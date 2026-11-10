@@ -18,8 +18,10 @@
  *   .credentials.json   the account's login (0600), the only real credential file
  *   .claude.json        a copy of the shared global config (MCP servers, onboarding) minus the cached account (it
  *                       goes stale on every switch; Claude Code reads it again)
- *   token.env           0600 shell line: `export CLAUDE_CODE_OAUTH_TOKEN=…` when the account has a saved token, else
- *                       `unset CLAUDE_CODE_OAUTH_TOKEN`, so an inherited token never beats the snapshot
+ *   token.env           0600 shell lines: `export CLAUDE_CODE_OAUTH_TOKEN=…` when the account has a saved token, else
+ *                       `unset CLAUDE_CODE_OAUTH_TOKEN`, so an inherited token never beats the snapshot. An API-key
+ *                       account (~/.claude-accounts/<name>/apikey, workers-api-routing Nov 8 2026) exports only
+ *                       ANTHROPIC_API_KEY; every other account unsets ANTHROPIC_API_KEY so it is never billed per token.
  *   build-login.json    build-login@1: { account, email, source, at } — never a credential
  *   token-chain.json    token-chain@1: hashes of the refresh tokens this copy has held + where its stores are
  *   everything else     symlinks to the shared config dir (settings.json + hooks, CLAUDE.md, projects/ transcripts,
@@ -77,8 +79,10 @@ export function accounts(env = process.env) {
   try { names = readdirSync(p.accounts).filter((n) => NAME_RE.test(n)).sort(); } catch { /* no store */ }
   return names.map((name) => {
     const d = join(p.accounts, name);
-    return { name, active: name === active, creds: isFile(join(d, '.credentials.json')), token: readText(join(d, 'token')) !== '', email: String(seen?.[name]?.email || '') };
-  }).filter((a) => a.creds || a.token);
+    const apikey = readText(join(d, 'apikey')) !== '';
+    return { name, active: name === active, creds: isFile(join(d, '.credentials.json')), token: readText(join(d, 'token')) !== '', apikey,
+      kind: apikey ? 'api' : 'subscription', email: String(seen?.[name]?.email || '') };
+  }).filter((a) => a.creds || a.token || a.apikey);
 }
 
 const liveEmail = (p) => String(readJson(p.global)?.oauthAccount?.emailAddress || '');
@@ -101,12 +105,13 @@ export function pick(want = 'active', env = process.env) {
   const isLive = (f) => bytes(f)?.equals(liveBuf) || (!!liveToken && refreshHash(f) === liveToken);
   const owner = hasLive ? list.find((a) => a.creds && isLive(join(p.accounts, a.name, '.credentials.json'))) || null : null;
   const act = list.find((a) => a.active) || null;
-  const saved = (a) => ({ account: a.name, email: a.email, source: 'saved',
-    creds: a.creds ? join(p.accounts, a.name, '.credentials.json') : '', tokenFile: a.token ? join(p.accounts, a.name, 'token') : '' });
-  const fromLive = (a) => ({ account: a ? a.name : 'live', email: a ? a.email : (list.length ? '' : liveEmail(p)), source: 'live',
+  const saved = (a) => ({ account: a.name, email: a.email, source: 'saved', kind: a.kind,
+    creds: a.apikey ? '' : a.creds ? join(p.accounts, a.name, '.credentials.json') : '', tokenFile: !a.apikey && a.token ? join(p.accounts, a.name, 'token') : '',
+    keyFile: a.apikey ? join(p.accounts, a.name, 'apikey') : '' });
+  const fromLive = (a) => ({ kind: 'subscription', keyFile: '', account: a ? a.name : 'live', email: a ? a.email : (list.length ? '' : liveEmail(p)), source: 'live',
     creds: hasLive ? liveCreds : '', tokenFile: a?.token ? join(p.accounts, a.name, 'token') : '' });
   // the live login is (still) account `a`: identical bytes, or nothing says it is anyone else
-  const liveIs = (a) => hasLive && (owner ? owner === a : a === act);
+  const liveIs = (a) => hasLive && a?.kind !== 'api' && (owner ? owner === a : a === act);
   const w = String(want || 'active').trim().toLowerCase();
   if (w === 'live') return fromLive(owner);   // unmatched (AI keys wrote another login) = "live"
   if (w === 'active' || w === '') {
@@ -130,7 +135,8 @@ export function snapshot({ dir, session, account = process.env.AXF_CLAUDE_ACCOUN
   const p = paths(env);
   const choice = pick(account, env);
   const token = choice.tokenFile ? readText(choice.tokenFile) : '';
-  if (!choice.creds && !token) throw Object.assign(new Error(`no Claude login to snapshot for "${choice.account}" (log in, or save the account first)`), { code: 4 });
+  const apiKey = choice.keyFile ? readText(choice.keyFile) : '';
+  if (!choice.creds && !token && !apiKey) throw Object.assign(new Error(`no Claude login to snapshot for "${choice.account}" (log in, or save the account first)`), { code: 4 });
   const parent = join(resolve(dir), FOLDER);
   const out = loginDir(dir, session);
   mkdirSync(parent, { recursive: true, mode: 0o700 }); chmodSync(parent, 0o700);
@@ -157,12 +163,18 @@ export function snapshot({ dir, session, account = process.env.AXF_CLAUDE_ACCOUN
     let target = join(shared, n); try { target = realpathSync(target); } catch { continue; }
     try { symlinkSync(target, join(out, n)); } catch { /* raced or exists */ }
   }
-  const line = token ? `export CLAUDE_CODE_OAUTH_TOKEN='${token.replace(/'/g, `'\\''`)}'\n` : 'unset CLAUDE_CODE_OAUTH_TOKEN\n';
+  // An API-key account bills per token: only its key is exported. Every other account drops an inherited
+  // ANTHROPIC_API_KEY, so a subscription run can never be billed to a key by accident.
+  const q = (v) => `'${v.replace(/'/g, `'\\''`)}'`;
+  const line = apiKey ? `unset CLAUDE_CODE_OAUTH_TOKEN\nexport ANTHROPIC_API_KEY=${q(apiKey)}\n`
+    : token ? `unset ANTHROPIC_API_KEY\nexport CLAUDE_CODE_OAUTH_TOKEN=${q(token)}\n` : 'unset CLAUDE_CODE_OAUTH_TOKEN ANTHROPIC_API_KEY\n';
   writeFileSync(join(out, 'token.env'), line, { mode: 0o600 });
-  const rec = { $axf: 'build-login@1', account: choice.account, email: choice.email, source: choice.source, token: !!token, session: slug(session), at: new Date().toISOString() };
+  const kind = apiKey ? 'api' : 'subscription';
+  const rec = { $axf: 'build-login@1', account: choice.account, email: choice.email, source: choice.source, token: !!token, kind, session: slug(session), at: new Date().toISOString() };
   writeFileSync(join(out, MARKER), JSON.stringify(rec, null, 2) + '\n', { mode: 0o600 });
-  return { dir: out, account: rec.account, email: rec.email, source: rec.source, token: rec.token,
-    env: { CLAUDE_CONFIG_DIR: out, ...(token ? { CLAUDE_CODE_OAUTH_TOKEN: token } : {}) }, unset: token ? [] : ['CLAUDE_CODE_OAUTH_TOKEN'] };
+  return { dir: out, account: rec.account, email: rec.email, source: rec.source, token: rec.token, kind,
+    env: { CLAUDE_CONFIG_DIR: out, ...(apiKey ? { ANTHROPIC_API_KEY: apiKey } : token ? { CLAUDE_CODE_OAUTH_TOKEN: token } : {}) },
+    unset: apiKey ? ['CLAUDE_CODE_OAUTH_TOKEN'] : token ? ['ANTHROPIC_API_KEY'] : ['CLAUDE_CODE_OAUTH_TOKEN', 'ANTHROPIC_API_KEY'] };
 }
 
 /** The environment for a node launcher: the parent's env with the snapshot applied (inherited token dropped). */
@@ -203,7 +215,7 @@ const main = () => {
       const s = snapshot({ dir, session, account: flag('account', process.env.AXF_CLAUDE_ACCOUNT || 'active') });
       const pub = { dir: s.dir, account: s.account, email: s.email, source: s.source, token: s.token };
       if (has('json')) console.log(JSON.stringify(pub));
-      else if (has('sh')) console.log(`login_dir=${q(s.dir)} login_account=${q(s.account)} login_email=${q(s.email)} login_source=${s.source} login_token=${s.token ? 1 : 0}`);
+      else if (has('sh')) console.log(`login_dir=${q(s.dir)} login_account=${q(s.account)} login_email=${q(s.email)} login_source=${s.source} login_token=${s.token ? 1 : 0} login_kind=${s.kind}`);
       else console.log(`build login: ${describe(s)} · ${s.source} copy in ${s.dir}`);
     } else if (cmd === 'release') {
       const r = release({ dir, session }); console.log(r.released ? 'released' : r.why);
@@ -211,8 +223,8 @@ const main = () => {
       const r = who({ dir, session }); console.log(has('json') ? JSON.stringify(r) : describe(r));
     } else if (cmd === 'accounts') {
       const l = accounts();
-      if (has('json')) console.log(JSON.stringify(l.map(({ name, active, email, token }) => ({ name, active, email, token }))));
-      else for (const a of l) console.log(`${a.active ? '*' : ' '} ${a.name}${a.email ? ` (${a.email})` : ''}${a.token ? ' [token]' : ''}`);
+      if (has('json')) console.log(JSON.stringify(l.map(({ name, active, email, token, kind }) => ({ name, active, email, token, kind }))));
+      else for (const a of l) console.log(`${a.active ? '*' : ' '} ${a.name}${a.email ? ` (${a.email})` : ''}${a.kind === 'api' ? ' [api key]' : a.token ? ' [token]' : ''}`);
     } else {
       console.error('usage: claude-login.mjs snapshot|release|who --dir <build folder> --session <name> [--account active|live|<name>] [--sh|--json] · accounts');
       process.exit(2);

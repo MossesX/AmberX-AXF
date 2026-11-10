@@ -15,7 +15,7 @@ import './voice.css';
 import { isNative, native, type VoiceStatus } from '../../../native';
 import { withMic } from '../../../miclease';
 import { dbText, graphPoints, levelOf, listens, overlayColors, pushLevel, voiceConfig, type VoiceConfig } from './handsfree';
-import { flatTree, localDay, parseIntent, type Intent } from '../../notes/web/core';
+import { flatTree, isOwnReply, localDay, parseIntent, type Intent } from '../../notes/web/core';
 import { NOTES_ID, load as loadNotes, runIntent, snapshot as notesSnapshot } from '../../notes/web/store';
 import { aiReady, parseNote } from '../../ai/web/client';
 import {
@@ -24,7 +24,7 @@ import {
   type CommandGroup, type Effective, type ManagedCommand, type MyCommand, type VoiceCommand,
 } from './core';
 import { FACTORY_PHRASES, SUGGESTED_PHRASES, addPhrase, phrasesText, removePhrase } from './wake';
-import { armedSaveAllowed, isEcho, markDone, markSpeaking, newGate, noteArmedSave, shouldSpeak, speechMs, type SayOpts } from './speechgate';
+import { armedSaveAllowed, isEcho, markDone, markSpeaking, newGate, noteArmedSave, shouldSpeak, speechMs, TALK_ECHO_LIKE, TALK_TAIL_MS, type SayOpts } from './speechgate';
 import { HandledIds, Subscriptions, deviceStore } from '../../../listeners';
 import { wakeAction, type WakeEvent } from './wakeflow';
 import { deviceHandsFree, isSoundOwner, mayMakeSound, onDeviceChange, onSound } from '../../../sound';
@@ -145,6 +145,16 @@ let sayN = 0;
 /** Is this heard text AmberX's own voice coming back? (exported for the dictation plugin) `armed` = heard with no wake
  * phrase (always armed): it waits longer after AmberX talks. */
 export const heardEcho = (text: string, armed = false) => isEcho(gate, text, Date.now(), { armed });
+/** Talk mode's echo test: still talking or stopped less than `TALK_TAIL_MS` ago, or a close copy of something said in the last few seconds
+ * (`TALK_ECHO_LIKE`, so Brett's follow-up that repeats Gizmo's words still goes through). */
+export const talkEcho = (text: string) => isEcho(gate, text, Date.now(), { like: TALK_ECHO_LIKE, tail: TALK_TAIL_MS });
+/** Does this sound like something AmberX or Gizmo just said (by the words only, even while it is still talking)? */
+export const soundsLikeOwnVoice = (text: string) => isEcho(gate, text, Date.now(), { content: true, like: TALK_ECHO_LIKE });
+/** Another speaker in the app (Gizmo's talk mode) says `text` now: hands-free and the notes parser treat it as AmberX's
+ * own voice, so it is never taken as a command or a note. */
+export const markOwnSpeech = (text: string) => { if (text.trim()) markSpeaking(gate, text, Date.now()); };
+/** That speaker finished talking (the `spoken` event, or its estimate ran out). */
+export const markOwnSpeechDone = () => markDone(gate, Date.now());
 
 /** Wake hits already run, kept on the device: a replay (reopen, reconnect, a retained event) never runs again. */
 const handledWake = new HandledIds(deviceStore(), 'amberx.voice.handled');
@@ -230,6 +240,8 @@ export async function handle(rt: AxfRuntime, heardRaw: string, opts: { armed?: b
   const armed = opts.armed === true;
   let turn: Turn;
   if (!heard) turn = { at, heard: heardRaw, did: 'Heard nothing.', ok: false };
+  // Its own notes reply heard back ("Note saved to Inbox."): never a note, a command or a question for the AI.
+  else if (isOwnReply(heard)) turn = { at, heard, did: "AmberX's own reply heard back (ignored).", ok: false };
   else {
     const notes = notesOn(rt) && (!armed || armedSaveAllowed(gate, Date.now()));
     const local = notes ? parseIntent(heard) : null;

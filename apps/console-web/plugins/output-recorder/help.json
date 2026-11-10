@@ -60,6 +60,12 @@
         "text": "Where you set “Record my mic too”. Change it and the app uses the new value. Part of Audio Output Recorder.",
         "kind": "field",
         "draft": true
+      },
+      {
+        "target": "search-what-was-said",
+        "title": "Search what was said",
+        "text": "Searches what was said in your session recordings. Every word has to be there, in any order. Covers the newest 200 transcripts.",
+        "kind": "field"
       }
     ],
     "intros": []

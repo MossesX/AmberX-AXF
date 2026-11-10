@@ -115,6 +115,15 @@ await t('no signed path here: nothing is sent, axHub opens (never a refused fram
   assert.equal(f.frame, true, 'where the hub allows the frame, it still frames');
 });
 
+await t('a host answers in place: its refusal stays here, nothing opens (Nov 7 2026)', async () => {
+  const held = { kind: 'held', id: H1, title: 'T', decisions: ['approve', 'deny'] } as never;
+  const r = await decide(held, true, { hub: HUB, origin: CONSOLE, vetoAct: async () => ({ ok: false, error: 'Too late.' }) });
+  assert.deepEqual([r.ok, r.route, r.message, r.open], [false, 'host', 'Too late.', undefined]);
+  const a = { kind: 'approval', id: A1, title: 'T', decisions: ['approve', 'decline'] } as never;
+  const d = await decide(a, false, { hub: HUB, origin: CONSOLE, approvalDecide: async () => ({ ok: true, message: 'Denied: T' }) });
+  assert.deepEqual([d.ok, d.open, d.frame], [true, undefined, undefined]);
+});
+
 await t('a host that only opens the page (opened) opens axHub, never a frame', async () => {
   const r = await decide(feed.items.find((i) => i.id === A1)!, true, { hub: HUB, origin: CONSOLE, approvalDecide: async () => ({ ok: true, opened: true, message: '' }) });
   assert.equal(r.open, true);

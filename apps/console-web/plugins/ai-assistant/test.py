@@ -190,13 +190,15 @@ an = c.post(f"{P}/profiles", json={"kind": "anthropic", "label": "Fake Claude", 
 check(c.get(f"{P}/profiles/{an}/models").json()["models"] == ["claude-test"], "anthropic model list")
 bad = c.post(f"{P}/profiles", json={"kind": "custom", "label": "Broken", "baseUrl": f"{BASE}/broken", "key": "x" * 24, "defaultModel": "m"}).json()["profile"]["id"]
 
+# Everything up to the chat mode section runs with tools forced: the plumbing, exactly as it was before chat mode.
+c.put(f"{P}/config", json={"chatMode": {"default": "tools"}})
 conv = c.post(f"{P}/conversations", json={}).json()["conversation"]
 ev = turn(conv["id"], content="hi there", context={"view": "home", "extra": {"projectId": "apk-1", "custom": {"k": [1, 2]}, "bad key": 1}})
 texts = "".join(d["text"] for e, d in ev if e == "text")
 check(texts == "Hello from fake", "streamed text arrives in order")
 _cv = c.get(f"{P}/conversations/{conv['id']}").json()["conversation"]
 check(_cv["messages"][0]["meta"]["context"] == {"view": "home", "extra": {"projectId": "apk-1", "custom": {"k": [1, 2]}}}, "ChatContext.extra is normalised and stored with the message (unknown keys kept, bad keys dropped)")
-_sys = next(m["content"] for x in reversed(CALLS) for m in x["body"]["messages"] if m["role"] == "system")
+_sys = next(m["content"] for x in reversed(CALLS) for m in x["body"]["messages"] if m["role"] == "system" and "short titles" not in m["content"])
 check("projectId: apk-1" in _sys and "view: home" in _sys and "custom" not in _sys, "well-known extra keys reach the model in the context line; a host's own keys stay out of it")
 done = [d for e, d in ev if e == "done"][0]
 check(done["message"]["meta"]["usage"] == {"input": 11, "output": 7}, "usage recorded on the message")
@@ -771,5 +773,146 @@ plugin_services.withdraw("ai-assistant")
 plugin_services.provide("axf.llm@1", mod.LlmService(), "ai-assistant")
 _prov.test_profile = _orig_test
 _st.save_config(_cfg0)
+
+# --- chat mode (Nov 5 2026): plain talk loads nothing, tools load per turn and drop back ---------------------------------
+c.put(f"{P}/config", json={"chatMode": {"default": "auto"}})
+cm = mod.chatmode
+_conf = cm.normalize(None)
+for _t in ["hi", "hey gizmo, how's it going?", "tell me a quick joke", "what do you think about pizza?", "do you like the beach?", "I had a rough day at work", "what's the capital of France?", "I'd check that out sometime"]:
+    check(cm.needs_tools(_t, _conf) == "", f"chat mode: plain talk stays chat: {_t!r}")
+for _t in ["check the build queue", "Hey Gizmo, can you please check the build queue?", "is main green?", "How’s main", "what's the crew building?", "open the settings", "yeah go ahead", "ok do it", "any PRs waiting?", "restart the console", "What is waiting in UI Review for me?", "use repo_search for that"]:
+    check(cm.needs_tools(_t, _conf, ["repo_search"]) != "", f"chat mode: asks for tools: {_t!r}")
+check(cm.normalize({"default": "nope", "cacheSec": -5, "actionWords": "x", "historyMessages": 9999})["default"] == "auto" and cm.normalize({"cacheSec": -5})["cacheSec"] == 0
+      and cm.normalize({"actionWords": "x"})["actionWords"] == cm.DEFAULTS["actionWords"] and cm.normalize({"historyMessages": 9999})["historyMessages"] == 200, "chat mode: a broken setting never breaks a chat")
+_g = [{"id": "b", "name": "Builds", "triggers": ["queue", "build"], "tools": ["axhub_call", "repo_read"]}, {"id": "d", "name": "DNS", "triggers": ["dns"], "tools": ["dns_tool"]}]
+_n = ["axhub_call", "repo_read", "dns_tool", "calculator"]
+_r = cm.decide("check the build queue", "", _conf, groups=_g, names=_n)
+check(_r.mode == "tools" and _r.groups == ["Builds"] and _r.names == {"axhub_call", "repo_read", "calculator"} and _r.lean, "chat mode: only the relevant tool group loads (plus ungrouped tools)")
+check(cm.decide("restart it", "", _conf, groups=_g, names=_n).names is None, "chat mode: tools needed but no group matched = all of them")
+check(cm.decide("hi", "", _conf, groups=_g, names=_n).mode == "chat" and cm.decide("hi", "", _conf, groups=_g, names=_n).escalate, "chat mode: auto, plain talk")
+check(cm.decide("check the queue", "chat", _conf, names=_n).mode == "chat" and not cm.decide("check the queue", "chat", _conf, names=_n).escalate, "chat mode: forced chat never loads tools, even when asked")
+_r = cm.decide("hi", "tools", _conf, names=_n)
+check(_r.mode == "tools" and _r.names is None and not _r.lean, "chat mode: forced tools = the full session, every tool")
+check(cm.decide("check the queue", "", _conf, names=[]).mode == "chat", "chat mode: a caller with no tools is always chat")
+check(cm.decide("look", "", _conf, images=True, names=_n).mode == "tools", "chat mode: an image keeps tools")
+_gd = cm.Guard(True)
+check(_gd.feed("Hey")[0] == "Hey" and _gd.feed(" there [")[0] == " there " and _gd.feed("x")[0] == "[x" and _gd.flush() == "", "guard: text passes at once, only a possible marker is held")
+_gd = cm.Guard(True)
+check(_gd.feed("[[to") == ("", False) and _gd.feed("ols]]") == ("", True), "guard: a marker split across chunks asks for tools and shows nothing")
+_gd = cm.Guard(True); _gd.feed("[[to")
+check(_gd.flush() == "[[to", "guard: a held tail is never lost")
+_s = cm.chat_system("You are Gizmo.", "Brett", cm.Route("chat", escalate=True), voice=True, memory="likes pizza")
+check(cm.MARKER in _s and "spoken aloud" in _s and "pizza" in _s and len(_s) < 1500, "chat mode: the prompt is short and says how to ask for tools")
+check(cm.MARKER not in cm.chat_system("You are Gizmo.", "Brett", cm.Route("chat")), "chat mode: forced chat has no marker")
+
+# A fake Claude Code that records every call. It says the marker on a chat call for "secret word", else answers.
+_cd = _tf.mkdtemp()
+_cf = _os.path.join(_cd, "fake-chat-claude")
+with open(_cf, "w") as f:
+    f.write(f"""#!{sys.executable}
+import json, os, sys
+msg = sys.stdin.read()
+with open({_os.path.join(_cd, "calls.jsonl")!r}, "a") as o:
+    o.write(json.dumps({{"argv": sys.argv[1:], "cwd": os.getcwd(), "msg": msg}}) + "\\n")
+chat = "--system-prompt" in sys.argv
+text = "[[tools]]" if chat and "secret word" in msg else ("Used tools" if not chat else "Hey there.")
+if "out of juice" in msg:
+    print(json.dumps({{"type": "assistant", "message": {{"content": [{{"type": "text", "text": "You've hit your weekly limit · resets Nov 10"}}]}}}}), flush=True)
+    print(json.dumps({{"type": "result", "is_error": True, "result": "You've hit your weekly limit · resets Nov 10", "usage": {{}}}}), flush=True)
+    sys.exit(1)
+for part in (text[:3], text[3:]):
+    print(json.dumps({{"type": "stream_event", "event": {{"type": "content_block_delta", "delta": {{"type": "text_delta", "text": part}}}}}}), flush=True)
+print(json.dumps({{"type": "result", "usage": {{"input_tokens": 1, "output_tokens": 1}}}}), flush=True)
+""")
+_os.chmod(_cf, 0o755)
+_os.environ["CLAUDE_BIN"] = _cf
+def _calls():
+    try:
+        out = [json.loads(x) for x in open(_os.path.join(_cd, "calls.jsonl"))]
+    except OSError:
+        return []
+    _os.remove(_os.path.join(_cd, "calls.jsonl"))
+    return out
+_cli2 = c.post(f"{P}/profiles", json={"kind": "claude-code", "label": "Sub2", "key": "sk-ant-oat01-" + "y" * 40, "defaultModel": "claude-opus-4-1"}).json()["profile"]["id"]
+class FakeGizmo:
+    reads = 0
+    def list_agents(self): return [{"id": "giz", "name": "Giz"}]
+    def get_agent(self, aid):
+        FakeGizmo.reads += 1
+        return {"id": aid, "name": "Giz", "system_prompt": "FULL PERSONA", "chatPrompt": "You are Giz, quick.", "model": {}, "writeMode": None,
+                "toolGroups": [{"id": "b", "name": "builds", "triggers": ["queue"], "tools": ["q_tool"]}, {"id": "d", "name": "dns", "triggers": ["dns"], "tools": ["d_tool"]}],
+                "tools": [{"name": "q_tool", "description": "q", "parameters": {"type": "object"}}, {"name": "d_tool", "description": "d", "parameters": {"type": "object"}}]}
+    def memory_context(self, aid, q): return "remembers pizza"
+    def run_tool(self, *a, **k): return "ok"
+    def record_turn(self, *a, **k): pass
+plugin_services.provide("axf.agents@1", FakeGizmo(), "fake-agent-manager")
+_c = c.post(f"{P}/conversations", json={"settings": {"agentId": "giz", "profileId": _cli2}}).json()["conversation"]
+ev = turn(_c["id"], content="hi")
+_k = _calls()
+_a = _k[0]["argv"]
+check(len(_k) == 1 and _a[_a.index("--tools") + 1] == "" and "--strict-mcp-config" in _a and "--mcp-config" not in _a and "--allowedTools" not in _a, "chat turn: no tools of any kind reach the CLI")
+check(_a[_a.index("--setting-sources") + 1] == "" and "--no-session-persistence" in _a and "--disable-slash-commands" in _a and "--append-system-prompt" not in _a, "chat turn: no CLAUDE.md, settings or hooks")
+check(_a[_a.index("--model") + 1] == "claude-opus-5-5", "chat turn: the policy's model, whatever the profile default")
+_sp = _a[_a.index("--system-prompt") + 1]
+check("You are Giz, quick." in _sp and "FULL PERSONA" not in _sp and "pizza" in _sp and len(_sp) < 1500, "chat turn: short prompt, the agent in a line, memory kept")
+check(_k[0]["cwd"] != str(mod.tools_root()) and not _os.path.exists(_k[0]["cwd"]), "chat turn: runs in an empty folder, removed afterwards")
+_start = next(d for e, d in ev if e == "start")
+check(_start["mode"]["mode"] == "chat" and "".join(d["text"] for e, d in ev if e == "text") == "Hey there.", "chat turn: says chat on start and streams the reply")
+_done = next(d for e, d in ev if e == "done")["message"]["meta"]
+check(_done["mode"]["mode"] == "chat" and _done["firstWordMs"] >= 0 and _done["tools"] == [], "chat turn: mode and time to first word on the reply")
+_reads = FakeGizmo.reads
+turn(_c["id"], content="how are you")
+check(FakeGizmo.reads == _reads, "chat turn: agent and memory come from the chat's cache")
+_calls()
+ev = turn(_c["id"], content="check the queue")
+_k = _calls()
+_a = _k[0]["argv"]
+check(next(d for e, d in ev if e == "start")["mode"] == {"mode": "tools", "reason": "asked: check", "groups": ["builds"]}, "tools turn: chip data names the group")
+check(_a[_a.index("--tools") + 1] == "Read,Grep,Glob" and _a[_a.index("--setting-sources") + 1] == "" and "--mcp-config" in _a and "--append-system-prompt" in _a, "tools turn: lean CLI, the host's tools over MCP")
+check(FakeGizmo.reads > _reads, "tools turn: reads the agent fresh")
+ev = turn(_c["id"], content="thanks")
+_k = _calls()
+check(next(d for e, d in ev if e == "start")["mode"]["mode"] == "chat" and "--mcp-config" not in _k[0]["argv"], "drops back to chat on the next message")
+ev = turn(_c["id"], content="whats the secret word")
+_k = _calls()
+_mode = [d["mode"] for e, d in ev if e == "status" and d.get("mode")]
+check(len(_k) == 2 and "--system-prompt" in _k[0]["argv"] and "--mcp-config" in _k[1]["argv"], "escalation: the model's marker reruns the turn with tools")
+check(_mode and _mode[0]["escalated"] and "[[" not in "".join(d["text"] for e, d in ev if e == "text") and "".join(d["text"] for e, d in ev if e == "text") == "Used tools", "escalation: the marker is never shown, the status carries the new mode")
+check(next(d for e, d in ev if e == "done")["message"]["meta"]["mode"]["escalated"] is True, "escalation: recorded on the reply")
+c.patch(f"{P}/conversations/{_c['id']}", json={"settings": {"toolMode": "chat"}})
+ev = turn(_c["id"], content="check the queue")
+_k = _calls()
+check(c.get(f"{P}/conversations/{_c['id']}").json()["conversation"]["settings"]["toolMode"] == "chat" and "--mcp-config" not in _k[0]["argv"] and cm.MARKER not in _k[0]["argv"][_k[0]["argv"].index("--system-prompt") + 1], "force chat: remembered per chat, no tools")
+c.patch(f"{P}/conversations/{_c['id']}", json={"settings": {"toolMode": "tools"}})
+ev = turn(_c["id"], content="hi")
+_k = _calls()
+check("--setting-sources" not in _k[0]["argv"] and "--mcp-config" in _k[0]["argv"] and _k[0]["cwd"] == _os.path.realpath(str(mod.tools_root())), "force tools: today's full session")
+check(not [x for x in _os.listdir(_tf.gettempdir()) if x.startswith("axf-cli-chat-")], "chat folders removed")
+# The plan's limit is an error, so the fallback chain and the credit check see it (it used to pass for a reply).
+_c2 = c.post(f"{P}/conversations", json={"settings": {"agentId": "giz", "profileId": _cli2}}).json()["conversation"]
+ev = turn(_c2["id"], content="out of juice")
+check([d for e, d in ev if e == "error"] and "weekly limit" in next(d for e, d in ev if e == "error")["message"] and not [d for e, d in ev if e == "text"], "limit: a real error, not a reply (and said once)")
+_e = ""
+try:
+    list(prov.stream_chat({"kind": "claude-code", "key": "sk-ant-oat01-" + "y" * 40}, [{"role": "user", "content": "out of juice"}], model="claude-test", lean=True))
+except prov.ProviderError as e:
+    _e = str(e)
+check(mod._NO_CREDIT.search(_e) is not None, "limit: the credit check recognises it, so the systems check can switch provider")
+# A host with its own default (Gizmo's setting) sends it per turn; a chat with no mode of its own follows it.
+_c3 = c.post(f"{P}/conversations", json={"settings": {"agentId": "giz", "profileId": _cli2}}).json()["conversation"]
+ev = turn(_c3["id"], content="check the queue", toolMode="chat")
+_k = _calls()
+check(next(d for e, d in ev if e == "start")["mode"]["mode"] == "chat" and "--mcp-config" not in _k[0]["argv"], "turn toolMode: the host's default wins for that turn")
+check("toolMode" not in c.get(f"{P}/conversations/{_c3['id']}").json()["conversation"]["settings"], "turn toolMode: never written to the chat")
+ev = turn(_c3["id"], content="check the queue", toolMode="nonsense")
+_calls()
+check(next(d for e, d in ev if e == "start")["mode"]["mode"] == "tools", "turn toolMode: a bad value falls back to the default")
+c.patch(f"{P}/conversations/{_c3['id']}", json={"settings": {"toolMode": "chat"}})
+check("toolMode" not in c.patch(f"{P}/conversations/{_c3['id']}", json={"settings": {"toolMode": ""}}).json()["conversation"]["settings"], "per-chat mode: empty goes back to the default")
+check(cm.normalize({"historyMessages": "lots", "cacheSec": None}) == {**cm.DEFAULTS}, "chat mode: a broken saved number falls back, a chat never breaks on it")
+check(c.get(f"{P}/status").json()["defaultToolMode"] == "auto", "status: says what a chat with no mode does")
+check(c.put(f"{P}/config", json={"chatMode": {"default": "chat", "historyMessages": 8}}).json()["chatMode"]["default"] == "chat" and c.get(f"{P}/config").json()["chatMode"]["historyMessages"] == 8, "chat mode settings save")
+c.put(f"{P}/config", json={"chatMode": {"default": "auto", "historyMessages": 16}})
+plugin_services.withdraw("fake-agent-manager")
 
 print(f"all {ok} checks passed")

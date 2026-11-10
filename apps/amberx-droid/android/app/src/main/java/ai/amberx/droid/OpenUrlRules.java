@@ -37,6 +37,11 @@ final class OpenUrlRules {
         return u.toString();
     }
 
+    /** An alert's link when AmberX may open it, else {@code fallback} (a console alert's tap never leaves Brett's sites). */
+    static String linkOr(String raw, String fallback) {
+        try { return allowed(raw); } catch (IllegalArgumentException e) { return fallback; }
+    }
+
     static boolean ownDomain(String host) {
         if (host == null || host.isEmpty() || host.endsWith(".")) return false;
         for (String d : DOMAINS) if (host.equals(d) || host.endsWith("." + d)) return true;

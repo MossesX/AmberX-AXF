@@ -127,7 +127,6 @@ export function FeatureActions({ feature }: { feature?: { id: string; status: st
 type Step = 'confirm' | 'planning' | 'review' | 'model' | 'starting' | 'done';
 
 export function BuildDialog({ featureId, close }: { featureId: string; close: () => void }) {
-  const rt = useRuntime();
   const s = useFAStatus();
   const [step, setStep] = useState<Step>('confirm');
   const [plan, setPlan] = useState<BuildPlan | null>(null);
@@ -150,13 +149,12 @@ export function BuildDialog({ featureId, close }: { featureId: string; close: ()
     if (!plan) return;
     setStep('starting'); setErr('');
     try {
-      const r = await post<{ parked: boolean; pending: string[]; chat?: { agentId: string; message: string; title: string; profile: string | null; model: string | null } }>('build/start', {
+      const r = await post<{ parked: boolean; pending: string[]; queued?: boolean; build?: string }>('build/start', {
         featureId, plan: plan.plan, model, fableLater: model !== 'fable' && fableLater, park: model === 'fable', order: useOrder && plan.order.changed ? plan.order.after : null,
       });
       await refreshStatus(); planChanged();
       if (r.parked) { setResult(`Parked for Fable on the pending list (${r.pending.join(', ')}). Add it to the claude.ai Pending Builds page too when you sync.`); setStep('done'); return; }
-      if (r.chat) rt.dispatch(`ai.chat.start:${encodeURIComponent(JSON.stringify({ agentId: r.chat.agentId, message: r.chat.message, title: r.chat.title, profileId: r.chat.profile, model: r.chat.model }))}`);
-      setResult(`Started on ${MODEL_LABEL[model]}.${r.pending.length ? ` Fable rebuild added to the pending list (${r.pending.join(', ')}).` : ''} Mosses is in the AI assistant chat; approve his cards as they come.`);
+      setResult(`In the Build orchestrator's Queue as ${r.build ?? 'a new build'} (${MODEL_LABEL[model]}): the orchestrator starts it when a slot is free.${r.pending.length ? ` Fable rebuild added to the pending list (${r.pending.join(', ')}).` : ''}`);
       setStep('done');
     } catch (e) { setErr((e as Error).message); setStep('model'); }
   };

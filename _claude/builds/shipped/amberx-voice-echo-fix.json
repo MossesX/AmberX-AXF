@@ -1,0 +1,104 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-amberx-voice-echo-fix",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-09T01:27:06Z",
+ "build": {
+  "id": "amberx-voice-echo-fix",
+  "title": "AmberX: stop the Note saved to Inbox echo loop",
+  "profile": "all",
+  "category": "AmberX",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Echo fix\n\nMaine but how do I make it so I don't have to keep cooking the mic to talk to you",
+  "verbatim": true,
+  "at": "2026-11-05T01:38:10.037Z",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "# Gizmo voice in AmberX: make it work (URGENT)\n\nBrett: Gizmo inside AmberX won't turn on / isn't listening.\n\n1. Read /root/axf-builds/gizmo-voice (branch claude/gizmo-voice, stopped at s2 of 3, 11h ago) and its log; bring its committed/uncommitted work over. Orchestrator ids: `gizmo-voice` (s3 pending) and `amberx-voice-echo-fix` (0/3) — get their briefs: `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs brief <id>`.\n2. Find why Gizmo doesn't start/listen in AmberX (apps/amberx-droid: companion plugin, WatchService, MicGuard, speech, permissions). Fix it end to end: tap/wake → mic on → transcript → Gizmo replies (voice). Fix the echo (Gizmo hearing itself).\n3. Tests for the path; build the APK if the repo's CI/scripts do; note how Brett installs it.\n4. Mark both orchestrator builds' steps done; add to Shipped features.\n\nProgress: append `<time> START|DONE <step>` to PROGRESS.md here at each step; don't stop between steps. Commit, don't push. Shipped quality, no hard-coded styling.",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "account-1"
+ ],
+ "runs": [
+  {
+   "session": "axf-gizmo-voice-fix--sully",
+   "account": "account-1",
+   "model": "Opus",
+   "startedAt": "2026-11-07T11:08:39.277Z",
+   "endedAt": "2026-11-07T11:18:18.744Z",
+   "exit": 0,
+   "costUsd": 4.9784
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Notes parser skips the app own reply lines (Note/Task/Todo saved to ...), with unit tests",
+   "model": "Opus",
+   "estimate": "25m",
+   "estimateMin": 25,
+   "startedAt": "2026-11-07T11:08:39.277Z",
+   "doneAt": "2026-11-07T11:17:31.253Z",
+   "actualMin": 9,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "speechgate.ts echo guard: fuzzy match against recently spoken lines, with unit tests",
+   "model": "Opus",
+   "estimate": "25m",
+   "estimateMin": 25,
+   "startedAt": "2026-11-07T11:17:31.253Z",
+   "doneAt": "2026-11-07T11:17:31.984Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Regression test that replays the spoken reply into the listener and proves no second note is saved; branch, PR, merge queue",
+   "model": "Opus",
+   "estimate": "20m",
+   "estimateMin": 20,
+   "startedAt": "2026-11-07T11:17:31.984Z",
+   "doneAt": "2026-11-07T11:17:32.753Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/gizmo-voice-fix",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "aeccdb0a848b520cd60fa4bb412e90f5037042ad",
+ "commits": [],
+ "mergedAt": "",
+ "landedAt": "2026-11-07T16:33:00Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 4.9784,
+  "estimated": false,
+  "tokens": {
+   "input": 134,
+   "output": 749,
+   "cacheRead": 11108282,
+   "cacheWrite": 208863
+  }
+ },
+ "report": "_claude/builds/reports/amberx-voice-echo-fix.md",
+ "open": []
+}

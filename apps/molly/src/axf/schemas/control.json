@@ -33,6 +33,7 @@
       "run": "write"
     },
     "console.nav": {
+      "refresh": "navigate",
       "back": "navigate",
       "home": "navigate",
       "close": "navigate"
@@ -1635,9 +1636,11 @@
       "acts": {
         "back": {},
         "home": {},
-        "close": {}
+        "close": {},
+        "refresh": {}
       },
       "actEffect": {
+        "refresh": "navigate",
         "back": "navigate",
         "home": "navigate",
         "close": "navigate"
@@ -3785,7 +3788,8 @@
         "acts": {
           "back": {},
           "home": {},
-          "close": {}
+          "close": {},
+          "refresh": {}
         },
         "paths": [
           "here"

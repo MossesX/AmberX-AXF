@@ -1,0 +1,42 @@
+{
+  "schema": "shipped-manifest@1",
+  "version": 1,
+  "sources": [
+    "orchestrator",
+    "backfill",
+    "api",
+    "manual"
+  ],
+  "testResults": [
+    "pass",
+    "fail",
+    "skip",
+    "unknown"
+  ],
+  "areaKinds": [
+    "plugin",
+    "app",
+    "framework",
+    "deploy",
+    "docs",
+    "builds",
+    "other"
+  ],
+  "models": [
+    "Opus",
+    "Fable"
+  ],
+  "repos": [
+    "amberx-axf",
+    "axhub"
+  ],
+  "maxBrief": 40000,
+  "maxSaid": 20000,
+  "sidecar": "_claude/builds/shipped/<build>.json",
+  "ref": [
+    "id",
+    "rev",
+    "at",
+    "landedCommit"
+  ]
+}

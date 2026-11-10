@@ -1,0 +1,90 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-337bca02-5b6e-48f8-8852-4399394245f2",
+ "source": "claude-code",
+ "sessionId": "337bca02-5b6e-48f8-8852-4399394245f2",
+ "project": "other",
+ "title": "# Lander C2 — resume lander-c (its login expired mid-run) First read /root/axf-builds/lander-c/PROGRESS.md (if any) and…",
+ "startedAt": "2026-11-07T10:22:12.220Z",
+ "endedAt": "2026-11-07T10:50:01.597Z",
+ "minutes": 28,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.319",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/lander-c2",
+  "repo": "",
+  "branch": "claude/lander-c2"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-07T10:22:16.914Z",
+   "kind": "prompt",
+   "text": "# Lander C2 — resume lander-c (its login expired mid-run) First read /root/axf-builds/lander-c/PROGRESS.md (if any) and skip builds already READY/SKIPPED. handoff-2-addenda-r2 was mid-merge (unresolved apps/console-web/plugins/session-sync/notify.json, reports/handoff-2.md taken as ours): finish that merge cleanly first. For each remaining build, in its folder /root/axf-builds/<name>: 1. `git checkout -- _claude/builds/` and `git clean -fd _claude/builds/`. Commit any other leftover changes as `<name>: commit leftover work`. 2. `git fetch origin && git merge origin/main`; resolve keeping both…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 316,
+    "output": 53110,
+    "cacheRead": 26344825,
+    "cacheWrite": 240852,
+    "thinking": 12098
+   },
+   "costUsd": 7.537,
+   "costEstimated": false,
+   "seconds": 1663,
+   "tools": {
+    "Bash": 160
+   },
+   "commands": 160,
+   "files": [],
+   "changeIds": [
+    "chg-20261107-5b0cd09161"
+   ],
+   "features": [
+    "pending:handoff-2",
+    "pending:handoff-2-addenda-r2",
+    "orchestrator:handoff-2"
+   ],
+   "output": "Yo boss, Lander C2 is done. All 7 builds that were left are merged with main, tested and committed locally. Nothing's pushed. notes-views and three-layouts-per-screen-r2 were already READY from lander-c, so I skipped 'em. The full log is in `PROGRESS.md` in this folder. **handoff-2-addenda-r2 (READ…"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261107-5b0cd09161"
+ ],
+ "features": [
+  "pending:handoff-2",
+  "pending:handoff-2-addenda-r2",
+  "orchestrator:handoff-2"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 316,
+  "output": 53110,
+  "cacheRead": 26344825,
+  "cacheWrite": 240852,
+  "thinking": 12098,
+  "costUsd": 7.537,
+  "costEstimated": false,
+  "toolCalls": 160,
+  "commands": 160,
+  "filesTouched": 0,
+  "reportedUsd": 8.2592
+ },
+ "ingestedAt": "2026-11-07T10:50:03.298Z"
+}

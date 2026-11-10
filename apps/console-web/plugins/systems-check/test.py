@@ -210,49 +210,37 @@ class FakeChanges:
     def update(self, cid, patch): self.updates.append((cid, patch)); return {}
 fc = FakeChanges()
 sett = {"claudeOnFail": False, "claudeShell": False}
-hub_calls = []
-def claude_call(states):
-    def f(tool, args, conf=None, timeout=None):
-        hub_calls.append((tool, args["command"], conf))
-        s_ = states.pop(0)
-        if s_ == "confirm": return {"confirm": "11111111-2222-3333-4444-555555555555"}
-        if s_ == "reject": raise hf.HubError("The user rejected this call.")
-        return {"ok": "$ …\nexit 0 · 30 ms\nstarted pid 42 in /root/axf-fixes/fix-syscheck-host-mosh"}
-    return f
-L = cf.Launches(lambda: sett, claude_call(["confirm", "ok"]), delays=lambda: [0.01] * 5, changes=lambda: fc)
+class FakeDispatch:
+    """The Build orchestrator's axf.build-dispatch@1: records what it was asked to queue."""
+    def __init__(self, fail: str = ""): self.calls, self.fail = [], fail
+    def request(self, title, detail="", **kw):
+        if self.fail: raise RuntimeError(self.fail)
+        self.calls.append((title, detail, kw)); return {"ok": True, "id": f"fix-build-{len(self.calls)}", "status": "queued"}
+fd = FakeDispatch()
+L = cf.Launches(lambda: sett, changes=lambda: fc, dispatch=lambda: fd)
 bad = {"id": "host-mosh", "service": "vps", "title": "mosh server", "status": "error", "summary": "mosh-server not installed",
        "details": ["x" * 300] * 12, "instructions": ["sudo apt-get install -y mosh"], "fix": {"type": "host", "command": "bash /opt/axf/deploy/console-doctor.sh --fix host-mosh"}}
-check(L.maybe_launch(bad, "apt failed") is None and not hub_calls, "setting off: nothing is handed over")
+check(L.maybe_launch(bad, "apt failed") is None and not fd.calls, "setting off: nothing is handed over")
 sett["claudeOnFail"] = True
 check(L.maybe_launch({**bad, "status": "ok"}, "x") is None, "a check that passes is never handed over")
 j = L.maybe_launch(bad, "apt failed")
-for _ in range(300):
-    if (L.get("host-mosh") or {}).get("state") in ("launched", "failed"): break
-    time.sleep(0.01)
-j = L.get("host-mosh")
-cmd = hub_calls[0][1]
-check(j["state"] == "launched" and hub_calls[0][0] == "vps.run" and hub_calls[-1][2], "asks vps.run, waits for the approval, retries with its id, launched")
-check(len(cmd) <= cf.MAX_COMMAND and "base64 -d > .axf-brief.md" in cmd and "AXF_ADOPT_CHANGE=chg-20261022-abcdef1234" in cmd and "AXF_SURFACE=console-launch" in cmd,
-      "the command fits axHub's limit, carries the brief in base64 and reports on the opened entry")
-check("--allowedTools" not in cmd and "fix/syscheck-host-mosh" in cmd and "origin/main" in cmd and " main" not in cmd.replace("origin/main", ""),
-      "shell off: read + edit only, on its own fix branch from origin/main")
-check(fc.opened and fc.opened[0][0]["surface"] == "console-launch" and fc.opened[0][0]["kind"] == "fix" and any(p.get("status") == "running" for _, p in fc.updates),
-      "a change-log entry is opened (building banner) and marked running once launched")
-import base64 as _b64
-b = _b64.b64decode(cmd.split("echo '")[1].split("'")[0]).decode()
-check("mosh server" in b and "never main" in b and "secrets" in b, "the brief names the check, the branch rule and the secrets rule")
-check(L.maybe_launch(bad, "again")["state"] == "launched" and len(hub_calls) == 2, "not handed over again within the cooldown")
+check(j["state"] == "launched" and j["build"] == "fix-build-1" and "Queue" in j["message"], "a failed fix goes to the Build orchestrator's Queue as a build (the one way to start builds)")
+title, detail, kw = fd.calls[0]
+check("mosh server" in title and kw.get("queue") is True and kw.get("priority") == "P1" and kw.get("by") == "systems-check", "filed as High, straight to the Queue, by systems-check")
+check("mosh server" in detail and "never main" in detail and "secrets" in detail, "the brief names the check, the branch rule and the secrets rule")
+check(not hasattr(cf, "launch_command") and not hasattr(cf, "headless") and not hasattr(L, "_run"), "no launcher, no axHub vps.run: nothing here starts a session")
+check(fc.opened and fc.opened[0][0]["kind"] == "fix" and any("Build orchestrator" in str(p.get("doing", "")) for _, p in fc.updates),
+      "a change-log entry is opened and says which orchestrator build it became")
+check(L.maybe_launch(bad, "again")["state"] == "launched" and len(fd.calls) == 1, "not handed over again within the cooldown")
 sett["claudeShell"] = True
-L2 = cf.Launches(lambda: sett, claude_call(["confirm", "reject"]), delays=lambda: [0.01], changes=lambda: fc)
+L2 = cf.Launches(lambda: sett, changes=lambda: fc, dispatch=lambda: fd)
 L2.maybe_launch({**bad, "id": "host-docker"}, "x")
-for _ in range(300):
-    if (L2.get("host-docker") or {}).get("state") in ("launched", "failed"): break
-    time.sleep(0.01)
-check("--allowedTools Bash" in hub_calls[-1][1], "shell on: Bash is allowed")
-check(L2.get("host-docker")["state"] == "failed" and "Rejected" in L2.get("host-docker")["message"]
-      and any(p.get("status") == "failed" for _, p in fc.updates), "rejected on the hub → failed, and the entry says so")
-check(cf.launch_command("x", "host-mosh; rm -rf /", "bad id", False).count("AXF_ADOPT_CHANGE") == 0 and "rm -rf" not in cf.branch_for("host-mosh; rm -rf /"),
-      "odd ids never reach the shell unquoted")
+check("may run shell commands" in fd.calls[-1][1], "shell on: the brief allows commands")
+L3 = cf.Launches(lambda: sett, changes=lambda: fc, dispatch=lambda: None)
+check(L3.maybe_launch({**bad, "id": "host-x"}, "x")["state"] == "failed" and "orchestrator is off" in L3.get("host-x")["message"], "orchestrator off: the fix is not started another way, and it says why")
+L4 = cf.Launches(lambda: sett, changes=lambda: fc, dispatch=lambda: FakeDispatch("no room"))
+check(L4.maybe_launch({**bad, "id": "host-y"}, "x")["state"] == "failed" and any(p.get("status") == "failed" for _, p in fc.updates), "the orchestrator refusing it → failed, and the entry says so")
+check("rm -rf" not in cf.branch_for("host-mosh; rm -rf /"), "odd ids never reach a branch name")
 check(c.post("/p/claude/host-mosh", json={}).status_code == 409, "the route refuses while the setting is off")
 check(c.get("/p/claude").json()["on"] is False, "GET claude reports the setting")
 # Every check gets a fix (Oct 23 2026): fixed commands for what can run unattended, Mosses for the rest
@@ -523,8 +511,7 @@ check('export PATH="$USER_HOME/.local/bin:$PATH"' in doctor, "doctor sees ~/.loc
 
 # ---- Fix failed dialog (Oct 28 2026): approved launch, connection badge, VPS command (Vinny first)
 sett["claudeOnFail"] = False
-hub_calls.clear()
-L2 = cf.Launches(lambda: sett, claude_call(["ok"]), delays=lambda: [0.01] * 5, changes=lambda: fc)
+L2 = cf.Launches(lambda: sett, changes=lambda: fc, dispatch=lambda: FakeDispatch())
 fbad = {"id": "host-mosh", "service": "vps", "title": "mosh server", "status": "error", "summary": "mosh-server not installed",
         "details": [], "instructions": ["sudo apt-get install -y mosh"], "fix": {"type": "host", "command": "bash /opt/axf/deploy/console-doctor.sh --fix host-mosh"}}
 bad2 = {**fbad, "id": "host-tmux"}
@@ -533,7 +520,7 @@ L2.maybe_launch(bad2, "x", force=True, approved=True)
 for _ in range(300):
     if (L2.get("host-tmux") or {}).get("state") in ("launched", "failed"): break
     time.sleep(0.01)
-check((L2.get("host-tmux") or {}).get("state") == "launched", "approved in the dialog: starts without the setting (axHub still asks)")
+check((L2.get("host-tmux") or {}).get("state") == "launched", "approved in the dialog: queued with the orchestrator without the setting")
 _old_ai = mod.ai_state
 mod.ai_state = lambda refresh=False: {"ok": True, "model": "claude-opus-5-5", "profile": "Max (brett)", "error": "", "at": 1}
 conn = mod.claude_connection()

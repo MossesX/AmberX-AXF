@@ -5,6 +5,10 @@ device-relay); the phone opens the URL in Chrome (or the default browser) and, w
 the background, posts a high-priority notification that opens it with one tap. The hub refuses any URL outside
 Brett's own domains (amberxai.com), and so does the phone.
 
+A "yes" from the phone is not proof a page opened: Android drops a blocked background start without raising anything,
+so an older AmberX answers `opened: true` either way. `ok` here only means the phone took the request; `opened` and
+`notified` are what it says it did, and only the console saying hello proves it (console-commands `picked`).
+
 Needs AXHUB_URL (default https://axhub.amberxai.com) + AXHUB_TOKEN in the console's environment; the token goes only
 to the hub (https only, no redirects).
 """
@@ -42,24 +46,53 @@ def _rpc(url: str, tok: str, sid: str | None, method: str, params: dict[str, Any
     return msg.get("result") or {}, r.headers.get("mcp-session-id") or sid
 
 
-def open_url(target: str, browser: str = "chrome") -> dict[str, Any]:
-    """→ {ok, message}. Never raises for a hub or phone failure: the command stays queued and the answer says why."""
-    url = (os.environ.get("AXHUB_URL") or "https://axhub.amberxai.com").rstrip("/")
-    tok = os.environ.get("AXHUB_TOKEN", "")
-    if not tok:
-        return {"ok": False, "message": "axHub isn't connected (no AXHUB_TOKEN), so AmberX can't be asked to open the console"}
-    if not url.startswith("https://"):
-        return {"ok": False, "message": "the axHub address must be https"}
+def _phone_answer(text: str) -> dict[str, Any]:
+    """The phone's reply inside the hub's result text ({opened, notified, …}, at the top or under data/result)."""
     try:
-        _, sid = _rpc(url, tok, None, "initialize", {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "axf-console-wake", "version": "1"}}, 15)
-        res, _ = _rpc(url, tok, sid, "tools/call", {"name": "call", "arguments": {"tool": TOOL, "arguments": {"url": target, "browser": browser}, "reason": REASON, "timeout_seconds": 20}}, 40)
-    except Exception as e:  # noqa: BLE001
-        return {"ok": False, "message": f"couldn't reach axHub: {str(e)[:200]}"}
+        body = json.loads(text) if text else {}
+    except json.JSONDecodeError:
+        return {}
+    for doc in (body, body.get("data") if isinstance(body, dict) else None, body.get("result") if isinstance(body, dict) else None):
+        if isinstance(doc, dict) and ("opened" in doc or "held" in doc):
+            return doc
+    return body if isinstance(body, dict) else {}
+
+
+def outcome(res: dict[str, Any]) -> dict[str, Any]:
+    """The hub's `tools/call` result → {ok, opened, notified, message}, saying only what the phone reported."""
     text = "\n".join(c.get("text", "") for c in res.get("content", []) if isinstance(c, dict))
     if res.get("isError"):
         try:
             err = json.loads(text).get("error", {})
         except Exception:  # noqa: BLE001
             err = {"message": text}
-        return {"ok": False, "message": f"AmberX couldn't open the console: {str(err.get('message') or text)[:240]}"}
-    return {"ok": True, "message": text[:300] or "AmberX is opening the console"}
+        return {"ok": False, "opened": False, "notified": False, "message": f"AmberX couldn't open the console: {str(err.get('message') or text)[:240]}"}
+    a = _phone_answer(text)
+    if a.get("held"):
+        return {"ok": False, "opened": False, "notified": False, "message": "axHub is holding the request instead of sending it to the phone"}
+    opened, notified = a.get("opened") is True, a.get("notified") is not False
+    if a.get("overlay") is False and not opened:
+        message = "AmberX can't open pages on its own (Display over other apps is off): tap its notification"
+    elif opened:
+        message = "AmberX started the browser on the phone"
+    elif notified:
+        message = "Android held the browser back: tap AmberX's notification to open the console"
+    else:
+        message = "AmberX couldn't open the page and its notifications are off"
+    return {"ok": True, "opened": opened, "notified": notified, "message": message}
+
+
+def open_url(target: str, browser: str = "chrome") -> dict[str, Any]:
+    """→ {ok, opened, notified, message}. Never raises for a hub or phone failure: the command stays queued and the answer says why."""
+    url = (os.environ.get("AXHUB_URL") or "https://axhub.amberxai.com").rstrip("/")
+    tok = os.environ.get("AXHUB_TOKEN", "")
+    if not tok:
+        return {"ok": False, "opened": False, "notified": False, "message": "axHub isn't connected (no AXHUB_TOKEN), so AmberX can't be asked to open the console"}
+    if not url.startswith("https://"):
+        return {"ok": False, "opened": False, "notified": False, "message": "the axHub address must be https"}
+    try:
+        _, sid = _rpc(url, tok, None, "initialize", {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "axf-console-wake", "version": "1"}}, 15)
+        res, _ = _rpc(url, tok, sid, "tools/call", {"name": "call", "arguments": {"tool": TOOL, "arguments": {"url": target, "browser": browser}, "reason": REASON, "timeout_seconds": 20}}, 40)
+    except Exception as e:  # noqa: BLE001
+        return {"ok": False, "opened": False, "notified": False, "message": f"couldn't reach axHub: {str(e)[:200]}"}
+    return outcome(res)

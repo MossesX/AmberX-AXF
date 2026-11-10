@@ -511,7 +511,7 @@ def vps_accounts(view: dict[str, Any] | None = None) -> list[dict[str, Any]]:
         kind = "anthropic" if a.get("type") == "api-key" else "claude-code"
         rows.append({"id": VPS_PREFIX + a["name"], "label": a["name"], "kind": kind, "kindLabel": KINDS[kind], "type": a.get("type") or "login",
                      "active": bool(a.get("active")), "email": a.get("email") or "", "plan": a.get("plan") or "",
-                     "limitedAt": limited.get(a["name"]), "source": "vps"})
+                     "limitedAt": limited.get(a["name"]), "source": "vps", "role": a.get("role") or "saved"})
     return rows
 
 
@@ -525,9 +525,9 @@ def _host_use(name: str, by: str) -> dict[str, Any]:
 
 def _host_switch(reason: str, by: str) -> dict[str, Any]:
     """A limit hit with no pair of AI keys' own: mark the active VPS account and ask for the next subscription one down the
-    list (API-key accounts are never picked: they cost money, so that's a choice for Brett). No probe: the tokens aren't
+    list (API-key accounts are never picked: they cost money, so that's a choice for Brett; worker accounts stay workers). No probe: the tokens aren't
     here, so an account that turns out to be limited too is marked by the next hit."""
-    rows = [r for r in vps_accounts() if r["kind"] == "claude-code"]
+    rows = [r for r in vps_accounts() if r["kind"] == "claude-code" and r["role"] != "worker"]  # workers only run headless jobs
     cur = next((r for r in rows if r["active"]), None)
     now = _now()
     with _lock:
@@ -827,6 +827,15 @@ class KeysService:
         if not rec:
             return {}
         return {"id": kid, "label": rec.get("label") or kid, "email": rec.get("email") or "", "name": rec.get("accountName") or "", "kind": kind}
+
+    def limited_at(self, name: str = "") -> int:
+        """When the Claude login on the VPS last hit a limit (ms), 0 when it hasn't in the last HOST_LIMIT_MS. `name` is the
+        account active on the VPS. Both places a hit lands count: the active pair and the saved VPS account. No model call."""
+        with _lock:
+            db = _load()
+        rec = db["keys"].get(db["active"].get("claude-code") or "") or {}
+        at = max(int(rec.get("limitedAt") or 0), int(db["hostLimited"].get(name) or 0))
+        return at if _now() - at < HOST_LIMIT_MS else 0
 
 
 @router.post("/switch")

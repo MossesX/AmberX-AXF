@@ -9,7 +9,10 @@
  *
  *   node apps/console-web/plugins/build-orchestrator/orchestrator.mjs            list (one line per build)
  *   … next [id]                       what to do next (default: the first build with work left)
- *   … brief <id>                      the current phase's brief, ready to paste as a first message
+ *   … brief <id> [--no-rules]         the current phase's brief, ready to paste as a first message; self-contained
+ *                                     (headless-context@1): the rules block for this job is written in (rules brief +
+ *                                     rule snippets by tag), and a brief over Claude settings headless.briefBudgetChars
+ *                                     says so on stderr (`budget` in --json). --no-rules = the bare phase brief.
  *   … act <action> <id> [args…]       step <id> <stepId> [done|undo] · approve <id> <phase> · status <id> <status>
  *                                     note <id> <text> · rename <id> <title> · rename-step <id> <stepId> <title>
  *                                     archive|hide|unhide|remove <id>
@@ -31,6 +34,8 @@ import * as core from './web/orchestrator-core.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { approverFrom, upgradeLine, upgradePolicy } from '../../../../framework/core/model-switch.mjs';
 import { loadUpgradePolicy } from '../../../../framework/cli/upgrade-policy.mjs';
+import { readPolicy as readContextPolicy, rulesFor } from '../../../../framework/cli/headless-context.mjs';
+import { briefBudget } from '../../../../framework/core/headless-context.mjs';
 
 loadUpgradePolicy(); // Fable upgrades need my approval (owner-only Claude setting, default off; Brett, Nov 4 2026)
 import { activeProfile } from '../../../../framework/cli/persist.mjs';
@@ -101,7 +106,10 @@ async function main(argv) {
     const n = core.nextUp(b, s.rules);
     return out({ ok: true, id: b.id, ...n }, `${b.title} (${b.id})\n${n.done ? 'complete' : n.needsApproval ? `Needs Brett's approval: model UPGRADE ${n.phase.from} → ${n.phase.model} (phase ${n.phase.index + 1}). Stop here: request-upgrade ${b.id} ${n.phase.index}` : `Next: ${n.step.id} on ${n.step.model} — ${n.step.text}`}`);
   }
-  if (cmd === 'brief') { const b = s.builds.find((x) => x.id === rest[0]); if (!b) throw new Error(`no build "${rest[0]}"`); const t = core.brief(b, s.rules); return out({ ok: true, brief: t }, t); }
+  if (cmd === 'brief') { const b = s.builds.find((x) => x.id === rest[0]); if (!b) throw new Error(`no build "${rest[0]}"`); let t = core.brief(b, s.rules);
+    if (!rest.includes('--no-rules')) { const r = rulesFor(t, { model: (core.nextUp(b, s.rules).phase?.model || '').toLowerCase(), name: b.id }); if (r.text) t = `${t}\n\n${r.text}`; }
+    const budget = briefBudget(t, readContextPolicy()); if (!budget.ok) process.stderr.write(`orchestrator: ${budget.warning}\n`);
+    return out({ ok: true, brief: t, budget }, t); }
   if (cmd === 'request-upgrade') {
     const [id, ph] = rest; const r = act({ action: 'request-upgrade', id, phase: Number(ph), by: process.env.AXF_SESSION || process.env.AXF_ACTOR || 'session' });
     const b = r.build; const p = core.phases(b)[Number(ph)]; const req = b.upgradeRequests.find((x) => x.phase === p.index && x.state !== 'denied');

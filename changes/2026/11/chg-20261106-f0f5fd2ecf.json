@@ -1,0 +1,43 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261106-f0f5fd2ecf",
+  "createdAt": "2026-11-06T18:49:56.405Z",
+  "updatedAt": "2026-11-06T18:50:26.505Z",
+  "kind": "build",
+  "title": "# Build demo: step s1 of 3 (fresh session) Handoff: 0/3 steps done.",
+  "asked": "# Build demo: step s1 of 3 (fresh session) Handoff: 0/3 steps done. - note: session axf-md-chain-control--earl started ## Do this now - s1 [opus] edit src/a.ts ## Files for this step Read these; do not explore the repo beyond them unless one of them sends you there. - src/b.ts - src/a.ts Do only that, commit, mark it done with `node framework/cli/build-progress.mjs step <stepId> done --note \"<one line for the next session>\"`, then finish. The next step gets its own fresh session. ## The build's brief (for context) # brief Model switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first. Progress: this build's progress file is the console's view of where you are. After each step run `node framework/cli/build-progress.mjs step <stepId> done --note \"<one line>\"` (and `step <next> running` when you start one; `note \"…\"`, `link --branch <b> --pr <n>`, `status blocked --note \"why\"` when stuck). It is a local file write: carry straight on. Never stop to update the console, the orchestrator, THREADS.md or the build log between steps; the reconciler folds the file into the builds store by itself. AXF_BUILD_ID=demo is set for you.",
+  "repos": [],
+  "model": "claude-opus-5-5",
+  "who": {
+    "session": "75a91872-0dc",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "partial",
+    "summary": "The session ended before a result was recorded.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "partial",
+  "status": "done",
+  "surface": "headless",
+  "startedAt": "2026-11-06T18:49:56.405Z",
+  "finishedAt": "2026-11-06T18:50:26.505Z",
+  "lastSeenAt": "2026-11-06T18:50:26.308Z",
+  "actual": {
+    "minutes": 1,
+    "costUsd": 0.2337,
+    "inputTokens": 14,
+    "outputTokens": 2947,
+    "cacheReadTokens": 221208,
+    "cacheWriteTokens": 26098,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "doing": "Waiting for the next message"
+}

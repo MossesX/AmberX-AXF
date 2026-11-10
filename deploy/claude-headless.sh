@@ -30,6 +30,9 @@
 # orchestrator build the run belongs to (--name, AXF_BUILD_ID or the brief's "Continue build … (<id>)"): a higher model
 # than its step, or an upgrade phase Brett hasn't approved, is refused with exit 3 and one line saying why. Every brief
 # gets a line saying upgrades need Brett and downgrades are fine.
+# One way to start builds (Brett, Nov 9 2026: "It has to be the orchestrator"): framework/cli/dispatch-gate.mjs refuses a
+# launch that belongs to a build (an orchestrator build, or a session named build-*) unless it carries the orchestrator
+# dispatcher's one-build token (AXF_DISPATCH_TOKEN, from pipeline.mjs tick); the token is spent when the session starts.
 #
 # Who asked (axHub decision 109, Nov 1 2026): the run exports AXF_SESSION=<slug of --name>. When an axHub token is at
 # hand (AXHUB_TOKEN, else the console's env file), Claude gets an `axhub` MCP server whose requests carry
@@ -58,6 +61,23 @@
 # (deploy/claude-token-save.mjs), and the copy is deleted when the session ends. Account: --account <name>
 # (or AXF_CLAUDE_ACCOUNT; default the active saved account). It is recorded in the log's `# login …` line, the tmux tag
 # @axf_login, a session-login event and a note on the orchestrator build. AXF_OWN_LOGIN=off runs on the shared login.
+# Worker accounts (build multi-account-headless-workers, Nov 7 2026, Brett: "The console itself uses one account. The other
+# accounts exist only as headless worker sessions"): with no --account, a job claims the least busy worker
+# (deploy/claude-workers.mjs claim; since workers-api-routing, Nov 8 2026: every subscription login is a worker, the
+# console's account takes jobs too after them, at most 3 run per account and 5 wait for one, and API-key accounts take
+# only the jobs a routing rule sends them, under their spend caps). Every account full = the run waits in that account's
+# queue; none can take it = the console's account, with a note. A worker that hits its limit or
+# loses its login is taken out, and the run moves to the next worker. The console's active account never changes for it.
+# Each move and the end of the run write the cost to events.jsonl per account. AXF_WORKERS=off skips the routing.
+# Brief only (headless-context@1, build brief-only-headless, Nov 8 2026, Brett: "The ONLY input is the brief the
+# orchestrator writes"): the inner run asks framework/cli/headless-context.mjs for its launch plan and runs claude with
+# it: no CLAUDE.md chain, auto-memory, settings files (user / project / local) or claude.ai connectors; the reporting
+# hooks keep running from a lean settings file with the context-printing events (SessionStart, UserPromptSubmit) muted;
+# MCP servers only when the brief says `Needs MCP: axhub` (or Claude settings → Headless sessions names them; default
+# none). The log's `# context: …` line says what loaded; the meter keeps the init summary and the start tokens. Off in
+# Claude settings (headless.briefOnly) or AXF_BRIEF_ONLY=off for one launch = the full chain as before. A brief without
+# a "## Rules for this job" block gets one appended (rules-briefs@1 + every rule bullet whose tag it names); a brief over
+# the budget (headless.briefBudgetChars) is sent anyway, with a warning in the log and a note on the build.
 set -uo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export PATH="$HOME/.local/bin:$PATH"   # vps.run / cron shells don't load the profile; Claude Code installs here
@@ -92,10 +112,12 @@ event() {   # $1 = session-start | session-end, $2 = tmux session, $3 = exit (en
   hdir_ready || return 0
   command -v node >/dev/null || return 0
   EV="$1" SES="$2" EXITC="${3:-}" AGENT="$agent" MODEL="$model" NAME="$name" LOGF="$(pwd)/$log" ACCT="${login_account:-}" ACCT_EMAIL="${login_email:-}" node -e '
-    const e = process.env; const line = { event: e.EV, session: e.SES, name: e.NAME, agent: e.AGENT, model: e.MODEL, cwd: process.cwd(), log: e.LOGF,
+    const e = process.env; const fs = require("fs"); const path = require("path");
+    let cost = 0; try { cost = Number(JSON.parse(fs.readFileSync(path.join(e.HDIR, `${e.SES}.meter.json`), "utf8")).costUsd) || 0; } catch {}
+    const line = { event: e.EV, session: e.SES, name: e.NAME, agent: e.AGENT, model: e.MODEL, cwd: process.cwd(), log: e.LOGF,
       surface: e.AXF_SURFACE || "", at: new Date().toISOString(), ...(e.EXITC !== "" ? { exit: Number(e.EXITC) } : {}),
-      ...(e.ACCT ? { account: e.ACCT, email: e.ACCT_EMAIL } : {}) };
-    require("fs").appendFileSync(require("path").join(e.HDIR, "events.jsonl"), JSON.stringify(line) + "\n");' 2>/dev/null || true
+      ...(e.ACCT ? { account: e.ACCT, email: e.ACCT_EMAIL } : {}), ...(/^session-(part|end)$/.test(e.EV) && cost ? { costUsd: cost } : {}) };
+    fs.appendFileSync(path.join(e.HDIR, "events.jsonl"), JSON.stringify(line) + "\n");' 2>/dev/null || true
 }
 export HDIR
 
@@ -114,13 +136,13 @@ start_watch_live() {   # $1 = session name; prints the watcher pid (empty when o
 LOGIN_JS="$HERE/claude-login.mjs"
 TOKEN_JS="$HERE/claude-token-save.mjs"
 ORCH_JS="$HERE/../apps/console-web/plugins/build-orchestrator/orchestrator.mjs"  # axf-plugin:build-orchestrator
-login_session="" login_dir="" login_account="" login_email="" login_source="" login_token=""
+login_session="" login_dir="" login_account="" login_email="" login_source="" login_token="" login_kind=""
 own_login() {   # $1 = account (active | live | <saved name>): snapshot it for this run; never stops the run
   [[ "${AXF_OWN_LOGIN:-on}" == off ]] && return 0
   command -v node >/dev/null && [[ -f "$LOGIN_JS" ]] || { printf 'claude-login: not available; this run uses the shared login\n' >&2; return 0; }
   local out sh
   out="$(node "$LOGIN_JS" snapshot --dir "$(pwd)" --session "$login_session" --account "${1:-active}" --sh 2>&1)"
-  sh="$(grep -E "^login_dir='[^']+' login_account='[a-z0-9-]+' login_email='[^']*' login_source=(saved|live) login_token=[01]\$" <<<"$out" | tail -1)"
+  sh="$(grep -E "^login_dir='[^']+' login_account='[a-z0-9-]+' login_email='[^']*' login_source=(saved|live) login_token=[01]( login_kind=(api|subscription))?\$" <<<"$out" | tail -1)"
   if [[ -z "$sh" ]]; then printf '\033[33mclaude-login: %s · this run uses the shared login\033[0m\n' "${out##*$'\n'}" >&2; return 0; fi
   eval "$sh"
   [[ -d "$login_dir" && -O "$login_dir" ]] || return 0
@@ -129,13 +151,41 @@ own_login() {   # $1 = account (active | live | <saved name>): snapshot it for t
   source "$login_dir/token.env"   # the account's saved token, else `unset CLAUDE_CODE_OAUTH_TOKEN`: the copy wins
   # a rotated token goes back to the saved login straight away; the watcher ends with the copy or this run
   [[ -f "$TOKEN_JS" ]] && { nohup node "$TOKEN_JS" watch --copy "$login_dir" ${inner:+--parent "$$"} >/dev/null 2>&1 & disown; }
-  login_line="# login ${login_account}${login_email:+ (${login_email})} · own copy (${login_source})"
+  login_line="# login ${login_account}${login_email:+ (${login_email})} · own copy (${login_source})${login_kind:+$([[ "$login_kind" == api ]] && echo ' · API key, billed per token')}"
   tmux set-option -t "=$(tmux display-message -p '#S' 2>/dev/null)" @axf_login "${login_account}${login_email:+ (${login_email})}" >/dev/null 2>&1 || true
   event session-login "$login_session"
   local bid=""   # the orchestrator build this run belongs to: a note says which account it runs on
   read -r _ bid < <(node "$HERE/../framework/cli/build-priority.mjs" slot --name "$name" --brief "$brief" 2>/dev/null) || true
   [[ -n "$bid" && -f "$ORCH_JS" && "${AXF_LOGIN_NOTE:-on}" != off ]] && \
     (node "$ORCH_JS" act note "$bid" "Claude account: ${login_account}${login_email:+ (${login_email})} (${login_session}, own login copy)" >/dev/null 2>&1 &)  # axf-plugin:build-orchestrator
+  return 0
+}
+WORKERS_JS="$HERE/claude-workers.mjs"
+on_worker="" tried_workers=""
+next_worker() {   # claim an account for this run (deploy/claude-workers.mjs claim): prints "run|queue|none <account> …"; $1 = names to skip
+  [[ "${AXF_WORKERS:-on}" != off && "${AXF_OWN_LOGIN:-on}" != off ]] && command -v node >/dev/null && [[ -f "$WORKERS_JS" ]] || return 0
+  node "$WORKERS_JS" claim --session "$login_session" --name "$name" --brief "$brief" ${model:+--model "$model"} ${priority:+--priority "$priority"} ${1:+--exclude "$1"} 2>/dev/null \
+    | grep -E '^(run [a-z0-9][a-z0-9-]{0,31} (subscription|api)|queue [a-z0-9][a-z0-9-]{0,31} [0-9]+|none .*)$' | head -1
+}
+wait_for_worker() {   # sets worker= and worker_kind= ('' = none free); waits in the account's queue while every account is full
+  local skip="$1" line state acc extra said=""
+  worker="" worker_kind=""
+  while :; do
+    line="$(next_worker "$skip")"; read -r state acc extra <<<"$line"
+    case "$state" in
+      run) worker="$acc" worker_kind="$extra"; return 0 ;;
+      queue)
+        if [[ "$said" != "$acc $extra" ]]; then printf '\033[2m# every Claude account is full: waiting for %s (position %s in its queue)\033[0m\n' "$acc" "$extra"; said="$acc $extra"; fi
+        sleep "${AXF_WORKER_POLL:-20}" ;;
+      *) return 0 ;;
+    esac
+  done
+}
+release_worker() { [[ -n "$login_session" && -f "$WORKERS_JS" ]] && command -v node >/dev/null && node "$WORKERS_JS" release --session "$login_session" >/dev/null 2>&1; return 0; }
+build_note() {   # one line on the orchestrator build this run belongs to
+  local bid=""
+  read -r _ bid < <(node "$HERE/../framework/cli/build-priority.mjs" slot --name "$name" --brief "$brief" 2>/dev/null) || true
+  [[ -n "$bid" && -f "$ORCH_JS" && "${AXF_LOGIN_NOTE:-on}" != off ]] && (node "$ORCH_JS" act note "$bid" "$1" >/dev/null 2>&1 &)  # axf-plugin:build-orchestrator
   return 0
 }
 release_login() {
@@ -160,6 +210,15 @@ if [[ -z "$inner" && -z "$queued" ]] && command -v node >/dev/null && [[ -f "$GA
     verdict="$(node "$GATE" launch --model "$model" --name "$name" --brief "$brief" 2>&1)"; gate_st=$?
     if (( gate_st == 3 )); then echo "claude-headless: $verdict" >&2; echo "$verdict"; exit 3; fi
   fi
+fi
+# One way to start builds (framework/cli/dispatch-gate.mjs, Brett, Nov 9 2026: "It has to be the orchestrator"): a launch
+# that belongs to a build starts only with the orchestrator dispatcher's token for that build (AXF_DISPATCH_TOKEN, set by
+# pipeline.mjs tick). Anything else (Build manager, a session, axHub vps.build_start, a fix button) is refused here with
+# the way to queue it. Non-build sessions pass. The token is spent below, once the session really starts.
+DISPATCH="$HERE/../framework/cli/dispatch-gate.mjs"
+if [[ -z "$inner" && -z "$queued" ]] && command -v node >/dev/null && [[ -f "$DISPATCH" ]]; then
+  dverdict="$(node "$DISPATCH" check --name "$name" --brief "$brief" 2>&1)"; d_st=$?
+  if (( d_st == 3 )); then echo "claude-headless: $dverdict" >&2; echo "$dverdict"; exit 3; fi
 fi
 
 # What Brett said (build-origin@1, Nov 3 2026): the brief's "## Brett said (verbatim)" block (and any "## Addendum N"
@@ -186,6 +245,30 @@ if [[ -z "$inner" && -z "$queued" ]] && look_on; then
     exit 0
   fi
 fi
+if [[ -z "$inner" && -z "$queued" ]] && command -v node >/dev/null && [[ -f "$DISPATCH" ]]; then
+  node "$DISPATCH" consume --name "$name" --brief "$brief" >/dev/null 2>&1 || { echo "claude-headless: dispatch token no longer valid; not starting" >&2; exit 3; }
+fi
+
+# Brief only: the launch plan (env, claude args, lean settings + MCP files in a private folder that goes with the run).
+# Sets ctx_args / ctx_line / ctx_warn / ctx_dir and exports the plan's env; brief_only=1 once a plan is in force.
+ctx_args=() ctx_line="" ctx_warn=() ctx_dir="" ctx_rules="" brief_only=""
+CTX_JS="$HERE/../framework/cli/headless-context.mjs"
+ctx_plan() {   # $1 = session name
+  command -v node >/dev/null && [[ -f "$CTX_JS" ]] || return 0
+  ctx_dir="$(mktemp -d "${TMPDIR:-/tmp}/axf-ctx-XXXXXX")"
+  local l kv
+  while IFS= read -r l; do
+    case "$l" in
+      "env "*) kv="${l#env }"; export "${kv%%=*}=${kv#*=}"; brief_only=1 ;;
+      "arg "*) ctx_args+=("${l#arg }") ;;
+      "line "*) ctx_line="${l#line }" ;;
+      "warn "*) ctx_warn+=("${l#warn }") ;;
+      "rules "*) ctx_rules="${l#rules }" ;;
+    esac
+  done < <(node "$CTX_JS" plan --brief "$brief" --out "$ctx_dir" --session "$1" 2>/dev/null)
+  [[ -n "$brief_only" ]] && export AXF_BRIEF_ONLY_RUN=1   # the stream printer reads it: no CLAUDE.md chain on the meter
+  return 0
+}
 
 if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   if [[ -n "$envfile" && -f "$envfile" && -O "$envfile" ]]; then
@@ -193,7 +276,11 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     source "$envfile"
     rm -f "$envfile"
   fi
-  if [[ -n "${AXHUB_TOKEN:-}" && -n "${AXF_SESSION:-}" ]]; then
+  ctx_plan "axf-${name:-run}"
+  if [[ -n "$brief_only" ]]; then
+    set -- "$@" "${ctx_args[@]}"
+    for w in "${ctx_warn[@]}"; do build_note "Brief only: $w"; done
+  elif [[ -n "${AXHUB_TOKEN:-}" && -n "${AXF_SESSION:-}" ]]; then   # full chain (brief only switched off): axHub as before
     mcp="$(mktemp "${TMPDIR:-/tmp}/axf-mcp-XXXXXX.json")"
     hub="${AXHUB_URL:-https://axhub.amberxai.com}"; hub="${hub%/}"; hub="${hub%/mcp}"
     printf '{"mcpServers":{"axhub":{"type":"http","url":"%s/mcp","headers":{"Authorization":"Bearer ${AXHUB_TOKEN}","X-Axhub-Session":"${AXF_SESSION}"}}}}\n' "$hub" > "$mcp"
@@ -209,10 +296,22 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   act="$HERE/../apps/console-web/plugins/activity/activity.mjs"  # axf-plugin:activity
   command -v node >/dev/null && [[ -f "${act:-}" ]] && node "$act" hooks ensure >/dev/null 2>&1 || true  # axf-plugin:activity
   login_session="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"
+  if [[ -z "$account" ]]; then
+    wait_for_worker ""
+    if [[ -n "$worker" ]]; then on_worker=1 account="$worker" tried_workers="$worker"
+      [[ "$worker_kind" == api ]] && build_note "Routed to API account $worker (billed per token) by a routing rule"
+    elif [[ "${AXF_WORKERS:-on}" != off && "${AXF_OWN_LOGIN:-on}" != off && -f "$WORKERS_JS" ]] && command -v node >/dev/null; then
+      build_note "No Claude account free (every one out or its queue full): this run uses the console's account"
+    fi
+  fi
   own_login "${account:-active}"
   [[ -n "$login_line" ]] && printf '\033[2m%s\033[0m\n' "$login_line"
+  [[ -n "$ctx_line" ]] && printf '\033[2m%s\033[0m\n' "$ctx_line"
+  for w in "${ctx_warn[@]}"; do printf '\033[33m# warning: %s\033[0m\n' "$w"; done
   wl="$(start_watch_live "$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")")"
   prompt="$(cat "$brief")"
+  # brief only: the rules this job needs ride in the brief (rules brief + rule snippets by tag) when it has none yet
+  [[ -n "$brief_only" && -n "$ctx_rules" && -f "$ctx_rules" ]] && prompt="$prompt"$'\n\n'"$(cat "$ctx_rules")"
   [[ -n "$wl" ]] && prompt="$prompt"$'\n\n'"$WATCH_NOTE"
   [[ -n "$slot" ]] && slots_on && prompt="$prompt"$'\n\n'"$HEAVY_NOTE"
   prompt="$prompt"$'\n\n'"${UPGRADE_NOTE:-}"
@@ -226,16 +325,37 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   # AI keys switches to the next saved account that still answers and writes it to the VPS (the AI keys plugin),
   # then the run starts again on it. At most AXF_ACCOUNT_SWITCHES times (default 3; 0 turns it off).
   switches=0 max_switches="${AXF_ACCOUNT_SWITCHES:-3}"
+  run_build=""   # the orchestrator build of this run: its meter (start tokens, cost) is grouped under it
+  read -r _ run_build < <(node "$HERE/../framework/cli/build-priority.mjs" slot --name "$name" --brief "$brief" 2>/dev/null) || true
   while :; do
     if command -v node >/dev/null; then
       ses="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"; meter=()
-      hdir_ready && meter=(--meter "$HDIR/$ses.meter.json" --chain "$HDIR/$ses.chain.json" --session "$ses" --name "$name" --agent "$agent" --model "$model")
-      claude -p "$@" --output-format stream-json --verbose "$prompt" 2>&1 | tee "$raw" | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; [[ -n "$login_line" ]] && printf '%s\n' "$login_line"; node "$HERE/claude-stream.mjs" "${meter[@]}"; } | tee "$log"
+      hdir_ready && meter=(--meter "$HDIR/$ses.meter.json" --chain "$HDIR/$ses.chain.json" --session "$ses" --name "$name" --agent "$agent" --model "$model" --build "${run_build:-}")
+      claude -p "$@" --output-format stream-json --verbose "$prompt" 2>&1 | tee "$raw" | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; [[ -n "$login_line" ]] && printf '%s\n' "$login_line"; [[ -n "$ctx_line" ]] && printf '%s\n' "$ctx_line"; node "$HERE/claude-stream.mjs" "${meter[@]}"; } | tee "$log"
     else
       claude -p "$@" "$prompt" 2>&1 | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; [[ -n "$login_line" ]] && printf '%s\n' "$login_line"; cat; } | tee "$log"
     fi
     st=${PIPESTATUS[0]}
     (( switches < max_switches )) || break
+    if [[ -n "$on_worker" ]]; then   # a worker's run moves to the next worker; the console's account stays where it is
+      hit="$(node "$WORKERS_JS" hit --log "$log" --exit "$st" 2>/dev/null)"
+      [[ -n "$hit" ]] || break
+      ses="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"
+      gone="$login_account"
+      printf '\n\033[1m── worker %s: %s ──\033[0m\n' "$gone" "$(node "$WORKERS_JS" limit "$gone" --kind "$hit" --log "$log" 2>&1)"
+      event session-part "$ses"
+      wait_for_worker "$tried_workers"
+      if [[ -z "$worker" ]]; then
+        build_note "Worker $gone stopped ($hit) and no worker is left: the run stopped here"
+        printf 'No worker account left to take over.\n'; break
+      fi
+      tried_workers="$tried_workers,$worker"
+      release_login; own_login "$worker"
+      build_note "Worker $gone stopped ($hit): the run moved to $worker"
+      prompt="$prompt"$'\n\n'"An account limit cut off an earlier run of this brief. Read the worktree and the build's ticked steps first, and carry on from there instead of starting over."
+      switches=$((switches + 1))
+      continue
+    fi
     tail -n 40 "$log" 2>/dev/null | grep -qiE "hit your (weekly |daily |session |5-hour )?limit|usage limit reached|out of credits|credit balance is too low" || break
     sw_js="$HERE/../apps/console-web/plugins/ai-keys/switch.mjs"  # axf-plugin:ai-keys
     command -v node >/dev/null && [[ -f "$sw_js" ]] || break
@@ -246,10 +366,21 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     switches=$((switches + 1))
   done
   [[ -n "${mcp:-}" ]] && rm -f "$mcp"
+  [[ -n "${ctx_dir:-}" && -d "$ctx_dir" ]] && rm -rf "$ctx_dir"
+  # per-build start tokens and cost: one note on the build (every build view shows its notes)
+  if command -v node >/dev/null && [[ -f "$CTX_JS" ]] && hdir_ready; then
+    run_sum="$(node "$CTX_JS" summary --meter "$HDIR/$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}").meter.json" 2>/dev/null)"
+    [[ -n "$run_sum" ]] && build_note "$run_sum"
+  fi
   release_login   # the build's own login copy goes with the session
+  [[ -n "$on_worker" ]] && release_worker   # its slot on that account frees for the next job
   [[ -n "$wl" ]] && kill "$wl" 2>/dev/null   # the session ended: its previews stop and leave the registry
   printf '\n\033[1m── finished (exit %s) · log: %s/%s ──\033[0m\n' "$st" "$(pwd)" "$log"
   event session-end "$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")" "$st"
+  if [[ -n "$on_worker" ]]; then
+    worker_note="$(node "$WORKERS_JS" note "$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")" 2>/dev/null)"
+    [[ -n "$worker_note" ]] && build_note "$worker_note"
+  fi
   # Nobody attached (the usual headless run): close ~2 min after claude exits, logs stay. Someone watching keeps the
   # old wait for Enter (up to a day). Finished sessions piling up used to block the cap and the queue (Nov 1 2026).
   session_now="$(tmux display-message -p '#S' 2>/dev/null || true)"
@@ -309,15 +440,17 @@ elif slots_on; then
 fi
 if ! command -v tmux >/dev/null; then
   login_session="$session"; own_login "${account:-active}"
+  ctx_plan "$session"; [[ -n "$brief_only" ]] && set -- "$@" "${ctx_args[@]}"
+  fb_prompt="$(cat "$brief")"; [[ -n "$brief_only" && -n "$ctx_rules" && -f "$ctx_rules" ]] && fb_prompt="$fb_prompt"$'\n\n'"$(cat "$ctx_rules")"
   # the copy is released when that claude exits (a small watcher, since nothing else stays behind to do it)
-  nohup bash -c 'claude -p "${@:3}" > "$2" 2>&1; st=$?; [ -n "$1" ] && node "'"$LOGIN_JS"'" release --dir "$PWD" --session "'"$login_session"'" >/dev/null 2>&1; exit $st' _ "$login_dir" "$log" "$@" "$(cat "$brief")" &
+  nohup bash -c 'claude -p "${@:3}" > "$2" 2>&1; st=$?; [ -n "$1" ] && node "'"$LOGIN_JS"'" release --dir "$PWD" --session "'"$login_session"'" >/dev/null 2>&1; exit $st' _ "$login_dir" "$log" "$@" "$fb_prompt" &
   [[ -n "$slot" ]] && slots_on && node "$SLOTS" bind "$slot" --pid "$!" >/dev/null 2>&1
   echo "started pid $! in $(pwd) (tmux missing: the console can't show it)"
   exit 0
 fi
 tmux has-session -t "=$session" 2>/dev/null && session="$session-$(date +%H%M%S)"
 envs=()   # tmux starts the command in its server's environment: pass what the run needs explicitly
-for v in PATH HOME AXF_SURFACE AXF_MODEL AXF_AGENT AXF_AGENT_NAME AXF_AGENT_BOOKED AXF_HEADLESS_DIR AXF_ADOPT_CHANGE AXF_CLAUDE_AUTH AXF_SESSION AXHUB_URL AXF_SLOTS AXF_SLOTS_DIR AXF_SLOTS_PREFIX AXF_SLOTS_HOST AXF_WATCH_LIVE AXF_CLAUDE_ACCOUNT AXF_OWN_LOGIN AXF_CLAUDE_ACCOUNTS AXF_CLAUDE_HOME AXF_CLAUDE_GLOBAL AXF_CLAUDE_SEEN AXF_LOGIN_NOTE; do
+for v in PATH HOME AXF_SURFACE AXF_MODEL AXF_AGENT AXF_AGENT_NAME AXF_AGENT_BOOKED AXF_HEADLESS_DIR AXF_ADOPT_CHANGE AXF_CLAUDE_AUTH AXF_SESSION AXHUB_URL AXF_SLOTS AXF_SLOTS_DIR AXF_SLOTS_PREFIX AXF_SLOTS_HOST AXF_WATCH_LIVE AXF_CLAUDE_ACCOUNT AXF_OWN_LOGIN AXF_CLAUDE_ACCOUNTS AXF_CLAUDE_HOME AXF_CLAUDE_GLOBAL AXF_CLAUDE_SEEN AXF_LOGIN_NOTE AXF_WORKERS AXF_CLAUDE_WORKERS AXF_WORKER_POLL AXF_WORKERS_ALIVE AXF_BUILD_PROFILE AXF_JOB_TYPE; do
   [[ -n "${!v:-}" ]] && envs+=(-e "$v=${!v}")
 done
 # Secrets go through a private file, not tmux's command line: git auth (GIT_CONFIG_COUNT/KEY_n/VALUE_n, which tmux
@@ -330,7 +463,7 @@ secret="$(umask 077; mktemp "${TMPDIR:-/tmp}/axf-headless-env-XXXXXX")"
   [[ -n "$tok" ]] && printf 'export AXHUB_TOKEN=%q\n' "$tok"
 } > "$secret"
 tmux new-session -d -s "$session" -x 200 -y 50 -c "$(pwd)" "${envs[@]}" \
-  bash "$HERE/claude-headless.sh" --inner --name "$slug" --agent "$agent" ${account:+--account "$account"} --envfile "$secret" --brief "$brief" --log "$log" ${slot:+--slot "$slot"} -- "$@"
+  bash "$HERE/claude-headless.sh" --inner --name "$slug" --agent "$agent" ${account:+--account "$account"} --envfile "$secret" --brief "$brief" --log "$log" ${slot:+--slot "$slot"} ${priority:+--priority "$priority"} -- "$@"
 tmux set-option -t "$session" history-limit 50000 >/dev/null 2>&1 || true
 # Headless tabs: what the console's Terminal shows on the tab (one `tmux ls` reads them all)
 for kv in "@axf_kind=headless" "@axf_agent=$agent" "@axf_model=$model" "@axf_cwd=$(pwd)" "@axf_meter=$HDIR/$session.meter.json" "@axf_chain=$HDIR/$session.chain.json"; do

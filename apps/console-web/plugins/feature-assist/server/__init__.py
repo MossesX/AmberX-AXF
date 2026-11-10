@@ -33,7 +33,6 @@ router = APIRouter()
 EXPERT = os.environ.get("AXF_FEATURE_EXPERT", "axf-expert")
 MOSSES = os.environ.get("AXF_FEATURE_BUILDER", "coder")
 MODELS = {"fable": "Fable", "opus": "Opus", "sonnet": "Sonnet"}
-API_MODEL = {"fable": "claude-fable-5-1", "opus": "claude-opus-5-5", "sonnet": "claude-sonnet-5-5"}
 _lock = threading.Lock()
 
 
@@ -300,7 +299,7 @@ def build_plan(body: dict[str, Any]) -> dict[str, Any]:
 
 @router.post("/build/start")
 def build_start(body: dict[str, Any]) -> dict[str, Any]:
-    """Apply the approved order, record the model, park or start. Returns what the console needs to open the chat."""
+    """Apply the approved order, record the model, then park it (Fable) or send it to the Build orchestrator's Queue."""
     fid = str(body.get("featureId") or "")
     model = body.get("model")
     if model not in MODELS:
@@ -326,22 +325,17 @@ def build_start(body: dict[str, Any]) -> dict[str, Any]:
             r = engine("pending-act", change={"action": "add", "title": f"Fable rebuild: {f['title']}", "model": "Fable", "planId": fid, "source": "feature-assist",
                                               "detail": f"Built on {MODELS[model]} with Mosses. The Fable build starts by running the {MODELS[model]} version's uninstall script.\n\n{detail}"[:4000]})
             added.append(r["item"]["id"])
-        _note(f, f"Build with Mosses started on {MODELS[model]}" + (" (Fable rebuild on the pending list)" if added else ""), model)
-        _log({"op": "start", "feature": fid, "title": f.get("title"), "model": model, "fableLater": bool(added), "pending": added})
-        llm = plugin_services.get("axf.llm@1")
-        profile = None
-        if llm:
-            try:
-                profile = next((p["id"] for p in llm.profiles() if p.get("kind") in ("anthropic", "claude-code") and p.get("enabled", True) is not False and p.get("keyReady", True)), None)
-            except Exception:  # noqa: BLE001
-                profile = None
-        message = (f"Build this feature from the AmberX AXF plan with me, step by step: **{f['title']}** (`{fid}`), on {MODELS[model]}.\n\n"
-                   f"{f.get('summary', '')}\n\nApproved plan:\n" + "\n".join(f"{i + 1}. {s}" for i, s in enumerate(plan.get("steps", []))) +
-                   ("\n\nFiles: " + ", ".join(plan.get("files", [])) if plan.get("files") else "") +
-                   "\n\nRead the code first, then propose each change for approval (one batch per reply, snapshot first). "
-                   "Tell me when it's done or what's left, so I can mark the feature built or partial.")
-        return {"parked": False, "pending": added, "chat": {"agentId": MOSSES, "message": message, "title": f"Build: {f['title']}"[:120],
-                                                            "profile": profile, "model": API_MODEL[model] if profile else None}}
+        # One way to start builds (Brett, Nov 9 2026: "It has to be the orchestrator"): the feature goes to the Build
+        # orchestrator's Queue; its dispatcher splits it, picks the account and model and starts it. No chat launch here.
+        disp = plugin_services.get("axf.build-dispatch@1")
+        if not disp:
+            raise PermissionError("The Build orchestrator is off: builds start only from its Queue (Settings → Plugins → Build orchestrator).")
+        files = ("\n\nFiles: " + ", ".join(plan.get("files", []))) if plan.get("files") else ""
+        r = disp.request(f"Build {f['title']}"[:300], f"Plan feature `{fid}`, on {MODELS[model]}.\n\n{detail}{files}"[:8000], by="feature-assist", source="feature-assist", queue=True)
+        bid = str(r.get("id") or "")
+        _note(f, f"Sent to the Build orchestrator's Queue as {bid} ({MODELS[model]})" + (" (Fable rebuild on the pending list)" if added else ""), model)
+        _log({"op": "start", "via": "orchestrator-queue", "feature": fid, "title": f.get("title"), "model": model, "build": bid, "fableLater": bool(added), "pending": added})
+        return {"parked": False, "pending": added, "queued": True, "build": bid, "chat": None}
     except Exception as e:  # noqa: BLE001
         raise _err(e) from None
 

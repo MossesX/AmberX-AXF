@@ -69,6 +69,17 @@ export interface VoiceStatus {
 /** An owner action on a held veto call (axHub decision 102 Deny, 104 Approve now + Shelve). */
 export type VetoActionName = 'deny' | 'approve-now' | 'shelve';
 
+/* ---- Gizmo talk mode with the screen off (TalkService, Nov 6 2026) and the Listeners control panel (ListenerRegistry) */
+
+/** What `talkStart` takes: the language, keep a turn open while Gizmo talks (interrupt words), the start tone once. */
+export interface TalkOptions { lang: string; listenWhileSpeaking?: boolean; sound?: boolean }
+/** The service's state: `phase` listening | thinking | speaking | paused | off; `line` = the notification's last line. */
+export interface TalkStatus { running: boolean; phase: string; line: string; since: number | null; pausedWhy: string; attempts: number; lastStop: string; holdsMic: boolean }
+/** A `talk` event: started · heard {text, final, phase} · paused {reason, label} · resumed · error {error} · stopped {why, reason}. */
+export interface TalkEvent { kind: 'started' | 'heard' | 'paused' | 'resumed' | 'error' | 'stopped'; text?: string; final?: boolean; phase?: string; reason?: string; label?: string; error?: string; why?: string; at?: number; id?: string }
+/** listener-state@1 rows from the native side (framework/libs/listeners `ListenerInfo`, partial) + who holds the mic. */
+export interface ListenersStatus { micOff: boolean; micHolder: string | null; at: number; listeners: Record<string, unknown>[] }
+
 export interface NativeApi {
   /** GET a hub page or feed with the hub session. No redirects, capped. */
   hubGet(opts: { url: string }): Promise<{ status: number; body: string; etag?: string }>;
@@ -112,11 +123,27 @@ export interface NativeApi {
    * `VetoAlerts`). Browser: ok false (the plugin opens the call on the hub).
    */
   vetoAction(opts: { id: string; action: VetoActionName }): Promise<{ ok: boolean; state?: string; error?: string }>;
+  /** Approve / Decline a call waiting for an approval with the phone's hub session, in place. */
+  approvalDecide(opts: { id: string; action: 'approve' | 'decline' }): Promise<{ ok: boolean }>;
   /** The banner plugin's alarm settings (Java `VetoAlarm`: alarm audio stream, rings through silent mode). */
   vetoAlarm(opts: Record<string, unknown>): Promise<void>;
   /** Ring the alarm once now with these settings (Settings → Test). */
   vetoAlarmTest(opts: Record<string, unknown>): Promise<void>;
   vetoAlarmStop(): Promise<void>;
+  /** Gizmo talk mode as a foreground microphone service (Android `TalkService`): listens turn by turn with the screen
+   * off, a notification with Stop, audio focus, one owner of the mic. The page keeps the conversation and speaks the
+   * reply, telling the service its half of the turn with `talkPhase`. Browser: the same turns on Web Speech while the
+   * tab is open. An older APK has no `talkStart`: the companion falls back to one `listen` per turn. */
+  talkStart(opts: TalkOptions): Promise<TalkStatus>;
+  talkStop(opts?: { reason?: string }): Promise<TalkStatus>;
+  talkStatus(): Promise<TalkStatus>;
+  talkPhase(opts: { phase: 'listening' | 'thinking' | 'speaking'; line?: string }): Promise<TalkStatus>;
+  /** Every native listener's state and policy (the Listeners control panel); the page adds its own listeners. */
+  listenersStatus(): Promise<ListenersStatus>;
+  /** Set a listener's policy (listener@1 fields: on, pauseOnCall, pauseForOtherApps, sound, retries, backoffMs, maxBackoffMs, cooldownMs). */
+  listenerSet(opts: { id: string; policy: Record<string, unknown> }): Promise<ListenersStatus>;
+  addListener(event: 'talk', fn: (e: TalkEvent) => void): Promise<PluginListenerHandle>;
+  addListener(event: 'listeners', fn: (e: ListenersStatus) => void): Promise<PluginListenerHandle>;
   /** A veto notification was tapped (`open`: the veto screen) or one of its Deny / Approve / Shelve buttons ran. */
   addListener(event: 'veto', fn: (e: { id: string; action: 'open' | 'denied' | 'approved' | 'shelved' | 'failed'; error?: string }) => void): Promise<PluginListenerHandle>;
   /** `id` + `at` (ms): the page runs each wake hit once and drops stale ones (older APKs send neither). */
@@ -227,6 +254,95 @@ function webMicState(): MicState {
   return { off, yielded: off ? 'mic-off' : null, label: off ? 'Mic off' : 'Listening', listening: !off && webVoice.listening };
 }
 
+/**
+ * Browser talk mode (the TalkService's twin for a tab): one Web Speech turn at a time while the tab is visible, the
+ * same `talk` events, the page's `talkPhase` deciding when the next turn starts, restarts that back off and give up
+ * ({@link restartDelay}), paused while the tab is hidden (a browser can't listen in the background).
+ */
+const webTalk: { on: boolean; phase: string; line: string; rec: Rec | null; opts: TalkOptions | null; attempts: number; since: number; lastStop: string; gen: number; timer: ReturnType<typeof setTimeout> | null } =
+  { on: false, phase: 'off', line: '', rec: null, opts: null, attempts: 0, since: 0, lastStop: '', gen: 0, timer: null };
+let talkSeq = 0;
+const talkEvent = (kind: TalkEvent['kind'], extra: Partial<TalkEvent> = {}) => emit('talk', { kind, ...extra, at: Date.now(), id: `talk-${Date.now().toString(36)}-${++talkSeq}` } satisfies TalkEvent);
+function webTalkStatus(): TalkStatus {
+  return { running: webTalk.on, phase: webTalk.on ? webTalk.phase : 'off', line: webTalk.line, since: webTalk.on ? webTalk.since : null, pausedWhy: webTalk.phase === 'paused' ? 'other-app' : '', attempts: webTalk.attempts, lastStop: webTalk.lastStop, holdsMic: webTalk.rec !== null };
+}
+function webTalkClose() {
+  webTalk.gen++;
+  if (webTalk.timer) clearTimeout(webTalk.timer);
+  webTalk.timer = null;
+  try { webTalk.rec?.abort(); } catch { /* already stopped */ }
+  webTalk.rec = null;
+}
+function webTalkEnd(reason: string, why: string) {
+  if (!webTalk.on) return;
+  webTalk.on = false;
+  webTalkClose();
+  webTalk.phase = 'off';
+  webTalk.lastStop = reason;
+  talkEvent('stopped', { why, reason });
+  if (webVoice.cfg) void webVoiceStart(webVoice.cfg); // hands-free comes back
+}
+function webTalkTurn() {
+  if (!webTalk.on || webTalk.rec || !Recognition) return;
+  if (webTalk.phase !== 'listening' && !(webTalk.phase === 'speaking' && webTalk.opts?.listenWhileSpeaking !== false)) return;
+  if (document.visibilityState !== 'visible') { webTalk.phase = 'paused'; talkEvent('paused', { reason: 'other-app', label: 'Paused: this tab is in the background' }); return; }
+  if (micIsOff()) { webTalkEnd('Mic off was switched on.', 'mic-off'); return; }
+  const g = ++webTalk.gen;
+  const rec = new Recognition();
+  rec.lang = webTalk.opts?.lang ?? 'en-US'; rec.interimResults = true; rec.continuous = false; rec.maxAlternatives = 1;
+  const startedAt = Date.now();
+  let text = '';
+  let fatal = false;
+  rec.onresult = (e) => {
+    if (g !== webTalk.gen) return;
+    const all = Array.from(e.results);
+    text = unmask(all.map((r) => r[0]?.transcript ?? '').join(' ').trim());
+    if (text) talkEvent('heard', { text, final: false, phase: webTalk.phase });
+  };
+  rec.onerror = (e) => { if (FATAL_RECOGNITION.includes(e.error)) fatal = true; };
+  rec.onend = () => {
+    if (g !== webTalk.gen) return;
+    webTalk.rec = null;
+    if (fatal) { webTalkEnd('The browser refused the microphone.', 'error'); return; }
+    const t = text.trim();
+    if (t) {
+      webTalk.attempts = 0;
+      webTalk.line = t;
+      talkEvent('heard', { text: t, final: true, phase: webTalk.phase });
+      if (webTalk.phase === 'speaking') { webTalkTurn(); return; }
+      webTalk.phase = 'thinking';
+      return;
+    }
+    const ran = Date.now() - startedAt;
+    const quick = ran < QUICK_END_MS;
+    webTalk.attempts = quick ? webTalk.attempts + 1 : 0;
+    const wait = quick ? restartDelay(webTalk.attempts) : 250;
+    if (wait === null) { webTalkEnd('The microphone kept refusing, so talk mode stopped.', 'error'); return; }
+    webTalk.timer = setTimeout(() => { if (g === webTalk.gen) webTalkTurn(); }, wait);
+  };
+  webTalk.rec = rec;
+  try { rec.start(); } catch { webTalk.rec = null; webTalk.timer = setTimeout(webTalkTurn, 1000); }
+}
+if (typeof document !== 'undefined') {
+  document.addEventListener('visibilitychange', () => {
+    if (!webTalk.on) return;
+    if (document.visibilityState === 'visible' && webTalk.phase === 'paused') { webTalk.phase = 'listening'; talkEvent('resumed'); webTalkTurn(); }
+    else if (document.visibilityState !== 'visible') webTalkClose();
+  });
+}
+
+/** The page-side listeners a browser can report (the phone adds every native one). */
+function webListenersStatus(): ListenersStatus {
+  const off = micIsOff();
+  return {
+    micOff: off, micHolder: webTalk.rec ? 'talk' : webVoice.rec ? 'browser-handsfree' : null, at: Date.now(),
+    listeners: [
+      { id: 'browser-handsfree', side: 'page', state: off ? 'yielded' : webVoice.listening ? 'on' : webVoice.cfg?.handsFree ? 'starting' : 'off', detail: off ? 'mic-off' : '', holdsMic: !!webVoice.rec },
+      { id: 'talk', side: 'page', state: !webTalk.on ? 'off' : webTalk.phase === 'paused' ? 'paused' : 'on', detail: webTalk.on ? (webTalk.phase === 'paused' ? 'this tab is in the background' : webTalk.phase) : webTalk.lastStop, holdsMic: !!webTalk.rec },
+    ],
+  };
+}
+
 let webMonitor: { timer: ReturnType<typeof setInterval> | null; status: MonitorStatus } = {
   timer: null,
   status: { running: false, listening: false, lastCheck: null, status: 'off', waiting: 0 },
@@ -250,6 +366,7 @@ const web: NativeApi = {
   async hubSignOut({ hub }) { window.open(`${hub}/auth/logout`, '_blank', 'noopener,noreferrer'); },
   listen({ lang }) {
     if (micIsOff()) return Promise.reject(new Error('Mic off is on. Turn the mic back on to talk to AmberX.'));
+    if (webTalk.rec) return Promise.reject(new Error("Gizmo's talk mode has the microphone. Stop it first."));
     // Hands-free lets go of the recognizer while the Speak button listens, and comes back afterwards.
     const resume = webVoice.cfg;
     if (webVoice.rec) webVoiceStop();
@@ -327,9 +444,43 @@ const web: NativeApi = {
   // Veto calls in a browser: the banner plugin rings its own alarm and opens the hub page for Deny / Approve / Shelve
   // (the hub only takes them under its own Origin).
   async vetoAction() { return { ok: false, error: 'browser' }; },
+  async approvalDecide() { throw new Error('browser'); },
   async vetoAlarm() { /* the plugin rings in the page */ },
   async vetoAlarmTest() { /* the plugin rings in the page */ },
   async vetoAlarmStop() { /* nothing rings natively */ },
+  async talkStart(opts) {
+    if (micIsOff()) throw new Error('Mic off is on. Turn the mic back on to talk to Gizmo.');
+    if (!Recognition) throw new Error('This browser has no speech recognition.');
+    const fresh = !webTalk.on;
+    webTalk.opts = opts;
+    if (fresh) {
+      if (webVoice.rec) webVoiceStop(); // one owner of the microphone: talk mode outranks hands-free
+      webTalk.on = true; webTalk.phase = 'listening'; webTalk.line = ''; webTalk.attempts = 0; webTalk.since = Date.now(); webTalk.lastStop = '';
+      talkEvent('started');
+      webTalkTurn();
+    }
+    return webTalkStatus();
+  },
+  async talkStop(o) { webTalkEnd(o?.reason || 'Stopped.', 'app'); return webTalkStatus(); },
+  async talkStatus() { return webTalkStatus(); },
+  async talkPhase({ phase, line }) {
+    if (!webTalk.on) return webTalkStatus();
+    if (line) webTalk.line = line.slice(0, 120);
+    if (webTalk.phase !== 'paused') {
+      webTalk.phase = phase;
+      if (phase === 'listening' || (phase === 'speaking' && webTalk.opts?.listenWhileSpeaking !== false)) { if (!webTalk.rec) webTalkTurn(); }
+      else webTalkClose();
+    }
+    return webTalkStatus();
+  },
+  async listenersStatus() { return webListenersStatus(); },
+  async listenerSet({ id, policy }) {
+    // A browser keeps policies in the app's settings (synced through axHub); the only native-like effect here is "off".
+    if (policy && policy.on === false) { if (id === 'talk') webTalkEnd('Talk mode was switched off in Listeners.', 'app'); if (id === 'browser-handsfree') webVoiceStop(); }
+    const s = webListenersStatus();
+    emit('listeners', s);
+    return s;
+  },
   async permissions() {
     let microphone = false;
     try { (await navigator.mediaDevices?.getUserMedia({ audio: true }))?.getTracks().forEach((t) => t.stop()); microphone = true; } catch { /* refused */ }

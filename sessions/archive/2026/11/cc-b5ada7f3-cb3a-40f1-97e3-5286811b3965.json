@@ -1,0 +1,84 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-b5ada7f3-cb3a-40f1-97e3-5286811b3965",
+ "source": "claude-code",
+ "sessionId": "b5ada7f3-cb3a-40f1-97e3-5286811b3965",
+ "project": "other",
+ "title": "# Build: handoff-2-addenda (Fable for the credential/role/protocol steps, Opus for UI) **Name:** Handoff 2 add-ons · **…",
+ "startedAt": "2026-11-04T22:11:10.893Z",
+ "endedAt": "2026-11-04T22:11:51.732Z",
+ "minutes": 1,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/handoff-2-addenda",
+  "repo": "",
+  "branch": "claude/handoff-2-addenda"
+ },
+ "user": "Brett (root)",
+ "models": [],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-04T22:11:50.218Z",
+   "kind": "prompt",
+   "text": "# Build: handoff-2-addenda (Fable for the credential/role/protocol steps, Opus for UI) **Name:** Handoff 2 add-ons · **Category:** Plugin extension (session-sync) ## Why (Brett, voice, Nov 4 2026) Handoff 2 (build `handoff-2`, PR #338, plugin `session-sync`) finished BEFORE these addenda reached its session; the tmux nudges never landed. Brett: \"Okay, do it... put them all. Do that now.\" Base is branch `claude/handoff-2` (PR #338). Build on top of it. If #338 merges first, rebase onto main. Open your own PR that lands after #338 (merge queue only). ## What to add: the addenda at the END of `/…",
+   "model": "",
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "thinking": 0
+   },
+   "costUsd": 0,
+   "costEstimated": false,
+   "seconds": 2,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [
+    "chg-20261104-f10772c714"
+   ],
+   "features": [
+    "pending:handoff-2",
+    "orchestrator:handoff-2"
+   ],
+   "output": "You're out of usage credits. Switch to another model, or manage usage credits at https://claude.ai/settings/usage?from=cc_cli_limit_message, to continue."
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261104-f10772c714"
+ ],
+ "features": [
+  "pending:handoff-2",
+  "orchestrator:handoff-2"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 0,
+  "output": 0,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thinking": 0,
+  "costUsd": 0,
+  "costEstimated": false,
+  "toolCalls": 0,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0
+ },
+ "ingestedAt": "2026-11-04T22:11:52.421Z"
+}

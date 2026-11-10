@@ -391,6 +391,20 @@
       "attrs": {
         "data-fx-btn": "soft"
       }
+    },
+    "windows": {
+      "vars": {
+        "--fx-btn-radius": "var(--fx-radius-md)",
+        "--fx-btn-weight": "400",
+        "--fx-btn-py": "calc(8px * var(--fx-density-k, 1))",
+        "--fx-btn-px": "14px",
+        "--fx-btn-shadow": "none",
+        "--fx-btn-case": "none",
+        "--fx-btn-tracking": "0"
+      },
+      "attrs": {
+        "data-fx-btn": "solid"
+      }
     }
   },
   "slider": {
@@ -983,6 +997,16 @@
         "data-fx-card": "card",
         "data-fx-card-header": "accent"
       }
+    },
+    "windows": {
+      "vars": {
+        "--fx-card-pad": "calc(var(--fx-space) * 2.2)",
+        "--fx-card-shadow": "none"
+      },
+      "attrs": {
+        "data-fx-card": "card",
+        "data-fx-card-header": "plain"
+      }
     }
   },
   "dialog": {
@@ -1293,6 +1317,17 @@
         "data-fx-dialog-anim": "scale",
         "data-fx-dialog-header": "filled"
       }
+    },
+    "windows": {
+      "vars": {
+        "--fx-dialog-w": "480px"
+      },
+      "attrs": {
+        "data-fx-dialog": "modal",
+        "data-fx-backdrop": "dim",
+        "data-fx-dialog-anim": "scale",
+        "data-fx-dialog-header": "plain"
+      }
     }
   },
   "popup": {
@@ -1570,6 +1605,12 @@
       "vars": {},
       "attrs": {
         "data-fx-ctx": "roomy"
+      }
+    },
+    "windows": {
+      "vars": {},
+      "attrs": {
+        "data-fx-ctx": "compact"
       }
     }
   },
@@ -1917,6 +1958,18 @@
       },
       "attrs": {
         "data-fx-toolbar": "icons-labels",
+        "data-fx-toolbar-surface": "flat",
+        "data-fx-toolbar-divider": "on",
+        "data-fx-toolbar-collapsible": "off"
+      }
+    },
+    "windows": {
+      "vars": {
+        "--fx-toolbar-py": "calc(var(--fx-space) * 0.6)",
+        "--fx-toolbtn-h": "calc(var(--fx-row-h) - 4px)"
+      },
+      "attrs": {
+        "data-fx-toolbar": "icons",
         "data-fx-toolbar-surface": "flat",
         "data-fx-toolbar-divider": "on",
         "data-fx-toolbar-collapsible": "off"

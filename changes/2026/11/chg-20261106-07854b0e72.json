@@ -1,0 +1,64 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261106-07854b0e72",
+  "createdAt": "2026-11-06T19:04:13.109Z",
+  "updatedAt": "2026-11-06T19:07:22.409Z",
+  "kind": "build",
+  "title": "# Build savings-lean: step s3 of 3 (fresh session) Handoff: 2/3 steps done · branch main.",
+  "asked": "# Build savings-lean: step s3 of 3 (fresh session) Handoff: 2/3 steps done · branch main. - s1 done: notes/a.md written: sum of src/a.txt is 820. Next: s2 largest number in src/b.txt. - s2 done: notes/b.md written: largest number in src/b.txt is 40. Next: s3 line count of src/c.txt. ## Do this now - s3 [opus] Write notes/c.md with the line count of src/c.txt ## Files for this step Read these; do not explore the repo beyond them unless one of them sends you there. - src/c.txt - notes/c.md Do only that, commit, mark it done with `node framework/cli/build-progress.mjs step <stepId> done --note \"<one line for the next session>\"`, then finish. The next step gets its own fresh session. ## The build's brief (for context) # Build savings-lean Do these three small steps in order: s1 write notes/a.md with the sum of the numbers in src/a.txt; s2 write notes/b.md with the largest number in src/b.txt; s3 write notes/c.md with the line count of src/c.txt. Mark each done with build-progress as you finish. No branch, no PR. Model switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first. Progress: this build's progress file is the console's view of where you are. After each step run `node framework/cli/build-progress.mjs step <stepId> done --note \"<one line>\"` (and `step <next> running` when you start one; `note \"…\"`, `link --branch <b> --pr <n>`, `status blocked --note \"why\"` when stuck). It is a local file write: carry straight on. Never stop to update the console, the orchestrator, THREADS.md or the build log between steps; the reconciler folds the file into the builds store by itself. AXF_BUILD_ID=savings-lean is set for you.",
+  "repos": [],
+  "model": "claude-opus-5-5",
+  "who": {
+    "session": "10c8d9a2-d52",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "cancelled",
+    "summary": "no change: chain-control savings test in a scratch folder",
+    "branch": "main",
+    "commits": [
+      {
+        "sha": "e479c61"
+      }
+    ],
+    "filesChanged": 1,
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "cancelled",
+  "status": "failed",
+  "surface": "headless",
+  "startedAt": "2026-11-06T19:04:13.109Z",
+  "finishedAt": "2026-11-06T19:04:20.930Z",
+  "lastSeenAt": "2026-11-06T19:04:15.059Z",
+  "actual": {
+    "minutes": 3,
+    "costUsd": 0.1459,
+    "inputTokens": 8,
+    "outputTokens": 902,
+    "cacheReadTokens": 116927,
+    "cacheWriteTokens": 20891,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "progress": 1,
+  "resume": {
+    "folder": "/tmp/cc-sav3/savings-lean",
+    "branch": "main",
+    "head": "e479c616931f815b23bbd43d6c60112f53cdae11",
+    "pushed": false,
+    "dirty": 5,
+    "files": [
+      "_claude/builds/",
+      "brief.md",
+      "o.jsonl",
+      "o.log",
+      "src/"
+    ],
+    "at": "2026-11-06T19:04:23.010Z"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "button",
+  "id": "windows",
+  "name": "Windows",
+  "version": "1.0.0",
+  "description": "Flat solid buttons with regular-weight labels and small radii.",
+  "author": "AmberX AXF",
+  "tags": [
+    "windows",
+    "skin"
+  ],
+  "data": {
+    "shape": "rounded",
+    "fill": "solid",
+    "weight": 400,
+    "uppercase": false,
+    "size": "md",
+    "elevation": false
+  }
+}

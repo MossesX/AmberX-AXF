@@ -5,8 +5,9 @@
  * A build profile is one complete set of work data: the pending build list, the plan (+ media), the build queue,
  * catalog status, tracker.json and the Build orchestrator's tracker. One profile is active; every CLI, the console
  * server and its plugins read and write the active profile's copy (resolution lives in persist.mjs → dataPath()).
- * "main-framework" is the base profile and keeps the original paths; every other profile lives under
- * framework/plan/profiles/<id>/ (hub shared data) and _claude/builds/profiles/<id>/orchestrator.json (repo).
+ * "all" is the base profile and keeps the original paths (since Nov 7 2026; it took over from "main-framework" when
+ * every profile was merged into it); any other profile lives under framework/plan/profiles/<id>/ (hub shared data)
+ * and _claude/builds/profiles/<id>/orchestrator.json (repo).
  *
  *   node framework/cli/profiles.mjs                         list (★ = active)
  *   node framework/cli/profiles.mjs current                 the active profile
@@ -18,18 +19,23 @@
  *   node framework/cli/profiles.mjs remove <id> --confirm <id>   off the list; its data stays (create it again to
  *                                                           get it back). The base and the active profile can't go.
  *   node framework/cli/profiles.mjs where [<id>]            the files of a profile
- *   node framework/cli/profiles.mjs act --json '{"action":"select","id":"refactor"}'   any change (console server)
+ *   node framework/cli/profiles.mjs merge-all               fold the retired profiles (main-framework, current, urgent,
+ *                                                           angel, big-dog, breakroom, refactor) into `all` for good,
+ *                                                           select it and delete the old profile folders (repo + hub)
+ *   node framework/cli/profiles.mjs act --json '{"action":"select","id":"all"}'   any change (console server)
  *   --json on any command prints JSON.
  *
  * AXF_BUILD_PROFILE=<id> makes one process (a session, a CI job) use another profile without changing the saved pick.
  */
-import { cpSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   BASE_PROFILE, PROFILED, PROFILES_REL, TRACKER_REL, PROFILE_ID, REPO_ROOT, activeProfile, baseDataPath, emptyProfileFile,
   orchestratorPath, persistRoot, profileRel, readProfiles,
 } from './persist.mjs';
+import { MERGED_PROFILE, RETIRED_PROFILES, resolveProfile } from '../plan/builds-store-core.mjs';
+import { mergeRetiredNow } from './builds-store.mjs';
 
 export const SCHEMA = 'build-profiles@1';
 const now = () => new Date().toISOString();
@@ -65,6 +71,8 @@ function seedProfile(id, from) {
     if (existsSync(to)) continue;
     mkdirSync(rel.endsWith('/') ? to : dirname(to), { recursive: true });
     if (src && existsSync(src[rel])) { cpSync(src[rel], to, { recursive: true }); continue; }
+    const snapshot = join(REPO_ROOT, profileRel(id, rel)); // the profile's repo snapshot (as dataPath seeds it)
+    if (!src && resolve(snapshot) !== resolve(to) && existsSync(snapshot)) { cpSync(snapshot, to, { recursive: true }); continue; }
     const empty = emptyProfileFile(rel);
     if (empty) writeJson(to, empty);
   }
@@ -77,11 +85,35 @@ function seedProfile(id, from) {
   }
 }
 
+/**
+ * Take away the folders of profiles that no longer exist (Brett, Nov 7 2026: "delete the old profile folders
+ * everywhere"): every retired profile's `_claude/builds/profiles/<id>/` and `framework/plan/profiles/<id>/`, in the
+ * repo and on the hub, and the base profile's own old folder (`all` lived there before it became the base; its
+ * matrices move to `_claude/builds/matrices.json` when that is missing, its exports are stale). Their builds are in
+ * the store already (the merge reads the store, not these files). Returns the paths removed.
+ */
+export function pruneRetiredFolders({ roots = [REPO_ROOT, persistRoot()].filter(Boolean) } = {}) {
+  const removed = [];
+  const rm = (f) => { if (existsSync(f)) { rmSync(f, { recursive: true, force: true }); removed.push(f); } };
+  for (const root of [...new Set(roots)]) {
+    for (const id of RETIRED_PROFILES) { rm(join(root, '_claude/builds/profiles', id)); rm(join(root, profileRel_(id))); }
+    const own = join(root, '_claude/builds/profiles', BASE_PROFILE);
+    const mx = join(own, 'matrices.json'); const top = join(root, '_claude/builds/matrices.json');
+    if (existsSync(mx) && !existsSync(top)) { renameSync(mx, top); removed.push(`${mx} → ${top}`); }
+    rm(join(own, 'orchestrator.json'));
+    rm(join(root, profileRel_(BASE_PROFILE)));
+    for (const d of [own, join(root, '_claude/builds/profiles'), join(root, 'framework/plan/profiles')]) { try { if (existsSync(d) && !readdirSync(d).length) rmSync(d, { recursive: true }); } catch { /* not empty */ } }
+  }
+  return removed;
+}
+/** A profile's own data folder (profileRel resolves retired ids to `all`, so the raw folder is built here). */
+const profileRel_ = (id) => `framework/plan/profiles/${id}`;
+
 /** One change to the registry. Returns { registry, profile?, log }. */
 export function act(change) {
   const c = change && typeof change === 'object' ? change : {};
   const reg = readProfiles();
-  const find = (id) => { const p = reg.profiles.find((x) => x.id === id); if (!p) throw new Error(`no build profile "${id}"`); return p; };
+  const find = (id) => { const p = reg.profiles.find((x) => x.id === resolveProfile(id)); if (!p) throw new Error(`no build profile "${id}"`); return p; };
   const log = [];
   switch (c.action) {
     case 'select': {
@@ -97,6 +129,7 @@ export function act(change) {
       const id = c.id ? str(c.id, 40) : slugId(name);
       if (!PROFILE_ID.test(id)) throw new Error('id: lowercase letters, digits and dashes, up to 40');
       if (reg.profiles.some((p) => p.id === id)) throw new Error(`"${id}" already exists`);
+      if (RETIRED_PROFILES.includes(id)) throw new Error(`"${id}" was merged into "${MERGED_PROFILE}" (Nov 7 2026); pick another id`);
       const from = c.copyFrom ? find(str(c.copyFrom, 40)).id : null;
       const p = { id, name, description: str(c.description, 600), createdAt: now(), updatedAt: now(), catalog: c.catalog === true, ...(from ? { copiedFrom: from } : {}) };
       seedProfile(id, from);
@@ -122,6 +155,19 @@ export function act(change) {
       reg.profiles = reg.profiles.filter((x) => x !== p);
       log.push(`build profile ${p.id} taken off the list (its data stays; create "${p.id}" again to get it back)`);
       return { registry: saveRegistry(reg), log };
+    }
+    case 'merge-all': {
+      // Brett, Nov 7 2026: every build profile merged into one. The registry drops the retired profiles and gains
+      // `all` (readProfiles already folds them; this saves it), `all` becomes the active pick, and the builds store
+      // moves their builds for good (builds-store.mjs mergeRetiredNow). Safe to run again: nothing left = no change.
+      reg.active = resolveProfile(reg.active);
+      const saved = saveRegistry(reg);
+      seedProfile(MERGED_PROFILE, null);
+      const r = mergeRetiredNow({ by: process.env.AXF_ACTOR || 'profiles-merge' });
+      log.push(r.report ? `merged ${r.report.from.map((p) => `${p.id} (${p.builds})`).join(', ')} into ${MERGED_PROFILE}: ${r.report.moved} build(s), ${r.changed} record(s) written` : `nothing left to merge; ${MERGED_PROFILE} is ${saved.active === MERGED_PROFILE ? 'active' : 'not active'}`);
+      const pruned = c.keepFolders === true ? [] : pruneRetiredFolders();
+      log.push(pruned.length ? `old profile folders removed: ${pruned.length}` : 'no old profile folders left');
+      return { registry: saved, report: r.report, pruned, log };
     }
     default: throw new Error(`unknown action ${c.action}`);
   }
@@ -176,6 +222,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
       else if (cmd === 'select') change = { action: 'select', id: pos[1] };
       else if (cmd === 'create') change = { action: 'create', name: pos[1], id: flag('--id'), description: flag('--description'), copyFrom: flag('--copy-from'), catalog: args.includes('--catalog'), select: args.includes('--select') };
       else if (cmd === 'update') change = { action: 'update', id: pos[1], name: flag('--name'), description: flag('--description'), catalog: flag('--catalog') === undefined ? undefined : flag('--catalog') === 'on' };
+      else if (cmd === 'merge-all') change = { action: 'merge-all' };
       else if (cmd === 'remove') change = { action: 'remove', id: pos[1], confirm: flag('--confirm') };
       else throw new Error(`unknown command ${cmd}`);
       const r = act(change);

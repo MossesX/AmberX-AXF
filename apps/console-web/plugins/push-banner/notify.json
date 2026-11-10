@@ -1,0 +1,31 @@
+{
+  "$axf": "notify-types@1",
+  "types": [
+    {
+      "id": "merge.blocked",
+      "label": "Landing blocked",
+      "group": "merge",
+      "app": "console",
+      "source": "Push banner, landing job",
+      "description": "A finished build can't land: CI failed, a conflict, or it needs you.",
+      "match": {
+        "source": "push-banner",
+        "keyPrefix": "land:"
+      },
+      "priority": "high"
+    },
+    {
+      "id": "merge.kicked",
+      "label": "Kicked out of the merge queue",
+      "group": "merge",
+      "app": "console",
+      "source": "Merge queue",
+      "description": "A PR failed its queue run and was taken out of the stack.",
+      "match": {
+        "source": "push-banner",
+        "keyPrefix": "queue:"
+      },
+      "priority": "high"
+    }
+  ]
+}

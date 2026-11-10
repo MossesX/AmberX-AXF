@@ -1,0 +1,101 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-d40dd8e4-a4ea-4f4e-91ab-902dd3883846",
+ "source": "claude-code",
+ "sessionId": "d40dd8e4-a4ea-4f4e-91ab-902dd3883846",
+ "project": "other",
+ "title": "# Build: follow-amber-switch (Current profile) - small ## What Brett said (verbatim, Nov 4 2026, voice) \"Make a widget …",
+ "startedAt": "2026-11-04T13:30:21.766Z",
+ "endedAt": "2026-11-04T13:53:27.297Z",
+ "minutes": 23,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/follow-amber-switch",
+  "repo": "",
+  "branch": "claude/follow-amber-switch"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-04T13:30:29.247Z",
+   "kind": "prompt",
+   "text": "# Build: follow-amber-switch (Current profile) - small ## What Brett said (verbatim, Nov 4 2026, voice) \"Make a widget that can go in the banner that is a switch which makes it automatically go to you when you mention something. You don't have to be asked to go to it. If you just mention something casually, it will go to that screen.\" Book to a free named agent (Snap Sully, else Janitor Joey). Register id `follow-amber-switch` in the `current` profile + banner entry + What Brett said block. ## Do - A **Follow Amber banner widget**: a compact switch chip ('Follow Amber' + on/off, Amber's avata…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 226,
+    "output": 92386,
+    "cacheRead": 18547541,
+    "cacheWrite": 227840,
+    "thinking": 23227
+   },
+   "costUsd": 6.6969,
+   "costEstimated": false,
+   "seconds": 1378,
+   "tools": {
+    "Bash": 109,
+    "Read": 2,
+    "Edit": 2,
+    "Write": 2
+   },
+   "commands": 109,
+   "files": [
+    "/root/axf-builds/follow-amber-switch/framework/core/engines/banner.ts",
+    "/root/axf-builds/follow-amber-switch/framework/react/components/Banner.tsx",
+    "/root/axf-builds/follow-amber-switch/apps/console-web/plugins/claude-badge/web/look.ts",
+    "/root/axf-builds/follow-amber-switch/apps/console-web/plugins/claude-badge/web/index.tsx"
+   ],
+   "changeIds": [
+    "chg-20261104-d11d9a8afe"
+   ],
+   "features": [
+    "pending:follow-amber-switch",
+    "orchestrator:follow-amber"
+   ],
+   "output": "Done, boss. Follow Amber now lives in the Claude badge, no new widget like you said. **PR #312** is open and will auto-merge once CI goes green: https://github.com/MossesX/AmberX-AXF/pull/312 **What you get:** - **Tap the badge to switch Follow Amber on or off.** The stuff a tap used to do (setting…"
+  }
+ ],
+ "files": [
+  "/root/axf-builds/follow-amber-switch/framework/core/engines/banner.ts",
+  "/root/axf-builds/follow-amber-switch/framework/react/components/Banner.tsx",
+  "/root/axf-builds/follow-amber-switch/apps/console-web/plugins/claude-badge/web/look.ts",
+  "/root/axf-builds/follow-amber-switch/apps/console-web/plugins/claude-badge/web/index.tsx"
+ ],
+ "changeIds": [
+  "chg-20261104-d11d9a8afe"
+ ],
+ "features": [
+  "pending:follow-amber-switch",
+  "orchestrator:follow-amber"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 226,
+  "output": 92386,
+  "cacheRead": 18547541,
+  "cacheWrite": 227840,
+  "thinking": 23227,
+  "costUsd": 6.6969,
+  "costEstimated": false,
+  "toolCalls": 115,
+  "commands": 109,
+  "filesTouched": 4,
+  "reportedUsd": 7.3809
+ },
+ "ingestedAt": "2026-11-04T13:53:27.933Z"
+}

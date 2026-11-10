@@ -21,7 +21,7 @@ let n = 0; const t = (name: string, f: () => void) => { try { f(); n++; } catch 
 const AT = '2026-10-30T12:00:00Z';
 /** A child env with no Claude session in it (so CI and a Claude Code run behave the same), + the data folder. */
 const cleanEnv = (dir) => { const e = { ...process.env, AXF_UI_REVIEW_DIR: dir }; for (const k of ['AXF_CONSOLE_URL', 'AXF_TOKEN', 'CLAUDECODE', 'CLAUDE_CODE_SESSION_ID', 'CLAUDE_CODE_SESSION_ATTENDED', 'AXF_SESSION']) delete e[k]; return e; };
-const WHO = ['--source', 'headless', '--by', 'build:claude/t'];
+const WHO = ['--source', 'headless', '--by', 'build:claude/t', '--single-option', 'a test fixture'];
 const mk = (o) => core.normItem({ kind: 'screen', title: 'T', ...o }, { now: o.submittedAt ?? AT }).item;
 
 t('kinds: registry order, data-folder extras override, unlisted kinds get a section', () => {
@@ -392,6 +392,60 @@ t('shot.mjs finds its handler by capability (ui-screenshots@1), never by folder 
   const src = readFileSync(join(HERE, '../../../../framework/cli/shot.mjs'), 'utf8');
   assert.match(src, /service:ui-screenshots@1/); assert.ok(!src.includes('plugins/ui-review'));
   assert.ok(JSON.parse(readFileSync(join(HERE, 'plugin.json'), 'utf8')).provides.includes('service:ui-screenshots@1'));
+});
+
+/* ---- ui-choices@1: options, the pick in priority order, the three-option rule */
+const ch = await import('../../../../framework/core/ui-choices.mjs');
+const three = { assetType: 'toolbar', owner: 'ui-review', set: 'bar', options: [{ id: 'a', label: 'A' }, { id: 'b', label: 'B', notes: 'tall' }, { id: 'c', label: 'C' }] };
+t('choices: clean set, multi only where the type holds several views', () => {
+  const c = ch.normChoices(three);
+  assert.equal(c.$axf, 'ui-choices@1'); assert.equal(c.multi, true);
+  assert.equal(ch.normChoices({ ...three, assetType: 'settings' }).multi, false);
+  assert.deepEqual(ch.choicesProblems(c), []);
+  assert.deepEqual(ch.normChoices({ ...three, chosen: ['b', 'x', 'b'] }).chosen, ['b'], 'unknown and repeated picks dropped');
+});
+t('choices: a pick keeps its order, the first is the default', () => {
+  const r = ch.choose(ch.normChoices(three), ['c', 'a'], { by: 'brett', at: '2026-11-07T00:00:00Z' });
+  assert.deepEqual(r.choices.chosen, ['c', 'a']); assert.equal(ch.defaultOption(r.choices), 'c');
+  assert.deepEqual(ch.movePick(['c', 'a', 'b'], 'b', -1), ['c', 'b', 'a']);
+  assert.deepEqual(ch.movePick(['c', 'a'], 'c', -1), ['c', 'a'], 'the top stays');
+});
+t('choices: a type with one view takes one pick', () => {
+  const single = ch.normChoices({ ...three, assetType: 'settings' });
+  assert.match(ch.choose(single, ['a', 'b']).error, /has one view/);
+  assert.ok(ch.choose(single, ['a']).choices);
+  assert.match(ch.choose(single, []).error, /at least one/);
+  assert.match(ch.choose(single, ['zz']).error, /no such option/);
+});
+t('the rule: a build ships at least three, the setting raises it, never lowers it', () => {
+  assert.equal(ch.minOptions(1), 3); assert.equal(ch.minOptions(5), 5); assert.equal(ch.minOptions('x'), 3);
+  assert.equal(ch.submissionGap({ choices: three }), '');
+  assert.match(ch.submissionGap({ choices: three }, 4), /3 sent, at least 4/);
+  assert.match(ch.submissionGap({ choices: { ...three, options: three.options.slice(0, 2) } }), /2 sent, at least 3/);
+  assert.match(ch.submissionGap({ source: 'headless' }), /at least 3 options/);
+  assert.match(ch.submissionGap({ submittedBy: 'build:x' }), /at least 3 options/);
+  assert.equal(ch.submissionGap({ source: 'headless', singleOption: 'a fix to one existing dialog' }), '', 'with the reason');
+  assert.equal(ch.submissionGap({ source: 'upload' }), '', 'a manual upload is not a build');
+  assert.equal(ch.submissionGap({ source: 'headless', prediction: { state: 'predicted' } }), '', 'a predicted item has its own flow');
+});
+t('every option is a real asset of its type, tagged with its set', () => {
+  const c = ch.normChoices(three);
+  const a = ch.optionAsset(c, c.options[1], { x: 1 }, { name: 'Bar' });
+  assert.deepEqual([a.$axf, a.type, a.id, a.name, a.description], ['asset@1', 'toolbar', 'bar-b', 'Bar: B', 'tall']);
+  assert.deepEqual(a.tags, ['ui-choice', 'choice-set:bar', 'choice-option:b']);
+  assert.equal(ch.optionAssetPath(c, c.options[0]), 'ui-review/assets/toolbar/bar-a.json');
+});
+t('an option\'s pictures are found by name', () => {
+  assert.equal(ch.optionOfShot('items/r-1/opt-a--desktop.png'), 'a');
+  assert.equal(ch.optionOfShot('items/r-1/2-opt-big-one--x.png'), 'big-one');
+  assert.equal(ch.optionOfShot('items/r-1/desktop.png'), '');
+  assert.deepEqual(ch.optionShots([{ src: 'i/opt-a--1.png' }, { src: 'i/opt-b--1.png' }], 'b'), [{ src: 'i/opt-b--1.png' }]);
+});
+t('sorting: every column sorts both ways', () => {
+  const xs = [{ title: 'b', app: 'x', status: 'waiting' }, { title: 'a', app: 'y', status: 'approved' }];
+  assert.equal(core.sortItems(xs, 'title')[0].title, 'a');
+  assert.equal(core.sortItems(xs, 'title-desc')[0].title, 'b');
+  assert.equal(core.sortItems(xs, 'waiting-desc')[0].status, 'approved');
 });
 
 console.log(`ui-review: ${n} checks ok`);

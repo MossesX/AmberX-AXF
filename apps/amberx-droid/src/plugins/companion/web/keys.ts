@@ -6,6 +6,8 @@ export const K = {
   persona: 'companion.persona',
   /** tools and connectors (axHub services, the repo, the crew) in new chats */
   tools: 'companion.tools',
+  /** auto: tools load per turn when a message needs them | chat: never | tools: always. Each chat can change it. */
+  toolMode: 'companion.toolMode',
   /** say replies out loud in talk mode */
   speak: 'companion.speak',
   /** say every reply out loud, typed ones too */

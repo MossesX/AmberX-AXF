@@ -1,0 +1,90 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-071adbfc-fc14-4d2d-a6bf-8ae34e3b6297",
+ "source": "claude-code",
+ "sessionId": "071adbfc-fc14-4d2d-a6bf-8ae34e3b6297",
+ "project": "other",
+ "title": "hi Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each …",
+ "startedAt": "2026-11-05T11:31:33.830Z",
+ "endedAt": "2026-11-05T11:31:41.270Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.318",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/tmp/axf-slots-rvD8pG/one",
+  "repo": "",
+  "branch": ""
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-05T11:31:35.057Z",
+   "kind": "prompt",
+   "text": "hi Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /root/axf-builds/handoff-2-addenda-r2/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once. Model switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 4,
+    "output": 546,
+    "cacheRead": 39490,
+    "cacheWrite": 21863,
+    "thinking": 235
+   },
+   "costUsd": 0.1282,
+   "costEstimated": false,
+   "seconds": 6,
+   "tools": {
+    "Bash": 1
+   },
+   "commands": 1,
+   "files": [],
+   "changeIds": [
+    "chg-20261105-289181d0fe"
+   ],
+   "features": [
+    "pending:handoff-2",
+    "pending:handoff-2-addenda-r2",
+    "orchestrator:handoff-2"
+   ],
+   "output": "Hi! What would you like to work on? Neither of my two startup commands ran, because both need approval this session: - **Build manager entry:** `chg-20261105-289181d0fe` is still open on axHub. I tried to close it as \"no change\", so it'll keep showing there until it's closed. - **Claude settings:**…"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261105-289181d0fe"
+ ],
+ "features": [
+  "pending:handoff-2",
+  "pending:handoff-2-addenda-r2",
+  "orchestrator:handoff-2"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 4,
+  "output": 546,
+  "cacheRead": 39490,
+  "cacheWrite": 21863,
+  "thinking": 235,
+  "costUsd": 0.1282,
+  "costEstimated": false,
+  "toolCalls": 1,
+  "commands": 1,
+  "filesTouched": 0,
+  "reportedUsd": 0.1937
+ },
+ "ingestedAt": "2026-11-05T11:31:41.458Z"
+}

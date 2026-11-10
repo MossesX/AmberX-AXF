@@ -1,0 +1,43 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261104-876c69d75c",
+  "createdAt": "2026-11-04T19:54:50.166Z",
+  "updatedAt": "2026-11-04T19:54:54.347Z",
+  "kind": "build",
+  "title": "hi Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-…",
+  "asked": "hi Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /root/axf-builds/readme-rule-every-build/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once. Model switches (Brett, Nov 3 2026): a downgrade (e.g. Fable → Opus) is fine. An UPGRADE (e.g. Opus → Fable) needs Brett's approval: when you reach one, run `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs request-upgrade <id> <phase>`, ask once, and stop. Never approve a model switch upgrade yourself (no `act approve` on an upgrade), never relaunch on a higher model. Docs: every build ships a basic Markdown readme for what it adds or changes, in the same PR: `docs/README.md` inside the plugin / app / module folder (or a section added to an existing one) covering what it does, how to use it (screens, settings, right-click actions, voice commands), commands (API / MCP / CLI) and troubleshooting. Plain Markdown, no docs engine. CI (`node framework/cli/check-docs-readme.mjs`) fails a PR that adds a plugin / app / module folder without one.",
+  "repos": [],
+  "model": "opus",
+  "who": {
+    "session": "a8b7b2f8-afb",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "partial",
+    "summary": "The session ended before a result was recorded.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "partial",
+  "status": "done",
+  "surface": "headless",
+  "startedAt": "2026-11-04T19:54:50.166Z",
+  "finishedAt": "2026-11-04T19:54:54.347Z",
+  "lastSeenAt": "2026-11-04T19:54:54.125Z",
+  "actual": {
+    "minutes": 0,
+    "costUsd": 0.0913,
+    "inputTokens": 4,
+    "outputTokens": 298,
+    "cacheReadTokens": 38004,
+    "cacheWriteTokens": 15539,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "doing": "Waiting for the next message"
+}

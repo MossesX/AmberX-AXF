@@ -2492,6 +2492,10 @@
                 {
                   "id": "cx.buildengine.queue",
                   "title": "Build queue + history"
+                },
+                {
+                  "id": "cx.buildengine.shipped",
+                  "title": "Shipped manifests: every landed build's prompt, brief, models, steps, commit, files, tests and cost in Shipped features (shipped-manifest@1)"
                 }
               ]
             },

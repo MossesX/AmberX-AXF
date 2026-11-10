@@ -51,7 +51,7 @@ export function FeatureMatrixPage() {
 
   const load = async () => {
     try { const r = await api.call<StateRes>('state'); if (!r.ok) throw new Error(r.error); setData(r); setError(''); }
-    catch (e) { setError((e as Error).message); setData((d) => d ?? { ok: false, active: 'main-framework', profiles: [], files: {}, state: fm.emptyState() as fm.State, rows: [], reports: [] }); }
+    catch (e) { setError((e as Error).message); setData((d) => d ?? { ok: false, active: 'all', profiles: [], files: {}, state: fm.emptyState() as fm.State, rows: [], reports: [] }); }
   };
   useEffect(() => { void load(); }, []);
 

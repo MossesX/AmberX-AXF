@@ -21,7 +21,9 @@ LLM_CAPABILITY = "axf.llm"
 
 SECRET = re.compile(r"\b(sk-(?:ant-|proj-)?[A-Za-z0-9_\-]{20,}|xai-[A-Za-z0-9]{20,}|gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}|AKIA[0-9A-Z]{16}|AIza[0-9A-Za-z_\-]{30,}|fc-[a-f0-9]{24,})\b")
 REDACTED = "[redacted secret]"
-SETTING_KEYS = ["profileId", "model", "temperature", "max_tokens", "top_p", "systemPrompt", "agentId", "tools", "thinking"]
+SETTING_KEYS = ["profileId", "model", "temperature", "max_tokens", "top_p", "systemPrompt", "agentId", "tools", "thinking", "toolMode"]
+#: settings.toolMode (optional): auto = tools load per turn when the message needs them; chat = never; tools = always.
+TOOL_MODES = ["auto", "chat", "tools"]
 TURN_EVENT_KINDS = ["start", "text", "thinking", "status", "tool", "error", "batch", "done"]
 USER_MAX_TOKENS = 4096
 USER_MAX_TOKENS_WITH_MODELS = 16384
@@ -153,7 +155,7 @@ def permission_allows(perms: Iterable[str], perm: str, admin: bool = False) -> b
 def settings_allowed_for(admin: bool, can) -> list[str]:
     if admin:
         return list(SETTING_KEYS)
-    keys = ["temperature", "top_p", "systemPrompt", "tools"]
+    keys = ["temperature", "top_p", "systemPrompt", "tools", "toolMode"]
     if can("assistant.agents"):
         keys.append("agentId")
     if can("assistant.models"):

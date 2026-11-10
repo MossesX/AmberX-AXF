@@ -18,6 +18,7 @@ export * from './engines/embed';
 export * from './engines/spacing';
 export * from './engines/settingsui';
 export * from './engines/designpackage';
+export * from './engines/skin';
 export * from './engines/brand';
 export * from './engines/interface';
 export * from './engines/roller';
@@ -31,6 +32,7 @@ export * from './engines/job-type-rules.mjs';
 export * from './engines/designer-rules.mjs';
 export * as designerDoc from './engines/designer-doc.mjs';
 export type { DesignerDoc, DesignerNode, DesignerHistory, DropPayload, DropTarget, DropCheck, CanvasRect } from './engines/designer-doc.mjs';
+export * from './engines/demo-rules.mjs';
 // card@1 + home-layout@1 as one namespace (its names would clash with agent-card's and layout's); import the engine directly for single names.
 export * as cardRules from './engines/card-rules.mjs';
 export type { CardData, CardModel as DataCardModel, HomeLayout, HomeCard } from './engines/card-rules.mjs';

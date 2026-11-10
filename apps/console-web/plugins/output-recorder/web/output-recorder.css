@@ -6,3 +6,4 @@
 .axp-output-recorder-rowhead { display: flex; align-items: center; justify-content: space-between; gap: var(--fx-dens-gap-xl); min-width: 0; }
 .axp-output-recorder-name { font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .axp-output-recorder-audio { width: 100%; }
+.axp-output-recorder-transcript { display: flex; flex-direction: column; gap: calc(var(--fx-space) / 2); max-height: calc(var(--fx-space) * 40); overflow-y: auto; }

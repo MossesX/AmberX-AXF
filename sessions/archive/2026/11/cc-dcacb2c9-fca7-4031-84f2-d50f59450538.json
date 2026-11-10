@@ -1,0 +1,84 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-dcacb2c9-fca7-4031-84f2-d50f59450538",
+ "source": "claude-code",
+ "sessionId": "dcacb2c9-fca7-4031-84f2-d50f59450538",
+ "project": "amberx-axf",
+ "title": "# ai-keys-r4: finish AI keys plugin (apps/console-web/plugins/ai-keys) Resume of ai-keys-new-format-r3 (died at usage l…",
+ "startedAt": "2026-11-06T02:43:24.196Z",
+ "endedAt": "2026-11-06T02:43:25.725Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.318",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/ai-keys-r4",
+  "repo": "",
+  "branch": "claude/ai-keys-r4"
+ },
+ "user": "Brett (root)",
+ "models": [],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-06T02:43:25.282Z",
+   "kind": "prompt",
+   "text": "# ai-keys-r4: finish AI keys plugin (apps/console-web/plugins/ai-keys) Resume of ai-keys-new-format-r3 (died at usage limit after writing framework/python/axf/anthropic_keys.py). Brett's orders: 1. **Finish new API key format**: accept new Anthropic keys (sk-ant-usr... and existing sk-ant-api...). Use the shared classifier in kind_of(), validate, test, help text. 2. **Console-driven auto failover, fully outside Claude's loop** (Claude must never be the trigger): - On every console load, and when a headless build dies, the console itself checks the active VPS Claude connection (tiny `claude -p…",
+   "model": "",
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "thinking": 0
+   },
+   "costUsd": 0,
+   "costEstimated": false,
+   "seconds": 0,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [
+    "chg-20261106-90cdbc2b74"
+   ],
+   "features": [
+    "pending:ai-keys-new-format",
+    "orch:ai-keys-new-format"
+   ],
+   "output": "Failed to authenticate: OAuth session expired and could not be refreshed"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261106-90cdbc2b74"
+ ],
+ "features": [
+  "pending:ai-keys-new-format",
+  "orch:ai-keys-new-format"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 0,
+  "output": 0,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thinking": 0,
+  "costUsd": 0,
+  "costEstimated": false,
+  "toolCalls": 0,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0
+ },
+ "ingestedAt": "2026-11-06T02:43:25.943Z"
+}

@@ -31,6 +31,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
 import axf_framework  # noqa: F401 — framework/python on sys.path
+import plugin_services
 from axf_server import github, http as axf_http, storage
 
 # ---------------------------------------------------------------- engine (mirror of core/engines/alerts.ts)
@@ -155,6 +156,18 @@ SOURCE_RE = re.compile(r"^[a-z][a-z0-9._-]{0,39}$")
 
 def _now() -> int:
     return int(time.time() * 1000)
+
+
+def _notify(call: Callable[[Any], Any], default: Any = None) -> Any:
+    """Ask the notification registry (capability axf.notify@1). None provider or any failure = the default: the hub then
+    works as it always did, because a broken panel must never lose a notification."""
+    gate = plugin_services.get("axf.notify@1")
+    if gate is None:
+        return default
+    try:
+        return call(gate)
+    except Exception:  # noqa: BLE001
+        return default
 
 
 def _target_ok(url: str) -> bool:
@@ -336,9 +349,19 @@ class AlertHub:
 
     # ---- alerts
 
-    def snapshot(self) -> dict[str, Any]:
+    def snapshot(self, phone: bool = False) -> dict[str, Any]:
+        """The alerts for one reader. `phone` = the AmberX app: only what may buzz it, plus the device types it must mute."""
         with self.lock:
-            return {"alerts": sort_alerts(self.items), "unread": unread_count(self.items), "version": self.version}
+            items, version = sort_alerts(self.items), self.version
+        items = _notify(lambda g: g.view(items, phone), items)
+        snap: dict[str, Any] = {"alerts": items, "unread": unread_count(items), "version": version}
+        if phone:
+            snap["notify"] = {"off": _notify(lambda g: g.device_off(), [])}
+        return snap
+
+    def touch(self) -> None:
+        """What a reader sees changed without an alert changing (the notification panel): the streams send it again."""
+        self.version += 1
 
     def _changed(self) -> None:
         self.version += 1
@@ -347,10 +370,14 @@ class AlertHub:
     def raise_alert(self, inp: dict[str, Any], deliver: bool = True) -> tuple[dict[str, Any], str, list[str]]:
         if not self.source_on(inp["source"]):
             return {}, "off", []
+        verdict = _notify(lambda g: g.check(inp))  # kept either way: a muted alert is still in the list, already read
         with self.lock:
             self.items, alert, event = apply_alert(self.items, inp, _now())
             self._changed()
             targets = delivery_targets(alert, event, self.config()["rules"])
+        if verdict:
+            on = verdict["channels"]
+            targets = [t for t in targets if on.get("banner" if t == "bell" else "webpush")]
         pushes = [t for t in targets if t != "bell"]
         if deliver and pushes:
             try:
@@ -797,8 +824,9 @@ def router_for(hub: AlertHub, auth: Callable[..., None]) -> APIRouter:
     r = APIRouter(prefix="/api/alerts", dependencies=[Depends(auth)])
 
     @r.get("")
-    def list_alerts() -> dict[str, Any]:
-        return hub.snapshot()
+    def list_alerts(request: Request) -> dict[str, Any]:
+        ua = request.headers.get("user-agent", "")  # the AmberX watch reads this route with Android's plain HTTP client
+        return hub.snapshot(phone=request.query_params.get("view") == "phone" or ua.startswith("Dalvik/"))
 
     @r.post("")
     def raise_alert(req: RaiseReq) -> dict[str, Any]:

@@ -1,0 +1,28 @@
+{
+  "$axf": "notify-types@1",
+  "types": [
+    {
+      "id": "activity.done",
+      "label": "Long task finished",
+      "group": "builds",
+      "app": "console",
+      "source": "Activity banner",
+      "description": "A long task finished or failed. When it pushes at all is set in Settings → Plugins → Activity.",
+      "match": {
+        "source": "activity"
+      }
+    },
+    {
+      "id": "activity.chime",
+      "label": "Activity chime",
+      "group": "builds",
+      "app": "console",
+      "source": "Activity banner",
+      "description": "The chime when a task ends. Whether it plays for all or only failed ones stays in Settings → Plugins → Activity.",
+      "enforced": "browser",
+      "only": [
+        "sound"
+      ]
+    }
+  ]
+}

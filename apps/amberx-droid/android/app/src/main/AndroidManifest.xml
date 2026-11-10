@@ -51,6 +51,12 @@
                 android:value="Watches the owner's axHub for approvals waiting on them and alerts them, and listens hands-free for the owner's voice commands" />
         </service>
 
+        <!-- Gizmo talk mode with the screen off (Nov 6 2026): one Google utterance at a time, Stop on the notification -->
+        <service
+            android:name=".TalkService"
+            android:exported="false"
+            android:foregroundServiceType="microphone" />
+
         <!-- Audio Extract's screen recorder: screen + app playback sound, never the microphone -->
         <service
             android:name=".ScreenRecordService"

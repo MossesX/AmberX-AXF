@@ -6,6 +6,7 @@
 import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
+import { backToSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, lookAfterChange, newAppLook, normalizeSkin, normalizeSkinScope, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setScopeOverride, setScopeSkin, setUseSkin, skinCovers, skinErrors, skinFromDesignPackage, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSlots, snapshotLook, uncoveredTypes, undoRestore } from '../core/engines/skin';
 import { SCALE_TYPES, normalizeScale, scaleErrors, scaleThemeVars, scaleVars } from '../core/engines/scale';
 import { AGENT_CARD_SAMPLE, agentCardErrors, avatarColors, avatarModel, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
 import { AVATAR_FACES, AVATAR_GEAR } from '../core/engines/swarm-rules.mjs';
@@ -1957,5 +1958,80 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     frames: ['standard', 'frameless'], frameDefault: 'standard',
     rect: r, hits, resizes, maximize,
     snap: { rules: DEFAULT_SNAP_RULES, zonesList: SNAP_ZONES, viewport: vp, work, others, moving, snaps, zones, zoneRects, overlap, split: { target, cases: splits, odd: oddSplit }, topmost: { stack, probes: topmost }, arm: { steps: armSteps, zeroDwell: armZero } },
+  });
+}
+
+/* ---- skin@1 + app-look@1 ---- */
+{
+  const skin = { layoutTheme: 'windows-explorer', colorTheme: 'windows-light', styleTheme: 'windows', assets: { button: 'windows', banner: 'windows-titlebar' }, preview: { caption: 'Windows' }, extras: { spacing: 'compact', hidden: { toolbar: false } } };
+  const shared = { $axf: 'appearance@1', slots: { layout: 'focus-top', 'color-theme': 'arctic-daylight', 'style-theme': 'hub', button: 'rounded-solid', 'design-package': 'hub-default' }, spacing: 'tight', hidden: { toolbar: true }, settings: { 'axf.banners.group': 'a', 'axf.tokens.button': 'x' } };
+  const look0 = newAppLook('app', snapshotLook(shared as never));
+  const on = setUseSkin(pickSkin(look0, 'windows'), true);
+  const overridden = lookAfterChange(on, { slots: { 'color-theme': 'aurora-night' } }, skin as never);
+  const own = lookAfterChange(look0, { slots: { button: 'terminal' }, hidden: { toolbar: false } }, null);
+  const restored = restoreAppDefault(overridden, '2026-11-05T00:00:00Z');
+  const movedShared = { ...shared, slots: { ...shared.slots, 'color-theme': 'other-theme' }, settings: { 'axf.tokens.button': 'y', 'axf.banners.group': 'other' } };
+  write('skin.json', {
+    contract: 'skin@1',
+    normalize: { good: normalizeSkin(skin), junk: normalizeSkin({ layoutTheme: 'BAD', assets: { 'uac-policy': 'x', button: 'ok', layout: 'nope' }, extras: { spacing: 'huge' } }) },
+    errors: { good: skinErrors(skin), noThemes: skinErrors({ assets: {} }), never: skinErrors({ ...skin, assets: { 'uac-policy': 'x', layout: 'y' } }), badExtras: skinErrors({ ...skin, extras: { spacing: 'huge', hidden: { a: 1 } } }) },
+    slots: skinSlots(normalizeSkin(skin)),
+    fromDesignPackage: skinFromDesignPackage({ 'style-theme': 's', 'color-theme': 'c', layout: 'l', 'behavior-theme': 'b', extras: { slots: { button: 'x' }, spacing: 'tight', hidden: { toolbar: true } } }),
+    look: {
+      shared, snapshot: look0.default,
+      off: composeLook(shared as never, look0, null),
+      offSharedMoved: composeLook(movedShared as never, look0, null),
+      on: composeLook(shared as never, on, skin as never),
+      unknownSkin: composeLook(shared as never, on, null),
+      overridden: { doc: overridden, composed: composeLook(shared as never, overridden, skin as never), backToSkin: composeLook(shared as never, backToSkin(overridden, 'color-theme'), skin as never) },
+      own: { doc: own, composed: composeLook(shared as never, own, null) },
+      restored: { doc: restored, composed: composeLook(shared as never, restored, null), undone: undoRestore(restored).skin, undoneTwice: undoRestore(undoRestore(restored)).skin },
+    },
+    // skin-coverage@1 (build skins-asset-types): every type covered, scopes plugin → ui → app → global, parts, icon pack
+    coverage: (() => {
+      const types = { button: { label: 'Button', group: 'Controls' }, label: { label: 'Label', group: 'Widgets', widget: true, attachable: true }, badge: { label: 'Badge', group: 'Chrome', attachable: true }, 'icon-pack': { label: 'Icon pack', group: 'Brand', skin: { by: 'reference', via: 'iconPack', why: 'named by the skin' } }, 'uac-policy': { label: 'Access policy', group: 'System', skin: { by: 'none', why: 'no look' } }, help: { label: 'Help', group: 'System' }, 'design-package': { label: 'Design package', group: 'System', skin: { by: 'bundle' } }, mystery: { label: 'Mystery', group: 'Data', skin: { by: 'sometimes' } }, hush: { label: 'Hush', group: 'System', skin: { by: 'none' } } };
+      const targets = { button: { root: '.fx-btn' }, label: { root: '.fx-widget-label' }, toolbar: { root: '.fx-toolbar', item: '.fx-toolbar .fx-btn' } };
+      const never = ['uac-policy', 'help', 'skin', 'design-package', 'interface'];
+      const table = coverageTable(types as never, targets, never);
+      return { table, uncovered: uncoveredTypes(types as never, targets, never).map((r) => r.type), summary: coverageSummary(table), partsTypes: partsTypes(types as never, targets), elements: { plain: partElements(targets.button), items: partElements(targets.toolbar), none: partElements(undefined) }, partsErrors: { good: partsErrors({ button: { radius: 'pill' } }, types as never, targets), bad: partsErrors({ nope: {}, badge: { x: 1 }, label: 7 }, types as never, targets), notObject: partsErrors(3, types as never, targets) }, declarationErrors: declarationErrors('mystery', types.mystery).concat(declarationErrors('hush', types.hush)) };
+    })(),
+    scopes: (() => {
+      const skinned = normalizeSkin({ ...skin, iconPack: 'lucide-sharp', parts: { button: { radius: 'pill', fontWeight: '600' }, label: { textColor: 'accent' }, 'uac-policy': { radius: 'pill' }, toolbar: { bogus: 1 } } });
+      const skins: Record<string, typeof skinned> = { windows: skinned, aurora: normalizeSkin({ ...skin, colorTheme: 'aurora-night' }) };
+      const skinOf = (id: string) => skins[id] ?? null;
+      const place = { app: 'app', ui: 'home', plugin: 'notes' };
+      const inherit = setInheritSkin(look0, true);
+      const withGlobal = { ...shared, skin: { id: 'aurora', overrides: { button: 'global-button' } } };
+      const pluginOn = setScopeSkin(setUseSkin(pickSkin(look0, 'windows'), true), 'plugin:notes', 'on', 'aurora');
+      const pluginOff = setScopeSkin(setUseSkin(pickSkin(look0, 'windows'), true), 'plugin:notes', 'off');
+      const uiOverride = setScopeOverride(setUseSkin(pickSkin(look0, 'windows'), true), 'ui:home', 'button', 'ui-button');
+      const chainOver = setScopeOverride(setScopeSkin(setUseSkin(pickSkin(look0, 'windows'), true), 'plugin:notes', 'on', 'aurora'), 'plugin:notes', 'dialog', 'plugin-dialog');
+      return {
+        skinned,
+        chain: { leaf: skinScopeChain(place), app: skinScopeChain({ app: 'app' }), keys: [skinScopeKey(place), skinScopeKey({ app: 'app', ui: 'home' }), skinScopeKey({ app: 'app' })], kinds: ['global', 'app', 'ui:home', 'plugin:notes'].map(skinScopeKind), selectors: ['app', 'ui:home', 'plugin:notes', 'global'].map(skinScopeSelector), normalized: normalizeSkinScope({ app: 'App!', ui: 'home', plugin: 'ai.amberx.notes' }) },
+        resolve: {
+          appOff: resolveLookSkin(look0, null, place),
+          appOn: resolveLookSkin(setUseSkin(pickSkin(look0, 'windows'), true), null, place),
+          inheritNoGlobal: resolveLookSkin(inherit, null, place),
+          inheritGlobal: resolveLookSkin(inherit, globalSkinOf(withGlobal as never), place),
+          ownBeatsGlobal: resolveLookSkin(look0, globalSkinOf(withGlobal as never), place),
+          pluginOn: resolveLookSkin(pluginOn, null, place),
+          pluginOff: resolveLookSkin(pluginOff, null, place),
+          pluginInheritsApp: resolveLookSkin(pluginOn, null, { app: 'app', ui: 'home' }),
+          uiOverride: resolveLookSkin(uiOverride, null, place),
+          chainOverrides: resolveLookSkin(setScopeOverride(chainOver, 'ui:home', 'button', 'ui-button'), null, place),
+        },
+        composed: {
+          app: composeLookAt(shared as never, setUseSkin(pickSkin(look0, 'windows'), true), skinOf),
+          global: composeLookAt(withGlobal as never, inherit, skinOf),
+          plugin: composeLookAt(shared as never, pluginOn, skinOf, place),
+          pluginOff: composeLookAt(shared as never, pluginOff, skinOf, place),
+          unknown: composeLookAt(shared as never, setUseSkin(pickSkin(look0, 'nope'), true), skinOf),
+        },
+        doc: { pluginOn, dropped: setScopeSkin(pluginOn, 'plugin:notes', 'inherit', ''), entries: scopeEntries(chainOver), state: scopeState(chainOver, 'plugin:notes'), appState: scopeState(inherit, 'app'), roundTrip: parseAppLook(JSON.stringify(chainOver)), restored: restoreAppDefault(chainOver, '2026-11-07T00:00:00Z').scopes, undone: undoRestore(restoreAppDefault(chainOver, '2026-11-07T00:00:00Z')).scopes },
+        covers: skinCovers(skinned).filter((c) => ['button', 'label', 'icon-pack', 'uac-policy', 'skin', 'logo-mark', 'branding', 'toolbar'].includes(c.type)),
+        globalSkin: { good: globalSkinOf(withGlobal as never), none: globalSkinOf(shared as never), junk: globalSkinOf({ $axf: 'appearance@1', skin: { id: 'Bad Id' } } as never) },
+      };
+    })(),
   });
 }

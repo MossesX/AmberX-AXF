@@ -12,7 +12,7 @@ export interface Item {
 }
 export interface Kind { id: string; label: string; icon: string; order: number; desc: string; unlisted?: boolean }
 export interface StatusInfo { id: Status; label: string; icon: string; tone: 'accent' | 'warning' | 'danger' | 'success'; holds: boolean }
-export interface Filter { kind?: string; status?: string; app?: string; branch?: string; pr?: number | string | null; q?: string }
+export interface Filter { kind?: string; status?: string; app?: string; branch?: string; pr?: number | string | null; q?: string; group?: string }
 export interface Counts { total: number; waiting: number; changes: number; rejected: number; approved: number }
 export interface Group { id: string; label: string; items: Item[] }
 export interface TreeKind extends Group { apps: Group[] }

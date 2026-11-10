@@ -133,6 +133,19 @@ if command -v git >/dev/null; then
   rm -f "$T/ran"; axf_update_script "$U" "$T/clone" main "$T/log" "touch $T/ran" "$T/st.json"
   bash "$U"; [ -e "$T/ran" ] && grep -q '"state":"done"' "$T/st.json" && ok || fail "after a failed run: retried on the next tick"
   rm -f "$T/ran"; bash "$U"; [ ! -e "$T/ran" ] && ok || fail "after the retry succeeded: unchanged again, not run"
+  # deploy-log@1: a failed update appends a failed record when AXF_UPDATE_DEPLOY is set
+  echo 4 > "$R/app"; git -C "$R" add -A; git -C "$R" -c user.email=t@t -c user.name=t commit -q -m four
+  AXF_UPDATE_DEPLOY="$T/deploys.jsonl console" axf_update_script "$U" "$T/clone" main "$T/log" "false" "$T/st.json"
+  ! bash "$U"; grep -q '"target":"console".*"state":"failed"' "$T/deploys.jsonl" && ok || fail "failed update: failed deploy record"
+  grep -q 'export AXF_DEPLOY_WHO=update' "$U" && ok || fail "update script says who deploys"
 fi
+
+# ---- deploy log (deploy-log@1)
+axf_deploy_log "$T/d/log.jsonl" console 0123456789abcdef0123456789abcdef01234567 update done abcdef1 1.2.3
+grep -q '^{"$axf":"deploy@1","id":"d-console-[0-9]*-0123456","target":"console","sha":"0123456789abcdef0123456789abcdef01234567","from":"abcdef1","at":"20[0-9-]*T[0-9:]*Z","who":"update",' "$T/d/log.jsonl" && ok || fail "deploy log record"
+axf_deploy_log "$T/d/log.jsonl" apk:amberx abc1234; grep -q '"id":"d-apk-amberx-[0-9]*-abc1234","target":"apk:amberx"' "$T/d/log.jsonl" && ok || fail "apk target id"
+axf_deploy_log "$T/d/log.jsonl" 'Bad Target' abc1234 2>/dev/null; axf_deploy_log "$T/d/log.jsonl" console 'not-a-sha' 2>/dev/null
+eq "$(wc -l < "$T/d/log.jsonl" | tr -d ' ')" 2 "deploy log refuses a bad target or sha"
+node -e 'const D=require("fs").readFileSync(process.argv[1],"utf8");import("'"$HERE"'/../core/deploy-log.mjs").then(m=>{const r=m.parseLog(D);process.exit(r.records.length===2&&r.skipped===0&&r.records.every(x=>m.validateDeploy(x).ok)?0:1)})' "$T/d/log.jsonl" && ok || fail "deploy log lines parse as deploy-log@1"
 
 echo "axf-deploy self-test: $pass checks passed"

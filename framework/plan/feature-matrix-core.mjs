@@ -47,7 +47,7 @@ export function formatMinutes(min) {
 
 /** The id of the matrix for a build reference in a profile: `<profile>:<kind>:<id>`. */
 export function matrixId(ref, profile) {
-  const r = normRef(ref); const p = slug(profile) || 'main-framework';
+  const r = normRef(ref); const p = slug(profile) || 'all';
   if (!r) throw new Error('a build reference { kind, id } is needed');
   return `${p}:${r.kind}:${r.id}`;
 }
@@ -81,7 +81,7 @@ function normItem(raw, i, now) {
 function normMatrix(raw, now) {
   const o = raw && typeof raw === 'object' ? raw : {};
   const ref = normRef(o.ref); if (!ref) return null;
-  const profile = slug(o.profile) || 'main-framework';
+  const profile = slug(o.profile) || 'all';
   const items = (Array.isArray(o.items) ? o.items : []).slice(0, LIMITS.items).map((it, i) => normItem(it, i, now)).filter((it) => it.name);
   const seen = new Set();
   items.forEach((it, i) => { let id = it.id; let n = 2; while (seen.has(id)) id = `${it.id}-${n++}`; it.id = id; seen.add(id); if (!it.id) it.id = `item-${i + 1}`; });

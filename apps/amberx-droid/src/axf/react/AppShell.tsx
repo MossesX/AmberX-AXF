@@ -3,6 +3,7 @@ import { compileSlots, regionAccepts } from '../core/engines/layout';
 import { useAsset, useAxfState, useRuntime } from './AxfProvider';
 import { MenuBar, NavMenu, StatusBar, Toolbar } from './components/Chrome';
 import { ContextMenuHost, DialogHost, ToastHost, type DialogMap } from './components/Overlays';
+import { SkinScope } from './components/SkinScope';
 import { Inspector } from './studio/Inspector';
 import { builtinDialogs } from './studio/builtinDialogs';
 import { bannerSettingsDialog } from './components/BannerSettings';
@@ -151,14 +152,15 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
         </div>
       )}
       <main className="fx-region fx-main" style={{ gridArea: 'main' }} data-fx-ctx-target="canvas">
+        {/* every view root is a UI level of the skin chain (SkinScope kind="ui": a marker until Appearance names a skin for it) */}
         {keptNow.map((id) => (
           <div key={`kept:${id}`} className="fx-main__inner fx-main__inner--kept" hidden={id !== state.view} data-axf-view={id}>
-            {views[id]?.render()}
+            <SkinScope kind="ui" id={id} className="fx-ui-scope">{views[id]?.render()}</SkinScope>
           </div>
         ))}
         {!keep.includes(state.view) && (
           <div className="fx-main__inner" key={state.view}>
-            {view?.render()}
+            <SkinScope kind="ui" id={state.view} className="fx-ui-scope">{view?.render()}</SkinScope>
           </div>
         )}
       </main>

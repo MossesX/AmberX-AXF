@@ -17,8 +17,8 @@ single grant `control.console.navigate`, so its runner refuses anything that wou
 tabs and dialogs open, navigation-only actions run, nothing else. When no console is open, Console commands' own
 delivery applies (queue + wake through AmberX where that is installed).
 
-Approvals are decided in the browser, never here: the console's pop-up reads the hub's feed and decides with Brett's
-own signed-in hub session (lib-approvals / veto@1). This server holds no hub session and can't approve anything.
+Approvals are never decided here: the console's pop-up reads the hub's feed and a tap goes through the approvals
+banner's relay with Brett's own browser session (lib-approvals / veto@1). This server holds no hub session.
 
 Only the owner's consoles follow Amber (the console token or a hub admin); a hub user who isn't an admin gets 403.
 State lives in .axf-console/plugins/follow-amber/state.json; the open streams live in memory.
@@ -140,7 +140,17 @@ def _open(kind: str, name: str, to: str, by: str) -> dict[str, Any]:
     if to and to != "recent":
         cmd["input"] = {"to": to}
     # navigate only: the runner refuses anything that would change data
-    return svc.run(cmd, NAVIGATE, by)
+    r = svc.run(cmd, NAVIGATE, by)
+    if r.get("ok") and not r.get("queued") and "delivered" in r and not _acked(r):
+        # a connected console that never answered (a frozen phone tab): it opens on the next console, AmberX wakes one
+        q = svc.queue_for_owner(cmd, NAVIGATE, by)
+        r = {**r, "queued": True, "delivery": {"how": "queued", **q}, "message": "the open console didn't answer, so this waits for one to open; AmberX is asked to open it"}
+    return r
+
+
+def _acked(r: dict[str, Any]) -> bool:
+    """A console really carried it out: its ack came back. `ok` alone only means the command was accepted or queued."""
+    return any(x.get("ok") for x in r.get("delivered") or [] if isinstance(x, dict))
 
 
 def show(target: str, kind: str = "", highlight: str = "", say: str = "", to: str = "recent", by: str = "amber") -> dict[str, Any]:
@@ -170,6 +180,9 @@ def show(target: str, kind: str = "", highlight: str = "", say: str = "", to: st
                 break
         if not r.get("ok"):
             r = {**{x: v for x, v in r.items() if x not in ("op", "path", "action")}, "shown": False, **base, "tried": tried}
+        elif r.get("queued"):
+            # not on screen yet: never say "opened" for something only waiting for a console
+            r = {"ok": True, "shown": False, "queued": True, **base, "kind": k, "delivery": r.get("delivery") or {}, "message": str(r.get("message") or "queued until a console opens")}
         else:
             item = r.get("item") or {}
             label = item.get("label") or name
@@ -184,6 +197,9 @@ def show(target: str, kind: str = "", highlight: str = "", say: str = "", to: st
 def approval(aid: str = "", by: str = "amber", say: str = "") -> dict[str, Any]:
     """A held / confirm call is waiting for Brett: the follow clients read the feed now and pop it up."""
     st = load_state()
+    gate = plugin_services.get("axf.notify@1")
+    if gate is not None and not gate.allowed("follow.approval", "popup"):
+        return {"ok": True, "shown": False, "follow": st["on"], "message": "the approval pop-up is off in the Notifications panel"}
     if not st["on"]:
         return {"ok": True, "shown": False, "follow": False, "message": "Follow Amber is off: the call waits in the approvals banner / axHub as usual"}
     n = broadcast({"type": "approval", "id": _text(aid, 80), "say": _text(say), "by": by})

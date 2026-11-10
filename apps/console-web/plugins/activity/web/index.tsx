@@ -90,7 +90,8 @@ function finished(feed: Feed) {
   const c = feed.complete;
   if (!now.length || !c) return;
   const failed = now.filter((i) => i.state === 'failed' || i.state === 'stale');
-  if (c.sound === 'all' || (c.sound === 'failed' && failed.length)) chime(failed.length > 0);
+  const soundOn = (globalThis as { AXF_NOTIFY?: { allowed(t: string, c: string): boolean } }).AXF_NOTIFY?.allowed('activity.chime', 'sound') !== false;
+  if (soundOn && (c.sound === 'all' || (c.sound === 'failed' && failed.length))) chime(failed.length > 0);
   if (c.expandOnDone) set({ open: true, hiddenFor: '' });
   if (c.toast && runtime) {
     for (const i of now.slice(0, 3)) runtime.toast(i.detail.split('\n')[0] || STATE_LABEL[i.state], i.state === 'done' ? 'success' : i.state === 'cancelled' ? 'info' : 'danger', `${STATE_LABEL[i.state]}: ${i.title}`);

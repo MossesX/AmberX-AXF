@@ -29,8 +29,8 @@ ROOT = TMP / "root"
 (ROOT / "apps" / "console-web" / "plugins" / "sample-editor" / "plugin.json").write_text(json.dumps({"name": "Theme Editor"}))
 (ROOT / "_claude" / "builds" / "reports").mkdir(parents=True)
 STORE = {"builds": [
-    {"id": "sample-editor", "title": "Theme Editor plugin", "profiles": ["urgent"], "status": "complete", "pr": "#243", "branch": "claude/sample-editor", "steps": []},
-    {"id": "dock-engine", "title": "Shared dock engine", "profiles": ["urgent"], "status": "pending", "pr": "", "branch": "",
+    {"id": "sample-editor", "title": "Theme Editor plugin", "profiles": ["all"], "status": "complete", "pr": "#243", "branch": "claude/sample-editor", "steps": []},
+    {"id": "dock-engine", "title": "Shared dock engine", "profiles": ["all"], "status": "pending", "pr": "", "branch": "",
      "steps": [{"id": "s1", "branch": "claude/molly-fable", "pr": ""}]},
     {"id": "quiet-fix", "title": "Quiet fix shipped by hand", "profiles": ["main-framework"], "status": "complete", "merged": True, "mergedAt": "2026-11-02T08:00:00Z", "branch": "claude/quiet"},
     {"id": "gone", "title": "Deleted", "deleted": True, "pr": "#999"},
@@ -149,7 +149,7 @@ check(t["summary"] == "Every token from one API." and t["pr"] == {"number": 250,
 check(t["deployed"] is False and t["deployedAt"] == "", "merged after the last deploy: not deployed yet")
 check(t["build"] is None and t["where"].startswith("Dev Console → Plugins → "), "no build on record; where to find it names the plugin")
 m = by["pr-245"]
-check(m["build"] == {"id": "dock-engine", "title": "Shared dock engine", "profile": "urgent"}, "build matched by a step's branch (per-step fields)")
+check(m["build"] == {"id": "dock-engine", "title": "Shared dock engine", "profile": "all"}, "build matched by a step's branch (per-step fields)")
 check(m["summary"] == "Dock engine: split, float and re-dock panes.", "summary from the Codebase changes entry for the branch")
 check([a["id"] for a in m["apps"]] == ["app:molly", "framework"] and m["where"] == "Molly", "app _claude files ignored; where = the app")
 te = by["pr-243"]
