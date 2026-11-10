@@ -771,11 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 01:04 UTC · `skins-own-everything-colour-theme-swaps-independ` note (all) · orchestrator
-- 2026-11-10 01:04 UTC · `account-failover-chain-subscription-next-subscri` note (all) · orchestrator
-- 2026-11-10 01:05 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → running, note (all) · pipeline
-- 2026-11-10 01:05 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · orchestrator
-- 2026-11-10 01:08 UTC · `walkthrough-player-ide-layout-setting-collapsibl` branch claude/walkthrough-player-ide-layout-setting-collapsibl (all) · builds-live
 - 2026-11-10 01:08 UTC · `walkthrough-player-ide-layout-setting-collapsibl` s1 done, → running (all) · orchestrator
 - 2026-11-10 01:08 UTC · `walkthrough-player-ide-layout-setting-collapsibl` note (all) · orchestrator
 - 2026-11-10 01:09 UTC · `orchestrator-and-build-manager-search-bar-collap` → running, note (all) · pipeline
@@ -1171,6 +1166,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 15:30 UTC · `file-watchdog-plugin-watch-files-run-scripts-or` s3 done, → built (all) · orchestrator
 - 2026-11-10 15:30 UTC · `skins-as-packages-of-slices-every-section-its-ow` branch claude/skins-as-packages-of-slices-every-section-its-ow, PR #446 (all) · builds-live
 - 2026-11-10 15:31 UTC · `file-watchdog-plugin-watch-files-run-scripts-or` note (all) · orchestrator
+- 2026-11-10 15:31 UTC · `account-order-switch-custom-drag-and-drop-order` added (0 steps) (all) · console
+- 2026-11-10 15:31 UTC · `account-order-switch-custom-drag-and-drop-order` → queued, note (all) · console
+- 2026-11-10 15:31 UTC · `claude-accounts-manager-plugin-one-ordered-list` → running, note (all) · pipeline
+- 2026-11-10 15:31 UTC · `claude-accounts-manager-plugin-one-ordered-list` branch claude/claude-accounts-manager-plugin-one-ordered-list (all) · pipeline
+- 2026-11-10 15:31 UTC · `claude-accounts-manager-plugin-one-ordered-list` note (all) · orchestrator
 
 ## Token passes (log)
 
