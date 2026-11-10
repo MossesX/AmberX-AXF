@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T00:17:54.554Z",
+ "updatedAt": "2026-11-10T00:18:10.300Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -81595,12 +81595,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T00:16:50.544Z",
-   "updatedAt": "2026-11-10T00:16:53.082Z",
+   "updatedAt": "2026-11-10T00:17:54.119Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T00:16:53.082Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T00:17:54.119Z"
     }
    ],
    "approvals": [],
@@ -81617,7 +81621,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "A) STATUSES: 1) A build says Running only when a live tmux or claude session exists for it right now. Every dispatcher tick corrects anything else marked Running (e.g. the 11 x.* builds stuck since Oct 31). 2) Finished builds don't go back into Pending. They go to: Needs something, with the exact need (screenshots for UI Review, PR merge/land, sign-in, an account with credits, a key/token, a decision from Brett, a Fable review, a disk/env fix), read from the session report and build notes; then Ready to land; then Landed. 3) Show the need as a badge plus one plain sentence on the row, with a button that does it or jumps to it. 4) Auto-handle whatever doesn't need Brett, per the fix-it-yourself rule. 5) Same statuses everywhere (orchestrator, Build Manager, Home card, AmberX, API). B) LIST: 1) Default view is expandable rows grouped by root: each root build is a row that expands to show its child builds and steps. Not a plain flat list, and not forced category grouping. 2) Category, status, priority and account grouping are optional, picked from a Group by control. 3) Sort by date (created, updated, queued) works in both directions, inside groups too, and is remembered. 4) Same controls in Build Manager. Verify on the live console, desktop and phone.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9xyfgn01vl00"
+    },
+    {
+     "id": "s2",
+     "text": "You gotta fix the status of these. They can't say running, and you gotta show if they need something. Show what they need. And I can't sort by day either. I don't want to be forced to view everything by category. I don't want a flat list by default, it's got to at least have an expanding row, depending on the root.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9xyfgn028z9y"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/build-statuses-tell-the-truth-orchestrator-list.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/build-statuses-tell-the-truth-orchestrator-list.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9xyfgn03aw8t"
+    }
+   ]
   },
   {
    "id": "orchestrator-table-columns-model-queue-assigned",
