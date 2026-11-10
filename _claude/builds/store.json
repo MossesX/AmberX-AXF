@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2852,
- "updatedAt": "2026-11-10T21:08:53.468Z",
+ "rev": 2853,
+ "updatedAt": "2026-11-10T21:10:14.974Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -146182,7 +146182,7 @@
    "title": "Molly flagship skin: premium, sellable, uncluttered; short main menu with smart sub-menus, live status and instant settings",
    "category": "",
    "detail": "Flagship skin for Molly: powerful, beautiful, expensive-looking, professional, sellable. Uncluttered UI. Everything reachable (redundantly is fine). 1) Context menus fully mapped, no junk items. 2) Application menu: short top level, everything else in sub-menus. Sub-menus flip left when they'd go off screen; long menus scroll inside the menu (never the page). 3) Choice settings live right in the app menu: click to change instantly, current value shown beside the entry. 4) Live info beside entries (e.g. tiny green/red axHub status icon); hover tooltips explain every icon; animated indicators allowed. 5) Right-click any menu item: dialog to set that item's behavior and appearance. Depends on the inline-edit build for per-element token editing.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -146190,7 +146190,7 @@
    "pr": "#469",
    "priority": "P1",
    "createdAt": "2026-11-10T16:39:09.087Z",
-   "updatedAt": "2026-11-10T21:08:52.121Z",
+   "updatedAt": "2026-11-10T21:10:12.042Z",
    "builtAt": "",
    "notes": [
     {
@@ -146260,6 +146260,10 @@
     {
      "text": "Self-check: molly-flagship-skin-premium-sellable-uncluttered was marked running on mossesx-max- with no session: released and back in the Queue.",
      "at": "2026-11-10T21:07:04.932Z"
+    },
+    {
+     "text": "Self-check: molly-flagship-skin-premium-sellable-uncluttered was marked running on mossesx-max- with no session: released and back in the Queue.",
+     "at": "2026-11-10T21:10:12.042Z"
     }
    ],
    "approvals": [
@@ -146288,7 +146292,7 @@
    "pipeline": {
     "queuedAt": "2026-11-10T16:39:10.516Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
+    "account": "",
     "session": "",
     "slot": "",
     "model": "Fable",
@@ -146310,7 +146314,7 @@
      "note": "Split by Claude into 12 steps (4 Fable)."
     },
     "splitRequested": "",
-    "note": "Session on mossesx-max- ended (exit 0) with 8 steps left: back in the Queue (run 1).",
+    "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
     "dispatchedAt": "2026-11-10T19:39:11.590Z",
     "planned": {
@@ -146641,7 +146645,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 57,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
