@@ -74,7 +74,7 @@ export function MenuBar() {
       </div>
       {/* Help mode's switch (Brett, Nov 1 2026): a ? that lights up while it's on */}
       <HelpModeButton />
-      <button type="button" className="fx-rolechip" onClick={() => rt.navigate('account')} title="User account control">
+      <button type="button" className="fx-rolechip" data-axf-el="item:role" onClick={() => rt.navigate('account')} title="User account control">
         <Icon name="shield" size={13} />
         {role?.label ?? state.role}
       </button>

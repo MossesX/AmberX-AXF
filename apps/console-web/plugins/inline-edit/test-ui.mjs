@@ -11,71 +11,30 @@
  * and see it go, then switch the mode off (a right-click is the normal menu again). Skips (exit 0) when Playwright or its
  * browser is not installed. Heavy: run it through `node framework/cli/agent-slots.mjs heavy -- …`.
  */
-import { execSync, spawn } from 'node:child_process';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync } from 'node:fs';
-import { createRequire } from 'node:module';
-import net from 'node:net';
+import { mkdirSync, mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join, resolve } from 'node:path';
+import { startConsole, until } from './ui-harness.mjs';
 
-const HERE = dirname(fileURLToPath(import.meta.url));
-const WEB = resolve(HERE, '../..');
-const REPO = resolve(WEB, '../..');
 const args = process.argv.slice(2);
 const OUT = args.includes('--out') ? resolve(args[args.indexOf('--out') + 1]) : mkdtempSync(join(tmpdir(), 'inline-edit-ui-'));
 mkdirSync(OUT, { recursive: true });
 
-let playwright = null;
-const globalRoot = (() => { try { return execSync('npm root -g', { encoding: 'utf8' }).trim(); } catch { return ''; } })();
-for (const base of [WEB, REPO, process.cwd(), process.env.PLAYWRIGHT_DIR, globalRoot && join(globalRoot, '..'), '/tmp/sc-pw'].filter(Boolean)) {
-  try { playwright = createRequire(join(base, 'x.js'))('playwright'); break; } catch { /* next */ }
-}
-if (!playwright) { console.log('- inline edit UI test skipped: playwright not installed (npm i -D playwright, or PLAYWRIGHT_DIR)'); process.exit(0); }
-
-const freePort = () => new Promise((ok) => { const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => ok(p)); }); });
-const waitFor = async (url, ms = 120_000) => { const end = Date.now() + ms; while (Date.now() < end) { try { const r = await fetch(url); if (r.status < 500) return; } catch { /* not up */ } await new Promise((r) => setTimeout(r, 500)); } throw new Error(`timeout waiting for ${url}`); };
-
-const token = `ie-${Math.random().toString(36).slice(2, 12)}`;
-const data = mkdtempSync(join(tmpdir(), 'inline-edit-ui-data-'));
-const apiPort = await freePort();
-const webPort = await freePort();
-const env = {
-  ...process.env, AXF_TOKEN: token, AXF_DATA_DIR: data, AXF_TOKEN_FILE: join(data, 'env'), AXF_STATE: join(data, 'state.json'), AXF_API: `http://127.0.0.1:${apiPort}`,
-  AXF_APPEARANCE_HUB: 'off', AXF_APPEARANCE_FILE: join(data, 'appearance.json'), AXF_INLINE_EDIT_DATA_DIR: join(data, 'inline-edit'),
-};
-const procs = [];
-const run = (cmd, argv, cwd) => { const p = spawn(cmd, argv, { cwd, env, stdio: ['ignore', 'pipe', 'pipe'], detached: true }); let log = ''; p.stdout.on('data', (d) => { log += d; }); p.stderr.on('data', (d) => { log += d; }); p.log = () => log.slice(-3000); procs.push(p); return p; };
-const stop = () => { for (const p of procs) { try { process.kill(-p.pid, 'SIGTERM'); } catch { /* gone */ } } };
-process.on('exit', stop);
-
-const api = run('python3', ['-m', 'uvicorn', 'main:app', '--host', '127.0.0.1', '--port', String(apiPort)], join(WEB, 'server'));
-const vite = run('npx', ['vite', '--host', '127.0.0.1', '--port', String(webPort), '--strictPort'], WEB);
-try { await waitFor(`http://127.0.0.1:${apiPort}/api/health`); } catch (e) { console.error(api.log()); throw e; }
-try { await waitFor(`http://127.0.0.1:${webPort}/`); } catch (e) { console.error(vite.log()); throw e; }
-
-const H = { authorization: `Bearer ${token}`, 'content-type': 'application/json' };
-const rest = async (method, path, body) => { const r = await fetch(`http://127.0.0.1:${apiPort}/api/plugins/inline-edit/${path}`, { method, headers: H, ...(body ? { body: JSON.stringify(body) } : {}) }); return r.json(); };
+const c = await startConsole();
+if (!c) { console.log('- inline edit UI test skipped: playwright not installed (npm i -D playwright, or PLAYWRIGHT_DIR)'); process.exit(0); }
+const rest = c.rest;
 
 let checks = 0;
-/** Poll until `fn` is truthy (the console server runs a Node process per call; a busy VPS can take seconds). */
-const until = async (fn, ms = 15_000) => { const end = Date.now() + ms; let v; while (Date.now() < end) { try { v = await fn(); if (v) return v; } catch { /* again */ } await new Promise((r) => setTimeout(r, 300)); } return v; };
 const ok = (v, what) => { if (!v) throw new Error(`✗ ${what}`); checks += 1; console.log(`  ✓ ${what}`); };
 
-const browser = await playwright.chromium.launch();
 const shots = [];
 let current = null;
 try {
   for (const vp of ['desktop', 'phone']) {
-    const phone = vp === 'phone';
-    const ctx = await browser.newContext(phone ? { viewport: { width: 412, height: 915 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true, colorScheme: 'dark' } : { viewport: { width: 1366, height: 860 }, colorScheme: 'dark' });
-    await ctx.addInitScript((t) => { try { localStorage.setItem('axf-console:token', t); } catch { /* blocked */ } }, token);
-    const page = await ctx.newPage();
+    const { ctx, page } = await c.page(vp);
     current = page;
-    page.setDefaultTimeout(30_000);
-    page.on('pageerror', (e) => console.error(`[page error] ${e.message}`));
     const shot = async (name) => { const f = join(OUT, `${vp}-${name}.png`); await page.screenshot({ path: f }); shots.push(f); };
-    await page.goto(`http://127.0.0.1:${webPort}/`);
+    await page.goto(`${c.web}/`);
     await page.waitForSelector('.fx-menubar', { timeout: 90_000 });
     await page.waitForTimeout(1500);
 
@@ -183,8 +142,7 @@ try {
   if (current) { const f = join(OUT, 'failed.png'); await current.screenshot({ path: f }).catch(() => undefined); console.error(`screen at the failure: ${f}`); }
   throw e;
 } finally {
-  await browser.close();
-  stop();
+  await c.stop();
 }
 console.log(`✓ inline edit UI — ${checks} checks; screenshots in ${OUT}`);
 console.log(shots.join('\n'));

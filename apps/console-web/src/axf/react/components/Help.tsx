@@ -387,7 +387,7 @@ export function HelpModeButton({ className }: { className?: string }) {
   const rt = useRuntime();
   const on = useHelpMode();
   return (
-    <button type="button" className={`fx-helpbtn${on ? ' is-on' : ''} ${className ?? ''}`.trim()} aria-pressed={on} data-help="action:help.mode"
+    <button type="button" className={`fx-helpbtn${on ? ' is-on' : ''} ${className ?? ''}`.trim()} aria-pressed={on} data-axf-el="item:help-mode" data-help="action:help.mode"
       aria-label={on ? 'Help mode is on (F1 turns it off)' : 'Help mode (F1): tooltips on everything'} title={on ? 'Help mode on' : 'Help mode'}
       onClick={() => rt.setHelpMode(null)}>
       <Icon name="help" size={15} />
