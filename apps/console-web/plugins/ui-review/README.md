@@ -157,6 +157,39 @@ an agent spends money. Core `framework/core/ui-predict.mjs` (pure; checks `frame
   `GET|PUT settings`. CLI: `ui-predict.mjs predict | real | list | approve | settings | gate | wait | follow |
   addendum | addenda | which | backfill | spec`.
 
+## Review timeout (`ui-review-alarm@1`, Nov 10 2026)
+
+Brett: *"Does UI review hold shit up? If shit sits in UI review for more than an hour, send me a notification and just
+go."* This replaces the Nov 4 review alarm (30 min, loud alarm, 5 min grace, approve-or-hold switch): builds never
+sit blocked on UI Review.
+
+```
+new item ──► UI Review opens on it (Follow Amber) + phone notice (notify.py)
+   │ 60 min unanswered (timeout, adjustable)
+   ▼
+GO AHEAD: approved with the recommended option (the first one the build ships; one option / none = approve),
+          marked "auto-approved after timeout" ──► the branch's holds lift, the build continues and lands
+   ├─ phone: "UI Review: <build> waited 1 h, going ahead with <option>" (alert@1, source ui-review)
+   ├─ fix log (axf.changes@1, kind fix) · Activity Monitor (axf.activity@1) · Breakroom chat (axf.crew@1 say)
+   └─ Brett changes it afterwards (another option, Ask changes, Reject) ──► follow-up build (axf.build-dispatch@1)
+```
+
+- **Timer**: `server/alarm.py`, pure `step` / `tick` / `pick` / `follow_up_reason` (epoch seconds, fake-clock tests in
+  `test.py`) plus a ticker thread every 30 s. The clock starts at the later of the item's `submittedAt` and when the
+  timeout was first on (`since`), so items already waiting when it shipped get a full hour. Re-opening an item
+  restarts its clock. Plain code, no model.
+- **Per item**: Snooze (`POST alarm/snooze {id, minutes}`), Go now (`POST alarm/go {id}`), Undo (`POST alarm/undo
+  {id}`: re-opens it, no follow-up build).
+- **Recommended option**: a build lists its options in its order of preference, so the first is the recommended one.
+  An explicit `recommended` flag would be a ui-choices@1 contract change and is not part of this build.
+- **Settings** (Settings → Plugins → UI Review → Review timeout; `alarm-settings.json` in the data folder): on/off,
+  timeout (60 min), phone notification, follow-up builds, scope (every item / only items blocking a merge), open on
+  new. The panel lists the last auto-approvals with Undo.
+- **API / MCP / CLI / voice** (plugin-commands@1, `forFramework`): `GET alarm`, `GET|PUT alarm/settings`,
+  `POST alarm/snooze|go|undo|tick`. Voice: "give UI Review two hours" = `PUT alarm/settings {timeoutMin: 120}`,
+  "just go with it" = `POST alarm/go`. CLI: `review.mjs timeout [status] | set timeoutMin=120 | snooze <id> [min] |
+  go|undo <id> | tick` (talks to the console; `alarm` is the same command).
+
 ## State for other plugins (`ui-review@1`)
 
 `plugin_services.get("ui-review@1")` → `state(branch, pr)`, `holds(branch, pr)`, `items(branch, pr)`, `submit(fields,

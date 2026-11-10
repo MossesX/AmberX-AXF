@@ -12,6 +12,10 @@ Every UI a build makes is submitted here for Brett's approval (review-item@1), o
   GET  state?branch=&pr=      ui-review@1: the strictest status of that branch's / PR's items, holds = don't merge yet
   …    settings, predicted, predict, predict/real, approve-look
   …    choices/*                  the options a build shipped, Brett's pick, option assets (ui-choices@1, choices.py)
+  …    alarm, alarm/settings, alarm/snooze, alarm/go, alarm/undo, alarm/tick
+                              the review timeout (ui-review-alarm@1, alarm.py): unreviewed for 60 min (adjustable) →
+                              phone notification and go ahead with the recommended option, marked "auto-approved after
+                              timeout"; Brett changing it afterwards files a follow-up build
                               predicted looks (ui-prediction@1, predicted.py): a build's mockup waits here before it runs
   …    shots/*                Screenshots tab (ui-screenshot@1, screenshots.py): ad-hoc pictures that never enter this
                               queue; shots/promote sends one in ("Send to review"), shots/migrate moves "Breakroom check:" items out
@@ -47,6 +51,7 @@ from . import screenshots as shots_mod
 from . import choices as choices_mod
 from . import predicted as predicted_mod
 from . import notify
+from . import alarm as alarm_mod
 
 router = APIRouter()
 FOLDER = "ui-review"
@@ -289,7 +294,24 @@ def submit(fields: dict, shots: list[tuple[str, str, bytes]] | None = None) -> d
         _save_items(doc)
         snapshot = {"items": list(doc["items"]), "groups": list(doc["groups"])}
     notify.ready(snapshot, g)  # outside the lock: AmberX shows it, a tap opens this group
+    for f in after_submit:
+        try:
+            f(stored)
+        except Exception:  # noqa: BLE001 — opening UI Review / notifying never refuses an item
+            pass
     return stored
+
+
+after_submit: list = []  # hooks run with each new item (alarm.py: open UI Review on it)
+decided_hooks: list = []  # hooks run with items decided by hand or by a pick, and who (alarm.py: follow-up builds)
+
+
+def run_decided_hooks(items: list[dict], by: str) -> None:
+    for f in decided_hooks:
+        try:
+            f(items, by)
+        except Exception:  # noqa: BLE001 — a hook never undoes a decision
+            pass
 
 
 def decide_many(ids: list[str], decision: str, comment: str = "", by: str = "brett") -> dict:
@@ -313,6 +335,7 @@ def decide_many(ids: list[str], decision: str, comment: str = "", by: str = "bre
         snapshot = {"items": list(doc["items"]), "groups": list(doc["groups"])}
     notify.decided(snapshot, [str(it.get("group") or "") for it in decided])
     after_decide(decided)  # Ask changes on a predicted look → the build gets the comment
+    run_decided_hooks(decided, by)
     return {"changed": changed, "missing": [x for x in ids if x not in changed], "at": at}
 
 
@@ -390,6 +413,12 @@ router.include_router(shots_router(shots, promote_shot, migrate_shots))
 import sys as _sys  # noqa: E402
 router.include_router(predicted_mod.router_for(_sys.modules[__name__]))
 router.include_router(choices_mod.router_for(_sys.modules[__name__]))
+alarm_router = alarm_mod.router_for(_sys.modules[__name__])
+router.include_router(alarm_router)
+after_submit.append(alarm_router.on_submit)
+decided_hooks.append(alarm_router.on_decided)
+if not os.environ.get("AXF_UI_REVIEW_NO_TICKER"):
+    alarm_router.start()
 
 # ---------------------------------------------------------------- health@1: every open item's pictures load
 

@@ -18,6 +18,7 @@ import json
 import os
 import sys
 import tempfile
+import time
 import types
 from pathlib import Path
 
@@ -26,6 +27,7 @@ REPO = HERE.parents[3]
 TMP = Path(tempfile.mkdtemp(prefix="axf-ui-review-test-"))
 os.environ["AXF_UI_REVIEW_DIR"] = str(TMP / "ui-review")
 os.environ["AXF_UI_REVIEW_OLD_DIR"] = str(TMP / "design-packs")
+os.environ["AXF_UI_REVIEW_NO_TICKER"] = "1"  # the alarm ticker runs on a fake clock below
 # the old Design packs data folder, with Brett's picks: migrated on import
 (TMP / "design-packs").mkdir()
 (TMP / "design-packs" / "picks.json").write_text(json.dumps({"picked": ["graphite-pro", "amber-noir"], "at": "2026-10-29T20:00:00Z"}))
@@ -489,7 +491,7 @@ check(r.status_code == 200 and r.json()["default"] == "c" and r.json()["status"]
 d = c.get(f"/p/choices/decision?id={ci['id']}").json()
 check(d["chosen"] == ["c", "a"] and d["default"] == "c", "the decision reads back in order")
 check(c.get("/p/state?branch=claude/c").json()["holds"] is False, "the hold lifts")
-got = {a["option"]: a["picked"] for a in c.get("/p/choices/assets").json()["assets"]}
+got = {a["option"]: a["picked"] for a in c.get("/p/choices/assets").json()["assets"] if a["option"] in ("a", "b", "c")}  # the repo ships its own option assets too
 check(got == {"a": True, "b": False, "c": True}, f"picked or not, all three stay ({got})")
 r = c.post("/p/submit", json={**BUILD, "kind": "settings", "choices": {**CH, "assetType": "settings"}})
 one = r.json()["item"]
@@ -534,6 +536,98 @@ plugin_services.provide("axf.claude-settings@1", types.SimpleNamespace(get=lambd
 before = len(raised)
 n.ready({"items": [item("g-1")], "groups": [group]}, group)
 check(len(raised) == before, "setting off: no notification")
+# ---------------------------------------------------------------- the review timeout (ui-review-alarm@1), fake clock
+A = mod.alarm_mod
+S0 = A.norm_settings({})
+check(S0["timeoutMin"] == 60 and S0["enabled"] and S0["notify"] and S0["followUp"], "timeout defaults: 1 hour, on, notify, follow-up builds")
+check(A.norm_settings({"timeoutMin": 0})["timeoutMin"] == 1 and A.norm_settings({"timeoutMin": 99999})["timeoutMin"] == 1440 and A.norm_settings({"scope": "x"})["scope"] == "all", "settings clamped, bad choices fall back")
+check(A.settings_errors({"timeoutMin": "5", "unanswered": "hold", "scope": "x"}) and not A.settings_errors({"timeoutMin": 90, "scope": "blocking", "notify": False}), "bad settings named (the old hold switch is gone), good ones pass")
+T0 = A.parse_at("2026-11-10T12:00:00Z")
+ITEM = {"id": "r-x", "title": "X", "status": "waiting", "submittedAt": "2026-11-10T12:00:00Z", "build": "grid-views"}
+st, ev = A.step(ITEM, None, S0, T0 + 59 * 60, T0 - 3600)
+check(ev is None and not st.get("actedAt"), "59 min: still waiting")
+st, ev = A.step(ITEM, st, S0, T0 + 60 * 60, T0 - 3600)
+check(ev == "go" and st["actedAt"] and st["option"] == "" and A.phase(st) == "approved", "60 min unanswered: go ahead (no options = approve)")
+check(A.message(ITEM, st, S0) == "UI Review: grid-views waited 1 h, going ahead with it as submitted", A.message(ITEM, st, S0))
+check(A.message(ITEM, {"label": "Look B"}, {**S0, "timeoutMin": 45}) == "UI Review: grid-views waited 45 min, going ahead with Look B", "the line names the build, the wait and the option")
+OPT3 = {"options": [{"id": "b", "label": "Look B"}, {"id": "a", "label": "Look A"}, {"id": "c", "label": "Look C"}], "chosen": []}
+check(A.pick({**ITEM, "choices": OPT3}) == {"option": "b", "label": "Look B"}, "several options: the recommended (first) one")
+check(A.pick({**ITEM, "choices": {"options": [{"id": "only", "label": "Only"}]}}) == {"option": "", "label": "Only"}, "a single option: plain approve")
+check(A.step({**ITEM, "status": "approved"}, None, S0, T0 + 99 * 60, T0)[1] is None, "decided by hand: nothing")
+check(A.step(ITEM, None, S0, T0 + 61 * 60, T0 + 10 * 60)[1] is None and A.step(ITEM, None, S0, T0 + 70 * 60, T0 + 10 * 60)[1] == "go", "clock starts at the later of submittedAt and since (items already waiting get a full hour)")
+re_, ev = A.step(ITEM, st, S0, T0 + 65 * 60, T0)
+check(ev is None and re_ == {"startAt": A.iso(T0 + 65 * 60)}, "went ahead, then re-opened by hand: a fresh clock")
+su = A.undo({"items": {"r-x": st}}, "r-x", T0 + 70 * 60)["items"]["r-x"]
+check(A.step(ITEM, su, S0, T0 + 129 * 60, T0)[1] is None and A.step(ITEM, su, S0, T0 + 130 * 60, T0)[1] == "go", "undo restarts the clock from the undo")
+sz = A.snooze({}, "r-x", T0 + 30 * 60, 120, 60)["items"]["r-x"]
+check(A.step(ITEM, sz, S0, T0 + 149 * 60, T0)[1] is None and A.step(ITEM, sz, S0, T0 + 150 * 60, T0)[1] == "go" and A.due_at(ITEM, sz, S0, T0) == T0 + 150 * 60, "snooze: goes ahead the given minutes from now")
+check(A.step(ITEM, None, {**S0, "enabled": False}, T0 + 999 * 60, T0)[1] is None, "timeout off: items wait")
+check(A.step({**ITEM, "pr": None, "branch": ""}, None, {**S0, "scope": "blocking"}, T0 + 99 * 60, T0)[1] is None and A.step({**ITEM, "pr": 12}, None, {**S0, "scope": "blocking"}, T0 + 99 * 60, T0)[1] == "go", "scope blocking: only items with a PR / branch")
+stt, evs = A.tick([ITEM, {**ITEM, "id": "pack:p"}, {**ITEM, "id": "r-y", "status": "approved"}], {"since": A.iso(T0 - 3600), "items": {"gone": {"actedAt": "x"}}}, S0, T0 + 60 * 60)
+check([e for e, _ in evs] == ["go"] and "gone" not in stt["items"] and stt["since"], "tick: one go, packs skipped, removed items forgotten, since set")
+check(A.due_at(ITEM, None, S0, T0 - 3600) == T0 + 3600, "due_at: one hour after submit")
+went = {"actedAt": "x", "option": "b", "label": "Look B"}
+check(A.follow_up_reason({**ITEM, "status": "approved", "choices": {**OPT3, "chosen": ["b"]}}, went) == "", "same pick: no follow-up")
+check(A.follow_up_reason({**ITEM, "status": "approved", "choices": {**OPT3, "chosen": ["c"]}}, went) == "picked Look C instead of Look B", "another option: a follow-up")
+check(A.follow_up_reason({**ITEM, "status": "changes", "comment": "bigger"}, went) == "asked for changes: bigger" and A.follow_up_reason({**ITEM, "status": "rejected"}, went).startswith("rejected"), "Ask changes / Reject: a follow-up")
+check(A.follow_up_reason({**ITEM, "status": "waiting"}, went) == "" and A.follow_up_reason({**ITEM, "status": "changes"}, None) == "" and A.follow_up_reason({**ITEM, "status": "changes"}, {**went, "changedAt": "y"}) == "", "re-open, never auto-approved, or already followed up: none")
+
+# routes on a fake clock, through the real store
+NOW = [time.time()]
+ar = A.router_for(mod, clock=lambda: NOW[0])
+aapp = FastAPI(); aapp.include_router(ar, prefix="/a"); aapp.include_router(mod.router, prefix="/p"); ac = TestClient(aapp)
+mod.decided_hooks.clear(); mod.decided_hooks.append(ar.on_decided)
+raised: list = []
+cx.raise_alert = lambda a: raised.append(a) or {}
+said: list = []; fixes: list = []; acts: list = []; builds: list = []
+plugin_services.provide("axf.crew@1", types.SimpleNamespace(say=lambda t: said.append(t)), "agent-swarm")
+plugin_services.provide("axf.changes@1", types.SimpleNamespace(open=lambda e, by="": fixes.append(e) or {"id": "chg-1"}), "build-manager")
+plugin_services.provide("axf.activity@1", types.SimpleNamespace(report=lambda it, origin="plugin": acts.append(it) or it), "activity")
+plugin_services.provide("axf.build-dispatch@1", types.SimpleNamespace(request=lambda title, detail="", **kw: builds.append((title, detail, kw)) or {"ok": True, "id": f"follow-{len(builds)}"}), "build-orchestrator")
+check(ac.put("/a/alarm/settings", json={"unanswered": "hold"}).status_code == 400, "PUT alarm/settings refuses the old hold switch")
+check(ac.put("/a/alarm/settings", json={"timeoutMin": 60, "enabled": True}).json()["timeoutMin"] == 60, "PUT alarm/settings saves")
+since = ac.get("/a/alarm").json()["since"]
+TB = {**BUILD, "branch": "claude/grid-views", "build": "grid-views", "pr": 501}
+plain = c.post("/p/submit", json={**TB, "name": "Plain screen", "files": SET, "singleOption": "one existing screen"}).json()["item"]
+multi = c.post("/p/submit", json={**TB, "name": "Grid looks", "choices": CH}).json()["item"]
+check(c.get("/p/state?branch=claude/grid-views").json()["holds"] is True, "the build waits on UI Review")
+check(ac.get("/a/alarm").json()["items"][multi["id"]]["goesAt"], "GET alarm says when each item goes ahead")
+NOW[0] = A.parse_at(since) + 61 * 60
+evs = ac.post("/a/alarm/tick").json()["events"]
+mine = {e["item"]: e["option"] for e in evs if e["item"] in (plain["id"], multi["id"])}
+check(mine == {plain["id"]: "", multi["id"]: "a"}, f"61 min: both go ahead, the multi with its first option ({mine})")
+items = {x["id"]: x for x in mod._submitted(mod._items_doc())}
+check(items[plain["id"]]["status"] == "approved" and A.AUTO_COMMENT in items[plain["id"]]["history"][-1]["comment"] and items[plain["id"]]["history"][-1]["by"] == A.BY, "plain item approved, marked auto-approved after timeout")
+check(items[multi["id"]]["status"] == "approved" and items[multi["id"]]["choices"]["chosen"] == ["a"] and items[multi["id"]]["choices"]["decidedBy"] == A.BY, "multi item: the first option is the pick")
+check(c.get("/p/state?branch=claude/grid-views").json()["holds"] is False, "the holds lift: the build continues and lands")
+phone = [a for a in raised if a.get("key") in (f"ui-review-timeout:{plain['id']}", f"ui-review-timeout:{multi['id']}")]
+check(len(phone) == 2 and any(a["title"] == "UI Review: grid-views waited 1 h, going ahead with Look A" for a in phone) and all("axf-review-group=" in a["link"] for a in phone), f"phone told, the line names build + option, a tap opens the group ({[a['title'] for a in phone]})")
+check(len(fixes) == len(evs) and fixes[0]["kind"] == "fix" and len(acts) == len(evs) and acts[0]["state"] == "done" and len(said) == len(evs) and any(multi["id"] in a["id"] for a in acts), "each one logged in the fix log, Activity Monitor and the Breakroom")
+check(ac.get("/a/alarm").json()["items"][multi["id"]]["phase"] == "approved", "GET alarm shows it went ahead")
+check(not ac.post("/a/alarm/tick").json()["events"], "nothing goes ahead twice")
+r = c.post("/p/choices/choose", json={"id": multi["id"], "chosen": ["c"]})
+check(r.status_code == 200 and len(builds) == 1 and "picked Look C instead of Look A" in builds[0][1] and builds[0][2]["by"] == A.BY, f"Brett changes the pick: a follow-up build is filed ({builds[-1:]})")
+v = ac.get("/a/alarm").json()["items"][multi["id"]]
+check(v["phase"] == "changed" and v["followUp"] == "follow-1", "the item points to its follow-up build")
+c.post("/p/choices/choose", json={"id": multi["id"], "chosen": ["a"]})
+check(len(builds) == 1, "one follow-up per auto-approval")
+c.post("/p/decide", json={"ids": [plain["id"]], "decision": "changes", "comment": "tighter rows"})
+check(len(builds) == 2 and "asked for changes: tighter rows" in builds[1][1], "Ask changes on an auto-approved item: a follow-up build")
+third = c.post("/p/submit", json={**TB, "name": "Third", "files": SET, "singleOption": "one dialog"}).json()["item"]
+check(ac.post("/a/alarm/snooze", json={"id": third["id"], "minutes": 0}).status_code == 400 and ac.post("/a/alarm/snooze", json={"id": "nope"}).status_code == 404, "snooze refuses bad minutes and unknown items")
+check(ac.post("/a/alarm/snooze", json={"id": third["id"], "minutes": 120}).json()["ok"], "snooze")
+NOW[0] += 90 * 60
+check(not ac.post("/a/alarm/tick").json()["events"], "snoozed: still waiting at 90 min")
+g = ac.post("/a/alarm/go", json={"id": third["id"]}).json()
+check(g["ok"] and next(x for x in mod._submitted(mod._items_doc()) if x["id"] == third["id"])["status"] == "approved", "Go now approves it at once")
+check(ac.post("/a/alarm/go", json={"id": third["id"]}).status_code == 409, "Go now: only waiting items")
+check(ac.post("/a/alarm/undo", json={"id": third["id"]}).status_code == 200 and next(x for x in mod._submitted(mod._items_doc()) if x["id"] == third["id"])["status"] == "waiting" and len(builds) == 2, "undo re-opens it, no follow-up build")
+check(ac.post("/a/alarm/undo", json={"id": third["id"]}).status_code == 409, "undo: only auto-approved items")
+ac.put("/a/alarm/settings", json={"enabled": False})
+NOW[0] += 999 * 60
+check(not ac.post("/a/alarm/tick").json()["events"], "timeout off: nothing goes ahead")
+ac.put("/a/alarm/settings", json={"enabled": True})
+check(stored_ok(), "stores conform after the timeout flow")
 
 print(f"ui-review: {ok} checks ok" + (f", {len(fails)} failed" if fails else ""))
 sys.exit(1 if fails else 0)

@@ -98,6 +98,48 @@
         "title": "Show everything",
         "text": "Clears the group a phone notification opened, so the whole queue shows again.",
         "kind": "button"
+      },
+      {
+        "target": "go-ahead-when-ui-review-waits-too-long",
+        "title": "Go ahead when UI Review waits too long",
+        "text": "When an item sits unanswered for the timeout, it goes ahead with the build's recommended option (or is approved), marked “auto-approved after timeout”, so the build keeps going and lands. Off = items and their builds wait for you.",
+        "kind": "toggle"
+      },
+      {
+        "target": "timeout",
+        "title": "Timeout",
+        "text": "How long an item can wait unanswered before it goes ahead (default 1 hour).",
+        "kind": "slider"
+      },
+      {
+        "target": "tell-my-phone-when-it-goes-ahead",
+        "title": "Tell my phone when it goes ahead",
+        "text": "AmberX gets “UI Review: <build> waited 1 h, going ahead with <option>”. A tap opens the item.",
+        "kind": "toggle"
+      },
+      {
+        "target": "file-a-follow-up-build-when-i-change-it-afterwards",
+        "title": "File a follow-up build when I change it afterwards",
+        "text": "Pick another option, Ask changes or Reject on an auto-approved item and a build is filed to match your decision.",
+        "kind": "toggle"
+      },
+      {
+        "target": "applies-to",
+        "title": "Applies to",
+        "text": "Every item, or only items with a PR or branch (the ones holding a merge).",
+        "kind": "field"
+      },
+      {
+        "target": "open-ui-review-on-each-new-item",
+        "title": "Open UI Review on each new item",
+        "text": "A new item opens UI Review on it (with Follow Amber on).",
+        "kind": "toggle"
+      },
+      {
+        "target": "undo",
+        "title": "Undo",
+        "text": "Re-opens an item that went ahead after the timeout: it waits for you again and its clock restarts.",
+        "kind": "button"
       }
     ],
     "intros": []

@@ -13,10 +13,11 @@ import { FOLDER, GROUP_BYS, GROUP_PARAM, ID, KEYS, MOCKUP_VIEW, PACKS_VIEW, SHOT
 import { MOCKUP_PARAM } from '../../../../../framework/core/ui-predict.mjs';
 import { MockupPage } from './mockup';
 import { LookApprovalPanel } from './look-settings';
+import { AlarmPanel } from './alarm-settings';
 import { UiReviewPage } from './ui';
 import { ASK_DIALOG, AskClient, AskDialog, ChoicesPanel } from './choices';
 
-const KEYWORDS = ['ui review', 'review', 'approve', 'approval', 'screenshots', 'shots', 'design', 'ui', 'reject', 'changes', 'waiting'];
+const KEYWORDS = ['timeout', 'alarm', 'auto-approve', 'ui review', 'review', 'approve', 'approval', 'screenshots', 'shots', 'design', 'ui', 'reject', 'changes', 'waiting'];
 
 export const plugin: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
@@ -61,7 +62,8 @@ export const plugin: AxfWebLibrary = {
       { key: KEYS.thumbs, label: 'Show the screens list', kind: 'toggle', default: true, description: 'The list of screens beside (on a phone: above) the preview.' },
     ],
   }],
-  settingsPanels: [{ id: 'ui-review.look', tab: FOLDER, title: 'Predicted looks', icon: 'eye', order: 20, render: () => <LookApprovalPanel /> },
+  settingsPanels: [{ id: 'ui-review.alarm', tab: FOLDER, title: 'Review timeout', icon: 'bell', order: 10, render: () => <AlarmPanel /> },
     { id: 'ui-review.choices', tab: FOLDER, title: 'Choices', icon: 'layers', order: 15, render: () => <ChoicesPanel /> },
+    { id: 'ui-review.look', tab: FOLDER, title: 'Predicted looks', icon: 'eye', order: 20, render: () => <LookApprovalPanel /> },
     { id: 'ui-review.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };

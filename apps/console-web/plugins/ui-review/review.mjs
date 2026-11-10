@@ -19,6 +19,9 @@
  *   node apps/console-web/plugins/ui-review/review.mjs migrate [--apply] [--report <file.md>]   older items → ui-review-item@1
  *   node apps/console-web/plugins/ui-review/review.mjs check        every stored item + screenshot conforms (exit 1 if not)
  *   node apps/console-web/plugins/ui-review/review.mjs kinds | paths
+ *   node apps/console-web/plugins/ui-review/review.mjs timeout [status] | set key=value… | snooze <id> [min] | go|undo <id> | tick
+ *        the review timeout (ui-review-alarm@1; `alarm` is the same) in the running console (AXF_CONSOLE_URL + AXF_TOKEN):
+ *        after timeoutMin (60) unanswered an item goes ahead with its first option, e.g. `timeout set timeoutMin=120`
  *
  * Every item is ui-review-item@1 (framework/core/ui-review-schema.mjs): a human name (--name; --title is the same),
  * a group (--group "<name>": ask Brett for it; none = '<session/build/source> - <YYYY-MM-DD HH:mm>'), app, screen,
@@ -158,10 +161,10 @@ function writeOptionAssets({ choices, data }) {
 }
 
 /* -------------------------------------------------------------- console API (--console) */
-async function consoleCall(path, body) {
+async function consoleCall(path, body, method = body ? 'POST' : 'GET') {
   const url = process.env.AXF_CONSOLE_URL, tok = process.env.AXF_TOKEN;
   if (!url || !tok) throw new Error('--console needs AXF_CONSOLE_URL and AXF_TOKEN');
-  const r = await fetch(`${url.replace(/\/$/, '')}/api/plugins/ui-review/${path}`, { method: body ? 'POST' : 'GET', headers: { Authorization: `Bearer ${tok}`, 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined });
+  const r = await fetch(`${url.replace(/\/$/, '')}/api/plugins/ui-review/${path}`, { method, headers: { Authorization: `Bearer ${tok}`, 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined });
   const j = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error(`console ${r.status}: ${typeof j.detail === 'string' ? j.detail : r.statusText}`);
   return j;
@@ -257,6 +260,27 @@ export async function main(argv = process.argv.slice(2)) {
     const r = checkAll(dataDir());
     if (r.errors.length) process.exitCode = 1;
     return out(r, r.errors.length ? r.errors.map((e) => `✗ ${e.message}`).join('\n') : `✓ ${r.items} item(s), ${r.shots} screenshot(s), ${r.groups} group(s): all ui-review-item@1 / ui-review-group@1`);
+  }
+  if (cmd === 'alarm' || cmd === 'timeout') { // the timer lives in the console server, so this always talks to it
+    const [, sub = 'status', ...rest] = pos;
+    if (sub === 'status') {
+      const v = await consoleCall('alarm');
+      const rows = Object.entries(v.items).map(([id, x]) => `${x.phase.padEnd(9)} ${id.padEnd(22)} ${x.goesAt ? `goes ahead ${x.goesAt}` : `went ahead with ${x.label ?? '-'}${x.followUp ? ` · follow-up ${x.followUp}` : ''}`}`);
+      return out({ ok: true, ...v }, [`timeout ${v.settings.enabled ? `on · ${v.settings.timeoutMin} min, then notify and go ahead` : 'off (items wait)'}`, ...rows].join('\n'));
+    }
+    if (sub === 'set') {
+      const body = Object.fromEntries(rest.map((kv) => { const [k, ...v] = kv.split('='); const x = v.join('='); return [k, x === 'true' ? true : x === 'false' ? false : /^\d+$/.test(x) ? Number(x) : x]; }));
+      if (!Object.keys(body).length) throw new Error('timeout set key=value… (timeoutMin, enabled, notify, followUp, openOnNew, scope=all|blocking)');
+      const s = await consoleCall('alarm/settings', body, 'PUT');
+      return out({ ok: true, settings: s }, `saved: ${Object.keys(body).join(', ')} · ${s.enabled ? `goes ahead after ${s.timeoutMin} min` : 'off'}`);
+    }
+    if (sub === 'snooze' || sub === 'go' || sub === 'undo') {
+      if (!rest[0]) throw new Error(`timeout ${sub} <item id>${sub === 'snooze' ? ' [minutes]' : ''}`);
+      const r = await consoleCall(`alarm/${sub}`, { id: rest[0], ...(sub === 'snooze' && rest[1] ? { minutes: Number(rest[1]) } : {}) });
+      return out(r, sub === 'snooze' ? `${rest[0]} goes ahead at ${r.goesAt}` : sub === 'go' ? `went ahead with ${r.label}: ${rest[0]}` : `re-opened: ${rest[0]}`);
+    }
+    if (sub === 'tick') { const r = await consoleCall('alarm/tick', {}); return out(r, `${r.events.length} item(s) went ahead`); }
+    throw new Error('timeout [status] | timeout set key=value… | timeout snooze <id> [min] | timeout go|undo <id> | timeout tick');
   }
   if (cmd === 'kinds') { const k = kinds(); return out({ ok: true, kinds: k }, k.map((x) => `${x.id.padEnd(12)} ${x.label}`).join('\n')); }
   if (cmd === 'paths') return out({ ok: true, dataDir: dataDir(), items: itemsFile() }, `data folder ${dataDir()}\nitems ${itemsFile()}`);

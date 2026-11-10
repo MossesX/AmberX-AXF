@@ -192,6 +192,7 @@ def router_for(h: Any) -> APIRouter:
             done = {**h.decide(it, "approve", note, who, at), "choices": c}
             doc["items"] = [done if x is it else x for x in doc["items"]]
             h._save_items(doc)
+        h.run_decided_hooks([done], who)  # outside the lock: a changed auto-approval files a follow-up build
         return {"ok": True, "id": done["id"], "chosen": c["chosen"], "default": c["chosen"][0], "status": done["status"]}
 
     @r.get("/choices/decision")
