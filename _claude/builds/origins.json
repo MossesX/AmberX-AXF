@@ -118,8 +118,8 @@
    "source": "",
    "session": "",
    "link": "",
-   "by": "",
-   "brief": "",
+   "by": "agent-manager-training-wizard-for-employee-agent",
+   "brief": "# Build: agent-manager-training-wizard-for-employee-agent\n\n## Brett said (verbatim)\nAt: 2026-11-10T16:29:30.818Z\n> I need a training hook for every employee agent. Add onto the agent manager a training dialog where you select from various types of data, how to get it, how to process and store it like RAG. Train employees by pointing them towards data like a website or certain stuff on it, specific product types or code, React, TypeScript, whatever. The training wizard will train agents with certain types, categories, and build its tools, skills and a persona, and an index of categorized vocabulary; auto attach already generated vocabulary files, pairs, tools, skills, personality etc.\n\n## What to build\nContinue build \"Agent Manager: training wizard for employee agents (data sources, processing, RAG, auto-built tools, skills, persona, vocabulary)\" (agent-manager-training-wizard-for-employee-agent) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 16:29):\n\"I need a training hook for every employee agent. Add onto the agent manager a training dialog where you select from various types of data, how to get it, how to process and store it like RAG. Train employees by pointing them towards data like a website or certain stuff on it, specific product types or code, React, TypeScript, whatever. The training wizard will train agents with certain types, categories, and build its tools, skills and a persona, and an index of categorized vocabulary; auto attach already generated vocabulary files, pairs, tools, skills, personality etc.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~30 min):\n[ ] s1 (~30 min) Design the agent-training@1 schema: a training spec per employee agent (data sources such as website/URL scopes, product types, code languages like React/TypeScript, and files; fetch method; processing and storage such as RAG/vector index or summaries; categories) and training outputs (tools, skills, persona, vocabulary index). Reference the existing agent-skill@1 and persona templates from the agent profile schema build instead of copying them. Add a migration that gives every existing employee profile an empty training block.\nRead first: packages/schemas/agent-training@1.json, packages/schemas/agent-profile@1.json, packages/schemas/migrations/, apps/console-web/plugins/agent-manager/schema/\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step agent-manager-training-wizard-for-employee-agent <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link agent-manager-training-wizard-for-employee-agent --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Tick every step as you finish it (orchestrator.mjs act step agent-manager-training-wizard-for-employee-agent <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note agent-manager-training-wizard-for-employee-agent \"…\"); the build goes back to Pending for Brett.\n",
    "verbatim": true,
    "from": "",
    "addenda": []
@@ -268,6 +268,18 @@
    "from": "detail",
    "addenda": []
   },
+  "amberx-build-notifications-for-every-stage-start": {
+   "said": "I'll get a notification every time a build starts, completes, ready for merge, and goes live, right?",
+   "at": "2026-11-10T20:56:54.475Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "amberx-claude-tokens": {
    "said": "Amberx ai assistant won't save keys the save key does nothing I need to be able to add multiple pairs of claude tokens and test individually and select a primary default",
    "at": "2026-10-28",
@@ -327,6 +339,30 @@
   "amberx-live-audio": {
    "said": "Amber: \"Live voice doesn't work yet, because AmberX only uploads audio in 30-minute chunks... Want me to queue the AmberX update so it streams audio live?\" Brett: \"Yeah.\"",
    "at": "2026-11-04T00:00:00Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "amberx-llama-axhub-service-hooks-so-amberx-and-e": {
+   "said": "axHub hooks in AmberX.",
+   "at": "2026-11-10T17:51:34.577Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "amberx-llama-llama-amberxai-com-via-coolify-trae": {
+   "said": "Update the hosting with a DNS entry to the container. You have root access to my VPS and Coolify.",
+   "at": "2026-11-10T17:52:45.615Z",
    "source": "",
    "session": "",
    "link": "",
@@ -492,6 +528,18 @@
    "from": "notes",
    "addenda": []
   },
+  "api-accounts-need-no-approval-builds-route-there": {
+   "said": "I don't want to have to approve builds sent to API. They need to just go there just like any other build.",
+   "at": "2026-11-10T21:02:31.264Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "app-compact": {
    "said": "after the compact Settings (PR #175) — 'Rest of the app too'. Same treatment everywhere: less wasted space, no walls of big buttons, no cards inside cards, tight spacing. Framework-wide (axf.css + console.css), so every app on the framework and every plugin follows; per-screen fixes after. Before/after screenshots of every main screen. Profile: Angel. Web; Android deferred.",
    "at": "2026-10-30",
@@ -562,6 +610,18 @@
    "brief": "",
    "verbatim": false,
    "from": "notes",
+   "addenda": []
+  },
+  "apply-skin-dialog-tree-of-everything-overridden": {
+   "said": "When you apply a new skin, it lists all the overrides. Overrides go in a registry. A dialog lists everything in a collapsible tree, multiple views, expandable rows, defaults everything checked, a filter to view overridden things highlighted a certain color, so you can keep them overridden or replace them with the new skin.",
+   "at": "2026-11-10T17:42:17.406Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "approval-costs": {
@@ -1080,6 +1140,18 @@
    "from": "detail",
    "addenda": []
   },
+  "build-notifications-same-notification-per-build": {
+   "said": "It's the same notification, but I want an alert each time at least.",
+   "at": "2026-11-10T20:57:38.838Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "build-optimizer": {
    "said": "In Build manager, add a button to optimize builds, which will take all the steps and sort them all into a smaller amount of builds, just moving all the steps over and combining builds. Yeah. And optimize, it will create a new package of builds, and it will list them all in a dialog to confirm. It will list the build with all of its steps.",
    "at": "2026-11-04T20:00:00Z",
@@ -1358,8 +1430,8 @@
    "source": "",
    "session": "",
    "link": "",
-   "by": "",
-   "brief": "",
+   "by": "claude-md-standing-rule-be-proactive-bring-up-th",
+   "brief": "# Build: claude-md-standing-rule-be-proactive-bring-up-th\n\n## Brett said (verbatim)\nAt: 2026-11-10T16:45:47.022Z\n> I can't believe I have to tell you half of the shit I do. I have to tell you what to do, and you're the one who has to tell me if I'm right or wrong. Put it in CLAUDE.md.\n\n## What to build\nContinue build \"CLAUDE.md standing rule: be proactive, bring up the right way, catches and follow-ups without being asked\" (claude-md-standing-rule-be-proactive-bring-up-th) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 16:45):\n\"I can't believe I have to tell you half of the shit I do. I have to tell you what to do, and you're the one who has to tell me if I'm right or wrong. Put it in CLAUDE.md.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Add to the shared CLAUDE.md rules every Claude session reads (and the orchestrator brief rules, headless rules, agent profiles): proactively bring up the right/standard way to do things, known catches and needed follow-ups, and include them in the work. Never wait for Brett to figure it out or ask. Don't just agree with his plan; say plainly when something's wrong or missing. Small change: land it right away.\n[ ] s2 (~30 min) I can't believe I have to tell you half of the shit I do. I have to tell you what to do, and you're the one who has to tell me if I'm right or wrong. Put it in CLAUDE.md.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/claude-md-standing-rule-be-proactive-bring-up-th.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/claude-md-standing-rule-be-proactive-bring-up-th.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step claude-md-standing-rule-be-proactive-bring-up-th <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link claude-md-standing-rule-be-proactive-bring-up-th --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step claude-md-standing-rule-be-proactive-bring-up-th <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note claude-md-standing-rule-be-proactive-bring-up-th \"…\"); the build goes back to Pending for Brett.\n",
    "verbatim": true,
    "from": "",
    "addenda": []
@@ -1565,8 +1637,8 @@
    "source": "",
    "session": "",
    "link": "",
-   "by": "",
-   "brief": "",
+   "by": "conversation-rag-amendment-store-only-short-key",
+   "brief": "# Build: conversation-rag-amendment-store-only-short-key\n\n## Brett said (verbatim)\nAt: 2026-11-10T16:51:08.892Z\n> I don't need the whole entire session quoted and plugged in, that costs me a shitload of money. Just a brief summary of what you don't do. A two field RAG format, an entry and a value, that's it.\n\n## What to build\nContinue build \"Conversation RAG amendment: store only short key/value entries, never full transcripts\" (conversation-rag-amendment-store-only-short-key) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 16:51):\n\"I don't need the whole entire session quoted and plugged in, that costs me a shitload of money. Just a brief summary of what you don't do. A two field RAG format, an entry and a value, that's it.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Amends the conversation RAG build. Do NOT store or inject whole sessions (too costly). Store only brief two-field entries: key (the entry, e.g. a rule, mistake, or decision) and value (a one-line summary, e.g. what Claude failed to do and what to do instead). Briefs pull only the matching entries. Extraction by plain rules where possible; AI only behind its switch.\n[ ] s2 (~30 min) I don't need the whole entire session quoted and plugged in, that costs me a shitload of money. Just a brief summary of what you don't do. A two field RAG format, an entry and a value, that's it.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/conversation-rag-amendment-store-only-short-key.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/conversation-rag-amendment-store-only-short-key.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step conversation-rag-amendment-store-only-short-key <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link conversation-rag-amendment-store-only-short-key --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step conversation-rag-amendment-store-only-short-key <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note conversation-rag-amendment-store-only-short-key \"…\"); the build goes back to Pending for Brett.\n",
    "verbatim": true,
    "from": "",
    "addenda": []
@@ -1577,8 +1649,8 @@
    "source": "",
    "session": "",
    "link": "",
-   "by": "",
-   "brief": "",
+   "by": "conversation-rag-index-every-voice-chat-session",
+   "brief": "# Build: conversation-rag-index-every-voice-chat-session\n\n## Brett said (verbatim)\nAt: 2026-11-10T16:50:14.626Z\n> You better make some type of RAG database for this conversation.\n\n## What to build\nContinue build \"Conversation RAG: index every voice/chat session with Brett (decisions, rules, requests) into a searchable store every agent reads\" (conversation-rag-index-every-voice-chat-session) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 16:50):\n\"You better make some type of RAG database for this conversation.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Builds on session-transcripts-api. Ingest every session transcript (AmberX recorder + faster-whisper, Claude chats/exports) into a local RAG index (chunked, embedded, tagged by date, topic, build ids). Extract standing rules and decisions into a rules ledger the orchestrator and every brief load automatically. Searchable from the new search plugin and by API. No paid API: local embeddings by default; AI use behind its switch.\n[ ] s2 (~30 min) You better make some type of RAG database for this conversation.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/conversation-rag-index-every-voice-chat-session.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/conversation-rag-index-every-voice-chat-session.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step conversation-rag-index-every-voice-chat-session <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link conversation-rag-index-every-voice-chat-session --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step conversation-rag-index-every-voice-chat-session <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note conversation-rag-index-every-voice-chat-session \"…\"); the build goes back to Pending for Brett.\n",
    "verbatim": true,
    "from": "",
    "addenda": []
@@ -1857,6 +1929,18 @@
    "from": "",
    "addenda": []
   },
+  "finish-and-land-the-git-status-board-every-ready": {
+   "said": "Git status board, put them in the console.",
+   "at": "2026-11-10T20:44:19.333Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "first-refresh-token-saved-every-time-it-s-used-v": {
    "said": "I'm going to log in as Moses X. You need to save it, and the very first build is to make the refresh token update every time it's used.",
    "at": "2026-11-06T18:07:12.388Z",
@@ -2036,8 +2120,8 @@
    "source": "",
    "session": "",
    "link": "",
-   "by": "",
-   "brief": "",
+   "by": "full-api-cli-control-of-everything-plus-an-offli",
+   "brief": "# Build: full-api-cli-control-of-everything-plus-an-offli\n\n## Brett said (verbatim)\nAt: 2026-11-10T16:28:24.043Z\n> I need extensive API and CLI control over every single page, app, plugin, tool, behavior, display, and setting with every single option or possibility for a parameter. Need to be able to completely run the console, Molly, axHub, Hostinger, Coolify, VPS, Moshi app, AmberX app. I need a powerful complete index and registry for offline management and internal logic. Anything that can possibly be done without AI needs to be, with AI only as a fallback by default unless you have made Claude available to the console in Claude settings.\n\n## What to build\nContinue build \"Full API + CLI control of everything, plus an offline index/registry; AI only as fallback\" (full-api-cli-control-of-everything-plus-an-offli) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 16:28):\n\"I need extensive API and CLI control over every single page, app, plugin, tool, behavior, display, and setting with every single option or possibility for a parameter. Need to be able to completely run the console, Molly, axHub, Hostinger, Coolify, VPS, Moshi app, AmberX app. I need a powerful complete index and registry for offline management and internal logic. Anything that can possibly be done without AI needs to be, with AI only as a fallback by default unless you have made Claude available to the console in Claude settings.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.5 h):\n[ ] s1 (~30 min) Design the control-registry@1 contract: one entry shape for everything controllable (id, type page/app/plugin/tool/behavior/display/setting, owner app, where it lives, deep link / console_open target, state read path, actions with parameters, parameter types, allowed values/ranges/defaults, needsAI flag, surfaces REST/MCP/CLI/voice). Extend the ui-api-parity and universal-voice-api-control declarations rather than replacing them. Write the JSON schema, a migration note for existing declarations, and the contract doc.\n[ ] s2 (~30 min) Build the registry engine: collect entries from plugin manifests, ui-api-parity declarations and voice intents into one versioned offline index (JSON file plus in-memory query: list, get, search, by owner/type), with validation against the schema, change detection and an export/import for offline use. No AI anywhere in this path.\n[ ] s3 (~30 min) Deterministic dispatcher with an AI-fallback gate: resolve a command, CLI call or voice phrase to a registry action and validated parameters using exact ids, aliases, synonyms and allowed values only. Fall back to Claude only when nothing matches and 'Make Claude available to the console' is on in Claude settings; otherwise return the closest registry matches and the gap. Reuse the universal-voice-api-control resolver.\nRead first: contracts/control-registry@1.schema.json, docs/contracts/control-registry.md, apps/console-web/lib/ui-api-parity/, apps/console-web/lib/registry/index.mjs, apps/console-web/lib/registry/collect.mjs, apps/console-web/lib/registry/store.mjs, _claude/builds/registry/, apps/console-web/lib/registry/dispatch.mjs, apps/console-web/lib/registry/ai-fallback.mjs, apps/console-web/lib/voice-api/\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step full-api-cli-control-of-everything-plus-an-offli <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link full-api-cli-control-of-everything-plus-an-offli --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Tick every step as you finish it (orchestrator.mjs act step full-api-cli-control-of-everything-plus-an-offli <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note full-api-cli-control-of-everything-plus-an-offli \"…\"); the build goes back to Pending for Brett.\n",
    "verbatim": true,
    "from": "",
    "addenda": []
@@ -2401,8 +2485,8 @@
    "source": "",
    "session": "",
    "link": "",
-   "by": "",
-   "brief": "",
+   "by": "inline-edit-plugin-install-in-console-molly-and",
+   "brief": "# Build: inline-edit-plugin-install-in-console-molly-and\n\n## Brett said (verbatim)\nAt: 2026-11-10T16:40:38.588Z\n> I want it installed in console, Molly, AmberX, except for the Android app. When things are opened in Molly, none of the plugins need to render twice. Molly is only to render the console's plugin if Molly doesn't have it already.\n\n## What to build\nContinue build \"Inline edit plugin: install in console, Molly and AmberX web (not Android); Molly never renders a plugin twice\" (inline-edit-plugin-install-in-console-molly-and) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 16:40):\n\"I want it installed in console, Molly, AmberX, except for the Android app. When things are opened in Molly, none of the plugins need to render twice. Molly is only to render the console's plugin if Molly doesn't have it already.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (2 left, ~55 min):\n[ ] s1 (~25 min) Design the Molly plugin dedupe contract. When a console page is embedded in Molly, the console's plugin host asks Molly which plugin ids it already provides (a postMessage/bridge handshake with a plugin id and version list) and skips rendering those. Write the contract doc, covering the default when Molly doesn't answer and the version mismatch rule.\n[ ] s2 (~30 min) Implement the dedupe in the console plugin host. Detect Molly embedding, run the handshake, and skip mounting any plugin Molly already has. Applies to every plugin, not only inline edit.\nRead first: apps/console-web/framework/plugin-host/, apps/molly/src/plugins/, docs/contracts/molly-plugin-dedupe.md, apps/console-web/framework/embed/\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step inline-edit-plugin-install-in-console-molly-and <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link inline-edit-plugin-install-in-console-molly-and --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Tick every step as you finish it (orchestrator.mjs act step inline-edit-plugin-install-in-console-molly-and <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note inline-edit-plugin-install-in-console-molly-and \"…\"); the build goes back to Pending for Brett.\n",
    "verbatim": true,
    "from": "",
    "addenda": []
@@ -2413,8 +2497,8 @@
    "source": "",
    "session": "",
    "link": "",
-   "by": "",
-   "brief": "",
+   "by": "inline-element-editing-plugin-right-click-any-el",
+   "brief": "# Build: inline-element-editing-plugin-right-click-any-el\n\n## Brett said (verbatim)\nAt: 2026-11-10T16:39:13.034Z\n> Right-click elements right down to the child, it opens a dialog with all the different tokens, in a tree or a classical tree or a grid with expandable rows, edit every token, notes that it overrides inheritance. A master switch in the main application settings to enable inline edit mode. Same with navigation menus, toolbars, banners, widgets, every single thing. Part of the plugin gives a monster list of everything changed from axHub's inheritance, reset them individually to axHub's. Searchable, filterable, a tree with selectable roots and a multi-tab column with different roots.\n\n## What to build\nContinue build \"Inline element editing plugin: right-click any element to edit every token; master switch; full overrides list with per-item reset to axHub\" (inline-element-editing-plugin-right-click-any-el) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 16:39):\n\"Right-click elements right down to the child, it opens a dialog with all the different tokens, in a tree or a classical tree or a grid with expandable rows, edit every token, notes that it overrides inheritance. A master switch in the main application settings to enable inline edit mode. Same with navigation menus, toolbars, banners, widgets, every single thing. Part of the plugin gives a monster list of everything changed from axHub's inheritance, reset them individually to axHub's. Searchable, filterable, a tree with selectable roots and a multi-tab column with different roots.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.4 h):\n[ ] s1 (~30 min) Define the element-token addressing contract for the GUI framework. Give every framework element a stable token path: app menu items and sub-menus down to the child, navigation menus, toolbars, banners and widgets. Add a resolver that, for any element and each of its parents, lists every settable token (text color, background, border, font, spacing and so on) with its current value and where it was inherited from in axHub. Write the contract doc.\n[ ] s2 (~30 min) Design the override schema and its migration. Each override record holds the token path, the scope (single item or parent), the token, the value, the axHub value it replaced, who changed it and when. It must fit the existing axHub override rules. Resetting one item restores only that record and does not re-inherit everything else. Build the store module with get, set, unset and list, and migrate existing overrides into the new schema.\n[ ] s3 (~25 min) Add a framework-level right-click capture layer, active only when inline edit mode is on. It hit-tests to the deepest child element, builds the parent chain from the token paths and emits an inline-edit open event. When the mode is off it is not attached at all, and it leaves native and app context menus alone.\nRead first: apps/console-web/framework/tokens/element-map.mjs, apps/console-web/framework/tokens/resolve.mjs, docs/contracts/inline-edit-tokens.md, apps/console-web/framework/tokens/overrides-store.mjs, apps/console-web/framework/tokens/overrides.schema.json, apps/console-web/framework/tokens/migrations/2026-11-inline-overrides.mjs, apps/console-web/framework/inline-edit/capture.mjs, apps/console-web/framework/index.mjs\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step inline-element-editing-plugin-right-click-any-el <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link inline-element-editing-plugin-right-click-any-el --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Tick every step as you finish it (orchestrator.mjs act step inline-element-editing-plugin-right-click-any-el <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note inline-element-editing-plugin-right-click-any-el \"…\"); the build goes back to Pending for Brett.\n",
    "verbatim": true,
    "from": "",
    "addenda": []
@@ -2465,6 +2549,18 @@
    "brief": "# Build: kill-patches-pilot (Urgent profile)\n\nRequested by Brett, Nov 3 2026 (voice): \"Patches is dead. Delete it, all references. Build Pilot dead, same thing. Delete it. All references.\" GO given. Do it now.\n\n## First\n- Register in the Urgent profile via the orchestrator CLI (id `kill-patches-pilot`, branch claude/kill-patches-pilot) + banner entry. Never hand-edit store.json (orch-live-sync is running). Other parallel builds: notes-vault, headless-tabs, whats-new-banner, amberx-backup-fix.\n\n## Remove from this repo (AmberX-AXF), everything\n- Patches: apps/patches-web, the Patches Android app/module, any patches plugin/wrapper code, patches-specific assets, banners, boilerplates, catalog/tracker entries, CI workflow jobs and deploy steps, rebake targets, demo/walkthrough chapters or captions mentioning it, help packs, docs (_claude/memory/docs/patches-*, rebuilds/patches-*), tracker.json rows.\n- Build Pilot: any build-pilot app/plugin/tab/integration code, Dev Console or axHub hooks into it, catalog/docs/help/walkthrough references.\n- Rules/instructions: rewrite every rule that depends on Patches. In particular the hub-sync rule that \"Console and Pilot can only run inside Patches (never standalone)\" -> Console runs standalone; Pilot is gone. Update RULES.md (repo + shared), CLAUDE.md, THREADS.md (one closing line, don't rewrite history), STATUS, decisions.md (add a decision entry: Patches and Build Pilot retired Nov 3 2026; don't delete old decision text, mark superseded).\n- Orchestrator store: archive every build whose subject is Patches or Build Pilot (via CLI), note \"retired Nov 3 2026\". Pending queue too.\n- grep -ri 'patches\\|build.pilot\\|build-pilot\\|buildpilot' across the repo afterward; the only hits left may be historical log lines and the decision entry. Note: don't confuse with generic words like 'patch' / 'patching' / 'autopilot' / PilotX (separate app).\n- Everything must still build: tsc, vite builds of every remaining app, check-theme/check-controls, plugin lifecycle, CI block. Open the PR.\n\n## Remove from the VPS (live)\n- Before removing anything: snapshot each container's volumes/data + its Coolify app config to /root/archive/retired-2026-11-03/ (tar.gz), so it's recoverable.\n- Stop and remove the `patches-web` and `build-pilot` containers and their Coolify applications (Coolify API/UI so they don't come back on redeploy), Traefik routes/domains, any cron/systemd units, images.\n- axHub projects tree: remove /projects/patches, /projects/patches-web (and any build-pilot project) via the hub memory API so versions stay recoverable; remove them from shared/memory/projects.md.\n- axHub repo: references to Patches/Build Pilot (services, examples, docs, approvals) -> clone /root/axHub fresh on branch claude/kill-patches-pilot, remove them, open a PR there too.\n- GitHub repo MossesX/Build-Pilot: ARCHIVE it (read-only), do not delete; deleting a repo is irreversible and Brett can delete it in one click later. Say so in the report.\n\n## Report\n`_claude/builds/reports/kill-patches-pilot.md`: everything removed (paths, containers, apps, domains), where the archive is, PR links. Mark each step done through the store as you go. Commits clean and professional.",
    "verbatim": false,
    "from": "brief",
+   "addenda": []
+  },
+  "land-all-97-built-but-unmerged-builds-skins-firs": {
+   "said": "Let's merge all that shit. Merge them all. Start with the skins and the skin stuff.",
+   "at": "2026-11-10T20:43:36.267Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "land-everything": {
@@ -2587,9 +2683,33 @@
    "from": "",
    "addenda": []
   },
+  "local-ai-ollama-mistral-on-the-vps-wired-into-th": {
+   "said": "I need to get that Llama build going with Mistral.",
+   "at": "2026-11-10T17:50:25.480Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "maintenance-redundancy-scan": {
    "said": "Maintenance: redundancy scan (Brett, Nov 7)\n\nAdd a job to the Maintenance plan/runner (reuse maintenance-vps-monitor / AmberX Maintenance / syscheck pieces where they exist) that searches for redundant data sets in a controlled, methodical way and REPORTS them. It never deletes or merges anything.",
    "at": "2026-11-07T13:46:06.752Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "make-hulu-actually-take-builds-dispatcher-counts": {
+   "said": "I want five builds on each subscription in parallel, so a total of ten at a time.",
+   "at": "2026-11-10T20:59:45.064Z",
    "source": "",
    "session": "",
    "link": "",
@@ -2641,8 +2761,8 @@
    "source": "",
    "session": "",
    "link": "",
-   "by": "",
-   "brief": "",
+   "by": "merge-batching-add-on-when-a-batch-fails-ci-spli",
+   "brief": "# Build: merge-batching-add-on-when-a-batch-fails-ci-spli\n\n## Brett said (verbatim)\nAt: 2026-11-10T16:45:23.543Z\n> That's the way to do it, right? Why do I have to figure this shit out on my own?\n\n## What to build\nContinue build \"Merge batching add-on: when a batch fails CI, split it to find the bad PR, merge the good ones, send the bad one back\" (merge-batching-add-on-when-a-batch-fails-ci-spli) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 16:45):\n\"That's the way to do it, right? Why do I have to figure this shit out on my own?\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Amends merge-queue batching. On a failed batch: bisect (split in halves) to isolate the failing PR(s), merge the passing ones, send the failing PR back to its build for an automatic fix and retry, notify on AmberX. No AI for the bisect logic.\n[ ] s2 (~30 min) That's the way to do it, right? Why do I have to figure this shit out on my own?\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/merge-batching-add-on-when-a-batch-fails-ci-spli.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/merge-batching-add-on-when-a-batch-fails-ci-spli.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step merge-batching-add-on-when-a-batch-fails-ci-spli <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link merge-batching-add-on-when-a-batch-fails-ci-spli --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step merge-batching-add-on-when-a-batch-fails-ci-spli <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note merge-batching-add-on-when-a-batch-fails-ci-spli \"…\"); the build goes back to Pending for Brett.\n",
    "verbatim": true,
    "from": "",
    "addenda": []
@@ -2764,8 +2884,8 @@
    "source": "",
    "session": "",
    "link": "",
-   "by": "",
-   "brief": "",
+   "by": "molly-flagship-skin-premium-sellable-uncluttered",
+   "brief": "# Build: molly-flagship-skin-premium-sellable-uncluttered\n\n## Brett said (verbatim)\nAt: 2026-11-10T16:39:09.087Z\n> I want a powerful, beautiful, very expensive, professional, sellable skin on Molly, my flagship. Cannot be cluttered. Access everything, even redundantly. Context menu spot on, completely mapped. Sub menus keep the main menu short; expand left if they'd go off screen; the menu scrolls, not the screen. Choices in the app menu change instantly with status listed beside them. Live info next to entries like the little green axHub logo, red if not. Hover explains icons. Make that shit sick.\n\n## What to build\nContinue build \"Molly flagship skin: premium, sellable, uncluttered; short main menu with smart sub-menus, live status and instant settings\" (molly-flagship-skin-premium-sellable-uncluttered) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 16:39):\n\"I want a powerful, beautiful, very expensive, professional, sellable skin on Molly, my flagship. Cannot be cluttered. Access everything, even redundantly. Context menu spot on, completely mapped. Sub menus keep the main menu short; expand left if they'd go off screen; the menu scrolls, not the screen. Choices in the app menu change instantly with status listed beside them. Live info next to entries like the little green axHub logo, red if not. Hover explains icons. Make that shit sick.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (4 left, ~2 h):\n[ ] s1 (~30 min) Design the menu-item schema and contract for the shared GUI framework: item kinds (action, submenu, choice-setting, separator), live status slot (icon, color, animation, tooltip, data source), per-item behavior/appearance overrides stored as design tokens (aligned with the inline-edit build's per-element token model), and a migration for existing menu definitions. Document the contract.\n[ ] s2 (~30 min) Framework menu engine: sub-menus flip left (and up) when they would go off screen, long menus scroll inside the menu with the page scroll-locked, keyboard navigation and focus kept correct across flips. Unit tests for placement math.\n[ ] s3 (~30 min) Framework menu engine: inline choice settings (current value shown beside the entry, click or sub-menu pick applies instantly with no dialog) and live status slots (subscribe to a status source, render icon/color/animation, tooltip on every icon). Unit tests.\n[ ] s4 (~30 min) Framework: right-click on any menu item opens an item-settings dialog (behavior: action/target/shortcut/visibility; appearance: icon, label, color, tokens) writing per-item token overrides through the inline-edit build's token API. Persist and reload.\nRead first: apps/framework/menu/schema/, apps/framework/menu/migrations/, docs/framework/menus.md, apps/framework/menu/engine/, apps/framework/menu/__tests__/placement.test.mjs, apps/framework/menu/items/, apps/framework/menu/__tests__/items.test.mjs, apps/framework/menu/item-settings/, apps/framework/tokens/\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step molly-flagship-skin-premium-sellable-uncluttered <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link molly-flagship-skin-premium-sellable-uncluttered --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Tick every step as you finish it (orchestrator.mjs act step molly-flagship-skin-premium-sellable-uncluttered <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note molly-flagship-skin-premium-sellable-uncluttered \"…\"); the build goes back to Pending for Brett.\n",
    "verbatim": true,
    "from": "",
    "addenda": []
@@ -2878,6 +2998,18 @@
    "from": "",
    "addenda": []
   },
+  "no-veto-timer-on-navigation-follow-amber-open-x": {
+   "said": "I don't want the timer on Follow Amber. Do stuff right away. If console's not open in Chrome, open it in Chrome and bring the page to the front. If Chrome's not in front, bring Chrome to the front and open it.",
+   "at": "2026-11-10T20:45:52.606Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "notes-tasks-calendar": {
    "said": "\"In the notes, task manager and to-do (one plugin), we're gonna add a calendar where we can set events and schedules. We can set weekly schedules. And it's gonna be hooked up to our Gmail / Google Calendar through axHub's MCP server.\"\n\nBase: branch claude/notes-tasks-sync (PR #363, shared notes-tasks plugin); merge it first, build on it.\n1. Calendar inside the notes-tasks plugin (console + AmberX): day / week / month / agenda views; events (time, location, notes, reminders); recurring + weekly schedules; tasks with due dates show on it.\n2. Two-way sync with Google Calendar through axHub's Google service (build axhub-google, queued). Until that lands, local calendar works on its own; sync switches on when the service exists.\n3. Reminders go through the console notifications engine (AmberX only delivers).\n4. REST/MCP/CLI + voice commands (UI registry).\n5. Tests, README, screenshots to UI Review, PR to the merge queue. Do NOT land directly.\n\nOne session, lean chain.",
    "at": "",
@@ -2968,6 +3100,30 @@
     }
    ]
   },
+  "ollama-model-pick-mistral-small-24b-q4-default-m": {
+   "said": "Pick the model. I got 64 gigs now.",
+   "at": "2026-11-10T17:50:42.350Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "ollama-own-docker-container-amberx-llama-interna": {
+   "said": "It's gonna build in its own Docker container named AmberX Llama, and configure the API all for internal building.",
+   "at": "2026-11-10T17:51:17.543Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "one-amberx-build-notification-veto-approval-befo": {
    "said": "Before the orchestrator starts anything, I want a veto approval notification. I don't need two. Get rid of the other one and just make it a veto approval for the AmberX notification.",
    "at": "2026-11-10T02:24:15.337Z",
@@ -3027,6 +3183,18 @@
   "one-way-to-start-builds-the-orchestrator-dispatc": {
    "said": "We need to make sure there's only one way to start builds. It can't be two. It needs to be one. It has to be the orchestrator... The orchestrator has to take the build from the queue and then and start them. Not the build manager... Anything with the UI gets API control. That has to be in the briefs.",
    "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "open-any-website-by-voice-on-the-phone-optionall": {
+   "said": "I need to be able to tell you to go to any website and open the web browser with the recorder in AmberX, or in a plugin somewhere.",
+   "at": "2026-11-10T20:46:28.820Z",
    "source": "",
    "session": "",
    "link": "",
@@ -3124,8 +3292,8 @@
    "source": "",
    "session": "",
    "link": "",
-   "by": "",
-   "brief": "",
+   "by": "orchestrator-assigns-builds-steps-to-employee-ag",
+   "brief": "# Build: orchestrator-assigns-builds-steps-to-employee-ag\n\n## Brett said (verbatim)\nAt: 2026-11-10T16:28:04.849Z\n> When the orchestrator assigns builds or steps they are sent to the right employee who has its own set of briefs to send back to the orchestrator and uses the employee data in the brief. In the group chat the orchestrator asks if anyone can do something, if they have skills or tools or capabilities; the first one to take it opens a dialog listing all the matching agents with a percentage of each one being the best choice for the job. After the 90 second veto it chooses the best probable one by default.\n\n## What to build\nContinue build \"Orchestrator assigns builds/steps to employee agents via group chat, with match % dialog and 90 s veto\" (orchestrator-assigns-builds-steps-to-employee-ag) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 16:28):\n\"When the orchestrator assigns builds or steps they are sent to the right employee who has its own set of briefs to send back to the orchestrator and uses the employee data in the brief. In the group chat the orchestrator asks if anyone can do something, if they have skills or tools or capabilities; the first one to take it opens a dialog listing all the matching agents with a percentage of each one being the best choice for the job. After the 90 second veto it chooses the best probable one by default.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (2 left, ~50 min):\n[ ] s1 (~25 min) Design the assignment contract shared by orchestrator, group chat and employee agents: message types for ask (build/step id, required skills/tools/capabilities), claim (first claimer opens the dialog), candidate list with match %, veto window (90 s, deadline timestamp), pick (Brett or default), and brief return (employee brief set to orchestrator). Write it as a versioned contract doc plus JSON schema; reuse the Brownie/Molly handoff envelope instead of a new one.\n[ ] s2 (~25 min) Schema and migration for assignment state: per build/step record with candidates[] {employee, match %, reasons}, claimedBy, vetoDeadline, pickedBy (brett|default), assignedEmployee, and returned brief refs. Extend the orchestrator table's assigned-employee column data instead of adding a parallel store; migrate existing orchestrator.json entries (assignedEmployee stays, new fields empty).\nRead first: _claude/builds/contracts/assignment@1.md, _claude/builds/contracts/assignment@1.schema.json, apps/console-web/plugins/group-chat/handoff.mjs, _claude/builds/orchestrator.json, apps/console-web/plugins/orchestrator/schema.mjs, apps/console-web/plugins/orchestrator/migrations/\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step orchestrator-assigns-builds-steps-to-employee-ag <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link orchestrator-assigns-builds-steps-to-employee-ag --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Tick every step as you finish it (orchestrator.mjs act step orchestrator-assigns-builds-steps-to-employee-ag <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note orchestrator-assigns-builds-steps-to-employee-ag \"…\"); the build goes back to Pending for Brett.\n",
    "verbatim": true,
    "from": "",
    "addenda": []
@@ -3138,6 +3306,18 @@
    "link": "",
    "by": "",
    "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "orchestrator-checks-each-build-against-main-righ": {
+   "said": "Instead of checking all the pending against main, just have the orchestrator check each one at a time before it puts it in the queue.",
+   "at": "2026-11-10T18:57:34.689Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "orchestrator-checks-each-build-against-main-righ",
+   "brief": "# Build: orchestrator-checks-each-build-against-main-righ\n\n## Brett said (verbatim)\nAt: 2026-11-10T18:57:34.689Z\n> Instead of checking all the pending against main, just have the orchestrator check each one at a time before it puts it in the queue.\n\n## What to build\nContinue build \"Orchestrator checks each build against main right before queuing it (done = close, partly done = queue only what's left)\" (orchestrator-checks-each-build-against-main-righ) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 18:57):\n\"Instead of checking all the pending against main, just have the orchestrator check each one at a time before it puts it in the queue.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Replaces the bulk pending audit. Plain code first, AI only behind its switch. Right before the orchestrator moves any build into the Queue (and again at dispatch), it checks that one build against main: Shipped Features ledger, merged PRs, and files/features the steps would touch. Already done: mark complete, link the PR/commit, archive. Partly done: tick done steps, queue only what's left. Superseded: archive with the reason. Builds on 'Orchestrator checks Shipped features before splitting any job'; merge them. Notify on AmberX for each closed build.\n[ ] s2 (~30 min) Instead of checking all the pending against main, just have the orchestrator check each one at a time before it puts it in the queue.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/orchestrator-checks-each-build-against-main-righ.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/orchestrator-checks-each-build-against-main-righ.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step orchestrator-checks-each-build-against-main-righ <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link orchestrator-checks-each-build-against-main-righ --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step orchestrator-checks-each-build-against-main-righ <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note orchestrator-checks-each-build-against-main-righ \"…\"); the build goes back to Pending for Brett.\n",
    "verbatim": true,
    "from": "",
    "addenda": []
@@ -3184,8 +3364,8 @@
    "source": "",
    "session": "",
    "link": "",
-   "by": "",
-   "brief": "",
+   "by": "orchestrator-hold-status-archive-tab-deleted-tab",
+   "brief": "# Build: orchestrator-hold-status-archive-tab-deleted-tab\n\n## Brett said (verbatim)\nAt: 2026-11-10T17:07:33.143Z\n> Make a hold status. Anything in the queue you can send back to pending, leave in queue on hold, move to the archive, or delete. All completed builds go to the archive, add an archive tab. A deleted tab where all deleted builds stay saved forever.\n\n## What to build\nContinue build \"Orchestrator: Hold status, Archive tab, Deleted tab (deleted builds kept forever)\" (orchestrator-hold-status-archive-tab-deleted-tab) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 17:07):\n\"Make a hold status. Anything in the queue you can send back to pending, leave in queue on hold, move to the archive, or delete. All completed builds go to the archive, add an archive tab. A deleted tab where all deleted builds stay saved forever.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Amends Retire Build Manager tabs. Actions on any queued build: Send back to Pending, Hold (stays in the queue, skipped by the dispatcher until released), Move to Archive, Delete. Archive tab: all completed and retired builds go there. Deleted tab: deleted builds are kept saved forever (soft delete, restorable). Bulk select. Full API/CLI control, no AI.\n[ ] s2 (~30 min) Make a hold status. Anything in the queue you can send back to pending, leave in queue on hold, move to the archive, or delete. All completed builds go to the archive, add an archive tab. A deleted tab where all deleted builds stay saved forever.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/orchestrator-hold-status-archive-tab-deleted-tab.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/orchestrator-hold-status-archive-tab-deleted-tab.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step orchestrator-hold-status-archive-tab-deleted-tab <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link orchestrator-hold-status-archive-tab-deleted-tab --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step orchestrator-hold-status-archive-tab-deleted-tab <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note orchestrator-hold-status-archive-tab-deleted-tab \"…\"); the build goes back to Pending for Brett.\n",
    "verbatim": true,
    "from": "",
    "addenda": []
@@ -3268,8 +3448,8 @@
    "source": "",
    "session": "",
    "link": "",
-   "by": "",
-   "brief": "",
+   "by": "pass-approval-hook-deep-link-amberx-notification",
+   "brief": "# Build: pass-approval-hook-deep-link-amberx-notification\n\n## Brett said (verbatim)\nAt: 2026-11-10T17:10:29.492Z\n> I'm gonna need a link to the pass, a hook to it.\n\n## What to build\nContinue build \"Pass approval hook: deep link + AmberX notification Approve button for veto passes\" (pass-approval-hook-deep-link-amberx-notification) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 17:10):\n\"I'm gonna need a link to the pass, a hook to it.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~30 min):\n[ ] s1 (~30 min) Design the pass-approval contract shared by console, Molly and AmberX. Define the deep link URL format for a pending pass (console_show/console_open target 'pass:<id>'). Define the short-lived, single-use, signed approve/deny action token embedded in links and notification actions, with its expiry, replay guard and binding to pass id and decision. Define the push notification payload with Approve/Deny action ids. Define the pass_grant result fields (approve_url, deny_url, deep_link). Write it as a contract doc and shared types.\nRead first: docs/contracts/pass-approval.md, packages/shared/pass-approval/\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step pass-approval-hook-deep-link-amberx-notification <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link pass-approval-hook-deep-link-amberx-notification --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Tick every step as you finish it (orchestrator.mjs act step pass-approval-hook-deep-link-amberx-notification <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note pass-approval-hook-deep-link-amberx-notification \"…\"); the build goes back to Pending for Brett.\n",
    "verbatim": true,
    "from": "",
    "addenda": []
@@ -3505,6 +3685,18 @@
    "from": "",
    "addenda": []
   },
+  "plugin-appearance-save-button-for-custom-looks-n": {
+   "said": "In every plugin's appearance settings, as soon as you make a change off inherit from axHub there's a save button lit up. Save prompts a dialog with a default name with the date and type of change. Saved, the button goes grey. Every change makes a new save. A button to revert pops up a dialog listing all the saves for that plugin in a side-by-side viewer of what it will look like restored compared to now.",
+   "at": "2026-11-10T17:38:24.452Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "plugin-cleanup": {
    "said": "First a merge map so no feature is lost, then: Build Breaker + Changes & features grid + Codebase changes banner -> one; Plugin switches + Plugin Update + Plugins menu -> Plugin Manager; Main build status -> Activity banner; retire Design packs after UI Review (#184); console Todo manager on the shared AmberX notes store; Voice notes vs Dictation; AmberX Voice control vs Voice command center. Uninstall scripts for removed plugins. Also retire the Basic filter plugin once grid-sort-filter moves filtering into the framework (migrate its saved filters).",
    "at": "2026-10-30",
@@ -3563,6 +3755,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "plugin-ui-inventory-per-plugin-reskin-one-button": {
+   "said": "A button in every plugin's settings. Generates a list of all the UI's dialogs, tables, buttons, panes, windows, tabs, everything, every behavior, every layout, style and color token. Multiple views, 3D, grid, expandable rows, classical trees, different roots, IDE style tabs. Rebuild, it will reskin just that plugin instead of the whole room. New look, layout and behavior, to look better, perform better, or be new.",
+   "at": "2026-11-10T17:31:45.669Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
    "addenda": []
   },
   "postgres-console": {
@@ -3721,6 +3925,18 @@
    "from": "detail",
    "addenda": []
   },
+  "queue-drag-and-drop-reorder-dispatcher-follows-t": {
+   "said": "Can I drag and drop builds in the queue? Yes, make it, run it now on an API account.",
+   "at": "2026-11-10T20:59:27.366Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "readme-rule-every-build": {
    "said": "We gotta structure the documentation engine later anyway, so leave that out. Just get basic documentation. In Markdown.\n\n(Asked whether every future build should include a basic Markdown readme:) Yeah.",
    "at": "2026-11-04T00:00:00Z",
@@ -3775,8 +3991,8 @@
    "source": "",
    "session": "",
    "link": "",
-   "by": "",
-   "brief": "",
+   "by": "remove-the-old-theme-manager-style-and-layout-se",
+   "brief": "# Build: remove-the-old-theme-manager-style-and-layout-se\n\n## Brett said (verbatim)\nAt: 2026-11-10T16:42:29.017Z\n> We need to remove all the styling and theme and layout stuff. Remove it all because the new thing's going to override it.\n\n## What to build\nContinue build \"Remove the old theme manager, style and layout settings everywhere; skins replace them\" (remove-the-old-theme-manager-style-and-layout-se) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 16:42):\n\"We need to remove all the styling and theme and layout stuff. Remove it all because the new thing's going to override it.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.4 h):\n[ ] s1 (~25 min) Inventory every old appearance control: grep for theme manager, style themes, layout settings and other look/layout pickers in Molly, console and every app, plus their REST routes, MCP tools, CLI commands and voice intents. Write the list with file paths, settings keys and API names to _claude/builds/reports/remove-the-old-theme-manager-style-and-layout-se/inventory.md, and note how each one maps onto the skin and colour-theme model from appearance-skins-colour-themes-only-remove-design-packs.\n[ ] s2 (~30 min) Design the settings schema change and migration: retire the theme, style and layout keys; define how each current pick (theme, style theme, density/layout options) folds into the active skin and its colour theme; make the migration idempotent and run once per profile on load; keep a backup of the old values. Write the schema and the migration module.\n[ ] s3 (~30 min) Change the shared GUI framework: remove the theme manager, style-theme loader and layout-setting hooks from the app shell, so skins (with their colour theme) are the only thing that applies look and layout. Route any remaining readers of the old keys through the active skin, and call the migration from step 2 on startup.\nRead first: apps/, packages/, _claude/builds/reports/remove-the-old-theme-manager-style-and-layout-se/inventory.md, packages/framework/appearance/, packages/framework/settings/schema/, packages/framework/appearance/migrate-legacy-appearance.mjs, packages/framework/shell/, packages/framework/theme/\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step remove-the-old-theme-manager-style-and-layout-se <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link remove-the-old-theme-manager-style-and-layout-se --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Tick every step as you finish it (orchestrator.mjs act step remove-the-old-theme-manager-style-and-layout-se <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note remove-the-old-theme-manager-style-and-layout-se \"…\"); the build goes back to Pending for Brett.\n",
    "verbatim": true,
    "from": "",
    "addenda": []
@@ -3801,6 +4017,30 @@
    "link": "",
    "by": "",
    "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "resolve-conflicts-and-land-460-456-457-459-342": {
+   "said": "If anything doesn't work, just fix it. Don't tell me, just tell me when it's fixed.",
+   "at": "2026-11-10T20:40:20.356Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "resolve-conflicts-and-land-460-456-457-459-342",
+   "brief": "# Build: resolve-conflicts-and-land-460-456-457-459-342\n\n## Brett said (verbatim)\nAt: 2026-11-10T20:40:20.356Z\n> If anything doesn't work, just fix it. Don't tell me, just tell me when it's fixed.\n\n## What to build\nContinue build \"Resolve conflicts and land #460, #456, #457, #459, #342\" (resolve-conflicts-and-land-460-456-457-459-342) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 20:40):\n\"If anything doesn't work, just fix it. Don't tell me, just tell me when it's fixed.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Merges failed. #460 (splitter fix), #457 (merge batching), #459 (failed-batch split), #342 (build optimizer) have merge conflicts with main; #456 (enforce merge queue) is still a draft. In order: #460 first (it fixes every build's steps), then #456 (mark ready), #457, #459, #342. For each: merge latest main into the branch, resolve conflicts keeping both sides' intent, tests green, push, merge. Then redeploy the console. Notify on AmberX only when all are landed.\n[ ] s2 (~30 min) If anything doesn't work, just fix it. Don't tell me, just tell me when it's fixed.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/resolve-conflicts-and-land-460-456-457-459-342.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/resolve-conflicts-and-land-460-456-457-459-342.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step resolve-conflicts-and-land-460-456-457-459-342 <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link resolve-conflicts-and-land-460-456-457-459-342 --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step resolve-conflicts-and-land-460-456-457-459-342 <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note resolve-conflicts-and-land-460-456-457-459-342 \"…\"); the build goes back to Pending for Brett.\n",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "resolve-conflicts-and-land-pr-449-account-order": {
+   "said": "Yeah, land it.",
+   "at": "2026-11-10T17:34:43.785Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "resolve-conflicts-and-land-pr-449-account-order",
+   "brief": "# Build: resolve-conflicts-and-land-pr-449-account-order\n\n## Brett said (verbatim)\nAt: 2026-11-10T17:34:43.785Z\n> Yeah, land it.\n\n## What to build\nContinue build \"Resolve conflicts and land PR #449 (account order switch)\" (resolve-conflicts-and-land-pr-449-account-order) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 17:34):\n\"Yeah, land it.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (7 left, ~2.5 h):\n[ ] s1 (~10 min) Fetch origin, check out PR #449's branch claude/account-order-switch-custom-drag-and-drop-order in this checkout, merge latest origin/main into it (no rebase, no force-push), and list every conflicted file with which side changed what. Read PR #449's description and main's commits on the same files so each side's intent is known before editing.\n[ ] s2 (~25 min) Resolve the code conflicts in the account order switch and the account code it touches (console-web accounts / account-switch plugin, its routes and store). Keep both sides: the PR's custom drag-and-drop order and main's newer account changes, such as failover and health. The saved order must still apply after main's changes. Delete no behaviour from either side. Commit the merge resolution.\n[ ] s3 (~15 min) Resolve the remaining non-code conflicts (docs, glossary, _claude/THREADS.md, builds JSON, changelog entries) by keeping both sides' rows and entries, valid JSON, and no duplicated ids. Then grep the tree for leftover conflict markers.\n[ ] s4 (~30 min) Check that the account order feature follows Everything comes with an API (main gained this rule after the PR branched). It needs a console_show/console_open deep link to the account order UI, the current order readable, and set order / move account / reset order callable through console REST, MCP console actions, the CLI and AmberX voice, all four the same. Add whatever the PR is missing in the plugin, routes, MCP action list, CLI and voice intents.\n[ ] s5 (~25 min) Run the console-web unit and route tests and the account/failover tests. Fix any failures the merge caused, keeping both sides' intent, until the suite is green. Add tests for the account order API parity (REST, MCP, CLI and voice give the same results).\n[ ] s6 (~15 min) Push the merged branch to origin (plain push, no force). Wait for CI on PR #449 to go green and confirm GitHub shows the PR as mergeable with no conflicts. If main moved again, repeat the merge for the new commits only.\n[ ] s7 (~30 min) Final step. Re-run the tests. Write the report at _claude/builds/reports/resolve-conflicts-and-land-pr-449-account-order.md, covering conflicts and how each was resolved, tests before→after, and how account order is reached via deep link, state read, actions and settings over REST, MCP, CLI and voice. Add the THREADS row. Put the API reach note on PR #449 and merge it. Redeploy the console and check that the account order switch works on the live console. Notify Brett on AmberX that #449 landed.\nRead first: git: claude/account-order-switch-custom-drag-and-drop-order, origin/main, apps/console-web/plugins/ (account order switch plugin and its server routes), conflicted files listed in step 1, _claude/THREADS.md, _claude/builds/, docs/, changes/, apps/console-web/plugins/ (account order plugin, plugin commands, console actions), apps/console-web/server/ routes, CLI and AmberX voice intent files for accounts, apps/console-web/plugins/ (account order tests), apps/console-web/test/, PR #449, _claude/builds/reports/resolve-conflicts-and-land-pr-449-account-order.md, console deploy\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step resolve-conflicts-and-land-pr-449-account-order <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link resolve-conflicts-and-land-pr-449-account-order --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step resolve-conflicts-and-land-pr-449-account-order <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note resolve-conflicts-and-land-pr-449-account-order \"…\"); the build goes back to Pending for Brett.\n",
    "verbatim": true,
    "from": "",
    "addenda": []
@@ -4012,6 +4252,18 @@
    "from": "detail",
    "addenda": []
   },
+  "shared-screenshot-registry-hooked-everywhere-liv": {
+   "said": "Screenshots go into a shared registry that can be accessed from anywhere. Plan Studio, features, builds, errors tie into it through a hook, not directly through UI review. View the screenshot of an element, open a pane with all the tokens, styles, parameters, tweak it live with a hot rendering preview of the same screen, save it. That creates a new asset type with the color, style, layout, behavior, icon themes that applies to just a particular UI screen.",
+   "at": "2026-11-10T17:34:36.360Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "shipped-features-live-manifests-from-dispatch-to": {
    "said": "Ship dock features gets manifest as soon as orchestrator sends out the job. then its status is it, it sends a manifest every time it's updated to every time it's a step completed it sends a manifest every time it's completed it sends a manifest and its status in ship features is updated constantly with different badges and a progress meter.",
    "at": "",
@@ -4079,9 +4331,9 @@
     }
    ]
   },
-  "skin-checker-flags-anything-that-breaks-a-profes": {
-   "said": "Yeah, build that shit right now.",
-   "at": "2026-11-10T17:11:27.008Z",
+  "shipped-features-show-each-landed-build-s-screen": {
+   "said": "Screenshots and everything of what it did? Yep.",
+   "at": "2026-11-10T17:34:46.359Z",
    "source": "",
    "session": "",
    "link": "",
@@ -4091,9 +4343,33 @@
    "from": "",
    "addenda": []
   },
+  "skin-checker-flags-anything-that-breaks-a-profes": {
+   "said": "Yeah, build that shit right now.",
+   "at": "2026-11-10T17:11:27.008Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "skin-checker-flags-anything-that-breaks-a-profes",
+   "brief": "# Build: skin-checker-flags-anything-that-breaks-a-profes\n\n## Brett said (verbatim)\nAt: 2026-11-10T17:11:27.008Z\n> Yeah, build that shit right now.\n\n## What to build\nContinue build \"Skin checker: flags anything that breaks a professional look (spacing scale, fonts, palette, contrast)\" (skin-checker-flags-anything-that-breaks-a-profes) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 17:11):\n\"Yeah, build that shit right now.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~25 min):\n[ ] s1 (~25 min) Design the skin checker contract: the issue schema (rule id, severity, token path, value, expected, fix suggestion), score formula, the threshold settings schema with defaults, and the pure-function engine interface shared by the skin editor, CI, REST, MCP, CLI and voice. Write it as a typed module plus a short spec doc.\nRead first: packages/skin-checker/src/contract.ts, packages/skin-checker/src/settings-schema.ts, packages/skin-checker/SPEC.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step skin-checker-flags-anything-that-breaks-a-profes <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link skin-checker-flags-anything-that-breaks-a-profes --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Tick every step as you finish it (orchestrator.mjs act step skin-checker-flags-anything-that-breaks-a-profes <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note skin-checker-flags-anything-that-breaks-a-profes \"…\"); the build goes back to Pending for Brett.\n",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "skin-chunk-previews-interactive-demos-and-an-ide": {
    "said": "When you're looking at these lists and any of the grids of these chunks, you can preview one, or open a demo of it if it can be demoed, an interactive demonstration where you can actually use it, or at the very least a preview of what the chunk looks like. And the ability to view them side by side, multiple containers with tab groups, mix and match elements in multiple floating containers to compare side by side. An IDE-style thing with a bunch of floating tab groups with different types of assets in them, with the info on the chunk, and you can drag them to each other and build new things side by side. Each tab can be split with a preview and an editor so you can see changes in real time.",
    "at": "2026-11-10T00:23:46.567Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "skin-rule-overrides-are-local-only-global-change": {
+   "said": "If you override a value, it wins for that element. You can't change a button in one of the plugins or apps and have it apply globally. You can only apply things globally by applying an entire skin.",
+   "at": "2026-11-10T17:40:55.344Z",
    "source": "",
    "session": "",
    "link": "",
@@ -4158,6 +4434,18 @@
      "verbatim": true
     }
    ]
+  },
+  "skins-consistent-across-plugins-full-state-saves": {
+   "said": "The save is going to include everything, behavior, style, the code, not just the category changed. Every skin consists only of asset names. The skins build needs to make the skin compatible with all the plugin screens since the plugins have different asset names than the apps. The style has to stay consistent.",
+   "at": "2026-11-10T17:39:40.556Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
   },
   "skins-own-everything-colour-theme-swaps-independ": {
    "said": "All the skins control everything. The skins have different sections, but the skins have the color theme in them. You can change the color theme without changing the skin. If you change the color theme, it makes a new skin, don't like that. You can change the color theme without changing the skin.",

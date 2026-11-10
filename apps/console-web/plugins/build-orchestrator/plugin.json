@@ -2,11 +2,11 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.build-orchestrator",
   "name": "Build orchestrator",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Breaks every build into small steps (30 min or less), each pinned to Fable or Opus, and runs the build pipeline (Brett, Nov 8 2026): every build gets an id and a Claude split (Fable only where needed) and sits in Pending; Brett moves it to the Queue; the dispatcher (pipeline.mjs on the VPS, every minute) watches the Claude accounts (which have Fable, parallel per account) and the agent slots and, when a slot is free, starts a headless session for the next Queue build on an account that runs its next phase's model. Page = tab group (Pipeline, Builds, Approvals, Rules); the Pipeline tab shows Pending / Queue / Building, the accounts, what the next tick starts and why the rest waits. Tracker is the one builds store, _claude/builds/store.json, so any session or account continues the build (orchestrator.mjs next | brief | act; pipeline.mjs status | queue | unqueue | split | tick).",
+  "description": "Breaks every build into small steps (30 min or less), each pinned to Fable or Opus, and runs the build pipeline (Brett, Nov 8 2026): every build gets an id and a Claude split (Fable only where needed) and sits in Pending; Brett moves it to the Queue; the dispatcher (pipeline.mjs on the VPS, every minute) watches the Claude accounts (which have Fable, parallel per account) and the agent slots and, when a slot is free, starts a headless session for the next Queue build on an account that runs its next phase's model. The only place that browses and manages builds (Brett, Nov 10 2026; the Build manager is retired): tabs Pending, Queue (each build's steps, planned model and account), Active, Incomplete, Complete, Errors, then Accounts (health every 5 minutes: sign-in, credits, Fable), All builds, Approvals and Rules. When a build's turn comes the dispatcher makes the final account pick, subscriptions first (in Brett's order), then any API account, moving on until one accepts, and records which account took it. Tracker is the one builds store, _claude/builds/store.json, so any session or account continues the build (orchestrator.mjs next | brief | act; pipeline.mjs status | queue | unqueue | split | tick).",
   "targets": [
     "axf-console"
   ],
@@ -257,12 +257,60 @@
           "properties": {
             "reason": {
               "type": "string",
-              "enum": ["on demand", "voice", "console-load"],
+              "enum": [
+                "on demand",
+                "voice",
+                "console-load"
+              ],
               "description": "Why the check was asked for"
             }
           }
         },
         "output": "{ ran: false, requested, last: { at, line, fixes, problems, findings } }"
+      },
+      {
+        "id": "pipeline-tab",
+        "route": "GET /pipeline/tab/{name}",
+        "title": "Orchestrator tab",
+        "description": "One of the orchestrator's tabs: pending, queue, active, incomplete, complete or errors, with each build's steps, planned model and account, and the account that took it. Say 'what's in the queue' or 'show build errors'.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "queue",
+                "active",
+                "incomplete",
+                "complete",
+                "errors"
+              ],
+              "description": "Tab"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        },
+        "output": "{ tab, rows: [{ id, title, status, steps, stepList, pipeline: { planned, account, pickedAt, tried } }] }"
+      },
+      {
+        "id": "pipeline-health",
+        "route": "GET /pipeline/health",
+        "title": "Claude account health",
+        "description": "The last account health sweep (every 5 minutes, headless, never touches a build): per account, can sign in, has credits, accepts Fable. Say 'are the accounts healthy'.",
+        "readOnly": true,
+        "output": "{ health: { at, line, problems, accounts: [{ name, kind, signedIn, credits, fable, error }] }, every }"
+      },
+      {
+        "id": "pipeline-health-now",
+        "route": "POST /pipeline/health",
+        "title": "Check the Claude accounts now",
+        "description": "Run the account health sweep now (the dispatcher starts it within a minute, in the background). Say 'check the accounts now'.",
+        "readOnly": false,
+        "output": "{ requested, last }"
       },
       {
         "id": "pipeline-queue",

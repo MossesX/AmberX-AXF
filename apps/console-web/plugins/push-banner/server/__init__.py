@@ -424,6 +424,8 @@ class Pushes:
                 # the red batch being split now, the last finished splits, and the fix jobs sent per PR
                 "bisect": st.get("bisect") if isinstance(st.get("bisect"), dict) else None, "bisects": lst("bisects")[-10:],
                 "fixJobs": {k: v for k, v in st.get("fixJobs", {}).items() if isinstance(v, dict)} if isinstance(st.get("fixJobs"), dict) else {},
+                "split": [n for n in st.get("suspects", []) if isinstance(n, int)] if isinstance(st.get("suspects"), list) else [],
+                "enlisted": [x for x in st.get("enlisted", []) if isinstance(x, dict)][:10] if isinstance(st.get("enlisted"), list) else [],
                 "items": items, "waiting": lst("waiting"), "kicked": kicked, "merged": lst("merged")[-10:],
                 "avgMin": st.get("avgMin") if isinstance(st.get("avgMin"), int) else None,
                 "variable": _text(st.get("variable"), 10), "variableError": _text(st.get("variableError"), 300),
@@ -845,6 +847,12 @@ class Pushes:
             raise HTTPException(400, "number is the PR number")
         if body.get("confirm") != f"{repo}#{number}":
             raise HTTPException(400, f'confirm with "{repo}#{number}"')
+        if repo == UI_REVIEW_REPO and self.config()["mergeQueue"]:
+            # Enforced (Nov 10 2026, Brett: "Everything needs to go into the merge queue"): nothing reaches this repo's main
+            # on its own. Merge puts the PR in the queue; it lands with the next batch once that batch's one CI run is green.
+            self.queue_command("add", {"pr": number})
+            return {"merged": False, "queued": True, "sha": "", "url": "",
+                    "text": f"#{number} is in the merge queue: it lands with the next batch once that batch's CI run is green."}
         gh = self.gh()
         try:
             p = gh.get(github.repo_path(repo, "pulls", number))
@@ -1409,7 +1417,7 @@ def auto_merge_now() -> dict[str, Any]:
 def auto_merge_last() -> dict[str, Any]:
     raw = storage.read_json(data_dir() / "auto-merge.json", {}) or {}
     cfg = PUSHES.config()
-    return {"on": cfg["autoMerge"], "autoPr": cfg["autoPr"], "mergeQueue": cfg["mergeQueue"], "everyS": AUTO_MERGE_EVERY_S, "last": raw.get("last", []), "at": raw.get("at"),
+    return {"on": cfg["autoMerge"], "autoPr": cfg["autoPr"], "mergeQueue": cfg["mergeQueue"], "queueMode": cfg["queueMode"], "batchSize": cfg["batchSize"], "batchSizeMax": BATCH_SIZE_MAX, "everyS": AUTO_MERGE_EVERY_S, "last": raw.get("last", []), "at": raw.get("at"),
             "protection": PUSHES.protection()["repos"]}
 
 
@@ -1516,7 +1524,11 @@ def queue_settings_get() -> dict[str, Any]:
 
 
 @router.post("/queue/settings")
-def queue_settings_set(body: Any = Body(None)) -> dict[str, Any]:
+def queue_settings_set(request: Request, body: Any = Body(None)) -> dict[str, Any]:
+    """The queue's settings without the UI: {on?, mode?: batch|stack, batchSize?, aiResolve?, depth?}. Switching the queue
+    off is Brett's own click (Nov 10 2026: everything lands through the queue, no exceptions); a session or agent gets 403."""
+    if isinstance(body, dict) and body.get("on") is False and not _owner(request):
+        raise HTTPException(403, "switching the merge queue off is Brett's own click in the console (signed in on axHub)")
     return PUSHES.save_queue_settings(body)
 
 

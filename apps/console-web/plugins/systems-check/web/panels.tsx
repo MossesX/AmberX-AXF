@@ -186,7 +186,7 @@ export function ClaudePanel() {
         </ul>
       )}
       <div className="fx-row fx-row--wrap">
-        <Button icon="hammer" onClick={() => rt.dispatch('build-manager.open')}>Open the Build manager</Button>
+        <Button icon="hammer" onClick={() => rt.dispatch('build-orchestrator.open')}>Open the Build orchestrator</Button>
       </div>
     </div>
   );

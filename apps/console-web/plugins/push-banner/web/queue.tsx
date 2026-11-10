@@ -10,7 +10,7 @@ import { AgentAvatar, Button, Icon, PriorityTag, SelectField, Switch, useRuntime
 import { cardFromDrop } from '@console/axf/core/engines/card-rules.mjs';
 import { api, FOLDER } from './store';
 
-export interface QueueItem { pr: number; title: string; url?: string; branch?: string; build?: string; agent?: string; state: 'waiting' | 'testing' | 'passed' | 'merging' | 'kicked' | 'held'; ci?: string; why?: string; etaMin?: number; runUrl?: string; queueBranch?: string; ahead?: number[]; with?: number[]; batch?: number; prCi?: string }
+export interface QueueItem { inBatch?: boolean; pr: number; title: string; url?: string; branch?: string; build?: string; agent?: string; state: 'waiting' | 'testing' | 'passed' | 'merging' | 'kicked' | 'held'; ci?: string; why?: string; etaMin?: number; runUrl?: string; queueBranch?: string; ahead?: number[]; with?: number[]; batch?: number; prCi?: string }
 export interface QueueBatch { id: number; branch: string; sha: string; base: string; members: { pr: number; head: string; title?: string }[]; ci?: string; runUrl?: string; bisect?: boolean; state?: string; why?: string; prNumber?: number; prUrl?: string }
 export interface QueueBatchDone { id: number; prs: number[]; result: 'merged' | 'red' | 'kicked'; at: string; pr?: number; runUrl?: string }
 export interface QueueSettings { on: boolean; mode: 'batch' | 'stack'; batchSize: number; aiResolve: boolean; autoFix: boolean; fixTries: number; fixTriesMax: number; depth: number; batchSizeMax: number; depthMax: number }
@@ -18,7 +18,7 @@ export interface QueueSettings { on: boolean; mode: 'batch' | 'stack'; batchSize
 export interface QueueBisect { of: number; prs: number[]; at: string; runs: number; merged: number[]; sentBack: number[]; failing?: string[]; runUrl?: string; doneAt?: string }
 export interface QueueKick { pr: number; title: string; why: string; at: string; runUrl?: string; sentBack?: string; build?: string }
 export interface QueueMerged { pr: number; title: string; at: string; agent?: string }
-export interface QueueState { on: boolean; depth: number; mode?: 'batch' | 'stack'; batchSize?: number; aiResolve?: boolean; autoFix?: boolean; fixTries?: number; bisect?: QueueBisect | null; bisects?: QueueBisect[]; batch?: QueueBatch | null; suspects?: number[]; batches?: QueueBatchDone[]; at?: string; items: QueueItem[]; waiting: QueueItem[]; kicked: QueueKick[]; merged: QueueMerged[]; avgMin: number | null; variable?: string; variableError?: string; chip: { label: string; count: number; testing: number; kicked: number; tone: string } }
+export interface QueueState { on: boolean; depth: number; mode?: 'batch' | 'stack'; batchSize?: number; aiResolve?: boolean; autoFix?: boolean; fixTries?: number; bisect?: QueueBisect | null; bisects?: QueueBisect[]; batch?: QueueBatch | null; suspects?: number[]; split?: number[]; enlisted?: { build: string; pr: number }[]; batches?: QueueBatchDone[]; at?: string; items: QueueItem[]; waiting: QueueItem[]; kicked: QueueKick[]; merged: QueueMerged[]; avgMin: number | null; variable?: string; variableError?: string; chip: { label: string; count: number; testing: number; kicked: number; tone: string } }
 
 const POLL_MS = 60_000;
 let qstate: { data: QueueState | null; error: string; busy: number; note: string } = { data: null, error: '', busy: 0, note: '' };
@@ -139,7 +139,7 @@ export function MergeQueueView({ compact = false }: { compact?: boolean }) {
   return (
     <div className="axp-mq fx-stack">
       <p className="fx-small fx-muted">{d.mode === 'batch'
-        ? `Ready PRs are combined ${d.batchSize ?? 5} at a time into one build on the latest main; CI runs once on it and the whole batch merges as one. A red batch is split in halves until the PR that broke it is found; the good ones merge and ${d.autoFix === false ? 'the bad one waits for a fix' : 'the bad one goes back to its build for an automatic fix and a retest'}.`
+        ? `Every finished build lands through here. Ready PRs are combined ${d.batchSize ?? 5} at a time into one build on the latest main; CI runs once on it and the whole batch merges as one. A red batch is split in halves until the PR that broke it is found; the good ones merge and ${d.autoFix === false ? 'the bad one waits for a fix' : 'the bad one goes back to its build for an automatic fix and a retest'}.`
         : `Each PR is tested once, on top of main and every PR ahead of it (${d.depth} at a time); when its run is green it merges with no retest. A red one is kicked out with the reason and the ones behind it are retested without it.`}{d.avgMin ? ` A run takes ~${d.avgMin} min.` : ''}{d.at ? ` Checked ${new Date(d.at).toLocaleTimeString()}.` : ''}</p>
       {d.mode === 'batch' && d.bisect && <BisectLine b={d.bisect} suspects={d.suspects || []} />}
       {d.mode === 'batch' && d.batch && <BatchLine b={d.batch} />}
@@ -182,7 +182,7 @@ export function MergeQueueView({ compact = false }: { compact?: boolean }) {
       )}
       {!compact && d.mode === 'batch' && (d.batches || []).length > 0 && <p className="fx-small fx-muted">Last batches: {(d.batches || []).slice(-4).reverse().map((b) => `${b.id} (${b.prs.map((n) => `#${n}`).join(' ')}): ${BATCH_RESULT[b.result] || b.result}`).join(' · ')}</p>}
       {!compact && d.mode === 'batch' && (d.bisects || []).length > 0 && <p className="fx-small fx-muted">Last red batches: {(d.bisects || []).slice(-3).reverse().map((b) => `${b.of}: merged ${b.merged.map((n) => `#${n}`).join(' ') || 'none'}, sent back ${b.sentBack.map((n) => `#${n}`).join(' ') || 'none'} (${b.runs} run${b.runs === 1 ? '' : 's'})`).join(' · ')}</p>}
-      {!compact && d.merged.length > 0 && <p className="fx-small fx-muted">Merged lately: {d.merged.slice(-5).reverse().map((m) => `#${m.pr}`).join(', ')} (each tested once).</p>}
+      {!compact && d.merged.length > 0 && <p className="fx-small fx-muted">Merged lately: {d.merged.slice(-5).reverse().map((m) => `#${m.pr}`).join(', ')} ({d.mode === 'stack' ? 'each tested once' : 'landed in batches, one CI run each'}).</p>}
       <div className="axp-push-banner__foot" role="toolbar" aria-label="Merge queue">
         <Button size="sm" tone="quiet" icon="refresh" onClick={() => void loadQueue()}>Check now</Button>
         <Button size="sm" tone="quiet" icon="plus" title="Show the merge queue on Home" onClick={() => rt.openDialog('home-card', { draft: cardFromDrop({ plugin: FOLDER, command: 'mergequeue-list', title: 'Merge queue' }) })}>Add to Home</Button>

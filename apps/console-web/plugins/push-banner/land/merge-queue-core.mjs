@@ -11,6 +11,12 @@
  *   passed: that PR is kicked out with the failing jobs in plain words, and the ones behind it are rebuilt without it.
  *   Main moving in code outside the queue invalidates the stack (rebuilt on the new main); status-only `[skip ci]`
  *   commits under _claude/ never do.
+ *
+ * Batch mode (the default since Nov 10 2026, Brett: "Everything needs to go into the merge queue so we can make one
+ * build out of it before we send it to CI"): every finished build gets a PR and joins; up to `batchSize` ready PRs are
+ * combined into one commit on queue/batch-<n> (a PR that conflicts with the others waits for the next batch), CI runs once on
+ * it, and a green batch lands on main as exactly that commit. A red batch is split in half (bisection) until the one PR
+ * that broke it is kicked out; the halves that pass land. `queueMode: 'stack'` keeps the per-PR stack above.
  */
 
 export const QUEUE_FRAME = 'merge-queue@1';
@@ -62,7 +68,7 @@ export const STATES = Object.freeze({
  *     landHeld: auto-land hold reason, conflicts: [code files] }
  * `ctl` is the control document: removed[pr] = {head} (Remove from queue, until a new commit), kicked[pr] = {head}.
  */
-export function notReady(pr, ctl = {}, { waitUi = true } = {}) {
+export function notReady(pr, ctl = {}, { waitUi = true, redJoins = false } = {}) {
   const n = num(pr?.number);
   if (!n) return 'not a pull request';
   if (pr.draft) return 'it is a draft';
@@ -74,11 +80,13 @@ export function notReady(pr, ctl = {}, { waitUi = true } = {}) {
   if (pr.landHeld) return `held by hand in auto-land (${str(String(pr.landHeld), 120)})`;
   if (waitUi && pr.ui) return pr.ui === 'waiting' ? 'its screenshots wait for Brett in UI Review' : `UI Review holds it (${str(pr.ui, 40)})`;
   if (pr.conflicts?.length) return `it conflicts with main in code (${pr.conflicts.slice(0, 3).join(', ')})`;
-  if (pr.ci === 'failure') return 'its PR checks are red';
+  // batch mode: the batch's one full run is the gate, so red light checks (often red only because main was, Nov 10 2026)
+  // don't keep a finished build out; it goes behind the green ones and a split finds it if it really breaks CI
+  if (pr.ci === 'failure' && !redJoins) return 'its PR checks are red';
   if (pr.ci === 'running') return 'its PR checks are still running';
   // GitHub runs no PR checks on a PR that conflicts with main: the queue commit resolves data conflicts itself (and kicks
   // a code conflict out with the files named), so such a PR goes straight to its one full run
-  if (pr.ci === 'none' && !pr.conflicted) return 'its PR checks have not run yet';
+  if (pr.ci === 'none' && !pr.conflicted && !redJoins) return 'its PR checks have not run yet';
   return '';
 }
 
@@ -149,6 +157,15 @@ export function decide(stack, ci = {}) {
     break;
   }
   return { merge, kick, keep: kick ? i : stack.length };
+}
+
+/** Batch order: PRs with green PR checks first, then the ones with none, then the red ones; Brett's manual order (`ctl.order`) stays first. */
+export function greenFirst(prs, ctl = {}) {
+  const manual = new Set((Array.isArray(ctl.order) ? ctl.order : []).filter(num));
+  const pinned = prs.filter((p) => manual.has(p.number));
+  const rest = prs.filter((p) => !manual.has(p.number));
+  const tier = (p) => (p.ci === 'success' ? 0 : p.ci === 'failure' ? 2 : 1);
+  return [...pinned, ...[0, 1, 2].flatMap((t) => rest.filter((p) => tier(p) === t))];
 }
 
 // ------------------------------------------------------------------ batch mode
@@ -319,6 +336,7 @@ export function runMinutes(history = []) {
  * one more run per `depth` entries ahead of it.
  */
 export function etaMinutes(index, { depth = 3, avg = DEFAULT_RUN_MIN, startedMin = null } = {}) {
+  // batch mode passes depth = batch size: everything in the batch lands with its one run, the rest with the next ones
   if (index < depth) return Math.max(1, Math.round(avg - (startedMin ?? 0)));
   return Math.round(avg * (1 + Math.floor((index - depth) / depth) + 1));
 }

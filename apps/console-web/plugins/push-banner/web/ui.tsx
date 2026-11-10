@@ -429,7 +429,7 @@ export function PushSettings() {
 }
 
 type AutoLast = { pr?: string; branch?: string; merged?: boolean; opened?: number | null; pulled?: boolean; why?: string };
-type AutoState = { on: boolean; autoPr: boolean; mergeQueue?: boolean; everyS: number; last: AutoLast[]; protection: Record<string, { base: string; state: string; error?: string; checks?: string[] }> };
+type AutoState = { on: boolean; autoPr: boolean; mergeQueue?: boolean; queueMode?: 'batch' | 'stack'; batchSize?: number; batchSizeMax?: number; everyS: number; last: AutoLast[]; protection: Record<string, { base: string; state: string; error?: string; checks?: string[] }> };
 
 /** Auto-merge (Oct 30 2026, Brett: "When stuff needs to merge automatic merge"; 0.5.0: "I want everything to need a PR
  * and to pull against main before it's merged"): every branch gets a PR, and ready PRs merge oldest first, one per round,
@@ -440,7 +440,7 @@ function AutoMergeSettings() {
   const read = () => api.call<AutoState>('auto-merge').then(setSt, (e: Error) => setErr(e.message));
   useEffect(() => { void read(); }, []);
   if (!st) return err ? <p className="fx-small axp-push-banner__note is-danger">{err}</p> : null;
-  const set = (patch: { autoMerge?: boolean; autoPr?: boolean; mergeQueue?: boolean }) => { setErr(''); api.put('config', patch).then(read, (e: Error) => setErr(e.message)); };
+  const set = (patch: { autoMerge?: boolean; autoPr?: boolean; mergeQueue?: boolean; queueMode?: 'batch' | 'stack'; batchSize?: number }) => { setErr(''); api.put('config', patch).then(read, (e: Error) => setErr(e.message)); };
   const said = (x: AutoLast) => x.branch ? (x.opened ? `PR #${x.opened}${x.why ? '' : ' open'}` : x.why || 'no PR') : x.merged ? 'merged' : x.why || 'not merged';
   const prot = Object.entries(st.protection ?? {});
   return (
@@ -450,8 +450,8 @@ function AutoMergeSettings() {
         hint={`Every ${Math.round(st.everyS / 60)} min the console takes the open PRs oldest first, one at a time per repo: one behind main gets main pulled in and waits for CI on its new head; it merges only when it is up to date with main, has no conflicts, isn't a draft and CI passed on its head commit (pinned). At most one merge per round, so the next PR is brought up to date with the new main first. Forks, hidden PRs and repos without CI never auto-merge. No Claude session, no tokens.`} />
       <Switch label="Open a pull request for every branch" checked={st.autoPr} disabled={!st.on} onChange={(v) => set({ autoPr: v })}
         hint="Each round, every branch ahead of main without an open PR gets one (never main, site, go-pass, gh-pages or hidden branches). Nothing reaches main without a PR." />
-      <Switch label="Merge queue: test each PR once" checked={st.mergeQueue !== false} onChange={(v) => set({ mergeQueue: v })}
-        hint="Ready PRs line up and are tested once before they reach main: in batch mode several are combined into one build on the latest main and merge as one; in stack mode each is tested on top of the ones ahead. A red one is kicked out with the reason. While it is on, PRs run only the light checks and the console doesn't merge AmberX-AXF itself (the queue does). GitHub's own merge queue needs an organisation-owned repo, so this one is ours." />
+      <Switch label="Merge queue: everything lands through it" checked={st.mergeQueue !== false} onChange={(v) => set({ mergeQueue: v })}
+        hint="Every finished build gets a PR and goes into the queue; nothing reaches AmberX-AXF's main on its own (Merge puts a PR in the queue). Ready PRs line up and are tested once before they reach main: in batch mode several are combined into one build on the latest main and merge as one; in stack mode each is tested on top of the ones ahead. A red one is kicked out with the reason. While it is on, PRs run only the light checks and the console doesn't merge AmberX-AXF itself (the queue does). GitHub's own merge queue needs an organisation-owned repo, so this one is ours." />
       {st.mergeQueue !== false && <MergeQueueSettings />}
       <div className="fx-row"><Button size="sm" icon="play" onClick={() => { setErr(''); api.post('auto-merge', {}).then(read, (e: Error) => setErr(e.message)); }}>Run a round now</Button></div>
       {st.last.length > 0 && <ul className="axp-push-banner__list">{st.last.slice(0, 8).map((x, i) => <li key={`${x.pr ?? x.branch}-${i}`} className="axp-push-banner__item"><span className="fx-small">{x.pr ?? x.branch}: {said(x)}</span></li>)}</ul>}

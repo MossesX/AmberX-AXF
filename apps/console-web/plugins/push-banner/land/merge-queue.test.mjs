@@ -6,7 +6,7 @@ import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import * as q from './merge-queue-core.mjs';
-import { queueRound, readQueue, queueControl } from './merge-queue.mjs';
+import { queueRound, readQueue, queueControl, enlist } from './merge-queue.mjs';
 import { makeGit } from './land.mjs';
 
 let n = 0;
@@ -92,6 +92,7 @@ const heads = { 1: branch('b1', 'one.txt', '1\n'), 2: branch('b2', 'two.txt', '2
 sh(repo, 'fetch', '-q', 'origin');
 
 const s = { repo, slug: 'o/r', dataDir: data, remote: 'origin', base: 'main', archive: join(root, 'archive') };
+writeFileSync(join(data, 'config.json'), JSON.stringify({ queueMode: 'stack' })); // the Nov 4 per-PR stack; batch mode is tested below
 const git = makeGit(repo);
 const ciBySha = {}; const merges = []; const comments = []; const vars = [];
 const open = () => [1, 2, 3].filter((x) => !merges.includes(x)).map((x) => ({ number: x, title: `PR ${x}`, html_url: `u/${x}`, created_at: `2026-11-0${x}`, base: { ref: 'main' }, head: { ref: `b${x}`, sha: heads[x], repo: { full_name: 'o/r' } }, user: { login: 'bot' } }));
@@ -432,5 +433,35 @@ await t('settings from the CLI: mode, size, AI fallback; bounds refused', async 
   assert.throws(() => writeQueueConfig(s2, { queueMode: 'x' }), /batch or stack/);
   assert.equal(JSON.parse(readFileSync(join(data2, 'config.json'), 'utf8')).batchAiResolve, true, 'other keys kept');
 });
+
+// ------------------------------------------------------------------ batch mode: every finished build goes in (enforce-the-merge-queue)
+
+await t('batch: red or missing PR checks still join (the batch run is the gate), green first, Brett\'s order wins', () => {
+  assert.equal(q.notReady({ number: 1, head: 'a', ci: 'failure' }, {}, { redJoins: true }), '', 'batch mode: the batch run is the gate');
+  assert.equal(q.notReady({ number: 1, head: 'a', ci: 'none' }, {}, { redJoins: true }), '');
+  assert.match(q.notReady({ number: 1, head: 'a', ci: 'running' }, {}, { redJoins: true }), /running/);
+  assert.deepEqual(q.greenFirst([{ number: 1, ci: 'failure' }, { number: 2, ci: 'none' }, { number: 3, ci: 'success' }]).map((p) => p.number), [3, 2, 1]);
+  assert.deepEqual(q.greenFirst([{ number: 1, ci: 'failure' }, { number: 3, ci: 'success' }], { order: [1] }).map((p) => p.number), [1, 3], "Brett's order wins");
+});
+
+await t('enlist: a finished build pushed with no PR gets one; one with a PR, unpushed or with nothing to land does not', async () => {
+  const root3 = mkdtempSync(join(tmpdir(), 'mq-enlist-'));
+  const origin3 = join(root3, 'origin.git'); const repo3 = join(root3, 'repo');
+  sh(root3, 'init', '-q', '--bare', '-b', 'main', origin3);
+  sh(root3, 'clone', '-q', origin3, repo3);
+  const commit3 = (file, text, msg) => { writeFileSync(join(repo3, file), text); sh(repo3, 'add', file); sh(repo3, ...cfg, 'commit', '-q', '-m', msg); };
+  commit3('a.txt', 'base\n', 'base');
+  sh(repo3, 'push', '-q', 'origin', 'HEAD:main');
+  for (const b of ['b1', 'b2']) { sh(repo3, 'checkout', '-q', '-b', b, 'origin/main'); commit3(`${b}.txt`, `${b}\n`, b); sh(repo3, 'push', '-q', 'origin', `HEAD:${b}`); }
+  sh(repo3, 'push', '-q', 'origin', 'origin/main:refs/heads/b3'); // nothing to land
+  sh(repo3, 'fetch', '-q', 'origin');
+  const builds = [{ id: 'one', title: 'Build one', branch: 'b1', status: 'built' }, { id: 'two', branch: 'b2', status: 'built' }, { id: 'three', branch: 'b3', status: 'built' }, { id: 'four', branch: 'b4', status: 'built' }];
+  const opened = [];
+  const gh3 = async (method, path, body) => { if (method === 'POST' && path.endsWith('/pulls')) { opened.push(body); return { number: 40 + opened.length }; } return {}; };
+  const out = await enlist({ s: { repo: repo3, slug: 'o/r', remote: 'origin', base: 'main' }, git: makeGit(repo3), gh: gh3, builds, pulls: [{ head: { ref: 'b2' } }] });
+  assert.deepEqual(out, [{ build: 'one', pr: 41 }]);
+  assert.equal(opened[0].head, 'b1'); assert.equal(opened[0].base, 'main'); assert.match(opened[0].body, /merge queue/);
+});
+
 
 console.log(`merge queue: ${n} checks passed`);

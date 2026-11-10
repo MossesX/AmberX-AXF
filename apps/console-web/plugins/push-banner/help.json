@@ -124,7 +124,7 @@
       {
         "target": "action:push-banner.queue",
         "title": "Merge queue",
-        "text": "Opens the merge queue: every ready PR in the order it merges, each tested once.",
+        "text": "Opens the merge queue: every finished build lands through it. The ready PRs are combined into one batch build, CI runs once on it, and a green batch lands on main as one commit.",
         "kind": "menu-item"
       },
       {
@@ -188,6 +188,12 @@
         "kind": "toggle"
       },
       {
+        "target": "red-run",
+        "title": "Red run",
+        "text": "Opens the CI run of the batch that went red, on GitHub: which checks failed while the queue splits the batch to find the PR that broke it.",
+        "kind": "link"
+      },
+      {
         "target": "send-the-pr-that-broke-a-batch-back-to-its-build-for-a-fix",
         "title": "Send the PR that broke a batch back",
         "text": "A red batch is split in halves until one PR alone is red; the good ones merge. On (default): that PR goes back to its build, an agent fixes its branch, and it rejoins the queue for a retest. AmberX gets an alert.",
@@ -198,6 +204,12 @@
         "title": "Fix tries per PR",
         "text": "How many automatic fixes a PR gets (0 to 5, default 2) before it stays out and you get an alert to look at it.",
         "kind": "field"
+      },
+      {
+        "target": "merge-queue-everything-lands-through-it",
+        "title": "Merge queue: everything lands through it",
+        "text": "On: every finished build gets a PR and goes into the merge queue, and nothing reaches AmberX-AXF's main on its own (Merge puts a PR in the queue). Switching it off is Brett's own click.",
+        "kind": "toggle"
       }
     ],
     "intros": []
