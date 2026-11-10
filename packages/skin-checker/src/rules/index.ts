@@ -3,5 +3,6 @@
  * SKIN_CHECK_RULES plus a file here; `ALL_RULES` is what index.ts registers.
  */
 import type { SkinCheckRule } from '../contract.ts';
+import { SPACING_RULES } from './spacing-scale.ts';
 
-export const ALL_RULES: readonly SkinCheckRule[] = [];
+export const ALL_RULES: readonly SkinCheckRule[] = [...SPACING_RULES];
