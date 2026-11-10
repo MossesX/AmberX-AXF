@@ -208,7 +208,7 @@ export function parseSegments(raw: unknown): ChapterVideo[] {
   });
 }
 
-/** A design package id as a name ("soft-studio" → "Soft studio"); '' when none was applied. */
+/** A skin id (or an older design package id) as a name ("soft-studio" → "Soft studio"); '' when none was applied. */
 export function lookLabel(id: string): string {
   const t = id.replace(/^design[-.]?package[-.:]?/i, '').replace(/[-_.]+/g, ' ').trim();
   return t ? t[0]!.toUpperCase() + t.slice(1) : '';

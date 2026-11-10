@@ -47,7 +47,7 @@ export function ChaptersView({ id, base }: { id: string; base: string }) {
       render: (c) => <span>{s.list.indexOf(c) + 1}. {c.title}</span> },
     { id: 'length', label: 'Length', width: 'calc(var(--fx-space) * 8)', align: 'end', sortable: true, sortValue: (c) => c.duration, render: (c) => <span className="fx-small">{clock(c.duration)}</span> },
     { id: 'version', label: 'Version', width: 'calc(var(--fx-space) * 8)', sortable: true, sortValue: (c) => c.version, render: (c) => <Chip tone={c.version > 1 ? 'accent' : undefined}>v{c.version}</Chip> },
-    { id: 'look', label: 'Design package', width: 'minmax(calc(var(--fx-space) * 12), 2fr)', sortable: true, sortValue: (c) => c.look,
+    { id: 'look', label: 'Skin', width: 'minmax(calc(var(--fx-space) * 12), 2fr)', sortable: true, sortValue: (c) => c.look,
       render: (c) => <span className="fx-small">{lookLabel(c.look) || <span className="fx-muted">none</span>}</span> },
     { id: 'recorded', label: 'Recorded', width: 'minmax(calc(var(--fx-space) * 12), 2fr)', sortable: true, sortValue: (c) => c.recordedAt, render: (c) => <span className="fx-small fx-muted">{when(c.recordedAt)}</span> },
     { id: 'act', label: '', width: 'calc(var(--fx-space) * 16)', fixed: true,

@@ -613,6 +613,14 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   eq(nav.map((c) => c.id), ['nav.notes'], 'one navigation command per page (duplicates, blanks and bad ids dropped)');
   eq(nav[0].phrases, ['open notes', 'go to notes', 'show notes'], 'navigation phrases come from the page title');
   eq([nav[0].action, nav[0].group, nav[0].defaultOn], ['nav:notes', 'nav', true], 'navigation command runs nav:<id>, on by default');
+  // skins only (Nov 9 2026): one voice command per skin runs skin.use:<id>, the same action as the Skin picker, REST, MCP and CLI
+  const skinCmds = voice.skinCommands([{ id: 'hub-default', name: 'Hub Default' }, { id: 'hub-default', name: 'Again' }, { id: 'Bad Id', name: 'x' }, { id: 'fresh', name: '' }]);
+  eq(skinCmds.map((c) => [c.id, c.action, c.defaultOn]), [['skin.hub-default', 'skin.use:hub-default', true]], 'one skin command per skin (duplicates, blanks and bad ids dropped), on by default');
+  eq(skinCmds[0].phrases, ['use skin hub default', 'skin hub default'], 'skin phrases come from the skin name');
+  for (const a of ['skin.next', 'skin.prev', 'skin.random']) ok(voice.CURATED_ACTIONS.has(a), `${a} is a curated voice action`);
+  ok(![...voice.CURATED_ACTIONS].some((a) => a.startsWith('swap:')), 'no voice action swaps a skin section on its own');
+  { const src = (await import('node:fs')).readFileSync(new URL('./src/plugins/voice/web/index.tsx', import.meta.url), 'utf8');
+    ok(!/swap:(color|style)-theme|swap:layout/.test(src), 'built-in voice commands step skins, never a colour / style / layout theme'); }
   const acts = voice.actionCommands([
     { id: 'app.settings', meta: { label: 'Settings', module: 'axf.framework' } },
     { id: 'swap', meta: { label: 'Swap', params: true } },

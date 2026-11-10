@@ -140,8 +140,24 @@ export function navigationCommands(views: readonly { id: string; title: string }
   return out;
 }
 
+/**
+ * One command per skin (skins only, Nov 9 2026): "use skin <name>", "skin <name>" → `skin.use:<id>`, the same action
+ * the Skin picker, the console API, MCP (console_action) and the CLI (skins.mjs use) run. Duplicates and bad ids dropped.
+ */
+export function skinCommands(skins: readonly { id: string; name: string }[]): ManagedCommand[] {
+  const out: ManagedCommand[] = [];
+  const seen = new Set<string>();
+  for (const s of skins) {
+    const t = normalize(s.name).slice(0, MAX_PHRASE - 9);
+    if (!s.id || !t || seen.has(s.id) || !/^[a-z0-9][a-z0-9-]*$/.test(s.id)) continue;
+    seen.add(s.id);
+    out.push({ id: `skin.${s.id}`, phrases: [`use skin ${t}`, `skin ${t}`], action: `skin.use:${s.id}`, reply: '', group: 'actions', owner: 'Skins', defaultOn: true, module: 'voice.skins' });
+  }
+  return out;
+}
+
 /** Actions a person would say out loud and that are safe to have on from the start. */
-export const CURATED_ACTIONS = new Set(['app.settings', 'axhub.check', 'monitor.start', 'monitor.stop', 'voice.listen', 'dictation.start', 'swap:color-theme:next', 'notes.new', 'tasks.new']);
+export const CURATED_ACTIONS = new Set(['app.settings', 'axhub.check', 'monitor.start', 'monitor.stop', 'voice.listen', 'dictation.start', 'skin.next', 'skin.prev', 'skin.random', 'notes.new', 'tasks.new']);
 
 /**
  * One command per argument-free action with a label (stubs, actions that need arguments, `nav` itself and ones kept out

@@ -331,15 +331,15 @@ export function NavMenu({ views }: { views: ViewMap }) {
 export function StatusBar() {
   const rt = useRuntime();
   const state = useAxfState();
-  const name = (t: 'color-theme' | 'style-theme' | 'layout') => rt.asset(t).name;
+  // Skins only (Nov 9 2026): the status bar names the skin in force, not its colour / style / layout sections
+  const skinId = rt.appliedSkin();
+  const skinName = skinId ? (rt.skinList().find((s) => s.id === skinId)?.name ?? skinId) : 'App look';
   return (
     <footer className="fx-status">
       <span className="fx-status__dot" aria-hidden="true" />
       <span>AmberX AXF {FRAMEWORK_VERSION}</span>
       <span className="fx-status__sep" />
-      <span title="Color theme">{name('color-theme')}</span>
-      <span title="Style theme">{name('style-theme')}</span>
-      <span title="Layout">{name('layout')}</span>
+      <span title="Skin">{skinName}</span>
       <span className="fx-status__grow" />
       <span>{rt.registry.count()} assets</span>
       <span>{state.swaps} swaps</span>

@@ -20,7 +20,7 @@ import { NOTES_ID, load as loadNotes, runIntent, snapshot as notesSnapshot } fro
 import { aiReady, parseNote } from '../../ai/web/client';
 import {
   GROUPS, NOTE_EXAMPLES, TASK_EXAMPLES, actionCommands, afterWake, applyOverrides, checkMine, decide, describeIntent, fillReply,
-  navigationCommands, openSpec, parseMine, parseOverrides, parseUserCommands, phraseList, resetOverrides, setOverride, userCommands,
+  navigationCommands, openSpec, skinCommands, parseMine, parseOverrides, parseUserCommands, phraseList, resetOverrides, setOverride, userCommands,
   type CommandGroup, type Effective, type ManagedCommand, type MyCommand, type VoiceCommand,
 } from './core';
 import { FACTORY_PHRASES, SUGGESTED_PHRASES, addPhrase, phrasesText, removePhrase } from './wake';
@@ -66,7 +66,11 @@ const BUILT_IN: VoiceCommand[] = [
   { id: 'monitor.start', phrases: ['start monitoring', 'start watching', 'watch the hub'], action: 'monitor.start', reply: 'Watching the hub.' },
   { id: 'monitor.stop', phrases: ['stop monitoring', 'stop watching'], action: 'monitor.stop', reply: 'Stopped watching.' },
   { id: 'settings.open', phrases: ['open settings', 'settings'], action: 'app.settings' },
-  { id: 'look.next', phrases: ['next theme', 'change colors', 'change the colors'], action: 'swap:color-theme:next' },
+  // Skins only (Nov 9 2026): every look phrase steps the skin; colours are a skin's section, never swapped alone
+  { id: 'look.next', phrases: ['next skin', 'change skin', 'next theme', 'change colors', 'change the colors'], action: 'skin.next' },
+  { id: 'look.prev', phrases: ['previous skin', 'last skin', 'previous theme'], action: 'skin.prev' },
+  { id: 'look.random', phrases: ['random skin', 'surprise me'], action: 'skin.random' },
+  { id: 'look.default', phrases: ['default skin', 'default look', 'restore the look'], action: 'skin.restore' },
   { id: 'help', phrases: ['what can you do', 'help'], action: 'nav:voice', reply: 'Here is everything I understand.' },
   { id: 'commands.open', phrases: ['voice commands', 'manage voice commands'], action: 'voice.commands' },
 ];
@@ -105,6 +109,7 @@ export function managedCommands(rt: AxfRuntime): ManagedCommand[] {
     ...plugin,
     ...builtin,
     ...navigationCommands(pages(rt)).filter((c) => !taken.has(c.action)),
+    ...skinCommands(rt.skinList()).filter((c) => !taken.has(c.action)),
     ...actionCommands(rt.actions.list()).filter((c) => !taken.has(c.action)),
   ];
 }
