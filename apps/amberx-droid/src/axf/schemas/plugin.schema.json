@@ -16,6 +16,96 @@
     "$axf": {
       "const": "plugin@1"
     },
+    "control": {
+      "type": "object",
+      "description": "control-registry@1 (build full-api-cli-control-of-everything-plus-an-offli, Nov 10 2026): what this plugin declares by hand for the control registry (contracts/control-registry@1.schema.json#/$defs/declaration): partial entries merged by id with what the collectors derive (allowed values, needsAI, synonyms, gaps, a provider owner). Read by apps/console-web/lib/registry/collect.mjs.",
+      "required": [
+        "$axf"
+      ],
+      "properties": {
+        "$axf": {
+          "const": "control-registry@1"
+        },
+        "note": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "object"
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9-]*/(page|app|plugin|tool|behavior|display|setting)/[A-Za-z0-9][A-Za-z0-9._:@-]*(/[A-Za-z0-9][A-Za-z0-9._:@-]*){0,2}$"
+              }
+            }
+          }
+        }
+      }
+    },
+    "voice": {
+      "type": "object",
+      "description": "voice-intents@1 (build full-api-cli-control-of-everything-plus-an-offli, Nov 10 2026): the spoken phrases this plugin understands, as data (contracts/control-registry@1.schema.json#/$defs/voice), so the offline control registry carries them and the deterministic dispatcher resolves them without a model. Each intent names a registry entry + action (or a ref to run) and its phrases; {param} slots name parameters.",
+      "required": [
+        "$axf",
+        "intents"
+      ],
+      "properties": {
+        "$axf": {
+          "const": "voice-intents@1"
+        },
+        "note": {
+          "type": "string"
+        },
+        "intents": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "phrases"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "phrases": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "maxLength": 80
+                }
+              },
+              "entry": {
+                "type": "string"
+              },
+              "action": {
+                "type": "string"
+              },
+              "run": {
+                "type": "string"
+              },
+              "params": {
+                "type": "object"
+              },
+              "reply": {
+                "type": "string"
+              },
+              "needsAI": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    },
     "id": {
       "type": "string",
       "description": "namespaced, e.g. com.example.myplugin"

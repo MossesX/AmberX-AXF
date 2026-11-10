@@ -11,7 +11,8 @@
     { "id": "recording", "label": "Session recording", "icon": "mic", "order": 65, "description": "AmberX records each Claude session and every part is transcribed. Android's capture prompt and your own mic switch still decide." },
     { "id": "headless", "label": "Headless sessions", "icon": "terminal", "order": 35, "description": "What a headless build takes in. Brief only: no CLAUDE.md, rules files, memory or settings-injected context; the brief the orchestrator writes is the whole input (headless-context@1)." },
     { "id": "memory", "label": "Memory and notes", "icon": "file", "order": 70, "description": "What Claude writes down for later sessions." },
-    { "id": "deploy", "label": "Nightly deploy", "icon": "refresh", "order": 80, "description": "The console rebuilds and deploys from main once a night, when code changed." }
+    { "id": "deploy", "label": "Nightly deploy", "icon": "refresh", "order": 80, "description": "The console rebuilds and deploys from main once a night, when code changed." },
+    { "id": "console", "label": "Console control", "icon": "terminal", "order": 25, "description": "How the console resolves commands, CLI calls and voice phrases: the control registry first, deterministically; Claude only as a fallback, and only when Brett allows it here." }
   ],
   "settings": [
     { "key": "noWait.enabled", "group": "no-wait", "label": "No wait", "kind": "toggle", "default": false, "owner": true, "level": "simple", "effect": "pass",
@@ -113,6 +114,8 @@
     { "key": "headless.briefBudgetChars", "group": "headless", "label": "Brief budget (characters)", "kind": "number", "default": 24000, "min": 1000, "max": 200000, "step": 1000, "level": "basic",
       "description": "Brief plus its rules block. Over it the run still starts, with a warning in its log and a note on the build. 24000 ≈ 6K tokens." },
     { "key": "headless.startTokenWarn", "group": "headless", "label": "Start tokens warning", "kind": "number", "default": 25000, "min": 1000, "max": 500000, "step": 1000, "level": "basic",
-      "description": "A run whose first request carries more context than this gets a warning on its meter and its build note." }
+      "description": "A run whose first request carries more context than this gets a warning on its meter and its build note." },
+    { "key": "console.claudeAvailable", "group": "console", "label": "Make Claude available to the console", "kind": "toggle", "default": false, "owner": true, "level": "simple",
+      "description": "Off (the default; Brett, Nov 10 2026: \"Anything that can possibly be done without AI needs to be, with AI only as a fallback\"): every command, CLI call and voice phrase is resolved by the control registry alone, and one nothing matches answers with the closest entries and the gap. On: when the registry has no exact match, or the action is marked needsAI, the console hands the request to Claude as a fallback; the model proposes an entry, action and parameters and the registry still validates them before anything runs." }
   ]
 }

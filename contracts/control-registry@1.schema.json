@@ -1,0 +1,294 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/contracts/control-registry@1.schema.json",
+  "title": "control-registry@1: one entry shape for everything controllable",
+  "description": "The offline index of everything a person can do in the console, Molly, axHub, AmberX, the VPS and the providers behind axHub (Hostinger, Coolify, Moshi): every page, app, plugin, tool, behaviour, display option and setting, each with where it lives, the deep link that opens it, how its state is read, every action with every parameter and allowed value, whether it needs AI, and how it is reached (REST, MCP, CLI, voice). Built by apps/console-web/lib/registry from plugin manifests (plugin@1 provides + commands, ui-api@1 ui, control-registry@1 control, voice-intents@1 voice), control@1 targets and AmberX voice commands. Doc: docs/contracts/control-registry.md.",
+  "type": "object",
+  "required": ["$axf", "version", "generatedAt", "hash", "entries"],
+  "additionalProperties": false,
+  "properties": {
+    "$axf": { "const": "control-registry@1" },
+    "version": { "type": "integer", "minimum": 1, "description": "the index format version (1); bumps only when an entry field changes meaning" },
+    "generatedAt": { "type": "string", "description": "ISO time the index was built" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "commit": { "type": "string", "description": "the git commit the sources were read at" },
+        "root": { "type": "string", "description": "repo root the collector ran in (informative)" },
+        "collectors": { "type": "array", "items": { "type": "string" }, "description": "which collectors ran (plugins, ui-api, control, voice, declared)" }
+      }
+    },
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{16}$", "description": "FNV-1a 64-bit over every entry's hash, in id order: two indexes with the same hash hold the same controllable things" },
+    "counts": {
+      "type": "object",
+      "description": "entries by type, owner and surface, for a glance (recomputed on load; never trusted)",
+      "additionalProperties": { "type": ["integer", "object"] }
+    },
+    "owners": {
+      "type": "array",
+      "description": "the apps and providers entries belong to",
+      "items": { "$ref": "#/$defs/owner" }
+    },
+    "gaps": {
+      "type": "array",
+      "description": "what is not controllable yet, index-wide (an entry's own gaps are on the entry)",
+      "items": { "$ref": "#/$defs/gap" }
+    },
+    "entries": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/entry" }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*/(page|app|plugin|tool|behavior|display|setting)/[A-Za-z0-9][A-Za-z0-9._:@-]*(/[A-Za-z0-9][A-Za-z0-9._:@-]*){0,2}$",
+      "maxLength": 200,
+      "description": "<owner>/<type>/<name>[/<sub>[/<sub>]]: console-web/page/plan-studio, console-web/setting/axf.display.fontScale, amberx-droid/plugin/tasks, vps/tool/systemd, axhub-web/behavior/sync. Owner and type lower case; the name is the thing's own id as written (a view id, a setting key, a plugin folder); the type segment must equal `type`."
+    },
+    "type": {
+      "enum": ["page", "app", "plugin", "tool", "behavior", "display", "setting"],
+      "description": "page = a screen, view, dialog or settings tab · app = a whole app or a provider (console, Molly, axHub, AmberX, Hostinger, Coolify, VPS, Moshi) · plugin = an installed plugin · tool = a command, route, MCP tool or CLI command that does one thing · behavior = how something behaves (follow, veto pass, hands-free) · display = how something looks (tokens, slots, skins, density) · setting = one settings key with a value"
+    },
+    "owner": {
+      "type": "object",
+      "required": ["id", "label"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+        "label": { "type": "string" },
+        "kind": { "enum": ["app", "provider", "device", "service"], "description": "app = one of ours · provider = reached through an axHub connection (Hostinger, Coolify) · device = the VPS or a phone · service = a third-party app we only deep-link into (Moshi)" },
+        "via": { "type": "string", "description": "how its entries are reached: console (the console API), axhub (an axHub connection id), channel (the AmberX app channel), intent (Android intents only)" },
+        "base": { "type": "string", "description": "the address deep links are made against (https://console.amberxai.com)" }
+      }
+    },
+    "effect": {
+      "enum": ["read", "navigate", "write", "destructive", "person"],
+      "description": "control@1's effects: read · navigate (opens or shows, no data) · write · destructive (needs a confirm token: the first try answers confirmation_required) · person (Brett's own tap only: approvals, owner-only settings; never run remotely)"
+    },
+    "ref": {
+      "type": "string",
+      "maxLength": 400,
+      "pattern": "^(none|[a-z0-9][a-z0-9-]*/[a-z0-9][a-z0-9-]*|(view|dialog|settings|action|value|control|rest|mcp|cli|intent|url|provider|channel|element):.+)$",
+      "description": "Where something runs or is read, one of: <plugin>/<command> (plugin-commands@1) · view:<id> · dialog:<id> · settings:<tab> · action:<console action[:args]> · value:<setting key> (ui-api@1's grammar) · control:<target>/<op>[/<verb>][/<path>] (control@1) · rest:<METHOD> <path> · mcp:<tool> · cli:<command> · intent:<android intent or app link> · url:<address> · provider:<axhub connection>/<op> · channel:<amberx channel op> · element:<where>/<role>:<label> (console.elements) · none"
+    },
+    "paramType": {
+      "enum": ["string", "number", "integer", "boolean", "enum", "color", "token", "id", "date", "time", "duration", "url", "path", "json", "object", "array", "text", "secret"],
+      "description": "What a parameter holds. enum needs `enum`; number / integer / duration may carry min / max / step; id names a record of `of`; token names a control@1 token path; secret is write-only (never read back)"
+    },
+    "param": {
+      "type": "object",
+      "required": ["name", "type"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_.-]{0,63}$" },
+        "type": { "$ref": "#/$defs/paramType" },
+        "label": { "type": "string", "maxLength": 120 },
+        "description": { "type": "string", "maxLength": 800 },
+        "required": { "type": "boolean", "default": false },
+        "default": { "description": "the value used when the parameter is left out (must be allowed)" },
+        "enum": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": ["string", "number", "boolean"] },
+          "description": "every allowed value, exhaustively (Brett: 'every single option or possibility for a parameter'); the dispatcher never accepts anything else"
+        },
+        "enumLabels": { "type": "object", "additionalProperties": { "type": "string" }, "description": "allowed value → the words a person uses for it (the dispatcher accepts these too)" },
+        "min": { "type": "number" },
+        "max": { "type": "number" },
+        "step": { "type": "number", "exclusiveMinimum": 0 },
+        "pattern": { "type": "string", "description": "a regular expression a string must match" },
+        "maxLength": { "type": "integer", "minimum": 0 },
+        "of": { "type": "string", "description": "for type id: the control@1 target or registry entry whose records this names (planner.builds, amberx.lists)" },
+        "items": { "$ref": "#/$defs/paramType", "description": "for type array: what each item is" },
+        "examples": { "type": "array", "items": {}, "maxItems": 8 },
+        "position": { "type": "integer", "minimum": 0, "description": "where it sits in a CLI call or a spoken phrase (0 = first word after the action); left out = named only (--name value)" },
+        "aliases": { "type": "array", "items": { "type": "string" }, "description": "other names the dispatcher accepts for this parameter (CLI flags, spoken words)" }
+      }
+    },
+    "surfaces": {
+      "type": "object",
+      "description": "How this is reached on each of the four surfaces. A string names the exact way in; true = through the generic dispatcher only (REST POST /api/control/<id>/<action>, MCP control_invoke, CLI axf ctl do, voice through the resolver); false = not reachable there, and `gaps` says why.",
+      "additionalProperties": false,
+      "properties": {
+        "rest": { "type": ["string", "boolean"], "description": "<METHOD> <path>" },
+        "mcp": { "type": ["string", "boolean"], "description": "the MCP tool name" },
+        "cli": { "type": ["string", "boolean"], "description": "the axf command" },
+        "voice": { "type": ["array", "boolean"], "items": { "type": "string", "maxLength": 80 }, "description": "the phrases AmberX understands for it (whole words; normalised like voice core.ts)" },
+        "deepLink": { "type": ["string", "boolean"], "description": "the URL (deep-link@1 for web apps, an intent URI for Android) that opens it" }
+      }
+    },
+    "gap": {
+      "type": "object",
+      "required": ["what", "why"],
+      "additionalProperties": false,
+      "properties": {
+        "what": { "type": "string", "maxLength": 160, "description": "the surface or ability that is missing: rest, mcp, cli, voice, deepLink, state, open, an action id, 'params' (a parameter without allowed values)" },
+        "why": { "type": "string", "minLength": 8, "maxLength": 400 },
+        "plan": { "type": "string", "maxLength": 200, "description": "the build or step that closes it, when known" }
+      }
+    },
+    "action": {
+      "type": "object",
+      "required": ["id", "effect", "run"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._:-]{0,63}$", "description": "open · read · set · reset · toggle · press · run · <verb>: unique within the entry" },
+        "label": { "type": "string", "maxLength": 120 },
+        "description": { "type": "string", "maxLength": 1200 },
+        "effect": { "$ref": "#/$defs/effect" },
+        "run": { "$ref": "#/$defs/ref", "description": "how it runs without the UI" },
+        "params": { "type": "array", "items": { "$ref": "#/$defs/param" } },
+        "needsAI": { "type": "boolean", "default": false, "description": "true only when the action cannot be done deterministically (it asks a model to judge, write or plan). The dispatcher runs these only when Claude settings' 'Make Claude available to the console' is on." },
+        "confirm": { "type": "boolean", "description": "needs the two-step confirm token (every destructive action does)" },
+        "permission": { "type": "string", "maxLength": 120, "description": "the control@1 or UAC permission a remote caller needs" },
+        "aliases": { "type": "array", "items": { "type": "string", "maxLength": 64 }, "description": "other exact ids this action answers to (old names, CLI verbs)" },
+        "phrases": { "type": "array", "items": { "type": "string", "maxLength": 80 }, "description": "spoken or typed phrases that mean this action on this entry ('open plan studio', 'turn follow amber on'); {param} slots name a parameter" },
+        "surfaces": { "$ref": "#/$defs/surfaces" },
+        "output": { "type": "string", "maxLength": 400, "description": "what it answers with" },
+        "gaps": { "type": "array", "items": { "$ref": "#/$defs/gap" } }
+      }
+    },
+    "entry": {
+      "type": "object",
+      "required": ["id", "type", "owner", "label", "where", "actions", "surfaces", "source", "hash"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "type": { "$ref": "#/$defs/type" },
+        "owner": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$", "description": "an owner id from `owners`" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "description": { "type": "string", "maxLength": 2000 },
+        "where": {
+          "type": "object",
+          "description": "where it lives",
+          "additionalProperties": false,
+          "properties": {
+            "app": { "type": "string", "description": "the app that renders or runs it (console-web, molly, axhub-web, amberx-droid, vps…)" },
+            "plugin": { "type": "string", "description": "the plugin folder, when a plugin provides it" },
+            "view": { "type": "string", "description": "the screen it is on" },
+            "settingsTab": { "type": "string", "description": "the Settings tab (plugins/<id> for a plugin's sub-tab)" },
+            "dialog": { "type": "string" },
+            "menu": { "type": "string", "description": "the menu or toolbar it sits in" },
+            "route": { "type": "string", "description": "a server route, when that is where it runs" },
+            "file": { "type": "string", "description": "the source file that defines it (repo-relative)" },
+            "host": { "type": "string", "description": "the machine or service (vps, hostinger, coolify) for off-console things" }
+          }
+        },
+        "open": {
+          "type": "object",
+          "description": "how to put it on screen: the console_open / console_show target and the deep link",
+          "additionalProperties": false,
+          "properties": {
+            "kind": { "enum": ["screen", "dialog", "settings", "action", "app", "intent", "url", "none"] },
+            "target": { "type": "string", "maxLength": 200, "description": "what console_open / console_show takes: the view id, dialog id, settings tab (plugins/<id>) or action spec" },
+            "deepLink": { "type": "string", "maxLength": 600, "description": "deep-link@1 query (?axf-view=…) or absolute URL; an intent URI for Android" },
+            "anchor": { "type": "string", "maxLength": 160, "description": "the setting or group to scroll to once open" }
+          }
+        },
+        "state": {
+          "type": "object",
+          "description": "how its state is read without the UI",
+          "additionalProperties": false,
+          "properties": {
+            "read": { "$ref": "#/$defs/ref" },
+            "shape": { "type": "string", "maxLength": 400, "description": "what comes back, in words or as a JSON Schema ref" },
+            "fields": { "type": "array", "items": { "$ref": "#/$defs/param" }, "description": "the readable fields, each typed; for a setting: one field `value` with the allowed values" }
+          }
+        },
+        "actions": { "type": "array", "items": { "$ref": "#/$defs/action" } },
+        "needsAI": { "type": "boolean", "default": false, "description": "the entry as a whole needs a model (an AI assistant page, a summariser); its actions inherit it" },
+        "surfaces": { "$ref": "#/$defs/surfaces" },
+        "aliases": { "type": "array", "items": { "type": "string", "maxLength": 120 }, "description": "other exact names that resolve to this entry: old ids, the console action id, the voice command id, 'plans' for plan-studio" },
+        "synonyms": { "type": "array", "items": { "type": "string", "maxLength": 80 }, "description": "words a person uses for it; the resolver matches them as whole words, never fuzzily" },
+        "keywords": { "type": "array", "items": { "type": "string", "maxLength": 80 } },
+        "tags": { "type": "array", "items": { "type": "string", "maxLength": 40 } },
+        "requires": { "type": "string", "maxLength": 120, "description": "the UAC permission the thing itself needs" },
+        "parent": { "$ref": "#/$defs/id", "description": "the entry this belongs to (a setting's tab, a plugin's app)" },
+        "source": {
+          "type": "object",
+          "required": ["kind"],
+          "additionalProperties": false,
+          "properties": {
+            "kind": { "enum": ["plugin-manifest", "ui-api", "control", "voice", "declared", "runtime", "provider"], "description": "plugin-manifest = plugin@1 provides / commands · ui-api = ui-api@1 ui block · control = a control@1 target · voice = AmberX voice commands · declared = a control-registry@1 control block or a registry.d file · runtime = reported by a running console (console-catalog@1) · provider = an axHub provider manifest" },
+            "file": { "type": "string", "maxLength": 300 },
+            "frame": { "type": "string", "maxLength": 60, "description": "the declaration's $axf, when it had one" }
+          }
+        },
+        "gaps": { "type": "array", "items": { "$ref": "#/$defs/gap" } },
+        "hash": { "type": "string", "pattern": "^[a-f0-9]{16}$", "description": "FNV-1a 64-bit of the entry without hash and source.file: change detection compares these" }
+      }
+    },
+    "declaration": {
+      "title": "control-registry@1 declaration (plugin.json `control`, registry.d/*.json)",
+      "description": "What a plugin or an app declares by hand to add to or override what the collectors derive. Entries here are partial: id and whatever should win; the collector merges by id (declared fields replace derived ones, arrays of actions and params merge by id / name).",
+      "type": "object",
+      "required": ["$axf"],
+      "additionalProperties": false,
+      "properties": {
+        "$axf": { "const": "control-registry@1" },
+        "note": { "type": "string" },
+        "owner": { "$ref": "#/$defs/owner", "description": "an owner this declaration introduces (a provider: hostinger, coolify, vps, moshi)" },
+        "entries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "type": { "$ref": "#/$defs/type" },
+              "owner": { "type": "string" },
+              "label": { "type": "string" },
+              "description": { "type": "string" },
+              "where": { "$ref": "#/$defs/entry/properties/where" },
+              "open": { "$ref": "#/$defs/entry/properties/open" },
+              "state": { "$ref": "#/$defs/entry/properties/state" },
+              "actions": { "type": "array", "items": { "type": "object", "required": ["id"], "properties": { "id": { "type": "string" } }, "description": "partial actions, merged by id; a new id adds an action (then effect and run are needed)" } },
+              "needsAI": { "type": "boolean" },
+              "surfaces": { "$ref": "#/$defs/surfaces" },
+              "aliases": { "type": "array", "items": { "type": "string" } },
+              "synonyms": { "type": "array", "items": { "type": "string" } },
+              "keywords": { "type": "array", "items": { "type": "string" } },
+              "tags": { "type": "array", "items": { "type": "string" } },
+              "requires": { "type": "string" },
+              "parent": { "type": "string" },
+              "gaps": { "type": "array", "items": { "$ref": "#/$defs/gap" } },
+              "remove": { "type": "boolean", "description": "true = this derived entry is not controllable: it is dropped from the index (say why in gaps)" }
+            }
+          }
+        }
+      }
+    },
+    "voice": {
+      "title": "voice-intents@1 (plugin.json `voice`)",
+      "description": "The spoken phrases a plugin understands, declared as data so the offline index carries them (what AmberX's registerVoiceCommands adds at run time, written down). Each intent names a registry entry and action (or a plain action ref) and the phrases that mean it; {param} slots name the action's parameters and are filled from the words in that position.",
+      "type": "object",
+      "required": ["$axf", "intents"],
+      "additionalProperties": false,
+      "properties": {
+        "$axf": { "const": "voice-intents@1" },
+        "note": { "type": "string" },
+        "intents": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "phrases"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._:-]{0,120}$" },
+              "phrases": { "type": "array", "minItems": 1, "items": { "type": "string", "maxLength": 80 } },
+              "entry": { "$ref": "#/$defs/id", "description": "the registry entry it controls" },
+              "action": { "type": "string", "maxLength": 64, "description": "the entry's action id (default: open for a page, run for a tool, set for a setting)" },
+              "run": { "$ref": "#/$defs/ref", "description": "when there is no entry yet: the ref to run (an action spec, a plugin command)" },
+              "params": { "type": "object", "additionalProperties": {}, "description": "fixed parameter values this phrase implies ('turn follow amber on' → { on: true })" },
+              "reply": { "type": "string", "maxLength": 200, "description": "what AmberX says back; {waiting} = approvals waiting" },
+              "needsAI": { "type": "boolean" }
+            }
+          }
+        }
+      }
+    }
+  }
+}
