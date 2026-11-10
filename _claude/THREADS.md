@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 02:22 UTC · `self-healing-build-folders-auto-clear-stale-git` added (0 steps) (all) · console
 - 2026-11-10 02:21 UTC · `one-builds-page-pending-queued-built-tabs-remove` → archived (all) · orchestrator
 - 2026-11-10 02:21 UTC · `split-builds-pages-build-manager-pending-complet-3` s1 done (all) · orchestrator
 - 2026-11-10 02:22 UTC · `one-builds-page-pending-queued-built-tabs-remove` note (all) · foreign-write
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 16:22 UTC · `search-bar-plugin-add-on-search-builds-session-h` branch claude/search-bar-plugin-add-on-search-builds-session-h (all) · pipeline
 - 2026-11-10 16:22 UTC · `search-bar-plugin-add-on-search-builds-session-h` note (all) · orchestrator
 - 2026-11-10 16:25 UTC · `retire-build-manager-the-orchestrator-is-the-onl` PR #450 (all) · builds-live
+- 2026-11-10 16:26 UTC · `retire-build-manager-the-orchestrator-is-the-onl` note (all) · orchestrator
 
 ## Token passes (log)
 
