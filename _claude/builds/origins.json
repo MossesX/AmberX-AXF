@@ -3004,6 +3004,18 @@
    "from": "",
    "addenda": []
   },
+  "ollama-own-docker-container-amberx-llama-interna": {
+   "said": "It's gonna build in its own Docker container named AmberX Llama, and configure the API all for internal building.",
+   "at": "2026-11-10T17:51:17.543Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "one-amberx-build-notification-veto-approval-befo": {
    "said": "Before the orchestrator starts anything, I want a veto approval notification. I don't need two. Get rid of the other one and just make it a veto approval for the AmberX notification.",
    "at": "2026-11-10T02:24:15.337Z",
