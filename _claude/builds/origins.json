@@ -2623,6 +2623,18 @@
    "from": "",
    "addenda": []
   },
+  "merge-queue-batching-orchestrator-combines-ready": {
+   "said": "Every time we go to compile something it's changed so much that everything breaks. Take all the pull requests as soon as they're ready, have the orchestrator combine them, like five at a time, into one big build. Then pull main and merge it as one.",
+   "at": "2026-11-10T16:44:49.604Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "model-thinking-audit": {
    "said": "Go through my list of things that can be done and see what should be redone with Fable and put that next to it, and put the level of thinking that it should be on.",
    "at": "2026-11-04T15:50:00Z",
