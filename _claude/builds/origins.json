@@ -528,6 +528,18 @@
    "from": "notes",
    "addenda": []
   },
+  "api-accounts-need-no-approval-builds-route-there": {
+   "said": "I don't want to have to approve builds sent to API. They need to just go there just like any other build.",
+   "at": "2026-11-10T21:02:31.264Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "app-compact": {
    "said": "after the compact Settings (PR #175) — 'Rest of the app too'. Same treatment everywhere: less wasted space, no walls of big buttons, no cards inside cards, tight spacing. Framework-wide (axf.css + console.css), so every app on the framework and every plugin follows; per-screen fixes after. Before/after screenshots of every main screen. Profile: Angel. Web; Android deferred.",
    "at": "2026-10-30",
