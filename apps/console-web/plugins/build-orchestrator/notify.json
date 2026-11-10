@@ -60,6 +60,36 @@
       "channels": {
         "amberx": false
       }
+    },
+    {
+      "id": "pipeline.retry",
+      "label": "Build rerun on another account",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator dispatcher",
+      "description": "FYI: a build's session died on its Claude account (login expired, usage limit, out of credits); the account is marked out and the build reruns on the next working account, resuming at its first open step.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:retry:"
+      },
+      "channels": {
+        "amberx": false
+      }
+    },
+    {
+      "id": "pipeline.exhausted",
+      "label": "Every Claude account is out",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator dispatcher",
+      "description": "Every Claude account (subscriptions and the API accounts builds may use) is out on a login, a limit or credits while builds wait, with the exact time of the next reset. Once per spell; cleared when an account comes back.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:exhausted"
+      },
+      "setting": "notify.blocked",
+      "push": true,
+      "priority": "high"
     }
   ]
 }

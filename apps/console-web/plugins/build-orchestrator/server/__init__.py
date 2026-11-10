@@ -484,10 +484,11 @@ def pipeline_settings() -> dict[str, Any]:
 @router.post("/pipeline/settings")
 async def pipeline_settings_set(request: Request) -> dict[str, Any]:
     """{key: value…} for pipeline-settings@1 (parallelPerAccount, fablePlans, useConsoleAccount, maxRuns, idleAfterMin, probeDays,
-    splitProvider, apiOverflow, apiAccounts). Turning the API overflow rule on spends money per token: only Brett's own click
+    splitProvider, apiOverflow, apiAccounts, fableFallback opus|wait, authHoldMin). Turning the API overflow rule on spends money per token: only Brett's own click
     does that (a session, MCP or voice may turn it off)."""
     body = await _json_body(request)
-    allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "apiOverflow", "apiAccounts"}
+    allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "apiOverflow", "apiAccounts",
+               "fableFallback", "authHoldMin"}
     if body.get("apiOverflow") is True and not brett_click(request):
         raise HTTPException(403, "turning the API overflow rule on is Brett's own click in the console (it bills per token)")
 
@@ -500,6 +501,38 @@ async def pipeline_settings_set(request: Request) -> dict[str, Any]:
     if not pairs:
         raise HTTPException(400, "nothing to change")
     return _pipeline("set", *pairs)
+
+
+@router.post("/pipeline/rerun")
+async def pipeline_rerun(request: Request) -> dict[str, Any]:
+    """{ids?: [build…], accountFailures?: bool}: failed builds back in the Queue with a fresh run count; they resume at their
+    first open step on the next working account. accountFailures = every failed build whose last run died on a login,
+    a usage limit or credits (Brett, Nov 10 2026: "When shit needs a rerun, rerun it")."""
+    body = await _json_body(request)
+    ids = [_build_id(i) for i in (body.get("ids") or [])][:50] if isinstance(body.get("ids"), list) else []
+    if body.get("id"):
+        ids.append(_build_id(body.get("id")))
+    flags = ["--account-failures"] if body.get("accountFailures") is True else []
+    if not ids and not flags:
+        raise HTTPException(400, "name builds (ids) or set accountFailures")
+    return _pipeline("rerun", *ids, *flags, "--by", (brett_click(request) or "console")[:80])
+
+
+@router.post("/pipeline/fixlog")
+async def pipeline_fixlog(request: Request) -> dict[str, Any]:
+    """{title, asked?, summary?, state?: done|failed}: the dispatcher's failover moves (a run rerouted off a dead account) as
+    finished fix entries in the change log (capability axf.changes@1). Quiet when no plugin provides the log."""
+    body = await _json_body(request)
+    title = str(body.get("title") or "").strip()[:160]
+    if not title:
+        raise HTTPException(400, "a fix needs a title")
+    svc = plugin_services.get("axf.changes@1")
+    if svc is None:
+        return {"ok": True, "logged": False}
+    state = "failed" if body.get("state") == "failed" else "done"
+    entry = svc.open({"kind": "fix", "title": title, "asked": str(body.get("asked") or "")[:1000],
+                      "result": {"state": state, "summary": str(body.get("summary") or "")[:600]}}, by="build-orchestrator")
+    return {"ok": True, "logged": True, "id": (entry or {}).get("id", "") if isinstance(entry, dict) else ""}
 
 
 @router.post("/pipeline/route")

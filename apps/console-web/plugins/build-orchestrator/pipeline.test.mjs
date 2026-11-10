@@ -243,6 +243,49 @@ t('dispatch gate: a build launch needs the orchestrator token for that build; ot
   assert.match(dispatchVerdict({ b, name: 'alpha', token: 'axd_x', rec: { ...rec, hash: 'f'.repeat(64) } }).why, /not alpha's/);
 });
 
+// ---------------- failover (Brett, Nov 10 2026: "Find one that works … Somebody else.")
+t('failover endOutcome: a run that died on its account requeues, does not count, says where it resumes', () => {
+  const b = build('fo', 'running', [step('s1', 'Opus', true), step('s2', 'Opus'), step('s3', 'Opus')], { pipeline: { account: 'acc-1', session: 'axf-fo', runs: 3 } });
+  const r = P.endOutcome(b, { exit: 1, hit: 'auth', limit: { until: '2026-11-10T03:00:00.000Z', reason: 'login failed' } }, P.normSettings({ maxRuns: 3 }));
+  assert.equal(r.outcome, 'requeued'); assert.equal(r.status, 'queued'); assert.equal(r.rerouted, true); assert.equal(r.runs, 2, 'the dead-account run is taken back off the count');
+  assert.match(r.note, /Account acc-1 login expired \(out until Nov 10 03:00 UTC\): rerunning on the next working account, resuming at s2 \(1 step already done\)/);
+  const plain = P.endOutcome(b, { exit: 1 }, P.normSettings({ maxRuns: 3 }));
+  assert.equal(plain.outcome, 'failed', 'a plain crash on run 3 still fails');
+});
+const fo = (name, extra = {}) => ({ name, kind: 'subscription', role: 'worker', usable: true, fable: true, running: 0, parallel: 1, free: 1, limited: null, why: '', ...extra });
+const out = (name, until, extra = {}) => fo(name, { usable: false, free: 1, limited: { until, reason: 'hit its limit', kind: 'usage' }, why: 'hit its limit', ...extra });
+const qb = (id, model) => build(id, 'queued', [step('s1', model)], { pipeline: { queuedAt: now } });
+t('failover plan: Fable out on every account → the phase runs on Opus and says so; wait setting waits for the reset', () => {
+  const accts = [out('max-1', '2026-11-10T05:00:00.000Z'), fo('pro-1', { fable: false })];
+  let p = P.plan({ builds: [qb('f1', 'Fable')], accounts: accts, slots: { free: 2 }, settings: P.normSettings({}), rules: { maxStepMinutes: 30 } });
+  assert.equal(p.launches.length, 1); assert.equal(p.launches[0].account, 'pro-1'); assert.equal(p.launches[0].model, 'Opus'); assert.equal(p.launches[0].pinned, 'Fable'); assert.equal(p.launches[0].fallback, 'opus');
+  assert.match(p.launches[0].why, /Fable[ 0-9.]* is out on every account \(next reset: max-1 at Nov 10 05:00 UTC\): this phase runs on Opus/);
+  p = P.plan({ builds: [qb('f1', 'Fable')], accounts: accts, slots: { free: 2 }, settings: P.normSettings({ fableFallback: 'wait' }), rules: { maxStepMinutes: 30 } });
+  assert.equal(p.launches.length, 0); assert.match(p.waits[0].why, /waiting for the reset \(fableFallback: wait\)/);
+});
+t('failover plan: a Fable account that is only busy is waited for (no downgrade)', () => {
+  const p = P.plan({ builds: [qb('f2', 'Fable')], accounts: [fo('max-1', { running: 1, free: 0 }), fo('pro-1', { fable: false })], slots: { free: 2 }, settings: P.normSettings({}), rules: { maxStepMinutes: 30 } });
+  assert.equal(p.launches.length, 0); assert.match(p.waits[0].why, /parallel cap/); assert.equal(p.exhausted, null);
+});
+t('failover plan: every account out → exhausted with the earliest reset; one alert, the exact time', () => {
+  const accts = [out('a1', '2026-11-10T09:00:00.000Z'), out('a2', '2026-11-10T04:30:00.000Z', { fable: false }), { name: 'api-1', kind: 'api', role: 'api-worker', usable: false, fable: true, running: 0, parallel: 1, free: 1, limited: null, why: '', api: { usable: true, why: '' } }];
+  const p = P.plan({ builds: [qb('e1', 'Opus'), qb('e2', 'Opus')], accounts: accts, slots: { free: 3 }, settings: P.normSettings({}), rules: { maxStepMinutes: 30 } });
+  assert.equal(p.launches.length, 0); assert.ok(p.exhausted); assert.deepEqual(p.exhausted.builds, ['e1', 'e2']); assert.equal(p.exhausted.next.account, 'a2');
+  assert.match(p.exhausted.reason, /Next reset: a2 at Nov 10 04:30 UTC/); assert.match(p.exhausted.reason, /api-1 API \(overflow off\)/);
+  const a = P.alertFor('exhausted', p.exhausted); assert.equal(a.key, 'pipeline:exhausted'); assert.equal(a.title, 'Every Claude account is out until Nov 10 04:30 UTC');
+  assert.match(P.alertFor('retry', { id: 'e1', title: 'E1', note: 'moved' }).key, /^pipeline:retry:e1$/);
+  // the overflow rule on: the API account is alive, so it takes a build and nothing is exhausted
+  const q = P.plan({ builds: [qb('e1', 'Opus')], accounts: accts, slots: { free: 3 }, settings: P.normSettings({ apiOverflow: true }), rules: { maxStepMinutes: 30 } });
+  assert.equal(q.launches[0]?.account, 'api-1'); assert.equal(q.exhausted, null);
+});
+t('failover noAccountWhy names the next reset; resumeBlock only on a rerun', () => {
+  assert.match(P.noAccountWhy([out('a1', '2026-11-10T09:00:00.000Z')], 'Opus'), /next reset: a1 at Nov 10 09:00 UTC/);
+  assert.equal(P.resumeBlock(build('r0', 'queued', [step('s1', 'Opus')])), '', 'a first run has no resume block');
+  const rb = P.resumeBlock(build('r1', 'queued', [step('s1', 'Opus', true), step('s2', 'Opus')], { pipeline: { lastRun: { account: 'a1', exit: 1, outcome: 'requeued' } } }));
+  assert.match(rb, /## Resume/); assert.match(rb, /Step s1 is ticked: done/); assert.match(rb, /carry on from s2\. Do not start over/);
+  assert.equal(P.normSettings({ fableFallback: 'nope', authHoldMin: 99999 }).fableFallback, 'opus'); assert.equal(P.normSettings({ authHoldMin: 99999 }).authHoldMin, 1440);
+});
+
 // ---------------- the CLI end to end (scratch store, fake accounts, fake launcher, fake splitter)
 const e2e = process.env.AXF_PIPELINE_TEST_E2E !== 'off' && existsSync(join(HERE, 'pipeline.mjs'));
 if (e2e) {
@@ -385,6 +428,40 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     orch('act', JSON.stringify({ action: 'add', id: 'delta', title: 'Delta', detail: 'Add the delta screen.\nDesign the delta schema.' }));
     const r = json(pipe('intake', '--json')); assert.deepEqual(r.split.map((x) => x.id), ['delta']);
     assert.equal(find('delta').pipeline.split.provider, 'rules'); assert.ok(find('delta').steps.length >= 3); assert.match(find('delta').pipeline.note, /rules/);
+  });
+  t('e2e failover: a run that dies on a dead login marks the account out and reruns on somebody else, uncounted', () => {
+    orch('act', JSON.stringify({ action: 'add', id: 'omega', title: 'Omega', steps: [{ text: 'omega one', model: 'Opus', estimate: '20 min' }, { text: 'omega two', model: 'Opus', estimate: '20 min' }] }));
+    orch('act', 'step', 'omega', 's1', 'done');
+    // free every account: end whatever runs, so omega has a choice
+    for (const b of store().builds.filter((x) => x.status === 'running')) orch('act', JSON.stringify({ action: 'status', id: b.id, status: 'pending' }));
+    json(pipe('queue', 'omega', '--json'));
+    let r = json(pipe('tick', '--json'));
+    const first = r.launched.find((l) => l.id === 'omega'); assert.ok(first, JSON.stringify(r.plan.waits));
+    const dead = first.account;
+    mkdirSync(join(wtRoot, 'omega'), { recursive: true });
+    writeFileSync(join(wtRoot, 'omega', 'omega.log'), '# login x\nFailed to authenticate: OAuth session expired and could not be refreshed\n');
+    writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('omega').pipeline.session, name: 'omega', exit: 1, at: new Date().toISOString() }) + '\n');
+    r = json(pipe('tick', '--json'));
+    const end = r.ended.find((e) => e.id === 'omega'); assert.ok(end?.rerouted, JSON.stringify(r.ended)); assert.equal(end.hit, 'auth');
+    const s = json(pipe('status', '--json'));
+    assert.equal(s.accounts.find((a) => a.name === dead).usable, false); assert.match(s.accounts.find((a) => a.name === dead).why, /login expired until/);
+    const o = find('omega');
+    assert.match(o.notes.map((x) => x.text).join('\n'), new RegExp(`Account ${dead} login expired .*resuming at s2 \\(1 step already done\\)`));
+    const again = r.launched.find((l) => l.id === 'omega');
+    if (again) { assert.notEqual(again.account, dead, 'somebody else'); assert.equal(o.pipeline.runs, 1, 'the dead-login run is not counted'); assert.match(readFileSync(join(wtRoot, 'omega', '.axf-brief.md'), 'utf8'), /## Resume[\s\S]*carry on from s2/); }
+    else assert.equal(o.status, 'queued');
+    const lines = readFileSync(join(pipeDir, 'log.jsonl'), 'utf8'); assert.match(lines, /"event":"rerouted","build":"omega"/);
+  });
+  t('e2e rerun --account-failures: failed builds that died on login / credits go back in the Queue with a fresh count', () => {
+    orch('act', JSON.stringify({ action: 'add', id: 'sigma', title: 'Sigma', steps: [{ text: 'sigma one', model: 'Opus', estimate: '20 min' }] }));
+    orch('act', JSON.stringify({ action: 'add', id: 'tau', title: 'Tau', steps: [{ text: 'tau one', model: 'Opus', estimate: '20 min' }] }));
+    for (const id of ['sigma', 'tau']) orch('act', JSON.stringify({ action: 'status', id, status: 'failed' }));
+    mkdirSync(join(wtRoot, 'sigma'), { recursive: true }); writeFileSync(join(wtRoot, 'sigma', 'sigma.log'), "You're out of usage credits. Switch to another model\n");
+    mkdirSync(join(wtRoot, 'tau'), { recursive: true }); writeFileSync(join(wtRoot, 'tau', 'tau.log'), 'TypeError: x is undefined\n');
+    const r = json(pipe('rerun', '--account-failures', '--by', 'brett', '--json'));
+    assert.deepEqual(r.requeued.map((x) => x.id), ['sigma']); assert.equal(find('sigma').status, 'queued'); assert.equal(find('sigma').pipeline.runs, 0); assert.equal(find('tau').status, 'failed', 'a code failure is not an account failure');
+    const r2 = json(pipe('rerun', 'tau', 'nope', '--json'));
+    assert.deepEqual(r2.requeued.map((x) => x.id), ['tau']); assert.deepEqual(r2.skipped.map((x) => x.id), ['nope']);
   });
 }
 

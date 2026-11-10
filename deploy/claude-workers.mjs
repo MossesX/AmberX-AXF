@@ -54,8 +54,10 @@ const HOUR = 3600e3;
 const DAY = 24 * HOUR;
 /** No reset time in the message: 5 hours (the shortest subscription window). A dead login gets another try sooner. */
 const COOLDOWN = { usage: 5 * HOUR, auth: 10 * 60e3 };
-const LIMIT_RE = /hit your (?:weekly |daily |session |5-hour )?limit|usage limit reached|out of credits|credit balance is too low/i;
-const AUTH_RE = /invalid api key|please run \/login|oauth token (?:has )?expired|authentication_error|not logged in/i;
+const LIMIT_RE = /hit your (?:weekly |daily |session |5-hour )?limit|usage limit reached|out of (?:usage )?credits|credit balance is too low/i;
+// "Failed to authenticate: OAuth session expired and could not be refreshed" is what a dead subscription login prints (Nov 9 2026:
+// 15 builds burned their three runs on account-1 / account-3 because this line did not match)
+const AUTH_RE = /invalid api key|please run \/login|oauth (?:token|session) (?:has )?expired|failed to authenticate|could not be refreshed|authentication_error|not logged in/i;
 const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
 
 const readJson = (f) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return null; } };
@@ -130,12 +132,14 @@ export function hitOf(text, exit = 0) {
   return exit !== 0 && AUTH_RE.test(text) ? 'auth' : '';
 }
 
-export function markLimit(name, { kind = 'usage', text = '' } = {}, env = process.env, now = Date.now()) {
+/** Mark an account out: until the reset the text names, else the kind's cooldown (holdMs overrides the cooldown: the dispatcher parks a dead login longer). */
+export function markLimit(name, { kind = 'usage', text = '', holdMs = 0 } = {}, env = process.env, now = Date.now()) {
   if (!NAME_RE.test(name)) throw Object.assign(new Error(`not an account name: ${name}`), { code: 2 });
-  const until = (kind === 'usage' ? parseReset(text, now) : 0) || now + (COOLDOWN[kind] ?? COOLDOWN.usage);
+  const hold = Number.isFinite(holdMs) && holdMs > 0 ? holdMs : (COOLDOWN[kind] ?? COOLDOWN.usage);
+  const until = (kind === 'usage' ? parseReset(text, now) : 0) || now + hold;
   return withLock(env, () => {
     const state = loadState(env);
-    state.limits[name] = { at: new Date(now).toISOString(), until: new Date(until).toISOString(), kind, reason: kind === 'usage' ? (/credit balance|out of credits/i.test(text) ? 'out of API credit' : 'hit its limit') : 'login failed' };
+    state.limits[name] = { at: new Date(now).toISOString(), until: new Date(until).toISOString(), kind, reason: kind === 'usage' ? (/credit balance|out of (?:usage )?credits/i.test(text) ? 'out of API credit' : 'hit its limit') : 'login failed' };
     saveState(state, env);
     return state.limits[name];
   });

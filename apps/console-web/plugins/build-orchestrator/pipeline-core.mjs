@@ -21,6 +21,15 @@
  *              apiOverflow, off by default: every subscription account full or out → an API account). An API account
  *              takes a build only when it has a key, is switched on, is under its daily and weekly caps and has room;
  *              otherwise it is skipped and the reason is said (apiNoAccountWhy()).
+ *   failover   (Brett, Nov 10 2026: "When shit needs a rerun, rerun it. Find one that works. The orchestrator knows. It
+ *              shouldn't just fail. It should find a new one and try it. Somebody else.") a session that dies on its
+ *              account (login expired, usage limit, out of credits: hitOf() in deploy/claude-workers.mjs) marks that
+ *              account out and goes straight back to the Queue without counting toward maxRuns (endOutcome() with
+ *              `hit`); the next tick routes it to the next working account (subscriptions, then API by the overflow
+ *              rule) and the brief tells the session to resume from the first unticked step (resumeBlock()). A Fable
+ *              phase whose every Fable account is out runs on Opus (fableFallback: opus) or waits for the reset (wait),
+ *              and says which (plan()). Every account out = plan().exhausted with the next reset (nextReset()): the one
+ *              thing Brett hears about; each retry is an FYI (alertFor('retry')).
  */
 import { DEFAULT_MAX_RUNS, STATUS_AFTER, nextModel, openSteps, outcomeLine, outcomeOf, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
@@ -49,12 +58,25 @@ export const DEFAULTS = Object.freeze({
   apiOverflow: false,
   /** API accounts the dispatcher may use ([] = every API worker in claude-workers@1). */
   apiAccounts: [],
+  /** A Fable phase when every Fable account is out (login, limit, credits): opus = run it on Opus now (a downgrade), wait = wait for the reset. Busy (full) accounts are always waited for. */
+  fableFallback: 'opus',
+  /** A login that failed is parked this long before the dispatcher tries it again (minutes). */
+  authHoldMin: 60,
 });
-const LIMITS = { parallelPerAccount: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90] };
+const LIMITS = { parallelPerAccount: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90], authHoldMin: [5, 1440] };
 
 const str = (v, max = 400) => (typeof v === 'string' ? v.slice(0, max) : v == null ? '' : String(v).slice(0, max));
 const list = (v) => (Array.isArray(v) ? v : []);
 const clamp = (k, v) => { const [lo, hi] = LIMITS[k]; const n = Number(v); return Number.isFinite(n) ? Math.min(hi, Math.max(lo, Math.round(n))) : DEFAULTS[k]; };
+
+/** "2026-11-10T15:00:00.000Z" → "Nov 10 15:00 UTC" (the exact time Brett is told). */
+export function when(iso) {
+  const t = Date.parse(iso || ''); if (!Number.isFinite(t)) return '?';
+  const d = new Date(t);
+  return `${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getUTCMonth()]} ${d.getUTCDate()} ${String(d.getUTCHours()).padStart(2, '0')}:${String(d.getUTCMinutes()).padStart(2, '0')} UTC`;
+}
+/** A claude-workers limit record ({ kind, reason, until }) in words. */
+export const limitWords = (l) => (l?.kind === 'auth' || l?.reason === 'auth' || l?.reason === 'login failed' ? 'login expired' : l?.reason || 'hit its limit');
 
 export function normSettings(raw = {}) {
   const o = raw && typeof raw === 'object' ? raw : {};
@@ -69,6 +91,8 @@ export function normSettings(raw = {}) {
     splitProvider: ['claude', 'rules', 'off'].includes(o.splitProvider) ? o.splitProvider : DEFAULTS.splitProvider,
     autoQueue: o.autoQueue === true,
     apiOverflow: o.apiOverflow === true,
+    fableFallback: ['opus', 'wait'].includes(o.fableFallback) ? o.fableFallback : DEFAULTS.fableFallback,
+    authHoldMin: o.authHoldMin === undefined ? DEFAULTS.authHoldMin : clamp('authHoldMin', o.authHoldMin),
     apiAccounts: [...new Set((typeof o.apiAccounts === 'string' ? o.apiAccounts.split(',') : list(o.apiAccounts)).map((n) => str(n, 32).toLowerCase()).filter((n) => /^[a-z0-9][a-z0-9-]{0,31}$/.test(n)))],
   };
 }
@@ -99,7 +123,7 @@ export function accountView(row, own = {}, { settings = normSettings(), anyWorke
   const usable = !off && !apiKey && !limited && (role === 'worker' || (!anyWorker && settings.useConsoleAccount && (role === 'interactive' || role === 'saved')));
   let why = '';
   if (off) why = 'switched off for the pipeline';
-  else if (limited) why = `${limited.reason === 'auth' ? 'login expired' : limited.reason || 'limited'} until ${str(limited.until, 40).slice(0, 16).replace('T', ' ')}`;
+  else if (limited) why = `${limitWords(limited)} until ${when(limited.until)}`;
   else if (apiKey) why = 'API key (billed per token): takes a build only when routed there';
   else if (!usable) why = anyWorker ? 'not a worker (workers take every headless job)' : 'console account use is off';
   // API accounts: their own slot count (claude-workers building limit), Fable unless overridden (an API key reaches every model)
@@ -119,7 +143,7 @@ export function apiState(row, own = {}, settings = normSettings(), { limited = n
   else if (settings.apiAccounts.length && !settings.apiAccounts.includes(name)) why = 'not in the pipeline\'s API account list';
   else if (row?.hasKey === false) why = `no API key saved (Terminal → VPS host → claude-account savekey ${name})`;
   else if (row?.role === 'api-off') why = row?.why || 'not set up as an API worker (Claude accounts → Job routing → API accounts)';
-  else if (limited) why = `${limited.reason === 'auth' ? 'key rejected' : limited.reason || 'limited'} until ${str(limited.until, 40).slice(0, 16).replace('T', ' ')}`;
+  else if (limited) why = `${limited.kind === 'auth' || limited.reason === 'auth' ? 'key rejected' : limited.reason || 'limited'} until ${when(limited.until)}`;
   else if (spend?.state === 'capped') why = `spend cap reached: ${spend.why}`;
   else if (running >= apiParallel) why = `full (${running}/${apiParallel})`;
   return { usable: !why, why, spend };
@@ -176,8 +200,32 @@ export function routeFor(b, accounts, model, settings = normSettings()) {
     : { account: '', kind: '', rule: 'overflow', why: `${subWhy}; overflow: ${apiNoAccountWhy(accounts, model)}` };
 }
 
-/** Why no account takes `model` right now, in plain words. */
+/** Why no account takes `model` right now, in plain words (with the next reset when accounts are out). */
 export function noAccountWhy(accounts, model) {
+  const r = nextReset(accounts, model);
+  const base = noAccountWhyBase(accounts, model);
+  return r ? `${base} · next reset: ${r.account} at ${when(r.until)}` : base;
+}
+
+/** The earliest moment an out account (that can run `model`) comes back: { account, until, why } or null. */
+export function nextReset(accounts, model = '') {
+  const needFable = modelKey(model) === FOUNDATION_MODEL;
+  const out = list(accounts).filter((a) => a.limited && Number.isFinite(Date.parse(a.limited.until)) && (!needFable || a.fable))
+    .sort((a, b) => Date.parse(a.limited.until) - Date.parse(b.limited.until));
+  return out[0] ? { account: out[0].name, until: out[0].limited.until, why: limitWords(out[0].limited) } : null;
+}
+
+/** May this build go to API accounts at all (its override, or the overflow rule)? */
+const apiAllowed = (b, settings) => (b?.pipeline?.route === 'api' || (b?.pipeline?.route !== 'subscription' && settings.apiOverflow));
+/** Accounts still alive for this build on `model`: usable now or only busy (full). Out (limited, capped, no key, off) don't count. */
+export function aliveFor(b, accounts, model, settings = normSettings()) {
+  const needFable = modelKey(model) === FOUNDATION_MODEL;
+  const subs = b?.pipeline?.route === 'api' ? [] : list(accounts).filter((a) => a.kind !== 'api' && a.usable && (!needFable || a.fable));
+  const apis = apiAllowed(b, settings) ? list(accounts).filter((a) => a.kind === 'api' && a.api && (a.api.usable || /^full/.test(a.api.why || '')) && (!needFable || a.fable)) : [];
+  return [...subs, ...apis];
+}
+
+function noAccountWhyBase(accounts, model) {
   const usable = list(accounts).filter((a) => a.usable);
   const needFable = modelKey(model) === FOUNDATION_MODEL;
   if (!usable.length) return list(accounts).length ? `no usable Claude account (${list(accounts).map((a) => `${a.name}: ${a.why || 'busy'}`).join('; ')})` : 'no Claude account is signed in on the VPS';
@@ -207,14 +255,34 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
     if (!openSteps(b).length) { waits.push({ id: b.id, why: b.steps?.length ? 'every step is done: nothing to run' : 'no steps yet: waiting for the split' }); continue; }
     const n = orchNextUp(b, rules);
     if (n.needsApproval) { waits.push({ id: b.id, why: `needs Brett's approval: upgrade ${n.phase.from} → ${n.phase.model}` }); continue; }
-    const model = nextModel(b);
+    const pinned = nextModel(b);
     if (free <= 0) { waits.push({ id: b.id, why: `no free agent slot (${slots?.used ?? '?'}/${slots?.cap ?? '?'} in use)` }); continue; }
-    const r = routeFor(b, acc, model, settings);
+    let model = pinned; let fallback = '';
+    let r = routeFor(b, acc, model, settings);
+    // the pinned model is out everywhere (not just busy): Fable → Opus now, or wait for the reset; either way it says so
+    if (!r.account && modelKey(pinned) === FOUNDATION_MODEL && !aliveFor(b, acc, pinned, settings).length) {
+      const reset = nextReset(acc, pinned);
+      const out = `${MODEL_LABELS[FOUNDATION_MODEL]} is out on every account${reset ? ` (next reset: ${reset.account} at ${when(reset.until)})` : ''}`;
+      const o = settings.fableFallback === 'opus' ? routeFor(b, acc, 'Opus', settings) : null;
+      if (o?.account) { r = { ...o, why: `${out}: this phase runs on Opus instead (fableFallback: opus)${o.why ? `; ${o.why}` : ''}` }; model = 'Opus'; fallback = 'opus'; }
+      else r = { ...r, why: settings.fableFallback === 'opus' ? `${out}, and no Opus account is free either: ${r.why}` : `${out}: waiting for the reset (fableFallback: wait)` };
+    }
     const a = r.account ? acc.find((x) => x.name === r.account) : null;
-    if (!a) { waits.push({ id: b.id, why: r.why }); continue; }
+    if (!a) { waits.push({ id: b.id, why: r.why, account: true, model: pinned }); continue; }
     a.running += 1; a.free -= 1; free -= 1;
     if (a.kind === 'api' && a.api && a.free <= 0) a.api = { ...a.api, usable: false, why: `full (${a.running}/${a.parallel})` };
-    launches.push({ id: b.id, account: a.name, model, phase: n.phase?.name ?? '', priority: priorityLabel(effectivePriority(b)), kind: r.kind, rule: r.rule, why: r.why });
+    launches.push({ id: b.id, account: a.name, model, pinned, fallback, phase: n.phase?.name ?? '', priority: priorityLabel(effectivePriority(b)), kind: r.kind, rule: r.rule, why: r.why });
+  }
+  // every account out (none usable, none merely busy) while builds wait for one: the one thing Brett is told, with the next reset
+  let exhausted = null;
+  const stuck = waits.filter((w) => w.account);
+  if (stuck.length && !launches.length) {
+    const b0 = queue.find((b) => b.id === stuck[0].id);
+    if (!aliveFor(b0, acc, 'Opus', settings).length && !aliveFor(b0, acc, stuck[0].model, settings).length) {
+      const reset = nextReset(acc);
+      const each = list(accounts).map((x) => `${x.name} ${x.limited ? `${limitWords(x.limited)} until ${when(x.limited.until)}` : x.kind === 'api' ? (x.api?.why || (settings.apiOverflow ? 'API' : 'API (overflow off)')) : x.why || 'out'}`).join('; ');
+      exhausted = { builds: stuck.map((w) => w.id), next: reset, reason: `Every Claude account is out: ${each || 'none signed in'}. ${stuck.length} build${stuck.length === 1 ? '' : 's'} wait${stuck.length === 1 ? 's' : ''}.${reset ? ` Next reset: ${reset.account} at ${when(reset.until)}.` : ' No reset time is known: an account needs signing in again.'}` };
+    }
   }
   let idle = null;
   const nothingRunning = !running.length && !(Number(slots?.used) > 0);
@@ -222,21 +290,46 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
     if (queue.length) idle = { reason: `${queue.length} build${queue.length === 1 ? '' : 's'} in the Queue, nothing running: ${waits[0]?.why ?? 'no launch this tick'}`, kind: 'stuck' };
     else if (pending.length) idle = { reason: `Queue empty, nothing running: ${pending.length} build${pending.length === 1 ? '' : 's'} wait in Pending for you to queue them`, kind: 'empty' };
   }
-  return { launches, waits, queue: queue.map((b) => b.id), running: running.map((b) => b.id), pending: pending.length, idle, at: new Date(now).toISOString() };
+  return { launches, waits, queue: queue.map((b) => b.id), running: running.map((b) => b.id), pending: pending.length, idle, exhausted, at: new Date(now).toISOString() };
 }
 
 // ------------------------------------------------------------------ session end
 
-/** A run ended: the build's new status, its lastRun record and a note line. */
-export function endOutcome(b, { exit, account = '', session = '', now = new Date().toISOString() } = {}, settings = normSettings()) {
+/**
+ * A run ended: the build's new status, its lastRun record and a note line. `hit` = the run died on its account ('auth' |
+ * 'usage', from hitOf() on the run's log) and `limit` = the record markLimit() wrote ({ until, reason }): the build goes
+ * straight back to the Queue, the run does not count toward maxRuns (`runs` comes back one lower) and the note says
+ * which account went out, until when, and where the next run resumes.
+ */
+export function endOutcome(b, { exit, account = '', session = '', hit = '', limit = null, now = new Date().toISOString() } = {}, settings = normSettings()) {
   const stepsLeft = openSteps(b).length;
   const runs = (b.pipeline?.runs ?? 0) || 1;
+  if (hit && stepsLeft) {
+    const acc = account || b.pipeline?.account || '?';
+    const run = { at: now, exit: Number.isInteger(exit) ? exit : null, outcome: 'requeued', stepsLeft, account: acc, session: session || b.pipeline?.session || '' };
+    const what = hit === 'auth' ? 'login expired' : limit?.reason || 'hit its limit';
+    const done = (b.steps ?? []).filter((s) => s.done).length;
+    const note = `Account ${acc} ${what}${limit?.until ? ` (out until ${when(limit.until)})` : ''}: rerunning on the next working account, resuming at ${openSteps(b)[0].id}${done ? ` (${done} step${done === 1 ? '' : 's'} already done)` : ''}. Not counted toward the ${settings.maxRuns}-run limit.`;
+    return { outcome: 'requeued', status: 'queued', run, note, rerouted: true, hit, runs: Math.max(0, runs - 1) };
+  }
   const phaseSwitch = stepsLeft > 0 && !!b.pipeline?.model && nextModel(b) !== b.pipeline.model;
   const outcome = outcomeOf({ exit, stepsLeft, runs, phaseSwitch }, settings.maxRuns);
   const run = { at: now, exit: Number.isInteger(exit) ? exit : null, outcome, stepsLeft, account: account || b.pipeline?.account || '', session: session || b.pipeline?.session || '' };
   let status = STATUS_AFTER[outcome];
   if (outcome === 'finished') status = b.pr && !b.mergedAt ? 'built' : 'complete';
   return { outcome, status, run, note: outcomeLine({ ...b, pipeline: { ...(b.pipeline ?? {}), runs } }, run) };
+}
+
+/**
+ * The brief's resume block for a rerun: a build that ran before (an account died under it, a crash, a phase change)
+ * carries on from its first unticked step in the same worktree, never from scratch. '' for a first run.
+ */
+export function resumeBlock(b) {
+  const lr = b?.pipeline?.lastRun; const open = openSteps(b);
+  const done = (b?.steps ?? []).filter((s) => s.done);
+  if (!open.length || (!lr && !done.length)) return '';
+  const why = lr ? `The last run${lr.account ? ` on ${lr.account}` : ''} ended (exit ${lr.exit ?? '?'}, ${lr.outcome}).` : 'Earlier runs already worked on this build.';
+  return ['## Resume', `${why} ${done.length ? `${done.length === 1 ? 'Step' : 'Steps'} ${done.map((s) => s.id).join(', ')} ${done.length === 1 ? 'is' : 'are'} ticked: done.` : 'No step is ticked yet.'} Its work so far is in this worktree and on the branch: run \`git status\` and \`git log --oneline -5\` first, keep what is there, and carry on from ${open[0].id}. Do not start over.`].join('\n');
 }
 
 // ------------------------------------------------------------------ split
@@ -316,7 +409,8 @@ export function needsSplit(b, rules = { maxStepMinutes: 30 }) {
 export const ALERT_SOURCE = 'pipeline';
 export const ALERT_LINK = '#/build-orchestrator';
 /**
- * The payload POST /api/alerts takes. kind = idle | launched | ended | failed | split. `key` makes repeats bump a count
+ * The payload POST /api/alerts takes. kind = idle | launched | ended | failed | split | retry (FYI: a run moved off a dead
+ * account) | exhausted (every account out: the one Brett hears, with the next reset). `key` makes repeats bump a count
  * instead of a new alert, and lets the dispatcher resolve one (idle) when a build runs again. Key prefixes are what
  * notify.json's types match on: pipeline:idle, pipeline:run:<id> (started), pipeline:end:<id> (ended / failed), pipeline:split:<id>.
  */
@@ -327,6 +421,8 @@ export function alertFor(kind, d = {}) {
     case 'launched': return { ...base, key: `pipeline:run:${d.id}`, severity: 'info', title: `Building: ${str(d.title, 120)}`, body: `Started on ${d.account} (${d.model}${d.phase ? `, ${d.phase}` : ''}) · session ${d.session || ''}`.trim() };
     case 'ended': return { ...base, key: `pipeline:end:${d.id}`, severity: d.outcome === 'finished' ? 'success' : 'warning', title: `${d.outcome === 'finished' ? 'Built' : d.outcome === 'requeued' ? 'Back in the Queue' : 'Back in Pending'}: ${str(d.title, 120)}`, body: str(d.note, 1500) };
     case 'failed': return { ...base, key: `pipeline:end:${d.id}`, severity: 'error', title: `Build failed: ${str(d.title, 120)}`, body: str(d.note, 1500) };
+    case 'retry': return { ...base, key: `pipeline:retry:${d.id}`, severity: 'info', title: `Rerunning on another account: ${str(d.title, 120)}`, body: str(d.note, 1500) };
+    case 'exhausted': return { ...base, key: 'pipeline:exhausted', severity: 'error', title: d.next ? `Every Claude account is out until ${when(d.next.until)}` : 'Every Claude account is out', body: str(d.reason, 1500) };
     case 'split': return { ...base, key: `pipeline:split:${d.id}`, severity: d.error ? 'warning' : 'info', title: d.error ? `Split needs a look: ${str(d.title, 120)}` : `Split into ${d.steps} steps: ${str(d.title, 120)}`, body: str(d.error || d.note, 1500) };
     default: throw new Error(`unknown alert kind ${kind}`);
   }

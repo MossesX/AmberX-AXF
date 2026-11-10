@@ -346,6 +346,29 @@
         "output": "{ id, status }"
       },
       {
+        "id": "pipeline-rerun",
+        "route": "POST /pipeline/rerun",
+        "title": "Rerun failed builds",
+        "description": "Put failed builds back in the Queue with a fresh run count; each resumes at its first open step on the next working Claude account. accountFailures = every failed build whose last run died on a login, a usage limit or credits. Say 'rerun the builds that died on a login'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Build ids"
+            },
+            "accountFailures": {
+              "type": "boolean",
+              "description": "Every failed build that died on its account"
+            }
+          }
+        },
+        "output": "{ requeued: [{ id, why }], skipped: [{ id, why }] }"
+      },
+      {
         "id": "pipeline-route",
         "route": "POST /pipeline/route",
         "title": "Route a build to API or subscriptions",
@@ -385,7 +408,7 @@
         "id": "pipeline-settings-set",
         "route": "POST /pipeline/settings",
         "title": "Change pipeline settings",
-        "description": "Change dispatcher settings. apiOverflow = when every subscription account is full or out, send builds to an API-key account (off by default; turning it on is Brett's own click, anyone may turn it off).",
+        "description": "Change dispatcher settings. apiOverflow = when every subscription account is full or out, send builds to an API-key account (off by default; turning it on is Brett's own click, anyone may turn it off). fableFallback = opus (a Fable phase whose every Fable account is out runs on Opus now) or wait (wait for the reset); authHoldMin = how long a dead login is parked before it is tried again.",
         "input": {
           "type": "object",
           "properties": {
@@ -414,6 +437,16 @@
                 "rules",
                 "off"
               ]
+            },
+            "fableFallback": {
+              "type": "string",
+              "enum": [
+                "opus",
+                "wait"
+              ]
+            },
+            "authHoldMin": {
+              "type": "integer"
             }
           }
         },

@@ -22,12 +22,21 @@
  *                                  Queue. Every former launch path (Build manager Start, Fix with Claude, feature assist) calls this.
  *   … show <id>                    one build as the table shows it (status, steps, pipeline record)
  *   … route <id> api|subscription|auto   the per-build override: run on an API-key account, never on one, or the default
+ *   … rerun <id…> [--account-failures]    failed builds back in the Queue (fresh run count, resume at the first open step);
+ *                                  --account-failures = every failed build whose last run died on a login / limit / credits
  *
  * One way to start builds (Brett, Nov 9 2026: "It has to be the orchestrator"): the tick is the only caller of the
  * launcher for a build. It issues a one-build dispatch token (framework/cli/dispatch-gate.mjs) and passes it in
  * AXF_DISPATCH_TOKEN; claude-headless.sh refuses a build launch without one.
  * API jobs: a build goes to an API-key account (hulu-api, mossesx-api…) by its per-build override (route api) or the
  * overflow rule (apiOverflow, off by default), only with a key, under its caps (pipeline-core.mjs routeFor()).
+ * Failover (Brett, Nov 10 2026: "When shit needs a rerun, rerun it. Find one that works."): checkEnds() reads the end of
+ * each finished run's log; a run that died on its account (login expired, usage limit, out of credits) marks that account
+ * out (claude-workers limits: the login for authHoldMin, a limit until the reset it names) and goes straight back to the
+ * Queue without counting toward maxRuns; the same tick puts it on the next working account and the brief says where to
+ * resume. A launch that fails on the account does the same. Each move is a build note (Activity Monitor reads those), a
+ * fix-log entry (POST pipeline/fixlog → axf.changes@1) and an FYI alert; every account out = one alert with the next
+ * reset. `rerun <id…> | rerun --account-failures` puts failed builds back in the Queue with a fresh run count.
  * Watchdog hook: afterTick(fn) registers fn({ state, plan, launched, ended, failed }) to run at the end of every tick
  * (build running-builds-watchdog plugs in here; a hook that throws is logged and never stops the tick).
  * Shipped manifests: the first hook ships every newly landed build's shipped-manifest@1 to Shipped features.
@@ -59,7 +68,7 @@ import { issue as issueDispatch } from '../../../../framework/cli/dispatch-gate.
 import { shipLanded } from '../../../../framework/cli/shipped.mjs';
 import { normPriority } from '../../../../framework/core/build-priority.mjs';
 import { act as orchAct } from './orchestrator.mjs';
-import { status as workersStatus, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
+import { status as workersStatus, route as workerRoute, hitOf, markLimit } from '../../../../deploy/claude-workers.mjs';
 import { childEnv, release as releaseLogin, snapshot as snapshotLogin } from '../../../../deploy/claude-login.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -296,23 +305,26 @@ export function ensureWorktree(id, env = process.env) {
 }
 
 /** The brief file: what Brett said first (build-origin@1 blocks), then the orchestrator's phase brief. */
-export function briefFor(b, rules, { account, model, kind = '' }) {
+export function briefFor(b, rules, { account, model, kind = '', pinned = '', fallback = '' }) {
   const o = b.origin ?? {};
   const addenda = (o.addenda ?? []).map((a, i) => addendumBlock(i + 1, a));
+  const resume = P.resumeBlock(b);
   return [
     `# Build: ${b.id}`, '',
     saidBlock(o), ...(addenda.length ? ['', ...addenda] : []), '',
     '## What to build', orch.brief(b, rules), '',
+    ...(resume ? [resume, ''] : []),
+    ...(fallback ? [`## Model fallback`, `This phase is pinned to ${pinned}, but ${pinned} is out on every Claude account right now, so the dispatcher runs it on ${model} (pipeline setting fableFallback: opus). Say so in the build note and the PR.`, ''] : []),
     `## Pipeline`,
     `This session was started by the orchestrator's dispatcher on Claude account ${account}${kind === 'api' ? ' (an API key: billed per token, keep it lean)' : ''} for the ${model} phase. Tick every step as you finish it (orchestrator.mjs act step ${b.id} <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note ${b.id} "…"); the build goes back to Pending for Brett.`,
   ].join('\n');
 }
 
 /** Start one headless session for a queued build on an account. */
-export function launch(b, { account, model, kind = '' }, { rules, env = process.env, launcher = env.AXF_PIPELINE_LAUNCHER || join(REPO_ROOT, 'deploy', 'claude-headless.sh') } = {}) {
+export function launch(b, { account, model, kind = '', pinned = '', fallback = '' }, { rules, env = process.env, launcher = env.AXF_PIPELINE_LAUNCHER || join(REPO_ROOT, 'deploy', 'claude-headless.sh') } = {}) {
   const { dir } = ensureWorktree(b.id, env);
   const briefFile = join(dir, '.axf-brief.md');
-  writeFileSync(briefFile, `${briefFor(b, rules, { account, model, kind })}\n`);
+  writeFileSync(briefFile, `${briefFor(b, rules, { account, model, kind, pinned, fallback })}\n`);
   // the one way in: a dispatch token for this build only, spent by the launcher when the session starts
   const token = issueDispatch(b.id, { account, model, env });
   const key = modelKey(model) || 'opus';
@@ -339,8 +351,28 @@ function tmuxHas(name) {
   return r.error ? null : r.status === 0;
 }
 
-/** Running builds whose session ended: { id, outcome, status, exit }. */
-export function checkEnds({ alert = () => {}, env = process.env } = {}) {
+/** The last ~8 KB of a build's run log (the launcher writes <worktree>/<id>.log), '' when there is none. */
+export function logTail(id, env = process.env) {
+  try { const t = readFileSync(join(worktreesRoot(env), id, `${id}.log`), 'utf8'); return t.slice(-8000); } catch { return ''; }
+}
+
+/**
+ * The run died on its account: mark the account out (a login for authHoldMin, a limit until the reset its text names)
+ * and return the limit record, or null when the account could not be marked (the next tick may pick it again).
+ */
+export function markAccountOut(account, hit, text, settings = loadSettings(), env = process.env) {
+  if (!account) return null;
+  try { return markLimit(account, { kind: hit, text, holdMs: hit === 'auth' ? settings.authHoldMin * 60e3 : 0 }, env); }
+  catch (e) { logLine({ event: 'mark-failed', account, hit, error: str(e.message, 200) }); return null; }
+}
+
+/** One fix-log entry (axf.changes@1, through the plugin's own console route); quiet when the console is away. */
+export function fixLog(consoleApi, { title, asked, summary, state = 'done' }) {
+  try { return consoleApi('POST', '/api/plugins/build-orchestrator/pipeline/fixlog', { title: str(title, 160), asked: str(asked, 1000), summary: str(summary, 600), state }); } catch { return null; }
+}
+
+/** Running builds whose session ended: { id, outcome, status, exit }. A run that died on its account is rerouted (outcome requeued, rerouted: true). */
+export function checkEnds({ alert = () => {}, env = process.env, consoleApi = () => null } = {}) {
   const store = loadStore(); const settings = loadSettings();
   const events = readEvents(env);
   const out = [];
@@ -358,12 +390,19 @@ export function checkEnds({ alert = () => {}, env = process.env } = {}) {
       if (alive !== false || Date.now() - Date.parse(b.pipeline.launchedAt || 0) < GONE_GRACE_MS) continue;
       exit = 1;
     }
-    const r = P.endOutcome(b, { exit, account: b.pipeline.account, session: b.pipeline.session }, settings);
+    // died on its account (login expired, limit, credits)? mark it out and reroute; the run doesn't count
+    const text = !settled && exit !== 0 ? logTail(b.id, env) : '';
+    const hit = text ? hitOf(text, exit) : '';
+    const limit = hit ? markAccountOut(b.pipeline.account, hit, text, settings, env) : null;
+    const r = P.endOutcome(b, { exit, account: b.pipeline.account, session: b.pipeline.session, hit, limit }, settings);
     if (settled) { r.outcome = 'finished'; r.status = b.status; r.run = { ...r.run, outcome: 'finished' }; r.note = `Session ${b.pipeline.session} on ${b.pipeline.account || '?'} ended (exit ${exit}); the build was already ${b.status}.`; }
-    setPipeline(b.id, { lastRun: r.run, session: '', slot: '', note: r.outcome === 'finished' ? '' : r.note }, { status: r.status, note: r.note, action: 'pipeline:end' });
-    alert(r.outcome === 'failed' ? 'failed' : 'ended', { id: b.id, title: b.title, outcome: r.outcome, note: r.note, account: b.pipeline.account });
-    logLine({ event: 'ended', build: b.id, outcome: r.outcome, exit, account: b.pipeline.account, session: b.pipeline.session });
-    out.push({ id: b.id, outcome: r.outcome, status: r.status, exit });
+    setPipeline(b.id, { lastRun: r.run, session: '', slot: '', note: r.outcome === 'finished' ? '' : r.note, ...(r.rerouted ? { runs: r.runs } : {}) }, { status: r.status, note: r.note, action: r.rerouted ? 'pipeline:reroute' : 'pipeline:end' });
+    if (r.rerouted) {
+      alert('retry', { id: b.id, title: b.title, note: r.note, account: b.pipeline.account });
+      fixLog(consoleApi, { title: `Rerun ${b.id}: ${b.pipeline.account} ${hit === 'auth' ? 'login expired' : limit?.reason || 'hit its limit'}`, asked: `Dispatcher failover for build ${b.id} (session ${b.pipeline.session}).`, summary: r.note });
+    } else alert(r.outcome === 'failed' ? 'failed' : 'ended', { id: b.id, title: b.title, outcome: r.outcome, note: r.note, account: b.pipeline.account });
+    logLine({ event: r.rerouted ? 'rerouted' : 'ended', build: b.id, outcome: r.outcome, exit, account: b.pipeline.account, session: b.pipeline.session, ...(hit ? { hit, until: limit?.until ?? '' } : {}) });
+    out.push({ id: b.id, outcome: r.outcome, status: r.status, exit, ...(r.rerouted ? { rerouted: true, hit, account: b.pipeline.account } : {}) });
   }
   return out;
 }
@@ -391,7 +430,7 @@ export function tick({ env = process.env } = {}) {
   const alert = (kind, d) => { const a = P.alertFor(kind, d); consoleApi('POST', '/api/alerts', a); sent.push({ key: a.key, kind, at: nowIso(), title: a.title }); };
   const started = nowIso();
   const inta = intake({ alert });
-  const ended = checkEnds({ alert, env });
+  const ended = checkEnds({ alert, env, consoleApi });
   const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
   const accounts = accountsNow(store, settings); const sl = slotsNow();
   const plan = P.plan({ builds: live(store), accounts, slots: sl, settings, rules });
@@ -405,17 +444,22 @@ export function tick({ env = process.env } = {}) {
       const r = launch(b, l, { rules, env });
       const runs = (b.pipeline?.runs ?? 0) + 1;
       setPipeline(b.id, { account: l.account, session: r.session, slot: r.slot, model: l.model, launchedAt: nowIso(), dispatchedAt: nowIso(), runs, note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : r.lookWait ? 'waiting for the predicted look approval in UI Review' : '' },
-        { status: 'running', note: `Started run ${runs} on ${l.account}${l.kind === 'api' ? ` (API key, ${l.rule === 'override' ? 'this build is set to API' : 'overflow rule'})` : ''} (${l.model}${l.phase ? `, ${l.phase}` : ''}): ${r.session || 'queued in agent slots'}.`, action: 'pipeline:launch' });
+        { status: 'running', note: `Started run ${runs} on ${l.account}${l.kind === 'api' ? ` (API key, ${l.rule === 'override' ? 'this build is set to API' : 'overflow rule'})` : ''} (${l.model}${l.phase ? `, ${l.phase}` : ''}): ${r.session || 'queued in agent slots'}.${l.fallback ? ` ${l.why}.` : ''}`, action: 'pipeline:launch' });
       if (!b.branch) withStore((s) => { const rec = storeCore.findBuild(s, b.id); if (rec && !rec.branch) rec.branch = `claude/${b.id}`; return s; }, { by: 'pipeline', action: 'pipeline:branch', note: b.id });
       alert('launched', { id: b.id, title: b.title, account: l.account, model: l.model, phase: l.phase, session: r.session });
       launched.push({ ...l, session: r.session, dir: r.dir });
       logLine({ event: 'launched', build: b.id, account: l.account, kind: l.kind || 'subscription', rule: l.rule || '', model: l.model, session: r.session });
       delete state.launchFails[l.id];
     } catch (e) {
-      state.launchFails[l.id] = [...fails, nowIso()];
-      failed.push({ id: l.id, error: e.message });
-      setPipeline(l.id, { note: `launch failed: ${str(e.message, 300)}` }, { note: `Launch on ${l.account} failed: ${str(e.message, 500)}`, action: 'pipeline:launch-failed' });
-      logLine({ event: 'launch-failed', build: l.id, account: l.account, error: e.message });
+      // the account refused the launch (dead login, limit): mark it out, don't count it against the build; the next tick tries somebody else
+      const hit = hitOf(e.message, 1);
+      const limit = hit ? markAccountOut(l.account, hit, e.message, settings, env) : null;
+      if (!limit) state.launchFails[l.id] = [...fails, nowIso()];
+      failed.push({ id: l.id, error: e.message, ...(limit ? { rerouted: true, account: l.account } : {}) });
+      const note = limit ? `Launch on ${l.account} failed (${P.limitWords(limit)}, out until ${P.when(limit.until)}): the next tick tries the next working account.` : `Launch on ${l.account} failed: ${str(e.message, 500)}`;
+      setPipeline(l.id, { note: limit ? note : `launch failed: ${str(e.message, 300)}` }, { note, action: limit ? 'pipeline:reroute' : 'pipeline:launch-failed' });
+      if (limit) { alert('retry', { id: l.id, title: b.title, note, account: l.account }); fixLog(consoleApi, { title: `Rerun ${l.id}: launch on ${l.account} refused`, asked: `Dispatcher failover for build ${l.id}.`, summary: note }); }
+      logLine({ event: limit ? 'launch-rerouted' : 'launch-failed', build: l.id, account: l.account, error: e.message });
     }
   }
   // idle: nothing running while work waits. Recorded at once; the phone hears about it after idleAfterMin, once per idle spell.
@@ -430,9 +474,16 @@ export function tick({ env = process.env } = {}) {
     consoleApi('POST', '/api/alerts/resolve', { keys: ['pipeline:idle'] });
     state.alerts = state.alerts.filter((a) => a.key !== 'pipeline:idle');
   }
-  const alerts = [...state.alerts.filter((a) => a.key !== 'pipeline:idle' || idle), ...sent.filter((a) => a.kind === 'idle')].filter((a, i, arr) => arr.findIndex((x) => x.key === a.key) === i);
-  const next = { ...state, at: nowIso(), plan: { launches: plan.launches, waits: plan.waits, queue: plan.queue, running: plan.running, pending: plan.pending }, slots: { used: sl.used, cap: sl.cap, free: sl.free }, accounts: accounts.map((a) => ({ name: a.name, fable: a.fable, parallel: a.parallel, running: a.running, usable: a.usable, why: a.why })), idle, alerts,
-    recent: [...state.recent, ...launched.map((l) => ({ at: nowIso(), event: 'launched', id: l.id, account: l.account, model: l.model })), ...ended.map((e) => ({ at: nowIso(), event: e.outcome, id: e.id })), ...failed.map((f) => ({ at: nowIso(), event: 'launch-failed', id: f.id, error: f.error }))].slice(-50) };
+  // every account out: Brett hears it once per spell, with the next reset; resolved when an account comes back
+  if (plan.exhausted && !launched.length) {
+    if (!state.alerts.some((a) => a.key === 'pipeline:exhausted')) { alert('exhausted', { reason: plan.exhausted.reason, next: plan.exhausted.next }); logLine({ event: 'exhausted', builds: plan.exhausted.builds, next: plan.exhausted.next }); }
+  } else if (state.alerts.some((a) => a.key === 'pipeline:exhausted')) {
+    consoleApi('POST', '/api/alerts/resolve', { keys: ['pipeline:exhausted'] });
+    state.alerts = state.alerts.filter((a) => a.key !== 'pipeline:exhausted');
+  }
+  const alerts = [...state.alerts.filter((a) => a.key !== 'pipeline:idle' || idle), ...sent.filter((a) => a.kind === 'idle' || a.kind === 'exhausted')].filter((a, i, arr) => arr.findIndex((x) => x.key === a.key) === i);
+  const next = { ...state, at: nowIso(), plan: { launches: plan.launches, waits: plan.waits, queue: plan.queue, running: plan.running, pending: plan.pending, exhausted: plan.exhausted }, slots: { used: sl.used, cap: sl.cap, free: sl.free }, accounts: accounts.map((a) => ({ name: a.name, fable: a.fable, parallel: a.parallel, running: a.running, usable: a.usable, why: a.why })), idle, alerts,
+    recent: [...state.recent, ...launched.map((l) => ({ at: nowIso(), event: 'launched', id: l.id, account: l.account, model: l.model })), ...ended.map((e) => ({ at: nowIso(), event: e.rerouted ? 'rerouted' : e.outcome, id: e.id, ...(e.rerouted ? { account: e.account, hit: e.hit } : {}) })), ...failed.map((f) => ({ at: nowIso(), event: f.rerouted ? 'launch-rerouted' : 'launch-failed', id: f.id, error: f.error }))].slice(-50) };
   saveState(next);
   for (const fn of TICK_HOOKS) {
     try { fn({ state: next, plan, launched, ended, failed, env }); } catch (e) { logLine({ event: 'hook-failed', error: str(e.message, 300) }); }
@@ -474,6 +525,39 @@ export function request({ title, detail = '', said = '', priority = '', route = 
   if (p || route) withStore((s) => { const rec = storeCore.findBuild(s, id); if (rec) { if (p) rec.priority = p; if (route) rec.pipeline = BP.normPipeline({ ...(rec.pipeline ?? {}), route }) ?? undefined; rec.updatedAt = nowIso(); } return s; }, { by, action: 'pipeline:request', note: id });
   logLine({ event: 'requested', build: id, by, queue: !!toQueue, route });
   return toQueue ? queue(id, { by }) : storeCore.findBuild(loadStore(), id);
+}
+
+/**
+ * Put failed (or stuck Pending) builds back in the Queue with a fresh run count; steps already ticked stay ticked and
+ * the brief tells the next run to resume. `accountFailures` = every failed build whose last run died on its account
+ * (the run log says login expired / limit / credits). Returns { requeued: [{ id, why }], skipped: [{ id, why }] }.
+ */
+export function rerun(ids = [], { accountFailures = false, by = process.env.AXF_ACTOR || 'console', env = process.env } = {}) {
+  const store = loadStore();
+  const pick = new Map();
+  for (const id of ids) {
+    const b = storeCore.findBuild(store, id) ?? live(store).find((x) => x.id.startsWith(id));
+    pick.set(id, b ?? null);
+  }
+  if (accountFailures) {
+    for (const b of live(store).filter((x) => x.status === 'failed')) {
+      const hit = hitOf(logTail(b.id, env), 1);
+      if (hit && !pick.has(b.id)) pick.set(b.id, b);
+    }
+  }
+  const requeued = []; const skipped = [];
+  for (const [id, b] of pick) {
+    if (!b) { skipped.push({ id, why: 'no such build' }); continue; }
+    if (!['failed', 'pending', 'queued'].includes(b.status)) { skipped.push({ id: b.id, why: `it is ${b.status}` }); continue; }
+    if (!BP.openSteps(b).length) { skipped.push({ id: b.id, why: 'every step is done' }); continue; }
+    const hit = hitOf(logTail(b.id, env), 1);
+    const why = hit ? `its last run died on ${b.pipeline?.lastRun?.account || b.pipeline?.account || 'its account'} (${hit === 'auth' ? 'login expired' : 'limit / credits'})` : `asked by ${by}`;
+    const note = `Rerun: back in the Queue with a fresh run count (${why}); resumes at ${BP.openSteps(b)[0].id} on the next working account.`;
+    setPipeline(b.id, { runs: 0, queuedAt: b.pipeline?.queuedAt || nowIso(), queuedBy: b.pipeline?.queuedBy || by, note }, { status: 'queued', note, by, action: 'pipeline:rerun' });
+    logLine({ event: 'rerun', build: b.id, by, hit });
+    requeued.push({ id: b.id, why });
+  }
+  return { requeued, skipped };
 }
 
 /** The per-build override: api (API-key accounts only), subscription (never API), auto ('' = the default rules). */
@@ -541,6 +625,10 @@ async function main(argv) {
     return out({ ok: true, id: b.id, status: b.status, build: { id: b.id, title: b.title, status: b.status } }, `${b.id} filed${b.status === 'queued' ? ' and queued: the dispatcher starts it' : ' in Pending'}`);
   }
   if (cmd === 'show') { const b = storeCore.findBuild(loadStore(), rest[0]); if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 }); const r = row(b); return out({ ok: true, build: r }, `${r.id} ${r.status} ${r.steps.done}/${r.steps.total}${r.pipeline?.account ? ` on ${r.pipeline.account}` : ''}`); }
+  if (cmd === 'rerun') {
+    const r = rerun(rest.filter((a) => !a.startsWith('--') && a !== flag('by')), { accountFailures: has('account-failures'), by });
+    return out({ ok: true, ...r }, [`requeued ${r.requeued.length}: ${r.requeued.map((x) => x.id).join(', ') || 'none'}`, ...r.skipped.map((x) => `  skipped ${x.id}: ${x.why}`)].join('\n'));
+  }
   if (cmd === 'route') { const b = setRoute(rest[0], rest[1], { by }); return out({ ok: true, id: b.id, route: b.pipeline?.route || 'auto' }, `${b.id}: route ${b.pipeline?.route || 'auto'}`); }
   if (cmd === 'intake') { const r = intake(); return out({ ok: true, ...r }, [`split: ${r.split.map((x) => `${x.id} (${x.provider}, ${x.steps})`).join(', ') || 'nothing'}`, `queued: ${r.queued.join(', ') || 'nothing'}`, ...r.skipped.map((x) => `skipped ${x.id}: ${x.error}`)].join('\n')); }
   if (cmd === 'tick') {
@@ -562,7 +650,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto | rerun <id…> [--account-failures] [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

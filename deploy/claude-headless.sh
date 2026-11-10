@@ -356,7 +356,7 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
       switches=$((switches + 1))
       continue
     fi
-    tail -n 40 "$log" 2>/dev/null | grep -qiE "hit your (weekly |daily |session |5-hour )?limit|usage limit reached|out of credits|credit balance is too low" || break
+    tail -n 40 "$log" 2>/dev/null | grep -qiE "hit your (weekly |daily |session |5-hour )?limit|usage limit reached|out of (usage )?credits|credit balance is too low" || break
     sw_js="$HERE/../apps/console-web/plugins/ai-keys/switch.mjs"  # axf-plugin:ai-keys
     command -v node >/dev/null && [[ -f "$sw_js" ]] || break
     printf '\n\033[1m── this Claude account hit its limit: switching accounts ──\033[0m\n'

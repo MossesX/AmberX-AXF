@@ -133,6 +133,34 @@ try:
         except srv.HTTPException as e:
             code = e.status_code
         check(code == want, f"route {route} by {'Brett' if brett else 'a session'}: {want}")
+    # failover (Nov 10 2026): rerun failed builds; the dispatcher's moves land in the change log
+    asyncio.run(srv.pipeline_rerun(_Req({"accountFailures": True}, True)))
+    check(_calls[-1][2] == "rerun" and "--account-failures" in _calls[-1] and _calls[-1][_calls[-1].index("--by") + 1] == "Brett", "rerun account failures reaches the CLI with who asked")
+    asyncio.run(srv.pipeline_rerun(_Req({"ids": ["alpha", "beta"]})))
+    check(_calls[-1][3:5] == ["alpha", "beta"] and "--account-failures" not in _calls[-1], "rerun named builds")
+    for body in ({}, {"ids": ["../x"]}):
+        try:
+            asyncio.run(srv.pipeline_rerun(_Req(body)))
+            code = 200
+        except srv.HTTPException as e:
+            code = e.status_code
+        check(code == 400, f"rerun with {body or 'nothing'}: 400")
+    asyncio.run(srv.pipeline_settings_set(_Req({"fableFallback": "wait", "authHoldMin": 90})))
+    check("fableFallback=wait" in _calls[-1] and "authHoldMin=90" in _calls[-1], "fableFallback and authHoldMin are settable")
+    logged: list[dict] = []
+
+    class _Changes:
+        def open(self, entry: dict, by: str = "") -> dict:
+            logged.append({**entry, "by": by})
+            return {"id": "c1"}
+
+    real_get = plugin_services.get
+    plugin_services.get = lambda name: _Changes() if name == "axf.changes@1" else real_get(name)
+    try:
+        r = asyncio.run(srv.pipeline_fixlog(_Req({"title": "Rerun alpha: account-1 login expired", "summary": "moved"})))
+        check(r["logged"] and logged[-1]["kind"] == "fix" and logged[-1]["result"]["state"] == "done" and logged[-1]["by"] == "build-orchestrator", "a failover move is a finished fix in the change log")
+    finally:
+        plugin_services.get = real_get
 finally:
     srv.subprocess.run = _real_run
 

@@ -8,7 +8,10 @@ import { TABLE_LABEL } from '@console/axf/core/build-pipeline.mjs';
  * accounts the dispatcher can use (Fable yes or no, how many run on each), the agent slots and what the dispatcher's
  * next tick starts or why it waits. The orchestrator is the only thing that starts builds (Brett, Nov 9 2026). API jobs:
  * the API overflow switch (off by default) and each build's route (Auto / API / Subscriptions) decide when a build may
- * run on an API-key account; API accounts show their key, caps and room. Every number comes from GET /pipeline (pipeline.mjs status on the VPS), refreshed
+ * run on an API-key account; API accounts show their key, caps and room. Failover (Brett, Nov 10 2026: "Find one that
+ * works"): a run that dies on its account reruns on the next working one by itself; the red note says when every
+ * account is out and the next reset; the Fable fallback switch picks Opus-now or wait; Rerun account failures puts back
+ * every failed build whose last run died on a login or credits. Every number comes from GET /pipeline (pipeline.mjs status on the VPS), refreshed
  * while the tab is on screen; Queue / Back to Pending / Split now go through the same CLI under the store lock.
  */
 
@@ -18,8 +21,8 @@ type Account = { name: string; email: string; plan: string; role: string; kind?:
 type Status = {
   ok: boolean; at: string; table: { pending: Row[]; queued: Row[]; building: Row[] }; accounts: Account[];
   slots: { used: number; cap: number; free: number; queued: number; unavailable: boolean };
-  plan: { launches: { id: string; account: string; model: string; phase: string; kind?: string; rule?: string }[]; waits: { id: string; why: string }[]; queue: string[]; idle: { reason: string; kind: string } | null };
-  settings: { parallelPerAccount: number; autoQueue: boolean; splitProvider: string; idleAfterMin: number; maxRuns: number; apiOverflow?: boolean };
+  plan: { launches: { id: string; account: string; model: string; phase: string; kind?: string; rule?: string; fallback?: string; pinned?: string }[]; waits: { id: string; why: string }[]; queue: string[]; idle: { reason: string; kind: string } | null; exhausted?: { reason: string; builds: string[]; next: { account: string; until: string } | null } | null };
+  settings: { parallelPerAccount: number; autoQueue: boolean; splitProvider: string; idleAfterMin: number; maxRuns: number; apiOverflow?: boolean; fableFallback?: string; authHoldMin?: number };
   state: { at: string; idle: { reason: string; kind: string; since: string } | null; alerts: { key: string; at: string }[]; recent: { at: string; event: string; id: string; account?: string; model?: string; error?: string }[] };
 };
 type Api = { call: <T>(path: string) => Promise<T>; post: <T>(path: string, body: unknown) => Promise<T> };
@@ -67,7 +70,10 @@ export function PipelineTab({ api, log }: { api: Api; log: (t: string, l?: 'info
         <span className="pl-stat fx-muted" title={s.state.at ? `Last dispatcher tick ${fmtTime(s.state.at)}` : 'The dispatcher has not run yet on this VPS'}><Icon name="refresh" size={14} />{s.state.at ? `tick ${tickAge}` : 'no tick yet'}</span>
         {s.settings.autoQueue && <Chip tone="accent">Launch without asking: new builds queue by themselves</Chip>}
         <Switch label="API overflow" text="Every subscription account full or out → an API-key account (billed per token, under its caps)" checked={!!s.settings.apiOverflow} disabled={busy === 'pipeline/settings'} onChange={(on) => act('pipeline/settings', { apiOverflow: on }, `API overflow ${on ? 'on' : 'off'}`)} />
+        <Switch label="Fable out → Opus" text="Every Fable account out (login, limit, credits): run the Fable phase on Opus now instead of waiting for the reset" checked={s.settings.fableFallback !== 'wait'} disabled={busy === 'pipeline/settings'} onChange={(on) => act('pipeline/settings', { fableFallback: on ? 'opus' : 'wait' }, `Fable out: ${on ? 'run on Opus' : 'wait for the reset'}`)} />
+        <Button size="sm" tone="neutral" icon="refresh" disabled={busy === 'pipeline/rerun'} title="Every failed build whose last run died on a login, a usage limit or credits goes back in the Queue with a fresh run count and resumes at its first open step" onClick={() => act('pipeline/rerun', { accountFailures: true }, 'Account failures back in the Queue')}>Rerun account failures</Button>
       </div>
+      {s.plan.exhausted && <Note tone="danger">{s.plan.exhausted.reason}</Note>}
       {idle && <Note tone={idle.kind === 'stuck' ? 'warning' : 'info'}>{idle.reason}{(idle as { since?: string }).since ? ` (since ${fmtTime((idle as { since?: string }).since ?? '')})` : ''}</Note>}
       {s.plan.launches.length > 0 && <Note tone="success">Next tick starts {s.plan.launches.map((l) => `${l.id} on ${l.account} (${l.model}${l.phase ? `, ${l.phase}` : ''})`).join(', ')}.</Note>}
       <section className="fx-stack">

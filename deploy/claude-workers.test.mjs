@@ -45,8 +45,10 @@ ok(X.parseReset('no time here', now) === 0 && X.parseReset('resets Foo 3, 2am', 
 
 console.log('what stopped a run');
 ok(X.hitOf("You've hit your weekly limit", 0) === 'usage', 'a limit');
+ok(X.hitOf("You're out of usage credits. Switch to another model", 1) === 'usage', 'out of usage credits (the Nov 9 skins failures)');
 ok(X.hitOf('Invalid API key · please run /login', 1) === 'auth', 'a dead login on a failed exit');
 ok(X.hitOf('the docs say: please run /login', 0) === '', 'those words in a run that finished are nothing');
+ok(X.hitOf('Failed to authenticate: OAuth session expired and could not be refreshed', 1) === 'auth', 'an expired subscription login (the Nov 9 failures)');
 ok(X.hitOf('all done', 1) === '', 'a plain failure is not a limit');
 
 console.log('routing');
@@ -71,6 +73,7 @@ ok(l.until === '2026-11-07T15:00:00.000Z' && X.route({}, env, now) === 'w2', 'a 
 ok(X.route({}, env, Date.parse('2026-11-07T15:00:01Z')) === 'w1', 'and comes back by itself');
 ok(Date.parse(X.markLimit('w1', { kind: 'usage' }, env, now).until) === now + 5 * 3600e3, 'no time in the text = 5 hours');
 ok(Date.parse(X.markLimit('w1', { kind: 'auth' }, env, now).until) === now + 600e3, 'a dead login gets another try in 10 minutes');
+ok(Date.parse(X.markLimit('w1', { kind: 'auth', holdMs: 3600e3 }, env, now).until) === now + 3600e3, 'the dispatcher may park a dead login for longer');
 X.markLimit('w2', { kind: 'usage' }, env, now); X.markLimit('w3', { kind: 'usage' }, env, now);
 ok(X.route({}, env, now) === 'console', 'every worker out = the console\'s own account');
 X.markLimit('console', { kind: 'usage' }, env, now);
