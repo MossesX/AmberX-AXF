@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T02:45:35.752Z",
+ "updatedAt": "2026-11-10T02:45:51.436Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -80107,7 +80107,7 @@
    "pr": "#431",
    "priority": "P1",
    "createdAt": "2026-11-09T19:10:08.745Z",
-   "updatedAt": "2026-11-10T02:43:04.549Z",
+   "updatedAt": "2026-11-10T02:45:47.771Z",
    "builtAt": "",
    "notes": [
     {
@@ -80181,6 +80181,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-vps-orchestrator-only-rule-vps-settings-console--earl, own login copy)",
      "at": "2026-11-10T02:17:33.840Z"
+    },
+    {
+     "text": "Built on claude/vps-orchestrator-only-rule-vps-settings-console, PR #431: VPS setting orchestratorOnly (on by default; turning it off is Brett's click only), refused-jobs log, phone notice, agent-slots swarm gate, VPS Settings plugin. Tests: 39 + 23 pass. UI Review item r-20261110-9x8ym01 is saved only in this worktree (the session had no console token), so it still has to be sent to the console.",
+     "at": "2026-11-10T02:45:47.771Z"
     }
    ],
    "approvals": [],

@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 18:55 UTC · `orchestrator-and-build-manager-search-bar-collap` → queued, note (all) · pipeline
 - 2026-11-09 18:55 UTC · `orchestrator-and-build-manager-search-bar-collap` note (all) · pipeline
 - 2026-11-09 18:55 UTC · `orchestrator-and-build-manager-search-bar-collap` note (all) · orchestrator
 - 2026-11-09 18:56 UTC · `orchestrator-and-build-manager-search-bar-collap` → failed, note (all) · pipeline
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 02:44 UTC · `one-vps-plugin-everything-vps-in-one-place-gauge` added (0 steps) (all) · console
 - 2026-11-10 02:44 UTC · `one-vps-plugin-everything-vps-in-one-place-gauge` → queued, note (all) · console
 - 2026-11-10 02:45 UTC · `split-builds-pages-build-manager-pending-complet` s1 done (all) · orchestrator
+- 2026-11-10 02:45 UTC · `vps-orchestrator-only-rule-vps-settings-console` note (all) · orchestrator
 
 ## Token passes (log)
 
