@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2705,
- "updatedAt": "2026-11-10T18:55:42.622Z",
+ "rev": 2706,
+ "updatedAt": "2026-11-10T18:55:52.479Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -141045,7 +141045,7 @@
    "title": "Audit Pending Fable builds against main: close what's done, queue only what's left",
    "category": "",
    "detail": "Many Pending builds (especially the old Fable ones from Oct 18 to Nov 9) are already done on main or covered by later builds, but still sit in Pending. 1) For every Pending build whose next model is Fable, check main (git log, the Shipped features ledger, reports, the files each step names) for whether each step's work already exists. 2) Mark steps that are done as done, with evidence (commit or file). Mark whole builds that are done or superseded as complete or superseded, with a one-line reason. 3) Queue only what's really left, with steps trimmed to the remaining work. 4) Write a short list: done, superseded, queued, with each queued build's remaining steps. 5) Run this audit automatically before any bulk queue, so finished work never gets rebuilt (plain code where possible). Runs on Opus, not Fable.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -141053,7 +141053,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T04:25:09.866Z",
-   "updatedAt": "2026-11-10T06:15:07.637Z",
+   "updatedAt": "2026-11-10T18:55:42.006Z",
    "builtAt": "",
    "notes": [
     {
@@ -141075,6 +141075,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 2 steps left: back in Pending for Brett.",
      "at": "2026-11-10T06:15:07.637Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T18:55:42.006Z"
     }
    ],
    "approvals": [],
@@ -141092,7 +141096,7 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-10T04:25:11.547Z",
+    "queuedAt": "2026-11-10T18:55:41.681Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
     "session": "",
@@ -141116,7 +141120,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Session on mossesx-max- stopped on its own with 2 steps left: back in Pending for Brett.",
+    "note": "",
     "route": "",
     "dispatchedAt": "2026-11-10T04:28:53.382Z",
     "planned": {
@@ -141208,7 +141212,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
