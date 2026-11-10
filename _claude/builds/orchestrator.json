@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T18:29:08.335Z",
+ "updatedAt": "2026-11-10T18:29:29.585Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -93965,12 +93965,111 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T18:28:36.423Z",
-   "updatedAt": "2026-11-10T18:28:37.421Z",
+   "updatedAt": "2026-11-10T18:29:28.351Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T18:29:28.351Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Seen on pass-approval-hook-deep-link-amberx-notification, Nov 10 2026 (journal _claude/builds/journal/2026-11-p4.jsonl): 18:11:16 pipeline:launch wrote status running + pipeline.session earl; 18:11:19 the worktree's orchestrator:note ('Claude account: ...', written by claude-headless.sh at start from a store copy taken before the launch) landed with status queued and no pipeline record, and the per-build newer-wins merge kept it; 18:12:11 the next tick launched the same build again (gina), both runs numbered 1.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb0y74v01nx97"
+    },
+    {
+     "id": "s2",
+     "text": "Earl's 's1 done' tick at 18:24:48 erased the second record the same way, so the live build sat in 'running' with no session: checkEnds and reapBuilds both skip a build without pipeline.session / pipeline.account, so the phase end was never handled (set to queued by hand).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb0y74v021de2"
+    },
+    {
+     "id": "s3",
+     "text": "Fix, in this order: (1) builds-merge-core: merge the pipeline record per field, never let an incoming copy with no pipeline record replace a newer launch record on main (or have orchestrator.mjs act pull main's record before a note/tick write); (2) pipeline-core plan(): never launch a build whose status is running/waiting or that has a running or queued agent slot for its id (agent-slots status lists build per slot); (3) checkEnds/reapBuilds: a build 'running' with no pipeline record and no live slot for it ends by the phase rule (exit 0 + model switch -> queued) instead of being skipped forever; (4) claude-headless.sh: write the 'Claude account' note only after the launch record is published, or through the per-field merge.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb0y74v03myg9"
+    },
+    {
+     "id": "s4",
+     "text": "Add a check in framework/spec/check-builds-live.mjs that replays this journal sequence.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb0y74v04551n"
+    },
+    {
+     "id": "s5",
+     "text": "Tests green, report _claude/builds/reports/dispatcher-a-worktree-store-write-can-erase-a-fr.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/dispatcher-a-worktree-store-write-can-erase-a-fr.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb0y74v0522g1"
+    }
+   ]
   }
  ]
 }

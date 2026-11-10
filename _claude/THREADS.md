@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 15:25 UTC · `claude-accounts-manager-plugin-one-ordered-list` → queued, note (all) · console
 - 2026-11-10 15:26 UTC · `claude-accounts-manager-plugin-one-ordered-list` → queued, note (all) · builds-live
 - 2026-11-10 15:26 UTC · `approval-page-allow-all-deny-all-for-a-set-time` added (0 steps) (all) · console
 - 2026-11-10 15:26 UTC · `claude-accounts-manager-plugin-one-ordered-list` note (all) · orchestrator
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 18:28 UTC · `dispatcher-a-worktree-store-write-can-erase-a-fr` added (0 steps) (all) · Claude (gina, pass-approval s1 watcher)
 - 2026-11-10 18:29 UTC · `pass-approval-hook-deep-link-amberx-notification` → running, note (all) · orchestrator
 - 2026-11-10 18:29 UTC · `pass-approval-hook-deep-link-amberx-notification` → running, note (all) · builds-live
+- 2026-11-10 18:29 UTC · `dispatcher-a-worktree-store-write-can-erase-a-fr` note (all) · orchestrator
 
 ## Token passes (log)
 
