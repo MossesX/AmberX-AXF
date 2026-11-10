@@ -22,6 +22,7 @@
  */
 
 import { ALLOWED_MODELS, DEFAULT_MODEL, MODEL_TIERS, coerceModel, modelAllowed, modelProblem } from '../model-policy.mjs';
+import { CHAT_KIND as ASSIGNMENT_KIND, normPayload as normAssignmentPayload } from '../build-assignment.mjs';
 
 /* ------------------------------------------------------------------ */
 /* Registry                                                             */
@@ -47,9 +48,13 @@ export const STATUSES = {
 /** Statuses Brett sets from the dropdown; Suspended and Quit come from Suspend and rage-quit. */
 export const PICKABLE = ['on-duty', 'off-duty', 'injured', 'medical-leave', 'probation', 'fired', 'custom'];
 
-export const CHAT_KINDS = ['assign', 'lease', 'report', 'handoff', 'merge', 'status', 'discipline', 'pay', 'banter', 'brett'];
-/** Work kinds are built from orchestrator messages and agent reports: no tokens. */
-export const WORK_KINDS = ['assign', 'lease', 'report', 'handoff', 'merge', 'status', 'discipline', 'pay', 'brett'];
+export const CHAT_KINDS = ['assign', 'lease', 'report', 'handoff', 'merge', 'status', 'discipline', 'pay', 'banter', 'brett', 'assignment'];
+/**
+ * Work kinds are built from orchestrator messages and agent reports: no tokens. `assignment` (assignment@1,
+ * core/build-assignment.mjs) is the orchestrator asking who can take a build or step, the claim, the candidate dialog,
+ * the veto, the pick and the brief sent back: the same envelope, a typed `assignment` payload on the message.
+ */
+export const WORK_KINDS = ['assign', 'lease', 'report', 'handoff', 'merge', 'status', 'discipline', 'pay', 'brett', 'assignment'];
 export const BOSS = { id: 'boss', name: 'Boss' };
 export const BRETT = 'brett';
 
@@ -318,8 +323,15 @@ export function normChat(c) {
   return { enabled: o.enabled !== false, agents: Object.fromEntries(Object.entries(isObj(o.agents) ? o.agents : {}).map(([k, v]) => [str(k, 40), v !== false])) };
 }
 
-/** One chat message. Unknown kinds read as banter (the cheap kind); `vibe` and `toned` are set by the vibe filter. */
-export const normMessage = (m, i = 0) => ({ id: str(m?.id, 40) || `m${i}`, at: str(m?.at, 40), from: str(m?.from, 40), kind: CHAT_KINDS.includes(m?.kind) ? m.kind : 'banter', text: str(m?.text, C.textMax), jobId: str(m?.jobId, 120), vibe: Number.isFinite(m?.vibe) ? m.vibe : null, toned: m?.toned === true });
+/**
+ * One chat message. Unknown kinds read as banter (the cheap kind); `vibe` and `toned` are set by the vibe filter. An
+ * `assignment` line keeps its typed payload (assignment@1); a payload that is not one, or on another kind, is dropped.
+ */
+export const normMessage = (m, i = 0) => {
+  const kind = CHAT_KINDS.includes(m?.kind) ? m.kind : 'banter';
+  const assignment = kind === ASSIGNMENT_KIND ? normAssignmentPayload(m?.assignment) : null;
+  return { id: str(m?.id, 40) || `m${i}`, at: str(m?.at, 40), from: str(m?.from, 40), kind, text: str(m?.text, C.textMax), jobId: str(m?.jobId, 120), vibe: Number.isFinite(m?.vibe) ? m.vibe : null, toned: m?.toned === true, ...(assignment ? { assignment } : {}) };
+};
 
 const sliderVals = (v, d) => ({ vibe: Math.round(num(v?.vibe, d.vibe, VIBE.min, VIBE.max)), chattiness: slider(v?.chattiness, d.chattiness), cussing: slider(v?.cussing, d.cussing), drama: slider(v?.drama, d.drama) });
 
@@ -634,7 +646,7 @@ export function jsonSchemas() {
       identity: { type: 'object', propertyNames: { enum: IDENTITY_FIELDS }, additionalProperties: { type: 'string' } }, card: { anyOf: [{ type: 'string', pattern: SWARM.cardIdPattern }, { const: '' }] },
     },
   };
-  const message = { type: 'object', required: ['from', 'kind', 'text'], properties: { id: { type: 'string' }, at: { type: 'string' }, from: { type: 'string' }, kind: { enum: CHAT_KINDS }, text: { type: 'string', maxLength: C.textMax }, jobId: { type: 'string' }, vibe: { anyOf: [rng([VIBE.min, VIBE.max]), { type: 'null' }] }, toned: { type: 'boolean' } } };
+  const message = { type: 'object', required: ['from', 'kind', 'text'], properties: { id: { type: 'string' }, at: { type: 'string' }, from: { type: 'string' }, kind: { enum: CHAT_KINDS }, text: { type: 'string', maxLength: C.textMax }, jobId: { type: 'string' }, vibe: { anyOf: [rng([VIBE.min, VIBE.max]), { type: 'null' }] }, toned: { type: 'boolean' }, assignment: { $ref: 'axf/assignment.schema.json#/$defs/payload', description: 'assignment@1 payload; only on kind "assignment"' } } };
   const state = {
     ...head('swarm-state', TAGS.state, 'swarm runtime state', 'Statuses, pay, history, chat, chat settings, ID cards and Breakroom hires.'),
     type: 'object', required: ['agents'],

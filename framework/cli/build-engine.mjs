@@ -22,6 +22,7 @@ import { REGISTRY as LEDGER_REGISTRY, jsonSchemas as ledgerJsonSchemas } from '.
 import { REGISTRY as DEPLOY_LOG_REGISTRY, jsonSchemas as deployLogJsonSchemas } from '../core/deploy-log.mjs';
 import { REGISTRY as BUILD_HOOK_REGISTRY, jsonSchemas as buildHookJsonSchemas } from '../core/build-hook.mjs';
 import { REGISTRY as SHIPPED_MANIFEST_REGISTRY, jsonSchemas as shippedManifestJsonSchemas } from '../core/shipped-manifest.mjs';
+import { REGISTRY as ASSIGNMENT_REGISTRY, jsonSchemas as assignmentJsonSchemas } from '../core/build-assignment.mjs';
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { applyOptions, readOptions, resolveOptions } from './build-options.mjs';
@@ -897,6 +898,14 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   // shipped-manifest@1: what the orchestrator sends Shipped features when a build lands
   for (const [n, schema] of Object.entries(shippedManifestJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const smreg = join(FRAMEWORK_DIR, 'schemas/shipped-manifest.json'); writeFileSync(smreg, JSON.stringify(SHIPPED_MANIFEST_REGISTRY, null, 2) + '\n'); written.push(smreg);
+  // assignment@1: the orchestrator handing a build or step to an employee agent through the group chat (record, payload, message).
+  // The contract doc lives in _claude/builds/contracts/assignment@1.md; its schema copy next to it is written here too so it never drifts.
+  for (const [n, schema] of Object.entries(assignmentJsonSchemas())) {
+    const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f);
+    const docCopy = join(FRAMEWORK_DIR, '..', '_claude/builds/contracts/assignment@1.schema.json');
+    if (existsSync(dirname(docCopy))) { writeFileSync(docCopy, JSON.stringify(schema, null, 2) + '\n'); written.push(docCopy); }
+  }
+  const areg = join(FRAMEWORK_DIR, 'schemas/assignment.json'); writeFileSync(areg, JSON.stringify(ASSIGNMENT_REGISTRY, null, 2) + '\n'); written.push(areg);
   return written;
 }
 

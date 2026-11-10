@@ -250,7 +250,8 @@
       "discipline",
       "pay",
       "banter",
-      "brett"
+      "brett",
+      "assignment"
     ],
     "workKinds": [
       "assign",
@@ -261,7 +262,8 @@
       "status",
       "discipline",
       "pay",
-      "brett"
+      "brett",
+      "assignment"
     ],
     "boss": {
       "id": "boss",

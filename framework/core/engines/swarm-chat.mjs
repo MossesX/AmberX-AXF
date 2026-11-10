@@ -18,6 +18,7 @@
  */
 
 import { BOSS, BRETT, CHAT_KINDS, WORK_KINDS, SWARM, normMessage } from './swarm-rules.mjs';
+import { CHAT_KIND as ASSIGNMENT_KIND, maySpeak as assignmentMaySpeak, payloadErrors as assignmentErrors, jobIdOf as assignmentJobId } from '../build-assignment.mjs';
 
 export { BOSS, BRETT, CHAT_KINDS, WORK_KINDS };
 
@@ -29,14 +30,19 @@ const err = (field, code, message) => ({ field, code, message });
 /* 1. Messages: who may say what                                        */
 /* ------------------------------------------------------------------ */
 
-/** Kinds Boss posts (a `handoff` from Boss hands a clash to the merge fixer); kinds an agent posts about its own run; what Brett posts. */
+/**
+ * Kinds Boss posts (a `handoff` from Boss hands a clash to the merge fixer); kinds an agent posts about its own run; what
+ * Brett posts. `assignment` (assignment@1) is open to all three: who may post which payload type is the payload's rule
+ * (build-assignment.mjs SPEAKERS: Boss asks and picks by default, an agent claims / lists candidates / sends briefs back,
+ * Brett vetoes and picks).
+ */
 export const SPEAKERS = {
-  boss: ['assign', 'lease', 'merge', 'handoff', 'status', 'discipline', 'pay'],
-  agent: ['report', 'handoff', 'banter', 'discipline', 'pay'],
-  brett: ['brett'],
+  boss: ['assign', 'lease', 'merge', 'handoff', 'status', 'discipline', 'pay', 'assignment'],
+  agent: ['report', 'handoff', 'banter', 'discipline', 'pay', 'assignment'],
+  brett: ['brett', 'assignment'],
 };
 /** Work kinds that are about one job and must name it. */
-export const JOB_KINDS = ['assign', 'lease', 'report', 'handoff'];
+export const JOB_KINDS = ['assign', 'lease', 'report', 'handoff', 'assignment'];
 export const BANTER_MAX_CHARS = 200;
 export const BANTER_PROMPT_LINE_CHARS = 140;
 export const BANTER_BATCH_MAX = 20;
@@ -55,6 +61,13 @@ export function messageErrors(m, agents = [], p = 'message') {
   if (JOB_KINDS.includes(m.kind) && !str(m.jobId, 120)) out.push(err(`${p}.jobId`, 'missing', `${p}: a "${m.kind}" line names its job (jobId)`));
   if (typeof m.text !== 'string' || !m.text.trim()) out.push(err(`${p}.text`, 'missing', `${p}.text is missing`));
   else if (m.text.length > SWARM.chat.textMax) out.push(err(`${p}.text`, 'invalid', `${p}.text is longer than ${SWARM.chat.textMax} characters`));
+  if (m.kind === ASSIGNMENT_KIND) {
+    // assignment@1: the payload is the contract; its type decides who may post it and the jobId must name the same work
+    out.push(...assignmentErrors(m.assignment, agents, `${p}.assignment`));
+    const a = m.assignment;
+    if (a && typeof a === 'object' && a.type && who && from && !assignmentMaySpeak(from, a.type)) out.push(err(`${p}.assignment.type`, 'invalid', `${p}: ${who === 'agent' ? from : who} cannot post an assignment "${a.type}"`));
+    if (a && typeof a === 'object' && str(a.buildId, 80) && str(m.jobId, 120) && m.jobId !== assignmentJobId(a.buildId, a.stepId)) out.push(err(`${p}.jobId`, 'invalid', `${p}.jobId "${m.jobId}" does not name the payload's work (${assignmentJobId(a.buildId, a.stepId)})`));
+  }
   return out;
 }
 

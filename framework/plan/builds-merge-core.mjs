@@ -15,6 +15,7 @@
  */
 import { STATUSES, normBuild, normalizeStore } from './builds-store-core.mjs';
 import { mergeOrigin } from '../core/build-origin.mjs';
+import { mergeAssignment } from '../core/build-assignment.mjs';
 
 const str = (v) => (typeof v === 'string' ? v : '');
 const clone = (o) => JSON.parse(JSON.stringify(o));
@@ -57,6 +58,18 @@ export function settleStatus(b, now = new Date().toISOString()) {
 }
 
 /**
+ * Settle `assignment` and the `assignedEmployee` column on `out` from two copies of a build or step (assignment@1,
+ * framework/core/build-assignment.mjs mergeAssignment): the record changed later wins its fields, briefs and message ids
+ * are the union; a copy that never had an employee cannot blank one the other copy named (unless it declined).
+ */
+function withAssignment(out, a, b) {
+  const m = mergeAssignment(a.assignment ?? (str(a.assignedEmployee) ? { assignedEmployee: a.assignedEmployee } : null), b.assignment ?? (str(b.assignedEmployee) ? { assignedEmployee: b.assignedEmployee } : null));
+  if (m) out.assignment = m; else delete out.assignment;
+  // the column follows the record; with no record on either side it is the first one named
+  out.assignedEmployee = m ? m.assignedEmployee : (str(out.assignedEmployee) || str(a.assignedEmployee) || str(b.assignedEmployee));
+}
+
+/**
  * Merge two copies of one build record. Build-level fields come from the newer copy; steps are merged by uid, each
  * from its newer copy (so session A ticking s2 and session B ticking s3 both survive). Steps only in the newer copy are
  * kept in its order; a step only in the older copy is kept when it was changed after the newer copy was written (added
@@ -70,12 +83,19 @@ export function mergeBuild(a, b) {
   const out = clone(win);
   const other = new Map(lose.steps.map((s) => [s.uid, s]));
   let combined = false;
-  out.steps = win.steps.map((s) => { const o = other.get(s.uid); if (o && newer(o, s) > 0) { combined = true; return clone(o); } return clone(s); });
+  out.steps = win.steps.map((s) => {
+    const o = other.get(s.uid);
+    const picked = o && newer(o, s) > 0 ? (combined = true, clone(o)) : clone(s);
+    // who the step went to and how (assignment@1): the later record wins, briefs union, an employee is never blanked
+    if (o && (s.assignment || o.assignment || s.assignedEmployee || o.assignedEmployee)) withAssignment(picked, s, o);
+    return picked;
+  });
   const have = new Set(out.steps.map((s) => s.uid));
   lose.steps.forEach((s, i) => { if (!have.has(s.uid) && str(s.createdAt) > str(win.updatedAt)) { combined = true; out.steps.splice(Math.min(i, out.steps.length), 0, clone(s)); } });
   for (const k of ['branch', 'pr', 'mergedAt', 'category', 'priority']) if (!str(out[k]) && str(lose[k])) { out[k] = lose[k]; combined = true; }
   // what Brett said that started it: never blanked or replaced by a copy that has less (build-origin@1)
   if (win.origin || lose.origin) { const og = mergeOrigin(win.origin, lose.origin); if (og) out.origin = og; }
+  if (win.assignment || lose.assignment || str(win.assignedEmployee) || str(lose.assignedEmployee)) withAssignment(out, win, lose);
   const key = (n) => `${n.at}|${n.text}`;
   const seenNotes = new Set(out.notes.map(key));
   for (const n of lose.notes ?? []) if (!seenNotes.has(key(n))) { out.notes.push(clone(n)); seenNotes.add(key(n)); combined = true; }

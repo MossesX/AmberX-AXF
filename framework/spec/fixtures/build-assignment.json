@@ -1,0 +1,1186 @@
+{
+ "$axf": "fixture@1",
+ "about": "assignment@1: the orchestrator hands a build or step to an employee agent through the group chat (core/build-assignment.mjs); regenerate: node framework/spec/check-build-assignment.mjs --write",
+ "at": "2026-11-10T16:28:00.000Z",
+ "inputs": {
+  "agents": [
+   {
+    "id": "rio",
+    "name": "Rio React",
+    "role": "Front-end engineer",
+    "skill": "react-ui",
+    "skills": [
+     "react-ui"
+    ],
+    "keywords": [
+     "react",
+     "dialog",
+     "css"
+    ],
+    "paths": [
+     "**/*.tsx"
+    ],
+    "models": [
+     "opus"
+    ],
+    "tools": [
+     "Read",
+     "Edit"
+    ],
+    "salary": 20
+   },
+   {
+    "id": "tia",
+    "name": "Tia Theme",
+    "role": "Asset designer",
+    "skill": "assets-themes",
+    "skills": [
+     "assets-themes"
+    ],
+    "keywords": [
+     "token",
+     "css"
+    ],
+    "paths": [],
+    "models": [
+     "opus"
+    ],
+    "tools": [
+     "Read",
+     "Edit"
+    ],
+    "salary": 10
+   },
+   {
+    "id": "joey",
+    "name": "Joey",
+    "role": "All-rounder",
+    "skill": "builds",
+    "skills": [
+     "builds",
+     "*"
+    ],
+    "keywords": [],
+    "paths": [],
+    "models": [
+     "opus",
+     "fable"
+    ],
+    "tools": [
+     "Read",
+     "Edit",
+     "Bash"
+    ],
+    "salary": 7.5
+   },
+   {
+    "id": "py",
+    "name": "Py Pete",
+    "role": "Server engineer",
+    "skill": "python-server",
+    "skills": [
+     "python-server"
+    ],
+    "keywords": [
+     "fastapi"
+    ],
+    "paths": [],
+    "models": [
+     "opus"
+    ],
+    "tools": [
+     "Read",
+     "Edit"
+    ],
+    "salary": 10
+   }
+  ],
+  "need": {
+   "skills": [
+    "react-ui"
+   ],
+   "tools": [
+    "Edit"
+   ],
+   "capabilities": [
+    "dialog",
+    "css"
+   ]
+  },
+  "posts": [
+   [
+    "m1",
+    "2026-11-10T16:28:00.000Z",
+    "boss",
+    {
+     "type": "ask",
+     "buildId": "b",
+     "stepId": "s1",
+     "need": {
+      "skills": [
+       "react-ui"
+      ],
+      "tools": [
+       "Edit"
+      ],
+      "capabilities": [
+       "dialog",
+       "css"
+      ]
+     }
+    }
+   ],
+   [
+    "m2",
+    "2026-11-10T16:28:05.000Z",
+    "rio",
+    {
+     "type": "claim",
+     "buildId": "b",
+     "stepId": "s1",
+     "ask": "m1",
+     "by": "rio"
+    }
+   ],
+   [
+    "m3",
+    "2026-11-10T16:28:06.000Z",
+    "tia",
+    {
+     "type": "claim",
+     "buildId": "b",
+     "stepId": "s1",
+     "ask": "m1",
+     "by": "tia"
+    }
+   ],
+   [
+    "m4",
+    "2026-11-10T16:28:07.000Z",
+    "rio",
+    {
+     "type": "candidates",
+     "buildId": "b",
+     "stepId": "s1",
+     "ask": "m1",
+     "by": "rio",
+     "candidates": [
+      {
+       "employee": "rio",
+       "match": 50,
+       "reasons": [
+        "skill react-ui",
+        "tool Edit",
+        "can dialog",
+        "can css",
+        "knows dialog"
+       ]
+      },
+      {
+       "employee": "joey",
+       "match": 31,
+       "reasons": [
+        "all-rounder: react-ui",
+        "tool Edit"
+       ]
+      },
+      {
+       "employee": "tia",
+       "match": 19,
+       "reasons": [
+        "tool Edit",
+        "can css"
+       ]
+      }
+     ],
+     "vetoDeadline": "2026-11-10T16:29:35.000Z"
+    }
+   ],
+   [
+    "m5",
+    "2026-11-10T16:28:30.000Z",
+    "boss",
+    {
+     "type": "pick",
+     "buildId": "b",
+     "stepId": "s1",
+     "ask": "m1",
+     "employee": "rio",
+     "pickedBy": "default"
+    }
+   ],
+   [
+    "m6",
+    "2026-11-10T16:29:36.000Z",
+    "boss",
+    {
+     "type": "pick",
+     "buildId": "b",
+     "stepId": "s1",
+     "ask": "m1",
+     "employee": "rio",
+     "pickedBy": "default"
+    }
+   ],
+   [
+    "m7",
+    "2026-11-10T16:34:40.000Z",
+    "rio",
+    {
+     "type": "brief",
+     "buildId": "b",
+     "stepId": "s1",
+     "ask": "m1",
+     "by": "rio",
+     "ref": "_claude/builds/reports/b-s1.md",
+     "kind": "report",
+     "employee": {
+      "id": "rio",
+      "name": "Rio React",
+      "role": "Front-end engineer",
+      "skill": "react-ui"
+     }
+    }
+   ]
+  ]
+ },
+ "registry": {
+  "$id": "axf/assignment",
+  "$axf": "assignment@1",
+  "envelope": "swarm-state@1 messages (engines/swarm-rules.mjs normMessage), kind \"assignment\"",
+  "types": [
+   "ask",
+   "claim",
+   "candidates",
+   "veto",
+   "pick",
+   "brief"
+  ],
+  "statuses": [
+   "",
+   "asked",
+   "claimed",
+   "veto",
+   "assigned",
+   "returned",
+   "declined"
+  ],
+  "pickers": [
+   "",
+   "brett",
+   "default"
+  ],
+  "needKeys": [
+   "skills",
+   "tools",
+   "capabilities"
+  ],
+  "briefKinds": [
+   "brief",
+   "report",
+   "handoff",
+   "question"
+  ],
+  "vetoSeconds": 90,
+  "speakers": {
+   "ask": [
+    "boss"
+   ],
+   "claim": [
+    "agent"
+   ],
+   "candidates": [
+    "agent",
+    "boss"
+   ],
+   "veto": [
+    "brett"
+   ],
+   "pick": [
+    "brett",
+    "boss"
+   ],
+   "brief": [
+    "agent"
+   ]
+  },
+  "weights": {
+   "skill": 3,
+   "tool": 2,
+   "capability": 1
+  },
+  "limits": {
+   "id": 40,
+   "buildId": 80,
+   "stepId": 40,
+   "jobId": 120,
+   "need": 20,
+   "needItem": 60,
+   "candidates": 30,
+   "reasons": 12,
+   "reason": 120,
+   "briefs": 50,
+   "ref": 300,
+   "note": 400,
+   "messages": 200,
+   "name": 60,
+   "role": 80,
+   "skill": 40
+  },
+  "jobId": "<buildId> for a build, <buildId>.<stepId> for a step (swarm-job@1 ids)",
+  "flow": [
+   "ask",
+   "claim",
+   "candidates",
+   "veto | pick",
+   "brief"
+  ]
+ },
+ "candidates": [
+  {
+   "employee": "rio",
+   "match": 50,
+   "reasons": [
+    "skill react-ui",
+    "tool Edit",
+    "can dialog",
+    "can css",
+    "knows dialog"
+   ]
+  },
+  {
+   "employee": "joey",
+   "match": 31,
+   "reasons": [
+    "all-rounder: react-ui",
+    "tool Edit"
+   ]
+  },
+  {
+   "employee": "tia",
+   "match": 19,
+   "reasons": [
+    "tool Edit",
+    "can css"
+   ]
+  }
+ ],
+ "nobody": [
+  {
+   "employee": "py",
+   "match": 100,
+   "reasons": [
+    "roster fallback: nobody matched the need"
+   ]
+  }
+ ],
+ "toolsOnly": [
+  {
+   "employee": "joey",
+   "match": 100,
+   "reasons": [
+    "tool Bash"
+   ]
+  }
+ ],
+ "messages": [
+  {
+   "id": "m1",
+   "at": "2026-11-10T16:28:00.000Z",
+   "from": "boss",
+   "kind": "assignment",
+   "jobId": "b.s1",
+   "text": "Who can take b s1? Need: skills react-ui; tools Edit; can dialog, css.",
+   "assignment": {
+    "type": "ask",
+    "buildId": "b",
+    "stepId": "s1",
+    "ask": "",
+    "at": "",
+    "need": {
+     "skills": [
+      "react-ui"
+     ],
+     "tools": [
+      "Edit"
+     ],
+     "capabilities": [
+      "dialog",
+      "css"
+     ]
+    }
+   }
+  },
+  {
+   "id": "m2",
+   "at": "2026-11-10T16:28:05.000Z",
+   "from": "rio",
+   "kind": "assignment",
+   "jobId": "b.s1",
+   "text": "Rio React took b s1 and opened the dialog.",
+   "assignment": {
+    "type": "claim",
+    "buildId": "b",
+    "stepId": "s1",
+    "ask": "m1",
+    "at": "",
+    "by": "rio"
+   }
+  },
+  {
+   "id": "m3",
+   "at": "2026-11-10T16:28:06.000Z",
+   "from": "tia",
+   "kind": "assignment",
+   "jobId": "b.s1",
+   "text": "Tia Theme took b s1 and opened the dialog.",
+   "assignment": {
+    "type": "claim",
+    "buildId": "b",
+    "stepId": "s1",
+    "ask": "m1",
+    "at": "",
+    "by": "tia"
+   }
+  },
+  {
+   "id": "m4",
+   "at": "2026-11-10T16:28:07.000Z",
+   "from": "rio",
+   "kind": "assignment",
+   "jobId": "b.s1",
+   "text": "b s1: Rio React 50%, joey 31%, Tia Theme 19%. Veto until 2026-11-10T16:29:35.000Z, then the top one has it.",
+   "assignment": {
+    "type": "candidates",
+    "buildId": "b",
+    "stepId": "s1",
+    "ask": "m1",
+    "at": "",
+    "by": "rio",
+    "candidates": [
+     {
+      "employee": "rio",
+      "match": 50,
+      "reasons": [
+       "skill react-ui",
+       "tool Edit",
+       "can dialog",
+       "can css",
+       "knows dialog"
+      ]
+     },
+     {
+      "employee": "joey",
+      "match": 31,
+      "reasons": [
+       "all-rounder: react-ui",
+       "tool Edit"
+      ]
+     },
+     {
+      "employee": "tia",
+      "match": 19,
+      "reasons": [
+       "tool Edit",
+       "can css"
+      ]
+     }
+    ],
+    "vetoDeadline": "2026-11-10T16:29:35.000Z"
+   }
+  },
+  {
+   "id": "m5",
+   "at": "2026-11-10T16:28:30.000Z",
+   "from": "boss",
+   "kind": "assignment",
+   "jobId": "b.s1",
+   "text": "Rio React, b s1 is yours (best match, nobody vetoed).",
+   "assignment": {
+    "type": "pick",
+    "buildId": "b",
+    "stepId": "s1",
+    "ask": "m1",
+    "at": "",
+    "employee": "rio",
+    "pickedBy": "default"
+   }
+  },
+  {
+   "id": "m6",
+   "at": "2026-11-10T16:29:36.000Z",
+   "from": "boss",
+   "kind": "assignment",
+   "jobId": "b.s1",
+   "text": "Rio React, b s1 is yours (best match, nobody vetoed).",
+   "assignment": {
+    "type": "pick",
+    "buildId": "b",
+    "stepId": "s1",
+    "ask": "m1",
+    "at": "",
+    "employee": "rio",
+    "pickedBy": "default"
+   }
+  },
+  {
+   "id": "m7",
+   "at": "2026-11-10T16:34:40.000Z",
+   "from": "rio",
+   "kind": "assignment",
+   "jobId": "b.s1",
+   "text": "Rio React sent the report for b s1 back: _claude/builds/reports/b-s1.md.",
+   "assignment": {
+    "type": "brief",
+    "buildId": "b",
+    "stepId": "s1",
+    "ask": "m1",
+    "at": "",
+    "by": "rio",
+    "ref": "_claude/builds/reports/b-s1.md",
+    "kind": "report",
+    "employee": {
+     "id": "rio",
+     "name": "Rio React",
+     "role": "Front-end engineer",
+     "skill": "react-ui"
+    }
+   }
+  }
+ ],
+ "folded": {
+  "record": {
+   "status": "returned",
+   "ask": "m1",
+   "askedAt": "2026-11-10T16:28:00.000Z",
+   "need": {
+    "skills": [
+     "react-ui"
+    ],
+    "tools": [
+     "Edit"
+    ],
+    "capabilities": [
+     "dialog",
+     "css"
+    ]
+   },
+   "candidates": [
+    {
+     "employee": "rio",
+     "match": 50,
+     "reasons": [
+      "skill react-ui",
+      "tool Edit",
+      "can dialog",
+      "can css",
+      "knows dialog"
+     ]
+    },
+    {
+     "employee": "joey",
+     "match": 31,
+     "reasons": [
+      "all-rounder: react-ui",
+      "tool Edit"
+     ]
+    },
+    {
+     "employee": "tia",
+     "match": 19,
+     "reasons": [
+      "tool Edit",
+      "can css"
+     ]
+    }
+   ],
+   "claimedBy": "rio",
+   "claimedAt": "2026-11-10T16:28:05.000Z",
+   "vetoDeadline": "2026-11-10T16:29:35.000Z",
+   "pickedBy": "default",
+   "pickedAt": "2026-11-10T16:29:36.000Z",
+   "assignedEmployee": "rio",
+   "briefs": [
+    {
+     "ref": "_claude/builds/reports/b-s1.md",
+     "kind": "report",
+     "by": "rio",
+     "at": "2026-11-10T16:34:40.000Z",
+     "employee": {
+      "id": "rio",
+      "name": "Rio React",
+      "role": "Front-end engineer",
+      "skill": "react-ui"
+     },
+     "message": "m7"
+    }
+   ],
+   "messages": [
+    "m1",
+    "m2",
+    "m4",
+    "m6",
+    "m7"
+   ],
+   "updatedAt": "2026-11-10T16:34:40.000Z"
+  },
+  "refused": [
+   {
+    "id": "m3",
+    "error": "rio already took it"
+   },
+   {
+    "id": "m5",
+    "error": "the veto window is open until 2026-11-10T16:29:35.000Z (65 s left)"
+   }
+  ]
+ },
+ "veto": {
+  "pick": {
+   "record": {
+    "status": "assigned",
+    "ask": "m1",
+    "askedAt": "2026-11-10T16:28:00.000Z",
+    "need": {
+     "skills": [
+      "react-ui"
+     ],
+     "tools": [
+      "Edit"
+     ],
+     "capabilities": [
+      "dialog",
+      "css"
+     ]
+    },
+    "candidates": [
+     {
+      "employee": "rio",
+      "match": 50,
+      "reasons": [
+       "skill react-ui",
+       "tool Edit",
+       "can dialog",
+       "can css",
+       "knows dialog"
+      ]
+     },
+     {
+      "employee": "joey",
+      "match": 31,
+      "reasons": [
+       "all-rounder: react-ui",
+       "tool Edit"
+      ]
+     },
+     {
+      "employee": "tia",
+      "match": 19,
+      "reasons": [
+       "tool Edit",
+       "can css"
+      ]
+     }
+    ],
+    "claimedBy": "rio",
+    "claimedAt": "2026-11-10T16:28:05.000Z",
+    "vetoDeadline": "2026-11-10T16:29:35.000Z",
+    "pickedBy": "brett",
+    "pickedAt": "2026-11-10T16:29:00.000Z",
+    "assignedEmployee": "tia",
+    "briefs": [],
+    "messages": [
+     "m1",
+     "m2",
+     "m4",
+     "v1"
+    ],
+    "updatedAt": "2026-11-10T16:29:00.000Z"
+   },
+   "error": ""
+  },
+  "decline": {
+   "record": {
+    "status": "declined",
+    "ask": "m1",
+    "askedAt": "2026-11-10T16:28:00.000Z",
+    "need": {
+     "skills": [
+      "react-ui"
+     ],
+     "tools": [
+      "Edit"
+     ],
+     "capabilities": [
+      "dialog",
+      "css"
+     ]
+    },
+    "candidates": [
+     {
+      "employee": "rio",
+      "match": 50,
+      "reasons": [
+       "skill react-ui",
+       "tool Edit",
+       "can dialog",
+       "can css",
+       "knows dialog"
+      ]
+     },
+     {
+      "employee": "joey",
+      "match": 31,
+      "reasons": [
+       "all-rounder: react-ui",
+       "tool Edit"
+      ]
+     },
+     {
+      "employee": "tia",
+      "match": 19,
+      "reasons": [
+       "tool Edit",
+       "can css"
+      ]
+     }
+    ],
+    "claimedBy": "rio",
+    "claimedAt": "2026-11-10T16:28:05.000Z",
+    "vetoDeadline": "2026-11-10T16:29:35.000Z",
+    "pickedBy": "brett",
+    "pickedAt": "2026-11-10T16:29:00.000Z",
+    "assignedEmployee": "",
+    "briefs": [],
+    "messages": [
+     "m1",
+     "m2",
+     "m4",
+     "v2"
+    ],
+    "updatedAt": "2026-11-10T16:29:00.000Z"
+   },
+   "error": ""
+  },
+  "late": {
+   "record": {
+    "status": "veto",
+    "ask": "m1",
+    "askedAt": "2026-11-10T16:28:00.000Z",
+    "need": {
+     "skills": [
+      "react-ui"
+     ],
+     "tools": [
+      "Edit"
+     ],
+     "capabilities": [
+      "dialog",
+      "css"
+     ]
+    },
+    "candidates": [
+     {
+      "employee": "rio",
+      "match": 50,
+      "reasons": [
+       "skill react-ui",
+       "tool Edit",
+       "can dialog",
+       "can css",
+       "knows dialog"
+      ]
+     },
+     {
+      "employee": "joey",
+      "match": 31,
+      "reasons": [
+       "all-rounder: react-ui",
+       "tool Edit"
+      ]
+     },
+     {
+      "employee": "tia",
+      "match": 19,
+      "reasons": [
+       "tool Edit",
+       "can css"
+      ]
+     }
+    ],
+    "claimedBy": "rio",
+    "claimedAt": "2026-11-10T16:28:05.000Z",
+    "vetoDeadline": "2026-11-10T16:29:35.000Z",
+    "pickedBy": "",
+    "pickedAt": "",
+    "assignedEmployee": "",
+    "briefs": [],
+    "messages": [
+     "m1",
+     "m2",
+     "m4"
+    ],
+    "updatedAt": "2026-11-10T16:28:07.000Z"
+   },
+   "error": "the veto window closed at 2026-11-10T16:29:35.000Z"
+  },
+  "brettEarly": {
+   "record": {
+    "status": "assigned",
+    "ask": "m1",
+    "askedAt": "2026-11-10T16:28:00.000Z",
+    "need": {
+     "skills": [
+      "react-ui"
+     ],
+     "tools": [
+      "Edit"
+     ],
+     "capabilities": [
+      "dialog",
+      "css"
+     ]
+    },
+    "candidates": [],
+    "claimedBy": "",
+    "claimedAt": "",
+    "vetoDeadline": "",
+    "pickedBy": "brett",
+    "pickedAt": "2026-11-10T16:28:02.000Z",
+    "assignedEmployee": "py",
+    "briefs": [],
+    "messages": [
+     "m1",
+     "p1"
+    ],
+    "updatedAt": "2026-11-10T16:28:02.000Z"
+   },
+   "error": ""
+  },
+  "wrongSpeaker": {
+   "record": null,
+   "error": "rio cannot post a ask (boss does)"
+  }
+ },
+ "defaultPick": {
+  "open": null,
+  "closed": {
+   "type": "pick",
+   "buildId": "b",
+   "stepId": "s1",
+   "ask": "m1",
+   "employee": "rio",
+   "pickedBy": "default",
+   "at": "2026-11-10T16:29:36.000Z"
+  },
+  "left": [
+   45,
+   0,
+   0
+  ]
+ },
+ "errors": {
+  "ask-empty": [
+   {
+    "field": "assignment.need",
+    "code": "missing",
+    "message": "assignment.need names at least one skill, tool or capability"
+   }
+  ],
+  "claim-no-ask": [
+   {
+    "field": "assignment.ask",
+    "code": "missing",
+    "message": "assignment: a claim answers an ask (its message id)"
+   }
+  ],
+  "candidates-bad": [
+   {
+    "field": "assignment.by",
+    "code": "invalid",
+    "message": "assignment.by \"nobody\" is not on the roster"
+   },
+   {
+    "field": "assignment.candidates",
+    "code": "invalid",
+    "message": "assignment.candidates: the match percentages add up to 100"
+   },
+   {
+    "field": "assignment.vetoDeadline",
+    "code": "missing",
+    "message": "assignment.vetoDeadline (claimed at + 90 s) is missing"
+   }
+  ],
+  "pick-bad": [
+   {
+    "field": "assignment.employee",
+    "code": "invalid",
+    "message": "assignment.employee \"Rio\" is not an agent id"
+   },
+   {
+    "field": "assignment.pickedBy",
+    "code": "invalid",
+    "message": "assignment.pickedBy is brett or default"
+   }
+  ],
+  "brief-bad": [
+   {
+    "field": "assignment.ref",
+    "code": "missing",
+    "message": "assignment.ref points at the brief sent back"
+   },
+   {
+    "field": "assignment.employee",
+    "code": "invalid",
+    "message": "assignment.employee carries the agent's id, name, role, skill"
+   }
+  ],
+  "type-bad": [
+   {
+    "field": "assignment.type",
+    "code": "invalid",
+    "message": "assignment.type must be one of ask, claim, candidates, veto, pick, brief"
+   }
+  ],
+  "chat-ok": [],
+  "chat-wrong-speaker": [
+   {
+    "field": "message.assignment.type",
+    "code": "invalid",
+    "message": "message: rio cannot post an assignment \"ask\""
+   }
+  ],
+  "chat-wrong-job": [
+   {
+    "field": "message.jobId",
+    "code": "invalid",
+    "message": "message.jobId \"other\" does not name the payload's work (b.s1)"
+   }
+  ],
+  "chat-no-payload": [
+   {
+    "field": "message.assignment",
+    "code": "missing",
+    "message": "message.assignment is missing"
+   }
+  ]
+ },
+ "normalized": {
+  "message": {
+   "id": "m1",
+   "at": "2026-11-10T16:28:00.000Z",
+   "from": "boss",
+   "kind": "assignment",
+   "text": "who?",
+   "jobId": "b.s1",
+   "vibe": null,
+   "toned": false,
+   "assignment": {
+    "type": "ask",
+    "buildId": "b",
+    "stepId": "s1",
+    "ask": "",
+    "at": "",
+    "need": {
+     "skills": [
+      "react-ui"
+     ],
+     "tools": [],
+     "capabilities": []
+    }
+   }
+  },
+  "banterKeepsNoPayload": {
+   "id": "m0",
+   "at": "",
+   "from": "rio",
+   "kind": "banter",
+   "text": "yo",
+   "jobId": "",
+   "vibe": null,
+   "toned": false
+  },
+  "record": {
+   "status": "",
+   "ask": "",
+   "askedAt": "",
+   "need": {
+    "skills": [],
+    "tools": [],
+    "capabilities": []
+   },
+   "candidates": [
+    {
+     "employee": "rio",
+     "match": 100,
+     "reasons": [
+      "x"
+     ]
+    }
+   ],
+   "claimedBy": "rio",
+   "claimedAt": "",
+   "vetoDeadline": "",
+   "pickedBy": "",
+   "pickedAt": "",
+   "assignedEmployee": "",
+   "briefs": [
+    {
+     "ref": "r",
+     "kind": "brief",
+     "by": "rio",
+     "at": "",
+     "employee": null,
+     "message": ""
+    }
+   ],
+   "messages": [
+    "m1"
+   ],
+   "updatedAt": "2026-11-10T16:28:00.000Z"
+  },
+  "columnOnly": {
+   "status": "assigned",
+   "ask": "",
+   "askedAt": "",
+   "need": {
+    "skills": [],
+    "tools": [],
+    "capabilities": []
+   },
+   "candidates": [],
+   "claimedBy": "",
+   "claimedAt": "",
+   "vetoDeadline": "",
+   "pickedBy": "",
+   "pickedAt": "",
+   "assignedEmployee": "rio",
+   "briefs": [],
+   "messages": [],
+   "updatedAt": ""
+  },
+  "nothing": null,
+  "payloadOnOtherKind": {
+   "type": "ask",
+   "buildId": "b",
+   "stepId": "",
+   "ask": "",
+   "at": "",
+   "need": {
+    "skills": [
+     "react-ui"
+    ],
+    "tools": [
+     "Edit"
+    ],
+    "capabilities": [
+     "dialog",
+     "css"
+    ]
+   }
+  }
+ },
+ "merged": {
+  "newerWins": {
+   "status": "returned",
+   "ask": "",
+   "askedAt": "",
+   "need": {
+    "skills": [],
+    "tools": [],
+    "capabilities": []
+   },
+   "candidates": [],
+   "claimedBy": "",
+   "claimedAt": "",
+   "vetoDeadline": "",
+   "pickedBy": "",
+   "pickedAt": "",
+   "assignedEmployee": "rio",
+   "briefs": [
+    {
+     "ref": "a",
+     "kind": "brief",
+     "by": "rio",
+     "at": "2026-11-10T16:28:01.000Z",
+     "employee": null,
+     "message": ""
+    },
+    {
+     "ref": "b",
+     "kind": "report",
+     "by": "rio",
+     "at": "2026-11-10T16:28:02.000Z",
+     "employee": null,
+     "message": ""
+    }
+   ],
+   "messages": [
+    "m2",
+    "m1"
+   ],
+   "updatedAt": "2026-11-10T16:28:02.000Z"
+  },
+  "employeeKept": {
+   "status": "asked",
+   "ask": "m9",
+   "askedAt": "",
+   "need": {
+    "skills": [],
+    "tools": [],
+    "capabilities": []
+   },
+   "candidates": [],
+   "claimedBy": "",
+   "claimedAt": "",
+   "vetoDeadline": "",
+   "pickedBy": "",
+   "pickedAt": "",
+   "assignedEmployee": "tia",
+   "briefs": [],
+   "messages": [],
+   "updatedAt": "2026-11-10T16:28:09.000Z"
+  },
+  "declinedStays": {
+   "status": "declined",
+   "ask": "",
+   "askedAt": "",
+   "need": {
+    "skills": [],
+    "tools": [],
+    "capabilities": []
+   },
+   "candidates": [],
+   "claimedBy": "",
+   "claimedAt": "",
+   "vetoDeadline": "",
+   "pickedBy": "brett",
+   "pickedAt": "",
+   "assignedEmployee": "",
+   "briefs": [],
+   "messages": [],
+   "updatedAt": "2026-11-10T16:28:09.000Z"
+  }
+ },
+ "jobIds": {
+  "build": "my-build",
+  "step": "my-build.s2",
+  "parsed": [
+   {
+    "buildId": "my-build",
+    "stepId": "s2"
+   },
+   {
+    "buildId": "dotted.name",
+    "stepId": ""
+   },
+   {
+    "buildId": "x",
+    "stepId": "s10.1"
+   }
+  ]
+ },
+ "schemas": [
+  "assignment.schema.json"
+ ]
+}

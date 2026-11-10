@@ -45,6 +45,19 @@ session on code from before build-origin@1 can't drop it: the next read heals th
 the build-orchestrator plugin's `GET /origin/{id}`, `POST /origin/{id}`, `POST /origin/{id}/addendum` (REST, MCP and
 `axf build-orchestrator …` through plugin-commands@1). <!-- axf-plugin:build-orchestrator -->
 
+## Who takes it (assignment@1, since Nov 10 2026)
+
+Brett: "the orchestrator asks if anyone can do something, if they have skills or tools or capabilities; the first one to
+take it opens a dialog listing all the matching agents with a percentage of each one being the best choice for the job.
+After the 90 second veto it chooses the best probable one by default." Contract: `contracts/assignment@1.md` (+ its
+schema copy), code `framework/core/build-assignment.mjs`. A build or step that went to someone carries
+`assignedEmployee` (the orchestrator table's employee column; absent = none) and `assignment` (ask, claim, candidates
+with match %, veto deadline, pick by Brett or default, briefs sent back with the employee's data). The envelope is the
+group chat message (kind `assignment`), never a new one. Older records gain nothing until they are assigned;
+`node framework/cli/build-assignment.mjs migrate [--apply]` reads the raw store and carries any older column into the
+record. CLI: `get | candidates | apply --payload | default-pick | migrate | missing`.
+<!-- axf-plugin:build-orchestrator -->
+
 ## Live on main (since Nov 3 2026)
 
 Brett: "every completed step, no matter how small, must reach the orchestrator and appear on main immediately".

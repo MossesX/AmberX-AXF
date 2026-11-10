@@ -1,0 +1,713 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/assignment.schema.json",
+  "title": "AmberX AXF build assignment (assignment@1)",
+  "description": "Generated from framework/core/build-assignment.mjs. The orchestrator asks the group chat who can take a build or step; the first claimer opens the dialog of matching agents with match %; after the 90 s veto the best match has it by default; the employee sends its briefs back. One schema: the record on a builds@1 build / step ($defs.record), the typed payload ($defs.payload) and the chat message it rides on ($defs.message).",
+  "$ref": "#/$defs/record",
+  "$defs": {
+    "need": {
+      "type": "object",
+      "properties": {
+        "skills": {
+          "type": "array",
+          "maxItems": 20,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "maxLength": 60
+          }
+        },
+        "tools": {
+          "type": "array",
+          "maxItems": 20,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "maxLength": 60
+          }
+        },
+        "capabilities": {
+          "type": "array",
+          "maxItems": 20,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "maxLength": 60
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "candidate": {
+      "type": "object",
+      "required": [
+        "employee",
+        "match"
+      ],
+      "properties": {
+        "employee": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{0,39}$"
+        },
+        "match": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "reasons": {
+          "type": "array",
+          "maxItems": 12,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "maxLength": 120
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "employee": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{0,39}$"
+            },
+            "name": {
+              "type": "string",
+              "maxLength": 60
+            },
+            "role": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "skill": {
+              "type": "string",
+              "maxLength": 40
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "brief": {
+      "type": "object",
+      "required": [
+        "ref",
+        "kind",
+        "by",
+        "at"
+      ],
+      "properties": {
+        "ref": {
+          "type": "string",
+          "maxLength": 300
+        },
+        "kind": {
+          "enum": [
+            "brief",
+            "report",
+            "handoff",
+            "question"
+          ]
+        },
+        "by": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{0,39}$"
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?(Z|[+-]\\d{2}:\\d{2})$"
+        },
+        "employee": {
+          "anyOf": [
+            {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9-]{0,39}$"
+                },
+                "name": {
+                  "type": "string",
+                  "maxLength": 60
+                },
+                "role": {
+                  "type": "string",
+                  "maxLength": 80
+                },
+                "skill": {
+                  "type": "string",
+                  "maxLength": 40
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "message": {
+          "type": "string",
+          "maxLength": 40
+        }
+      },
+      "additionalProperties": false
+    },
+    "payload": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "buildId",
+            "need"
+          ],
+          "properties": {
+            "type": {
+              "const": "ask"
+            },
+            "buildId": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "stepId": {
+              "type": "string",
+              "maxLength": 40
+            },
+            "ask": {
+              "type": "string",
+              "maxLength": 40
+            },
+            "at": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?(Z|[+-]\\d{2}:\\d{2})$"
+                },
+                {
+                  "const": ""
+                }
+              ]
+            },
+            "need": {
+              "$ref": "#/$defs/need"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "buildId",
+            "ask",
+            "by"
+          ],
+          "properties": {
+            "type": {
+              "const": "claim"
+            },
+            "buildId": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "stepId": {
+              "type": "string",
+              "maxLength": 40
+            },
+            "ask": {
+              "type": "string",
+              "maxLength": 40
+            },
+            "at": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?(Z|[+-]\\d{2}:\\d{2})$"
+                },
+                {
+                  "const": ""
+                }
+              ]
+            },
+            "by": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{0,39}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "buildId",
+            "ask",
+            "by",
+            "candidates",
+            "vetoDeadline"
+          ],
+          "properties": {
+            "type": {
+              "const": "candidates"
+            },
+            "buildId": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "stepId": {
+              "type": "string",
+              "maxLength": 40
+            },
+            "ask": {
+              "type": "string",
+              "maxLength": 40
+            },
+            "at": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?(Z|[+-]\\d{2}:\\d{2})$"
+                },
+                {
+                  "const": ""
+                }
+              ]
+            },
+            "by": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{0,39}$"
+            },
+            "candidates": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 30,
+              "items": {
+                "$ref": "#/$defs/candidate"
+              }
+            },
+            "vetoDeadline": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?(Z|[+-]\\d{2}:\\d{2})$"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "buildId",
+            "ask"
+          ],
+          "properties": {
+            "type": {
+              "const": "veto"
+            },
+            "buildId": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "stepId": {
+              "type": "string",
+              "maxLength": 40
+            },
+            "ask": {
+              "type": "string",
+              "maxLength": 40
+            },
+            "at": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?(Z|[+-]\\d{2}:\\d{2})$"
+                },
+                {
+                  "const": ""
+                }
+              ]
+            },
+            "by": {
+              "const": "brett"
+            },
+            "employee": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9-]{0,39}$"
+                },
+                {
+                  "const": ""
+                }
+              ]
+            },
+            "note": {
+              "type": "string",
+              "maxLength": 400
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "buildId",
+            "ask",
+            "employee",
+            "pickedBy"
+          ],
+          "properties": {
+            "type": {
+              "const": "pick"
+            },
+            "buildId": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "stepId": {
+              "type": "string",
+              "maxLength": 40
+            },
+            "ask": {
+              "type": "string",
+              "maxLength": 40
+            },
+            "at": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?(Z|[+-]\\d{2}:\\d{2})$"
+                },
+                {
+                  "const": ""
+                }
+              ]
+            },
+            "employee": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{0,39}$"
+            },
+            "pickedBy": {
+              "enum": [
+                "brett",
+                "default"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "buildId",
+            "ask",
+            "by",
+            "ref"
+          ],
+          "properties": {
+            "type": {
+              "const": "brief"
+            },
+            "buildId": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "stepId": {
+              "type": "string",
+              "maxLength": 40
+            },
+            "ask": {
+              "type": "string",
+              "maxLength": 40
+            },
+            "at": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?(Z|[+-]\\d{2}:\\d{2})$"
+                },
+                {
+                  "const": ""
+                }
+              ]
+            },
+            "by": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{0,39}$"
+            },
+            "ref": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 300
+            },
+            "kind": {
+              "enum": [
+                "brief",
+                "report",
+                "handoff",
+                "question"
+              ]
+            },
+            "employee": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "required": [
+                    "id"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9-]{0,39}$"
+                    },
+                    "name": {
+                      "type": "string",
+                      "maxLength": 60
+                    },
+                    "role": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "skill": {
+                      "type": "string",
+                      "maxLength": 40
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "record": {
+      "type": "object",
+      "required": [
+        "status",
+        "assignedEmployee"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "",
+            "asked",
+            "claimed",
+            "veto",
+            "assigned",
+            "returned",
+            "declined"
+          ]
+        },
+        "ask": {
+          "type": "string",
+          "maxLength": 40
+        },
+        "askedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?(Z|[+-]\\d{2}:\\d{2})$"
+            },
+            {
+              "const": ""
+            }
+          ]
+        },
+        "need": {
+          "$ref": "#/$defs/need"
+        },
+        "candidates": {
+          "type": "array",
+          "maxItems": 30,
+          "items": {
+            "$ref": "#/$defs/candidate"
+          }
+        },
+        "claimedBy": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{0,39}$"
+            },
+            {
+              "const": ""
+            }
+          ]
+        },
+        "claimedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?(Z|[+-]\\d{2}:\\d{2})$"
+            },
+            {
+              "const": ""
+            }
+          ]
+        },
+        "vetoDeadline": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?(Z|[+-]\\d{2}:\\d{2})$"
+            },
+            {
+              "const": ""
+            }
+          ]
+        },
+        "pickedBy": {
+          "enum": [
+            "",
+            "brett",
+            "default"
+          ]
+        },
+        "pickedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?(Z|[+-]\\d{2}:\\d{2})$"
+            },
+            {
+              "const": ""
+            }
+          ]
+        },
+        "assignedEmployee": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{0,39}$"
+            },
+            {
+              "const": ""
+            }
+          ]
+        },
+        "briefs": {
+          "type": "array",
+          "maxItems": 50,
+          "items": {
+            "$ref": "#/$defs/brief"
+          }
+        },
+        "messages": {
+          "type": "array",
+          "maxItems": 200,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "maxLength": 40
+          }
+        },
+        "updatedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?(Z|[+-]\\d{2}:\\d{2})$"
+            },
+            {
+              "const": ""
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "message": {
+      "type": "object",
+      "required": [
+        "from",
+        "kind",
+        "text",
+        "jobId",
+        "assignment"
+      ],
+      "description": "A swarm-state@1 chat message (engines/swarm-rules.mjs normMessage) of kind \"assignment\" carrying one payload. jobId = <buildId> or <buildId>.<stepId>.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 40
+        },
+        "at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?(Z|[+-]\\d{2}:\\d{2})$"
+            },
+            {
+              "const": ""
+            }
+          ]
+        },
+        "from": {
+          "type": "string",
+          "maxLength": 40
+        },
+        "kind": {
+          "const": "assignment"
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "jobId": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "vibe": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "toned": {
+          "type": "boolean"
+        },
+        "assignment": {
+          "$ref": "#/$defs/payload"
+        }
+      }
+    }
+  }
+}

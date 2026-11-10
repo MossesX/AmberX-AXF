@@ -2,7 +2,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type Model = 'haiku' | 'sonnet' | 'opus' | 'fable';
 export type AgentStatus = 'on-duty' | 'off-duty' | 'injured' | 'medical-leave' | 'probation' | 'fired' | 'custom' | 'suspended' | 'quit';
-export type ChatKind = 'assign' | 'lease' | 'report' | 'handoff' | 'merge' | 'status' | 'discipline' | 'pay' | 'banter' | 'brett';
+export type ChatKind = 'assign' | 'lease' | 'report' | 'handoff' | 'merge' | 'status' | 'discipline' | 'pay' | 'banter' | 'brett' | 'assignment';
+/** assignment@1 payload (framework/core/build-assignment.mjs normPayload); present only on kind "assignment". */
+export type AssignmentPayload = { type: 'ask' | 'claim' | 'candidates' | 'veto' | 'pick' | 'brief'; buildId: string; stepId: string; ask: string; at: string } & Record<string, any>;
 export type RunKind = 'build' | 'job';
 export type RunStatus = 'running' | 'done' | 'failed' | 'blocked' | 'killed' | 'error';
 export type ReportStatus = 'done' | 'failed' | 'blocked';
@@ -16,7 +18,7 @@ export interface Agent {
 export interface Skill { id: string; title: string; schema: string; body: string; lines: number; chars: number }
 export interface Roster { $axf: 'swarm-roster@1'; tune: { scale: number; basis: string }; fallback: string; agents: Agent[] }
 export interface ChatSettings { vibe: number; chattiness: number; cussing: number; drama: number; preset: string; overrides: Record<string, Partial<Record<'vibe' | 'chattiness' | 'cussing' | 'drama', number>>>; banterBudget: number; saved: { name: string; vibe: number; chattiness: number; cussing: number; drama: number }[] }
-export interface Message { id: string; at: string; from: string; kind: ChatKind; text: string; jobId: string; vibe: number | null; toned: boolean }
+export interface Message { id: string; at: string; from: string; kind: ChatKind; text: string; jobId: string; vibe: number | null; toned: boolean; assignment?: AssignmentPayload }
 export interface AgentState {
   status: AgentStatus; note: string; until: string; custom: { name: string; works: boolean }; salary: number | null;
   topups: { at: string; usd: number }[]; pay: { at: string; kind: 'raise' | 'dock'; from: number; to: number; note: string }[]; bonuses: { at: string; jobId: string; usd: number }[];

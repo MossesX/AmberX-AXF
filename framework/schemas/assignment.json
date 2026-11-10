@@ -1,0 +1,92 @@
+{
+  "$id": "axf/assignment",
+  "$axf": "assignment@1",
+  "envelope": "swarm-state@1 messages (engines/swarm-rules.mjs normMessage), kind \"assignment\"",
+  "types": [
+    "ask",
+    "claim",
+    "candidates",
+    "veto",
+    "pick",
+    "brief"
+  ],
+  "statuses": [
+    "",
+    "asked",
+    "claimed",
+    "veto",
+    "assigned",
+    "returned",
+    "declined"
+  ],
+  "pickers": [
+    "",
+    "brett",
+    "default"
+  ],
+  "needKeys": [
+    "skills",
+    "tools",
+    "capabilities"
+  ],
+  "briefKinds": [
+    "brief",
+    "report",
+    "handoff",
+    "question"
+  ],
+  "vetoSeconds": 90,
+  "speakers": {
+    "ask": [
+      "boss"
+    ],
+    "claim": [
+      "agent"
+    ],
+    "candidates": [
+      "agent",
+      "boss"
+    ],
+    "veto": [
+      "brett"
+    ],
+    "pick": [
+      "brett",
+      "boss"
+    ],
+    "brief": [
+      "agent"
+    ]
+  },
+  "weights": {
+    "skill": 3,
+    "tool": 2,
+    "capability": 1
+  },
+  "limits": {
+    "id": 40,
+    "buildId": 80,
+    "stepId": 40,
+    "jobId": 120,
+    "need": 20,
+    "needItem": 60,
+    "candidates": 30,
+    "reasons": 12,
+    "reason": 120,
+    "briefs": 50,
+    "ref": 300,
+    "note": 400,
+    "messages": 200,
+    "name": 60,
+    "role": 80,
+    "skill": 40
+  },
+  "jobId": "<buildId> for a build, <buildId>.<stepId> for a step (swarm-job@1 ids)",
+  "flow": [
+    "ask",
+    "claim",
+    "candidates",
+    "veto | pick",
+    "brief"
+  ]
+}

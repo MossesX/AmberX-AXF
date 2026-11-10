@@ -352,7 +352,8 @@
               "discipline",
               "pay",
               "banter",
-              "brett"
+              "brett",
+              "assignment"
             ]
           },
           "text": {
@@ -376,6 +377,10 @@
           },
           "toned": {
             "type": "boolean"
+          },
+          "assignment": {
+            "$ref": "axf/assignment.schema.json#/$defs/payload",
+            "description": "assignment@1 payload; only on kind \"assignment\""
           }
         }
       }

@@ -35,10 +35,15 @@
  *
  *     origin                       build-origin@1 (framework/core/build-origin.mjs): Brett's verbatim words that started it,
  *                                  when / where / who launched it, the brief, later addenda; merged, never overwritten
+ *     assignedEmployee             the orchestrator table's employee column: the agent (agent@1 id) the build went to, '' = none
+ *     assignment                   assignment@1 (framework/core/build-assignment.mjs): how it got there through the group chat
+ *                                  (ask, claim, candidates with match %, 90 s veto, pick, briefs sent back); absent until
+ *                                  an assignment happens. The column and the record's assignedEmployee read the same.
  *
  *   StepRecord = orchestrator@1 step fields (id, text, model, why, phase, group, estimate, files, checks, session,
  *     agent, skip, done, doneAt, note) plus uid (never changes, also across a harvest), title (rename; shown instead
- *     of the text when set), rev, createdAt, updatedAt, origin ({ build, step } it was harvested or divided from).
+ *     of the text when set), rev, createdAt, updatedAt, origin ({ build, step } it was harvested or divided from),
+ *     assignedEmployee and assignment (as on the build, for one step).
  *
  * Ids never change: renaming changes title only, so links, PRs and history keep pointing at the same record.
  */
@@ -48,6 +53,7 @@ import { mergeOrigin, normOrigin } from '../core/build-origin.mjs';
 import { effectivePriority, normPriority } from '../core/build-priority.mjs';
 import { normRef as normShippedRef } from '../core/shipped-manifest.mjs';
 import { normPipeline } from '../core/build-pipeline.mjs';
+import { normAssignment } from '../core/build-assignment.mjs';
 
 export const SCHEMA = 'builds@1';
 export const MODELS = ['Fable', 'Opus'];
@@ -81,7 +87,7 @@ const stepModel = (m) => (m === 'Fable' ? 'Fable' : 'Opus');
 const clone = (o) => JSON.parse(JSON.stringify(o));
 const nowIso = () => new Date().toISOString();
 export const slug = (t) => str(t, 80).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'build';
-const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'priority', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'origin', 'steps'];
+const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'priority', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'origin', 'assignedEmployee', 'assignment', 'steps'];
 const ORCH_STEP_KEYS = ['id', 'text', 'model', 'why', 'phase', 'group', 'estimate', 'files', 'checks', 'session', 'agent', 'skip', 'done', 'doneAt', 'note'];
 
 // ------------------------------------------------------------------ records
@@ -121,7 +127,21 @@ export function normStep(s, i = 0, ctx = {}) {
     createdAt: str(o.createdAt, 40) || at,
     updatedAt: str(o.updatedAt, 40) || at,
     ...(o.origin && typeof o.origin === 'object' ? { origin: { build: str(o.origin.build, 80), step: str(o.origin.step, 60), how: str(o.origin.how, 20) } } : {}),
+    ...assignmentFields(o), // assignment@1: the employee column and, when an assignment happened, its record
   };
+}
+
+/**
+ * `assignedEmployee` (the column; only when someone is named, absent = none) and `assignment` (only when there is one),
+ * kept equal (framework/core/build-assignment.mjs): the record wins when it exists (changing who has it is a pick, never a
+ * bare column write); a column alone reads as assigned. Both are absent on a record nobody assigned, so records from before
+ * assignment@1 are not rewritten (and not republished) until an assignment happens.
+ */
+function assignmentFields(o) {
+  const column = str(o.assignedEmployee, 40);
+  const a = normAssignment(o.assignment, { assignedEmployee: column });
+  const employee = a ? a.assignedEmployee : column;
+  return { ...(employee ? { assignedEmployee: employee } : {}), ...(a ? { assignment: a } : {}) };
 }
 
 export function normBuild(b, ctx = {}) {
@@ -162,6 +182,7 @@ export function normBuild(b, ctx = {}) {
     approvals: (Array.isArray(o.approvals) ? o.approvals : []).map(normApproval), // model-switch.mjs: who approved, how
     upgradeRequests: (Array.isArray(o.upgradeRequests) ? o.upgradeRequests : []).map(normRequest).filter((r) => r.id),
     ...(origin ? { origin } : {}),
+    ...assignmentFields(o), // assignment@1: the orchestrator table's employee column and, when an assignment happened, its record
     ...(normPipeline(o.pipeline) ? { pipeline: normPipeline(o.pipeline) } : {}), // build-pipeline@1: queue / run record (framework/core/build-pipeline.mjs)
     ...(normShippedRef(o.shipped) ? { shipped: normShippedRef(o.shipped) } : {}), // shipped-manifest@1 ref: the manifest the orchestrator sent when it landed (sidecar _claude/builds/shipped/<id>.json)
     steps,
@@ -427,7 +448,7 @@ export function storeSummary(store, profile) {
 
 // ------------------------------------------------------------------ orchestrator@1 projection
 
-const orchStep = (s) => { const o = {}; for (const k of ORCH_STEP_KEYS) o[k] = s[k]; o.uid = s.uid; if (s.title) o.title = s.title; return o; };
+const orchStep = (s) => { const o = {}; for (const k of ORCH_STEP_KEYS) o[k] = s[k]; o.uid = s.uid; if (s.title) o.title = s.title; if (s.assignedEmployee) o.assignedEmployee = s.assignedEmployee; if (s.assignment) o.assignment = clone(s.assignment); return o; };
 const orchBuild = (b) => { const o = {}; for (const k of ORCH_BUILD_KEYS) if (b[k] !== undefined) o[k] = k === 'steps' ? b.steps.map(orchStep) : clone(b[k]); return o; };
 
 export function projectOrchestrator(store, profile) {
@@ -473,6 +494,8 @@ export function absorbOrchestrator(store, profile, orch, { now = nowIso(), by = 
     if (!rec.profiles.includes(profile)) { rec.profiles.push(profile); rec.order[profile] = nextOrder(s, profile); }
     for (const k of ORCH_BUILD_KEYS) if (k !== 'steps' && k !== 'id' && k !== 'origin' && ob[k] !== undefined) rec[k] = clone(ob[k]);
     { const og = mergeOrigin(ob.origin, rec.origin); if (og) rec.origin = og; } // his words are never lost on a write
+    // assignment@1: the record wins, the column follows it; a file from older code (neither field) leaves the store's alone
+    if (ob.assignedEmployee !== undefined || ob.assignment !== undefined) { delete rec.assignedEmployee; delete rec.assignment; Object.assign(rec, assignmentFields(ob)); }
     mergeSteps(rec, ob.steps ?? [], now, by, 'removed in the orchestrator');
     followDefault(rec, now);
     if (!newerOnly) rec.order[profile] = i;

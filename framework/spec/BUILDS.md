@@ -38,10 +38,13 @@ journalled.
 | `defaultSteps`, `defaultAt`, `rearranged` | the default breakdown (Restore default); follows orchestrator edits until the Steps view rearranges the build |
 | `removedSteps` | steps taken out (removed, divided, harvested away) with why, when, by |
 | `legacy`, `copies` | where the record came from in the migration; other copies kept verbatim |
+| `assignedEmployee` | the orchestrator table's employee column: the agent@1 id the build went to; absent = none (Nov 10 2026) |
+| `assignment` | assignment@1 (`framework/core/build-assignment.mjs`, doc `_claude/builds/contracts/assignment@1.md`): how it got there through the group chat: ask, claim, candidates with match %, 90 s veto, pick (Brett or default), briefs sent back. Both fields are absent until an assignment happens (older records are not rewritten); the record wins and the column follows it (changing who has it is a pick); a column alone reads as assigned. Merge: the later record wins, briefs union, an employee is never blanked unless declined |
 
 **StepRecord** = orchestrator@1 step fields (`id`, `text`, `model`, `why`, `phase`, `group`, `estimate`, `files`, `checks`,
 `session`, `agent`, `skip`, `done`, `doneAt`, `note`) plus `uid` (never changes, also across a harvest), `title` (rename),
-`rev`, `createdAt`, `updatedAt`, `origin { build, step, how: divided | harvested }`.
+`rev`, `createdAt`, `updatedAt`, `origin { build, step, how: divided | harvested }`, and `assignedEmployee` / `assignment`
+as on the build, for that one step.
 
 Statuses: `pending running waiting blocked failed complete archived`. Step models: **`Fable` or `Opus` only** (model
 policy `framework/core/model-policy.mjs`; a legacy `[Sonnet]` prefix reads as Opus).
