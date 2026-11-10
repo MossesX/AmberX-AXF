@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2670,
- "updatedAt": "2026-11-10T18:28:14.312Z",
+ "rev": 2671,
+ "updatedAt": "2026-11-10T18:28:26.471Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -149147,7 +149147,7 @@
    "title": "Pass approval hook: deep link + AmberX notification Approve button for veto passes",
    "category": "",
    "detail": "Today a pass request can only be approved from the console banner or Token control → Passes. Add: a deep link URL that opens straight to the pending pass with Approve/Deny (console + Molly), returned in pass_grant's result so Claude can hand it over; an AmberX push notification with Approve/Deny actions that work in the background (no navigation); API to approve from Brett's own session. Full API control.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -149155,7 +149155,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-10T18:28:12.724Z",
+   "updatedAt": "2026-11-10T18:28:14.057Z",
    "builtAt": "",
    "notes": [
     {
@@ -149482,7 +149482,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
