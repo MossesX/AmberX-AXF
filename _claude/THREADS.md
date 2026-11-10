@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 19:22 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → queued, note (all) · pipeline
 - 2026-11-09 19:22 UTC · `urgent-terminal-pops-up-every-time-the-console-o` → queued, note (all) · pipeline
 - 2026-11-09 19:22 UTC · `urgent-terminal-pops-up-every-time-the-console-o` → running, note (all) · pipeline
 - 2026-11-09 19:22 UTC · `urgent-terminal-pops-up-every-time-the-console-o` note (all) · orchestrator
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 02:56 UTC · `amberx-phone-pop-up-for-every-build-start-and-fi` s2 done (all) · orchestrator
 - 2026-11-10 02:57 UTC · `test-button-on-every-claude-account-subscription` s1 done, → running (all) · orchestrator
 - 2026-11-10 02:58 UTC · `amberx-phone-pop-up-for-every-build-start-and-fi` PR #433 (all) · builds-live
+- 2026-11-10 02:57 UTC · `test-button-on-every-claude-account-subscription` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
