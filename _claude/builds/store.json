@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2921,
- "updatedAt": "2026-11-10T21:51:51.305Z",
+ "rev": 2922,
+ "updatedAt": "2026-11-10T21:52:59.001Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -154041,7 +154041,7 @@
    "title": "Land all 97 built-but-unmerged builds, skins first, in batches of 5",
    "category": "",
    "detail": "Land every build in status 'built' (97, see Nov 10 list). Order: 1) skins and appearance first: #430 Appearance = skins + colour themes, #409 Skins restyle everything, #355 Three layouts per screen, #376 UI asset designer, then the rest of today's (#460 splitter first if not yet landed), then Nov 9, Nov 7-8, Nov 3-5. Batch related PRs up to 5 at a time: merge latest main in, resolve conflicts keeping both intents, CI once, merge. Before each, check main: if already covered or superseded (e.g. #432/#440/#269 by #450), close and archive with the reason instead of merging. Redeploy the console after each batch. Fix any failure and retry; notify on AmberX only per batch landed, and a final summary.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -154049,7 +154049,7 @@
    "pr": "#474",
    "priority": "P0",
    "createdAt": "2026-11-10T20:43:36.267Z",
-   "updatedAt": "2026-11-10T21:27:31.473Z",
+   "updatedAt": "2026-11-10T21:52:56.818Z",
    "builtAt": "",
    "notes": [
     {
@@ -154075,6 +154075,10 @@
     {
      "text": "Phase 1 stopped with s1/s2 open: landing ~90 PRs doesn't fit one session. Done: main-red root cause found and fixed in #455 (green, first in the merge queue); skins #409 #429 #355 #376 merged with main and pushed; #432 #440 #269 closed as superseded by #450; report + PR #474. Next run: once #455 is on main, one fresh check run per open PR, then hand-merge the kicked-out conflicts (#411 #379 #378 #374 #373 #372 #371 #362 #347). #446 #466 need Brett's UI Review approval; drafts #430 #472 #469 #377 wait for their builds.",
      "at": "2026-11-10T21:27:17.609Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-10T21:52:56.818Z"
     }
    ],
    "approvals": [],
@@ -154201,7 +154205,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

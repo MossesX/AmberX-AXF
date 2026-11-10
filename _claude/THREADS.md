@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:50 UTC · `landing-tool-takes-long-build-names-and-auto-fix` note (all) · builds-live
 - 2026-11-10 17:50 UTC · `landing-tool-takes-long-build-names-and-auto-fix` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-10 17:50 UTC · `local-ai-ollama-mistral-on-the-vps-wired-into-th` added (0 steps) (all) · console
 - 2026-11-10 17:50 UTC · `local-ai-ollama-mistral-on-the-vps-wired-into-th` → queued, note (all) · console
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 21:51 UTC · `overrides-summary-highlight-colour-setting-asset` note (all) · orchestrator
 - 2026-11-10 21:51 UTC · `correction-to-overrides-list-expanded-asset-show` added (0 steps) (all) · console
 - 2026-11-10 21:51 UTC · `correction-to-overrides-list-expanded-asset-show` → queued, note (all) · console
+- 2026-11-10 21:52 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` → pending, note (all) · reconciler
 
 ## Token passes (log)
 
