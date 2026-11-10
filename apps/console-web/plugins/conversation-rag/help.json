@@ -1,0 +1,35 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "conversation-rag-help",
+  "name": "Conversations help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the Conversations plugin (help@1).",
+  "author": "Brett",
+  "tags": ["help"],
+  "data": {
+    "scope": "plugin:conversation-rag",
+    "entries": [
+      { "target": "view:conversation-rag", "title": "Conversations", "text": "Search everything said in Claude chats, claude.ai exports and transcribed voice sessions, and see the rules ledger every brief carries. Search is local: no AI, no tokens.", "kind": "screen" },
+      { "target": "read-new-sessions", "title": "Read new sessions", "text": "Reads what is new in every source now instead of waiting for the next round (every 10 minutes)." },
+      { "target": "search-what-was-said", "title": "Search what was said", "text": "Type a few words or a whole sentence; matching passages show newest-ranked first. Tap one to read the whole passage." },
+      { "target": "source", "title": "Source", "text": "Limit the search to Claude Code chats, claude.ai exports or voice recordings." },
+      { "target": "kind", "title": "Kind", "text": "Show rules, decisions or requests from Brett's words." },
+      { "target": "add-a-rule-in-brett-s-words", "title": "Add a rule", "text": "Adds a rule straight to the ledger, pinned to the top of what every brief carries." },
+      { "target": "add", "title": "Add", "text": "Saves the rule typed beside it." },
+      { "target": "pin", "title": "Pin", "text": "Keeps this line at the top of the ledger in every brief." },
+      { "target": "unpin", "title": "Unpin", "text": "Lets this line drop back to its date order." },
+      { "target": "hide", "title": "Hide", "text": "Takes a line that isn't really a rule out of the ledger and out of every brief." },
+      { "target": "conversation-rag", "title": "Conversations settings", "text": "Whether briefs carry the ledger, whether headless build runs are indexed, and whether AI answers are allowed." },
+      { "target": "put-the-rules-ledger-in-every-brief", "title": "Ledger in every brief", "text": "On: every rules brief (orchestrator dispatches, headless runs) ends with Brett's standing rules from the ledger." },
+      { "target": "also-index-headless-build-runs", "title": "Index headless runs", "text": "Off by default: build runs are agents talking to themselves. Their verbatim quote from Brett is always kept." },
+      { "target": "ai-answers-in-the-context-pack-uses-model-tokens", "title": "AI answers", "text": "Off by default. On: the context pack also asks the model service for a short answer drawn from the passages, which costs tokens." }
+    ],
+    "intros": [
+      { "screen": "conversation-rag", "title": "Conversations", "steps": [
+        { "say": "Everything said with Brett, searchable in one box.", "target": "" },
+        { "say": "The Rules ledger tab shows what every agent's brief carries from those conversations.", "target": "" }
+      ] }
+    ]
+  }
+}
