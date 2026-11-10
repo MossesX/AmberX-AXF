@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2327,
- "updatedAt": "2026-11-10T04:27:36.192Z",
+ "rev": 2328,
+ "updatedAt": "2026-11-10T04:27:50.512Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -96312,10 +96312,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -116840,10 +116837,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T00:16:15.395Z",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": "2026-11-10T00:16:15.395Z"
    },
    "steps": [
     {
@@ -117071,10 +117065,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -118400,16 +118391,21 @@
    "title": "Molly gap: one sign-in reaches every app backend (console token, hub session, Expenses) for native screens",
    "category": "Molly",
    "detail": "Gap found by molly-one-shell. Native screens call each app backend from molly.amberxai.com: the console API takes a bearer token kept in the console origin, axHub uses its own session, Expenses its own. Molly needs one sign-in that hands each native plugin its credentials. No secrets in the repo.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T16:59:02.204Z",
-   "updatedAt": "2026-11-08T16:59:02.204Z",
+   "updatedAt": "2026-11-10T04:27:31.671Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by brett.",
+     "at": "2026-11-10T04:27:31.671Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -118423,6 +118419,22 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-10T04:27:31.167Z",
+    "queuedBy": "brett",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -118500,7 +118512,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124765,10 +124777,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -125131,10 +125140,7 @@
     "splitRequested": "",
     "note": "Session on account-3 ended (exit 0) with 2 steps left: back in the Queue (run 1).",
     "route": "",
-    "dispatchedAt": "2026-11-09T02:31:11.152Z",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": "2026-11-09T02:31:11.152Z"
    },
    "steps": [
     {
@@ -126246,10 +126252,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -126409,10 +126412,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -126576,10 +126576,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -126759,10 +126756,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -126999,10 +126993,7 @@
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "api",
-    "dispatchedAt": "2026-11-09T20:25:15.903Z",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": "2026-11-09T20:25:15.903Z"
    },
    "steps": [
     {
@@ -127606,10 +127597,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:53:07.552Z",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": "2026-11-09T18:53:07.552Z"
    },
    "steps": [
     {
@@ -127932,10 +127920,7 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (limit / credits)); resumes at s4 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:24:37.196Z",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": "2026-11-09T19:24:37.196Z"
    },
    "steps": [
     {
@@ -128263,10 +128248,7 @@
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "api",
-    "dispatchedAt": "2026-11-09T18:10:30.633Z",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": "2026-11-09T18:10:30.633Z"
    },
    "steps": [
     {
@@ -128429,10 +128411,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -128599,10 +128578,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -128769,10 +128745,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -129014,10 +128987,7 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T17:58:10.111Z",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": "2026-11-09T17:58:10.111Z"
    },
    "steps": [
     {
@@ -129295,10 +129265,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T01:57:09.377Z",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": "2026-11-10T01:57:09.377Z"
    },
    "steps": [
     {
@@ -129445,10 +129412,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -129726,10 +129690,7 @@
     "splitRequested": "",
     "note": "",
     "route": "api",
-    "dispatchedAt": "2026-11-10T04:19:07.513Z",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": "2026-11-10T04:19:07.513Z"
    },
    "steps": [
     {
@@ -130143,10 +130104,7 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:02:10.280Z",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": "2026-11-09T18:02:10.280Z"
    },
    "steps": [
     {
@@ -130364,10 +130322,7 @@
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "api",
-    "dispatchedAt": "2026-11-09T18:49:06.246Z",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": "2026-11-09T18:49:06.246Z"
    },
    "steps": [
     {
@@ -130589,10 +130544,7 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:23:07.733Z",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": "2026-11-09T19:23:07.733Z"
    },
    "steps": [
     {
@@ -130814,10 +130766,7 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:55:16.286Z",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": "2026-11-09T18:55:16.286Z"
    },
    "steps": [
     {
@@ -131055,10 +131004,7 @@
     "splitRequested": "",
     "note": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "api",
-    "dispatchedAt": "2026-11-10T02:17:28.580Z",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": "2026-11-10T02:17:28.580Z"
    },
    "steps": [
     {
@@ -131276,10 +131222,7 @@
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "api",
-    "dispatchedAt": "2026-11-09T19:25:10.063Z",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": "2026-11-09T19:25:10.063Z"
    },
    "steps": [
     {
@@ -131505,10 +131448,7 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:27:06.719Z",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": "2026-11-09T19:27:06.719Z"
    },
    "steps": [
     {
@@ -131686,10 +131626,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -131941,10 +131878,7 @@
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "",
-    "dispatchedAt": "2026-11-09T20:19:06.480Z",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": "2026-11-09T20:19:06.480Z"
    },
    "steps": [
     {
@@ -132111,10 +132045,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -132285,10 +132216,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -132455,10 +132383,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -132605,10 +132530,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -132786,10 +132708,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -133034,10 +132953,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -133134,7 +133050,7 @@
    "title": "Walkthrough player: IDE layout setting, collapsible panels, build books from clips; merge with the Demonstration manager",
    "category": "",
    "detail": "Upgrade the existing walkthrough/demonstration tools, don't make new ones. 1) Player setting: Layout = Player or IDE. IDE style: collapsible side columns and panels (clips library, book outline, properties, picture-in-picture group chat, captions/script). 2) Books: drag and drop clips into a book, reorder, nest chapters. 3) Merge the walkthrough player and the already-built Demonstration manager into one plugin (harvest its code, keep its data: demonstration, book, clip asset types), one source of truth. 4) Keep the playback controls (voice switch, speed, hide parts). Full API control.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -133142,7 +133058,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T23:59:19.114Z",
-   "updatedAt": "2026-11-10T04:04:40.734Z",
+   "updatedAt": "2026-11-10T04:27:17.964Z",
    "builtAt": "",
    "notes": [
     {
@@ -133184,6 +133100,10 @@
     {
      "text": "Demo Designer phase 2 (PR #438) adds cloud narrators: narratorOptions / loadNarrators / narrate in web/model.ts, sayCloud in web/stage.ts, GET narrators + POST narrate in server. When you rebase the page split (pitch.tsx), use narratorOptions(voice, voices, m.narrators) for the Voice picker instead of the inline list.",
      "at": "2026-11-10T04:04:40.734Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-10T04:27:17.964Z"
     }
    ],
    "approvals": [],
@@ -133235,10 +133155,7 @@
     "splitRequested": "",
     "note": "",
     "route": "api",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -133319,7 +133236,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -133401,10 +133318,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -133571,10 +133485,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -133745,10 +133656,7 @@
     "splitRequested": "",
     "note": "",
     "route": "api",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -133926,10 +133834,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T00:42:13.778Z",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": "2026-11-10T00:42:13.778Z"
    },
    "steps": [
     {
@@ -134088,10 +133993,7 @@
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "api",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -134238,10 +134140,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -134381,10 +134280,7 @@
     "splitRequested": "",
     "note": "",
     "route": "api",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -134517,10 +134413,7 @@
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "api",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -134688,10 +134581,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -134909,10 +134799,7 @@
     "splitRequested": "",
     "note": "Session on account-5 ended (exit 1) with 3 steps left: back in the Queue (run 1).",
     "route": "",
-    "dispatchedAt": "2026-11-10T02:48:43.040Z",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": "2026-11-10T02:48:43.040Z"
    },
    "steps": [
     {
@@ -135079,10 +134966,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -135233,10 +135117,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -135414,10 +135295,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T03:33:16.699Z",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": "2026-11-10T03:33:16.699Z"
    },
    "steps": [
     {
@@ -135514,15 +135392,16 @@
    "title": "Demo Designer: finish phase 2 (s2, s3), resuming from the existing branch",
    "category": "",
    "detail": "Demo Designer was launched directly (build id demo-designer) and has no orchestrator record, so it never resumed. Adopt it: resume in /root/axf-builds/demo-designer on its existing branch and PR. Read demo-designer.log and its report. Phase 1 (s1) is done and its UI Review items are waiting. Do phase 2 (s2, s3) exactly as planned in its report. Coordinate with walkthrough-player-ide-layout-setting-collapsibl, which merges Demo Designer with the Demonstration manager: don't duplicate, and share the code. Tests, screenshots to UI Review, report, PR.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-designer-finish-phase-2-s2-s3-resuming-from",
    "pr": "#438",
+   "mergedAt": "2026-11-10T04:26:11Z",
    "priority": "P0",
    "createdAt": "2026-11-10T03:10:30.744Z",
-   "updatedAt": "2026-11-10T04:05:07.683Z",
+   "updatedAt": "2026-11-10T04:27:17.964Z",
    "builtAt": "2026-11-10T04:05:07.683Z",
    "notes": [
     {
@@ -135564,6 +135443,10 @@
     {
      "text": "Reconciler: PR #438; PR #438 names s2, s3 done",
      "at": "2026-11-10T04:05:01.206Z"
+    },
+    {
+     "text": "Reconciler: PR #438 merged; PR #438 names s2, s3 done",
+     "at": "2026-11-10T04:27:17.964Z"
     }
    ],
    "approvals": [],
@@ -135600,10 +135483,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -135684,7 +135564,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -135781,10 +135661,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T03:55:23.238Z",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": "2026-11-10T03:55:23.238Z"
    },
    "steps": [
     {
@@ -135943,10 +135820,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T04:04:16.333Z",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": "2026-11-10T04:04:16.333Z"
    },
    "steps": [
     {
@@ -136097,10 +135971,7 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -136205,12 +136076,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T04:25:09.866Z",
-   "updatedAt": "2026-11-10T04:25:14.084Z",
+   "updatedAt": "2026-11-10T04:27:21.668Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T04:25:14.084Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T04:27:21.668Z"
     }
    ],
    "approvals": [],
@@ -136237,16 +136112,89 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-10T04:27:21.668Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "",
-    "held": "",
-    "heldBy": "",
-    "pin": ""
+    "dispatchedAt": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwa6v8hw01cvgp",
+     "title": "",
+     "text": "Many Pending builds (especially the old Fable ones from Oct 18 to Nov 9) are already done on main or covered by later builds, but still sit in Pending. 1) For every Pending build whose next model is Fable, check main (git log, the Shipped features ledger, reports, the files each step names) for whether each step's work already exists. 2) Mark steps that are done as done, with evidence (commit or file). Mark whole builds that are done or superseded as complete or superseded, with a one-line reason. 3) Queue only what's really left, with steps trimmed to the remaining work. 4) Write a short list: done, superseded, queued, with each queued build's remaining steps. 5) Run this audit automatically before any bulk queue, so finished work never gets rebuilt (plain code where possible). Runs on Opus, not Fable.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T04:27:21.668Z",
+     "updatedAt": "2026-11-10T04:27:21.668Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwa6v8hw02blv7",
+     "title": "",
+     "text": "Queue up all the Fable stuff. You already got tons of that shit, tons of that shit's already done.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T04:27:21.668Z",
+     "updatedAt": "2026-11-10T04:27:21.668Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwa6v8hw03ucf9",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/audit-pending-fable-builds-against-main-close-wh.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/audit-pending-fable-builds-against-main-close-wh.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T04:27:21.668Z",
+     "updatedAt": "2026-11-10T04:27:21.668Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -136255,12 +136203,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T04:27:21.668Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

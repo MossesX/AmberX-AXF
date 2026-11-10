@@ -771,10 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 20:51 UTC · `fix-owner-check-bug-dead-start-button` PR #416 (all) · builds-live
-- 2026-11-09 20:51 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` note (all) · orchestrator
-- 2026-11-09 20:51 UTC · `fix-owner-check-bug-dead-start-button` s4 done, → built (all) · orchestrator
-- 2026-11-09 20:51 UTC · `fix-owner-check-bug-dead-start-button` note (all) · orchestrator
 - 2026-11-09 20:52 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → queued, note (all) · console
 - 2026-11-09 20:53 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → running, note (all) · pipeline
 - 2026-11-09 20:53 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · orchestrator
@@ -1171,6 +1167,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 04:26 UTC · `split-builds-pages-build-manager-pending-complet-3` s10 done (all) · orchestrator
 - 2026-11-10 04:26 UTC · `split-builds-pages-build-manager-pending-complet-3` note (all) · orchestrator
 - 2026-11-10 04:27 UTC · `split-builds-pages-build-manager-pending-complet-3` PR #440 (all) · builds-live
+- 2026-11-10 04:27 UTC · `walkthrough-player-ide-layout-setting-collapsibl` → pending, note (all) · reconciler
+- 2026-11-10 04:27 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` → complete, merged, note (all) · reconciler
+- 2026-11-10 04:27 UTC · `audit-pending-fable-builds-against-main-close-wh` note (all) · orchestrator
+- 2026-11-10 04:27 UTC · `molly-sign-in-once` → queued, note (all) · brett
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T04:27:36.192Z",
+ "updatedAt": "2026-11-10T04:27:50.512Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -71219,16 +71219,21 @@
    "title": "Molly gap: one sign-in reaches every app backend (console token, hub session, Expenses) for native screens",
    "category": "Molly",
    "detail": "Gap found by molly-one-shell. Native screens call each app backend from molly.amberxai.com: the console API takes a bearer token kept in the console origin, axHub uses its own session, Expenses its own. Molly needs one sign-in that hands each native plugin its credentials. No secrets in the repo.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T16:59:02.204Z",
-   "updatedAt": "2026-11-08T16:59:02.204Z",
+   "updatedAt": "2026-11-10T04:27:31.671Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by brett.",
+     "at": "2026-11-10T04:27:31.671Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -81795,7 +81800,7 @@
    "title": "Walkthrough player: IDE layout setting, collapsible panels, build books from clips; merge with the Demonstration manager",
    "category": "",
    "detail": "Upgrade the existing walkthrough/demonstration tools, don't make new ones. 1) Player setting: Layout = Player or IDE. IDE style: collapsible side columns and panels (clips library, book outline, properties, picture-in-picture group chat, captions/script). 2) Books: drag and drop clips into a book, reorder, nest chapters. 3) Merge the walkthrough player and the already-built Demonstration manager into one plugin (harvest its code, keep its data: demonstration, book, clip asset types), one source of truth. 4) Keep the playback controls (voice switch, speed, hide parts). Full API control.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -81803,7 +81808,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T23:59:19.114Z",
-   "updatedAt": "2026-11-10T04:04:40.734Z",
+   "updatedAt": "2026-11-10T04:27:17.964Z",
    "builtAt": "",
    "notes": [
     {
@@ -81845,6 +81850,10 @@
     {
      "text": "Demo Designer phase 2 (PR #438) adds cloud narrators: narratorOptions / loadNarrators / narrate in web/model.ts, sayCloud in web/stage.ts, GET narrators + POST narrate in server. When you rebase the page split (pitch.tsx), use narratorOptions(voice, voices, m.narrators) for the Voice picker instead of the inline list.",
      "at": "2026-11-10T04:04:40.734Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-10T04:27:17.964Z"
     }
    ],
    "approvals": [],
@@ -83396,15 +83405,16 @@
    "title": "Demo Designer: finish phase 2 (s2, s3), resuming from the existing branch",
    "category": "",
    "detail": "Demo Designer was launched directly (build id demo-designer) and has no orchestrator record, so it never resumed. Adopt it: resume in /root/axf-builds/demo-designer on its existing branch and PR. Read demo-designer.log and its report. Phase 1 (s1) is done and its UI Review items are waiting. Do phase 2 (s2, s3) exactly as planned in its report. Coordinate with walkthrough-player-ide-layout-setting-collapsibl, which merges Demo Designer with the Demonstration manager: don't duplicate, and share the code. Tests, screenshots to UI Review, report, PR.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-designer-finish-phase-2-s2-s3-resuming-from",
    "pr": "#438",
+   "mergedAt": "2026-11-10T04:26:11Z",
    "priority": "P0",
    "createdAt": "2026-11-10T03:10:30.744Z",
-   "updatedAt": "2026-11-10T04:05:07.683Z",
+   "updatedAt": "2026-11-10T04:27:17.964Z",
    "builtAt": "2026-11-10T04:05:07.683Z",
    "notes": [
     {
@@ -83446,6 +83456,10 @@
     {
      "text": "Reconciler: PR #438; PR #438 names s2, s3 done",
      "at": "2026-11-10T04:05:01.206Z"
+    },
+    {
+     "text": "Reconciler: PR #438 merged; PR #438 names s2, s3 done",
+     "at": "2026-11-10T04:27:17.964Z"
     }
    ],
    "approvals": [],
@@ -83860,12 +83874,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T04:25:09.866Z",
-   "updatedAt": "2026-11-10T04:25:14.084Z",
+   "updatedAt": "2026-11-10T04:27:21.668Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T04:25:14.084Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T04:27:21.668Z"
     }
    ],
    "approvals": [],
@@ -83882,7 +83900,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Many Pending builds (especially the old Fable ones from Oct 18 to Nov 9) are already done on main or covered by later builds, but still sit in Pending. 1) For every Pending build whose next model is Fable, check main (git log, the Shipped features ledger, reports, the files each step names) for whether each step's work already exists. 2) Mark steps that are done as done, with evidence (commit or file). Mark whole builds that are done or superseded as complete or superseded, with a one-line reason. 3) Queue only what's really left, with steps trimmed to the remaining work. 4) Write a short list: done, superseded, queued, with each queued build's remaining steps. 5) Run this audit automatically before any bulk queue, so finished work never gets rebuilt (plain code where possible). Runs on Opus, not Fable.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwa6v8hw01cvgp"
+    },
+    {
+     "id": "s2",
+     "text": "Queue up all the Fable stuff. You already got tons of that shit, tons of that shit's already done.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwa6v8hw02blv7"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/audit-pending-fable-builds-against-main-close-wh.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/audit-pending-fable-builds-against-main-close-wh.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwa6v8hw03ucf9"
+    }
+   ]
   },
   {
    "id": "landing-tool-takes-long-build-names-and-auto-fix",
