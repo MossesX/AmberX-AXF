@@ -1,0 +1,36 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "molly-flagship-night",
+  "name": "Molly Flagship Night",
+  "version": "1.0.0",
+  "description": "Graphite and soft white with a luminous violet accent: Molly's flagship palette after dark; deep layered surfaces, low-glare text, a bright live-status green.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "premium",
+    "molly",
+    "flagship"
+  ],
+  "data": {
+    "scheme": "dark",
+    "tokens": {
+      "bg": "#0b0c11",
+      "surface": "#12131a",
+      "surface2": "#171922",
+      "surface3": "#20222e",
+      "text": "#eceef5",
+      "muted": "#9195a9",
+      "border": "#262938",
+      "accent": "#8f82ff",
+      "accentText": "#0d0b24",
+      "accentSoft": "rgba(143,130,255,0.14)",
+      "danger": "#ff5d6e",
+      "success": "#36d896",
+      "warning": "#f2b54e",
+      "info": "#6aa9ff",
+      "focus": "#8f82ff",
+      "shadow": "rgba(0,0,0,0.55)"
+    }
+  }
+}

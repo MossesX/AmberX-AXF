@@ -1,0 +1,44 @@
+{
+  "$axf": "asset@1",
+  "type": "style-theme",
+  "id": "molly-flagship",
+  "name": "Molly Flagship",
+  "version": "1.0.0",
+  "description": "Inter on a generous 8-point rhythm, soft 8/12/18 radii, layered elevation and quick, quiet motion: Molly's flagship style.",
+  "author": "AmberX AXF",
+  "tags": [
+    "premium",
+    "molly",
+    "flagship"
+  ],
+  "data": {
+    "fontFamily": "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
+    "fontDisplay": "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
+    "fontMono": "'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace",
+    "fontSize": 14,
+    "radius": {
+      "sm": 8,
+      "md": 12,
+      "lg": 18
+    },
+    "space": 8,
+    "borderWidth": 1,
+    "shadow": {
+      "sm": "0 1px 2px var(--fx-shadow)",
+      "md": "0 6px 20px var(--fx-shadow)",
+      "lg": "0 18px 48px var(--fx-shadow)"
+    },
+    "density": "comfortable",
+    "motion": 160,
+    "blur": 20,
+    "headingWeight": 650,
+    "tracking": -0.018,
+    "opacityDisabled": 0.4,
+    "opacityMuted": 0.64,
+    "opacityHover": 0.07,
+    "opacityTint": 0.12,
+    "opacityScrim": 0.46,
+    "opacityGlass": 0.78,
+    "wrapGroups": false
+  }
+}

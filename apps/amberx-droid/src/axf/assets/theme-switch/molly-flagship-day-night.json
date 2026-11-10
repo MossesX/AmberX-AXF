@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "theme-switch",
+  "id": "molly-flagship-day-night",
+  "name": "Molly Flagship day / night",
+  "version": "1.0.0",
+  "description": "Switches between the Molly Flagship Day and Molly Flagship Night color themes.",
+  "author": "AmberX AXF",
+  "tags": [
+    "theme-switch",
+    "molly",
+    "flagship"
+  ],
+  "data": {
+    "light": "molly-flagship-day",
+    "dark": "molly-flagship-night",
+    "show": "icon",
+    "lightLabel": "Day",
+    "darkLabel": "Night"
+  }
+}

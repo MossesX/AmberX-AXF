@@ -1,0 +1,51 @@
+{
+  "$axf": "asset@1",
+  "type": "typography",
+  "id": "molly-flagship",
+  "name": "Molly Flagship",
+  "version": "1.0.0",
+  "description": "Molly's flagship text sizes: a clear title, readable 0.9em controls, a quiet uppercase eyebrow.",
+  "author": "AmberX AXF",
+  "tags": [
+    "premium",
+    "molly",
+    "flagship"
+  ],
+  "data": {
+    "scale": {
+      "2xs": 0.68,
+      "xs": 0.76,
+      "sm": 0.85,
+      "md": 0.92,
+      "lg": 1.08,
+      "xl": 1.32,
+      "2xl": 1.9
+    },
+    "headings": {
+      "h1": 1.45,
+      "h2": 1.18,
+      "h3": 0.94,
+      "h4": 0.86,
+      "tracking": -0.02
+    },
+    "weights": {
+      "body": 400,
+      "medium": 550,
+      "strong": 650
+    },
+    "line": {
+      "tight": 1.2,
+      "normal": 1.48,
+      "loose": 1.68
+    },
+    "eyebrow": {
+      "size": 0.68,
+      "weight": 600,
+      "tracking": 0.08,
+      "case": "upper"
+    },
+    "mono": {
+      "size": 0.9
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "molly-flagship-day",
+  "name": "Molly Flagship Day",
+  "version": "1.0.0",
+  "description": "Porcelain and ink with a royal-violet accent: Molly's flagship palette for daylight; calm surfaces, crisp borders, a vivid live-status green.",
+  "author": "AmberX AXF",
+  "tags": [
+    "light",
+    "premium",
+    "molly",
+    "flagship"
+  ],
+  "data": {
+    "scheme": "light",
+    "tokens": {
+      "bg": "#f5f4f1",
+      "surface": "#ffffff",
+      "surface2": "#faf9f7",
+      "surface3": "#ecebe7",
+      "text": "#14141c",
+      "muted": "#636577",
+      "border": "#e2e0db",
+      "accent": "#5847e8",
+      "accentText": "#ffffff",
+      "accentSoft": "rgba(88,71,232,0.09)",
+      "danger": "#d9324a",
+      "success": "#11a26a",
+      "warning": "#c07a12",
+      "info": "#2f7fd6",
+      "focus": "#5847e8",
+      "shadow": "rgba(20,20,40,0.10)"
+    }
+  }
+}

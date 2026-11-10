@@ -1,0 +1,130 @@
+{
+  "$axf": "asset@1",
+  "type": "skin",
+  "id": "molly-flagship",
+  "name": "Molly Flagship",
+  "version": "1.0.0",
+  "description": "Molly's flagship look for daylight: porcelain and ink with a royal-violet accent, Inter type, soft 8/12/18 radii, layered elevation, quick quiet motion, frosted dialogs, rounded menus with tinted hover and live-status colour. Keeps Molly's own menus and layout; only the look changes.",
+  "author": "AmberX AXF",
+  "tags": [
+    "skin",
+    "premium",
+    "molly",
+    "flagship",
+    "light"
+  ],
+  "data": {
+    "layoutTheme": "classic-ide",
+    "colorTheme": "molly-flagship-day",
+    "styleTheme": "molly-flagship",
+    "assets": {
+      "behavior-theme": "molly-flagship",
+      "typography": "molly-flagship",
+      "dialog": "molly-flagship",
+      "popup": "molly-flagship",
+      "context-menu": "compact-classic",
+      "density": "standard",
+      "sizing": "standard"
+    },
+    "preview": {
+      "caption": "Flagship: porcelain, ink and violet."
+    },
+    "extras": {
+      "spacing": "regular",
+      "hidden": {
+        "nav-menu": false,
+        "banner": false,
+        "app-menu": false
+      }
+    },
+    "iconPack": "amberx-outline",
+    "parts": {
+      "app-menu": {
+        "itemPadding": "sm",
+        "radius": "md",
+        "hover": "tint",
+        "fontWeight": "500",
+        "animation": "fade",
+        "animationSpeed": "fast",
+        "easing": "ease-out"
+      },
+      "context-menu": {
+        "radius": "md",
+        "shadow": "lg",
+        "itemPadding": "sm",
+        "hover": "tint",
+        "animation": "scale",
+        "animationSpeed": "fast",
+        "easing": "ease-out",
+        "borderColor": "border"
+      },
+      "nav-menu": {
+        "hover": "tint",
+        "itemPadding": "sm",
+        "radius": "md"
+      },
+      "toolbar": {
+        "hover": "tint",
+        "radius": "md",
+        "gap": "xs"
+      },
+      "tab-group": {
+        "fontWeight": "500"
+      },
+      "banner": {
+        "background": "surface"
+      },
+      "dialog": {
+        "radius": "lg",
+        "shadow": "lg",
+        "animation": "scale",
+        "animationSpeed": "fast",
+        "easing": "ease-out"
+      },
+      "popup": {
+        "radius": "md",
+        "shadow": "md",
+        "animation": "slide-up",
+        "animationSpeed": "fast"
+      },
+      "button": {
+        "radius": "md",
+        "hover": "lift",
+        "click": "press",
+        "fontWeight": "500"
+      },
+      "action-button": {
+        "radius": "md",
+        "hover": "tint"
+      },
+      "container": {
+        "radius": "lg",
+        "shadow": "sm"
+      },
+      "search-bar": {
+        "radius": "pill"
+      },
+      "badge": {
+        "radius": "pill",
+        "fontWeight": "600"
+      },
+      "counter": {
+        "radius": "pill",
+        "fontWeight": "600"
+      },
+      "status": {
+        "fontWeight": "500"
+      },
+      "avatar": {
+        "radius": "pill"
+      },
+      "progress": {
+        "radius": "pill"
+      },
+      "link": {
+        "hover": "underline",
+        "textColor": "accent"
+      }
+    }
+  }
+}

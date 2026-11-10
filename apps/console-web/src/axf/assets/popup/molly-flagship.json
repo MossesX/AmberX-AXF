@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "popup",
+  "id": "molly-flagship",
+  "name": "Molly Flagship pop-ups",
+  "version": "1.0.0",
+  "description": "Molly Flagship: solid pop-ups bottom-right with an icon, three at a time.",
+  "author": "AmberX AXF",
+  "tags": [
+    "premium",
+    "molly",
+    "flagship"
+  ],
+  "data": {
+    "position": "bottom-right",
+    "variant": "solid",
+    "duration": 5500,
+    "showIcon": true,
+    "maxVisible": 3
+  }
+}

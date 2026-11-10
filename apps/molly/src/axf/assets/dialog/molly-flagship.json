@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "molly-flagship",
+  "name": "Molly Flagship dialog",
+  "version": "1.0.0",
+  "description": "Molly Flagship: centred modal on a frosted backdrop, plain header, fades in.",
+  "author": "AmberX AXF",
+  "tags": [
+    "premium",
+    "molly",
+    "flagship"
+  ],
+  "data": {
+    "variant": "modal",
+    "width": 560,
+    "backdrop": "blur",
+    "animation": "fade",
+    "header": "plain",
+    "closeOnBackdrop": true
+  }
+}

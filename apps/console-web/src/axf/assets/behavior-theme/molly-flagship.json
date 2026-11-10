@@ -1,0 +1,51 @@
+{
+  "$axf": "asset@1",
+  "type": "behavior-theme",
+  "id": "molly-flagship",
+  "name": "Molly Flagship",
+  "version": "1.0.0",
+  "description": "Quick and quiet: short fades, a soft lift on hover, a light press, frosted dialogs, toasts that stay long enough to read.",
+  "author": "AmberX AXF",
+  "tags": [
+    "premium",
+    "molly",
+    "flagship"
+  ],
+  "data": {
+    "motion": {
+      "speed": "normal",
+      "easing": "standard",
+      "reduced": "system",
+      "entrance": "fade"
+    },
+    "interaction": {
+      "hover": "lift",
+      "press": "shrink",
+      "focusRing": "auto",
+      "cursor": "pointer",
+      "longPressMs": 600,
+      "doubleTapMs": 300,
+      "dragThreshold": 8
+    },
+    "windows": {
+      "dialogOpen": "fade",
+      "backdrop": "blur",
+      "popupOpen": "fade",
+      "drawerOpen": "slide",
+      "snap": false,
+      "snapGrid": 8,
+      "stack": "center",
+      "minimize": "dock",
+      "closeOnBackdrop": true,
+      "closeOnEscape": true
+    },
+    "feedback": {
+      "toastPosition": "bottom-right",
+      "toastMs": 5500,
+      "sound": "off",
+      "vibration": "off",
+      "confirmDelete": "always",
+      "busyCursor": true
+    }
+  }
+}
