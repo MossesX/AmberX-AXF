@@ -376,7 +376,7 @@ console.log(`check-skin: ${n} checks passed`);
   eq(globalSkinOf({ $axf: 'appearance@1', skin: { id: 'Bad Id' } } as never), null, 'a junk hub-wide skin is none');
   // the hub-wide skin survives the shared document's parser and merge
   const parsed = parseAppearance(JSON.stringify(withGlobal));
-  eq(parsed?.skin, { id: 'aurora', overrides: { button: 'global-button' }, sections: {} }, 'appearance@1 keeps the hub-wide skin');
+  eq(parsed?.skin, { id: 'aurora', overrides: { button: 'global-button' } }, 'appearance@1 keeps the hub-wide skin');
   eq(mergeAppearance(parsed, { skin: null }, 'test', 'now').skin, undefined, 'a null change clears it');
   eq(mergeAppearance(parsed, { skin: { id: 'windows' } }, 'test', 'now').skin, { id: 'windows' }, 'a pick replaces it');
 }
@@ -415,7 +415,7 @@ console.log(`check-skin (coverage + scopes): ${n} checks passed`);
   eq(f.active()['color-theme'], 'windows-light', 'outside it: the skin');
   ok(pv!.scopeCss().includes('[data-fx-scope="skin-plugin-ai-amberx-notes"]'), 'its vars are scoped under its root');
   eq(pv!.appliedInterface(), f.rt.appliedInterface(), 'a skin scope is not an interface');
-  eq(f.rt.skinScopes(), [{ key: 'plugin:ai.amberx.notes', use: 'off', id: '', overrides: {} }], 'the scopes list');
+  eq(f.rt.skinScopes(), [{ key: 'plugin:ai.amberx.notes', use: 'off', id: '', overrides: {}, sections: {} }], 'the scopes list');
   eq(f.rt.skinAt({ plugin: 'ai.amberx.notes' }), { id: '', overrides: {}, sections: {}, from: 'plugin:ai.amberx.notes' }, 'skinAt the plugin');
   ok(f.rt.scopeSkin('ui:home', 'on', 'hub-default'), 'the home UI takes a design package as its skin');
   const uv = f.rt.skinScoped('ui:home');
