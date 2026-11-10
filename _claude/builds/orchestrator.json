@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T21:13:52.367Z",
+ "updatedAt": "2026-11-10T21:14:04.991Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -94532,7 +94532,7 @@
    "title": "Resolve conflicts and land #460, #456, #457, #459, #342",
    "category": "",
    "detail": "Merges failed. #460 (splitter fix), #457 (merge batching), #459 (failed-batch split), #342 (build optimizer) have merge conflicts with main; #456 (enforce merge queue) is still a draft. In order: #460 first (it fixes every build's steps), then #456 (mark ready), #457, #459, #342. For each: merge latest main into the branch, resolve conflicts keeping both sides' intent, tests green, push, merge. Then redeploy the console. Notify on AmberX only when all are landed.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -94540,7 +94540,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T20:40:20.356Z",
-   "updatedAt": "2026-11-10T21:04:01.950Z",
+   "updatedAt": "2026-11-10T21:13:52.270Z",
    "builtAt": "",
    "notes": [
     {
@@ -94550,6 +94550,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T20:41:31.157Z"
+    },
+    {
+     "text": "s1: conflicts resolved and pushed on all five. #460 (pipeline.mjs: kept main's callAccount, moved its probe onto oneShotArgs + stdin). #456 marked ready (help.json kind). #457 = main + #456 folded into #457's batch runner (enlist, green-first, red joins, Merge queues, off is Brett's click). #459 = resolved #457 + send-back, plus a missing help entry. #342 = main (2,278 commits) + packager/optimizer, plugin.json/help.json merged by id. All PRs ready; the merge queue lands them (#456 first: it fixes main's red builds-store verify that holds #460's light checks).",
+     "at": "2026-11-10T21:13:52.270Z"
     },
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-resolve-conflicts-and-land-460-456-457-459-342--rhonda.",
