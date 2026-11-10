@@ -76,6 +76,11 @@ export function ElementDialog({ arg, close }: { arg: string; close: () => void }
     return () => { live = false; clearInterval(t); };
   }, [first.path]);
 
+  // a deep link or a right-click: what it opened on is the dialog's state on the server (readable by every surface)
+  useEffect(() => {
+    if (first.path || first.scope || first.view) remember({ ...(first.path ? { path: first.path } : {}), ...(first.scope ? { scope: first.scope } : {}), ...(first.view ? { view: first.view } : {}) });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   useEffect(() => { void load(); }, [load]);
   useEffect(() => { const f = () => void load(); globalThis.addEventListener(CHANGED_EVENT, f); return () => globalThis.removeEventListener(CHANGED_EVENT, f); }, [load]);
   useEffect(() => () => { for (const t of Object.values(timers.current)) clearTimeout(t); applier?.clearPreview(); }, []);

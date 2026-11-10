@@ -21,7 +21,7 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import type { AxfRuntime } from '@console/axf/core';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { bindInlineEditMode, createInlineEditCapture, inlineEditModeOn, INLINE_EDIT_MODE_KEY } from '../../../framework/index.mjs';
-import { FOLDER, parseArg, setElementUi, setMode, setOverridesState, errText } from './api';
+import { changed, FOLDER, overridesPatch, setMode, setOverridesState, errText } from './api';
 import { startApplier, type Applier } from './apply';
 import { startModeSync } from './mode';
 import { ElementDialog, DIALOG, setApplier } from './dialog';
@@ -35,20 +35,14 @@ const MODE_DESCRIPTION = 'On: right-click any element of the console, down to th
 
 /** Open the edit dialog for a path (from the capture layer, an action or a deep link) and record it as the dialog's state. */
 export function openElement(rt: AxfRuntime, arg: string): void {
-  const a = parseArg(arg);
-  if (a.path || a.scope || a.view) void setElementUi({ ...(a.path ? { path: a.path } : {}), ...(a.scope ? { scope: a.scope } : {}), ...(a.view ? { view: a.view } : {}) }).catch(() => undefined);
-  rt.openDialog(DIALOG, { arg });
+  rt.openDialog(DIALOG, { arg }); // the dialog records what it opened on as its server state
 }
 /** Open the overrides page, applying any root / q / filter / tab from the deep link first. */
 export async function openOverrides(rt: AxfRuntime, arg: string): Promise<void> {
-  const a = parseArg(arg);
-  const patch: Record<string, unknown> = {};
-  if (a.tab) patch.tab = a.tab;
-  if (a.root !== undefined) patch.root = a.root;
-  if (a.q !== undefined) patch.q = a.q;
-  if (a.filter !== undefined) { try { patch.filter = JSON.parse(a.filter); } catch { patch.filter = a.filter; } }
+  const patch = overridesPatch(arg);
   if (Object.keys(patch).length) { try { await setOverridesState(patch); } catch (e) { rt.toast(errText(e), 'danger', 'Inline edit'); } }
   rt.navigate(VIEW);
+  changed();
 }
 
 function ModePanel() {

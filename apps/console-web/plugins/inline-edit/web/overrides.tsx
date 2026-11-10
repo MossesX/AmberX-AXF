@@ -13,7 +13,7 @@
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button, Chip, Container, Icon, IconButton, Note, SelectField, TabGroup, TextField, useRuntime } from '@console/axf/react';
-import { addTab, errText, listOverrides, removeTab, resetItem, setOverridesState, CHANGED_EVENT, type Filter, type OverrideItem, type OverridesList, type TreeNode } from './api';
+import { addTab, errText, listOverrides, overridesPatch, removeTab, resetItem, setOverridesState, takeViewArg, CHANGED_EVENT, VIEW_ARG_EVENT, type Filter, type OverrideItem, type OverridesList, type TreeNode } from './api';
 import { shown, swatchVar } from './editors';
 
 export const VIEW = 'inline-edit-overrides';
@@ -96,6 +96,16 @@ export function OverridesPage() {
     try { await setOverridesState(patch); } catch (e) { rt.toast(errText(e), 'danger', 'Inline edit'); }
     await load();
   }, [load, rt]);
+
+  // a deep link (console_open inline-edit/overrides?root=…&q=…&filter=…&tab=…) left an argument for this screen
+  useEffect(() => {
+    const take = (arg: string) => { const p = overridesPatch(arg); if (Object.keys(p).length) void save(p); };
+    const first = takeViewArg(VIEW);
+    if (first) take(first);
+    const on = (e: Event) => { const d = (e as CustomEvent<{ view?: string; arg?: string }>).detail; if (d?.view === VIEW) { takeViewArg(VIEW); take(d.arg ?? ''); } };
+    globalThis.addEventListener(VIEW_ARG_EVENT, on);
+    return () => globalThis.removeEventListener(VIEW_ARG_EVENT, on);
+  }, [save]);
 
   useEffect(() => {
     void load();

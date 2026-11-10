@@ -21,6 +21,7 @@ export const CONSOLE_CATALOG_MAX: number;
 export const CONSOLE_LIST_DEFAULT: number;
 export const CONSOLE_CLIENT_STALE_MS: number;
 export const CONSOLE_TOOLS: readonly string[];
+export const CONSOLE_VIEW_ARG_EVENT: string;
 export function foldWords(s: unknown): string;
 export function normalizeConsoleItem(raw: unknown): ConsoleItem | null;
 export function normalizeConsoleCatalog(raw: unknown): ConsoleCatalog;

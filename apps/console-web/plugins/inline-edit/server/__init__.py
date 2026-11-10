@@ -22,7 +22,7 @@ from __future__ import annotations
 import json
 import subprocess
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 from fastapi import APIRouter, Request
 from fastapi.concurrency import run_in_threadpool
@@ -73,10 +73,6 @@ async def _body(request: Request) -> dict[str, Any]:
     return b if isinstance(b, dict) else {}
 
 
-def _query(request: Request) -> dict[str, Any]:
-    return {k: v for k, v in request.query_params.items()}
-
-
 @router.get("/mode")
 async def get_mode(request: Request) -> Any:
     return await _answer(request, "mode.get", {})
@@ -88,8 +84,9 @@ async def put_mode(request: Request) -> Any:
 
 
 @router.get("/tokens")
-async def get_tokens(request: Request) -> Any:
-    return await _answer(request, "tokens.get", _query(request))
+async def get_tokens(request: Request, path: str = "", scope: str = "") -> Any:
+    """Every token of the element and each parent (query parameters are declared so plugin commands pass them)."""
+    return await _answer(request, "tokens.get", {k: v for k, v in {"path": path, "scope": scope}.items() if v})
 
 
 @router.put("/tokens")
@@ -113,8 +110,10 @@ async def put_element(request: Request) -> Any:
 
 
 @router.get("/overrides")
-async def get_overrides(request: Request) -> Any:
-    return await _answer(request, "overrides.list", _query(request))
+async def get_overrides(request: Request, root: Optional[str] = None, q: Optional[str] = None, filter: Optional[str] = None, tab: Optional[str] = None) -> Any:  # noqa: A002
+    """The overrides list; a parameter left out = the user's saved state."""
+    sent = {"root": root, "q": q, "filter": filter, "tab": tab}
+    return await _answer(request, "overrides.list", {k: v for k, v in sent.items() if v is not None})
 
 
 @router.put("/overrides/state")

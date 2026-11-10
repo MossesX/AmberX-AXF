@@ -1,7 +1,7 @@
 {
   "$axf": "voice-intents@1",
   "plugin": "inline-edit",
-  "description": "What Brett can say to reach Inline edit by voice. AmberX (voice-command@1, Developer tab, group 'Inline edit' in apps/amberx-droid/src/plugins/commands/web/lib-developer.ts) hands each one to Gizmo, which runs the named plugin command through the console's MCP (inline-edit_<command>) or opens the screen with the console tool. The same commands answer REST /api/control/inline-edit/<command> and `axf inline-edit <command>`, so voice does exactly what the other surfaces do. test.mjs checks every intent names a real command and has its AmberX twin.",
+  "description": "What Brett can say to reach Inline edit by voice. AmberX (voice-command@1, Developer tab, group 'Inline edit' in apps/amberx-droid/src/plugins/commands/web/lib-developer.ts) hands each one to Gizmo, which runs the named plugin command through the console's MCP (inline_edit_<command>, dashes as underscores) or opens the screen with the console tool. The same commands answer REST /api/control/inline-edit/<command> and `axf inline-edit <command>`, so voice does exactly what the other surfaces do. test.mjs checks every intent names a real command and has its AmberX twin.",
   "intents": [
     { "id": "inline-mode", "phrases": ["inline edit {state}", "turn {state} inline edit", "inline edit mode {state}"], "slots": { "state": ["on", "off", "toggle", "status"] }, "command": "mode", "input": { "state": "{state}" } },
     { "id": "inline-status", "phrases": ["is inline edit on", "inline edit status"], "command": "mode-status", "input": {} },

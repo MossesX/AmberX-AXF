@@ -71,4 +71,24 @@ export function parseArg(arg: unknown): { path?: string; scope?: Scope; view?: V
   return out as ReturnType<typeof parseArg>;
 }
 
+/** A deep-link argument for the overrides page → the list state it sets (root, q, filter, tab). */
+export function overridesPatch(arg: string): { q?: string; filter?: Filter; root?: string; tab?: string } {
+  const a = parseArg(arg);
+  const patch: { q?: string; filter?: Filter; root?: string; tab?: string } = {};
+  if (a.tab) patch.tab = a.tab;
+  if (a.root !== undefined) patch.root = a.root;
+  if (a.q !== undefined) patch.q = a.q;
+  if (a.filter !== undefined) { try { patch.filter = JSON.parse(a.filter) as Filter; } catch { patch.filter = Object.fromEntries(new URLSearchParams(a.filter)) as Filter; } }
+  return patch;
+}
+/** The window event the console client fires when a screen is opened with an argument (console-commands CONSOLE_VIEW_ARG_EVENT). */
+export const VIEW_ARG_EVENT = 'axf:view-arg';
+/** Take (and clear) the argument a deep link left for a screen. */
+export function takeViewArg(view: string): string {
+  const g = globalThis as unknown as { AXF_VIEW_ARGS?: Record<string, string> };
+  const a = g.AXF_VIEW_ARGS?.[view] ?? '';
+  if (g.AXF_VIEW_ARGS) delete g.AXF_VIEW_ARGS[view];
+  return a;
+}
+
 export const errText = (e: unknown) => (e instanceof Error ? e.message : String(e));

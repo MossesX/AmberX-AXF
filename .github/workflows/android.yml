@@ -139,6 +139,8 @@ jobs:
         run: node apps/console-web/plugins/token-control/test.mjs  # axf-plugin:token-control
       - name: Inline edit tokens (inline-edit-tokens@1 element paths + resolver, inline-override@1 store + migration, right-click capture layer)
         run: node apps/console-web/framework/test.mjs
+      - name: Inline edit plugin (engine over the overrides store, single-item reset, list + tabs, deep links, REST = MCP = CLI = voice parity)  # axf-plugin:inline-edit
+        run: node apps/console-web/plugins/inline-edit/test.mjs  # axf-plugin:inline-edit
       - name: Console commands plugin (control@1 console domain — CLI words, runner gate + resolve + deliver, confirm, send to a console)  # axf-plugin:console-commands
         run: node apps/console-web/plugins/console-commands/test.mjs  # axf-plugin:console-commands
       - name: Reference links plugin (ref@1 runner — builds store + plugin targets, find, explicit touches, ambiguous, missing, resolve, CLI)  # axf-plugin:ref-links

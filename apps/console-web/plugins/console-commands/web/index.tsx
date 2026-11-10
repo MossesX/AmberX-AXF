@@ -22,7 +22,7 @@ import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
 import './console-commands.css';
-import { consoleCatalogFrom, consoleMessageErrors, type ConsoleHere, type ConsoleMessage } from '@console/axf/core/engines/console-commands.mjs';
+import { consoleCatalogFrom, consoleMessageErrors, CONSOLE_VIEW_ARG_EVENT, type ConsoleHere, type ConsoleMessage } from '@console/axf/core/engines/console-commands.mjs';
 
 const FOLDER = 'console-commands';
 const ID = 'ai.amberx.axf.console.console-commands';
@@ -116,6 +116,12 @@ function runMessage(rt: AxfRuntime, m: ConsoleMessage, history: string[]): [bool
   if (errors.length) return [false, errors.join('; ')];
   switch (m.op) {
     case 'open':
+      if (m.kind === 'screen' && m.arg) {
+        // a deep link's query: the screen reads AXF_VIEW_ARGS[view] when it mounts, or hears the event while open
+        const g = globalThis as unknown as { AXF_VIEW_ARGS?: Record<string, string> };
+        (g.AXF_VIEW_ARGS ??= {})[m.target!] = m.arg;
+        globalThis.dispatchEvent(new CustomEvent(CONSOLE_VIEW_ARG_EVENT, { detail: { view: m.target, arg: m.arg } }));
+      }
       if (m.kind === 'screen') { rt.search.focus({ id: `view:${m.target}`, kind: 'view', label: m.label ?? m.target!, focus: { kind: 'view', view: m.target! } }); return [rt.getState().view === m.target || !!rt.getState().dialog, `opened ${m.label ?? m.target}`]; }
       if (m.kind === 'dialog') { rt.openDialog(m.target!, m.arg ? { arg: m.arg } : undefined); return [true, `opened ${m.label ?? m.target}`]; }
       rt.search.focus({ id: `settings-tab:${m.target}`, kind: 'setting', label: m.label ?? m.target!, focus: { kind: 'setting', tab: m.target!, ...(m.anchor ? { anchor: m.anchor } : {}) } });

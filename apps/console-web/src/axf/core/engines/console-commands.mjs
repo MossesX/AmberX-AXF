@@ -29,6 +29,12 @@ export const CONSOLE_CATALOG_MAX = 3000;
 export const CONSOLE_LIST_DEFAULT = 50;
 /** How long a console counts as open without a heartbeat (the client re-announces every 30 s and on focus). */
 export const CONSOLE_CLIENT_STALE_MS = 90_000;
+/**
+ * A screen opened with an argument (a deep link's query, `console_open inline-edit/overrides?root=…`): the console client
+ * puts it in `globalThis.AXF_VIEW_ARGS[<view>]` and fires this window event `{ view, arg }`; the screen reads and clears
+ * its entry when it mounts and listens while it is open. Dialogs get theirs as the `arg` prop.
+ */
+export const CONSOLE_VIEW_ARG_EVENT = 'axf:view-arg';
 /** The MCP shortcut tools every console MCP server publishes (names are a contract: Claude sessions call them through axHub). */
 export const CONSOLE_TOOLS = ['console_open', 'console_dialog', 'console_settings', 'console_action', 'console_back', 'console_where', 'console_list', 'console_clients', 'console_refresh'];
 
@@ -139,18 +145,29 @@ export function consoleSearch(items, kind, q = '', limit = CONSOLE_LIST_DEFAULT)
 }
 
 /**
- * The one item a path names: the exact id (case-insensitive; `plugins/<id>` and `<parent>/<id>` for sub-tabs; an action
- * spec `id:arg:arg` names the action `id`), the exact title, then the best search hit when it clearly wins.
- * → { item, args? } or { candidates, ambiguous: true } or { candidates: [] } (nothing).
+ * The one item a path names: the exact id (case-insensitive; `<plugin>/<page>` for `<plugin>-<page>`, `plugins/<id>` and
+ * `<parent>/<id>` for sub-tabs; an action spec `id:arg:arg` names the action `id`), the exact title, then the best search
+ * hit when it clearly wins. A deep link's `?query` (screens, dialogs, settings) comes back as `query`: the open command
+ * hands it to the screen or dialog as its `arg`.
+ * → { item, args?, query? } or { candidates, ambiguous: true } or { candidates: [] } (nothing).
  */
 export function consoleResolve(items, kind, path) {
   const list = (Array.isArray(items) ? items : []).filter((i) => i.kind === kind);
-  const raw = String(path ?? '').trim();
+  const full = String(path ?? '').trim();
+  // a deep link's query (`inline-edit/element?path=…&view=grid`) is the screen's or dialog's argument, not part of its name
+  const qi = kind === 'action' ? -1 : full.indexOf('?');
+  const query = qi >= 0 ? full.slice(qi + 1).slice(0, 400) : '';
+  const raw = qi >= 0 ? full.slice(0, qi).trim() : full;
   const low = raw.toLowerCase();
   const byId = (id) => list.find((i) => i.id.toLowerCase() === id);
+  const found = (item, more = {}) => ({ item, ...more, ...(query ? { query } : {}) });
   let hit = byId(low);
-  if (hit) return { item: hit };
-  if (low.includes('/')) { hit = byId(low.slice(low.lastIndexOf('/') + 1)); if (hit) return { item: hit }; }
+  if (hit) return found(hit);
+  if (low.includes('/')) {
+    // `<plugin>/<page>` names the id `<plugin>-<page>`, else the last step (`plugins/<tab>`, `<parent>/<id>`)
+    hit = byId(low.replace(/\//g, '-')) ?? byId(low.slice(low.lastIndexOf('/') + 1));
+    if (hit) return found(hit);
+  }
   if (kind === 'action' && low.includes(':')) {
     const [id, ...args] = raw.split(':');
     hit = byId(id.toLowerCase());
@@ -158,12 +175,12 @@ export function consoleResolve(items, kind, path) {
   }
   const phrase = foldWords(raw);
   hit = list.find((i) => foldWords(i.label) === phrase);
-  if (hit) return { item: hit };
+  if (hit) return found(hit);
   const words = wordsOf(raw);
   if (!words.length) return { candidates: [] };
   const scored = list.map((i) => [i, scoreItem(i, words, words.join(' '))]).filter(([, s]) => s > 0).sort((a, b) => b[1] - a[1]);
   if (!scored.length) return { candidates: [] };
-  if (scored.length === 1 || scored[0][1] - scored[1][1] >= 1) return { item: scored[0][0] };
+  if (scored.length === 1 || scored[0][1] - scored[1][1] >= 1) return found(scored[0][0]);
   return { candidates: scored.slice(0, 6).map(([i]) => i), ambiguous: true };
 }
 
@@ -274,7 +291,14 @@ export function runConsoleCommand(c, ctx = {}) {
     const items = consoleSearch(catalog, kind, str(select.q, 200), limit);
     return { ok: true, data: { items, total: catalog.filter((i) => i.kind === kind).length, client: targets[0].id } };
   }
-  const r = consoleResolve(catalog, kind, c.path);
+  let r = consoleResolve(catalog, kind, c.path);
+  let openKind = kind;
+  if (!r.item && kind === 'screen' && c.op === 'act') {
+    // console_open on a deep link that names a dialog (`inline-edit/element?path=…`): open that dialog
+    const d = consoleResolve(catalog, 'dialog', c.path);
+    const base = String(c.path ?? '').split('?')[0].trim().toLowerCase();
+    if (d.item && [base, base.replace(/\//g, '-')].includes(d.item.id.toLowerCase())) { r = d; openKind = 'dialog'; } // its id exactly, never a guess
+  }
   if (!r.item) {
     const near = r.candidates?.length ? r.candidates : consoleSearch(catalog, kind, String(c.path).split(/[\s:/]+/)[0], 6);
     return r.ambiguous
@@ -299,7 +323,7 @@ export function runConsoleCommand(c, ctx = {}) {
     }
     return send({ op: 'run', kind: 'action', target: item.id, label: item.label, spec }, { item, effect });
   }
-  return send({ op: 'open', kind, target: item.id, label: item.label, anchor: str(input.anchor, 160), arg: str(input.arg, 400) }, { item });
+  return send({ op: 'open', kind: openKind, target: item.id, label: item.label, anchor: str(input.anchor, 160), arg: str(input.arg, 400) || r.query || '' }, { item });
 }
 
 /** The confirm token a destructive console action needs (what the CLI prints, the check uses). */
