@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2274,
- "updatedAt": "2026-11-10T03:35:08.511Z",
+ "rev": 2275,
+ "updatedAt": "2026-11-10T03:35:22.559Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -134621,7 +134621,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T02:22:06.131Z",
-   "updatedAt": "2026-11-10T03:35:05.767Z",
+   "updatedAt": "2026-11-10T03:35:07.056Z",
    "builtAt": "",
    "notes": [
     {
@@ -134679,6 +134679,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 3 steps left: back in Pending for Brett.",
      "at": "2026-11-10T03:33:04.411Z"
+    },
+    {
+     "text": "Self-check: self-healing-build-folders-auto-clear-stale-git was marked running on account-5 with no session: released and back in the Queue.",
+     "at": "2026-11-10T03:35:07.056Z"
     }
    ],
    "approvals": [],
@@ -134698,7 +134702,7 @@
    "pipeline": {
     "queuedAt": "2026-11-10T02:22:12.571Z",
     "queuedBy": "console",
-    "account": "account-5",
+    "account": "",
     "session": "",
     "slot": "",
     "model": "Opus",
@@ -134720,7 +134724,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Session on account-5 ended (exit 1) with 3 steps left: back in the Queue (run 1).",
+    "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
     "dispatchedAt": "2026-11-10T02:48:43.040Z"
    },

@@ -770,7 +770,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 20:25 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` note (all) · orchestrator
 - 2026-11-09 20:26 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` → failed, note (all) · pipeline
 - 2026-11-09 20:26 UTC · `per-account-queues-long-press-a-queued-build-to` added (0 steps) (all) · console
 - 2026-11-09 20:26 UTC · `per-account-queues-long-press-a-queued-build-to` → queued, note (all) · console
@@ -1170,6 +1169,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 03:34 UTC · `skins-own-everything-colour-theme-swaps-independ` note (all) · self-heal
 - 2026-11-10 03:34 UTC · `self-healing-build-folders-auto-clear-stale-git` s1 done, → running (all) · orchestrator
 - 2026-11-10 03:35 UTC · `self-healing-build-folders-auto-clear-stale-git` s2 done (all) · orchestrator
+- 2026-11-10 03:35 UTC · `self-healing-build-folders-auto-clear-stale-git` → queued, note (all) · pipeline
 
 ## Token passes (log)
 
