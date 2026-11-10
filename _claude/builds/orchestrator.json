@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:52:16.462Z",
+ "updatedAt": "2026-11-10T17:52:37.201Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -90131,12 +90131,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T17:50:42.350Z",
-   "updatedAt": "2026-11-10T17:50:44.009Z",
+   "updatedAt": "2026-11-10T17:52:29.947Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T17:50:44.009Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T17:52:29.947Z"
     }
    ],
    "approvals": [],
@@ -90153,7 +90157,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Amends the Ollama + Mistral build. VPS now has 64 GB RAM. Use Mistral Small (24B, Q4 quant, ~14 GB) as the default model; also pull Mistral 7B for fast lightweight tasks. Keep headroom for builds (cap Ollama memory, one model loaded at a time, unload after idle).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazmnej04pib1"
+    },
+    {
+     "id": "s2",
+     "text": "Pick the model. I got 64 gigs now.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazmnej050g3x"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/ollama-model-pick-mistral-small-24b-q4-default-m.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/ollama-model-pick-mistral-small-24b-q4-default-m.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazmnek060m0f"
+    }
+   ]
   },
   {
    "id": "ollama-own-docker-container-amberx-llama-interna",
