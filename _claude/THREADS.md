@@ -770,7 +770,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 20:27 UTC · `per-account-queues-long-press-a-queued-build-to` note (all) · orchestrator
 - 2026-11-09 20:27 UTC · `one-source-of-truth-for-claude-accounts-the-orch` note (all) · orchestrator
 - 2026-11-09 20:27 UTC · `saved-claude-logins-never-end-up-on-a-spent-refr` s1 done, → running (all) · orchestrator
 - 2026-11-09 20:29 UTC · `saved-claude-logins-never-end-up-on-a-spent-refr` s2 done (all) · orchestrator
@@ -1170,6 +1169,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 03:36 UTC · `self-healing-build-folders-auto-clear-stale-git` note (all) · orchestrator
 - 2026-11-10 03:37 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` → running, note (all) · pipeline
 - 2026-11-10 03:37 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` branch claude/demo-designer-finish-phase-2-s2-s3-resuming-from (all) · pipeline
+- 2026-11-10 03:37 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` note (all) · orchestrator
 
 ## Token passes (log)
 
