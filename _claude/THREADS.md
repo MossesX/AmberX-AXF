@@ -771,9 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 01:45 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` s2 done (all) · orchestrator
-- 2026-11-10 01:47 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` PR #428 (all) · builds-live
-- 2026-11-10 01:47 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` note (all) · orchestrator
 - 2026-11-10 01:47 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` s3 done, → built (all) · orchestrator
 - 2026-11-10 01:48 UTC · `test-button-on-every-claude-account-subscription` → running, note (all) · pipeline
 - 2026-11-10 01:48 UTC · `test-button-on-every-claude-account-subscription` note (all) · orchestrator
@@ -1171,6 +1168,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 15:53 UTC · `claude-accounts-manager-plugin-one-ordered-list` PR #448 (all) · builds-live
 - 2026-11-10 15:53 UTC · `claude-accounts-manager-plugin-one-ordered-list` s3 done, → built (all) · orchestrator
 - 2026-11-10 15:53 UTC · `claude-accounts-manager-plugin-one-ordered-list` note (all) · orchestrator
+- 2026-11-10 15:54 UTC · `retire-build-manager-the-orchestrator-is-the-onl` → running, note (all) · pipeline
+- 2026-11-10 15:54 UTC · `retire-build-manager-the-orchestrator-is-the-onl` branch claude/retire-build-manager-the-orchestrator-is-the-onl (all) · pipeline
+- 2026-11-10 15:54 UTC · `retire-build-manager-the-orchestrator-is-the-onl` note (all) · orchestrator
 
 ## Token passes (log)
 
