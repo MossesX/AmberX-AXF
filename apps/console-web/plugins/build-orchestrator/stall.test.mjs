@@ -158,6 +158,8 @@ console.log('tick now\\nsplit 0 · ended none · launched q1 on w1 (Opus)');
     assert.match(readFileSync(note, 'utf8'), /Fixed by Restart the dispatcher\./);
     assert.equal(store().builds.find((x) => x.id === 'q1').status, 'running');
     assert.equal(wd('run').action, 'none');
+    const ps = JSON.parse(run('pipeline.mjs', 'status', '--json').stdout.trim().split('\n').pop());
+    assert.equal(ps.stall.stalled, false); assert.equal(ps.stall.last.fixedBy, 'Restart the dispatcher', 'GET /pipeline carries the watchdog');
   });
   t('e2e: release dead slots puts a build with a gone session back in the Queue (tmux answers "gone")', () => {
     // a tmux stand-in that says no session exists

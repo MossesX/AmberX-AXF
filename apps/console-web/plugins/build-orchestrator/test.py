@@ -133,6 +133,10 @@ try:
         except srv.HTTPException as e:
             code = e.status_code
         check(code == want, f"route {route} by {'Brett' if brett else 'a session'}: {want}")
+    srv.pipeline_stall()
+    check(_calls[-1][1].endswith("stall-watchdog.mjs") and _calls[-1][2] == "status", "GET /pipeline/stall reads the stall watchdog's status")
+    asyncio.run(srv.pipeline_stall_fix(_Req({}, True)))
+    check(_calls[-1][2] == "request" and "--by" in _calls[-1], "POST /pipeline/stall asks the watchdog to fix now, with who asked")
 finally:
     srv.subprocess.run = _real_run
 

@@ -245,7 +245,7 @@
         "title": "Pipeline status",
         "description": "The build pipeline: what is Pending, in the Queue and Building, every Claude account (Fable yes or no, how many run on it), the agent slots, and what the dispatcher's next tick will start or why it waits. Say 'what's in the queue' or 'is anything building'.",
         "readOnly": true,
-        "output": "{ table: { pending, queued, building }, accounts, accountsFrom: { source, at, ageMin, why }, slots, plan: { launches, waits, idle }, state: { selfCheck, selfCheckRequested, … } }"
+        "output": "{ table: { pending, queued, building }, accounts, accountsFrom: { source, at, ageMin, why }, slots, plan: { launches, waits, idle }, state: { selfCheck, selfCheckRequested, … }, stall: { at, stalled, findings, spell, last } }"
       },
       {
         "id": "pipeline-selfcheck",
@@ -267,6 +267,22 @@
           }
         },
         "output": "{ ran: false, requested, last: { at, line, fixes, problems, findings } }"
+      },
+      {
+        "id": "pipeline-stall",
+        "route": "GET /pipeline/stall",
+        "title": "Stall watchdog",
+        "description": "Is the build pipeline stuck right now: nothing building while the Queue or Urgent / High Pending builds wait, a running build whose session is gone, or no dispatcher tick for 3 minutes. Shows the open stall with every automatic fix tried (self-check, release dead slots, auto-queue Urgent / High, restart the dispatcher) and the last stalls with what fixed them. Say 'is the pipeline stalled' or 'why is nothing building'.",
+        "readOnly": true,
+        "output": "{ at, ageMin, watching, stalled, findings: [{ kind, line }], spell: { id, since, rounds, attempts, escalatedAt, needs }, history }"
+      },
+      {
+        "id": "pipeline-stall-fix",
+        "route": "POST /pipeline/stall",
+        "title": "Fix a stall now",
+        "description": "Ask the stall watchdog to run its fixes now (self-check, release dead slots, auto-queue Urgent / High builds, restart the dispatcher) instead of waiting 2 minutes to confirm. Runs on the VPS within a minute; each attempt goes to AmberX and to Notes → Automatic fixes. Say 'unstick the builds' or 'fix the pipeline'.",
+        "input": { "type": "object", "properties": {} },
+        "output": "{ requested, last }"
       },
       {
         "id": "pipeline-tab",

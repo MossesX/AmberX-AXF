@@ -199,7 +199,15 @@ export function status() {
   tabs.complete.sort((a, b) => str(b.builtAt || b.updatedAt).localeCompare(str(a.builtAt || a.updatedAt)));
   const st = loadState();
   return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), table: byTable, tabs, accounts, accountsFrom, health: loadHealth(), slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable }, plan, settings,
-    state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails, selfCheck: st.selfCheck ?? null, selfCheckRequested: readJson(files().checkRequest)?.at || '' } };
+    state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails, selfCheck: st.selfCheck ?? null, selfCheckRequested: readJson(files().checkRequest)?.at || '' }, stall: stallBrief() };
+}
+
+/** The stall watchdog's last look (stall-watchdog.mjs, its own cron): stuck or not, the open spell, the last fixes. */
+export function stallBrief() {
+  const j = readJson(join(files().dir, 'stall.json'));
+  if (!j) return null;
+  const sp = j.spell;
+  return { at: str(j.at, 40), stalled: !!sp, findings: (j.findings ?? []).map((f) => ({ kind: f.kind, line: str(f.line, 300) })), spell: sp ? { id: sp.id, since: sp.since, rounds: sp.rounds, escalatedAt: sp.escalatedAt || '', needs: sp.needs ?? [] } : null, last: (j.history ?? []).slice(-1)[0] ?? null };
 }
 
 // ------------------------------------------------------------------ store writes

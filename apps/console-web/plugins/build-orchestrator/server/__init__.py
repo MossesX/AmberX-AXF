@@ -453,6 +453,38 @@ async def pipeline_selfcheck(request: Request) -> dict[str, Any]:
     return _pipeline("selfcheck", "--request", "--reason", reason, who=(brett_click(request) or "console")[:80])
 
 
+STALL_CLI = CLI.parent / "stall-watchdog.mjs"
+
+
+def _stall(*args: str, who: str = "") -> dict[str, Any]:
+    """Run the stall watchdog CLI (reads stall.json in the shared pipeline folder; `request` writes stall-request.json)."""
+    env = {k: v for k, v in os.environ.items() if k not in APPROVER_KEYS}
+    if who:
+        env["AXF_ACTOR"] = who
+    proc = subprocess.run(["node", str(STALL_CLI), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=60, env=env)
+    out = proc.stdout.strip().splitlines()
+    try:
+        res = json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
+    except json.JSONDecodeError:
+        res = {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+    if not res.get("ok"):
+        raise HTTPException(400 if proc.returncode == 2 else 500, str(res.get("error") or "stall watchdog failed")[:400])
+    return res
+
+
+@router.get("/pipeline/stall")
+def pipeline_stall() -> dict[str, Any]:
+    """The stall watchdog (Brett, Nov 10 2026): is anything stuck right now (nothing building while work waits, a running
+    build whose session is gone, no dispatcher tick for 3 minutes), the open spell with every fix tried, and the last spells."""
+    return _stall("status")
+
+
+@router.post("/pipeline/stall")
+async def pipeline_stall_fix(request: Request) -> dict[str, Any]:
+    """Ask the watchdog to run its fixes now instead of after the 2-minute confirm (the VPS host runs it within a minute)."""
+    return _stall("request", "--by", (brett_click(request) or "console")[:80])
+
+
 PIPELINE_TABS = ("pending", "queue", "active", "incomplete", "complete", "errors")
 
 
