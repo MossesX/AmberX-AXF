@@ -769,9 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 18:09 UTC · `split-builds-pages-build-manager-pending-complet-3` → running, note (all) · pipeline
-- 2026-11-09 18:09 UTC · `split-builds-pages-build-manager-pending-complet` note (all) · orchestrator
-- 2026-11-09 18:10 UTC · `split-builds-pages-build-manager-pending-complet-3` → failed, note (all) · pipeline
 - 2026-11-09 18:10 UTC · `prompt-caching-and-batch-api-support-in-the-buil` → running, note (all) · pipeline
 - 2026-11-09 18:10 UTC · `prompt-caching-and-batch-api-support-in-the-buil` note (all) · orchestrator
 - 2026-11-09 18:11 UTC · `prompt-caching-and-batch-api-support-in-the-buil` → failed, note (all) · pipeline
@@ -1169,6 +1166,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 01:48 UTC · `test-button-on-every-claude-account-subscription` → running, note (all) · pipeline
 - 2026-11-10 01:48 UTC · `test-button-on-every-claude-account-subscription` note (all) · orchestrator
 - 2026-11-10 01:53 UTC · `skins-own-everything-colour-theme-swaps-independ` PR #429 (all) · builds-live
+- 2026-11-10 01:53 UTC · `skins-own-everything-colour-theme-swaps-independ` s1 done, → running (all) · orchestrator
+- 2026-11-10 01:53 UTC · `skins-own-everything-colour-theme-swaps-independ` note (all) · orchestrator
+- 2026-11-10 01:53 UTC · `skins-theme-rule` note (all) · orchestrator
 
 ## Token passes (log)
 

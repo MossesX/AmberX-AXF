@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T01:53:44.396Z",
+ "updatedAt": "2026-11-10T01:54:01.412Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -79383,7 +79383,7 @@
    "title": "Skins own everything; colour theme swaps independently inside the active skin",
    "category": "",
    "detail": "Standing rule for skins work (applies to appearance-skins-colour-themes-only-remove-design-packs, skins-restyle-everything and skins-are-a-complete-rework): a skin controls everything (look, layout, behavior, every section/asset type) and includes a colour theme section. The user can change the colour theme on its own without changing the skin: picking a colour theme applies it inside the current skin and does NOT create a new skin or fork/duplicate the skin. Skin sections stay separate; the colour theme is one switchable part. Update contracts, pickers (skin picker + colour theme picker), API/voice, and tests. Check the running builds' changes against this and fix any that make a new skin on theme change.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -79391,7 +79391,7 @@
    "pr": "#429",
    "priority": "P0",
    "createdAt": "2026-11-09T17:52:45.295Z",
-   "updatedAt": "2026-11-10T01:53:38.723Z",
+   "updatedAt": "2026-11-10T01:53:47.504Z",
    "builtAt": "",
    "notes": [
     {
@@ -79455,6 +79455,10 @@
      "at": "2026-11-10T00:49:08.905Z"
     },
     {
+     "text": "Phase 1 done: PR #429. Rule in APPEARANCE-SOURCE.md; colour theme is a colorTheme field beside the skin (app, scope, hub-wide), never an override, never a new skin; UI, CLI, REST/MCP, action skin.color. Carried and finished the uncommitted engine draft from the skins-theme-rule worktree (that build's s1 is done by this PR). UI Review item filed locally (no console credentials in this session); shots in the report folder. Pre-existing: check-help fails on claude-accounts/help.json on main.",
+     "at": "2026-11-10T01:53:47.504Z"
+    },
+    {
      "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-skins-own-everything-colour-theme-swaps-independ--sully.",
      "at": "2026-11-10T01:04:08.837Z"
     },
@@ -79491,8 +79495,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T01:53:41.274Z",
      "note": "",
      "uid": "st-mw9k7yqs0162wn"
     },
@@ -82353,12 +82357,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-10T00:50:40.704Z",
-   "updatedAt": "2026-11-10T01:42:07.360Z",
+   "updatedAt": "2026-11-10T01:53:49.874Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by failed-launches-auto-retry-on-another-working-ac.",
      "at": "2026-11-10T00:50:44.359Z"
+    },
+    {
+     "text": "Its uncommitted engine draft (colorTheme beside the skin) was carried into build skins-own-everything-colour-theme-swaps-independ and finished there: PR #429 (engine, fixtures, tests, CLI/API/pickers, docs). s1 and s2 of this build are covered by that PR; s3's report lives at _claude/builds/reports/skins-own-everything-colour-theme-swaps-independ.md.",
+     "at": "2026-11-10T01:53:49.874Z"
     },
     {
      "text": "amber asked to run this build on API account account-5 (request rr-mwa0yhwk-ym8b); it waits for Brett's approval.",
