@@ -1,0 +1,38 @@
+/* Build search: layout only. Every value is a theme token; controls keep the framework's own look. */
+.axp-build-search__box { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); }
+.axp-build-search__filters { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs); align-items: center; }
+
+.axp-build-search__split { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--fx-dens-gap-lg); align-items: start; }
+.axp-build-search__split.is-open { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); }
+:where([data-fx-tiny], [data-fx-small], [data-fx-narrow]) .axp-build-search__split.is-open { grid-template-columns: minmax(0, 1fr); }
+.axp-build-search__left, .axp-build-search__right { min-width: 0; }
+.axp-build-search__right { position: sticky; top: 0; }
+
+.axp-build-search__results { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); max-height: 70vh; overflow: auto; }
+.axp-build-search__summary, .axp-build-search__more { margin: 0; color: var(--fx-muted); font-size: var(--fx-type-root-sm); }
+.axp-build-search__group { flex: none; display: flex; flex-direction: column; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); overflow: hidden; }
+.axp-build-search__ghead { flex: none; display: flex; align-items: center; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); background: var(--fx-surface2); cursor: pointer; min-width: 0; }
+.axp-build-search__type { display: inline-flex; color: var(--fx-accent); flex: none; }
+.axp-build-search__gtitle { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: var(--fx-type-weights-strong); }
+.axp-build-search__count { flex: none; color: var(--fx-muted); font-size: var(--fx-type-root-xs); }
+
+.axp-build-search__hit { flex: none; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--fx-dens-gap-md); align-items: baseline; padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); border-top: var(--fx-border-w) solid var(--fx-border); cursor: pointer; font-size: var(--fx-type-root-sm); }
+.axp-build-search__hit.is-active { background: var(--fx-accent-soft); }
+.axp-build-search__inst { color: var(--fx-accent); white-space: nowrap; font-size: var(--fx-type-root-xs); }
+.axp-build-search__lineno { color: var(--fx-muted); white-space: nowrap; font-family: var(--fx-font-mono); font-size: var(--fx-type-root-xs); }
+.axp-build-search__snip { min-width: 0; overflow-wrap: anywhere; font-family: var(--fx-font-mono); }
+.axp-build-search__mark { background: var(--fx-warning); color: var(--fx-bg); border-radius: var(--fx-radius-sm); }
+
+.axp-build-search__logbar { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs); align-items: center; margin-bottom: var(--fx-dens-gap-sm); }
+.axp-build-search__where { flex: 1 1 auto; color: var(--fx-muted); font-size: var(--fx-type-root-sm); }
+.axp-build-search__logbody { max-height: 65vh; overflow: auto; font-family: var(--fx-font-mono); font-size: var(--fx-type-root-xs); background: var(--fx-surface2); border-radius: var(--fx-radius-sm); padding: var(--fx-dens-gap-xs) 0; }
+.axp-build-search__logline { display: grid; grid-template-columns: calc(var(--fx-space) * 3.5) minmax(0, 1fr); gap: var(--fx-dens-gap-sm); padding: 0 var(--fx-dens-gap-sm); }
+.axp-build-search__logline .axp-build-search__lineno { text-align: right; }
+.axp-build-search__logline.is-current { background: var(--fx-accent-soft); box-shadow: inset var(--fx-border-w) 0 0 var(--fx-accent); }
+.axp-build-search__logtext { min-width: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+.axp-build-search__pre { white-space: pre-wrap; font-family: var(--fx-font-mono); font-size: var(--fx-type-root-sm); }
+.axp-build-search__list { list-style: none; margin: 0 0 var(--fx-dens-gap-md); padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
+.axp-build-search__list li { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); flex-wrap: wrap; }
+.axp-build-search__form { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 12), 1fr)); gap: var(--fx-dens-gap-md); align-items: end; }
+:where([data-fx-tiny], [data-fx-small], [data-fx-narrow]) .axp-build-search__hit { grid-template-columns: minmax(0, 1fr); }

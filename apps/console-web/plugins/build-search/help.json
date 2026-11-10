@@ -1,0 +1,125 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "build-search-help",
+  "name": "Build search help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the Build search plugin (help@1).",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:build-search",
+    "entries": [
+      {
+        "target": "view:build-search",
+        "kind": "screen",
+        "title": "Build search",
+        "text": "Searches every build, build note, build report, session log and session message at once. Each hit is listed under its document with an icon for its type and numbered instance 1, 2, 3; tap one to open that log scrolled to the spot and highlighted."
+      },
+      {
+        "target": "search-builds-notes-reports-and-session-logs",
+        "title": "Search box",
+        "text": "Type words (all must be on the line), \"a phrase\", /a regex/, -word to leave lines out, type:log or build:<id> to narrow it. Start with > for commands: >add source, >add action, >ai off, >help."
+      },
+      {
+        "target": "search",
+        "title": "Search",
+        "text": "Runs the search again now (it also runs as you type)."
+      },
+      {
+        "target": "previous",
+        "title": "Previous instance",
+        "text": "Moves the log to the previous hit in the same document."
+      },
+      {
+        "target": "next",
+        "title": "Next instance",
+        "text": "Moves the log to the next hit in the same document."
+      },
+      {
+        "target": "copy-link",
+        "title": "Copy link",
+        "text": "Copies a link that opens the console on this log at this spot."
+      },
+      {
+        "target": "copy-line",
+        "title": "Copy line",
+        "text": "Copies the highlighted line."
+      },
+      {
+        "target": "open-the-build",
+        "title": "Open the build",
+        "text": "Shows the build this hit belongs to: its title, Brett's words, the request and its steps."
+      },
+      {
+        "target": "only-this-build",
+        "title": "Only this build",
+        "text": "Narrows the search to this build's documents. Tap the Build chip to clear it."
+      },
+      {
+        "target": "allow-ai-features",
+        "title": "Allow AI features",
+        "text": "Off by default. Build search never calls a model by itself; everything here is plain code. Turn this on only if you add an AI feature you want to use."
+      },
+      {
+        "target": "add-source",
+        "title": "Add source",
+        "text": "Adds a file, folder or glob (for example docs/**/*.md) to what Build search reads, with the type shown on its hits."
+      },
+      {
+        "target": "add-action",
+        "title": "Add action",
+        "text": "Adds a button to every hit: a console action, nav:<page> or an https link, with {build}, {line}, {doc} and the other placeholders filled in."
+      },
+      {
+        "target": "build-search",
+        "title": "Build search settings",
+        "text": "Sources, hit actions, limits and the AI switch, under Settings → Plugins."
+      },
+      {
+        "target": "open-build-search",
+        "title": "Open Build search",
+        "text": "Goes to the Build search page."
+      },
+      {
+        "target": "action:build-search.open",
+        "title": "Search builds and logs",
+        "text": "Searches builds and logs. Part of Build search.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "close-the-log",
+        "title": "Close the log",
+        "text": "Closes the log. Part of Build search.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "file-folder-or-glob",
+        "title": "File, folder or glob",
+        "text": "Where you set “File, folder or glob”. Change it and the app uses the new value. Part of Build search.",
+        "kind": "field",
+        "draft": true
+      }
+    ],
+    "intros": [
+      {
+        "screen": "build-search",
+        "title": "Build search",
+        "steps": [
+          {
+            "say": "Type what you are looking for. Every build, note, report and session log is searched, with no AI.",
+            "target": ""
+          },
+          {
+            "say": "Each document lists its hits as instance 1, 2, 3. Tap one to open the log at that line, highlighted; Previous and Next walk the instances.",
+            "target": ""
+          }
+        ]
+      }
+    ]
+  }
+}
