@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T04:29:48.028Z",
+ "updatedAt": "2026-11-10T04:30:17.977Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -24035,14 +24035,14 @@
    "title": "Orchestrator is the only door to the VPS (vps-action-policy@1)",
    "category": "orchestrator",
    "detail": "HARD RULE (Brett): no build may start unless it carries a build ID issued by the Build orchestrator. Enforce it in the launcher itself, not just in docs: vps.build_start (axHub vps service) and deploy/claude-headless.sh must require an orchestrator build ID, check it exists in the orchestrator store, and REFUSE otherwise. A refused launch is not lost: its name and brief are sent to the orchestrator as a new pending build (plan made, Brett's words kept, models picked by the orchestrator) and the caller is told to launch from there. Also remove the launcher's own model choice: the model comes from the orchestrator's step plan. Add to RULES.md and CLAUDE.md, plus a CI test that a launch without an ID fails. Orchestrator assigns models.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/orchestrator-vps-gate",
    "pr": "",
    "createdAt": "2026-11-07T04:55:09.050Z",
-   "updatedAt": "2026-11-07T15:22:37.455Z",
+   "updatedAt": "2026-11-10T04:29:48.051Z",
    "builtAt": "2026-11-07T15:22:27.195Z",
    "notes": [
     {
@@ -24052,6 +24052,10 @@
     {
      "text": "Built on branch claude/orchestrator-vps-gate (committed, not pushed per the brief). Report _claude/builds/reports/orchestrator-vps-gate.md; UI Review has the three settings-interface options (set vps-gate-settings). Next: push through the broker, open the PR into the merge queue, set DEFAULT_INTERFACE to Brett's pick.",
      "at": "2026-11-07T15:21:50.550Z"
+    },
+    {
+     "text": "Earlier step list (framework/plan/pending.json, before this build was re-split), kept so nothing is lost:\n1. Launcher requires an orchestrator build ID and refuses without one\n2. Refused launches are forwarded to the orchestrator as pending builds with the brief and words\n3. Model comes from the orchestrator plan, never the launcher\n4. RULES.md + CLAUDE.md rule and CI test",
+     "at": "2026-11-10T04:29:48.051Z"
     }
    ],
    "approvals": [],
@@ -49785,14 +49789,14 @@
    "title": "Dev Console Android app: wrapper shell (one codebase)",
    "category": "App",
    "detail": "Brett chose the wrapper over a native rewrite (Nov 7 2026): the web Dev Console (console.amberxai.com) runs inside an Android app shell (Capacitor, like AmberX), so every console change shows on the phone at once. Shell: sign-in kept (cookies), back button, pull-to-refresh, offline screen. Native bridges: notifications for build alerts (console /api/alerts, quiet when AmberX already posts them), mic for voice, background wake (periodic alerts check), file share/download (APKs), deep links to console screens. Console UI stays asset-driven (phone layout assets). APK in CI next to amberx-debug.apk, listed under Apps. UI Review with three shell-chrome options. App: apps/console-droid. Replaces the native tab plan (Pilot is retired).",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "chat",
    "pendingId": "console-android-app-tabs",
    "branch": "claude/console-android-wrapper",
    "pr": "",
    "createdAt": "2026-10-21T03:58:03.794Z",
-   "updatedAt": "2026-11-07T15:38:25.087Z",
+   "updatedAt": "2026-11-10T04:29:53.879Z",
    "builtAt": "2026-11-07T15:38:20.289Z",
    "notes": [
     {
@@ -49818,6 +49822,14 @@
     {
      "text": "Built Nov 7 2026 on branch claude/console-android-wrapper (3 commits, not pushed per brief). apps/console-droid + plugin android-app + CI job console-droid. UI Review r-20261107-89356ccf (3 offline-card options). Android Java beyond the pure rules first compiles in CI. Report _claude/builds/reports/console-android-app-tabs.md.",
      "at": "2026-11-07T15:38:21.042Z"
+    },
+    {
+     "text": "Earlier step list (framework/plan/pending.json, before this build was re-split), kept so nothing is lost:\n1. 1a. Compose page slots, kernel side: add `ExtensionPoints.PAGE_SLOTS` (`axf.page-slots`, contribution {slot: \"app.frame.top\" | \"app.frame.cover\", order, content key}) in `axf-kernel/module/Extensions.kt`, same slot names as `framework/react/components/Slots.tsx`; unit test that contributions order like the web `installLibraries` does.\n2. 1b. Compose page slots, UI side: `axf-ui/.../Slots.kt` with `AxfSlot(name)` reading the registry and `AppShell` rendering `app.frame.top` above the banner and `app.frame.cover` over the shell (same positions as the web `AppShell.tsx`); Android console showcase contributes a debug label into each to prove it; compiles in CI.\n3. 2a. `lib-apptabs` module skeleton: `framework/android/lib-apptabs` (id `ai.amberx.axf.apptabs`, `settings.gradle.kts` entry, `AppTabsModule` registering a settings group \"App tabs\" with the same keys as the web plugin `app-tabs.tabs|custom|active`); `:lib-apptabs:testDebugUnitTest` job with one test (keys match the web plugin's constants read from a shared JSON resource).\n4. 2b. Tab bar composable `AxfAppTabBar` in slot `app.frame.top`: reads the tab list + active id from settings, console tab = the app itself, action `app-tabs.show:<id>` registered; tapping switches the active setting; no content yet.\n5. 2c. Settings sync note: the module reads/writes only through `SettingsRegistry` so settings-from-axHub (decision Oct 20) applies once that lands; add the keys to `framework/android/lib-settings`'s shared-key list; unit test round-trip of `app-tabs.custom` JSON.\n6. 3a. Built-in tab list: Console (self), Pilot `https://pilot.amberxai.com`, axHub `https://axhub.amberxai.com/apps`, Demo, as a Kotlin list mirroring the web plugin's built-ins; icons from `axf-ui/icons`.",
+     "at": "2026-11-10T04:29:50.458Z"
+    },
+    {
+     "text": "Earlier step list (framework/plan/pending.json, before this build was re-split), kept so nothing is lost: (cont.)\n7. 3b. Manifest tabs: project manifests built on/for AXF with `deploy.url`, read from a bundled `catalog/projects.json` (generated by `sync-data.mjs` into the Android console assets), appended to the list; unit test with a fixture catalog.",
+     "at": "2026-11-10T04:29:53.879Z"
     }
    ],
    "approvals": [],
