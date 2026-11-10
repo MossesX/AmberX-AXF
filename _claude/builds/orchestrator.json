@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T22:11:25.603Z",
+ "updatedAt": "2026-11-10T22:11:46.292Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -96664,9 +96664,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-10T22:09:29.615Z",
-   "updatedAt": "2026-11-10T22:09:29.615Z",
+   "updatedAt": "2026-11-10T22:11:45.052Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T22:11:45.052Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -96681,7 +96686,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Found by molly-sign-in-once s1. Two halves. (1) The console API refuses cross-origin calls from Molly: OPTIONS https://console.amberxai.com/api/me with Origin https://molly.amberxai.com answers 401 with no CORS headers (the token check runs before FastAPI's CORSMiddleware, and allow_origins * cannot be used by the wall). Let preflights through and answer an allow-list of amberxai.com app origins with Access-Control-Allow-Headers authorization, content-type, accept. (2) The console token lives only in the console origin's storage (axf-console:token); Molly keeps its own copy (molly:console-token) that today a person must paste. Add an embed@1 message (guest to host, e.g. credentials with {app, scheme, token}) the console frame sends once to a host it recognises (frame-ancestors origin, embed host name), handled by Molly's xLayout host into the console provider's signIn(token); never to a URL or a log. Molly side is in place: apps/molly/src/molly/credentials.ts (console provider, bearer, credentials omit).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb8w1st07ko5t"
+    },
+    {
+     "id": "s2",
+     "text": "Standalone apps keep working until Molly covers them; list gaps as pending builds.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb8w1st08vasb"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/molly-gap-console-token-handoff.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/molly-gap-console-token-handoff.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb8w1st0981cw"
+    }
+   ]
   },
   {
    "id": "ai-assistant-gizmo-moved-to-the-console-remove-t",

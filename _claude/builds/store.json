@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2947,
- "updatedAt": "2026-11-10T22:11:25.603Z",
+ "rev": 2948,
+ "updatedAt": "2026-11-10T22:11:46.292Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -151288,9 +151288,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-10T22:09:29.615Z",
-   "updatedAt": "2026-11-10T22:09:29.615Z",
+   "updatedAt": "2026-11-10T22:11:45.052Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T22:11:45.052Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -151305,7 +151310,102 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-10T22:11:45.052Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwb8w1st07ko5t",
+     "title": "",
+     "text": "Found by molly-sign-in-once s1. Two halves. (1) The console API refuses cross-origin calls from Molly: OPTIONS https://console.amberxai.com/api/me with Origin https://molly.amberxai.com answers 401 with no CORS headers (the token check runs before FastAPI's CORSMiddleware, and allow_origins * cannot be used by the wall). Let preflights through and answer an allow-list of amberxai.com app origins with Access-Control-Allow-Headers authorization, content-type, accept. (2) The console token lives only in the console origin's storage (axf-console:token); Molly keeps its own copy (molly:console-token) that today a person must paste. Add an embed@1 message (guest to host, e.g. credentials with {app, scheme, token}) the console frame sends once to a host it recognises (frame-ancestors origin, embed host name), handled by Molly's xLayout host into the console provider's signIn(token); never to a URL or a log. Molly side is in place: apps/molly/src/molly/credentials.ts (console provider, bearer, credentials omit).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T22:11:45.052Z",
+     "updatedAt": "2026-11-10T22:11:45.052Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwb8w1st08vasb",
+     "title": "",
+     "text": "Standalone apps keep working until Molly covers them; list gaps as pending builds.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T22:11:45.052Z",
+     "updatedAt": "2026-11-10T22:11:45.052Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwb8w1st0981cw",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/molly-gap-console-token-handoff.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/molly-gap-console-token-handoff.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T22:11:45.052Z",
+     "updatedAt": "2026-11-10T22:11:45.052Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -151314,12 +151414,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T22:11:45.052Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
