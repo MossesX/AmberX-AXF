@@ -16,8 +16,7 @@ import { mollyService } from '../../../src/molly/host';
 import { Button, Icon, useAxfState, useRuntime } from '../../../src/axf/react';
 import { DockHost, DockPresetThumb } from '../../../src/axf/react/windows/DockHost';
 import { useWindowState } from '../../../src/axf/react/windows/WindowHost';
-import { AppSlot } from '../../../src/molly/FrameDeck';
-import { isNative, NativeView } from '../../../src/molly/native';
+import { NativeView } from '../../../src/molly/native';
 import { MOLLY_APPS, mollyApp } from '../../../src/molly/apps';
 import { docked, effectiveXLayout, K } from './model';
 
@@ -185,12 +184,11 @@ export function keepIde(rt: AxfRuntime): void {
   if (snap) rt.settings.set(K.dock, JSON.stringify(snap));
 }
 
-/** The tab body of an app in a pane: the app mounted natively (shell-surface@1), else its frame's slot covering only the
- *  pane. `app` may name one of its screens (`console/plan`). */
+/** The tab body of an app in a pane: the app mounted natively (shell-surface@1). `app` may name one of its screens
+ *  (`console/plan`). */
 export function AppTab({ app }: { app: string }) {
   const [id, ...rest] = app.split('/');
-  if (isNative(id!)) return <NativeView app={id!} view={rest.join('/') || 'home'} />;
-  return <AppSlot id={app} fill="self" />;
+  return <NativeView app={id!} view={rest.join('/') || 'home'} />;
 }
 
 /** IDE mode's main area: the dock of the main window, the app on screen brought up in it. */
@@ -208,12 +206,11 @@ export function Workspace({ app }: { app: string }) {
   );
 }
 
-/** What an app's view shows: the dock in IDE mode, its frame alone otherwise. */
+/** What an app's view shows: the dock in IDE mode, its screen alone otherwise. */
 export function AppMain({ app }: { app: string }) {
   const rt = useRuntime();
   useAxfState();
   const ide = docked(effectiveXLayout(rt));
-  // the app area already fills the main region edge to edge (xlayout.css), so the frame covers just its slot
   return ide ? <Workspace app={app} /> : <AppTab app={app} />;
 }
 

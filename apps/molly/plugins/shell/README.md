@@ -11,9 +11,9 @@ every app and plugin … Do NOT embed other apps").
     star favorites, open in the main area, a pane or a floating window.
 - **Where surfaces come from:** native app mounts register through capability `axf.shell@1` (`register(surface,
   opener)`); Molly's own surface is its live search index (every view, action, settings tab, setting, dialog and menu
-  item, plugins' too), so a new plugin appears with no menu edit. Until the apps' native mounts land (molly-one-shell
-  s7/s8) their items come from the chrome xLayout already receives and open through xLayout; that stopgap goes with
-  Molly's frames (s11).
+  item, plugins' too), so a new plugin appears with no menu edit. Every app's native surface (console, axHub, AmberX)
+  registers itself when it loads (`src/molly/native.tsx`); an app with none yet (Expenses) is listed with its home
+  entry and opens on its own.
 - **Layout modes and named layouts:** one at a time, tabs, side by side or IDE (docked panes), through xLayout's
   capability (`axf.xlayout@1` → `mode` / `setMode` / `snapshot` / `restore`); named layouts keep the mode, the pane
   layout and the dock arrangement.

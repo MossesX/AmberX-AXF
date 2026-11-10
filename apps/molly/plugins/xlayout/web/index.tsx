@@ -5,11 +5,11 @@ import { Button, SelectField, Switch, useAxfState, useRuntime } from '../../../s
 import type { AxfWebLibrary } from '../../../src/axf/react/library';
 import { appOfView, mollyService, provideMollyService, setMollyHook } from '../../../src/molly/host';
 import { ChromeHost, RUN_ACTION } from './host';
+import { MOLLY_APPS } from '../../../src/molly/apps';
 import { effectiveXLayout, FOLDER, K, PLUGIN_ID, saveSlotItems, SLOTS } from './model';
 import { declaredToolbars, barKey, runToolbarItem, TOOLBAR_CTX, WithToolbars } from './toolbars';
 
 /** Apps Molly opens hidden at start because they take remote commands (the Dev Console's console-commands). */
-const WARM_APPS = ['console'];
 import { APP_TAB, AppMain, AppTab, applyPresetById, enterIde, keepIde, LAYOUT_DIALOG, LayoutPicker, groupOfPane, openApp, openRefIn, setTabGroup } from './workspace';
 import { LAYOUT_MODE_PRESET, type LayoutMode } from '../../../src/axf/core/engines/xlayout';
 import helpPack from '../help.json';
@@ -19,7 +19,7 @@ import './xlayout.css';
  * xLayout (Molly): Molly as ONE app. One banner (Molly's), one application menu, one navigation and one context menu
  * across the whole page, holding AmberX's, axHub's and the Console's (they hide their own and send them as data); an
  * IDE switch that puts the apps in draggable, resizable, dockable panes, with ten preset layouts; up to three plugin
- * toolbars. Settings: Settings → Plugins → xLayout. Switched off or removed, Molly frames each app plainly again and
+ * toolbars. Settings: Settings → Plugins → xLayout. Switched off or removed, Molly shows one app screen at a time again and
  * the apps draw their own chrome, exactly as they do on their own.
  */
 
@@ -59,7 +59,7 @@ function customize(rt: AxfRuntime, payload = 'xlayout|*|1') {
   else rt.toast('Install the Toolbar designer plugin to pick what this toolbar holds.', 'info', 'Toolbar designer');
 }
 
-/** What an app's view (or one of its pages) shows: the frame, or the IDE dock, inside the toolbars. */
+/** What an app's view (or one of its screens) shows: the screen, or the IDE dock, inside the toolbars. */
 function Main({ app }: { app: string }) {
   const h = useHost();
   return <WithToolbars host={h}><AppMain app={app} /></WithToolbars>;
@@ -119,16 +119,13 @@ function ToolbarsPanel() {
 
 function AppsPanel() {
   const h = useHost();
-  const rt = useRuntime();
-  const l = effectiveXLayout(rt);
   const on = new Set(h.connected());
   return (
     <div className="fx-stack">
-      <p className="fx-muted">Molly shows one banner, one application menu, one navigation and one context menu. These apps hide their own and send theirs here; on their own they stay exactly as they are.</p>
+      <p className="fx-muted">Molly shows one banner, one application menu, one navigation and one context menu. Every app's screens mount natively inside Molly (no frames); its screens, actions and settings are in Molly's menus (Go, Go to anything). On their own the apps stay exactly as they are.</p>
       <ul className="axp-xlayout-apps">
-        {l.apps.map((a) => <li key={a.id}><strong>{a.label}</strong> <span className="fx-muted">{on.has(a.id) ? 'joined: its menus, navigation, context menu and toolbars are in Molly’s' : 'not open yet, or not sending its chrome (an older build of it draws its own)'}</span></li>)}
+        {MOLLY_APPS.map((a) => <li key={a.id}><strong>{a.label}</strong> <span className="fx-muted">{on.has(a.id) ? 'in Molly: its screens, actions and settings are in Molly’s menus' : a.surface ? 'loading, or its native surface could not load (Molly shows why on its screen)' : 'not native yet: it opens on its own'}</span></li>)}
       </ul>
-      {h.chrome().notes.length > 0 && <p className="fx-muted">{h.chrome().notes.join(' · ')}</p>}
     </div>
   );
 }
@@ -136,7 +133,7 @@ function AppsPanel() {
 function LifecyclePanel() {
   return (
     <div className="fx-stack">
-      <p className="fx-muted">xLayout's code is all in apps/molly/plugins/{FOLDER}. Install or remove it (Molly then frames each app plainly):</p>
+      <p className="fx-muted">xLayout's code is all in apps/molly/plugins/{FOLDER}. Install or remove it (Molly then shows one app screen at a time):</p>
       <pre className="axp-xlayout-code">{`node apps/molly/plugins/${FOLDER}/install.mjs\nnode apps/molly/plugins/${FOLDER}/uninstall.mjs --all`}</pre>
     </div>
   );
@@ -156,16 +153,7 @@ export const plugin: AxfWebLibrary = {
     host = new ChromeHost(rt, () => effectiveXLayout(rt));
     host.start();
     const h = host;
-    setMollyHook(PLUGIN_ID, 'frameUrl', (a, start) => h.frameUrl(a, start));
-    setMollyHook(PLUGIN_ID, 'onFrame', (app, el) => h.frame(app, el));
     setMollyHook(PLUGIN_ID, 'main', (app) => <Main app={app} />);
-    // the apps that take remote commands (console-commands) open hidden at once, so "Amber, open Plan Studio" finds a
-    // console inside Molly and Molly brings it to the front (embed@1 `show`)
-    setMollyHook(PLUGIN_ID, 'warm', WARM_APPS);
-    // each app's pages become Molly views (`<app>/<item>`), so the one navigation can hold them
-    const views = () => setMollyHook(PLUGIN_ID, 'views', Object.fromEntries(Object.entries(h.navViews).map(([id, v]) => [id, { title: v.title, icon: v.icon, render: () => <Main app={id.split('/')[0]!} /> }])));
-    let lastViews = '';
-    h.subscribe(() => { const k = Object.keys(h.navViews).join(','); if (k !== lastViews) { lastViews = k; views(); } });
     const on = rt.actions.register.bind(rt.actions);
     on(RUN_ACTION, (args) => { h.run(args.join(':')); }, { label: 'Run an app’s menu item' });
     on('xlayout.ide', () => { const now = !effectiveXLayout(rt).ide.on; rt.settings.set(K.ideOn, now); rt.settings.set(K.mode, now ? 'ide' : 'single'); if (now) enterIde(rt); else keepIde(rt); rt.toast(now ? 'Apps open in panes now.' : 'One app at a time again.', 'info', now ? 'IDE mode on' : 'IDE mode off'); }, { label: 'IDE mode on / off' });

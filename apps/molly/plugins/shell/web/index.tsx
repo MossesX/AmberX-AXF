@@ -230,7 +230,7 @@ function AppsPanel() {
   const surfaces = m.surfaces();
   return (
     <div className="fx-stack">
-      <p className="fx-muted">Every app Molly holds and what it brings into the one menu. “Native” apps mount in Molly itself; “through xLayout” apps still show in their own frame until their native mount lands.</p>
+      <p className="fx-muted">Every app Molly holds and what it brings into the one menu. “Native” apps mount in Molly itself; an app that is “not native yet” is listed and opens on its own (Molly never frames an app).</p>
       <ul className="fx-menu axp-shell-list" aria-label="Apps">
         {surfaces.map((s) => {
           const c = surfaceCounts(s);
@@ -239,7 +239,7 @@ function AppsPanel() {
               <div className="fx-menu__item">
                 <span className="fx-menu__label">{s.app.label}</span>
                 <span className="fx-muted">{Object.entries(c).map(([k, n]) => `${n} ${k}`).join(' · ') || 'nothing yet'}</span>
-                <span className="fx-chip">{s.app.id === 'molly' || !m.isStopgap(s.app.id) ? 'native' : 'through xLayout'}</span>
+                <span className="fx-chip">{m.isNative(s.app.id) ? 'native' : 'not native yet'}</span>
               </div>
             </li>
           );

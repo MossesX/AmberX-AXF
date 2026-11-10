@@ -5,22 +5,20 @@ import { library as settingsLibrary } from './axf/libs/settings';
 import { toolbarsLibrary } from './axf/libs/toolbars';
 import { dialogs } from './dialogs';
 import { Home } from './views/Home';
-import { AppSlot, FrameDeck } from './molly/FrameDeck';
 import { MOLLY_APPS } from './molly/apps';
 import { mollyHooks, mollyHooksRev, onMollyHooks } from './molly/host';
 import { isNative, loadAllNative, NativeView, nativeViews, useNativeRev } from './molly/native';
 
 /**
- * Molly: the one shell for AmberX, axHub, the Dev Console and every later app. An app with a native surface
- * (molly/native.tsx) mounts its screens straight into Molly's page under Molly's one chrome; `<app>/<screen>` views come
- * from its surface. Apps not yet native still show through the older frame path (molly/FrameDeck.tsx) until
- * molly-one-shell s11 removes it. Plugins (plugins/<folder>/web/index.tsx, found by folder, never named here) extend
- * Molly through molly/host.ts.
+ * Molly: the one shell for AmberX, axHub, the Dev Console and every later app. Each app mounts natively
+ * (molly/native.tsx, shell-surface@1): its screens render in Molly's page under Molly's one banner, menu, nav and
+ * settings, and `<app>/<screen>` views come from its surface. No frames (Brett, Nov 8 2026). Plugins
+ * (plugins/<folder>/web/index.tsx, found by folder, never named here) extend Molly through molly/host.ts.
  */
 const appView = (id: string) => {
   const main = mollyHooks().main;
   if (main) return main(id);
-  return isNative(id) ? <NativeView app={id} /> : <AppSlot id={id} />;
+  return <NativeView app={id} />;
 };
 const views: ViewMap = {
   home: { title: 'Molly', icon: 'home', render: () => <Home /> },
@@ -50,7 +48,6 @@ export function App() {
       <SlotsProvider slots={contributed.slots}>
         <AppShell views={{ ...contributed.views, ...extra, ...native, ...views }} dialogs={{ ...contributed.dialogs, ...dialogs }} tabs={contributed.tabs} />
       </SlotsProvider>
-      <FrameDeck />
     </>
   );
 }

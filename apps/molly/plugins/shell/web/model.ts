@@ -7,12 +7,11 @@
  *      capability `axf.shell@1` (`register`). Nothing is written by hand per app.
  *   2. Molly's own surface, from its live search index (every view, action, settings tab, setting, dialog and menu item
  *      Molly and its plugins register), so a new plugin shows up by itself.
- *   3. Stopgap until the native mounts land: the apps' chrome xLayout already receives (their navigation, menus and
- *      toolbars as data, `axf.xlayout@1` → `chrome()`), turned into surfaces and opened through xLayout. It goes with
- *      Molly's frames in molly-one-shell s11; a native surface for the same app always replaces it.
+ *   3. An app with no native surface yet (Expenses) or still loading: listed with its home entry only; it opens its
+ *      screen in Molly (loading, or "open it on its own"). Never a frame (the frame stopgap went in molly-one-shell s11).
  */
 import type { AxfRuntime } from '../../../src/axf/core';
-import type { UnifiedChrome, UnifiedMenuItem } from '../../../src/axf/core/engines/chrome';
+import type { UnifiedChrome } from '../../../src/axf/core/engines/chrome';
 import { buildMenuIndex, pruneRefs, pushRecent, toggleFavorite, type MenuIndex } from '../../../src/axf/core/engines/menu-index';
 import { mergeSurfaces, parseRef, resolveRef, SHELL_SURFACE_CONTRACT, surfaceFromSearch, type ShellSurface, type SurfaceItem } from '../../../src/axf/core/engines/shell-surface';
 import { normalizeXLayout, parseNamedLayout, removeLayout, saveLayout, type LayoutMode, type OpenTarget, type XLayoutData, type XNamedLayout } from '../../../src/axf/core/engines/xlayout';
@@ -89,38 +88,21 @@ export class ShellModel {
     return surfaceFromSearch({ id: 'molly', label: 'Molly', icon: 'home' }, { kind: 'native', module: 'molly', auth: 'none' }, entries);
   }
 
-  /** Stopgap: an app's chrome as xLayout received it (navigation, menus, toolbars) as its surface. */
-  private chromeSurfaces(): ShellSurface[] {
-    // every app is in the menu with at least its home screen; its pages, menus and toolbar join once xLayout has them
-    let chrome: UnifiedChrome | null = null;
-    try { chrome = xlayout()?.chrome() ?? null; } catch { chrome = null; }
-    const nav = chrome?.nav ?? [], menus = chrome?.menus ?? [], toolbars = chrome?.toolbars ?? [];
-    const out: unknown[] = [];
-    for (const a of MOLLY_APPS) {
-      if (this.native.has(a.id)) continue; // a native surface replaces the stopgap
-      const items: Record<string, unknown>[] = [{ kind: 'screen', id: 'home', label: a.label, icon: a.icon, detail: a.description }];
-      const strip = (id: string) => (id.startsWith(`${a.id}:`) ? id.slice(a.id.length + 1) : id);
-      for (const sec of nav.filter((s) => s.app === a.id)) for (const it of sec.items) items.push({ kind: 'screen', id: strip(it.id), label: it.label, icon: it.icon, ...(sec.label && sec.label !== a.label ? { category: ['Screens', sec.label] } : {}) });
-      const walk = (list: UnifiedMenuItem[], path: string[]) => {
-        for (const it of list) {
-          if (it.separator || it.locked) continue;
-          if (it.items?.length) { walk(it.items, [...path, it.label]); continue; }
-          items.push({ kind: 'menu', id: strip(it.id), label: it.label, icon: it.icon, category: ['Menus', ...path].slice(0, 4) });
-        }
-      };
-      for (const m of menus.filter((m) => m.app === a.id)) walk(m.items, m.label === a.label ? [] : [m.label]);
-      for (const t of toolbars.filter((t) => t.app === a.id)) for (const it of t.items) if (!it.locked) items.push({ kind: 'action', id: strip(it.id), label: it.label, icon: it.icon, category: ['Toolbar'] });
-      out.push({ $axf: SHELL_SURFACE_CONTRACT, app: { id: a.id, label: a.label, icon: a.icon, url: a.url, description: a.description }, mount: { kind: 'native', module: `@axf-stopgap/xlayout-${a.id}`, auth: 'none' }, items });
-    }
-    return mergeSurfaces(out);
+  /** Apps not (yet) registered natively: their home entry only, so every app is always in the menu. */
+  private pendingSurfaces(): ShellSurface[] {
+    return mergeSurfaces(MOLLY_APPS.filter((a) => !this.native.has(a.id)).map((a) => ({
+      $axf: SHELL_SURFACE_CONTRACT, app: { id: a.id, label: a.label, icon: a.icon, url: a.url, description: a.description },
+      mount: { kind: 'native', module: `@axf-app/${a.id}`, auth: a.auth ?? 'none' },
+      items: [{ kind: 'screen', id: 'home', label: a.label, icon: a.icon, detail: a.description }],
+    })));
   }
 
-  /** Is this app's surface the stopgap (still shown through xLayout) rather than native? */
-  isStopgap(app: string): boolean { return !this.native.has(app) && !!mollyApp(app); }
+  /** Has this app registered its native surface (its screens, actions and settings are in the menu)? */
+  isNative(app: string): boolean { return app === 'molly' || this.native.has(app); }
 
   surfaces(): ShellSurface[] {
     const own = this.mollySurface();
-    return mergeSurfaces([...(own ? [own] : []), ...this.chromeSurfaces(), ...[...this.native.values()].map((r) => r.surface)]);
+    return mergeSurfaces([...(own ? [own] : []), ...this.pendingSurfaces(), ...[...this.native.values()].map((r) => r.surface)]);
   }
 
   favorites(): string[] { return parseList(this.rt.settings.get(K.favorites)); }
@@ -150,7 +132,7 @@ export class ShellModel {
     const native = this.native.get(surface.app.id);
     if (native?.open) done = native.open(item, target);
     else if (surface.app.id === 'molly') done = this.openOwn(item);
-    else done = this.openStopgap(surface.app.id, item, target);
+    else if (item.kind === 'screen') { this.rt.navigate(surface.app.id); done = true; }
     if (done) { this.rt.settings.set(K.recents, JSON.stringify(pushRecent(this.recents(), ref))); this.changed(); }
     return done;
   }
@@ -163,14 +145,6 @@ export class ShellModel {
       case 'setting': return this.rt.dispatch(`settings.open:${item.parent ?? ''}`);
       default: return this.rt.dispatch(item.id);
     }
-  }
-
-  private openStopgap(app: string, item: SurfaceItem, target: OpenTarget): boolean {
-    if (item.id === 'home' && item.kind === 'screen') { this.rt.navigate(app); return true; }
-    const x = xlayout();
-    if (!x) { this.rt.navigate(app); return true; }
-    x.run({ id: `${app}.${item.id}`, label: item.label, app, action: `${app}:${item.id}`, open: target });
-    return true;
   }
 
   /* ---------- named layouts ---------- */

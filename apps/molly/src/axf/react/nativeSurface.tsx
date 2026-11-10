@@ -15,6 +15,8 @@
  *   subscribe(f)        told when the above change (a plugin loaded, a view added, the app navigated)
  *   routes              the relative paths it calls on its own server (the shell sends them there)
  *
+ * Screens whose id starts with `axf-` are reserved parts for the shell's own chrome, not screens: `axf-banners` is the
+ * app's banners for the shell's one banner region. They are mounted like screens but never listed or searched.
  * One runtime and one React tree per page, whatever the number of mounts: each mount is a portal into the element the
  * shell gave it, showing one view, so the main area and a pane can each show a different screen while they share one
  * store and one set of dialogs. The runtime is `hosted` (AxfProvider): it inherits the shell's look and leaves the
@@ -36,6 +38,8 @@ import { builtinDialogs } from './studio/builtinDialogs';
 import { terminalDialog } from './studio/OutputTerminal';
 
 export const NATIVE_SURFACE_CONTRACT = 'shell-surface@1';
+/** Screen ids for the shell's own chrome (`axf-banners`), never listed as screens. */
+export const RESERVED = 'axf-';
 
 export interface NativeSurfaceApp { id: string; label: string; icon: string; description: string }
 export interface NativeSurfaceContents { views: ViewMap; dialogs?: DialogMap; tabs?: TabRenderers; slots?: Record<string, SlotDef[]> }
@@ -94,15 +98,15 @@ export function createNativeSurface(spec: NativeSurfaceSpec): NativeSurface {
   function Tree() {
     const c = spec.useContents();
     const list = useSyncExternalStore(subscribeMounts, () => mounts, () => mounts);
-    const ids = Object.keys(c.views).join('|');
+    const ids = Object.keys(c.views).filter((id) => !id.startsWith(RESERVED)).join('|');
     if (ids !== screenList.map((s) => s.id).join('|')) {
-      screenList = Object.entries(c.views).map(([id, v]) => ({ id, title: v.title, ...(v.icon ? { icon: v.icon } : {}) }));
+      screenList = Object.entries(c.views).filter(([id]) => !id.startsWith(RESERVED)).map(([id, v]) => ({ id, title: v.title, ...(v.icon ? { icon: v.icon } : {}) }));
       queueMicrotask(notify);
     }
     const dialogs: DialogMap = { ...builtinDialogs, ...windowDialogs, ...terminalDialog, ...(c.dialogs ?? {}) };
     // the app's screens and dialogs go into its search index, as its own shell (AppShell) would put them: the shell's
     // menus are built from that index (searchEntries)
-    useSearchHost(c.views, dialogs);
+    useSearchHost(Object.fromEntries(Object.entries(c.views).filter(([id]) => !id.startsWith(RESERVED))), dialogs);
     const fallback = c.views.home ?? Object.values(c.views)[0];
     return (
       <SlotsProvider slots={c.slots ?? {}}>

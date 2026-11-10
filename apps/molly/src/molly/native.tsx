@@ -188,7 +188,7 @@ export function nativeViews(): ViewMap {
 }
 
 /** One of an app's screens, mounted natively in this element. */
-export function NativeView({ app, view = 'home' }: { app: string; view?: string }) {
+export function NativeView({ app, view = 'home', quiet = false }: { app: string; view?: string; quiet?: boolean }) {
   const rt = useRuntime();
   useNativeRev();
   const a = mollyApp(app);
@@ -208,6 +208,8 @@ export function NativeView({ app, view = 'home' }: { app: string; view?: string 
   }, [s?.state, app, rt]);
   useEffect(() => { handle.current?.show(view); }, [view]);
   if (!a) return null;
+  if (!isNative(app)) return quiet ? null : <NotNative app={a} />;
+  if (quiet && s?.state !== 'ready') return null;
   if (!s || s.state === 'loading') return <div className="molly-native" data-app={app} data-state="loading" aria-busy="true"><Note tone="info" icon={a.icon}>Loading {a.label}…</Note></div>;
   if (s.state === 'failed') {
     return (
@@ -221,4 +223,25 @@ export function NativeView({ app, view = 'home' }: { app: string; view?: string 
     );
   }
   return <div ref={ref} className="molly-native" data-app={app} data-view={view} data-state="ready" />;
+}
+
+/** Load an app again (Molly's "Reload this app"): its screens unmount and mount again. */
+export function reloadNative(rt: AxfRuntime, id: string): void {
+  const a = mollyApp(id);
+  if (!a) return;
+  loads.delete(id);
+  changed();
+  loadNative(rt, a);
+}
+
+/** An app with no native surface yet (Expenses, molly-native-expenses): listed, and opens on its own. Never a frame. */
+export function NotNative({ app }: { app: MollyApp }) {
+  return (
+    <div className="molly-native" data-app={app.id} data-state="not-native">
+      <Note tone="info" icon={app.icon}>{app.label} does not run inside Molly yet. It opens on its own, at its own address.</Note>
+      <div className="fx-row fx-row--wrap">
+        <Button tone="primary" icon="external" onClick={() => window.open(app.url, '_blank', 'noopener')}>Open {app.label} on its own</Button>
+      </div>
+    </div>
+  );
 }

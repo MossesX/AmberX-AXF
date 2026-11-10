@@ -1,11 +1,11 @@
 /* xLayout: layout only. Colours, sizes, borders and the toolbar buttons come from the engine tokens and classes. */
 
-/* the app area fills the main region edge to edge (the frames cover their slots exactly) */
+/* the app area fills the main region edge to edge */
 .fx-main__inner:has(> .axp-xlayout-main) { padding: 0; margin: 0; max-width: none; width: 100%; height: 100%; display: flex; }
 .axp-xlayout-main { display: flex; flex-direction: column; flex: 1 1 auto; min-width: 0; min-height: 0; height: 100%; }
 .axp-xlayout-middle { display: flex; flex: 1 1 auto; min-height: 0; }
 .axp-xlayout-body { display: flex; flex: 1 1 auto; min-width: 0; min-height: 0; }
-.axp-xlayout-body > .molly-slot { flex: 1 1 auto; }
+.axp-xlayout-body > .molly-native { flex: 1 1 auto; }
 
 /* toolbars on an edge: stacked across it, never over the app (they take their own room) */
 .axp-xlayout-edge { display: flex; flex: 0 0 auto; gap: var(--fx-dens-gap-xl); padding: calc(var(--fx-space) / 2); background: var(--fx-surface); border: 0 solid var(--fx-border); overflow: auto; scroll-snap-type: x proximity; }
@@ -20,15 +20,10 @@
 /* IDE mode: the dock fills the app area */
 .axp-xlayout-ide { display: flex; flex: 1 1 auto; min-width: 0; min-height: 0; }
 .axp-xlayout-ide > .fx-dock { flex: 1 1 auto; min-height: 0; }
-.fx-tabgroup .molly-slot[data-fill='self'] { flex: 1 1 auto; align-self: stretch; }
+.fx-tabgroup .molly-native { flex: 1 1 auto; align-self: stretch; }
 
 /* a menu item dragged over a pane (drop opens it there) */
 .axp-xlayout-ide .fx-tabgroup[data-axp-drop='on'] { outline: var(--fx-border-w) dashed var(--fx-accent); outline-offset: calc(var(--fx-border-w) * -2); }
-/* while a menu item is dragged, the frames let the pointer through to the panes */
-body:has([data-axp-drop]) .molly-frame { pointer-events: none; }
-
-/* while a tab or a splitter is dragged, the frames let the pointer through to the dock's drop zones */
-body:has(.fx-dragghost) .molly-frame, body:has(.fx-splitter.is-active) .molly-frame { pointer-events: none; }
 
 /* settings */
 .axp-xlayout-slot { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto; gap: var(--fx-dens-gap-xl); align-items: end; }

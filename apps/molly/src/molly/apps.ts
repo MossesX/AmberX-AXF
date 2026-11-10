@@ -28,7 +28,7 @@ export const MOLLY_APPS: MollyApp[] = [
 
 export const mollyApp = (id: string | undefined | null): MollyApp | undefined => MOLLY_APPS.find((a) => a.id === id);
 
-/** `#/<app>/<route…>` → the app and the address its frame starts on. */
+/** `#/<app>/<screen…>` → the app (main.tsx opens its screen once the app has loaded), and its own address. */
 export function deepLink(hash: string): { app: MollyApp; src: string } | null {
   const parts = hash.replace(/^#\/?/, '').split('/');
   const app = mollyApp(parts[0]);

@@ -1,6 +1,6 @@
 import type { AxfRuntime } from './axf/core';
 import { mollyApp } from './molly/apps';
-import { reloadFrame } from './molly/FrameDeck';
+import { reloadNative } from './molly/native';
 
 /** Molly's actions, called by id from its menu, toolbar and nav assets. */
 export function registerActions(axf: AxfRuntime) {
@@ -9,7 +9,7 @@ export function registerActions(axf: AxfRuntime) {
 
   on('molly.reload', () => {
     const a = current();
-    if (a) reloadFrame(a.id);
+    if (a) reloadNative(axf, a.id);
     else axf.toast('Open an app first.', 'info', 'Reload');
   }, { label: 'Reload this app' });
   on('molly.own-tab', () => {

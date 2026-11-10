@@ -4,24 +4,24 @@ One interface for **AmberX**, **axHub** and the **Dev Console**, at https://moll
 Big Dog profile, Opus; a Fable version comes later as its own build).
 
 - Each app stays its own app at its own address (`amberx.amberxai.com`, `axhub.amberxai.com`, `console.amberxai.com`,
-  `expenses.amberxai.com`)
-  and runs exactly the same on its own. Without plugins Molly only frames that address (plain URL, nothing hidden or
-  merged); with xLayout the frames carry the embed@1 marker and Molly merges their chrome (below).
-- Frames are kept alive (`src/molly/FrameDeck.tsx`): switching apps never reloads them. Reload or open the one on screen
-  on its own from the Molly menu or toolbar.
-- Deep links: `#/<app>/<route>` (for example `#/console/builds`) open straight on that app's route.
+  `expenses.amberxai.com`) and runs exactly the same on its own. **Inside Molly every app mounts natively**
+  (`src/molly/native.tsx`, shell-surface@1, build molly-one-shell): Molly imports the app's surface module
+  (`<app address>/surface/<app>-surface.js`, built by the app's `vite.surface.config.ts` from its `src/surface.tsx` on
+  `framework/react/nativeSurface.tsx`) and shows its screens in Molly's own page, under Molly's one banner, menu, nav and
+  settings. **No frames, no embedding** (Brett, Nov 8 2026). An app's relative API paths go back to its own server.
+  Expenses has no native surface yet (gap build `molly-native-expenses`): it is listed and opens on its own.
+- Deep links: `#/<app>/<screen>` (for example `#/console/plan`) open straight on that app's screen.
 - The look comes from axHub only (`developer.hub`), like every app; Molly ships the shared asset set at `src/axf/assets`.
-  Its own assets are its nav menu, app menu and toolbar (`src/assets/*/molly.json`). The app list is `src/molly/apps.ts`.
-- The only changes outside this folder: axHub web's and AmberX's `frame-ancestors` now allow `https://molly.amberxai.com`.
+  The apps mounted in Molly inherit Molly's look (their runtime is `hosted`). Molly's own assets are its nav menu, app
+  menu and toolbar (`src/assets/*/molly.json`). The app list is `src/molly/apps.ts`.
+- For development, `localStorage['molly.surface.<app>']` points an app at another surface module (https or localhost).
 
 - **Plugins** live in `plugins/<folder>/` (found by folder: `plugins/*/web/index.tsx` exporting `plugin`; deleting a
-  folder removes it) and change Molly only through `src/molly/host.ts` (frame address, frame mount, what an app's view
-  shows, extra views, capability services).
-- **xLayout** (`plugins/xlayout`, asset `src/assets/xlayout/molly.json`): Molly as ONE app. The apps hide their banner,
-  application menu, navigation, context menu and toolbar and send them as data; Molly shows one menu bar (a menu per
-  app), one navigation (a section per app), one context menu (a right-click inside an app opens it too) and their
-  toolbars. IDE mode puts the apps in draggable, resizable, dockable panes (ten preset layouts with a preview, pane
-  limit); three toolbars (show / hide, edge). Settings → Plugins → xLayout. <!-- axf-plugin:xlayout -->
+  folder removes it) and change Molly only through `src/molly/host.ts` (what an app's view shows, extra views, capability services).
+- **xLayout** (`plugins/xlayout`, asset `src/assets/xlayout/molly.json`): Molly as ONE app. IDE mode puts the apps' screens in
+  draggable, resizable, dockable panes (ten preset layouts with a preview, pane limit); drag any item from Go to anything
+  onto a pane to open it there; each pane can be a tab group (right-click its tabs → Tab group on / off); three toolbars
+  (show / hide, edge). Settings → Plugins → xLayout. <!-- axf-plugin:xlayout -->
 - **Toolbar designer** (`plugins/toolbar-designer`, capability `axf.toolbar-designer@1`): picks what each toolbar holds
   from every app and screen and where each item opens (main area, floating window, pane); from its settings tab, View
   → Toolbar designer and right-click on any toolbar. <!-- axf-plugin:toolbar-designer -->
@@ -30,10 +30,9 @@ Big Dog profile, Opus; a Fable version comes later as its own build).
   sub menus, search, favorites, recent), built from each app's registry (shell-surface@1 → menu-index@1) so a new plugin
   appears by itself; layout modes (one at a time, tabs, side by side, IDE) and named layouts; capability
   `axf.shell@1` for native app mounts. Settings → Plugins → One shell. <!-- axf-plugin:shell -->
-- **Banners** (`plugins/banners`): Molly's one banner region. The Dev Console draws its own live banners and banner chips
-  in a strip (its banner-strip page, `framework/react/bannerStrip.ts`) in Molly's `app.frame.banners` slot; a dialog or
-  menu it opens covers Molly's window, a view it opens opens in the console's frame. Settings → Plugins → Banners
-  (show the strip, show / hide each banner). <!-- axf-plugin:banners -->
+- **Banners** (`plugins/banners`): Molly's one banner region. The Dev Console's live banners mount natively (its
+  surface's reserved part `axf-banners`) in Molly's `app.frame.banners` slot; a screen a banner opens shows in Molly.
+  Settings → Plugins → Banners (show the banners; each banner's own Banner settings). <!-- axf-plugin:banners -->
 
 ```bash
 npm install && npm run dev      # :5173
