@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T02:49:55.986Z",
+ "updatedAt": "2026-11-10T02:52:15.992Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -83060,12 +83060,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T02:49:14.121Z",
-   "updatedAt": "2026-11-10T02:49:23.901Z",
+   "updatedAt": "2026-11-10T02:52:12.001Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T02:49:23.901Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T02:52:12.001Z"
     }
    ],
    "approvals": [],
@@ -83082,7 +83086,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Measured Nov 10 02:46: load average 30, swap 3.4/4 GB used, RAM 7.2/16 GB, axf-console container at 74% CPU and 800 MB, 5 headless builds running. 1) PROFILE axf-console: find what burns CPU (polling loops, file watchers on /root/axf-builds and _claude, builds-live sync, log tailing, git fetches, plugin server ticks, SSE fan-out). Fix the worst offenders: back off polling, debounce watchers, cache reads, kill duplicate timers. Before and after numbers in the report. 2) SWAP: keep builds from pushing the console into swap (memory caps per build session via systemd-run/cgroups or tmux wrapper, a lower Node heap for test runs, Playwright only one at a time). The console stays responsive under load (nice/ionice the builds). 3) PLAN, don't buy anything: a design note for moving headless builds to a second VPS (cost, size, how the orchestrator dispatches there, git/worktree sync, accounts), for Brett to decide. 4) Show console CPU/RAM in the new VPS plugin. Plain code. Tests, report, PR.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwa3guw1012cmy"
+    },
+    {
+     "id": "s2",
+     "text": "The console is mad slow. Ridiculous slow. How do I make this faster? ... I guess.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwa3guw1027xm4"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/console-speed-profile-and-cut-axf-console-cpu-pl.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/console-speed-profile-and-cut-axf-console-cpu-pl.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwa3guw103t99t"
+    }
+   ]
   }
  ]
 }
