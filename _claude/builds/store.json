@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2499,
- "updatedAt": "2026-11-10T16:56:41.629Z",
+ "rev": 2500,
+ "updatedAt": "2026-11-10T16:56:59.077Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -137499,10 +137499,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/search-bar-plugin-snappable-search-asset-globe-e",
-   "pr": "",
+   "pr": "#452",
    "priority": "P1",
    "createdAt": "2026-11-10T15:33:40.111Z",
-   "updatedAt": "2026-11-10T16:55:33.534Z",
+   "updatedAt": "2026-11-10T16:56:46.020Z",
    "builtAt": "",
    "notes": [
     {
@@ -137637,7 +137637,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

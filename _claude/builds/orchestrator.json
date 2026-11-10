@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T16:56:41.629Z",
+ "updatedAt": "2026-11-10T16:56:59.077Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -84842,10 +84842,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/search-bar-plugin-snappable-search-asset-globe-e",
-   "pr": "",
+   "pr": "#452",
    "priority": "P1",
    "createdAt": "2026-11-10T15:33:40.111Z",
-   "updatedAt": "2026-11-10T16:55:33.534Z",
+   "updatedAt": "2026-11-10T16:56:46.020Z",
    "builtAt": "",
    "notes": [
     {
