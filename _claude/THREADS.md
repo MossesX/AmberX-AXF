@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:32 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` note (all) · builds-live
 - 2026-11-10 17:31 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` s3 done, → built (all) · orchestrator
 - 2026-11-10 17:32 UTC · `plugin-ui-inventory-per-plugin-reskin-one-button` note (all) · orchestrator
 - 2026-11-10 17:33 UTC · `conversation-rag-index-every-voice-chat-session` → running, note (all) · pipeline
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 21:35 UTC · `convert-every-app-into-a-molly-module-expenses-c` added (0 steps) (all) · foreign-write
 - 2026-11-10 21:36 UTC · `convert-every-app-into-a-molly-module-expenses-c` note (all) · orchestrator
 - 2026-11-10 21:37 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` added (0 steps) (all) · console
+- 2026-11-10 21:37 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` → queued, note (all) · console
 
 ## Token passes (log)
 

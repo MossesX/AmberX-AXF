@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2891,
- "updatedAt": "2026-11-10T21:37:40.925Z",
+ "rev": 2892,
+ "updatedAt": "2026-11-10T21:37:53.674Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -155817,16 +155817,22 @@
    "title": "Gizmo opens by voice/link (AmberX web app + Android app) and the new look sticks after reload",
    "category": "",
    "detail": "1) Give Gizmo chat a real https deep link on amberxai.com that opens Gizmo in the AmberX Android app (app links) or in the AmberX web app if the app isn't there; make amberx.open_url able to open it; add a Gizmo entry to console.screens. 2) Bug: the new home cards/frame/menus look showed, then a reload brought back the old banner and old look. Persist the chosen skin as the default so reloads keep it.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-10T21:37:39.627Z",
-   "updatedAt": "2026-11-10T21:37:39.627Z",
+   "updatedAt": "2026-11-10T21:37:41.236Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T21:37:41.236Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -155841,6 +155847,25 @@
     "from": "",
     "addenda": []
    },
+   "pipeline": {
+    "queuedAt": "2026-11-10T21:37:40.869Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -155850,7 +155875,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
