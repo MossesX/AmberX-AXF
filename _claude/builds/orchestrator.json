@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T02:42:19.829Z",
+ "updatedAt": "2026-11-10T02:42:40.018Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -82604,15 +82604,15 @@
    "title": "AmberX phone pop-up for every build start and finish: build name, account, model",
    "category": "",
    "detail": "Upgrade the existing AmberX notification panel and fix-log FYI notifications; don't add a new channel. 1) The orchestrator sends an AmberX phone notification on every build start (dispatcher launch, including retries and reruns) and every finish (succeeded, failed, needs something). 2) It shows as a heads-up pop-up on the phone screen, not silent: 'Started: <build title> on <account label> (<model>)' or 'Finished: <build title> on <account>, <outcome>, <steps done/total>', plus what it needs if anything. 3) Tapping it opens that build in the orchestrator. 4) Settings in the orchestrator and AmberX: on/off per event type, sound, grouping. Defaults on. 5) Also in the Activity Monitor log. Full REST, MCP, CLI and voice control. Test it with one real start and one real finish on the phone.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/amberx-phone-pop-up-for-every-build-start-and-fi",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T02:18:30.783Z",
-   "updatedAt": "2026-11-10T02:42:15.814Z",
+   "updatedAt": "2026-11-10T02:42:25.787Z",
    "builtAt": "",
    "notes": [
     {
@@ -82622,6 +82622,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T02:20:05.157Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-amberx-phone-pop-up-for-every-build-start-and-fi--rhonda.",
+     "at": "2026-11-10T02:42:22.386Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-amberx-phone-pop-up-for-every-build-start-and-fi--rhonda, own login copy)",
+     "at": "2026-11-10T02:42:25.787Z"
     }
    ],
    "approvals": [],
