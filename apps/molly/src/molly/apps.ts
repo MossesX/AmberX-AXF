@@ -20,8 +20,8 @@ export interface MollyApp {
 }
 
 export const MOLLY_APPS: MollyApp[] = [
-  { id: 'amberx', label: 'AmberX', icon: 'sparkles', url: 'https://amberx.amberxai.com', description: 'The AmberX app: plugins, voice, walkthroughs.' },
-  { id: 'axhub', label: 'axHub', icon: 'shield', url: 'https://axhub.amberxai.com', description: 'The connector hub: approvals, go pass, services.' },
+  { id: 'amberx', label: 'AmberX', icon: 'sparkles', url: 'https://amberx.amberxai.com', description: 'The AmberX app: plugins, voice, walkthroughs.', surface: 'https://amberx.amberxai.com/surface/amberx-surface.js', auth: 'hub-session' },
+  { id: 'axhub', label: 'axHub', icon: 'shield', url: 'https://axhub.amberxai.com', description: 'The connector hub: approvals, go pass, services.', surface: 'https://axhub.amberxai.com/surface/axhub-surface.js', auth: 'hub-session' },
   { id: 'console', label: 'Console', icon: 'terminal', url: 'https://console.amberxai.com', description: 'The AXF Dev Console: builds, plugins, UI Review.', surface: 'https://console.amberxai.com/surface/console-surface.js', auth: 'console-token' },
   { id: 'expenses', label: 'Expenses', icon: 'chart', url: 'https://expenses.amberxai.com', description: 'The Expense Tracker: ledger, paydays, reports, assistant.' },
 ];

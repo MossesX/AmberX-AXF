@@ -586,7 +586,9 @@ def make_app(router: Router | None = None) -> FastAPI:
             f = (root / path).resolve()
             if f.is_file() and f.is_relative_to(root):
                 cache = "public, max-age=2592000, immutable" if path.startswith("assets/") else "no-cache"
-                return FileResponse(f, headers={**SEC, "Cache-Control": cache})
+                # the native surface (shell-surface@1, src/surface.tsx) is imported by Molly from its own address
+                surface = {"Access-Control-Allow-Origin": "https://molly.amberxai.com", "Vary": "Origin"} if path.startswith("surface/") else {}
+                return FileResponse(f, headers={**SEC, **surface, "Cache-Control": cache})
         if not index.is_file():
             return JSONResponse({"detail": "web app not built (npm run build)"}, status_code=404)
         return FileResponse(index, headers={**SEC, "Cache-Control": "no-cache"})
