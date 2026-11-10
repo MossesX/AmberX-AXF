@@ -37,7 +37,8 @@ export const LOCK_STALE_MS = 10 * 60 * 1000;
 export function takeLock(stale = LOCK_STALE_MS) {
   mkdirSync(hooksDir(), { recursive: true });
   try { mkdirSync(lockDir()); writeFileSync(join(lockDir(), 'pid'), `${process.pid}\n`); return true; } catch { /* held */ }
-  try { if (Date.now() - statSync(lockDir()).mtimeMs >= stale) { rmSync(lockDir(), { recursive: true, force: true }); return takeLock(stale); } } catch { /* gone meanwhile */ }
+  // mtimeMs has sub-millisecond precision and can sit a fraction of a ms past Date.now(): floor it, or a 0 ms limit can miss
+  try { if (Date.now() - Math.floor(statSync(lockDir()).mtimeMs) >= stale) { rmSync(lockDir(), { recursive: true, force: true }); return takeLock(stale); } } catch { /* gone meanwhile */ }
   return false;
 }
 export const dropLock = () => { try { rmSync(lockDir(), { recursive: true, force: true }); } catch { /* already gone */ } };
