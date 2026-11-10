@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T00:54:22.137Z",
+ "updatedAt": "2026-11-10T00:54:31.871Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -81667,8 +81667,8 @@
    "pr": "#423",
    "priority": "P0",
    "createdAt": "2026-11-10T00:16:50.544Z",
-   "updatedAt": "2026-11-10T00:54:07.801Z",
-   "builtAt": "2026-11-10T00:54:07.801Z",
+   "updatedAt": "2026-11-10T00:54:30.260Z",
+   "builtAt": "2026-11-10T00:54:30.260Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -81685,6 +81685,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-build-statuses-tell-the-truth-orchestrator-list--lenny, own login copy)",
      "at": "2026-11-10T00:37:26.111Z"
+    },
+    {
+     "text": "Headless run axf-build-statuses-tell-the-truth-orchestrator-list--lenny: brief only · start 11.4K tokens ($0.03) · cost $5.75 · 90 turns · 6 tools, MCP none",
+     "at": "2026-11-10T00:54:30.260Z"
     },
     {
      "text": "PR #423 open. Not yet in UI Review: desktop + phone screenshots of the Builds tab (root rows, Group by, Sort by, need badges) and the Builds page still to take and submit before it is called ready.",
