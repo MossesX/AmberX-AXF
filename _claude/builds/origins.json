@@ -564,6 +564,18 @@
    "from": "notes",
    "addenda": []
   },
+  "apply-skin-dialog-tree-of-everything-overridden": {
+   "said": "When you apply a new skin, it lists all the overrides. Overrides go in a registry. A dialog lists everything in a collapsible tree, multiple views, expandable rows, defaults everything checked, a filter to view overridden things highlighted a certain color, so you can keep them overridden or replace them with the new skin.",
+   "at": "2026-11-10T17:42:17.406Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "approval-costs": {
    "said": "'Add cost of approval every time something is approved and display costs, as well as all details and history of past approvals browsing. Can you alert when needing approval without stopping and restarting.' Context: he asked whether sending an approval and waiting costs tokens. Answer given: waiting is free, but each retry check re-reads the conversation (mostly cached). The 15 s x10 then 1 min rule costs about 10-15 checks per 5 minutes. HELD: queued, not started. Picks (cards): profile Refactor, held; history in the Console AND on axHub's approvals page.",
    "at": "2026-10-28",

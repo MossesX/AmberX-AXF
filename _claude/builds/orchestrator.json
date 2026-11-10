@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:42:07.870Z",
+ "updatedAt": "2026-11-10T17:42:20.260Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -88863,6 +88863,38 @@
      "uid": "st-mwaz8mg903xf9x"
     }
    ]
+  },
+  {
+   "id": "apply-skin-dialog-tree-of-everything-overridden",
+   "title": "Apply-skin dialog: tree of everything, overridden items highlighted, choose keep override or take the new skin per item",
+   "category": "",
+   "detail": "Amends skin rules + overrides list. Every override is recorded in an overrides registry. Applying a skin opens a dialog: collapsible/expandable tree (plus other views) of everything the skin touches, all checked by default; filter to show only overridden items, highlighted in a distinct colour; per item (and per branch) choose keep my override or take the new skin's value. Bulk keep-all / replace-all. Full API/CLI control.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-10T17:42:17.406Z",
+   "updatedAt": "2026-11-10T17:42:18.181Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "When you apply a new skin, it lists all the overrides. Overrides go in a registry. A dialog lists everything in a collapsible tree, multiple views, expandable rows, defaults everything checked, a filter to view overridden things highlighted a certain color, so you can keep them overridden or replace them with the new skin.",
+    "at": "2026-11-10T17:42:17.406Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
