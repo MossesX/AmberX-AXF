@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2458,
- "updatedAt": "2026-11-10T16:29:55.613Z",
+ "rev": 2459,
+ "updatedAt": "2026-11-10T16:30:13.003Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -138567,12 +138567,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T16:28:24.043Z",
-   "updatedAt": "2026-11-10T16:28:25.975Z",
+   "updatedAt": "2026-11-10T16:29:56.158Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T16:28:25.975Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T16:29:56.158Z"
     }
    ],
    "approvals": [],
@@ -138599,13 +138603,89 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-10T16:29:56.158Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwawoh1a04c5v2",
+     "title": "",
+     "text": "Extensive API and CLI control over every page, app, plugin, tool, behavior, display and setting, covering every option and every possible parameter value. Scope: console, Molly, axHub, AmberX app, and through axHub: Hostinger, Coolify, VPS. Moshi is a third-party phone SSH app: cover it only as far as it can be driven (deep links/intents), otherwise record the gap. 2) A complete index and registry of everything controllable (ids, types, actions, parameters, allowed values, where it lives) for offline management and internal logic. 3) Rule: anything that can be done without AI is done without AI. AI is only a fallback, and only when 'Make Claude available to the console' is on in Claude settings. Builds on universal-voice-api-control and the ui-api-parity builds; reuse them, don't duplicate.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T16:29:56.158Z",
+     "updatedAt": "2026-11-10T16:29:56.158Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwawoh1a05v17k",
+     "title": "",
+     "text": "I need extensive API and CLI control over every single page, app, plugin, tool, behavior, display, and setting with every single option or possibility for a parameter. Need to be able to completely run the console, Molly, axHub, Hostinger, Coolify, VPS, Moshi app, AmberX app. I need a powerful complete index and registry for offline management and internal logic. Anything that can possibly be done without AI needs to be, with AI only as a fallback by default unless you have made Claude available to the console in Claude settings.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T16:29:56.158Z",
+     "updatedAt": "2026-11-10T16:29:56.158Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwawoh1a0618wv",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/full-api-cli-control-of-everything-plus-an-offli.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/full-api-cli-control-of-everything-plus-an-offli.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T16:29:56.158Z",
+     "updatedAt": "2026-11-10T16:29:56.158Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -138614,12 +138694,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T16:29:56.158Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
