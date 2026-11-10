@@ -75,5 +75,19 @@ the spend guard is the same for all. The CLI runner drops a `--to` flag, so `mov
 
 ## CI / mergeability
 
-See the PR. GitHub briefly showed the pushed head as CONFLICTING. A local `git merge-tree` of the same commits against
-main was clean, and the next push (`be5d14cda`) brought in main's newest builds-live commits.
+- After the second push GitHub showed CONFLICTING, but only in `_claude/builds/orchestrator.json`. The builds store
+  files merge with the local `axf-builds` driver (`.gitattributes`), which GitHub does not run. I reproduced the conflict
+  with a driverless merge in a scratch clone. Main already holds every build, origin and journal line the branch has,
+  so the branch now takes main's copies of those files. After that GitHub reports #449 **mergeable, clean**
+  (`1d232a9ba`).
+- CI "Light PR checks" is **red**, and not because of this PR: `node framework/cli/builds-store.mjs verify` fails with
+  1471 `breakroom …` findings on a clean `origin/main` checkout as well. Other open PRs (#conversation-rag,
+  #orchestrator-hold-status) fail the same step, as does a main push at 17:34. Every check this PR touches passes
+  locally. The builds-store breakage is the subject of `dispatcher-a-worktree-store-write-can-erase-a-fr`.
+
+## Left for after the merge queue
+
+- Merge: the merge queue lands #449 (sessions never merge by hand). It is blocked while the repo-wide builds-store
+  check is red.
+- Console redeploy and a live check of the order switch, once #449 is on main.
+- The "#449 landed" AmberX message. Until #449 lands, the dispatcher's end-of-session alert is the notice.
