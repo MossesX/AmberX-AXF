@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T00:40:19.026Z",
+ "updatedAt": "2026-11-10T00:41:08.616Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -81051,7 +81051,7 @@
    "title": "Activity Monitor plugin: live plain-English log of everything the console, axHub and every app does, with rules",
    "category": "",
    "detail": "New plugin (not app core). 1) One event bus: console UI actions, plugin commands, axHub calls/jobs/approvals/vetoes, agent and crew requests, orchestrator decisions (split, queue, launch, reject, hand-off), headless sessions, errors and the fix attempts after them (link to the Automatic fixes notes), from every app through axHub. 2) Each event written as a plain-English sentence with who, what, to whom, result (e.g. 'Joey sent X to the orchestrator, which rejected it: reason'), plus expandable raw detail. Chains grouped: one request and everything that followed it, as a collapsible tree. 3) Beautiful output window: colored by kind and severity, tabs (All, Errors, Approvals, Agents, Builds, axHub, per app), collapsible panes, live follow, search, filters, time range, pause, export; settings for colors, density, what to show. 4) Select any event to act on it: retry, open the thing it touched, jump to the fix note, or Make a rule: 'when this happens again, do that' (run a fix, notify, route to an agent), rules listed and editable. 5) Widget for banners/toolbars with live count and last error. Full API control so sessions can read and search the log.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -81059,8 +81059,8 @@
    "pr": "#422",
    "priority": "P1",
    "createdAt": "2026-11-09T23:49:14.622Z",
-   "updatedAt": "2026-11-10T00:40:17.367Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T00:41:05.700Z",
+   "builtAt": "2026-11-10T00:41:05.700Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -81161,8 +81161,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T00:41:05.700Z",
      "note": "",
      "uid": "st-mw9wzu2403n0ka"
     }
