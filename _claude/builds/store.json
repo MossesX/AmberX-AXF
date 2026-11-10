@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2756,
- "updatedAt": "2026-11-10T19:52:45.932Z",
+ "rev": 2757,
+ "updatedAt": "2026-11-10T19:53:29.989Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -145256,10 +145256,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/full-api-cli-control-of-everything-plus-an-offli",
-   "pr": "",
+   "pr": "#468",
    "priority": "P1",
    "createdAt": "2026-11-10T16:28:24.043Z",
-   "updatedAt": "2026-11-10T19:52:32.271Z",
+   "updatedAt": "2026-11-10T19:53:28.799Z",
    "builtAt": "",
    "notes": [
     {
@@ -145775,7 +145775,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
