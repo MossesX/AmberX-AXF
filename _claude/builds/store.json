@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2784,
- "updatedAt": "2026-11-10T20:27:55.249Z",
+ "rev": 2785,
+ "updatedAt": "2026-11-10T20:29:06.292Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -146589,7 +146589,7 @@
    "title": "Inline element editing plugin: right-click any element to edit every token; master switch; full overrides list with per-item reset to axHub",
    "category": "",
    "detail": "1) Master switch in the main app settings to enable inline edit mode. 2) With it on, right-click any element (app menu items and sub-menus down to the child, navigation menus, toolbars, banners, widgets, everything) to open a dialog with every token that can be set for it, viewable as a tree, classic tree, or grid with expandable rows; edit any token (text color, background, etc.) for the single item or a whole parent. Dialog notes that changes override axHub inheritance (existing override rules). 3) Overrides list in the same plugin: every single thing changed from axHub's inherited defaults. Reset items one by one to axHub (restores just that item, does not re-inherit everything). Searchable, filterable, tree view with selectable roots, multi-tab column with different roots. Full API/CLI control.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -146597,7 +146597,7 @@
    "pr": "#470",
    "priority": "P1",
    "createdAt": "2026-11-10T16:39:13.034Z",
-   "updatedAt": "2026-11-10T20:27:53.819Z",
+   "updatedAt": "2026-11-10T20:29:04.592Z",
    "builtAt": "",
    "notes": [
     {
@@ -146635,6 +146635,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-inline-element-editing-plugin-right-click-any-el--sully, own login copy)",
      "at": "2026-11-10T20:12:11.327Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 0) with 9 steps left: back in the Queue (run 1).",
+     "at": "2026-11-10T20:29:04.592Z"
     }
    ],
    "approvals": [
@@ -146664,12 +146668,19 @@
     "queuedAt": "2026-11-10T16:39:14.760Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-inline-element-editing-plugin-right-click-any-el--joey",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "launchedAt": "2026-11-10T19:45:20.208Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-10T20:29:04.192Z",
+     "exit": 0,
+     "outcome": "requeued",
+     "stepsLeft": 9,
+     "account": "mossesx-max-",
+     "session": "axf-inline-element-editing-plugin-right-click-any-el--joey"
+    },
     "split": {
      "at": "2026-11-10T18:00:14.834Z",
      "by": "fix-the-orchestrator-s-splitter-claude-print-get",
@@ -146678,7 +146689,7 @@
      "note": "Split by Claude into 13 steps (3 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- ended (exit 0) with 9 steps left: back in the Queue (run 1).",
     "route": "",
     "dispatchedAt": "2026-11-10T19:45:20.208Z",
     "planned": {
@@ -147043,7 +147054,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
