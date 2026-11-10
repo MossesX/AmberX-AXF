@@ -156,3 +156,6 @@ Web only (Android on hold), Kotlin twins when the Android side resumes:
 - `console.nav` act `refresh` and `console-command@1` op `refresh` (`hard?`).
 - `ui-choices@1` (`framework/core/ui-choices.mjs`): the `choices` and `singleOption` fields of ui-review-item@1.
 
+## Deferred: build start / finish pop-ups on AmberX (Nov 10 2026)
+
+- **Build start / finish pop-ups on AmberX (Nov 10 2026, Opus, web/Node only; build `amberx-phone-pop-up-for-every-build-start-and-fi`):** the dispatcher raises `pipeline.launched` / `pipeline.ended` per run (`pipeline:run:<id>:<run>`, `pipeline:end:<id>:<run>`), `meta.label` Started / Finished so AmberX's existing console-alert notification reads `Started: <build> on <account> (<model>)` / `Finished: <build> on <account>, <outcome>, <done>/<total> steps`, link `<console>/?orch-build=<id>`; settings `notifyStart` / `notifyFinish` / `notifySound` / `notifyGrouping` in pipeline-settings@1. Works on the installed APK (heads-up on its high-importance Console alerts channel). **AmberX twin deferred** (no new Android work): honour `meta.sound: false` (post on a silent channel) and `meta.event` grouping (`setGroup("axf-builds")` + a summary) in `WatchService.consoleAlert`; until then sound and grouping on the phone follow the Console alerts channel and the server-side grouping (a finish resolves its start).

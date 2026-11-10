@@ -502,10 +502,11 @@ def pipeline_settings() -> dict[str, Any]:
 @router.post("/pipeline/settings")
 async def pipeline_settings_set(request: Request) -> dict[str, Any]:
     """{key: value…} for pipeline-settings@1 (parallelPerAccount, fablePlans, useConsoleAccount, maxRuns, idleAfterMin, probeDays,
-    splitProvider, apiOverflow, apiAccounts). Turning the API overflow rule on spends money per token: only Brett's own click
+    splitProvider, apiOverflow, apiAccounts, notifyStart, notifyFinish, notifySound, notifyGrouping build|each). Turning the API overflow rule on spends money per token: only Brett's own click
     does that (a session, MCP or voice may turn it off)."""
     body = await _json_body(request)
-    allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "apiOverflow", "apiAccounts"}
+    allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "apiOverflow", "apiAccounts",
+               "notifyStart", "notifyFinish", "notifySound", "notifyGrouping"}
     if body.get("apiOverflow") is True and not brett_click(request):
         raise HTTPException(403, "turning the API overflow rule on is Brett's own click in the console (it bills per token)")
 
@@ -532,6 +533,35 @@ async def pipeline_route(request: Request) -> dict[str, Any]:
     if route == "api" and not who:
         raise HTTPException(403, "sending a build to an API account is Brett's own click in the console (it bills per token)")
     return _pipeline("route", _build_id(body.get("id")), route, "--by", (who or "console")[:80])
+
+
+ACTIVITY_CAP = "axf.activity@1"
+RUN_EVENTS = ("start", "finish")
+
+
+@router.post("/pipeline/activity")
+async def pipeline_activity(request: Request) -> dict[str, Any]:
+    """{event: start|finish, id, run, title, detail?, state?, url?}: the dispatcher's start / finish line in the Activity
+    feed (axf.activity@1), next to the AmberX pop-up. One item per run: a start is running, its finish closes it.
+    Without the Activity plugin it is a no-op ({ok, logged: false})."""
+    body = await _json_body(request)
+    ev = str(body.get("event") or "")
+    if ev not in RUN_EVENTS:
+        raise HTTPException(400, "event is start or finish")
+    bid = _build_id(body.get("id"))
+    run = body.get("run") if isinstance(body.get("run"), int) and body["run"] > 0 else 1
+    svc = plugin_services.get(ACTIVITY_CAP)
+    if svc is None:
+        return {"ok": True, "logged": False}
+    state = "running" if ev == "start" else ("failed" if body.get("state") == "failed" else "done")
+    url = str(body.get("url") or "")
+    item = {"id": f"build-run:{bid}:{run}", "source": "pipeline", "kind": "build", "title": str(body.get("title") or bid)[:160],
+            "detail": str(body.get("detail") or "")[:2000], "state": state, **({"url": url} if url.startswith("https://") else {})}
+    try:
+        svc.report(item, "pipeline")
+    except Exception as e:  # noqa: BLE001 - the feed is a courtesy; the alert already went
+        return {"ok": True, "logged": False, "error": str(e)[:200]}
+    return {"ok": True, "logged": True, "item": item["id"]}
 
 
 def request_build(title: str, detail: str = "", *, by: str = "console", source: str = "", said: str = "", priority: str = "",

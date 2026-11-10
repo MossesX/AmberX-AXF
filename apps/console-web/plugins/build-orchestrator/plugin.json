@@ -402,7 +402,7 @@
         "id": "pipeline-settings-set",
         "route": "POST /pipeline/settings",
         "title": "Change pipeline settings",
-        "description": "Change dispatcher settings. apiOverflow = when every subscription account is full or out, send builds to an API-key account (off by default; turning it on is Brett's own click, anyone may turn it off).",
+        "description": "Change dispatcher settings. apiOverflow = when every subscription account is full or out, send builds to an API-key account (off by default; turning it on is Brett's own click, anyone may turn it off). Phone pop-ups on AmberX (Brett, Nov 10 2026): notifyStart / notifyFinish (on by default) send 'Started: <build> on <account> (<model>)' and 'Finished: <build> on <account>, <outcome>, <done>/<total> steps' (plus what it needs); notifySound; notifyGrouping build = one pop-up per build, each = every event stays. A tap opens the build (<console>/?orch-build=<id>, action build-orchestrator.open-build).",
         "input": {
           "type": "object",
           "properties": {
@@ -430,6 +430,22 @@
                 "claude",
                 "rules",
                 "off"
+              ]
+            },
+            "notifyStart": {
+              "type": "boolean"
+            },
+            "notifyFinish": {
+              "type": "boolean"
+            },
+            "notifySound": {
+              "type": "boolean"
+            },
+            "notifyGrouping": {
+              "type": "string",
+              "enum": [
+                "build",
+                "each"
               ]
             }
           }

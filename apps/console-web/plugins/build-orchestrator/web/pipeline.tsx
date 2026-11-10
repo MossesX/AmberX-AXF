@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Button, Chip, Icon, Note, PriorityTag, Switch, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, Note, PriorityTag, Segmented, Switch, useRuntime } from '@console/axf/react';
 import { WatchLiveFor } from '@console/watchLive';
 import { TABLE_LABEL } from '@console/axf/core/build-pipeline.mjs';
 
@@ -19,7 +19,8 @@ type Status = {
   ok: boolean; at: string; table: { pending: Row[]; queued: Row[]; building: Row[] }; accounts: Account[];
   slots: { used: number; cap: number; free: number; queued: number; unavailable: boolean };
   plan: { launches: { id: string; account: string; model: string; phase: string; kind?: string; rule?: string }[]; waits: { id: string; why: string }[]; queue: string[]; idle: { reason: string; kind: string } | null };
-  settings: { parallelPerAccount: number; autoQueue: boolean; splitProvider: string; idleAfterMin: number; maxRuns: number; apiOverflow?: boolean };
+  settings: { parallelPerAccount: number; autoQueue: boolean; splitProvider: string; idleAfterMin: number; maxRuns: number; apiOverflow?: boolean;
+    notifyStart?: boolean; notifyFinish?: boolean; notifySound?: boolean; notifyGrouping?: 'build' | 'each' };
   accountsFrom?: { source: 'host' | 'snapshot' | 'none'; at: string; ageMin: number | null; why: string };
   state: { at: string; idle: { reason: string; kind: string; since: string } | null; alerts: { key: string; at: string }[]; recent: { at: string; event: string; id: string; account?: string; model?: string; error?: string }[]; selfCheck?: SelfCheck | null; selfCheckRequested?: string };
 };
@@ -77,6 +78,7 @@ export function PipelineTab({ api, log }: { api: Api; log: (t: string, l?: 'info
         {s.settings.autoQueue && <Chip tone="accent">Launch without asking: new builds queue by themselves</Chip>}
         <Switch label="API overflow" text="Every subscription account full or out → an API-key account (billed per token, under its caps)" checked={!!s.settings.apiOverflow} disabled={busy === 'pipeline/settings'} onChange={(on) => act('pipeline/settings', { apiOverflow: on }, `API overflow ${on ? 'on' : 'off'}`)} />
       </div>
+      <PhonePopups settings={s.settings} busy={busy === 'pipeline/settings'} set={(patch, what) => act('pipeline/settings', patch, what)} />
       {idle && <Note tone={idle.kind === 'stuck' ? 'warning' : 'info'}>{idle.reason}{(idle as { since?: string }).since ? ` (since ${fmtTime((idle as { since?: string }).since ?? '')})` : ''}</Note>}
       {s.plan.launches.length > 0 && <Note tone="success">Next tick starts {s.plan.launches.map((l) => `${l.id} on ${l.account} (${l.model}${l.phase ? `, ${l.phase}` : ''})`).join(', ')}.</Note>}
       <section className="fx-stack">
@@ -176,5 +178,27 @@ function PipelineCard({ r, table, busy, wait, launch, act }: { r: Row; table: 'p
         {table !== 'building' && <Button size="sm" tone="neutral" icon="edit" disabled={busy || !!p?.splitRequested} title={p?.splitRequested ? 'Split asked for: the dispatcher does it within a minute' : 'Ask the orchestrator to (re)split this build into steps of 30 min or less'} onClick={() => act('pipeline/split', { id: r.id }, `${r.id}: split on the next tick`)}>{p?.splitRequested ? 'Splitting…' : 'Split now'}</Button>}
       </div>
     </article>
+  );
+}
+
+/**
+ * Phone pop-ups (Brett, Nov 10 2026: "a notification on AmberX every time the orchestrator starts a build and every time a
+ * build finishes"). pipeline-settings@1 notifyStart / notifyFinish / notifySound / notifyGrouping; the same keys through
+ * REST (POST pipeline/settings), MCP and the CLI (pipeline-settings-set), and voice. Channels and quiet hours stay in the
+ * Notifications panel (types pipeline.launched and pipeline.ended).
+ */
+function PhonePopups({ settings, busy, set }: { settings: Status['settings']; busy: boolean; set: (patch: Record<string, unknown>, what: string) => Promise<void> }) {
+  const on = (k: 'notifyStart' | 'notifyFinish' | 'notifySound') => settings[k] !== false;
+  return (
+    <section className="fx-stack oc-popups" aria-label="Phone pop-ups" data-help="phone-popups">
+      <h2 className="pd-card__title">Phone pop-ups <span className="fx-muted fx-small">· AmberX, when a build starts and when it finishes: the build, the account, the model or outcome. A tap opens the build here.</span></h2>
+      <div className="pl-strip" role="toolbar" aria-label="Phone pop-up settings">
+        <Switch label="Build started" text="Started: build on account (model)" checked={on('notifyStart')} disabled={busy} onChange={(v) => set({ notifyStart: v }, `Start pop-ups ${v ? 'on' : 'off'}`)} />
+        <Switch label="Build finished" text="Finished: build on account, outcome, steps (and what it needs)" checked={on('notifyFinish')} disabled={busy} onChange={(v) => set({ notifyFinish: v }, `Finish pop-ups ${v ? 'on' : 'off'}`)} />
+        <Switch label="Sound" checked={on('notifySound')} disabled={busy} onChange={(v) => set({ notifySound: v }, `Pop-up sound ${v ? 'on' : 'off'}`)} />
+        <Segmented size="sm" label="Grouping" value={settings.notifyGrouping ?? 'build'} onChange={(v) => set({ notifyGrouping: v }, v === 'build' ? 'One pop-up per build' : 'Every start and finish stays')}
+          options={[{ value: 'build', label: 'One per build', icon: 'layers' }, { value: 'each', label: 'Every event', icon: 'list' }]} />
+      </div>
+    </section>
   );
 }

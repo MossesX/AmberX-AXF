@@ -215,6 +215,12 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 ## To carry on
 
+### AmberX pop-up on every build start and finish (`amberx-phone-pop-up-for-every-build-start-and-fi`, All, Opus) — branch `claude/amberx-phone-pop-up-for-every-build-start-and-fi`
+- **Asked:** "a notification on AmberX every time the orchestrator starts a build and every time a build finishes ... what build ... what account ... On my phone."
+- **State:** built. Start/finish alerts per run, heads-up on AmberX, tap opens the build (`?orch-build=<id>`), Activity feed line, settings notifyStart/notifyFinish/notifySound/notifyGrouping. Fixed the old `#/build-orchestrator` link the alerts API refused.
+- **Left:** UI Review click, merge queue. After it lands: watch one real start and one real finish pop up on the phone. AmberX sound/grouping twin deferred (PORTING.md).
+- **Read:** `_claude/builds/reports/amberx-phone-pop-up-for-every-build-start-and-fi.md`.
+
 ### Skins cover every asset type, at any scope (`skins-asset-types`)
 
 - **Asked (in full):** Brett (voice, Nov 7 2026): "What about skins? How's skins doing? Is skins gonna um, be upgraded since we've we've made um so many more asset types?" Brief: upgrade the skins system so it styles every asset type in the registry (embeddable widget, icon pack, composite assets, data set bar, embed, text blocks / labels); skins at any scope global / app / UI / plugin with child-overrides-parent inheritance (the design / icon pack model); a skin is a design pack that may reference an icon pack; the type list comes from the registry dynamically with a CI check that fails on an uncovered type; voice + API / MCP / CLI parity; at least 3 UI options to UI Review first.

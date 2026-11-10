@@ -101,6 +101,12 @@
         "title": "API overflow",
         "text": "When every subscription account is full or out, the orchestrator sends the next build to an API-key account (billed per token, under its daily and weekly caps). Off by default; only your own click turns it on.",
         "kind": "toggle"
+      },
+      {
+        "target": "phone-popups",
+        "title": "Phone pop-ups",
+        "text": "AmberX pops up every time the orchestrator starts a build (Started: build on account (model)) and every time one finishes (Finished: build on account, outcome, steps done, plus what it needs). A tap opens that build here. Switch start or finish off, mute the sound, or keep every event instead of one pop-up per build. Also: POST pipeline/settings, pipeline-settings-set on MCP and the CLI, or ask Amber.",
+        "kind": "toggle"
       }
     ],
     "intros": []
