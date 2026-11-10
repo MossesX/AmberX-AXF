@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T21:44:57.901Z",
+ "updatedAt": "2026-11-10T21:45:19.830Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -94793,7 +94793,7 @@
    "pr": "#475",
    "priority": "P0",
    "createdAt": "2026-11-10T20:44:19.333Z",
-   "updatedAt": "2026-11-10T21:38:32.328Z",
+   "updatedAt": "2026-11-10T21:44:59.264Z",
    "builtAt": "",
    "notes": [
     {
@@ -94811,6 +94811,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-finish-and-land-the-git-status-board-every-ready--joey, own login copy)",
      "at": "2026-11-10T21:28:12.809Z"
+    },
+    {
+     "text": "PR #475 replaces #291 (close it after #475 lands). Shots are taken but not yet in UI Review: this session has no console token. The submit command is in the report.",
+     "at": "2026-11-10T21:44:59.264Z"
     }
    ],
    "approvals": [],
