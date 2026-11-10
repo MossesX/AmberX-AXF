@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2903,
- "updatedAt": "2026-11-10T21:45:51.973Z",
+ "rev": 2904,
+ "updatedAt": "2026-11-10T21:46:05.983Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -156135,6 +156135,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-10T21:39:38.105Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "bug-asset-settings-nav-menu-tab-bar-toolbar-chan",
+   "title": "Bug: asset settings (nav menu, tab bar, toolbar) change the settings panel instead of the asset; reset to default resets the wrong thing",
+   "category": "",
+   "detail": "Right-click > Settings on any asset (nav menu, tab bar, toolbar, banner) opens a settings panel whose changes and Reset to default currently target the settings panel's own assets. Fix: the panel binds to the asset that was right-clicked (and the app it lives in); every change and Reset to default applies to that target asset in the live app. The settings panel's own look is never edited from there. Add a test per asset type.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T21:45:52.947Z",
+   "updatedAt": "2026-11-10T21:45:52.947Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "When I click on a navigation menu settings and change it, it changes the settings interface, not the navigation menu itself. Reset to default only resets that asset, the settings panel. When you right click an asset like a nav menu, tab bar or toolbar, the settings need to apply to the app, not the settings panel.",
+    "at": "2026-11-10T21:45:52.947Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 595
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

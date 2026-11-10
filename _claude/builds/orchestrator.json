@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T21:45:51.973Z",
+ "updatedAt": "2026-11-10T21:46:05.983Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -95991,6 +95991,37 @@
      "uid": "st-mwb7qqyi03q7rd"
     }
    ]
+  },
+  {
+   "id": "bug-asset-settings-nav-menu-tab-bar-toolbar-chan",
+   "title": "Bug: asset settings (nav menu, tab bar, toolbar) change the settings panel instead of the asset; reset to default resets the wrong thing",
+   "category": "",
+   "detail": "Right-click > Settings on any asset (nav menu, tab bar, toolbar, banner) opens a settings panel whose changes and Reset to default currently target the settings panel's own assets. Fix: the panel binds to the asset that was right-clicked (and the app it lives in); every change and Reset to default applies to that target asset in the live app. The settings panel's own look is never edited from there. Add a test per asset type.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T21:45:52.947Z",
+   "updatedAt": "2026-11-10T21:45:52.947Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "When I click on a navigation menu settings and change it, it changes the settings interface, not the navigation menu itself. Reset to default only resets that asset, the settings panel. When you right click an asset like a nav menu, tab bar or toolbar, the settings need to apply to the app, not the settings panel.",
+    "at": "2026-11-10T21:45:52.947Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

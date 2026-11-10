@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:35 UTC · `resolve-conflicts-and-land-pr-449-account-order` note (all) · orchestrator
 - 2026-11-10 17:36 UTC · `resolve-conflicts-and-land-pr-449-account-order` note (all) · builds-live
 - 2026-11-10 17:36 UTC · `shipped-features-show-each-landed-build-s-screen` note (all) · orchestrator
 - 2026-11-10 17:38 UTC · `plugin-appearance-save-button-for-custom-looks-n` added (0 steps) (all) · console
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 21:44 UTC · `finish-and-land-the-git-status-board-every-ready` note (all) · orchestrator
 - 2026-11-10 21:45 UTC · `finish-and-land-the-git-status-board-every-ready` note (all) · orchestrator
 - 2026-11-10 21:45 UTC · `finish-and-land-the-git-status-board-every-ready` s3 done, → built (all) · orchestrator
+- 2026-11-10 21:45 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` added (0 steps) (all) · console
 
 ## Token passes (log)
 

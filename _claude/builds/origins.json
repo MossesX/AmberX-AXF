@@ -1104,6 +1104,18 @@
    "from": "",
    "addenda": []
   },
+  "bug-asset-settings-nav-menu-tab-bar-toolbar-chan": {
+   "said": "When I click on a navigation menu settings and change it, it changes the settings interface, not the navigation menu itself. Reset to default only resets that asset, the settings panel. When you right click an asset like a nav menu, tab bar or toolbar, the settings need to apply to the app, not the settings panel.",
+   "at": "2026-11-10T21:45:52.947Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "bugs-board": {
    "said": "\"Do we have a confirmed bugs list?\" -> \"Yep, and I want to be able to drag and drop and arrange them. And show which builds they're part of. And if they're part of a build that's being run, and what line it is in the queue. And all that good stuff. I want to be able to move it from one build to another one.\" ... \"I need an auto-optimize switch, which will move the bugs to appropriate builds that are either in queue or in process.\"",
    "at": "2026-11-04T00:00:00Z",
