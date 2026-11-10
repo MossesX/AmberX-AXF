@@ -106,6 +106,17 @@ closes every terminal.
 
 xterm.js 5.3.0 + fit/search/web-links addons are vendored in `web/vendor/` (MIT) so uninstalling leaves nothing.
 
+## Extension points (Nov 10 2026)
+
+- **Slot `terminal.side`**: a column right of the panes in every Terminal window; props `{ hostId, open(o: Open) }` add a
+  tab to that window. A plugin's column goes with the plugin.
+- **Action `terminal.tab:<Open as URI-encoded JSON>`**: open any tab from another plugin.
+- **`Open.account`** (Claude Code on the VPS host): run as that saved account on a private copy of its login
+  (`deploy/claude-login.mjs snapshot`); the name is checked, '' = the active account.
+- **`Open.setup`** (VPS host shell): `login:<name>` = `claude auth login` in `~/.claude-accounts/<name>`;
+  `savekey:<name>` = `claude-account savekey <name>` (the key goes in at the host's hidden prompt). Fixed commands plus
+  a checked name.
+
 ## Lifecycle (plugin-lifecycle@1)
 Data: `.axf-console/plugins/console-terminal/` (`settings.json`, `ssh/` key + known_hosts, `claude-token`, `sessions.jsonl`).
 ```bash

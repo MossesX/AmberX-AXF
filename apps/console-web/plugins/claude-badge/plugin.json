@@ -17,7 +17,8 @@
     "asset:badge/amberx-phone",
     "asset:badge/claude-usage",
     "banner:left",
-    "settings-tab:claude-badge"
+    "settings-tab:claude-badge",
+    "service:axf.claude-usage@1"
   ],
   "optional": [
     "service:axf.llm@1",

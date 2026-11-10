@@ -348,3 +348,14 @@ def vps(request: Request) -> dict[str, Any]:
     if user is not None and not getattr(user, "admin", False):  # the state for everyone, who it is only for the owner
         res.update(account="", email="", plan="")
     return res
+
+
+class UsageService:
+    """axf.claude-usage@1: every saved Claude login's 5-hour and weekly usage (percent used, reset times, status), the
+    same cached read the usage meter shows. Names, plans and numbers only, never a token."""
+
+    def usage(self, refresh: bool = False) -> dict[str, Any]:
+        return read_usage(refresh)
+
+
+plugin_services.provide("axf.claude-usage@1", UsageService(), Path(__file__).resolve().parents[1].name)

@@ -203,49 +203,65 @@ t('settings normalise and clamp', () => {
 // ---------------- API jobs (Brett, Nov 9 2026: "I'm also gonna be able to have the orchestrator send jobs to the API, right?")
 const apiRow = (name, extra = {}) => ({ name, kind: 'api', role: 'api-worker', plan: '', email: '', limited: null, running: [], hasKey: true, building: 1, spend: { day: 0, week: 0, state: 'ok', why: '' }, ...extra });
 const subsFull = [{ name: 'w-max', role: 'worker', plan: 'max', limited: null, running: ['a', 'b'] }];
-t('settings: the API overflow rule is off by default; API account list parsed', () => {
-  assert.equal(P.normSettings({}).apiOverflow, false); assert.deepEqual(P.normSettings({}).apiAccounts, []);
-  assert.equal(P.normSettings({ apiOverflow: true }).apiOverflow, true); assert.equal(P.normSettings({ apiOverflow: 'yes' }).apiOverflow, false);
+t('settings: no account order by default; order and API account list parsed', () => {
+  assert.deepEqual(P.normSettings({}).order, []); assert.deepEqual(P.normSettings({}).apiAccounts, []);
+  assert.equal('apiOverflow' in P.normSettings({ apiOverflow: true }), false, 'the overflow rule is gone');
+  assert.deepEqual(P.normSettings({ order: 'w-max, hulu-api,Bad Name,w-max' }).order, ['w-max', 'hulu-api']);
   assert.deepEqual(P.normSettings({ apiAccounts: 'hulu-api,Bad Name,mossesx-api' }).apiAccounts, ['hulu-api', 'mossesx-api']);
 });
-t('API accounts: never usable as a subscription; ready only with a key, switched on, under caps, with room', () => {
+t('API accounts: usable only while in the order and ready (key, switched on, under caps, room)', () => {
   const s = P.normSettings({ parallelPerAccount: 2 });
-  const v = P.accountViews([...subsFull, apiRow('hulu-api'), apiRow('mossesx-api', { hasKey: false }), apiRow('capped-api', { spend: { day: 10, week: 10, state: 'capped', why: 'daily cap $10 reached ($10.00)' } }), apiRow('off-api', { role: 'api-off', why: 'API worker switched off' })], {}, { settings: s });
+  const rows = [...subsFull, apiRow('hulu-api'), apiRow('mossesx-api', { hasKey: false }), apiRow('capped-api', { spend: { day: 10, week: 10, state: 'capped', why: 'daily cap $10 reached ($10.00)' } }), apiRow('off-api', { role: 'api-off', why: 'API worker switched off' })];
+  const v = P.accountViews(rows, {}, { settings: s });
   const by = Object.fromEntries(v.map((a) => [a.name, a]));
-  for (const n of ['hulu-api', 'mossesx-api', 'capped-api', 'off-api']) { assert.equal(by[n].kind, 'api'); assert.equal(by[n].usable, false, `${n} never takes a build by itself`); }
+  for (const n of ['hulu-api', 'mossesx-api', 'capped-api', 'off-api']) { assert.equal(by[n].kind, 'api'); assert.equal(by[n].usable, false, `${n}: no order, no build`); }
+  assert.match(by['hulu-api'].why, /not in the account order/);
   assert.equal(by['hulu-api'].api.usable, true); assert.equal(by['hulu-api'].parallel, 1, 'its own building limit');
   assert.equal(by['mossesx-api'].api.usable, false); assert.match(by['mossesx-api'].api.why, /no API key saved .*savekey mossesx-api/);
   assert.equal(by['capped-api'].api.usable, false); assert.match(by['capped-api'].api.why, /spend cap reached: daily cap \$10/);
   assert.equal(by['off-api'].api.usable, false); assert.match(by['off-api'].api.why, /switched off/);
-  assert.equal(P.accountViews([apiRow('x', { running: ['s'] })], {}, { settings: s })[0].api.usable, false, 'full: no room');
+  const listed = Object.fromEntries(P.accountViews(rows, {}, { settings: P.normSettings({ parallelPerAccount: 2, order: ['hulu-api', 'mossesx-api', 'capped-api', 'w-max'] }) }).map((a) => [a.name, a]));
+  assert.equal(listed['hulu-api'].usable, true); assert.equal(listed['hulu-api'].rank, 0);
+  assert.equal(listed['mossesx-api'].usable, false); assert.match(listed['mossesx-api'].why, /no API key saved/);
+  assert.equal(listed['capped-api'].usable, false); assert.equal(listed['off-api'].rank, null);
+  assert.equal(P.accountViews([apiRow('x', { running: ['s'] })], {}, { settings: P.normSettings({ order: ['x'] }) })[0].api.usable, false, 'full: no room');
   assert.match(P.accountViews([apiRow('x', { running: ['s'] })], {}, { settings: s })[0].api.why, /full \(1\/1\)/);
   assert.equal(P.accountViews([apiRow('hulu-api')], {}, { settings: P.normSettings({ apiAccounts: ['mossesx-api'] }) })[0].api.usable, false, 'not in the pipeline list');
 });
-t('routeFor: subscriptions first; overflow off = wait and say so; overflow on = API under its caps; override api / subscription', () => {
-  const free = P.accountViews([{ name: 'w-max', role: 'worker', plan: 'max', limited: null, running: [] }, apiRow('hulu-api')], {}, { settings: P.normSettings({}) });
-  assert.deepEqual([P.routeFor(build('x', 'queued', []), free, 'Opus').account, P.routeFor(build('x', 'queued', []), free, 'Opus').kind], ['w-max', 'subscription']);
-  const full = P.accountViews([...subsFull, apiRow('hulu-api'), apiRow('mossesx-api', { hasKey: false })], {}, { settings: P.normSettings({ parallelPerAccount: 2 }) });
-  const off = P.routeFor(build('x', 'queued', []), full, 'Opus', P.normSettings({ apiOverflow: false }));
-  assert.equal(off.account, ''); assert.match(off.why, /API overflow is off/);
-  const on = P.routeFor(build('x', 'queued', []), full, 'Opus', P.normSettings({ apiOverflow: true }));
-  assert.deepEqual([on.account, on.kind, on.rule], ['hulu-api', 'api', 'overflow']);
-  const noKeys = P.accountViews([...subsFull, apiRow('mossesx-api', { hasKey: false }), apiRow('capped-api', { spend: { day: 0, week: 60, state: 'capped', why: 'weekly cap $50 reached ($60.00)' } })], {}, { settings: P.normSettings({ parallelPerAccount: 2 }) });
-  const skip = P.routeFor(build('x', 'queued', []), noKeys, 'Opus', P.normSettings({ apiOverflow: true }));
+t('routeFor: the one order decides, subscription or API alike; override api / subscription', () => {
+  const rows = [{ name: 'w-max', role: 'worker', plan: 'max', limited: null, running: [] }, apiRow('hulu-api')];
+  const none = P.normSettings({});
+  const free = P.accountViews(rows, {}, { settings: none });
+  assert.deepEqual([P.routeFor(build('x', 'queued', []), free, 'Opus', none).account, P.routeFor(build('x', 'queued', []), free, 'Opus', none).kind], ['w-max', 'subscription']);
+  const apiFirst = P.normSettings({ order: ['hulu-api', 'w-max'] });
+  const r1 = P.routeFor(build('x', 'queued', []), P.accountViews(rows, {}, { settings: apiFirst }), 'Opus', apiFirst);
+  assert.deepEqual([r1.account, r1.kind, r1.rule], ['hulu-api', 'api', 'order'], 'API first in the order = API first');
+  const subFirst = P.normSettings({ order: ['w-max', 'hulu-api'] });
+  assert.equal(P.routeFor(build('x', 'queued', []), P.accountViews(rows, {}, { settings: subFirst }), 'Opus', subFirst).account, 'w-max');
+  const fullS = P.normSettings({ parallelPerAccount: 2, order: ['w-max', 'hulu-api'] });
+  const full = P.accountViews([...subsFull, apiRow('hulu-api')], {}, { settings: fullS });
+  assert.equal(P.routeFor(build('x', 'queued', []), full, 'Opus', fullS).account, 'hulu-api', 'the next in the order when the first is full');
+  const fullNone = P.normSettings({ parallelPerAccount: 2 });
+  const off = P.routeFor(build('x', 'queued', []), P.accountViews([...subsFull, apiRow('hulu-api')], {}, { settings: fullNone }), 'Opus', fullNone);
+  assert.equal(off.account, '', 'no order: the API account takes nothing'); assert.match(off.why, /parallel cap/);
+  const noKeysS = P.normSettings({ parallelPerAccount: 2, order: ['w-max', 'mossesx-api', 'capped-api'] });
+  const noKeys = P.accountViews([...subsFull, apiRow('mossesx-api', { hasKey: false }), apiRow('capped-api', { spend: { day: 0, week: 60, state: 'capped', why: 'weekly cap $50 reached ($60.00)' } })], {}, { settings: noKeysS });
+  const skip = P.routeFor(build('x', 'queued', []), noKeys, 'Opus', noKeysS);
   assert.equal(skip.account, ''); assert.match(skip.why, /mossesx-api: no API key saved/); assert.match(skip.why, /capped-api: spend cap reached: weekly cap/);
-  const ov = P.routeFor(build('x', 'queued', [], { pipeline: { route: 'api' } }), free, 'Opus');
+  const ov = P.routeFor(build('x', 'queued', [], { pipeline: { route: 'api' } }), free, 'Opus', none);
   assert.deepEqual([ov.account, ov.kind, ov.rule], ['hulu-api', 'api', 'override'], 'per-build override: API even while a subscription is free');
-  const ovNone = P.routeFor(build('x', 'queued', [], { pipeline: { route: 'api' } }), noKeys, 'Opus');
+  const ovNone = P.routeFor(build('x', 'queued', [], { pipeline: { route: 'api' } }), noKeys, 'Opus', noKeysS);
   assert.equal(ovNone.account, ''); assert.match(ovNone.why, /set to run on API, no API account can take it/);
-  const subOnly = P.routeFor(build('x', 'queued', [], { pipeline: { route: 'subscription' } }), full, 'Opus', P.normSettings({ apiOverflow: true }));
+  const subOnly = P.routeFor(build('x', 'queued', [], { pipeline: { route: 'subscription' } }), full, 'Opus', fullS);
   assert.equal(subOnly.account, ''); assert.match(subOnly.why, /kept off API accounts/);
 });
-t('plan: overflow fills an API account up to its cap, then the rest wait with the reason', () => {
-  const s = P.normSettings({ parallelPerAccount: 2, apiOverflow: true });
+t('plan: the order fills an API account up to its cap, then the rest wait with the reason', () => {
+  const s = P.normSettings({ parallelPerAccount: 2, order: ['w-max', 'hulu-api'] });
   const accts = P.accountViews([...subsFull, apiRow('hulu-api')], {}, { settings: s });
   const q = (id, at) => build(id, 'queued', [step('s1', 'Opus')], { pipeline: { queuedAt: at } });
   const r = P.plan({ builds: [q('one', '2026-11-08T00:01:00Z'), q('two', '2026-11-08T00:02:00Z')], accounts: accts, slots: { free: 4, used: 0, cap: 6 }, settings: s });
-  assert.deepEqual(r.launches.map((l) => [l.id, l.account, l.kind, l.rule]), [['one', 'hulu-api', 'api', 'overflow']]);
-  assert.equal(r.waits[0].id, 'two'); assert.match(r.waits[0].why, /hulu-api: full/);
+  assert.deepEqual(r.launches.map((l) => [l.id, l.account, l.kind, l.rule]), [['one', 'hulu-api', 'api', 'order']]);
+  assert.equal(r.waits[0].id, 'two'); assert.match(r.waits[0].why, /hulu-api/);
   assert.equal(BP.normPipeline({ route: 'api' }).route, 'api'); assert.equal(BP.normPipeline({ route: 'nope', queuedAt: now }).route, '');
 });
 t('every brief and the split prompt carry the API rule (deep link, state, every action and setting; REST / MCP / CLI / voice)', () => {

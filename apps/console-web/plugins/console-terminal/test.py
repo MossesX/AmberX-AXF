@@ -190,6 +190,20 @@ plugin_services.withdraw("fake-container-access")
 
 # Windows-style terminal (Oct 28 2026): connections, Claude Code profiles + arguments, look settings
 S0 = mod.sessions
+check(S0.account_login("") == "", "no account: Claude Code runs on the active login")
+check("--account hulu-api --sh" in S0.account_login("hulu-api") and 'CLAUDE_CONFIG_DIR="$login_dir"' in S0.account_login("hulu-api"), "an account: its own login copy (claude-login.mjs snapshot)")
+for bad in ("Hulu", "a;rm -rf /", "-x", "a b"):
+    try:
+        S0.account_login(bad); check(False, f"account refuses {bad!r}")
+    except ValueError:
+        check(True, f"account refuses {bad!r}")
+check(S0.setup_script("") == "" and "claude-account savekey hulu-api;" in S0.setup_script("savekey:hulu-api"), "add an API key: the host's hidden key prompt")
+check('.claude-accounts/account-6' in S0.setup_script("login:account-6") and "claude auth login" in S0.setup_script("login:account-6"), "add a subscription: claude auth login in its own folder")
+for bad in ("rm:x", "login:A B", "savekey:$(id)"):
+    try:
+        S0.setup_script(bad); check(False, f"setup refuses {bad!r}")
+    except ValueError:
+        check(True, f"setup refuses {bad!r}")
 check(S0.claude_args({"model": "claude-opus-5-5", "permissionMode": "plan", "flags": ["--verbose"], "prompt": "hi there"})
       == ["--model", "claude-opus-5-5", "--permission-mode", "plan", "--verbose", "hi there"], "profile options become claude arguments")
 for bad in ({"model": "x; rm -rf /"}, {"permissionMode": "yolo"}, {"flags": ["; rm"]}, {"flags": ["notaflag"]}):

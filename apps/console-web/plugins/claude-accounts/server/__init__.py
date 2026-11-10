@@ -567,17 +567,18 @@ async def routing_test(request: Request) -> dict[str, Any]:
 async def label(request: Request) -> dict[str, Any]:
     by = _who(request)
     b = await _body(request)
-    name, text = clean_name(b.get("name")), str(b.get("label") or "").strip()[:40]
+    return await run_in_threadpool(set_label, b.get("name"), b.get("label"), by)
 
-    def change() -> dict[str, Any]:
-        cfg = config()
-        if name in cfg["api"]:
-            cfg["api"][name]["label"] = text
-        else:
-            cfg["perAccount"][name] = {**cfg["perAccount"].get(name, {}), "label": text}
-        return _save_config(cfg, by, True)
 
-    await run_in_threadpool(change)
+def set_label(raw_name: Any, raw_label: Any, by: str) -> dict[str, Any]:
+    """A display name for a saved account or API slot ('' = its name). Never touches the login."""
+    name, text = clean_name(raw_name), str(raw_label or "").strip()[:40]
+    cfg = config()
+    if name in cfg["api"]:
+        cfg["api"][name]["label"] = text
+    else:
+        cfg["perAccount"][name] = {**cfg["perAccount"].get(name, {}), "label": text}
+    _save_config(cfg, by, True)
     return {"ok": True, "name": name, "label": text, "message": f"{name} is shown as {text or name}."}
 
 
@@ -630,6 +631,15 @@ class AccountsService:
 
     def use(self, name: str, by: str) -> dict[str, Any]:
         return ask("use", clean_name(name), by)
+
+    def label(self, name: str, label: str, by: str) -> dict[str, Any]:
+        """Rename: the display name shown everywhere (the saved login keeps its name)."""
+        return set_label(name, label, by)
+
+    def signin(self, name: str, by: str) -> dict[str, Any]:
+        """Sign a new or expired account in, in its own folder: one held axHub call; the sign-in then runs in the
+        tmux session axf-signin-<name> on the VPS host for the Terminal to open."""
+        return ask("signin", clean_name(name), by)
 
 
 plugin_services.provide("axf.claude-accounts@1", AccountsService(), FOLDER)

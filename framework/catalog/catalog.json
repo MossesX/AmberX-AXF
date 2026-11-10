@@ -2496,6 +2496,10 @@
                 {
                   "id": "cx.buildengine.shipped",
                   "title": "Shipped manifests: every landed build's prompt, brief, models, steps, commit, files, tests and cost in Shipped features (shipped-manifest@1)"
+                },
+                {
+                  "id": "cx.claude.accountsmanager",
+                  "title": "Claude accounts manager: one ordered list of every Claude account (subscription and API alike) with usage in dollars; the orchestrator follows the order; Terminal column, banner widget, floating overlay"
                 }
               ]
             },

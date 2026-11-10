@@ -1,0 +1,59 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "claude-accounts-manager-help",
+  "name": "claude-accounts-manager help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:claude-accounts-manager.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:claude-accounts-manager",
+    "entries": [
+      {
+        "target": "view:claude-accounts-manager",
+        "title": "Claude accounts manager",
+        "text": "Every Claude account on the VPS in one ordered list: subscriptions and API keys alike. Drag a row to change the order the build orchestrator follows. Right-click a row to rename it, move it or open Claude Code as that account.",
+        "kind": "page"
+      },
+      {
+        "target": "settings-tab:claude-accounts-manager",
+        "title": "Claude accounts manager settings",
+        "text": "The banner widget, the Terminal column, the floating overlay window and its buttons, and the plan prices used for dollars.",
+        "kind": "settings"
+      },
+      {
+        "target": "action:claude-accounts-manager.open",
+        "title": "Claude accounts manager",
+        "text": "Opens the ordered list of Claude accounts.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:claude-accounts-manager.session",
+        "title": "Claude Code as an account",
+        "text": "Opens a Terminal tab running Claude Code on the VPS host as that account, on its own copy of the login.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:claude-accounts-manager.add",
+        "title": "Add a Claude account",
+        "text": "Opens the Terminal and starts the Claude login (subscription) or the hidden API key prompt (API key) for a new account.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:claude-accounts-manager.overlay",
+        "title": "Accounts overlay",
+        "text": "Shows or hides the floating accounts window: custom buttons, resizable, size lock, docking, minimize, console or whole-screen.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "dialog:claude-accounts-manager.pick",
+        "title": "Pick an account",
+        "text": "The banner widget's drop-down: every account with what is left; tap one to show it on the banner.",
+        "kind": "dialog"
+      }
+    ]
+  }
+}

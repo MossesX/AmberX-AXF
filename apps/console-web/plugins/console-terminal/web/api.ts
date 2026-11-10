@@ -18,6 +18,10 @@ export interface Open {
   /** The persistent tmux session (axt-…) this tab lives in: picked once, kept with the tab, re-attached after any drop. */
   tmux?: string;
   via?: Via; profile?: string; model?: string; permissionMode?: string; flags?: string[]; prompt?: string;
+  /** Claude Code on the VPS host as this saved account (its own copy of the login, deploy/claude-login.mjs); '' = the active one. */
+  account?: string;
+  /** VPS host tab: run this first (login:<name> = sign a new account in, in its own folder; savekey:<name> = the API key prompt). */
+  setup?: string;
   /** Sessions nav (Nov 3 2026): a read-only mirror of the tmux session in `attach` (Jump in turns it off). */
   readOnly?: boolean;
   /** kind 'feed': a claude.ai chat / voice session's mirror feed (chat:<session>), shown instead of a terminal. */

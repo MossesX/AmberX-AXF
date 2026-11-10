@@ -20,7 +20,7 @@
  */
 import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
-import { AgentAvatar, Icon, WindowGrip, useRuntime, useTabPress, useWindowFrame, useWindowManager } from '@console/axf/react';
+import { AgentAvatar, Icon, Slot, WindowGrip, useRuntime, useTabPress, useWindowFrame, useWindowManager } from '@console/axf/react';
 import { reorderIndex, type TabSpec } from '@console/axf/core';
 import { call, getSettings, post, type ClaudeProfile, onSettings, parseOpen, tabSessions, type Open, type Settings, type Target, type TmuxSession } from './api';
 import { applyProfile, useProfiles } from './profiles';
@@ -307,6 +307,8 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
         })}
       </div>
       </div>
+      {/* extension point: a plugin's own column beside the panes (e.g. the Claude accounts list); gone with the plugin */}
+      <Slot name="terminal.side" props={{ hostId: tab.id, open: add }} />
       </div>
 
       {(menu || drop || winMenu) && createPortal(<>

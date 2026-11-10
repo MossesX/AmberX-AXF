@@ -502,12 +502,13 @@ def pipeline_settings() -> dict[str, Any]:
 @router.post("/pipeline/settings")
 async def pipeline_settings_set(request: Request) -> dict[str, Any]:
     """{key: value…} for pipeline-settings@1 (parallelPerAccount, fablePlans, useConsoleAccount, maxRuns, idleAfterMin, probeDays,
-    splitProvider, apiOverflow, apiAccounts). Turning the API overflow rule on spends money per token: only Brett's own click
-    does that (a session, MCP or voice may turn it off)."""
+    splitProvider, order, apiAccounts). `order` is the one account order, API keys included: putting an API account in
+    it, or moving one earlier, spends money per token, so only Brett's own click does that (a session, MCP or voice may
+    move API accounts later or take them out)."""
     body = await _json_body(request)
-    allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "apiOverflow", "apiAccounts"}
-    if body.get("apiOverflow") is True and not brett_click(request):
-        raise HTTPException(403, "turning the API overflow rule on is Brett's own click in the console (it bills per token)")
+    allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "order", "apiAccounts"}
+    if "order" in body:
+        body["order"] = set_order_check(body.get("order"), brett_click(request))
 
     def val(v: Any) -> str:
         if isinstance(v, bool):
@@ -572,6 +573,42 @@ async def pipeline_request(request: Request) -> dict[str, Any]:
                          said=str(body.get("said") or ""), priority=str(body.get("priority") or ""), queue=body.get("queue") is not False)
 
 
+def _api_names() -> set[str]:
+    """The API-key accounts the pipeline knows (pipeline.mjs accounts)."""
+    try:
+        rows = _pipeline("accounts").get("accounts") or []
+    except HTTPException:
+        rows = []
+    return {str(a.get("name")) for a in rows if isinstance(a, dict) and a.get("kind") == "api"}
+
+
+def order_raises_api(old: list[str], new: list[str], api: set[str]) -> list[str]:
+    """API accounts the new order adds or moves earlier than they were (pure). Each is money per token."""
+    out = []
+    for n in new:
+        if n in api and (n not in old or new.index(n) < old.index(n)):
+            out.append(n)
+    return out
+
+
+def set_order_check(raw: Any, brett: str) -> list[str]:
+    """A new account order, checked: names only, each once; an API account added or moved earlier needs Brett's click."""
+    items = raw.split(",") if isinstance(raw, str) else raw if isinstance(raw, list) else None
+    if items is None:
+        raise HTTPException(400, "order is a list of account names")
+    new: list[str] = []
+    for n in items:
+        n = str(n).strip().lower()
+        if re.fullmatch(r"[a-z0-9][a-z0-9-]{0,31}", n) and n not in new:
+            new.append(n)
+    if not brett:
+        old = list((_pipeline("settings").get("settings") or {}).get("order") or [])
+        raised = order_raises_api(old, new, _api_names())
+        if raised:
+            raise HTTPException(403, f"putting API account {', '.join(raised)} in the order or earlier in it bills per token: that is Brett's own click in the console")
+    return new
+
+
 class DispatchService:
     """axf.build-dispatch@1: the one way for other plugins to start a build. request(title, detail, by=…, source=…,
     priority=…, queue=True) → {ok, id, status}; queue(id, by) puts an existing build in the Queue; build(id) reads one."""
@@ -585,6 +622,20 @@ class DispatchService:
     def build(self, build_id: str) -> dict[str, Any]:
         """{id, status, steps, pipeline…} of one build (so a caller can follow what it asked for)."""
         return _pipeline("show", _build_id(build_id)).get("build") or {}
+
+    def accounts(self) -> list[dict[str, Any]]:
+        """Every account as the dispatcher sees it (pipeline-core accountView: rank, usable, why, running, parallel, api)."""
+        return list(_pipeline("accounts").get("accounts") or [])
+
+    def order(self) -> list[str]:
+        """The one account order the dispatcher follows (pipeline-settings@1 `order`; [] = subscriptions only)."""
+        return list((_pipeline("settings").get("settings") or {}).get("order") or [])
+
+    def set_order(self, names: list[str], brett: str = "") -> list[str]:
+        """Set the account order. `brett` = Brett's own click (his name): needed to add an API account or move one earlier."""
+        new = set_order_check(names, brett)
+        _pipeline("set", f"order={','.join(new)}")
+        return new
 
 
 plugin_services.provide("axf.build-dispatch@1", DispatchService(), Path(__file__).resolve().parents[1].name)

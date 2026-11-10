@@ -1,0 +1,43 @@
+/* Claude accounts manager: layout only. Controls are the framework's (Button, Chip, Meter, IconButton, fields); every
+   size, colour and border comes from --fx-* tokens, so a theme or style asset restyles the list, column and overlay. */
+.axp-cam-list { display: grid; gap: var(--fx-dens-gap-sm); }
+.axp-cam-row { display: flex; align-items: flex-start; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-sm); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); cursor: grab; }
+.axp-cam-row.is-dragging { opacity: var(--fx-opacity-muted); }
+.axp-cam-row.is-over { border-color: var(--fx-accent); }
+.axp-cam-row--out { border-style: dashed; }
+.axp-cam-row--compact { gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-xs); }
+.axp-cam-grip { color: var(--fx-muted); padding-top: var(--fx-dens-gap-xs); }
+.axp-cam-n { min-width: calc(var(--fx-space) * 6); font-weight: var(--fx-type-weights-strong); font-variant-numeric: tabular-nums; }
+.axp-cam-who { flex: 1 1 auto; min-width: 0; display: grid; gap: var(--fx-dens-gap-xs); overflow-wrap: anywhere; }
+.axp-cam-line { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xs) var(--fx-dens-gap-sm); }
+.axp-cam-sub { margin: 0; color: var(--fx-muted); font-size: var(--fx-type-root-sm); }
+.axp-cam-usage { font-size: var(--fx-type-root-sm); }
+.axp-cam-divider { padding: var(--fx-dens-gap-sm) 0; color: var(--fx-muted); font-size: var(--fx-type-root-sm); border-top: var(--fx-border-w) solid var(--fx-border); }
+.axp-cam-totals, .axp-cam-actions, .axp-cam-checks { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); }
+.axp-cam-add, .axp-cam-edit-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-md); }
+.axp-cam-add > *, .axp-cam-edit-row > * { flex: 1 1 12em; }
+.axp-cam-edit-row > .fx-iconbtn { flex: 0 0 auto; }
+.axp-cam-h { margin: 0; font-size: var(--fx-type-root-md); }
+.axp-cam-pick { display: block; width: 100%; text-align: start; }
+/* the Terminal column (slot terminal.side) */
+.axp-cam-col { display: flex; flex-direction: column; min-height: 0; border-left: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); }
+.axp-cam-col.is-open { width: calc(var(--fx-space) * 70); max-width: 45%; }
+.axp-cam-col__head { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-xs); }
+.axp-cam-col__title { flex: 1; font-weight: var(--fx-type-weights-strong); font-size: var(--fx-type-root-sm); }
+.axp-cam-col__body { flex: 1; min-height: 0; overflow: auto; padding: var(--fx-dens-gap-xs); }
+/* the floating overlay window */
+.axp-cam-ov { position: fixed; z-index: 800; display: flex; flex-direction: column; min-width: 0; background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-lg); box-shadow: var(--fx-shadow-lg); overflow: hidden; }
+.axp-cam-ov--dock-left { left: 0; top: 0; bottom: 0; border-radius: 0; }
+.axp-cam-ov--dock-right { right: 0; top: 0; bottom: 0; border-radius: 0; }
+.axp-cam-ov--dock-top { top: 0; left: 0; right: 0; border-radius: 0; }
+.axp-cam-ov--dock-bottom { bottom: 0; left: 0; right: 0; border-radius: 0; }
+.axp-cam-ov--pip { position: static; inset: auto; width: 100%; height: 100%; border: 0; border-radius: 0; box-shadow: none; }
+.axp-cam-ov__bar { display: flex; align-items: center; gap: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-sm); border-bottom: var(--fx-border-w) solid var(--fx-border); cursor: move; touch-action: none; user-select: none; }
+.axp-cam-ov.is-locked .axp-cam-ov__bar, .axp-cam-ov:not(.axp-cam-ov--dock-free) .axp-cam-ov__bar { cursor: default; }
+.axp-cam-ov__title { flex: 1; font-weight: var(--fx-type-weights-strong); font-size: var(--fx-type-root-sm); }
+.axp-cam-ov__buttons { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-sm); }
+.axp-cam-ov__btnwrap { position: relative; }
+.axp-cam-ov__menu { position: absolute; top: 100%; left: 0; z-index: 800; display: grid; min-width: calc(var(--fx-space) * 45); max-height: calc(var(--fx-space) * 80); overflow: auto; }
+.axp-cam-ov__list { flex: 1; min-height: 0; overflow: auto; padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-sm); }
+.axp-cam-ov__size { position: absolute; right: 0; bottom: 0; padding: var(--fx-dens-gap-xs); cursor: nwse-resize; touch-action: none; color: var(--fx-muted); }
+.axp-cam-ov-pill { position: fixed; left: var(--fx-dens-gap-md); bottom: var(--fx-dens-gap-md); z-index: 800; }

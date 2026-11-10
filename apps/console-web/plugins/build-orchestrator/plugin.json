@@ -395,19 +395,23 @@
         "route": "GET /pipeline/settings",
         "title": "Pipeline settings",
         "readOnly": true,
-        "description": "The dispatcher's settings, including the API overflow rule (apiOverflow) and which API accounts it may use.",
+        "description": "The dispatcher's settings, including the one account order it follows (order: subscriptions and API keys alike) and which API accounts it may use.",
         "output": "{ settings }"
       },
       {
         "id": "pipeline-settings-set",
         "route": "POST /pipeline/settings",
         "title": "Change pipeline settings",
-        "description": "Change dispatcher settings. apiOverflow = when every subscription account is full or out, send builds to an API-key account (off by default; turning it on is Brett's own click, anyone may turn it off).",
+        "description": "Change dispatcher settings. order = the one account order (account names, first = tried first; API keys are entries like any subscription). Adding an API account to the order or moving one earlier is Brett's own click (it bills per token); anyone may move one later or take it out. Empty order = subscriptions only.",
         "input": {
           "type": "object",
           "properties": {
-            "apiOverflow": {
-              "type": "boolean"
+            "order": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "account names in order (voice: 'put hulu-api after account 3')"
             },
             "apiAccounts": {
               "type": "array",

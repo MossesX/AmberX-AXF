@@ -3,7 +3,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { FOLDER, ID } from './api';
 import { findHost, newTab, openFromContext } from './open';
 import { ConnectDialog, ConnectionDialog } from './connections';
-import { getSettings } from './api';
+import { getSettings, parseOpen } from './api';
 import { applyProfile } from './profiles';
 import { AppearancePanel, BehaviourPanel, HeadlessPanel, ProfilesPanel } from './look';
 import { ClaudePanel, GeneralPanel, MoshiPanel, SessionsPanel, VpsPanel } from './panels';
@@ -58,6 +58,8 @@ export const plugin: AxfWebLibrary = {
     // sessions nav (Nov 3 2026): mirror a session read-only, or jump in (writable; a chat opens claude.ai); args [name, where]
     rt.actions.register('terminal.mirror', ([name, where]) => void openByName(rt, String(name ?? ''), String(where ?? ''), false), { label: 'Mirror a session (read-only)', params: true });
     rt.actions.register('terminal.jump', ([name, where]) => void openByName(rt, String(name ?? ''), String(where ?? ''), true), { label: 'Jump into a session', params: true });
+    // any tab by its Open (JSON, URI-encoded): other plugins' "open this in the Terminal" (e.g. Claude Code as one account)
+    rt.actions.register('terminal.tab', ([raw = '']) => { const o = parseOpen(decodeURIComponent(String(raw))); if (o && typeof o.kind === 'string') newTab(rt, o); }, { label: 'Open a Terminal tab', params: true, searchable: false });
     rt.actions.register('terminal.sessions', () => { if (!findHost(rt)) openFromContext(rt); else rt.toast('The sessions list is on the left of the terminal window', 'info'); }, { label: 'Terminal sessions' });
     watchHubRuns(rt); // approved VPS / shell commands open here once they've run (setting showHubRuns)
     watchHeadless(rt); // headless Claude Code sessions on the VPS get a tab here, quietly by default (settings showHeadless, newSession)

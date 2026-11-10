@@ -21,7 +21,7 @@
  * host tick writes (status.accountsFrom says which, and how old).
  *   … account <name> [--fable on|off|auto] [--parallel n] [--use on|off]   the pipeline's own record of an account
  *   … probe <name>                 ask the account's login whether it can run Fable (one tiny call), recorded for probeDays
- *   … settings [--json] | set k=v…  pipeline settings (pipeline-settings@1; apiOverflow=true|false is the overflow rule)
+ *   … settings [--json] | set k=v…  pipeline settings (pipeline-settings@1; order=a,b,c is the one account order, API accounts included)
  *   … request --title T [--detail D | --detail-file F] [--said S] [--priority P0-P3] [--route api|subscription] [--queue] [--by who]
  *                                  file a build with the orchestrator (the id is assigned here) and, with --queue, put it in the
  *                                  Queue. Every former launch path (Build manager Start, Fix with Claude, feature assist) calls this.
@@ -31,8 +31,9 @@
  * One way to start builds (Brett, Nov 9 2026: "It has to be the orchestrator"): the tick is the only caller of the
  * launcher for a build. It issues a one-build dispatch token (framework/cli/dispatch-gate.mjs) and passes it in
  * AXF_DISPATCH_TOKEN; claude-headless.sh refuses a build launch without one.
- * API jobs: a build goes to an API-key account (hulu-api, mossesx-api…) by its per-build override (route api) or the
- * overflow rule (apiOverflow, off by default), only with a key, under its caps (pipeline-core.mjs routeFor()).
+ * API jobs: a build goes to an API-key account (hulu-api, mossesx-api…) when it is the first ready account in the one
+ * account order (setting order) or by its per-build override (route api), only with a key, under its caps
+ * (pipeline-core.mjs routeFor()).
  * Watchdog hook: afterTick(fn) registers fn({ state, plan, launched, ended, failed }) to run at the end of every tick
  * (build running-builds-watchdog plugs in here; a hook that throws is logged and never stops the tick).
  * Shipped manifests: the first hook ships every newly landed build's shipped-manifest@1 to Shipped features.
@@ -509,7 +510,7 @@ export function tick({ env = process.env } = {}) {
       const r = launch(b, l, { rules, env });
       const runs = (b.pipeline?.runs ?? 0) + 1;
       setPipeline(b.id, { account: l.account, session: r.session, slot: r.slot, model: l.model, launchedAt: nowIso(), dispatchedAt: nowIso(), runs, note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : r.lookWait ? 'waiting for the predicted look approval in UI Review' : '' },
-        { status: 'running', note: `Started run ${runs} on ${l.account}${l.kind === 'api' ? ` (API key, ${l.rule === 'override' ? 'this build is set to API' : 'overflow rule'})` : ''} (${l.model}${l.phase ? `, ${l.phase}` : ''}): ${r.session || 'queued in agent slots'}.`, action: 'pipeline:launch' });
+        { status: 'running', note: `Started run ${runs} on ${l.account}${l.kind === 'api' ? ` (API key, ${l.rule === 'override' ? 'this build is set to API' : 'next in the account order'})` : ''} (${l.model}${l.phase ? `, ${l.phase}` : ''}): ${r.session || 'queued in agent slots'}.`, action: 'pipeline:launch' });
       if (!b.branch) withStore((s) => { const rec = storeCore.findBuild(s, b.id); if (rec && !rec.branch) rec.branch = `claude/${b.id}`; return s; }, { by: 'pipeline', action: 'pipeline:branch', note: b.id });
       alert('launched', { id: b.id, title: b.title, account: l.account, model: l.model, phase: l.phase, session: r.session });
       launched.push({ ...l, session: r.session, dir: r.dir });
@@ -591,7 +592,7 @@ export function request({ title, detail = '', said = '', priority = '', route = 
 export function setRoute(id, route, { by = process.env.AXF_ACTOR || 'console' } = {}) {
   const r = route === 'auto' ? '' : route;
   if (!BP.ROUTES.includes(r)) throw Object.assign(new Error('route is api, subscription or auto'), { code: 2 });
-  const out = setPipeline(id, { route: r }, { note: `Runs on ${r === 'api' ? 'API-key accounts only (billed per token, under their caps)' : r === 'subscription' ? 'subscription accounts only' : 'the default accounts (subscriptions; API only by the overflow rule)'} (${by}).`, by, action: 'pipeline:route' });
+  const out = setPipeline(id, { route: r }, { note: `Runs on ${r === 'api' ? 'API-key accounts only (billed per token, under their caps)' : r === 'subscription' ? 'subscription accounts only' : 'the default accounts (the account order, API keys included)'} (${by}).`, by, action: 'pipeline:route' });
   logLine({ event: 'route', build: id, route: r || 'auto', by });
   return out;
 }
@@ -631,7 +632,7 @@ async function main(argv) {
     return out(s, [
       `Pipeline · ${s.at} · slots ${s.slots.used}/${s.slots.cap} (${s.slots.free} free)${s.slots.unavailable ? ' (no slots store here)' : ''}`,
       `Accounts: ${s.accounts.map((a) => `${a.name}${a.kind === 'api' ? ' [API]' : ''} ${a.fable ? 'Fable' : 'Opus'} ${a.running}/${a.parallel}${a.kind === 'api' ? (a.api?.usable ? '' : ` (${a.api?.why})`) : a.usable ? '' : ` (${a.why})`}`).join(' · ') || 'none'}`,
-      `API overflow: ${s.settings.apiOverflow ? 'on' : 'off'}`,
+      `Account order: ${s.settings.order.length ? s.settings.order.join(' → ') : 'not set (subscriptions only)'}`,
       `Pending (${s.table.pending.length})`, ...s.table.pending.map(line),
       `Queue (${s.table.queued.length})`, ...s.table.queued.map(line),
       `Building (${s.table.building.length})`, ...s.table.building.map(line),

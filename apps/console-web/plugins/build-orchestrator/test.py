@@ -80,7 +80,9 @@ def _fake_run(cmd, **kw):  # noqa: ANN001
         return _Proc('{"ok":false,"error":"no build \"no-such-build\""}', 2)
     if "refused" in cmd:
         return _Proc('{"ok":false,"error":"refused is complete: only a Pending build can be queued"}', 2)
-    return _Proc('{"ok":true,"table":{"pending":[],"queued":[],"building":[]},"accounts":[],"slots":{"used":0,"cap":3,"free":3},"plan":{"launches":[],"waits":[],"idle":null}}')
+    if cmd[2:3] == ["settings"]:
+        return _Proc('{"ok":true,"settings":{"order":["w-max","hulu-api"]}}')
+    return _Proc('{"ok":true,"table":{"pending":[],"queued":[],"building":[]},"accounts":[{"name":"w-max","kind":"subscription"},{"name":"hulu-api","kind":"api"},{"name":"other-api","kind":"api"}],"slots":{"used":0,"cap":3,"free":3},"plan":{"launches":[],"waits":[],"idle":null}}')
 
 
 _real_run = srv.subprocess.run
@@ -118,14 +120,19 @@ try:
     svc.request("Fix systems check: mosh", "Install mosh.", by="systems-check", source="systems-check", priority="P1", queue=True)
     cmd = _calls[-1]
     check(cmd[2] == "request" and "--queue" in cmd and cmd[cmd.index("--priority") + 1] == "P1" and cmd[cmd.index("--by") + 1] == "systems-check" and "--detail-file" in cmd, "request: title, detail in a file, priority, by, straight to the Queue")
-    for body, brett, want in (({"apiOverflow": True}, False, 403), ({"apiOverflow": False}, False, 200), ({"apiOverflow": True}, True, 200)):
+    cases = ((["w-max", "hulu-api"], False, 200, "same order by a session"), (["w-max"], False, 200, "a session takes an API account out"),
+             (["hulu-api", "w-max"], False, 403, "a session moves an API account earlier"), (["w-max", "hulu-api", "other-api"], False, 403, "a session adds an API account"),
+             (["hulu-api", "w-max", "other-api"], True, 200, "Brett puts API accounts anywhere"))
+    for order, brett, want, what in cases:
         try:
-            asyncio.run(srv.pipeline_settings_set(_Req(body, brett)))
+            asyncio.run(srv.pipeline_settings_set(_Req({"order": order}, brett)))
             code = 200
         except srv.HTTPException as e:
             code = e.status_code
-        check(code == want, f"API overflow {'on' if body['apiOverflow'] else 'off'} by {'Brett' if brett else 'a session'}: {want}")
-    check(_calls[-1][-2] == "apiOverflow=true", "a Python bool reaches the CLI as true/false")
+        check(code == want, f"order: {what}: {want}")
+    check(_calls[-1][-2] == "order=hulu-api,w-max,other-api", "the order reaches the CLI as one comma list")
+    check(srv.order_raises_api(["a", "x-api"], ["x-api", "a"], {"x-api"}) == ["x-api"] and srv.order_raises_api(["x-api", "a"], ["a", "x-api"], {"x-api"}) == [], "moving an API account later is free; earlier is Brett's")
+    check(hasattr(svc, "set_order") and hasattr(svc, "accounts") and hasattr(svc, "order"), "axf.build-dispatch@1 reads and sets the account order")
     for route, brett, want in (("api", False, 403), ("api", True, 200), ("subscription", False, 200), ("nowhere", True, 400)):
         try:
             asyncio.run(srv.pipeline_route(_Req({"id": "alpha", "route": route}, brett)))

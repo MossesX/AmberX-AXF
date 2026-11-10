@@ -2268,5 +2268,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "Orchestrator tick ships each landed build's manifest; ledger shows it per entry; API/MCP/CLI/voice/deep link; backfill --since. Kotlin twin deferred."
+  },
+  "cx.claude.accountsmanager": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Claude accounts manager plugin: one ordered list of every account (subscription + API, no overflow rule), usage in % and $, drag-and-drop order the orchestrator follows, rename/add via Terminal, Claude Code per account, Terminal column, banner widget, floating overlay; REST/MCP/CLI/voice/deep link. Kotlin twin deferred."
   }
 }

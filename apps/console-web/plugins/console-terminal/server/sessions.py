@@ -294,11 +294,13 @@ class Manager:
                 remote = attach_script(attach, read_only)
                 tmux, where = attach, "vps"
             elif tab_tmux:
-                remote = tmux_script(tab_tmux, "exec \"${SHELL:-bash}\" -l", cwd, cols, rows,
-                                     fallback=(f"cd -- {shlex.quote(cwd)} 2>/dev/null; " if cwd else "") + "exec \"${SHELL:-bash}\" -l")
+                first = setup_script(str(req.get("setup") or ""))  # add-an-account: the sign-in or the key prompt, then the shell
+                remote = tmux_script(tab_tmux, first + "exec \"${SHELL:-bash}\" -l", cwd, cols, rows,
+                                     fallback=(f"cd -- {shlex.quote(cwd)} 2>/dev/null; " if cwd else "") + first + "exec \"${SHELL:-bash}\" -l")
                 tmux, where = tab_tmux, "vps"
             else:
-                remote = f"cd -- {shlex.quote(cwd)} 2>/dev/null; exec \"${{SHELL:-bash}}\" -l" if cwd else "exec \"${SHELL:-bash}\" -l"
+                first = setup_script(str(req.get("setup") or ""))
+                remote = (f"cd -- {shlex.quote(cwd)} 2>/dev/null; " if cwd else "") + first + "exec \"${SHELL:-bash}\" -l"
             be = PtyBackend(vps_argv(st, remote, tty=True), str(cx.ROOT), clean_env(), cols, rows)
             title, target, badge = (f"Claude: {attach[4:]}" if attach else "VPS"), vps["host"], "HOST ROOT"
         elif kind == "claude":
@@ -334,10 +336,11 @@ class Manager:
                 if not vps.get("host") or not store.ssh_key().exists():
                     raise ValueError("set up the VPS tab first (Settings → Plugins → Terminal → VPS host: host + a key)")
                 run = " ".join(shlex.quote(x) for x in ["claude", *cargs])
+                pre = account_login(str(req.get("account") or ""))  # a saved account's own login copy, '' = the active one
                 remote = (f"cd -- {shlex.quote(cwd)} 2>/dev/null; " if cwd else "") + \
-                    f"command -v claude >/dev/null 2>&1 || {{ echo 'Claude Code is not installed on the VPS host.'; exec \"${{SHELL:-bash}}\" -l; }}; exec {run}"
+                    f"command -v claude >/dev/null 2>&1 || {{ echo 'Claude Code is not installed on the VPS host.'; exec \"${{SHELL:-bash}}\" -l; }}; {pre}exec {run}"
                 if tab_tmux:
-                    inner = f"command -v claude >/dev/null 2>&1 || {{ echo 'Claude Code is not installed on the VPS host.'; exec \"${{SHELL:-bash}}\" -l; }}; exec {run}"
+                    inner = f"command -v claude >/dev/null 2>&1 || {{ echo 'Claude Code is not installed on the VPS host.'; exec \"${{SHELL:-bash}}\" -l; }}; {pre}exec {run}"
                     remote = tmux_script(tab_tmux, inner, cwd, cols, rows, fallback=remote)
                     tmux, where = tab_tmux, "vps"
                 be = PtyBackend(vps_argv(st, remote, tty=True), str(cx.ROOT), clean_env(), cols, rows)
@@ -501,6 +504,43 @@ def kill_tmux(name: str, where: str) -> dict[str, Any]:
     if r.returncode != 0:
         raise KeyError(((r.stderr or "").strip().splitlines() or ["no such session"])[-1][:200])
     return {"ok": True, "name": name}
+
+
+ACCOUNT_RE = re.compile(r"[a-z0-9][a-z0-9-]{0,31}")
+LOGIN_CLI = "/opt/axf/deploy/claude-login.mjs"
+LOGIN_DIR = "/var/tmp/axf-term-logins"
+
+
+def account_login(name: str) -> str:
+    """Shell lines (VPS host) that run the next command as a saved Claude account: a private copy of its login
+    (deploy/claude-login.mjs snapshot, the same copy a headless build gets), so the active login is never touched and a
+    token refresh is saved back. '' = the active account. The name is checked; nothing else reaches the shell. Pure."""
+    name = (name or "").strip()
+    if not name:
+        return ""
+    if not ACCOUNT_RE.fullmatch(name):
+        raise ValueError("account is a saved account name (lower-case letters, digits, dashes)")
+    return (f'eval "$(node {LOGIN_CLI} snapshot --dir {LOGIN_DIR} --session term-{name} --account {name} --sh)" || '
+            f'{{ echo "Could not load the login of {name}."; exec "${{SHELL:-bash}}" -l; }}; '
+            'export CLAUDE_CONFIG_DIR="$login_dir"; . "$login_dir/token.env"; ')
+
+
+def setup_script(setup: str) -> str:
+    """The first thing a VPS host tab runs when an account is being added (Claude accounts manager), before its shell:
+      login:<name>    `claude auth login` in the account's own folder (~/.claude-accounts/<name>), so the live login and
+                      every other account are never touched (the same script as claude-workers.mjs signin)
+      savekey:<name>  `claude-account savekey <name>`: the API key is pasted at the host's hidden prompt, never here
+    Fixed commands plus a checked name; '' = nothing. Pure."""
+    setup = (setup or "").strip()
+    if not setup:
+        return ""
+    op, _, name = setup.partition(":")
+    if op not in ("login", "savekey") or not ACCOUNT_RE.fullmatch(name):
+        raise ValueError("setup is login:<name> or savekey:<name>")
+    if op == "savekey":
+        return f"/usr/local/bin/claude-account savekey {name}; "
+    return (f'( d="$HOME/.claude-accounts/{name}"; mkdir -p "$d" && chmod 700 "$d" && export PATH="$HOME/.local/bin:$PATH" CLAUDE_CONFIG_DIR="$d" && '
+            f'unset CLAUDE_CODE_OAUTH_TOKEN ANTHROPIC_API_KEY && echo "Signing in {name}: finish the login below." && claude auth login ); ')
 
 
 CLAUDE_FLAG = re.compile(r"^--?[A-Za-z][A-Za-z0-9-]*(=[^\x00]*)?$")

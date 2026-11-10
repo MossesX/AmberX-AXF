@@ -216,6 +216,13 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 ## To carry on
 
+### Claude accounts manager (`claude-accounts-manager-plugin-one-ordered-list`, Opus) — branch `claude/claude-accounts-manager-plugin-one-ordered-list`
+
+- **Asked:** one ordered list of every Claude account on the VPS (subscription + API, no API fallback), usage in dollars, drag-and-drop order, rename/add via the Terminal, Claude Code per account, Terminal column, banner widget, floating overlay. Full words in the report.
+- **Done:** plugin `claude-accounts-manager`; orchestrator `order` setting replaces `apiOverflow` (Brett's click to add an API account or move one earlier); Terminal slot `terminal.side`, `terminal.tab`, `Open.account` / `Open.setup`; `axf.claude-usage@1`. Tests green.
+- **Left:** UI Review shots once a preview of the branch is up; the merge queue.
+- **Read first:** `_claude/builds/reports/claude-accounts-manager-plugin-one-ordered-list.md`, `apps/console-web/plugins/claude-accounts-manager/README.md`.
+
 ### Skins cover every asset type, at any scope (`skins-asset-types`)
 
 - **Asked (in full):** Brett (voice, Nov 7 2026): "What about skins? How's skins doing? Is skins gonna um, be upgraded since we've we've made um so many more asset types?" Brief: upgrade the skins system so it styles every asset type in the registry (embeddable widget, icon pack, composite assets, data set bar, embed, text blocks / labels); skins at any scope global / app / UI / plugin with child-overrides-parent inheritance (the design / icon pack model); a skin is a design pack that may reference an icon pack; the type list comes from the registry dynamically with a CI check that fails on an uncovered type; voice + API / MCP / CLI parity; at least 3 UI options to UI Review first.
