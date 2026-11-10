@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3007,
- "updatedAt": "2026-11-10T23:24:00.603Z",
+ "rev": 3008,
+ "updatedAt": "2026-11-10T23:24:19.882Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -153430,7 +153430,7 @@
    "title": "API accounts need no approval: builds route there like any other account (spend caps still apply)",
    "category": "",
    "detail": "Remove the owner-click requirement for routing builds to API-key accounts (pipeline_route api, overflow, voice/API). API accounts are treated like any other account in the order: builds go there automatically with no approval. Keep the daily/weekly spend caps and the 80% alert as the safety net; when a cap is hit, stop sending there and notify on AmberX. Supersedes the confirm-approval rule for API runs in token-usage-log s10.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -153439,7 +153439,7 @@
    "priority": "P0",
    "createdAt": "2026-11-10T21:02:31.264Z",
    "updatedAt": "2026-11-10T23:23:14.336Z",
-   "builtAt": "",
+   "builtAt": "2026-11-10T23:23:14.336Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -153599,12 +153599,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T23:19:55.698Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T21:03:49.492Z",
-     "updatedAt": "2026-11-10T21:03:49.492Z"
+     "updatedAt": "2026-11-10T23:19:55.867Z"
     }
    ],
    "profiles": [
