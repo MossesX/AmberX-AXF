@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2492,
- "updatedAt": "2026-11-10T16:51:25.716Z",
+ "rev": 2493,
+ "updatedAt": "2026-11-10T16:52:28.065Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -140693,12 +140693,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T16:51:08.892Z",
-   "updatedAt": "2026-11-10T16:51:10.898Z",
+   "updatedAt": "2026-11-10T16:52:25.257Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T16:51:10.898Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T16:52:25.257Z"
     }
    ],
    "approvals": [],
@@ -140725,13 +140729,89 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-10T16:52:25.257Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwaxhe0901k6r4",
+     "title": "",
+     "text": "Amends the conversation RAG build. Do NOT store or inject whole sessions (too costly). Store only brief two-field entries: key (the entry, e.g. a rule, mistake, or decision) and value (a one-line summary, e.g. what Claude failed to do and what to do instead). Briefs pull only the matching entries. Extraction by plain rules where possible; AI only behind its switch.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T16:52:25.257Z",
+     "updatedAt": "2026-11-10T16:52:25.257Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwaxhe0902vny9",
+     "title": "",
+     "text": "I don't need the whole entire session quoted and plugged in, that costs me a shitload of money. Just a brief summary of what you don't do. A two field RAG format, an entry and a value, that's it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T16:52:25.257Z",
+     "updatedAt": "2026-11-10T16:52:25.257Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwaxhe09039jas",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/conversation-rag-amendment-store-only-short-key.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/conversation-rag-amendment-store-only-short-key.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T16:52:25.257Z",
+     "updatedAt": "2026-11-10T16:52:25.257Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -140740,12 +140820,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T16:52:25.257Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

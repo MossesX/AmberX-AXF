@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 03:09 UTC · `file-watchdog-plugin-watch-files-run-scripts-or` note (all) · brett
 - 2026-11-10 03:09 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` note (all) · brett
 - 2026-11-10 03:10 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` added (0 steps) (all) · console
 - 2026-11-10 03:10 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` → queued, note (all) · console
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 16:51 UTC · `conversation-rag-amendment-store-only-short-key` added (0 steps) (all) · console
 - 2026-11-10 16:51 UTC · `conversation-rag-amendment-store-only-short-key` → queued, note (all) · console
 - 2026-11-10 16:51 UTC · `conversation-rag-index-every-voice-chat-session` note (all) · orchestrator
+- 2026-11-10 16:52 UTC · `conversation-rag-amendment-store-only-short-key` note (all) · orchestrator
 
 ## Token passes (log)
 
