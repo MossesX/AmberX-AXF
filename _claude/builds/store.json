@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2379,
- "updatedAt": "2026-11-10T15:17:05.496Z",
+ "rev": 2380,
+ "updatedAt": "2026-11-10T15:17:17.681Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -128074,15 +128074,15 @@
    "title": "Prompt caching and Batch API support in the build orchestrator",
    "category": "",
    "detail": "Add Anthropic prompt caching (cache_control on system prompt, tools and stable context) and Message Batches API support to the build orchestrator, so jobs it sends to API-key accounts use them. Batch path for non-urgent jobs, normal path for urgent ones. Report cache hits and batch savings in cost tracking.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/prompt-caching-and-batch-api-support-in-the-buil",
-   "pr": "",
+   "pr": "#444",
    "priority": "P2",
    "createdAt": "2026-11-09T16:02:30.370Z",
-   "updatedAt": "2026-11-10T15:17:04.092Z",
+   "updatedAt": "2026-11-10T15:17:16.424Z",
    "builtAt": "",
    "notes": [
     {
@@ -128187,7 +128187,7 @@
    "pipeline": {
     "queuedAt": "2026-11-09T16:02:31.432Z",
     "queuedBy": "console",
-    "account": "",
+    "account": "account-1",
     "session": "",
     "slot": "",
     "model": "Opus",
@@ -128209,7 +128209,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "released by the self-check (nothing ran): back in the Queue",
+    "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "api",
     "dispatchedAt": "2026-11-09T18:10:30.633Z"
    },
