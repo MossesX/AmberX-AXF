@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2241,
- "updatedAt": "2026-11-10T03:09:41.043Z",
+ "rev": 2242,
+ "updatedAt": "2026-11-10T03:09:54.407Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -126832,7 +126832,7 @@
    "branch": "claude/amberx-floating-toolbar-always-on-top-mic-approvals-build-status",
    "pr": "",
    "createdAt": "2026-11-09T13:08:03.151Z",
-   "updatedAt": "2026-11-10T01:41:56.471Z",
+   "updatedAt": "2026-11-10T03:09:40.766Z",
    "builtAt": "",
    "notes": [
     {
@@ -126902,6 +126902,10 @@
     {
      "text": "amber asked to run this build on API account account-5 (request rr-mwa0yhwk-ym8b); it waits for Brett's approval.",
      "at": "2026-11-10T01:41:56.471Z"
+    },
+    {
+     "text": "Runs on API-key accounts only (billed per token, under their caps) (brett).",
+     "at": "2026-11-10T03:09:40.766Z"
     }
    ],
    "approvals": [],
@@ -126946,7 +126950,7 @@
     "split": null,
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
-    "route": "",
+    "route": "api",
     "dispatchedAt": "2026-11-09T20:25:15.903Z"
    },
    "steps": [
@@ -127047,7 +127051,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

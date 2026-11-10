@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 19:24 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` → running, note (all) · pipeline
 - 2026-11-09 19:24 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` branch claude/let-voice-api-route-a-build-to-an-api-account-wi (all) · pipeline
 - 2026-11-09 19:25 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → failed, note (all) · pipeline
 - 2026-11-09 19:25 UTC · `home-page-build-queue-card-opens-the-orchestrato` → running, note (all) · pipeline
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 03:09 UTC · `home-page-build-queue-card-opens-the-orchestrato` note (all) · brett
 - 2026-11-10 03:09 UTC · `prompt-caching-and-batch-api-support-in-the-buil` note (all) · brett
 - 2026-11-10 03:09 UTC · `file-watchdog-plugin-watch-files-run-scripts-or` note (all) · brett
+- 2026-11-10 03:09 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` note (all) · brett
 
 ## Token passes (log)
 
