@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 04:32 UTC · `resolve-merge-conflicts-and-land-running-builds` s3 done, → built (all) · orchestrator
 - 2026-11-10 04:32 UTC · `resolve-merge-conflicts-and-land-running-builds` note (all) · orchestrator
 - 2026-11-10 04:32 UTC · `auto-land-every-build-the-moment-it-finishes-red` note (all) · orchestrator
 - 2026-11-10 04:33 UTC · `resolve-merge-conflicts-and-land-running-builds` note (all) · builds-live
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 17:46 UTC · `split-builds-pages-build-manager-pending-complet-2` note (all) · builds-live
 - 2026-11-10 17:47 UTC · `home-page-build-queue-card-opens-the-orchestrato` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-10 17:47 UTC · `home-page-build-queue-card-opens-the-orchestrato` note (all) · builds-live
+- 2026-11-10 17:47 UTC · `conversation-rag-amendment-store-only-short-key` → running, note (all) · pipeline
 
 ## Token passes (log)
 
