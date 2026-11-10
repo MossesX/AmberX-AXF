@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 00:58 UTC · `account-failover-chain-subscription-next-subscri` → running, note (all) · pipeline
 - 2026-11-10 00:58 UTC · `account-failover-chain-subscription-next-subscri` note (all) · orchestrator
 - 2026-11-10 01:00 UTC · `account-failover-chain-subscription-next-subscri` s1 done, → running (all) · orchestrator
 - 2026-11-10 01:00 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (all) · orchestrator
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 15:26 UTC · `claude-accounts-manager-plugin-one-ordered-list` → queued, note (all) · builds-live
 - 2026-11-10 15:26 UTC · `approval-page-allow-all-deny-all-for-a-set-time` added (0 steps) (all) · console
 - 2026-11-10 15:26 UTC · `claude-accounts-manager-plugin-one-ordered-list` note (all) · orchestrator
+- 2026-11-10 15:27 UTC · `claude-accounts-manager-plugin-one-ordered-list` note (all) · builds-live
 
 ## Token passes (log)
 
