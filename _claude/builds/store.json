@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2172,
- "updatedAt": "2026-11-10T01:41:57.845Z",
+ "rev": 2173,
+ "updatedAt": "2026-11-10T01:42:16.307Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -128041,7 +128041,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T16:02:30.370Z",
-   "updatedAt": "2026-11-10T00:49:03.427Z",
+   "updatedAt": "2026-11-10T01:41:57.125Z",
    "builtAt": "",
    "notes": [
     {
@@ -128103,6 +128103,10 @@
     {
      "text": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
      "at": "2026-11-10T00:49:03.427Z"
+    },
+    {
+     "text": "amber asked to run this build on API account account-5 (request rr-mwa0yhwk-ym8b); it waits for Brett's approval.",
+     "at": "2026-11-10T01:41:57.125Z"
     }
    ],
    "approvals": [],
@@ -128144,7 +128148,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
+    "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "",
     "dispatchedAt": "2026-11-09T18:10:30.633Z"
    },
@@ -128227,7 +128231,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -128990,7 +128994,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T17:48:20.032Z",
-   "updatedAt": "2026-11-10T00:49:06.631Z",
+   "updatedAt": "2026-11-10T01:41:57.792Z",
    "builtAt": "",
    "notes": [
     {
@@ -129076,6 +129080,10 @@
     {
      "text": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
      "at": "2026-11-10T00:49:06.631Z"
+    },
+    {
+     "text": "amber asked to run this build on API account account-5 (request rr-mwa0yhwk-ym8b); it waits for Brett's approval.",
+     "at": "2026-11-10T01:41:57.792Z"
     }
    ],
    "approvals": [],
@@ -129117,7 +129125,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
+    "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "",
     "dispatchedAt": "2026-11-09T18:05:17.080Z"
    },
@@ -129200,7 +129208,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -129415,7 +129423,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T17:50:55.358Z",
-   "updatedAt": "2026-11-10T00:49:07.850Z",
+   "updatedAt": "2026-11-10T01:41:58.521Z",
    "builtAt": "",
    "notes": [
     {
@@ -129453,6 +129461,10 @@
     {
      "text": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
      "at": "2026-11-10T00:49:07.850Z"
+    },
+    {
+     "text": "amber asked to run this build on API account account-5 (request rr-mwa0yhwk-ym8b); it waits for Brett's approval.",
+     "at": "2026-11-10T01:41:58.521Z"
     }
    ],
    "approvals": [],
@@ -129494,7 +129506,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
+    "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "",
     "dispatchedAt": "2026-11-09T18:09:09.055Z"
    },
@@ -129753,7 +129765,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -129995,7 +130007,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T18:43:22.318Z",
-   "updatedAt": "2026-11-10T00:49:09.818Z",
+   "updatedAt": "2026-11-10T01:41:59.289Z",
    "builtAt": "",
    "notes": [
     {
@@ -130057,6 +130069,10 @@
     {
      "text": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
      "at": "2026-11-10T00:49:09.818Z"
+    },
+    {
+     "text": "amber asked to run this build on API account account-5 (request rr-mwa0yhwk-ym8b); it waits for Brett's approval.",
+     "at": "2026-11-10T01:41:59.289Z"
     }
    ],
    "approvals": [],
@@ -130098,7 +130114,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
+    "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "",
     "dispatchedAt": "2026-11-09T18:49:06.246Z"
    },
@@ -130181,7 +130197,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -130649,7 +130665,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T19:10:08.745Z",
-   "updatedAt": "2026-11-10T00:49:11.829Z",
+   "updatedAt": "2026-11-10T01:41:59.886Z",
    "builtAt": "",
    "notes": [
     {
@@ -130711,6 +130727,10 @@
     {
      "text": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
      "at": "2026-11-10T00:49:11.829Z"
+    },
+    {
+     "text": "amber asked to run this build on API account account-5 (request rr-mwa0yhwk-ym8b); it waits for Brett's approval.",
+     "at": "2026-11-10T01:41:59.886Z"
     }
    ],
    "approvals": [],
@@ -130752,7 +130772,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
+    "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "",
     "dispatchedAt": "2026-11-09T19:13:07.725Z"
    },
@@ -130835,7 +130855,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -130859,7 +130879,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T19:21:03.353Z",
-   "updatedAt": "2026-11-10T00:49:12.481Z",
+   "updatedAt": "2026-11-10T01:42:01.814Z",
    "builtAt": "",
    "notes": [
     {
@@ -130921,6 +130941,10 @@
     {
      "text": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (login expired)); resumes at s1 on the next working account.",
      "at": "2026-11-10T00:49:12.481Z"
+    },
+    {
+     "text": "amber asked to run this build on API account account-5 (request rr-mwa0yhwk-ym8b); it waits for Brett's approval.",
+     "at": "2026-11-10T01:42:01.814Z"
     }
    ],
    "approvals": [],
@@ -130962,7 +130986,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (login expired)); resumes at s1 on the next working account.",
+    "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "",
     "dispatchedAt": "2026-11-09T19:25:10.063Z"
    },
@@ -131045,7 +131069,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -131465,7 +131489,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T20:16:02.957Z",
-   "updatedAt": "2026-11-10T00:49:13.657Z",
+   "updatedAt": "2026-11-10T01:42:03.144Z",
    "builtAt": "",
    "notes": [
     {
@@ -131527,6 +131551,10 @@
     {
      "text": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (login expired)); resumes at s1 on the next working account.",
      "at": "2026-11-10T00:49:13.657Z"
+    },
+    {
+     "text": "amber asked to run this build on API account account-5 (request rr-mwa0yhwk-ym8b); it waits for Brett's approval.",
+     "at": "2026-11-10T01:42:03.144Z"
     }
    ],
    "approvals": [],
@@ -131590,7 +131618,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (login expired)); resumes at s1 on the next working account.",
+    "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "",
     "dispatchedAt": "2026-11-09T20:19:06.480Z"
    },
@@ -131673,7 +131701,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -133613,7 +133641,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T00:21:59.738Z",
-   "updatedAt": "2026-11-10T00:23:32.988Z",
+   "updatedAt": "2026-11-10T01:42:05.320Z",
    "builtAt": "",
    "notes": [
     {
@@ -133623,6 +133651,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T00:23:32.988Z"
+    },
+    {
+     "text": "amber asked to run this build on API account account-5 (request rr-mwa0yhwk-ym8b); it waits for Brett's approval.",
+     "at": "2026-11-10T01:42:05.320Z"
     }
    ],
    "approvals": [],
@@ -133657,7 +133689,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "",
     "dispatchedAt": ""
    },
@@ -133740,7 +133772,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -133910,12 +133942,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-10T00:50:40.704Z",
-   "updatedAt": "2026-11-10T00:50:44.359Z",
+   "updatedAt": "2026-11-10T01:42:07.360Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by failed-launches-auto-retry-on-another-working-ac.",
      "at": "2026-11-10T00:50:44.359Z"
+    },
+    {
+     "text": "amber asked to run this build on API account account-5 (request rr-mwa0yhwk-ym8b); it waits for Brett's approval.",
+     "at": "2026-11-10T01:42:07.360Z"
     }
    ],
    "approvals": [],
@@ -133932,7 +133968,7 @@
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "",
     "dispatchedAt": ""
    },
@@ -134012,7 +134048,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -134035,12 +134071,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-10T00:50:42.579Z",
-   "updatedAt": "2026-11-10T00:50:45.845Z",
+   "updatedAt": "2026-11-10T01:42:08.271Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by failed-launches-auto-retry-on-another-working-ac.",
      "at": "2026-11-10T00:50:45.845Z"
+    },
+    {
+     "text": "amber asked to run this build on API account account-5 (request rr-mwa0yhwk-ym8b); it waits for Brett's approval.",
+     "at": "2026-11-10T01:42:08.271Z"
     }
    ],
    "approvals": [],
@@ -134057,7 +134097,7 @@
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "",
     "dispatchedAt": ""
    },
@@ -134137,7 +134177,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
