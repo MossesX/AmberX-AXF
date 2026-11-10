@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T15:18:23.439Z",
+ "updatedAt": "2026-11-10T15:25:49.994Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -84343,6 +84343,37 @@
      "uid": "st-mwa74ba206jkok"
     }
    ]
+  },
+  {
+   "id": "claude-accounts-manager-plugin-one-ordered-list",
+   "title": "Claude Accounts Manager plugin: one ordered list of every account (subscription + API), usage in dollars, terminal column, banner widget, floating overlay",
+   "category": "",
+   "detail": "New console plugin. 1) ACCOUNTS LIST: reads every Claude account stored on the VPS and lists each: name/label, email, plan, subscription or API, active builder / active worker / not, out of credits, order number, usage used / total, percent left, plan size; usage converted to dollars everywhere usage is shown. 2) ONE ORDER: drag and drop to set the order; subscriptions and API keys are equal to the orchestrator, it follows the order. Remove the 'fall back to API' concept (apiOverflow); API is just another entry. 3) MANAGE: rename, rearrange, add accounts (API keys or subscriptions) in the console; adding opens the terminal and automatically attempts the Claude login. Right-click any account anywhere: rename, reorder, open a Claude Code session in the terminal. 4) TERMINAL COLUMN: plugin adds a collapsible column (hamburger button) to the Terminal listing all VPS Claude accounts with the same management. Uninstalling the plugin removes the column. 5) BANNER WIDGET: drop-down to pick an account; settings choose what it shows (name, number, usage left, API/subscription, email, any combination). 6) FLOATING OVERLAY WINDOW (not a toolbar): small narrow professional window with customizable buttons; editable behavior and sub-menus in plugin settings; resizable, size lock, dockable where the console allows, minimize to main screen, overlay scope (whole OS vs just the console/browser), styleable like any asset. 7) Full API control for everything.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T15:25:48.900Z",
+   "updatedAt": "2026-11-10T15:25:48.900Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Make a plugin that reads all the accounts stored on the VPS, lists them, says if they're active builders, workers, out of credits, API or not, number in the order, usage left, percentage, plan, usage in dollars. Drag and drop to arrange the order. API is no longer a fallback, it's included like any other. Rename, add accounts and APIs in the console; it pops up the terminal and attempts the login. Terminal gets a collapsible column of all Claude accounts, managed the same; the plugin adds that column. Configurable banner widget drop-down. Floating overlay window with custom buttons, editable behavior and sub-menus, resizable, lockable, dockable, minimizable, overlay the whole OS or just the console. Right-click any account to open a Claude Code session.",
+    "at": "2026-11-10T15:25:48.900Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

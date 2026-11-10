@@ -1253,6 +1253,18 @@
    "from": "brief",
    "addenda": []
   },
+  "claude-accounts-manager-plugin-one-ordered-list": {
+   "said": "Make a plugin that reads all the accounts stored on the VPS, lists them, says if they're active builders, workers, out of credits, API or not, number in the order, usage left, percentage, plan, usage in dollars. Drag and drop to arrange the order. API is no longer a fallback, it's included like any other. Rename, add accounts and APIs in the console; it pops up the terminal and attempts the login. Terminal gets a collapsible column of all Claude accounts, managed the same; the plugin adds that column. Configurable banner widget drop-down. Floating overlay window with custom buttons, editable behavior and sub-menus, resizable, lockable, dockable, minimizable, overlay the whole OS or just the console. Right-click any account to open a Claude Code session.",
+   "at": "2026-11-10T15:25:48.900Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "claude-badge-vps": {
    "said": "I need a setting in the Claude badge plugin that has a VPS connection and a console connection, and I need to be able to put them on icons only and select which icons for each one.",
    "at": "2026-11-06T20:18:34.992Z",

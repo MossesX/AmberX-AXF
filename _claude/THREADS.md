@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 00:56 UTC · `failed-launches-auto-retry-on-another-working-ac` s2 done (all) · orchestrator
 - 2026-11-10 00:57 UTC · `failed-launches-auto-retry-on-another-working-ac` PR #424 (all) · builds-live
 - 2026-11-10 00:57 UTC · `failed-launches-auto-retry-on-another-working-ac` note (all) · orchestrator
 - 2026-11-10 00:57 UTC · `failed-launches-auto-retry-on-another-working-ac` s3 done, → built (all) · orchestrator
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 15:17 UTC · `prompt-caching-and-batch-api-support-in-the-buil` note (all) · orchestrator
 - 2026-11-10 15:18 UTC · `file-watchdog-plugin-watch-files-run-scripts-or` → running, note (all) · pipeline
 - 2026-11-10 15:18 UTC · `file-watchdog-plugin-watch-files-run-scripts-or` note (all) · orchestrator
+- 2026-11-10 15:25 UTC · `claude-accounts-manager-plugin-one-ordered-list` added (0 steps) (all) · console
 
 ## Token passes (log)
 
