@@ -623,6 +623,23 @@ check(g["ok"] and next(x for x in mod._submitted(mod._items_doc()) if x["id"] ==
 check(ac.post("/a/alarm/go", json={"id": third["id"]}).status_code == 409, "Go now: only waiting items")
 check(ac.post("/a/alarm/undo", json={"id": third["id"]}).status_code == 200 and next(x for x in mod._submitted(mod._items_doc()) if x["id"] == third["id"])["status"] == "waiting" and len(builds) == 2, "undo re-opens it, no follow-up build")
 check(ac.post("/a/alarm/undo", json={"id": third["id"]}).status_code == 409, "undo: only auto-approved items")
+# s2 "Does UI review hold shit up?": every UI Review gate a build waits on lets go after the timeout
+c.put("/p/settings", json={"waitForLook": True})
+lk = c.post("/p/predict", json={"build": "slow-look", "name": "Slow look: Grid", "app": "Console", "screen": "Grid", "kind": "screen", "source": "headless",
+                                "submittedBy": "build:slow-look", "group": "slow-look - predicted", "branch": "claude/slow-look", "prediction": {**PRED, "build": "slow-look"}, "files": PFILES}).json()["item"]
+check(c.get("/p/predicted?build=slow-look").json()["verdict"]["wait"], "look approval on: the build waits for its predicted look")
+NOW[0] = time.time() + 61 * 60
+ac.post("/a/alarm/tick")
+vl = c.get("/p/predicted?build=slow-look").json()["verdict"]
+check(vl["go"] and vl["look"] == "approved", f"after the timeout the look is approved and the build starts ({vl})")
+check(next(x for x in mod._submitted(mod._items_doc()) if x["id"] == lk["id"])["history"][-1]["by"] == A.BY, "marked as the timeout's decision")
+held = c.post("/p/submit", json={**TB, "branch": "claude/held", "name": "Held", "files": SET, "singleOption": "one screen"}).json()["item"]
+check(mod.state(branch="claude/held")["holds"] is True, "a waiting item holds its branch's merge")
+NOW[0] += 61 * 60
+ac.post("/a/alarm/tick")
+check(mod.state(branch="claude/held")["holds"] is False, "after the timeout the merge hold lifts: the PR lands")
+c.put("/p/settings", json={"waitForLook": False})
+
 ac.put("/a/alarm/settings", json={"enabled": False})
 NOW[0] += 999 * 60
 check(not ac.post("/a/alarm/tick").json()["events"], "timeout off: nothing goes ahead")
