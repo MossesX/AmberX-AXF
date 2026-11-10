@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T20:41:05.633Z",
+ "updatedAt": "2026-11-10T20:41:32.306Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -89812,7 +89812,7 @@
    "title": "Inline edit plugin: install in console, Molly and AmberX web (not Android); Molly never renders a plugin twice",
    "category": "",
    "detail": "Amends the inline element editing build. 1) Install the plugin in the console, Molly and AmberX web. Not the AmberX Android app. 2) Molly rule for every plugin: when a console page is open inside Molly, render the console's plugin only if Molly doesn't already have that plugin, so nothing ever renders twice.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -89820,7 +89820,7 @@
    "pr": "#471",
    "priority": "P1",
    "createdAt": "2026-11-10T16:40:38.588Z",
-   "updatedAt": "2026-11-10T20:13:40.457Z",
+   "updatedAt": "2026-11-10T20:41:09.179Z",
    "builtAt": "",
    "notes": [
     {
@@ -89846,6 +89846,10 @@
     {
      "text": "Headless run axf-inline-edit-plugin-install-in-console-molly-and--paulie: brief only · start 12.8K tokens ($0.06) · cost $7.35 · 75 turns · 6 tools, MCP none",
      "at": "2026-11-10T20:13:40.457Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-10T20:41:09.179Z"
     }
    ],
    "approvals": [],
