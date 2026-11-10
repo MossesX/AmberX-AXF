@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2183,
- "updatedAt": "2026-11-10T01:54:42.303Z",
+ "rev": 2184,
+ "updatedAt": "2026-11-10T01:55:04.372Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -127692,10 +127692,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/appearance-skins-colour-themes-only-remove-design-packs",
-   "pr": "",
+   "pr": "#430",
    "priority": "P0",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-10T01:54:39.796Z",
+   "updatedAt": "2026-11-10T01:54:54.809Z",
    "builtAt": "",
    "notes": [
     {
@@ -127892,12 +127892,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T01:54:41.460Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-09T13:21:25.005Z",
-     "updatedAt": "2026-11-09T17:13:28.787Z"
+     "updatedAt": "2026-11-10T01:54:41.813Z"
     },
     {
      "id": "s3",
@@ -127952,7 +127952,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
