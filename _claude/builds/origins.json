@@ -1857,6 +1857,18 @@
    "from": "detail",
    "addenda": []
   },
+  "employee-hooks-everywhere-any-mention-of-an-agen": {
+   "said": "The agent picker will have a hook to jump to the agents, different places where agents are managed and referenced. It can go to its group chats, its training section or its employee information. Anywhere an employee is mentioned, you can access its information directly from a hook, probably a context menu with a sub menu showing everything you can do, or open one of the employee's dialogs right there on the spot. And yeah, merge the Gizmo rebuild in.",
+   "at": "2026-11-10T21:55:14.370Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "enforce-the-merge-queue-every-finished-build-goe": {
    "said": "What happened to the merge queue? We need to start enforcing that. Everything needs to go into the merge queue so we can make one build out of it before we send it to CI.",
    "at": "2026-11-10T16:43:57.553Z",

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2925,
- "updatedAt": "2026-11-10T21:54:23.649Z",
+ "rev": 2926,
+ "updatedAt": "2026-11-10T21:55:15.830Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -156926,6 +156926,55 @@
    "kind": "build",
    "planRef": "",
    "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "employee-hooks-everywhere-any-mention-of-an-agen",
+   "title": "Employee hooks everywhere: any mention of an agent/employee gets a context menu (sub menu of actions) to open its group chats, training, employee info, or its dialogs on the spot; merge Gizmo rebuild into AI assistant",
+   "category": "",
+   "detail": "1) Shared employee hook (framework-wide): every place an agent/employee is shown or mentioned (agent picker in AI assistant, Crew, orchestrator rows, banners, builds, chats) gets right-click/long-press context menu > employee name > sub menu: Open employee info (ID card/profile), Group chats, Direct chat, Training, Assigned builds, Settings. Each item can open in place as a dialog over the current screen or jump to its page. Register as a reusable hook so new screens get it automatically. 2) Merge the earlier Gizmo rebuild build (Claude-style chat, Claude/Ollama switch) into the 'AI assistant' console plugin build (d2180ddc); one build, not two.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T21:55:14.370Z",
+   "updatedAt": "2026-11-10T21:55:14.370Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "The agent picker will have a hook to jump to the agents, different places where agents are managed and referenced. It can go to its group chats, its training section or its employee information. Anywhere an employee is mentioned, you can access its information directly from a hook, probably a context menu with a sub menu showing everything you can do, or open one of the employee's dialogs right there on the spot. And yeah, merge the Gizmo rebuild in.",
+    "at": "2026-11-10T21:55:14.370Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 600
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
