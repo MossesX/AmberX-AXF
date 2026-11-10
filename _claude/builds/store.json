@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2123,
- "updatedAt": "2026-11-10T00:50:42.794Z",
+ "rev": 2124,
+ "updatedAt": "2026-11-10T00:50:56.152Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -127667,7 +127667,7 @@
    "title": "Appearance = skins + colour themes only (remove design packs)",
    "category": "Appearance",
    "detail": "Brett: \"can we remove design packs as a thing since everything's covered in a skin? So it's just skins and color themes.\" Simplify appearance to two concepts: skins (look, style, layout, behaviour of every asset) and colour themes. 1) Convert every existing design pack (design-package / style-package assets, Design packs screen picks) into a skin so nothing is lost. 2) Remove the Design packs screen, settings, menu entries and asset types (design-package, style-package), redirect old references to skins. 3) Appearance settings shows only Skin and Colour theme pickers. Check if style-theme / layout themes should also fold into skins and list it in the report for Brett, don't remove those without asking. Default look must stay identical; screenshots to UI Review.",
-   "status": "failed",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -127675,7 +127675,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-09T19:36:41.200Z",
+   "updatedAt": "2026-11-10T00:50:47.288Z",
    "builtAt": "",
    "notes": [
     {
@@ -127753,6 +127753,10 @@
     {
      "text": "Headless run axf-appearance-skins-colour-themes-only-remove-desig--rhonda: brief only · start 12.8K tokens ($0.10) · cost $31.77 · 120 turns · 6 tools, MCP none",
      "at": "2026-11-09T19:36:41.200Z"
+    },
+    {
+     "text": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (limit / credits)); resumes at s4 on the next working account.",
+     "at": "2026-11-10T00:50:47.288Z"
     }
    ],
    "approvals": [],
@@ -127777,7 +127781,7 @@
     "slot": "",
     "model": "Fable",
     "launchedAt": "2026-11-09T19:24:37.196Z",
-    "runs": 3,
+    "runs": 0,
     "lastRun": {
      "at": "2026-11-09T19:25:04.527Z",
      "exit": 1,
@@ -127788,7 +127792,7 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "Session on account-3 ended (exit 1) with 5 steps left after 3 runs: failed.",
+    "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (limit / credits)); resumes at s4 on the next working account.",
     "route": "",
     "dispatchedAt": "2026-11-09T19:24:37.196Z"
    },
@@ -127912,7 +127916,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -133756,18 +133760,39 @@
    "title": "Skins: a colour theme pick is its own setting, never a skin override (resume after credits ran out)",
    "category": "",
    "detail": "Rerun of a headless Fable session (axf-skins-theme-rule--earl, Moses X, Nov 9 18:38-18:47 UTC) that stopped on \"You are out of usage credits\" with its work uncommitted in /root/axf-builds/skins-theme-rule (11 files: framework/core/engines/appearance.ts, skin-coverage, skin-rules …). Its own words: \"the colour pick becomes its own colorTheme field in the skin state (never an override, never a new skin), with old documents migrated on read. Engine and runtime are changed; now updating the tests and fixture to pin the rule, then the CLI/API, pickers and docs.\" Read git diff and the run log first; keep that work.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "failed-launches-auto-retry-on-another-wo",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-10T00:50:40.704Z",
-   "updatedAt": "2026-11-10T00:50:40.704Z",
+   "updatedAt": "2026-11-10T00:50:44.359Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by failed-launches-auto-retry-on-another-working-ac.",
+     "at": "2026-11-10T00:50:44.359Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "2026-11-10T00:50:43.770Z",
+    "queuedBy": "failed-launches-auto-retry-on-another-working-ac",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": ""
+   },
    "steps": [
     {
      "id": "s1",
@@ -133844,12 +133869,137 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-10T00:50:40.705Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "skins-restyle-finish",
+   "title": "Skins restyle: finish the coverage engine, registry and text targets (resume after credits ran out)",
+   "category": "",
+   "detail": "Rerun of a headless Fable session (axf-skins-restyle-finish--sully, Moses X, Nov 9 UTC) that stopped on \"You are out of usage credits\" with its work uncommitted in /root/axf-builds/skins-restyle-finish (28 files). It was finishing s6 of skins-restyle-everything-badges-banner-and-every-visual-element. Its own words: \"coverage engine first (explicit entries required, parts and ingredient flags), then the registry, then the customize text targets … s6 tests pass (skin spec, customize spec, coverage check). Now finishing the surrounding pieces: CLI output, the coverage panel hint, the audit and the docs.\" Read git diff and the run log first; keep that work.",
+   "status": "queued",
+   "hidden": false,
+   "source": "failed-launches-auto-retry-on-another-wo",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T00:50:42.579Z",
+   "updatedAt": "2026-11-10T00:50:45.845Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by failed-launches-auto-retry-on-another-working-ac.",
+     "at": "2026-11-10T00:50:45.845Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "2026-11-10T00:50:45.310Z",
+    "queuedBy": "failed-launches-auto-retry-on-another-working-ac",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw9z4mhy04qfqw",
+     "title": "",
+     "text": "Read git diff and skins-restyle-finish.log; check the coverage engine, registry and customize text-target changes in this worktree are complete and the skin / customize / coverage specs pass; regenerate framework/spec/fixtures",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T00:50:42.580Z",
+     "updatedAt": "2026-11-10T00:50:42.580Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw9z4mhy05ct4d",
+     "title": "",
+     "text": "Finish the surrounding pieces: skin-audit CLI output, the Appearance coverage panel hint, the audit list and the docs",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T00:50:42.580Z",
+     "updatedAt": "2026-11-10T00:50:42.580Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw9z4mhy06iixs",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/skins-restyle-finish.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T00:50:42.580Z",
+     "updatedAt": "2026-11-10T00:50:42.580Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 523
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 2,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-10T00:50:42.580Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
