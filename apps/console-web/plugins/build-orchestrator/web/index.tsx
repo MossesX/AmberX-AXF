@@ -8,8 +8,8 @@ import { FOLDER, OrchestratorPage, TABS, openTab } from './ui';
 /*
  * Nov 10 2026: the orchestrator took over everything the retired Build manager did. Actions (console API, MCP console
  * actions, voice): build-orchestrator.open[:<build>] (opens the build's tab), build-orchestrator.tab:<pending|queue|
- * active|incomplete|complete|errors|accounts|builds|approvals|rules>, build-orchestrator.start:<build> (Start = Queue: the
- * dispatcher starts it when its turn comes). Search: every build, by its tab. Context menu: Open / Queue on build rows.
+ * active|merging|incomplete|complete|errors|accounts|builds|approvals|rules>, build-orchestrator.start:<build> (Start = Queue: the
+ * dispatcher starts it when its turn comes), build-orchestrator.merge[:<build>] (give a built PR to a merger). Search: every build, by its tab. Context menu: Open / Queue on build rows.
  */
 type TabRow = { id: string; title: string; status: string; tab: string; nextModel: string; pipeline?: { planned?: { account: string; model: string } | null; account?: string } | null };
 const pipeApi = pluginApi(FOLDER, 'Build orchestrator', { unavailable: 'The build orchestrator is switched off or its server part is not running.' });
@@ -53,6 +53,13 @@ export const plugin: AxfWebLibrary = {
         .then((r) => { if (!r.ok) throw new Error(r.error); rt.toast(`${id} is in the Queue: the dispatcher starts it when its turn comes.`, 'success'); void open('queue'); })
         .catch((e: Error) => rt.toast(e.message, 'danger'));
     }, { label: 'Start a build (put it in the Queue)' });
+    rt.actions.register('build-orchestrator.merge', ([arg]) => {
+      const id = decodeURIComponent(arg ?? '');
+      if (!id) { rt.navigate('build-orchestrator'); openTab('merging'); return; }
+      void pipeApi.post<{ ok: boolean; error?: string }>('pipeline/merge', { id })
+        .then((r) => { if (!r.ok) throw new Error(r.error); rt.toast(`${id}: given to a merger.`, 'success'); rt.navigate('build-orchestrator'); openTab('merging'); })
+        .catch((e: Error) => rt.toast(e.message, 'danger'));
+    }, { label: 'Give a built PR to a merger (rebase, conflicts, test, push)' });
     rt.search.add('build-orchestrator.builds', () => {
       if (Date.now() - loadedAt > 30_000) void loadRows().catch(() => undefined);
       return rows.map((r) => ({
@@ -70,7 +77,7 @@ export const plugin: AxfWebLibrary = {
       return out;
     });
   },
-  views: { 'build-orchestrator': { title: 'Build orchestrator', icon: 'layers', keywords: ['orchestrator', 'builds', 'build manager', 'pending', 'queue', 'active', 'incomplete', 'complete', 'errors', 'accounts', 'health', 'fable', 'opus', 'steps', 'phases', 'approve model'], render: () => <OrchestratorPage /> } },
+  views: { 'build-orchestrator': { title: 'Build orchestrator', icon: 'layers', keywords: ['orchestrator', 'builds', 'build manager', 'pending', 'queue', 'active', 'merging', 'mergers', 'builders', 'merge first', 'incomplete', 'complete', 'errors', 'accounts', 'health', 'fable', 'opus', 'steps', 'phases', 'approve model'], render: () => <OrchestratorPage /> } },
   nav: { label: 'Builds', items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', view: 'build-orchestrator' }] },
   contextMenu: [{ id: 'build-orchestrator.pending', target: 'axf-pending-item', items: [{ id: 'build-orchestrator.open', label: 'Open in Build orchestrator', icon: 'layers', action: 'build-orchestrator.open' }] },
     { id: 'build-orchestrator.default', target: 'default', order: 91, items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', action: 'nav:build-orchestrator' }] }],

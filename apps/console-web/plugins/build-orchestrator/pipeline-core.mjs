@@ -62,8 +62,14 @@ export const DEFAULTS = Object.freeze({
   apiAccounts: [],
   /** The account health sweep runs this often (minutes; 0 = off). */
   healthEveryMin: 5,
+  /** Merge first (Brett, Nov 10 2026: "Put all my processing power towards merging"): free slots go to merge jobs before new builds. */
+  mergeFirst: true,
+  /** Merge jobs (rebase, conflict fix, test, push for the merge queue) running at once, at most. 0 = none. */
+  mergers: 12,
+  /** Build sessions running at once, at most. 0 = none. Mergers and builders share the account slot pool. */
+  builders: 12,
 });
-const LIMITS = { parallelPerAccount: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90], healthEveryMin: [0, 120] };
+const LIMITS = { mergers: [0, 12], builders: [0, 12], parallelPerAccount: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90], healthEveryMin: [0, 120] };
 /** A health record older than this many sweeps is stale: the account falls back to its probe / plan. */
 const HEALTH_STALE_SWEEPS = 4;
 
@@ -85,6 +91,9 @@ export function normSettings(raw = {}) {
     autoQueue: o.autoQueue === true,
     apiOverflow: o.apiOverflow === undefined ? DEFAULTS.apiOverflow : o.apiOverflow === true,
     healthEveryMin: o.healthEveryMin === undefined ? DEFAULTS.healthEveryMin : clamp('healthEveryMin', o.healthEveryMin),
+    mergeFirst: o.mergeFirst === undefined ? DEFAULTS.mergeFirst : o.mergeFirst === true,
+    mergers: o.mergers === undefined ? DEFAULTS.mergers : clamp('mergers', o.mergers),
+    builders: o.builders === undefined ? DEFAULTS.builders : clamp('builders', o.builders),
     apiAccounts: [...new Set((typeof o.apiAccounts === 'string' ? o.apiAccounts.split(',') : list(o.apiAccounts)).map((n) => str(n, 32).toLowerCase()).filter((n) => /^[a-z0-9][a-z0-9-]{0,31}$/.test(n)))],
   };
 }
@@ -291,34 +300,138 @@ export function noAccountWhy(accounts, model) {
  *   waits     [{ id, why }]                    queued builds that stay put this tick, and why
  *   idle      null, or { reason, since? }      nothing is running while work waits
  */
-export function plan({ builds, accounts, slots, settings = normSettings(), rules, now = Date.now() }) {
+export function plan({ builds, accounts, slots, settings = normSettings(), rules, merges = [], now = Date.now() }) {
   const live = list(builds).filter((b) => !b.deleted);
   const queue = queueOrder(live, (b) => effectivePriority(b));
   const running = live.filter((b) => b.status === 'running' || b.status === 'waiting');
   const pending = live.filter((b) => b.status === 'pending' && !b.hidden);
   const acc = list(accounts).map((a) => ({ ...a }));
   let free = Math.max(0, Number(slots?.free) || 0);
-  const launches = []; const waits = [];
-  for (const b of queue) {
-    if (!openSteps(b).length) { waits.push({ id: b.id, why: b.steps?.length ? 'every step is done: nothing to run' : 'no steps yet: waiting for the split' }); continue; }
-    const n = orchNextUp(b, rules);
-    if (n.needsApproval) { waits.push({ id: b.id, why: `needs Brett's approval: upgrade ${n.phase.from} → ${n.phase.model}` }); continue; }
-    const model = nextModel(b);
-    if (free <= 0) { waits.push({ id: b.id, why: `no free agent slot (${slots?.used ?? '?'}/${slots?.cap ?? '?'} in use)` }); continue; }
-    const r = routeFor(b, acc, model, settings);
-    const a = r.account ? acc.find((x) => x.name === r.account) : null;
-    if (!a) { waits.push({ id: b.id, why: r.why }); continue; }
-    a.running += 1; a.free -= 1; free -= 1;
-    if (a.kind === 'api' && a.api && a.free <= 0) a.api = { ...a.api, usable: false, why: `full (${a.running}/${a.parallel})` };
-    launches.push({ id: b.id, account: a.name, model, phase: n.phase?.name ?? '', priority: priorityLabel(effectivePriority(b)), kind: r.kind, rule: r.rule, why: r.why });
-  }
+  const launches = []; const waits = []; const mergeLaunches = []; const mergeWaits = [];
+  const jobs = list(merges).map(normMerge).filter(Boolean);
+  const mergesRunning = jobs.filter((j) => j.state === 'running').length;
+  let mergeRoom = Math.max(0, settings.mergers - mergesRunning);
+  let buildRoom = Math.max(0, settings.builders - running.length);
+  const take = (r) => { const a = r.account ? acc.find((x) => x.name === r.account) : null; if (!a) return null; a.running += 1; a.free -= 1; free -= 1; if (a.kind === 'api' && a.api && a.free <= 0) a.api = { ...a.api, usable: false, why: `full (${a.running}/${a.parallel})` }; return a; };
+  const planMerges = () => {
+    for (const j of mergeQueue(jobs)) {
+      if (mergeRoom <= 0) { mergeWaits.push({ id: j.id, why: settings.mergers ? `every merger is busy (${mergesRunning}/${settings.mergers})` : 'Mergers is set to 0' }); continue; }
+      if (free <= 0) { mergeWaits.push({ id: j.id, why: `no free agent slot (${slots?.used ?? '?'}/${slots?.cap ?? '?'} in use)` }); continue; }
+      const r = routeFor({ pipeline: { route: '' } }, acc, MERGE_MODEL, settings);
+      const a = take(r);
+      if (!a) { mergeWaits.push({ id: j.id, why: r.why }); continue; }
+      mergeRoom -= 1;
+      mergeLaunches.push({ id: j.id, build: j.build, pr: j.pr, account: a.name, model: MERGE_MODEL, kind: r.kind, rule: r.rule, why: r.why });
+    }
+  };
+  const planBuilds = () => {
+    for (const b of queue) {
+      if (!openSteps(b).length) { waits.push({ id: b.id, why: b.steps?.length ? 'every step is done: nothing to run' : 'no steps yet: waiting for the split' }); continue; }
+      const n = orchNextUp(b, rules);
+      if (n.needsApproval) { waits.push({ id: b.id, why: `needs Brett's approval: upgrade ${n.phase.from} → ${n.phase.model}` }); continue; }
+      const model = nextModel(b);
+      if (buildRoom <= 0) { waits.push({ id: b.id, why: settings.builders ? `every builder is busy (${running.length}/${settings.builders})` : 'Builders is set to 0' }); continue; }
+      if (free <= 0) { waits.push({ id: b.id, why: `no free agent slot (${slots?.used ?? '?'}/${slots?.cap ?? '?'} in use)${settings.mergeFirst && mergeLaunches.length ? ': merges go first' : ''}` }); continue; }
+      const r = routeFor(b, acc, model, settings);
+      const a = take(r);
+      if (!a) { waits.push({ id: b.id, why: r.why }); continue; }
+      buildRoom -= 1;
+      launches.push({ id: b.id, account: a.name, model, phase: n.phase?.name ?? '', priority: priorityLabel(effectivePriority(b)), kind: r.kind, rule: r.rule, why: r.why });
+    }
+  };
+  if (settings.mergeFirst) { planMerges(); planBuilds(); } else { planBuilds(); planMerges(); }
   let idle = null;
-  const nothingRunning = !running.length && !(Number(slots?.used) > 0);
-  if (nothingRunning && !launches.length) {
+  const nothingRunning = !running.length && !mergesRunning && !(Number(slots?.used) > 0);
+  if (nothingRunning && !launches.length && !mergeLaunches.length) {
     if (queue.length) idle = { reason: `${queue.length} build${queue.length === 1 ? '' : 's'} in the Queue, nothing running: ${waits[0]?.why ?? 'no launch this tick'}`, kind: 'stuck' };
     else if (pending.length) idle = { reason: `Queue empty, nothing running: ${pending.length} build${pending.length === 1 ? '' : 's'} wait in Pending for you to queue them`, kind: 'empty' };
   }
-  return { launches, waits, queue: queue.map((b) => b.id), running: running.map((b) => b.id), pending: pending.length, idle, at: new Date(now).toISOString() };
+  return { launches, waits, mergeLaunches, mergeWaits, queue: queue.map((b) => b.id), running: running.map((b) => b.id), pending: pending.length, idle,
+    crew: { mergeFirst: settings.mergeFirst, mergers: settings.mergers, builders: settings.builders, mergesRunning, buildsRunning: running.length }, at: new Date(now).toISOString() };
+}
+
+// ------------------------------------------------------------------ merge jobs
+
+/**
+ * Merge jobs (Brett, Nov 10 2026: "I need a switch in the orchestrator to set the number of mergers and the number of
+ * builders. It needs to assign merges to an employee just like builds."). A built build whose PR can't land as is
+ * (conflicts with main, red checks, kicked out of the merge queue, or asked for by hand) becomes a merge job: the
+ * dispatcher gives it to a Claude account like a build, and a headless session rebases the branch on main, fixes the
+ * conflicts, runs the tests and pushes; the merge queue then lands it (nobody merges a PR by hand).
+ * merge-job@1: { id, build, pr, branch, title, reason, state, stage, account, session, slot, runs, at, launchedAt, endedAt, note, by }
+ *   state  waiting (in the merge line) | running (a session has it) | done (pushed, the queue lands it) | failed (maxRuns spent)
+ *   stage  queued → rebase → conflicts → test → push → landing (the session reports each with `pipeline.mjs merge-stage`)
+ */
+export const MERGE_SCHEMA = 'merge-job@1';
+export const MERGE_MODEL = 'opus';
+export const MERGE_STATES = ['waiting', 'running', 'done', 'failed'];
+export const MERGE_STAGES = ['queued', 'rebase', 'conflicts', 'test', 'push', 'landing'];
+export const MERGE_STAGE_LABEL = { queued: 'Waiting for a merger', rebase: 'Rebasing on main', conflicts: 'Fixing conflicts', test: 'Running tests', push: 'Pushing', landing: 'In the merge queue' };
+export const mergeId = (build) => `merge-${str(build, 80)}`;
+
+export function normMerge(raw) {
+  const o = raw && typeof raw === 'object' ? raw : null;
+  const build = str(o?.build, 80);
+  if (!build) return null;
+  return { $axf: MERGE_SCHEMA, id: mergeId(build), build, pr: str(o.pr, 200), branch: str(o.branch, 200), title: str(o.title, 300), reason: str(o.reason, 400),
+    state: MERGE_STATES.includes(o.state) ? o.state : 'waiting', stage: MERGE_STAGES.includes(o.stage) ? o.stage : 'queued',
+    account: str(o.account, 40), session: str(o.session, 80), slot: str(o.slot, 80), runs: Number.isInteger(o.runs) && o.runs > 0 ? o.runs : 0,
+    at: str(o.at, 40), launchedAt: str(o.launchedAt, 40), endedAt: str(o.endedAt, 40), note: str(o.note, 600), by: str(o.by, 80) };
+}
+
+/** Waiting merge jobs in the order mergers take them: oldest first (a PR that waits longest lands first). */
+export function mergeQueue(jobs) {
+  return list(jobs).filter((j) => j && j.state === 'waiting').sort((a, b) => String(a.at).localeCompare(String(b.at)) || a.id.localeCompare(b.id));
+}
+
+/** The PR number of a build's `pr` field (a number, "#12" or a PR URL), 0 when none. */
+export const prNumber = (pr) => { const m = /(\d+)\s*$/.exec(str(pr, 200)); return m ? Number(m[1]) : 0; };
+
+/**
+ * Merge jobs to open: built builds with an open PR that the merge queue says can't land as is. `needs` = { [prNumber]:
+ * reason } (from axf.merge-queue@1: conflicts, red checks, kicked out). A build that already has a waiting or running
+ * job is skipped; a done job is reopened only when its PR needs work again after it ended.
+ */
+export function mergeOpen(builds, jobs, needs = {}, now = new Date().toISOString()) {
+  const have = new Map(list(jobs).map((j) => [j.build, j]));
+  const out = [];
+  for (const b of list(builds)) {
+    if (b.deleted || b.status !== 'built' || !b.pr || b.mergedAt) continue;
+    const reason = needs[prNumber(b.pr)];
+    if (!reason) continue;
+    const cur = have.get(b.id);
+    if (cur && (cur.state === 'waiting' || cur.state === 'running')) continue;
+    if (cur && cur.state === 'failed') continue;
+    out.push(normMerge({ build: b.id, pr: b.pr, branch: b.branch || `claude/${b.id}`, title: b.title, reason, at: now, by: 'merge-queue', runs: cur?.runs ?? 0 }));
+  }
+  return out;
+}
+
+/** A merge session ended: the job's new state and a note. exit 0 = pushed (the queue lands it); otherwise retried up to maxRuns. */
+export function mergeEnd(j, exit, settings = normSettings(), now = new Date().toISOString()) {
+  const ok = exit === 0;
+  const runs = j.runs || 1;
+  const state = ok ? 'done' : runs >= settings.maxRuns ? 'failed' : 'waiting';
+  const note = ok ? `Merger ${j.account || '?'} pushed ${j.branch}: the merge queue lands it.`
+    : state === 'failed' ? `Merge of ${j.build} failed ${runs} times (last exit ${exit}): needs Brett.` : `Merge session on ${j.account || '?'} ended with exit ${exit}: back in the merge line (run ${runs}/${settings.maxRuns}).`;
+  return { ...j, state, stage: ok ? 'landing' : state === 'failed' ? j.stage : 'queued', session: '', slot: '', endedAt: now, note };
+}
+
+/** The brief a merge session gets: its one job, the stage reports, the rules that matter for it. */
+export function mergeBrief(j) {
+  return [
+    `# Merge job: ${j.build}${j.pr ? ` (PR ${j.pr})` : ''}`, '',
+    `You are a merger. Get branch ${j.branch} ready to land on main: ${j.reason || 'it cannot land as is'}.`, '',
+    '## Steps (report each stage as you reach it)',
+    `1. \`node apps/console-web/plugins/build-orchestrator/pipeline.mjs merge-stage ${j.build} rebase\` then \`git fetch origin main && git rebase origin/main\` (or merge origin/main when a rebase is hopeless).`,
+    `2. On conflicts: \`… merge-stage ${j.build} conflicts\`; resolve them keeping both sides' intent; data under _claude/ takes main's version.`,
+    `3. \`… merge-stage ${j.build} test\`: run the tests for the files the branch touches (heavy runs through \`node framework/cli/agent-slots.mjs heavy -- <cmd>\`).`,
+    `4. \`… merge-stage ${j.build} push\`: \`git push --force-with-lease origin HEAD:${j.branch}\`.`,
+    `5. \`… merge-stage ${j.build} landing\` and stop: the merge queue lands it.`, '',
+    '## Rules',
+    '- One session, no sub-agents, no questions. Never push to main, never merge the PR yourself, never re-run CI to freshen it.',
+    '- Change only what the conflicts and red tests need; no new features. A fix you cannot make: say why in one build note (`orchestrator.mjs act note <build> "…"`) and exit 1.',
+  ].join('\n');
 }
 
 // ------------------------------------------------------------------ session end
@@ -472,6 +585,9 @@ export function alertFor(kind, d = {}) {
     case 'selfcheck': return { ...base, key: 'pipeline:selfcheck', severity: list(d.problems).length ? 'warning' : 'info',
       title: `Dispatcher self-check: ${list(d.fixes).length ? `fixed ${list(d.fixes).length}` : 'nothing fixed'}${list(d.problems).length ? `, ${list(d.problems).length} account${list(d.problems).length === 1 ? '' : 's'} can't work` : ''}`,
       body: str([...list(d.fixes).map((x) => `Fixed: ${x}`), ...list(d.problems).map((x) => `Can't use ${x}`), d.line ? `Now: ${d.line}` : ''].filter(Boolean).join('\n'), 1500) };
+    case 'merge': return { ...base, key: `pipeline:merge:${d.id}`, severity: d.stage === 'failed' ? 'error' : d.stage === 'landing' ? 'success' : 'info',
+      title: `${d.stage === 'failed' ? 'Merge failed' : `Merge: ${MERGE_STAGE_LABEL[d.stage] || str(d.stage, 40)}`}: ${str(d.title, 120)}`,
+      body: str([d.account ? `Merger: ${d.account}` : '', d.pr ? `PR ${d.pr}` : '', d.note].filter(Boolean).join(' · '), 1500) };
     case 'split': return { ...base, key: `pipeline:split:${d.id}`, severity: d.error ? 'warning' : 'info', title: d.error ? `Split needs a look: ${str(d.title, 120)}` : `Split into ${d.steps} steps: ${str(d.title, 120)}`, body: str(d.error || d.note, 1500) };
     default: throw new Error(`unknown alert kind ${kind}`);
   }

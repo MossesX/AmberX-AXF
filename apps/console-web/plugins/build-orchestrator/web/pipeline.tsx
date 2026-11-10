@@ -27,11 +27,16 @@ type Account = { name: string; email: string; plan: string; role: string; kind?:
 type Status = {
   ok: boolean; at: string; table: { pending: Row[]; queued: Row[]; building: Row[] }; tabs?: Record<BuildTab, Row[]>; health?: Health; accounts: Account[];
   slots: { used: number; cap: number; free: number; queued: number; unavailable: boolean };
-  plan: { launches: { id: string; account: string; model: string; phase: string; kind?: string; rule?: string }[]; waits: { id: string; why: string }[]; queue: string[]; idle: { reason: string; kind: string } | null };
-  settings: { parallelPerAccount: number; autoQueue: boolean; splitProvider: string; idleAfterMin: number; maxRuns: number; apiOverflow?: boolean; healthEveryMin?: number };
+  plan: { launches: { id: string; account: string; model: string; phase: string; kind?: string; rule?: string }[]; waits: { id: string; why: string }[]; queue: string[]; idle: { reason: string; kind: string } | null;
+    mergeLaunches?: { id: string; build: string; account: string; model: string }[]; mergeWaits?: { id: string; why: string }[]; crew?: Crew };
+  merges?: MergeJob[];
+  settings: { parallelPerAccount: number; autoQueue: boolean; splitProvider: string; idleAfterMin: number; maxRuns: number; apiOverflow?: boolean; healthEveryMin?: number; mergeFirst?: boolean; mergers?: number; builders?: number };
   accountsFrom?: { source: 'host' | 'snapshot' | 'none'; at: string; ageMin: number | null; why: string };
   state: { at: string; idle: { reason: string; kind: string; since: string } | null; alerts: { key: string; at: string }[]; recent: { at: string; event: string; id: string; account?: string; model?: string; error?: string }[]; selfCheck?: SelfCheck | null; selfCheckRequested?: string };
 };
+type MergeJob = { id: string; build: string; pr: string; branch: string; title: string; reason: string; state: 'waiting' | 'running' | 'done' | 'failed'; stage: string; account: string; session: string; runs: number; at: string; launchedAt: string; endedAt: string; note: string };
+type Crew = { mergeFirst: boolean; mergers: number; builders: number; mergesRunning: number; buildsRunning: number };
+const STAGE_LABEL: Record<string, string> = { queued: 'Waiting for a merger', rebase: 'Rebasing on main', conflicts: 'Fixing conflicts', test: 'Running tests', push: 'Pushing', landing: 'In the merge queue' };
 type Finding = { name: string; kind: string; role: string; state: 'ready' | 'busy' | 'standby' | 'blocked'; running: number; parallel: number; note: string };
 type SelfCheck = { at: string; reason: string; by: string; line: string; fixes: string[]; problems: string[]; findings: Finding[]; notified: boolean };
 const CHECK_TONE: Record<Finding['state'], 'success' | 'accent' | undefined | 'danger'> = { ready: 'success', busy: 'accent', standby: undefined, blocked: 'danger' };
@@ -40,7 +45,7 @@ const REFRESH_MS = 10_000;
 const fmtTime = (v: string) => { const d = new Date(v); return Number.isNaN(d.getTime()) ? '' : d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); };
 const ago = (v: string) => { const ms = Date.now() - new Date(v).getTime(); if (!Number.isFinite(ms)) return ''; const m = Math.round(ms / 60000); return m < 1 ? 'just now' : m < 60 ? `${m} min ago` : `${Math.round(m / 60)} h ago`; };
 
-export type PipelineView = BuildTab | 'accounts';
+export type PipelineView = BuildTab | 'accounts' | 'merging';
 const EMPTY: Record<BuildTab, string> = { pending: 'Nothing pending.', queue: 'The Queue is empty.', active: 'Nothing is building.', incomplete: 'Nothing stopped half way.', complete: 'Nothing finished yet.', errors: 'No errors.' };
 const yn = (v: boolean | null | undefined) => (v == null ? '?' : v ? 'yes' : 'no');
 
@@ -90,6 +95,7 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
         {s.settings.autoQueue && <Chip tone="accent">Launch without asking: new builds queue by themselves</Chip>}
         <Switch label="Then any API" text="Subscriptions first; when every subscription account is full or out, an API-key account takes it (billed per token, under its caps)" checked={!!s.settings.apiOverflow} disabled={busy === 'pipeline/settings'} onChange={(on) => act('pipeline/settings', { apiOverflow: on }, `API overflow ${on ? 'on' : 'off'}`)} />
       </div>
+      <CrewBar s={s} busy={busy} act={act} />
       {idle && <Note tone={idle.kind === 'stuck' ? 'warning' : 'info'}>{idle.reason}{(idle as { since?: string }).since ? ` (since ${fmtTime((idle as { since?: string }).since ?? '')})` : ''}</Note>}
       {s.plan.launches.length > 0 && <Note tone="success">Next tick starts {s.plan.launches.map((l) => `${l.id} on ${l.account} (${l.model}${l.phase ? `, ${l.phase}` : ''})`).join(', ')}.</Note>}
       {view === 'accounts' && <section className="fx-stack">
@@ -144,7 +150,8 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
           </div>
         )}
       </section>}
-      {view !== 'accounts' && (() => {
+      {(view === 'merging' || view === 'active') && <MergeList jobs={(s.merges ?? []).filter((j) => (view === 'active' ? j.state === 'running' : true))} waits={s.plan.mergeWaits ?? []} launches={s.plan.mergeLaunches ?? []} busy={busy} act={act} active={view === 'active'} />}
+      {view !== 'accounts' && view !== 'merging' && (() => {
         const rows = s.tabs?.[view] ?? [];
         return (
           <section className="fx-stack" aria-label={TAB_LABEL[view]}>
@@ -209,8 +216,64 @@ function PipelineCard({ r, busy, wait, launch, act, showSteps }: { r: Row; busy:
         {table === 'pending' && <Button size="sm" tone="primary" icon="arrow-right" disabled={busy} onClick={() => act('pipeline/queue', { id: r.id }, `${r.id} → Queue`)}>Queue</Button>}
         {table === 'queued' && <Button size="sm" tone="neutral" icon="arrow-left" disabled={busy} onClick={() => act('pipeline/unqueue', { id: r.id }, `${r.id} → Pending`)}>Back to Pending</Button>}
         {(table === 'pending' || table === 'queued') && <Button size="sm" tone="neutral" icon="zap" disabled={busy} title="Where this build may run: Auto (subscriptions first, then any API), API (API-key accounts only, billed per token) or Subscriptions (never API). Tap to switch." onClick={() => { const n = routeOf(p?.route); void act('pipeline/route', { id: r.id, route: n.to }, `${r.id}: route ${n.to}`); }}>Runs on: {routeOf(p?.route).label}</Button>}
+        {r.status === 'built' && r.pr && <Button size="sm" tone="neutral" icon="branch" disabled={busy} title="Give this PR to a merger: rebase on main, fix conflicts, test, push; the merge queue lands it" onClick={() => act('pipeline/merge', { id: r.id }, `${r.id}: given to a merger`)}>Merge it</Button>}
         {(table === 'pending' || table === 'queued') && <Button size="sm" tone="neutral" icon="edit" disabled={busy || !!p?.splitRequested} title={p?.splitRequested ? 'Split asked for: the dispatcher does it within a minute' : 'Ask the orchestrator to (re)split this build into steps of 30 min or less'} onClick={() => act('pipeline/split', { id: r.id }, `${r.id}: split on the next tick`)}>{p?.splitRequested ? 'Splitting…' : 'Split now'}</Button>}
       </div>
     </article>
+  );
+}
+
+/** Merge first + Mergers N + Builders N (pipeline-settings@1 mergeFirst / mergers / builders): one slot pool, two kinds of work. */
+function CrewBar({ s, busy, act }: { s: Status; busy: string; act: (path: string, body: Record<string, unknown>, what: string) => Promise<void> }) {
+  const st = s.settings; const c = s.plan.crew;
+  const mergers = st.mergers ?? 12; const builders = st.builders ?? 12;
+  const off = busy === 'pipeline/crew';
+  const step = (k: 'mergers' | 'builders', v: number) => act('pipeline/crew', { [k]: v }, `${k === 'mergers' ? 'Mergers' : 'Builders'}: ${v}`);
+  return (
+    <div className="pl-strip pl-crew" role="toolbar" aria-label="Mergers and builders">
+      <Switch label="Merge first" text="Free slots go to merge jobs (rebase, conflicts, tests, push) before new builds" checked={!!st.mergeFirst} disabled={off} onChange={(on) => act('pipeline/crew', { mergeFirst: on }, `Merge first ${on ? 'on' : 'off'}`)} />
+      <span className="pl-stat" title="Merge sessions running / the most at once"><Icon name="branch" size={14} />Mergers <b>{c?.mergesRunning ?? 0}/{mergers}</b></span>
+      <Button size="sm" tone="neutral" icon="minus" disabled={off || mergers <= 0} title="One merger fewer" onClick={() => step('mergers', mergers - 1)}>Fewer mergers</Button>
+      <Button size="sm" tone="neutral" icon="plus" disabled={off || mergers >= 12} title="One merger more" onClick={() => step('mergers', mergers + 1)}>More mergers</Button>
+      <span className="pl-stat" title="Build sessions running / the most at once"><Icon name="play" size={14} />Builders <b>{c?.buildsRunning ?? 0}/{builders}</b></span>
+      <Button size="sm" tone="neutral" icon="minus" disabled={off || builders <= 0} title="One builder fewer" onClick={() => step('builders', builders - 1)}>Fewer builders</Button>
+      <Button size="sm" tone="neutral" icon="plus" disabled={off || builders >= 12} title="One builder more" onClick={() => step('builders', builders + 1)}>More builders</Button>
+      <Button size="sm" tone="primary" icon="branch" disabled={off || (st.mergeFirst && builders === 0 && mergers === 12)} title="Merge first on, Mergers 12, Builders 0: every slot goes to merging" onClick={() => act('pipeline/crew', { mergeFirst: true, mergers: 12, builders: 0 }, 'All slots on merging')}>All on merging</Button>
+    </div>
+  );
+}
+
+/** Merge jobs (merge-job@1): each one given to an account like a build, with its stage. */
+function MergeList({ jobs, waits, launches, busy, act, active }: { jobs: MergeJob[]; waits: { id: string; why: string }[]; launches: { id: string; account: string; model: string }[]; busy: string; act: (path: string, body: Record<string, unknown>, what: string) => Promise<void>; active: boolean }) {
+  const open = jobs.filter((j) => j.state === 'waiting' || j.state === 'running');
+  const rest = active ? [] : jobs.filter((j) => j.state === 'done' || j.state === 'failed').slice(-10).reverse();
+  if (active && !open.length) return null;
+  return (
+    <section className="fx-stack" aria-label="Merge jobs">
+      <h2 className="pd-card__title">Merging <span className="oc-count">{open.length}</span><span className="fx-muted fx-small"> · built PRs that can't land as is, each given to a merger account like a build · the merge queue lands them</span></h2>
+      {!open.length && !rest.length ? <div className="fx-empty">No merge work: every built PR can land as is.</div> : (
+        <div className="pl-cols">{[...open, ...rest].map((j) => {
+          const l = launches.find((x) => x.id === j.id); const w = waits.find((x) => x.id === j.id);
+          return (
+            <article key={j.id} className={`pd-card is-${j.state === 'running' ? 'running' : 'pending'}`} data-fx-ctx-target="axf-orchestrator-build" data-fx-ctx-payload={j.build}>
+              <div className="pd-card__top"><h3 className="pd-card__title">{j.title || j.build}<span className="fx-muted fx-small fx-mono"> {j.build}</span></h3><Chip tone={j.state === 'failed' ? 'danger' : j.state === 'done' ? 'success' : j.state === 'running' ? 'accent' : undefined}>{j.state === 'running' || j.state === 'waiting' ? STAGE_LABEL[j.stage] ?? j.stage : j.state}</Chip></div>
+              <div className="pd-meta">
+                {j.pr && <span><Icon name="branch" size={13} />PR {j.pr.replace(/^.*\//, '#')}</span>}
+                {j.account && <span title={j.session ? `Session ${j.session}` : ''}><Icon name="user" size={13} />{j.account}{j.runs ? ` · run ${j.runs}` : ''}</span>}
+                {j.launchedAt && j.state === 'running' && <span className="fx-muted"><Icon name="clock" size={13} />{ago(j.launchedAt)}</span>}
+              </div>
+              {j.reason && <p className="fx-small">{j.reason}</p>}
+              {l && <p className="fx-small"><Icon name="play" size={13} /> Next tick: starts on <b>{l.account}</b> ({l.model})</p>}
+              {!l && w && j.state === 'waiting' && <p className="fx-small fx-muted"><Icon name="clock" size={13} /> {w.why}</p>}
+              {j.note && <p className="fx-small fx-muted">{j.note}</p>}
+              <div className="fx-row fx-row--wrap">
+                {(j.state === 'waiting' || j.state === 'running') && <Button size="sm" tone="neutral" icon="x" disabled={busy === j.build} onClick={() => act('pipeline/merge/cancel', { id: j.build }, `${j.build}: merge job cancelled`)}>Cancel</Button>}
+                {(j.state === 'done' || j.state === 'failed') && <Button size="sm" tone="neutral" icon="refresh" disabled={busy === j.build} onClick={() => act('pipeline/merge', { id: j.build }, `${j.build}: given to a merger again`)}>Merge again</Button>}
+              </div>
+            </article>
+          );
+        })}</div>
+      )}
+    </section>
   );
 }

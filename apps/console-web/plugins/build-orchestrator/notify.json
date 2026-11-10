@@ -75,6 +75,21 @@
       "channels": {
         "amberx": false
       }
+    },
+    {
+      "id": "pipeline.merge",
+      "label": "Merge job",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator dispatcher",
+      "description": "A merge job moved a stage: opened (a built PR conflicts, is red or was kicked out of the merge queue), given to a merger account, rebasing, fixing conflicts, testing, pushing, in the merge queue, or failed and needs you.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:merge:"
+      },
+      "setting": "notify.builds",
+      "push": true,
+      "priority": "default"
     }
   ]
 }

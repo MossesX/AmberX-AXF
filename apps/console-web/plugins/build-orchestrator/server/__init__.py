@@ -453,7 +453,7 @@ async def pipeline_selfcheck(request: Request) -> dict[str, Any]:
     return _pipeline("selfcheck", "--request", "--reason", reason, who=(brett_click(request) or "console")[:80])
 
 
-PIPELINE_TABS = ("pending", "queue", "active", "incomplete", "complete", "errors")
+PIPELINE_TABS = ("pending", "queue", "active", "merging", "incomplete", "complete", "errors")
 
 
 @router.get("/pipeline/tab/{name}")
@@ -531,7 +531,8 @@ async def pipeline_settings_set(request: Request) -> dict[str, Any]:
     splitProvider, apiOverflow, apiAccounts). Turning the API overflow rule on spends money per token: only Brett's own click
     does that (a session, MCP or voice may turn it off)."""
     body = await _json_body(request)
-    allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "apiOverflow", "apiAccounts"}
+    allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "apiOverflow", "apiAccounts",
+               "mergeFirst", "mergers", "builders"}
     if body.get("apiOverflow") is True and not brett_click(request):
         raise HTTPException(403, "turning the API overflow rule on is Brett's own click in the console (it bills per token)")
 
@@ -544,6 +545,76 @@ async def pipeline_settings_set(request: Request) -> dict[str, Any]:
     if not pairs:
         raise HTTPException(400, "nothing to change")
     return _pipeline("set", *pairs)
+
+
+def _merge_needs() -> dict[str, str]:
+    """{pr: reason} for open PRs the merge queue can't land as is (conflicts, red checks, kicked out), from axf.merge-queue@1."""
+    svc = plugin_services.get("axf.merge-queue@1")
+    if svc is None:
+        return {}
+    try:
+        q = svc.queue() or {}
+    except Exception:  # noqa: BLE001 - the queue is optional
+        return {}
+    needs: dict[str, str] = {}
+    for e in list(q.get("waiting") or []) + list(q.get("kicked") or []):
+        if not isinstance(e, dict) or not isinstance(e.get("pr"), int):
+            continue
+        why = str(e.get("why") or "")
+        if e.get("state") in ("kicked", None) or re.search(r"conflict|checks are red|kicked out", why):
+            needs[str(e["pr"])] = why[:300] or "kicked out of the merge queue"
+    return needs
+
+
+def _sync_merge_needs() -> None:
+    """Hand the merge queue's view to the dispatcher (merge-needs.json): it opens a merge job for each built PR in it."""
+    try:
+        _pipeline("merge-needs", "--needs", json.dumps(_merge_needs()), who="merge-queue")
+    except HTTPException:
+        pass
+
+
+@router.get("/pipeline/crew")
+def pipeline_crew() -> dict[str, Any]:
+    """Merge first on / off, Mergers N, Builders N, and every merge job (waiting, running with its account and stage, done, failed)."""
+    _sync_merge_needs()
+    return _pipeline("merges")
+
+
+@router.post("/pipeline/crew")
+async def pipeline_crew_set(request: Request) -> dict[str, Any]:
+    """{mergeFirst?: bool, mergers?: 0-12, builders?: 0-12}: merge-first puts free slots on merge jobs before new builds;
+    mergers and builders cap each kind of session in the shared account slot pool."""
+    body = await _json_body(request)
+    args = ["crew"]
+    if isinstance(body.get("mergeFirst"), bool):
+        args += ["--merge-first", "on" if body["mergeFirst"] else "off"]
+    for k in ("mergers", "builders"):
+        v = body.get(k)
+        if v is not None:
+            if not isinstance(v, int) or isinstance(v, bool) or not 0 <= v <= 12:
+                raise HTTPException(400, f"{k} is a whole number from 0 to 12")
+            args += [f"--{k}", str(v)]
+    if len(args) == 1:
+        raise HTTPException(400, "send mergeFirst, mergers or builders")
+    return _pipeline(*args, who=(brett_click(request) or "console")[:80])
+
+
+@router.post("/pipeline/merge")
+async def pipeline_merge(request: Request) -> dict[str, Any]:
+    """{id, reason?}: give a built build's PR to a merger (rebase on main, fix conflicts, test, push; the merge queue lands it)."""
+    body = await _json_body(request)
+    args = ["merge", _build_id(body.get("id"))]
+    if body.get("reason"):
+        args += ["--reason", str(body["reason"])[:300]]
+    return _pipeline(*args, "--by", (brett_click(request) or "console")[:80])
+
+
+@router.post("/pipeline/merge/cancel")
+async def pipeline_merge_cancel(request: Request) -> dict[str, Any]:
+    """{id}: take a build's merge job out of the merge line."""
+    body = await _json_body(request)
+    return _pipeline("merge-cancel", _build_id(body.get("id")), "--by", (brett_click(request) or "console")[:80])
 
 
 @router.post("/pipeline/route")

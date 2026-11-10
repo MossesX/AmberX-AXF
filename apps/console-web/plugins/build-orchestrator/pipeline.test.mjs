@@ -100,6 +100,45 @@ t('plan: account caps hold a launch even with slots free; Fable work waits when 
   assert.equal(r.launches.length, 0); assert.match(r.waits[0].why, /no account with Fable/); assert.match(r.waits[1].why, /parallel cap/);
   assert.equal(r.idle.kind, 'stuck'); assert.match(r.idle.reason, /2 builds in the Queue, nothing running/);
 });
+// ---------------- merge first + mergers / builders (Brett, Nov 10 2026)
+t('settings: mergeFirst on, mergers / builders 12 by default; counts clamp to 0-12', () => {
+  const d = P.normSettings({}); assert.equal(d.mergeFirst, true); assert.equal(d.mergers, 12); assert.equal(d.builders, 12);
+  const s2 = P.normSettings({ mergeFirst: false, mergers: 40, builders: -3 }); assert.equal(s2.mergeFirst, false); assert.equal(s2.mergers, 12); assert.equal(s2.builders, 0);
+});
+const mj = (b, at, extra = {}) => ({ build: b, pr: `https://github.com/x/y/pull/${at.slice(-2)}`, branch: `claude/${b}`, reason: 'it conflicts with main', at, ...extra });
+t('plan: merge first takes free slots before builds; off puts builds first', () => {
+  const v = P.accountViews(rows, {}, { settings });
+  const on = P.plan({ builds: [q2, q4], accounts: v, slots: { free: 2, used: 0, cap: 2 }, settings: P.normSettings({ ...settings, mergeFirst: true }), merges: [mj('m1', '2026-11-08T00:00:01Z'), mj('m2', '2026-11-08T00:00:02Z')] });
+  assert.deepEqual(on.mergeLaunches.map((l) => l.build), ['m1', 'm2']); assert.equal(on.launches.length, 0); assert.match(on.waits[0].why, /merges go first/);
+  const off = P.plan({ builds: [q2, q4], accounts: v, slots: { free: 2, used: 0, cap: 2 }, settings: P.normSettings({ ...settings, mergeFirst: false }), merges: [mj('m1', '2026-11-08T00:00:01Z')] });
+  assert.deepEqual(off.launches.map((l) => l.id), ['q2', 'q4']); assert.equal(off.mergeLaunches.length, 0); assert.match(off.mergeWaits[0].why, /no free agent slot/);
+});
+t('plan: Mergers N and Builders N cap each kind; Builders 0 = every slot on merging', () => {
+  const v = P.accountViews(rows, {}, { settings: P.normSettings({ parallelPerAccount: 4 }) });
+  const r = P.plan({ builds: [q2, q4], accounts: v, slots: { free: 6, used: 0, cap: 6 }, settings: P.normSettings({ parallelPerAccount: 4, mergers: 1, builders: 1 }), merges: [mj('m1', '2026-11-08T00:00:01Z'), mj('m2', '2026-11-08T00:00:02Z')] });
+  assert.equal(r.mergeLaunches.length, 1); assert.match(r.mergeWaits[0].why, /every merger is busy/);
+  assert.equal(r.launches.length, 1); assert.match(r.waits.find((w) => w.id === 'q4').why, /every builder is busy/);
+  const all = P.plan({ builds: [q2], accounts: v, slots: { free: 6, used: 0, cap: 6 }, settings: P.normSettings({ parallelPerAccount: 4, builders: 0 }), merges: [mj('m1', '2026-11-08T00:00:01Z')] });
+  assert.equal(all.launches.length, 0); assert.match(all.waits[0].why, /Builders is set to 0/); assert.equal(all.mergeLaunches.length, 1);
+  assert.equal(all.crew.builders, 0);
+  const busy = P.plan({ builds: [], accounts: v, slots: { free: 6, used: 1, cap: 6 }, settings: P.normSettings({ mergers: 1 }), merges: [mj('m1', '2026-11-08T00:00:01Z', { state: 'running' }), mj('m2', '2026-11-08T00:00:02Z')] });
+  assert.equal(busy.mergeLaunches.length, 0); assert.equal(busy.crew.mergesRunning, 1);
+});
+t('merge jobs: opened for built PRs the merge queue flags; skipped when open or merged; end → done / retry / failed', () => {
+  const bb = build('bb', 'built', [step('s1', 'Opus', true)], { pr: 'https://github.com/x/y/pull/42', branch: 'claude/bb' });
+  const merged = build('mm', 'built', [], { pr: '43', mergedAt: now });
+  const o = P.mergeOpen([bb, merged, q2], [], { 42: 'it conflicts with main', 43: 'x' }, now);
+  assert.deepEqual(o.map((j) => [j.id, j.state, j.stage, j.branch]), [['merge-bb', 'waiting', 'queued', 'claude/bb']]);
+  assert.equal(P.mergeOpen([bb], o, { 42: 'again' }).length, 0, 'a waiting job is not opened twice');
+  const run = { ...o[0], state: 'running', account: 'w-pro', runs: 1, session: 'axf-merge-bb' };
+  assert.equal(P.mergeEnd(run, 0).state, 'done'); assert.equal(P.mergeEnd(run, 0).stage, 'landing');
+  assert.equal(P.mergeEnd(run, 1).state, 'waiting');
+  assert.equal(P.mergeEnd({ ...run, runs: 9 }, 1, P.normSettings({ maxRuns: 3 })).state, 'failed');
+  assert.match(P.mergeBrief(run), /merge-stage bb rebase/); assert.match(P.mergeBrief(run), /never merge the PR yourself/);
+  assert.equal(P.prNumber('https://github.com/x/y/pull/42'), 42); assert.equal(P.prNumber('#7'), 7); assert.equal(P.prNumber(''), 0);
+  const a = P.alertFor('merge', { id: 'bb', title: 'BB', stage: 'conflicts', account: 'w-pro' });
+  assert.equal(a.key, 'pipeline:merge:bb'); assert.match(a.title, /Fixing conflicts/);
+});
 t('plan: idle when the Queue is empty and Pending has work; quiet when something runs', () => {
   const v = P.accountViews(rows, {}, { settings });
   const r = P.plan({ builds: [p1], accounts: v, slots: { free: 2, used: 0, cap: 3 }, settings });

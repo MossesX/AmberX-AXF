@@ -41,12 +41,12 @@ function headlessRuns(b: Build): { at: string; start: string; cost: string; mode
 const fmtDate = (v: string) => { if (!v) return '—'; const d = new Date(v); return Number.isNaN(d.getTime()) ? '—' : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }); };
 const fmtTime = (v: string) => { const d = new Date(v); return Number.isNaN(d.getTime()) ? '' : d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); };
 export const TABS = [
-  { id: 'pending', label: 'Pending', icon: 'clock' }, { id: 'queue', label: 'Queue', icon: 'list' }, { id: 'active', label: 'Active', icon: 'play' },
+  { id: 'pending', label: 'Pending', icon: 'clock' }, { id: 'queue', label: 'Queue', icon: 'list' }, { id: 'active', label: 'Active', icon: 'play' }, { id: 'merging', label: 'Merging', icon: 'branch' },
   { id: 'incomplete', label: 'Incomplete', icon: 'pause' }, { id: 'complete', label: 'Complete', icon: 'check-circle' }, { id: 'errors', label: 'Errors', icon: 'alert' },
   { id: 'accounts', label: 'Accounts', icon: 'user' }, { id: 'builds', label: 'All builds', icon: 'grid' }, { id: 'approvals', label: 'Approvals', icon: 'check' }, { id: 'rules', label: 'Rules', icon: 'settings' },
 ] as const;
 export type Tab = (typeof TABS)[number]['id'];
-const PIPELINE_VIEWS = new Set<string>(['pending', 'queue', 'active', 'incomplete', 'complete', 'errors', 'accounts']);
+const PIPELINE_VIEWS = new Set<string>(['pending', 'queue', 'active', 'merging', 'incomplete', 'complete', 'errors', 'accounts']);
 /** Another part of the console (an action, a deep link) asks for a tab: the page switches to it. */
 const TAB_EVENT = 'axf:orchestrator-tab';
 export function openTab(t: string) { if (TABS.some((x) => x.id === t)) { consoleApi.writeLocal('orch-tab', t); window.dispatchEvent(new CustomEvent(TAB_EVENT, { detail: t })); } }

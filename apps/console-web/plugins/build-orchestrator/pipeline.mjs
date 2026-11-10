@@ -93,7 +93,7 @@ export function pipeDir(env = process.env) {
   const hub = join(env.AXHUB_PROJECTS_DIR || '/projects', 'amberx-axf', '_data');
   return existsSync(hub) ? join(hub, 'pipeline') : join(homedir(), '.axf', 'pipeline');
 }
-const files = () => { const d = pipeDir(); return { dir: d, settings: join(d, 'settings.json'), accounts: join(d, 'accounts.json'), state: join(d, 'state.json'), log: join(d, 'log.jsonl'), host: join(d, 'accounts-host.json'), checkRequest: join(d, 'selfcheck-request.json'), health: join(d, 'health.json'), healthLock: join(d, 'health.lock'), healthRequest: join(d, 'health-request.json') }; };
+const files = () => { const d = pipeDir(); return { dir: d, settings: join(d, 'settings.json'), accounts: join(d, 'accounts.json'), state: join(d, 'state.json'), log: join(d, 'log.jsonl'), host: join(d, 'accounts-host.json'), checkRequest: join(d, 'selfcheck-request.json'), health: join(d, 'health.json'), healthLock: join(d, 'health.lock'), healthRequest: join(d, 'health-request.json'), merges: join(d, 'merges.json'), mergeNeeds: join(d, 'merge-needs.json') }; };
 
 /** The Claude settings document's values (owner-only ones included), {} when unreadable. */
 export function claudeSettings(env = process.env) { return readJson(claudeSettingsFile(env))?.values ?? {}; }
@@ -184,7 +184,8 @@ export function status() {
   const builds = live(store);
   const ageMin = read.at ? Math.max(0, Math.round((Date.now() - Date.parse(read.at)) / 60e3)) : null;
   const accountsFrom = { source: read.source, at: read.at, ageMin, why: read.why || (read.source === 'snapshot' && ageMin > 5 ? `the host's account snapshot is ${ageMin} min old: the dispatcher cron may be stopped` : '') };
-  const plan = P.plan({ builds, accounts, slots: sl, settings, rules: rulesOf(store) });
+  const merges = loadMerges();
+  const plan = P.plan({ builds, accounts, slots: sl, settings, rules: rulesOf(store), merges });
   const byTable = { pending: [], queued: [], building: [] };
   for (const b of builds) { const t = BP.tableOf(b); if (t && !b.hidden) byTable[t].push(row(b)); }
   byTable.queued.sort((a, b) => plan.queue.indexOf(a.id) - plan.queue.indexOf(b.id));
@@ -197,7 +198,8 @@ export function status() {
   for (const t of ['pending', 'incomplete', 'errors']) tabs[t].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   tabs.complete.sort((a, b) => str(b.builtAt || b.updatedAt).localeCompare(str(a.builtAt || a.updatedAt)));
   const st = loadState();
-  return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), table: byTable, tabs, accounts, accountsFrom, health: loadHealth(), slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable }, plan, settings,
+  tabs.merging = merges.filter((j) => j.state === 'waiting' || j.state === 'running').sort((a, b) => str(a.at).localeCompare(str(b.at)));
+  return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), table: byTable, tabs, merges, mergeNeeds: loadMergeNeeds(), accounts, accountsFrom, health: loadHealth(), slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable }, plan, settings,
     state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails, selfCheck: st.selfCheck ?? null, selfCheckRequested: readJson(files().checkRequest)?.at || '' } };
 }
 
@@ -357,14 +359,14 @@ export function briefFor(b, rules, { account, model, kind = '' }) {
 }
 
 /** Start one headless session for a queued build on an account. */
-export function launch(b, { account, model, kind = '' }, { rules, env = process.env, launcher = env.AXF_PIPELINE_LAUNCHER || join(REPO_ROOT, 'deploy', 'claude-headless.sh') } = {}) {
+export function launch(b, { account, model, kind = '' }, { rules, env = process.env, launcher = env.AXF_PIPELINE_LAUNCHER || join(REPO_ROOT, 'deploy', 'claude-headless.sh'), name = b.id, brief = '' } = {}) {
   const { dir } = ensureWorktree(b.id, env);
   const briefFile = join(dir, '.axf-brief.md');
-  writeFileSync(briefFile, `${briefFor(b, rules, { account, model, kind })}\n`);
+  writeFileSync(briefFile, `${brief || briefFor(b, rules, { account, model, kind })}\n`);
   // the one way in: a dispatch token for this build only, spent by the launcher when the session starts
   const token = issueDispatch(b.id, { account, model, env });
   const key = modelKey(model) || 'opus';
-  const args = ['--name', b.id, '--account', account, '--brief', '.axf-brief.md', '--log', `${b.id}.log`, '--', '--model', MODEL_IDS[key], ...CLAUDE_ARGS];
+  const args = ['--name', name, '--account', account, '--brief', '.axf-brief.md', '--log', `${name}.log`, '--', '--model', MODEL_IDS[key], ...CLAUDE_ARGS];
   const e = { ...env, AXF_DISPATCH_TOKEN: token, AXF_SURFACE: 'pipeline', AXF_MODEL: key, AXF_BUILD_ID: b.id, AXF_CLAUDE_ACCOUNT: account, AXF_PRIORITY: slots.levelFor ? (['P0', 'P1', 'P2', 'P3'].includes(effectivePriority(b)) ? { P0: 'urgent', P1: 'high', P2: 'normal', P3: 'low' }[effectivePriority(b)] : 'normal') : 'normal' };
   const r = spawnSync('bash', [launcher, ...args], { cwd: dir, encoding: 'utf8', timeout: 180e3, env: e });
   const text = `${r.stdout || ''}\n${r.stderr || ''}`;
@@ -497,6 +499,80 @@ export function selfCheck({ reason = 'on demand', by = 'pipeline', env = process
   return result;
 }
 
+// ------------------------------------------------------------------ merge jobs (merge-job@1, merges.json)
+
+/** Every merge job the pipeline keeps (merges.json in its data dir). */
+export const loadMerges = () => { const j = readJson(files().merges, {}); return (Array.isArray(j?.jobs) ? j.jobs : []).map(P.normMerge).filter(Boolean); };
+const saveMerges = (jobs) => writeJson(files().merges, { $axf: 'merge-jobs@1', at: nowIso(), jobs: jobs.map(P.normMerge).filter(Boolean).slice(-200) });
+/** What the merge queue says needs a merger: { [pr]: reason } (written by the console from axf.merge-queue@1). */
+export const loadMergeNeeds = () => { const j = readJson(files().mergeNeeds, {}); return j && typeof j.needs === 'object' && j.needs ? j.needs : {}; };
+export function saveMergeNeeds(needs, by = 'console') {
+  const clean = {}; for (const [k, v] of Object.entries(needs && typeof needs === 'object' ? needs : {})) if (/^\d+$/.test(k) && v) clean[k] = str(v, 300);
+  writeJson(files().mergeNeeds, { at: nowIso(), by: str(by, 80), needs: clean }); return clean;
+}
+function updateMerge(build, fn) {
+  const jobs = loadMerges(); const i = jobs.findIndex((j) => j.build === build);
+  if (i < 0) throw Object.assign(new Error(`no merge job for "${build}"`), { code: 2 });
+  jobs[i] = P.normMerge(fn(jobs[i])); saveMerges(jobs); return jobs[i];
+}
+const mergeAlert = (env) => (j, stage, note = '') => { try { makeConsole(env)('POST', '/api/alerts', P.alertFor('merge', { id: j.build, title: j.title || j.build, stage, account: j.account, pr: j.pr, note })); } catch { /* the alert is a courtesy */ } };
+
+/** Ask for a merger on a built build by hand (console, voice, MCP, CLI). Reopens a done or failed job. */
+export function requestMerge(build, { reason = '', by = process.env.AXF_ACTOR || 'console', env = process.env } = {}) {
+  const b = storeCore.findBuild(loadStore(), build); if (!b) throw Object.assign(new Error(`no build "${build}"`), { code: 2 });
+  if (!b.pr) throw Object.assign(new Error(`${build} has no PR yet: nothing to merge`), { code: 2 });
+  if (b.mergedAt) throw Object.assign(new Error(`${build} already merged`), { code: 2 });
+  const jobs = loadMerges(); const cur = jobs.find((j) => j.build === build);
+  if (cur && (cur.state === 'waiting' || cur.state === 'running')) return cur;
+  const j = P.normMerge({ build, pr: b.pr, branch: b.branch || `claude/${build}`, title: b.title, reason: str(reason, 300) || `${by} asked for a merge`, at: nowIso(), by, runs: 0 });
+  saveMerges([...jobs.filter((x) => x.build !== build), j]);
+  logLine({ event: 'merge-requested', build, by });
+  mergeAlert(env)(j, 'queued', j.reason);
+  return j;
+}
+/** Take a merge job out of the line (a running session is left to end by itself; its end no longer reopens it). */
+export function cancelMerge(build, { by = process.env.AXF_ACTOR || 'console' } = {}) {
+  const j = updateMerge(build, (x) => ({ ...x, state: 'done', note: `cancelled by ${by}`, endedAt: nowIso() }));
+  logLine({ event: 'merge-cancelled', build, by }); return j;
+}
+/** A merge session reports its stage (rebase, conflicts, test, push, landing): recorded and sent to AmberX. */
+export function mergeStage(build, stage, { note = '', env = process.env } = {}) {
+  if (!P.MERGE_STAGES.includes(stage)) throw Object.assign(new Error(`stage is one of ${P.MERGE_STAGES.join(', ')}`), { code: 2 });
+  const j = updateMerge(build, (x) => ({ ...x, stage, note: str(note, 600) || x.note }));
+  logLine({ event: 'merge-stage', build, stage }); mergeAlert(env)(j, stage, note); return j;
+}
+
+/** One tick's merge work: open jobs the merge queue asks for, close ended sessions. Returns { opened, ended }. */
+export function mergeHousekeeping({ env = process.env, settings = loadSettings() } = {}) {
+  const store = loadStore(); let jobs = loadMerges();
+  const opened = P.mergeOpen(live(store), jobs, loadMergeNeeds());
+  if (opened.length) jobs = [...jobs.filter((j) => !opened.some((o) => o.build === j.build)), ...opened];
+  const events = readEvents(env); const ended = [];
+  jobs = jobs.map((j) => {
+    // a build that merged meanwhile ends its job
+    const b = storeCore.findBuild(store, j.build);
+    if ((j.state === 'waiting' || j.state === 'running') && (!b || b.mergedAt)) { ended.push({ ...j, state: 'done' }); return { ...j, state: 'done', stage: 'landing', note: 'merged', endedAt: nowIso() }; }
+    if (j.state !== 'running' || !j.session) return j;
+    const since = Date.parse(j.launchedAt || 0) - 5000;
+    const end = events.filter((e) => e.event === 'session-end' && e.session === j.session && Date.parse(e.at || 0) >= since).pop();
+    let exit = null;
+    if (end) exit = Number.isInteger(end.exit) ? end.exit : Number(end.exit) || 0;
+    else { if (tmuxHas(j.session) !== false || Date.now() - Date.parse(j.launchedAt || 0) < GONE_GRACE_MS) return j; exit = 1; }
+    const n = P.mergeEnd(j, exit, settings); ended.push(n); return n;
+  });
+  if (opened.length || ended.length) saveMerges(jobs);
+  const tell = mergeAlert(env);
+  for (const o of opened) { logLine({ event: 'merge-opened', build: o.build, reason: o.reason }); tell(o, 'queued', o.reason); }
+  for (const e of ended) { logLine({ event: 'merge-ended', build: e.build, state: e.state }); if (e.note !== 'merged') tell(e, e.state === 'failed' ? 'failed' : e.state === 'done' ? 'landing' : 'queued', e.note); }
+  return { opened: opened.map((o) => o.build), ended: ended.map((e) => ({ build: e.build, state: e.state })) };
+}
+
+/** Start one merge session on its account (the build's own worktree and branch). */
+export function launchMerge(j, l, { rules, env = process.env } = {}) {
+  const b = storeCore.findBuild(loadStore(), j.build); if (!b) throw new Error(`no build "${j.build}"`);
+  return launch(b, { account: l.account, model: l.model, kind: l.kind }, { rules, env, name: j.id, brief: P.mergeBrief(j) });
+}
+
 // ------------------------------------------------------------------ the tick
 
 export function tick({ env = process.env } = {}) {
@@ -508,14 +584,34 @@ export function tick({ env = process.env } = {}) {
   const started = nowIso();
   const inta = intake({ alert });
   const ended = checkEnds({ alert, env });
+  let mh = { opened: [], ended: [] };
+  try { mh = mergeHousekeeping({ env }); } catch (e) { logLine({ event: 'merge-housekeeping-failed', error: str(e.message, 300) }); }
   const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
   const read = accountsRead(store, settings, env); const accounts = read.accounts; const sl = slotsNow();
   // the console (in its container) can't see the logins: it reads what the host saw here
   if (read.source === 'host') { try { writeHostAccounts(read.rows, read.at || nowIso()); } catch (e) { logLine({ event: 'snapshot-failed', error: str(e.message, 300) }); } }
-  const plan = P.plan({ builds: live(store), accounts, slots: sl, settings, rules });
+  const plan = P.plan({ builds: live(store), accounts, slots: sl, settings, rules, merges: loadMerges() });
   planAhead(store, accounts, settings);
   const launched = []; const failed = [];
   const hourAgo = Date.now() - 3600e3;
+  // merge-first: the plan put merge jobs ahead of builds when the switch is on; they start in the plan's order
+  const mergesLaunched = [];
+  for (const m of plan.mergeLaunches) {
+    const fails = (state.launchFails[m.id] ?? []).filter((t) => Date.parse(t) > hourAgo);
+    if (fails.length >= LAUNCH_FAILS_PER_HOUR) { plan.mergeWaits.push({ id: m.id, why: `launch failed ${fails.length} times in the last hour: waiting` }); continue; }
+    const j = loadMerges().find((x) => x.id === m.id); if (!j) continue;
+    try {
+      const r = launchMerge(j, m, { rules, env });
+      const n = updateMerge(j.build, (x) => ({ ...x, state: 'running', stage: 'rebase', account: m.account, session: r.session, slot: r.slot, runs: x.runs + 1, launchedAt: nowIso(), note: `merger ${m.account} (${m.model})` }));
+      mergeAlert(env)(n, 'rebase', `started on ${m.account}${m.kind === 'api' ? ' (API key)' : ''}`);
+      mergesLaunched.push({ ...m, session: r.session }); delete state.launchFails[m.id];
+      logLine({ event: 'merge-launched', build: j.build, account: m.account, session: r.session });
+    } catch (e) {
+      state.launchFails[m.id] = [...fails, nowIso()];
+      failed.push({ id: m.id, error: e.message, tried: [m.account] });
+      logLine({ event: 'merge-launch-failed', build: j.build, account: m.account, error: str(e.message, 300) });
+    }
+  }
   for (const first of plan.launches) {
     const fails = (state.launchFails[first.id] ?? []).filter((t) => Date.parse(t) > hourAgo);
     if (fails.length >= LAUNCH_FAILS_PER_HOUR) { plan.waits.push({ id: first.id, why: `launch failed ${fails.length} times in the last hour: waiting` }); continue; }
@@ -550,7 +646,7 @@ export function tick({ env = process.env } = {}) {
   }
   // idle: nothing running while work waits. Recorded at once; the phone hears about it after idleAfterMin, once per idle spell.
   let idle = null;
-  if (plan.idle && !launched.length) {
+  if (plan.idle && !launched.length && !mergesLaunched.length) {
     const since = state.idle?.kind === plan.idle.kind ? state.idle.since : started;
     idle = { ...plan.idle, since };
     const dueAt = Date.parse(since) + settings.idleAfterMin * 60e3;
@@ -561,7 +657,7 @@ export function tick({ env = process.env } = {}) {
     state.alerts = state.alerts.filter((a) => a.key !== 'pipeline:idle');
   }
   const alerts = [...state.alerts.filter((a) => a.key !== 'pipeline:idle' || idle), ...sent.filter((a) => a.kind === 'idle')].filter((a, i, arr) => arr.findIndex((x) => x.key === a.key) === i);
-  const next = { ...state, at: nowIso(), plan: { launches: plan.launches, waits: plan.waits, queue: plan.queue, running: plan.running, pending: plan.pending }, slots: { used: sl.used, cap: sl.cap, free: sl.free }, accounts: accounts.map((a) => ({ name: a.name, fable: a.fable, parallel: a.parallel, running: a.running, usable: a.usable, why: a.why })), idle, alerts,
+  const next = { ...state, at: nowIso(), plan: { launches: plan.launches, waits: plan.waits, mergeLaunches: plan.mergeLaunches, mergeWaits: plan.mergeWaits, crew: plan.crew, queue: plan.queue, running: plan.running, pending: plan.pending }, slots: { used: sl.used, cap: sl.cap, free: sl.free }, accounts: accounts.map((a) => ({ name: a.name, fable: a.fable, parallel: a.parallel, running: a.running, usable: a.usable, why: a.why })), idle, alerts,
     recent: [...state.recent, ...launched.map((l) => ({ at: nowIso(), event: 'launched', id: l.id, account: l.account, model: l.model })), ...ended.map((e) => ({ at: nowIso(), event: e.outcome, id: e.id })), ...failed.map((f) => ({ at: nowIso(), event: 'launch-failed', id: f.id, error: f.error }))].slice(-50) };
   saveState(next);
   // self-check: asked for (console load, voice, API), or queued work waits and this tick started nothing
@@ -577,7 +673,7 @@ export function tick({ env = process.env } = {}) {
   for (const fn of TICK_HOOKS) {
     try { fn({ state: next, plan, launched, ended, failed, env }); } catch (e) { logLine({ event: 'hook-failed', error: str(e.message, 300) }); }
   }
-  return { ok: true, at: next.at, intake: inta, ended, launched, failed, plan, idle, alertsSent: sent, selfCheck: check, health };
+  return { ok: true, at: next.at, intake: inta, ended, launched, mergesLaunched, merges: mh, failed, plan, idle, alertsSent: sent, selfCheck: check, health };
 }
 
 const MAX_PICK_TRIES = 4;
@@ -813,9 +909,21 @@ async function main(argv) {
     return out({ ok: true, ...r }, [`health ${r.at}: ${r.line}`, ...r.accounts.map((a) => `  ${a.name.padEnd(16)} sign-in ${a.signedIn == null ? '?' : a.signedIn ? 'yes' : 'NO'} · credits ${a.credits == null ? '?' : a.credits ? 'yes' : 'NO'} · Fable ${a.fable == null ? '?' : a.fable ? 'yes' : 'NO'}${a.error ? ` · ${a.error}` : ''}`)].join('\n'));
   }
   if (cmd === 'tab') {
-    const t = rest[0]; if (!BP.TABS.includes(t)) throw Object.assign(new Error(`tab is one of ${BP.TABS.join(', ')}`), { code: 2 });
+    const t = rest[0];
+    if (t === 'merging') { const rows = status().tabs.merging; return out({ ok: true, tab: t, rows }, [`Merging (${rows.length})`, ...rows.map((j) => `  ${j.build.padEnd(40)} ${j.state.padEnd(8)} ${P.MERGE_STAGE_LABEL[j.stage]}${j.account ? ` · ${j.account}` : ''}`)].join('\n')); }
+    if (!BP.TABS.includes(t)) throw Object.assign(new Error(`tab is one of ${BP.TABS.join(', ')}, merging`), { code: 2 });
     const rows = status().tabs[t];
     return out({ ok: true, tab: t, rows }, [`${BP.TAB_LABEL[t]} (${rows.length})`, ...rows.map((r) => `  ${r.id.padEnd(40)} ${r.status.padEnd(9)} ${r.steps.done}/${r.steps.total}${r.pipeline?.planned ? ` · planned ${r.pipeline.planned.model} on ${r.pipeline.planned.account || '—'}` : ''}${r.pipeline?.account ? ` · took ${r.pipeline.account}` : ''}`)].join('\n'));
+  }
+  if (cmd === 'merges') { const j = loadMerges(); const s = loadSettings(); return out({ ok: true, crew: { mergeFirst: s.mergeFirst, mergers: s.mergers, builders: s.builders }, jobs: j, needs: loadMergeNeeds() }, [`Merge first ${s.mergeFirst ? 'on' : 'off'} · mergers ${s.mergers} · builders ${s.builders}`, ...j.map((x) => `  ${x.build.padEnd(40)} ${x.state.padEnd(8)} ${x.stage.padEnd(9)} ${x.account || '—'} · ${x.reason}`)].join('\n')); }
+  if (cmd === 'merge') { const j = requestMerge(rest[0], { reason: flag('reason'), by }); return out({ ok: true, job: j }, `${j.build}: merge job ${j.state}`); }
+  if (cmd === 'merge-cancel') { const j = cancelMerge(rest[0], { by }); return out({ ok: true, job: j }, `${j.build}: merge job cancelled`); }
+  if (cmd === 'merge-stage') { const j = mergeStage(rest[0], rest[1], { note: flag('note') }); return out({ ok: true, job: j }, `${j.build}: ${P.MERGE_STAGE_LABEL[j.stage]}`); }
+  if (cmd === 'merge-needs') { const n = saveMergeNeeds(JSON.parse(flag('needs', '{}')), by); return out({ ok: true, needs: n }, `${Object.keys(n).length} PR(s) need a merger`); }
+  if (cmd === 'crew') {
+    const patch = {}; if (has('merge-first')) patch.mergeFirst = flag('merge-first') !== 'off'; if (has('mergers')) patch.mergers = Number(flag('mergers')); if (has('builders')) patch.builders = Number(flag('builders'));
+    const s = Object.keys(patch).length ? saveSettings(patch) : loadSettings();
+    return out({ ok: true, mergeFirst: s.mergeFirst, mergers: s.mergers, builders: s.builders }, `Merge first ${s.mergeFirst ? 'on' : 'off'} · mergers ${s.mergers} · builders ${s.builders}`);
   }
   if (cmd === 'probe') { const r = probe(rest[0]); return out({ ok: true, name: rest[0], probe: r }, `${rest[0]}: Fable ${r.fable ? 'yes' : 'no'}${r.error ? ` (${r.error})` : ''}`); }
   if (cmd === 'settings') { const s = loadSettings(); return out({ ok: true, settings: s }, Object.entries(s).filter(([k]) => k !== '$axf').map(([k, v]) => `${k} = ${JSON.stringify(v)}`).join('\n')); }
@@ -823,7 +931,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto | crew [--merge-first on|off] [--mergers n] [--builders n] | merges | merge <build> [--reason r] | merge-cancel <build> | merge-stage <build> <stage> | merge-needs --needs {pr:reason} [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

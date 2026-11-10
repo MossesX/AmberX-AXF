@@ -283,6 +283,7 @@
                 "pending",
                 "queue",
                 "active",
+                "merging",
                 "incomplete",
                 "complete",
                 "errors"
@@ -479,10 +480,90 @@
                 "rules",
                 "off"
               ]
+            },
+            "mergeFirst": {
+              "type": "boolean"
+            },
+            "mergers": {
+              "type": "integer"
+            },
+            "builders": {
+              "type": "integer"
             }
           }
         },
         "output": "{ settings }"
+      },
+      {
+        "id": "pipeline-crew",
+        "route": "GET /pipeline/crew",
+        "title": "Mergers and builders",
+        "description": "Merge first on or off, how many mergers and builders run at once, and every merge job: waiting, running (which account has it, which stage: rebase, conflicts, test, push, in the merge queue), done, failed. Say 'how are the merges going'.",
+        "readOnly": true,
+        "output": "{ crew: { mergeFirst, mergers, builders }, jobs: [merge-job@1], needs: { <pr>: reason } }"
+      },
+      {
+        "id": "pipeline-crew-set",
+        "route": "POST /pipeline/crew",
+        "title": "Set mergers and builders",
+        "description": "Merge first (free slots go to merge jobs before new builds), Mergers N and Builders N (0-12 each, sharing the account slot pool). Say 'put everything on merging' (mergeFirst true, builders 0) or 'two mergers, four builders'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "mergeFirst": {
+              "type": "boolean"
+            },
+            "mergers": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 12
+            },
+            "builders": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 12
+            }
+          }
+        }
+      },
+      {
+        "id": "pipeline-merge",
+        "route": "POST /pipeline/merge",
+        "title": "Give a PR to a merger",
+        "description": "A built build's PR becomes a merge job: the dispatcher gives it to a Claude account like a build; the session rebases on main, fixes conflicts, runs the tests and pushes, and the merge queue lands it.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        }
+      },
+      {
+        "id": "pipeline-merge-cancel",
+        "route": "POST /pipeline/merge/cancel",
+        "title": "Cancel a merge job",
+        "description": "Take a build's merge job out of the merge line.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        }
       }
     ]
   },
