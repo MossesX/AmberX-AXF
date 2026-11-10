@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2677,
- "updatedAt": "2026-11-10T18:36:55.881Z",
+ "rev": 2678,
+ "updatedAt": "2026-11-10T18:37:18.874Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -149510,7 +149510,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T17:11:27.008Z",
-   "updatedAt": "2026-11-10T18:36:54.191Z",
+   "updatedAt": "2026-11-10T18:37:16.895Z",
    "builtAt": "",
    "notes": [
     {
@@ -149532,6 +149532,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skin-checker-flags-anything-that-breaks-a-profes--rhonda, own login copy)",
      "at": "2026-11-10T18:26:17.837Z"
+    },
+    {
+     "text": "Headless run axf-skin-checker-flags-anything-that-breaks-a-profes--rhonda: brief only · start 12.6K tokens ($0.06) · cost $3.90 · 34 turns · 6 tools, MCP none",
+     "at": "2026-11-10T18:37:16.894Z"
     }
    ],
    "approvals": [],
@@ -149918,7 +149922,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
