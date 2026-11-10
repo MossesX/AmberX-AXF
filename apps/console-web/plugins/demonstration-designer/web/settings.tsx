@@ -13,7 +13,7 @@ import type { Settings, SettingsPatch } from '../engine.mjs';
 import sections from '../assets/settings/demonstration-designer-sections.json';
 import wizard from '../assets/settings/demonstration-designer-wizard.json';
 import twoColumn from '../assets/settings/demonstration-designer-two-column.json';
-import { FOLDER, SETTINGS_VIEW_KEY, loadSettings, saveSettings, useModel } from './model';
+import { FOLDER, SETTINGS_VIEW_KEY, loadNarrators, loadSettings, narratorOptions, saveSettings, useModel } from './model';
 
 export const SETTINGS_ASSETS = [sections, wizard, twoColumn] as const;
 type ViewName = 'sections' | 'wizard' | 'two-column';
@@ -68,11 +68,12 @@ function NarrationSection({ s }: { s: Settings }) {
   const [voice, setVoice] = useState(s.narration.voice);
   useEffect(() => setVoice(s.narration.voice), [s.narration.voice]);
   const voices = (() => { try { return (globalThis.speechSynthesis?.getVoices() ?? []).filter((v) => /^en/i.test(v.lang)).map((v) => ({ value: v.name, label: `${v.name} (${v.lang})` })); } catch { return []; } })();
-  const options = [...E.NARRATORS.map((n) => ({ value: n.value, label: n.label })), ...voices.filter((v) => !E.NARRATORS.some((n) => n.value === v.value))];
-  if (voice && !options.some((o) => o.value === voice)) options.push({ value: voice, label: `${voice} (not on this device)` });
+  const m = useModel();
+  useEffect(() => { void loadNarrators(); }, []);
+  const options = narratorOptions(voice, voices, m.narrators);
   return (
     <div className="fx-stack">
-      <SelectField label="Default narrator" value={voice} onChange={(v) => { setVoice(v); void save({ narration: { voice: v } }); }} options={options} hint="A device voice, the default one, or captions only. Each pitch can pick another." />
+      <SelectField label="Default narrator" value={voice} onChange={(v) => { setVoice(v); void save({ narration: { voice: v } }); }} options={options} hint={`A device voice, the default one, captions only, or an agent\u2019s cloud voice (Agent voice; an exported video carries only a cloud voice). Each pitch can pick another.${m.narratorsWhy ? ` No cloud voices: ${m.narratorsWhy}.` : ''}`} />
       <SelectField label="Speed" value={String(s.narration.speed)} onChange={(v) => void save({ narration: { speed: Number(v) } })} options={[{ value: '0.9', label: 'Calm (0.9×)' }, { value: '1', label: 'Normal' }, { value: '1.15', label: 'Brisk (1.15×)' }, { value: '1.3', label: 'Fast (1.3×)' }]} />
       <Switch label="Captions" hint="The words at the bottom of the stage while they are spoken." checked={s.narration.captions} onChange={(v) => void save({ narration: { captions: v } })} />
       <SelectField label="Caption size" value={s.narration.captionSize} onChange={(v) => void save({ narration: { captionSize: v as Settings['narration']['captionSize'] } })} options={[{ value: 'sm', label: 'Small' }, { value: 'md', label: 'Medium' }, { value: 'lg', label: 'Large' }]} />

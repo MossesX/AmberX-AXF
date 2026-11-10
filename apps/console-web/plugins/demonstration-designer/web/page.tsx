@@ -12,7 +12,7 @@ import type { PitchStep, Topic } from '../engine.mjs';
 import stacked from '../assets/settings/demonstration-designer-page-stacked.json';
 import threeUp from '../assets/settings/demonstration-designer-page-three-up.json';
 import wide from '../assets/settings/demonstration-designer-page-wide.json';
-import { type DemoRecord, type Summary, PAGE_VIEW_KEY, applyScript, deleteDemo, deviceVoices, fmtSeconds, generate, getDemo, loadDemos, loadSettings, loadTopics, saveDemo, setChain, shareOf, startRecording, stopRecording, takeWanted, uploadMedia, useModel, clearRecording } from './model';
+import { type DemoRecord, type Summary, PAGE_VIEW_KEY, applyScript, deleteDemo, deviceVoices, fmtSeconds, generate, getDemo, loadDemos, loadNarrators, loadSettings, loadTopics, narratorOptions, saveDemo, setChain, shareOf, startRecording, stopRecording, takeWanted, uploadMedia, useModel, clearRecording } from './model';
 import { play, stop, useStage } from './stage';
 
 /** The page layout (a `settings` asset picked in UI Review): stacked, three-up or wide. */
@@ -246,7 +246,7 @@ export function DesignerPage() {
   const [demo, setDemo] = useState<DemoRecord | null>(null);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState('');
-  useEffect(() => { void loadTopics(rt); void loadDemos(); void loadSettings(); }, [rt]);
+  useEffect(() => { void loadTopics(rt); void loadDemos(); void loadSettings(); void loadNarrators(); }, [rt]);
   useEffect(() => {
     const synth = globalThis.speechSynthesis;
     if (!synth) return;
@@ -266,7 +266,7 @@ export function DesignerPage() {
   const mins = minutes || String(m.settings.script.minutes);
   const voice = narrator ?? m.settings.narration.voice;
   const spd = speed ?? String(m.settings.narration.speed);
-  const narrators = useMemo(() => { const base = E.NARRATORS.map((n) => ({ value: n.value, label: n.label })); const seen = new Set(base.map((b) => b.value)); for (const v of voices) if (!seen.has(v.value)) { seen.add(v.value); base.push(v); } if (voice && !seen.has(voice)) base.push({ value: voice, label: `${voice} (not on this device)` }); return base; }, [voices, voice]);
+  const narrators = useMemo(() => narratorOptions(voice, voices, m.narrators), [voices, voice, m.narrators]);
   const go = () => {
     if (!topic) return;
     setBusy(true); setMsg('');

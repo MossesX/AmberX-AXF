@@ -92,8 +92,19 @@ ok(X.claim('j6', {}, {}, envA, now + 8).state === (q6.account === 'w1' ? 'run' :
 ok(X.claim('j5', {}, {}, envA, now + 9).state === (q5.account === 'w1' ? 'run' : 'queue'), 'a re-asked queue claim keeps its place');
 process.env.AXF_WORKERS_ALIVE = 'j2';
 ok(X.status({ ...process.env }, now).accounts.find((a) => a.name === 'w1').running.length === 0, 'a claim goes with its session');
+X.markLimit('w2', { kind: 'auth' }, { ...process.env }, now - 3600e3);
+const reaped = X.reap({ ...process.env }, now);
+ok(reaped.claims.length >= 1 && !reaped.claims.some((c) => c.session === 'j2') && reaped.limits.join() === 'w2', 'reap drops dead claims and expired limits, keeps the live one');
+ok(Object.keys(JSON.parse(readFileSync(join(W, 'worker-state.json'), 'utf8')).claims).join() === 'j2', 'only the live claim is left');
+ok(X.reap({ ...process.env }, now).claims.length === 0, 'a second reap finds nothing');
 delete process.env.AXF_WORKERS_ALIVE;
 rmSync(join(W, 'worker-state.json'));
+
+console.log('live sessions');
+ok(X.liveSessions(() => ({ status: 0, stdout: 'a\nb\n' })).size === 2, 'tmux answers: its sessions');
+ok(X.liveSessions(() => ({ status: 1, stdout: '', stderr: 'no server running on /tmp/tmux-0/default\n' })).size === 0, 'no tmux server = no session alive (was: unknown, so every unclosed run counted as running)');
+ok(X.liveSessions(() => ({ status: 1, stdout: '', stderr: 'error connecting to /tmp/tmux-0/default (No such file or directory)\n' })).size === 0, 'no socket = no session alive');
+ok(X.liveSessions(() => ({ error: new Error('ENOENT') })) === null, 'no tmux binary = unknown');
 
 console.log('config: rules, API workers, spend caps');
 const cli = (...a) => spawnSync(process.execPath, [join(HERE, 'claude-workers.mjs'), ...a], { env: process.env, encoding: 'utf8' });

@@ -14,6 +14,8 @@ What lives here (everything in the plugin's data folder, 0600 files in a 0700 fo
     GET    /voices/{provider}             the provider's voices (OpenAI: fixed list; ElevenLabs: the account's voices)
     POST   /tts               {agentId, text, …}  cloud speech → audio/mpeg, only for agents whose profile allows cloud voices
 
+Capability axf.speech@1 (SpeechService): narrators() and say(agentId, text, rate) for other plugins, same rules as /tts.
+
 Cloud keys: the stored key first, else OPENAI_API_KEY / ELEVENLABS_API_KEY. They never leave this server.
 Spoken audio is cached (hash of provider, voice, model, style, speed, text) up to CACHE_MAX bytes, oldest first out.
 Nothing here names another plugin: the agents come from the axf.agents@1 capability, or none.
@@ -321,9 +323,10 @@ def synth(provider: str, key: str, voice: str, model: str, text: str, style: str
     return raw
 
 
-@router.post("/tts")
-def tts(body: dict[str, Any] = Body(...)) -> Response:
-    agent_id = _check_agent(str(body.get("agentId") or ""))
+def render(agent_id: str, body: dict[str, Any]) -> tuple[bytes, bool]:
+    """One agent's cloud speech for the text in body (overrides: provider, voice, model, style, rate) → (mp3, cache hit).
+    Same rules for the /tts route and the axf.speech@1 service: the agent's profile must allow cloud voices."""
+    agent_id = _check_agent(agent_id)
     text = str(body.get("text") or "").strip()
     if not text:
         raise HTTPException(400, "nothing to say")
@@ -353,7 +356,7 @@ def tts(body: dict[str, Any] = Body(...)) -> Response:
     hit = _cache_dir() / f"{h}.mp3"
     if hit.exists():
         os.utime(hit)
-        return Response(hit.read_bytes(), media_type="audio/mpeg", headers={"x-agent-voice-cache": "hit"})
+        return hit.read_bytes(), True
     audio = synth(provider, key, voice, model, text, style, speed, stability, similarity)
     with _lock:
         tmp = hit.with_suffix(".tmp")
@@ -361,7 +364,46 @@ def tts(body: dict[str, Any] = Body(...)) -> Response:
         os.chmod(tmp, 0o600)
         tmp.replace(hit)
         _trim_cache()
-    return Response(audio, media_type="audio/mpeg", headers={"x-agent-voice-cache": "miss"})
+    return audio, False
+
+
+@router.post("/tts")
+def tts(body: dict[str, Any] = Body(...)) -> Response:
+    audio, hit = render(str(body.get("agentId") or ""), body)
+    return Response(audio, media_type="audio/mpeg", headers={"x-agent-voice-cache": "hit" if hit else "miss"})
+
+
+def narrators() -> list[dict[str, Any]]:
+    """Agents whose profile allows cloud voices and whose provider has a key: the voices other plugins may narrate with."""
+    names = {a["id"]: a["name"] for a in _agents()}
+    out = []
+    for agent_id, prof in sorted(load_store()["profiles"].items()):
+        if not (isinstance(prof, dict) and isinstance(prof.get("permissions"), dict) and prof["permissions"].get("cloud") is True):
+            continue
+        cloud = prof.get("cloud") if isinstance(prof.get("cloud"), dict) else {}
+        provider = str(cloud.get("provider") or "openai")
+        if provider not in PROVIDERS or not key_for(provider):
+            continue
+        out.append({"agentId": agent_id, "name": names.get(agent_id, agent_id), "provider": provider, "voice": str(cloud.get("voice") or "")})
+    return out
+
+
+class SpeechService:
+    """axf.speech@1: server-side speech for other plugins (a narrated video, a spoken report). Keys never leave here."""
+
+    max_text = MAX_TEXT
+
+    def narrators(self) -> list[dict[str, Any]]:
+        return narrators()
+
+    def say(self, agent_id: str, text: str, rate: float | None = None) -> bytes:
+        """mp3 of the text in the agent's cloud voice; HTTPException 400/403/413 with the reason when it can't."""
+        body: dict[str, Any] = {"text": text}
+        if rate is not None:
+            body["rate"] = rate
+        return render(agent_id, body)[0]
+
+
 
 
 @router.delete("/cache")
@@ -381,3 +423,6 @@ def self_check() -> dict[str, Any]:
     s = load_store()
     return {"ok": True, "profiles": len(s["profiles"]), "voiceAgents": sum(1 for p in s["profiles"].values() if p.get("enabled") is True),
             "cloud": {p: bool(key_for(p)) for p in PROVIDERS}}
+
+
+plugin_services.provide("axf.speech@1", SpeechService(), Path(__file__).resolve().parents[1].name)

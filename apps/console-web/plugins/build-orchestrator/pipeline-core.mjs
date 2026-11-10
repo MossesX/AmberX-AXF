@@ -18,9 +18,20 @@
  *   API jobs   (Brett, Nov 9 2026: "I'm also gonna be able to have the orchestrator send jobs to the API, right?") the
  *              dispatcher can put a build on an API-key account (claude-workers@1 api slots, e.g. hulu-api, mossesx-api):
  *              routeFor() = the per-build override (pipeline.route = api | subscription) or the overflow rule (setting
- *              apiOverflow, off by default: every subscription account full or out → an API account). An API account
+ *              apiOverflow, on by default since Nov 10 2026: every subscription account full or out → an API account). An API account
  *              takes a build only when it has a key, is switched on, is under its daily and weekly caps and has room;
  *              otherwise it is skipped and the reason is said (apiNoAccountWhy()).
+ *   order      (Brett, Nov 10 2026: "Subscriptions first, then any API") every subscription account in Brett's order
+ *              (the Claude Accounts Manager's drag-and-drop order: row.order / own.order, lower first), then every API
+ *              account. apiOverflow is on by default; a build set to Subscriptions never reaches API, one set to API
+ *              never takes a subscription. routeOptions() is the whole ordered list; the dispatcher walks it until an
+ *              account accepts the launch (what it believed about one may turn out wrong).
+ *   planning   planFor(): as soon as a build is split the orchestrator plans its model and account (pipeline.planned);
+ *              the final pick happens when its turn comes in the Queue and is recorded (pipeline.account, pickedAt).
+ *   health     (Brett: "Every five minutes a background headless session that doesn't affect any builds or sign
+ *              anything out checks all the accounts: can get in, have credits, can accept the Fable model.")
+ *              healthOf() reads one tiny call's answer; a fresh health record (own.health) decides usable / Fable,
+ *              so the dispatcher never tests an account at launch time. healthDue() says when the next sweep runs.
  */
 import { DEFAULT_MAX_RUNS, STATUS_AFTER, nextModel, openSteps, outcomeLine, outcomeOf, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
@@ -45,12 +56,16 @@ export const DEFAULTS = Object.freeze({
   splitProvider: 'claude',
   /** New builds go straight to the Queue (the Claude setting builds.launchWithoutAsking, read on every tick). */
   autoQueue: false,
-  /** The overflow rule: when no subscription account can take a build, send it to an API-key account (billed per token, under its caps). Off by default. */
-  apiOverflow: false,
+  /** Subscriptions first, then any API account (Brett, Nov 10 2026): when no subscription account can take a build, an API-key account takes it (billed per token, under its caps). */
+  apiOverflow: true,
   /** API accounts the dispatcher may use ([] = every API worker in claude-workers@1). */
   apiAccounts: [],
+  /** The account health sweep runs this often (minutes; 0 = off). */
+  healthEveryMin: 5,
 });
-const LIMITS = { parallelPerAccount: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90] };
+const LIMITS = { parallelPerAccount: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90], healthEveryMin: [0, 120] };
+/** A health record older than this many sweeps is stale: the account falls back to its probe / plan. */
+const HEALTH_STALE_SWEEPS = 4;
 
 const str = (v, max = 400) => (typeof v === 'string' ? v.slice(0, max) : v == null ? '' : String(v).slice(0, max));
 const list = (v) => (Array.isArray(v) ? v : []);
@@ -68,7 +83,8 @@ export function normSettings(raw = {}) {
     probeDays: o.probeDays === undefined ? DEFAULTS.probeDays : clamp('probeDays', o.probeDays),
     splitProvider: ['claude', 'rules', 'off'].includes(o.splitProvider) ? o.splitProvider : DEFAULTS.splitProvider,
     autoQueue: o.autoQueue === true,
-    apiOverflow: o.apiOverflow === true,
+    apiOverflow: o.apiOverflow === undefined ? DEFAULTS.apiOverflow : o.apiOverflow === true,
+    healthEveryMin: o.healthEveryMin === undefined ? DEFAULTS.healthEveryMin : clamp('healthEveryMin', o.healthEveryMin),
     apiAccounts: [...new Set((typeof o.apiAccounts === 'string' ? o.apiAccounts.split(',') : list(o.apiAccounts)).map((n) => str(n, 32).toLowerCase()).filter((n) => /^[a-z0-9][a-z0-9-]{0,31}$/.test(n)))],
   };
 }
@@ -86,26 +102,33 @@ export function normSettings(raw = {}) {
 export function accountView(row, own = {}, { settings = normSettings(), anyWorker = false, now = Date.now() } = {}) {
   const o = own && typeof own === 'object' ? own : {};
   const plan = str(row?.plan, 40).toLowerCase();
-  const probe = o.probe && typeof o.probe === 'object' && typeof o.probe.fable === 'boolean' && now - Date.parse(o.probe.at || 0) < settings.probeDays * 86400e3 ? o.probe : null;
+  const health = freshHealth(o.health, settings, now);
+  // a fresh health answer about Fable beats an older probe (an auth or credit failure says nothing about Fable)
+  const hp = health && typeof health.fable === 'boolean' ? { fable: health.fable, at: health.at, error: health.error } : null;
+  const probe = hp ?? (o.probe && typeof o.probe === 'object' && typeof o.probe.fable === 'boolean' && now - Date.parse(o.probe.at || 0) < settings.probeDays * 86400e3 ? o.probe : null);
   const fable = typeof o.fable === 'boolean' ? o.fable : probe ? probe.fable : settings.fablePlans.includes(plan);
-  const fableFrom = typeof o.fable === 'boolean' ? 'override' : probe ? 'probe' : plan ? 'plan' : 'unknown';
+  const fableFrom = typeof o.fable === 'boolean' ? 'override' : hp ? 'health' : probe ? 'probe' : plan ? 'plan' : 'unknown';
   const role = str(row?.role, 20) || 'saved';
   const running = list(row?.running).length;
   const parallel = Number.isInteger(o.parallel) && o.parallel > 0 ? Math.min(12, o.parallel) : settings.parallelPerAccount;
   const apiKey = row?.kind === 'api' || role === 'api-key' || role === 'api-worker' || role === 'api-off' || plan === 'api';
   const off = o.use === false;
-  const limited = row?.limited && typeof row.limited === 'object' ? row.limited : null;
+  const sick = health && (health.signedIn === false || health.credits === false)
+    ? { kind: health.signedIn === false ? 'auth' : 'credits', reason: health.signedIn === false ? 'cannot sign in (health check)' : 'no credits left (health check)', until: '' } : null;
+  const limited = row?.limited && typeof row.limited === 'object' ? row.limited : sick;
   // subscriptions only: an API account never takes a build by itself, only through routeFor() (override or overflow)
   const usable = !off && !apiKey && !limited && (role === 'worker' || (!anyWorker && settings.useConsoleAccount && (role === 'interactive' || role === 'saved')));
   let why = '';
   if (off) why = 'switched off for the pipeline';
-  else if (limited) why = `${limited.reason === 'auth' ? 'login expired' : limited.reason || 'limited'} until ${str(limited.until, 40).slice(0, 16).replace('T', ' ')}`;
+  else if (limited) why = `${limited.reason === 'auth' ? 'login expired' : limited.reason || 'limited'}${limited.until ? ` until ${str(limited.until, 40).slice(0, 16).replace('T', ' ')}` : ''}`;
   else if (apiKey) why = 'API key (billed per token): takes a build only when routed there';
   else if (!usable) why = anyWorker ? 'not a worker (workers take every headless job)' : 'console account use is off';
   // API accounts: their own slot count (claude-workers building limit), Fable unless overridden (an API key reaches every model)
   const apiParallel = Number.isInteger(o.parallel) && o.parallel > 0 ? Math.min(12, o.parallel) : Number.isInteger(row?.building) && row.building > 0 ? row.building : settings.parallelPerAccount;
   const api = apiKey ? apiState(row, o, settings, { limited, apiParallel, running }) : null;
-  return { name: str(row?.name, 40), email: str(row?.email, 200), plan, role, kind: apiKey ? 'api' : 'subscription', label: str(row?.label, 40),
+  const rawOrder = o.order ?? row?.order;
+  const order = typeof rawOrder === 'number' && Number.isFinite(rawOrder) ? rawOrder : null;
+  return { name: str(row?.name, 40), email: str(row?.email, 200), plan, role, kind: apiKey ? 'api' : 'subscription', label: str(row?.label, 40), order, health: health ?? (o.health && typeof o.health === 'object' ? o.health : null),
     fable: apiKey && typeof o.fable !== 'boolean' && !probe ? true : fable, fableFrom: apiKey && typeof o.fable !== 'boolean' && !probe ? 'api' : fableFrom,
     parallel: apiKey ? apiParallel : parallel, running, free: Math.max(0, (apiKey ? apiParallel : parallel) - running), usable, why, limited, probe: probe ?? (o.probe ?? null), api };
 }
@@ -119,7 +142,7 @@ export function apiState(row, own = {}, settings = normSettings(), { limited = n
   else if (settings.apiAccounts.length && !settings.apiAccounts.includes(name)) why = 'not in the pipeline\'s API account list';
   else if (row?.hasKey === false) why = `no API key saved (Terminal → VPS host → claude-account savekey ${name})`;
   else if (row?.role === 'api-off') why = row?.why || 'not set up as an API worker (Claude accounts → Job routing → API accounts)';
-  else if (limited) why = `${limited.reason === 'auth' ? 'key rejected' : limited.reason || 'limited'} until ${str(limited.until, 40).slice(0, 16).replace('T', ' ')}`;
+  else if (limited) why = `${limited.reason === 'auth' ? 'key rejected' : limited.reason || 'limited'}${limited.until ? ` until ${str(limited.until, 40).slice(0, 16).replace('T', ' ')}` : ''}`;
   else if (spend?.state === 'capped') why = `spend cap reached: ${spend.why}`;
   else if (running >= apiParallel) why = `full (${running}/${apiParallel})`;
   return { usable: !why, why, spend };
@@ -131,19 +154,92 @@ export function accountViews(rows, own = {}, opts = {}) {
   return list(rows).map((r) => accountView(r, own?.[r?.name], { ...opts, anyWorker }));
 }
 
-/** Accounts that can take one more session on `model` now: Fable needs an account with Fable; fewest running first, Opus away from Fable accounts, workers before the console's account. */
+/** Brett's account order (Claude Accounts Manager drag-and-drop): ordered accounts first, lower first; unordered keep the old rules. */
+const byOrder = (a, b) => (a.order == null ? 1 : 0) - (b.order == null ? 1 : 0) || (a.order != null && b.order != null ? a.order - b.order : 0);
+
+/** Accounts that can take one more session on `model` now: Fable needs an account with Fable; Brett's order first, then fewest running, Opus away from Fable accounts, workers before the console's account. */
 export function candidates(accounts, model) {
   const needFable = modelKey(model) === FOUNDATION_MODEL;
   // Opus work goes to accounts without Fable first, so the Fable accounts stay free for Fable phases
   return list(accounts).filter((a) => a.usable && a.free > 0 && (!needFable || a.fable))
-    .sort((a, b) => a.running - b.running || (needFable ? 0 : (a.fable ? 1 : 0) - (b.fable ? 1 : 0)) || (a.role === 'worker' ? 0 : 1) - (b.role === 'worker' ? 0 : 1));
+    .sort((a, b) => byOrder(a, b) || a.running - b.running || (needFable ? 0 : (a.fable ? 1 : 0) - (b.fable ? 1 : 0)) || (a.role === 'worker' ? 0 : 1) - (b.role === 'worker' ? 0 : 1));
 }
 
 /** API accounts that can take one more build on `model` now: least busy first, then the least spent today. */
 export function apiCandidates(accounts, model) {
   const needFable = modelKey(model) === FOUNDATION_MODEL;
   return list(accounts).filter((a) => a.kind === 'api' && a.api?.usable && a.free > 0 && (!needFable || a.fable))
-    .sort((a, b) => a.running - b.running || (Number(a.api?.spend?.day) || 0) - (Number(b.api?.spend?.day) || 0) || a.name.localeCompare(b.name));
+    .sort((a, b) => byOrder(a, b) || a.running - b.running || (Number(a.api?.spend?.day) || 0) - (Number(b.api?.spend?.day) || 0) || a.name.localeCompare(b.name));
+}
+
+/**
+ * Every account that may take this build's next phase now, in the order the final pick tries them: subscriptions
+ * first (Brett's order), then API accounts (unless the build is kept off API, or overflow is switched off). A build set
+ * to API only lists API accounts. [{ account, kind, rule, why }]
+ */
+export function routeOptions(b, accounts, model, settings = normSettings()) {
+  const route = b?.pipeline?.route || '';
+  const subs = route === 'api' ? [] : candidates(accounts, model).map((a) => ({ account: a.name, kind: 'subscription', rule: '', why: '' }));
+  const apiOk = route === 'api' || (route !== 'subscription' && settings.apiOverflow);
+  const apis = apiOk ? apiCandidates(accounts, model).map((a) => ({ account: a.name, kind: 'api', rule: route === 'api' ? 'override' : 'overflow',
+    why: route === 'api' ? `routed to API account ${a.name} (this build is set to run on API)` : `every subscription account is full or out, so it goes to API account ${a.name}` })) : [];
+  return [...subs, ...apis];
+}
+
+/**
+ * The orchestrator's plan for a build, made as soon as it is split (pipeline.planned): the model of its next phase
+ * and the account it expects to take it (the first that could, ignoring how busy it is now). The final pick, when the
+ * build's turn comes, can differ; both are recorded.
+ */
+export function planFor(b, accounts, settings = normSettings(), now = new Date().toISOString()) {
+  const model = nextModel(b);
+  if (!model) return null;
+  // planning ignores who is busy right now: everyone gets a free slot for the guess
+  const roomy = list(accounts).map((a) => ({ ...a, free: Math.max(1, a.free), api: a.api ? { ...a.api, usable: a.api.usable || /^full/.test(a.api.why || ''), why: /^full/.test(a.api.why || '') ? '' : a.api.why } : a.api }));
+  const r = routeOptions(b, roomy, model, settings)[0];
+  return { model, account: r?.account ?? '', kind: r?.kind ?? '', at: now, why: r ? (r.why || `subscription account ${r.account}`) : routeFor(b, roomy, model, settings).why };
+}
+
+// ------------------------------------------------------------------ account health
+
+const healthOk = (h) => h && typeof h === 'object' && Number.isFinite(Date.parse(h.at || ''));
+/** The account's health record when it is fresh enough to trust (a few sweeps old at most), else null. */
+export function freshHealth(h, settings = normSettings(), now = Date.now()) {
+  if (!healthOk(h) || !settings.healthEveryMin) return null;
+  return now - Date.parse(h.at) <= settings.healthEveryMin * HEALTH_STALE_SWEEPS * 60e3 ? h : null;
+}
+
+/** Is a health sweep due? `last` = the ISO of the last sweep's start ('' = never). */
+export function healthDue(last, settings = normSettings(), now = Date.now()) {
+  if (!settings.healthEveryMin) return false;
+  const t = Date.parse(last || '');
+  return !Number.isFinite(t) || now - t >= settings.healthEveryMin * 60e3;
+}
+
+/**
+ * Read one health call's answer (claude -p on Fable, one turn, no tools) into { signedIn, credits, fable, error }.
+ * `null` = the call did not say (a timeout or a crash says nothing about the account).
+ */
+export function healthOf({ status = null, out = '', error = '' } = {}) {
+  const t = `${out || ''} ${error || ''}`;
+  const auth = /invalid api key|authentication|unauthori[sz]ed|oauth token|token (has )?expired|please run \/login|not logged in|log ?in again|401\b|invalid x-api-key/i.test(t);
+  const credits = /credit balance|out of credits|insufficient (credit|fund|quota)|usage limit|limit reached|rate limit|quota|billing|payment required|402\b|429\b/i.test(t);
+  const model = /not available|no access|does not exist|invalid model|model.*not found|not_found_error|permission to use/i.test(t);
+  // a clean exit whose JSON answer is not an error = signed in, credits left, Fable accepted (the answer text is never matched)
+  if (status === 0 && !/"is_error"\s*:\s*true/.test(out)) return { signedIn: true, credits: true, fable: true, error: '' };
+  const line = str(t.trim().split('\n').filter(Boolean).pop() || error || `exit ${status}`, 200);
+  if (auth) return { signedIn: false, credits: null, fable: null, error: line };
+  if (credits) return { signedIn: true, credits: false, fable: null, error: line };
+  if (model) return { signedIn: true, credits: true, fable: false, error: line };
+  return { signedIn: null, credits: null, fable: null, error: line };
+}
+
+/** One line for the health of every account: "4 accounts: 3 ok, 1 can't sign in". */
+export function healthSummary(rows) {
+  const r = list(rows);
+  const bad = (x) => x.signedIn === false ? 'can\'t sign in' : x.credits === false ? 'no credits' : x.fable === false ? 'no Fable' : x.signedIn == null ? 'no answer' : '';
+  const problems = r.filter((x) => bad(x)).map((x) => `${x.name}: ${bad(x)}${x.error ? ` (${x.error})` : ''}`);
+  return { line: r.length ? `${r.length} accounts: ${r.length - problems.length} ok${problems.length ? `, ${problems.length} not` : ''}` : 'no Claude account found', problems };
 }
 
 /** Why no API account takes `model` right now: every API account and what keeps it out. */
@@ -320,6 +416,52 @@ export const ALERT_LINK = '#/build-orchestrator';
  * instead of a new alert, and lets the dispatcher resolve one (idle) when a build runs again. Key prefixes are what
  * notify.json's types match on: pipeline:idle, pipeline:run:<id> (started), pipeline:end:<id> (ended / failed), pipeline:split:<id>.
  */
+// ------------------------------------------------------------------ self-check
+
+/**
+ * One account as the self-check finds it, from its view (accountView) and its claude-workers row:
+ *   { name, kind, role, state: ready | busy | standby | blocked, signedIn, keySaved, keyOk, limited, running, parallel, free, note }
+ * ready = takes the next build; busy = takes builds, every slot full; standby = by design not taking one now (not a worker,
+ * an API key only takes routed builds, switched off by Brett); blocked = can't work until something changes (a limit, an
+ * expired login, no key, a rejected key, a spend cap). A key is checked locally: saved and not rejected by its last run.
+ */
+export function checkAccount(v, row = {}) {
+  const api = v.kind === 'api';
+  const limited = v.limited ?? null;
+  const signedIn = api ? null : !(limited && limited.kind === 'auth');
+  const keySaved = api ? row?.hasKey !== false : null;
+  const keyOk = api ? keySaved && !(limited && limited.kind === 'auth') : null;
+  let state; let note;
+  if (api) {
+    const why = v.api?.why || '';
+    if (!keySaved) { state = 'blocked'; note = why || 'no API key saved'; }
+    else if (limited || /spend cap|rejected/i.test(why)) { state = 'blocked'; note = why; }
+    else if (why && !/^full/.test(why)) { state = 'standby'; note = why; }
+    else { state = v.free > 0 ? 'ready' : 'busy'; note = v.free > 0 ? 'takes routed builds' : why || 'full'; }
+  } else if (limited) { state = 'blocked'; note = v.why; }
+  else if (!v.usable) { state = 'standby'; note = v.why; }
+  else { state = v.free > 0 ? 'ready' : 'busy'; note = v.free > 0 ? `${v.free} free` : 'every slot is in use'; }
+  return { name: v.name, kind: v.kind, role: v.role, state, signedIn, keySaved, keyOk, limited: limited ? { kind: str(limited.kind, 20), until: str(limited.until, 40), reason: str(limited.reason, 80) } : null,
+    running: v.running, parallel: v.parallel, free: v.free, note: str(note, 300) };
+}
+
+/** The self-check's verdict in one line, and the problems worth a phone alert (an account it can't use). */
+export function checkSummary(findings, fixes = []) {
+  const f = list(findings);
+  const count = (s) => f.filter((x) => x.state === s).length;
+  const blocked = f.filter((x) => x.state === 'blocked');
+  const line = !f.length ? 'no Claude account found'
+    : `${f.length} accounts: ${count('ready')} ready, ${count('busy')} busy, ${count('standby')} standby, ${blocked.length} blocked${fixes.length ? ` · fixed ${fixes.length}` : ''}`;
+  return { line, problems: blocked.map((x) => `${x.name}: ${x.note}`), signature: blocked.map((x) => `${x.name}:${x.limited?.kind || x.note}`).sort().join('|') };
+}
+
+/** Should the self-check tell Brett? When it fixed something, or an account it can't use shows up that wasn't there last time. */
+export function checkNotify(cur, prev) {
+  if (list(cur?.fixes).length) return true;
+  const was = new Set(String(prev?.signature || '').split('|').filter(Boolean));
+  return String(cur?.signature || '').split('|').filter(Boolean).some((s) => !was.has(s)) || (!list(cur?.findings).length && list(prev?.findings).length > 0);
+}
+
 export function alertFor(kind, d = {}) {
   const base = { source: ALERT_SOURCE, link: ALERT_LINK, meta: { kind, build: d.id ?? '', account: d.account ?? '' } };
   switch (kind) {
@@ -327,6 +469,9 @@ export function alertFor(kind, d = {}) {
     case 'launched': return { ...base, key: `pipeline:run:${d.id}`, severity: 'info', title: `Building: ${str(d.title, 120)}`, body: `Started on ${d.account} (${d.model}${d.phase ? `, ${d.phase}` : ''}) · session ${d.session || ''}`.trim() };
     case 'ended': return { ...base, key: `pipeline:end:${d.id}`, severity: d.outcome === 'finished' ? 'success' : 'warning', title: `${d.outcome === 'finished' ? 'Built' : d.outcome === 'requeued' ? 'Back in the Queue' : 'Back in Pending'}: ${str(d.title, 120)}`, body: str(d.note, 1500) };
     case 'failed': return { ...base, key: `pipeline:end:${d.id}`, severity: 'error', title: `Build failed: ${str(d.title, 120)}`, body: str(d.note, 1500) };
+    case 'selfcheck': return { ...base, key: 'pipeline:selfcheck', severity: list(d.problems).length ? 'warning' : 'info',
+      title: `Dispatcher self-check: ${list(d.fixes).length ? `fixed ${list(d.fixes).length}` : 'nothing fixed'}${list(d.problems).length ? `, ${list(d.problems).length} account${list(d.problems).length === 1 ? '' : 's'} can't work` : ''}`,
+      body: str([...list(d.fixes).map((x) => `Fixed: ${x}`), ...list(d.problems).map((x) => `Can't use ${x}`), d.line ? `Now: ${d.line}` : ''].filter(Boolean).join('\n'), 1500) };
     case 'split': return { ...base, key: `pipeline:split:${d.id}`, severity: d.error ? 'warning' : 'info', title: d.error ? `Split needs a look: ${str(d.title, 120)}` : `Split into ${d.steps} steps: ${str(d.title, 120)}`, body: str(d.error || d.note, 1500) };
     default: throw new Error(`unknown alert kind ${kind}`);
   }
