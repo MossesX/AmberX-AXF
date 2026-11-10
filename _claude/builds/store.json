@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2452,
- "updatedAt": "2026-11-10T16:27:10.444Z",
+ "rev": 2453,
+ "updatedAt": "2026-11-10T16:27:27.185Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -137947,15 +137947,15 @@
    "title": "Project Manager: every project its own console instance, multi-project tab view, project types (self/framework dev vs new app), live app preview window",
    "category": "",
    "detail": "Builds on the create/move-projects build. 1) Project Manager plugin: create, open, rename and switch projects; each project is its own instance of the console with its own builds, notes, data. 2) Setting: Multi-project view. When on, the console shows a group (tab group) with each project's console running side by side. 3) Project type: (a) Framework/self development: developing the console itself or framework tools (the console builds itself); (b) New app: uses all the console's tools to generate a new, real app. 4) Live preview: the app being built renders live in a separate floating or dockable preview window while you work in the console. Full API control, no AI needed.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/project-manager-every-project-its-own-console-in",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T15:40:27.752Z",
-   "updatedAt": "2026-11-10T16:27:09.318Z",
+   "updatedAt": "2026-11-10T16:27:12.560Z",
    "builtAt": "",
    "notes": [
     {
@@ -137965,6 +137965,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T15:41:30.058Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-project-manager-every-project-its-own-console-in--rhonda.",
+     "at": "2026-11-10T16:27:11.144Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-project-manager-every-project-its-own-console-in--rhonda, own login copy)",
+     "at": "2026-11-10T16:27:12.560Z"
     }
    ],
    "approvals": [],
@@ -137984,12 +137992,12 @@
    "pipeline": {
     "queuedAt": "2026-11-10T15:40:29.339Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-project-manager-every-project-its-own-console-in--rhonda",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-10T16:27:10.805Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T15:41:30.058Z",
@@ -137999,9 +138007,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "2026-11-10T16:27:10.805Z"
    },
    "steps": [
     {
@@ -138082,7 +138090,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
