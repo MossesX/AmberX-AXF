@@ -76,3 +76,10 @@ Audited by right-clicking every surface in the built app (s9).
 Removed: the shared `compact-classic` rows Molly never handled (Cut, Copy, Paste, Next colour / style / layout, Random
 look, Keyboard shortcuts), and the Navigation plugin's second "Navigation settings…" row on navigation entries. Fixed:
 the menu bar (outside the shell) showed the browser's menu instead of its own (framework `ContextMenuHost`).
+
+## Without the UI
+
+Every menu, choice, status and setting above is reachable through the `molly-menus` console plugin
+(apps/console-web/plugins/molly-menus) — REST `/api/plugins/molly-menus`, MCP `molly_menus_*`, CLI
+`axf molly-menus …`, AmberX voice (Developer → Molly) — and through Molly's deep links (`src/molly/links.ts`):
+`#/menu/<menu>/<sub-menu>…`, `#/skin`, `#/item-settings/<path>`, `#/set/<choice>/<value>`, `#/do/<menu action>`.

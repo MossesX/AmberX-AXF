@@ -147,6 +147,8 @@ jobs:
         run: node apps/console-web/plugins/demonstration-designer/test.mjs  # axf-plugin:demonstration-designer
       - name: Plugin commands plugin (control@1 plugins domain — runner gate, reads, dispatch, confirm, CLI)  # axf-plugin:plugin-commands
         run: node apps/console-web/plugins/plugin-commands/test.mjs  # axf-plugin:plugin-commands
+      - name: Molly menus plugin (API parity — every REST command has its MCP tool, CLI command and AmberX voice command; menu choice rows = API choices)  # axf-plugin:molly-menus
+        run: node apps/console-web/plugins/molly-menus/test.mjs  # axf-plugin:molly-menus
       - name: Claude plugin (claude-settings@1 — open registry, owner-only rules, No wait ↔ pass decisions)  # axf-plugin:claude-settings
         run: node apps/console-web/plugins/claude-settings/test.mjs  # axf-plugin:claude-settings
       - name: AmberX listeners plugin (listener@1 on the console — devices from the hub table, policies as hub-settings@1, restart requests, CLI)  # axf-plugin:amberx-listeners
@@ -338,6 +340,7 @@ jobs:
             python apps/console-web/plugins/ref-links/server/test_ref_links.py  # reference links: targets (catalog, agents, UI Review), find, resolve, open → refs.<how> through console-commands@1  # axf-plugin:ref-links
             python apps/console-web/server/test_mcp_tools.py         # console MCP: read tools read-only, deletes destructive, veto pass tools
             python apps/console-web/plugins/plugin-commands/server/test_plugin_commands.py  # plugin commands: /api/control/<plugin>/<command>, deletes confirm, actions to the console, MCP tools follow the plugins  # axf-plugin:plugin-commands
+            python apps/console-web/plugins/molly-menus/server/test_molly_menus.py  # Molly menus REST: choices, skin, mode under a skin, tree, invoke, links, state  # axf-plugin:molly-menus
             python apps/amberx-droid/server/test_server.py           # AmberX server: wall, admin-only AI config, write-only keys, fallback, intent checks, caps, SPA paths
           } 2>&1 | tee /tmp/web-tests.log
       - name: Report web/Python test failures to the "CI build errors" issue
