@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T18:58:42.796Z",
+ "updatedAt": "2026-11-10T18:58:52.818Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -92766,7 +92766,7 @@
    "title": "Resolve conflicts and land PR #449 (account order switch)",
    "category": "",
    "detail": "PR #449 (claude/account-order-switch-custom-drag-and-drop-order) failed to merge: merge conflicts with main. Merge latest main into the branch, resolve conflicts keeping both sides' intent, tests green, push, then merge the PR and redeploy the console. Notify on AmberX.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -92774,7 +92774,7 @@
    "pr": "#449",
    "priority": "P0",
    "createdAt": "2026-11-10T17:34:43.785Z",
-   "updatedAt": "2026-11-10T18:57:36.584Z",
+   "updatedAt": "2026-11-10T18:58:42.418Z",
    "builtAt": "",
    "notes": [
     {
@@ -92804,6 +92804,10 @@
     {
      "text": "s1-s6 done. PR #449 has main merged in, is mergeable/clean on GitHub, and has full API reach for the account order (read/set/move/reset over REST, MCP, CLI, voice). Tests green locally. s7 left open: (1) CI Light PR checks is red on every PR and on main because builds-store.mjs verify fails (1471 breakroom findings on clean origin/main; see dispatcher-a-worktree-store-write-can-erase-a-fr), so the merge queue can't land #449 yet; (2) sessions never merge a PR by hand, so the merge queue lands it; (3) console redeploy, live check and the 'landed' AmberX message wait for that. Report: _claude/builds/reports/resolve-conflicts-and-land-pr-449-account-order.md",
      "at": "2026-11-10T18:57:16.814Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-10T18:58:42.418Z"
     }
    ],
    "approvals": [],
@@ -94166,15 +94170,15 @@
    "title": "Orchestrator checks each build against main right before queuing it (done = close, partly done = queue only what's left)",
    "category": "",
    "detail": "Replaces the bulk pending audit. Plain code first, AI only behind its switch. Right before the orchestrator moves any build into the Queue (and again at dispatch), it checks that one build against main: Shipped Features ledger, merged PRs, and files/features the steps would touch. Already done: mark complete, link the PR/commit, archive. Partly done: tick done steps, queue only what's left. Superseded: archive with the reason. Builds on 'Orchestrator checks Shipped features before splitting any job'; merge them. Notify on AmberX for each closed build.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/orchestrator-checks-each-build-against-main-righ",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T18:57:34.689Z",
-   "updatedAt": "2026-11-10T18:58:41.585Z",
+   "updatedAt": "2026-11-10T18:58:49.818Z",
    "builtAt": "",
    "notes": [
     {
@@ -94184,6 +94188,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T18:58:41.585Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-orchestrator-checks-each-build-against-main-righ--sully.",
+     "at": "2026-11-10T18:58:49.818Z"
     }
    ],
    "approvals": [],
@@ -94194,8 +94202,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "orchestrator-checks-each-build-against-main-righ",
+    "brief": "# Build: orchestrator-checks-each-build-against-main-righ\n\n## Brett said (verbatim)\nAt: 2026-11-10T18:57:34.689Z\n> Instead of checking all the pending against main, just have the orchestrator check each one at a time before it puts it in the queue.\n\n## What to build\nContinue build \"Orchestrator checks each build against main right before queuing it (done = close, partly done = queue only what's left)\" (orchestrator-checks-each-build-against-main-righ) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 18:57):\n\"Instead of checking all the pending against main, just have the orchestrator check each one at a time before it puts it in the queue.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Replaces the bulk pending audit. Plain code first, AI only behind its switch. Right before the orchestrator moves any build into the Queue (and again at dispatch), it checks that one build against main: Shipped Features ledger, merged PRs, and files/features the steps would touch. Already done: mark complete, link the PR/commit, archive. Partly done: tick done steps, queue only what's left. Superseded: archive with the reason. Builds on 'Orchestrator checks Shipped features before splitting any job'; merge them. Notify on AmberX for each closed build.\n[ ] s2 (~30 min) Instead of checking all the pending against main, just have the orchestrator check each one at a time before it puts it in the queue.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/orchestrator-checks-each-build-against-main-righ.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/orchestrator-checks-each-build-against-main-righ.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step orchestrator-checks-each-build-against-main-righ <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link orchestrator-checks-each-build-against-main-righ --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step orchestrator-checks-each-build-against-main-righ <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note orchestrator-checks-each-build-against-main-righ \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
