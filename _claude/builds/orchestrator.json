@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T22:10:50.789Z",
+ "updatedAt": "2026-11-10T22:11:13.706Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -71223,10 +71223,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/molly-sign-in-once",
-   "pr": "",
+   "pr": "#477",
    "priority": "P0",
    "createdAt": "2026-11-08T16:59:02.204Z",
-   "updatedAt": "2026-11-10T22:10:37.085Z",
+   "updatedAt": "2026-11-10T22:10:58.913Z",
    "builtAt": "",
    "notes": [
     {
@@ -71244,6 +71244,10 @@
     {
      "text": "Headless run axf-molly-sign-in-once--gina: brief only · start 12.4K tokens ($0.06) · cost $7.59 · 100 turns · 6 tools, MCP none",
      "at": "2026-11-10T22:10:37.085Z"
+    },
+    {
+     "text": "Reconciler: PR #477; PR #477 names s1, s2 done",
+     "at": "2026-11-10T22:10:58.913Z"
     }
    ],
    "approvals": [],
@@ -71274,9 +71278,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-10T22:10:58.913Z",
+     "note": "PR #477 (claude/molly-sign-in-once)",
      "uid": "st-mw82u77u04a0wg"
     },
     {
@@ -71292,9 +71296,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-10T22:10:58.913Z",
+     "note": "PR #477 (claude/molly-sign-in-once)",
      "uid": "st-mw82u77u05lksp"
     },
     {
