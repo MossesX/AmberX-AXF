@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T01:32:54.248Z",
+ "updatedAt": "2026-11-10T01:33:09.577Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -79673,7 +79673,7 @@
    "title": "URGENT: Terminal pops up every time the console opens",
    "category": "",
    "detail": "Every time Brett opens the console, the Terminal pops up on its own. Find what opens it on load (restored tabs/layout, a queued console command like a sign-in or 'open terminal' from claude-accounts/signin, session restore, a plugin autostart, follow-amber) and stop it. Terminal only opens when Brett opens it, or when he explicitly asks for something that needs it. Clear any stale queued open-terminal commands. Add a test. Skip non-essential steps like screenshots (mark them skipped, keep the step).",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -79681,8 +79681,8 @@
    "pr": "#427",
    "priority": "P0",
    "createdAt": "2026-11-09T18:51:17.675Z",
-   "updatedAt": "2026-11-10T01:32:52.625Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T01:32:53.905Z",
+   "builtAt": "2026-11-10T01:32:53.905Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -79820,8 +79820,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T01:32:53.905Z",
      "note": "",
      "uid": "st-mw9mby2v03i0c6"
     }
