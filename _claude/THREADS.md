@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:25 UTC · `claude-md-standing-rule-be-proactive-bring-up-th` s2 done (all) · orchestrator
 - 2026-11-10 17:25 UTC · `claude-md-standing-rule-be-proactive-bring-up-th` PR #458 (all) · builds-live
 - 2026-11-10 17:25 UTC · `claude-md-standing-rule-be-proactive-bring-up-th` s3 done, → built (all) · orchestrator
 - 2026-11-10 17:26 UTC · `claude-md-standing-rule-be-proactive-bring-up-th` note (all) · orchestrator
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 21:28 UTC · `finish-and-land-the-git-status-board-every-ready` branch claude/finish-and-land-the-git-status-board-every-ready (all) · pipeline
 - 2026-11-10 21:28 UTC · `finish-and-land-the-git-status-board-every-ready` note (all) · orchestrator
 - 2026-11-10 21:28 UTC · `inline-element-editing-plugin-right-click-any-el` s13 done, → built (all) · orchestrator
+- 2026-11-10 21:28 UTC · `inline-element-editing-plugin-right-click-any-el` → running, note (all) · orchestrator
 
 ## Token passes (log)
 

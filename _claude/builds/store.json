@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2878,
- "updatedAt": "2026-11-10T21:28:33.328Z",
+ "rev": 2879,
+ "updatedAt": "2026-11-10T21:28:44.770Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -146677,8 +146677,8 @@
    "pr": "#470",
    "priority": "P1",
    "createdAt": "2026-11-10T16:39:13.034Z",
-   "updatedAt": "2026-11-10T21:28:28.048Z",
-   "builtAt": "2026-11-10T21:28:28.049Z",
+   "updatedAt": "2026-11-10T21:28:43.318Z",
+   "builtAt": "2026-11-10T21:28:43.318Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -146743,6 +146743,10 @@
     {
      "text": "Self-check: inline-element-editing-plugin-right-click-any-el was marked running on mossesx-max- with no session: released and back in the Queue.",
      "at": "2026-11-10T21:20:10.514Z"
+    },
+    {
+     "text": "Headless run axf-inline-element-editing-plugin-right-click-any-el--sully: brief only · start 12.7K tokens ($0.03) · cost $19.08 · 256 turns · 6 tools, MCP none",
+     "at": "2026-11-10T21:28:43.318Z"
     }
    ],
    "approvals": [
@@ -146771,7 +146775,7 @@
    "pipeline": {
     "queuedAt": "2026-11-10T16:39:14.760Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
+    "account": "",
     "session": "",
     "slot": "",
     "model": "Fable",
@@ -146793,14 +146797,14 @@
      "note": "Split by Claude into 13 steps (3 Fable)."
     },
     "splitRequested": "",
-    "note": "Session on mossesx-max- ended (exit 0) with 4 steps left: back in the Queue (run 1).",
+    "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
     "dispatchedAt": "2026-11-10T19:45:20.208Z",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T19:45:07.250Z",
+     "at": "2026-11-10T21:21:04.049Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -147158,7 +147162,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 58,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
