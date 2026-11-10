@@ -2323,6 +2323,18 @@
    "from": "",
    "addenda": []
   },
+  "landing-tool-takes-long-build-names-and-auto-fix": {
+   "said": "Why, when it has a problem, when it gets rejected, aren't you just fixing it right away? I keep telling you over and over.",
+   "at": "2026-11-10T04:26:25.764Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "layout-repeating-slots": {
    "said": "Many-slots with style (tabs/cards/grid/stacked) + fallback slot; pages declare data sets. Web + Android + fixtures.",
    "at": "2026-10-30",

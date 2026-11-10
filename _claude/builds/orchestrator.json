@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T04:26:16.522Z",
+ "updatedAt": "2026-11-10T04:26:43.014Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -83869,6 +83869,37 @@
    "origin": {
     "said": "Queue up all the Fable stuff. You already got tons of that shit, tons of that shit's already done.",
     "at": "2026-11-10T04:25:09.866Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "landing-tool-takes-long-build-names-and-auto-fix",
+   "title": "Landing tool takes long build names, and auto-fixes and retries failed lands",
+   "category": "",
+   "detail": "vps.build_land, build_start, build_stop and build_clean reject names over 40 characters (^[a-z0-9][a-z0-9-]{0,39}$), but the orchestrator makes build IDs up to about 50 characters (e.g. demo-designer-finish-phase-2-s2-s3-resuming-from, skins-restyle-everything-badges-banner-and-every-visual-element). 1) In the axHub vps service, raise the name limit to match the orchestrator's longest IDs (at least 80), keeping the same safe character set. 2) If the orchestrator ever makes an ID the tools can't take, it shortens it consistently (folder, branch, tmux) instead of failing. 3) When build_land fails for any fixable reason (stray files, stale locks, name format), it fixes it and retries automatically, logging to the fix log. Real code clashes go to a conflict-fix build automatically. 4) Tests with long names. Repos: axHub (vps service config) and AmberX-AXF (orchestrator).",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T04:26:25.764Z",
+   "updatedAt": "2026-11-10T04:26:25.764Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Why, when it has a problem, when it gets rejected, aren't you just fixing it right away? I keep telling you over and over.",
+    "at": "2026-11-10T04:26:25.764Z",
     "source": "",
     "session": "",
     "link": "",
