@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2888,
- "updatedAt": "2026-11-10T21:35:16.933Z",
+ "rev": 2889,
+ "updatedAt": "2026-11-10T21:36:48.827Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -155665,12 +155665,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:34:57.978Z",
-   "updatedAt": "2026-11-10T21:34:59.613Z",
+   "updatedAt": "2026-11-10T21:36:47.442Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T21:34:59.613Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T21:36:47.442Z"
     }
    ],
    "approvals": [],
@@ -155687,7 +155691,102 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-10T21:36:47.442Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwb7n39u01s9om",
+     "title": "",
+     "text": "Turn each standalone app into a self-contained module that loads natively inside Molly: own manifest, routes, settings, isolated failure so one broken module cannot crash Molly. Start with Expense Tracker, then console plugins, axHub screens, AmberX. Depends on molly-one-shell and molly-sign-in-once; run after them. Notify on AmberX at each stage.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T21:36:47.442Z",
+     "updatedAt": "2026-11-10T21:36:47.442Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwb7n39u02b8aq",
+     "title": "",
+     "text": "Can we convert the apps to modules then?",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T21:36:47.442Z",
+     "updatedAt": "2026-11-10T21:36:47.442Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwb7n39u03hw8k",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/convert-every-app-into-a-molly-module-expenses-c.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/convert-every-app-into-a-molly-module-expenses-c.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T21:36:47.442Z",
+     "updatedAt": "2026-11-10T21:36:47.442Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -155696,12 +155795,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T21:36:47.442Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
