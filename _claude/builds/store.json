@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2286,
- "updatedAt": "2026-11-10T03:44:06.304Z",
+ "rev": 2287,
+ "updatedAt": "2026-11-10T03:44:18.493Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -135308,7 +135308,7 @@
    "title": "Demo Designer: finish phase 2 (s2, s3), resuming from the existing branch",
    "category": "",
    "detail": "Demo Designer was launched directly (build id demo-designer) and has no orchestrator record, so it never resumed. Adopt it: resume in /root/axf-builds/demo-designer on its existing branch and PR. Read demo-designer.log and its report. Phase 1 (s1) is done and its UI Review items are waiting. Do phase 2 (s2, s3) exactly as planned in its report. Coordinate with walkthrough-player-ide-layout-setting-collapsibl, which merges Demo Designer with the Demonstration manager: don't duplicate, and share the code. Tests, screenshots to UI Review, report, PR.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -135316,7 +135316,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T03:10:30.744Z",
-   "updatedAt": "2026-11-10T03:44:04.987Z",
+   "updatedAt": "2026-11-10T03:44:09.339Z",
    "builtAt": "",
    "notes": [
     {
@@ -135334,6 +135334,14 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-demo-designer-finish-phase-2-s2-s3-resuming-from--rhonda.",
      "at": "2026-11-10T03:37:12.637Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-demo-designer-finish-phase-2-s2-s3-resuming-from--lenny.",
+     "at": "2026-11-10T03:44:07.292Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-demo-designer-finish-phase-2-s2-s3-resuming-from--lenny, own login copy)",
+     "at": "2026-11-10T03:44:09.339Z"
     }
    ],
    "approvals": [],
@@ -135353,12 +135361,12 @@
    "pipeline": {
     "queuedAt": "2026-11-10T03:10:36.987Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-demo-designer-finish-phase-2-s2-s3-resuming-from--lenny",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-10T03:44:06.882Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T03:12:10.221Z",
@@ -135368,9 +135376,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "2026-11-10T03:44:06.882Z"
    },
    "steps": [
     {
@@ -135451,7 +135459,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
