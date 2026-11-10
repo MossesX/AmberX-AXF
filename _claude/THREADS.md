@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 02:17 UTC · `split-builds-pages-build-manager-pending-complet-3` → running, note (all) · pipeline
 - 2026-11-10 02:17 UTC · `split-builds-pages-build-manager-pending-complet` note (all) · orchestrator
 - 2026-11-10 02:17 UTC · `vps-orchestrator-only-rule-vps-settings-console` → running, note (all) · pipeline
 - 2026-11-10 02:17 UTC · `vps-orchestrator-only-rule-vps-settings-console` note (all) · orchestrator
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 16:16 UTC · `account-order-switch-custom-drag-and-drop-order` PR #449 (all) · builds-live
 - 2026-11-10 16:16 UTC · `account-order-switch-custom-drag-and-drop-order` s3 done, → built (all) · orchestrator
 - 2026-11-10 16:17 UTC · `account-order-switch-custom-drag-and-drop-order` note (all) · orchestrator
+- 2026-11-10 16:18 UTC · `account-order-switch-custom-drag-and-drop-order` note (all) · pipeline
 
 ## Token passes (log)
 

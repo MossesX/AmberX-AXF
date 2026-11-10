@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2442,
- "updatedAt": "2026-11-10T16:17:31.034Z",
+ "rev": 2443,
+ "updatedAt": "2026-11-10T16:18:07.870Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -137300,7 +137300,7 @@
    "pr": "#449",
    "priority": "P1",
    "createdAt": "2026-11-10T15:31:10.459Z",
-   "updatedAt": "2026-11-10T16:17:25.297Z",
+   "updatedAt": "2026-11-10T16:18:06.074Z",
    "builtAt": "2026-11-10T16:17:25.297Z",
    "notes": [
     {
@@ -137322,6 +137322,10 @@
     {
      "text": "Headless run axf-account-order-switch-custom-drag-and-drop-order--sully: brief only · start 10.9K tokens ($0.03) · cost $3.13 · 62 turns · 6 tools, MCP none",
      "at": "2026-11-10T16:17:25.297Z"
+    },
+    {
+     "text": "Session axf-account-order-switch-custom-drag-and-drop-order--sully on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-10T16:18:06.074Z"
     }
    ],
    "approvals": [],
@@ -137342,12 +137346,19 @@
     "queuedAt": "2026-11-10T15:31:11.733Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-account-order-switch-custom-drag-and-drop-order--sully",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-10T16:07:12.460Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-10T16:18:05.045Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-account-order-switch-custom-drag-and-drop-order--sully"
+    },
     "split": {
      "at": "2026-11-10T15:32:17.511Z",
      "by": "orchestrator",
@@ -137439,7 +137450,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
