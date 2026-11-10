@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 01:19 UTC · `urgent-terminal-pops-up-every-time-the-console-o` note (all) · orchestrator
 - 2026-11-10 01:30 UTC · `walkthrough-player-ide-layout-setting-collapsibl` → pending, note (all) · reconciler
 - 2026-11-10 01:31 UTC · `urgent-terminal-pops-up-every-time-the-console-o` s1 done, → running (all) · orchestrator
 - 2026-11-10 01:31 UTC · `urgent-terminal-pops-up-every-time-the-console-o` s2 done (all) · orchestrator
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 15:36 UTC · `molly-fable-version-the-one-interface-for-amberx` s1 done, → running (all) · orchestrator
 - 2026-11-10 15:37 UTC · `search-bar-plugin-add-on-search-builds-session-h` → queued, note (all) · builds-live
 - 2026-11-10 15:37 UTC · `molly-fable-version-the-one-interface-for-amberx` note (all) · orchestrator
+- 2026-11-10 15:38 UTC · `search-bar-plugin-add-on-search-builds-session-h` note (all) · orchestrator
 
 ## Token passes (log)
 

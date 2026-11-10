@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T15:37:58.558Z",
+ "updatedAt": "2026-11-10T15:38:30.510Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -84868,12 +84868,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T15:36:52.351Z",
-   "updatedAt": "2026-11-10T15:36:54.265Z",
+   "updatedAt": "2026-11-10T15:38:29.044Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T15:36:54.265Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T15:38:29.044Z"
     }
    ],
    "approvals": [],
@@ -84890,7 +84894,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Amends the Search bar plugin build. 1) Builds scope: search all session histories, build logs and build notes for related matches. 2) Results list every hit in the drop-down, each with an icon by type (session, log entry, note, build, etc.). Clicking a hit opens that session's log scrolled to the spot, highlighted. Multiple hits in one session listed as instance 1, 2, 3, 4... 3) Make it very powerful: extensive integrations and easy actions; users can add sources and actions by typing. 4) Everything fully API-controlled without AI. Anything that needs AI has its own enable/disable switch, OFF by default; never uses AI automatically even when an AI connection exists. Full API control.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwauub0501qi2a"
+    },
+    {
+     "id": "s2",
+     "text": "Make sure you can search for builds, browse all the session histories and building notes, list all the hits, click it and it brings you to that session's log with that spot highlighted. More than one instance: instance one, two, three, four. Icon by type. Really powerful search plugin with extensive integration and easy actions. Completely API controlled without AI. Anything that requires AI has a switch to enable or disable AI use. Not automatically use AI. Disable it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwauub05028abx"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/search-bar-plugin-add-on-search-builds-session-h.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/search-bar-plugin-add-on-search-builds-session-h.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwauub0503p09q"
+    }
+   ]
   }
  ]
 }
