@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T20:10:58.806Z",
+ "updatedAt": "2026-11-10T20:11:31.329Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -89416,10 +89416,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/inline-element-editing-plugin-right-click-any-el",
-   "pr": "",
+   "pr": "#470",
    "priority": "P1",
    "createdAt": "2026-11-10T16:39:13.034Z",
-   "updatedAt": "2026-11-10T20:10:46.899Z",
+   "updatedAt": "2026-11-10T20:11:30.086Z",
    "builtAt": "",
    "notes": [
     {
