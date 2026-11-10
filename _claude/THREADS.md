@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 16:53 UTC · `search-bar-plugin-add-on-search-builds-session-h` s2 done (all) · foreign-write
 - 2026-11-10 16:55 UTC · `search-bar-plugin-snappable-search-asset-globe-e` s2 done (all) · orchestrator
 - 2026-11-10 16:55 UTC · `search-bar-plugin-add-on-search-builds-session-h` PR #451 (all) · builds-live
 - 2026-11-10 16:56 UTC · `search-bar-plugin-add-on-search-builds-session-h` s3 done, → built (all) · orchestrator
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 20:43 UTC · `molly-flagship-skin-premium-sellable-uncluttered` s5 done, → running (all) · orchestrator
 - 2026-11-10 20:43 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` added (0 steps) (all) · console
 - 2026-11-10 20:43 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` → queued, note (all) · console
+- 2026-11-10 20:44 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` note (all) · orchestrator
 
 ## Token passes (log)
 

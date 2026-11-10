@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2801,
- "updatedAt": "2026-11-10T20:43:48.054Z",
+ "rev": 2802,
+ "updatedAt": "2026-11-10T20:44:19.514Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -153938,12 +153938,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T20:43:36.267Z",
-   "updatedAt": "2026-11-10T20:43:37.538Z",
+   "updatedAt": "2026-11-10T20:44:18.380Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T20:43:37.538Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T20:44:18.380Z"
     }
    ],
    "approvals": [],
@@ -153970,16 +153974,92 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-10T20:44:18.380Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
     "pickedAt": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwb5rlfw01r2zp",
+     "title": "",
+     "text": "Land every build in status 'built' (97, see Nov 10 list). Order: 1) skins and appearance first: #430 Appearance = skins + colour themes, #409 Skins restyle everything, #355 Three layouts per screen, #376 UI asset designer, then the rest of today's (#460 splitter first if not yet landed), then Nov 9, Nov 7-8, Nov 3-5. Batch related PRs up to 5 at a time: merge latest main in, resolve conflicts keeping both intents, CI once, merge. Before each, check main: if already covered or superseded (e.g. #432/#440/#269 by #450), close and archive with the reason instead of merging. Redeploy the console after each batch. Fix any failure and retry; notify on AmberX only per batch landed, and a final summary.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T20:44:18.380Z",
+     "updatedAt": "2026-11-10T20:44:18.380Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwb5rlfw0240vb",
+     "title": "",
+     "text": "Let's merge all that shit. Merge them all. Start with the skins and the skin stuff.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T20:44:18.380Z",
+     "updatedAt": "2026-11-10T20:44:18.380Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwb5rlfw03tnr2",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/land-all-97-built-but-unmerged-builds-skins-firs.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/land-all-97-built-but-unmerged-builds-skins-firs.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T20:44:18.380Z",
+     "updatedAt": "2026-11-10T20:44:18.380Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -153988,12 +154068,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T20:44:18.380Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
