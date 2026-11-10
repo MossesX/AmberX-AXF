@@ -149,9 +149,14 @@ function readEvents(env) {
   return t.split('\n').flatMap((l) => { if (!l.trim()) return []; try { return [JSON.parse(l)]; } catch { return []; } });
 }
 
-function liveSessions() {
-  const r = spawnSync('tmux', ['ls', '-F', '#S'], { encoding: 'utf8' });
-  return r.status === 0 ? new Set(r.stdout.split('\n').filter(Boolean)) : null;
+/** Live tmux sessions; an empty set when no tmux server runs (no session is alive); null only when tmux can't be asked. */
+export function liveSessions(run = () => spawnSync('tmux', ['ls', '-F', '#S'], { encoding: 'utf8' })) {
+  const r = run();
+  if (r.error) return null;
+  if (r.status === 0) return new Set(String(r.stdout || '').split('\n').filter(Boolean));
+  // "no server running on …" / "error connecting to … (No such file or directory)": tmux answers, nothing runs. Treating
+  // that as "unknown" counted every unclosed session in events.jsonl as running (stale running counts per account).
+  return /no server running|error connecting to/i.test(String(r.stderr || '')) ? new Set() : null;
 }
 
 const meterCost = (env, session) => Number(readJson(join(paths(env).hdir, `${session}.meter.json`))?.costUsd) || 0;
@@ -192,6 +197,24 @@ function aliveSet(env) {
 /** Claims whose session is still there (no tmux to ask = a claim lives 12 hours). */
 function liveClaims(state, alive, now) {
   return Object.entries(state.claims).filter(([s, c]) => c && (alive ? alive.has(s) : now - Date.parse(c.at) < 12 * HOUR));
+}
+
+/**
+ * Drop what no longer holds anything: claims whose tmux session is gone, limits past their end. Nothing is dropped when
+ * tmux can't be asked (a claim then lives its 12 hours). Returns { claims: [{ session, account }], limits: [name] }.
+ */
+export function reap(env = process.env, now = Date.now()) {
+  const alive = aliveSet(env);
+  return withLock(env, () => {
+    const state = loadState(env);
+    const claims = alive ? Object.entries(state.claims).filter(([s, c]) => !c || !alive.has(s)).map(([session, c]) => ({ session, account: String(c?.account || '') })) : [];
+    const limits = Object.keys(state.limits).filter((n) => !limitOf(state, n, now));
+    if (!claims.length && !limits.length) return { claims, limits };
+    for (const c of claims) delete state.claims[c.session];
+    for (const n of limits) delete state.limits[n];
+    saveState(state, env);
+    return { claims, limits };
+  });
 }
 
 /** Every saved account with its role, kind, limit, jobs, cost and spend caps. No credential. */
