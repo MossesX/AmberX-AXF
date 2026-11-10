@@ -771,60 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 20:27 UTC · `one-source-of-truth-for-claude-accounts-the-orch` note (all) · orchestrator
-- 2026-11-09 20:27 UTC · `saved-claude-logins-never-end-up-on-a-spent-refr` s1 done, → running (all) · orchestrator
-- 2026-11-09 20:29 UTC · `saved-claude-logins-never-end-up-on-a-spent-refr` s2 done (all) · orchestrator
-- 2026-11-09 20:30 UTC · `saved-claude-logins-never-end-up-on-a-spent-refr` PR #412 (all) · builds-live
-- 2026-11-09 20:30 UTC · `saved-claude-logins-never-end-up-on-a-spent-refr` s3 done, → built (all) · orchestrator
-- 2026-11-09 20:30 UTC · `saved-claude-logins-never-end-up-on-a-spent-refr` note (all) · orchestrator
-- 2026-11-09 20:31 UTC · `one-source-of-truth-for-claude-accounts-the-orch` → running, note (all) · pipeline
-- 2026-11-09 20:31 UTC · `one-source-of-truth-for-claude-accounts-the-orch` branch claude/one-source-of-truth-for-claude-accounts-the-orch (all) · pipeline
-- 2026-11-09 20:31 UTC · `one-source-of-truth-for-claude-accounts-the-orch` note (all) · orchestrator
-- 2026-11-09 20:32 UTC · `per-account-queues-long-press-a-queued-build-to` → running, note (all) · pipeline
-- 2026-11-09 20:32 UTC · `per-account-queues-long-press-a-queued-build-to` branch claude/per-account-queues-long-press-a-queued-build-to (all) · pipeline
-- 2026-11-09 20:32 UTC · `per-account-queues-long-press-a-queued-build-to` note (all) · orchestrator
-- 2026-11-09 20:36 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` note (all) · console
-- 2026-11-09 20:36 UTC · `fix-owner-check-bug-dead-start-button` note (all) · console
-- 2026-11-09 20:37 UTC · `fix-owner-check-bug-dead-start-button` → queued, note (all) · console
-- 2026-11-09 20:37 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` → queued, note (all) · console
-- 2026-11-09 20:37 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` → queued, note (all) · builds-live
-- 2026-11-09 20:37 UTC · `fix-owner-check-bug-dead-start-button` → queued, note (all) · builds-live
-- 2026-11-09 20:38 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` note (all) · orchestrator
-- 2026-11-09 20:38 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` note (all) · builds-live
-- 2026-11-09 20:39 UTC · `fix-owner-check-bug-dead-start-button` note (all) · orchestrator
-- 2026-11-09 20:39 UTC · `fix-owner-check-bug-dead-start-button` → running, note (all) · pipeline
-- 2026-11-09 20:39 UTC · `fix-owner-check-bug-dead-start-button` branch claude/fix-owner-check-bug-dead-start-button (all) · pipeline
-- 2026-11-09 20:41 UTC · `per-account-queues-long-press-a-queued-build-to` s1 done, → running (all) · orchestrator
-- 2026-11-09 20:41 UTC · `per-account-queues-long-press-a-queued-build-to` s2 done (all) · orchestrator
-- 2026-11-09 20:41 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` → queued, note (all) · console
-- 2026-11-09 20:42 UTC · `fix-owner-check-bug-dead-start-button` s1 done, → running (all) · orchestrator
-- 2026-11-09 20:42 UTC · `one-source-of-truth-for-claude-accounts-the-orch` s1 done, → running (all) · orchestrator
-- 2026-11-09 20:42 UTC · `fix-owner-check-bug-dead-start-button` s2 done (all) · orchestrator
-- 2026-11-09 20:42 UTC · `one-source-of-truth-for-claude-accounts-the-orch` s2 done (all) · orchestrator
-- 2026-11-09 20:42 UTC · `per-account-queues-long-press-a-queued-build-to` PR #413 (all) · builds-live
-- 2026-11-09 20:43 UTC · `fix-owner-check-bug-dead-start-button` s1 done (all) · foreign-write
-- 2026-11-09 20:44 UTC · `one-source-of-truth-for-claude-accounts-the-orch` PR #414 (all) · builds-live
-- 2026-11-09 20:42 UTC · `per-account-queues-long-press-a-queued-build-to` s3 done, → built (all) · orchestrator
-- 2026-11-09 20:42 UTC · `per-account-queues-long-press-a-queued-build-to` note (all) · orchestrator
-- 2026-11-09 20:44 UTC · `one-source-of-truth-for-claude-accounts-the-orch` s3 done, → built (all) · orchestrator
-- 2026-11-09 20:43 UTC · `per-account-queues-long-press-a-queued-build-to` note (all) · orchestrator
-- 2026-11-09 20:44 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` → running, note (all) · pipeline
-- 2026-11-09 20:44 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` note (all) · orchestrator
-- 2026-11-09 20:44 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` branch claude/owner-only-settings-brett-s-admin-console-login-counts-as-owner (all) · pipeline
-- 2026-11-09 20:44 UTC · `one-source-of-truth-for-claude-accounts-the-orch` note (all) · orchestrator
-- 2026-11-09 20:45 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` → running, note (all) · pipeline
-- 2026-11-09 20:45 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` branch claude/owner-only-settings-brett-s-admin-console-login-counts-as-owner (all) · pipeline
-- 2026-11-09 20:45 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` note (all) · orchestrator
-- 2026-11-09 20:46 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` s1 done, → running (all) · orchestrator
-- 2026-11-09 20:46 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` s2 done (all) · orchestrator
-- 2026-11-09 20:47 UTC · `fix-owner-check-bug-dead-start-button` s3 done (all) · orchestrator
-- 2026-11-09 20:47 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` s3 done (all) · orchestrator
-- 2026-11-09 20:47 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` s4 done (all) · orchestrator
-- 2026-11-09 20:47 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` s5 done (all) · orchestrator
-- 2026-11-09 20:47 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` s6 done (all) · orchestrator
-- 2026-11-09 20:48 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` PR #415 (all) · builds-live
-- 2026-11-09 20:48 UTC · `fix-owner-check-bug-dead-start-button` note (all) · orchestrator
-- 2026-11-09 20:48 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` s7 done, → built (all) · orchestrator
 - 2026-11-09 20:48 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` PR #415 (all) · foreign-write
 - 2026-11-09 20:48 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` note (all) · orchestrator
 - 2026-11-09 20:49 UTC · `approvals-page-auto-approve-toggle-1-h-2-h-until` → running, note (all) · pipeline
@@ -1171,6 +1117,60 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 03:37 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` → running, note (all) · pipeline
 - 2026-11-10 03:37 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` branch claude/demo-designer-finish-phase-2-s2-s3-resuming-from (all) · pipeline
 - 2026-11-10 03:37 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` note (all) · orchestrator
+- 2026-11-10 03:41 UTC · `one-amberx-build-notification-veto-approval-befo` s1 done, → running (all) · orchestrator
+- 2026-11-10 03:41 UTC · `one-amberx-build-notification-veto-approval-befo` s2 done (all) · orchestrator
+- 2026-11-10 03:42 UTC · `one-amberx-build-notification-veto-approval-befo` PR #436 (all) · builds-live
+- 2026-11-10 03:43 UTC · `one-amberx-build-notification-veto-approval-befo` note (all) · orchestrator
+- 2026-11-10 03:43 UTC · `one-amberx-build-notification-veto-approval-befo` s3 done, → built (all) · orchestrator
+- 2026-11-10 03:44 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` → running, note (all) · pipeline
+- 2026-11-10 03:44 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` note (all) · orchestrator
+- 2026-11-10 03:49 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` s1 done (all) · orchestrator
+- 2026-11-10 03:50 UTC · `orchestrator-table-columns-model-queue-assigned` → pending, note (all) · reconciler
+- 2026-11-10 03:52 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` PR #437 (all) · builds-live
+- 2026-11-10 03:53 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` s2 done (all) · orchestrator
+- 2026-11-10 03:53 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` s3 done, → built (all) · orchestrator
+- 2026-11-10 03:53 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` note (all) · orchestrator
+- 2026-11-10 03:54 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` note (all) · orchestrator
+- 2026-11-10 03:55 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` note (all) · pipeline
+- 2026-11-10 03:55 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` → running, note (all) · pipeline
+- 2026-11-10 03:55 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` branch claude/ui-review-timeout-after-1-hour-notify-brett-and (all) · pipeline
+- 2026-11-10 03:55 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` note (all) · orchestrator
+- 2026-11-10 04:03 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` s1 done, → running (all) · orchestrator
+- 2026-11-10 04:03 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` note (all) · orchestrator
+- 2026-11-10 04:04 UTC · `resolve-merge-conflicts-and-land-running-builds` → running, note (all) · pipeline
+- 2026-11-10 04:04 UTC · `resolve-merge-conflicts-and-land-running-builds` branch claude/resolve-merge-conflicts-and-land-running-builds (all) · pipeline
+- 2026-11-10 04:04 UTC · `resolve-merge-conflicts-and-land-running-builds` note (all) · orchestrator
+- 2026-11-10 04:04 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` PR #438 (all) · builds-live
+- 2026-11-10 04:04 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` s2 done (all) · orchestrator
+- 2026-11-10 04:04 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` s3 done, → built (all) · orchestrator
+- 2026-11-10 04:04 UTC · `walkthrough-player-ide-layout-setting-collapsibl` → running, note (all) · orchestrator
+- 2026-11-10 04:05 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` s2 done, s3 done, → built, PR #438, note (all) · reconciler
+- 2026-11-10 04:05 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` note (all) · orchestrator
+- 2026-11-10 04:05 UTC · `split-builds-pages-build-manager-pending-complet-3` → running, note (all) · pipeline
+- 2026-11-10 04:05 UTC · `split-builds-pages-build-manager-pending-complet` note (all) · orchestrator
+- 2026-11-10 04:06 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` s1 done (all) · orchestrator
+- 2026-11-10 04:11 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` s2 done (all) · orchestrator
+- 2026-11-10 04:13 UTC · `split-builds-pages-build-manager-pending-complet-3` → running, note (all) · orchestrator
+- 2026-11-10 04:14 UTC · `split-builds-pages-build-manager-pending-complet-3` → queued, note (all) · pipeline
+- 2026-11-10 04:14 UTC · `split-builds-pages-build-manager-pending-complet-3` s3 done (all) · orchestrator
+- 2026-11-10 04:14 UTC · `split-builds-pages-build-manager-pending-complet-3` s4 done (all) · orchestrator
+- 2026-11-10 04:14 UTC · `split-builds-pages-build-manager-pending-complet-3` s5 done (all) · orchestrator
+- 2026-11-10 04:15 UTC · `split-builds-pages-build-manager-pending-complet-3` s6 done (all) · orchestrator
+- 2026-11-10 04:15 UTC · `split-builds-pages-build-manager-pending-complet-3` s7 done (all) · orchestrator
+- 2026-11-10 04:15 UTC · `split-builds-pages-build-manager-pending-complet-3` s8 done (all) · orchestrator
+- 2026-11-10 04:16 UTC · `split-builds-pages-build-manager-pending-complet-3` → queued, note (all) · pipeline
+- 2026-11-10 04:17 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` PR #439 (all) · builds-live
+- 2026-11-10 04:17 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` note (all) · orchestrator
+- 2026-11-10 04:17 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` s3 done, → built (all) · orchestrator
+- 2026-11-10 04:18 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` note (all) · orchestrator
+- 2026-11-10 04:19 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` note (all) · pipeline
+- 2026-11-10 04:19 UTC · `split-builds-pages-build-manager-pending-complet-3` → running, note (all) · pipeline
+- 2026-11-10 04:19 UTC · `split-builds-pages-build-manager-pending-complet` note (all) · orchestrator
+- 2026-11-10 04:23 UTC · `molly-fable-version-the-one-interface-for-amberx` added (0 steps) (all) · console
+- 2026-11-10 04:23 UTC · `molly-fable-version-the-one-interface-for-amberx` → queued, note (all) · console
+- 2026-11-10 04:24 UTC · `molly-fable-version-the-one-interface-for-amberx` note (all) · orchestrator
+- 2026-11-10 04:25 UTC · `audit-pending-fable-builds-against-main-close-wh` added (0 steps) (all) · console
+- 2026-11-10 04:25 UTC · `audit-pending-fable-builds-against-main-close-wh` → queued, note (all) · console
 
 ## Token passes (log)
 

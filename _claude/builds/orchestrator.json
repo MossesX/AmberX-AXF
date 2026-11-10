@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T03:37:32.855Z",
+ "updatedAt": "2026-11-10T04:25:25.599Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -78883,7 +78883,7 @@
    "pr": "#432",
    "priority": "P1",
    "createdAt": "2026-11-09T17:48:20.032Z",
-   "updatedAt": "2026-11-10T03:21:53.113Z",
+   "updatedAt": "2026-11-10T04:19:11.263Z",
    "builtAt": "2026-11-10T02:47:27.970Z",
    "notes": [
     {
@@ -79005,6 +79005,14 @@
     {
      "text": "Headless run axf-split-builds-pages-build-manager-pending-complet--sully: brief only · start 0 tokens · cost $5.27 · 123 turns · 6 tools, MCP none",
      "at": "2026-11-10T03:21:53.113Z"
+    },
+    {
+     "text": "Claude account: account-5 (axf-split-builds-pages-build-manager-pending-complet--sully, own login copy)",
+     "at": "2026-11-10T04:05:29.888Z"
+    },
+    {
+     "text": "Claude account: account-5 (axf-split-builds-pages-build-manager-pending-complet--earl, own login copy)",
+     "at": "2026-11-10T04:19:11.263Z"
     }
    ],
    "approvals": [],
@@ -79217,7 +79225,7 @@
    "title": "Split builds pages (Build Manager = Pending + Complete; Orchestrator = Queued + Active) with a professional, consistent table design",
    "category": "",
    "detail": "Replaces one-builds-page-pending-queued-built-tabs-remove (mark superseded).\n\nPages: Build Manager owns Pending (create, edit, prioritize, Send to orchestrator) and Complete (finished builds sent back by the orchestrator). Build orchestrator owns only Queued and Active (route, assign account, hold, cancel/return to Pending); finished builds go back to Build Manager Complete. Remove every other builds table and the separate Build queue screen (redirect).\n\nDesign: polished, professional, like a modern SaaS dashboard. One shared visual language across all four tabs (same spacing, type, badges, row style), but each tab shows what fits it; rows may be two lines tall, info doesn't have to be identical or in the same place. Rows expand to collapsible sections/sub-grids (steps, runs, cost, PR, Brett's words, log tail).\n- Every row: dates (created, started, finished as relevant), steps total and steps completed.\n- Pending: no timer; created date, steps, priority, Send to orchestrator.\n- Queued: queue position, why it's waiting, account/model planned.\n- Active: animated activity indicator in the row, live elapsed timer, steps complete with progress bar, current step, account actually running it.\n- Complete: started/finished dates, duration, cost, account that actually built it, PR/land status.\nTheme tokens only, phone + desktop, screenshots to UI Review. Full API/voice control.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -79225,7 +79233,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T17:50:55.358Z",
-   "updatedAt": "2026-11-10T03:22:11.280Z",
+   "updatedAt": "2026-11-10T04:19:08.030Z",
    "builtAt": "",
    "notes": [
     {
@@ -79287,6 +79295,26 @@
     {
      "text": "Session on mossesx-max- ended (exit 1) with 9 steps left: back in the Queue (run 1).",
      "at": "2026-11-10T03:22:11.280Z"
+    },
+    {
+     "text": "VPS disk hit 0 MB free twice in this session (/root/axf-builds worktrees use 109G of 193G). Space recovered to 6.8G. Earlier uncommitted work saved and pushed as c3b40c33a. Continuing from s3.",
+     "at": "2026-11-10T04:13:17.761Z"
+    },
+    {
+     "text": "Started run 2 on account-5 (API key, this build is set to API) (Opus, Phase 1): axf-split-builds-pages-build-manager-pending-complet--sully.",
+     "at": "2026-11-10T04:05:22.551Z"
+    },
+    {
+     "text": "Self-check: split-builds-pages-build-manager-pending-complet-3 was marked running on mossesx-max- with no session: released and back in the Queue.",
+     "at": "2026-11-10T04:14:05.993Z"
+    },
+    {
+     "text": "Self-check: split-builds-pages-build-manager-pending-complet-3 was marked running on mossesx-max- with no session: released and back in the Queue.",
+     "at": "2026-11-10T04:16:06.363Z"
+    },
+    {
+     "text": "Started run 2 on account-5 (API key, this build is set to API) (Opus, Phase 1): axf-split-builds-pages-build-manager-pending-complet--earl.",
+     "at": "2026-11-10T04:19:08.030Z"
     }
    ],
    "approvals": [],
@@ -79298,7 +79326,7 @@
     "session": "",
     "link": "",
     "by": "split-builds-pages-build-manager-pending-complet-3",
-    "brief": "# Build: split-builds-pages-build-manager-pending-complet-3\n\n## Brett said (verbatim)\nAt: 2026-11-09T17:50:55.358Z\n> It doesn't have to be a single clean line... it can be a double wide row... make it look good, like a professional website. Pending isn't gonna have a timer. They should have dates, when they were started, how many steps, how many completed. The active ones need an animated thing in the row. Build manager: pending and complete. Orchestrator: active and queued.\n\n## What to build\nContinue build \"Split builds pages (Build Manager = Pending + Complete; Orchestrator = Queued + Active) with a professional, consistent table design\" (split-builds-pages-build-manager-pending-complet-3) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-09 17:50):\n\"It doesn't have to be a single clean line... it can be a double wide row... make it look good, like a professional website. Pending isn't gonna have a timer. They should have dates, when they were started, how many steps, how many completed. The active ones need an animated thing in the row. Build manager: pending and complete. Orchestrator: active and queued.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/split-builds-pages-build-manager-pending-complet-3\nSteps in this phase (11 left, ~5.3 h):\n[ ] s1 (~30 min) Replaces one-builds-page-pending-queued-built-tabs-remove (mark superseded).\n[ ] s2 (~30 min) Pages: Build Manager owns Pending (create, edit, prioritize, Send to orchestrator) and Complete (finished builds sent back by the orchestrator). Build orchestrator owns only Queued and Active (route, assign account, hold, cancel/return to Pending); finished builds go back to Build Manager Complete. Remove every other builds table and the separate Build queue screen (redirect).\n[ ] s3 (~30 min) Design: polished, professional, like a modern SaaS dashboard. One shared visual language across all four tabs (same spacing, type, badges, row style), but each tab shows what fits it; rows may be two lines tall, info doesn't have to be identical or in the same place. Rows expand to collapsible sections/sub-grids (steps, runs, cost, PR, Brett's words, log tail).\n[ ] s4 (~30 min) Every row: dates (created, started, finished as relevant), steps total and steps completed.\n[ ] s5 (~30 min) Pending: no timer; created date, steps, priority, Send to orchestrator.\n[ ] s6 (~30 min) Queued: queue position, why it's waiting, account/model planned.\n[ ] s7 (~30 min) Active: animated activity indicator in the row, live elapsed timer, steps complete with progress bar, current step, account actually running it.\n[ ] s8 (~30 min) Complete: started/finished dates, duration, cost, account that actually built it, PR/land status.\n[ ] s9 (~30 min) Theme tokens only, phone + desktop, screenshots to UI Review. Full API/voice control.\n[ ] s10 (~30 min) It doesn't have to be a single clean line... it can be a double wide row... make it look good, like a professional website. Pending isn't gonna have a timer. They should have dates, when they were started, how many steps, how many completed. The active ones need an animated thing in the row. Build manager: pending and complete. Orchestrator: active and queued.\n[ ] s11 (~20 min) Tests green, report _claude/builds/reports/split-builds-pages-build-manager-pending-complet-3.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/split-builds-pages-build-manager-pending-complet-3.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step split-builds-pages-build-manager-pending-complet-3 <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link split-builds-pages-build-manager-pending-complet-3 --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step split-builds-pages-build-manager-pending-complet-3 <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note split-builds-pages-build-manager-pending-complet-3 \"…\"); the build goes back to Pending for Brett.\n",
+    "brief": "# Build: split-builds-pages-build-manager-pending-complet-3\n\n## Brett said (verbatim)\nAt: 2026-11-09T17:50:55.358Z\n> It doesn't have to be a single clean line... it can be a double wide row... make it look good, like a professional website. Pending isn't gonna have a timer. They should have dates, when they were started, how many steps, how many completed. The active ones need an animated thing in the row. Build manager: pending and complete. Orchestrator: active and queued.\n\n## What to build\nContinue build \"Split builds pages (Build Manager = Pending + Complete; Orchestrator = Queued + Active) with a professional, consistent table design\" (split-builds-pages-build-manager-pending-complet-3) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-09 17:50):\n\"It doesn't have to be a single clean line... it can be a double wide row... make it look good, like a professional website. Pending isn't gonna have a timer. They should have dates, when they were started, how many steps, how many completed. The active ones need an animated thing in the row. Build manager: pending and complete. Orchestrator: active and queued.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/split-builds-pages-build-manager-pending-complet-3\nSteps in this phase (3 left, ~1.3 h):\n[x] s1 (~30 min) Replaces one-builds-page-pending-queued-built-tabs-remove (mark superseded).\n[x] s2 (~30 min) Pages: Build Manager owns Pending (create, edit, prioritize, Send to orchestrator) and Complete (finished builds sent back by the orchestrator). Build orchestrator owns only Queued and Active (route, assign account, hold, cancel/return to Pending); finished builds go back to Build Manager Complete. Remove every other builds table and the separate Build queue screen (redirect).\n[x] s3 (~30 min) Design: polished, professional, like a modern SaaS dashboard. One shared visual language across all four tabs (same spacing, type, badges, row style), but each tab shows what fits it; rows may be two lines tall, info doesn't have to be identical or in the same place. Rows expand to collapsible sections/sub-grids (steps, runs, cost, PR, Brett's words, log tail).\n[x] s4 (~30 min) Every row: dates (created, started, finished as relevant), steps total and steps completed.\n[x] s5 (~30 min) Pending: no timer; created date, steps, priority, Send to orchestrator.\n[x] s6 (~30 min) Queued: queue position, why it's waiting, account/model planned.\n[x] s7 (~30 min) Active: animated activity indicator in the row, live elapsed timer, steps complete with progress bar, current step, account actually running it.\n[x] s8 (~30 min) Complete: started/finished dates, duration, cost, account that actually built it, PR/land status.\n[ ] s9 (~30 min) Theme tokens only, phone + desktop, screenshots to UI Review. Full API/voice control.\n[ ] s10 (~30 min) It doesn't have to be a single clean line... it can be a double wide row... make it look good, like a professional website. Pending isn't gonna have a timer. They should have dates, when they were started, how many steps, how many completed. The active ones need an animated thing in the row. Build manager: pending and complete. Orchestrator: active and queued.\n[ ] s11 (~20 min) Tests green, report _claude/builds/reports/split-builds-pages-build-manager-pending-complet-3.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/split-builds-pages-build-manager-pending-complet-3.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step split-builds-pages-build-manager-pending-complet-3 <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link split-builds-pages-build-manager-pending-complet-3 --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-5 (an API key: billed per token, keep it lean) for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step split-builds-pages-build-manager-pending-complet-3 <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note split-builds-pages-build-manager-pending-complet-3 \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -79353,8 +79381,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T04:14:56.323Z",
      "note": "",
      "uid": "st-mw9k6lfv03u8ff"
     },
@@ -79371,8 +79399,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T04:14:57.587Z",
      "note": "",
      "uid": "st-mw9k6lfv04z0d3"
     },
@@ -79389,8 +79417,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T04:14:58.817Z",
      "note": "",
      "uid": "st-mw9k6lfv05akkt"
     },
@@ -79407,8 +79435,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T04:15:00.826Z",
      "note": "",
      "uid": "st-mw9k6lfv06rgsl"
     },
@@ -79425,8 +79453,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T04:15:04.979Z",
      "note": "",
      "uid": "st-mw9k6lfv07f9xx"
     },
@@ -79443,8 +79471,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T04:15:08.013Z",
      "note": "",
      "uid": "st-mw9k6lfv08zqqx"
     },
@@ -81763,7 +81791,7 @@
    "title": "Walkthrough player: IDE layout setting, collapsible panels, build books from clips; merge with the Demonstration manager",
    "category": "",
    "detail": "Upgrade the existing walkthrough/demonstration tools, don't make new ones. 1) Player setting: Layout = Player or IDE. IDE style: collapsible side columns and panels (clips library, book outline, properties, picture-in-picture group chat, captions/script). 2) Books: drag and drop clips into a book, reorder, nest chapters. 3) Merge the walkthrough player and the already-built Demonstration manager into one plugin (harvest its code, keep its data: demonstration, book, clip asset types), one source of truth. 4) Keep the playback controls (voice switch, speed, hide parts). Full API control.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -81771,7 +81799,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T23:59:19.114Z",
-   "updatedAt": "2026-11-10T03:09:20.018Z",
+   "updatedAt": "2026-11-10T04:04:40.734Z",
    "builtAt": "",
    "notes": [
     {
@@ -81809,6 +81837,10 @@
     {
      "text": "Runs on API-key accounts only (billed per token, under their caps) (brett).",
      "at": "2026-11-10T03:09:20.018Z"
+    },
+    {
+     "text": "Demo Designer phase 2 (PR #438) adds cloud narrators: narratorOptions / loadNarrators / narrate in web/model.ts, sayCloud in web/stage.ts, GET narrators + POST narrate in server. When you rebase the page split (pitch.tsx), use narratorOptions(voice, voices, m.narrators) for the Voice picker instead of the inline list.",
+     "at": "2026-11-10T04:04:40.734Z"
     }
    ],
    "approvals": [],
@@ -82131,7 +82163,7 @@
    "title": "Orchestrator table columns (model, queue #, assigned employee) + auto-hire builders with approval + train employees on website data",
    "category": "",
    "detail": "Builds on the HR/employees build (assign-an-employee-to-every-role-action-type-and); upgrade that, don't duplicate. 1) Orchestrator and Build Manager tables get columns: model (Opus/Fable/etc.), queue position number, assigned employee (avatar + name, links to profile). Sortable and shown on the expandable root rows. 2) Every build must be assigned to an employee in the builder job category. 3) When there's no available builder, the orchestrator sends Brett an AmberX notification: 'Hire a new builder?' with Approve/Deny. On approve, HR hires one automatically: name, avatar, persona, voice, job category builder, tools and permissions from the builder role, added to the roster, and the waiting build is assigned. No hire without approval. 4) Training: any employee can be trained on website data. Add URLs or a site to crawl from their profile; the content is fetched, stored as that employee's knowledge, viewable and removable, and used in their sessions. Same controls via REST, MCP, CLI and voice. Verify on the live console, desktop and phone.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -82139,7 +82171,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T00:17:45.319Z",
-   "updatedAt": "2026-11-10T03:20:58.905Z",
+   "updatedAt": "2026-11-10T03:50:50.715Z",
    "builtAt": "",
    "notes": [
     {
@@ -82165,6 +82197,10 @@
     {
      "text": "Headless run axf-orchestrator-table-columns-model-queue-assigned--lenny: brief only · start 11.4K tokens ($0.03) · cost $6.99 · 122 turns · 6 tools, MCP none",
      "at": "2026-11-10T03:20:58.905Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-10T03:50:50.715Z"
     }
    ],
    "approvals": [],
@@ -83023,16 +83059,16 @@
    "title": "One AmberX build notification: veto approval before every start, pop-up on every finish",
    "category": "",
    "detail": "This REPLACES the build 'AmberX phone pop-up for every build start and finish: build name, account, model': remove it from Pending or the Queue and mark it superseded. Also upgrade, don't duplicate, brief-approval-dialog-before-every-headless-sess. 1) START = VETO: before every launch (new, retry, rerun, resume), one AmberX heads-up pop-up on the phone, also mirrored in the console. It shows the build name, what it will do, steps, model, account and employee, with Approve, Deny and a countdown (default 90 s, adjustable down to 0 via the approvals countdown setting). It launches on Approve or when the countdown ends; Deny sends it back to Pending. 2) FINISH: a pop-up with the build, account and outcome (done, failed, needs something and what). Tap to open the build. 3) One notification type, not two. Plain code, no AI. Respects the auto-approve toggle. Full API and voice control.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/one-amberx-build-notification-veto-approval-befo",
-   "pr": "",
+   "pr": "#436",
    "priority": "P0",
    "createdAt": "2026-11-10T02:24:15.337Z",
-   "updatedAt": "2026-11-10T03:28:19.516Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T03:43:20.593Z",
+   "builtAt": "2026-11-10T03:43:20.593Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -83049,6 +83085,14 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-one-amberx-build-notification-veto-approval-befo--sully, own login copy)",
      "at": "2026-11-10T03:28:19.516Z"
+    },
+    {
+     "text": "Headless run axf-one-amberx-build-notification-veto-approval-befo--sully: brief only · start 11.2K tokens ($0.03) · cost $3.84 · 84 turns · 6 tools, MCP none",
+     "at": "2026-11-10T03:43:20.593Z"
+    },
+    {
+     "text": "Built, PR #436 (folds in and closes #433). Veto before every start on the AmberX start notification, 90 s default, Approve / Deny / auto-approve, console Waiting to start card. UI Review shots not taken (VPS headless browser broke on #433): capture Pipeline tab Waiting to start + Phone pop-ups, desktop and phone, and submit. Real phone test after merge.",
+     "at": "2026-11-10T03:43:00.518Z"
     }
    ],
    "approvals": [],
@@ -83079,8 +83123,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T03:41:48.346Z",
      "note": "",
      "uid": "st-mwa2jrw901jcus"
     },
@@ -83097,8 +83141,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T03:41:49.874Z",
      "note": "",
      "uid": "st-mwa2jrw902q4s9"
     },
@@ -83118,8 +83162,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T03:43:03.611Z",
      "note": "",
      "uid": "st-mwa2jrw903m8ys"
     }
@@ -83229,16 +83273,16 @@
    "title": "Console speed: profile and cut axf-console CPU, plus plan a separate build VPS",
    "category": "",
    "detail": "Measured Nov 10 02:46: load average 30, swap 3.4/4 GB used, RAM 7.2/16 GB, axf-console container at 74% CPU and 800 MB, 5 headless builds running. 1) PROFILE axf-console: find what burns CPU (polling loops, file watchers on /root/axf-builds and _claude, builds-live sync, log tailing, git fetches, plugin server ticks, SSE fan-out). Fix the worst offenders: back off polling, debounce watchers, cache reads, kill duplicate timers. Before and after numbers in the report. 2) SWAP: keep builds from pushing the console into swap (memory caps per build session via systemd-run/cgroups or tmux wrapper, a lower Node heap for test runs, Playwright only one at a time). The console stays responsive under load (nice/ionice the builds). 3) PLAN, don't buy anything: a design note for moving headless builds to a second VPS (cost, size, how the orchestrator dispatches there, git/worktree sync, accounts), for Brett to decide. 4) Show console CPU/RAM in the new VPS plugin. Plain code. Tests, report, PR.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/console-speed-profile-and-cut-axf-console-cpu-pl",
-   "pr": "",
+   "pr": "#437",
    "priority": "P0",
    "createdAt": "2026-11-10T02:49:14.121Z",
-   "updatedAt": "2026-11-10T03:33:22.499Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T03:55:08.921Z",
+   "builtAt": "2026-11-10T03:53:49.891Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -83255,6 +83299,18 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-speed-profile-and-cut-axf-console-cpu-pl--gina, own login copy)",
      "at": "2026-11-10T03:33:22.499Z"
+    },
+    {
+     "text": "PR #437. Cause: maintenance snapshot cron stacked 12 copies (84 min each, du over 96 GB of worktrees); stopped and locked on the VPS now. Builds now run in capped systemd scopes. Waiting: UI Review shots (Playwright not installed, disk 100% full so not installed); Brett to approve disk clean-up and pick a build-VPS option (_claude/plans/build-vps.md).",
+     "at": "2026-11-10T03:53:51.850Z"
+    },
+    {
+     "text": "Headless run axf-console-speed-profile-and-cut-axf-console-cpu-pl--gina: brief only · start 11.3K tokens ($0.03) · cost $4.62 · 136 turns · 6 tools, MCP none",
+     "at": "2026-11-10T03:54:44.564Z"
+    },
+    {
+     "text": "Session axf-console-speed-profile-and-cut-axf-console-cpu-pl--gina on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-10T03:55:08.921Z"
     }
    ],
    "approvals": [],
@@ -83285,8 +83341,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T03:49:32.308Z",
      "note": "",
      "uid": "st-mwa3guw1012cmy"
     },
@@ -83303,8 +83359,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T03:53:48.440Z",
      "note": "",
      "uid": "st-mwa3guw1027xm4"
     },
@@ -83324,8 +83380,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T03:53:49.891Z",
      "note": "",
      "uid": "st-mwa3guw103t99t"
     }
@@ -83336,16 +83392,16 @@
    "title": "Demo Designer: finish phase 2 (s2, s3), resuming from the existing branch",
    "category": "",
    "detail": "Demo Designer was launched directly (build id demo-designer) and has no orchestrator record, so it never resumed. Adopt it: resume in /root/axf-builds/demo-designer on its existing branch and PR. Read demo-designer.log and its report. Phase 1 (s1) is done and its UI Review items are waiting. Do phase 2 (s2, s3) exactly as planned in its report. Coordinate with walkthrough-player-ide-layout-setting-collapsibl, which merges Demo Designer with the Demonstration manager: don't duplicate, and share the code. Tests, screenshots to UI Review, report, PR.",
-   "status": "queued",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-designer-finish-phase-2-s2-s3-resuming-from",
-   "pr": "",
+   "pr": "#438",
    "priority": "P0",
    "createdAt": "2026-11-10T03:10:30.744Z",
-   "updatedAt": "2026-11-10T03:37:18.064Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T04:05:07.683Z",
+   "builtAt": "2026-11-10T04:05:07.683Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -83362,6 +83418,30 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-demo-designer-finish-phase-2-s2-s3-resuming-from--rhonda.",
      "at": "2026-11-10T03:37:12.637Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-demo-designer-finish-phase-2-s2-s3-resuming-from--lenny.",
+     "at": "2026-11-10T03:44:07.292Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-demo-designer-finish-phase-2-s2-s3-resuming-from--lenny, own login copy)",
+     "at": "2026-11-10T03:44:09.339Z"
+    },
+    {
+     "text": "Duplicate dispatch: two headless sessions were started on this build in the same worktree (Reel Rhonda 03:37, Landin' Lenny 03:44). Lenny stood down with no repo edits, no commits, no ticks and no UI Review submissions so Rhonda's run finishes the build. Lenny did verify Rhonda's uncommitted work: demonstration-designer test.mjs 22/22, agent-voice test.py 41/41, tsc clean, check-theme/controls/toolbars/chrome-assets clean, plugin-lifecycle clean for both plugins. Lenny also overwrote /tmp/dd2-shots.json and wrote settings shots into /tmp/dd2-out/after (same code, valid captures). Dispatcher should guard against a second launch on a build that already has a live session.",
+     "at": "2026-11-10T04:03:31.787Z"
+    },
+    {
+     "text": "Headless run axf-demo-designer-finish-phase-2-s2-s3-resuming-from--lenny: brief only · start 11.5K tokens ($0.03) · cost $1.39 · 47 turns · 6 tools, MCP none",
+     "at": "2026-11-10T04:03:45.090Z"
+    },
+    {
+     "text": "Headless run axf-demo-designer-finish-phase-2-s2-s3-resuming-from--rhonda: brief only · start 11.1K tokens ($0.03) · cost $3.05 · 82 turns · 6 tools, MCP none",
+     "at": "2026-11-10T04:05:07.683Z"
+    },
+    {
+     "text": "Reconciler: PR #438; PR #438 names s2, s3 done",
+     "at": "2026-11-10T04:05:01.206Z"
     }
    ],
    "approvals": [],
@@ -83392,8 +83472,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T04:03:12.609Z",
      "note": "",
      "uid": "st-mwa46jfx01zr02"
     },
@@ -83410,9 +83490,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-10T04:05:01.206Z",
+     "note": "PR #438 (claude/demo-designer-finish-phase-2-s2-s3-resuming-from)",
      "uid": "st-mwa46jfx021cai"
     },
     {
@@ -83431,9 +83511,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-10T04:05:01.206Z",
+     "note": "PR #438 (claude/demo-designer-finish-phase-2-s2-s3-resuming-from)",
      "uid": "st-mwa46jfx03b5jn"
     }
    ]
@@ -83443,16 +83523,16 @@
    "title": "UI Review timeout: after 1 hour, notify Brett and go ahead without him",
    "category": "",
    "detail": "Upgrade the existing UI Review alarm (ui-review-alarm, PR #343: alarm after 30 min) instead of adding a new one. 1) Every UI Review item gets a 1-hour timer, adjustable in UI Review settings. 2) At 1 hour unanswered, send an AmberX phone notification ('UI Review: <build> waited 1 h, going ahead with <option>'). Then proceed automatically: take the recommended or first option (or approve if there's a single option), mark it 'auto-approved after timeout', and let the build continue and land. 3) Brett can still change the pick afterwards, and a change files a follow-up build. 4) Builds never sit blocked on UI Review. Log each auto-approval in the fix log and Activity Monitor. Plain code, no AI. Full REST, MCP, CLI and voice control.",
-   "status": "queued",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/ui-review-timeout-after-1-hour-notify-brett-and",
+   "pr": "#439",
    "priority": "P0",
    "createdAt": "2026-11-10T03:11:27.944Z",
-   "updatedAt": "2026-11-10T03:13:32.265Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T04:19:03.074Z",
+   "builtAt": "2026-11-10T04:18:16.681Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -83461,6 +83541,26 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T03:13:32.265Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-ui-review-timeout-after-1-hour-notify-brett-and--joey.",
+     "at": "2026-11-10T03:55:23.628Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-ui-review-timeout-after-1-hour-notify-brett-and--joey, own login copy)",
+     "at": "2026-11-10T03:55:26.172Z"
+    },
+    {
+     "text": "Headless run axf-ui-review-timeout-after-1-hour-notify-brett-and--joey: brief only · start 11.1K tokens ($0.03) · cost $4.90 · 105 turns · 6 tools, MCP none",
+     "at": "2026-11-10T04:18:16.681Z"
+    },
+    {
+     "text": "PR #439: UI Review items now go ahead after 1 h (phone told, first option picked, logged; changing it files a follow-up build). Upgrades PR #343's alarm, which never landed. Not in UI Review: settings panel screenshots failed (capture console waits on axHub; Playwright 1.56 vs chromium 1234 on the VPS). Report _claude/builds/reports/ui-review-timeout-after-1-hour-notify-brett-and.md",
+     "at": "2026-11-10T04:17:52.037Z"
+    },
+    {
+     "text": "Session axf-ui-review-timeout-after-1-hour-notify-brett-and--joey on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-10T04:19:03.074Z"
     }
    ],
    "approvals": [],
@@ -83471,8 +83571,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "ui-review-timeout-after-1-hour-notify-brett-and",
+    "brief": "# Build: ui-review-timeout-after-1-hour-notify-brett-and\n\n## Brett said (verbatim)\nAt: 2026-11-10T03:11:27.944Z\n> Does UI review hold shit up? If shit sits in UI review for more than an hour, send me a notification and just go.\n\n## What to build\nContinue build \"UI Review timeout: after 1 hour, notify Brett and go ahead without him\" (ui-review-timeout-after-1-hour-notify-brett-and) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 03:11):\n\"Does UI review hold shit up? If shit sits in UI review for more than an hour, send me a notification and just go.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Upgrade the existing UI Review alarm (ui-review-alarm, PR #343: alarm after 30 min) instead of adding a new one. 1) Every UI Review item gets a 1-hour timer, adjustable in UI Review settings. 2) At 1 hour unanswered, send an AmberX phone notification ('UI Review: <build> waited 1 h, going ahead with <option>'). Then proceed automatically: take the recommended or first option (or approve if there's a single option), mark it 'auto-approved after timeout', and let the build continue and land. 3) Brett can still change the pick afterwards, and a change files a follow-up build. 4) Builds never sit blocked on UI Review. Log each auto-approval in the fix log and Activity Monitor. Plain code, no AI. Full REST, MCP, CLI and voice control.\n[ ] s2 (~30 min) Does UI review hold shit up? If shit sits in UI review for more than an hour, send me a notification and just go.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/ui-review-timeout-after-1-hour-notify-brett-and.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/ui-review-timeout-after-1-hour-notify-brett-and.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step ui-review-timeout-after-1-hour-notify-brett-and <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link ui-review-timeout-after-1-hour-notify-brett-and --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step ui-review-timeout-after-1-hour-notify-brett-and <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note ui-review-timeout-after-1-hour-notify-brett-and \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -83491,8 +83591,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T04:06:50.706Z",
      "note": "",
      "uid": "st-mwa48aqx018kob"
     },
@@ -83509,8 +83609,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T04:11:24.983Z",
      "note": "",
      "uid": "st-mwa48aqx02bxcx"
     },
@@ -83530,8 +83630,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T04:17:53.405Z",
      "note": "",
      "uid": "st-mwa48aqx03gwzl"
     }
@@ -83542,15 +83642,15 @@
    "title": "Resolve merge conflicts and land: running-builds-watchdog and amberx-approvals-fix",
    "category": "",
    "detail": "Two finished builds can't land because they clash with main. 1) claude/running-builds-watchdog clashes in build-orchestrator pipeline-core.mjs, pipeline.mjs, server/__init__.py and web/pipeline.tsx. 2) claude/amberx-approvals-fix (PR #353) failed with 'Merge with strategy ort failed' and is 1054 commits behind. For each: merge origin/main into the branch, resolve conflicts keeping both behaviours (main's newer code wins on structure, with the branch's feature re-applied), run the plugin tests, then land with build_land. Redo nothing that main already has. Report what each kept.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/resolve-merge-conflicts-and-land-running-builds",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T03:14:09.017Z",
-   "updatedAt": "2026-11-10T03:17:06.231Z",
+   "updatedAt": "2026-11-10T04:04:20.974Z",
    "builtAt": "",
    "notes": [
     {
@@ -83560,6 +83660,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T03:17:06.231Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-resolve-merge-conflicts-and-land-running-builds--paulie.",
+     "at": "2026-11-10T04:04:16.744Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-resolve-merge-conflicts-and-land-running-builds--paulie, own login copy)",
+     "at": "2026-11-10T04:04:20.974Z"
     }
    ],
    "approvals": [],
@@ -83570,8 +83678,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "resolve-merge-conflicts-and-land-running-builds",
+    "brief": "# Build: resolve-merge-conflicts-and-land-running-builds\n\n## Brett said (verbatim)\nAt: 2026-11-10T03:14:09.017Z\n> When I tell you to do something, you do it till you get it right.\n\n## What to build\nContinue build \"Resolve merge conflicts and land: running-builds-watchdog and amberx-approvals-fix\" (resolve-merge-conflicts-and-land-running-builds) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 03:14):\n\"When I tell you to do something, you do it till you get it right.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Two finished builds can't land because they clash with main. 1) claude/running-builds-watchdog clashes in build-orchestrator pipeline-core.mjs, pipeline.mjs, server/__init__.py and web/pipeline.tsx. 2) claude/amberx-approvals-fix (PR #353) failed with 'Merge with strategy ort failed' and is 1054 commits behind. For each: merge origin/main into the branch, resolve conflicts keeping both behaviours (main's newer code wins on structure, with the branch's feature re-applied), run the plugin tests, then land with build_land. Redo nothing that main already has. Report what each kept.\n[ ] s2 (~30 min) When I tell you to do something, you do it till you get it right.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/resolve-merge-conflicts-and-land-running-builds.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/resolve-merge-conflicts-and-land-running-builds.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step resolve-merge-conflicts-and-land-running-builds <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link resolve-merge-conflicts-and-land-running-builds --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step resolve-merge-conflicts-and-land-running-builds <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note resolve-merge-conflicts-and-land-running-builds \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -83635,6 +83743,142 @@
      "uid": "st-mwa4cvup035x92"
     }
    ]
+  },
+  {
+   "id": "molly-fable-version-the-one-interface-for-amberx",
+   "title": "Molly (Fable version): the one interface for AmberX, axHub and the console, built on Fable",
+   "category": "",
+   "detail": "The Fable version of Molly that the molly-opus build promised ('a Fable version comes later in its own build'), never filed until now. Run every step on Fable (model: fable); don't fall back to Opus without saying so in the report. Start from what's on main: apps/molly (the Opus shell), the dock@1 engine, dock-layout@1 presets and DockHost from claude/molly-fable (PR #245, landed bffc2601), xlayout@1/chrome@1, and the molly-* builds (one-shell, sign-in-once, multi-instance-tabs, banner-match, nav-submenus, console-commands, native-expenses). Goal: Molly as the one interface that shows AmberX, axHub and the console (and the other apps) while they stay separate apps. One sign-in, docked multi-instance tabs, shared banner and widgets, nested menus, Molly-to-app messages. First read the open molly-* builds and reports: upgrade what exists, fold in unfinished molly steps where they overlap instead of duplicating, and list which builds this supersedes. Deploy at molly.amberxai.com (or a Fable variant URL if the Opus one must stay; say which). Full REST, MCP, CLI and voice control. Tests, desktop and phone screenshots to UI Review grouped by screen, report, PR.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-10T04:23:08.521Z",
+   "updatedAt": "2026-11-10T04:24:27.270Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T04:23:10.104Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T04:24:27.270Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Build the molly apps fable",
+    "at": "2026-11-10T04:23:08.521Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "The Fable version of Molly that the molly-opus build promised ('a Fable version comes later in its own build'), never filed until now. Run every step on Fable (model: fable); don't fall back to Opus without saying so in the report. Start from what's on main: apps/molly (the Opus shell), the dock@1 engine, dock-layout@1 presets and DockHost from claude/molly-fable (PR #245, landed bffc2601), xlayout@1/chrome@1, and the molly-* builds (one-shell, sign-in-once, multi-instance-tabs, banner-match, nav-submenus, console-commands, native-expenses). Goal: Molly as the one interface that shows AmberX, axHub and the console (and the other apps) while they stay separate apps. One sign-in, docked multi-instance tabs, shared banner and widgets, nested menus, Molly-to-app messages. First read the open molly-* builds and reports: upgrade what exists, fold in unfinished molly steps where they overlap instead of duplicating, and list which builds this supersedes. Deploy at molly.amberxai.com (or a Fable variant URL if the Opus one must stay; say which). Full REST, MCP, CLI and voice control. Tests, desktop and phone screenshots to UI Review grouped by screen, report, PR.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwa6rhxj01tkx3"
+    },
+    {
+     "id": "s2",
+     "text": "Build the molly apps fable",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwa6rhxj024m0u"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/molly-fable-version-the-one-interface-for-amberx.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/molly-fable-version-the-one-interface-for-amberx.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwa6rhxj031s4h"
+    }
+   ]
+  },
+  {
+   "id": "audit-pending-fable-builds-against-main-close-wh",
+   "title": "Audit Pending Fable builds against main: close what's done, queue only what's left",
+   "category": "",
+   "detail": "Many Pending builds (especially the old Fable ones from Oct 18 to Nov 9) are already done on main or covered by later builds, but still sit in Pending. 1) For every Pending build whose next model is Fable, check main (git log, the Shipped features ledger, reports, the files each step names) for whether each step's work already exists. 2) Mark steps that are done as done, with evidence (commit or file). Mark whole builds that are done or superseded as complete or superseded, with a one-line reason. 3) Queue only what's really left, with steps trimmed to the remaining work. 4) Write a short list: done, superseded, queued, with each queued build's remaining steps. 5) Run this audit automatically before any bulk queue, so finished work never gets rebuilt (plain code where possible). Runs on Opus, not Fable.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-10T04:25:09.866Z",
+   "updatedAt": "2026-11-10T04:25:14.084Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T04:25:14.084Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Queue up all the Fable stuff. You already got tons of that shit, tons of that shit's already done.",
+    "at": "2026-11-10T04:25:09.866Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
