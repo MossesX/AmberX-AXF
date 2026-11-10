@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T01:48:24.797Z",
+ "updatedAt": "2026-11-10T01:53:44.396Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -79383,15 +79383,15 @@
    "title": "Skins own everything; colour theme swaps independently inside the active skin",
    "category": "",
    "detail": "Standing rule for skins work (applies to appearance-skins-colour-themes-only-remove-design-packs, skins-restyle-everything and skins-are-a-complete-rework): a skin controls everything (look, layout, behavior, every section/asset type) and includes a colour theme section. The user can change the colour theme on its own without changing the skin: picking a colour theme applies it inside the current skin and does NOT create a new skin or fork/duplicate the skin. Skin sections stay separate; the colour theme is one switchable part. Update contracts, pickers (skin picker + colour theme picker), API/voice, and tests. Check the running builds' changes against this and fix any that make a new skin on theme change.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/skins-own-everything-colour-theme-swaps-independ",
-   "pr": "",
+   "pr": "#429",
    "priority": "P0",
    "createdAt": "2026-11-09T17:52:45.295Z",
-   "updatedAt": "2026-11-10T01:04:12.656Z",
+   "updatedAt": "2026-11-10T01:53:38.723Z",
    "builtAt": "",
    "notes": [
     {
