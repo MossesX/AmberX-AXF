@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2370,
- "updatedAt": "2026-11-10T15:10:08.766Z",
+ "rev": 2371,
+ "updatedAt": "2026-11-10T15:10:27.042Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -135042,7 +135042,7 @@
    "title": "One VPS plugin: everything VPS in one place (gauges, banner widget with heat-colour icons and dropdown, cleanup, settings, status)",
    "category": "",
    "detail": "ONE VPS plugin (e.g. 'VPS'), reachable from Maintenance and its own nav entry. 1) CONSOLIDATE: find every VPS-related feature across the console and move it into this plugin as tabs or sections, leaving no duplicates behind. That includes the claude-badge VPS check, agent-slots resource and swap settings and warnings, the VPS settings/orchestrator-only rule plugin (from vps-orchestrator-only-rule-vps-settings-console), Docker/container views, container-access, the Coolify/Hostinger links, VPS terminal shortcuts, ai-keys VPS sync, maintenance cleanup/redundancy scans, the disk alerts, and the running-builds watchdog's resource bits. Old entry points redirect to the new plugin. 2) STATUS tab: live gauges and meters for CPU load (1/5/15 min), RAM, swap, disk per filesystem, plus Docker per-container CPU/RAM and the top processes. Several views (radial, bars, compact strip, history sparklines), switchable and remembered, with adjustable thresholds. 3) BANNER WIDGET: a snappable widget for the banner, toolbars and title bars, with modes icon only, icon plus value, or mini meters. It has its own settings (metrics, mode, thresholds, refresh). 4) ICON-ONLY HEAT COLOUR: each icon's colour follows its level on a smooth scale, white (low) to gray to black to red (high). The stops are editable and the theme can override them. 5) BANNER DROPDOWN: clicking any banner gauge opens a dropdown listing every gauge, one row each: a dot in the same heat colour as that gauge, the name (Load, RAM, Swap, Disk /), the percentage, and the actual values (e.g. 9.4 / 16 GB). Rows update live, the clicked one is highlighted, and the footer has Open VPS plugin and quick cleanup links. 6) CLEANUP tab: docker builder/image/container prune, apt/npm/pip caches, journal vacuum, old build worktrees and logs, /tmp, the Playwright cache, and stale git locks. Each has a size preview and a confirm, shows the space freed and logs to the fix log. Optional auto-cleanup over a threshold (off by default). 7) SETTINGS tab: every VPS setting in one place. Plain code, no AI. Full REST, MCP, CLI and voice control. Desktop and phone screenshots go to UI Review.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -135050,8 +135050,8 @@
    "pr": "#443",
    "priority": "P1",
    "createdAt": "2026-11-10T02:44:38.021Z",
-   "updatedAt": "2026-11-10T15:10:07.359Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T15:10:09.706Z",
+   "builtAt": "2026-11-10T15:10:08.567Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -135068,6 +135068,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-one-vps-plugin-everything-vps-in-one-place-gauge--sully, own login copy)",
      "at": "2026-11-10T14:51:42.208Z"
+    },
+    {
+     "text": "PR #443 open. UI Review screenshots (desktop + phone) not taken in this session: needed before the PR counts as ready.",
+     "at": "2026-11-10T15:10:09.706Z"
     }
    ],
    "approvals": [],
@@ -135169,12 +135173,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T15:10:08.567Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T02:46:47.916Z",
-     "updatedAt": "2026-11-10T02:46:47.916Z"
+     "updatedAt": "2026-11-10T15:10:08.738Z"
     }
    ],
    "profiles": [
@@ -135185,7 +135189,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

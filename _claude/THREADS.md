@@ -771,8 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 00:49 UTC · `test-button-on-every-claude-account-subscription` → queued, note (all) · cli
-- 2026-11-10 00:50 UTC · `skins-theme-rule` added (3 steps) (all) · orchestrator
 - 2026-11-10 00:50 UTC · `skins-restyle-finish` added (3 steps) (all) · orchestrator
 - 2026-11-10 00:50 UTC · `skins-theme-rule` → queued, note (all) · failed-launches-auto-retry-on-another-working-ac
 - 2026-11-10 00:50 UTC · `skins-restyle-finish` → queued, note (all) · failed-launches-auto-retry-on-another-working-ac
@@ -1171,6 +1169,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 15:06 UTC · `one-vps-plugin-everything-vps-in-one-place-gauge` s1 done, → running (all) · orchestrator
 - 2026-11-10 15:08 UTC · `one-vps-plugin-everything-vps-in-one-place-gauge` s2 done (all) · orchestrator
 - 2026-11-10 15:10 UTC · `one-vps-plugin-everything-vps-in-one-place-gauge` PR #443 (all) · builds-live
+- 2026-11-10 15:10 UTC · `one-vps-plugin-everything-vps-in-one-place-gauge` s3 done, → built (all) · orchestrator
+- 2026-11-10 15:10 UTC · `one-vps-plugin-everything-vps-in-one-place-gauge` note (all) · orchestrator
 
 ## Token passes (log)
 
