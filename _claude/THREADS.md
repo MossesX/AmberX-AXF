@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 19:45 UTC · `inline-element-editing-plugin-right-click-any-el` branch claude/inline-element-editing-plugin-right-click-any-el (all) · pipeline
 - 2026-11-10 19:45 UTC · `inline-element-editing-plugin-right-click-any-el` note (all) · orchestrator
 - 2026-11-10 19:46 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` → pending, note (all) · reconciler
 - 2026-11-10 19:52 UTC · `full-api-cli-control-of-everything-plus-an-offli` s2 done (all) · orchestrator
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 23:46 UTC · `resolve-conflicts-and-land-pr-449-account-order` note (all) · orchestrator
 - 2026-11-10 23:46 UTC · `resolve-conflicts-and-land-pr-449-account-order` s7 done, → built (all) · orchestrator
 - 2026-11-10 23:46 UTC · `per-agent-api-control-switch-in-each-employee-s` added (0 steps) (all) · console
+- 2026-11-10 23:46 UTC · `per-agent-api-control-switch-in-each-employee-s` → queued, note (all) · console
 
 ## Token passes (log)
 

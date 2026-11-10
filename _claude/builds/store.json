@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3056,
- "updatedAt": "2026-11-10T23:46:44.811Z",
+ "rev": 3057,
+ "updatedAt": "2026-11-10T23:46:49.928Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -149774,8 +149774,8 @@
    "pr": "#449",
    "priority": "P0",
    "createdAt": "2026-11-10T17:34:43.785Z",
-   "updatedAt": "2026-11-10T23:46:33.476Z",
-   "builtAt": "2026-11-10T23:46:33.477Z",
+   "updatedAt": "2026-11-10T23:46:43.049Z",
+   "builtAt": "2026-11-10T23:46:43.049Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -149824,6 +149824,10 @@
     {
      "text": "s7: tests re-run green; report + API reach note on #449. Not merged by hand (rules: merge queue lands PRs); queue blocked by repo-wide builds-store verify failure (breakroom orchestrator-self-check-when-stuck-verify-each-a). Redeploy, live check and AmberX 'landed' notice follow once #449 is on main.",
      "at": "2026-11-10T23:46:32.233Z"
+    },
+    {
+     "text": "Headless run axf-resolve-conflicts-and-land-pr-449-account-order--lenny: brief only · start 11.7K tokens ($0.03) · cost $6.70 · 154 turns · 6 tools, MCP none",
+     "at": "2026-11-10T23:46:43.049Z"
     }
    ],
    "approvals": [],
@@ -156943,16 +156947,22 @@
    "title": "Per-agent API control: switch in each employee's control panel; Amber and Molly on by default",
    "category": "",
    "detail": "Amends 3f5775eb. Console API/control access is a per-agent permission, off by default. In each employee's control panel (Agent Manager / Crew profile) add an 'API control' switch (with scope: open screens, change settings, run commands, file/queue builds). The AI assistant uses the permissions of the agent selected in its chat. Defaults: Amber = on, Molly = on, everyone else off. Changes are audited and show on the employee hook card.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-10T23:46:39.715Z",
-   "updatedAt": "2026-11-10T23:46:39.715Z",
+   "updatedAt": "2026-11-10T23:46:41.182Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T23:46:41.182Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -156967,6 +156977,25 @@
     "from": "",
     "addenda": []
    },
+   "pipeline": {
+    "queuedAt": "2026-11-10T23:46:40.904Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -156976,7 +157005,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
