@@ -3,7 +3,7 @@ import type { AppLookDocument } from './skin-rules.mjs';
 export const LOOK_MIGRATION_FRAME: 'look-migration@1';
 export const LOOK_MIGRATION_VERSION: number;
 export const LEGACY_LOOK_KEY: 'axf.legacy.look';
-export const LOOK_MIGRATED_KEY: 'axf.look.migrated';
+export const LOOK_MIGRATED_KEY: 'axf.skin.migrated';
 export const RETIRED_LOOK_KEYS: readonly string[];
 export const RETIRED_LOOK_PREFIXES: readonly string[];
 export const FOLDED_PICK_TYPES: readonly string[];
@@ -19,6 +19,10 @@ export interface FoldReport { skin: string; folded: Record<string, string>; over
 export interface FoldContext { skinOf: (id: string) => FoldSkin | null; skinIds?: readonly string[]; has?: (type: string, id: string) => boolean; designPick?: string; now?: string; by?: string }
 
 export function legacyPicks(look: AppLookDocument | null | undefined): Record<string, string>;
+export function legacyLookSettings(look: AppLookDocument | null | undefined): Record<string, unknown>;
+export const DESIGN_OVERRIDES_SETTING: 'axf.appearance.overrides';
+export function legacyThemesInForce(slots: Record<string, string> | null | undefined, settings: Record<string, unknown> | null | undefined, skinOf: (id: string) => FoldSkin | null, has?: (type: string, id: string) => boolean): Partial<Record<'style-theme' | 'color-theme', string>>;
+export function resolveLegacyLook(look: AppLookDocument, skinOf: (id: string) => FoldSkin | null, has?: (type: string, id: string) => boolean): { look: AppLookDocument; settings: Record<string, unknown> };
 export function lookMigrated(look: AppLookDocument | null | undefined): boolean;
 export function lookNeedsMigration(look: AppLookDocument | null | undefined): boolean;
 export function settingsNeedMigration(values: Record<string, unknown> | null | undefined): boolean;

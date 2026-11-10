@@ -32,8 +32,8 @@ export const LOOK_MIGRATION_FRAME = 'look-migration@1';
 export const LOOK_MIGRATION_VERSION = 1;
 /** Local backup of the retired settings (a JSON string: `{ $axf, version, at, settings }`). */
 export const LEGACY_LOOK_KEY = 'axf.legacy.look';
-/** Local one-run stamp (the version that ran). */
-export const LOOK_MIGRATED_KEY = 'axf.look.migrated';
+/** Local one-run stamp (the version that ran). Under `axf.skin.`: never an appearance setting (not pushed to the hub, not cleared by a document). */
+export const LOOK_MIGRATED_KEY = 'axf.skin.migrated';
 /** Retired local settings: read once by the fold, backed up, cleared, never written again. */
 export const RETIRED_LOOK_KEYS = ['axf.appearance.design', 'axf.appearance.package', 'axf.appearance.overrides', 'axf.appearance.interface', 'axf.look', 'axf.hub.appearance.follow'];
 /** Retired key prefixes (`axf.look.sliders`, …). The stamp and the backup are not retired keys. */
@@ -57,10 +57,70 @@ export function legacyPicks(look) {
   return out;
 }
 
+/** The retired look settings a document's parts still carry (`default.settings`, `own.settings`). */
+export function legacyLookSettings(look) {
+  const out = {};
+  for (const part of [look?.default, look?.own]) for (const [k, v] of Object.entries(part?.settings ?? {})) if (isRetiredLookKey(k) && !Object.hasOwn(out, k)) out[k] = v;
+  return out;
+}
+
 /** Has this version of the fold run on the document? */
 export const lookMigrated = (look) => (look?.migrated?.version ?? 0) >= LOOK_MIGRATION_VERSION;
-/** Does the document need the fold (not stamped, or a pick of a folded type is back that the stamp did not keep)? */
-export const lookNeedsMigration = (look) => !!look && (!lookMigrated(look) || Object.keys(legacyPicks(look)).some((t) => !(look.migrated?.kept ?? []).includes(t)));
+/** Does the document need the fold (not stamped, a retired setting in a part, or a pick of a folded type back that the stamp did not keep)? */
+export const lookNeedsMigration = (look) => !!look && (!lookMigrated(look) || Object.keys(legacyLookSettings(look)).length > 0 || Object.keys(legacyPicks(look)).some((t) => !(look.migrated?.kept ?? []).includes(t)));
+
+/** The retired precedence setting of design-package@1 (`{ "style-theme"?: id, "color-theme"?: id }`). */
+export const DESIGN_OVERRIDES_SETTING = 'axf.appearance.overrides';
+const PRECEDENCE_TYPES = ['style-theme', 'color-theme'];
+
+/**
+ * The style and colour theme the retired precedence rule showed (design-package@1, Nov 1 2026: a loaded package's
+ * style and colour win over the slots; a recorded override wins over the package) for `slots` + `settings`: what the
+ * screen drew before skins only, so the fold can write it into the document once. `skinOf` reads a package as a skin.
+ */
+export function legacyThemesInForce(slots, settings, skinOf, has = () => true) {
+  const out = {};
+  const pkgId = slots?.['design-package'];
+  const pkg = pkgId && ID.test(pkgId) ? skinOf(pkgId) : null;
+  if (!pkg) return out;
+  const o = isObj(settings?.[DESIGN_OVERRIDES_SETTING]) ? settings[DESIGN_OVERRIDES_SETTING] : {};
+  const ofPkg = { 'style-theme': pkg.styleTheme, 'color-theme': pkg.colorTheme };
+  for (const t of PRECEDENCE_TYPES) {
+    const over = typeof o[t] === 'string' && ID.test(o[t]) && has(t, o[t]) ? o[t] : '';
+    const own = typeof ofPkg[t] === 'string' && ofPkg[t] && has(t, ofPkg[t]) ? ofPkg[t] : '';
+    const v = over || own || slots[t];
+    if (v) out[t] = v;
+  }
+  return out;
+}
+
+/**
+ * Step one of the fold: make the document say what the screen showed. The retired precedence rule is resolved into the
+ * slot that carried the theme (the own pick when there was one, else the snapshot), and every retired look setting
+ * leaves both parts (returned, for the backup). Pure; the result composes to the same screen without the rule.
+ */
+export function resolveLegacyLook(look, skinOf, has = () => true) {
+  const def = { ...look.default, slots: { ...(look.default.slots ?? {}) } };
+  const own = { ...look.own, slots: { ...(look.own.slots ?? {}) } };
+  const effective = { ...def.slots, ...own.slots };
+  const settings = { ...(def.settings ?? {}), ...(own.settings ?? {}) };
+  for (const [t, v] of Object.entries(legacyThemesInForce(effective, settings, skinOf, has))) {
+    if (effective[t] === v) continue;
+    if (t in own.slots) own.slots[t] = v; else def.slots[t] = v;
+  }
+  const moved = {};
+  for (const part of [def, own]) {
+    if (part.settings) {
+      const s = { ...part.settings };
+      for (const k of Object.keys(s)) if (isRetiredLookKey(k)) { if (!Object.hasOwn(moved, k)) moved[k] = s[k]; delete s[k]; }
+      part.settings = s;
+    }
+  }
+  // a part that had no slots keeps none (the copy above added an empty map)
+  if (!look.default.slots && !Object.keys(def.slots).length) delete def.slots;
+  if (!look.own.slots && !Object.keys(own.slots).length) delete own.slots;
+  return { look: { ...look, default: def, own }, settings: moved };
+}
 /** Do a profile's saved settings need the fold (not stamped, or a retired key is back)? */
 export function settingsNeedMigration(values) {
   const v = values ?? {};
@@ -95,11 +155,15 @@ export function migrateLookSettings(values, now) {
   return { changed: true, set, clear: retired, designPick, backup };
 }
 
-/** Would skin `skin` (its slots and extras) draw the same screen as the look does today, once the differing own picks are overrides? */
-function adoptable(look, skin, has) {
+/**
+ * May skin `skin` carry this look? Its extras (spacing, hidden chrome, look settings) must not change the screen: there
+ * is no override for them. `strict` (the match search: a skin nobody named) also refuses a skin that would change a
+ * snapshot value; a package the picks named is adopted with those values as overrides instead.
+ */
+function adoptable(look, skin, has, strict) {
   const effective = { ...look.default.slots, ...look.own.slots };
   const ownSlots = look.own.slots ?? {};
-  for (const [t, id] of Object.entries(skinSlotMap(skin))) {
+  if (strict) for (const [t, id] of Object.entries(skinSlotMap(skin))) {
     if (!has(t, id)) continue; // an id this app lacks keeps the app's default: no change on screen
     if (effective[t] === id || t in ownSlots) continue; // the skin's, or an explicit pick that becomes an override
     if (effective[t] === undefined) continue; // nothing picked there: the skin's asset is the first pick
@@ -122,38 +186,51 @@ function adoptable(look, skin, has) {
  * `skin` the skin now in force, `folded` the picks moved, `overrides` the picks kept as skin overrides, `kept` the picks
  * left as the app's own, `reason` one of nothing | skin-on | package | match | no-skin.
  */
-export function foldLegacyPicks(look, ctx) {
+export function foldLegacyPicks(input, ctx) {
   const skinOf = ctx?.skinOf ?? (() => null);
   const has = ctx?.has ?? (() => true);
   const now = ctx?.now ?? '';
+  const report = { skin: input.skin.use ? input.skin.id : '', folded: {}, overrides: {}, kept: {}, reason: 'nothing' };
+  // already stamped at this version and nothing new to fold (kept picks included): the document is left exactly as it is
+  if (!lookNeedsMigration(input)) return { look: input, ...report, kept: legacyPicks(input) };
+  const resolved = resolveLegacyLook(input, skinOf, has);
+  const look = resolved.look;
   const picks = legacyPicks(look);
   const stamp = { version: LOOK_MIGRATION_VERSION, at: now, by: String(ctx?.by ?? '') };
   const legacy = (own) => {
-    const prev = look.legacy;
+    const prev = input.legacy;
     const slots = { ...(prev?.own?.slots ?? {}) };
     for (const [t, id] of Object.entries(own)) if (!Object.hasOwn(slots, t)) slots[t] = id;
-    return { ...(prev ?? {}), at: prev?.at || now, own: normalizeLookPart({ ...(prev?.own ?? {}), slots }) };
+    const settings = { ...(prev?.settings ?? {}) };
+    for (const [k, v] of Object.entries(resolved.settings)) if (!Object.hasOwn(settings, k)) settings[k] = v;
+    const out = { ...(prev ?? {}), at: prev?.at || now };
+    if (Object.keys(slots).length) out.own = normalizeLookPart({ ...(prev?.own ?? {}), slots });
+    if (Object.keys(settings).length) out.settings = settings;
+    return out;
   };
-  const report = { skin: look.skin.use ? look.skin.id : '', folded: {}, overrides: {}, kept: {}, reason: 'nothing' };
-  // already stamped at this version and nothing new to fold (kept picks included): the document is left exactly as it is
-  if (!lookNeedsMigration(look)) return { look, ...report, kept: picks };
-  if (!Object.keys(picks).length) return { look: { ...look, migrated: stamp }, ...report };
+  const withLegacy = (doc) => (Object.keys(resolved.settings).length || input.legacy ? { ...doc, legacy: legacy({}) } : doc);
+  if (!Object.keys(picks).length) return { look: withLegacy({ ...look, migrated: stamp }), ...report };
   /**
-   * Move the folded picks under skin `id` (its data `skin`): a pick of a type the skin draws is inert while the skin is
-   * on (dropped) unless `keepDiffering` says a differing pick becomes an override (adopting a skin must not change the
-   * screen); a section or scale pick of a type the skin leaves alone becomes an override too (it still shows, and it
-   * now reads through the skin); a bundle pick is a label only (its members are separate slots), so it is dropped.
+   * Move the folded picks under skin `id` (its data `skin`). `adopt` (the skin was off and is being turned on): every
+   * slot the skin draws differently from what the screen shows today becomes an override, so nothing changes on screen.
+   * Skin already on: a pick of a type the skin draws was inert and is dropped. In both cases a section or scale pick
+   * of a type the skin leaves alone becomes an override (it still shows, and now reads through the skin), and a bundle
+   * pick is a label only (its members are separate slots), so it is dropped.
    */
-  const fold = (id, skin, keepDiffering) => {
+  const fold = (id, skin, adopt) => {
     const inSkin = skinSlotMap(skin);
     const overrides = id === look.skin.id ? { ...look.skin.overrides } : {};
     const ownSlots = { ...(look.own.slots ?? {}) };
+    const effective = { ...(look.default.slots ?? {}), ...ownSlots };
     const moved = {};
+    if (adopt) for (const [t, v] of Object.entries(inSkin)) {
+      if (!has(t, v)) continue; // the skin's asset is not in this app: the app's default stays either way
+      const cur = effective[t];
+      if (cur !== undefined && cur !== v && has(t, cur)) { overrides[t] = cur; if (isFoldedPickType(t)) moved[t] = cur; }
+    }
     for (const [t, pick] of Object.entries(ownSlots)) {
-      if (t in inSkin) {
-        if (keepDiffering && pick !== inSkin[t] && has(t, pick)) { overrides[t] = pick; if (isFoldedPickType(t)) moved[t] = pick; }
-        delete ownSlots[t];
-      } else if (isFoldedPickType(t)) {
+      if (t in inSkin) delete ownSlots[t]; // the skin draws it (kept above as an override when it differed)
+      else if (isFoldedPickType(t)) {
         if (!RETIRED_PACKAGE_TYPES.includes(t) && has(t, pick)) { overrides[t] = pick; moved[t] = pick; }
         delete ownSlots[t];
       }
@@ -162,7 +239,7 @@ export function foldLegacyPicks(look, ctx) {
   };
   if (look.skin.use) {
     const skin = skinOf(look.skin.id);
-    if (!skin) return { look: { ...look, migrated: { ...stamp, kept: Object.keys(picks).sort() } }, ...report, kept: picks, reason: 'no-skin' }; // unknown skin reads as off: nothing to fold onto
+    if (!skin) return { look: withLegacy({ ...look, migrated: { ...stamp, kept: Object.keys(picks).sort() } }), ...report, kept: picks, reason: 'no-skin' }; // unknown skin reads as off: nothing to fold onto
     const f = fold(look.skin.id, skin, false);
     const next = { ...look, own: { ...look.own, slots: f.ownSlots }, skin: { ...look.skin, overrides: f.overrides }, legacy: legacy(picks), migrated: stamp };
     return { look: next, skin: look.skin.id, folded: picks, overrides: f.moved, kept: {}, reason: 'skin-on' };
@@ -170,12 +247,12 @@ export function foldLegacyPicks(look, ctx) {
   const candidates = [picks['design-package'], picks['appearance-package'], ctx?.designPick].filter((id) => typeof id === 'string' && ID.test(id));
   let chosen = '';
   let reason = 'no-skin';
-  for (const id of candidates) { const s = skinOf(id); if (s && adoptable(look, s, has)) { chosen = id; reason = 'package'; break; } }
-  if (!chosen) for (const id of ctx?.skinIds ?? []) { const s = skinOf(id); if (s && adoptable(look, s, has)) { chosen = id; reason = 'match'; break; } }
+  for (const id of candidates) { const s = skinOf(id); if (s && adoptable(look, s, has, false)) { chosen = id; reason = 'package'; break; } }
+  if (!chosen) for (const id of ctx?.skinIds ?? []) { const s = skinOf(id); if (s && adoptable(look, s, has, true)) { chosen = id; reason = 'match'; break; } }
   if (!chosen) {
     // nothing draws this screen but the app's own picks: they stay (the pickers are gone; a skin pick replaces them);
     // the stamp names them, so the next load does not try again, while a new pick of another type still folds
-    return { look: { ...look, migrated: { ...stamp, kept: Object.keys(picks).sort() } }, ...report, kept: picks, reason };
+    return { look: withLegacy({ ...look, migrated: { ...stamp, kept: Object.keys(picks).sort() } }), ...report, kept: picks, reason };
   }
   const f = fold(chosen, skinOf(chosen), true);
   const next = { ...look, own: { ...look.own, slots: f.ownSlots }, skin: { ...look.skin, use: true, id: chosen, overrides: f.overrides }, legacy: legacy(picks), migrated: stamp };

@@ -31,7 +31,7 @@ const TAB_DIALOG = 'axf.settings.tab';
 
 /** Standard tabs, in order. Ids are stable: libraries target them by id. */
 export const SETTINGS_TABS = {
-  appearance: { id: 'appearance', label: 'Appearance', icon: 'palette', order: 10, description: 'Pick a skin, or a style, colour and layout theme. Changes stay in this app.' },
+  appearance: { id: 'appearance', label: 'Appearance', icon: 'palette', order: 10, description: 'Pick a skin and its colour theme. Changes stay in this app.' },
   account: { id: 'account', label: 'Account & security', icon: 'shield', order: 20, description: 'Who you are acting as, and how this app is protected.' },
   connections: { id: 'connections', label: 'Connections', icon: 'cloud', order: 30, description: 'Servers and services this app talks to.' },
   plugins: { id: 'plugins', label: 'Plugins', icon: 'package', order: 40, description: 'Libraries and plugins installed in this app.' },
@@ -565,10 +565,12 @@ const SKIN_DIALOG = 'axf.settings.skin';
 const LOCK_PANEL_ID = 'axf.appearance.lock';
 
 /**
- * Settings → Appearance is the Theme manager in every app (Nov 4 2026, Brett): one shared panel, top to bottom: Skin
- * (picker + the Use skin switch, off = the app's own look), Style / Colour / Layout theme, Visible parts, Navigation
- * menu, Restore to default. With a skin on, a pick overrides just that part (a dot + Back to skin); with no skin, it
- * sets this app's own look. Every change stays in this app (engines/skin.ts).
+ * Settings → Appearance is the skin panel in every app (Nov 4 2026, Brett; skins only since Nov 10 2026: "remove all
+ * the styling and theme and layout stuff … the new thing's going to override it"): one shared panel, top to bottom: Skin
+ * (picker + the Use skin switch, off = the app's own look), Colour theme (the one section still swapped inside a skin:
+ * a pick overrides the skin's colours, a dot + Back to skin), Visible parts, Navigation menu, Where the skin applies,
+ * Restore to default. Style, layout and behaviour themes, spacing and the scale assets are the skin's and have no
+ * picker here. Every change stays in this app (engines/skin.ts, engines/look-migration.mjs).
  */
 export function AppearancePanel() {
   const rt = useRuntime();
@@ -612,9 +614,7 @@ export function AppearancePanel() {
       </div>
       <Switch label="Use skin" hint={skinOn ? 'Off goes back to this app\'s own look and keeps your picks.' : 'On applies the last skin you picked.'} checked={skinOn} disabled={locked || !skins.length} onChange={(on) => { rt.useSkin(on, skinId || undefined); }} />
       <FollowHubSwitch locked={locked} />
-      {row('Style theme', 'style-theme')}
       {row('Colour theme', 'color-theme')}
-      {row('Layout theme', 'layout')}
       <p className="fx-eyebrow">Visible parts</p>
       {hideableTypes().map((t) => (
         <Switch key={t} label={assetTypeSpecs[t as AssetType]?.label ?? t} checked={!rt.slotHidden(t as AssetType)} disabled={locked} onChange={(on) => rt.setSlotHidden(t as AssetType, !on)} />
@@ -1010,7 +1010,7 @@ export const library: AxfWebLibrary = {
   settingsPanels: [
     { id: 'axf.account.role', tab: 'account', title: 'Role', icon: 'shield', order: 10, render: () => <RolePanel /> },
     { id: 'axf.account.profile', tab: 'account', title: 'Access policy', icon: 'user', order: 20, render: () => <AccessPanel /> },
-    { id: DESIGN_PANEL_ID, tab: 'appearance', title: 'Theme manager', icon: 'palette', order: 0, render: () => <AppearancePanel /> },
+    { id: DESIGN_PANEL_ID, tab: 'appearance', title: 'Skin', icon: 'palette', order: 0, render: () => <AppearancePanel /> },
     { id: 'axf.plugins.libraries', tab: 'plugins', title: 'Installed plugins and libraries', icon: 'box', order: 50, render: () => <LibrariesPanel /> },
     { id: 'axf.banners', tab: 'banners', title: 'Every banner', icon: 'bell', order: 10, render: () => <BannerSettingsPanel /> },
     { id: 'axf.about', tab: 'about', title: 'About', icon: 'info', order: 10, render: () => <AboutPanel /> },

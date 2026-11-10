@@ -2048,10 +2048,15 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
   const ctx = { skinOf, skinIds: Object.keys(skins), has: () => true, now: '2026-11-10T00:00:00Z', by: 'app' };
   const snapshot = { slots: { layout: 'focus-top', 'color-theme': 'arctic-daylight', 'style-theme': 'hub', 'behavior-theme': 'standard', 'design-package': 'hub-default', button: 'rounded-solid', toolbar: 'standard-icons', typography: 'compact' }, spacing: 'tight', hidden: { toolbar: true } };
   const base = newAppLook('app', snapshot);
-  const own = (slots: Record<string, string>, more: Record<string, unknown> = {}) => ({ ...base, own: { slots, ...more } });
+  // an own pick of a style or colour theme always came with the recorded precedence override (the old picker wrote both)
+  const own = (slots: Record<string, string>, more: Record<string, unknown> = {}) => {
+    const over = Object.fromEntries(['style-theme', 'color-theme'].filter((t) => slots[t]).map((t) => [t, slots[t]]));
+    const settings = { ...(Object.keys(over).length ? { 'axf.appearance.overrides': over } : {}), ...((more.settings as Record<string, unknown> | undefined) ?? {}) };
+    return { ...base, own: { slots, ...more, ...(Object.keys(settings).length ? { settings } : {}) } };
+  };
   const cases: Record<string, { look: AppLookDocument; ctx?: Record<string, unknown> }> = {
     nothing: { look: base },
-    // a skin in force: the picks under it were inert, except a section the skin leaves alone (behaviour) which becomes an override
+    // a skin in force: the picks under it were inert, except a section the skin leaves alone (behaviour) which becomes an override; a style package is not folded yet
     skinOn: { look: { ...own({ 'color-theme': 'coral-studio', 'behavior-theme': 'brisk', 'style-package': 'amber-signature' }), skin: { use: true, inherit: false, id: 'windows', overrides: { toolbar: 'labeled-actions' } } } },
     // the old picker applied a package (its themes and extras landed in own), then a colour theme was picked over it
     package: { look: own({ 'design-package': 'hub-default', layout: 'classic-ide', 'color-theme': 'coral-studio', 'style-theme': 'hub', 'behavior-theme': 'standard', button: 'rounded-solid', toolbar: 'standard-icons', typography: 'compact' }, { spacing: 'tight', hidden: { toolbar: true } }) },
@@ -2065,6 +2070,11 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     unknownSkinOn: { look: { ...own({ 'color-theme': 'coral-studio' }), skin: { use: true, inherit: false, id: 'nope', overrides: {} } } },
     // a package the app lacks and a scale pick: the scale pick rides the matched skin as an override
     scale: { look: own({ 'design-package': 'gone', 'color-theme': 'aurora-night', density: 'spacious' }) },
+    // the retired precedence rule: the snapshot names Hub Default and a colour slot it did not show (the package's
+    // colour won, a recorded override kept the style); the fold writes what the screen showed and moves the setting
+    precedence: { look: newAppLook('app', { ...snapshot, settings: { 'axf.appearance.overrides': { 'style-theme': 'hub' }, 'axf.banners.group': 'a' } }) },
+    // the same with the pick in own and the override there too: the own pick takes the shown value
+    precedenceOwn: { look: { ...base, own: { slots: { 'design-package': 'hub-default', 'color-theme': 'coral-studio' }, settings: { 'axf.appearance.overrides': { 'color-theme': 'coral-studio' }, 'axf.appearance.design': 'hub-default' } } } },
   };
   const fold = Object.fromEntries(Object.entries(cases).map(([name, c]) => {
     const first = foldLegacyPicks(c.look, { ...ctx, ...(c.ctx ?? {}) });
@@ -2081,7 +2091,7 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
   const combined = migrateLook(cases.designPick!.look, { 'axf.appearance.design': 'aurora', 'axf.look': 1 }, ctx);
   write('look-migration.json', {
     contract: 'look-migration@1', version: 1,
-    keys: { legacy: 'axf.legacy.look', migrated: 'axf.look.migrated', retired: ['axf.appearance.design', 'axf.appearance.package', 'axf.appearance.overrides', 'axf.appearance.interface', 'axf.look', 'axf.hub.appearance.follow'], retiredPrefixes: ['axf.look.'] },
+    keys: { legacy: 'axf.legacy.look', migrated: 'axf.skin.migrated', retired: ['axf.appearance.design', 'axf.appearance.package', 'axf.appearance.overrides', 'axf.appearance.interface', 'axf.look', 'axf.hub.appearance.follow'], retiredPrefixes: ['axf.look.'] },
     skins, snapshot, fold,
     settings: {
       values, first: s1, needsBefore: settingsNeedMigration(values), applied, again: s2, needsAfter: settingsNeedMigration(applied),

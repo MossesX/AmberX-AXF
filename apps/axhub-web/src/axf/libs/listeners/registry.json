@@ -1,0 +1,27 @@
+{
+  "$axf": "listener-registry@1",
+  "about": "Every background listener AmberX runs, its policy defaults and the microphone priority (listener@1). Data, so core.ts (web), the Dev Console's amberx-listeners plugin (Node core.mjs + Python server) and the docs read one list. The Android twin keeps the ids it uses in ListenerRules.java and checks the defaults against cases.json.",
+  "defaults": { "on": true, "pauseOnCall": true, "pauseForOtherApps": true, "sound": false, "retries": 6, "backoffMs": 1000, "maxBackoffMs": 30000, "cooldownMs": 60000 },
+  "retryChoices": [
+    { "value": 0, "label": "Never restart" },
+    { "value": 3, "label": "3 tries" },
+    { "value": 6, "label": "6 tries" },
+    { "value": 10, "label": "10 tries" },
+    { "value": -1, "label": "Keep trying (backs off)" }
+  ],
+  "micPriority": ["talk", "speak", "voice-command", "dictation", "notes", "agent-voice", "oneshot", "handsfree", "browser-handsfree", "recorder-mic"],
+  "listeners": [
+    { "id": "handsfree", "label": "Hands-free (wake word)", "kind": "mic", "side": "native", "about": "Listens for the wake phrases (or everything, when always armed) on screen and with the screen off." },
+    { "id": "oneshot", "label": "Command after the wake word", "kind": "mic", "side": "native", "about": "One Google utterance after a wake phrase, then back to the silent wake listener.", "without": ["on"] },
+    { "id": "speak", "label": "Speak button", "kind": "mic", "side": "native", "about": "One utterance when you tap Speak or push to talk." },
+    { "id": "talk", "label": "Gizmo talk mode", "kind": "mic", "side": "native", "about": "Hands-free conversation with Gizmo that keeps going with the screen off or AmberX in the background (a notification with Stop)." },
+    { "id": "recorder-mic", "label": "Recorder microphone", "kind": "mic", "side": "native", "about": "The Audio Output Recorder's opt-in mic track.", "without": ["retries", "sound"] },
+    { "id": "monitor", "label": "axHub watch (approvals)", "kind": "poll", "side": "native", "about": "Reads the approvals feed with the screen off and raises alerts.", "without": ["pauseOnCall", "pauseForOtherApps", "sound"] },
+    { "id": "veto-alarm", "label": "Veto alarm", "kind": "sound", "side": "native", "about": "Rings for a held command until you decide it.", "without": ["pauseOnCall", "pauseForOtherApps", "retries"], "defaults": { "sound": true } },
+    { "id": "browser-handsfree", "label": "Hands-free in this browser", "kind": "mic", "side": "page", "about": "Web Speech recognition while an AmberX tab is open (the phone app listens natively instead)." },
+    { "id": "dictation", "label": "Dictation", "kind": "mic", "side": "page", "about": "The dictation plugin while it records.", "without": ["retries"] },
+    { "id": "voice-command", "label": "Speak a command (page)", "kind": "mic", "side": "page", "about": "The voice plugin waiting for the next command in a browser.", "without": ["retries"] },
+    { "id": "agent-voice", "label": "Assistant microphone", "kind": "mic", "side": "page", "about": "The agent voice console plugin loaded into AmberX.", "without": ["retries"] },
+    { "id": "notes", "label": "Voice notes", "kind": "mic", "side": "page", "about": "Voice notes while one records.", "without": ["retries"] }
+  ]
+}

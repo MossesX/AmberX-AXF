@@ -28,8 +28,12 @@ export const SKIN_SECTIONS = { colors: 'color-theme', style: 'style-theme', layo
 export const SKIN_SECTION_FIELDS = { colors: 'colorTheme', style: 'styleTheme', layout: 'layoutTheme', behavior: 'behaviorTheme' };
 /** The one section a user still swaps inside a skin (the theme switch, "Next colour theme"): the skin and its colour theme. */
 export const SKIN_SWAPPABLE_SECTION = 'color-theme';
-/** The retired bundle types a skin replaced: a slot or setting naming one reads as the skin of the same id. */
-export const RETIRED_PACKAGE_TYPES = ['design-package', 'style-package', 'appearance-package'];
+/**
+ * The retired bundle types a skin replaced: a slot or setting naming one reads as the skin of the same id. A style
+ * package (one matched set of controls) is not here yet: it becomes a skin when skin@2 lands (PR #430); until then it
+ * stays a swappable set of control slots.
+ */
+export const RETIRED_PACKAGE_TYPES = ['design-package', 'appearance-package'];
 /** The scale picks (density / sizing / typography): the skin's `assets` name them; they are never picked on their own. */
 export const SKIN_SCALE_TYPES = ['typography', 'density', 'sizing'];
 export const isSkinSectionType = (type) => Object.values(SKIN_SECTIONS).includes(type);

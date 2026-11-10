@@ -220,20 +220,35 @@ override it." The skin is the only thing that applies look and layout. Engine: `
    `RETIRED_LOOK_PREFIXES`). The design-package precedence rule above is history: the skin composes its sections. The
    control@1 token overrides (`axf.tokens.*`) stay: they are skin-level hand tuning, the API's one path to a value.
 3. **Retired picks in a look document**: `own.slots` of a section type, a bundle type (`design-package`,
-   `style-package`, `appearance-package`) or a scale type (`FOLDED_PICK_TYPES`).
+   `appearance-package`) or a scale type (`FOLDED_PICK_TYPES`). A style package (one matched set of controls) stays a
+   swappable set until skin@2 (PR #430) makes every style package a skin.
+   **Step one of the fold** resolves the retired precedence rule into the document (`resolveLegacyLook`,
+   `legacyThemesInForce`): the style and colour the screen showed (override over package over slot) are written into
+   the slot that carried them, and every retired setting leaves `default.settings` / `own.settings` into
+   `legacy.settings`, so the document composes to the same screen without the rule.
 4. **The fold (`migrateLook`), once per profile on load**, idempotent, look-preserving, nothing lost:
    - with a skin on: a pick of a section the skin draws was inert and is dropped; a section or scale pick the skin
      leaves alone becomes an override; a bundle pick is a label (its members are slots of their own) and is dropped;
    - with no skin: the package the picks or the local `axf.appearance.design` note name becomes the skin (`package`),
-     else the first skin that draws the same screen (`match`); every pick that differs from that skin becomes a
-     skin-level override, so nothing changes on screen; a skin that would change a snapshot value, the spacing, a hidden
-     flag or a look setting is never adopted; when none fits the picks stay the app's own (`kept`, reported) and only
-     a skin pick replaces them from then on;
+     with every slot it would draw differently kept as a skin-level override; else the first skin that draws the very
+     same screen (`match`, no snapshot value changed); a skin whose extras would change the spacing, a hidden flag or a
+     look setting is never adopted; when none fits the picks stay the app's own (`kept`, reported) and only a skin
+     pick replaces them from then on. Nothing changes on screen in any case;
    - the local settings are backed up into `axf.legacy.look` (`look-migration@1`: first value kept, later runs add
      keys) and cleared; the document gets `legacy.own` (the moved picks) and `migrated { version, at, by }`; the
-     profile gets `axf.look.migrated`. `normalizeAppLook` keeps both fields through every writer (runtime, skins CLI).
+     profile gets `axf.skin.migrated`. `normalizeAppLook` keeps both fields through every writer (runtime, skins CLI).
 5. **Today's hub documents** (console on `enterprise-day` with a layout override, axHub with the skin off, Molly and
    AmberX untouched) fold to nothing but the stamp (pinned in the check).
+6. **The runtime** (`AxfRuntime`, every app with a look document, which is every real app): `ensureLook` runs the
+   local half once per runtime and the document half when a document arrives, saving the folded document back
+   (`migrateLocalLook`, `migrateLookDocument`); `swap` refuses a folded type other than `color-theme` with the skin
+   hint (`swap:design-package:<id>` is `skin.use:<id>`); `applyDesignPackage` is Use skin on with that id;
+   `appliedDesignPackage` is the skin in force; `designOverrides` is empty and `axf.appearance.overrides` is never
+   written; a roll never moves a part of the skin; `applyAppearance` and `skinScoped` take the composed skin's
+   sections as final (no package precedence pass). Settings → Appearance keeps Skin, Colour theme, Visible parts,
+   Navigation menu, Where the skin applies and Restore; the status bar shows the skin and its colour theme. An older
+   source without a look document (the fixture-pinned legacy path, `check-hub-look`, `check-appearance`) keeps the
+   design-package behaviour until those checks move to the skin model (s10 of the build).
 
 ## When axHub is down
 

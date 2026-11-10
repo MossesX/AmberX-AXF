@@ -3,7 +3,7 @@
   "version": 1,
   "keys": {
     "legacy": "axf.legacy.look",
-    "migrated": "axf.look.migrated",
+    "migrated": "axf.skin.migrated",
     "retired": [
       "axf.appearance.design",
       "axf.appearance.package",
@@ -107,7 +107,7 @@
         "default": {
           "slots": {
             "layout": "focus-top",
-            "color-theme": "arctic-daylight",
+            "color-theme": "hub-night",
             "style-theme": "hub",
             "behavior-theme": "standard",
             "design-package": "hub-default",
@@ -146,7 +146,7 @@
         "default": {
           "slots": {
             "layout": "focus-top",
-            "color-theme": "arctic-daylight",
+            "color-theme": "hub-night",
             "style-theme": "hub",
             "behavior-theme": "standard",
             "design-package": "hub-default",
@@ -201,6 +201,11 @@
             "color-theme": "coral-studio",
             "behavior-theme": "brisk",
             "style-package": "amber-signature"
+          },
+          "settings": {
+            "axf.appearance.overrides": {
+              "color-theme": "coral-studio"
+            }
           }
         },
         "skin": {
@@ -216,8 +221,7 @@
       },
       "picks": {
         "color-theme": "coral-studio",
-        "behavior-theme": "brisk",
-        "style-package": "amber-signature"
+        "behavior-theme": "brisk"
       },
       "needs": true,
       "look": {
@@ -240,7 +244,10 @@
           }
         },
         "own": {
-          "slots": {}
+          "slots": {
+            "style-package": "amber-signature"
+          },
+          "settings": {}
         },
         "skin": {
           "use": true,
@@ -258,8 +265,12 @@
           "own": {
             "slots": {
               "color-theme": "coral-studio",
-              "behavior-theme": "brisk",
-              "style-package": "amber-signature"
+              "behavior-theme": "brisk"
+            }
+          },
+          "settings": {
+            "axf.appearance.overrides": {
+              "color-theme": "coral-studio"
             }
           }
         },
@@ -272,8 +283,7 @@
       "skin": "windows",
       "folded": {
         "color-theme": "coral-studio",
-        "behavior-theme": "brisk",
-        "style-package": "amber-signature"
+        "behavior-theme": "brisk"
       },
       "overrides": {
         "behavior-theme": "brisk"
@@ -300,7 +310,10 @@
           }
         },
         "own": {
-          "slots": {}
+          "slots": {
+            "style-package": "amber-signature"
+          },
+          "settings": {}
         },
         "skin": {
           "use": true,
@@ -318,8 +331,12 @@
           "own": {
             "slots": {
               "color-theme": "coral-studio",
-              "behavior-theme": "brisk",
-              "style-package": "amber-signature"
+              "behavior-theme": "brisk"
+            }
+          },
+          "settings": {
+            "axf.appearance.overrides": {
+              "color-theme": "coral-studio"
             }
           }
         },
@@ -365,6 +382,12 @@
           "spacing": "tight",
           "hidden": {
             "toolbar": true
+          },
+          "settings": {
+            "axf.appearance.overrides": {
+              "style-theme": "hub",
+              "color-theme": "coral-studio"
+            }
           }
         },
         "skin": {
@@ -409,7 +432,8 @@
           "spacing": "tight",
           "hidden": {
             "toolbar": true
-          }
+          },
+          "settings": {}
         },
         "skin": {
           "use": true,
@@ -431,6 +455,12 @@
               "style-theme": "hub",
               "behavior-theme": "standard",
               "typography": "compact"
+            }
+          },
+          "settings": {
+            "axf.appearance.overrides": {
+              "style-theme": "hub",
+              "color-theme": "coral-studio"
             }
           }
         },
@@ -478,7 +508,8 @@
           "spacing": "tight",
           "hidden": {
             "toolbar": true
-          }
+          },
+          "settings": {}
         },
         "skin": {
           "use": true,
@@ -500,6 +531,12 @@
               "style-theme": "hub",
               "behavior-theme": "standard",
               "typography": "compact"
+            }
+          },
+          "settings": {
+            "axf.appearance.overrides": {
+              "style-theme": "hub",
+              "color-theme": "coral-studio"
             }
           }
         },
@@ -534,6 +571,11 @@
         "own": {
           "slots": {
             "color-theme": "coral-studio"
+          },
+          "settings": {
+            "axf.appearance.overrides": {
+              "color-theme": "coral-studio"
+            }
           }
         },
         "skin": {
@@ -569,7 +611,8 @@
           }
         },
         "own": {
-          "slots": {}
+          "slots": {},
+          "settings": {}
         },
         "skin": {
           "use": true,
@@ -585,6 +628,11 @@
           "at": "2026-11-10T00:00:00Z",
           "own": {
             "slots": {
+              "color-theme": "coral-studio"
+            }
+          },
+          "settings": {
+            "axf.appearance.overrides": {
               "color-theme": "coral-studio"
             }
           }
@@ -624,7 +672,8 @@
           }
         },
         "own": {
-          "slots": {}
+          "slots": {},
+          "settings": {}
         },
         "skin": {
           "use": true,
@@ -640,6 +689,11 @@
           "at": "2026-11-10T00:00:00Z",
           "own": {
             "slots": {
+              "color-theme": "coral-studio"
+            }
+          },
+          "settings": {
+            "axf.appearance.overrides": {
               "color-theme": "coral-studio"
             }
           }
@@ -675,6 +729,11 @@
         "own": {
           "slots": {
             "color-theme": "aurora-night"
+          },
+          "settings": {
+            "axf.appearance.overrides": {
+              "color-theme": "aurora-night"
+            }
           }
         },
         "skin": {
@@ -710,7 +769,8 @@
           }
         },
         "own": {
-          "slots": {}
+          "slots": {},
+          "settings": {}
         },
         "skin": {
           "use": true,
@@ -724,6 +784,11 @@
           "at": "2026-11-10T00:00:00Z",
           "own": {
             "slots": {
+              "color-theme": "aurora-night"
+            }
+          },
+          "settings": {
+            "axf.appearance.overrides": {
               "color-theme": "aurora-night"
             }
           }
@@ -761,7 +826,8 @@
           }
         },
         "own": {
-          "slots": {}
+          "slots": {},
+          "settings": {}
         },
         "skin": {
           "use": true,
@@ -775,6 +841,11 @@
           "at": "2026-11-10T00:00:00Z",
           "own": {
             "slots": {
+              "color-theme": "aurora-night"
+            }
+          },
+          "settings": {
+            "axf.appearance.overrides": {
               "color-theme": "aurora-night"
             }
           }
@@ -810,6 +881,11 @@
         "own": {
           "slots": {
             "style-theme": "glass-orbit"
+          },
+          "settings": {
+            "axf.appearance.overrides": {
+              "style-theme": "glass-orbit"
+            }
           }
         },
         "skin": {
@@ -831,7 +907,7 @@
         "default": {
           "slots": {
             "layout": "focus-top",
-            "color-theme": "arctic-daylight",
+            "color-theme": "hub-night",
             "style-theme": "hub",
             "behavior-theme": "standard",
             "design-package": "hub-default",
@@ -847,7 +923,8 @@
         "own": {
           "slots": {
             "style-theme": "glass-orbit"
-          }
+          },
+          "settings": {}
         },
         "skin": {
           "use": false,
@@ -864,6 +941,14 @@
           "kept": [
             "style-theme"
           ]
+        },
+        "legacy": {
+          "at": "2026-11-10T00:00:00Z",
+          "settings": {
+            "axf.appearance.overrides": {
+              "style-theme": "glass-orbit"
+            }
+          }
         }
       },
       "skin": "",
@@ -879,7 +964,7 @@
         "default": {
           "slots": {
             "layout": "focus-top",
-            "color-theme": "arctic-daylight",
+            "color-theme": "hub-night",
             "style-theme": "hub",
             "behavior-theme": "standard",
             "design-package": "hub-default",
@@ -895,7 +980,8 @@
         "own": {
           "slots": {
             "style-theme": "glass-orbit"
-          }
+          },
+          "settings": {}
         },
         "skin": {
           "use": false,
@@ -912,6 +998,14 @@
           "kept": [
             "style-theme"
           ]
+        },
+        "legacy": {
+          "at": "2026-11-10T00:00:00Z",
+          "settings": {
+            "axf.appearance.overrides": {
+              "style-theme": "glass-orbit"
+            }
+          }
         }
       },
       "needsAfter": false
@@ -939,6 +1033,11 @@
         "own": {
           "slots": {
             "color-theme": "coral-studio"
+          },
+          "settings": {
+            "axf.appearance.overrides": {
+              "color-theme": "coral-studio"
+            }
           }
         },
         "skin": {
@@ -976,7 +1075,8 @@
         "own": {
           "slots": {
             "color-theme": "coral-studio"
-          }
+          },
+          "settings": {}
         },
         "skin": {
           "use": true,
@@ -993,6 +1093,14 @@
           "kept": [
             "color-theme"
           ]
+        },
+        "legacy": {
+          "at": "2026-11-10T00:00:00Z",
+          "settings": {
+            "axf.appearance.overrides": {
+              "color-theme": "coral-studio"
+            }
+          }
         }
       },
       "skin": "nope",
@@ -1024,7 +1132,8 @@
         "own": {
           "slots": {
             "color-theme": "coral-studio"
-          }
+          },
+          "settings": {}
         },
         "skin": {
           "use": true,
@@ -1041,6 +1150,14 @@
           "kept": [
             "color-theme"
           ]
+        },
+        "legacy": {
+          "at": "2026-11-10T00:00:00Z",
+          "settings": {
+            "axf.appearance.overrides": {
+              "color-theme": "coral-studio"
+            }
+          }
         }
       },
       "needsAfter": false
@@ -1070,6 +1187,11 @@
             "design-package": "gone",
             "color-theme": "aurora-night",
             "density": "spacious"
+          },
+          "settings": {
+            "axf.appearance.overrides": {
+              "color-theme": "aurora-night"
+            }
           }
         },
         "skin": {
@@ -1107,7 +1229,8 @@
           }
         },
         "own": {
-          "slots": {}
+          "slots": {},
+          "settings": {}
         },
         "skin": {
           "use": true,
@@ -1126,6 +1249,11 @@
               "design-package": "gone",
               "color-theme": "aurora-night",
               "density": "spacious"
+            }
+          },
+          "settings": {
+            "axf.appearance.overrides": {
+              "color-theme": "aurora-night"
             }
           }
         },
@@ -1166,7 +1294,8 @@
           }
         },
         "own": {
-          "slots": {}
+          "slots": {},
+          "settings": {}
         },
         "skin": {
           "use": true,
@@ -1186,6 +1315,315 @@
               "color-theme": "aurora-night",
               "density": "spacious"
             }
+          },
+          "settings": {
+            "axf.appearance.overrides": {
+              "color-theme": "aurora-night"
+            }
+          }
+        },
+        "migrated": {
+          "version": 1,
+          "at": "2026-11-10T00:00:00Z",
+          "by": "app"
+        }
+      },
+      "needsAfter": false
+    },
+    "precedence": {
+      "before": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.appearance.overrides": {
+              "style-theme": "hub"
+            },
+            "axf.banners.group": "a"
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": false,
+          "inherit": false,
+          "id": "",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "picks": {},
+      "needs": true,
+      "look": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "hub-night",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a"
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": false,
+          "inherit": false,
+          "id": "",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null,
+        "migrated": {
+          "version": 1,
+          "at": "2026-11-10T00:00:00Z",
+          "by": "app"
+        },
+        "legacy": {
+          "at": "2026-11-10T00:00:00Z",
+          "settings": {
+            "axf.appearance.overrides": {
+              "style-theme": "hub"
+            }
+          }
+        }
+      },
+      "skin": "",
+      "folded": {},
+      "overrides": {},
+      "kept": {},
+      "reason": "nothing",
+      "again": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "hub-night",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a"
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": false,
+          "inherit": false,
+          "id": "",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null,
+        "migrated": {
+          "version": 1,
+          "at": "2026-11-10T00:00:00Z",
+          "by": "app"
+        },
+        "legacy": {
+          "at": "2026-11-10T00:00:00Z",
+          "settings": {
+            "axf.appearance.overrides": {
+              "style-theme": "hub"
+            }
+          }
+        }
+      },
+      "needsAfter": false
+    },
+    "precedenceOwn": {
+      "before": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {
+          "slots": {
+            "design-package": "hub-default",
+            "color-theme": "coral-studio"
+          },
+          "settings": {
+            "axf.appearance.overrides": {
+              "color-theme": "coral-studio"
+            },
+            "axf.appearance.design": "hub-default"
+          }
+        },
+        "skin": {
+          "use": false,
+          "inherit": false,
+          "id": "",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "picks": {
+        "design-package": "hub-default",
+        "color-theme": "coral-studio"
+      },
+      "needs": true,
+      "look": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {
+          "slots": {},
+          "settings": {}
+        },
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "hub-default",
+          "overrides": {
+            "layout": "focus-top",
+            "color-theme": "coral-studio"
+          }
+        },
+        "scopes": {},
+        "undo": null,
+        "legacy": {
+          "at": "2026-11-10T00:00:00Z",
+          "own": {
+            "slots": {
+              "design-package": "hub-default",
+              "color-theme": "coral-studio"
+            }
+          },
+          "settings": {
+            "axf.appearance.overrides": {
+              "color-theme": "coral-studio"
+            },
+            "axf.appearance.design": "hub-default"
+          }
+        },
+        "migrated": {
+          "version": 1,
+          "at": "2026-11-10T00:00:00Z",
+          "by": "app"
+        }
+      },
+      "skin": "hub-default",
+      "folded": {
+        "design-package": "hub-default",
+        "color-theme": "coral-studio"
+      },
+      "overrides": {
+        "layout": "focus-top",
+        "color-theme": "coral-studio"
+      },
+      "kept": {},
+      "reason": "package",
+      "again": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {
+          "slots": {},
+          "settings": {}
+        },
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "hub-default",
+          "overrides": {
+            "layout": "focus-top",
+            "color-theme": "coral-studio"
+          }
+        },
+        "scopes": {},
+        "undo": null,
+        "legacy": {
+          "at": "2026-11-10T00:00:00Z",
+          "own": {
+            "slots": {
+              "design-package": "hub-default",
+              "color-theme": "coral-studio"
+            }
+          },
+          "settings": {
+            "axf.appearance.overrides": {
+              "color-theme": "coral-studio"
+            },
+            "axf.appearance.design": "hub-default"
           }
         },
         "migrated": {
@@ -1217,7 +1655,7 @@
     "first": {
       "changed": true,
       "set": {
-        "axf.look.migrated": 1,
+        "axf.skin.migrated": 1,
         "axf.legacy.look": "{\"$axf\":\"look-migration@1\",\"version\":1,\"at\":\"2026-11-10T00:00:00Z\",\"settings\":{\"axf.appearance.design\":\"hub-default\",\"axf.appearance.overrides\":{\"color-theme\":\"coral-studio\"},\"axf.hub.appearance.follow\":false,\"axf.look\":{\"space\":2},\"axf.look.sliders\":1}}"
       },
       "clear": [
@@ -1252,7 +1690,7 @@
       },
       "axf.skin.look": "kept",
       "axf.hide.toolbar": true,
-      "axf.look.migrated": 1,
+      "axf.skin.migrated": 1,
       "axf.legacy.look": "{\"$axf\":\"look-migration@1\",\"version\":1,\"at\":\"2026-11-10T00:00:00Z\",\"settings\":{\"axf.appearance.design\":\"hub-default\",\"axf.appearance.overrides\":{\"color-theme\":\"coral-studio\"},\"axf.hub.appearance.follow\":false,\"axf.look\":{\"space\":2},\"axf.look.sliders\":1}}"
     },
     "again": {
@@ -1285,7 +1723,7 @@
         },
         "axf.skin.look": "kept",
         "axf.hide.toolbar": true,
-        "axf.look.migrated": 1,
+        "axf.skin.migrated": 1,
         "axf.legacy.look": "{\"$axf\":\"look-migration@1\",\"version\":1,\"at\":\"2026-11-10T00:00:00Z\",\"settings\":{\"axf.appearance.design\":\"hub-default\",\"axf.appearance.overrides\":{\"color-theme\":\"coral-studio\"},\"axf.hub.appearance.follow\":false,\"axf.look\":{\"space\":2},\"axf.look.sliders\":1}}",
         "axf.appearance.design": "windows",
         "axf.appearance.interface": "amber"
@@ -1293,7 +1731,7 @@
       "result": {
         "changed": true,
         "set": {
-          "axf.look.migrated": 1,
+          "axf.skin.migrated": 1,
           "axf.legacy.look": "{\"$axf\":\"look-migration@1\",\"version\":1,\"at\":\"2026-11-10T00:00:00Z\",\"settings\":{\"axf.appearance.design\":\"hub-default\",\"axf.appearance.overrides\":{\"color-theme\":\"coral-studio\"},\"axf.hub.appearance.follow\":false,\"axf.look\":{\"space\":2},\"axf.look.sliders\":1,\"axf.appearance.interface\":\"amber\"}}"
         },
         "clear": [
@@ -1361,7 +1799,8 @@
         }
       },
       "own": {
-        "slots": {}
+        "slots": {},
+        "settings": {}
       },
       "skin": {
         "use": true,
@@ -1379,6 +1818,11 @@
           "slots": {
             "color-theme": "coral-studio"
           }
+        },
+        "settings": {
+          "axf.appearance.overrides": {
+            "color-theme": "coral-studio"
+          }
         }
       },
       "migrated": {
@@ -1390,7 +1834,7 @@
     "lookChanged": true,
     "settings": {
       "set": {
-        "axf.look.migrated": 1,
+        "axf.skin.migrated": 1,
         "axf.legacy.look": "{\"$axf\":\"look-migration@1\",\"version\":1,\"at\":\"2026-11-10T00:00:00Z\",\"settings\":{\"axf.appearance.design\":\"aurora\",\"axf.look\":1}}"
       },
       "clear": [
@@ -1444,7 +1888,8 @@
           }
         },
         "own": {
-          "slots": {}
+          "slots": {},
+          "settings": {}
         },
         "skin": {
           "use": true,
@@ -1460,6 +1905,11 @@
           "at": "2026-11-10T00:00:00Z",
           "own": {
             "slots": {
+              "color-theme": "coral-studio"
+            }
+          },
+          "settings": {
+            "axf.appearance.overrides": {
               "color-theme": "coral-studio"
             }
           }

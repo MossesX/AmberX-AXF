@@ -18,6 +18,32 @@ export const appLookPath = (appId) => `settings/looks/${appId}.json`;
 export const SKIN_NEVER = ['uac-policy', 'help', 'skin', 'design-package', 'interface'];
 /** The three per-level choices. */
 export const SKIN_USES = ['on', 'off', 'inherit'];
+/**
+ * The skin's four sections → the asset type that holds a section's presets (skins only, Nov 10 2026, Brett: "remove all
+ * the styling and theme and layout stuff … the new thing's going to override it"): colour, style, layout and behaviour
+ * themes are no longer picked on their own; they are the sections of a skin. Same names as skin@2 (PR #430).
+ */
+export const SKIN_SECTIONS = { colors: 'color-theme', style: 'style-theme', layout: 'layout', behavior: 'behavior-theme' };
+/** Section → the skin field that names its preset. */
+export const SKIN_SECTION_FIELDS = { colors: 'colorTheme', style: 'styleTheme', layout: 'layoutTheme', behavior: 'behaviorTheme' };
+/** The one section a user still swaps inside a skin (the theme switch, "Next colour theme"): the skin and its colour theme. */
+export const SKIN_SWAPPABLE_SECTION = 'color-theme';
+/**
+ * The retired bundle types a skin replaced: a slot or setting naming one reads as the skin of the same id. A style
+ * package (one matched set of controls) is not here yet: it becomes a skin when skin@2 lands (PR #430); until then it
+ * stays a swappable set of control slots.
+ */
+export const RETIRED_PACKAGE_TYPES = ['design-package', 'appearance-package'];
+/** The scale picks (density / sizing / typography): the skin's `assets` name them; they are never picked on their own. */
+export const SKIN_SCALE_TYPES = ['typography', 'density', 'sizing'];
+export const isSkinSectionType = (type) => Object.values(SKIN_SECTIONS).includes(type);
+export const sectionOfType = (type) => Object.keys(SKIN_SECTIONS).find((s) => SKIN_SECTIONS[s] === type) ?? '';
+/** Every slot a skin sets: its `assets` plus the four section presets (a named section wins over an `assets` entry of that type). */
+export function skinSlotMap(skin) {
+  const out = { ...(skin?.assets ?? {}) };
+  for (const s of ['layout', 'colors', 'style', 'behavior']) { const v = skin?.[SKIN_SECTION_FIELDS[s]]; if (typeof v === 'string' && v) out[SKIN_SECTIONS[s]] = v; }
+  return out;
+}
 
 const isObj = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
 const ID = /^[a-z0-9][a-z0-9-]*$/;
@@ -72,6 +98,18 @@ export function normalizeAppLook(raw) {
   out.skin = normalizeSkinState(raw.skin);
   out.scopes = normalizeScopes(raw.scopes);
   if (isObj(raw.undo)) out.undo = { own: normalizeLookPart(raw.undo.own), skin: normalizeSkinState(raw.undo.skin), scopes: normalizeScopes(raw.undo.scopes), at: String(raw.undo.at ?? '') };
+  // skins only (look-migration@1): the one-run stamp and the backup of what the fold moved; kept through every writer
+  if (isObj(raw.migrated) && Number.isFinite(Number(raw.migrated.version))) {
+    out.migrated = { version: Math.max(0, Math.floor(Number(raw.migrated.version))), at: String(raw.migrated.at ?? ''), by: String(raw.migrated.by ?? '') };
+    const kept = Array.isArray(raw.migrated.kept) ? raw.migrated.kept.filter((t) => typeof t === 'string' && ID.test(t)) : [];
+    if (kept.length) out.migrated.kept = kept;
+  }
+  if (isObj(raw.legacy)) {
+    const legacy = { at: String(raw.legacy.at ?? '') };
+    if (isObj(raw.legacy.own)) legacy.own = normalizeLookPart(raw.legacy.own);
+    if (isObj(raw.legacy.settings)) legacy.settings = { ...raw.legacy.settings };
+    out.legacy = legacy;
+  }
   if (typeof raw.updatedBy === 'string') out.updatedBy = raw.updatedBy;
   if (typeof raw.updatedAt === 'string') out.updatedAt = raw.updatedAt;
   return out;
