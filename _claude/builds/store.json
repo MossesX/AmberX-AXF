@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2284,
- "updatedAt": "2026-11-10T03:43:12.359Z",
+ "rev": 2285,
+ "updatedAt": "2026-11-10T03:43:22.165Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -134839,8 +134839,8 @@
    "pr": "#436",
    "priority": "P0",
    "createdAt": "2026-11-10T02:24:15.337Z",
-   "updatedAt": "2026-11-10T03:43:03.611Z",
-   "builtAt": "2026-11-10T03:43:03.612Z",
+   "updatedAt": "2026-11-10T03:43:20.593Z",
+   "builtAt": "2026-11-10T03:43:20.593Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -134857,6 +134857,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-one-amberx-build-notification-veto-approval-befo--sully, own login copy)",
      "at": "2026-11-10T03:28:19.516Z"
+    },
+    {
+     "text": "Headless run axf-one-amberx-build-notification-veto-approval-befo--sully: brief only · start 11.2K tokens ($0.03) · cost $3.84 · 84 turns · 6 tools, MCP none",
+     "at": "2026-11-10T03:43:20.593Z"
     },
     {
      "text": "Built, PR #436 (folds in and closes #433). Veto before every start on the AmberX start notification, 90 s default, Approve / Deny / auto-approve, console Waiting to start card. UI Review shots not taken (VPS headless browser broke on #433): capture Pipeline tab Waiting to start + Phone pop-ups, desktop and phone, and submit. Real phone test after merge.",
