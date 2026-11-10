@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2394,
- "updatedAt": "2026-11-10T15:29:55.137Z",
+ "rev": 2395,
+ "updatedAt": "2026-11-10T15:30:23.635Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -137097,12 +137097,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T15:29:42.107Z",
-   "updatedAt": "2026-11-10T15:29:43.445Z",
+   "updatedAt": "2026-11-10T15:30:22.097Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T15:29:43.445Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T15:30:22.097Z"
     }
    ],
    "approvals": [],
@@ -137129,13 +137133,89 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-10T15:30:22.097Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwaujv9t01w0kb",
+     "title": "",
+     "text": "Uninstall/remove the Build Manager plugin. Audit its responsibilities first and hand each to the orchestrator (or the right owner); nothing lost. Supersedes split-builds-pages-build-manager-pending-complet-2. 2) Orchestrator screen tabs: Pending (everything it's been asked to do), Queue, Active, Incomplete, Complete, Errors. 3) Splitting happens right away when a build is filed, so the Queue shows steps. At that point the orchestrator plans model + account. When the build's turn comes in the queue it makes the final account decision and records which account took it. 4) Account pick: subscriptions first (any subscription), then any API account, moving on until one accepts, if what it believed about an account turns out wrong. 5) Account health: every 5 minutes a background check (headless, never touches running builds, never signs anything out) confirms each account can sign in, has credits, and can run the needed model (Fable). The orchestrator always knows every account's status from this, so it doesn't test at dispatch time. Note: reconcile with the Claude Accounts Manager plugin's drag-and-drop account order. Full API control.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T15:30:22.097Z",
+     "updatedAt": "2026-11-10T15:30:22.097Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwaujv9u020t73",
+     "title": "",
+     "text": "Get rid of build manager. Remove it. Uninstall it. If it has responsibilities, decide who to hand them to. The only thing that browses or manages builds is the orchestrator. Tabs: pending, active, incomplete, complete, errors, queue. He has to split it right away so the queue can show the steps. He'll plan what model, what account. When the time comes up in the queue he makes his final decision and updates which subscription took it. Subscriptions first, then any API. Every five minutes a background headless session that doesn't affect any builds or sign anything out checks all the accounts: can get in, have credits, can accept the Fable model.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T15:30:22.097Z",
+     "updatedAt": "2026-11-10T15:30:22.097Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwaujv9u03omjr",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/retire-build-manager-the-orchestrator-is-the-onl.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/retire-build-manager-the-orchestrator-is-the-onl.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T15:30:22.097Z",
+     "updatedAt": "2026-11-10T15:30:22.097Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -137144,12 +137224,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T15:30:22.097Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
