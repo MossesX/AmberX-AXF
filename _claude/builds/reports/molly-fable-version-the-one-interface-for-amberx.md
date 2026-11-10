@@ -119,4 +119,4 @@ the console is redeployed, Molly's own items are not reachable remotely; the con
   screens list. A `molly.state` read endpoint would need the console server to carry host reads (control@1 `get`).
 - The + button on tab rows, tab rename and touch drag (molly-multi-instance-tabs s2) are not here.
 - Android twin of molly-shell@1 deferred (`framework/spec/PORTING.md`).
-- UI Review: desktop + phone shots submitted (see the PR); waiting there.
+- UI Review: desktop + phone shots submitted, grouped by screen (group "molly-fable-version-the-one-interface-for-amberx - Nov 10 3:45 PM": r-20261110-c7431f42 Console in Molly, r-20261110-c1e811c0 Console 2, r-20261110-da7101c2 IDE mode, r-20261110-22ea3d4f Tabs menu, r-20261110-aef8deb0 Molly control settings, r-20261110-19dc983a start page); PR #447; waiting there.
