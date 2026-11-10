@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2100,
- "updatedAt": "2026-11-10T00:22:03.902Z",
+ "rev": 2101,
+ "updatedAt": "2026-11-10T00:22:27.443Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -133367,16 +133367,22 @@
    "title": "Skins as packages of slices: every section its own asset, pick sections on apply, mix creates a new skin via dialog, drag-and-drop Skin Builder",
    "category": "",
    "detail": "Upgrade the existing skins/appearance system and asset registry; don't build a parallel one. 1) DATA MODEL: a skin is only a package (manifest) referencing section assets. Every section (colours, layouts, design/visual styles, behaviour, and every other category a skin covers) is its own standalone asset with a name, preview, tags and source. Convert every existing skin into this form, with no monolithic skins left. 2) APPLY WITH PICKS: when you apply, enable or change a skin, a dialog lists its sections with checkboxes and previews. Choose which sections to take and which to leave out; left-out sections keep the current skin's. 3) MIX = NEW SKIN: if the result mixes sections from more than one skin, a dialog asks you to save it as a new skin (name, description, thumbnail auto-captured), with Save as new, Apply without saving, or Cancel. 4) SKIN BUILDER: a slice library (searchable, by category, live hover preview) and a pack template with one slot per category. Drag slices into slots, preview the whole console live, see which slots are empty, swap or clear slots, before/after toggle. Save, apply, export or import as a file, duplicate, edit later. 5) Professional polish: snap animations, slot highlights, desktop and phone layouts. 6) Full control via REST, MCP, CLI and voice (list sections, save section, apply with includes/excludes, build skin from sections, export). Screenshots go to UI Review grouped by screen.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-10T00:21:59.738Z",
-   "updatedAt": "2026-11-10T00:21:59.738Z",
+   "updatedAt": "2026-11-10T00:22:09.097Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T00:22:09.097Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -133391,6 +133397,22 @@
     "from": "",
     "addenda": []
    },
+   "pipeline": {
+    "queuedAt": "2026-11-10T00:22:04.756Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -133400,7 +133422,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
