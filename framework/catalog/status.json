@@ -447,7 +447,7 @@
     "status": "partial",
     "wave": 2,
     "module": "axf-kernel",
-    "note": "Web engine + React renderer built (Fable, Oct 21 2026); Android twin deferred while the Android port is on hold."
+    "note": "Web engine + React renderer built (Fable, Oct 21 2026); menu-item@2 kinds, choice settings, live status slots and per-item token overrides (Fable, Nov 10 2026, spec/MENUS.md); Android twin deferred while the Android port is on hold."
   },
   "k.shortcuts": {
     "status": "placeholder",

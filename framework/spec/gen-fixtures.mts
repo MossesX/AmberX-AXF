@@ -31,7 +31,13 @@ import { LIVE_KINDS, LIVE_STATES, LiveEventLog, reduceLiveState } from '../core/
 import { PROVIDER_KINDS, batchTitle, clampUserParams, emptyLiveReply, applyStreamEvent, contextExtra, frameToEvent, normalizeChatContext, parseSseText, permissionAllows, profileChain, reconnectDelayMs, redactSecrets, settingsAllowedFor, summarizeArgs, titleFromText, wireHistory, ownerKind, type Message, type StreamEvent } from '../core/assistant';
 import { buildPluginInventory, pluginGraph, pluginRecord, PLUGIN_HEALTHS, DEPENDENCY_LABEL, PLUGIN_INVENTORY_FRAME, type InventoryContext } from '../core/engines/plugins';
 import { ASSET_TYPES } from '../core/types';
-import { ASSET_ORIGIN, CHECKED_KINDS, DEFAULT_MENU, MENU_DEFAULT_ORDER, MENU_ITEM_FIELDS, MENU_MAX_DEPTH, PROVIDER_MAX, appMenuSearchEntries, buildAppMenu, chromeToggleItems, chromeToggleTypes, compileAppMenu, compileProviderItems, mergeAppMenu, parseChecked, resolveChecked, titleFromId, truthy, validateMenuItems, type AppMenuContribution, type AppMenuEnv } from '../core/engines/appmenu';
+import {
+  ASSET_ORIGIN, CHECKED_KINDS, DEFAULT_MENU, MENU_DEFAULT_ORDER, MENU_ITEM_FIELDS, MENU_MAX_DEPTH, PROVIDER_MAX, appMenuSearchEntries, buildAppMenu, chromeToggleItems, chromeToggleTypes, compileAppMenu, compileProviderItems, mergeAppMenu, parseChecked, resolveChecked, titleFromId, truthy, validateMenuItems, type AppMenuContribution, type AppMenuEnv,
+  // menu-item@2
+  MENU_ITEMS_VERSION, MENU_KINDS, MENU_STATUS_KINDS, MENU_STATUS_STATES, MENU_STATUS_TONES, MENU_STATUS_ANIMS, MENU_STATUS_DEFAULT_ANIMS, MENU_STATUS_TEXT, MENU_CHOICES_MAX, MENU_TOKENS_KEY, MENU_TOKENS_TARGET, MENU_SETTING_SET, MENU_SETTING_TOGGLE, MENU_ITEM_TOKENS,
+  menuItemKind, choiceAction, parseChoiceAction, currentChoice, nextChoice, parseStatusSource, compileStatus, resolveStatus, menuItemPath, isMenuItemPath, normalizeMenuOverrides, withMenuOverride, withoutMenuOverrides, listMenuOverrides, migrateMenuItems, migrateMenuAsset, compileMenuItems,
+  type MenuStatusReading,
+} from '../core/engines/appmenu';
 import { LIBRARY_PARAM_TYPES, PARAM_TRUE_WORDS, paramBool, paramDefaultText, paramDefaults, paramError, paramToJson, type LibraryParam } from '../core/library';
 import { validateAsset } from '../core/validate';
 import * as cs from '../core/engines/chrome-settings-rules.mjs';
@@ -1319,8 +1325,127 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     { id: 'f1', label: 'Feature 1', action: 'nav:f1' }, { id: 'f2', label: 'Feature 2', action: 'nav:f2', requires: 'uac.manage' }, { id: 'f3', label: 'Feature 3', action: 'nav:f3' },
     { id: 'f4', label: 'Feature 4', action: 'nav:f4', badge: 'builds.pending' }, { id: 'f5', label: 'Feature 5', action: 'nav:f5' }, { id: 'sep', separator: true }, { id: 'f6', label: 'Feature 6', action: 'nav:f6' },
   ];
+  // menu-item@2 (spec/MENUS.md): kinds, choice settings, live status slots, paths + per-item token overrides, migration.
+  const v2Asset = {
+    menus: [
+      { id: 'view', label: 'View', items: [
+        { id: 'theme', label: 'Theme', icon: 'palette', hint: 'Light, dark or follow the system', setting: 'ui.theme', choices: [{ value: 'light', label: 'Light', icon: 'sun' }, { value: 'dark', label: 'Dark', icon: 'moon' }, { value: 'system', label: 'System', hint: 'Follow the device' }] },
+        { id: 'density', label: 'Density', setting: 'ui.density', cycle: true, choices: [{ value: 'compact', label: 'Compact' }, { value: 'regular', label: 'Regular' }, { value: 'roomy', label: 'Roomy' }] },
+        { id: 'autosave', label: 'Auto save', setting: 'files.autosave' },
+        { id: 'sep', separator: true },
+        { id: 'hub', label: 'axHub', icon: 'cloud', action: 'nav:hub', status: { source: 'source:hub', icon: 'axhub', tooltip: 'axHub connection' } },
+        { id: 'builds', label: 'Builds', action: 'nav:builds', status: 'counter:builds.running' },
+        { id: 'alerts', label: 'Alerts', action: 'nav:alerts', status: { source: 'counter:alerts.unread', tones: { on: 'warning', off: 'muted' }, anims: { on: 'blink' } } },
+        { id: 'toolbar', label: 'Toolbar', action: 'slot.hide:toolbar:toggle', status: 'slot:toolbar' },
+        { id: 'nobody', label: 'Nobody', action: 'noop', status: 'source:nobody' },
+        { id: 'tools', label: 'Tools', kind: 'submenu', items: [{ id: 'a', label: 'A', action: 'tools.a' }, { id: 'b', label: 'B', action: 'tools.b' }, { id: 'c', label: 'C', action: 'tools.c' }] },
+      ] },
+    ],
+  };
+  const hubReading: MenuStatusReading = { state: 'on', text: 'Connected', icon: 'axhub' };
+  const v2Env = (settings: Record<string, unknown>, counters: Record<string, number>, hub: MenuStatusReading | null, overrides?: unknown): AppMenuEnv => ({
+    ...envFor('admin', ['toolbar'], settings, counters), status: (id) => (id === 'hub' ? hub : null), overrides,
+  });
+  const v2Merged = mergeAppMenu(v2Asset, []);
+  const v2Overrides = {
+    'app-menu/view/theme': { label: 'Appearance', icon: 'brush', tone: 'accent', weight: 'semibold' },
+    'app-menu/view/tools/b': { visible: false },
+    'app-menu/view/tools/c': { order: 1 },
+    'app-menu/view/hub': { hint: 'Open axHub', shortcut: 'Alt+H', iconTone: 'success', emphasis: 'soft' },
+    'app-menu/view/builds': { action: 'nav:build-queue' },
+    'app-menu/view/autosave': { action: 'ignored.on.a.choice' },
+  };
+  const ctxItems = [
+    { id: 'copy', label: 'Copy', icon: 'copy', action: 'edit.copy', shortcut: 'Ctrl+C' },
+    { id: 's', separator: true },
+    { id: 'wrap', label: 'Word wrap', setting: 'editor.wrap' },
+    { id: 'size', label: 'Text size', setting: 'editor.size', choices: [{ value: 12, label: 'Small' }, { value: 14, label: 'Medium' }, { value: 18, label: 'Large' }] },
+    { id: 'first', label: 'First', action: 'noop', order: 1 },
+  ];
+  const v1Items = [
+    { id: 'reload', label: 'Reload', action: 'view.reload' },
+    { id: 'auto', label: 'Auto build', checked: 'setting:builds.auto' },
+    { id: 'auto-act', label: 'Auto (with action)', action: 'builds.auto:toggle', checked: 'setting:builds.auto' },
+    { id: 'sep', separator: true },
+    { id: 'recent', label: 'Recent', provider: 'recent' },
+    { id: 'wrong', label: 'Wrong kind', kind: 'submenu', action: 'x' },
+    { id: 'sub', label: 'Sub', items: [{ id: 'inner', label: 'Inner', checked: 'setting:inner.on' }] },
+  ];
+  const starters = { 'app-menu': load('app-menu'), 'context-menu': load('context-menu') };
   write('app-menu.json', {
-    spec: { maxDepth: MENU_MAX_DEPTH, providerMax: PROVIDER_MAX, defaultOrder: MENU_DEFAULT_ORDER, checkedKinds: CHECKED_KINDS, itemFields: MENU_ITEM_FIELDS, defaultMenu: DEFAULT_MENU, assetOrigin: ASSET_ORIGIN },
+    spec: {
+      maxDepth: MENU_MAX_DEPTH, providerMax: PROVIDER_MAX, defaultOrder: MENU_DEFAULT_ORDER, checkedKinds: CHECKED_KINDS, itemFields: MENU_ITEM_FIELDS, defaultMenu: DEFAULT_MENU, assetOrigin: ASSET_ORIGIN,
+      version: MENU_ITEMS_VERSION, kinds: MENU_KINDS, statusKinds: MENU_STATUS_KINDS, statusStates: MENU_STATUS_STATES, statusTones: MENU_STATUS_TONES, statusAnims: MENU_STATUS_ANIMS, statusDefaultAnims: MENU_STATUS_DEFAULT_ANIMS, statusText: MENU_STATUS_TEXT,
+      choicesMax: MENU_CHOICES_MAX, tokensKey: MENU_TOKENS_KEY, tokensTarget: MENU_TOKENS_TARGET, settingSet: MENU_SETTING_SET, settingToggle: MENU_SETTING_TOGGLE, itemTokens: MENU_ITEM_TOKENS,
+    },
+    v2: {
+      // inputs a port replays: the asset, the overrides and the flat context list
+      asset: v2Asset, rawOverrides: v2Overrides, ctxItems, v1Items,
+      kinds: Object.fromEntries(Object.entries({
+        action: { id: 'a', action: 'x' }, empty: { id: 'a' }, submenu: { id: 'a', items: [] }, 'submenu-with-action': { id: 'a', action: 'x', items: [{ id: 'b' }] },
+        choice: { id: 'a', setting: 'k' }, 'choice-list': { id: 'a', setting: 'k', choices: [] }, separator: { id: 'a', separator: true }, 'live-list': { id: 'a', provider: 'p' },
+        'provider-beats-setting': { id: 'a', provider: 'p', setting: 'k' }, 'not-an-object': 7,
+      }).map(([k, v]) => [k, menuItemKind(v)])),
+      choiceActions: Object.fromEntries(([['ui.theme', 'dark'], ['ui.size', 14], ['files.autosave', true], ['odd:key', 'a:b c']] as [string, string | number | boolean][]).map(([k, v]) => {
+        const spec = choiceAction(k, v);
+        return [`${k}=${JSON.stringify(v)}`, { spec, parsed: parseChoiceAction(spec.split(':').slice(1)) }];
+      })),
+      badChoiceActions: [[], ['k'], ['k', '%ZZ'], ['k', encodeURIComponent('{"a":1}')]].map((args) => parseChoiceAction(args)),
+      current: { picked: currentChoice(v2Asset.menus[0]!.items[0]!.choices, 'dark'), unsaved: currentChoice(v2Asset.menus[0]!.items[0]!.choices, null), loose: currentChoice([{ value: 14, label: 'M' }], '14'), none: currentChoice([], 'x') },
+      next: { middle: nextChoice(v2Asset.menus[0]!.items[1]!.choices, 'regular'), wrap: nextChoice(v2Asset.menus[0]!.items[1]!.choices, 'roomy'), unsaved: nextChoice(v2Asset.menus[0]!.items[1]!.choices, null) },
+      statusSources: Object.fromEntries(['counter:c', 'setting:k', 'slot:toolbar', 'hidden:toolbar', 'source:hub', 'nope:x', 'source:', 'plain', ''].map((s) => [s, parseStatusSource(s)])),
+      resolved: Object.fromEntries(['counter:builds.running', 'counter:alerts.unread', 'setting:files.autosave', 'slot:toolbar', 'hidden:toolbar', 'source:hub', 'source:nobody', 'bad'].map((s) => [s, resolveStatus(s, v2Env({ 'files.autosave': true }, { 'builds.running': 2, 'alerts.unread': 0 }, hubReading))])),
+      compiledStatus: {
+        'string-source-on': compileStatus('counter:x', { state: 'on', text: '3' }, 'Builds'),
+        'object-off-default-tone': compileStatus({ source: 'source:hub', icon: 'axhub', tooltip: 'axHub connection' }, { state: 'off' }, 'axHub'),
+        'busy-pulses': compileStatus('source:hub', { state: 'busy', text: 'Syncing' }, 'axHub'),
+        'own-tones-anims': compileStatus({ source: 'counter:a', tones: { on: 'warning' }, anims: { on: 'blink' } }, { state: 'on' }, 'Alerts'),
+        'unknown-when-unregistered': compileStatus('source:nobody', null, 'Nobody'),
+        'bad-state-reads-unknown': compileStatus('source:hub', { state: 'weird' as never }, 'Hub'),
+        'reading-icon-when-item-has-none': compileStatus('source:hub', hubReading, 'Hub'),
+        'not-a-status': compileStatus('nope:x', { state: 'on' }, 'X'),
+      },
+      // the whole asset compiled: theme dark, density regular, autosave on, hub connected, 2 builds running, toolbar hidden
+      compiled: compileAppMenu(v2Merged, v2Env({ 'ui.theme': 'dark', 'ui.density': 'regular', 'files.autosave': true }, { 'builds.running': 2, 'alerts.unread': 0 }, hubReading)),
+      // nothing saved, hub down, no builds: unpicked choices, switch off, red hub
+      compiledCold: compileAppMenu(v2Merged, v2Env({}, {}, { state: 'off', text: 'Not signed in' })),
+      // the same with per-item overrides in force
+      compiledOverridden: compileAppMenu(v2Merged, v2Env({ 'ui.theme': 'dark' }, { 'builds.running': 1 }, hubReading, v2Overrides)),
+      paths: {
+        made: [menuItemPath('app-menu', ['file', 'exports', 'json']), menuItemPath('context-menu', ['default', 'copy'])],
+        valid: Object.fromEntries(['app-menu/file', 'app-menu/file/exports/json', 'context-menu/default/copy', 'context-menu/axf-banner/widget:x', 'nav/file', 'app-menu', 'app-menu//x', 'app-menu/-x', 'app-menu/file/' + 'x'.repeat(240)].map((p) => [p, isMenuItemPath(p)])),
+      },
+      overrides: {
+        normalized: normalizeMenuOverrides({
+          ...v2Overrides,
+          'app-menu/view/theme2': { tone: 'theme', weight: 'theme', visible: true, order: 1000.6, label: 'x'.repeat(201) },
+          'nav/x': { label: 'dropped root' }, 'app-menu/view/bad': { nope: 1, label: 7, visible: 'yes', order: 'first', tone: '#ff0000' }, 'app-menu/view/empty': {}, 'app-menu/view/list': [1],
+        }),
+        set: withMenuOverride(v2Overrides, 'app-menu/view/theme', 'size', 'lg'),
+        setDefaultClears: withMenuOverride({ 'app-menu/view/x': { tone: 'accent' } }, 'app-menu/view/x', 'tone', 'theme'),
+        setNullClears: withMenuOverride({ 'app-menu/view/x': { tone: 'accent', label: 'X' } }, 'app-menu/view/x', 'tone', null),
+        setBadPath: withMenuOverride({}, 'nav/x', 'tone', 'accent'),
+        setBadToken: withMenuOverride({}, 'app-menu/view/x', 'colour', 'accent'),
+        withoutOne: withoutMenuOverrides(v2Overrides, 'app-menu/view/tools/b'),
+        withoutDeep: withoutMenuOverrides(v2Overrides, 'app-menu/view/tools', true),
+        list: listMenuOverrides(v2Overrides),
+      },
+      flat: {
+        // a context-menu target compiled flat: paths under context-menu/default, `order` placement, a switch and a numeric choice
+        default: compileMenuItems(ctxItems, { ...v2Env({ 'editor.wrap': false, 'editor.size': 14 }, {}, null), pathRoot: 'context-menu' }, 'default'),
+        overridden: compileMenuItems(ctxItems, { ...v2Env({ 'editor.size': '18' }, {}, null, { 'context-menu/default/copy': { label: 'Copy text', tone: 'accent' }, 'context-menu/default/first': { visible: false } }), pathRoot: 'context-menu' }, 'default'),
+      },
+      migration: {
+        items: migrateMenuItems(v1Items, ['view']),
+        idempotent: migrateMenuItems(migrateMenuItems(v1Items, ['view']).items, ['view']),
+        notAList: migrateMenuItems('x' as never),
+        asset: migrateMenuAsset({ $axf: 'asset@1', type: 'app-menu', id: 'm', name: 'M', version: '1', data: { menus: [{ id: 'view', label: 'View', items: v1Items }] } }),
+        context: migrateMenuAsset({ $axf: 'asset@1', type: 'context-menu', id: 'c', name: 'C', version: '1', data: { variant: 'compact', showIcons: true, showShortcuts: true, targets: { default: v1Items.slice(0, 2) } } }),
+        other: migrateMenuAsset({ $axf: 'asset@1', type: 'toolbar', id: 't', name: 'T', version: '1', data: { groups: [] } }),
+        // every starter migrates with explicit kinds only (no @1 starter relied on a check mark with nothing to run)
+        starters: Object.fromEntries(Object.entries(starters).flatMap(([t, list]) => list.map((a) => { const r = migrateMenuAsset(a); return [`${t}/${a.id}`, { changed: r.changed, notes: r.notes, valid: validateAsset(r.asset).ok, version: r.asset.data.menuItems }]; }))),
+      },
+    },
     titles: Object.fromEntries(['pending-builds', 'build_queue', 'a.b.c', 'x', '', '--'].map((id) => [id, titleFromId(id)])),
     truthy: Object.fromEntries(([true, false, 0, 1, -2, '', 'false', 'FALSE', '0', 'off', 'no', 'yes', 'x', ' on '] as const).map((v) => [JSON.stringify(v), truthy(v)])),
     checked: Object.fromEntries(['setting:a', 'counter:c', 'slot:toolbar', 'hidden:toolbar', 'slot:nav-menu', 'nope:x', 'setting:', ':x', 'plain', ''].map((b) => [b, { parsed: parseChecked(b), resolved: resolveChecked(b, { counter: (n) => (n === 'c' ? 2 : 0), setting: (k) => (k === 'a' ? 'yes' : undefined), hidden: (t) => t === 'toolbar' }) }])),
@@ -1353,6 +1478,12 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       'too-deep': [{ id: 'a', items: [{ id: 'b', items: [{ id: 'c', items: [{ id: 'd', items: [{ id: 'e' }] }] }] }] }],
       'not-a-list': 'x',
       'not-objects': [1, null],
+      // menu-item@2
+      'v2-ok': v2Asset.menus[0]!.items,
+      'v2-kind': [{ id: 'a', kind: 'nope' }, { id: 'b', kind: 'submenu', action: 'x' }, { id: 'c', kind: 'choice', setting: 'k' }, { id: 'd', kind: 'separator', separator: true }, { id: 'e', kind: 'live-list', provider: 'p' }],
+      'v2-hint': [{ id: 'a', hint: '' }, { id: 'b', hint: 3 }],
+      'v2-choice': [{ id: 'a', setting: '' }, { id: 'b', setting: 'k', provider: 'p' }, { id: 'c', setting: 'k', items: [] }, { id: 'd', setting: 'k', checked: 'setting:k' }, { id: 'e', choices: [{ value: 1, label: 'x' }, { value: 2, label: 'y' }] }, { id: 'f', setting: 'k', choices: 'x' }, { id: 'g', setting: 'k', choices: [{ value: 1, label: 'x' }] }, { id: 'h', setting: 'k', choices: [{ value: 1, label: 'x' }, { value: '1', label: 'y' }, 3, { value: null, label: '' }, { value: 2, label: 'z', icon: '', hint: 1 }] }, { id: 'i', setting: 'k', cycle: 'yes' }, { id: 'j', setting: 'k', cycle: true }],
+      'v2-status': [{ id: 'a', status: 'nope:x' }, { id: 'b', status: 7 }, { id: 'c', status: {} }, { id: 'd', status: { source: 'counter:c', icon: '', tooltip: 2, tones: 'x', anims: { on: 'wobble', weird: 'pulse' } } }, { id: 'e', status: { source: 'source:hub', tones: { off: 'purple' } } }],
     }).map(([k, items]) => ({ case: k, items, errors: validateMenuItems(items, 'data.menus[0].items') })),
     assets: [
       { case: 'app-menu-bad-order', raw: { $axf: 'asset@1', type: 'app-menu', id: 'bad-menu', name: 'X', version: '1', data: { menus: [{ id: 'm', label: 'M', order: 'x', items: [{ id: 'a', checked: 'bad' }] }] } } },

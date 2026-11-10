@@ -16,10 +16,2015 @@
       "order",
       "before",
       "after",
-      "spacer"
+      "spacer",
+      "kind",
+      "hint",
+      "setting",
+      "choices",
+      "cycle",
+      "status"
     ],
     "defaultMenu": "more",
-    "assetOrigin": "asset"
+    "assetOrigin": "asset",
+    "version": 2,
+    "kinds": [
+      "action",
+      "submenu",
+      "choice",
+      "separator",
+      "live-list"
+    ],
+    "statusKinds": [
+      "counter",
+      "setting",
+      "slot",
+      "hidden",
+      "source"
+    ],
+    "statusStates": [
+      "on",
+      "off",
+      "busy",
+      "warn",
+      "unknown"
+    ],
+    "statusTones": {
+      "on": "success",
+      "off": "danger",
+      "busy": "accent",
+      "warn": "warning",
+      "unknown": "muted"
+    },
+    "statusAnims": [
+      "none",
+      "pulse",
+      "spin",
+      "blink"
+    ],
+    "statusDefaultAnims": {
+      "busy": "pulse"
+    },
+    "statusText": {
+      "on": "On",
+      "off": "Off",
+      "busy": "Working",
+      "warn": "Needs attention",
+      "unknown": "Unknown"
+    },
+    "choicesMax": 24,
+    "tokensKey": "axf.tokens.menu",
+    "tokensTarget": "tokens.menu",
+    "settingSet": "setting.set",
+    "settingToggle": "setting.toggle",
+    "itemTokens": {
+      "label": {
+        "group": "behavior",
+        "kind": "text",
+        "label": "Label"
+      },
+      "icon": {
+        "group": "behavior",
+        "kind": "icon",
+        "label": "Icon"
+      },
+      "hint": {
+        "group": "behavior",
+        "kind": "text",
+        "label": "Hint (tooltip)"
+      },
+      "action": {
+        "group": "behavior",
+        "kind": "action",
+        "label": "Action"
+      },
+      "shortcut": {
+        "group": "behavior",
+        "kind": "text",
+        "label": "Shortcut"
+      },
+      "visible": {
+        "group": "behavior",
+        "kind": "boolean",
+        "label": "Visible",
+        "default": true
+      },
+      "order": {
+        "group": "behavior",
+        "kind": "number",
+        "label": "Order",
+        "min": 0,
+        "max": 1000
+      },
+      "tone": {
+        "group": "appearance",
+        "kind": "enum",
+        "label": "Text colour",
+        "options": [
+          "theme",
+          "text",
+          "muted",
+          "accent",
+          "info",
+          "success",
+          "warning",
+          "danger"
+        ],
+        "default": "theme"
+      },
+      "iconTone": {
+        "group": "appearance",
+        "kind": "enum",
+        "label": "Icon colour",
+        "options": [
+          "theme",
+          "text",
+          "muted",
+          "accent",
+          "info",
+          "success",
+          "warning",
+          "danger"
+        ],
+        "default": "theme"
+      },
+      "weight": {
+        "group": "appearance",
+        "kind": "enum",
+        "label": "Weight",
+        "options": [
+          "theme",
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "default": "theme"
+      },
+      "emphasis": {
+        "group": "appearance",
+        "kind": "enum",
+        "label": "Emphasis",
+        "options": [
+          "none",
+          "soft",
+          "outline",
+          "filled"
+        ],
+        "default": "none"
+      },
+      "size": {
+        "group": "appearance",
+        "kind": "enum",
+        "label": "Text size",
+        "options": [
+          "theme",
+          "sm",
+          "md",
+          "lg"
+        ],
+        "default": "theme"
+      }
+    }
+  },
+  "v2": {
+    "asset": {
+      "menus": [
+        {
+          "id": "view",
+          "label": "View",
+          "items": [
+            {
+              "id": "theme",
+              "label": "Theme",
+              "icon": "palette",
+              "hint": "Light, dark or follow the system",
+              "setting": "ui.theme",
+              "choices": [
+                {
+                  "value": "light",
+                  "label": "Light",
+                  "icon": "sun"
+                },
+                {
+                  "value": "dark",
+                  "label": "Dark",
+                  "icon": "moon"
+                },
+                {
+                  "value": "system",
+                  "label": "System",
+                  "hint": "Follow the device"
+                }
+              ]
+            },
+            {
+              "id": "density",
+              "label": "Density",
+              "setting": "ui.density",
+              "cycle": true,
+              "choices": [
+                {
+                  "value": "compact",
+                  "label": "Compact"
+                },
+                {
+                  "value": "regular",
+                  "label": "Regular"
+                },
+                {
+                  "value": "roomy",
+                  "label": "Roomy"
+                }
+              ]
+            },
+            {
+              "id": "autosave",
+              "label": "Auto save",
+              "setting": "files.autosave"
+            },
+            {
+              "id": "sep",
+              "separator": true
+            },
+            {
+              "id": "hub",
+              "label": "axHub",
+              "icon": "cloud",
+              "action": "nav:hub",
+              "status": {
+                "source": "source:hub",
+                "icon": "axhub",
+                "tooltip": "axHub connection"
+              }
+            },
+            {
+              "id": "builds",
+              "label": "Builds",
+              "action": "nav:builds",
+              "status": "counter:builds.running"
+            },
+            {
+              "id": "alerts",
+              "label": "Alerts",
+              "action": "nav:alerts",
+              "status": {
+                "source": "counter:alerts.unread",
+                "tones": {
+                  "on": "warning",
+                  "off": "muted"
+                },
+                "anims": {
+                  "on": "blink"
+                }
+              }
+            },
+            {
+              "id": "toolbar",
+              "label": "Toolbar",
+              "action": "slot.hide:toolbar:toggle",
+              "status": "slot:toolbar"
+            },
+            {
+              "id": "nobody",
+              "label": "Nobody",
+              "action": "noop",
+              "status": "source:nobody"
+            },
+            {
+              "id": "tools",
+              "label": "Tools",
+              "kind": "submenu",
+              "items": [
+                {
+                  "id": "a",
+                  "label": "A",
+                  "action": "tools.a"
+                },
+                {
+                  "id": "b",
+                  "label": "B",
+                  "action": "tools.b"
+                },
+                {
+                  "id": "c",
+                  "label": "C",
+                  "action": "tools.c"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "rawOverrides": {
+      "app-menu/view/theme": {
+        "label": "Appearance",
+        "icon": "brush",
+        "tone": "accent",
+        "weight": "semibold"
+      },
+      "app-menu/view/tools/b": {
+        "visible": false
+      },
+      "app-menu/view/tools/c": {
+        "order": 1
+      },
+      "app-menu/view/hub": {
+        "hint": "Open axHub",
+        "shortcut": "Alt+H",
+        "iconTone": "success",
+        "emphasis": "soft"
+      },
+      "app-menu/view/builds": {
+        "action": "nav:build-queue"
+      },
+      "app-menu/view/autosave": {
+        "action": "ignored.on.a.choice"
+      }
+    },
+    "ctxItems": [
+      {
+        "id": "copy",
+        "label": "Copy",
+        "icon": "copy",
+        "action": "edit.copy",
+        "shortcut": "Ctrl+C"
+      },
+      {
+        "id": "s",
+        "separator": true
+      },
+      {
+        "id": "wrap",
+        "label": "Word wrap",
+        "setting": "editor.wrap"
+      },
+      {
+        "id": "size",
+        "label": "Text size",
+        "setting": "editor.size",
+        "choices": [
+          {
+            "value": 12,
+            "label": "Small"
+          },
+          {
+            "value": 14,
+            "label": "Medium"
+          },
+          {
+            "value": 18,
+            "label": "Large"
+          }
+        ]
+      },
+      {
+        "id": "first",
+        "label": "First",
+        "action": "noop",
+        "order": 1
+      }
+    ],
+    "v1Items": [
+      {
+        "id": "reload",
+        "label": "Reload",
+        "action": "view.reload"
+      },
+      {
+        "id": "auto",
+        "label": "Auto build",
+        "checked": "setting:builds.auto"
+      },
+      {
+        "id": "auto-act",
+        "label": "Auto (with action)",
+        "action": "builds.auto:toggle",
+        "checked": "setting:builds.auto"
+      },
+      {
+        "id": "sep",
+        "separator": true
+      },
+      {
+        "id": "recent",
+        "label": "Recent",
+        "provider": "recent"
+      },
+      {
+        "id": "wrong",
+        "label": "Wrong kind",
+        "kind": "submenu",
+        "action": "x"
+      },
+      {
+        "id": "sub",
+        "label": "Sub",
+        "items": [
+          {
+            "id": "inner",
+            "label": "Inner",
+            "checked": "setting:inner.on"
+          }
+        ]
+      }
+    ],
+    "kinds": {
+      "action": "action",
+      "empty": "action",
+      "submenu": "submenu",
+      "submenu-with-action": "submenu",
+      "choice": "choice",
+      "choice-list": "choice",
+      "separator": "separator",
+      "live-list": "live-list",
+      "provider-beats-setting": "live-list",
+      "not-an-object": "action"
+    },
+    "choiceActions": {
+      "ui.theme=\"dark\"": {
+        "spec": "setting.set:ui.theme:%22dark%22",
+        "parsed": {
+          "key": "ui.theme",
+          "value": "dark"
+        }
+      },
+      "ui.size=14": {
+        "spec": "setting.set:ui.size:14",
+        "parsed": {
+          "key": "ui.size",
+          "value": 14
+        }
+      },
+      "files.autosave=true": {
+        "spec": "setting.set:files.autosave:true",
+        "parsed": {
+          "key": "files.autosave",
+          "value": true
+        }
+      },
+      "odd:key=\"a:b c\"": {
+        "spec": "setting.set:odd%3Akey:%22a%3Ab%20c%22",
+        "parsed": {
+          "key": "odd:key",
+          "value": "a:b c"
+        }
+      }
+    },
+    "badChoiceActions": [
+      null,
+      null,
+      null,
+      null
+    ],
+    "current": {
+      "picked": {
+        "choice": {
+          "value": "dark",
+          "label": "Dark",
+          "icon": "moon"
+        },
+        "picked": true
+      },
+      "unsaved": {
+        "choice": {
+          "value": "light",
+          "label": "Light",
+          "icon": "sun"
+        },
+        "picked": false
+      },
+      "loose": {
+        "choice": {
+          "value": 14,
+          "label": "M"
+        },
+        "picked": true
+      },
+      "none": null
+    },
+    "next": {
+      "middle": {
+        "value": "roomy",
+        "label": "Roomy"
+      },
+      "wrap": {
+        "value": "compact",
+        "label": "Compact"
+      },
+      "unsaved": {
+        "value": "compact",
+        "label": "Compact"
+      }
+    },
+    "statusSources": {
+      "counter:c": {
+        "kind": "counter",
+        "ref": "c"
+      },
+      "setting:k": {
+        "kind": "setting",
+        "ref": "k"
+      },
+      "slot:toolbar": {
+        "kind": "slot",
+        "ref": "toolbar"
+      },
+      "hidden:toolbar": {
+        "kind": "hidden",
+        "ref": "toolbar"
+      },
+      "source:hub": {
+        "kind": "source",
+        "ref": "hub"
+      },
+      "nope:x": null,
+      "source:": null,
+      "plain": null,
+      "": null
+    },
+    "resolved": {
+      "counter:builds.running": {
+        "state": "on",
+        "text": "2"
+      },
+      "counter:alerts.unread": {
+        "state": "off"
+      },
+      "setting:files.autosave": {
+        "state": "on"
+      },
+      "slot:toolbar": {
+        "state": "off",
+        "text": "Hidden"
+      },
+      "hidden:toolbar": {
+        "state": "on",
+        "text": "Hidden"
+      },
+      "source:hub": {
+        "state": "on",
+        "text": "Connected",
+        "icon": "axhub"
+      },
+      "source:nobody": null,
+      "bad": null
+    },
+    "compiledStatus": {
+      "string-source-on": {
+        "source": "counter:x",
+        "state": "on",
+        "tone": "success",
+        "anim": "none",
+        "icon": "circle",
+        "text": "3",
+        "tooltip": "Builds: 3"
+      },
+      "object-off-default-tone": {
+        "source": "source:hub",
+        "state": "off",
+        "tone": "danger",
+        "anim": "none",
+        "icon": "axhub",
+        "text": "Off",
+        "tooltip": "axHub connection: Off"
+      },
+      "busy-pulses": {
+        "source": "source:hub",
+        "state": "busy",
+        "tone": "accent",
+        "anim": "pulse",
+        "icon": "circle",
+        "text": "Syncing",
+        "tooltip": "axHub: Syncing"
+      },
+      "own-tones-anims": {
+        "source": "counter:a",
+        "state": "on",
+        "tone": "warning",
+        "anim": "blink",
+        "icon": "circle",
+        "text": "On",
+        "tooltip": "Alerts: On"
+      },
+      "unknown-when-unregistered": {
+        "source": "source:nobody",
+        "state": "unknown",
+        "tone": "muted",
+        "anim": "none",
+        "icon": "circle",
+        "text": "Unknown",
+        "tooltip": "Nobody: Unknown"
+      },
+      "bad-state-reads-unknown": {
+        "source": "source:hub",
+        "state": "unknown",
+        "tone": "muted",
+        "anim": "none",
+        "icon": "circle",
+        "text": "Unknown",
+        "tooltip": "Hub: Unknown"
+      },
+      "reading-icon-when-item-has-none": {
+        "source": "source:hub",
+        "state": "on",
+        "tone": "success",
+        "anim": "none",
+        "icon": "axhub",
+        "text": "Connected",
+        "tooltip": "Hub: Connected"
+      },
+      "not-a-status": null
+    },
+    "compiled": {
+      "menus": [
+        {
+          "id": "view",
+          "label": "View",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "theme",
+              "label": "Theme",
+              "kind": "choice",
+              "path": "app-menu/view/theme",
+              "locked": false,
+              "origin": "asset",
+              "hint": "Light, dark or follow the system",
+              "icon": "palette",
+              "setting": "ui.theme",
+              "value": "dark",
+              "choices": [
+                {
+                  "value": "light",
+                  "label": "Light",
+                  "icon": "sun",
+                  "on": false,
+                  "action": "setting.set:ui.theme:%22light%22"
+                },
+                {
+                  "value": "dark",
+                  "label": "Dark",
+                  "icon": "moon",
+                  "on": true,
+                  "action": "setting.set:ui.theme:%22dark%22"
+                },
+                {
+                  "value": "system",
+                  "label": "System",
+                  "hint": "Follow the device",
+                  "on": false,
+                  "action": "setting.set:ui.theme:%22system%22"
+                }
+              ],
+              "valueLabel": "Dark"
+            },
+            {
+              "id": "density",
+              "label": "Density",
+              "kind": "choice",
+              "path": "app-menu/view/density",
+              "locked": false,
+              "origin": "asset",
+              "setting": "ui.density",
+              "value": "regular",
+              "choices": [
+                {
+                  "value": "compact",
+                  "label": "Compact",
+                  "on": false,
+                  "action": "setting.set:ui.density:%22compact%22"
+                },
+                {
+                  "value": "regular",
+                  "label": "Regular",
+                  "on": true,
+                  "action": "setting.set:ui.density:%22regular%22"
+                },
+                {
+                  "value": "roomy",
+                  "label": "Roomy",
+                  "on": false,
+                  "action": "setting.set:ui.density:%22roomy%22"
+                }
+              ],
+              "valueLabel": "Regular",
+              "cycle": true,
+              "action": "setting.set:ui.density:%22roomy%22"
+            },
+            {
+              "id": "autosave",
+              "label": "Auto save",
+              "kind": "choice",
+              "path": "app-menu/view/autosave",
+              "locked": false,
+              "origin": "asset",
+              "setting": "files.autosave",
+              "value": true,
+              "check": true,
+              "valueLabel": "On",
+              "action": "setting.toggle:files.autosave"
+            },
+            {
+              "id": "sep",
+              "label": "",
+              "kind": "separator",
+              "path": "app-menu/view/sep",
+              "separator": true,
+              "locked": false,
+              "origin": "asset"
+            },
+            {
+              "id": "hub",
+              "label": "axHub",
+              "kind": "action",
+              "path": "app-menu/view/hub",
+              "locked": false,
+              "origin": "asset",
+              "icon": "cloud",
+              "action": "nav:hub",
+              "status": {
+                "source": "source:hub",
+                "state": "on",
+                "tone": "success",
+                "anim": "none",
+                "icon": "axhub",
+                "text": "Connected",
+                "tooltip": "axHub connection: Connected"
+              }
+            },
+            {
+              "id": "builds",
+              "label": "Builds",
+              "kind": "action",
+              "path": "app-menu/view/builds",
+              "locked": false,
+              "origin": "asset",
+              "action": "nav:builds",
+              "status": {
+                "source": "counter:builds.running",
+                "state": "on",
+                "tone": "success",
+                "anim": "none",
+                "icon": "circle",
+                "text": "2",
+                "tooltip": "Builds: 2"
+              }
+            },
+            {
+              "id": "alerts",
+              "label": "Alerts",
+              "kind": "action",
+              "path": "app-menu/view/alerts",
+              "locked": false,
+              "origin": "asset",
+              "action": "nav:alerts",
+              "status": {
+                "source": "counter:alerts.unread",
+                "state": "off",
+                "tone": "muted",
+                "anim": "none",
+                "icon": "circle",
+                "text": "Off",
+                "tooltip": "Alerts: Off"
+              }
+            },
+            {
+              "id": "toolbar",
+              "label": "Toolbar",
+              "kind": "action",
+              "path": "app-menu/view/toolbar",
+              "locked": false,
+              "origin": "asset",
+              "action": "slot.hide:toolbar:toggle",
+              "status": {
+                "source": "slot:toolbar",
+                "state": "off",
+                "tone": "danger",
+                "anim": "none",
+                "icon": "circle",
+                "text": "Hidden",
+                "tooltip": "Toolbar: Hidden"
+              }
+            },
+            {
+              "id": "nobody",
+              "label": "Nobody",
+              "kind": "action",
+              "path": "app-menu/view/nobody",
+              "locked": false,
+              "origin": "asset",
+              "action": "noop",
+              "status": {
+                "source": "source:nobody",
+                "state": "unknown",
+                "tone": "muted",
+                "anim": "none",
+                "icon": "circle",
+                "text": "Unknown",
+                "tooltip": "Nobody: Unknown"
+              }
+            },
+            {
+              "id": "tools",
+              "label": "Tools",
+              "kind": "submenu",
+              "path": "app-menu/view/tools",
+              "locked": false,
+              "origin": "asset",
+              "items": [
+                {
+                  "id": "a",
+                  "label": "A",
+                  "kind": "action",
+                  "path": "app-menu/view/tools/a",
+                  "locked": false,
+                  "origin": "asset",
+                  "action": "tools.a"
+                },
+                {
+                  "id": "b",
+                  "label": "B",
+                  "kind": "action",
+                  "path": "app-menu/view/tools/b",
+                  "locked": false,
+                  "origin": "asset",
+                  "action": "tools.b"
+                },
+                {
+                  "id": "c",
+                  "label": "C",
+                  "kind": "action",
+                  "path": "app-menu/view/tools/c",
+                  "locked": false,
+                  "origin": "asset",
+                  "action": "tools.c"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "conflicts": [],
+      "notes": [
+        "view/nobody: status source \"nobody\" is not registered"
+      ]
+    },
+    "compiledCold": {
+      "menus": [
+        {
+          "id": "view",
+          "label": "View",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "theme",
+              "label": "Theme",
+              "kind": "choice",
+              "path": "app-menu/view/theme",
+              "locked": false,
+              "origin": "asset",
+              "hint": "Light, dark or follow the system",
+              "icon": "palette",
+              "setting": "ui.theme",
+              "value": null,
+              "choices": [
+                {
+                  "value": "light",
+                  "label": "Light",
+                  "icon": "sun",
+                  "on": false,
+                  "action": "setting.set:ui.theme:%22light%22"
+                },
+                {
+                  "value": "dark",
+                  "label": "Dark",
+                  "icon": "moon",
+                  "on": false,
+                  "action": "setting.set:ui.theme:%22dark%22"
+                },
+                {
+                  "value": "system",
+                  "label": "System",
+                  "hint": "Follow the device",
+                  "on": false,
+                  "action": "setting.set:ui.theme:%22system%22"
+                }
+              ],
+              "valueLabel": ""
+            },
+            {
+              "id": "density",
+              "label": "Density",
+              "kind": "choice",
+              "path": "app-menu/view/density",
+              "locked": false,
+              "origin": "asset",
+              "setting": "ui.density",
+              "value": null,
+              "choices": [
+                {
+                  "value": "compact",
+                  "label": "Compact",
+                  "on": false,
+                  "action": "setting.set:ui.density:%22compact%22"
+                },
+                {
+                  "value": "regular",
+                  "label": "Regular",
+                  "on": false,
+                  "action": "setting.set:ui.density:%22regular%22"
+                },
+                {
+                  "value": "roomy",
+                  "label": "Roomy",
+                  "on": false,
+                  "action": "setting.set:ui.density:%22roomy%22"
+                }
+              ],
+              "valueLabel": "",
+              "cycle": true,
+              "action": "setting.set:ui.density:%22compact%22"
+            },
+            {
+              "id": "autosave",
+              "label": "Auto save",
+              "kind": "choice",
+              "path": "app-menu/view/autosave",
+              "locked": false,
+              "origin": "asset",
+              "setting": "files.autosave",
+              "value": null,
+              "check": false,
+              "valueLabel": "Off",
+              "action": "setting.toggle:files.autosave"
+            },
+            {
+              "id": "sep",
+              "label": "",
+              "kind": "separator",
+              "path": "app-menu/view/sep",
+              "separator": true,
+              "locked": false,
+              "origin": "asset"
+            },
+            {
+              "id": "hub",
+              "label": "axHub",
+              "kind": "action",
+              "path": "app-menu/view/hub",
+              "locked": false,
+              "origin": "asset",
+              "icon": "cloud",
+              "action": "nav:hub",
+              "status": {
+                "source": "source:hub",
+                "state": "off",
+                "tone": "danger",
+                "anim": "none",
+                "icon": "axhub",
+                "text": "Not signed in",
+                "tooltip": "axHub connection: Not signed in"
+              }
+            },
+            {
+              "id": "builds",
+              "label": "Builds",
+              "kind": "action",
+              "path": "app-menu/view/builds",
+              "locked": false,
+              "origin": "asset",
+              "action": "nav:builds",
+              "status": {
+                "source": "counter:builds.running",
+                "state": "off",
+                "tone": "danger",
+                "anim": "none",
+                "icon": "circle",
+                "text": "Off",
+                "tooltip": "Builds: Off"
+              }
+            },
+            {
+              "id": "alerts",
+              "label": "Alerts",
+              "kind": "action",
+              "path": "app-menu/view/alerts",
+              "locked": false,
+              "origin": "asset",
+              "action": "nav:alerts",
+              "status": {
+                "source": "counter:alerts.unread",
+                "state": "off",
+                "tone": "muted",
+                "anim": "none",
+                "icon": "circle",
+                "text": "Off",
+                "tooltip": "Alerts: Off"
+              }
+            },
+            {
+              "id": "toolbar",
+              "label": "Toolbar",
+              "kind": "action",
+              "path": "app-menu/view/toolbar",
+              "locked": false,
+              "origin": "asset",
+              "action": "slot.hide:toolbar:toggle",
+              "status": {
+                "source": "slot:toolbar",
+                "state": "off",
+                "tone": "danger",
+                "anim": "none",
+                "icon": "circle",
+                "text": "Hidden",
+                "tooltip": "Toolbar: Hidden"
+              }
+            },
+            {
+              "id": "nobody",
+              "label": "Nobody",
+              "kind": "action",
+              "path": "app-menu/view/nobody",
+              "locked": false,
+              "origin": "asset",
+              "action": "noop",
+              "status": {
+                "source": "source:nobody",
+                "state": "unknown",
+                "tone": "muted",
+                "anim": "none",
+                "icon": "circle",
+                "text": "Unknown",
+                "tooltip": "Nobody: Unknown"
+              }
+            },
+            {
+              "id": "tools",
+              "label": "Tools",
+              "kind": "submenu",
+              "path": "app-menu/view/tools",
+              "locked": false,
+              "origin": "asset",
+              "items": [
+                {
+                  "id": "a",
+                  "label": "A",
+                  "kind": "action",
+                  "path": "app-menu/view/tools/a",
+                  "locked": false,
+                  "origin": "asset",
+                  "action": "tools.a"
+                },
+                {
+                  "id": "b",
+                  "label": "B",
+                  "kind": "action",
+                  "path": "app-menu/view/tools/b",
+                  "locked": false,
+                  "origin": "asset",
+                  "action": "tools.b"
+                },
+                {
+                  "id": "c",
+                  "label": "C",
+                  "kind": "action",
+                  "path": "app-menu/view/tools/c",
+                  "locked": false,
+                  "origin": "asset",
+                  "action": "tools.c"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "conflicts": [],
+      "notes": [
+        "view/nobody: status source \"nobody\" is not registered"
+      ]
+    },
+    "compiledOverridden": {
+      "menus": [
+        {
+          "id": "view",
+          "label": "View",
+          "origin": "asset",
+          "items": [
+            {
+              "id": "theme",
+              "label": "Appearance",
+              "kind": "choice",
+              "path": "app-menu/view/theme",
+              "locked": false,
+              "origin": "asset",
+              "hint": "Light, dark or follow the system",
+              "look": {
+                "tone": "accent",
+                "weight": "semibold"
+              },
+              "icon": "brush",
+              "setting": "ui.theme",
+              "value": "dark",
+              "choices": [
+                {
+                  "value": "light",
+                  "label": "Light",
+                  "icon": "sun",
+                  "on": false,
+                  "action": "setting.set:ui.theme:%22light%22"
+                },
+                {
+                  "value": "dark",
+                  "label": "Dark",
+                  "icon": "moon",
+                  "on": true,
+                  "action": "setting.set:ui.theme:%22dark%22"
+                },
+                {
+                  "value": "system",
+                  "label": "System",
+                  "hint": "Follow the device",
+                  "on": false,
+                  "action": "setting.set:ui.theme:%22system%22"
+                }
+              ],
+              "valueLabel": "Dark"
+            },
+            {
+              "id": "density",
+              "label": "Density",
+              "kind": "choice",
+              "path": "app-menu/view/density",
+              "locked": false,
+              "origin": "asset",
+              "setting": "ui.density",
+              "value": null,
+              "choices": [
+                {
+                  "value": "compact",
+                  "label": "Compact",
+                  "on": false,
+                  "action": "setting.set:ui.density:%22compact%22"
+                },
+                {
+                  "value": "regular",
+                  "label": "Regular",
+                  "on": false,
+                  "action": "setting.set:ui.density:%22regular%22"
+                },
+                {
+                  "value": "roomy",
+                  "label": "Roomy",
+                  "on": false,
+                  "action": "setting.set:ui.density:%22roomy%22"
+                }
+              ],
+              "valueLabel": "",
+              "cycle": true,
+              "action": "setting.set:ui.density:%22compact%22"
+            },
+            {
+              "id": "autosave",
+              "label": "Auto save",
+              "kind": "choice",
+              "path": "app-menu/view/autosave",
+              "locked": false,
+              "origin": "asset",
+              "setting": "files.autosave",
+              "value": null,
+              "check": false,
+              "valueLabel": "Off",
+              "action": "setting.toggle:files.autosave"
+            },
+            {
+              "id": "sep",
+              "label": "",
+              "kind": "separator",
+              "path": "app-menu/view/sep",
+              "separator": true,
+              "locked": false,
+              "origin": "asset"
+            },
+            {
+              "id": "hub",
+              "label": "axHub",
+              "kind": "action",
+              "path": "app-menu/view/hub",
+              "locked": false,
+              "origin": "asset",
+              "hint": "Open axHub",
+              "look": {
+                "iconTone": "success",
+                "emphasis": "soft"
+              },
+              "icon": "cloud",
+              "action": "nav:hub",
+              "shortcut": "Alt+H",
+              "status": {
+                "source": "source:hub",
+                "state": "on",
+                "tone": "success",
+                "anim": "none",
+                "icon": "axhub",
+                "text": "Connected",
+                "tooltip": "axHub connection: Connected"
+              }
+            },
+            {
+              "id": "builds",
+              "label": "Builds",
+              "kind": "action",
+              "path": "app-menu/view/builds",
+              "locked": false,
+              "origin": "asset",
+              "action": "nav:build-queue",
+              "status": {
+                "source": "counter:builds.running",
+                "state": "on",
+                "tone": "success",
+                "anim": "none",
+                "icon": "circle",
+                "text": "1",
+                "tooltip": "Builds: 1"
+              }
+            },
+            {
+              "id": "alerts",
+              "label": "Alerts",
+              "kind": "action",
+              "path": "app-menu/view/alerts",
+              "locked": false,
+              "origin": "asset",
+              "action": "nav:alerts",
+              "status": {
+                "source": "counter:alerts.unread",
+                "state": "off",
+                "tone": "muted",
+                "anim": "none",
+                "icon": "circle",
+                "text": "Off",
+                "tooltip": "Alerts: Off"
+              }
+            },
+            {
+              "id": "toolbar",
+              "label": "Toolbar",
+              "kind": "action",
+              "path": "app-menu/view/toolbar",
+              "locked": false,
+              "origin": "asset",
+              "action": "slot.hide:toolbar:toggle",
+              "status": {
+                "source": "slot:toolbar",
+                "state": "off",
+                "tone": "danger",
+                "anim": "none",
+                "icon": "circle",
+                "text": "Hidden",
+                "tooltip": "Toolbar: Hidden"
+              }
+            },
+            {
+              "id": "nobody",
+              "label": "Nobody",
+              "kind": "action",
+              "path": "app-menu/view/nobody",
+              "locked": false,
+              "origin": "asset",
+              "action": "noop",
+              "status": {
+                "source": "source:nobody",
+                "state": "unknown",
+                "tone": "muted",
+                "anim": "none",
+                "icon": "circle",
+                "text": "Unknown",
+                "tooltip": "Nobody: Unknown"
+              }
+            },
+            {
+              "id": "tools",
+              "label": "Tools",
+              "kind": "submenu",
+              "path": "app-menu/view/tools",
+              "locked": false,
+              "origin": "asset",
+              "items": [
+                {
+                  "id": "c",
+                  "label": "C",
+                  "kind": "action",
+                  "path": "app-menu/view/tools/c",
+                  "locked": false,
+                  "origin": "asset",
+                  "action": "tools.c"
+                },
+                {
+                  "id": "a",
+                  "label": "A",
+                  "kind": "action",
+                  "path": "app-menu/view/tools/a",
+                  "locked": false,
+                  "origin": "asset",
+                  "action": "tools.a"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "conflicts": [],
+      "notes": [
+        "view/nobody: status source \"nobody\" is not registered"
+      ]
+    },
+    "paths": {
+      "made": [
+        "app-menu/file/exports/json",
+        "context-menu/default/copy"
+      ],
+      "valid": {
+        "app-menu/file": true,
+        "app-menu/file/exports/json": true,
+        "context-menu/default/copy": true,
+        "context-menu/axf-banner/widget:x": true,
+        "nav/file": false,
+        "app-menu": false,
+        "app-menu//x": false,
+        "app-menu/-x": false,
+        "app-menu/file/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx": false
+      }
+    },
+    "overrides": {
+      "normalized": {
+        "app-menu/view/theme": {
+          "label": "Appearance",
+          "icon": "brush",
+          "tone": "accent",
+          "weight": "semibold"
+        },
+        "app-menu/view/tools/b": {
+          "visible": false
+        },
+        "app-menu/view/tools/c": {
+          "order": 1
+        },
+        "app-menu/view/hub": {
+          "hint": "Open axHub",
+          "shortcut": "Alt+H",
+          "iconTone": "success",
+          "emphasis": "soft"
+        },
+        "app-menu/view/builds": {
+          "action": "nav:build-queue"
+        },
+        "app-menu/view/autosave": {
+          "action": "ignored.on.a.choice"
+        },
+        "app-menu/view/theme2": {
+          "order": 1000
+        }
+      },
+      "set": {
+        "app-menu/view/theme": {
+          "label": "Appearance",
+          "icon": "brush",
+          "tone": "accent",
+          "weight": "semibold",
+          "size": "lg"
+        },
+        "app-menu/view/tools/b": {
+          "visible": false
+        },
+        "app-menu/view/tools/c": {
+          "order": 1
+        },
+        "app-menu/view/hub": {
+          "hint": "Open axHub",
+          "shortcut": "Alt+H",
+          "iconTone": "success",
+          "emphasis": "soft"
+        },
+        "app-menu/view/builds": {
+          "action": "nav:build-queue"
+        },
+        "app-menu/view/autosave": {
+          "action": "ignored.on.a.choice"
+        }
+      },
+      "setDefaultClears": {},
+      "setNullClears": {
+        "app-menu/view/x": {
+          "label": "X"
+        }
+      },
+      "setBadPath": {},
+      "setBadToken": {},
+      "withoutOne": {
+        "app-menu/view/theme": {
+          "label": "Appearance",
+          "icon": "brush",
+          "tone": "accent",
+          "weight": "semibold"
+        },
+        "app-menu/view/tools/c": {
+          "order": 1
+        },
+        "app-menu/view/hub": {
+          "hint": "Open axHub",
+          "shortcut": "Alt+H",
+          "iconTone": "success",
+          "emphasis": "soft"
+        },
+        "app-menu/view/builds": {
+          "action": "nav:build-queue"
+        },
+        "app-menu/view/autosave": {
+          "action": "ignored.on.a.choice"
+        }
+      },
+      "withoutDeep": {
+        "app-menu/view/theme": {
+          "label": "Appearance",
+          "icon": "brush",
+          "tone": "accent",
+          "weight": "semibold"
+        },
+        "app-menu/view/hub": {
+          "hint": "Open axHub",
+          "shortcut": "Alt+H",
+          "iconTone": "success",
+          "emphasis": "soft"
+        },
+        "app-menu/view/builds": {
+          "action": "nav:build-queue"
+        },
+        "app-menu/view/autosave": {
+          "action": "ignored.on.a.choice"
+        }
+      },
+      "list": [
+        {
+          "path": "app-menu/view/theme",
+          "token": "label",
+          "value": "Appearance"
+        },
+        {
+          "path": "app-menu/view/theme",
+          "token": "icon",
+          "value": "brush"
+        },
+        {
+          "path": "app-menu/view/theme",
+          "token": "tone",
+          "value": "accent"
+        },
+        {
+          "path": "app-menu/view/theme",
+          "token": "weight",
+          "value": "semibold"
+        },
+        {
+          "path": "app-menu/view/tools/b",
+          "token": "visible",
+          "value": false
+        },
+        {
+          "path": "app-menu/view/tools/c",
+          "token": "order",
+          "value": 1
+        },
+        {
+          "path": "app-menu/view/hub",
+          "token": "hint",
+          "value": "Open axHub"
+        },
+        {
+          "path": "app-menu/view/hub",
+          "token": "shortcut",
+          "value": "Alt+H"
+        },
+        {
+          "path": "app-menu/view/hub",
+          "token": "iconTone",
+          "value": "success"
+        },
+        {
+          "path": "app-menu/view/hub",
+          "token": "emphasis",
+          "value": "soft"
+        },
+        {
+          "path": "app-menu/view/builds",
+          "token": "action",
+          "value": "nav:build-queue"
+        },
+        {
+          "path": "app-menu/view/autosave",
+          "token": "action",
+          "value": "ignored.on.a.choice"
+        }
+      ]
+    },
+    "flat": {
+      "default": {
+        "items": [
+          {
+            "id": "first",
+            "label": "First",
+            "kind": "action",
+            "path": "context-menu/default/first",
+            "locked": false,
+            "origin": "asset",
+            "action": "noop"
+          },
+          {
+            "id": "copy",
+            "label": "Copy",
+            "kind": "action",
+            "path": "context-menu/default/copy",
+            "locked": false,
+            "origin": "asset",
+            "icon": "copy",
+            "action": "edit.copy",
+            "shortcut": "Ctrl+C"
+          },
+          {
+            "id": "s",
+            "label": "",
+            "kind": "separator",
+            "path": "context-menu/default/s",
+            "separator": true,
+            "locked": false,
+            "origin": "asset"
+          },
+          {
+            "id": "wrap",
+            "label": "Word wrap",
+            "kind": "choice",
+            "path": "context-menu/default/wrap",
+            "locked": false,
+            "origin": "asset",
+            "setting": "editor.wrap",
+            "value": false,
+            "check": false,
+            "valueLabel": "Off",
+            "action": "setting.toggle:editor.wrap"
+          },
+          {
+            "id": "size",
+            "label": "Text size",
+            "kind": "choice",
+            "path": "context-menu/default/size",
+            "locked": false,
+            "origin": "asset",
+            "setting": "editor.size",
+            "value": 14,
+            "choices": [
+              {
+                "value": 12,
+                "label": "Small",
+                "on": false,
+                "action": "setting.set:editor.size:12"
+              },
+              {
+                "value": 14,
+                "label": "Medium",
+                "on": true,
+                "action": "setting.set:editor.size:14"
+              },
+              {
+                "value": 18,
+                "label": "Large",
+                "on": false,
+                "action": "setting.set:editor.size:18"
+              }
+            ],
+            "valueLabel": "Medium"
+          }
+        ],
+        "notes": []
+      },
+      "overridden": {
+        "items": [
+          {
+            "id": "copy",
+            "label": "Copy text",
+            "kind": "action",
+            "path": "context-menu/default/copy",
+            "locked": false,
+            "origin": "asset",
+            "look": {
+              "tone": "accent"
+            },
+            "icon": "copy",
+            "action": "edit.copy",
+            "shortcut": "Ctrl+C"
+          },
+          {
+            "id": "s",
+            "label": "",
+            "kind": "separator",
+            "path": "context-menu/default/s",
+            "separator": true,
+            "locked": false,
+            "origin": "asset"
+          },
+          {
+            "id": "wrap",
+            "label": "Word wrap",
+            "kind": "choice",
+            "path": "context-menu/default/wrap",
+            "locked": false,
+            "origin": "asset",
+            "setting": "editor.wrap",
+            "value": null,
+            "check": false,
+            "valueLabel": "Off",
+            "action": "setting.toggle:editor.wrap"
+          },
+          {
+            "id": "size",
+            "label": "Text size",
+            "kind": "choice",
+            "path": "context-menu/default/size",
+            "locked": false,
+            "origin": "asset",
+            "setting": "editor.size",
+            "value": "18",
+            "choices": [
+              {
+                "value": 12,
+                "label": "Small",
+                "on": false,
+                "action": "setting.set:editor.size:12"
+              },
+              {
+                "value": 14,
+                "label": "Medium",
+                "on": false,
+                "action": "setting.set:editor.size:14"
+              },
+              {
+                "value": 18,
+                "label": "Large",
+                "on": true,
+                "action": "setting.set:editor.size:18"
+              }
+            ],
+            "valueLabel": "Large"
+          }
+        ],
+        "notes": []
+      }
+    },
+    "migration": {
+      "items": {
+        "items": [
+          {
+            "id": "reload",
+            "label": "Reload",
+            "action": "view.reload",
+            "kind": "action"
+          },
+          {
+            "id": "auto",
+            "label": "Auto build",
+            "setting": "builds.auto",
+            "kind": "choice"
+          },
+          {
+            "id": "auto-act",
+            "label": "Auto (with action)",
+            "action": "builds.auto:toggle",
+            "checked": "setting:builds.auto",
+            "kind": "action"
+          },
+          {
+            "id": "sep",
+            "separator": true,
+            "kind": "separator"
+          },
+          {
+            "id": "recent",
+            "label": "Recent",
+            "provider": "recent",
+            "kind": "live-list"
+          },
+          {
+            "id": "wrong",
+            "label": "Wrong kind",
+            "kind": "action",
+            "action": "x"
+          },
+          {
+            "id": "sub",
+            "label": "Sub",
+            "items": [
+              {
+                "id": "inner",
+                "label": "Inner",
+                "setting": "inner.on",
+                "kind": "choice"
+              }
+            ],
+            "kind": "submenu"
+          }
+        ],
+        "notes": [
+          "view/auto: check mark bound to setting \"builds.auto\" with nothing to run → a switch (setting)",
+          "view/wrong: kind \"submenu\" does not match the item; set to action",
+          "view/sub/inner: check mark bound to setting \"inner.on\" with nothing to run → a switch (setting)"
+        ]
+      },
+      "idempotent": {
+        "items": [
+          {
+            "id": "reload",
+            "label": "Reload",
+            "action": "view.reload",
+            "kind": "action"
+          },
+          {
+            "id": "auto",
+            "label": "Auto build",
+            "setting": "builds.auto",
+            "kind": "choice"
+          },
+          {
+            "id": "auto-act",
+            "label": "Auto (with action)",
+            "action": "builds.auto:toggle",
+            "checked": "setting:builds.auto",
+            "kind": "action"
+          },
+          {
+            "id": "sep",
+            "separator": true,
+            "kind": "separator"
+          },
+          {
+            "id": "recent",
+            "label": "Recent",
+            "provider": "recent",
+            "kind": "live-list"
+          },
+          {
+            "id": "wrong",
+            "label": "Wrong kind",
+            "kind": "action",
+            "action": "x"
+          },
+          {
+            "id": "sub",
+            "label": "Sub",
+            "items": [
+              {
+                "id": "inner",
+                "label": "Inner",
+                "setting": "inner.on",
+                "kind": "choice"
+              }
+            ],
+            "kind": "submenu"
+          }
+        ],
+        "notes": []
+      },
+      "notAList": {
+        "items": "x",
+        "notes": []
+      },
+      "asset": {
+        "asset": {
+          "$axf": "asset@1",
+          "type": "app-menu",
+          "id": "m",
+          "name": "M",
+          "version": "1",
+          "data": {
+            "menus": [
+              {
+                "id": "view",
+                "label": "View",
+                "items": [
+                  {
+                    "id": "reload",
+                    "label": "Reload",
+                    "action": "view.reload",
+                    "kind": "action"
+                  },
+                  {
+                    "id": "auto",
+                    "label": "Auto build",
+                    "setting": "builds.auto",
+                    "kind": "choice"
+                  },
+                  {
+                    "id": "auto-act",
+                    "label": "Auto (with action)",
+                    "action": "builds.auto:toggle",
+                    "checked": "setting:builds.auto",
+                    "kind": "action"
+                  },
+                  {
+                    "id": "sep",
+                    "separator": true,
+                    "kind": "separator"
+                  },
+                  {
+                    "id": "recent",
+                    "label": "Recent",
+                    "provider": "recent",
+                    "kind": "live-list"
+                  },
+                  {
+                    "id": "wrong",
+                    "label": "Wrong kind",
+                    "kind": "action",
+                    "action": "x"
+                  },
+                  {
+                    "id": "sub",
+                    "label": "Sub",
+                    "items": [
+                      {
+                        "id": "inner",
+                        "label": "Inner",
+                        "setting": "inner.on",
+                        "kind": "choice"
+                      }
+                    ],
+                    "kind": "submenu"
+                  }
+                ]
+              }
+            ],
+            "menuItems": 2
+          }
+        },
+        "notes": [
+          "view/auto: check mark bound to setting \"builds.auto\" with nothing to run → a switch (setting)",
+          "view/wrong: kind \"submenu\" does not match the item; set to action",
+          "view/sub/inner: check mark bound to setting \"inner.on\" with nothing to run → a switch (setting)"
+        ],
+        "changed": true
+      },
+      "context": {
+        "asset": {
+          "$axf": "asset@1",
+          "type": "context-menu",
+          "id": "c",
+          "name": "C",
+          "version": "1",
+          "data": {
+            "variant": "compact",
+            "showIcons": true,
+            "showShortcuts": true,
+            "targets": {
+              "default": [
+                {
+                  "id": "reload",
+                  "label": "Reload",
+                  "action": "view.reload",
+                  "kind": "action"
+                },
+                {
+                  "id": "auto",
+                  "label": "Auto build",
+                  "setting": "builds.auto",
+                  "kind": "choice"
+                }
+              ]
+            },
+            "menuItems": 2
+          }
+        },
+        "notes": [
+          "default/auto: check mark bound to setting \"builds.auto\" with nothing to run → a switch (setting)"
+        ],
+        "changed": true
+      },
+      "other": {
+        "asset": {
+          "$axf": "asset@1",
+          "type": "toolbar",
+          "id": "t",
+          "name": "T",
+          "version": "1",
+          "data": {
+            "groups": []
+          }
+        },
+        "notes": [],
+        "changed": false
+      },
+      "starters": {
+        "app-menu/developer": {
+          "changed": true,
+          "notes": [],
+          "valid": true,
+          "version": 2
+        },
+        "app-menu/minimal-picker": {
+          "changed": true,
+          "notes": [],
+          "valid": true,
+          "version": 2
+        },
+        "app-menu/standard-desktop": {
+          "changed": true,
+          "notes": [],
+          "valid": true,
+          "version": 2
+        },
+        "context-menu/appearance-quick": {
+          "changed": true,
+          "notes": [],
+          "valid": true,
+          "version": 2
+        },
+        "context-menu/asset-manager": {
+          "changed": true,
+          "notes": [],
+          "valid": true,
+          "version": 2
+        },
+        "context-menu/compact-classic": {
+          "changed": true,
+          "notes": [],
+          "valid": true,
+          "version": 2
+        },
+        "context-menu/developer-tools": {
+          "changed": true,
+          "notes": [],
+          "valid": true,
+          "version": 2
+        },
+        "context-menu/editor-pro": {
+          "changed": true,
+          "notes": [],
+          "valid": true,
+          "version": 2
+        },
+        "context-menu/enterprise-standard": {
+          "changed": true,
+          "notes": [],
+          "valid": true,
+          "version": 2
+        },
+        "context-menu/glass-flyout": {
+          "changed": true,
+          "notes": [],
+          "valid": true,
+          "version": 2
+        },
+        "context-menu/glass-minimal": {
+          "changed": true,
+          "notes": [],
+          "valid": true,
+          "version": 2
+        },
+        "context-menu/locked-down": {
+          "changed": true,
+          "notes": [],
+          "valid": true,
+          "version": 2
+        },
+        "context-menu/navigator": {
+          "changed": true,
+          "notes": [],
+          "valid": true,
+          "version": 2
+        },
+        "context-menu/reader-minimal": {
+          "changed": true,
+          "notes": [],
+          "valid": true,
+          "version": 2
+        },
+        "context-menu/roomy-touch": {
+          "changed": true,
+          "notes": [],
+          "valid": true,
+          "version": 2
+        },
+        "context-menu/touch-large": {
+          "changed": true,
+          "notes": [],
+          "valid": true,
+          "version": 2
+        },
+        "context-menu/windows": {
+          "changed": true,
+          "notes": [],
+          "valid": true,
+          "version": 2
+        }
+      }
+    }
   },
   "titles": {
     "pending-builds": "Pending builds",
@@ -764,6 +2769,8 @@
             {
               "id": "reload",
               "label": "Reload",
+              "kind": "action",
+              "path": "app-menu/view/reload",
               "locked": false,
               "origin": "asset",
               "action": "view.reload"
@@ -771,6 +2778,8 @@
             {
               "id": "theme",
               "label": "Theme (B2)",
+              "kind": "action",
+              "path": "app-menu/view/theme",
               "locked": false,
               "origin": "mod-b",
               "action": "b.theme2"
@@ -778,6 +2787,8 @@
             {
               "id": "sep",
               "label": "",
+              "kind": "separator",
+              "path": "app-menu/view/sep",
               "separator": true,
               "locked": false,
               "origin": "axf"
@@ -785,6 +2796,8 @@
             {
               "id": "chrome.toolbar",
               "label": "Toolbar",
+              "kind": "action",
+              "path": "app-menu/view/chrome.toolbar",
               "locked": false,
               "origin": "axf",
               "icon": "sliders",
@@ -796,6 +2809,8 @@
             {
               "id": "chrome.nav-menu",
               "label": "Navigation menu",
+              "kind": "action",
+              "path": "app-menu/view/chrome.nav-menu",
               "locked": false,
               "origin": "axf",
               "icon": "grid",
@@ -807,6 +2822,8 @@
             {
               "id": "chrome.banner",
               "label": "Banner",
+              "kind": "action",
+              "path": "app-menu/view/chrome.banner",
               "locked": false,
               "origin": "axf",
               "icon": "menu",
@@ -818,6 +2835,8 @@
             {
               "id": "sep2",
               "label": "",
+              "kind": "separator",
+              "path": "app-menu/view/sep2",
               "separator": true,
               "locked": false,
               "origin": "axf"
@@ -825,6 +2844,8 @@
             {
               "id": "hidden-state",
               "label": "Toolbar hidden?",
+              "kind": "action",
+              "path": "app-menu/view/hidden-state",
               "locked": false,
               "origin": "axf",
               "action": "noop",
@@ -841,6 +2862,8 @@
             {
               "id": "manager",
               "label": "Build manager",
+              "kind": "submenu",
+              "path": "app-menu/builds/manager",
               "locked": false,
               "origin": "builds",
               "icon": "hammer",
@@ -848,6 +2871,8 @@
                 {
                   "id": "pending",
                   "label": "Pending builds",
+                  "kind": "action",
+                  "path": "app-menu/builds/manager/pending",
                   "locked": false,
                   "origin": "builds",
                   "icon": "clock",
@@ -858,6 +2883,8 @@
                 {
                   "id": "queue",
                   "label": "Build queue",
+                  "kind": "action",
+                  "path": "app-menu/builds/manager/queue",
                   "locked": false,
                   "origin": "builds",
                   "icon": "list",
@@ -868,6 +2895,8 @@
             {
               "id": "sep",
               "label": "",
+              "kind": "separator",
+              "path": "app-menu/builds/sep",
               "separator": true,
               "locked": false,
               "origin": "builds"
@@ -875,6 +2904,8 @@
             {
               "id": "features",
               "label": "Features",
+              "kind": "live-list",
+              "path": "app-menu/builds/features",
               "locked": false,
               "origin": "builds",
               "icon": "star",
@@ -884,6 +2915,8 @@
             {
               "id": "auto",
               "label": "Auto build",
+              "kind": "action",
+              "path": "app-menu/builds/auto",
               "locked": false,
               "origin": "builds",
               "action": "builds.auto:toggle",
@@ -900,6 +2933,8 @@
             {
               "id": "first",
               "label": "First",
+              "kind": "action",
+              "path": "app-menu/file/first",
               "locked": false,
               "origin": "files",
               "action": "file.first"
@@ -907,6 +2942,8 @@
             {
               "id": "new",
               "label": "New file",
+              "kind": "action",
+              "path": "app-menu/file/new",
               "locked": false,
               "origin": "asset",
               "icon": "plus",
@@ -916,6 +2953,8 @@
             {
               "id": "open",
               "label": "Open…",
+              "kind": "action",
+              "path": "app-menu/file/open",
               "locked": false,
               "origin": "files",
               "icon": "folder",
@@ -924,6 +2963,8 @@
             {
               "id": "recent",
               "label": "Recent",
+              "kind": "live-list",
+              "path": "app-menu/file/recent",
               "locked": false,
               "origin": "files",
               "provider": "recent",
@@ -932,6 +2973,8 @@
             {
               "id": "save",
               "label": "Save (plugin)",
+              "kind": "action",
+              "path": "app-menu/file/save",
               "locked": false,
               "origin": "files",
               "icon": "save",
@@ -940,6 +2983,8 @@
             {
               "id": "s1",
               "label": "",
+              "kind": "separator",
+              "path": "app-menu/file/s1",
               "separator": true,
               "locked": false,
               "origin": "asset"
@@ -947,6 +2992,8 @@
             {
               "id": "exports",
               "label": "Export",
+              "kind": "submenu",
+              "path": "app-menu/file/exports",
               "locked": false,
               "origin": "asset",
               "icon": "share",
@@ -954,6 +3001,8 @@
                 {
                   "id": "json",
                   "label": "As JSON",
+                  "kind": "action",
+                  "path": "app-menu/file/exports/json",
                   "locked": false,
                   "origin": "asset",
                   "action": "file.export:json"
@@ -961,6 +3010,8 @@
                 {
                   "id": "csv",
                   "label": "As CSV",
+                  "kind": "action",
+                  "path": "app-menu/file/exports/csv",
                   "locked": false,
                   "origin": "files",
                   "action": "file.export:csv"
@@ -970,6 +3021,8 @@
             {
               "id": "admin-only",
               "label": "Wipe",
+              "kind": "action",
+              "path": "app-menu/file/admin-only",
               "locked": true,
               "origin": "asset",
               "action": "file.wipe",
@@ -978,6 +3031,8 @@
             {
               "id": "clear-recent",
               "label": "Clear recent",
+              "kind": "action",
+              "path": "app-menu/file/clear-recent",
               "locked": false,
               "origin": "files",
               "action": "file.recent.clear"
@@ -992,12 +3047,16 @@
             {
               "id": "hidden-sub",
               "label": "Hidden",
+              "kind": "submenu",
+              "path": "app-menu/empty/hidden-sub",
               "locked": false,
               "origin": "asset",
               "items": [
                 {
                   "id": "x",
                   "label": "X",
+                  "kind": "action",
+                  "path": "app-menu/empty/hidden-sub/x",
                   "locked": true,
                   "origin": "asset",
                   "action": "x",
@@ -1015,6 +3074,8 @@
             {
               "id": "about",
               "label": "About",
+              "kind": "action",
+              "path": "app-menu/more/about",
               "locked": false,
               "origin": "help",
               "icon": "info",
@@ -1025,6 +3086,8 @@
             {
               "id": "alerts",
               "label": "Alerts",
+              "kind": "action",
+              "path": "app-menu/more/alerts",
               "locked": false,
               "origin": "help",
               "action": "alerts.open",
@@ -1033,6 +3096,8 @@
             {
               "id": "bad1",
               "label": "Bad 1",
+              "kind": "action",
+              "path": "app-menu/more/bad1",
               "locked": false,
               "origin": "help",
               "action": "noop",
@@ -1041,6 +3106,8 @@
             {
               "id": "bad2",
               "label": "Bad 2",
+              "kind": "action",
+              "path": "app-menu/more/bad2",
               "locked": false,
               "origin": "help",
               "action": "noop",
@@ -1074,6 +3141,8 @@
             {
               "id": "reload",
               "label": "Reload",
+              "kind": "action",
+              "path": "app-menu/view/reload",
               "locked": false,
               "origin": "asset",
               "action": "view.reload"
@@ -1081,6 +3150,8 @@
             {
               "id": "theme",
               "label": "Theme (B2)",
+              "kind": "action",
+              "path": "app-menu/view/theme",
               "locked": false,
               "origin": "mod-b",
               "action": "b.theme2"
@@ -1088,6 +3159,8 @@
             {
               "id": "sep",
               "label": "",
+              "kind": "separator",
+              "path": "app-menu/view/sep",
               "separator": true,
               "locked": false,
               "origin": "axf"
@@ -1095,6 +3168,8 @@
             {
               "id": "chrome.toolbar",
               "label": "Toolbar",
+              "kind": "action",
+              "path": "app-menu/view/chrome.toolbar",
               "locked": false,
               "origin": "axf",
               "icon": "sliders",
@@ -1106,6 +3181,8 @@
             {
               "id": "chrome.nav-menu",
               "label": "Navigation menu",
+              "kind": "action",
+              "path": "app-menu/view/chrome.nav-menu",
               "locked": false,
               "origin": "axf",
               "icon": "grid",
@@ -1117,6 +3194,8 @@
             {
               "id": "chrome.banner",
               "label": "Banner",
+              "kind": "action",
+              "path": "app-menu/view/chrome.banner",
               "locked": false,
               "origin": "axf",
               "icon": "menu",
@@ -1128,6 +3207,8 @@
             {
               "id": "sep2",
               "label": "",
+              "kind": "separator",
+              "path": "app-menu/view/sep2",
               "separator": true,
               "locked": false,
               "origin": "axf"
@@ -1135,6 +3216,8 @@
             {
               "id": "hidden-state",
               "label": "Toolbar hidden?",
+              "kind": "action",
+              "path": "app-menu/view/hidden-state",
               "locked": false,
               "origin": "axf",
               "action": "noop",
@@ -1151,6 +3234,8 @@
             {
               "id": "manager",
               "label": "Build manager",
+              "kind": "submenu",
+              "path": "app-menu/builds/manager",
               "locked": false,
               "origin": "builds",
               "icon": "hammer",
@@ -1158,6 +3243,8 @@
                 {
                   "id": "pending",
                   "label": "Pending builds",
+                  "kind": "action",
+                  "path": "app-menu/builds/manager/pending",
                   "locked": false,
                   "origin": "builds",
                   "icon": "clock",
@@ -1168,6 +3255,8 @@
                 {
                   "id": "queue",
                   "label": "Build queue",
+                  "kind": "action",
+                  "path": "app-menu/builds/manager/queue",
                   "locked": false,
                   "origin": "builds",
                   "icon": "list",
@@ -1178,6 +3267,8 @@
             {
               "id": "sep",
               "label": "",
+              "kind": "separator",
+              "path": "app-menu/builds/sep",
               "separator": true,
               "locked": false,
               "origin": "builds"
@@ -1185,6 +3276,8 @@
             {
               "id": "features",
               "label": "Features",
+              "kind": "live-list",
+              "path": "app-menu/builds/features",
               "locked": false,
               "origin": "builds",
               "icon": "star",
@@ -1194,6 +3287,8 @@
             {
               "id": "auto",
               "label": "Auto build",
+              "kind": "action",
+              "path": "app-menu/builds/auto",
               "locked": false,
               "origin": "builds",
               "action": "builds.auto:toggle",
@@ -1210,6 +3305,8 @@
             {
               "id": "first",
               "label": "First",
+              "kind": "action",
+              "path": "app-menu/file/first",
               "locked": false,
               "origin": "files",
               "action": "file.first"
@@ -1217,6 +3314,8 @@
             {
               "id": "new",
               "label": "New file",
+              "kind": "action",
+              "path": "app-menu/file/new",
               "locked": false,
               "origin": "asset",
               "icon": "plus",
@@ -1226,6 +3325,8 @@
             {
               "id": "open",
               "label": "Open…",
+              "kind": "action",
+              "path": "app-menu/file/open",
               "locked": false,
               "origin": "files",
               "icon": "folder",
@@ -1234,6 +3335,8 @@
             {
               "id": "recent",
               "label": "Recent",
+              "kind": "live-list",
+              "path": "app-menu/file/recent",
               "locked": false,
               "origin": "files",
               "provider": "recent",
@@ -1242,6 +3345,8 @@
             {
               "id": "save",
               "label": "Save (plugin)",
+              "kind": "action",
+              "path": "app-menu/file/save",
               "locked": false,
               "origin": "files",
               "icon": "save",
@@ -1250,6 +3355,8 @@
             {
               "id": "s1",
               "label": "",
+              "kind": "separator",
+              "path": "app-menu/file/s1",
               "separator": true,
               "locked": false,
               "origin": "asset"
@@ -1257,6 +3364,8 @@
             {
               "id": "exports",
               "label": "Export",
+              "kind": "submenu",
+              "path": "app-menu/file/exports",
               "locked": false,
               "origin": "asset",
               "icon": "share",
@@ -1264,6 +3373,8 @@
                 {
                   "id": "json",
                   "label": "As JSON",
+                  "kind": "action",
+                  "path": "app-menu/file/exports/json",
                   "locked": false,
                   "origin": "asset",
                   "action": "file.export:json"
@@ -1271,6 +3382,8 @@
                 {
                   "id": "csv",
                   "label": "As CSV",
+                  "kind": "action",
+                  "path": "app-menu/file/exports/csv",
                   "locked": false,
                   "origin": "files",
                   "action": "file.export:csv"
@@ -1280,6 +3393,8 @@
             {
               "id": "admin-only",
               "label": "Wipe",
+              "kind": "action",
+              "path": "app-menu/file/admin-only",
               "locked": true,
               "origin": "asset",
               "action": "file.wipe",
@@ -1288,6 +3403,8 @@
             {
               "id": "clear-recent",
               "label": "Clear recent",
+              "kind": "action",
+              "path": "app-menu/file/clear-recent",
               "locked": false,
               "origin": "files",
               "action": "file.recent.clear"
@@ -1302,12 +3419,16 @@
             {
               "id": "hidden-sub",
               "label": "Hidden",
+              "kind": "submenu",
+              "path": "app-menu/empty/hidden-sub",
               "locked": false,
               "origin": "asset",
               "items": [
                 {
                   "id": "x",
                   "label": "X",
+                  "kind": "action",
+                  "path": "app-menu/empty/hidden-sub/x",
                   "locked": true,
                   "origin": "asset",
                   "action": "x",
@@ -1325,6 +3446,8 @@
             {
               "id": "about",
               "label": "About",
+              "kind": "action",
+              "path": "app-menu/more/about",
               "locked": false,
               "origin": "help",
               "icon": "info",
@@ -1335,6 +3458,8 @@
             {
               "id": "alerts",
               "label": "Alerts",
+              "kind": "action",
+              "path": "app-menu/more/alerts",
               "locked": false,
               "origin": "help",
               "action": "alerts.open",
@@ -1343,6 +3468,8 @@
             {
               "id": "bad1",
               "label": "Bad 1",
+              "kind": "action",
+              "path": "app-menu/more/bad1",
               "locked": false,
               "origin": "help",
               "action": "noop",
@@ -1351,6 +3478,8 @@
             {
               "id": "bad2",
               "label": "Bad 2",
+              "kind": "action",
+              "path": "app-menu/more/bad2",
               "locked": false,
               "origin": "help",
               "action": "noop",
@@ -1384,6 +3513,8 @@
             {
               "id": "reload",
               "label": "Reload",
+              "kind": "action",
+              "path": "app-menu/view/reload",
               "locked": false,
               "origin": "asset",
               "action": "view.reload"
@@ -1391,6 +3522,8 @@
             {
               "id": "theme",
               "label": "Theme (B2)",
+              "kind": "action",
+              "path": "app-menu/view/theme",
               "locked": false,
               "origin": "mod-b",
               "action": "b.theme2"
@@ -1398,6 +3531,8 @@
             {
               "id": "sep",
               "label": "",
+              "kind": "separator",
+              "path": "app-menu/view/sep",
               "separator": true,
               "locked": false,
               "origin": "axf"
@@ -1405,6 +3540,8 @@
             {
               "id": "chrome.toolbar",
               "label": "Toolbar",
+              "kind": "action",
+              "path": "app-menu/view/chrome.toolbar",
               "locked": false,
               "origin": "axf",
               "icon": "sliders",
@@ -1416,6 +3553,8 @@
             {
               "id": "chrome.nav-menu",
               "label": "Navigation menu",
+              "kind": "action",
+              "path": "app-menu/view/chrome.nav-menu",
               "locked": false,
               "origin": "axf",
               "icon": "grid",
@@ -1427,6 +3566,8 @@
             {
               "id": "chrome.banner",
               "label": "Banner",
+              "kind": "action",
+              "path": "app-menu/view/chrome.banner",
               "locked": false,
               "origin": "axf",
               "icon": "menu",
@@ -1438,6 +3579,8 @@
             {
               "id": "sep2",
               "label": "",
+              "kind": "separator",
+              "path": "app-menu/view/sep2",
               "separator": true,
               "locked": false,
               "origin": "axf"
@@ -1445,6 +3588,8 @@
             {
               "id": "hidden-state",
               "label": "Toolbar hidden?",
+              "kind": "action",
+              "path": "app-menu/view/hidden-state",
               "locked": false,
               "origin": "axf",
               "action": "noop",
@@ -1461,6 +3606,8 @@
             {
               "id": "manager",
               "label": "Build manager",
+              "kind": "submenu",
+              "path": "app-menu/builds/manager",
               "locked": false,
               "origin": "builds",
               "icon": "hammer",
@@ -1468,6 +3615,8 @@
                 {
                   "id": "pending",
                   "label": "Pending builds",
+                  "kind": "action",
+                  "path": "app-menu/builds/manager/pending",
                   "locked": false,
                   "origin": "builds",
                   "icon": "clock",
@@ -1478,6 +3627,8 @@
                 {
                   "id": "queue",
                   "label": "Build queue",
+                  "kind": "action",
+                  "path": "app-menu/builds/manager/queue",
                   "locked": false,
                   "origin": "builds",
                   "icon": "list",
@@ -1488,6 +3639,8 @@
             {
               "id": "sep",
               "label": "",
+              "kind": "separator",
+              "path": "app-menu/builds/sep",
               "separator": true,
               "locked": false,
               "origin": "builds"
@@ -1495,6 +3648,8 @@
             {
               "id": "features",
               "label": "Features",
+              "kind": "live-list",
+              "path": "app-menu/builds/features",
               "locked": false,
               "origin": "builds",
               "icon": "star",
@@ -1504,6 +3659,8 @@
             {
               "id": "auto",
               "label": "Auto build",
+              "kind": "action",
+              "path": "app-menu/builds/auto",
               "locked": false,
               "origin": "builds",
               "action": "builds.auto:toggle",
@@ -1520,6 +3677,8 @@
             {
               "id": "first",
               "label": "First",
+              "kind": "action",
+              "path": "app-menu/file/first",
               "locked": false,
               "origin": "files",
               "action": "file.first"
@@ -1527,6 +3686,8 @@
             {
               "id": "new",
               "label": "New file",
+              "kind": "action",
+              "path": "app-menu/file/new",
               "locked": false,
               "origin": "asset",
               "icon": "plus",
@@ -1536,6 +3697,8 @@
             {
               "id": "open",
               "label": "Open…",
+              "kind": "action",
+              "path": "app-menu/file/open",
               "locked": false,
               "origin": "files",
               "icon": "folder",
@@ -1544,6 +3707,8 @@
             {
               "id": "recent",
               "label": "Recent",
+              "kind": "live-list",
+              "path": "app-menu/file/recent",
               "locked": false,
               "origin": "files",
               "provider": "recent",
@@ -1552,6 +3717,8 @@
             {
               "id": "save",
               "label": "Save (plugin)",
+              "kind": "action",
+              "path": "app-menu/file/save",
               "locked": false,
               "origin": "files",
               "icon": "save",
@@ -1560,6 +3727,8 @@
             {
               "id": "s1",
               "label": "",
+              "kind": "separator",
+              "path": "app-menu/file/s1",
               "separator": true,
               "locked": false,
               "origin": "asset"
@@ -1567,6 +3736,8 @@
             {
               "id": "exports",
               "label": "Export",
+              "kind": "submenu",
+              "path": "app-menu/file/exports",
               "locked": false,
               "origin": "asset",
               "icon": "share",
@@ -1574,6 +3745,8 @@
                 {
                   "id": "json",
                   "label": "As JSON",
+                  "kind": "action",
+                  "path": "app-menu/file/exports/json",
                   "locked": false,
                   "origin": "asset",
                   "action": "file.export:json"
@@ -1581,6 +3754,8 @@
                 {
                   "id": "csv",
                   "label": "As CSV",
+                  "kind": "action",
+                  "path": "app-menu/file/exports/csv",
                   "locked": false,
                   "origin": "files",
                   "action": "file.export:csv"
@@ -1590,6 +3765,8 @@
             {
               "id": "admin-only",
               "label": "Wipe",
+              "kind": "action",
+              "path": "app-menu/file/admin-only",
               "locked": false,
               "origin": "asset",
               "action": "file.wipe",
@@ -1598,6 +3775,8 @@
             {
               "id": "clear-recent",
               "label": "Clear recent",
+              "kind": "action",
+              "path": "app-menu/file/clear-recent",
               "locked": false,
               "origin": "files",
               "action": "file.recent.clear"
@@ -1612,12 +3791,16 @@
             {
               "id": "hidden-sub",
               "label": "Hidden",
+              "kind": "submenu",
+              "path": "app-menu/empty/hidden-sub",
               "locked": false,
               "origin": "asset",
               "items": [
                 {
                   "id": "x",
                   "label": "X",
+                  "kind": "action",
+                  "path": "app-menu/empty/hidden-sub/x",
                   "locked": false,
                   "origin": "asset",
                   "action": "x",
@@ -1635,6 +3818,8 @@
             {
               "id": "about",
               "label": "About",
+              "kind": "action",
+              "path": "app-menu/more/about",
               "locked": false,
               "origin": "help",
               "icon": "info",
@@ -1645,6 +3830,8 @@
             {
               "id": "alerts",
               "label": "Alerts",
+              "kind": "action",
+              "path": "app-menu/more/alerts",
               "locked": false,
               "origin": "help",
               "action": "alerts.open",
@@ -1653,6 +3840,8 @@
             {
               "id": "bad1",
               "label": "Bad 1",
+              "kind": "action",
+              "path": "app-menu/more/bad1",
               "locked": false,
               "origin": "help",
               "action": "noop",
@@ -1661,6 +3850,8 @@
             {
               "id": "bad2",
               "label": "Bad 2",
+              "kind": "action",
+              "path": "app-menu/more/bad2",
               "locked": false,
               "origin": "help",
               "action": "noop",
@@ -1695,6 +3886,8 @@
           {
             "id": "reload",
             "label": "Reload",
+            "kind": "action",
+            "path": "app-menu/view/reload",
             "locked": false,
             "origin": "asset",
             "action": "view.reload"
@@ -1702,6 +3895,8 @@
           {
             "id": "theme",
             "label": "Theme (B2)",
+            "kind": "action",
+            "path": "app-menu/view/theme",
             "locked": false,
             "origin": "mod-b",
             "action": "b.theme2"
@@ -1709,6 +3904,8 @@
           {
             "id": "sep",
             "label": "",
+            "kind": "separator",
+            "path": "app-menu/view/sep",
             "separator": true,
             "locked": false,
             "origin": "axf"
@@ -1716,6 +3913,8 @@
           {
             "id": "chrome.toolbar",
             "label": "Toolbar",
+            "kind": "action",
+            "path": "app-menu/view/chrome.toolbar",
             "locked": false,
             "origin": "axf",
             "icon": "sliders",
@@ -1727,6 +3926,8 @@
           {
             "id": "chrome.nav-menu",
             "label": "Navigation menu",
+            "kind": "action",
+            "path": "app-menu/view/chrome.nav-menu",
             "locked": false,
             "origin": "axf",
             "icon": "grid",
@@ -1738,6 +3939,8 @@
           {
             "id": "chrome.banner",
             "label": "Banner",
+            "kind": "action",
+            "path": "app-menu/view/chrome.banner",
             "locked": false,
             "origin": "axf",
             "icon": "menu",
@@ -1749,6 +3952,8 @@
           {
             "id": "sep2",
             "label": "",
+            "kind": "separator",
+            "path": "app-menu/view/sep2",
             "separator": true,
             "locked": false,
             "origin": "axf"
@@ -1756,6 +3961,8 @@
           {
             "id": "hidden-state",
             "label": "Toolbar hidden?",
+            "kind": "action",
+            "path": "app-menu/view/hidden-state",
             "locked": false,
             "origin": "axf",
             "action": "noop",
@@ -1772,6 +3979,8 @@
           {
             "id": "manager",
             "label": "Build manager",
+            "kind": "submenu",
+            "path": "app-menu/builds/manager",
             "locked": false,
             "origin": "builds",
             "icon": "hammer",
@@ -1779,6 +3988,8 @@
               {
                 "id": "pending",
                 "label": "Pending builds",
+                "kind": "action",
+                "path": "app-menu/builds/manager/pending",
                 "locked": false,
                 "origin": "builds",
                 "icon": "clock",
@@ -1789,6 +4000,8 @@
               {
                 "id": "queue",
                 "label": "Build queue",
+                "kind": "action",
+                "path": "app-menu/builds/manager/queue",
                 "locked": false,
                 "origin": "builds",
                 "icon": "list",
@@ -1799,6 +4012,8 @@
           {
             "id": "sep",
             "label": "",
+            "kind": "separator",
+            "path": "app-menu/builds/sep",
             "separator": true,
             "locked": false,
             "origin": "builds"
@@ -1806,6 +4021,8 @@
           {
             "id": "features",
             "label": "Features",
+            "kind": "live-list",
+            "path": "app-menu/builds/features",
             "locked": false,
             "origin": "builds",
             "icon": "star",
@@ -1815,6 +4032,8 @@
           {
             "id": "auto",
             "label": "Auto build",
+            "kind": "action",
+            "path": "app-menu/builds/auto",
             "locked": false,
             "origin": "builds",
             "action": "builds.auto:toggle",
@@ -1831,6 +4050,8 @@
           {
             "id": "first",
             "label": "First",
+            "kind": "action",
+            "path": "app-menu/file/first",
             "locked": false,
             "origin": "files",
             "action": "file.first"
@@ -1838,6 +4059,8 @@
           {
             "id": "new",
             "label": "New file",
+            "kind": "action",
+            "path": "app-menu/file/new",
             "locked": false,
             "origin": "asset",
             "icon": "plus",
@@ -1847,6 +4070,8 @@
           {
             "id": "open",
             "label": "Open…",
+            "kind": "action",
+            "path": "app-menu/file/open",
             "locked": false,
             "origin": "files",
             "icon": "folder",
@@ -1855,6 +4080,8 @@
           {
             "id": "recent",
             "label": "Recent",
+            "kind": "live-list",
+            "path": "app-menu/file/recent",
             "locked": false,
             "origin": "files",
             "provider": "recent",
@@ -1863,6 +4090,8 @@
           {
             "id": "save",
             "label": "Save (plugin)",
+            "kind": "action",
+            "path": "app-menu/file/save",
             "locked": false,
             "origin": "files",
             "icon": "save",
@@ -1871,6 +4100,8 @@
           {
             "id": "s1",
             "label": "",
+            "kind": "separator",
+            "path": "app-menu/file/s1",
             "separator": true,
             "locked": false,
             "origin": "asset"
@@ -1878,6 +4109,8 @@
           {
             "id": "exports",
             "label": "Export",
+            "kind": "submenu",
+            "path": "app-menu/file/exports",
             "locked": false,
             "origin": "asset",
             "icon": "share",
@@ -1885,6 +4118,8 @@
               {
                 "id": "json",
                 "label": "As JSON",
+                "kind": "action",
+                "path": "app-menu/file/exports/json",
                 "locked": false,
                 "origin": "asset",
                 "action": "file.export:json"
@@ -1892,6 +4127,8 @@
               {
                 "id": "csv",
                 "label": "As CSV",
+                "kind": "action",
+                "path": "app-menu/file/exports/csv",
                 "locked": false,
                 "origin": "files",
                 "action": "file.export:csv"
@@ -1901,6 +4138,8 @@
           {
             "id": "admin-only",
             "label": "Wipe",
+            "kind": "action",
+            "path": "app-menu/file/admin-only",
             "locked": false,
             "origin": "asset",
             "action": "file.wipe",
@@ -1909,6 +4148,8 @@
           {
             "id": "clear-recent",
             "label": "Clear recent",
+            "kind": "action",
+            "path": "app-menu/file/clear-recent",
             "locked": false,
             "origin": "files",
             "action": "file.recent.clear"
@@ -1923,12 +4164,16 @@
           {
             "id": "hidden-sub",
             "label": "Hidden",
+            "kind": "submenu",
+            "path": "app-menu/empty/hidden-sub",
             "locked": false,
             "origin": "asset",
             "items": [
               {
                 "id": "x",
                 "label": "X",
+                "kind": "action",
+                "path": "app-menu/empty/hidden-sub/x",
                 "locked": false,
                 "origin": "asset",
                 "action": "x",
@@ -1946,6 +4191,8 @@
           {
             "id": "about",
             "label": "About",
+            "kind": "action",
+            "path": "app-menu/more/about",
             "locked": false,
             "origin": "help",
             "icon": "info",
@@ -1956,6 +4203,8 @@
           {
             "id": "alerts",
             "label": "Alerts",
+            "kind": "action",
+            "path": "app-menu/more/alerts",
             "locked": false,
             "origin": "help",
             "action": "alerts.open",
@@ -1964,6 +4213,8 @@
           {
             "id": "bad1",
             "label": "Bad 1",
+            "kind": "action",
+            "path": "app-menu/more/bad1",
             "locked": false,
             "origin": "help",
             "action": "noop",
@@ -1972,6 +4223,8 @@
           {
             "id": "bad2",
             "label": "Bad 2",
+            "kind": "action",
+            "path": "app-menu/more/bad2",
             "locked": false,
             "origin": "help",
             "action": "noop",
@@ -2006,6 +4259,8 @@
             {
               "id": "reload",
               "label": "Reload",
+              "kind": "action",
+              "path": "app-menu/view/reload",
               "locked": false,
               "origin": "asset",
               "action": "view.reload"
@@ -2013,6 +4268,8 @@
             {
               "id": "theme",
               "label": "Theme (B2)",
+              "kind": "action",
+              "path": "app-menu/view/theme",
               "locked": false,
               "origin": "mod-b",
               "action": "b.theme2"
@@ -2020,6 +4277,8 @@
             {
               "id": "sep",
               "label": "",
+              "kind": "separator",
+              "path": "app-menu/view/sep",
               "separator": true,
               "locked": false,
               "origin": "axf"
@@ -2027,6 +4286,8 @@
             {
               "id": "chrome.toolbar",
               "label": "Toolbar",
+              "kind": "action",
+              "path": "app-menu/view/chrome.toolbar",
               "locked": false,
               "origin": "axf",
               "icon": "sliders",
@@ -2038,6 +4299,8 @@
             {
               "id": "chrome.nav-menu",
               "label": "Navigation menu",
+              "kind": "action",
+              "path": "app-menu/view/chrome.nav-menu",
               "locked": false,
               "origin": "axf",
               "icon": "grid",
@@ -2049,6 +4312,8 @@
             {
               "id": "chrome.banner",
               "label": "Banner",
+              "kind": "action",
+              "path": "app-menu/view/chrome.banner",
               "locked": false,
               "origin": "axf",
               "icon": "menu",
@@ -2060,6 +4325,8 @@
             {
               "id": "sep2",
               "label": "",
+              "kind": "separator",
+              "path": "app-menu/view/sep2",
               "separator": true,
               "locked": false,
               "origin": "axf"
@@ -2067,6 +4334,8 @@
             {
               "id": "hidden-state",
               "label": "Toolbar hidden?",
+              "kind": "action",
+              "path": "app-menu/view/hidden-state",
               "locked": false,
               "origin": "axf",
               "action": "noop",
@@ -2083,6 +4352,8 @@
             {
               "id": "manager",
               "label": "Build manager",
+              "kind": "submenu",
+              "path": "app-menu/builds/manager",
               "locked": false,
               "origin": "builds",
               "icon": "hammer",
@@ -2090,6 +4361,8 @@
                 {
                   "id": "pending",
                   "label": "Pending builds",
+                  "kind": "action",
+                  "path": "app-menu/builds/manager/pending",
                   "locked": false,
                   "origin": "builds",
                   "icon": "clock",
@@ -2100,6 +4373,8 @@
                 {
                   "id": "queue",
                   "label": "Build queue",
+                  "kind": "action",
+                  "path": "app-menu/builds/manager/queue",
                   "locked": false,
                   "origin": "builds",
                   "icon": "list",
@@ -2110,6 +4385,8 @@
             {
               "id": "sep",
               "label": "",
+              "kind": "separator",
+              "path": "app-menu/builds/sep",
               "separator": true,
               "locked": false,
               "origin": "builds"
@@ -2117,6 +4394,8 @@
             {
               "id": "features",
               "label": "Features",
+              "kind": "live-list",
+              "path": "app-menu/builds/features",
               "locked": false,
               "origin": "builds",
               "icon": "star",
@@ -2126,6 +4405,8 @@
             {
               "id": "auto",
               "label": "Auto build",
+              "kind": "action",
+              "path": "app-menu/builds/auto",
               "locked": false,
               "origin": "builds",
               "action": "builds.auto:toggle",
@@ -2142,6 +4423,8 @@
             {
               "id": "first",
               "label": "First",
+              "kind": "action",
+              "path": "app-menu/file/first",
               "locked": false,
               "origin": "files",
               "action": "file.first"
@@ -2149,6 +4432,8 @@
             {
               "id": "new",
               "label": "New file",
+              "kind": "action",
+              "path": "app-menu/file/new",
               "locked": false,
               "origin": "asset",
               "icon": "plus",
@@ -2158,6 +4443,8 @@
             {
               "id": "open",
               "label": "Open…",
+              "kind": "action",
+              "path": "app-menu/file/open",
               "locked": false,
               "origin": "files",
               "icon": "folder",
@@ -2166,6 +4453,8 @@
             {
               "id": "recent",
               "label": "Recent",
+              "kind": "live-list",
+              "path": "app-menu/file/recent",
               "locked": false,
               "origin": "files",
               "provider": "recent",
@@ -2174,6 +4463,8 @@
             {
               "id": "save",
               "label": "Save (plugin)",
+              "kind": "action",
+              "path": "app-menu/file/save",
               "locked": false,
               "origin": "files",
               "icon": "save",
@@ -2182,6 +4473,8 @@
             {
               "id": "s1",
               "label": "",
+              "kind": "separator",
+              "path": "app-menu/file/s1",
               "separator": true,
               "locked": false,
               "origin": "asset"
@@ -2189,6 +4482,8 @@
             {
               "id": "exports",
               "label": "Export",
+              "kind": "submenu",
+              "path": "app-menu/file/exports",
               "locked": false,
               "origin": "asset",
               "icon": "share",
@@ -2196,6 +4491,8 @@
                 {
                   "id": "json",
                   "label": "As JSON",
+                  "kind": "action",
+                  "path": "app-menu/file/exports/json",
                   "locked": false,
                   "origin": "asset",
                   "action": "file.export:json"
@@ -2203,6 +4500,8 @@
                 {
                   "id": "csv",
                   "label": "As CSV",
+                  "kind": "action",
+                  "path": "app-menu/file/exports/csv",
                   "locked": false,
                   "origin": "files",
                   "action": "file.export:csv"
@@ -2212,6 +4511,8 @@
             {
               "id": "clear-recent",
               "label": "Clear recent",
+              "kind": "action",
+              "path": "app-menu/file/clear-recent",
               "locked": false,
               "origin": "files",
               "action": "file.recent.clear"
@@ -2226,6 +4527,8 @@
             {
               "id": "about",
               "label": "About",
+              "kind": "action",
+              "path": "app-menu/more/about",
               "locked": false,
               "origin": "help",
               "icon": "info",
@@ -2236,6 +4539,8 @@
             {
               "id": "alerts",
               "label": "Alerts",
+              "kind": "action",
+              "path": "app-menu/more/alerts",
               "locked": false,
               "origin": "help",
               "action": "alerts.open",
@@ -2244,6 +4549,8 @@
             {
               "id": "bad1",
               "label": "Bad 1",
+              "kind": "action",
+              "path": "app-menu/more/bad1",
               "locked": false,
               "origin": "help",
               "action": "noop",
@@ -2252,6 +4559,8 @@
             {
               "id": "bad2",
               "label": "Bad 2",
+              "kind": "action",
+              "path": "app-menu/more/bad2",
               "locked": false,
               "origin": "help",
               "action": "noop",
@@ -2285,6 +4594,8 @@
             {
               "id": "reload",
               "label": "Reload",
+              "kind": "action",
+              "path": "app-menu/view/reload",
               "locked": false,
               "origin": "asset",
               "action": "view.reload"
@@ -2292,6 +4603,8 @@
             {
               "id": "theme",
               "label": "Theme (B2)",
+              "kind": "action",
+              "path": "app-menu/view/theme",
               "locked": false,
               "origin": "mod-b",
               "action": "b.theme2"
@@ -2299,6 +4612,8 @@
             {
               "id": "sep",
               "label": "",
+              "kind": "separator",
+              "path": "app-menu/view/sep",
               "separator": true,
               "locked": false,
               "origin": "axf"
@@ -2306,6 +4621,8 @@
             {
               "id": "chrome.toolbar",
               "label": "Toolbar",
+              "kind": "action",
+              "path": "app-menu/view/chrome.toolbar",
               "locked": false,
               "origin": "axf",
               "icon": "sliders",
@@ -2317,6 +4634,8 @@
             {
               "id": "chrome.nav-menu",
               "label": "Navigation menu",
+              "kind": "action",
+              "path": "app-menu/view/chrome.nav-menu",
               "locked": false,
               "origin": "axf",
               "icon": "grid",
@@ -2328,6 +4647,8 @@
             {
               "id": "chrome.banner",
               "label": "Banner",
+              "kind": "action",
+              "path": "app-menu/view/chrome.banner",
               "locked": false,
               "origin": "axf",
               "icon": "menu",
@@ -2339,6 +4660,8 @@
             {
               "id": "sep2",
               "label": "",
+              "kind": "separator",
+              "path": "app-menu/view/sep2",
               "separator": true,
               "locked": false,
               "origin": "axf"
@@ -2346,6 +4669,8 @@
             {
               "id": "hidden-state",
               "label": "Toolbar hidden?",
+              "kind": "action",
+              "path": "app-menu/view/hidden-state",
               "locked": false,
               "origin": "axf",
               "action": "noop",
@@ -2362,6 +4687,8 @@
             {
               "id": "manager",
               "label": "Build manager",
+              "kind": "submenu",
+              "path": "app-menu/builds/manager",
               "locked": false,
               "origin": "builds",
               "icon": "hammer",
@@ -2369,6 +4696,8 @@
                 {
                   "id": "pending",
                   "label": "Pending builds",
+                  "kind": "action",
+                  "path": "app-menu/builds/manager/pending",
                   "locked": false,
                   "origin": "builds",
                   "icon": "clock",
@@ -2379,6 +4708,8 @@
                 {
                   "id": "queue",
                   "label": "Build queue",
+                  "kind": "action",
+                  "path": "app-menu/builds/manager/queue",
                   "locked": false,
                   "origin": "builds",
                   "icon": "list",
@@ -2389,6 +4720,8 @@
             {
               "id": "sep",
               "label": "",
+              "kind": "separator",
+              "path": "app-menu/builds/sep",
               "separator": true,
               "locked": false,
               "origin": "builds"
@@ -2396,6 +4729,8 @@
             {
               "id": "features",
               "label": "Features",
+              "kind": "live-list",
+              "path": "app-menu/builds/features",
               "locked": false,
               "origin": "builds",
               "icon": "star",
@@ -2405,6 +4740,8 @@
             {
               "id": "auto",
               "label": "Auto build",
+              "kind": "action",
+              "path": "app-menu/builds/auto",
               "locked": false,
               "origin": "builds",
               "action": "builds.auto:toggle",
@@ -2421,6 +4758,8 @@
             {
               "id": "first",
               "label": "First",
+              "kind": "action",
+              "path": "app-menu/file/first",
               "locked": false,
               "origin": "files",
               "action": "file.first"
@@ -2428,6 +4767,8 @@
             {
               "id": "new",
               "label": "New file",
+              "kind": "action",
+              "path": "app-menu/file/new",
               "locked": false,
               "origin": "asset",
               "icon": "plus",
@@ -2437,6 +4778,8 @@
             {
               "id": "open",
               "label": "Open…",
+              "kind": "action",
+              "path": "app-menu/file/open",
               "locked": false,
               "origin": "files",
               "icon": "folder",
@@ -2445,6 +4788,8 @@
             {
               "id": "recent",
               "label": "Recent",
+              "kind": "live-list",
+              "path": "app-menu/file/recent",
               "locked": false,
               "origin": "files",
               "provider": "recent",
@@ -2453,6 +4798,8 @@
             {
               "id": "save",
               "label": "Save (plugin)",
+              "kind": "action",
+              "path": "app-menu/file/save",
               "locked": false,
               "origin": "files",
               "icon": "save",
@@ -2461,6 +4808,8 @@
             {
               "id": "s1",
               "label": "",
+              "kind": "separator",
+              "path": "app-menu/file/s1",
               "separator": true,
               "locked": false,
               "origin": "asset"
@@ -2468,6 +4817,8 @@
             {
               "id": "exports",
               "label": "Export",
+              "kind": "submenu",
+              "path": "app-menu/file/exports",
               "locked": false,
               "origin": "asset",
               "icon": "share",
@@ -2475,6 +4826,8 @@
                 {
                   "id": "json",
                   "label": "As JSON",
+                  "kind": "action",
+                  "path": "app-menu/file/exports/json",
                   "locked": false,
                   "origin": "asset",
                   "action": "file.export:json"
@@ -2482,6 +4835,8 @@
                 {
                   "id": "csv",
                   "label": "As CSV",
+                  "kind": "action",
+                  "path": "app-menu/file/exports/csv",
                   "locked": false,
                   "origin": "files",
                   "action": "file.export:csv"
@@ -2491,6 +4846,8 @@
             {
               "id": "clear-recent",
               "label": "Clear recent",
+              "kind": "action",
+              "path": "app-menu/file/clear-recent",
               "locked": false,
               "origin": "files",
               "action": "file.recent.clear"
@@ -2505,6 +4862,8 @@
             {
               "id": "about",
               "label": "About",
+              "kind": "action",
+              "path": "app-menu/more/about",
               "locked": false,
               "origin": "help",
               "icon": "info",
@@ -2515,6 +4874,8 @@
             {
               "id": "alerts",
               "label": "Alerts",
+              "kind": "action",
+              "path": "app-menu/more/alerts",
               "locked": false,
               "origin": "help",
               "action": "alerts.open",
@@ -2523,6 +4884,8 @@
             {
               "id": "bad1",
               "label": "Bad 1",
+              "kind": "action",
+              "path": "app-menu/more/bad1",
               "locked": false,
               "origin": "help",
               "action": "noop",
@@ -2531,6 +4894,8 @@
             {
               "id": "bad2",
               "label": "Bad 2",
+              "kind": "action",
+              "path": "app-menu/more/bad2",
               "locked": false,
               "origin": "help",
               "action": "noop",
@@ -2564,6 +4929,8 @@
             {
               "id": "reload",
               "label": "Reload",
+              "kind": "action",
+              "path": "app-menu/view/reload",
               "locked": false,
               "origin": "asset",
               "action": "view.reload"
@@ -2571,6 +4938,8 @@
             {
               "id": "theme",
               "label": "Theme (B2)",
+              "kind": "action",
+              "path": "app-menu/view/theme",
               "locked": false,
               "origin": "mod-b",
               "action": "b.theme2"
@@ -2578,6 +4947,8 @@
             {
               "id": "sep",
               "label": "",
+              "kind": "separator",
+              "path": "app-menu/view/sep",
               "separator": true,
               "locked": false,
               "origin": "axf"
@@ -2585,6 +4956,8 @@
             {
               "id": "chrome.toolbar",
               "label": "Toolbar",
+              "kind": "action",
+              "path": "app-menu/view/chrome.toolbar",
               "locked": false,
               "origin": "axf",
               "icon": "sliders",
@@ -2596,6 +4969,8 @@
             {
               "id": "chrome.nav-menu",
               "label": "Navigation menu",
+              "kind": "action",
+              "path": "app-menu/view/chrome.nav-menu",
               "locked": false,
               "origin": "axf",
               "icon": "grid",
@@ -2607,6 +4982,8 @@
             {
               "id": "chrome.banner",
               "label": "Banner",
+              "kind": "action",
+              "path": "app-menu/view/chrome.banner",
               "locked": false,
               "origin": "axf",
               "icon": "menu",
@@ -2618,6 +4995,8 @@
             {
               "id": "sep2",
               "label": "",
+              "kind": "separator",
+              "path": "app-menu/view/sep2",
               "separator": true,
               "locked": false,
               "origin": "axf"
@@ -2625,6 +5004,8 @@
             {
               "id": "hidden-state",
               "label": "Toolbar hidden?",
+              "kind": "action",
+              "path": "app-menu/view/hidden-state",
               "locked": false,
               "origin": "axf",
               "action": "noop",
@@ -2641,6 +5022,8 @@
             {
               "id": "manager",
               "label": "Build manager",
+              "kind": "submenu",
+              "path": "app-menu/builds/manager",
               "locked": false,
               "origin": "builds",
               "icon": "hammer",
@@ -2648,6 +5031,8 @@
                 {
                   "id": "pending",
                   "label": "Pending builds",
+                  "kind": "action",
+                  "path": "app-menu/builds/manager/pending",
                   "locked": false,
                   "origin": "builds",
                   "icon": "clock",
@@ -2658,6 +5043,8 @@
                 {
                   "id": "queue",
                   "label": "Build queue",
+                  "kind": "action",
+                  "path": "app-menu/builds/manager/queue",
                   "locked": false,
                   "origin": "builds",
                   "icon": "list",
@@ -2668,6 +5055,8 @@
             {
               "id": "sep",
               "label": "",
+              "kind": "separator",
+              "path": "app-menu/builds/sep",
               "separator": true,
               "locked": false,
               "origin": "builds"
@@ -2675,6 +5064,8 @@
             {
               "id": "features",
               "label": "Features",
+              "kind": "live-list",
+              "path": "app-menu/builds/features",
               "locked": false,
               "origin": "builds",
               "icon": "star",
@@ -2684,6 +5075,8 @@
             {
               "id": "auto",
               "label": "Auto build",
+              "kind": "action",
+              "path": "app-menu/builds/auto",
               "locked": false,
               "origin": "builds",
               "action": "builds.auto:toggle",
@@ -2700,6 +5093,8 @@
             {
               "id": "first",
               "label": "First",
+              "kind": "action",
+              "path": "app-menu/file/first",
               "locked": false,
               "origin": "files",
               "action": "file.first"
@@ -2707,6 +5102,8 @@
             {
               "id": "new",
               "label": "New file",
+              "kind": "action",
+              "path": "app-menu/file/new",
               "locked": false,
               "origin": "asset",
               "icon": "plus",
@@ -2716,6 +5113,8 @@
             {
               "id": "open",
               "label": "Open…",
+              "kind": "action",
+              "path": "app-menu/file/open",
               "locked": false,
               "origin": "files",
               "icon": "folder",
@@ -2724,6 +5123,8 @@
             {
               "id": "recent",
               "label": "Recent",
+              "kind": "live-list",
+              "path": "app-menu/file/recent",
               "locked": false,
               "origin": "files",
               "provider": "recent",
@@ -2732,6 +5133,8 @@
             {
               "id": "save",
               "label": "Save (plugin)",
+              "kind": "action",
+              "path": "app-menu/file/save",
               "locked": false,
               "origin": "files",
               "icon": "save",
@@ -2740,6 +5143,8 @@
             {
               "id": "s1",
               "label": "",
+              "kind": "separator",
+              "path": "app-menu/file/s1",
               "separator": true,
               "locked": false,
               "origin": "asset"
@@ -2747,6 +5152,8 @@
             {
               "id": "exports",
               "label": "Export",
+              "kind": "submenu",
+              "path": "app-menu/file/exports",
               "locked": false,
               "origin": "asset",
               "icon": "share",
@@ -2754,6 +5161,8 @@
                 {
                   "id": "json",
                   "label": "As JSON",
+                  "kind": "action",
+                  "path": "app-menu/file/exports/json",
                   "locked": false,
                   "origin": "asset",
                   "action": "file.export:json"
@@ -2761,6 +5170,8 @@
                 {
                   "id": "csv",
                   "label": "As CSV",
+                  "kind": "action",
+                  "path": "app-menu/file/exports/csv",
                   "locked": false,
                   "origin": "files",
                   "action": "file.export:csv"
@@ -2770,6 +5181,8 @@
             {
               "id": "admin-only",
               "label": "Wipe",
+              "kind": "action",
+              "path": "app-menu/file/admin-only",
               "locked": false,
               "origin": "asset",
               "action": "file.wipe",
@@ -2778,6 +5191,8 @@
             {
               "id": "clear-recent",
               "label": "Clear recent",
+              "kind": "action",
+              "path": "app-menu/file/clear-recent",
               "locked": false,
               "origin": "files",
               "action": "file.recent.clear"
@@ -2792,12 +5207,16 @@
             {
               "id": "hidden-sub",
               "label": "Hidden",
+              "kind": "submenu",
+              "path": "app-menu/empty/hidden-sub",
               "locked": false,
               "origin": "asset",
               "items": [
                 {
                   "id": "x",
                   "label": "X",
+                  "kind": "action",
+                  "path": "app-menu/empty/hidden-sub/x",
                   "locked": false,
                   "origin": "asset",
                   "action": "x",
@@ -2815,6 +5234,8 @@
             {
               "id": "about",
               "label": "About",
+              "kind": "action",
+              "path": "app-menu/more/about",
               "locked": false,
               "origin": "help",
               "icon": "info",
@@ -2825,6 +5246,8 @@
             {
               "id": "alerts",
               "label": "Alerts",
+              "kind": "action",
+              "path": "app-menu/more/alerts",
               "locked": false,
               "origin": "help",
               "action": "alerts.open",
@@ -2833,6 +5256,8 @@
             {
               "id": "bad1",
               "label": "Bad 1",
+              "kind": "action",
+              "path": "app-menu/more/bad1",
               "locked": false,
               "origin": "help",
               "action": "noop",
@@ -2841,6 +5266,8 @@
             {
               "id": "bad2",
               "label": "Bad 2",
+              "kind": "action",
+              "path": "app-menu/more/bad2",
               "locked": false,
               "origin": "help",
               "action": "noop",
@@ -2875,6 +5302,8 @@
           {
             "id": "reload",
             "label": "Reload",
+            "kind": "action",
+            "path": "app-menu/view/reload",
             "locked": false,
             "origin": "asset",
             "action": "view.reload"
@@ -2882,6 +5311,8 @@
           {
             "id": "theme",
             "label": "Theme (B2)",
+            "kind": "action",
+            "path": "app-menu/view/theme",
             "locked": false,
             "origin": "mod-b",
             "action": "b.theme2"
@@ -2889,6 +5320,8 @@
           {
             "id": "sep",
             "label": "",
+            "kind": "separator",
+            "path": "app-menu/view/sep",
             "separator": true,
             "locked": false,
             "origin": "axf"
@@ -2896,6 +5329,8 @@
           {
             "id": "chrome.toolbar",
             "label": "Toolbar",
+            "kind": "action",
+            "path": "app-menu/view/chrome.toolbar",
             "locked": false,
             "origin": "axf",
             "icon": "sliders",
@@ -2907,6 +5342,8 @@
           {
             "id": "chrome.nav-menu",
             "label": "Navigation menu",
+            "kind": "action",
+            "path": "app-menu/view/chrome.nav-menu",
             "locked": false,
             "origin": "axf",
             "icon": "grid",
@@ -2918,6 +5355,8 @@
           {
             "id": "chrome.banner",
             "label": "Banner",
+            "kind": "action",
+            "path": "app-menu/view/chrome.banner",
             "locked": false,
             "origin": "axf",
             "icon": "menu",
@@ -2929,6 +5368,8 @@
           {
             "id": "sep2",
             "label": "",
+            "kind": "separator",
+            "path": "app-menu/view/sep2",
             "separator": true,
             "locked": false,
             "origin": "axf"
@@ -2936,6 +5377,8 @@
           {
             "id": "hidden-state",
             "label": "Toolbar hidden?",
+            "kind": "action",
+            "path": "app-menu/view/hidden-state",
             "locked": false,
             "origin": "axf",
             "action": "noop",
@@ -2952,6 +5395,8 @@
           {
             "id": "manager",
             "label": "Build manager",
+            "kind": "submenu",
+            "path": "app-menu/builds/manager",
             "locked": false,
             "origin": "builds",
             "icon": "hammer",
@@ -2959,6 +5404,8 @@
               {
                 "id": "pending",
                 "label": "Pending builds",
+                "kind": "action",
+                "path": "app-menu/builds/manager/pending",
                 "locked": false,
                 "origin": "builds",
                 "icon": "clock",
@@ -2969,6 +5416,8 @@
               {
                 "id": "queue",
                 "label": "Build queue",
+                "kind": "action",
+                "path": "app-menu/builds/manager/queue",
                 "locked": false,
                 "origin": "builds",
                 "icon": "list",
@@ -2979,6 +5428,8 @@
           {
             "id": "sep",
             "label": "",
+            "kind": "separator",
+            "path": "app-menu/builds/sep",
             "separator": true,
             "locked": false,
             "origin": "builds"
@@ -2986,6 +5437,8 @@
           {
             "id": "features",
             "label": "Features",
+            "kind": "live-list",
+            "path": "app-menu/builds/features",
             "locked": false,
             "origin": "builds",
             "icon": "star",
@@ -2995,6 +5448,8 @@
           {
             "id": "auto",
             "label": "Auto build",
+            "kind": "action",
+            "path": "app-menu/builds/auto",
             "locked": false,
             "origin": "builds",
             "action": "builds.auto:toggle",
@@ -3011,6 +5466,8 @@
           {
             "id": "first",
             "label": "First",
+            "kind": "action",
+            "path": "app-menu/file/first",
             "locked": false,
             "origin": "files",
             "action": "file.first"
@@ -3018,6 +5475,8 @@
           {
             "id": "new",
             "label": "New file",
+            "kind": "action",
+            "path": "app-menu/file/new",
             "locked": false,
             "origin": "asset",
             "icon": "plus",
@@ -3027,6 +5486,8 @@
           {
             "id": "open",
             "label": "Open…",
+            "kind": "action",
+            "path": "app-menu/file/open",
             "locked": false,
             "origin": "files",
             "icon": "folder",
@@ -3035,6 +5496,8 @@
           {
             "id": "recent",
             "label": "Recent",
+            "kind": "live-list",
+            "path": "app-menu/file/recent",
             "locked": false,
             "origin": "files",
             "provider": "recent",
@@ -3043,6 +5506,8 @@
           {
             "id": "save",
             "label": "Save (plugin)",
+            "kind": "action",
+            "path": "app-menu/file/save",
             "locked": false,
             "origin": "files",
             "icon": "save",
@@ -3051,6 +5516,8 @@
           {
             "id": "s1",
             "label": "",
+            "kind": "separator",
+            "path": "app-menu/file/s1",
             "separator": true,
             "locked": false,
             "origin": "asset"
@@ -3058,6 +5525,8 @@
           {
             "id": "exports",
             "label": "Export",
+            "kind": "submenu",
+            "path": "app-menu/file/exports",
             "locked": false,
             "origin": "asset",
             "icon": "share",
@@ -3065,6 +5534,8 @@
               {
                 "id": "json",
                 "label": "As JSON",
+                "kind": "action",
+                "path": "app-menu/file/exports/json",
                 "locked": false,
                 "origin": "asset",
                 "action": "file.export:json"
@@ -3072,6 +5543,8 @@
               {
                 "id": "csv",
                 "label": "As CSV",
+                "kind": "action",
+                "path": "app-menu/file/exports/csv",
                 "locked": false,
                 "origin": "files",
                 "action": "file.export:csv"
@@ -3081,6 +5554,8 @@
           {
             "id": "admin-only",
             "label": "Wipe",
+            "kind": "action",
+            "path": "app-menu/file/admin-only",
             "locked": false,
             "origin": "asset",
             "action": "file.wipe",
@@ -3089,6 +5564,8 @@
           {
             "id": "clear-recent",
             "label": "Clear recent",
+            "kind": "action",
+            "path": "app-menu/file/clear-recent",
             "locked": false,
             "origin": "files",
             "action": "file.recent.clear"
@@ -3103,12 +5580,16 @@
           {
             "id": "hidden-sub",
             "label": "Hidden",
+            "kind": "submenu",
+            "path": "app-menu/empty/hidden-sub",
             "locked": false,
             "origin": "asset",
             "items": [
               {
                 "id": "x",
                 "label": "X",
+                "kind": "action",
+                "path": "app-menu/empty/hidden-sub/x",
                 "locked": false,
                 "origin": "asset",
                 "action": "x",
@@ -3126,6 +5607,8 @@
           {
             "id": "about",
             "label": "About",
+            "kind": "action",
+            "path": "app-menu/more/about",
             "locked": false,
             "origin": "help",
             "icon": "info",
@@ -3136,6 +5619,8 @@
           {
             "id": "alerts",
             "label": "Alerts",
+            "kind": "action",
+            "path": "app-menu/more/alerts",
             "locked": false,
             "origin": "help",
             "action": "alerts.open",
@@ -3144,6 +5629,8 @@
           {
             "id": "bad1",
             "label": "Bad 1",
+            "kind": "action",
+            "path": "app-menu/more/bad1",
             "locked": false,
             "origin": "help",
             "action": "noop",
@@ -3152,6 +5639,8 @@
           {
             "id": "bad2",
             "label": "Bad 2",
+            "kind": "action",
+            "path": "app-menu/more/bad2",
             "locked": false,
             "origin": "help",
             "action": "noop",
@@ -3186,6 +5675,8 @@
             {
               "id": "new",
               "label": "New file",
+              "kind": "action",
+              "path": "app-menu/file/new",
               "locked": false,
               "origin": "asset",
               "icon": "plus",
@@ -3195,6 +5686,8 @@
             {
               "id": "save",
               "label": "Save",
+              "kind": "action",
+              "path": "app-menu/file/save",
               "locked": true,
               "origin": "asset",
               "icon": "save",
@@ -3212,6 +5705,8 @@
             {
               "id": "build",
               "label": "Build app",
+              "kind": "action",
+              "path": "app-menu/build/build",
               "locked": true,
               "origin": "asset",
               "icon": "package",
@@ -3222,6 +5717,8 @@
             {
               "id": "deploy",
               "label": "Deploy",
+              "kind": "action",
+              "path": "app-menu/build/deploy",
               "locked": true,
               "origin": "asset",
               "icon": "rocket",
@@ -3231,6 +5728,8 @@
             {
               "id": "s1",
               "label": "",
+              "kind": "separator",
+              "path": "app-menu/build/s1",
               "separator": true,
               "locked": false,
               "origin": "asset"
@@ -3238,6 +5737,8 @@
             {
               "id": "console",
               "label": "Developer console",
+              "kind": "action",
+              "path": "app-menu/build/console",
               "locked": true,
               "origin": "asset",
               "icon": "terminal",
@@ -3255,6 +5756,8 @@
             {
               "id": "import",
               "label": "Import asset…",
+              "kind": "action",
+              "path": "app-menu/assets/import",
               "locked": true,
               "origin": "asset",
               "icon": "upload",
@@ -3264,6 +5767,8 @@
             {
               "id": "cycle",
               "label": "Cycle slot",
+              "kind": "submenu",
+              "path": "app-menu/assets/cycle",
               "locked": false,
               "origin": "asset",
               "icon": "refresh",
@@ -3271,6 +5776,8 @@
                 {
                   "id": "next-color",
                   "label": "Next color theme",
+                  "kind": "action",
+                  "path": "app-menu/assets/cycle/next-color",
                   "locked": false,
                   "origin": "asset",
                   "icon": "palette",
@@ -3280,6 +5787,8 @@
                 {
                   "id": "next-style",
                   "label": "Next style theme",
+                  "kind": "action",
+                  "path": "app-menu/assets/cycle/next-style",
                   "locked": false,
                   "origin": "asset",
                   "icon": "type",
@@ -3289,6 +5798,8 @@
                 {
                   "id": "next-layout",
                   "label": "Next layout",
+                  "kind": "action",
+                  "path": "app-menu/assets/cycle/next-layout",
                   "locked": false,
                   "origin": "asset",
                   "icon": "layout",
@@ -3298,6 +5809,8 @@
                 {
                   "id": "next-button",
                   "label": "Next button",
+                  "kind": "action",
+                  "path": "app-menu/assets/cycle/next-button",
                   "locked": false,
                   "origin": "asset",
                   "icon": "zap",
@@ -3307,6 +5820,8 @@
                 {
                   "id": "next-slider",
                   "label": "Next slider",
+                  "kind": "action",
+                  "path": "app-menu/assets/cycle/next-slider",
                   "locked": false,
                   "origin": "asset",
                   "icon": "sliders",
@@ -3316,6 +5831,8 @@
                 {
                   "id": "next-container",
                   "label": "Next container",
+                  "kind": "action",
+                  "path": "app-menu/assets/cycle/next-container",
                   "locked": false,
                   "origin": "asset",
                   "icon": "box",
@@ -3325,6 +5842,8 @@
                 {
                   "id": "next-dialog",
                   "label": "Next dialog",
+                  "kind": "action",
+                  "path": "app-menu/assets/cycle/next-dialog",
                   "locked": false,
                   "origin": "asset",
                   "icon": "box",
@@ -3334,6 +5853,8 @@
                 {
                   "id": "next-popup",
                   "label": "Next popup",
+                  "kind": "action",
+                  "path": "app-menu/assets/cycle/next-popup",
                   "locked": false,
                   "origin": "asset",
                   "icon": "bell",
@@ -3345,6 +5866,8 @@
             {
               "id": "random",
               "label": "Randomize",
+              "kind": "action",
+              "path": "app-menu/assets/random",
               "locked": false,
               "origin": "asset",
               "icon": "shuffle",
@@ -3354,6 +5877,8 @@
             {
               "id": "reset",
               "label": "Reset",
+              "kind": "action",
+              "path": "app-menu/assets/reset",
               "locked": false,
               "origin": "asset",
               "icon": "refresh",
@@ -3369,6 +5894,8 @@
             {
               "id": "go-home",
               "label": "Home",
+              "kind": "action",
+              "path": "app-menu/window/go-home",
               "locked": false,
               "origin": "asset",
               "icon": "home",
@@ -3377,6 +5904,8 @@
             {
               "id": "go-components",
               "label": "Components",
+              "kind": "action",
+              "path": "app-menu/window/go-components",
               "locked": false,
               "origin": "asset",
               "icon": "grid",
@@ -3385,6 +5914,8 @@
             {
               "id": "go-assets",
               "label": "Assets",
+              "kind": "action",
+              "path": "app-menu/window/go-assets",
               "locked": false,
               "origin": "asset",
               "icon": "layers",
@@ -3393,6 +5924,8 @@
             {
               "id": "go-account",
               "label": "Account",
+              "kind": "action",
+              "path": "app-menu/window/go-account",
               "locked": false,
               "origin": "asset",
               "icon": "user",
@@ -3401,6 +5934,8 @@
             {
               "id": "settings",
               "label": "Settings",
+              "kind": "action",
+              "path": "app-menu/window/settings",
               "locked": false,
               "origin": "asset",
               "icon": "settings",
@@ -3416,6 +5951,8 @@
             {
               "id": "shortcuts",
               "label": "Shortcuts",
+              "kind": "action",
+              "path": "app-menu/help/shortcuts",
               "locked": false,
               "origin": "asset",
               "icon": "keyboard",
@@ -3425,6 +5962,8 @@
             {
               "id": "about",
               "label": "About",
+              "kind": "action",
+              "path": "app-menu/help/about",
               "locked": false,
               "origin": "asset",
               "icon": "info",
@@ -3446,6 +5985,8 @@
             {
               "id": "new",
               "label": "New file",
+              "kind": "action",
+              "path": "app-menu/file/new",
               "locked": false,
               "origin": "asset",
               "icon": "plus",
@@ -3455,6 +5996,8 @@
             {
               "id": "save",
               "label": "Save",
+              "kind": "action",
+              "path": "app-menu/file/save",
               "locked": false,
               "origin": "asset",
               "icon": "save",
@@ -3472,6 +6015,8 @@
             {
               "id": "build",
               "label": "Build app",
+              "kind": "action",
+              "path": "app-menu/build/build",
               "locked": false,
               "origin": "asset",
               "icon": "package",
@@ -3482,6 +6027,8 @@
             {
               "id": "deploy",
               "label": "Deploy",
+              "kind": "action",
+              "path": "app-menu/build/deploy",
               "locked": true,
               "origin": "asset",
               "icon": "rocket",
@@ -3491,6 +6038,8 @@
             {
               "id": "s1",
               "label": "",
+              "kind": "separator",
+              "path": "app-menu/build/s1",
               "separator": true,
               "locked": false,
               "origin": "asset"
@@ -3498,6 +6047,8 @@
             {
               "id": "console",
               "label": "Developer console",
+              "kind": "action",
+              "path": "app-menu/build/console",
               "locked": false,
               "origin": "asset",
               "icon": "terminal",
@@ -3515,6 +6066,8 @@
             {
               "id": "import",
               "label": "Import asset…",
+              "kind": "action",
+              "path": "app-menu/assets/import",
               "locked": false,
               "origin": "asset",
               "icon": "upload",
@@ -3524,6 +6077,8 @@
             {
               "id": "cycle",
               "label": "Cycle slot",
+              "kind": "submenu",
+              "path": "app-menu/assets/cycle",
               "locked": false,
               "origin": "asset",
               "icon": "refresh",
@@ -3531,6 +6086,8 @@
                 {
                   "id": "next-color",
                   "label": "Next color theme",
+                  "kind": "action",
+                  "path": "app-menu/assets/cycle/next-color",
                   "locked": false,
                   "origin": "asset",
                   "icon": "palette",
@@ -3540,6 +6097,8 @@
                 {
                   "id": "next-style",
                   "label": "Next style theme",
+                  "kind": "action",
+                  "path": "app-menu/assets/cycle/next-style",
                   "locked": false,
                   "origin": "asset",
                   "icon": "type",
@@ -3549,6 +6108,8 @@
                 {
                   "id": "next-layout",
                   "label": "Next layout",
+                  "kind": "action",
+                  "path": "app-menu/assets/cycle/next-layout",
                   "locked": false,
                   "origin": "asset",
                   "icon": "layout",
@@ -3558,6 +6119,8 @@
                 {
                   "id": "next-button",
                   "label": "Next button",
+                  "kind": "action",
+                  "path": "app-menu/assets/cycle/next-button",
                   "locked": false,
                   "origin": "asset",
                   "icon": "zap",
@@ -3567,6 +6130,8 @@
                 {
                   "id": "next-slider",
                   "label": "Next slider",
+                  "kind": "action",
+                  "path": "app-menu/assets/cycle/next-slider",
                   "locked": false,
                   "origin": "asset",
                   "icon": "sliders",
@@ -3576,6 +6141,8 @@
                 {
                   "id": "next-container",
                   "label": "Next container",
+                  "kind": "action",
+                  "path": "app-menu/assets/cycle/next-container",
                   "locked": false,
                   "origin": "asset",
                   "icon": "box",
@@ -3585,6 +6152,8 @@
                 {
                   "id": "next-dialog",
                   "label": "Next dialog",
+                  "kind": "action",
+                  "path": "app-menu/assets/cycle/next-dialog",
                   "locked": false,
                   "origin": "asset",
                   "icon": "box",
@@ -3594,6 +6163,8 @@
                 {
                   "id": "next-popup",
                   "label": "Next popup",
+                  "kind": "action",
+                  "path": "app-menu/assets/cycle/next-popup",
                   "locked": false,
                   "origin": "asset",
                   "icon": "bell",
@@ -3605,6 +6176,8 @@
             {
               "id": "random",
               "label": "Randomize",
+              "kind": "action",
+              "path": "app-menu/assets/random",
               "locked": false,
               "origin": "asset",
               "icon": "shuffle",
@@ -3614,6 +6187,8 @@
             {
               "id": "reset",
               "label": "Reset",
+              "kind": "action",
+              "path": "app-menu/assets/reset",
               "locked": false,
               "origin": "asset",
               "icon": "refresh",
@@ -3629,6 +6204,8 @@
             {
               "id": "go-home",
               "label": "Home",
+              "kind": "action",
+              "path": "app-menu/window/go-home",
               "locked": false,
               "origin": "asset",
               "icon": "home",
@@ -3637,6 +6214,8 @@
             {
               "id": "go-components",
               "label": "Components",
+              "kind": "action",
+              "path": "app-menu/window/go-components",
               "locked": false,
               "origin": "asset",
               "icon": "grid",
@@ -3645,6 +6224,8 @@
             {
               "id": "go-assets",
               "label": "Assets",
+              "kind": "action",
+              "path": "app-menu/window/go-assets",
               "locked": false,
               "origin": "asset",
               "icon": "layers",
@@ -3653,6 +6234,8 @@
             {
               "id": "go-account",
               "label": "Account",
+              "kind": "action",
+              "path": "app-menu/window/go-account",
               "locked": false,
               "origin": "asset",
               "icon": "user",
@@ -3661,6 +6244,8 @@
             {
               "id": "settings",
               "label": "Settings",
+              "kind": "action",
+              "path": "app-menu/window/settings",
               "locked": false,
               "origin": "asset",
               "icon": "settings",
@@ -3676,6 +6261,8 @@
             {
               "id": "shortcuts",
               "label": "Shortcuts",
+              "kind": "action",
+              "path": "app-menu/help/shortcuts",
               "locked": false,
               "origin": "asset",
               "icon": "keyboard",
@@ -3685,6 +6272,8 @@
             {
               "id": "about",
               "label": "About",
+              "kind": "action",
+              "path": "app-menu/help/about",
               "locked": false,
               "origin": "asset",
               "icon": "info",
@@ -3706,6 +6295,8 @@
             {
               "id": "new",
               "label": "New file",
+              "kind": "action",
+              "path": "app-menu/file/new",
               "locked": false,
               "origin": "asset",
               "icon": "plus",
@@ -3715,6 +6306,8 @@
             {
               "id": "save",
               "label": "Save",
+              "kind": "action",
+              "path": "app-menu/file/save",
               "locked": false,
               "origin": "asset",
               "icon": "save",
@@ -3732,6 +6325,8 @@
             {
               "id": "build",
               "label": "Build app",
+              "kind": "action",
+              "path": "app-menu/build/build",
               "locked": false,
               "origin": "asset",
               "icon": "package",
@@ -3742,6 +6337,8 @@
             {
               "id": "deploy",
               "label": "Deploy",
+              "kind": "action",
+              "path": "app-menu/build/deploy",
               "locked": false,
               "origin": "asset",
               "icon": "rocket",
@@ -3751,6 +6348,8 @@
             {
               "id": "s1",
               "label": "",
+              "kind": "separator",
+              "path": "app-menu/build/s1",
               "separator": true,
               "locked": false,
               "origin": "asset"
@@ -3758,6 +6357,8 @@
             {
               "id": "console",
               "label": "Developer console",
+              "kind": "action",
+              "path": "app-menu/build/console",
               "locked": false,
               "origin": "asset",
               "icon": "terminal",
@@ -3775,6 +6376,8 @@
             {
               "id": "import",
               "label": "Import asset…",
+              "kind": "action",
+              "path": "app-menu/assets/import",
               "locked": false,
               "origin": "asset",
               "icon": "upload",
@@ -3784,6 +6387,8 @@
             {
               "id": "cycle",
               "label": "Cycle slot",
+              "kind": "submenu",
+              "path": "app-menu/assets/cycle",
               "locked": false,
               "origin": "asset",
               "icon": "refresh",
@@ -3791,6 +6396,8 @@
                 {
                   "id": "next-color",
                   "label": "Next color theme",
+                  "kind": "action",
+                  "path": "app-menu/assets/cycle/next-color",
                   "locked": false,
                   "origin": "asset",
                   "icon": "palette",
@@ -3800,6 +6407,8 @@
                 {
                   "id": "next-style",
                   "label": "Next style theme",
+                  "kind": "action",
+                  "path": "app-menu/assets/cycle/next-style",
                   "locked": false,
                   "origin": "asset",
                   "icon": "type",
@@ -3809,6 +6418,8 @@
                 {
                   "id": "next-layout",
                   "label": "Next layout",
+                  "kind": "action",
+                  "path": "app-menu/assets/cycle/next-layout",
                   "locked": false,
                   "origin": "asset",
                   "icon": "layout",
@@ -3818,6 +6429,8 @@
                 {
                   "id": "next-button",
                   "label": "Next button",
+                  "kind": "action",
+                  "path": "app-menu/assets/cycle/next-button",
                   "locked": false,
                   "origin": "asset",
                   "icon": "zap",
@@ -3827,6 +6440,8 @@
                 {
                   "id": "next-slider",
                   "label": "Next slider",
+                  "kind": "action",
+                  "path": "app-menu/assets/cycle/next-slider",
                   "locked": false,
                   "origin": "asset",
                   "icon": "sliders",
@@ -3836,6 +6451,8 @@
                 {
                   "id": "next-container",
                   "label": "Next container",
+                  "kind": "action",
+                  "path": "app-menu/assets/cycle/next-container",
                   "locked": false,
                   "origin": "asset",
                   "icon": "box",
@@ -3845,6 +6462,8 @@
                 {
                   "id": "next-dialog",
                   "label": "Next dialog",
+                  "kind": "action",
+                  "path": "app-menu/assets/cycle/next-dialog",
                   "locked": false,
                   "origin": "asset",
                   "icon": "box",
@@ -3854,6 +6473,8 @@
                 {
                   "id": "next-popup",
                   "label": "Next popup",
+                  "kind": "action",
+                  "path": "app-menu/assets/cycle/next-popup",
                   "locked": false,
                   "origin": "asset",
                   "icon": "bell",
@@ -3865,6 +6486,8 @@
             {
               "id": "random",
               "label": "Randomize",
+              "kind": "action",
+              "path": "app-menu/assets/random",
               "locked": false,
               "origin": "asset",
               "icon": "shuffle",
@@ -3874,6 +6497,8 @@
             {
               "id": "reset",
               "label": "Reset",
+              "kind": "action",
+              "path": "app-menu/assets/reset",
               "locked": false,
               "origin": "asset",
               "icon": "refresh",
@@ -3889,6 +6514,8 @@
             {
               "id": "go-home",
               "label": "Home",
+              "kind": "action",
+              "path": "app-menu/window/go-home",
               "locked": false,
               "origin": "asset",
               "icon": "home",
@@ -3897,6 +6524,8 @@
             {
               "id": "go-components",
               "label": "Components",
+              "kind": "action",
+              "path": "app-menu/window/go-components",
               "locked": false,
               "origin": "asset",
               "icon": "grid",
@@ -3905,6 +6534,8 @@
             {
               "id": "go-assets",
               "label": "Assets",
+              "kind": "action",
+              "path": "app-menu/window/go-assets",
               "locked": false,
               "origin": "asset",
               "icon": "layers",
@@ -3913,6 +6544,8 @@
             {
               "id": "go-account",
               "label": "Account",
+              "kind": "action",
+              "path": "app-menu/window/go-account",
               "locked": false,
               "origin": "asset",
               "icon": "user",
@@ -3921,6 +6554,8 @@
             {
               "id": "settings",
               "label": "Settings",
+              "kind": "action",
+              "path": "app-menu/window/settings",
               "locked": false,
               "origin": "asset",
               "icon": "settings",
@@ -3936,6 +6571,8 @@
             {
               "id": "shortcuts",
               "label": "Shortcuts",
+              "kind": "action",
+              "path": "app-menu/help/shortcuts",
               "locked": false,
               "origin": "asset",
               "icon": "keyboard",
@@ -3945,6 +6582,8 @@
             {
               "id": "about",
               "label": "About",
+              "kind": "action",
+              "path": "app-menu/help/about",
               "locked": false,
               "origin": "asset",
               "icon": "info",
@@ -3962,6 +6601,8 @@
       {
         "id": "f1",
         "label": "Feature 1",
+        "kind": "action",
+        "path": "app-menu/features/f1",
         "locked": false,
         "origin": "provider:features",
         "action": "nav:f1"
@@ -3969,6 +6610,8 @@
       {
         "id": "f2",
         "label": "Feature 2",
+        "kind": "action",
+        "path": "app-menu/features/f2",
         "locked": false,
         "origin": "provider:features",
         "action": "nav:f2",
@@ -3977,6 +6620,8 @@
       {
         "id": "f3",
         "label": "Feature 3",
+        "kind": "action",
+        "path": "app-menu/features/f3",
         "locked": false,
         "origin": "provider:features",
         "action": "nav:f3"
@@ -3985,6 +6630,9 @@
         "id": "features.more",
         "label": "More…",
         "icon": "more",
+        "kind": "action",
+        "path": "app-menu/features/features.more",
+        "hint": "Show the whole list",
         "locked": false,
         "origin": "provider:features",
         "action": "nav:features"
@@ -3994,6 +6642,8 @@
       {
         "id": "f1",
         "label": "Feature 1",
+        "kind": "action",
+        "path": "app-menu/features/f1",
         "locked": false,
         "origin": "provider:features",
         "action": "nav:f1"
@@ -4001,6 +6651,8 @@
       {
         "id": "f2",
         "label": "Feature 2",
+        "kind": "action",
+        "path": "app-menu/features/f2",
         "locked": false,
         "origin": "provider:features",
         "action": "nav:f2",
@@ -4009,6 +6661,8 @@
       {
         "id": "f3",
         "label": "Feature 3",
+        "kind": "action",
+        "path": "app-menu/features/f3",
         "locked": false,
         "origin": "provider:features",
         "action": "nav:f3"
@@ -4017,6 +6671,9 @@
         "id": "features.more",
         "label": "3 more…",
         "icon": "more",
+        "kind": "action",
+        "path": "app-menu/features/features.more",
+        "hint": "3 more entries are not shown",
         "locked": true,
         "origin": "provider:features"
       }
@@ -4025,6 +6682,8 @@
       {
         "id": "f1",
         "label": "Feature 1",
+        "kind": "action",
+        "path": "app-menu/features/f1",
         "locked": false,
         "origin": "provider:features",
         "action": "nav:f1"
@@ -4032,6 +6691,8 @@
       {
         "id": "f2",
         "label": "Feature 2",
+        "kind": "action",
+        "path": "app-menu/features/f2",
         "locked": true,
         "origin": "provider:features",
         "action": "nav:f2",
@@ -4040,6 +6701,8 @@
       {
         "id": "f3",
         "label": "Feature 3",
+        "kind": "action",
+        "path": "app-menu/features/f3",
         "locked": false,
         "origin": "provider:features",
         "action": "nav:f3"
@@ -4047,6 +6710,8 @@
       {
         "id": "f4",
         "label": "Feature 4",
+        "kind": "action",
+        "path": "app-menu/features/f4",
         "locked": false,
         "origin": "provider:features",
         "action": "nav:f4",
@@ -4056,6 +6721,8 @@
       {
         "id": "f5",
         "label": "Feature 5",
+        "kind": "action",
+        "path": "app-menu/features/f5",
         "locked": false,
         "origin": "provider:features",
         "action": "nav:f5"
@@ -4063,6 +6730,8 @@
       {
         "id": "sep",
         "label": "",
+        "kind": "separator",
+        "path": "app-menu/features/sep",
         "separator": true,
         "locked": false,
         "origin": "provider:features"
@@ -4070,6 +6739,8 @@
       {
         "id": "f6",
         "label": "Feature 6",
+        "kind": "action",
+        "path": "app-menu/features/f6",
         "locked": false,
         "origin": "provider:features",
         "action": "nav:f6"
@@ -4079,6 +6750,8 @@
       {
         "id": "f1",
         "label": "Feature 1",
+        "kind": "action",
+        "path": "app-menu/features/f1",
         "locked": false,
         "origin": "provider:features",
         "action": "nav:f1"
@@ -4086,6 +6759,8 @@
       {
         "id": "f2",
         "label": "Feature 2",
+        "kind": "action",
+        "path": "app-menu/features/f2",
         "locked": false,
         "origin": "provider:features",
         "action": "nav:f2",
@@ -4094,6 +6769,8 @@
       {
         "id": "f3",
         "label": "Feature 3",
+        "kind": "action",
+        "path": "app-menu/features/f3",
         "locked": false,
         "origin": "provider:features",
         "action": "nav:f3"
@@ -4555,6 +7232,335 @@
       "errors": [
         "data.menus[0].items[0] must be a menu item object",
         "data.menus[0].items[1] must be a menu item object"
+      ]
+    },
+    {
+      "case": "v2-ok",
+      "items": [
+        {
+          "id": "theme",
+          "label": "Theme",
+          "icon": "palette",
+          "hint": "Light, dark or follow the system",
+          "setting": "ui.theme",
+          "choices": [
+            {
+              "value": "light",
+              "label": "Light",
+              "icon": "sun"
+            },
+            {
+              "value": "dark",
+              "label": "Dark",
+              "icon": "moon"
+            },
+            {
+              "value": "system",
+              "label": "System",
+              "hint": "Follow the device"
+            }
+          ]
+        },
+        {
+          "id": "density",
+          "label": "Density",
+          "setting": "ui.density",
+          "cycle": true,
+          "choices": [
+            {
+              "value": "compact",
+              "label": "Compact"
+            },
+            {
+              "value": "regular",
+              "label": "Regular"
+            },
+            {
+              "value": "roomy",
+              "label": "Roomy"
+            }
+          ]
+        },
+        {
+          "id": "autosave",
+          "label": "Auto save",
+          "setting": "files.autosave"
+        },
+        {
+          "id": "sep",
+          "separator": true
+        },
+        {
+          "id": "hub",
+          "label": "axHub",
+          "icon": "cloud",
+          "action": "nav:hub",
+          "status": {
+            "source": "source:hub",
+            "icon": "axhub",
+            "tooltip": "axHub connection"
+          }
+        },
+        {
+          "id": "builds",
+          "label": "Builds",
+          "action": "nav:builds",
+          "status": "counter:builds.running"
+        },
+        {
+          "id": "alerts",
+          "label": "Alerts",
+          "action": "nav:alerts",
+          "status": {
+            "source": "counter:alerts.unread",
+            "tones": {
+              "on": "warning",
+              "off": "muted"
+            },
+            "anims": {
+              "on": "blink"
+            }
+          }
+        },
+        {
+          "id": "toolbar",
+          "label": "Toolbar",
+          "action": "slot.hide:toolbar:toggle",
+          "status": "slot:toolbar"
+        },
+        {
+          "id": "nobody",
+          "label": "Nobody",
+          "action": "noop",
+          "status": "source:nobody"
+        },
+        {
+          "id": "tools",
+          "label": "Tools",
+          "kind": "submenu",
+          "items": [
+            {
+              "id": "a",
+              "label": "A",
+              "action": "tools.a"
+            },
+            {
+              "id": "b",
+              "label": "B",
+              "action": "tools.b"
+            },
+            {
+              "id": "c",
+              "label": "C",
+              "action": "tools.c"
+            }
+          ]
+        }
+      ],
+      "errors": []
+    },
+    {
+      "case": "v2-kind",
+      "items": [
+        {
+          "id": "a",
+          "kind": "nope"
+        },
+        {
+          "id": "b",
+          "kind": "submenu",
+          "action": "x"
+        },
+        {
+          "id": "c",
+          "kind": "choice",
+          "setting": "k"
+        },
+        {
+          "id": "d",
+          "kind": "separator",
+          "separator": true
+        },
+        {
+          "id": "e",
+          "kind": "live-list",
+          "provider": "p"
+        }
+      ],
+      "errors": [
+        "data.menus[0].items[0].kind must be one of: action, submenu, choice, separator, live-list",
+        "data.menus[0].items[1].kind is submenu but the item is a action (separator / provider / setting / items decide)"
+      ]
+    },
+    {
+      "case": "v2-hint",
+      "items": [
+        {
+          "id": "a",
+          "hint": ""
+        },
+        {
+          "id": "b",
+          "hint": 3
+        }
+      ],
+      "errors": [
+        "data.menus[0].items[0].hint must be a non-empty string",
+        "data.menus[0].items[1].hint must be a non-empty string"
+      ]
+    },
+    {
+      "case": "v2-choice",
+      "items": [
+        {
+          "id": "a",
+          "setting": ""
+        },
+        {
+          "id": "b",
+          "setting": "k",
+          "provider": "p"
+        },
+        {
+          "id": "c",
+          "setting": "k",
+          "items": []
+        },
+        {
+          "id": "d",
+          "setting": "k",
+          "checked": "setting:k"
+        },
+        {
+          "id": "e",
+          "choices": [
+            {
+              "value": 1,
+              "label": "x"
+            },
+            {
+              "value": 2,
+              "label": "y"
+            }
+          ]
+        },
+        {
+          "id": "f",
+          "setting": "k",
+          "choices": "x"
+        },
+        {
+          "id": "g",
+          "setting": "k",
+          "choices": [
+            {
+              "value": 1,
+              "label": "x"
+            }
+          ]
+        },
+        {
+          "id": "h",
+          "setting": "k",
+          "choices": [
+            {
+              "value": 1,
+              "label": "x"
+            },
+            {
+              "value": "1",
+              "label": "y"
+            },
+            3,
+            {
+              "value": null,
+              "label": ""
+            },
+            {
+              "value": 2,
+              "label": "z",
+              "icon": "",
+              "hint": 1
+            }
+          ]
+        },
+        {
+          "id": "i",
+          "setting": "k",
+          "cycle": "yes"
+        },
+        {
+          "id": "j",
+          "setting": "k",
+          "cycle": true
+        }
+      ],
+      "errors": [
+        "data.menus[0].items[0].setting must be a non-empty string (a settings key)",
+        "data.menus[0].items[1] has both setting and provider",
+        "data.menus[0].items[2] has both setting and items (a choice setting lists its own choices)",
+        "data.menus[0].items[3] has both setting and checked (a choice setting draws its own check)",
+        "data.menus[0].items[4].choices needs a setting",
+        "data.menus[0].items[5].choices must be a list",
+        "data.menus[0].items[6].choices must have 2 to 24 entries",
+        "data.menus[0].items[7].choices[1].value repeats \"1\"",
+        "data.menus[0].items[7].choices[2] must be an object",
+        "data.menus[0].items[7].choices[3].value must be a string, number or boolean",
+        "data.menus[0].items[7].choices[3].label must be a non-empty string",
+        "data.menus[0].items[7].choices[4].icon must be a non-empty string",
+        "data.menus[0].items[7].choices[4].hint must be a non-empty string",
+        "data.menus[0].items[8].cycle must be a boolean",
+        "data.menus[0].items[9].cycle needs choices"
+      ]
+    },
+    {
+      "case": "v2-status",
+      "items": [
+        {
+          "id": "a",
+          "status": "nope:x"
+        },
+        {
+          "id": "b",
+          "status": 7
+        },
+        {
+          "id": "c",
+          "status": {}
+        },
+        {
+          "id": "d",
+          "status": {
+            "source": "counter:c",
+            "icon": "",
+            "tooltip": 2,
+            "tones": "x",
+            "anims": {
+              "on": "wobble",
+              "weird": "pulse"
+            }
+          }
+        },
+        {
+          "id": "e",
+          "status": {
+            "source": "source:hub",
+            "tones": {
+              "off": "purple"
+            }
+          }
+        }
+      ],
+      "errors": [
+        "data.menus[0].items[0].status must be one of: counter:<ref>, setting:<ref>, slot:<ref>, hidden:<ref>, source:<ref>",
+        "data.menus[0].items[1].status must be a source string or an object",
+        "data.menus[0].items[2].status.source must be one of: counter:<ref>, setting:<ref>, slot:<ref>, hidden:<ref>, source:<ref>",
+        "data.menus[0].items[3].status.icon must be a non-empty string",
+        "data.menus[0].items[3].status.tooltip must be a non-empty string",
+        "data.menus[0].items[3].status.tones must be an object keyed by state",
+        "data.menus[0].items[3].status.anims.on must be one of: none, pulse, spin, blink",
+        "data.menus[0].items[3].status.anims.weird: unknown state (on, off, busy, warn, unknown)",
+        "data.menus[0].items[4].status.tones.off must be one of: success, danger, accent, warning, info, muted"
       ]
     }
   ],

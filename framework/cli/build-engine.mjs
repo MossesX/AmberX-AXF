@@ -9,6 +9,7 @@ import { isScaleType, scaleErrors, scaleSchemaProperties } from '../core/engines
 import { isLayoutType, layoutErrors, layoutSchemaProperties } from '../core/engines/layout-rules.mjs';
 import { helpErrors } from '../core/engines/help-rules.mjs';
 import { navStyleErrors, navStyleSchemaProperties } from '../core/engines/navstyle-rules.mjs';
+import { menuItemV2Errors, menuItemV2SchemaProperties } from '../core/engines/menu-item-rules.mjs';
 import { AGENT_CARD_TYPE, agentCardErrors, agentCardSchemaProperties } from '../core/engines/agent-card-rules.mjs';
 import { JOB_TYPE, jobTypeErrors, jobTypeSchemaProperties } from '../core/engines/job-type-rules.mjs';
 import { CARD_TYPE, cardErrors, cardSchemaProperties } from '../core/engines/card-rules.mjs';
@@ -292,6 +293,9 @@ export function menuItemSchema() {
       checked: { type: 'string', pattern: `^(${MENU_SPEC.checkedKinds.join('|')}):.+$`, description: MENU_SPEC.optional_fields.checked },
       order: { type: 'number', description: MENU_SPEC.optional_fields.order },
       before: { type: 'string', minLength: 1 }, after: { type: 'string', minLength: 1 },
+      spacer: { type: 'boolean', description: MENU_SPEC.optional_fields.spacer },
+      // menu-item@2 (core/engines/menu-item-rules.mjs; spec/MENUS.md)
+      ...menuItemV2SchemaProperties(MENU_SPEC.optional_fields),
     },
   };
 }
@@ -314,6 +318,7 @@ export function validateMenuItems(items, path, depth = 0) {
     if ('checked' in o && (typeof o.checked !== 'string' || !parseChecked(o.checked))) errors.push(`${p}.checked must be one of: ${MENU_SPEC.checkedKinds.map((k) => `${k}:<ref>`).join(', ')}`);
     if ('order' in o && (typeof o.order !== 'number' || !Number.isFinite(o.order))) errors.push(`${p}.order must be a number`);
     if ('provider' in o && 'items' in o) errors.push(`${p} has both provider and items (a live list fills its own)`);
+    errors.push(...menuItemV2Errors(o, p));
     if ('items' in o) {
       if (depth + 1 >= MENU_SPEC.maxDepth) errors.push(`${p}.items is deeper than ${MENU_SPEC.maxDepth} levels`);
       else errors.push(...validateMenuItems(o.items, `${p}.items`, depth + 1));

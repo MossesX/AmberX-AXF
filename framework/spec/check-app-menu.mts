@@ -11,7 +11,12 @@ import {
   ASSET_ORIGIN, CHECKED_KINDS, DEFAULT_MENU, MENU_DEFAULT_ORDER, MENU_ITEM_FIELDS, MENU_MAX_DEPTH, PROVIDER_MAX,
   appMenuSearchEntries, buildAppMenu, chromeToggleItems, chromeToggleTypes, compileAppMenu, compileProviderItems, mergeAppMenu,
   parseChecked, resolveChecked, titleFromId, truthy, validateMenuItems, type AppMenuEnv,
+  // menu-item@2 (spec/MENUS.md)
+  MENU_ITEMS_VERSION, MENU_KINDS, MENU_STATUS_KINDS, MENU_STATUS_STATES, MENU_STATUS_TONES, MENU_STATUS_ANIMS, MENU_STATUS_DEFAULT_ANIMS, MENU_STATUS_TEXT, MENU_CHOICES_MAX, MENU_TOKENS_KEY, MENU_TOKENS_TARGET, MENU_SETTING_SET, MENU_SETTING_TOGGLE, MENU_ITEM_TOKENS,
+  menuItemKind, choiceAction, parseChoiceAction, currentChoice, nextChoice, parseStatusSource, compileStatus, resolveStatus, menuItemPath, isMenuItemPath, normalizeMenuOverrides, withMenuOverride, withoutMenuOverrides, listMenuOverrides, migrateMenuItems, migrateMenuAsset, compileMenuItems,
+  type MenuStatusReading,
 } from '../core/engines/appmenu';
+import spec from '../schemas/asset-types.json';
 import { gateFor, resolvePermissions } from '../core/engines/uac';
 import { validateAsset } from '../core/validate';
 import { AxfRuntime } from '../core/runtime';
@@ -25,7 +30,16 @@ const f = read('app-menu.json');
 
 // constants + pure helpers
 {
-  eq({ maxDepth: MENU_MAX_DEPTH, providerMax: PROVIDER_MAX, defaultOrder: MENU_DEFAULT_ORDER, checkedKinds: [...CHECKED_KINDS], itemFields: [...MENU_ITEM_FIELDS], defaultMenu: DEFAULT_MENU, assetOrigin: ASSET_ORIGIN }, f.spec, 'spec constants');
+  eq({
+    maxDepth: MENU_MAX_DEPTH, providerMax: PROVIDER_MAX, defaultOrder: MENU_DEFAULT_ORDER, checkedKinds: [...CHECKED_KINDS], itemFields: [...MENU_ITEM_FIELDS], defaultMenu: DEFAULT_MENU, assetOrigin: ASSET_ORIGIN,
+    version: MENU_ITEMS_VERSION, kinds: [...MENU_KINDS], statusKinds: [...MENU_STATUS_KINDS], statusStates: [...MENU_STATUS_STATES], statusTones: MENU_STATUS_TONES, statusAnims: [...MENU_STATUS_ANIMS], statusDefaultAnims: MENU_STATUS_DEFAULT_ANIMS, statusText: MENU_STATUS_TEXT,
+    choicesMax: MENU_CHOICES_MAX, tokensKey: MENU_TOKENS_KEY, tokensTarget: MENU_TOKENS_TARGET, settingSet: MENU_SETTING_SET, settingToggle: MENU_SETTING_TOGGLE, itemTokens: MENU_ITEM_TOKENS,
+  }, f.spec, 'spec constants');
+  // the rules module (shared with the build engine) and asset-types.json → menuItems say the same thing
+  const m = spec.menuItems as Record<string, unknown>;
+  eq({ version: m.version, kinds: m.kinds, statusKinds: m.statusKinds, statusStates: m.statusStates, statusTones: m.statusTones, statusAnims: m.statusAnims, statusDefaultAnims: m.statusDefaultAnims, choicesMax: m.choicesMax, tokensKey: m.tokensKey },
+    { version: MENU_ITEMS_VERSION, kinds: [...MENU_KINDS], statusKinds: [...MENU_STATUS_KINDS], statusStates: [...MENU_STATUS_STATES], statusTones: MENU_STATUS_TONES, statusAnims: [...MENU_STATUS_ANIMS], statusDefaultAnims: MENU_STATUS_DEFAULT_ANIMS, choicesMax: MENU_CHOICES_MAX, tokensKey: MENU_TOKENS_KEY }, 'asset-types.json menuItems = menu-item-rules.mjs');
+  for (const k of ['kind', 'hint', 'setting', 'choices', 'cycle', 'status']) ok(k in (m.optional_fields as Record<string, string>), `optional_fields documents ${k}`);
   for (const [id, t] of Object.entries<string>(f.titles)) eq(titleFromId(id), t, `title ${JSON.stringify(id)}`);
   for (const [v, t] of Object.entries<boolean>(f.truthy)) eq(truthy(JSON.parse(v)), t, `truthy ${v}`);
   for (const [b, c] of Object.entries<any>(f.checked)) {
@@ -74,6 +88,91 @@ const envFor = (role: string, hidden: string[] = ['toolbar'], settings: Record<s
   eq(chromeToggleItems(), f.chrome.items, 'chrome toggle items');
   eq(chromeToggleItems(['toolbar', 'color-theme', 'nav-menu'], { toolbar: 'Top toolbar' }), f.chrome.labelled, 'chrome toggle items (labelled)');
   eq(appMenuSearchEntries(compileAppMenu(mergeAppMenu(f.asset, f.contributions), envFor('admin')), new Set(['file.first'])), f.search.entries, 'search entries');
+}
+
+// menu-item@2: kinds, choice settings, live status, paths + overrides, flat lists, migration (fixture replay)
+{
+  const v = f.v2;
+  const hubReading: MenuStatusReading = { state: 'on', text: 'Connected', icon: 'axhub' };
+  const v2Env = (settings: Record<string, unknown>, counters: Record<string, number>, hub: MenuStatusReading | null, overrides?: unknown): AppMenuEnv => ({
+    ...envFor('admin', ['toolbar'], settings, counters), status: (id) => (id === 'hub' ? hub : null), overrides,
+  });
+  for (const [k, c] of Object.entries<any>(v.kinds)) {
+    const shapes: Record<string, unknown> = { action: { id: 'a', action: 'x' }, empty: { id: 'a' }, submenu: { id: 'a', items: [] }, 'submenu-with-action': { id: 'a', action: 'x', items: [{ id: 'b' }] }, choice: { id: 'a', setting: 'k' }, 'choice-list': { id: 'a', setting: 'k', choices: [] }, separator: { id: 'a', separator: true }, 'live-list': { id: 'a', provider: 'p' }, 'provider-beats-setting': { id: 'a', provider: 'p', setting: 'k' }, 'not-an-object': 7 };
+    eq(menuItemKind(shapes[k]), c, `kind ${k}`);
+  }
+  for (const [k, c] of Object.entries<any>(v.choiceActions)) {
+    const [key, json] = [k.slice(0, k.indexOf('=')), k.slice(k.indexOf('=') + 1)];
+    const spec = choiceAction(key, JSON.parse(json));
+    eq(spec, c.spec, `choice action ${k}`);
+    eq(parseChoiceAction(spec.split(':').slice(1)), c.parsed, `choice action round trip ${k}`);
+  }
+  eq([[], ['k'], ['k', '%ZZ'], ['k', encodeURIComponent('{"a":1}')]].map((a) => parseChoiceAction(a)), v.badChoiceActions, 'bad choice actions parse to null');
+  const theme = v.compiled.menus[0].items.find((i: any) => i.id === 'theme');
+  const [themeChoices, densityChoices] = [v.asset.menus[0].items[0].choices, v.asset.menus[0].items[1].choices];
+  eq(currentChoice(themeChoices, 'dark'), v.current.picked, 'current choice (picked)');
+  eq(currentChoice(themeChoices, null), v.current.unsaved, 'current choice (never saved: first, not picked)');
+  eq(currentChoice([{ value: 14, label: 'M' }], '14'), v.current.loose, 'current choice matches loosely on type');
+  eq(nextChoice(densityChoices, 'roomy'), v.next.wrap, 'next choice wraps');
+  for (const [s, c] of Object.entries(v.statusSources)) eq(parseStatusSource(s), c, `status source ${JSON.stringify(s)}`);
+  for (const [s, c] of Object.entries(v.resolved)) eq(resolveStatus(s, v2Env({ 'files.autosave': true }, { 'builds.running': 2, 'alerts.unread': 0 }, hubReading)), c, `resolve status ${s}`);
+  eq(compileStatus({ source: 'source:hub', icon: 'axhub', tooltip: 'axHub connection' }, { state: 'off' }, 'axHub'), v.compiledStatus['object-off-default-tone'], 'off = danger tone, tooltip explains the icon');
+  eq(compileStatus('source:hub', { state: 'busy', text: 'Syncing' }, 'axHub'), v.compiledStatus['busy-pulses'], 'busy pulses');
+  eq(compileStatus('source:nobody', null, 'Nobody'), v.compiledStatus['unknown-when-unregistered'], 'unregistered source reads Unknown');
+  eq(compileStatus('nope:x', { state: 'on' }, 'X'), v.compiledStatus['not-a-status'], 'not a status');
+  // replay: the same asset, settings, counters, readings and overrides give the fixture's compiled trees
+  const v2Merged = mergeAppMenu(v.asset, []);
+  eq(compileAppMenu(v2Merged, v2Env({ 'ui.theme': 'dark', 'ui.density': 'regular', 'files.autosave': true }, { 'builds.running': 2, 'alerts.unread': 0 }, hubReading)), v.compiled, 'v2 compiled (warm)');
+  eq(compileAppMenu(v2Merged, v2Env({}, {}, { state: 'off', text: 'Not signed in' })), v.compiledCold, 'v2 compiled (cold)');
+  eq(compileAppMenu(v2Merged, v2Env({ 'ui.theme': 'dark' }, { 'builds.running': 1 }, hubReading, v.rawOverrides)), v.compiledOverridden, 'v2 compiled (overridden)');
+  eq(compileMenuItems(v.ctxItems, { ...v2Env({ 'editor.wrap': false, 'editor.size': 14 }, {}, null), pathRoot: 'context-menu' }, 'default'), v.flat.default, 'flat context list compiled');
+  eq(compileMenuItems(v.ctxItems, { ...v2Env({ 'editor.size': '18' }, {}, null, { 'context-menu/default/copy': { label: 'Copy text', tone: 'accent' }, 'context-menu/default/first': { visible: false } }), pathRoot: 'context-menu' }, 'default'), v.flat.overridden, 'flat context list compiled (overridden)');
+  eq(migrateMenuItems(v.v1Items, ['view']), v.migration.items, 'migration replay');
+  // the compiled trees: every item carries kind + path; choices show their value; statuses their state
+  const walk = (items: any[], fn: (i: any) => void) => { for (const i of items) { fn(i); if (i.items) walk(i.items, fn); } };
+  for (const key of ['compiled', 'compiledCold', 'compiledOverridden']) walk(v[key].menus[0].items, (i) => { ok(MENU_KINDS.includes(i.kind), `${key}/${i.id}: kind`); ok(isMenuItemPath(i.path), `${key}/${i.id}: path ${i.path}`); });
+  eq(theme.valueLabel, 'Dark', 'choice shows its current value beside the label');
+  eq(theme.choices.map((c: any) => c.on), [false, true, false], 'the picked choice is marked');
+  ok(theme.choices.every((c: any) => c.action.startsWith(`${MENU_SETTING_SET}:`)), 'every choice runs setting.set');
+  eq(v.compiled.menus[0].items.find((i: any) => i.id === 'autosave').action, `${MENU_SETTING_TOGGLE}:files.autosave`, 'a switch runs setting.toggle');
+  eq(v.compiled.menus[0].items.find((i: any) => i.id === 'hub').status, { source: 'source:hub', state: 'on', tone: 'success', anim: 'none', icon: 'axhub', text: 'Connected', tooltip: 'axHub connection: Connected' }, 'the green axHub slot');
+  eq(v.compiledCold.menus[0].items.find((i: any) => i.id === 'hub').status.tone, 'danger', '…red when not');
+  eq(v.compiledCold.menus[0].items.find((i: any) => i.id === 'theme').valueLabel, '', 'never-saved choice shows no value');
+  eq(v.compiled.notes, ['view/nobody: status source "nobody" is not registered'], 'unregistered source noted once');
+  const over = v.compiledOverridden.menus[0].items;
+  eq([over.find((i: any) => i.id === 'theme').label, over.find((i: any) => i.id === 'theme').look, over.find((i: any) => i.id === 'tools').items.map((i: any) => i.id), over.find((i: any) => i.id === 'builds').action, over.find((i: any) => i.id === 'autosave').action],
+    ['Appearance', { tone: 'accent', weight: 'semibold' }, ['c', 'a'], 'nav:build-queue', `${MENU_SETTING_TOGGLE}:files.autosave`], 'overrides: label + look, hidden + reordered children, action; a choice keeps its own action');
+  eq([menuItemPath('app-menu', ['file', 'exports', 'json']), menuItemPath('context-menu', ['default', 'copy'])], v.paths.made, 'paths');
+  for (const [p, c] of Object.entries(v.paths.valid)) eq(isMenuItemPath(p), c, `path valid ${p.slice(0, 40)}`);
+  const o = v.overrides;
+  eq(normalizeMenuOverrides(o.normalized), o.normalized, 'normalized overrides are a fixed point');
+  ok(!('nav/x' in o.normalized) && !('app-menu/view/bad' in o.normalized) && !('app-menu/view/empty' in o.normalized), 'bad roots, bad values and empty maps are dropped');
+  eq(withMenuOverride(o.normalized, 'app-menu/view/theme', 'size', 'lg')['app-menu/view/theme'].size, 'lg', 'set one token');
+  eq(withMenuOverride({ 'app-menu/view/x': { tone: 'accent' } }, 'app-menu/view/x', 'tone', 'theme'), o.setDefaultClears, 'setting the default clears');
+  eq(withMenuOverride({ 'app-menu/view/x': { tone: 'accent', label: 'X' } }, 'app-menu/view/x', 'tone', null), o.setNullClears, 'null clears');
+  eq(withMenuOverride({}, 'nav/x', 'tone', 'accent'), {}, 'bad path ignored');
+  eq(withMenuOverride({}, 'app-menu/view/x', 'colour', 'accent'), {}, 'bad token ignored');
+  eq(Object.keys(withoutMenuOverrides(o.normalized, 'app-menu/view/tools', true)).some((p) => p.startsWith('app-menu/view/tools')), false, 'deep remove drops the subtree');
+  eq(listMenuOverrides(o.normalized).length, Object.values<any>(o.normalized).reduce((n, m) => n + Object.keys(m).length, 0), 'list = one record per token');
+  const ctx = v.flat.default.items;
+  eq(ctx.map((i: any) => [i.id, i.kind, i.path]), [['first', 'action', 'context-menu/default/first'], ['copy', 'action', 'context-menu/default/copy'], ['s', 'separator', 'context-menu/default/s'], ['wrap', 'choice', 'context-menu/default/wrap'], ['size', 'choice', 'context-menu/default/size']], 'flat list: placement, kinds, context-menu paths');
+  eq(ctx.find((i: any) => i.id === 'size').valueLabel, 'Medium', 'flat list: numeric choice value');
+  eq(v.flat.overridden.items.map((i: any) => i.id), ['copy', 's', 'wrap', 'size'], 'flat list: visible:false drops an item');
+  const mig = v.migration;
+  eq(mig.items.items.map((i: any) => i.kind), ['action', 'choice', 'action', 'separator', 'live-list', 'action', 'submenu'], 'migration: explicit kinds');
+  eq(mig.items.items[1], { id: 'auto', label: 'Auto build', setting: 'builds.auto', kind: 'choice' }, 'migration: a check with nothing to run → a switch');
+  eq(mig.items.items[2].checked, 'setting:builds.auto', 'migration: a check with an action stays a check');
+  eq(mig.idempotent.notes, [], 'migration is idempotent');
+  eq(mig.asset.asset.data.menuItems, MENU_ITEMS_VERSION, 'migrated asset carries menuItems: 2');
+  eq(mig.other.changed, false, 'other asset types pass through');
+  for (const [k, s] of Object.entries<any>(mig.starters)) ok(s.changed && s.valid && s.version === MENU_ITEMS_VERSION && s.notes.length === 0, `starter ${k} migrates clean`);
+  // migrating a real starter here gives the fixture's answer
+  for (const t of ['app-menu', 'context-menu']) for (const n of readdirSync(join(root, 'assets', t))) {
+    const a = JSON.parse(readFileSync(join(root, 'assets', t, n), 'utf8'));
+    const r = migrateMenuAsset(a);
+    eq({ changed: r.changed, notes: r.notes, valid: validateAsset(r.asset).ok, version: (r.asset as any).data.menuItems }, mig.starters[`${t}/${a.id}`], `starter ${t}/${a.id} migration replay`);
+  }
+  eq(migrateMenuItems(migrateMenuItems(mig.items.items).items).items, mig.items.items, 'migrating twice changes nothing');
 }
 
 // validation: core and CLI agree on every case
