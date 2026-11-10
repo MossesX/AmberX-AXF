@@ -26,6 +26,13 @@ argv, JSON on stdin, never a shell), the same code the launcher uses, so the pre
 Raising or removing a spend cap (or adding an API account without both caps) is Brett's own signed-in click: the
 console token (sessions, MCP, voice) may lower a cap but never raise one.
 
+Account checks (build test-button-on-every-claude-account-subscription, Nov 10 2026): only when asked, never on
+console start and never before a launch (Brett: "If the build fails, that's the check").
+  POST check      { name }  one tiny no-tool call per model on that account (deploy/claude-account-check.mjs on the host)
+  POST check-all  {}        every account, one at a time
+  GET  checks               { checks: name → account-check@1, checking: name | "" , queue }
+Each row of GET accounts carries its last `check`. A check changes nothing on the host, so it needs no hold.
+
 Capability axf.claude-accounts@1 gives other plugins the same view and the same held switch (AI keys lists these accounts
 beside its own keys); it hands out names, types, emails and plans, never a credential.
 
@@ -68,7 +75,15 @@ NOTE = "Running builds keep their account. New jobs go to the least busy worker,
 ROUTER = ROOT / "deploy" / "worker-routing.mjs"
 ROLE_NAMES = ("interactive", "worker", "saved", "api-worker", "api-off")
 
+CHECK_CLI = "/opt/axf/deploy/claude-account-check.mjs"
+CHECK_TIMEOUT_S = 150  # two models, 60 s each at worst, and the ssh round trip
+CHECK_STATES = ("alive", "expired", "bad-key", "no-credit", "limit", "unknown-account", "error")
+MODEL_RESULTS = ("ok", "unavailable", "expired", "bad-key", "no-credit", "limit", "error")
+CHECK_MODELS = ("opus", "fable")
+
 _lock = threading.RLock()
+_check_lock = threading.Lock()   # one account check at a time on the host
+_checking: dict[str, Any] = {"name": "", "queue": []}
 _cache: dict[str, Any] = {"at": 0.0, "value": None}
 _pending: dict[str, Any] | None = None
 
@@ -252,6 +267,86 @@ def _pending_now(names: list[str] | None = None, active: str = "") -> dict[str, 
         return dict(p) if p else None
 
 
+def _checks() -> dict[str, Any]:
+    try:
+        v = json.loads((_data() / "checks.json").read_text())
+        return v if isinstance(v, dict) else {}
+    except (OSError, ValueError):
+        return {}
+
+
+def parse_check(text: str, name: str) -> dict[str, Any]:
+    """The host's account-check@1 line → only the known fields, in their known values. Anything else is an error result."""
+    at = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    try:
+        v = json.loads((text or "").strip().splitlines()[-1])
+    except (ValueError, IndexError):
+        v = None
+    if not isinstance(v, dict) or v.get("name") != name:
+        return {"name": name, "kind": "", "state": "error", "models": {}, "detail": "The VPS didn't answer the check (is deploy/claude-account-check.mjs deployed?).", "until": "", "at": at, "ms": 0}
+    models = v.get("models") if isinstance(v.get("models"), dict) else {}
+    return {"name": name, "kind": "api" if v.get("kind") == "api" else "subscription" if v.get("kind") == "subscription" else "",
+            "state": v.get("state") if v.get("state") in CHECK_STATES else "error",
+            "models": {m: models[m] for m in CHECK_MODELS if models.get(m) in MODEL_RESULTS},
+            "detail": str(v.get("detail") or "")[:200], "until": str(v.get("until") or "")[:40], "at": str(v.get("at") or at)[:40],
+            "ms": int(v.get("ms") or 0) if isinstance(v.get("ms"), (int, float)) else 0}
+
+
+def check_account(name: str) -> dict[str, Any]:
+    """Run the check for one account on the host (one at a time) and keep the answer in checks.json."""
+    name = clean_name(name)
+    with _check_lock:
+        with _lock:
+            _checking["name"] = name
+            _checking["queue"] = [n for n in _checking["queue"] if n != name]
+        try:
+            svc = plugin_services.get("axf.headless@1")
+            if svc is None or not hasattr(svc, "vps_read"):
+                raise HTTPException(503, "The Terminal plugin is off or too old, so the console can't reach the VPS host.")
+            r = svc.vps_read(f'export PATH="$HOME/.local/bin:$PATH"; node {CHECK_CLI} check {name} --json', CHECK_TIMEOUT_S)
+            if not r.get("ready"):
+                raise HTTPException(503, f"Can't reach the VPS host: {str(r.get('why') or '')[:200]}")
+            result = parse_check(str(r.get("out") or ""), name)
+            with _lock:
+                _data().mkdir(parents=True, exist_ok=True)
+                tmp = _data() / f"checks.json.{os.getpid()}.tmp"
+                tmp.write_text(json.dumps({**_checks(), name: result}, indent=1))
+                tmp.replace(_data() / "checks.json")
+            return result
+        finally:
+            with _lock:
+                _checking["name"] = ""
+
+
+def check_all(names: list[str] | None = None) -> list[dict[str, Any]]:
+    """Every account (or the ones named), one at a time, in list order."""
+    names = [clean_name(n) for n in names] if names else [a["name"] for a in view()["accounts"]]
+    with _lock:
+        _checking["queue"] = list(names)
+    out = []
+    try:
+        for n in names:
+            out.append(check_account(n))
+    finally:
+        with _lock:
+            _checking["queue"] = []
+    return out
+
+
+CHECK_WORDS = {"alive": "alive", "expired": "login expired", "bad-key": "bad key", "no-credit": "out of credits", "limit": "limit hit",
+               "unknown-account": "no such account", "error": "check failed"}
+
+
+def check_line(c: dict[str, Any]) -> str:
+    runs = [m.capitalize() for m, r in c.get("models", {}).items() if r == "ok"]
+    return f"{c['name']}: {CHECK_WORDS.get(c['state'], c['state'])}" + (f" · runs {', '.join(runs)}" if runs else "") + (f" · {c['detail']}" if c.get("detail") and c["state"] != "alive" else "")
+
+
+def checks_view() -> dict[str, Any]:
+    with _lock:
+        return {"ok": True, "checks": _checks(), "checking": _checking["name"], "queue": list(_checking["queue"])}
+
+
 def view() -> dict[str, Any]:
     v = _read()
     names, active, login = v["names"], v["active"], v["login"]
@@ -275,9 +370,10 @@ def view() -> dict[str, Any]:
                 **{k: host.get(k, d) for k, d in idle.items()}}
 
     names = names + [n for n in v["host"] if n not in names]   # API worker slots whose key isn't saved yet
-    rows = [row(n) for n in names]
+    checks = _checks()
+    rows = [{**row(n), "check": checks.get(n)} for n in names]
     return {"ok": True, "ready": v["ready"], "why": v["why"], "accounts": rows, "active": active, "login": login, "loginChanged": changed, "pending": pending, "note": NOTE,
-            "checked": v["checked"], "expiresAt": v["expiresAt"]}
+            "checked": v["checked"], "expiresAt": v["expiresAt"], "checking": _checking["name"], "checkQueue": list(_checking["queue"])}
 
 
 def _who(request: Request) -> str:
@@ -581,6 +677,29 @@ async def label(request: Request) -> dict[str, Any]:
     return {"ok": True, "name": name, "label": text, "message": f"{name} is shown as {text or name}."}
 
 
+@router.get("/checks")
+def get_checks(request: Request) -> dict[str, Any]:
+    _who(request)
+    return checks_view()
+
+
+@router.post("/check")
+async def post_check(request: Request) -> dict[str, Any]:
+    _who(request)
+    name = await _name(request)
+    c = await run_in_threadpool(check_account, name)
+    return {"ok": True, "check": c, "message": check_line(c)}
+
+
+@router.post("/check-all")
+async def post_check_all(request: Request) -> dict[str, Any]:
+    _who(request)
+    b = await _body(request)
+    names = b.get("names") if isinstance(b.get("names"), list) else None
+    out = await run_in_threadpool(check_all, names)
+    return {"ok": True, "checks": out, "message": "; ".join(check_line(c) for c in out) or "No accounts to check."}
+
+
 @router.post("/signin")
 async def signin(request: Request) -> dict[str, Any]:
     by = _who(request)
@@ -630,6 +749,13 @@ class AccountsService:
 
     def use(self, name: str, by: str) -> dict[str, Any]:
         return ask("use", clean_name(name), by)
+
+    def check(self, name: str) -> dict[str, Any]:
+        """One account check (account-check@1). Only on request: launches never call it."""
+        return check_account(name)
+
+    def checks(self) -> dict[str, Any]:
+        return checks_view()
 
 
 plugin_services.provide("axf.claude-accounts@1", AccountsService(), FOLDER)

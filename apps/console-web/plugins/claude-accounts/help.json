@@ -119,6 +119,18 @@
         "title": "Job routing",
         "text": "Every saved subscription login takes headless jobs unless you stop it; the console's account takes jobs after them when its switch is on. At most 3 jobs build and 5 wait per account. API keys bill per token, so they only take jobs a routing rule sends them, and nothing once a daily or weekly spend cap is reached. Rules are checked in order and the first switched-on match decides. Test a job shows where a job would go right now.",
         "kind": "panel"
+      },
+      {
+        "target": "action:claude-accounts.test-all",
+        "title": "Test all Claude accounts",
+        "text": "Opens Claude accounts and checks every account one at a time with a tiny no-tool call per model: alive, login expired, bad key, out of credits or limit hit, and whether it runs Opus and Fable.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:claude-accounts.test",
+        "title": "Test a Claude account",
+        "text": "Checks one account the same way (claude-accounts.test:<name>). Tests only run when asked, never on open or before a launch.",
+        "kind": "menu-item"
       }
     ]
   }

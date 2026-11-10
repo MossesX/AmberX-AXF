@@ -2,11 +2,11 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.claude-accounts",
   "name": "Claude accounts",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Claude accounts on the VPS: lists the saved logins and API keys, switches the console's account, and routes headless jobs: every subscription login is a worker (the console's account takes jobs after them), 3 build and 5 wait per account, and API-key accounts take only the jobs a routing rule sends them, under daily and weekly spend caps with alerts. Job routing settings: rules on job type, model, size, priority, profile and a subscriptions-busy fallback, in order, each on or off, with a test-a-job preview. Never shows a credential. Every switch, save, sign-in or removal is one held axHub call.",
+  "description": "Claude accounts on the VPS: lists the saved logins and API keys, switches the console's account, and routes headless jobs: every subscription login is a worker (the console's account takes jobs after them), 3 build and 5 wait per account, and API-key accounts take only the jobs a routing rule sends them, under daily and weekly spend caps with alerts. Job routing settings: rules on job type, model, size, priority, profile and a subscriptions-busy fallback, in order, each on or off, with a test-a-job preview. Test and Test all check each account on request with one tiny no-tool call per model: alive, login expired, bad key, out of credits or limit hit, and whether it runs Opus and Fable. Never shows a credential. Every switch, save, sign-in or removal is one held axHub call.",
   "targets": [
     "axf-console"
   ],
@@ -18,7 +18,9 @@
     "action:claude-accounts.switch",
     "service:axf.claude-accounts@1",
     "settings-panel:claude-accounts.routing",
-    "action:claude-accounts.routing"
+    "action:claude-accounts.routing",
+    "action:claude-accounts.test",
+    "action:claude-accounts.test-all"
   ],
   "requires": [
     "service:axf.headless@1",
@@ -270,7 +272,7 @@
                       "items": {
                         "type": "string"
                       },
-                      "description": "build, agent-job or a job-type id (walkthrough, ui-shots\u2026)"
+                      "description": "build, agent-job or a job-type id (walkthrough, ui-shots…)"
                     },
                     "models": {
                       "type": "array",
@@ -406,6 +408,49 @@
             "label"
           ]
         }
+      },
+      {
+        "route": "POST /check",
+        "id": "check",
+        "title": "Test a Claude account",
+        "description": "Check one saved account now with one tiny no-tool call per model on its own saved login or API key (no AI build, a few tokens): alive, login expired, bad key, out of credits or limit hit, which models it runs (Opus, Fable) and when. Voice: 'test account 3'. Only runs when asked; launches never test first.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "saved account name (spoken 'account 3' works)"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        }
+      },
+      {
+        "route": "POST /check-all",
+        "id": "check-all",
+        "title": "Test all Claude accounts",
+        "description": "Check every saved account, one at a time, the same way as check (voice: 'test all Claude accounts'). Takes about 10 seconds per account.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "names": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "only these accounts (default: all)"
+            }
+          }
+        }
+      },
+      {
+        "route": "GET /checks",
+        "id": "checks",
+        "title": "Claude account test results",
+        "description": "The last test result per account (state, models, detail, when) and which account is being tested now.",
+        "readOnly": true
       }
     ]
   },
@@ -429,7 +474,9 @@
       "deploy/claude-workers.mjs",
       "deploy/claude-workers.test.mjs",
       "deploy/worker-routing.mjs",
-      "deploy/worker-routing.test.mjs"
+      "deploy/worker-routing.test.mjs",
+      "deploy/claude-account-check.mjs",
+      "deploy/claude-account-check.test.mjs"
     ],
     "keeps": [
       "/root/.claude-accounts and /usr/local/bin/claude-account on the VPS host: the saved logins and the script belong to the host, not to this plugin"

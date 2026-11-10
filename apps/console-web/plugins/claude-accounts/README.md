@@ -58,6 +58,25 @@ each on a private copy of its login, so several subscriptions work at once.
 CLI: `axf claude-accounts role --name <n> --role worker|saved | signin --name <n> | remove --name <n>`.
 Host: `node deploy/claude-workers.mjs status`.
 
+## Testing an account
+
+**Test** on every row (Accounts and Job routing) and **Test all** check whether an account can work right now. Only
+when asked: never when the page opens, never on console start and never before a launch (a build that fails on an
+account is that account's check).
+
+- **How:** `deploy/claude-account-check.mjs check <name>` on the host, over the Terminal's read connection (no hold: it
+  changes nothing). One `claude -p` per model (Opus, then Fable) with a one-line system prompt, no tools, no MCP, safe
+  mode and no saved session, on a private copy of that account's saved login or API key (`claude-login.mjs snapshot`,
+  released at once so a refreshed token is carried back). A few tokens, about 10 s per account. A dead login or key
+  stops after the first call.
+- **Answer** (account-check@1): `alive`, `expired` (sign in again), `bad-key`, `no-credit`, `limit` (with when it
+  resets, if Claude said), or `error`; each model `ok`, `unavailable`, or the same words; and when it ran.
+  Kept per account in `checks.json` in the data folder (no credential).
+- **Test all** runs the accounts one at a time with a moving progress bar; each row shows Testing…, then its result.
+- **API:** `POST check {name}`, `POST check-all {names?}`, `GET checks`; MCP / CLI `axf claude-accounts check --name <n>`,
+  `check-all`, `checks`; console actions `claude-accounts.test:<name>` and `claude-accounts.test-all` (open the page and
+  run there); voice "test account 3", "test all Claude accounts". Capability `axf.claude-accounts@1` `check(name)`.
+
 ## Adding an account
 
 Terminal > VPS host > claude > /login, then **Save current login as…** right away.
@@ -70,13 +89,15 @@ the active account), shows a warning and refuses the switch until the new login 
 
 `workers.json` (claude-workers@1, names in order) and `worker-state.json` (limits) sit next to `seen.json`, and neither holds a credential.
 
+`checks.json` holds the last test per account.
+
 `.axf-console/plugins/claude-accounts/seen.json`: the email + plan last seen per account. The script only reports the
 active account, so this is how the other rows show theirs. A saved account the console hasn't seen active yet shows
 its name only. Uninstalling leaves the host script and the saved logins alone.
 
 ## Test
 
-`python3 apps/console-web/plugins/claude-accounts/test.py` and `node deploy/claude-workers.test.mjs`
+`python3 apps/console-web/plugins/claude-accounts/test.py`, `node deploy/claude-workers.test.mjs` and `node deploy/claude-account-check.test.mjs`
 
 ## Rotated tokens
 

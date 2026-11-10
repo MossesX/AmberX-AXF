@@ -130,7 +130,7 @@ ok(names == [f"account-{i}" for i in range(1, 7)], "token and API-key accounts a
 ok(active == "account-6" and kinds["account-2"] == "login" and kinds["account-3"] == "token" and kinds["account-5"] == "api-key", "each row keeps its type")
 ok(not any(x == "bad" for x in names), "an unknown tag is still malformed")
 svc = plugin_services.get("axf.claude-accounts@1")
-ok(svc and {"name", "type", "kind", "hasKey", "active", "email", "plan", "role", "limited", "running", "runsToday", "costToday", "costWeek", "recent", "label", "queued", "building", "queue", "spend", "why", "takesJobs"} == set(svc.view()["accounts"][0]), "the capability lists names, roles, limits and usage, nothing else")
+ok(svc and {"name", "type", "kind", "hasKey", "active", "email", "plan", "role", "limited", "running", "runsToday", "costToday", "costWeek", "recent", "label", "queued", "building", "queue", "spend", "why", "takesJobs", "check"} == set(svc.view()["accounts"][0]), "the capability lists names, roles, limits, usage and the last test, nothing else")
 
 print("use")
 reset()
@@ -277,5 +277,42 @@ host.out = host.out.replace('"costToday": 0, "costWeek": 0, "recent": [], "takes
 mod._forget_read()
 ok(mod.api_health()["status"] == "error" and "daily cap" in mod.api_health()["summary"], "API health: over the (lowered) $8 cap is an error")
 ok(SECRET not in (data / "workers.json").read_text(), "workers.json holds names and numbers only")
+
+print("account tests (only when asked)")
+ok(not any("claude-account-check" in cmd for cmd in host.commands), "reading the accounts never runs a test")
+real_read = host.vps_read
+answers = {"account-2": {"$axf": "account-check@1", "name": "account-2", "kind": "subscription", "state": "alive", "models": {"opus": "ok", "fable": "ok"}, "detail": "", "until": "", "at": "2026-11-10T01:00:00Z", "ms": 8000, "token": SECRET},
+           "account-3": {"$axf": "account-check@1", "name": "account-3", "kind": "subscription", "state": "expired", "models": {"opus": "expired"}, "detail": "Failed to authenticate: OAuth session expired", "until": "", "at": "2026-11-10T01:00:10Z", "ms": 2000}}
+order: list[str] = []
+
+
+def check_read(remote: str, timeout: int = 15) -> dict:
+    if "claude-account-check.mjs check " in remote:
+        name = remote.split(" check ")[1].split()[0]
+        order.append(name)
+        ok(mod.checks_view()["checking"] == name, f"while {name} is tested, the state says so")
+        return {"ready": True, "out": "noise\n" + json.dumps(answers.get(name, {"name": name, "state": "weird"})) + "\n", "why": ""}
+    return real_read(remote, timeout)
+
+
+host.vps_read = check_read
+for bad in ["../evil", "a;rm -rf /", "$(id)"]:
+    ok(c.post("/p/check", json={"name": bad}).status_code == 400, f"test refuses a bad name: {bad!r}")
+r = c.post("/p/check", json={"name": "Account 3"})
+ok(r.status_code == 200 and r.json()["check"]["state"] == "expired" and "login expired" in r.json()["message"], "Test: an expired login says so (spoken 'Account 3' works)")
+r = c.post("/p/check-all", json={})
+names_now = [a["name"] for a in c.get("/p/accounts").json()["accounts"]]
+ok(order[1:] == names_now, "Test all checks every account, one at a time, in list order")
+ok(SECRET not in r.text and SECRET not in (data / "checks.json").read_text(), "no credential passes through a test result")
+g = c.get("/p/checks").json()
+ok(g["checks"]["account-2"]["models"] == {"opus": "ok", "fable": "ok"} and g["checking"] == "" and g["queue"] == [], "results kept per account; nothing running after")
+rows = {a["name"]: a for a in c.get("/p/accounts").json()["accounts"]}
+ok(rows["account-2"]["check"]["state"] == "alive" and rows["account-2"]["check"]["at"], "each row carries its last test and when")
+ok(all(rows[n]["check"]["state"] == "error" for n in rows if n not in answers), "an odd host answer is a failed test, not a crash")
+ok(mod.parse_check("", "x")["state"] == "error" and "deployed" in mod.parse_check("", "x")["detail"], "no answer from the host says the check may not be deployed")
+user[0] = types.SimpleNamespace(admin=False, name="guest")
+ok(c.post("/p/check", json={"name": "account-2"}).status_code == 403, "a non-owner can't run tests")
+user[0] = None
+host.vps_read = real_read
 
 print(f"\nclaude-accounts: {checks} checks passed")

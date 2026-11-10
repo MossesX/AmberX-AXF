@@ -12,6 +12,8 @@ import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
 import { JobRouting, ROUTING_ASSETS, loadRouting } from './routing';
+import { TestAllBar, TestCell, TestDetail, onChecked, testAccounts } from './checks';
+import type { Check } from './checks';
 import './claude-accounts.css';
 
 const ID = 'ai.amberx.axf.console.claude-accounts';
@@ -31,11 +33,12 @@ interface Account {
   limited: { until: string; kind: string; reason: string } | null; running: string[]; queued: number; building: number; queue: number;
   runsToday: number; costToday: number; costWeek: number; recent: Run[];
   spend: { day: number; week: number; dayCap: number; weekCap: number; state: 'ok' | 'warn' | 'capped'; why: string } | null;
+  check: Check | null;
 }
 interface Pending { op: Op; name: string; by: string }
 interface View {
   ok: boolean; ready: boolean; why: string; accounts: Account[]; active: string; login: { email?: string; plan?: string };
-  loginChanged: boolean; pending: Pending | null; note: string;
+  loginChanged: boolean; pending: Pending | null; note: string; checking: string; checkQueue: string[];
 }
 
 /* ---------------- data: one poll shared by the chip and the screens ---------------- */
@@ -101,6 +104,7 @@ function Row({ a, view, onDone, manage }: { a: Account; view: View; onDone: (m: 
         <b>{a.label || a.name}</b>{a.label && <span className="axp-ca-row__sub"> · {a.name}</span>}
         {sub && <p className="axp-ca-row__sub">{sub}</p>}
         <p className="axp-ca-row__sub">{usageLine(a)}</p>
+        <TestDetail name={a.name} last={a.check} />
       </div>
       <div className="axp-ca-row__actions">
       {a.active ? <Chip tone="success"><Icon name="check" size={12} /> Console</Chip> : <Chip tone={isWorker || a.role === 'api-worker' ? 'accent' : undefined}>{ROLE_CHIP[a.role] ?? a.role}</Chip>}
@@ -108,6 +112,7 @@ function Row({ a, view, onDone, manage }: { a: Account; view: View; onDone: (m: 
       {a.limited && <Chip tone="warning">Out until {when(a.limited.until)}</Chip>}
       {a.spend && a.spend.state !== 'ok' && <Chip tone={a.spend.state === 'capped' ? 'danger' : 'warning'}>{a.spend.state === 'capped' ? 'Capped' : 'Near cap'}</Chip>}
       {waiting && <Chip tone="warning">Waiting for approval</Chip>}
+      <TestCell name={a.name} last={a.check} />
       {!a.active && !isApi && <Button tone="primary" icon="refresh" busy={busy} disabled={held} onClick={() => run(ask('use', a.name))}>Switch</Button>}
       {manage && !a.active && !isApi && <Button icon="user" busy={busy} disabled={busy} onClick={() => run(ask('role', a.name, isWorker ? 'saved' : 'worker'))}>{isWorker ? 'Stop worker' : 'Make worker'}</Button>}
       {manage && !isApi && <Button icon="key" busy={busy} disabled={held} onClick={() => run(ask('signin', a.name))}>Sign in</Button>}
@@ -127,6 +132,8 @@ function AccountList({ view, error, manage = false }: { view: View | null; error
       {!view.ready && <Note tone="warning">Can't read the VPS host: {view.why}</Note>}
       {view.loginChanged && <Note tone="warning">Claude on the VPS is signed in as {view.login.email}, which isn't {view.active}. Save this login under its own name before you switch, or the switch writes it over {view.active}.</Note>}
       {view.ready && !view.accounts.length && <p className="axp-ca-help">No accounts saved yet.</p>}
+      {manage && <TestAllBar names={view.accounts.map((a) => a.name)} />}
+      {view.checking && <p className="axp-ca-help" aria-live="polite">Testing {view.checking} on the VPS…</p>}
       <div>{view.accounts.map((a) => <Row key={a.name} a={a} view={view} onDone={done} manage={manage} />)}</div>
       {said && <Note tone={said.bad ? 'danger' : 'info'}>{said.text}</Note>}
       <p className="axp-ca-help">{view.note}</p>
@@ -276,6 +283,17 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('claude-accounts.open', () => rt.dispatch(`settings.open:${VIEW}`), { label: 'Claude accounts settings' });
     rt.actions.register('claude-accounts.switch', () => rt.openDialog(DIALOG, {}), { label: 'Switch Claude account' });
     rt.actions.register('claude-accounts.routing', () => rt.dispatch(`settings.open:${VIEW}`), { label: 'Claude job routing settings' });
+    // Test / Test all: open the accounts settings and run the tests there, so the progress shows (deep link + action)
+    rt.actions.register('claude-accounts.test-all', () => {
+      rt.dispatch(`settings.open:${VIEW}`);
+      void load().then(() => testAccounts((shared?.accounts ?? []).map((a) => a.name)), () => undefined);
+    }, { label: 'Test all Claude accounts' });
+    rt.actions.register('claude-accounts.test', ([raw = '']) => {
+      const name = String(raw).trim().toLowerCase().replace(/\s+/g, '-');
+      rt.dispatch(`settings.open:${VIEW}`);
+      if (NAME.test(name)) void testAccounts([name]);
+    }, { label: 'Test a Claude account', params: true } as never);
+    onChecked(() => { void load().catch(() => undefined); void loadRouting().catch(() => undefined); });
     // the Job routing layouts are settings assets (the UI Review options): in the registry, so the asset library lists them
     for (const a of ROUTING_ASSETS) rt.registry.register(a as Parameters<typeof rt.registry.register>[0], 'app', ID);
     void loadRouting().catch(() => undefined);

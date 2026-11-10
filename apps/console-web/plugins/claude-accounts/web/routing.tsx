@@ -12,6 +12,8 @@ import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
 import type { ReactNode } from 'react';
 import { Button, Checkbox, Chip, Container, Meter, Note, SelectField, Switch, TextField, useRuntime } from '@console/axf/react';
 import { pluginFetch } from '@console/plugins';
+import { TestAllBar, TestCell, TestDetail } from './checks';
+import type { Check } from './checks';
 import sections from '../assets/settings/claude-accounts-routing-sections.json';
 import statusFirst from '../assets/settings/claude-accounts-routing-status-first.json';
 import ruleCards from '../assets/settings/claude-accounts-routing-rule-cards.json';
@@ -29,7 +31,7 @@ interface Spend { day: number; week: number; dayCap: number; weekCap: number; al
 export interface RoutingAccount {
   name: string; label: string; kind: 'subscription' | 'api'; role: string; active: boolean; hasKey: boolean; email: string;
   limited: { until: string; kind: string; reason: string } | null; running: string[]; queued: number; building: number; queue: number;
-  costToday: number; costWeek: number; spend: Spend | null; why: string;
+  costToday: number; costWeek: number; spend: Spend | null; why: string; check?: Check | null;
 }
 interface Alert { account: string; level: 'warn' | 'error'; kind: string; text: string }
 interface Routing { ok: boolean; ready: boolean; why: string; config: Config; accounts: RoutingAccount[]; alerts: Alert[]; fields: { jobTypes: string[]; models: string[]; priorities: string[]; profiles: string[] } }
@@ -98,12 +100,14 @@ export function StatusRow({ a }: { a: RoutingAccount }) {
         <p className="axp-ca-row__sub">{[`${a.running.length}/${a.building} running`, `${a.queued}/${a.queue} waiting`, `${usd(a.costToday)} today`, `${usd(a.costWeek)} this week`].join(' · ')}</p>
         {a.spend && <SpendMeter s={a.spend} />}
         {a.why && !a.limited && <p className="axp-ca-row__sub">{a.why}</p>}
+        <TestDetail name={a.name} last={a.check} />
       </div>
       <div className="axp-ca-row__actions">
         <Chip tone={tone}>{ROLE_LABEL[a.role] ?? a.role}</Chip>
         {a.kind === 'api' && !a.hasKey && <Chip tone="warning">No key</Chip>}
         {a.limited && <Chip tone="warning">Out until {when(a.limited.until)}</Chip>}
         {a.spend && a.spend.state !== 'ok' && <Chip tone={a.spend.state === 'capped' ? 'danger' : 'warning'}>{a.spend.state === 'capped' ? 'Capped' : 'Near cap'}</Chip>}
+        <TestCell name={a.name} last={a.check} />
       </div>
     </div>
   );
@@ -113,6 +117,7 @@ function StatusTable({ data }: { data: Routing }) {
   return (
     <div className="fx-stack">
       {data.alerts.map((a) => <Note key={`${a.account}-${a.kind}`} tone={a.level === 'error' ? 'danger' : 'warning'}>{a.text}</Note>)}
+      <TestAllBar names={data.accounts.map((a) => a.name)} />
       <div>{data.accounts.map((a) => <StatusRow key={a.name} a={a} />)}</div>
     </div>
   );

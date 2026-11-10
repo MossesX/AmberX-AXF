@@ -15,3 +15,5 @@
 .axp-ca-considered { list-style: none; margin: var(--fx-dens-gap-sm) 0 0; padding-left: calc(var(--fx-space) * 4); }
 .axp-ca-cards { display: grid; gap: var(--fx-dens-gap-md); }
 .axp-ca-grid { display: grid; gap: var(--fx-dens-gap-md); grid-template-columns: repeat(auto-fit, minmax(min(100%, 30em), 1fr)); align-items: start; }
+/* Account tests: layout only (the bar is a framework Meter, the buttons framework Buttons). */
+.axp-ca-testall { gap: var(--fx-dens-gap-sm); }
