@@ -2626,6 +2626,18 @@
    "from": "",
    "addenda": []
   },
+  "molly-flagship-skin-premium-sellable-uncluttered": {
+   "said": "I want a powerful, beautiful, very expensive, professional, sellable skin on Molly, my flagship. Cannot be cluttered. Access everything, even redundantly. Context menu spot on, completely mapped. Sub menus keep the main menu short; expand left if they'd go off screen; the menu scrolls, not the screen. Choices in the app menu change instantly with status listed beside them. Live info next to entries like the little green axHub logo, red if not. Hover explains icons. Make that shit sick.",
+   "at": "2026-11-10T16:39:09.087Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "molly-multi-instance-tabs": {
    "said": "In Molly's xLayout IDE mode: \"How do I make a new tab in Molly?\" ... (there's no + button) ... \"Need to be able to add a tab so I can have multiple instances.\"\nAlso: \"How do I reset the layout? Because I run it IDE style and I made a bunch of tabs.\" He couldn't find Reset layout (it exists as the workspace action `layout-reset` in src/axf/libs/workspace, but he can't see it).\n\nADDENDUM 1 (Brett, voice, Nov 4): \"Any screen or any UI whatsoever can be dragged.\"",
    "at": "2026-11-04T16:00:00.000Z",

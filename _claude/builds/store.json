@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2467,
- "updatedAt": "2026-11-10T16:36:15.441Z",
+ "rev": 2468,
+ "updatedAt": "2026-11-10T16:39:10.595Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -138867,6 +138867,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-10T16:30:49.935Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "molly-flagship-skin-premium-sellable-uncluttered",
+   "title": "Molly flagship skin: premium, sellable, uncluttered; short main menu with smart sub-menus, live status and instant settings",
+   "category": "",
+   "detail": "Flagship skin for Molly: powerful, beautiful, expensive-looking, professional, sellable. Uncluttered UI. Everything reachable (redundantly is fine). 1) Context menus fully mapped, no junk items. 2) Application menu: short top level, everything else in sub-menus. Sub-menus flip left when they'd go off screen; long menus scroll inside the menu (never the page). 3) Choice settings live right in the app menu: click to change instantly, current value shown beside the entry. 4) Live info beside entries (e.g. tiny green/red axHub status icon); hover tooltips explain every icon; animated indicators allowed. 5) Right-click any menu item: dialog to set that item's behavior and appearance. Depends on the inline-edit build for per-element token editing.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T16:39:09.087Z",
+   "updatedAt": "2026-11-10T16:39:09.087Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I want a powerful, beautiful, very expensive, professional, sellable skin on Molly, my flagship. Cannot be cluttered. Access everything, even redundantly. Context menu spot on, completely mapped. Sub menus keep the main menu short; expand left if they'd go off screen; the menu scrolls, not the screen. Choices in the app menu change instantly with status listed beside them. Live info next to entries like the little green axHub logo, red if not. Hover explains icons. Make that shit sick.",
+    "at": "2026-11-10T16:39:09.087Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 550
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
