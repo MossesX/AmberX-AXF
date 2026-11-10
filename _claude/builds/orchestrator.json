@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T18:29:40.669Z",
+ "updatedAt": "2026-11-10T18:44:52.341Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -88572,20 +88572,6 @@
    "rev": 0
   },
   {
-   "id": "orchestrator-assigns-builds-steps-to-employee-ag",
-   "title": "Orchestrator assigns builds/steps to employee agents via group chat, with match % dialog and 90 s veto",
-   "category": "",
-   "detail": "1) When the orchestrator assigns a build or step, it posts in the group chat asking which employee has the skills/tools/capabilities. 2) The first agent to claim it opens a dialog listing all matching agents with a percentage for how likely each is the best choice. 3) 90-second veto: if Brett doesn't pick, the orchestrator assigns the highest-probability agent by default. 4) The chosen employee uses its own brief set and its training data in the brief, and sends its briefs back to the orchestrator. Builds on orchestrator-table-columns (assigned employee) and the Brownie/Molly group chat handoffs; reuse. Full API/CLI control.",
-   "status": "queued",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "",
-   "pr": "",
-   "priority": "P1",
-   "createdAt": "2026-11-10T16:28:04.849Z",
-   "updatedAt": "2026-11-10T17:56:44.230Z",
-   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -88600,6 +88586,20 @@
      "at": "2026-11-10T17:56:44.230Z"
     }
    ],
+   "id": "orchestrator-assigns-builds-steps-to-employee-ag",
+   "title": "Orchestrator assigns builds/steps to employee agents via group chat, with match % dialog and 90 s veto",
+   "category": "",
+   "detail": "1) When the orchestrator assigns a build or step, it posts in the group chat asking which employee has the skills/tools/capabilities. 2) The first agent to claim it opens a dialog listing all matching agents with a percentage for how likely each is the best choice. 3) 90-second veto: if Brett doesn't pick, the orchestrator assigns the highest-probability agent by default. 4) The chosen employee uses its own brief set and its training data in the brief, and sends its briefs back to the orchestrator. Builds on orchestrator-table-columns (assigned employee) and the Brownie/Molly group chat handoffs; reuse. Full API/CLI control.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-10T16:28:04.849Z",
+   "updatedAt": "2026-11-10T17:56:44.230Z",
+   "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -88834,23 +88834,10 @@
      "note": "",
      "uid": "st-mwazsnvs07f9ss"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "full-api-cli-control-of-everything-plus-an-offli",
-   "title": "Full API + CLI control of everything, plus an offline index/registry; AI only as fallback",
-   "category": "",
-   "detail": "1) Extensive API and CLI control over every page, app, plugin, tool, behavior, display and setting, covering every option and every possible parameter value. Scope: console, Molly, axHub, AmberX app, and through axHub: Hostinger, Coolify, VPS. Moshi is a third-party phone SSH app: cover it only as far as it can be driven (deep links/intents), otherwise record the gap. 2) A complete index and registry of everything controllable (ids, types, actions, parameters, allowed values, where it lives) for offline management and internal logic. 3) Rule: anything that can be done without AI is done without AI. AI is only a fallback, and only when 'Make Claude available to the console' is on in Claude settings. Builds on universal-voice-api-control and the ui-api-parity builds; reuse them, don't duplicate.",
-   "status": "queued",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "",
-   "pr": "",
-   "priority": "P1",
-   "createdAt": "2026-11-10T16:28:24.043Z",
-   "updatedAt": "2026-11-10T17:57:53.486Z",
-   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -88865,6 +88852,20 @@
      "at": "2026-11-10T17:57:53.486Z"
     }
    ],
+   "id": "full-api-cli-control-of-everything-plus-an-offli",
+   "title": "Full API + CLI control of everything, plus an offline index/registry; AI only as fallback",
+   "category": "",
+   "detail": "1) Extensive API and CLI control over every page, app, plugin, tool, behavior, display and setting, covering every option and every possible parameter value. Scope: console, Molly, axHub, AmberX app, and through axHub: Hostinger, Coolify, VPS. Moshi is a third-party phone SSH app: cover it only as far as it can be driven (deep links/intents), otherwise record the gap. 2) A complete index and registry of everything controllable (ids, types, actions, parameters, allowed values, where it lives) for offline management and internal logic. 3) Rule: anything that can be done without AI is done without AI. AI is only a fallback, and only when 'Make Claude available to the console' is on in Claude settings. Builds on universal-voice-api-control and the ui-api-parity builds; reuse them, don't duplicate.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-10T16:28:24.043Z",
+   "updatedAt": "2026-11-10T17:57:53.486Z",
+   "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -89249,23 +89250,10 @@
      "note": "",
      "uid": "st-mwaztl1q4pip7s"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "agent-manager-training-wizard-for-employee-agent",
-   "title": "Agent Manager: training wizard for employee agents (data sources, processing, RAG, auto-built tools, skills, persona, vocabulary)",
-   "category": "",
-   "detail": "1) A training hook on every employee agent. 2) Training wizard in the Agent Manager: pick data sources (a website or parts of one, specific product types, code such as React or TypeScript, files, etc.), how to fetch them, how to process and store them (RAG/vector index, summaries, etc.). 3) Training by category/type produces for the agent: tools, skills, a persona, and an index of categorized vocabulary. Auto-attach already generated vocabulary files, pairs, tools, skills and personality assets that match. 4) Ties into the agent profile schema build (agent-skill@1 / persona templates) and 'train employees on website data'; reuse, don't duplicate. Full API/CLI control.",
-   "status": "queued",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "",
-   "pr": "",
-   "priority": "P1",
-   "createdAt": "2026-11-10T16:29:30.818Z",
-   "updatedAt": "2026-11-10T17:58:33.406Z",
-   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -89280,6 +89268,20 @@
      "at": "2026-11-10T17:58:33.406Z"
     }
    ],
+   "id": "agent-manager-training-wizard-for-employee-agent",
+   "title": "Agent Manager: training wizard for employee agents (data sources, processing, RAG, auto-built tools, skills, persona, vocabulary)",
+   "category": "",
+   "detail": "1) A training hook on every employee agent. 2) Training wizard in the Agent Manager: pick data sources (a website or parts of one, specific product types, code such as React or TypeScript, files, etc.), how to fetch them, how to process and store them (RAG/vector index, summaries, etc.). 3) Training by category/type produces for the agent: tools, skills, a persona, and an index of categorized vocabulary. Auto-attach already generated vocabulary files, pairs, tools, skills and personality assets that match. 4) Ties into the agent profile schema build (agent-skill@1 / persona templates) and 'train employees on website data'; reuse, don't duplicate. Full API/CLI control.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-10T16:29:30.818Z",
+   "updatedAt": "2026-11-10T17:58:33.406Z",
+   "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -89519,23 +89521,10 @@
      "note": "",
      "uid": "st-mwazufum4zw9ul"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "molly-flagship-skin-premium-sellable-uncluttered",
-   "title": "Molly flagship skin: premium, sellable, uncluttered; short main menu with smart sub-menus, live status and instant settings",
-   "category": "",
-   "detail": "Flagship skin for Molly: powerful, beautiful, expensive-looking, professional, sellable. Uncluttered UI. Everything reachable (redundantly is fine). 1) Context menus fully mapped, no junk items. 2) Application menu: short top level, everything else in sub-menus. Sub-menus flip left when they'd go off screen; long menus scroll inside the menu (never the page). 3) Choice settings live right in the app menu: click to change instantly, current value shown beside the entry. 4) Live info beside entries (e.g. tiny green/red axHub status icon); hover tooltips explain every icon; animated indicators allowed. 5) Right-click any menu item: dialog to set that item's behavior and appearance. Depends on the inline-edit build for per-element token editing.",
-   "status": "queued",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "",
-   "pr": "",
-   "priority": "P1",
-   "createdAt": "2026-11-10T16:39:09.087Z",
-   "updatedAt": "2026-11-10T17:59:12.954Z",
-   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -89550,6 +89539,20 @@
      "at": "2026-11-10T17:59:12.954Z"
     }
    ],
+   "id": "molly-flagship-skin-premium-sellable-uncluttered",
+   "title": "Molly flagship skin: premium, sellable, uncluttered; short main menu with smart sub-menus, live status and instant settings",
+   "category": "",
+   "detail": "Flagship skin for Molly: powerful, beautiful, expensive-looking, professional, sellable. Uncluttered UI. Everything reachable (redundantly is fine). 1) Context menus fully mapped, no junk items. 2) Application menu: short top level, everything else in sub-menus. Sub-menus flip left when they'd go off screen; long menus scroll inside the menu (never the page). 3) Choice settings live right in the app menu: click to change instantly, current value shown beside the entry. 4) Live info beside entries (e.g. tiny green/red axHub status icon); hover tooltips explain every icon; animated indicators allowed. 5) Right-click any menu item: dialog to set that item's behavior and appearance. Depends on the inline-edit build for per-element token editing.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-10T16:39:09.087Z",
+   "updatedAt": "2026-11-10T17:59:12.954Z",
+   "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -89825,23 +89828,10 @@
      "note": "",
      "uid": "st-mwazvad75b694y"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "inline-element-editing-plugin-right-click-any-el",
-   "title": "Inline element editing plugin: right-click any element to edit every token; master switch; full overrides list with per-item reset to axHub",
-   "category": "",
-   "detail": "1) Master switch in the main app settings to enable inline edit mode. 2) With it on, right-click any element (app menu items and sub-menus down to the child, navigation menus, toolbars, banners, widgets, everything) to open a dialog with every token that can be set for it, viewable as a tree, classic tree, or grid with expandable rows; edit any token (text color, background, etc.) for the single item or a whole parent. Dialog notes that changes override axHub inheritance (existing override rules). 3) Overrides list in the same plugin: every single thing changed from axHub's inherited defaults. Reset items one by one to axHub (restores just that item, does not re-inherit everything). Searchable, filterable, tree view with selectable roots, multi-tab column with different roots. Full API/CLI control.",
-   "status": "queued",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "",
-   "pr": "",
-   "priority": "P1",
-   "createdAt": "2026-11-10T16:39:13.034Z",
-   "updatedAt": "2026-11-10T18:00:14.834Z",
-   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -89856,6 +89846,20 @@
      "at": "2026-11-10T18:00:14.834Z"
     }
    ],
+   "id": "inline-element-editing-plugin-right-click-any-el",
+   "title": "Inline element editing plugin: right-click any element to edit every token; master switch; full overrides list with per-item reset to axHub",
+   "category": "",
+   "detail": "1) Master switch in the main app settings to enable inline edit mode. 2) With it on, right-click any element (app menu items and sub-menus down to the child, navigation menus, toolbars, banners, widgets, everything) to open a dialog with every token that can be set for it, viewable as a tree, classic tree, or grid with expandable rows; edit any token (text color, background, etc.) for the single item or a whole parent. Dialog notes that changes override axHub inheritance (existing override rules). 3) Overrides list in the same plugin: every single thing changed from axHub's inherited defaults. Reset items one by one to axHub (restores just that item, does not re-inherit everything). Searchable, filterable, tree view with selectable roots, multi-tab column with different roots. Full API/CLI control.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-10T16:39:13.034Z",
+   "updatedAt": "2026-11-10T18:00:14.834Z",
+   "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -90161,23 +90165,10 @@
      "note": "",
      "uid": "st-mwazwm425oxj1t"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "inline-edit-plugin-install-in-console-molly-and",
-   "title": "Inline edit plugin: install in console, Molly and AmberX web (not Android); Molly never renders a plugin twice",
-   "category": "",
-   "detail": "Amends the inline element editing build. 1) Install the plugin in the console, Molly and AmberX web. Not the AmberX Android app. 2) Molly rule for every plugin: when a console page is open inside Molly, render the console's plugin only if Molly doesn't already have that plugin, so nothing ever renders twice.",
-   "status": "queued",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "",
-   "pr": "",
-   "priority": "P1",
-   "createdAt": "2026-11-10T16:40:38.588Z",
-   "updatedAt": "2026-11-10T18:01:36.622Z",
-   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -90192,6 +90183,20 @@
      "at": "2026-11-10T18:01:36.622Z"
     }
    ],
+   "id": "inline-edit-plugin-install-in-console-molly-and",
+   "title": "Inline edit plugin: install in console, Molly and AmberX web (not Android); Molly never renders a plugin twice",
+   "category": "",
+   "detail": "Amends the inline element editing build. 1) Install the plugin in the console, Molly and AmberX web. Not the AmberX Android app. 2) Molly rule for every plugin: when a console page is open inside Molly, render the console's plugin only if Molly doesn't already have that plugin, so nothing ever renders twice.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-10T16:40:38.588Z",
+   "updatedAt": "2026-11-10T18:01:36.622Z",
+   "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -90422,23 +90427,10 @@
      "note": "",
      "uid": "st-mwazyd7y5yazpr"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "amberx-open-url-tapping-the-command-waiting-noti",
-   "title": "AmberX open_url: tapping the 'command waiting' notification opens Chrome on the page, not the AmberX app",
-   "category": "",
-   "detail": "amberx.open_url: when Android blocks the background start, the high-priority notification's tap must launch Chrome (or the default browser) straight on the URL, not open the AmberX app. Also prompt once for 'Display over other apps' so pages come to the front with no tap. Test on the paired phone.",
-   "status": "built",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/amberx-open-url-tapping-the-command-waiting-noti",
-   "pr": "#454",
-   "priority": "P0",
-   "createdAt": "2026-11-10T16:41:39.193Z",
-   "updatedAt": "2026-11-10T17:08:49.567Z",
-   "builtAt": "2026-11-10T17:08:49.567Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -90465,6 +90457,20 @@
      "at": "2026-11-10T17:08:49.567Z"
     }
    ],
+   "id": "amberx-open-url-tapping-the-command-waiting-noti",
+   "title": "AmberX open_url: tapping the 'command waiting' notification opens Chrome on the page, not the AmberX app",
+   "category": "",
+   "detail": "amberx.open_url: when Android blocks the background start, the high-priority notification's tap must launch Chrome (or the default browser) straight on the URL, not open the AmberX app. Also prompt once for 'Display over other apps' so pages come to the front with no tap. Test on the paired phone.",
+   "status": "built",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/amberx-open-url-tapping-the-command-waiting-noti",
+   "pr": "#454",
+   "priority": "P0",
+   "createdAt": "2026-11-10T16:41:39.193Z",
+   "updatedAt": "2026-11-10T17:08:49.567Z",
+   "builtAt": "2026-11-10T17:08:49.567Z",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -90537,23 +90543,10 @@
      "note": "",
      "uid": "st-mwax51vu06qncu"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "remove-the-old-theme-manager-style-and-layout-se",
-   "title": "Remove the old theme manager, style and layout settings everywhere; skins replace them",
-   "category": "",
-   "detail": "Goes with appearance-skins-colour-themes-only-remove-design-packs. Remove the old Theme manager, style themes, layout settings and any other look/layout pickers from Appearance in Molly, console and every app. Skins (with their colour theme) are the only appearance control. Migrate current picks into the active skin so nothing breaks; keep API parity.",
-   "status": "queued",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "",
-   "pr": "",
-   "priority": "P1",
-   "createdAt": "2026-11-10T16:42:29.017Z",
-   "updatedAt": "2026-11-10T18:02:14.975Z",
-   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -90568,6 +90561,20 @@
      "at": "2026-11-10T18:02:14.975Z"
     }
    ],
+   "id": "remove-the-old-theme-manager-style-and-layout-se",
+   "title": "Remove the old theme manager, style and layout settings everywhere; skins replace them",
+   "category": "",
+   "detail": "Goes with appearance-skins-colour-themes-only-remove-design-packs. Remove the old Theme manager, style themes, layout settings and any other look/layout pickers from Appearance in Molly, console and every app. Skins (with their colour theme) are the only appearance control. Migrate current picks into the active skin so nothing breaks; keep API parity.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-10T16:42:29.017Z",
+   "updatedAt": "2026-11-10T18:02:14.975Z",
+   "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -90801,9 +90808,20 @@
      "note": "",
      "uid": "st-mwazz6tb68zjz9"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T16:44:43.378Z"
+    },
+    {
+     "text": "Split by Claude into 7 steps (0 Fable).",
+     "at": "2026-11-10T18:02:47.724Z"
+    }
+   ],
    "id": "amberx-android-web-view-top-banner-hidden-behind",
    "title": "AmberX Android: web view top banner hidden behind the status bar and camera cutout (respect safe-area insets)",
    "category": "",
@@ -90818,16 +90836,6 @@
    "createdAt": "2026-11-10T16:43:03.427Z",
    "updatedAt": "2026-11-10T18:02:47.724Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
-     "at": "2026-11-10T16:44:43.378Z"
-    },
-    {
-     "text": "Split by Claude into 7 steps (0 Fable).",
-     "at": "2026-11-10T18:02:47.724Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -90997,23 +91005,10 @@
      "note": "",
      "uid": "st-mwazzw306foqfl"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "enforce-the-merge-queue-every-finished-build-goe",
-   "title": "Enforce the merge queue: every finished build goes into it and is batched into one combined build before CI",
-   "category": "",
-   "detail": "Enforce for all builds, no exceptions: when a build finishes it goes into the merge queue (never straight to main or its own CI run). The merge queue combines the queued builds into one batch build, resolves conflicts, then sends that single build to CI; on green it lands and redeploys. Reconcile with auto-land-every-build and the Batch Manager build. No AI for the queue logic. Full API control.",
-   "status": "built",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/enforce-the-merge-queue-every-finished-build-goe",
-   "pr": "#456",
-   "priority": "P0",
-   "createdAt": "2026-11-10T16:43:57.553Z",
-   "updatedAt": "2026-11-10T17:22:07.151Z",
-   "builtAt": "2026-11-10T17:22:07.151Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -91044,6 +91039,20 @@
      "at": "2026-11-10T17:21:47.019Z"
     }
    ],
+   "id": "enforce-the-merge-queue-every-finished-build-goe",
+   "title": "Enforce the merge queue: every finished build goes into it and is batched into one combined build before CI",
+   "category": "",
+   "detail": "Enforce for all builds, no exceptions: when a build finishes it goes into the merge queue (never straight to main or its own CI run). The merge queue combines the queued builds into one batch build, resolves conflicts, then sends that single build to CI; on green it lands and redeploys. Reconcile with auto-land-every-build and the Batch Manager build. No AI for the queue logic. Full API control.",
+   "status": "built",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/enforce-the-merge-queue-every-finished-build-goe",
+   "pr": "#456",
+   "priority": "P0",
+   "createdAt": "2026-11-10T16:43:57.553Z",
+   "updatedAt": "2026-11-10T17:22:07.151Z",
+   "builtAt": "2026-11-10T17:22:07.151Z",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -91116,23 +91125,10 @@
      "note": "",
      "uid": "st-mwax9j8i06xygq"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "merge-queue-batching-orchestrator-combines-ready",
-   "title": "Merge queue batching: orchestrator combines ready PRs 5 at a time into one build, pulls main, merges as one",
-   "category": "",
-   "detail": "Amends the enforce-merge-queue build. Main changes so fast that separate merges keep breaking. As soon as PRs are ready, the orchestrator takes them in batches of 5 (setting), combines them into one branch/build, resolves conflicts, pulls latest main into it, runs CI once, and merges the batch as one. Plain code, no AI except conflict resolution fallback when enabled.",
-   "status": "built",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/merge-queue-batching-orchestrator-combines-ready",
-   "pr": "#457",
-   "priority": "P0",
-   "createdAt": "2026-11-10T16:44:49.604Z",
-   "updatedAt": "2026-11-10T17:22:08.084Z",
-   "builtAt": "2026-11-10T17:22:08.084Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -91159,6 +91155,20 @@
      "at": "2026-11-10T17:21:56.468Z"
     }
    ],
+   "id": "merge-queue-batching-orchestrator-combines-ready",
+   "title": "Merge queue batching: orchestrator combines ready PRs 5 at a time into one build, pulls main, merges as one",
+   "category": "",
+   "detail": "Amends the enforce-merge-queue build. Main changes so fast that separate merges keep breaking. As soon as PRs are ready, the orchestrator takes them in batches of 5 (setting), combines them into one branch/build, resolves conflicts, pulls latest main into it, runs CI once, and merges the batch as one. Plain code, no AI except conflict resolution fallback when enabled.",
+   "status": "built",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/merge-queue-batching-orchestrator-combines-ready",
+   "pr": "#457",
+   "priority": "P0",
+   "createdAt": "2026-11-10T16:44:49.604Z",
+   "updatedAt": "2026-11-10T17:22:08.084Z",
+   "builtAt": "2026-11-10T17:22:08.084Z",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -91231,23 +91241,10 @@
      "note": "",
      "uid": "st-mwaxau1u03i0qq"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "merge-batching-add-on-when-a-batch-fails-ci-spli",
-   "title": "Merge batching add-on: when a batch fails CI, split it to find the bad PR, merge the good ones, send the bad one back",
-   "category": "",
-   "detail": "Amends merge-queue batching. On a failed batch: bisect (split in halves) to isolate the failing PR(s), merge the passing ones, send the failing PR back to its build for an automatic fix and retry, notify on AmberX. No AI for the bisect logic.",
-   "status": "built",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/merge-batching-add-on-when-a-batch-fails-ci-spli",
-   "pr": "#459",
-   "priority": "P0",
-   "createdAt": "2026-11-10T16:45:23.543Z",
-   "updatedAt": "2026-11-10T17:31:53.379Z",
-   "builtAt": "2026-11-10T17:31:53.379Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -91270,6 +91267,20 @@
      "at": "2026-11-10T17:31:53.379Z"
     }
    ],
+   "id": "merge-batching-add-on-when-a-batch-fails-ci-spli",
+   "title": "Merge batching add-on: when a batch fails CI, split it to find the bad PR, merge the good ones, send the bad one back",
+   "category": "",
+   "detail": "Amends merge-queue batching. On a failed batch: bisect (split in halves) to isolate the failing PR(s), merge the passing ones, send the failing PR back to its build for an automatic fix and retry, notify on AmberX. No AI for the bisect logic.",
+   "status": "built",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/merge-batching-add-on-when-a-batch-fails-ci-spli",
+   "pr": "#459",
+   "priority": "P0",
+   "createdAt": "2026-11-10T16:45:23.543Z",
+   "updatedAt": "2026-11-10T17:31:53.379Z",
+   "builtAt": "2026-11-10T17:31:53.379Z",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -91342,23 +91353,10 @@
      "note": "",
      "uid": "st-mwaxcbw306fd56"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "claude-md-standing-rule-be-proactive-bring-up-th",
-   "title": "CLAUDE.md standing rule: be proactive, bring up the right way, catches and follow-ups without being asked",
-   "category": "",
-   "detail": "Add to the shared CLAUDE.md rules every Claude session reads (and the orchestrator brief rules, headless rules, agent profiles): proactively bring up the right/standard way to do things, known catches and needed follow-ups, and include them in the work. Never wait for Brett to figure it out or ask. Don't just agree with his plan; say plainly when something's wrong or missing. Small change: land it right away.",
-   "status": "built",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/claude-md-standing-rule-be-proactive-bring-up-th",
-   "pr": "#458",
-   "priority": "P0",
-   "createdAt": "2026-11-10T16:45:47.022Z",
-   "updatedAt": "2026-11-10T17:26:05.038Z",
-   "builtAt": "2026-11-10T17:26:05.038Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -91381,6 +91379,20 @@
      "at": "2026-11-10T17:26:05.038Z"
     }
    ],
+   "id": "claude-md-standing-rule-be-proactive-bring-up-th",
+   "title": "CLAUDE.md standing rule: be proactive, bring up the right way, catches and follow-ups without being asked",
+   "category": "",
+   "detail": "Add to the shared CLAUDE.md rules every Claude session reads (and the orchestrator brief rules, headless rules, agent profiles): proactively bring up the right/standard way to do things, known catches and needed follow-ups, and include them in the work. Never wait for Brett to figure it out or ask. Don't just agree with his plan; say plainly when something's wrong or missing. Small change: land it right away.",
+   "status": "built",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/claude-md-standing-rule-be-proactive-bring-up-th",
+   "pr": "#458",
+   "priority": "P0",
+   "createdAt": "2026-11-10T16:45:47.022Z",
+   "updatedAt": "2026-11-10T17:26:05.038Z",
+   "builtAt": "2026-11-10T17:26:05.038Z",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -91453,23 +91465,10 @@
      "note": "",
      "uid": "st-mwaxda9109twrn"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "fix-the-orchestrator-s-splitter-claude-print-get",
-   "title": "Fix the orchestrator's splitter: claude --print gets no prompt, so every build falls back to rule-based steps",
-   "category": "",
-   "detail": "Every split note says: 'claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print'. The splitter launches claude -p without passing the prompt, so all builds are split one-step-per-line by rules. Fix the invocation (pipe the prompt on stdin or pass it as the argument), add a test, then re-split builds whose steps were 'made by rules' and are not started. Also check the repeated worktree 'unable to write file _claude/builds/journal/*.jsonl' launch failures (permissions/disk) and fix them. Notify on AmberX.",
-   "status": "built",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/fix-the-orchestrator-s-splitter-claude-print-get",
-   "pr": "#460",
-   "priority": "P0",
-   "createdAt": "2026-11-10T16:47:11.863Z",
-   "updatedAt": "2026-11-10T18:11:04.862Z",
-   "builtAt": "2026-11-10T18:10:42.752Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -91496,6 +91495,20 @@
      "at": "2026-11-10T18:11:04.862Z"
     }
    ],
+   "id": "fix-the-orchestrator-s-splitter-claude-print-get",
+   "title": "Fix the orchestrator's splitter: claude --print gets no prompt, so every build falls back to rule-based steps",
+   "category": "",
+   "detail": "Every split note says: 'claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print'. The splitter launches claude -p without passing the prompt, so all builds are split one-step-per-line by rules. Fix the invocation (pipe the prompt on stdin or pass it as the argument), add a test, then re-split builds whose steps were 'made by rules' and are not started. Also check the repeated worktree 'unable to write file _claude/builds/journal/*.jsonl' launch failures (permissions/disk) and fix them. Notify on AmberX.",
+   "status": "built",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/fix-the-orchestrator-s-splitter-claude-print-get",
+   "pr": "#460",
+   "priority": "P0",
+   "createdAt": "2026-11-10T16:47:11.863Z",
+   "updatedAt": "2026-11-10T18:11:04.862Z",
+   "builtAt": "2026-11-10T18:10:42.752Z",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -91568,23 +91581,10 @@
      "note": "",
      "uid": "st-mwaxeztr03zjez"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "conversation-rag-index-every-voice-chat-session",
-   "title": "Conversation RAG: index every voice/chat session with Brett (decisions, rules, requests) into a searchable store every agent reads",
-   "category": "",
-   "detail": "Builds on session-transcripts-api. Ingest every session transcript (AmberX recorder + faster-whisper, Claude chats/exports) into a local RAG index (chunked, embedded, tagged by date, topic, build ids). Extract standing rules and decisions into a rules ledger the orchestrator and every brief load automatically. Searchable from the new search plugin and by API. No paid API: local embeddings by default; AI use behind its switch.",
-   "status": "built",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/conversation-rag-index-every-voice-chat-session",
-   "pr": "#461",
-   "priority": "P0",
-   "createdAt": "2026-11-10T16:50:14.626Z",
-   "updatedAt": "2026-11-10T17:46:32.477Z",
-   "builtAt": "2026-11-10T17:46:32.477Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -91611,6 +91611,20 @@
      "at": "2026-11-10T17:46:05.057Z"
     }
    ],
+   "id": "conversation-rag-index-every-voice-chat-session",
+   "title": "Conversation RAG: index every voice/chat session with Brett (decisions, rules, requests) into a searchable store every agent reads",
+   "category": "",
+   "detail": "Builds on session-transcripts-api. Ingest every session transcript (AmberX recorder + faster-whisper, Claude chats/exports) into a local RAG index (chunked, embedded, tagged by date, topic, build ids). Extract standing rules and decisions into a rules ledger the orchestrator and every brief load automatically. Searchable from the new search plugin and by API. No paid API: local embeddings by default; AI use behind its switch.",
+   "status": "built",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/conversation-rag-index-every-voice-chat-session",
+   "pr": "#461",
+   "priority": "P0",
+   "createdAt": "2026-11-10T16:50:14.626Z",
+   "updatedAt": "2026-11-10T17:46:32.477Z",
+   "builtAt": "2026-11-10T17:46:32.477Z",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -91683,23 +91697,10 @@
      "note": "",
      "uid": "st-mwaxg0gx03a4xl"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "conversation-rag-amendment-store-only-short-key",
-   "title": "Conversation RAG amendment: store only short key/value entries, never full transcripts",
-   "category": "",
-   "detail": "Amends the conversation RAG build. Do NOT store or inject whole sessions (too costly). Store only brief two-field entries: key (the entry, e.g. a rule, mistake, or decision) and value (a one-line summary, e.g. what Claude failed to do and what to do instead). Briefs pull only the matching entries. Extraction by plain rules where possible; AI only behind its switch.",
-   "status": "built",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/conversation-rag-amendment-store-only-short-key",
-   "pr": "#462",
-   "priority": "P0",
-   "createdAt": "2026-11-10T16:51:08.892Z",
-   "updatedAt": "2026-11-10T17:56:06.164Z",
-   "builtAt": "2026-11-10T17:56:06.164Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -91722,6 +91723,20 @@
      "at": "2026-11-10T17:56:06.164Z"
     }
    ],
+   "id": "conversation-rag-amendment-store-only-short-key",
+   "title": "Conversation RAG amendment: store only short key/value entries, never full transcripts",
+   "category": "",
+   "detail": "Amends the conversation RAG build. Do NOT store or inject whole sessions (too costly). Store only brief two-field entries: key (the entry, e.g. a rule, mistake, or decision) and value (a one-line summary, e.g. what Claude failed to do and what to do instead). Briefs pull only the matching entries. Extraction by plain rules where possible; AI only behind its switch.",
+   "status": "built",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/conversation-rag-amendment-store-only-short-key",
+   "pr": "#462",
+   "priority": "P0",
+   "createdAt": "2026-11-10T16:51:08.892Z",
+   "updatedAt": "2026-11-10T17:56:06.164Z",
+   "builtAt": "2026-11-10T17:56:06.164Z",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -91794,23 +91809,10 @@
      "note": "",
      "uid": "st-mwaxhe09039jas"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "orchestrator-hold-status-archive-tab-deleted-tab",
-   "title": "Orchestrator: Hold status, Archive tab, Deleted tab (deleted builds kept forever)",
-   "category": "",
-   "detail": "Amends Retire Build Manager tabs. Actions on any queued build: Send back to Pending, Hold (stays in the queue, skipped by the dispatcher until released), Move to Archive, Delete. Archive tab: all completed and retired builds go there. Deleted tab: deleted builds are kept saved forever (soft delete, restorable). Bulk select. Full API/CLI control, no AI.",
-   "status": "running",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/orchestrator-hold-status-archive-tab-deleted-tab",
-   "pr": "#463",
-   "priority": "P0",
-   "createdAt": "2026-11-10T17:07:33.143Z",
-   "updatedAt": "2026-11-10T18:11:54.228Z",
-   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -91831,8 +91833,26 @@
     {
      "text": "Headless run axf-orchestrator-hold-status-archive-tab-deleted-tab--sully: brief only · start 11.1K tokens ($0.03) · cost $4.70 · 100 turns · 6 tools, MCP none",
      "at": "2026-11-10T18:11:54.228Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-10T18:38:52.562Z"
     }
    ],
+   "id": "orchestrator-hold-status-archive-tab-deleted-tab",
+   "title": "Orchestrator: Hold status, Archive tab, Deleted tab (deleted builds kept forever)",
+   "category": "",
+   "detail": "Amends Retire Build Manager tabs. Actions on any queued build: Send back to Pending, Hold (stays in the queue, skipped by the dispatcher until released), Move to Archive, Delete. Archive tab: all completed and retired builds go there. Deleted tab: deleted builds are kept saved forever (soft delete, restorable). Bulk select. Full API/CLI control, no AI.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/orchestrator-hold-status-archive-tab-deleted-tab",
+   "pr": "#463",
+   "priority": "P0",
+   "createdAt": "2026-11-10T17:07:33.143Z",
+   "updatedAt": "2026-11-10T18:38:52.562Z",
+   "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -91905,23 +91925,10 @@
      "note": "",
      "uid": "st-mway2ijc03z7ux"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "pass-approval-hook-deep-link-amberx-notification",
-   "title": "Pass approval hook: deep link + AmberX notification Approve button for veto passes",
-   "category": "",
-   "detail": "Today a pass request can only be approved from the console banner or Token control → Passes. Add: a deep link URL that opens straight to the pending pass with Approve/Deny (console + Molly), returned in pass_grant's result so Claude can hand it over; an AmberX push notification with Approve/Deny actions that work in the background (no navigation); API to approve from Brett's own session. Full API control.",
-   "status": "running",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/pass-approval-hook-deep-link-amberx-notification",
-   "pr": "",
-   "priority": "P0",
-   "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-10T18:29:06.248Z",
-   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -91968,6 +91975,20 @@
      "at": "2026-11-10T18:29:06.248Z"
     }
    ],
+   "id": "pass-approval-hook-deep-link-amberx-notification",
+   "title": "Pass approval hook: deep link + AmberX notification Approve button for veto passes",
+   "category": "",
+   "detail": "Today a pass request can only be approved from the console banner or Token control → Passes. Add: a deep link URL that opens straight to the pending pass with Approve/Deny (console + Molly), returned in pass_grant's result so Claude can hand it over; an AmberX push notification with Approve/Deny actions that work in the background (no navigation); API to approve from Brett's own session. Full API control.",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/pass-approval-hook-deep-link-amberx-notification",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-10T17:10:29.492Z",
+   "updatedAt": "2026-11-10T18:29:06.248Z",
+   "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -92175,23 +92196,10 @@
      "note": "",
      "uid": "st-mwb00qda6oi0e8"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "skin-checker-flags-anything-that-breaks-a-profes",
-   "title": "Skin checker: flags anything that breaks a professional look (spacing scale, fonts, palette, contrast)",
-   "category": "",
-   "detail": "Plain-code checker (no AI) for any skin, run in the skin editor live and in CI: 1) spacing/sizing values off the token scale, 2) more than 2 font families or off-scale type sizes, 3) palette sprawl (too many distinct colours, near-duplicate colours), 4) WCAG contrast failures for text and icons, 5) inconsistent radius/border/shadow use. Shows a score and a list of issues with one-click jump/fix to the token. Settings for thresholds. Full API/CLI control.",
-   "status": "running",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/skin-checker-flags-anything-that-breaks-a-profes",
-   "pr": "",
-   "priority": "P0",
-   "createdAt": "2026-11-10T17:11:27.008Z",
-   "updatedAt": "2026-11-10T18:26:17.837Z",
-   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -92212,9 +92220,48 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skin-checker-flags-anything-that-breaks-a-profes--rhonda, own login copy)",
      "at": "2026-11-10T18:26:17.837Z"
+    },
+    {
+     "text": "Headless run axf-skin-checker-flags-anything-that-breaks-a-profes--rhonda: brief only · start 12.6K tokens ($0.06) · cost $3.90 · 34 turns · 6 tools, MCP none",
+     "at": "2026-11-10T18:37:16.894Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 0) with 12 steps left: back in the Queue (run 1).",
+     "at": "2026-11-10T18:38:04.044Z"
+    },
+    {
+     "text": "Started run 2 on mossesx-max- (Opus, Phase 2): axf-skin-checker-flags-anything-that-breaks-a-profes--joey.",
+     "at": "2026-11-10T18:38:11.959Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skin-checker-flags-anything-that-breaks-a-profes--joey, own login copy)",
+     "at": "2026-11-10T18:38:13.037Z"
     }
    ],
-   "approvals": [],
+   "id": "skin-checker-flags-anything-that-breaks-a-profes",
+   "title": "Skin checker: flags anything that breaks a professional look (spacing scale, fonts, palette, contrast)",
+   "category": "",
+   "detail": "Plain-code checker (no AI) for any skin, run in the skin editor live and in CI: 1) spacing/sizing values off the token scale, 2) more than 2 font families or off-scale type sizes, 3) palette sprawl (too many distinct colours, near-duplicate colours), 4) WCAG contrast failures for text and icons, 5) inconsistent radius/border/shadow use. Shows a score and a list of issues with one-click jump/fix to the token. Settings for thresholds. Full API/CLI control.",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/skin-checker-flags-anything-that-breaks-a-profes",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-10T17:11:27.008Z",
+   "updatedAt": "2026-11-10T18:44:51.079Z",
+   "builtAt": "",
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-10T18:42:33.252Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "Yeah, build that shit right now.",
@@ -92223,7 +92270,7 @@
     "session": "",
     "link": "",
     "by": "skin-checker-flags-anything-that-breaks-a-profes",
-    "brief": "# Build: skin-checker-flags-anything-that-breaks-a-profes\n\n## Brett said (verbatim)\nAt: 2026-11-10T17:11:27.008Z\n> Yeah, build that shit right now.\n\n## What to build\nContinue build \"Skin checker: flags anything that breaks a professional look (spacing scale, fonts, palette, contrast)\" (skin-checker-flags-anything-that-breaks-a-profes) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 17:11):\n\"Yeah, build that shit right now.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~25 min):\n[ ] s1 (~25 min) Design the skin checker contract: the issue schema (rule id, severity, token path, value, expected, fix suggestion), score formula, the threshold settings schema with defaults, and the pure-function engine interface shared by the skin editor, CI, REST, MCP, CLI and voice. Write it as a typed module plus a short spec doc.\nRead first: packages/skin-checker/src/contract.ts, packages/skin-checker/src/settings-schema.ts, packages/skin-checker/SPEC.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step skin-checker-flags-anything-that-breaks-a-profes <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link skin-checker-flags-anything-that-breaks-a-profes --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Tick every step as you finish it (orchestrator.mjs act step skin-checker-flags-anything-that-breaks-a-profes <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note skin-checker-flags-anything-that-breaks-a-profes \"…\"); the build goes back to Pending for Brett.\n",
+    "brief": "# Build: skin-checker-flags-anything-that-breaks-a-profes\n\n## Brett said (verbatim)\nAt: 2026-11-10T17:11:27.008Z\n> Yeah, build that shit right now.\n\n## What to build\nContinue build \"Skin checker: flags anything that breaks a professional look (spacing scale, fonts, palette, contrast)\" (skin-checker-flags-anything-that-breaks-a-profes) — Phase 2, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 17:11):\n\"Yeah, build that shit right now.\"\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/skin-checker-flags-anything-that-breaks-a-profes\nSteps in this phase (12 left, ~4.8 h):\n[ ] s2 (~20 min) Implement the engine core: load a skin's tokens and resolved styles, run the registered rules, aggregate issues, compute the score. No rules yet, just the runner and a rule registry.\n[ ] s3 (~25 min) Rule 1: spacing and sizing values off the token scale (padding, margin, gap, width/height steps), with the nearest scale token as the fix.\n[ ] s4 (~20 min) Rule 2: typography. Flag more than 2 font families (threshold setting) and type sizes off the type scale, with the nearest-step fix.\n[ ] s5 (~25 min) Rule 3: palette sprawl. Count distinct colours against the threshold and find near-duplicates by deltaE (OKLab), suggesting a merge into the canonical token.\n[ ] s6 (~25 min) Rule 4: WCAG contrast for text (AA 4.5:1, large text 3:1) and icons/UI (3:1) over every foreground/background token pair the skin actually uses, suggesting the nearest passing shade.\n[ ] s7 (~20 min) Rule 5: inconsistent radius, border width and shadow use, flagging values outside the token set and too many distinct values per category.\n[ ] s8 (~25 min) Unit tests for the engine, the score and each rule, using clean and broken fixture skins.\n[ ] s9 (~25 min) Add the console REST routes: run the check on a skin (GET result and state), read and write threshold settings, apply a fix for one issue or for all issues. Persist the settings.\n[ ] s10 (~30 min) Add a skin editor panel showing the live score and the issue list, re-run on token edits (debounced), with one-click jump to the token and fix buttons. Add a thresholds settings section. Deep link console_show/console_open target 'skin-editor/checker' (optionally ?skin=&issue=). The panel reads state and runs actions only through the REST routes.\n[ ] s11 (~30 min) API parity: MCP console actions and plugin commands (skin_check, skin_check_state, skin_check_fix, skin_check_fix_all, skin_check_settings_get/set, open via console_show), the CLI 'axf skin check|fix|settings' with --json and a nonzero exit code below the threshold score, and AmberX voice intents for the same actions. All four call the same REST handlers.\n[ ] s12 (~15 min) CI: add a workflow step that runs 'axf skin check --all --json' on every skin and fails below the configured threshold, uploading the issue list as an artifact.\n[ ] s13 (~30 min) Run the tests, including route, CLI and MCP parity tests that check every action gives the same result through each surface. Write the report at _claude/builds/reports/skin-checker-flags-anything-that-breaks-a-profes.md, add the THREADS row, and open the PR. The PR lists how each UI feature is reached: deep link, state read, actions and settings via REST, MCP, CLI and voice.\nRead first: packages/skin-checker/src/engine.ts, packages/skin-checker/src/load-skin.ts, packages/skin-checker/src/index.ts, packages/skin-checker/src/rules/spacing-scale.ts, packages/skin-checker/src/rules/typography.ts, packages/skin-checker/src/rules/palette.ts, packages/skin-checker/src/color.ts, packages/skin-checker/src/rules/contrast.ts, packages/skin-checker/src/rules/shape-consistency.ts, packages/skin-checker/test/, packages/skin-checker/test/fixtures/, apps/console-web/server/routes/skin-checker.mjs, apps/console-web/server/data/skin-checker-settings.json, apps/console-web/plugins/skin-editor/checker-panel.js, apps/console-web/plugins/skin-editor/checker-settings.js, apps/console-web/plugins/skin-editor/plugin.json, apps/console-web/plugins/skin-editor/commands.mjs, apps/console-web/mcp/tools/skin-checker.mjs, bin/axf-skin.mjs, apps/amberx/voice/intents/skin-checker.json, .github/workflows/skins.yml, scripts/ci/skin-check.mjs, apps/console-web/test/skin-checker-api.test.mjs, _claude/builds/reports/skin-checker-flags-anything-that-breaks-a-profes.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step skin-checker-flags-anything-that-breaks-a-profes <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link skin-checker-flags-anything-that-breaks-a-profes --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step skin-checker-flags-anything-that-breaks-a-profes <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note skin-checker-flags-anything-that-breaks-a-profes \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -92246,8 +92293,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T18:36:54.191Z",
      "note": "",
      "uid": "st-mwb01lsy6pdum9"
     },
@@ -92268,8 +92315,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T18:42:33.252Z",
      "note": "",
      "uid": "st-mwb01lsy6qveki"
     },
@@ -92288,8 +92335,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T18:44:05.159Z",
      "note": "",
      "uid": "st-mwb01lsy6r7h9k"
     },
@@ -92308,8 +92355,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T18:44:51.079Z",
      "note": "",
      "uid": "st-mwb01lsy6so6im"
     },
@@ -92506,9 +92553,20 @@
      "note": "",
      "uid": "st-mwb01lsy716le1"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T17:32:51.828Z"
+    },
+    {
+     "text": "Split by Claude into 15 steps (3 Fable).",
+     "at": "2026-11-10T18:05:12.224Z"
+    }
+   ],
    "id": "plugin-ui-inventory-per-plugin-reskin-one-button",
    "title": "Plugin UI inventory + per-plugin reskin: one button lists every element, behavior and token; rebuild just that plugin's look",
    "category": "",
@@ -92523,16 +92581,6 @@
    "createdAt": "2026-11-10T17:31:45.669Z",
    "updatedAt": "2026-11-10T18:05:12.224Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
-     "at": "2026-11-10T17:32:51.828Z"
-    },
-    {
-     "text": "Split by Claude into 15 steps (3 Fable).",
-     "at": "2026-11-10T18:05:12.224Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -92882,9 +92930,20 @@
      "note": "",
      "uid": "st-mwb02zkw7g3xs4"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T17:35:25.480Z"
+    },
+    {
+     "text": "Split by Claude into 14 steps (4 Fable).",
+     "at": "2026-11-10T18:06:07.730Z"
+    }
+   ],
    "id": "shared-screenshot-registry-hooked-everywhere-liv",
    "title": "Shared screenshot registry hooked everywhere + live edit from a screenshot + new per-screen skin asset type",
    "category": "",
@@ -92899,16 +92958,6 @@
    "createdAt": "2026-11-10T17:34:36.360Z",
    "updatedAt": "2026-11-10T18:06:07.730Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
-     "at": "2026-11-10T17:35:25.480Z"
-    },
-    {
-     "text": "Split by Claude into 14 steps (4 Fable).",
-     "at": "2026-11-10T18:06:07.730Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -93232,23 +93281,10 @@
      "note": "",
      "uid": "st-mwb04ibq0b1fvw"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
-   "id": "resolve-conflicts-and-land-pr-449-account-order",
-   "title": "Resolve conflicts and land PR #449 (account order switch)",
-   "category": "",
-   "detail": "PR #449 (claude/account-order-switch-custom-drag-and-drop-order) failed to merge: merge conflicts with main. Merge latest main into the branch, resolve conflicts keeping both sides' intent, tests green, push, then merge the PR and redeploy the console. Notify on AmberX.",
-   "status": "running",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "claude/resolve-conflicts-and-land-pr-449-account-order",
-   "pr": "",
-   "priority": "P0",
-   "createdAt": "2026-11-10T17:34:43.785Z",
-   "updatedAt": "2026-11-10T18:29:39.036Z",
-   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -93271,6 +93307,20 @@
      "at": "2026-11-10T18:29:39.036Z"
     }
    ],
+   "id": "resolve-conflicts-and-land-pr-449-account-order",
+   "title": "Resolve conflicts and land PR #449 (account order switch)",
+   "category": "",
+   "detail": "PR #449 (claude/account-order-switch-custom-drag-and-drop-order) failed to merge: merge conflicts with main. Merge latest main into the branch, resolve conflicts keeping both sides' intent, tests green, push, then merge the PR and redeploy the console. Notify on AmberX.",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/account-order-switch-custom-drag-and-drop-order",
+   "pr": "#449",
+   "priority": "P0",
+   "createdAt": "2026-11-10T17:34:43.785Z",
+   "updatedAt": "2026-11-10T18:38:09.784Z",
+   "builtAt": "",
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -93302,8 +93352,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T18:38:04.183Z",
      "note": "",
      "uid": "st-mwb066qf7vnfie"
     },
@@ -93323,8 +93373,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T18:38:06.356Z",
      "note": "",
      "uid": "st-mwb066qf7wfi3w"
     },
@@ -93346,8 +93396,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T18:38:08.488Z",
      "note": "",
      "uid": "st-mwb066qf7x1oka"
     },
@@ -93438,9 +93488,20 @@
      "note": "",
      "uid": "st-mwb066qf81b31o"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T17:36:24.532Z"
+    },
+    {
+     "text": "Split by Claude into 7 steps (1 Fable).",
+     "at": "2026-11-10T18:08:20.331Z"
+    }
+   ],
    "id": "shipped-features-show-each-landed-build-s-screen",
    "title": "Shipped Features: show each landed build's screenshots on its entry",
    "category": "",
@@ -93455,16 +93516,6 @@
    "createdAt": "2026-11-10T17:34:46.359Z",
    "updatedAt": "2026-11-10T18:08:20.331Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
-     "at": "2026-11-10T17:36:24.532Z"
-    },
-    {
-     "text": "Split by Claude into 7 steps (1 Fable).",
-     "at": "2026-11-10T18:08:20.331Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -93630,9 +93681,16 @@
      "note": "",
      "uid": "st-mwb070q388mv4d"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T17:39:20.659Z"
+    }
+   ],
    "id": "plugin-appearance-save-button-for-custom-looks-n",
    "title": "Plugin Appearance: Save button for custom looks, named saves as per-plugin assets, restore dialog with side-by-side preview",
    "category": "",
@@ -93647,12 +93705,6 @@
    "createdAt": "2026-11-10T17:38:24.452Z",
    "updatedAt": "2026-11-10T17:39:20.659Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
-     "at": "2026-11-10T17:39:20.659Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -93725,9 +93777,16 @@
      "note": "",
      "uid": "st-mwaz5qdv03ovh6"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T17:40:28.648Z"
+    }
+   ],
    "id": "skins-consistent-across-plugins-full-state-saves",
    "title": "Skins consistent across plugins: full-state saves, skins as asset-name manifests, shared naming contract mapping plugin assets to canonical roles",
    "category": "",
@@ -93742,12 +93801,6 @@
    "createdAt": "2026-11-10T17:39:40.556Z",
    "updatedAt": "2026-11-10T17:40:28.648Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
-     "at": "2026-11-10T17:40:28.648Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -93820,9 +93873,16 @@
      "note": "",
      "uid": "st-mwaz76ug03fw5f"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T17:41:35.529Z"
+    }
+   ],
    "id": "skin-rule-overrides-are-local-only-global-change",
    "title": "Skin rule: overrides are local only; global changes only by applying a whole skin",
    "category": "",
@@ -93837,12 +93897,6 @@
    "createdAt": "2026-11-10T17:40:55.347Z",
    "updatedAt": "2026-11-10T17:41:35.529Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
-     "at": "2026-11-10T17:41:35.529Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -93915,9 +93969,16 @@
      "note": "",
      "uid": "st-mwaz8mg903xf9x"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T17:43:17.233Z"
+    }
+   ],
    "id": "apply-skin-dialog-tree-of-everything-overridden",
    "title": "Apply-skin dialog: tree of everything, overridden items highlighted, choose keep override or take the new skin per item",
    "category": "",
@@ -93932,12 +93993,6 @@
    "createdAt": "2026-11-10T17:42:17.406Z",
    "updatedAt": "2026-11-10T17:43:17.233Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
-     "at": "2026-11-10T17:43:17.233Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -94010,9 +94065,20 @@
      "note": "",
      "uid": "st-mwazasxd03kxpx"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T17:50:27.203Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T17:51:36.004Z"
+    }
+   ],
    "id": "local-ai-ollama-mistral-on-the-vps-wired-into-th",
    "title": "Local AI: Ollama + Mistral on the VPS, wired into the AI-assist switch",
    "category": "",
@@ -94027,16 +94093,6 @@
    "createdAt": "2026-11-10T17:50:25.480Z",
    "updatedAt": "2026-11-10T17:51:36.004Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Queued by console.",
-     "at": "2026-11-10T17:50:27.203Z"
-    },
-    {
-     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
-     "at": "2026-11-10T17:51:36.004Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -94109,9 +94165,20 @@
      "note": "",
      "uid": "st-mwazlhs503px1x"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T17:50:44.009Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T17:52:29.947Z"
+    }
+   ],
    "id": "ollama-model-pick-mistral-small-24b-q4-default-m",
    "title": "Ollama model pick: Mistral Small 24B (Q4) default + Mistral 7B for quick tasks (VPS has 64 GB)",
    "category": "",
@@ -94126,16 +94193,6 @@
    "createdAt": "2026-11-10T17:50:42.350Z",
    "updatedAt": "2026-11-10T17:52:29.947Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Queued by console.",
-     "at": "2026-11-10T17:50:44.009Z"
-    },
-    {
-     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
-     "at": "2026-11-10T17:52:29.947Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -94208,9 +94265,20 @@
      "note": "",
      "uid": "st-mwazmnek060m0f"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T17:51:21.499Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T17:53:28.164Z"
+    }
+   ],
    "id": "ollama-own-docker-container-amberx-llama-interna",
    "title": "Ollama: own Docker container 'amberx-llama', internal-only API wired into console, orchestrator and agents",
    "category": "",
@@ -94225,16 +94293,6 @@
    "createdAt": "2026-11-10T17:51:17.543Z",
    "updatedAt": "2026-11-10T17:53:28.164Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Queued by console.",
-     "at": "2026-11-10T17:51:21.499Z"
-    },
-    {
-     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
-     "at": "2026-11-10T17:53:28.164Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -94307,9 +94365,20 @@
      "note": "",
      "uid": "st-mwaznwbo03zjvs"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T17:51:38.300Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T17:53:59.144Z"
+    }
+   ],
    "id": "amberx-llama-axhub-service-hooks-so-amberx-and-e",
    "title": "amberx-llama: axHub service hooks so AmberX and every app can use it",
    "category": "",
@@ -94324,16 +94393,6 @@
    "createdAt": "2026-11-10T17:51:34.577Z",
    "updatedAt": "2026-11-10T17:53:59.144Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Queued by console.",
-     "at": "2026-11-10T17:51:38.300Z"
-    },
-    {
-     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
-     "at": "2026-11-10T17:53:59.144Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -94406,9 +94465,20 @@
      "note": "",
      "uid": "st-mwazok8806vxbj"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T17:52:47.290Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T17:54:43.788Z"
+    }
+   ],
    "id": "amberx-llama-llama-amberxai-com-via-coolify-trae",
    "title": "amberx-llama: llama.amberxai.com via Coolify/Traefik, behind axHub auth",
    "category": "",
@@ -94423,16 +94493,6 @@
    "createdAt": "2026-11-10T17:52:45.615Z",
    "updatedAt": "2026-11-10T17:54:43.788Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Queued by console.",
-     "at": "2026-11-10T17:52:47.290Z"
-    },
-    {
-     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
-     "at": "2026-11-10T17:54:43.788Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -94505,9 +94565,16 @@
      "note": "",
      "uid": "st-mwazpioc090qtr"
     }
-   ]
+   ],
+   "rev": 0
   },
   {
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T18:29:28.351Z"
+    }
+   ],
    "id": "dispatcher-a-worktree-store-write-can-erase-a-fr",
    "title": "Dispatcher: a worktree store write can erase a fresh launch record (double launch, then a stuck build)",
    "category": "",
@@ -94522,12 +94589,6 @@
    "createdAt": "2026-11-10T18:28:36.423Z",
    "updatedAt": "2026-11-10T18:29:28.351Z",
    "builtAt": "",
-   "notes": [
-    {
-     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
-     "at": "2026-11-10T18:29:28.351Z"
-    }
-   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -94624,7 +94685,8 @@
      "note": "",
      "uid": "st-mwb0y74v0522g1"
     }
-   ]
+   ],
+   "rev": 0
   }
  ]
 }
