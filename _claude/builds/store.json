@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3075,
- "updatedAt": "2026-11-10T23:56:54.042Z",
+ "rev": 3076,
+ "updatedAt": "2026-11-10T23:57:04.133Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -131881,7 +131881,7 @@
    "pr": "#485",
    "priority": "P1",
    "createdAt": "2026-11-09T19:21:03.353Z",
-   "updatedAt": "2026-11-10T23:56:42.707Z",
+   "updatedAt": "2026-11-10T23:57:01.156Z",
    "builtAt": "2026-11-10T23:56:41.451Z",
    "notes": [
     {
@@ -131979,6 +131979,10 @@
     {
      "text": "PR #485 (draft): UI Review screenshots not taken in the headless session; desktop + phone shots of the Home Build queue card still needed.",
      "at": "2026-11-10T23:56:42.707Z"
+    },
+    {
+     "text": "Headless run axf-home-page-build-queue-card-opens-the-orchestrato--paulie: brief only · start 11.3K tokens ($0.03) · cost $3.10 · 91 turns · 6 tools, MCP none",
+     "at": "2026-11-10T23:57:01.156Z"
     }
    ],
    "approvals": [],
@@ -132131,7 +132135,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
