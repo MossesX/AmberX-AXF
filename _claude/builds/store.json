@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2866,
- "updatedAt": "2026-11-10T21:21:39.902Z",
+ "rev": 2867,
+ "updatedAt": "2026-11-10T21:21:51.420Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -155448,6 +155448,56 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-10T21:03:49.492Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "orchestrator-merge-first-switch-separate-merger",
+   "title": "Orchestrator: merge-first switch + separate merger and builder counts; merges assigned to employees like builds",
+   "category": "",
+   "detail": "Add to orchestrator settings: (1) Merge-first switch: when on, free slots go to merge work before new builds. (2) Two counts: Mergers N and Builders N, sharing the account slot pool. (3) Merges (rebase, conflict fix, test, land) become assignable jobs given to an employee/agent profile like builds, shown in the Active banner and tabs. Notify on AmberX at each stage. Move this build to the front of the queue.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-10T21:21:49.158Z",
+   "updatedAt": "2026-11-10T21:21:50.247Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I need a switch in the orchestrator to set the number of mergers and the number of builders. It needs to assign merges to an employee just like builds. Put all my processing power towards merging.",
+    "at": "2026-11-10T21:21:49.158Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 591
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 2,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

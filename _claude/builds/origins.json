@@ -3370,6 +3370,18 @@
    "from": "",
    "addenda": []
   },
+  "orchestrator-merge-first-switch-separate-merger": {
+   "said": "I need a switch in the orchestrator to set the number of mergers and the number of builders. It needs to assign merges to an employee just like builds. Put all my processing power towards merging.",
+   "at": "2026-11-10T21:21:49.158Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "orchestrator-self-check-when-stuck-verify-each-a": {
    "said": "The orchestrator is supposed to check all that every time it loads if things are stuck. If he has any problems, he's supposed to check each account one by one. And look for stale jobs.",
    "at": "2026-11-09T16:25:52.442Z",

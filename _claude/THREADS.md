@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:21 UTC · `enforce-the-merge-queue-every-finished-build-goe` s3 done, → built (all) · orchestrator
 - 2026-11-10 17:22 UTC · `enforce-the-merge-queue-every-finished-build-goe` → pending, note (all) · pipeline
 - 2026-11-10 17:22 UTC · `merge-queue-batching-orchestrator-combines-ready` note (all) · orchestrator
 - 2026-11-10 17:22 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` → running, note (all) · pipeline
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 21:20 UTC · `inline-element-editing-plugin-right-click-any-el` → queued, note (all) · pipeline
 - 2026-11-10 21:21 UTC · `resolve-conflicts-and-land-460-456-457-459-342` s2 done (all) · orchestrator
 - 2026-11-10 21:21 UTC · `resolve-conflicts-and-land-460-456-457-459-342` PR #473 (all) · builds-live
+- 2026-11-10 21:21 UTC · `orchestrator-merge-first-switch-separate-merger` added (0 steps) (all) · console
 
 ## Token passes (log)
 

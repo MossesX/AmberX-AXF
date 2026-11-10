@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T21:21:39.902Z",
+ "updatedAt": "2026-11-10T21:21:51.420Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -95548,6 +95548,38 @@
      "uid": "st-mwb6gp2s03svzi"
     }
    ]
+  },
+  {
+   "id": "orchestrator-merge-first-switch-separate-merger",
+   "title": "Orchestrator: merge-first switch + separate merger and builder counts; merges assigned to employees like builds",
+   "category": "",
+   "detail": "Add to orchestrator settings: (1) Merge-first switch: when on, free slots go to merge work before new builds. (2) Two counts: Mergers N and Builders N, sharing the account slot pool. (3) Merges (rebase, conflict fix, test, land) become assignable jobs given to an employee/agent profile like builds, shown in the Active banner and tabs. Notify on AmberX at each stage. Move this build to the front of the queue.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-10T21:21:49.158Z",
+   "updatedAt": "2026-11-10T21:21:50.247Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I need a switch in the orchestrator to set the number of mergers and the number of builders. It needs to assign merges to an employee just like builds. Put all my processing power towards merging.",
+    "at": "2026-11-10T21:21:49.158Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
