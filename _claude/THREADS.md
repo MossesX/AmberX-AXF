@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 03:34 UTC · `amber-chat-asset` note (all) · self-heal
 - 2026-11-10 03:34 UTC · `full-api-control` note (all) · self-heal
 - 2026-11-10 03:34 UTC · `account-failover-notify` note (all) · self-heal
 - 2026-11-10 03:34 UTC · `tabs-api-control` note (all) · self-heal
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 17:07 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` added (0 steps) (all) · console
 - 2026-11-10 17:07 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` → queued, note (all) · console
 - 2026-11-10 17:07 UTC · `amberx-open-url-tapping-the-command-waiting-noti` s2 done (all) · orchestrator
+- 2026-11-10 17:08 UTC · `amberx-open-url-tapping-the-command-waiting-noti` note (all) · orchestrator
 
 ## Token passes (log)
 

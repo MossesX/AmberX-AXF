@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:08:00.420Z",
+ "updatedAt": "2026-11-10T17:08:17.751Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -86114,7 +86114,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T16:41:39.193Z",
-   "updatedAt": "2026-11-10T17:07:05.639Z",
+   "updatedAt": "2026-11-10T17:08:16.399Z",
    "builtAt": "",
    "notes": [
     {
@@ -86132,6 +86132,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-amberx-open-url-tapping-the-command-waiting-noti--paulie, own login copy)",
      "at": "2026-11-10T17:01:19.073Z"
+    },
+    {
+     "text": "Headless run axf-amberx-open-url-tapping-the-command-waiting-noti--paulie: brief only · start 10.9K tokens ($0.03) · cost $2.20 · 57 turns · 6 tools, MCP none",
+     "at": "2026-11-10T17:08:16.399Z"
     }
    ],
    "approvals": [],
