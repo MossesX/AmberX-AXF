@@ -1,0 +1,207 @@
+{
+  "$axf": "asset@1",
+  "type": "context-menu",
+  "id": "molly",
+  "name": "Molly context menu",
+  "version": "1.0.0",
+  "description": "Molly's right-click menus, one per surface and only what applies there: the page (apps, this app, skin, settings, help), a start-page app card, a navigation entry and the menu bar. Plugins add theirs (navigation, toolbar, panes); the framework adds Settings / Change / Move to chrome. Inventory: apps/molly/menus/inventory.md.",
+  "author": "AmberX AXF",
+  "tags": [
+    "molly",
+    "flagship"
+  ],
+  "data": {
+    "variant": "compact",
+    "showIcons": true,
+    "showShortcuts": true,
+    "targets": {
+      "default": [
+        {
+          "id": "home",
+          "label": "Start page",
+          "icon": "home",
+          "action": "nav:home",
+          "hint": "Molly's start page."
+        },
+        {
+          "id": "apps",
+          "label": "Apps",
+          "icon": "grid",
+          "hint": "Switch to another app.",
+          "items": [
+            {
+              "id": "go-amberx",
+              "label": "AmberX",
+              "icon": "sparkles",
+              "action": "nav:amberx",
+              "hint": "Switch to AmberX."
+            },
+            {
+              "id": "go-axhub",
+              "label": "axHub",
+              "icon": "shield",
+              "action": "nav:axhub",
+              "hint": "Switch to axHub."
+            },
+            {
+              "id": "go-console",
+              "label": "Console",
+              "icon": "terminal",
+              "action": "nav:console",
+              "hint": "Switch to Console."
+            },
+            {
+              "id": "go-expenses",
+              "label": "Expenses",
+              "icon": "chart",
+              "action": "nav:expenses",
+              "hint": "Switch to Expenses."
+            }
+          ]
+        },
+        {
+          "id": "s1",
+          "separator": true
+        },
+        {
+          "id": "reload",
+          "label": "Reload this app",
+          "icon": "refresh",
+          "action": "molly.reload",
+          "hint": "Reload only the app on screen.",
+          "shortcut": "Alt+R"
+        },
+        {
+          "id": "own",
+          "label": "Open this app on its own",
+          "icon": "external",
+          "action": "molly.own-tab",
+          "hint": "Open the app on screen at its own address in a new tab."
+        },
+        {
+          "id": "s2",
+          "separator": true
+        },
+        {
+          "id": "skin",
+          "label": "Skin",
+          "icon": "layers",
+          "setting": "molly.look.skin",
+          "hint": "The whole look of Molly; applies at once.",
+          "choices": [
+            {
+              "value": "molly-flagship",
+              "label": "Flagship",
+              "hint": "Porcelain, ink and violet."
+            },
+            {
+              "value": "molly-flagship-night",
+              "label": "Flagship Night",
+              "hint": "Graphite and violet."
+            },
+            {
+              "value": "own",
+              "label": "Molly's own look",
+              "hint": "No skin."
+            }
+          ]
+        },
+        {
+          "id": "mode",
+          "label": "Day / night",
+          "icon": "moon",
+          "setting": "molly.look.mode",
+          "cycle": true,
+          "hint": "Click to switch between day and night.",
+          "choices": [
+            {
+              "value": "day",
+              "label": "Day",
+              "hint": "Light surfaces."
+            },
+            {
+              "value": "night",
+              "label": "Night",
+              "hint": "Dark surfaces."
+            }
+          ]
+        },
+        {
+          "id": "s3",
+          "separator": true
+        },
+        {
+          "id": "settings",
+          "label": "Settings",
+          "icon": "settings",
+          "action": "app.settings",
+          "hint": "All of Molly's settings.",
+          "shortcut": "Ctrl+,"
+        },
+        {
+          "id": "help",
+          "label": "Help mode",
+          "icon": "help",
+          "action": "help.mode:toggle",
+          "hint": "Explain every control on hover; F1 turns it off again.",
+          "shortcut": "F1"
+        }
+      ],
+      "molly-app": [
+        {
+          "id": "open",
+          "label": "Open in Molly",
+          "icon": "chevron-right",
+          "action": "nav:{payload}",
+          "hint": "Show this app inside Molly."
+        },
+        {
+          "id": "own",
+          "label": "Open on its own",
+          "icon": "external",
+          "action": "molly.own-tab:{payload}",
+          "hint": "Open this app at its own address in a new tab."
+        },
+        {
+          "id": "reload",
+          "label": "Reload",
+          "icon": "refresh",
+          "action": "molly.reload:{payload}",
+          "hint": "Reload this app's frame; the others keep their place."
+        }
+      ],
+      "nav-item": [
+        {
+          "id": "open",
+          "label": "Open",
+          "icon": "chevron-right",
+          "action": "nav:{payload}",
+          "hint": "Show this page."
+        },
+        {
+          "id": "own",
+          "label": "Open on its own",
+          "icon": "external",
+          "action": "molly.own-tab:{payload}",
+          "hint": "Open this app at its own address in a new tab (apps only)."
+        },
+        {
+          "id": "reload",
+          "label": "Reload",
+          "icon": "refresh",
+          "action": "molly.reload:{payload}",
+          "hint": "Reload this app's frame (apps only)."
+        }
+      ],
+      "app-menu": [
+        {
+          "id": "appearance",
+          "label": "Appearance settings…",
+          "icon": "palette",
+          "action": "settings.open:appearance",
+          "hint": "Settings → Appearance: skins and themes."
+        }
+      ]
+    }
+  }
+}

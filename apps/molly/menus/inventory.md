@@ -53,3 +53,26 @@ Account, Approvals waiting. Details: `menus/status-sources.mjs` notes in the PR,
   (same actions, plus the context menu).
 - Ten flat View rows from four plugins: each plugin now contributes one sub-menu (or one row).
 - No dead entries were found: every action above is registered by Molly, its plugins or the framework.
+
+## Context menus (right-click, long-press on touch)
+
+Molly's own asset `src/assets/context-menu/molly.json` (Molly's default; the flagship skins and design packages leave
+the slot alone). Each surface shows only what applies there; plugins and the framework add their rows after Molly's.
+Audited by right-clicking every surface in the built app (s9).
+
+| Surface | Target | Rows |
+|---|---|---|
+| Page, start page, status bar (anything without its own target) | `default` | Start page · Apps ▸ · Reload this app · Open this app on its own · Skin (choice) · Day / night (cycle) · Settings · Help mode |
+| Start-page app card | `molly-app` (payload: app id) | Open in Molly · Open on its own · Reload |
+| Navigation entry | `nav-item` (payload: view id) | Open · Open on its own · Reload · (xLayout) Open in a pane · Open in a floating window · (framework) Navigation menu settings… · Change navigation menu… · Move · Restore to default… |
+| Navigation background | `nav` | (Navigation plugin) Navigation settings… · Collapse to icons · Reset navigation · (framework) settings / change / move / restore |
+| Menu bar | `app-menu` | Appearance settings… · (framework) Application menu settings… · Change application menu… · Restore to default… |
+| Any menu row (menu bar or context menu) | — | the item-settings dialog for that row (behaviour and look; s4) |
+| Banner strip | `banner` | (framework) Banner settings… · Change banner… · Restore to default… · Widgets… · Arrange widgets… |
+| Toolbar (when shown) | `toolbar` | (xLayout) Customize toolbar… · Toolbar settings… · (framework) settings / change / move |
+| Tab rows | `tab-group` | (framework) settings / change / move |
+| Inside an app's frame | — | the app's own menu; with xLayout the app sends it to Molly and Molly's one context menu opens |
+
+Removed: the shared `compact-classic` rows Molly never handled (Cut, Copy, Paste, Next colour / style / layout, Random
+look, Keyboard shortcuts), and the Navigation plugin's second "Navigation settings…" row on navigation entries. Fixed:
+the menu bar (outside the shell) showed the browser's menu instead of its own (framework `ContextMenuHost`).

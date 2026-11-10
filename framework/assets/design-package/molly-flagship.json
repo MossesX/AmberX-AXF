@@ -19,7 +19,6 @@
     "behavior-theme": "molly-flagship",
     "extras": {
       "slots": {
-        "context-menu": "compact-classic",
         "dialog": "molly-flagship",
         "popup": "molly-flagship",
         "theme-switch": "molly-flagship-day-night",

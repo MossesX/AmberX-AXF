@@ -16,7 +16,7 @@ export function Home() {
       </header>
       <div className="fx-grid">
         {MOLLY_APPS.map((a) => (
-          <Container key={a.id} title={a.label} icon={a.icon}>
+          <Container key={a.id} title={a.label} icon={a.icon} ctx="molly-app" ctxPayload={a.id}>
             <div className="fx-stack">
               <p className="fx-muted">{a.description}</p>
               <div className="fx-row fx-row--wrap">

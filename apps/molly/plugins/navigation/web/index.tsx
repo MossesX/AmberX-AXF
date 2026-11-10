@@ -82,9 +82,7 @@ export const plugin: AxfWebLibrary = {
       { id: 'navigation.ctx.collapse', label: 'Collapse to icons', icon: 'menu', action: 'navigation.collapse', checked: `setting:${NAV_COLLAPSED_KEY}` },
       { id: 'navigation.ctx.reset', label: 'Reset navigation', icon: 'undo', action: 'navigation.reset' },
     ] },
-    { id: 'navigation.ctx.item', target: 'nav-item', items: [
-      { id: 'navigation.ctx.item.settings', label: 'Navigation settings…', icon: 'settings', action: 'navigation.settings' },
-    ] },
+    // nav-item: no settings row of its own (flagship skin s9): the framework's "Navigation menu settings…" is already there
   ],
 };
 
