@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T00:06:44.654Z",
+ "updatedAt": "2026-11-10T00:07:05.646Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -81439,12 +81439,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T00:03:04.356Z",
-   "updatedAt": "2026-11-10T00:03:12.984Z",
+   "updatedAt": "2026-11-10T00:05:58.285Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T00:03:12.984Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T00:05:58.285Z"
     }
    ],
    "approvals": [],
@@ -81461,7 +81465,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "The rule text is already saved in axHub shared rules (/projects/_shared rules/fix-it-yourself.md). Make every orchestrator brief, headless session, agent profile and CLAUDE rules chain load and follow it: fix blockers within your permissions and keep going, log each attempt in AmberX Notes 'Automatic fixes' (entry + sub-list of attempts), send FYI notifications through the fix-log tool, only report what's missing (key, token, tool, MCP connection) after everything fails.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9xj34d01szl3"
+    },
+    {
+     "id": "s2",
+     "text": "From now on, you do whatever in your ability to fix any problem... just notify me of doing it, not for permission or veto. Every single build, put that in the brief... anything that's doing anything will be able to follow those rules.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9xj34d02eeii"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/fix-it-yourself-rule-in-every-brief-and-session.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/fix-it-yourself-rule-in-every-brief-and-session.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9xj34d03v2k8"
+    }
+   ]
   }
  ]
 }
