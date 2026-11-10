@@ -1,0 +1,69 @@
+/* Activity Monitor: layout only, theme tokens only. Each line's colour comes in as --axp-am-tone (a theme colour token
+   picked per kind in the settings, or the severity's colour); density changes the gaps, never the controls. */
+.axp-activity-monitor { --axp-am-gap: var(--fx-dens-gap-sm); --axp-am-pad: var(--fx-dens-gap-sm); min-width: 0 }
+.axp-activity-monitor--compact { --axp-am-gap: var(--fx-dens-gap-2xs); --axp-am-pad: var(--fx-dens-gap-2xs) }
+.axp-activity-monitor--roomy { --axp-am-gap: var(--fx-dens-gap-md); --axp-am-pad: var(--fx-dens-gap-lg) }
+
+.axp-activity-monitor__tools { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-md) }
+.axp-activity-monitor__search { flex: 1 1 calc(var(--fx-row-h) * 8); min-width: 0 }
+.axp-activity-monitor__count { color: var(--fx-muted); font-size: var(--fx-type-root-sm); white-space: nowrap }
+.axp-activity-monitor__err { margin: 0; color: var(--fx-danger) }
+.axp-activity-monitor__empty { margin: 0; color: var(--fx-muted) }
+
+.axp-activity-monitor__panes { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--fx-dens-gap-lg); align-items: start }
+:where([data-fx-tiny], [data-fx-small], [data-fx-narrow]) .axp-activity-monitor__panes { grid-template-columns: minmax(0, 1fr) }
+
+/* the log: a dark-on-surface output window, newest at the bottom, scrolls inside */
+.axp-activity-monitor__log { display: flex; flex-direction: column; gap: var(--axp-am-gap); max-height: 65vh; overflow: auto; overscroll-behavior: contain;
+  font-family: var(--fx-font-mono); font-size: var(--fx-type-root-sm); background: var(--fx-bg); border: var(--fx-border-w) solid var(--fx-border);
+  border-radius: var(--fx-radius-md); padding: var(--fx-dens-gap-md) }
+
+.axp-activity-monitor__chain { display: flex; flex-direction: column; gap: var(--axp-am-gap); border-left: calc(var(--fx-border-w) * 3) solid var(--axp-am-tone); border-radius: var(--fx-radius-sm); padding-left: var(--fx-dens-gap-xs) }
+.axp-activity-monitor__chain.is-open { background: var(--fx-surface) }
+.axp-activity-monitor__chainhead { display: flex; align-items: center; gap: var(--fx-dens-gap-xs); min-width: 0 }
+.axp-activity-monitor__chainhead > button[data-fx-row] { flex: 1 }
+.axp-activity-monitor__twisty { flex: none; width: var(--fx-size-icon-button-size) }
+.axp-activity-monitor__tree { list-style: none; margin: 0; padding: 0 0 var(--fx-dens-gap-xs); display: flex; flex-direction: column; gap: var(--axp-am-gap) }
+.axp-activity-monitor__tree > li { padding-left: calc(var(--fx-dens-gap-xl) * var(--axp-am-depth)); position: relative }
+.axp-activity-monitor__tree > li::before { content: ""; position: absolute; left: calc(var(--fx-dens-gap-xl) * var(--axp-am-depth) - var(--fx-dens-gap-md)); top: 0; bottom: 50%;
+  width: var(--fx-dens-gap-sm); border-left: var(--fx-border-w) solid var(--fx-border); border-bottom: var(--fx-border-w) solid var(--fx-border) }
+
+/* a line you tap (data-fx-row): time · icon · kind · sentence · app */
+button.axp-activity-monitor__row { all: unset; box-sizing: border-box; display: flex; align-items: baseline; gap: var(--fx-dens-gap-md); width: 100%; min-width: 0; cursor: pointer;
+  padding: var(--axp-am-pad) var(--fx-dens-gap-md); border-radius: var(--fx-radius-sm); color: var(--fx-text) }
+.axp-activity-monitor__row:hover { background: var(--fx-surface2) }
+.axp-activity-monitor__row:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: calc(var(--fx-border-w) * -1) }
+.axp-activity-monitor__row.is-selected { background: var(--fx-accent-soft) }
+.axp-activity-monitor__row.is-dim { opacity: var(--fx-opacity-muted) }
+.axp-activity-monitor__row--error .axp-activity-monitor__text { color: var(--fx-danger); font-weight: var(--fx-type-weights-strong) }
+.axp-activity-monitor__row--warning .axp-activity-monitor__text { color: var(--fx-warning) }
+.axp-activity-monitor__row--debug { opacity: var(--fx-opacity-muted) }
+.axp-activity-monitor__time { flex: none; color: var(--fx-muted); font-variant-numeric: tabular-nums; white-space: nowrap; font-size: var(--fx-type-root-xs) }
+.axp-activity-monitor__icon { flex: none; align-self: center; display: inline-flex; color: var(--axp-am-tone) }
+.axp-activity-monitor__kind { flex: none; color: var(--axp-am-tone); text-transform: uppercase; letter-spacing: var(--fx-tracking); font-size: var(--fx-type-root-2xs); min-width: calc(var(--fx-row-h) * 2.4) }
+.axp-activity-monitor__text { flex: 1; min-width: 0; overflow-wrap: anywhere; font-family: var(--fx-font) }
+.axp-activity-monitor__app { flex: none; color: var(--fx-info); font-size: var(--fx-type-root-xs) }
+
+/* the selected event */
+.axp-activity-monitor__detail { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); border-left: calc(var(--fx-border-w) * 3) solid var(--axp-am-tone); padding-left: var(--fx-dens-gap-md) }
+.axp-activity-monitor__sentence { margin: 0; font-size: var(--fx-type-root-md); font-weight: var(--fx-type-weights-strong) }
+.axp-activity-monitor__facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: var(--fx-dens-gap-2xs) var(--fx-dens-gap-xl); margin: 0; font-size: var(--fx-type-root-sm) }
+.axp-activity-monitor__facts > div { display: contents }
+.axp-activity-monitor__facts dt { color: var(--fx-muted) }
+.axp-activity-monitor__facts dd { margin: 0; overflow-wrap: anywhere }
+.axp-activity-monitor__acts { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-sm) }
+.axp-activity-monitor__raw summary { cursor: pointer; color: var(--fx-muted) }
+.axp-activity-monitor__raw pre { margin: var(--fx-dens-gap-sm) 0 0; max-height: 40vh; overflow: auto; padding: var(--fx-dens-gap-md); background: var(--fx-bg); border-radius: var(--fx-radius-sm);
+  font-size: var(--fx-type-root-xs); white-space: pre-wrap; overflow-wrap: anywhere }
+
+/* rules */
+.axp-activity-monitor__ruleform { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md); background: var(--fx-surface2); border-radius: var(--fx-radius-md) }
+.axp-activity-monitor__rulelead { margin: 0; font-weight: var(--fx-type-weights-strong) }
+.axp-activity-monitor__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-row-h) * 6), 1fr)); gap: var(--fx-dens-gap-md) }
+.axp-activity-monitor__rulelist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
+.axp-activity-monitor__rulehead { display: flex; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0 }
+
+/* widget (banner summary line, Builds toolbar, page head) */
+.axp-activity-monitor__widget { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); min-width: 0 }
+.axp-activity-monitor__lasterr { color: var(--fx-danger); font-size: var(--fx-type-root-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 40ch }
+.axp-activity-monitor__settings { min-width: 0 }

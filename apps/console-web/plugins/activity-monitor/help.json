@@ -1,0 +1,253 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "activity-monitor-help",
+  "name": "Activity Monitor help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the Activity Monitor plugin (help@1).",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:activity-monitor",
+    "entries": [
+      {
+        "target": "view:activity-monitor",
+        "title": "Activity Monitor",
+        "text": "A live log of everything the console, axHub and every app does, each line in plain English: who did what, to whom, and what came of it.",
+        "kind": "screen"
+      },
+      {
+        "target": "search",
+        "title": "Search",
+        "text": "Finds lines with all the words you type: a name, an app, a build, an error."
+      },
+      {
+        "target": "time",
+        "title": "Time",
+        "text": "Shows only what happened in the last 15 minutes, hour, day or week."
+      },
+      {
+        "target": "level",
+        "title": "Level",
+        "text": "Hides the quiet lines: show everything, warnings and errors, or errors only."
+      },
+      {
+        "target": "kind",
+        "title": "Kind",
+        "text": "Shows one kind of event: taps, actions, axHub runs, approvals, agents, builds, errors, fixes, rules."
+      },
+      {
+        "target": "layout",
+        "title": "Layout",
+        "text": "Chains groups one request with everything that followed it as a tree; Lines shows every event in time order."
+      },
+      {
+        "target": "live-follow",
+        "title": "Live follow",
+        "text": "Keeps the newest line in view as new events arrive."
+      },
+      {
+        "target": "pause",
+        "title": "Pause",
+        "text": "Stops the log updating so you can read; Resume carries on."
+      },
+      {
+        "target": "resume",
+        "title": "Resume",
+        "text": "Starts the live updates again."
+      },
+      {
+        "target": "export-as",
+        "title": "Export as",
+        "text": "The file type Export writes: JSON lines, CSV, Markdown or text."
+      },
+      {
+        "target": "export",
+        "title": "Export",
+        "text": "Downloads what the log shows now, with the current tab and filters."
+      },
+      {
+        "target": "activity-log-settings",
+        "title": "Activity log settings",
+        "text": "Opens the log's settings: colours, density, what to show and record, rules."
+      },
+      {
+        "target": "activity-log-sections",
+        "title": "Tabs",
+        "text": "All, Errors, Approvals, Agents, Builds, axHub, and one tab per app seen in the log."
+      },
+      {
+        "target": "retry",
+        "title": "Retry",
+        "text": "Does what this event did again: reruns the console action, puts the build back in the Queue or reruns the systems check."
+      },
+      {
+        "target": "open",
+        "title": "Open",
+        "text": "Opens the thing this event touched: the build, the page, the run."
+      },
+      {
+        "target": "fix-note",
+        "title": "Fix note",
+        "text": "Opens the Automatic fixes note about how this error was fixed."
+      },
+      {
+        "target": "whole-request",
+        "title": "Whole request",
+        "text": "Shows the request this event belongs to and everything that followed it."
+      },
+      {
+        "target": "make-a-rule",
+        "title": "Make a rule",
+        "text": "When this happens again, do that: notify you, run the fix, send it to an agent or run a console action."
+      },
+      {
+        "target": "test",
+        "title": "Test",
+        "text": "Counts how many recent events this rule would have caught."
+      },
+      {
+        "target": "save-rule",
+        "title": "Save rule",
+        "text": "Saves the rule. It runs the next time a matching event comes in."
+      },
+      {
+        "target": "cancel",
+        "title": "Cancel",
+        "text": "Closes the rule form without saving."
+      },
+      {
+        "target": "delete",
+        "title": "Delete",
+        "text": "Deletes this rule."
+      },
+      {
+        "target": "activity-monitor",
+        "title": "Activity Monitor settings",
+        "text": "How the log looks, what it shows and records, and its rules, under Settings → Plugins."
+      },
+      {
+        "target": "banner:activity-monitor.summary",
+        "title": "Activity count",
+        "text": "Events today and errors today; tap to open the log, tap the errors to see them."
+      },
+      {
+        "target": "chains",
+        "title": "Chains",
+        "text": "Groups one request with everything that followed it, as a tree you can fold."
+      },
+      {
+        "target": "lines",
+        "title": "Lines",
+        "text": "Every event on its own line, in time order."
+      },
+      {
+        "target": "who",
+        "title": "Who",
+        "text": "The rule only fires when this person, agent or service did it. Empty means anyone."
+      },
+      {
+        "target": "text-it-contains",
+        "title": "Text it contains",
+        "text": "The rule only fires when the event's sentence or reason contains these words."
+      },
+      {
+        "target": "agent",
+        "title": "Agent",
+        "text": "Who gets the event: the orchestrator files it as a build for them."
+      },
+      {
+        "target": "console-action",
+        "title": "Console action",
+        "text": "A console action to run in the open console, e.g. nav:builds."
+      },
+      {
+        "target": "systems-check-id-optional",
+        "title": "Systems check id",
+        "text": "Which systems check to rerun; empty reruns what the event itself did."
+      },
+      {
+        "target": "message",
+        "title": "Message",
+        "text": "What the notification says, or a note for the agent."
+      },
+      {
+        "target": "rule-name",
+        "title": "Rule name",
+        "text": "A name for the rule; left empty, one is written from what it does."
+      },
+      {
+        "target": "today",
+        "title": "Events today",
+        "text": "How many events the log saw today; tap to open the log."
+      },
+      {
+        "target": "error",
+        "title": "Errors today",
+        "text": "How many errors the log saw today; tap to see them. Hover for the last one."
+      },
+      {
+        "target": "live-follow-by-default",
+        "title": "Live follow by default",
+        "text": "The log opens following the newest line."
+      },
+      {
+        "target": "one-tab-per-app",
+        "title": "One tab per app",
+        "text": "Adds a tab for every app seen in the log (console, axHub, AmberX …)."
+      },
+      {
+        "target": "refresh-every-ms",
+        "title": "Refresh every",
+        "text": "How often the open log asks for new events, in milliseconds."
+      },
+      {
+        "target": "record-every-tap-in-the-console",
+        "title": "Record every tap",
+        "text": "Writes a line for every button, menu item, tab and row you tap in the console."
+      },
+      {
+        "target": "record-every-console-action-menus-shortcuts-toolbars",
+        "title": "Record every console action",
+        "text": "Writes a line for every console action, from menus, shortcuts, toolbars or remote callers."
+      },
+      {
+        "target": "record-errors-on-the-console-page",
+        "title": "Record page errors",
+        "text": "Writes a line when the console page hits an error or a request fails."
+      },
+      {
+        "target": "events-kept",
+        "title": "Events kept",
+        "text": "How many events stay on disk; older ones are dropped."
+      },
+      {
+        "target": "action:activity-monitor.tab:errors",
+        "title": "Activity log: errors",
+        "text": "Opens the activity log on its Errors tab."
+      }
+    ],
+    "intros": [
+      {
+        "screen": "activity-monitor",
+        "title": "Activity Monitor",
+        "steps": [
+          {
+            "say": "Everything the console, axHub and the apps do shows up here as a sentence, newest at the bottom.",
+            "target": ""
+          },
+          {
+            "say": "Use the tabs and filters to narrow it; Chains folds one request and everything that followed it.",
+            "target": "layout"
+          },
+          {
+            "say": "Select a line to retry it, open what it touched or make a rule for next time.",
+            "target": ""
+          }
+        ]
+      }
+    ]
+  }
+}
