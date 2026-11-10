@@ -769,9 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 13:08 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` added (3 steps) (all) · claude-ai-voice
-- 2026-11-09 13:09 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` note (all) · claude-ai-voice
-- 2026-11-09 13:10 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` note (all) · claude-ai-voice
 - 2026-11-09 13:12 UTC · `approve-deny-anywhere-send-in-background-never-navigate` added (2 steps) (all) · claude-ai-voice
 - 2026-11-09 13:13 UTC · `pending-builds-steps-column-first-done-total-sortable` added (1 steps) (all) · claude-ai-voice
 - 2026-11-09 13:13 UTC · `banner-skins-context-menu-item-with-sub-menu-of-all-skins-widget-hidden-by-def` added (1 steps) (all) · claude-ai-voice
@@ -1169,6 +1166,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 00:09 UTC · `assign-an-employee-to-every-role-action-type-and` PR #419 (all) · builds-live
 - 2026-11-10 00:09 UTC · `assign-an-employee-to-every-role-action-type-and` note (all) · orchestrator
 - 2026-11-10 00:09 UTC · `assign-an-employee-to-every-role-action-type-and` s3 done, → built (all) · orchestrator
+- 2026-11-10 00:10 UTC · `walkthrough-player-ide-layout-setting-collapsibl` → running, note (all) · pipeline
+- 2026-11-10 00:10 UTC · `walkthrough-player-ide-layout-setting-collapsibl` branch claude/walkthrough-player-ide-layout-setting-collapsibl (all) · pipeline
+- 2026-11-10 00:10 UTC · `walkthrough-player-ide-layout-setting-collapsibl` note (all) · orchestrator
 
 ## Token passes (log)
 
