@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2402,
- "updatedAt": "2026-11-10T15:32:18.973Z",
+ "rev": 2403,
+ "updatedAt": "2026-11-10T15:33:41.178Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -137397,6 +137397,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-10T15:32:17.511Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "search-bar-plugin-snappable-search-asset-globe-e",
+   "title": "Search bar plugin: snappable search asset (globe = everything, gear = settings only), live tree drop-down with quick-set sub-menus; replaces the old Search everywhere",
+   "category": "",
+   "detail": "New plugin providing a search bar asset: snappable/embeddable widget for toolbars and banners like any other asset; multiple instances allowed; multiple view types. 1) Scope switch: globe = search everywhere (whole program, every plugin, every setting); gear = settings only. 2) Matching: its own built-in logic, live letter-by-letter results; regular expressions, exact match and other options in its own settings. Uses AI only if an Ollama (local Llama) connection exists AND AI assistance is enabled; otherwise no AI. 3) Results drop-down: left column = categories (plugins, settings interfaces, etc., named sensibly); right side = tree listing of the matches under each. Selecting a result navigates to it. 4) Right-click a result: spawns a sub-menu tree to the right or left (whichever fits on screen) with that setting's options (on/off, multi-choice); pick directly from the drop-down with no confirmation, just the small check-mark confirmation toast in place. 5) Remove the existing Search everywhere. Full API control.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T15:33:40.111Z",
+   "updatedAt": "2026-11-10T15:33:40.111Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I want to make a plugin that is a search bar. Multiple types of views, you can have multiple of them, an asset. Globe searches everywhere, the whole program, every plugin, every setting; gear only searches settings. Regular expressions; unless there's a Llama connection and AI assistant use enabled, it uses its own logic. Letter by letter the possibilities come up. Drop menu with categories column on the left, tree of matches. Select one, it goes to it. Right click spawns a sub-menu with the options for that switch, quick select with no confirmation except the little check mark notification. Embeddable widget that snaps into toolbars and banners. Remove the other search everywhere.",
+    "at": "2026-11-10T15:33:40.111Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 541
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

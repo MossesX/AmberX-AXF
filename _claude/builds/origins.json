@@ -3628,6 +3628,18 @@
    "from": "detail",
    "addenda": []
   },
+  "search-bar-plugin-snappable-search-asset-globe-e": {
+   "said": "I want to make a plugin that is a search bar. Multiple types of views, you can have multiple of them, an asset. Globe searches everywhere, the whole program, every plugin, every setting; gear only searches settings. Regular expressions; unless there's a Llama connection and AI assistant use enabled, it uses its own logic. Letter by letter the possibilities come up. Drop menu with categories column on the left, tree of matches. Select one, it goes to it. Right click spawns a sub-menu with the options for that switch, quick select with no confirmation except the little check mark notification. Embeddable widget that snaps into toolbars and banners. Remove the other search everywhere.",
+   "at": "2026-11-10T15:33:40.111Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "self-healing-build-folders-auto-clear-stale-git": {
    "said": "Anytime that happens, you gotta remove that. You guys have to deal with the problems. I can't have it just stop working every time something goes wrong. Put in the code: if something breaks, it needs to remove locks. Put it in the code so it doesn't rely on AI.",
    "at": "2026-11-10T02:22:06.131Z",
