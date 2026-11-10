@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T16:51:10.580Z",
+ "updatedAt": "2026-11-10T16:51:25.716Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -86845,12 +86845,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T16:50:14.626Z",
-   "updatedAt": "2026-11-10T16:50:16.796Z",
+   "updatedAt": "2026-11-10T16:51:21.057Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T16:50:16.796Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T16:51:21.057Z"
     }
    ],
    "approvals": [],
@@ -86867,23 +86871,87 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Builds on session-transcripts-api. Ingest every session transcript (AmberX recorder + faster-whisper, Claude chats/exports) into a local RAG index (chunked, embedded, tagged by date, topic, build ids). Extract standing rules and decisions into a rules ledger the orchestrator and every brief load automatically. Searchable from the new search plugin and by API. No paid API: local embeddings by default; AI use behind its switch.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaxg0gx01vf4n"
+    },
+    {
+     "id": "s2",
+     "text": "You better make some type of RAG database for this conversation.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaxg0gx02wpg6"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/conversation-rag-index-every-voice-chat-session.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/conversation-rag-index-every-voice-chat-session.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaxg0gx03a4xl"
+    }
+   ]
   },
   {
    "id": "conversation-rag-amendment-store-only-short-key",
    "title": "Conversation RAG amendment: store only short key/value entries, never full transcripts",
    "category": "",
    "detail": "Amends the conversation RAG build. Do NOT store or inject whole sessions (too costly). Store only brief two-field entries: key (the entry, e.g. a rule, mistake, or decision) and value (a one-line summary, e.g. what Claude failed to do and what to do instead). Briefs pull only the matching entries. Extraction by plain rules where possible; AI only behind its switch.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-10T16:51:08.892Z",
-   "updatedAt": "2026-11-10T16:51:08.892Z",
+   "updatedAt": "2026-11-10T16:51:10.898Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T16:51:10.898Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
