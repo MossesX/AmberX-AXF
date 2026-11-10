@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:48:06.792Z",
+ "updatedAt": "2026-11-10T17:48:18.948Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -82343,12 +82343,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T23:45:25.391Z",
-   "updatedAt": "2026-11-09T23:47:12.764Z",
+   "updatedAt": "2026-11-10T17:48:09.529Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-09T23:47:12.764Z"
+    },
+    {
+     "text": "Split by Claude into 8 steps (0 Fable).",
+     "at": "2026-11-10T17:48:09.529Z"
     }
    ],
    "approvals": [],
@@ -82368,13 +82372,16 @@
    "steps": [
     {
      "id": "s1",
-     "text": "Add to the orchestrator's brief rules (every build it splits and briefs), the headless session rules, agent profiles and the shared CLAUDE rules every Claude session reads: when something blocks the work, try every fix within your permissions (axHub tools, console, VPS check/run, Coolify, hosting, or hand off to an agent with the right permissions) and keep going; don't stop to ask Brett. Log each attempt and send him an FYI notification through AmberX (trying X / X failed / trying Y / fixed) using the fix-log tool; informational, never a permission request. Existing approval gates on VPS writes stay as they are.",
+     "text": "Write the canonical standing rule in _claude/shared/rules/fix-it-yourself.md. When something blocks the work, try every fix within your permissions: axHub tools, console, VPS check/run, Coolify, hosting, or hand off to an agent that has the right permissions. Keep going and never stop to ask Brett. Log each attempt with the fix-log tool, which sends Brett an FYI through AmberX (trying X / X failed / trying Y / fixed). The FYI is informational, never a permission request or veto. Existing approval gates on VPS writes stay as they are. Include Brett's verbatim quote and a short how-to for the fix-log tool. Link the rule from _claude/shared/rules/RULES.md so it sits in the always-read set.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "30 min",
-     "files": [],
+     "estimate": "15 min",
+     "files": [
+      "_claude/shared/rules/fix-it-yourself.md",
+      "_claude/shared/rules/RULES.md"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -82382,17 +82389,21 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw9wuynw01xzjb"
+     "uid": "st-mwazh2gp1n9vso"
     },
     {
      "id": "s2",
-     "text": "From now on, you do whatever in your ability to fix any problem. I don't want to be bothered... just notify me of doing it, not for permission or veto. ... Every single build, put that in the brief... put it where you need to so that anything that's doing anything will be able to follow those rules.",
+     "text": "Wire the rule into the shared CLAUDE rules every Claude session reads. Add a short pointer section to the repo CLAUDE.md and the shared CLAUDE instructions synced by claude-sync. Make sure the claude-sync manifest ships fix-it-yourself.md to every project.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "30 min",
-     "files": [],
+     "estimate": "15 min",
+     "files": [
+      "CLAUDE.md",
+      "_claude/shared/instructions/",
+      "_claude/shared/rules/fix-it-yourself.md"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -82400,17 +82411,126 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw9wuynw02ndqi"
+     "uid": "st-mwazh2gp1oy913"
     },
     {
      "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/standing-rule-in-every-brief-fix-problems-yourse.md, THREADS row, commit, push, PR",
+     "text": "Orchestrator brief rules: add the standing rule as a fixed block in the brief every build gets. Put it in BRIEF-TEMPLATE.md and in the orchestrator's brief builder, which always injects it no matter what the build's details say. Also add a line to the splitter prompt saying the rule applies to every step.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "_claude/builds/BRIEF-TEMPLATE.md",
+      "_claude/builds/orchestrator.json",
+      "apps/console-web/plugins/builds/ (brief builder + splitter prompt)"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazh2gp1p2mm9"
+    },
+    {
+     "id": "s4",
+     "text": "Headless session rules: add the rule to the system prompt / --append-system-prompt the orchestrator passes to every headless Claude Code step and probe. Cover both the Fable and Opus paths, and the resume/retry path.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "20 min",
      "files": [
+      "apps/console-web/plugins/builds/ (headless runner)",
+      "_claude/builds/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazh2gp1qlqkc"
+    },
+    {
+     "id": "s5",
+     "text": "Agent profiles: add the rule, or a reference to it, to every agent profile and agent definition. This covers _claude/builds/profiles/* (all, breakroom, others) and .claude/agents/*. New profiles created from the template inherit it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/profiles/",
+      "_claude/builds/profiles/all/orchestrator.json",
+      ".claude/agents/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazh2gp1rxivt"
+    },
+    {
+     "id": "s6",
+     "text": "Fix-log tool: check that it records each attempt (trying / failed / fixed, with what was tried) and sends the AmberX notification as an FYI only, with no approve/veto buttons and no waiting for a reply. It must be callable the same way from the CLI, MCP tool, console REST route and AmberX voice, so headless sessions can use it. Fill any gaps and add the reach-paths to the tool's README.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/fix-log/",
+      "apps/amberx/ (notification + voice intent)"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazh2gp1ss85q"
+    },
+    {
+     "id": "s7",
+     "text": "Guard the VPS approval gates. Check that the VPS write approval flow (vps run/write gate) is untouched by the new rule. Add one sentence in fix-it-yourself.md and in the VPS tool docs saying the gate still applies: a gated write goes through the existing approval and is logged as an attempt, not bypassed.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/vps/",
+      "_claude/shared/rules/fix-it-yourself.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazh2gp1txf5f"
+    },
+    {
+     "id": "s8",
+     "text": "Tests and wrap-up. Add tests that assert: (1) every generated brief contains the standing rule block; (2) the headless system prompt contains it; (3) every agent profile references it; (4) fix-log sends an FYI-category AmberX notification with no actions, reachable from CLI, MCP, REST and voice; (5) the VPS write gate still requires approval. Run the suites and write _claude/builds/reports/standing-rule-in-every-brief-fix-problems-yourse.md. Add a THREADS.md row. Open a PR that states this build adds no UI and lists how the fix-log tool is reached (CLI / MCP / REST / voice).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/builds/test/",
+      "apps/console-web/plugins/fix-log/test/",
       "_claude/builds/reports/standing-rule-in-every-brief-fix-problems-yourse.md",
       "_claude/THREADS.md"
      ],
@@ -82421,7 +82541,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw9wuynw039x51"
+     "uid": "st-mwazh2gp1uzvl2"
     }
    ]
   },

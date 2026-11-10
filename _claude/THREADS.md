@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 04:33 UTC · `resolve-merge-conflicts-and-land-running-builds` note (all) · builds-live
 - 2026-11-10 04:33 UTC · `auto-land-every-build-the-moment-it-finishes-red` note (all) · builds-live
 - 2026-11-10 04:34 UTC · `resolve-the-conflict-and-land-the-orchestrator-l` note (all) · orchestrator
 - 2026-11-04 17:18 UTC · `settings-placement-everywhere` s24-23 done, note (current) · foreign-write
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 17:47 UTC · `conversation-rag-amendment-store-only-short-key` → running, note (all) · pipeline
 - 2026-11-10 17:47 UTC · `conversation-rag-amendment-store-only-short-key` branch claude/conversation-rag-amendment-store-only-short-key (all) · pipeline
 - 2026-11-10 17:47 UTC · `conversation-rag-amendment-store-only-short-key` note (all) · orchestrator
+- 2026-11-10 17:48 UTC · `standing-rule-in-every-brief-fix-problems-yourse` note (all) · builds-live
 
 ## Token passes (log)
 
