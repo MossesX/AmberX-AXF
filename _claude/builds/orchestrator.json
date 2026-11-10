@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T02:46:11.511Z",
+ "updatedAt": "2026-11-10T02:46:34.280Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -80099,7 +80099,7 @@
    "title": "VPS orchestrator-only rule + VPS Settings console plugin to manage it",
    "category": "",
    "detail": "1) Enforce on the VPS itself: every headless Claude build launch (claude-headless.sh, agent slots, vps build_start, any launcher) must carry an orchestrator-issued build ID/token; anything else is refused and logged, with a notice to the phone. Builds on one-way-to-start-builds-the-orchestrator-dispatc (2/3 done) - finish or fold that in. 2) New console plugin 'VPS Settings' to view and change VPS-side settings, starting with this rule (on/off, refused-jobs log). Full API control per standing rule.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -80107,8 +80107,8 @@
    "pr": "#431",
    "priority": "P1",
    "createdAt": "2026-11-09T19:10:08.745Z",
-   "updatedAt": "2026-11-10T02:45:47.771Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T02:46:07.976Z",
+   "builtAt": "2026-11-10T02:46:07.976Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -80254,8 +80254,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T02:46:07.976Z",
      "note": "",
      "uid": "st-mw9n028703ofoi"
     }
