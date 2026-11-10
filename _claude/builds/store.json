@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2797,
- "updatedAt": "2026-11-10T20:41:32.306Z",
+ "rev": 2798,
+ "updatedAt": "2026-11-10T20:43:06.241Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -146178,7 +146178,7 @@
    "title": "Molly flagship skin: premium, sellable, uncluttered; short main menu with smart sub-menus, live status and instant settings",
    "category": "",
    "detail": "Flagship skin for Molly: powerful, beautiful, expensive-looking, professional, sellable. Uncluttered UI. Everything reachable (redundantly is fine). 1) Context menus fully mapped, no junk items. 2) Application menu: short top level, everything else in sub-menus. Sub-menus flip left when they'd go off screen; long menus scroll inside the menu (never the page). 3) Choice settings live right in the app menu: click to change instantly, current value shown beside the entry. 4) Live info beside entries (e.g. tiny green/red axHub status icon); hover tooltips explain every icon; animated indicators allowed. 5) Right-click any menu item: dialog to set that item's behavior and appearance. Depends on the inline-edit build for per-element token editing.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -146186,7 +146186,7 @@
    "pr": "#469",
    "priority": "P1",
    "createdAt": "2026-11-10T16:39:09.087Z",
-   "updatedAt": "2026-11-10T20:40:40.910Z",
+   "updatedAt": "2026-11-10T20:41:33.492Z",
    "builtAt": "",
    "notes": [
     {
@@ -146228,6 +146228,10 @@
     {
      "text": "Started run 2 on mossesx-max- (Opus, Phase 2): axf-molly-flagship-skin-premium-sellable-uncluttered--gina.",
      "at": "2026-11-10T20:40:38.511Z"
+    },
+    {
+     "text": "Self-check: molly-flagship-skin-premium-sellable-uncluttered was marked running on mossesx-max- with no session: released and back in the Queue.",
+     "at": "2026-11-10T20:41:33.492Z"
     }
    ],
    "approvals": [],
@@ -146247,7 +146251,7 @@
    "pipeline": {
     "queuedAt": "2026-11-10T16:39:10.516Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
+    "account": "",
     "session": "",
     "slot": "",
     "model": "Fable",
@@ -146269,7 +146273,7 @@
      "note": "Split by Claude into 12 steps (4 Fable)."
     },
     "splitRequested": "",
-    "note": "Session on mossesx-max- ended (exit 0) with 8 steps left: back in the Queue (run 1).",
+    "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
     "dispatchedAt": "2026-11-10T19:39:11.590Z",
     "planned": {
@@ -146600,7 +146604,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -147177,10 +147181,10 @@
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T19:45:07.250Z",
+     "at": "2026-11-10T20:41:31.970Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -147451,7 +147455,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -153765,12 +153769,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T20:40:20.356Z",
-   "updatedAt": "2026-11-10T20:40:30.009Z",
+   "updatedAt": "2026-11-10T20:41:31.157Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T20:40:30.009Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T20:41:31.157Z"
     }
    ],
    "approvals": [],
@@ -153797,16 +153805,98 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-10T20:41:31.157Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-10T20:41:31.971Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwb5o0et012qbw",
+     "title": "",
+     "text": "Merges failed. #460 (splitter fix), #457 (merge batching), #459 (failed-batch split), #342 (build optimizer) have merge conflicts with main; #456 (enforce merge queue) is still a draft. In order: #460 first (it fixes every build's steps), then #456 (mark ready), #457, #459, #342. For each: merge latest main into the branch, resolve conflicts keeping both sides' intent, tests green, push, merge. Then redeploy the console. Notify on AmberX only when all are landed.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T20:41:31.157Z",
+     "updatedAt": "2026-11-10T20:41:31.157Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwb5o0et02rxzo",
+     "title": "",
+     "text": "If anything doesn't work, just fix it. Don't tell me, just tell me when it's fixed.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T20:41:31.157Z",
+     "updatedAt": "2026-11-10T20:41:31.157Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwb5o0et03hacq",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/resolve-conflicts-and-land-460-456-457-459-342.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/resolve-conflicts-and-land-460-456-457-459-342.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T20:41:31.157Z",
+     "updatedAt": "2026-11-10T20:41:31.157Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -153815,12 +153905,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T20:41:31.157Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
