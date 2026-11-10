@@ -11,8 +11,11 @@ import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type CSSP
 import { createPortal } from 'react-dom';
 import type { AxfRuntime, SearchEntry } from '@console/axf/core';
 import { Icon, usePortalRoot, useRuntime, useAxfState, type WidgetRenderProps } from '@console/axf/react';
-import { applyRanking, flatten, groupHits, matchEntries, pickValue, quickOptions, submenuSide, type Group, type Hit, type Quick, type Scope, type TreeNode } from './match.mjs';
-import { aiOn, api, dropInstance, upsertInstance, useSearchState } from './store';
+import { MODES, applyRanking, flatten, groupHits, matchEntries, pickValue, quickOptions, submenuSide, type Group, type Hit, type Mode, type Quick, type Scope, type TreeNode } from './match.mjs';
+import { aiOn, api, dropInstance, saveConfig, upsertInstance, useSearchState } from './store';
+
+const MODE_SHORT: Record<Mode, string> = { words: 'Words', prefix: 'Starts', exact: 'Exact', regex: '.*' };
+const MODE_TITLES: Record<Mode, string> = { words: 'Words in any order, anywhere', prefix: 'Words that start with what you type', exact: 'The exact phrase', regex: 'Regular expression' };
 
 export interface BarData { placeholder?: string; width?: string; shortcut?: boolean; view?: string; scope?: string }
 
@@ -61,7 +64,7 @@ export function quickSet(rt: AxfRuntime, key: string, item: { value: string | bo
 
 export function SearchBarView({ data, id, host }: WidgetRenderProps<BarData>) {
   const rt = useRuntime();
-  useAxfState();
+  const axf = useAxfState();
   const store = useSearchState();
   const uid = useId().replace(/:/g, '');
   const key = `${host ?? 'free'}:${id}:${uid}`;
@@ -87,7 +90,7 @@ export function SearchBarView({ data, id, host }: WidgetRenderProps<BarData>) {
     if (!q.trim()) return { hits: [] as Hit[], error: '' };
     const entries = rt.search.entries().filter((e) => rt.gate(e.requires) !== 'hide').map((e) => ({ ...e, locked: rt.gate(e.requires) === 'disable' }));
     return matchEntries(entries, q, store.options, scope);
-  }, [q, scope, store.options, rt, store.rev]);
+  }, [q, scope, store.options, rt, axf.rev]);
   const ranked = useMemo(() => applyRanking(hits, aiIds), [hits, aiIds]);
   const groups: Group[] = useMemo(() => groupHits(ranked, store.options), [ranked, store.options]);
   const shown = cat === 'all' ? groups : groups.filter((g) => g.id === cat);
@@ -114,12 +117,12 @@ export function SearchBarView({ data, id, host }: WidgetRenderProps<BarData>) {
     setOpen(true);
     setTimeout(() => input.current?.focus(), 0);
   };
-  const counts = useMemo(() => Object.fromEntries(groups.map((g) => [g.id, g.count])), [groups]);
+  const countsKey = JSON.stringify(Object.fromEntries(groups.map((g) => [g.id, g.count])));
   useEffect(() => {
-    upsertInstance({ key, id, host: host ?? 'free', view, scope, query: q, open, results: hits.length, categories: counts,
+    upsertInstance({ key, id, host: host ?? 'free', view, scope, query: q, open, results: hits.length, categories: JSON.parse(countsKey) as Record<string, number>,
       show: (x) => showRef.current(x), setScope, close: () => setOpen(false) });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [key, view, scope, q, open, hits.length, counts]);
+  }, [key, view, scope, q, open, hits.length, countsKey]);
   useEffect(() => () => dropInstance(key), [key]);
 
   // Ctrl/Cmd+K or "/" focuses the first bar that asks for the shortcut.
@@ -258,7 +261,7 @@ export function SearchBarView({ data, id, host }: WidgetRenderProps<BarData>) {
               {[{ id: 'all', label: 'All', icon: 'list', count: hits.length }, ...groups].map((g) => (
                 <button key={g.id} type="button" role="option" aria-selected={cat === g.id} data-fx-row className={`axp-search-bar__cat${cat === g.id ? ' is-on' : ''}`}
                   onPointerDown={(e) => e.preventDefault()} onClick={() => setCat(g.id)}>
-                  <Icon name={g.icon} size={14} /><span>{g.label}</span><span className="axp-search-bar__count">{g.count}</span>
+                  <Icon name={g.icon} size={14} /><span className="axp-search-bar__catlabel">{g.label}</span><span className="axp-search-bar__count">{g.count}</span>
                 </button>
               ))}
             </div>
@@ -275,7 +278,14 @@ export function SearchBarView({ data, id, host }: WidgetRenderProps<BarData>) {
             </div>
           </div>
           <div className="axp-search-bar__foot">
-            <span>{store.options.mode === 'regex' ? 'Regular expression' : store.options.mode === 'exact' ? 'Exact match' : store.options.mode === 'prefix' ? 'Word starts' : 'Words'}{store.options.caseSensitive ? ' · case-sensitive' : ''}</span>
+            <span className="axp-search-bar__modes" role="group" aria-label="Matching">
+              {MODES.map((m) => (
+                <button key={m} type="button" className={`fx-chip${store.options.mode === m ? ' is-selected' : ''}`} aria-pressed={store.options.mode === m} title={MODE_TITLES[m]}
+                  onPointerDown={(e) => e.preventDefault()} onClick={() => void saveConfig({ mode: m })}>{MODE_SHORT[m]}</button>
+              ))}
+              <button type="button" className={`fx-chip${store.options.caseSensitive ? ' is-selected' : ''}`} aria-pressed={store.options.caseSensitive} title="Case-sensitive"
+                onPointerDown={(e) => e.preventDefault()} onClick={() => void saveConfig({ caseSensitive: !store.options.caseSensitive })}>Aa</button>
+            </span>
             <span>{ai ? 'AI ranking (local Llama)' : 'Built-in matching'}</span>
             <span>Right-click or → for quick options</span>
           </div>

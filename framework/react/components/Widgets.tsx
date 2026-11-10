@@ -5,7 +5,7 @@
  * registry (`registerWidgetRenderer`): a library adds a new widget type by registering its renderer, no shell change.
  * Theme tokens only.
  */
-import type { ComponentType, ReactNode } from 'react';
+import { useSyncExternalStore, type ComponentType, type ReactNode } from 'react';
 import { avatarInitials, avatarSize, counterText, imageSrc, linkHref, logoSize, progressPercent, progressWidth, searchBarConfig, spacerUnits, statusOn, themeSwitchNext, widgetTone } from '../../core/engines/widgets';
 import type { ActionButtonData, AvatarData, ClockData, CounterData, DividerData, LabelData, LinkData, LogoData, ProgressData, SearchBarData, SpacerData, StatusData, ThemeSwitchData } from '../../core/types';
 import { useAxfState, useRuntime } from '../AxfProvider';
@@ -17,11 +17,19 @@ export interface WidgetRenderProps<D = unknown> { data: D; id: string; /** the h
 export type WidgetRenderer<D = unknown> = ComponentType<WidgetRenderProps<D>>;
 
 const renderers = new Map<string, WidgetRenderer>();
+// Widgets already on screen redraw when a renderer is registered or replaced (a module loaded after the first paint).
+let renderersVersion = 0;
+const rendererWatchers = new Set<() => void>();
+const renderersChanged = () => { renderersVersion += 1; rendererWatchers.forEach((f) => f()); };
+const watchRenderers = (f: () => void) => { rendererWatchers.add(f); return () => { rendererWatchers.delete(f); }; };
 /** Register (or replace) the renderer for a widget asset type. Returns an unregister function. */
 export function registerWidgetRenderer<D>(type: string, r: WidgetRenderer<D>): () => void {
   renderers.set(type, r as WidgetRenderer);
-  return () => { if (renderers.get(type) === r) renderers.delete(type); };
+  renderersChanged();
+  return () => { if (renderers.get(type) === r) { renderers.delete(type); renderersChanged(); } };
 }
+/** Re-render when the renderer registry changes (hosts that read `widgetRenderer` while drawing). */
+export function useWidgetRenderers(): number { return useSyncExternalStore(watchRenderers, () => renderersVersion, () => renderersVersion); }
 export function widgetRenderer(type: string): WidgetRenderer | undefined { return renderers.get(type); }
 
 /** A search bar widget: the app-wide live search (views, settings, actions, assets, windows, page words, module providers). */
@@ -175,6 +183,7 @@ registerWidgetRenderer<DividerData>('divider', DividerWidget);
 /** Draw a widget asset by type + id (nothing if it's gone or no renderer is registered for its type). */
 export function WidgetView({ type, id, host, patch }: { type: string; id: string; host?: string; /** fields laid over the asset's data for this draw */ patch?: Record<string, unknown> }) {
   const rt = useRuntime();
+  useWidgetRenderers();
   const raw = rt.registry.get(type as never, id) as { data: unknown } | undefined;
   const R = renderers.get(type);
   if (!raw || !R) return null;

@@ -42,14 +42,15 @@ test('regular expressions, exact and prefix modes, case', () => {
 test('categories in order, a tree from where each result lives', () => {
   const { hits } = matchEntries(E, 'o', {});
   const g = groupHits(hits, {});
-  assert.deepEqual(g.map((x) => x.id), ['settings', 'plugins', 'pages', 'actions', 'other']);
-  const settings = g[0];
+  assert.deepEqual(g.map((x) => x.id).sort(), ['actions', 'other', 'pages', 'plugins', 'settings']);
+  assert.equal(g[0].id, categoryOf(hits[0].kind).id, 'the category of the best hit comes first');
+  const settings = g.find((x) => x.id === 'settings');
   assert.equal(settings.root.children[0].label, 'Appearance');
   assert.ok(flatten(settings.root).some((h) => h.id === 'setting:axf.display.fontScale'));
   assert.deepEqual(pathOf({ detail: 'Settings › Appearance › Text' }, 'Settings'), ['Appearance', 'Text']);
   assert.deepEqual(pathOf({ detail: 'Page' }, 'Pages'), []);
   assert.equal(categoryOf('weird').id, 'other');
-  assert.equal(groupHits(hits, { perCategory: 1 })[0].root.children.flatMap((c) => flatten(c)).length, 1);
+  assert.equal(groupHits(hits, { perCategory: 1 }).find((x) => x.id === 'settings').root.children.flatMap((c) => flatten(c)).length, 1);
 });
 
 test('quick options: toggle, choice, multi-choice; values parsed for the API', () => {

@@ -20,7 +20,7 @@
  */
 import { useEffect, useRef } from 'react';
 import type { AssetType, AxfRuntime, MenuItem } from './axf/core';
-import { Button, LiveSearch, Note, flashWhenReady, useAxfState, useRuntime } from './axf/react';
+import { Button, Note, WidgetView, flashWhenReady, useAxfState, useRuntime } from './axf/react';
 import type { AxfWebLibrary } from './axf/react/library';
 import { HUB_DEFAULT, accountUrl, approvalsUrl, appsUrl, normalizeHub } from './axf/libs/hub/hub';
 import * as api from './api';
@@ -88,7 +88,8 @@ function reveal(rt: AxfRuntime, view: string, text: string, click = false) {
 
 /* ---------------- search: the bar when it's on screen, else the dialog ---------------- */
 
-const visibleSearch = () => [...document.querySelectorAll<HTMLInputElement>('.fx-search--live input')].find((i) => !i.closest('.fx-dialog, [role="dialog"]') && i.offsetParent !== null) ?? null;
+// Any search bar on screen (the framework's box or a module's own search-bar widget renderer): role="search" + its input.
+const visibleSearch = () => [...document.querySelectorAll<HTMLInputElement>('[role="search"] input')].find((i) => !i.closest('.fx-dialog, [role="dialog"]') && i.offsetParent !== null) ?? null;
 function search(rt: AxfRuntime) {
   const input = visibleSearch();
   if (input) { input.focus(); input.select(); return; }
@@ -104,7 +105,8 @@ function SearchDialog({ close }: { close: () => void }) {
   useEffect(() => { if (state.view !== view.current) close(); }, [state.view, close]);
   return (
     <div className="fx-stack" ref={box}>
-      <div className="fx-row"><LiveSearch config={{ live: true, placeholder: 'Search pages, builds, plugins, settings…', maxResults: 14 }} /></div>
+      {/* The search-bar widget as drawn now (a module may replace its renderer), so there is one search UI, not two. */}
+      <div className="fx-row"><WidgetView type="search-bar" id="everything" host="dialog" /></div>
       <p className="fx-small fx-muted" style={{ margin: 0 }}>Everything the console can open: pages, actions, settings, builds, features, plugins and menu items.</p>
     </div>
   );

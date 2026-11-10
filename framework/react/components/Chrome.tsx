@@ -9,7 +9,7 @@ import { AppMenuDropdown } from './AppMenu';
 import { HelpModeButton } from './Help';
 import { LiveSearch } from './Search';
 import type { ViewMap } from '../AppShell';
-import { SearchBarWidget, WidgetView, widgetRenderer } from './Widgets';
+import { SearchBarWidget, WidgetView, useWidgetRenderers, widgetRenderer } from './Widgets';
 import { ArrangeBar, arrangedSide, useArrange } from './Arrange';
 import type { PlacedAttachment } from '../../core/engines/widgets';
 import type { CompiledMenuItem } from '../../core/engines/appmenu';
@@ -88,6 +88,7 @@ export function Toolbar({ views }: { views: ViewMap }) {
   const rt = useRuntime();
   const tb = useAsset('toolbar');
   useAxfState();
+  const rendererRev = useWidgetRenderers(); // the search slot follows a replaced search-bar renderer
   const [q, setQ] = useState('');
   // Widgets (clock, search bar) at the toolbar's start / end: its own `widgets` + run-time ones (core/engines/widgets.ts).
   const widgets = rt.toolbarWidgets();
@@ -111,6 +112,7 @@ export function Toolbar({ views }: { views: ViewMap }) {
   // A module that replaces the search-bar widget renderer (registerWidgetRenderer('search-bar', …)) also draws the
   // toolbar's search slot, so an app has one search; otherwise the toolbar keeps its own box below.
   const searchRenderer = widgetRenderer('search-bar');
+  void rendererRev;
   const SearchSlot = searchRenderer && searchRenderer !== SearchBarWidget ? searchRenderer : null;
   // Search doubles as a mini command palette: jump to a view or hot-swap an asset by name.
   const run = (e: FormEvent) => {

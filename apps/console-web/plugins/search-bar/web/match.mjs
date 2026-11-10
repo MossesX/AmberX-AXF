@@ -130,8 +130,8 @@ export function pathOf(hit, categoryLabel) {
 }
 
 /**
- * Group ranked hits by category, each with a tree: nodes { id, label, children, hits }. Categories keep the
- * CATEGORIES order (best first inside); each category holds at most `perCategory` hits.
+ * Group ranked hits by category, each with a tree: nodes { id, label, children, hits }. Categories come in the order
+ * of their best hit (best first inside); each category holds at most `perCategory` hits.
  */
 export function groupHits(hits, options) {
   const o = normOptions(options);
@@ -150,8 +150,8 @@ export function groupHits(hits, options) {
     }
     node.hits.push(h);
   }
-  const order = [...CATEGORIES, OTHER_CATEGORY].map((c) => c.id);
-  return [...byCat.values()].sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
+  // Map keeps insertion order = the category of the best hit first (hits arrive ranked), so Enter picks the best match.
+  return [...byCat.values()];
 }
 
 /** Hits of a tree in display order (keyboard moves through this list). */
