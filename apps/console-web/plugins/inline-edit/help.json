@@ -1,0 +1,154 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "inline-edit-help",
+  "name": "Inline edit help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the Inline edit plugin (help@1): the master switch, the edit dialog and the overrides list.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:inline-edit",
+    "entries": [
+      {
+        "target": "inline-edit",
+        "title": "Inline edit settings",
+        "text": "The Inline edit mode switch, a shortcut to the overrides list, and installing or removing the plugin."
+      },
+      {
+        "target": "inline-edit-mode",
+        "title": "Inline edit mode",
+        "text": "The master switch. On: right-click any element of the console, down to a single menu row, nav item, toolbar button or banner widget, to edit its tokens. Off: right-click works as usual. Alt + right-click always opens the normal menu."
+      },
+      {
+        "target": "view:inline-edit-overrides",
+        "title": "Overrides",
+        "text": "Every value changed from what axHub passes down. Search and filter it, pick a root in the tree or give each tab its own root, and reset any single item to axHub.",
+        "kind": "screen"
+      },
+      {
+        "target": "dialog:inline-edit-element",
+        "title": "Edit element",
+        "text": "Every token of the element you right-clicked. The path at the top runs from the root down to the element; tap a step to edit that parent instead. Each token shows what it inherits from axHub, and a change here overrides that.",
+        "kind": "screen"
+      },
+      {
+        "target": "apply-changes-to",
+        "title": "Apply changes to",
+        "text": "This item only, or this item and everything under it, or everything under one of its parents. An item override beats a parent one."
+      },
+      {
+        "target": "view",
+        "title": "View",
+        "text": "Tree groups the tokens by kind, Classic tree shows the element and every parent with their tokens, and Grid is a table whose rows open to the editor."
+      },
+      {
+        "target": "revert-to-axhub",
+        "title": "Revert to axHub",
+        "text": "Removes just this one override, so the token goes back to what it inherits from axHub. Nothing else changes."
+      },
+      {
+        "target": "reset-to-axhub",
+        "title": "Reset to axHub",
+        "text": "Removes only this override and updates the list at once. A parent override reaches everything under it, so it asks first."
+      },
+      {
+        "target": "all-overrides",
+        "title": "All overrides",
+        "text": "Closes the dialog and opens the overrides list."
+      },
+      {
+        "target": "done",
+        "title": "Done",
+        "text": "Closes the dialog. Changes are already saved."
+      },
+      {
+        "target": "open-the-overrides-list",
+        "title": "Open the overrides list",
+        "text": "Opens the list of every value changed from axHub's inheritance."
+      },
+      {
+        "target": "roots",
+        "title": "Roots",
+        "text": "One tab per root you keep coming back to (a toolbar, a menu, a nav section). Tabs are kept for you. Plus adds a tab with the root selected now."
+      },
+      {
+        "target": "root",
+        "title": "Root",
+        "text": "Shows only what is changed under this element. Everything shows it all."
+      },
+      {
+        "target": "search",
+        "title": "Search",
+        "text": "Finds overrides by element, token, value, who changed it or why."
+      },
+      {
+        "target": "clear",
+        "title": "Clear",
+        "text": "Clears the search and every filter."
+      },
+      {
+        "target": "edit",
+        "title": "Edit",
+        "text": "Opens the edit dialog on this element at this scope."
+      },
+      {
+        "target": "action:inline-edit.overrides",
+        "title": "Inline edit overrides",
+        "text": "Opens the list of every value changed from axHub's inheritance."
+      },
+      {
+        "target": "action:inline-edit.mode.toggle",
+        "title": "Inline edit mode",
+        "text": "Turns inline edit mode on or off: on, right-click any element to edit its tokens."
+      },
+      {
+        "target": "overrides-list",
+        "title": "Overrides list",
+        "text": "Opens the list of every value changed from axHub's inheritance, where each one can be reset."
+      },
+      {
+        "target": "new-tab-with-the-selected-root",
+        "title": "New tab",
+        "text": "Adds a tab to the column that keeps the root selected now, so you can come back to it."
+      },
+      {
+        "target": "changed-since",
+        "title": "Changed since",
+        "text": "Shows only overrides changed on or after this day."
+      },
+      {
+        "target": "until",
+        "title": "Until",
+        "text": "Shows only overrides changed on or before this day."
+      },
+      {
+        "target": "edit-here",
+        "title": "Edit here",
+        "text": "Makes this parent the one your edits go to: they then reach it and everything under it."
+      }
+    ],
+    "intros": [
+      {
+        "screen": "inline-edit-overrides",
+        "title": "Overrides",
+        "steps": [
+          {
+            "say": "Everything changed from what axHub passes down is listed here, newest values against what axHub would give.",
+            "target": ""
+          },
+          {
+            "say": "Pick a root in the tree on the left, or give each tab its own root, to narrow the list.",
+            "target": ""
+          },
+          {
+            "say": "Reset to axHub on any row puts back only that one item.",
+            "target": ""
+          }
+        ]
+      }
+    ]
+  }
+}

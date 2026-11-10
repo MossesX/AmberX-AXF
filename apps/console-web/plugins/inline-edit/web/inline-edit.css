@@ -1,0 +1,56 @@
+/* Inline edit plugin: layout only. Every control is a framework control; sizes, colours and spacing are asset tokens. */
+
+.axp-inline-edit { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-width: 0; }
+.axp-inline-edit__panel { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); }
+
+/* ---- dialog ---- */
+.axp-inline-edit__dialog { max-width: 100%; }
+.axp-inline-edit__crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xs); }
+.axp-inline-edit__crumb { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); }
+.axp-inline-edit__path { color: var(--fx-muted); overflow-wrap: anywhere; }
+.axp-inline-edit__bar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-md); }
+.axp-inline-edit__foot { justify-content: flex-end; }
+
+.axp-inline-edit__tree, .axp-inline-edit__rows, .axp-inline-edit__classic, .axp-inline-edit__cchildren, .axp-inline-edit__ctokens,
+.axp-inline-edit__otree, .axp-inline-edit__otree-group, .axp-inline-edit__olist { list-style: none; margin: 0; padding: 0; }
+.axp-inline-edit__group { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
+.axp-inline-edit__group-head, .axp-inline-edit__cnode-head, .axp-inline-edit__onode-head { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); }
+.axp-inline-edit__rows { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding-inline-start: var(--fx-dens-gap-xl); }
+.axp-inline-edit__row { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); padding-block: var(--fx-dens-gap-xs); border-block-end: var(--fx-border-w) solid var(--fx-border); }
+.axp-inline-edit__row.is-active, .axp-inline-edit__ctoken.is-active, .axp-inline-edit__grow.is-active { border-inline-start: calc(var(--fx-border-w) * 3) solid var(--fx-warning); padding-inline-start: var(--fx-dens-gap-sm); }
+.axp-inline-edit__meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); }
+.axp-inline-edit__inherited, .axp-inline-edit__from { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); color: var(--fx-muted); }
+
+.axp-inline-edit__editor { min-width: 0; }
+.axp-inline-edit__editor--color { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
+.axp-inline-edit__palette { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs); }
+.axp-inline-edit__swatch { display: inline-block; inline-size: 1em; block-size: 1em; border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); vertical-align: middle; }
+.axp-inline-edit__swatch--small { inline-size: 0.8em; block-size: 0.8em; margin-inline-end: var(--fx-dens-gap-xs); }
+
+.axp-inline-edit__cchildren { padding-inline-start: var(--fx-dens-gap-lg); border-inline-start: var(--fx-border-w) solid var(--fx-border); }
+.axp-inline-edit__cnode.is-selected > .axp-inline-edit__cnode-head { color: var(--fx-accent); }
+.axp-inline-edit__ctokens { padding-inline-start: var(--fx-dens-gap-xl); display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
+.axp-inline-edit__ctoken { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); }
+.axp-inline-edit__cedit { flex-basis: 100%; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); padding-inline-start: var(--fx-dens-gap-md); }
+
+.axp-inline-edit__grid { inline-size: 100%; border-collapse: collapse; }
+.axp-inline-edit__grid th, .axp-inline-edit__grid td { text-align: start; padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-sm); border-block-end: var(--fx-border-w) solid var(--fx-border); vertical-align: middle; }
+.axp-inline-edit__grow { cursor: pointer; }
+.axp-inline-edit__gdetail td { background: var(--fx-surface2); }
+
+/* ---- overrides page ---- */
+.axp-inline-edit__page { padding: var(--fx-dens-pad-page); }
+.axp-inline-edit__head { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
+.axp-inline-edit__title { margin: 0; }
+.axp-inline-edit__columns { display: grid; grid-template-columns: minmax(16rem, 22rem) minmax(0, 1fr); gap: var(--fx-dens-gap-lg); align-items: start; }
+:where([data-fx-narrow]) .axp-inline-edit__columns { grid-template-columns: minmax(0, 1fr); }
+.axp-inline-edit__column, .axp-inline-edit__list { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-width: 0; }
+.axp-inline-edit__otree-group .axp-inline-edit__otree-group { padding-inline-start: var(--fx-dens-gap-lg); }
+.axp-inline-edit__leaf { display: inline-block; inline-size: var(--fx-size-icon-button-size); }
+.axp-inline-edit__filters { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-sm); }
+.axp-inline-edit__olist { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); }
+.axp-inline-edit__orow { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--fx-dens-gap-sm); padding-block: var(--fx-dens-gap-sm); border-block-end: var(--fx-border-w) solid var(--fx-border); }
+.axp-inline-edit__orow-main { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); min-width: 0; }
+.axp-inline-edit__orow-change { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); }
+.axp-inline-edit__orow-meta { overflow-wrap: anywhere; }
+.axp-inline-edit__orow-actions, .axp-inline-edit__confirm { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xs); }
