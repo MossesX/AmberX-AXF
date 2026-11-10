@@ -22,6 +22,7 @@ import json
 import os
 import re
 import subprocess
+import threading
 import time
 from datetime import datetime
 from pathlib import Path
@@ -572,6 +573,22 @@ def _sync_merge_needs() -> None:
         _pipeline("merge-needs", "--needs", json.dumps(_merge_needs()), who="merge-queue")
     except HTTPException:
         pass
+
+
+MERGE_SYNC_EVERY = 60
+
+
+def _merge_sync_loop() -> None:
+    """Feed the merge queue's flagged PRs to the dispatcher every minute, so merge jobs open with nobody watching the console."""
+    time.sleep(30)
+    while True:
+        if plugin_services.get("axf.merge-queue@1") is not None:
+            _sync_merge_needs()
+        time.sleep(MERGE_SYNC_EVERY)
+
+
+if not os.environ.get("AXF_NO_MERGE_SYNC"):
+    threading.Thread(target=_merge_sync_loop, name="build-orchestrator-merge-sync", daemon=True).start()
 
 
 @router.get("/pipeline/crew")
