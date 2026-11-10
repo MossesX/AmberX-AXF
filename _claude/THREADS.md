@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 19:39 UTC · `molly-flagship-skin-premium-sellable-uncluttered` → running, note (all) · pipeline
 - 2026-11-10 19:39 UTC · `molly-flagship-skin-premium-sellable-uncluttered` branch claude/molly-flagship-skin-premium-sellable-uncluttered (all) · pipeline
 - 2026-11-10 19:39 UTC · `molly-flagship-skin-premium-sellable-uncluttered` note (all) · orchestrator
 - 2026-11-10 19:42 UTC · `molly-fable-version-the-one-interface-for-amberx` s2 done, → running (all) · orchestrator
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 23:44 UTC · `auto-requeue-builds-whose-session-stops-early-go` PR #484 (all) · builds-live
 - 2026-11-10 23:44 UTC · `auto-requeue-builds-whose-session-stops-early-go` s3 done, → built (all) · orchestrator
 - 2026-11-10 23:44 UTC · `auto-requeue-builds-whose-session-stops-early-go` note (all) · orchestrator
+- 2026-11-10 23:45 UTC · `auto-requeue-builds-whose-session-stops-early-go` PR #484, note (all) · reconciler
 
 ## Token passes (log)
 

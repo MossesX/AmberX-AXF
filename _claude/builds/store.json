@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3050,
- "updatedAt": "2026-11-10T23:44:47.013Z",
+ "rev": 3051,
+ "updatedAt": "2026-11-10T23:45:08.258Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -156686,8 +156686,8 @@
    "pr": "#484",
    "priority": "P0",
    "createdAt": "2026-11-10T23:36:56.261Z",
-   "updatedAt": "2026-11-10T23:44:45.452Z",
-   "builtAt": "2026-11-10T23:44:45.452Z",
+   "updatedAt": "2026-11-10T23:45:05.094Z",
+   "builtAt": "2026-11-10T23:45:05.094Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -156704,6 +156704,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-auto-requeue-builds-whose-session-stops-early-go--gina, own login copy)",
      "at": "2026-11-10T23:38:07.055Z"
+    },
+    {
+     "text": "Reconciler: PR #484",
+     "at": "2026-11-10T23:45:05.094Z"
     },
     {
      "text": "Headless run axf-auto-requeue-builds-whose-session-stops-early-go--gina: brief only · start 10.9K tokens ($0.03) · cost $2.22 · 51 turns · 6 tools, MCP none",
