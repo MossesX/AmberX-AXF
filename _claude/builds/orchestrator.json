@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T16:30:54.514Z",
+ "updatedAt": "2026-11-10T16:31:08.432Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -85649,12 +85649,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T16:29:30.818Z",
-   "updatedAt": "2026-11-10T16:29:32.377Z",
+   "updatedAt": "2026-11-10T16:30:49.935Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T16:29:32.377Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T16:30:49.935Z"
     }
    ],
    "approvals": [],
@@ -85671,7 +85675,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "A training hook on every employee agent. 2) Training wizard in the Agent Manager: pick data sources (a website or parts of one, specific product types, code such as React or TypeScript, files, etc.), how to fetch them, how to process and store them (RAG/vector index, summaries, etc.). 3) Training by category/type produces for the agent: tools, skills, a persona, and an index of categorized vocabulary. Auto-attach already generated vocabulary files, pairs, tools, skills and personality assets that match. 4) Ties into the agent profile schema build (agent-skill@1 / persona templates) and 'train employees on website data'; reuse, don't duplicate. Full API/CLI control.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwawpmj301n5ea"
+    },
+    {
+     "id": "s2",
+     "text": "I need a training hook for every employee agent. Add onto the agent manager a training dialog where you select from various types of data, how to get it, how to process and store it like RAG. Train employees by pointing them towards data like a website or certain stuff on it, specific product types or code, React, TypeScript, whatever. The training wizard will train agents with certain types, categories, and build its tools, skills and a persona, and an index of categorized vocabulary; auto attach already generated vocabulary files, pairs, tools, skills, personality etc.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwawpmj402w2o1"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/agent-manager-training-wizard-for-employee-agent.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/agent-manager-training-wizard-for-employee-agent.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwawpmj403fd97"
+    }
+   ]
   }
  ]
 }
