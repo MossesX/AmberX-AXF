@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2516,
- "updatedAt": "2026-11-10T17:02:23.338Z",
+ "rev": 2517,
+ "updatedAt": "2026-11-10T17:06:58.608Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -137535,7 +137535,7 @@
    "title": "Search bar plugin: snappable search asset (globe = everything, gear = settings only), live tree drop-down with quick-set sub-menus; replaces the old Search everywhere",
    "category": "",
    "detail": "New plugin providing a search bar asset: snappable/embeddable widget for toolbars and banners like any other asset; multiple instances allowed; multiple view types. 1) Scope switch: globe = search everywhere (whole program, every plugin, every setting); gear = settings only. 2) Matching: its own built-in logic, live letter-by-letter results; regular expressions, exact match and other options in its own settings. Uses AI only if an Ollama (local Llama) connection exists AND AI assistance is enabled; otherwise no AI. 3) Results drop-down: left column = categories (plugins, settings interfaces, etc., named sensibly); right side = tree listing of the matches under each. Selecting a result navigates to it. 4) Right-click a result: spawns a sub-menu tree to the right or left (whichever fits on screen) with that setting's options (on/off, multi-choice); pick directly from the drop-down with no confirmation, just the small check-mark confirmation toast in place. 5) Remove the existing Search everywhere. Full API control.",
-   "status": "built",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -137543,8 +137543,8 @@
    "pr": "#452",
    "priority": "P1",
    "createdAt": "2026-11-10T15:33:40.111Z",
-   "updatedAt": "2026-11-10T16:58:03.738Z",
-   "builtAt": "2026-11-10T16:57:40.489Z",
+   "updatedAt": "2026-11-10T17:06:57.437Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -137693,7 +137693,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
