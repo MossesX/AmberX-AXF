@@ -467,6 +467,23 @@ async def pipeline_unqueue(request: Request) -> dict[str, Any]:
     return _pipeline("unqueue", _build_id(body.get("id")), "--by", (brett_click(request) or "console")[:80])
 
 
+@router.get("/pipeline/holds")
+def pipeline_holds() -> dict[str, Any]:
+    """Builds held behind the start veto: build, what it will do, steps, model, account, run, seconds left, any decision."""
+    return _pipeline("holds")
+
+
+@router.post("/pipeline/start")
+async def pipeline_start_decide(request: Request) -> dict[str, Any]:
+    """{id, decision: approve | deny}: answer a start veto. Approve = it starts on the next tick (within a minute);
+    Deny = back to Pending at once. Same as the pop-up's buttons, the console actions, MCP, the CLI and voice."""
+    body = await _json_body(request)
+    decision = str(body.get("decision") or "")
+    if decision not in ("approve", "deny"):
+        raise HTTPException(400, "decision is approve or deny")
+    return _pipeline(decision, _build_id(body.get("id")), "--by", (brett_click(request) or "console")[:80])
+
+
 @router.post("/pipeline/split")
 async def pipeline_split(request: Request) -> dict[str, Any]:
     """{id}: ask the orchestrator to (re)split a build into ≤ 30-min steps on its next tick (the console container has no
@@ -502,11 +519,11 @@ def pipeline_settings() -> dict[str, Any]:
 @router.post("/pipeline/settings")
 async def pipeline_settings_set(request: Request) -> dict[str, Any]:
     """{key: value…} for pipeline-settings@1 (parallelPerAccount, fablePlans, useConsoleAccount, maxRuns, idleAfterMin, probeDays,
-    splitProvider, apiOverflow, apiAccounts, notifyStart, notifyFinish, notifySound, notifyGrouping build|each). Turning the API overflow rule on spends money per token: only Brett's own click
+    splitProvider, apiOverflow, apiAccounts, autoApprove, vetoSeconds 0-600, notifyStart, notifyFinish, notifySound, notifyGrouping build|each). Turning the API overflow rule on spends money per token: only Brett's own click
     does that (a session, MCP or voice may turn it off)."""
     body = await _json_body(request)
     allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "apiOverflow", "apiAccounts",
-               "notifyStart", "notifyFinish", "notifySound", "notifyGrouping"}
+               "autoApprove", "vetoSeconds", "notifyStart", "notifyFinish", "notifySound", "notifyGrouping"}
     if body.get("apiOverflow") is True and not brett_click(request):
         raise HTTPException(403, "turning the API overflow rule on is Brett's own click in the console (it bills per token)")
 

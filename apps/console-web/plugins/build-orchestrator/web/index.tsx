@@ -6,6 +6,7 @@ import { pluginApi } from '@console/plugins';
 import { FOLDER, OrchestratorPage, focusBuild, focusedBuild } from './ui';
 
 // the tags on every build screen read through this plugin; with it removed they simply draw nothing
+const pipelineApi = pluginApi(FOLDER, 'Build orchestrator', { unavailable: 'The build orchestrator is switched off or its server part is not running.' });
 const priorityApi = pluginApi(FOLDER, 'Build priority', { unavailable: 'The build orchestrator is switched off or its server part is not running.' });
 setPriorityHost({
   load: async () => (await priorityApi.call<{ map: Awaited<ReturnType<PriorityHost['load']>> }>('priority')).map,
@@ -21,6 +22,14 @@ export const plugin: AxfWebLibrary = {
   register(rt) {
     // one build: the AmberX start / finish pop-up's tap (?orch-build=<id>), console_open, voice
     rt.actions.register('build-orchestrator.open-build', ([id = '']) => { focusBuild(decodeURIComponent(String(id))); rt.navigate('build-orchestrator'); }, { label: 'Open a build in the orchestrator', params: true, effect: 'navigate' });
+    // the start veto's Approve / Deny (the AmberX pop-up's buttons, voice, console_open): same as POST pipeline/start
+    const decide = (decision: 'approve' | 'deny') => async ([id = '']: string[]) => {
+      const build = decodeURIComponent(String(id));
+      await pipelineApi.post('pipeline/start', { id: build, decision });
+      focusBuild(build); rt.navigate('build-orchestrator');
+    };
+    rt.actions.register('build-orchestrator.start-approve', decide('approve'), { label: 'Approve a build start (it starts on the next tick)', params: true });
+    rt.actions.register('build-orchestrator.start-deny', decide('deny'), { label: 'Deny a build start (back to Pending)', params: true });
     if (focusedBuild()) setTimeout(() => rt.navigate('build-orchestrator'), 0);
   },
   views: { 'build-orchestrator': { title: 'Build orchestrator', icon: 'layers', keywords: ['orchestrator', 'fable', 'opus', 'steps', 'phases', 'approve model'], render: () => <OrchestratorPage /> } },

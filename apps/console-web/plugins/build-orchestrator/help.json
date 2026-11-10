@@ -105,7 +105,7 @@
       {
         "target": "phone-popups",
         "title": "Phone pop-ups",
-        "text": "AmberX pops up every time the orchestrator starts a build (Started: build on account (model)) and every time one finishes (Finished: build on account, outcome, steps done, plus what it needs). A tap opens that build here. Switch start or finish off, mute the sound, or keep every event instead of one pop-up per build. Also: POST pipeline/settings, pipeline-settings-set on MCP and the CLI, or ask Amber.",
+        "text": "One AmberX notification per build. Before every start (first run, retry, rerun, next phase) a veto pop-up shows the build, what it will do, its steps, model, account and employee, with Approve, Deny and a countdown (90 s by default, down to 0). No answer = it starts; Deny = back to Pending. The same holds show here under Waiting to start. When it finishes, the same notification turns into the outcome (built, failed, needs you and what). A tap opens that build. Auto-approve starts skips the hold. Also: POST pipeline/start {id, decision}, MCP pipeline-start / pipeline-holds, pipeline.mjs approve|deny <id>, console actions build-orchestrator.start-approve / start-deny, or ask Amber.",
         "kind": "toggle"
       }
     ],

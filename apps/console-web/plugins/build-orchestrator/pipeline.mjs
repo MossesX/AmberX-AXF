@@ -86,7 +86,7 @@ export function pipeDir(env = process.env) {
   const hub = join(env.AXHUB_PROJECTS_DIR || '/projects', 'amberx-axf', '_data');
   return existsSync(hub) ? join(hub, 'pipeline') : join(homedir(), '.axf', 'pipeline');
 }
-const files = () => { const d = pipeDir(); return { dir: d, settings: join(d, 'settings.json'), accounts: join(d, 'accounts.json'), state: join(d, 'state.json'), log: join(d, 'log.jsonl'), host: join(d, 'accounts-host.json'), checkRequest: join(d, 'selfcheck-request.json') }; };
+const files = () => { const d = pipeDir(); return { dir: d, settings: join(d, 'settings.json'), accounts: join(d, 'accounts.json'), state: join(d, 'state.json'), log: join(d, 'log.jsonl'), host: join(d, 'accounts-host.json'), checkRequest: join(d, 'selfcheck-request.json'), holds: join(d, 'start-holds.json'), decisions: join(d, 'start-decisions.json') }; };
 
 /** The Claude settings document's values (owner-only ones included), {} when unreadable. */
 export function claudeSettings(env = process.env) { return readJson(claudeSettingsFile(env))?.values ?? {}; }
@@ -184,7 +184,7 @@ export function status() {
   byTable.building.sort((a, b) => str(b.pipeline?.launchedAt).localeCompare(str(a.pipeline?.launchedAt)));
   const st = loadState();
   return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), table: byTable, accounts, accountsFrom, slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable }, plan, settings,
-    state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails, selfCheck: st.selfCheck ?? null, selfCheckRequested: readJson(files().checkRequest)?.at || '' } };
+    state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails, selfCheck: st.selfCheck ?? null, selfCheckRequested: readJson(files().checkRequest)?.at || '' }, holds: startHolds() };
 }
 
 // ------------------------------------------------------------------ store writes
@@ -487,6 +487,33 @@ export function selfCheck({ reason = 'on demand', by = 'pipeline', env = process
   return result;
 }
 
+// ------------------------------------------------------------------ start veto
+
+/**
+ * Start = veto (Brett, Nov 10 2026). The dispatcher owns start-holds.json ({ <build id>: hold }); Approve / Deny land in
+ * start-decisions.json ({ <build id>: { decision, by, at } }) so the console, MCP, CLI and voice never race the tick's own
+ * write. Deny also moves the build back to Pending at once; the next tick turns the pop-up into "Denied".
+ * hold: { id, title, account, model, phase, kind, run, steps[], what, employee, at, runsAt, seconds }
+ */
+export function startHolds() {
+  const h = readJson(files().holds, {}) ?? {}; const d = readJson(files().decisions, {}) ?? {};
+  return Object.values(h).filter((x) => x && x.id).map((x) => ({ ...x, decision: d[x.id] ?? null, secondsLeft: Math.max(0, Math.ceil((Date.parse(x.runsAt) - Date.now()) / 1000)) || 0 }));
+}
+
+export function decideStart(id, decision, { by = process.env.AXF_ACTOR || 'console' } = {}) {
+  if (!['approve', 'deny'].includes(decision)) throw Object.assign(new Error('decision is approve or deny'), { code: 2 });
+  const hold = (readJson(files().holds, {}) ?? {})[id];
+  if (!hold) throw Object.assign(new Error(`no build "${id}" waiting to start (nothing to ${decision})`), { code: 2 });
+  const d = readJson(files().decisions, {}) ?? {};
+  d[id] = { decision, by: str(by, 80), at: nowIso() }; writeJson(files().decisions, d);
+  if (decision === 'deny') {
+    const b = storeCore.findBuild(loadStore(), id);
+    if (b && BP.canUnqueue(b)) setPipeline(id, { queuedAt: '', queuedBy: '', note: '' }, { status: 'pending', note: `Start denied by ${by}: back to Pending.`, by, action: 'pipeline:start-deny' });
+  }
+  logLine({ event: `start-${decision}`, build: id, by });
+  return { ...hold, decision: d[id] };
+}
+
 // ------------------------------------------------------------------ the tick
 
 export function tick({ env = process.env } = {}) {
@@ -504,16 +531,17 @@ export function tick({ env = process.env } = {}) {
   };
   const consoleUrl = (env.AXF_CONSOLE_PUBLIC_URL || 'https://console.amberxai.com').replace(/\/+$/, '');
   const alert = (kind, d) => {
-    const start = kind === 'launched'; const finish = kind === 'ended' || kind === 'failed';
-    // start / finish pop-ups (pipeline-settings@1 notifyStart / notifyFinish; the Notifications panel still decides the channels)
-    if ((start && !ns.notifyStart) || (finish && !ns.notifyFinish)) { logLine({ event: 'notify-off', kind, build: d.id }); return; }
+    const start = kind === 'launched' || kind === 'veto' || kind === 'denied'; const finish = kind === 'ended' || kind === 'failed';
+    // the veto (and the launch / deny that update it in place) always goes; with autoApprove on, notifyStart decides the
+    // Started pop-up; notifyFinish the finish one (the Notifications panel still decides the channels)
+    if ((kind === 'launched' && !d.held && !ns.notifyStart) || (finish && !ns.notifyFinish)) { logLine({ event: 'notify-off', kind, build: d.id }); return; }
     const link = start || finish ? P.buildLink(d.id, consoleUrl) : '';
     const account = start || finish ? `${labelOf(d.account)}${d.api ? ' (API key)' : ''}` : d.account;
     const a = P.alertFor(kind, { ...d, account, link, sound: ns.notifySound });
     const gone = P.supersededKeys(kind, d, ns.notifyGrouping);
     if (gone.length) consoleApi('POST', '/api/alerts/resolve', { keys: gone });
     consoleApi('POST', '/api/alerts', a);
-    if (start || finish) {
+    if ((start && kind !== 'veto') || finish) {
       consoleApi('POST', '/api/plugins/build-orchestrator/pipeline/activity', { event: start ? 'start' : 'finish', id: d.id, run: a.meta.run, url: link,
         title: `${a.meta.label}: ${a.title}`, detail: a.body, state: kind === 'failed' ? 'failed' : 'done' });
     }
@@ -527,19 +555,46 @@ export function tick({ env = process.env } = {}) {
   // the console (in its container) can't see the logins: it reads what the host saw here
   if (read.source === 'host') { try { writeHostAccounts(read.rows, read.at || nowIso()); } catch (e) { logLine({ event: 'snapshot-failed', error: str(e.message, 300) }); } }
   const plan = P.plan({ builds: live(store), accounts, slots: sl, settings, rules });
-  const launched = []; const failed = [];
+  const launched = []; const failed = []; const denied = [];
   const hourAgo = Date.now() - 3600e3;
+  // start veto: holds whose build left the Queue (denied, or moved by hand) end here
+  const holds = readJson(files().holds, {}) ?? {}; const decisions = readJson(files().decisions, {}) ?? {}; const used = new Set();
+  for (const h of Object.values(holds)) {
+    const b = storeCore.findBuild(store, h.id);
+    if (b && b.status === 'queued' && !b.hidden && decisions[h.id]?.decision !== 'deny') continue;
+    delete holds[h.id]; used.add(h.id);
+    if (decisions[h.id]?.decision === 'deny') { alert('denied', { id: h.id, title: h.title, account: h.account, run: h.run, by: decisions[h.id].by }); denied.push(h.id); }
+    else consoleApi('POST', '/api/alerts/resolve', { keys: [`pipeline:run:${h.id}:${h.run}`] });
+  }
   for (const l of plan.launches) {
     const fails = (state.launchFails[l.id] ?? []).filter((t) => Date.parse(t) > hourAgo);
     if (fails.length >= LAUNCH_FAILS_PER_HOUR) { plan.waits.push({ id: l.id, why: `launch failed ${fails.length} times in the last hour: waiting` }); continue; }
     const b = live(store).find((x) => x.id === l.id);
+    let held = null;
+    if (!settings.autoApprove) {
+      if (!holds[l.id]) {
+        const n = orch.nextUp(b, rules); const run = (b.pipeline?.runs ?? 0) + 1;
+        const phaseSteps = (b.steps ?? []).filter((x) => !x.done && (!n.phase || (n.phase.steps ?? []).some((p) => p.id === x.id))).slice(0, 8);
+        const h = { id: b.id, title: b.title, account: l.account, model: l.model, phase: l.phase || '', kind: l.kind || '', run, at: nowIso(),
+          runsAt: new Date(Date.now() + settings.vetoSeconds * 1000).toISOString(), seconds: settings.vetoSeconds,
+          what: str(b.origin?.said || b.detail || b.title, 300), steps: phaseSteps.map((x) => `${x.id} ${str(x.text, 80)}`), employee: '' };
+        holds[l.id] = h;
+        alert('veto', { ...h, api: l.kind === 'api' });
+        logLine({ event: 'start-held', build: b.id, account: l.account, model: l.model, seconds: settings.vetoSeconds });
+      }
+      const h = holds[l.id];
+      const verdict = P.holdVerdict(h, decisions[l.id]);
+      if (verdict !== 'launch') { if (verdict === 'wait') plan.waits.push({ id: l.id, why: `waiting for your veto: starts in ${Math.max(0, Math.ceil((Date.parse(h.runsAt) - Date.now()) / 1000))} s unless you deny it` }); continue; }
+      held = { by: decisions[l.id]?.by ? `approved by ${decisions[l.id].by}` : 'countdown ran out' };
+      delete holds[l.id]; used.add(l.id);
+    }
     try {
       const r = launch(b, l, { rules, env });
       const runs = (b.pipeline?.runs ?? 0) + 1;
       setPipeline(b.id, { account: l.account, session: r.session, slot: r.slot, model: l.model, launchedAt: nowIso(), dispatchedAt: nowIso(), runs, note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : r.lookWait ? 'waiting for the predicted look approval in UI Review' : '' },
         { status: 'running', note: `Started run ${runs} on ${l.account}${l.kind === 'api' ? ` (API key, ${l.rule === 'override' ? 'this build is set to API' : 'overflow rule'})` : ''} (${l.model}${l.phase ? `, ${l.phase}` : ''}): ${r.session || 'queued in agent slots'}.`, action: 'pipeline:launch' });
       if (!b.branch) withStore((s) => { const rec = storeCore.findBuild(s, b.id); if (rec && !rec.branch) rec.branch = `claude/${b.id}`; return s; }, { by: 'pipeline', action: 'pipeline:branch', note: b.id });
-      alert('launched', { id: b.id, title: b.title, account: l.account, api: l.kind === 'api', model: l.model, phase: l.phase, session: r.session, run: runs });
+      alert('launched', { id: b.id, title: b.title, account: l.account, api: l.kind === 'api', model: l.model, phase: l.phase, session: r.session, run: runs, employee: P.employeeOf(r.session), held: !!held, approvedBy: held?.by || '' });
       launched.push({ ...l, session: r.session, dir: r.dir });
       logLine({ event: 'launched', build: b.id, account: l.account, kind: l.kind || 'subscription', rule: l.rule || '', model: l.model, session: r.session });
       delete state.launchFails[l.id];
@@ -550,9 +605,11 @@ export function tick({ env = process.env } = {}) {
       logLine({ event: 'launch-failed', build: l.id, account: l.account, error: e.message });
     }
   }
+  writeJson(files().holds, holds);
+  if (used.size) { const d = readJson(files().decisions, {}) ?? {}; for (const id of used) delete d[id]; writeJson(files().decisions, d); }
   // idle: nothing running while work waits. Recorded at once; the phone hears about it after idleAfterMin, once per idle spell.
   let idle = null;
-  if (plan.idle && !launched.length) {
+  if (plan.idle && !launched.length && !Object.keys(holds).length) {
     const since = state.idle?.kind === plan.idle.kind ? state.idle.since : started;
     idle = { ...plan.idle, since };
     const dueAt = Date.parse(since) + settings.idleAfterMin * 60e3;
@@ -576,7 +633,7 @@ export function tick({ env = process.env } = {}) {
   for (const fn of TICK_HOOKS) {
     try { fn({ state: next, plan, launched, ended, failed, env }); } catch (e) { logLine({ event: 'hook-failed', error: str(e.message, 300) }); }
   }
-  return { ok: true, at: next.at, intake: inta, ended, launched, failed, plan, idle, alertsSent: sent, selfCheck: check };
+  return { ok: true, at: next.at, intake: inta, ended, launched, failed, denied, held: Object.values(holds), plan, idle, alertsSent: sent, selfCheck: check };
 }
 
 /** Run `fn` at the end of every tick (the running-builds watchdog's way in). Returns a function that removes it. */
@@ -694,6 +751,8 @@ async function main(argv) {
     if (!r.ran) return out({ ok: true, ...r, last: loadState().selfCheck ?? null }, r.why);
     return out({ ok: true, ...r }, [`self-check ${r.at}: ${r.line}`, ...r.fixes.map((f) => `  fixed: ${f}`), ...r.findings.map((f) => `  ${f.name.padEnd(16)} ${f.kind.padEnd(12)} ${f.state.padEnd(8)} ${f.running}/${f.parallel} · ${f.note}`), r.notified ? '  (AmberX told)' : ''].filter(Boolean).join('\n'));
   }
+  if (cmd === 'holds') { const h = startHolds(); return out({ ok: true, holds: h, autoApprove: loadSettings().autoApprove, vetoSeconds: loadSettings().vetoSeconds }, h.map((x) => `${x.id} on ${x.account} (${x.model}) · starts in ${x.secondsLeft} s${x.decision ? ` · ${x.decision.decision} by ${x.decision.by}` : ''}`).join('\n') || 'Nothing is waiting to start.'); }
+  if (cmd === 'approve' || cmd === 'deny') { const h = decideStart(rest[0], cmd, { by }); return out({ ok: true, id: h.id, decision: h.decision }, `${h.id}: ${cmd === 'approve' ? 'approved, starts on the next tick' : 'denied, back to Pending'}`); }
   if (cmd === 'accounts') { const a = accountsNow(loadStore()); return out({ ok: true, accounts: a }, a.map((x) => `${x.name.padEnd(16)} ${x.role.padEnd(11)} ${x.fable ? 'Fable' : 'Opus '} (${x.fableFrom}) · ${x.running}/${x.parallel}${x.usable ? '' : ` · ${x.why}`}`).join('\n') || 'no accounts'); }
   if (cmd === 'account') {
     const patch = {};
@@ -708,7 +767,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | selfcheck [--request] [--reason r] | holds | approve <id> | deny <id> [--by who] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

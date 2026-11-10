@@ -33,11 +33,11 @@
     },
     {
       "id": "pipeline.launched",
-      "label": "Build started",
+      "label": "Build start (veto)",
       "group": "builds",
       "app": "console",
       "source": "Build orchestrator dispatcher",
-      "description": "Every time the dispatcher starts a build (first run, retry, rerun, next phase): a heads-up pop-up on AmberX reading 'Started: <build> on <account> (<model>)'. A tap opens that build in the orchestrator. Also in the Activity feed. Off in Build orchestrator \u2192 Pipeline \u2192 Phone pop-ups (notifyStart), or here.",
+      "description": "Before every build start (first run, retry, rerun, next phase): one heads-up pop-up on AmberX, mirrored in the console (Build orchestrator \u2192 Pipeline \u2192 Waiting to start), with the build, what it will do, steps, model, account and employee, Approve, Deny and a countdown (vetoSeconds, default 90 s). It starts on Approve or when the countdown ends; Deny sends it back to Pending. The launch then updates the same notification to 'Started: <build> on <account> (<model>)'. A tap opens that build. With auto-approve on there is no hold and notifyStart decides the Started pop-up.",
       "match": {
         "source": "pipeline",
         "keyPrefix": "pipeline:run:"

@@ -20,6 +20,17 @@ const step = (id, model, done = false) => ({ id, uid: `u-${id}`, text: `${id} wo
 const build = (id, status, steps, extra = {}) => ({ id, title: id, status, steps, createdAt: now, updatedAt: now, notes: [], approvals: [], upgradeRequests: [], deleted: false, hidden: false, ...extra });
 
 // ---------------- build-pipeline@1 record
+t('holdVerdict: approve launches now, deny denies, otherwise it waits for the countdown', () => {
+  const h = { runsAt: new Date(Date.now() + 60e3).toISOString() };
+  assert.equal(P.holdVerdict(h, null), 'wait'); assert.equal(P.holdVerdict(h, { decision: 'approve' }), 'launch'); assert.equal(P.holdVerdict(h, { decision: 'deny' }), 'deny');
+  assert.equal(P.holdVerdict({ runsAt: new Date(Date.now() - 1).toISOString() }, null), 'launch', 'the countdown ran out');
+  assert.equal(P.normSettings({}).vetoSeconds, 90); assert.equal(P.normSettings({ vetoSeconds: 0 }).vetoSeconds, 0); assert.equal(P.normSettings({ vetoSeconds: 9999 }).vetoSeconds, 600); assert.equal(P.normSettings({}).autoApprove, false);
+  assert.equal(P.employeeOf('axf-some-build--rhonda'), 'rhonda'); assert.equal(P.employeeOf('hl-abc'), '');
+  const a = P.alertFor('veto', { id: 'x', title: 'X', account: 'w', model: 'Opus', seconds: 90, steps: ['s1 do'], what: 'thing', run: 1 });
+  assert.equal(a.key, 'pipeline:run:x:1'); assert.deepEqual(a.meta.actions.map((y) => y.action), ['build-orchestrator.start-approve:x', 'build-orchestrator.start-deny:x']);
+  assert.match(a.body, /Will do: thing/); assert.match(a.body, /Steps: s1 do/); assert.match(a.body, /employee/);
+});
+
 t('normPipeline: empty → null, fields in shape', () => {
   assert.equal(BP.normPipeline(null), null); assert.equal(BP.normPipeline({}), null);
   const p = BP.normPipeline({ queuedAt: now, queuedBy: 'brett', account: 'Bad Name', runs: 2.5, lastRun: { exit: 1, outcome: 'nope', stepsLeft: 3 }, split: { provider: 'claude', steps: 8 } });
@@ -329,6 +340,32 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     json(pipe('unqueue', 'beta', '--json')); assert.equal(find('beta').status, 'pending'); assert.equal(find('beta').pipeline?.queuedAt ?? '', '');
     json(pipe('queue', 'beta', '--json'));
     const bad = pipe('queue', 'alpha', '--json', '--expect-fail'); assert.notEqual(bad.status, 0, 'queueing a queued build is refused');
+  });
+  t('e2e start veto: every start is held behind one AmberX veto pop-up; no answer = wait, Deny = back to Pending', () => {
+    let r = json(pipe('tick', '--json'));
+    assert.equal(r.launched.length, 0, 'nothing starts before the veto');
+    assert.deepEqual(r.held.map((h) => h.id).sort(), ['alpha', 'beta']);
+    const veto = r.alertsSent.filter((x) => x.kind === 'veto');
+    assert.deepEqual(veto.map((x) => x.key).sort(), ['pipeline:run:alpha:1', 'pipeline:run:beta:1'], 'the veto uses the start key: one notification, not two');
+    assert.ok(veto.some((x) => x.title === 'Veto: Starts in 90 s: Alpha feature on w-max (Fable)'), JSON.stringify(veto));
+    assert.ok(r.plan.waits.some((w) => w.id === 'alpha' && /waiting for your veto/.test(w.why)));
+    r = json(pipe('tick', '--json'));
+    assert.equal(r.launched.length, 0); assert.equal(r.alertsSent.filter((x) => x.kind === 'veto').length, 0, 'a held start does not pop up again');
+    const holds = json(pipe('holds', '--json')); assert.equal(holds.holds.length, 2); assert.ok(holds.holds.every((h) => h.secondsLeft > 0 && h.secondsLeft <= 90));
+    json(pipe('deny', 'beta', '--by', 'brett', '--json'));
+    assert.equal(find('beta').status, 'pending', 'Deny sends it back to Pending at once');
+    const ok = json(pipe('approve', 'alpha', '--by', 'brett', '--json')); assert.equal(ok.decision.decision, 'approve');
+    assert.equal(json(pipe('holds', '--json')).holds.find((h) => h.id === 'alpha').decision.by, 'brett', 'the hold shows who approved it');
+    json(pipe('deny', 'alpha', '--by', 'brett', '--json'));
+    r = json(pipe('tick', '--json'));
+    assert.equal(r.launched.length, 0);
+    assert.deepEqual(r.denied.sort(), ['alpha', 'beta']);
+    assert.ok(r.alertsSent.some((x) => x.key === 'pipeline:run:beta:1' && x.kind === 'denied' && /^Denied: Denied, back in Pending: Beta feature/.test(x.title)), JSON.stringify(r.alertsSent));
+    assert.equal(json(pipe('holds', '--json')).holds.length, 0);
+    assert.notEqual(pipe('approve', 'beta', '--json', '--expect-fail').status, 0, 'nothing to approve once it is gone');
+    // back in the Queue; from here starts go on a 0 s countdown (the veto pop-up, then the launch on the same tick)
+    json(pipe('queue', 'alpha', '--json')); json(pipe('queue', 'beta', '--json'));
+    env.AXF_PIPELINE_SETTINGS = JSON.stringify({ parallelPerAccount: 1, idleAfterMin: 0, vetoSeconds: 0 });
   });
   t('e2e tick: one slot per account cap; the Fable build goes to the Max account, the Opus build to the Pro one', () => {
     const r = json(pipe('tick', '--json'));
