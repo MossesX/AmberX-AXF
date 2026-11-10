@@ -40,6 +40,8 @@ try {
 
     // 1. the master switch in Settings → Appearance
     await rest('PUT', 'mode', { state: 'off' });
+    // plugins load after the shell: wait until this one has registered
+    await page.waitForFunction(() => globalThis.AXF?.actions?.list?.().some((a) => a.id === 'inline-edit.mode.toggle'), null, { timeout: 120_000 });
     await page.evaluate(() => globalThis.AXF.dispatch('settings.open:appearance'));
     await page.waitForTimeout(1500);
     const sw = page.getByRole('switch', { name: /Inline edit mode/ }).first();
@@ -104,6 +106,7 @@ try {
     ok(await until(async () => (await page.locator('.axp-inline-edit__orow').count()) === 1), `${vp}: picking a root in the tree shows only what is under it`);
     await page.getByRole('button', { name: 'New tab with the selected root' }).click();
     ok(await until(async () => (await rest('GET', 'overrides')).tabs.length === 2), `${vp}: a new tab keeps that root (per user, on the server)`);
+    ok(await until(async () => (await page.locator('.axp-inline-edit__column [role="tab"]').count()) === 2), `${vp}: the new tab shows in the column`);
     await shot('overrides-tab');
     await page.getByRole('tab', { name: 'Everything' }).click();
     ok(await until(async () => (await page.locator('.axp-inline-edit__orow').count()) === 2), `${vp}: the Everything tab shows both again`);

@@ -2268,5 +2268,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "Orchestrator tick ships each landed build's manifest; ledger shows it per entry; API/MCP/CLI/voice/deep link; backfill --since. Kotlin twin deferred."
+  },
+  "cx.inlineedit": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Inline edit plugin: master switch (Settings → Appearance), right-click dialog with breadcrumb / scope / axHub note / three views / live editors, overrides list (tree roots, search, filters, tabs per user, per-item reset). API: deep links, REST, MCP, CLI, voice. Kotlin twin deferred."
   }
 }

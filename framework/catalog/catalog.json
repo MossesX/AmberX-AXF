@@ -2500,6 +2500,14 @@
               ]
             },
             {
+              "id": "cx.inlineedit",
+              "title": "Inline edit: right-click any element down to the child to edit every token (tree, classic tree, grid), master switch, overrides list with per-item reset to axHub",
+              "note": "",
+              "tag": "plugin",
+              "recommended": true,
+              "suggests": []
+            },
+            {
               "id": "cx.ai",
               "title": "AI assistant panel (Claude subscription or API key) with tools for the tracker and build engine",
               "note": "",

@@ -146,6 +146,16 @@ Kotlin work: a port would derive the same paths from its Compose node tree (sema
 replay the path, resolver, store and migration cases of `test.mjs`, read `axf.inline.*` from the same appearance document
 (`isAppearanceSetting` gained the `axf.inline.` prefix), and bind a long-press to the open event while the switch is on.
 
+## Deferred: console deep links with arguments (Nov 10 2026)
+
+`core/engines/console-commands.mjs` (console-commands@1): a target's `?query` is the screen's or dialog's argument
+(`consoleResolve` returns it as `query`, the open message carries it as `arg`), `<plugin>/<page>` also names the id
+`<plugin>-<page>`, and `console_open` on a name that is exactly a dialog's id opens that dialog. The console client hands a
+screen its argument through `globalThis.AXF_VIEW_ARGS[<view>]` + the window event `CONSOLE_VIEW_ARG_EVENT`
+(`axf:view-arg`). Checks `spec/check-console-commands.mts` (deep-link cases). Web only (build
+`inline-element-editing-plugin-right-click-any-el`, Opus, for the inline edit dialog and overrides page deep links).
+**Android twin deferred** (Android on hold): the Kotlin console client would read the same `arg` for screens.
+
 ## Deferred: build priority (Nov 5 2026)
 
 `framework/core/build-priority.mjs` and `framework/react/components/PriorityTag.tsx` have no Kotlin twin. Android work is on hold; builds show only in the web console today. A port needs the same levels (P0-P3), the same read-time default and the same `waitingOn` rows.

@@ -107,6 +107,15 @@ const r3 = runConsoleCommand({ op: 'act', target: 'console.settings', path: 'plu
 ok(r3.ok && r3.deliver!.message.kind === 'settings' && r3.deliver!.message.anchor === 'settings-group:remote', 'settings sub-tab with an anchor');
 const r4 = runConsoleCommand({ op: 'act', target: 'console.screens', path: 'spreadsheet', action: 'open' }, ctx);
 ok(!r4.ok && r4.code === 'not_found', 'unknown screen → not_found');
+// deep links (Nov 10 2026): a ?query is the screen's / dialog's argument; <plugin>/<page> names <plugin>-<page>;
+// console_open on exactly a dialog's id opens the dialog, never a guess
+eq(consoleResolve(items, 'screen', 'token/control?tab=pass').item?.id, 'token-control', '<plugin>/<page> names <plugin>-<page>');
+eq(consoleResolve(items, 'screen', 'plan-studio?plan=p1&view=grid').query, 'plan=p1&view=grid', 'the query comes back as query');
+const r4q = runConsoleCommand({ op: 'act', target: 'console.screens', path: 'plan-studio?plan=p1', action: 'open' }, ctx);
+ok(r4q.ok && r4q.deliver!.message.kind === 'screen' && r4q.deliver!.message.arg === 'plan=p1', 'a screen opens with its query as arg');
+const r4d = runConsoleCommand({ op: 'act', target: 'console.screens', path: 'asset/json?type=toolbar', action: 'open' }, ctx);
+ok(r4d.ok && r4d.deliver!.message.kind === 'dialog' && r4d.deliver!.message.target === 'asset-json' && r4d.deliver!.message.arg === 'type=toolbar', 'console_open on a dialog id opens the dialog with its arg');
+ok(!runConsoleCommand({ op: 'act', target: 'console.screens', path: 'json', action: 'open' }, ctx).ok, 'a screen name never guesses a dialog');
 const r5 = runConsoleCommand({ op: 'list', target: 'console.screens', select: { q: 'build' } }, ctx);
 ok(r5.ok && (r5.data.items as { id: string }[]).map((i) => i.id).sort().join() === 'build-orchestrator,builds', `list with words (${r5.ok ? (r5.data.items as { id: string }[]).map((i) => i.id).join() : ''})`);
 const r6 = runConsoleCommand({ op: 'get', target: 'console.nav', path: 'here' }, ctx);
