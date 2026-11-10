@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2758,
- "updatedAt": "2026-11-10T19:53:42.510Z",
+ "rev": 2759,
+ "updatedAt": "2026-11-10T19:54:08.525Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -145259,7 +145259,7 @@
    "pr": "#468",
    "priority": "P1",
    "createdAt": "2026-11-10T16:28:24.043Z",
-   "updatedAt": "2026-11-10T19:53:29.858Z",
+   "updatedAt": "2026-11-10T19:54:07.129Z",
    "builtAt": "",
    "notes": [
     {
@@ -145285,6 +145285,10 @@
     {
      "text": "Phase 1 (Fable) done: control-registry@1 contract + schema, offline index (1364 entries, 1531 actions, every token path with its allowed values), deterministic dispatcher with the AI gate on the new owner-only Claude setting 'Make Claude available to the console' (off by default). PR #468. 136 spec checks green. Next phase (Opus): REST s4, MCP s5, axf ctl s6 wrap dispatch(); the model call is a seam they attach.",
      "at": "2026-11-10T19:53:29.858Z"
+    },
+    {
+     "text": "Headless run axf-full-api-cli-control-of-everything-plus-an-offli--earl: brief only · start 13.4K tokens ($0.07) · cost $17.97 · 141 turns · 6 tools, MCP none",
+     "at": "2026-11-10T19:54:07.129Z"
     }
    ],
    "approvals": [],
@@ -145779,7 +145783,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
