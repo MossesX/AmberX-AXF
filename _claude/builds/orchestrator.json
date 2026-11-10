@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T00:06:24.098Z",
+ "updatedAt": "2026-11-10T00:06:44.654Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -80804,7 +80804,7 @@
    "title": "Fix log + FYI phone notifications from Claude sessions (no approval)",
    "category": "",
    "detail": "An axHub/console tool any Claude session (voice, chat, headless) can call with a short text: it appends to a Fix log (time, session, what was tried, outcome: trying / failed / fixed) and sends an informational notification to Brett's phone through AmberX (and the console bell). Policy allow: no approval, no veto countdown, never asks for anything. Fix log viewable in the console with filters. Full API control.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -80812,8 +80812,8 @@
    "pr": "#418",
    "priority": "P1",
    "createdAt": "2026-11-09T23:44:46.980Z",
-   "updatedAt": "2026-11-10T00:06:18.185Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T00:06:27.950Z",
+   "builtAt": "2026-11-10T00:06:27.950Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -80830,6 +80830,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-log-fyi-phone-notifications-from-claude-sess--joey, own login copy)",
      "at": "2026-11-09T23:46:04.270Z"
+    },
+    {
+     "text": "PR #418. Fix log plugin + rules brief + axHub allow on fix_log_log (live). UI Review shots not taken: rebuild-shots could not open the new page headless; take them from the deployed console (Plugins → Fix log, desktop + phone).",
+     "at": "2026-11-10T00:06:23.794Z"
     }
    ],
    "approvals": [],
@@ -80899,8 +80903,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T00:06:27.950Z",
      "note": "",
      "uid": "st-mw9wt9jf03bhnd"
     }
