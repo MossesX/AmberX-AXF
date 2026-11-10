@@ -1,7 +1,7 @@
 /** Push banner UI: the banner (open pull requests + branches not on main, grouped by what's ready) and the settings panel. Theme tokens only. */
 import { useEffect, useState, type ReactNode } from 'react';
 import { Button, Icon, RefText, Switch, useAxfState, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
-import { MergeQueueChip, MergeQueueView } from './queue';
+import { MergeQueueChip, MergeQueueSettings, MergeQueueView } from './queue';
 import { ago, bannerOn, doneKeys, doneRows, failedKeys, failedRows, fixWithClaude, jobOf, REPAIR_ALL, removeFailed, repair, repairAll, load, loadDetail, mergePr, needsPull, openPr, PULL_ALL, pullAll, pullMain, pullRows, removeDone, rows, saveClaude, setHidden, useStore, api, type Done, type Failed, type PullRow, type Row } from './store';
 
 const CI_WORD: Record<string, string> = { success: 'CI passed', failure: 'CI failed', running: 'CI running', none: 'no CI yet', unknown: 'CI unknown' };
@@ -451,7 +451,8 @@ function AutoMergeSettings() {
       <Switch label="Open a pull request for every branch" checked={st.autoPr} disabled={!st.on} onChange={(v) => set({ autoPr: v })}
         hint="Each round, every branch ahead of main without an open PR gets one (never main, site, go-pass, gh-pages or hidden branches). Nothing reaches main without a PR." />
       <Switch label="Merge queue: test each PR once" checked={st.mergeQueue !== false} onChange={(v) => set({ mergeQueue: v })}
-        hint="Ready PRs line up and each is tested once on top of main + every PR ahead of it (queue/pr-<n> branches); a green one merges with no retest, a red one is kicked out with the reason and the ones behind it are retested without it. While it is on, PRs run only the light checks and the console doesn't merge AmberX-AXF itself (the queue does). GitHub's own merge queue needs an organisation-owned repo, so this one is ours." />
+        hint="Ready PRs line up and are tested once before they reach main: in batch mode several are combined into one build on the latest main and merge as one; in stack mode each is tested on top of the ones ahead. A red one is kicked out with the reason. While it is on, PRs run only the light checks and the console doesn't merge AmberX-AXF itself (the queue does). GitHub's own merge queue needs an organisation-owned repo, so this one is ours." />
+      {st.mergeQueue !== false && <MergeQueueSettings />}
       <div className="fx-row"><Button size="sm" icon="play" onClick={() => { setErr(''); api.post('auto-merge', {}).then(read, (e: Error) => setErr(e.message)); }}>Run a round now</Button></div>
       {st.last.length > 0 && <ul className="axp-push-banner__list">{st.last.slice(0, 8).map((x, i) => <li key={`${x.pr ?? x.branch}-${i}`} className="axp-push-banner__item"><span className="fx-small">{x.pr ?? x.branch}: {said(x)}</span></li>)}</ul>}
       {prot.length > 0 && <ul className="axp-push-banner__list">{prot.map(([repo, p]) => <li key={repo} className="axp-push-banner__item"><span className={`fx-small${p.state === 'protected' ? '' : ' axp-push-banner__note is-danger'}`}>{repo} {p.base}: {p.state === 'protected' ? `protected (PR, up to date${p.checks?.length ? `, ${p.checks.join(', ')}` : ''})` : `not protected: ${p.error ?? ''} (systems check → Auto fix)`}</span></li>)}</ul>}

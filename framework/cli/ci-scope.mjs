@@ -10,12 +10,12 @@
  *   node framework/cli/ci-scope.mjs light [--run]                     the light PR checks for this change (or run them)
  *
  * Three modes:
- *   full   a queue branch (queue/pr-<n>), a workflow_dispatch, or any PR while the merge queue is off: every job the
+ *   full   a queue branch (queue/pr-<n> or queue/batch-<n>), a workflow_dispatch, or any PR while the merge queue is off: every job the
  *          change touches (path filters below), nothing else;
  *   light  a PR while the merge queue is on (repo variable AXF_MERGE_QUEUE=on, set by the queue runner): the cheap
  *          checks only (framework validators, the console type-check, the touched plugins' own tests); the full set
  *          runs once, in the merge queue;
- *   main   a push to main: when the merge queue already ran CI green on the same code (a queue/pr-* commit whose files
+ *   main   a push to main: when the merge queue already ran CI green on the same code (a queue/* commit whose files
  *          match main's outside _claude/), nothing runs again except the Android publish when Android changed.
  */
 import { spawnSync } from 'node:child_process';
@@ -145,7 +145,7 @@ export function changedFiles({ event, ref, before = '' }) {
 }
 
 /**
- * Has the merge queue already run CI green on this code? A queue/pr-* branch whose files equal HEAD's outside
+ * Has the merge queue already run CI green on this code? A queue/* branch (pr or batch) whose files equal HEAD's outside
  * _claude/, and whose head commit has a successful run of this workflow (GitHub API, the job's own token).
  */
 /**

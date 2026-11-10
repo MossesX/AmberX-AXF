@@ -2,11 +2,11 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.push-banner",
   "name": "Push banner",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "A banner listing every branch that isn't on main yet in AmberX-AXF and axHub (commits ahead/behind, age, last commit, its open PR and that PR's CI), with Open PR and Merge: every change reaches main only through its PR (one is opened for every branch), brought up to date with main and re-tested before it merges (not behind, CI passed on the pinned head; re-checked on the server). Auto-merge takes ready PRs oldest first, one merge per round, and sets branch protection on main where the token may. Auto-land (land/land.mjs, plain scripts on the VPS, no model calls) lands every finished build: worktree cleaned, main merged in with the builds files newer-wins, PR opened, CI started, merged here in dependency order once green and not held by UI Review; blocked builds are pushed to Brett once, in plain words. The console server talks to GitHub with its own token, which never reaches the browser. Merge queue (0.7.0): GitHub's own merge queue needs an organisation-owned repo, so the queue is ours: ready PRs line up, each is tested once on top of main + every PR ahead of it (queue/pr-<n> branches), the green head merges with no retest, a red one is kicked out with the reason in plain words and the ones behind it are retested without it; CI runs only what a change touches, PRs run light checks while the queue is on. Merge queue view, banner chip, REST + MCP + CLI. 0.7.1 (Nov 4 2026, Brett: \"Stop merging these things one at a time\"): auto-land is off by default and only the merge queue merges AmberX-AXF; GitHub reads are cached with ETags (a 304 costs no API call) and held back when the shared limit runs low; the console redeploys once per stack.",
+  "description": "A banner listing every branch that isn't on main yet in AmberX-AXF and axHub (commits ahead/behind, age, last commit, its open PR and that PR's CI), with Open PR and Merge: every change reaches main only through its PR (one is opened for every branch), brought up to date with main and re-tested before it merges (not behind, CI passed on the pinned head; re-checked on the server). Auto-merge takes ready PRs oldest first, one merge per round, and sets branch protection on main where the token may. Auto-land (land/land.mjs, plain scripts on the VPS, no model calls) lands every finished build: worktree cleaned, main merged in with the builds files newer-wins, PR opened, CI started, merged here in dependency order once green and not held by UI Review; blocked builds are pushed to Brett once, in plain words. The console server talks to GitHub with its own token, which never reaches the browser. Merge queue (0.7.0): GitHub's own merge queue needs an organisation-owned repo, so the queue is ours: ready PRs line up, each is tested once on top of main + every PR ahead of it (queue/pr-<n> branches), the green head merges with no retest, a red one is kicked out with the reason in plain words and the ones behind it are retested without it; CI runs only what a change touches, PRs run light checks while the queue is on. Merge queue view, banner chip, REST + MCP + CLI. 0.7.1 (Nov 4 2026, Brett: \"Stop merging these things one at a time\"): auto-land is off by default and only the merge queue merges AmberX-AXF; GitHub reads are cached with ETags (a 304 costs no API call) and held back when the shared limit runs low; the console redeploys once per stack. 0.8.0 (Nov 10 2026, Brett: \"Take all the pull requests as soon as they're ready, have the orchestrator combine them, like five at a time, into one big build. Then pull main and merge it as one.\"): batch mode, the default: up to 5 (setting) ready PRs combined into one queue/batch-<n> branch on the latest main, CI once, main pulled in again if it moved, merged as one PR; a red batch is halved until the PR at fault is kicked out; a code conflict inside a batch waits for the next batch, or goes to a queue-conflict agent job when the AI fallback is on. Settings over REST / MCP / CLI.",
   "targets": [
     "axf-console"
   ],
@@ -101,9 +101,55 @@
       {
         "id": "mergequeue-list",
         "title": "Merge queue: the line",
-        "description": "Every PR in the merge queue in order: title, agent, test state (waiting, testing, passed, kicked out and why), ETA in minutes; plus the open PRs not in it and why, the last merged and kicked-out ones. Each PR is tested once on top of main + the PRs ahead of it and merges with no retest.",
+        "description": "Every PR in the merge queue in order: title, agent, test state (waiting, testing, passed, kicked out and why), ETA in minutes; the batch being tested (PRs combined, CI run, result) and the last batches; plus the open PRs not in it and why, the last merged and kicked-out ones. Batch mode (default): up to batchSize ready PRs are combined on the latest main, CI runs once and the batch merges as one; stack mode: each PR tested on top of the ones ahead.",
         "route": "GET /queue",
         "readOnly": true
+      },
+      {
+        "id": "mergequeue-settings",
+        "title": "Merge queue: settings",
+        "description": "The merge queue's settings: on, mode (batch = ready PRs combined batchSize at a time into one build on the latest main, one CI run, merged as one; stack = each PR tested on top of the ones ahead), batchSize (1-10, default 5), aiResolve (a code conflict inside a batch goes to a queue-conflict agent job), depth (stack mode).",
+        "route": "GET /queue/settings",
+        "readOnly": true
+      },
+      {
+        "id": "mergequeue-set",
+        "title": "Merge queue: change settings",
+        "description": "Change the merge queue's settings: on (true/false), mode (batch or stack), batchSize (1-10), aiResolve (true/false), depth (1-6, stack mode). Takes effect at the next round (within 3 minutes).",
+        "route": "POST /queue/settings",
+        "input": {
+          "type": "object",
+          "properties": {
+            "on": {
+              "type": "boolean",
+              "description": "merge queue on or off"
+            },
+            "mode": {
+              "type": "string",
+              "enum": [
+                "batch",
+                "stack"
+              ],
+              "description": "batch (default) or stack"
+            },
+            "batchSize": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10,
+              "description": "PRs per batch (default 5)"
+            },
+            "aiResolve": {
+              "type": "boolean",
+              "description": "send a code conflict inside a batch to an agent job"
+            },
+            "depth": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 6,
+              "description": "stack mode: PRs tested at once"
+            }
+          }
+        }
       },
       {
         "id": "mergequeue-add",

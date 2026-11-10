@@ -108,6 +108,11 @@ LAND_SCRIPT = Path(__file__).resolve().parent.parent / "land" / "land.mjs"
 # merge queue (Nov 4 2026): land/merge-queue.mjs on the VPS host runs it every auto-land round; commands go through it too
 QUEUE_SCRIPT = Path(__file__).resolve().parent.parent / "land" / "merge-queue.mjs"
 QUEUE_DEPTH_MAX = 6
+# Batch mode (Nov 10 2026, Brett: "have the orchestrator combine them, like five at a time, into one big build. Then pull
+# main and merge it as one"): land/merge-queue-core.mjs QUEUE_DEFAULTS / BATCH_SIZE_MAX hold the same values.
+QUEUE_MODES = ("batch", "stack")
+BATCH_SIZE_MAX = 10
+BATCH_SIZE_DEFAULT = 5
 AGENT_HEADERS = ("x-axhub-session", "x-axhub-source")
 LAND_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,80}\Z")
 UI_REVIEW_CAP = "ui-review@1"  # PRs whose UI is waiting, has changes asked or is rejected in UI Review don't merge
@@ -224,10 +229,16 @@ class Pushes:
                 # Merge queue (Nov 4 2026, Brett: "We're paying to do these CI checks twice."): each ready PR is tested
                 # once on top of main + the PRs ahead of it and merges with no retest. On unless switched off.
                 "mergeQueue": raw.get("mergeQueue") is not False,
-                "queueDepth": raw["queueDepth"] if isinstance(raw.get("queueDepth"), int) and not isinstance(raw.get("queueDepth"), bool) and 1 <= raw["queueDepth"] <= QUEUE_DEPTH_MAX else 3}
+                "queueDepth": raw["queueDepth"] if isinstance(raw.get("queueDepth"), int) and not isinstance(raw.get("queueDepth"), bool) and 1 <= raw["queueDepth"] <= QUEUE_DEPTH_MAX else 3,
+                # batch (default): up to batchSize ready PRs combined into one branch on the latest main, CI once, merged
+                # as one; stack: the Nov 4 queue (queueDepth PRs, each on top of the ones ahead)
+                "queueMode": raw.get("queueMode") if raw.get("queueMode") in QUEUE_MODES else "batch",
+                "batchSize": raw["batchSize"] if isinstance(raw.get("batchSize"), int) and not isinstance(raw.get("batchSize"), bool) and 1 <= raw["batchSize"] <= BATCH_SIZE_MAX else BATCH_SIZE_DEFAULT,
+                # a code conflict inside a batch goes to one agent job (queue-conflict) when on; plain code only when off
+                "batchAiResolve": raw.get("batchAiResolve") is True}
 
     def save_config(self, body: Any) -> dict[str, Any]:
-        if not isinstance(body, dict) or set(body) - {"repos", "hidden", "claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "mergeQueue", "queueDepth"}:
+        if not isinstance(body, dict) or set(body) - {"repos", "hidden", "claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "mergeQueue", "queueDepth", "queueMode", "batchSize", "batchAiResolve"}:
             raise HTTPException(400, "send {repos: [owner/name …], hidden: [\"owner/name:branch\" …]}")
         cur = self.config()
         repos, hidden = cur["repos"], cur["hidden"]
@@ -244,13 +255,19 @@ class Pushes:
                     raise HTTPException(400, f"hidden entries look like owner/name:branch[@sha] ({_text(e, 80)!r})")
             hidden = list(dict.fromkeys(h))
         flags = {}
-        for k in ("claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "mergeQueue"):
+        for k in ("claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "mergeQueue", "batchAiResolve"):
             if k in body and not isinstance(body[k], bool):
                 raise HTTPException(400, f"{k} is true or false")
             flags[k] = body[k] if k in body else cur[k]
         if "queueDepth" in body and (not isinstance(body["queueDepth"], int) or isinstance(body["queueDepth"], bool) or not 1 <= body["queueDepth"] <= QUEUE_DEPTH_MAX):
             raise HTTPException(400, f"queueDepth is 1 to {QUEUE_DEPTH_MAX}")
         flags["queueDepth"] = body.get("queueDepth", cur["queueDepth"])
+        if "queueMode" in body and body["queueMode"] not in QUEUE_MODES:
+            raise HTTPException(400, "queueMode is batch or stack")
+        flags["queueMode"] = body.get("queueMode", cur["queueMode"])
+        if "batchSize" in body and (not isinstance(body["batchSize"], int) or isinstance(body["batchSize"], bool) or not 1 <= body["batchSize"] <= BATCH_SIZE_MAX):
+            raise HTTPException(400, f"batchSize is 1 to {BATCH_SIZE_MAX}")
+        flags["batchSize"] = body.get("batchSize", cur["batchSize"])
         storage.write_json(data_dir() / "config.json", {"$axf": "push-banner-config@1", "repos": repos, "hidden": hidden, **flags})
         with self._lock:
             self._cache = None
@@ -388,12 +405,30 @@ class Pushes:
         lst = lambda k: [x for x in st.get(k, []) if isinstance(x, dict)] if isinstance(st.get(k), list) else []  # noqa: E731
         items = lst("items")
         kicked = lst("kicked")
+        batch = st.get("batch") if isinstance(st.get("batch"), dict) else None
         return {"$axf": "merge-queue@1", "on": cfg["mergeQueue"], "depth": cfg["queueDepth"], "repo": UI_REVIEW_REPO, "at": st.get("at"),
+                "mode": cfg["queueMode"], "batchSize": cfg["batchSize"], "aiResolve": cfg["batchAiResolve"],
+                "batch": batch, "suspects": [n for n in st.get("suspects", []) if isinstance(n, int)] if isinstance(st.get("suspects"), list) else [],
+                "batches": lst("batches")[-10:],
                 "items": items, "waiting": lst("waiting"), "kicked": kicked, "merged": lst("merged")[-10:],
                 "avgMin": st.get("avgMin") if isinstance(st.get("avgMin"), int) else None,
                 "variable": _text(st.get("variable"), 10), "variableError": _text(st.get("variableError"), 300),
                 "chip": {"label": f"Merge queue: {len(items)}", "count": len(items), "testing": sum(1 for x in items if x.get("state") == "testing"),
                          "kicked": len(kicked), "tone": "warning" if kicked else "info" if items else "muted"}}
+
+    def queue_settings(self) -> dict[str, Any]:
+        cfg = self.config()
+        return {"$axf": "merge-queue-settings@1", "on": cfg["mergeQueue"], "mode": cfg["queueMode"], "batchSize": cfg["batchSize"],
+                "aiResolve": cfg["batchAiResolve"], "depth": cfg["queueDepth"], "batchSizeMax": BATCH_SIZE_MAX, "depthMax": QUEUE_DEPTH_MAX,
+                "modes": list(QUEUE_MODES)}
+
+    def save_queue_settings(self, body: Any) -> dict[str, Any]:
+        """The merge queue's own settings in its words (on, mode, batchSize, aiResolve, depth) onto the config keys."""
+        keys = {"on": "mergeQueue", "mode": "queueMode", "batchSize": "batchSize", "aiResolve": "batchAiResolve", "depth": "queueDepth"}
+        if not isinstance(body, dict) or not body or set(body) - set(keys):
+            raise HTTPException(400, "send any of {on: bool, mode: batch|stack, batchSize: 1-10, aiResolve: bool, depth: 1-6}")
+        self.save_config({keys[k]: v for k, v in body.items()})
+        return self.queue_settings()
 
     def queue_command(self, cmd: str, body: Any, owner: str = "") -> dict[str, Any]:
         """add | remove | move: one implementation, land/merge-queue.mjs (the same file the CLI and the host runner use).
@@ -1457,6 +1492,16 @@ def _owner(request: Request) -> str:
 @router.get("/queue")
 def queue_list() -> dict[str, Any]:
     return PUSHES.queue()
+
+
+@router.get("/queue/settings")
+def queue_settings_get() -> dict[str, Any]:
+    return PUSHES.queue_settings()
+
+
+@router.post("/queue/settings")
+def queue_settings_set(body: Any = Body(None)) -> dict[str, Any]:
+    return PUSHES.save_queue_settings(body)
 
 
 @router.post("/queue/add")

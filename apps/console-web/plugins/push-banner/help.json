@@ -162,6 +162,30 @@
         "title": "Merge queue",
         "text": "On: each PR is tested once on top of main and the PRs ahead of it, then merges with no second run.",
         "kind": "toggle"
+      },
+      {
+        "target": "how-the-merge-queue-tests-prs",
+        "title": "How the merge queue tests PRs",
+        "text": "Batch (default): ready PRs are combined into one build on the latest main, CI runs once and the batch merges as one. Stack: each PR is tested on top of the ones ahead of it.",
+        "kind": "field"
+      },
+      {
+        "target": "prs-per-batch",
+        "title": "PRs per batch",
+        "text": "How many ready PRs go into one batch build (1 to 10, default 5). With fewer ready, the batch takes what is ready.",
+        "kind": "field"
+      },
+      {
+        "target": "prs-tested-at-once",
+        "title": "PRs tested at once",
+        "text": "Stack mode: how many PRs are tested at the same time, each on top of the ones ahead.",
+        "kind": "field"
+      },
+      {
+        "target": "ai-fallback-for-code-conflicts-inside-a-batch",
+        "title": "AI fallback for code conflicts",
+        "text": "Off: a PR that conflicts in code with one earlier in its batch waits for the next batch. On: an agent also makes its branch work with the others; CI still decides.",
+        "kind": "toggle"
       }
     ],
     "intros": []
