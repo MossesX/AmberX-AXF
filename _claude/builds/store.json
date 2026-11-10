@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2548,
- "updatedAt": "2026-11-10T17:25:07.811Z",
+ "rev": 2549,
+ "updatedAt": "2026-11-10T17:25:46.195Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -140380,10 +140380,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/claude-md-standing-rule-be-proactive-bring-up-th",
-   "pr": "",
+   "pr": "#458",
    "priority": "P0",
    "createdAt": "2026-11-10T16:45:47.022Z",
-   "updatedAt": "2026-11-10T17:25:06.045Z",
+   "updatedAt": "2026-11-10T17:25:45.076Z",
    "builtAt": "",
    "notes": [
     {
@@ -140518,7 +140518,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
