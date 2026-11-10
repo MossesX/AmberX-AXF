@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T04:36:40.892Z",
+ "updatedAt": "2026-11-10T04:39:08.619Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -32064,7 +32064,7 @@
    "title": "Element inspector (Android first)",
    "category": "Feature",
    "detail": "Brett, Oct 30 2026 (voice): Left click only. Press-drag: panel follows, live updates to element under pointer. Release closes. Double click pins; pinned panel drags and resizes. Current fields + size.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -32072,7 +32072,7 @@
    "pr": "#192",
    "priority": "P0",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-11-10T04:35:37.818Z",
+   "updatedAt": "2026-11-10T04:39:05.140Z",
    "builtAt": "",
    "notes": [
     {
