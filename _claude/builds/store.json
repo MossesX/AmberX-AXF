@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2456,
- "updatedAt": "2026-11-10T16:28:32.462Z",
+ "rev": 2457,
+ "updatedAt": "2026-11-10T16:29:22.571Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -138416,12 +138416,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T16:28:04.849Z",
-   "updatedAt": "2026-11-10T16:28:07.544Z",
+   "updatedAt": "2026-11-10T16:29:21.276Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T16:28:07.544Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T16:29:21.276Z"
     }
    ],
    "approvals": [],
@@ -138448,13 +138452,89 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-10T16:29:21.276Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwawnq4d01tqa1",
+     "title": "",
+     "text": "When the orchestrator assigns a build or step, it posts in the group chat asking which employee has the skills/tools/capabilities. 2) The first agent to claim it opens a dialog listing all matching agents with a percentage for how likely each is the best choice. 3) 90-second veto: if Brett doesn't pick, the orchestrator assigns the highest-probability agent by default. 4) The chosen employee uses its own brief set and its training data in the brief, and sends its briefs back to the orchestrator. Builds on orchestrator-table-columns (assigned employee) and the Brownie/Molly group chat handoffs; reuse. Full API/CLI control.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T16:29:21.276Z",
+     "updatedAt": "2026-11-10T16:29:21.276Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwawnq4d02hm5s",
+     "title": "",
+     "text": "When the orchestrator assigns builds or steps they are sent to the right employee who has its own set of briefs to send back to the orchestrator and uses the employee data in the brief. In the group chat the orchestrator asks if anyone can do something, if they have skills or tools or capabilities; the first one to take it opens a dialog listing all the matching agents with a percentage of each one being the best choice for the job. After the 90 second veto it chooses the best probable one by default.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T16:29:21.276Z",
+     "updatedAt": "2026-11-10T16:29:21.276Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwawnq4d039fo4",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/orchestrator-assigns-builds-steps-to-employee-ag.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/orchestrator-assigns-builds-steps-to-employee-ag.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T16:29:21.276Z",
+     "updatedAt": "2026-11-10T16:29:21.276Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -138463,12 +138543,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T16:29:21.276Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
