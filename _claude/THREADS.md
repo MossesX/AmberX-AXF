@@ -770,7 +770,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 20:31 UTC · `one-source-of-truth-for-claude-accounts-the-orch` note (all) · orchestrator
 - 2026-11-09 20:32 UTC · `per-account-queues-long-press-a-queued-build-to` → running, note (all) · pipeline
 - 2026-11-09 20:32 UTC · `per-account-queues-long-press-a-queued-build-to` branch claude/per-account-queues-long-press-a-queued-build-to (all) · pipeline
 - 2026-11-09 20:32 UTC · `per-account-queues-long-press-a-queued-build-to` note (all) · orchestrator
@@ -1170,6 +1169,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 03:44 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` → running, note (all) · pipeline
 - 2026-11-10 03:44 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` note (all) · orchestrator
 - 2026-11-10 03:49 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` s1 done (all) · orchestrator
+- 2026-11-10 03:50 UTC · `orchestrator-table-columns-model-queue-assigned` → pending, note (all) · reconciler
 
 ## Token passes (log)
 
