@@ -20,6 +20,8 @@ export const SKIN_BUILDER_VIEW = 'skin-builder';
 const ZONE = 'skin-slot';
 const KIND = 'skin-slice';
 const DRAFT_KEY = 'axf.skin-builder.draft';
+/** The skin the open action asked to edit (read once on mount). */
+export const LOAD_KEY = 'axf.skin-builder.load';
 
 interface Draft { id: string; name: string; description: string; sections: SkinSections; from: string }
 const emptyDraft = (): Draft => ({ id: '', name: '', description: '', sections: {}, from: '' });
@@ -87,7 +89,12 @@ export function SkinBuilder({ load }: { load?: string } = {}) {
     setDraft({ id, name: entry.name, description: entry.description, sections: { ...info.sections }, from: id });
     setNote(Object.keys(info.inline).length ? `${entry.name} still carries ${Object.keys(info.inline).join(' and ')} inline: use "Save as asset" on that slot to make it a slice.` : '');
   }, [rt]);
-  useEffect(() => { if (load) loadSkin(load); }, [load, loadSkin]);
+  // `load` (a prop) or the id the theme-manager.skin-builder:<skin> action left behind: load that skin to edit it
+  useEffect(() => {
+    const id = load || localStorage.getItem(LOAD_KEY) || '';
+    localStorage.removeItem(LOAD_KEY);
+    if (id) loadSkin(id);
+  }, [load, loadSkin]);
 
   // the sections the console previews: the draft over what is in force now (so a half-built pack still shows); keyed by
   // value, so a render never redraws the same pack

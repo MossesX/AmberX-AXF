@@ -2,6 +2,6 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 
 export const appMenu: NonNullable<AxfWebLibrary['appMenu']> = [
-  { id: 'theme-manager.menu', menu: 'plugins', menuLabel: 'Plugins', menuOrder: 40, order: 50, items: [{ id: 'theme-manager', label: 'Theme manager', icon: 'palette', action: 'nav:theme-manager' }] },
+  { id: 'theme-manager.menu', menu: 'plugins', menuLabel: 'Plugins', menuOrder: 40, order: 50, items: [{ id: 'theme-manager', label: 'Theme manager', icon: 'palette', action: 'nav:theme-manager' }, { id: 'skin-builder', label: 'Skin Builder', icon: 'layers', action: 'nav:skin-builder' }] },
   { id: 'theme-manager.look', menu: 'view', menuLabel: 'View', menuOrder: 60, path: ['look'], order: 30, items: [{ id: 'theme-manager', label: 'Theme manager…', icon: 'palette', action: 'nav:theme-manager' }, { id: 'skin-builder', label: 'Skin Builder…', icon: 'layers', action: 'nav:skin-builder' }] },
 ];

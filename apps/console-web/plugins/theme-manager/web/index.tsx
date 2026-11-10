@@ -4,7 +4,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { AppearancePanel } from '@console/axf/libs/settings';
 import { FOLDER, ID, call, type SavedTheme } from './api';
 import { ThemeManager, lastApplied } from './ThemeManager';
-import { SKIN_BUILDER_VIEW, SkinBuilder } from './SkinBuilder';
+import { LOAD_KEY, SKIN_BUILDER_VIEW, SkinBuilder } from './SkinBuilder';
 import './theme-manager.css';
 import { appMenu } from './menu';
 import { buildTree, getAt, leaves, setAt } from './rollEngine';
@@ -46,13 +46,13 @@ export const plugin: AxfWebLibrary = {
     services()[TOKEN_TREE] = { version: 1, buildTree, leaves, getAt, setAt };
     void loadSaved(rt);
     rt.actions.register('theme-manager.open', () => rt.navigate('theme-manager'), { label: 'Open the theme manager' });
-    rt.actions.register('theme-manager.skin-builder', ([id]) => { if (id) localStorage.setItem('axf.skin-builder.load', id); rt.navigate(SKIN_BUILDER_VIEW); }, { label: 'Open the Skin Builder (theme-manager.skin-builder[:<skin to edit>])', params: true });
+    rt.actions.register('theme-manager.skin-builder', ([id]) => { if (id) localStorage.setItem(LOAD_KEY, id); rt.navigate(SKIN_BUILDER_VIEW); }, { label: 'Open the Skin Builder (theme-manager.skin-builder[:<skin to edit>])', params: true });
     // skin-sections@1: a skin or section saved anywhere in this app (the picker's Save as new skin, the Skin Builder) is kept with the other saved themes
     rt.onSaveAsset(async (asset) => { await call('themes', { method: 'POST', body: JSON.stringify({ asset }) }); globalThis.dispatchEvent?.(new CustomEvent('axf:tm-saved')); });
   },
   views: {
     'theme-manager': { title: 'Theme manager', icon: 'palette', keywords: ['roll', 'theme', 'colors', 'tokens'], render: () => <div className="fx-stack fx-stack--lg"><header className="fx-pagehead"><div><p className="fx-eyebrow">Design &amp; branding</p><h1>Theme manager</h1><p className="fx-muted" title="Roll colour, style and layout themes from a token tree, preview them live and save the ones you like as themes.">Roll themes from a token tree, preview live, save the keepers.</p></div></header><AppearancePanel /><ThemeManager /></div> },
-    [SKIN_BUILDER_VIEW]: { title: 'Skin Builder', icon: 'layers', keywords: ['skin', 'sections', 'slices', 'pack', 'chrome', 'build'], render: () => { const load = localStorage.getItem('axf.skin-builder.load') ?? ''; if (load) localStorage.removeItem('axf.skin-builder.load'); return <div className="fx-stack fx-stack--lg"><header className="fx-pagehead"><div><p className="fx-eyebrow">Design &amp; branding</p><h1>Skin Builder</h1><p className="fx-muted" title="Every section of a skin is its own asset. Drag slices into the pack template, preview the whole console live, save, apply, export or import.">Build a skin from slices: one slot per section, live on the whole console.</p></div></header><SkinBuilder load={load || undefined} /></div>; } },
+    [SKIN_BUILDER_VIEW]: { title: 'Skin Builder', icon: 'layers', keywords: ['skin', 'sections', 'slices', 'pack', 'chrome', 'build'], render: () => <div className="fx-stack fx-stack--lg"><header className="fx-pagehead"><div><p className="fx-eyebrow">Design &amp; branding</p><h1>Skin Builder</h1><p className="fx-muted" title="Every section of a skin is its own asset. Drag slices into the pack template, preview the whole console live, save, apply, export or import.">Build a skin from slices: one slot per section, live on the whole console.</p></div></header><SkinBuilder /></div> },
   },
   nav: { label: 'Plugins', items: [{ id: 'theme-manager', label: 'Theme manager', icon: 'palette', view: 'theme-manager' }, { id: 'skin-builder', label: 'Skin Builder', icon: 'layers', view: SKIN_BUILDER_VIEW }] },
   settingsTabs: [{ id: 'theme-manager', label: 'Themes', icon: 'palette', parent: 'plugins', order: 44, description: 'Roll colour, style and layout themes (or any themeable part), pick which tokens change, save rolls as assets.' }],
