@@ -772,8 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:54 UTC · `project-manager-add-on-new-project-prompt-asks-i` note (all) · builds-live
-- 2026-11-10 17:54 UTC · `amberx-llama-llama-amberxai-com-via-coolify-trae` note (all) · orchestrator
 - 2026-11-10 17:55 UTC · `conversation-rag-amendment-store-only-short-key` PR #462 (all) · builds-live
 - 2026-11-10 17:55 UTC · `conversation-rag-amendment-store-only-short-key` s3 done, → built (all) · orchestrator
 - 2026-11-10 17:56 UTC · `conversation-rag-amendment-store-only-short-key` PR #462 (all) · foreign-write
@@ -1172,6 +1170,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 22:10 UTC · `molly-gap-axhub-cors` note (all) · builds-live
 - 2026-11-10 22:10 UTC · `molly-sign-in-once` s1 done, s2 done, PR #477, note (all) · reconciler
 - 2026-11-10 22:11 UTC · `molly-gap-expenses-cors` note (all) · orchestrator
+- 2026-11-10 22:11 UTC · `molly-sign-in-once` s1 done, s2 done, PR #477, note (all) · builds-live
+- 2026-11-10 22:11 UTC · `molly-gap-expenses-cors` note (all) · builds-live
 
 ## Token passes (log)
 
