@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:39 UTC · `skins-are-a-complete-rework-look-layout-behavior` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-10 17:40 UTC · `reserve-build-ids-at-once-add-returns-the-id-wit` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-10 17:40 UTC · `skins-consistent-across-plugins-full-state-saves` note (all) · orchestrator
 - 2026-11-10 17:40 UTC · `skin-rule-overrides-are-local-only-global-change` added (0 steps) (all) · console
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 21:47 UTC · `convert-every-app-into-a-molly-module-expenses-c` → running, note (all) · pipeline
 - 2026-11-10 21:47 UTC · `convert-every-app-into-a-molly-module-expenses-c` branch claude/convert-every-app-into-a-molly-module-expenses-c (all) · pipeline
 - 2026-11-10 21:47 UTC · `convert-every-app-into-a-molly-module-expenses-c` note (all) · orchestrator
+- 2026-11-10 21:47 UTC · `no-veto-timer-on-navigation-follow-amber-open-x` PR #476 (all) · builds-live
 
 ## Token passes (log)
 

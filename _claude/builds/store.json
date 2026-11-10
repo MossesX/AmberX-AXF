@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2908,
- "updatedAt": "2026-11-10T21:47:45.114Z",
+ "rev": 2909,
+ "updatedAt": "2026-11-10T21:47:57.634Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -154393,10 +154393,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/no-veto-timer-on-navigation-follow-amber-open-x",
-   "pr": "",
+   "pr": "#476",
    "priority": "P0",
    "createdAt": "2026-11-10T20:45:52.606Z",
-   "updatedAt": "2026-11-10T21:44:44.670Z",
+   "updatedAt": "2026-11-10T21:47:56.115Z",
    "builtAt": "",
    "notes": [
     {
@@ -154540,7 +154540,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
