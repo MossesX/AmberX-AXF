@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T04:33:30.222Z",
+ "updatedAt": "2026-11-10T04:34:26.924Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -84223,12 +84223,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T04:30:53.617Z",
-   "updatedAt": "2026-11-10T04:30:58.359Z",
+   "updatedAt": "2026-11-10T04:34:25.178Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T04:30:58.359Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T04:34:25.178Z"
     }
    ],
    "approvals": [],
@@ -84245,7 +84249,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Branch claude/build-statuses-tell-the-truth-orchestrator-list (true build statuses, expandable root rows, Group by optional, working date sort) is finished, but merging origin/main conflicts in apps/console-web/plugins/build-orchestrator/pipeline.mjs and pipeline.test.mjs. Work in /root/axf-builds/build-statuses-tell-the-truth-orchestrator-list: merge origin/main, resolve keeping main's newer code plus this branch's statuses and list features, run the orchestrator tests and typecheck, then push to main. Verify on the live console that the queue isn't forced into categories.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwa74ba2049q4k"
+    },
+    {
+     "id": "s2",
+     "text": "Why is the queue in categories again? Didn't we change that?",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwa74ba205pb7u"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/resolve-the-conflict-and-land-the-orchestrator-l.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/resolve-the-conflict-and-land-the-orchestrator-l.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwa74ba206jkok"
+    }
+   ]
   }
  ]
 }
