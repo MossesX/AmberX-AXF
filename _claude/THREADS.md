@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 16:50 UTC · `conversation-rag-index-every-voice-chat-session` → queued, note (all) · console
 - 2026-11-10 16:50 UTC · `fix-the-orchestrator-s-splitter-claude-print-get` note (all) · orchestrator
 - 2026-11-10 16:51 UTC · `conversation-rag-amendment-store-only-short-key` added (0 steps) (all) · console
 - 2026-11-10 16:51 UTC · `conversation-rag-amendment-store-only-short-key` → queued, note (all) · console
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 20:40 UTC · `resolve-conflicts-and-land-460-456-457-459-342` → queued, note (all) · console
 - 2026-11-10 20:40 UTC · `molly-flagship-skin-premium-sellable-uncluttered` → running, note (all) · pipeline
 - 2026-11-10 20:40 UTC · `molly-flagship-skin-premium-sellable-uncluttered` → running, note (all) · orchestrator
+- 2026-11-10 20:41 UTC · `molly-flagship-skin-premium-sellable-uncluttered` note (all) · builds-live
 
 ## Token passes (log)
 
