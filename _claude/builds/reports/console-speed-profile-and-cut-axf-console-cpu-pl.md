@@ -53,7 +53,7 @@ The console itself was not the problem. Measured 03:34-03:40 UTC:
 | | Before | After |
 |---|---|---|
 | Maintenance snapshots running at once | 12 | 1 at most (lock) |
-| Snapshot run time | 84 min, 12 overlapping | cold (empty cache, idle I/O class, under load): about half of 216 worktrees in 10 min, still running when this was written; after that, sizes are reused for 1 h (6 h for /root, /opt), and fresh measuring is capped at 4 min a run |
+| Snapshot run time | 84 min, 12 overlapping | cold (empty cache, idle I/O class, under load): about half of 216 worktrees measured when I stopped it at 11 min (no finished cold figure); after that, sizes are reused for 1 h (6 h for /root, /opt), and fresh measuring is capped at 4 min a run |
 | Host CPU idle (vmstat) | 0 % | 60-64 % |
 | Processes blocked on disk | 11 | 0-1 |
 | Load average (1 min) | 24-29 | 15.5 a minute later, 16-18 under builds |
