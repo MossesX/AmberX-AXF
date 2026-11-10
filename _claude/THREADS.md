@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 03:21 UTC · `self-healing-build-folders-auto-clear-stale-git` note (all) · orchestrator
 - 2026-11-10 03:21 UTC · `split-builds-pages-build-manager-pending-complet` note (all) · orchestrator
 - 2026-11-10 03:22 UTC · `split-builds-pages-build-manager-pending-complet-3` → queued, note (all) · pipeline
 - 2026-11-10 03:22 UTC · `self-healing-build-folders-auto-clear-stale-git` → running, note (all) · pipeline
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 16:57 UTC · `skins-own-everything-colour-theme-swaps-independ` note (all) · orchestrator
 - 2026-11-10 16:57 UTC · `search-bar-plugin-snappable-search-asset-globe-e` note (all) · orchestrator
 - 2026-11-10 16:58 UTC · `skins-as-packages-of-slices-every-section-its-ow` → pending, note (all) · reconciler
+- 2026-11-10 16:58 UTC · `search-bar-plugin-snappable-search-asset-globe-e` note (all) · pipeline
 
 ## Token passes (log)
 
