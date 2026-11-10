@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T03:54:12.688Z",
+ "updatedAt": "2026-11-10T03:54:46.271Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -83249,7 +83249,7 @@
    "pr": "#437",
    "priority": "P0",
    "createdAt": "2026-11-10T02:49:14.121Z",
-   "updatedAt": "2026-11-10T03:53:51.850Z",
+   "updatedAt": "2026-11-10T03:54:44.564Z",
    "builtAt": "2026-11-10T03:53:49.891Z",
    "notes": [
     {
@@ -83271,6 +83271,10 @@
     {
      "text": "PR #437. Cause: maintenance snapshot cron stacked 12 copies (84 min each, du over 96 GB of worktrees); stopped and locked on the VPS now. Builds now run in capped systemd scopes. Waiting: UI Review shots (Playwright not installed, disk 100% full so not installed); Brett to approve disk clean-up and pick a build-VPS option (_claude/plans/build-vps.md).",
      "at": "2026-11-10T03:53:51.850Z"
+    },
+    {
+     "text": "Headless run axf-console-speed-profile-and-cut-axf-console-cpu-pl--gina: brief only · start 11.3K tokens ($0.03) · cost $4.62 · 136 turns · 6 tools, MCP none",
+     "at": "2026-11-10T03:54:44.564Z"
     }
    ],
    "approvals": [],

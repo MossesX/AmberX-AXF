@@ -770,7 +770,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 20:36 UTC · `fix-owner-check-bug-dead-start-button` note (all) · console
 - 2026-11-09 20:37 UTC · `fix-owner-check-bug-dead-start-button` → queued, note (all) · console
 - 2026-11-09 20:37 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` → queued, note (all) · console
 - 2026-11-09 20:37 UTC · `owner-only-settings-brett-s-admin-console-login-counts-as-owner` → queued, note (all) · builds-live
@@ -1170,6 +1169,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 03:53 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` s2 done (all) · orchestrator
 - 2026-11-10 03:53 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` s3 done, → built (all) · orchestrator
 - 2026-11-10 03:53 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` note (all) · orchestrator
+- 2026-11-10 03:54 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` note (all) · orchestrator
 
 ## Token passes (log)
 
