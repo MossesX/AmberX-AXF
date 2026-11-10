@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:56 UTC · `conversation-rag-amendment-store-only-short-key` PR #462 (all) · foreign-write
 - 2026-11-10 17:56 UTC · `conversation-rag-amendment-store-only-short-key` note (all) · orchestrator
 - 2026-11-10 17:56 UTC · `project-manager-add-on-drag-a-build-to-another-p` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-10 17:56 UTC · `project-manager-add-on-drag-a-build-to-another-p` note (all) · builds-live
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 22:11 UTC · `molly-gap-expenses-cors` note (all) · builds-live
 - 2026-11-10 22:11 UTC · `molly-gap-console-token-handoff` note (all) · orchestrator
 - 2026-11-10 22:12 UTC · `molly-gap-remote-actions` note (all) · orchestrator
+- 2026-11-10 22:21 UTC · `molly-one-shell` s10 done (all) · orchestrator
 
 ## Token passes (log)
 
