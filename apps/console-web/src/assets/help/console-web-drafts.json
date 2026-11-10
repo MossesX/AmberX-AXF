@@ -780,6 +780,12 @@
         "title": "Reload for the new version",
         "text": "The console was updated while this page was open. Reloads the page so the plugin loads from the new version.",
         "kind": "button"
+      },
+      {
+        "target": "view:axf-banners",
+        "title": "Banners",
+        "text": "The console's banners as a shell such as Molly shows them in its one banner region (the console's native surface). Not a screen of its own: each banner keeps its Banner settings (right-click it).",
+        "kind": "screen"
       }
     ],
     "intros": []

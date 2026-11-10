@@ -160,3 +160,95 @@ to anything, the Molly group, search "layout", One shell settings).
 - `check-theme`, `check-controls`, `check-chrome-assets`, `check-toolbars`, `help-coverage --check`,
   `check-plugin-commands`, glossary `catalog.mjs --check`, `tracker.mjs --check`, `axf validate apps/molly` and
   `--framework`, plugin-lifecycle for shell + xlayout: all pass.
+
+---
+
+# Phase 3 (r4 p3, Nov 10 2026, Opus): every app native in Molly
+
+Branch `claude/molly-one-shell-r4`, PR #395. Headless, one session. Steps s7, s8, s10–s14 done (s9 was done in r4).
+
+## How native mounting works (s7, s8)
+
+- **The seam** `framework/react/nativeSurface.tsx` (`createNativeSurface`): an app's `src/surface.tsx` names its id, the
+  relative paths its screens call on its own server, how to make its runtime and a hook giving its views / dialogs /
+  tabs / slots. It returns `mountSurface(el, view, ctx)`, `searchEntries()`, `screens()`, `run(kind, id)`,
+  `subscribe()`, `connect(ctx)` and `routes`. One runtime and one React tree per page; each mount is a portal into the
+  element Molly gives it, so the main area and panes show different screens over one store and one set of dialogs.
+  Screens and dialogs go into the app's search index as AppShell would (that is what Molly's menus are built from).
+  `axf-…` screens are reserved parts for the shell's chrome (`axf-banners`).
+- **Hosted provider** (`framework/react/AxfProvider.tsx`, `hosted`): a mounted app inherits Molly's look (no root
+  tokens, custom sheet, shortcuts, tap-to-confirm or menu fit of its own).
+- **Each app**: `src/runtime.ts` (shared with `main.tsx`), `src/surface.tsx`, `vite.surface.config.ts` (library build into
+  `dist/surface/<app>-surface.js` + `.css`), `npm run build` builds both. Console: CORS already open. axHub web nginx and
+  the AmberX server now send `/surface/` with `Access-Control-Allow-Origin: https://molly.amberxai.com`.
+- **Molly** `src/molly/native.tsx`: imports every app's module at start, links its CSS, routes its relative API paths
+  (fetch + EventSource; longest prefix wins: console `/api/` + `/data/`, AmberX `/api/ai/`, `/api/walkthrough`,
+  `/api/console/plugins/`), registers its surface with One shell (`axf.shell@1`), adds `<app>/<screen>` views (deep
+  links `#/console/plan`, also on hash change). Dev override: `localStorage['molly.surface.<app>']` (https/localhost).
+
+## s10 IDE: drag onto a container, tab-group containers
+
+Go to anything rows drag (`text/x-axf-ref`) onto any IDE pane (captured at the dock, so the app screen inside never
+sees it; the dialog steps aside during the drag and closes on drop). An app's screen opens in that pane as a native tab:
+after the front tab when the pane is a tab group, alone otherwise (xlayout@1 `openInContainer` rules); anything else runs
+through One shell. Per-pane tab-group switch: tab-group context menu "Tab group on / off" (`xlayout.ide.containers`).
+Actions `xlayout.container.tabs[:on|off][:<pane>]`, `xlayout.drop:<pane>:<ref>`.
+
+## s11 frames removed
+
+`src/molly/FrameDeck.tsx` deleted; host hooks `frameUrl` / `onFrame` / `warm` gone; xLayout's embed@1 chrome take-over
+(postMessage host, `guestUrl`, frame watchers, warm console frame) replaced by a small native host; the Banners
+plugin's banner-strip iframe replaced by the console's banners mounted natively (`axf-banners`); One shell's
+xLayout-chrome stopgap gone. Expenses (no native surface: Next.js 16 / React 19, gap `molly-native-expenses`) is listed
+and opens on its own. **Not removed:** the xlayout@1 engine's `guest*` / `merge` fields (a contract change; nothing in
+Molly reads them now) — for the s15 Fable review.
+
+## s12 control (how each UI is reached)
+
+| What | Deep link | API / MCP | CLI | Voice |
+|---|---|---|---|---|
+| any app screen in Molly | `#/<app>/<screen>` | `console_action("host:shell.open:<ref>")` | `axf molly open <ref> [--in pane]` | same console action |
+| Go to anything | — | `host:shell.go` / `host:shell.find:<words>` | `axf molly go [words]` | idem |
+| layout mode | — | `host:shell.mode:<m>` | `axf molly mode <m>` | idem |
+| named layouts | — | `host:shell.layout.save|switch|remove:<x>` | `axf molly layout …` | idem |
+| drop onto pane n | — | `host:xlayout.drop:<n>:<ref>` | `axf molly pane <n> <ref>` | idem |
+| pane as tab group | — | `host:xlayout.container.tabs:on:<n>` | `axf molly tabs <n> on` | idem |
+| settings | `#/settings` | `host:settings.open:shell` | `axf molly settings` | idem |
+
+The bridge: every native app's runtime has the action `host:<Molly action spec>`, run by Molly. The console mounted in
+Molly carries its remote-command client (console-commands plugin), so REST `POST /api/console`, MCP `console_action`, the
+console CLI and voice (which speaks console actions) reach every Molly action. Molly's plugins are in the
+plugin-commands registry (`framework/cli/plugin-commands.mjs`); xLayout declares its commands. `axf <app> …` runs
+`apps/<app>/cli.mjs`. Gap: an action's return value (Molly state such as `shell.list`) isn't sent back over the console
+channel; the registry and the UI show it.
+
+## s13 settings
+
+Molly's settings asset `molly` (standard + levels): the level toolbar on every Molly settings interface. Framework
+settings panels can say `collapsible` / `collapsed`; every Molly plugin's panels are collapsible categories.
+
+## s14 UI Review, tests
+
+- UI Review **r-20261110-5d1a0295** (group "molly-one-shell - Nov 10 10:35 PM"), 3 options for Molly's default layout:
+  one at a time, side by side, IDE (desktop + phone each); option assets `apps/molly/src/assets/xlayout/molly-every-app-mounted-*.json`. Waiting for Brett.
+- `apps/molly/test.mjs` (CLI mapping + transport), in CI after Molly's build.
+- Passing: `check-shell-surface.mts` (271), `check-xlayout.mts` (199), tsc on console-web / axhub-web / amberx-droid /
+  molly, Molly `vite build`, the three surface builds, `check-theme`, `check-controls`, `check-toolbars`,
+  `check-chrome-assets`, `help-coverage --check`, `plugin-commands check`, `axf validate apps/molly` + `--framework`,
+  plugin-lifecycle for shell / xlayout / banners / navigation / toolbar-designer.
+- Browser checks (Playwright, local surface servers, axHub look stubbed): 0 iframes on every screen; console Home, Plan,
+  Libraries, axHub Approvals, AmberX home mounted; drag "Libraries · Console › Screens" onto an IDE pane opened it there;
+  `host:shell.mode:ide` from the console runtime switched Molly to IDE.
+
+## Known gaps
+
+- AmberX's API (`/api/ai/…`) has no CORS for Molly yet, so AmberX screens that call it fail inside Molly until
+  `molly-sign-in-once` (one sign-in + credentials per app) lands. `/api/me` goes to the console when both are mounted.
+- Each app's look comes from Molly; an app's own `useHubAppearance` is not run when hosted.
+- Expenses stays out until `molly-native-expenses`.
+- Live deploy: the console, axHub web and AmberX must be deployed from this branch for Molly to find the surface
+  modules; until then Molly shows "could not load" with "Open on its own" for each app.
+
+## Cost
+
+Phase 3 on Opus, about 4 hours in one session.
