@@ -772,8 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:50 UTC · `ollama-model-pick-mistral-small-24b-q4-default-m` → queued, note (all) · console
-- 2026-11-10 17:51 UTC · `ollama-model-pick-mistral-small-24b-q4-default-m` added (0 steps) (all) · builds-live
 - 2026-11-10 17:51 UTC · `ollama-own-docker-container-amberx-llama-interna` added (0 steps) (all) · console
 - 2026-11-10 17:51 UTC · `auto-land-every-build-the-moment-it-finishes-red` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-10 17:51 UTC · `auto-land-every-build-the-moment-it-finishes-red` note (all) · builds-live
@@ -1172,6 +1170,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 21:54 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` added (0 steps) (all) · console
 - 2026-11-10 21:54 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` → queued, note (all) · console
 - 2026-11-10 21:55 UTC · `employee-hooks-everywhere-any-mention-of-an-agen` added (0 steps) (all) · console
+- 2026-11-10 21:55 UTC · `employee-hooks-everywhere-any-mention-of-an-agen` → queued, note (all) · console
+- 2026-11-10 21:55 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` note (all) · orchestrator
 
 ## Token passes (log)
 
