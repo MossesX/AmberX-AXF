@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T02:24:05.912Z",
+ "updatedAt": "2026-11-10T02:24:33.781Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -82683,12 +82683,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T02:22:06.131Z",
-   "updatedAt": "2026-11-10T02:22:15.710Z",
+   "updatedAt": "2026-11-10T02:24:12.593Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T02:22:15.710Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T02:24:12.593Z"
     }
    ],
    "approvals": [],
@@ -82696,6 +82700,101 @@
    "origin": {
     "said": "Anytime that happens, you gotta remove that. You guys have to deal with the problems. I can't have it just stop working every time something goes wrong. Put in the code: if something breaks, it needs to remove locks. Put it in the code so it doesn't rely on AI.",
     "at": "2026-11-10T02:22:06.131Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Plain code (no AI, zero tokens), run by the dispatcher tick and before every launch, land and rerun. 1) Stale git locks: find index.lock, HEAD.lock, refs locks and worktree locks under /opt/axf/.git and every /root/axf-builds/* folder. If no live git process holds them and they're older than 2 minutes, remove them. 2) Stray files that block landing (assets.log, build logs, _claude/builds sync files): restore tracked ones and stash or ignore untracked ones, then retry the land automatically. 3) Crashed sessions: tmux or claude processes dead with the build marked running get reset and requeued (works with the reaper). 4) Every auto-fix is logged in the fix log and Automatic fixes notes, with an AmberX FYI. 5) Same guard after any git operation fails with a lock error: clear it and retry once. 6) Tests with fake locks and crashed runs. Same bug twice gets a guard, per it-has-to-work.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwa2gv1u0144v2"
+    },
+    {
+     "id": "s2",
+     "text": "Anytime that happens, you gotta remove that. You guys have to deal with the problems. I can't have it just stop working every time something goes wrong. Put in the code: if something breaks, it needs to remove locks. Put it in the code so it doesn't rely on AI.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwa2gv1u02cqrt"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/self-healing-build-folders-auto-clear-stale-git.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/self-healing-build-folders-auto-clear-stale-git.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwa2gv1u03y641"
+    }
+   ]
+  },
+  {
+   "id": "one-amberx-build-notification-veto-approval-befo",
+   "title": "One AmberX build notification: veto approval before every start, pop-up on every finish",
+   "category": "",
+   "detail": "This REPLACES the build 'AmberX phone pop-up for every build start and finish: build name, account, model': remove it from Pending or the Queue and mark it superseded. Also upgrade, don't duplicate, brief-approval-dialog-before-every-headless-sess. 1) START = VETO: before every launch (new, retry, rerun, resume), one AmberX heads-up pop-up on the phone, also mirrored in the console. It shows the build name, what it will do, steps, model, account and employee, with Approve, Deny and a countdown (default 90 s, adjustable down to 0 via the approvals countdown setting). It launches on Approve or when the countdown ends; Deny sends it back to Pending. 2) FINISH: a pop-up with the build, account and outcome (done, failed, needs something and what). Tap to open the build. 3) One notification type, not two. Plain code, no AI. Respects the auto-approve toggle. Full API and voice control.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-10T02:24:15.337Z",
+   "updatedAt": "2026-11-10T02:24:21.854Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T02:24:21.854Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Before the orchestrator starts anything, I want a veto approval notification. I don't need two. Get rid of the other one and just make it a veto approval for the AmberX notification.",
+    "at": "2026-11-10T02:24:15.337Z",
     "source": "",
     "session": "",
     "link": "",

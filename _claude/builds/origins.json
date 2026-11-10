@@ -2692,6 +2692,18 @@
     }
    ]
   },
+  "one-amberx-build-notification-veto-approval-befo": {
+   "said": "Before the orchestrator starts anything, I want a veto approval notification. I don't need two. Get rid of the other one and just make it a veto approval for the AmberX notification.",
+   "at": "2026-11-10T02:24:15.337Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "one-builds-page-pending-queued-built-tabs-remove": {
    "said": "There's too many tables that show information about builds. Get rid of all of them. All we want is pending queued and built. All on one page in different tabs.",
    "at": "",
