@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2079,
- "updatedAt": "2026-11-10T00:09:27.094Z",
+ "rev": 2080,
+ "updatedAt": "2026-11-10T00:09:40.064Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -132303,8 +132303,8 @@
    "pr": "#419",
    "priority": "P1",
    "createdAt": "2026-11-09T23:50:13.944Z",
-   "updatedAt": "2026-11-10T00:09:10.889Z",
-   "builtAt": "2026-11-10T00:09:10.889Z",
+   "updatedAt": "2026-11-10T00:09:33.092Z",
+   "builtAt": "2026-11-10T00:09:33.092Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -132321,6 +132321,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-assign-an-employee-to-every-role-action-type-and--paulie, own login copy)",
      "at": "2026-11-09T23:52:30.365Z"
+    },
+    {
+     "text": "Headless run axf-assign-an-employee-to-every-role-action-type-and--paulie: brief only · start 11.3K tokens ($0.03) · cost $4.77 · 100 turns · 6 tools, MCP none",
+     "at": "2026-11-10T00:09:33.092Z"
     },
     {
      "text": "PR #419 open. UI Review screenshots still owed: the headless session had no console running on the branch to capture (Activity rows with faces, Who does what, profile Jobs + history, Run by chip; desktop + phone).",
