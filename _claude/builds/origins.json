@@ -1559,6 +1559,18 @@
    "from": "detail",
    "addenda": []
   },
+  "conversation-rag-index-every-voice-chat-session": {
+   "said": "You better make some type of RAG database for this conversation.",
+   "at": "2026-11-10T16:50:14.626Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "crew-live": {
    "said": "Ping Paulie. Console plugin 'Crew' listing every agent currently working with exactly what each is doing, live: avatar, status, build + step, model, live timer, live cost, tokens, files touched, PR. Expanded: what I'm doing now (from stream events, no LLM), step list, files with live worktree diff, recent tool calls with cost, Terminal/Session browser links, stop. Off the clock section + totals. Shared AgentAvatar framework component + agent-avatar asset used across the console, agent context menu items. Zero tokens; commands as REST+MCP+CLI. Reuses headless meters (headless-tabs), headless events/stream logs, agent-swarm roster, builds store.",
    "at": "2026-11-03",

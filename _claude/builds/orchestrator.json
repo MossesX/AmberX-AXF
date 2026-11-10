@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T16:49:15.774Z",
+ "updatedAt": "2026-11-10T16:50:16.363Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -86759,6 +86759,37 @@
    "origin": {
     "said": "You're the one who knows. Tell me what's wrong.",
     "at": "2026-11-10T16:47:11.863Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "conversation-rag-index-every-voice-chat-session",
+   "title": "Conversation RAG: index every voice/chat session with Brett (decisions, rules, requests) into a searchable store every agent reads",
+   "category": "",
+   "detail": "Builds on session-transcripts-api. Ingest every session transcript (AmberX recorder + faster-whisper, Claude chats/exports) into a local RAG index (chunked, embedded, tagged by date, topic, build ids). Extract standing rules and decisions into a rules ledger the orchestrator and every brief load automatically. Searchable from the new search plugin and by API. No paid API: local embeddings by default; AI use behind its switch.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T16:50:14.626Z",
+   "updatedAt": "2026-11-10T16:50:14.626Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "You better make some type of RAG database for this conversation.",
+    "at": "2026-11-10T16:50:14.626Z",
     "source": "",
     "session": "",
     "link": "",

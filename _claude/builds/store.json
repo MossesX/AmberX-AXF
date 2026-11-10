@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2487,
- "updatedAt": "2026-11-10T16:49:15.774Z",
+ "rev": 2488,
+ "updatedAt": "2026-11-10T16:50:16.363Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -140439,6 +140439,55 @@
    "kind": "build",
    "planRef": "",
    "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "conversation-rag-index-every-voice-chat-session",
+   "title": "Conversation RAG: index every voice/chat session with Brett (decisions, rules, requests) into a searchable store every agent reads",
+   "category": "",
+   "detail": "Builds on session-transcripts-api. Ingest every session transcript (AmberX recorder + faster-whisper, Claude chats/exports) into a local RAG index (chunked, embedded, tagged by date, topic, build ids). Extract standing rules and decisions into a rules ledger the orchestrator and every brief load automatically. Searchable from the new search plugin and by API. No paid API: local embeddings by default; AI use behind its switch.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T16:50:14.626Z",
+   "updatedAt": "2026-11-10T16:50:14.626Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "You better make some type of RAG database for this conversation.",
+    "at": "2026-11-10T16:50:14.626Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 561
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
