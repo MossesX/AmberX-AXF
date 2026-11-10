@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T20:40:40.844Z",
+ "updatedAt": "2026-11-10T20:41:05.633Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -89109,7 +89109,7 @@
    "pr": "#469",
    "priority": "P1",
    "createdAt": "2026-11-10T16:39:09.087Z",
-   "updatedAt": "2026-11-10T20:40:38.511Z",
+   "updatedAt": "2026-11-10T20:40:40.910Z",
    "builtAt": "",
    "notes": [
     {
@@ -89143,6 +89143,10 @@
     {
      "text": "Session on mossesx-max- ended (exit 0) with 8 steps left: back in the Queue (run 1).",
      "at": "2026-11-10T20:40:09.960Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-molly-flagship-skin-premium-sellable-uncluttered--gina, own login copy)",
+     "at": "2026-11-10T20:40:40.910Z"
     },
     {
      "text": "Started run 2 on mossesx-max- (Opus, Phase 2): axf-molly-flagship-skin-premium-sellable-uncluttered--gina.",

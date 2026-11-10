@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2795,
- "updatedAt": "2026-11-10T20:40:40.844Z",
+ "rev": 2796,
+ "updatedAt": "2026-11-10T20:41:05.633Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -146186,7 +146186,7 @@
    "pr": "#469",
    "priority": "P1",
    "createdAt": "2026-11-10T16:39:09.087Z",
-   "updatedAt": "2026-11-10T20:40:38.511Z",
+   "updatedAt": "2026-11-10T20:40:40.910Z",
    "builtAt": "",
    "notes": [
     {
@@ -146222,6 +146222,10 @@
      "at": "2026-11-10T20:40:09.960Z"
     },
     {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-molly-flagship-skin-premium-sellable-uncluttered--gina, own login copy)",
+     "at": "2026-11-10T20:40:40.910Z"
+    },
+    {
      "text": "Started run 2 on mossesx-max- (Opus, Phase 2): axf-molly-flagship-skin-premium-sellable-uncluttered--gina.",
      "at": "2026-11-10T20:40:38.511Z"
     }
@@ -146244,11 +146248,11 @@
     "queuedAt": "2026-11-10T16:39:10.516Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-molly-flagship-skin-premium-sellable-uncluttered--gina",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-10T20:40:33.524Z",
-    "runs": 2,
+    "model": "Fable",
+    "launchedAt": "2026-11-10T19:39:11.590Z",
+    "runs": 1,
     "lastRun": {
      "at": "2026-11-10T20:40:08.508Z",
      "exit": 0,
@@ -146265,9 +146269,9 @@
      "note": "Split by Claude into 12 steps (4 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- ended (exit 0) with 8 steps left: back in the Queue (run 1).",
     "route": "",
-    "dispatchedAt": "2026-11-10T20:40:33.524Z",
+    "dispatchedAt": "2026-11-10T19:39:11.590Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -146276,7 +146280,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-10T20:40:33.524Z"
+    "pickedAt": "2026-11-10T19:39:11.590Z"
    },
    "steps": [
     {
