@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3038,
- "updatedAt": "2026-11-10T23:42:19.538Z",
+ "rev": 3039,
+ "updatedAt": "2026-11-10T23:43:03.970Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -5486,9 +5486,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -6433,9 +6431,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -6886,9 +6882,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -7576,9 +7570,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -8047,9 +8039,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -9431,9 +9421,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -12269,9 +12257,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -15007,9 +14993,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -19091,9 +19075,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -19776,9 +19758,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -25584,9 +25564,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -25842,9 +25820,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -25967,9 +25943,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -26221,9 +26195,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -26453,9 +26425,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -26795,9 +26765,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -26983,9 +26951,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -27149,9 +27115,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -27381,9 +27345,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -27833,9 +27795,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -28318,9 +28278,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -28528,9 +28486,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -28738,9 +28694,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -28948,9 +28902,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -29158,9 +29110,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -29368,9 +29318,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -29578,9 +29526,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -29788,9 +29734,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -29998,9 +29942,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -30208,9 +30150,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -30418,9 +30358,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -30628,9 +30566,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -30816,9 +30752,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -40463,9 +40397,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -41240,9 +41172,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -41714,9 +41644,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -42523,9 +42451,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -42918,9 +42844,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -43369,9 +43293,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -43607,9 +43529,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -51310,9 +51230,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -52496,9 +52414,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -66739,9 +66655,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -72071,9 +71985,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -73376,9 +73288,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -74069,9 +73979,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -75759,9 +75667,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -79823,9 +79729,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -81826,9 +81730,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -86664,9 +86566,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -89171,9 +89071,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -90541,9 +90439,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -91259,9 +91155,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -93646,9 +93540,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -94334,9 +94226,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -95306,9 +95196,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -95524,9 +95412,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -96051,9 +95937,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -96389,9 +96273,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -97187,9 +97069,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -97376,9 +97256,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -97557,9 +97435,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -97863,9 +97739,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -99153,9 +99027,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -102014,9 +101886,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -106340,9 +106210,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -107054,9 +106922,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -107241,9 +107107,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -107449,9 +107313,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -107634,9 +107496,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -107854,9 +107714,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -109398,9 +109256,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -110032,9 +109888,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -111187,9 +111041,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -111549,9 +111401,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -111834,9 +111684,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -112030,9 +111878,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -112559,9 +112405,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -113069,9 +112913,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -115498,9 +115340,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -115632,9 +115472,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -116472,9 +116310,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -116832,9 +116668,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -116971,9 +116805,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -117426,9 +117258,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -117591,9 +117421,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -118052,9 +117880,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -118463,9 +118289,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -118663,9 +118487,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -118877,9 +118699,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -120611,9 +120431,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -120880,9 +120698,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-10T23:13:17.993Z",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": "2026-11-10T23:13:17.993Z"
    },
    "steps": [
     {
@@ -121247,9 +121063,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -121412,9 +121226,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -121980,9 +121792,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -122432,9 +122242,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -122988,9 +122796,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -123778,9 +123584,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -124074,9 +123878,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -124422,9 +124224,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -124675,9 +124475,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -124878,9 +124676,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -125132,9 +124928,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -125310,9 +125104,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -125792,9 +125584,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -125969,9 +125759,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -126154,9 +125942,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -126319,9 +126105,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -126488,9 +126272,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -126653,9 +126435,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -126818,9 +126598,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -127149,9 +126927,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -127314,9 +127090,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -127479,9 +127253,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -128316,9 +128088,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -128506,9 +128276,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -128691,9 +128459,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -128856,9 +128622,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -129031,9 +128795,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -129196,9 +128958,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -129365,9 +129125,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -129900,9 +129658,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -130210,9 +129966,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -130714,9 +130468,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -131166,9 +130918,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -131319,9 +131069,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -131428,9 +131176,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -131515,9 +131261,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -131602,9 +131346,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -133564,9 +133306,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -135447,9 +135187,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -136656,9 +136394,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -137378,9 +137114,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -137840,9 +137574,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -138193,9 +137925,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -138349,9 +138079,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -138847,9 +138575,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -138991,9 +138717,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -140724,9 +140448,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -141054,9 +140776,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -141840,9 +141560,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -142766,9 +142484,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -143260,9 +142976,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -143529,9 +143243,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -143873,9 +143585,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -144243,9 +143953,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -144787,9 +144495,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -146082,9 +145788,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -146593,9 +146297,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -146938,9 +146640,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -148230,9 +147930,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -148426,9 +148124,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -149175,9 +148871,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -149656,9 +149350,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -150131,9 +149823,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -150398,9 +150088,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -150659,9 +150347,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -150811,9 +150497,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -150963,9 +150647,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -151115,9 +150797,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -151271,9 +150951,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -151427,9 +151105,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -151583,9 +151259,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -151739,9 +151413,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -151895,9 +151567,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -152035,9 +151705,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -152553,9 +152221,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -153003,9 +152669,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -153159,9 +152823,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -153315,9 +152977,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -153471,9 +153131,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -153679,9 +153337,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -153890,9 +153546,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-10T23:23:12.403Z",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": "2026-11-10T23:23:12.403Z"
    },
    "steps": [
     {
@@ -154105,9 +153759,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-10T23:21:13.313Z",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": "2026-11-10T23:21:13.313Z"
    },
    "steps": [
     {
@@ -154297,9 +153949,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -154404,7 +154054,7 @@
    "pr": "#483",
    "priority": "P0",
    "createdAt": "2026-11-10T21:37:39.627Z",
-   "updatedAt": "2026-11-10T23:33:30.995Z",
+   "updatedAt": "2026-11-10T23:43:01.287Z",
    "builtAt": "2026-11-10T23:28:08.303Z",
    "notes": [
     {
@@ -154462,6 +154112,10 @@
     {
      "text": "Headless run axf-gizmo-opens-by-voice-link-amberx-web-app-android--earl: brief only · start 10.8K tokens ($0.03) · cost $4.92 · 130 turns · 6 tools, MCP none",
      "at": "2026-11-10T23:28:25.491Z"
+    },
+    {
+     "text": "Headless run axf-gizmo-opens-by-voice-link-amberx-web-app-android--sully: brief only · start 11.1K tokens ($0.03) · cost $2.10 · 27 turns · 6 tools, MCP none",
+     "at": "2026-11-10T23:43:01.287Z"
     }
    ],
    "approvals": [],
@@ -154508,9 +154162,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-10T23:26:11.877Z",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": "2026-11-10T23:26:11.877Z"
    },
    "steps": [
     {
@@ -154591,7 +154243,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -154664,9 +154316,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -154820,9 +154470,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -154976,9 +154624,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -155132,9 +154778,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -155288,9 +154932,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -155503,9 +155145,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-10T23:37:53.361Z",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": "2026-11-10T23:37:53.361Z"
    },
    "steps": [
     {
@@ -155659,9 +155299,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -155815,9 +155453,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -155971,9 +155607,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -156127,9 +155761,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -156278,9 +155910,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -156429,9 +156059,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -156580,9 +156208,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -156731,9 +156357,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -156905,9 +156529,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -157075,9 +156697,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-10T23:38:03.674Z",
-    "openAtLaunch": 0,
-    "earlyStops": 0
+    "pickedAt": "2026-11-10T23:38:03.674Z"
    },
    "steps": [
     {
