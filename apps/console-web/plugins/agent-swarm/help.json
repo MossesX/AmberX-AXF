@@ -38,6 +38,18 @@
         "text": "Previews brief. Part of Agent swarm.",
         "kind": "button",
         "draft": true
+      },
+      {
+        "target": "agent-swarm.tabs:roles",
+        "title": "Who does what",
+        "text": "Every job in the system (the orchestrator, the dispatcher, each app, each kind of action) and the employee who holds it. Tap a face for their profile; pick someone else to reassign the job.",
+        "kind": "tab"
+      },
+      {
+        "target": "agent-swarm.orchestrator",
+        "title": "Run by",
+        "text": "The employee who runs the orchestrator. Tap for their profile: jobs, current work and history.",
+        "kind": "button"
       }
     ],
     "intros": []

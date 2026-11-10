@@ -26,7 +26,7 @@ import { appMenu } from './menu';
 
 const ID = 'ai.amberx.axf.console.activity';
 const FOLDER = 'activity';
-const VERSION = '0.4.0';
+const VERSION = '0.5.0';
 const POLL_MS = 4_000;
 const DONE_FLASH_MS = 20_000;
 const ACTIVE = new Set(['queued', 'running', 'waiting']);

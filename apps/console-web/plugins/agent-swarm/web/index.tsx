@@ -5,6 +5,7 @@ import { FOLDER, SwarmCostChip, SwarmPage } from './ui';
 import { COLOR_BY_VIBE_ACTION, KEYS } from './chat-settings';
 import { VIBE_COLORS } from './swarm-core.mjs';
 import { appMenu } from './menu';
+import { OrchestratorChip } from './roles';
 import { PROFILE_EVENT, ROLES_EVENT } from './cards';
 import { writeLocal } from '@console/api';
 
@@ -16,7 +17,7 @@ function Desks() {
 export const plugin: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.agent-swarm',
   label: 'Agent swarm',
-  version: '0.2.0',
+  version: '0.3.0',
   register(rt) {
     // an agent's employee card (profile: info, stats, pay, history) from anywhere: agent-swarm.profile:<agent id>
     rt.actions.register('agent-swarm.profile', ([id = '']) => {
@@ -39,7 +40,11 @@ export const plugin: AxfWebLibrary = {
   appMenu,
   nav: { label: 'Builds', items: [{ id: 'agent-swarm', label: 'Agent swarm', icon: 'user', view: 'agent-swarm' }] },
   // the orchestrator's (and every Builds page's) toolbar shows what the swarm has spent
-  slots: { 'builds.toolbar': [{ id: 'agent-swarm.cost', order: 30, render: () => <SwarmCostChip /> }] },
+  // and who runs the orchestrator (Who does what), their face opening their profile
+  slots: { 'builds.toolbar': [
+    { id: 'agent-swarm.cost', order: 30, render: () => <SwarmCostChip /> },
+    { id: 'agent-swarm.orchestrator', order: 20, render: () => <OrchestratorChip /> },
+  ] },
   // the chat window's right-click menu: Color by vibe, with its check mark
   contextMenu: [{ id: 'agent-swarm.chat', target: 'agent-swarm-chat', items: [{ id: 'agent-swarm.color-by-vibe', label: 'Color by vibe', icon: 'palette', action: COLOR_BY_VIBE_ACTION, checked: `setting:${KEYS.colorByVibe}` }] }],
   settings: [{

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { AgentAvatar, Button, Chip, Icon, SelectField } from '@console/axf/react';
+import { AgentAvatar, Button, Chip, Icon, SelectField, useRuntime } from '@console/axf/react';
 import { api, fmtTime, type Agent, type Res, type SwarmState } from './ui-types';
 
 /*
@@ -105,5 +105,22 @@ export function ProfileJobs({ a, onRoles }: { a: Agent; onRoles: () => void }) {
         {h && h.reassignments.length > 0 && <p className="fx-muted fx-small">{h.reassignments.length} reassignment(s) involve them (Who does what → Reassignments).</p>}
       </section>
     </>
+  );
+}
+
+/**
+ * The Builds pages' toolbar (slot builds.toolbar): who runs the orchestrator, with their face (Brett, Nov 9 2026: "The
+ * orchestrator has somebody who runs it, one of my employees"). Tap: their profile.
+ */
+export function OrchestratorChip() {
+  const rt = useRuntime();
+  const { board } = useBoard();
+  const onAgent = (id: string) => void rt.actions.dispatch(`agent-swarm.profile:${id}`, { runtime: rt });
+  const r = board?.roles.find((x) => x.id === 'orchestrator');
+  if (!r) return null;
+  return (
+    <Button title={`${r.holderName} runs the orchestrator: open their profile`} onClick={() => onAgent(r.holder)}>
+      <AgentAvatar info={{ id: r.holder, name: r.holderName, role: r.holderTitle }} size="small" noMenu /> Run by {r.holderName}
+    </Button>
   );
 }

@@ -144,6 +144,12 @@
         "text": "Shows “Activity (what’s in progress)”. Part of Activity banner.",
         "kind": "menu-item",
         "draft": true
+      },
+      {
+        "target": "axp-activity__who",
+        "title": "Who did it",
+        "text": "The employee who did this, like the sender of a text message. Tap their face for their profile: their jobs, what they are on now and everything they did.",
+        "kind": "button"
       }
     ],
     "intros": []

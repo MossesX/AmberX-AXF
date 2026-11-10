@@ -116,9 +116,31 @@ build steps.
 - `due [--run]` and `event <name> [--run]` start scheduled and event jobs (cron is not installed by the plugin).
 - The Jobs tab replaced the old tab name for build planning, which is now **Build plan**.
 
+## Who does what (crew-roles@1, Nov 9 2026)
+
+Brett: "Assign employees to every single type of action and app, so I can understand easily what's what … And I need a
+way to see who has which job." Every role has one employee who holds it:
+
+- **Catalogue** `agents/roles.json`: the orchestrator (Ozzie Orchestrator runs it), the dispatcher (Dispatch Dot), each
+  app (Dev Console, AmberX, Molly, axHub, VoiceVault, Walkthrough Studio, Expenses) and each kind of action (builds,
+  approvals, fixes/CI, deploys, accounts, notifications, git/merges, landing, AI replies, tests, screenshots, site
+  checks, banner cleanup, themes, docs). Ten role holders were hired for it (home skill `crew-roles`, `jobsOnly`): they
+  never take build steps or job-type runs. Existing crew hold the rest.
+- **Who did it**: `web/roles-core.mjs` resolves an Activity Monitor entry to its employee: a crew member the entry names
+  (`by`, `agent`, "Agent: Name") wins; else the first role whose id prefix, then source, then kind, then a whole word in
+  the title fits; else the orchestrator. Capability `axf.crew-roles@1` (`annotate(items)`, `board()`) sets `actor` on
+  every Activity banner item and logs each new entry state to that employee's history (`activity.jsonl`).
+- **Board**: Breakroom → Who does what: every role, its holder's face (tap: profile), a picker to reassign. Profiles show
+  the roles held (Jobs) and the full Activity history. Reassignments (`roles.json` in the data folder) are kept with who
+  had it before and are posted in the group chat. The Builds toolbar shows who runs the orchestrator.
+- **API**: REST `GET roles`, `POST roles/assign {role, agent, note?}`, `GET roles/who?source=&kind=&title=&id=&by=`,
+  `GET agents/{agent}/history`; the same as plugin commands (`roles`, `assign-role`, `who-did`, `agent-history`) for the
+  console MCP and AmberX voice; CLI `swarm.mjs roles | assign <role> <agent> [note] | who '<json>' [--record] | history
+  <agent>`; deep links: console actions `agent-swarm.roles` (the board) and `agent-swarm.profile:<agent>`.
+
 ## Files
 
-- Code: this folder. Data: `.axf-console/plugins/agent-swarm/` (`state.json`, `runs.json`, `merges.json`,
+- Code: this folder. Data: `.axf-console/plugins/agent-swarm/` (`state.json`, `runs.json`, `merges.json`, `roles.json`, `activity.jsonl`,
   `pilot-*.json`, `worktrees/`); the read-only chat mirror on the hub (`agent-swarm/chats/` in amberx-axf `_data`).
 - Self-test: `node apps/console-web/plugins/agent-swarm/test.mjs`.
 - Remove: `node apps/console-web/plugins/agent-swarm/uninstall.mjs --all`.
