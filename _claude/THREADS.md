@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 16:45 UTC · `claude-md-standing-rule-be-proactive-bring-up-th` added (0 steps) (all) · console
 - 2026-11-10 16:45 UTC · `claude-md-standing-rule-be-proactive-bring-up-th` → queued, note (all) · console
 - 2026-11-10 16:46 UTC · `enforce-the-merge-queue-every-finished-build-goe` note (all) · orchestrator
 - 2026-11-10 16:47 UTC · `fix-the-orchestrator-s-splitter-claude-print-get` added (0 steps) (all) · console
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 20:27 UTC · `inline-element-editing-plugin-right-click-any-el` s4 done (all) · orchestrator
 - 2026-11-10 20:29 UTC · `inline-element-editing-plugin-right-click-any-el` → queued, note (all) · pipeline
 - 2026-11-10 20:29 UTC · `inline-element-editing-plugin-right-click-any-el` s5 done (all) · orchestrator
+- 2026-11-10 20:30 UTC · `inline-element-editing-plugin-right-click-any-el` s5 done, → running (all) · foreign-write
 
 ## Token passes (log)
 

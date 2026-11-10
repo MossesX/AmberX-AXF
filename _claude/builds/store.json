@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2787,
- "updatedAt": "2026-11-10T20:29:51.273Z",
+ "rev": 2788,
+ "updatedAt": "2026-11-10T20:30:13.576Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -146668,12 +146668,19 @@
     "queuedAt": "2026-11-10T16:39:14.760Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-inline-element-editing-plugin-right-click-any-el--joey",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "launchedAt": "2026-11-10T19:45:20.208Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-10T20:29:04.192Z",
+     "exit": 0,
+     "outcome": "requeued",
+     "stepsLeft": 9,
+     "account": "mossesx-max-",
+     "session": "axf-inline-element-editing-plugin-right-click-any-el--joey"
+    },
     "split": {
      "at": "2026-11-10T18:00:14.834Z",
      "by": "fix-the-orchestrator-s-splitter-claude-print-get",
@@ -146682,14 +146689,14 @@
      "note": "Split by Claude into 13 steps (3 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- ended (exit 0) with 9 steps left: back in the Queue (run 1).",
     "route": "",
     "dispatchedAt": "2026-11-10T19:45:20.208Z",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T19:45:07.250Z",
+     "at": "2026-11-10T20:29:05.512Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -146825,7 +146832,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-10T18:00:14.834Z",
-     "updatedAt": "2026-11-10T20:29:49.996Z"
+     "updatedAt": "2026-11-10T20:30:08.871Z"
     },
     {
      "id": "s6",
@@ -147047,7 +147054,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
