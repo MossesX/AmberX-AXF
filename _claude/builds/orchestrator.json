@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T03:33:25.575Z",
+ "updatedAt": "2026-11-10T03:34:06.190Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -66643,7 +66643,7 @@
    "branch": "claude/amber-chat-asset",
    "pr": "",
    "createdAt": "2026-11-07T12:30:40.602Z",
-   "updatedAt": "2026-11-07T13:12:24.625Z",
+   "updatedAt": "2026-11-10T03:34:03.927Z",
    "builtAt": "2026-11-07T13:12:23.670Z",
    "notes": [
     {
@@ -66653,6 +66653,10 @@
     {
      "text": "Built on claude/amber-chat-asset (3a48beeb0), committed, not pushed (brief: commit, don't push). UI Review r-20261107-2a4f80e8 holds the PR until Brett picks a look. Report _claude/builds/reports/amber-chat-asset.md",
      "at": "2026-11-07T13:12:24.625Z"
+    },
+    {
+     "text": "Automatic fix (self-heal, no AI): Removed stale git lock /opt/axf/.git/worktrees/amber-chat-asset/index.lock (stale)",
+     "at": "2026-11-10T03:34:03.927Z"
     }
    ],
    "approvals": [
@@ -67714,7 +67718,7 @@
    "branch": "claude/ui-api-parity-rule-r3",
    "pr": "#393",
    "createdAt": "2026-11-07T16:09:37.164Z",
-   "updatedAt": "2026-11-08T17:45:50.327Z",
+   "updatedAt": "2026-11-10T03:34:03.927Z",
    "builtAt": "2026-11-07T16:58:59.435Z",
    "notes": [
     {
@@ -67728,6 +67732,10 @@
     {
      "text": "Never pushed until Nov 8 2026: merged into claude/ui-api-parity-rule-r3 and lands with ui-api-parity-rule in PR #393 (still waits on UI Review r-20261107-e7b50396).",
      "at": "2026-11-08T17:45:50.327Z"
+    },
+    {
+     "text": "Automatic fix (self-heal, no AI): Removed stale git lock /opt/axf/.git/worktrees/full-api-control/index.lock (stale)",
+     "at": "2026-11-10T03:34:03.927Z"
     }
    ],
    "approvals": [],
@@ -71304,7 +71312,7 @@
    "branch": "claude/account-failover-notify",
    "pr": "#392",
    "createdAt": "2026-11-08T16:59:53.289Z",
-   "updatedAt": "2026-11-08T17:27:08.719Z",
+   "updatedAt": "2026-11-10T03:34:03.927Z",
    "builtAt": "2026-11-08T17:26:34.358Z",
    "notes": [
     {
@@ -71314,6 +71322,10 @@
     {
      "text": "Worker accounts: account-3: 1 run, $12.90",
      "at": "2026-11-08T17:27:08.719Z"
+    },
+    {
+     "text": "Automatic fix (self-heal, no AI): Removed stale git lock /opt/axf/.git/worktrees/account-failover-notify/index.lock (stale)",
+     "at": "2026-11-10T03:34:03.927Z"
     }
    ],
    "approvals": [],
@@ -75789,9 +75801,14 @@
    "pr": "#398",
    "priority": "P0",
    "createdAt": "2026-11-08T22:30:52.988Z",
-   "updatedAt": "2026-11-08T22:46:46.787Z",
+   "updatedAt": "2026-11-10T03:34:03.927Z",
    "builtAt": "2026-11-08T22:46:45.882Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Automatic fix (self-heal, no AI): Removed stale git lock /opt/axf/.git/worktrees/tabs-api-control/index.lock (stale)",
+     "at": "2026-11-10T03:34:03.927Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -79503,7 +79520,7 @@
    "pr": "#429",
    "priority": "P0",
    "createdAt": "2026-11-09T17:52:45.295Z",
-   "updatedAt": "2026-11-10T02:32:16.216Z",
+   "updatedAt": "2026-11-10T03:34:03.927Z",
    "builtAt": "",
    "notes": [
     {
@@ -79589,6 +79606,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-10T02:32:16.216Z"
+    },
+    {
+     "text": "Automatic fix (self-heal, no AI): Removed stale git lock /opt/axf/.git/worktrees/skins-own-everything-colour-theme-swaps-independ/index.lock (stale)",
+     "at": "2026-11-10T03:34:03.927Z"
     }
    ],
    "approvals": [],

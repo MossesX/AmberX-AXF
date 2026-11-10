@@ -770,11 +770,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 20:22 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` branch claude/amberx-floating-toolbar-always-on-top-mic-approvals-build-status (all) · pipeline
-- 2026-11-09 20:22 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` note (all) · orchestrator
-- 2026-11-09 20:23 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` → queued, note (all) · pipeline
-- 2026-11-09 20:23 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` → running, note (all) · pipeline
-- 2026-11-09 20:23 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` note (all) · orchestrator
 - 2026-11-09 20:24 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` → queued, note (all) · pipeline
 - 2026-11-09 20:25 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` → running, note (all) · pipeline
 - 2026-11-09 20:25 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` note (all) · orchestrator
@@ -1170,6 +1165,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 03:33 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` → running, note (all) · pipeline
 - 2026-11-10 03:33 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` branch claude/console-speed-profile-and-cut-axf-console-cpu-pl (all) · pipeline
 - 2026-11-10 03:33 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` note (all) · orchestrator
+- 2026-11-10 03:34 UTC · `amber-chat-asset` note (all) · self-heal
+- 2026-11-10 03:34 UTC · `full-api-control` note (all) · self-heal
+- 2026-11-10 03:34 UTC · `account-failover-notify` note (all) · self-heal
+- 2026-11-10 03:34 UTC · `tabs-api-control` note (all) · self-heal
+- 2026-11-10 03:34 UTC · `skins-own-everything-colour-theme-swaps-independ` note (all) · self-heal
 
 ## Token passes (log)
 
