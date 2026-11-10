@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2551,
- "updatedAt": "2026-11-10T17:26:06.971Z",
+ "rev": 2552,
+ "updatedAt": "2026-11-10T17:26:16.747Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -140538,15 +140538,15 @@
    "title": "Fix the orchestrator's splitter: claude --print gets no prompt, so every build falls back to rule-based steps",
    "category": "",
    "detail": "Every split note says: 'claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print'. The splitter launches claude -p without passing the prompt, so all builds are split one-step-per-line by rules. Fix the invocation (pipe the prompt on stdin or pass it as the argument), add a test, then re-split builds whose steps were 'made by rules' and are not started. Also check the repeated worktree 'unable to write file _claude/builds/journal/*.jsonl' launch failures (permissions/disk) and fix them. Notify on AmberX.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/fix-the-orchestrator-s-splitter-claude-print-get",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T16:47:11.863Z",
-   "updatedAt": "2026-11-10T16:50:33.567Z",
+   "updatedAt": "2026-11-10T17:26:13.179Z",
    "builtAt": "",
    "notes": [
     {
@@ -140556,6 +140556,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T16:50:33.567Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-fix-the-orchestrator-s-splitter-claude-print-get--lenny.",
+     "at": "2026-11-10T17:26:11.843Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-the-orchestrator-s-splitter-claude-print-get--lenny, own login copy)",
+     "at": "2026-11-10T17:26:13.179Z"
     }
    ],
    "approvals": [],
@@ -140575,12 +140583,12 @@
    "pipeline": {
     "queuedAt": "2026-11-10T16:47:13.180Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-fix-the-orchestrator-s-splitter-claude-print-get--lenny",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-10T17:26:11.553Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T16:50:33.567Z",
@@ -140590,9 +140598,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "2026-11-10T17:26:11.553Z"
    },
    "steps": [
     {
@@ -140673,7 +140681,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

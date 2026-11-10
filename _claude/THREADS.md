@@ -771,9 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 04:15 UTC · `split-builds-pages-build-manager-pending-complet-3` s7 done (all) · orchestrator
-- 2026-11-10 04:15 UTC · `split-builds-pages-build-manager-pending-complet-3` s8 done (all) · orchestrator
-- 2026-11-10 04:16 UTC · `split-builds-pages-build-manager-pending-complet-3` → queued, note (all) · pipeline
 - 2026-11-10 04:17 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` PR #439 (all) · builds-live
 - 2026-11-10 04:17 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` note (all) · orchestrator
 - 2026-11-10 04:17 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` s3 done, → built (all) · orchestrator
@@ -1171,6 +1168,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 17:25 UTC · `claude-md-standing-rule-be-proactive-bring-up-th` PR #458 (all) · builds-live
 - 2026-11-10 17:25 UTC · `claude-md-standing-rule-be-proactive-bring-up-th` s3 done, → built (all) · orchestrator
 - 2026-11-10 17:26 UTC · `claude-md-standing-rule-be-proactive-bring-up-th` note (all) · orchestrator
+- 2026-11-10 17:26 UTC · `fix-the-orchestrator-s-splitter-claude-print-get` → running, note (all) · pipeline
+- 2026-11-10 17:26 UTC · `fix-the-orchestrator-s-splitter-claude-print-get` branch claude/fix-the-orchestrator-s-splitter-claude-print-get (all) · pipeline
+- 2026-11-10 17:26 UTC · `fix-the-orchestrator-s-splitter-claude-print-get` note (all) · orchestrator
 
 ## Token passes (log)
 
