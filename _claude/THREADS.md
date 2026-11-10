@@ -772,8 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 18:02 UTC · `remove-the-old-theme-manager-style-and-layout-se` note (all) · builds-live
-- 2026-11-10 18:02 UTC · `amberx-android-web-view-top-banner-hidden-behind` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-10 18:02 UTC · `amberx-android-web-view-top-banner-hidden-behind` note (all) · builds-live
 - 2026-11-10 18:03 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-10 18:03 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · builds-live
@@ -1172,6 +1170,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 23:09 UTC · `make-hulu-actually-take-builds-dispatcher-counts` → running, note (all) · pipeline
 - 2026-11-10 23:09 UTC · `make-hulu-actually-take-builds-dispatcher-counts` branch claude/make-hulu-actually-take-builds-dispatcher-counts (all) · pipeline
 - 2026-11-10 23:09 UTC · `make-hulu-actually-take-builds-dispatcher-counts` note (all) · orchestrator
+- 2026-11-10 22:10 UTC · `molly-sign-in-once` s1 done (all) · orchestrator
+- 2026-11-10 22:10 UTC · `molly-sign-in-once` PR #477 (all) · builds-live
 
 ## Token passes (log)
 
