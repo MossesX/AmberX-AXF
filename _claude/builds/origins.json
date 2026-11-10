@@ -3460,6 +3460,18 @@
    "from": "detail",
    "addenda": []
   },
+  "self-healing-build-folders-auto-clear-stale-git": {
+   "said": "Anytime that happens, you gotta remove that. You guys have to deal with the problems. I can't have it just stop working every time something goes wrong. Put in the code: if something breaks, it needs to remove locks. Put it in the code so it doesn't rely on AI.",
+   "at": "2026-11-10T02:22:06.131Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "session-history": {
    "said": "a full-blown session browser for regular Claude sessions AND every headless agent run, monitoring in real time. Live grid, collapsible rows like every other grid: agent, build, job, model, status badge (running, done, failed, killed for budget), tokens, dollars, duration, started time; updates live. Expand a row: plain-English rundown of what it built and exactly what changed (item, what was wrong, before/after), taken from real commits and file changes. Tabs: Context (all text that flowed into its context and what it said back), Tools (every command and file edit), Conversation for regular sessions. Watch a running agent live and kill it. Links to PR/commit/file. Sort, search, filter. Built on Session check-in archive + Codebase changes log + the agent-swarm runner's JSON reports and stream logs. Prices everywhere: the row shows the run's exact total cost (from usage). Expanded 'what it did' shows a price next to every line (estimated: tokens of the turns that produced that change, labelled 'est.'). Context tab: cost per turn; Tools tab: cost per command. Totals at the bottom plus a per-model breakdown.",
    "at": "2026-10-30",

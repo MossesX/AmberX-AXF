@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2193,
- "updatedAt": "2026-11-10T02:21:14.196Z",
+ "rev": 2194,
+ "updatedAt": "2026-11-10T02:22:10.742Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -134402,6 +134402,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-10T02:20:05.157Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "self-healing-build-folders-auto-clear-stale-git",
+   "title": "Self-healing build folders: auto-clear stale git locks and stray files, plain script, no AI",
+   "category": "",
+   "detail": "Plain code (no AI, zero tokens), run by the dispatcher tick and before every launch, land and rerun. 1) Stale git locks: find index.lock, HEAD.lock, refs locks and worktree locks under /opt/axf/.git and every /root/axf-builds/* folder. If no live git process holds them and they're older than 2 minutes, remove them. 2) Stray files that block landing (assets.log, build logs, _claude/builds sync files): restore tracked ones and stash or ignore untracked ones, then retry the land automatically. 3) Crashed sessions: tmux or claude processes dead with the build marked running get reset and requeued (works with the reaper). 4) Every auto-fix is logged in the fix log and Automatic fixes notes, with an AmberX FYI. 5) Same guard after any git operation fails with a lock error: clear it and retry once. 6) Tests with fake locks and crashed runs. Same bug twice gets a guard, per it-has-to-work.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T02:22:06.131Z",
+   "updatedAt": "2026-11-10T02:22:06.131Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Anytime that happens, you gotta remove that. You guys have to deal with the problems. I can't have it just stop working every time something goes wrong. Put in the code: if something breaks, it needs to remove locks. Put it in the code so it doesn't rely on AI.",
+    "at": "2026-11-10T02:22:06.131Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 525
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
