@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 16:34 UTC · `molly-fable-version-the-one-interface-for-amberx` → queued, note (all) · console
 - 2026-11-10 16:36 UTC · `project-manager-every-project-its-own-console-in` s1 done, → running (all) · orchestrator
 - 2026-11-10 16:39 UTC · `molly-flagship-skin-premium-sellable-uncluttered` added (0 steps) (all) · console
 - 2026-11-10 16:39 UTC · `molly-flagship-skin-premium-sellable-uncluttered` → queued, note (all) · console
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 19:45 UTC · `inline-element-editing-plugin-right-click-any-el` branch claude/inline-element-editing-plugin-right-click-any-el (all) · pipeline
 - 2026-11-10 19:45 UTC · `inline-element-editing-plugin-right-click-any-el` note (all) · orchestrator
 - 2026-11-10 19:46 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` → pending, note (all) · reconciler
+- 2026-11-10 19:52 UTC · `full-api-cli-control-of-everything-plus-an-offli` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
