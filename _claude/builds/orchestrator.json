@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T04:28:25.580Z",
+ "updatedAt": "2026-11-10T04:28:47.898Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -83990,14 +83990,113 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T04:26:25.764Z",
-   "updatedAt": "2026-11-10T04:26:29.506Z",
+   "updatedAt": "2026-11-10T04:28:39.599Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T04:28:39.599Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
     "said": "Why, when it has a problem, when it gets rejected, aren't you just fixing it right away? I keep telling you over and over.",
     "at": "2026-11-10T04:26:25.764Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "vps.build_land, build_start, build_stop and build_clean reject names over 40 characters (^[a-z0-9][a-z0-9-]{0,39}$), but the orchestrator makes build IDs up to about 50 characters (e.g. demo-designer-finish-phase-2-s2-s3-resuming-from, skins-restyle-everything-badges-banner-and-every-visual-element). 1) In the axHub vps service, raise the name limit to match the orchestrator's longest IDs (at least 80), keeping the same safe character set. 2) If the orchestrator ever makes an ID the tools can't take, it shortens it consistently (folder, branch, tmux) instead of failing. 3) When build_land fails for any fixable reason (stray files, stale locks, name format), it fixes it and retries automatically, logging to the fix log. Real code clashes go to a conflict-fix build automatically. 4) Tests with long names. Repos: axHub (vps service config) and AmberX-AXF (orchestrator).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwa6wwmo01tqc9"
+    },
+    {
+     "id": "s2",
+     "text": "Why, when it has a problem, when it gets rejected, aren't you just fixing it right away? I keep telling you over and over.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwa6wwmo02lcvo"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/landing-tool-takes-long-build-names-and-auto-fix.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/landing-tool-takes-long-build-names-and-auto-fix.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwa6wwmo0397qq"
+    }
+   ]
+  },
+  {
+   "id": "auto-land-every-build-the-moment-it-finishes-red",
+   "title": "Auto-land every build the moment it finishes, redeploy the console on every land, and backfill the 134 unlanded",
+   "category": "",
+   "detail": "Plain code in the orchestrator dispatcher, no AI. 1) The moment a build's session finishes with its steps ticked and tests green, the orchestrator lands it straight away: clean sync files and stray logs, clear stale locks, merge origin/main, rerun the build's own tests, push to main. No waiting on a person or a later session. 2) UPDATE THE CONSOLE ON EVERY LAND: right after each push to main, trigger the console redeploy immediately (the same path as install-console.sh's auto-update, run now, not on the 5-minute timer), and rebuild any other app the change touched (AmberX web, axHub web, Molly and so on). Wait for it to come up healthy, then refresh open consoles. If the deploy fails, roll back to the last good image and queue a fix. 3) UI Review never blocks landing: screenshots and picks can follow after landing, and changes come as follow-up builds. 4) If main moved and tests fail after the merge, or there's a code clash, the orchestrator immediately queues a conflict-fix run on the same branch (top priority, any working account) and lands when green. It retries until it's on main. 5) Land in finish order, one at a time (a merge lock), so each lands on the newest main. Batch redeploys if several land within a minute. 6) Backfill now: land every finished-but-unlanded build (about 134), oldest first, skipping ones superseded or already on main, with conflict-fix runs where needed. 7) Each land and deploy shows in the Activity Monitor and fix log, with a phone FYI only for failures that need Brett. Tests with fake clashes and a fake failed deploy. Supersedes any auto-land pieces in other builds; don't duplicate.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T04:28:17.210Z",
+   "updatedAt": "2026-11-10T04:28:24.947Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T04:28:24.947Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "You realize when you don't merge stuff right away you have to pull in main again, and tests are gonna fail. Why do you not just merge this as soon as it's done? ... Right, so when something lands, update the console. Period.",
+    "at": "2026-11-10T04:28:17.210Z",
     "source": "",
     "session": "",
     "link": "",
