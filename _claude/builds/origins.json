@@ -2950,6 +2950,18 @@
    "from": "",
    "addenda": []
   },
+  "no-veto-timer-on-navigation-follow-amber-open-x": {
+   "said": "I don't want the timer on Follow Amber. Do stuff right away. If console's not open in Chrome, open it in Chrome and bring the page to the front. If Chrome's not in front, bring Chrome to the front and open it.",
+   "at": "2026-11-10T20:45:52.606Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "notes-tasks-calendar": {
    "said": "\"In the notes, task manager and to-do (one plugin), we're gonna add a calendar where we can set events and schedules. We can set weekly schedules. And it's gonna be hooked up to our Gmail / Google Calendar through axHub's MCP server.\"\n\nBase: branch claude/notes-tasks-sync (PR #363, shared notes-tasks plugin); merge it first, build on it.\n1. Calendar inside the notes-tasks plugin (console + AmberX): day / week / month / agenda views; events (time, location, notes, reminders); recurring + weekly schedules; tasks with due dates show on it.\n2. Two-way sync with Google Calendar through axHub's Google service (build axhub-google, queued). Until that lands, local calendar works on its own; sync switches on when the service exists.\n3. Reminders go through the console notifications engine (AmberX only delivers).\n4. REST/MCP/CLI + voice commands (UI registry).\n5. Tests, README, screenshots to UI Review, PR to the merge queue. Do NOT land directly.\n\nOne session, lean chain.",
    "at": "",
