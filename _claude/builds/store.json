@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2111,
- "updatedAt": "2026-11-10T00:36:18.178Z",
+ "rev": 2112,
+ "updatedAt": "2026-11-10T00:37:09.023Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -116724,7 +116724,7 @@
    "pr": "#421",
    "priority": "P0",
    "createdAt": "2026-11-08T00:52:07.400Z",
-   "updatedAt": "2026-11-10T00:36:13.510Z",
+   "updatedAt": "2026-11-10T00:37:06.232Z",
    "builtAt": "2026-11-10T00:36:13.510Z",
    "notes": [
     {
@@ -116754,6 +116754,10 @@
     {
      "text": "PR #421. All 5 steps done. Missing: UI Review desktop/phone shots of Live slots + Reaper log (the headless preview could not reach axHub without the console login). Overlaps open PRs #400/#406/#407 in pipeline.mjs / pipeline.tsx.",
      "at": "2026-11-10T00:35:49.432Z"
+    },
+    {
+     "text": "Session axf-real-time-slot-tracking-stale-data-reaper--rhonda on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-10T00:37:06.232Z"
     }
    ],
    "approvals": [],
@@ -116774,12 +116778,19 @@
     "queuedAt": "2026-11-10T00:14:53.325Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-real-time-slot-tracking-stale-data-reaper--rhonda",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-10T00:16:15.395Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-10T00:37:05.424Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-real-time-slot-tracking-stale-data-reaper--rhonda"
+    },
     "split": null,
     "splitRequested": "",
     "note": "",
@@ -116906,7 +116917,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {

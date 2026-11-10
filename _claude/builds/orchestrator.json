@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T00:36:18.178Z",
+ "updatedAt": "2026-11-10T00:37:09.023Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -70024,7 +70024,7 @@
    "pr": "#421",
    "priority": "P0",
    "createdAt": "2026-11-08T00:52:07.400Z",
-   "updatedAt": "2026-11-10T00:36:13.510Z",
+   "updatedAt": "2026-11-10T00:37:06.232Z",
    "builtAt": "2026-11-10T00:36:13.510Z",
    "notes": [
     {
@@ -70054,6 +70054,10 @@
     {
      "text": "PR #421. All 5 steps done. Missing: UI Review desktop/phone shots of Live slots + Reaper log (the headless preview could not reach axHub without the console login). Overlaps open PRs #400/#406/#407 in pipeline.mjs / pipeline.tsx.",
      "at": "2026-11-10T00:35:49.432Z"
+    },
+    {
+     "text": "Session axf-real-time-slot-tracking-stale-data-reaper--rhonda on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-10T00:37:06.232Z"
     }
    ],
    "approvals": [],
