@@ -276,6 +276,7 @@ jobs:
             npx -y tsx framework/spec/check-listeners.mts              # listeners lib (listener@1): cases.json replay (= Android ListenerRules), policy keys, backoff + give-up, silent restarts, yield, one mic owner, device doc, baked copies
             npx -y tsx framework/spec/check-terminal-nav.mts           # terminal sessions nav: search / filter / sort, mirror vs jump in, chat link guard
             npx -y tsx framework/spec/check-swarm.mts                  # agent swarm contracts (agent@1 … swarm-run@1): fixture replay, field-naming validators, model policy, schema snapshots, shipped roster, plugin uses the framework's
+            npx -y tsx framework/spec/check-agent-training.mts         # agent-training@1 + vocabulary-index@1: fixture replay, field-naming validators, job expansion, pinned agent-definition@1 constants, schema + snapshot current
             npx -y tsx framework/spec/check-help.mts                   # help@1 + Help mode: registry, fixture replay (auto ids, index, intros, coverage, ratchet), validators agree, every shipped pack, runtime switch
             npx -y tsx framework/spec/check-help-mode.mts              # Help mode in the DOM (jsdom): switch, hover / long-press / badge tooltips, dismiss, No help yet, What is this?, intro once per screen
             npx -y tsx framework/spec/check-brand.mts                  # logo-mark / animated-logo / icon-pack / branding rules, SVG output, starters

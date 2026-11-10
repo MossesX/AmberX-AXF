@@ -156,3 +156,15 @@ Web only (Android on hold), Kotlin twins when the Android side resumes:
 - `console.nav` act `refresh` and `console-command@1` op `refresh` (`hard?`).
 - `ui-choices@1` (`framework/core/ui-choices.mjs`): the `choices` and `singleOption` fields of ui-review-item@1.
 
+## Deferred: agent-training@1 + vocabulary-index@1 (Nov 10 2026)
+
+`framework/core/engines/agent-training-rules.mjs` (Fable; build `agent-manager-training-wizard-for-employee-agent` s1) is the
+training block every employee agent carries: data sources (website scopes, product catalogues, code by language, files,
+text, search, MCP), fetch method per source, processing and storage (RAG index / summaries), categories, and the outputs
+a run built and attached (tools, skills, persona, lingo, vocabulary index), referencing agent-definition@1 records and
+agent-skill@1 pages by id. Registry snapshot `schemas/agent-training.json` (with the empty block), schemas
+`schemas/json/agent-training.schema.json` + `vocabulary-index.schema.json`, fixture `spec/fixtures/agent-training.json`,
+check `spec/check-agent-training.mts`. The console's agent-manager (Python) copies the empty block from the snapshot onto
+every existing agent in `store.migrate()`. **Android twin deferred** (Android on hold): a Kotlin `AgentTrainingRules`
+replaying `agent-training.json` next to `Agents.kt`, so an Android host shows and edits the same block. <!-- axf-plugin:agent-manager -->
+

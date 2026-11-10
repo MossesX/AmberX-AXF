@@ -155,6 +155,8 @@ def upsert(coll: str, rec: dict[str, Any], *, origin: str | None = None) -> dict
         if origin is not None:
             out["origin"] = origin
         out.setdefault("origin", "user")
+        if coll == "agents" and not isinstance(out.get("training"), dict):  # every employee agent carries an agent-training@1 block
+            out["training"] = empty_training(iid)
         data[iid] = out
         save_items(coll, data)
         return out
@@ -213,6 +215,25 @@ def runs(kind: str = "") -> list[dict[str, Any]]:
     return [x for x in r if not kind or x.get("kind") == kind]
 
 
+# ---------------------------------------------------------------- training block (agent-training@1)
+
+TRAINING_TAG = "agent-training@1"
+_TRAINING_SNAPSHOT = ROOT / "framework" / "schemas" / "agent-training.json"
+
+
+def training_registry() -> dict[str, Any]:
+    """The agent-training@1 registry snapshot `axf schemas` writes (enums, limits, defaults and the empty block).
+    The rules live in framework/core/engines/agent-training-rules.mjs; this host copies, never re-implements."""
+    return _read(_TRAINING_SNAPSHOT, {})
+
+
+def empty_training(agent_id: str) -> dict[str, Any]:
+    """The empty training block every employee agent starts with (exactly the engine's `emptyTraining`)."""
+    block = deepcopy(training_registry().get("empty") or {"$axf": TRAINING_TAG, "status": "empty", "categories": [], "sources": [], "outputs": {}, "lastRun": None})
+    block["agentId"] = agent_id
+    return block
+
+
 # ---------------------------------------------------------------- migration
 
 def migrate() -> list[str]:
@@ -227,6 +248,7 @@ def migrate() -> list[str]:
             if not isinstance(raw, dict) or "items" not in raw:
                 continue
             changed = False
+            trained = 0
             for iid, rec in list(raw["items"].items()):
                 if coll == "tools" and "dangerous" not in rec:  # Opus 0.1.0 tools had no explicit flag
                     rec["dangerous"] = False
@@ -234,7 +256,11 @@ def migrate() -> list[str]:
                 if coll == "agents" and rec.get("memory") is None:
                     rec["memory"] = {}
                     changed = True
+                if coll == "agents" and not isinstance(rec.get("training"), dict):  # Nov 10 2026: every employee agent carries a training block
+                    rec["training"] = empty_training(iid)
+                    changed = True
+                    trained += 1
             if changed:
                 _write(p, {"$axf": f"agent-manager-{coll}@1", "items": raw["items"]})
-                done.append(f"{coll}: normalised {len(raw['items'])} records")
+                done.append(f"{coll}: normalised {len(raw['items'])} records" + (f", {trained} given an empty {TRAINING_TAG} block" if trained else ""))
     return done

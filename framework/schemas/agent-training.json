@@ -1,0 +1,249 @@
+{
+  "tags": {
+    "training": "agent-training@1",
+    "vocabulary": "vocabulary-index@1"
+  },
+  "idPattern": "^[a-z0-9][a-z0-9._-]{0,63}$",
+  "sourceTypes": [
+    "website",
+    "product",
+    "code",
+    "files",
+    "text",
+    "search",
+    "mcp"
+  ],
+  "fetchMethods": [
+    "firecrawl",
+    "http",
+    "repo",
+    "git",
+    "upload",
+    "paste",
+    "mcp"
+  ],
+  "fetchByType": {
+    "website": [
+      "firecrawl",
+      "http"
+    ],
+    "product": [
+      "firecrawl",
+      "http"
+    ],
+    "code": [
+      "repo",
+      "git",
+      "upload"
+    ],
+    "files": [
+      "upload",
+      "repo"
+    ],
+    "text": [
+      "paste"
+    ],
+    "search": [
+      "firecrawl"
+    ],
+    "mcp": [
+      "mcp"
+    ]
+  },
+  "codeLanguages": [
+    "react",
+    "typescript",
+    "javascript",
+    "python",
+    "kotlin",
+    "java",
+    "swift",
+    "go",
+    "rust",
+    "css",
+    "html",
+    "sql",
+    "shell",
+    "markdown",
+    "other"
+  ],
+  "categoryKinds": [
+    "product",
+    "code",
+    "docs",
+    "process",
+    "brand",
+    "support",
+    "people",
+    "custom"
+  ],
+  "storageModes": [
+    "rag",
+    "summaries",
+    "both",
+    "none"
+  ],
+  "indexTypes": [
+    "keyword",
+    "vector",
+    "hybrid"
+  ],
+  "extracts": [
+    "vocabulary",
+    "pairs",
+    "tools",
+    "skills",
+    "persona"
+  ],
+  "schedules": [
+    "manual",
+    "hourly",
+    "daily",
+    "weekly"
+  ],
+  "statuses": [
+    "empty",
+    "draft",
+    "ready",
+    "running",
+    "trained",
+    "stale",
+    "failed"
+  ],
+  "attachKinds": [
+    "vocabulary",
+    "pairs",
+    "tool",
+    "skill",
+    "skill-page",
+    "persona",
+    "lingo"
+  ],
+  "limits": {
+    "name": 120,
+    "description": 1000,
+    "label": 80,
+    "url": 2000,
+    "text": 30000,
+    "query": 400,
+    "categories": 40,
+    "keywords": 40,
+    "keyword": 40,
+    "sources": 40,
+    "include": 40,
+    "pattern": 400,
+    "productTypes": 40,
+    "productType": 80,
+    "languages": 20,
+    "paths": 40,
+    "files": 200,
+    "file": 400,
+    "categoryIds": 40,
+    "tokenEnv": 120,
+    "uri": 2000,
+    "tool": 120,
+    "toolIds": 60,
+    "skillIds": 60,
+    "skillPages": 60,
+    "lingoIds": 20,
+    "attached": 200,
+    "log": 60,
+    "logLine": 400,
+    "terms": 2000,
+    "term": 120,
+    "meaning": 400,
+    "termSources": 10
+  },
+  "ranges": {
+    "depth": [
+      0,
+      10
+    ],
+    "limit": [
+      1,
+      2000
+    ],
+    "chunkSize": [
+      300,
+      6000
+    ],
+    "overlap": [
+      0,
+      1000
+    ],
+    "maxItems": [
+      100,
+      200000
+    ]
+  },
+  "defaults": {
+    "processing": {
+      "chunkSize": 1200,
+      "overlap": 120,
+      "dedupe": true,
+      "summarize": false,
+      "extract": [
+        "vocabulary",
+        "pairs",
+        "skills"
+      ],
+      "embedProfile": ""
+    },
+    "storage": {
+      "mode": "rag",
+      "index": "hybrid",
+      "scope": "",
+      "maxItems": 20000,
+      "replace": true
+    },
+    "source": {
+      "depth": 2,
+      "limit": 50
+    }
+  },
+  "empty": {
+    "$axf": "agent-training@1",
+    "agentId": "",
+    "name": "",
+    "description": "",
+    "status": "empty",
+    "categories": [],
+    "sources": [],
+    "processing": {
+      "chunkSize": 1200,
+      "overlap": 120,
+      "dedupe": true,
+      "summarize": false,
+      "extract": [
+        "vocabulary",
+        "pairs",
+        "skills"
+      ],
+      "embedProfile": ""
+    },
+    "storage": {
+      "mode": "rag",
+      "index": "hybrid",
+      "scope": "",
+      "maxItems": 20000,
+      "replace": true
+    },
+    "schedule": "manual",
+    "outputs": {
+      "toolIds": [],
+      "skillIds": [],
+      "skillPages": [],
+      "personaId": "",
+      "lingoIds": [],
+      "vocabulary": {
+        "id": "",
+        "terms": 0,
+        "byCategory": {}
+      },
+      "pairs": 0,
+      "attached": []
+    },
+    "lastRun": null,
+    "updatedAt": ""
+  }
+}

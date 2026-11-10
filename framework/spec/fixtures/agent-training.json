@@ -1,0 +1,1066 @@
+{
+  "contract": "agent-training@1",
+  "at": "2026-11-10T16:30:00.000Z",
+  "known": {
+    "agents": [
+      "coder",
+      "writer"
+    ],
+    "tools": [
+      "calc"
+    ],
+    "skills": [
+      "review"
+    ],
+    "personas": [
+      "calm"
+    ],
+    "lingo": [
+      "eng"
+    ],
+    "skillPages": [
+      "react-ui"
+    ]
+  },
+  "full": {
+    "raw": {
+      "$axf": "agent-training@1",
+      "agentId": "coder",
+      "name": "Front-end product training",
+      "description": "Our shop, our stack.",
+      "status": "trained",
+      "schedule": "daily",
+      "categories": [
+        {
+          "id": "shop",
+          "label": "Shop",
+          "kind": "product",
+          "keywords": "sku, bundle, sku"
+        },
+        {
+          "label": "React stack",
+          "kind": "code",
+          "keywords": [
+            "hook",
+            "tsx"
+          ]
+        },
+        {
+          "id": "ghost"
+        }
+      ],
+      "sources": [
+        {
+          "id": "site",
+          "type": "website",
+          "fetch": "firecrawl",
+          "url": "https://shop.example/docs",
+          "include": [
+            "/docs/*"
+          ],
+          "exclude": "/docs/legacy/*",
+          "depth": 3,
+          "limit": 5000,
+          "categoryIds": [
+            "shop",
+            "nope"
+          ]
+        },
+        {
+          "type": "product",
+          "url": "https://shop.example/catalog",
+          "productTypes": [
+            "Speakers",
+            "Cables"
+          ],
+          "fetch": "http",
+          "categoryIds": [
+            "shop"
+          ]
+        },
+        {
+          "type": "code",
+          "fetch": "repo",
+          "paths": "apps/console-web/plugins/**/web/*.tsx",
+          "languages": [
+            "react",
+            "typescript",
+            "cobol"
+          ],
+          "categoryIds": [
+            "react-stack"
+          ]
+        },
+        {
+          "type": "files",
+          "files": [
+            "uploads/brand-guide.pdf"
+          ],
+          "fetch": "upload",
+          "enabled": "false"
+        },
+        {
+          "type": "text",
+          "fetch": "paste",
+          "text": "Support hours are 9 to 5.",
+          "label": "Hours"
+        },
+        {
+          "type": "search",
+          "query": "AmberX AXF framework controls",
+          "limit": 3
+        },
+        {
+          "type": "mcp",
+          "url": "https://hub.example/mcp",
+          "tokenEnv": "HUB_TOKEN",
+          "tool": "catalog_dump",
+          "args": {
+            "full": true
+          }
+        }
+      ],
+      "processing": {
+        "chunkSize": 50,
+        "overlap": "200",
+        "dedupe": "true",
+        "summarize": true,
+        "extract": [
+          "vocabulary",
+          "persona",
+          "magic"
+        ],
+        "embedProfile": "main"
+      },
+      "storage": {
+        "mode": "both",
+        "index": "buffer",
+        "scope": "Bad Scope",
+        "maxItems": 5,
+        "replace": false
+      },
+      "outputs": {
+        "toolIds": [
+          "calc"
+        ],
+        "skillIds": [
+          "review"
+        ],
+        "skillPages": [
+          "react-ui"
+        ],
+        "personaId": "calm",
+        "lingoIds": [
+          "eng"
+        ],
+        "vocabulary": {
+          "id": "coder.vocab",
+          "terms": 240,
+          "byCategory": {
+            "shop": 200,
+            "react-stack": 40,
+            "gone": 3
+          }
+        },
+        "pairs": 12,
+        "attached": [
+          {
+            "kind": "persona",
+            "id": "calm",
+            "at": "2026-11-10T16:30:00.000Z"
+          },
+          {
+            "kind": "bogus",
+            "id": "x",
+            "auto": false
+          }
+        ]
+      },
+      "lastRun": {
+        "at": "2026-11-10T16:30:00.000Z",
+        "status": "completed",
+        "added": 812,
+        "log": [
+          "crawl https://shop.example/docs: 40 pages",
+          "completed: 812 knowledge chunks"
+        ]
+      },
+      "updatedAt": "2026-11-10T16:30:00.000Z",
+      "evil": "dropped"
+    },
+    "normalized": {
+      "$axf": "agent-training@1",
+      "agentId": "coder",
+      "name": "Front-end product training",
+      "description": "Our shop, our stack.",
+      "status": "trained",
+      "categories": [
+        {
+          "id": "shop",
+          "label": "Shop",
+          "kind": "product",
+          "keywords": [
+            "sku",
+            "bundle"
+          ]
+        },
+        {
+          "id": "react-stack",
+          "label": "React stack",
+          "kind": "code",
+          "keywords": [
+            "hook",
+            "tsx"
+          ]
+        },
+        {
+          "id": "ghost",
+          "label": "ghost",
+          "kind": "custom",
+          "keywords": []
+        }
+      ],
+      "sources": [
+        {
+          "id": "site",
+          "type": "website",
+          "label": "",
+          "fetch": "firecrawl",
+          "enabled": true,
+          "url": "https://shop.example/docs",
+          "include": [
+            "/docs/*"
+          ],
+          "exclude": [
+            "/docs/legacy/*"
+          ],
+          "depth": 3,
+          "limit": 2000,
+          "productTypes": [],
+          "languages": [],
+          "paths": [],
+          "files": [],
+          "text": "",
+          "query": "",
+          "tokenEnv": "",
+          "uri": "",
+          "tool": "",
+          "args": {},
+          "categoryIds": [
+            "shop"
+          ]
+        },
+        {
+          "id": "source-2",
+          "type": "product",
+          "label": "",
+          "fetch": "http",
+          "enabled": true,
+          "url": "https://shop.example/catalog",
+          "include": [],
+          "exclude": [],
+          "depth": 2,
+          "limit": 50,
+          "productTypes": [
+            "Speakers",
+            "Cables"
+          ],
+          "languages": [],
+          "paths": [],
+          "files": [],
+          "text": "",
+          "query": "",
+          "tokenEnv": "",
+          "uri": "",
+          "tool": "",
+          "args": {},
+          "categoryIds": [
+            "shop"
+          ]
+        },
+        {
+          "id": "source-3",
+          "type": "code",
+          "label": "",
+          "fetch": "repo",
+          "enabled": true,
+          "url": "",
+          "include": [],
+          "exclude": [],
+          "depth": 2,
+          "limit": 50,
+          "productTypes": [],
+          "languages": [
+            "react",
+            "typescript"
+          ],
+          "paths": [
+            "apps/console-web/plugins/**/web/*.tsx"
+          ],
+          "files": [],
+          "text": "",
+          "query": "",
+          "tokenEnv": "",
+          "uri": "",
+          "tool": "",
+          "args": {},
+          "categoryIds": [
+            "react-stack"
+          ]
+        },
+        {
+          "id": "source-4",
+          "type": "files",
+          "label": "",
+          "fetch": "upload",
+          "enabled": false,
+          "url": "",
+          "include": [],
+          "exclude": [],
+          "depth": 2,
+          "limit": 50,
+          "productTypes": [],
+          "languages": [],
+          "paths": [],
+          "files": [
+            "uploads/brand-guide.pdf"
+          ],
+          "text": "",
+          "query": "",
+          "tokenEnv": "",
+          "uri": "",
+          "tool": "",
+          "args": {},
+          "categoryIds": []
+        },
+        {
+          "id": "source-5",
+          "type": "text",
+          "label": "Hours",
+          "fetch": "paste",
+          "enabled": true,
+          "url": "",
+          "include": [],
+          "exclude": [],
+          "depth": 2,
+          "limit": 50,
+          "productTypes": [],
+          "languages": [],
+          "paths": [],
+          "files": [],
+          "text": "Support hours are 9 to 5.",
+          "query": "",
+          "tokenEnv": "",
+          "uri": "",
+          "tool": "",
+          "args": {},
+          "categoryIds": []
+        },
+        {
+          "id": "source-6",
+          "type": "search",
+          "label": "",
+          "fetch": "firecrawl",
+          "enabled": true,
+          "url": "",
+          "include": [],
+          "exclude": [],
+          "depth": 2,
+          "limit": 3,
+          "productTypes": [],
+          "languages": [],
+          "paths": [],
+          "files": [],
+          "text": "",
+          "query": "AmberX AXF framework controls",
+          "tokenEnv": "",
+          "uri": "",
+          "tool": "",
+          "args": {},
+          "categoryIds": []
+        },
+        {
+          "id": "source-7",
+          "type": "mcp",
+          "label": "",
+          "fetch": "mcp",
+          "enabled": true,
+          "url": "https://hub.example/mcp",
+          "include": [],
+          "exclude": [],
+          "depth": 2,
+          "limit": 50,
+          "productTypes": [],
+          "languages": [],
+          "paths": [],
+          "files": [],
+          "text": "",
+          "query": "",
+          "tokenEnv": "HUB_TOKEN",
+          "uri": "",
+          "tool": "catalog_dump",
+          "args": {
+            "full": true
+          },
+          "categoryIds": []
+        }
+      ],
+      "processing": {
+        "chunkSize": 300,
+        "overlap": 200,
+        "dedupe": true,
+        "summarize": true,
+        "extract": [
+          "vocabulary",
+          "persona"
+        ],
+        "embedProfile": "main"
+      },
+      "storage": {
+        "mode": "both",
+        "index": "hybrid",
+        "scope": "",
+        "maxItems": 100,
+        "replace": false
+      },
+      "schedule": "daily",
+      "outputs": {
+        "toolIds": [
+          "calc"
+        ],
+        "skillIds": [
+          "review"
+        ],
+        "skillPages": [
+          "react-ui"
+        ],
+        "personaId": "calm",
+        "lingoIds": [
+          "eng"
+        ],
+        "vocabulary": {
+          "id": "coder.vocab",
+          "terms": 240,
+          "byCategory": {
+            "shop": 200,
+            "react-stack": 40
+          }
+        },
+        "pairs": 12,
+        "attached": [
+          {
+            "kind": "persona",
+            "id": "calm",
+            "at": "2026-11-10T16:30:00.000Z",
+            "auto": true
+          },
+          {
+            "kind": "skill",
+            "id": "x",
+            "at": "",
+            "auto": false
+          }
+        ]
+      },
+      "lastRun": {
+        "at": "2026-11-10T16:30:00.000Z",
+        "status": "completed",
+        "added": 812,
+        "log": [
+          "crawl https://shop.example/docs: 40 pages",
+          "completed: 812 knowledge chunks"
+        ]
+      },
+      "updatedAt": "2026-11-10T16:30:00.000Z"
+    },
+    "errors": []
+  },
+  "draft": {
+    "normalized": {
+      "$axf": "agent-training@1",
+      "agentId": "writer",
+      "name": "",
+      "description": "",
+      "status": "draft",
+      "categories": [],
+      "sources": [
+        {
+          "id": "source-1",
+          "type": "code",
+          "label": "",
+          "fetch": "repo",
+          "enabled": true,
+          "url": "",
+          "include": [],
+          "exclude": [],
+          "depth": 2,
+          "limit": 50,
+          "productTypes": [],
+          "languages": [],
+          "paths": [],
+          "files": [],
+          "text": "",
+          "query": "",
+          "tokenEnv": "",
+          "uri": "",
+          "tool": "",
+          "args": {},
+          "categoryIds": []
+        },
+        {
+          "id": "source-2",
+          "type": "website",
+          "label": "",
+          "fetch": "firecrawl",
+          "enabled": true,
+          "url": "shop.example",
+          "include": [],
+          "exclude": [],
+          "depth": 2,
+          "limit": 50,
+          "productTypes": [],
+          "languages": [],
+          "paths": [],
+          "files": [],
+          "text": "",
+          "query": "",
+          "tokenEnv": "",
+          "uri": "",
+          "tool": "",
+          "args": {},
+          "categoryIds": []
+        },
+        {
+          "id": "source-3",
+          "type": "files",
+          "label": "",
+          "fetch": "upload",
+          "enabled": true,
+          "url": "",
+          "include": [],
+          "exclude": [],
+          "depth": 2,
+          "limit": 50,
+          "productTypes": [],
+          "languages": [],
+          "paths": [],
+          "files": [],
+          "text": "",
+          "query": "",
+          "tokenEnv": "",
+          "uri": "",
+          "tool": "",
+          "args": {},
+          "categoryIds": []
+        },
+        {
+          "id": "source-4",
+          "type": "search",
+          "label": "",
+          "fetch": "firecrawl",
+          "enabled": true,
+          "url": "",
+          "include": [],
+          "exclude": [],
+          "depth": 2,
+          "limit": 50,
+          "productTypes": [],
+          "languages": [],
+          "paths": [],
+          "files": [],
+          "text": "",
+          "query": "",
+          "tokenEnv": "",
+          "uri": "",
+          "tool": "",
+          "args": {},
+          "categoryIds": []
+        },
+        {
+          "id": "source-5",
+          "type": "mcp",
+          "label": "",
+          "fetch": "mcp",
+          "enabled": true,
+          "url": "https://h/mcp",
+          "include": [],
+          "exclude": [],
+          "depth": 2,
+          "limit": 50,
+          "productTypes": [],
+          "languages": [],
+          "paths": [],
+          "files": [],
+          "text": "",
+          "query": "",
+          "tokenEnv": "",
+          "uri": "",
+          "tool": "",
+          "args": {},
+          "categoryIds": []
+        },
+        {
+          "id": "dup",
+          "type": "text",
+          "label": "",
+          "fetch": "paste",
+          "enabled": true,
+          "url": "",
+          "include": [],
+          "exclude": [],
+          "depth": 2,
+          "limit": 50,
+          "productTypes": [],
+          "languages": [],
+          "paths": [],
+          "files": [],
+          "text": "a",
+          "query": "",
+          "tokenEnv": "",
+          "uri": "",
+          "tool": "",
+          "args": {},
+          "categoryIds": []
+        },
+        {
+          "id": "dup",
+          "type": "text",
+          "label": "",
+          "fetch": "paste",
+          "enabled": true,
+          "url": "",
+          "include": [],
+          "exclude": [],
+          "depth": 2,
+          "limit": 50,
+          "productTypes": [],
+          "languages": [],
+          "paths": [],
+          "files": [],
+          "text": "",
+          "query": "",
+          "tokenEnv": "",
+          "uri": "",
+          "tool": "",
+          "args": {},
+          "categoryIds": []
+        }
+      ],
+      "processing": {
+        "chunkSize": 1200,
+        "overlap": 120,
+        "dedupe": true,
+        "summarize": false,
+        "extract": [
+          "vocabulary",
+          "pairs",
+          "skills"
+        ],
+        "embedProfile": ""
+      },
+      "storage": {
+        "mode": "rag",
+        "index": "hybrid",
+        "scope": "",
+        "maxItems": 20000,
+        "replace": true
+      },
+      "schedule": "manual",
+      "outputs": {
+        "toolIds": [],
+        "skillIds": [],
+        "skillPages": [],
+        "personaId": "",
+        "lingoIds": [],
+        "vocabulary": {
+          "id": "",
+          "terms": 0,
+          "byCategory": {}
+        },
+        "pairs": 0,
+        "attached": []
+      },
+      "lastRun": null,
+      "updatedAt": ""
+    },
+    "errors": [
+      {
+        "field": "training.sources[0].paths",
+        "code": "missing",
+        "message": "code sources from the repo need at least one file glob"
+      },
+      {
+        "field": "training.sources[1].url",
+        "code": "invalid",
+        "message": "website sources need a URL starting with http:// or https://"
+      },
+      {
+        "field": "training.sources[2].files",
+        "code": "missing",
+        "message": "files sources need at least one uploaded file"
+      },
+      {
+        "field": "training.sources[3].query",
+        "code": "missing",
+        "message": "search sources need a query"
+      },
+      {
+        "field": "training.sources[4].uri",
+        "code": "missing",
+        "message": "mcp sources name a resource uri or a tool"
+      },
+      {
+        "field": "training.sources[6].id",
+        "code": "invalid",
+        "message": "source id dup is used twice"
+      },
+      {
+        "field": "training.sources[6].text",
+        "code": "missing",
+        "message": "text sources need text"
+      }
+    ]
+  },
+  "junk": {
+    "normalized": {
+      "$axf": "agent-training@1",
+      "agentId": "coder",
+      "name": "",
+      "description": "",
+      "status": "draft",
+      "categories": [],
+      "sources": [
+        {
+          "id": "source-1",
+          "type": "website",
+          "label": "",
+          "fetch": "firecrawl",
+          "enabled": true,
+          "url": "nope",
+          "include": [],
+          "exclude": [],
+          "depth": 2,
+          "limit": 50,
+          "productTypes": [],
+          "languages": [],
+          "paths": [],
+          "files": [],
+          "text": "",
+          "query": "",
+          "tokenEnv": "",
+          "uri": "",
+          "tool": "",
+          "args": {},
+          "categoryIds": []
+        }
+      ],
+      "processing": {
+        "chunkSize": 1200,
+        "overlap": 120,
+        "dedupe": true,
+        "summarize": false,
+        "extract": [
+          "vocabulary",
+          "pairs",
+          "skills"
+        ],
+        "embedProfile": ""
+      },
+      "storage": {
+        "mode": "rag",
+        "index": "hybrid",
+        "scope": "",
+        "maxItems": 20000,
+        "replace": true
+      },
+      "schedule": "manual",
+      "outputs": {
+        "toolIds": [
+          "calc",
+          "ghost"
+        ],
+        "skillIds": [],
+        "skillPages": [],
+        "personaId": "",
+        "lingoIds": [],
+        "vocabulary": {
+          "id": "",
+          "terms": 0,
+          "byCategory": {}
+        },
+        "pairs": 0,
+        "attached": []
+      },
+      "lastRun": null,
+      "updatedAt": ""
+    },
+    "errors": [
+      {
+        "field": "training.sources[0].url",
+        "code": "invalid",
+        "message": "website sources need a URL starting with http:// or https://"
+      },
+      {
+        "field": "training.outputs.toolIds",
+        "code": "invalid",
+        "message": "unknown tool ghost"
+      }
+    ]
+  },
+  "empty": {
+    "normalized": {
+      "$axf": "agent-training@1",
+      "agentId": "coder",
+      "name": "",
+      "description": "",
+      "status": "empty",
+      "categories": [],
+      "sources": [],
+      "processing": {
+        "chunkSize": 1200,
+        "overlap": 120,
+        "dedupe": true,
+        "summarize": false,
+        "extract": [
+          "vocabulary",
+          "pairs",
+          "skills"
+        ],
+        "embedProfile": ""
+      },
+      "storage": {
+        "mode": "rag",
+        "index": "hybrid",
+        "scope": "",
+        "maxItems": 20000,
+        "replace": true
+      },
+      "schedule": "manual",
+      "outputs": {
+        "toolIds": [],
+        "skillIds": [],
+        "skillPages": [],
+        "personaId": "",
+        "lingoIds": [],
+        "vocabulary": {
+          "id": "",
+          "terms": 0,
+          "byCategory": {}
+        },
+        "pairs": 0,
+        "attached": []
+      },
+      "lastRun": null,
+      "updatedAt": ""
+    },
+    "errors": []
+  },
+  "unknownAgent": [
+    {
+      "field": "training.agentId",
+      "code": "invalid",
+      "message": "unknown agent nobody"
+    }
+  ],
+  "noAgent": [
+    {
+      "field": "training.agentId",
+      "code": "missing",
+      "message": "a training block belongs to one agent: agentId must be its id"
+    }
+  ],
+  "jobs": [
+    {
+      "id": "coder.training.site",
+      "name": "website site",
+      "agentId": "coder",
+      "sources": [
+        {
+          "type": "firecrawl-crawl",
+          "url": "https://shop.example/docs",
+          "limit": 2000,
+          "include": [
+            "/docs/*"
+          ]
+        }
+      ],
+      "chunkSize": 300,
+      "overlap": 200,
+      "replace": false,
+      "schedule": "daily",
+      "tags": [
+        "training",
+        "shop"
+      ]
+    },
+    {
+      "id": "coder.training.source-2",
+      "name": "product source-2",
+      "agentId": "coder",
+      "sources": [
+        {
+          "type": "url",
+          "url": "https://shop.example/catalog"
+        }
+      ],
+      "chunkSize": 300,
+      "overlap": 200,
+      "replace": false,
+      "schedule": "daily",
+      "tags": [
+        "training",
+        "shop"
+      ]
+    },
+    {
+      "id": "coder.training.source-3",
+      "name": "code source-3",
+      "agentId": "coder",
+      "sources": [
+        {
+          "type": "repo",
+          "paths": [
+            "apps/console-web/plugins/**/web/*.tsx"
+          ]
+        }
+      ],
+      "chunkSize": 300,
+      "overlap": 200,
+      "replace": false,
+      "schedule": "daily",
+      "tags": [
+        "training",
+        "react-stack"
+      ]
+    },
+    {
+      "id": "coder.training.source-5",
+      "name": "Hours",
+      "agentId": "coder",
+      "sources": [
+        {
+          "type": "text",
+          "title": "Hours",
+          "text": "Support hours are 9 to 5."
+        }
+      ],
+      "chunkSize": 300,
+      "overlap": 200,
+      "replace": false,
+      "schedule": "daily",
+      "tags": [
+        "training"
+      ]
+    },
+    {
+      "id": "coder.training.source-6",
+      "name": "search source-6",
+      "agentId": "coder",
+      "sources": [
+        {
+          "type": "firecrawl-search",
+          "query": "AmberX AXF framework controls",
+          "limit": 3
+        }
+      ],
+      "chunkSize": 300,
+      "overlap": 200,
+      "replace": false,
+      "schedule": "daily",
+      "tags": [
+        "training"
+      ]
+    },
+    {
+      "id": "coder.training.source-7",
+      "name": "mcp source-7",
+      "agentId": "coder",
+      "sources": [
+        {
+          "type": "mcp-tool",
+          "url": "https://hub.example/mcp",
+          "tokenEnv": "HUB_TOKEN",
+          "tool": "catalog_dump",
+          "args": {
+            "full": true
+          }
+        }
+      ],
+      "chunkSize": 300,
+      "overlap": 200,
+      "replace": false,
+      "schedule": "daily",
+      "tags": [
+        "training"
+      ]
+    }
+  ],
+  "vocabulary": {
+    "normalized": {
+      "$axf": "vocabulary-index@1",
+      "id": "coder.vocab",
+      "agentId": "coder",
+      "terms": [
+        {
+          "term": "SKU",
+          "meaning": "stock keeping unit",
+          "categoryId": "shop",
+          "count": 40,
+          "sources": [
+            "https://shop.example/docs/skus"
+          ]
+        },
+        {
+          "term": "hook",
+          "meaning": "",
+          "categoryId": "",
+          "count": 1,
+          "sources": []
+        },
+        {
+          "term": "Bundle",
+          "meaning": "",
+          "categoryId": "",
+          "count": 1,
+          "sources": []
+        }
+      ],
+      "byCategory": {
+        "shop": [
+          "SKU"
+        ],
+        "uncategorized": [
+          "hook",
+          "Bundle"
+        ]
+      },
+      "updatedAt": "2026-11-10T16:30:00.000Z"
+    },
+    "errors": [
+      [],
+      [
+        {
+          "field": "vocabulary.id",
+          "code": "missing",
+          "message": "a vocabulary index needs an id"
+        },
+        {
+          "field": "vocabulary.agentId",
+          "code": "missing",
+          "message": "a vocabulary index belongs to one agent"
+        }
+      ],
+      [
+        {
+          "field": "vocabulary",
+          "code": "invalid",
+          "message": "vocabulary must be an object"
+        }
+      ]
+    ]
+  },
+  "schemas": [
+    "agent-training.schema.json",
+    "vocabulary-index.schema.json"
+  ]
+}

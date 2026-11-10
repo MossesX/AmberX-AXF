@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/vocabulary-index.schema.json",
+  "title": "AmberX AXF vocabulary index (vocabulary-index@1)",
+  "description": "Generated from framework/core/engines/agent-training-rules.mjs. The categorized terms a training run extracted for one agent (category ids are the agent-training@1 categories).",
+  "type": "object",
+  "required": [
+    "$axf",
+    "id",
+    "agentId",
+    "terms"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "vocabulary-index@1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+    },
+    "agentId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+    },
+    "terms": {
+      "type": "array",
+      "maxItems": 2000,
+      "items": {
+        "type": "object",
+        "required": [
+          "term"
+        ],
+        "properties": {
+          "term": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "meaning": {
+            "type": "string",
+            "maxLength": 400
+          },
+          "categoryId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+              },
+              {
+                "const": ""
+              }
+            ]
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "sources": {
+            "type": "array",
+            "maxItems": 10,
+            "items": {
+              "type": "string",
+              "maxLength": 2000
+            }
+          }
+        }
+      }
+    },
+    "byCategory": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "maxItems": 2000,
+        "items": {
+          "type": "string",
+          "maxLength": 120
+        }
+      }
+    },
+    "updatedAt": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "date-time"
+        },
+        {
+          "const": ""
+        }
+      ]
+    }
+  }
+}

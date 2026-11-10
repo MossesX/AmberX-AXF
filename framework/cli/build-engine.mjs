@@ -18,6 +18,7 @@ import { jsonSchemas as uiReviewJsonSchemas, REGISTRY as UI_REVIEW_REGISTRY } fr
 import { jsonSchemas as sessionJsonSchemas, REGISTRY as SESSION_REGISTRY } from '../core/session-schema.mjs';
 import { MODEL_POLICY } from '../core/model-policy.mjs';
 import { SWARM, jsonSchemas as swarmJsonSchemas } from '../core/engines/swarm-rules.mjs';
+import { jsonSchemas as agentTrainingJsonSchemas, registrySnapshot as agentTrainingSnapshot } from '../core/engines/agent-training-rules.mjs';
 import { REGISTRY as LEDGER_REGISTRY, jsonSchemas as ledgerJsonSchemas } from '../core/feature-ledger.mjs';
 import { REGISTRY as DEPLOY_LOG_REGISTRY, jsonSchemas as deployLogJsonSchemas } from '../core/deploy-log.mjs';
 import { REGISTRY as BUILD_HOOK_REGISTRY, jsonSchemas as buildHookJsonSchemas } from '../core/build-hook.mjs';
@@ -897,6 +898,9 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   // shipped-manifest@1: what the orchestrator sends Shipped features when a build lands
   for (const [n, schema] of Object.entries(shippedManifestJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const smreg = join(FRAMEWORK_DIR, 'schemas/shipped-manifest.json'); writeFileSync(smreg, JSON.stringify(SHIPPED_MANIFEST_REGISTRY, null, 2) + '\n'); written.push(smreg);
+  // agent-training@1 + vocabulary-index@1: JSON Schemas + the registry snapshot (with the empty block) the agent-manager's Python server reads
+  for (const [n, schema] of Object.entries(agentTrainingJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
+  const atreg = join(FRAMEWORK_DIR, 'schemas/agent-training.json'); writeFileSync(atreg, JSON.stringify(agentTrainingSnapshot(), null, 2) + '\n'); written.push(atreg);
   return written;
 }
 

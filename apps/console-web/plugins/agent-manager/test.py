@@ -146,6 +146,9 @@ check(r.status_code == 400 and "environment variable" in r.text, "http tools ref
 skill = post("c/skills", {"name": "Test design", "instructions": "Design tests by risk.", "triggers": "test\nqa", "toolIds": [calc["id"]]})["item"]
 agent = post("c/agents", {"name": "QA", "personaId": persona["id"], "lingoIds": [lingo["id"], "missing"], "skillIds": [skill["id"]], "memory": {"type": "keyword", "record": "both"}})["item"]
 check(agent["lingoIds"] == [lingo["id"]], "unknown references are dropped on save")
+tr = agent.get("training") or {}
+check(tr.get("$axf") == "agent-training@1" and tr.get("agentId") == agent["id"] and tr.get("status") == "empty" and tr.get("sources") == [] and tr == {**am.store.empty_training(agent["id"])},
+      "every employee agent carries an empty agent-training@1 block (the engine's, copied from framework/schemas/agent-training.json)")
 res = c.get(f"/am/agents/{agent['id']}/resolved").json()
 check("QA lead" in res["system"] and "flaky" in res["system"] and "Design tests by risk" in res["system"], "composed prompt has persona, lingo and skill")
 names = [t["name"] for t in res["tools"]]

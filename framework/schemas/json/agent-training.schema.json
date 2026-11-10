@@ -1,0 +1,630 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/agent-training.schema.json",
+  "title": "AmberX AXF agent training (agent-training@1)",
+  "description": "Generated from framework/core/engines/agent-training-rules.mjs. The training spec and outputs of one employee agent: data sources, fetch method, processing and storage (RAG / summaries), categories, and what was built and attached (tools, skills, persona, lingo, vocabulary index). Outputs reference agent-definition@1 records and agent-skill@1 pages by id.",
+  "type": "object",
+  "required": [
+    "$axf",
+    "agentId",
+    "status",
+    "sources",
+    "processing",
+    "storage",
+    "outputs"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "agent-training@1"
+    },
+    "agentId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "status": {
+      "enum": [
+        "empty",
+        "draft",
+        "ready",
+        "running",
+        "trained",
+        "stale",
+        "failed"
+      ]
+    },
+    "categories": {
+      "type": "array",
+      "maxItems": 40,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "label"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "kind": {
+            "enum": [
+              "product",
+              "code",
+              "docs",
+              "process",
+              "brand",
+              "support",
+              "people",
+              "custom"
+            ]
+          },
+          "keywords": {
+            "type": "array",
+            "maxItems": 40,
+            "items": {
+              "type": "string",
+              "maxLength": 40
+            }
+          }
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "maxItems": 40,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "fetch"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+          },
+          "type": {
+            "enum": [
+              "website",
+              "product",
+              "code",
+              "files",
+              "text",
+              "search",
+              "mcp"
+            ]
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "fetch": {
+            "enum": [
+              "firecrawl",
+              "http",
+              "repo",
+              "git",
+              "upload",
+              "paste",
+              "mcp"
+            ]
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "include": {
+            "type": "array",
+            "maxItems": 40,
+            "items": {
+              "type": "string",
+              "maxLength": 400
+            }
+          },
+          "exclude": {
+            "type": "array",
+            "maxItems": 40,
+            "items": {
+              "type": "string",
+              "maxLength": 400
+            }
+          },
+          "depth": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2000
+          },
+          "productTypes": {
+            "type": "array",
+            "maxItems": 40,
+            "items": {
+              "type": "string",
+              "maxLength": 80
+            }
+          },
+          "languages": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "enum": [
+                "react",
+                "typescript",
+                "javascript",
+                "python",
+                "kotlin",
+                "java",
+                "swift",
+                "go",
+                "rust",
+                "css",
+                "html",
+                "sql",
+                "shell",
+                "markdown",
+                "other"
+              ]
+            }
+          },
+          "paths": {
+            "type": "array",
+            "maxItems": 40,
+            "items": {
+              "type": "string",
+              "maxLength": 400
+            }
+          },
+          "files": {
+            "type": "array",
+            "maxItems": 200,
+            "items": {
+              "type": "string",
+              "maxLength": 400
+            }
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 30000
+          },
+          "query": {
+            "type": "string",
+            "maxLength": 400
+          },
+          "tokenEnv": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "uri": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "tool": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "args": {
+            "type": "object"
+          },
+          "categoryIds": {
+            "type": "array",
+            "maxItems": 40,
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+            }
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "website"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "fetch": {
+                  "enum": [
+                    "firecrawl",
+                    "http"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "product"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "fetch": {
+                  "enum": [
+                    "firecrawl",
+                    "http"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "code"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "fetch": {
+                  "enum": [
+                    "repo",
+                    "git",
+                    "upload"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "files"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "fetch": {
+                  "enum": [
+                    "upload",
+                    "repo"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "text"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "fetch": {
+                  "enum": [
+                    "paste"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "search"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "fetch": {
+                  "enum": [
+                    "firecrawl"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "mcp"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "fetch": {
+                  "enum": [
+                    "mcp"
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "processing": {
+      "type": "object",
+      "properties": {
+        "chunkSize": {
+          "type": "integer",
+          "minimum": 300,
+          "maximum": 6000
+        },
+        "overlap": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "dedupe": {
+          "type": "boolean"
+        },
+        "summarize": {
+          "type": "boolean"
+        },
+        "extract": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "vocabulary",
+              "pairs",
+              "tools",
+              "skills",
+              "persona"
+            ]
+          }
+        },
+        "embedProfile": {
+          "type": "string",
+          "maxLength": 120
+        }
+      }
+    },
+    "storage": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "enum": [
+            "rag",
+            "summaries",
+            "both",
+            "none"
+          ]
+        },
+        "index": {
+          "enum": [
+            "keyword",
+            "vector",
+            "hybrid"
+          ]
+        },
+        "scope": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+            },
+            {
+              "const": ""
+            }
+          ]
+        },
+        "maxItems": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 200000
+        },
+        "replace": {
+          "type": "boolean"
+        }
+      }
+    },
+    "schedule": {
+      "enum": [
+        "manual",
+        "hourly",
+        "daily",
+        "weekly"
+      ]
+    },
+    "outputs": {
+      "type": "object",
+      "properties": {
+        "toolIds": {
+          "type": "array",
+          "maxItems": 60,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+          }
+        },
+        "skillIds": {
+          "type": "array",
+          "maxItems": 60,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+          }
+        },
+        "skillPages": {
+          "type": "array",
+          "maxItems": 60,
+          "items": {
+            "$ref": "axf/agent-skill.schema.json#/properties/id"
+          }
+        },
+        "personaId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+            },
+            {
+              "const": ""
+            }
+          ]
+        },
+        "lingoIds": {
+          "type": "array",
+          "maxItems": 20,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+          }
+        },
+        "vocabulary": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "anyOf": [
+                {
+                  "$ref": "axf/vocabulary-index.schema.json#/properties/id"
+                },
+                {
+                  "const": ""
+                }
+              ]
+            },
+            "terms": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2000
+            },
+            "byCategory": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2000
+              }
+            }
+          }
+        },
+        "pairs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "attached": {
+          "type": "array",
+          "maxItems": 200,
+          "items": {
+            "type": "object",
+            "required": [
+              "kind",
+              "id"
+            ],
+            "properties": {
+              "kind": {
+                "enum": [
+                  "vocabulary",
+                  "pairs",
+                  "tool",
+                  "skill",
+                  "skill-page",
+                  "persona",
+                  "lingo"
+                ]
+              },
+              "id": {
+                "type": "string"
+              },
+              "at": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  {
+                    "const": ""
+                  }
+                ]
+              },
+              "auto": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    },
+    "lastRun": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "at": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "const": ""
+                }
+              ]
+            },
+            "status": {
+              "enum": [
+                "completed",
+                "partial",
+                "failed"
+              ]
+            },
+            "added": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "log": {
+              "type": "array",
+              "maxItems": 60,
+              "items": {
+                "type": "string",
+                "maxLength": 400
+              }
+            }
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "updatedAt": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "date-time"
+        },
+        {
+          "const": ""
+        }
+      ]
+    }
+  }
+}
