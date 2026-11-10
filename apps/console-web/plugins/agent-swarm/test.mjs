@@ -227,6 +227,9 @@ t('Amber persona is a few lines, in the shared prefix, and keeps code clean', ()
   const a = c.packJob(job, { prefix: pre, skill: skills[job.skill] }); const d = c.packJob(job2, { prefix: pre, skill: skills[job2.skill] });
   assert.ok(a.system.startsWith(pre) && d.system.startsWith(pre)); // same bytes first, so the cache hits across agents
 });
+t('shared prefix tells every agent to be proactive and say when the job is wrong', () => {
+  const pre = c.sharedPrefix(); assert.match(pre, /Be proactive/); assert.match(pre, /Never just agree/); assert.match(pre, /follow-ups/);
+});
 
 // s9 statuses
 const AT = '2026-10-31T12:00:00.000Z';

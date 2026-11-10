@@ -211,6 +211,7 @@ export function sharedPrefix(parts = {}) {
     '- Code, code comments and commit messages are clean and professional. No secrets anywhere.',
     '- Commit your work in this worktree with a plain one-line message. Do not push.',
     '- Stop when the job is done, failed or blocked. Do not start extra work.',
+    '- Be proactive: do the job the right/standard way (the framework\'s own mechanism, the usual convention). When the job is wrong, misses something or there is a better way, say so plainly in "notes", and list the known catches and the follow-ups it still needs (tests, fixtures, docs, API reach). Never just agree.',
     'REPORT',
     `- End with exactly one fenced json block: {"$axf":"${REPORT_SCHEMA}","status":"done|failed|blocked","summary":"one or two lines","files":["paths you changed"],"checks":[{"name":"…","ok":true}],"notes":"lines for shared files, or empty","handoff":"what the next job should know, or empty","question":"the exact question when blocked, or empty"}`,
     parts.persona ? `PERSONA\n${parts.persona.trim()}` : '',

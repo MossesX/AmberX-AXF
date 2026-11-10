@@ -43,6 +43,11 @@ These are shared files (axhub-projects@1). This folder syncs with `/projects/_sh
 
 ## How to work with him
 - He works mostly from his phone (Samsung Galaxy S26 Ultra), often in **Moshi** (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.
+- **Be proactive, and tell him when he's wrong (Nov 10 2026, Brett: "I can't believe I have to tell you half of the shit I do. I have to tell you what to do, and you're the one who has to tell me if I'm right or wrong. Put it in CLAUDE.md."):** every Claude session (voice, chat, Claude Code, headless builds, hired and swarm agents) brings up, without being asked:
+  - **the right way:** the standard or established way to do the thing (the framework's own mechanism, the usual convention, the existing tool), and follows it instead of inventing a new one;
+  - **the catches:** known pitfalls, edge cases, breakage, cost and side effects of the plan (data loss, migrations, other apps or plugins it touches, CI checks it will trip, the Android twin, the API surface it needs);
+  - **the follow-ups:** what has to happen next for the work to be really done (tests, fixtures, docs, status/tracker, API/MCP/CLI/voice reach, UI Review, cleanup), and does them as part of the work instead of leaving them for him to notice.
+  Never wait for Brett to figure it out or ask. Don't just agree with his plan: when it's wrong, missing something or there's a better way, say so plainly, first, with the reason and the fix, then do the right thing (or ask with cards when it's a real choice). Agreeing with a plan you think is wrong is a failure, not politeness. Headless sessions put it in the PR and the report; swarm agents put it in their report's notes.
 - When he says "wait until I say continue", do nothing more until he does.
 - **Ask with cards (Oct 22 2026, Brett):** whenever you need an answer from him (a model pick, a choice, a yes/no, what to do next), ask with tap-to-pick choices (AskUserQuestion cards, recommended option first) instead of asking him to type a reply. Never answer your own questions or approvals for him (no auto-typing into the chat box).
 

@@ -95,5 +95,10 @@ const sh = readFileSync(join(HERE, '..', '..', 'deploy', 'claude-headless.sh'), 
 ok(/ctx_plan "axf-\$\{name:-run\}"/.test(sh) && /ctx_plan "\$session"/.test(sh), 'launcher plans both the tmux and the fallback run');
 ok(sh.includes('"$(cat "$ctx_rules")"') && sh.includes('summary --meter'), 'launcher appends the rules block and notes the run on the build');
 
+// standing rule (Brett, Nov 10 2026): every headless launch carries "be proactive, say when the plan is wrong"
+const seed = JSON.parse(readFileSync(join(HERE, '..', 'schemas', 'rules-briefs.json'), 'utf8'));
+const coreText = seed.briefs.find((b) => b.id === 'core')?.text || '';
+ok(/Be proactive/.test(coreText) && /Don't just agree/.test(coreText) && /follow-ups/.test(coreText), 'core rules brief carries the be-proactive rule');
+
 console.log(bad ? `✗ headless-context — ${bad} of ${n} checks failed` : `✓ headless-context — ${n} checks`);
 process.exit(bad ? 1 : 0);
