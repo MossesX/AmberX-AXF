@@ -414,7 +414,7 @@
         "id": "pipeline-route",
         "route": "POST /pipeline/route",
         "title": "Route a build to API or subscriptions",
-        "description": "Where one build may run: api (API-key accounts only, billed per token under their daily and weekly caps; Brett's own click), subscription (never an API account) or auto (subscriptions, API only by the overflow rule).",
+        "description": "Where one build may run: api (API-key accounts only, billed per token under their daily and weekly caps; no approval needed), subscription (never an API account) or auto (subscriptions, then API accounts by the overflow rule).",
         "input": {
           "type": "object",
           "properties": {
@@ -450,7 +450,7 @@
         "id": "pipeline-settings-set",
         "route": "POST /pipeline/settings",
         "title": "Change pipeline settings",
-        "description": "Change dispatcher settings. apiOverflow = when every subscription account is full or out, send builds to an API-key account (off by default; turning it on is Brett's own click, anyone may turn it off).",
+        "description": "Change dispatcher settings. apiOverflow = when every subscription account is full or out, send builds to an API-key account (on by default; no approval needed, the account's daily and weekly spend caps stop it).",
         "input": {
           "type": "object",
           "properties": {

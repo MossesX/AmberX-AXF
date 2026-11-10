@@ -189,7 +189,7 @@ function ApiAccounts({ data }: { data: Routing }) {
   const entries = Object.entries(data.config.api);
   return (
     <div className="fx-stack">
-      <p className="axp-ca-help">API keys bill per token, so they only take jobs a routing rule sends them, and nothing once a daily or weekly cap is reached (the last 24 h / 7 days). An alert goes up at the alert level. Only your own click in the console raises a cap; a session can lower one.</p>
+      <p className="axp-ca-help">API keys bill per token but need no approval: they take the jobs a routing rule sends them and any job no subscription account can start now, and nothing once a daily or weekly cap is reached (the last 24 h / 7 days). An alert goes up at the alert level. Only your own click in the console raises a cap; a session can lower one.</p>
       {!entries.length && <p className="axp-ca-help">No API accounts set up.</p>}
       <div>{entries.map(([n, cfg]) => <ApiRow key={n} name={n} cfg={cfg} acc={data.accounts.find((a) => a.name === n)} />)}</div>
       <Container title="Add an API account" icon="plus" collapsible defaultOpen={false}>

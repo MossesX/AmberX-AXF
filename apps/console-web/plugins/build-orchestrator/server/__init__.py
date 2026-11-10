@@ -528,12 +528,10 @@ def pipeline_settings() -> dict[str, Any]:
 @router.post("/pipeline/settings")
 async def pipeline_settings_set(request: Request) -> dict[str, Any]:
     """{key: value…} for pipeline-settings@1 (parallelPerAccount, fablePlans, useConsoleAccount, maxRuns, idleAfterMin, probeDays,
-    splitProvider, apiOverflow, apiAccounts). Turning the API overflow rule on spends money per token: only Brett's own click
-    does that (a session, MCP or voice may turn it off)."""
+    splitProvider, apiOverflow, apiAccounts). API accounts are accounts like any other (Brett, Nov 10 2026): turning the
+    overflow rule on or off needs no owner click; the daily and weekly spend caps are the safety net."""
     body = await _json_body(request)
     allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "apiOverflow", "apiAccounts"}
-    if body.get("apiOverflow") is True and not brett_click(request):
-        raise HTTPException(403, "turning the API overflow rule on is Brett's own click in the console (it bills per token)")
 
     def val(v: Any) -> str:
         if isinstance(v, bool):
@@ -549,15 +547,12 @@ async def pipeline_settings_set(request: Request) -> dict[str, Any]:
 @router.post("/pipeline/route")
 async def pipeline_route(request: Request) -> dict[str, Any]:
     """{id, route: api|subscription|auto}: the per-build override. api = only API-key accounts (billed per token, under
-    their caps; Brett's own click), subscription = never an API account, auto = subscriptions, API only by overflow."""
+    their caps; no approval, Brett Nov 10 2026), subscription = never an API account, auto = subscriptions, then API."""
     body = await _json_body(request)
     route = str(body.get("route") or "")
     if route not in ("api", "subscription", "auto"):
         raise HTTPException(400, "route is api, subscription or auto")
-    who = brett_click(request)
-    if route == "api" and not who:
-        raise HTTPException(403, "sending a build to an API account is Brett's own click in the console (it bills per token)")
-    return _pipeline("route", _build_id(body.get("id")), route, "--by", (who or "console")[:80])
+    return _pipeline("route", _build_id(body.get("id")), route, "--by", (brett_click(request) or "console")[:80])
 
 
 def request_build(title: str, detail: str = "", *, by: str = "console", source: str = "", said: str = "", priority: str = "",

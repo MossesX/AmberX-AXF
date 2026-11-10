@@ -39,7 +39,7 @@
  * launcher for a build. It issues a one-build dispatch token (framework/cli/dispatch-gate.mjs) and passes it in
  * AXF_DISPATCH_TOKEN; claude-headless.sh refuses a build launch without one.
  * API jobs: a build goes to an API-key account (hulu-api, mossesx-api…) by its per-build override (route api) or the
- * overflow rule (apiOverflow, off by default), only with a key, under its caps (pipeline-core.mjs routeFor()).
+ * overflow rule (apiOverflow, on by default; no approval, Brett Nov 10 2026), only with a key, under its caps (pipeline-core.mjs routeFor()).
  * Watchdog hook: afterTick(fn) registers fn({ state, plan, launched, ended, failed }) to run at the end of every tick
  * (build running-builds-watchdog plugs in here; a hook that throws is logged and never stops the tick).
  * Shipped manifests: the first hook ships every newly landed build's shipped-manifest@1 to Shipped features.
@@ -548,6 +548,15 @@ export function tick({ env = process.env } = {}) {
       logLine({ event: 'launch-failed', build: l.id, account: l.account, tried, error: e.message });
     }
   }
+  // API spend caps: one alert per account and state (warn at the alert level, error at the cap); resolved once under it
+  const spendKeys = [];
+  for (const sp of P.apiSpendAlerts(accounts)) {
+    const key = `pipeline:api-spend:${sp.account}`; spendKeys.push(key);
+    if (!state.alerts.some((a) => a.key === key && a.state === sp.state)) { alert('api-spend', sp); sent[sent.length - 1].state = sp.state; }
+  }
+  const spendGone = state.alerts.filter((a) => a.key.startsWith('pipeline:api-spend:') && !spendKeys.includes(a.key)).map((a) => a.key);
+  if (spendGone.length) consoleApi('POST', '/api/alerts/resolve', { keys: spendGone });
+  state.alerts = state.alerts.filter((a) => !spendGone.includes(a.key) && !(a.key.startsWith('pipeline:api-spend:') && sent.some((x) => x.key === a.key)));
   // idle: nothing running while work waits. Recorded at once; the phone hears about it after idleAfterMin, once per idle spell.
   let idle = null;
   if (plan.idle && !launched.length) {
@@ -560,7 +569,7 @@ export function tick({ env = process.env } = {}) {
     consoleApi('POST', '/api/alerts/resolve', { keys: ['pipeline:idle'] });
     state.alerts = state.alerts.filter((a) => a.key !== 'pipeline:idle');
   }
-  const alerts = [...state.alerts.filter((a) => a.key !== 'pipeline:idle' || idle), ...sent.filter((a) => a.kind === 'idle')].filter((a, i, arr) => arr.findIndex((x) => x.key === a.key) === i);
+  const alerts = [...state.alerts.filter((a) => a.key !== 'pipeline:idle' || idle), ...sent.filter((a) => a.kind === 'idle' || a.kind === 'api-spend')].filter((a, i, arr) => arr.findIndex((x) => x.key === a.key) === i);
   const next = { ...state, at: nowIso(), plan: { launches: plan.launches, waits: plan.waits, queue: plan.queue, running: plan.running, pending: plan.pending }, slots: { used: sl.used, cap: sl.cap, free: sl.free }, accounts: accounts.map((a) => ({ name: a.name, fable: a.fable, parallel: a.parallel, running: a.running, usable: a.usable, why: a.why })), idle, alerts,
     recent: [...state.recent, ...launched.map((l) => ({ at: nowIso(), event: 'launched', id: l.id, account: l.account, model: l.model })), ...ended.map((e) => ({ at: nowIso(), event: e.outcome, id: e.id })), ...failed.map((f) => ({ at: nowIso(), event: 'launch-failed', id: f.id, error: f.error }))].slice(-50) };
   saveState(next);

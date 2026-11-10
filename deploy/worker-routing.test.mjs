@@ -45,17 +45,30 @@ x = R.decide({ api: caps }, team({ w1: { running: 3 }, w2: { running: 3 } }), {}
 ok(x.account === 'console' && x.state === 'run', 'workers full = the console\'s own account (setting on)');
 x = R.decide({ api: caps }, team({ w1: { running: 1 }, w2: { running: 1 } }), {});
 ok(x.account === 'w1', 'the console\'s account goes after the workers, even when idle');
-x = R.decide({ api: caps, interactiveTakesJobs: false }, team({ w1: { running: 3 }, w2: { running: 3 } }), {});
+x = R.decide({ api: {}, interactiveTakesJobs: false }, team({ w1: { running: 3 }, w2: { running: 3 } }), {});
 ok(x.state === 'queue' && x.account === 'w1' && x.position === 1, 'console account off + workers full = wait in a worker\'s queue');
-x = R.decide({ api: caps, interactiveTakesJobs: false }, team({ w1: { running: 3, queued: 2 }, w2: { running: 3, queued: 1 } }), {});
+x = R.decide({ api: {}, interactiveTakesJobs: false }, team({ w1: { running: 3, queued: 2 }, w2: { running: 3, queued: 1 } }), {});
 ok(x.state === 'queue' && x.account === 'w2' && x.position === 2, 'the shortest queue');
-x = R.decide({ api: caps, interactiveTakesJobs: false, limits: { queue: 2 } }, team({ w1: { running: 3, queued: 2 }, w2: { running: 3, queued: 2 } }), {});
+x = R.decide({ api: {}, interactiveTakesJobs: false, limits: { queue: 2 } }, team({ w1: { running: 3, queued: 2 }, w2: { running: 3, queued: 2 } }), {});
 ok(x.state === 'none' && /queue is full/.test(x.why), 'every queue full = none');
 x = R.decide({ api: caps, perAccount: { w1: { building: 1 } } }, team({ w1: { running: 1 } }), {});
 ok(x.account === 'w2', 'a per-account building limit');
 x = R.decide({ api: caps }, team({ w1: { limited: { until: 'later', reason: 'hit its limit' } } }), {});
 ok(x.account === 'w2', 'a limited account is skipped');
-ok(R.decide({ api: caps }, team(), { model: 'fable' }).kind === 'subscription', 'no rule = API accounts never get a job');
+ok(R.decide({ api: caps }, team(), { model: 'fable' }).kind === 'subscription', 'no rule + a subscription free = the subscription');
+
+console.log('API accounts need no approval (Brett, Nov 10 2026)');
+const busy = { console: { running: 3 }, w1: { running: 3 }, w2: { running: 3 } };
+x = R.decide({ api: caps }, team(busy), { model: 'fable' });
+ok(x.state === 'run' && x.kind === 'api' && x.account === 'hulu-api' && !x.rule && /no approval/.test(x.why), 'no rule + every subscription busy = an API worker takes it, no approval');
+x = R.decide({ api: caps }, team({ ...busy, hulu: { running: 1 } }), {});
+ok(x.account === 'mx-api', 'the least busy API worker');
+x = R.decide({ api: caps, rules: [{ name: 'Subs only', to: 'subscription' }] }, team(busy), {});
+ok(x.kind === 'subscription' && x.state === 'queue', 'a rule keeping the job on subscriptions keeps it off API');
+x = R.decide({ api: caps }, team({ ...busy, hulu: { costToday: 10 }, mx: { costWeek: 50 } }), {});
+ok(x.kind === 'subscription' && x.state === 'queue', 'API workers at a spend cap take nothing: the job waits for a subscription');
+x = R.decide({ api: { 'hulu-api': { ...caps['hulu-api'], enabled: false } } }, team(busy), {});
+ok(x.kind === 'subscription', 'an API worker switched off or not set up takes nothing');
 
 console.log('rules');
 const rules = [

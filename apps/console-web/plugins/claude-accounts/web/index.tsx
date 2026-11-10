@@ -241,7 +241,7 @@ function Page() {
         <div>
           <p className="fx-eyebrow">Plugins · Claude accounts</p>
           <h1>Claude accounts</h1>
-          <p className="fx-muted">One account runs the console; every other subscription login runs headless jobs, and API keys take only the jobs a routing rule sends them. Every switch, save, sign-in or removal waits for your approval.</p>
+          <p className="fx-muted">One account runs the console; every other subscription login runs headless jobs, and API keys take jobs too (no approval; a routing rule or a full set of subscriptions sends them there, under their spend caps). Every switch, save, sign-in or removal waits for your approval.</p>
         </div>
         <Button size="sm" tone="ghost" icon="refresh" onClick={() => void refresh()}>Refresh</Button>
       </header>

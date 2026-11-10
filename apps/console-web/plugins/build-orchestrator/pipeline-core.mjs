@@ -116,12 +116,12 @@ export function accountView(row, own = {}, { settings = normSettings(), anyWorke
   const sick = health && (health.signedIn === false || health.credits === false)
     ? { kind: health.signedIn === false ? 'auth' : 'credits', reason: health.signedIn === false ? 'cannot sign in (health check)' : 'no credits left (health check)', until: '' } : null;
   const limited = row?.limited && typeof row.limited === 'object' ? row.limited : sick;
-  // subscriptions only: an API account never takes a build by itself, only through routeFor() (override or overflow)
+  // subscriptions here: API accounts take builds through routeFor() (Brett's order, else after the subscriptions), no approval
   const usable = !off && !apiKey && !limited && (role === 'worker' || (!anyWorker && settings.useConsoleAccount && (role === 'interactive' || role === 'saved')));
   let why = '';
   if (off) why = 'switched off for the pipeline';
   else if (limited) why = `${limited.reason === 'auth' ? 'login expired' : limited.reason || 'limited'}${limited.until ? ` until ${str(limited.until, 40).slice(0, 16).replace('T', ' ')}` : ''}`;
-  else if (apiKey) why = 'API key (billed per token): takes a build only when routed there';
+  else if (apiKey) why = 'API key (billed per token): takes builds in the account order, no approval, under its spend caps';
   else if (!usable) why = anyWorker ? 'not a worker (workers take every headless job)' : 'console account use is off';
   // API accounts: their own slot count (claude-workers building limit), Fable unless overridden (an API key reaches every model)
   const apiParallel = Number.isInteger(o.parallel) && o.parallel > 0 ? Math.min(12, o.parallel) : Number.isInteger(row?.building) && row.building > 0 ? row.building : settings.parallelPerAccount;
@@ -173,18 +173,33 @@ export function apiCandidates(accounts, model) {
 }
 
 /**
- * Every account that may take this build's next phase now, in the order the final pick tries them: subscriptions
- * first (Brett's order), then API accounts (unless the build is kept off API, or overflow is switched off). A build set
- * to API only lists API accounts. [{ account, kind, rule, why }]
+ * Subscriptions and API accounts in one line (Brett, Nov 10 2026: API builds "need to just go there just like any other
+ * build"): when Brett's account order covers every candidate, that order decides, API accounts included; otherwise
+ * subscriptions first (their own order), then API accounts. No approval either way: the spend caps are the safety net.
+ */
+export function inAccountOrder(subs, apis) {
+  const all = [...list(subs), ...list(apis)];
+  if (!list(apis).length || !list(subs).length || all.some((a) => a.order == null)) return all;
+  return all.map((a, i) => [a, i]).sort(([a, i], [b, j]) => a.order - b.order || i - j).map(([a]) => a);
+}
+
+/**
+ * Every account that may take this build's next phase now, in the order the final pick tries them: Brett's account
+ * order, API accounts included (inAccountOrder), else subscriptions first, then API accounts (unless the build is kept
+ * off API, or overflow is switched off). A build set to API only lists API accounts. [{ account, kind, rule, why }]
  */
 export function routeOptions(b, accounts, model, settings = normSettings()) {
   const route = b?.pipeline?.route || '';
-  const subs = route === 'api' ? [] : candidates(accounts, model).map((a) => ({ account: a.name, kind: 'subscription', rule: '', why: '' }));
+  const subs = route === 'api' ? [] : candidates(accounts, model);
   const apiOk = route === 'api' || (route !== 'subscription' && settings.apiOverflow);
-  const apis = apiOk ? apiCandidates(accounts, model).map((a) => ({ account: a.name, kind: 'api', rule: route === 'api' ? 'override' : 'overflow',
-    why: route === 'api' ? `routed to API account ${a.name} (this build is set to run on API)` : `every subscription account is full or out, so it goes to API account ${a.name}` })) : [];
-  return [...subs, ...apis];
+  const apis = apiOk ? apiCandidates(accounts, model) : [];
+  return inAccountOrder(subs, apis).map((a) => a.kind === 'api'
+    ? { account: a.name, kind: 'api', rule: route === 'api' ? 'override' : 'overflow', why: route === 'api' ? `routed to API account ${a.name} (this build is set to run on API)` : apiWhy(a, subs) }
+    : { account: a.name, kind: 'subscription', rule: '', why: '' });
 }
+
+/** Why an auto-routed build went to this API account. */
+const apiWhy = (a, subs) => (list(subs).length ? `API account ${a.name} is next in the account order` : `every subscription account is full or out, so it goes to API account ${a.name}`);
 
 /**
  * The orchestrator's plan for a build, made as soon as it is split (pipeline.planned): the model of its next phase
@@ -234,6 +249,12 @@ export function healthOf({ status = null, out = '', error = '' } = {}) {
   return { signedIn: null, credits: null, fable: null, error: line };
 }
 
+/** API accounts whose spend needs an alert: [{ account, state: warn|capped, why }] (accountView rows). */
+export function apiSpendAlerts(accounts) {
+  return list(accounts).filter((a) => a.kind === 'api' && ['warn', 'capped'].includes(a.api?.spend?.state))
+    .map((a) => ({ account: a.name, state: a.api.spend.state, why: str(a.api.spend.why, 300) }));
+}
+
 /** One line for the health of every account: "4 accounts: 3 ok, 1 can't sign in". */
 export function healthSummary(rows) {
   const r = list(rows);
@@ -252,7 +273,7 @@ export function apiNoAccountWhy(accounts, model) {
 
 /**
  * Where one build goes this tick: { account, kind, rule, why }. `rule` = override (pipeline.route api) | overflow
- * (settings.apiOverflow, every subscription account full or out) | '' (a subscription account, the normal case).
+ * (settings.apiOverflow: every subscription account full or out, or an API account ahead in Brett's order; no approval) | '' (a subscription account, the normal case).
  * No account = account '' and `why` says what keeps each option out (a missing key, a cap, a full account).
  */
 export function routeFor(b, accounts, model, settings = normSettings()) {
@@ -261,7 +282,12 @@ export function routeFor(b, accounts, model, settings = normSettings()) {
     const a = apiCandidates(accounts, model)[0];
     return a ? { account: a.name, kind: 'api', rule: 'override', why: `routed to API account ${a.name} (this build is set to run on API)` } : { account: '', kind: '', rule: 'override', why: `set to run on API, ${apiNoAccountWhy(accounts, model)}` };
   }
-  const sub = candidates(accounts, model)[0];
+  const subs = candidates(accounts, model);
+  if (route !== 'subscription' && settings.apiOverflow && subs.length) {
+    const first = inAccountOrder(subs, apiCandidates(accounts, model))[0];
+    if (first?.kind === 'api') return { account: first.name, kind: 'api', rule: 'overflow', why: apiWhy(first, subs) };
+  }
+  const sub = subs[0];
   if (sub) return { account: sub.name, kind: 'subscription', rule: '', why: '' };
   const subWhy = noAccountWhy(accounts, model);
   if (route === 'subscription') return { account: '', kind: '', rule: '', why: `${subWhy} (this build is kept off API accounts)` };
@@ -473,6 +499,11 @@ export function alertFor(kind, d = {}) {
       title: `Dispatcher self-check: ${list(d.fixes).length ? `fixed ${list(d.fixes).length}` : 'nothing fixed'}${list(d.problems).length ? `, ${list(d.problems).length} account${list(d.problems).length === 1 ? '' : 's'} can't work` : ''}`,
       body: str([...list(d.fixes).map((x) => `Fixed: ${x}`), ...list(d.problems).map((x) => `Can't use ${x}`), d.line ? `Now: ${d.line}` : ''].filter(Boolean).join('\n'), 1500) };
     case 'split': return { ...base, key: `pipeline:split:${d.id}`, severity: d.error ? 'warning' : 'info', title: d.error ? `Split needs a look: ${str(d.title, 120)}` : `Split into ${d.steps} steps: ${str(d.title, 120)}`, body: str(d.error || d.note, 1500) };
+    // API spend (Brett, Nov 10 2026): no approval per run, so the caps are the safety net: AmberX hears at the alert
+    // level (80% by default) and when a cap is hit (the dispatcher stops sending builds there until spend drops)
+    case 'api-spend': return { ...base, key: `pipeline:api-spend:${d.account}`, severity: d.state === 'capped' ? 'error' : 'warning',
+      title: d.state === 'capped' ? `API account ${d.account} hit its spend cap: no more builds go there` : `API account ${d.account} is near its spend cap`,
+      body: str(`${d.why || ''}${d.state === 'capped' ? '. Builds go to the other accounts until spend drops under the cap.' : ''}`, 1500) };
     default: throw new Error(`unknown alert kind ${kind}`);
   }
 }

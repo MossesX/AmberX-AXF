@@ -100,7 +100,7 @@ try:
         check(False, "a refused move is a 400")
     except srv.HTTPException as e:
         check(e.status_code == 400 and "only a Pending build" in e.detail, "a refused move is a 400 with the reason")
-    # one way to start builds: the dispatch service every other plugin uses; API switches are Brett's own click
+    # one way to start builds: the dispatch service every other plugin uses; API switches need no approval (spend caps are the safety net)
     import asyncio
     import plugin_services
 
@@ -118,7 +118,7 @@ try:
     svc.request("Fix systems check: mosh", "Install mosh.", by="systems-check", source="systems-check", priority="P1", queue=True)
     cmd = _calls[-1]
     check(cmd[2] == "request" and "--queue" in cmd and cmd[cmd.index("--priority") + 1] == "P1" and cmd[cmd.index("--by") + 1] == "systems-check" and "--detail-file" in cmd, "request: title, detail in a file, priority, by, straight to the Queue")
-    for body, brett, want in (({"apiOverflow": True}, False, 403), ({"apiOverflow": False}, False, 200), ({"apiOverflow": True}, True, 200)):
+    for body, brett, want in (({"apiOverflow": True}, False, 200), ({"apiOverflow": False}, False, 200), ({"apiOverflow": True}, True, 200)):
         try:
             asyncio.run(srv.pipeline_settings_set(_Req(body, brett)))
             code = 200
@@ -126,7 +126,7 @@ try:
             code = e.status_code
         check(code == want, f"API overflow {'on' if body['apiOverflow'] else 'off'} by {'Brett' if brett else 'a session'}: {want}")
     check(_calls[-1][-2] == "apiOverflow=true", "a Python bool reaches the CLI as true/false")
-    for route, brett, want in (("api", False, 403), ("api", True, 200), ("subscription", False, 200), ("nowhere", True, 400)):
+    for route, brett, want in (("api", False, 200), ("api", True, 200), ("subscription", False, 200), ("nowhere", True, 400)):
         try:
             asyncio.run(srv.pipeline_route(_Req({"id": "alpha", "route": route}, brett)))
             code = 200

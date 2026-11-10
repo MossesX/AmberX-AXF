@@ -239,6 +239,24 @@ t('routeFor: subscriptions first; overflow off = wait and say so; overflow on = 
   const subOnly = P.routeFor(build('x', 'queued', [], { pipeline: { route: 'subscription' } }), full, 'Opus', P.normSettings({ apiOverflow: true }));
   assert.equal(subOnly.account, ''); assert.match(subOnly.why, /kept off API accounts/);
 });
+t('API accounts need no approval: Brett\'s account order covers API accounts too; caps stop them and AmberX hears', () => {
+  const rows2 = [{ name: 'w-max', role: 'worker', plan: 'max', limited: null, running: [] }, apiRow('hulu-api')];
+  const ordered = P.accountViews(rows2, { 'w-max': { order: 2 }, 'hulu-api': { order: 1 } }, { settings: P.normSettings({}) });
+  const r = P.routeFor(build('x', 'queued', []), ordered, 'Opus');
+  assert.deepEqual([r.account, r.kind, r.rule], ['hulu-api', 'api', 'overflow'], 'an API account first in the order takes the build, no approval');
+  assert.deepEqual(P.routeOptions(build('x', 'queued', []), ordered, 'Opus').map((o) => o.account), ['hulu-api', 'w-max']);
+  const unordered = P.accountViews(rows2, { 'hulu-api': { order: 1 } }, { settings: P.normSettings({}) });
+  assert.equal(P.routeFor(build('x', 'queued', []), unordered, 'Opus').account, 'w-max', 'a partial order keeps subscriptions first');
+  assert.equal(P.routeFor(build('x', 'queued', [], { pipeline: { route: 'subscription' } }), ordered, 'Opus').account, 'w-max', 'route subscription keeps it off API');
+  assert.equal(P.routeFor(build('x', 'queued', []), ordered, 'Opus', P.normSettings({ apiOverflow: false })).account, 'w-max', 'overflow off keeps it off API');
+  const capped = P.accountViews([rows2[0], apiRow('hulu-api', { spend: { day: 10, week: 10, state: 'capped', why: 'daily cap $10 reached' } }), apiRow('mx-api', { spend: { day: 8.5, week: 9, state: 'warn', why: '$8.50 of the $10 daily cap' } })],
+    { 'w-max': { order: 3 }, 'hulu-api': { order: 1 }, 'mx-api': { order: 2 } }, { settings: P.normSettings({}) });
+  assert.equal(P.routeFor(build('x', 'queued', []), capped, 'Opus').account, 'mx-api', 'a capped API account is skipped; one near its cap still works');
+  assert.deepEqual(P.apiSpendAlerts(capped).map((a) => `${a.account}:${a.state}`), ['hulu-api:capped', 'mx-api:warn']);
+  const a = P.alertFor('api-spend', { account: 'hulu-api', state: 'capped', why: 'daily cap $10 reached' });
+  assert.equal(a.key, 'pipeline:api-spend:hulu-api'); assert.equal(a.severity, 'error'); assert.match(a.title, /hit its spend cap/);
+  assert.equal(P.alertFor('api-spend', { account: 'mx-api', state: 'warn', why: 'x' }).severity, 'warning');
+});
 t('plan: overflow fills an API account up to its cap, then the rest wait with the reason', () => {
   const s = P.normSettings({ parallelPerAccount: 2, apiOverflow: true });
   const accts = P.accountViews([...subsFull, apiRow('hulu-api')], {}, { settings: s });

@@ -299,7 +299,7 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   if [[ -z "$account" ]]; then
     wait_for_worker ""
     if [[ -n "$worker" ]]; then on_worker=1 account="$worker" tried_workers="$worker"
-      [[ "$worker_kind" == api ]] && build_note "Routed to API account $worker (billed per token) by a routing rule"
+      [[ "$worker_kind" == api ]] && build_note "Routed to API account $worker (billed per token, no approval needed; under its spend caps)"
     elif [[ "${AXF_WORKERS:-on}" != off && "${AXF_OWN_LOGIN:-on}" != off && -f "$WORKERS_JS" ]] && command -v node >/dev/null; then
       build_note "No Claude account free (every one out or its queue full): this run uses the console's account"
     fi

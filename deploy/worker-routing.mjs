@@ -15,7 +15,9 @@
  *   limits                { building: 3, queue: 5 } per account: jobs running at once, jobs waiting for that account
  *   perAccount            { name: { label?, building?, queue? } }
  *   api                   { name: { label, enabled, dailyCapUsd, weeklyCapUsd, alertAt } } the API-key accounts that may
- *                         work. They bill per token, so they only take a job a rule sends them (never by default).
+ *                         work. They bill per token, but need no approval (Brett, Nov 10 2026: "They need to just go
+ *                         there just like any other build"): a job a rule sends them, and any job no subscription
+ *                         account can start now, runs there. Their spend caps are the safety net.
  *   rules                 ordered; the first enabled rule that matches a job decides:
  *                         { id, name, enabled, to: api|subscription, accounts: [names] (api only; [] = any API account),
  *                           when: { jobTypes, models, priorities, profiles: [] (any), minSteps, maxSteps, maxMinutes,
@@ -26,7 +28,9 @@
  * Decision: { account, kind: subscription|api|'', state: run|queue|none, rule, position, why, considered: [...] }.
  *   rule to api   → the least busy matching API account under its caps with a free building slot; none → falls through
  *   otherwise     → the least busy subscription worker with a free slot (workers in order, the interactive account last);
- *                   all full → queue on the account with the shortest queue that still has room; none → state none.
+ *                   none free → the least busy API worker under its caps with a free slot (not when a rule keeps the
+ *                   job on subscriptions); still none → queue on the account with the shortest queue that still has
+ *                   room; none → state none.
  *
  * Spend: an API account at or over a cap takes nothing more; at alertAt (default 0.8) of a cap its state is "warn".
  * Caps count the last 24 h / 7 days of that account's runs (the same windows as the cost columns).
@@ -211,6 +215,10 @@ export function decide(config, accounts, job) {
   const lead = rule?.to === 'subscription' ? `rule "${rule.name}" keeps it on subscriptions: ` : fell ? `${fell}, so ` : '';
   const run = [...subsFree].sort(byLoad)[0];
   if (run) return out(run, 'run', `${lead}${run.name} is the least busy ${run.role === 'interactive' ? 'account (the console\'s own)' : 'worker'}`);
+  if (rule?.to !== 'subscription') {
+    const api = rows.filter((r) => r.role === 'api-worker' && r.canRun).sort(byLoad)[0];
+    if (api) return out(api, 'run', `${lead}every subscription account is busy or out: API account ${api.name} takes it (no approval; under its spend caps)`);
+  }
   const q = subs.filter((r) => r.canQueue).sort((a, b) => a.queued - b.queued || byLoad(a, b))[0];
   if (q) return out(q, 'queue', `${lead}every subscription account is full: waits for ${q.name} (${q.queued + 1} in its queue)`, q.queued + 1);
   return out(null, 'none', `${lead}${subs.length ? 'every subscription account is out or its queue is full' : 'no subscription account takes headless jobs'}`);
