@@ -3649,6 +3649,18 @@
    "from": "detail",
    "addenda": []
   },
+  "remove-the-old-theme-manager-style-and-layout-se": {
+   "said": "We need to remove all the styling and theme and layout stuff. Remove it all because the new thing's going to override it.",
+   "at": "2026-11-10T16:42:29.017Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "requests-ledger": {
    "said": "I need a way to see all the little things I've asked for, like a list of all these things I've asked for, and then when I open it up, it expands into a row. I need to be able to see verbatim what I said that initiated it. And where it is in line, and what its status is, and all that stuff. So I need a way to view every single little thing that I've asked for in a list that expands to all its information regarding its list and the queue, or whatever list it's in, or whatever its status is. I need a hook to access every piece of information about that particular request.",
    "at": "2026-11-04T00:00:00.000Z",

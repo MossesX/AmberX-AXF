@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 02:47 UTC · `vps-orchestrator-only-rule-vps-settings-console` → pending, note (all) · pipeline
 - 2026-11-10 02:47 UTC · `split-builds-pages-build-manager-pending-complet` note (all) · orchestrator
 - 2026-11-10 02:47 UTC · `orchestrator-table-columns-model-queue-assigned` → running, note (all) · pipeline
 - 2026-11-10 02:47 UTC · `orchestrator-table-columns-model-queue-assigned` note (all) · orchestrator
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 16:41 UTC · `amberx-open-url-tapping-the-command-waiting-noti` added (0 steps) (all) · console
 - 2026-11-10 16:41 UTC · `amberx-open-url-tapping-the-command-waiting-noti` → queued, note (all) · console
 - 2026-11-10 16:42 UTC · `inline-edit-plugin-install-in-console-molly-and` note (all) · orchestrator
+- 2026-11-10 16:42 UTC · `inline-edit-plugin-install-in-console-molly-and` note (all) · builds-live
 
 ## Token passes (log)
 
