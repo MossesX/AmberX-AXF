@@ -97,7 +97,8 @@ export function normSettings(raw = {}) {
  *   fable      may this account run Fable? override (own.fable) > a fresh probe > the plan (fablePlans)
  *   parallel   sessions at once: own.parallel > settings.parallelPerAccount
  *   usable     may the dispatcher put a build on it? never limited, never an API key, never one Brett switched off;
- *              workers always; the console's account only when no worker exists and useConsoleAccount is on
+ *              workers always; the console's account when it takes headless jobs (claude-workers interactiveTakesJobs,
+ *              row.takesJobs), at the same priority as a worker; otherwise only when no worker exists and useConsoleAccount is on
  */
 export function accountView(row, own = {}, { settings = normSettings(), anyWorker = false, now = Date.now() } = {}) {
   const o = own && typeof own === 'object' ? own : {};
@@ -117,12 +118,15 @@ export function accountView(row, own = {}, { settings = normSettings(), anyWorke
     ? { kind: health.signedIn === false ? 'auth' : 'credits', reason: health.signedIn === false ? 'cannot sign in (health check)' : 'no credits left (health check)', until: '' } : null;
   const limited = row?.limited && typeof row.limited === 'object' ? row.limited : sick;
   // subscriptions only: an API account never takes a build by itself, only through routeFor() (override or overflow)
-  const usable = !off && !apiKey && !limited && (role === 'worker' || (!anyWorker && settings.useConsoleAccount && (role === 'interactive' || role === 'saved')));
+  // the console's own account is a builder like any worker when claude-workers says it takes headless jobs
+  // (interactiveTakesJobs on: row.takesJobs); with no worker at all it still fills in when useConsoleAccount is on
+  const consoleTakes = role === 'interactive' && row?.takesJobs === true;
+  const usable = !off && !apiKey && !limited && (role === 'worker' || consoleTakes || (!anyWorker && settings.useConsoleAccount && (role === 'interactive' || role === 'saved')));
   let why = '';
   if (off) why = 'switched off for the pipeline';
   else if (limited) why = `${limited.reason === 'auth' ? 'login expired' : limited.reason || 'limited'}${limited.until ? ` until ${str(limited.until, 40).slice(0, 16).replace('T', ' ')}` : ''}`;
   else if (apiKey) why = 'API key (billed per token): takes a build only when routed there';
-  else if (!usable) why = anyWorker ? 'not a worker (workers take every headless job)' : 'console account use is off';
+  else if (!usable) why = !anyWorker ? 'console account use is off' : role === 'interactive' ? 'console account; taking headless jobs is off (Claude accounts → Job routing)' : 'not a worker (workers take every headless job)';
   // API accounts: their own slot count (claude-workers building limit), Fable unless overridden (an API key reaches every model)
   const apiParallel = Number.isInteger(o.parallel) && o.parallel > 0 ? Math.min(12, o.parallel) : Number.isInteger(row?.building) && row.building > 0 ? row.building : settings.parallelPerAccount;
   const api = apiKey ? apiState(row, o, settings, { limited, apiParallel, running }) : null;
@@ -157,12 +161,12 @@ export function accountViews(rows, own = {}, opts = {}) {
 /** Brett's account order (Claude Accounts Manager drag-and-drop): ordered accounts first, lower first; unordered keep the old rules. */
 const byOrder = (a, b) => (a.order == null ? 1 : 0) - (b.order == null ? 1 : 0) || (a.order != null && b.order != null ? a.order - b.order : 0);
 
-/** Accounts that can take one more session on `model` now: Fable needs an account with Fable; Brett's order first, then fewest running, Opus away from Fable accounts, workers before the console's account. */
+/** Accounts that can take one more session on `model` now: Fable needs an account with Fable; Brett's order first, then fewest running, Opus away from Fable accounts, then the name (the console's account is a builder at the same priority as a worker). */
 export function candidates(accounts, model) {
   const needFable = modelKey(model) === FOUNDATION_MODEL;
   // Opus work goes to accounts without Fable first, so the Fable accounts stay free for Fable phases
   return list(accounts).filter((a) => a.usable && a.free > 0 && (!needFable || a.fable))
-    .sort((a, b) => byOrder(a, b) || a.running - b.running || (needFable ? 0 : (a.fable ? 1 : 0) - (b.fable ? 1 : 0)) || (a.role === 'worker' ? 0 : 1) - (b.role === 'worker' ? 0 : 1));
+    .sort((a, b) => byOrder(a, b) || a.running - b.running || (needFable ? 0 : (a.fable ? 1 : 0) - (b.fable ? 1 : 0)) || a.name.localeCompare(b.name));
 }
 
 /** API accounts that can take one more build on `model` now: least busy first, then the least spent today. */
@@ -222,7 +226,7 @@ export function healthDue(last, settings = normSettings(), now = Date.now()) {
  */
 export function healthOf({ status = null, out = '', error = '' } = {}) {
   const t = `${out || ''} ${error || ''}`;
-  const auth = /invalid api key|authentication|unauthori[sz]ed|oauth token|token (has )?expired|please run \/login|not logged in|log ?in again|401\b|invalid x-api-key/i.test(t);
+  const auth = /invalid api key|authenticat(e|ion)|unauthori[sz]ed|oauth (token|session)|(session|token) (has )?expired|could not be refreshed|token (has )?expired|please run \/login|not logged in|log ?in again|401\b|invalid x-api-key/i.test(t);
   const credits = /credit balance|out of credits|insufficient (credit|fund|quota)|usage limit|limit reached|rate limit|quota|billing|payment required|402\b|429\b/i.test(t);
   const model = /not available|no access|does not exist|invalid model|model.*not found|not_found_error|permission to use/i.test(t);
   // a clean exit whose JSON answer is not an error = signed in, credits left, Fable accepted (the answer text is never matched)
@@ -410,7 +414,7 @@ export function needsSplit(b, rules = { maxStepMinutes: 30 }) {
 // ------------------------------------------------------------------ alerts (the console alerts API; types in notify.json)
 
 export const ALERT_SOURCE = 'pipeline';
-export const ALERT_LINK = '#/build-orchestrator';
+export const ALERT_LINK = 'view:build-orchestrator';   // the console's alerts API takes http(s)://, view:<id> or settings:<tab>
 /**
  * The payload POST /api/alerts takes. kind = idle | launched | ended | failed | split. `key` makes repeats bump a count
  * instead of a new alert, and lets the dispatcher resolve one (idle) when a build runs again. Key prefixes are what

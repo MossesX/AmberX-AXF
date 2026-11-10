@@ -63,12 +63,33 @@ t('accountView: Fable from the plan, override and probe win over it; parallel pe
 t('usable: workers only when any worker exists; the console account when none; never a limited one', () => {
   const v = P.accountViews(rows, {}, { settings });
   const by = Object.fromEntries(v.map((a) => [a.name, a]));
-  assert.equal(by.console.usable, false); assert.match(by.console.why, /not a worker/);
+  assert.equal(by.console.usable, false); assert.match(by.console.why, /taking headless jobs is off/);
   assert.equal(by['w-pro'].usable, true); assert.equal(by['w-out'].usable, false); assert.match(by['w-out'].why, /hit its limit/);
   const solo = P.accountViews([rows[0]], {}, { settings }); assert.equal(solo[0].usable, true);
   const off = P.accountViews([rows[0]], {}, { settings: P.normSettings({ useConsoleAccount: false }) }); assert.equal(off[0].usable, false);
   const stale = P.accountViews(rows, { 'w-max': { probe: { fable: false, at: '2026-01-01T00:00:00Z' } } }, { settings, now: Date.parse(now) });
   assert.equal(stale.find((a) => a.name === 'w-max').fableFrom, 'plan');
+});
+t('usable: the console account takes builds next to the workers when it takes headless jobs (5 each, 10 in all)', () => {
+  const team = [{ name: 'hulu', role: 'interactive', plan: 'max', takesJobs: true, running: [] }, { name: 'moses', role: 'worker', plan: 'max', running: ['a', 'b', 'c'] }];
+  const v = P.accountViews(team, {}, { settings: P.normSettings({ parallelPerAccount: 5 }) });
+  const by = Object.fromEntries(v.map((a) => [a.name, a]));
+  assert.equal(by.hulu.usable, true); assert.equal(by.hulu.why, ''); assert.equal(by.hulu.free, 5); assert.equal(by.moses.free, 2);
+  assert.equal(v.reduce((n, a) => n + a.parallel, 0), 10);
+  // same priority as a worker: the least busy goes first, whatever its role
+  assert.deepEqual(P.candidates(v, 'Opus').map((a) => a.name), ['hulu', 'moses']);
+  const offJobs = P.accountViews([{ ...team[0], takesJobs: false }, team[1]], {}, { settings });
+  assert.equal(offJobs[0].usable, false); assert.match(offJobs[0].why, /taking headless jobs is off/);
+  const switchedOff = P.accountViews(team, { hulu: { use: false } }, { settings });
+  assert.equal(switchedOff[0].usable, false);
+});
+t('healthOf: an expired OAuth session that could not be refreshed is a sign-in failure', () => {
+  const h = P.healthOf({ status: 1, out: '{"is_error":true,"result":"Failed to authenticate: OAuth session expired and could not be refreshed"}' });
+  assert.equal(h.signedIn, false);
+  assert.equal(P.healthOf({ status: 1, out: 'Failed to authenticate: OAuth session expired and could not be refreshed' }).signedIn, false);
+});
+t('alertFor: links in a form the console alerts API accepts (http(s)://, view:, settings:)', () => {
+  for (const k of ['idle', 'launched', 'ended', 'failed', 'selfcheck', 'split']) assert.match(P.alertFor(k, { id: 'x', title: 'x' }).link, /^(https?:\/\/|view:|settings:)/);
 });
 t('candidates: Fable only on Fable accounts, fewest running first', () => {
   const v = P.accountViews(rows, {}, { settings });
@@ -326,7 +347,7 @@ if (e2e) {
   for (const name of ['console', 'w-max', 'w-pro']) { mkdirSync(join(accountsDir, name), { recursive: true }); writeFileSync(join(accountsDir, name, '.credentials.json'), '{}'); }
   writeFileSync(join(accountsDir, '.active'), 'console\n');
   writeFileSync(join(workersDir, 'seen.json'), JSON.stringify({ console: { email: 'c@x', plan: 'max' }, 'w-max': { email: 'max@x', plan: 'max' }, 'w-pro': { email: 'pro@x', plan: 'pro' } }));
-  writeFileSync(join(workersDir, 'workers.json'), JSON.stringify({ workers: ['w-max', 'w-pro'] }));
+  writeFileSync(join(workersDir, 'workers.json'), JSON.stringify({ workers: ['w-max', 'w-pro'], interactiveTakesJobs: false }));
   // the fake launcher records what it was asked to start and "starts" a session: an events.jsonl line + a slot entry
   const launcher = join(tmp, 'launcher.sh');
   writeFileSync(launcher, `#!/usr/bin/env bash
@@ -368,7 +389,7 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     const r = json(pipe('tick', '--json'));
     assert.equal(r.launched.length, 0); assert.equal(r.plan.pending, 2);
     const s = json(pipe('status', '--json')); assert.equal(s.table.pending.length, 2); assert.equal(s.table.queued.length, 0); assert.equal(s.accounts.length, 3);
-    assert.equal(s.accounts.find((a) => a.name === 'console').usable, false, 'workers exist: the console account stays out');
+    assert.equal(s.accounts.find((a) => a.name === 'console').usable, false, 'the console account takes no headless jobs here, so it stays out');
     assert.equal(s.accounts.find((a) => a.name === 'w-max').fable, true); assert.equal(s.accounts.find((a) => a.name === 'w-pro').fable, false);
   });
   t('e2e queue: Brett moves both to the Queue; unqueue brings one back', () => {
