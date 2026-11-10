@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2554,
- "updatedAt": "2026-11-10T17:30:17.900Z",
+ "rev": 2555,
+ "updatedAt": "2026-11-10T17:31:35.241Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -140221,10 +140221,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/merge-batching-add-on-when-a-batch-fails-ci-spli",
-   "pr": "",
+   "pr": "#459",
    "priority": "P0",
    "createdAt": "2026-11-10T16:45:23.543Z",
-   "updatedAt": "2026-11-10T17:30:15.036Z",
+   "updatedAt": "2026-11-10T17:31:33.604Z",
    "builtAt": "",
    "notes": [
     {
@@ -140359,7 +140359,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
