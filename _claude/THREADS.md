@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:52 UTC · `amberx-llama-llama-amberxai-com-via-coolify-trae` added (0 steps) (all) · console
 - 2026-11-10 17:52 UTC · `amberx-llama-llama-amberxai-com-via-coolify-trae` → queued, note (all) · console
 - 2026-11-10 17:53 UTC · `ollama-own-docker-container-amberx-llama-interna` note (all) · orchestrator
 - 2026-11-10 17:53 UTC · `ollama-own-docker-container-amberx-llama-interna` note (all) · builds-live
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 21:58 UTC · `employee-hooks-plain-tap-on-an-employee-name-ope` note (all) · orchestrator
 - 2026-11-10 21:59 UTC · `background-is-its-own-asset-type-with-asset-sett` note (all) · orchestrator
 - 2026-11-10 22:03 UTC · `molly-one-shell` s7 done, → running (all) · orchestrator
+- 2026-11-10 22:09 UTC · `molly-gap-axhub-cors` added (0 steps) (all) · orchestrator
 
 ## Token passes (log)
 

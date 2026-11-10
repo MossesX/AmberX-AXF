@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T22:04:06.489Z",
+ "updatedAt": "2026-11-10T22:09:28.397Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -96356,6 +96356,37 @@
      "uid": "st-mwb85zah035ccu"
     }
    ]
+  },
+  {
+   "id": "molly-gap-axhub-cors",
+   "title": "Molly gap: axHub allows Molly's origin on /auth/api/* (CORS with credentials) so native screens read the hub session",
+   "category": "",
+   "detail": "Found by molly-sign-in-once s1. From https://molly.amberxai.com, GET https://axhub.amberxai.com/auth/api/session answers 200 with no Access-Control-Allow-Origin, and the preflight OPTIONS /auth/api/logout answers 200 with no CORS headers, so a browser on Molly cannot read the hub session or post a write. The hub should answer an allow-list of amberxai.com app origins (Molly first) on /auth/api/* with Access-Control-Allow-Origin echoing the origin, Access-Control-Allow-Credentials true, Access-Control-Allow-Headers content-type, accept, x-axhub-csrf, Vary Origin; never * with credentials. The session cookie is same-site (SameSite=Lax is enough). Molly side is in place: apps/molly/src/molly/credentials.ts (axhub provider, credentials include, X-AxHub-CSRF on writes).",
+   "status": "pending",
+   "hidden": false,
+   "source": "molly-sign-in-once",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T22:09:27.000Z",
+   "updatedAt": "2026-11-10T22:09:27.000Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Standalone apps keep working until Molly covers them; list gaps as pending builds.",
+    "at": "2026-11-10T22:09:27.000Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   },
   {
    "id": "correction-to-overrides-list-expanded-asset-show",
