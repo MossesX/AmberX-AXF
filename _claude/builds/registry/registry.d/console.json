@@ -1,0 +1,9 @@
+{
+  "$axf": "control-registry@1",
+  "note": "Hand-written facts about the console's pages the collectors cannot see in a manifest: the words Brett uses for them. Plugins declare their own in plugin.json control; this file is for what no plugin owns. Merged last, by id.",
+  "entries": [
+    { "id": "console-web/page/plan-studio", "synonyms": ["plans", "planner", "plan"], "actions": [ { "id": "open", "phrases": ["open plans", "show my plans", "plan studio"] } ] },
+    { "id": "console-web/page/build-orchestrator", "synonyms": ["orchestrator"], "actions": [ { "id": "open", "phrases": ["open the orchestrator", "show builds running"] } ] },
+    { "id": "console-web/page/builds", "synonyms": ["build manager", "build queue"], "actions": [ { "id": "open", "phrases": ["open builds", "show builds"] } ] }
+  ]
+}

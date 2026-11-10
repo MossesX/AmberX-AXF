@@ -156,3 +156,11 @@ Web only (Android on hold), Kotlin twins when the Android side resumes:
 - `console.nav` act `refresh` and `console-command@1` op `refresh` (`hard?`).
 - `ui-choices@1` (`framework/core/ui-choices.mjs`): the `choices` and `singleOption` fields of ui-review-item@1.
 
+
+## Deferred: control-registry@1 (Nov 10 2026)
+
+`framework/core/engines/control-registry.mjs` (the offline index of everything controllable and the deterministic
+dispatcher: entry normalisation, FNV-1a hashing, index diff, the JSON Schema subset validator, `resolvePhrase` /
+`resolveCli` / `resolveCommand`, `aiGate`). Web and Node only. The AmberX twin would let the phone resolve a phrase against
+an imported index without the console; until then AmberX voice phrases are collected into the index
+(`apps/console-web/lib/voice-api`) and the console resolves them. A port keeps `foldPhrase` = voice core `normalize`.

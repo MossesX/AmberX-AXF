@@ -39,7 +39,7 @@ export const HASH = /^[a-f0-9]{16}$/;
 const isObj = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
 const str = (v, max = 400) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 /** foldWords for what a person said: decimal points inside numbers survive ("1.2" stays "1.2", "v1.2.3" too). */
-export const foldPhrase = (s) => String(s ?? '').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9.]+/g, ' ').replace(/(?<!\d)\.|\.(?!\d)/g, ' ').replace(/\s+/g, ' ').trim();
+export const foldPhrase = (s) => String(s ?? '').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/['’]/g, '').replace(/[^a-z0-9.#]+/g, ' ').replace(/(?<!\d)\.|\.(?!\d)/g, ' ').replace(/#(?![0-9a-f]{3,8}\b)/g, ' ').replace(/\s+/g, ' ').trim();
 /** An id as compared: owner and type lower case, the name as written. */
 const normId = (v) => { const m = /^([^/]+)\/([^/]+)\/(.*)$/.exec(str(v, 200)); return m ? `${m[1].toLowerCase()}/${m[2].toLowerCase()}/${m[3]}` : str(v, 200).toLowerCase(); };
 const strList = (v, max = 120, cap = 60) => (Array.isArray(v) ? [...new Set(v.map((x) => str(x, max)).filter(Boolean))].slice(0, cap) : []);
@@ -356,16 +356,28 @@ export function normalizeEntry(raw) {
   if (ID.test(normId(e.parent))) out.parent = normId(e.parent);
   const sk = isObj(e.source) && SOURCE_KINDS.includes(e.source.kind) ? e.source.kind : 'declared';
   out.source = { kind: sk, ...(str(e.source?.file, 300) ? { file: str(e.source.file, 300) } : {}), ...(str(e.source?.frame, 60) ? { frame: str(e.source.frame, 60) } : {}) };
-  const gaps = cleanGaps(e.gaps);
+  // derived gaps (allowed values, surfaces) are recomputed every time, so a declaration that fixes one removes it
+  const gaps = cleanGaps(e.gaps).filter((g) => !(g.what === 'params' && g.why.includes(AUTO_PARAMS_WHY)) && !(SURFACE_GAPS.has(g.what) && AUTO_SURFACE_WHY.some((w) => g.why === w)));
   for (const a of out.actions) for (const p of a.params ?? []) {
-    if (needsAllowedValues(p) && !gaps.some((g) => g.what === 'params' && g.why.includes(`${a.id}.${p.name}`))) gaps.push({ what: 'params', why: `${a.id}.${p.name} (${p.type}) declares no allowed values: add enum, min/max or pattern in plugin.json control`, plan: 'full-api-cli-control s7' });
+    if (needsAllowedValues(p) && !gaps.some((g) => g.what === 'params' && g.why.includes(`${a.id}.${p.name}`))) gaps.push({ what: 'params', why: `${a.id}.${p.name} (${p.type}) ${AUTO_PARAMS_WHY}`, plan: 'full-api-cli-control s7' });
   }
-  for (const k of ['rest', 'mcp', 'cli', 'voice', 'deepLink']) if (surfaces[k] === false && !gaps.some((g) => g.what === k)) gaps.push({ what: k, why: k === 'voice' ? 'no phrase declared for it yet (plugin.json voice, or a control-registry declaration)' : k === 'deepLink' ? 'nothing to open: it has no view, dialog or settings tab' : `declared unreachable on ${k}` });
+  // a missing surface is a gap: REST / MCP / CLI always; a deep link only for things that are screens (page, plugin, app);
+  // voice only for things a person would say (not a plain read or info tool)
+  const spoken = ['page', 'setting', 'behavior', 'display', 'plugin', 'app'].includes(type) || out.actions.some((a) => a.effect !== 'read');
+  for (const k of ['rest', 'mcp', 'cli', 'voice', 'deepLink']) {
+    if (surfaces[k] !== false || gaps.some((g) => g.what === k)) continue;
+    if (k === 'deepLink' && !['page', 'plugin', 'app'].includes(type)) continue;
+    if (k === 'voice' && !spoken) continue;
+    gaps.push({ what: k, why: k === 'voice' ? AUTO_SURFACE_WHY[0] : k === 'deepLink' ? AUTO_SURFACE_WHY[1] : `declared unreachable on ${k}` });
+  }
   if (gaps.length) out.gaps = gaps;
   out.hash = entryHash(out);
   return out;
 }
 
+const AUTO_PARAMS_WHY = 'declares no allowed values: add enum, min/max or pattern in plugin.json control';
+const AUTO_SURFACE_WHY = ['no phrase declared for it yet (plugin.json voice, or a control-registry declaration)', 'nothing to open: it has no view, dialog or settings tab'];
+const SURFACE_GAPS = new Set(['voice', 'deepLink']);
 /** A free string / number param on a write should say what it allows; ids, text, json, objects, secrets and booleans needn't. */
 const needsAllowedValues = (p) => ['string', 'number', 'integer'].includes(p.type) && p.enum === undefined && p.min === undefined && p.max === undefined && !p.pattern && !p.of && p.maxLength === undefined;
 
@@ -451,9 +463,24 @@ export function buildIndex(rawEntries, { now = new Date(), commit = '', root = '
     needsAI: entries.filter((e) => e.needsAI || e.actions.some((a) => a.needsAI)).length,
     surfaces: Object.fromEntries(SURFACES.map((s) => [s, entries.filter((e) => e.surfaces[s] !== false && e.surfaces[s] !== undefined).length])),
     gaps: entries.reduce((n, e) => n + (e.gaps?.length ?? 0), 0),
+    gapsBy: entries.flatMap((e) => e.gaps ?? []).reduce((m, g) => { m[g.what] = (m[g.what] ?? 0) + 1; return m; }, {}),
   };
-  const gaps = entries.flatMap((e) => (e.gaps ?? []).map((g) => ({ ...g, what: `${e.id}: ${g.what}` }))).slice(0, 5000);
-  return { $axf: REGISTRY_FRAME, version: REGISTRY_VERSION, generatedAt: now.toISOString(), source: { ...(commit ? { commit } : {}), ...(root ? { root } : {}), collectors }, hash: indexHash(entries), counts, owners, gaps, entries };
+  // index-wide gaps only (an entry's gaps stay on the entry: gapsOf(index) lists them all)
+  const gaps = extraOwners.flatMap((o) => (Array.isArray(o.gaps) ? o.gaps : []));
+  return { $axf: REGISTRY_FRAME, version: REGISTRY_VERSION, generatedAt: now.toISOString(), source: { ...(commit ? { commit } : {}), ...(root ? { root } : {}), collectors }, hash: indexHash(entries), counts, owners: owners.map(({ gaps: _g, ...o }) => o), gaps, entries };
+}
+
+/** Every gap in the index, with the entry it belongs to: [{ entry, what, why, plan? }]. */
+export const gapsOf = (index) => (index?.entries ?? []).flatMap((e) => (e.gaps ?? []).map((g) => ({ entry: e.id, ...g })));
+
+/**
+ * The index as a file: the header fields, then one entry per line (readable diffs, a third of the size of indented
+ * JSON). `JSON.parse` reads it back as is.
+ */
+export function serializeIndex(index) {
+  const { entries, ...head } = index;
+  const h = JSON.stringify(head, null, 1).replace(/\n}$/, ',\n "entries": [\n');
+  return `${h}${(entries ?? []).map((e) => JSON.stringify(e)).join(',\n')}\n ]\n}\n`;
 }
 
 /** What changed between two indexes: { same, added, removed, changed: [{ id, fields }] }. */
@@ -476,7 +503,7 @@ export function diffIndex(before, after) {
 /* ================================================================== export / import */
 
 /** The index as a file: the index itself plus when it was exported. */
-export const exportIndex = (index, { now = new Date() } = {}) => `${JSON.stringify({ ...index, exportedAt: now.toISOString() }, null, 1)}\n`;
+export const exportIndex = (index, { now = new Date() } = {}) => serializeIndex({ ...index, exportedAt: now.toISOString() });
 
 /** An exported index back in: parsed, exportedAt dropped, checked against the schema and its hashes. → { ok, index?, errors }. */
 export function importIndex(textOrObj, schema) {
@@ -513,14 +540,14 @@ export function listEntries(index, { owner = '', type = '', tag = '', surface = 
 }
 
 /** Ranked search: whole-word hits on label, aliases, synonyms, keywords and id; label phrase matches first. */
-export function searchEntries(index, q, { limit = LIST_DEFAULT, type = '', owner = '' } = {}) {
+export function searchEntries(index, q, { limit = LIST_DEFAULT, type = '', owner = '', strict = false } = {}) {
   const words = foldWords(q).split(' ').filter(Boolean);
   if (!words.length) return [];
   const phrase = words.join(' ');
   const scored = [];
   for (const e of index?.entries ?? []) {
     if ((type && e.type !== type) || (owner && e.owner !== owner)) continue;
-    const s = scoreEntry(e, words, phrase);
+    const s = scoreEntry(e, words, phrase, strict);
     if (s > 0) scored.push([e, s]);
   }
   return scored.sort((a, b) => b[1] - a[1] || a[0].id.localeCompare(b[0].id)).slice(0, Math.min(limit, LIST_MAX)).map(([e, score]) => ({ entry: e, score }));
@@ -543,10 +570,24 @@ const VERBS = [
   [/^(add|create|new)$/, 'add'],
   [/^(remove|delete)$/, 'remove'],
 ];
-const FILLER = new Set(['the', 'a', 'an', 'my', 'me', 'please', 'to', 'in', 'on', 'of', 'for', 'at', 'up', 'screen', 'page', 'tab', 'view', 'now', 'it', 'this', 'that', 'amber', 'amberx', 'hey', 'okay', 'ok', 'console']);
+/** When several exact names can do the verb, which type a person most likely means: open → the page; set / read → the setting or display; run → the tool. */
+const TYPE_RANK = {
+  open: ['page', 'app', 'plugin', 'display', 'behavior', 'setting', 'tool'],
+  set: ['setting', 'display', 'behavior', 'tool', 'page', 'plugin', 'app'], on: ['behavior', 'setting', 'tool', 'display', 'plugin', 'page', 'app'], off: ['behavior', 'setting', 'tool', 'display', 'plugin', 'page', 'app'], toggle: ['behavior', 'setting', 'tool', 'display', 'plugin', 'page', 'app'], reset: ['setting', 'display', 'behavior', 'tool', 'page', 'plugin', 'app'],
+  read: ['setting', 'display', 'behavior', 'tool', 'plugin', 'page', 'app'], run: ['tool', 'behavior', 'setting', 'display', 'plugin', 'page', 'app'],
+  '': ['page', 'setting', 'display', 'behavior', 'tool', 'plugin', 'app'],
+};
+/** Grammar words that never name anything, dropped anywhere in a phrase. */
+const FILLER = new Set(['the', 'a', 'an', 'my', 'me', 'please', 'to', 'in', 'on', 'of', 'for', 'at', 'up', 'screen', 'page', 'tab', 'view', 'now', 'it', 'this', 'that']);
+/** Wake words and addresses, dropped only at the front ("hey amber, …"): "amber" inside a name (Follow Amber) stays. */
+const WAKE = new Set(['hey', 'okay', 'ok', 'amber', 'amberx', 'console', 'computer', 'yo', ...FILLER]);
 
-/** How well an entry matches words (0 = not at all; every word must hit something). Labels weigh most, then aliases / synonyms, then keywords / id, then the description. */
-function scoreEntry(e, words, phrase) {
+/**
+ * How well an entry matches words (0 = not at all; every word must hit something). Labels weigh most, then aliases /
+ * synonyms, then keywords / id, then the description. `strict` leaves the description out (resolving a phrase: a value
+ * word that happens to be in a description must not be swallowed into the name).
+ */
+function scoreEntry(e, words, phrase, strict = false) {
   const label = foldWords(e.label);
   const lw = label.split(' ');
   const names = (e.aliases ?? []).concat(e.synonyms ?? []).map(foldWords);
@@ -560,7 +601,7 @@ function scoreEntry(e, words, phrase) {
     else if (idw.includes(w)) score += 3;
     else if (kw.includes(w)) score += 2;
     else if (lw.some((x) => x.startsWith(w) && w.length >= 3)) score += 1.5;
-    else if (` ${desc} `.includes(` ${w} `)) score += 0.5;
+    else if (!strict && ` ${desc} `.includes(` ${w} `)) score += 0.5;
     else return 0;
   }
   if (label === phrase || names.includes(phrase)) score += 20;
@@ -585,8 +626,8 @@ export function findAction(entry, token) {
       const p = (tog.params ?? []).find((x) => x.type === 'boolean') ?? (tog.params ?? []).find((x) => x.name === 'value' || x.name === 'on');
       return { action: tog, preset: p ? { [p.name]: id === 'on' } : {} };
     }
-    if (id === 'read') hit = by('read') ?? by('get') ?? by('state') ?? by('list') ?? by('status');
-    else if (id === 'open') hit = by('open') ?? by('show') ?? by('run');
+    if (id === 'read') hit = by('read') ?? by('get') ?? by('state') ?? by('list') ?? by('status') ?? by('info');
+    else if (id === 'open') hit = by('open') ?? by('show');
     else hit = by(id);
     if (hit) return { action: hit };
   }
@@ -646,8 +687,10 @@ export function resolveCli(index, argv, opts = {}) {
     if (args[i].startsWith('--')) { const k = args[i].slice(2); const eq = k.indexOf('='); if (eq > 0) flags[k.slice(0, eq)] = k.slice(eq + 1); else if (args[i + 1] !== undefined && !args[i + 1].startsWith('--')) flags[k] = args[++i]; else flags[k.replace(/^no-/, '')] = !k.startsWith('no-'); }
     else words.push(args[i]);
   }
-  let entry = getEntry(index, words[0]); let used = 1;
-  if (!entry && words.length >= 2) { const two = `${words[0]}/${words[1]}`.toLowerCase(); entry = (index?.entries ?? []).find((e) => e.id.toLowerCase().endsWith(`/tool/${two}`) || e.aliases?.includes(two)) ?? null; if (entry) used = 2; }
+  // `<plugin> <command>` names the tool before `<plugin>` alone names the plugin entry
+  let entry = null; let used = 1;
+  if (words.length >= 2) { const two = `${words[0]}/${words[1]}`.toLowerCase(); entry = (index?.entries ?? []).find((e) => e.id.toLowerCase().endsWith(`/tool/${two}`) || e.aliases?.includes(two)) ?? null; if (entry) used = 2; }
+  if (!entry) entry = getEntry(index, words[0]);
   if (!entry) { const one = words[0].toLowerCase(); const tools = (index?.entries ?? []).filter((e) => e.id.toLowerCase().endsWith(`/${one}`) || e.where.plugin === one); if (tools.length === 1) entry = tools[0]; else if (tools.length > 1 && words.length === 1) return fail(RESOLVE_CODES.AMBIGUOUS, `"${one}" names several: ${tools.slice(0, 8).map((e) => e.id).join(', ')}`, { candidates: tools.slice(0, 8).map((e) => ({ id: e.id, label: e.label, type: e.type, owner: e.owner, actions: e.actions.map((a) => a.id) })) }); }
   if (!entry) { const candidates = candidatesOf(index, words.join(' ')); return fail(RESOLVE_CODES.NOT_FOUND, `no entry "${words[0]}"${candidates.length ? `; closest: ${candidates.map((x) => x.id).join(', ')}` : ''}`, { candidates, gap: gapFor(words.join(' '), 'CLI: entry id, alias or <plugin> <command>') }); }
   let action = null; let preset = {}; let rest = words.slice(used);
@@ -700,37 +743,61 @@ export function resolvePhrase(index, phrase, opts = {}) {
   }
   // 2. verb + entry words [+ value]
   let verb = ''; let restWords = heard.split(' ');
-  while (restWords.length > 1 && FILLER.has(restWords[0])) restWords.shift(); // "hey amber, open plans please"
+  while (restWords.length > 1 && WAKE.has(restWords[0])) restWords.shift(); // "hey amber, open plans please"
   for (const [re] of VERBS) { for (const n of [3, 2, 1]) { const head = restWords.slice(0, n).join(' '); if (re.test(head)) { verb = head; restWords = restWords.slice(n); break; } } if (verb) break; }
   // "turn follow amber on", "follow amber off": a trailing on / off is the verb
   const last = restWords[restWords.length - 1];
   if ((last === 'on' || last === 'off') && restWords.length > 1 && (!verb || /^(turn|switch|set|put|make|flip)$/.test(verb))) { verb = `turn ${last}`; restWords = restWords.slice(0, -1); }
   else if (!verb && /^(turn|switch|put|make)$/.test(restWords[0] ?? '')) restWords = restWords.slice(1);
-  const content = restWords.filter((w) => !FILLER.has(w));
-  if (!content.length) return fail(RESOLVE_CODES.NOT_FOUND, `"${phrase}" names nothing in the registry`, { candidates: [], gap: gapFor(phrase, 'phrase') });
-  // the longest run of leading words that names exactly one entry; what follows is the value
+  const content = restWords;
+  if (!content.some((w) => !FILLER.has(w))) return fail(RESOLVE_CODES.NOT_FOUND, `"${phrase}" names nothing in the registry`, { candidates: [], gap: gapFor(phrase, 'phrase') });
+  // the longest run of leading words that names exactly one entry; what follows is the value. Grammar words are
+  // ignored for scoring but kept for exact names ("follow me" is a synonym; "me" alone is filler).
+  const namesOf = (e) => [foldWords(e.label), ...(e.aliases ?? []).concat(e.synonyms ?? []).map(foldWords)];
   for (let n = content.length; n >= 1; n--) {
-    const name = content.slice(0, n).join(' ');
-    const hits = searchEntries(index, name, { limit: 8 });
+    const raw = content.slice(0, n).join(' ');
+    const name = content.slice(0, n).filter((w) => !FILLER.has(w)).join(' ');
+    if (!name) continue;
+    const hits = searchEntries(index, name, { limit: 8, strict: true });
     if (!hits.length) continue;
     const top = hits[0];
-    const exact = hits.filter((h) => foldWords(h.entry.label) === name || (h.entry.aliases ?? []).concat(h.entry.synonyms ?? []).map(foldWords).includes(name));
+    let exact = hits.filter((h) => { const ns = namesOf(h.entry); return ns.includes(raw) || ns.includes(name); });
+    // several things share the name ("Follow Amber" the plugin, "follow amber" the switch): the one that can do the verb
+    // wins; an exact name that cannot do the verb yields to the one hit that can
+    if (verb) {
+      const can = hits.filter((h) => findAction(h.entry, verb));
+      const exactCan = exact.filter((h) => can.includes(h));
+      if (exactCan.length) exact = exactCan; else if (exact.length && can.length === 1) exact = can;
+    }
+    if (exact.length > 1 && n < content.length) { const takes = exact.filter((h) => h.entry.actions.some((a) => (a.params ?? []).length)); if (takes.length === 1) exact = takes; }
+    // still several: the exact label beats an alias or synonym; then what a person means by the words: a page over a plugin over a tool
+    if (exact.length > 1) { const byLabel = exact.filter((h) => [raw, name].includes(foldWords(h.entry.label))); if (byLabel.length >= 1 && byLabel.length < exact.length) exact = byLabel; }
+    if (exact.length > 1) { const rank = TYPE_RANK[verb ? (VERBS.find(([re]) => re.test(verb))?.[1] ?? '') : ''] ?? TYPE_RANK['']; const best = Math.min(...exact.map((h) => rank.indexOf(h.entry.type))); const top2 = exact.filter((h) => rank.indexOf(h.entry.type) === best); if (top2.length === 1) exact = top2; }
     const chosen = exact.length === 1 ? exact[0] : exact.length > 1 ? null : hits.length === 1 || top.score - hits[1].score >= 1 ? top : null;
     if (!chosen) {
       if (n === 1 || exact.length > 1) { const cands = (exact.length > 1 ? exact : hits).slice(0, 6).map((h) => h.entry); return fail(RESOLVE_CODES.AMBIGUOUS, `"${name}" matches several: ${cands.map((e) => `${e.label} (${e.id})`).join(', ')}; say which`, { candidates: cands.map((e) => ({ id: e.id, label: e.label, type: e.type, owner: e.owner, actions: e.actions.map((a) => a.id) })) }); }
       continue;
     }
     const entry = chosen.entry;
-    const value = content.slice(n);
+    const value = content.slice(n).filter((w) => !FILLER.has(w));
     let action = null; let preset = {};
     if (verb) { const f = findAction(entry, verb); if (f) { action = f.action; preset = f.preset ?? {}; } }
     if (!action && value.length) { const f = findAction(entry, value[0]); if (f) { action = f.action; preset = f.preset ?? {}; value.shift(); } }
     if (!action) action = value.length ? (entry.actions.find((a) => a.id === 'set') ?? defaultAction(entry)) : defaultAction(entry);
     const given = { ...preset };
     if (action && value.length) {
-      const target = (action.params ?? []).filter((p) => given[p.name] === undefined).sort((a, b) => (a.position ?? 99) - (b.position ?? 99) || (b.required ? 1 : 0) - (a.required ? 1 : 0))[0];
-      if (target) given[target.name] = value.join(' ');
-      else return fail(RESOLVE_CODES.VALIDATION, `${entry.label} · ${action.id} takes no value, but "${value.join(' ')}" was said`, { entry: entry.id, action: action.id, errors: [`"${value.join(' ')}" has nowhere to go`], how: { kind: 'phrase' } });
+      // the spoken values, in order, over the positional (else required) parameters: an enum or boolean takes the one word
+      // that is one of its values, the last parameter takes everything left ("accent #ff8800" → path accent, value #ff8800)
+      const slots = (action.params ?? []).filter((p) => given[p.name] === undefined).sort((a, b) => (a.position ?? 99) - (b.position ?? 99) || (b.required ? 1 : 0) - (a.required ? 1 : 0));
+      const targets = slots.some((p) => p.position !== undefined) ? slots.filter((p) => p.position !== undefined) : slots.filter((p) => p.required).length ? slots.filter((p) => p.required) : slots.slice(0, 1);
+      if (!targets.length) return fail(RESOLVE_CODES.VALIDATION, `${entry.label} · ${action.id} takes no value, but "${value.join(' ')}" was said`, { entry: entry.id, action: action.id, errors: [`"${value.join(' ')}" has nowhere to go`], how: { kind: 'phrase' } });
+      const words = [...value];
+      targets.forEach((p, i) => {
+        if (!words.length) return;
+        if (i === targets.length - 1) { given[p.name] = words.splice(0).join(' '); return; }
+        if (p.type === 'enum' || p.type === 'boolean') { const j = words.findIndex((w) => coerceParam(p, w) !== undefined); given[p.name] = j >= 0 ? words.splice(j, 1)[0] : words.shift(); return; }
+        given[p.name] = words.shift();
+      });
     }
     return finish(index, entry, action, given, { kind: 'phrase', verb, name }, opts);
   }
