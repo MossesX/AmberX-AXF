@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2856,
- "updatedAt": "2026-11-10T21:14:04.991Z",
+ "rev": 2857,
+ "updatedAt": "2026-11-10T21:14:18.018Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -146190,7 +146190,7 @@
    "pr": "#469",
    "priority": "P1",
    "createdAt": "2026-11-10T16:39:09.087Z",
-   "updatedAt": "2026-11-10T21:13:50.883Z",
+   "updatedAt": "2026-11-10T21:14:12.079Z",
    "builtAt": "2026-11-10T21:13:50.883Z",
    "notes": [
     {
@@ -146264,6 +146264,10 @@
     {
      "text": "Self-check: molly-flagship-skin-premium-sellable-uncluttered was marked running on mossesx-max- with no session: released and back in the Queue.",
      "at": "2026-11-10T21:10:12.042Z"
+    },
+    {
+     "text": "Headless run axf-molly-flagship-skin-premium-sellable-uncluttered--gina: brief only · start 12.2K tokens ($0.03) · cost $13.25 · 232 turns · 6 tools, MCP none",
+     "at": "2026-11-10T21:14:12.078Z"
     }
    ],
    "approvals": [
@@ -146645,7 +146649,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 58,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
