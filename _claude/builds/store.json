@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2715,
- "updatedAt": "2026-11-10T18:59:05.711Z",
+ "rev": 2716,
+ "updatedAt": "2026-11-10T19:09:37.283Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -153413,7 +153413,7 @@
    "title": "Orchestrator checks each build against main right before queuing it (done = close, partly done = queue only what's left)",
    "category": "",
    "detail": "Replaces the bulk pending audit. Plain code first, AI only behind its switch. Right before the orchestrator moves any build into the Queue (and again at dispatch), it checks that one build against main: Shipped Features ledger, merged PRs, and files/features the steps would touch. Already done: mark complete, link the PR/commit, archive. Partly done: tick done steps, queue only what's left. Superseded: archive with the reason. Builds on 'Orchestrator checks Shipped features before splitting any job'; merge them. Notify on AmberX for each closed build.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -153421,7 +153421,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T18:57:34.689Z",
-   "updatedAt": "2026-11-10T18:58:53.521Z",
+   "updatedAt": "2026-11-10T19:09:35.519Z",
    "builtAt": "",
    "notes": [
     {
@@ -153476,13 +153476,7 @@
     "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T18:58:42.985Z",
-     "why": "subscription account mossesx-max-"
-    },
+    "planned": null,
     "tried": [],
     "pickedAt": ""
    },
@@ -153502,12 +153496,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T19:09:35.519Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T18:58:41.585Z",
-     "updatedAt": "2026-11-10T18:58:41.585Z"
+     "updatedAt": "2026-11-10T19:09:35.691Z"
     },
     {
      "id": "s2",

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T18:59:05.711Z",
+ "updatedAt": "2026-11-10T19:09:37.283Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -94170,7 +94170,7 @@
    "title": "Orchestrator checks each build against main right before queuing it (done = close, partly done = queue only what's left)",
    "category": "",
    "detail": "Replaces the bulk pending audit. Plain code first, AI only behind its switch. Right before the orchestrator moves any build into the Queue (and again at dispatch), it checks that one build against main: Shipped Features ledger, merged PRs, and files/features the steps would touch. Already done: mark complete, link the PR/commit, archive. Partly done: tick done steps, queue only what's left. Superseded: archive with the reason. Builds on 'Orchestrator checks Shipped features before splitting any job'; merge them. Notify on AmberX for each closed build.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -94178,7 +94178,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T18:57:34.689Z",
-   "updatedAt": "2026-11-10T18:58:53.521Z",
+   "updatedAt": "2026-11-10T19:09:35.519Z",
    "builtAt": "",
    "notes": [
     {
@@ -94226,8 +94226,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T19:09:35.519Z",
      "note": "",
      "uid": "st-mwb1zrxt01xbvc"
     },
