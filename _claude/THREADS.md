@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 04:03 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` s1 done, → running (all) · orchestrator
 - 2026-11-10 04:03 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` note (all) · orchestrator
 - 2026-11-10 04:04 UTC · `resolve-merge-conflicts-and-land-running-builds` → running, note (all) · pipeline
 - 2026-11-10 04:04 UTC · `resolve-merge-conflicts-and-land-running-builds` branch claude/resolve-merge-conflicts-and-land-running-builds (all) · pipeline
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 17:14 UTC · `enforce-the-merge-queue-every-finished-build-goe` s1 done (all) · orchestrator
 - 2026-11-10 17:16 UTC · `merge-queue-batching-orchestrator-combines-ready` s1 done, → running (all) · orchestrator
 - 2026-11-10 17:19 UTC · `enforce-the-merge-queue-every-finished-build-goe` s2 done (all) · orchestrator
+- 2026-11-10 17:20 UTC · `merge-queue-batching-orchestrator-combines-ready` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
