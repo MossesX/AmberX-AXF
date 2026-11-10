@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2150,
- "updatedAt": "2026-11-10T01:05:38.545Z",
+ "rev": 2151,
+ "updatedAt": "2026-11-10T01:08:23.082Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -132724,7 +132724,7 @@
    "title": "Walkthrough player: IDE layout setting, collapsible panels, build books from clips; merge with the Demonstration manager",
    "category": "",
    "detail": "Upgrade the existing walkthrough/demonstration tools, don't make new ones. 1) Player setting: Layout = Player or IDE. IDE style: collapsible side columns and panels (clips library, book outline, properties, picture-in-picture group chat, captions/script). 2) Books: drag and drop clips into a book, reorder, nest chapters. 3) Merge the walkthrough player and the already-built Demonstration manager into one plugin (harvest its code, keep its data: demonstration, book, clip asset types), one source of truth. 4) Keep the playback controls (voice switch, speed, hide parts). Full API control.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -132732,7 +132732,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T23:59:19.114Z",
-   "updatedAt": "2026-11-10T00:10:38.861Z",
+   "updatedAt": "2026-11-10T01:08:21.859Z",
    "builtAt": "",
    "notes": [
     {
@@ -132769,14 +132769,14 @@
       "said": "Multiple books open in different containers and tabs, drag tabs from one group to another, et cetera. Powerful context menu too. Need to be able to add a book and enter information about it, name it, and have all the books appear in a list that expands or shows some info. You can build books by dragging clips. Make it sick, it needs to do everything. You can export videos, turn off captions. Export to MP3, MP4, export to a person, to an email or a share, whatever. And a pane you can hide or unhide that lists all the plugins, all the apps, and types of things like assets, in categories, a categorized tree, maybe multiple views. You select things, then right click or a quick button that says Create a demo on this, set how long you want it, add a custom prompt. When you make a new book, you can add a prompt to it and select. It has to build a glossary, and the glossary indexes all that, documentation, that all goes into a book.",
       "at": "",
       "source": "voice",
-      "by": "",
+      "by": "Claude voice (Gizmo)",
       "verbatim": true
      },
      {
       "said": "Like UI Review, UI Review would be one of them. You click it to add it to a generated demo, with a dialog where you enter the information you want. Make it sick. I'm gonna be selling this. I need good demonstrations of the Demo Designer and the HR department.",
       "at": "",
       "source": "voice",
-      "by": "",
+      "by": "Claude voice (Gizmo)",
       "verbatim": true
      }
     ]
@@ -132784,12 +132784,12 @@
    "pipeline": {
     "queuedAt": "2026-11-09T23:59:21.013Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-walkthrough-player-ide-layout-setting-collapsibl--gina",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
-    "launchedAt": "2026-11-10T00:10:34.054Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T00:01:58.512Z",
@@ -132799,9 +132799,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-10T00:10:34.054Z"
+    "dispatchedAt": ""
    },
    "steps": [
     {

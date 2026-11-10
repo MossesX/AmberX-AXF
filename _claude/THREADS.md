@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 17:53 UTC · `skins-own-everything-colour-theme-swaps-independ` note (all) · orchestrator
 - 2026-11-09 17:56 UTC · `account-failover-chain-subscription-next-subscri` → running, note (all) · pipeline
 - 2026-11-09 17:56 UTC · `account-failover-chain-subscription-next-subscri` branch claude/account-failover-chain-subscription-next-subscri (all) · pipeline
 - 2026-11-09 17:56 UTC · `account-failover-chain-subscription-next-subscri` note (all) · orchestrator
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 01:04 UTC · `account-failover-chain-subscription-next-subscri` note (all) · orchestrator
 - 2026-11-10 01:05 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → running, note (all) · pipeline
 - 2026-11-10 01:05 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · orchestrator
+- 2026-11-10 01:08 UTC · `walkthrough-player-ide-layout-setting-collapsibl` branch claude/walkthrough-player-ide-layout-setting-collapsibl (all) · builds-live
 
 ## Token passes (log)
 
