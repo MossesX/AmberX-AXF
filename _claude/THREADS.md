@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:21 UTC · `merge-queue-batching-orchestrator-combines-ready` note (all) · orchestrator
 - 2026-11-10 17:21 UTC · `merge-queue-batching-orchestrator-combines-ready` s3 done, → built (all) · orchestrator
 - 2026-11-10 17:22 UTC · `claude-md-standing-rule-be-proactive-bring-up-th` → running, note (all) · pipeline
 - 2026-11-10 17:22 UTC · `claude-md-standing-rule-be-proactive-bring-up-th` branch claude/claude-md-standing-rule-be-proactive-bring-up-th (all) · pipeline
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 21:23 UTC · `orchestrator-merge-first-switch-separate-merger` note (all) · orchestrator
 - 2026-11-10 21:24 UTC · `resolve-conflicts-and-land-460-456-457-459-342` s3 done, → built (all) · orchestrator
 - 2026-11-10 21:26 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` branch claude/land-all-97-built-but-unmerged-builds-skins-firs, PR #474 (all) · builds-live
+- 2026-11-10 21:27 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` s3 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
