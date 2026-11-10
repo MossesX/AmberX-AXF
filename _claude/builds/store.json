@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2110,
- "updatedAt": "2026-11-10T00:36:02.275Z",
+ "rev": 2111,
+ "updatedAt": "2026-11-10T00:36:18.178Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -116724,8 +116724,8 @@
    "pr": "#421",
    "priority": "P0",
    "createdAt": "2026-11-08T00:52:07.400Z",
-   "updatedAt": "2026-11-10T00:35:49.432Z",
-   "builtAt": "2026-11-10T00:35:46.375Z",
+   "updatedAt": "2026-11-10T00:36:13.510Z",
+   "builtAt": "2026-11-10T00:36:13.510Z",
    "notes": [
     {
      "text": "Overlap: slot-watchdog (branch claude/slot-watchdog) builds the stale reaper part (s3 dead/hung sessions released, s4 running-with-no-session reconciled on a 30 s timer). s1/s2 (per-account slot registry, heartbeats) stay here.",
@@ -116746,6 +116746,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-real-time-slot-tracking-stale-data-reaper--rhonda, own login copy)",
      "at": "2026-11-10T00:16:21.396Z"
+    },
+    {
+     "text": "Headless run axf-real-time-slot-tracking-stale-data-reaper--rhonda: brief only · start 10.7K tokens ($0.02) · cost $4.39 · 75 turns · 6 tools, MCP none",
+     "at": "2026-11-10T00:36:13.510Z"
     },
     {
      "text": "PR #421. All 5 steps done. Missing: UI Review desktop/phone shots of Live slots + Reaper log (the headless preview could not reach axHub without the console login). Overlaps open PRs #400/#406/#407 in pipeline.mjs / pipeline.tsx.",
