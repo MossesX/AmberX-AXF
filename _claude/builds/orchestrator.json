@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T19:38:07.961Z",
+ "updatedAt": "2026-11-10T19:38:18.092Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -88790,7 +88790,7 @@
    "pr": "#467",
    "priority": "P1",
    "createdAt": "2026-11-10T16:29:30.818Z",
-   "updatedAt": "2026-11-10T19:37:53.769Z",
+   "updatedAt": "2026-11-10T19:38:13.149Z",
    "builtAt": "",
    "notes": [
     {
@@ -88812,6 +88812,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-agent-manager-training-wizard-for-employee-agent--gina, own login copy)",
      "at": "2026-11-10T19:25:18.029Z"
+    },
+    {
+     "text": "Headless run axf-agent-manager-training-wizard-for-employee-agent--gina: brief only · start 13.0K tokens ($0.07) · cost $6.09 · 61 turns · 6 tools, MCP none",
+     "at": "2026-11-10T19:38:13.149Z"
     }
    ],
    "approvals": [],
