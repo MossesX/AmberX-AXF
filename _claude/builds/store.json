@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2130,
- "updatedAt": "2026-11-10T00:55:18.152Z",
+ "rev": 2131,
+ "updatedAt": "2026-11-10T00:55:28.512Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -128708,7 +128708,7 @@
    "title": "Account failover chain: subscription, next subscription, then API; record who actually built it",
    "category": "",
    "detail": "When the orchestrator launches a step on its chosen account and the login fails or is limited, it marks that account limited and retries on the next subscription account in priority order; if no subscription can run it, it goes to an API-key account under its caps. Whichever account or API key actually ran the step is recorded on the step and build (account, email, model, cost) and shown in the orchestrator. Never silently fall back outside this chain. Builds on fix-account-attribution (running now, which records the real login) and overlaps pending running-builds-follow-the-active-claude-account-fail-over-when-it-dies and auto-switch-claude-account-when-the-active-one-r: fold them in.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -128716,7 +128716,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T17:44:47.652Z",
-   "updatedAt": "2026-11-10T00:55:09.203Z",
+   "updatedAt": "2026-11-10T00:55:15.748Z",
    "builtAt": "",
    "notes": [
     {
@@ -128778,6 +128778,14 @@
     {
      "text": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
      "at": "2026-11-10T00:49:05.023Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-account-failover-chain-subscription-next-subscri--joey.",
+     "at": "2026-11-10T00:55:13.591Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-account-failover-chain-subscription-next-subscri--joey, own login copy)",
+     "at": "2026-11-10T00:55:15.748Z"
     }
    ],
    "approvals": [],
@@ -128797,12 +128805,12 @@
    "pipeline": {
     "queuedAt": "2026-11-09T17:44:49.712Z",
     "queuedBy": "console",
-    "account": "account-1",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-account-failover-chain-subscription-next-subscri--joey",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-09T17:58:10.111Z",
-    "runs": 0,
+    "launchedAt": "2026-11-10T00:55:13.000Z",
+    "runs": 1,
     "lastRun": {
      "at": "2026-11-09T17:59:03.135Z",
      "exit": 1,
@@ -128819,9 +128827,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-09T17:58:10.111Z"
+    "dispatchedAt": "2026-11-10T00:55:13.000Z"
    },
    "steps": [
     {
@@ -128902,7 +128910,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

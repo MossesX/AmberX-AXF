@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T00:55:18.152Z",
+ "updatedAt": "2026-11-10T00:55:28.512Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -78579,7 +78579,7 @@
    "title": "Account failover chain: subscription, next subscription, then API; record who actually built it",
    "category": "",
    "detail": "When the orchestrator launches a step on its chosen account and the login fails or is limited, it marks that account limited and retries on the next subscription account in priority order; if no subscription can run it, it goes to an API-key account under its caps. Whichever account or API key actually ran the step is recorded on the step and build (account, email, model, cost) and shown in the orchestrator. Never silently fall back outside this chain. Builds on fix-account-attribution (running now, which records the real login) and overlaps pending running-builds-follow-the-active-claude-account-fail-over-when-it-dies and auto-switch-claude-account-when-the-active-one-r: fold them in.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -78587,7 +78587,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T17:44:47.652Z",
-   "updatedAt": "2026-11-10T00:55:09.203Z",
+   "updatedAt": "2026-11-10T00:55:15.748Z",
    "builtAt": "",
    "notes": [
     {
@@ -78649,6 +78649,14 @@
     {
      "text": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
      "at": "2026-11-10T00:49:05.023Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-account-failover-chain-subscription-next-subscri--joey.",
+     "at": "2026-11-10T00:55:13.591Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-account-failover-chain-subscription-next-subscri--joey, own login copy)",
+     "at": "2026-11-10T00:55:15.748Z"
     }
    ],
    "approvals": [],
