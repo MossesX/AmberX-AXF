@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T21:38:50.362Z",
+ "updatedAt": "2026-11-10T21:39:08.305Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -95884,6 +95884,43 @@
      "uid": "st-mwb7p3og03hhrs"
     }
    ]
+  },
+  {
+   "id": "rebuild-gizmo-from-scratch-full-claude-style-cha",
+   "title": "Rebuild Gizmo from scratch: full Claude-style chat interface, switch between Claude and local Ollama/Llama",
+   "category": "",
+   "detail": "Replace the current Gizmo chat. Full Claude.ai-quality interface: conversation list, streaming replies, markdown/code, attachments, voice talk mode, history search. Model switcher per chat: Claude (accounts/API) or local Ollama (amberx-llama container, Mistral Small 24B default, 7B option) via the internal API. Works in AmberX app, AmberX web app and console, with a real deep link. Keep what worked before the Nov 7 Fable rebuild.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-10T21:38:57.321Z",
+   "updatedAt": "2026-11-10T21:38:59.002Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T21:38:59.002Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "You might as well just build it over again and make it sick. Make it better. It's gotta be a full-blown Claude interface where I can either talk to Claude or talk to my Ollama. The Gizmo plugin is trash, the chat is trash, it used to be way better.",
+    "at": "2026-11-10T21:38:57.321Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

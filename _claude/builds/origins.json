@@ -4009,6 +4009,18 @@
    "from": "",
    "addenda": []
   },
+  "rebuild-gizmo-from-scratch-full-claude-style-cha": {
+   "said": "You might as well just build it over again and make it sick. Make it better. It's gotta be a full-blown Claude interface where I can either talk to Claude or talk to my Ollama. The Gizmo plugin is trash, the chat is trash, it used to be way better.",
+   "at": "2026-11-10T21:38:57.321Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "refactor-all": {
    "said": "Stop everything from every session right now except the documentation. Put everything left to build into 1 single build in a new session. Send the build to orchestrator and create the matrix then end all other sessions.",
    "at": "2026-10-28",
