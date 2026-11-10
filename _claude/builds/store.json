@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2534,
- "updatedAt": "2026-11-10T17:14:09.163Z",
+ "rev": 2535,
+ "updatedAt": "2026-11-10T17:14:22.123Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -40250,7 +40250,7 @@
    "branch": "claude/batch-manager",
    "pr": "",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-11-04T14:38:17.121Z",
+   "updatedAt": "2026-11-10T17:14:08.950Z",
    "builtAt": "",
    "notes": [
     {
@@ -40268,6 +40268,10 @@
     {
      "text": "Merged from build profile \"angel\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Reconciled with enforce-the-merge-queue (Nov 10 2026): a 'batch' is now the merge queue's batch (GET /api/plugins/push-banner/queue → batch {prs, sha, ci, runUrl, bisect}, split, items[].inBatch; settings POST /queue/settings {mode, batchSize}). The Batch Manager grid should read that, not build its own batching; Merge on a row = queue add (push-banner Merge already queues AmberX-AXF PRs).",
+     "at": "2026-11-10T17:14:08.950Z"
     }
    ],
    "approvals": [
@@ -40481,7 +40485,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": {
