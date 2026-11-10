@@ -2736,6 +2736,18 @@
     }
    ]
   },
+  "one-vps-plugin-everything-vps-in-one-place-gauge": {
+   "said": "Is there a plugin that shows the VPS status, like its load and disk space? I need gauges and meter widgets for the VPS: load, RAM usage, swap usage, hard drive space, with different views. Various cleanup options. Put it in maintenance, a server maintenance tab. Add a banner widget. In the banner widget, if it's icon only, I want the colours to represent the load and the space: start with white, go up to gray to black, then all the way up to red, representing low or high. Move all the other VPS stuff over to that plugin. I want it all in one plugin. When you click the banner items, it's a drop-down menu showing all the gauges, each with a dot in the same colour as the gauge, the text, the percentage and what it is.",
+   "at": "2026-11-10T02:44:38.021Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "one-way-to-start-builds-the-orchestrator-dispatc": {
    "said": "We need to make sure there's only one way to start builds. It can't be two. It needs to be one. It has to be the orchestrator... The orchestrator has to take the build from the queue and then and start them. Not the build manager... Anything with the UI gets API control. That has to be in the briefs.",
    "at": "",
