@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 03:53 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` note (all) · orchestrator
 - 2026-11-10 03:54 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` note (all) · orchestrator
 - 2026-11-10 03:55 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` note (all) · pipeline
 - 2026-11-10 03:55 UTC · `ui-review-timeout-after-1-hour-notify-brett-and` → running, note (all) · pipeline
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 17:11 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
 - 2026-11-10 17:11 UTC · `skin-checker-flags-anything-that-breaks-a-profes` added (0 steps) (all) · console
 - 2026-11-10 17:11 UTC · `skin-checker-flags-anything-that-breaks-a-profes` → queued, note (all) · console
+- 2026-11-10 17:12 UTC · `skin-checker-flags-anything-that-breaks-a-profes` note (all) · orchestrator
 
 ## Token passes (log)
 
