@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2198,
- "updatedAt": "2026-11-10T02:24:33.781Z",
+ "rev": 2199,
+ "updatedAt": "2026-11-10T02:26:33.369Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -134583,12 +134583,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T02:24:15.337Z",
-   "updatedAt": "2026-11-10T02:24:21.854Z",
+   "updatedAt": "2026-11-10T02:26:28.473Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T02:24:21.854Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T02:26:28.473Z"
     }
    ],
    "approvals": [],
@@ -134615,13 +134619,89 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-10T02:26:28.473Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwa2jrw901jcus",
+     "title": "",
+     "text": "This REPLACES the build 'AmberX phone pop-up for every build start and finish: build name, account, model': remove it from Pending or the Queue and mark it superseded. Also upgrade, don't duplicate, brief-approval-dialog-before-every-headless-sess. 1) START = VETO: before every launch (new, retry, rerun, resume), one AmberX heads-up pop-up on the phone, also mirrored in the console. It shows the build name, what it will do, steps, model, account and employee, with Approve, Deny and a countdown (default 90 s, adjustable down to 0 via the approvals countdown setting). It launches on Approve or when the countdown ends; Deny sends it back to Pending. 2) FINISH: a pop-up with the build, account and outcome (done, failed, needs something and what). Tap to open the build. 3) One notification type, not two. Plain code, no AI. Respects the auto-approve toggle. Full API and voice control.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T02:26:28.473Z",
+     "updatedAt": "2026-11-10T02:26:28.473Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwa2jrw902q4s9",
+     "title": "",
+     "text": "Before the orchestrator starts anything, I want a veto approval notification. I don't need two. Get rid of the other one and just make it a veto approval for the AmberX notification.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T02:26:28.473Z",
+     "updatedAt": "2026-11-10T02:26:28.473Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwa2jrw903m8ys",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/one-amberx-build-notification-veto-approval-befo.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/one-amberx-build-notification-veto-approval-befo.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T02:26:28.473Z",
+     "updatedAt": "2026-11-10T02:26:28.473Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -134630,12 +134710,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T02:26:28.473Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
