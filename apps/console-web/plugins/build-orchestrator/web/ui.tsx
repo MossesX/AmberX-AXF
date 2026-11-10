@@ -7,12 +7,14 @@ import * as core from './orchestrator-core.mjs';
 import * as pendingCore from '@console/axf/plan/pending-core.mjs';
 import pricing from '@console/axf/schemas/model-pricing.json';
 import { DataGrid, RowHookButtons, registerRowRefTarget, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
-import { PipelineTab } from './pipeline';
+import { PipelineTab, type PipelineView } from './pipeline';
 import './orchestrator.css';
 
 /*
- * Build orchestrator page: a tab group (Pipeline · Builds · Approvals · Rules). The Pipeline tab (pipeline.tsx) is the
- * build pipeline: Pending / Queue / Building, the Claude accounts and what the dispatcher starts next. The Builds tab looks and behaves exactly like
+ * Build orchestrator page, the only place that browses and manages builds (Brett, Nov 10 2026: the Build manager is
+ * retired). Tabs: Pending · Queue · Active · Incomplete · Complete · Errors (pipeline.tsx, one view of GET /pipeline
+ * each), Accounts (health every 5 minutes, self-check, per-account controls), All builds · Approvals · Rules.
+ * Deep link: nav:build-orchestrator, or action build-orchestrator.tab:<tab>. The All builds tab looks and behaves exactly like
  * the console's Pending builds list (same pd-* cards, status strip, sort bar, step ticks, add form), with more
  * options: per-step model (Fable / Opus), phases and model-switch approvals, next-phase brief, hide / archive,
  * import from the pending list, step move / edit / remove. All rules are in orchestrator-core.mjs.
@@ -38,8 +40,16 @@ function headlessRuns(b: Build): { at: string; start: string; cost: string; mode
 }
 const fmtDate = (v: string) => { if (!v) return '—'; const d = new Date(v); return Number.isNaN(d.getTime()) ? '—' : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }); };
 const fmtTime = (v: string) => { const d = new Date(v); return Number.isNaN(d.getTime()) ? '' : d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); };
-const TABS = [{ id: 'pipeline', label: 'Pipeline', icon: 'play' }, { id: 'builds', label: 'Builds', icon: 'list' }, { id: 'approvals', label: 'Approvals', icon: 'check-circle' }, { id: 'rules', label: 'Rules', icon: 'settings' }] as const;
-type Tab = (typeof TABS)[number]['id'];
+export const TABS = [
+  { id: 'pending', label: 'Pending', icon: 'clock' }, { id: 'queue', label: 'Queue', icon: 'list' }, { id: 'active', label: 'Active', icon: 'play' },
+  { id: 'incomplete', label: 'Incomplete', icon: 'pause' }, { id: 'complete', label: 'Complete', icon: 'check-circle' }, { id: 'errors', label: 'Errors', icon: 'alert' },
+  { id: 'accounts', label: 'Accounts', icon: 'user' }, { id: 'builds', label: 'All builds', icon: 'grid' }, { id: 'approvals', label: 'Approvals', icon: 'check' }, { id: 'rules', label: 'Rules', icon: 'settings' },
+] as const;
+export type Tab = (typeof TABS)[number]['id'];
+const PIPELINE_VIEWS = new Set<string>(['pending', 'queue', 'active', 'incomplete', 'complete', 'errors', 'accounts']);
+/** Another part of the console (an action, a deep link) asks for a tab: the page switches to it. */
+const TAB_EVENT = 'axf:orchestrator-tab';
+export function openTab(t: string) { if (TABS.some((x) => x.id === t)) { consoleApi.writeLocal('orch-tab', t); window.dispatchEvent(new CustomEvent(TAB_EVENT, { detail: t })); } }
 
 export function OrchestratorPage() {
   const rt = useRuntime();
@@ -47,8 +57,9 @@ export function OrchestratorPage() {
   const [state, setState] = useState<State | null>(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
-  const [tab, setTab] = useState<Tab>(() => consoleApi.readLocal<Tab>('orch-tab', 'pipeline'));
+  const [tab, setTab] = useState<Tab>(() => { const t = consoleApi.readLocal<string>('orch-tab', 'queue'); return (TABS.some((x) => x.id === t) ? t : 'queue') as Tab; });
   useEffect(() => { consoleApi.writeLocal('orch-tab', tab); }, [tab]);
+  useEffect(() => { const on = (e: Event) => setTab((e as CustomEvent<Tab>).detail); window.addEventListener(TAB_EVENT, on); return () => window.removeEventListener(TAB_EVENT, on); }, []);
 
   const load = async () => {
     try { const r = await api.call<Res>('state'); if (!r.ok) throw new Error(r.error); if (r.upgradePolicy) core.setUpgradePolicy(r.upgradePolicy); setState(r.state!); setError(''); }
@@ -76,13 +87,13 @@ export function OrchestratorPage() {
         <div>
           <p className="fx-eyebrow">Build orchestrator · {state.builds.length} builds{state.updatedAt ? ` · updated ${fmtTime(state.updatedAt)}` : ''}</p>
           <h1>Build orchestrator</h1>
-          <p className="fx-muted" title="One session, no sub-agents unless a step says so. Tracker: _claude/builds/store.json">Every build in small Fable / Opus steps, split by the orchestrator; Pending → Queue (your move) → Building (the dispatcher, when a slot is free).</p>
+          <p className="fx-muted" title="One session, no sub-agents unless a step says so. Tracker: _claude/builds/store.json">Every build, split into small Fable / Opus steps as soon as it is filed, with its model and account planned; Pending → Queue (your move) → Active (the dispatcher picks the account when its turn comes: subscriptions first, then any API).</p>
         </div>
         <div className="fx-row fx-row--wrap"><Button icon="refresh" disabled={busy} onClick={() => load().then(() => log('reloaded', 'ok'))}>Reload</Button><Slot name="builds.toolbar" props={{ page: 'build-orchestrator' }} /></div>
       </header>
       {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
       <TabGroup id="build-orchestrator.tabs" label="Build orchestrator" value={tab} onChange={setTab} tabs={TABS.map((t) => ({ value: t.id, label: t.label, icon: t.icon, badge: t.id === 'approvals' && waiting > 0 ? waiting : undefined }))} />
-      {tab === 'pipeline' && <PipelineTab api={api} log={log} />}
+      {PIPELINE_VIEWS.has(tab) && <PipelineTab key={tab} api={api} log={log} view={tab as PipelineView} />}
       {tab === 'builds' && <BuildsTab state={state} busy={busy} act={act} />}
       {tab === 'approvals' && <ApprovalsTab state={state} busy={busy} act={act} />}
       {tab === 'rules' && <RulesTab rules={state.rules} busy={busy} act={act} />}

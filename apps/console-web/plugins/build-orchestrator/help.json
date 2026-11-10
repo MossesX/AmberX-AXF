@@ -101,6 +101,34 @@
         "title": "API overflow",
         "text": "When every subscription account is full or out, the orchestrator sends the next build to an API-key account (billed per token, under its daily and weekly caps). Off by default; only your own click turns it on.",
         "kind": "toggle"
+      },
+      {
+        "target": "action:build-orchestrator.tab:queue",
+        "title": "Build queue",
+        "text": "Opens the Build orchestrator on the Queue: every queued build in start order, with its steps and the planned model and account.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:build-orchestrator.tab:active",
+        "title": "Building now",
+        "text": "Opens the Build orchestrator on Active: what is building now and which account took each build.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:build-orchestrator.tab:errors",
+        "title": "Build errors",
+        "text": "Opens the Build orchestrator on Errors: failed builds and builds whose launch failed, with the accounts that refused them.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:build-orchestrator.tab:accounts",
+        "title": "Claude account health",
+        "text": "Opens the Build orchestrator on Accounts: the 5-minute health check of every Claude account (sign-in, credits, Fable).",
+        "kind": "menu-item",
+        "draft": true
       }
     ],
     "intros": []
