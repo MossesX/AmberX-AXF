@@ -53,11 +53,14 @@ const stubs = new Set(Object.keys(STANDARD_ACTIONS).filter((a) => !consoleAction
 /** `const NAME = 'value'` in a source file, for resolving `view: VIEW` / `[VIEW]`. */
 const constsOf = (src: string) => Object.fromEntries([...src.matchAll(/const\s+([A-Z_][A-Z0-9_]*)\s*=\s*'([^']+)'/g)].map((m) => [m[1], m[2]]));
 /** View ids in a source file's `nav: { … items: [ … view: X … ] }` lines. */
-function navViews(src: string): string[] {
-  const c = constsOf(src);
+function navViews(src: string, more: Record<string, string> = {}): string[] {
+  const c = { ...more, ...constsOf(src) };
   const out: string[] = [];
-  for (const line of src.split('\n').filter((l) => /^\s*nav:\s*\{/.test(l))) {
-    for (const m of line.matchAll(/view:\s*(?:'([^']+)'|([A-Z_][A-Z0-9_]*))/g)) { const v = m[1] ?? c[m[2]!]; if (v) out.push(v); }
+  // the whole `nav: { … }` block, one line or many (a plugin with several pages lists one item per line)
+  for (const start of [...src.matchAll(/^\s*nav:\s*\{/gm)].map((m) => m.index! + m[0].length)) {
+    let depth = 1; let i = start;
+    for (; i < src.length && depth > 0; i++) { if (src[i] === '{') depth++; else if (src[i] === '}') depth--; }
+    for (const m of src.slice(start, i).matchAll(/view:\s*(?:'([^']+)'|([A-Z_][A-Z0-9_]*))/g)) { const v = m[1] ?? c[m[2]!]; if (v) out.push(v); }
   }
   return out;
 }
@@ -84,16 +87,24 @@ const contributions: AppMenuContribution[] = consoleMenuContributions.map((c) =>
 const providers = new Set<string>(['views', 'nav', 'toolbar', 'settings', 'windows', 'dialogs', 'chrome', ...Object.values(CONSOLE_PROVIDERS).map((p) => p.id)]);
 const moreActions: string[] = Object.values(CONSOLE_PROVIDERS).map((p) => p.moreAction);
 const pluginNav: { folder: string; view: string }[] = [];
+const pluginPages: string[] = [];
 const pluginDir = join(app, 'plugins');
 for (const folder of readdirSync(pluginDir).filter((f) => !f.startsWith('_') && !f.startsWith('.') && existsSync(join(pluginDir, f, 'plugin.json'))).sort()) {
   const indexFile = join(pluginDir, folder, 'web/index.tsx');
   if (!existsSync(indexFile)) continue;
   const src = readFileSync(indexFile, 'utf8');
   const id = JSON.parse(readFileSync(join(pluginDir, folder, 'plugin.json'), 'utf8')).id as string;
-  let views = navViews(src);
+  // constants a plugin imports from its own web/ files (e.g. `VIEW` from './ui')
+  const webDir = join(pluginDir, folder, 'web');
+  const local = Object.assign({}, ...readdirSync(webDir).filter((f) => /\.(ts|tsx)$/.test(f)).map((f) => constsOf(readFileSync(join(webDir, f), 'utf8'))));
+  let views = navViews(src, local);
   // A plugin built on a framework library (`...lib` from createXLibrary) gets the library's nav.
   for (const m of src.matchAll(/from '@console\/axf\/libs\/([\w-]+)'/g)) if (/\.\.\.lib\b/.test(src)) views = views.concat(navViews(readText(`src/axf/libs/${m[1]}/index.tsx`)));
-  for (const v of views) pluginNav.push({ folder, view: v });
+  // every page a plugin declares is a known page (a menu item may open it); the "its nav entry is in the app menu" rule
+  // still covers what the one-line, same-file parse saw before Nov 10 2026 (agent-voice and codebase-changes reach
+  // their pages through an .open action, a gap recorded in the enforce-the-merge-queue report)
+  pluginPages.push(...views);
+  for (const v of navViews(src.split('\n').filter((l) => /^\s*nav:\s*\{/.test(l)).join('\n'))) pluginNav.push({ folder, view: v });
   const hasUi = views.length > 0 || /\bdialogs:\s*\{/.test(src) || /\bsettingsTabs\b/.test(src);
   const menuFile = join(pluginDir, folder, 'web/menu.ts');
   if (!existsSync(menuFile)) { need(!hasUi, `plugin ${folder} has a page, dialog or settings tab but no web/menu.ts`); continue; }
@@ -152,7 +163,7 @@ for (const tb of toolbars) for (const g of tb.data.groups) for (const it of g.it
 }
 for (const v of consoleViews) need(reaches(v), `page "${v}" (src/App.tsx) isn't in the app menu`);
 
-const known = new Set([...consoleViews, ...libViews, ...pluginNav.map((p) => p.view)]);
+const known = new Set([...consoleViews, ...libViews, ...pluginNav.map((p) => p.view), ...pluginPages]);
 for (const a of actions) if (a.startsWith('nav:')) need(known.has(a.slice(4)), `menu item opens unknown page "${a.slice(4)}"`);
 for (const p of ['views', 'nav', 'toolbar', 'settings', 'windows', 'dialogs', 'chrome']) need(used.has(p), `built-in live list "${p}" is missing from the menu`);
 for (const p of Object.values(CONSOLE_PROVIDERS)) need(used.has(p.id), `console live list "${p.id}" is registered but not in the menu`);
