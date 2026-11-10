@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 15:42 UTC · `project-manager-add-on-new-project-prompt-asks-i` note (all) · orchestrator
 - 2026-11-10 15:43 UTC · `project-manager-add-on-drag-a-build-to-another-p` added (0 steps) (all) · console
 - 2026-11-10 15:43 UTC · `project-manager-add-on-drag-a-build-to-another-p` → queued, note (all) · console
 - 2026-11-10 15:44 UTC · `project-manager-add-on-drag-a-build-to-another-p` note (all) · orchestrator
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 18:55 UTC · `x.lib.notifications` → pending (all) · voice
 - 2026-11-10 18:55 UTC · `x.engine.dev` → pending (all) · voice
 - 2026-11-10 18:55 UTC · `x.lib.hub` → pending (all) · voice
+- 2026-11-10 18:55 UTC · `skin-checker-flags-anything-that-breaks-a-profes` s9 done (all) · orchestrator
 
 ## Token passes (log)
 
