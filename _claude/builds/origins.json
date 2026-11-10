@@ -3817,6 +3817,18 @@
    "from": "",
    "addenda": []
   },
+  "resolve-conflicts-and-land-pr-449-account-order": {
+   "said": "Yeah, land it.",
+   "at": "2026-11-10T17:34:43.785Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "resolve-merge-conflicts-and-land-running-builds": {
    "said": "When I tell you to do something, you do it till you get it right.",
    "at": "2026-11-10T03:14:09.017Z",
@@ -4024,6 +4036,18 @@
    "from": "detail",
    "addenda": []
   },
+  "shared-screenshot-registry-hooked-everywhere-liv": {
+   "said": "Screenshots go into a shared registry that can be accessed from anywhere. Plan Studio, features, builds, errors tie into it through a hook, not directly through UI review. View the screenshot of an element, open a pane with all the tokens, styles, parameters, tweak it live with a hot rendering preview of the same screen, save it. That creates a new asset type with the color, style, layout, behavior, icon themes that applies to just a particular UI screen.",
+   "at": "2026-11-10T17:34:36.360Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "shipped-features-live-manifests-from-dispatch-to": {
    "said": "Ship dock features gets manifest as soon as orchestrator sends out the job. then its status is it, it sends a manifest every time it's updated to every time it's a step completed it sends a manifest every time it's completed it sends a manifest and its status in ship features is updated constantly with different badges and a progress meter.",
    "at": "",
@@ -4090,6 +4114,18 @@
      "verbatim": true
     }
    ]
+  },
+  "shipped-features-show-each-landed-build-s-screen": {
+   "said": "Screenshots and everything of what it did? Yep.",
+   "at": "2026-11-10T17:34:46.359Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
   },
   "skin-checker-flags-anything-that-breaks-a-profes": {
    "said": "Yeah, build that shit right now.",
