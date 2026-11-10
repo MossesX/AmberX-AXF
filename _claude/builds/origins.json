@@ -3565,6 +3565,18 @@
    "from": "detail",
    "addenda": []
   },
+  "plugin-ui-inventory-per-plugin-reskin-one-button": {
+   "said": "A button in every plugin's settings. Generates a list of all the UI's dialogs, tables, buttons, panes, windows, tabs, everything, every behavior, every layout, style and color token. Multiple views, 3D, grid, expandable rows, classical trees, different roots, IDE style tabs. Rebuild, it will reskin just that plugin instead of the whole room. New look, layout and behavior, to look better, perform better, or be new.",
+   "at": "2026-11-10T17:31:45.669Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "postgres-console": {
    "said": "the planner sends a request to the orchestrator to assign the building ID. The orchestrator has to assign all IDs and register them.\nwhat kind of database is this registry? Is it SQLite? Or Postgres.\nSQLite is too small. This project's too big.\nI'm thinking MongoDB or Postgres.\ncan we make Postgres run on the console?\nBundle the Postgres into the console's container.\nAnd make it queryable from the console.\ndon't run that. Put that in the planner for Molly and park it.",
    "at": "2026-11-06T13:41:20.323Z",
