@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2892,
- "updatedAt": "2026-11-10T21:37:53.674Z",
+ "rev": 2893,
+ "updatedAt": "2026-11-10T21:38:23.139Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -155825,12 +155825,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:37:39.627Z",
-   "updatedAt": "2026-11-10T21:37:41.236Z",
+   "updatedAt": "2026-11-10T21:38:21.280Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T21:37:41.236Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T21:38:21.280Z"
     }
    ],
    "approvals": [],
@@ -155857,16 +155861,92 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-10T21:38:21.280Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
     "pickedAt": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwb7p3og01x6uz",
+     "title": "",
+     "text": "Give Gizmo chat a real https deep link on amberxai.com that opens Gizmo in the AmberX Android app (app links) or in the AmberX web app if the app isn't there; make amberx.open_url able to open it; add a Gizmo entry to console.screens. 2) Bug: the new home cards/frame/menus look showed, then a reload brought back the old banner and old look. Persist the chosen skin as the default so reloads keep it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T21:38:21.280Z",
+     "updatedAt": "2026-11-10T21:38:21.280Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwb7p3og02w4bn",
+     "title": "",
+     "text": "That Gizmo didn't open. There's an AmberX web app tied to the app, so why won't it work? Now it's loading the old banner again, the old look.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T21:38:21.280Z",
+     "updatedAt": "2026-11-10T21:38:21.280Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwb7p3og03hhrs",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/gizmo-opens-by-voice-link-amberx-web-app-android.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/gizmo-opens-by-voice-link-amberx-web-app-android.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T21:38:21.280Z",
+     "updatedAt": "2026-11-10T21:38:21.280Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -155875,12 +155955,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T21:38:21.280Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
