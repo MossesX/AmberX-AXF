@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 18:38 UTC · `resolve-conflicts-and-land-pr-449-account-order` branch claude/account-order-switch-custom-drag-and-drop-order, PR #449 (all) · builds-live
 - 2026-11-10 18:38 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` → pending, note (all) · reconciler
 - 2026-11-10 18:42 UTC · `skin-checker-flags-anything-that-breaks-a-profes` s2 done (all) · orchestrator
 - 2026-11-10 18:44 UTC · `skin-checker-flags-anything-that-breaks-a-profes` s3 done (all) · orchestrator
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 23:17 UTC · `make-hulu-actually-take-builds-dispatcher-counts` s2 done (all) · orchestrator
 - 2026-11-10 23:18 UTC · `make-hulu-actually-take-builds-dispatcher-counts` PR #478 (all) · builds-live
 - 2026-11-10 23:18 UTC · `api-accounts-need-no-approval-builds-route-there` s1 done (all) · orchestrator
+- 2026-11-10 23:19 UTC · `api-accounts-need-no-approval-builds-route-there` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
