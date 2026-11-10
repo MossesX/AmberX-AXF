@@ -108,18 +108,18 @@ Pure: the same subject and settings give the same result; `now` is injectable fo
 
 | Action | REST (under the hosting console plugin's mount, `…/checker`) | MCP | CLI | Voice |
 | --- | --- | --- | --- | --- |
-| check | `POST /:skin/check` | `skin_editor_check` | `axf skin check <skin>` | `skin.check` |
-| state | `GET /:skin` | `skin_editor_state` | `axf skin check <skin> --cached` | `skin.check.state` |
-| fix | `POST /:skin/fix` `{ issues }` | `skin_editor_fix` | `axf skin fix <skin> <issueId…>` | `skin.check.fix` |
-| fix_all | `POST /:skin/fix-all` | `skin_editor_fix_all` | `axf skin fix <skin> --all` | `skin.check.fix.all` |
-| settings_get | `GET /settings` | `skin_editor_settings_get` | `axf skin settings` | `skin.check.settings.get` |
-| settings_set | `PUT /settings` | `skin_editor_settings_set` | `axf skin settings set <key> <value>` | `skin.check.settings.set` |
-| settings_reset | `DELETE /settings` | `skin_editor_settings_reset` | `axf skin settings reset` | `skin.check.settings.reset` |
-| open | `GET /link?skin=&issue=` (the link); `console_show` opens it | `console_show` target `skin-editor/checker` | `axf skin open <skin> [issueId]` | `skin.check.open` |
+| check | `POST /:skin/check` | `skin_editor_check` | `axf skin check <skin>` | `dev.skin-check` |
+| state | `GET /:skin` | `skin_editor_state` | `axf skin check <skin> --cached` | `dev.skin-state` |
+| fix | `POST /:skin/fix` `{ issues }` | `skin_editor_fix` | `axf skin fix <skin> <issueId…>` | `dev.skin-fix` |
+| fix_all | `POST /:skin/fix-all` | `skin_editor_fix_all` | `axf skin fix <skin> --all` | `dev.skin-fix-all` |
+| settings_get | `GET /settings` | `skin_editor_settings_get` | `axf skin settings` | `dev.skin-settings` |
+| settings_set | `PUT /settings` | `skin_editor_settings_set` | `axf skin settings set <key> <value>` | `dev.skin-setting-set` |
+| settings_reset | `DELETE /settings` | `skin_editor_settings_reset` | `axf skin settings reset` | `dev.skin-settings-reset` |
+| open | `GET /link?skin=&issue=` (the link); `console_show` opens it | `console_show` target `skin-editor/checker` | `axf skin open <skin> [issueId]` | `dev.skin-open` |
 
 Also `GET /skins` (`skin_editor_skins`, `axf skin list`): every skin and design package with its last score.
 
-One implementation: `src/core.ts` holds every handler. The hosting console plugin's Python routes run it through `bin/skin-check.mjs call <action> '<json>'`, the CLI calls it in-process, the MCP tools are the plugin's commands (generated from plugin.json) and the voice intents run those commands. `bin/skin-check.mjs` runs the TypeScript with Node's type stripping (Node 22.6+) or tsx.
+One implementation: `src/core.ts` holds every handler. The hosting console plugin's Python routes run it through `bin/skin-check.mjs call <action> '<json>'`, the CLI calls it in-process, the MCP tools are the plugin's commands (generated from plugin.json) and the AmberX voice commands (developer tab, "dev check skin fresh") have Gizmo run those MCP tools. `bin/skin-check.mjs` runs the TypeScript with Node's type stripping (Node 22.6+) or tsx.
 
 Deep link: `skin-editor/checker?skin=<id>&issue=<issueId>` (`skinCheckLink`) opens the panel on that skin and scrolls to the issue. `state` returns the last result kept per skin and runs a check when there is none; `check` runs and replaces it. `axf skin check` exits 0 when the skin passes, 1 when it does not (CI), 2 on a usage or load error; `--all` checks every skin and fails if any does not pass.
 

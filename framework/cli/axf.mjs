@@ -19,6 +19,9 @@
  *                               new GitHub repo with the GitHub App's user token (framework/cli/github-app.mjs)
  *   axf shot <file> --name "…" --app A --screen S [--group "<name>"] [--source <ui-review-item@1 source>] [--by type:id]
  *                               save a non-review screenshot to UI Review → Screenshots (framework/cli/shot.mjs)
+ *   axf skin list | check <skin>|--all [--cached] [--json] | fix <skin> <issueId…>|--all | set <skin> <tokenKey> <value>
+ *                               | settings [set <key> <value> | reset] | open [<skin>] [<issueId>]
+ *                               the skin checker (skin-check@1, packages/skin-checker): exit 1 when a skin fails, 2 on a usage error
  *   axf templates               list app templates (react-ts, android-compose, …)
  *   axf new-module <name> [--label "Name"] [--capabilities a,b] [--depends-on id,id] [--no-compose]
  *                               scaffold framework/android/lib-<name> (Android port)
@@ -94,7 +97,7 @@ if (cmd === 'console') {
 // plugin commands (control@1 plugins domain): `axf plugins [plugin]`, `axf plugin <plugin> <command> …`, and
 // `axf <plugin> <command> …` for any console plugin whose folder isn't an axf command; they go to the plugin that
 // provides plugin-commands@1 (never by folder name).
-const AXF_COMMANDS = new Set(['init', 'claude-project', 'project', 'options', 'validate', 'list', 'new-asset', 'dev', 'focus', 'import-ui', 'ported-kits', 'library-templates', 'new-library', 'compile-library', 'port-library', 'remove-library', 'libraries', 'install', 'boilerplates', 'serve', 'templates', 'new-module', 'new-demo', 'modules', 'repo', 'shot', 'schemas']);
+const AXF_COMMANDS = new Set(['init', 'claude-project', 'project', 'options', 'validate', 'list', 'new-asset', 'dev', 'focus', 'import-ui', 'ported-kits', 'library-templates', 'new-library', 'compile-library', 'port-library', 'remove-library', 'libraries', 'install', 'boilerplates', 'serve', 'templates', 'new-module', 'new-demo', 'modules', 'repo', 'shot', 'schemas', 'skin']);
 {
   const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');
   const { join: joinPath } = await import('node:path');
@@ -356,6 +359,14 @@ try {
       // UI Review → Screenshots (not the approve / reject queue): framework/cli/shot.mjs, raw arguments passed through
       const { main: shot } = await import('./shot.mjs');
       await shot(process.argv.slice(3));
+      break;
+    }
+    case 'skin': {
+      // the skin checker's CLI (packages/skin-checker/src/cli.ts through its launcher); exit code passed through
+      const { spawnSync } = await import('node:child_process');
+      const bin = join(FRAMEWORK_DIR, '..', 'packages', 'skin-checker', 'bin', 'skin-check.mjs');
+      const r = spawnSync(process.execPath, [bin, ...process.argv.slice(3)], { stdio: 'inherit' });
+      process.exitCode = r.status ?? 2;
       break;
     }
     case 'schemas': {

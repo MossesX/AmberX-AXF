@@ -378,7 +378,7 @@ export interface SkinCheckSurface {
   mcp: string;
   /** `axf skin …` */
   cli: string;
-  /** AmberX intent id. */
+  /** AmberX voice command id (apps/amberx-droid commands plugin, developer tab; Gizmo runs the MCP tool). */
   voice: string;
   what: string;
 }
@@ -389,14 +389,14 @@ export interface SkinCheckSurface {
  * (what the editor shows without re-running); `check` runs and replaces it.
  */
 export const SKIN_CHECK_SURFACES: readonly SkinCheckSurface[] = [
-  { action: 'check', effect: 'write', rest: { method: 'POST', path: 'checker/:skin/check' }, mcp: 'skin_editor_check', cli: 'skin check <skin>', voice: 'skin.check', what: 'Run the checker on a skin; returns skin-check@1.' },
-  { action: 'state', effect: 'read', rest: { method: 'GET', path: 'checker/:skin' }, mcp: 'skin_editor_state', cli: 'skin check <skin> --cached', voice: 'skin.check.state', what: 'The last result for a skin (runs the check if there is none).' },
-  { action: 'fix', effect: 'write', rest: { method: 'POST', path: 'checker/:skin/fix' }, mcp: 'skin_editor_fix', cli: 'skin fix <skin> <issueId…>', voice: 'skin.check.fix', what: 'Apply the fix of one or more issues (body: { issues: string[] }); returns the writes and the new result.' },
-  { action: 'fix_all', effect: 'write', rest: { method: 'POST', path: 'checker/:skin/fix-all' }, mcp: 'skin_editor_fix_all', cli: 'skin fix <skin> --all', voice: 'skin.check.fix.all', what: 'Apply every fix the last result offers.' },
-  { action: 'settings_get', effect: 'read', rest: { method: 'GET', path: 'checker/settings' }, mcp: 'skin_editor_settings_get', cli: 'skin settings', voice: 'skin.check.settings.get', what: 'The threshold settings (skin-check-settings@1) with defaults filled in.' },
-  { action: 'settings_set', effect: 'write', rest: { method: 'PUT', path: 'checker/settings' }, mcp: 'skin_editor_settings_set', cli: 'skin settings set <key> <value>', voice: 'skin.check.settings.set', what: 'Write one or more settings (body: partial, dotted keys or nested); validated against the schema.' },
-  { action: 'settings_reset', effect: 'write', rest: { method: 'DELETE', path: 'checker/settings' }, mcp: 'skin_editor_settings_reset', cli: 'skin settings reset', voice: 'skin.check.settings.reset', what: 'Back to the defaults.' },
-  { action: 'open', effect: 'navigate', rest: { method: 'GET', path: 'checker/link' }, mcp: 'console_show', cli: 'skin open <skin> [issueId]', voice: 'skin.check.open', what: `Open the checker panel (target ${SKIN_CHECK_TARGET}, ?skin=&issue=).` },
+  { action: 'check', effect: 'write', rest: { method: 'POST', path: 'checker/:skin/check' }, mcp: 'skin_editor_check', cli: 'skin check <skin>', voice: 'dev.skin-check', what: 'Run the checker on a skin; returns skin-check@1.' },
+  { action: 'state', effect: 'read', rest: { method: 'GET', path: 'checker/:skin' }, mcp: 'skin_editor_state', cli: 'skin check <skin> --cached', voice: 'dev.skin-state', what: 'The last result for a skin (runs the check if there is none).' },
+  { action: 'fix', effect: 'write', rest: { method: 'POST', path: 'checker/:skin/fix' }, mcp: 'skin_editor_fix', cli: 'skin fix <skin> <issueId…>', voice: 'dev.skin-fix', what: 'Apply the fix of one or more issues (body: { issues: string[] }); returns the writes and the new result.' },
+  { action: 'fix_all', effect: 'write', rest: { method: 'POST', path: 'checker/:skin/fix-all' }, mcp: 'skin_editor_fix_all', cli: 'skin fix <skin> --all', voice: 'dev.skin-fix-all', what: 'Apply every fix the last result offers.' },
+  { action: 'settings_get', effect: 'read', rest: { method: 'GET', path: 'checker/settings' }, mcp: 'skin_editor_settings_get', cli: 'skin settings', voice: 'dev.skin-settings', what: 'The threshold settings (skin-check-settings@1) with defaults filled in.' },
+  { action: 'settings_set', effect: 'write', rest: { method: 'PUT', path: 'checker/settings' }, mcp: 'skin_editor_settings_set', cli: 'skin settings set <key> <value>', voice: 'dev.skin-setting-set', what: 'Write one or more settings (body: partial, dotted keys or nested); validated against the schema.' },
+  { action: 'settings_reset', effect: 'write', rest: { method: 'DELETE', path: 'checker/settings' }, mcp: 'skin_editor_settings_reset', cli: 'skin settings reset', voice: 'dev.skin-settings-reset', what: 'Back to the defaults.' },
+  { action: 'open', effect: 'navigate', rest: { method: 'GET', path: 'checker/link' }, mcp: 'console_show', cli: 'skin open <skin> [issueId]', voice: 'dev.skin-open', what: `Open the checker panel (target ${SKIN_CHECK_TARGET}, ?skin=&issue=).` },
 ];
 export const skinCheckSurface = (action: SkinCheckAction): SkinCheckSurface => SKIN_CHECK_SURFACES.find((s) => s.action === action)!;
 
