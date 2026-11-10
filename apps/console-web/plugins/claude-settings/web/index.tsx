@@ -190,6 +190,7 @@ const GROUP_PANELS: { id: string; title: string; icon: string }[] = [
   { id: 'no-wait', title: 'No wait', icon: 'zap' },
   { id: 'follow', title: 'Follow Amber', icon: 'eye' },
   { id: 'builds', title: 'Builds', icon: 'layers' },
+  { id: 'headless', title: 'Headless sessions', icon: 'terminal' },
   { id: 'verification', title: 'Verification', icon: 'shield' },
   { id: 'talking', title: 'Talking', icon: 'mic' },
   { id: 'notifications', title: 'Notifications', icon: 'bell' },
@@ -209,7 +210,7 @@ export const plugin: AxfWebLibrary = {
   nav: { label: 'Plugins', items: [{ id: VIEW, label: 'Claude', icon: 'sparkles', view: VIEW }] },
   contextMenu: [{ id: 'claude-settings.ctx', target: '*', order: 70, items: [{ id: 'claude-settings.open', label: 'Claude settings', icon: 'sparkles', action: 'claude-settings.open' }] }],
   banners: [{ id: 'claude-no-wait', label: 'No wait', icon: 'zap', order: 4.9, render: () => <NoWaitBanner /> }],
-  settingsTabs: [{ id: VIEW, label: 'Claude', icon: 'sparkles', order: 12, parent: 'plugins', description: 'Settings every Claude session reads on axHub before it acts: No wait, builds, talking, notifications, memory.' }],
+  settingsTabs: [{ id: VIEW, label: 'Claude', icon: 'sparkles', order: 12, parent: 'plugins', description: 'Settings every Claude session reads on axHub before it acts: No wait, builds, headless sessions, talking, notifications, memory.' }],
   settingsPanels: [
     ...GROUP_PANELS.map((g, i) => ({ id: `claude-settings.${g.id}`, tab: VIEW, title: g.title, icon: g.icon, order: i + 1, render: () => <GroupPanel id={g.id} /> })),
     { id: 'claude-settings.lifecycle', tab: VIEW, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },

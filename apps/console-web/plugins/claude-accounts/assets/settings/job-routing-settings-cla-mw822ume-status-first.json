@@ -1,0 +1,40 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "job-routing-settings-cla-mw822ume-status-first",
+ "name": "job-routing-settings-cla-mw822ume: Status first (status board + test on top)",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "A live account status board and the test-a-job preview on top, both open; workers, API caps and rules folded below for when you change them.",
+ "tags": [
+  "ui-choice",
+  "choice-set:job-routing-settings-cla-mw822ume",
+  "choice-option:status-first"
+ ],
+ "data": {
+  "layout": "list",
+  "header": "compact",
+  "search": true,
+  "descriptions": true,
+  "levels": true,
+  "defaultLevel": "basic",
+  "levelOf": {
+   "claude-accounts.routing": "basic",
+   "claude-accounts.list": "simple",
+   "claude-accounts.runs": "developer",
+   "claude-accounts.add": "administrator"
+  },
+  "view": "status-first",
+  "order": [
+   "status",
+   "test",
+   "rules",
+   "api",
+   "workers"
+  ],
+  "open": [
+   "status",
+   "test"
+  ]
+ }
+}

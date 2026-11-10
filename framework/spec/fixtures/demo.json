@@ -1,0 +1,1612 @@
+{
+ "$axf": "fixture@1",
+ "about": "demonstration@1 / book@1 / clip@1 / docs@1 rules (core/engines/demo-rules.mjs); regenerate: npx -y tsx framework/spec/check-demo.mts --write",
+ "at": "2026-11-07T12:00:00.000Z",
+ "entry": {
+  "id": "control:console-web:ui-review:approve",
+  "term": "Approve",
+  "kind": "control",
+  "category": "Plugins › UI Review › Controls",
+  "summary": "Approves the item: its PR may be called ready.",
+  "detail": "Approves the item: its PR may be called ready. The build that submitted it carries on and the screenshots stay in the group.",
+  "app": "Dev Console",
+  "plugin": "ui-review",
+  "where": [
+   "Dev Console"
+  ],
+  "api": [
+   {
+    "kind": "rest",
+    "name": "POST /api/plugins/ui-review/decide"
+   },
+   {
+    "kind": "mcp",
+    "name": "ui_review_decide"
+   },
+   {
+    "kind": "cli",
+    "name": "axf ui-review decide"
+   }
+  ],
+  "related": [
+   "plugin:ui-review",
+   "control:console-web:ui-review:reject"
+  ],
+  "keywords": [
+   "approve",
+   "review",
+   "pr"
+  ],
+  "tags": [
+   "approve",
+   "button"
+  ]
+ },
+ "cases": {
+  "demo-ok": [
+   "demonstration",
+   {
+    "about": "concept:asset",
+    "app": "console",
+    "surface": "live",
+    "steps": [
+     {
+      "say": "Hello.",
+      "do": "nav:home",
+      "target": "home"
+     },
+     {
+      "say": "Bye.",
+      "wait": 500,
+      "highlight": "Here"
+     }
+    ],
+    "chain": [
+     "other-demo"
+    ],
+    "generated": {
+     "from": "manual"
+    }
+   }
+  ],
+  "demo-not-an-object": [
+   "demonstration",
+   "nope"
+  ],
+  "demo-no-steps": [
+   "demonstration",
+   {
+    "steps": []
+   }
+  ],
+  "demo-bad-step": [
+   "demonstration",
+   {
+    "steps": [
+     {
+      "say": "",
+      "do": "https://evil",
+      "target": "<img>",
+      "wait": -1
+     }
+    ]
+   }
+  ],
+  "demo-bad-rest": [
+   "demonstration",
+   {
+    "about": "nope",
+    "app": "console",
+    "surface": "tv",
+    "steps": [
+     {
+      "say": "Hello.",
+      "do": "nav:home",
+      "target": "home"
+     },
+     {
+      "say": "Bye.",
+      "wait": 500,
+      "highlight": "Here"
+     }
+    ],
+    "chain": [
+     "Bad Id"
+    ],
+    "generated": {
+     "from": "ai"
+    },
+    "voice": {
+     "speed": 9
+    }
+   }
+  ],
+  "book-ok": [
+   "book",
+   {
+    "plan": {
+     "totalMinutes": 10,
+     "chapterMinutes": 4,
+     "style": "tutorial"
+    },
+    "chapters": [
+     {
+      "id": "a",
+      "title": "A",
+      "minutes": 6,
+      "items": [
+       {
+        "ref": "concept:asset"
+       },
+       {
+        "ref": "demonstration/what-is-an-asset",
+        "minutes": 2
+       }
+      ]
+     },
+     {
+      "id": "b",
+      "title": "B",
+      "items": [
+       {
+        "ref": "clip/x-clip"
+       },
+       {
+        "ref": "book/other#intro"
+       }
+      ]
+     }
+    ],
+    "docs": {
+     "enabled": true,
+     "depth": "deep",
+     "format": "interactive-html-ts",
+     "interactive": "live"
+    }
+   }
+  ],
+  "book-not-an-object": [
+   "book",
+   "nope"
+  ],
+  "book-bad-plan": [
+   "book",
+   {
+    "plan": {
+     "totalMinutes": -1,
+     "chapterMinutes": 0,
+     "style": "rant"
+    },
+    "chapters": "x"
+   }
+  ],
+  "book-bad-chapters": [
+   "book",
+   {
+    "plan": {
+     "totalMinutes": 10,
+     "chapterMinutes": 4,
+     "style": "tutorial"
+    },
+    "chapters": [
+     {
+      "id": "A",
+      "title": ""
+     },
+     {
+      "id": "a",
+      "title": "x",
+      "items": [
+       {
+        "ref": "what/is/this"
+       }
+      ]
+     },
+     {
+      "id": "a",
+      "title": "y"
+     }
+    ],
+    "docs": {
+     "enabled": true,
+     "depth": "deep",
+     "format": "interactive-html-ts",
+     "interactive": "live"
+    }
+   }
+  ],
+  "book-docs-live-needs-ts": [
+   "book",
+   {
+    "plan": {
+     "totalMinutes": 10,
+     "chapterMinutes": 4,
+     "style": "tutorial"
+    },
+    "chapters": [
+     {
+      "id": "a",
+      "title": "A",
+      "minutes": 6,
+      "items": [
+       {
+        "ref": "concept:asset"
+       },
+       {
+        "ref": "demonstration/what-is-an-asset",
+        "minutes": 2
+       }
+      ]
+     },
+     {
+      "id": "b",
+      "title": "B",
+      "items": [
+       {
+        "ref": "clip/x-clip"
+       },
+       {
+        "ref": "book/other#intro"
+       }
+      ]
+     }
+    ],
+    "docs": {
+     "enabled": true,
+     "depth": "deep",
+     "format": "html",
+     "interactive": "live"
+    }
+   }
+  ],
+  "book-docs-markdown-no-examples": [
+   "book",
+   {
+    "plan": {
+     "totalMinutes": 10,
+     "chapterMinutes": 4,
+     "style": "tutorial"
+    },
+    "chapters": [
+     {
+      "id": "a",
+      "title": "A",
+      "minutes": 6,
+      "items": [
+       {
+        "ref": "concept:asset"
+       },
+       {
+        "ref": "demonstration/what-is-an-asset",
+        "minutes": 2
+       }
+      ]
+     },
+     {
+      "id": "b",
+      "title": "B",
+      "items": [
+       {
+        "ref": "clip/x-clip"
+       },
+       {
+        "ref": "book/other#intro"
+       }
+      ]
+     }
+    ],
+    "docs": {
+     "enabled": true,
+     "depth": "light",
+     "format": "markdown",
+     "interactive": "examples"
+    }
+   }
+  ],
+  "clip-ok": [
+   "clip",
+   {
+    "kind": "demo",
+    "source": {
+     "kind": "demonstration",
+     "id": "what-is-an-asset"
+    },
+    "media": {
+     "video": "clips/x.mp4",
+     "seconds": 12.5
+    },
+    "recorded": {
+     "at": "2026-11-07T12:00:00.000Z",
+     "app": "console"
+    },
+    "transcript": [
+     {
+      "at": 0,
+      "say": "Hi"
+     }
+    ],
+    "entries": [
+     "concept:asset"
+    ],
+    "keywords": [
+     "a",
+     "b"
+    ]
+   }
+  ],
+  "clip-not-an-object": [
+   "clip",
+   "nope"
+  ],
+  "clip-bad": [
+   "clip",
+   {
+    "kind": "gif",
+    "source": {
+     "kind": "book"
+    },
+    "media": {
+     "video": "../x.mp4",
+     "seconds": -1
+    },
+    "recorded": {
+     "at": "yesterday"
+    },
+    "transcript": [
+     {
+      "say": 1
+     }
+    ],
+    "chain": [
+     "Bad"
+    ]
+   }
+  ],
+  "docs-ok": [
+   "docs",
+   {
+    "source": {
+     "kind": "book",
+     "id": "getting-started"
+    },
+    "depth": "standard",
+    "format": "html",
+    "interactive": "none",
+    "files": [
+     {
+      "path": "index.html",
+      "kind": "index"
+     }
+    ],
+    "generatedAt": "2026-11-07T12:00:00.000Z"
+   }
+  ],
+  "docs-not-an-object": [
+   "docs",
+   "nope"
+  ],
+  "docs-bad": [
+   "docs",
+   {
+    "source": {
+     "kind": "entries",
+     "entries": []
+    },
+    "depth": "huge",
+    "format": "pdf",
+    "interactive": "live",
+    "files": [
+     {
+      "path": "/etc/passwd",
+      "kind": "index"
+     },
+     {
+      "path": "x.html",
+      "kind": "thing"
+     }
+    ],
+    "generatedAt": "now"
+   }
+  ],
+  "other-type": [
+   "button",
+   {
+    "steps": []
+   }
+  ]
+ },
+ "defaults": {
+  "demonstration": {
+   "about": "",
+   "entries": [],
+   "app": "console",
+   "surface": "live",
+   "steps": [],
+   "voice": {
+    "narrator": "",
+    "speed": 1
+   },
+   "chain": [],
+   "keywords": [],
+   "generated": {
+    "from": "manual",
+    "at": "",
+    "build": ""
+   },
+   "editable": true
+  },
+  "book": {
+   "about": "",
+   "plan": {
+    "totalMinutes": 0,
+    "chapterMinutes": 5,
+    "style": "tutorial",
+    "theme": "",
+    "narrator": "",
+    "speed": 1
+   },
+   "chapters": [],
+   "docs": {
+    "enabled": false,
+    "depth": "standard",
+    "format": "html",
+    "interactive": "none",
+    "includeApi": true,
+    "includeScreens": true
+   },
+   "outputs": {
+    "video": true,
+    "chapterClips": true
+   },
+   "keywords": []
+  },
+  "clip": {
+   "kind": "clip",
+   "source": {
+    "kind": "manual",
+    "id": "",
+    "chapter": ""
+   },
+   "media": {
+    "video": "",
+    "poster": "",
+    "captions": "",
+    "audio": "",
+    "seconds": 0,
+    "width": 0,
+    "height": 0
+   },
+   "recorded": {
+    "at": "",
+    "app": "",
+    "url": "",
+    "viewport": {
+     "width": 0,
+     "height": 0
+    },
+    "designPackage": "",
+    "voice": ""
+   },
+   "transcript": [],
+   "chain": [],
+   "entries": [],
+   "keywords": []
+  },
+  "docs": {
+   "source": {
+    "kind": "entries",
+    "id": "",
+    "entries": []
+   },
+   "depth": "standard",
+   "format": "html",
+   "interactive": "none",
+   "files": [],
+   "generatedAt": "",
+   "sourceHash": "",
+   "build": "",
+   "keywords": []
+  }
+ },
+ "normalized": {
+  "demo": {
+   "about": "concept:asset",
+   "entries": [
+    "concept:asset"
+   ],
+   "app": "console",
+   "surface": "live",
+   "steps": [
+    {
+     "say": "Hello.",
+     "do": "nav:home",
+     "target": "home"
+    },
+    {
+     "say": "Bye.",
+     "do": "",
+     "target": "",
+     "highlight": "Here",
+     "wait": 500
+    }
+   ],
+   "voice": {
+    "narrator": "",
+    "speed": 1
+   },
+   "chain": [
+    "other-demo"
+   ],
+   "keywords": [],
+   "generated": {
+    "from": "manual",
+    "at": "",
+    "build": ""
+   },
+   "editable": true
+  },
+  "demoJunk": {
+   "about": "",
+   "entries": [],
+   "app": "console",
+   "surface": "live",
+   "steps": [
+    {
+     "say": "Hi",
+     "do": "",
+     "target": "",
+     "title": "T",
+     "wait": 30000
+    }
+   ],
+   "voice": {
+    "narrator": "",
+    "speed": 2
+   },
+   "chain": [
+    "ok-id"
+   ],
+   "keywords": [],
+   "generated": {
+    "from": "manual",
+    "at": "",
+    "build": ""
+   },
+   "editable": true
+  },
+  "book": {
+   "about": "",
+   "plan": {
+    "totalMinutes": 10,
+    "chapterMinutes": 4,
+    "style": "tutorial",
+    "theme": "",
+    "narrator": "",
+    "speed": 1
+   },
+   "chapters": [
+    {
+     "id": "a",
+     "title": "A",
+     "minutes": 6,
+     "intro": "",
+     "items": [
+      {
+       "ref": "concept:asset"
+      },
+      {
+       "ref": "demonstration/what-is-an-asset",
+       "minutes": 2
+      }
+     ],
+     "collapsed": false
+    },
+    {
+     "id": "b",
+     "title": "B",
+     "minutes": 0,
+     "intro": "",
+     "items": [
+      {
+       "ref": "clip/x-clip"
+      },
+      {
+       "ref": "book/other#intro"
+      }
+     ],
+     "collapsed": false
+    }
+   ],
+   "docs": {
+    "enabled": true,
+    "depth": "deep",
+    "format": "interactive-html-ts",
+    "interactive": "live",
+    "includeApi": true,
+    "includeScreens": true
+   },
+   "outputs": {
+    "video": true,
+    "chapterClips": true
+   },
+   "keywords": []
+  },
+  "bookJunk": {
+   "about": "",
+   "plan": {
+    "totalMinutes": 600,
+    "chapterMinutes": 1,
+    "style": "tutorial",
+    "theme": "",
+    "narrator": "",
+    "speed": 1
+   },
+   "chapters": [
+    {
+     "id": "a",
+     "title": "A",
+     "minutes": 0,
+     "intro": "",
+     "items": [],
+     "collapsed": false
+    },
+    {
+     "id": "no-id",
+     "title": "No id",
+     "minutes": 0,
+     "intro": "",
+     "items": [
+      {
+       "ref": "concept:asset",
+       "minutes": 3,
+       "note": "n"
+      }
+     ],
+     "collapsed": false
+    }
+   ],
+   "docs": {
+    "enabled": true,
+    "depth": "standard",
+    "format": "interactive-html-ts",
+    "interactive": "live",
+    "includeApi": true,
+    "includeScreens": true
+   },
+   "outputs": {
+    "video": true,
+    "chapterClips": true
+   },
+   "keywords": []
+  },
+  "clip": {
+   "kind": "demo",
+   "source": {
+    "kind": "demonstration",
+    "id": "what-is-an-asset",
+    "chapter": ""
+   },
+   "media": {
+    "video": "clips/x.mp4",
+    "poster": "",
+    "captions": "",
+    "audio": "",
+    "seconds": 12.5,
+    "width": 0,
+    "height": 0
+   },
+   "recorded": {
+    "at": "2026-11-07T12:00:00.000Z",
+    "app": "console",
+    "url": "",
+    "viewport": {
+     "width": 0,
+     "height": 0
+    },
+    "designPackage": "",
+    "voice": ""
+   },
+   "transcript": [
+    {
+     "at": 0,
+     "say": "Hi"
+    }
+   ],
+   "chain": [],
+   "entries": [
+    "concept:asset"
+   ],
+   "keywords": []
+  },
+  "docs": {
+   "source": {
+    "kind": "book",
+    "id": "getting-started",
+    "entries": []
+   },
+   "depth": "standard",
+   "format": "html",
+   "interactive": "none",
+   "files": [
+    {
+     "path": "index.html",
+     "kind": "index",
+     "title": "",
+     "bytes": 0
+    }
+   ],
+   "generatedAt": "2026-11-07T12:00:00.000Z",
+   "sourceHash": "",
+   "build": "",
+   "keywords": []
+  },
+  "docsLive": {
+   "source": {
+    "kind": "book",
+    "id": "getting-started",
+    "entries": []
+   },
+   "depth": "standard",
+   "format": "interactive-html-ts",
+   "interactive": "live",
+   "files": [
+    {
+     "path": "index.html",
+     "kind": "index",
+     "title": "",
+     "bytes": 0
+    }
+   ],
+   "generatedAt": "2026-11-07T12:00:00.000Z",
+   "sourceHash": "",
+   "build": "",
+   "keywords": []
+  }
+ },
+ "errors": {
+  "demo-ok": [],
+  "demo-not-an-object": [
+   "data must be an object"
+  ],
+  "demo-no-steps": [
+   "data.steps needs 1 to 60 steps"
+  ],
+  "demo-bad-step": [
+   "data.steps[0].say is what the narrator says (required)",
+   "data.steps[0].do must be a console action spec (e.g. nav:builds, settings.open:plugins), never a URL or script",
+   "data.steps[0].target must be a data-axf-id, view id or CSS selector without < > { } `",
+   "data.steps[0].wait must be 0 to 30000 ms"
+  ],
+  "demo-bad-rest": [
+   "data.about must be the glossary entry id this demonstrates (e.g. plugin:build-manager)",
+   "data.surface must be one of live, preview, recorder",
+   "data.voice.speed must be 0.5 to 2",
+   "data.chain must be up to 20 demonstration ids played after this one",
+   "data.generated.from must be one of glossary, manual, book, help-intro, recorder"
+  ],
+  "book-ok": [],
+  "book-not-an-object": [
+   "data must be an object"
+  ],
+  "book-bad-plan": [
+   "data.plan.totalMinutes must be 0 (no limit) to 600",
+   "data.plan.chapterMinutes must be 1 to 120",
+   "data.plan.style must be one of quickstart, tutorial, tour, reference, deep-dive",
+   "data.chapters must be a list of chapters { id, title, minutes?, intro?, items }"
+  ],
+  "book-bad-chapters": [
+   "data.chapters[0].id must be a slug (lowercase letters, digits and dashes)",
+   "data.chapters[0].title is required",
+   "data.chapters[1].items[0].ref must be a glossary entry id or demonstration/<id>, clip/<id>, book/<id>#<chapter>",
+   "data.chapters[2].id \"a\" is used twice"
+  ],
+  "book-docs-live-needs-ts": [
+   "data.docs.interactive \"live\" needs format \"interactive-html-ts\" (live components run only there)"
+  ],
+  "book-docs-markdown-no-examples": [
+   "data.docs.interactive \"examples\" needs an HTML format (markdown can't run them)"
+  ],
+  "clip-ok": [],
+  "clip-not-an-object": [
+   "data must be an object"
+  ],
+  "clip-bad": [
+   "data.kind must be one of clip, demo, chapter, walkthrough, video",
+   "data.source.id names the book this clip came from",
+   "data.media.seconds must be 0 to 86400",
+   "data.media.video must be a path inside the data folder or an https URL",
+   "data.recorded.at must be an ISO time",
+   "data.transcript must be up to 2000 lines { at (seconds), say }",
+   "data.chain must be up to 20 clip ids played after this one"
+  ],
+  "docs-ok": [],
+  "docs-not-an-object": [
+   "data must be an object"
+  ],
+  "docs-bad": [
+   "data.source.entries must list the glossary entry ids documented",
+   "data.depth must be one of light, standard, deep, extreme",
+   "data.format must be one of markdown, html, interactive-html-ts",
+   "data.interactive \"live\" needs format \"interactive-html-ts\" (live components run only there)",
+   "data.files[0].path must be a relative path inside the docs folder",
+   "data.files[1].kind must be one of index, page, asset, script, style, data, media",
+   "data.generatedAt must be an ISO time"
+  ],
+  "other-type": []
+ },
+ "generated": {
+  "id": "demo-control-console-web-ui-review-approve",
+  "name": "Approve demonstration",
+  "description": "A generated demonstration of Approve: Approves the item: its PR may be called ready.",
+  "data": {
+   "about": "control:console-web:ui-review:approve",
+   "entries": [
+    "control:console-web:ui-review:approve",
+    "plugin:ui-review",
+    "control:console-web:ui-review:reject"
+   ],
+   "app": "console",
+   "surface": "live",
+   "steps": [
+    {
+     "say": "Approve, a control: Approves the item: its PR may be called ready.",
+     "do": "nav:ui-review",
+     "target": "approve",
+     "title": "Approve",
+     "highlight": "Approve"
+    },
+    {
+     "say": "Approves the item: its PR may be called ready. The build that submitted it carries on and the screenshots stay in the group.",
+     "do": "",
+     "target": "",
+     "title": "What it does"
+    },
+    {
+     "say": "You find it in Dev Console, part of the UI Review plugin.",
+     "do": "",
+     "target": "approve",
+     "title": "Where"
+    },
+    {
+     "say": "You can also reach it from outside the console: over REST (POST /api/plugins/ui-review/decide), as the MCP tool ui_review_decide and from the command line (axf ui-review decide).",
+     "do": "",
+     "target": "",
+     "title": "API"
+    },
+    {
+     "say": "Related: UI Review and Reject.",
+     "do": "",
+     "target": "",
+     "title": "See also"
+    }
+   ],
+   "voice": {
+    "narrator": "",
+    "speed": 1
+   },
+   "chain": [],
+   "keywords": [
+    "demonstration",
+    "demo",
+    "walkthrough",
+    "approve",
+    "control",
+    "plugins",
+    "review",
+    "controls",
+    "dev",
+    "console",
+    "ui-review",
+    "console-web",
+    "post",
+    "api",
+    "decide",
+    "axf",
+    "nav",
+    "approves",
+    "item",
+    "may",
+    "called",
+    "ready",
+    "build",
+    "submitted",
+    "carries",
+    "screenshots",
+    "stay",
+    "group",
+    "where",
+    "find",
+    "part",
+    "plugin",
+    "reach",
+    "outside",
+    "over",
+    "rest",
+    "mcp",
+    "tool",
+    "command",
+    "line",
+    "see",
+    "related",
+    "reject"
+   ],
+   "generated": {
+    "from": "glossary",
+    "at": "2026-11-07T12:00:00.000Z",
+    "build": "glossary-index-demos"
+   },
+   "editable": true
+  }
+ },
+ "generatedPlugin": {
+  "id": "demo-plugin-ui-review",
+  "name": "UI Review demonstration",
+  "description": "A generated demonstration of UI Review: Screenshots for approval.",
+  "data": {
+   "about": "plugin:ui-review",
+   "entries": [
+    "plugin:ui-review"
+   ],
+   "app": "console",
+   "surface": "live",
+   "steps": [
+    {
+     "say": "UI Review, a plugin: Screenshots for approval.",
+     "do": "nav:ui-review",
+     "target": "",
+     "title": "UI Review"
+    },
+    {
+     "say": "It brings 2 pieces of its own, like Approve and Reject.",
+     "do": "",
+     "target": "",
+     "title": "Contains"
+    }
+   ],
+   "voice": {
+    "narrator": "",
+    "speed": 1
+   },
+   "chain": [],
+   "keywords": [
+    "demonstration",
+    "demo",
+    "walkthrough",
+    "review",
+    "plugin",
+    "plugins",
+    "ui-review",
+    "nav",
+    "screenshots",
+    "approval",
+    "contains",
+    "brings",
+    "pieces",
+    "own",
+    "approve",
+    "reject"
+   ],
+   "generated": {
+    "from": "glossary",
+    "at": "2026-11-07T12:00:00.000Z",
+    "build": ""
+   },
+   "editable": true
+  }
+ },
+ "seconds": {
+  "demo": 3.7,
+  "generated": 35.3,
+  "steps": 3.7
+ },
+ "walkthrough": {
+  "$axf": "walkthrough@1",
+  "id": "what-is-an-asset",
+  "title": "What is an asset?",
+  "app": "console",
+  "steps": [
+   {
+    "say": "Hello.",
+    "do": "nav:home",
+    "target": "home"
+   },
+   {
+    "say": "Bye.",
+    "do": "",
+    "target": ""
+   }
+  ],
+  "source": "demonstration"
+ },
+ "targets": {
+  "control": "approve",
+  "screen": "view:glossary-index",
+  "concept": "",
+  "view": "ui-review",
+  "viewOwn": "ui-review",
+  "viewScreen": "builds"
+ },
+ "refs": {
+  "entry": {
+   "kind": "entry",
+   "id": "concept:asset",
+   "chapter": "",
+   "ref": "concept:asset"
+  },
+  "demo": {
+   "kind": "demonstration",
+   "id": "what-is-an-asset",
+   "chapter": "",
+   "ref": "demonstration/what-is-an-asset"
+  },
+  "chapter": {
+   "kind": "book",
+   "id": "getting-started",
+   "chapter": "assets",
+   "ref": "book/getting-started#assets"
+  },
+  "bad": null,
+  "made": "book/b#c"
+ },
+ "plan": {
+  "tenByFour": {
+   "count": 3,
+   "totalMinutes": 10,
+   "chapterMinutes": 4,
+   "minutes": [
+    3,
+    3,
+    4
+   ]
+  },
+  "noTotal": {
+   "count": 3,
+   "totalMinutes": 15,
+   "chapterMinutes": 5,
+   "minutes": [
+    5,
+    5,
+    5
+   ]
+  },
+  "count": {
+   "count": 4,
+   "totalMinutes": 30,
+   "chapterMinutes": 5,
+   "minutes": [
+    7,
+    7,
+    7,
+    9
+   ]
+  }
+ },
+ "newBook": {
+  "about": "My book",
+  "plan": {
+   "totalMinutes": 12,
+   "chapterMinutes": 4,
+   "style": "tour",
+   "theme": "",
+   "narrator": "",
+   "speed": 1
+  },
+  "chapters": [
+   {
+    "id": "chapter-1",
+    "title": "Chapter 1",
+    "minutes": 4,
+    "intro": "",
+    "items": [],
+    "collapsed": false
+   },
+   {
+    "id": "chapter-2",
+    "title": "Chapter 2",
+    "minutes": 4,
+    "intro": "",
+    "items": [],
+    "collapsed": false
+   },
+   {
+    "id": "chapter-3",
+    "title": "Chapter 3",
+    "minutes": 4,
+    "intro": "",
+    "items": [],
+    "collapsed": false
+   }
+  ],
+  "docs": {
+   "enabled": true,
+   "depth": "extreme",
+   "format": "interactive-html-ts",
+   "interactive": "live",
+   "includeApi": true,
+   "includeScreens": true
+  },
+  "outputs": {
+   "video": true,
+   "chapterClips": true
+  },
+  "keywords": [
+   "book",
+   "tour"
+  ]
+ },
+ "minutes": {
+  "total": 10,
+  "chapters": [
+   {
+    "id": "a",
+    "title": "A",
+    "minutes": 6,
+    "items": [
+     {
+      "ref": "concept:asset",
+      "minutes": 4
+     },
+     {
+      "ref": "demonstration/what-is-an-asset",
+      "minutes": 2
+     }
+    ]
+   },
+   {
+    "id": "b",
+    "title": "B",
+    "minutes": 4,
+    "items": [
+     {
+      "ref": "clip/x-clip",
+      "minutes": 2
+     },
+     {
+      "ref": "book/other#intro",
+      "minutes": 2
+     }
+    ]
+   }
+  ]
+ },
+ "moves": {
+  "item": [
+   [
+    "demonstration/what-is-an-asset"
+   ],
+   [
+    "clip/x-clip",
+    "concept:asset",
+    "book/other#intro"
+   ]
+  ],
+  "itemOut": [
+   [
+    "concept:asset",
+    "demonstration/what-is-an-asset"
+   ],
+   [
+    "clip/x-clip",
+    "book/other#intro"
+   ]
+  ],
+  "chapter": [
+   "b",
+   "a"
+  ],
+  "add": [
+   "plugin:ui-review",
+   "clip/x-clip",
+   "book/other#intro"
+  ],
+  "addDup": [
+   "demonstration/what-is-an-asset",
+   "concept:asset"
+  ]
+ },
+ "outline": [
+  {
+   "key": "book/getting-started",
+   "label": "Getting started",
+   "minutes": 10,
+   "count": 4,
+   "children": [
+    {
+     "key": "book/getting-started#a",
+     "label": "A",
+     "minutes": 6,
+     "collapsed": false,
+     "count": 2,
+     "children": [
+      {
+       "key": "getting-started#a/0",
+       "ref": "concept:asset",
+       "kind": "entry",
+       "label": "Asset (asset@1)",
+       "minutes": 4,
+       "note": ""
+      },
+      {
+       "key": "getting-started#a/1",
+       "ref": "demonstration/what-is-an-asset",
+       "kind": "demonstration",
+       "label": "what-is-an-asset",
+       "minutes": 2,
+       "note": ""
+      }
+     ]
+    },
+    {
+     "key": "book/getting-started#b",
+     "label": "B",
+     "minutes": 4,
+     "collapsed": false,
+     "count": 2,
+     "children": [
+      {
+       "key": "getting-started#b/0",
+       "ref": "clip/x-clip",
+       "kind": "clip",
+       "label": "x-clip",
+       "minutes": 2,
+       "note": ""
+      },
+      {
+       "key": "getting-started#b/1",
+       "ref": "book/other#intro",
+       "kind": "book",
+       "label": "other",
+       "minutes": 2,
+       "note": ""
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "bookWalkthrough": {
+  "$axf": "walkthrough@1",
+  "id": "getting-started",
+  "title": "Getting started",
+  "app": "console",
+  "steps": [
+   {
+    "say": "Chapter: A.",
+    "do": "",
+    "target": ""
+   },
+   {
+    "say": "Next: concept:asset.",
+    "do": "",
+    "target": ""
+   },
+   {
+    "say": "Hello.",
+    "do": "nav:home",
+    "target": "home"
+   },
+   {
+    "say": "Bye.",
+    "do": "",
+    "target": ""
+   },
+   {
+    "say": "Chapter: B.",
+    "do": "",
+    "target": ""
+   },
+   {
+    "say": "Next: clip/x-clip.",
+    "do": "",
+    "target": ""
+   },
+   {
+    "say": "Next: book/other#intro.",
+    "do": "",
+    "target": ""
+   }
+  ],
+  "source": "book"
+ },
+ "clipFrom": {
+  "id": "clip-what-is-an-asset",
+  "name": "What is an asset? (clip)",
+  "description": "A recorded clip of What is an asset?: 4 s.",
+  "data": {
+   "kind": "demo",
+   "source": {
+    "kind": "demonstration",
+    "id": "what-is-an-asset",
+    "chapter": ""
+   },
+   "media": {
+    "video": "clips/what-is-an-asset.mp4",
+    "poster": "",
+    "captions": "",
+    "audio": "",
+    "seconds": 3.7,
+    "width": 0,
+    "height": 0
+   },
+   "recorded": {
+    "at": "2026-11-07T12:00:00.000Z",
+    "app": "console",
+    "url": "",
+    "viewport": {
+     "width": 1920,
+     "height": 1080
+    },
+    "designPackage": "",
+    "voice": ""
+   },
+   "transcript": [
+    {
+     "at": 0,
+     "say": "Hello."
+    },
+    {
+     "at": 1.58,
+     "say": "Bye."
+    }
+   ],
+   "chain": [],
+   "entries": [
+    "concept:asset"
+   ],
+   "keywords": [
+    "clip",
+    "demo",
+    "demonstration",
+    "what-is-an-asset",
+    "approve",
+    "control",
+    "plugins",
+    "review",
+    "controls",
+    "dev",
+    "console",
+    "ui-review",
+    "console-web",
+    "approves",
+    "item",
+    "may",
+    "called",
+    "ready",
+    "nav",
+    "home",
+    "hello",
+    "bye",
+    "asset"
+   ]
+  }
+ },
+ "clipKeywords": [
+  "clip",
+  "demo",
+  "demonstration",
+  "approve",
+  "control",
+  "plugins",
+  "review",
+  "controls",
+  "dev",
+  "console",
+  "ui-review",
+  "console-web",
+  "approves",
+  "item",
+  "may",
+  "called",
+  "ready",
+  "plugin",
+  "screenshots",
+  "approval",
+  "nav",
+  "home",
+  "hello",
+  "bye"
+ ],
+ "docsPlans": {
+  "light": {
+   "depth": "light",
+   "format": "markdown",
+   "interactive": "none",
+   "files": [
+    {
+     "path": "index.md",
+     "kind": "index",
+     "title": "Contents"
+    }
+   ]
+  },
+  "standard": {
+   "depth": "standard",
+   "format": "html",
+   "interactive": "none",
+   "files": [
+    {
+     "path": "index.html",
+     "kind": "index",
+     "title": "Contents"
+    },
+    {
+     "path": "chapters/a.html",
+     "kind": "page",
+     "title": "A"
+    },
+    {
+     "path": "chapters/b.html",
+     "kind": "page",
+     "title": "B"
+    },
+    {
+     "path": "docs.css",
+     "kind": "style",
+     "title": "Styles (theme tokens)"
+    }
+   ]
+  },
+  "deep": {
+   "depth": "deep",
+   "format": "interactive-html-ts",
+   "interactive": "examples",
+   "files": [
+    {
+     "path": "index.html",
+     "kind": "index",
+     "title": "Contents"
+    },
+    {
+     "path": "chapters/a.html",
+     "kind": "page",
+     "title": "A"
+    },
+    {
+     "path": "chapters/b.html",
+     "kind": "page",
+     "title": "B"
+    },
+    {
+     "path": "items/concept-asset.html",
+     "kind": "page",
+     "title": "concept:asset"
+    },
+    {
+     "path": "items/demonstration-what-is-an-asset.html",
+     "kind": "page",
+     "title": "demonstration/what-is-an-asset"
+    },
+    {
+     "path": "items/clip-x-clip.html",
+     "kind": "page",
+     "title": "clip/x-clip"
+    },
+    {
+     "path": "items/book-other-intro.html",
+     "kind": "page",
+     "title": "book/other#intro"
+    },
+    {
+     "path": "docs.css",
+     "kind": "style",
+     "title": "Styles (theme tokens)"
+    },
+    {
+     "path": "docs.ts",
+     "kind": "script",
+     "title": "Interactive runtime (TypeScript)"
+    },
+    {
+     "path": "docs.js",
+     "kind": "script",
+     "title": "Interactive runtime (compiled)"
+    },
+    {
+     "path": "data/book.json",
+     "kind": "data",
+     "title": "The book and its entries"
+    },
+    {
+     "path": "data/examples.json",
+     "kind": "data",
+     "title": "Runnable API examples"
+    }
+   ]
+  },
+  "extreme": {
+   "depth": "extreme",
+   "format": "interactive-html-ts",
+   "interactive": "live",
+   "files": [
+    {
+     "path": "index.html",
+     "kind": "index",
+     "title": "Contents"
+    },
+    {
+     "path": "chapters/a.html",
+     "kind": "page",
+     "title": "A"
+    },
+    {
+     "path": "chapters/b.html",
+     "kind": "page",
+     "title": "B"
+    },
+    {
+     "path": "items/concept-asset.html",
+     "kind": "page",
+     "title": "concept:asset"
+    },
+    {
+     "path": "items/demonstration-what-is-an-asset.html",
+     "kind": "page",
+     "title": "demonstration/what-is-an-asset"
+    },
+    {
+     "path": "items/clip-x-clip.html",
+     "kind": "page",
+     "title": "clip/x-clip"
+    },
+    {
+     "path": "items/book-other-intro.html",
+     "kind": "page",
+     "title": "book/other#intro"
+    },
+    {
+     "path": "docs.css",
+     "kind": "style",
+     "title": "Styles (theme tokens)"
+    },
+    {
+     "path": "docs.ts",
+     "kind": "script",
+     "title": "Interactive runtime (TypeScript)"
+    },
+    {
+     "path": "docs.js",
+     "kind": "script",
+     "title": "Interactive runtime (compiled)"
+    },
+    {
+     "path": "data/book.json",
+     "kind": "data",
+     "title": "The book and its entries"
+    },
+    {
+     "path": "data/examples.json",
+     "kind": "data",
+     "title": "Runnable API examples"
+    },
+    {
+     "path": "live.ts",
+     "kind": "script",
+     "title": "Live components (frames of the real app)"
+    },
+    {
+     "path": "live.js",
+     "kind": "script",
+     "title": "Live components (compiled)"
+    },
+    {
+     "path": "data/search.json",
+     "kind": "data",
+     "title": "Search index"
+    }
+   ]
+  }
+ },
+ "keywords": [
+  "build",
+  "manager",
+  "plugin",
+  "shows",
+  "axf",
+  "merge-queue"
+ ],
+ "slugs": [
+  "what-is-an-asset",
+  "item",
+  "plugin-ui-review"
+ ]
+}

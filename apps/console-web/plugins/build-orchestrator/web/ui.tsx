@@ -7,10 +7,12 @@ import * as core from './orchestrator-core.mjs';
 import * as pendingCore from '@console/axf/plan/pending-core.mjs';
 import pricing from '@console/axf/schemas/model-pricing.json';
 import { DataGrid, RowHookButtons, registerRowRefTarget, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
+import { PipelineTab } from './pipeline';
 import './orchestrator.css';
 
 /*
- * Build orchestrator page: a tab group (Builds · Approvals · Rules). The Builds tab looks and behaves exactly like
+ * Build orchestrator page: a tab group (Pipeline · Builds · Approvals · Rules). The Pipeline tab (pipeline.tsx) is the
+ * build pipeline: Pending / Queue / Building, the Claude accounts and what the dispatcher starts next. The Builds tab looks and behaves exactly like
  * the console's Pending builds list (same pd-* cards, status strip, sort bar, step ticks, add form), with more
  * options: per-step model (Fable / Opus), phases and model-switch approvals, next-phase brief, hide / archive,
  * import from the pending list, step move / edit / remove. All rules are in orchestrator-core.mjs.
@@ -27,9 +29,16 @@ type State = { updatedAt: string; rules: Rules; builds: Build[] };
 type Res = { ok: boolean; error?: string; state?: State; log?: string[]; brief?: string; upgradePolicy?: { approvalRequired: boolean; source: string } };
 type Act = (c: Record<string, unknown>) => Promise<boolean>;
 
+/** A build's headless runs, from the launcher's end-of-run notes (headless-context@1; same line format as
+ * parseRunNote in framework/cli/headless-context.mjs): start tokens, cost, brief only or full chain. */
+const RUN_NOTE = /^Headless run (\S+): (brief only|full chain) · (start [\d.]+K? tokens(?: \(\$[\d.]+\))?|no start recorded) · cost (\$[\d.]+(?: \(estimate\))?)/;
+function headlessRuns(b: Build): { at: string; start: string; cost: string; mode: string }[] {
+  return b.notes.map((n) => { const m = RUN_NOTE.exec(n.text); return m ? { at: n.at, start: m[3]!.replace(/^start /, ''), cost: m[4]!, mode: m[2]! } : null; })
+    .filter((x): x is { at: string; start: string; cost: string; mode: string } => !!x).reverse();
+}
 const fmtDate = (v: string) => { if (!v) return '—'; const d = new Date(v); return Number.isNaN(d.getTime()) ? '—' : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }); };
 const fmtTime = (v: string) => { const d = new Date(v); return Number.isNaN(d.getTime()) ? '' : d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); };
-const TABS = [{ id: 'builds', label: 'Builds', icon: 'list' }, { id: 'approvals', label: 'Approvals', icon: 'check-circle' }, { id: 'rules', label: 'Rules', icon: 'settings' }] as const;
+const TABS = [{ id: 'pipeline', label: 'Pipeline', icon: 'play' }, { id: 'builds', label: 'Builds', icon: 'list' }, { id: 'approvals', label: 'Approvals', icon: 'check-circle' }, { id: 'rules', label: 'Rules', icon: 'settings' }] as const;
 type Tab = (typeof TABS)[number]['id'];
 
 export function OrchestratorPage() {
@@ -38,7 +47,7 @@ export function OrchestratorPage() {
   const [state, setState] = useState<State | null>(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
-  const [tab, setTab] = useState<Tab>(() => consoleApi.readLocal<Tab>('orch-tab', 'builds'));
+  const [tab, setTab] = useState<Tab>(() => consoleApi.readLocal<Tab>('orch-tab', 'pipeline'));
   useEffect(() => { consoleApi.writeLocal('orch-tab', tab); }, [tab]);
 
   const load = async () => {
@@ -67,12 +76,13 @@ export function OrchestratorPage() {
         <div>
           <p className="fx-eyebrow">Build orchestrator · {state.builds.length} builds{state.updatedAt ? ` · updated ${fmtTime(state.updatedAt)}` : ''}</p>
           <h1>Build orchestrator</h1>
-          <p className="fx-muted" title="One session, no sub-agents unless a step says so. Tracker: _claude/builds/orchestrator.json">Every build in small Fable / Opus steps; a model upgrade waits for your approval, a downgrade goes on by itself.</p>
+          <p className="fx-muted" title="One session, no sub-agents unless a step says so. Tracker: _claude/builds/store.json">Every build in small Fable / Opus steps, split by the orchestrator; Pending → Queue (your move) → Building (the dispatcher, when a slot is free).</p>
         </div>
         <div className="fx-row fx-row--wrap"><Button icon="refresh" disabled={busy} onClick={() => load().then(() => log('reloaded', 'ok'))}>Reload</Button><Slot name="builds.toolbar" props={{ page: 'build-orchestrator' }} /></div>
       </header>
       {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
       <TabGroup id="build-orchestrator.tabs" label="Build orchestrator" value={tab} onChange={setTab} tabs={TABS.map((t) => ({ value: t.id, label: t.label, icon: t.icon, badge: t.id === 'approvals' && waiting > 0 ? waiting : undefined }))} />
+      {tab === 'pipeline' && <PipelineTab api={api} log={log} />}
       {tab === 'builds' && <BuildsTab state={state} busy={busy} act={act} />}
       {tab === 'approvals' && <ApprovalsTab state={state} busy={busy} act={act} />}
       {tab === 'rules' && <RulesTab rules={state.rules} busy={busy} act={act} />}
@@ -213,6 +223,11 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
           ))}
         </div>
       ))}
+      {headlessRuns(b).length > 0 && (
+        <div className="pd-thread"><h3>Headless runs</h3>{headlessRuns(b).map((r, i) => (
+          <div key={i} className="pd-entry"><time dateTime={r.at}>{fmtDate(r.at)}</time>
+            <p><span className="fx-mono">{r.start}</span> start · {r.cost} · {r.mode}</p></div>))}</div>
+      )}
       {b.notes.length > 0 && (
         <div className="pd-thread"><h3>Notes</h3>{b.notes.map((e, i) => <div key={i} className="pd-entry"><time dateTime={e.at}>{fmtDate(e.at)}</time><p>{e.text}</p></div>)}</div>
       )}

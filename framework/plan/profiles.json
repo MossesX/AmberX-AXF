@@ -1,21 +1,15 @@
 {
  "$axf": "build-profiles@1",
- "updatedAt": "2026-11-07T09:19:06.205Z",
+ "updatedAt": "2026-11-07T10:19:35.297Z",
  "active": "all",
  "profiles": [
   {
-   "id": "main-framework",
-   "name": "Main framework",
-   "description": "The framework's own work: everything planned, queued, pending and tracked before profiles existed.",
-   "updatedAt": "2026-10-27T19:02:21.878Z"
-  },
-  {
    "id": "all",
    "name": "All builds",
-   "description": "Every build in one profile (Brett, Nov 7 2026): Current, Urgent, Angel, Big Dog, Breakroom and Refactor merged; each build keeps its old profile in fromProfile and urgency as its priority tag.",
+   "description": "Every build in one profile (Brett, Nov 7 2026): Main framework, Current, Urgent, Angel, Big Dog, Breakroom and Refactor merged; each build keeps its old profile in fromProfile and urgency as its priority tag.",
    "createdAt": "2026-11-07T00:00:00.000Z",
-   "catalog": false,
-   "updatedAt": "2026-11-07T00:00:00.000Z"
+   "catalog": true,
+   "updatedAt": "2026-11-07T10:19:35.296Z"
   }
  ]
 }

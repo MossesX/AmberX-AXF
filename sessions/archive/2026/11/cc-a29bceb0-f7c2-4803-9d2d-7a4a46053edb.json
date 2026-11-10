@@ -1,0 +1,92 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-a29bceb0-f7c2-4803-9d2d-7a4a46053edb",
+ "source": "claude-code",
+ "sessionId": "a29bceb0-f7c2-4803-9d2d-7a4a46053edb",
+ "project": "other",
+ "title": "# Build: gizmo-voice (pending item gizmo-voice) ## Brett said (verbatim) \"Voice is step 2 and goes first in line.\" Toda…",
+ "startedAt": "2026-11-06T22:23:29.181Z",
+ "endedAt": "2026-11-06T22:24:34.122Z",
+ "minutes": 1,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.319",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/gizmo-voice",
+  "repo": "",
+  "branch": "claude/gizmo-voice"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-06T22:23:46.985Z",
+   "kind": "prompt",
+   "text": "# Build: gizmo-voice (pending item gizmo-voice) ## Brett said (verbatim) \"Voice is step 2 and goes first in line.\" Today: likes Gizmo talk mode working with the screen off; start it now. Gizmo talk mode keeps working with the phone screen off / AmberX in the background. 1. AmberX foreground service (native, allowed Android exception) keeps talk mode + speech running with the screen off. 2. Wire companion talk.ts to the service; transcript shows in the chat; stop from the notification. 3. Use the fast chat mode from assistant-chat-mode-r4 if merged (don't rebuild it). 4. APK via CI, tests, REA…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 6,
+    "output": 3861,
+    "cacheRead": 154694,
+    "cacheWrite": 82612,
+    "thinking": 1879
+   },
+   "costUsd": 0.5212,
+   "costEstimated": false,
+   "seconds": 46,
+   "tools": {
+    "Bash": 4,
+    "Grep": 1,
+    "Read": 6
+   },
+   "commands": 4,
+   "files": [],
+   "changeIds": [
+    "chg-20261106-07d2acda1c"
+   ],
+   "features": [
+    "pending:gizmo-voice",
+    "pending:assistant-chat-mode",
+    "queue:assistant-chat-mode"
+   ],
+   "output": "Starting up: settings, thread log, and where this build stands."
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261106-07d2acda1c"
+ ],
+ "features": [
+  "pending:gizmo-voice",
+  "pending:assistant-chat-mode",
+  "queue:assistant-chat-mode"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 6,
+  "output": 3861,
+  "cacheRead": 154694,
+  "cacheWrite": 82612,
+  "thinking": 1879,
+  "costUsd": 0.5212,
+  "costEstimated": false,
+  "toolCalls": 11,
+  "commands": 4,
+  "filesTouched": 0,
+  "reportedUsd": 0.7691
+ },
+ "ingestedAt": "2026-11-06T22:25:10.537Z"
+}

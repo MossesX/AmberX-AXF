@@ -1,0 +1,98 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-426d49b6-ffa5-4739-9912-fe8cc9ce8fd0",
+ "source": "claude-code",
+ "sessionId": "426d49b6-ffa5-4739-9912-fe8cc9ce8fd0",
+ "project": "other",
+ "title": "# Build: handoff-2-addenda-r2 (ALL Opus, high thinking; this account has NO Fable) **Name:** Handoff 2 add-ons · **Cate…",
+ "startedAt": "2026-11-05T11:01:50.885Z",
+ "endedAt": "2026-11-05T11:36:15.691Z",
+ "minutes": 34,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.318",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/handoff-2-addenda-r2",
+  "repo": "",
+  "branch": "claude/handoff-2-addenda-r2"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-05T11:02:06.245Z",
+   "kind": "prompt",
+   "text": "# Build: handoff-2-addenda-r2 (ALL Opus, high thinking; this account has NO Fable) **Name:** Handoff 2 add-ons · **Category:** Plugin extension (session-sync) ## Resume (Brett, voice, Nov 5): restart the builds that died on credits, on Opus The first run (`/root/axf-builds/handoff-2-addenda`) died at ~22:11 Nov 4 with 'out of usage credits'. **FIRST:** salvage its work: `cd /root/axf-builds/handoff-2-addenda && git log --oneline origin/claude/handoff-2..HEAD` (commits) and `git status --short` / `git diff` (uncommitted). Bring over ONLY the files that build actually wrote for this feature (se…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 136,
+    "output": 125897,
+    "cacheRead": 18633911,
+    "cacheWrite": 379542,
+    "thinking": 32241
+   },
+   "costUsd": 8.1426,
+   "costEstimated": false,
+   "seconds": 2049,
+   "tools": {
+    "Bash": 72,
+    "Read": 11,
+    "ToolSearch": 1,
+    "mcp__claude_ai_axHub__list_services": 1,
+    "Write": 1
+   },
+   "commands": 72,
+   "files": [
+    "/root/axf-builds/handoff-2-addenda-r2/apps/console-web/plugins/session-sync/creds.mjs"
+   ],
+   "changeIds": [
+    "chg-20261105-7cd06e14f0"
+   ],
+   "features": [
+    "pending:handoff-2-addenda-r2",
+    "pending:handoff-2",
+    "orchestrator:handoff-2"
+   ],
+   "output": "You've hit your 5-hour limit · resets 4pm (UTC)"
+  }
+ ],
+ "files": [
+  "/root/axf-builds/handoff-2-addenda-r2/apps/console-web/plugins/session-sync/creds.mjs"
+ ],
+ "changeIds": [
+  "chg-20261105-7cd06e14f0"
+ ],
+ "features": [
+  "pending:handoff-2-addenda-r2",
+  "pending:handoff-2",
+  "orchestrator:handoff-2"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 136,
+  "output": 125897,
+  "cacheRead": 18633911,
+  "cacheWrite": 379542,
+  "thinking": 32241,
+  "costUsd": 8.1426,
+  "costEstimated": false,
+  "toolCalls": 86,
+  "commands": 72,
+  "filesTouched": 1,
+  "reportedUsd": 9.2816
+ },
+ "ingestedAt": "2026-11-05T11:36:16.074Z"
+}

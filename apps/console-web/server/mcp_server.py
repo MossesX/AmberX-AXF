@@ -923,7 +923,7 @@ def _register_control_tools(mcp: MCPServer, control: Callable[[dict[str, Any]], 
 
 # ---------------------------------------------------------------------- console commands (control@1 console domain)
 
-CONSOLE_TOOLS = ("console_open", "console_dialog", "console_settings", "console_action", "console_back", "console_where", "console_list", "console_clients")
+CONSOLE_TOOLS = ("console_open", "console_dialog", "console_settings", "console_action", "console_back", "console_where", "console_list", "console_clients", "console_refresh")
 FOLLOW_TOOLS = ("console_show", "console_follow")  # Follow Amber plugin (follow-amber@1)
 # Opening and moving only navigate, so they are annotated read-only: axHub's recommended preset (decision #112) runs
 # read-only tools at once, and navigation never waits on a veto countdown (Brett, Nov 3 2026: Follow Amber).
@@ -987,6 +987,12 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
     async def console_back(move: Literal["back", "home", "close"] = "back", to: Delivery = "recent") -> dict[str, Any]:
         """Move the open console: back (closes an open dialog first, else the screen before), home, or close (the dialog)."""
         return await go({"op": "act", "target": "console.nav", "path": "here", "action": move, "input": inp(to)})
+
+    @mcp.tool(annotations=NAVIGATE)
+    async def console_refresh(hard: bool = False, to: Delivery = "recent") -> dict[str, Any]:
+        """Reload the open console page, so it picks up a deploy or a stuck screen. hard=true clears its caches first.
+        to="all" reloads every open console. Reloading loses nothing saved; an unsaved form on screen is gone."""
+        return await go({"op": "act", "target": "console.nav", "path": "here", "action": "refresh", "input": inp(to, **({"hard": True} if hard else {}))})
 
     @mcp.tool(annotations=READ)
     async def console_where() -> dict[str, Any]:

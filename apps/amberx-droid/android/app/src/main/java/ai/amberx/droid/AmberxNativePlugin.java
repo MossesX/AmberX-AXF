@@ -213,14 +213,14 @@ public class AmberxNativePlugin extends Plugin {
         });
     }
 
-    /** Approve / Decline a call waiting for an approval, with the phone's hub session. */
+    /** Approve / Decline a call waiting for an approval with the phone's hub session, in place (no hub view). */
     @PluginMethod
     public void approvalDecide(PluginCall call) {
         String id = call.getString("id", "");
         String action = call.getString("action", "");
-        if (HubRules.approvalUrl(HubRules.HUB, id) == null) { call.reject("Not a request id."); return; }
+        if (HubRules.approvalUrl(HubRules.HUB, id) == null || !HubRules.isDecision(action)) { call.reject("Not a request id or decision."); return; }
         io.execute(() -> {
-            boolean ok = HubRules.decide(HubRules.HUB, id, action, CookieManager.getInstance().getCookie(HubRules.HUB));
+            boolean ok = HubRules.decide(HubRules.HUB, id, action, android.webkit.CookieManager.getInstance().getCookie(HubRules.HUB));
             if (ok) getContext().getSystemService(android.app.NotificationManager.class).cancel(id, 0);
             call.resolve(new JSObject().put("ok", ok));
         });

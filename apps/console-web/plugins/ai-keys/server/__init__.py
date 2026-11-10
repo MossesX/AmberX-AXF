@@ -511,7 +511,7 @@ def vps_accounts(view: dict[str, Any] | None = None) -> list[dict[str, Any]]:
         kind = "anthropic" if a.get("type") == "api-key" else "claude-code"
         rows.append({"id": VPS_PREFIX + a["name"], "label": a["name"], "kind": kind, "kindLabel": KINDS[kind], "type": a.get("type") or "login",
                      "active": bool(a.get("active")), "email": a.get("email") or "", "plan": a.get("plan") or "",
-                     "limitedAt": limited.get(a["name"]), "source": "vps"})
+                     "limitedAt": limited.get(a["name"]), "source": "vps", "role": a.get("role") or "saved"})
     return rows
 
 
@@ -525,9 +525,9 @@ def _host_use(name: str, by: str) -> dict[str, Any]:
 
 def _host_switch(reason: str, by: str) -> dict[str, Any]:
     """A limit hit with no pair of AI keys' own: mark the active VPS account and ask for the next subscription one down the
-    list (API-key accounts are never picked: they cost money, so that's a choice for Brett). No probe: the tokens aren't
+    list (API-key accounts are never picked: they cost money, so that's a choice for Brett; worker accounts stay workers). No probe: the tokens aren't
     here, so an account that turns out to be limited too is marked by the next hit."""
-    rows = [r for r in vps_accounts() if r["kind"] == "claude-code"]
+    rows = [r for r in vps_accounts() if r["kind"] == "claude-code" and r["role"] != "worker"]  # workers only run headless jobs
     cur = next((r for r in rows if r["active"]), None)
     now = _now()
     with _lock:

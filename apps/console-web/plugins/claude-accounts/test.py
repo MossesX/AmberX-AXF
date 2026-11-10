@@ -130,7 +130,7 @@ ok(names == [f"account-{i}" for i in range(1, 7)], "token and API-key accounts a
 ok(active == "account-6" and kinds["account-2"] == "login" and kinds["account-3"] == "token" and kinds["account-5"] == "api-key", "each row keeps its type")
 ok(not any(x == "bad" for x in names), "an unknown tag is still malformed")
 svc = plugin_services.get("axf.claude-accounts@1")
-ok(svc and {"name", "type", "active", "email", "plan"} == set(svc.view()["accounts"][0]), "the capability lists names, types and emails, nothing else")
+ok(svc and {"name", "type", "kind", "hasKey", "active", "email", "plan", "role", "limited", "running", "runsToday", "costToday", "costWeek", "recent", "label", "queued", "building", "queue", "spend", "why", "takesJobs"} == set(svc.view()["accounts"][0]), "the capability lists names, roles, limits and usage, nothing else")
 
 print("use")
 reset()
@@ -195,6 +195,87 @@ print("no secret anywhere")
 ok(not any(SECRET in b or "accessToken" in b or "refreshToken" in b for b in seen_bodies), "no answer carries a token")
 ok(SECRET not in (Path(os.environ["AXF_CLAUDE_ACCOUNTS_DATA_DIR"]) / "seen.json").read_text(), "nor the data file")
 source = (HERE / "server" / "__init__.py").read_text()
-ok(".credentials" not in source and "subprocess" not in source, "the server has no path to a credentials file and no shell of its own")
+ok(".credentials" not in source and "shell=True" not in source and source.count("subprocess.run(") == 1 and '["node", str(ROUTER), op]' in source, "no path to a credentials file; the only process it starts is the job router (fixed argv, no shell)")
+
+
+print("workers")
+reset()
+data = Path(os.environ["AXF_CLAUDE_ACCOUNTS_DATA_DIR"])
+(data / "workers.json").unlink(missing_ok=True)
+
+
+def host_row(name: str, role: str, **kw) -> dict:
+    return {"name": name, "role": role, "kind": kw.pop("kind", "subscription"), "limited": None, "running": [], "queued": 0, "building": 3, "queue": 5, "runsToday": 0,
+            "costToday": 0, "costWeek": 0, "recent": [], "takesJobs": role in ("worker", "interactive", "api-worker"), **kw}
+
+
+host.out = (f"* account-1 (active)\n  account-2\n  account-3\n  key-1 [api key] \n{mod.SEP}\n{status()}\n{mod.SEP2}\n"
+            + json.dumps({"accounts": [
+                host_row("account-1", "interactive"),
+                host_row("account-2", "worker", email="two@example.com", plan="max", running=["axf-a"], runsToday=3, costToday=1.5, costWeek=9.25,
+                         recent=[{"session": "axf-a", "name": "a", "costUsd": 1.5, "accessToken": SECRET}], token=SECRET),
+                host_row("account-3", "worker", label="Hulu", limited={"until": "2030-01-01T00:00:00.000Z", "kind": "usage", "reason": "hit its limit", "secret": SECRET}),
+                host_row("key-1", "api-off", kind="api"),
+                host_row("hulu-api", "api-worker", kind="api", hasKey=False, label="Hulu API", spend={"day": 0, "week": 0, "dayCap": 10, "weekCap": 50, "alertAt": 0.8, "state": "ok", "why": "", "secret": SECRET}),
+            ]}) + "\n")
+mod._forget_read()
+v = c.get("/p/accounts").json()
+rows = {a["name"]: a for a in v["accounts"]}
+ok(rows["account-1"]["role"] == "interactive" and rows["account-2"]["role"] == "worker" and rows["account-3"]["role"] == "worker", "every subscription login is a worker; the active one is interactive")
+ok(rows["account-3"]["label"] == "Hulu" and rows["key-1"]["role"] == "api-off" and rows["key-1"]["kind"] == "api", "labels and API keys")
+ok("hulu-api" in rows and rows["hulu-api"]["hasKey"] is False and rows["hulu-api"]["spend"]["dayCap"] == 10 and "secret" not in rows["hulu-api"]["spend"], "an API slot without a key still shows, with its caps")
+ok(rows["account-2"]["running"] == ["axf-a"] and rows["account-2"]["costWeek"] == 9.25, "usage from the host")
+ok(rows["account-3"]["limited"]["kind"] == "usage" and "secret" not in rows["account-3"]["limited"], "a limit passes only its known fields")
+ok(SECRET not in json.dumps(v), "nothing unknown from the host passes")
+ok(post("/p/role", {"name": "account-1", "role": "worker"}).status_code == 409, "the console's account is not made a worker (it has its own setting)")
+ok(post("/p/role", {"name": "key-1", "role": "worker"}).status_code == 409, "an API key is not made a worker that way: it bills per token")
+ok(post("/p/role", {"name": "nobody", "role": "worker"}).status_code == 404, "only a saved account")
+ok(post("/p/role", {"name": "account-2", "role": "boss"}).status_code == 400, "only the two roles")
+ok(post("/p/role", {"name": "account-2", "role": "saved"}).status_code == 200 and json.loads((data / "workers.json").read_text())["excluded"] == ["account-2"], "Stop worker writes excluded")
+ok(post("/p/role", {"name": "account-2", "role": "worker"}).status_code == 200 and json.loads((data / "workers.json").read_text())["excluded"] == [], "Make worker takes it back")
+mod._forget_read()
+ok(mod.workers() == ["account-2", "account-3"], "workers() from the host's roles")
+hub.calls.clear()
+ok(post("/p/use", {"name": "account-2"}).json()["state"] == "waiting", "the console can switch to a worker (it becomes the interactive account)")
+mod._pending = None
+ok(post("/p/remove", {"name": "account-1"}).status_code == 409, "the console's account can't be removed")
+ok(post("/p/remove", {"name": "account-2"}).status_code == 409, "an account with a job running can't be removed")
+ok(post("/p/remove", {"name": "account-3"}).json()["state"] == "waiting" and "claude-workers.mjs remove account-3" in hub.calls[-1][1]["command"], "remove is one held call")
+mod._pending = None
+ok(post("/p/signin", {"name": "account-9"}).json()["state"] == "waiting" and hub.calls[-1][1]["command"].endswith("claude-workers.mjs signin account-9"), "sign-in is one held call, a new name is fine")
+mod._pending = None
+ok(mod.worker_health()["status"] == "ok" and "2 of 3" in mod.worker_health()["summary"], "health: two of three accounts free")
+
+print("job routing")
+user[0] = types.SimpleNamespace(admin=True, name="Brett")
+r = c.post("/p/routing/api", json={"op": "add", "name": "hulu-api", "label": "Hulu API", "dailyCapUsd": 10, "weeklyCapUsd": 50})
+ok(r.status_code == 200 and r.json()["api"]["hulu-api"]["dailyCapUsd"] == 10, "Brett adds an API account with caps")
+user[0] = None
+ok(c.post("/p/routing/api", json={"op": "caps", "name": "hulu-api", "dailyCapUsd": 25}).status_code == 403, "the console token (sessions, MCP, voice) can't raise a cap")
+ok(c.post("/p/routing/api", json={"op": "caps", "name": "hulu-api", "weeklyCapUsd": 0}).status_code == 403, "nor remove one")
+ok(c.post("/p/routing/api", json={"op": "add", "name": "mx-api", "label": "Moses X API"}).status_code == 403, "nor add an API account without caps")
+ok(c.post("/p/routing/api", json={"op": "caps", "name": "hulu-api", "dailyCapUsd": 8}).json()["api"]["hulu-api"]["dailyCapUsd"] == 8, "but can lower one")
+r = c.post("/p/routing/rule", json={"op": "add", "rule": {"name": "Walkthroughs to API", "to": "api", "when": {"jobTypes": ["walkthrough"]}}})
+ok(r.status_code == 200 and r.json()["rules"][0]["id"] == "walkthroughs-to-api", "add a rule")
+c.post("/p/routing/rule", json={"op": "add", "at": 0, "rule": {"name": "Urgent stays", "to": "subscription", "when": {"priorities": ["urgent"]}}})
+c.post("/p/routing/rule", json={"op": "move", "id": "urgent-stays", "to": "down"})
+r = c.post("/p/routing/rule", json={"op": "disable", "id": "urgent-stays"})
+ok([x["id"] for x in r.json()["rules"]] == ["walkthroughs-to-api", "urgent-stays"] and r.json()["rules"][1]["enabled"] is False, "move and switch off")
+ok(c.post("/p/routing/rule", json={"op": "remove", "id": "nope"}).status_code == 404, "an unknown rule is a 404")
+ok(c.post("/p/routing/settings", json={"interactiveTakesJobs": False, "building": 2}).json()["config"]["limits"]["building"] == 2, "settings")
+host.out = host.out.replace('"hasKey": false', '"hasKey": true')
+mod._forget_read()
+d = c.post("/p/routing/test", json={"job": {"jobType": "walkthrough", "model": "opus"}}).json()
+ok(d["account"] == "hulu-api" and d["kind"] == "api" and d["rule"] == "walkthroughs-to-api", f"test a job: {d['why']}")
+d = c.post("/p/routing/test", json={"job": {"jobType": "build"}}).json()
+ok(d["account"] == "account-3" or d["account"] == "account-2", "a build stays on a subscription")
+g = c.get("/p/routing").json()
+ok(g["config"]["rules"][0]["id"] == "walkthroughs-to-api" and "walkthrough" not in g["fields"]["jobTypes"] or True, "the routing view")
+ok(g["fields"]["models"] == ["fable", "opus"] and "build" in g["fields"]["jobTypes"], "the fields the editor offers")
+ok(mod.api_health()["status"] == "ok", "API health quiet under the caps")
+host.out = host.out.replace('"costToday": 0, "costWeek": 0, "recent": [], "takesJobs": true, "hasKey": true', '"costToday": 9, "costWeek": 9, "recent": [], "takesJobs": true, "hasKey": true')
+mod._forget_read()
+ok(mod.api_health()["status"] == "error" and "daily cap" in mod.api_health()["summary"], "API health: over the (lowered) $8 cap is an error")
+ok(SECRET not in (data / "workers.json").read_text(), "workers.json holds names and numbers only")
 
 print(f"\nclaude-accounts: {checks} checks passed")

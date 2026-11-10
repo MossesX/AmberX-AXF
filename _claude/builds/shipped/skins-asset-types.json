@@ -1,0 +1,640 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-skins-asset-types",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-09T04:31:05Z",
+ "build": {
+  "id": "skins-asset-types",
+  "title": "skins-asset-types",
+  "profile": "all",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "What about skins? How's skins doing? Is skins gonna um, be upgraded since we've we've made um so many more asset types? ... Added into skins.",
+  "verbatim": true,
+  "at": "",
+  "source": "voice",
+  "by": "claude-voice",
+  "addenda": [
+   {
+    "text": "Upgrade the skins system so it styles EVERY asset type now in the registry, not just the original kinds. Cover the new types: embeddable widget, icon pack, composite assets (button = box + text, nav = container + items), data set bar (search/filter/sort), embed, and every element down to text blocks/labels. Skins apply at any scope: global/app/UI/plugin, with child-overrides-parent inheritance (same model as design/icon packs). A skin is a design pack; it MAY reference an icon pack but doesn't have to. Pull the full asset-type list from the registry dynamically so new types are covered automatically going forward (no hardcoded list); add a CI check that fails if a registered asset type has no skin coverage. Voice + API/MCP/CLI parity. Submit at least 3 UI options to UI Review first.",
+    "at": "",
+    "source": "console",
+    "verbatim": true
+   }
+  ]
+ },
+ "brief": "# Skins upgrade — cover all new asset types (Brett)\nUpgrade the skins system so it styles EVERY asset type now in the registry, not just the original kinds.\n- Cover the new types: embeddable widget, icon pack, composite assets (button = box + text, nav = container + items), data set bar (search/filter/sort), embed, and every element down to text blocks/labels.\n- Skins apply at any scope: global/app/UI/plugin, with child-overrides-parent inheritance (same model as design/icon packs).\n- A skin is a design pack; it MAY reference an icon pack but doesn't have to.\n- Pull the full asset-type list from the registry dynamically so new types are covered automatically going forward (no hardcoded list); add a CI check that fails if a registered asset type has no skin coverage.\n- Voice + API/MCP/CLI parity. Submit at least 3 UI options to UI Review first.",
+ "models": [
+  "Fable",
+  "Opus"
+ ],
+ "accounts": [
+  "account-1",
+  "account-3"
+ ],
+ "runs": [
+  {
+   "session": "axf-skins-asset-types--gina",
+   "account": "account-1",
+   "model": "Fable",
+   "startedAt": "2026-11-07T04:29:11.541Z",
+   "endedAt": "2026-11-07T05:48:08.250Z",
+   "exit": 0,
+   "costUsd": 40.3603
+  },
+  {
+   "session": "axf-skins-finish--earl",
+   "account": "account-3",
+   "model": "Opus",
+   "startedAt": "2026-11-09T02:54:29.354Z",
+   "endedAt": "2026-11-09T02:58:44.798Z",
+   "exit": 0,
+   "costUsd": 0.6797
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "skin-coverage@1 engine: coverage of every registry type (slot / parts / reference / bundle / none) derived from asset-types.json, scope chain global → app → UI → plugin (child overrides parent), fixtures; registry declarations for the few types with no look",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T04:29:11.541Z",
+   "doneAt": "2026-11-07T05:01:52.391Z",
+   "actualMin": 33,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "skin@1 extension: parts, iconPack, per-scope skins in app-look@1 + composeLook per scope; validators (TS + build engine), schemas, gen-fixtures",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T05:01:52.391Z",
+   "doneAt": "2026-11-07T05:01:53.300Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "CI: check-skin-coverage fails on a registered type with no skin coverage; android.yml; rebake; typecheck; checks",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T05:26:51.534Z",
+   "doneAt": "2026-11-07T05:34:36.829Z",
+   "actualMin": 8,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Customize targets for every drawn type (widgets, badge, label, text): composite parts box / text / icon / items",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T05:01:53.300Z",
+   "doneAt": "2026-11-07T05:01:54.196Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Runtime + React: scope-aware skins on plugin roots and view roots, parts sheet, icon pack setting",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T05:01:54.196Z",
+   "doneAt": "2026-11-07T05:11:59.257Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Settings → Appearance: scope picker, Follow global switch, coverage list; 3 UI options to UI Review",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T05:34:36.829Z",
+   "doneAt": "2026-11-07T05:34:38.687Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "CLI / API / MCP / voice parity: skins.mjs scopes + coverage, theme-manager routes, console actions",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T05:11:59.257Z",
+   "doneAt": "2026-11-07T05:26:51.534Z",
+   "actualMin": 15,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Docs, PORTING, rules, report, THREADS, PR into the merge queue; close skins s9–s11",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T05:34:38.687Z",
+   "doneAt": "2026-11-09T02:58:18.211Z",
+   "actualMin": 2724,
+   "done": true
+  }
+ ],
+ "branch": "claude/skins-finish",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 383,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/383"
+ },
+ "landedCommit": "4aafd97f1a31edd318e5c14d6aec823946192029",
+ "commits": [
+  "7bf85227d8dea598ebdf6b8b0cc53ddb7210e3c8",
+  "8a4fa6eabee0007a1d8812c6df2794c4bb37d06b",
+  "f4cd27694a36fd28c6376d6909b2eae0d9c37f00",
+  "0e3b11c7f475397be63621b316c111d01197f871",
+  "9e2f61512a35d292654c634ecb74340e876286e3",
+  "c01d6529f3cb8e93d4d66a7d568309ebfcddd059",
+  "9d6e403cd7484ef268df98f54e282356143f30f5",
+  "752d4d85659421a9ba129ebe21761cb4575e2ecc",
+  "6eeb8007418805accaf29aae05726dd85950cb43",
+  "72898700e90a05f8c47edd714ff4ad34878ea302",
+  "53facbd18de4f9324e1e708044b899da4d56f62a",
+  "4e4ca963d1448378b5f2b2f78322e352853b3887"
+ ],
+ "mergedAt": "2026-11-09T04:24:01Z",
+ "landedAt": "2026-11-09T04:24:06Z",
+ "files": [
+  ".axf-queue.log",
+  ".github/workflows/android.yml",
+  "_claude/THREADS.md",
+  "_claude/builds/journal/2026-11.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/origins.json",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/builds/profiles/big-dog/orchestrator.json",
+  "_claude/builds/profiles/breakroom/orchestrator.json",
+  "_claude/builds/profiles/current/orchestrator.json",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/builds/profiles/urgent/orchestrator.json",
+  "_claude/builds/reports/gizmo-rebuild-fable.md",
+  "_claude/builds/reports/gizmo-rebuild-fable/shots/console-listeners-desktop.png",
+  "_claude/builds/reports/gizmo-rebuild-fable/shots/console-listeners-phone.png",
+  "_claude/builds/reports/gizmo-rebuild-fable/shots/gizmo-chat-desktop.png",
+  "_claude/builds/reports/gizmo-rebuild-fable/shots/gizmo-chat-phone.png",
+  "_claude/builds/reports/gizmo-rebuild-fable/shots/listeners-desktop.png",
+  "_claude/builds/reports/gizmo-rebuild-fable/shots/listeners-phone.png",
+  "_claude/builds/reports/md-chain-control.md",
+  "_claude/builds/reports/skins-asset-types.md",
+  "_claude/builds/reports/skins-asset-types/shots/covers-desktop.png",
+  "_claude/builds/reports/skins-asset-types/shots/covers-phone.png",
+  "_claude/builds/reports/skins-asset-types/shots/skin-home-desktop.png",
+  "_claude/builds/reports/skins-asset-types/shots/skin-home-phone.png",
+  "_claude/builds/reports/skins-asset-types/shots/where-dialog-desktop.png",
+  "_claude/builds/reports/skins-asset-types/shots/where-dialog-open-desktop.png",
+  "_claude/builds/reports/skins-asset-types/shots/where-dialog-open-phone.png",
+  "_claude/builds/reports/skins-asset-types/shots/where-dialog-phone.png",
+  "_claude/builds/reports/skins-asset-types/shots/where-matrix-desktop.png",
+  "_claude/builds/reports/skins-asset-types/shots/where-matrix-phone.png",
+  "_claude/builds/reports/skins-asset-types/shots/where-rows-desktop.png",
+  "_claude/builds/reports/skins-asset-types/shots/where-rows-phone.png",
+  "_claude/builds/store.json",
+  "_claude/memory/STATUS.md",
+  "_claude/memory/decisions.md",
+  "_claude/rules/RULES.md",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/axf/assets/help/framework-drafts.json",
+  "apps/amberx-droid/src/axf/assets/skin/windows.json",
+  "apps/amberx-droid/src/axf/core/engines/appearance.ts",
+  "apps/amberx-droid/src/axf/core/engines/designpackage.ts",
+  "apps/amberx-droid/src/axf/core/engines/skin-coverage.d.mts",
+  "apps/amberx-droid/src/axf/core/engines/skin-coverage.mjs",
+  "apps/amberx-droid/src/axf/core/engines/skin-rules.d.mts",
+  "apps/amberx-droid/src/axf/core/engines/skin-rules.mjs",
+  "apps/amberx-droid/src/axf/core/engines/skin.ts",
+  "apps/amberx-droid/src/axf/core/runtime.ts",
+  "apps/amberx-droid/src/axf/libs/plugintheme/index.tsx",
+  "apps/amberx-droid/src/axf/libs/settings/index.tsx",
+  "apps/amberx-droid/src/axf/libs/settings/skinwhere.tsx",
+  "apps/amberx-droid/src/axf/react/AppShell.tsx",
+  "apps/amberx-droid/src/axf/react/components/InterfaceScope.tsx",
+  "apps/amberx-droid/src/axf/react/components/SkinScope.tsx",
+  "apps/amberx-droid/src/axf/react/index.ts",
+  "apps/amberx-droid/src/axf/schemas/asset-types.json",
+  "apps/amberx-droid/src/axf/schemas/customize.json",
+  "apps/amberx-droid/src/axf/ui/axf.css",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/axf/assets/help/framework-drafts.json",
+  "apps/axhub-web/src/axf/assets/skin/windows.json",
+  "apps/axhub-web/src/axf/core/engines/appearance.ts",
+  "apps/axhub-web/src/axf/core/engines/designpackage.ts",
+  "apps/axhub-web/src/axf/core/engines/skin-coverage.d.mts",
+  "apps/axhub-web/src/axf/core/engines/skin-coverage.mjs",
+  "apps/axhub-web/src/axf/core/engines/skin-rules.d.mts",
+  "apps/axhub-web/src/axf/core/engines/skin-rules.mjs",
+  "apps/axhub-web/src/axf/core/engines/skin.ts",
+  "apps/axhub-web/src/axf/core/runtime.ts",
+  "apps/axhub-web/src/axf/libs/plugintheme/index.tsx",
+  "apps/axhub-web/src/axf/libs/settings/index.tsx",
+  "apps/axhub-web/src/axf/libs/settings/skinwhere.tsx",
+  "apps/axhub-web/src/axf/react/AppShell.tsx",
+  "apps/axhub-web/src/axf/react/components/InterfaceScope.tsx",
+  "apps/axhub-web/src/axf/react/components/SkinScope.tsx",
+  "apps/axhub-web/src/axf/react/index.ts",
+  "apps/axhub-web/src/axf/schemas/asset-types.json",
+  "apps/axhub-web/src/axf/schemas/customize.json",
+  "apps/axhub-web/src/axf/ui/axf.css",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/theme-manager/README.md",
+  "apps/console-web/plugins/theme-manager/plugin.json",
+  "apps/console-web/plugins/theme-manager/server/__init__.py",
+  "apps/console-web/src/axf/assets/help/framework-drafts.json",
+  "apps/console-web/src/axf/assets/skin/windows.json",
+  "apps/console-web/src/axf/core/engines/appearance.ts",
+  "apps/console-web/src/axf/core/engines/designpackage.ts",
+  "apps/console-web/src/axf/core/engines/skin-coverage.d.mts",
+  "apps/console-web/src/axf/core/engines/skin-coverage.mjs",
+  "apps/console-web/src/axf/core/engines/skin-rules.d.mts",
+  "apps/console-web/src/axf/core/engines/skin-rules.mjs",
+  "apps/console-web/src/axf/core/engines/skin.ts",
+  "apps/console-web/src/axf/core/runtime.ts",
+  "apps/console-web/src/axf/libs/plugintheme/index.tsx",
+  "apps/console-web/src/axf/libs/settings/index.tsx",
+  "apps/console-web/src/axf/libs/settings/skinwhere.tsx",
+  "apps/console-web/src/axf/react/AppShell.tsx",
+  "apps/console-web/src/axf/react/components/InterfaceScope.tsx",
+  "apps/console-web/src/axf/react/components/SkinScope.tsx",
+  "apps/console-web/src/axf/react/index.ts",
+  "apps/console-web/src/axf/schemas/asset-types.json",
+  "apps/console-web/src/axf/schemas/customize.json",
+  "apps/console-web/src/axf/ui/axf.css",
+  "apps/molly/axf.lock.json",
+  "apps/molly/src/axf/assets/help/framework-drafts.json",
+  "apps/molly/src/axf/assets/skin/windows.json",
+  "apps/molly/src/axf/core/engines/appearance.ts",
+  "apps/molly/src/axf/core/engines/designpackage.ts",
+  "apps/molly/src/axf/core/engines/skin-coverage.d.mts",
+  "apps/molly/src/axf/core/engines/skin-coverage.mjs",
+  "apps/molly/src/axf/core/engines/skin-rules.d.mts",
+  "apps/molly/src/axf/core/engines/skin-rules.mjs",
+  "apps/molly/src/axf/core/engines/skin.ts",
+  "apps/molly/src/axf/core/runtime.ts",
+  "apps/molly/src/axf/libs/plugintheme/index.tsx",
+  "apps/molly/src/axf/libs/settings/index.tsx",
+  "apps/molly/src/axf/libs/settings/skinwhere.tsx",
+  "apps/molly/src/axf/react/AppShell.tsx",
+  "apps/molly/src/axf/react/components/InterfaceScope.tsx",
+  "apps/molly/src/axf/react/components/SkinScope.tsx",
+  "apps/molly/src/axf/react/index.ts",
+  "apps/molly/src/axf/schemas/asset-types.json",
+  "apps/molly/src/axf/schemas/customize.json",
+  "apps/molly/src/axf/ui/axf.css",
+  "apps/walkthrough-studio/src/assets/help/framework-drafts.json",
+  "framework/assets/help/framework-drafts.json",
+  "framework/assets/skin/windows.json",
+  "framework/cli/build-engine.mjs",
+  "framework/cli/skins.mjs",
+  "framework/core/engines/appearance.ts",
+  "framework/core/engines/designpackage.ts",
+  "framework/core/engines/skin-coverage.d.mts",
+  "framework/core/engines/skin-coverage.mjs",
+  "framework/core/engines/skin-rules.d.mts",
+  "framework/core/engines/skin-rules.mjs",
+  "framework/core/engines/skin.ts",
+  "framework/core/runtime.ts",
+  "framework/libs/plugintheme/index.tsx",
+  "framework/libs/settings/index.tsx",
+  "framework/libs/settings/skinwhere.tsx",
+  "framework/react/AppShell.tsx",
+  "framework/react/components/InterfaceScope.tsx",
+  "framework/react/components/SkinScope.tsx",
+  "framework/react/index.ts",
+  "framework/schemas/asset-types.json",
+  "framework/schemas/customize.json",
+  "framework/spec/APPEARANCE-SOURCE.md",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-skin-coverage.mjs",
+  "framework/spec/check-skin.mts",
+  "framework/spec/fixtures/skin.json",
+  "framework/spec/gen-fixtures.mts",
+  "framework/ui/axf.css"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/journal/2026-11.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/origins.json",
+    "_claude/builds/profiles/angel/orchestrator.json",
+    "_claude/builds/profiles/big-dog/orchestrator.json",
+    "_claude/builds/profiles/breakroom/orchestrator.json",
+    "_claude/builds/profiles/current/orchestrator.json",
+    "_claude/builds/profiles/refactor/orchestrator.json",
+    "_claude/builds/profiles/urgent/orchestrator.json",
+    "_claude/builds/reports/gizmo-rebuild-fable.md",
+    "_claude/builds/reports/gizmo-rebuild-fable/shots/console-listeners-desktop.png",
+    "_claude/builds/reports/gizmo-rebuild-fable/shots/console-listeners-phone.png",
+    "_claude/builds/reports/gizmo-rebuild-fable/shots/gizmo-chat-desktop.png",
+    "_claude/builds/reports/gizmo-rebuild-fable/shots/gizmo-chat-phone.png",
+    "_claude/builds/reports/gizmo-rebuild-fable/shots/listeners-desktop.png",
+    "_claude/builds/reports/gizmo-rebuild-fable/shots/listeners-phone.png",
+    "_claude/builds/reports/md-chain-control.md",
+    "_claude/builds/reports/skins-asset-types.md",
+    "_claude/builds/reports/skins-asset-types/shots/covers-desktop.png",
+    "_claude/builds/reports/skins-asset-types/shots/covers-phone.png",
+    "_claude/builds/reports/skins-asset-types/shots/skin-home-desktop.png",
+    "_claude/builds/reports/skins-asset-types/shots/skin-home-phone.png",
+    "_claude/builds/reports/skins-asset-types/shots/where-dialog-desktop.png",
+    "_claude/builds/reports/skins-asset-types/shots/where-dialog-open-desktop.png",
+    "_claude/builds/reports/skins-asset-types/shots/where-dialog-open-phone.png",
+    "_claude/builds/reports/skins-asset-types/shots/where-dialog-phone.png",
+    "_claude/builds/reports/skins-asset-types/shots/where-matrix-desktop.png",
+    "_claude/builds/reports/skins-asset-types/shots/where-matrix-phone.png",
+    "_claude/builds/reports/skins-asset-types/shots/where-rows-desktop.png",
+    "_claude/builds/reports/skins-asset-types/shots/where-rows-phone.png",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/axf/assets/help/framework-drafts.json",
+    "apps/amberx-droid/src/axf/assets/skin/windows.json",
+    "apps/amberx-droid/src/axf/core/engines/appearance.ts",
+    "apps/amberx-droid/src/axf/core/engines/designpackage.ts",
+    "apps/amberx-droid/src/axf/core/engines/skin-coverage.d.mts",
+    "apps/amberx-droid/src/axf/core/engines/skin-coverage.mjs",
+    "apps/amberx-droid/src/axf/core/engines/skin-rules.d.mts",
+    "apps/amberx-droid/src/axf/core/engines/skin-rules.mjs",
+    "apps/amberx-droid/src/axf/core/engines/skin.ts",
+    "apps/amberx-droid/src/axf/core/runtime.ts",
+    "apps/amberx-droid/src/axf/libs/plugintheme/index.tsx",
+    "apps/amberx-droid/src/axf/libs/settings/index.tsx",
+    "apps/amberx-droid/src/axf/libs/settings/skinwhere.tsx",
+    "apps/amberx-droid/src/axf/react/AppShell.tsx",
+    "apps/amberx-droid/src/axf/react/components/InterfaceScope.tsx",
+    "apps/amberx-droid/src/axf/react/components/SkinScope.tsx",
+    "apps/amberx-droid/src/axf/react/index.ts",
+    "apps/amberx-droid/src/axf/schemas/asset-types.json",
+    "apps/amberx-droid/src/axf/schemas/customize.json",
+    "apps/amberx-droid/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/axf/assets/help/framework-drafts.json",
+    "apps/axhub-web/src/axf/assets/skin/windows.json",
+    "apps/axhub-web/src/axf/core/engines/appearance.ts",
+    "apps/axhub-web/src/axf/core/engines/designpackage.ts",
+    "apps/axhub-web/src/axf/core/engines/skin-coverage.d.mts",
+    "apps/axhub-web/src/axf/core/engines/skin-coverage.mjs",
+    "apps/axhub-web/src/axf/core/engines/skin-rules.d.mts",
+    "apps/axhub-web/src/axf/core/engines/skin-rules.mjs",
+    "apps/axhub-web/src/axf/core/engines/skin.ts",
+    "apps/axhub-web/src/axf/core/runtime.ts",
+    "apps/axhub-web/src/axf/libs/plugintheme/index.tsx",
+    "apps/axhub-web/src/axf/libs/settings/index.tsx",
+    "apps/axhub-web/src/axf/libs/settings/skinwhere.tsx",
+    "apps/axhub-web/src/axf/react/AppShell.tsx",
+    "apps/axhub-web/src/axf/react/components/InterfaceScope.tsx",
+    "apps/axhub-web/src/axf/react/components/SkinScope.tsx",
+    "apps/axhub-web/src/axf/react/index.ts",
+    "apps/axhub-web/src/axf/schemas/asset-types.json",
+    "apps/axhub-web/src/axf/schemas/customize.json",
+    "apps/axhub-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/src/axf/assets/help/framework-drafts.json",
+    "apps/console-web/src/axf/assets/skin/windows.json",
+    "apps/console-web/src/axf/core/engines/appearance.ts",
+    "apps/console-web/src/axf/core/engines/designpackage.ts",
+    "apps/console-web/src/axf/core/engines/skin-coverage.d.mts",
+    "apps/console-web/src/axf/core/engines/skin-coverage.mjs",
+    "apps/console-web/src/axf/core/engines/skin-rules.d.mts",
+    "apps/console-web/src/axf/core/engines/skin-rules.mjs",
+    "apps/console-web/src/axf/core/engines/skin.ts",
+    "apps/console-web/src/axf/core/runtime.ts",
+    "apps/console-web/src/axf/libs/plugintheme/index.tsx",
+    "apps/console-web/src/axf/libs/settings/index.tsx",
+    "apps/console-web/src/axf/libs/settings/skinwhere.tsx",
+    "apps/console-web/src/axf/react/AppShell.tsx",
+    "apps/console-web/src/axf/react/components/InterfaceScope.tsx",
+    "apps/console-web/src/axf/react/components/SkinScope.tsx",
+    "apps/console-web/src/axf/react/index.ts",
+    "apps/console-web/src/axf/schemas/asset-types.json",
+    "apps/console-web/src/axf/schemas/customize.json",
+    "apps/console-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/axf.lock.json",
+    "apps/molly/src/axf/assets/help/framework-drafts.json",
+    "apps/molly/src/axf/assets/skin/windows.json",
+    "apps/molly/src/axf/core/engines/appearance.ts",
+    "apps/molly/src/axf/core/engines/designpackage.ts",
+    "apps/molly/src/axf/core/engines/skin-coverage.d.mts",
+    "apps/molly/src/axf/core/engines/skin-coverage.mjs",
+    "apps/molly/src/axf/core/engines/skin-rules.d.mts",
+    "apps/molly/src/axf/core/engines/skin-rules.mjs",
+    "apps/molly/src/axf/core/engines/skin.ts",
+    "apps/molly/src/axf/core/runtime.ts",
+    "apps/molly/src/axf/libs/plugintheme/index.tsx",
+    "apps/molly/src/axf/libs/settings/index.tsx",
+    "apps/molly/src/axf/libs/settings/skinwhere.tsx",
+    "apps/molly/src/axf/react/AppShell.tsx",
+    "apps/molly/src/axf/react/components/InterfaceScope.tsx",
+    "apps/molly/src/axf/react/components/SkinScope.tsx",
+    "apps/molly/src/axf/react/index.ts",
+    "apps/molly/src/axf/schemas/asset-types.json",
+    "apps/molly/src/axf/schemas/customize.json",
+    "apps/molly/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/appearance.ts",
+    "framework/core/engines/designpackage.ts",
+    "framework/core/engines/skin-coverage.d.mts",
+    "framework/core/engines/skin-coverage.mjs",
+    "framework/core/engines/skin-rules.d.mts",
+    "framework/core/engines/skin-rules.mjs",
+    "framework/core/engines/skin.ts",
+    "framework/core/runtime.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/APPEARANCE-SOURCE.md",
+    "framework/spec/PORTING.md",
+    "framework/spec/check-skin-coverage.mjs",
+    "framework/spec/check-skin.mts",
+    "framework/spec/fixtures/skin.json",
+    "framework/spec/gen-fixtures.mts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/AppShell.tsx",
+    "framework/react/components/InterfaceScope.tsx",
+    "framework/react/components/SkinScope.tsx",
+    "framework/react/index.ts"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md",
+    "_claude/memory/decisions.md",
+    "_claude/rules/RULES.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "theme-manager",
+   "files": [
+    "apps/console-web/plugins/theme-manager/README.md",
+    "apps/console-web/plugins/theme-manager/plugin.json",
+    "apps/console-web/plugins/theme-manager/server/__init__.py"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "libs",
+   "files": [
+    "framework/libs/plugintheme/index.tsx",
+    "framework/libs/settings/index.tsx",
+    "framework/libs/settings/skinwhere.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "assets",
+   "files": [
+    "framework/assets/help/framework-drafts.json",
+    "framework/assets/skin/windows.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/build-engine.mjs",
+    "framework/cli/skins.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/asset-types.json",
+    "framework/schemas/customize.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "walkthrough-studio",
+   "files": [
+    "apps/walkthrough-studio/src/assets/help/framework-drafts.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "ui",
+   "files": [
+    "framework/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".axf-queue.log",
+   "files": [
+    ".axf-queue.log"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261107-c4d6a0ed",
+   "name": "Skins: where it applies — Option A: Rows (every level a settings row, covers in a collapsible)",
+   "status": "approved",
+   "group": "g-20261107-154addac",
+   "url": "/review/r-20261107-c4d6a0ed"
+  },
+  {
+   "id": "r-20261107-245de949",
+   "name": "Skins: where it applies — Option B: Dialog (one summary row, levels and covers in a dialog)",
+   "status": "approved",
+   "group": "g-20261107-154addac",
+   "url": "/review/r-20261107-245de949"
+  },
+  {
+   "id": "r-20261107-8691299f",
+   "name": "Skins: where it applies — Option C: Matrix (one table of every level + a chip grid of coverage)",
+   "status": "approved",
+   "group": "g-20261107-154addac",
+   "url": "/review/r-20261107-8691299f"
+  },
+  {
+   "id": "r-20261107-72357a2c",
+   "name": "Skins: scoping in action — Windows skin on the app, Home screen under Hub Default",
+   "status": "approved",
+   "group": "g-20261107-154addac",
+   "url": "/review/r-20261107-72357a2c"
+  }
+ ],
+ "cost": {
+  "usd": 41.04,
+  "estimated": false,
+  "tokens": {
+   "input": 7954,
+   "output": 2209,
+   "cacheRead": 77000049,
+   "cacheWrite": 512876
+  }
+ },
+ "report": "_claude/builds/reports/skins-asset-types.md",
+ "open": [
+  "Kotlin twin deferred (Android on hold): PORTING.md names the functions and fixture blocks a port needs.",
+  "The matrix layout on a phone folds each level into stacked lines with small column labels; the UI Review phone shot of option C predates the labels (added after the shots).",
+  "The hub-wide skin is set by CLI / API (`skins.mjs global`); the console has no \"set the hub-wide skin\" button yet (the Follow switch tells where to set it).",
+  "The VPS disk hit 100% during this build (docker build cache 17 GB, old `/tmp` scratch); `docker builder prune` and the tsx cache freed 13 GB. A disk-space health check with Auto fix belongs in the systems check."
+ ]
+}

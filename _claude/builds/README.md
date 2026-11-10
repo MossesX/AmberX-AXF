@@ -74,6 +74,24 @@ node framework/cli/builds-live.mjs link <id> --branch <b> --pr <n> [--merged]
 node framework/cli/builds-reconcile.mjs [--apply]       # dry run / write what it is sure of + the report
 ```
 
+## The pipeline: Pending → Queue → Building (since Nov 8 2026)
+
+Brett: "what I say, send a build to the orchestrator … he sends everything to the pending. And I have to send them from
+pending to queue … If he has slots open, he grabs the next build in the queue and starts the headless session."
+
+- Every build gets its id in the store and, when it has no steps, a split by the orchestrator (one Opus call, ≤ 30-min
+  steps, Fable only where needed; `apps/console-web/plugins/build-orchestrator/pipeline.mjs intake`). It sits in **Pending**.
+- **Pending → Queue** is Brett's move: the Pipeline tab's *Queue*, `pipeline.mjs queue <id>`, the plugin command
+  `pipeline-queue` (MCP / voice). *Launch builds without asking* ON (owner-only Claude setting) queues split builds by itself.
+- The **dispatcher** (`pipeline.mjs tick`, cron `axf-pipeline` every minute) reads the Claude accounts (which have Fable,
+  how many run on each, limits), the agent slots and the Queue, and starts the next build when a slot and an account for
+  its next phase's model are free: `deploy/claude-headless.sh --account <acct>` in `/root/axf-builds/<id>`. Status
+  `queued` → `running` (**Building**). It never starts a session right away.
+- A session end moves the build on: built / complete; the Queue again (next phase, or a crash, up to 3 runs); Pending
+  (stopped early, for Brett); failed. Nothing running while the Queue has work = one phone alert (`pipeline.idle`).
+- Contract: `framework/core/build-pipeline.mjs` (build-pipeline@1, the `pipeline` record on a build). Rules:
+  `apps/console-web/plugins/build-orchestrator/pipeline-core.mjs`. Report: `reports/pipeline-rebuild.md`.
+
 ## Own Claude login per build (since Nov 5 2026)
 
 Every headless build runs on its own copy of a Claude login (`deploy/claude-login.mjs`, build `build-own-login`):

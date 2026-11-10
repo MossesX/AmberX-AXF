@@ -137,7 +137,7 @@ export interface NativeApi {
    * `VetoAlerts`). Browser: ok false (the plugin opens the call on the hub).
    */
   vetoAction(opts: { id: string; action: VetoActionName }): Promise<{ ok: boolean; state?: string; error?: string }>;
-  /** Approve / Decline a call waiting for an approval with the phone's hub session. Older APKs reject: open its hub page. */
+  /** Approve / Decline a call waiting for an approval with the phone's hub session, in place. */
   approvalDecide(opts: { id: string; action: 'approve' | 'decline' }): Promise<{ ok: boolean }>;
   /** Whether this phone can get an approval with the app closed (Java `WatchAlarm.health`). Older APKs reject. */
   phoneHealth(): Promise<PhoneHealth>;
@@ -462,7 +462,7 @@ const web: NativeApi = {
   // Veto calls in a browser: the banner plugin rings its own alarm and opens the hub page for Deny / Approve / Shelve
   // (the hub only takes them under its own Origin).
   async vetoAction() { return { ok: false, error: 'browser' }; },
-  async approvalDecide() { return { ok: false }; },
+  async approvalDecide() { throw new Error('browser'); },
   async phoneHealth() { throw new Error('browser'); },
   async phoneFix() { /* nothing to open in a browser */ },
   async vetoAlarm() { /* the plugin rings in the page */ },

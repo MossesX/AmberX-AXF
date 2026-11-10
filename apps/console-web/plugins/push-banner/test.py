@@ -200,104 +200,90 @@ check(u.status_code == 409 and "conflicts" in u.json()["detail"], "conflicts: sa
 u = c.post("/p/update", json={"repo": "Someone/Else", "branch": "x", "confirm": "Someone/Else:x"})
 check(u.status_code == 400, "only watched repos")
 
-# Claude on failure: a conflicted pull / refused merge goes to headless Claude Code on the VPS (approved on axHub)
+# Claude on failure: a conflicted pull / refused merge goes to the Build orchestrator's Queue as a build (Brett, Nov 9 2026:
+# one way to start builds, the orchestrator); Vinny's mapped command first when he has one
 cf = sys.modules[spec.name + ".claudefix"]
-hub_calls = []
-def fake_hub(tool, args, conf=None, timeout=None):
-    hub_calls.append((tool, args["command"], conf))
-    return {"confirm": "11111111-2222-3333-4444-555555555555"} if conf is None else {"ok": "$ …\nexit 0 · 40 ms\nstarted pid 7"}
 class FakeChanges:
     def __init__(self): self.opened, self.updates = [], []
     def open(self, e, by): self.opened.append(e); return {"id": "chg-20261022-abcdef1234"}
     def update(self, cid, patch): self.updates.append(patch); return {}
+class FakeDispatch:
+    def __init__(self, status="running"): self.calls, self.status = [], status
+    def request(self, title, detail="", **kw): self.calls.append((title, detail, kw)); return {"ok": True, "id": f"fix-pr-{len(self.calls)}", "status": "queued"}
+    def build(self, bid): return {"id": bid, "status": self.status}
 fch = FakeChanges()
-mod.CLAUDE.call, mod.CLAUDE.delays, mod.CLAUDE.changes = fake_hub, (lambda: [0.01] * 5), (lambda: fch)
-# The real route goes through Mosses (axf.agents@1 → axhub_call): the push banner never calls axHub itself
+fdp = FakeDispatch()
+mod.CLAUDE.changes, mod.CLAUDE.dispatch, mod.CLAUDE.vinny_svc = (lambda: fch), (lambda: fdp), (lambda: None)
 import plugin_services  # noqa: E402
-class FakeMosses:
-    def __init__(self, tools=("axhub_call",)): self.tools, self.runs = tools, []
-    def get_agent(self, aid): return {"id": aid, "tools": [{"name": t} for t in self.tools]} if aid == "coder" else None
-    def run_tool(self, aid, name, args, ctx=None):
-        self.runs.append((aid, name, args))
-        return json.dumps({"status": "confirm", "confirmationId": "11111111-2222-3333-4444-555555555555"} if "confirmation_id" not in args else {"status": "ok", "output": "exit 0"})
-check("agent manager" in cf.mosses_ready()[1], "no Mosses: the fix can't be handed over (it says why)")
-fmo = FakeMosses()
-plugin_services.provide("axf.agents@1", fmo, "fake-mosses")
-r1 = cf.call_hub("vps.run", {"command": "echo hi"})
-r2 = cf.call_hub("vps.run", {"command": "echo hi"}, "11111111-2222-3333-4444-555555555555")
-check(r1 == {"confirm": "11111111-2222-3333-4444-555555555555"} and r2 == {"ok": "exit 0"} and fmo.runs[0][:2] == ("coder", "axhub_call")
-      and fmo.runs[0][2]["wait"] is False and fmo.runs[0][2]["tool"] == "vps.run", "the launch goes through Mosses's axhub_call (approval id, then the output)")
-plugin_services.withdraw("fake-mosses")
-plugin_services.provide("axf.agents@1", FakeMosses(tools=("repo_read",)), "fake-mosses")
-check("Safety" in cf.mosses_ready()[1], "Mosses without axhub_call: says to allow him dangerous tools")
-plugin_services.withdraw("fake-mosses")
+check("agent manager" in cf.mosses_ready()[1], "no Mosses: says so (the systems view shows it)")
+check(not hasattr(cf, "launch_command") and not hasattr(cf, "call_hub") and not hasattr(mod.CLAUDE, "_run"), "no launcher and no axHub vps.run left: the push banner never starts a session itself")
 def settle(key):
     for _ in range(300):
         j = mod.CLAUDE.get(key)
         if j and j["state"] in ("launched", "failed"): return j
         time.sleep(0.01)
     return mod.CLAUDE.get(key)
-check(c.post("/p/claude", json={"repo": "MossesX/AmberX-AXF", "branch": "feat/b", "confirm": "MossesX/AmberX-AXF:feat/b"}).status_code == 409 and not hub_calls, "setting off: nothing handed over, Fix with Claude refused")
+check(c.post("/p/claude", json={"repo": "MossesX/AmberX-AXF", "branch": "feat/b", "confirm": "MossesX/AmberX-AXF:feat/b"}).status_code == 409 and not fdp.calls, "setting off: nothing handed over, Fix with Claude refused")
 check(c.put("/p/config", json={"claudeOnFail": "yes"}).status_code == 400, "the switches are true/false")
 check(c.put("/p/config", json={"claudeOnFail": True}).json()["claudeOnFail"] is True, "Hand failures to Claude Code is a setting")
 u = c.post("/p/update", json={"repo": "MossesX/AmberX-AXF", "branch": "feat/conflict", "confirm": "MossesX/AmberX-AXF:feat/conflict"})
-check(u.status_code == 409 and "Handed to Claude Code" in u.json()["detail"], "a conflicted Pull main in is handed to Claude (the error says so)")
+check(u.status_code == 409 and "Handed to Claude Code" in u.json()["detail"], "a conflicted Pull main in is handed over (the error says so)")
 j = settle("MossesX/AmberX-AXF:feat/conflict")
-cmd = hub_calls[0][1]
-check(j["state"] == "launched" and hub_calls[0][0] == "vps.run" and hub_calls[-1][2], "vps.run, waits for the approval, retries with its id, launched")
-check(len(cmd) <= cf.MAX_COMMAND and "git clone -q 'https://github.com/MossesX/AmberX-AXF.git'" in cmd and "-B 'feat/conflict'" in cmd
-      and "'origin/feat/conflict'" in cmd and "AXF_ADOPT_CHANGE=chg-20261022-abcdef1234" in cmd, "one clone per repo, a worktree on that branch, reports on its entry")
-check("'Bash(git push origin HEAD:feat/conflict)'" in cmd and "--allowedTools Bash " not in cmd and "push origin HEAD:main" not in cmd, "shell off: edits + git, a push only to that branch")
-b = __import__("base64").b64decode(cmd.split("echo '")[1].split("'")[0]).decode()
-check("Never push to `main`" in b and "never force-push" in b and "never merge the PR" in b and "secrets" in b, "the brief: never main, never force, never merge, no secrets")
-check(fch.opened and fch.opened[0]["surface"] == "console-launch" and fch.opened[0]["kind"] == "fix" and any(p.get("status") == "running" for p in fch.updates), "a change-log entry: it shows in the building banner")
+title, detail, kw = fdp.calls[0]
+check(j["state"] == "launched" and j["build"] == "fix-pr-1" and "Queue" in j["message"], "it goes to the Build orchestrator's Queue as a build")
+check(kw.get("queue") is True and kw.get("priority") == "P1" and kw.get("by") == "push-banner" and "AmberX-AXF" in title, "High, straight to the Queue, by push-banner")
+check("git clone -q 'https://github.com/MossesX/AmberX-AXF.git'" in detail and "-B 'feat/conflict'" in detail and "'origin/feat/conflict'" in detail, "the brief's setup: one clone per repo, a worktree on that branch")
+check("Never push to `main`" in detail and "never force-push" in detail and "never merge the PR" in detail and "secrets" in detail and "git only" in detail, "the brief: never main, never force, never merge, no secrets, git only when shell is off")
+check(fch.opened and fch.opened[0]["kind"] == "fix" and any("Build orchestrator" in str(p.get("doing", "")) for p in fch.updates), "a change-log entry says which orchestrator build it became")
+check(next(x for x in c.get("/p/claude").json()["jobs"] if x["key"] == "MossesX/AmberX-AXF:feat/conflict")["fixed"] == "running", "the banner follows the orchestrator build (running)")
+fdp.status = "built"
+check(next(x for x in mod.CLAUDE.all() if x["key"] == "MossesX/AmberX-AXF:feat/conflict")["fixed"] == "done", "…and sees it done once the build is built (pull again)")
 u = c.post("/p/update", json={"repo": "MossesX/AmberX-AXF", "branch": "feat/conflict", "confirm": "MossesX/AmberX-AXF:feat/conflict"})
-check(len(hub_calls) == 2, "not handed over again within the cooldown")
+check(len(fdp.calls) == 1, "not handed over again within the cooldown")
 r = c.post("/p/claude", json={"repo": "MossesX/AmberX-AXF", "branch": "feat/conflict", "confirm": "MossesX/AmberX-AXF:feat/conflict"})
-check(r.status_code == 200 and settle("MossesX/AmberX-AXF:feat/conflict")["state"] == "launched" and len(hub_calls) == 4, "Fix with Claude by hand skips the cooldown")
+check(r.status_code == 200 and settle("MossesX/AmberX-AXF:feat/conflict")["state"] == "launched" and len(fdp.calls) == 2, "Fix with Claude by hand skips the cooldown")
 check(c.post("/p/claude", json={"repo": "MossesX/AmberX-AXF", "branch": "main", "confirm": "MossesX/AmberX-AXF:main"}).status_code == 400, "never the default branch")
 STATE["mergeable"] = False
 m = c.post("/p/merge", json={"repo": "MossesX/AmberX-AXF", "number": 18, "confirm": "MossesX/AmberX-AXF#18"})
 STATE["mergeable"] = True
 check(m.status_code == 409 and "conflicts" in m.json()["detail"] and "Handed to Claude Code" in m.json()["detail"], "a Merge GitHub refuses for conflicts is handed over")
 check(settle("MossesX/AmberX-AXF:#18")["branch"] == "feat/a", "…on the PR's own branch")
-# Vinny first (Oct 24 2026): his mapped command for the failure runs before Claude; the hub call goes through his tool first
+# Vinny first (Oct 24 2026): his mapped command for the failure runs before the orchestrator gets it
 class FakeVinny:
-    def __init__(self, state="done"): self.state, self.started, self.calls = state, [], []
+    def __init__(self, state="done"): self.state, self.started = state, []
     def ready(self): return True, ""
     def auto_fix_first(self): return True
     def start_fix(self, key, text="", ctx=None, source=""): self.started.append((key, text, ctx)); return {"id": "v1", "name": "Re-pull", "state": "running"}
     def get_run(self, rid): return {"id": rid, "name": "Re-pull", "state": self.state, "message": "x"}
-    def call(self, tool, a, conf=None, timeout=0, reason=""): self.calls.append(tool); return {"ok": "exit 0"}
 fv = FakeVinny()
 fch2 = FakeChanges()
-L = cf.Launches(lambda: {"claudeOnFail": True}, call=fake_hub, delays=lambda: [0.01] * 5, changes=lambda: fch2, vinny_svc=lambda: fv, sleep=lambda s: None)
-n0 = len(hub_calls)
+fd2 = FakeDispatch()
+L = cf.Launches(lambda: {"claudeOnFail": True}, changes=lambda: fch2, vinny_svc=lambda: fv, sleep=lambda s: None, dispatch=lambda: fd2)
 L.maybe_launch({"repo": "MossesX/AmberX-AXF", "branch": "feat/v", "base": "main", "kind": "conflict", "action": "pull main in", "failure": "conflict"})
 for _ in range(300):
     if (L.get("MossesX/AmberX-AXF:feat/v") or {}).get("state") in ("launched", "failed"): break
     time.sleep(0.01)
 jv = L.get("MossesX/AmberX-AXF:feat/v")
-check(jv["state"] == "launched" and "Vinny" in jv["message"] and len(hub_calls) == n0 and fv.started[0][2]["branch"] == "feat/v"
-      and any(p.get("status") == "done" for p in fch2.updates), "Vinny's mapped command fixes it first: no Claude launch, the entry is done")
+check(jv["state"] == "launched" and "Vinny" in jv["message"] and not fd2.calls and fv.started[0][2]["branch"] == "feat/v"
+      and any(p.get("status") == "done" for p in fch2.updates), "Vinny's mapped command fixes it first: no build, the entry is done")
 fv.state = "failed"
 L.maybe_launch({"repo": "MossesX/AmberX-AXF", "branch": "feat/w", "base": "main", "kind": "conflict", "action": "pull main in", "failure": "conflict"})
 for _ in range(300):
     if (L.get("MossesX/AmberX-AXF:feat/w") or {}).get("state") in ("launched", "failed"): break
     time.sleep(0.01)
-check(L.get("MossesX/AmberX-AXF:feat/w")["state"] == "launched" and len(hub_calls) > n0, "Vinny's command fails → Claude Code is launched")
-plugin_services.provide("axf.vinny@1", fv, "fake-vinny")
-fv.calls.clear()
-check(cf.call_hub("vps.run", {"command": "echo"}) == {"ok": "exit 0"} and fv.calls == ["vps.run"], "the hub call goes through Vinny's tool first")
-plugin_services.withdraw("fake-vinny")
-c.put("/p/config", json={"claudeShell": True})
+check(L.get("MossesX/AmberX-AXF:feat/w")["state"] == "launched" and len(fd2.calls) == 1, "Vinny's command fails → the orchestrator's Queue")
+L3 = cf.Launches(lambda: {"claudeOnFail": True}, changes=lambda: fch2, vinny_svc=lambda: None, sleep=lambda s: None, dispatch=lambda: None)
+L3.maybe_launch({"repo": "MossesX/AmberX-AXF", "branch": "feat/z", "base": "main", "kind": "conflict", "action": "pull main in", "failure": "conflict"})
+for _ in range(300):
+    if (L3.get("MossesX/AmberX-AXF:feat/z") or {}).get("state") in ("launched", "failed"): break
+    time.sleep(0.01)
+check(L3.get("MossesX/AmberX-AXF:feat/z")["state"] == "failed" and "orchestrator is off" in L3.get("MossesX/AmberX-AXF:feat/z")["message"], "orchestrator off: nothing starts another way, and it says why")
 try:
-    cf.launch_command({"repo": "MossesX/AmberX-AXF", "branch": "x; rm -rf /", "base": "main", "kind": "conflict", "action": "x", "failure": ""}, "")
+    cf.setup({"repo": "MossesX/AmberX-AXF", "branch": "x; rm -rf /", "base": "main", "kind": "conflict", "action": "x", "failure": ""})
     odd = False
 except cf.HubError:
     odd = True
-check(odd, "odd branch names never reach the shell")
-check("--allowedTools Bash;" in cf.launch_command({"repo": "MossesX/AmberX-AXF", "branch": "feat/a", "base": "main", "kind": "merge", "action": "merge it", "failure": "", "shell": True}, ""), "shell on: any command")
+check(odd, "odd branch names never reach the brief's commands")
 check(c.get("/p/claude").json()["on"] is True and all("command" not in j for j in c.get("/p/claude").json()["jobs"]), "GET claude: the setting and the jobs (no commands)")
 c.put("/p/config", json={"claudeOnFail": False, "claudeShell": False})
 
@@ -575,27 +561,20 @@ check(c.post("/p/failed/remove", json={"key": "../x"}).status_code == 400, "fail
 c.put("/p/config", json={"claudeOnFail": False})
 R0 = {"repo": "MossesX/AmberX-AXF", "branch": "feat/conflict", "confirm": "MossesX/AmberX-AXF:feat/conflict"}
 check(c.post("/p/claude", json=R0).status_code == 409, "setting off: Fix with Claude still refused")
-n_hub = len(hub_calls)
+n_req = len(fdp.calls)
 r = c.post("/p/claude", json={**R0, "repair": True})
-check(r.status_code == 200 and r.json()["job"]["state"] in ("asking", "waiting", "launched"), "Repair: hands it to Claude even with the setting off")
+check(r.status_code == 200 and r.json()["job"]["state"] in ("asking", "waiting", "launched"), "Repair: hands it over even with the setting off")
 j = settle("MossesX/AmberX-AXF:feat/conflict")
-check(len(hub_calls) > n_hub and j["state"] == "launched", "Repair: launched through vps.run")
+check(len(fdp.calls) > n_req and j["state"] == "launched", "Repair: queued with the Build orchestrator")
 check(c.post("/p/claude", json={**R0, "repair": "yes"}).status_code in (200, 409), "Repair: only true counts")
 check(c.post("/p/claude", json={**R0, "rest": ["feat/b"]}).status_code == 400, "rest only with repair: true")
 check(c.post("/p/claude", json={**R0, "repair": True, "rest": ["bad..name"]}).status_code == 400, "rest: branch names are checked")
-n_hub = len(hub_calls)
+n_req = len(fdp.calls)
 r = c.post("/p/claude", json={**R0, "repair": True, "rest": ["feat/b", "main", "feat/x"]})
 j = settle("MossesX/AmberX-AXF:feat/conflict")
-cmd = hub_calls[n_hub][1]
+b = fdp.calls[n_req][1]
 check(r.status_code == 200 and j["rest"] == ["feat/b", "feat/x"], "Pull all hand-over: the rest of the repo's branches go with it (never the base)")
-check("HEAD:feat/b" in cmd and "HEAD:feat/x" in cmd and "HEAD:main" not in cmd, "Pull all hand-over: pushes allowed only to those branches")
-import base64 as _b64, gzip as _gz
-_raw = _b64.b64decode(cmd.split("echo '")[1].split("'")[0])
-b = (_gz.decompress(_raw) if "gunzip" in cmd else _raw).decode()
-check("finish the banner's Pull all" in b and "`feat/x`" in b, "Pull all hand-over: the brief lists the rest")
-many = [f"feat/n{i:02d}-{'x' * 60}" for i in range(80)]
-cmd2, sent = cf.fit({"repo": "MossesX/AmberX-AXF", "branch": "feat/conflict", "base": "main", "kind": "conflict", "action": "pull main in", "failure": "x", "rest": many}, "")
-check(len(cmd2) <= cf.MAX_COMMAND and 0 < len(sent) < 80 and sent == many[:len(sent)], "Pull all hand-over: trimmed to fit the hub, extra branches dropped from the end")
+check("finish the banner's Pull all" in b and "- `feat/x`" in b and "- `feat/b`" in b and "- `main`" not in b, "Pull all hand-over: the brief lists the rest, never the base")
 check(c.post("/p/failed/remove", json={"key": "MossesX/AmberX-AXF:feat/conflict"}).json()["ok"], "failed/remove: takes it off")
 check(not c.get("/p/branches").json()["failed"], "failed/remove: gone from the banner")
 c.post("/p/update", json={"repo": "MossesX/AmberX-AXF", "branch": "feat/conflict", "confirm": "MossesX/AmberX-AXF:feat/conflict"})

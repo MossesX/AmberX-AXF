@@ -11,6 +11,7 @@ Every UI a build makes is submitted here for Brett's approval (review-item@1), o
   GET  picks / PUT picks {picked: [ids]}             design-pack picks (the page allows 3)
   GET  state?branch=&pr=      ui-review@1: the strictest status of that branch's / PR's items, holds = don't merge yet
   …    settings, predicted, predict, predict/real, approve-look
+  …    choices/*                  the options a build shipped, Brett's pick, option assets (ui-choices@1, choices.py)
                               predicted looks (ui-prediction@1, predicted.py): a build's mockup waits here before it runs
   …    shots/*                Screenshots tab (ui-screenshot@1, screenshots.py): ad-hoc pictures that never enter this
                               queue; shots/promote sends one in ("Send to review"), shots/migrate moves "Breakroom check:" items out
@@ -43,6 +44,7 @@ from . import conform as cf
 from . import schema as S
 from .screenshots import Store as ShotStore, resolve_group, router_for as shots_router
 from . import screenshots as shots_mod
+from . import choices as choices_mod
 from . import predicted as predicted_mod
 from . import notify
 
@@ -253,6 +255,10 @@ def submit(fields: dict, shots: list[tuple[str, str, bytes]] | None = None) -> d
     item, problems = norm_item({**fields, "status": "waiting", "history": None, "id": None, "group": None}, now)
     if problems:
         raise ValueError("; ".join(problems))
+    if fields.get("choices"):
+        item["choices"] = choices_mod.norm_choices(fields["choices"], set_id=f"{choices_mod.slug(item['title'])[:24]}-{item['id'][-8:]}")
+    if _s(fields.get("singleOption"), 300):
+        item["singleOption"] = _s(fields.get("singleOption"), 300)
     folder = data_dir() / "shots" / item["id"]
     names: list[tuple[str, str, bytes]] = []
     used: set[str] = set()
@@ -271,6 +277,9 @@ def submit(fields: dict, shots: list[tuple[str, str, bytes]] | None = None) -> d
         item.pop("groupSession", None)
         stored, errors = cf.review_to_stored(item, [*doc["groups"], g])
         cf.refuse(errors)  # nothing written for a refused item
+        gap = choices_mod.submission_gap(fields, choices_minimum())
+        if gap:
+            raise ValueError(gap)
         if created:
             doc["groups"].append(g)
         for fn, _, raw in names:
@@ -380,6 +389,7 @@ plugin_services.provide("ui-review@1", UiReviewService(), FOLDER)
 router.include_router(shots_router(shots, promote_shot, migrate_shots))
 import sys as _sys  # noqa: E402
 router.include_router(predicted_mod.router_for(_sys.modules[__name__]))
+router.include_router(choices_mod.router_for(_sys.modules[__name__]))
 
 # ---------------------------------------------------------------- health@1: every open item's pictures load
 
@@ -485,6 +495,12 @@ async def post_submit(request: Request) -> dict:
     body = await _json(request, MAX_BODY)
     shots = []
     files = body.get("files") if isinstance(body.get("files"), list) else []
+    # an option's pictures travel in the option; they join the item's shots as opt-<option id>--<name>
+    raw_choices = body.get("choices") if isinstance(body.get("choices"), dict) else None
+    for x in (raw_choices or {}).get("options") or []:
+        if isinstance(x, dict) and isinstance(x.get("files"), list):
+            oid = choices_mod.slug(x.get("id") or x.get("label"))
+            files = [*files, *({**f, "name": f"opt-{oid}--{_s(f.get('name'), 90) or 'shot.png'}"} for f in x["files"] if isinstance(f, dict))]
     for i, f in enumerate(files[:60]):
         if not isinstance(f, dict) or not isinstance(f.get("data"), str):
             raise HTTPException(400, "files: [{name, device?, data}]")
@@ -493,11 +509,38 @@ async def post_submit(request: Request) -> dict:
     if "name" in fields and not fields.get("title"):
         fields["title"] = fields.pop("name")
     try:
-        return {"ok": True, "item": submit(fields, shots)}
+        stored = submit(fields, shots)
+        save_option_assets(stored, raw_choices)
+        return {"ok": True, "item": stored}
     except S.SchemaError as e:
         raise HTTPException(400, str(e)) from e  # names every missing / bad field
     except ValueError as e:
         raise HTTPException(400, str(e)) from e
+
+
+def save_option_assets(stored: dict, raw: dict | None) -> None:
+    """Every option of a set sent through the API is kept as a real asset, picked or not (ui-choices@1)."""
+    c = stored.get("choices")
+    if not raw or not isinstance(c, dict):
+        return
+    data = {choices_mod.slug(x.get("id") or x.get("label")): x.get("data") for x in raw.get("options") or [] if isinstance(x, dict)}
+    for o in c["options"]:
+        a = choices_mod.option_asset(c, o, data.get(o["id"]), str(stored.get("name") or ""))
+        _write(data_dir() / "option-assets" / c["owner"] / "assets" / c["assetType"] / f"{a['id']}.json", a)
+
+
+def choices_minimum() -> int:
+    """Replaced by choices.router_for (the setting)."""
+    return choices_mod.MIN_OPTIONS
+
+
+def ask_notice(ask: dict) -> None:
+    """How-many-options question: a console alert, pushed to AmberX by its delivery rules; the pop-up reads /choices/asks."""
+    try:
+        import console_context as cx  # only inside the console
+        cx.raise_alert({"source": "ui-review", "key": f"ask-{ask['id']}", "severity": "warning", "title": f"How many options for {ask['build'] or ask['title'] or 'this UI'}?", "body": f"Answer in UI Review, or {ask['default']} get built."})
+    except (ImportError, AttributeError):
+        pass
 
 
 @router.post("/migrate")

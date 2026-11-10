@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "clip",
+  "id": "what-is-an-asset-clip",
+  "name": "What is an asset? (clip)",
+  "version": "1.0.0",
+  "description": "The starter clip record: what the recorder writes when it films the starter demonstration (no media shipped; the paths fill in after a recording). Shows the shape every generated clip has: source, media, recording facts, transcript and the auto-tagged keyword set.",
+  "author": "AmberX AXF",
+  "tags": [
+    "clip",
+    "starter"
+  ],
+  "data": {
+    "kind": "demo",
+    "source": { "kind": "demonstration", "id": "what-is-an-asset", "chapter": "" },
+    "media": { "video": "", "poster": "", "captions": "", "audio": "", "seconds": 42, "width": 1920, "height": 1080 },
+    "recorded": { "at": "2026-11-07T00:00:00Z", "app": "console", "url": "", "viewport": { "width": 1920, "height": 1080 }, "designPackage": "", "voice": "" },
+    "transcript": [
+      { "at": 0, "say": "Everything you see in an AmberX app is an asset." },
+      { "at": 12.5, "say": "Settings, then Appearance, is where the active asset of every type is picked." },
+      { "at": 24, "say": "Pick another asset in any slot and the app restyles itself at once." },
+      { "at": 35, "say": "Because the look comes from axHub, the same swap reaches every app." }
+    ],
+    "chain": [],
+    "entries": [ "concept:asset", "concept:hot-swap" ],
+    "keywords": [ "clip", "demo", "asset", "asset@1", "hot-swap", "appearance", "theme", "token", "swap", "settings", "console", "what-is-an-asset" ]
+  }
+}

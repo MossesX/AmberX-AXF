@@ -49,7 +49,7 @@
  *   axf plugins [plugin]        every plugin's commands and reads (or one plugin's help)
  *   axf <plugin> <command> [--field value]…   run a plugin command or read (also axf plugin <plugin> <command>; needs
  *                               a plugin providing service:plugin-commands@1, the Plugin commands plugin)  <!-- axf-plugin:plugin-commands -->
- *   axf console open <screen> | dialog <id> | settings <tab> | action <id> [args…] | back | home | where | list [kind] [words] | clients
+ *   axf console open <screen> | dialog <id> | settings <tab> | action <id> [args…] | back | home | refresh [--hard] [--all] | where | list [kind] [words] | clients
  *                               load a screen in Brett's open console (needs a plugin providing service:console-commands@1)
  */
 import { join, relative } from 'node:path';

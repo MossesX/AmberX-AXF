@@ -1,6 +1,7 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import type { AxfRuntime } from '@console/axf/core';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { AppearancePanel } from '@console/axf/libs/settings';
 import { FOLDER, ID, call, type SavedTheme } from './api';
 import { ThemeManager, lastApplied } from './ThemeManager';
 import './theme-manager.css';
@@ -35,7 +36,7 @@ async function loadSaved(rt: AxfRuntime) {
 export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'Theme manager',
-  version: '0.1.0',
+  version: '0.2.0',
   appMenu,
   provides: ['axf.theme-manager', TOKEN_TREE],
   register(rt) {
@@ -43,10 +44,11 @@ export const plugin: AxfWebLibrary = {
     void loadSaved(rt);
     rt.actions.register('theme-manager.open', () => rt.navigate('theme-manager'), { label: 'Open the theme manager' });
   },
-  views: { 'theme-manager': { title: 'Theme manager', icon: 'palette', keywords: ['roll', 'theme', 'colors', 'tokens'], render: () => <div className="fx-stack fx-stack--lg"><header className="fx-pagehead"><div><p className="fx-eyebrow">Design &amp; branding</p><h1>Theme manager</h1><p className="fx-muted" title="Roll colour, style and layout themes from a token tree, preview them live and save the ones you like as themes.">Roll themes from a token tree, preview live, save the keepers.</p></div></header><ThemeManager /></div> } },
+  views: { 'theme-manager': { title: 'Theme manager', icon: 'palette', keywords: ['roll', 'theme', 'colors', 'tokens'], render: () => <div className="fx-stack fx-stack--lg"><header className="fx-pagehead"><div><p className="fx-eyebrow">Design &amp; branding</p><h1>Theme manager</h1><p className="fx-muted" title="Roll colour, style and layout themes from a token tree, preview them live and save the ones you like as themes.">Roll themes from a token tree, preview live, save the keepers.</p></div></header><AppearancePanel /><ThemeManager /></div> } },
   nav: { label: 'Plugins', items: [{ id: 'theme-manager', label: 'Theme manager', icon: 'palette', view: 'theme-manager' }] },
   settingsTabs: [{ id: 'theme-manager', label: 'Themes', icon: 'palette', parent: 'plugins', order: 44, description: 'Roll colour, style and layout themes (or any themeable part), pick which tokens change, save rolls as assets.' }],
   settingsPanels: [
+    { id: 'theme-manager.appearance', tab: 'theme-manager', title: 'Appearance', icon: 'palette', order: 5, render: () => <AppearancePanel /> },
     { id: 'theme-manager.main', tab: 'theme-manager', title: 'Theme manager', icon: 'palette', order: 10, render: () => <ThemeManager /> },
     { id: 'theme-manager.lifecycle', tab: 'theme-manager', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],

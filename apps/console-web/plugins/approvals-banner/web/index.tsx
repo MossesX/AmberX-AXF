@@ -4,8 +4,9 @@
  * Shows a banner at the top of every view while axHub has calls waiting for approval (axHub decision #85). The browser
  * reads the hub's feed `GET <hub>/auth/admin/approvals.json` with its own hub session cookie (same site, credentials
  * included); the console server isn't involved and never sees the session. Only signed-in hub admins get an answer:
- * anyone else (or a console opened with just the console token) sees nothing. The banner never approves: Review opens
- * the request on the hub's own page, where Approve/Reject live.
+ * anyone else (or a console opened with just the console token) sees nothing. The server is involved only in a decision:
+ * the tap goes through this plugin's relay (see relay.ts and server/__init__.py) with his own hub session, and the
+ * result shows where he tapped (Brett, Nov 6 2026). The hub's page is one secondary link, never where a tap lands.
  *
  * Polls every 5 s while the page is visible, again on focus. Hiding it lasts until something new arrives.
  *
@@ -13,11 +14,10 @@
  * every hub link come from the framework's lib-hub (`framework/libs/hub`, Oct 20 2026 harvest), the same rules the AXHub
  * phone app uses; only items whose link points at the hub are kept, and links are rebuilt from the approval id.
  *
- * Opens by itself (Oct 20 2026, axHub decision #87): each new request opens once in the `approvals.review` dialog, which
- * shows the hub's own approval page in a frame (the hub allows that only for the console's origin, set in
- * AXHUB_APPROVALS_FRAME_ANCESTORS). Approve/Reject run on the hub's page with its Origin + CSRF checks, so the console
- * still never approves anything itself. When the request is decided the dialog closes. "Open new approvals by
- * themselves" can be switched off in its settings (per browser).
+ * Opens by itself (Oct 20 2026, axHub decision #87): each new request opens once in the `approvals.review` dialog, the
+ * call's details with Deny / Approve in the console (no frame of the hub's page since Nov 7 2026). When the request is
+ * decided the dialog says so and closes. "Open new approvals by themselves" can be switched off in its settings (per
+ * browser).
  *
  * Held commands (veto@1, Brett Oct 28 2026): a command Claude sends through Vinnie is held by the hub for a countdown
  * (90 s since axHub decision 104) and then run, unless Brett stops it. The feed lists those with `status: "held"`;
@@ -27,19 +27,21 @@
  * The veto banner (Brett, Oct 30 2026): the veto notices, the veto screen and the alarm belong to this plugin, so they
  * work in every app it is installed in (`targets`: the console and AmberX, whose phone app shows the AmberX web app).
  * Actions use the app's host when it has one (AmberX's phone shell posts with its own hub session, rings the alarm on
- * the alarm stream through silent mode and puts Deny / Approve / Shelve on its notifications), else a page on the hub's
- * origin, else the call's page on the hub. See `veto.tsx` and `alarm.ts`.
+ * the alarm stream through silent mode and puts Deny / Approve / Shelve on its notifications; the console lends its
+ * relay the same way), else a page on the hub's origin, else the call's page on the hub. See `veto.tsx` and `alarm.ts`.
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
-import { Button, Icon, useBannerLaunchOpen, BannerIcon } from '@console/axf/react';
+import { Button, Icon, Note, useBannerLaunchOpen, BannerIcon } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { HUB_DEFAULT, approvalUrl, normalizeHub, approvalsUrl, type HubApproval, type HubFeedStatus } from '@console/axf/libs/hub/hub';
-import { formatCountdown, onVetoHost, vetoHost, VETO_ACTIONS, type VetoAction, type VetoCall } from '@console/axf/libs/hub/veto';
-import { ALARM_KEYS, START_AT, TONES, VIBRATIONS, ALARM_DEFAULTS } from './alarm';
+import { onVetoHost, setVetoHost, vetoHost, VETO_ACTIONS, type VetoAction, type VetoCall } from '@console/axf/libs/hub/veto';
+import { ALARM_KEYS, START_AT, TONES, VIBRATIONS, ALARM_DEFAULTS, NOTICE_DEFAULTS } from './alarm';
 import { act, actResult, AlarmPanel, syncNativeAlarm, VetoButtons, VetoScreen, watch, type VetoDeps } from './veto';
-import { approvalsHost, ApprovalDetailsPanel, ApprovalRow } from '@console/axf/libs/approvals/react';
-import { approvalExpandKey, detailsCountdown, detailsOfItem, fetchApprovals, heldDecisions, registerApprovalsLookup, type ApprovalDecision, type ApprovalItem, type DecideResult } from '@console/axf/libs/approvals';
+import { approvalsHost, ApprovalDetailsPanel, ApprovalRow, setApprovalsHost } from '@console/axf/libs/approvals/react';
+import { pluginFetch } from '@console/plugins';
+import { relayHosts, type RelayPost } from './relay';
+import { approvalExpandKey, detailsOfItem, fetchApprovals, heldDecisions, registerApprovalsLookup, type ApprovalDecision, type ApprovalItem, type DecideResult } from '@console/axf/libs/approvals';
 import { decidedState, decisionButtons } from '@console/axf/libs/approvals/menu';
 import type { MenuActResult, MenuItem } from '@console/axf/core';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -69,7 +71,7 @@ function autoOpen(pending: { id: string }[]) {
   openReview(next.id);
 }
 export function openReview(id: string) {
-  // A held call opens the veto screen (Deny / Approve / Shelve), a call waiting for an approval the hub's page.
+  // A held call opens the veto screen (Deny / Approve / Shelve), a call waiting for an approval its details here.
   if (st.held.some((c) => c.id === id)) { openVeto(id); return; }
   reviewing = id; runtime?.openDialog('approvals.review', { id });
 }
@@ -101,6 +103,34 @@ async function hubUrl(): Promise<string> {
     if (hub) return hub;
   } catch { /* fall back */ }
   return DEFAULT_HUB;
+}
+
+/**
+ * Lends the relay to the veto and approvals seams, once, unless the app already has its own (AmberX's phone shell).
+ * Lent even when the probe says this browser can't decide (Brett, Nov 7 2026: Approve "does nothing"): the tap then
+ * comes back with the server's exact reason in place (no owner sign-in on the console, not his browser, axHub down)
+ * instead of a button that silently falls back to "open it on axHub".
+ */
+const RELAY_TIMEOUT_MS = 25_000;
+const relayPost: RelayPost = async (body) => {
+  const r = await pluginFetch(FOLDER, 'decide', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), signal: AbortSignal.timeout(RELAY_TIMEOUT_MS) });
+  return { status: r.status, json: await r.json().catch(() => null) };
+};
+let relayOn = false;
+/** Why this browser can't decide in place ('' = it can, or not known yet); shown under the buttons. */
+let relayReason = '';
+async function installRelay(): Promise<void> {
+  if (relayOn || vetoHost().act) return;
+  try {
+    const r = await pluginFetch(FOLDER, 'relay');
+    const j = r.ok ? ((await r.json()) as { relay?: boolean; reason?: string }) : null;
+    relayReason = j?.relay === true ? '' : (typeof j?.reason === 'string' ? j.reason : '');
+  } catch { /* the server answers the tap itself */ }
+  if (relayOn || vetoHost().act) return;
+  relayOn = true;
+  const h = relayHosts(relayPost);
+  setVetoHost(h.veto);
+  setApprovalsHost(h.approvals);
 }
 
 let inflight = false;
@@ -183,13 +213,17 @@ function HeldRow({ c }: { c: VetoCall }) {
 }
 
 /**
- * Approve / Deny for a call waiting for an approval (Brett, Oct 30 2026: on every row). The hub takes a decision only
- * from its own pages (Origin + CSRF), so the app's own deciding path goes first (AmberX: the signed-in hub web view);
- * otherwise the hub's page opens in the review dialog, where the tap is confirmed. The console never approves itself.
+ * Approve / Deny for a call waiting for an approval (Brett, Oct 30 2026: on every row), through the app's own deciding
+ * path: the console's relay, AmberX's phone. With none (a browser the hub session doesn't reach) it says so in place and
+ * nothing opens; the hub's page stays one tap away on the secondary link.
  */
 async function decidePending(p: Pending, d: ApprovalDecision): Promise<DecideResult> {
   const decide = approvalsHost().decide;
-  if (!decide) { openReview(p.id); return { ok: true, opened: true, message: '' }; }
+  if (!decide) {
+    const message = 'This page has no way to decide in place yet. Use Open on axHub.';
+    runtime?.toast(message, 'warning', 'Approvals');
+    return { ok: false, message };
+  }
   const item: ApprovalItem = itemOf(p.id) ?? {
     kind: 'approval', id: p.id, tool: p.tool, title: p.title || `${p.tool}: ${shortSummary(p)}`, description: '', summary: p.summary, command: '',
     createdAt: p.createdAt, expiresAt: p.expiresAt, url: p.url, decisions: ['approve', 'decline'], revision: null, veto: null, source: p.source ?? null,
@@ -333,7 +367,7 @@ function ApprovalsBanner() {
           <span className="axp-approvals-banner__head">{s.count} call{s.count === 1 ? '' : 's'} waiting for your approval in axHub</span>
           <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} />
         </button>
-        <a className="fx-btn fx-btn--neutral axp-approvals-banner__go" href={s.approvalsUrl} target="_blank" rel="noopener noreferrer"><Icon name="external" size={14} /> All</a>
+        <a className="fx-btn fx-btn--neutral axp-approvals-banner__go" href={s.approvalsUrl} target="_blank" rel="noopener noreferrer" title="Everything on axHub, in a new tab"><Icon name="external" size={14} /> All</a>
         <button type="button" className="fx-iconbtn" aria-label="Hide until something new is waiting" title="Hide until something new is waiting" onClick={hide}><Icon name="x" size={16} /></button>
       </div>
       {shown.map((p) => <PendingRow key={p.id} p={p} />)}
@@ -346,7 +380,10 @@ function ApprovalsBanner() {
   );
 }
 
-/* ---------------- the review dialog: native, from the hub's feed ---------------- */
+/* ---------------- the review dialog: the call and Deny / Approve, in the console ---------------- */
+
+/** Opens the hub's page the app's way, else in a new tab: only ever from the secondary link, never from a decision. */
+const openOnHub = (url: string) => { const h = vetoHost(); if (h.open) h.open(url); else globalThis.open(url, '_blank', 'noopener,noreferrer'); };
 
 /**
  * One approval from the feed, drawn here: title, plain description, the exact call (folded), the countdown and Deny /
@@ -356,53 +393,39 @@ function ApprovalsBanner() {
  */
 function ReviewDialog({ id }: { id: string }) {
   const s = useApprovals();
-  const [decided, setDecided] = useState(false);
+  const [gone, setGone] = useState(false);
   const [busy, setBusy] = useState('');
-  const [, tick] = useState(0);
-  const p = s.pending.find((x) => x.id === id);
-  const c = s.held.find((x) => x.id === id);
+  const [result, setResult] = useState<{ ok: boolean; message: string } | null>(null);
+  const p = s.pending.find((x) => x.id === id) ?? s.held.find((x) => x.id === id);
   const it = itemOf(id);
   const url = p?.url ?? approvalUrl(s.hub, id) ?? s.approvalsUrl;
-  const openOnHub = () => { const h = vetoHost(); if (h.open) h.open(url); else globalThis.open(url, '_blank', 'noopener,noreferrer'); };
-  const decide = (d: ApprovalDecision) => {
-    setBusy(`${id}:${d}`);
-    const run: Promise<unknown> = c ? actResult(deps, c, d === 'approve' ? 'approve-now' : 'deny')
-      : p && approvalsHost().decide ? decidePending(p, d)
-      : Promise.resolve(openOnHub());
-    void run.finally(() => setBusy(''));
-  };
-  useEffect(() => { const t = setInterval(() => tick((n) => n + 1), 1_000); return () => clearInterval(t); }, []);
   // Fast checks while it's open; once the request leaves the waiting list it was decided (or expired): close.
   useEffect(() => { const t = setInterval(() => void checkNow(), 2_000); return () => { clearInterval(t); if (reviewing === id) reviewing = null; }; }, [id]);
   useEffect(() => {
-    if (s.status !== 'ok' || p || c) return;
-    setDecided(true);
+    if (s.status !== 'ok' || p) return;
+    setGone(true);
     const t = setTimeout(() => { if (reviewing === id) reviewing = null; runtime?.closeDialog(); }, 2_500);
     return () => clearTimeout(t);
-  }, [s.status, s.checkedAt, p, c, id]);
-  const details = it ? detailsOfItem(it) : null;
-  const left = details ? detailsCountdown(details) : null;
-  const denyAs: ApprovalDecision = c ? 'deny' : 'decline';
+  }, [s.status, s.checkedAt, p, id]);
+  const decide = (d: ApprovalDecision) => {
+    const pending = s.pending.find((x) => x.id === id);
+    const held = s.held.find((x) => x.id === id);
+    if (!pending && !held) return;
+    setBusy(`${id}:${d}`);
+    setResult(null);
+    // a held call (veto countdown) is denied or run now through the veto host; a waiting approval through the hub
+    const run: Promise<{ ok: boolean; message: string }> = held
+      ? actResult(deps, held, d === 'approve' ? 'approve-now' : 'deny').then((r) => ({ ok: r.ok, message: r.ok ? `${d === 'approve' ? 'Running now' : 'Denied'}: ${held.title}` : `Couldn't ${d === 'approve' ? 'approve' : 'deny'} it${r.error ? ` (${r.error})` : ''}.` }))
+      : decidePending(pending!, d);
+    void run.then((r) => setResult({ ok: r.ok, message: r.message })).finally(() => setBusy(''));
+  };
   return (
     <div className="fx-stack axp-approvals-review">
-      {decided && <p className="fx-small" role="status" style={{ margin: 0 }}><Icon name="check" size={14} /> Decided. Closing…</p>}
-      {(p || c) && (
-        <div className="fx-row fx-row--wrap axp-approvals-review__first">
-          {left !== null && <strong role="timer" className={left <= 30 ? 'axp-approvals-review__urgent' : undefined}>{formatCountdown(left)}</strong>}
-          <Button tone="danger" icon="x" disabled={!!busy} onClick={() => decide(denyAs)}>Deny</Button>
-          <Button tone="primary" icon="check" disabled={!!busy} onClick={() => decide('approve')}>Approve</Button>
-        </div>
-      )}
-      {details ? <ApprovalDetailsPanel details={details} hub={s.hub} foldCall openPage={openOnHub} /> : (
-        <div className="fx-stack axp-approvals-review__stuck" role="status">
-          <Icon name="shield" size={24} />
-          <strong>{p?.tool ?? c?.tool ?? 'Approval waiting'}</strong>
-          <p className="fx-small fx-muted" style={{ margin: 0 }}>{s.status === 'ok' || s.status === 'idle' ? 'Reading it from axHub…' : "Can't read axHub right now. Open it on the hub to decide."}</p>
-        </div>
-      )}
+      {result ? <Note tone={result.ok ? 'success' : 'danger'}>{result.message}</Note> : gone ? <p className="fx-small" role="status" style={{ margin: 0 }}><Icon name="check" size={14} /> No longer waiting. Closing…</p> : null}
+      {it ? <ApprovalDetailsPanel details={detailsOfItem(it)} hub={s.hub} busy={busy} onDecide={decide} openPage={openOnHub} /> : !gone && <p className="fx-small fx-muted" style={{ margin: 0 }}>Reading it from axHub…</p>}
       <div className="fx-row fx-row--wrap axp-approvals-review__foot">
-        {it && <WatchLiveFor text={JSON.stringify(it)} />}
-        <Button size="sm" icon="external" onClick={openOnHub}>Open in axHub</Button>
+        {p && <WatchLiveFor text={JSON.stringify(p)} />}
+        <Button size="sm" tone="ghost" icon="external" onClick={() => openOnHub(url)}>Open on axHub</Button>
       </div>
     </div>
   );
@@ -424,7 +447,7 @@ function AutoOpenSwitch() {
   return (
     <label className="fx-row" style={{ alignItems: 'flex-start' }}>
       <input type="checkbox" checked={on} onChange={(e) => { save(AUTO_KEY, e.target.checked ? 'on' : 'off'); setOn(e.target.checked); }} />
-      <span><strong>Open new approvals by themselves</strong><br /><span className="fx-small fx-muted">Each new request pops up here once, showing the hub's approval page, so you can approve without leaving the console. This browser only.</span></span>
+      <span><strong>Open new approvals by themselves</strong><br /><span className="fx-small fx-muted">Each new request pops up here once, so you can approve without leaving the console. This browser only.</span></span>
     </label>
   );
 }
@@ -448,7 +471,8 @@ function StatusPanel() {
         <Button tone="primary" icon="refresh" onClick={() => void checkNow()}>Check now</Button>
         <a className="fx-btn fx-btn--neutral" style={{ textDecoration: 'none' }} href={s.approvalsUrl} target="_blank" rel="noopener noreferrer">Open the approvals page</a>
       </div>
-      <p className="fx-muted fx-small" style={{ margin: 0 }}>Hub: {s.hub}. The console server never sees your hub session: your browser asks the hub directly.</p>
+      <p className="fx-muted fx-small" style={{ margin: 0 }}>Hub: {s.hub}. Your browser reads the list from the hub directly. A tap on Approve or Deny goes through the console's relay and stays in the console: with this browser's hub session when it reaches the console, else with the console's own axHub owner sign-in (server-side, logged with your name). Only your signed-in browser can use it; Claude sessions and the console token can't.</p>
+      {relayReason && <Note tone="warning">{relayReason}</Note>}
     </div>
   );
 }
@@ -456,7 +480,7 @@ function StatusPanel() {
 export const plugin: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
   label: 'Approvals banner',
-  version: '0.5.2',
+  version: '0.6.0',
   appMenu,
   appMenuProviders: {
     [WAITING_LIST]: {
@@ -473,13 +497,26 @@ export const plugin: AxfWebLibrary = {
     runtime = rt;
     watch.setup((k) => rt.settings.get(k), (id) => openVeto(id));
     start();
-    // approvals.veto:<id> — the veto screen; approvals.deny|approve-now|shelve:<id> — one action (a person's tap only)
-    rt.actions.register('approvals.veto', ([id]) => { if (id) openVeto(id); }, { label: 'Open a held call', params: true, searchable: false });
+    void installRelay();
+    // approvals.veto:<id> — the veto screen; approvals.deny|approve-now|shelve:<id> — one action. Deciding actions are
+    // personOnly: menus and buttons run them on his tap, no remote console command can (they stay out of the catalog).
+    rt.actions.register('approvals.veto', ([id]) => { if (id) openVeto(id); }, { label: 'Open a held call', params: true, searchable: false, effect: 'navigate' });
     for (const a of VETO_ACTIONS) {
       rt.actions.register(`approvals.${a}`, ([id]) => {
         const c = st.held.find((x) => x.id === id);
         if (c) void act(deps, c, a as VetoAction); else rt.toast('That call is no longer held.', 'info', 'Approvals');
-      }, { label: `${a === 'deny' ? 'Deny' : a === 'shelve' ? 'Shelve' : 'Approve'} a held call`, params: true, searchable: false });
+      }, { label: `${a === 'deny' ? 'Deny' : a === 'shelve' ? 'Shelve' : 'Approve'} a held call`, params: true, searchable: false, personOnly: true });
+    }
+    // approvals.approve:<id> — held or waiting, the same decision; approvals.deny above covers held calls only, so a
+    // waiting call's Deny is approvals.decline:<id>.
+    for (const [name, d] of [['approve', 'approve'], ['decline', 'decline']] as const) {
+      rt.actions.register(`approvals.${name}`, ([id]) => {
+        const c = st.held.find((x) => x.id === id);
+        const p = st.pending.find((x) => x.id === id);
+        if (c) void act(deps, c, d === 'approve' ? 'approve-now' : 'deny');
+        else if (p) void decidePending(p, d);
+        else rt.toast('That one is no longer waiting.', 'info', 'Approvals');
+      }, { label: `${name === 'approve' ? 'Approve' : 'Deny'} an approval`, params: true, searchable: false, personOnly: true });
     }
     // The app's native side (AmberX phone): notification taps open the veto screen; actions taken there refresh.
     let offEvents: (() => void) | undefined;
@@ -497,10 +534,26 @@ export const plugin: AxfWebLibrary = {
     onVetoHost(hook);
     hook();
     rt.subscribe(sync);
+    // approvals.notice:<sound|vibrate|repeat|alarm>:<on|off> — how loud the one notice per hold is (Brett, Nov 8 2026:
+    // "Full API + voice control"). Whether notices show at all stays his own click (notify-control guards veto notices).
+    const NOTICE_SWITCHES: Record<string, string> = { sound: ALARM_KEYS.noticeSound, vibrate: ALARM_KEYS.noticeVibrate, repeat: ALARM_KEYS.noticeRepeat, alarm: ALARM_KEYS.enabled };
+    rt.actions.register('approvals.notice', ([what = '', value = '']) => {
+      const key = NOTICE_SWITCHES[what];
+      const on = /^(on|true|yes|1)$/i.test(value) ? true : /^(off|false|no|0)$/i.test(value) ? false : null;
+      if (!key || on === null) { rt.toast(`approvals.notice:<sound|vibrate|repeat|alarm>:<on|off> (got "${what}:${value}")`, 'warning', 'Approvals'); return; }
+      rt.settings.set(key, on);
+      rt.toast(`Veto ${what === 'alarm' ? 'alarm' : `notice ${what}`}: ${on ? 'on' : 'off'}`, 'success', 'Approvals');
+    }, { label: 'Veto notice: sound / vibrate / repeat / alarm on or off (approvals.notice:<what>:<on|off>)', params: true });
     rt.actions.register('approvals.check', () => void checkNow(), { label: 'Check axHub approvals' });
     rt.actions.register('approvals.open', () => { globalThis.open(st.approvalsUrl, '_blank', 'noopener'); }, { label: 'Open axHub approvals' });
-    // approvals.review:<id> — that request in the native review dialog (menu live list, a tapped notification)
-    rt.actions.register('approvals.review', ([id]) => { if (id) openReview(id); else globalThis.open(st.approvalsUrl, '_blank', 'noopener'); }, { label: 'Review an axHub approval', params: true, searchable: false });
+    // approvals.view:<id> — that call in the console (menus, console_show, notification taps); approvals.review is its
+    // older name. Only opens: a session may show it to him, the deciding stays his.
+    const view = ([id]: string[]) => {
+      if (id && (st.pending.some((x) => x.id === id) || st.held.some((x) => x.id === id))) openReview(id);
+      else rt.toast('That one is no longer waiting.', 'info', 'Approvals');
+    };
+    rt.actions.register('approvals.view', view, { label: 'Show an axHub approval', params: true, searchable: false, effect: 'navigate' });
+    rt.actions.register('approvals.review', view, { label: 'Review an axHub approval', params: true, searchable: false, effect: 'navigate' });
   },
   banners: [{ id: 'approvals', label: 'Approvals', icon: 'shield', settingsTab: 'approvals-banner', order: 5, render: () => <ApprovalsBanner /> }],
   dialogs: {
@@ -509,10 +562,10 @@ export const plugin: AxfWebLibrary = {
   },
   settings: [
     {
-      id: 'approvals-banner.alarm', label: 'Veto alarm', icon: 'bell', tab: 'approvals-banner', order: 10,
-      description: 'Rings for a held call until you Deny, Approve or Shelve it (or it ends).',
+      id: 'approvals-banner.alarm', label: 'Veto notices and alarm', icon: 'bell', tab: 'approvals-banner', order: 10,
+      description: 'One normal notice per held call; the alarm (off by default) rings until you Deny, Approve or Shelve it.',
       settings: [
-        { key: ALARM_KEYS.enabled, label: 'Alarm', kind: 'toggle', default: ALARM_DEFAULTS.enabled },
+        { key: ALARM_KEYS.enabled, label: 'Alarm', kind: 'toggle', default: ALARM_DEFAULTS.enabled, description: 'Off by default: a ringing alarm on top of the notice. Its tone, volume, repeats and silent-mode ringing are below.' },
         { key: ALARM_KEYS.startAt, label: 'Starts', kind: 'choice', default: ALARM_DEFAULTS.startAt, options: START_AT.map(({ value, label }) => ({ value, label })) },
         { key: ALARM_KEYS.tone, label: 'Tone', kind: 'choice', default: ALARM_DEFAULTS.tone, options: TONES.map(({ value, label }) => ({ value, label })), description: 'My own sound file: pick it below.' },
         { key: ALARM_KEYS.volume, label: 'Volume', kind: 'slider', default: ALARM_DEFAULTS.volume, min: 0, max: 100, step: 5 },
@@ -523,7 +576,10 @@ export const plugin: AxfWebLibrary = {
         { key: ALARM_KEYS.repeatGapSeconds, label: 'Quiet between rings (seconds)', kind: 'number', default: ALARM_DEFAULTS.repeatGapSeconds, min: 0, max: 300 },
         { key: ALARM_KEYS.vibration, label: 'Vibration', kind: 'choice', default: ALARM_DEFAULTS.vibration, options: VIBRATIONS.map(({ value, label }) => ({ value, label })) },
         { key: ALARM_KEYS.throughSilent, label: 'Ring through silent mode (phone)', kind: 'toggle', default: ALARM_DEFAULTS.throughSilent, description: 'AmberX on Android plays it on the alarm channel, which sounds even when the phone is on silent.' },
-        { key: ALARM_KEYS.notices, label: 'Notices (timer started, 30 s left, running)', kind: 'toggle', default: true, description: 'On the phone AmberX raises them with Deny, Approve and Shelve buttons; in a browser, while this page is open.' },
+        { key: ALARM_KEYS.notices, label: 'Notices (one per held call)', kind: 'toggle', default: true, description: 'One normal notification per held call, with Deny, Approve and Shelve (AmberX on the phone; in a browser while this page is open). It updates at 30 s left and when it runs.' },
+        { key: ALARM_KEYS.noticeSound, label: 'Notice sound', kind: 'toggle', default: NOTICE_DEFAULTS.sound, description: "The phone's normal notification sound, once." },
+        { key: ALARM_KEYS.noticeVibrate, label: 'Notice vibration', kind: 'toggle', default: NOTICE_DEFAULTS.vibrate },
+        { key: ALARM_KEYS.noticeRepeat, label: 'Alert again at 30 s left and when it runs', kind: 'toggle', default: NOTICE_DEFAULTS.repeat, description: 'Off: the notice just updates, silently.' },
       ],
     },
   ],

@@ -54,6 +54,11 @@ export function styleThemeVars(s: StyleThemeData, spacing: Spacing = 'regular'):
 }
 
 /** Build option --wrap-groups as a style token: true only when the theme says exactly `true` (default off). */
+/** Themed scrollbars, only for a theme that names them; the others keep the browser's. Web only (PORTING.md, skin@1). */
+export function scrollbarVars(s: Pick<StyleThemeData, 'scrollbar'> | undefined | null): VarMap {
+  return s?.scrollbar === 'thin' ? { '--fx-scrollbar-width': 'thin', '--fx-scrollbar-color': 'var(--fx-muted) transparent' } : {};
+}
+
 export function wrapGroups(s: Pick<StyleThemeData, 'wrapGroups'> | undefined | null): boolean {
   return s?.wrapGroups === true;
 }

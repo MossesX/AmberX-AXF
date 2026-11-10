@@ -2,6 +2,9 @@ fastapi>=0.115
 uvicorn[standard]>=0.30
 mcp>=2.3,<3
 cryptography>=42
+# Plugin servers that call other services (approvals-banner's Approve / Deny relay). Listed on its own: mcp 2.3 moved to
+# httpx2, so it no longer brings httpx in, and without it the relay never loads and every Approve answers 405.
+httpx>=0.27
 # Local speech to text for session transcripts. av 18.1 is proven with faster-whisper 1.2.1; it's pinned because the
 # newest av (19) dropped an argument faster-whisper passes, which fails every transcript.
 faster-whisper>=1.2,<1.3

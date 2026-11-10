@@ -30,6 +30,9 @@ export const SORTS = [
   { id: 'oldest', label: 'Oldest' },
   { id: 'title', label: 'Title' },
   { id: 'app', label: 'App' },
+  { id: 'waiting-desc', label: 'Waiting last' },
+  { id: 'title-desc', label: 'Title, Z first' },
+  { id: 'app-desc', label: 'App, Z first' },
 ];
 
 const KIND_RE = /^[a-z0-9][a-z0-9-]{0,40}$/;
@@ -140,6 +143,7 @@ export function filterItems(items, f = {}) {
 const rank = (s) => { const i = STATUS_IDS.indexOf(s); return i < 0 ? 99 : i; };
 const when = (it) => String(it.updatedAt || it.submittedAt || '');
 export function sortItems(items, sort = 'waiting') {
+  if (sort.endsWith('-desc')) return sortItems(items, sort.slice(0, -5)).reverse();
   const a = [...items];
   const byNew = (x, y) => when(y).localeCompare(when(x));
   if (sort === 'newest') return a.sort(byNew);

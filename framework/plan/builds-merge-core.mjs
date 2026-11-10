@@ -40,6 +40,7 @@ export function liveStatus(b) {
   if (done === steps.length) return str(b.pr) && !str(b.mergedAt) ? 'built' : 'complete';
   if (!done && (b.status === 'complete' || b.status === 'built')) return b.status; // built without ticking its steps
   if (b.status === 'waiting') return 'waiting';
+  if (b.status === 'queued') return done > 0 ? 'running' : 'queued'; // in the Queue until the dispatcher's session ticks a step
   // a pending build with ticked steps stays pending (paused: nothing is running it); a tick through the Builds page or
   // the orchestrator moves it back to running
   return b.status === 'running' || (done > 0 && b.status !== 'pending') ? 'running' : 'pending';

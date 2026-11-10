@@ -539,6 +539,24 @@
     "--fx-focus": "#6aa1c8",
     "--fx-shadow": "rgba(0,0,0,0.55)"
   },
+  "color-theme:windows-light": {
+    "--fx-bg": "#f3f3f3",
+    "--fx-surface": "#ffffff",
+    "--fx-surface2": "#fbfbfb",
+    "--fx-surface3": "#ebebeb",
+    "--fx-text": "#1b1b1b",
+    "--fx-muted": "#5d5d5d",
+    "--fx-border": "#e5e5e5",
+    "--fx-accent": "#0067c0",
+    "--fx-accent-text": "#ffffff",
+    "--fx-accent-soft": "rgba(0,103,192,0.10)",
+    "--fx-danger": "#c42b1c",
+    "--fx-success": "#0f7b0f",
+    "--fx-warning": "#9d5d00",
+    "--fx-info": "#005fb8",
+    "--fx-focus": "#0067c0",
+    "--fx-shadow": "rgba(0,0,0,0.14)"
+  },
   "style-theme:dense-grid": {
     "--fx-font": "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
     "--fx-font-display": "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
@@ -942,6 +960,33 @@
     "--fx-opacity-tint": "0.14",
     "--fx-opacity-scrim": "0.5",
     "--fx-opacity-glass": "0.92",
+    "--fx-wrap-groups": "0"
+  },
+  "style-theme:windows": {
+    "--fx-font": "'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif",
+    "--fx-font-display": "'Segoe UI Variable Display', 'Segoe UI', system-ui, sans-serif",
+    "--fx-font-mono": "'Cascadia Mono', Consolas, ui-monospace, monospace",
+    "--fx-font-size": "14px",
+    "--fx-radius-sm": "3px",
+    "--fx-radius-md": "4px",
+    "--fx-radius-lg": "8px",
+    "--fx-space": "6.2px",
+    "--fx-border-w": "1px",
+    "--fx-shadow-sm": "0 1px 2px var(--fx-shadow)",
+    "--fx-shadow-md": "0 2px 4px var(--fx-shadow)",
+    "--fx-shadow-lg": "0 8px 16px var(--fx-shadow)",
+    "--fx-motion": "100ms",
+    "--fx-blur": "24px",
+    "--fx-heading-weight": "600",
+    "--fx-tracking": "0em",
+    "--fx-row-h": "27px",
+    "--fx-density-k": "0.78",
+    "--fx-opacity-disabled": "0.4",
+    "--fx-opacity-muted": "0.7",
+    "--fx-opacity-hover": "0.06",
+    "--fx-opacity-tint": "0.1",
+    "--fx-opacity-scrim": "0.4",
+    "--fx-opacity-glass": "0.8",
     "--fx-wrap-groups": "0"
   }
 }

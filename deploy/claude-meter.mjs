@@ -13,10 +13,14 @@
 // Cost = per assistant message (counted once per message id, last usage wins) × the model's price in
 // framework/schemas/model-pricing.json (no prices in code); a `result` event's total_cost_usd replaces the estimate for
 // that run, so the final value matches what Claude Code reports. Several runs (account switches) add up.
+// Brief only (headless-context@1, Nov 8 2026): `start` = the context of the run's first request (start tokens, its cost,
+// a warning over Claude settings headless.startTokenWarn) and `context` = brief only or not plus what the init event
+// says loaded (tools, MCP servers, skills…). A brief-only run (lean) has no CLAUDE.md chain to put on the chain.
 import { existsSync, readFileSync, readdirSync, renameSync, statSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { dirname, isAbsolute, join, relative, resolve } from 'node:path';
 import { costUsd, loadPricing, modelKey } from '../framework/cli/model-pricing.mjs';
+import { loadedFrom, policyOf, startOf, startWarning } from '../framework/core/headless-context.mjs';
 
 const MAX_RULES = 400;          // per file
 const MAX_RULE_CHARS = 600;
@@ -108,12 +112,13 @@ export function memoryChain(cwd, { home = homedir(), read = readText, list = lis
 function listDir(d) { try { return readdirSync(d); } catch { return []; } }
 
 /** A live meter for one session. `add(ev)` takes each stream-json event; `snapshot()` / `chain()` give the files' JSON. */
-export function createMeter({ session = '', name = '', agent = '', model = '', cwd = process.cwd(), home = homedir(), pricing = loadPricing(), now = () => Date.now(), read = readText, list = listDir, prev = null, prevChain = null } = {}) {
+export function createMeter({ session = '', name = '', build = '', agent = '', model = '', cwd = process.cwd(), home = homedir(), pricing = loadPricing(), now = () => Date.now(), read = readText, list = listDir, prev = null, prevChain = null, lean = process.env.AXF_BRIEF_ONLY_RUN === '1' || process.env.CLAUDE_CODE_DISABLE_CLAUDE_MDS === '1', policy = policyOf() } = {}) {
   const t0 = now();
   const base = prev && prev.session === session ? prev : null;
   const st = {
     startedAt: base?.startedAt ?? new Date(t0).toISOString(), model: model || base?.model || '', status: 'starting', lastEventAt: t0,
     baseCost: base ? Number(base.costUsd) || 0 : 0, baseTokens: base?.tokens ?? { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+    start: base?.start ?? null, loaded: base?.context?.loaded ?? null,
     baseTurns: base?.turns ?? 0, baseTools: base?.tools ?? 0, runs: (base?.runs ?? 0) + 1,
     reported: 0, msgs: new Map(), turns: 0, tools: 0, pendingTools: new Set(), result: null, reportedTokens: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }, unpriced: false,
   };
@@ -159,10 +164,11 @@ export function createMeter({ session = '', name = '', agent = '', model = '', c
     return push(path, 'read', Math.min((r.it.depth ?? 0) + 1, 24), r.it.path, startRule(r.line) ? 'session-start rule' : 'reference', r.line);
   };
   let chainVersion = 0;
-  if (!items.length) { for (const m of memoryChain(cwd, { home, read, list })) push(m.path, m.via, m.depth, m.parent, m.reason); chainVersion++; }
+  if (!items.length && !lean) { for (const m of memoryChain(cwd, { home, read, list })) push(m.path, m.via, m.depth, m.parent, m.reason); chainVersion++; }
 
   /** A file read inside a folder may bring in that folder's CLAUDE.md (Claude Code loads nested memory on demand). */
   const lazyMemory = (file) => {
+    if (lean) return false;
     const root = resolve(cwd); let added = false;
     const dirs = []; for (let d = dirname(file); d.startsWith(root) && d !== root; d = dirname(d)) dirs.unshift(d);
     for (const d of dirs) for (const f of ['CLAUDE.md', join('.claude', 'CLAUDE.md')]) { const p = join(d, f); if (!have.has(p) && read(p) != null) added = push(p, 'nested memory', 0, '', 'nested memory') || added; }
@@ -172,12 +178,13 @@ export function createMeter({ session = '', name = '', agent = '', model = '', c
   function add(ev) {
     if (!ev || typeof ev !== 'object') return;
     st.lastEventAt = now();
-    if (ev.type === 'system' && ev.subtype === 'init') { if (ev.model) st.model = ev.model; st.status = 'working'; return; }
+    if (ev.type === 'system' && ev.subtype === 'init') { if (ev.model) st.model = ev.model; st.status = 'working'; if (!st.loaded) st.loaded = loadedFrom(ev); return; }
     if (ev.type === 'assistant') {
       st.status = 'working';
       const msg = ev.message ?? {};
       const id = msg.id || `anon-${st.msgs.size}`;
       if (msg.usage) st.msgs.set(id, { model: msg.model || st.model, usage: msg.usage });
+      if (msg.usage && !st.start) { const s0 = startOf(msg.usage); const c0 = costUsd(msg.model || st.model, { input: s0.input, output: 0, cacheRead: s0.cacheRead, cacheWrite: s0.cacheWrite }, pricing); st.start = { ...s0, costUsd: c0 == null ? null : Math.round(c0 * 10000) / 10000, at: new Date(now()).toISOString(), warning: startWarning(s0.tokens, policy) }; }
       for (const b of msg.content ?? []) {
         if (b.type !== 'tool_use') continue;
         st.tools++; if (b.id) st.pendingTools.add(b.id);
@@ -215,12 +222,13 @@ export function createMeter({ session = '', name = '', agent = '', model = '', c
     const est = runEstimate(); const run = runTokens();
     const tokens = {}; for (const k of ['input', 'output', 'cacheRead', 'cacheWrite']) tokens[k] = (st.baseTokens[k] ?? 0) + st.reportedTokens[k] + run[k];
     return {
-      $axf: 'headless-meter@1', session, name, agent: agent || name, model: st.model, modelKey: modelKey(st.model), cwd,
+      $axf: 'headless-meter@1', session, name, build: build || base?.build || '', agent: agent || name, model: st.model, modelKey: modelKey(st.model), cwd,
       startedAt: st.startedAt, updatedAt: new Date(now()).toISOString(), lastEventAt: new Date(st.lastEventAt).toISOString(),
       status: st.status, toolRunning: st.pendingTools.size > 0, ended: !!st.ended, exit: st.exit ?? null,
       costUsd: r4(st.baseCost + st.reported + est), estimatedUsd: r4(est), costEstimated: est > 0, priced: !st.unpriced && !!modelKey(st.model),
       tokens, turns: st.baseTurns + st.turns, tools: st.baseTools + st.tools, runs: st.runs, result: st.result,
       chainCount: items.length, chainVersion,
+      start: st.start, context: { $axf: 'headless-context@1', briefOnly: !!lean, loaded: st.loaded },
     };
   }
   const chain = () => ({ $axf: 'context-chain@1', session, cwd, version: chainVersion, items });

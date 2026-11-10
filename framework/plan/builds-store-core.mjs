@@ -46,23 +46,31 @@
 import { normApproval, normRequest } from '../core/model-switch.mjs';
 import { mergeOrigin, normOrigin } from '../core/build-origin.mjs';
 import { effectivePriority, normPriority } from '../core/build-priority.mjs';
+import { normRef as normShippedRef } from '../core/shipped-manifest.mjs';
+import { normPipeline } from '../core/build-pipeline.mjs';
 
 export const SCHEMA = 'builds@1';
 export const MODELS = ['Fable', 'Opus'];
-/** `built` = every step done, its PR not merged yet (Nov 3 2026, orch-live-sync); `complete` once the PR merged. */
-export const STATUSES = ['pending', 'running', 'waiting', 'blocked', 'failed', 'built', 'complete', 'archived'];
+/**
+ * `built` = every step done, its PR not merged yet (Nov 3 2026, orch-live-sync); `complete` once the PR merged.
+ * `queued` (Nov 8 2026, pipeline rebuild) = Brett moved it from Pending to the Queue: the dispatcher starts it when a slot
+ * is free; `running` is the pipeline's Building (framework/core/build-pipeline.mjs).
+ */
+export const STATUSES = ['pending', 'queued', 'running', 'waiting', 'blocked', 'failed', 'built', 'complete', 'archived'];
 /** Statuses that count as finished work (progress, Pending list). */
 export const FINISHED = ['built', 'complete'];
 export const DEFAULT_RULES = { sameSession: true, subAgents: false, approveModelSwitch: true, maxStepMinutes: 30 };
-export const BASE_PROFILE = 'main-framework';
 /**
- * One work profile (Brett, Nov 7 2026: merge every build profile into one). The six profiles below were folded into
+ * One work profile (Brett, Nov 7 2026: merge every build profile into one). The profiles below were folded into
  * `all`; a record that still names one of them (an older checkout, a live merge from a session on older code, a hub
  * plan's build link, `AXF_BUILD_PROFILE=urgent` in an old brief) is read as `all`, its old profile kept in
  * `fromProfile`. Urgency is a per-build `priority`, never a profile: a build from `urgent` without one reads as P0.
+ * The old base, `main-framework`, was folded in too (Brett, Nov 7 2026), so `all` is the base profile now: its files
+ * are the original paths (`_claude/builds/orchestrator.json`, `framework/plan/pending.json`, …).
  */
 export const MERGED_PROFILE = 'all';
-export const RETIRED_PROFILES = ['current', 'urgent', 'angel', 'big-dog', 'breakroom', 'refactor'];
+export const BASE_PROFILE = MERGED_PROFILE;
+export const RETIRED_PROFILES = ['current', 'urgent', 'angel', 'big-dog', 'breakroom', 'refactor', 'main-framework'];
 /** A profile id after the merge: a retired id is `all`, anything else stays. */
 export const resolveProfile = (id) => (RETIRED_PROFILES.includes(id) ? MERGED_PROFILE : id);
 
@@ -154,6 +162,8 @@ export function normBuild(b, ctx = {}) {
     approvals: (Array.isArray(o.approvals) ? o.approvals : []).map(normApproval), // model-switch.mjs: who approved, how
     upgradeRequests: (Array.isArray(o.upgradeRequests) ? o.upgradeRequests : []).map(normRequest).filter((r) => r.id),
     ...(origin ? { origin } : {}),
+    ...(normPipeline(o.pipeline) ? { pipeline: normPipeline(o.pipeline) } : {}), // build-pipeline@1: queue / run record (framework/core/build-pipeline.mjs)
+    ...(normShippedRef(o.shipped) ? { shipped: normShippedRef(o.shipped) } : {}), // shipped-manifest@1 ref: the manifest the orchestrator sent when it landed (sidecar _claude/builds/shipped/<id>.json)
     steps,
     profiles,
     order,
@@ -595,7 +605,7 @@ export function absorbPending(store, profile, pending, change = null, { now = no
     if (it.status === shownItem.status && b.pending?.status) meta.status = b.pending.status;
     b.pending = { ...(b.pending ?? {}), ...meta };
     b.updatedAt = it.updatedAt || now;
-    if (['pending', 'running', 'waiting'].includes(b.status) && b.steps.length && b.steps.every((x) => x.done || x.skip) && b.steps.some((x) => x.done)) { b.status = 'complete'; b.builtAt = b.builtAt || now; }
+    if (['pending', 'queued', 'running', 'waiting'].includes(b.status) && b.steps.length && b.steps.every((x) => x.done || x.skip) && b.steps.some((x) => x.done)) { b.status = 'complete'; b.builtAt = b.builtAt || now; }
   }
   if (!newerOnly) for (const [id, b] of shown) if (!seen.has(id)) {
     if (b.profiles.length > 1) { b.profiles = b.profiles.filter((p) => p !== profile); delete b.order[profile]; }

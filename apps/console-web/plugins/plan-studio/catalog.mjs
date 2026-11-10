@@ -143,7 +143,7 @@ export async function discover({ root = ROOT, seen = [], matrices = [], plans = 
 export function readMatrices(root = ROOT) {
   const out = [];
   const add = (f, profile) => { const j = readJson(f); for (const m of j?.matrices ?? []) out.push({ ...m, profile: resolveProfile(m.profile ?? profile) }); };
-  add(join(root, '_claude/builds/matrices.json'), 'main-framework');
+  add(join(root, '_claude/builds/matrices.json'), 'all'); // the base profile's (all since Nov 7 2026)
   const pd = join(root, '_claude/builds/profiles');
   for (const d of existsSync(pd) ? readdirSync(pd) : []) add(join(pd, d, 'matrices.json'), d);
   return out;

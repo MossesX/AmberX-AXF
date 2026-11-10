@@ -332,6 +332,9 @@ final class HubRules {
         return code == 200 && body != null && body.contains("\"ok\":true") && body.contains("\"result\":\"approved\"");
     }
 
+    /** A decline answers ok; only a hub refusal or a dropped reply counts as not done. */
+    static boolean declinedReply(int code, String body) { return code == 200 && body != null && body.contains("\"ok\":true"); }
+
     /* ---------------------------------------------------------------- HTTP (cookie from Android's store) */
 
     static final class Reply {
@@ -443,14 +446,15 @@ final class HubRules {
 
     /** The hub's reply word for a decision. */
     static boolean decidedReply(String action, int code, String body) {
-        if ("approve".equals(action)) return approvedReply(code, body);
-        return code == 200 && body != null && body.contains("\"ok\":true");
+        return "approve".equals(action) ? approvedReply(code, body) : declinedReply(code, body);
     }
 
-    /** Approve or decline one waiting call with the phone's hub session, under the hub's Origin + CSRF. */
+    /** Approve or decline in place, with the phone's hub session (Brett, Nov 7 2026: never bounce to the hub's page). */
+    static boolean isDecision(String action) { return "approve".equals(action) || "decline".equals(action); }
+
     static boolean decide(String hub, String id, String action, String cookie) {
         String url = approvalApiUrl(hub, id);
-        if (url == null || cookie == null || !isHub(HUB, hub) || !("approve".equals(action) || "decline".equals(action))) return false;
+        if (url == null || cookie == null || !isHub(HUB, hub) || !isDecision(action)) return false;
         try {
             Reply session = get(hub + SESSION_PATH, cookie);
             String csrf = session.status == 200 ? csrfFromSession(session.body) : null;

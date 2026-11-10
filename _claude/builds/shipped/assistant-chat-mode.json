@@ -1,0 +1,388 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-assistant-chat-mode",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-09T01:28:04Z",
+ "build": {
+  "id": "assistant-chat-mode",
+  "title": "Fast talk: Gizmo and the console assistant answer plain chat without loading tools",
+  "profile": "all",
+  "category": "Feature",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "\"What's up with the Claude chat in AmberX? Gizmo was loading all the tools, and we were supposed to fix that. So we didn't load the tools, so I could talk quick, like I'm talking to you.\" (Nov 5 2026, voice). Started by, Nov 4 2026, voice: \"In the Claude in my app, it calls all kinds of tools. It takes forever. Why is it calling all these tools?\" … \"Yeah, build that right now.\"",
+  "verbatim": true,
+  "at": "2026-11-05T18:36:01.911Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "# Build: assistant-chat-mode-r4 (pending item assistant-chat-mode)\n\nBrett: Gizmo chat in AmberX has to talk fast, like a normal conversation, without loading all the tools. Steps 1-4 were done in the unpushed worktree /root/axf-builds/assistant-chat-mode-r3 (measured, lean provider, turn router, assistant@1 toolMode). First bring that work in: commit anything uncommitted there and merge or cherry-pick its commits onto this branch.\n\nThen do the remaining steps only:\n5. Gizmo (AmberX companion plugin): Chat / Tools chip, force setting, per-chat mode, spoken errors.\n6. Console assistant: same chip + settings (default mode, words, cache).\n7. Tests, type checks.\n8. Measure after on the real turn path; report, PR to the merge queue. Do not land.\n\nDon't load the full CLAUDE.md chain; read only files you need. Tick steps on the pending item as they finish.",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "account-1"
+ ],
+ "runs": [
+  {
+   "session": "axf-assistant-chat-mode--joey",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-05T03:08:22.080Z",
+   "endedAt": "2026-11-05T03:08:38.859Z",
+   "exit": 1,
+   "costUsd": 0
+  },
+  {
+   "session": "axf-assistant-chat-mode-r4--gina",
+   "account": "account-1",
+   "model": "Opus",
+   "startedAt": "2026-11-06T18:40:22.393Z",
+   "endedAt": "2026-11-06T19:02:47.422Z",
+   "exit": 0,
+   "costUsd": 9.9331
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Measure today's plain turn on the live path; find why it is slow",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-05T03:08:22.080Z",
+   "doneAt": "2026-11-05T18:36:05.849Z",
+   "actualMin": 928,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Provider: lean Claude Code call (no CLAUDE.md, hooks or tools), limit errors raise, temperature fix",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-05T18:36:05.849Z",
+   "doneAt": "2026-11-05T18:42:14.020Z",
+   "actualMin": 6,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Turn router: intent check, tool groups from agent skills, escalation marker, drop back",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-05T18:42:14.020Z",
+   "doneAt": "2026-11-05T18:42:14.823Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "assistant@1 optional toolMode + mode on start/status/meta; fixtures; Kotlin list",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-05T18:42:14.823Z",
+   "doneAt": "2026-11-05T18:42:15.606Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Gizmo: Chat / Tools chip, force setting, per-chat mode, spoken errors",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-05T18:42:15.606Z",
+   "doneAt": "2026-11-06T18:45:27.146Z",
+   "actualMin": 1443,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Console assistant: same chip, settings (default mode, words, cache)",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T18:45:27.146Z",
+   "doneAt": "2026-11-06T18:45:27.785Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Tests, type checks, CI sweep",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T18:45:27.785Z",
+   "doneAt": "2026-11-06T18:57:47.548Z",
+   "actualMin": 12,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Measure after on the real turn path; screenshots; report, README, rules, THREADS, PR to the merge queue",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T18:57:47.548Z",
+   "doneAt": "2026-11-06T18:57:48.129Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/assistant-chat-mode-r4",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 361,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/361"
+ },
+ "landedCommit": "150913e8b82ccd417800291b070c0350d2e99192",
+ "commits": [
+  "0456514275f5a82cc5dfe770137851b63eeefe50",
+  "845e8a7c67dbf1835bbdf3ffcfd3753b3c0b6958",
+  "f46d66bef0a20a5344b270ee064cf7019f874bcf",
+  "311c1980bd3fd0e49429f741fa82e16ec68926d7"
+ ],
+ "mergedAt": "2026-11-07T04:09:27Z",
+ "landedAt": "2026-11-07T04:09:26Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/assistant-chat-mode.md",
+  "_claude/builds/reports/assistant-chat-mode/measure-after.json",
+  "_claude/builds/reports/assistant-chat-mode/shots/console-desktop.png",
+  "_claude/builds/reports/assistant-chat-mode/shots/console-phone.png",
+  "_claude/builds/reports/assistant-chat-mode/shots/gizmo-desktop-chatonly.png",
+  "_claude/builds/reports/assistant-chat-mode/shots/gizmo-desktop.png",
+  "_claude/builds/reports/assistant-chat-mode/shots/gizmo-phone-chatonly.png",
+  "_claude/builds/reports/assistant-chat-mode/shots/gizmo-phone.png",
+  "_claude/builds/reports/assistant-chat-mode/shots/settings-desktop.png",
+  "_claude/builds/reports/assistant-chat-mode/shots/settings-phone.png",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/axf/core/assistant.ts",
+  "apps/amberx-droid/src/plugins/companion/web/Chat.tsx",
+  "apps/amberx-droid/src/plugins/companion/web/companion.css",
+  "apps/amberx-droid/src/plugins/companion/web/index.tsx",
+  "apps/amberx-droid/src/plugins/companion/web/keys.ts",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/axf/core/assistant.ts",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/agent-manager/server/__init__.py",
+  "apps/console-web/plugins/agent-manager/server/engine.py",
+  "apps/console-web/plugins/ai-assistant/plugin.json",
+  "apps/console-web/plugins/ai-assistant/server/__init__.py",
+  "apps/console-web/plugins/ai-assistant/server/chatmode.py",
+  "apps/console-web/plugins/ai-assistant/server/store.py",
+  "apps/console-web/plugins/ai-assistant/server/tools.py",
+  "apps/console-web/plugins/ai-assistant/test.py",
+  "apps/console-web/plugins/ai-assistant/web/api.ts",
+  "apps/console-web/plugins/ai-assistant/web/chat.tsx",
+  "apps/console-web/plugins/ai-assistant/web/settings.tsx",
+  "apps/console-web/src/axf/core/assistant.ts",
+  "apps/molly/axf.lock.json",
+  "apps/molly/src/axf/core/assistant.ts",
+  "framework/android/axf-kernel/src/main/kotlin/ai/amberx/axf/kernel/assistant/Assistant.kt",
+  "framework/core/assistant.ts",
+  "framework/python/axf/assistant_host/providers.py",
+  "framework/python/axf/contracts/assistant.py",
+  "framework/spec/ASSISTANT.md",
+  "framework/spec/PORTING.md",
+  "framework/spec/fixtures/assistant.json"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/assistant-chat-mode.md",
+    "_claude/builds/reports/assistant-chat-mode/measure-after.json",
+    "_claude/builds/reports/assistant-chat-mode/shots/console-desktop.png",
+    "_claude/builds/reports/assistant-chat-mode/shots/console-phone.png",
+    "_claude/builds/reports/assistant-chat-mode/shots/gizmo-desktop-chatonly.png",
+    "_claude/builds/reports/assistant-chat-mode/shots/gizmo-desktop.png",
+    "_claude/builds/reports/assistant-chat-mode/shots/gizmo-phone-chatonly.png",
+    "_claude/builds/reports/assistant-chat-mode/shots/gizmo-phone.png",
+    "_claude/builds/reports/assistant-chat-mode/shots/settings-desktop.png",
+    "_claude/builds/reports/assistant-chat-mode/shots/settings-phone.png"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ai-assistant",
+   "files": [
+    "apps/console-web/plugins/ai-assistant/plugin.json",
+    "apps/console-web/plugins/ai-assistant/server/__init__.py",
+    "apps/console-web/plugins/ai-assistant/server/chatmode.py",
+    "apps/console-web/plugins/ai-assistant/server/store.py",
+    "apps/console-web/plugins/ai-assistant/server/tools.py",
+    "apps/console-web/plugins/ai-assistant/test.py",
+    "apps/console-web/plugins/ai-assistant/web/api.ts",
+    "apps/console-web/plugins/ai-assistant/web/chat.tsx",
+    "apps/console-web/plugins/ai-assistant/web/settings.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "companion",
+   "files": [
+    "apps/amberx-droid/src/plugins/companion/web/Chat.tsx",
+    "apps/amberx-droid/src/plugins/companion/web/companion.css",
+    "apps/amberx-droid/src/plugins/companion/web/index.tsx",
+    "apps/amberx-droid/src/plugins/companion/web/keys.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/ASSISTANT.md",
+    "framework/spec/PORTING.md",
+    "framework/spec/fixtures/assistant.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-manager",
+   "files": [
+    "apps/console-web/plugins/agent-manager/server/__init__.py",
+    "apps/console-web/plugins/agent-manager/server/engine.py"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/axf/core/assistant.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/axf/core/assistant.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/src/axf/core/assistant.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/axf.lock.json",
+    "apps/molly/src/axf/core/assistant.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "python",
+   "files": [
+    "framework/python/axf/assistant_host/providers.py",
+    "framework/python/axf/contracts/assistant.py"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "android",
+   "files": [
+    "framework/android/axf-kernel/src/main/kotlin/ai/amberx/axf/kernel/assistant/Assistant.kt"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/assistant.ts"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "apps/console-web/plugins/ai-assistant/test.py: 203 passed, six new.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "framework/python/axf/contracts/test.py: 9 passed. assistant_host/test.py: 58 passed. check-web-client.mts: 616 passed.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "tsc --noEmit on console, AmberX and axHub web; Molly was not type-checked here (no node_modules in this worktree).",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "Theme, controls, toolbars, chrome, help coverage, plugin lifecycle, plugins, tracker, project validation, model policy, shared assets: pass with CI data settings.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "The full CI workflow runs on the PR. theme-swap and the Android build were not run locally.",
+   "command": "",
+   "result": "skip",
+   "detail": ""
+  }
+ ],
+ "uiReview": [
+  {
+   "id": "r-20261106-a4669028",
+   "name": "Gizmo: Chat / Tools chip and reply footer",
+   "status": "approved",
+   "group": "g-20261106-831a5c5b",
+   "url": "/review/r-20261106-a4669028"
+  },
+  {
+   "id": "r-20261106-2535a240",
+   "name": "Console assistant: chip and chat mode settings",
+   "status": "approved",
+   "group": "g-20261106-831a5c5b",
+   "url": "/review/r-20261106-2535a240"
+  }
+ ],
+ "cost": {
+  "usd": 9.9331,
+  "estimated": false,
+  "tokens": {
+   "input": 108,
+   "output": 443,
+   "cacheRead": 9696019,
+   "cacheWrite": 235694
+  }
+ },
+ "report": "_claude/builds/reports/assistant-chat-mode.md",
+ "open": [
+  "The first-word time depends on the CLI starting, which is most of the second. It will not get lower on this path.",
+  "Escalation costs one extra call, and that call's usage is not counted, because the stream is stopped as soon as the marker appears.",
+  "Tool turns outside an agent have repo reading only, no shell. The measured escalation said so in its reply. Gizmo has its agent's tools.",
+  "A chat turn keeps agent and memory for `cacheSec` (10 minutes), so memory recalled on the first message is reused and not searched per message.",
+  "`Button size=\"sm\"` is short on a phone: the chip is about as tall as Send. Same theme token, not changed here.",
+  "Not from this build: on a 412 px phone in the test harness Gizmo's composer sits below the fold behind the bottom nav until you scroll (`.axp-companion` height ignores the banner and nav). Worth its own fix."
+ ]
+}

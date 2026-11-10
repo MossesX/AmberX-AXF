@@ -1,0 +1,104 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261104-f3ded20635",
+  "createdAt": "2026-11-04T12:18:17.114Z",
+  "updatedAt": "2026-11-04T13:29:46.616Z",
+  "kind": "build",
+  "title": "# Build: hotfix-build-manager (Current profile) - URGENT small fix ## What Brett said (verbatim, No…",
+  "asked": "# Build: hotfix-build-manager (Current profile) - URGENT small fix ## What Brett said (verbatim, Nov 4 2026, voice) \"Can you check build manager to see what's going? It says 21 things are going.\" ... \"When I click them, they don't open up, and the steps in the build menu don't work.\" Book to a free named agent (Janitor Joey, else Ping Paulie). Register id `hotfix-build-manager` in the `current` profile + banner entry + What Brett said block. ## Bugs (live on main after last night's landings: #269 builds-one-page is NOT merged; #282, #283, #273, #275 etc. are) 1. **Clicking a build row in the Build manager / Builds page does nothing** - it must open the build's detail (steps, brief, What Brett said, PR, log). Find the regression (likely from tonight's landings: #282 build-prompt-origin, #283 home-cards, #273 crew-live, #268 menu-fit, #298 not merged) and fix at root. Check console logs for errors on click. 2. **Step actions in the build menu don't work** (tick/untick step, open step, context menu on steps). Fix. 3. **Stale statuses / wrong count**: the banner counts 21 'going' but only land-round-2 is actually running. Reconcile the builds store with reality: a build is 'running' only if its tmux session / headless process is alive (agent-slots status). Mark: paused (worktree saved, no process): plugin-lazy-load, browser-automation, profile-switcher-widget, app-style-override, terminal-tabs-left, git-status-board, main-area-tabs, molly-banners, molly-nav-submenus, terminal-drag-chain-tree, gizmo-companion -> 'paused' (or 'built, awaiting merge' if their PR is up and complete); urgent-main-ci-green (#284 merged) -> complete; anything whose PR is merged -> complete. Add a reconciler rule (zero tokens, in the existing every-10-minutes sync) so this can't drift again, and make the banner count = actually running. - Small and focused. Type-check + the builds/Build manager tests. One phone screenshot filed to UI Review (non-blocking). PR, merge as soon as CI is green, redeploy the console. Don't leave tsc/vite/playwright running. Report `_claude/builds/reports/hotfix-build-manager.md`. Commits clean and professional. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once. Model switches (Brett, Nov 3 2026): a downgrade (e.g. Fable → Opus) is fine. An UPGRADE (e.g. Opus → Fable) needs Brett's approval: when you reach one, run `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs request-upgrade <id> <phase>`, ask once, and stop. Never approve a model switch upgrade yourself (no `act approve` on an upgrade), never relaunch on a higher model.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "claude-opus-5-5",
+  "who": {
+    "session": "8bba7b0d-4d4",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [
+    {
+      "text": "Builds page: tap a row opens it; ticks no longer reverted by stale polls",
+      "state": "done",
+      "startedAt": "2026-11-04T12:38:56.231Z",
+      "finishedAt": "2026-11-04T12:47:57.753Z"
+    }
+  ],
+  "result": {
+    "state": "done",
+    "summary": "Builds page rows open on tap; step ticks stick (stale-poll race fixed); orchestrator steps open on tap; changes banner counts only live sessions; reconciler pauses builds no live process runs (7 merged -> complete, 9 idle -> paused). PR #309 merged, console redeployed.",
+    "branch": "claude/hotfix-build-manager",
+    "commits": [
+      {
+        "sha": "bf7da8e76"
+      }
+    ],
+    "filesChanged": 10,
+    "tests": {
+      "check-builds-live": {
+        "before": "42",
+        "after": "47"
+      }
+    },
+    "links": {
+      "report": "_claude/builds/reports/hotfix-build-manager.md"
+    }
+  },
+  "closed": null,
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "orch",
+    "id": "hotfix-build-manager"
+  },
+  "surface": "headless",
+  "startedAt": "2026-11-04T12:18:17.114Z",
+  "finishedAt": "2026-11-04T13:28:29.107Z",
+  "lastSeenAt": "2026-11-04T13:28:10.065Z",
+  "estimate": {
+    "minutes": 90,
+    "costUsd": 12.6
+  },
+  "actual": {
+    "minutes": 70,
+    "costUsd": 9.1558,
+    "inputTokens": 344,
+    "outputTokens": 83050,
+    "cacheReadTokens": 31108322,
+    "cacheWriteTokens": 254343,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "branch": "claude/hotfix-build-manager",
+  "areas": [
+    "apps/console-web/plugins/build-manager",
+    "apps/console-web/plugins/builds-page",
+    "framework/plan",
+    "framework/cli"
+  ],
+  "progress": 1,
+  "resume": {
+    "repo": "MossesX/AmberX-AXF",
+    "folder": "/root/axf-builds/hotfix-build-manager",
+    "branch": "claude/hotfix-build-manager",
+    "base": "cbe2909e1682de2a729ac29d32d2eb6d0a1259c3",
+    "head": "cbe2909e1682de2a729ac29d32d2eb6d0a1259c3",
+    "pushed": false,
+    "dirty": 9,
+    "pr": "https://github.com/MossesX/AmberX-AXF/pull/309",
+    "plan": "Fixes on PR #309",
+    "next": "CI green -> auto-merge -> redeploy console",
+    "files": [
+      "_claude/builds/journal/2026-11.jsonl",
+      "_claude/builds/orchestrator.json",
+      "_claude/builds/profiles/angel/orchestrator.json",
+      "_claude/builds/profiles/big-dog/orchestrator.json",
+      "_claude/builds/profiles/breakroom/orchestrator.json",
+      "_claude/builds/profiles/current/orchestrator.json",
+      "_claude/builds/profiles/refactor/orchestrator.json",
+      "_claude/builds/profiles/urgent/orchestrator.json",
+      "_claude/builds/store.json"
+    ],
+    "at": "2026-11-04T13:29:46.786Z"
+  }
+}

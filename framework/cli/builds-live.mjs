@@ -34,7 +34,7 @@
  * the writing process instead of a background one (tests); AXF_CONSOLE_ROOT (default /opt/axf; "off" = none).
  */
 import { spawn, spawnSync } from 'node:child_process';
-import { closeSync, existsSync, mkdtempSync, openSync, readFileSync, readdirSync, realpathSync, rmSync, statSync, writeFileSync, appendFileSync } from 'node:fs';
+import { closeSync, existsSync, mkdirSync, mkdtempSync, openSync, readFileSync, readdirSync, realpathSync, rmSync, statSync, writeFileSync, appendFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -42,19 +42,22 @@ import * as core from '../plan/builds-store-core.mjs';
 import * as merge from '../plan/builds-merge-core.mjs';
 import { REPO_ROOT } from './persist.mjs';
 import { gitAuthEnv, githubToken, scrub } from './github.mjs';
-import { adoptStore, journalDir, journalMax, mergeOriginsText, orchestratorExports, originsFile, readStoreNow, storeFile, storeText, withStore } from './builds-store.mjs';
+import { adoptStore, adoptedChanges, journalDir, journalMax, mergeOriginsText, orchestratorExports, originsFile, readStoreNow, storeFile, storeText, withStore } from './builds-store.mjs';
+import { emitChangesTo } from './build-hooks.mjs';
+import { readManifest } from './shipped-files.mjs';
 
 const SELF = fileURLToPath(import.meta.url);
 const STORE_REL = '_claude/builds/store.json'; // = builds-store STORE_REL (not imported: the two modules import each other)
 const JOURNAL_REL = '_claude/builds/journal';
 const ORIGINS_REL = '_claude/builds/origins.json'; // = builds-store ORIGINS_REL (build-origin@1 sidecar)
+const SHIPPED_DIR_REL = '_claude/builds/shipped'; // shipped-manifest@1 sidecars (framework/cli/shipped-files.mjs)
 const THREADS_REL = '_claude/THREADS.md';
 export const LIVE_HEAD = '## Live build log';
 const LIVE_NOTE = '<!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->';
 const LIVE_KEEP = 400;
 const ATTEMPTS = 6;
 /** Files a builds-only conflict may touch (heal) and the merge driver handles. */
-export const BUILDS_PATHS = [STORE_REL, ORIGINS_REL, `${JOURNAL_REL}/`, '_claude/builds/orchestrator.json', '_claude/builds/profiles/', THREADS_REL];
+export const BUILDS_PATHS = [STORE_REL, ORIGINS_REL, `${JOURNAL_REL}/`, `${SHIPPED_DIR_REL}/`, '_claude/builds/orchestrator.json', '_claude/builds/profiles/', THREADS_REL];
 
 const env = (k, d = '') => process.env[k] ?? d;
 const remote = () => env('AXF_BUILDS_LIVE_REMOTE', 'origin');
@@ -218,11 +221,21 @@ export function publish(entries, { journalExtra = {} } = {}) {
     const threads = show(base, THREADS_REL);
     if (threads !== null && threadLines.length) files[THREADS_REL] = appendThreads(threads, threadLines);
     for (const x of orchestratorExports(merged)) { const old = show(base, x.rel); if (old !== null || x.builds) files[x.rel] = x.text; }
+    // One profile (Brett, Nov 7 2026): an orchestrator export of a profile that is not registered any more (a retired
+    // profile's file an older checkout or a merge brought back) is taken off main, never rewritten.
+    for (const rel of staleProfileExports(base, files)) files[rel] = null;
     // what Brett said (build-origin@1): main's sidecar + every origin on the merged records, never fewer
     { let mine = ''; try { mine = readFileSync(originsFile(), 'utf8'); } catch { /* none yet */ }
       const fromRecords = JSON.stringify({ origins: Object.fromEntries(merged.builds.filter((b) => b.origin).map((b) => [b.id, b.origin])) });
       const text = mergeOriginsText(mergeOriginsText(show(base, ORIGINS_REL) ?? '', mine), fromRecords);
       if (text !== mergeOriginsText('', '') || show(base, ORIGINS_REL) !== null) files[ORIGINS_REL] = text; }
+    // shipped-manifest@1: the manifest of every build in this batch that has one here (main's copy stays when it is newer)
+    for (const id of ids) {
+      const m = readManifest(id); if (!m) continue;
+      const rel = `${SHIPPED_DIR_REL}/${m.build.id}.json`; let mainRev = 0;
+      try { mainRev = Number(JSON.parse(show(base, rel) ?? '{}').rev) || 0; } catch { /* unreadable on main: ours replaces it */ }
+      if (mainRev <= m.rev) files[rel] = `${JSON.stringify(m, null, 1)}\n`;
+    }
     // what actually differs from main
     const changed = Object.entries(files).filter(([rel, text]) => show(base, rel) !== text);
     if (!changed.length) return { ok: true, sha: '', files: allFiles(base, files), skipped };
@@ -243,10 +256,15 @@ function journalSizes(rev) {
   for (const l of git(['ls-tree', '-l', rev, `${JOURNAL_REL}/`]).out.split('\n')) { const m = /\s(\d+)\t.*\/([^/]+)\.jsonl$/.exec(l); if (m) out[m[2]] = Number(m[1]); }
   return out;
 }
+/** Orchestrator exports on `rev` under _claude/builds/profiles/ that no registered profile writes (null = remove). */
+export function staleProfileExports(rev, files) {
+  return git(['ls-tree', '-r', '--name-only', rev, '--', '_claude/builds/profiles']).out.split('\n')
+    .filter((rel) => rel.endsWith('/orchestrator.json') && !(rel in files));
+}
 function allFiles(rev, files) {
   const out = { ...files };
   const ls = git(['ls-tree', '-r', '--name-only', rev, '--', '_claude/builds/profiles', '_claude/builds/orchestrator.json']).out.split('\n').filter((x) => x.endsWith('orchestrator.json'));
-  for (const rel of ls) if (!(rel in out)) out[rel] = show(rev, rel) ?? '';
+  for (const rel of ls) if (!(rel in out) || out[rel] === null) out[rel] = show(rev, rel) ?? '';
   return out;
 }
 function message(entries, taken) {
@@ -261,6 +279,7 @@ function commitOnto(base, files, msg) {
   try {
     let r = git(['read-tree', base], { envx }); if (r.code) return { ok: false, error: `read-tree: ${r.err}` };
     for (const [rel, text] of files) {
+      if (text === null) { r = git(['update-index', '--force-remove', '--', rel], { envx }); if (r.code) return { ok: false, error: `update-index: ${r.err}` }; continue; } // a file taken off main
       const h = git(['hash-object', '-w', '--stdin'], { input: text }); if (h.code) return { ok: false, error: `hash-object: ${h.err}` };
       r = git(['update-index', '--add', '--cacheinfo', `100644,${h.out},${rel}`], { envx }); if (r.code) return { ok: false, error: `update-index: ${r.err}` };
     }
@@ -304,8 +323,14 @@ function toConsole(files) {
     const main = core.normalizeStore(JSON.parse(files[STORE_REL]));
     const theirs = core.normalizeStore(JSON.parse(readFileSync(join(root, STORE_REL), 'utf8')));
     const { store, taken } = merge.mergeStores(theirs, main);
+    for (const [rel, t] of Object.entries(files)) if (rel.startsWith(`${SHIPPED_DIR_REL}/`) && t) { mkdirSync(join(root, SHIPPED_DIR_REL), { recursive: true }); writeFileSync(join(root, rel), t); }
     if (!taken.length) return;
     const consoleOnly = merge.mergeStores(main, theirs).taken.length;
+    const next = consoleOnly ? store : main;
+    // build-hook@1: these builds changed in this checkout, not in the console's; their events go to the console's outbox
+    // (its Shipped features sync delivers them), or the ledger never hears of ticks, PRs and manifests made in a worktree
+    const hooks = join(root, '.axf-console', 'build-hooks');
+    if (existsSync(hooks)) emitChangesTo(hooks, adoptedChanges(theirs, next), { at: new Date().toISOString(), by: 'builds-live' });
     writeFileSync(join(root, STORE_REL), consoleOnly ? storeText(store) : files[STORE_REL]);
     for (const x of orchestratorExports(consoleOnly ? store : main)) if (existsSync(join(root, x.rel)) || x.builds) writeFileSync(join(root, x.rel), x.text);
     for (const [rel, t] of Object.entries(files)) if (rel.startsWith(`${JOURNAL_REL}/`)) {

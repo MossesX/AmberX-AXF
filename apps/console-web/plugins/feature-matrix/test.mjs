@@ -25,8 +25,8 @@ t('plugin@1 manifest: id, data folder, model, no other plugin named', () => {
 t('server part has no delete route', () => { const py = readFileSync(join(repo, 'apps/console-web/plugins/feature-matrix/server/__init__.py'), 'utf8'); assert.doesNotMatch(py, /@router\.delete/); assert.match(py, /never deleted/); });
 
 // ---- the draft (feature-matrix@0) → feature-matrix@1 (s66: the first matrix of the dataset)
-const draftRel = '_claude/builds/profiles/all/matrices.json'; // the Refactor draft was converted when every profile merged into all (Nov 7 2026)
-const orchRel = '_claude/builds/profiles/all/orchestrator.json';
+const draftRel = '_claude/builds/matrices.json'; // the Refactor draft was converted when every profile merged into all, the base profile (Nov 7 2026)
+const orchRel = '_claude/builds/orchestrator.json';
 const draft = existsSync(join(repo, draftRel)) ? read(draftRel) : null;
 const orch = read(orchRel);
 if (draft && draft.$axf !== fm.SCHEMA) {

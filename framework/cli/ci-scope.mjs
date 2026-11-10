@@ -197,7 +197,7 @@ async function main(argv) {
     if (!argv.includes('--run')) return console.log(cmds.join('\n'));
     for (const c of cmds) {
       console.log(`== ${c}`);
-      const r = spawnSync('bash', ['-c', c], { cwd: ROOT, stdio: 'inherit', env: { ...process.env, AXF_BUILD_PROFILE: 'main-framework' } });
+      const r = spawnSync('bash', ['-c', c], { cwd: ROOT, stdio: 'inherit', env: { ...process.env, AXF_BUILD_PROFILE: 'all' } });
       if (r.status !== 0) { console.error(`light check failed: ${c}`); process.exitCode = 1; return; }
     }
     return;

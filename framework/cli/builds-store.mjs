@@ -32,6 +32,7 @@ import * as core from '../plan/builds-store-core.mjs';
 import * as merge from '../plan/builds-merge-core.mjs';
 import { mergeOrigin } from '../core/build-origin.mjs';
 import { enqueueLive, flushLiveSoon } from './builds-live.mjs';
+import { emitChanges } from './build-hooks.mjs';
 import { BASE_PROFILE, REPO_ROOT, activeProfile, orchestratorPath, persistRoot, profileRel, readProfiles } from './persist.mjs';
 
 export const STORE_REL = '_claude/builds/store.json';
@@ -232,6 +233,11 @@ function journal(entry) {
 export function adoptStore(next, { journals = {} } = {}) {
   const f = storeFile(); const unlock = lock(f);
   try {
+    // build-hook@1: builds changed in another checkout (a build session's worktree) arrive here, not through saveStore;
+    // their events fire now, so the ledger hears about ticks, PRs and shipped manifests made elsewhere (ids are the
+    // writer's revs, so an event a listener already took is skipped)
+    let before = null; try { before = existsSync(f) ? core.normalizeStore(JSON.parse(readFileSync(f, 'utf8'))) : null; } catch { /* unreadable: nothing to compare */ }
+    if (before) { const changes = adoptedChanges(before, next); if (changes.length) emitChanges(changes, { at: new Date().toISOString(), by: 'builds-live' }); }
     healOrigins(next);
     const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, storeText(next)); renameSync(tmp, f);
     foldOrigins(next);
@@ -239,6 +245,17 @@ export function adoptStore(next, { journals = {} } = {}) {
     for (const [m, text] of Object.entries(journals)) writeFileSync(join(d, `${m}.jsonl`), text);
     if (exportsOn()) exportAll(next);
   } finally { unlock(); }
+}
+/** The builds that differ between the store on disk and one taken from elsewhere, as diffStores changes (nothing mutated). */
+export function adoptedChanges(before, next) {
+  const old = new Map((before?.builds ?? []).map((b) => [b.id, b]));
+  const out = [];
+  for (const b of next?.builds ?? []) {
+    const o = old.get(b.id);
+    if (o && JSON.stringify(core.compactBuild(o)) === JSON.stringify(core.compactBuild(b))) continue;
+    out.push({ id: b.id, op: !o ? 'add' : b.deleted && !o.deleted ? 'delete' : !b.deleted && o.deleted ? 'restore' : 'change', before: o ?? null, after: b });
+  }
+  return out;
 }
 /** The store as it is on disk now (no foreign-write absorb). */
 export const readStoreNow = () => readStore();
@@ -255,6 +272,8 @@ export function saveStore(before, after, { by = 'cli', action = 'write', note = 
   const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, storeText(after)); renameSync(tmp, f);
   foldOrigins(after);
   journal({ rev: after.rev, at: now, by, action, note, builds: changes.map((c) => ({ id: c.id, op: c.op, rev: c.after?.rev, before: core.compactBuild(c.before), after: core.compactBuild(c.after) })), ...(draftChanged ? { drafts: after.drafts } : {}), ...(metaChanged ? { meta: after.meta, rules: after.rules } : {}) });
+  // build-hook@1: every creator's write fires the same events (Shipped features ledger and other listeners)
+  if (changes.length) emitChanges(changes, { at: now, by });
   return { store: after, changes, rev: after.rev };
 }
 

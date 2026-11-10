@@ -33,8 +33,10 @@ import org.json.JSONObject;
  *
  * - **One owner of the mic:** it takes the microphone through {@link MicGuard#acquire} (talk mode outranks Speak and
  *   hands-free, which pause and come back when it ends) and hands-free is told to step aside ({@link WatchService#appMic}).
- * - **Audio focus:** transient focus for the whole session ({@link AudioFocusGuard}); a call or another app taking it
- *   pauses the turns (`paused` event, reason) and they resume when the focus comes back; the policy's pause-for-calls
+ * - **Audio focus:** transient focus for the whole session ({@link AudioFocusGuard}); a loss pauses the turns
+ *   (`paused` event, reason) only when a call or another app's recording wants the microphone ({@link FocusRules}),
+ *   never because Google's recognizer took focus for our own turn (Nov 7 2026: that paused every turn as it opened,
+ *   so talk mode never heard a word); they resume once the microphone is free again. The policy's pause-for-calls
  *   and pause-for-other-apps switches (listener `talk`, {@link ListenerRegistry}) decide whether it yields.
  * - **Restarts back off:** a turn refused at once (busy, no audio) waits 1 s, 2 s, 4 s… and after the policy's retries
  *   the session stops with the error (shown in Listeners and said to the page); silence restarts at once; the tone
@@ -205,6 +207,9 @@ public class TalkService extends Service {
 
     private void refuse(String why) {
         lastStop = why;
+        // Started with startForegroundService: Android expects startForeground before the service goes, or it may kill
+        // the app. Show the notification for a moment (it can be refused too: nothing more to do then).
+        try { ServiceCompat.startForeground(this, ID_ONGOING, ongoing(), 0); } catch (Exception ignored) {}
         ListenerRegistry.error(ListenerRules.TALK, why);
         JSONObject e = new JSONObject();
         try { e.put("why", "refused").put("error", why); } catch (Exception ignored) {}
@@ -280,6 +285,9 @@ public class TalkService extends Service {
 
     private void tryResume() {
         if (running != this || !"paused".equals(phase)) return;
+        // Paused for a focus loss: once no call and no other app's recording wants the microphone, the loss is over
+        // even if the focus never came back (an app that took it for good and only plays sound).
+        if (focusLost && FocusRules.yieldOnLoss(MicRules.callMode(MicGuard.mode(this)), MicRules.others(MicGuard.foreign(this), ownRecognizer()), ListenerRegistry.policy(this, ListenerRules.TALK)) == null) focusLost = false;
         String why = yieldNow();
         long now = System.currentTimeMillis();
         if ("mic-off".equals(why)) { end("Mic off was switched on.", "mic-off"); return; }
@@ -298,10 +306,23 @@ public class TalkService extends Service {
 
     private class Focus implements AudioFocusGuard.Events {
         @Override public void lost(boolean transientLoss) {
-            focusLost = true;
-            if (ListenerRegistry.policy(TalkService.this, ListenerRules.TALK).pauseForOtherApps) pause(MicRules.callMode(MicGuard.mode(TalkService.this)) ? "call" : "other-app");
+            focusCheck();
+            // a call or another app's recording often starts a moment after it took the focus: look again
+            main.postDelayed(TalkService.this::focusCheck, FocusRules.RECHECK_MS);
         }
         @Override public void regained() { focusLost = false; main.post(TalkService.this::tryResume); }
+    }
+
+    /** True while our own Google recognizer runs or has just stopped (it shows as another app's recording). */
+    private boolean ownRecognizer() { return turnOpen || System.currentTimeMillis() < WatchService.recognizerGraceUntil; }
+
+    /** After a focus loss: let go only for a call or another app's recording, never for our own recognizer or voice. */
+    private void focusCheck() {
+        if (running != this || focus == null || !focus.lost() || "paused".equals(phase)) return;
+        String why = FocusRules.yieldOnLoss(MicRules.callMode(MicGuard.mode(this)), MicRules.others(MicGuard.foreign(this), ownRecognizer()), ListenerRegistry.policy(this, ListenerRules.TALK));
+        if (why == null) return;
+        focusLost = true;
+        pause(why);
     }
 
     /* ---------------------------------------------------------------- turns */
@@ -315,7 +336,10 @@ public class TalkService extends Service {
         JSONObject voice = WatchService.voice(this);
         ListenerRules.Policy pol = ListenerRegistry.policy(this, ListenerRules.TALK);
         boolean tone = firstTurn && ListenerRules.startSound(pol, "user");
-        if (!tone) SpeechTuning.quiet(this, voice); else SpeechTuning.loud(this);
+        if (tone) SpeechTuning.loud(this);
+        // While Gizmo talks never mute media ("silence-all"): his voice plays there.
+        else if ("speaking".equals(phase)) SpeechTuning.quietMode(this, voice != null && "on".equals(voice.optString("beep", "")) ? "on" : "silence");
+        else SpeechTuning.quiet(this, voice);
         firstTurn = false;
         final int g = ++gen;
         SpeechRecognizer r = SpeechRecognizer.createSpeechRecognizer(this);

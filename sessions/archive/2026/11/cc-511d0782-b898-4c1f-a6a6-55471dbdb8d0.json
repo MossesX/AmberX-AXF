@@ -1,0 +1,76 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-511d0782-b898-4c1f-a6a6-55471dbdb8d0",
+ "source": "claude-code",
+ "sessionId": "511d0782-b898-4c1f-a6a6-55471dbdb8d0",
+ "project": "other",
+ "title": "hey gizmo, how's it going?",
+ "startedAt": "2026-11-05T18:32:23.391Z",
+ "endedAt": "2026-11-05T18:32:38.133Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.318",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/assistant-chat-mode-r3",
+  "repo": "",
+  "branch": "claude/assistant-chat-mode-r3"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-05T18:32:34.244Z",
+   "kind": "prompt",
+   "text": "hey gizmo, how's it going?",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 2,
+    "output": 232,
+    "cacheRead": 0,
+    "cacheWrite": 63538,
+    "thinking": 144
+   },
+   "costUsd": 0.3223,
+   "costEstimated": false,
+   "seconds": 4,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [],
+   "features": [],
+   "output": "Doing great, Brett, wide awake and ready to go. One heads-up: Claude file sync is holding 113 files that differ between here and the hub, including `RULES.md` and `THREADS.md`. Want me to go through those with you, or is something else on your mind?"
+  }
+ ],
+ "files": [],
+ "changeIds": [],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 2,
+  "output": 232,
+  "cacheRead": 0,
+  "cacheWrite": 63538,
+  "thinking": 144,
+  "costUsd": 0.3223,
+  "costEstimated": false,
+  "toolCalls": 0,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0.513
+ },
+ "ingestedAt": "2026-11-05T18:32:38.558Z"
+}

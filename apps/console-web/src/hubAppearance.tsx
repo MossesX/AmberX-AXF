@@ -7,6 +7,7 @@
  * The hub's address comes from the console server (`GET /api/me` → `hub`, the same AXF_WALL_HUB the wall uses), so a
  * local dev console against a local hub works too; until the server answers, the default hub is used.
  */
+import { AssetPickerPanel } from './assetPicker';
 import { useEffect, useState } from 'react';
 import { Chip, HubAppearanceSource, DEFAULT_HUB, useAxfState, useRuntime } from './axf/react';
 import type { AxfWebLibrary } from './axf/react/library';
@@ -92,5 +93,6 @@ export const hubAppearanceLibrary: AxfWebLibrary = {
   version: '1.0.0',
   settingsPanels: [
     { id: 'console.appearance.hub', tab: 'appearance', title: 'Look from axHub', icon: 'layers', order: 5, render: () => <HubLookPanel /> },
+    { id: 'console.appearance.assets', tab: 'appearance', title: 'Choose from every asset', icon: 'palette', order: 6, render: () => <AssetPickerPanel /> },
   ],
 };

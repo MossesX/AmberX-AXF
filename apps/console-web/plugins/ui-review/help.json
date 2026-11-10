@@ -73,6 +73,27 @@
         "kind": "button"
       },
       {
+        "target": "options-every-build-ships",
+        "title": "Options every build ships",
+        "text": "Where you set “Options every build ships”. Change it and the app uses the new value. Part of UI Review.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "ask-me-how-many-options-before-a-build-makes-them",
+        "title": "Ask me how many options before a build makes them",
+        "text": "Turns “Ask me how many options before a build makes them” on or off. It takes effect straight away and is remembered. Part of UI Review.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "minutes-to-wait-for-my-answer",
+        "title": "Minutes to wait for my answer",
+        "text": "Where you set “Minutes to wait for my answer”. Change it and the app uses the new value. Part of UI Review.",
+        "kind": "field",
+        "draft": true
+      },
+      {
         "target": "show-everything",
         "title": "Show everything",
         "text": "Clears the group a phone notification opened, so the whole queue shows again.",

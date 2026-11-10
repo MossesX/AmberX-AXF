@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/ledger-pr.schema.json",
+  "title": "ledger-pr@1 (feature-ledger@1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "repo",
+    "number"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "ledger-pr@1"
+    },
+    "key": {
+      "type": "string"
+    },
+    "repo": {
+      "type": "string"
+    },
+    "number": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "title": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string"
+    },
+    "branch": {
+      "type": "string"
+    },
+    "author": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": "string"
+    },
+    "mergedAt": {
+      "type": "string"
+    },
+    "mergeCommit": {
+      "type": "string"
+    },
+    "closedAt": {
+      "type": "string"
+    },
+    "state": {
+      "enum": [
+        "open",
+        "merged",
+        "closed"
+      ]
+    },
+    "build": {
+      "type": "string"
+    },
+    "profile": {
+      "type": "string"
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
