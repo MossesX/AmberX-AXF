@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 04:45 UTC · `resolve-the-conflict-and-land-the-orchestrator-l` note (all) · pipeline
 - 2026-11-10 04:46 UTC · `resolve-the-conflict-and-land-the-orchestrator-l` note (all) · pipeline
 - 2026-11-10 04:47 UTC · `resolve-the-conflict-and-land-the-orchestrator-l` note (all) · pipeline
 - 2026-11-10 06:05 UTC · `audit-pending-fable-builds-against-main-close-wh` → pending, note (all) · pipeline
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 17:56 UTC · `project-manager-add-on-drag-a-build-to-another-p` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-10 17:56 UTC · `project-manager-add-on-drag-a-build-to-another-p` note (all) · builds-live
 - 2026-11-10 17:56 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` note (all) · builds-live
+- 2026-11-10 17:56 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 
 ## Token passes (log)
 
