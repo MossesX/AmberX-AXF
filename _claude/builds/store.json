@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2396,
- "updatedAt": "2026-11-10T15:30:36.556Z",
+ "rev": 2397,
+ "updatedAt": "2026-11-10T15:30:49.027Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -130262,6 +130262,10 @@
     {
      "text": "Claude account: account-5 (axf-file-watchdog-plugin-watch-files-run-scripts-or--rhonda, own login copy)",
      "at": "2026-11-10T15:18:10.922Z"
+    },
+    {
+     "text": "Self-check: file-watchdog-plugin-watch-files-run-scripts-or was marked running on account-1 with no session: released and back in the Queue.",
+     "at": "2026-11-10T15:30:23.790Z"
     }
    ],
    "approvals": [],
