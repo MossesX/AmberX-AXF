@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2647,
- "updatedAt": "2026-11-10T18:08:06.827Z",
+ "rev": 2648,
+ "updatedAt": "2026-11-10T18:08:20.191Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -5486,7 +5486,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -6431,7 +6434,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -6882,7 +6888,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -7570,7 +7579,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -8039,7 +8051,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -9421,7 +9436,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -12257,7 +12275,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -14993,7 +15014,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -19075,7 +19099,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -19758,7 +19785,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -27145,7 +27175,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -27595,7 +27628,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -28078,7 +28114,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -28286,7 +28325,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -28494,7 +28536,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -28702,7 +28747,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -28910,7 +28958,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -29118,7 +29169,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -29326,7 +29380,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -29717,7 +29774,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -30108,7 +30168,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -30316,7 +30379,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -40122,7 +40188,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -40897,7 +40966,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -41369,7 +41441,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -42176,7 +42251,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -42569,7 +42647,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -43018,7 +43099,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -43254,7 +43338,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -50955,7 +51042,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -52139,7 +52229,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -66380,7 +66473,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -71710,7 +71806,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -73013,7 +73112,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -73704,7 +73806,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -75392,7 +75497,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -79454,7 +79562,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -81455,7 +81566,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -86291,7 +86405,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -88796,7 +88913,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -90171,7 +90291,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -90887,7 +91010,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -93272,7 +93398,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -93958,7 +94087,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -94928,7 +95060,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -95144,7 +95279,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -95675,7 +95813,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -96011,7 +96152,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -96807,7 +96951,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -96994,7 +97141,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -97173,7 +97323,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -97477,7 +97630,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -97738,7 +97894,10 @@
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -98790,7 +98949,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -101649,7 +101811,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -105973,7 +106138,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -106685,7 +106853,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -106870,7 +107041,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -107076,7 +107250,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -107259,7 +107436,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -107477,7 +107657,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -109019,7 +109202,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -109651,7 +109837,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -110810,7 +110999,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -111170,7 +111362,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -111453,7 +111648,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -111647,7 +111845,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -112174,7 +112375,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -112682,7 +112886,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -115109,7 +115316,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -115241,7 +115451,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -116079,7 +116292,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -116437,7 +116653,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -116574,7 +116793,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -117027,7 +117249,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -117190,7 +117415,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -117649,7 +117877,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -118058,7 +118289,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -118256,7 +118490,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -118468,7 +118705,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -118773,7 +119013,10 @@
     "dispatchedAt": "2026-11-10T00:16:15.395Z",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -119004,7 +119247,10 @@
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -119822,7 +120068,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -120258,7 +120507,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -120441,7 +120693,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -120802,7 +121057,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -120965,7 +121223,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -121531,7 +121792,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -121981,7 +122245,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -122535,7 +122802,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -123323,7 +123593,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -123617,7 +123890,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -123963,7 +124239,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -124210,7 +124489,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -124411,7 +124693,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -124663,7 +124948,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -124839,7 +125127,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -125319,7 +125610,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -125494,7 +125788,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -125677,7 +125974,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -125840,7 +126140,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -126007,7 +126310,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -126170,7 +126476,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -126333,7 +126642,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -126662,7 +126974,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -126825,7 +127140,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -126988,7 +127306,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -127341,7 +127662,10 @@
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -127707,7 +128031,10 @@
     "dispatchedAt": "2026-11-09T02:31:11.152Z",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -127874,7 +128201,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -128062,7 +128392,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -128245,7 +128578,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -128408,7 +128744,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -128581,7 +128920,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -128744,7 +129086,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -128917,7 +129262,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -129456,7 +129804,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -129770,7 +130121,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -130274,7 +130628,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -130520,7 +130877,10 @@
      "why": "routed to API account account-5 (this build is set to run on API)"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -130671,7 +131031,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -130778,7 +131141,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -130863,7 +131229,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -130948,7 +131317,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -131227,7 +131599,10 @@
     "dispatchedAt": "2026-11-09T18:53:07.552Z",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -131575,7 +131950,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -131926,7 +132304,10 @@
     "dispatchedAt": "2026-11-09T18:10:30.633Z",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -132092,7 +132473,10 @@
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -132262,7 +132646,10 @@
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -132432,7 +132819,10 @@
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -132677,7 +133067,10 @@
     "dispatchedAt": "2026-11-09T17:58:10.111Z",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -132962,7 +133355,10 @@
     "dispatchedAt": "2026-11-10T01:57:09.377Z",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -133122,7 +133518,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -133591,7 +133990,10 @@
     "dispatchedAt": "2026-11-10T04:19:07.513Z",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -134041,7 +134443,10 @@
     "dispatchedAt": "2026-11-10T16:57:09.463Z",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -134278,7 +134683,10 @@
     "dispatchedAt": "2026-11-09T18:49:06.246Z",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -134503,7 +134911,10 @@
     "dispatchedAt": "2026-11-09T19:23:07.733Z",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -134728,7 +135139,10 @@
     "dispatchedAt": "2026-11-09T18:55:16.286Z",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -134969,7 +135383,10 @@
     "dispatchedAt": "2026-11-10T02:17:28.580Z",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -135208,7 +135625,10 @@
      "why": "routed to API account account-5 (this build is set to run on API)"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -135475,7 +135895,10 @@
     "dispatchedAt": "2026-11-09T19:27:06.719Z",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -135656,7 +136079,10 @@
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -135911,7 +136337,10 @@
     "dispatchedAt": "2026-11-09T20:19:06.480Z",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -136081,7 +136510,10 @@
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -136255,7 +136687,10 @@
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -136425,7 +136860,10 @@
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -136585,7 +137023,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -136902,7 +137343,10 @@
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -137150,7 +137594,10 @@
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -137361,7 +137808,10 @@
      "why": "routed to API account account-5 (this build is set to run on API)"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -137527,7 +137977,10 @@
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -137697,7 +138150,10 @@
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -137877,7 +138333,10 @@
      "why": "routed to API account account-5 (this build is set to run on API)"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -138058,7 +138517,10 @@
     "dispatchedAt": "2026-11-10T00:42:13.778Z",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -138266,7 +138728,10 @@
      "why": "routed to API account account-5 (this build is set to run on API)"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -138426,7 +138891,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -138922,7 +139390,10 @@
      "why": "routed to API account account-5 (this build is set to run on API)"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -139064,7 +139535,10 @@
      "why": "routed to API account account-5 (this build is set to run on API)"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -139235,7 +139709,10 @@
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -139456,7 +139933,10 @@
     "dispatchedAt": "2026-11-10T02:48:43.040Z",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -139626,7 +140106,10 @@
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -139800,7 +140283,10 @@
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -139981,7 +140467,10 @@
     "dispatchedAt": "2026-11-10T03:33:16.699Z",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -140172,7 +140661,10 @@
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -140353,7 +140845,10 @@
     "dispatchedAt": "2026-11-10T03:55:23.238Z",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -140534,7 +141029,10 @@
     "dispatchedAt": "2026-11-10T04:04:16.333Z",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -140718,7 +141216,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -140897,7 +141398,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -141057,7 +141561,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -141391,7 +141898,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -141912,7 +142422,10 @@
     "dispatchedAt": "2026-11-10T14:51:14.691Z",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -142078,7 +142591,10 @@
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -142238,7 +142754,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -142598,7 +143117,10 @@
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -142775,7 +143297,10 @@
     "dispatchedAt": "2026-11-10T16:07:12.460Z",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -142952,7 +143477,10 @@
     "dispatchedAt": "2026-11-10T16:18:16.704Z",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -143118,7 +143646,10 @@
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -143282,7 +143813,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -143641,7 +144175,10 @@
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -143805,7 +144342,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -144078,7 +144618,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -144406,7 +144949,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -144760,7 +145306,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -145292,7 +145841,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -145651,7 +146203,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -146054,7 +146609,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -146491,7 +147049,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -146847,7 +147408,10 @@
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -147011,7 +147575,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -147360,7 +147927,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -147654,7 +148224,10 @@
     "dispatchedAt": "2026-11-10T17:02:10.384Z",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -147824,7 +148397,10 @@
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -147990,7 +148566,10 @@
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -148156,7 +148735,10 @@
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -148318,7 +148900,10 @@
     "dispatchedAt": "2026-11-10T17:26:11.553Z",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -148488,7 +149073,10 @@
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -148654,7 +149242,10 @@
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -148759,7 +149350,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T17:07:33.143Z",
-   "updatedAt": "2026-11-10T17:57:16.249Z",
+   "updatedAt": "2026-11-10T18:08:18.387Z",
    "builtAt": "",
    "notes": [
     {
@@ -148796,12 +149387,12 @@
    "pipeline": {
     "queuedAt": "2026-11-10T17:07:34.440Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-orchestrator-hold-status-archive-tab-deleted-tab--sully",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-10T17:57:13.052Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T17:08:50.903Z",
@@ -148811,12 +149402,15 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-10T17:57:13.052Z",
+    "dispatchedAt": "",
     "planned": null,
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -148834,12 +149428,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T18:08:18.387Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T17:08:50.903Z",
-     "updatedAt": "2026-11-10T17:08:50.903Z"
+     "updatedAt": "2026-11-10T18:08:18.594Z"
     },
     {
      "id": "s2",
@@ -148980,7 +149574,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -149303,7 +149900,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -149723,7 +150323,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -150208,7 +150811,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -150667,7 +151273,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -150934,7 +151543,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -151090,7 +151702,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -151246,7 +151861,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -151402,7 +152020,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -151558,7 +152179,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -151718,7 +152342,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -151878,7 +152505,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -152038,7 +152668,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -152198,7 +152831,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -152358,7 +152994,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
