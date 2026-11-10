@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:52:50.356Z",
+ "updatedAt": "2026-11-10T17:53:13.199Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -90441,6 +90441,43 @@
    "origin": {
     "said": "axHub hooks in AmberX.",
     "at": "2026-11-10T17:51:34.577Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "amberx-llama-llama-amberxai-com-via-coolify-trae",
+   "title": "amberx-llama: llama.amberxai.com via Coolify/Traefik, behind axHub auth",
+   "category": "",
+   "detail": "Amends amberx-llama. Give the container a hostname llama.amberxai.com through Coolify on the VPS (root shell available): set the domain on the Coolify app so Traefik routes it with HTTPS. If *.amberxai.com wildcard DNS already points at the VPS, no Hostinger change is needed; if not, record the exact A record needed (Hostinger API key is missing from the axHub vault, so report it). Put the public route behind axHub auth (forward-auth / token); never expose raw Ollama unauthenticated. Keep the internal http://amberx-llama:11434 for the console and agents.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-10T17:52:45.615Z",
+   "updatedAt": "2026-11-10T17:52:47.290Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T17:52:47.290Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Update the hosting with a DNS entry to the container. You have root access to my VPS and Coolify.",
+    "at": "2026-11-10T17:52:45.615Z",
     "source": "",
     "session": "",
     "link": "",
