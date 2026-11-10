@@ -771,9 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 00:42 UTC · `failed-launches-auto-retry-on-another-working-ac` → running, note (all) · pipeline
-- 2026-11-10 00:42 UTC · `failed-launches-auto-retry-on-another-working-ac` branch claude/failed-launches-auto-retry-on-another-working-ac (all) · pipeline
-- 2026-11-10 00:42 UTC · `failed-launches-auto-retry-on-another-working-ac` note (all) · orchestrator
 - 2026-11-10 00:48 UTC · `build-statuses-tell-the-truth-orchestrator-list` s1 done, → running (all) · orchestrator
 - 2026-11-10 00:49 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` → queued, note (all) · cli
 - 2026-11-10 00:49 UTC · `prompt-caching-and-batch-api-support-in-the-buil` → queued, note (all) · cli
@@ -1171,6 +1168,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 14:51 UTC · `skins-as-packages-of-slices-every-section-its-ow` → running, note (all) · pipeline
 - 2026-11-10 14:51 UTC · `skins-as-packages-of-slices-every-section-its-ow` branch claude/skins-as-packages-of-slices-every-section-its-ow (all) · pipeline
 - 2026-11-10 14:51 UTC · `skins-as-packages-of-slices-every-section-its-ow` note (all) · orchestrator
+- 2026-11-10 14:51 UTC · `one-vps-plugin-everything-vps-in-one-place-gauge` → running, note (all) · pipeline
+- 2026-11-10 14:51 UTC · `one-vps-plugin-everything-vps-in-one-place-gauge` branch claude/one-vps-plugin-everything-vps-in-one-place-gauge (all) · pipeline
+- 2026-11-10 14:51 UTC · `one-vps-plugin-everything-vps-in-one-place-gauge` note (all) · orchestrator
 
 ## Token passes (log)
 
