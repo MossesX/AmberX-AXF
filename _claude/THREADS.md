@@ -771,8 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 02:57 UTC · `test-button-on-every-claude-account-subscription` s1 done, → running (all) · orchestrator
-- 2026-11-10 02:58 UTC · `amberx-phone-pop-up-for-every-build-start-and-fi` PR #433 (all) · builds-live
 - 2026-11-10 02:57 UTC · `test-button-on-every-claude-account-subscription` s2 done (all) · orchestrator
 - 2026-11-10 02:59 UTC · `self-healing-build-folders-auto-clear-stale-git` → queued, note (all) · pipeline
 - 2026-11-10 02:59 UTC · `test-button-on-every-claude-account-subscription` PR #434 (all) · builds-live
@@ -1171,6 +1169,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 16:44 UTC · `amberx-android-web-view-top-banner-hidden-behind` note (all) · builds-live
 - 2026-11-10 16:44 UTC · `merge-queue-batching-orchestrator-combines-ready` added (0 steps) (all) · console
 - 2026-11-10 16:44 UTC · `merge-queue-batching-orchestrator-combines-ready` → queued, note (all) · console
+- 2026-11-10 16:45 UTC · `merge-queue-batching-orchestrator-combines-ready` added (0 steps) (all) · builds-live
+- 2026-11-10 16:45 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` added (0 steps) (all) · builds-live
 
 ## Token passes (log)
 
