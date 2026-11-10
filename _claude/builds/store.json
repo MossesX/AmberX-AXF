@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2809,
- "updatedAt": "2026-11-10T20:46:51.547Z",
+ "rev": 2810,
+ "updatedAt": "2026-11-10T20:47:18.081Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -154255,12 +154255,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T20:45:52.606Z",
-   "updatedAt": "2026-11-10T20:45:54.021Z",
+   "updatedAt": "2026-11-10T20:47:16.823Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T20:45:54.021Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T20:47:16.823Z"
     }
    ],
    "approvals": [],
@@ -154287,16 +154291,92 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-10T20:47:16.823Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
     "pickedAt": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwb5vf4n01exxa",
+     "title": "",
+     "text": "axHub policy: console_action calls that only navigate (open a screen, tab, page; Follow Amber) run immediately with no veto countdown; only data-changing actions keep the veto. 2) Every 'open X' from voice: if the console isn't open in Chrome on the phone, AmberX opens Chrome on the console and brings it to the front; if Chrome is behind, bring Chrome to the front; then navigate to the page. Uses the open_url notification fix (#454) and 'Display over other apps'. Full API control.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T20:47:16.823Z",
+     "updatedAt": "2026-11-10T20:47:16.823Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwb5vf4n02an7e",
+     "title": "",
+     "text": "I don't want the timer on Follow Amber. Do stuff right away. If console's not open in Chrome, open it in Chrome and bring the page to the front. If Chrome's not in front, bring Chrome to the front and open it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T20:47:16.823Z",
+     "updatedAt": "2026-11-10T20:47:16.823Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwb5vf4n03b96z",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/no-veto-timer-on-navigation-follow-amber-open-x.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/no-veto-timer-on-navigation-follow-amber-open-x.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T20:47:16.823Z",
+     "updatedAt": "2026-11-10T20:47:16.823Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -154305,12 +154385,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T20:47:16.823Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
