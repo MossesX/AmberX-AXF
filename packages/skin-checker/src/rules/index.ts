@@ -7,5 +7,6 @@ import { SPACING_RULES } from './spacing-scale.ts';
 import { TYPOGRAPHY_RULES } from './typography.ts';
 import { PALETTE_RULES } from './palette.ts';
 import { CONTRAST_RULES } from './contrast.ts';
+import { SHAPE_RULES } from './shape-consistency.ts';
 
-export const ALL_RULES: readonly SkinCheckRule[] = [...SPACING_RULES, ...TYPOGRAPHY_RULES, ...PALETTE_RULES, ...CONTRAST_RULES];
+export const ALL_RULES: readonly SkinCheckRule[] = [...SPACING_RULES, ...TYPOGRAPHY_RULES, ...PALETTE_RULES, ...CONTRAST_RULES, ...SHAPE_RULES];
