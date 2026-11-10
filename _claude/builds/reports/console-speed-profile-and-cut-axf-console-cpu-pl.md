@@ -7,8 +7,10 @@ Brett, Nov 10 2026: "The console is mad slow. Ridiculous slow. How do I make thi
 ## What was actually slow
 The console itself was not the problem. Measured 03:34-03:40 UTC:
 
-- `axf-console` container: **0.2 % CPU idle, 205-270 MB**. Its busiest endpoint in the log (`ui-hold`, called by the
-  merge queue about 37 times a minute) answers in **33 ms**. No runaway timer, watcher or SSE loop in the container.
+- `axf-console` container: **0.2 % CPU idle, 205-270 MB** with no browser open; its busiest caller in the log is the
+  merge queue (`ui-hold`, about 37 calls a minute, a cheap in-memory lookup). No runaway timer, watcher or SSE loop in
+  the container. The 74 % seen at 02:46 was with the console open; the container restarted at 03:29, so those logs are
+  gone (see "Endpoint timings" for what an open console costs).
 - The **host** was choking: load 24-29 on **4 CPUs**, CPU idle **0 %**, **11 processes blocked on disk**, 15 % I/O wait,
   swap 2.9-3.4 / 4 GB, and disk `/` at **100 %** (191 / 193 GB; build worktrees 96 GB in 205 folders).
 - Worst offender: the **Maintenance snapshot** (`/etc/cron.d/axf-maintenance`, every 10 min). One run took
@@ -51,7 +53,7 @@ The console itself was not the problem. Measured 03:34-03:40 UTC:
 | | Before | After |
 |---|---|---|
 | Maintenance snapshots running at once | 12 | 1 at most (lock) |
-| Snapshot run time | 84 min | SNAP_COLD cold (no cache), SNAP_WARM with the cache |
+| Snapshot run time | 84 min, 12 overlapping | cold (empty cache, idle I/O class, under load): about half of 216 worktrees in 10 min, still running when this was written; after that, sizes are reused for 1 h (6 h for /root, /opt), and fresh measuring is capped at 4 min a run |
 | Host CPU idle (vmstat) | 0 % | 60-64 % |
 | Processes blocked on disk | 11 | 0-1 |
 | Load average (1 min) | 24-29 | 15.5 a minute later, 16-18 under builds |
@@ -59,6 +61,29 @@ The console itself was not the problem. Measured 03:34-03:40 UTC:
 
 The "after" host numbers are from right after the stacked snapshots were stopped (03:38) with the same builds
 running. The build caps apply to sessions started after this merges.
+
+## Endpoint timings (s2: what an open console costs)
+Every GET route without parameters (268 from `/openapi.json`), timed one by one at 03:55 with 3-5 builds running:
+228 answered, **49 took over 0.3 s, 12 over 1 s**. The slowest real (non-stream) ones:
+
+| Route | Time | Why |
+|---|---|---|
+| `/api/plugins/agent-swarm/jobs` | 9.2 s | spawns `node swarm.mjs list` per request |
+| `/api/plugins/plugin-manager/inventory` | 8.3 s | not checked |
+| `/api/plugins/ref-links/targets` | 4.4 s | |
+| `/api/plugins/systems-check/ai/state` | 3.8 s | |
+| `/api/plugins/whats-shipped/feed` | 2.5 s | |
+| `/api/plan` | 1.8 s | |
+
+These load when their tab opens rather than on a timer, so they make screens feel slow rather than burning CPU in
+the background. They were timed on a host at load 16-20, so part of each figure is waiting for CPU and disk; how much
+is still to be measured on a quiet host. The short browser timers
+(`setInterval` under 5 s) are clocks or "only while this dialog is open" checks; the Terminal's 2 s meter poll already
+reuses one SSH connection (`ControlPersist`).
+
+Not done (follow-ups): a logged-in browser profile of request counts per open page (the container restarted at 03:29,
+so the 74 % window can't be replayed from its log, and Playwright isn't installed in this worktree); caching
+`agent-swarm/jobs` and `plugin-manager/inventory` server-side.
 
 ## Done on the VPS now (not only in the PR)
 - Stopped the 12 stacked snapshot runs (they only measure; nothing is lost).
