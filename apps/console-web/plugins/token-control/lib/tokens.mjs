@@ -48,9 +48,10 @@ export function writeAppearance(change, by) {
   const tmp = `${f}.tmp-${process.pid}`;
   writeFileSync(tmp, `${text}\n`);
   renameSync(tmp, f);
-  return doc;
-  // apps draw their slots from their own look documents now: a slot set from outside still reaches them all
+  // apps draw their slots from their own look documents now: a slot set from outside still reaches them all (the colour
+  // theme lands inside a skin in force as its colorTheme, never as a new skin: engines/skin-rules.mjs setLookSlot)
   for (const [slot, id] of Object.entries(change.slots ?? {})) setSlotEverywhere(slot, id, doc.updatedBy);
+  return doc;
 }
 
 const assetCache = new Map();

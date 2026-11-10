@@ -69,3 +69,38 @@ this checkout's data folder: no console credentials in this session, so it is no
   so Apply in the skin picker is refused there ("look can't be read from axHub"). Pre-existing; the capture worked
   around it by saving `axf.hubsync.connection` with `look: off`. Worth a small fix in hubsync or the console later.
 - Kotlin twin deferred (PORTING.md).
+
+# Phase 2 (Opus), Nov 10 2026
+
+## s2: every entry point checked against the rule
+
+Walked each way a colour theme can be picked (Settings pickers, skin picker, `skins.mjs color` / `global-color`,
+theme-manager REST/MCP/voice, runtime action `skin.color`, control@1 `tokens.slots`). One gap, and it was on main:
+
+- **control@1 `tokens.slots` never reached the apps.** In token-control `lib/tokens.mjs`, `writeAppearance` called
+  `setSlotEverywhere` *after* `return doc`, so the call never ran: a colour theme set through control@1 (MCP, CLI
+  `control.mjs`, voice) changed the hub document only and left every app's look as it was. That meant Phase 1's
+  "control@1 lands inside the skin" was true of `setSlotEverywhere` but not of the control@1 route. Moved the call
+  before the return; now each app with a skin in force gets the pick as that skin's `colorTheme` (same skin id, no
+  skin override, no new look or skin written), apps without a skin take it as their own pick, and reset goes back to
+  the skin's own colours. Pinned by a new token-control test.
+- Nothing else makes a new skin. The design-package override path (`overrideAfterPick`, label "(colour changed)") is
+  the retired design-package model; it does not touch skins and is being removed by
+  `appearance-skins-colour-themes-only-remove-design-packs`.
+
+## How it is reached (API)
+
+| Surface | Read | Change (inside the skin; skin stays) |
+| --- | --- | --- |
+| UI | Settings → Appearance → Colour theme row; skin picker | Colour theme select / *Skin's colours* |
+| Deep link | `console_open` Settings → Appearance | — |
+| REST | `GET /skins/{app}/color` | `POST /skins/{app}/color {theme, scope?}`, `POST /skins/global/color {theme}` |
+| MCP / voice | plugin-commands@1 for the routes above; control@1 `tokens.slots` `color-theme` | same |
+| CLI | `skins.mjs color <app>` | `skins.mjs color <app> <theme>|default [--scope]`, `global-color`, `control.mjs set tokens.slots color-theme <id>` |
+| Runtime | `rt.skinColorTheme()` | `rt.setSkinColorTheme(id|null, scope?)`, action `skin.color:<theme|default>` |
+
+## Checks (Phase 2)
+
+token-control 21 (new: colour pick lands inside the skin), check-skin 356, check-skin-coverage 55/0 uncovered,
+check-hub-look 110, theme-manager self-test 36, check-theme, check-controls, check-toolbars, check-chrome-assets,
+plugin-lifecycle token-control clean. No UI changed in this phase (UI Review item from Phase 1 stands).
