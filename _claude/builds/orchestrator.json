@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T16:14:50.523Z",
+ "updatedAt": "2026-11-10T16:16:59.590Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -84694,16 +84694,16 @@
    "title": "Account order switch: custom drag-and-drop order or automatic (subscriptions first, then API)",
    "category": "",
    "detail": "Amends the Claude Accounts Manager plugin and the Retire Build Manager builds. Add a switch: Custom = the orchestrator follows the drag-and-drop account order exactly (subscriptions and API treated the same). Automatic = subscriptions first, then any API. Drag-and-drop order wins when the switch is on Custom. Full API control.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/account-order-switch-custom-drag-and-drop-order",
-   "pr": "",
+   "pr": "#449",
    "priority": "P1",
    "createdAt": "2026-11-10T15:31:10.459Z",
-   "updatedAt": "2026-11-10T16:14:48.483Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T16:16:59.382Z",
+   "builtAt": "2026-11-10T16:16:59.382Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -84789,8 +84789,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T16:16:59.382Z",
      "note": "",
      "uid": "st-mwaumcbr039s0g"
     }
