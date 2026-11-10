@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2935,
- "updatedAt": "2026-11-10T21:58:45.263Z",
+ "rev": 2936,
+ "updatedAt": "2026-11-10T21:59:18.396Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -157515,12 +157515,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:57:17.444Z",
-   "updatedAt": "2026-11-10T21:57:18.870Z",
+   "updatedAt": "2026-11-10T21:59:17.083Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T21:57:18.870Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T21:59:17.083Z"
     }
    ],
    "approvals": [],
@@ -157547,16 +157551,92 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-10T21:59:17.083Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
     "pickedAt": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwb8g0nv01dz9x",
+     "title": "",
+     "text": "Addition to the background token + Background Designer build (4c4f05f2): add 'background' as a named asset type like nav menus, tab groups, toolbars and banners. Every screen/app/panel background is an asset: right-click > Settings opens its asset settings, follows per-field override rules and the Appearance 'Assets with edits' list, saveable/reusable from Background Designer and skins.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T21:59:17.083Z",
+     "updatedAt": "2026-11-10T21:59:17.083Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwb8g0nv026sbl",
+     "title": "",
+     "text": "Yeah, make the background a new asset too.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T21:59:17.083Z",
+     "updatedAt": "2026-11-10T21:59:17.083Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwb8g0nv03ma0a",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/background-is-its-own-asset-type-with-asset-sett.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/background-is-its-own-asset-type-with-asset-sett.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T21:59:17.083Z",
+     "updatedAt": "2026-11-10T21:59:17.083Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -157565,12 +157645,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T21:59:17.083Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

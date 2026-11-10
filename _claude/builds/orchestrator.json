@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T21:58:45.263Z",
+ "updatedAt": "2026-11-10T21:59:18.396Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -96865,12 +96865,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:57:17.444Z",
-   "updatedAt": "2026-11-10T21:57:18.870Z",
+   "updatedAt": "2026-11-10T21:59:17.083Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T21:57:18.870Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T21:59:17.083Z"
     }
    ],
    "approvals": [],
@@ -96887,7 +96891,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Addition to the background token + Background Designer build (4c4f05f2): add 'background' as a named asset type like nav menus, tab groups, toolbars and banners. Every screen/app/panel background is an asset: right-click > Settings opens its asset settings, follows per-field override rules and the Appearance 'Assets with edits' list, saveable/reusable from Background Designer and skins.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb8g0nv01dz9x"
+    },
+    {
+     "id": "s2",
+     "text": "Yeah, make the background a new asset too.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb8g0nv026sbl"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/background-is-its-own-asset-type-with-asset-sett.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/background-is-its-own-asset-type-with-asset-sett.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb8g0nv03ma0a"
+    }
+   ]
   }
  ]
 }
