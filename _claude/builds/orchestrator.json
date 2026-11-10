@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T21:47:57.634Z",
+ "updatedAt": "2026-11-10T21:48:15.478Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -94904,7 +94904,7 @@
    "title": "No veto timer on navigation/Follow Amber; 'open X' brings Chrome + console to the front instantly",
    "category": "",
    "detail": "1) axHub policy: console_action calls that only navigate (open a screen, tab, page; Follow Amber) run immediately with no veto countdown; only data-changing actions keep the veto. 2) Every 'open X' from voice: if the console isn't open in Chrome on the phone, AmberX opens Chrome on the console and brings it to the front; if Chrome is behind, bring Chrome to the front; then navigate to the page. Uses the open_url notification fix (#454) and 'Display over other apps'. Full API control.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -94912,8 +94912,8 @@
    "pr": "#476",
    "priority": "P0",
    "createdAt": "2026-11-10T20:45:52.606Z",
-   "updatedAt": "2026-11-10T21:47:56.115Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T21:48:04.562Z",
+   "builtAt": "2026-11-10T21:47:57.395Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -94930,6 +94930,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-no-veto-timer-on-navigation-follow-amber-open-x--paulie, own login copy)",
      "at": "2026-11-10T21:29:11.812Z"
+    },
+    {
+     "text": "PR #476. console_go runs at once with no veto timer; a console behind is brought to the front through AmberX. Install the AmberX APK from the PR's CI run. No UI Review shots: the headless console stopped at 'Waiting for axHub'.",
+     "at": "2026-11-10T21:48:04.562Z"
     }
    ],
    "approvals": [],
@@ -94999,8 +95003,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T21:47:57.395Z",
      "note": "",
      "uid": "st-mwb5vf4n03b96z"
     }
