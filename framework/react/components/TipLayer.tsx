@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { placeTip } from '../placeTip';
 
 /**
  * Styled tooltips for chrome (menus, menu bar, toolbars, context menus, nav): every icon, status slot and value there
@@ -11,7 +12,7 @@ import { useEffect, useRef, useState } from 'react';
 const SCOPE = '.fx-menu, .fx-menubar, .fx-toolbar, .fx-ctx, .fx-dropdown, .fx-nav, .fx-banner, [data-fx-tips]';
 const DELAY_MS = 380;
 
-interface Tip { text: string; x: number; y: number; below: boolean }
+interface Tip { text: string; rect: { left: number; top: number; bottom: number; width: number } }
 
 function tipTarget(node: EventTarget | null): HTMLElement | null {
   if (!(node instanceof Element)) return null;
@@ -55,8 +56,7 @@ export function TipLayer() {
       timer.current = window.setTimeout(() => {
         if (cur.current !== el || !el.isConnected) return;
         const r = el.getBoundingClientRect();
-        const below = r.bottom + 48 < window.innerHeight;
-        setTip({ text, x: r.left + r.width / 2, y: below ? r.bottom : r.top, below });
+        setTip({ text, rect: { left: r.left, top: r.top, bottom: r.bottom, width: r.width } });
       }, delay);
     };
     const over = (e: PointerEvent) => {
@@ -95,20 +95,20 @@ export function TipLayer() {
     };
   }, []);
 
-  // keep the tip inside the window once its width is known
-  useEffect(() => {
+  // place it once its size is known: below the element, above when there is no room, inside the window
+  useLayoutEffect(() => {
     const el = box.current;
     if (!el || !tip) return;
-    const w = el.offsetWidth;
-    const left = Math.min(Math.max(8, tip.x - w / 2), window.innerWidth - w - 8);
-    el.style.setProperty('--fx-tip-x', `${Math.round(left)}px`);
-    el.style.setProperty('--fx-tip-y', `${Math.round(tip.y)}px`);
+    const p = placeTip(tip.rect, { w: el.offsetWidth, h: el.offsetHeight }, { w: window.innerWidth, h: window.innerHeight });
+    el.style.setProperty('--fx-tip-x', `${Math.round(p.left)}px`);
+    el.style.setProperty('--fx-tip-y', `${Math.round(p.top)}px`);
+    el.dataset.fxSide = p.side;
     el.dataset.fxReady = 'on';
   }, [tip]);
 
   if (!tip) return null;
   return (
-    <div ref={box} className="fx-tip" role="tooltip" data-fx-side={tip.below ? 'below' : 'above'}>
+    <div ref={box} className="fx-tip" role="tooltip">
       {tip.text}
     </div>
   );

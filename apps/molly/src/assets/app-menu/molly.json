@@ -3,83 +3,105 @@
   "type": "app-menu",
   "id": "molly",
   "name": "Molly menu",
-  "version": "0.1.0",
-  "description": "Molly's application menu: switch apps, reload or open the one on screen on its own, settings.",
+  "version": "0.2.0",
+  "description": "Molly's application menu, kept short: the start page, the apps, this app, settings and account at the top; everything else in sub-menus (spec: apps/molly/menus/inventory.md).",
   "author": "AmberX AXF",
   "tags": [
     "molly"
   ],
   "data": {
+    "density": "regular",
+    "surface": "glass",
     "menus": [
       {
         "id": "molly",
         "label": "Molly",
+        "order": 10,
         "items": [
           {
             "id": "go-home",
             "label": "Start page",
             "icon": "home",
-            "action": "nav:home"
+            "action": "nav:home",
+            "hint": "Molly's start page: every app with Open in Molly and Open on its own."
+          },
+          {
+            "id": "apps",
+            "label": "Apps",
+            "icon": "grid",
+            "hint": "Switch to another app. Each one stays alive in the background.",
+            "items": [
+              {
+                "id": "go-amberx",
+                "label": "AmberX",
+                "icon": "sparkles",
+                "action": "nav:amberx",
+                "hint": "AmberX: plugins, voice, walkthroughs."
+              },
+              {
+                "id": "go-axhub",
+                "label": "axHub",
+                "icon": "shield",
+                "action": "nav:axhub",
+                "hint": "axHub: approvals, go pass, services."
+              },
+              {
+                "id": "go-console",
+                "label": "Console",
+                "icon": "terminal",
+                "action": "nav:console",
+                "hint": "The Dev Console: builds, plugins, UI Review."
+              },
+              {
+                "id": "go-expenses",
+                "label": "Expenses",
+                "icon": "chart",
+                "action": "nav:expenses",
+                "hint": "The Expense Tracker: ledger, paydays, reports."
+              }
+            ]
+          },
+          {
+            "id": "this-app",
+            "label": "This app",
+            "icon": "monitor",
+            "hint": "Commands for the app on screen.",
+            "items": [
+              {
+                "id": "reload",
+                "label": "Reload this app",
+                "icon": "refresh",
+                "action": "molly.reload",
+                "shortcut": "Alt+R",
+                "hint": "Reload only the app on screen; the others keep their place."
+              },
+              {
+                "id": "own",
+                "label": "Open this app on its own",
+                "icon": "external",
+                "action": "molly.own-tab",
+                "hint": "Open the app on screen at its own address in a new tab."
+              }
+            ]
           },
           {
             "id": "s1",
             "separator": true
           },
           {
-            "id": "go-amberx",
-            "label": "AmberX",
-            "icon": "sparkles",
-            "action": "nav:amberx"
-          },
-          {
-            "id": "go-axhub",
-            "label": "axHub",
-            "icon": "shield",
-            "action": "nav:axhub"
-          },
-          {
-            "id": "go-console",
-            "label": "Console",
-            "icon": "terminal",
-            "action": "nav:console"
-          },
-          {
-            "id": "go-expenses",
-            "label": "Expenses",
-            "icon": "chart",
-            "action": "nav:expenses"
-          },
-          {
-            "id": "s2",
-            "separator": true
-          },
-          {
-            "id": "reload",
-            "label": "Reload this app",
-            "icon": "refresh",
-            "action": "molly.reload"
-          },
-          {
-            "id": "own",
-            "label": "Open this app on its own",
-            "icon": "external",
-            "action": "molly.own-tab"
-          },
-          {
-            "id": "s3",
-            "separator": true
-          },
-          {
             "id": "settings",
             "label": "Settings",
             "icon": "settings",
-            "action": "app.settings"
+            "action": "app.settings",
+            "shortcut": "Ctrl+,",
+            "hint": "All of Molly's settings: appearance, plugins, account."
           },
           {
             "id": "account",
             "label": "Account",
             "icon": "user",
-            "action": "nav:account"
+            "action": "nav:account",
+            "hint": "Who you're signed in as, and your roles."
           }
         ]
       }

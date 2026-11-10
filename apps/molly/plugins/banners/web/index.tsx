@@ -165,8 +165,10 @@ export const plugin: AxfWebLibrary = {
   ],
   appMenu: [
     { id: 'molly-banners.view', menu: 'view', menuLabel: 'View', menuOrder: 30, order: 30, items: [
-      { id: 'molly-banners.toggle', label: 'Banners', icon: 'bell', action: 'molly-banners.toggle', checked: `setting:${K.show}` },
-      { id: 'molly-banners.settings', label: 'Banner settings…', icon: 'settings', action: `settings.open:${TAB}` },
+      { id: 'molly-banners.menu', label: 'Banners', icon: 'bell', hint: 'The Dev Console’s live banners at the top of Molly.', items: [
+        { id: 'molly-banners.toggle', label: 'Show banners', icon: 'eye', action: 'molly-banners.toggle', checked: `setting:${K.show}`, hint: 'Show or hide the banner strip.' },
+        { id: 'molly-banners.settings', label: 'Banner settings…', icon: 'settings', action: `settings.open:${TAB}`, hint: 'Pick which banners show: Settings → Plugins → Banners.' },
+      ] },
     ] },
   ],
 };

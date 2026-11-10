@@ -187,12 +187,17 @@ export const plugin: AxfWebLibrary = {
     { id: 'xlayout.lifecycle', tab: 'xlayout', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <LifecyclePanel /> },
   ],
   appMenu: [
+    // one sub-menu keeps View short (flagship skin s7): IDE mode and panes, then this app's pane / window, then settings
     { id: 'xlayout.view', menu: 'view', menuLabel: 'View', menuOrder: 30, order: 20, items: [
-      { id: 'xlayout.ide', label: 'IDE mode', icon: 'layout', action: 'xlayout.ide', checked: 'setting:xlayout.ide.on' },
-      { id: 'xlayout.layout', label: 'Pane layout…', icon: 'layout', action: 'xlayout.layout' },
-      { id: 'xlayout.open-pane', label: 'Open this app in a pane', icon: 'grid', action: 'xlayout.open:pane' },
-      { id: 'xlayout.open-floating', label: 'Open this app in a floating window', icon: 'monitor', action: 'xlayout.open:floating' },
-      { id: 'xlayout.settings', label: 'xLayout settings…', icon: 'settings', action: 'settings.open:xlayout' },
+      { id: 'xlayout.menu', label: 'Layout', icon: 'layout', hint: 'IDE mode, pane layouts, and opening this app in a pane or a floating window.', items: [
+        { id: 'xlayout.ide', label: 'IDE mode', icon: 'layout', action: 'xlayout.ide', checked: 'setting:xlayout.ide.on', hint: 'Show the apps in draggable, dockable panes.' },
+        { id: 'xlayout.layout', label: 'Pane layout…', icon: 'grid', action: 'xlayout.layout', hint: 'Pick one of the preset pane layouts, with a preview.' },
+        { id: 'xlayout.sep1', separator: true },
+        { id: 'xlayout.open-pane', label: 'Open this app in a pane', icon: 'grid', action: 'xlayout.open:pane', hint: 'Move the app on screen into a pane of its own.' },
+        { id: 'xlayout.open-floating', label: 'Open this app in a floating window', icon: 'monitor', action: 'xlayout.open:floating', hint: 'Float the app on screen in a window you can move and resize.' },
+        { id: 'xlayout.sep2', separator: true },
+        { id: 'xlayout.settings', label: 'xLayout settings…', icon: 'settings', action: 'settings.open:xlayout', hint: 'Settings → Plugins → xLayout.' },
+      ] },
     ] },
   ],
   contextMenu: [

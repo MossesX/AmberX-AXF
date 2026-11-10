@@ -166,7 +166,7 @@ export const plugin: AxfWebLibrary = {
   dialogs: { [DIALOG]: { title: 'Toolbar designer', icon: 'hammer', render: (p, close) => <Designer slot={Number(p.slot ?? 1) || 1} close={close} /> } },
   settingsTabs: [{ id: 'toolbar-designer', label: 'Toolbar designer', icon: 'hammer', order: 45, parent: 'plugins', description: 'Pick what each toolbar holds and where its items open.' }],
   settingsPanels: [{ id: 'toolbar-designer.main', tab: 'toolbar-designer', title: 'Toolbars', icon: 'hammer', order: 10, render: () => <SettingsPanel /> }],
-  appMenu: [{ id: 'toolbar-designer.view', menu: 'view', menuLabel: 'View', menuOrder: 30, order: 30, items: [{ id: 'toolbar-designer.open', label: 'Toolbar designer…', icon: 'hammer', action: 'toolbar-designer.open:1' }] }],
+  appMenu: [{ id: 'toolbar-designer.view', menu: 'view', menuLabel: 'View', menuOrder: 30, order: 30, items: [{ id: 'toolbar-designer.open', label: 'Toolbar designer…', icon: 'hammer', action: 'toolbar-designer.open:1', hint: 'Pick what each toolbar holds, from every app and screen, and where each item opens.' }] }],
   // right-click on any toolbar: Molly's own (asset toolbar) and the plugin toolbars
   contextMenu: [
     { id: 'toolbar-designer.toolbar', target: 'toolbar', items: [{ id: 'toolbar-designer.customize', label: 'Customize toolbar…', icon: 'hammer', action: 'toolbar-designer.open:1' }] },
