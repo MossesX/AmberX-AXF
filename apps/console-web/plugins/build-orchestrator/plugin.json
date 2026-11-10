@@ -316,7 +316,7 @@
         "id": "pipeline-queue",
         "route": "POST /pipeline/queue",
         "title": "Queue a build",
-        "description": "Move a Pending build to the Queue: the dispatcher starts it when a slot and an account for its model are free. Say 'queue the icon browser build'.",
+        "description": "Move a Pending build to the Queue: the dispatcher starts it when a slot and an account for its model are free. Say 'queue the icon browser build'. Right before it moves, the orchestrator checks it against main: already done or superseded = closed and archived instead, partly done = only what is left is queued.",
         "input": {
           "type": "object",
           "properties": {
@@ -329,7 +329,37 @@
             "id"
           ]
         },
-        "output": "{ id, status, pipeline }"
+        "output": "{ id, status, pipeline, mainCheck }"
+      },
+      {
+        "id": "pipeline-main-checks",
+        "route": "GET /pipeline/main-check",
+        "title": "Main checks",
+        "description": "Every recorded check of a build against main (at queue and at dispatch): verdict, why, steps ticked, PR / commit.",
+        "output": "{ checks: { <build>: { verdict, why, ticks, stage, at } } }"
+      },
+      {
+        "id": "pipeline-main-check",
+        "route": "POST /pipeline/main-check",
+        "title": "Check a build against main",
+        "description": "Check one build against main now: Shipped features, its PR, its branch and the files its steps name. Dry unless apply: already done or superseded = closed and archived (AmberX told), partly done = the steps already on main are ticked. The orchestrator does this by itself before it queues a build and again at dispatch. Say 'is the icon browser build already on main'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            },
+            "apply": {
+              "type": "boolean",
+              "description": "Act on the verdict (default: only report it)"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "{ id, verdict: done|partial|superseded|open|unknown, why, ticks, pr, commit, applied }"
       },
       {
         "id": "pipeline-unqueue",
@@ -479,6 +509,15 @@
                 "rules",
                 "off"
               ]
+            },
+            "mainCheck": {
+              "type": "string",
+              "enum": [
+                "code",
+                "ai",
+                "off"
+              ],
+              "description": "The check against main before queueing: code = plain evidence, ai = also ask Claude when code finds nothing, off = never"
             }
           }
         },

@@ -8,7 +8,11 @@
  * dispatcher takes the next Queue build and starts a headless session on an account that runs its next phase's model.
  *
  *   node apps/console-web/plugins/build-orchestrator/pipeline.mjs status [--json]    the table (Pending / Queue / Building), accounts, slots, what the next tick would do
- *   … queue <id> [--by who]        Pending → Queue (Brett's move; the console calls it with his name)
+ *   … queue <id> [--by who] [--no-main-check]   Pending → Queue (Brett's move; the console calls it with his name). Right
+ *                                  before it moves, the build is checked against main (main-check.mjs): already done or
+ *                                  superseded = closed and archived instead (AmberX told), partly done = the steps on
+ *                                  main are ticked and only what is left is queued. The tick checks again at dispatch.
+ *   … main-check [<id> [--apply]]  one build against main (dry without --apply); no id = the recorded checks
  *   … unqueue <id>                 Queue → Pending
  *   … split <id> [--request] [--provider claude|rules]   split a build now (or ask the next tick to)
  *   … intake [--json]              split every build with no steps (and every split the console asked for); auto-queue when the Claude setting says so
@@ -71,6 +75,8 @@ import { issue as issueDispatch } from '../../../../framework/cli/dispatch-gate.
 import { shipLanded } from '../../../../framework/cli/shipped.mjs';
 import { normPriority } from '../../../../framework/core/build-priority.mjs';
 import { act as orchAct } from './orchestrator.mjs';
+import * as MCK from './main-check.mjs';
+import { closedAlert, lineOf as mainCheckLine } from './main-check-core.mjs';
 import { reap as workersReap, status as workersStatus, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
 import { childEnv, paths as loginPaths, release as releaseLogin, snapshot as snapshotLogin } from '../../../../deploy/claude-login.mjs';
 
@@ -198,7 +204,7 @@ export function status() {
   tabs.complete.sort((a, b) => str(b.builtAt || b.updatedAt).localeCompare(str(a.builtAt || a.updatedAt)));
   const st = loadState();
   return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), table: byTable, tabs, accounts, accountsFrom, health: loadHealth(), slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable }, plan, settings,
-    state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails, selfCheck: st.selfCheck ?? null, selfCheckRequested: readJson(files().checkRequest)?.at || '' } };
+    state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails, selfCheck: st.selfCheck ?? null, mainChecks: MCK.loadChecks(files().dir).builds, selfCheckRequested: readJson(files().checkRequest)?.at || '' } };
 }
 
 // ------------------------------------------------------------------ store writes
@@ -219,9 +225,46 @@ export function setPipeline(id, patch, { status = '', note = '', by = 'pipeline'
   return out;
 }
 
-export function queue(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
-  const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+// ------------------------------------------------------------------ the one-build check against main
+
+/**
+ * Check one build against main (main-check.mjs) and act on it: done / superseded = closed and archived, AmberX told;
+ * partial = the steps already on main are ticked. stage 'queue' (right before Pending → Queue), 'dispatch' (right before
+ * a launch, cached while main and the open steps are unchanged) or 'manual' (the CLI / API, dry unless apply).
+ */
+export function mainCheck(id, { stage = 'manual', apply = true, by = 'orchestrator', env = process.env, alert = null } = {}) {
+  const settings = loadSettings(env);
+  let r;
+  try {
+    r = MCK.check(id, { apply, stage, by, settings, env, dir: files().dir, cache: stage === 'dispatch', writeRecord: writeJson, ask: (prompt) => askSplitter(prompt, { ...settings, splitProvider: 'claude' }, env) });
+  } catch (e) {
+    if (e.code === 2) throw e;
+    logLine({ event: 'main-check-failed', build: id, stage, error: str(e.message, 300) });
+    return { id, verdict: 'unknown', why: `check failed: ${str(e.message, 200)}`, ticks: [], queue: true, applied: false, stage };
+  }
+  if (!r.cached && r.mode !== 'off') logLine({ event: 'main-check', build: id, stage, verdict: r.verdict, why: str(r.why, 300), ticked: (r.ticks ?? []).map((t) => t.id), applied: r.applied });
+  if (r.applied && !r.queue) {
+    const b = storeCore.findBuild(loadStore(), id);
+    const a = closedAlert(b ?? { id, title: id }, r);
+    (alert ?? ((kind, d) => makeConsole(env)('POST', '/api/alerts', P.alertFor(kind, d))))('main-check', a);
+  }
+  return r;
+}
+
+export function queue(id, { by = process.env.AXF_ACTOR || 'console', check = true } = {}) {
+  let b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
   if (!BP.canQueue(b)) throw Object.assign(new Error(`${b.id} is ${b.status}${b.hidden ? ' (hidden)' : ''}: only a Pending build can be queued`), { code: 2 });
+  // Brett, Nov 10 2026: the orchestrator checks each build against main right before it puts it in the Queue
+  if (check && b.steps.length) {
+    const mc = mainCheck(b.id, { stage: 'queue', by });
+    if (!mc.queue) { const closed = storeCore.findBuild(loadStore(), b.id); return Object.assign(closed ?? b, { mainCheck: mc }); }
+    if (mc.applied) b = storeCore.findBuild(loadStore(), b.id) ?? b;
+    if (b.steps.length && b.steps.every((x) => x.done || x.skip)) return Object.assign(b, { mainCheck: mc });
+    const r0 = queueNow(b, by); return Object.assign(r0, { mainCheck: mc });
+  }
+  return queueNow(b, by);
+}
+function queueNow(b, by) {
   const now = nowIso();
   const r = setPipeline(b.id, { queuedAt: now, queuedBy: str(by, 80), note: b.steps.length ? '' : 'waiting for the split before it can start' }, { status: 'queued', note: `Queued by ${by}.`, by, action: 'pipeline:queue' });
   logLine({ event: 'queued', build: b.id, by });
@@ -296,7 +339,7 @@ export function splitBuild(id, { provider = '', by = 'orchestrator' } = {}) {
 export function intake({ max = MAX_SPLITS_PER_TICK, alert = () => {} } = {}) {
   loadUpgradePolicy();
   const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
-  const out = { split: [], queued: [], skipped: [] };
+  const out = { split: [], queued: [], closed: [], skipped: [] };
   if (settings.splitProvider !== 'off' || process.env.AXF_PIPELINE_SPLITTER) {
     // only a build with no steps at all is split by itself: steps someone wrote by hand (even with a missing estimate) are
     // never replaced unless the console asked for a split (splitRequested); the table flags them as "needs split"
@@ -313,7 +356,7 @@ export function intake({ max = MAX_SPLITS_PER_TICK, alert = () => {} } = {}) {
       // Launch builds without asking is ON: a split build with every step still open goes to the Queue by itself; one a session
       // handed back to Pending (returned) waits for Brett
       if (b.status !== 'pending' || b.hidden || !b.steps.length || P.needsSplit(b, rules) || b.pipeline?.lastRun?.outcome === 'returned') continue;
-      try { queue(b.id, { by: 'auto (Launch builds without asking)' }); out.queued.push(b.id); } catch (e) { out.skipped.push({ id: b.id, error: e.message }); }
+      try { const q = queue(b.id, { by: 'auto (Launch builds without asking)' }); if (q.status === 'queued') out.queued.push(b.id); else out.closed.push({ id: b.id, verdict: q.mainCheck?.verdict ?? q.status, why: q.mainCheck?.why ?? '' }); } catch (e) { out.skipped.push({ id: b.id, error: e.message }); }
     }
   }
   return out;
@@ -520,6 +563,10 @@ export function tick({ env = process.env } = {}) {
     const fails = (state.launchFails[first.id] ?? []).filter((t) => Date.parse(t) > hourAgo);
     if (fails.length >= LAUNCH_FAILS_PER_HOUR) { plan.waits.push({ id: first.id, why: `launch failed ${fails.length} times in the last hour: waiting` }); continue; }
     const b = live(store).find((x) => x.id === first.id);
+    // and again at dispatch: main may have moved since it was queued
+    const mc = mainCheck(b.id, { stage: 'dispatch', by: 'dispatcher', env, alert });
+    if (!mc.queue) { plan.waits.push({ id: b.id, why: `main check closed it: ${mc.verdict}` }); continue; }
+    if (mc.applied) { plan.waits.push({ id: b.id, why: `main check ticked ${(mc.ticks ?? []).map((t) => t.id).join(', ')}: replanned next tick` }); continue; }
     // the final pick: the plan's account first, then every other account that may take it (subscriptions, then API),
     // moving on until one accepts the launch
     const options = [first, ...P.routeOptions(b, accounts, first.model, settings).filter((o) => o.account !== first.account).map((o) => ({ ...first, ...o }))].slice(0, MAX_PICK_TRIES);
@@ -772,7 +819,15 @@ async function main(argv) {
       s.plan.idle ? `IDLE: ${s.plan.idle.reason}` : '',
     ].filter(Boolean).join('\n'));
   }
-  if (cmd === 'queue') { const b = queue(rest[0], { by }); return out({ ok: true, id: b.id, status: b.status, pipeline: b.pipeline }, `${b.id} → Queue (by ${by})`); }
+  if (cmd === 'queue') {
+    const b = queue(rest[0], { by, check: !has('no-main-check') }); const mc = b.mainCheck ?? null;
+    return out({ ok: true, id: b.id, status: b.status, pipeline: b.pipeline, mainCheck: mc }, b.status === 'queued' ? `${b.id} → Queue (by ${by})${mc && mc.verdict === 'partial' ? ` · ${mainCheckLine(b.id, mc)}` : ''}` : `${b.id} not queued: ${mc ? mainCheckLine(b.id, mc) : b.status}`);
+  }
+  if (cmd === 'main-check') {
+    if (!rest[0]) { const all = MCK.loadChecks(files().dir).builds; return out({ ok: true, checks: all }, Object.entries(all).map(([id, r]) => `${r.at.slice(0, 16)} ${r.stage.padEnd(8)} ${mainCheckLine(id, r)}`).join('\n') || 'no checks yet'); }
+    const r = mainCheck(rest[0], { stage: 'manual', apply: has('apply'), by });
+    return out({ ok: true, ...r }, `${mainCheckLine(r.id, r)}${has('apply') ? (r.applied ? ' (applied)' : '') : ' (dry: --apply to act on it)'}${(r.ticks ?? []).length ? `\n${r.ticks.map((t) => `  ${t.id}: ${t.why}`).join('\n')}` : ''}`);
+  }
   if (cmd === 'unqueue') { const b = unqueue(rest[0], { by }); return out({ ok: true, id: b.id, status: b.status }, `${b.id} → Pending`); }
   if (cmd === 'split') {
     if (has('request')) { const b = setPipeline(rest[0], { splitRequested: nowIso() }, { note: `Split asked for by ${by}.`, by, action: 'pipeline:split-request' }); return out({ ok: true, id: b.id, requested: b.pipeline.splitRequested }, `${b.id}: split on the next tick`); }
@@ -823,7 +878,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] [--no-main-check] | main-check [<id> [--apply]] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

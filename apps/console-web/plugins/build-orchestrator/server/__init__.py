@@ -481,9 +481,29 @@ async def pipeline_health_now(request: Request) -> dict[str, Any]:
 
 @router.post("/pipeline/queue")
 async def pipeline_queue(request: Request) -> dict[str, Any]:
-    """{id}: Pending → Queue. Brett's move: the dispatcher starts it when a slot and an account for its model are free."""
+    """{id}: Pending → Queue. Brett's move: the dispatcher starts it when a slot and an account for its model are free.
+    Right before it moves, the orchestrator checks the build against main: already done or superseded = closed and
+    archived instead (status archived, mainCheck says why), partly done = the steps on main are ticked first."""
     body = await _json_body(request)
     return _pipeline("queue", _build_id(body.get("id")), "--by", (brett_click(request) or "console")[:80])
+
+
+@router.get("/pipeline/main-check")
+def pipeline_main_checks() -> dict[str, Any]:
+    """Every recorded one-build check against main (at queue and at dispatch): verdict, why, steps ticked, PR / commit."""
+    return _pipeline("main-check")
+
+
+@router.post("/pipeline/main-check")
+async def pipeline_main_check(request: Request) -> dict[str, Any]:
+    """{id, apply?}: check one build against main now (Shipped features, its PR, its branch, the files its steps name).
+    Dry unless apply: done / superseded = closed and archived (AmberX told), partly done = the steps on main ticked.
+    The orchestrator runs the same check by itself right before it queues a build and again at dispatch."""
+    body = await _json_body(request)
+    args = ["main-check", _build_id(body.get("id")), "--by", (brett_click(request) or "console")[:80]]
+    if body.get("apply") is True:
+        args.append("--apply")
+    return _pipeline(*args)
 
 
 @router.post("/pipeline/unqueue")
@@ -528,10 +548,10 @@ def pipeline_settings() -> dict[str, Any]:
 @router.post("/pipeline/settings")
 async def pipeline_settings_set(request: Request) -> dict[str, Any]:
     """{key: value…} for pipeline-settings@1 (parallelPerAccount, fablePlans, useConsoleAccount, maxRuns, idleAfterMin, probeDays,
-    splitProvider, apiOverflow, apiAccounts). Turning the API overflow rule on spends money per token: only Brett's own click
+    splitProvider, apiOverflow, apiAccounts, mainCheck = code | ai | off). Turning the API overflow rule on spends money per token: only Brett's own click
     does that (a session, MCP or voice may turn it off)."""
     body = await _json_body(request)
-    allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "apiOverflow", "apiAccounts"}
+    allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "apiOverflow", "apiAccounts", "mainCheck"}
     if body.get("apiOverflow") is True and not brett_click(request):
         raise HTTPException(403, "turning the API overflow rule on is Brett's own click in the console (it bills per token)")
 

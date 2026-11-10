@@ -40,6 +40,9 @@ import { API_RULE, estimateMinutes, nextUp as orchNextUp, MODEL_GUIDE } from './
 
 export const SCHEMA = 'pipeline-settings@1';
 export const DEFAULTS = Object.freeze({
+  /** The one-build check against main before a build is queued and again at dispatch (main-check.mjs): code = plain
+   *  evidence only, ai = also ask Claude when code finds nothing, off = never check. */
+  mainCheck: 'code',
   /** Sessions per account at once, when the account has no cap of its own (the Claude setting builds.maxParallel wins when set). */
   parallelPerAccount: 1,
   /** Plans that run Fable (Brett's Max subscriptions do; Pro ones don't). An account's override or probe beats the plan. */
@@ -85,6 +88,7 @@ export function normSettings(raw = {}) {
     autoQueue: o.autoQueue === true,
     apiOverflow: o.apiOverflow === undefined ? DEFAULTS.apiOverflow : o.apiOverflow === true,
     healthEveryMin: o.healthEveryMin === undefined ? DEFAULTS.healthEveryMin : clamp('healthEveryMin', o.healthEveryMin),
+    mainCheck: ['code', 'ai', 'off'].includes(o.mainCheck) ? o.mainCheck : DEFAULTS.mainCheck,
     apiAccounts: [...new Set((typeof o.apiAccounts === 'string' ? o.apiAccounts.split(',') : list(o.apiAccounts)).map((n) => str(n, 32).toLowerCase()).filter((n) => /^[a-z0-9][a-z0-9-]{0,31}$/.test(n)))],
   };
 }
@@ -473,6 +477,7 @@ export function alertFor(kind, d = {}) {
       title: `Dispatcher self-check: ${list(d.fixes).length ? `fixed ${list(d.fixes).length}` : 'nothing fixed'}${list(d.problems).length ? `, ${list(d.problems).length} account${list(d.problems).length === 1 ? '' : 's'} can't work` : ''}`,
       body: str([...list(d.fixes).map((x) => `Fixed: ${x}`), ...list(d.problems).map((x) => `Can't use ${x}`), d.line ? `Now: ${d.line}` : ''].filter(Boolean).join('\n'), 1500) };
     case 'split': return { ...base, key: `pipeline:split:${d.id}`, severity: d.error ? 'warning' : 'info', title: d.error ? `Split needs a look: ${str(d.title, 120)}` : `Split into ${d.steps} steps: ${str(d.title, 120)}`, body: str(d.error || d.note, 1500) };
+    case 'main-check': return { ...base, key: `pipeline:main-check:${d.id}`, severity: 'success', title: str(d.title, 200), body: str(d.body, 1500) };
     default: throw new Error(`unknown alert kind ${kind}`);
   }
 }
