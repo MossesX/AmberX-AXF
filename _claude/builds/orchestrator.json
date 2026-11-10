@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:47:39.044Z",
+ "updatedAt": "2026-11-10T17:47:52.029Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -88018,15 +88018,15 @@
    "title": "Conversation RAG amendment: store only short key/value entries, never full transcripts",
    "category": "",
    "detail": "Amends the conversation RAG build. Do NOT store or inject whole sessions (too costly). Store only brief two-field entries: key (the entry, e.g. a rule, mistake, or decision) and value (a one-line summary, e.g. what Claude failed to do and what to do instead). Briefs pull only the matching entries. Extraction by plain rules where possible; AI only behind its switch.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/conversation-rag-amendment-store-only-short-key",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T16:51:08.892Z",
-   "updatedAt": "2026-11-10T17:47:13.009Z",
+   "updatedAt": "2026-11-10T17:47:16.572Z",
    "builtAt": "",
    "notes": [
     {
@@ -88036,6 +88036,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T16:52:25.257Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-conversation-rag-amendment-store-only-short-key--paulie, own login copy)",
+     "at": "2026-11-10T17:47:16.572Z"
     },
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-conversation-rag-amendment-store-only-short-key--paulie.",

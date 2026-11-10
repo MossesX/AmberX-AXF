@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2592,
- "updatedAt": "2026-11-10T17:47:39.044Z",
+ "rev": 2593,
+ "updatedAt": "2026-11-10T17:47:52.029Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -145145,15 +145145,15 @@
    "title": "Conversation RAG amendment: store only short key/value entries, never full transcripts",
    "category": "",
    "detail": "Amends the conversation RAG build. Do NOT store or inject whole sessions (too costly). Store only brief two-field entries: key (the entry, e.g. a rule, mistake, or decision) and value (a one-line summary, e.g. what Claude failed to do and what to do instead). Briefs pull only the matching entries. Extraction by plain rules where possible; AI only behind its switch.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/conversation-rag-amendment-store-only-short-key",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T16:51:08.892Z",
-   "updatedAt": "2026-11-10T17:47:13.009Z",
+   "updatedAt": "2026-11-10T17:47:16.572Z",
    "builtAt": "",
    "notes": [
     {
@@ -145163,6 +145163,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T16:52:25.257Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-conversation-rag-amendment-store-only-short-key--paulie, own login copy)",
+     "at": "2026-11-10T17:47:16.572Z"
     },
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-conversation-rag-amendment-store-only-short-key--paulie.",
@@ -145186,12 +145190,12 @@
    "pipeline": {
     "queuedAt": "2026-11-10T16:51:10.536Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-conversation-rag-amendment-store-only-short-key--paulie",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-10T17:47:12.521Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T16:52:25.257Z",
@@ -145201,9 +145205,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-10T17:47:12.521Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -145212,7 +145216,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-10T17:47:12.521Z"
+    "pickedAt": ""
    },
    "steps": [
     {
@@ -145293,7 +145297,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

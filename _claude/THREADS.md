@@ -772,8 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 04:32 UTC · `resolve-merge-conflicts-and-land-running-builds` note (all) · orchestrator
-- 2026-11-10 04:32 UTC · `auto-land-every-build-the-moment-it-finishes-red` note (all) · orchestrator
 - 2026-11-10 04:33 UTC · `resolve-merge-conflicts-and-land-running-builds` note (all) · builds-live
 - 2026-11-10 04:33 UTC · `auto-land-every-build-the-moment-it-finishes-red` note (all) · builds-live
 - 2026-11-10 04:34 UTC · `resolve-the-conflict-and-land-the-orchestrator-l` note (all) · orchestrator
@@ -1172,6 +1170,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 17:47 UTC · `home-page-build-queue-card-opens-the-orchestrato` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-10 17:47 UTC · `home-page-build-queue-card-opens-the-orchestrato` note (all) · builds-live
 - 2026-11-10 17:47 UTC · `conversation-rag-amendment-store-only-short-key` → running, note (all) · pipeline
+- 2026-11-10 17:47 UTC · `conversation-rag-amendment-store-only-short-key` branch claude/conversation-rag-amendment-store-only-short-key (all) · pipeline
+- 2026-11-10 17:47 UTC · `conversation-rag-amendment-store-only-short-key` note (all) · orchestrator
 
 ## Token passes (log)
 
