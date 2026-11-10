@@ -1,0 +1,43 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261107-68ef6bd6f2",
+  "createdAt": "2026-11-07T14:49:57.806Z",
+  "updatedAt": "2026-11-07T14:50:05.649Z",
+  "kind": "build",
+  "title": "hi Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-…",
+  "asked": "hi Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /root/axf-builds/orchestrator-vps-gate/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once. Model switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first. VPS actions (Brett, Nov 7 2026): the orchestrator is the only door to the VPS. Never call axHub's vps.run / vps.build_* tools yourself. Send every VPS action through the orchestrator's gate: `node framework/cli/axf.mjs vps run \"<command>\" --reason \"<one plain line>\"` (or the console MCP tool build_orchestrator_vps_act). Its policy decides: reads run at once, writes count down for Brett's veto or wait for his approve; `axf vps held` shows what is waiting. Never decide a hold yourself.",
+  "repos": [],
+  "model": "fable",
+  "who": {
+    "session": "7102b8bf-a21",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "partial",
+    "summary": "The session ended before a result was recorded.",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "partial",
+  "status": "done",
+  "surface": "headless",
+  "startedAt": "2026-11-07T14:49:57.806Z",
+  "finishedAt": "2026-11-07T14:50:05.649Z",
+  "lastSeenAt": "2026-11-07T14:50:02.536Z",
+  "actual": {
+    "minutes": 0,
+    "costUsd": 0.1016,
+    "inputTokens": 4,
+    "outputTokens": 332,
+    "cacheReadTokens": 39920,
+    "cacheWriteTokens": 17393,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "doing": "Waiting for the next message"
+}

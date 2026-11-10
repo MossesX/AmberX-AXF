@@ -49,6 +49,7 @@ from pydantic import BaseModel, Field
 
 import console_context as cx
 import plugin_services
+import readcache
 from credentials import CREDENTIALS
 
 from . import claudefix, derive, githubsvc, health, healthchecks, hostfix, mosses, probes, routine, store, whatsnew  # noqa: F401 — mosses: every Auto fix goes through him
@@ -136,6 +137,7 @@ class Service:
         return hit
 
     def invalidate(self) -> None:
+        readcache.invalidate("syscheck:")
         self._cache = None
         self.core._cache = None  # noqa: SLF001
 
@@ -202,7 +204,10 @@ def check(force: bool = False, ai: bool = False, keys: bool = False) -> dict[str
         except Exception as e:  # noqa: BLE001 — the check still runs without the new routine
             note = f"AI routine not refreshed: {str(e)[:200]}"
     r = store.routine()
-    return _report(SVC.run_all(force, keys), {"routine": {"source": r.get("source"), "generatedAt": r.get("generatedAt"), "checks": len(r.get("checks", [])),
+    # Concurrent banner loads (several consoles, Home cards) share one run: the key checks hit GitHub and other services,
+    # so they run at most once per 20 s for everyone (single-flight, server/readcache.py). force=1 always runs.
+    items = SVC.run_all(True, keys) if force else readcache.cached(f"syscheck:check:{int(keys)}", lambda: SVC.run_all(False, keys), ttl=20, max_stale=0)
+    return _report(items, {"routine": {"source": r.get("source"), "generatedAt": r.get("generatedAt"), "checks": len(r.get("checks", [])),
                                                     "stale": routine.stale()} if r else None, "aiNote": note, "aiOn": _ai_allowed("systems")})
 
 

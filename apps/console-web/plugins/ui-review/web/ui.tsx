@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { AgentAvatar, Button, Checkbox, Icon, IconButton, Segmented, useRuntime } from '@console/axf/react';
+import { AgentAvatar, Button, Checkbox, Icon, IconButton, Segmented, TabGroup, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { OriginFor } from '@console/buildOrigin';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
@@ -8,9 +8,10 @@ import * as cf from './conform.mjs';
 import * as P from '../../../../../framework/core/ui-predict.mjs';
 import type { Prediction } from '../../../../../framework/core/ui-predict.mjs';
 import type { Decision, Item, Kind } from './review-core.mjs';
-import { FOLDER, GROUP_BYS, KEYS, VIEWS, type GroupBy, type ViewId } from './keys';
+import { FOLDER, GROUP_BYS, GROUP_PARAM, KEYS, VIEWS, type GroupBy, type ViewId } from './keys';
 import { ShotBrowser } from './shots';
 import { ScreenshotsTab } from './screenshots';
+import { ChoicesTab, choicesOf } from './choices';
 import { CompareView, GalleryView, GridView, GroupsView, TreeView } from './views';
 import './ui-review.css';
 
@@ -30,6 +31,7 @@ const save = (rt: ReturnType<typeof useRuntime>, k: string, v: unknown) => { try
 export interface Review {
   kinds: Kind[]; sel: string[]; setSel: (s: string[]) => void; open: string[]; toggleOpen: (id: string) => void;
   decide: (ids: string[], d: Decision, comment?: string) => Promise<void>; picked: string[]; togglePick: (packId: string) => void; device: string;
+  reload: () => Promise<void>;
 }
 const Ctx = createContext<Review | null>(null);
 export const useReview = () => useContext(Ctx)!;
@@ -75,7 +77,7 @@ export function Meta({ it, kind = true }: { it: Item; kind?: boolean }) {
   );
 }
 
-const when = (s: string) => { const d = new Date(s); return Number.isNaN(d.getTime()) ? s : d.toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); };
+export const when = (s: string) => { const d = new Date(s); return Number.isNaN(d.getTime()) ? s : d.toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); };
 
 /** An item opened: its screenshots, details, the decision buttons, his comment and the history. */
 export function Detail({ it }: { it: Item }) {
@@ -98,10 +100,10 @@ export function Detail({ it }: { it: Item }) {
   const repo = typeof it.repo === 'string' && /^[\w.-]+\/[\w.-]+$/.test(it.repo) ? it.repo : REPO;
   const packId = it.pack?.id;
   const on = !!packId && r.picked.includes(packId);
-  return (
-    <div className="axp-ui-review__detail">
-      <ShotBrowser shots={shots.length ? shots : shown} title={it.title} />
-      <div className="axp-ui-review__facts">
+  const c = choicesOf(it);
+  const [tab, setTab] = useState<'screens' | 'choices' | 'comments'>(c && !c.chosen.length ? 'choices' : 'screens');
+  const info = (
+      <>
         {p && (
           <div className="axp-ui-review__predict" role="group" aria-label="Predicted look">
             <PredictBadge it={it} />
@@ -124,6 +126,11 @@ export function Detail({ it }: { it: Item }) {
         </dl>
         {it.build && <OriginFor build={it.build} />}
         {it.notes && <p className="axp-ui-review__notes">{it.notes}</p>}
+        {typeof it.singleOption === 'string' && <p className="fx-small fx-muted">One option only: {it.singleOption}</p>}
+      </>
+  );
+  const talk = (
+      <>
         <textarea className="fx-input axp-ui-review__comment" rows={2} value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Your comment (what to change, why)…" aria-label="Your comment" />
         <div className="axp-ui-review__acts">
           {packId && <Button size="sm" tone={on ? 'primary' : 'neutral'} icon={on ? 'check' : 'plus'} onClick={() => r.togglePick(packId)} aria-pressed={on}>{on ? 'Picked' : 'Pick'}</Button>}
@@ -138,8 +145,19 @@ export function Detail({ it }: { it: Item }) {
             <ol>{[...it.history].reverse().map((h, k) => <li key={k} className="fx-small"><span className="fx-muted">{when(h.at)}</span> · {h.by} · {core.statusInfo(h.status).label}{h.comment ? <> — <q>{h.comment}</q></> : null}</li>)}</ol>
           </details>
         )}
-      </div>
+      </>
+  );
+  const screens = (
+    <div className="axp-ui-review__detail">
+      <ShotBrowser shots={shots.length ? shots : shown} title={it.title} />
+      <div className="axp-ui-review__facts">{info}{c ? null : talk}</div>
     </div>
+  );
+  if (!c) return screens;
+  return (
+    <TabGroup id="ui-review-item" label="This item" value={tab} onChange={setTab} tabs={[{ value: 'screens', label: 'Screens' }, { value: 'choices', label: `Choices (${c.options.length})` }, { value: 'comments', label: 'Comments' }]}>
+      {tab === 'screens' ? screens : tab === 'choices' ? <ChoicesTab it={it} device={r.device} onDone={r.reload} /> : <div className="axp-ui-review__facts">{talk}</div>}
+    </TabGroup>
   );
 }
 
@@ -167,11 +185,12 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
   const [shotCount, setShotCount] = useState<number | null>(null);
   const [data, setData] = useState<Loaded | null>(null);
   const [error, setError] = useState('');
-  const [kind, setKindRaw] = useState<string>(() => section ?? setting(rt, KEYS.section, ''));
+  const [groupId, setGroupId] = useState(() => new URLSearchParams(globalThis.location?.search ?? '').get(GROUP_PARAM) ?? '');
+  const [kind, setKindRaw] = useState<string>(() => section ?? (groupId ? '' : setting(rt, KEYS.section, '')));
   const [view, setViewRaw] = useState<ViewId>(() => setting(rt, KEYS.view, 'grid') as ViewId);
   const [sort, setSortRaw] = useState<string>(() => setting(rt, KEYS.sort, 'waiting'));
   const [groupBy, setGroupByRaw] = useState<GroupBy>(() => setting(rt, KEYS.groupBy, 'kind') as GroupBy);
-  const [status, setStatusRaw] = useState<string>(() => setting(rt, KEYS.status, ''));
+  const [status, setStatusRaw] = useState<string>(() => (groupId ? '' : setting(rt, KEYS.status, '')));
   const [device, setDeviceRaw] = useState<string>(() => setting(rt, KEYS.device, ''));
   const [app, setApp] = useState('');
   const [q, setQ] = useState('');
@@ -195,7 +214,8 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
   const kinds = useMemo(() => (data ? core.mergeKinds(data.kinds.base, data.kinds.extra, all) : []), [data, all]);
   const counts = useMemo(() => core.counts(all), [all]);
   const appList = useMemo(() => core.apps(all), [all]);
-  const rows = useMemo(() => core.sortItems(core.filterItems(all, { kind, status, app, q }), sort), [all, kind, status, app, q, sort]);
+  const rows = useMemo(() => core.sortItems(core.filterItems(all, { kind, status, app, q, group: groupId }), sort), [all, kind, status, app, q, groupId, sort]);
+  const groupName = groupId ? String(all.find((x) => x.group === groupId)?.groupName || 'this group') : '';
   const picked = data?.picks.picked ?? [];
 
   const decide = async (ids: string[], d: Decision, comment = '') => {
@@ -216,7 +236,7 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
     catch (e) { rt.toast((e as Error).message, 'danger'); }
   };
   const toggleOpen = (id: string) => setOpen((o) => (o.includes(id) ? o.filter((x) => x !== id) : [...o, id]));
-  const ctx: Review = { kinds, sel, setSel, open, toggleOpen, decide, picked, togglePick, device };
+  const ctx: Review = { kinds, sel, setSel, open, toggleOpen, decide, picked, togglePick, device, reload: load };
 
   if (!data) return <LoadingSkeleton rows={6} label="Loading UI Review" />;
   const c = counts[''] ?? { total: 0, waiting: 0 };
@@ -243,20 +263,21 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
             {tab === 'review' && <IconButton icon="refresh" label="Reload" onClick={() => void load()} />}
           </div>
         </header>
-        <Segmented<Tab> label="UI Review tabs" value={tab} onChange={setTab} className="axp-ui-review__tabs"
-          options={[{ value: 'review', label: `Review · ${c.waiting} waiting`, icon: 'eye' }, { value: 'shots', label: shotCount !== null ? `Screenshots · ${shotCount}` : 'Screenshots', icon: 'monitor' }]} />
+        <TabGroup<Tab> id="ui-review.tabs" label="UI Review tabs" value={tab} onChange={setTab} className="axp-ui-review__tabs"
+          tabs={[{ value: 'review', label: 'Review', icon: 'eye', badge: c.waiting ? `${c.waiting} waiting` : undefined }, { value: 'shots', label: 'Screenshots', icon: 'monitor', badge: shotCount ?? undefined }]} />
         {tab === 'shots' ? <ScreenshotsTab onCount={setShotCount} /> : <>
         {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
 
-        <nav className="axp-ui-review__sections" aria-label="Sections">
-          <button type="button" className={`fx-chip ${!kind ? 'fx-chip--accent' : ''}`} aria-pressed={!kind} onClick={() => setKind('')}>All <span className="axp-ui-review__n">{c.waiting}/{c.total}</span></button>
-          {kinds.map((k) => { const n = counts[k.id] ?? { waiting: 0, total: 0 }; return (
-            <button type="button" key={k.id} className={`fx-chip ${kind === k.id ? 'fx-chip--accent' : ''}`} aria-pressed={kind === k.id} onClick={() => setKind(k.id)} title={k.desc}>
-              <Icon name={k.icon} size={12} />{k.label} <span className="axp-ui-review__n">{n.waiting}/{n.total}</span>
-            </button>
-          ); })}
-        </nav>
+        {/* The category row is a tab group (Brett, Nov 4 2026): right-click it for its settings / tab style / position. */}
+        <TabGroup id="ui-review.sections" label="Sections" className="axp-ui-review__sections" value={kind} onChange={setKind}
+          tabs={[{ value: '', label: 'All', badge: `${c.waiting}/${c.total}` }, ...kinds.map((k) => { const n = counts[k.id] ?? { waiting: 0, total: 0 }; return { value: k.id, label: k.label, icon: k.icon, title: k.desc, badge: `${n.waiting}/${n.total}` }; })]} />
 
+        {groupId && (
+          <div className="fx-row fx-row--wrap">
+            <span className="fx-small">Showing <b>{groupName}</b> ({rows.length})</span>
+            <Button size="sm" tone="quiet" onClick={() => setGroupId('')}>Show everything</Button>
+          </div>
+        )}
         <div className="axp-ui-review__bar" role="toolbar" aria-label="Filter and view">
           <input className="fx-input axp-ui-review__search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search: title, app, branch, #PR…" aria-label="Search" />
           <select className="fx-input axp-ui-review__sel" value={status} onChange={(e) => setStatus(e.target.value)} aria-label="Status">
@@ -280,7 +301,7 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
           : view === 'groups' ? <GroupsView items={rows} by={groupBy} />
           : view === 'gallery' ? <GalleryView items={rows} />
           : view === 'compare' ? <CompareView items={rows} />
-          : <GridView items={rows} />}
+          : <GridView items={rows} sort={sort} onSort={setSort} />}
 
         {sel.length > 0 && <BulkBar n={sel.length} onClear={() => setSel([])} />}
         </>}

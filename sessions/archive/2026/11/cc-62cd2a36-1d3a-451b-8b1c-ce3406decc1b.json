@@ -1,0 +1,109 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-62cd2a36-1d3a-451b-8b1c-ce3406decc1b",
+ "source": "claude-code",
+ "sessionId": "62cd2a36-1d3a-451b-8b1c-ce3406decc1b",
+ "project": "axhub",
+ "title": "# Build: notes-tasks-calendar ## Brett said (verbatim) \"In the notes, task manager and to-do (one plugin), we're gonna …",
+ "startedAt": "2026-11-07T00:58:28.986Z",
+ "endedAt": "2026-11-07T01:32:34.458Z",
+ "minutes": 34,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.319",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/notes-tasks-calendar",
+  "repo": "",
+  "branch": "claude/notes-tasks-calendar"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-07T00:58:43.778Z",
+   "kind": "prompt",
+   "text": "# Build: notes-tasks-calendar ## Brett said (verbatim) \"In the notes, task manager and to-do (one plugin), we're gonna add a calendar where we can set events and schedules. We can set weekly schedules. And it's gonna be hooked up to our Gmail / Google Calendar through axHub's MCP server.\" Base: branch claude/notes-tasks-sync (PR #363, shared notes-tasks plugin); merge it first, build on it. 1. Calendar inside the notes-tasks plugin (console + AmberX): day / week / month / agenda views; events (time, location, notes, reminders); recurring + weekly schedules; tasks with due dates show on it. 2.…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 110,
+    "output": 168285,
+    "cacheRead": 12898341,
+    "cacheWrite": 353044,
+    "thinking": 31410
+   },
+   "costUsd": 7.7113,
+   "costEstimated": false,
+   "seconds": 2029,
+   "tools": {
+    "Bash": 56,
+    "Grep": 1,
+    "Write": 7,
+    "Read": 9
+   },
+   "commands": 56,
+   "files": [
+    "/root/axf-builds/notes-tasks-calendar/apps/console-web/plugins/notes-tasks/web/calendar/core.ts",
+    "/root/axf-builds/notes-tasks-calendar/apps/console-web/plugins/notes-tasks/web/calendar/store.ts",
+    "/root/axf-builds/notes-tasks-calendar/apps/console-web/plugins/notes-tasks/server/calendar_core.py",
+    "/root/axf-builds/notes-tasks-calendar/apps/console-web/plugins/notes-tasks/server/hubcall.py",
+    "/root/axf-builds/notes-tasks-calendar/apps/console-web/plugins/notes-tasks/server/reply.py",
+    "/root/axf-builds/notes-tasks-calendar/apps/console-web/plugins/notes-tasks/server/calendar_google.py",
+    "/root/axf-builds/notes-tasks-calendar/apps/console-web/plugins/notes-tasks/server/calendar_api.py"
+   ],
+   "changeIds": [
+    "chg-20261107-56ce016ef3"
+   ],
+   "features": [
+    "orchestrator:notes-tasks-calendar",
+    "pending:notes-tasks-sync",
+    "pending:notes-tasks-calendar"
+   ],
+   "output": "Calendar's built, boss, and **PR #374** is up. It's not landed: it's stacked on #363 and waiting on your UI Review. 23 screenshots of every view, phone and desktop, are in there, group \"notes-tasks-calendar - Nov 6 8:31 PM\". The PR's in the merge queue, but the queue holds it until you approve. CI …"
+  }
+ ],
+ "files": [
+  "/root/axf-builds/notes-tasks-calendar/apps/console-web/plugins/notes-tasks/web/calendar/core.ts",
+  "/root/axf-builds/notes-tasks-calendar/apps/console-web/plugins/notes-tasks/web/calendar/store.ts",
+  "/root/axf-builds/notes-tasks-calendar/apps/console-web/plugins/notes-tasks/server/calendar_core.py",
+  "/root/axf-builds/notes-tasks-calendar/apps/console-web/plugins/notes-tasks/server/hubcall.py",
+  "/root/axf-builds/notes-tasks-calendar/apps/console-web/plugins/notes-tasks/server/reply.py",
+  "/root/axf-builds/notes-tasks-calendar/apps/console-web/plugins/notes-tasks/server/calendar_google.py",
+  "/root/axf-builds/notes-tasks-calendar/apps/console-web/plugins/notes-tasks/server/calendar_api.py"
+ ],
+ "changeIds": [
+  "chg-20261107-56ce016ef3"
+ ],
+ "features": [
+  "orchestrator:notes-tasks-calendar",
+  "pending:notes-tasks-sync",
+  "pending:notes-tasks-calendar"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 110,
+  "output": 168285,
+  "cacheRead": 12898341,
+  "cacheWrite": 353044,
+  "thinking": 31410,
+  "costUsd": 7.7113,
+  "costEstimated": false,
+  "toolCalls": 73,
+  "commands": 56,
+  "filesTouched": 7,
+  "reportedUsd": 8.7702
+ },
+ "ingestedAt": "2026-11-07T01:32:34.851Z"
+}

@@ -1,0 +1,58 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "chrome-banner-axf-console",
+  "name": "Banner settings (GizmoX AI Studio)",
+  "version": "1.0.0",
+  "description": "GizmoX AI Studio's own copy of the shared banner settings interface (chrome-banner). It follows the default until it is edited; the default stays selected until you pick this one (chrome-settings@1).",
+  "author": "AmberX AXF",
+  "tags": [
+    "custom",
+    "chrome-settings",
+    "axf-console"
+  ],
+  "data": {
+    "for": "banner",
+    "layout": "tabs-top",
+    "header": "compact",
+    "search": false,
+    "descriptions": true,
+    "tabs": [
+      {
+        "id": "look",
+        "label": "Look",
+        "icon": "palette",
+        "order": 10
+      },
+      {
+        "id": "behaviour",
+        "label": "Behaviour",
+        "icon": "sliders",
+        "order": 20
+      },
+      {
+        "id": "asset",
+        "label": "Asset",
+        "icon": "layers",
+        "order": 30
+      },
+      {
+        "id": "interface",
+        "label": "Interface",
+        "icon": "settings",
+        "order": 40
+      }
+    ],
+    "hide": [],
+    "groups": [],
+    "levels": true,
+    "defaultLevel": "basic",
+    "levelOf": {
+      "look": "simple",
+      "behaviour": "basic",
+      "asset": "basic",
+      "interface": "developer"
+    },
+    "extends": "chrome-banner"
+  }
+}

@@ -5,6 +5,7 @@ export interface ChangeSummary {
   state?: string | null; repos?: string[]; model?: string; where?: string; branch?: string;
   steps?: { total: number; done: number; failed: number; running: string };
   result?: { state?: string; summary?: string } | null; closed?: string | null;
+  buildRef?: { kind?: string; id?: string } | null;
 }
 export interface FeatureLike {
   id: string; title: string; area?: string; kind?: string; status?: string; summary?: string; model?: string; group?: string;
@@ -14,7 +15,7 @@ export type Source = 'change' | 'feature';
 export type Show = 'all' | 'changes' | 'features';
 export type Sort = 'newest' | 'oldest' | 'title';
 export interface Row {
-  key: string; source: Source; refId: string; title: string; at: string; kind: string; status: string; model: string; area: string; summary: string;
+  key: string; source: Source; refId: string; title: string; at: string; kind: string; status: string; model: string; area: string; summary: string; build?: string;
 }
 
 const str = (v: unknown) => (typeof v === 'string' ? v : '');
@@ -24,6 +25,7 @@ export function changeRow(c: ChangeSummary): Row {
     key: `change:${c.id}`, source: 'change', refId: c.id, title: str(c.title).trim() || str(c.asked).trim() || c.id,
     at: str(c.createdAt), kind: str(c.kind) || 'change', status: str(c.result?.state) || str(c.state) || 'open',
     model: str(c.model), area: (c.repos ?? []).join(', ') || str(c.where), summary: str(c.result?.summary) || str(c.asked),
+    build: str(c.buildRef?.id),
   };
 }
 

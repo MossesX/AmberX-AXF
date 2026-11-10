@@ -110,3 +110,19 @@ export function shownOf(r: Reveal, k: number, items: readonly ChainItem[]): { ru
   if (r.cur?.item === k) { const rule = r.cur.step - 1; return { rules: Math.max(0, rule), typing: rule >= 0 && rule < items[k]!.rules.length ? rule : -1, chars: r.cur.chars }; }
   return { rules: r.done.includes(k) ? items[k]!.rules.length : 0, typing: -1, chars: 0 };
 }
+
+/* ------------------------------------------------- start tokens (headless-context@1, build brief-only-headless) */
+/** What deploy/claude-meter.mjs adds to a meter since Nov 8 2026: the run's start and what it loaded. */
+export interface MeterStart {
+  start?: { tokens: number; costUsd: number | null; warning?: string } | null;
+  context?: { briefOnly: boolean; loaded?: { tools: number; mcp: string[]; skills: number; slashCommands: number } | null } | null;
+}
+/** '11.2K' / '950'. Pure. */
+export const kTokens = (n: number): string => (n >= 1000 ? `${(n / 1000).toFixed(1)}K` : String(Math.round(n)));
+/** The tab's start line: 'start 11.2K tokens ($0.03) · brief only · 6 tools · MCP none'; '' before the first request. Pure. */
+export function startLine(m: MeterStart | null | undefined): string {
+  const s = m?.start; if (!s || typeof s.tokens !== 'number') return '';
+  const c = m?.context; const l = c?.loaded;
+  return [`start ${kTokens(s.tokens)} tokens${typeof s.costUsd === 'number' ? ` ($${s.costUsd.toFixed(2)})` : ''}`,
+    c ? (c.briefOnly ? 'brief only' : 'full chain') : '', l ? `${l.tools} tools` : '', l ? `MCP ${l.mcp.length ? l.mcp.join(', ') : 'none'}` : '', s.warning || ''].filter(Boolean).join(' · ');
+}

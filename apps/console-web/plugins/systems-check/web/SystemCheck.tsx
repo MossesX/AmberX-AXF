@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import { BannerIcon, Button, Chip, Icon, Segmented, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
+import { BannerIcon, Button, Chip, Icon, Segmented, TabGroup, useBannerLaunchOpen, useRuntime } from '@console/axf/react';
 import type { AxfRuntime } from '@console/axf/core';
 import * as api from '@console/api';
 import { StepList } from '@console/commandText';
@@ -566,11 +566,8 @@ export function SystemCheckDialog({ focus }: { focus?: string }) {
 
       {s.prompt && <PromptPanel p={s.prompt} />}
 
-      <div className="axp-systems-check__tabs" role="tablist">
-        {([['grid', 'Grid', 'list'], ['service', 'By service', 'grid'], ['guided', 'Guided setup', 'play']] as [View, string, string][]).map(([id, label, icon]) => (
-          <button key={id} type="button" role="tab" aria-selected={view === id} className="fx-tab" onClick={() => setView(id)}><Icon name={icon} size={14} /> {label}</button>
-        ))}
-      </div>
+      <TabGroup<View> id="systems-check.views" label="Systems check views" className="axp-systems-check__tabs" value={view} onChange={setView}
+        tabs={([['grid', 'Grid', 'list'], ['service', 'By service', 'grid'], ['guided', 'Guided setup', 'play']] as [View, string, string][]).map(([id, label, icon]) => ({ value: id, label, icon }))} />
 
       {view === 'grid' && (
         <div className="axp-systems-check__grid">

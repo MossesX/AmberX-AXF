@@ -1,0 +1,521 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-shipped-features-r2",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-09T01:26:05Z",
+ "build": {
+  "id": "shipped-features-r2",
+  "title": "Shipped features",
+  "profile": "all",
+  "category": "Plugin",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Where's the list of features that can be sorted, and when they went live? ... I need a list of individual features, and you can view the features or you can view the builds that made the features. The builds will have an expanding row to show all its information along with the features. Tap in the expanded row. And there will also be another table that uses the features themselves as the root.",
+  "verbatim": true,
+  "at": "2026-11-04T12:00:00Z",
+  "source": "voice",
+  "by": "Greenlight Gina (headless, Fable)",
+  "addenda": [
+   {
+    "text": "Create a database, create a grid that lists all the features going back for days and days, all the way back: all the features that were built and what PR they belong to. If you're sorted by PR, you select the PR, it opens an expanded row which shows all the features, which open another expanded row which shows all the information about it, including the prompt that I wrote that spawned it. And make it so the initial row you can view by PR, view by plugin, view by app, view by feature type.",
+    "at": "2026-11-04T13:00:00Z",
+    "source": "voice",
+    "verbatim": true
+   },
+   {
+    "text": "If the repo was first day, it was way before the third.",
+    "at": "2026-11-04T14:00:00Z",
+    "source": "voice",
+    "verbatim": true
+   },
+   {
+    "text": "Just AmberX and axHub, not any of those other repos.",
+    "at": "2026-11-04T15:00:00Z",
+    "source": "voice",
+    "verbatim": true
+   },
+   {
+    "text": "As soon as a prompt goes through that plans on building the features, they go into that list, and have it sortable so you can hide completed ones and pending ones.",
+    "at": "2026-11-04T16:00:00Z",
+    "source": "voice",
+    "verbatim": true
+   },
+   {
+    "text": "Anytime a feature in that list is getting changed or altered, it will appear as an edit. It will update that list and show edits to that feature.",
+    "at": "2026-11-04T17:00:00Z",
+    "source": "voice",
+    "verbatim": true
+   },
+   {
+    "text": "I want you to work on the Fable part right now. ... Take the whole task from him. I'm gonna shut him down. Then you take the whole task. Start it right now.",
+    "at": "2026-11-04T21:30:00Z",
+    "source": "voice",
+    "verbatim": true
+   }
+  ]
+ },
+ "brief": "# Build: shipped-features-r2 (Fable for the foundation steps, then downgrade to Opus for the plugin/UI steps)\n**Name:** Shipped features · **Category:** Plugin (+ Framework contracts)\n\n## Takeover (Brett, voice, Nov 4 2026)\n\"I want you to work on the Fable part right now.\" ... \"Take the whole task from him. I'm gonna shut him down. Then you take the whole task. Start it right now.\"\nThe helper account was building this on branch `claude/shipped-features-acct2` (Opus only, no Fable) and is being stopped. **FIRST:** `git fetch origin claude/shipped-features-acct2`. If it exists and has real work, base on it (merge it into your branch), read its `_claude/builds/progress/shipped-features.md`, and continue from the first unticked step without redoing finished ones; re-check its contract code against the Fable steps below. If it's empty, start fresh. Close the helper's draft PR (if any) as superseded once your PR is open, linking it.\n\n**The full spec is the original brief + Addenda 1-3 in `/root/axf-builds/shipped-features/.brief.md` (read it), plus the two parts below.** Summary of that file: SQLite feature database on the data volume (never in repo); history ONLY from MossesX/AmberX-AXF + MossesX/axHub back to first commit; split PRs into individual features linked to Brett's verbatim prompt; deploy log for real 'live' dates; 3-level expanding grid (group -> features -> full details incl. 'What Brett said'), View by PR (default) / Plugin / App / Feature type / Build / Day / Repo / Flat; Live / Merged-not-deployed badges on Build manager + Codebase changes; API/MCP/CLI + voice.\n\n## Addendum 4 (Brett): planned features show up right away\n\"As soon as a prompt goes through that plans on building the features, they go into that list, and have it sortable so you can hide completed ones and pending ones.\"\n- Every build creator (vps.build_start, orchestrator add, pending_change add, Plan Studio 'Turn into a build', helper take) puts its planned features in instantly with the verbatim prompt. Status Planned -> Queued -> Building -> In PR -> Merged -> Live (+ Cancelled/Removed). Status chips everywhere, sortable; 'Hide completed' / 'Hide pending' toggles + status multi-select, remembered per device. Cancelled kept, hidden by default.\n\n## Addendum 5 (Brett): changes show up as edits\n\"Anytime a feature in that list is getting changed or altered, it will appear as an edit. It will update that list and show edits to that feature.\"\n- Later builds/addenda/PRs/fixes touching an existing feature add an EDIT (what changed, build/PR/commit, verbatim prompt, model, agent, session, date, own status), not a new feature. 'Edited' chip with count + last edit date, 'Being edited' while in progress, sortable by last edited. Level 3 has an Edits timeline (newest first, expandable). Filters: Has edits / Being edited now / edit status. Edits table; backfill from history.\n\n## FABLE STEPS FIRST (foundation; Plan Studio plan 'Shipped features: Fable part')\n1. **feature-ledger@1** contract: schema + versioning for features, PRs, builds, deploys, prompts, edits; one status lifecycle for features and edits. Fixtures, conformance check in CI, PORTING.md entry. Keep it in one small module the plugin imports.\n2. **Build hook contract**: one framework event every build creator fires (create, status change, PR open/merge), so the ledger updates instantly without each plugin knowing about it.\n3. **deploy-log@1**: target, commit sha, time, who. Every deploy script writes it.\nThen **downgrade to Opus** (allowed) for the importer, grid, badges, commands and UI.\n\n## Rules\nWork in resumable steps (progress file ticked + pushed after every step; draft PR after step 1). Book to a free named agent; tick the Plan Studio plans. Basic docs/README.md, tests, phone + desktop UI Review shots (non-blocking). PR **through the merge queue only** (auto-land is OFF). Report in _claude/builds/reports/. Commits clean.",
+ "models": [
+  "Fable",
+  "Opus"
+ ],
+ "accounts": [
+  "account-1"
+ ],
+ "runs": [
+  {
+   "session": "axf-shipped-features-r2--gina",
+   "account": "",
+   "model": "Fable",
+   "startedAt": "2026-11-04T21:38:15.451Z",
+   "endedAt": "2026-11-04T21:54:57.462Z",
+   "exit": 1,
+   "costUsd": 7.5509
+  },
+  {
+   "session": "axf-shipped-features-fable--rhonda",
+   "account": "account-1",
+   "model": "Fable",
+   "startedAt": "2026-11-06T19:47:11.012Z",
+   "endedAt": "2026-11-06T20:35:08.423Z",
+   "exit": 0,
+   "costUsd": 19.6409
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "feature-ledger@1 contract: framework/core/feature-ledger.mjs (features, PRs, builds, deploys, prompts, edits; one status lifecycle for features and edits; grouping/sort/filter projections), schema snapshot, fixture, CI check, PORTING.md entry",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-04T21:38:15.451Z",
+   "doneAt": "2026-11-06T20:04:31.580Z",
+   "actualMin": 2786,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "build-events@1 hook: one framework event for every builds-store write (created, status, step, branch, PR open/merge, origin) fired from saveStore; event log on the data volume; plugin handlers via plugin.json; fixture + CI check",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-04T21:38:15.451Z",
+   "doneAt": "2026-11-06T20:04:31.580Z",
+   "actualMin": 2786,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "deploy-log@1: target, commit sha, from, time, who, state; core + CLI + shell helper; every deploy script writes it (console updater, app installers, demo site cron); fixture, CI check, deploy test.sh",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-04T21:38:15.451Z",
+   "doneAt": "2026-11-06T20:04:31.580Z",
+   "actualMin": 2786,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Plugin shipped-features: SQLite feature database on the data volume (WAL, migrations, nightly backup), server routes reading it",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-04T21:38:15.451Z",
+   "doneAt": "2026-11-06T20:04:31.580Z",
+   "actualMin": 2786,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Importer: full history of MossesX/AmberX-AXF + MossesX/axHub (merged PRs, builds + origins/briefs/reports, commits without PR, catalog/status.json, deploy logs); PRs split into features (Deep AI default, Basic fallback), prompts linked, idempotent re-run",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-04T21:38:15.451Z",
+   "doneAt": "2026-11-06T20:04:31.580Z",
+   "actualMin": 2786,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Live intake: build-events@1 puts planned features in instantly (Planned → Queued → Building → In PR → Merged → Live); later builds/PRs/fixes on an existing feature become edits; deploy-log@1 sets live dates per target",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-04T21:38:15.451Z",
+   "doneAt": "2026-11-06T20:04:31.580Z",
+   "actualMin": 2786,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Shipped grid: three-level expanding rows, View by PR (default) / Plugin / App / Feature type / Build / Day / Repo / Flat, sort/filter/search (inside prompts too), column hiding, CSV/Markdown export, status + Edited chips, Hide completed / Hide pending, remembered per device",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-04T21:38:15.451Z",
+   "doneAt": "2026-11-06T20:04:31.580Z",
+   "actualMin": 2786,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Level 3 details: description, PR/build/model/agent/session, merged at, live at per target, files, docs/video/plan/report links, Edits timeline, 'What Brett said' block with the passage highlighted; phone layout as stacked cards with breadcrumb",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-04T21:38:15.451Z",
+   "doneAt": "2026-11-06T20:04:31.580Z",
+   "actualMin": 2786,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "Live / Merged-not-deployed badges on Build manager and Codebase changes rows; API/MCP/CLI commands + voice ('what went live today', 'when did X go live')",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-04T21:38:15.451Z",
+   "doneAt": "2026-11-06T20:04:31.580Z",
+   "actualMin": 2786,
+   "done": true
+  },
+  {
+   "id": "s10",
+   "text": "Settings sub-tab, help pack, tests, lifecycle check, README, UI Review shots (phone + desktop, non-blocking), report _claude/builds/reports/shipped-features-r2.md, PR through the merge queue",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-04T21:38:15.451Z",
+   "doneAt": "2026-11-06T20:04:31.580Z",
+   "actualMin": 2786,
+   "done": true
+  },
+  {
+   "id": "s11",
+   "text": "Addendum 1: Create a database, create a grid that lists all the features going back for days and days, all the way back: all the features that were built and what PR they belong to.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T20:04:31.580Z",
+   "doneAt": "2026-11-07T00:47:59.495Z",
+   "actualMin": 283,
+   "done": true
+  },
+  {
+   "id": "s11-1",
+   "text": "Create a database, create a grid that lists all the features going back for days and days, all the way back: all the features that were built and what PR they belong to.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-04T21:38:15.451Z",
+   "doneAt": "2026-11-06T20:04:31.580Z",
+   "actualMin": 2786,
+   "done": true
+  },
+  {
+   "id": "s12",
+   "text": "Addendum 2: If the repo was first day, it was way before the third.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T20:04:31.580Z",
+   "doneAt": "2026-11-07T00:47:59.495Z",
+   "actualMin": 283,
+   "done": true
+  },
+  {
+   "id": "s12-1",
+   "text": "If the repo was first day, it was way before the third.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-04T21:38:15.451Z",
+   "doneAt": "2026-11-06T20:04:31.580Z",
+   "actualMin": 2786,
+   "done": true
+  },
+  {
+   "id": "s13",
+   "text": "Addendum 3: Just AmberX and axHub, not any of those other repos.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T20:04:31.580Z",
+   "doneAt": "2026-11-07T00:47:59.495Z",
+   "actualMin": 283,
+   "done": true
+  },
+  {
+   "id": "s13-1",
+   "text": "Just AmberX and axHub, not any of those other repos.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-04T21:38:15.451Z",
+   "doneAt": "2026-11-06T20:04:31.580Z",
+   "actualMin": 2786,
+   "done": true
+  },
+  {
+   "id": "s14",
+   "text": "Addendum 4: As soon as a prompt goes through that plans on building the features, they go into that list, and have it sortable so you can hide completed ones and pending ones.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T20:04:31.580Z",
+   "doneAt": "2026-11-07T00:47:59.495Z",
+   "actualMin": 283,
+   "done": true
+  },
+  {
+   "id": "s14-1",
+   "text": "As soon as a prompt goes through that plans on building the features, they go into that list, and have it sortable so you can hide completed ones and pending ones.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-04T21:38:15.451Z",
+   "doneAt": "2026-11-06T20:04:31.580Z",
+   "actualMin": 2786,
+   "done": true
+  },
+  {
+   "id": "s15",
+   "text": "Addendum 5: Anytime a feature in that list is getting changed or altered, it will appear as an edit.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T20:04:31.580Z",
+   "doneAt": "2026-11-07T00:47:59.495Z",
+   "actualMin": 283,
+   "done": true
+  },
+  {
+   "id": "s15-1",
+   "text": "Anytime a feature in that list is getting changed or altered, it will appear as an edit.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-04T21:38:15.451Z",
+   "doneAt": "2026-11-06T20:04:31.580Z",
+   "actualMin": 2786,
+   "done": true
+  },
+  {
+   "id": "s16",
+   "text": "Addendum 6: I want you to work on the Fable part right now.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T20:04:31.580Z",
+   "doneAt": "2026-11-07T00:47:59.495Z",
+   "actualMin": 283,
+   "done": true
+  },
+  {
+   "id": "s16-1",
+   "text": "I want you to work on the Fable part right now.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-04T21:38:15.451Z",
+   "doneAt": "2026-11-06T20:04:31.580Z",
+   "actualMin": 2786,
+   "done": true
+  }
+ ],
+ "branch": "claude/shipped-features-fable",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 364,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/364"
+ },
+ "landedCommit": "aeccdb0a848b520cd60fa4bb412e90f5037042ad",
+ "commits": [
+  "4f5fdb993e0a08567ceeee36fc5af25dd7653868",
+  "f4ee124c1e315996151194d7460d9689bde3ff69",
+  "c07f630a86cfa5c26e7348fb2b3d1661282785a0",
+  "7bf0ef05a7e4704ecdd235ee4432fcb81956e28a"
+ ],
+ "mergedAt": "2026-11-07T16:33:06Z",
+ "landedAt": "2026-11-07T16:33:00Z",
+ "files": [
+  "CLAUDE.md",
+  "_claude/THREADS.md",
+  "_claude/builds/progress/shipped-features.md",
+  "_claude/builds/reports/shipped-features.md",
+  "_claude/memory/STATUS.md",
+  "_claude/memory/builds-registry.md",
+  "_claude/memory/docs/chain-control.md",
+  "_claude/memory/docs/token-log.md",
+  "_claude/memory/handoff-2026-11-05.md",
+  "_claude/memory/todo/features-landed.md",
+  "_claude/memory/todo/install-keys.md",
+  "_claude/sessions/2026-11-04-shipped-features.md",
+  "_claude/sessions/2026-11-04.md",
+  "_claude/sessions/2026-11-05.md",
+  "_claude/shared/memory/vision.md",
+  "_claude/shared/memory/write-ups.md",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/shipped-features/README.md",
+  "apps/console-web/plugins/shipped-features/help.json",
+  "apps/console-web/plugins/shipped-features/ledger/apply.mjs",
+  "apps/console-web/src/axf/core/build-hook.mjs",
+  "apps/console-web/src/axf/core/deploy-log.mjs",
+  "apps/console-web/src/axf/core/feature-ledger.d.mts",
+  "apps/console-web/src/axf/core/feature-ledger.mjs",
+  "apps/console-web/src/axf/schemas/build-hook.json",
+  "apps/expenses/_claude/README.md",
+  "apps/expenses/_claude/instructions/README.md",
+  "apps/expenses/_claude/memory/README.md",
+  "apps/expenses/_claude/rules/README.md",
+  "framework/cli/build-hooks.mjs",
+  "framework/core/build-hook.mjs",
+  "framework/core/deploy-log.mjs",
+  "framework/core/feature-ledger.d.mts",
+  "framework/core/feature-ledger.mjs",
+  "framework/plan/profiles/breakroom/framework/catalog/status.json",
+  "framework/plan/profiles/breakroom/framework/plan/build-queue.json",
+  "framework/plan/profiles/breakroom/framework/plan/plan.json",
+  "framework/schemas/build-hook.json",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-build-hook.mjs",
+  "framework/spec/check-feature-ledger.mjs",
+  "framework/spec/fixtures/build-hook.json",
+  "framework/spec/fixtures/feature-ledger.json"
+ ],
+ "areas": [
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md",
+    "_claude/memory/builds-registry.md",
+    "_claude/memory/docs/chain-control.md",
+    "_claude/memory/docs/token-log.md",
+    "_claude/memory/handoff-2026-11-05.md",
+    "_claude/memory/todo/features-landed.md",
+    "_claude/memory/todo/install-keys.md",
+    "_claude/sessions/2026-11-04-shipped-features.md",
+    "_claude/sessions/2026-11-04.md",
+    "_claude/sessions/2026-11-05.md",
+    "_claude/shared/memory/vision.md",
+    "_claude/shared/memory/write-ups.md"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/src/axf/core/build-hook.mjs",
+    "apps/console-web/src/axf/core/deploy-log.mjs",
+    "apps/console-web/src/axf/core/feature-ledger.d.mts",
+    "apps/console-web/src/axf/core/feature-ledger.mjs",
+    "apps/console-web/src/axf/schemas/build-hook.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-build-hook.mjs",
+    "framework/spec/check-feature-ledger.mjs",
+    "framework/spec/fixtures/build-hook.json",
+    "framework/spec/fixtures/feature-ledger.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "expenses",
+   "files": [
+    "apps/expenses/_claude/README.md",
+    "apps/expenses/_claude/instructions/README.md",
+    "apps/expenses/_claude/memory/README.md",
+    "apps/expenses/_claude/rules/README.md"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/build-hook.mjs",
+    "framework/core/deploy-log.mjs",
+    "framework/core/feature-ledger.d.mts",
+    "framework/core/feature-ledger.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "shipped-features",
+   "files": [
+    "apps/console-web/plugins/shipped-features/README.md",
+    "apps/console-web/plugins/shipped-features/help.json",
+    "apps/console-web/plugins/shipped-features/ledger/apply.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/profiles/breakroom/framework/catalog/status.json",
+    "framework/plan/profiles/breakroom/framework/plan/build-queue.json",
+    "framework/plan/profiles/breakroom/framework/plan/plan.json"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/progress/shipped-features.md",
+    "_claude/builds/reports/shipped-features.md"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/build-hooks.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/build-hook.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261106-f8fd11bb",
+   "name": "Shipped features",
+   "status": "approved",
+   "group": "g-20261106-8769175f",
+   "url": "/review/r-20261106-f8fd11bb"
+  }
+ ],
+ "cost": {
+  "usd": 27.1918,
+  "estimated": false,
+  "tokens": {
+   "input": 1992,
+   "output": 1431,
+   "cacheRead": 10200534,
+   "cacheWrite": 400336
+  }
+ },
+ "report": "",
+ "open": []
+}

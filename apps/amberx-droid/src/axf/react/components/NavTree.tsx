@@ -185,7 +185,7 @@ export function NavTree({ sections, views, style, orient, header }: { sections: 
 
   return (
     <div className="fx-navs" data-orient={orient}>
-      <nav ref={navRef} className={`fx-nav fx-nav--${rt.asset('nav-menu').data.style}`} data-orient={orient} aria-label="Main" data-fx-ctx-target="nav" onPointerDown={onDown}>
+      <nav ref={navRef} className={`fx-nav fx-nav--${rt.asset('nav-menu').data.style}`} data-orient={orient} aria-label="Main" data-axf-nav="app" data-fx-ctx-target="nav" data-fx-ctx-payload="app" onPointerDown={onDown}>
         {(header || (style.width.collapsible && !narrow)) && orient === 'vertical' && (
           <div className="fx-nav__head">
             {header && <div className="fx-nav__header">{header}</div>}

@@ -32,8 +32,9 @@ export const isBackendUp = () => backendUp === true;
 
 async function getJson<T>(api: string, fallback: string): Promise<T> {
   if (backendUp !== false) {
-    try { const r = await fetch(`/api/${api}`, { cache: 'no-store' }); if (r.ok) { backendUp = true; return (await r.json()) as T; } } catch { /* fall through */ }
-    backendUp = false;
+    // a server error (5xx, or the backoff's 503) falls back for this read only; just "no answer at all" marks the
+    // backend down (it used to flip on any error, sending every later read to the stale static copies)
+    try { const r = await fetch(`/api/${api}`, { cache: 'no-store' }); if (r.ok) { backendUp = true; return (await r.json()) as T; } if (r.status === 404 || r.status === 405) backendUp = false; } catch { backendUp = false; }
   }
   const r = await fetch(`${DATA}${fallback}`, { cache: 'no-store' });
   if (!r.ok) throw new Error(`No ${fallback} (run npm run sync)`);

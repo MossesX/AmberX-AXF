@@ -1,0 +1,286 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "claude-accounts-help",
+  "name": "claude-accounts help",
+  "version": "0.2.0",
+  "description": "Help mode entries for plugin:claude-accounts.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:claude-accounts",
+    "entries": [
+      {
+        "target": "action:claude-accounts.open",
+        "title": "Claude accounts settings",
+        "text": "Opens Settings → Plugins → Claude accounts.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:claude-accounts.switch",
+        "title": "Switch Claude account",
+        "text": "Opens the list of saved Claude accounts with a Switch button on each.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "view:claude-accounts",
+        "title": "Claude accounts",
+        "text": "Which Claude login the VPS uses. New launches use the active account; running builds keep theirs.",
+        "kind": "screen"
+      },
+      {
+        "target": "switch",
+        "title": "Switch",
+        "text": "Asks to switch Claude on the VPS to this account. It waits for your approval, then new launches use it.",
+        "kind": "button"
+      },
+      {
+        "target": "save",
+        "title": "Save",
+        "text": "Asks to save the login Claude is signed in with on the VPS under this name. It waits for your approval.",
+        "kind": "button"
+      },
+      {
+        "target": "save-current-login-as",
+        "title": "Save current login as…",
+        "text": "The name for the login. Lower-case letters, digits and dashes, up to 32.",
+        "kind": "field"
+      },
+      {
+        "target": "new-claude-code-terminal",
+        "title": "New Claude Code terminal",
+        "text": "Opens a new Claude Code tab. Pick the VPS host, then run /login to add an account.",
+        "kind": "button"
+      },
+      {
+        "target": "refresh",
+        "title": "Refresh",
+        "text": "Reads the accounts from the VPS again.",
+        "kind": "button"
+      },
+      {
+        "target": "claude-accounts",
+        "title": "Claude accounts",
+        "text": "Settings for which Claude login the VPS uses: list, switch, save the current login.",
+        "kind": "tab"
+      },
+      {
+        "target": "view:claude-accounts.switch",
+        "title": "Switch Claude account",
+        "text": "The saved Claude accounts with a Switch button on each. A switch waits for your approval.",
+        "kind": "screen"
+      },
+      {
+        "target": "make-worker",
+        "title": "Make worker",
+        "text": "Turns this account into a worker: it only runs headless jobs and is never the console's account.",
+        "kind": "button"
+      },
+      {
+        "target": "stop-worker",
+        "title": "Stop worker",
+        "text": "Stops sending headless jobs to this account. Running jobs finish where they are.",
+        "kind": "button"
+      },
+      {
+        "target": "sign-in",
+        "title": "Sign in",
+        "text": "Signs this account in, in its own folder, so the active login isn't touched. Use it for a new account or when a login expired. Asks for approval, then opens in the Terminal.",
+        "kind": "button"
+      },
+      {
+        "target": "remove",
+        "title": "Remove",
+        "text": "Sets this saved account aside on the VPS. Nothing is deleted. The active account and one running a job can't be removed.",
+        "kind": "button"
+      },
+      {
+        "target": "add-and-sign-in",
+        "title": "Add and sign in",
+        "text": "Creates a new account folder and starts its sign-in. Once it's signed in, tap Make worker on its row.",
+        "kind": "button"
+      },
+      {
+        "target": "new-account-name",
+        "title": "New account name",
+        "text": "The name for the new account: lower-case letters, digits and dashes.",
+        "kind": "field"
+      },
+      {
+        "target": "action:claude-accounts.routing",
+        "title": "Claude job routing settings",
+        "text": "Opens Settings → Plugins → Claude accounts, where Job routing decides which account takes each headless job.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "settings-panel:claude-accounts.routing",
+        "title": "Job routing",
+        "text": "Every saved subscription login takes headless jobs unless you stop it; the console's account takes jobs after them when its switch is on. At most 3 jobs build and 5 wait per account. API keys bill per token, so they only take jobs a routing rule sends them, and nothing once a daily or weekly spend cap is reached. Rules are checked in order and the first switched-on match decides. Test a job shows where a job would go right now.",
+        "kind": "card"
+      },
+      {
+        "target": "console-account-takes-headless-jobs",
+        "title": "Console account takes headless jobs",
+        "text": "Turns “Console account takes headless jobs” on or off. It takes effect straight away and is remembered. Part of Claude accounts.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "jobs-building-at-once-per-account",
+        "title": "Jobs building at once, per account",
+        "text": "Where you set “Jobs building at once, per account”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "jobs-waiting-per-account",
+        "title": "Jobs waiting, per account",
+        "text": "Where you set “Jobs waiting, per account”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "save-limits",
+        "title": "Save limits",
+        "text": "Saves limits. Nothing is kept until you tap it. Part of Claude accounts.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "takes-jobs",
+        "title": "Takes jobs",
+        "text": "Turns “Takes jobs” on or off. It takes effect straight away and is remembered. Part of Claude accounts.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "daily-cap-usd",
+        "title": "Daily cap (USD)",
+        "text": "Where you set “Daily cap (USD)”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "weekly-cap-usd",
+        "title": "Weekly cap (USD)",
+        "text": "Where you set “Weekly cap (USD)”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "alert-at-of-a-cap",
+        "title": "Alert at (% of a cap)",
+        "text": "Where you set “Alert at (% of a cap)”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "save-caps",
+        "title": "Save caps",
+        "text": "Saves caps. Nothing is kept until you tap it. Part of Claude accounts.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "name-on-the-vps",
+        "title": "Name on the VPS",
+        "text": "Where you set “Name on the VPS”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "shown-as",
+        "title": "Shown as",
+        "text": "Where you set “Shown as”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "rule-name",
+        "title": "Rule name",
+        "text": "Where you set “Rule name”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "send-matching-jobs-to",
+        "title": "Send matching jobs to",
+        "text": "Where you set “Send matching jobs to”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "api-accounts-empty-any",
+        "title": "API accounts (empty = any)",
+        "text": "Where you set “API accounts (empty = any)”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "profiles-empty-any",
+        "title": "Profiles (empty = any)",
+        "text": "Where you set “Profiles (empty = any)”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "steps-left-at-least",
+        "title": "Steps left, at least",
+        "text": "Where you set “Steps left, at least”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "steps-left-at-most",
+        "title": "Steps left, at most",
+        "text": "Where you set “Steps left, at most”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "minutes-left-at-most",
+        "title": "Minutes left, at most",
+        "text": "Where you set “Minutes left, at most”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "only-when-subscriptions-are-full-or-limited",
+        "title": "Only when subscriptions are full or limited",
+        "text": "Turns “Only when subscriptions are full or limited” on or off. It takes effect straight away and is remembered. Part of Claude accounts.",
+        "kind": "toggle",
+        "draft": true
+      },
+      {
+        "target": "add-a-rule",
+        "title": "Add a rule",
+        "text": "Adds a rule. Part of Claude accounts.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "job-type",
+        "title": "Job type",
+        "text": "Where you set “Job type”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "steps-left",
+        "title": "Steps left",
+        "text": "Where you set “Steps left”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "minutes-left",
+        "title": "Minutes left",
+        "text": "Where you set “Minutes left”. Change it and the app uses the new value. Part of Claude accounts.",
+        "kind": "field",
+        "draft": true
+      }
+    ]
+  }
+}

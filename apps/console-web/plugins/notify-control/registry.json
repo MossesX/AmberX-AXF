@@ -1,0 +1,53 @@
+{
+  "$axf": "notify-registry@1",
+  "note": "One registry of every notification type. Types a plugin sends live in that plugin's own notify.json, so they leave with it. Everything else (the console core, AmberX, axHub) is here. A type's `match` ties it to the alerts it covers; `enforced` says who really checks it.",
+  "channels": [
+    { "id": "banner", "label": "Banner", "icon": "bell", "app": "console", "description": "The console's alerts bell and its unread count. Off: the alert is still kept in the Alerts list, already marked read." },
+    { "id": "amberx", "label": "AmberX push", "icon": "smartphone", "app": "amberx", "description": "A notification from the AmberX app on the phone." },
+    { "id": "sound", "label": "Sound", "icon": "play", "app": "console", "description": "A short tone in an open console." },
+    { "id": "popup", "label": "Console pop-up", "icon": "info", "app": "console", "description": "A pop-up in an open console." },
+    { "id": "webpush", "label": "Web push / ntfy", "icon": "cloud", "app": "webpush", "description": "Browser web push and ntfy, when they are set up in Settings → Alerts. Their severity rules there still apply." }
+  ],
+  "apps": [
+    { "id": "console", "label": "Console", "description": "Everything shown in the console: banner, sound and pop-ups." },
+    { "id": "amberx", "label": "AmberX", "description": "Everything the AmberX app shows on the phone." },
+    { "id": "webpush", "label": "Web push / ntfy", "description": "Browser web push and ntfy." }
+  ],
+  "groups": [
+    { "id": "approvals", "label": "Approvals and veto", "icon": "shield" },
+    { "id": "review", "label": "UI Review", "icon": "eye" },
+    { "id": "builds", "label": "Builds", "icon": "layers" },
+    { "id": "merge", "label": "Merge queue and CI", "icon": "branch" },
+    { "id": "health", "label": "Health checks", "icon": "alert" },
+    { "id": "accounts", "label": "Accounts and limits", "icon": "key" },
+    { "id": "sessions", "label": "Claude sessions", "icon": "sparkles" },
+    { "id": "console", "label": "Console", "icon": "terminal" },
+    { "id": "amberx", "label": "AmberX app", "icon": "smartphone" },
+    { "id": "banners", "label": "Status banners", "icon": "layout" },
+    { "id": "other", "label": "Not in the registry yet", "icon": "help" }
+  ],
+  "types": [
+    { "id": "ci.failed", "label": "CI failed", "group": "merge", "app": "console", "source": "GitHub Actions poll, console core", "description": "A workflow failed on a watched repo. The next green run clears it.", "match": { "source": "ci" }, "priority": "high" },
+    { "id": "deploy.failed", "label": "Deploy failed", "group": "merge", "app": "console", "source": "GitHub Actions poll, console core", "description": "A deploy workflow failed.", "match": { "source": "deploys" }, "priority": "high" },
+    { "id": "deploy.done", "label": "Deploy finished", "group": "merge", "app": "console", "source": "GitHub Actions poll, console core", "description": "A deploy workflow finished.", "match": { "source": "deploys", "keyPrefix": "deployed:" }, "channels": { "amberx": false } },
+    { "id": "health.check", "label": "Systems check problem", "group": "health", "app": "console", "source": "Systems check", "description": "Anything the systems check finds broken, including the VPS backup. Clears when it passes again.", "match": { "source": "system" }, "priority": "high" },
+    { "id": "account.claude", "label": "Claude sign-in and keys", "group": "accounts", "app": "console", "source": "Systems check", "description": "A Claude sign-in, API key or account check is failing.", "match": { "source": "system", "keyPrefix": "system:claude" }, "priority": "high" },
+    { "id": "account.github", "label": "GitHub tokens and limits", "group": "accounts", "app": "console", "source": "Systems check", "description": "A GitHub token or the shared rate limit is in trouble.", "match": { "source": "system", "keyPrefix": "system:github" }, "priority": "high" },
+    { "id": "builds.failed", "label": "Build failed or broke", "group": "builds", "app": "console", "source": "Pending list poll, console core", "description": "A pending build went to failed or broken.", "match": { "source": "builds", "keyPrefix": "builds:" }, "setting": "notify.blocked", "priority": "high" },
+    { "id": "builds.done", "label": "Build finished", "group": "builds", "app": "console", "source": "Pending list poll, console core", "description": "A pending build went to complete.", "match": { "source": "builds", "keyPrefix": "built:" }, "setting": "notify.buildDone", "push": true },
+    { "id": "console.plugin", "label": "Plugin failed to load", "group": "console", "app": "console", "source": "Console core", "description": "A plugin failed to load.", "match": { "source": "plugins" } },
+    { "id": "console.conflict", "label": "Conflicts", "group": "console", "app": "console", "source": "Console core and the page", "description": "Two plugins or modules claim the same id.", "match": { "source": "conflicts" } },
+    { "id": "console.crash", "label": "Crashes", "group": "console", "app": "console", "source": "Console core and the page", "description": "An unhandled API or page error.", "match": { "source": "crashes" }, "priority": "high" },
+    { "id": "console.restart", "label": "Unclean restart", "group": "console", "app": "console", "source": "Console core", "description": "The console restarted without shutting down cleanly.", "match": { "source": "crashes", "keyPrefix": "crash:restart" } },
+    { "id": "console.test", "label": "Alert test buttons", "group": "console", "app": "console", "source": "Settings → Alerts", "description": "The Try it buttons in Settings → Alerts.", "match": { "source": "alerts" } },
+
+    { "id": "amberx.approval", "label": "Approval waiting", "group": "approvals", "app": "amberx", "source": "AmberX reads the axHub feed", "description": "A call waits for your approval on axHub. AmberX buzzes through the silencer.", "enforced": "device", "guarded": true, "only": ["amberx"], "priority": "urgent" },
+    { "id": "amberx.veto", "label": "Veto countdown", "group": "approvals", "app": "amberx", "source": "AmberX reads the axHub feed", "description": "A held call is counting down to run. AmberX shows it with Deny, Approve and Shelve, and the alarm.", "enforced": "device", "guarded": true, "only": ["amberx"], "priority": "urgent" },
+    { "id": "amberx.auto-approved", "label": "Auto-approved call", "group": "amberx", "app": "amberx", "source": "AmberX", "description": "AmberX approved a call under its auto-approve rules and says so.", "enforced": "device", "only": ["amberx"] },
+    { "id": "amberx.wake", "label": "Wake phrase", "group": "amberx", "app": "amberx", "source": "AmberX", "description": "The wake phrase opened Amber. Android needs this notification to bring the app forward.", "enforced": "required", "only": ["amberx"] },
+    { "id": "amberx.recording", "label": "Recording asked from axHub", "group": "amberx", "app": "amberx", "source": "AmberX", "description": "A session asked to record. Android needs your tap to allow capture.", "enforced": "required", "only": ["amberx"] },
+    { "id": "amberx.console-open", "label": "Console opened by Amber", "group": "amberx", "app": "amberx", "source": "AmberX", "description": "Amber asked the phone to open the console. Android needs this notification when the app is in the background.", "enforced": "required", "only": ["amberx"] },
+    { "id": "amberx.foreground", "label": "AmberX running notices", "group": "amberx", "app": "amberx", "source": "AmberX", "description": "Watching axHub, the screen recorder and the audio recorder. Android requires these while they run.", "enforced": "required", "only": ["amberx"] },
+    { "id": "axhub.feed", "label": "axHub held calls", "group": "approvals", "app": "axhub", "source": "axHub", "description": "axHub sends no pushes of its own: it holds the call and its feed is read by AmberX and the veto banner. Control them through their own rows.", "enforced": "feed", "only": [] }
+  ]
+}

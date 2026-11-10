@@ -1,9 +1,25 @@
 # Appearance source: a developer app's look and settings live on axHub
 
-> **The rule (Brett, Nov 1 2026): the apps get their appearance from axHub only, period, and any look change in one app
-> applies to all.** No opt-out switch, no local look tabs, no local fallback; the look settings (Sliders, per-asset
-> tokens, banner looks, rolls) ride the document's `settings` map. **Every app ships every shareable asset**
-> (`framework/cli/shared-assets.mjs`: baked at `src/axf/assets`, CI-checked), so a pick made anywhere resolves everywhere.
+> **The rule (Brett, Nov 1 2026, changed by build `skins`, Nov 4 2026): the apps get their appearance from axHub only,
+> with no local look tabs and no local fallback, and each app has its own look document there.** "By default they're
+> all their own": slots, spacing and hidden chrome come from the app's `shared/settings/looks/<app>.json` (app-look@1,
+> below), so a pick in one app stays in that app. Control@1 token overrides (`axf.tokens.*`) in `appearance.json` still
+> reach every app. **Every app ships every shareable asset** (`framework/cli/shared-assets.mjs`: baked at `src/axf/assets`,
+> CI-checked), so a pick made anywhere resolves everywhere.
+
+## Each app's own look: `app-look@1`
+
+Project `shared`, path `settings/looks/<app>.json`. Written only by that app, or by `framework/cli/skins.mjs` for voice,
+MCP and REST. The format is in one module, `framework/core/engines/skin.ts` + `skin-rules.mjs`.
+
+- `default`: the snapshot of the look the app had when skins landed (`skins.mjs snapshot --all`), so nothing changed.
+- `own`: picks made with no skin on. `skin`: `{ use, id, overrides }`, the Use skin switch, the skin and the picks that
+  beat it. `undo`: the one step Restore to default can take back.
+- Effective look = default + own picks; with Use skin on, that + the skin + its overrides.
+
+An app without a hub source keeps the same document in a setting (`axf.skin.look`), so a new app from a template gets the
+same Settings → Appearance. The sections below describe the shared document, which stays the transport and the source
+of the shared token overrides.
 
 Brett's decision (Oct 20 2026, refined the same night): **all settings and shared data of his developer apps come
 from the axHub data server.** The theme is *data*: the selection (asset id per appearance slot, spacing, hidden chrome)
@@ -14,6 +30,34 @@ there and every other one follows live. **When axHub is down, a developer app do
 Developer apps: the AXF Dev Console (web and Android), axHub's own
 pages, the AXHub phone app, and any future app that opts in. **Not** every app built on AXF: an ordinary app keeps its
 own local settings. Voice Vault is deliberately out (offline password vault).
+
+## Every asset type, at any scope: skin-coverage@1 (build skins-asset-types, Nov 7 2026)
+
+How a skin reaches each registered asset type is derived from the registry (`framework/schemas/asset-types.json`) and
+the style targets (`framework/schemas/customize.json`) by `framework/core/engines/skin-coverage.mjs`; nothing names a
+type by hand, so a new type is covered (or fails CI) the moment it is registered:
+
+| by | how the skin reaches it | which types |
+| --- | --- | --- |
+| `slot` | the skin picks the active asset (`assets[type]`, the three themes) | every type not excluded from appearance slots |
+| `parts` | the skin styles the type's drawn elements (`parts[type]`: customize tokens under the type's style target; composite: box / text / icon / items) | widgets and attachables (label, badge, clock, counter …); slot types with a target take parts too |
+| `reference` | the skin names it through a field (`iconPack`) or an asset it picks (`via: branding` for logo marks) | declared on the registry entry |
+| `bundle` | a whole look the skin stands in for | design package, style package, interface, skin (declared) |
+| `none` | no look (declared with a `why`) | access policy, help, job type, card |
+
+`node framework/spec/check-skin-coverage.mjs` fails on any type with none of these (a widget without a style target, an
+excluded type with no declaration, a bad declaration). `node framework/cli/skins.mjs coverage` and `covers <skin>`
+print the table; Settings → Appearance → *What a skin covers* shows it.
+
+**Scopes** (the icon-map model): the chain for a place is `plugin:<id>` → `ui:<view>` → `app` → `global`, and the first
+level that is not *inherit* decides; its overrides and those of every level nearer the leaf apply (child over parent).
+`global` is the `skin` field of the shared appearance@1 document (`skins.mjs global <skin>`); an app takes it only while
+`skin.inherit` is on (Follow the hub-wide skin; off by default: "by default they're all their own"). `ui:` and `plugin:`
+states live in the app's look document under `scopes` (`{ use: on | off | inherit, id, overrides }`). The runtime draws
+a sub level that resolves differently from the app as a scoped view (`rt.skinScoped(key)`, like an interface scope)
+under `<SkinScope>` on every view root and every plugin root; a skin's `iconPack` lands in `axf.icons.pack.<scopeKey>`
+and its `parts` in the customize sheet. Pure functions: `resolveSkinChain`, `resolveLookSkin`, `composeLookAt`,
+`setScopeSkin`, `setInheritSkin`; fixture `spec/fixtures/skin.json` (`coverage`, `scopes`), `spec/check-skin.mts`.
 
 ## The document: `appearance@1`
 

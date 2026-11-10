@@ -1,0 +1,88 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-a8037b19-d385-41d4-80f3-38d29e718468",
+ "source": "claude-code",
+ "sessionId": "a8037b19-d385-41d4-80f3-38d29e718468",
+ "project": "other",
+ "title": "hi Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each …",
+ "startedAt": "2026-11-04T13:28:40.198Z",
+ "endedAt": "2026-11-04T13:28:45.165Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/tmp/axf-slots-OvakZw/one",
+  "repo": "",
+  "branch": ""
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-04T13:28:41.067Z",
+   "kind": "prompt",
+   "text": "hi Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /root/axf-builds/land-round-2/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once. Model switches (Brett, Nov 3 2026): a downgrade (e.g. Fable → Opus) is fine. An UPGRADE (e.g. Opus → Fable) needs Brett's approval: when you reach one, run `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs request-upgrade <id> <phase>`, ask once, and stop. Never approve a model switch upgrade yourself (no `act approve` on an upgrad…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 4,
+    "output": 330,
+    "cacheRead": 37744,
+    "cacheWrite": 15302,
+    "thinking": 58
+   },
+   "costUsd": 0.0906,
+   "costEstimated": false,
+   "seconds": 4,
+   "tools": {
+    "Bash": 1
+   },
+   "commands": 1,
+   "files": [],
+   "changeIds": [
+    "chg-20261104-9a8ccc79e6"
+   ],
+   "features": [
+    "pending:land-round-2",
+    "plan:land-round-2"
+   ],
+   "output": "Hi! What would you like to work on? (A build entry, `chg-20261104-9a8ccc79e6`, was opened automatically for this message. I tried to close it as \"no change\", but the command needed approval and didn't run, so it's still open in the Build manager. Once you give me a task I'll fill it in, or you can …"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261104-9a8ccc79e6"
+ ],
+ "features": [
+  "pending:land-round-2",
+  "plan:land-round-2"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 4,
+  "output": 330,
+  "cacheRead": 37744,
+  "cacheWrite": 15302,
+  "thinking": 58,
+  "costUsd": 0.0906,
+  "costEstimated": false,
+  "toolCalls": 1,
+  "commands": 1,
+  "filesTouched": 0,
+  "reportedUsd": 0.1366
+ },
+ "ingestedAt": "2026-11-04T13:28:45.363Z"
+}

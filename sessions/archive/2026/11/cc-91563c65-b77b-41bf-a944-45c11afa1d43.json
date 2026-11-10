@@ -1,0 +1,87 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-91563c65-b77b-41bf-a944-45c11afa1d43",
+ "source": "claude-code",
+ "sessionId": "91563c65-b77b-41bf-a944-45c11afa1d43",
+ "project": "other",
+ "title": "# Plan Studio: Archive folder (Brett, Nov 7) 1. Add a separate **Archive** folder/section in Plan Studio. Archived plan…",
+ "startedAt": "2026-11-07T12:26:53.328Z",
+ "endedAt": "2026-11-07T12:47:05.056Z",
+ "minutes": 20,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.319",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/plan-archive",
+  "repo": "",
+  "branch": "claude/plan-archive"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-07T12:27:12.665Z",
+   "kind": "prompt",
+   "text": "# Plan Studio: Archive folder (Brett, Nov 7) 1. Add a separate **Archive** folder/section in Plan Studio. Archived plans are hidden from the normal lists, shown only in Archive, never deleted. 2. Actions: `archive` and `unarchive` (restore) on planner.plans — in the UI (row menu + bulk select), control@1 (`control_act planner.plans archive|unarchive`), MCP/CLI/voice. Restore puts the plan back exactly as it was (status, steps, links, build link). 3. Move EVERY existing plan (all ~58 at time of writing) into Archive. Do NOT archive the plan named \"New Hire\" if it exists, nor anything created a…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 240,
+    "output": 66445,
+    "cacheRead": 21832765,
+    "cacheWrite": 253335,
+    "thinking": 11171
+   },
+   "costUsd": 6.9638,
+   "costEstimated": false,
+   "seconds": 1192,
+   "tools": {
+    "Bash": 118,
+    "Read": 7
+   },
+   "commands": 118,
+   "files": [],
+   "changeIds": [
+    "chg-20261107-f51341ee1c"
+   ],
+   "features": [
+    "orchestrator:plan-archive"
+   ],
+   "output": "I built the Plan Studio Archive and committed it on `claude/plan-archive`, but haven't pushed it. Live hub data is already changed: all 58 plans are now in the Archive. The console still runs main's code, so it keeps listing them until this branch merges. Nothing is lost. **Moving the plans** - I m…"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261107-f51341ee1c"
+ ],
+ "features": [
+  "orchestrator:plan-archive"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 240,
+  "output": 66445,
+  "cacheRead": 21832765,
+  "cacheWrite": 253335,
+  "thinking": 11171,
+  "costUsd": 6.9638,
+  "costEstimated": false,
+  "toolCalls": 125,
+  "commands": 118,
+  "filesTouched": 0,
+  "reportedUsd": 7.7231
+ },
+ "ingestedAt": "2026-11-07T12:47:05.462Z"
+}

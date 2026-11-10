@@ -34,8 +34,9 @@ import org.json.JSONObject;
  *  - `recorder.status` answers on/off, since, session, current file, uploaded parts and the queue.
  *  - `browser.open` (capability `open-url@1`, console wake, Nov 3 2026) opens one of Brett's own pages
  *    ({@link OpenUrlRules#allowed}: https on amberxai.com only) in Chrome or the default browser, e.g. the Dev Console
- *    with a queued console command. Android 10+ blocks most starts from the background, so a high-priority
- *    notification with a full-screen intent opens it too (one tap when the screen is on).
+ *    with a queued console command. Android 10+ silently drops most starts from the background (startActivity returns
+ *    normally), so {@link #startInForeground} only counts one that had a window to start from, and a high-priority
+ *    notification with a full-screen intent stays as the one-tap way in. The answer's `opened` says which.
  */
 final class AxppLink {
     private AxppLink() {}
@@ -46,6 +47,7 @@ final class AxppLink {
     private static final String CHANNEL_OPEN = "amberx-open-console";
     private static final String CHANNEL = "amberx-recorder-remote";
     private static final int POLL_SECONDS = 25;
+    private static final long OVERLAY_LEAD_MS = 200, OVERLAY_HOLD_MS = 1500;
     private static Thread thread;
     private static Context app;
     private static final Handler main = new Handler(Looper.getMainLooper());
@@ -211,7 +213,7 @@ final class AxppLink {
      */
     private static void askToStart(Context c, RecorderControl.Session s) {
         main.post(() -> {
-            try { c.startActivity(OutputRecordStartActivity.intent(c)); } catch (RuntimeException ignored) { /* background start refused: the notification does it */ }
+            startInForeground(c, OutputRecordStartActivity.intent(c)); // refused or dropped: the notification does it
             NotificationManager nm = (NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && nm.getNotificationChannel(CHANNEL) == null) {
                 NotificationChannel ch = new NotificationChannel(CHANNEL, "Recording asked from axHub", NotificationManager.IMPORTANCE_HIGH);
@@ -248,16 +250,41 @@ final class AxppLink {
     }
 
     /**
-     * Opens the page now where Android lets it (AmberX on screen, or allowed to draw over other apps), and always posts
-     * an "Amber is opening the console" notification with a full-screen intent, so a locked or busy phone still gets
-     * there with one tap. The answer says which happened.
+     * Starts an activity from the background the way Android allows it. Since Android 15 holding "Display over other
+     * apps" isn't enough on its own: the app needs a visible overlay window at that moment, so a 1 px transparent one
+     * is up for the start. Without AmberX on screen or that permission Android drops the start silently, so this
+     * doesn't try. → true when the start has a window behind it; only the page opening proves it landed.
+     */
+    private static boolean startInForeground(Context c, Intent i) {
+        if (WatchService.inApp) {
+            try { c.startActivity(i); return true; } catch (RuntimeException e) { return false; }
+        }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || !android.provider.Settings.canDrawOverlays(c)) return false;
+        android.view.WindowManager wm = (android.view.WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
+        android.view.View dot = new android.view.View(c);
+        try {
+            wm.addView(dot, new android.view.WindowManager.LayoutParams(1, 1, android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, android.graphics.PixelFormat.TRANSLUCENT));
+        } catch (RuntimeException e) { return false; }
+        // the system has to see the window first: start a moment later, take the window down after the start
+        main.postDelayed(() -> { try { c.startActivity(i); } catch (RuntimeException ignored) { /* the notification does it */ } }, OVERLAY_LEAD_MS);
+        main.postDelayed(() -> { try { wm.removeViewImmediate(dot); } catch (RuntimeException ignored) { /* already gone */ } }, OVERLAY_HOLD_MS);
+        return true;
+    }
+
+    /**
+     * Opens the page now where Android lets it (AmberX on screen, or a brief overlay window), and always posts a
+     * "Tap to open" notification with a full-screen intent, so a locked or busy phone still gets there with one tap.
+     * The answer says what really happened: `opened` only for a start Android can't have dropped, `notified` only when
+     * notifications are on, `overlay` whether "Display over other apps" is granted.
      */
     private static JSONObject openUrl(Context c, String url, String browser) throws Exception {
         Intent open = browserIntent(c, url, browser);
         boolean[] started = { false };
+        boolean[] notified = { false };
         java.util.concurrent.CountDownLatch done = new java.util.concurrent.CountDownLatch(1);
         main.post(() -> {
-            try { c.startActivity(open); started[0] = true; } catch (RuntimeException ignored) { /* background start refused: the notification does it */ }
+            started[0] = startInForeground(c, open);
             try {
                 NotificationManager nm = (NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && nm.getNotificationChannel(CHANNEL_OPEN) == null) {
@@ -268,21 +295,23 @@ final class AxppLink {
                 PendingIntent pi = PendingIntent.getActivity(c, 4, open, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
                 Notification.Builder b = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? new Notification.Builder(c, CHANNEL_OPEN) : new Notification.Builder(c);
                 b.setSmallIcon(android.R.drawable.ic_menu_view)
-                    .setContentTitle("Amber is opening the console")
-                    .setContentText("A command is waiting for the Dev Console. Tap to open it.")
+                    .setContentTitle("Tap to open the Dev Console")
+                    .setContentText("Amber has something to show you.")
                     .setContentIntent(pi)
                     .setFullScreenIntent(pi, true)
                     .setCategory(Notification.CATEGORY_REMINDER)
                     .setPriority(Notification.PRIORITY_HIGH)
                     .setAutoCancel(true);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) b.setTimeoutAfter(2 * 60_000L);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) b.setTimeoutAfter(10 * 60_000L);
                 nm.notify(NOTE_OPEN, b.build());
+                notified[0] = Build.VERSION.SDK_INT < Build.VERSION_CODES.N || nm.areNotificationsEnabled();
             } catch (RuntimeException ignored) { /* notifications off: the start above is all there is */ }
             done.countDown();
         });
         done.await(5, java.util.concurrent.TimeUnit.SECONDS);
         return new JSONObject().put("url", url).put("browser", open.getPackage() == null ? "default" : "chrome")
-            .put("opened", started[0]).put("notified", true);
+            .put("opened", started[0]).put("notified", notified[0])
+            .put("overlay", Build.VERSION.SDK_INT < Build.VERSION_CODES.M || android.provider.Settings.canDrawOverlays(c));
     }
 
     static void cancelPrompt(Context c) {

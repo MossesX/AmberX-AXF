@@ -35,7 +35,7 @@ export function SearchBarWidget({ data }: WidgetRenderProps<SearchBarData>) {
 }
 
 /** Tap target shared by the widgets that take a `link` / `action`: a button when there is one, a span otherwise. */
-function Tap({ action, className, title, children, pressed }: { action?: string; className: string; title?: string; children: ReactNode; pressed?: boolean }) {
+export function Tap({ action, className, title, children, pressed }: { action?: string; className: string; title?: string; children: ReactNode; pressed?: boolean }) {
   const rt = useRuntime();
   return action
     ? <button type="button" className={`${className} is-tap`} title={title} aria-label={title} aria-pressed={pressed} onClick={() => rt.dispatch(action)}>{children}</button>
@@ -173,11 +173,12 @@ registerWidgetRenderer<SpacerData>('spacer', SpacerWidget);
 registerWidgetRenderer<DividerData>('divider', DividerWidget);
 
 /** Draw a widget asset by type + id (nothing if it's gone or no renderer is registered for its type). */
-export function WidgetView({ type, id, host }: { type: string; id: string; host?: string }) {
+export function WidgetView({ type, id, host, patch }: { type: string; id: string; host?: string; /** fields laid over the asset's data for this draw */ patch?: Record<string, unknown> }) {
   const rt = useRuntime();
-  const a = rt.registry.get(type as never, id) as { data: unknown } | undefined;
+  const raw = rt.registry.get(type as never, id) as { data: unknown } | undefined;
   const R = renderers.get(type);
-  if (!a || !R) return null;
+  if (!raw || !R) return null;
+  const a = patch ? { data: { ...(raw.data as object), ...patch } } : raw;
   // A widget whose tap is a hook the host app took over (embed@1 takes): an action button goes, others lose the tap.
   const d = a.data as { action?: unknown; link?: unknown } | null;
   if (rt.embedded?.takes?.length && d && typeof d === 'object') {

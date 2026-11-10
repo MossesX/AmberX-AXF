@@ -5,7 +5,7 @@
  */
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import type { AxfRuntime } from '../../../axf/core';
-import { Button, Checkbox, Container, Icon, IconButton, Note, SelectField, Segmented, TextField, useRuntime } from '../../../axf/react';
+import { Button, Checkbox, Container, Icon, IconButton, Note, SelectField, Segmented, TabGroup, TextField, useRuntime } from '../../../axf/react';
 import { loginUrl } from '../../../axf/libs/hub';
 import { HUB } from '../../../hub/useHub';
 import { native } from '../../../native';
@@ -336,17 +336,8 @@ export function NotesView() {
         </div>
       </header>
       <HubLine n={n} />
-      <div className="fx-tabs" role="tablist">
-        {TABS.map((t) => {
-          const c = t.id === 'lists' ? listCount : countOf(t.id);
-          return (
-            <button key={t.id} type="button" role="tab" aria-selected={ui.tab === t.id} className={`fx-tab${ui.tab === t.id ? ' is-active' : ''}`}
-              onClick={() => setUi({ tab: t.id, ...(t.id === 'lists' && ui.tab === 'lists' ? { list: null } : {}) })}>
-              <Icon name={t.icon} size={13} /> {t.label}{c ? <span className="fx-muted"> {c}</span> : null}
-            </button>
-          );
-        })}
-      </div>
+      <TabGroup id="notes.tabs" label="Notes" value={ui.tab} onChange={(id) => setUi({ tab: id, ...(id === 'lists' && ui.tab === 'lists' ? { list: null } : {}) })}
+        tabs={TABS.map((t) => ({ value: t.id, label: t.label, icon: t.icon, badge: (t.id === 'lists' ? listCount : countOf(t.id)) || undefined }))} />
       {!n.loaded && n.status !== 'signed-out' && n.status !== 'offline' ? <p className="fx-muted">Loading your notes…</p> : (
         <>
           {ui.tab === 'inbox' && (

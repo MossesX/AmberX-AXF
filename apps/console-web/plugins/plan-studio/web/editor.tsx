@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Button, Checkbox, Chip, Icon, IconButton, Markdown, SelectField, Segmented, TextField, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, Icon, IconButton, Markdown, PriorityTag, SelectField, Segmented, TextField, useRuntime } from '@console/axf/react';
 import * as pc from './plan-core.mjs';
 import type { History, ListId, Plan, Step, TextItem } from './plan-core.mjs';
 import { call, deletePlan, fmtWhen, getPlan, KEYS, restorePlan, savePlan, statusInfo, turnIntoBuild, useBusy, useStudio, type SaveResult } from './api';
@@ -359,7 +359,7 @@ function BuildPanel({ plan, dirty }: { plan: Plan; dirty: boolean }) {
   if (plan.build) {
     return (
       <div className="axp-plan-studio__build">
-        <p><b>Orchestrator build</b> <span className="fx-mono">{plan.build.profile}:{plan.build.id}</span> · {plan.build.status} · {plan.build.progress ?? 0}%</p>
+        <p><b>Orchestrator build</b> <span className="fx-mono">{plan.build.profile}:{plan.build.id}</span> · {plan.build.status} · {plan.build.progress ?? 0}% <PriorityTag build={plan.build.id} /></p>
         <div className="axp-plan-studio__bar" role="progressbar" aria-valuenow={plan.build.progress ?? 0} aria-valuemin={0} aria-valuemax={100}><span style={{ width: `${plan.build.progress ?? 0}%` }} /></div>
         <div className="fx-row"><Button size="sm" icon="layers" onClick={() => rt.dispatch('nav:build-orchestrator')}>Open the orchestrator</Button><Button size="sm" tone="quiet" icon="refresh" busy={busy} onClick={() => run(async () => { await call('sync-builds'); })}>Check progress</Button></div>
         <p className="fx-muted axp-plan-studio__hint">The plan ticks its steps as the build does, and turns done (its planned features to have) when the build completes.</p>

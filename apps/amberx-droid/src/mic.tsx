@@ -115,7 +115,7 @@ export const micLibrary: AxfWebLibrary = {
     rt.actions.register(MIC_ACTIONS.on, () => void setMicOff(false), { label: 'Turn the mic back on' });
     set(state);
     // The banner chip on whatever banner asset is active (same pattern as the approvals counter).
-    if (rt.registry.has('status', 'amberx-mic')) rt.attachToBanner({ type: 'status', id: 'amberx-mic', at: 'right', order: 28, origin: MIC_ORIGIN });
+    if (rt.registry.has('status', 'amberx-mic')) rt.attachToBanner({ type: 'status', id: 'amberx-mic', at: 'right', order: 28, origin: MIC_ORIGIN, widget: { label: 'Microphone', size: 'compact', priority: 7, aliases: ['mic'] } });
     // The native switch is the truth on the phone (the tile and the notification flip it with the page closed).
     const read = () => void native.micState().then(set).catch(() => undefined);
     void native.addListener('mic', (e) => set(e)).catch(() => undefined);

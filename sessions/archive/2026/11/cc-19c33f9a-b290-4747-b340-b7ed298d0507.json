@@ -1,0 +1,87 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-19c33f9a-b290-4747-b340-b7ed298d0507",
+ "source": "claude-code",
+ "sessionId": "19c33f9a-b290-4747-b340-b7ed298d0507",
+ "project": "other",
+ "title": "# Lander B — make finished builds landable For each build below, in order, work in its folder /root/axf-builds/<name> (…",
+ "startedAt": "2026-11-07T09:38:55.203Z",
+ "endedAt": "2026-11-07T09:59:15.954Z",
+ "minutes": 20,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.319",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/lander-b",
+  "repo": "",
+  "branch": "claude/lander-b"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-07T09:38:57.489Z",
+   "kind": "prompt",
+   "text": "# Lander B — make finished builds landable For each build below, in order, work in its folder /root/axf-builds/<name> (if missing, try /home/axfbuild/wt-<name>; if still missing, log it and skip): 1. `git checkout -- _claude/builds/` and `git clean -fd _claude/builds/` (those are auto-synced data, never real work). Keep any other uncommitted change: commit it as `<name>: commit leftover work`. 2. `git fetch origin && git merge origin/main`. Resolve clashes keeping BOTH sides' intent; for _claude/builds/** JSON take main's version. 3. Run the tests/checks for the touched area (and `node framew…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 194,
+    "output": 41848,
+    "cacheRead": 12180405,
+    "cacheWrite": 160881,
+    "thinking": 10547
+   },
+   "costUsd": 4.0781,
+   "costEstimated": false,
+   "seconds": 1218,
+   "tools": {
+    "Bash": 97,
+    "Write": 1
+   },
+   "commands": 97,
+   "files": [
+    "/root/axf-builds/lander-b/.axf-claude/axf-lander-b--earl/projects/-opt-axf/memory/lander-merge-traps.md"
+   ],
+   "changeIds": [
+    "chg-20261107-f81208b916"
+   ],
+   "features": [],
+   "output": "All 8 builds are merged with main, their checks pass, and each one is committed locally. Nothing is pushed. The log is in `/root/axf-builds/lander-b/PROGRESS.md`. | Build | What I fixed after merging main | |---|---| | plan-studio-backfill-12h | RULES.md clash (kept both rules), re-baked 4 apps, ad…"
+  }
+ ],
+ "files": [
+  "/root/axf-builds/lander-b/.axf-claude/axf-lander-b--earl/projects/-opt-axf/memory/lander-merge-traps.md"
+ ],
+ "changeIds": [
+  "chg-20261107-f81208b916"
+ ],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 194,
+  "output": 41848,
+  "cacheRead": 12180405,
+  "cacheWrite": 160881,
+  "thinking": 10547,
+  "costUsd": 4.0781,
+  "costEstimated": false,
+  "toolCalls": 98,
+  "commands": 97,
+  "filesTouched": 1,
+  "reportedUsd": 4.5609
+ },
+ "ingestedAt": "2026-11-07T09:59:16.274Z"
+}

@@ -1,0 +1,17 @@
+/* Maintenance plugin: layout only. Every control is a framework control (Button, Checkbox, Chip, Gauge, Note);
+   colours, sizes and spacing come from the theme engines' tokens. */
+.axp-maintenance__gauges { display: grid; grid-template-columns: repeat(auto-fit, minmax(9em, 1fr)); gap: var(--fx-dens-gap-md); align-items: end; }
+.axp-maintenance__meta { margin: var(--fx-dens-gap-sm) 0 0 0; }
+.axp-maintenance__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); }
+.axp-maintenance__row { display: flex; align-items: center; gap: var(--fx-dens-gap-md); flex-wrap: wrap; padding: var(--fx-dens-gap-sm) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.axp-maintenance__row:last-child { border-bottom: 0; }
+.axp-maintenance__name { display: flex; flex-direction: column; flex: 1 1 14em; min-width: 0; overflow-wrap: anywhere; }
+.axp-maintenance__size { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.axp-maintenance__acts { display: flex; gap: var(--fx-dens-gap-sm); flex-wrap: wrap; align-items: center; }
+.axp-maintenance__job { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-sm) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.axp-maintenance__job:last-child { border-bottom: 0; }
+.axp-maintenance__jobhead { display: flex; align-items: center; gap: var(--fx-dens-gap-md); flex-wrap: wrap; }
+.axp-maintenance__jobhead > :first-child { flex: 1 1 14em; }
+.axp-maintenance__preview { margin-top: var(--fx-dens-gap-sm); }
+.axp-maintenance__pc details { border-bottom: var(--fx-border-w) solid var(--fx-border); padding: var(--fx-dens-gap-sm) 0; }
+.axp-maintenance__pcname { flex: 0 1 18em; min-width: 0; overflow-wrap: anywhere; }

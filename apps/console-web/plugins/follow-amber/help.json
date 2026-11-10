@@ -6,7 +6,9 @@
   "version": "0.1.0",
   "description": "Help mode entries for the Follow Amber plugin (help@1): its settings tab and the approval pop-up.",
   "author": "Brett",
-  "tags": ["help"],
+  "tags": [
+    "help"
+  ],
   "data": {
     "scope": "plugin:follow-amber",
     "entries": [
@@ -43,6 +45,12 @@
         "title": "Waiting approvals",
         "text": "Opens the approvals waiting for you.",
         "kind": "menu-item"
+      },
+      {
+        "target": "open-in-axhub",
+        "title": "Open in axHub",
+        "text": "Opens this approval on axHub, where you can approve, deny or shelve it.",
+        "kind": "button"
       }
     ]
   }

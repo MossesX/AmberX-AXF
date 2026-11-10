@@ -6,13 +6,13 @@
  *   max running agents, max heavy test/build steps, memory floor, close-after, priority rules. Saved to the shared
  *   store and read fresh by every launch (hot reload: nothing to restart).
  * - Activity banner summary (slot `activity.summary`): "slots 4/6 · 2 queued".
- * - Builds page (slot `builds.top`): the queue with position, priority and waiting since, Move up and Cancel.
+ * - Builds page (slot `builds.top`) and Build queue screen (slot `build.queue.top`): running + waiting with priority tags, priority and waiting since, Move up and Cancel.
  * - Swarm cards (slot `swarm.agent.status`): on-duty agents past the free slots show "Waiting for a desk".
  *
  * Polls GET /api/plugins/agent-slots/status every 5 s while a consumer is on screen.
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
-import { Button, Chip, Container, Icon, SelectField, TextField, useRuntime } from '@console/axf/react';
+import { Button, Chip, Container, Icon, PriorityTag, SelectField, TextField, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginApi } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -21,14 +21,14 @@ import './slots.css';
 
 const FOLDER = 'agent-slots';
 const POLL_MS = 5_000;
-const LEVELS = ['boss', 'urgent', 'normal', 'low'] as const;
+const LEVELS = ['boss', 'urgent', 'high', 'normal', 'low'] as const;
 type Level = (typeof LEVELS)[number];
-const LEVEL_LABEL: Record<Level, string> = { boss: 'Boss', urgent: 'Urgent', normal: 'Normal', low: 'Low' };
-const LEVEL_TONE: Record<Level, 'danger' | 'warning' | undefined> = { boss: 'danger', urgent: 'warning', normal: undefined, low: undefined };
+const LEVEL_LABEL: Record<Level, string> = { boss: 'Boss', urgent: 'Urgent', high: 'High', normal: 'Normal', low: 'Low' };
+const LEVEL_TONE: Record<Level, 'danger' | 'warning' | undefined> = { boss: 'danger', urgent: 'danger', high: 'warning', normal: undefined, low: undefined };
 
 interface Rule { match: string; level: Level }
 interface Settings { maxAgents: number; maxHeavy: number; minFreeGb: number; closeFinishedAfterSec: number; pollSec: number; priorityRules: Rule[]; guardWarnTrips: number; swapWarnMb: number; swapWarnMin: number }
-interface Entry { id: string; name: string; kind: 'headless' | 'swarm' | 'legacy'; priority: Level; state: string; session?: string; agent?: string; by?: string; enqueuedAt: string; startedAt?: string; finishedAt?: string; position?: number }
+interface Entry { id: string; name: string; kind: 'headless' | 'swarm' | 'legacy'; priority: Level; build?: string; state: string; session?: string; agent?: string; by?: string; enqueuedAt: string; startedAt?: string; finishedAt?: string; position?: number }
 interface Status { used: number; cap: number; free: number; queued: number; running: Entry[]; queue: Entry[]; heavy: { used: number; cap: number }; memory: { availGb: number | null; swapMb: number | null; floorGb: number }; guard: { tripsLastHour: number }; settings: Settings; error?: string }
 
 const api = pluginApi(FOLDER, 'Agent cap', { unavailable: 'The Agent cap plugin is switched off or its server part is not running.' });
@@ -107,7 +107,7 @@ function QueuePanel() {
                 <li key={q.id} className="axp-slots__row">
                   <span className="axp-slots__pos" aria-label={`Position ${q.position}`}>#{q.position}</span>
                   <span className="axp-slots__name"><b>{q.name}</b><span className="fx-small fx-muted">{q.kind === 'swarm' ? 'swarm job' : 'headless session'}{q.by ? ` · ${q.by}` : ''} · waiting {ago(q.enqueuedAt)}</span></span>
-                  <Chip tone={LEVEL_TONE[q.priority]}>{LEVEL_LABEL[q.priority] ?? q.priority}</Chip>
+                  <PriorityTag build={q.build || q.name} fallback={<Chip tone={LEVEL_TONE[q.priority]}>{LEVEL_LABEL[q.priority] ?? q.priority}</Chip>} />
                   <span className="axp-slots__acts">
                     <Button size="sm" icon="chevron-up" disabled={busy === q.id || q.position === 1} onClick={() => void act(q.id, 'up')}>Move up</Button>
                     <Button size="sm" icon="close" tone="quiet" disabled={busy === q.id} onClick={() => void act(q.id, 'cancel')}>Cancel</Button>
@@ -117,10 +117,10 @@ function QueuePanel() {
             </ol>
           ) : <p className="fx-small fx-muted">Nothing waiting: new sessions start at once while slots are free.</p>}
           {running.length > 0 && (
-            <details className="axp-slots__running">
+            <details className="axp-slots__running" open>
               <summary className="fx-small">Holding a slot ({running.length})</summary>
               <ul className="axp-slots__list">
-                {running.map((r) => <li key={r.id} className="axp-slots__row"><span className="axp-slots__name"><b>{r.name}</b><span className="fx-small fx-muted">{r.kind === 'legacy' ? 'started before the cap' : r.kind} · {r.session || r.state} · {ago(r.startedAt)}</span></span><Chip tone={LEVEL_TONE[r.priority]}>{LEVEL_LABEL[r.priority] ?? r.priority}</Chip></li>)}
+                {running.map((r) => <li key={r.id} className="axp-slots__row"><span className="axp-slots__name"><b>{r.name}</b><span className="fx-small fx-muted">{r.kind === 'legacy' ? 'started before the cap' : r.kind} · {r.session || r.state} · {ago(r.startedAt)}</span></span><PriorityTag build={r.build || r.name} fallback={<Chip tone={LEVEL_TONE[r.priority]}>{LEVEL_LABEL[r.priority] ?? r.priority}</Chip>} /></li>)}
               </ul>
             </details>
           )}
@@ -226,6 +226,7 @@ export const plugin: AxfWebLibrary = {
   slots: {
     'activity.summary': [{ id: 'agent-slots.summary', render: () => <SummaryChip /> }],
     'builds.top': [{ id: 'agent-slots.queue', render: () => <QueuePanel /> }],
+    'build.queue.top': [{ id: 'agent-slots.build-queue', render: () => <QueuePanel /> }], // the real queue, on the Build queue screen
     // the Breakroom (agent swarm) settings show the same panel: one store, so a change in either place is the same change
     'swarm.settings.desks': [{ id: 'agent-slots.desks', render: () => <SettingsPanel /> }],
     'swarm.agent.status': [{ id: 'agent-slots.desk', render: (p) => <DeskChip agentId={String(p.agentId ?? '')} onDuty={Array.isArray(p.onDuty) ? (p.onDuty as string[]) : []} /> }],

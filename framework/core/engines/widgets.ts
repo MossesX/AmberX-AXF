@@ -58,6 +58,8 @@ export interface HostAttachment {
   order?: number;
   /** Who attached it: `asset` for the host's own list, else the module / plugin id. */
   origin?: string;
+  /** What the banner's Widgets picker needs to know about it (engines/bannerwidgets.ts). Other hosts ignore it. */
+  widget?: import('./bannerwidgets').BannerWidgetHint;
 }
 export interface PlacedAttachment { key: string; type: string; id: string; at: string; order: number; origin: string }
 

@@ -348,6 +348,7 @@
         "run": "write"
       },
       "console.nav": {
+        "refresh": "navigate",
         "back": "navigate",
         "home": "navigate",
         "close": "navigate"

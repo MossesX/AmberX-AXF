@@ -1,0 +1,78 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-64978b44-ed02-44e8-8c64-75f4e1cad588",
+ "source": "claude-code",
+ "sessionId": "64978b44-ed02-44e8-8c64-75f4e1cad588",
+ "project": "axhub",
+ "title": "# urgent: recorder mic on/off per recording Brett, Nov 5 2026 (voice): \"I want to be able to turn on the microphone or …",
+ "startedAt": "2026-11-06T01:55:11.293Z",
+ "endedAt": "2026-11-06T01:55:12.072Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.318",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/urgent",
+  "repo": "",
+  "branch": "claude/urgent"
+ },
+ "user": "Brett (root)",
+ "models": [],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-06T01:55:11.376Z",
+   "kind": "prompt",
+   "text": "# urgent: recorder mic on/off per recording Brett, Nov 5 2026 (voice): \"I want to be able to turn on the microphone or not too.\" ... \"Create a new build called urgent and put that in it.\" This is axHub PR #30 (`claude/recorder-mic`): `amberx.recorder_start` gets an opt-in `mic` arg and the approval title says \"Playback + MIC\" when the mic will be on. It's 1 commit, behind main. ## Do - Merge main into the branch, fix conflicts, make the tests pass, push. Keep PR #30 as the PR (update its description). Do not merge it yourself; it goes through the normal merge flow. - Check the AmberX app side…",
+   "model": "",
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cacheRead": 0,
+    "cacheWrite": 0,
+    "thinking": 0
+   },
+   "costUsd": 0,
+   "costEstimated": false,
+   "seconds": 1,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [
+    "chg-20261106-7a5dc0adb3"
+   ],
+   "features": [],
+   "output": "You've hit your 5-hour limit · resets 4:30am (UTC)"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261106-7a5dc0adb3"
+ ],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 0,
+  "output": 0,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "thinking": 0,
+  "costUsd": 0,
+  "costEstimated": false,
+  "toolCalls": 0,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0
+ },
+ "ingestedAt": "2026-11-06T01:55:12.324Z"
+}

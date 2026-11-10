@@ -20,7 +20,7 @@
  */
 import { createPortal } from 'react-dom';
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { Button, Chip, IconButton, Icon, ModelBadge, Note, Segmented, Switch, TextField, useAxfState, useRuntime } from '../../react';
+import { Button, Chip, IconButton, Icon, ModelBadge, Note, Segmented, Switch, TabGroup, TextField, useAxfState, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import type { AxfRuntime } from '../../core/runtime';
 import {
@@ -570,10 +570,7 @@ function Inspector() {
               {snap.asset && <Chip>{snap.asset.type} / {snap.asset.id}</Chip>}
             </header>
             <p className="fx-muted axf-ashes-insp__path">{snap.path.join(' › ')}</p>
-            <div className="fx-tabs" role="tablist" aria-label="Parameters as">
-              <button type="button" role="tab" className={`fx-tab ${tab === 'grid' ? 'is-active' : ''}`} aria-selected={tab === 'grid'} onClick={() => setTab('grid')}><Icon name="grid" size={13} /> Grid</button>
-              <button type="button" role="tab" className={`fx-tab ${tab === 'tree' ? 'is-active' : ''}`} aria-selected={tab === 'tree'} onClick={() => setTab('tree')}><Icon name="list" size={13} /> Tree</button>
-            </div>
+            <TabGroup id="ashes.params" label="Parameters as" size="sm" value={tab} onChange={setTab} tabs={[{ value: 'grid', label: 'Grid', icon: 'grid' }, { value: 'tree', label: 'Tree', icon: 'list' }]} />
             <TextField label="Filter parameters" value={pfilter} onChange={setPfilter} placeholder="e.g. color, padding, --fx-accent" />
             <div className="axf-ashes-insp__params" role="tabpanel">
               {tab === 'grid' ? <ParamGrid rows={rows} onEdit={edit} filter={pfilter} /> : <ParamTree nodes={ptree} />}

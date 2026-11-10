@@ -8,7 +8,7 @@ COPY . .
 RUN cd apps/console-web && npm ci && npm run build
 
 FROM python:3.12-slim
-RUN apt-get update && apt-get install -y --no-install-recommends curl git ca-certificates openssh-client procps tmux && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && apt-get install -y nodejs && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl git ca-certificates openssh-client procps tmux tini && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && apt-get install -y nodejs && rm -rf /var/lib/apt/lists/*
 WORKDIR /axf
 COPY --from=web /axf /axf
 # Claude Code CLI inside the container: the AI assistant's "Claude Code (subscription)" provider runs it here
@@ -28,4 +28,7 @@ RUN python -c "import axf_server.wall, axf_server.storage, axf_server.http, axf_
 EXPOSE 7090
 # umask 002: files written into /projects stay group-writable for axHub (axhub-projects@1).
 # exec: uvicorn gets SIGTERM from `docker stop` and shuts down cleanly
+# tini as PID 1 reaps orphaned children (node scripts that leave detached git/node processes behind would otherwise
+# pile up as <defunct> zombies under uvicorn) and forwards signals.
+ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD ["sh", "-c", "umask 002 && cd apps/console-web/server && exec uvicorn main:app --host 0.0.0.0 --port ${PORT}"]

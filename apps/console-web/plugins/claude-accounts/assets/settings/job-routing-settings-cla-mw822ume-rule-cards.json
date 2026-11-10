@@ -1,0 +1,40 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "job-routing-settings-cla-mw822ume-rule-cards",
+ "name": "job-routing-settings-cla-mw822ume: Rule cards (two columns, rules as sentences)",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Two columns on a wide screen; every rule is a card that reads as a sentence (\"When model is opus and at most 3 steps left: send it to hulu-api\"). Rules and API caps open.",
+ "tags": [
+  "ui-choice",
+  "choice-set:job-routing-settings-cla-mw822ume",
+  "choice-option:rule-cards"
+ ],
+ "data": {
+  "layout": "list",
+  "header": "compact",
+  "search": true,
+  "descriptions": true,
+  "levels": true,
+  "defaultLevel": "basic",
+  "levelOf": {
+   "claude-accounts.routing": "basic",
+   "claude-accounts.list": "simple",
+   "claude-accounts.runs": "developer",
+   "claude-accounts.add": "administrator"
+  },
+  "view": "rule-cards",
+  "order": [
+   "rules",
+   "api",
+   "status",
+   "test",
+   "workers"
+  ],
+  "open": [
+   "rules",
+   "api"
+  ]
+ }
+}

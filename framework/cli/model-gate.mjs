@@ -19,7 +19,8 @@ import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { MODEL_LABELS, modelKey, modelRank } from '../core/model-policy.mjs';
-import { phaseApproved, stepPhases, upgradeLine } from '../core/model-switch.mjs';
+import { phaseApproved, stepPhases, upgradeLine, upgradeNeedsApproval } from '../core/model-switch.mjs';
+import { loadUpgradePolicy } from './upgrade-policy.mjs';
 import { loadStore, withStore } from './builds-store.mjs';
 
 const label = (m) => MODEL_LABELS[modelKey(m)] ?? m;
@@ -46,9 +47,12 @@ export function launchCheck(b, model) {
     return { ok: false, build: b.id, phase: p.index, why: `${upgradeLine(b.id, p)} and Brett hasn't approved it. Only Brett can: run \`orchestrator.mjs request-upgrade ${b.id} ${p.index}\` (files the axHub approval) and wait; don't launch it.` };
   }
   if (modelRank(want) > modelRank(p.model)) {
-    return { ok: false, build: b.id, phase: p.index, why: `${b.id}: phase ${p.index + 1} is pinned to ${label(p.model)}; launching it on ${label(want)} is a model upgrade and needs Brett's approval. Launch it on ${label(p.model)} (or lower), or ask Brett to raise the step's model in the Build orchestrator.` };
+    return { ok: false, build: b.id, phase: p.index, why: upgradeNeedsApproval()
+      ? `${b.id}: phase ${p.index + 1} is pinned to ${label(p.model)}; launching it on ${label(want)} is a model upgrade and needs Brett's approval. Launch it on ${label(p.model)} (or lower), or ask Brett to raise the step's model in the Build orchestrator.`
+      : `${b.id}: phase ${p.index + 1} is pinned to ${label(p.model)}. If it needs ${label(want)}, set its steps to ${label(want)} in the Build orchestrator first (no approval needed right now: Fable upgrades need my approval is off), then launch.` };
   }
-  return { ok: true, build: b.id, phase: p.index, why: `${b.id} phase ${p.index + 1} runs on ${label(p.model)}; ${label(want)} is ${modelRank(want) < modelRank(p.model) ? 'a downgrade (fine)' : 'the same model'}` };
+  const auto = p.gate && p.kind === 'upgrade' && !upgradeNeedsApproval() && !(b.approvals ?? []).some((a) => a.phase === p.index) ? ' (upgrade: no approval needed, recorded when its first step is ticked)' : '';
+  return { ok: true, build: b.id, phase: p.index, why: `${b.id} phase ${p.index + 1} runs on ${label(p.model)}${auto}; ${label(want)} is ${modelRank(want) < modelRank(p.model) ? 'a downgrade (fine)' : 'the same model'}` };
 }
 
 /**
@@ -85,6 +89,7 @@ async function main(argv) {
   const opt = (k) => { const i = args.indexOf(`--${k}`); return i >= 0 ? args[i + 1] ?? '' : ''; };
   const [cmd] = args;
   if (cmd === 'launch') {
+    loadUpgradePolicy();
     const briefFile = opt('brief'); const brief = briefFile && existsSync(briefFile) ? readFileSync(briefFile, 'utf8').slice(0, 64 * 1024) : '';
     const b = findBuild(loadStore(), { build: opt('build') || process.env.AXF_BUILD_ID || '', name: opt('name'), brief });
     const r = launchCheck(b, opt('model') || process.env.AXF_MODEL || '');
@@ -96,7 +101,7 @@ async function main(argv) {
     const rows = audit(loadStore(), { all: args.includes('--all') });
     if (json) return console.log(JSON.stringify({ ok: true, approvals: rows }));
     if (!rows.length) return console.log('No model upgrades approved yet.');
-    for (const r of rows) console.log(`${r.at}  ${r.build} phase ${r.phase + 1}: ${r.from} → ${r.to} (${r.kind})  ${r.human ? `Brett via ${r.via}` : `NOT Brett${r.by ? `: ${r.by}` : ': approver not recorded (before Nov 3 2026)'}`}${r.selfApproved ? ' · marked self-approved' : ''}`);
+    for (const r of rows) console.log(`${r.at}  ${r.build} phase ${r.phase + 1}: ${r.from} → ${r.to} (${r.kind})  ${r.human ? `Brett via ${r.via}` : r.via === 'policy' ? 'automatic (Fable upgrades need my approval was off)' : `NOT Brett${r.by ? `: ${r.by}` : ': approver not recorded (before Nov 3 2026)'}`}${r.selfApproved ? ' · marked self-approved' : ''}`);
     return;
   }
   if (cmd === 'mark-self') { // audit fix: node framework/cli/model-gate.mjs mark-self <build> <phase> --by "<who>" [--note "…"]

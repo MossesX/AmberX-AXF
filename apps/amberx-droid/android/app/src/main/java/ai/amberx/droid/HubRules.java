@@ -244,7 +244,11 @@ final class HubRules {
 
     static final class ConsoleAlert {
         final String key, stamp, title, body, severity;
-        ConsoleAlert(String key, String stamp, String title, String body, String severity) { this.key = key; this.stamp = stamp; this.title = title; this.body = body; this.severity = severity; }
+        /** Where a tap goes (one of Brett's pages, {@link OpenUrlRules#linkOr}) and the word in front of the title. */
+        final String link, label;
+        ConsoleAlert(String key, String stamp, String title, String body, String severity, String link, String label) {
+            this.key = key; this.stamp = stamp; this.title = title; this.body = body; this.severity = severity; this.link = link; this.label = label;
+        }
     }
     static final class Alerts {
         /** open, loud alerts (one stamp per key + lastAt: a repeat of the same alert alerts again) */
@@ -271,9 +275,31 @@ final class HubRules {
                 if (a.optBoolean("resolved") || a.optBoolean("ack")) { closed.add(key); continue; }
                 String sev = a.optString("severity", "info");
                 if (!LOUD.contains(sev) || !keys.add(key)) continue;
-                open.add(new ConsoleAlert(key, key + "@" + a.optLong("lastAt"), cap(a.optString("title", "Console alert"), 200), cap(a.optString("body", ""), 600), sev));
+                JSONObject meta = a.optJSONObject("meta");
+                String label = cap(meta == null ? "" : meta.optString("label", ""), 40).trim();
+                if (label.isEmpty()) label = "critical".equals(sev) || "error".equals(sev) ? "Console error" : "Console warning";
+                open.add(new ConsoleAlert(key, key + "@" + a.optLong("lastAt"), cap(a.optString("title", "Console alert"), 200), cap(a.optString("body", ""), 600), sev,
+                    OpenUrlRules.linkOr(a.optString("link", ""), CONSOLE), label));
             }
             return new Alerts(open, closed);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * The notification types the Dev Console's panel switched off for this phone (`notify.off` in its alerts reply), or
+     * null when the reply doesn't say. Null means keep the last answer: a console that can't be read never mutes anything.
+     */
+    static Set<String> mutedTypes(int status, String body) {
+        if (status != 200 || body == null) return null;
+        try {
+            JSONObject notify = new JSONObject(body).optJSONObject("notify");
+            JSONArray off = notify == null ? null : notify.optJSONArray("off");
+            if (off == null) return null;
+            Set<String> out = new HashSet<>();
+            for (int i = 0; i < off.length(); i++) out.add(off.optString(i, ""));
+            return out;
         } catch (Exception e) {
             return null;
         }
@@ -305,6 +331,9 @@ final class HubRules {
     static boolean approvedReply(int code, String body) {
         return code == 200 && body != null && body.contains("\"ok\":true") && body.contains("\"result\":\"approved\"");
     }
+
+    /** A decline answers ok; only a hub refusal or a dropped reply counts as not done. */
+    static boolean declinedReply(int code, String body) { return code == 200 && body != null && body.contains("\"ok\":true"); }
 
     /* ---------------------------------------------------------------- HTTP (cookie from Android's store) */
 
@@ -405,9 +434,14 @@ final class HubRules {
         }
     }
 
-    static boolean approve(String hub, String id, String cookie) {
+    static boolean approve(String hub, String id, String cookie) { return decide(hub, id, "approve", cookie); }
+
+    /** Approve or decline in place, with the phone's hub session (Brett, Nov 7 2026: never bounce to the hub's page). */
+    static boolean isDecision(String action) { return "approve".equals(action) || "decline".equals(action); }
+
+    static boolean decide(String hub, String id, String action, String cookie) {
         String url = approvalApiUrl(hub, id);
-        if (url == null || cookie == null || !isHub(HUB, hub)) return false;
+        if (url == null || cookie == null || !isHub(HUB, hub) || !isDecision(action)) return false;
         try {
             Reply session = get(hub + SESSION_PATH, cookie);
             String csrf = session.status == 200 ? csrfFromSession(session.body) : null;
@@ -422,10 +456,11 @@ final class HubRules {
                 c.setRequestProperty("Content-Type", "application/json");
                 c.setRequestProperty("Accept", "application/json");
                 c.setRequestProperty("X-AxHub-CSRF", csrf);
-                c.getOutputStream().write("{\"action\":\"approve\"}".getBytes(StandardCharsets.UTF_8));
+                c.getOutputStream().write(("{\"action\":\"" + action + "\"}").getBytes(StandardCharsets.UTF_8));
                 int code = c.getResponseCode();
                 InputStream in = code >= 400 ? c.getErrorStream() : c.getInputStream();
-                return approvedReply(code, in == null ? "" : readLimited(in, FEED_MAX_BYTES));
+                String reply = in == null ? "" : readLimited(in, FEED_MAX_BYTES);
+                return "approve".equals(action) ? approvedReply(code, reply) : declinedReply(code, reply);
             } finally {
                 c.disconnect();
             }

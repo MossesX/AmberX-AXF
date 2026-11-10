@@ -152,8 +152,8 @@ export function planJobs(builds, roster, opts = {}) {
   const eligible = opts.eligible ?? (() => true);
   const jobs = []; const warnings = [];
   for (const b of Array.isArray(builds) ? builds : [builds]) {
-    // Model upgrades need Brett (framework/core/model-switch.mjs, Nov 3 2026): steps in an upgrade phase he hasn't
-    // approved get no job, and no step goes to an agent on a higher model than it is pinned to.
+    // Model upgrades need Brett while 'Fable upgrades need my approval' is on (framework/core/model-switch.mjs): steps
+    // in an upgrade phase he hasn't approved get no job, and no step goes to an agent on a higher model than it is pinned to.
     const held = heldSteps(b);
     for (const s of b.steps ?? []) {
       if ((s.done === true && !opts.includeDone) || s.skip === true) continue;

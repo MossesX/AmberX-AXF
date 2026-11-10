@@ -439,6 +439,9 @@ export const CARD_SUGGESTIONS = [
   { id: 'notes-recent', title: 'Recent notes', icon: 'file', candidates: [
     { plugin: 'notes-browser', command: 'notes', path: 'notes', view: 'feed', limit: 6, refresh: 'every', every: 300 },
   ] },
+  { id: 'server-disk', title: 'Server disk', icon: 'monitor', unit: '%', candidates: [ // axf-plugin:maintenance
+    { plugin: 'maintenance', command: 'summary', path: 'disk', view: 'meter', fields: { value: 'pct', max: 'max', label: 'Disk used' }, refresh: 'every', every: 120 },
+  ] },
   { id: 'changes-live', title: 'Codebase changes', icon: 'clock', candidates: [
     { plugin: 'codebase-changes', command: 'entries', path: 'items', view: 'feed', fields: { title: 'title', at: 'updatedAt', subtitle: 'state' }, limit: 6, refresh: 'live' },
   ] },

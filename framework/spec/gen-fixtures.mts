@@ -6,13 +6,15 @@
 import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
+import { backToSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, lookAfterChange, newAppLook, normalizeSkin, normalizeSkinScope, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setScopeOverride, setScopeSkin, setUseSkin, skinCovers, skinErrors, skinFromDesignPackage, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSlots, snapshotLook, uncoveredTypes, undoRestore } from '../core/engines/skin';
 import { SCALE_TYPES, normalizeScale, scaleErrors, scaleThemeVars, scaleVars } from '../core/engines/scale';
-import { AGENT_CARD_SAMPLE, agentCardErrors, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
+import { AGENT_CARD_SAMPLE, agentCardErrors, avatarColors, avatarModel, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
+import { AVATAR_FACES, AVATAR_GEAR } from '../core/engines/swarm-rules.mjs';
 import { buildHelpIndex, helpCoverage, helpErrors, helpTarget, introToShow, introToWalkthrough, markSeen, normalizeHelpPack, ratchetErrors, resolveHelp, slugLabel } from '../core/engines/help-rules.mjs';
 import { DEFAULT_LAYOUT, LAYOUT_FIELDS, compileLayout, layoutBreakpointAttr, layoutErrors, layoutTokenVars, layoutTokens, layoutVars, layoutViewportAttrs, layoutViewports, normalizeLayout } from '../core/engines/layout';
 import { CONTROL_TARGET_IDS, canonicalControl, controlConfirmToken, controlConfirmValid, controlErrors, controlGate, controlHash, controlPaths, controlRegistry, controlResult, controlFailure, normalizeControl } from '../core/engines/control-rules.mjs';
 import { compileRepeats, declaredDataSets, missingDataSets, repeatVars, REPEAT_DEFAULT_COLUMNS, REPEAT_DEFAULT_STYLE, REPEAT_MAX_COLUMNS, REPEAT_STYLES } from '../core/engines/repeat';
-import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, navMenuStyle, popupStyle, sliderStyle, toolbarStyle } from '../core/engines/components';
+import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, navMenuStyle, normalizeTabGroup, popupStyle, sliderStyle, tabGroupStyle, toolbarStyle } from '../core/engines/components';
 import { filterMenu, gateFor, hasPermission, resolvePermissions } from '../core/engines/uac';
 import { ActionBus } from '../core/engines/actions';
 import { rollPlan, rollSlotDefault } from '../core/engines/roll';
@@ -32,6 +34,7 @@ import { ASSET_TYPES } from '../core/types';
 import { ASSET_ORIGIN, CHECKED_KINDS, DEFAULT_MENU, MENU_DEFAULT_ORDER, MENU_ITEM_FIELDS, MENU_MAX_DEPTH, PROVIDER_MAX, appMenuSearchEntries, buildAppMenu, chromeToggleItems, chromeToggleTypes, compileAppMenu, compileProviderItems, mergeAppMenu, parseChecked, resolveChecked, titleFromId, truthy, validateMenuItems, type AppMenuContribution, type AppMenuEnv } from '../core/engines/appmenu';
 import { LIBRARY_PARAM_TYPES, PARAM_TRUE_WORDS, paramBool, paramDefaultText, paramDefaults, paramError, paramToJson, type LibraryParam } from '../core/library';
 import { validateAsset } from '../core/validate';
+import * as cs from '../core/engines/chrome-settings-rules.mjs';
 import { DEFAULT_PROJECT_RULES, validateProjectManifest } from '../core/project';
 import { HUB_DEFAULT, HUB_FEED_MAX_BYTES, HUB_FEED_MAX_ITEMS, HUB_FEED_STATUSES, HUB_FIELD_CAPS, HUB_MESSAGES, HUB_PATHS, HUB_SEEN_CAP, accountUrl, apkDownloadName, approvalUrl, approvalsUrl, appsUrl, csrfFromPage, feedUrl, hubOrigin, interpretFeed, isHub, loginUrl, logoutUrl, normalizeHub, seenPlan, unreachableFeed } from '../libs/hub/hub';
 import { APPS_FEED_MAX_BYTES, APPS_FEED_PATH, APPS_MAX, VERSIONS_MAX, appsFeedUrl, interpretApps } from '../libs/hub/apps';
@@ -99,6 +102,14 @@ write('agent-card.json', {
     'too-many': agentCardErrors('agent-card', { front: Array(13).fill('name') }),
     'not-an-object': agentCardErrors('agent-card', 'nope'),
     'other-type': agentCardErrors('button', { design: 'poster' }),
+  },
+  // the avatar (agent@1 face / hair / gear / hue → a part list of theme tokens): what every port draws
+  avatar: {
+    sample: avatarModel(AGENT_CARD_SAMPLE.avatar),
+    junk: avatarModel('nope'),
+    faces: Object.fromEntries(AVATAR_FACES.map((face) => [face, avatarModel({ face }).parts.find((x) => x.id === 'face')])),
+    gear: Object.fromEntries(AVATAR_GEAR.map((gear) => [gear, avatarModel({ gear }).parts.filter((x) => x.id.startsWith('gear'))])),
+    hues: Object.fromEntries([0, 45, 90, 180, 270, 359].map((hue) => [hue, avatarColors({ hue, hair: 0 })])),
   },
 });
 // Help mode (help@1; core/engines/help-rules.mjs): auto help ids, packs, the index (later wins, drafts never beat written), intros, coverage, ratchet, errors.
@@ -648,6 +659,48 @@ write('spacing.json', {
     kinds,
   });
 }
+// chrome-settings@1 (Nov 4 2026): registry, ids, inherit@1 chain, picks, instance overrides, custom copies
+{
+  const defaults = Object.fromEntries(load('settings').filter((a) => (a.data as { for?: string }).for).map((a) => [a.id, a]));
+  const custom = cs.customCopy(defaults['chrome-tab-group']!, { id: 'axf-console', name: 'Dev Console' });
+  const edited = { ...custom, id: 'chrome-tab-group-edited', data: { ...custom.data, layout: 'tabs-side', tabs: [], hide: ['interface'], levelOf: { look: 'basic' } } };
+  const get = (id: string) => ({ ...defaults, [custom.id]: custom, [edited.id]: edited, loop1: { id: 'loop1', data: { for: 'toolbar', extends: 'loop2' } }, loop2: { id: 'loop2', data: { for: 'toolbar', extends: 'loop1', header: 'none' } } } as Record<string, unknown>)[id] ?? null;
+  write('chrome-settings.json', {
+    contract: cs.CHROME_SETTINGS_CONTRACT,
+    types: cs.CHROME_TYPES, labels: cs.CHROME_LABELS, many: cs.CHROME_MANY, targets: cs.CHROME_TARGETS, moves: cs.CHROME_MOVES, tabs: cs.CHROME_SETTINGS_TABS, fields: cs.CHROME_FIELDS,
+    ids: Object.fromEntries(cs.CHROME_TYPES.map((t) => [t, { default: cs.chromeSettingsDefaultId(t), custom: cs.chromeSettingsCustomId(t, 'axf-console'), typeOfDefault: cs.chromeTypeOfSettingsId(cs.chromeSettingsDefaultId(t)), typeOfCustom: cs.chromeTypeOfSettingsId(cs.chromeSettingsCustomId(t, 'axf-console')) }])),
+    keys: { pick: cs.CHROME_SETTINGS_PICK_KEY('tab-group'), patch: cs.CHROME_SETTINGS_PATCH_KEY('tab-group'), instance: cs.CHROME_INSTANCE_KEY('tab-group', 'ui-review.sections'), instanceAsset: cs.CHROME_INSTANCE_ASSET_KEY('tab-group', 'ui-review.sections'), last: cs.TAB_GROUP_LAST_KEY('ui-review.sections'), fold: cs.TAB_GROUP_FOLD_KEY('ui-review.sections') },
+    slugs: { 'Dev Console': cs.appSlug('Dev Console'), 'axf-console': cs.appSlug('axf-console'), '': cs.appSlug(''), '  Weird__Name!!': cs.appSlug('  Weird__Name!!') },
+    targetTypes: Object.fromEntries(['tab-group', 'toolbar', 'banner', 'axf-banner', 'nav', 'nav-item', 'app-menu', 'menubar', 'canvas', 'default', ''].map((t) => [t || '(empty)', cs.chromeTypeOfTarget(t)])),
+    customCopy: custom,
+    chain: { custom: cs.resolveSettingsChain(get, custom.id), edited: cs.resolveSettingsChain(get, edited.id), default: cs.resolveSettingsChain(get, 'chrome-tab-group'), loop: cs.resolveSettingsChain(get, 'loop1'), missing: cs.resolveSettingsChain(get, 'nope') },
+    picks: {
+      unset: cs.chromeSettingsPick(undefined, 'tab-group', ['chrome-tab-group', custom.id]),
+      custom: cs.chromeSettingsPick(custom.id, 'tab-group', ['chrome-tab-group', custom.id]),
+      gone: cs.chromeSettingsPick('chrome-tab-group-old', 'tab-group', ['chrome-tab-group', custom.id]),
+      wrongType: cs.chromeSettingsPick('chrome-toolbar', 'tab-group', ['chrome-tab-group', 'chrome-toolbar']),
+      noDefault: cs.chromeSettingsPick(undefined, 'tab-group', [custom.id]),
+    },
+    choices: cs.chromeSettingsChoices('tab-group', [edited, defaults['chrome-toolbar']!, custom, defaults['chrome-tab-group']!]),
+    overrides: {
+      clean: cs.normalizeInstanceOverride('tab-group', { style: 'pills', position: 'left', badges: false, bogus: 1, density: 'huge', sticky: 'yes' }),
+      number: cs.normalizeInstanceOverride('banner', { height: 999.6, surface: 'raised' }),
+      empty: cs.normalizeInstanceOverride('toolbar', null),
+      unknownType: cs.normalizeInstanceOverride('clock', { format: '12h' }),
+      data: cs.chromeInstanceData('tab-group', { style: 'underline', align: 'start' }, { style: 'pills', bogus: true }),
+      value: [cs.chromeFieldValue('tab-group', { style: 'underline' }, { style: 'pills' }, 'style'), cs.chromeFieldValue('tab-group', { style: 'underline' }, {}, 'style'), cs.chromeFieldValue('tab-group', {}, {}, 'style')],
+    },
+    errors: {
+      ok: cs.chromeSettingsErrors(custom),
+      badFor: cs.chromeSettingsErrors({ id: 'chrome-x', data: { for: 'clock' } }),
+      self: cs.chromeSettingsErrors({ id: 'chrome-toolbar-a', data: { for: 'toolbar', extends: 'chrome-toolbar-a' } }),
+      badName: cs.chromeSettingsErrors({ id: 'my-settings', data: { for: 'toolbar' } }),
+      notAsset: cs.chromeSettingsErrors(null),
+    },
+    plan: cs.chromeSettingsPlan('molly'),
+    missing: cs.chromeSettingsMissing('molly', ['chrome-tab-group', 'chrome-tab-group-molly', 'chrome-toolbar']),
+  });
+}
 write('components.json', {
   button: Object.fromEntries(load('button').map((a) => [a.id, buttonStyle(a.data)])),
   slider: Object.fromEntries(load('slider').map((a) => [a.id, sliderStyle(a.data)])),
@@ -658,6 +711,17 @@ write('components.json', {
   toolbar: Object.fromEntries(load('toolbar').map((a) => [a.id, toolbarStyle(a.data)])),
   'nav-menu': Object.fromEntries(load('nav-menu').map((a) => [a.id, navMenuStyle(a.data)])),
   'app-menu': Object.fromEntries(load('app-menu').map((a) => [a.id, appMenuStyle(a.data)])),
+  // tab-group@1 (Nov 4 2026): every starter's compiled output + normalized data, and the edge cases a port must match
+  'tab-group': Object.fromEntries(load('tab-group').map((a) => [a.id, { normalized: normalizeTabGroup(a.data), ...tabGroupStyle(a.data) }])),
+  'tab-group-cases': {
+    missing: { normalized: normalizeTabGroup(null), ...tabGroupStyle(null) },
+    hidden: tabGroupStyle({ style: 'pills', align: 'start' }, true),
+    'legacy-show-icons-false': normalizeTabGroup({ style: 'underline', align: 'start', showIcons: false }),
+    'display-wins-over-show-icons': normalizeTabGroup({ style: 'underline', align: 'start', showIcons: false, display: 'icons' }),
+    'unknown-values-fall-back': normalizeTabGroup({ style: 'x' as never, align: 'y' as never, position: 'z' as never, overflow: 'q' as never, display: 'w' as never, density: 'v' as never }),
+    'left-rail': tabGroupStyle({ style: 'pills', align: 'start', position: 'left', display: 'icons', sticky: true, badges: false }),
+    'every-flag-on': normalizeTabGroup({ style: 'boxed', align: 'stretch', sticky: true, collapsible: true, closable: true, reorderable: true, badges: true, rememberLast: true, overflow: 'more', position: 'bottom' }),
+  },
   // style fields set explicitly (the starter assets mostly use defaults)
   'chrome-cases': {
     'toolbar-compact-glass': toolbarStyle({ variant: 'labels', align: 'start', groups: [], showSearch: false, density: 'compact', surface: 'glass', divider: false }),
@@ -1894,5 +1958,80 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     frames: ['standard', 'frameless'], frameDefault: 'standard',
     rect: r, hits, resizes, maximize,
     snap: { rules: DEFAULT_SNAP_RULES, zonesList: SNAP_ZONES, viewport: vp, work, others, moving, snaps, zones, zoneRects, overlap, split: { target, cases: splits, odd: oddSplit }, topmost: { stack, probes: topmost }, arm: { steps: armSteps, zeroDwell: armZero } },
+  });
+}
+
+/* ---- skin@1 + app-look@1 ---- */
+{
+  const skin = { layoutTheme: 'windows-explorer', colorTheme: 'windows-light', styleTheme: 'windows', assets: { button: 'windows', banner: 'windows-titlebar' }, preview: { caption: 'Windows' }, extras: { spacing: 'compact', hidden: { toolbar: false } } };
+  const shared = { $axf: 'appearance@1', slots: { layout: 'focus-top', 'color-theme': 'arctic-daylight', 'style-theme': 'hub', button: 'rounded-solid', 'design-package': 'hub-default' }, spacing: 'tight', hidden: { toolbar: true }, settings: { 'axf.banners.group': 'a', 'axf.tokens.button': 'x' } };
+  const look0 = newAppLook('app', snapshotLook(shared as never));
+  const on = setUseSkin(pickSkin(look0, 'windows'), true);
+  const overridden = lookAfterChange(on, { slots: { 'color-theme': 'aurora-night' } }, skin as never);
+  const own = lookAfterChange(look0, { slots: { button: 'terminal' }, hidden: { toolbar: false } }, null);
+  const restored = restoreAppDefault(overridden, '2026-11-05T00:00:00Z');
+  const movedShared = { ...shared, slots: { ...shared.slots, 'color-theme': 'other-theme' }, settings: { 'axf.tokens.button': 'y', 'axf.banners.group': 'other' } };
+  write('skin.json', {
+    contract: 'skin@1',
+    normalize: { good: normalizeSkin(skin), junk: normalizeSkin({ layoutTheme: 'BAD', assets: { 'uac-policy': 'x', button: 'ok', layout: 'nope' }, extras: { spacing: 'huge' } }) },
+    errors: { good: skinErrors(skin), noThemes: skinErrors({ assets: {} }), never: skinErrors({ ...skin, assets: { 'uac-policy': 'x', layout: 'y' } }), badExtras: skinErrors({ ...skin, extras: { spacing: 'huge', hidden: { a: 1 } } }) },
+    slots: skinSlots(normalizeSkin(skin)),
+    fromDesignPackage: skinFromDesignPackage({ 'style-theme': 's', 'color-theme': 'c', layout: 'l', 'behavior-theme': 'b', extras: { slots: { button: 'x' }, spacing: 'tight', hidden: { toolbar: true } } }),
+    look: {
+      shared, snapshot: look0.default,
+      off: composeLook(shared as never, look0, null),
+      offSharedMoved: composeLook(movedShared as never, look0, null),
+      on: composeLook(shared as never, on, skin as never),
+      unknownSkin: composeLook(shared as never, on, null),
+      overridden: { doc: overridden, composed: composeLook(shared as never, overridden, skin as never), backToSkin: composeLook(shared as never, backToSkin(overridden, 'color-theme'), skin as never) },
+      own: { doc: own, composed: composeLook(shared as never, own, null) },
+      restored: { doc: restored, composed: composeLook(shared as never, restored, null), undone: undoRestore(restored).skin, undoneTwice: undoRestore(undoRestore(restored)).skin },
+    },
+    // skin-coverage@1 (build skins-asset-types): every type covered, scopes plugin → ui → app → global, parts, icon pack
+    coverage: (() => {
+      const types = { button: { label: 'Button', group: 'Controls' }, label: { label: 'Label', group: 'Widgets', widget: true, attachable: true }, badge: { label: 'Badge', group: 'Chrome', attachable: true }, 'icon-pack': { label: 'Icon pack', group: 'Brand', skin: { by: 'reference', via: 'iconPack', why: 'named by the skin' } }, 'uac-policy': { label: 'Access policy', group: 'System', skin: { by: 'none', why: 'no look' } }, help: { label: 'Help', group: 'System' }, 'design-package': { label: 'Design package', group: 'System', skin: { by: 'bundle' } }, mystery: { label: 'Mystery', group: 'Data', skin: { by: 'sometimes' } }, hush: { label: 'Hush', group: 'System', skin: { by: 'none' } } };
+      const targets = { button: { root: '.fx-btn' }, label: { root: '.fx-widget-label' }, toolbar: { root: '.fx-toolbar', item: '.fx-toolbar .fx-btn' } };
+      const never = ['uac-policy', 'help', 'skin', 'design-package', 'interface'];
+      const table = coverageTable(types as never, targets, never);
+      return { table, uncovered: uncoveredTypes(types as never, targets, never).map((r) => r.type), summary: coverageSummary(table), partsTypes: partsTypes(types as never, targets), elements: { plain: partElements(targets.button), items: partElements(targets.toolbar), none: partElements(undefined) }, partsErrors: { good: partsErrors({ button: { radius: 'pill' } }, types as never, targets), bad: partsErrors({ nope: {}, badge: { x: 1 }, label: 7 }, types as never, targets), notObject: partsErrors(3, types as never, targets) }, declarationErrors: declarationErrors('mystery', types.mystery).concat(declarationErrors('hush', types.hush)) };
+    })(),
+    scopes: (() => {
+      const skinned = normalizeSkin({ ...skin, iconPack: 'lucide-sharp', parts: { button: { radius: 'pill', fontWeight: '600' }, label: { textColor: 'accent' }, 'uac-policy': { radius: 'pill' }, toolbar: { bogus: 1 } } });
+      const skins: Record<string, typeof skinned> = { windows: skinned, aurora: normalizeSkin({ ...skin, colorTheme: 'aurora-night' }) };
+      const skinOf = (id: string) => skins[id] ?? null;
+      const place = { app: 'app', ui: 'home', plugin: 'notes' };
+      const inherit = setInheritSkin(look0, true);
+      const withGlobal = { ...shared, skin: { id: 'aurora', overrides: { button: 'global-button' } } };
+      const pluginOn = setScopeSkin(setUseSkin(pickSkin(look0, 'windows'), true), 'plugin:notes', 'on', 'aurora');
+      const pluginOff = setScopeSkin(setUseSkin(pickSkin(look0, 'windows'), true), 'plugin:notes', 'off');
+      const uiOverride = setScopeOverride(setUseSkin(pickSkin(look0, 'windows'), true), 'ui:home', 'button', 'ui-button');
+      const chainOver = setScopeOverride(setScopeSkin(setUseSkin(pickSkin(look0, 'windows'), true), 'plugin:notes', 'on', 'aurora'), 'plugin:notes', 'dialog', 'plugin-dialog');
+      return {
+        skinned,
+        chain: { leaf: skinScopeChain(place), app: skinScopeChain({ app: 'app' }), keys: [skinScopeKey(place), skinScopeKey({ app: 'app', ui: 'home' }), skinScopeKey({ app: 'app' })], kinds: ['global', 'app', 'ui:home', 'plugin:notes'].map(skinScopeKind), selectors: ['app', 'ui:home', 'plugin:notes', 'global'].map(skinScopeSelector), normalized: normalizeSkinScope({ app: 'App!', ui: 'home', plugin: 'ai.amberx.notes' }) },
+        resolve: {
+          appOff: resolveLookSkin(look0, null, place),
+          appOn: resolveLookSkin(setUseSkin(pickSkin(look0, 'windows'), true), null, place),
+          inheritNoGlobal: resolveLookSkin(inherit, null, place),
+          inheritGlobal: resolveLookSkin(inherit, globalSkinOf(withGlobal as never), place),
+          ownBeatsGlobal: resolveLookSkin(look0, globalSkinOf(withGlobal as never), place),
+          pluginOn: resolveLookSkin(pluginOn, null, place),
+          pluginOff: resolveLookSkin(pluginOff, null, place),
+          pluginInheritsApp: resolveLookSkin(pluginOn, null, { app: 'app', ui: 'home' }),
+          uiOverride: resolveLookSkin(uiOverride, null, place),
+          chainOverrides: resolveLookSkin(setScopeOverride(chainOver, 'ui:home', 'button', 'ui-button'), null, place),
+        },
+        composed: {
+          app: composeLookAt(shared as never, setUseSkin(pickSkin(look0, 'windows'), true), skinOf),
+          global: composeLookAt(withGlobal as never, inherit, skinOf),
+          plugin: composeLookAt(shared as never, pluginOn, skinOf, place),
+          pluginOff: composeLookAt(shared as never, pluginOff, skinOf, place),
+          unknown: composeLookAt(shared as never, setUseSkin(pickSkin(look0, 'nope'), true), skinOf),
+        },
+        doc: { pluginOn, dropped: setScopeSkin(pluginOn, 'plugin:notes', 'inherit', ''), entries: scopeEntries(chainOver), state: scopeState(chainOver, 'plugin:notes'), appState: scopeState(inherit, 'app'), roundTrip: parseAppLook(JSON.stringify(chainOver)), restored: restoreAppDefault(chainOver, '2026-11-07T00:00:00Z').scopes, undone: undoRestore(restoreAppDefault(chainOver, '2026-11-07T00:00:00Z')).scopes },
+        covers: skinCovers(skinned).filter((c) => ['button', 'label', 'icon-pack', 'uac-policy', 'skin', 'logo-mark', 'branding', 'toolbar'].includes(c.type)),
+        globalSkin: { good: globalSkinOf(withGlobal as never), none: globalSkinOf(shared as never), junk: globalSkinOf({ $axf: 'appearance@1', skin: { id: 'Bad Id' } } as never) },
+      };
+    })(),
   });
 }

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { BuildOrigin, Button, Icon, Slot, useRuntime } from '../axf/react';
+import { BuildOrigin, Button, Icon, PriorityTag, Slot, useRuntime } from '../axf/react';
 import * as api from '../api';
 import * as core from '../axf/plan/pending-core.mjs';
 import pricing from '../axf/schemas/model-pricing.json';
@@ -147,6 +147,7 @@ function PendingRow({ it, busy, act }: { it: PendingItem; busy: boolean; act: (c
     <article className={`pd-card is-${it.status}`} role="listitem" data-fx-ctx-target="axf-pending-item" data-fx-ctx-payload={it.id}>
       <div className="pd-card__top">
         <h2 className="pd-card__title">{it.title}<span className="fx-muted fx-small fx-mono"> {it.id}</span></h2>
+        <PriorityTag build={it.id} />
         <button className={`fx-chip ${STATUS_TONE[it.status]}`} aria-expanded={statusOpen} aria-label={`Status: ${core.STATUS_LABEL[it.status]}. Change`} onClick={() => setStatusOpen((o) => !o)}>{core.STATUS_LABEL[it.status]}</button>
       </div>
       <BuildOrigin origin={it.origin} showEmpty />

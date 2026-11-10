@@ -4,6 +4,7 @@
  * panes become one swipeable row (scroll snap), with two chips to jump between them. Theme tokens only.
  */
 import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { TabGroup } from '@console/axf/react';
 
 export type Split = 'side' | 'stacked' | 'none';
 const P = 'axp-split';
@@ -26,9 +27,7 @@ export function SplitView({ split, active, a, b, labels = ['Session', 'Context c
     <div ref={root} className={`${P} ${on ? `${P}--${narrow ? 'swipe' : split}` : ''}`} hidden={!active}>
       <span ref={probe} className={`${P}__probe`} aria-hidden />
       {on && narrow && (
-        <div className={`${P}__pager`} role="tablist" aria-label="Panes">
-          {labels.map((l, i) => <button key={l} type="button" role="tab" aria-selected={page === i} className={`fx-chip ${page === i ? 'is-on' : ''}`} onClick={() => go(i)}>{l}</button>)}
-        </div>
+        <TabGroup id="terminal.panes" label="Panes" className={`${P}__pager`} value={String(page)} onChange={(v) => go(Number(v))} tabs={labels.map((l, i) => ({ value: String(i), label: l }))} />
       )}
       <div ref={row} className={`${P}__row`} onScroll={(e) => { if (!narrow) return; const r = e.currentTarget; setPage(Math.round(r.scrollLeft / Math.max(1, r.clientWidth))); }}>
         <div className={`${P}__pane ${P}__pane--a`}>{a}</div>

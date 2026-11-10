@@ -1,0 +1,105 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261107-a805bc462d",
+  "createdAt": "2026-11-07T00:38:08.807Z",
+  "updatedAt": "2026-11-07T00:45:51.703Z",
+  "kind": "build",
+  "title": "# Build: amberx-open-any-url ## Brett said (verbatim) \"We need a plugin that will let AmberX open u…",
+  "asked": "# Build: amberx-open-any-url ## Brett said (verbatim) \"We need a plugin that will let AmberX open up any website I tell her to.\" (Context: amberx.open_url refused www.hostinger.com: \"open_url only opens Brett's own sites (amberxai.com)\".) 1. amberx.open_url (axHub device service) opens any http/https URL on Brett's paired phone, not only amberxai.com. Block non-http(s) schemes (intent:, file:, javascript:). Audit-log every open. 2. Setting in axHub (owner-only): mode = own sites only / allowlist / any site (default: any site, per Brett). Allowlist editable. 3. AmberX app: opens external sites in the phone's default browser; own sites keep opening in AmberX. 4. Tests, docs (decisions), PR to the merge queue. Do NOT land directly. If the AmberX APK needs a change, note it for an AmberX-AXF follow-up. One session, lean chain. Watch live: Brett can watch the screen you are changing hot-render in the console. Whenever you start work on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` (apps: console-web, axhub-web, amberx-droid, walkthrough-studio, demo, framework, console, axhub-android, voicevault). Agent cap: heavy steps (pnpm/npm/vite builds, docker node:22 test runs, Playwright) share a VPS-wide lock. Run each one as `node /opt/axf/deploy/../framework/cli/agent-slots.mjs heavy -- <command>` so only a few run at once. Model switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.",
+  "repos": [
+    "MossesX/axHub"
+  ],
+  "model": "claude-opus-5-5",
+  "who": {
+    "session": "8ad36bcb-aef",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "done",
+    "summary": "amberx.open_url opens any http/https site (default), owner setting own/allowlist/any, every open logged; PR #39. APK + AXHub web screen are an AmberX-AXF follow-up.",
+    "branch": "claude/amberx-open-any-url",
+    "commits": [
+      {
+        "sha": "4f971ec"
+      }
+    ],
+    "tests": {},
+    "links": {
+      "report": "https://github.com/MossesX/axHub/pull/39"
+    }
+  },
+  "closed": null,
+  "state": "done",
+  "status": "done",
+  "buildRef": {
+    "kind": "build",
+    "id": "amberx-open-any-url"
+  },
+  "surface": "headless",
+  "startedAt": "2026-11-07T00:38:08.807Z",
+  "finishedAt": "2026-11-07T00:45:32.520Z",
+  "lastSeenAt": "2026-11-07T00:45:32.109Z",
+  "estimate": {
+    "minutes": 30,
+    "costUsd": 4.2
+  },
+  "actual": {
+    "minutes": 7,
+    "costUsd": 1.7477,
+    "inputTokens": 32,
+    "outputTokens": 36502,
+    "cacheReadTokens": 1726386,
+    "cacheWriteTokens": 134458,
+    "source": "transcript"
+  },
+  "costEstimated": false,
+  "branch": "claude/amberx-open-any-url",
+  "areas": [
+    "packages/server",
+    "packages/core",
+    "docs",
+    "project/initialization"
+  ],
+  "progress": 1,
+  "resume": {
+    "repo": "MossesX/axHub",
+    "folder": "/root/axf-builds/amberx-open-any-url",
+    "branch": "claude/amberx-open-any-url",
+    "base": "440184cbdcc4da5e1aed1e8554ad45bcd29b7135",
+    "head": "4f971ec54d813b3eff1530e344b1d88320e779ea",
+    "pushed": true,
+    "dirty": 8,
+    "files": [
+      "CLAUDE.md",
+      "_claude/memory/decisions.md",
+      "docs/cli.md",
+      "docs/roadmap.md",
+      "packages/connectors/device-relay/src/index.ts",
+      "packages/core/src/hub.ts",
+      "packages/core/src/model.ts",
+      "packages/core/src/registry.ts",
+      "packages/core/src/schemas.ts",
+      "packages/server/src/amberx.ts",
+      "packages/server/src/app.ts",
+      "packages/server/src/cli.ts",
+      "packages/server/src/main.ts",
+      "packages/server/src/web.ts",
+      "packages/server/test/amberx.test.ts",
+      "packages/server/test/cli.test.ts",
+      "project/initialization/axhub-context.md",
+      "project/initialization/axhub-planning.md",
+      ".axf-claude/",
+      ".axf-queue.log",
+      ".axf-watch-live.log",
+      "_claude/shared/memory/amber-persona.md",
+      "_claude/shared/memory/naming.md",
+      "_claude/shared/memory/vision.md",
+      "_claude/shared/memory/write-ups.md",
+      "_claude/shared/notes/"
+    ],
+    "at": "2026-11-07T00:45:51.768Z"
+  }
+}

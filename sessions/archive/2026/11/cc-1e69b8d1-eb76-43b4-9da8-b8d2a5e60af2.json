@@ -1,0 +1,76 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-1e69b8d1-eb76-43b4-9da8-b8d2a5e60af2",
+ "source": "claude-code",
+ "sessionId": "1e69b8d1-eb76-43b4-9da8-b8d2a5e60af2",
+ "project": "other",
+ "title": "Claude Code session",
+ "startedAt": "2026-11-06T14:33:15.892Z",
+ "endedAt": "2026-11-06T14:33:16.187Z",
+ "minutes": 0,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.319",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/tmp/axf-slots-X5IMLa/two",
+  "repo": "",
+  "branch": ""
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-06T14:33:15.892Z",
+   "kind": "start",
+   "text": "(session start)",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 2,
+    "output": 103,
+    "cacheRead": 24333,
+    "cacheWrite": 216,
+    "thinking": 0
+   },
+   "costUsd": 0.008,
+   "costEstimated": false,
+   "seconds": 0,
+   "tools": {},
+   "commands": 0,
+   "files": [],
+   "changeIds": [],
+   "features": [],
+   "output": "Hi Brett! What would you like to work on today? (The hook opened a Build manager entry, `chg-20261106-a0b9d8e04c`, for this message. I tried to mark it cancelled since you only said hi, but the command needs your approval. If you give me a task, I'll use that entry for it instead.)"
+  }
+ ],
+ "files": [],
+ "changeIds": [],
+ "features": [],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 0,
+  "turns": 1,
+  "input": 2,
+  "output": 103,
+  "cacheRead": 24333,
+  "cacheWrite": 216,
+  "thinking": 0,
+  "costUsd": 0.008,
+  "costEstimated": false,
+  "toolCalls": 0,
+  "commands": 0,
+  "filesTouched": 0,
+  "reportedUsd": 0.137
+ },
+ "ingestedAt": "2026-11-06T14:33:16.429Z"
+}

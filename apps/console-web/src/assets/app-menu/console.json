@@ -622,6 +622,14 @@
             ]
           },
           {
+            "id": "banner-widgets",
+            "label": "Banner widgets…",
+            "icon": "layers",
+            "action": "banner.widgets",
+            "requires": "assets.swap",
+            "order": 21
+          },
+          {
             "id": "spacing",
             "label": "Spacing",
             "icon": "sliders",

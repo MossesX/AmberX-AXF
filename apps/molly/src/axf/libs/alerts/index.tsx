@@ -174,7 +174,12 @@ function openLink(rt: AxfRuntime, link: string): void {
   if (link.startsWith('view:')) rt.navigate(link.slice(5));
   else if (link.startsWith('settings:')) rt.dispatch(`settings.open:${link.slice(9)}`);
   else if (/^https?:\/\//.test(link)) window.open(link, '_blank', 'noopener,noreferrer');
+  else rt.dispatch(link);
 }
+
+/** A command button the notification registry put on an alert (`notify.actions`); it runs in this browser only. */
+interface AlertCommand { label: string; kind: string; target: string; icon?: string }
+const commandsOf = (a: object) => (a as { notify?: { actions?: AlertCommand[] } }).notify?.actions ?? [];
 
 /* ================================================================== Alerts view */
 
@@ -239,6 +244,7 @@ function AlertsView() {
                   <p className="fx-small fx-muted" style={{ margin: 0 }}>First {new Date(a.firstAt).toLocaleString()} · last {new Date(a.lastAt).toLocaleString()}{Object.keys(a.meta).length ? ` · ${Object.entries(a.meta).map(([k, v]) => `${k}: ${v}`).join(' · ')}` : ''}</p>
                   <div className="fx-row fx-row--wrap">
                     {a.link && <Button icon="external" tone="primary" onClick={() => openLink(rt, a.link)}>Open</Button>}
+                    {commandsOf(a).map((c) => <Button key={c.label} icon={c.icon || (c.kind === 'approve' ? 'check' : 'play')} onClick={() => openLink(rt, c.target)}>{c.label}</Button>)}
                     {!a.resolved && <Button icon="check-circle" onClick={() => void s.act(() => s.transport.resolve([a.key]))}>Resolve</Button>}
                     <Button icon="trash" tone="ghost" onClick={() => void s.act(() => s.transport.dismiss([a.id]))}>Dismiss</Button>
                   </div>

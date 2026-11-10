@@ -51,7 +51,7 @@ function paintBanner(rt: AxfRuntime) {
     data: { counter: COUNTER, onLabel: `${l.agentName || 'Voice'} · ${LIGHT_LABEL[l.state].toLowerCase()}`, offLabel: 'Voice off', onTone: TONE[l.state], offTone: 'neutral', dot: true, link: l.agentId ? `agent-voice.configure:${encodeURIComponent(l.agentId)}` : 'agent-voice.open' },
   } as never, 'app', ID);
   rt.setBadge(COUNTER, l.state === 'off' ? 0 : 1);
-  if (show) rt.attachToBanner({ type: 'status', id: ASSET_ID, at: 'right', order: 22, origin: ID });
+  if (show) rt.attachToBanner({ type: 'status', id: ASSET_ID, at: 'right', order: 22, origin: ID, widget: { label: 'Agent voice', size: 'compact', priority: 4, aliases: ['voice'] } });
   else rt.detachFromBanner(`status:${ASSET_ID}`);
 }
 

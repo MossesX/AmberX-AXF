@@ -16,7 +16,7 @@
  */
 import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { AxfRuntime } from '../../../axf/core';
-import { Button, Chip, Container, Icon, IconButton, Note, SelectField, Switch, TextField, useRuntime, type AxfWebLibrary } from '../../../axf/react';
+import { Button, Chip, Container, Icon, IconButton, Note, SelectField, Switch, TabGroup, TextField, useRuntime, type AxfWebLibrary } from '../../../axf/react';
 import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '../../../axf/libs/datagrid';
 import { native } from '../../../native';
 import { withMic } from '../../../miclease';
@@ -450,23 +450,12 @@ export function CommandCenter({ start }: { start?: string }) {
         </div>
         <Button icon="mic" onClick={() => rt.dispatch('voice.listen')}>Speak</Button>
       </header>
-      <div className="fx-tabs" role="tablist" aria-label="Command tabs">
-        {CATEGORIES.map((c) => (
-          <button key={c.id} type="button" role="tab" className={`fx-tab${cat === c.id ? ' is-active' : ''}`} aria-selected={cat === c.id} onClick={() => setCat(c.id)}>
-            <Icon name={c.icon} size={14} /> {c.label} <span className="fx-muted">{all.filter((x) => x.category === c.id).length}</span>
-          </button>
-        ))}
-      </div>
+      <TabGroup id="commands.categories" label="Command tabs" value={cat} onChange={setCat} tabs={CATEGORIES.map((c) => ({ value: c.id, label: c.label, icon: c.icon, badge: all.filter((x) => x.category === c.id).length || undefined }))} />
       <p className="fx-muted axp-cmd-trigger">{info.description} Trigger: <b>“{info.triggers.slice(0, 3).join('”, “')}”</b>.</p>
       {!available ? <Unavailable cat={cat} /> : (
         <>
-          <div className="fx-tabs fx-tabs--sub" role="tablist" aria-label={`${info.label} lists`}>
-            {(['commands', 'chains'] as Inner[]).map((t) => (
-              <button key={t} type="button" role="tab" className={`fx-tab${inner === t ? ' is-active' : ''}`} aria-selected={inner === t} onClick={() => { setInner(t); setF({ ...f, kind: '', group: '' }); }}>
-                {t === 'commands' ? 'Commands' : 'Chains & wizards'} <span className="fx-muted">{inCat.filter((c) => (t === 'commands' ? c.kind === 'action' : c.kind !== 'action')).length}</span>
-              </button>
-            ))}
-          </div>
+          <TabGroup<Inner> id="commands.lists" label={`${info.label} lists`} className="fx-tabs--sub" size="sm" value={inner} onChange={(t) => { setInner(t); setF({ ...f, kind: '', group: '' }); }}
+            tabs={(['commands', 'chains'] as Inner[]).map((t) => ({ value: t, label: t === 'commands' ? 'Commands' : 'Chains & wizards', badge: inCat.filter((c) => (t === 'commands' ? c.kind === 'action' : c.kind !== 'action')).length || undefined }))} />
           <div className="axp-cmd-tools" role="toolbar" aria-label="Command filters">
             <TextField label="Search" value={f.q ?? ''} onChange={(q) => setF({ ...f, q })} placeholder="what you'd say, or what it does" />
             <SelectField label="Group" value={f.group ?? ''} onChange={(group) => setF({ ...f, group })} options={[{ value: '', label: 'All groups' }, ...groupsOf(inTab).map((g) => ({ value: g, label: g }))]} />

@@ -3,9 +3,13 @@ import { compileSlots, regionAccepts } from '../core/engines/layout';
 import { useAsset, useAxfState, useRuntime } from './AxfProvider';
 import { MenuBar, NavMenu, StatusBar, Toolbar } from './components/Chrome';
 import { ContextMenuHost, DialogHost, ToastHost, type DialogMap } from './components/Overlays';
+import { SkinScope } from './components/SkinScope';
 import { Inspector } from './studio/Inspector';
 import { builtinDialogs } from './studio/builtinDialogs';
 import { bannerSettingsDialog } from './components/BannerSettings';
+import { bannerWidgetsDialog } from './components/BannerWidgets';
+import { chromeDialogs, installChrome } from './components/ChromeContext';
+import { priorityDialogs } from './components/PriorityTag';
 import { FloatingWindowsHost, TabRenderersProvider, windowDialogs, useWindowShortcuts, type TabRenderers } from './windows/WindowHost';
 import { OutputTerminalPane, terminalDialog } from './studio/OutputTerminal';
 import { useSearchHost } from './components/Search';
@@ -64,7 +68,9 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
   const showToolbar = layout.showToolbar && regionAccepts(slots, 'toolbar', 'toolbar') && !rt.slotHidden('toolbar');
   const showNav = regionAccepts(slots, 'nav', 'nav-menu') && !rt.slotHidden('nav-menu');
   useWindowShortcuts();
-  const allDialogs: DialogMap = { ...builtinDialogs, ...bannerSettingsDialog, ...windowDialogs, ...terminalDialog, ...dialogs };
+  // chrome-settings@1: Settings / Change / Move on every tab group, toolbar, banner, nav and menu bar (once per runtime)
+  installChrome(rt);
+  const allDialogs: DialogMap = { ...builtinDialogs, ...bannerSettingsDialog, ...bannerWidgetsDialog, ...chromeDialogs, ...priorityDialogs, ...windowDialogs, ...terminalDialog, ...dialogs };
   // Live search: views, dialogs and page text go into the runtime's search index; picks are focused here.
   useSearchHost(declaredViews, allDialogs);
   const view = views[state.view] ?? Object.values(views)[0];
@@ -146,14 +152,15 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
         </div>
       )}
       <main className="fx-region fx-main" style={{ gridArea: 'main' }} data-fx-ctx-target="canvas">
+        {/* every view root is a UI level of the skin chain (SkinScope kind="ui": a marker until Appearance names a skin for it) */}
         {keptNow.map((id) => (
           <div key={`kept:${id}`} className="fx-main__inner fx-main__inner--kept" hidden={id !== state.view} data-axf-view={id}>
-            {views[id]?.render()}
+            <SkinScope kind="ui" id={id} className="fx-ui-scope">{views[id]?.render()}</SkinScope>
           </div>
         ))}
         {!keep.includes(state.view) && (
           <div className="fx-main__inner" key={state.view}>
-            {view?.render()}
+            <SkinScope kind="ui" id={state.view} className="fx-ui-scope">{view?.render()}</SkinScope>
           </div>
         )}
       </main>

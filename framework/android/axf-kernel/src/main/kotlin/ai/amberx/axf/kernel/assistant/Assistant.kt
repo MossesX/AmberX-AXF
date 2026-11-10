@@ -296,7 +296,7 @@ public data class ConversationSettings(
 )
 
 /** Setting keys as the wire spells them (same order as the web reference). */
-public val CONVERSATION_SETTING_KEYS: List<String> = listOf("profileId", "model", "temperature", "max_tokens", "top_p", "systemPrompt", "agentId", "tools", "thinking")
+public val CONVERSATION_SETTING_KEYS: List<String> = listOf("profileId", "model", "temperature", "max_tokens", "top_p", "systemPrompt", "agentId", "tools", "thinking", "toolMode")
 
 public data class Conversation(
     val id: String,
@@ -368,7 +368,7 @@ public object AssistantRules {
     /** Admins may set every conversation setting; users only what their hub permissions allow. */
     public fun settingsAllowedFor(admin: Boolean, can: (String) -> Boolean): List<String> {
         if (admin) return CONVERSATION_SETTING_KEYS
-        val keys = mutableListOf("temperature", "top_p", "systemPrompt", "tools")
+        val keys = mutableListOf("temperature", "top_p", "systemPrompt", "tools", "toolMode")
         if (can("assistant.agents")) keys += "agentId"
         if (can("assistant.models")) keys += listOf("profileId", "model", "max_tokens", "thinking")
         return keys

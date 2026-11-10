@@ -1,0 +1,35 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "windows-light",
+  "name": "Windows Light",
+  "version": "1.0.0",
+  "description": "Windows 11-style light colours: Mica greys and the system blue accent.",
+  "author": "AmberX AXF",
+  "tags": [
+    "windows",
+    "skin",
+    "light"
+  ],
+  "data": {
+    "scheme": "light",
+    "tokens": {
+      "bg": "#f3f3f3",
+      "surface": "#ffffff",
+      "surface2": "#fbfbfb",
+      "surface3": "#ebebeb",
+      "text": "#1b1b1b",
+      "muted": "#5d5d5d",
+      "border": "#e5e5e5",
+      "accent": "#0067c0",
+      "accentText": "#ffffff",
+      "accentSoft": "rgba(0,103,192,0.10)",
+      "danger": "#c42b1c",
+      "success": "#0f7b0f",
+      "warning": "#9d5d00",
+      "info": "#005fb8",
+      "focus": "#0067c0",
+      "shadow": "rgba(0,0,0,0.14)"
+    }
+  }
+}

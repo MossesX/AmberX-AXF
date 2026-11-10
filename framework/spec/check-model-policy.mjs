@@ -11,6 +11,9 @@ import { MODELS as STORE_MODELS } from '../plan/builds-store-core.mjs';
 import { suggestModel } from '../cli/plan.mjs';
 import * as SW from '../core/model-switch.mjs';
 import { audit, findBuild, launchCheck } from '../cli/model-gate.mjs';
+import { readUpgradePolicy } from '../cli/upgrade-policy.mjs';
+import { mkdtempSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 
 const ROOT = fileURLToPath(new URL('../..', import.meta.url));
 const read = (p) => JSON.parse(readFileSync(join(ROOT, p), 'utf8'));
@@ -91,6 +94,28 @@ t('launch gate: an unapproved upgrade phase or a model above the step is refused
 t('audit lists upgrades with who approved them (Brett or not)', () => {
   const rows = audit({ builds: [LB([{ phase: 1, from: 'Opus', to: 'Fable', at: 'a' }]), { id: 'ok', steps: [{ id: 's1', model: 'Opus' }, { id: 's2', model: 'Fable' }], approvals: [{ phase: 1, from: 'Opus', to: 'Fable', at: 'b', by: 'brett', via: 'axhub' }] }] });
   assert.deepEqual(rows.map((r) => [r.build, r.kind, r.human]), [['lb', 'upgrade', false], ['ok', 'upgrade', true]]);
+});
+
+// Fable upgrades need my approval (owner-only Claude setting builds.fableUpgradeApproval, default off; Brett, Nov 4 2026)
+t('upgrade policy: strict until set; off = upgrade phases clear, launch on the pinned model; the pin still holds', () => {
+  assert.equal(SW.upgradePolicy().approvalRequired, true, 'the pure module is strict until an entry point reads the setting');
+  SW.setUpgradePolicy({ approvalRequired: false, source: 'check' });
+  try {
+    assert.equal(SW.heldSteps(LB()).size, 0); assert.equal(launchCheck(LB(), 'fable').ok, true, 'phase 2 runs on Fable by itself');
+    assert.match(launchCheck(LB(), 'fable').why, /no approval needed/);
+    assert.equal(launchCheck(LB([], 0), 'fable').ok, false, 'an Opus step is still not launched on Fable: raise the step first');
+    assert.match(launchCheck(LB([], 0), 'fable').why, /set its steps to Fable/); assert.match(SW.switchRule(), /need no approval/);
+  } finally { SW.setUpgradePolicy({ approvalRequired: true, source: 'check' }); }
+  assert.equal(SW.heldSteps(LB()).size, 1); assert.equal(SW.switchRule(), SW.SWITCH_RULE);
+});
+t('upgrade policy reader: setting value, default off, env can only make it stricter', () => {
+  const d = mkdtempSync(join(tmpdir(), 'upol-')); const f = join(d, 'settings.json');
+  assert.equal(readUpgradePolicy({ AXF_CLAUDE_SETTINGS_FILE: f }).approvalRequired, false, 'no document = default off');
+  writeFileSync(f, JSON.stringify({ values: { [SW.UPGRADE_SETTING]: true } }));
+  assert.equal(readUpgradePolicy({ AXF_CLAUDE_SETTINGS_FILE: f }).approvalRequired, true, 'Brett turned it on');
+  assert.equal(readUpgradePolicy({ AXF_CLAUDE_SETTINGS_FILE: f, AXF_FABLE_UPGRADE_APPROVAL: '0' }).approvalRequired, true, 'the environment never turns it off');
+  writeFileSync(f, JSON.stringify({ values: { [SW.UPGRADE_SETTING]: false } }));
+  assert.equal(readUpgradePolicy({ AXF_CLAUDE_SETTINGS_FILE: f, AXF_FABLE_UPGRADE_APPROVAL: '1' }).approvalRequired, true, 'the environment may make it stricter');
 });
 
 console.log(`model-policy: ${n} checks passed`);

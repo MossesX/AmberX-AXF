@@ -24,8 +24,11 @@ from pathlib import Path
 from typing import Any, Callable
 
 import axf_framework  # noqa: F401 — framework/python on sys.path
+from axf import anthropic_keys as ak
 from axf.contracts import assistant as contract
 from axf_server import storage
+
+from . import chatmode
 
 ROOT = Path(os.environ.get("AXF_ROOT", Path(__file__).resolve().parents[5])).resolve()
 DATA = Path(os.environ.get("AXF_AI_ASSISTANT_DIR", ROOT / ".axf-console" / "plugins" / "ai-assistant"))
@@ -68,6 +71,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
     "sessionHost": "local",
     "userDailyTokens": 50000,
     "keepInterrupted": True,
+    "chatMode": deepcopy(chatmode.DEFAULTS),
     "suggestions": [
         "Explain how the theme engine compiles a color-theme asset",
         "Where are console plugins loaded, and how do I write one?",
@@ -141,6 +145,7 @@ def load_config() -> dict[str, Any]:
         cfg = {**deepcopy(DEFAULT_CONFIG), **raw}
         cfg["params"] = {**DEFAULT_CONFIG["params"], **(raw.get("params") or {})}
         cfg["tools"] = {**DEFAULT_CONFIG["tools"], **(raw.get("tools") or {})}
+        cfg["chatMode"] = chatmode.normalize(raw.get("chatMode"))
         return cfg
 
 
@@ -226,8 +231,8 @@ def upsert_profile(body: dict[str, Any]) -> dict[str, Any]:
             k = re.sub(r"\s+", "", str(key))
             if cat["protocol"] == "anthropic" and k.startswith("sk-ant-oat"):
                 raise ValueError("that's a Claude Code subscription token (sk-ant-oat…), not an API key: put it in the “Claude Code (subscription)” provider. Anthropic API keys start with sk-ant-api…")
-            if cat["protocol"] == "claude-cli" and k.startswith("sk-ant-api"):
-                raise ValueError("that's an Anthropic API key (sk-ant-api…): put it in the “Anthropic (Claude)” provider. The subscription provider needs the token from `claude setup-token` (sk-ant-oat…)")
+            if cat["protocol"] == "claude-cli" and ak.is_api_key(k):
+                raise ValueError("that's an Anthropic API key (sk-ant-api03… / sk-ant-usr…): put it in the “Anthropic (Claude)” provider. The subscription provider needs the token from `claude setup-token` (sk-ant-oat…)")
             rec["key"] = k
         profiles[pid] = rec
         if not cfg.get("defaultProfile"):
