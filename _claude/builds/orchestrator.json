@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-09T23:59:32.228Z",
+ "updatedAt": "2026-11-10T00:02:09.194Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -81306,12 +81306,16 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T23:59:19.114Z",
-   "updatedAt": "2026-11-09T23:59:21.457Z",
+   "updatedAt": "2026-11-10T00:01:58.512Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-09T23:59:21.457Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T00:01:58.512Z"
     }
    ],
    "approvals": [],
@@ -81328,7 +81332,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Upgrade the existing walkthrough/demonstration tools, don't make new ones. 1) Player setting: Layout = Player or IDE. IDE style: collapsible side columns and panels (clips library, book outline, properties, picture-in-picture group chat, captions/script). 2) Books: drag and drop clips into a book, reorder, nest chapters. 3) Merge the walkthrough player and the already-built Demonstration manager into one plugin (harvest its code, keep its data: demonstration, book, clip asset types), one source of truth. 4) Keep the playback controls (voice switch, speed, hide parts). Full API control.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9xdy4001xnwl"
+    },
+    {
+     "id": "s2",
+     "text": "They want to be able to open a collapsible column or a view... maybe we should make a setting in its settings to be IDE style, and then you can create books by dragging and dropping clips. And you can get code from the already built demonstration manager and merge them together.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9xdy4002cdz6"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/walkthrough-player-ide-layout-setting-collapsibl.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/walkthrough-player-ide-layout-setting-collapsibl.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9xdy4003t2j0"
+    }
+   ]
   }
  ]
 }

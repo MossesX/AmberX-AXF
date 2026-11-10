@@ -4400,7 +4400,15 @@
    "brief": "",
    "verbatim": true,
    "from": "",
-   "addenda": []
+   "addenda": [
+    {
+     "said": "Multiple books open in different containers and tabs, drag tabs from one group to another, et cetera. Powerful context menu too. Need to be able to add a book and enter information about it, name it, and have all the books appear in a list that expands or shows some info. You can build books by dragging clips. Make it sick, it needs to do everything. You can export videos, turn off captions. Export to MP3, MP4, export to a person, to an email or a share, whatever. And a pane you can hide or unhide that lists all the plugins, all the apps, and types of things like assets, in categories, a categorized tree, maybe multiple views. You select things, then right click or a quick button that says Create a demo on this, set how long you want it, add a custom prompt. When you make a new book, you can add a prompt to it and select. It has to build a glossary, and the glossary indexes all that, documentation, that all goes into a book.",
+     "at": "",
+     "source": "voice",
+     "by": "Claude voice (Gizmo)",
+     "verbatim": true
+    }
+   ]
   },
   "walkthrough-random-look": {
    "said": "for the 90-minute walkthrough, change the design pack to a random one for chapters 5-10 (cli, console, plugins, builds, guardrails, agents). Chosen: recording-only look; the recorder rewrites only its own browser copy of the hub appearance document, the shared look on axHub never changes.",
