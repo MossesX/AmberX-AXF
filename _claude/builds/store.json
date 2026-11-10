@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2722,
- "updatedAt": "2026-11-10T19:12:11.719Z",
+ "rev": 2723,
+ "updatedAt": "2026-11-10T19:12:24.118Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -145226,15 +145226,15 @@
    "title": "Full API + CLI control of everything, plus an offline index/registry; AI only as fallback",
    "category": "",
    "detail": "1) Extensive API and CLI control over every page, app, plugin, tool, behavior, display and setting, covering every option and every possible parameter value. Scope: console, Molly, axHub, AmberX app, and through axHub: Hostinger, Coolify, VPS. Moshi is a third-party phone SSH app: cover it only as far as it can be driven (deep links/intents), otherwise record the gap. 2) A complete index and registry of everything controllable (ids, types, actions, parameters, allowed values, where it lives) for offline management and internal logic. 3) Rule: anything that can be done without AI is done without AI. AI is only a fallback, and only when 'Make Claude available to the console' is on in Claude settings. Builds on universal-voice-api-control and the ui-api-parity builds; reuse them, don't duplicate.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/full-api-cli-control-of-everything-plus-an-offli",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T16:28:24.043Z",
-   "updatedAt": "2026-11-10T19:12:10.044Z",
+   "updatedAt": "2026-11-10T19:12:15.294Z",
    "builtAt": "",
    "notes": [
     {
@@ -145248,6 +145248,14 @@
     {
      "text": "Split by Claude into 17 steps (3 Fable).",
      "at": "2026-11-10T17:57:53.486Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-full-api-cli-control-of-everything-plus-an-offli--earl.",
+     "at": "2026-11-10T19:12:13.095Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-full-api-cli-control-of-everything-plus-an-offli--earl, own login copy)",
+     "at": "2026-11-10T19:12:15.294Z"
     }
    ],
    "approvals": [],
@@ -145267,12 +145275,12 @@
    "pipeline": {
     "queuedAt": "2026-11-10T16:28:25.691Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-full-api-cli-control-of-everything-plus-an-offli--earl",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "launchedAt": "2026-11-10T19:12:12.573Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T17:57:53.486Z",
@@ -145284,7 +145292,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-10T19:12:12.573Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -145293,7 +145301,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "2026-11-10T19:12:12.573Z"
    },
    "steps": [
     {
@@ -145742,7 +145750,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

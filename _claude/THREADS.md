@@ -772,9 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 16:16 UTC · `account-order-switch-custom-drag-and-drop-order` PR #449 (all) · builds-live
-- 2026-11-10 16:16 UTC · `account-order-switch-custom-drag-and-drop-order` s3 done, → built (all) · orchestrator
-- 2026-11-10 16:17 UTC · `account-order-switch-custom-drag-and-drop-order` note (all) · orchestrator
 - 2026-11-10 16:18 UTC · `account-order-switch-custom-drag-and-drop-order` note (all) · pipeline
 - 2026-11-10 16:18 UTC · `search-bar-plugin-snappable-search-asset-globe-e` → running, note (all) · pipeline
 - 2026-11-10 16:18 UTC · `search-bar-plugin-snappable-search-asset-globe-e` branch claude/search-bar-plugin-snappable-search-asset-globe-e (all) · pipeline
@@ -1172,6 +1169,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 19:11 UTC · `orchestrator-checks-each-build-against-main-righ` PR #464 (all) · builds-live
 - 2026-11-10 19:11 UTC · `orchestrator-checks-each-build-against-main-righ` s3 done, → built (all) · orchestrator
 - 2026-11-10 19:11 UTC · `orchestrator-checks-each-build-against-main-righ` note (all) · orchestrator
+- 2026-11-10 19:12 UTC · `full-api-cli-control-of-everything-plus-an-offli` → running, note (all) · pipeline
+- 2026-11-10 19:12 UTC · `full-api-cli-control-of-everything-plus-an-offli` branch claude/full-api-cli-control-of-everything-plus-an-offli (all) · pipeline
+- 2026-11-10 19:12 UTC · `full-api-cli-control-of-everything-plus-an-offli` note (all) · orchestrator
 
 ## Token passes (log)
 
