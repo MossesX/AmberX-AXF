@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T22:40:23.810Z",
+ "updatedAt": "2026-11-10T22:40:36.219Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -71226,7 +71226,7 @@
    "title": "Molly gap: one sign-in reaches every app backend (console token, hub session, Expenses) for native screens",
    "category": "Molly",
    "detail": "Gap found by molly-one-shell. Native screens call each app backend from molly.amberxai.com: the console API takes a bearer token kept in the console origin, axHub uses its own session, Expenses its own. Molly needs one sign-in that hands each native plugin its credentials. No secrets in the repo.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -71234,7 +71234,7 @@
    "pr": "#477",
    "priority": "P0",
    "createdAt": "2026-11-08T16:59:02.204Z",
-   "updatedAt": "2026-11-10T22:10:58.913Z",
+   "updatedAt": "2026-11-10T22:40:32.080Z",
    "builtAt": "",
    "notes": [
     {
@@ -71256,6 +71256,10 @@
     {
      "text": "Reconciler: PR #477; PR #477 names s1, s2 done",
      "at": "2026-11-10T22:10:58.913Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-10T22:40:32.080Z"
     }
    ],
    "approvals": [],
