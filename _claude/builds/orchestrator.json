@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:51:33.543Z",
+ "updatedAt": "2026-11-10T17:51:46.509Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -85686,7 +85686,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-10T04:28:17.210Z",
-   "updatedAt": "2026-11-10T17:14:07.682Z",
+   "updatedAt": "2026-11-10T17:51:25.771Z",
    "builtAt": "",
    "notes": [
     {
@@ -85704,6 +85704,10 @@
     {
      "text": "Reconciled with enforce-the-merge-queue (Nov 10 2026, Brett: 'Everything needs to go into the merge queue so we can make one build out of it before we send it to CI'). Step 1 must not push to main: a finished build gets its PR and joins the merge queue (push-banner land/merge-queue.mjs enlist does this every 3 min already); the queue batches the ready PRs into one build on queue/batch, runs CI once and lands it on main as one commit. Redeploy-on-land happens once per landed batch. Keep the backfill: it should open PRs into the queue, not push.",
      "at": "2026-11-10T17:14:07.682Z"
+    },
+    {
+     "text": "Split by Claude into 15 steps (2 Fable).",
+     "at": "2026-11-10T17:51:25.771Z"
     }
    ],
    "approvals": [],
@@ -85723,13 +85727,19 @@
    "steps": [
     {
      "id": "s1",
-     "text": "Plain code in the orchestrator dispatcher, no AI. 1) The moment a build's session finishes with its steps ticked and tests green, the orchestrator lands it straight away: clean sync files and stray logs, clear stale locks, merge origin/main, rerun the build's own tests, push to main. No waiting on a person or a later session. 2) UPDATE THE CONSOLE ON EVERY LAND: right after each push to main, trigger the console redeploy immediately (the same path as install-console.sh's auto-update, run now, not on the 5-minute timer), and rebuild any other app the change touched (AmberX web, axHub web, Molly and so on). Wait for it to come up healthy, then refresh open consoles. If the deploy fails, roll back to the last good image and queue a fix. 3) UI Review never blocks landing: screenshots and picks can follow after landing, and changes come as follow-up builds. 4) If main moved and tests fail after the merge, or there's a code clash, the orchestrator immediately queues a conflict-fix run on the same branch (top priority, any working account) and lands when green. It retries until it's on main. 5) Land in finish order, one at a time (a merge lock), so each lands on the newest main. Batch redeploys if several land within a minute. 6) Backfill now: land every finished-but-unlanded build (about 134), oldest first, skipping ones superseded or already on main, with conflict-fix runs where needed. 7) Each land and deploy shows in the Activity Monitor and fix log, with a phone FYI only for failures that need Brett. Tests with fake clashes and a fake failed deploy. Supersedes any auto-land pieces in other builds; don't duplicate.",
-     "model": "Opus",
-     "why": "",
+     "text": "Design the land pipeline contract inside the orchestrator dispatcher. Define the land-queue state machine (finished → queued → locked → cleaning → merging → testing → pushed → deploying → landed | conflict-fix | deploy-failed). Define a merge lock that lands builds one at a time in finish order. Add a land record schema to the build store (landedAt, mainSha, deployId, attempts, lastError) with a migration that also adds a 'landed' field to existing builds. Write it up in the orchestrator README.",
+     "model": "Fable",
+     "why": "Engine internals plus a schema and migration that every later step and the backfill depend on",
      "phase": "",
      "group": "",
      "estimate": "30 min",
-     "files": [],
+     "files": [
+      "apps/console-web/plugins/orchestrator/land/state.mjs",
+      "apps/console-web/plugins/orchestrator/land/lock.mjs",
+      "apps/console-web/plugins/orchestrator/store-migrations/",
+      "_claude/builds/store.json",
+      "_claude/builds/README.md"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -85737,17 +85747,21 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwa729lm01ud5e"
+     "uid": "st-mwazl9vv2kxd4u"
     },
     {
      "id": "s2",
-     "text": "You realize when you don't merge stuff right away you have to pull in main again, and tests are gonna fail. Why do you not just merge this as soon as it's done? ... Right, so when something lands, update the console. Period.",
-     "model": "Opus",
-     "why": "",
+     "text": "Implement the land core as plain code with no AI. Under the merge lock: delete sync temp files (*.tmp-*) and stray logs (.axf-*.log, .axf-brief.md), clear stale locks, fetch and merge origin/main into the build branch, rerun the build's own tests from its brief/report, then push to main. Return a typed result: landed, clash or tests-failed.",
+     "model": "Fable",
+     "why": "Core dispatcher engine path that every land and the backfill run through",
      "phase": "",
      "group": "",
      "estimate": "30 min",
-     "files": [],
+     "files": [
+      "apps/console-web/plugins/orchestrator/land/land.mjs",
+      "apps/console-web/plugins/orchestrator/land/clean.mjs",
+      "apps/console-web/plugins/orchestrator/land/tests.mjs"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -85755,11 +85769,273 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwa729ln02bs9b"
+     "uid": "st-mwazl9vv2lk8a3"
     },
     {
      "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/auto-land-every-build-the-moment-it-finishes-red.md, THREADS row, commit, push, PR",
+     "text": "Wire auto-land into the session-finish handler in the dispatcher. When a build's session ends with all steps ticked and tests green, put it on the land queue straight away, in finish order. Make UI Review non-blocking: screenshots and picks get queued as follow-ups after landing, and changes become follow-up builds. Remove the gates that waited on a person or a later session.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator/dispatcher.mjs",
+      "apps/console-web/plugins/orchestrator/ui-review.mjs",
+      "_claude/builds/orchestrator.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazl9vv2m29bh"
+    },
+    {
+     "id": "s4",
+     "text": "Add conflict-fix runs. On a clash, or on tests failing after the merge, queue a conflict-fix session on the same branch at top priority on any working account, using a fixed prompt template. When it finishes green, put the build back on the land queue. Retry until it is on main, with backoff and an attempts counter in the land record.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator/land/conflict-fix.mjs",
+      "apps/console-web/plugins/orchestrator/dispatcher.mjs",
+      "apps/console-web/plugins/orchestrator/accounts.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazl9vv2n9vll"
+    },
+    {
+     "id": "s5",
+     "text": "Redeploy the console on every land. Pull the auto-update path out of install-console.sh into a callable redeploy script and run it right after each push to main, with no 5-minute timer. Batch redeploys when several lands happen within 60 s. Wait for the health check to pass, then send a refresh event to open consoles.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "install-console.sh",
+      "scripts/redeploy-console.sh",
+      "apps/console-web/plugins/orchestrator/land/deploy.mjs",
+      "apps/console-web/server/events.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazl9vv2ozq0h"
+    },
+    {
+     "id": "s6",
+     "text": "Rebuild the other apps a land touched. Map the changed paths to apps (AmberX web, axHub web, Molly, …) and rebuild and redeploy each one, with its own health wait. This uses the same batch window as the console redeploy.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator/land/apps-map.mjs",
+      "apps/console-web/plugins/orchestrator/land/deploy.mjs",
+      "scripts/redeploy-app.sh"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazl9vv2pvvhu"
+    },
+    {
+     "id": "s7",
+     "text": "Add deploy rollback. Keep a last-good image tag for each app. When a deploy fails or its health check times out, roll back to that tag, record deploy-failed in the land record, and queue a fix build that carries the deploy log.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator/land/rollback.mjs",
+      "apps/console-web/plugins/orchestrator/land/deploy.mjs",
+      "_claude/builds/orchestrator.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazl9vv2qlwlq"
+    },
+    {
+     "id": "s8",
+     "text": "Report every land and deploy. Emit Activity Monitor events and fix-log entries for queued, landed, conflict-fix, deployed, rolled back and failed. Send a phone FYI only for failures that need Brett: a rollback that also failed, or a build still not on main after N conflict-fix attempts.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/activity-monitor/",
+      "apps/console-web/plugins/orchestrator/land/notify.mjs",
+      "apps/console-web/plugins/orchestrator/fixlog.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazl9vv2r93xf"
+    },
+    {
+     "id": "s9",
+     "text": "Add a Land queue panel to the Activity Monitor UI. It shows the queue, the current lock holder, recent lands and deploys, and conflict-fix runs. It offers these actions: land now, retry, skip, roll back. It has these settings: auto-land on/off and the batch window in seconds.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/activity-monitor/land-panel.mjs",
+      "apps/console-web/plugins/activity-monitor/index.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazl9vv2s8tp9"
+    },
+    {
+     "id": "s10",
+     "text": "Give the Land queue full API control, the same across all four surfaces. Deep link: console_show / console_open target 'activity-monitor/land'. State read: the queue, the lock and the land records. Actions: land now, retry, skip, roll back, start backfill. Settings: auto-land and batch window. Expose these through REST routes, MCP console actions and plugin commands, the axf CLI subcommands 'land' and 'deploy', and AmberX voice intents.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/server/routes/land.mjs",
+      "apps/console-web/plugins/orchestrator/mcp-actions.mjs",
+      "bin/axf-land.mjs",
+      "apps/amberx/voice/intents/land.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazl9vv2tupal"
+    },
+    {
+     "id": "s11",
+     "text": "Implement the backfill command. List the finished-but-unlanded builds, oldest first. Skip any that are superseded (checked through supersedes links) or already on main (checked with git merge-base --is-ancestor or a patch-id match). Put the rest on the land queue, which uses conflict-fix runs where needed. Support a --dry-run report.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator/land/backfill.mjs",
+      "bin/axf-land.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazl9vv2ufemf"
+    },
+    {
+     "id": "s12",
+     "text": "Remove the duplicate auto-land pieces. Find the auto-land and merge code in other builds and modules (including build-manager leftovers and the shipping unblock in the orchestrator) and point them at the new land pipeline. Mark the overlapping queued builds as superseded by this one.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator/",
+      "apps/console-web/plugins/codebase-changes/",
+      "_claude/builds/store.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazl9vv2v544y"
+    },
+    {
+     "id": "s13",
+     "text": "Write tests for the land pipeline using temporary git repos. Cover: the merge lock and finish order, a fake code clash leading to a conflict-fix run, a fake test failure after the merge, redeploy batching within 60 s, a fake failed deploy leading to rollback and a fix build, backfill skipping superseded and already-on-main builds, and API parity across REST, MCP and CLI.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator/land/__tests__/",
+      "apps/console-web/server/routes/__tests__/land.test.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazl9vv2wbp7z"
+    },
+    {
+     "id": "s14",
+     "text": "Start the backfill. Run it with --dry-run and save the list in the report, then start the real backfill of about 134 builds, oldest first. Watch the first lands and redeploys come up healthy in the Activity Monitor, and note what is still queued.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator/land/backfill.mjs",
+      "_claude/builds/reports/auto-land-every-build-the-moment-it-finishes-red.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazl9vv2xja39"
+    },
+    {
+     "id": "s15",
+     "text": "Final step. Run the full test suite. Write the report at _claude/builds/reports/auto-land-every-build-the-moment-it-finishes-red.md, covering the backfill status and how each feature is reached through deep link, REST, MCP, CLI and voice. Add the THREADS row, then open the PR with the API reach list.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -85776,7 +86052,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwa729ln03cxzu"
+     "uid": "st-mwazl9vv2ys4u4"
     }
    ]
   },
