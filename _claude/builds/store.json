@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3048,
- "updatedAt": "2026-11-10T23:44:35.308Z",
+ "rev": 3049,
+ "updatedAt": "2026-11-10T23:44:42.927Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -157060,7 +157060,7 @@
    "title": "Auto-requeue: builds whose session stops early go back to the Queue, not Pending",
    "category": "",
    "detail": "When a build session stops on its own with steps left (outcome 'returned'), the dispatcher puts the build straight back in the Queue (keeping its priority and position) instead of Pending, and continues from the next step. Only after 3 consecutive early stops with no step progress does it go to Pending, with an AmberX notification and the reason. Fold into the stall watchdog build.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -157068,8 +157068,8 @@
    "pr": "#484",
    "priority": "P0",
    "createdAt": "2026-11-10T23:36:56.261Z",
-   "updatedAt": "2026-11-10T23:44:33.492Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T23:44:35.347Z",
+   "builtAt": "2026-11-10T23:44:35.348Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -157198,12 +157198,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T23:44:35.347Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T23:37:48.400Z",
-     "updatedAt": "2026-11-10T23:37:48.400Z"
+     "updatedAt": "2026-11-10T23:44:35.635Z"
     }
    ],
    "profiles": [
@@ -157214,7 +157214,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
