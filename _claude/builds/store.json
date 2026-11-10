@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2064,
- "updatedAt": "2026-11-10T00:02:27.097Z",
+ "rev": 2065,
+ "updatedAt": "2026-11-10T00:02:42.823Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -132517,7 +132517,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T23:59:19.114Z",
-   "updatedAt": "2026-11-10T00:02:08.935Z",
+   "updatedAt": "2026-11-10T00:02:29.688Z",
    "builtAt": "",
    "notes": [
     {
@@ -132544,6 +132544,13 @@
     "addenda": [
      {
       "said": "Multiple books open in different containers and tabs, drag tabs from one group to another, et cetera. Powerful context menu too. Need to be able to add a book and enter information about it, name it, and have all the books appear in a list that expands or shows some info. You can build books by dragging clips. Make it sick, it needs to do everything. You can export videos, turn off captions. Export to MP3, MP4, export to a person, to an email or a share, whatever. And a pane you can hide or unhide that lists all the plugins, all the apps, and types of things like assets, in categories, a categorized tree, maybe multiple views. You select things, then right click or a quick button that says Create a demo on this, set how long you want it, add a custom prompt. When you make a new book, you can add a prompt to it and select. It has to build a glossary, and the glossary indexes all that, documentation, that all goes into a book.",
+      "at": "",
+      "source": "voice",
+      "by": "Claude voice (Gizmo)",
+      "verbatim": true
+     },
+     {
+      "said": "Like UI Review, UI Review would be one of them. You click it to add it to a generated demo, with a dialog where you enter the information you want. Make it sick. I'm gonna be selling this. I need good demonstrations of the Demo Designer and the HR department.",
       "at": "",
       "source": "voice",
       "by": "Claude voice (Gizmo)",
@@ -132652,7 +132659,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
