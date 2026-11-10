@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2309,
- "updatedAt": "2026-11-10T04:14:07.758Z",
+ "rev": 2310,
+ "updatedAt": "2026-11-10T04:14:57.761Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -96312,7 +96312,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -116837,7 +116840,10 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T00:16:15.395Z"
+    "dispatchedAt": "2026-11-10T00:16:15.395Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -117065,7 +117071,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -124756,7 +124765,10 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -125119,7 +125131,10 @@
     "splitRequested": "",
     "note": "Session on account-3 ended (exit 0) with 2 steps left: back in the Queue (run 1).",
     "route": "",
-    "dispatchedAt": "2026-11-09T02:31:11.152Z"
+    "dispatchedAt": "2026-11-09T02:31:11.152Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -126231,7 +126246,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -126391,7 +126409,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -126555,7 +126576,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -126735,7 +126759,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -126972,7 +126999,10 @@
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "api",
-    "dispatchedAt": "2026-11-09T20:25:15.903Z"
+    "dispatchedAt": "2026-11-09T20:25:15.903Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -127576,7 +127606,10 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:53:07.552Z"
+    "dispatchedAt": "2026-11-09T18:53:07.552Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -127899,7 +127932,10 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (limit / credits)); resumes at s4 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:24:37.196Z"
+    "dispatchedAt": "2026-11-09T19:24:37.196Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -128227,7 +128263,10 @@
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "api",
-    "dispatchedAt": "2026-11-09T18:10:30.633Z"
+    "dispatchedAt": "2026-11-09T18:10:30.633Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -128390,7 +128429,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -128557,7 +128599,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -128724,7 +128769,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -128966,7 +129014,10 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T17:58:10.111Z"
+    "dispatchedAt": "2026-11-09T17:58:10.111Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -129240,7 +129291,10 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T01:57:09.377Z"
+    "dispatchedAt": "2026-11-10T01:57:09.377Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -129387,7 +129441,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -129528,7 +129585,7 @@
    "title": "Split builds pages (Build Manager = Pending + Complete; Orchestrator = Queued + Active) with a professional, consistent table design",
    "category": "",
    "detail": "Replaces one-builds-page-pending-queued-built-tabs-remove (mark superseded).\n\nPages: Build Manager owns Pending (create, edit, prioritize, Send to orchestrator) and Complete (finished builds sent back by the orchestrator). Build orchestrator owns only Queued and Active (route, assign account, hold, cancel/return to Pending); finished builds go back to Build Manager Complete. Remove every other builds table and the separate Build queue screen (redirect).\n\nDesign: polished, professional, like a modern SaaS dashboard. One shared visual language across all four tabs (same spacing, type, badges, row style), but each tab shows what fits it; rows may be two lines tall, info doesn't have to be identical or in the same place. Rows expand to collapsible sections/sub-grids (steps, runs, cost, PR, Brett's words, log tail).\n- Every row: dates (created, started, finished as relevant), steps total and steps completed.\n- Pending: no timer; created date, steps, priority, Send to orchestrator.\n- Queued: queue position, why it's waiting, account/model planned.\n- Active: animated activity indicator in the row, live elapsed timer, steps complete with progress bar, current step, account actually running it.\n- Complete: started/finished dates, duration, cost, account that actually built it, PR/land status.\nTheme tokens only, phone + desktop, screenshots to UI Review. Full API/voice control.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -129536,7 +129593,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T17:50:55.358Z",
-   "updatedAt": "2026-11-10T04:14:05.993Z",
+   "updatedAt": "2026-11-10T04:14:56.323Z",
    "builtAt": "",
    "notes": [
     {
@@ -129629,7 +129686,7 @@
    "pipeline": {
     "queuedAt": "2026-11-09T17:50:57.626Z",
     "queuedBy": "console",
-    "account": "",
+    "account": "mossesx-max-",
     "session": "",
     "slot": "",
     "model": "Opus",
@@ -129651,9 +129708,12 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "released by the self-check (nothing ran): back in the Queue",
+    "note": "Session on mossesx-max- ended (exit 1) with 9 steps left: back in the Queue (run 1).",
     "route": "api",
-    "dispatchedAt": "2026-11-10T02:17:13.935Z"
+    "dispatchedAt": "2026-11-10T02:17:13.935Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -129715,12 +129775,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T04:14:56.323Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-09T17:52:20.491Z",
-     "updatedAt": "2026-11-09T17:52:20.491Z"
+     "updatedAt": "2026-11-10T04:14:56.509Z"
     },
     {
      "id": "s4",
@@ -130067,7 +130127,10 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:02:10.280Z"
+    "dispatchedAt": "2026-11-09T18:02:10.280Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -130285,7 +130348,10 @@
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "api",
-    "dispatchedAt": "2026-11-09T18:49:06.246Z"
+    "dispatchedAt": "2026-11-09T18:49:06.246Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -130507,7 +130573,10 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:23:07.733Z"
+    "dispatchedAt": "2026-11-09T19:23:07.733Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -130729,7 +130798,10 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:55:16.286Z"
+    "dispatchedAt": "2026-11-09T18:55:16.286Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -130967,7 +131039,10 @@
     "splitRequested": "",
     "note": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "api",
-    "dispatchedAt": "2026-11-10T02:17:28.580Z"
+    "dispatchedAt": "2026-11-10T02:17:28.580Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -131185,7 +131260,10 @@
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "api",
-    "dispatchedAt": "2026-11-09T19:25:10.063Z"
+    "dispatchedAt": "2026-11-09T19:25:10.063Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -131411,7 +131489,10 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:27:06.719Z"
+    "dispatchedAt": "2026-11-09T19:27:06.719Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -131589,7 +131670,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -131841,7 +131925,10 @@
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "",
-    "dispatchedAt": "2026-11-09T20:19:06.480Z"
+    "dispatchedAt": "2026-11-09T20:19:06.480Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -132008,7 +132095,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -132179,7 +132269,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -132346,7 +132439,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -132493,7 +132589,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -132671,7 +132770,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -132916,7 +133018,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -133114,7 +133219,10 @@
     "splitRequested": "",
     "note": "",
     "route": "api",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -133277,7 +133385,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -133444,7 +133555,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -133615,7 +133729,10 @@
     "splitRequested": "",
     "note": "",
     "route": "api",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -133793,7 +133910,10 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T00:42:13.778Z"
+    "dispatchedAt": "2026-11-10T00:42:13.778Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -133952,7 +134072,10 @@
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "api",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -134099,7 +134222,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -134239,7 +134365,10 @@
     "splitRequested": "",
     "note": "",
     "route": "api",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -134372,7 +134501,10 @@
     "splitRequested": "",
     "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "api",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -134540,7 +134672,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -134758,7 +134893,10 @@
     "splitRequested": "",
     "note": "Session on account-5 ended (exit 1) with 3 steps left: back in the Queue (run 1).",
     "route": "",
-    "dispatchedAt": "2026-11-10T02:48:43.040Z"
+    "dispatchedAt": "2026-11-10T02:48:43.040Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -134925,7 +135063,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -135076,7 +135217,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -135254,7 +135398,10 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T03:33:16.699Z"
+    "dispatchedAt": "2026-11-10T03:33:16.699Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -135437,7 +135584,10 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -135596,7 +135746,10 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T03:55:23.238Z"
+    "dispatchedAt": "2026-11-10T03:55:23.238Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
@@ -135755,7 +135908,10 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T04:04:16.333Z"
+    "dispatchedAt": "2026-11-10T04:04:16.333Z",
+    "held": "",
+    "heldBy": "",
+    "pin": ""
    },
    "steps": [
     {
