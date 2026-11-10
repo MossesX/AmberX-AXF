@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 01:42 UTC · `home-page-build-queue-card-opens-the-orchestrato` note (all) · amber
 - 2026-11-10 01:42 UTC · `test-button-on-every-claude-account-subscription` note (all) · amber
 - 2026-11-10 01:42 UTC · `skins-as-packages-of-slices-every-section-its-ow` note (all) · amber
 - 2026-11-10 01:42 UTC · `skins-theme-rule` note (all) · amber
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 15:43 UTC · `project-manager-add-on-drag-a-build-to-another-p` added (0 steps) (all) · console
 - 2026-11-10 15:43 UTC · `project-manager-add-on-drag-a-build-to-another-p` → queued, note (all) · console
 - 2026-11-10 15:44 UTC · `project-manager-add-on-drag-a-build-to-another-p` note (all) · orchestrator
+- 2026-11-10 15:49 UTC · `claude-accounts-manager-plugin-one-ordered-list` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
