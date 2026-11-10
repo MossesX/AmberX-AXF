@@ -217,7 +217,7 @@ export async function post(argv) {
     if (onlyApp && app !== onlyApp) continue;
     const pick = rec.shots.filter((s) => all || s.name === 'home' || s.name === 'settings' || /^settings appearance/i.test(s.name) || /^settings plugins$/i.test(s.name));
     for (const s of pick) {
-      const args = ['framework/cli/shot.mjs', join(dir, 'shots', k, s.file), '--name', `${app} ${vp}: ${s.name} (${meta.branch ?? ''} ${meta.commit?.slice(0, 7) ?? ''})`, '--app', app, '--screen', s.item ?? s.settings ?? s.name, '--group', group, '--viewport', vp, '--source', 'look-regression', '--local'];
+      const args = ['framework/cli/shot.mjs', join(dir, 'shots', k, s.file), '--name', `${app} ${vp}: ${s.name} (${meta.branch ?? ''} ${meta.commit?.slice(0, 7) ?? ''})`, '--app', app, '--screen', s.item ?? s.settings ?? s.name, '--group', group, '--viewport', vp, '--source', 'headless', '--note', `look-regression record ${meta.at ?? ''}`, '--local'];
       if (flag(argv, 'build')) args.push('--build', flag(argv, 'build'));
       const r = spawnSync('node', args, { cwd: ROOT, encoding: 'utf8' });
       if (r.status === 0) n += 1; else console.error(`shot failed: ${s.name}: ${(r.stderr || r.stdout).trim().slice(-200)}`);
