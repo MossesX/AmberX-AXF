@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 01:54 UTC · `appearance-skins-colour-themes-only-remove-design-packs` s2 done (all) · orchestrator
 - 2026-11-10 01:54 UTC · `appearance-skins-colour-themes-only-remove-design-packs` PR #430 (all) · builds-live
 - 2026-11-10 01:56 UTC · `skins-own-everything-colour-theme-swaps-independ` note (all) · orchestrator
 - 2026-11-10 01:57 UTC · `split-builds-pages-build-manager-pending-complet` → running, note (all) · pipeline
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 16:09 UTC · `retire-build-manager-the-orchestrator-is-the-onl` s1 done, → running (all) · orchestrator
 - 2026-11-10 16:09 UTC · `retire-build-manager-the-orchestrator-is-the-onl` s2 done (all) · orchestrator
 - 2026-11-10 16:12 UTC · `account-order-switch-custom-drag-and-drop-order` s1 done (all) · orchestrator
+- 2026-11-10 16:14 UTC · `account-order-switch-custom-drag-and-drop-order` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
