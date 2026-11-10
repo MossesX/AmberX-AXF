@@ -20,7 +20,7 @@ import './windows/windows.css';
  * Approvals (home, with its alerts); everything else comes from plugins in `src/plugins` (catalog kind `amberx`):
  * voice control and background monitoring ship with it, and any plugin dropped in there joins the menus by itself.
  */
-const views: ViewMap = {
+export const views: ViewMap = {
   home: { title: 'Approvals', icon: 'shield', keywords: ['approval', 'waiting', 'confirm'], render: () => <Approvals /> },
 };
 
@@ -30,7 +30,7 @@ const views: ViewMap = {
  * FLAG_SECURE unless opted in, `securescreen.ts`) and Sound and microphone (Quiet, one owner per device, `sound.tsx`)
  * are AmberX's own, and so is Mic off (`mic.tsx`: one tap lets go of every microphone). The plugins come after them.
  */
-const libraries = [settingsLibrary, toolbarsLibrary, hubSyncLibrary, secureScreenLibrary, soundLibrary, micLibrary, ...loadPlugins().map((p) => p.library)];
+export const libraries = [settingsLibrary, toolbarsLibrary, hubSyncLibrary, secureScreenLibrary, soundLibrary, micLibrary, ...loadPlugins().map((p) => p.library)];
 
 export function App() {
   const rt = useRuntime();

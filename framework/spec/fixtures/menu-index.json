@@ -1,0 +1,4089 @@
+{
+  "contract": "menu-index@1",
+  "defaults": {
+    "maxPerLevel": 12,
+    "favorites": 50,
+    "recents": 20,
+    "searchLimit": 30
+  },
+  "input": {
+    "surfaces": [
+      {
+        "$axf": "shell-surface@1",
+        "app": {
+          "id": "console",
+          "label": "Console",
+          "icon": "terminal"
+        },
+        "mount": {
+          "kind": "native",
+          "module": "@axf-app/console",
+          "export": "mountSurface",
+          "auth": "none"
+        },
+        "items": [
+          {
+            "kind": "screen",
+            "id": "s0",
+            "label": "Aa screen 0"
+          },
+          {
+            "kind": "screen",
+            "id": "s1",
+            "label": "Bh screen 1"
+          },
+          {
+            "kind": "screen",
+            "id": "s2",
+            "label": "Co screen 2"
+          },
+          {
+            "kind": "screen",
+            "id": "s3",
+            "label": "Dv screen 3"
+          },
+          {
+            "kind": "screen",
+            "id": "s4",
+            "label": "Ec screen 4"
+          },
+          {
+            "kind": "screen",
+            "id": "s5",
+            "label": "Fj screen 5"
+          },
+          {
+            "kind": "screen",
+            "id": "s6",
+            "label": "Gq screen 6"
+          },
+          {
+            "kind": "screen",
+            "id": "s7",
+            "label": "Hx screen 7"
+          },
+          {
+            "kind": "screen",
+            "id": "s8",
+            "label": "Ie screen 8"
+          },
+          {
+            "kind": "screen",
+            "id": "s9",
+            "label": "Jl screen 9"
+          },
+          {
+            "kind": "screen",
+            "id": "s10",
+            "label": "Ks screen 10"
+          },
+          {
+            "kind": "screen",
+            "id": "s11",
+            "label": "Lz screen 11"
+          },
+          {
+            "kind": "screen",
+            "id": "s12",
+            "label": "Mg screen 12"
+          },
+          {
+            "kind": "screen",
+            "id": "s13",
+            "label": "Nn screen 13"
+          },
+          {
+            "kind": "screen",
+            "id": "s14",
+            "label": "Ou screen 14"
+          },
+          {
+            "kind": "screen",
+            "id": "s15",
+            "label": "Pb screen 15"
+          },
+          {
+            "kind": "screen",
+            "id": "s16",
+            "label": "Qi screen 16"
+          },
+          {
+            "kind": "screen",
+            "id": "s17",
+            "label": "Rp screen 17"
+          },
+          {
+            "kind": "screen",
+            "id": "s18",
+            "label": "Sw screen 18"
+          },
+          {
+            "kind": "screen",
+            "id": "s19",
+            "label": "Td screen 19"
+          },
+          {
+            "kind": "screen",
+            "id": "s20",
+            "label": "Uk screen 20"
+          },
+          {
+            "kind": "screen",
+            "id": "s21",
+            "label": "Vr screen 21"
+          },
+          {
+            "kind": "screen",
+            "id": "s22",
+            "label": "Wy screen 22"
+          },
+          {
+            "kind": "screen",
+            "id": "s23",
+            "label": "Xf screen 23"
+          },
+          {
+            "kind": "screen",
+            "id": "s24",
+            "label": "Ym screen 24"
+          },
+          {
+            "kind": "screen",
+            "id": "s25",
+            "label": "Zt screen 25"
+          },
+          {
+            "kind": "screen",
+            "id": "s26",
+            "label": "Aa screen 26"
+          },
+          {
+            "kind": "screen",
+            "id": "s27",
+            "label": "Bh screen 27"
+          },
+          {
+            "kind": "screen",
+            "id": "s28",
+            "label": "Co screen 28"
+          },
+          {
+            "kind": "screen",
+            "id": "s29",
+            "label": "Dv screen 29"
+          },
+          {
+            "kind": "action",
+            "id": "act0",
+            "label": "Sync thing 0"
+          },
+          {
+            "kind": "action",
+            "id": "act1",
+            "label": "Sync thing 1"
+          },
+          {
+            "kind": "action",
+            "id": "act2",
+            "label": "Sync thing 2"
+          },
+          {
+            "kind": "action",
+            "id": "act3",
+            "label": "Sync thing 3"
+          },
+          {
+            "kind": "action",
+            "id": "act4",
+            "label": "Sync thing 4"
+          },
+          {
+            "kind": "action",
+            "id": "act5",
+            "label": "Sync thing 5"
+          },
+          {
+            "kind": "action",
+            "id": "act6",
+            "label": "Sync thing 6"
+          },
+          {
+            "kind": "action",
+            "id": "act7",
+            "label": "Sync thing 7"
+          },
+          {
+            "kind": "action",
+            "id": "act8",
+            "label": "Sync thing 8"
+          },
+          {
+            "kind": "action",
+            "id": "act9",
+            "label": "Sync thing 9"
+          },
+          {
+            "kind": "action",
+            "id": "act10",
+            "label": "Sync thing 10"
+          },
+          {
+            "kind": "action",
+            "id": "act11",
+            "label": "Sync thing 11"
+          },
+          {
+            "kind": "action",
+            "id": "act12",
+            "label": "Sync thing 12"
+          },
+          {
+            "kind": "action",
+            "id": "act13",
+            "label": "Sync thing 13"
+          },
+          {
+            "kind": "action",
+            "id": "act14",
+            "label": "Sync thing 14"
+          },
+          {
+            "kind": "settings",
+            "id": "appearance",
+            "label": "Appearance"
+          },
+          {
+            "kind": "setting",
+            "id": "font",
+            "label": "Font size",
+            "parent": "appearance"
+          },
+          {
+            "kind": "setting",
+            "id": "admin-only",
+            "label": "Admin thing",
+            "requires": "admin",
+            "parent": "appearance"
+          },
+          {
+            "kind": "screen",
+            "id": "merge",
+            "label": "Merge queue",
+            "category": [
+              "Builds",
+              "Landing"
+            ]
+          },
+          {
+            "kind": "plugin",
+            "id": "ui-review",
+            "label": "UI Review",
+            "icon": "eye"
+          }
+        ]
+      },
+      {
+        "$axf": "shell-surface@1",
+        "app": {
+          "id": "axhub",
+          "label": "axHub",
+          "icon": "shield"
+        },
+        "mount": {
+          "kind": "native",
+          "module": "@axf-app/axhub",
+          "export": "mountSurface",
+          "auth": "none"
+        },
+        "items": [
+          {
+            "kind": "screen",
+            "id": "approvals",
+            "label": "Approvals"
+          },
+          {
+            "kind": "screen",
+            "id": "go-pass",
+            "label": "Go pass"
+          },
+          {
+            "kind": "dialog",
+            "id": "about",
+            "label": "About axHub"
+          }
+        ]
+      },
+      {
+        "$axf": "shell-surface@1",
+        "app": {
+          "id": "amberx",
+          "label": "AmberX",
+          "icon": "sparkles"
+        },
+        "mount": {
+          "kind": "native",
+          "module": "@axf-app/amberx",
+          "export": "mountSurface",
+          "auth": "none"
+        },
+        "items": []
+      }
+    ],
+    "favorites": [
+      "axhub:screen:approvals",
+      "console:screen:merge",
+      "gone:screen:x"
+    ],
+    "recents": [
+      "console:setting:font",
+      "axhub:screen:go-pass",
+      "console:screen:merge"
+    ],
+    "deniedPermission": "admin"
+  },
+  "index": {
+    "$axf": "menu-index@1",
+    "roots": [
+      {
+        "kind": "group",
+        "id": "favorites",
+        "label": "Favorites",
+        "icon": "star",
+        "count": 2,
+        "children": [
+          {
+            "kind": "item",
+            "id": "axhub:screen:approvals",
+            "label": "Approvals",
+            "app": "axhub",
+            "itemKind": "screen",
+            "favorite": true
+          },
+          {
+            "kind": "item",
+            "id": "console:screen:merge",
+            "label": "Merge queue",
+            "app": "console",
+            "itemKind": "screen",
+            "favorite": true
+          }
+        ]
+      },
+      {
+        "kind": "group",
+        "id": "recents",
+        "label": "Recent",
+        "icon": "clock",
+        "count": 3,
+        "children": [
+          {
+            "kind": "item",
+            "id": "console:setting:font",
+            "label": "Font size",
+            "app": "console",
+            "itemKind": "setting"
+          },
+          {
+            "kind": "item",
+            "id": "axhub:screen:go-pass",
+            "label": "Go pass",
+            "app": "axhub",
+            "itemKind": "screen"
+          },
+          {
+            "kind": "item",
+            "id": "console:screen:merge",
+            "label": "Merge queue",
+            "app": "console",
+            "itemKind": "screen",
+            "favorite": true
+          }
+        ]
+      },
+      {
+        "kind": "group",
+        "id": "console",
+        "label": "Console",
+        "count": 49,
+        "children": [
+          {
+            "kind": "group",
+            "id": "console/Actions",
+            "label": "Actions",
+            "count": 15,
+            "children": [
+              {
+                "kind": "group",
+                "id": "console/Actions/S 1",
+                "label": "S 1",
+                "range": true,
+                "count": 12,
+                "children": [
+                  {
+                    "kind": "item",
+                    "id": "console:action:act0",
+                    "label": "Sync thing 0",
+                    "app": "console",
+                    "itemKind": "action"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:action:act1",
+                    "label": "Sync thing 1",
+                    "app": "console",
+                    "itemKind": "action"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:action:act2",
+                    "label": "Sync thing 2",
+                    "app": "console",
+                    "itemKind": "action"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:action:act3",
+                    "label": "Sync thing 3",
+                    "app": "console",
+                    "itemKind": "action"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:action:act4",
+                    "label": "Sync thing 4",
+                    "app": "console",
+                    "itemKind": "action"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:action:act5",
+                    "label": "Sync thing 5",
+                    "app": "console",
+                    "itemKind": "action"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:action:act6",
+                    "label": "Sync thing 6",
+                    "app": "console",
+                    "itemKind": "action"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:action:act7",
+                    "label": "Sync thing 7",
+                    "app": "console",
+                    "itemKind": "action"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:action:act8",
+                    "label": "Sync thing 8",
+                    "app": "console",
+                    "itemKind": "action"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:action:act9",
+                    "label": "Sync thing 9",
+                    "app": "console",
+                    "itemKind": "action"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:action:act10",
+                    "label": "Sync thing 10",
+                    "app": "console",
+                    "itemKind": "action"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:action:act11",
+                    "label": "Sync thing 11",
+                    "app": "console",
+                    "itemKind": "action"
+                  }
+                ]
+              },
+              {
+                "kind": "group",
+                "id": "console/Actions/S 2",
+                "label": "S 2",
+                "range": true,
+                "count": 3,
+                "children": [
+                  {
+                    "kind": "item",
+                    "id": "console:action:act12",
+                    "label": "Sync thing 12",
+                    "app": "console",
+                    "itemKind": "action"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:action:act13",
+                    "label": "Sync thing 13",
+                    "app": "console",
+                    "itemKind": "action"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:action:act14",
+                    "label": "Sync thing 14",
+                    "app": "console",
+                    "itemKind": "action"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "group",
+            "id": "console/Builds",
+            "label": "Builds",
+            "count": 1,
+            "children": [
+              {
+                "kind": "group",
+                "id": "console/Builds/Landing",
+                "label": "Landing",
+                "count": 1,
+                "children": [
+                  {
+                    "kind": "item",
+                    "id": "console:screen:merge",
+                    "label": "Merge queue",
+                    "app": "console",
+                    "itemKind": "screen",
+                    "favorite": true
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "group",
+            "id": "console/Plugins",
+            "label": "Plugins",
+            "count": 1,
+            "children": [
+              {
+                "kind": "item",
+                "id": "console:plugin:ui-review",
+                "label": "UI Review",
+                "app": "console",
+                "itemKind": "plugin",
+                "icon": "eye"
+              }
+            ]
+          },
+          {
+            "kind": "group",
+            "id": "console/Screens",
+            "label": "Screens",
+            "count": 30,
+            "children": [
+              {
+                "kind": "group",
+                "id": "console/Screens/A–H",
+                "label": "A–H",
+                "range": true,
+                "count": 12,
+                "children": [
+                  {
+                    "kind": "item",
+                    "id": "console:screen:s0",
+                    "label": "Aa screen 0",
+                    "app": "console",
+                    "itemKind": "screen"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:screen:s26",
+                    "label": "Aa screen 26",
+                    "app": "console",
+                    "itemKind": "screen"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:screen:s1",
+                    "label": "Bh screen 1",
+                    "app": "console",
+                    "itemKind": "screen"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:screen:s27",
+                    "label": "Bh screen 27",
+                    "app": "console",
+                    "itemKind": "screen"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:screen:s2",
+                    "label": "Co screen 2",
+                    "app": "console",
+                    "itemKind": "screen"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:screen:s28",
+                    "label": "Co screen 28",
+                    "app": "console",
+                    "itemKind": "screen"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:screen:s3",
+                    "label": "Dv screen 3",
+                    "app": "console",
+                    "itemKind": "screen"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:screen:s29",
+                    "label": "Dv screen 29",
+                    "app": "console",
+                    "itemKind": "screen"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:screen:s4",
+                    "label": "Ec screen 4",
+                    "app": "console",
+                    "itemKind": "screen"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:screen:s5",
+                    "label": "Fj screen 5",
+                    "app": "console",
+                    "itemKind": "screen"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:screen:s6",
+                    "label": "Gq screen 6",
+                    "app": "console",
+                    "itemKind": "screen"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:screen:s7",
+                    "label": "Hx screen 7",
+                    "app": "console",
+                    "itemKind": "screen"
+                  }
+                ]
+              },
+              {
+                "kind": "group",
+                "id": "console/Screens/I–T",
+                "label": "I–T",
+                "range": true,
+                "count": 12,
+                "children": [
+                  {
+                    "kind": "item",
+                    "id": "console:screen:s8",
+                    "label": "Ie screen 8",
+                    "app": "console",
+                    "itemKind": "screen"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:screen:s9",
+                    "label": "Jl screen 9",
+                    "app": "console",
+                    "itemKind": "screen"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:screen:s10",
+                    "label": "Ks screen 10",
+                    "app": "console",
+                    "itemKind": "screen"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:screen:s11",
+                    "label": "Lz screen 11",
+                    "app": "console",
+                    "itemKind": "screen"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:screen:s12",
+                    "label": "Mg screen 12",
+                    "app": "console",
+                    "itemKind": "screen"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:screen:s13",
+                    "label": "Nn screen 13",
+                    "app": "console",
+                    "itemKind": "screen"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:screen:s14",
+                    "label": "Ou screen 14",
+                    "app": "console",
+                    "itemKind": "screen"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:screen:s15",
+                    "label": "Pb screen 15",
+                    "app": "console",
+                    "itemKind": "screen"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:screen:s16",
+                    "label": "Qi screen 16",
+                    "app": "console",
+                    "itemKind": "screen"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:screen:s17",
+                    "label": "Rp screen 17",
+                    "app": "console",
+                    "itemKind": "screen"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:screen:s18",
+                    "label": "Sw screen 18",
+                    "app": "console",
+                    "itemKind": "screen"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:screen:s19",
+                    "label": "Td screen 19",
+                    "app": "console",
+                    "itemKind": "screen"
+                  }
+                ]
+              },
+              {
+                "kind": "group",
+                "id": "console/Screens/U–Z",
+                "label": "U–Z",
+                "range": true,
+                "count": 6,
+                "children": [
+                  {
+                    "kind": "item",
+                    "id": "console:screen:s20",
+                    "label": "Uk screen 20",
+                    "app": "console",
+                    "itemKind": "screen"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:screen:s21",
+                    "label": "Vr screen 21",
+                    "app": "console",
+                    "itemKind": "screen"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:screen:s22",
+                    "label": "Wy screen 22",
+                    "app": "console",
+                    "itemKind": "screen"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:screen:s23",
+                    "label": "Xf screen 23",
+                    "app": "console",
+                    "itemKind": "screen"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:screen:s24",
+                    "label": "Ym screen 24",
+                    "app": "console",
+                    "itemKind": "screen"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:screen:s25",
+                    "label": "Zt screen 25",
+                    "app": "console",
+                    "itemKind": "screen"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "group",
+            "id": "console/Settings",
+            "label": "Settings",
+            "count": 2,
+            "children": [
+              {
+                "kind": "group",
+                "id": "console/Settings/Appearance",
+                "label": "Appearance",
+                "count": 2,
+                "children": [
+                  {
+                    "kind": "item",
+                    "id": "console:settings:appearance",
+                    "label": "Appearance",
+                    "app": "console",
+                    "itemKind": "settings"
+                  },
+                  {
+                    "kind": "item",
+                    "id": "console:setting:font",
+                    "label": "Font size",
+                    "app": "console",
+                    "itemKind": "setting"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "icon": "terminal"
+      },
+      {
+        "kind": "group",
+        "id": "axhub",
+        "label": "axHub",
+        "count": 3,
+        "children": [
+          {
+            "kind": "group",
+            "id": "axhub/Dialogs",
+            "label": "Dialogs",
+            "count": 1,
+            "children": [
+              {
+                "kind": "item",
+                "id": "axhub:dialog:about",
+                "label": "About axHub",
+                "app": "axhub",
+                "itemKind": "dialog"
+              }
+            ]
+          },
+          {
+            "kind": "group",
+            "id": "axhub/Screens",
+            "label": "Screens",
+            "count": 2,
+            "children": [
+              {
+                "kind": "item",
+                "id": "axhub:screen:approvals",
+                "label": "Approvals",
+                "app": "axhub",
+                "itemKind": "screen",
+                "favorite": true
+              },
+              {
+                "kind": "item",
+                "id": "axhub:screen:go-pass",
+                "label": "Go pass",
+                "app": "axhub",
+                "itemKind": "screen"
+              }
+            ]
+          }
+        ],
+        "icon": "shield"
+      }
+    ],
+    "total": 52
+  },
+  "variants": {
+    "navOnly": {
+      "$axf": "menu-index@1",
+      "roots": [
+        {
+          "kind": "group",
+          "id": "console",
+          "label": "Console",
+          "count": 32,
+          "children": [
+            {
+              "kind": "group",
+              "id": "console/Builds",
+              "label": "Builds",
+              "count": 1,
+              "children": [
+                {
+                  "kind": "group",
+                  "id": "console/Builds/Landing",
+                  "label": "Landing",
+                  "count": 1,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "console:screen:merge",
+                      "label": "Merge queue",
+                      "app": "console",
+                      "itemKind": "screen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "kind": "group",
+              "id": "console/Plugins",
+              "label": "Plugins",
+              "count": 1,
+              "children": [
+                {
+                  "kind": "item",
+                  "id": "console:plugin:ui-review",
+                  "label": "UI Review",
+                  "app": "console",
+                  "itemKind": "plugin",
+                  "icon": "eye"
+                }
+              ]
+            },
+            {
+              "kind": "group",
+              "id": "console/Screens",
+              "label": "Screens",
+              "count": 30,
+              "children": [
+                {
+                  "kind": "group",
+                  "id": "console/Screens/A–D",
+                  "label": "A–D",
+                  "range": true,
+                  "count": 8,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "console:screen:s0",
+                      "label": "Aa screen 0",
+                      "app": "console",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "console:screen:s26",
+                      "label": "Aa screen 26",
+                      "app": "console",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "console:screen:s1",
+                      "label": "Bh screen 1",
+                      "app": "console",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "console:screen:s27",
+                      "label": "Bh screen 27",
+                      "app": "console",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "console:screen:s2",
+                      "label": "Co screen 2",
+                      "app": "console",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "console:screen:s28",
+                      "label": "Co screen 28",
+                      "app": "console",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "console:screen:s3",
+                      "label": "Dv screen 3",
+                      "app": "console",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "console:screen:s29",
+                      "label": "Dv screen 29",
+                      "app": "console",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "console/Screens/E–L",
+                  "label": "E–L",
+                  "range": true,
+                  "count": 8,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "console:screen:s4",
+                      "label": "Ec screen 4",
+                      "app": "console",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "console:screen:s5",
+                      "label": "Fj screen 5",
+                      "app": "console",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "console:screen:s6",
+                      "label": "Gq screen 6",
+                      "app": "console",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "console:screen:s7",
+                      "label": "Hx screen 7",
+                      "app": "console",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "console:screen:s8",
+                      "label": "Ie screen 8",
+                      "app": "console",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "console:screen:s9",
+                      "label": "Jl screen 9",
+                      "app": "console",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "console:screen:s10",
+                      "label": "Ks screen 10",
+                      "app": "console",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "console:screen:s11",
+                      "label": "Lz screen 11",
+                      "app": "console",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "console/Screens/M–T",
+                  "label": "M–T",
+                  "range": true,
+                  "count": 8,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "console:screen:s12",
+                      "label": "Mg screen 12",
+                      "app": "console",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "console:screen:s13",
+                      "label": "Nn screen 13",
+                      "app": "console",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "console:screen:s14",
+                      "label": "Ou screen 14",
+                      "app": "console",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "console:screen:s15",
+                      "label": "Pb screen 15",
+                      "app": "console",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "console:screen:s16",
+                      "label": "Qi screen 16",
+                      "app": "console",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "console:screen:s17",
+                      "label": "Rp screen 17",
+                      "app": "console",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "console:screen:s18",
+                      "label": "Sw screen 18",
+                      "app": "console",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "console:screen:s19",
+                      "label": "Td screen 19",
+                      "app": "console",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "console/Screens/U–Z",
+                  "label": "U–Z",
+                  "range": true,
+                  "count": 6,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "console:screen:s20",
+                      "label": "Uk screen 20",
+                      "app": "console",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "console:screen:s21",
+                      "label": "Vr screen 21",
+                      "app": "console",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "console:screen:s22",
+                      "label": "Wy screen 22",
+                      "app": "console",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "console:screen:s23",
+                      "label": "Xf screen 23",
+                      "app": "console",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "console:screen:s24",
+                      "label": "Ym screen 24",
+                      "app": "console",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "console:screen:s25",
+                      "label": "Zt screen 25",
+                      "app": "console",
+                      "itemKind": "screen"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "icon": "terminal"
+        },
+        {
+          "kind": "group",
+          "id": "axhub",
+          "label": "axHub",
+          "count": 2,
+          "children": [
+            {
+              "kind": "group",
+              "id": "axhub/Screens",
+              "label": "Screens",
+              "count": 2,
+              "children": [
+                {
+                  "kind": "item",
+                  "id": "axhub:screen:approvals",
+                  "label": "Approvals",
+                  "app": "axhub",
+                  "itemKind": "screen"
+                },
+                {
+                  "kind": "item",
+                  "id": "axhub:screen:go-pass",
+                  "label": "Go pass",
+                  "app": "axhub",
+                  "itemKind": "screen"
+                }
+              ]
+            }
+          ],
+          "icon": "shield"
+        }
+      ],
+      "total": 34
+    },
+    "ordered": [
+      "axhub"
+    ],
+    "tinyMax": [
+      [
+        "console",
+        2
+      ],
+      [
+        "axhub",
+        2
+      ]
+    ]
+  },
+  "fold": [
+    {
+      "n": 5,
+      "out": [
+        {
+          "kind": "item",
+          "id": "a:screen:0",
+          "label": "A 0",
+          "app": "a",
+          "itemKind": "screen"
+        },
+        {
+          "kind": "item",
+          "id": "a:screen:1",
+          "label": "F 1",
+          "app": "a",
+          "itemKind": "screen"
+        },
+        {
+          "kind": "item",
+          "id": "a:screen:2",
+          "label": "K 2",
+          "app": "a",
+          "itemKind": "screen"
+        },
+        {
+          "kind": "item",
+          "id": "a:screen:3",
+          "label": "P 3",
+          "app": "a",
+          "itemKind": "screen"
+        },
+        {
+          "kind": "item",
+          "id": "a:screen:4",
+          "label": "U 4",
+          "app": "a",
+          "itemKind": "screen"
+        }
+      ]
+    },
+    {
+      "n": 13,
+      "out": [
+        {
+          "kind": "group",
+          "id": "p/A–J",
+          "label": "A–J",
+          "range": true,
+          "count": 6,
+          "children": [
+            {
+              "kind": "item",
+              "id": "a:screen:0",
+              "label": "A 0",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:11",
+              "label": "D 11",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:6",
+              "label": "E 6",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:1",
+              "label": "F 1",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:12",
+              "label": "I 12",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:7",
+              "label": "J 7",
+              "app": "a",
+              "itemKind": "screen"
+            }
+          ]
+        },
+        {
+          "kind": "group",
+          "id": "p/K–Y",
+          "label": "K–Y",
+          "range": true,
+          "count": 6,
+          "children": [
+            {
+              "kind": "item",
+              "id": "a:screen:2",
+              "label": "K 2",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:8",
+              "label": "O 8",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:3",
+              "label": "P 3",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:9",
+              "label": "T 9",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:4",
+              "label": "U 4",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:10",
+              "label": "Y 10",
+              "app": "a",
+              "itemKind": "screen"
+            }
+          ]
+        },
+        {
+          "kind": "group",
+          "id": "p/Z",
+          "label": "Z",
+          "range": true,
+          "count": 1,
+          "children": [
+            {
+              "kind": "item",
+              "id": "a:screen:5",
+              "label": "Z 5",
+              "app": "a",
+              "itemKind": "screen"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 30,
+      "out": [
+        {
+          "kind": "group",
+          "id": "p/A–E",
+          "label": "A–E",
+          "range": true,
+          "count": 6,
+          "children": [
+            {
+              "kind": "item",
+              "id": "a:screen:0",
+              "label": "A 0",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:26",
+              "label": "A 26",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:21",
+              "label": "B 21",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:16",
+              "label": "C 16",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:11",
+              "label": "D 11",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:6",
+              "label": "E 6",
+              "app": "a",
+              "itemKind": "screen"
+            }
+          ]
+        },
+        {
+          "kind": "group",
+          "id": "p/F–J",
+          "label": "F–J",
+          "range": true,
+          "count": 6,
+          "children": [
+            {
+              "kind": "item",
+              "id": "a:screen:1",
+              "label": "F 1",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:27",
+              "label": "F 27",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:22",
+              "label": "G 22",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:17",
+              "label": "H 17",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:12",
+              "label": "I 12",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:7",
+              "label": "J 7",
+              "app": "a",
+              "itemKind": "screen"
+            }
+          ]
+        },
+        {
+          "kind": "group",
+          "id": "p/K–O",
+          "label": "K–O",
+          "range": true,
+          "count": 6,
+          "children": [
+            {
+              "kind": "item",
+              "id": "a:screen:2",
+              "label": "K 2",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:28",
+              "label": "K 28",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:23",
+              "label": "L 23",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:18",
+              "label": "M 18",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:13",
+              "label": "N 13",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:8",
+              "label": "O 8",
+              "app": "a",
+              "itemKind": "screen"
+            }
+          ]
+        },
+        {
+          "kind": "group",
+          "id": "p/P–T",
+          "label": "P–T",
+          "range": true,
+          "count": 6,
+          "children": [
+            {
+              "kind": "item",
+              "id": "a:screen:3",
+              "label": "P 3",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:29",
+              "label": "P 29",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:24",
+              "label": "Q 24",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:19",
+              "label": "R 19",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:14",
+              "label": "S 14",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:9",
+              "label": "T 9",
+              "app": "a",
+              "itemKind": "screen"
+            }
+          ]
+        },
+        {
+          "kind": "group",
+          "id": "p/U–Z",
+          "label": "U–Z",
+          "range": true,
+          "count": 6,
+          "children": [
+            {
+              "kind": "item",
+              "id": "a:screen:4",
+              "label": "U 4",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:25",
+              "label": "V 25",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:20",
+              "label": "W 20",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:15",
+              "label": "X 15",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:10",
+              "label": "Y 10",
+              "app": "a",
+              "itemKind": "screen"
+            },
+            {
+              "kind": "item",
+              "id": "a:screen:5",
+              "label": "Z 5",
+              "app": "a",
+              "itemKind": "screen"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "n": 200,
+      "out": [
+        {
+          "kind": "group",
+          "id": "p/A–P",
+          "label": "A–P",
+          "range": true,
+          "count": 138,
+          "children": [
+            {
+              "kind": "group",
+              "id": "p/A–C",
+              "label": "A–C",
+              "range": true,
+              "count": 23,
+              "children": [
+                {
+                  "kind": "group",
+                  "id": "p/A–C/A 1",
+                  "label": "A 1",
+                  "range": true,
+                  "count": 6,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:0",
+                      "label": "A 0",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:26",
+                      "label": "A 26",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:52",
+                      "label": "A 52",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:78",
+                      "label": "A 78",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:104",
+                      "label": "A 104",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:130",
+                      "label": "A 130",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/A–C/A 2",
+                  "label": "A 2",
+                  "range": true,
+                  "count": 2,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:156",
+                      "label": "A 156",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:182",
+                      "label": "A 182",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/A–C/B 1",
+                  "label": "B 1",
+                  "range": true,
+                  "count": 6,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:21",
+                      "label": "B 21",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:47",
+                      "label": "B 47",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:73",
+                      "label": "B 73",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:99",
+                      "label": "B 99",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:125",
+                      "label": "B 125",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:151",
+                      "label": "B 151",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/A–C/B 2",
+                  "label": "B 2",
+                  "range": true,
+                  "count": 1,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:177",
+                      "label": "B 177",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/A–C/C 1",
+                  "label": "C 1",
+                  "range": true,
+                  "count": 6,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:16",
+                      "label": "C 16",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:42",
+                      "label": "C 42",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:68",
+                      "label": "C 68",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:94",
+                      "label": "C 94",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:120",
+                      "label": "C 120",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:146",
+                      "label": "C 146",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/A–C/C 2",
+                  "label": "C 2",
+                  "range": true,
+                  "count": 2,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:172",
+                      "label": "C 172",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:198",
+                      "label": "C 198",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "kind": "group",
+              "id": "p/D–F",
+              "label": "D–F",
+              "range": true,
+              "count": 24,
+              "children": [
+                {
+                  "kind": "group",
+                  "id": "p/D–F/D 1",
+                  "label": "D 1",
+                  "range": true,
+                  "count": 6,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:11",
+                      "label": "D 11",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:37",
+                      "label": "D 37",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:63",
+                      "label": "D 63",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:89",
+                      "label": "D 89",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:115",
+                      "label": "D 115",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:141",
+                      "label": "D 141",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/D–F/D 2",
+                  "label": "D 2",
+                  "range": true,
+                  "count": 2,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:167",
+                      "label": "D 167",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:193",
+                      "label": "D 193",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/D–F/E 1",
+                  "label": "E 1",
+                  "range": true,
+                  "count": 6,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:6",
+                      "label": "E 6",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:32",
+                      "label": "E 32",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:58",
+                      "label": "E 58",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:84",
+                      "label": "E 84",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:110",
+                      "label": "E 110",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:136",
+                      "label": "E 136",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/D–F/E 2",
+                  "label": "E 2",
+                  "range": true,
+                  "count": 2,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:162",
+                      "label": "E 162",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:188",
+                      "label": "E 188",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/D–F/F 1",
+                  "label": "F 1",
+                  "range": true,
+                  "count": 6,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:1",
+                      "label": "F 1",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:27",
+                      "label": "F 27",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:53",
+                      "label": "F 53",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:79",
+                      "label": "F 79",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:105",
+                      "label": "F 105",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:131",
+                      "label": "F 131",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/D–F/F 2",
+                  "label": "F 2",
+                  "range": true,
+                  "count": 2,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:157",
+                      "label": "F 157",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:183",
+                      "label": "F 183",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "kind": "group",
+              "id": "p/G–I",
+              "label": "G–I",
+              "range": true,
+              "count": 23,
+              "children": [
+                {
+                  "kind": "group",
+                  "id": "p/G–I/G 1",
+                  "label": "G 1",
+                  "range": true,
+                  "count": 6,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:22",
+                      "label": "G 22",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:48",
+                      "label": "G 48",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:74",
+                      "label": "G 74",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:100",
+                      "label": "G 100",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:126",
+                      "label": "G 126",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:152",
+                      "label": "G 152",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/G–I/G 2",
+                  "label": "G 2",
+                  "range": true,
+                  "count": 1,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:178",
+                      "label": "G 178",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/G–I/H 1",
+                  "label": "H 1",
+                  "range": true,
+                  "count": 6,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:17",
+                      "label": "H 17",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:43",
+                      "label": "H 43",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:69",
+                      "label": "H 69",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:95",
+                      "label": "H 95",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:121",
+                      "label": "H 121",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:147",
+                      "label": "H 147",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/G–I/H 2",
+                  "label": "H 2",
+                  "range": true,
+                  "count": 2,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:173",
+                      "label": "H 173",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:199",
+                      "label": "H 199",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/G–I/I 1",
+                  "label": "I 1",
+                  "range": true,
+                  "count": 6,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:12",
+                      "label": "I 12",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:38",
+                      "label": "I 38",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:64",
+                      "label": "I 64",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:90",
+                      "label": "I 90",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:116",
+                      "label": "I 116",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:142",
+                      "label": "I 142",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/G–I/I 2",
+                  "label": "I 2",
+                  "range": true,
+                  "count": 2,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:168",
+                      "label": "I 168",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:194",
+                      "label": "I 194",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "kind": "group",
+              "id": "p/J–L",
+              "label": "J–L",
+              "range": true,
+              "count": 23,
+              "children": [
+                {
+                  "kind": "group",
+                  "id": "p/J–L/J 1",
+                  "label": "J 1",
+                  "range": true,
+                  "count": 6,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:7",
+                      "label": "J 7",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:33",
+                      "label": "J 33",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:59",
+                      "label": "J 59",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:85",
+                      "label": "J 85",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:111",
+                      "label": "J 111",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:137",
+                      "label": "J 137",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/J–L/J 2",
+                  "label": "J 2",
+                  "range": true,
+                  "count": 2,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:163",
+                      "label": "J 163",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:189",
+                      "label": "J 189",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/J–L/K 1",
+                  "label": "K 1",
+                  "range": true,
+                  "count": 6,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:2",
+                      "label": "K 2",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:28",
+                      "label": "K 28",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:54",
+                      "label": "K 54",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:80",
+                      "label": "K 80",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:106",
+                      "label": "K 106",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:132",
+                      "label": "K 132",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/J–L/K 2",
+                  "label": "K 2",
+                  "range": true,
+                  "count": 2,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:158",
+                      "label": "K 158",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:184",
+                      "label": "K 184",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/J–L/L 1",
+                  "label": "L 1",
+                  "range": true,
+                  "count": 6,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:23",
+                      "label": "L 23",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:49",
+                      "label": "L 49",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:75",
+                      "label": "L 75",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:101",
+                      "label": "L 101",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:127",
+                      "label": "L 127",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:153",
+                      "label": "L 153",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/J–L/L 2",
+                  "label": "L 2",
+                  "range": true,
+                  "count": 1,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:179",
+                      "label": "L 179",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "kind": "group",
+              "id": "p/M–O",
+              "label": "M–O",
+              "range": true,
+              "count": 23,
+              "children": [
+                {
+                  "kind": "group",
+                  "id": "p/M–O/M 1",
+                  "label": "M 1",
+                  "range": true,
+                  "count": 6,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:18",
+                      "label": "M 18",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:44",
+                      "label": "M 44",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:70",
+                      "label": "M 70",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:96",
+                      "label": "M 96",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:122",
+                      "label": "M 122",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:148",
+                      "label": "M 148",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/M–O/M 2",
+                  "label": "M 2",
+                  "range": true,
+                  "count": 1,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:174",
+                      "label": "M 174",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/M–O/N 1",
+                  "label": "N 1",
+                  "range": true,
+                  "count": 6,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:13",
+                      "label": "N 13",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:39",
+                      "label": "N 39",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:65",
+                      "label": "N 65",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:91",
+                      "label": "N 91",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:117",
+                      "label": "N 117",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:143",
+                      "label": "N 143",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/M–O/N 2",
+                  "label": "N 2",
+                  "range": true,
+                  "count": 2,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:169",
+                      "label": "N 169",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:195",
+                      "label": "N 195",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/M–O/O 1",
+                  "label": "O 1",
+                  "range": true,
+                  "count": 6,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:8",
+                      "label": "O 8",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:34",
+                      "label": "O 34",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:60",
+                      "label": "O 60",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:86",
+                      "label": "O 86",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:112",
+                      "label": "O 112",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:138",
+                      "label": "O 138",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/M–O/O 2",
+                  "label": "O 2",
+                  "range": true,
+                  "count": 2,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:164",
+                      "label": "O 164",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:190",
+                      "label": "O 190",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "kind": "group",
+              "id": "p/P–R",
+              "label": "P–R",
+              "range": true,
+              "count": 22,
+              "children": [
+                {
+                  "kind": "group",
+                  "id": "p/P–R/P 1",
+                  "label": "P 1",
+                  "range": true,
+                  "count": 6,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:3",
+                      "label": "P 3",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:29",
+                      "label": "P 29",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:55",
+                      "label": "P 55",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:81",
+                      "label": "P 81",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:107",
+                      "label": "P 107",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:133",
+                      "label": "P 133",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/P–R/P 2",
+                  "label": "P 2",
+                  "range": true,
+                  "count": 2,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:159",
+                      "label": "P 159",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:185",
+                      "label": "P 185",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/P–R/Q 1",
+                  "label": "Q 1",
+                  "range": true,
+                  "count": 6,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:24",
+                      "label": "Q 24",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:50",
+                      "label": "Q 50",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:76",
+                      "label": "Q 76",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:102",
+                      "label": "Q 102",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:128",
+                      "label": "Q 128",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:154",
+                      "label": "Q 154",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/P–R/Q 2",
+                  "label": "Q 2",
+                  "range": true,
+                  "count": 1,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:180",
+                      "label": "Q 180",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/P–R/R 1",
+                  "label": "R 1",
+                  "range": true,
+                  "count": 6,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:19",
+                      "label": "R 19",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:45",
+                      "label": "R 45",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:71",
+                      "label": "R 71",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:97",
+                      "label": "R 97",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:123",
+                      "label": "R 123",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:149",
+                      "label": "R 149",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/P–R/R 2",
+                  "label": "R 2",
+                  "range": true,
+                  "count": 1,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:175",
+                      "label": "R 175",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "group",
+          "id": "p/S–Y",
+          "label": "S–Y",
+          "range": true,
+          "count": 62,
+          "children": [
+            {
+              "kind": "group",
+              "id": "p/S–U",
+              "label": "S–U",
+              "range": true,
+              "count": 24,
+              "children": [
+                {
+                  "kind": "group",
+                  "id": "p/S–U/S 1",
+                  "label": "S 1",
+                  "range": true,
+                  "count": 6,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:14",
+                      "label": "S 14",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:40",
+                      "label": "S 40",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:66",
+                      "label": "S 66",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:92",
+                      "label": "S 92",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:118",
+                      "label": "S 118",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:144",
+                      "label": "S 144",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/S–U/S 2",
+                  "label": "S 2",
+                  "range": true,
+                  "count": 2,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:170",
+                      "label": "S 170",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:196",
+                      "label": "S 196",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/S–U/T 1",
+                  "label": "T 1",
+                  "range": true,
+                  "count": 6,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:9",
+                      "label": "T 9",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:35",
+                      "label": "T 35",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:61",
+                      "label": "T 61",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:87",
+                      "label": "T 87",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:113",
+                      "label": "T 113",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:139",
+                      "label": "T 139",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/S–U/T 2",
+                  "label": "T 2",
+                  "range": true,
+                  "count": 2,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:165",
+                      "label": "T 165",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:191",
+                      "label": "T 191",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/S–U/U 1",
+                  "label": "U 1",
+                  "range": true,
+                  "count": 6,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:4",
+                      "label": "U 4",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:30",
+                      "label": "U 30",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:56",
+                      "label": "U 56",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:82",
+                      "label": "U 82",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:108",
+                      "label": "U 108",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:134",
+                      "label": "U 134",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/S–U/U 2",
+                  "label": "U 2",
+                  "range": true,
+                  "count": 2,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:160",
+                      "label": "U 160",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:186",
+                      "label": "U 186",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "kind": "group",
+              "id": "p/V–X",
+              "label": "V–X",
+              "range": true,
+              "count": 22,
+              "children": [
+                {
+                  "kind": "group",
+                  "id": "p/V–X/V 1",
+                  "label": "V 1",
+                  "range": true,
+                  "count": 6,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:25",
+                      "label": "V 25",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:51",
+                      "label": "V 51",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:77",
+                      "label": "V 77",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:103",
+                      "label": "V 103",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:129",
+                      "label": "V 129",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:155",
+                      "label": "V 155",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/V–X/V 2",
+                  "label": "V 2",
+                  "range": true,
+                  "count": 1,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:181",
+                      "label": "V 181",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/V–X/W 1",
+                  "label": "W 1",
+                  "range": true,
+                  "count": 6,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:20",
+                      "label": "W 20",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:46",
+                      "label": "W 46",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:72",
+                      "label": "W 72",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:98",
+                      "label": "W 98",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:124",
+                      "label": "W 124",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:150",
+                      "label": "W 150",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/V–X/W 2",
+                  "label": "W 2",
+                  "range": true,
+                  "count": 1,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:176",
+                      "label": "W 176",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/V–X/X 1",
+                  "label": "X 1",
+                  "range": true,
+                  "count": 6,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:15",
+                      "label": "X 15",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:41",
+                      "label": "X 41",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:67",
+                      "label": "X 67",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:93",
+                      "label": "X 93",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:119",
+                      "label": "X 119",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:145",
+                      "label": "X 145",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/V–X/X 2",
+                  "label": "X 2",
+                  "range": true,
+                  "count": 2,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:171",
+                      "label": "X 171",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:197",
+                      "label": "X 197",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "kind": "group",
+              "id": "p/Y–Z",
+              "label": "Y–Z",
+              "range": true,
+              "count": 16,
+              "children": [
+                {
+                  "kind": "group",
+                  "id": "p/Y–Z/Y 1",
+                  "label": "Y 1",
+                  "range": true,
+                  "count": 6,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:10",
+                      "label": "Y 10",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:36",
+                      "label": "Y 36",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:62",
+                      "label": "Y 62",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:88",
+                      "label": "Y 88",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:114",
+                      "label": "Y 114",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:140",
+                      "label": "Y 140",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/Y–Z/Y 2",
+                  "label": "Y 2",
+                  "range": true,
+                  "count": 2,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:166",
+                      "label": "Y 166",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:192",
+                      "label": "Y 192",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/Y–Z/Z 1",
+                  "label": "Z 1",
+                  "range": true,
+                  "count": 6,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:5",
+                      "label": "Z 5",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:31",
+                      "label": "Z 31",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:57",
+                      "label": "Z 57",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:83",
+                      "label": "Z 83",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:109",
+                      "label": "Z 109",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:135",
+                      "label": "Z 135",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                },
+                {
+                  "kind": "group",
+                  "id": "p/Y–Z/Z 2",
+                  "label": "Z 2",
+                  "range": true,
+                  "count": 2,
+                  "children": [
+                    {
+                      "kind": "item",
+                      "id": "a:screen:161",
+                      "label": "Z 161",
+                      "app": "a",
+                      "itemKind": "screen"
+                    },
+                    {
+                      "kind": "item",
+                      "id": "a:screen:187",
+                      "label": "Z 187",
+                      "app": "a",
+                      "itemKind": "screen"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "paths": [
+    {
+      "id": "console:screen:merge",
+      "path": [
+        "console",
+        "console/Builds",
+        "console/Builds/Landing",
+        "console:screen:merge"
+      ],
+      "node": "Merge queue"
+    },
+    {
+      "id": "console:setting:font",
+      "path": [
+        "console",
+        "console/Settings",
+        "console/Settings/Appearance",
+        "console:setting:font"
+      ],
+      "node": "Font size"
+    },
+    {
+      "id": "console:screen:s3",
+      "path": [
+        "console",
+        "console/Screens",
+        "console/Screens/A–H",
+        "console:screen:s3"
+      ],
+      "node": "Dv screen 3"
+    },
+    {
+      "id": "console/Builds",
+      "path": [
+        "console",
+        "console/Builds"
+      ],
+      "node": "Builds"
+    },
+    {
+      "id": "nope",
+      "path": null,
+      "node": null
+    }
+  ],
+  "items": [
+    "console:action:act0",
+    "console:action:act1",
+    "console:action:act2",
+    "console:action:act3",
+    "console:action:act4",
+    "console:action:act5",
+    "console:action:act6",
+    "console:action:act7",
+    "console:action:act8",
+    "console:action:act9",
+    "console:action:act10",
+    "console:action:act11",
+    "console:action:act12",
+    "console:action:act13",
+    "console:action:act14",
+    "console:screen:merge",
+    "console:plugin:ui-review",
+    "console:screen:s0",
+    "console:screen:s26",
+    "console:screen:s1",
+    "console:screen:s27",
+    "console:screen:s2",
+    "console:screen:s28",
+    "console:screen:s3",
+    "console:screen:s29",
+    "console:screen:s4",
+    "console:screen:s5",
+    "console:screen:s6",
+    "console:screen:s7",
+    "console:screen:s8",
+    "console:screen:s9",
+    "console:screen:s10",
+    "console:screen:s11",
+    "console:screen:s12",
+    "console:screen:s13",
+    "console:screen:s14",
+    "console:screen:s15",
+    "console:screen:s16",
+    "console:screen:s17",
+    "console:screen:s18",
+    "console:screen:s19",
+    "console:screen:s20",
+    "console:screen:s21",
+    "console:screen:s22",
+    "console:screen:s23",
+    "console:screen:s24",
+    "console:screen:s25",
+    "console:settings:appearance",
+    "console:setting:font",
+    "axhub:dialog:about",
+    "axhub:screen:approvals",
+    "axhub:screen:go-pass"
+  ],
+  "search": [
+    {
+      "q": "merge",
+      "hits": [
+        {
+          "id": "console:screen:merge",
+          "label": "Merge queue",
+          "app": "console",
+          "itemKind": "screen",
+          "path": [
+            "Console",
+            "Builds",
+            "Landing"
+          ],
+          "score": 59.81666666666667,
+          "favorite": true,
+          "recent": true
+        }
+      ]
+    },
+    {
+      "q": "screen 1",
+      "hits": [
+        {
+          "id": "console:screen:s1",
+          "label": "Bh screen 1",
+          "app": "console",
+          "itemKind": "screen",
+          "path": [
+            "Console",
+            "Screens"
+          ],
+          "score": 109.81666666666666,
+          "favorite": false,
+          "recent": false
+        },
+        {
+          "id": "console:screen:s10",
+          "label": "Ks screen 10",
+          "app": "console",
+          "itemKind": "screen",
+          "path": [
+            "Console",
+            "Screens"
+          ],
+          "score": 109.8,
+          "favorite": false,
+          "recent": false
+        },
+        {
+          "id": "console:screen:s11",
+          "label": "Lz screen 11",
+          "app": "console",
+          "itemKind": "screen",
+          "path": [
+            "Console",
+            "Screens"
+          ],
+          "score": 109.8,
+          "favorite": false,
+          "recent": false
+        },
+        {
+          "id": "console:screen:s12",
+          "label": "Mg screen 12",
+          "app": "console",
+          "itemKind": "screen",
+          "path": [
+            "Console",
+            "Screens"
+          ],
+          "score": 109.8,
+          "favorite": false,
+          "recent": false
+        },
+        {
+          "id": "console:screen:s13",
+          "label": "Nn screen 13",
+          "app": "console",
+          "itemKind": "screen",
+          "path": [
+            "Console",
+            "Screens"
+          ],
+          "score": 109.8,
+          "favorite": false,
+          "recent": false
+        }
+      ]
+    },
+    {
+      "q": "font appearance",
+      "hits": [
+        {
+          "id": "console:setting:font",
+          "label": "Font size",
+          "app": "console",
+          "itemKind": "setting",
+          "path": [
+            "Console",
+            "Settings",
+            "Appearance"
+          ],
+          "score": 69.85,
+          "favorite": false,
+          "recent": true
+        }
+      ]
+    },
+    {
+      "q": "axhub",
+      "hits": [
+        {
+          "id": "axhub:dialog:about",
+          "label": "About axHub",
+          "app": "axhub",
+          "itemKind": "dialog",
+          "path": [
+            "axHub",
+            "Dialogs"
+          ],
+          "score": 39.81666666666667,
+          "favorite": false,
+          "recent": false
+        },
+        {
+          "id": "axhub:screen:go-pass",
+          "label": "Go pass",
+          "app": "axhub",
+          "itemKind": "screen",
+          "path": [
+            "axHub",
+            "Screens"
+          ],
+          "score": 9.883333333333333,
+          "favorite": false,
+          "recent": true
+        },
+        {
+          "id": "axhub:screen:approvals",
+          "label": "Approvals",
+          "app": "axhub",
+          "itemKind": "screen",
+          "path": [
+            "axHub",
+            "Screens"
+          ],
+          "score": 9.85,
+          "favorite": true,
+          "recent": false
+        }
+      ]
+    },
+    {
+      "q": "sync 1",
+      "hits": [
+        {
+          "id": "console:action:act1",
+          "label": "Sync thing 1",
+          "app": "console",
+          "itemKind": "action",
+          "path": [
+            "Console",
+            "Actions"
+          ],
+          "score": 99.8,
+          "favorite": false,
+          "recent": false
+        },
+        {
+          "id": "console:action:act10",
+          "label": "Sync thing 10",
+          "app": "console",
+          "itemKind": "action",
+          "path": [
+            "Console",
+            "Actions"
+          ],
+          "score": 99.78333333333333,
+          "favorite": false,
+          "recent": false
+        },
+        {
+          "id": "console:action:act11",
+          "label": "Sync thing 11",
+          "app": "console",
+          "itemKind": "action",
+          "path": [
+            "Console",
+            "Actions"
+          ],
+          "score": 99.78333333333333,
+          "favorite": false,
+          "recent": false
+        },
+        {
+          "id": "console:action:act12",
+          "label": "Sync thing 12",
+          "app": "console",
+          "itemKind": "action",
+          "path": [
+            "Console",
+            "Actions"
+          ],
+          "score": 99.78333333333333,
+          "favorite": false,
+          "recent": false
+        },
+        {
+          "id": "console:action:act13",
+          "label": "Sync thing 13",
+          "app": "console",
+          "itemKind": "action",
+          "path": [
+            "Console",
+            "Actions"
+          ],
+          "score": 99.78333333333333,
+          "favorite": false,
+          "recent": false
+        }
+      ]
+    },
+    {
+      "q": "zzz",
+      "hits": []
+    },
+    {
+      "q": "",
+      "hits": []
+    }
+  ],
+  "favorites": [
+    [
+      "a:screen:x"
+    ],
+    [
+      "a:screen:y"
+    ],
+    [
+      "2",
+      "3",
+      "4"
+    ],
+    [
+      "a"
+    ]
+  ],
+  "recents": [
+    [
+      "a"
+    ],
+    [
+      "c",
+      "a",
+      "b"
+    ],
+    [
+      "d",
+      "a",
+      "b"
+    ]
+  ],
+  "prune": [
+    "axhub:screen:approvals",
+    "console:screen:merge"
+  ],
+  "fit": [
+    {
+      "widths": [
+        50,
+        60,
+        70
+      ],
+      "available": 200,
+      "more": 30,
+      "gap": 0,
+      "kept": 3
+    },
+    {
+      "widths": [
+        50,
+        60,
+        70
+      ],
+      "available": 170,
+      "more": 30,
+      "gap": 0,
+      "kept": 2
+    },
+    {
+      "widths": [
+        50,
+        60,
+        70
+      ],
+      "available": 100,
+      "more": 30,
+      "gap": 4,
+      "kept": 1
+    },
+    {
+      "widths": [
+        50,
+        60,
+        70
+      ],
+      "available": 20,
+      "more": 30,
+      "gap": 0,
+      "kept": 0
+    },
+    {
+      "widths": [],
+      "available": 10,
+      "more": 30,
+      "gap": 0,
+      "kept": 0
+    },
+    {
+      "widths": [
+        50,
+        -1,
+        null
+      ],
+      "available": 60,
+      "more": 30,
+      "gap": 0,
+      "kept": 3
+    }
+  ]
+}

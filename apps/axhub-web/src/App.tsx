@@ -27,7 +27,7 @@ import { loadPlugins } from './plugins';
  * results (the hub redirects its old addresses to `#/<route>`, see `hub/route.ts`). The hub areas that aren't built
  * yet are real routes with a note each (see `views/Planned.tsx`).
  */
-const views: ViewMap = {
+export const views: ViewMap = {
   home: { title: 'Approvals', icon: 'shield', keywords: ['approval', 'waiting', 'confirm'], render: () => <Approvals /> },
   hub: { title: 'Hub', icon: 'external', keywords: ['axhub', 'session', 'sign in'], render: () => <HubView /> },
   approval: { title: 'Request', icon: 'shield', render: () => <ApprovalDetail /> },
@@ -51,7 +51,7 @@ const views: ViewMap = {
  * settings on axHub (same on every device) and adds Settings → Plugins → axHub sync; the look stays the developer one.
  * Installed axHub web plugins (src/plugins, catalog kind `axhub`) come after them.
  */
-const libraries = [settingsLibrary, toolbarsLibrary, dataGridLibrary, hubSyncLibrary, ...loadPlugins().map((p) => p.library)];
+export const libraries = [settingsLibrary, toolbarsLibrary, dataGridLibrary, hubSyncLibrary, ...loadPlugins().map((p) => p.library)];
 
 export function App() {
   const rt = useRuntime();

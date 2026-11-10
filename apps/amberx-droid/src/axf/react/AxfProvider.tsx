@@ -71,7 +71,13 @@ export function useShortcutMap() {
 
 /* ---------- provider ---------- */
 
-export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; children: ReactNode }) {
+/**
+ * `hosted` (shell-surface@1 native mounts, Nov 2026): this runtime renders inside another app's shell (Molly) with no
+ * chrome of its own. The shell owns the document: its look stays on the root (this runtime inherits it through the
+ * cascade), its custom sheet, menu fit, tap-to-confirm and keyboard shortcuts stay its own. Only Escape closing this
+ * runtime's own dialog is kept.
+ */
+export function AxfProvider({ runtime, children, hosted = false }: { runtime: AxfRuntime; children: ReactNode; hosted?: boolean }) {
   const state = useSyncExternalStore(runtime.subscribe, runtime.getState, runtime.getState);
 
   // Compile active assets -> CSS on the document root (this is the hot-swap).
@@ -84,12 +90,13 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
   // Token overrides (control@1 axf.tokens.*) and the nav's per-device state (collapsed, dragged width) compile in too.
   const styleKey = runtime.styleSettingsKey();
   useLayoutEffect(() => {
-    runtime.applyTo(document.documentElement);
-  }, [runtime, state.active, hidden, spacing, viewport, styleKey]);
+    if (!hosted) runtime.applyTo(document.documentElement);
+  }, [runtime, state.active, hidden, spacing, viewport, styleKey, hosted]);
 
   // Extra tokens per asset (Settings → Appearance → Assets; core/engines/customize.ts) as one sheet.
   const customSheet = runtime.customSheet();
   useLayoutEffect(() => {
+    if (hosted) return;
     let el = document.getElementById('axf-custom') as HTMLStyleElement | null;
     if (!customSheet) return void el?.remove();
     if (!el) {
@@ -98,10 +105,10 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
       document.head.appendChild(el);
     }
     if (el.textContent !== customSheet) el.textContent = customSheet;
-  }, [customSheet]);
+  }, [customSheet, hosted]);
 
   // Menus that place themselves (plugins' ⋯ menus) stay on screen and scroll when too tall, like the framework's (menu-fit@1).
-  useEffect(() => installMenuFit(), []);
+  useEffect(() => (hosted ? undefined : installMenuFit()), [hosted]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -109,6 +116,7 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
         if (runtime.getState().context) return runtime.closeContext();
         if (runtime.getState().dialog && runtime.behavior().windows.closeOnEscape) return runtime.closeDialog(); // behaviour theme
       }
+      if (hosted) return;
       const typing = (e.target as HTMLElement)?.closest?.('input, textarea, select, [contenteditable]');
       if (typing && !e.ctrlKey && !e.metaKey && !e.altKey) return;
       const map = new Map<string, string>();
@@ -121,18 +129,20 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
       }
     };
     window.addEventListener('keydown', onKey);
+    if (hosted) return () => window.removeEventListener('keydown', onKey);
     // interface scopes (components/InterfaceScope.tsx): a pointer / key outside every scope puts the app back in its own scope
     const leave = (e: Event) => { if (!(e.target as Element | null)?.closest?.('[data-fx-scope]')) runtime.enterScope(''); };
     document.addEventListener('pointerdown', leave, true);
     document.addEventListener('keydown', leave, true);
     return () => { window.removeEventListener('keydown', onKey); document.removeEventListener('pointerdown', leave, true); document.removeEventListener('keydown', leave, true); };
-  }, [runtime]);
+  }, [runtime, hosted]);
 
   // Tap-to-confirm on every toolbar (framework/react/tapConfirm.ts): touch arms first, a second tap runs; mouse clicks once.
   useEffect(() => {
+    if (hosted) return;
     const host = installTapConfirm(document, (key) => runtime.settings.get(key));
     return () => host.dispose();
-  }, [runtime]);
+  }, [runtime, hosted]);
 
   return <AxfContext.Provider value={runtime}>{children}</AxfContext.Provider>;
 }

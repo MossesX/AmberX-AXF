@@ -5,12 +5,13 @@ import { Button, SelectField, Switch, useAxfState, useRuntime } from '../../../s
 import type { AxfWebLibrary } from '../../../src/axf/react/library';
 import { appOfView, mollyService, provideMollyService, setMollyHook } from '../../../src/molly/host';
 import { ChromeHost, RUN_ACTION } from './host';
+import { MOLLY_APPS } from '../../../src/molly/apps';
 import { effectiveXLayout, FOLDER, K, PLUGIN_ID, saveSlotItems, SLOTS } from './model';
 import { declaredToolbars, barKey, runToolbarItem, TOOLBAR_CTX, WithToolbars } from './toolbars';
 
 /** Apps Molly opens hidden at start because they take remote commands (the Dev Console's console-commands). */
-const WARM_APPS = ['console'];
-import { APP_TAB, AppMain, AppTab, enterIde, keepIde, LAYOUT_DIALOG, LayoutPicker, openApp } from './workspace';
+import { APP_TAB, AppMain, AppTab, applyPresetById, enterIde, keepIde, LAYOUT_DIALOG, LayoutPicker, groupOfPane, openApp, openRefIn, setTabGroup } from './workspace';
+import { LAYOUT_MODE_PRESET, type LayoutMode } from '../../../src/axf/core/engines/xlayout';
 import helpPack from '../help.json';
 import './xlayout.css';
 
@@ -18,7 +19,7 @@ import './xlayout.css';
  * xLayout (Molly): Molly as ONE app. One banner (Molly's), one application menu, one navigation and one context menu
  * across the whole page, holding AmberX's, axHub's and the Console's (they hide their own and send them as data); an
  * IDE switch that puts the apps in draggable, resizable, dockable panes, with ten preset layouts; up to three plugin
- * toolbars. Settings: Settings → Plugins → xLayout. Switched off or removed, Molly frames each app plainly again and
+ * toolbars. Settings: Settings → Plugins → xLayout. Switched off or removed, Molly shows one app screen at a time again and
  * the apps draw their own chrome, exactly as they do on their own.
  */
 
@@ -37,6 +38,14 @@ export interface XLayoutService {
   saveSlot(slot: number, items: import('../../../src/axf/core/engines/xlayout').XToolbarItem[]): void;
   /** run an item now (try it) */
   run(item: import('../../../src/axf/core/engines/xlayout').XToolbarItem): void;
+  /** the layout mode in force (single | tabs | split | ide) and the preset it uses */
+  mode(): { mode: LayoutMode; preset: string };
+  /** switch the layout mode (tabs / split / ide lay the apps out on the dock with the preset; single = one at a time) */
+  setMode(mode: LayoutMode, preset?: string): boolean;
+  /** the dock arrangement now (dock@1 snapshot, null when nothing is docked), to keep in a named layout */
+  snapshot(): unknown;
+  /** bring back an arrangement taken by snapshot() */
+  restore(snapshot: unknown): boolean;
 }
 
 let host: ChromeHost | null = null;
@@ -50,7 +59,7 @@ function customize(rt: AxfRuntime, payload = 'xlayout|*|1') {
   else rt.toast('Install the Toolbar designer plugin to pick what this toolbar holds.', 'info', 'Toolbar designer');
 }
 
-/** What an app's view (or one of its pages) shows: the frame, or the IDE dock, inside the toolbars. */
+/** What an app's view (or one of its screens) shows: the screen, or the IDE dock, inside the toolbars. */
 function Main({ app }: { app: string }) {
   const h = useHost();
   return <WithToolbars host={h}><AppMain app={app} /></WithToolbars>;
@@ -70,7 +79,7 @@ function IdePanel() {
   const presets = rt.registry.list('dock-layout' as never) as unknown as { id: string; name: string }[];
   return (
     <div className="fx-stack">
-      <Switch label="IDE mode" hint="Apps open as tabs in panes you drag, resize and dock, instead of one app at a time." checked={l.ide.on} onChange={(on) => { rt.settings.set(K.ideOn, on); if (on) enterIde(rt); else keepIde(rt); }} />
+      <Switch label="IDE mode" hint="Apps open as tabs in panes you drag, resize and dock, instead of one app at a time. Other layout modes: Settings → Plugins → One shell." checked={l.ide.on} onChange={(on) => { rt.settings.set(K.ideOn, on); rt.settings.set(K.mode, on ? 'ide' : 'single'); if (on) enterIde(rt); else keepIde(rt); }} />
       <SelectField label="Pane layout" hint="The layout IDE mode starts with. Pick one with a preview: Choose layout." value={l.ide.preset} options={l.ide.presets.filter((p) => presets.some((x) => x.id === p)).map((p) => ({ value: p, label: presets.find((x) => x.id === p)?.name ?? p }))} onChange={(v) => rt.settings.set(K.preset, v)} />
       <SelectField label="Pane limit" hint="The most panes at once; a tab dropped past it joins a pane as a tab." value={String(l.ide.paneLimit)} options={Array.from({ length: 12 }, (_, i) => ({ value: String(i + 1), label: String(i + 1) }))} onChange={(v) => { rt.settings.set(K.paneLimit, Number(v)); rt.windows.setDockRules({ paneLimit: Number(v) }); }} />
       <div className="fx-form__actions"><Button icon="layout" onClick={() => rt.openDialog(LAYOUT_DIALOG)}>Choose layout…</Button></div>
@@ -110,16 +119,13 @@ function ToolbarsPanel() {
 
 function AppsPanel() {
   const h = useHost();
-  const rt = useRuntime();
-  const l = effectiveXLayout(rt);
   const on = new Set(h.connected());
   return (
     <div className="fx-stack">
-      <p className="fx-muted">Molly shows one banner, one application menu, one navigation and one context menu. These apps hide their own and send theirs here; on their own they stay exactly as they are.</p>
+      <p className="fx-muted">Molly shows one banner, one application menu, one navigation and one context menu. Every app's screens mount natively inside Molly (no frames); its screens, actions and settings are in Molly's menus (Go, Go to anything). On their own the apps stay exactly as they are.</p>
       <ul className="axp-xlayout-apps">
-        {l.apps.map((a) => <li key={a.id}><strong>{a.label}</strong> <span className="fx-muted">{on.has(a.id) ? 'joined: its menus, navigation, context menu and toolbars are in Molly’s' : 'not open yet, or not sending its chrome (an older build of it draws its own)'}</span></li>)}
+        {MOLLY_APPS.map((a) => <li key={a.id}><strong>{a.label}</strong> <span className="fx-muted">{on.has(a.id) ? 'in Molly: its screens, actions and settings are in Molly’s menus' : a.surface ? 'loading, or its native surface could not load (Molly shows why on its screen)' : 'not native yet: it opens on its own'}</span></li>)}
       </ul>
-      {h.chrome().notes.length > 0 && <p className="fx-muted">{h.chrome().notes.join(' · ')}</p>}
     </div>
   );
 }
@@ -127,7 +133,7 @@ function AppsPanel() {
 function LifecyclePanel() {
   return (
     <div className="fx-stack">
-      <p className="fx-muted">xLayout's code is all in apps/molly/plugins/{FOLDER}. Install or remove it (Molly then frames each app plainly):</p>
+      <p className="fx-muted">xLayout's code is all in apps/molly/plugins/{FOLDER}. Install or remove it (Molly then shows one app screen at a time):</p>
       <pre className="axp-xlayout-code">{`node apps/molly/plugins/${FOLDER}/install.mjs\nnode apps/molly/plugins/${FOLDER}/uninstall.mjs --all`}</pre>
     </div>
   );
@@ -147,19 +153,10 @@ export const plugin: AxfWebLibrary = {
     host = new ChromeHost(rt, () => effectiveXLayout(rt));
     host.start();
     const h = host;
-    setMollyHook(PLUGIN_ID, 'frameUrl', (a, start) => h.frameUrl(a, start));
-    setMollyHook(PLUGIN_ID, 'onFrame', (app, el) => h.frame(app, el));
     setMollyHook(PLUGIN_ID, 'main', (app) => <Main app={app} />);
-    // the apps that take remote commands (console-commands) open hidden at once, so "Amber, open Plan Studio" finds a
-    // console inside Molly and Molly brings it to the front (embed@1 `show`)
-    setMollyHook(PLUGIN_ID, 'warm', WARM_APPS);
-    // each app's pages become Molly views (`<app>/<item>`), so the one navigation can hold them
-    const views = () => setMollyHook(PLUGIN_ID, 'views', Object.fromEntries(Object.entries(h.navViews).map(([id, v]) => [id, { title: v.title, icon: v.icon, render: () => <Main app={id.split('/')[0]!} /> }])));
-    let lastViews = '';
-    h.subscribe(() => { const k = Object.keys(h.navViews).join(','); if (k !== lastViews) { lastViews = k; views(); } });
     const on = rt.actions.register.bind(rt.actions);
     on(RUN_ACTION, (args) => { h.run(args.join(':')); }, { label: 'Run an app’s menu item' });
-    on('xlayout.ide', () => { const now = !effectiveXLayout(rt).ide.on; rt.settings.set(K.ideOn, now); if (now) enterIde(rt); else keepIde(rt); rt.toast(now ? 'Apps open in panes now.' : 'One app at a time again.', 'info', now ? 'IDE mode on' : 'IDE mode off'); }, { label: 'IDE mode on / off' });
+    on('xlayout.ide', () => { const now = !effectiveXLayout(rt).ide.on; rt.settings.set(K.ideOn, now); rt.settings.set(K.mode, now ? 'ide' : 'single'); if (now) enterIde(rt); else keepIde(rt); rt.toast(now ? 'Apps open in panes now.' : 'One app at a time again.', 'info', now ? 'IDE mode on' : 'IDE mode off'); }, { label: 'IDE mode on / off' });
     on('xlayout.layout', () => rt.openDialog(LAYOUT_DIALOG), { label: 'Pane layout…' });
     on('xlayout.open', (args, ctx) => {
       const [target = 'main', ...rest] = args;
@@ -168,11 +165,30 @@ export const plugin: AxfWebLibrary = {
       openApp(rt, app, target === 'pane' || target === 'floating' ? target : 'main');
     }, { label: 'Open an app in the main area, a floating window or a pane' });
     on('xlayout.customize', (_args, ctx) => customize(rt, ctx.payload), { label: 'Customize toolbar…' });
+    // containers (s10): a pane as a tab group or not, and opening any menu item in a given pane, without the mouse
+    on('xlayout.container.tabs', (args, ctx) => {
+      // xlayout.container.tabs[:on|off][:<pane number | group id>] (the context menu passes the group as payload)
+      const flag = args[0] === 'on' ? true : args[0] === 'off' ? false : undefined;
+      const which = (flag === undefined ? args[0] : args[1]) ?? ctx.payload ?? '';
+      const group = /^\d+$/.test(which) ? groupOfPane(rt, Number(which)) : which || null;
+      const now = group ? setTabGroup(rt, group, flag) : null;
+      if (now === null) { rt.toast('Pick a pane in IDE mode first.', 'info', 'Tab group'); return; }
+      rt.toast(now ? 'This pane holds tabs now: what you drop on it opens as a new tab.' : 'This pane shows one thing: what you drop on it replaces it.', 'info', now ? 'Tab group on' : 'Tab group off');
+    }, { label: 'Pane as a tab group on / off', params: true });
+    on('xlayout.drop', (args) => {
+      // xlayout.drop:<pane number>:<ref>: what dropping a menu item on that pane does (voice, API, CLI)
+      const [pane = '', ...ref] = args;
+      if (!openRefIn(rt, groupOfPane(rt, Number(pane)), ref.join(':'))) rt.toast(`Nothing to open for ${ref.join(':')}.`, 'warning', 'Open in pane');
+    }, { label: 'Open a menu item in a pane', params: true });
     provideMollyService(PLUGIN_ID, XLAYOUT_SERVICE, {
       layout: () => effectiveXLayout(rt),
       chrome: () => h.chrome(),
       saveSlot: (slot, items) => saveSlotItems(rt, slot, items),
       run: (item) => runToolbarItem(rt, h, item),
+      mode: () => { const l = effectiveXLayout(rt); return { mode: l.mode, preset: l.mode === 'ide' ? l.ide.preset : LAYOUT_MODE_PRESET[l.mode] }; },
+      setMode: (mode, preset) => applyPresetById(rt, preset ?? (mode === 'ide' ? effectiveXLayout(rt).ide.preset : LAYOUT_MODE_PRESET[mode]), mode),
+      snapshot: () => rt.windows.snapshot(),
+      restore: (snap) => { try { const ok = rt.windows.restoreLayout(snap); if (ok) keepIde(rt); return ok; } catch { return false; } },
     } satisfies XLayoutService);
     rt.settings.onChange(K.paneLimit, () => rt.windows.setDockRules({ paneLimit: effectiveXLayout(rt).ide.paneLimit }));
   },
@@ -181,10 +197,10 @@ export const plugin: AxfWebLibrary = {
   // Settings → Plugins → xLayout (a sub-tab of Plugins, like every plugin's)
   settingsTabs: [{ id: 'xlayout', label: 'xLayout', icon: 'layout', order: 40, parent: 'plugins', description: 'Molly as one app: merged menus, IDE panes, toolbars.' }],
   settingsPanels: [
-    { id: 'xlayout.ide', tab: 'xlayout', title: 'IDE mode', icon: 'layout', order: 10, render: () => <IdePanel /> },
-    { id: 'xlayout.toolbars', tab: 'xlayout', title: 'Toolbars', icon: 'hammer', order: 20, render: () => <ToolbarsPanel /> },
-    { id: 'xlayout.apps', tab: 'xlayout', title: 'One app', icon: 'external', order: 30, render: () => <AppsPanel /> },
-    { id: 'xlayout.lifecycle', tab: 'xlayout', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <LifecyclePanel /> },
+    { id: 'xlayout.ide', tab: 'xlayout', title: 'IDE mode', icon: 'layout', order: 10, collapsible: true, render: () => <IdePanel /> },
+    { id: 'xlayout.toolbars', tab: 'xlayout', title: 'Toolbars', icon: 'hammer', order: 20, collapsible: true, render: () => <ToolbarsPanel /> },
+    { id: 'xlayout.apps', tab: 'xlayout', title: 'One app', icon: 'external', order: 30, collapsible: true, collapsed: true, render: () => <AppsPanel /> },
+    { id: 'xlayout.lifecycle', tab: 'xlayout', title: 'Install & uninstall', icon: 'package', order: 90, collapsible: true, collapsed: true, render: () => <LifecyclePanel /> },
   ],
   appMenu: [
     { id: 'xlayout.view', menu: 'view', menuLabel: 'View', menuOrder: 30, order: 20, items: [
@@ -199,6 +215,9 @@ export const plugin: AxfWebLibrary = {
     { id: 'xlayout.toolbar', target: TOOLBAR_CTX, items: [
       { id: 'xlayout.customize', label: 'Customize toolbar…', icon: 'edit', action: 'xlayout.customize' },
       { id: 'xlayout.toolbar-settings', label: 'Toolbar settings…', icon: 'settings', action: 'settings.open:xlayout' },
+    ] },
+    { id: 'xlayout.tabgroup', target: 'tab-group', items: [
+      { id: 'xlayout.container-tabs', label: 'Tab group on / off', icon: 'layers', action: 'xlayout.container.tabs:{payload}' },
     ] },
     { id: 'xlayout.nav', target: 'nav-item', items: [
       { id: 'xlayout.nav-pane', label: 'Open in a pane', icon: 'grid', action: 'xlayout.open:pane:{payload}' },

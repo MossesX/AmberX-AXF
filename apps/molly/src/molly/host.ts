@@ -4,24 +4,18 @@ import { mollyApp, type MollyApp } from './apps';
 
 /**
  * Molly's extension points for its plugins (plugins/<folder>/web, loaded by App.tsx without naming them). Each one is
- * empty by default, and Molly without plugins is exactly what it was: plain frames, one app on screen at a time.
- *   - `frameUrl`: the address an app's frame opens (a host plugin adds the embed@1 marker);
- *   - `onFrame`: told when an app's frame mounts (its window, for messages) and unmounts;
- *   - `main`: what an app's view shows (default: the app's frame slot);
- *   - `views`: extra views (an app's own pages as Molly views, `<app>/<item id>`);
- *   - `warm`: apps whose frame opens (hidden) as soon as Molly starts, e.g. the Console, so a remote command always has a
- *     console inside Molly to go to instead of waking a separate tab.
- * One owner per hook: the last plugin to set one wins, and clears only its own.
+ * empty by default, and Molly without plugins shows one app screen at a time, mounted natively (molly/native.tsx).
+ *   - `main`: what an app's view (`console`) or one of its screens (`console/plan`) shows (default: the screen alone);
+ *   - `views`: extra views.
+ * One owner per hook: the last plugin to set one wins, and clears only its own. (The frame hooks went with Molly's
+ * frames, molly-one-shell s11: every app mounts natively.)
  */
 export interface MollyHostHooks {
-  frameUrl: ((app: MollyApp, start: string) => string) | null;
-  onFrame: ((app: string, frame: HTMLIFrameElement | null) => void) | null;
   main: ((app: string) => ReactNode) | null;
   views: ViewMap;
-  warm: string[] | null;
 }
 
-const hooks: MollyHostHooks = { frameUrl: null, onFrame: null, main: null, views: {}, warm: null };
+const hooks: MollyHostHooks = { main: null, views: {} };
 const owners = new Map<keyof MollyHostHooks, string>();
 const listeners = new Set<() => void>();
 let rev = 0;

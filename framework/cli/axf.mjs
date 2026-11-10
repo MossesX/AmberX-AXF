@@ -17,6 +17,7 @@
  *   axf schemas                 regenerate JSON Schemas in framework/schemas/json
  *   axf repo create <name> [--private|--public] [--description "…"]
  *                               new GitHub repo with the GitHub App's user token (framework/cli/github-app.mjs)
+ *   axf <app> …                 an app's own CLI (apps/<app>/cli.mjs), e.g. axf molly open console:screen:plan --in pane
  *   axf shot <file> --name "…" --app A --screen S [--group "<name>"] [--source <ui-review-item@1 source>] [--by type:id]
  *                               save a non-review screenshot to UI Review → Screenshots (framework/cli/shot.mjs)
  *   axf templates               list app templates (react-ts, android-compose, …)
@@ -108,6 +109,13 @@ const AXF_COMMANDS = new Set(['init', 'claude-project', 'project', 'options', 'v
     if (!dir) { console.error('no plugin provides plugin-commands@1 (install the Plugin commands plugin)'); process.exit(1); }
     const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'commands.mjs')).href);
     process.exit(await main([cmd, ...rest]));
+  }
+  // `axf <app> …` for an app that ships its own CLI (apps/<app>/cli.mjs exporting main), e.g. `axf molly open …`
+  const appCli = cmd && !AXF_COMMANDS.has(cmd) && /^[a-z0-9][a-z0-9-]+$/.test(cmd) ? joinPath(import.meta.dirname ?? new URL('.', import.meta.url).pathname, '../../apps', cmd, 'cli.mjs') : '';
+  if (appCli && exists(appCli)) {
+    const { pathToFileURL } = await import('node:url');
+    const { main } = await import(pathToFileURL(appCli).href);
+    process.exit(await main(rest));
   }
 }
 const flags = {};

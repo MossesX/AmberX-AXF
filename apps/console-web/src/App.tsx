@@ -43,8 +43,8 @@ const ashesLibrary = createAshesLibrary({
   ),
 });
 
-/** Views the shell can show. The console-nav asset references these ids. */
-const views: ViewMap = {
+/** Views the shell can show. The console-nav asset references these ids (also the native surface's screens, surface.tsx). */
+export const views: ViewMap = {
   home: { title: 'Home', icon: 'home', render: () => <Home /> },
   tracker: { title: 'Tracker', icon: 'check-circle', render: () => <Tracker /> },
   plan: { title: 'Plan', icon: 'layers', render: () => <Plan /> },
@@ -92,7 +92,7 @@ function underPlugins(p: BundledPlugin): AxfWebLibrary {
 }
 
 /** Installed console plugins (apps/console-web/plugins), filtered by what the backend says is enabled. */
-function usePlugins() {
+export function usePlugins() {
   const rt = useRuntime();
   const [status, setStatus] = useState<PluginStatus[] | null>(null);
   const [loaded, setLoaded] = useState(false);

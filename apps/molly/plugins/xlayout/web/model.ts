@@ -11,11 +11,15 @@ export const FOLDER = 'xlayout';
 
 /** Settings keys (one value each, so two editors saving different keys never undo each other). */
 export const K = {
+  /** the layout mode (single | tabs | split | ide, xlayout@1 `mode`); unset = ide when `ideOn`, else single */
+  mode: 'xlayout.mode',
   ideOn: 'xlayout.ide.on',
   preset: 'xlayout.ide.preset',
   paneLimit: 'xlayout.ide.paneLimit',
   /** the IDE dock as last arranged (dock@1 snapshot), restored when IDE mode comes back */
   dock: 'xlayout.ide.dock',
+  /** which panes of the IDE dock are tab groups (xlayout@1 `ide.containers`, JSON list of { pane, tabs }) */
+  containers: 'xlayout.ide.containers',
   visible: (slot: number) => `xlayout.toolbar.${slot}.visible`,
   location: (slot: number) => `xlayout.toolbar.${slot}.location`,
   /** a slot's items as the Toolbar designer saved them (JSON list of xlayout toolbar items) */
@@ -43,6 +47,7 @@ export function effectiveXLayout(rt: AxfRuntime): XLayoutData {
   if (has(K.ideOn)) ide.on = saved[K.ideOn] === true;
   if (has(K.preset)) ide.preset = saved[K.preset];
   if (has(K.paneLimit)) ide.paneLimit = Number(saved[K.paneLimit]);
+  const containers = parseJson(saved[K.containers]); if (Array.isArray(containers)) ide.containers = containers;
   const bars = Array.isArray(raw.toolbars) ? (raw.toolbars as Record<string, unknown>[]).map((t) => ({ ...t })) : [];
   for (const slot of SLOTS) {
     let t = bars.find((b) => b.slot === slot);
@@ -51,8 +56,12 @@ export function effectiveXLayout(rt: AxfRuntime): XLayoutData {
     if (has(K.location(slot)) && (TOOLBAR_LOCATIONS as readonly unknown[]).includes(saved[K.location(slot)])) t.location = saved[K.location(slot)];
     const items = parseJson(saved[K.items(slot)]); if (Array.isArray(items)) t.items = items;
   }
-  return normalizeXLayout({ ...raw, ide, toolbars: bars });
+  const mode = has(K.mode) ? saved[K.mode] : raw.mode;
+  return normalizeXLayout({ ...raw, ...(mode !== undefined ? { mode } : {}), ide, toolbars: bars });
 }
+
+/** Whether the apps sit in the dock (tabs, split and IDE all lay out on dock@1; single shows one app at a time). */
+export const docked = (l: Pick<XLayoutData, 'mode'>) => l.mode !== 'single';
 
 /** Save one slot's items (the Toolbar designer). */
 export function saveSlotItems(rt: AxfRuntime, slot: number, items: readonly XToolbarItem[]): void {

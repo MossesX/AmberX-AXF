@@ -74,6 +74,9 @@ export interface SettingsPanel {
   icon?: string;
   order?: number;
   module?: string;
+  /** drawn as a collapsible section (a settings category the user can fold); `collapsed` = starts folded */
+  collapsible?: boolean;
+  collapsed?: boolean;
   render: () => unknown;
 }
 

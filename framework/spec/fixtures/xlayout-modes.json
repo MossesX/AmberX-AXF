@@ -1,0 +1,1306 @@
+{
+  "modes": [
+    "single",
+    "tabs",
+    "split",
+    "ide"
+  ],
+  "modePreset": {
+    "single": "single",
+    "tabs": "single",
+    "split": "two-columns",
+    "ide": "ide"
+  },
+  "normalize": [
+    {
+      "name": "no mode, ide off",
+      "raw": {
+        "apps": []
+      },
+      "out": {
+        "apps": [],
+        "merge": {
+          "banner": "host",
+          "app-menu": "merged",
+          "nav-menu": "merged",
+          "context-menu": "merged",
+          "toolbar": "merged",
+          "widgets": "merged"
+        },
+        "ide": {
+          "on": false,
+          "paneLimit": 6,
+          "preset": "ide",
+          "presets": [
+            "single",
+            "two-columns",
+            "two-rows",
+            "main-side",
+            "side-main",
+            "main-bottom",
+            "three-columns",
+            "top-two-below",
+            "grid-2x2",
+            "ide"
+          ],
+          "containers": []
+        },
+        "toolbars": [
+          {
+            "slot": 1,
+            "visible": true,
+            "location": "top",
+            "label": "Toolbar 1",
+            "items": []
+          },
+          {
+            "slot": 2,
+            "visible": false,
+            "location": "bottom",
+            "label": "Toolbar 2",
+            "items": []
+          },
+          {
+            "slot": 3,
+            "visible": false,
+            "location": "right",
+            "label": "Toolbar 3",
+            "items": []
+          }
+        ],
+        "mode": "single",
+        "layouts": [],
+        "active": null
+      }
+    },
+    {
+      "name": "no mode, ide on",
+      "raw": {
+        "apps": [],
+        "ide": {
+          "on": true
+        }
+      },
+      "out": {
+        "apps": [],
+        "merge": {
+          "banner": "host",
+          "app-menu": "merged",
+          "nav-menu": "merged",
+          "context-menu": "merged",
+          "toolbar": "merged",
+          "widgets": "merged"
+        },
+        "ide": {
+          "on": true,
+          "paneLimit": 6,
+          "preset": "ide",
+          "presets": [
+            "single",
+            "two-columns",
+            "two-rows",
+            "main-side",
+            "side-main",
+            "main-bottom",
+            "three-columns",
+            "top-two-below",
+            "grid-2x2",
+            "ide"
+          ],
+          "containers": []
+        },
+        "toolbars": [
+          {
+            "slot": 1,
+            "visible": true,
+            "location": "top",
+            "label": "Toolbar 1",
+            "items": []
+          },
+          {
+            "slot": 2,
+            "visible": false,
+            "location": "bottom",
+            "label": "Toolbar 2",
+            "items": []
+          },
+          {
+            "slot": 3,
+            "visible": false,
+            "location": "right",
+            "label": "Toolbar 3",
+            "items": []
+          }
+        ],
+        "mode": "ide",
+        "layouts": [],
+        "active": null
+      }
+    },
+    {
+      "name": "mode wins over ide.on",
+      "raw": {
+        "apps": [],
+        "mode": "split",
+        "ide": {
+          "on": true
+        }
+      },
+      "out": {
+        "apps": [],
+        "merge": {
+          "banner": "host",
+          "app-menu": "merged",
+          "nav-menu": "merged",
+          "context-menu": "merged",
+          "toolbar": "merged",
+          "widgets": "merged"
+        },
+        "ide": {
+          "on": false,
+          "paneLimit": 6,
+          "preset": "ide",
+          "presets": [
+            "single",
+            "two-columns",
+            "two-rows",
+            "main-side",
+            "side-main",
+            "main-bottom",
+            "three-columns",
+            "top-two-below",
+            "grid-2x2",
+            "ide"
+          ],
+          "containers": []
+        },
+        "toolbars": [
+          {
+            "slot": 1,
+            "visible": true,
+            "location": "top",
+            "label": "Toolbar 1",
+            "items": []
+          },
+          {
+            "slot": 2,
+            "visible": false,
+            "location": "bottom",
+            "label": "Toolbar 2",
+            "items": []
+          },
+          {
+            "slot": 3,
+            "visible": false,
+            "location": "right",
+            "label": "Toolbar 3",
+            "items": []
+          }
+        ],
+        "mode": "split",
+        "layouts": [],
+        "active": null
+      }
+    },
+    {
+      "name": "tabs",
+      "raw": {
+        "apps": [],
+        "mode": "tabs"
+      },
+      "out": {
+        "apps": [],
+        "merge": {
+          "banner": "host",
+          "app-menu": "merged",
+          "nav-menu": "merged",
+          "context-menu": "merged",
+          "toolbar": "merged",
+          "widgets": "merged"
+        },
+        "ide": {
+          "on": false,
+          "paneLimit": 6,
+          "preset": "ide",
+          "presets": [
+            "single",
+            "two-columns",
+            "two-rows",
+            "main-side",
+            "side-main",
+            "main-bottom",
+            "three-columns",
+            "top-two-below",
+            "grid-2x2",
+            "ide"
+          ],
+          "containers": []
+        },
+        "toolbars": [
+          {
+            "slot": 1,
+            "visible": true,
+            "location": "top",
+            "label": "Toolbar 1",
+            "items": []
+          },
+          {
+            "slot": 2,
+            "visible": false,
+            "location": "bottom",
+            "label": "Toolbar 2",
+            "items": []
+          },
+          {
+            "slot": 3,
+            "visible": false,
+            "location": "right",
+            "label": "Toolbar 3",
+            "items": []
+          }
+        ],
+        "mode": "tabs",
+        "layouts": [],
+        "active": null
+      }
+    },
+    {
+      "name": "bad mode",
+      "raw": {
+        "apps": [],
+        "mode": "grid"
+      },
+      "out": {
+        "apps": [],
+        "merge": {
+          "banner": "host",
+          "app-menu": "merged",
+          "nav-menu": "merged",
+          "context-menu": "merged",
+          "toolbar": "merged",
+          "widgets": "merged"
+        },
+        "ide": {
+          "on": false,
+          "paneLimit": 6,
+          "preset": "ide",
+          "presets": [
+            "single",
+            "two-columns",
+            "two-rows",
+            "main-side",
+            "side-main",
+            "main-bottom",
+            "three-columns",
+            "top-two-below",
+            "grid-2x2",
+            "ide"
+          ],
+          "containers": []
+        },
+        "toolbars": [
+          {
+            "slot": 1,
+            "visible": true,
+            "location": "top",
+            "label": "Toolbar 1",
+            "items": []
+          },
+          {
+            "slot": 2,
+            "visible": false,
+            "location": "bottom",
+            "label": "Toolbar 2",
+            "items": []
+          },
+          {
+            "slot": 3,
+            "visible": false,
+            "location": "right",
+            "label": "Toolbar 3",
+            "items": []
+          }
+        ],
+        "mode": "single",
+        "layouts": [],
+        "active": null
+      }
+    },
+    {
+      "name": "containers cleaned",
+      "raw": {
+        "apps": [],
+        "mode": "ide",
+        "ide": {
+          "containers": [
+            {
+              "pane": 2,
+              "tabs": true,
+              "label": "Side"
+            },
+            {
+              "pane": 1,
+              "tabs": "yes"
+            },
+            {
+              "pane": 2
+            },
+            {
+              "pane": 13
+            },
+            "x"
+          ]
+        }
+      },
+      "out": {
+        "apps": [],
+        "merge": {
+          "banner": "host",
+          "app-menu": "merged",
+          "nav-menu": "merged",
+          "context-menu": "merged",
+          "toolbar": "merged",
+          "widgets": "merged"
+        },
+        "ide": {
+          "on": true,
+          "paneLimit": 6,
+          "preset": "ide",
+          "presets": [
+            "single",
+            "two-columns",
+            "two-rows",
+            "main-side",
+            "side-main",
+            "main-bottom",
+            "three-columns",
+            "top-two-below",
+            "grid-2x2",
+            "ide"
+          ],
+          "containers": [
+            {
+              "pane": 1,
+              "tabs": false
+            },
+            {
+              "pane": 2,
+              "tabs": true,
+              "label": "Side"
+            }
+          ]
+        },
+        "toolbars": [
+          {
+            "slot": 1,
+            "visible": true,
+            "location": "top",
+            "label": "Toolbar 1",
+            "items": []
+          },
+          {
+            "slot": 2,
+            "visible": false,
+            "location": "bottom",
+            "label": "Toolbar 2",
+            "items": []
+          },
+          {
+            "slot": 3,
+            "visible": false,
+            "location": "right",
+            "label": "Toolbar 3",
+            "items": []
+          }
+        ],
+        "mode": "ide",
+        "layouts": [],
+        "active": null
+      }
+    },
+    {
+      "name": "named layouts",
+      "raw": {
+        "apps": [],
+        "mode": "ide",
+        "active": "Review",
+        "layouts": [
+          {
+            "id": "review",
+            "label": "Review",
+            "mode": "split",
+            "containers": [
+              {
+                "pane": 1,
+                "tabs": true
+              }
+            ],
+            "open": {
+              "1": {
+                "tabs": [
+                  "console:screen:build",
+                  "console:screen:build",
+                  "bad ref",
+                  "axhub:screen:home"
+                ],
+                "active": 9
+              },
+              "2": {
+                "tabs": []
+              },
+              "13": {
+                "tabs": [
+                  "a:screen:b"
+                ]
+              }
+            }
+          },
+          {
+            "id": "review",
+            "label": "Again"
+          },
+          {
+            "id": "Bad Id!"
+          },
+          {
+            "id": "coding",
+            "tree": {
+              "kind": "split",
+              "vertical": false,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "pane": 1
+                },
+                {
+                  "kind": "leaf",
+                  "pane": 2
+                }
+              ],
+              "weights": [
+                2,
+                1
+              ]
+            }
+          }
+        ]
+      },
+      "out": {
+        "apps": [],
+        "merge": {
+          "banner": "host",
+          "app-menu": "merged",
+          "nav-menu": "merged",
+          "context-menu": "merged",
+          "toolbar": "merged",
+          "widgets": "merged"
+        },
+        "ide": {
+          "on": true,
+          "paneLimit": 6,
+          "preset": "ide",
+          "presets": [
+            "single",
+            "two-columns",
+            "two-rows",
+            "main-side",
+            "side-main",
+            "main-bottom",
+            "three-columns",
+            "top-two-below",
+            "grid-2x2",
+            "ide"
+          ],
+          "containers": []
+        },
+        "toolbars": [
+          {
+            "slot": 1,
+            "visible": true,
+            "location": "top",
+            "label": "Toolbar 1",
+            "items": []
+          },
+          {
+            "slot": 2,
+            "visible": false,
+            "location": "bottom",
+            "label": "Toolbar 2",
+            "items": []
+          },
+          {
+            "slot": 3,
+            "visible": false,
+            "location": "right",
+            "label": "Toolbar 3",
+            "items": []
+          }
+        ],
+        "mode": "ide",
+        "layouts": [
+          {
+            "id": "review",
+            "label": "Review",
+            "mode": "split",
+            "preset": "two-columns",
+            "containers": [
+              {
+                "pane": 1,
+                "tabs": true
+              }
+            ],
+            "open": {
+              "1": {
+                "tabs": [
+                  "console:screen:build",
+                  "axhub:screen:home"
+                ],
+                "active": 1
+              }
+            }
+          },
+          {
+            "id": "coding",
+            "label": "coding",
+            "mode": "ide",
+            "preset": "ide",
+            "containers": [],
+            "open": {},
+            "tree": {
+              "kind": "split",
+              "vertical": false,
+              "children": [
+                {
+                  "kind": "leaf",
+                  "pane": 1
+                },
+                {
+                  "kind": "leaf",
+                  "pane": 2
+                }
+              ],
+              "weights": [
+                0.666667,
+                0.333333
+              ]
+            }
+          }
+        ],
+        "active": "review"
+      }
+    },
+    {
+      "name": "active not a layout",
+      "raw": {
+        "apps": [],
+        "layouts": [
+          {
+            "id": "a"
+          }
+        ],
+        "active": "b"
+      },
+      "out": {
+        "apps": [],
+        "merge": {
+          "banner": "host",
+          "app-menu": "merged",
+          "nav-menu": "merged",
+          "context-menu": "merged",
+          "toolbar": "merged",
+          "widgets": "merged"
+        },
+        "ide": {
+          "on": false,
+          "paneLimit": 6,
+          "preset": "ide",
+          "presets": [
+            "single",
+            "two-columns",
+            "two-rows",
+            "main-side",
+            "side-main",
+            "main-bottom",
+            "three-columns",
+            "top-two-below",
+            "grid-2x2",
+            "ide"
+          ],
+          "containers": []
+        },
+        "toolbars": [
+          {
+            "slot": 1,
+            "visible": true,
+            "location": "top",
+            "label": "Toolbar 1",
+            "items": []
+          },
+          {
+            "slot": 2,
+            "visible": false,
+            "location": "bottom",
+            "label": "Toolbar 2",
+            "items": []
+          },
+          {
+            "slot": 3,
+            "visible": false,
+            "location": "right",
+            "label": "Toolbar 3",
+            "items": []
+          }
+        ],
+        "mode": "single",
+        "layouts": [],
+        "active": null
+      }
+    }
+  ],
+  "errors": [
+    {
+      "name": "bad mode",
+      "raw": {
+        "apps": [],
+        "mode": "grid"
+      },
+      "errors": [
+        "data.mode must be one of: single, tabs, split, ide"
+      ]
+    },
+    {
+      "name": "layouts not a list",
+      "raw": {
+        "apps": [],
+        "layouts": {}
+      },
+      "errors": [
+        "data.layouts must be a list of { id, label, mode, preset?, tree?, containers?, open? }"
+      ]
+    },
+    {
+      "name": "bad layouts",
+      "raw": {
+        "apps": [],
+        "layouts": [
+          {
+            "id": "A B"
+          },
+          "x",
+          {
+            "id": "a",
+            "mode": "grid",
+            "preset": "Bad!",
+            "tree": {
+              "kind": "?"
+            },
+            "containers": [
+              {
+                "pane": 0
+              },
+              {
+                "pane": 1,
+                "tabs": "y"
+              },
+              {
+                "pane": 1
+              }
+            ],
+            "open": []
+          },
+          {
+            "id": "a"
+          }
+        ]
+      },
+      "errors": [
+        "data.layouts[0].id must match ^[a-z0-9][a-z0-9-]{1,47}$",
+        "data.layouts[1] must be an object",
+        "data.layouts[2].id must match ^[a-z0-9][a-z0-9-]{1,47}$",
+        "data.layouts[2].mode must be one of: single, tabs, split, ide",
+        "data.layouts[2].preset must be a dock-layout asset id",
+        "data.layouts[2].tree must be a preset tree",
+        "data.layouts[2].containers[0].pane must be 1..12",
+        "data.layouts[2].containers[1].tabs must be true or false",
+        "data.layouts[2].containers[2].pane 1 repeats",
+        "data.layouts[2].open must be an object of pane → { tabs, active }",
+        "data.layouts[3].id must match ^[a-z0-9][a-z0-9-]{1,47}$"
+      ]
+    },
+    {
+      "name": "active unknown",
+      "raw": {
+        "apps": [],
+        "layouts": [
+          {
+            "id": "a"
+          }
+        ],
+        "active": "b"
+      },
+      "errors": [
+        "data.layouts[0].id must match ^[a-z0-9][a-z0-9-]{1,47}$",
+        "data.active \"b\" is not one of data.layouts"
+      ]
+    },
+    {
+      "name": "containers not a list",
+      "raw": {
+        "apps": [],
+        "ide": {
+          "containers": {}
+        }
+      },
+      "errors": [
+        "data.ide.containers must be a list of { pane, tabs, label? }"
+      ]
+    }
+  ],
+  "effective": {
+    "base": {
+      "id": null,
+      "label": "Default",
+      "mode": "ide",
+      "preset": "ide",
+      "containers": [
+        {
+          "pane": 1,
+          "tabs": true
+        },
+        {
+          "pane": 2,
+          "tabs": false
+        }
+      ],
+      "open": {}
+    },
+    "named": {
+      "id": "review",
+      "label": "Review",
+      "mode": "split",
+      "preset": "two-columns",
+      "containers": [
+        {
+          "pane": 1,
+          "tabs": true
+        }
+      ],
+      "open": {
+        "1": {
+          "tabs": [
+            "console:screen:build",
+            "axhub:screen:home"
+          ],
+          "active": 1
+        }
+      }
+    },
+    "tabsMode": {
+      "id": null,
+      "label": "Default",
+      "mode": "tabs",
+      "preset": "single",
+      "containers": [],
+      "open": {}
+    }
+  },
+  "isTabs": [
+    {
+      "mode": "single",
+      "pane": 1,
+      "tabs": false
+    },
+    {
+      "mode": "single",
+      "pane": 2,
+      "tabs": false
+    },
+    {
+      "mode": "single",
+      "pane": 3,
+      "tabs": false
+    },
+    {
+      "mode": "tabs",
+      "pane": 1,
+      "tabs": true
+    },
+    {
+      "mode": "tabs",
+      "pane": 2,
+      "tabs": false
+    },
+    {
+      "mode": "tabs",
+      "pane": 3,
+      "tabs": false
+    },
+    {
+      "mode": "split",
+      "pane": 1,
+      "tabs": true
+    },
+    {
+      "mode": "split",
+      "pane": 2,
+      "tabs": false
+    },
+    {
+      "mode": "split",
+      "pane": 3,
+      "tabs": false
+    },
+    {
+      "mode": "ide",
+      "pane": 1,
+      "tabs": true
+    },
+    {
+      "mode": "ide",
+      "pane": 2,
+      "tabs": false
+    },
+    {
+      "mode": "ide",
+      "pane": 3,
+      "tabs": false
+    }
+  ],
+  "setTabs": [
+    [
+      {
+        "pane": 1,
+        "tabs": true
+      },
+      {
+        "pane": 2,
+        "tabs": true
+      }
+    ],
+    [
+      {
+        "pane": 1,
+        "tabs": true
+      },
+      {
+        "pane": 2,
+        "tabs": false
+      },
+      {
+        "pane": 4,
+        "tabs": true
+      }
+    ],
+    [
+      {
+        "pane": 1,
+        "tabs": false
+      },
+      {
+        "pane": 2,
+        "tabs": false
+      }
+    ],
+    [
+      {
+        "pane": 1,
+        "tabs": true
+      },
+      {
+        "pane": 2,
+        "tabs": false
+      }
+    ]
+  ],
+  "openSteps": [
+    {
+      "op": "open a in 1 (tabs)",
+      "out": {
+        "1": {
+          "tabs": [
+            "console:screen:a"
+          ],
+          "active": 0
+        }
+      }
+    },
+    {
+      "op": "open b in 1 (tabs)",
+      "out": {
+        "1": {
+          "tabs": [
+            "console:screen:a",
+            "console:screen:b"
+          ],
+          "active": 1
+        }
+      }
+    },
+    {
+      "op": "open a again (front)",
+      "out": {
+        "1": {
+          "tabs": [
+            "console:screen:a",
+            "console:screen:b"
+          ],
+          "active": 0
+        }
+      }
+    },
+    {
+      "op": "open c after a",
+      "out": {
+        "1": {
+          "tabs": [
+            "console:screen:a",
+            "console:screen:c",
+            "console:screen:b"
+          ],
+          "active": 1
+        }
+      }
+    },
+    {
+      "op": "open d in 2 (single)",
+      "out": {
+        "1": {
+          "tabs": [
+            "console:screen:a",
+            "console:screen:c",
+            "console:screen:b"
+          ],
+          "active": 1
+        },
+        "2": {
+          "tabs": [
+            "console:screen:d"
+          ],
+          "active": 0
+        }
+      }
+    },
+    {
+      "op": "open e in 2 (single replaces)",
+      "out": {
+        "1": {
+          "tabs": [
+            "console:screen:a",
+            "console:screen:c",
+            "console:screen:b"
+          ],
+          "active": 1
+        },
+        "2": {
+          "tabs": [
+            "console:screen:e"
+          ],
+          "active": 0
+        }
+      }
+    },
+    {
+      "op": "bad ref ignored",
+      "out": {
+        "1": {
+          "tabs": [
+            "console:screen:a",
+            "console:screen:c",
+            "console:screen:b"
+          ],
+          "active": 1
+        },
+        "2": {
+          "tabs": [
+            "console:screen:e"
+          ],
+          "active": 0
+        }
+      }
+    },
+    {
+      "op": "bad pane ignored",
+      "out": {
+        "1": {
+          "tabs": [
+            "console:screen:a",
+            "console:screen:c",
+            "console:screen:b"
+          ],
+          "active": 1
+        },
+        "2": {
+          "tabs": [
+            "console:screen:e"
+          ],
+          "active": 0
+        }
+      }
+    },
+    {
+      "op": "move c 1 → 2 (tabs, at 0)",
+      "out": {
+        "1": {
+          "tabs": [
+            "console:screen:a",
+            "console:screen:b"
+          ],
+          "active": 0
+        },
+        "2": {
+          "tabs": [
+            "console:screen:c",
+            "console:screen:e"
+          ],
+          "active": 0
+        }
+      }
+    },
+    {
+      "op": "move a 1 → 3 (single)",
+      "out": {
+        "1": {
+          "tabs": [
+            "console:screen:b"
+          ],
+          "active": 0
+        },
+        "2": {
+          "tabs": [
+            "console:screen:c",
+            "console:screen:e"
+          ],
+          "active": 0
+        },
+        "3": {
+          "tabs": [
+            "console:screen:a"
+          ],
+          "active": 0
+        }
+      }
+    },
+    {
+      "op": "reorder in 2",
+      "out": {
+        "1": {
+          "tabs": [
+            "console:screen:b"
+          ],
+          "active": 0
+        },
+        "2": {
+          "tabs": [
+            "console:screen:e",
+            "console:screen:c"
+          ],
+          "active": 1
+        },
+        "3": {
+          "tabs": [
+            "console:screen:a"
+          ],
+          "active": 0
+        }
+      }
+    },
+    {
+      "op": "move unknown ignored",
+      "out": {
+        "1": {
+          "tabs": [
+            "console:screen:b"
+          ],
+          "active": 0
+        },
+        "2": {
+          "tabs": [
+            "console:screen:e",
+            "console:screen:c"
+          ],
+          "active": 1
+        },
+        "3": {
+          "tabs": [
+            "console:screen:a"
+          ],
+          "active": 0
+        }
+      }
+    },
+    {
+      "op": "close e",
+      "out": {
+        "1": {
+          "tabs": [
+            "console:screen:b"
+          ],
+          "active": 0
+        },
+        "2": {
+          "tabs": [
+            "console:screen:c"
+          ],
+          "active": 0
+        },
+        "3": {
+          "tabs": [
+            "console:screen:a"
+          ],
+          "active": 0
+        }
+      }
+    },
+    {
+      "op": "close last in 3",
+      "out": {
+        "1": {
+          "tabs": [
+            "console:screen:b"
+          ],
+          "active": 0
+        },
+        "2": {
+          "tabs": [
+            "console:screen:c"
+          ],
+          "active": 0
+        }
+      }
+    }
+  ],
+  "manyTabs": {
+    "1": {
+      "tabs": [
+        "console:screen:t5",
+        "console:screen:t6",
+        "console:screen:t7",
+        "console:screen:t8",
+        "console:screen:t9",
+        "console:screen:t10",
+        "console:screen:t11",
+        "console:screen:t12",
+        "console:screen:t13",
+        "console:screen:t14",
+        "console:screen:t15",
+        "console:screen:t16",
+        "console:screen:t17",
+        "console:screen:t18",
+        "console:screen:t19",
+        "console:screen:t20",
+        "console:screen:t21",
+        "console:screen:t22",
+        "console:screen:t23",
+        "console:screen:t24",
+        "console:screen:t25",
+        "console:screen:t26",
+        "console:screen:t27",
+        "console:screen:t28",
+        "console:screen:t29",
+        "console:screen:t30",
+        "console:screen:t31",
+        "console:screen:t32",
+        "console:screen:t33",
+        "console:screen:t34",
+        "console:screen:t35",
+        "console:screen:t36",
+        "console:screen:t37",
+        "console:screen:t38",
+        "console:screen:t39",
+        "console:screen:t40",
+        "console:screen:t41",
+        "console:screen:t42",
+        "console:screen:t43",
+        "console:screen:t44"
+      ],
+      "active": 39
+    }
+  },
+  "openMap": [
+    {
+      "1": {
+        "tabs": [
+          "console:screen:a"
+        ],
+        "active": 0
+      }
+    },
+    {},
+    {}
+  ],
+  "layoutSteps": [
+    {
+      "op": "save review",
+      "layouts": [
+        "review:split"
+      ],
+      "active": "review",
+      "mode": "ide"
+    },
+    {
+      "op": "save coding",
+      "layouts": [
+        "review:split",
+        "coding:split"
+      ],
+      "active": "coding",
+      "mode": "ide"
+    },
+    {
+      "op": "switch review",
+      "layouts": [
+        "review:split",
+        "coding:split"
+      ],
+      "active": "review",
+      "mode": "ide"
+    },
+    {
+      "op": "switch unknown",
+      "layouts": [
+        "review:split",
+        "coding:split"
+      ],
+      "active": "review",
+      "mode": "ide"
+    },
+    {
+      "op": "replace review",
+      "layouts": [
+        "review:tabs",
+        "coding:split"
+      ],
+      "active": "review",
+      "mode": "ide"
+    },
+    {
+      "op": "remove review",
+      "layouts": [
+        "coding:split"
+      ],
+      "active": null,
+      "mode": "ide"
+    },
+    {
+      "op": "mode tabs",
+      "layouts": [
+        "coding:split"
+      ],
+      "active": null,
+      "mode": "tabs"
+    },
+    {
+      "op": "switch default",
+      "layouts": [
+        "coding:split"
+      ],
+      "active": null,
+      "mode": "tabs"
+    }
+  ],
+  "overflow": {
+    "count": 20,
+    "first": "l2",
+    "active": "l21"
+  }
+}

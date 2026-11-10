@@ -1,23 +1,24 @@
-import { useMemo, useSyncExternalStore } from 'react';
+import { useEffect, useMemo, useSyncExternalStore } from 'react';
 import { AccountView, AppShell, installLibraries, SlotsProvider, useRuntime, type ViewMap } from './axf/react';
 import type { AxfWebLibrary } from './axf/react/library';
 import { library as settingsLibrary } from './axf/libs/settings';
 import { toolbarsLibrary } from './axf/libs/toolbars';
 import { dialogs } from './dialogs';
 import { Home } from './views/Home';
-import { AppSlot, FrameDeck } from './molly/FrameDeck';
 import { MOLLY_APPS } from './molly/apps';
 import { mollyHooks, mollyHooksRev, onMollyHooks } from './molly/host';
+import { isNative, loadAllNative, NativeView, nativeViews, useNativeRev } from './molly/native';
 
 /**
- * Molly: one interface for AmberX, axHub and the Dev Console. Each app is a view whose body is its own live address in a
- * kept-alive frame (molly/FrameDeck.tsx); the apps themselves are untouched and keep running on their own. Plugins
- * (plugins/<folder>/web/index.tsx, found by folder, never named here) may change how the apps are shown through
- * molly/host.ts; without them Molly frames each app plainly.
+ * Molly: the one shell for AmberX, axHub, the Dev Console and every later app. Each app mounts natively
+ * (molly/native.tsx, shell-surface@1): its screens render in Molly's page under Molly's one banner, menu, nav and
+ * settings, and `<app>/<screen>` views come from its surface. No frames (Brett, Nov 8 2026). Plugins
+ * (plugins/<folder>/web/index.tsx, found by folder, never named here) extend Molly through molly/host.ts.
  */
 const appView = (id: string) => {
   const main = mollyHooks().main;
-  return main ? main(id) : <AppSlot id={id} />;
+  if (main) return main(id);
+  return <NativeView app={id} />;
 };
 const views: ViewMap = {
   home: { title: 'Molly', icon: 'home', render: () => <Home /> },
@@ -36,14 +37,17 @@ export function App() {
   const rt = useRuntime();
   const contributed = useMemo(() => installLibraries(rt, libraries), [rt]);
   useSyncExternalStore(onMollyHooks, mollyHooksRev, mollyHooksRev);
-  const extra = mollyHooks().views;
+  // native apps load at start: Molly's one menu needs their surfaces (molly/native.tsx)
+  useEffect(() => loadAllNative(rt), [rt]);
+  useNativeRev();
+  const extra = Object.fromEntries(Object.entries(mollyHooks().views).filter(([id]) => !isNative(id.split('/')[0]!)));
+  const native = nativeViews();
   return (
     <>
       {/* plugins' slot content (e.g. the Banners plugin's strip in app.frame.banners) */}
       <SlotsProvider slots={contributed.slots}>
-        <AppShell views={{ ...contributed.views, ...extra, ...views }} dialogs={{ ...contributed.dialogs, ...dialogs }} tabs={contributed.tabs} />
+        <AppShell views={{ ...contributed.views, ...extra, ...native, ...views }} dialogs={{ ...contributed.dialogs, ...dialogs }} tabs={contributed.tabs} />
       </SlotsProvider>
-      <FrameDeck />
     </>
   );
 }

@@ -1,0 +1,123 @@
+{
+ "$axf": "asset@1",
+ "type": "xlayout",
+ "id": "molly-every-app-mounted-mwb9qt8v-ide",
+ "name": "molly-every-app-mounted-mwb9qt8v: IDE",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Docked panes you drag, split, float and resize; each pane can be a tab group; drag anything from Go to anything onto a pane. Named layouts keep the arrangement.",
+ "tags": [
+  "ui-choice",
+  "choice-set:molly-every-app-mounted-mwb9qt8v",
+  "choice-option:ide"
+ ],
+ "data": {
+  "apps": [
+   {
+    "id": "amberx",
+    "label": "AmberX",
+    "url": "https://amberx.amberxai.com",
+    "icon": "sparkles"
+   },
+   {
+    "id": "axhub",
+    "label": "axHub",
+    "url": "https://axhub.amberxai.com",
+    "icon": "shield"
+   },
+   {
+    "id": "console",
+    "label": "Console",
+    "url": "https://console.amberxai.com",
+    "icon": "terminal"
+   },
+   {
+    "id": "expenses",
+    "label": "Expenses",
+    "url": "https://expenses.amberxai.com",
+    "icon": "chart"
+   }
+  ],
+  "merge": {
+   "banner": "host",
+   "app-menu": "merged",
+   "nav-menu": "merged",
+   "context-menu": "merged",
+   "toolbar": "merged",
+   "widgets": "merged"
+  },
+  "ide": {
+   "on": true,
+   "paneLimit": 6,
+   "preset": "ide",
+   "presets": [
+    "single",
+    "two-columns",
+    "two-rows",
+    "main-side",
+    "side-main",
+    "main-bottom",
+    "three-columns",
+    "top-two-below",
+    "grid-2x2",
+    "ide"
+   ]
+  },
+  "toolbars": [
+   {
+    "slot": 1,
+    "visible": true,
+    "location": "top",
+    "label": "Molly",
+    "items": [
+     {
+      "id": "home",
+      "label": "Home",
+      "icon": "home",
+      "action": "nav:home",
+      "open": "main"
+     },
+     {
+      "id": "amberx-home",
+      "label": "AmberX",
+      "icon": "sparkles",
+      "app": "amberx",
+      "action": "nav:home",
+      "open": "main"
+     },
+     {
+      "id": "hub-approvals",
+      "label": "Approvals",
+      "icon": "shield",
+      "app": "axhub",
+      "action": "nav:approvals",
+      "open": "floating"
+     },
+     {
+      "id": "console-builds",
+      "label": "Builds",
+      "icon": "terminal",
+      "app": "console",
+      "action": "nav:build",
+      "open": "pane"
+     }
+    ]
+   },
+   {
+    "slot": 2,
+    "visible": false,
+    "location": "bottom",
+    "label": "Tools",
+    "items": []
+   },
+   {
+    "slot": 3,
+    "visible": false,
+    "location": "right",
+    "label": "Side",
+    "items": []
+   }
+  ],
+  "mode": "ide"
+ }
+}

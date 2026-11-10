@@ -51,7 +51,11 @@
     "presets": 10,
     "label": 80,
     "url": 300,
-    "id": 48
+    "id": 48,
+    "layouts": 20,
+    "containers": 12,
+    "tabs": 40,
+    "ref": 260
   },
   "starters": {
     "molly": {
@@ -99,7 +103,8 @@
             "top-two-below",
             "grid-2x2",
             "ide"
-          ]
+          ],
+          "containers": []
         },
         "toolbars": [
           {
@@ -155,7 +160,10 @@
             "label": "Side",
             "items": []
           }
-        ]
+        ],
+        "mode": "single",
+        "layouts": [],
+        "active": null
       },
       "errors": [],
       "valid": {
@@ -193,7 +201,8 @@
             "top-two-below",
             "grid-2x2",
             "ide"
-          ]
+          ],
+          "containers": []
         },
         "toolbars": [
           {
@@ -217,7 +226,10 @@
             "label": "Toolbar 3",
             "items": []
           }
-        ]
+        ],
+        "mode": "single",
+        "layouts": [],
+        "active": null
       }
     },
     {
@@ -248,7 +260,8 @@
             "top-two-below",
             "grid-2x2",
             "ide"
-          ]
+          ],
+          "containers": []
         },
         "toolbars": [
           {
@@ -272,7 +285,10 @@
             "label": "Toolbar 3",
             "items": []
           }
-        ]
+        ],
+        "mode": "single",
+        "layouts": [],
+        "active": null
       }
     },
     {
@@ -303,7 +319,8 @@
             "top-two-below",
             "grid-2x2",
             "ide"
-          ]
+          ],
+          "containers": []
         },
         "toolbars": [
           {
@@ -327,7 +344,10 @@
             "label": "Toolbar 3",
             "items": []
           }
-        ]
+        ],
+        "mode": "single",
+        "layouts": [],
+        "active": null
       }
     },
     {
@@ -360,7 +380,8 @@
             "top-two-below",
             "grid-2x2",
             "ide"
-          ]
+          ],
+          "containers": []
         },
         "toolbars": [
           {
@@ -384,7 +405,10 @@
             "label": "Toolbar 3",
             "items": []
           }
-        ]
+        ],
+        "mode": "single",
+        "layouts": [],
+        "active": null
       }
     },
     {
@@ -440,7 +464,8 @@
             "top-two-below",
             "grid-2x2",
             "ide"
-          ]
+          ],
+          "containers": []
         },
         "toolbars": [
           {
@@ -464,7 +489,10 @@
             "label": "Toolbar 3",
             "items": []
           }
-        ]
+        ],
+        "mode": "single",
+        "layouts": [],
+        "active": null
       }
     },
     {
@@ -549,7 +577,8 @@
             "top-two-below",
             "grid-2x2",
             "ide"
-          ]
+          ],
+          "containers": []
         },
         "toolbars": [
           {
@@ -573,7 +602,10 @@
             "label": "Toolbar 3",
             "items": []
           }
-        ]
+        ],
+        "mode": "single",
+        "layouts": [],
+        "active": null
       }
     },
     {
@@ -607,7 +639,8 @@
             "top-two-below",
             "grid-2x2",
             "ide"
-          ]
+          ],
+          "containers": []
         },
         "toolbars": [
           {
@@ -631,7 +664,10 @@
             "label": "Toolbar 3",
             "items": []
           }
-        ]
+        ],
+        "mode": "single",
+        "layouts": [],
+        "active": null
       }
     },
     {
@@ -665,7 +701,8 @@
             "top-two-below",
             "grid-2x2",
             "ide"
-          ]
+          ],
+          "containers": []
         },
         "toolbars": [
           {
@@ -689,7 +726,10 @@
             "label": "Toolbar 3",
             "items": []
           }
-        ]
+        ],
+        "mode": "single",
+        "layouts": [],
+        "active": null
       }
     },
     {
@@ -723,7 +763,8 @@
             "top-two-below",
             "grid-2x2",
             "ide"
-          ]
+          ],
+          "containers": []
         },
         "toolbars": [
           {
@@ -747,7 +788,10 @@
             "label": "Toolbar 3",
             "items": []
           }
-        ]
+        ],
+        "mode": "single",
+        "layouts": [],
+        "active": null
       }
     },
     {
@@ -922,7 +966,8 @@
             "p-7",
             "p-8",
             "p-9"
-          ]
+          ],
+          "containers": []
         },
         "toolbars": [
           {
@@ -946,7 +991,10 @@
             "label": "Toolbar 3",
             "items": []
           }
-        ]
+        ],
+        "mode": "single",
+        "layouts": [],
+        "active": null
       }
     },
     {
@@ -1097,7 +1145,8 @@
             "top-two-below",
             "grid-2x2",
             "ide"
-          ]
+          ],
+          "containers": []
         },
         "toolbars": [
           {
@@ -1153,7 +1202,10 @@
             "label": "Side",
             "items": []
           }
-        ]
+        ],
+        "mode": "single",
+        "layouts": [],
+        "active": null
       }
     },
     {
@@ -1219,6 +1271,7 @@
             "two-rows",
             "ide"
           ],
+          "containers": [],
           "tree": {
             "kind": "split",
             "vertical": true,
@@ -1260,7 +1313,10 @@
             "label": "Toolbar 3",
             "items": []
           }
-        ]
+        ],
+        "mode": "ide",
+        "layouts": [],
+        "active": null
       }
     },
     {
@@ -1291,7 +1347,8 @@
           "presets": [
             "two-columns",
             "grid-2x2"
-          ]
+          ],
+          "containers": []
         },
         "toolbars": [
           {
@@ -1315,7 +1372,10 @@
             "label": "Toolbar 3",
             "items": []
           }
-        ]
+        ],
+        "mode": "single",
+        "layouts": [],
+        "active": null
       }
     },
     {
@@ -1394,7 +1454,8 @@
             "top-two-below",
             "grid-2x2",
             "ide"
-          ]
+          ],
+          "containers": []
         },
         "toolbars": [
           {
@@ -1440,7 +1501,10 @@
             "label": "Toolbar 3",
             "items": []
           }
-        ]
+        ],
+        "mode": "single",
+        "layouts": [],
+        "active": null
       }
     }
   ],

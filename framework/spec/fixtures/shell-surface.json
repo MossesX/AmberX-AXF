@@ -1,0 +1,947 @@
+{
+  "contract": "shell-surface@1",
+  "kinds": [
+    "screen",
+    "plugin",
+    "action",
+    "settings",
+    "setting",
+    "dialog",
+    "menu"
+  ],
+  "kindCategory": {
+    "screen": "Screens",
+    "plugin": "Plugins",
+    "action": "Actions",
+    "settings": "Settings",
+    "setting": "Settings",
+    "dialog": "Dialogs",
+    "menu": "Menus"
+  },
+  "mounts": [
+    "native"
+  ],
+  "refused": [
+    "frame",
+    "iframe",
+    "embed",
+    "webview",
+    "url"
+  ],
+  "auth": [
+    "none",
+    "console-token",
+    "hub-session",
+    "app-session"
+  ],
+  "effects": [
+    "navigate",
+    "change",
+    "destructive"
+  ],
+  "limits": {
+    "items": 5000,
+    "id": 200,
+    "label": 120,
+    "detail": 200,
+    "keywords": 12,
+    "keyword": 40,
+    "category": 4,
+    "categoryPart": 60,
+    "module": 200,
+    "url": 300
+  },
+  "searchKinds": {
+    "view": "screen",
+    "action": "action",
+    "settings-tab": "settings",
+    "setting": "setting",
+    "dialog": "dialog",
+    "menu": "menu",
+    "plugin": "plugin"
+  },
+  "normalize": [
+    {
+      "name": "good",
+      "raw": {
+        "$axf": "shell-surface@1",
+        "app": {
+          "id": "Console",
+          "label": "Console",
+          "icon": "terminal",
+          "url": "https://console.example/",
+          "description": "The Dev Console"
+        },
+        "mount": {
+          "kind": "native",
+          "module": "@axf-app/console",
+          "export": "mountSurface",
+          "api": "https://console.example/api/",
+          "auth": "console-token"
+        },
+        "items": [
+          {
+            "kind": "screen",
+            "id": "build",
+            "label": "Build manager",
+            "category": "Builds > Manager",
+            "keywords": [
+              "Queue",
+              "queue"
+            ]
+          },
+          {
+            "kind": "plugin",
+            "id": "ui-review",
+            "label": "UI Review",
+            "plugin": "ui-review",
+            "icon": "eye"
+          },
+          {
+            "kind": "settings",
+            "id": "appearance",
+            "label": "Appearance"
+          },
+          {
+            "kind": "setting",
+            "id": "axf.x",
+            "label": "X",
+            "parent": "appearance",
+            "effect": "change"
+          },
+          {
+            "kind": "action",
+            "id": "reset",
+            "label": "Reset",
+            "effect": "destructive",
+            "requires": "admin"
+          },
+          {
+            "kind": "widget",
+            "id": "clock",
+            "label": "Clock"
+          },
+          {
+            "kind": "screen",
+            "id": "build",
+            "label": "Repeat"
+          },
+          {
+            "kind": "Bad Kind",
+            "id": "x",
+            "label": "X"
+          },
+          {
+            "kind": "screen",
+            "id": "",
+            "label": "No id"
+          },
+          {
+            "kind": "screen",
+            "id": "y",
+            "label": ""
+          },
+          "x"
+        ]
+      },
+      "out": {
+        "$axf": "shell-surface@1",
+        "app": {
+          "id": "console",
+          "label": "Console",
+          "icon": "terminal",
+          "description": "The Dev Console",
+          "url": "https://console.example"
+        },
+        "mount": {
+          "kind": "native",
+          "module": "@axf-app/console",
+          "export": "mountSurface",
+          "auth": "console-token",
+          "api": "https://console.example/api"
+        },
+        "items": [
+          {
+            "kind": "screen",
+            "id": "build",
+            "label": "Build manager",
+            "category": [
+              "Builds",
+              "Manager"
+            ],
+            "keywords": [
+              "queue"
+            ]
+          },
+          {
+            "kind": "plugin",
+            "id": "ui-review",
+            "label": "UI Review",
+            "icon": "eye",
+            "plugin": "ui-review"
+          },
+          {
+            "kind": "settings",
+            "id": "appearance",
+            "label": "Appearance"
+          },
+          {
+            "kind": "setting",
+            "id": "axf.x",
+            "label": "X",
+            "parent": "appearance",
+            "effect": "change"
+          },
+          {
+            "kind": "action",
+            "id": "reset",
+            "label": "Reset",
+            "requires": "admin",
+            "effect": "destructive"
+          },
+          {
+            "kind": "widget",
+            "id": "clock",
+            "label": "Clock"
+          }
+        ]
+      }
+    },
+    {
+      "name": "nothing",
+      "raw": null,
+      "out": null
+    },
+    {
+      "name": "string",
+      "raw": "x",
+      "out": null
+    },
+    {
+      "name": "empty object",
+      "raw": {},
+      "out": null
+    },
+    {
+      "name": "frame mount",
+      "raw": {
+        "$axf": "shell-surface@1",
+        "app": {
+          "id": "axhub",
+          "label": "axHub"
+        },
+        "mount": {
+          "kind": "iframe",
+          "module": "x"
+        },
+        "items": []
+      },
+      "out": null
+    },
+    {
+      "name": "url mount",
+      "raw": {
+        "$axf": "shell-surface@1",
+        "app": {
+          "id": "axhub",
+          "label": "axHub"
+        },
+        "mount": {
+          "kind": "url",
+          "module": "x"
+        },
+        "items": []
+      },
+      "out": null
+    },
+    {
+      "name": "bad everything",
+      "raw": {
+        "$axf": "shell-surface@2",
+        "app": {
+          "id": "Bad App!",
+          "label": "",
+          "url": "http://x"
+        },
+        "mount": {
+          "kind": "native",
+          "module": " ",
+          "export": "1x",
+          "api": "ftp://x",
+          "auth": "password"
+        },
+        "items": [
+          {
+            "kind": "screen",
+            "id": "a",
+            "label": "A",
+            "effect": "boom"
+          },
+          {
+            "kind": "screen",
+            "id": "a",
+            "label": "A"
+          },
+          "x",
+          {
+            "id": "b"
+          }
+        ]
+      },
+      "out": null
+    },
+    {
+      "name": "items not a list",
+      "raw": {
+        "$axf": "shell-surface@1",
+        "app": {
+          "id": "a",
+          "label": "A"
+        },
+        "mount": {
+          "kind": "native",
+          "module": "a"
+        },
+        "items": {}
+      },
+      "out": {
+        "$axf": "shell-surface@1",
+        "app": {
+          "id": "a",
+          "label": "A"
+        },
+        "mount": {
+          "kind": "native",
+          "module": "a",
+          "export": "mountSurface",
+          "auth": "none"
+        },
+        "items": []
+      }
+    },
+    {
+      "name": "no mount",
+      "raw": {
+        "app": {
+          "id": "a",
+          "label": "A"
+        },
+        "items": []
+      },
+      "out": null
+    },
+    {
+      "name": "mount defaults",
+      "raw": {
+        "app": {
+          "id": "a"
+        },
+        "mount": {
+          "kind": "native",
+          "module": "@axf-app/a"
+        },
+        "items": []
+      },
+      "out": {
+        "$axf": "shell-surface@1",
+        "app": {
+          "id": "a",
+          "label": "a"
+        },
+        "mount": {
+          "kind": "native",
+          "module": "@axf-app/a",
+          "export": "mountSurface",
+          "auth": "none"
+        },
+        "items": []
+      }
+    }
+  ],
+  "errors": [
+    {
+      "name": "good",
+      "raw": {
+        "$axf": "shell-surface@1",
+        "app": {
+          "id": "Console",
+          "label": "Console",
+          "icon": "terminal",
+          "url": "https://console.example/",
+          "description": "The Dev Console"
+        },
+        "mount": {
+          "kind": "native",
+          "module": "@axf-app/console",
+          "export": "mountSurface",
+          "api": "https://console.example/api/",
+          "auth": "console-token"
+        },
+        "items": [
+          {
+            "kind": "screen",
+            "id": "build",
+            "label": "Build manager",
+            "category": "Builds > Manager",
+            "keywords": [
+              "Queue",
+              "queue"
+            ]
+          },
+          {
+            "kind": "plugin",
+            "id": "ui-review",
+            "label": "UI Review",
+            "plugin": "ui-review",
+            "icon": "eye"
+          },
+          {
+            "kind": "settings",
+            "id": "appearance",
+            "label": "Appearance"
+          },
+          {
+            "kind": "setting",
+            "id": "axf.x",
+            "label": "X",
+            "parent": "appearance",
+            "effect": "change"
+          },
+          {
+            "kind": "action",
+            "id": "reset",
+            "label": "Reset",
+            "effect": "destructive",
+            "requires": "admin"
+          },
+          {
+            "kind": "widget",
+            "id": "clock",
+            "label": "Clock"
+          },
+          {
+            "kind": "screen",
+            "id": "build",
+            "label": "Repeat"
+          },
+          {
+            "kind": "Bad Kind",
+            "id": "x",
+            "label": "X"
+          },
+          {
+            "kind": "screen",
+            "id": "",
+            "label": "No id"
+          },
+          {
+            "kind": "screen",
+            "id": "y",
+            "label": ""
+          },
+          "x"
+        ]
+      },
+      "errors": [
+        "items[6] repeats screen:build",
+        "items[7] needs a kind ([a-z-]), an id and a label",
+        "items[8] needs a kind ([a-z-]), an id and a label",
+        "items[9] needs a kind ([a-z-]), an id and a label",
+        "items[10] must be an object"
+      ]
+    },
+    {
+      "name": "nothing",
+      "raw": null,
+      "errors": [
+        "a shell surface must be an object"
+      ]
+    },
+    {
+      "name": "string",
+      "raw": "x",
+      "errors": [
+        "a shell surface must be an object"
+      ]
+    },
+    {
+      "name": "empty object",
+      "raw": {},
+      "errors": [
+        "$axf must be \"shell-surface@1\"",
+        "app must be an object { id, label, icon?, description?, url? }",
+        "mount must be an object { kind: 'native', module, export?, api?, auth? }",
+        "items must be a list of { kind, id, label, … }"
+      ]
+    },
+    {
+      "name": "frame mount",
+      "raw": {
+        "$axf": "shell-surface@1",
+        "app": {
+          "id": "axhub",
+          "label": "axHub"
+        },
+        "mount": {
+          "kind": "iframe",
+          "module": "x"
+        },
+        "items": []
+      },
+      "errors": [
+        "mount.kind \"iframe\" is refused: apps mount natively, never in a frame (no embedding, Brett, Nov 8 2026)"
+      ]
+    },
+    {
+      "name": "url mount",
+      "raw": {
+        "$axf": "shell-surface@1",
+        "app": {
+          "id": "axhub",
+          "label": "axHub"
+        },
+        "mount": {
+          "kind": "url",
+          "module": "x"
+        },
+        "items": []
+      },
+      "errors": [
+        "mount.kind \"url\" is refused: apps mount natively, never in a frame (no embedding, Brett, Nov 8 2026)"
+      ]
+    },
+    {
+      "name": "bad everything",
+      "raw": {
+        "$axf": "shell-surface@2",
+        "app": {
+          "id": "Bad App!",
+          "label": "",
+          "url": "http://x"
+        },
+        "mount": {
+          "kind": "native",
+          "module": " ",
+          "export": "1x",
+          "api": "ftp://x",
+          "auth": "password"
+        },
+        "items": [
+          {
+            "kind": "screen",
+            "id": "a",
+            "label": "A",
+            "effect": "boom"
+          },
+          {
+            "kind": "screen",
+            "id": "a",
+            "label": "A"
+          },
+          "x",
+          {
+            "id": "b"
+          }
+        ]
+      },
+      "errors": [
+        "$axf must be \"shell-surface@1\"",
+        "app.id must match ^[a-z0-9][a-z0-9-]{0,31}$",
+        "app.label is required",
+        "app.url must be an https address",
+        "mount.module must name the app's native entry module",
+        "mount.export must be a function name",
+        "mount.api must be an https address",
+        "mount.auth must be one of: none, console-token, hub-session, app-session",
+        "items[0].effect must be one of: navigate, change, destructive",
+        "items[1] repeats screen:a",
+        "items[2] must be an object",
+        "items[3] needs a kind ([a-z-]), an id and a label"
+      ]
+    },
+    {
+      "name": "items not a list",
+      "raw": {
+        "$axf": "shell-surface@1",
+        "app": {
+          "id": "a",
+          "label": "A"
+        },
+        "mount": {
+          "kind": "native",
+          "module": "a"
+        },
+        "items": {}
+      },
+      "errors": [
+        "items must be a list of { kind, id, label, … }"
+      ]
+    }
+  ],
+  "categories": [
+    {
+      "raw": "A > B > ",
+      "out": [
+        "A",
+        "B"
+      ]
+    },
+    {
+      "raw": [
+        "A",
+        " B ",
+        "",
+        "C",
+        "D",
+        "E"
+      ],
+      "out": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ]
+    },
+    {
+      "raw": 7,
+      "out": []
+    },
+    {
+      "raw": "",
+      "out": []
+    }
+  ],
+  "categoryOf": [
+    {
+      "kind": "screen",
+      "id": "build",
+      "path": [
+        "Builds",
+        "Manager"
+      ]
+    },
+    {
+      "kind": "plugin",
+      "id": "ui-review",
+      "path": [
+        "Plugins"
+      ]
+    },
+    {
+      "kind": "settings",
+      "id": "appearance",
+      "path": [
+        "Settings"
+      ]
+    },
+    {
+      "kind": "setting",
+      "id": "axf.x",
+      "path": [
+        "Settings"
+      ]
+    },
+    {
+      "kind": "action",
+      "id": "reset",
+      "path": [
+        "Actions"
+      ]
+    },
+    {
+      "kind": "widget",
+      "id": "clock",
+      "path": [
+        "More"
+      ]
+    }
+  ],
+  "refs": {
+    "make": [
+      "console:screen:build",
+      "console:plugin:ui-review",
+      "console:settings:appearance",
+      "console:setting:axf.x",
+      "console:action:reset",
+      "console:widget:clock"
+    ],
+    "parse": [
+      {
+        "ref": "console:screen:build",
+        "out": {
+          "app": "console",
+          "kind": "screen",
+          "id": "build"
+        }
+      },
+      {
+        "ref": "console:setting:axf.x:y",
+        "out": {
+          "app": "console",
+          "kind": "setting",
+          "id": "axf.x:y"
+        }
+      },
+      {
+        "ref": "console::x",
+        "out": null
+      },
+      {
+        "ref": ":screen:x",
+        "out": null
+      },
+      {
+        "ref": "Console:screen:x",
+        "out": null
+      },
+      {
+        "ref": "console:screen:",
+        "out": null
+      },
+      {
+        "ref": "console",
+        "out": null
+      }
+    ],
+    "resolve": [
+      {
+        "ref": "console:screen:build",
+        "out": {
+          "kind": "screen",
+          "id": "build",
+          "label": "Build manager",
+          "category": [
+            "Builds",
+            "Manager"
+          ],
+          "keywords": [
+            "queue"
+          ]
+        }
+      },
+      {
+        "ref": "console:screen:nope",
+        "out": null
+      },
+      {
+        "ref": "axhub:screen:build",
+        "out": null
+      },
+      {
+        "ref": "bad",
+        "out": null
+      }
+    ]
+  },
+  "fromSearch": {
+    "search": [
+      {
+        "id": "view:home",
+        "kind": "view",
+        "label": "Home",
+        "icon": "home",
+        "focus": {
+          "kind": "view",
+          "view": "home"
+        }
+      },
+      {
+        "id": "view:build",
+        "kind": "view",
+        "label": "Build manager",
+        "detail": "Builds",
+        "keywords": [
+          "Queue",
+          "queue",
+          "orchestrator"
+        ],
+        "focus": {
+          "kind": "view",
+          "view": "build"
+        }
+      },
+      {
+        "id": "action:theme.next",
+        "kind": "action",
+        "label": "Next theme",
+        "focus": {
+          "kind": "action",
+          "spec": "theme.next"
+        },
+        "requires": "theme.write"
+      },
+      {
+        "id": "settings-tab:appearance",
+        "kind": "settings-tab",
+        "label": "Appearance",
+        "focus": {
+          "kind": "setting",
+          "tab": "appearance"
+        }
+      },
+      {
+        "id": "setting:axf.display.fontScale",
+        "kind": "setting",
+        "label": "Font size",
+        "focus": {
+          "kind": "setting",
+          "tab": "appearance",
+          "anchor": "axf.display.fontScale"
+        }
+      },
+      {
+        "id": "dialog:about",
+        "kind": "dialog",
+        "label": "About",
+        "focus": {
+          "kind": "dialog",
+          "id": "about"
+        }
+      },
+      {
+        "id": "asset:theme:dark",
+        "kind": "asset",
+        "label": "Dark",
+        "focus": {
+          "kind": "asset",
+          "type": "theme",
+          "id": "dark"
+        }
+      },
+      {
+        "id": "window:w1",
+        "kind": "window",
+        "label": "Window",
+        "focus": {
+          "kind": "window",
+          "id": "w1"
+        }
+      },
+      {
+        "id": "menu:file.save",
+        "kind": "menu",
+        "label": "Save",
+        "focus": {
+          "kind": "action",
+          "spec": "file.save"
+        }
+      }
+    ],
+    "out": {
+      "$axf": "shell-surface@1",
+      "app": {
+        "id": "console",
+        "label": "Console"
+      },
+      "mount": {
+        "kind": "native",
+        "module": "@axf-app/console",
+        "export": "mountSurface",
+        "auth": "console-token",
+        "api": "https://console.example/api"
+      },
+      "items": [
+        {
+          "kind": "screen",
+          "id": "home",
+          "label": "Home",
+          "icon": "home"
+        },
+        {
+          "kind": "screen",
+          "id": "build",
+          "label": "Build manager",
+          "detail": "Builds",
+          "keywords": [
+            "queue",
+            "orchestrator"
+          ]
+        },
+        {
+          "kind": "action",
+          "id": "theme.next",
+          "label": "Next theme",
+          "requires": "theme.write"
+        },
+        {
+          "kind": "settings",
+          "id": "appearance",
+          "label": "Appearance"
+        },
+        {
+          "kind": "setting",
+          "id": "axf.display.fontScale",
+          "label": "Font size",
+          "parent": "appearance"
+        },
+        {
+          "kind": "dialog",
+          "id": "about",
+          "label": "About"
+        },
+        {
+          "kind": "menu",
+          "id": "file.save",
+          "label": "Save"
+        }
+      ]
+    }
+  },
+  "fromCatalog": {
+    "$axf": "shell-surface@1",
+    "app": {
+      "id": "console",
+      "label": "Console"
+    },
+    "mount": {
+      "kind": "native",
+      "module": "@axf-app/console",
+      "export": "mountSurface",
+      "auth": "console-token",
+      "api": "https://console.example/api"
+    },
+    "items": [
+      {
+        "kind": "screen",
+        "id": "build",
+        "label": "Builds"
+      },
+      {
+        "kind": "action",
+        "id": "x.reset",
+        "label": "Reset",
+        "effect": "destructive"
+      },
+      {
+        "kind": "settings",
+        "id": "plugins/ui-review",
+        "label": "UI Review",
+        "parent": "plugins"
+      }
+    ]
+  },
+  "merge": [
+    {
+      "app": {
+        "id": "console",
+        "label": "Console 2"
+      },
+      "items": 6
+    },
+    {
+      "app": {
+        "id": "axhub",
+        "label": "axHub"
+      },
+      "items": 6
+    }
+  ],
+  "counts": {
+    "screen": 1,
+    "plugin": 1,
+    "settings": 1,
+    "setting": 1,
+    "action": 1,
+    "widget": 1
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "shell-help",
+  "name": "One shell help",
+  "version": "0.1.0",
+  "description": "Help mode entries for Molly's One shell plugin (help@1).",
+  "author": "Brett",
+  "tags": ["help"],
+  "data": {
+    "scope": "plugin:shell",
+    "entries": [
+      { "target": "shell-go", "title": "Go to anything", "text": "Every app's screens, plugins, actions and settings in one place. Type to search all of them, or tap a group to slide into it. The star adds a place to Favorites; on a computer the side buttons open it in a pane or a floating window." },
+      { "target": "app-menu:go", "title": "Go menu", "text": "Favorites, Recent, then one sub menu per app, built from what each app registers, so a new plugin shows up here by itself. Long lists fold into A–F style sub menus." },
+      { "target": "settings:shell", "title": "One shell settings", "text": "Layout mode (one at a time, tabs, side by side, IDE), named layouts, how long a menu level may get, which apps show in the menus, favorites and recent." }
+    ]
+  }
+}

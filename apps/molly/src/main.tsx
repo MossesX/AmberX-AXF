@@ -6,6 +6,7 @@ import manifest from '../axf.manifest.json';
 import { registerActions } from './actions';
 import { App } from './App';
 import { deepLink } from './molly/apps';
+import { isNative } from './molly/native';
 import './axf/ui/axf.css';
 import './molly/molly.css';
 
@@ -15,14 +16,18 @@ const sharedAssets = import.meta.glob('./axf/assets/**/*.json', { eager: true, i
 const ownAssets = import.meta.glob('./assets/**/*.json', { eager: true, import: 'default' });
 const overrideAssets = import.meta.glob('./assets-overrides/**/*.json', { eager: true, import: 'default' });
 
-// A deep link (#/<app>/<route>) opens straight on that app.
+// A deep link (#/<app>/<screen>) opens straight on that app; a native app's screen once the app has loaded (molly/native.tsx).
 const link = deepLink(window.location.hash);
 const axf = createAxf({
   manifest: (link ? { ...manifest, startView: link.app.id } : manifest) as AxfManifest,
   assets: Object.values({ ...sharedAssets, ...ownAssets, ...overrideAssets }),
 });
 registerActions(axf);
-window.addEventListener('hashchange', () => { const l = deepLink(window.location.hash); if (l) axf.navigate(l.app.id); });
+window.addEventListener('hashchange', () => {
+  const l = deepLink(window.location.hash);
+  const path = window.location.hash.replace(/^#\/?/, '');
+  if (l) axf.navigate(isNative(l.app.id) && path.includes('/') ? path : l.app.id);
+});
 
 // The look comes from axHub only (Brett, Nov 1 2026): Molly reads and writes the one shared look on axHub's data server.
 axf.attachAppearanceSource(new HubAppearanceSource({ hub: manifest.developer?.hub ?? DEFAULT_HUB, appId: manifest.app.id }));
