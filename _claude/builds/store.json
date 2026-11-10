@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3025,
- "updatedAt": "2026-11-10T23:28:20.434Z",
+ "rev": 3026,
+ "updatedAt": "2026-11-10T23:28:26.738Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -154050,8 +154050,8 @@
    "pr": "#483",
    "priority": "P0",
    "createdAt": "2026-11-10T21:37:39.627Z",
-   "updatedAt": "2026-11-10T23:28:12.668Z",
-   "builtAt": "2026-11-10T23:28:08.303Z",
+   "updatedAt": "2026-11-10T23:28:25.491Z",
+   "builtAt": "2026-11-10T23:28:25.491Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -154096,6 +154096,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-gizmo-opens-by-voice-link-amberx-web-app-android--sully, own login copy)",
      "at": "2026-11-10T23:26:15.698Z"
+    },
+    {
+     "text": "Headless run axf-gizmo-opens-by-voice-link-amberx-web-app-android--earl: brief only · start 10.8K tokens ($0.03) · cost $4.92 · 130 turns · 6 tools, MCP none",
+     "at": "2026-11-10T23:28:25.491Z"
     },
     {
      "text": "PR #483 in the merge queue. UI Review shots of the console Gizmo screen weren't taken: Playwright isn't installed on the runner. App-link verification needs APP_CERT_SHA256 (systems check amberx-app-links has the steps).",
