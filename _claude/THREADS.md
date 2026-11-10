@@ -772,8 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 19:32 UTC · `molly-fable-version-the-one-interface-for-amberx` → running, note (all) · pipeline
-- 2026-11-10 19:32 UTC · `molly-fable-version-the-one-interface-for-amberx` note (all) · orchestrator
 - 2026-11-10 19:37 UTC · `agent-manager-training-wizard-for-employee-agent` branch claude/agent-manager-training-wizard-for-employee-agent, PR #467 (all) · builds-live
 - 2026-11-10 19:37 UTC · `agent-manager-training-wizard-for-employee-agent` s1 done, → running (all) · orchestrator
 - 2026-11-10 19:38 UTC · `agent-manager-training-wizard-for-employee-agent` note (all) · orchestrator
@@ -1172,6 +1170,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 23:44 UTC · `resolve-conflicts-and-land-pr-449-account-order` → running, note (all) · orchestrator
 - 2026-11-10 23:44 UTC · `convert-every-app-into-a-molly-module-expenses-c` → running, note (all) · pipeline
 - 2026-11-10 23:44 UTC · `convert-every-app-into-a-molly-module-expenses-c` note (all) · orchestrator
+- 2026-11-10 23:44 UTC · `home-page-build-queue-card-opens-the-orchestrato` → running, note (all) · pipeline
+- 2026-11-10 23:44 UTC · `home-page-build-queue-card-opens-the-orchestrato` note (all) · orchestrator
 
 ## Token passes (log)
 
