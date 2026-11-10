@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T02:19:10.272Z",
+ "updatedAt": "2026-11-10T02:20:15.609Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -82568,12 +82568,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T02:18:30.783Z",
-   "updatedAt": "2026-11-10T02:18:51.737Z",
+   "updatedAt": "2026-11-10T02:20:05.157Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T02:18:51.737Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T02:20:05.157Z"
     }
    ],
    "approvals": [],
@@ -82590,7 +82594,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Upgrade the existing AmberX notification panel and fix-log FYI notifications; don't add a new channel. 1) The orchestrator sends an AmberX phone notification on every build start (dispatcher launch, including retries and reruns) and every finish (succeeded, failed, needs something). 2) It shows as a heads-up pop-up on the phone screen, not silent: 'Started: <build title> on <account label> (<model>)' or 'Finished: <build title> on <account>, <outcome>, <steps done/total>', plus what it needs if anything. 3) Tapping it opens that build in the orchestrator. 4) Settings in the orchestrator and AmberX: on/off per event type, sound, grouping. Defaults on. 5) Also in the Activity Monitor log. Full REST, MCP, CLI and voice control. Test it with one real start and one real finish on the phone.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwa2bk4l01hhj8"
+    },
+    {
+     "id": "s2",
+     "text": "I want a notification on AmberX every time the orchestrator starts a build and every time a build finishes. I want it to pop up on my screen and say what build is starting or finishing and what account it's being run on. On my phone.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwa2bk4l02r1ep"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/amberx-phone-pop-up-for-every-build-start-and-fi.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/amberx-phone-pop-up-for-every-build-start-and-fi.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwa2bk4l0394l9"
+    }
+   ]
   }
  ]
 }
