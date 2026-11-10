@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2401,
- "updatedAt": "2026-11-10T15:31:51.320Z",
+ "rev": 2402,
+ "updatedAt": "2026-11-10T15:32:18.973Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -137264,12 +137264,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T15:31:10.459Z",
-   "updatedAt": "2026-11-10T15:31:13.501Z",
+   "updatedAt": "2026-11-10T15:32:17.511Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T15:31:13.501Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T15:32:17.511Z"
     }
    ],
    "approvals": [],
@@ -137296,13 +137300,89 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-10T15:32:17.511Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwaumcbr012qq5",
+     "title": "",
+     "text": "Amends the Claude Accounts Manager plugin and the Retire Build Manager builds. Add a switch: Custom = the orchestrator follows the drag-and-drop account order exactly (subscriptions and API treated the same). Automatic = subscriptions first, then any API. Drag-and-drop order wins when the switch is on Custom. Full API control.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T15:32:17.511Z",
+     "updatedAt": "2026-11-10T15:32:17.511Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwaumcbr02y2fb",
+     "title": "",
+     "text": "Drag and drop over. In a switch, a switch if you want to customize it or do that automatically.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T15:32:17.511Z",
+     "updatedAt": "2026-11-10T15:32:17.511Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwaumcbr039s0g",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/account-order-switch-custom-drag-and-drop-order.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/account-order-switch-custom-drag-and-drop-order.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T15:32:17.511Z",
+     "updatedAt": "2026-11-10T15:32:17.511Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -137311,12 +137391,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T15:32:17.511Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
