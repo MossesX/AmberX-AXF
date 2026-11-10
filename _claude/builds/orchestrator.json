@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:58:09.049Z",
+ "updatedAt": "2026-11-10T17:58:34.764Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -88534,7 +88534,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T16:29:30.818Z",
-   "updatedAt": "2026-11-10T16:30:49.935Z",
+   "updatedAt": "2026-11-10T17:58:33.406Z",
    "builtAt": "",
    "notes": [
     {
@@ -88544,6 +88544,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T16:30:49.935Z"
+    },
+    {
+     "text": "Split by Claude into 10 steps (1 Fable).",
+     "at": "2026-11-10T17:58:33.406Z"
     }
    ],
    "approvals": [],
@@ -88563,13 +88567,18 @@
    "steps": [
     {
      "id": "s1",
-     "text": "A training hook on every employee agent. 2) Training wizard in the Agent Manager: pick data sources (a website or parts of one, specific product types, code such as React or TypeScript, files, etc.), how to fetch them, how to process and store them (RAG/vector index, summaries, etc.). 3) Training by category/type produces for the agent: tools, skills, a persona, and an index of categorized vocabulary. Auto-attach already generated vocabulary files, pairs, tools, skills and personality assets that match. 4) Ties into the agent profile schema build (agent-skill@1 / persona templates) and 'train employees on website data'; reuse, don't duplicate. Full API/CLI control.",
+     "text": "Design the agent-training@1 schema: a training spec per employee agent (data sources such as website/URL scopes, product types, code languages like React/TypeScript, and files; fetch method; processing and storage such as RAG/vector index or summaries; categories) and training outputs (tools, skills, persona, vocabulary index). Reference the existing agent-skill@1 and persona templates from the agent profile schema build instead of copying them. Add a migration that gives every existing employee profile an empty training block.",
      "model": "Fable",
-     "why": "foundation words in the step",
+     "why": "Schema + migration design that extends the shared agent profile contract (agent-skill@1 / persona)",
      "phase": "",
      "group": "",
      "estimate": "30 min",
-     "files": [],
+     "files": [
+      "packages/schemas/agent-training@1.json",
+      "packages/schemas/agent-profile@1.json",
+      "packages/schemas/migrations/",
+      "apps/console-web/plugins/agent-manager/schema/"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -88577,17 +88586,21 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwawpmj301n5ea"
+     "uid": "st-mwazufum4qucrx"
     },
     {
      "id": "s2",
-     "text": "I need a training hook for every employee agent. Add onto the agent manager a training dialog where you select from various types of data, how to get it, how to process and store it like RAG. Train employees by pointing them towards data like a website or certain stuff on it, specific product types or code, React, TypeScript, whatever. The training wizard will train agents with certain types, categories, and build its tools, skills and a persona, and an index of categorized vocabulary; auto attach already generated vocabulary files, pairs, tools, skills, personality etc.",
+     "text": "Training hook on every employee agent: add a train(spec) entry point and a training-state record (idle/fetching/processing/building/done/failed, progress, last run) to the agent runtime. Fire it from agent lifecycle events so every employee agent has it by default.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "30 min",
-     "files": [],
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/agent-manager/lib/training-hook.mjs",
+      "apps/console-web/plugins/agent-manager/lib/agents.mjs",
+      "apps/console-web/plugins/agent-manager/data/"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -88595,17 +88608,175 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwawpmj402w2o1"
+     "uid": "st-mwazufum4rfhqb"
     },
     {
      "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/agent-manager-training-wizard-for-employee-agent.md, THREADS row, commit, push, PR",
+     "text": "Data source fetchers: website or parts of one (URL include/exclude patterns, sitemap, depth), product-type filters, code repos and paths filtered by language (React, TypeScript, etc.), and uploaded files. Reuse the 'train employees on website data' crawler and do not write a second one.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "20 min",
+     "estimate": "30 min",
      "files": [
+      "apps/console-web/plugins/agent-manager/lib/training/sources/",
+      "apps/console-web/plugins/agent-manager/lib/training/sources/website.mjs",
+      "apps/console-web/plugins/agent-manager/lib/training/sources/code.mjs",
+      "apps/console-web/plugins/agent-manager/lib/training/sources/files.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazufum4s4a2f"
+    },
+    {
+     "id": "s4",
+     "text": "Processing and storage pipeline: chunking, categorization by type/category, summaries, and a RAG/vector index store per agent. Choose the storage backend from the spec and record index stats in the training state.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/agent-manager/lib/training/process.mjs",
+      "apps/console-web/plugins/agent-manager/lib/training/store/",
+      "apps/console-web/plugins/agent-manager/data/indexes/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazufum4tenrw"
+    },
+    {
+     "id": "s5",
+     "text": "Output builders: generate agent-skill@1 skills, tool definitions, a persona built from the persona templates, and a categorized vocabulary index (terms and pairs) from the processed data, then write them onto the agent profile.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/agent-manager/lib/training/build-skills.mjs",
+      "apps/console-web/plugins/agent-manager/lib/training/build-tools.mjs",
+      "apps/console-web/plugins/agent-manager/lib/training/build-persona.mjs",
+      "apps/console-web/plugins/agent-manager/lib/training/build-vocabulary.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazufum4urezy"
+    },
+    {
+     "id": "s6",
+     "text": "Auto-attach matcher: scan vocabulary files, pairs, tools, skills and personality assets that already exist. Match them to the agent's training categories and types, then attach the matches by reference without copying them, and list what was attached in the training state.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/agent-manager/lib/training/auto-attach.mjs",
+      "apps/console-web/plugins/agent-manager/lib/agents.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazufum4vv3e6"
+    },
+    {
+     "id": "s7",
+     "text": "Training wizard UI in the Agent Manager, built on the plugin framework, with these steps: choose data sources → fetch method → processing/storage → categories → review generated and auto-attached assets → run. Show live progress, and add a Train button on every employee agent card.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/agent-manager/ui/training-wizard.js",
+      "apps/console-web/plugins/agent-manager/ui/agent-card.js",
+      "apps/console-web/plugins/agent-manager/ui/styles.css"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazufum4wtycd"
+    },
+    {
+     "id": "s8",
+     "text": "API part of the wizard (same four surfaces). Deep link: console_show/console_open target agent-manager/train?agent=<id>&step=<n>. State read: training spec, state and outputs. Actions: set sources, fetch, process, build outputs, auto-attach, run, cancel, detach asset. Settings: storage backend and defaults. Expose all of it through REST routes, MCP console actions and plugin commands, the CLI, and AmberX voice intents, all with the same behavior.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/agent-manager/routes/training.mjs",
+      "apps/console-web/plugins/agent-manager/mcp/training-tools.mjs",
+      "apps/console-web/plugins/agent-manager/cli/train.mjs",
+      "apps/console-web/plugins/agent-manager/voice/training-intents.json",
+      "apps/console-web/plugins/agent-manager/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazufum4xvpth"
+    },
+    {
+     "id": "s9",
+     "text": "Docs: Agent Manager training guide covering data source types, processing options, the generated outputs, auto-attach rules, and how each action is reached through REST, MCP, CLI and voice. Link it from the agent profile schema docs.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "apps/console-web/plugins/agent-manager/docs/training.md",
+      "docs/agents/agent-profile.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazufum4ywuut"
+    },
+    {
+     "id": "s10",
+     "text": "Tests: schema and migration, fetchers (with mocked website and code sources), the processing/RAG pipeline, output builders, the auto-attach matcher, and parity of the REST, MCP, CLI and voice surfaces including deep link and state read. Then write the report _claude/builds/reports/agent-manager-training-wizard-for-employee-agent.md, add a THREADS row, and open a PR that says how every wizard action and setting is reached without the UI.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/agent-manager/test/training.test.mjs",
+      "apps/console-web/plugins/agent-manager/test/training-api-parity.test.mjs",
       "_claude/builds/reports/agent-manager-training-wizard-for-employee-agent.md",
       "_claude/THREADS.md"
      ],
@@ -88616,7 +88787,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwawpmj403fd97"
+     "uid": "st-mwazufum4zw9ul"
     }
    ]
   },
