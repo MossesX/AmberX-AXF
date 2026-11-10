@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 17:41 UTC · `right-click-a-queued-build-to-assign-it-to-a-spe` branch claude/right-click-a-queued-build-to-assign-it-to-a-spe (all) · pipeline
 - 2026-11-09 17:41 UTC · `right-click-a-queued-build-to-assign-it-to-a-spe` note (all) · orchestrator
 - 2026-11-09 17:42 UTC · `prompt-caching-and-batch-api-support-in-the-buil` → queued, note (all) · pipeline
 - 2026-11-09 17:42 UTC · `prompt-caching-and-batch-api-support-in-the-buil` → running, note (all) · pipeline
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 00:55 UTC · `account-failover-chain-subscription-next-subscri` → running, note (all) · pipeline
 - 2026-11-10 00:55 UTC · `account-failover-chain-subscription-next-subscri` note (all) · orchestrator
 - 2026-11-10 00:56 UTC · `account-failover-chain-subscription-next-subscri` note (all) · orchestrator
+- 2026-11-10 00:56 UTC · `failed-launches-auto-retry-on-another-working-ac` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
