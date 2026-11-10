@@ -449,6 +449,36 @@ async def pipeline_unqueue(request: Request) -> dict[str, Any]:
     return _pipeline("unqueue", _build_id(body.get("id")), "--by", (brett_click(request) or "console")[:80])
 
 
+@router.post("/pipeline/hold")
+async def pipeline_hold(request: Request) -> dict[str, Any]:
+    """{id, on?: true|false}: Hold (default) or Resume a queued / active build. A held build is never launched; a running
+    one finishes its current run, then waits."""
+    body = await _json_body(request)
+    return _pipeline("hold" if body.get("on") is not False else "resume", _build_id(body.get("id")), "--by", (brett_click(request) or "console")[:80])
+
+
+@router.post("/pipeline/assign")
+async def pipeline_assign(request: Request) -> dict[str, Any]:
+    """{id, account}: start this build only on that Claude account; account "auto" (or empty) = the dispatcher picks."""
+    body = await _json_body(request)
+    account = str(body.get("account") or "auto").strip()
+    if account != "auto" and not re.match(r"^[a-z0-9][a-z0-9-]{0,31}$", account):
+        raise HTTPException(400, "bad account name")
+    return _pipeline("assign", _build_id(body.get("id")), account, "--by", (brett_click(request) or "console")[:80])
+
+
+@router.post("/pipeline/return")
+async def pipeline_return(request: Request) -> dict[str, Any]:
+    """{id, reason?}: cancel / send back. A queued or active build (not running a session) goes back to Build Manager's
+    Pending, hold and account pin cleared."""
+    body = await _json_body(request)
+    args = ["return", _build_id(body.get("id")), "--by", (brett_click(request) or "console")[:80]]
+    reason = str(body.get("reason") or "").strip()
+    if reason:
+        args += ["--reason", reason[:400]]
+    return _pipeline(*args)
+
+
 @router.post("/pipeline/split")
 async def pipeline_split(request: Request) -> dict[str, Any]:
     """{id}: ask the orchestrator to (re)split a build into ≤ 30-min steps on its next tick (the console container has no
@@ -556,13 +586,34 @@ async def pipeline_request(request: Request) -> dict[str, Any]:
 
 class DispatchService:
     """axf.build-dispatch@1: the one way for other plugins to start a build. request(title, detail, by=…, source=…,
-    priority=…, queue=True) → {ok, id, status}; queue(id, by) puts an existing build in the Queue; build(id) reads one."""
+    priority=…, queue=True) → {ok, id, status}; queue(id, by) puts an existing build in the Queue (Build Manager's Send to
+    orchestrator); hold(id, on), give_back(id) (→ Pending), tables() (Pending / Queued / Active / Complete); build(id) reads one."""
 
     def request(self, title: str, detail: str = "", **kw: Any) -> dict[str, Any]:
         return request_build(title, detail, **kw)
 
     def queue(self, build_id: str, by: str = "console") -> dict[str, Any]:
         return _pipeline("queue", _build_id(build_id), "--by", by[:80])
+
+    def hold(self, build_id: str, on: bool = True, by: str = "console") -> dict[str, Any]:
+        return _pipeline("hold" if on else "resume", _build_id(build_id), "--by", by[:80])
+
+    def give_back(self, build_id: str, by: str = "console", reason: str = "") -> dict[str, Any]:
+        """Queued / active → Build Manager's Pending."""
+        args = ["return", _build_id(build_id), "--by", by[:80]]
+        return _pipeline(*(args + ["--reason", reason[:400]] if reason else args))
+
+    def update(self, build_id: str, by: str = "console", **fields: Any) -> dict[str, Any]:
+        """Edit a build Build Manager still owns (title, detail, category, branch)."""
+        change = {"action": "update", "id": _build_id(build_id), **{k: str(v)[:8000] for k, v in fields.items() if k in ("title", "detail", "category", "branch") and v is not None}}
+        res = _run("act", json.dumps(change))
+        if not res.get("ok"):
+            raise HTTPException(400, str(res.get("error") or "update failed")[:400])
+        return {"ok": True, "id": change["id"]}
+
+    def tables(self) -> dict[str, Any]:
+        """pipeline-status@1 tables: pending, queued, building, active, complete (rows with cost, builtBy, models, PR)."""
+        return _pipeline("status").get("table") or {}
 
     def build(self, build_id: str) -> dict[str, Any]:
         """{id, status, steps, pipeline…} of one build (so a caller can follow what it asked for)."""

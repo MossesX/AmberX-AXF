@@ -75,7 +75,7 @@ export function verdict({ b = null, name = '', rec = null, token = '', now = Dat
   if (!b && !byName) return { ok: true, build: '', why: 'not a build: no dispatch needed' };
   const id = b?.id || bare.replace(/^build[-:]/, '');
   const how = b
-    ? `Only the orchestrator starts builds. Queue it (Build orchestrator → Pipeline → Queue, Build manager → Send to queue, or \`node apps/console-web/plugins/build-orchestrator/pipeline.mjs queue ${b.id}\`): the dispatcher starts it within a minute.`
+    ? `Only the orchestrator starts builds. Send it (Build manager → Pending → Send to orchestrator, or \`node apps/console-web/plugins/build-orchestrator/pipeline.mjs queue ${b.id}\`): the dispatcher starts it within a minute.`
     : 'Only the orchestrator starts builds. File it as an orchestrator build (`node apps/console-web/plugins/build-orchestrator/pipeline.mjs request --title "…" --detail "…" --queue`): the dispatcher starts it within a minute.';
   if (!b) return { ok: false, build: id, why: `refused: "${bare}" is a build launch outside the orchestrator. ${how}` };
   if (!token) return { ok: false, build: id, why: `refused: ${id} has no orchestrator dispatch token. ${how}` };

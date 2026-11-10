@@ -6,14 +6,16 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Everything about builds in one place. Remaining: pending items not complete, build-queue steps not done and plan features nothing else covers, one row per build, with model, status, time left, steps and 'needs split'; Start build now (row button + context menu) plans it (dependencies first, queue reordered, never on top of a running build or its folders), asks axHub vps.run (Brett approves) to run headless Claude Code on the VPS on its own branch, then checks nothing broke. Live: every build any session on any machine reported to axHub (VPS, other computers, claude.ai, console launches, subagents), in real time, with elapsed vs estimate, cost, model, where it runs and a 'no word' flag when a session goes quiet, plus the activity feed. Built: every finished build with time and cost (actual or estimated), totals by model and week, filters. One search bar across all three. Banner while something builds.",
+  "description": "Owns builds before and after the orchestrator (Brett, Nov 9 2026): Pending (create, edit, prioritise, Send to orchestrator) and Complete (what the orchestrator sent back: the account that built it, model, cost, PR, land status). Queued and Active are the Build orchestrator's. Reads and writes the one builds store only through axf.build-dispatch@1. Banner while something builds.",
   "targets": [
     "axf-console"
   ],
   "provides": [
     "action:build-manager.built",
+    "action:build-manager.complete",
     "action:build-manager.live",
     "action:build-manager.open",
+    "action:build-manager.pending",
     "action:build-manager.start",
     "banner:build-manager",
     "search:build-manager.items",
@@ -23,22 +25,123 @@
   ],
   "optional": [
     "service:axf.activity@1",
+    "service:axf.build-dispatch@1",
     "service:axf.changes@1"
   ],
   "scopes": [
     "ROUTES"
   ],
   "enabledByDefault": true,
-  "commands": { "$axf": "plugin-commands@1", "auto": true },
-  "builtWith": { "model": "opus", "builtAt": "2026-10-22" },
-  "banner": ["build-manager"],
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "id": "builds-flow",
+        "route": "GET /flow",
+        "title": "Pending and complete builds",
+        "description": "Build Manager's two tabs: Pending (not sent to the orchestrator yet) and Complete (sent back by the orchestrator, with the account that built it, model, cost, PR and land status). Say 'what's pending' or 'what got built'.",
+        "readOnly": true,
+        "output": "{ pending, complete, counts: { queued, active } }"
+      },
+      {
+        "id": "builds-create",
+        "route": "POST /flow/create",
+        "title": "Add a pending build",
+        "description": "A new build in Build Manager's Pending (the orchestrator gives it an id and splits it). Say 'add a build: …'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "detail": {
+              "type": "string"
+            },
+            "said": {
+              "type": "string",
+              "description": "Brett's words, verbatim"
+            },
+            "priority": {
+              "type": "string",
+              "enum": [
+                "P0",
+                "P1",
+                "P2",
+                "P3"
+              ]
+            }
+          },
+          "required": [
+            "title"
+          ]
+        },
+        "output": "{ id, status }"
+      },
+      {
+        "id": "builds-edit",
+        "route": "POST /flow/edit",
+        "title": "Edit a pending build",
+        "description": "Change a Pending build's title, details or category.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            },
+            "title": {
+              "type": "string"
+            },
+            "detail": {
+              "type": "string"
+            },
+            "category": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "{ id }"
+      },
+      {
+        "id": "builds-send",
+        "route": "POST /flow/send",
+        "title": "Send a build to the orchestrator",
+        "description": "Pending → the orchestrator's Queued: its dispatcher starts it when an account for its model is free. Say 'send the icon browser build to the orchestrator'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "{ id, status, pipeline }"
+      }
+    ]
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-10-22"
+  },
+  "banner": [
+    "build-manager"
+  ],
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/build-manager",
     "env": [],
     "mentions": [
-      "CLAUDE.md", "_claude/memory/STATUS.md",
+      "CLAUDE.md",
+      "_claude/memory/STATUS.md",
       "apps/console-web/plugins/README.md",
       "_claude/memory/docs/build-manager.md"
     ]

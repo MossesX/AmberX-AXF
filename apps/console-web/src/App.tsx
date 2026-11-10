@@ -13,8 +13,6 @@ import { Boilerplates } from './views/Boilerplates';
 import { Components } from './views/Components';
 import { consoleTabs, useUndockDrop } from './views/Explorer';
 import { Plan, PlanFeatureTab } from './views/Plan';
-import { BuildManager } from './views/BuildManager';
-import { Pending } from './views/Pending';
 import { Standards } from './views/Standards';
 import type { AxfWebLibrary } from './axf/react/library';
 import { bundledPlugins, enabledFolders, enabledPlugins, fetchPluginStatus, hostEnabledPlugins, pluginReport, PLUGINS_CHANGED, serverPartsToSwitchOn, type BundledPlugin, type PluginStatus } from './plugins';
@@ -48,8 +46,10 @@ const views: ViewMap = {
   home: { title: 'Home', icon: 'home', render: () => <Home /> },
   tracker: { title: 'Tracker', icon: 'check-circle', render: () => <Tracker /> },
   plan: { title: 'Plan', icon: 'layers', render: () => <Plan /> },
-  build: { title: 'Build queue', icon: 'play', render: () => <BuildManager /> },
-  pending: { title: 'Pending builds', icon: 'clock', render: () => <Pending /> },
+  // Split builds pages (Brett, Nov 9 2026): Pending + Complete live in the builds manager, Queued + Active in the
+  // orchestrator. The old Build queue and Pending builds screens redirect there (old links and bookmarks keep working).
+  build: { title: 'Build queue', icon: 'play', render: () => <RedirectTo action="builds.queued" what="Queued builds" /> },
+  pending: { title: 'Pending builds', icon: 'clock', render: () => <RedirectTo action="builds.pending" what="Pending builds" /> },
   // Standards: rules every project must meet (first: project manifests).
   'standards-projects': { title: 'Projects', icon: 'folder', render: () => <Standards tab="projects" /> },
   'standards-rules': { title: 'Manifest rules', icon: 'shield', render: () => <Standards tab="rules" /> },
@@ -62,6 +62,14 @@ const views: ViewMap = {
   assets: { title: 'Assets', icon: 'palette', render: () => <AssetStudio /> },
   account: { title: 'Account', icon: 'shield', render: () => <AccountView /> },
 };
+
+/** A retired screen: hands over to whichever plugin registered `action`, or says none is on. */
+function RedirectTo({ action, what }: { action: string; what: string }) {
+  const rt = useRuntime();
+  const has = !!rt.actions.get(action);
+  useEffect(() => { if (has) rt.dispatch(action); }, [rt, action, has]);
+  return has ? null : <div className="fx-empty">{what} moved: switch the build plugins on in Settings → Plugins.</div>;
+}
 
 function OpenSettingsTab({ tab }: { tab: string }) {
   const rt = useRuntime();

@@ -22,6 +22,9 @@
  *                                  Queue. Every former launch path (Build manager Start, Fix with Claude, feature assist) calls this.
  *   … show <id>                    one build as the table shows it (status, steps, pipeline record)
  *   … route <id> api|subscription|auto   the per-build override: run on an API-key account, never on one, or the default
+ *   … hold <id> | resume <id>      held builds are never launched (a running one stops after its current run)
+ *   … assign <id> <account|auto>   start this build only on that Claude account (auto = the dispatcher picks)
+ *   … return <id> [--reason R]     cancel: Queued / Active (not running) → Build Manager's Pending
  *
  * One way to start builds (Brett, Nov 9 2026: "It has to be the orchestrator"): the tick is the only caller of the
  * launcher for a build. It issues a one-build dispatch token (framework/cli/dispatch-gate.mjs) and passes it in
@@ -135,8 +138,25 @@ export function accountsNow(store, settings = loadSettings()) {
 const row = (b) => {
   const p = orch.progress(b); const nx = orch.nextUp(b);
   return { id: b.id, title: b.title, status: b.status, priority: priorityLabel(effectivePriority(b)), steps: { done: p.done, total: p.total, left: p.total - p.done - p.skipped }, minutesLeft: p.minutesLeft,
-    nextModel: BP.nextModel(b), nextStep: nx.step ? `${nx.step.id} ${nx.step.text}`.slice(0, 200) : '', needsApproval: nx.needsApproval, needsSplit: P.needsSplit(b), pipeline: b.pipeline ?? null, said: subtitle(b.origin, 160), branch: b.branch, pr: b.pr, createdAt: b.createdAt, updatedAt: b.updatedAt };
+    nextModel: BP.nextModel(b), nextStep: nx.step ? `${nx.step.id} ${nx.step.text}`.slice(0, 200) : '', needsApproval: nx.needsApproval, needsSplit: P.needsSplit(b), pipeline: b.pipeline ?? null, said: subtitle(b.origin, 160), branch: b.branch, pr: b.pr, createdAt: b.createdAt, updatedAt: b.updatedAt,
+    home: BP.homeOf(b), held: !!b.pipeline?.held, builtAt: b.builtAt || '', mergedAt: b.mergedAt || '', ...runCost(b) };
 };
+
+/** What a build's headless runs cost and which accounts / models ran it, from the launcher's end-of-run notes
+ * (headless-context@1 "Headless run <session>: … · cost $X") and the "Started run N on <account> (<Model>, …)" notes. */
+const RUN_COST = /^Headless run \S+: .*· cost \$([\d.]+)( \(estimate\))?/;
+const RUN_START = /^Started run \d+ on (\S+) \((Fable|Opus)\b/;
+export function runCost(b) {
+  let cost = 0; let estimated = false; const accounts = []; const models = [];
+  for (const n of b.notes ?? []) {
+    const c = RUN_COST.exec(n.text); if (c) { cost += Number(c[1]) || 0; if (c[2]) estimated = true; }
+    const r = RUN_START.exec(n.text); if (r) { if (!accounts.includes(r[1])) accounts.push(r[1]); if (!models.includes(r[2])) models.push(r[2]); }
+  }
+  // the notes are in time order: the last "Started run" is the account that built it; the run record when there are none
+  const builtBy = accounts[accounts.length - 1] || b.pipeline?.lastRun?.account || b.pipeline?.account || '';
+  if (builtBy && !accounts.includes(builtBy)) accounts.push(builtBy);
+  return { cost: Math.round(cost * 100) / 100, costEstimated: estimated, builtBy, accounts, models };
+}
 
 /** The whole picture for the console and the CLI. */
 export function status() {
@@ -144,8 +164,20 @@ export function status() {
   const store = loadStore(); const settings = loadSettings(); const accounts = accountsNow(store, settings); const sl = slotsNow();
   const builds = live(store);
   const plan = P.plan({ builds, accounts, slots: sl, settings, rules: rulesOf(store) });
-  const byTable = { pending: [], queued: [], building: [] };
-  for (const b of builds) { const t = BP.tableOf(b); if (t && !b.hidden) byTable[t].push(row(b)); }
+  // pending / queued / building: the dispatcher's tables; active = everything the orchestrator holds that is not queued
+  // (building + blocked + failed); complete = what it sent back to Build Manager (newest first, capped)
+  const byTable = { pending: [], queued: [], building: [], active: [], complete: [] };
+  for (const b of builds) {
+    if (b.hidden) continue;
+    const t = BP.tableOf(b); const home = BP.homeOf(b);
+    const r = t || home ? row(b) : null;
+    if (t) byTable[t].push(r);
+    if (home === 'orchestrator:active') byTable.active.push(r);
+    if (home === 'manager:complete') byTable.complete.push(r);
+  }
+  byTable.active.sort((a, b) => str(b.pipeline?.launchedAt || b.updatedAt).localeCompare(str(a.pipeline?.launchedAt || a.updatedAt)));
+  byTable.complete.sort((a, b) => str(b.builtAt || b.updatedAt).localeCompare(str(a.builtAt || a.updatedAt)));
+  byTable.complete = byTable.complete.slice(0, 400);
   byTable.queued.sort((a, b) => plan.queue.indexOf(a.id) - plan.queue.indexOf(b.id));
   byTable.pending.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   byTable.building.sort((a, b) => str(b.pipeline?.launchedAt).localeCompare(str(a.pipeline?.launchedAt)));
@@ -184,6 +216,36 @@ export function unqueue(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
   if (!BP.canUnqueue(b)) throw Object.assign(new Error(`${b.id} is ${b.status}: only a queued build goes back to Pending`), { code: 2 });
   const r = setPipeline(b.id, { queuedAt: '', queuedBy: '', note: '' }, { status: 'pending', note: `Back to Pending (${by}).`, by, action: 'pipeline:unqueue' });
   logLine({ event: 'unqueued', build: b.id, by });
+  return r;
+}
+
+/** Hold (on) / Resume (off): a held build is never launched; a running one finishes its current run, then waits. */
+export function hold(id, on = true, { by = process.env.AXF_ACTOR || 'console' } = {}) {
+  const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  if (BP.homeOf(b).split(':')[0] !== 'orchestrator') throw Object.assign(new Error(`${b.id} is ${b.status}: only a queued or active build can be held`), { code: 2 });
+  const note = on ? (b.status === 'running' ? `On hold (${by}): stops after the current run.` : `On hold (${by}).`) : `Resumed (${by}).`;
+  const r = setPipeline(b.id, on ? { held: nowIso(), heldBy: str(by, 80) } : { held: '', heldBy: '' }, { note, by, action: on ? 'pipeline:hold' : 'pipeline:resume' });
+  logLine({ event: on ? 'held' : 'resumed', build: b.id, by });
+  return r;
+}
+
+/** Assign the build to one Claude account ('' or auto = the dispatcher picks). */
+export function assign(id, account, { by = process.env.AXF_ACTOR || 'console' } = {}) {
+  const name = account === 'auto' ? '' : str(account, 40);
+  if (name && !BP.accountName(name)) throw Object.assign(new Error(`not an account name: ${account}`), { code: 2 });
+  const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  if (BP.homeOf(b).split(':')[0] !== 'orchestrator') throw Object.assign(new Error(`${b.id} is ${b.status}: send it to the orchestrator first`), { code: 2 });
+  const r = setPipeline(b.id, { pin: name }, { note: name ? `Assigned to account ${name} (${by}).` : `Account: the dispatcher picks (${by}).`, by, action: 'pipeline:assign' });
+  logLine({ event: 'assign', build: b.id, account: name || 'auto', by });
+  return r;
+}
+
+/** Cancel / return: Queued or Active (not running a session) → Build Manager's Pending, hold and pin cleared. */
+export function giveBack(id, { by = process.env.AXF_ACTOR || 'console', reason = '' } = {}) {
+  const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  if (!BP.canReturn(b)) throw Object.assign(new Error(b.status === 'running' ? `${b.id} is running: Hold it first, it comes back when the current run ends` : `${b.id} is ${b.status}: only a queued or active build goes back to Pending`), { code: 2 });
+  const r = setPipeline(b.id, { queuedAt: '', queuedBy: '', note: '', held: '', heldBy: '', pin: '' }, { status: 'pending', note: `Sent back to Build Manager → Pending (${by})${reason ? `: ${str(reason, 400)}` : ''}.`, by, action: 'pipeline:return' });
+  logLine({ event: 'returned', build: b.id, by });
   return r;
 }
 
@@ -360,7 +422,9 @@ export function checkEnds({ alert = () => {}, env = process.env } = {}) {
     }
     const r = P.endOutcome(b, { exit, account: b.pipeline.account, session: b.pipeline.session }, settings);
     if (settled) { r.outcome = 'finished'; r.status = b.status; r.run = { ...r.run, outcome: 'finished' }; r.note = `Session ${b.pipeline.session} on ${b.pipeline.account || '?'} ended (exit ${exit}); the build was already ${b.status}.`; }
-    setPipeline(b.id, { lastRun: r.run, session: '', slot: '', note: r.outcome === 'finished' ? '' : r.note }, { status: r.status, note: r.note, action: 'pipeline:end' });
+    // finished = the orchestrator sends it back to Build Manager (Complete); returned = back to Build Manager's Pending
+    const back = r.outcome === 'finished' ? ' Sent back to Build Manager → Complete.' : r.status === 'pending' ? ' Sent back to Build Manager → Pending.' : '';
+    setPipeline(b.id, { lastRun: r.run, session: '', slot: '', note: r.outcome === 'finished' ? '' : r.note, ...(r.status === 'pending' ? { held: '', heldBy: '' } : {}) }, { status: r.status, note: `${r.note}${back}`, action: 'pipeline:end' });
     alert(r.outcome === 'failed' ? 'failed' : 'ended', { id: b.id, title: b.title, outcome: r.outcome, note: r.note, account: b.pipeline.account });
     logLine({ event: 'ended', build: b.id, outcome: r.outcome, exit, account: b.pipeline.account, session: b.pipeline.session });
     out.push({ id: b.id, outcome: r.outcome, status: r.status, exit });
@@ -530,6 +594,9 @@ async function main(argv) {
     ].filter(Boolean).join('\n'));
   }
   if (cmd === 'queue') { const b = queue(rest[0], { by }); return out({ ok: true, id: b.id, status: b.status, pipeline: b.pipeline }, `${b.id} → Queue (by ${by})`); }
+  if (cmd === 'hold' || cmd === 'resume') { const b = hold(rest[0], cmd === 'hold', { by }); return out({ ok: true, id: b.id, status: b.status, held: b.pipeline?.held || '' }, `${b.id}: ${cmd === 'hold' ? 'on hold' : 'resumed'}`); }
+  if (cmd === 'assign') { const b = assign(rest[0], rest[1] ?? 'auto', { by }); return out({ ok: true, id: b.id, pin: b.pipeline?.pin || '' }, `${b.id}: account ${b.pipeline?.pin || 'auto'}`); }
+  if (cmd === 'return') { const b = giveBack(rest[0], { by, reason: flag('reason') }); return out({ ok: true, id: b.id, status: b.status }, `${b.id} → Build Manager (Pending)`); }
   if (cmd === 'unqueue') { const b = unqueue(rest[0], { by }); return out({ ok: true, id: b.id, status: b.status }, `${b.id} → Pending`); }
   if (cmd === 'split') {
     if (has('request')) { const b = setPipeline(rest[0], { splitRequested: nowIso() }, { note: `Split asked for by ${by}.`, by, action: 'pipeline:split-request' }); return out({ ok: true, id: b.id, requested: b.pipeline.splitRequested }, `${b.id}: split on the next tick`); }
@@ -562,7 +629,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto | hold|resume <id> | assign <id> <account|auto> | return <id> [--reason R] [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

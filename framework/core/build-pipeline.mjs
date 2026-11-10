@@ -21,6 +21,9 @@
  *   split      { at, by, provider, steps, note }                     how its steps were made (claude | rules | hand)
  *   splitRequested  ISO: the console asked for a (re)split; the next tick does it
  *   note       one plain line the Pipeline view shows (why it waits, what happened last)
+ *   held       ISO time Brett put the build on hold ('' = not held); heldBy who. A held build is never launched: queued it
+ *              stays in the Queue, running it finishes its current run and then waits (Hold / Resume, Nov 10 2026).
+ *   pin        the Claude account Brett assigned ('' = the dispatcher picks). A pinned build only starts on that account.
  *   route      '' (auto: subscriptions, then API only when the overflow rule is on) | 'api' (run on an API-key account,
  *              billed per token, under its caps) | 'subscription' (never an API account). Brett's per-build override.
  *   dispatchedAt  ISO of the orchestrator dispatch that started the current run (its token is in the dispatcher's files)
@@ -44,7 +47,7 @@ const NAME_RE = /^[a-z0-9][a-z0-9-]{0,31}$/;
 export const accountName = (v) => (NAME_RE.test(str(v, 40)) ? str(v, 40) : '');
 
 export function emptyPipeline() {
-  return { queuedAt: '', queuedBy: '', account: '', session: '', slot: '', model: '', launchedAt: '', runs: 0, lastRun: null, split: null, splitRequested: '', note: '', route: '', dispatchedAt: '' };
+  return { queuedAt: '', queuedBy: '', account: '', session: '', slot: '', model: '', launchedAt: '', runs: 0, lastRun: null, split: null, splitRequested: '', note: '', route: '', dispatchedAt: '', held: '', heldBy: '', pin: '' };
 }
 
 /** The record, every field in shape; null for nothing (a build the pipeline never touched carries none). */
@@ -60,6 +63,7 @@ export function normPipeline(p) {
     split: sp ? { at: iso(sp.at), by: str(sp.by, 80), provider: SPLIT_PROVIDERS.includes(sp.provider) ? sp.provider : 'hand', steps: Number.isInteger(sp.steps) ? sp.steps : 0, note: str(sp.note, 400) } : null,
     splitRequested: iso(p.splitRequested), note: str(p.note, 400),
     route: ROUTES.includes(p.route) ? p.route : '', dispatchedAt: iso(p.dispatchedAt),
+    held: iso(p.held), heldBy: iso(p.held) ? str(p.heldBy, 80) : '', pin: accountName(p.pin),
   };
   const empty = emptyPipeline();
   return JSON.stringify(out) === JSON.stringify(empty) ? null : out;
@@ -72,6 +76,21 @@ export const tableOf = (b) => TABLE[b?.status] ?? '';
 export const canQueue = (b) => !!b && b.status === 'pending' && !b.deleted && !b.hidden;
 /** A build may leave the Queue for Pending: queued and not launched yet. */
 export const canUnqueue = (b) => !!b && b.status === 'queued';
+/** The orchestrator owns Queued and Active; Build Manager owns Pending and Complete (Brett, Nov 9 2026). */
+export const ACTIVE_STATES = ['running', 'waiting', 'blocked', 'failed'];
+export const COMPLETE_STATES = ['built', 'complete'];
+/** Which page and tab a build is on: manager:pending | orchestrator:queued | orchestrator:active | manager:complete | '' (archived, hidden, deleted). */
+export function homeOf(b) {
+  if (!b || b.deleted || b.status === 'archived') return '';
+  if (b.status === 'pending') return b.hidden ? '' : 'manager:pending';
+  if (b.status === 'queued') return 'orchestrator:queued';
+  if (ACTIVE_STATES.includes(b.status)) return 'orchestrator:active';
+  return COMPLETE_STATES.includes(b.status) ? 'manager:complete' : '';
+}
+/** Held: never launched by the dispatcher until resumed. */
+export const isHeld = (b) => !!b?.pipeline?.held;
+/** Back to Build Manager's Pending: anything the orchestrator holds that is not running a session right now. */
+export const canReturn = (b) => !!b && (b.status === 'queued' || (ACTIVE_STATES.includes(b.status) && b.status !== 'running'));
 
 /** Builds of the Queue in start order: priority first (P0 before P3), then the moment they were queued. */
 export function queueOrder(builds, priorityOf = () => 'P2') {

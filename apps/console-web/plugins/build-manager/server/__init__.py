@@ -330,3 +330,77 @@ def run_verify(e: dict[str, Any], runner: Callable[[str], int] | None = None, ci
     v = {"state": state, "at": time.strftime("%Y-%m-%dT%H:%M:%S.000Z", time.gmtime()), "summary": summary, "checks": checks}
     _update_change(e["id"], {"verify": v})
     return {"ok": True, "verify": v}
+
+
+# ---- split pages (Brett, Nov 9 2026: "Build manager will have pending and complete. Orchestrator will have active and
+# queued. They need to be sent to the orchestrator, so they gotta be sent from somewhere."). Build Manager owns a build
+# before the orchestrator (Pending: create, edit, prioritise, Send to orchestrator) and after it (Complete: what the
+# orchestrator sent back). Every read and write goes through the orchestrator's capability (axf.build-dispatch@1),
+# never its folder; the one builds store stays the orchestrator's.
+_ID = re.compile(r"^[a-z0-9][a-z0-9._-]{0,79}$")
+
+
+def _dispatch() -> Any:
+    disp = plugin_services.get(DISPATCH)
+    if not disp:
+        raise HTTPException(503, "The Build orchestrator is off: turn it on in Settings → Plugins (it holds the builds store).")
+    return disp
+
+
+def _who(request: Request) -> str:
+    """The signed-in user's name on a console click (the build's notes say who moved it), else "build-manager"."""
+    c = getattr(request.state, "axf_user", None)
+    name = str(getattr(c, "name", "") or "") if c is not None and getattr(c, "via", "token") == "session" else ""
+    return name[:80] or "build-manager"
+
+
+async def _body(request: Request) -> dict[str, Any]:
+    try:
+        body = await request.json()
+    except ValueError:
+        raise HTTPException(400, "send JSON") from None
+    if not isinstance(body, dict):
+        raise HTTPException(400, "an object is needed")
+    return body
+
+
+def _bid(v: Any) -> str:
+    s = str(v or "").strip()
+    if not _ID.match(s):
+        raise HTTPException(400, "bad build id")
+    return s
+
+
+@router.get("/flow")
+def flow() -> dict[str, Any]:
+    """{pending, complete, queued, active}: Build Manager's two tabs (rows from pipeline-status@1: steps, model, cost,
+    account that built it, PR, land status) plus the orchestrator's counts so the page can say where the rest are."""
+    t = _dispatch().tables()
+    return {"ok": True, "pending": t.get("pending") or [], "complete": t.get("complete") or [],
+            "counts": {"queued": len(t.get("queued") or []), "active": len(t.get("active") or [])}}
+
+
+@router.post("/flow/create")
+async def flow_create(request: Request) -> dict[str, Any]:
+    """{title, detail?, said?, priority?}: a new build in Pending (the orchestrator assigns the id and splits it)."""
+    b = await _body(request)
+    title = str(b.get("title") or "").strip()
+    if not title:
+        raise HTTPException(400, "a build needs a title")
+    pr = str(b.get("priority") or "")
+    return _dispatch().request(title[:300], str(b.get("detail") or "")[:8000], by=_who(request), source="build-manager",
+                               said=str(b.get("said") or "")[:6000], priority=pr if pr in ("P0", "P1", "P2", "P3") else "", queue=False)
+
+
+@router.post("/flow/edit")
+async def flow_edit(request: Request) -> dict[str, Any]:
+    """{id, title?, detail?, category?}: edit a Pending build."""
+    b = await _body(request)
+    return _dispatch().update(_bid(b.get("id")), by=_who(request), **{k: b.get(k) for k in ("title", "detail", "category")})
+
+
+@router.post("/flow/send")
+async def flow_send(request: Request) -> dict[str, Any]:
+    """{id}: Send to orchestrator. Pending → the orchestrator's Queued; its dispatcher starts it when an account is free."""
+    b = await _body(request)
+    return _dispatch().queue(_bid(b.get("id")), by=_who(request))

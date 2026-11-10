@@ -7,7 +7,17 @@ import type { AxfRuntime } from '@console/axf/core';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
-import { BuildsPage, FOLDER, KEYS, StorePanel, VIEW, api } from './ui';
+import { useEffect } from 'react';
+import { useRuntime } from '@console/axf/react';
+import { FOLDER, KEYS, StorePanel, VIEW, api } from './ui';
+
+/** The retired Builds page: hands over to Pending (builds.pending), or says where the builds went. */
+function Moved() {
+  const rt = useRuntime();
+  const has = !!rt.actions.get('builds.pending');
+  useEffect(() => { if (has) rt.dispatch('builds.pending'); }, [rt, has]);
+  return has ? null : <div className="fx-empty">The builds moved: Pending and Complete are in the Build manager, Queued and Active in the Build orchestrator.</div>;
+}
 
 const ID = 'ai.amberx.axf.console.builds-page';
 const BANNER_ASSET = 'builds-progress';
@@ -20,7 +30,7 @@ function paint(rt: AxfRuntime, pct: number | null, active: boolean, name: string
   rt.registry.register({
     $axf: 'asset@1', type: 'counter', id: BANNER_ASSET, name: 'Builds progress', version: '0.1.0', author: 'Builds plugin',
     description: 'The active build profile\'s progress in percent (steps done of all steps), animated while a build runs.', tags: ['builds', 'progress'],
-    data: { counter: COUNTER, tone: active ? 'accent' : 'neutral', hideAtZero: false, max: 100, label: active ? '% building' : '%', link: `nav:${VIEW}`, icon: 'chart' },
+    data: { counter: COUNTER, tone: active ? 'accent' : 'neutral', hideAtZero: false, max: 100, label: active ? '% building' : '%', link: 'builds.active', icon: 'chart' },
   }, 'app', ID);
   if (rt.settings.get(KEYS.banner) !== false && pct != null) rt.attachToBanner({ type: 'counter', id: BANNER_ASSET, at: 'right', order: 24, origin: ID, widget: { label: '% building', icon: 'hammer', size: 'compact', priority: 3, aliases: ['building', 'builds'] } });
   else rt.detachFromBanner(`counter:${BANNER_ASSET}`);
@@ -48,11 +58,12 @@ export const plugin: AxfWebLibrary = {
   appMenu,
   builtWith: { model: 'opus', builtAt: '2026-10-31' },
   register(rt) {
-    rt.actions.register('builds.open', () => rt.navigate(VIEW), { label: 'Open the Builds page' });
+    // Split builds pages (Brett, Nov 9 2026): the Builds and Steps tables are retired; Pending + Complete are the builds
+    // manager's, Queued + Active the orchestrator's. Old links land on Pending. The banner percentage stays.
+    rt.actions.register('builds.open', () => (rt.actions.get('builds.pending') ? rt.dispatch('builds.pending') : rt.navigate(VIEW)), { label: 'Open the builds (Pending)' });
     start(rt);
   },
-  views: { builds: { title: 'Builds', icon: 'list', keywords: ['builds', 'steps', 'harvest', 'progress', 'pending', 'queue', 'orchestrator', 'rename', 'restore default'], render: () => <BuildsPage /> } },
-  nav: { label: 'Builds', items: [{ id: 'builds', label: 'Builds', icon: 'list', view: 'builds' }] }, // literal ids: scripts/menu-reach.mts reads them (= VIEW)
+  views: { builds: { title: 'Builds', icon: 'list', keywords: ['builds', 'steps', 'harvest', 'progress', 'pending', 'queue', 'orchestrator', 'rename', 'restore default'], render: () => <Moved /> } },
   settingsTabs: [{ id: FOLDER, label: 'Builds', icon: 'list', order: 88, parent: 'plugins', description: 'The one Builds page: views, selection, the banner number.' }],
   settings: [{
     id: 'builds.look', label: 'Builds page', icon: 'list', tab: FOLDER, order: 5,

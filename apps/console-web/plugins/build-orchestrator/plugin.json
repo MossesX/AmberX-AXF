@@ -6,7 +6,7 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Breaks every build into small steps (30 min or less), each pinned to Fable or Opus, and runs the build pipeline (Brett, Nov 8 2026): every build gets an id and a Claude split (Fable only where needed) and sits in Pending; Brett moves it to the Queue; the dispatcher (pipeline.mjs on the VPS, every minute) watches the Claude accounts (which have Fable, parallel per account) and the agent slots and, when a slot is free, starts a headless session for the next Queue build on an account that runs its next phase's model. Page = tab group (Pipeline, Builds, Approvals, Rules); the Pipeline tab shows Pending / Queue / Building, the accounts, what the next tick starts and why the rest waits. Tracker is the one builds store, _claude/builds/store.json, so any session or account continues the build (orchestrator.mjs next | brief | act; pipeline.mjs status | queue | unqueue | split | tick).",
+  "description": "Breaks every build into small steps (30 min or less), each pinned to Fable or Opus, and runs the build pipeline (Brett, Nov 8 2026): every build gets an id and a Claude split (Fable only where needed) and sits in Pending; Brett moves it to the Queue; the dispatcher (pipeline.mjs on the VPS, every minute) watches the Claude accounts (which have Fable, parallel per account) and the agent slots and, when a slot is free, starts a headless session for the next Queue build on an account that runs its next phase's model. Owns only what Build Manager sends it (Brett, Nov 9 2026): page = tab group (Queued, Active, Accounts, Approvals, Rules); Queued and Active show steps, assigned / actual account, model, progress and the actions route, assign account, hold / resume and send back to Pending; a finished build goes back to Build Manager's Complete. Tracker is the one builds store, _claude/builds/store.json, so any session or account continues the build (orchestrator.mjs next | brief | act; pipeline.mjs status | queue | unqueue | hold | resume | assign | return | split | tick).",
   "targets": [
     "axf-console"
   ],
@@ -243,9 +243,9 @@
         "id": "pipeline-status",
         "route": "GET /pipeline",
         "title": "Pipeline status",
-        "description": "The build pipeline: what is Pending, in the Queue and Building, every Claude account (Fable yes or no, how many run on it), the agent slots, and what the dispatcher's next tick will start or why it waits. Say 'what's in the queue' or 'is anything building'.",
+        "description": "The build pipeline: what is Pending (Build Manager), Queued and Active (the orchestrator), Complete (sent back to Build Manager, with account, model, cost, PR), every Claude account (Fable yes or no, how many run on it), the agent slots, and what the dispatcher's next tick will start or why it waits. Say 'what's in the queue' or 'is anything building'.",
         "readOnly": true,
-        "output": "{ table: { pending, queued, building }, accounts, slots, plan: { launches, waits, idle }, state }"
+        "output": "{ table: { pending, queued, building, active, complete }, accounts, slots, plan: { launches, waits, idle }, state }"
       },
       {
         "id": "pipeline-queue",
@@ -277,6 +277,76 @@
             "id": {
               "type": "string",
               "description": "Build id"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "{ id, status }"
+      },
+      {
+        "id": "pipeline-hold",
+        "route": "POST /pipeline/hold",
+        "title": "Hold or resume a build",
+        "description": "Put a queued or active build on hold (the dispatcher never starts it; a running one stops after its current run) or resume it (on: false). Say 'hold the icon browser build' or 'resume it'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            },
+            "on": {
+              "type": "boolean",
+              "description": "true = hold (default), false = resume"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "{ id, status, held }"
+      },
+      {
+        "id": "pipeline-assign",
+        "route": "POST /pipeline/assign",
+        "title": "Assign a build to a Claude account",
+        "description": "Start a queued or active build only on one Claude account (auto = the dispatcher picks). Say 'run the icon browser build on account-2'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            },
+            "account": {
+              "type": "string",
+              "description": "Account name, or auto"
+            }
+          },
+          "required": [
+            "id",
+            "account"
+          ]
+        },
+        "output": "{ id, pin }"
+      },
+      {
+        "id": "pipeline-return",
+        "route": "POST /pipeline/return",
+        "title": "Send a build back to Pending",
+        "description": "Cancel: a queued or active build (not running a session) goes back to Build Manager's Pending, hold and account cleared. Say 'send the icon browser build back to pending'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            },
+            "reason": {
+              "type": "string",
+              "description": "Why (kept on the build)"
             }
           },
           "required": [

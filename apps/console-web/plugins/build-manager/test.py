@@ -80,7 +80,44 @@ feed.fail = True
 r = c.get("/p/live")
 check(r.status_code == 200 and r.json()["items"] == [] and "feed down" in r.json()["error"], "a failing feed doesn't break the route")
 
-check({(m.path, *sorted(m.methods)) for m in mod.router.routes if m.methods - {"GET", "HEAD"}} == {("/start", "POST"), ("/verify", "POST"), ("/abandon", "POST")}, "only start, verify + abandon write anything")
+check({(m.path, *sorted(m.methods)) for m in mod.router.routes if m.methods - {"GET", "HEAD"}} == {("/start", "POST"), ("/verify", "POST"), ("/abandon", "POST"), ("/flow/create", "POST"), ("/flow/edit", "POST"), ("/flow/send", "POST")}, "only start, verify, abandon and the flow writes (through the orchestrator) write anything")
+
+# ---------------------------------------------------------------- split pages: Pending + Complete through axf.build-dispatch@1
+
+
+class _FakeDispatch:
+    def __init__(self) -> None:
+        self.calls: list[tuple] = []
+
+    def tables(self):
+        return {"pending": [{"id": "p1"}], "queued": [{"id": "q1"}], "active": [], "complete": [{"id": "c1", "builtBy": "account-2", "cost": 1.5}]}
+
+    def request(self, title, detail="", **kw):
+        self.calls.append(("request", title, kw.get("queue")))
+        return {"ok": True, "id": "new-build", "status": "pending"}
+
+    def queue(self, build_id, by="console"):
+        self.calls.append(("queue", build_id))
+        return {"ok": True, "id": build_id, "status": "queued"}
+
+    def update(self, build_id, by="console", **fields):
+        self.calls.append(("update", build_id, fields.get("title")))
+        return {"ok": True, "id": build_id}
+
+
+_saved_disp = plugin_services._services.pop("axf.build-dispatch@1", None)
+check(c.get("/p/flow").status_code == 503, "no orchestrator → the flow says so (503)")
+fake = _FakeDispatch()
+plugin_services._services["axf.build-dispatch@1"] = ("fake-orchestrator", fake)
+f = c.get("/p/flow").json()
+check(f["pending"] == [{"id": "p1"}] and f["complete"][0]["builtBy"] == "account-2" and f["counts"] == {"queued": 1, "active": 0}, "flow: Pending + Complete, orchestrator counts")
+check(c.post("/p/flow/create", json={"title": "New thing", "priority": "P1"}).json()["id"] == "new-build" and fake.calls[-1] == ("request", "New thing", False), "create files a Pending build (not queued)")
+check(c.post("/p/flow/send", json={"id": "p1"}).json()["status"] == "queued" and fake.calls[-1] == ("queue", "p1"), "Send to orchestrator queues it")
+check(c.post("/p/flow/edit", json={"id": "p1", "title": "Renamed"}).status_code == 200 and fake.calls[-1] == ("update", "p1", "Renamed"), "edit goes through the capability")
+check(c.post("/p/flow/send", json={"id": "../x"}).status_code == 400, "bad id refused")
+plugin_services._services.pop("axf.build-dispatch@1", None)
+if _saved_disp is not None:
+    plugin_services._services["axf.build-dispatch@1"] = _saved_disp
 check({p: p.stat().st_mtime for p in (REPO / "framework" / "plan").glob("*.json")} == before, "nothing in framework/plan written")
 
 # ---------------------------------------------------------------- the build log (axf.changes@1) + real time

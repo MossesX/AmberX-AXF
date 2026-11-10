@@ -17,7 +17,8 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { SORT_LABEL, SORTS, SOURCE_LABEL, SOURCES } from './merge.mjs';
 import { FOLDER, ID, KEYS, VERSION, fmt, getStore, loadList, requestStart, setFocus, start } from './store';
 import { builtRows, liveFromChanges, money } from './history.mjs';
-import { BuildBanner, BuildManagerView, SettingsSummary } from './ui';
+import { BuildBanner, SettingsSummary } from './ui';
+import { FLOW_TAB_EVENT, FLOW_TAB_KEY, FlowView, type FlowTab } from './flow';
 import './build-manager.css';
 import { appMenu, REMAINING } from './menu';
 
@@ -29,7 +30,14 @@ function resolveKey(arg: string): string {
   if (rows.some((r) => r.key === arg)) return arg;
   return rows.find((r) => r.id === arg || r.planId === arg)?.key ?? '';
 }
+/** Open the page on Pending or Complete (the deep link every surface uses: console_open, voice, MCP actions). */
+function openTab(rt: AxfRuntime, t: FlowTab) {
+  try { localStorage.setItem(FLOW_TAB_KEY, t); } catch { /* private window */ }
+  globalThis.dispatchEvent?.(new CustomEvent(FLOW_TAB_EVENT, { detail: t }));
+  rt.navigate(VIEW);
+}
 function open(rt: AxfRuntime, arg = '') {
+  if (arg === 'pending' || arg === 'complete') { openTab(rt, arg); return; }
   const key = arg ? resolveKey(arg) : '';
   if (key) setFocus(key);
   rt.navigate(VIEW);
@@ -43,7 +51,7 @@ export const plugin: AxfWebLibrary = {
   appMenu,
   appMenuProviders: {
     [REMAINING]: {
-      max: 12, moreAction: 'nav:build-manager', moreLabel: 'The whole Build manager…',
+      max: 12, moreAction: 'build-manager.pending', moreLabel: 'The whole Build manager…',
       items: async () => {
         if (!getStore().loaded) await loadList();
         return getStore().rows.map((r) => ({ id: `build:${r.key}`, label: `${r.title} · ${r.model}${r.left == null ? '' : ` · ${fmt(r.left)} left`}`, icon: r.needsSplit ? 'alert' : 'play', action: `build-manager.open:${encodeURIComponent(r.key)}` }));
@@ -63,9 +71,13 @@ export const plugin: AxfWebLibrary = {
       open(rt, key);
       setTimeout(() => requestStart(key), 60);
     }, { label: 'Start build now' });
-    const tabTo = (t: string) => () => { try { localStorage.setItem('axp-build-manager:tab', t); } catch { /* private window */ } rt.navigate(VIEW); };
-    rt.actions.register('build-manager.live', tabTo('live'), { label: 'Build manager: what’s building now' });
-    rt.actions.register('build-manager.built', tabTo('built'), { label: 'Build manager: everything built (cost + time)' });
+    // Split pages (Brett, Nov 9 2026): Pending + Complete here; Live = the orchestrator's Active, Built = Complete
+    rt.actions.register('build-manager.pending', () => openTab(rt, 'pending'), { label: 'Build manager: Pending builds' });
+    rt.actions.register('build-manager.complete', () => openTab(rt, 'complete'), { label: 'Build manager: Complete builds (account, model, cost, PR)' });
+    rt.actions.register('builds.pending', () => openTab(rt, 'pending'), { label: 'Pending builds' });
+    rt.actions.register('builds.complete', () => openTab(rt, 'complete'), { label: 'Complete builds' });
+    rt.actions.register('build-manager.built', () => openTab(rt, 'complete'), { label: 'Build manager: Complete builds' });
+    rt.actions.register('build-manager.live', () => { if (rt.actions.get('builds.active')) rt.dispatch('builds.active'); else openTab(rt, 'pending'); }, { label: 'What’s building now (the orchestrator’s Active tab)' });
     rt.search.add('build-manager.log', () => [
       ...liveFromChanges(getStore().changes, getStore().rows).map((e) => ({
         id: `live:${e.changeId}`, kind: 'build', label: `Building: ${e.title}`, icon: 'refresh',
@@ -98,7 +110,7 @@ export const plugin: AxfWebLibrary = {
       return [];
     });
   },
-  views: { [VIEW]: { title: 'Build manager', icon: 'play', keywords: ['build', 'builds', 'manager', 'pending', 'queue', 'estimate', 'time left', 'split', 'tracker'], render: () => <BuildManagerView /> } },
+  views: { [VIEW]: { title: 'Build manager', icon: 'play', keywords: ['build', 'builds', 'manager', 'pending', 'complete', 'built', 'send to orchestrator', 'cost', 'pr'], render: () => <FlowView /> } },
   nav: { label: 'Builds', items: [{ id: VIEW, label: 'Build manager', icon: 'play', view: VIEW }] },
   contextMenu: [{ id: 'build-manager.default', target: 'default', order: 91, items: [{ id: 'build-manager', label: 'Build manager', icon: 'play', action: 'build-manager.open' }] }],
   // After the Activity banner (order 4), before the approvals banner (5).

@@ -176,6 +176,18 @@ export function routeFor(b, accounts, model, settings = normSettings()) {
     : { account: '', kind: '', rule: 'overflow', why: `${subWhy}; overflow: ${apiNoAccountWhy(accounts, model)}` };
 }
 
+/** A build Brett assigned to one account: only that account, when it can take `model` now. */
+export function pinnedRoute(name, accounts, model) {
+  const a = list(accounts).find((x) => x.name === name);
+  if (!a) return { account: '', kind: '', rule: 'pin', why: `assigned to ${name}, which is not signed in on the VPS` };
+  const needFable = modelKey(model) === FOUNDATION_MODEL;
+  const usable = a.kind === 'api' ? !!a.api?.usable : a.usable;
+  if (!usable) return { account: '', kind: '', rule: 'pin', why: `assigned to ${name}: ${(a.kind === 'api' ? a.api?.why : a.why) || 'not usable'}` };
+  if (needFable && !a.fable) return { account: '', kind: '', rule: 'pin', why: `assigned to ${name}, which has no ${MODEL_LABELS[FOUNDATION_MODEL]} for this phase` };
+  if (!(a.free > 0)) return { account: '', kind: '', rule: 'pin', why: `assigned to ${name}, at its parallel cap (${a.running}/${a.parallel})` };
+  return { account: a.name, kind: a.kind === 'api' ? 'api' : 'subscription', rule: 'pin', why: `assigned to ${name}` };
+}
+
 /** Why no account takes `model` right now, in plain words. */
 export function noAccountWhy(accounts, model) {
   const usable = list(accounts).filter((a) => a.usable);
@@ -204,12 +216,14 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
   let free = Math.max(0, Number(slots?.free) || 0);
   const launches = []; const waits = [];
   for (const b of queue) {
+    if (b.pipeline?.held) { waits.push({ id: b.id, why: `on hold${b.pipeline.heldBy ? ` (${b.pipeline.heldBy})` : ''}: Resume to let it start` }); continue; }
     if (!openSteps(b).length) { waits.push({ id: b.id, why: b.steps?.length ? 'every step is done: nothing to run' : 'no steps yet: waiting for the split' }); continue; }
     const n = orchNextUp(b, rules);
     if (n.needsApproval) { waits.push({ id: b.id, why: `needs Brett's approval: upgrade ${n.phase.from} → ${n.phase.model}` }); continue; }
     const model = nextModel(b);
     if (free <= 0) { waits.push({ id: b.id, why: `no free agent slot (${slots?.used ?? '?'}/${slots?.cap ?? '?'} in use)` }); continue; }
-    const r = routeFor(b, acc, model, settings);
+    const pin = b.pipeline?.pin || '';
+    const r = pin ? pinnedRoute(pin, acc, model) : routeFor(b, acc, model, settings);
     const a = r.account ? acc.find((x) => x.name === r.account) : null;
     if (!a) { waits.push({ id: b.id, why: r.why }); continue; }
     a.running += 1; a.free -= 1; free -= 1;

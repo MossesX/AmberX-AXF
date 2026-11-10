@@ -94,6 +94,27 @@ t('plan: one launch per free slot in Queue order, Fable to a Fable account, the 
   assert.match(r.waits[0].why, /no steps yet/); assert.match(r.waits[1].why, /no free agent slot/);
   assert.equal(r.idle, null);
 });
+t('split pages: homeOf puts Pending / Complete in Build Manager, Queued / Active in the orchestrator', () => {
+  assert.equal(BP.homeOf({ status: 'pending' }), 'manager:pending'); assert.equal(BP.homeOf({ status: 'pending', hidden: true }), '');
+  assert.equal(BP.homeOf({ status: 'queued' }), 'orchestrator:queued');
+  for (const st of ['running', 'waiting', 'blocked', 'failed']) assert.equal(BP.homeOf({ status: st }), 'orchestrator:active');
+  assert.equal(BP.homeOf({ status: 'built' }), 'manager:complete'); assert.equal(BP.homeOf({ status: 'complete' }), 'manager:complete'); assert.equal(BP.homeOf({ status: 'archived' }), '');
+  assert.ok(BP.canReturn({ status: 'queued' })); assert.ok(BP.canReturn({ status: 'failed' })); assert.ok(!BP.canReturn({ status: 'running' })); assert.ok(!BP.canReturn({ status: 'pending' }));
+  const p = BP.normPipeline({ held: now, heldBy: 'brett', pin: 'w-max' }); assert.equal(p.held, now); assert.equal(p.heldBy, 'brett'); assert.equal(p.pin, 'w-max');
+  assert.equal(BP.normPipeline({ heldBy: 'brett', pin: 'Bad Name' }), null, 'heldBy without held and a bad pin are dropped');
+});
+t('plan: a held build waits; a pinned build starts only on its account', () => {
+  const v = P.accountViews(rows, {}, { settings });
+  const held = build('h1', 'queued', [step('s1', 'Opus')], { pipeline: { queuedAt: '2026-11-08T00:00:30Z', held: now, heldBy: 'brett' } });
+  const r = P.plan({ builds: [held, q2], accounts: v, slots: { free: 2, used: 0, cap: 3 }, settings });
+  assert.deepEqual(r.launches.map((l) => l.id), ['q2']); assert.match(r.waits.find((w) => w.id === 'h1').why, /on hold \(brett\)/);
+  const pinned = build('p2', 'queued', [step('s1', 'Opus')], { pipeline: { queuedAt: '2026-11-08T00:00:30Z', pin: 'w-max' } });
+  const r2 = P.plan({ builds: [pinned], accounts: v, slots: { free: 2, used: 0, cap: 3 }, settings });
+  assert.deepEqual(r2.launches.map((l) => [l.id, l.account, l.rule]), [['p2', 'w-max', 'pin']], 'Opus work goes to the assigned Fable account when pinned');
+  const gone = build('p3', 'queued', [step('s1', 'Opus')], { pipeline: { pin: 'nobody' } });
+  const r3 = P.plan({ builds: [gone], accounts: v, slots: { free: 2, used: 0, cap: 3 }, settings });
+  assert.equal(r3.launches.length, 0); assert.match(r3.waits[0].why, /assigned to nobody/);
+});
 t('plan: account caps hold a launch even with slots free; Fable work waits when no Fable account is free', () => {
   const v = P.accountViews(rows.filter((x) => x.name === 'w-pro'), {}, { settings: P.normSettings({ parallelPerAccount: 1 }) });
   const r = P.plan({ builds: [q1, q2], accounts: v, slots: { free: 5, used: 0, cap: 5 }, settings });
@@ -303,6 +324,13 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     json(pipe('queue', 'alpha', '--by', 'brett', '--json')); json(pipe('queue', 'beta', '--by', 'brett', '--json'));
     assert.equal(find('alpha').status, 'queued'); assert.equal(find('alpha').pipeline.queuedBy, 'brett'); assert.ok(find('alpha').pipeline.queuedAt);
     json(pipe('unqueue', 'beta', '--json')); assert.equal(find('beta').status, 'pending'); assert.equal(find('beta').pipeline?.queuedAt ?? '', '');
+    json(pipe('queue', 'beta', '--json'));
+    // split pages: hold / resume, assign an account, send back to Pending
+    json(pipe('hold', 'beta', '--by', 'brett', '--json')); assert.ok(find('beta').pipeline.held); assert.equal(find('beta').pipeline.heldBy, 'brett');
+    json(pipe('assign', 'beta', 'w-max', '--json')); assert.equal(find('beta').pipeline.pin, 'w-max');
+    json(pipe('resume', 'beta', '--json')); assert.equal(find('beta').pipeline.held, '');
+    json(pipe('return', 'beta', '--reason', 'not now', '--json')); assert.equal(find('beta').status, 'pending'); assert.match(find('beta').notes.at(-1).text, /Build Manager → Pending.*not now/);
+    assert.notEqual(pipe('hold', 'beta', '--json', '--expect-fail').status, 0, 'a Pending build is not the orchestrator\'s to hold');
     json(pipe('queue', 'beta', '--json'));
     const bad = pipe('queue', 'alpha', '--json', '--expect-fail'); assert.notEqual(bad.status, 0, 'queueing a queued build is refused');
   });
