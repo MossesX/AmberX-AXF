@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:56 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` note (all) · builds-live
 - 2026-11-10 17:56 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-10 17:57 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` note (all) · foreign-write
 - 2026-11-10 17:57 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` → running, note (all) · pipeline
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 22:27 UTC · `molly-one-shell` s11 done (all) · orchestrator
 - 2026-11-10 22:30 UTC · `molly-one-shell` s12 done (all) · orchestrator
 - 2026-11-10 22:30 UTC · `molly-one-shell` note (all) · reconciler
+- 2026-11-10 22:33 UTC · `molly-one-shell` s13 done (all) · orchestrator
 
 ## Token passes (log)
 
