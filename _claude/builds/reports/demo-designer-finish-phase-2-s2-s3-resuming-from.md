@@ -46,7 +46,7 @@ designer done yet? ... Yes, queue it urgent."
   `plugin-lifecycle check` clean for both plugins; `plugin-commands.mjs check` 67/67; `plugins.mjs --check` clean.
 
 ## UI Review
-Screen item for the Demonstration Designer page with the cloud narrator picked (desktop shot), group
+Screen item `r-20261110-8f523a7c` (single option: one new entry in an existing select) for the Demonstration Designer page with the cloud narrator picked (desktop shot), group
 "demo-designer-finish-phase-2-s2-s3-resuming-from - Nov 10 …". Shots were taken on a local console with a scratch Agent
 voice folder (one agent allowed cloud voices, placeholder key) and `AXF_APPEARANCE_HUB=off`.
 **Missing:** a phone shot. In the headless shot runner the phone viewport kept landing on Home (the `?axf-demo=` deep link
