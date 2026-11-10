@@ -914,5 +914,10 @@ check(c.get(f"{P}/status").json()["defaultToolMode"] == "auto", "status: says wh
 check(c.put(f"{P}/config", json={"chatMode": {"default": "chat", "historyMessages": 8}}).json()["chatMode"]["default"] == "chat" and c.get(f"{P}/config").json()["chatMode"]["historyMessages"] == 8, "chat mode settings save")
 c.put(f"{P}/config", json={"chatMode": {"default": "auto", "historyMessages": 16}})
 plugin_services.withdraw("fake-agent-manager")
+_conv = {"id": "c-fix", "settings": {}}
+_with = mod._system_prompt({}, _conv, None, None, [{"name": "repo_read"}], "")
+_agent = mod._system_prompt({}, _conv, {"name": "Earl", "system_prompt": "You are Earl."}, None, [{"name": "console_action"}], "")
+check(mod.FIX_RULE in _with and mod.FIX_RULE in _agent, "fix it yourself (Nov 9 2026): every assistant and agent profile with tools gets the rule")
+check(mod.FIX_RULE not in mod._system_prompt({}, _conv, None, None, [], ""), "fix it yourself: a chat with no tools can't act, so no rule")
 
 print(f"all {ok} checks passed")

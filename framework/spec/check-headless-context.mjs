@@ -11,6 +11,7 @@ import { dirname, join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import * as hc from '../core/headless-context.mjs';
+import * as rb from '../core/rules-brief.mjs';
 import { noteRuns, parseRunNote, planLines, planRun } from '../cli/headless-context.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -71,6 +72,13 @@ const cr = hc.composeRules({ brief: 'change the ui-thing submit', rulesBrief: '#
 ok(cr.text.startsWith(hc.RULES_HEADING) && cr.text.includes('Every UI change goes to UI Review') && !cr.text.includes('Untagged') && !cr.text.includes('<!--'), 'rules block: rules brief + tagged snippet, tags stripped');
 ok(hc.composeRules({ brief: `${hc.RULES_HEADING}\n- mine`, rulesBrief: 'x', ruleTexts: [rules] }).already, 'a brief with its own rules block gets nothing added');
 ok(!hc.hasRules(`${hc.RULES_HEADING}\n<!-- template comment -->\n\n## Next`), 'an empty template heading is not a rules block');
+
+// fix it yourself (Brett, Nov 9 2026): every launch's rules brief carries it, whatever the surface, agent or job
+const seed = rb.normDoc(JSON.parse(readFileSync(join(HERE, '..', 'schemas', 'rules-briefs.json'), 'utf8')));
+for (const ctx of [{ task: 'tidy the docs' }, { task: 'fix the screen', surface: 'pipeline', model: 'fable' }, { task: 'x', surface: 'swarm', agent: 'earl', job: 'ui-review' }]) {
+  const c = rb.compose(seed, rb.launchContext(ctx));
+  ok(c.picked.some((p) => p.id === 'fix-it-yourself') && /Never stop to ask permission/.test(c.text) && /Automatic fixes/.test(c.text) && /Only after everything fails/.test(c.text), `fix-it-yourself brief in every launch (${ctx.surface || 'headless'})`);
+}
 
 // run notes (the console's build view parses the same line)
 const note = 'Headless run axf-x--earl: brief only · start 11.2K tokens ($0.03) · cost $0.42 · 9 turns · 6 tools, MCP none';

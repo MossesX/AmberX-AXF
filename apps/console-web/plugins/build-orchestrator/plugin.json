@@ -37,6 +37,7 @@
     "dataDir": ".axf-console/plugins/build-orchestrator",
     "env": [],
     "mentions": [
+      "_claude/shared/rules/fix-it-yourself.md",
       ".github/workflows/android.yml",
       "CLAUDE.md",
       "_claude/THREADS.md",

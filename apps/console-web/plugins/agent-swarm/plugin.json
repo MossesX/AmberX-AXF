@@ -36,6 +36,7 @@
       "AXF_CLAUDE_BIN"
     ],
     "mentions": [
+      "_claude/shared/rules/fix-it-yourself.md",
       "_claude/memory/STATUS.md",
       "deploy/claude-login.test.mjs",
       "_claude/rules/RULES.md",

@@ -45,6 +45,13 @@ export const ASSET_RULE = 'UI code (handwritten or generated) conforms to the ho
  */
 export const API_RULE = 'Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.';
 
+/**
+ * Every brief carries the fix-it-yourself rule (Brett, Nov 9 2026: "you do whatever in your ability to fix any problem…
+ * just notify me of doing it, not for permission or veto. Every single build, put that in the brief"; shared rule
+ * _claude/shared/rules/fix-it-yourself.md; build fix-it-yourself-rule-in-every-brief-and-session).
+ */
+export const FIX_RULE = 'Fix it yourself (Brett, Nov 9 2026): when something is broken or blocks the work, fix it with every means you have (axHub tools, the console, VPS check/run, Coolify, GitHub, an agent with the right permissions) and keep going; never stop to ask permission. Notify, never ask: one FYI line per attempt with `node apps/console-web/plugins/*/fixlog.mjs found|trying|failed|fixed "…"`. Log each problem in AmberX Notes, list "Automatic fixes" (`axf note add "<what broke>" --list "Automatic fixes"`): one entry per problem, its checklist = every attempt, then what fixed it; check that list first and reuse a known fix. Only after everything fails, say exactly what is missing (key, token, tool, MCP connection) in the entry, a build note and a systems check item. Approval gates run on their own countdown: never wait on them. Full rule: _claude/shared/rules/fix-it-yourself.md.';
+
 const now = () => new Date().toISOString();
 const str = (v, max = 4000) => (typeof v === 'string' ? v.slice(0, max) : '');
 /** A step still to do: not done and not skipped by the build's feature matrix. */
@@ -239,6 +246,7 @@ export function brief(build, rules = DEFAULT_RULES) {
     `Rules: ${rules.sameSession ? 'stay in this one session' : 'new session allowed'}; ${rules.subAgents ? 'sub-agents allowed' : 'no sub-agents'}; steps ≤ ${rules.maxStepMinutes} min; read only the files listed; stop at the end of this phase.`,
     `Look: ${ASSET_RULE}`,
     `API: ${API_RULE}`,
+    `Fix: ${FIX_RULE}`,
     build.branch ? `Branch: ${build.branch}${build.pr ? ` · PR ${build.pr}` : ''}` : '',
     `Steps in this phase (${p.steps.filter(open).length} left, ~${formatMinutes(p.minutesLeft) || '?'}):`,
     ...p.steps.map((s, i) => `${s.group && s.group !== p.steps[i - 1]?.group ? `— ${s.group} —\n` : ''}${s.done ? '[x]' : s.skip ? '[skip]' : '[ ]'} ${s.id} ${s.estimate ? `(~${s.estimate}) ` : ''}${s.text}${s.session === 'new' ? ' [needs a new session]' : ''}${s.agent ? ' [sub-agent allowed]' : ''}`),

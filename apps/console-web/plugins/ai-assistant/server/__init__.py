@@ -301,6 +301,14 @@ _host.on_interrupted = _keep_interrupted
 
 # ---------------------------------------------------------------- prompts
 
+# Brett, Nov 9 2026 (_claude/shared/rules/fix-it-yourself.md): every session and agent that can act follows it.
+FIX_RULE = ("Fix it yourself: when something is broken or blocks the work and your tools can fix it, fix it and keep going; "
+            "never ask Brett for permission. Tell him what you tried, as you go, as information only (FYI, not a question). "
+            "Log each problem in AmberX Notes, list \"Automatic fixes\": one entry per problem, its checklist = every attempt, then what fixed it; "
+            "check that list first and reuse a known fix. Only after everything fails, say exactly what is missing "
+            "(a key, token, tool or MCP connection).")
+
+
 def _system_prompt(cfg: dict[str, Any], conv: dict[str, Any], agent: dict[str, Any] | None, context: dict[str, Any] | None, tool_specs: list[dict[str, Any]], memory: str) -> str:
     st = conv.get("settings") or {}
     name = cfg.get("assistantName") or "Amber"
@@ -315,6 +323,8 @@ def _system_prompt(cfg: dict[str, Any], conv: dict[str, Any], agent: dict[str, A
             parts.append(persona)
     if any(t["name"].startswith("repo_") for t in tool_specs):
         parts.append("You can read the AXF repository with repo_list, repo_read and repo_search. Read files before making claims about the code, and cite paths.")
+    if tool_specs:
+        parts.append(FIX_RULE)
     if cfg.get("instructions", "").strip() and not agent:
         parts.append(f"Owner instructions:\n{cfg['instructions'].strip()}")
     if st.get("systemPrompt", "").strip():

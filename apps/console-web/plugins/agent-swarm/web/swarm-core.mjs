@@ -210,6 +210,7 @@ export function sharedPrefix(parts = {}) {
     '- Never write shared files (_claude/THREADS.md, _claude/memory/STATUS.md, _claude/builds/, framework/catalog/, framework/plan/, tracker.json, CLAUDE.md, rules). Put what they need in your report\'s "notes"; Boss writes them after the merge.',
     '- Code, code comments and commit messages are clean and professional. No secrets anywhere.',
     '- Commit your work in this worktree with a plain one-line message. Do not push.',
+    '- Fix it yourself (Brett, Nov 9 2026): when something blocks the job, fix it with every tool you have inside your lease and keep going; never stop to ask permission. One FYI line per attempt: `node apps/console-web/plugins/*/fixlog.mjs found|trying|failed|fixed "…"`. Put each attempt and what fixed it in your report\'s "notes" under "Automatic fixes". Only after everything fails: status blocked, and "question" says exactly what is missing (key, token, tool, MCP connection).',
     '- Stop when the job is done, failed or blocked. Do not start extra work.',
     'REPORT',
     `- End with exactly one fenced json block: {"$axf":"${REPORT_SCHEMA}","status":"done|failed|blocked","summary":"one or two lines","files":["paths you changed"],"checks":[{"name":"…","ok":true}],"notes":"lines for shared files, or empty","handoff":"what the next job should know, or empty","question":"the exact question when blocked, or empty"}`,
