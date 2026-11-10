@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useAxfState } from '../axf/react';
 import { deepLink, MOLLY_APPS } from './apps';
 import { appOfView, mollyHooks, mollyHooksRev, onMollyHooks } from './host';
+import { isNative } from './native';
 
 /**
  * Molly keeps every app it has opened alive. Moving an iframe in the DOM reloads it, so the frames never move: they
@@ -98,13 +99,13 @@ export function FrameDeck() {
   });
   const [opened, setOpened] = useState<string[]>(() => (active ? [active] : []));
   useEffect(() => {
-    const want = [...new Set([...(active ? [active] : []), ...rects.keys(), ...(warm ?? [])])].filter((id) => !opened.includes(id) && MOLLY_APPS.some((a) => a.id === id));
+    const want = [...new Set([...(active ? [active] : []), ...rects.keys(), ...(warm ?? [])])].filter((id) => !opened.includes(id) && MOLLY_APPS.some((a) => a.id === id) && !isNative(id));
     if (want.length) setOpened((o) => [...o, ...want]);
   }, [active, rects, opened, warm]);
 
   return createPortal(
     <div className="molly-deck">
-      {MOLLY_APPS.filter((a) => opened.includes(a.id)).map((a) => {
+      {MOLLY_APPS.filter((a) => opened.includes(a.id) && !isNative(a.id)).map((a) => {
         const rect = rects.get(a.id);
         const start = srcs.get(a.id) ?? a.url;
         return (

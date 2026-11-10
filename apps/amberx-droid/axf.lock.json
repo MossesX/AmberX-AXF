@@ -702,7 +702,7 @@
     "src/axf/libs/workspace/store.ts": "633e7e776264e141",
     "src/axf/libs/workspace/workspace.css": "c3c3322143caab3c",
     "src/axf/react/AppShell.tsx": "0a8aa5bccc79c321",
-    "src/axf/react/AxfProvider.tsx": "395ef3773cc17ad1",
+    "src/axf/react/AxfProvider.tsx": "350e3d4b12384b48",
     "src/axf/react/bannerStrip.ts": "c4217d5b8a6251a1",
     "src/axf/react/components/AgentAvatar.tsx": "56b3990cd19b119d",
     "src/axf/react/components/AgentCard.tsx": "c73a04590aac39fe",

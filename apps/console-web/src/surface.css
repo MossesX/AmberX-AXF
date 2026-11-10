@@ -1,0 +1,4 @@
+/* The console as a native surface inside a shell (src/surface.tsx): fills the element the shell gives it and scrolls on
+   its own; the shell keeps the chrome and the look. */
+.axf-surface { display: flex; flex-direction: column; min-width: 0; min-height: 0; height: 100%; overflow: auto; }
+.axf-surface__inner { flex: 1 1 auto; min-height: 0; }

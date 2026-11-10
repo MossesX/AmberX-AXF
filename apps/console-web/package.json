@@ -9,7 +9,8 @@
   },
   "scripts": {
     "dev": "node scripts/sync-data.mjs && vite",
-    "build": "node scripts/sync-data.mjs && tsc --noEmit && vite build",
+    "build": "node scripts/sync-data.mjs && tsc --noEmit && vite build && vite build --config vite.surface.config.ts",
+    "build:surface": "vite build --config vite.surface.config.ts",
     "build:single": "tsc --noEmit && vite build --mode single",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
