@@ -1,0 +1,1498 @@
+{
+  "contract": "look-migration@1",
+  "version": 1,
+  "keys": {
+    "legacy": "axf.legacy.look",
+    "migrated": "axf.look.migrated",
+    "retired": [
+      "axf.appearance.design",
+      "axf.appearance.package",
+      "axf.appearance.overrides",
+      "axf.appearance.interface",
+      "axf.look",
+      "axf.hub.appearance.follow"
+    ],
+    "retiredPrefixes": [
+      "axf.look."
+    ]
+  },
+  "skins": {
+    "hub-default": {
+      "layoutTheme": "classic-ide",
+      "colorTheme": "hub-night",
+      "styleTheme": "hub",
+      "assets": {
+        "behavior-theme": "standard",
+        "button": "rounded-solid",
+        "toolbar": "standard-icons",
+        "typography": "compact"
+      },
+      "extras": {
+        "spacing": "tight",
+        "hidden": {
+          "toolbar": true
+        }
+      }
+    },
+    "windows": {
+      "layoutTheme": "windows-explorer",
+      "colorTheme": "windows-light",
+      "styleTheme": "windows",
+      "assets": {
+        "button": "windows"
+      },
+      "extras": {
+        "spacing": "compact"
+      }
+    },
+    "aurora": {
+      "layoutTheme": "focus-top",
+      "colorTheme": "aurora-night",
+      "styleTheme": "hub",
+      "assets": {}
+    }
+  },
+  "snapshot": {
+    "slots": {
+      "layout": "focus-top",
+      "color-theme": "arctic-daylight",
+      "style-theme": "hub",
+      "behavior-theme": "standard",
+      "design-package": "hub-default",
+      "button": "rounded-solid",
+      "toolbar": "standard-icons",
+      "typography": "compact"
+    },
+    "spacing": "tight",
+    "hidden": {
+      "toolbar": true
+    }
+  },
+  "fold": {
+    "nothing": {
+      "before": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": false,
+          "inherit": false,
+          "id": "",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "picks": {},
+      "needs": true,
+      "look": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": false,
+          "inherit": false,
+          "id": "",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null,
+        "migrated": {
+          "version": 1,
+          "at": "2026-11-10T00:00:00Z",
+          "by": "app"
+        }
+      },
+      "skin": "",
+      "folded": {},
+      "overrides": {},
+      "kept": {},
+      "reason": "nothing",
+      "again": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": false,
+          "inherit": false,
+          "id": "",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null,
+        "migrated": {
+          "version": 1,
+          "at": "2026-11-10T00:00:00Z",
+          "by": "app"
+        }
+      },
+      "needsAfter": false
+    },
+    "skinOn": {
+      "before": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {
+          "slots": {
+            "color-theme": "coral-studio",
+            "behavior-theme": "brisk",
+            "style-package": "amber-signature"
+          }
+        },
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {
+            "toolbar": "labeled-actions"
+          }
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "picks": {
+        "color-theme": "coral-studio",
+        "behavior-theme": "brisk",
+        "style-package": "amber-signature"
+      },
+      "needs": true,
+      "look": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {
+          "slots": {}
+        },
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {
+            "toolbar": "labeled-actions",
+            "behavior-theme": "brisk"
+          }
+        },
+        "scopes": {},
+        "undo": null,
+        "legacy": {
+          "at": "2026-11-10T00:00:00Z",
+          "own": {
+            "slots": {
+              "color-theme": "coral-studio",
+              "behavior-theme": "brisk",
+              "style-package": "amber-signature"
+            }
+          }
+        },
+        "migrated": {
+          "version": 1,
+          "at": "2026-11-10T00:00:00Z",
+          "by": "app"
+        }
+      },
+      "skin": "windows",
+      "folded": {
+        "color-theme": "coral-studio",
+        "behavior-theme": "brisk",
+        "style-package": "amber-signature"
+      },
+      "overrides": {
+        "behavior-theme": "brisk"
+      },
+      "kept": {},
+      "reason": "skin-on",
+      "again": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {
+          "slots": {}
+        },
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {
+            "toolbar": "labeled-actions",
+            "behavior-theme": "brisk"
+          }
+        },
+        "scopes": {},
+        "undo": null,
+        "legacy": {
+          "at": "2026-11-10T00:00:00Z",
+          "own": {
+            "slots": {
+              "color-theme": "coral-studio",
+              "behavior-theme": "brisk",
+              "style-package": "amber-signature"
+            }
+          }
+        },
+        "migrated": {
+          "version": 1,
+          "at": "2026-11-10T00:00:00Z",
+          "by": "app"
+        }
+      },
+      "needsAfter": false
+    },
+    "package": {
+      "before": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {
+          "slots": {
+            "design-package": "hub-default",
+            "layout": "classic-ide",
+            "color-theme": "coral-studio",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "skin": {
+          "use": false,
+          "inherit": false,
+          "id": "",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "picks": {
+        "design-package": "hub-default",
+        "layout": "classic-ide",
+        "color-theme": "coral-studio",
+        "style-theme": "hub",
+        "behavior-theme": "standard",
+        "typography": "compact"
+      },
+      "needs": true,
+      "look": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {
+          "slots": {},
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "hub-default",
+          "overrides": {
+            "color-theme": "coral-studio"
+          }
+        },
+        "scopes": {},
+        "undo": null,
+        "legacy": {
+          "at": "2026-11-10T00:00:00Z",
+          "own": {
+            "slots": {
+              "design-package": "hub-default",
+              "layout": "classic-ide",
+              "color-theme": "coral-studio",
+              "style-theme": "hub",
+              "behavior-theme": "standard",
+              "typography": "compact"
+            }
+          }
+        },
+        "migrated": {
+          "version": 1,
+          "at": "2026-11-10T00:00:00Z",
+          "by": "app"
+        }
+      },
+      "skin": "hub-default",
+      "folded": {
+        "design-package": "hub-default",
+        "layout": "classic-ide",
+        "color-theme": "coral-studio",
+        "style-theme": "hub",
+        "behavior-theme": "standard",
+        "typography": "compact"
+      },
+      "overrides": {
+        "color-theme": "coral-studio"
+      },
+      "kept": {},
+      "reason": "package",
+      "again": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {
+          "slots": {},
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "hub-default",
+          "overrides": {
+            "color-theme": "coral-studio"
+          }
+        },
+        "scopes": {},
+        "undo": null,
+        "legacy": {
+          "at": "2026-11-10T00:00:00Z",
+          "own": {
+            "slots": {
+              "design-package": "hub-default",
+              "layout": "classic-ide",
+              "color-theme": "coral-studio",
+              "style-theme": "hub",
+              "behavior-theme": "standard",
+              "typography": "compact"
+            }
+          }
+        },
+        "migrated": {
+          "version": 1,
+          "at": "2026-11-10T00:00:00Z",
+          "by": "app"
+        }
+      },
+      "needsAfter": false
+    },
+    "designPick": {
+      "before": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {
+          "slots": {
+            "color-theme": "coral-studio"
+          }
+        },
+        "skin": {
+          "use": false,
+          "inherit": false,
+          "id": "",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "picks": {
+        "color-theme": "coral-studio"
+      },
+      "needs": true,
+      "look": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {
+          "slots": {}
+        },
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "aurora",
+          "overrides": {
+            "color-theme": "coral-studio"
+          }
+        },
+        "scopes": {},
+        "undo": null,
+        "legacy": {
+          "at": "2026-11-10T00:00:00Z",
+          "own": {
+            "slots": {
+              "color-theme": "coral-studio"
+            }
+          }
+        },
+        "migrated": {
+          "version": 1,
+          "at": "2026-11-10T00:00:00Z",
+          "by": "app"
+        }
+      },
+      "skin": "aurora",
+      "folded": {
+        "color-theme": "coral-studio"
+      },
+      "overrides": {
+        "color-theme": "coral-studio"
+      },
+      "kept": {},
+      "reason": "package",
+      "again": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {
+          "slots": {}
+        },
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "aurora",
+          "overrides": {
+            "color-theme": "coral-studio"
+          }
+        },
+        "scopes": {},
+        "undo": null,
+        "legacy": {
+          "at": "2026-11-10T00:00:00Z",
+          "own": {
+            "slots": {
+              "color-theme": "coral-studio"
+            }
+          }
+        },
+        "migrated": {
+          "version": 1,
+          "at": "2026-11-10T00:00:00Z",
+          "by": "app"
+        }
+      },
+      "needsAfter": false
+    },
+    "match": {
+      "before": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {
+          "slots": {
+            "color-theme": "aurora-night"
+          }
+        },
+        "skin": {
+          "use": false,
+          "inherit": false,
+          "id": "",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "picks": {
+        "color-theme": "aurora-night"
+      },
+      "needs": true,
+      "look": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {
+          "slots": {}
+        },
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "aurora",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null,
+        "legacy": {
+          "at": "2026-11-10T00:00:00Z",
+          "own": {
+            "slots": {
+              "color-theme": "aurora-night"
+            }
+          }
+        },
+        "migrated": {
+          "version": 1,
+          "at": "2026-11-10T00:00:00Z",
+          "by": "app"
+        }
+      },
+      "skin": "aurora",
+      "folded": {
+        "color-theme": "aurora-night"
+      },
+      "overrides": {},
+      "kept": {},
+      "reason": "match",
+      "again": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {
+          "slots": {}
+        },
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "aurora",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null,
+        "legacy": {
+          "at": "2026-11-10T00:00:00Z",
+          "own": {
+            "slots": {
+              "color-theme": "aurora-night"
+            }
+          }
+        },
+        "migrated": {
+          "version": 1,
+          "at": "2026-11-10T00:00:00Z",
+          "by": "app"
+        }
+      },
+      "needsAfter": false
+    },
+    "noSkin": {
+      "before": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {
+          "slots": {
+            "style-theme": "glass-orbit"
+          }
+        },
+        "skin": {
+          "use": false,
+          "inherit": false,
+          "id": "",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "picks": {
+        "style-theme": "glass-orbit"
+      },
+      "needs": true,
+      "look": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {
+          "slots": {
+            "style-theme": "glass-orbit"
+          }
+        },
+        "skin": {
+          "use": false,
+          "inherit": false,
+          "id": "",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null,
+        "migrated": {
+          "version": 1,
+          "at": "2026-11-10T00:00:00Z",
+          "by": "app",
+          "kept": [
+            "style-theme"
+          ]
+        }
+      },
+      "skin": "",
+      "folded": {},
+      "overrides": {},
+      "kept": {
+        "style-theme": "glass-orbit"
+      },
+      "reason": "no-skin",
+      "again": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {
+          "slots": {
+            "style-theme": "glass-orbit"
+          }
+        },
+        "skin": {
+          "use": false,
+          "inherit": false,
+          "id": "",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null,
+        "migrated": {
+          "version": 1,
+          "at": "2026-11-10T00:00:00Z",
+          "by": "app",
+          "kept": [
+            "style-theme"
+          ]
+        }
+      },
+      "needsAfter": false
+    },
+    "unknownSkinOn": {
+      "before": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {
+          "slots": {
+            "color-theme": "coral-studio"
+          }
+        },
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "nope",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "picks": {
+        "color-theme": "coral-studio"
+      },
+      "needs": true,
+      "look": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {
+          "slots": {
+            "color-theme": "coral-studio"
+          }
+        },
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "nope",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null,
+        "migrated": {
+          "version": 1,
+          "at": "2026-11-10T00:00:00Z",
+          "by": "app",
+          "kept": [
+            "color-theme"
+          ]
+        }
+      },
+      "skin": "nope",
+      "folded": {},
+      "overrides": {},
+      "kept": {
+        "color-theme": "coral-studio"
+      },
+      "reason": "no-skin",
+      "again": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {
+          "slots": {
+            "color-theme": "coral-studio"
+          }
+        },
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "nope",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null,
+        "migrated": {
+          "version": 1,
+          "at": "2026-11-10T00:00:00Z",
+          "by": "app",
+          "kept": [
+            "color-theme"
+          ]
+        }
+      },
+      "needsAfter": false
+    },
+    "scale": {
+      "before": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {
+          "slots": {
+            "design-package": "gone",
+            "color-theme": "aurora-night",
+            "density": "spacious"
+          }
+        },
+        "skin": {
+          "use": false,
+          "inherit": false,
+          "id": "",
+          "overrides": {}
+        },
+        "scopes": {},
+        "undo": null
+      },
+      "picks": {
+        "design-package": "gone",
+        "color-theme": "aurora-night",
+        "density": "spacious"
+      },
+      "needs": true,
+      "look": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {
+          "slots": {}
+        },
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "aurora",
+          "overrides": {
+            "density": "spacious"
+          }
+        },
+        "scopes": {},
+        "undo": null,
+        "legacy": {
+          "at": "2026-11-10T00:00:00Z",
+          "own": {
+            "slots": {
+              "design-package": "gone",
+              "color-theme": "aurora-night",
+              "density": "spacious"
+            }
+          }
+        },
+        "migrated": {
+          "version": 1,
+          "at": "2026-11-10T00:00:00Z",
+          "by": "app"
+        }
+      },
+      "skin": "aurora",
+      "folded": {
+        "design-package": "gone",
+        "color-theme": "aurora-night",
+        "density": "spacious"
+      },
+      "overrides": {
+        "density": "spacious"
+      },
+      "kept": {},
+      "reason": "match",
+      "again": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {
+          "slots": {}
+        },
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "aurora",
+          "overrides": {
+            "density": "spacious"
+          }
+        },
+        "scopes": {},
+        "undo": null,
+        "legacy": {
+          "at": "2026-11-10T00:00:00Z",
+          "own": {
+            "slots": {
+              "design-package": "gone",
+              "color-theme": "aurora-night",
+              "density": "spacious"
+            }
+          }
+        },
+        "migrated": {
+          "version": 1,
+          "at": "2026-11-10T00:00:00Z",
+          "by": "app"
+        }
+      },
+      "needsAfter": false
+    }
+  },
+  "settings": {
+    "values": {
+      "axf.appearance.design": "hub-default",
+      "axf.appearance.overrides": {
+        "color-theme": "coral-studio"
+      },
+      "axf.look": {
+        "space": 2
+      },
+      "axf.look.sliders": 1,
+      "axf.hub.appearance.follow": false,
+      "axf.tokens.theme": {
+        "accent": "#ff8800"
+      },
+      "axf.skin.look": "kept",
+      "axf.hide.toolbar": true
+    },
+    "first": {
+      "changed": true,
+      "set": {
+        "axf.look.migrated": 1,
+        "axf.legacy.look": "{\"$axf\":\"look-migration@1\",\"version\":1,\"at\":\"2026-11-10T00:00:00Z\",\"settings\":{\"axf.appearance.design\":\"hub-default\",\"axf.appearance.overrides\":{\"color-theme\":\"coral-studio\"},\"axf.hub.appearance.follow\":false,\"axf.look\":{\"space\":2},\"axf.look.sliders\":1}}"
+      },
+      "clear": [
+        "axf.appearance.design",
+        "axf.appearance.overrides",
+        "axf.hub.appearance.follow",
+        "axf.look",
+        "axf.look.sliders"
+      ],
+      "designPick": "hub-default",
+      "backup": {
+        "$axf": "look-migration@1",
+        "version": 1,
+        "at": "2026-11-10T00:00:00Z",
+        "settings": {
+          "axf.appearance.design": "hub-default",
+          "axf.appearance.overrides": {
+            "color-theme": "coral-studio"
+          },
+          "axf.hub.appearance.follow": false,
+          "axf.look": {
+            "space": 2
+          },
+          "axf.look.sliders": 1
+        }
+      }
+    },
+    "needsBefore": true,
+    "applied": {
+      "axf.tokens.theme": {
+        "accent": "#ff8800"
+      },
+      "axf.skin.look": "kept",
+      "axf.hide.toolbar": true,
+      "axf.look.migrated": 1,
+      "axf.legacy.look": "{\"$axf\":\"look-migration@1\",\"version\":1,\"at\":\"2026-11-10T00:00:00Z\",\"settings\":{\"axf.appearance.design\":\"hub-default\",\"axf.appearance.overrides\":{\"color-theme\":\"coral-studio\"},\"axf.hub.appearance.follow\":false,\"axf.look\":{\"space\":2},\"axf.look.sliders\":1}}"
+    },
+    "again": {
+      "changed": false,
+      "set": {},
+      "clear": [],
+      "designPick": "",
+      "backup": {
+        "$axf": "look-migration@1",
+        "version": 1,
+        "at": "2026-11-10T00:00:00Z",
+        "settings": {
+          "axf.appearance.design": "hub-default",
+          "axf.appearance.overrides": {
+            "color-theme": "coral-studio"
+          },
+          "axf.hub.appearance.follow": false,
+          "axf.look": {
+            "space": 2
+          },
+          "axf.look.sliders": 1
+        }
+      }
+    },
+    "needsAfter": false,
+    "back": {
+      "values": {
+        "axf.tokens.theme": {
+          "accent": "#ff8800"
+        },
+        "axf.skin.look": "kept",
+        "axf.hide.toolbar": true,
+        "axf.look.migrated": 1,
+        "axf.legacy.look": "{\"$axf\":\"look-migration@1\",\"version\":1,\"at\":\"2026-11-10T00:00:00Z\",\"settings\":{\"axf.appearance.design\":\"hub-default\",\"axf.appearance.overrides\":{\"color-theme\":\"coral-studio\"},\"axf.hub.appearance.follow\":false,\"axf.look\":{\"space\":2},\"axf.look.sliders\":1}}",
+        "axf.appearance.design": "windows",
+        "axf.appearance.interface": "amber"
+      },
+      "result": {
+        "changed": true,
+        "set": {
+          "axf.look.migrated": 1,
+          "axf.legacy.look": "{\"$axf\":\"look-migration@1\",\"version\":1,\"at\":\"2026-11-10T00:00:00Z\",\"settings\":{\"axf.appearance.design\":\"hub-default\",\"axf.appearance.overrides\":{\"color-theme\":\"coral-studio\"},\"axf.hub.appearance.follow\":false,\"axf.look\":{\"space\":2},\"axf.look.sliders\":1,\"axf.appearance.interface\":\"amber\"}}"
+        },
+        "clear": [
+          "axf.appearance.design",
+          "axf.appearance.interface"
+        ],
+        "designPick": "windows",
+        "backup": {
+          "$axf": "look-migration@1",
+          "version": 1,
+          "at": "2026-11-10T00:00:00Z",
+          "settings": {
+            "axf.appearance.design": "hub-default",
+            "axf.appearance.overrides": {
+              "color-theme": "coral-studio"
+            },
+            "axf.hub.appearance.follow": false,
+            "axf.look": {
+              "space": 2
+            },
+            "axf.look.sliders": 1,
+            "axf.appearance.interface": "amber"
+          }
+        }
+      },
+      "backup": {
+        "$axf": "look-migration@1",
+        "version": 1,
+        "at": "2026-11-10T00:00:00Z",
+        "settings": {
+          "axf.appearance.design": "hub-default",
+          "axf.appearance.overrides": {
+            "color-theme": "coral-studio"
+          },
+          "axf.hub.appearance.follow": false,
+          "axf.look": {
+            "space": 2
+          },
+          "axf.look.sliders": 1,
+          "axf.appearance.interface": "amber"
+        }
+      }
+    },
+    "junkBackup": null,
+    "wrongFrame": null
+  },
+  "combined": {
+    "look": {
+      "$axf": "app-look@1",
+      "app": "app",
+      "default": {
+        "slots": {
+          "layout": "focus-top",
+          "color-theme": "arctic-daylight",
+          "style-theme": "hub",
+          "behavior-theme": "standard",
+          "design-package": "hub-default",
+          "button": "rounded-solid",
+          "toolbar": "standard-icons",
+          "typography": "compact"
+        },
+        "spacing": "tight",
+        "hidden": {
+          "toolbar": true
+        }
+      },
+      "own": {
+        "slots": {}
+      },
+      "skin": {
+        "use": true,
+        "inherit": false,
+        "id": "aurora",
+        "overrides": {
+          "color-theme": "coral-studio"
+        }
+      },
+      "scopes": {},
+      "undo": null,
+      "legacy": {
+        "at": "2026-11-10T00:00:00Z",
+        "own": {
+          "slots": {
+            "color-theme": "coral-studio"
+          }
+        }
+      },
+      "migrated": {
+        "version": 1,
+        "at": "2026-11-10T00:00:00Z",
+        "by": "app"
+      }
+    },
+    "lookChanged": true,
+    "settings": {
+      "set": {
+        "axf.look.migrated": 1,
+        "axf.legacy.look": "{\"$axf\":\"look-migration@1\",\"version\":1,\"at\":\"2026-11-10T00:00:00Z\",\"settings\":{\"axf.appearance.design\":\"aurora\",\"axf.look\":1}}"
+      },
+      "clear": [
+        "axf.appearance.design",
+        "axf.look"
+      ]
+    },
+    "settingsChanged": true,
+    "retired": [
+      "axf.appearance.design",
+      "axf.look"
+    ],
+    "backup": {
+      "$axf": "look-migration@1",
+      "version": 1,
+      "at": "2026-11-10T00:00:00Z",
+      "settings": {
+        "axf.appearance.design": "aurora",
+        "axf.look": 1
+      }
+    },
+    "report": {
+      "skin": "aurora",
+      "folded": {
+        "color-theme": "coral-studio"
+      },
+      "overrides": {
+        "color-theme": "coral-studio"
+      },
+      "kept": {},
+      "reason": "package"
+    },
+    "again": {
+      "look": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "behavior-theme": "standard",
+            "design-package": "hub-default",
+            "button": "rounded-solid",
+            "toolbar": "standard-icons",
+            "typography": "compact"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          }
+        },
+        "own": {
+          "slots": {}
+        },
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "aurora",
+          "overrides": {
+            "color-theme": "coral-studio"
+          }
+        },
+        "scopes": {},
+        "undo": null,
+        "legacy": {
+          "at": "2026-11-10T00:00:00Z",
+          "own": {
+            "slots": {
+              "color-theme": "coral-studio"
+            }
+          }
+        },
+        "migrated": {
+          "version": 1,
+          "at": "2026-11-10T00:00:00Z",
+          "by": "app"
+        }
+      },
+      "lookChanged": false,
+      "settings": {
+        "set": {},
+        "clear": []
+      },
+      "settingsChanged": false,
+      "retired": [],
+      "backup": {
+        "$axf": "look-migration@1",
+        "version": 1,
+        "at": "2026-11-10T00:00:00Z",
+        "settings": {
+          "axf.appearance.design": "aurora",
+          "axf.look": 1
+        }
+      },
+      "report": {
+        "skin": "aurora",
+        "folded": {},
+        "overrides": {},
+        "kept": {},
+        "reason": "nothing"
+      }
+    }
+  }
+}

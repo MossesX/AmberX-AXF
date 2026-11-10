@@ -6,6 +6,7 @@
 import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
+import { foldLegacyPicks, legacyPicks, lookNeedsMigration, migrateLook, migrateLookSettings, parseLegacyLook, settingsNeedMigration } from '../core/engines/look-migration.mjs';
 import { backToSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, lookAfterChange, newAppLook, normalizeSkin, normalizeSkinScope, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setScopeOverride, setScopeSkin, setUseSkin, skinCovers, skinErrors, skinFromDesignPackage, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSlots, snapshotLook, uncoveredTypes, undoRestore } from '../core/engines/skin';
 import { SCALE_TYPES, normalizeScale, scaleErrors, scaleThemeVars, scaleVars } from '../core/engines/scale';
 import { AGENT_CARD_SAMPLE, agentCardErrors, avatarColors, avatarModel, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
@@ -2033,5 +2034,60 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
         globalSkin: { good: globalSkinOf(withGlobal as never), none: globalSkinOf(shared as never), junk: globalSkinOf({ $axf: 'appearance@1', skin: { id: 'Bad Id' } } as never) },
       };
     })(),
+  });
+}
+
+/* ---- look-migration@1 (skins only, Nov 10 2026): the one-run fold of the retired theme / style / layout picks ---- */
+{
+  const skins: Record<string, unknown> = {
+    'hub-default': { layoutTheme: 'classic-ide', colorTheme: 'hub-night', styleTheme: 'hub', assets: { 'behavior-theme': 'standard', button: 'rounded-solid', toolbar: 'standard-icons', typography: 'compact' }, extras: { spacing: 'tight', hidden: { toolbar: true } } },
+    windows: { layoutTheme: 'windows-explorer', colorTheme: 'windows-light', styleTheme: 'windows', assets: { button: 'windows' }, extras: { spacing: 'compact' } },
+    aurora: { layoutTheme: 'focus-top', colorTheme: 'aurora-night', styleTheme: 'hub', assets: {} },
+  };
+  const skinOf = (id: string) => (skins[id] as never) ?? null;
+  const ctx = { skinOf, skinIds: Object.keys(skins), has: () => true, now: '2026-11-10T00:00:00Z', by: 'app' };
+  const snapshot = { slots: { layout: 'focus-top', 'color-theme': 'arctic-daylight', 'style-theme': 'hub', 'behavior-theme': 'standard', 'design-package': 'hub-default', button: 'rounded-solid', toolbar: 'standard-icons', typography: 'compact' }, spacing: 'tight', hidden: { toolbar: true } };
+  const base = newAppLook('app', snapshot);
+  const own = (slots: Record<string, string>, more: Record<string, unknown> = {}) => ({ ...base, own: { slots, ...more } });
+  const cases: Record<string, { look: AppLookDocument; ctx?: Record<string, unknown> }> = {
+    nothing: { look: base },
+    // a skin in force: the picks under it were inert, except a section the skin leaves alone (behaviour) which becomes an override
+    skinOn: { look: { ...own({ 'color-theme': 'coral-studio', 'behavior-theme': 'brisk', 'style-package': 'amber-signature' }), skin: { use: true, inherit: false, id: 'windows', overrides: { toolbar: 'labeled-actions' } } } },
+    // the old picker applied a package (its themes and extras landed in own), then a colour theme was picked over it
+    package: { look: own({ 'design-package': 'hub-default', layout: 'classic-ide', 'color-theme': 'coral-studio', 'style-theme': 'hub', 'behavior-theme': 'standard', button: 'rounded-solid', toolbar: 'standard-icons', typography: 'compact' }, { spacing: 'tight', hidden: { toolbar: true } }) },
+    // the local note (axf.appearance.design) names the package; the document holds one colour pick
+    designPick: { look: own({ 'color-theme': 'coral-studio' }), ctx: { designPick: 'aurora' } },
+    // one colour pick that is exactly a skin: that skin, no overrides
+    match: { look: own({ 'color-theme': 'aurora-night' }) },
+    // a style pick no skin can carry without changing the screen: kept as the app's own
+    noSkin: { look: own({ 'style-theme': 'glass-orbit' }) },
+    // a skin the app does not have reads as off: nothing to fold onto
+    unknownSkinOn: { look: { ...own({ 'color-theme': 'coral-studio' }), skin: { use: true, inherit: false, id: 'nope', overrides: {} } } },
+    // a package the app lacks and a scale pick: the scale pick rides the matched skin as an override
+    scale: { look: own({ 'design-package': 'gone', 'color-theme': 'aurora-night', density: 'spacious' }) },
+  };
+  const fold = Object.fromEntries(Object.entries(cases).map(([name, c]) => {
+    const first = foldLegacyPicks(c.look, { ...ctx, ...(c.ctx ?? {}) });
+    const again = foldLegacyPicks(first.look, { ...ctx, ...(c.ctx ?? {}), now: '2026-12-01T00:00:00Z' });
+    return [name, { before: c.look, picks: legacyPicks(c.look), needs: lookNeedsMigration(c.look), ...first, again: again.look, needsAfter: lookNeedsMigration(first.look) }];
+  }));
+  const values = { 'axf.appearance.design': 'hub-default', 'axf.appearance.overrides': { 'color-theme': 'coral-studio' }, 'axf.look': { space: 2 }, 'axf.look.sliders': 1, 'axf.hub.appearance.follow': false, 'axf.tokens.theme': { accent: '#ff8800' }, 'axf.skin.look': 'kept', 'axf.hide.toolbar': true };
+  const s1 = migrateLookSettings(values, '2026-11-10T00:00:00Z');
+  const applied: Record<string, unknown> = { ...values, ...s1.set };
+  for (const k of s1.clear) delete applied[k];
+  const s2 = migrateLookSettings(applied, '2026-12-01T00:00:00Z');
+  const back = { ...applied, 'axf.appearance.design': 'windows', 'axf.appearance.interface': 'amber' };
+  const s3 = migrateLookSettings(back, '2026-12-02T00:00:00Z');
+  const combined = migrateLook(cases.designPick!.look, { 'axf.appearance.design': 'aurora', 'axf.look': 1 }, ctx);
+  write('look-migration.json', {
+    contract: 'look-migration@1', version: 1,
+    keys: { legacy: 'axf.legacy.look', migrated: 'axf.look.migrated', retired: ['axf.appearance.design', 'axf.appearance.package', 'axf.appearance.overrides', 'axf.appearance.interface', 'axf.look', 'axf.hub.appearance.follow'], retiredPrefixes: ['axf.look.'] },
+    skins, snapshot, fold,
+    settings: {
+      values, first: s1, needsBefore: settingsNeedMigration(values), applied, again: s2, needsAfter: settingsNeedMigration(applied),
+      back: { values: back, result: s3, backup: parseLegacyLook(s3.set['axf.legacy.look']) },
+      junkBackup: parseLegacyLook('not json'), wrongFrame: parseLegacyLook({ $axf: 'appearance@1', settings: {} }),
+    },
+    combined: { ...combined, again: migrateLook(combined.look, (() => { const v: Record<string, unknown> = { 'axf.appearance.design': 'aurora', 'axf.look': 1, ...combined.settings.set }; for (const k of combined.settings.clear) delete v[k]; return v; })(), ctx) },
   });
 }
