@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2634,
- "updatedAt": "2026-11-10T18:02:16.388Z",
+ "rev": 2635,
+ "updatedAt": "2026-11-10T18:02:49.429Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -144114,12 +144114,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T16:43:03.427Z",
-   "updatedAt": "2026-11-10T16:44:43.378Z",
+   "updatedAt": "2026-11-10T18:02:47.724Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T16:44:43.378Z"
+    },
+    {
+     "text": "Split by Claude into 7 steps (0 Fable).",
+     "at": "2026-11-10T18:02:47.724Z"
     }
    ],
    "approvals": [],
@@ -144147,29 +144151,34 @@
     "runs": 0,
     "lastRun": null,
     "split": {
-     "at": "2026-11-10T16:44:43.378Z",
-     "by": "orchestrator",
-     "provider": "rules",
-     "steps": 3,
-     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+     "at": "2026-11-10T18:02:47.724Z",
+     "by": "fix-the-orchestrator-s-splitter-claude-print-get",
+     "provider": "claude",
+     "steps": 7,
+     "note": "Split by Claude into 7 steps (0 Fable)."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
     "dispatchedAt": ""
    },
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mwax7hma01vryr",
+     "uid": "st-mwazzw3069wfpz",
      "title": "",
-     "text": "In the AmberX Android app the rendered page sits too high: the top banner/row is hidden behind the phone's status bar (call notifications) and the camera cutout. Fix edge-to-edge handling: apply system bar and display-cutout insets (WindowInsets / safe-area-inset-top for the web view), so the top row is fully visible. Test on the paired phone, portrait and landscape.",
+     "text": "Locate the AmberX Android WebView host (activity/fragment, theme, manifest) and the web shell's top-banner CSS; note current edge-to-edge setup (enableEdgeToEdge / setDecorFitsSystemWindows, windowLayoutInDisplayCutoutMode, viewport meta) and record findings in the build notes.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "30 min",
-     "files": [],
+     "estimate": "15 min",
+     "files": [
+      "apps/amberx-android/app/src/main/java/",
+      "apps/amberx-android/app/src/main/res/values/themes.xml",
+      "apps/amberx-android/app/src/main/AndroidManifest.xml",
+      "apps/amberx-android/app/src/main/assets/"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -144178,20 +144187,24 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-10T16:44:43.378Z",
-     "updatedAt": "2026-11-10T16:44:43.378Z"
+     "createdAt": "2026-11-10T18:02:47.724Z",
+     "updatedAt": "2026-11-10T18:02:47.724Z"
     },
     {
      "id": "s2",
-     "uid": "st-mwax7hma026l9w",
+     "uid": "st-mwazzw306arwet",
      "title": "",
-     "text": "Fix the top bar of the AmberX app because it's behind my top banner where my call notifications are. It renders the web page too high up for the screen. The top row is hidden. The banner's behind stuff like my camera.",
+     "text": "Native fix: in the WebView host, apply ViewCompat.setOnApplyWindowInsetsListener combining WindowInsetsCompat.Type.systemBars() | displayCutout(); pad the WebView container top/left/right/bottom by those insets (portrait and landscape), set layoutInDisplayCutoutMode to shortEdges, and keep status bar icons readable over the banner colour.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "30 min",
-     "files": [],
+     "files": [
+      "apps/amberx-android/app/src/main/java/",
+      "apps/amberx-android/app/src/main/res/values/themes.xml",
+      "apps/amberx-android/app/src/main/res/layout/"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -144200,14 +144213,118 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-10T16:44:43.378Z",
-     "updatedAt": "2026-11-10T16:44:43.378Z"
+     "createdAt": "2026-11-10T18:02:47.724Z",
+     "updatedAt": "2026-11-10T18:02:47.724Z"
     },
     {
      "id": "s3",
-     "uid": "st-mwax7hma033sqy",
+     "uid": "st-mwazzw306brmos",
      "title": "",
-     "text": "Tests green, report _claude/builds/reports/amberx-android-web-view-top-banner-hidden-behind.md, THREADS row, commit, push, PR",
+     "text": "Web side: add viewport-fit=cover to the viewport meta and make the top banner/row use padding-top: env(safe-area-inset-top) (plus left/right for landscape cutouts), with a JS bridge fallback that sets --sat/--sal/--sar/--sab CSS variables from the native insets for WebView versions where env() reports 0; ensure no double padding with the native fix.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/amberx-android/app/src/main/java/",
+      "apps/console-web/public/",
+      "apps/console-web/src/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T18:02:47.724Z",
+     "updatedAt": "2026-11-10T18:02:47.724Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwazzw306c9d59",
+     "title": "",
+     "text": "API part: expose the applied insets and edge-to-edge mode as readable state (top/left/right/bottom px, cutout present, orientation) via the console API REST route, an MCP console action, the CLI (`axf amberx insets`) and an AmberX voice query, all returning the same payload; reuse the existing console_show/console_open deep link for the AmberX app view. No new settings or actions are added (layout fix only).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/amberx-android/app/src/main/java/",
+      "apps/console-web/plugins/",
+      "apps/console-web/src/api/",
+      "apps/cli/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T18:02:47.724Z",
+     "updatedAt": "2026-11-10T18:02:47.724Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwazzw306d8fsa",
+     "title": "",
+     "text": "Tests: add an instrumented/Robolectric test that dispatches fake WindowInsets (status bar 32dp + top cutout, then landscape side cutout) and asserts the WebView container padding; add a web unit test for the safe-area CSS variables; add an API test for the insets state read across REST/MCP/CLI.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/amberx-android/app/src/test/",
+      "apps/amberx-android/app/src/androidTest/",
+      "apps/console-web/test/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T18:02:47.724Z",
+     "updatedAt": "2026-11-10T18:02:47.724Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwazzw306eouei",
+     "title": "",
+     "text": "Build the debug APK, install on the paired phone via adb, verify portrait and landscape (with an active call notification) that the top row is fully visible and not under the status bar or camera cutout; capture adb screenshots plus the insets state read output as evidence.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/amberx-android/",
+      "_claude/builds/reports/amberx-android-web-view-top-banner-hidden-behind/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T18:02:47.724Z",
+     "updatedAt": "2026-11-10T18:02:47.724Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwazzw306foqfl",
+     "title": "",
+     "text": "Run the full test suites, write the report (_claude/builds/reports/amberx-android-web-view-top-banner-hidden-behind.md) with before/after screenshots and how the insets state is reached via deep link, REST, MCP, CLI and voice, add the THREADS row, and open the PR stating the same API reach.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -144225,8 +144342,8 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-10T16:44:43.378Z",
-     "updatedAt": "2026-11-10T16:44:43.378Z"
+     "createdAt": "2026-11-10T18:02:47.724Z",
+     "updatedAt": "2026-11-10T18:02:47.724Z"
     }
    ],
    "profiles": [
@@ -144237,12 +144354,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-10T16:44:43.378Z",
+   "defaultAt": "2026-11-10T18:02:47.724Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
