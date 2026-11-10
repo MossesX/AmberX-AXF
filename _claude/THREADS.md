@@ -772,8 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 16:07 UTC · `account-order-switch-custom-drag-and-drop-order` note (all) · orchestrator
-- 2026-11-10 16:09 UTC · `retire-build-manager-the-orchestrator-is-the-onl` s1 done, → running (all) · orchestrator
 - 2026-11-10 16:09 UTC · `retire-build-manager-the-orchestrator-is-the-onl` s2 done (all) · orchestrator
 - 2026-11-10 16:12 UTC · `account-order-switch-custom-drag-and-drop-order` s1 done (all) · orchestrator
 - 2026-11-10 16:14 UTC · `account-order-switch-custom-drag-and-drop-order` s2 done (all) · orchestrator
@@ -1172,6 +1170,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 19:09 UTC · `audit-pending-fable-builds-against-main-close-wh` → running, note (all) · orchestrator
 - 2026-11-10 19:09 UTC · `audit-pending-fable-builds-against-main-close-wh` → archived (all) · orchestrator
 - 2026-11-10 19:09 UTC · `orchestrator-checks-shipped-features-before-spli` note (all) · orchestrator
+- 2026-11-10 19:10 UTC · `orchestrator-checks-shipped-features-before-spli` note (all) · foreign-write
+- 2026-11-10 19:10 UTC · `audit-pending-fable-builds-against-main-close-wh` → archived, note (all) · foreign-write
 
 ## Token passes (log)
 
