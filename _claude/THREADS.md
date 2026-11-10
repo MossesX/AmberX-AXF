@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:09 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → queued, note (all) · pipeline
 - 2026-11-10 17:09 UTC · `search-bar-plugin-add-on-search-builds-session-h` → pending (all) · voice
 - 2026-11-10 17:09 UTC · `project-manager-add-on-drag-a-build-to-another-p` → pending (all) · voice
 - 2026-11-10 17:09 UTC · `project-manager-every-project-its-own-console-in` → pending (all) · voice
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 20:59 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` → queued, note (all) · console
 - 2026-11-10 20:59 UTC · `make-hulu-actually-take-builds-dispatcher-counts` added (0 steps) (all) · console
 - 2026-11-10 20:59 UTC · `make-hulu-actually-take-builds-dispatcher-counts` → queued, note (all) · console
+- 2026-11-10 21:00 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` note (all) · orchestrator
 
 ## Token passes (log)
 
