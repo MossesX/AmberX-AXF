@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:35 UTC · `shared-screenshot-registry-hooked-everywhere-liv` note (all) · orchestrator
 - 2026-11-10 17:35 UTC · `shared-screenshot-registry-hooked-everywhere-liv` note (all) · builds-live
 - 2026-11-10 17:35 UTC · `resolve-conflicts-and-land-pr-449-account-order` note (all) · orchestrator
 - 2026-11-10 17:36 UTC · `resolve-conflicts-and-land-pr-449-account-order` note (all) · builds-live
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 21:44 UTC · `no-veto-timer-on-navigation-follow-amber-open-x` s1 done, → running (all) · orchestrator
 - 2026-11-10 21:44 UTC · `no-veto-timer-on-navigation-follow-amber-open-x` s2 done (all) · orchestrator
 - 2026-11-10 21:44 UTC · `finish-and-land-the-git-status-board-every-ready` note (all) · orchestrator
+- 2026-11-10 21:45 UTC · `finish-and-land-the-git-status-board-every-ready` note (all) · orchestrator
 
 ## Token passes (log)
 
