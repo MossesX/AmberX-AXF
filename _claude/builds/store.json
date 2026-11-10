@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2078,
- "updatedAt": "2026-11-10T00:09:07.784Z",
+ "rev": 2079,
+ "updatedAt": "2026-11-10T00:09:27.094Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -132295,7 +132295,7 @@
    "title": "Assign an employee to every role, action type and app; avatars in the Activity Monitor; who-has-which-job board",
    "category": "",
    "detail": "Goes with the Activity Monitor build. 1) Every role gets a named employee (crew agent profile): orchestrator, dispatcher, each app (console, AmberX, Molly, axHub, Patches...), each action type (builds, approvals, fixes, deploys, accounts, notifications, git/merge, etc.). Use existing crew where they fit, create the rest with names and avatars. 2) Every Activity Monitor entry shows the acting employee's avatar and name like a chat message; click opens their profile: role, jobs, current work, full activity history. 3) A Who does what board: every job/role and the employee that holds it, reassignable. Full API control.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -132303,8 +132303,8 @@
    "pr": "#419",
    "priority": "P1",
    "createdAt": "2026-11-09T23:50:13.944Z",
-   "updatedAt": "2026-11-10T00:09:02.909Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T00:09:10.889Z",
+   "builtAt": "2026-11-10T00:09:10.889Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -132321,6 +132321,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-assign-an-employee-to-every-role-action-type-and--paulie, own login copy)",
      "at": "2026-11-09T23:52:30.365Z"
+    },
+    {
+     "text": "PR #419 open. UI Review screenshots still owed: the headless session had no console running on the branch to capture (Activity rows with faces, Who does what, profile Jobs + history, Run by chip; desktop + phone).",
+     "at": "2026-11-10T00:09:07.441Z"
     }
    ],
    "approvals": [],
@@ -132500,12 +132504,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T00:09:10.889Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-09T23:52:16.582Z",
-     "updatedAt": "2026-11-09T23:52:16.582Z"
+     "updatedAt": "2026-11-10T00:09:11.548Z"
     }
    ],
    "profiles": [
@@ -132516,7 +132520,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
