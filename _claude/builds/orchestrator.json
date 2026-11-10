@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T00:54:00.493Z",
+ "updatedAt": "2026-11-10T00:54:22.137Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -81659,7 +81659,7 @@
    "title": "Build statuses tell the truth + orchestrator list: expandable root rows, working date sort, category optional",
    "category": "",
    "detail": "A) STATUSES: 1) A build says Running only when a live tmux or claude session exists for it right now. Every dispatcher tick corrects anything else marked Running (e.g. the 11 x.* builds stuck since Oct 31). 2) Finished builds don't go back into Pending. They go to: Needs something, with the exact need (screenshots for UI Review, PR merge/land, sign-in, an account with credits, a key/token, a decision from Brett, a Fable review, a disk/env fix), read from the session report and build notes; then Ready to land; then Landed. 3) Show the need as a badge plus one plain sentence on the row, with a button that does it or jumps to it. 4) Auto-handle whatever doesn't need Brett, per the fix-it-yourself rule. 5) Same statuses everywhere (orchestrator, Build Manager, Home card, AmberX, API). B) LIST: 1) Default view is expandable rows grouped by root: each root build is a row that expands to show its child builds and steps. Not a plain flat list, and not forced category grouping. 2) Category, status, priority and account grouping are optional, picked from a Group by control. 3) Sort by date (created, updated, queued) works in both directions, inside groups too, and is remembered. 4) Same controls in Build Manager. Verify on the live console, desktop and phone.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -81667,8 +81667,8 @@
    "pr": "#423",
    "priority": "P0",
    "createdAt": "2026-11-10T00:16:50.544Z",
-   "updatedAt": "2026-11-10T00:53:57.371Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T00:54:07.801Z",
+   "builtAt": "2026-11-10T00:54:07.801Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -81685,6 +81685,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-build-statuses-tell-the-truth-orchestrator-list--lenny, own login copy)",
      "at": "2026-11-10T00:37:26.111Z"
+    },
+    {
+     "text": "PR #423 open. Not yet in UI Review: desktop + phone screenshots of the Builds tab (root rows, Group by, Sort by, need badges) and the Builds page still to take and submit before it is called ready.",
+     "at": "2026-11-10T00:54:01.033Z"
     }
    ],
    "approvals": [],
@@ -81754,8 +81758,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T00:54:07.801Z",
      "note": "",
      "uid": "st-mw9xyfgn03aw8t"
     }
