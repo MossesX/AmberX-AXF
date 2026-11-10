@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2611,
- "updatedAt": "2026-11-10T17:54:18.399Z",
+ "rev": 2612,
+ "updatedAt": "2026-11-10T17:54:42.513Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -143567,7 +143567,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T16:51:08.892Z",
-   "updatedAt": "2026-11-10T17:48:28.532Z",
+   "updatedAt": "2026-11-10T17:54:36.613Z",
    "builtAt": "",
    "notes": [
     {
@@ -143622,7 +143622,13 @@
     "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-10T17:46:06.971Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": ""
    },
@@ -143664,12 +143670,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T17:54:36.613Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T16:52:25.257Z",
-     "updatedAt": "2026-11-10T16:52:25.257Z"
+     "updatedAt": "2026-11-10T17:54:36.793Z"
     },
     {
      "id": "s3",
@@ -143705,7 +143711,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
