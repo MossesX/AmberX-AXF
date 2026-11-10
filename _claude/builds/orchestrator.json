@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T16:45:58.628Z",
+ "updatedAt": "2026-11-10T16:46:21.384Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -86437,6 +86437,43 @@
    "origin": {
     "said": "That's the way to do it, right? Why do I have to figure this shit out on my own?",
     "at": "2026-11-10T16:45:23.543Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "claude-md-standing-rule-be-proactive-bring-up-th",
+   "title": "CLAUDE.md standing rule: be proactive, bring up the right way, catches and follow-ups without being asked",
+   "category": "",
+   "detail": "Add to the shared CLAUDE.md rules every Claude session reads (and the orchestrator brief rules, headless rules, agent profiles): proactively bring up the right/standard way to do things, known catches and needed follow-ups, and include them in the work. Never wait for Brett to figure it out or ask. Don't just agree with his plan; say plainly when something's wrong or missing. Small change: land it right away.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-10T16:45:47.022Z",
+   "updatedAt": "2026-11-10T16:45:49.248Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T16:45:49.248Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I can't believe I have to tell you half of the shit I do. I have to tell you what to do, and you're the one who has to tell me if I'm right or wrong. Put it in CLAUDE.md.",
+    "at": "2026-11-10T16:45:47.022Z",
     "source": "",
     "session": "",
     "link": "",

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2481,
- "updatedAt": "2026-11-10T16:45:58.628Z",
+ "rev": 2482,
+ "updatedAt": "2026-11-10T16:46:21.384Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -139973,6 +139973,77 @@
    ],
    "order": {
     "all": 558
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "claude-md-standing-rule-be-proactive-bring-up-th",
+   "title": "CLAUDE.md standing rule: be proactive, bring up the right way, catches and follow-ups without being asked",
+   "category": "",
+   "detail": "Add to the shared CLAUDE.md rules every Claude session reads (and the orchestrator brief rules, headless rules, agent profiles): proactively bring up the right/standard way to do things, known catches and needed follow-ups, and include them in the work. Never wait for Brett to figure it out or ask. Don't just agree with his plan; say plainly when something's wrong or missing. Small change: land it right away.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-10T16:45:47.022Z",
+   "updatedAt": "2026-11-10T16:45:49.248Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T16:45:49.248Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I can't believe I have to tell you half of the shit I do. I have to tell you what to do, and you're the one who has to tell me if I'm right or wrong. Put it in CLAUDE.md.",
+    "at": "2026-11-10T16:45:47.022Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-10T16:45:48.741Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": ""
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 559
    },
    "kind": "build",
    "planRef": "",

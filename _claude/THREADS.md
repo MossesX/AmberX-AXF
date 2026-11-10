@@ -771,11 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 02:57 UTC · `test-button-on-every-claude-account-subscription` s2 done (all) · orchestrator
-- 2026-11-10 02:59 UTC · `self-healing-build-folders-auto-clear-stale-git` → queued, note (all) · pipeline
-- 2026-11-10 02:59 UTC · `test-button-on-every-claude-account-subscription` PR #434 (all) · builds-live
-- 2026-11-10 03:00 UTC · `test-button-on-every-claude-account-subscription` s3 done, → built (all) · orchestrator
-- 2026-11-10 03:03 UTC · `test-button-on-every-claude-account-subscription` note (all) · orchestrator
 - 2026-11-10 03:04 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → pending, note (all) · reconciler
 - 2026-11-10 03:04 UTC · `split-builds-pages-build-manager-pending-complet` → built, PR #432, note (all) · reconciler
 - 2026-11-10 03:04 UTC · `test-button-on-every-claude-account-subscription` note (all) · orchestrator
@@ -1171,6 +1166,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 16:44 UTC · `merge-queue-batching-orchestrator-combines-ready` → queued, note (all) · console
 - 2026-11-10 16:45 UTC · `merge-queue-batching-orchestrator-combines-ready` added (0 steps) (all) · builds-live
 - 2026-11-10 16:45 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` added (0 steps) (all) · builds-live
+- 2026-11-10 16:45 UTC · `merge-queue-batching-orchestrator-combines-ready` added (0 steps) (all) · foreign-write
+- 2026-11-10 16:45 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` added (0 steps) (all) · console
+- 2026-11-10 16:45 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` → queued, note (all) · console
+- 2026-11-10 16:45 UTC · `claude-md-standing-rule-be-proactive-bring-up-th` added (0 steps) (all) · console
+- 2026-11-10 16:45 UTC · `claude-md-standing-rule-be-proactive-bring-up-th` → queued, note (all) · console
 
 ## Token passes (log)
 
