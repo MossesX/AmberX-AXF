@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 21:10 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · orchestrator
 - 2026-11-09 21:40 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → pending, note (all) · reconciler
 - 2026-11-09 23:43 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → queued, note (all) · console
 - 2026-11-09 23:44 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → running, note (all) · pipeline
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 04:28 UTC · `auto-land-every-build-the-moment-it-finishes-red` added (0 steps) (all) · console
 - 2026-11-10 04:28 UTC · `auto-land-every-build-the-moment-it-finishes-red` → queued, note (all) · console
 - 2026-11-10 04:28 UTC · `landing-tool-takes-long-build-names-and-auto-fix` note (all) · orchestrator
+- 2026-11-10 04:28 UTC · `split-builds-pages-build-manager-pending-complet-3` note (all) · pipeline
 
 ## Token passes (log)
 
