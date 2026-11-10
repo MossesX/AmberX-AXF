@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T01:48:08.740Z",
+ "updatedAt": "2026-11-10T01:48:24.797Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -80626,7 +80626,7 @@
    "title": "Test button on every Claude account (subscription and API)",
    "category": "",
    "detail": "Claude accounts page (Settings > Plugins > Claude accounts) and Job routing: a Test button on every account row that runs a tiny no-tool check with that account's saved login or API key (no AI build, minimal tokens) and shows alive / expired login / bad key / out of credits / limit hit, which models it can run (Opus, Fable), and when it was last checked. Test all button. Same check runs before the orchestrator launches on an account. Full API control.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -80634,7 +80634,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T20:16:02.957Z",
-   "updatedAt": "2026-11-10T01:48:05.913Z",
+   "updatedAt": "2026-11-10T01:48:13.306Z",
    "builtAt": "",
    "notes": [
     {
@@ -80700,6 +80700,14 @@
     {
      "text": "amber asked to run this build on API account account-5 (request rr-mwa0yhwk-ym8b); it waits for Brett's approval.",
      "at": "2026-11-10T01:42:03.144Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-test-button-on-every-claude-account-subscription--gina.",
+     "at": "2026-11-10T01:48:10.993Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-test-button-on-every-claude-account-subscription--gina, own login copy)",
+     "at": "2026-11-10T01:48:13.306Z"
     }
    ],
    "approvals": [],
