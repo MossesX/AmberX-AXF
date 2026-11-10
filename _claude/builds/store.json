@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2195,
- "updatedAt": "2026-11-10T02:22:31.316Z",
+ "rev": 2196,
+ "updatedAt": "2026-11-10T02:22:54.127Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -134412,16 +134412,22 @@
    "title": "Self-healing build folders: auto-clear stale git locks and stray files, plain script, no AI",
    "category": "",
    "detail": "Plain code (no AI, zero tokens), run by the dispatcher tick and before every launch, land and rerun. 1) Stale git locks: find index.lock, HEAD.lock, refs locks and worktree locks under /opt/axf/.git and every /root/axf-builds/* folder. If no live git process holds them and they're older than 2 minutes, remove them. 2) Stray files that block landing (assets.log, build logs, _claude/builds sync files): restore tracked ones and stash or ignore untracked ones, then retry the land automatically. 3) Crashed sessions: tmux or claude processes dead with the build marked running get reset and requeued (works with the reaper). 4) Every auto-fix is logged in the fix log and Automatic fixes notes, with an AmberX FYI. 5) Same guard after any git operation fails with a lock error: clear it and retry once. 6) Tests with fake locks and crashed runs. Same bug twice gets a guard, per it-has-to-work.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-10T02:22:06.131Z",
-   "updatedAt": "2026-11-10T02:22:06.131Z",
+   "updatedAt": "2026-11-10T02:22:15.710Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T02:22:15.710Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -134436,6 +134442,22 @@
     "from": "",
     "addenda": []
    },
+   "pipeline": {
+    "queuedAt": "2026-11-10T02:22:12.571Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -134445,7 +134467,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
