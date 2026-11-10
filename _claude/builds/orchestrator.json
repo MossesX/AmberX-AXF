@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:41:01.231Z",
+ "updatedAt": "2026-11-10T17:41:34.114Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77412,7 +77412,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T03:02:16.421Z",
-   "updatedAt": "2026-11-09T03:03:15.234Z",
+   "updatedAt": "2026-11-10T17:41:15.891Z",
    "builtAt": "",
    "notes": [
     {
@@ -77422,6 +77422,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-09T03:03:15.234Z"
+    },
+    {
+     "text": "Split by Claude into 15 steps (2 Fable).",
+     "at": "2026-11-10T17:41:15.891Z"
     }
    ],
    "approvals": [],
@@ -77441,13 +77445,17 @@
    "steps": [
     {
      "id": "s1",
-     "text": "Repo: axHub (policy store) + console/axhub-web screen. One Permissions panel listing every connected service and every tool (vps.build_start, vps.run, axf-console.*, github, hostinger, amberx...) with its policy (allow / veto countdown / confirm / deny), countdown length, who may call it (Brett's sessions, Claude sessions, headless builds, agents), and passes. Brett changes a policy with a dropdown; bulk change per service or by filter (destructive, writes, reads). Tree grouped by service > category, search, filters, live type-ahead. Every change logged with history and undo. Claude sessions and builds can read policies but never change them (owner-only, enforced on the hub, not just the UI). First change: set vps.build_start to deny so only the orchestrator launches builds. Full API (read for all, write owner-only), voice for Brett. 3 layout options to UI Review.",
-     "model": "Opus",
-     "why": "",
+     "text": "Design the axHub policy store schema and migration. One record per tool (service, tool id, category tags destructive/writes/reads, mode allow|veto|confirm|deny, countdown seconds, allowed callers brett-session|claude-session|headless-build|agent, passes). Add an append-only change-history table with actor, before/after and undo link. Write a migration that imports today's scattered veto/confirm/pass settings into the store without changing any effective policy.",
+     "model": "Fable",
+     "why": "Schema plus migration design for the hub's central policy store",
      "phase": "",
      "group": "",
      "estimate": "30 min",
-     "files": [],
+     "files": [
+      "apps/axhub/src/policy/schema.mjs",
+      "apps/axhub/src/policy/migrations/001-policy-store.mjs",
+      "apps/axhub/src/policy/README.md"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -77455,17 +77463,20 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw8of7z701qzlf"
+     "uid": "st-mwaz87ar0qvxz3"
     },
     {
      "id": "s2",
-     "text": "I need a control panel for all those settings, those permission settings.",
-     "model": "Opus",
-     "why": "",
+     "text": "Define the cross-port policy contract axhub-policy@1. It covers REST shapes (tree, search, filter, get, set, bulk set, history, undo), MCP tool names, control@1 ops, the CLI verbs, the live change event stream, and owner-only write semantics with error codes. Every surface (console API, MCP, CLI, AmberX voice) maps 1:1 to it.",
+     "model": "Fable",
+     "why": "Cross-port contract shared by hub, console, MCP, CLI and voice",
      "phase": "",
      "group": "",
-     "estimate": "30 min",
-     "files": [],
+     "estimate": "25 min",
+     "files": [
+      "docs/contracts/axhub-policy@1.md",
+      "apps/axhub/src/policy/contract.mjs"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -77473,16 +77484,272 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw8of7z7023tt9"
+     "uid": "st-mwaz87ar0r2i6u"
     },
     {
      "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/permissions-control-panel-every-axhub-tool-s-pol.md, THREADS row, commit, push, PR",
+     "text": "Build the tool registry inventory. Enumerate every connected service and tool (vps.build_start, vps.run, axf-console.*, github, hostinger, amberx, ...) from the hub's connection manifests. Classify each tool into a category and destructive/writes/reads, and seed missing tools with a safe default (confirm). Re-sync when a service connects or disconnects.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/axhub/src/policy/registry.mjs",
+      "apps/axhub/src/connections/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz87ar0s612c"
+    },
+    {
+     "id": "s4",
+     "text": "Enforce policies on the hub, not in the UI. The tool-call gate resolves caller identity (Brett session, Claude session, headless build, agent) and applies allow/veto countdown/confirm/deny plus the caller list and passes. Policy writes are owner-only: any non-owner caller gets 403 with a clear message. Reads stay open to all authenticated callers.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/axhub/src/policy/enforce.mjs",
+      "apps/axhub/src/gate/tool-call.mjs",
+      "apps/axhub/src/auth/caller-identity.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz87as0tui5z"
+    },
+    {
+     "id": "s5",
+     "text": "Add the history and undo service. Every single or bulk change is written as one history entry, with a bulk change grouped under one id. Undo restores the before-state, is itself logged, and is also owner-only. Each change emits a live event for the panel.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/axhub/src/policy/history.mjs",
+      "apps/axhub/src/policy/events.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz87as0uciwt"
+    },
+    {
+     "id": "s6",
+     "text": "Add the REST routes: GET /policies (tree grouped by service > category, with q= type-ahead search and filters by mode/category/caller), GET /policies/:tool, PUT /policies/:tool, POST /policies/bulk (by service or by filter), GET /policies/history, POST /policies/history/:id/undo. Write routes go through owner-only enforcement. Proxy the routes through the console API.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/axhub/src/routes/policies.mjs",
+      "apps/console-web/server/routes/axhub-policies.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz87as0v4z2r"
+    },
+    {
+     "id": "s7",
+     "text": "Expose the same operations through MCP and the CLI. Add MCP console actions (policy.list/get/set/bulk/history/undo), control@1 ops for policy items, and CLI `axf policy list|get|set|bulk|history|undo` with the same filters. Writes from Claude sessions and builds are rejected by the hub.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/axhub/src/mcp/policy-tools.mjs",
+      "apps/axhub/src/control/control-v1-policy.mjs",
+      "framework/cli/policy.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz87as0wg4d5"
+    },
+    {
+     "id": "s8",
+     "text": "Add AmberX voice intents for Brett. Read intents: 'what's the policy for vps.run', 'which tools are deny'. Write intents: 'set github writes to confirm', 'undo last permission change', 'open permissions'. Writes need the owner voice session and are spoken back before they apply.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/amberx/intents/permissions.mjs",
+      "apps/amberx/intents/permissions.test.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz87as0xvt11"
+    },
+    {
+     "id": "s9",
+     "text": "Build the shared Permissions panel core in console/axhub-web. It includes the data hook on GET /policies with live events, the policy dropdown per tool, countdown and caller editors, pass list, bulk change bar (per service or current filter), live type-ahead search, filter chips (destructive/writes/reads, mode, caller), and a history drawer with undo. Register deep link console_show/console_open target 'permissions' (with optional tool= / service= / filter=). Make the panel state readable via the console state API.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/axhub-web/src/permissions/core/",
+      "apps/console-web/plugins/axhub-permissions/plugin.mjs",
+      "apps/console-web/plugins/axhub-permissions/state.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz87as0yr12o"
+    },
+    {
+     "id": "s10",
+     "text": "Build layout option A: a collapsible tree (service > category > tool) with an inline dropdown per row and a sticky bulk bar. It reuses the core and adds no new actions. The deep link 'permissions?layout=a' and the state read come from the core.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/axhub-web/src/permissions/layouts/tree.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz87as0zxffi"
+    },
+    {
+     "id": "s11",
+     "text": "Build layout option B (dense filterable table with column sort and multi-select) and layout option C (service cards with a per-service default and expandable tool lists). Both reuse the core. Add deep links 'permissions?layout=b|c'.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/axhub-web/src/permissions/layouts/table.mjs",
+      "apps/axhub-web/src/permissions/layouts/cards.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz87as10trw0"
+    },
+    {
+     "id": "s12",
+     "text": "Submit the 3 layouts to UI Review with screenshots and deep links. Add a setting for the chosen layout, readable and settable through REST, MCP, CLI (`axf policy layout`) and voice.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "20 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/submissions/permissions-control-panel.json",
+      "apps/console-web/plugins/axhub-permissions/settings.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz87at11rgza"
+    },
+    {
+     "id": "s13",
+     "text": "Make the first change as owner through the API: set vps.build_start to deny for every caller except the orchestrator's build-launch identity (via a pass). Check that a Claude session and a headless build are refused and that the orchestrator still launches builds. Record the change in policy history.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "apps/axhub/src/policy/seeds/vps-build-start-deny.mjs",
+      "apps/console-web/plugins/build-orchestrator/pipeline-core.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz87at12zj96"
+    },
+    {
+     "id": "s14",
+     "text": "Write tests covering: migration keeps effective policies unchanged; enforcement for every mode and caller; owner-only writes rejected for Claude sessions, builds and agents on REST, MCP, CLI and voice; bulk by service and by filter; history and undo; registry sync; type-ahead search and filters; deep link and state read for each layout.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/axhub/src/policy/policy.test.mjs",
+      "apps/axhub/src/routes/policies.test.mjs",
+      "apps/axhub-web/src/permissions/permissions.test.mjs",
+      "framework/cli/policy.test.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwaz87at13outm"
+    },
+    {
+     "id": "s15",
+     "text": "Run the full test suites and fix any failures. Write the report _claude/builds/reports/permissions-control-panel-every-axhub-tool-s-pol.md (what was built, the vps.build_start change, how each UI part is reached via deep link, state read, REST, MCP, CLI and voice). Add the THREADS row and open the PR, with the same API access table in the PR description.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
      "files": [
       "_claude/builds/reports/permissions-control-panel-every-axhub-tool-s-pol.md",
       "_claude/THREADS.md"
@@ -77494,7 +77761,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw8of7z703zubg"
+     "uid": "st-mwaz87at1444ia"
     }
    ]
   },
