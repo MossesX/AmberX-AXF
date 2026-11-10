@@ -108,7 +108,7 @@ finally:
 # ---- build optimizer (build-optimize@1): Deep mode with a fake AI, every fallback to Basic, notifications
 with tempfile.TemporaryDirectory() as d:
     step = lambda b, i, text, f: {"id": f"s{i}", "uid": f"{b}-s{i}", "text": text, "model": "Opus", "estimate": "20 min", "files": [f]}  # noqa: E731
-    builds = [{"id": b, "title": b, "status": "pending", "profiles": ["p"], "order": {"p": i}, "createdAt": "2026-11-01T00:00:00Z", "steps": [step(b, 1, f"{b} grid work", "apps/console-web/plugins/changes-grid/web/a.tsx")]} for i, b in enumerate(["alpha", "beta"])]
+    builds = [{"id": b, "title": b, "status": "pending", "profiles": ["p"], "order": {"p": i}, "createdAt": "2026-11-01T00:00:00Z", "steps": [step(b, 1, f"{b} grid work", "apps/console-web/plugins/example-grid/web/a.tsx")]} for i, b in enumerate(["alpha", "beta"])]
     Path(d, "store.json").write_text(json.dumps({"$axf": "builds@1", "rev": 1, "builds": builds}))
     os.environ.update(AXF_BUILDS_STORE=str(Path(d, "store.json")), AXF_OPTIMIZER_FILE=str(Path(d, "opt.json")), AXF_BUILDS_LIVE="0")
     alerts: list[dict] = []

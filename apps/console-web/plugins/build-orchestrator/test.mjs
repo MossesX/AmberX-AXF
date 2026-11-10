@@ -274,12 +274,12 @@ t('approvals off: an open request filed while they were on is closed when the ph
   const st = (id, text, model = 'Opus', extra = {}) => ({ id, uid: `${extra.b ?? 'x'}-${id}`, text, model, estimate: '20 min', ...extra });
   const mk = (id, steps, extra = {}) => ({ id, title: id, category: extra.category ?? 'Console', status: extra.status ?? 'pending', profiles: ['p'], order: { p: extra.order ?? 0 }, createdAt: '2026-11-01T00:00:00Z', origin: { said: `do ${id}` }, ...extra, steps: steps.map((x) => ({ ...x, uid: `${id}-${x.id}` })) });
   const builds = () => S.normalizeStore({ builds: [
-    mk('a', [st('s1', 'Grid sorting in the datagrid', 'Opus', { files: ['apps/console-web/plugins/changes-grid/web/x.tsx'] }), st('s2', 'Grid column picker', 'Opus', { files: ['apps/console-web/plugins/changes-grid/web/y.tsx'] })], { order: 0 }),
-    mk('b', [st('s1', 'Grid export to csv', 'Opus', { files: ['apps/console-web/plugins/changes-grid/web/z.tsx'] })], { order: 1 }),
+    mk('a', [st('s1', 'Grid sorting in the datagrid', 'Opus', { files: ['apps/console-web/plugins/example-grid/web/x.tsx'] }), st('s2', 'Grid column picker', 'Opus', { files: ['apps/console-web/plugins/example-grid/web/y.tsx'] })], { order: 0 }),
+    mk('b', [st('s1', 'Grid export to csv', 'Opus', { files: ['apps/console-web/plugins/example-grid/web/z.tsx'] })], { order: 1 }),
     mk('c', [st('s1', 'Kernel contract for widgets', 'Fable', { files: ['framework/core/engines/w.ts'] })], { order: 2 }),
     mk('d', [st('s1', 'Engine fixture for widgets', 'Fable', { files: ['framework/core/engines/v.ts'] })], { order: 3 }),
-    mk('run', [st('s1', 'Being built now', 'Opus'), st('s2', 'Waiting after it', 'Opus', { files: ['apps/console-web/plugins/changes-grid/web/w.tsx'] })], { order: 4, status: 'running' }),
-    mk('pin', [st('s1', 'Pinned work on the grid', 'Opus', { files: ['apps/console-web/plugins/changes-grid/web/q.tsx'] })], { order: 5, pinned: true }),
+    mk('run', [st('s1', 'Being built now', 'Opus'), st('s2', 'Waiting after it', 'Opus', { files: ['apps/console-web/plugins/example-grid/web/w.tsx'] })], { order: 4, status: 'running' }),
+    mk('pin', [st('s1', 'Pinned work on the grid', 'Opus', { files: ['apps/console-web/plugins/example-grid/web/q.tsx'] })], { order: 5, pinned: true }),
     mk('done', [{ ...st('s1', 'Grid export to csv file', 'Opus'), done: true }], { order: 6, status: 'complete', pr: '#1' }),
   ] });
   const store0 = builds(); store0.builds.find((b) => b.id === 'pin').pinned = true; // normBuild drops unknown keys: pins come from settings too
@@ -299,7 +299,7 @@ t('approvals off: an open request filed while they were on is closed when the ph
     const pl = O.plan(sc.items, { settings, builds: store0.builds });
     assert.equal(pl.mode, 'basic');
     const grid = pl.packs.find((p) => p.keys.includes('a/a-s1'));
-    assert.ok(grid.keys.includes('b/b-s1') && grid.keys.includes('run/run-s2'), 'claims on changes-grid packed together');
+    assert.ok(grid.keys.includes('b/b-s1') && grid.keys.includes('run/run-s2'), 'claims on example-grid packed together');
     const kern = pl.packs.find((p) => p.keys.includes('c/c-s1'));
     assert.ok(kern.keys.includes('d/d-s1') && kern.model === 'Fable' && kern !== grid, 'Fable work apart, kernel claims together');
     assert.deepEqual(grid.keys.slice(0, 2), ['a/a-s1', 'a/a-s2'], 'a build keeps its step order');
