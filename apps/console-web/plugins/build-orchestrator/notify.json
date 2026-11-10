@@ -75,6 +75,35 @@
       "channels": {
         "amberx": false
       }
+    },
+    {
+      "id": "pipeline.stall",
+      "label": "Stall watchdog: fix attempts",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator stall watchdog",
+      "description": "Builds stalled (nothing building while the Queue or Urgent / High Pending builds wait, a running build whose session is gone, or no dispatcher tick for 3 minutes): each fix the watchdog tried (self-check, release dead slots, auto-queue Urgent / High, restart the dispatcher), its result, and when builds move again. Logged in Notes → Automatic fixes.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:stall:"
+      },
+      "setting": "notify.blocked",
+      "push": true,
+      "priority": "high"
+    },
+    {
+      "id": "pipeline.stall-escalate",
+      "label": "Stall watchdog: needs you",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator stall watchdog",
+      "description": "Builds are stuck and every automatic fix failed: what is missing (a broken builds store, a stopped cron, no account that can take the work) and the exact steps. Once per stall; cleared when builds move again.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:stall-escalate:"
+      },
+      "push": true,
+      "priority": "urgent"
     }
   ]
 }

@@ -241,6 +241,9 @@ axf_cron_file axf-builds-reconcile "*/10 * * * * root cd $DIR && node framework/
 # The build pipeline's dispatcher (Brett, Nov 8 2026): every minute, split new builds, watch the Queue, the Claude accounts
 # and the agent slots, and start a headless session for the next Queue build when a slot is free (never two at once).
 axf_cron_file axf-pipeline "* * * * * root P=$DIR/apps/console-web/plugins/build-orchestrator/pipeline.mjs; [ -f \$P ] && cd $DIR && flock -n /run/axf-pipeline.lock timeout 600 node \$P tick >> /var/log/axf-pipeline.log 2>&1"  # axf-plugin:build-orchestrator
+# Stall watchdog (Brett, Nov 10 2026: "You need to be monitoring it so you know when it stalls, then try to fix it, then
+# let me know"): its own cron, so a tick that crashes or hangs is still seen; fixes in order, AmberX FYI per attempt.
+axf_cron_file axf-pipeline-watchdog "* * * * * root W=$DIR/apps/console-web/plugins/build-orchestrator/stall-watchdog.mjs; [ -f \$W ] && cd $DIR && flock -n /run/axf-pipeline-watchdog.lock timeout 900 node \$W run >> /var/log/axf-pipeline-watchdog.log 2>&1"  # axf-plugin:build-orchestrator
 # Auto-land (push banner, Nov 3 2026, Brett: "zero tokens for merging"): every 3 minutes a plain script lands finished
 # builds (worktree cleaned, main merged in, PR opened, CI started); the console's auto-merge merges them. No model calls.
 axf_cron_file axf-auto-land "*/3 * * * * root L=$DIR/apps/console-web/plugins/push-banner/land/land.mjs; [ -f \$L ] && cd $DIR && AXF_LAND_REPO=$DIR flock -n /run/axf-auto-land.lock timeout 900 node \$L run >> /var/log/axf-auto-land.log 2>&1"  # axf-plugin:push-banner

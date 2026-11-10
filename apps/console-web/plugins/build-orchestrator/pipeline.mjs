@@ -71,6 +71,7 @@ import { issue as issueDispatch } from '../../../../framework/cli/dispatch-gate.
 import { shipLanded } from '../../../../framework/cli/shipped.mjs';
 import { normPriority } from '../../../../framework/core/build-priority.mjs';
 import { act as orchAct } from './orchestrator.mjs';
+import { urgentNew } from './stall-core.mjs';
 import { reap as workersReap, status as workersStatus, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
 import { childEnv, paths as loginPaths, release as releaseLogin, snapshot as snapshotLogin } from '../../../../deploy/claude-login.mjs';
 
@@ -306,6 +307,11 @@ export function intake({ max = MAX_SPLITS_PER_TICK, alert = () => {} } = {}) {
       catch (e) { out.skipped.push({ id: b.id, error: e.message }); }
     }
     for (const b of want.slice(max)) out.skipped.push({ id: b.id, error: 'next round' });
+  }
+  // a newly filed Urgent build goes to the Queue by itself, whatever the setting (Brett, Nov 10 2026: stall watchdog)
+  for (const b of live(loadStore())) {
+    if (!urgentNew(b) || P.needsSplit(b, rules)) continue;
+    try { queue(b.id, { by: 'auto (Urgent)' }); out.queued.push(b.id); } catch (e) { out.skipped.push({ id: b.id, error: e.message }); }
   }
   if (settings.autoQueue) {
     const fresh = loadStore();
