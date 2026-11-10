@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T20:47:18.081Z",
+ "updatedAt": "2026-11-10T20:47:43.563Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -94884,12 +94884,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T20:46:28.820Z",
-   "updatedAt": "2026-11-10T20:46:30.255Z",
+   "updatedAt": "2026-11-10T20:47:42.129Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T20:46:30.255Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T20:47:42.129Z"
     }
    ],
    "approvals": [],
@@ -94906,7 +94910,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Merges/supersedes amberx-open-any-url and amberx-open-any-url-apk. 1) Voice: 'go to <any website>' opens it on the phone in Chrome (any https host, not just amberxai.com; block non-http schemes), brought to the front. 2) Option to open it with AmberX's recorder running (screen/audio recorder plugin), recordings saved to axHub with the URL and time. 3) Also available as a browser plugin in the console/Molly (embedded browser pane). Audit-log every open. Full API control.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb5vynl0472la"
+    },
+    {
+     "id": "s2",
+     "text": "I need to be able to tell you to go to any website and open the web browser with the recorder in AmberX, or in a plugin somewhere.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb5vynl05mrjm"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/open-any-website-by-voice-on-the-phone-optionall.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/open-any-website-by-voice-on-the-phone-optionall.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb5vynl06s1fk"
+    }
+   ]
   }
  ]
 }

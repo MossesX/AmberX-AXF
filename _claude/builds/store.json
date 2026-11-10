@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2810,
- "updatedAt": "2026-11-10T20:47:18.081Z",
+ "rev": 2811,
+ "updatedAt": "2026-11-10T20:47:43.563Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -154409,12 +154409,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T20:46:28.820Z",
-   "updatedAt": "2026-11-10T20:46:30.255Z",
+   "updatedAt": "2026-11-10T20:47:42.129Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T20:46:30.255Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T20:47:42.129Z"
     }
    ],
    "approvals": [],
@@ -154441,16 +154445,92 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-10T20:47:42.129Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
     "pickedAt": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwb5vynl0472la",
+     "title": "",
+     "text": "Merges/supersedes amberx-open-any-url and amberx-open-any-url-apk. 1) Voice: 'go to <any website>' opens it on the phone in Chrome (any https host, not just amberxai.com; block non-http schemes), brought to the front. 2) Option to open it with AmberX's recorder running (screen/audio recorder plugin), recordings saved to axHub with the URL and time. 3) Also available as a browser plugin in the console/Molly (embedded browser pane). Audit-log every open. Full API control.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T20:47:42.129Z",
+     "updatedAt": "2026-11-10T20:47:42.129Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwb5vynl05mrjm",
+     "title": "",
+     "text": "I need to be able to tell you to go to any website and open the web browser with the recorder in AmberX, or in a plugin somewhere.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T20:47:42.129Z",
+     "updatedAt": "2026-11-10T20:47:42.129Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwb5vynl06s1fk",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/open-any-website-by-voice-on-the-phone-optionall.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/open-any-website-by-voice-on-the-phone-optionall.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T20:47:42.129Z",
+     "updatedAt": "2026-11-10T20:47:42.129Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -154459,12 +154539,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T20:47:42.129Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

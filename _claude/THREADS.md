@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 16:58 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · orchestrator
 - 2026-11-10 16:59 UTC · `project-manager-every-project-its-own-console-in` s2 done (all) · orchestrator
 - 2026-11-10 16:59 UTC · `skins-own-everything-colour-theme-swaps-independ` s2 done (all) · orchestrator
 - 2026-11-10 17:00 UTC · `project-manager-every-project-its-own-console-in` PR #453 (all) · builds-live
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 20:46 UTC · `open-any-website-by-voice-on-the-phone-optionall` → queued, note (all) · console
 - 2026-11-10 20:47 UTC · `no-veto-timer-on-navigation-follow-amber-open-x` note (all) · orchestrator
 - 2026-11-10 20:47 UTC · `no-veto-timer-on-navigation-follow-amber-open-x` note (all) · builds-live
+- 2026-11-10 20:47 UTC · `open-any-website-by-voice-on-the-phone-optionall` note (all) · orchestrator
 
 ## Token passes (log)
 
