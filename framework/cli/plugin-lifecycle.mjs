@@ -52,6 +52,9 @@ const SESSIONS_DIR = join(ROOT, 'sessions'); // the session check-in archive (se
 // CI ratchet baselines (check-chrome-assets.mjs → framework/spec/chrome-baseline.json): per-file counts of findings that
 // may only shrink. A removed plugin's line only lowers a count nobody can exceed, so it is not a stale reference.
 const RATCHET_BASELINE = /^framework\/spec\/chrome-baseline\.json$/;
+// Generated fixtures that snapshot real data: the shipped-features manifest (files a build shipped, history) and the
+// demonstration fixture generated from a glossary entry. A plugin removed later only leaves a stale snapshot behind.
+const SNAPSHOT_FIXTURE = /^framework\/spec\/fixtures\/(shipped-manifest|demo)\.json$/;
 const BUILD_EXPORT = /^framework\/plan\/(profiles\/[^/]+\/framework\/plan\/)?(pending|build-queue)\.json$/;
 const HANDOFF_NOTE = /^_claude\/(memory|shared\/notes\/handoffs)\/handoff-[0-9-]+\.md$/; // dated account-switch handoff notes (own or shared): snapshots of a day, history
 const SKIP_DIRS = new Set(['.git', 'node_modules', 'dist', 'dist-single', '.axf-console', '__pycache__', 'build', '.gradle']);
@@ -140,7 +143,7 @@ export function scanReferences(p) {
   for (const file of walk(ROOT)) {
     if (file.startsWith(p.dir + '/') || file === STATE) continue;
     // Rebuild and harvest reports (and their screenshots) and the changes log are history: they describe a plugin version and must outlive it.
-    if (file.startsWith(REBUILDS_DIR + '/') || file.startsWith(HARVEST_DIR + '/') || file.startsWith(CHANGES_DIR + '/') || file.startsWith(HANDOFF_DIR + '/') || file.startsWith(BUILDS_DIR + '/') || file.startsWith(SESSIONS_DIR + '/') || HANDOFF_NOTE.test(relative(ROOT, file)) || BUILD_EXPORT.test(relative(ROOT, file)) || RATCHET_BASELINE.test(relative(ROOT, file))) continue;
+    if (file.startsWith(REBUILDS_DIR + '/') || file.startsWith(HARVEST_DIR + '/') || file.startsWith(CHANGES_DIR + '/') || file.startsWith(HANDOFF_DIR + '/') || file.startsWith(BUILDS_DIR + '/') || file.startsWith(SESSIONS_DIR + '/') || HANDOFF_NOTE.test(relative(ROOT, file)) || BUILD_EXPORT.test(relative(ROOT, file)) || RATCHET_BASELINE.test(relative(ROOT, file)) || SNAPSHOT_FIXTURE.test(relative(ROOT, file))) continue;
     // The console's public/data is generated from the builds store and is git-ignored: build notes there are history too.
     if (file.startsWith(join(CONSOLE_APP_DIR, 'public/data') + '/')) continue;
     // An app's baked framework (apps/<app>/src/axf) is a copy: `framework/` is the file checked, and a re-bake refreshes the copy.

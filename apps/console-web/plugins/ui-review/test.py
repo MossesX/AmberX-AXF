@@ -489,7 +489,9 @@ check(r.status_code == 200 and r.json()["default"] == "c" and r.json()["status"]
 d = c.get(f"/p/choices/decision?id={ci['id']}").json()
 check(d["chosen"] == ["c", "a"] and d["default"] == "c", "the decision reads back in order")
 check(c.get("/p/state?branch=claude/c").json()["holds"] is False, "the hold lifts")
-got = {a["option"]: a["picked"] for a in c.get("/p/choices/assets").json()["assets"]}
+# only this item's set: the repo carries real ui-choice assets of other builds too
+mine = {a["set"] for a in c.get("/p/choices/assets?type=toolbar").json()["assets"]}
+got = {a["option"]: a["picked"] for a in c.get("/p/choices/assets").json()["assets"] if a["set"] in mine}
 check(got == {"a": True, "b": False, "c": True}, f"picked or not, all three stay ({got})")
 r = c.post("/p/submit", json={**BUILD, "kind": "settings", "choices": {**CH, "assetType": "settings"}})
 one = r.json()["item"]
