@@ -772,8 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 16:28 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` → queued, note (all) · console
-- 2026-11-10 16:28 UTC · `full-api-cli-control-of-everything-plus-an-offli` added (0 steps) (all) · console
 - 2026-11-10 16:28 UTC · `full-api-cli-control-of-everything-plus-an-offli` → queued, note (all) · console
 - 2026-11-10 16:29 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` note (all) · orchestrator
 - 2026-11-10 16:29 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` note (all) · builds-live
@@ -1172,6 +1170,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 19:31 UTC · `skin-checker-flags-anything-that-breaks-a-profes` note (all) · orchestrator
 - 2026-11-10 19:31 UTC · `full-api-cli-control-of-everything-plus-an-offli` branch claude/full-api-cli-control-of-everything-plus-an-offli (all) · builds-live
 - 2026-11-10 19:32 UTC · `skin-checker-flags-anything-that-breaks-a-profes` note (all) · pipeline
+- 2026-11-10 19:32 UTC · `molly-fable-version-the-one-interface-for-amberx` → running, note (all) · pipeline
+- 2026-11-10 19:32 UTC · `molly-fable-version-the-one-interface-for-amberx` note (all) · orchestrator
 
 ## Token passes (log)
 
