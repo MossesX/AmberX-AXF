@@ -746,6 +746,18 @@
    "from": "detail",
    "addenda": []
   },
+  "audit-pending-fable-builds-against-main-close-wh": {
+   "said": "Queue up all the Fable stuff. You already got tons of that shit, tons of that shit's already done.",
+   "at": "2026-11-10T04:25:09.866Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "auto-land": {
    "said": "Earl the Ear. Plain-script merge pipeline reusing the push banner batch merge; AI only for real conflicts / red CI needing code.",
    "at": "2026-11-03",
