@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2395,
- "updatedAt": "2026-11-10T15:30:23.635Z",
+ "rev": 2396,
+ "updatedAt": "2026-11-10T15:30:36.556Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -130181,10 +130181,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/file-watchdog-plugin-watch-files-run-scripts-or",
-   "pr": "",
+   "pr": "#445",
    "priority": "P2",
    "createdAt": "2026-11-09T18:43:22.318Z",
-   "updatedAt": "2026-11-10T15:29:15.032Z",
+   "updatedAt": "2026-11-10T15:30:35.187Z",
    "builtAt": "",
    "notes": [
     {
@@ -130386,7 +130386,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 01:02 UTC · `auto-switch-claude-account-when-the-active-one-r` note (all) · orchestrator
 - 2026-11-10 01:03 UTC · `account-failover-chain-subscription-next-subscri` PR #425 (all) · builds-live
 - 2026-11-10 01:03 UTC · `account-failover-chain-subscription-next-subscri` note (all) · orchestrator
 - 2026-11-10 01:03 UTC · `account-failover-chain-subscription-next-subscri` s3 done, → built (all) · orchestrator
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 15:29 UTC · `retire-build-manager-the-orchestrator-is-the-onl` added (0 steps) (all) · console
 - 2026-11-10 15:29 UTC · `retire-build-manager-the-orchestrator-is-the-onl` → queued, note (all) · console
 - 2026-11-10 15:30 UTC · `retire-build-manager-the-orchestrator-is-the-onl` note (all) · orchestrator
+- 2026-11-10 15:30 UTC · `file-watchdog-plugin-watch-files-run-scripts-or` PR #445 (all) · builds-live
 
 ## Token passes (log)
 
