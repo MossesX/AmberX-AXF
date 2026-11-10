@@ -21,6 +21,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 SERVER_DIR = HERE.parents[1] / "server"
 os.environ["AXF_AI_ASSISTANT_DIR"] = tempfile.mkdtemp(prefix="axf-ai-test-")
+# A private temp root: the "folder removed" checks list it, and other runs on the same host share /tmp.
+tempfile.tempdir = os.environ["TMPDIR"] = tempfile.mkdtemp(prefix="axf-ai-tmp-")
 sys.path.insert(0, str(SERVER_DIR))  # plugin_services lives next to the console's main.py
 
 import plugin_services  # noqa: E402

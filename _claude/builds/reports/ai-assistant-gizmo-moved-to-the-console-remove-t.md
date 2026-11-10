@@ -41,9 +41,9 @@ is Android-only and stays there. Not removed from AmberX: that would take away t
 
 ## Checks
 - `apps/console-web` `tsc --noEmit`: 0 errors.
-- `python3 apps/console-web/plugins/ai-assistant/test.py`: 213 checks (10 new for the console tools). One check,
-  "chat turn: no tools of any kind reach the CLI", fails about one run in two **on unchanged main too** (timing in the fake
-  CLI log), not from this build.
+- `python3 apps/console-web/plugins/ai-assistant/test.py`: 213/213, seven runs in a row (10 new checks for the console
+  tools). It used to fail now and then because its "folder removed" checks listed the shared `/tmp`, where other runs on
+  the same host leave folders; the test now uses a private temp root.
 - check-theme, check-controls, check-toolbars, check-chrome-assets, check-plugin-pages: pass.
 - plugin-lifecycle check flags only `.axf-focus.json` (git-ignored live-preview file), not plugin code.
 
