@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2133,
- "updatedAt": "2026-11-10T00:56:34.316Z",
+ "rev": 2134,
+ "updatedAt": "2026-11-10T00:57:36.020Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -133328,10 +133328,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/failed-launches-auto-retry-on-another-working-ac",
-   "pr": "",
+   "pr": "#424",
    "priority": "P0",
    "createdAt": "2026-11-10T00:19:09.682Z",
-   "updatedAt": "2026-11-10T00:56:21.384Z",
+   "updatedAt": "2026-11-10T00:57:34.571Z",
    "builtAt": "",
    "notes": [
     {
@@ -133466,7 +133466,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
