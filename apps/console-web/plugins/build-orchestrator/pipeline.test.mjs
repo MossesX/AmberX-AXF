@@ -406,10 +406,10 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.equal(h3.status, 3); assert.match(h3.stdout, /build launch outside the orchestrator/);
   });
   t('e2e request: every other path files a build with the orchestrator and queues it; route api is the per-build override', () => {
-    const r = json(pipe('request', '--title', 'Fix systems check: mosh server', '--detail', 'Install mosh.', '--priority', 'P1', '--queue', '--by', 'systems-check', '--json'));
-    assert.equal(r.id, 'fix-systems-check-mosh-server'); assert.equal(find(r.id).status, 'queued'); assert.equal(find(r.id).priority, 'P1'); assert.equal(find(r.id).pipeline.queuedBy, 'systems-check');
-    const r2 = json(pipe('request', '--title', 'Fix systems check: mosh server', '--json'));
-    assert.equal(r2.id, 'fix-systems-check-mosh-server-2'); assert.equal(find(r2.id).status, 'pending', 'unique id; without --queue it waits in Pending');
+    const r = json(pipe('request', '--title', 'Fix the health check: mosh server', '--detail', 'Install mosh.', '--priority', 'P1', '--queue', '--by', 'health-check', '--json'));
+    assert.equal(r.id, 'fix-the-health-check-mosh-server'); assert.equal(find(r.id).status, 'queued'); assert.equal(find(r.id).priority, 'P1'); assert.equal(find(r.id).pipeline.queuedBy, 'health-check');
+    const r2 = json(pipe('request', '--title', 'Fix the health check: mosh server', '--json'));
+    assert.equal(r2.id, 'fix-the-health-check-mosh-server-2'); assert.equal(find(r2.id).status, 'pending', 'unique id; without --queue it waits in Pending');
     json(pipe('route', r2.id, 'api', '--json')); assert.equal(find(r2.id).pipeline.route, 'api');
     json(pipe('route', r2.id, 'auto', '--json')); assert.equal(find(r2.id).pipeline?.route ?? '', '');
     assert.notEqual(pipe('route', r2.id, 'nowhere', '--json', '--expect-fail').status, 0);
