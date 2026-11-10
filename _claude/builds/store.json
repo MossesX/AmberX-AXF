@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2277,
- "updatedAt": "2026-11-10T03:36:38.089Z",
+ "rev": 2278,
+ "updatedAt": "2026-11-10T03:37:03.646Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -134621,8 +134621,8 @@
    "pr": "#435",
    "priority": "P0",
    "createdAt": "2026-11-10T02:22:06.131Z",
-   "updatedAt": "2026-11-10T03:36:20.579Z",
-   "builtAt": "2026-11-10T03:36:10.823Z",
+   "updatedAt": "2026-11-10T03:36:46.019Z",
+   "builtAt": "2026-11-10T03:36:46.019Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -134681,12 +134681,16 @@
      "at": "2026-11-10T03:33:04.411Z"
     },
     {
-     "text": "Done, PR #435. Ping Paulie restored and finished Janitor Joey's self-heal.mjs from /root/archive/self-heal-joey-2026-11-10 after the double dispatch. It is wired into tick, launch, land and builds-live, and the dispatcher now refuses to launch a build that already has a live session. Cleared 10 real stale index.locks on the VPS.",
-     "at": "2026-11-10T03:36:20.579Z"
-    },
-    {
      "text": "Self-check: self-healing-build-folders-auto-clear-stale-git was marked running on account-5 with no session: released and back in the Queue.",
      "at": "2026-11-10T03:35:07.056Z"
+    },
+    {
+     "text": "Headless run axf-self-healing-build-folders-auto-clear-stale-git--paulie: brief only · start 11.4K tokens ($0.03) · cost $4.20 · 81 turns · 6 tools, MCP none",
+     "at": "2026-11-10T03:36:46.019Z"
+    },
+    {
+     "text": "Done, PR #435. Ping Paulie restored and finished Janitor Joey's self-heal.mjs from /root/archive/self-heal-joey-2026-11-10 after the double dispatch. It is wired into tick, launch, land and builds-live, and the dispatcher now refuses to launch a build that already has a live session. Cleared 10 real stale index.locks on the VPS.",
+     "at": "2026-11-10T03:36:20.579Z"
     }
    ],
    "approvals": [],
