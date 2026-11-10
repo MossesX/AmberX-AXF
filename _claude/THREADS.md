@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 03:09 UTC · `skins-restyle-finish` note (all) · brett
 - 2026-11-10 03:09 UTC · `split-builds-pages-build-manager-pending-complet-3` note (all) · brett
 - 2026-11-10 03:09 UTC · `vps-orchestrator-only-rule-vps-settings-console` note (all) · brett
 - 2026-11-10 03:09 UTC · `home-page-build-queue-card-opens-the-orchestrato` note (all) · brett
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 16:48 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` note (all) · builds-live
 - 2026-11-10 16:49 UTC · `claude-md-standing-rule-be-proactive-bring-up-th` note (all) · orchestrator
 - 2026-11-10 16:50 UTC · `conversation-rag-index-every-voice-chat-session` added (0 steps) (all) · console
+- 2026-11-10 16:50 UTC · `conversation-rag-index-every-voice-chat-session` → queued, note (all) · console
 
 ## Token passes (log)
 
