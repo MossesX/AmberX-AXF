@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 16:27 UTC · `project-manager-every-project-its-own-console-in` → running, note (all) · pipeline
 - 2026-11-10 16:27 UTC · `project-manager-every-project-its-own-console-in` branch claude/project-manager-every-project-its-own-console-in (all) · pipeline
 - 2026-11-10 16:27 UTC · `project-manager-every-project-its-own-console-in` note (all) · orchestrator
 - 2026-11-10 16:28 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` added (0 steps) (all) · console
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 19:25 UTC · `agent-manager-training-wizard-for-employee-agent` note (all) · orchestrator
 - 2026-11-10 19:30 UTC · `skin-checker-flags-anything-that-breaks-a-profes` PR #466 (all) · builds-live
 - 2026-11-10 19:31 UTC · `skin-checker-flags-anything-that-breaks-a-profes` s13 done, → built (all) · orchestrator
+- 2026-11-10 19:31 UTC · `full-api-cli-control-of-everything-plus-an-offli` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
