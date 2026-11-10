@@ -772,8 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 20:10 UTC · `inline-element-editing-plugin-right-click-any-el` s3 done (all) · orchestrator
-- 2026-11-10 20:11 UTC · `inline-element-editing-plugin-right-click-any-el` PR #470 (all) · builds-live
 - 2026-11-10 20:11 UTC · `molly-flagship-skin-premium-sellable-uncluttered` s2 done (all) · orchestrator
 - 2026-11-10 20:11 UTC · `inline-element-editing-plugin-right-click-any-el` note (all) · orchestrator
 - 2026-11-10 20:12 UTC · `inline-element-editing-plugin-right-click-any-el` → queued, note (all) · pipeline
@@ -1172,6 +1170,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 23:55 UTC · `convert-every-app-into-a-molly-module-expenses-c` note (all) · orchestrator
 - 2026-11-10 23:55 UTC · `convert-every-app-into-a-molly-module-expenses-c` s2 done (all) · orchestrator
 - 2026-11-10 23:56 UTC · `home-page-build-queue-card-opens-the-orchestrato` PR #485 (all) · builds-live
+- 2026-11-10 23:56 UTC · `home-page-build-queue-card-opens-the-orchestrato` s4 done, → built (all) · orchestrator
+- 2026-11-10 23:56 UTC · `home-page-build-queue-card-opens-the-orchestrato` note (all) · orchestrator
 
 ## Token passes (log)
 

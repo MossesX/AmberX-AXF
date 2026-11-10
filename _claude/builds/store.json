@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3073,
- "updatedAt": "2026-11-10T23:56:41.612Z",
+ "rev": 3074,
+ "updatedAt": "2026-11-10T23:56:48.429Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -131867,7 +131867,7 @@
    "title": "Home page Build queue card opens the orchestrator, not the old build queue",
    "category": "",
    "detail": "On the console Home page, the Build queue card/link still opens the old build queue screen. Point it at the Build orchestrator screen (Pending / Queued / Building), and retire any remaining links to the old queue.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -131875,8 +131875,8 @@
    "pr": "#485",
    "priority": "P1",
    "createdAt": "2026-11-09T19:21:03.353Z",
-   "updatedAt": "2026-11-10T23:56:40.431Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T23:56:42.707Z",
+   "builtAt": "2026-11-10T23:56:41.451Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -131969,6 +131969,10 @@
     {
      "text": "Claude account: account-5 (axf-home-page-build-queue-card-opens-the-orchestrato--paulie, own login copy)",
      "at": "2026-11-10T23:44:24.561Z"
+    },
+    {
+     "text": "PR #485 (draft): UI Review screenshots not taken in the headless session; desktop + phone shots of the Home Build queue card still needed.",
+     "at": "2026-11-10T23:56:42.707Z"
     }
    ],
    "approvals": [],
@@ -132102,12 +132106,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T23:56:41.451Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T17:47:13.860Z",
-     "updatedAt": "2026-11-10T17:47:13.860Z"
+     "updatedAt": "2026-11-10T23:56:41.643Z"
     }
    ],
    "profiles": [
@@ -132118,7 +132122,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
