@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:07:23.429Z",
+ "updatedAt": "2026-11-10T17:07:34.388Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -87102,6 +87102,37 @@
      "uid": "st-mwaxhe09039jas"
     }
    ]
+  },
+  {
+   "id": "orchestrator-hold-status-archive-tab-deleted-tab",
+   "title": "Orchestrator: Hold status, Archive tab, Deleted tab (deleted builds kept forever)",
+   "category": "",
+   "detail": "Amends Retire Build Manager tabs. Actions on any queued build: Send back to Pending, Hold (stays in the queue, skipped by the dispatcher until released), Move to Archive, Delete. Archive tab: all completed and retired builds go there. Deleted tab: deleted builds are kept saved forever (soft delete, restorable). Bulk select. Full API/CLI control, no AI.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T17:07:33.143Z",
+   "updatedAt": "2026-11-10T17:07:33.143Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Make a hold status. Anything in the queue you can send back to pending, leave in queue on hold, move to the archive, or delete. All completed builds go to the archive, add an archive tab. A deleted tab where all deleted builds stay saved forever.",
+    "at": "2026-11-10T17:07:33.143Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

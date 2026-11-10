@@ -3178,6 +3178,18 @@
    "from": "",
    "addenda": []
   },
+  "orchestrator-hold-status-archive-tab-deleted-tab": {
+   "said": "Make a hold status. Anything in the queue you can send back to pending, leave in queue on hold, move to the archive, or delete. All completed builds go to the archive, add an archive tab. A deleted tab where all deleted builds stay saved forever.",
+   "at": "2026-11-10T17:07:33.143Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "orchestrator-self-check-when-stuck-verify-each-a": {
    "said": "The orchestrator is supposed to check all that every time it loads if things are stuck. If he has any problems, he's supposed to check each account one by one. And look for stale jobs.",
    "at": "2026-11-09T16:25:52.442Z",

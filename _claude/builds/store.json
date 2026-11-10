@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2518,
- "updatedAt": "2026-11-10T17:07:23.429Z",
+ "rev": 2519,
+ "updatedAt": "2026-11-10T17:07:34.388Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -140906,6 +140906,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-10T16:52:25.257Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "orchestrator-hold-status-archive-tab-deleted-tab",
+   "title": "Orchestrator: Hold status, Archive tab, Deleted tab (deleted builds kept forever)",
+   "category": "",
+   "detail": "Amends Retire Build Manager tabs. Actions on any queued build: Send back to Pending, Hold (stays in the queue, skipped by the dispatcher until released), Move to Archive, Delete. Archive tab: all completed and retired builds go there. Deleted tab: deleted builds are kept saved forever (soft delete, restorable). Bulk select. Full API/CLI control, no AI.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T17:07:33.143Z",
+   "updatedAt": "2026-11-10T17:07:33.143Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Make a hold status. Anything in the queue you can send back to pending, leave in queue on hold, move to the archive, or delete. All completed builds go to the archive, add an archive tab. A deleted tab where all deleted builds stay saved forever.",
+    "at": "2026-11-10T17:07:33.143Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 563
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
