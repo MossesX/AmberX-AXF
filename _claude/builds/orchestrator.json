@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T03:30:41.724Z",
+ "updatedAt": "2026-11-10T03:31:31.064Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -82728,7 +82728,7 @@
    "pr": "#433",
    "priority": "P0",
    "createdAt": "2026-11-10T02:18:30.783Z",
-   "updatedAt": "2026-11-10T03:27:31.484Z",
+   "updatedAt": "2026-11-10T03:31:28.962Z",
    "builtAt": "2026-11-10T03:27:31.484Z",
    "notes": [
     {
@@ -82754,6 +82754,10 @@
     {
      "text": "Headless run axf-amberx-phone-pop-up-for-every-build-start-and-fi--rhonda: brief only · start 11.2K tokens ($0.03) · cost $7.60 · 169 turns · 6 tools, MCP none",
      "at": "2026-11-10T03:27:31.484Z"
+    },
+    {
+     "text": "Superseded by one-amberx-build-notification-veto-approval-befo (Brett, Nov 10: one AmberX notification, veto before every start). Its commits (PR #433) are merged into that build's branch and upgraded there; PR #433 is closed in favour of the new PR.",
+     "at": "2026-11-10T03:31:28.962Z"
     }
    ],
    "approvals": [],

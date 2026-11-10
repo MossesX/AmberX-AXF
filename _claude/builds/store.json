@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2265,
- "updatedAt": "2026-11-10T03:30:41.724Z",
+ "rev": 2266,
+ "updatedAt": "2026-11-10T03:31:31.064Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -134425,7 +134425,7 @@
    "pr": "#433",
    "priority": "P0",
    "createdAt": "2026-11-10T02:18:30.783Z",
-   "updatedAt": "2026-11-10T03:27:31.484Z",
+   "updatedAt": "2026-11-10T03:31:28.962Z",
    "builtAt": "2026-11-10T03:27:31.484Z",
    "notes": [
     {
@@ -134451,6 +134451,10 @@
     {
      "text": "Headless run axf-amberx-phone-pop-up-for-every-build-start-and-fi--rhonda: brief only · start 11.2K tokens ($0.03) · cost $7.60 · 169 turns · 6 tools, MCP none",
      "at": "2026-11-10T03:27:31.484Z"
+    },
+    {
+     "text": "Superseded by one-amberx-build-notification-veto-approval-befo (Brett, Nov 10: one AmberX notification, veto before every start). Its commits (PR #433) are merged into that build's branch and upgraded there; PR #433 is closed in favour of the new PR.",
+     "at": "2026-11-10T03:31:28.962Z"
     }
    ],
    "approvals": [],
@@ -134568,7 +134572,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
