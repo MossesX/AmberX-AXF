@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 18:55 UTC · `x.session` → pending (all) · voice
 - 2026-11-10 18:55 UTC · `x.lib.files` → pending (all) · voice
 - 2026-11-10 18:55 UTC · `x.lib.notifications` → pending (all) · voice
 - 2026-11-10 18:55 UTC · `x.engine.dev` → pending (all) · voice
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 23:23 UTC · `orchestrator-merge-first-switch-separate-merger` note (all) · orchestrator
 - 2026-11-10 23:24 UTC · `orchestrator-merge-first-switch-separate-merger` note (all) · pipeline
 - 2026-11-10 23:24 UTC · `stall-watchdog-detect-when-nothing-is-building-a` note (all) · orchestrator
+- 2026-11-10 23:24 UTC · `stall-watchdog-detect-when-nothing-is-building-a` PR #481 (all) · builds-live
 
 ## Token passes (log)
 

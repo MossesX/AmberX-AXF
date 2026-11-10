@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3010,
- "updatedAt": "2026-11-10T23:24:46.306Z",
+ "rev": 3011,
+ "updatedAt": "2026-11-10T23:24:58.482Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -156372,7 +156372,7 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/stall-watchdog-detect-when-nothing-is-building-a",
-   "pr": "",
+   "pr": "#481",
    "priority": "P0",
    "createdAt": "2026-11-10T23:08:12.434Z",
    "updatedAt": "2026-11-10T23:24:31.015Z",
