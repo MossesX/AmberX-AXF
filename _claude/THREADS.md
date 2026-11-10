@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 01:48 UTC · `test-button-on-every-claude-account-subscription` note (all) · orchestrator
 - 2026-11-10 01:53 UTC · `skins-own-everything-colour-theme-swaps-independ` PR #429 (all) · builds-live
 - 2026-11-10 01:53 UTC · `skins-own-everything-colour-theme-swaps-independ` s1 done, → running (all) · orchestrator
 - 2026-11-10 01:53 UTC · `skins-own-everything-colour-theme-swaps-independ` note (all) · orchestrator
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 15:54 UTC · `retire-build-manager-the-orchestrator-is-the-onl` note (all) · orchestrator
 - 2026-11-10 16:01 UTC · `molly-fable-version-the-one-interface-for-amberx` → pending, note (all) · reconciler
 - 2026-11-10 16:06 UTC · `skins-as-packages-of-slices-every-section-its-ow` s1 done, → running (all) · orchestrator
+- 2026-11-10 16:06 UTC · `skins-as-packages-of-slices-every-section-its-ow` note (all) · orchestrator
 
 ## Token passes (log)
 
