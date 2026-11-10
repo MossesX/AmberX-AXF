@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2836,
- "updatedAt": "2026-11-10T20:59:36.910Z",
+ "rev": 2837,
+ "updatedAt": "2026-11-10T20:59:50.394Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -154985,6 +154985,80 @@
    ],
    "order": {
     "all": 588
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "make-hulu-actually-take-builds-dispatcher-counts",
+   "title": "Make Hulu actually take builds: dispatcher counts the console account as a worker (5 parallel)",
+   "category": "",
+   "detail": "Hulu (account-3, max plan) is signed in and switched on (pipeline use=on, interactiveTakesJobs=true, removed from excluded) but the dispatcher still marks it standby 'not a worker (workers take every headless job)' because it is the console's interactive account, so it never takes builds. Make the dispatcher treat the console account as a builder when interactiveTakesJobs is on, at the same priority as workers, 5 parallel. Brett wants 5 per subscription = 10 total. Verify with a real launch; notify on AmberX when Hulu takes its first build.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-10T20:59:45.064Z",
+   "updatedAt": "2026-11-10T20:59:46.553Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T20:59:46.553Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I want five builds on each subscription in parallel, so a total of ten at a time.",
+    "at": "2026-11-10T20:59:45.064Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-10T20:59:46.292Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": ""
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 589
    },
    "kind": "build",
    "planRef": "",

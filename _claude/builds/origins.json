@@ -2695,6 +2695,18 @@
    "from": "",
    "addenda": []
   },
+  "make-hulu-actually-take-builds-dispatcher-counts": {
+   "said": "I want five builds on each subscription in parallel, so a total of ten at a time.",
+   "at": "2026-11-10T20:59:45.064Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "md-studio": {
    "said": "build MD Studio. It was planned but NEVER built (no branch, no log). Assigned agent: **Reel Rhonda** (book on her agent-swarm card; set AXF_AGENT=reel-rhonda if supported, else record in report + store note).",
    "at": "2026-11-03",

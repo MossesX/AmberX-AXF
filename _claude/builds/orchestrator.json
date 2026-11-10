@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T20:59:36.910Z",
+ "updatedAt": "2026-11-10T20:59:50.394Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -95230,6 +95230,43 @@
    "origin": {
     "said": "Can I drag and drop builds in the queue? Yes, make it, run it now on an API account.",
     "at": "2026-11-10T20:59:27.366Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "make-hulu-actually-take-builds-dispatcher-counts",
+   "title": "Make Hulu actually take builds: dispatcher counts the console account as a worker (5 parallel)",
+   "category": "",
+   "detail": "Hulu (account-3, max plan) is signed in and switched on (pipeline use=on, interactiveTakesJobs=true, removed from excluded) but the dispatcher still marks it standby 'not a worker (workers take every headless job)' because it is the console's interactive account, so it never takes builds. Make the dispatcher treat the console account as a builder when interactiveTakesJobs is on, at the same priority as workers, 5 parallel. Brett wants 5 per subscription = 10 total. Verify with a real launch; notify on AmberX when Hulu takes its first build.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-10T20:59:45.064Z",
+   "updatedAt": "2026-11-10T20:59:46.553Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T20:59:46.553Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I want five builds on each subscription in parallel, so a total of ten at a time.",
+    "at": "2026-11-10T20:59:45.064Z",
     "source": "",
     "session": "",
     "link": "",
