@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2247,
- "updatedAt": "2026-11-10T03:13:34.922Z",
+ "rev": 2248,
+ "updatedAt": "2026-11-10T03:14:12.436Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -135475,6 +135475,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-10T03:13:32.265Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "resolve-merge-conflicts-and-land-running-builds",
+   "title": "Resolve merge conflicts and land: running-builds-watchdog and amberx-approvals-fix",
+   "category": "",
+   "detail": "Two finished builds can't land because they clash with main. 1) claude/running-builds-watchdog clashes in build-orchestrator pipeline-core.mjs, pipeline.mjs, server/__init__.py and web/pipeline.tsx. 2) claude/amberx-approvals-fix (PR #353) failed with 'Merge with strategy ort failed' and is 1054 commits behind. For each: merge origin/main into the branch, resolve conflicts keeping both behaviours (main's newer code wins on structure, with the branch's feature re-applied), run the plugin tests, then land with build_land. Redo nothing that main already has. Report what each kept.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T03:14:09.017Z",
+   "updatedAt": "2026-11-10T03:14:09.017Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "When I tell you to do something, you do it till you get it right.",
+    "at": "2026-11-10T03:14:09.017Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 531
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

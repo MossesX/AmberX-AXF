@@ -3457,6 +3457,18 @@
    "from": "",
    "addenda": []
   },
+  "resolve-merge-conflicts-and-land-running-builds": {
+   "said": "When I tell you to do something, you do it till you get it right.",
+   "at": "2026-11-10T03:14:09.017Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "right-click-a-queued-build-to-assign-it-to-a-spe": {
    "said": "I need to be able to right-click jobs in the orchestrator and assign them to one of my stored accounts.",
    "at": "2026-11-09T16:03:35.870Z",
