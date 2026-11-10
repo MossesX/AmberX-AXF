@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2575,
- "updatedAt": "2026-11-10T17:40:47.436Z",
+ "rev": 2576,
+ "updatedAt": "2026-11-10T17:41:01.231Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -146158,6 +146158,56 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-10T17:40:28.648Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "skin-rule-overrides-are-local-only-global-change",
+   "title": "Skin rule: overrides are local only; global changes only by applying a whole skin",
+   "category": "",
+   "detail": "Amends the skins naming-contract build. Precedence: axHub base < skin (by canonical role) < per-screen skin < per-element override. An override changes only that element. Global changes are made ONLY by applying a whole skin; editing a button inside one plugin or app never propagates to other plugins/apps. Enforce in the inline editor (no 'apply everywhere' outside the skin editor) and document in CLAUDE.md rules.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-10T17:40:55.347Z",
+   "updatedAt": "2026-11-10T17:40:56.501Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "If you override a value, it wins for that element. You can't change a button in one of the plugins or apps and have it apply globally. You can only apply things globally by applying an entire skin.",
+    "at": "2026-11-10T17:40:55.344Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 572
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 2,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

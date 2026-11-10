@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:40:47.436Z",
+ "updatedAt": "2026-11-10T17:41:01.231Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -88501,6 +88501,38 @@
      "uid": "st-mwaz76ug03fw5f"
     }
    ]
+  },
+  {
+   "id": "skin-rule-overrides-are-local-only-global-change",
+   "title": "Skin rule: overrides are local only; global changes only by applying a whole skin",
+   "category": "",
+   "detail": "Amends the skins naming-contract build. Precedence: axHub base < skin (by canonical role) < per-screen skin < per-element override. An override changes only that element. Global changes are made ONLY by applying a whole skin; editing a button inside one plugin or app never propagates to other plugins/apps. Enforce in the inline editor (no 'apply everywhere' outside the skin editor) and document in CLAUDE.md rules.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-10T17:40:55.347Z",
+   "updatedAt": "2026-11-10T17:40:56.501Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "If you override a value, it wins for that element. You can't change a button in one of the plugins or apps and have it apply globally. You can only apply things globally by applying an entire skin.",
+    "at": "2026-11-10T17:40:55.344Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
