@@ -771,8 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 02:24 UTC · `one-amberx-build-notification-veto-approval-befo` → queued, note (all) · console
-- 2026-11-10 02:26 UTC · `one-amberx-build-notification-veto-approval-befo` note (all) · orchestrator
 - 2026-11-10 02:32 UTC · `amberx-approvals-fix` s6 done, → built, note (all) · reconciler
 - 2026-11-10 02:32 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → pending, note (all) · reconciler
 - 2026-11-10 02:32 UTC · `skins-own-everything-colour-theme-swaps-independ` → pending, note (all) · reconciler
@@ -1171,6 +1169,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 16:27 UTC · `project-manager-every-project-its-own-console-in` note (all) · orchestrator
 - 2026-11-10 16:28 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` added (0 steps) (all) · console
 - 2026-11-10 16:28 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` → queued, note (all) · console
+- 2026-11-10 16:28 UTC · `full-api-cli-control-of-everything-plus-an-offli` added (0 steps) (all) · console
+- 2026-11-10 16:28 UTC · `full-api-cli-control-of-everything-plus-an-offli` → queued, note (all) · console
 
 ## Token passes (log)
 

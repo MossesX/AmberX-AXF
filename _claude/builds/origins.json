@@ -1934,6 +1934,18 @@
    "from": "detail",
    "addenda": []
   },
+  "full-api-cli-control-of-everything-plus-an-offli": {
+   "said": "I need extensive API and CLI control over every single page, app, plugin, tool, behavior, display, and setting with every single option or possibility for a parameter. Need to be able to completely run the console, Molly, axHub, Hostinger, Coolify, VPS, Moshi app, AmberX app. I need a powerful complete index and registry for offline management and internal logic. Anything that can possibly be done without AI needs to be, with AI only as a fallback by default unless you have made Claude available to the console in Claude settings.",
+   "at": "2026-11-10T16:28:24.043Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "full-api-control": {
    "said": "The API controls EVERYTHING in the console. Rule: the API (control@1 / MCP / CLI / voice) must be able to do anything Brett can do by hand in the console and every plugin. Today it can't (e.g. it can open a terminal tab but can't type in it).",
    "at": "2026-11-07T16:09:37.164Z",
