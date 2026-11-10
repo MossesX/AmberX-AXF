@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2678,
- "updatedAt": "2026-11-10T18:37:18.874Z",
+ "rev": 2679,
+ "updatedAt": "2026-11-10T18:38:05.861Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -149502,7 +149502,7 @@
    "title": "Skin checker: flags anything that breaks a professional look (spacing scale, fonts, palette, contrast)",
    "category": "",
    "detail": "Plain-code checker (no AI) for any skin, run in the skin editor live and in CI: 1) spacing/sizing values off the token scale, 2) more than 2 font families or off-scale type sizes, 3) palette sprawl (too many distinct colours, near-duplicate colours), 4) WCAG contrast failures for text and icons, 5) inconsistent radius/border/shadow use. Shows a score and a list of issues with one-click jump/fix to the token. Settings for thresholds. Full API/CLI control.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -149510,7 +149510,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T17:11:27.008Z",
-   "updatedAt": "2026-11-10T18:37:16.895Z",
+   "updatedAt": "2026-11-10T18:38:04.044Z",
    "builtAt": "",
    "notes": [
     {
@@ -149536,6 +149536,10 @@
     {
      "text": "Headless run axf-skin-checker-flags-anything-that-breaks-a-profes--rhonda: brief only · start 12.6K tokens ($0.06) · cost $3.90 · 34 turns · 6 tools, MCP none",
      "at": "2026-11-10T18:37:16.894Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 0) with 12 steps left: back in the Queue (run 1).",
+     "at": "2026-11-10T18:38:04.044Z"
     }
    ],
    "approvals": [],
@@ -149556,12 +149560,19 @@
     "queuedAt": "2026-11-10T17:11:28.506Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-skin-checker-flags-anything-that-breaks-a-profes--rhonda",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "launchedAt": "2026-11-10T18:26:14.387Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-10T18:38:03.275Z",
+     "exit": 0,
+     "outcome": "requeued",
+     "stepsLeft": 12,
+     "account": "mossesx-max-",
+     "session": "axf-skin-checker-flags-anything-that-breaks-a-profes--rhonda"
+    },
     "split": {
      "at": "2026-11-10T18:04:07.714Z",
      "by": "fix-the-orchestrator-s-splitter-claude-print-get",
@@ -149570,7 +149581,7 @@
      "note": "Split by Claude into 13 steps (1 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- ended (exit 0) with 12 steps left: back in the Queue (run 1).",
     "route": "",
     "dispatchedAt": "2026-11-10T18:26:14.388Z",
     "planned": {
@@ -149922,7 +149933,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
