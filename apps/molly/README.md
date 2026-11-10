@@ -21,6 +21,11 @@ Big Dog profile, Opus; a Fable version comes later as its own build).
   from `src/molly/host.ts`; `molly.auth.<app>.base` overrides a base; a plugin may supply a provider
   (`setAuthProvider`). Actions `molly.auth.status` / `check` / `sign-in` / `sign-out` / `base` do everything without
   a screen. Today each app's server still has to allow Molly's origin (listed as their own builds).
+- **App connections** (`src/molly/Connections.tsx`): the one sign-in screen, in the systems check's look (a row per app:
+  status, how it signs in, one line; open a row to paste a token, sign in on the app's page, sign out or check again),
+  and Settings → App connections (status, API addresses). Deep link `#/connections[/<app>]`, `molly.auth.open[:app]`,
+  navigation and the Molly menu; every button runs a `molly.auth.*` action (`molly.auth.user:<app>[:name]` sets the user
+  an Expenses token acts as).
 - **Plugins** live in `plugins/<folder>/` (found by folder: `plugins/*/web/index.tsx` exporting `plugin`; deleting a
   folder removes it) and change Molly only through `src/molly/host.ts` (frame address, frame mount, what an app's view
   shows, extra views, capability services).

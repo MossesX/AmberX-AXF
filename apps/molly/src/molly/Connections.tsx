@@ -50,6 +50,7 @@ export function ConnectionDot({ s }: { s: ConnectionStatus }) {
 function StatusChip({ s }: { s: ConnectionStatus }) {
   return <Chip tone={s === 'ok' ? 'success' : s === 'error' ? 'danger' : s === 'warn' ? 'warning' : undefined}>{CONNECTION_STATUS_LABEL[s]}</Chip>;
 }
+const COUNT_WORD: Record<ConnectionStatus, string> = { error: "can't reach", warn: 'to sign in', ok: 'ok', unknown: 'not checked' };
 const HOW: Record<AppConnection['scheme'], string> = { bearer: 'Token', session: 'Session', none: 'No sign-in' };
 const howOf = (c: AppConnection) => (c.scheme === 'none' ? HOW.none : c.hasToken ? `${HOW[c.scheme]} · token saved` : HOW[c.scheme]);
 const summaryOf = (c: AppConnection): string => {
@@ -73,7 +74,6 @@ function ConnectionBody({ c }: { c: AppConnection }) {
         <li className="fx-small"><strong>API</strong> <span className="fx-mono">{c.apiBase}</span>{c.baseOverridden && <> <Chip tone="accent">changed</Chip></>}</li>
         <li className="fx-small"><strong>Signs in by</strong> {c.scheme === 'bearer' ? 'a token kept in this browser for Molly' : c.scheme === 'session' ? `the browser's ${c.label} session${b?.tokenKey ? ', or a token kept in this browser' : ''}` : 'nothing: it has no backend of its own'}</li>
         {c.state !== 'none' && <li className="fx-small"><strong>Checked</strong> {timeOf(c.checkedAt)}</li>}
-        {c.detail && <li className="fx-small">{c.detail}</li>}
       </ul>
       {c.state === 'unreachable' && (
         <Note tone="warning">A browser can't tell offline from a server that doesn't allow calls from Molly's address. Until {c.label}'s server allows Molly's address, open {c.label} in Molly (it signs in inside its own frame).</Note>
@@ -138,7 +138,7 @@ export function ConnectionsView() {
       </header>
       <div className="molly-conn-top">
         <div className="molly-conn-counts" role="status">
-          {(['error', 'warn', 'ok', 'unknown'] as ConnectionStatus[]).map((k) => <span key={k} className="molly-conn-count"><ConnectionDot s={k} /> {counts[k]} {CONNECTION_STATUS_LABEL[k].toLowerCase()}</span>)}
+          {(['error', 'warn', 'ok', 'unknown'] as ConnectionStatus[]).map((k) => <span key={k} className="molly-conn-count"><ConnectionDot s={k} /> {counts[k]} {COUNT_WORD[k]}</span>)}
           <span className="fx-muted fx-small">checked {timeOf(last)}</span>
         </div>
         <div className="fx-row fx-row--wrap" role="toolbar" aria-label="App connections">
