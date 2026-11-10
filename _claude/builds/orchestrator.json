@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T21:57:20.839Z",
+ "updatedAt": "2026-11-10T21:58:10.747Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -96667,12 +96667,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:56:52.404Z",
-   "updatedAt": "2026-11-10T21:56:54.037Z",
+   "updatedAt": "2026-11-10T21:58:09.525Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T21:56:54.037Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T21:58:09.525Z"
     }
    ],
    "approvals": [],
@@ -96689,7 +96693,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "New token 'background' in the token sets (tokens.look/style) for every app, screen and asset, exposed in axHub style settings and Appearance, inheriting/overridable like other tokens. Values: colour, gradient, image, video/animation (Lottie, CSS/WebGL, GIF/MP4), logo/brand marks from Brand library, pattern. 2) Background Designer plugin: layers, animated backgrounds, generators, brand integration, design import (Figma/SVG/image/Lottie), presets saved as assets and usable in skins. 3) Foreground transparency control: make panels/cards/banners in front semi-transparent (opacity + blur) per app or skin. Respects reduced-motion and phone battery.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb8ekja018tom"
+    },
+    {
+     "id": "s2",
+     "text": "I need a background token for every UI, included in axHub's style settings. It accepts animations and logos, integrated with the enterprise branding and all kinds of tools to build backgrounds, animated backgrounds and design import. A powerful background designer. You can make everything in front of it semi-transparent.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb8ekja02qcrh"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/background-token-for-every-ui-background-designe.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/background-token-for-every-ui-background-designe.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwb8ekja03td73"
+    }
+   ]
   },
   {
    "id": "employee-hooks-plain-tap-on-an-employee-name-ope",
