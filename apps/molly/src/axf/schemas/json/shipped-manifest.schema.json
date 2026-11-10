@@ -1,0 +1,382 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/shipped-manifest.schema.json",
+  "title": "shipped-manifest@1: what the orchestrator sends the Shipped features ledger when a build lands",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "build",
+    "said"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "shipped-manifest@1"
+    },
+    "version": {
+      "const": 1
+    },
+    "id": {
+      "type": "string"
+    },
+    "rev": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "source": {
+      "enum": [
+        "orchestrator",
+        "backfill",
+        "api",
+        "manual"
+      ]
+    },
+    "by": {
+      "type": "string"
+    },
+    "shippedAt": {
+      "type": "string"
+    },
+    "build": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string"
+        },
+        "profile": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "priority": {
+          "type": "string"
+        },
+        "repo": {
+          "enum": [
+            "amberx-axf",
+            "axhub"
+          ]
+        }
+      }
+    },
+    "said": {
+      "type": "object",
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "verbatim": {
+          "type": "boolean"
+        },
+        "at": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "by": {
+          "type": "string"
+        },
+        "addenda": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "text"
+            ],
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "at": {
+                "type": "string"
+              },
+              "source": {
+                "type": "string"
+              },
+              "verbatim": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    },
+    "brief": {
+      "type": "string",
+      "maxLength": 40000
+    },
+    "models": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "Opus",
+          "Fable"
+        ]
+      }
+    },
+    "accounts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "runs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "session": {
+            "type": "string"
+          },
+          "account": {
+            "type": "string"
+          },
+          "model": {
+            "enum": [
+              "Opus",
+              "Fable",
+              ""
+            ]
+          },
+          "startedAt": {
+            "type": "string"
+          },
+          "endedAt": {
+            "type": "string"
+          },
+          "exit": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "costUsd": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "model": {
+            "enum": [
+              "Opus",
+              "Fable"
+            ]
+          },
+          "estimate": {
+            "type": "string"
+          },
+          "estimateMin": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "startedAt": {
+            "type": "string"
+          },
+          "doneAt": {
+            "type": "string"
+          },
+          "actualMin": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "done": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "branch": {
+      "type": "string"
+    },
+    "pr": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "repo": {
+          "enum": [
+            "amberx-axf",
+            "axhub"
+          ]
+        },
+        "number": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "landedCommit": {
+      "type": "string"
+    },
+    "commits": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "mergedAt": {
+      "type": "string"
+    },
+    "landedAt": {
+      "type": "string"
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "areas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "enum": [
+              "plugin",
+              "app",
+              "framework",
+              "deploy",
+              "docs",
+              "builds",
+              "other"
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "tests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "command": {
+            "type": "string"
+          },
+          "result": {
+            "enum": [
+              "pass",
+              "fail",
+              "skip",
+              "unknown"
+            ]
+          },
+          "detail": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "uiReview": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "group": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "cost": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "usd": {
+          "type": "number",
+          "minimum": 0
+        },
+        "estimated": {
+          "type": "boolean"
+        },
+        "tokens": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "input": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "output": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "cacheRead": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "cacheWrite": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    },
+    "report": {
+      "type": "string"
+    },
+    "open": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

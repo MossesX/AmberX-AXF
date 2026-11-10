@@ -8,7 +8,7 @@ import { SettingsRegistry, type SettingValue } from './settings';
 import { AssetRegistry, serializeAsset, type RegisteredAsset } from './registry';
 import { announceWatchLiveRuntime } from './watch-live';
 import { ActionBus, FRAMEWORK_MODULE, STANDARD_ACTIONS, type ActionContext } from './engines/actions';
-import { colorThemeVars, styleThemeVars, type VarMap } from './engines/theme';
+import { colorThemeVars, scrollbarVars, styleThemeVars, type VarMap } from './engines/theme';
 import { scaleThemeVars } from './engines/scale';
 import { LAYOUT_VIEWPORTS, layoutViewports, layoutVars } from './engines/layout';
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, tabGroupStyle, toolbarStyle } from './engines/components';
@@ -25,15 +25,17 @@ import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
 import { detectEmbedFull, embedHostLabel, embedTakeSpec, embedLockedBy, embedLockNote, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type EmbedPlugin } from './engines/embed';
 import { SPACING_DEFAULT as SPACING_DEFAULT_VALUE, spacingOf, type Spacing } from './engines/spacing';
 import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, type PlacedBanner } from './engines/banner';
+import { BANNER_FIXED_SHAPE, bannerWidgetEmpty, bannerWidgetView, findBannerWidget, normalizeBannerWidgetPrefs, patchBannerWidget, BANNER_WIDGET_SIZES, type BannerWidgetHint, type BannerWidgetPrefs, type BannerWidgetSize, type BannerWidgetView } from './engines/bannerwidgets';
 import { hostSpec, hostSpecs, moveOnHost, normalizeArrangement, placeHost, placeToolbarWidgets, type HostArrangement, type HostAttachment, type PlacedAttachment } from './engines/widgets';
 import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
 import { SearchIndex } from './engines/search';
-import { STYLE_PACKAGE_TYPE, stepPackage, stylePackageSlots, type StylePackageData } from './engines/stylepackage';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, resolveChecked, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
-import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, type DesignOverrides } from './engines/designpackage';
+import { backToSkin, captureSkin, composeLookAt, globalSkinOf, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setUseSkin, skinCoverage, skinCovers, skinEntries, skinScopeDomId, skinScopeOf, skinSectionAssets, skinSlots, snapshotLook, undoRestore, LEGACY_DESIGN_APPLIED_KEY, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState } from './engines/skin';
+import { isAppearanceSetting, isRetiredLookSetting } from './engines/looksettings';
 import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
+import { navStyleOutput, normalizeNavStyle, type NavStyleData } from './engines/navstyle';
 import { animationFor, brandingVars, glyphFor, markSvg, resolveBranding, type Glyph, type MarkAnimation, type ResolvedBrand } from './engines/brand';
-import { INTERFACE_SETTING_KEY, INTERFACE_TYPE, captureInterface, isScopeId, resolveInterface, scopeAttrs, scopeSheet, scopeVarsCss, type InterfaceData, type ResolvedInterface } from './engines/interface';
+import { INTERFACE_SETTING_KEY, INTERFACE_TYPE, captureInterface, isScopeId, normalizeInterface, resolveInterface, scopeAttrs, scopeSheet, scopeVarsCss, type InterfaceData, type ResolvedInterface } from './engines/interface';
 import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceChange, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, HELP_SEEN_KEY, buildHelpIndex, helpTarget, introFor, introToShow, markSeen, resolveHelp, type HelpDescriptor, type HelpEntry, type HelpIndex, type HelpIntro } from './engines/help';
 import { Diagnostics } from './diagnostics';
@@ -42,9 +44,7 @@ import {
   ASSET_TYPES,
   OPTIONAL_TYPES,
   type ActiveAssets,
-  type AppearancePackageData,
   type BehaviorThemeData,
-  type DesignPackageData,
   type Asset,
   type AssetType,
   type AxfManifest,
@@ -53,6 +53,7 @@ import {
   type MenuActResult,
   type MenuItem,
   type MenuItemButton,
+  type NavItem,
   type Toast,
 } from './types';
 import { assetTypeSpecs, attachable, type ValidationResult } from './validate';
@@ -91,8 +92,32 @@ export const ROLL_ASSET_KEY = (type: string, id: string) => `axf.roll.asset.${ty
 export const HIDE_KEY = (type: string) => `axf.hide.${type}`;
 /** Per-device fold state of a `collapsible` toolbar (same key on Android). */
 export const TOOLBAR_COLLAPSED_KEY = 'axf.toolbar.collapsed';
+/** Per-device state of a nav that opts in to nav-style@1: collapsed to its icons, the width it was dragged to, the open sub menus (JSON id list). */
+export const NAV_COLLAPSED_KEY = 'axf.nav.collapsed';
+export const NAV_WIDTH_KEY = 'axf.nav.width';
+export const NAV_OPEN_KEY = 'axf.nav.open';
 /** Where a person put the widgets of one host (banner, toolbar, …): JSON of a HostArrangement (core/engines/widgets.ts). */
 export const ARRANGE_KEY = (host: string) => `axf.widgets.arrange.${host}`;
+/** Dialog id of the banner's Widgets picker (react/components/BannerWidgets.tsx). */
+export const BANNER_WIDGETS_DIALOG = 'axf.banner.widgets';
+
+/** One widget the banner knows about: on the bar now or not. */
+export interface BannerWidget {
+  key: string;
+  type: string;
+  id: string;
+  label: string;
+  icon?: string;
+  aliases: string[];
+  origin: string;
+  /** Is it on the host right now? A chip its plugin took down stays listed, so a choice for it can still be made. */
+  attached: boolean;
+  /** Is it being drawn on the bar right now (attached, not hidden, not hidden for being empty)? */
+  shown: boolean;
+  at: string;
+  order: number;
+  view: BannerWidgetView;
+}
 /** Spacing choice (Settings → Appearance → Spacing): tight | compact | regular; absent = tight (engines/spacing.ts). */
 export const SPACING_KEY = 'axf.appearance.spacing';
 /**
@@ -101,6 +126,10 @@ export const SPACING_KEY = 'axf.appearance.spacing';
  * aside, not deleted. The look from axHub still applies. Not an appearance setting itself, so Restore keeps it.
  */
 export const APPEARANCE_LOCK_KEY = 'axf.lock.appearance';
+/** app-look@1 of an app without a hub source (engines/skin.ts). Not an appearance setting: it holds them. */
+export const APP_LOOK_KEY = 'axf.skin.look';
+/** The app whose colours the shared document's palette follows (axHub's own pages draw with it). */
+const HUB_PALETTE_APP = 'axhub-web';
 export const LOCKED_APPEARANCE_PERMS: readonly string[] = ['assets.swap', 'assets.import'];
 /**
  * Retired (Nov 1 2026, Brett: "The apps should only get appearance from axhub period"): a developer app always reads
@@ -219,6 +248,8 @@ export interface AppearanceSource {
   refresh(): void;
   /** Save a change. `change` is this app's keys only; the source merges into the latest document it holds (last write wins per key). */
   save(change: AppearanceChange): void;
+  /** This app's own look document, when the source keeps one (engines/skin.ts). Read before the first document is sent. */
+  appLook?: AppLookStore;
 }
 
 /** What `rt.brandPlace(slot)` gives a UI piece to draw. */
@@ -261,6 +292,9 @@ export class AxfRuntime {
   readonly manifest: AxfManifest;
   /** The host app this one is embedded in (embed@1), or null when it runs on its own. Fixed for the page's life. */
   readonly embedded: Embed | null;
+  /** embed@1 `shown`: whether the host says this app's frame is on screen (null = it hasn't said; standalone = null). */
+  hostShown: boolean | null = null;
+  private readonly frontSubs = new Set<() => void>();
   readonly loadErrors: { id: string; errors: string[] }[] = [];
   private state: AxfState;
   private listeners = new Set<() => void>();
@@ -307,6 +341,12 @@ export class AxfRuntime {
     const out: Record<string, string> = {};
     for (const w of this.viewportLists) if (w.list.matches) out[w.attr] = '1';
     return out;
+  }
+
+  /** A string that changes whenever a settings value compileStyles reads changes: the control@1 token overrides and the nav's collapsed / width state (a render dependency for the provider). */
+  styleSettingsKey(): string {
+    const keys = [...Object.values(CONTROL_TOKEN_SLOTS).map((s) => s.key), NAV_COLLAPSED_KEY, NAV_WIDTH_KEY];
+    return JSON.stringify(keys.map((k) => this.settings.get(k) ?? null));
   }
 
   /** A string that changes whenever a viewport attribute changes (a render dependency for the provider). */
@@ -393,6 +433,10 @@ export class AxfRuntime {
   /** true while the runtime applies a pushed document, so the change isn't echoed back to the source */
   private applyingAppearance = false;
   private lastAppearance: AppearanceDocument | null = null;
+  /** The document last applied: the shared one with this app's look over it. */
+  private lastEffective: AppearanceDocument | null = null;
+  /** What the app level composed last: the document, the skin's parts and which level decided (engines/skin.ts). */
+  private lastComposed: ComposedLook | null = null;
 
   /**
    * Make this a developer app: its appearance comes from the source (and goes back to it). Until the source is
@@ -401,6 +445,7 @@ export class AxfRuntime {
   attachAppearanceSource(source: AppearanceSource): void {
     this.detachAppearanceSource();
     this.appearanceSource = source;
+    this.useLookStore(source.appLook ?? null);
     this.appearanceOff = source.subscribe((ev) => {
       if ('state' in ev) {
         if (ev.state.status === 'ready') this.appearanceWasReady = true;
@@ -429,6 +474,7 @@ export class AxfRuntime {
     this.appearanceWasReady = false;
     this.appearanceSource = null;
     this.lastAppearance = null;
+    this.useLookStore(null);
     this.set({ appearance: null });
   }
 
@@ -477,7 +523,7 @@ export class AxfRuntime {
   }
 
   /** What the last document resolved to in this app, for Settings → Appearance to explain skipped ids. */
-  appearanceSkipped(): string[] { return resolveAppearance(this.lastAppearance, (t, id) => this.registry.has(t as AssetType, id)).skipped; }
+  appearanceSkipped(): string[] { return resolveAppearance(this.lastEffective, (t, id) => this.registry.has(t as AssetType, id)).skipped; }
 
   /**
    * Apply a document from the source: every appearance slot starts from the app's own default, then takes the
@@ -485,8 +531,15 @@ export class AxfRuntime {
    * through the same settings keys the UI uses. Nothing here needs a permission: the document *is* the saved setting,
    * the UAC gate sits on changing it (swap / setSpacing / setSlotHidden still decide who may).
    */
-  private applyAppearance(doc: AppearanceDocument | null): void {
-    this.lastAppearance = doc;
+  private applyAppearance(shared: AppearanceDocument | null): void {
+    this.lastAppearance = shared;
+    const saved = this.ensureLook();
+    const look = saved && this.lookPreview ? setUseSkin(pickSkin(saved, this.lookPreview), true) : saved;
+    // the app level of the chain: this app's own skin, or the hub-wide one while the app follows it (engines/skin.ts)
+    const composed = look ? composeLookAt(shared, look, (id) => this.skinData(id)) : null;
+    this.lastComposed = composed;
+    const doc = composed?.doc ?? shared;
+    this.lastEffective = doc;
     let retired: string[] = [];
     const r = resolveAppearance(doc, (t, id) => this.registry.has(t as AssetType, id));
     this.applyingAppearance = true;
@@ -519,19 +572,11 @@ export class AxfRuntime {
         for (const k of Object.keys(saved)) if (isAppearanceSetting(k) && !Object.hasOwn(shared, k)) this.settings.clear(k);
         retired = Object.keys(doc.settings).filter(isRetiredLookSetting);
       }
-      // A loaded design package decides the style and colour theme; only a recorded override beats it (Nov 1 2026).
-      const pkgId = active[DESIGN_PACKAGE_TYPE as AssetType];
-      const pkgAsset = pkgId ? this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, pkgId) : undefined;
-      if (pkgAsset) {
-        const overrides = normalizeDesignOverrides(doc?.settings ? doc.settings[DESIGN_OVERRIDES_KEY] : this.settings.get(DESIGN_OVERRIDES_KEY));
-        const look = designLookSlots(normalizeDesignPackage(pkgAsset.data), overrides, { 'style-theme': active['style-theme' as AssetType], 'color-theme': active['color-theme' as AssetType] }, (t, id) => this.registry.has(t as AssetType, id));
-        for (const t of DESIGN_OVERRIDABLE) { const v = look[t]; if (v) active[t as AssetType] = v; }
-      }
       const changed = ASSET_TYPES.some((t) => active[t] !== this.state.active[t]);
       // Nothing to swap = no new state: a re-applied document must not re-render every view (Nov 1 2026).
       if (changed) this.set({ active, swaps: this.state.swaps + 1 }, true);
       // A new look from the hub is applied to the app itself: hosts drawing the app under something else (the console's
-      // GizmoX interface tabs) bring it back into view, like a local design package does (Brett, Nov 1 2026: the console
+      // GizmoX interface tabs) bring it back into view, like a local skin does (Brett, Nov 1 2026: the console
       // sat on its GizmoX Night tab while axHub showed Saffron Day, so the two looked out of sync).
       if (changed) this.lookApplied('hub', doc?.updatedBy ?? '');
       if (r.skipped.length) this.terminal.warn('appearance', `not in this app, kept the default: ${r.skipped.join(', ')}`);
@@ -540,9 +585,9 @@ export class AxfRuntime {
       this.applyingAppearance = false;
     }
     // A document still carrying retired look settings is cleaned once (the next one won't list them).
-    if (retired.length) this.pushAppearance({ settings: Object.fromEntries(retired.map((k) => [k, null])) });
+    if (retired.length && !look) this.pushAppearance({ settings: Object.fromEntries(retired.map((k) => [k, null])) });
     // The hub doesn't hold look settings yet: this app's become the shared ones (sent once; the next document lists them).
-    if (doc && !doc.settings) {
+    if (doc && !doc.settings && !look) {
       const mine = this.lookSettings();
       if (Object.keys(mine).length) this.pushAppearance({ settings: mine });
     }
@@ -557,8 +602,243 @@ export class AxfRuntime {
 
   /** Push a local change to the source (no-op without one, or while applying a pushed document). */
   private pushAppearance(change: AppearanceChange): void {
-    if (!this.appearanceSource || !this.appearanceRunning || this.applyingAppearance) return;
+    if (this.applyingAppearance) return;
+    const store = this.lookStore();
+    if (this.lookLayerOn() && store.status() === 'failed') { this.terminal.warn('appearance', "this app's look document can't be read, so this change isn't saved"); return; }
+    const look = this.lookLayerOn() ? store.get() : null;
+    if (look) {
+      const inForce = resolveLookSkin(look, globalSkinOf(this.lastAppearance), null);
+      this.saveLook(lookAfterChange(look, change, inForce.id ? this.skinData(inForce.id) : null));
+      // the hub's own pages take their colours from axHub's look, the one thing the shared document still carries
+      if (change.palette && this.manifest.app.id === HUB_PALETTE_APP && this.appearanceRunning) this.appearanceSource?.save({ palette: change.palette });
+      return;
+    }
+    if (!this.appearanceSource || !this.appearanceRunning) return;
     this.appearanceSource.save(change);
+  }
+
+  /* ---------------- skins and each app's own look (engines/skin.ts) ---------------- */
+
+  private lookStoreRef: AppLookStore | null = null;
+  private lookStoreOff: (() => void) | null = null;
+  private localLookStore: AppLookStore | null = null;
+  /** The skin the picker is showing; drawn only, never saved. */
+  private lookPreview: string | null = null;
+
+  private useLookStore(store: AppLookStore | null): void {
+    this.lookStoreOff?.();
+    this.lookStoreOff = store?.subscribe(() => { this.applyAppearance(this.lastAppearance); this.bumpLook(); }) ?? null;
+    this.lookStoreRef = store;
+  }
+
+  /** A source that keeps no app-look (older sources, tests): the shared document alone is the look. */
+  private lookLayerOn(): boolean { return !this.appearanceSource || !!this.lookStoreRef; }
+
+  /** Where this app's look document lives: the hub for a developer app, a setting otherwise. */
+  private lookStore(): AppLookStore {
+    return this.lookStoreRef ?? (this.localLookStore ??= {
+      get: () => { const v = this.settings.get(APP_LOOK_KEY); return typeof v === 'string' ? parseAppLook(v) : null; },
+      status: () => (this.settings.get(APP_LOOK_KEY) === null ? 'missing' : 'ready'),
+      save: (doc) => { this.settings.set(APP_LOOK_KEY, JSON.stringify(doc)); },
+      subscribe: () => () => {},
+    });
+  }
+
+  /** The app's look document; the first read saves the snapshot, so the app's current look is its default from then on. */
+  private ensureLook(): AppLookDocument | null {
+    if (!this.lookLayerOn()) return null;
+    const store = this.lookStore();
+    const cur = store.get();
+    if (cur || store.status() !== 'missing') return cur ? this.migrateLook(cur) : cur;
+    const doc = this.migrateLook(newAppLook(this.manifest.app.id, snapshotLook(this.lookStoreRef ? this.lastAppearance : this.currentAppearance())));
+    this.saveLook(doc);
+    this.terminal.ok('appearance', 'saved the current look as this app\'s default');
+    return doc;
+  }
+
+  /**
+   * A look written before design packs folded into skins (Nov 10 2026): the retired `axf.appearance.design` setting
+   * (the package last applied) names the skin of the same id; it becomes the pick when the document has none, and the
+   * setting goes. The document's own retired slots are handled on read (`migrateLegacyLook`).
+   */
+  private migrateLook(doc: AppLookDocument): AppLookDocument {
+    const legacy = this.settings.get(LEGACY_DESIGN_APPLIED_KEY);
+    if (legacy === null) return doc;
+    this.settings.clear(LEGACY_DESIGN_APPLIED_KEY);
+    if (typeof legacy !== 'string' || doc.skin.id || !this.skinData(legacy)) return doc;
+    const next = pickSkin(doc, legacy);
+    this.lookStore().save(next);
+    return next;
+  }
+
+  private saveLook(doc: AppLookDocument): void {
+    this.lookStore().save({ ...doc, updatedBy: this.manifest.app.id, updatedAt: new Date().toISOString() });
+  }
+
+  private bumpLook(): void { this.set({ swaps: this.state.swaps + 1 }); }
+
+  /** Save a look change and draw it. */
+  private changeLook(next: (cur: AppLookDocument) => AppLookDocument): boolean {
+    if (this.lockedByAppearance('assets.swap')) { this.lockedToast(); return false; }
+    if (!this.can('assets.swap')) { this.toast('Your role cannot change the look.', 'danger', 'Permission denied'); return false; }
+    const cur = this.ensureLook();
+    if (!cur) { this.toast("This app's look can't be read from axHub right now.", 'warning', 'Appearance'); return false; }
+    this.lookPreview = null;
+    this.saveLook(next(cur));
+    this.applyAppearance(this.lastAppearance);
+    this.bumpLook();
+    return true;
+  }
+
+  /** Skins whose inline sections are registered as section presets (`<section type>/skin-<id>`), once each. */
+  private readonly sectionPresetsOf = new Set<string>();
+
+  private skinData(id: string): SkinData | null {
+    const s = this.registry.get(SKIN_TYPE as AssetType, id);
+    if (!s) return null;
+    const skin = normalizeSkin(s.data);
+    if (skin.sections && !this.sectionPresetsOf.has(id)) {
+      this.sectionPresetsOf.add(id);
+      for (const a of skinSectionAssets(id, skin, s.name)) {
+        const r = this.registry.register(a, 'builtin', `skin:${id}`);
+        if (!r.ok) this.terminal.warn('appearance', `skin ${id}: its ${a.type} section is not valid (${r.errors.join('; ')}); the preset it names is used instead`);
+      }
+    }
+    return skin;
+  }
+
+  /** Every skin this app can use (every former design package and style package is one). */
+  skinList(): SkinEntry[] {
+    return skinEntries(this.registry.list(SKIN_TYPE as AssetType) as never);
+  }
+
+  /** The skin a place in this app is on: the skin in force, else the app's default skin (the manifest's). */
+  appliedSkin(): string {
+    const inForce = this.skinInForce().id;
+    if (inForce) return inForce;
+    const def = (this.manifest.defaults as Record<string, string | undefined>).skin;
+    return def && this.registry.has(SKIN_TYPE as AssetType, def) ? def : '';
+  }
+
+  /** This app's look document (null while it can't be read). */
+  appLook(): AppLookDocument | null { return this.ensureLook(); }
+
+  /** The slots where a pick beats the skin. */
+  skinOverrides(): string[] { return overriddenSlots(this.appLook()); }
+
+  /** The 'Use skin' switch. `id` picks the skin too; on with none picked takes the first skin. */
+  useSkin(on: boolean, id?: string): boolean {
+    const pick = id ?? this.appLook()?.skin.id ?? '';
+    const skin = pick || (on ? this.skinList()[0]?.id ?? '' : '');
+    if (on && !this.skinData(skin)) { this.toast(`No skin "${skin}" in this app.`, 'warning', 'Skin'); return false; }
+    if (!this.changeLook((cur) => setUseSkin(skin ? pickSkin(cur, skin) : cur, on))) return false;
+    this.terminal.ok('hot-swap', on ? `skin ${skin} on for this app` : 'skin off: back to this app\'s own look');
+    this.lookApplied(on ? 'skin' : 'default', skin);
+    return true;
+  }
+
+  /** Pick a skin; it shows only while Use skin is on. */
+  pickSkin(id: string): boolean {
+    if (!this.skinData(id)) { this.toast(`No skin "${id}" in this app.`, 'warning', 'Skin'); return false; }
+    return this.changeLook((cur) => pickSkin(cur, id));
+  }
+
+  /**
+   * Show a skin on this screen without saving anything; null puts the saved look back. The picker's preview: it reaches
+   * no document and no other tab, and any saved change ends it.
+   */
+  previewSkin(id: string | null): boolean {
+    const want = id ?? null;
+    if (want === this.lookPreview) return true;
+    if (want && !this.skinData(want)) return false;
+    if (want && (!this.can('assets.swap') || this.lockedByAppearance('assets.swap') || !this.ensureLook())) return false;
+    this.lookPreview = want;
+    this.applyAppearance(this.lastAppearance);
+    this.bumpLook();
+    return true;
+  }
+
+  /** The skin being previewed, if any. */
+  previewedSkin(): string | null { return this.lookPreview; }
+
+  /** Per-item "Back to skin": drop this slot's override. */
+  backToSkin(slot: string): boolean { return this.changeLook((cur) => backToSkin(cur, slot)); }
+
+  /** Undo the last Restore to default (one level). */
+  undoRestoreDefault(): boolean {
+    if (!this.appLook()?.undo) return false;
+    if (!this.changeLook(undoRestore)) return false;
+    this.toast('Look brought back.', 'success', 'Appearance');
+    return true;
+  }
+
+  /* ---- scopes: hub-wide, this app, one UI, one plugin (skin-coverage@1, engines/skin-coverage.mjs) ---- */
+
+  /** Follow the hub-wide skin while Use skin is off (Brett: a switch, off by default). */
+  skinInherit(on: boolean): boolean {
+    if (!this.changeLook((cur) => setInheritSkin(cur, on))) return false;
+    this.terminal.ok('hot-swap', on ? 'this app follows the hub-wide skin' : 'this app keeps its own look');
+    return true;
+  }
+
+  /** The hub-wide skin the shared document carries (null = none). */
+  globalSkin(): { id: string; overrides?: Record<string, string> } | null { return globalSkinOf(this.lastAppearance); }
+
+  /**
+   * A UI or plugin level of the chain: `key` = `ui:<id>` | `plugin:<id>`, `use` on (with `id`, else the skin already
+   * picked there, else the app's), off (no skin inside it) or inherit (the parent decides, the default).
+   */
+  scopeSkin(key: string, use: 'on' | 'off' | 'inherit', id?: string): boolean {
+    if (!isSubScopeKey(key)) { this.toast(`"${key}" is not a UI or plugin scope.`, 'warning', 'Skin'); return false; }
+    const cur = this.appLook();
+    const pick = use === 'on' ? (id || cur?.scopes[key]?.id || cur?.skin.id || this.skinList()[0]?.id || '') : id;
+    if (use === 'on' && (!pick || !this.skinData(pick))) { this.toast(`No skin "${pick}" in this app.`, 'warning', 'Skin'); return false; }
+    if (!this.changeLook((look) => setScopeSkin(look, key, use, pick))) return false;
+    this.terminal.ok('hot-swap', use === 'on' ? `skin ${pick} on for ${key}` : use === 'off' ? `no skin inside ${key}` : `${key} follows its parent`);
+    return true;
+  }
+
+  /** The skin states this app's look names for UIs and plugins. */
+  skinScopes(): ({ key: string } & SkinScopeState)[] { return scopeEntries(this.appLook()); }
+
+  /** The skin in force at a place in this app, hub-wide skin included: `{ id, overrides, from }` (from = the level that decided). */
+  skinAt(scope?: Partial<SkinScope> | null): ResolvedSkin {
+    return resolveLookSkin(this.appLook(), this.globalSkin(), { ...scope, app: this.manifest.app.id });
+  }
+
+  /** The skin in force at the app level (the one Settings → Appearance shows), '' = none. */
+  skinInForce(): ResolvedSkin { return this.lastComposed?.skin ?? { id: '', overrides: {}, from: '' }; }
+
+  /** How a skin reaches every registered asset type (skin-coverage@1), registry order. */
+  skinCoverage(): CoverageRow[] { return skinCoverage(); }
+
+  /** What one skin sets or styles, type by type. */
+  skinCovers(id: string): { type: string; by: CoverageRow['by']; covered: boolean; how: string[] }[] {
+    const s = this.skinData(id);
+    return s ? skinCovers(s, id) : [];
+  }
+
+  /**
+   * A scoped view drawn under the skin in force at a UI or plugin (`key` = `ui:<id>` | `plugin:<id>`): null when that
+   * level resolves to the same skin and overrides as the app itself (nothing to scope) or the key is not a sub scope.
+   * Like `scoped()`: reads of the look come from the scope's composed document, everything else is the shared runtime.
+   */
+  skinScoped(key: string): AxfRuntime | null {
+    if (!isSubScopeKey(key)) return null;
+    const look = this.appLook();
+    if (!look) return null;
+    const here = resolveLookSkin(look, this.globalSkin(), skinScopeOf(key, this.manifest.app.id));
+    const app = this.skinInForce();
+    if (here.id === app.id && JSON.stringify(here.overrides) === JSON.stringify(app.overrides)) { this.dropScope(skinScopeDomId(key)); return null; }
+    const scopeId = skinScopeDomId(key);
+    const resolve = (): ResolvedInterface => {
+      const composed = composeLookAt(this.lastAppearance, this.appLook() ?? look, (id) => this.skinData(id), skinScopeOf(key, this.manifest.app.id));
+      const has = (t: string, id: string) => this.registry.has(t as AssetType, id);
+      const r = resolveAppearance(composed.doc, has);
+      const active: Record<string, string> = { ...r.slots };
+      return { active, spacing: r.spacing ?? this.spacing(), hidden: r.hidden, settings: (composed.doc.settings ?? {}) as Record<string, unknown>, branding: '', skin: composed.skin.id, missing: [], parts: composed.parts } as ResolvedInterface & { parts: ComposedLook['parts'] };
+    };
+    return this.scopedView(scopeId, `skin:${key}`, resolve, 'skin');
   }
 
   /** The palette the hub's own pages use, from this app's active colour theme. */
@@ -598,6 +878,17 @@ export class AxfRuntime {
   }
 
   /* ---------------- contributed navigation ---------------- */
+
+  /**
+   * The nav-style in force (nav-style@1, normalized, with the control@1 `tokens.nav` overrides written in), or null when
+   * the nav doesn't opt in (nav-menu `navStyle` is not true) or the app ships no nav-style asset.
+   */
+  navStyleData(): NavStyleData | null {
+    if (this.assetOrNull('nav-menu')?.data.navStyle !== true) return null;
+    const a = this.assetOrNull('nav-style' as AssetType);
+    if (!a) return null;
+    return normalizeNavStyle(this.withTokenOverrides('tokens.nav', 'nav-style' as AssetType, a.data));
+  }
 
   /** Nav sections libraries and plugins added, in the order they were added. */
   get navExtras(): NavExtraSection[] {
@@ -874,6 +1165,7 @@ export class AxfRuntime {
     else if (!this.registry.has(a.type as AssetType, a.id)) this.terminal.warn('widgets', `${key} (attached to ${host} by ${a.origin}) is not registered; it shows once it is`);
     const list = this.hostExtra.get(host) ?? [];
     this.hostExtra.set(host, [...list.filter((x) => attachmentKey(x.type, x.id) !== key), { ...a }]);
+    if (host === 'banner') this.bannerSeen.set(key, { type: a.type, id: a.id, origin: a.origin, at: a.at, order: a.order ?? 1000, hint: a.widget });
     this.set({});
     return () => this.detachFromHost(host, key);
   }
@@ -893,6 +1185,8 @@ export class AxfRuntime {
       const next = list.filter((x) => x.origin !== origin);
       if (next.length !== list.length) { this.hostExtra.set(host, next); changed = true; }
     }
+    // a plugin switched off takes its widgets out of the picker too; a chip that only took itself down stays listed
+    for (const [key, w] of this.bannerSeen) if (w.origin === origin) { this.bannerSeen.delete(key); changed = true; }
     if (changed) this.set({});
   }
 
@@ -905,11 +1199,94 @@ export class AxfRuntime {
   /** Remove run-time banner attachments by key (`type:id`) or by origin (a module / plugin id). */
   detachFromBanner(keyOrOrigin: string): void { this.detachFromHost('banner', keyOrOrigin); }
 
-  /** The banner to draw: its data (null = no banner or hidden) and where every attachment goes. */
-  banner(): { data: Asset<'banner'>['data'] | null; placed: PlacedBanner } {
+  /** The banner to draw: its data (null = no banner or hidden) and where every attachment goes. `all` keeps the widgets the person hid. */
+  banner(opts?: { all?: boolean }): { data: Asset<'banner'>['data'] | null; placed: PlacedBanner } {
     const b = this.slotHidden('banner') ? null : this.assetOrNull('banner')?.data ?? null;
     const placed = placeAttachments(b, b ? (this.hostExtra.get('banner') as BannerAttachment[] | undefined) ?? [] : [], (t, id) => this.registry.has(t as AssetType, id), this.hostArrangement('banner'));
-    return { data: b, placed };
+    if (opts?.all) return { data: b, placed };
+    const shown = Object.fromEntries(Object.entries(placed).map(([s, list]) => [s, list.filter((p) => this.bannerWidgetShown(p.key))])) as PlacedBanner;
+    return { data: b, placed: shown };
+  }
+
+  /* ---------------- banner widgets (core/engines/bannerwidgets.ts): one registry, the person's choices ---------------- */
+
+  /** Everything that ever attached itself to the banner while this page ran. */
+  /** The widget under the last right-click or long-press on the banner (`type:id`), set by the context menu host. */
+  contextBannerWidget: string | null = null;
+  private readonly bannerSeen = new Map<string, { type: string; id: string; origin: string; at: string; order: number; hint?: BannerWidgetHint }>();
+
+  /** The setting holding the widget choices: one per app and form factor. A look setting, so it syncs through axHub. */
+  bannerWidgetsKey(): string {
+    const app = this.manifest.app.id.toLowerCase().replace(/[^a-z0-9-]+/g, '-').slice(0, 40) || 'app';
+    const g = globalThis as { matchMedia?: (q: string) => { matches: boolean } };
+    return `axf.banners.widgets.${app}.${g.matchMedia?.('(max-width: 640px)').matches ? 'phone' : 'desktop'}`;
+  }
+
+  /** The person's widget choices on this app and form factor. */
+  bannerWidgetPrefs(): BannerWidgetPrefs { return normalizeBannerWidgetPrefs(this.settings.get(this.bannerWidgetsKey())); }
+
+  private bannerWidgetHint(key: string): BannerWidgetHint | undefined {
+    const seen = this.bannerSeen.get(key);
+    if (seen?.hint) return seen.hint;
+    const own = (this.assetOrNull('banner')?.data as { attach?: HostAttachment[] } | undefined)?.attach;
+    return own?.find((a) => attachmentKey(a.type, a.id) === key)?.widget;
+  }
+
+  /** How one widget is drawn (`type:id`). */
+  bannerWidgetView(key: string): BannerWidgetView {
+    return bannerWidgetView(key.split(':')[0] ?? '', this.bannerWidgetHint(key), this.bannerWidgetPrefs()[key]);
+  }
+
+  /** Does this widget get drawn: not hidden, and not empty with hide-when-empty on? */
+  bannerWidgetShown(key: string): boolean {
+    const v = this.bannerWidgetView(key);
+    if (v.hidden) return false;
+    if (!v.hideWhenEmpty) return true;
+    const i = key.indexOf(':');
+    const data = (this.registry.get(key.slice(0, i) as AssetType, key.slice(i + 1)) as { data: unknown } | undefined)?.data;
+    return !bannerWidgetEmpty(key.slice(0, i), data, (c) => this.badge(c));
+  }
+
+  /** Every widget the banner has, in bar order (left, center, right), then the ones not on the bar right now. */
+  bannerWidgets(): BannerWidget[] {
+    const rows: BannerWidget[] = [];
+    const row = (key: string, type: string, id: string, origin: string, at: string, order: number, attached: boolean): BannerWidget => {
+      const asset = this.registry.get(type as AssetType, id) as { name?: string; data?: { label?: string; icon?: string } } | undefined;
+      const hint = this.bannerWidgetHint(key);
+      return {
+        key, type, id, origin, at, order, attached,
+        label: hint?.label || (type === 'clock' ? 'Clock' : asset?.name || asset?.data?.label || id),
+        ...(hint?.icon || asset?.data?.icon ? { icon: hint?.icon || asset?.data?.icon } : {}),
+        // "the clock", "the search bar": a one-of-a-kind widget also answers to its type
+        aliases: [...(hint?.aliases ?? []), ...(BANNER_FIXED_SHAPE.includes(type) ? [type.replace(/-/g, ' ')] : [])],
+        shown: attached && this.bannerWidgetShown(key),
+        view: this.bannerWidgetView(key),
+      };
+    };
+    const { placed } = this.banner({ all: true });
+    for (const side of Object.keys(placed)) for (const p of placed[side as keyof PlacedBanner]) rows.push(row(p.key, p.type, p.id, p.origin, p.at, p.order, true));
+    for (const [key, w] of this.bannerSeen) if (!rows.some((r) => r.key === key)) rows.push(row(key, w.type, w.id, w.origin, w.at, w.order, false));
+    return rows;
+  }
+
+  /** Find a widget from what someone said ("clock", "ticker") or its key. */
+  findBannerWidget(query: string): BannerWidget | null { return findBannerWidget(this.bannerWidgets(), query); }
+
+  /** Change one widget's choices; saved at once, drawn at once. A field set to null goes back to its default. */
+  setBannerWidget(key: string, patch: Record<string, unknown>): boolean {
+    if (!this.canArrange()) { this.toast('Your account can\'t change the look.', 'warning', 'Banner widgets'); return false; }
+    const next = patchBannerWidget(this.bannerWidgetPrefs(), key, patch);
+    if (Object.keys(next).length) this.settings.set(this.bannerWidgetsKey(), next as never); else this.settings.clear(this.bannerWidgetsKey());
+    this.terminal.ok('widgets', `banner: ${key} ${JSON.stringify(patch)}`);
+    this.set({});
+    return true;
+  }
+
+  /** Every widget choice and the arrangement back to the defaults. */
+  resetBannerWidgets(): void {
+    if (!this.canArrange()) return;
+    this.settings.clear(this.bannerWidgetsKey());
+    this.resetHostArrangement('banner');
   }
 
   /** Attach a widget (clock, search bar) to the toolbar at run time (at: start | end). Same type + id replaces. Returns detach. */
@@ -939,7 +1316,7 @@ export class AxfRuntime {
 
   /** Every attachment of a host where it is drawn now (banner and toolbar use their own rules; other hosts the generic one). */
   hostPlaced(host: string): Record<string, PlacedAttachment[]> {
-    if (host === 'banner') return this.banner().placed;
+    if (host === 'banner') return this.banner({ all: true }).placed;
     if (host === 'toolbar') return this.toolbarWidgets();
     const data = (this.registry.has(host as AssetType, this.state.active[host as AssetType] ?? '') ? this.assetOrNull(host as AssetType)?.data : null) as Record<string, unknown> | null;
     return placeHost(host, data ?? null, this.hostExtra.get(host) ?? [], (t, id) => this.registry.has(t as AssetType, id), true, this.hostArrangement(host));
@@ -1056,13 +1433,8 @@ export class AxfRuntime {
       this.toast(`No ${type} asset with id "${target}".`, 'warning', 'Swap failed');
       return false;
     }
-    // A design package is never "just a slot": moving it means loading the package (its themes, extras; overrides
-    // cleared), or every other app on the hub would show the package while this one kept the old themes (Nov 3 2026).
-    if (type === DESIGN_PACKAGE_TYPE) return this.applyDesignPackage(next);
-    if (next === this.state.active[type] && type !== STYLE_PACKAGE_TYPE) return true;
+    if (next === this.state.active[type]) return true;
     this.terminal.ok('hot-swap', `${type}: ${this.state.active[type]} → ${next}`);
-    // a style package is a set of controls: picking one swaps every member it names (engines/stylepackage.ts)
-    if (type === STYLE_PACKAGE_TYPE) { this.swapAll({ [type]: next } as Partial<ActiveAssets>); return true; }
 
     const active = { ...this.state.active, [type]: next };
     const patch: Partial<AxfState> = { active, swaps: this.state.swaps + 1 };
@@ -1075,41 +1447,11 @@ export class AxfRuntime {
       }
     }
     this.set(patch, true);
-    this.recordDesignOverride(type, next); // a look setting: it reaches the hub with the other look settings
     if (type !== 'uac-policy') this.pushAppearance({ slots: { [type]: next }, ...(type === 'color-theme' ? { palette: this.appearancePalette() } : {}) });
     return true;
   }
 
-  /** The style / colour theme overrides on top of the loaded design package (engines/designpackage.ts, precedence rule). */
-  designOverrides(): DesignOverrides { return this.loadedDesignPackage() ? normalizeDesignOverrides(this.settings.get(DESIGN_OVERRIDES_KEY)) : {}; }
-
-  /** The design package in force (its data), or null when none is loaded. */
-  private loadedDesignPackage() {
-    const id = this.state.active[DESIGN_PACKAGE_TYPE as AssetType];
-    const a = id ? this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, id) : undefined;
-    return a ? normalizeDesignPackage(a.data) : null;
-  }
-
-  /** A style or colour pick while a package is loaded: record (or drop) its override. Returns the new overrides, or null when nothing changed. */
-  private recordDesignOverride(type: string, id: string): DesignOverrides | null {
-    const next = overrideAfterPick(this.loadedDesignPackage(), normalizeDesignOverrides(this.settings.get(DESIGN_OVERRIDES_KEY)), type, id);
-    if (!next) return null;
-    if (Object.keys(next).length) this.settings.set(DESIGN_OVERRIDES_KEY, next as unknown as SettingValue);
-    else this.settings.clear(DESIGN_OVERRIDES_KEY);
-    return next;
-  }
-
   swapAll(targets: Partial<ActiveAssets>) {
-    // a style package among the targets brings its member controls; slots named explicitly win over them
-    const sp = (targets as Record<string, string | undefined>)[STYLE_PACKAGE_TYPE];
-    if (sp) {
-      const pkg = this.registry.get(STYLE_PACKAGE_TYPE as AssetType, sp);
-      if (pkg) {
-        const members = stylePackageSlots(pkg.data as StylePackageData);
-        for (const [t, id] of Object.entries(members)) if (!this.registry.has(t as AssetType, id)) { this.terminal.warn('hot-swap', `style package ${sp}: no ${t} "${id}" in this app, kept the current one`); delete members[t]; }
-        targets = { ...members, ...targets } as Partial<ActiveAssets>;
-      }
-    }
     const active = { ...this.state.active };
     const pushed: Record<string, string> = {};
     for (const [t, id] of Object.entries(targets) as [AssetType, string][]) {
@@ -1283,101 +1625,91 @@ export class AxfRuntime {
     this.pushAppearance({ slots, hidden, palette: this.appearancePalette() });
   }
 
-  /* ---------------- design packages (engines/designpackage.ts) ---------------- */
+  /* ---------------- the look as a skin (engines/skin.ts) ---------------- */
 
-  /** The current look as a design package: the four themes, plus every other appearance slot and setting as extras. */
-  captureDesignPackage(withExtras = true): DesignPackageData {
+  /** The current look as a skin: the four sections in force, every other slot as an asset, spacing, chrome and look settings as extras. */
+  captureSkin(): SkinData {
     const hidden: Record<string, boolean> = {};
     for (const t of ASSET_TYPES) { const v = this.settings.get(HIDE_KEY(t)); if (typeof v === 'boolean') hidden[t] = v; }
-    return captureDesignPackage({ active: this.state.active as Record<string, string>, types: ASSET_TYPES, spacing: this.spacing(), hidden, values: this.settings.savedValues() }, withExtras);
+    return captureSkin({ active: this.state.active as Record<string, string | undefined>, types: ASSET_TYPES, spacing: this.spacing(), hidden, values: this.settings.savedValues(), isLookSetting: (k) => isAppearanceSetting(k) && !isRetiredLookSetting(k) });
   }
 
   /**
-   * The design package loaded in this app, if any: the `design-package` slot, which rides the shared look, so every app
-   * on the hub names the same one (the local `axf.appearance.design` note is only written for older readers; a slot
-   * that is a known package always wins over it, Nov 3 2026). After Restore default appearance: the app's default package.
+   * Apply skin `id` as this app's look (design-package@1's `applyDesignPackage` under its new name: every former design
+   * package is a skin with the same id). `next` / `prev` / `random` step through the skins from the one in force.
    */
-  appliedDesignPackage(): string | undefined {
-    const active = this.state.active[DESIGN_PACKAGE_TYPE as AssetType];
-    if (active && this.registry.has(DESIGN_PACKAGE_TYPE as AssetType, active)) return active;
-    let v = this.settings.get(DESIGN_APPLIED_KEY);
-    if (typeof v !== 'string') {
-      // the retired appearance package's pick: the shipped packages kept their ids, so move it over once
-      const old = this.settings.get(PACKAGE_APPLIED_KEY);
-      if (typeof old === 'string' && this.registry.has(DESIGN_PACKAGE_TYPE as AssetType, old)) { this.settings.set(DESIGN_APPLIED_KEY, old); this.settings.clear(PACKAGE_APPLIED_KEY); v = old; }
+  applySkin(id: string): boolean {
+    let pick = id;
+    if (id === 'next' || id === 'prev' || id === 'random') {
+      const list = this.skinList().map((x) => x.id);
+      if (!list.length) return false;
+      const cur = list.indexOf(this.appliedSkin());
+      const step = id === 'random' ? 1 + Math.floor(Math.random() * Math.max(1, list.length - 1)) : id === 'next' ? 1 : -1;
+      pick = list[((cur < 0 ? (step > 0 ? -1 : 0) : cur) + step + list.length * 2) % list.length]!;
     }
-    return typeof v === 'string' && this.registry.has(DESIGN_PACKAGE_TYPE as AssetType, v) ? v : undefined;
-  }
-
-  /**
-   * Apply design package `id`: its style, colour, layout and behaviour themes; and when it carries extras, the other
-   * slots, spacing, shown / hidden chrome and the other appearance settings too (the whole look).
-   */
-  applyDesignPackage(id: string, opts: { quiet?: boolean } = {}): boolean {
+    if (this.lookLayerOn()) return this.useSkin(true, pick);
+    // a source without an app-look layer (older sources): the shared document alone is the look, so the skin is written
+    // into it slot by slot, spacing and chrome included (what applyDesignPackage did), and every app on that document follows
     if (!this.can('assets.swap')) { this.toast('Your role cannot change the look.', 'danger', 'Permission denied'); return false; }
-    const a = this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, id);
-    if (!a) { this.toast(`No design package "${id}".`, 'warning', 'Design package'); return false; }
-    const pkg = normalizeDesignPackage(a.data);
-    const plan = packageSettingsPlan(pkg, Object.keys(this.settings.savedValues()));
-    for (const k of plan.clear) this.settings.clear(k);
-    // loading a package (again) clears the individual style / colour overrides (precedence rule)
-    if (this.settings.get(DESIGN_OVERRIDES_KEY) !== null) this.settings.clear(DESIGN_OVERRIDES_KEY);
-    for (const [k, v] of Object.entries(plan.set)) this.settings.set(k, v as SettingValue);
+    const s = this.registry.get(SKIN_TYPE as AssetType, pick);
+    const skin = this.skinData(pick);
+    if (!s || !skin) { this.toast(`No skin "${pick}" in this app.`, 'warning', 'Skin'); return false; }
+    for (const [k, v] of Object.entries(skin.extras?.settings ?? {})) this.settings.set(k, v as SettingValue);
     const hidden: Record<string, boolean | null> = {};
-    if (pkg.extras) for (const t of ASSET_TYPES) {
+    for (const t of ASSET_TYPES) {
       if (!hideable(t) || this.slotOwnedByHost(t)) continue;
-      const want = pkg.extras.hidden?.[t];
+      const want = skin.extras?.hidden?.[t];
       if (typeof want !== 'boolean' || want === this.defaultHiddenSlots().includes(t)) { if (this.settings.get(HIDE_KEY(t)) !== null) this.settings.clear(HIDE_KEY(t)); hidden[t] = null; }
       else { this.settings.set(HIDE_KEY(t), want); hidden[t] = want; }
     }
-    if (pkg.extras?.spacing) this.setSpacing(pkg.extras.spacing as Spacing);
-    const slots = designPackageSlots(pkg);
-    // a theme the package names but this app doesn't ship is skipped (warned), never a broken look
-    for (const [t, sid] of Object.entries(slots)) if (!this.registry.has(t as AssetType, sid)) { this.terminal.warn('hot-swap', `design package ${id}: no ${t} "${sid}" in this app, kept the current one`); delete slots[t]; }
-    this.swapAll({ ...(slots as Partial<ActiveAssets>), [DESIGN_PACKAGE_TYPE]: id } as Partial<ActiveAssets>);
-    if (pkg.extras) this.pushAppearance({ hidden });
-    this.settings.set(DESIGN_APPLIED_KEY, id);
-    if (this.settings.get(PACKAGE_APPLIED_KEY) !== null) this.settings.clear(PACKAGE_APPLIED_KEY);
-    this.terminal.ok('hot-swap', `design package ${id} applied (${Object.keys(slots).length} slots, ${Object.keys(plan.set).length} settings)`);
-    if (opts.quiet) return true; // part of a bigger step (Restore default): that step says what happened
-    this.toast(`${a.name} applied.`, 'success', 'Design package');
-    this.lookApplied('design-package', id);
+    if (skin.extras?.spacing) this.setSpacing(skin.extras.spacing as Spacing);
+    const slots = skinSlots(skin, pick);
+    for (const [t, sid] of Object.entries(slots)) if (!this.registry.has(t as AssetType, sid)) { this.terminal.warn('hot-swap', `skin ${pick}: no ${t} "${sid}" in this app, kept the current one`); delete slots[t]; }
+    this.swapAll(slots as Partial<ActiveAssets>);
+    this.pushAppearance({ hidden });
+    this.terminal.ok('hot-swap', `skin ${pick} applied (${Object.keys(slots).length} slots)`);
+    this.toast(`${s.name} applied.`, 'success', 'Skin');
+    this.lookApplied('skin', pick);
     return true;
   }
 
-  private readonly lookAppliedListeners = new Set<(ev: { kind: 'design-package' | 'interface' | 'default' | 'hub'; id: string }) => void>();
+  private readonly lookAppliedListeners = new Set<(ev: { kind: 'skin' | 'interface' | 'default' | 'hub'; id: string }) => void>();
 
   /**
-   * Called after a design package, an interface or the default look is applied to the app (also on "Apply again").
+   * Called after a skin, an interface or the default look is applied to the app (also on "Apply again").
    * Hosts that draw the app under something else (the console's GizmoX interface tabs) bring the app back into view.
    */
-  onLookApplied(fn: (ev: { kind: 'design-package' | 'interface' | 'default' | 'hub'; id: string }) => void): () => void {
+  onLookApplied(fn: (ev: { kind: 'skin' | 'interface' | 'default' | 'hub'; id: string }) => void): () => void {
     this.lookAppliedListeners.add(fn);
     return () => { this.lookAppliedListeners.delete(fn); };
   }
 
-  private lookApplied(kind: 'design-package' | 'interface' | 'default' | 'hub', id: string): void {
+  private lookApplied(kind: 'skin' | 'interface' | 'default' | 'hub', id: string): void {
     for (const fn of [...this.lookAppliedListeners]) { try { fn({ kind, id }); } catch (e) { this.terminal.warn('hot-swap', `look listener failed: ${(e as Error).message}`); } }
   }
 
-  /** @deprecated the appearance package became the design package (Oct 27 2026). */
-  captureAppearancePackage(): AppearancePackageData { const p = this.captureDesignPackage(); return { ...(p.extras ?? {}), slots: designPackageSlots(p) }; }
-  /** @deprecated use appliedDesignPackage */
-  appliedAppearancePackage(): string | undefined { return this.appliedDesignPackage(); }
-  /** @deprecated use applyDesignPackage */
-  applyAppearancePackage(id: string): boolean { return this.applyDesignPackage(id); }
+  /** @deprecated design packages are skins (Nov 10 2026): use applySkin */
+  applyDesignPackage(id: string): boolean { return this.applySkin(id); }
+  /** @deprecated design packages are skins (Nov 10 2026): use appliedSkin */
+  appliedDesignPackage(): string | undefined { return this.appliedSkin() || undefined; }
 
   /** Back to the app's default look: default assets, spacing, chrome and every other appearance setting cleared. */
   restoreDefaultAppearance(): void {
     if (this.lockedByAppearance('assets.swap')) return this.lockedToast();
     if (!this.can('assets.swap')) return this.toast('Your role cannot change the look.', 'danger', 'Permission denied');
-    for (const k of Object.keys(this.settings.savedValues())) if (isAppearanceSetting(k) || k === SPACING_KEY || k === PACKAGE_APPLIED_KEY || k === DESIGN_APPLIED_KEY) this.settings.clear(k);
+    if (this.lookStore().get() && this.changeLook((cur) => restoreAppDefault(cur, new Date().toISOString()))) {
+      this.terminal.ok('hot-swap', 'back to this app\'s default look');
+      this.toast('Back to this app\'s default look.', 'success', 'Appearance');
+      this.lookApplied('default', '');
+      return;
+    }
+    for (const k of Object.keys(this.settings.savedValues())) if (isAppearanceSetting(k) || isRetiredLookSetting(k) || k === SPACING_KEY) this.settings.clear(k);
     this.reset();
+    // The default look is the app's default skin in full: its spacing and chrome too (the slots are the manifest's defaults already).
+    const def = this.appliedSkin() ? this.skinData(this.appliedSkin()) : null;
+    if (def?.extras?.spacing) this.setSpacing(def.extras.spacing as Spacing);
+    for (const [t, want] of Object.entries(def?.extras?.hidden ?? {})) if (hideable(t as AssetType) && !this.slotOwnedByHost(t as AssetType) && want !== this.defaultHiddenSlots().includes(t as AssetType)) this.setSlotHidden(t as AssetType, want);
     this.pushAppearance({ spacing: this.spacing() });
-    // The default look is the app's default design theme, loaded in full (its spacing and chrome too), with no style
-    // or colour override left (precedence rule 3): Restore = load the default design package again (Nov 3 2026).
-    const def = (this.manifest.defaults as Record<string, string | undefined>)[DESIGN_PACKAGE_TYPE];
-    if (def && this.registry.has(DESIGN_PACKAGE_TYPE as AssetType, def)) this.applyDesignPackage(def, { quiet: true });
     this.terminal.ok('hot-swap', 'default appearance restored');
     this.toast('Default appearance restored.', 'success', 'Appearance');
     this.lookApplied('default', '');
@@ -1797,6 +2129,24 @@ export class AxfRuntime {
     return false;
   }
 
+  /**
+   * Is this app in front of the person: the page is visible and, inside a host, the host shows this app's frame (a host
+   * that never said counts as showing it). Remote commands go to the client in front (console-commands, Nov 3 2026).
+   */
+  inFront(): boolean {
+    const d = (globalThis as unknown as { document?: { visibilityState?: string } }).document;
+    if (d?.visibilityState && d.visibilityState !== 'visible') return false;
+    return !this.embedded || this.hostShown !== false;
+  }
+
+  /** Told when inFront() may have changed (the host showed or hid this frame). → unsubscribe. */
+  onFront(f: () => void): () => void { this.frontSubs.add(f); return () => { this.frontSubs.delete(f); }; }
+
+  /** Inside a host: ask it to bring this app's frame to the front (embed@1 `show`). False standalone or with no host. */
+  bringToFront(reason?: string): boolean {
+    return this.postToHost(reason ? { $axf: EMBED_MESSAGE, type: 'show', reason } : { $axf: EMBED_MESSAGE, type: 'show' });
+  }
+
   /** A taken hook was used: ask the host (open its settings on this app's tab, and the tab the action named). */
   private askHost(spec: string): boolean {
     const fn = embedTakenBy(this.embedded, spec) ?? embedTakenView(this.embedded, spec.startsWith('nav:') ? spec.slice(4) : spec);
@@ -1825,6 +2175,10 @@ export class AxfRuntime {
       if (m?.type === 'run') this.runSharedMenuItem(m.id);
       if (m?.type === 'plugins-enabled' && this.hostTakes('plugins')) this.receiveHostPlugins(m.plugins);
       if (m?.type === 'plugins-request' && this.reportedPlugins) this.reportPluginsToHost(this.reportedPlugins);
+      if (m?.type === 'shown' && m.on !== this.hostShown) {
+        this.hostShown = m.on;
+        for (const f of this.frontSubs) try { f(); } catch { /* a listener's own problem */ }
+      }
     };
     // the app itself in a tab shares its menu (and, chrome@1, its navigation / context menus / toolbar / widgets when the
     // host takes them); a page the host shows alone (its settings page) doesn't
@@ -1945,7 +2299,17 @@ export class AxfRuntime {
     if (this.hostTakes('app-menu')) { const m = await this.buildSharedMenus(opts); bundle.menus = m.menus; for (const [k, v] of m.run) run.set(k, v); }
     if (this.hostTakes('nav-menu')) {
       const nav = this.assetOrNull('nav-menu')?.data;
-      for (const sec of nav?.sections ?? []) {
+      // the asset's sections and the ones plugins contribute (their pages), one level: children follow their parent
+      const flat = (its: readonly NavItem[]): NavItem[] => its.flatMap((it) => [...(it.view ? [it] : []), ...flat(it.items ?? [])]);
+      const seen = new Set<string>();
+      const sections: { label?: string; items: NavItem[] }[] = [];
+      for (const sec of [...(nav?.sections ?? []), ...this.navExtras]) {
+        const items = flat(sec.items).filter((it) => !seen.has(it.view) && !!seen.add(it.view));
+        const key = sec.label?.trim().toLowerCase();
+        const same = key ? sections.find((x) => x.label?.trim().toLowerCase() === key) : undefined;
+        if (same) same.items.push(...items); else sections.push({ ...(sec.label ? { label: sec.label } : {}), items });
+      }
+      for (const sec of sections) {
         const items: ChromeNavItem[] = [];
         for (const it of sec.items) {
           const gate = this.gate(it.requires);
@@ -2057,6 +2421,7 @@ export class AxfRuntime {
     const vars: VarMap = {
       ...colorThemeVars(color),
       ...styleThemeVars(this.withTokenOverrides('tokens.style', 'style-theme', this.asset('style-theme').data), this.spacing()),
+      ...scrollbarVars(this.asset('style-theme').data),
       // the scale assets (typography, density, sizing): every size the stylesheet and components read; defaults when an app has none
       ...scaleThemeVars({
         typography: this.withTokenOverrides('tokens.typography', 'typography' as AssetType, this.assetOrNull('typography' as AssetType)?.data ?? (this.settings.get(CONTROL_TOKEN_SLOTS['tokens.typography'].key) ? {} : undefined)),
@@ -2072,6 +2437,10 @@ export class AxfRuntime {
     const reducedMotion = this.prefersReducedMotion();
     const behavior = this.assetOrNull('behavior-theme' as AssetType)?.data;
     parts.push(behaviorStyle(behavior, reducedMotion));
+    // nav-style@1 last (core/engines/navstyle.ts): only for a nav that opts in (nav-menu `navStyle: true`); it may set
+    // the nav width (resized or collapsed to icons), so it wins over the layout's
+    const navStyle = this.navStyleData();
+    if (navStyle) parts.push(navStyleOutput(navStyle, { reducedMotion, collapsed: this.settings.get(NAV_COLLAPSED_KEY) === true, width: Number(this.settings.get(NAV_WIDTH_KEY)) || null }));
     // the window manager follows the behaviour theme's `windows` group (stack / snap / minimize) from the same compile
     this.windows.setPlacement(normalizeBehavior(behavior).windows);
     const attrs: Record<string, string> = { 'data-fx-scheme': color.scheme, ...this.viewportAttrs() };
@@ -2101,7 +2470,7 @@ export class AxfRuntime {
 
   /** The registry view the interface engine resolves against. */
   private interfaceRegistry() {
-    return { has: (t: string, id: string) => this.registry.has(t as AssetType, id), designPackage: (id: string) => this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, id)?.data, stylePackage: (id: string) => this.registry.get(STYLE_PACKAGE_TYPE as AssetType, id)?.data };
+    return { has: (t: string, id: string) => this.registry.has(t as AssetType, id), skin: (id: string) => this.skinData(id) };
   }
 
   /** An interface asset resolved against what this app ships (null when there is no such interface). */
@@ -2110,11 +2479,11 @@ export class AxfRuntime {
     return a ? resolveInterface(a.data, this.interfaceRegistry()) : null;
   }
 
-  /** The current look as an interface over the applied design package (for the roller and Save as interface). */
+  /** The current look as an interface over the skin in force (for the roller and Save as interface). */
   captureInterface(tab?: { label: string; icon: string }): InterfaceData {
     const hidden: Record<string, boolean> = {};
     for (const t of ASSET_TYPES) { const v = this.settings.get(HIDE_KEY(t)); if (typeof v === 'boolean') hidden[t] = v; }
-    return captureInterface({ active: this.state.active as Record<string, string>, types: ASSET_TYPES, spacing: this.spacing(), hidden, values: this.settings.savedValues(), design: this.appliedDesignPackage() ?? '' }, tab);
+    return captureInterface({ active: this.state.active as Record<string, string>, types: ASSET_TYPES, spacing: this.spacing(), hidden, values: this.settings.savedValues(), skin: this.appliedSkin() }, tab);
   }
 
   /** The interface applied to the whole app, if any. */
@@ -2123,18 +2492,20 @@ export class AxfRuntime {
     return typeof v === 'string' && this.registry.has(INTERFACE_TYPE as AssetType, v) ? v : undefined;
   }
 
-  /** Apply interface `id` to the whole app: its design package (whole look), then its own slots, spacing, hidden chrome, settings and branding. */
+  /** Apply interface `id` to the whole app: its skin's slots and extras, then its own slots, spacing, hidden chrome, settings and branding. */
   applyInterface(id: string): boolean {
     if (!this.can('assets.swap')) { this.toast('Your role cannot change the look.', 'danger', 'Permission denied'); return false; }
     const a = this.registry.get(INTERFACE_TYPE as AssetType, id);
     if (!a) { this.toast(`No interface "${id}".`, 'warning', 'Interface'); return false; }
     const r = resolveInterface(a.data, this.interfaceRegistry());
-    if (r.design && this.registry.has(DESIGN_PACKAGE_TYPE as AssetType, r.design)) this.applyDesignPackage(r.design);
+    // the interface's skin goes on first (Use skin, where the app keeps a look; slot by slot otherwise), then its own slots over it
+    const skinOn = !!r.skin && this.skinData(r.skin) !== null && this.applySkin(r.skin);
     for (const [k, v] of Object.entries(r.settings)) this.settings.set(k, v as SettingValue);
     for (const [t, want] of Object.entries(r.hidden)) if (hideable(t as AssetType) && !this.slotOwnedByHost(t as AssetType)) this.setSlotHidden(t as AssetType, want);
     this.setSpacing(r.spacing as Spacing);
-    const slots: Record<string, string> = {};
-    for (const [t, sid] of Object.entries(r.active)) if (t !== DESIGN_PACKAGE_TYPE) slots[t] = sid;
+    const own = normalizeInterface(a.data);
+    const slots: Record<string, string> = skinOn ? { ...own.slots, ...(r.branding ? { branding: r.branding } : {}) } : { ...r.active };
+    for (const [t, sid] of Object.entries(slots)) if (!this.registry.has(t as AssetType, sid)) delete slots[t];
     this.swapAll({ ...(slots as Partial<ActiveAssets>), [INTERFACE_TYPE]: id } as Partial<ActiveAssets>);
     this.settings.set(INTERFACE_SETTING_KEY, id);
     for (const m of r.missing) this.terminal.warn('hot-swap', `interface ${id}: ${m} isn't in this app, kept the current one`);
@@ -2153,14 +2524,23 @@ export class AxfRuntime {
    */
   scoped(scopeId: string, interfaceId: string): AxfRuntime | null {
     if (!isScopeId(scopeId) || !this.registry.has(INTERFACE_TYPE as AssetType, interfaceId)) return null;
+    return this.scopedView(scopeId, interfaceId, () => this.resolveInterface(interfaceId)!, 'interface');
+  }
+
+  /**
+   * The view behind `scoped()` (an interface) and `skinScoped()` (the skin in force at a UI or plugin): `marker` is the
+   * interface id, or `skin:<key>` for a skin scope; `resolve()` gives the look the scope draws (memoised per base state).
+   */
+  private scopedView(scopeId: string, interfaceId: string, resolve: () => ResolvedInterface, kind: 'interface' | 'skin'): AxfRuntime | null {
     const cached = this.scopes.get(scopeId);
     if (cached && (cached as unknown as { scopeInterface: string }).scopeInterface === interfaceId) return cached;
     const base = this;
+    const skinScope = kind === 'skin';
     let memo: { rev: number; r: ResolvedInterface } | null = null;
     let snap: { base: AxfState; value: AxfState } | null = null;
     const resolved = (): ResolvedInterface => {
       const rev = base.state.rev;
-      if (!memo || memo.rev !== rev) memo = { rev, r: base.resolveInterface(interfaceId)! };
+      if (!memo || memo.rev !== rev) memo = { rev, r: resolve() };
       return memo.r;
     };
     const view = Object.create(base) as AxfRuntime & { scopeId: string; scopeInterface: string };
@@ -2185,7 +2565,7 @@ export class AxfRuntime {
       // changes, or React loops (error #185) the moment a whole app shell renders inside a scope
       state: { get: () => {
         const bs = base.state;
-        if (!snap || snap.base !== bs) snap = { base: bs, value: { ...bs, active: { ...bs.active, ...resolved().active, [INTERFACE_TYPE]: interfaceId } } };
+        if (!snap || snap.base !== bs) snap = { base: bs, value: { ...bs, active: { ...bs.active, ...resolved().active, ...(skinScope ? {} : { [INTERFACE_TYPE]: interfaceId }) } } };
         return snap.value;
       }, set: () => { /* writes go through set(), which the base owns */ } },
       getState: { value: () => view.state },
@@ -2193,7 +2573,12 @@ export class AxfRuntime {
       hiddenSlots: { value: () => hiddenSlots({ ...resolved().hidden }, base.defaultHiddenSlots(), base.embedHiddenSlots()) as AssetType[] },
       slotHidden: { value: (type: AssetType) => hideable(type) && view.hiddenSlots().includes(type) },
       spacing: { value: () => spacingOf(resolved().spacing) },
-      appliedInterface: { value: () => interfaceId },
+      appliedInterface: { value: () => (skinScope ? base.appliedInterface() : interfaceId) },
+      // a skin scope: its key (icon pack lookups) and the skin's parts for its sheet (customSheet reads lastComposed)
+      ...(skinScope ? {
+        scopeKey: { value: interfaceId.slice(5) },
+        lastComposed: { get: () => ({ parts: (resolved() as ResolvedInterface & { parts?: ComposedLook['parts'] }).parts ?? {} }) },
+      } : {}),
       // swaps inside a scope change the app: the palette pushed to axHub is the app's, not the scope's interface
       // (fix Oct 29 2026: the hub document carried the AmberX Signature tab's saffron palette over fresh-light)
       appearancePalette: { value: () => base.appearancePalette() },
@@ -2202,9 +2587,18 @@ export class AxfRuntime {
       swap: { value: (type: AssetType, target: string) => base.swap(type, target) },
       swapAll: { value: (targets: Partial<ActiveAssets>) => base.swapAll(targets) },
       randomize: { value: () => base.randomize() },
+      applySkin: { value: (sid: string) => base.applySkin(sid) },
+      appliedSkin: { value: () => base.appliedSkin() },
+      captureSkin: { value: () => base.captureSkin() },
       applyDesignPackage: { value: (pid: string) => base.applyDesignPackage(pid) },
       applyInterface: { value: (iid: string) => base.applyInterface(iid) },
       restoreDefaultAppearance: { value: () => base.restoreDefaultAppearance() },
+      useSkin: { value: (on: boolean, sid?: string) => base.useSkin(on, sid) },
+      pickSkin: { value: (sid: string) => base.pickSkin(sid) },
+      previewSkin: { value: (sid: string | null) => base.previewSkin(sid) },
+      previewedSkin: { value: () => base.previewedSkin() },
+      backToSkin: { value: (slot: string) => base.backToSkin(slot) },
+      undoRestoreDefault: { value: () => base.undoRestoreDefault() },
       scoped: { value: (sid: string, iid: string) => base.scoped(sid, iid) },
       // anything opened through the scoped view belongs to the scope (its own hosts draw it)
       openDialog: { value: (did: string, props?: Record<string, unknown>) => { base.enterScope(scopeId); base.openDialog(did, props); } },
@@ -2269,9 +2663,10 @@ export class AxfRuntime {
 
   /** The glyph an icon name resolves to in the active icon pack, or null = the framework's own icon. */
   brandGlyph(name: string): { glyph: Glyph; pack: unknown } | null {
-    const b = this.branding();
-    if (!b?.iconPack) return null;
-    const pack = this.registry.get('icon-pack' as AssetType, b.iconPack);
+    // a skin's icon pack (engines/skin.ts, axf.icons.pack.<scope>: this scope's, else the app's) beats the branding's
+    const packId = this.skinIconPack() || this.branding()?.iconPack;
+    if (!packId) return null;
+    const pack = this.registry.get('icon-pack' as AssetType, packId);
     if (!pack) return null;
     const glyph = glyphFor(pack.data, name);
     return glyph ? { glyph, pack: pack.data } : null;
@@ -2296,12 +2691,25 @@ export class AxfRuntime {
   /** One CSS sheet: each customizable slot's values for its active asset (empty when nothing is customized). */
   customSheet(): string {
     if (this.appearanceLocked()) return '';
+    // the skin in force here styles every type's parts first (skin@1 `parts`); a saved customize value sits on top
+    const parts = this.lastComposed?.parts ?? {};
     const per: Record<string, CustomValues> = {};
     for (const t of customizableTypes()) {
       const id = (this.getState().active as Record<string, string | undefined>)[t];
-      per[t] = effectiveCustom(this.customSlot(t as AssetType), id);
+      const own = effectiveCustom(this.customSlot(t as AssetType), id);
+      per[t] = parts[t] ? { ...parts[t], ...own } : own;
     }
     return customizeSheet(per);
+  }
+
+  /** The icon pack a skin puts in force at this place (this scope's key, else the app's), '' = none. */
+  skinIconPack(): string {
+    const key = (this as unknown as { scopeKey?: string }).scopeKey ?? 'app';
+    for (const k of key === 'app' ? [key] : [key, 'app']) {
+      const v = this.settings.get(SKIN_ICON_PACK_KEY(k));
+      if (typeof v === 'string' && v && this.registry.has('icon-pack' as AssetType, v)) return v;
+    }
+    return '';
   }
 
   applyTo(el: HTMLElement) {
@@ -2358,31 +2766,47 @@ export class AxfRuntime {
     a.register('widgets.arrange', ([host]) => { const h = host || 'banner'; this.setArranging(this.arranging(h) ? null : h); }, { label: 'Arrange widgets (drag to move)', requires: 'assets.swap', params: true });
     a.register('widgets.arrange.done', () => this.setArranging(null), { label: 'Done arranging widgets', searchable: false });
     a.register('widgets.reset', ([host]) => this.resetHostArrangement(host || 'banner'), { label: 'Put widgets back where they were', requires: 'assets.swap', params: true });
+    // Banner widgets: the picker, and what voice and the API say (`banner.widget:<clock|ticker|…>:hide|show|<size>`).
+    a.register('banner.widgets', (args) => this.openDialog(BANNER_WIDGETS_DIALOG, args.length ? { key: args.join(':') } : {}), { label: 'Banner widgets…', requires: 'assets.swap' });
+    a.register('banner.widgets.reset', () => this.resetBannerWidgets(), { label: 'Reset the banner widgets', requires: 'assets.swap' });
+    a.register('banner.widget', (args) => {
+      const what = args[args.length - 1] ?? '';
+      const w = this.findBannerWidget(args.slice(0, -1).join(':'));
+      if (!w) { this.toast(`No banner widget "${args.slice(0, -1).join(':')}"`, 'warning', 'Banner widgets'); return; }
+      if (what === 'hide' || what === 'show') this.setBannerWidget(w.key, { hidden: what === 'hide' });
+      else if ((BANNER_WIDGET_SIZES as readonly string[]).includes(what)) this.setBannerWidget(w.key, { size: what as BannerWidgetSize });
+      else if (what === 'reset') this.setBannerWidget(w.key, { hidden: null, size: null, show: null, maxWidth: null, maxUnit: null, priority: null, hideWhenEmpty: null, overflow: null });
+      else this.toast(`"${what}": use hide, show, reset or a size (${BANNER_WIDGET_SIZES.join(', ')})`, 'warning', 'Banner widgets');
+    }, { label: 'Change a banner widget', requires: 'assets.swap', params: true, searchable: false });
     a.register('assets.reset', () => this.reset(), { label: 'Reset to defaults' });
-    // design.package:<id> · design.package:next|prev|random steps through the registered packages and applies one
-    // (swap:design-package:next would only move the slot, never apply the package's themes).
-    a.register('design.package', ([id]) => {
-      if (!id) return;
-      if (id === 'next' || id === 'prev' || id === 'random') {
-        const list = this.registry.list(DESIGN_PACKAGE_TYPE as AssetType);
-        if (!list.length) return;
-        const cur = list.findIndex((p) => p.id === this.state.active[DESIGN_PACKAGE_TYPE as AssetType]);
-        const step = id === 'random' ? 1 + Math.floor(Math.random() * Math.max(1, list.length - 1)) : id === 'next' ? 1 : -1;
-        id = list[((cur < 0 ? (step > 0 ? -1 : 0) : cur) + step + list.length * 2) % list.length]?.id ?? id;
-      }
-      this.applyDesignPackage(id);
-    }, { label: 'Apply a design package (id, next, prev or random)', requires: 'assets.swap', params: true });
-    // style.package:<id> · style.package:next|prev|random — a matched set of controls in one go
-    a.register('style.package', ([id]) => {
-      if (!id) return;
-      const ids = this.registry.list(STYLE_PACKAGE_TYPE as AssetType).map((p) => p.id);
-      const pick = id === 'next' || id === 'prev' || id === 'random' ? stepPackage(ids, this.state.active[STYLE_PACKAGE_TYPE as AssetType], id) : id;
-      if (pick && this.swap(STYLE_PACKAGE_TYPE as AssetType, pick)) {
-        const a = this.registry.get(STYLE_PACKAGE_TYPE as AssetType, pick);
-        if (a) this.toast(`${a.name} applied.`, 'success', 'Style package');
-      }
-    }, { label: 'Apply a style package (id, next, prev or random)', requires: 'assets.swap', params: true });
-    a.register('appearance.package', ([id]) => { if (id) this.applyDesignPackage(id); }, { label: 'Apply a design package (old name)', requires: 'assets.swap', params: true, searchable: false });
+    // Skins (engines/skin.ts). skin.use:<id|next|prev|random> turns Use skin on for this app, skin.off goes back to its own look.
+    a.register('skin.use', ([id]) => { if (id === 'next' || id === 'prev' || id === 'random') this.applySkin(id); else this.useSkin(true, id || undefined); }, { label: 'Use a skin in this app (id, next, prev or random)', requires: 'assets.swap', params: true });
+    a.register('skin.next', () => { this.applySkin('next'); }, { label: 'Next skin', requires: 'assets.swap' });
+    a.register('skin.prev', () => { this.applySkin('prev'); }, { label: 'Previous skin', requires: 'assets.swap' });
+    a.register('skin.random', () => { this.applySkin('random'); }, { label: 'A random skin', requires: 'assets.swap' });
+    // design.package:<…> and style.package:<…> (retired Nov 10 2026): every package is a skin with the same id
+    a.register('design.package', ([id]) => { if (id) this.applySkin(id); }, { label: 'Use a skin (old name: design package)', requires: 'assets.swap', params: true, searchable: false });
+    a.register('style.package', ([id]) => { if (id) this.applySkin(id); }, { label: 'Use a skin (old name: style package)', requires: 'assets.swap', params: true, searchable: false });
+    a.register('skin.off', () => { this.useSkin(false); }, { label: "Back to this app's own look", requires: 'assets.swap' });
+    a.register('skin.restore', () => this.restoreDefaultAppearance(), { label: 'Restore this app to its default look', requires: 'assets.swap' });
+    a.register('skin.undo', () => { this.undoRestoreDefault(); }, { label: 'Undo Restore to default', requires: 'assets.swap' });
+    // Scopes (skin-coverage@1): skin.inherit:on|off follows the hub-wide skin; skin.scope:<ui|plugin>:<id>:<on|off|inherit>[:<skin>] sets one level
+    a.register('skin.inherit', ([v]) => { this.skinInherit(v !== 'off'); }, { label: 'Follow the hub-wide skin in this app', requires: 'assets.swap', params: true });
+    a.register('skin.scope', ([kind, id, use, skinId]) => {
+      if ((kind !== 'ui' && kind !== 'plugin') || !id) { this.toast('skin.scope needs ui or plugin, an id, and on / off / inherit.', 'warning', 'Skin'); return; }
+      this.scopeSkin(`${kind}:${id}`, use === 'off' ? 'off' : use === 'inherit' ? 'inherit' : 'on', skinId || undefined);
+    }, { label: 'Skin one UI or plugin (on / off / inherit)', requires: 'assets.swap', params: true });
+    // Title bar buttons of a Windows-style skin: they drive the front floating window; the app's own page can only go full screen
+    const front = () => { const id = this.windows.state.focused; return id && id !== this.windows.mainWindowId ? id : ''; };
+    a.register('skin.window.minimize', () => { const id = front(); if (id) this.windows.minimizeToNextCorner(id); }, { label: 'Minimize the front window', searchable: false });
+    a.register('skin.window.maximize', () => {
+      const id = front();
+      if (id) return this.windows.toggleMaximize(id);
+      if (typeof document === 'undefined') return;
+      if (document.fullscreenElement) void document.exitFullscreen(); else void document.documentElement.requestFullscreen?.();
+    }, { label: 'Maximize the front window', searchable: false });
+    a.register('skin.window.close', () => { const id = front(); if (id) this.windows.close(id); else this.navigate('home'); }, { label: 'Close the front window', searchable: false });
+    a.register('appearance.package', ([id]) => { if (id) this.applySkin(id); }, { label: 'Use a skin (old name: appearance package)', requires: 'assets.swap', params: true, searchable: false });
     a.register('appearance.restore', () => this.restoreDefaultAppearance(), { label: 'Restore default appearance', requires: 'assets.swap' });
     // No `requires`: these must work while the lock greys out every assets.swap control (setAppearanceLocked checks the role).
     const turn = (arg: string | undefined, cur: boolean) => (arg === 'on' ? true : arg === 'off' ? false : !cur);
@@ -2425,11 +2849,22 @@ export class AxfRuntime {
     this.contextExtras.set('*:widgets', (target) => {
       const host = target && hostSpec(target) ? target : null;
       if (!host || !this.canArrange() || !Object.values(this.hostPlaced(host)).some((l) => l.length)) return [];
-      const items: import('./engines/windows').MenuEntry[] = [{ id: `widgets-arrange-${host}`, label: this.arranging(host) ? 'Done arranging widgets' : 'Arrange widgets…', icon: 'move', action: `widgets.arrange:${host}` }];
+      const items: import('./engines/windows').MenuEntry[] = [];
+      if (host === 'banner') {
+        items.push({ id: 'banner-widgets', label: 'Widgets…', icon: 'layers', action: 'banner.widgets' });
+        const hit = this.contextBannerWidget ? this.bannerWidgets().find((w) => w.key === this.contextBannerWidget) : null;
+        if (hit) items.push(
+          { id: 'banner-widget-settings', label: `Widget settings: ${hit.label}`, icon: 'settings', action: `banner.widgets:${hit.key}` },
+          { id: 'banner-widget-hide', label: `Hide ${hit.label}`, icon: 'eye', action: `banner.widget:${hit.key}:hide` },
+        );
+      }
+      items.push({ id: `widgets-arrange-${host}`, label: this.arranging(host) ? 'Done arranging widgets' : 'Arrange widgets…', icon: 'move', action: `widgets.arrange:${host}` });
       if (Object.keys(this.hostArrangement(host)).length) items.push({ id: `widgets-reset-${host}`, label: 'Put widgets back', icon: 'undo', action: `widgets.reset:${host}` });
       return items;
     });
-    this.contextExtras.set('tab-group', () => wm.groupMenu());
+    // Window tab groups (payload = a group id) get the windowing menu; every other tab row (a TabGroup component,
+    // payload = its settings id) gets only the shared chrome block (react/components/ChromeContext.tsx).
+    this.contextExtras.set('tab-group', (_t, payload) => (payload && wm.state.groups[payload] ? wm.groupMenu() : []));
     this.contextExtras.set('window-title', () => wm.windowMenu());
   }
 }

@@ -764,10 +764,10 @@
             "action": "settings.open:appearance"
           },
           {
-            "id": "theme",
-            "label": "Next colour theme",
+            "id": "next-skin",
+            "label": "Next skin",
             "icon": "palette",
-            "action": "swap:color-theme:next"
+            "action": "skin.next"
           }
         ]
       },

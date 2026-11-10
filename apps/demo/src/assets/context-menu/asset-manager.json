@@ -28,35 +28,11 @@
           "separator": true
         },
         {
-          "id": "next-package",
-          "label": "Next design package",
-          "icon": "package",
-          "action": "design.package:next",
-          "shortcut": "Alt+P",
-          "requires": "assets.swap"
-        },
-        {
-          "id": "next-color",
-          "label": "Next colour theme",
+          "id": "next-skin",
+          "label": "Next skin",
           "icon": "palette",
-          "action": "swap:color-theme:next",
-          "shortcut": "Alt+C",
-          "requires": "assets.swap"
-        },
-        {
-          "id": "next-style",
-          "label": "Next style theme",
-          "icon": "type",
-          "action": "swap:style-theme:next",
-          "shortcut": "Alt+S",
-          "requires": "assets.swap"
-        },
-        {
-          "id": "next-layout",
-          "label": "Next layout",
-          "icon": "layout",
-          "action": "swap:layout:next",
-          "shortcut": "Alt+L",
+          "action": "skin.next",
+          "shortcut": "Alt+P",
           "requires": "assets.swap"
         },
         {
@@ -115,10 +91,10 @@
           "requires": "assets.import"
         },
         {
-          "id": "next-package",
-          "label": "Next design package",
-          "icon": "package",
-          "action": "design.package:next",
+          "id": "next-skin",
+          "label": "Next skin",
+          "icon": "palette",
+          "action": "skin.next",
           "shortcut": "Alt+P",
           "requires": "assets.swap"
         }

@@ -22,7 +22,7 @@
   "types": {
     "color-theme": {
       "label": "Color theme",
-      "group": "Themes",
+      "group": "Skin sections",
       "icon": "palette",
       "required": [
         "scheme",
@@ -53,11 +53,13 @@
           "focus",
           "shadow"
         ]
-      }
+      },
+      "section": "colors",
+      "sectionNote": "A skin section preset (skin@2, Nov 10 2026): never picked on its own. A skin names one of these as its colours section (or writes the section inline under data.sections.colors); the Skin Designer offers the presets. Still an appearance slot, so a saved look and the hub keep resolving it."
     },
     "style-theme": {
       "label": "Style theme",
-      "group": "Themes",
+      "group": "Skin sections",
       "icon": "type",
       "required": [
         "fontFamily",
@@ -96,11 +98,13 @@
       "optional_fields": {
         "scrollbar": "'thin' — thin themed scrollbars (--fx-scrollbar-width, --fx-scrollbar-color); unset = the browser's own",
         "wrapGroups": "boolean, default false — every section / group (Container) is collapsible with a toggle in its top-right corner (build option --wrap-groups; compiles to --fx-wrap-groups 1|0)"
-      }
+      },
+      "section": "style",
+      "sectionNote": "A skin section preset (skin@2, Nov 10 2026): never picked on its own. A skin names one of these as its style section (or writes the section inline under data.sections.style); the Skin Designer offers the presets. Still an appearance slot, so a saved look and the hub keep resolving it."
     },
     "layout": {
       "label": "Layout",
-      "group": "Themes",
+      "group": "Skin sections",
       "icon": "layout",
       "required": [
         "nav",
@@ -197,7 +201,9 @@
         "prefix": "layout",
         "rules": "core/engines/layout-rules.mjs",
         "note": "Every field below compiles to --fx-layout-<field in kebab-case>: numbers as px or × --fx-space, enums as their word, switches as 1 / 0. The compiled grid (fixture layout.json → compiled) keeps px numbers for native ports; the web grid vars read the tokens."
-      }
+      },
+      "section": "layout",
+      "sectionNote": "A skin section preset (skin@2, Nov 10 2026): never picked on its own. A skin names one of these as its layout section (or writes the section inline under data.sections.layout); the Skin Designer offers the presets. Still an appearance slot, so a saved look and the hub keep resolving it."
     },
     "app-menu": {
       "label": "Application menu",
@@ -1220,7 +1226,7 @@
     },
     "behavior-theme": {
       "label": "Behaviour theme",
-      "group": "Themes",
+      "group": "Skin sections",
       "icon": "sparkles",
       "description": "How the app behaves (behavior-theme@1, engine core/engines/behavior.ts): motion (speed, easing, reduced motion, how pages come in), interaction (hover, press, focus ring, long-press and double-tap times, drag start, cursor), windows (how dialogs, pop-ups, drawers and floating windows open, close, snap, stack and minimize) and feedback (toasts, sound, vibration, confirm before delete, busy cursor). Every field has a default, so a theme may set only what it changes. One of the four themes an AmberX Design Package wraps.",
       "required": [
@@ -1235,48 +1241,29 @@
         "windows": "{ dialogOpen: asset | none | fade | scale | slide-up | slide-down, backdrop: asset | dim | blur | none, popupOpen: asset | none | fade | scale | slide, drawerOpen: asset | slide | fade | none, snap, snapGrid 0–48, stack: cascade | center | remember, minimize: cursor | dock | none, closeOnBackdrop, closeOnEscape }",
         "feedback": "{ toastPosition: asset | top | bottom | top-right | bottom-right | top-left | bottom-left, toastMs 0–20000 (0 = the pop-up asset's time), sound: off | subtle | full, vibration: off | light | strong, confirmDelete: always | risky | never, busyCursor }"
       },
-      "optional": true
-    },
-    "design-package": {
-      "label": "AmberX Design Package",
-      "group": "System",
-      "icon": "palette",
-      "description": "An AmberX Design Package (design-package@1, engine core/engines/designpackage.ts) wraps the four themes of a whole look and feel: a style theme, a colour theme, a layout and a behaviour theme. Picking one in Settings → Appearance swaps all four at once. Optional extras carry everything else a saved look holds (the other slots, spacing, chrome shown / hidden, other appearance settings); it replaced the appearance package on Oct 27 2026.",
-      "required": [
-        "style-theme",
-        "color-theme",
-        "layout",
-        "behavior-theme"
-      ],
-      "optional_fields": {
-        "extras": "{ slots: asset type → asset id (not the four themes, never the policy), spacing: tight | compact | regular, hidden: asset type → true / false, settings: appearance settings key → value }"
-      },
-      "roll": {
-        "slot": false,
-        "asset": false
-      },
       "optional": true,
-      "skin": {
-        "by": "bundle",
-        "why": "A design package is a whole look that reads as a skin (skinFromDesignPackage)."
-      }
+      "section": "behavior",
+      "sectionNote": "A skin section preset (skin@2, Nov 10 2026): never picked on its own. A skin names one of these as its behaviour section (or writes the section inline under data.sections.behavior); the Skin Designer offers the presets. Still an appearance slot, so a saved look and the hub keep resolving it."
     },
     "skin": {
       "label": "Skin",
       "group": "System",
       "icon": "palette",
-      "description": "A skin (skin@1, engine core/engines/skin.ts) is a whole look for one place: a layout theme, a colour theme, a style theme, the assets that fill the other slots, an optional icon pack and style parts for any drawn type. Apps keep their own look unless Use skin is on (Settings → Appearance); a skin applies hub-wide, per app, per UI / screen or per plugin (the chain plugin → ui → app → global, the child overrides the parent). How a skin reaches every registered type is worked out from this registry (skin-coverage@1, core/engines/skin-coverage.mjs): a type declares `skin: { by: slot | parts | reference | bundle | none, via?, why? }` only when its flags do not say (widgets and attachables are styled through their style target in schemas/customize.json; everything else is a slot); CI fails on a type a skin cannot reach.",
+      "description": "A skin (skin@2, engine core/engines/skin.ts) is the whole look for one place: four sections kept apart — colours (colorTheme or sections.colors), style (styleTheme or sections.style), layout (layoutTheme or sections.layout), behaviour (behaviorTheme or sections.behavior), each a preset id of the section's asset type or the section written inline — the assets that fill the other slots, an optional icon pack and style parts for any drawn type. Design packages and style packages folded into skins on Nov 10 2026 (same ids). Apps keep their own look unless Use skin is on (Settings → Appearance); a skin applies hub-wide, per app, per UI / screen or per plugin (the chain plugin → ui → app → global, the child overrides the parent). How a skin reaches every registered type is worked out from this registry (skin-coverage@1, core/engines/skin-coverage.mjs): a type declares `skin: { by: slot | parts | reference | bundle | none, via?, why? }` only when its flags do not say (widgets and attachables are styled through their style target in schemas/customize.json; everything else is a slot); CI fails on a type a skin cannot reach.",
       "required": [
-        "layoutTheme",
-        "colorTheme",
-        "styleTheme",
         "assets"
       ],
       "optional_fields": {
-        "preview": "{ caption, image }: what the picker shows",
-        "extras": "{ spacing: tight | compact | regular, hidden: asset type → true / false, settings: appearance settings key → value }",
-        "iconPack": "icon-pack asset id — the icon pack the skin draws with (sets axf.icons.pack.<scope>); absent = the branding's",
-        "parts": "{ <asset type>: { <customize token>: value } } — style parts for any type with a style target (schemas/customize.json): the type's box, text, icon and items under this skin"
+        "colorTheme": "color-theme preset id (required unless sections.colors is written)",
+        "styleTheme": "style-theme preset id (required unless sections.style is written)",
+        "layoutTheme": "layout preset id (required unless sections.layout is written)",
+        "behaviorTheme": "behavior-theme preset id (default: the framework standard)",
+        "sections": "{ colors?, style?, layout?, behavior? }: a section's data written in the skin (the section type's own fields), winning over the preset",
+        "assets": "asset type → asset id for every other slot (never the four section types, the policy, help, a skin or an interface)",
+        "iconPack": "icon-pack asset id",
+        "parts": "asset type → customize tokens (style parts)",
+        "preview": "{ caption?, image? }",
+        "extras": "{ spacing?: tight | compact | regular, hidden?: asset type → true / false, settings?: appearance settings key → value }"
       },
       "roll": {
         "slot": false,
@@ -1288,53 +1275,21 @@
         "why": "A skin is the whole look; it never contains another skin."
       }
     },
-    "style-package": {
-      "label": "Style package",
-      "group": "Themes",
-      "icon": "package",
-      "description": "A Style Package (style-package@1, engine core/engines/stylepackage.ts) is one matched set of control assets — buttons, containers, sliders, dialogs, pop-ups, tab groups, gauges and meters — applied in one go. The style theme sets the shared tokens; the style package decides how each kind of control is built on them. Picking one swaps every control it names.",
-      "required": [
-        "slots"
-      ],
-      "members": [
-        "button",
-        "container",
-        "slider",
-        "dialog",
-        "popup",
-        "tab-group",
-        "gauge",
-        "meter"
-      ],
-      "optional_fields": {
-        "tone": "one lowercase word describing the package's character (crisp, soft, glass, …) for pickers and the interface roller"
-      },
-      "roll": {
-        "slot": false,
-        "asset": false
-      },
-      "optional": true,
-      "skin": {
-        "by": "bundle",
-        "why": "A style package is one matched set of styles; a skin picks its themes and assets itself."
-      }
-    },
     "interface": {
       "label": "Interface",
       "group": "System",
       "icon": "layout",
-      "description": "A whole interface in one asset (interface@1, engine core/engines/interface.ts): a design package (style, colour, layout, behaviour), a branding package, and every other slot (chrome, controls, widgets, settings interface) as an open list, plus spacing, shown / hidden chrome and appearance settings. The same app can be drawn under several interfaces at once (scopes: GizmoX's interface tabs), and the interface roller makes new ones. Never rolled; never picked in Appearance → Assets (Settings → Appearance → Interface applies one).",
-      "required": [
-        "design"
-      ],
+      "description": "A whole interface in one asset (interface@1, engine core/engines/interface.ts): a skin (its four sections, assets and extras), a branding package, and every other slot (chrome, controls, widgets, settings interface) as an open list, plus spacing, shown / hidden chrome and appearance settings. The same app can be drawn under several interfaces at once (scopes: GizmoX's interface tabs), and the interface roller makes new ones. Never rolled; never picked in Appearance → Assets (Settings → Appearance → Interface applies one).",
+      "required": [],
       "optional_fields": {
         "branding": "a branding asset id",
-        "slots": "asset type → asset id for every other slot (never the themes, the policy or a package)",
+        "slots": "asset type → asset id for every other slot (never the sections, the policy, a skin or a package)",
         "spacing": "tight | compact | regular",
         "hidden": "asset type → true / false",
         "settings": "appearance settings key → value",
         "tab": "{ label, icon } for a host showing interfaces as tabs",
-        "tagline": "one line under the tab label"
+        "tagline": "one line under the tab label",
+        "design": "the skin field under its old name (an interface written before Nov 10 2026)"
       },
       "roll": {
         "slot": false,
@@ -1343,7 +1298,7 @@
       "optional": true,
       "skin": {
         "by": "bundle",
-        "why": "An interface wraps a design package plus slots: a whole look, like a skin."
+        "why": "An interface wraps a skin plus slots: a whole look, like a skin."
       }
     },
     "logo-mark": {

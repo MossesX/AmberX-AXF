@@ -19,10 +19,10 @@
         "id": "package",
         "items": [
           {
-            "id": "next-package",
-            "icon": "package",
-            "label": "Next design package",
-            "action": "design.package:next",
+            "id": "next-skin",
+            "icon": "palette",
+            "label": "Next skin",
+            "action": "skin.next",
             "requires": "assets.swap"
           }
         ]
@@ -31,24 +31,10 @@
         "id": "themes",
         "items": [
           {
-            "id": "next-color",
+            "id": "next-skin",
             "icon": "palette",
-            "label": "Next colour theme",
-            "action": "swap:color-theme:next",
-            "requires": "assets.swap"
-          },
-          {
-            "id": "next-style",
-            "icon": "type",
-            "label": "Next style theme",
-            "action": "swap:style-theme:next",
-            "requires": "assets.swap"
-          },
-          {
-            "id": "next-layout",
-            "icon": "layout",
-            "label": "Next layout",
-            "action": "swap:layout:next",
+            "label": "Next skin",
+            "action": "skin.next",
             "requires": "assets.swap"
           }
         ]

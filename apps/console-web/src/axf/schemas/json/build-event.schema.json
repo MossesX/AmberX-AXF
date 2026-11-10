@@ -26,7 +26,8 @@
         "pr-merged",
         "addendum",
         "cancelled",
-        "restored"
+        "restored",
+        "shipped"
       ]
     },
     "at": {
@@ -168,6 +169,28 @@
         },
         "index": {
           "type": "integer"
+        }
+      }
+    },
+    "shipped": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "rev": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "at": {
+          "type": "string"
+        },
+        "landedCommit": {
+          "type": "string"
         }
       }
     }

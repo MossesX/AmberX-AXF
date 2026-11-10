@@ -156,38 +156,36 @@ What the runtime does with it:
 - Write: hub admins, and users granted `data.write` on the hub. In the console the UAC gate (`assets.swap` via
   `console.themes`) applies first, so a plain user can't change the look even if the hub would accept the write.
 
-## Design theme precedence (Nov 1 2026)
+## Skins only (Nov 10 2026)
 
-Brett: "When a design theme is loaded the individual style and color themes are not applied. Only when something
-changes is the design pack overridden with the individual packs." Engine: `core/engines/designpackage.ts`
-(`designLookSlots`, `overrideAfterPick`, `normalizeDesignOverrides`, `designLookLabel`); runtime: `applyAppearance`,
-`swap`, `applyDesignPackage`, `designOverrides()`.
+Brett (Nov 9 2026): "remove design packs as a thing since everything's covered in a skin … it's just skins." Design
+packages (design-package@1), style packages (style-package@1) and the colour / style / layout / behaviour themes as
+things to pick are gone. Engine: `core/engines/skin.ts` (skin@2) + `skin-rules.mjs`; look settings: `core/engines/looksettings.ts`.
 
-1. While a design package is loaded (slot `design-package`), its `style-theme` and `color-theme` are in force. A style
-   or colour slot the document still carries is ignored. **The app's default package counts as loaded:** a document
-   without a `design-package` slot (or naming one this app doesn't ship) leaves the app on its manifest default,
-   `hub-default`, and that package's themes win over the document's style and colour slots the same way.
-2. Picking a style or colour theme afterwards records an override for that part only, in the look setting
-   `axf.appearance.overrides` (`{ "style-theme"?: id, "color-theme"?: id }`), which rides `settings` like every other
-   look setting, so every app agrees. Picking the package's own theme drops that override. The slot itself is pushed
-   too (`slots.style-theme`), so an app without the package (or an older build) still sees the pick.
-3. Loading a design package (again) clears every override. **A design package is never just a slot** (Nov 3 2026):
-   `swap('design-package', id)`, the generic `swap:design-package:<id|next|prev>` action and `design.package:<…>` all
-   load the package (`applyDesignPackage`: its four themes, its extras, overrides cleared), so no app can carry the
-   package slot with another package's themes. Loading the package already loaded is a reload (overrides cleared).
-4. **Restore default = the default design theme loaded in full** (Nov 3 2026): every look setting and override cleared,
-   the manifest defaults restored, then the manifest's default package applied with its extras (spacing, chrome), so
-   "Restore" in any app puts every app on exactly Hub Default. `appliedDesignPackage()` is the loaded package = the
-   `design-package` slot (shared), never a local note, so every app names the same one.
-5. An override or package theme the app doesn't ship falls back (override → package → the pick), never a broken look.
-   A package the app doesn't ship is skipped like any slot id (the app stays on its default package, warned in the
-   terminal); since every listed app ships every shared asset this only happens for an app-own package.
-
-Why the overrides ride `settings` and not a first-class document field (Fable review, Nov 3 2026): the document's
-contract (`appearance@1`, fixture `appearance.json`, Kotlin `AppearanceEngine`) stays unchanged on both ports; the key
-is a look setting by the same rule as every plugin look setting (per key, last write wins, cleared when the document
-doesn't list it), and `resolveAppearance` never has to know about packages. The cost is that two keys describe one
-pick (`slots.style-theme` and the override), which `designLookSlots` reconciles; the fixture-pinned engine stays pure.
+1. **A skin is the whole look** and has four sections kept apart so the Skin Designer can edit each on its own:
+   colours, style, layout, behaviour. Each is a preset id (`colorTheme`, `styleTheme`, `layoutTheme`, `behaviorTheme`:
+   the former theme asset types are now the *section preset* types, `section` in asset-types.json, never picked on
+   their own) or the section written inline (`sections.colors` …, validated by that section type's own rules and
+   registered at run time as the preset `skin-<skin id>`). `assets` fill every other slot; `iconPack`, `parts`,
+   `extras` (spacing, hidden chrome, look settings) as before.
+2. **Every former package is a skin with the same id** (`skinFromDesignPackage`, `skinFromStylePackage`: a style
+   package became the Fresh look with that control set), so every reference keeps resolving: an `interface`'s `design`
+   field reads as `skin`; a shared document's `design-package` / `style-package` slot is retired (`APPEARANCE_NEVER`:
+   dropped on read, gone after the next write); an app-look document's retired slots become the skin pick
+   (`migrateLegacyLook`); the `axf.appearance.design` setting is read once as the pick (`AxfRuntime.migrateLook`);
+   `applyDesignPackage` / `appliedDesignPackage` and the actions `design.package:<id>`, `style.package:<id>`,
+   `appearance.package:<id>` are aliases of `applySkin` / `appliedSkin` / `skin.use:<id>`.
+3. **The precedence rule is gone with the packages.** The section slots ride the shared document like any slot; with a
+   skin on, a pick overrides that part of the skin (app-look `overrides`, "Back to skin"); `axf.appearance.overrides`
+   and `axf.appearance.design` are retired look settings (`RETIRED_LOOK_SETTINGS`): never applied, cleaned once.
+4. **Restore default = the app's default skin in full** (`defaults.skin` in the manifest): the manifest's slots, then
+   the skin's spacing and chrome. `appliedSkin()` is the skin in force, else the default skin.
+5. **A source without an app-look layer** (older sources, tests: the shared document alone is the look) still gets the
+   whole skin: `applySkin` writes it slot by slot into the shared document, spacing and chrome included, and every app
+   on that document follows (`spec/check-hub-look.mts`). With the app-look layer it is Use skin for that app only.
+6. **Stepping:** `skin.next` / `skin.prev` / `skin.random` (and `skin.use:next|prev|random`) replaced the "Next colour
+   theme" / "Next style theme" / "Next layout" / "Next design package" items in every framework menu, toolbar and
+   context menu (`cli/asset-library.mjs` seeds `I.skin`, `I.prevSkin`, `I.randomSkin`).
 
 Settings → Appearance in every app is selection only: Design theme, Style theme, Colour theme, Restore. The status
 line reads "Hub Default (style changed)". Plugin settings (Banner settings and its Apply to all) still edit their own

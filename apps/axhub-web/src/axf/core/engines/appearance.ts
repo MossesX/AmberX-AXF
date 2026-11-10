@@ -24,11 +24,12 @@ export const APPEARANCE_MAX_BYTES = 16 * 1024;
 export const APPEARANCE_SETTING_MAX_BYTES = 4 * 1024;
 /**
  * Slots an appearance document never carries: access policies come from the account / the app, never from shared data;
- * help packs are all in force at once (no pick to share); `appearance-package` is the retired type the design package
- * replaced (Oct 27 2026), so a document an older build wrote with that slot loses it on read, and the next write by any
- * app drops it from the hub (one-shot clean, Nov 3 2026).
+ * help packs are all in force at once (no pick to share); `appearance-package`, `design-package` and `style-package` are
+ * retired types (the design package replaced the first on Oct 27 2026; both packages folded into skins on Nov 10 2026),
+ * so a document an older build wrote with one of those slots loses it on read, and the next write by any app drops it
+ * from the hub (one-shot clean, Nov 3 2026). A skin is never a slot: it is the `skin` field (hub-wide) or an app's look.
  */
-export const APPEARANCE_NEVER: readonly string[] = ['uac-policy', 'help', 'appearance-package', 'skin'];
+export const APPEARANCE_NEVER: readonly string[] = ['uac-policy', 'help', 'appearance-package', 'design-package', 'style-package', 'skin'];
 
 const ID = /^[a-z0-9][a-z0-9-]{0,63}$/;
 /** A look settings key (`axf.look`, `axf.custom.button.amber`, …); which keys count is the runtime's call. */

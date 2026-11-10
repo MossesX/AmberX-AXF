@@ -2,16 +2,17 @@
  * interface@1: one asset (type `interface`) that names a whole interface, so the same app can be drawn as several
  * "different apps" (GizmoX's interface tabs) and an interface roller can produce a complete new one:
  *
- *   design      a design-package id: style, colour, layout and behaviour themes (+ its extras, lowest layer)
+ *   skin        a skin id (skin@2: colours, style, layout and behaviour sections + its assets and extras, lowest layer);
+ *               `design` is the same field under its old name (an interface written when the skin was a design package)
  *   branding    a branding id (logos, animated logo, icon pack); '' = the app's current branding
  *   slots       asset type → asset id for every other slot (chrome, controls, widgets, settings interface …);
  *               an OPEN list: any registered asset type except the never list, so new chrome joins by itself
  *   spacing     tight | compact | regular;  hidden  asset type → true / false;  settings  appearance key → value
  *   tab         { label, icon } for a host that shows interfaces as tabs
  *
- * Layers, lowest first: the design package's own themes and extras → the interface's slots / spacing / hidden /
- * settings → (at run time) nothing else: an interface is complete by itself. `resolveInterface` turns one into the
- * full active map against a registry, skipping ids the app doesn't ship (reported in `missing`, never a crash).
+ * Layers, lowest first: the skin's sections, assets and extras → the interface's slots / spacing / hidden / settings →
+ * (at run time) nothing else: an interface is complete by itself. `resolveInterface` turns one into the full active
+ * map against a registry, skipping ids the app doesn't ship (reported in `missing`, never a crash).
  *
  * Scopes (step s2): several interfaces drawn at once in one page. A scope is an id + a resolved interface; its CSS
  * lives under `[data-fx-scope="<id>"]` instead of `:root`, so nothing leaks between scopes or into the app's own look.
@@ -20,18 +21,21 @@
  *
  * Pure; fixture `spec/fixtures/interface.json`, checker `spec/check-interface.mts`. Kotlin twin deferred (PORTING.md).
  */
-import { DESIGN_PACKAGE_TYPE, DESIGN_THEMES, designPackageSlots, isAppearanceSetting, normalizeDesignPackage } from './designpackage';
+import { isAppearanceSetting } from './looksettings';
 import { spacingOf } from './spacing';
-import { STYLE_PACKAGE_TYPE, stylePackageSlots, type StylePackageData } from './stylepackage';
+import { RETIRED_PACKAGE_TYPES, SKIN_SECTIONS, SKIN_TYPE, skinSlots, type SkinData } from './skin';
 
 export const INTERFACE_TYPE = 'interface';
 export const INTERFACE_SETTING_KEY = 'axf.appearance.interface';
 
-/** Slot types an interface never sets directly (the themes come from its design package). */
-export const INTERFACE_NEVER: readonly string[] = ['uac-policy', INTERFACE_TYPE, DESIGN_PACKAGE_TYPE, 'appearance-package', ...DESIGN_THEMES];
+/** The skin's section types: an interface never sets them directly (they come from its skin). */
+const SECTION_TYPES = Object.values(SKIN_SECTIONS) as string[];
+/** Slot types an interface never sets directly (the sections come from its skin; the retired package types are aliases of it). */
+export const INTERFACE_NEVER: readonly string[] = ['uac-policy', INTERFACE_TYPE, SKIN_TYPE, ...RETIRED_PACKAGE_TYPES, ...SECTION_TYPES];
 
 export interface InterfaceData {
-  design: string;
+  /** The skin the interface is drawn over (skin id). */
+  skin: string;
   branding: string;
   slots: Record<string, string>;
   spacing?: string;
@@ -42,35 +46,37 @@ export interface InterfaceData {
 }
 
 export interface ResolvedInterface {
-  /** asset type → id for every slot the interface sets (themes included); only ids the registry has */
+  /** asset type → id for every slot the interface sets (the skin's sections included); only ids the registry has */
   active: Record<string, string>;
   spacing: string;
   hidden: Record<string, boolean>;
   settings: Record<string, unknown>;
   branding: string;
-  design: string;
+  /** the skin id */
+  skin: string;
   /** `type/id` of everything named but not shipped by the app */
   missing: string[];
 }
 
 export interface InterfaceRegistry {
   has(type: string, id: string): boolean;
-  /** the raw data of a design package, or undefined */
-  designPackage(id: string): unknown;
-  /** the raw data of a style package (style-package@1), or undefined; optional so older hosts keep working */
-  stylePackage?(id: string): unknown;
+  /** the normalized data of a skin, or null */
+  skin(id: string): SkinData | null;
 }
 
 const isObj = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);
 const ID = /^[a-z0-9][a-z0-9-]*$/;
 const SCOPE_ID = /^[a-z0-9][a-z0-9_-]{0,63}$/;
 
+/** The skin field: `skin`, or the old `design` (a design package of the same id is now the skin). */
+function skinField(d: Record<string, unknown>): unknown { return d.skin !== undefined ? d.skin : d.design; }
+
 export function normalizeInterface(raw: unknown): InterfaceData {
   const d = isObj(raw) ? raw : {};
   const id = (v: unknown) => (typeof v === 'string' && ID.test(v) ? v : '');
   const slots: Record<string, string> = {};
   if (isObj(d.slots)) for (const [t, v] of Object.entries(d.slots)) if (!INTERFACE_NEVER.includes(t) && ID.test(t) && id(v)) slots[t] = v as string;
-  const out: InterfaceData = { design: id(d.design), branding: id(d.branding), slots };
+  const out: InterfaceData = { skin: id(skinField(d)), branding: id(d.branding), slots };
   if (typeof d.spacing === 'string' && spacingOf(d.spacing) === d.spacing) out.spacing = d.spacing;
   if (isObj(d.hidden)) { out.hidden = {}; for (const [t, v] of Object.entries(d.hidden)) if (typeof v === 'boolean' && ID.test(t)) out.hidden[t] = v; }
   if (isObj(d.settings)) { out.settings = {}; for (const [k, v] of Object.entries(d.settings)) if (isAppearanceSetting(k) && v !== undefined) out.settings[k] = v; }
@@ -82,12 +88,13 @@ export function normalizeInterface(raw: unknown): InterfaceData {
 export function interfaceErrors(raw: unknown): string[] {
   if (!isObj(raw)) return ['data must be an object'];
   const e: string[] = [];
-  if (typeof raw.design !== 'string' || !ID.test(raw.design)) e.push('data.design must be a design-package asset id');
+  const skin = skinField(raw);
+  if (typeof skin !== 'string' || !ID.test(skin)) e.push('data.skin must be a skin asset id');
   if (raw.branding !== undefined && (typeof raw.branding !== 'string' || !ID.test(raw.branding))) e.push('data.branding must be a branding asset id');
   if (raw.slots !== undefined) {
     if (!isObj(raw.slots)) e.push('data.slots must be an object (asset type → asset id)');
     else for (const [t, v] of Object.entries(raw.slots)) {
-      if (INTERFACE_NEVER.includes(t)) e.push(`data.slots.${t}: ${(DESIGN_THEMES as readonly string[]).includes(t) ? 'the themes come from the design package' : `an interface never sets ${t}`}`);
+      if (INTERFACE_NEVER.includes(t)) e.push(`data.slots.${t}: ${SECTION_TYPES.includes(t) ? 'the sections come from the skin' : `an interface never sets ${t}`}`);
       else if (!ID.test(t)) e.push(`data.slots.${t}: not an asset type name`);
       else if (typeof v !== 'string' || !ID.test(v)) e.push(`data.slots.${t} must be an asset id`);
     }
@@ -102,7 +109,7 @@ export function interfaceErrors(raw: unknown): string[] {
   return e;
 }
 
-/** The full look an interface stands for, against what the app ships. Layer order: design package → interface. */
+/** The full look an interface stands for, against what the app ships. Layer order: skin → interface. */
 export function resolveInterface(raw: unknown, registry: InterfaceRegistry): ResolvedInterface {
   const i = normalizeInterface(raw);
   const missing: string[] = [];
@@ -110,20 +117,13 @@ export function resolveInterface(raw: unknown, registry: InterfaceRegistry): Res
   let spacing = 'tight';
   const hidden: Record<string, boolean> = {};
   const settings: Record<string, unknown> = {};
-  const pkgRaw = i.design ? registry.designPackage(i.design) : undefined;
-  if (i.design && pkgRaw === undefined) missing.push(`${DESIGN_PACKAGE_TYPE}/${i.design}`);
-  const pkg = pkgRaw !== undefined ? normalizeDesignPackage(pkgRaw) : undefined;
-  // a style package (named by the interface, else by its design package's extras) is the lowest layer: its member
-  // controls first, then the package's own slots, then the interface's (engines/stylepackage.ts)
-  const sp = i.slots[STYLE_PACKAGE_TYPE] ?? (pkg ? designPackageSlots(pkg)[STYLE_PACKAGE_TYPE] : undefined);
-  const spRaw = sp && registry.stylePackage ? registry.stylePackage(sp) : undefined;
-  if (spRaw !== undefined) for (const [t, id] of Object.entries(stylePackageSlots(spRaw as Partial<StylePackageData>))) { if (registry.has(t, id)) active[t] = id; else missing.push(`${t}/${id}`); }
-  if (pkg) {
-    for (const [t, id] of Object.entries(designPackageSlots(pkg))) { if (registry.has(t, id)) active[t] = id; else missing.push(`${t}/${id}`); }
-    if (pkg.extras?.spacing) spacing = pkg.extras.spacing;
-    Object.assign(hidden, pkg.extras?.hidden ?? {});
-    Object.assign(settings, pkg.extras?.settings ?? {});
-    active[DESIGN_PACKAGE_TYPE] = i.design;
+  const skin = i.skin ? registry.skin(i.skin) : null;
+  if (i.skin && !skin) missing.push(`${SKIN_TYPE}/${i.skin}`);
+  if (skin) {
+    for (const [t, id] of Object.entries(skinSlots(skin, i.skin))) { if (registry.has(t, id)) active[t] = id; else missing.push(`${t}/${id}`); }
+    if (skin.extras?.spacing) spacing = skin.extras.spacing;
+    Object.assign(hidden, skin.extras?.hidden ?? {});
+    Object.assign(settings, skin.extras?.settings ?? {});
   }
   for (const [t, id] of Object.entries(i.slots)) { if (registry.has(t, id)) active[t] = id; else missing.push(`${t}/${id}`); }
   let branding = '';
@@ -131,19 +131,19 @@ export function resolveInterface(raw: unknown, registry: InterfaceRegistry): Res
   if (i.spacing) spacing = i.spacing;
   Object.assign(hidden, i.hidden ?? {});
   Object.assign(settings, i.settings ?? {});
-  return { active, spacing, hidden, settings, branding, design: i.design, missing };
+  return { active, spacing, hidden, settings, branding, skin: i.skin, missing };
 }
 
 /** What capturing needs. */
-export interface InterfaceCaptureEnv { active: Record<string, string>; types: readonly string[]; spacing: string; hidden: Record<string, boolean>; values: Record<string, unknown>; design: string }
+export interface InterfaceCaptureEnv { active: Record<string, string>; types: readonly string[]; spacing: string; hidden: Record<string, boolean>; values: Record<string, unknown>; skin: string }
 
-/** The current look as an interface over design package `env.design` (its extras are not repeated: the interface lists every slot itself, so it is complete without them). */
+/** The current look as an interface over skin `env.skin` (the skin's own slots are not repeated: the interface lists every slot itself, so it is complete without them). */
 export function captureInterface(env: InterfaceCaptureEnv, tab?: { label: string; icon: string }): InterfaceData {
   const slots: Record<string, string> = {};
   for (const t of env.types) if (!INTERFACE_NEVER.includes(t) && t !== 'branding' && env.active[t]) slots[t] = env.active[t]!;
   const settings: Record<string, unknown> = {};
   for (const [k, v] of Object.entries(env.values).sort(([a], [b]) => a.localeCompare(b))) if (isAppearanceSetting(k) && k !== INTERFACE_SETTING_KEY && v !== undefined && v !== null) settings[k] = v;
-  return { design: env.design, branding: env.active.branding ?? '', slots, spacing: env.spacing, hidden: { ...env.hidden }, settings, ...(tab ? { tab } : {}) };
+  return { skin: env.skin, branding: env.active.branding ?? '', slots, spacing: env.spacing, hidden: { ...env.hidden }, settings, ...(tab ? { tab } : {}) };
 }
 
 /** The slots two interfaces disagree on (for the roller's diff and the tabs' "what changes" note). */

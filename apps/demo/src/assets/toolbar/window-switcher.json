@@ -26,13 +26,6 @@
         "id": "layout",
         "items": [
           {
-            "id": "next-layout",
-            "icon": "layout",
-            "label": "Next layout",
-            "action": "swap:layout:next",
-            "requires": "assets.swap"
-          },
-          {
             "id": "toggle-nav",
             "icon": "list",
             "label": "Show or hide navigation",

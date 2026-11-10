@@ -1,17 +1,18 @@
 /**
- * One look, from axHub, for every app (Nov 1 2026, Brett: "The apps should only get appearance from axhub period" and
- * "if you select design package in one app it changes it for all! Any theme change applies to all").
+ * One look, from axHub, for every app on a source without an app-look layer (Nov 1 2026, Brett: "The apps should only
+ * get appearance from axhub period" and "if you select design package in one app it changes it for all! Any theme
+ * change applies to all"; design packages are skins since Nov 10 2026).
  *
- * Two runtimes stand in for two apps on one hub document: whatever one changes (a design package, a slot, spacing,
- * hidden chrome, plugin look settings, the design overrides) the other ends up with, exactly, and nothing is skipped
- * when both ship the same shared assets. The retired app-wide tweaks (Sliders, per-asset tokens, rolls) never travel.
+ * Two runtimes stand in for two apps on one hub document: whatever one changes (a skin, a slot, spacing, hidden
+ * chrome, plugin look settings) the other ends up with, exactly, and nothing is skipped when both ship the same shared
+ * assets. The retired app-wide tweaks (Sliders, per-asset tokens, rolls, the design package keys) never travel.
  * Run: npx -y tsx framework/spec/check-hub-look.mts
  */
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { mergeAppearance, normalizeAppearance, type AppearanceChange, type AppearanceDocument, type AppearanceSourceState } from '../core/engines/appearance';
-import { isAppearanceSetting } from '../core/engines/designpackage';
+import { isAppearanceSetting } from '../core/engines/looksettings';
 import { AxfRuntime, type AppearanceSource } from '../core/runtime';
 import type { AxfManifest } from '../core/types';
 
@@ -72,16 +73,19 @@ a.attachAppearanceSource(new HubLink(hub, 'app-a'));
 b.attachAppearanceSource(new HubLink(hub, 'app-b'));
 await settle();
 
-/* ---- a design package picked in one app is the look in every app ---- */
+/* ---- a skin applied in one app is the look in every app ---- */
 {
-  const packages = a.registry.list('design-package');
-  ok(packages.length >= 2, 'the framework ships design packages');
-  for (const p of packages.slice(0, 4)) {
-    ok(a.applyDesignPackage(p.id), `app A applies ${p.id}`);
+  const skins = a.skinList();
+  ok(skins.length >= 2, 'the framework ships skins');
+  for (const p of skins.slice(0, 4)) {
+    ok(a.applySkin(p.id), `app A applies ${p.id}`);
     await settle(); await settle();
-    eq(lookOf(b), lookOf(a), `app B has exactly app A's look after ${p.id} (slots, spacing, hidden chrome, package settings)`);
+    eq(lookOf(b), lookOf(a), `app B has exactly app A's look after ${p.id} (slots, spacing, hidden chrome, skin settings)`);
     eq(b.appearanceSkipped(), [], `nothing skipped in app B for ${p.id}: both ship the same shared assets`);
   }
+  ok(a.applyDesignPackage(skins[1]!.id), 'the old name (applyDesignPackage) still applies a skin');
+  await settle(); await settle();
+  eq(lookOf(b), lookOf(a), 'and every app follows');
 }
 
 /* ---- a single swap, spacing, hidden chrome ---- */
@@ -120,33 +124,27 @@ await settle();
   a.settings.clear('axf.look'); a.settings.clear('axf.custom.button');
 }
 
-/* ---- precedence: a loaded design package wins; a later pick overrides only its part (Nov 1 2026) ---- */
+/* ---- a skin's sections are plain slots on the shared document: a pick after it changes only that part, in every app ---- */
 {
-  ok(a.applyDesignPackage('hub-default'), 'app A loads Hub Default');
+  ok(a.applySkin('hub-default'), 'app A applies Hub Default');
   await settle(); await settle();
   const st = (rt: AxfRuntime, t: string) => rt.getState().active[t as never];
-  eq([st(b, 'design-package'), st(b, 'style-theme'), st(b, 'color-theme')], ['hub-default', 'hub', 'hub-night'], 'app B shows the package\'s style and colour');
-  // a stale style / colour slot in the document is ignored while the package is loaded
-  hub.save({ slots: { 'style-theme': 'glass-orbit', 'color-theme': 'arctic-daylight' } }, 'old-build');
+  eq([st(b, 'style-theme'), st(b, 'color-theme')], ['hub', 'hub-night'], 'app B shows the skin\'s style and colour sections');
+  ok(b.swap('style-theme', 'fresh'), 'app B picks another style section');
   await settle(); await settle();
-  eq([st(a, 'style-theme'), st(a, 'color-theme')], ['hub', 'hub-night'], 'individual picks without an override are not applied (app A)');
-  eq([st(b, 'style-theme'), st(b, 'color-theme')], ['hub', 'hub-night'], 'individual picks without an override are not applied (app B)');
-  // picking a style in app B overrides only the style, in every app
-  ok(b.swap('style-theme', 'fresh'), 'app B picks the Fresh style');
+  eq([st(a, 'style-theme'), st(a, 'color-theme')], ['fresh', 'hub-night'], 'app A: style changed, colour still the skin\'s');
+  ok(a.swap('color-theme', 'fresh-light'), 'app A picks a colour section');
   await settle(); await settle();
-  eq([st(a, 'style-theme'), st(a, 'color-theme')], ['fresh', 'hub-night'], 'app A: style overridden, colour still the package\'s');
-  eq(a.designOverrides(), { 'style-theme': 'fresh' }, 'app A sees the override');
-  // picking the package's own style again drops the override
-  ok(a.swap('style-theme', 'hub'), 'app A picks the package\'s style again');
+  eq([st(b, 'style-theme'), st(b, 'color-theme')], ['fresh', 'fresh-light'], 'app B: both changed');
+  ok(b.applySkin('hub-default'), 'app B applies the skin again');
   await settle(); await settle();
-  eq(b.designOverrides(), {}, 'override dropped everywhere');
-  // colour override, then reloading the package clears it
-  ok(a.swap('color-theme', 'fresh-light'), 'app A picks a colour');
+  eq([st(a, 'style-theme'), st(a, 'color-theme')], ['hub', 'hub-night'], 'the skin\'s sections are back in every app');
+  // the retired design package keys an older build wrote never travel
+  hub.save({ settings: { 'axf.appearance.overrides': { 'style-theme': 'glass-orbit' }, 'axf.appearance.design': 'fresh-night' } }, 'old-build');
   await settle(); await settle();
-  eq([st(b, 'style-theme'), st(b, 'color-theme')], ['hub', 'fresh-light'], 'app B: colour overridden, style the package\'s');
-  ok(b.applyDesignPackage('hub-default'), 'app B loads the package again');
-  await settle(); await settle();
-  eq([st(a, 'style-theme'), st(a, 'color-theme'), a.designOverrides()], ['hub', 'hub-night', {}], 'reloading the package clears the overrides in every app');
+  ok(a.settings.get('axf.appearance.overrides') === null && a.settings.get('axf.appearance.design') === null, 'retired package keys in an older document are not applied');
+  eq([st(a, 'style-theme'), st(a, 'color-theme')], ['hub', 'hub-night'], 'and change nothing');
+  ok(!('axf.appearance.overrides' in (hub.doc?.settings ?? {})) && !('axf.appearance.design' in (hub.doc?.settings ?? {})), 'and are removed from the hub document');
 }
 
 /* ---- Restore default appearance in one app restores every app ---- */
@@ -179,40 +177,35 @@ await settle();
 
 ok(!existsSync(join(root, '..', 'apps', 'console-web', 'src', 'interfaceTabs.tsx')), 'the console has no interface look tabs');
 
-/* ---- a design package is never just a slot: moving it loads the package, so every app agrees (Nov 3 2026) ---- */
+/* ---- the retired design-package slot an older build wrote: dropped on read, gone after the next write ---- */
 {
-  ok(a.applyDesignPackage('hub-default'), 'app A on Hub Default');
+  hub.doc = { ...hub.doc!, slots: { ...(hub.doc?.slots ?? {}), 'design-package': 'fresh-night', 'style-package': 'boardroom' } };
+  for (const s of hub.sources) s.receive(normalizeAppearance(JSON.parse(JSON.stringify(hub.doc))));
   await settle(); await settle();
-  ok(a.swap('style-theme', 'fresh'), 'app A overrides the style');
+  ok(hub.doc?.slots?.['design-package'] === 'fresh-night', 'the stored document carries the retired slots');
+  ok(!a.appearanceSkipped().some((s) => s.startsWith('design-package') || s.startsWith('style-package')), 'no app sees them (dropped on read, not even "skipped")');
+  a.setSpacing('compact');
   await settle(); await settle();
-  ok(b.swap('design-package', 'fresh-night'), 'app B moves the design-package slot through swap');
-  await settle(); await settle();
-  const st = (rt: AxfRuntime, t: string) => rt.getState().active[t as never];
-  const fresh = b.registry.get('design-package', 'fresh-night')!.data as { 'style-theme': string; 'color-theme': string };
-  eq([st(b, 'design-package'), st(b, 'style-theme'), st(b, 'color-theme'), b.designOverrides()], ['fresh-night', fresh['style-theme'], fresh['color-theme'], {}], 'swap loaded the package in app B: its themes, no override left');
-  eq([st(a, 'design-package'), st(a, 'style-theme'), st(a, 'color-theme'), a.designOverrides()], ['fresh-night', fresh['style-theme'], fresh['color-theme'], {}], 'and app A shows exactly the same');
-  ok(b.swap('design-package', 'fresh-night'), 'swapping to the package already loaded');
-  await settle(); await settle();
-  eq(a.designOverrides(), {}, 'is a reload: overrides stay cleared');
+  ok(hub.doc?.slots && !('design-package' in hub.doc.slots) && !('style-package' in hub.doc.slots), 'the next write by any app drops them from the hub');
 }
 
-/* ---- Restore default = the app's default design theme loaded in full, overrides cleared (Nov 3 2026) ---- */
+/* ---- Restore default = the app's default skin in full (Nov 3 2026; skins since Nov 10 2026) ---- */
 {
-  const def = defaults['design-package'] as string;
-  ok(a.registry.has('design-package', def), `the default look is a design package (${def})`);
-  const pkg = a.registry.get('design-package', def)!.data as { 'style-theme': string; 'color-theme': string; extras?: { spacing?: string; hidden?: Record<string, boolean> } };
-  ok(pkg.extras?.spacing && pkg.extras.hidden && Object.keys(pkg.extras.hidden).length, 'the default package carries spacing and chrome');
-  ok(a.swap('color-theme', 'fresh-light'), 'app A overrides the colour');
+  const def = defaults.skin as string;
+  ok(a.registry.has('skin', def), `the default look is a skin (${def})`);
+  const skin = a.skinList().find((s) => s.id === def)!.data;
+  ok(skin.extras?.spacing && skin.extras.hidden && Object.keys(skin.extras.hidden).length, 'the default skin carries spacing and chrome');
+  ok(a.swap('color-theme', 'fresh-light'), 'app A changes the colour section');
   b.setSpacing('regular');
   await settle(); await settle();
   b.restoreDefaultAppearance();
   await settle(); await settle();
   for (const [name, rt] of [['A', a], ['B', b]] as const) {
     const st = (t: string) => rt.getState().active[t as never];
-    eq([st('design-package'), st('style-theme'), st('color-theme'), rt.designOverrides()], [def, pkg['style-theme'], pkg['color-theme'], {}], `app ${name}: back on ${def}, its themes, no override`);
-    eq(rt.spacing(), pkg.extras!.spacing, `app ${name}: the package's spacing`);
-    for (const [t, hidden] of Object.entries(pkg.extras!.hidden!)) eq(rt.slotHidden(t as never), hidden, `app ${name}: the package's chrome (${t})`);
-    eq(rt.appliedDesignPackage(), def, `app ${name}: the default package counts as applied`);
+    eq([st('style-theme'), st('color-theme'), st('layout')], [skin.styleTheme, skin.colorTheme, skin.layoutTheme], `app ${name}: back on ${def}, its sections`);
+    eq(rt.spacing(), skin.extras!.spacing, `app ${name}: the skin's spacing`);
+    for (const [t, hidden] of Object.entries(skin.extras!.hidden!)) eq(rt.slotHidden(t as never), hidden, `app ${name}: the skin's chrome (${t})`);
+    eq(rt.appliedSkin(), def, `app ${name}: the default skin counts as applied`);
   }
   eq(lookOf(a), lookOf(b), 'both apps have the same look after Restore');
 }
@@ -250,16 +243,16 @@ ok(!existsSync(join(root, '..', 'apps', 'console-web', 'src', 'interfaceTabs.tsx
   });
   const st = (rt: AxfRuntime, t: string) => rt.getState().active[t as never] as string;
   const sharedLook = (rt: AxfRuntime) => ({
-    design: st(rt, 'design-package'), style: st(rt, 'style-theme'), colour: st(rt, 'color-theme'),
-    spacing: rt.spacing(), overrides: rt.designOverrides(),
+    style: st(rt, 'style-theme'), colour: st(rt, 'color-theme'), layout: st(rt, 'layout'),
+    spacing: rt.spacing(),
     // what the hub carries: hidden-chrome overrides (an app's own default chrome stays its own) and the look settings
     hidden: Object.fromEntries(Object.entries(rt.settings.savedValues()).filter(([k]) => k.startsWith('axf.hide.')).sort(([x], [y]) => x.localeCompare(y))),
     settings: Object.fromEntries(Object.entries(rt.settings.savedValues()).filter(([k]) => isAppearanceSetting(k)).sort(([x], [y]) => x.localeCompare(y))),
   });
   const frameworkThin = JSON.parse(readFileSync(join(root, 'assets', 'banner', 'amberx-thin.json'), 'utf8'));
   for (const { app, rt, m } of apps) {
-    eq([m.defaults['design-package' as never], m.defaults['style-theme'], m.defaults['color-theme']], ['hub-default', 'hub', 'hub-night'], `${app}: the manifest's default look is Hub Default (hub + hub-night)`);
-    eq([st(rt, 'design-package'), st(rt, 'style-theme'), st(rt, 'color-theme')], ['hub-default', 'hub', 'hub-night'], `${app}: starts on Hub Default`);
+    eq([m.defaults['skin' as never], m.defaults['style-theme'], m.defaults['color-theme']], ['hub-default', 'hub', 'hub-night'], `${app}: the manifest's default look is the Hub Default skin (hub + hub-night)`);
+    eq([rt.appliedSkin(), st(rt, 'style-theme'), st(rt, 'color-theme')], ['hub-default', 'hub', 'hub-night'], `${app}: starts on Hub Default`);
     eq(rt.registry.get('banner', 'amberx-thin')!.data, frameworkThin.data, `${app}: the thin banner is the framework's (no per-app copy)`);
     ok((rt.registry.get('banner', 'amberx-thin')!.data as { attach: { type: string }[] }).attach.some((x) => x.type === 'theme-switch'), `${app}: the thin banner carries the day/night switch`);
     ok(!existsSync(join(appsRoot, app, 'src', 'assets-overrides', 'banner')), `${app}: no banner override folder`);
@@ -267,35 +260,31 @@ ok(!existsSync(join(root, '..', 'apps', 'console-web', 'src', 'interfaceTabs.tsx
   }
   await settle(); await settle();
   const [console_, axhub, amberx] = apps.map((x) => x.rt);
-  // the console loads a package: axHub web and AmberX show exactly that look
-  ok(console_.applyDesignPackage('fresh-night'), 'the console loads Fresh Night');
+  // the console applies a skin: axHub web and AmberX show exactly that look
+  ok(console_.applySkin('fresh-night'), 'the console applies Fresh Night');
   await settle(); await settle();
   for (const { app, rt } of apps.slice(1)) { eq(sharedLook(rt), sharedLook(console_), `${app} has the console's look`); eq(rt.appearanceSkipped(), [], `${app} skipped nothing (ships every shared asset)`); }
-  // axHub web picks a colour: only the colour changes, in all three
+  // axHub web picks a colour section: only the colour changes, in all three
   ok(axhub.swap('color-theme', 'hub-night'), 'axHub web picks Hub Night');
   await settle(); await settle();
-  for (const { app, rt } of apps) eq([st(rt, 'design-package'), st(rt, 'style-theme'), st(rt, 'color-theme'), rt.designOverrides()], ['fresh-night', 'fresh', 'hub-night', { 'color-theme': 'hub-night' }], `${app}: colour overridden, style still the package's`);
-  // AmberX picks a style: both overrides, everywhere
-  ok(amberx.swap('style-theme', 'hub'), 'AmberX picks the Hub style');
-  await settle(); await settle();
-  for (const { app, rt } of apps) eq(rt.designOverrides(), { 'style-theme': 'hub', 'color-theme': 'hub-night' }, `${app}: both parts overridden`);
+  for (const { app, rt } of apps) eq([st(rt, 'style-theme'), st(rt, 'color-theme')], ['fresh', 'hub-night'], `${app}: colour changed, style still the skin's`);
   // the banner's day / night switch is a colour pick too
   ok(console_.swap('color-theme', 'fresh-light'), 'the console flips to a day colour (the banner switch does this)');
   await settle(); await settle();
   for (const { app, rt } of apps) eq(st(rt, 'color-theme'), 'fresh-light', `${app}: day colour`);
-  // AmberX loads Hub Default again: every override gone, every app on the default look
-  ok(amberx.applyDesignPackage('hub-default'), 'AmberX loads Hub Default');
+  // AmberX applies Hub Default again: every app on the default look
+  ok(amberx.applySkin('hub-default'), 'AmberX applies Hub Default');
   await settle(); await settle();
-  for (const { app, rt } of apps) eq([st(rt, 'design-package'), st(rt, 'style-theme'), st(rt, 'color-theme'), rt.designOverrides(), rt.spacing(), rt.slotHidden('toolbar')], ['hub-default', 'hub', 'hub-night', {}, 'tight', true], `${app}: Hub Default in full, no override`);
+  for (const { app, rt } of apps) eq([st(rt, 'style-theme'), st(rt, 'color-theme'), rt.spacing(), rt.slotHidden('toolbar')], ['hub', 'hub-night', 'tight', true], `${app}: Hub Default in full`);
   for (const { app, rt } of apps) eq(st(rt, 'banner'), 'amberx-thin', `${app}: Hub Default's banner (the compact thin bar) in every app`);
   for (const { app, rt } of apps.slice(1)) eq(sharedLook(rt), sharedLook(console_), `${app}: the same look as the console`);
   // Restore in axHub web = Hub Default again, everywhere
-  ok(console_.swap('style-theme', 'glass-orbit'), 'the console overrides the style');
+  ok(console_.swap('style-theme', 'glass-orbit'), 'the console changes the style section');
   await settle(); await settle();
   axhub.restoreDefaultAppearance();
   await settle(); await settle();
-  for (const { app, rt } of apps) eq([st(rt, 'design-package'), st(rt, 'style-theme'), st(rt, 'color-theme'), rt.designOverrides()], ['hub-default', 'hub', 'hub-night', {}], `${app}: Restore from axHub web puts every app back on Hub Default`);
-  ok(!(hub3.doc?.settings && 'axf.appearance.overrides' in hub3.doc.settings), 'no override left on the hub');
+  for (const { app, rt } of apps) eq([st(rt, 'style-theme'), st(rt, 'color-theme')], ['hub', 'hub-night'], `${app}: Restore from axHub web puts every app back on Hub Default`);
+  ok(!(hub3.doc?.settings && 'axf.appearance.overrides' in hub3.doc.settings), 'no retired override key on the hub');
 }
 
 console.log(`check-hub-look: ${checks} checks passed`);

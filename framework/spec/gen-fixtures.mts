@@ -6,7 +6,7 @@
 import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
-import { backToSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, lookAfterChange, newAppLook, normalizeSkin, normalizeSkinScope, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setScopeOverride, setScopeSkin, setUseSkin, skinCovers, skinErrors, skinFromDesignPackage, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSlots, snapshotLook, uncoveredTypes, undoRestore } from '../core/engines/skin';
+import { backToSkin, captureSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, lookAfterChange, migrateLegacyLook, newAppLook, normalizeAppLook, normalizeSkin, normalizeSkinScope, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setScopeOverride, setScopeSkin, setUseSkin, skinCovers, skinErrors, skinFromDesignPackage, skinFromStylePackage, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSectionAssets, skinSectionErrors, skinSlots, snapshotLook, uncoveredTypes, undoRestore } from '../core/engines/skin';
 import { SCALE_TYPES, normalizeScale, scaleErrors, scaleThemeVars, scaleVars } from '../core/engines/scale';
 import { AGENT_CARD_SAMPLE, agentCardErrors, avatarColors, avatarModel, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
 import { AVATAR_FACES, AVATAR_GEAR } from '../core/engines/swarm-rules.mjs';
@@ -1961,7 +1961,7 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
   });
 }
 
-/* ---- skin@1 + app-look@1 ---- */
+/* ---- skin@2 + app-look@1 ---- */
 {
   const skin = { layoutTheme: 'windows-explorer', colorTheme: 'windows-light', styleTheme: 'windows', assets: { button: 'windows', banner: 'windows-titlebar' }, preview: { caption: 'Windows' }, extras: { spacing: 'compact', hidden: { toolbar: false } } };
   const shared = { $axf: 'appearance@1', slots: { layout: 'focus-top', 'color-theme': 'arctic-daylight', 'style-theme': 'hub', button: 'rounded-solid', 'design-package': 'hub-default' }, spacing: 'tight', hidden: { toolbar: true }, settings: { 'axf.banners.group': 'a', 'axf.tokens.button': 'x' } };
@@ -1971,12 +1971,22 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
   const own = lookAfterChange(look0, { slots: { button: 'terminal' }, hidden: { toolbar: false } }, null);
   const restored = restoreAppDefault(overridden, '2026-11-05T00:00:00Z');
   const movedShared = { ...shared, slots: { ...shared.slots, 'color-theme': 'other-theme' }, settings: { 'axf.tokens.button': 'y', 'axf.banners.group': 'other' } };
+  // skin@2 sections: a colour section written in the skin, the others as presets; a behaviour preset; the legacy skin@1 behaviour slot
+  const inlineColors = { scheme: 'dark', tokens: { bg: '#101214', surface: '#16191d', surface2: '#1b1f24', surface3: '#242930', text: '#e8eaed', muted: '#9aa3ad', border: '#2a3038', accent: '#f0b429', accentText: '#1a1300', accentSoft: 'rgba(240,180,41,0.14)', danger: '#ff6b6b', success: '#4cd38a', warning: '#ffb020', info: '#5ab4ff', focus: '#f0b429', shadow: 'rgba(0,0,0,0.5)' } };
+  const sectioned = { ...skin, behaviorTheme: 'snappy', sections: { colors: inlineColors } };
+  const legacyBehavior = { ...skin, assets: { ...skin.assets, 'behavior-theme': 'calm' } };
+  const legacyLook = { $axf: 'app-look@1', app: 'app', default: { slots: { 'design-package': 'hub-default', 'style-package': 'boardroom', 'color-theme': 'hub-night', button: 'rounded-solid' }, spacing: 'tight' }, own: { slots: { 'design-package': 'fresh-night' } }, skin: { use: false, inherit: false, id: '', overrides: {} }, scopes: {} };
   write('skin.json', {
-    contract: 'skin@1',
-    normalize: { good: normalizeSkin(skin), junk: normalizeSkin({ layoutTheme: 'BAD', assets: { 'uac-policy': 'x', button: 'ok', layout: 'nope' }, extras: { spacing: 'huge' } }) },
-    errors: { good: skinErrors(skin), noThemes: skinErrors({ assets: {} }), never: skinErrors({ ...skin, assets: { 'uac-policy': 'x', layout: 'y' } }), badExtras: skinErrors({ ...skin, extras: { spacing: 'huge', hidden: { a: 1 } } }) },
+    contract: 'skin@2',
+    normalize: { good: normalizeSkin(skin), junk: normalizeSkin({ layoutTheme: 'BAD', assets: { 'uac-policy': 'x', button: 'ok', layout: 'nope', 'design-package': 'fresh' }, extras: { spacing: 'huge' } }), sectioned: normalizeSkin(sectioned), legacyBehavior: normalizeSkin(legacyBehavior) },
+    errors: { good: skinErrors(skin), noThemes: skinErrors({ assets: {} }), never: skinErrors({ ...skin, assets: { 'uac-policy': 'x', layout: 'y', 'style-package': 'z' } }), badExtras: skinErrors({ ...skin, extras: { spacing: 'huge', hidden: { a: 1 } } }), sectioned: skinErrors(sectioned), inlineOnly: skinErrors({ assets: {}, sections: { colors: inlineColors, style: { fontFamily: 'x', fontDisplay: 'x', fontMono: 'x', fontSize: 14, radius: { sm: 1, md: 2, lg: 3 }, space: 8, borderWidth: 1, shadow: { sm: 'a', md: 'b', lg: 'c' }, density: 'compact', motion: 100, blur: 0, headingWeight: 600, tracking: 0 }, layout: { nav: 'left', navWidth: 200, showMenubar: true, showToolbar: true, toolbarPosition: 'top', showStatusbar: true, inspector: 'none', inspectorWidth: 260, contentMaxWidth: 1080 }, behavior: { motion: { speed: 'fast' } } } }), badSections: skinErrors({ ...skin, sections: { colors: { scheme: 'neon' }, layout: { nav: 'middle' }, behavior: { motion: { speed: 'warp' } }, nope: {} } }), sectionNotObject: skinSectionErrors('colors', 3) },
     slots: skinSlots(normalizeSkin(skin)),
-    fromDesignPackage: skinFromDesignPackage({ 'style-theme': 's', 'color-theme': 'c', layout: 'l', 'behavior-theme': 'b', extras: { slots: { button: 'x' }, spacing: 'tight', hidden: { toolbar: true } } }),
+    sectionedSlots: skinSlots(normalizeSkin(sectioned), 'windows'),
+    sectionAssets: skinSectionAssets('windows', normalizeSkin(sectioned), 'Windows'),
+    fromDesignPackage: skinFromDesignPackage({ 'style-theme': 's', 'color-theme': 'c', layout: 'l', 'behavior-theme': 'b', extras: { slots: { button: 'x', 'style-package': 'pack' }, spacing: 'tight', hidden: { toolbar: true } } }, (id) => (id === 'pack' ? { button: 'pack-button', dialog: 'pack-dialog' } : null)),
+    fromStylePackage: skinFromStylePackage({ slots: { button: 'bb', container: 'cc' }, tone: 'formal' }, normalizeSkin(skin)),
+    capture: captureSkin({ active: { 'color-theme': 'a', 'style-theme': 's', layout: 'l', 'behavior-theme': 'b', toolbar: 't', 'uac-policy': 'p', skin: 'fresh' }, types: ['color-theme', 'style-theme', 'layout', 'behavior-theme', 'toolbar', 'uac-policy', 'skin'], spacing: 'compact', hidden: { toolbar: true }, values: { 'axf.banners.prefs': { a: 1 }, other: 1, 'axf.appearance.spacing': 'compact', 'axf.look': { x: 1 } }, isLookSetting: (k) => k.startsWith('axf.banners.') }),
+    legacyLook: { raw: legacyLook, migrated: migrateLegacyLook(normalizeAppLook({ ...legacyLook, default: { ...legacyLook.default }, own: { ...legacyLook.own } }) as never), read: normalizeAppLook(legacyLook) },
     look: {
       shared, snapshot: look0.default,
       off: composeLook(shared as never, look0, null),

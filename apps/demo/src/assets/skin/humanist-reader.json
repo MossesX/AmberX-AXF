@@ -1,0 +1,35 @@
+{
+  "$axf": "asset@1",
+  "type": "skin",
+  "id": "humanist-reader",
+  "name": "Humanist Reader",
+  "version": "2.0.0",
+  "description": "Serif headings on warm linen in a focused reading column; gentle motion and a minimal menu.",
+  "author": "AmberX AXF",
+  "tags": [
+    "light",
+    "reading",
+    "skin"
+  ],
+  "data": {
+    "colorTheme": "linen-slate",
+    "styleTheme": "humanist",
+    "layoutTheme": "document-reader",
+    "behaviorTheme": "gentle",
+    "assets": {
+      "button": "calm-reader",
+      "container": "calm-reader",
+      "slider": "calm-reader",
+      "dialog": "calm-reader",
+      "popup": "calm-reader",
+      "tab-group": "calm-reader",
+      "gauge": "level-bar",
+      "meter": "hairline",
+      "nav-menu": "text-only",
+      "context-menu": "reader-minimal"
+    },
+    "extras": {
+      "spacing": "regular"
+    }
+  }
+}

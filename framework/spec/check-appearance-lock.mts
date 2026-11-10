@@ -9,7 +9,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseAppearance, type AppearanceDocument, type AppearanceSourceState } from '../core/engines/appearance';
-import { isAppearanceSetting } from '../core/engines/designpackage';
+import { isAppearanceSetting } from '../core/engines/looksettings';
 import { lookCss, normalizeLook } from '../core/engines/looktokens';
 import { APPEARANCE_FOLLOW_KEY, APPEARANCE_LOCK_KEY, AxfRuntime, type AppearanceSource } from '../core/runtime';
 import type { AxfManifest } from '../core/types';

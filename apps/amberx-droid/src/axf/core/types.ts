@@ -44,9 +44,7 @@ export const ASSET_TYPES = [
   'xlayout',
   'nav-style',
   'behavior-theme',
-  'design-package',
   'skin',
-  'style-package',
   'interface',
   'logo-mark',
   'animated-logo',
@@ -59,11 +57,15 @@ export const ASSET_TYPES = [
   'job-type',
   'card',
   'help',
+  'demonstration',
+  'book',
+  'clip',
+  'docs',
   'uac-policy',
 ] as const;
 
 /** Types that are optional: an app may ship none (the framework ships starters). Attachable ones live on a host (the banner). */
-export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'dock-layout', 'xlayout', 'nav-style', 'behavior-theme', 'design-package', 'skin', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface', 'typography', 'density', 'sizing', 'agent-card', 'job-type', 'card', 'help'];
+export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'dock-layout', 'xlayout', 'nav-style', 'behavior-theme', 'skin', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface', 'typography', 'density', 'sizing', 'agent-card', 'job-type', 'card', 'help', 'demonstration', 'book', 'clip', 'docs'];
 
 export type AssetType = (typeof ASSET_TYPES)[number];
 
@@ -539,29 +541,6 @@ export interface BehaviorThemeData {
   feedback: { toastPosition: string; toastMs: number; sound: string; vibration: string; confirmDelete: string; busyCursor: boolean };
 }
 
-/** What a design package carries beyond its four themes (everything the retired appearance package held). */
-export interface DesignPackageExtras {
-  /** asset type → asset id for every other appearance slot (chrome, controls, widgets); never the policy */
-  slots?: Record<string, string>;
-  /** spacing choice (tight | compact | regular) */
-  spacing?: string;
-  /** chrome slots hidden (true) or shown (false); absent = the app's default */
-  hidden?: Record<string, boolean>;
-  /** every other appearance setting by key (customize tokens, roll switches, banner looks, toolbar fold …) */
-  settings?: Record<string, unknown>;
-}
-
-/** design-package@1 (engines/designpackage.ts): an AmberX Design Package = style + colour + layout + behaviour. */
-export interface DesignPackageData {
-  'style-theme': string;
-  'color-theme': string;
-  layout: string;
-  'behavior-theme': string;
-  extras?: DesignPackageExtras;
-}
-/** @deprecated the appearance package was replaced by the design package (Oct 27 2026); kept for old callers. */
-export type AppearancePackageData = DesignPackageExtras & { slots: Record<string, string> };
-
 export type SettingsData = Pick<SettingsUi, 'layout' | 'header' | 'search' | 'descriptions'> & Partial<Pick<SettingsUi, 'tabs' | 'hide' | 'groups'>>;
 
 export interface UACRole {
@@ -620,9 +599,7 @@ export interface AssetDataMap {
   xlayout: import('./engines/xlayout').XLayoutData;
   'nav-style': import('./engines/navstyle-rules.mjs').NavStyleData;
   'behavior-theme': BehaviorThemeData;
-  'design-package': DesignPackageData;
   skin: import('./engines/skin').SkinData;
-  'style-package': import('./engines/stylepackage').StylePackageData;
   interface: InterfaceData;
   'logo-mark': MarkData;
   'animated-logo': AnimatedLogoData;
@@ -635,6 +612,10 @@ export interface AssetDataMap {
   'job-type': import('./engines/job-type-rules.mjs').JobTypeData;
   card: import('./engines/card-rules.mjs').CardData;
   help: import('./engines/help').HelpData;
+  demonstration: import('./engines/demo-rules.mjs').DemonstrationData;
+  book: import('./engines/demo-rules.mjs').BookData;
+  clip: import('./engines/demo-rules.mjs').ClipData;
+  docs: import('./engines/demo-rules.mjs').DocsData;
   'uac-policy': UACPolicyData;
 }
 
@@ -642,7 +623,7 @@ export type Asset<K extends AssetType> = AssetEnvelope<AssetDataMap[K]>;
 /** Active asset id per slot. Optional control types added after apps already shipped (gauge, meter, settings) may be absent from an app's manifest. */
 export type ActiveAssets = { [K in Exclude<AssetType, LateOptionalType>]: string } & { [K in LateOptionalType]?: string };
 /** Types added after apps shipped manifests: their defaults may be missing (the engines fall back to built-in defaults). */
-export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'dock-layout' | 'xlayout' | 'nav-style' | 'behavior-theme' | 'design-package' | 'skin' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface' | 'typography' | 'density' | 'sizing' | 'agent-card' | 'job-type' | 'card' | 'help';
+export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'dock-layout' | 'xlayout' | 'nav-style' | 'behavior-theme' | 'skin' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface' | 'typography' | 'density' | 'sizing' | 'agent-card' | 'job-type' | 'card' | 'help' | 'demonstration' | 'book' | 'clip' | 'docs';
 
 export interface AxfManifest {
   $axf: 'manifest@1';

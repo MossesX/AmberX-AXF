@@ -7,7 +7,9 @@
  * keeps a local copy. A set never touches an asset: it writes an override into the look settings
  * (`axf.tokens.<set>`, engines/control-tokens.mjs), and every app applies it on its next read of the document.
  * `tokens.slots` writes the document's `slots` (the hot-swap), `tokens.look` / `tokens.custom` answer
- * not_implemented for writes: the Sliders and per-asset tokens were retired on Nov 1 2026 (designpackage.ts).
+ * not_implemented for writes: the Sliders and per-asset tokens were retired on Nov 1 2026 (looksettings.ts). A skin is
+ * not a slot (Nov 10 2026, skins only): `tokens.slots` lists the slots a skin fills, the skin itself is picked through
+ * the skins CLI / `skin.use` (framework/cli/skins.mjs).
  */
 import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -18,9 +20,9 @@ import { setSlotEverywhere } from '../../../../../framework/cli/skins.mjs';
 
 const ASSETS = join(ROOT, 'framework', 'assets');
 const APPEARANCE_MAX = 16 * 1024;
-const OVERRIDES_KEY = 'axf.appearance.overrides';
-const DESIGN_TYPE = 'design-package';
-const DEFAULT_DESIGN = 'hub-default';
+/** The skin whose slots stand in for an empty document: the hub apps' default skin (their manifests name it). */
+const DEFAULT_SKIN = 'hub-default';
+const SKIN_SECTION_FIELDS = { 'color-theme': 'colorTheme', 'style-theme': 'styleTheme', layout: 'layoutTheme', 'behavior-theme': 'behaviorTheme' };
 
 export function appearanceFile() {
   if (process.env.AXF_APPEARANCE_FILE) return process.env.AXF_APPEARANCE_FILE;
@@ -63,16 +65,11 @@ export function assetIds(type) {
   try { return readdirSync(join(ASSETS, type)).filter((f) => f.endsWith('.json')).map((f) => f.slice(0, -5)).sort(); } catch { return []; }
 }
 
-/** The asset in force for a slot under this document (design package rules: APPEARANCE-SOURCE.md → precedence). */
+/** The asset in force for a slot under this document: the document's pick, else the default skin's, else the first shipped. */
 export function activeAsset(doc, slot) {
-  const pkgId = doc.slots?.[DESIGN_TYPE] || DEFAULT_DESIGN;
-  const pkg = assetData(DESIGN_TYPE, pkgId) ?? {};
-  if (slot === 'style-theme' || slot === 'color-theme') {
-    const over = doc.settings?.[OVERRIDES_KEY]?.[slot];
-    if (over && assetData(slot, over)) return over;
-    if (pkg[slot] && assetData(slot, pkg[slot])) return pkg[slot];
-  }
-  const pick = doc.slots?.[slot] ?? pkg[slot] ?? pkg.extras?.slots?.[slot];
+  const skin = assetData('skin', DEFAULT_SKIN) ?? {};
+  const fromSkin = SKIN_SECTION_FIELDS[slot] ? skin[SKIN_SECTION_FIELDS[slot]] : skin.assets?.[slot];
+  const pick = doc.slots?.[slot] ?? fromSkin;
   if (pick && assetData(slot, pick)) return pick;
   return assetIds(slot)[0] ?? null;
 }
@@ -129,9 +126,6 @@ function runSlots(c, doc) {
       if (!types.includes(c.path)) throw new ControlError('not_found', `no slot ${c.path}`);
       if (typeof c.value !== 'string' || !assetIds(c.path).includes(c.value)) throw new ControlError('validation', `${c.path} has no asset ${String(c.value)} (it has ${assetIds(c.path).join(', ')})`);
       const change = { slots: { [c.path]: c.value } };
-      // picking a style or colour theme under a design package records the override (designpackage.ts overrideAfterPick)
-      if ((c.path === 'style-theme' || c.path === 'color-theme') && doc.slots?.[DESIGN_TYPE]) change.settings = { [OVERRIDES_KEY]: { ...(doc.settings?.[OVERRIDES_KEY] ?? {}), [c.path]: c.value } };
-      if (c.path === DESIGN_TYPE) change.settings = { [OVERRIDES_KEY]: null };
       const after = writeAppearance(change, c.by);
       return { changed: true, item: { id: c.path, kind: 'asset-id', value: activeAsset(after, c.path), picked: c.value, options: assetIds(c.path) } };
     }
@@ -140,11 +134,6 @@ function runSlots(c, doc) {
       if (!c.path) throw new ControlError('validation', 'reset tokens.slots needs a slot (path): the whole look is reset from Settings → Appearance');
       const slots = [c.path];
       const change = { slots: Object.fromEntries(slots.map((s) => [s, null])) };
-      if (c.path === 'style-theme' || c.path === 'color-theme') {
-        const o = { ...(doc.settings?.[OVERRIDES_KEY] ?? {}) };
-        delete o[c.path];
-        change.settings = { [OVERRIDES_KEY]: Object.keys(o).length ? o : null };
-      }
       writeAppearance(change, c.by);
       return { changed: slots.length > 0, cleared: slots };
     }

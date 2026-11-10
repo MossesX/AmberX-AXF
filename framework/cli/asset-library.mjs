@@ -181,10 +181,9 @@ const I = {
   save: ['save', 'Save', 'save', 'file.save', 'Ctrl+S'], exp: ['export', 'Export…', 'download', 'file.export'],
   settings: ['settings', 'Settings', 'settings', 'app.settings', 'Ctrl+,'], keys: ['shortcuts', 'Keyboard shortcuts', 'keyboard', 'view.shortcuts', 'Alt+K'],
   docs: ['docs', 'Documentation', 'help', 'help.docs', 'F1'], about: ['about', 'About', 'info', 'help.about'],
-  color: ['next-color', 'Next colour theme', 'palette', 'swap:color-theme:next', 'Alt+C', 'assets.swap'],
-  style: ['next-style', 'Next style theme', 'type', 'swap:style-theme:next', 'Alt+S', 'assets.swap'],
-  layout: ['next-layout', 'Next layout', 'layout', 'swap:layout:next', 'Alt+L', 'assets.swap'],
-  pkg: ['next-package', 'Next design package', 'package', 'design.package:next', 'Alt+P', 'assets.swap'],
+  skin: ['next-skin', 'Next skin', 'palette', 'skin.next', 'Alt+P', 'assets.swap'],
+  prevSkin: ['prev-skin', 'Previous skin', 'palette', 'skin.prev', 'Alt+Shift+P', 'assets.swap'],
+  randomSkin: ['random-skin', 'A random skin', 'shuffle', 'skin.random', null, 'assets.swap'],
   random: ['random', 'Randomize the look', 'shuffle', 'assets.random', 'Alt+R', 'assets.swap'],
   reset: ['reset', 'Reset the look', 'refresh', 'assets.reset', null, 'assets.swap'],
   tight: ['spacing-tight', 'Super tight spacing', 'minimize', 'spacing:tight', null, 'assets.swap'],
@@ -202,17 +201,17 @@ const I = {
   import: ['import', 'Import asset…', 'upload', 'dialog:import-asset', null, 'assets.import'],
 };
 const assetCard = items([I.activate, '-', I.json, I.copyJson, '-', I.import]);
-const navItem = items([I.open, '-', I.nextNav, I.layout, '-', I.nav]);
+const navItem = items([I.open, '-', I.nextNav, '-', I.nav]);
 const CM = [
   { id: 'enterprise-standard', name: 'Enterprise Standard', tags: ['desktop', 'enterprise'], description: 'The complete desktop menu: edit commands with shortcuts, settings and help, grouped by intent.', data: { variant: 'compact', showIcons: true, showShortcuts: true, targets: { default: items([I.undo, I.redo, '-', I.cut, I.copy, I.paste, I.del, '-', I.settings, I.keys, I.docs]), 'asset-card': assetCard, 'nav-item': navItem } } },
   { id: 'editor-pro', name: 'Editor Pro', tags: ['desktop', 'editing'], description: 'Built for editors: clipboard first, then save and export, with every shortcut shown.', data: { variant: 'compact', showIcons: true, showShortcuts: true, targets: { default: items([I.cut, I.copy, I.paste, I.del, '-', I.undo, I.redo, '-', I.save, I.exp]), 'asset-card': assetCard } } },
-  { id: 'appearance-quick', name: 'Appearance Quick', tags: ['appearance', 'designer'], description: 'Restyle from anywhere: step colour, style, layout and design package, pick spacing, randomize or reset.', data: { variant: 'glass', showIcons: true, showShortcuts: true, targets: { default: items([I.pkg, I.color, I.style, I.layout, '-', I.tight, I.compact, I.regular, '-', I.random, I.reset, I.appearance]), 'asset-card': assetCard, 'nav-item': navItem } } },
+  { id: 'appearance-quick', name: 'Appearance Quick', tags: ['appearance', 'designer'], description: 'Restyle from anywhere: step through the skins, pick spacing, randomize or reset.', data: { variant: 'glass', showIcons: true, showShortcuts: true, targets: { default: items([I.skin, I.prevSkin, I.randomSkin, '-', I.tight, I.compact, I.regular, '-', I.random, I.reset, I.appearance]), 'asset-card': assetCard, 'nav-item': navItem } } },
   { id: 'touch-large', name: 'Touch Large', tags: ['touch', 'tablet'], description: 'Roomy rows for fingers, no shortcut hints, only the commands people reach for on a tablet.', data: { variant: 'roomy', showIcons: true, showShortcuts: false, targets: { default: items([I.copy, I.paste, '-', I.home, I.settings, '-', I.docs]), 'nav-item': items([I.open, I.home]) } } },
-  { id: 'glass-flyout', name: 'Glass Flyout', tags: ['glass', 'modern'], description: 'Frosted glass flyout with icons only where they help: clipboard, look and settings.', data: { variant: 'glass', showIcons: true, showShortcuts: false, targets: { default: items([I.cut, I.copy, I.paste, '-', I.color, I.layout, '-', I.settings]), 'asset-card': assetCard } } },
+  { id: 'glass-flyout', name: 'Glass Flyout', tags: ['glass', 'modern'], description: 'Frosted glass flyout with icons only where they help: clipboard, look and settings.', data: { variant: 'glass', showIcons: true, showShortcuts: false, targets: { default: items([I.cut, I.copy, I.paste, '-', I.skin, '-', I.settings]), 'asset-card': assetCard } } },
   { id: 'developer-tools', name: 'Developer Tools', tags: ['developer'], description: 'Build, deploy and inspect from a right-click, with the dev console one step away.', data: { variant: 'compact', showIcons: true, showShortcuts: true, targets: { default: items([I.build, I.deploy, '-', I.console, '-', I.copy, I.paste, '-', I.keys, I.docs]), 'asset-card': assetCard, 'nav-item': navItem } } },
   { id: 'reader-minimal', name: 'Reader Minimal', tags: ['reading', 'minimal'], description: 'Copy, spacing and help: a quiet menu for reading apps that stays out of the way.', data: { variant: 'roomy', showIcons: false, showShortcuts: false, targets: { default: items([I.copy, '-', I.compact, I.regular, '-', I.docs]) } } },
-  { id: 'asset-manager', name: 'Asset Manager', tags: ['designer', 'assets'], description: 'For asset browsers: use, inspect, copy and import assets, plus stepping through the look.', data: { variant: 'compact', showIcons: true, showShortcuts: true, targets: { default: items([I.import, '-', I.pkg, I.color, I.style, I.layout, '-', I.random, I.reset]), 'asset-card': items([I.activate, '-', I.json, I.copyJson, '-', I.import, I.pkg]) } } },
-  { id: 'navigator', name: 'Navigator', tags: ['navigation'], description: 'Navigation first: open, go home, switch navigation menus and show or hide the bars.', data: { variant: 'compact', showIcons: true, showShortcuts: true, targets: { default: items([I.home, '-', I.nav, I.toolbar, I.nextNav, I.layout, '-', I.settings]), 'nav-item': navItem } } },
+  { id: 'asset-manager', name: 'Asset Manager', tags: ['designer', 'assets'], description: 'For asset browsers: use, inspect, copy and import assets, plus stepping through the skins.', data: { variant: 'compact', showIcons: true, showShortcuts: true, targets: { default: items([I.import, '-', I.skin, I.prevSkin, I.randomSkin, '-', I.random, I.reset]), 'asset-card': items([I.activate, '-', I.json, I.copyJson, '-', I.import, I.skin]) } } },
+  { id: 'navigator', name: 'Navigator', tags: ['navigation'], description: 'Navigation first: open, go home, switch navigation menus and show or hide the bars.', data: { variant: 'compact', showIcons: true, showShortcuts: true, targets: { default: items([I.home, '-', I.nav, I.toolbar, I.nextNav, '-', I.settings]), 'nav-item': navItem } } },
   { id: 'locked-down', name: 'Locked Down', tags: ['kiosk', 'secure'], description: 'Kiosk and shared-screen menu: copy and help only, and no plugin or everywhere items join it.', data: { variant: 'roomy', showIcons: true, showShortcuts: false, contributions: false, targets: { default: items([I.copy, '-', I.about]) } } },
 ];
 
@@ -240,14 +239,14 @@ const TOOLBAR = [
   { id: 'enterprise-command', name: 'Enterprise Command', use: 'Line-of-business desktops', tags: ['enterprise', 'desktop'], description: 'File, edit and look commands with labels, a live search and the account and connection status at the end.', data: TB('icons-labels', 'start', [G('file', [T.new, T.openFile, T.save, T.exp]), G('edit', [T.undo, T.redo]), G('app', [T.alerts, T.settings])], { search: live('Search…  (Ctrl K)'), widgets: [W('status', 'online', 'end', 10), W('avatar', 'account', 'end', 20)], surface: 'raised', collapsible: true }) },
   { id: 'live-pages', name: 'Live Pages', use: 'Apps with many pages', tags: ['live', 'navigation'], description: 'Every page of the app as a button, straight from the views provider, so new pages appear by themselves.', data: TB('icons', 'start', [G('pages', [T.home], { provider: 'views', max: 10, label: 'Pages' })], { search: live('Find a page…', 10, ['view']) }) },
   { id: 'navigator-strip', name: 'Navigator Strip', use: 'Replacing the side navigation', tags: ['live', 'navigation'], description: 'The active navigation menu drawn as a labelled strip; swapping the nav menu changes the strip too.', data: TB('labels', 'start', [G('nav', [], { provider: 'nav', max: 12, label: 'Navigation' })], { density: 'compact', divider: false }) },
-  { id: 'window-switcher', name: 'Window Switcher', use: 'Multi-window desktops', tags: ['live', 'windows'], description: 'One button per open floating window to bring it back, beside the window and layout commands.', data: TB('icons-labels', 'start', [G('windows', [], { provider: 'windows', max: 8, label: 'Open windows' }), G('layout', [T.layout, T.navOn])]) },
+  { id: 'window-switcher', name: 'Window Switcher', use: 'Multi-window desktops', tags: ['live', 'windows'], description: 'One button per open floating window to bring it back, beside the window and layout commands.', data: TB('icons-labels', 'start', [G('windows', [], { provider: 'windows', max: 8, label: 'Open windows' }), G('layout', [T.navOn])]) },
   { id: 'chrome-toggles', name: 'Chrome Toggles', use: 'Focus and presentation modes', tags: ['live', 'appearance'], description: 'Pressed-state toggles for every bar and menu (chrome provider), plus the spacing choices.', data: TB('icons', 'center', [G('chrome', [], { provider: 'chrome', max: 8, label: 'Bars and menus' }), G('spacing', [T.tight, T.compact, T.regular])], { surface: 'glass' }) },
   { id: 'settings-jump', name: 'Settings Jump', use: 'Settings and admin pages', tags: ['live', 'settings'], description: 'A tab for every settings page, from the settings provider; plugin settings join as they install.', data: TB('labels', 'start', [G('settings', [], { provider: 'settings', max: 10, label: 'Settings pages' })], { search: live('Search settings…', 12, ['setting', 'settings-tab']), density: 'compact' }) },
   { id: 'dialog-launcher', name: 'Dialog Launcher', use: 'Tool-heavy apps', tags: ['live', 'dialogs'], description: 'Every dialog the app and its plugins register, one tap away, with a search limited to dialogs and actions.', data: TB('icons-labels', 'start', [G('dialogs', [], { provider: 'dialogs', max: 8, label: 'Dialogs' })], { search: live('Open a dialog…', 10, ['dialog', 'action']) }) },
   { id: 'developer-ops', name: 'Developer Ops', use: 'Developer consoles', tags: ['developer'], description: 'Build, deploy and the dev console with a build progress bar, AI status and a 24 h clock (alerts stay on the banner).', data: TB('icons', 'start', [G('run', [T.build, T.deploy]), G('tools', [T.console])], { widgets: [W('progress', 'build', 'end', 10), W('status', 'ai', 'end', 20), W('clock', 'digital-24h', 'end', 30)], density: 'compact' }) },
   { id: 'ops-monitor', name: 'Ops Monitor', use: 'Monitoring dashboards', tags: ['ops', 'widgets'], description: 'A status board: connection, unread alerts, build progress and the clock, with settings and help at the start.', data: TB('icons', 'spread', [G('app', [T.settings, T.docs])], { widgets: [W('status', 'online', 'end', 10), W('counter', 'alerts', 'end', 20), W('progress', 'build', 'end', 30), W('clock', 'digital-24h', 'end', 40)], surface: 'raised' }) },
   { id: 'editor-classic', name: 'Editor Classic', use: 'Document and form editors', tags: ['editing'], description: 'The classic editing row: new, open, save, export, undo, redo and the clipboard.', data: TB('icons', 'start', [G('file', [T.new, T.openFile, T.save, T.exp]), G('history', [T.undo, T.redo]), G('clipboard', [T.cut, T.copy, T.paste, T.del])], { density: 'compact' }) },
-  { id: 'appearance-studio', name: 'Appearance Studio', use: 'Theme and brand work', tags: ['appearance', 'designer'], description: 'Step design packages and every theme, roll or reset the look, with the day and night switch at the end.', data: TB('icons-labels', 'start', [G('package', [T.pkg]), G('themes', [T.color, T.style, T.layout]), G('roll', [T.random, T.reset, T.appearance])], { widgets: [W('theme-switch', 'day-night', 'end', 10)], surface: 'glass', collapsible: true }) },
+  { id: 'appearance-studio', name: 'Appearance Studio', use: 'Skin and brand work', tags: ['appearance', 'designer'], description: 'Step through the skins, roll or reset the look, with the day and night switch at the end.', data: TB('icons-labels', 'start', [G('skin', [T.skin, T.prevSkin, T.randomSkin]), G('roll', [T.random, T.reset, T.appearance])], { widgets: [W('theme-switch', 'day-night', 'end', 10)], surface: 'glass', collapsible: true }) },
   { id: 'minimal-glass', name: 'Minimal Glass', use: 'Consumer and marketing apps', tags: ['glass', 'minimal'], description: 'A centred frosted strip with search, alerts and settings only.', data: TB('icons', 'center', [G('app', [T.alerts, T.settings])], { search: live('Search', 8), surface: 'glass', divider: false }) },
   { id: 'touch-dock', name: 'Touch Dock', use: 'Tablets and phones', tags: ['touch'], description: 'Roomy labelled buttons spread across the width, sized for thumbs: home, pages, alerts and settings.', data: TB('icons-labels', 'spread', [G('go', [T.home]), G('pages', [], { provider: 'views', max: 3, label: 'Pages' }), G('app', [T.alerts, T.settings])], { density: 'roomy', divider: false }) },
   // s18
@@ -265,10 +264,10 @@ const TOOLBAR = [
   { id: 'amberx-signature', name: 'AmberX Signature', use: 'The AmberX brand frame', tags: ['brand', 'amber', 'glass'], description: 'The AmberX house toolbar: live pages, a live search, the day and night switch and the account, on glass; the brand draws its own mark here.', data: TB('icons', 'start', [G('pages', [T.home], { provider: 'views', max: 6, label: 'Pages' }), G('app', [T.settings])], { search: live('Search AmberX…  (Ctrl K)'), widgets: [W('theme-switch', 'day-night', 'end', 10), W('avatar', 'account', 'end', 20)], surface: 'glass', collapsible: true }) },
 ];
 
-/* ───────────────────────── seeds: style packages (s19, s20) ───────────────────────── */
+/* ───────────────────────── seeds: control sets (were style packages, s19, s20; skins since Nov 10 2026) ───────────────────────── */
 
 // Each family = one matched control set (button, container, slider, dialog, popup, tab group, all with the family's
-// id) + a gauge and a meter picked from the starters, wrapped in a style-package of the same id.
+// id) + a gauge and a meter picked from the starters. A skin seed names the family to take the whole set.
 // btn: shape fill weight uppercase size elevation · card: variant header padding elevation · slider: track thumb size fill showValue ticks
 // dialog: variant width backdrop animation header · popup: position variant duration icon max · tabs: style align density divider icons
 const SP = (id, name, tone, btn, card, sl, dlg, pop, tabs, gauge, meter, description, tags = []) => ({ id, name, tone, btn, card, sl, dlg, pop, tabs, gauge, meter, description, tags });
@@ -317,12 +316,11 @@ function stylePackageAssets() {
     out.push(env('popup', { ...base, name: `${f.name} pop-ups`, description: `${f.name}: ${pv} pop-ups at the ${position}.` }, { position, variant: pv, duration, showIcon, maxVisible }));
     const [style, align, density, divider, showIcons] = f.tabs;
     out.push(env('tab-group', { ...base, name: `${f.name} tabs`, description: `${f.name}: ${style} tabs, ${align}.` }, { style, align, position: 'top', density, overflow: 'scroll', showIcons, divider }));
-    out.push(env('style-package', { id: f.id, name: f.name, description: f.description, tags: [f.tone, ...f.tags] }, {
-      slots: { button: f.id, container: f.id, slider: f.id, dialog: f.id, popup: f.id, 'tab-group': f.id, gauge: f.gauge, meter: f.meter }, tone: f.tone,
-    }));
   }
   return out;
 }
+/** The control set of a style-package family, as skin assets (style packages folded into skins, Nov 10 2026). */
+const controlSet = (f) => ({ button: f.id, container: f.id, slider: f.id, dialog: f.id, popup: f.id, 'tab-group': f.id, gauge: f.gauge, meter: f.meter });
 
 /* ───────────────────────── seeds: navigation menus + paired behaviour themes (s21, s22) ───────────────────────── */
 
@@ -421,8 +419,14 @@ const DP_SCALE = {
   'executive-suite': { typography: 'standard', density: 'standard', sizing: 'standard' },
 };
 const scaleSlots = (id) => ({ typography: 'compact', density: 'compact', sizing: 'compact', ...(DP_SCALE[id] ?? {}) });
-const designPackageAssets = () => DP.map(([id, name, style, color, layout, behavior, slots, spacing, tags, description]) => env('design-package', { id, name, tags, description },
-  { 'style-theme': style, 'color-theme': color, layout, 'behavior-theme': behavior, extras: { slots: { ...slots, ...scaleSlots(id) }, ...(spacing ? { spacing } : {}) } }));
+// Skins (skin@2): the four sections as presets, the control set of the named family + the other slots as assets. Same
+// ids as the design packages they were (Nov 10 2026), so every reference to one keeps resolving.
+const skinAssets = () => DP.map(([id, name, style, color, layout, behavior, slots, spacing, tags, description]) => {
+  const { 'style-package': family, ...rest } = slots;
+  const f = family ? STYLE_PACKAGES.find((x) => x.id === family) : null;
+  if (family && !f) throw new Error(`skin ${id}: no control set ${family}`);
+  return { ...env('skin', { id, name, tags: [...tags, 'skin'], description }, { colorTheme: color, styleTheme: style, layoutTheme: layout, behaviorTheme: behavior, assets: { ...(f ? controlSet(f) : {}), ...rest, ...scaleSlots(id) }, ...(spacing ? { extras: { spacing } } : {}) }), version: '2.0.0' };
+});
 
 function toolbarDoc() {
   const PROVIDERS = { views: 'every page the app registers (`nav:<view>`)', nav: 'the active navigation menu’s items', settings: 'every settings tab, plugins’ included (`settings.open:<tab>`)', windows: 'every open floating window (`windows.restore:<id>`)', dialogs: 'every registered dialog (`dialog:<id>`)', chrome: 'show/hide toggles for every bar and menu, drawn pressed while shown' };
@@ -484,9 +488,9 @@ const BUILD = {
   'style-theme': () => STYLE.map((s) => env('style-theme', s, s.data)),
   'context-menu': () => CM.map((s) => env('context-menu', s, s.data)),
   toolbar: () => TOOLBAR.map((s) => env('toolbar', s, s.data)),
-  'style-package': () => stylePackageAssets(),
+  controls: () => stylePackageAssets(),
   'nav-menu': () => navAssets(),
-  'design-package': () => designPackageAssets(),
+  skin: () => skinAssets(),
 };
 
 /* ───────────────────────── runner ───────────────────────── */

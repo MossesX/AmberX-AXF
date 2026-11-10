@@ -4,7 +4,7 @@
   "id": "asset-manager",
   "name": "Asset Manager",
   "version": "1.0.0",
-  "description": "For asset browsers: use, inspect, copy and import assets, plus stepping through the look.",
+  "description": "For asset browsers: use, inspect, copy and import assets, plus stepping through the skins.",
   "author": "AmberX AXF",
   "tags": [
     "designer",
@@ -28,35 +28,26 @@
           "separator": true
         },
         {
-          "id": "next-package",
-          "label": "Next design package",
-          "icon": "package",
-          "action": "design.package:next",
+          "id": "next-skin",
+          "label": "Next skin",
+          "icon": "palette",
+          "action": "skin.next",
           "shortcut": "Alt+P",
           "requires": "assets.swap"
         },
         {
-          "id": "next-color",
-          "label": "Next colour theme",
+          "id": "prev-skin",
+          "label": "Previous skin",
           "icon": "palette",
-          "action": "swap:color-theme:next",
-          "shortcut": "Alt+C",
+          "action": "skin.prev",
+          "shortcut": "Alt+Shift+P",
           "requires": "assets.swap"
         },
         {
-          "id": "next-style",
-          "label": "Next style theme",
-          "icon": "type",
-          "action": "swap:style-theme:next",
-          "shortcut": "Alt+S",
-          "requires": "assets.swap"
-        },
-        {
-          "id": "next-layout",
-          "label": "Next layout",
-          "icon": "layout",
-          "action": "swap:layout:next",
-          "shortcut": "Alt+L",
+          "id": "random-skin",
+          "label": "A random skin",
+          "icon": "shuffle",
+          "action": "skin.random",
           "requires": "assets.swap"
         },
         {
@@ -115,10 +106,10 @@
           "requires": "assets.import"
         },
         {
-          "id": "next-package",
-          "label": "Next design package",
-          "icon": "package",
-          "action": "design.package:next",
+          "id": "next-skin",
+          "label": "Next skin",
+          "icon": "palette",
+          "action": "skin.next",
           "shortcut": "Alt+P",
           "requires": "assets.swap"
         }

@@ -14,7 +14,7 @@ Object.assign(process.env, {
   AXF_PLANS_DIR: join(T, 'plans'), AXF_ORCH_FILE: join(T, 'orch.json'), AXF_CONTROL_SALT: 'test-salt',
   AXF_THREADS_FILE: join(T, 'THREADS.md'), AXF_PASS_SECRET: 'pass-secret', AXF_NO_TTY_APPROVAL: '1',
 });
-writeFileSync(process.env.AXF_APPEARANCE_FILE, JSON.stringify({ $axf: 'appearance@1', slots: { 'design-package': 'hub-default', layout: 'axhub-console' }, settings: { 'axf.banners.x': 1 } }));
+writeFileSync(process.env.AXF_APPEARANCE_FILE, JSON.stringify({ $axf: 'appearance@1', slots: { layout: 'axhub-console' }, settings: { 'axf.banners.x': 1 } }));
 
 const { runControl, commandFromArgv, formatAnswer, main } = await import('./control.mjs');
 const ov = await import('../../../../framework/core/engines/control-tokens.mjs');
@@ -53,7 +53,7 @@ await test('tokens: get / set / list / reset ride the look document', async () =
   const r = await runControl({ op: 'reset', target: 'tokens.layout', path: 'navWidth' });
   assert.equal(r.ok, true); assert.equal(doc().settings['axf.tokens.layout'], undefined);
 });
-await test('tokens: theme colour, style field, design package resolves the theme', async () => {
+await test('tokens: theme colour, style field, the default skin resolves the theme', async () => {
   const g = await runControl({ op: 'get', target: 'tokens.theme', path: 'accent' });
   assert.equal(g.item.asset, 'hub-night');
   assert.equal((await runControl({ op: 'set', target: 'tokens.theme', path: 'accent', value: 'not a colour' })).code, 'validation');
@@ -61,14 +61,16 @@ await test('tokens: theme colour, style field, design package resolves the theme
   assert.equal((await runControl({ op: 'reset', target: 'tokens.style' })).ok, true);
   assert.equal(doc().settings['axf.tokens.style'], undefined);
 });
-await test('tokens: slots swap, override under a design package, reset needs a slot', async () => {
+await test('tokens: slots swap (a skin section is a plain slot), reset needs a slot, a skin is not a slot', async () => {
   const s = await runControl({ op: 'set', target: 'tokens.slots', path: 'color-theme', value: 'arctic-daylight' });
   assert.equal(s.ok, true); assert.equal(s.item.value, 'arctic-daylight');
-  assert.equal(doc().settings['axf.appearance.overrides']['color-theme'], 'arctic-daylight');
+  assert.equal(doc().slots['color-theme'], 'arctic-daylight');
+  assert.equal(doc().settings['axf.appearance.overrides'], undefined);
   assert.equal((await runControl({ op: 'set', target: 'tokens.slots', path: 'color-theme', value: 'nope' })).code, 'validation');
+  assert.equal((await runControl({ op: 'set', target: 'tokens.slots', path: 'design-package', value: 'fresh' })).code, 'not_found');
   assert.equal((await runControl({ op: 'reset', target: 'tokens.slots' })).code, 'validation');
   assert.equal((await runControl({ op: 'reset', target: 'tokens.slots', path: 'color-theme' })).ok, true);
-  assert.equal(doc().settings['axf.appearance.overrides'], undefined);
+  assert.equal((await runControl({ op: 'get', target: 'tokens.slots', path: 'color-theme' })).value, 'hub-night');
 });
 await test('tokens: look / custom are retired', async () => {
   assert.equal((await runControl({ op: 'set', target: 'tokens.look', path: 'compact', value: true })).code, 'not_implemented');

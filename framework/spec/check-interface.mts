@@ -9,6 +9,7 @@ import { validateAsset } from '../core/validate';
 import { ASSET_TYPES, OPTIONAL_TYPES } from '../core/types';
 import { AxfRuntime } from '../core/runtime';
 import { INTERFACE_NEVER, captureInterface, interfaceDiff, interfaceErrors, isScopeId, normalizeInterface, resolveInterface, scopeAttrs, scopeSelector, scopeSheet, scopeVarsCss } from '../core/engines/interface';
+import { normalizeSkin } from '../core/engines/skin';
 import * as engine from '../cli/build-engine.mjs';
 
 let n = 0;
@@ -20,19 +21,21 @@ const read = (p: string) => JSON.parse(readFileSync(new URL(p, root), 'utf8'));
 ok(ASSET_TYPES.includes('interface' as never) && OPTIONAL_TYPES.includes('interface' as never), 'interface registered as an optional type');
 
 /* ---- rules ---- */
-eq(interfaceErrors({ design: 'fresh' }), [], 'design alone is enough');
-ok(interfaceErrors({}).length === 1, 'design required');
-ok(interfaceErrors({ design: 'fresh', slots: { 'style-theme': 'x' } }).some((e) => e.includes('design package')), 'themes never set directly');
-ok(interfaceErrors({ design: 'fresh', slots: { 'uac-policy': 'x' } }).some((e) => e.includes('never sets')), 'policy never set');
-ok(interfaceErrors({ design: 'fresh', slots: { toolbar: 'Bad Id' } }).length === 1, 'ids checked');
-ok(interfaceErrors({ design: 'fresh', spacing: 'huge' }).length === 1 && interfaceErrors({ design: 'fresh', hidden: { toolbar: 'yes' } }).length === 1, 'spacing + hidden checked');
-ok(interfaceErrors({ design: 'fresh', settings: { 'not.appearance': 1 } }).length === 1, 'only appearance settings');
-ok(interfaceErrors({ design: 'fresh', tab: 'x' }).length === 1, 'tab shape');
-eq(normalizeInterface({ design: 'fresh', slots: { toolbar: 'a', 'style-theme': 'b', 'uac-policy': 'c', bad: 'Bad' }, spacing: 'nope', tab: { label: 'T' } }), { design: 'fresh', branding: '', slots: { toolbar: 'a' }, tab: { label: 'T', icon: '' } }, 'normalize drops what is not allowed');
-ok(INTERFACE_NEVER.includes('design-package') && INTERFACE_NEVER.includes('color-theme'), 'never list');
+eq(interfaceErrors({ skin: 'fresh' }), [], 'a skin alone is enough');
+eq(interfaceErrors({ design: 'fresh' }), [], 'the old field name (design) still names the skin');
+ok(interfaceErrors({}).length === 1, 'skin required');
+ok(interfaceErrors({ skin: 'fresh', slots: { 'style-theme': 'x' } }).some((e) => e.includes('sections come from the skin')), 'sections never set directly');
+ok(interfaceErrors({ skin: 'fresh', slots: { 'design-package': 'x' } }).some((e) => e.includes('never sets')), 'a retired package never set');
+ok(interfaceErrors({ skin: 'fresh', slots: { 'uac-policy': 'x' } }).some((e) => e.includes('never sets')), 'policy never set');
+ok(interfaceErrors({ skin: 'fresh', slots: { toolbar: 'Bad Id' } }).length === 1, 'ids checked');
+ok(interfaceErrors({ skin: 'fresh', spacing: 'huge' }).length === 1 && interfaceErrors({ skin: 'fresh', hidden: { toolbar: 'yes' } }).length === 1, 'spacing + hidden checked');
+ok(interfaceErrors({ skin: 'fresh', settings: { 'not.appearance': 1 } }).length === 1, 'only appearance settings');
+ok(interfaceErrors({ skin: 'fresh', tab: 'x' }).length === 1, 'tab shape');
+eq(normalizeInterface({ design: 'fresh', slots: { toolbar: 'a', 'style-theme': 'b', 'uac-policy': 'c', bad: 'Bad' }, spacing: 'nope', tab: { label: 'T' } }), { skin: 'fresh', branding: '', slots: { toolbar: 'a' }, tab: { label: 'T', icon: '' } }, 'normalize drops what is not allowed and reads design as skin');
+ok(INTERFACE_NEVER.includes('design-package') && INTERFACE_NEVER.includes('style-package') && INTERFACE_NEVER.includes('skin') && INTERFACE_NEVER.includes('color-theme') && INTERFACE_NEVER.includes('behavior-theme'), 'never list');
 
 /* ---- build engine = core ---- */
-for (const data of [{}, { design: 'fresh', slots: { 'style-theme': 'x', 'uac-policy': 'y', 'Bad': 'z', toolbar: 'Bad' } }, { design: 'fresh', spacing: 'x', hidden: { a: 1 }, settings: 3, tab: 'x' }, { design: 'fresh', branding: 'B' }]) {
+for (const data of [{}, { skin: 'fresh', slots: { 'style-theme': 'x', 'uac-policy': 'y', 'Bad': 'z', toolbar: 'Bad' } }, { skin: 'fresh', spacing: 'x', hidden: { a: 1 }, settings: 3, tab: 'x' }, { design: 'fresh', branding: 'B' }]) {
   const a = { $axf: 'asset@1', type: 'interface', id: 'x', name: 'x', version: '1.0.0', data };
   eq(engine.validateAsset(a).errors, validateAsset(a).errors, `build engine mirrors core (${JSON.stringify(data).slice(0, 40)})`);
 }
@@ -40,17 +43,17 @@ for (const data of [{}, { design: 'fresh', slots: { 'style-theme': 'x', 'uac-pol
 /* ---- resolution ---- */
 const reg = {
   has: (t: string, id: string) => ({ toolbar: ['tb-a', 'tb-b'], 'nav-menu': ['nav-a'], 'style-theme': ['fresh', 'glass'], 'color-theme': ['light'], layout: ['classic'], 'behavior-theme': ['standard'], branding: ['amberx'], banner: ['thin'] } as Record<string, string[]>)[t]?.includes(id) ?? false,
-  designPackage: (id: string) => id === 'fresh' ? { 'style-theme': 'fresh', 'color-theme': 'light', layout: 'classic', 'behavior-theme': 'standard', extras: { slots: { toolbar: 'tb-a', 'nav-menu': 'nav-a', banner: 'gone' }, spacing: 'compact', hidden: { toolbar: true }, settings: { 'axf.toolbar.collapsed': true } } } : undefined,
+  skin: (id: string) => id === 'fresh' ? normalizeSkin({ styleTheme: 'fresh', colorTheme: 'light', layoutTheme: 'classic', behaviorTheme: 'standard', assets: { toolbar: 'tb-a', 'nav-menu': 'nav-a', banner: 'gone' }, extras: { spacing: 'compact', hidden: { toolbar: true }, settings: { 'axf.toolbar.collapsed': true } } }) : null,
 };
-const r = resolveInterface({ design: 'fresh', branding: 'amberx', slots: { toolbar: 'tb-b', banner: 'thin' }, hidden: { 'nav-menu': true }, settings: { 'axf.banners.look': { x: 1 } } }, reg);
-eq(r.active, { 'style-theme': 'fresh', 'color-theme': 'light', layout: 'classic', 'behavior-theme': 'standard', toolbar: 'tb-b', 'nav-menu': 'nav-a', 'design-package': 'fresh', banner: 'thin', branding: 'amberx' }, 'interface slots over the package, themes from the package');
-eq([r.spacing, r.hidden, r.settings, r.missing], ['compact', { toolbar: true, 'nav-menu': true }, { 'axf.toolbar.collapsed': true, 'axf.banners.look': { x: 1 } }, ['banner/gone']], 'extras merged, missing reported');
-const r2 = resolveInterface({ design: 'nope', slots: { toolbar: 'tb-a' }, spacing: 'regular' }, reg);
-eq([r2.active, r2.spacing, r2.missing], [{ toolbar: 'tb-a' }, 'regular', ['design-package/nope']], 'a missing package never crashes');
+const r = resolveInterface({ skin: 'fresh', branding: 'amberx', slots: { toolbar: 'tb-b', banner: 'thin' }, hidden: { 'nav-menu': true }, settings: { 'axf.banners.look': { x: 1 } } }, reg);
+eq(r.active, { toolbar: 'tb-b', 'nav-menu': 'nav-a', 'color-theme': 'light', 'style-theme': 'fresh', layout: 'classic', 'behavior-theme': 'standard', banner: 'thin', branding: 'amberx' }, 'interface slots over the skin, sections from the skin');
+eq([r.spacing, r.hidden, r.settings, r.missing, r.skin], ['compact', { toolbar: true, 'nav-menu': true }, { 'axf.toolbar.collapsed': true, 'axf.banners.look': { x: 1 } }, ['banner/gone'], 'fresh'], 'extras merged, missing reported');
+const r2 = resolveInterface({ skin: 'nope', slots: { toolbar: 'tb-a' }, spacing: 'regular' }, reg);
+eq([r2.active, r2.spacing, r2.missing], [{ toolbar: 'tb-a' }, 'regular', ['skin/nope']], 'a missing skin never crashes');
 eq(interfaceDiff(r, r2).slice(0, 4), ['banner', 'behavior-theme', 'branding', 'color-theme'], 'diff lists slots that differ');
 ok(interfaceDiff(r, r2).includes('spacing') && interfaceDiff(r, r2).includes('hidden'), 'diff sees spacing + hidden');
-const cap = captureInterface({ active: { toolbar: 'tb-b', 'style-theme': 'fresh', 'uac-policy': 'std', branding: 'amberx', 'design-package': 'fresh' }, types: ['toolbar', 'style-theme', 'uac-policy', 'branding', 'design-package'], spacing: 'tight', hidden: { toolbar: true }, values: { 'axf.custom.toolbar': { a: 1 }, 'axf.appearance.interface': 'x', other: 2 }, design: 'fresh' }, { label: 'Mine', icon: 'star' });
-eq(cap, { design: 'fresh', branding: 'amberx', slots: { toolbar: 'tb-b' }, spacing: 'tight', hidden: { toolbar: true }, settings: { 'axf.custom.toolbar': { a: 1 } }, tab: { label: 'Mine', icon: 'star' } }, 'capture = the look as an interface');
+const cap = captureInterface({ active: { toolbar: 'tb-b', 'style-theme': 'fresh', 'uac-policy': 'std', branding: 'amberx', skin: 'fresh' }, types: ['toolbar', 'style-theme', 'uac-policy', 'branding', 'skin'], spacing: 'tight', hidden: { toolbar: true }, values: { 'axf.custom.toolbar': { a: 1 }, 'axf.appearance.interface': 'x', other: 2 }, skin: 'fresh' }, { label: 'Mine', icon: 'star' });
+eq(cap, { skin: 'fresh', branding: 'amberx', slots: { toolbar: 'tb-b' }, spacing: 'tight', hidden: { toolbar: true }, settings: { 'axf.custom.toolbar': { a: 1 } }, tab: { label: 'Mine', icon: 'star' } }, 'capture = the look as an interface');
 eq(interfaceErrors(cap), [], 'a captured interface validates');
 
 /* ---- scopes ---- */
@@ -82,7 +85,7 @@ for (const a of starters) eq(validateAsset(a).errors, [], `interface/${a.id} val
   const rt = new AxfRuntime({ manifest: { app: { id: 'test', name: 'Test' }, defaults } as never, assets, storageKey: 'test:iface' });
   for (const a of starters) eq(rt.resolveInterface(a.id)!.missing, [], `interface/${a.id} resolves in the framework`);
   const amber = rt.resolveInterface('amber')!;
-  ok(amber.active['style-theme'] === 'glass-orbit' && amber.active['color-theme'] === 'arctic-daylight' && amber.branding === 'amberx', 'amber resolves through its design package');
+  ok(amber.active['style-theme'] === 'glass-orbit' && amber.active['color-theme'] === 'arctic-daylight' && amber.branding === 'amberx' && amber.skin === 'amberx', 'amber resolves through its skin');
   const base = rt.getState().active;
   const v = rt.scoped('tab-a', 'amber')!;
   ok(v && v.asset('style-theme').id === 'glass-orbit' && rt.asset('style-theme').id === base['style-theme'], 'the scoped view reads the interface; the app is untouched');
@@ -100,18 +103,20 @@ for (const a of starters) eq(validateAsset(a).errors, [], `interface/${a.id} val
   v.swap('color-theme', 'fresh-dark');
   ok(rt.asset('color-theme').id === 'fresh-dark' && v.asset('color-theme').id === 'arctic-daylight', 'swap through a scope goes to the app');
   ok(v.branding()?.name === 'AmberX', 'scope branding resolves');
-  // a design package applied inside the scope changes only the app's themes: none of the scope's interface slots
-  // leak into the app, and the app's own look listeners hear it (fix Oct 29 2026)
+  // a skin applied inside the scope changes only the app: none of the scope's interface slots leak into the app, and
+  // the app's own look listeners hear it (fix Oct 29 2026; skins since Nov 10 2026)
   rt.setRole('admin');
   const before = { ...rt.getState().active };
   let looked = 0;
   const offLook = rt.onLookApplied(() => { looked++; });
-  ok(v.applyDesignPackage('midnight-pro'), 'design package applied through a scope');
+  ok(v.applySkin('midnight-pro'), 'skin applied through a scope');
   const after = rt.getState().active as Record<string, string>;
-  ok(after['color-theme'] === 'midnight-ink' && after['style-theme'] === 'glass-orbit' && after['design-package'] === 'midnight-pro', 'the app takes the package themes');
-  eq(Object.keys(after).filter((t) => !['style-theme', 'color-theme', 'layout', 'behavior-theme', 'design-package'].includes(t) && after[t] !== (before as Record<string, string>)[t]), [], 'no interface slot leaked into the app');
+  ok(after['color-theme'] === 'midnight-ink' && after['style-theme'] === 'glass-orbit' && rt.appliedSkin() === 'midnight-pro', 'the app takes the skin\'s sections and the skin is in force');
+  const midnight = rt.skinList().find((s) => s.id === 'midnight-pro')!.data;
+  eq(Object.keys(after).filter((t) => !['style-theme', 'color-theme', 'layout', 'behavior-theme'].includes(t) && !(t in midnight.assets) && after[t] !== (before as Record<string, string>)[t]), [], 'no interface slot leaked into the app');
   ok(after['interface'] === (before as Record<string, string>)['interface'], 'the app keeps its own interface marker');
-  ok(rt.applyDesignPackage('midnight-pro') && looked === 2, 'look listeners hear every apply, Apply again too');
+  ok(rt.applySkin('midnight-pro') && looked === 2, 'look listeners hear every apply, Apply again too');
+  ok(v.applyDesignPackage('midnight-pro'), 'the old name still works');
   offLook();
   // a setting written inside the scope reaches the app (Oct 28 2026 fix: Object.create kept writes on the scope)
   let heard = 0;
@@ -129,7 +134,7 @@ for (const a of starters) eq(validateAsset(a).errors, [], `interface/${a.id} val
   ok(rt.applyInterface('amber') && rt.asset('style-theme').id === 'glass-orbit' && rt.appliedInterface() === 'amber', 'applyInterface sets the whole look');
   ok(!rt.applyInterface('nope'), 'unknown interface refused');
   const cap2 = rt.captureInterface({ label: 'Now', icon: 'star' });
-  ok(cap2.design === 'amberx' && cap2.branding === 'amberx' && cap2.slots['style-theme'] === undefined && cap2.slots.toolbar, 'runtime capture over the applied package');
+  ok(cap2.skin === 'amberx' && cap2.branding === 'amberx' && cap2.slots['style-theme'] === undefined && cap2.slots.toolbar, 'runtime capture over the applied skin');
 }
 
 /* ---- fixture ---- */

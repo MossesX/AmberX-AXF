@@ -260,7 +260,7 @@ jobs:
             npx -y tsx framework/spec/check-skin.mts                   # skin@1 + app-look@1: one look per app, fixture replay, the Windows skin's assets, preview, apply, overrides, Restore + undo
             node framework/spec/check-skin-coverage.mjs                 # skin-coverage@1: every registered asset type has skin coverage (slot / parts / reference / bundle / none); fails on a type a skin cannot reach
             npx -y tsx framework/spec/check-settings-ui.mts            # settings interface asset: fixture replay, starters, enums
-            npx -y tsx framework/spec/check-design-package.mts         # design-package@1 + behavior-theme@1 rules, starters, the Amber context menu
+            npx -y tsx framework/spec/check-behavior-theme.mts         # behavior-theme@1 rules, starters, the window manager follows it, the Amber context menu
             npx -y tsx framework/spec/check-scale.mts                  # typography@1 + density@1 + sizing@1: registry, defaults, tokens, fixture, starters, validators agree, hub slots
             npx -y tsx framework/spec/check-layout-tokens.mts          # every layout parameter is a token: registry = asset-types, defaults, normalize, --fx-layout-* vars, grid reads tokens, validators agree, starters, schema, fixture
             npx -y tsx framework/spec/check-control.mts                # control@1: one command schema for tokens, AmberX entities and the planner: registry, gate (roles × ops), confirm flow, errors, projections, snapshot, fixture
@@ -281,7 +281,6 @@ jobs:
             npx -y tsx framework/spec/check-brand.mts                  # logo-mark / animated-logo / icon-pack / branding rules, SVG output, starters
             npx -y tsx framework/spec/check-design-language.mts        # DESIGN-LANGUAGE.md quality bar over every starter + the brand generators
             npx -y tsx framework/spec/check-toolbars.mts               # toolbar library: live groups (providers), toggles, widgets, TOOLBARS.md + asset-library.mjs --check
-            npx -y tsx framework/spec/check-style-packages.mts         # style-package@1: validators agree, 25 starter sets ship + are distinct, runtime apply paths
             node framework/cli/brand-gen.mjs library --check                # brand library: 250 logos + 250 animated + 100 icon packs, valid, in sync, within the size budget
             npx -y tsx framework/spec/check-interface.mts              # interface@1 + scopes: rules, resolution, scoped sheets, runtime scoped view
             npx -y tsx framework/spec/check-roller.mts                 # interface roller: every rolled asset validates, structure kept, reproducible

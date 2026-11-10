@@ -1,13 +1,15 @@
 /**
- * skin@1 + app-look@1: the format and its rules against spec/fixtures/skin.json, the build engine's validator agrees,
- * the Windows skin resolves against framework assets, and the runtime behaviour: landing changes nothing on screen
- * (snapshot = the current look), a skin stays in its own app, off gives the app's look back, overrides, Restore + one undo.
+ * skin@2 + app-look@1: the format and its rules against spec/fixtures/skin.json (sections written in the skin or as
+ * presets, the conversion of design and style packages, the capture, the legacy-look migration), the build engine's
+ * validator agrees, every framework skin resolves against framework assets, and the runtime behaviour: landing changes
+ * nothing on screen (snapshot = the current look), a skin stays in its own app, off gives the app's look back,
+ * overrides, Restore + one undo, inline sections registered as presets.
  *   npx -y tsx framework/spec/check-skin.mts
  */
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { backToSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, lookAfterChange, newAppLook, normalizeSkin, normalizeSkinScope, partElements, partsErrors, partsTypes, resolveLookSkin, resolveSkinChain, scopeEntries, scopeState, setInheritSkin, setScopeOverride, setScopeSkin, skinCoverage, skinCoverageSummary, skinCovers, skinPartsTypes, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinUncovered, uncoveredTypes, parseAppLook, pickSkin, restoreAppDefault, setUseSkin, skinErrors, skinFromDesignPackage, skinSlots, snapshotLook, undoRestore, type AppLookDocument, type AppLookStore } from '../core/engines/skin';
+import { backToSkin, captureSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, lookAfterChange, migrateLegacyLook, newAppLook, normalizeAppLook, normalizeSkin, normalizeSkinScope, partElements, partsErrors, partsTypes, resolveLookSkin, resolveSkinChain, scopeEntries, scopeState, setInheritSkin, setScopeOverride, setScopeSkin, skinCoverage, skinCoverageSummary, skinCovers, skinPartsTypes, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinUncovered, uncoveredTypes, parseAppLook, pickSkin, restoreAppDefault, setUseSkin, skinErrors, skinFromDesignPackage, skinFromStylePackage, skinSectionAssets, skinSectionErrors, skinSlots, snapshotLook, undoRestore, SKIN_SECTIONS, type AppLookDocument, type AppLookStore } from '../core/engines/skin';
 import { validateAsset } from '../core/validate';
 import { AxfRuntime, type AppearanceSource } from '../core/runtime';
 import { mergeAppearance, parseAppearance, type AppearanceDocument, type AppearanceSourceState } from '../core/engines/appearance';
@@ -31,13 +33,43 @@ for (const bad of [{ assets: {} }, { ...skin, assets: { 'uac-policy': 'x', layou
   eq((engine as unknown as { skinErrors(d: unknown): string[] }).skinErrors(bad), skinErrors(bad), 'build engine agrees');
   ok(skinErrors(bad).length, 'bad skin refused');
 }
-eq(skinFromDesignPackage({ 'style-theme': 's', 'color-theme': 'c', layout: 'l', 'behavior-theme': 'b', extras: { slots: { button: 'x' }, spacing: 'tight', hidden: { toolbar: true } } }), fx.fromDesignPackage, 'a design package reads as a skin');
+eq(skinFromDesignPackage({ 'style-theme': 's', 'color-theme': 'c', layout: 'l', 'behavior-theme': 'b', extras: { slots: { button: 'x', 'style-package': 'pack' }, spacing: 'tight', hidden: { toolbar: true } } }, (id) => (id === 'pack' ? { button: 'pack-button', dialog: 'pack-dialog' } : null)), fx.fromDesignPackage, 'a design package reads as a skin (its style package expanded, its own slots winning)');
+eq(fx.fromDesignPackage.behaviorTheme, 'b', 'the behaviour theme is the behaviour section');
+eq(fx.fromDesignPackage.assets, { button: 'x', dialog: 'pack-dialog' }, 'the style package members are assets');
+eq(skinFromStylePackage({ slots: { button: 'bb', container: 'cc' }, tone: 'formal' }, normalizeSkin(skin)), fx.fromStylePackage, 'a style package reads as the base skin with its controls');
+/* ---- skin@2 sections ---- */
+eq(SKIN_SECTIONS, { colors: 'color-theme', style: 'style-theme', layout: 'layout', behavior: 'behavior-theme' }, 'four sections, each a section preset type');
+eq(fx.normalize.sectioned.sections.colors.scheme, 'dark', 'an inline colour section is kept');
+eq(fx.normalize.sectioned.behaviorTheme, 'snappy', 'the behaviour preset is kept');
+eq(fx.normalize.legacyBehavior.behaviorTheme, 'calm', 'skin@1 kept the behaviour in assets: read as the behaviour section');
+ok(!('behavior-theme' in fx.normalize.legacyBehavior.assets), 'and it is no longer an asset');
+ok(!('design-package' in fx.normalize.junk.assets), 'a retired package slot in assets is dropped');
+eq(fx.errors.sectioned, [], 'a skin with an inline section validates');
+eq(fx.errors.inlineOnly, [], 'a skin made only of inline sections validates (no preset ids needed)');
+ok(fx.errors.badSections.length >= 4 && fx.errors.badSections.some((e: string) => e.includes('data.sections.colors.scheme')) && fx.errors.badSections.some((e: string) => e.includes('data.sections.layout')) && fx.errors.badSections.some((e: string) => e.includes('data.sections.behavior: data.motion.speed')) && fx.errors.badSections.some((e: string) => e.includes('data.sections.nope')), 'every bad section is named with its own validator\'s message');
+eq(fx.errors.sectionNotObject, ['data.sections.colors must be an object (color-theme data)'], 'a section must be an object');
+ok(fx.errors.never.some((e: string) => e.includes('style-package')), 'a retired package in assets is refused');
+eq(fx.sectionedSlots['color-theme'], 'skin-windows', 'an inline section resolves to the preset named after the skin');
+eq(fx.sectionedSlots['behavior-theme'], 'snappy', 'the behaviour section is a slot too');
+eq(fx.sectionAssets.map((a: { type: string; id: string }) => [a.type, a.id]), [['color-theme', 'skin-windows']], 'one section asset per inline section');
+for (const bad of [{ ...skin, sections: { colors: { scheme: 'neon' } } }, { assets: {}, sections: { colors: 3 } }]) eq((engine as unknown as { skinErrors(d: unknown): string[] }).skinErrors(bad), skinErrors(bad), 'build engine agrees on sections');
+eq(skinSectionErrors('style', { fontFamily: 'x' }).length > 3, true, 'a style section needs the style theme\'s fields');
+/* ---- capture + the legacy look ---- */
+eq(fx.capture.extras.settings, { 'axf.banners.prefs': { a: 1 } }, 'capture keeps only look settings');
+eq([fx.capture.colorTheme, fx.capture.behaviorTheme, Object.keys(fx.capture.assets)], ['a', 'b', ['toolbar']], 'capture: the four sections, every other slot as an asset (never the policy or the skin)');
+eq(fx.legacyLook.read.skin.id, 'fresh-night', 'an old look naming design packages reads with that skin picked (the own pick beats the snapshot\'s)');
+ok(!fx.legacyLook.read.skin.use, 'but Use skin stays as it was: the section slots still resolve, so nothing moves');
+ok(!('design-package' in fx.legacyLook.read.default.slots) && !('style-package' in fx.legacyLook.read.default.slots) && !('design-package' in fx.legacyLook.read.own.slots), 'the retired slots are gone');
+eq(fx.legacyLook.read.default.slots['color-theme'], 'hub-night', 'the section slots stay');
+eq(migrateLegacyLook(fx.legacyLook.read), fx.legacyLook.read, 'idempotent');
 
 const shared = fx.look.shared as AppearanceDocument;
+// the fixture's shared document still names a design package (an older build wrote it): composing drops that retired slot
+const sharedSlots = Object.fromEntries(Object.entries(shared.slots ?? {}).filter(([t]) => t !== 'design-package'));
 const look0 = newAppLook('app', snapshotLook(shared));
 eq(look0.default, fx.look.snapshot, 'snapshot');
 eq(composeLook(shared, look0, null), fx.look.off, 'skin off = the snapshot');
-eq(composeLook(shared, look0, null).slots, shared.slots, 'snapshot = no visual change');
+eq(composeLook(shared, look0, null).slots, sharedSlots, 'snapshot = no visual change (the retired package slot dropped)');
 eq(composeLook(shared, look0, null).hidden, shared.hidden, 'snapshot keeps chrome');
 eq(composeLook(fx.look.shared && { ...shared, slots: { ...shared.slots, 'color-theme': 'other-theme' }, settings: { 'axf.tokens.button': 'y', 'axf.banners.group': 'other' } }, look0, null), fx.look.offSharedMoved, 'a moved shared document changes only shared tokens');
 const on = setUseSkin(pickSkin(look0, 'windows'), true);
@@ -51,13 +83,13 @@ eq(lookAfterChange(over, { slots: { 'color-theme': skin.colorTheme } }, skin).sk
 eq(lookAfterChange(look0, { slots: { button: 'terminal' }, hidden: { toolbar: false } }, null), fx.look.own.doc, 'no skin: picks are the app\'s own');
 const restored = restoreAppDefault(over, '2026-11-05T00:00:00Z');
 eq(restored, fx.look.restored.doc, 'restore keeps one undo');
-eq(composeLook(shared, restored, null).slots, shared.slots, 'restore = the snapshot');
+eq(composeLook(shared, restored, null).slots, sharedSlots, 'restore = the snapshot');
 eq(undoRestore(restored).skin, fx.look.restored.undone, 'undo');
 eq(undoRestore(undoRestore(restored)), undoRestore(restored), 'one undo only');
 eq(parseAppLook(JSON.stringify(restored)), restored, 'round trip');
 ok(parseAppLook('{"$axf":"appearance@1"}') === null, 'wrong frame refused');
 
-/* ---- the Windows skin is real assets ---- */
+/* ---- every framework skin is real assets ---- */
 const assets: Record<string, unknown>[] = [];
 for (const t of readdirSync(join(root, 'assets'))) {
   const dir = join(root, 'assets', t);
@@ -65,8 +97,14 @@ for (const t of readdirSync(join(root, 'assets'))) {
   for (const f of readdirSync(dir)) if (f.endsWith('.json')) assets.push(JSON.parse(readFileSync(join(dir, f), 'utf8')));
 }
 const win = assets.find((a) => a.type === 'skin' && a.id === 'windows');
-eq(validateAsset(win).errors, [], 'the Windows skin validates');
-for (const [t, id] of Object.entries(skinSlots(normalizeSkin(win!.data)))) ok(assets.some((a) => a.type === t && a.id === id), `windows: ${t} ${id} exists`);
+const skinsShipped = assets.filter((a) => a.type === 'skin');
+ok(skinsShipped.length >= 40, `${skinsShipped.length} skins ship (every former design package and style package is one)`);
+for (const sk of skinsShipped) {
+  eq(validateAsset(sk).errors, [], `skin ${sk.id} validates`);
+  for (const [t, id] of Object.entries(skinSlots(normalizeSkin(sk.data), sk.id as string))) ok(assets.some((a) => a.type === t && a.id === id) || skinSectionAssets(sk.id as string, normalizeSkin(sk.data)).some((a) => a.type === t && a.id === id), `${sk.id}: ${t} ${id} exists`);
+}
+ok(!assets.some((a) => a.type === 'design-package' || a.type === 'style-package'), 'no design or style package assets left');
+for (const id of ['fresh', 'hub-default', 'fresh-night', 'boardroom', 'amberx-signature-day']) ok(skinsShipped.some((a) => a.id === id), `former package ${id} is a skin with the same id`);
 
 const bar = (assets.find((a) => a.type === 'banner' && a.id === 'windows-titlebar')!.data) as { logo: { text: string }; attach: { type: string; id: string; order?: number; widget?: { overflow?: boolean } }[] };
 eq(bar.logo.text, '{app}', "the title bar shows each app's own name");
@@ -96,7 +134,7 @@ class Source implements AppearanceSource {
   start() { for (const l of this.listeners) { l({ state: this.st }); l({ doc: this.doc, version: 'v' }); } }
   stop() {} refresh() {} save(c: unknown) { this.saved.push(c); }
 }
-const hubDoc = { $axf: 'appearance@1', slots: { 'design-package': 'hub-default', 'color-theme': 'arctic-daylight', 'style-theme': 'hub', layout: 'focus-top', button: 'rounded-solid' }, spacing: 'tight', hidden: { toolbar: true }, settings: { 'axf.banners.group': 'x' } } as unknown as AppearanceDocument;
+const hubDoc = { $axf: 'appearance@1', slots: { 'color-theme': 'arctic-daylight', 'style-theme': 'hub', layout: 'focus-top', button: 'rounded-solid' }, spacing: 'tight', hidden: { toolbar: true }, settings: { 'axf.banners.group': 'x' } } as unknown as AppearanceDocument;
 const boot = (id: string) => {
   const rt = new AxfRuntime({ manifest: manifest(id), assets: assets as never, storageKey: `skin-${id}` });
   const store = new Store();
@@ -116,7 +154,7 @@ eq(a.src.saved, [], 'the snapshot writes nothing to the shared document');
 
 ok(a.rt.useSkin(true, 'windows'), 'Use skin on');
 eq(a.active()['color-theme'], 'windows-light', 'the skin colour is on');
-eq(a.active()['style-theme'], 'windows', 'the skin style beats the design package');
+eq(a.active()['style-theme'], 'windows', 'the skin style section is on');
 eq(a.active().layout, 'windows-explorer', 'the skin layout is on');
 eq(a.active().button, 'windows', 'the skin assets are on');
 eq(b.active(), before, 'the other app did not move');
@@ -145,7 +183,7 @@ eq(a.active()['color-theme'], 'windows-light', 'undo brings the skin back');
 ok(!a.rt.undoRestoreDefault(), 'a second undo does nothing');
 a.rt.restoreDefaultAppearance();
 
-ok(a.rt.useSkin(true, 'hub-default'), 'a design package works as a skin');
+ok(a.rt.useSkin(true, 'hub-default'), 'a former design package is a skin');
 ok(!a.rt.useSkin(true, 'no-such-skin'), 'an unknown skin is refused');
 a.rt.restoreDefaultAppearance();
 eq(a.active(), before, 'and back');
@@ -269,7 +307,7 @@ console.log(`check-skin: ${n} checks passed`);
   eq(composeLookAt(withGlobal as never, inherit, skinOf).doc.slots!.button, 'global-button', 'the hub-wide override reaches an inheriting app');
   eq(composeLookAt(shared as never, setUseSkin(pickSkin(look0, 'nope'), true), skinOf).doc.slots, composeLook(shared as never, look0, null).slots, 'an unknown skin reads as none');
   eq(scopeEntries(pluginOn), [{ key: 'plugin:notes', use: 'on', id: 'aurora', overrides: {} }], 'entries');
-  eq(scopeState(inherit, 'app'), { use: 'inherit', id: '', overrides: {} }, 'the app level as a state');
+  eq(scopeState(inherit, 'app'), { use: 'inherit', id: look0.skin.id, overrides: {} }, 'the app level as a state (the pick the legacy slot left is kept)');
   eq(setScopeSkin(pluginOn, 'plugin:notes', 'inherit', '').scopes, {}, 'inherit with nothing else drops the entry');
   eq(parseAppLook(JSON.stringify(pluginOn)), pluginOn, 'scopes round trip');
   eq(restoreAppDefault(pluginOn, 'now').scopes, {}, 'Restore clears the scopes');
@@ -321,7 +359,7 @@ console.log(`check-skin (coverage + scopes): ${n} checks passed`);
   eq(pv!.appliedInterface(), f.rt.appliedInterface(), 'a skin scope is not an interface');
   eq(f.rt.skinScopes(), [{ key: 'plugin:ai.amberx.notes', use: 'off', id: '', overrides: {} }], 'the scopes list');
   eq(f.rt.skinAt({ plugin: 'ai.amberx.notes' }), { id: '', overrides: {}, from: 'plugin:ai.amberx.notes' }, 'skinAt the plugin');
-  ok(f.rt.scopeSkin('ui:home', 'on', 'hub-default'), 'the home UI takes a design package as its skin');
+  ok(f.rt.scopeSkin('ui:home', 'on', 'hub-default'), 'the home UI takes another skin');
   const uv = f.rt.skinScoped('ui:home');
   ok(uv && (uv.getState().active as Record<string, string>)['style-theme'] !== 'windows', 'inside home: the other skin');
   ok(!f.rt.scopeSkin('ui:home', 'on', 'no-such-skin'), 'an unknown skin is refused for a scope');
@@ -348,5 +386,28 @@ console.log(`check-skin (coverage + scopes): ${n} checks passed`);
   f.rt.useSkin(false);
   ok(!f.rt.customSheet().includes('.fx-widget-label'), 'skin off: the parts go');
   eq(f.rt.skinIconPack(), '', 'skin off: no skin pack');
+
+  // an inline section: registered as a preset named after the skin, drawn like any preset
+  const inline = { $axf: 'asset@1', type: 'skin', id: 'inline-test', name: 'Inline test', version: '1.0.0', data: fx.normalize.sectioned };
+  const h = new AxfRuntime({ manifest: manifest('app-h'), assets: [...assets, inline] as never, storageKey: 'skin-app-h' });
+  ok(h.useSkin(true, 'inline-test'), 'a skin with an inline colour section goes on');
+  eq((h.getState().active as Record<string, string>)['color-theme'], 'skin-inline-test', 'the colour slot is the inline section');
+  eq(h.compileStyles().vars['--fx-accent'], fx.normalize.sectioned.sections.colors.tokens.accent, 'the inline colours compile');
+  eq((h.getState().active as Record<string, string>)['behavior-theme'], 'snappy', 'the behaviour preset is in force');
+  ok(h.registry.has('color-theme' as never, 'skin-inline-test'), 'the section preset is registered');
+  ok(h.skinCovers('inline-test').find((c) => c.type === 'color-theme')!.how[0]!.includes('written in the skin'), 'covers says the section is written in the skin');
+  // the retired design-package setting becomes the skin pick once
+  const i = new AxfRuntime({ manifest: manifest('app-i'), assets: assets as never, storageKey: 'skin-app-i' });
+  i.settings.set('axf.appearance.design', 'fresh-night' as never);
+  eq(i.appLook()?.skin.id, 'fresh-night', 'axf.appearance.design is read once as the skin pick');
+  eq(i.settings.get('axf.appearance.design'), null, 'and the setting goes');
+  ok(!i.appLook()?.skin.use, 'without turning the skin on (the look on screen is unchanged)');
+  // applySkin steps and the old names
+  ok(i.applySkin('next') && i.appliedSkin() !== '', 'applySkin next');
+  ok(i.applyDesignPackage('windows') && i.appliedSkin() === 'windows', 'applyDesignPackage is applySkin');
+  eq(i.appliedDesignPackage(), 'windows', 'appliedDesignPackage is appliedSkin');
+  i.dispatch('skin.use:fresh');
+  eq(i.appliedSkin(), 'fresh', 'skin.use:<id>');
+  for (const act of ['skin.next', 'skin.prev', 'skin.random', 'design.package', 'style.package']) ok(i.actions.list().some((x) => x.id === act), `action ${act} registered`);
 }
 console.log(`check-skin (runtime scopes): ${n} checks passed`);

@@ -110,23 +110,17 @@
           "separator": true
         },
         {
-          "id": "next-theme",
-          "label": "Next theme",
+          "id": "next-skin",
+          "label": "Next skin",
           "icon": "palette",
-          "action": "swap:color-theme:next",
+          "action": "skin.next",
           "shortcut": "Alt+C"
         },
         {
-          "id": "prev-theme",
-          "label": "Previous theme",
+          "id": "prev-skin",
+          "label": "Previous skin",
           "icon": "palette",
-          "action": "swap:color-theme:prev"
-        },
-        {
-          "id": "reset-theme",
-          "label": "Reset theme",
-          "icon": "undo",
-          "action": "swap:color-theme:default"
+          "action": "skin.prev"
         },
         {
           "id": "spacer",

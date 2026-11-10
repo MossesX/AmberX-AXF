@@ -14,7 +14,7 @@
  */
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { SettingsPanel } from '../../core';
-import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, hideableTypes, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
+import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, hideableTypes, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup, type SkinEntry } from '../../core';
 import { AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, Icon, IconButton, ModelBadge, setBannerOwnSettingsRenderer, Slider, Switch, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
@@ -31,7 +31,7 @@ const TAB_DIALOG = 'axf.settings.tab';
 
 /** Standard tabs, in order. Ids are stable: libraries target them by id. */
 export const SETTINGS_TABS = {
-  appearance: { id: 'appearance', label: 'Appearance', icon: 'palette', order: 10, description: 'Pick a skin, or a style, colour and layout theme. Changes stay in this app.' },
+  appearance: { id: 'appearance', label: 'Appearance', icon: 'palette', order: 10, description: 'Pick a skin: colours, style, layout, behaviour and every control in one. Changes stay in this app.' },
   account: { id: 'account', label: 'Account & security', icon: 'shield', order: 20, description: 'Who you are acting as, and how this app is protected.' },
   connections: { id: 'connections', label: 'Connections', icon: 'cloud', order: 30, description: 'Servers and services this app talks to.' },
   plugins: { id: 'plugins', label: 'Plugins', icon: 'package', order: 40, description: 'Libraries and plugins installed in this app.' },
@@ -559,16 +559,17 @@ function SearchResults({ query, tabs, ui }: { query: string; tabs: SettingsTabLi
 }
 type SettingsTabLike = { id: string; label: string };
 
-const DESIGN_PANEL_ID = 'axf.design-package';
+const SKIN_PANEL_ID = 'axf.skin';
 const RESTORE_DIALOG = 'axf.settings.restore-default';
 const SKIN_DIALOG = 'axf.settings.skin';
 const LOCK_PANEL_ID = 'axf.appearance.lock';
 
 /**
- * Settings → Appearance is the Theme manager in every app (Nov 4 2026, Brett): one shared panel, top to bottom: Skin
- * (picker + the Use skin switch, off = the app's own look), Style / Colour / Layout theme, Visible parts, Navigation
- * menu, Restore to default. With a skin on, a pick overrides just that part (a dot + Back to skin); with no skin, it
- * sets this app's own look. Every change stays in this app (engines/skin.ts).
+ * Settings → Appearance is the Skin panel in every app (Nov 4 2026, Brett; skins only since Nov 9 2026: "remove design
+ * packs as a thing since everything's covered in a skin"): one shared panel, top to bottom: Skin (picker + the Use skin
+ * switch, off = the app's own look), Visible parts, Navigation menu, Restore to default. The colour, style, layout and
+ * behaviour sections are the skin's; they are no longer picked on their own. With a skin on, a nav pick overrides just
+ * that part (a dot + Back to skin); with no skin, it sets this app's own look. Every change stays in this app (engines/skin.ts).
  */
 export function AppearancePanel() {
   const rt = useRuntime();
@@ -612,9 +613,6 @@ export function AppearancePanel() {
       </div>
       <Switch label="Use skin" hint={skinOn ? 'Off goes back to this app\'s own look and keeps your picks.' : 'On applies the last skin you picked.'} checked={skinOn} disabled={locked || !skins.length} onChange={(on) => { rt.useSkin(on, skinId || undefined); }} />
       <FollowHubSwitch locked={locked} />
-      {row('Style theme', 'style-theme')}
-      {row('Colour theme', 'color-theme')}
-      {row('Layout theme', 'layout')}
       <p className="fx-eyebrow">Visible parts</p>
       {hideableTypes().map((t) => (
         <Switch key={t} label={assetTypeSpecs[t as AssetType]?.label ?? t} checked={!rt.slotHidden(t as AssetType)} disabled={locked} onChange={(on) => rt.setSlotHidden(t as AssetType, !on)} />
@@ -648,8 +646,9 @@ function SkinPickerDialog() {
   const tap = (id: string) => { setPicked(id); rt.previewSkin(id === applied ? null : id); };
   const close = () => rt.closeDialog();
   const current = skins.find((s) => s.id === picked);
-  const swatches = (colorTheme: string) => {
-    const tokens = (rt.registry.get('color-theme', colorTheme)?.data as { tokens?: Record<string, string> } | undefined)?.tokens;
+  // swatches from the skin's colour section: written in the skin, or its colour preset
+  const swatches = (s: SkinEntry) => {
+    const tokens = (s.data.sections?.colors?.tokens ?? (rt.registry.get('color-theme', s.data.colorTheme)?.data as { tokens?: Record<string, string> } | undefined)?.tokens) as Record<string, string> | undefined;
     return tokens ? [tokens.bg, tokens.surface, tokens.accent, tokens.text] : [];
   };
   return (
@@ -657,7 +656,7 @@ function SkinPickerDialog() {
       <div className="axf-skin__grid" role="listbox" aria-label="Skin">
         {skins.map((s) => (
           <Button key={s.id} tone="quiet" size="sm" className={`axf-skin__tile${s.id === picked ? ' is-picked' : ''}`} aria-selected={s.id === picked} role="option" title={s.description} onClick={() => tap(s.id)}>
-            <span className="axf-skin__swatches" aria-hidden="true">{swatches(s.data.colorTheme).map((c, i) => <span key={i} style={{ background: c }} />)}</span>
+            <span className="axf-skin__swatches" aria-hidden="true">{swatches(s).map((c, i) => <span key={i} style={{ background: c }} />)}</span>
             <span className="axf-skin__name">{s.name}</span>
           </Button>
         ))}
@@ -731,8 +730,8 @@ function TabBody({ id, all = false }: { id: string; all?: boolean }) {
     ...gs.map((g) => ({ order: g.order ?? 100, tie: 1, key: `g:${g.id}`, node: <GroupCard group={g} /> }))]
     .sort((a, b) => a.order - b.order || a.tie - b.tie)
     .map((x) => <Fragment key={x.key}>{x.node}</Fragment>);
-  // Settings → Appearance: the AmberX Design Package picker on top, everything else in one collapsible container
-  const design = id === 'appearance' && !all ? panels.find((p) => p.id === DESIGN_PANEL_ID) : undefined;
+  // Settings → Appearance: the Skin panel on top, everything else in one collapsible container
+  const design = id === 'appearance' && !all ? panels.find((p) => p.id === SKIN_PANEL_ID) : undefined;
   const lock = design ? panels.find((p) => p.id === LOCK_PANEL_ID) : undefined;
   const items = design ? ordered(panels.filter((p) => p !== design && p !== lock), groups) : ordered(panels, groups);
   const shown = design ? (
@@ -1010,7 +1009,7 @@ export const library: AxfWebLibrary = {
   settingsPanels: [
     { id: 'axf.account.role', tab: 'account', title: 'Role', icon: 'shield', order: 10, render: () => <RolePanel /> },
     { id: 'axf.account.profile', tab: 'account', title: 'Access policy', icon: 'user', order: 20, render: () => <AccessPanel /> },
-    { id: DESIGN_PANEL_ID, tab: 'appearance', title: 'Theme manager', icon: 'palette', order: 0, render: () => <AppearancePanel /> },
+    { id: SKIN_PANEL_ID, tab: 'appearance', title: 'Skin', icon: 'palette', order: 0, render: () => <AppearancePanel /> },
     { id: 'axf.plugins.libraries', tab: 'plugins', title: 'Installed plugins and libraries', icon: 'box', order: 50, render: () => <LibrariesPanel /> },
     { id: 'axf.banners', tab: 'banners', title: 'Every banner', icon: 'bell', order: 10, render: () => <BannerSettingsPanel /> },
     { id: 'axf.about', tab: 'about', title: 'About', icon: 'info', order: 10, render: () => <AboutPanel /> },

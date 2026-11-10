@@ -19,7 +19,7 @@
     "style-theme": "fresh",
     "layout": "classic-ide",
     "behavior-theme": "standard",
-    "design-package": "hub-default",
+    "skin": "hub-default",
     "app-menu": "molly",
     "toolbar": "molly",
     "nav-menu": "molly",

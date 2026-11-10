@@ -14,10 +14,21 @@ export const APP_LOOK_FRAME = 'app-look@1';
 export const APP_LOOK_PROJECT = 'shared';
 export const APP_LOOK_MAX_BYTES = 64 * 1024;
 export const appLookPath = (appId) => `settings/looks/${appId}.json`;
-/** Slots a skin never sets. */
-export const SKIN_NEVER = ['uac-policy', 'help', 'skin', 'design-package', 'interface'];
+/** Slots a skin never sets (the retired package types stay listed so an old document naming one is dropped, never applied). */
+export const SKIN_NEVER = ['uac-policy', 'help', 'skin', 'design-package', 'style-package', 'interface'];
 /** The three per-level choices. */
 export const SKIN_USES = ['on', 'off', 'inherit'];
+/**
+ * The skin's four sections → the asset type that holds a section's presets (skin@2, Nov 10 2026: colour, style, layout
+ * and behaviour themes are no longer picked on their own; they are the sections of a skin). Same order as the picker.
+ */
+export const SKIN_SECTIONS = { colors: 'color-theme', style: 'style-theme', layout: 'layout', behavior: 'behavior-theme' };
+/** The retired package types a skin replaced; an old slot naming one reads as the skin of the same id (`migrateLegacyLook`). */
+const RETIRED_PACKAGES = ['design-package', 'appearance-package'];
+/** Is this asset type one of a skin's section preset types? */
+export const isSkinSectionType = (type) => Object.values(SKIN_SECTIONS).includes(type);
+/** The section name of a section preset type ('' for any other type). */
+export const sectionOfType = (type) => Object.keys(SKIN_SECTIONS).find((s) => SKIN_SECTIONS[s] === type) ?? '';
 
 const isObj = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
 const ID = /^[a-z0-9][a-z0-9-]*$/;
@@ -26,6 +37,29 @@ const SPACINGS = ['tight', 'compact', 'regular'];
 function idMap(raw, never = []) {
   const out = {};
   if (isObj(raw)) for (const [k, v] of Object.entries(raw)) if (ID.test(k) && typeof v === 'string' && ID.test(v) && !never.includes(k)) out[k] = v;
+  return out;
+}
+
+/**
+ * A look document written before design packs went (Nov 10 2026): the `design-package` slot it carried (in the snapshot
+ * or the own picks) becomes the skin's id when none is picked yet, and the slot goes. `use` is left as it was: the
+ * four section slots the document also carries still resolve (they are the skin's section presets), so the look on
+ * screen is exactly what it was; the picker simply shows which skin that look came from. A `style-package` slot goes
+ * too (its member controls are already in the document as slots of their own). Idempotent.
+ */
+export function migrateLegacyLook(look) {
+  if (!look) return look;
+  let legacy = '';
+  const strip = (part) => {
+    if (!part?.slots) return part;
+    const slots = { ...part.slots };
+    for (const t of RETIRED_PACKAGES) { if (ID.test(slots[t] ?? '')) legacy = slots[t]; delete slots[t]; }
+    delete slots['style-package'];
+    return { ...part, slots };
+  };
+  const out = { ...look, default: strip(look.default), own: strip(look.own) };
+  if (look.undo) out.undo = { ...look.undo, own: strip(look.undo.own) };
+  if (legacy && !out.skin.id) out.skin = { ...out.skin, id: legacy };
   return out;
 }
 function boolMap(raw) {
@@ -60,9 +94,9 @@ function normalizeScopes(raw) {
   return out;
 }
 
-/** A new app-look: `snapshot` as the default, nothing picked, no skin, every scope inheriting. */
+/** A new app-look: `snapshot` as the default, nothing picked, no skin, every scope inheriting (a retired package slot in the snapshot becomes the pick). */
 export function newAppLook(app, snapshot) {
-  return { $axf: APP_LOOK_FRAME, app, default: normalizeLookPart(snapshot), own: {}, skin: { use: false, inherit: false, id: '', overrides: {} }, scopes: {}, undo: null };
+  return migrateLegacyLook({ $axf: APP_LOOK_FRAME, app, default: normalizeLookPart(snapshot), own: {}, skin: { use: false, inherit: false, id: '', overrides: {} }, scopes: {}, undo: null });
 }
 
 export function normalizeAppLook(raw) {
@@ -74,7 +108,7 @@ export function normalizeAppLook(raw) {
   if (isObj(raw.undo)) out.undo = { own: normalizeLookPart(raw.undo.own), skin: normalizeSkinState(raw.undo.skin), scopes: normalizeScopes(raw.undo.scopes), at: String(raw.undo.at ?? '') };
   if (typeof raw.updatedBy === 'string') out.updatedBy = raw.updatedBy;
   if (typeof raw.updatedAt === 'string') out.updatedAt = raw.updatedAt;
-  return out;
+  return migrateLegacyLook(out);
 }
 
 export function parseAppLook(text) {

@@ -22,7 +22,7 @@
   "types": {
     "color-theme": {
       "label": "Color theme",
-      "group": "Themes",
+      "group": "Skin sections",
       "icon": "palette",
       "required": [
         "scheme",
@@ -53,11 +53,13 @@
           "focus",
           "shadow"
         ]
-      }
+      },
+      "section": "colors",
+      "sectionNote": "A skin section preset (skin@2, Nov 10 2026): never picked on its own. A skin names one of these as its colours section (or writes the section inline under data.sections.colors); the Skin Designer offers the presets. Still an appearance slot, so a saved look and the hub keep resolving it."
     },
     "style-theme": {
       "label": "Style theme",
-      "group": "Themes",
+      "group": "Skin sections",
       "icon": "type",
       "required": [
         "fontFamily",
@@ -94,12 +96,15 @@
         ]
       },
       "optional_fields": {
+        "scrollbar": "'thin' — thin themed scrollbars (--fx-scrollbar-width, --fx-scrollbar-color); unset = the browser's own",
         "wrapGroups": "boolean, default false — every section / group (Container) is collapsible with a toggle in its top-right corner (build option --wrap-groups; compiles to --fx-wrap-groups 1|0)"
-      }
+      },
+      "section": "style",
+      "sectionNote": "A skin section preset (skin@2, Nov 10 2026): never picked on its own. A skin names one of these as its style section (or writes the section inline under data.sections.style); the Skin Designer offers the presets. Still an appearance slot, so a saved look and the hub keep resolving it."
     },
     "layout": {
       "label": "Layout",
-      "group": "Themes",
+      "group": "Skin sections",
       "icon": "layout",
       "required": [
         "nav",
@@ -196,7 +201,9 @@
         "prefix": "layout",
         "rules": "core/engines/layout-rules.mjs",
         "note": "Every field below compiles to --fx-layout-<field in kebab-case>: numbers as px or × --fx-space, enums as their word, switches as 1 / 0. The compiled grid (fixture layout.json → compiled) keeps px numbers for native ports; the web grid vars read the tokens."
-      }
+      },
+      "section": "layout",
+      "sectionNote": "A skin section preset (skin@2, Nov 10 2026): never picked on its own. A skin names one of these as its layout section (or writes the section inline under data.sections.layout); the Skin Designer offers the presets. Still an appearance slot, so a saved look and the hub keep resolving it."
     },
     "app-menu": {
       "label": "Application menu",
@@ -309,7 +316,9 @@
       "optional_fields": {
         "density": "compact | regular (default) | roomy — item padding",
         "indicator": "auto (default, per style) | bar | fill | none — active-item marker",
-        "showIcons": "boolean, default true"
+        "showIcons": "boolean, default true",
+        "navStyle": "boolean, default false — opt in to nav-style@1: items with children (NavItem.items) open sub menus that slide open, styled, timed and arranged by the nav-style asset in force",
+        "items": "per item: items?: [NavItem] — children (a sub menu; nested levels allowed). Shown as a sub menu only when navStyle is true"
       },
       "hideable": true
     },
@@ -348,7 +357,7 @@
       "label": "Tab group",
       "group": "Navigation",
       "icon": "layers",
-      "description": "How every tab row looks: page tabs (.fx-tabs) and the tab bars of floating-window tab groups. Engine tabGroupStyle in core/engines/components.ts; Hidden (hideable) leaves only the active tab of each row on screen.",
+      "description": "tab-group@1: how every tab row looks and behaves — page tabs, section switchers, settings tab bars and the tab bars of window tab groups (every tab row is a tab-group asset, Brett Nov 4 2026; the framework TabGroup component draws them and gives each one the chrome context menu: Settings / Change tab style / Move). Engine tabGroupStyle in core/engines/components.ts; Hidden (hideable) leaves only the active tab of each row on screen. Its settings interface is the settings asset chrome-tab-group (chrome-settings@1).",
       "required": [
         "style",
         "align"
@@ -359,7 +368,8 @@
           "pills",
           "boxed",
           "segmented",
-          "plain"
+          "plain",
+          "chips"
         ],
         "align": [
           "start",
@@ -369,7 +379,9 @@
         ],
         "position": [
           "top",
-          "bottom"
+          "bottom",
+          "left",
+          "right"
         ],
         "density": [
           "compact",
@@ -378,15 +390,29 @@
         ],
         "overflow": [
           "scroll",
-          "wrap"
+          "wrap",
+          "more",
+          "dropdown"
+        ],
+        "display": [
+          "both",
+          "text",
+          "icons"
         ]
       },
       "optional_fields": {
-        "position": "top (default) | bottom — where a window tab group's bar sits",
-        "density": "compact | regular (default) | roomy — tab padding",
-        "overflow": "scroll (default) | wrap — what a row does when its tabs don't fit",
-        "showIcons": "boolean, default true",
-        "divider": "boolean, default true — the rule under the row"
+        "position": "top (default) | bottom | left | right — where the row sits against its panel (left / right = a vertical rail)",
+        "density": "compact | regular (default) | roomy — tab padding (size)",
+        "overflow": "scroll (default) | wrap | more (tabs that don't fit go under a More menu) | dropdown (one button opens the list)",
+        "display": "both (default: icons + text) | text | icons (text becomes the tooltip)",
+        "showIcons": "boolean, default true — older form of display: false = text only",
+        "divider": "boolean, default true — the rule under the row",
+        "sticky": "boolean, default false — the row stays at the top of its scrolling panel",
+        "collapsible": "boolean, default false — a fold button leaves only the active tab (per device)",
+        "closable": "boolean, default true — tabs get a close button where the host allows closing (false hides it)",
+        "reorderable": "boolean, default true — tabs can be dragged into another order where the host allows it (false turns it off)",
+        "badges": "boolean, default true — count badges on tabs",
+        "rememberLast": "boolean, default false — the row reopens on the tab it was on last time (per device)"
       },
       "hideable": true,
       "optional": true
@@ -611,7 +637,7 @@
       "label": "Banner",
       "group": "Chrome",
       "icon": "menu",
-      "description": "Thin permanent bar across the top of the screen (above the layout). Shows the app logo and holds attached assets (badges and widgets: clock, search bar, logo, buttons, counters, …) on its left, center or right; plugins attach more at run time.",
+      "description": "Thin permanent bar across the top of the screen (above the layout). Shows the app logo (logo.text \"{app}\" = the app's own name) and holds attached assets (badges and widgets: clock, search bar, logo, buttons, counters, …) on its left, center or right; plugins attach more at run time.",
       "required": [
         "height",
         "surface",
@@ -1105,6 +1131,8 @@
       "icon": "settings",
       "description": "The settings page as an asset, so several apps share one settings interface with the same options: layout (tabs on top, at the side, or a list), header, search, descriptions, which tabs show in which order and with which labels, what is left out (tab, group, panel or setting ids), and extra groups of data-only options (toggle, text, number, slider, choice, multi_choice, color, link, section) the app gets while the asset is active, and the page's own toolbar (a toolbar asset by id). Engine core/engines/settingsui.ts.",
       "optional_fields": {
+        "for": "chrome-settings@1: the chrome type this settings asset is the settings interface of (tab-group | toolbar | banner | nav-menu | app-menu | context-menu); the shared default is chrome-<type>, an app's custom copy chrome-<type>-<app> (core/engines/chrome-settings-rules.mjs)",
+        "extends": "inherit@1: id of the settings asset this one extends; fields it does not set come from that one (an app's custom chrome copy extends the shared default until edited)",
         "toolbar": "id of a toolbar asset drawn at the top of the settings page (its items + the settings search when it has showSearch)",
         "levels": "true = the level toolbar (Simple / Basic / Developer / Administrator) is on and every tab, group, panel and setting shows from its level up; Administrator shows all",
         "defaultLevel": "level of anything levelOf doesn't name (simple | basic | developer | administrator; older pro = administrator, advanced = developer)",
@@ -1176,9 +1204,29 @@
       "shared": false,
       "optional": true
     },
+    "nav-style": {
+      "label": "Navigation style",
+      "group": "Navigation",
+      "icon": "menu",
+      "description": "How a navigation menu with sub menus looks and behaves (nav-style@1, engine core/engines/navstyle.ts, fields in navstyle-rules.mjs): colours (colour-theme token ids, never literal colours), fonts (style-theme family, typography scale step, weight), icons, density and indent, width (size, min, max, resizable, collapsible to icons), the sub-menu animation (slide, accordion, fade, push, none; duration, easing, stagger, chevron, reduced motion) and behaviour (one or many sub menus open, open on tap or hover, auto-collapse, remember, follow the active page, swipe to open on a phone), plus pinned, hidden and reordered top-level items and per-item accents. Every field has a default and theme leaves it to the stylesheet, so the standard preset draws a nav as it was. Only a nav-menu asset with navStyle: true reads it. Settings: the Navigation settings interface (framework/react/components/NavStyleSettings.tsx); control@1 target tokens.nav.",
+      "required": [],
+      "optional_fields": {
+        "colors": "{ background, text, hover, active, activeText, submenu, accent: theme | colour token }",
+        "font": "{ family: theme | body | display | mono, size: theme | 2xs | xs | sm | md | lg, weight: theme | 400..800 }",
+        "icons": "{ show: boolean, size: sm | md | lg }",
+        "layout": "{ density: theme | compact | regular | roomy, indent: 0..6 (× space) }",
+        "width": "{ size: 0 (the layout asset) | 0..480 px, min 48..320, max 160..640, resizable, collapsible }",
+        "animation": "{ kind: slide | accordion | fade | push | none, durationMs 0..1200 (0 = the theme motion), easing: theme | standard | emphasized | linear | spring | bounce, staggerMs 0..150, chevron: rotate | flip | none, reduced: system | always | never }",
+        "behavior": "{ single, openOn: tap | hover, autoCollapse, remember, followActive, swipe }",
+        "items": "{ order, hidden, pinned: comma-separated top-level item ids }",
+        "accents": "{ <item id>: colour token }"
+      },
+      "hideable": false,
+      "optional": true
+    },
     "behavior-theme": {
       "label": "Behaviour theme",
-      "group": "Themes",
+      "group": "Skin sections",
       "icon": "sparkles",
       "description": "How the app behaves (behavior-theme@1, engine core/engines/behavior.ts): motion (speed, easing, reduced motion, how pages come in), interaction (hover, press, focus ring, long-press and double-tap times, drag start, cursor), windows (how dialogs, pop-ups, drawers and floating windows open, close, snap, stack and minimize) and feedback (toasts, sound, vibration, confirm before delete, busy cursor). Every field has a default, so a theme may set only what it changes. One of the four themes an AmberX Design Package wraps.",
       "required": [
@@ -1193,77 +1241,65 @@
         "windows": "{ dialogOpen: asset | none | fade | scale | slide-up | slide-down, backdrop: asset | dim | blur | none, popupOpen: asset | none | fade | scale | slide, drawerOpen: asset | slide | fade | none, snap, snapGrid 0–48, stack: cascade | center | remember, minimize: cursor | dock | none, closeOnBackdrop, closeOnEscape }",
         "feedback": "{ toastPosition: asset | top | bottom | top-right | bottom-right | top-left | bottom-left, toastMs 0–20000 (0 = the pop-up asset's time), sound: off | subtle | full, vibration: off | light | strong, confirmDelete: always | risky | never, busyCursor }"
       },
-      "optional": true
+      "optional": true,
+      "section": "behavior",
+      "sectionNote": "A skin section preset (skin@2, Nov 10 2026): never picked on its own. A skin names one of these as its behaviour section (or writes the section inline under data.sections.behavior); the Skin Designer offers the presets. Still an appearance slot, so a saved look and the hub keep resolving it."
     },
-    "design-package": {
-      "label": "AmberX Design Package",
+    "skin": {
+      "label": "Skin",
       "group": "System",
       "icon": "palette",
-      "description": "An AmberX Design Package (design-package@1, engine core/engines/designpackage.ts) wraps the four themes of a whole look and feel: a style theme, a colour theme, a layout and a behaviour theme. Picking one in Settings → Appearance swaps all four at once. Optional extras carry everything else a saved look holds (the other slots, spacing, chrome shown / hidden, other appearance settings); it replaced the appearance package on Oct 27 2026.",
+      "description": "A skin (skin@2, engine core/engines/skin.ts) is the whole look for one place: four sections kept apart — colours (colorTheme or sections.colors), style (styleTheme or sections.style), layout (layoutTheme or sections.layout), behaviour (behaviorTheme or sections.behavior), each a preset id of the section's asset type or the section written inline — the assets that fill the other slots, an optional icon pack and style parts for any drawn type. Design packages and style packages folded into skins on Nov 10 2026 (same ids). Apps keep their own look unless Use skin is on (Settings → Appearance); a skin applies hub-wide, per app, per UI / screen or per plugin (the chain plugin → ui → app → global, the child overrides the parent). How a skin reaches every registered type is worked out from this registry (skin-coverage@1, core/engines/skin-coverage.mjs): a type declares `skin: { by: slot | parts | reference | bundle | none, via?, why? }` only when its flags do not say (widgets and attachables are styled through their style target in schemas/customize.json; everything else is a slot); CI fails on a type a skin cannot reach.",
       "required": [
-        "style-theme",
-        "color-theme",
-        "layout",
-        "behavior-theme"
+        "assets"
       ],
       "optional_fields": {
-        "extras": "{ slots: asset type → asset id (not the four themes, never the policy), spacing: tight | compact | regular, hidden: asset type → true / false, settings: appearance settings key → value }"
+        "colorTheme": "color-theme preset id (required unless sections.colors is written)",
+        "styleTheme": "style-theme preset id (required unless sections.style is written)",
+        "layoutTheme": "layout preset id (required unless sections.layout is written)",
+        "behaviorTheme": "behavior-theme preset id (default: the framework standard)",
+        "sections": "{ colors?, style?, layout?, behavior? }: a section's data written in the skin (the section type's own fields), winning over the preset",
+        "assets": "asset type → asset id for every other slot (never the four section types, the policy, help, a skin or an interface)",
+        "iconPack": "icon-pack asset id",
+        "parts": "asset type → customize tokens (style parts)",
+        "preview": "{ caption?, image? }",
+        "extras": "{ spacing?: tight | compact | regular, hidden?: asset type → true / false, settings?: appearance settings key → value }"
       },
       "roll": {
         "slot": false,
         "asset": false
       },
-      "optional": true
-    },
-    "style-package": {
-      "label": "Style package",
-      "group": "Themes",
-      "icon": "package",
-      "description": "A Style Package (style-package@1, engine core/engines/stylepackage.ts) is one matched set of control assets — buttons, containers, sliders, dialogs, pop-ups, tab groups, gauges and meters — applied in one go. The style theme sets the shared tokens; the style package decides how each kind of control is built on them. Picking one swaps every control it names.",
-      "required": [
-        "slots"
-      ],
-      "members": [
-        "button",
-        "container",
-        "slider",
-        "dialog",
-        "popup",
-        "tab-group",
-        "gauge",
-        "meter"
-      ],
-      "optional_fields": {
-        "tone": "one lowercase word describing the package's character (crisp, soft, glass, …) for pickers and the interface roller"
-      },
-      "roll": {
-        "slot": false,
-        "asset": false
-      },
-      "optional": true
+      "optional": true,
+      "skin": {
+        "by": "bundle",
+        "why": "A skin is the whole look; it never contains another skin."
+      }
     },
     "interface": {
       "label": "Interface",
       "group": "System",
       "icon": "layout",
-      "description": "A whole interface in one asset (interface@1, engine core/engines/interface.ts): a design package (style, colour, layout, behaviour), a branding package, and every other slot (chrome, controls, widgets, settings interface) as an open list, plus spacing, shown / hidden chrome and appearance settings. The same app can be drawn under several interfaces at once (scopes: GizmoX's interface tabs), and the interface roller makes new ones. Never rolled; never picked in Appearance → Assets (Settings → Appearance → Interface applies one).",
-      "required": [
-        "design"
-      ],
+      "description": "A whole interface in one asset (interface@1, engine core/engines/interface.ts): a skin (its four sections, assets and extras), a branding package, and every other slot (chrome, controls, widgets, settings interface) as an open list, plus spacing, shown / hidden chrome and appearance settings. The same app can be drawn under several interfaces at once (scopes: GizmoX's interface tabs), and the interface roller makes new ones. Never rolled; never picked in Appearance → Assets (Settings → Appearance → Interface applies one).",
+      "required": [],
       "optional_fields": {
         "branding": "a branding asset id",
-        "slots": "asset type → asset id for every other slot (never the themes, the policy or a package)",
+        "slots": "asset type → asset id for every other slot (never the sections, the policy, a skin or a package)",
         "spacing": "tight | compact | regular",
         "hidden": "asset type → true / false",
         "settings": "appearance settings key → value",
         "tab": "{ label, icon } for a host showing interfaces as tabs",
-        "tagline": "one line under the tab label"
+        "tagline": "one line under the tab label",
+        "design": "the skin field under its old name (an interface written before Nov 10 2026)"
       },
       "roll": {
         "slot": false,
         "asset": false
       },
-      "optional": true
+      "optional": true,
+      "skin": {
+        "by": "bundle",
+        "why": "An interface wraps a skin plus slots: a whole look, like a skin."
+      }
     },
     "logo-mark": {
       "label": "Logo mark",
@@ -1293,6 +1329,11 @@
         "safeArea": "number 0-1 (default 0.25): clear space as a fraction of the height",
         "minSize": "number px (default 16)",
         "brand": "string: the brand this mark belongs to"
+      },
+      "skin": {
+        "by": "reference",
+        "via": "branding",
+        "why": "Logo marks are named by the branding asset the skin picks."
       }
     },
     "animated-logo": {
@@ -1327,6 +1368,11 @@
         "loop": "true (default) | false | \"hover\"",
         "still": "first | last: which frame shows when it does not move",
         "intensity": "number 0.1-1 (default 0.6)"
+      },
+      "skin": {
+        "by": "reference",
+        "via": "branding",
+        "why": "Animated logos are named by the branding asset the skin picks."
       }
     },
     "icon-pack": {
@@ -1357,6 +1403,11 @@
         "stroke": "number 0.5-4 (default 1.75)",
         "linecap": "round | square | butt",
         "fallback": "framework (default) | none"
+      },
+      "skin": {
+        "by": "reference",
+        "via": "iconPack",
+        "why": "A skin may name the icon pack it draws its icons from (data.iconPack)."
       }
     },
     "branding": {
@@ -1535,6 +1586,70 @@
         "inputs": "[{ id, label, required?, default?, about? }] filled into the brief",
         "command": "a command the job runs (e.g. a re-record command), shown in the brief",
         "outputs": "{ report: path template, uiReviewGroup: name template with {{when}}, uiReviewApp }"
+      },
+      "skin": {
+        "by": "none",
+        "why": "A job type is recurring work for a hired agent, not UI."
+      }
+    },
+    "card": {
+      "label": "Card",
+      "group": "Widgets",
+      "icon": "chart",
+      "shared": false,
+      "description": "A Home card (card@1, rules core/engines/card-rules.mjs): a data binding, not a design. It names the read it draws (any plugin read command from the plugin-commands@1 registry, served by control@1 as REST, MCP and CLI, or a read the host app provides), its args, a path into the result, an optional filter (where) and reduction, the view (auto or number, list, meter, chart, feed, table, status, plus views a host registers in the open registry), the refresh (live from the console's live feed, every N seconds, or by hand), title, icon and size. Not themed itself: every colour and size comes from the active theme through the view's tokens. Users make cards on Home (Add card, drag a read onto Home, Suggested cards) with no code and no tokens; an app's own starter cards ship as assets.",
+      "required": [
+        "source"
+      ],
+      "enums": {
+        "size": [
+          "s",
+          "m",
+          "l",
+          "wide"
+        ],
+        "chart": [
+          "line",
+          "bar",
+          "spark"
+        ],
+        "reduce": [
+          "none",
+          "count",
+          "sum",
+          "avg",
+          "min",
+          "max",
+          "first",
+          "last"
+        ]
+      },
+      "nested": {
+        "source": [
+          "kind"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "title": "shown on the card (up to 60)",
+        "icon": "icon name",
+        "args": "the read command's input",
+        "path": "dotted path into the result; * maps over a list or object",
+        "where": "{ field: value } keeps matching items",
+        "reduce": "fold a list: count, sum, avg, min, max, first, last",
+        "fields": "{ role: field } for the view",
+        "refresh": "{ kind: live | every | manual, every: seconds, channels: [live-feed channels] }",
+        "limit": "items shown (1-200)",
+        "unit": "after a number (USD, ms)",
+        "view": "auto (picked from the data's shape) or a registered view: number, list, meter, chart, feed, table, status, panel (the host's own renderer for a host read), plus views a host registers"
+      },
+      "skin": {
+        "by": "none",
+        "why": "A Home card is a data binding, not a design: the card UI takes the container and typography the skin sets."
       }
     },
     "help": {
@@ -1549,7 +1664,158 @@
         "entries": "[{ id?, target, title, text, more?, tryIt?, link?: path | https URL | { label, href }, related?: [help ids], kind?, draft? }]",
         "intros": "[{ screen: view id, title?, steps: [{ say, target?, do?, title? }] (1–6) }]"
       },
-      "optional": true
+      "optional": true,
+      "skin": {
+        "by": "none",
+        "why": "Help text has no look of its own: the Help UI that shows it is drawn with parts a skin styles."
+      }
+    },
+    "demonstration": {
+      "label": "Demonstration",
+      "group": "Demos",
+      "icon": "play",
+      "shared": false,
+      "description": "A narrated demonstration of one glossary entry (demonstration@1, rules core/engines/demo-rules.mjs), built on the walkthrough engine: steps of walkthrough@1 shape (say = the narration, do = a console action such as nav:builds or settings.open:plugins, target = the data-axf-id, view id or selector to highlight, plus a highlight label, a wait and a title), the surface it runs on (the live UI, a preview, the recorder), a voice (narrator, speed), demonstrations chained after it into a tour, the entry it is about and the entries it covers, auto-tagged keywords and where it was generated from (the glossary's Generate demonstration button, by hand, a book, a help intro, the recorder). Editable, replayable and voice-controlled in the Demonstration Designer; Molly's guide plays it as walkthrough@1; the recorder films it into a clip. Not drawn: it carries no colours or sizes.",
+      "required": [
+        "steps"
+      ],
+      "enums": {
+        "surface": [
+          "live",
+          "preview",
+          "recorder"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "about": "the glossary entry id it demonstrates (plugin:build-manager, concept:asset, control:console-web:ui-review:approve)",
+        "entries": "glossary entry ids it covers (the about entry is always one)",
+        "app": "the app it runs in (console, axhub-web, amberx-droid); default console",
+        "voice": "{ narrator: a voice id or '' for the browser's, speed: 0.5–2 }",
+        "chain": "demonstration ids played after this one (a tour)",
+        "keywords": "auto-tagged words for search and the clip tagger (up to 200)",
+        "generated": "{ from: glossary | manual | book | help-intro | recorder, at: ISO time, build: the build that made it }",
+        "editable": "false = a generated demo that is rebuilt from its entry (edits are lost); default true"
+      }
+    },
+    "book": {
+      "label": "Book",
+      "group": "Demos",
+      "icon": "file",
+      "shared": false,
+      "description": "A book written from the glossary (book@1, rules core/engines/demo-rules.mjs): the wizard's plan (total minutes, minutes per chapter, style: quickstart, tutorial, tour, reference or deep-dive, the design package to show, narrator voice and speed), its chapters (id, title, minutes or a share of the total, an intro line, and items: a glossary entry id, demonstration/<id>, clip/<id> or book/<id>#<chapter>, each with its own minutes and a note; items are dragged in from the glossary and index and moved by drag, context menu or the column icons), the documentation to generate with it (enabled, depth light / standard / deep / extreme, format markdown / html / interactive-html-ts, how interactive: none, examples or live components) and its outputs (the walkthrough video, one clip per chapter). The Book Builder previews a book as one walkthrough and hands it to the recorder; what comes back is clip assets and a docs asset. Not drawn: it carries no colours or sizes.",
+      "required": [
+        "plan",
+        "chapters"
+      ],
+      "nested": {
+        "plan": [
+          "chapterMinutes"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "about": "what the book is about (up to 600)",
+        "docs": "{ enabled, depth, format, interactive, includeApi, includeScreens } — the documentation generated alongside the book",
+        "outputs": "{ video: the narrated walkthrough video, chapterClips: one clip asset per chapter }",
+        "keywords": "words for search (up to 200)"
+      }
+    },
+    "clip": {
+      "label": "Clip",
+      "group": "Demos",
+      "icon": "monitor",
+      "shared": false,
+      "description": "A generated clip (clip@1, rules core/engines/demo-rules.mjs): every clip, demo, chapter, walkthrough or video the demonstration system makes is one of these, a first-class registry asset. It names its kind and source (the demonstration, book chapter, walkthrough or entry it came from), its media (video, poster, captions, audio: paths in the data folder or https URLs, seconds, size), how it was recorded (when, app, URL, viewport, the design package shown, the voice), a transcript (seconds + words), clips chained after it, the glossary entries it shows and a large auto-extracted keyword set (the entries' terms, kinds, categories and keywords, every action and target, every word of the narration, the app, the look, the voice), so it is searchable, filterable and sortable like everything else and can be dropped into books. Not drawn: it carries no colours or sizes.",
+      "required": [
+        "source",
+        "media"
+      ],
+      "enums": {
+        "kind": [
+          "clip",
+          "demo",
+          "chapter",
+          "walkthrough",
+          "video"
+        ]
+      },
+      "nested": {
+        "source": [
+          "kind"
+        ],
+        "media": [
+          "seconds"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "recorded": "{ at: ISO time, app, url, viewport: { width, height }, designPackage, voice }",
+        "transcript": "[{ at: seconds, say }] (up to 2000 lines)",
+        "chain": "clip ids played after this one",
+        "entries": "glossary entry ids shown in the clip",
+        "keywords": "the auto-extracted tag set (up to 200)"
+      }
+    },
+    "docs": {
+      "label": "Documentation",
+      "group": "Demos",
+      "icon": "code",
+      "shared": false,
+      "description": "Generated documentation (docs@1, rules core/engines/demo-rules.mjs): made alongside a book (or from one demonstration, or a list of glossary entries) from the same sources (glossary, index, registry, the sandbox) and kept in sync by a hash of them. Depth: light (one page), standard (an index plus a page per chapter), deep (plus a page per item with its full API, links and demonstration steps) or extreme (plus runnable API examples, live components embedded from the real app, a search index and the TypeScript sources). Format: markdown, html or interactive-html-ts (real, runnable, interactive examples and live components throughout: the real deal, not static pages); interactive: none, examples or live. Lists the files it is made of (index, pages, scripts, styles, data, media), when it was generated and the build. Not drawn: it carries no colours or sizes.",
+      "required": [
+        "source",
+        "depth",
+        "format",
+        "files"
+      ],
+      "enums": {
+        "depth": [
+          "light",
+          "standard",
+          "deep",
+          "extreme"
+        ],
+        "format": [
+          "markdown",
+          "html",
+          "interactive-html-ts"
+        ],
+        "interactive": [
+          "none",
+          "examples",
+          "live"
+        ]
+      },
+      "nested": {
+        "source": [
+          "kind"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "interactive": "none | examples | live (live needs format interactive-html-ts); default none",
+        "generatedAt": "ISO time",
+        "sourceHash": "hash of the sources it was generated from (a different hash = out of sync)",
+        "build": "the build that generated it",
+        "keywords": "words for search (up to 200)"
+      }
     },
     "uac-policy": {
       "label": "User account control",
@@ -1566,6 +1832,10 @@
           "hide",
           "disable"
         ]
+      },
+      "skin": {
+        "by": "none",
+        "why": "An access policy decides who may do what; it has no look."
       }
     }
   },

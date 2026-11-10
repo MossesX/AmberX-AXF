@@ -49,7 +49,7 @@
     "meter": "striped-pill",
     "settings": "console",
     "uac-policy": "standard",
-    "design-package": "hub-default",
+    "skin": "hub-default",
     "branding": "amberx-app",
     "style-package": "amber-signature",
     "typography": "compact",

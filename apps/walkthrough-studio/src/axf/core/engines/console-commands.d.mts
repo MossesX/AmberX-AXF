@@ -7,7 +7,7 @@ export interface ConsoleItem { kind: ConsoleItemKind; id: string; label: string;
 export interface ConsoleHere { screen?: string; screenLabel?: string; dialog?: string; settings?: string }
 export interface ConsoleCatalog { $axf: 'console-catalog@1'; app: string; items: ConsoleItem[]; here: ConsoleHere }
 export interface ConsoleClient { id: string; app?: string; title?: string; device?: string; user?: string; lastUsed?: number; lastSeen?: number; here?: ConsoleHere; catalog?: ConsoleCatalog }
-export interface ConsoleMessage { $axf: 'console-command@1'; id: string; op: 'open' | 'run' | 'back' | 'home' | 'close'; kind?: ConsoleItemKind; target?: string; label?: string; spec?: string; anchor?: string; arg?: string; by: string; at: string }
+export interface ConsoleMessage { $axf: 'console-command@1'; id: string; op: 'open' | 'run' | 'back' | 'home' | 'close' | 'refresh'; kind?: ConsoleItemKind; target?: string; label?: string; spec?: string; anchor?: string; arg?: string; hard?: boolean; by: string; at: string; /** set by the console server on a queued command: `queued` (held until a console connected) or `woke` (AmberX opened the console for it) */ delivery?: 'queued' | 'woke' }
 export type ConsoleRun =
   | { ok: true; data: Record<string, unknown>; deliver?: { to: string[]; message: ConsoleMessage } }
   | { ok: false; code: ControlWireCode; message: string; [k: string]: unknown };

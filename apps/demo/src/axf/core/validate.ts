@@ -2,15 +2,20 @@ import spec from '../schemas/asset-types.json';
 import { ASSET_TYPES, type AssetEnvelope, type AssetType } from './types';
 import { hostSpec, validateHostAttachments } from './engines/widgets';
 import { validateMenuItems } from './engines/appmenu';
-import { designPackageErrors } from './engines/designpackage';
-import { stylePackageErrors } from './engines/stylepackage';
+import { skinErrors } from './engines/skin';
 import { interfaceErrors } from './engines/interface';
 import { brandAssetErrors } from './engines/brand-rules.mjs';
 import { scaleErrors } from './engines/scale-rules.mjs';
+import { layoutErrors } from './engines/layout-rules.mjs';
 import { helpErrors } from './engines/help-rules.mjs';
 import { agentCardErrors } from './engines/agent-card-rules.mjs';
 import { jobTypeErrors } from './engines/job-type-rules.mjs';
+import { cardErrors } from './engines/card-rules.mjs';
+import { demoAssetErrors } from './engines/demo-rules.mjs';
 import { behaviorErrors } from './engines/behavior';
+import { dockLayoutErrors } from './engines/dock';
+import { xlayoutErrors } from './engines/xlayout';
+import { navStyleErrors } from './engines/navstyle-rules.mjs';
 
 export interface ValidationResult {
   ok: boolean;
@@ -87,6 +92,8 @@ export function validateAsset(raw: unknown): ValidationResult {
     if (!isObj(inner)) continue;
     for (const nk of keys) if (!(nk in inner)) errors.push(`data.${k}.${nk} is required`);
   }
+  // layout tokens (every layout parameter is a token): ONE validator shared with the build engine (core/engines/layout-rules.mjs)
+  errors.push(...layoutErrors(raw.type, data));
   if (raw.type === 'layout' && 'slots' in data) errors.push(...validateSlots(data.slots, (t) => isAssetType(t)));
   if (raw.type === 'layout' && 'repeat' in data) errors.push(...validateRepeat(data.repeat, (t) => isAssetType(t)));
   // Menu items (app-menu menus, context-menu targets): optional fields provider / badge / checked / order / before / after.
@@ -100,10 +107,15 @@ export function validateAsset(raw: unknown): ValidationResult {
   if (raw.type === 'context-menu' && isObj(data.targets)) {
     for (const [t, items] of Object.entries(data.targets)) errors.push(...validateMenuItems(items, `data.targets.${t}`));
   }
-  if (raw.type === 'design-package') errors.push(...designPackageErrors(data));
-  if (raw.type === 'style-package') errors.push(...stylePackageErrors(data));
+  if (raw.type === 'skin') errors.push(...skinErrors(data));
   if (raw.type === 'interface') errors.push(...interfaceErrors(data));
   if (raw.type === 'behavior-theme') errors.push(...behaviorErrors(data));
+  // dock-layout@1 (core/engines/dock.ts): pane numbers 1..n once each, panes = leaves, ≤ 12
+  if (raw.type === 'dock-layout') errors.push(...dockLayoutErrors(data));
+  // xlayout@1 (core/engines/xlayout.ts): apps, merge modes, IDE block, three toolbar slots
+  if (raw.type === 'xlayout') errors.push(...xlayoutErrors(data));
+  // nav-style@1: ONE validator shared with control@1 and the build engine (core/engines/navstyle-rules.mjs)
+  if (raw.type === 'nav-style') errors.push(...navStyleErrors(data));
   // typography@1 / density@1 / sizing@1: ONE validator shared with the build engine (core/engines/scale-rules.mjs)
   errors.push(...scaleErrors(raw.type, data));
   // help@1: ONE validator shared with the build engine (core/engines/help-rules.mjs)
@@ -112,6 +124,10 @@ export function validateAsset(raw: unknown): ValidationResult {
   errors.push(...agentCardErrors(raw.type, data));
   // job-type@1: ONE validator shared with the build engine (core/engines/job-type-rules.mjs)
   errors.push(...jobTypeErrors(raw.type, data));
+  // card@1: ONE validator shared with the build engine (core/engines/card-rules.mjs)
+  errors.push(...cardErrors(raw.type, data));
+  // demonstration@1 / book@1 / clip@1 / docs@1: ONE validator shared with the build engine (core/engines/demo-rules.mjs)
+  errors.push(...demoAssetErrors(raw.type, data));
   errors.push(...(brandAssetErrors(raw.type, data) ?? []));
   // Widget hosts (banner.attach, toolbar.widgets): every entry names a type and side the host takes.
   const host = hostSpec(raw.type);

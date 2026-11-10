@@ -5,7 +5,7 @@
  * the child overrides the parent.
  *
  *   node framework/cli/skins.mjs apps                      apps, their skin switch, scopes and overrides
- *   node framework/cli/skins.mjs list                      the skins (and design packages) that can be used
+ *   node framework/cli/skins.mjs list                      the skins that can be used (every former design package and style package is one)
  *   node framework/cli/skins.mjs snapshot [--all | <app>] [--force]   save the current look as the app's default
  *   node framework/cli/skins.mjs use <app> <skin> [--scope ui:<id>|plugin:<id>]   Use skin on, in that app (or one of its screens / plugins)
  *   node framework/cli/skins.mjs off <app> [--scope ui:<id>|plugin:<id>]          back to the app's own look (or no skin inside that scope)
@@ -92,10 +92,7 @@ function assetsOf(type) {
   const dir = join(ROOT, 'framework/assets', type);
   return existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith('.json')).map((f) => readJson(join(dir, f))).filter(Boolean) : [];
 }
-export const skinRows = () => [
-  ...assetsOf('skin').map((a) => ({ id: a.id, name: a.name, kind: 'skin', description: a.description ?? '', iconPack: a.data?.iconPack ?? '', parts: Object.keys(a.data?.parts ?? {}) })),
-  ...assetsOf('design-package').map((a) => ({ id: a.id, name: a.name, kind: 'design-package', description: a.description ?? '', iconPack: '', parts: [] })),
-];
+export const skinRows = () => assetsOf('skin').map((a) => ({ id: a.id, name: a.name, kind: 'skin', description: a.description ?? '', tags: a.tags ?? [], sections: { colors: a.data?.sections?.colors ? 'inline' : a.data?.colorTheme ?? '', style: a.data?.sections?.style ? 'inline' : a.data?.styleTheme ?? '', layout: a.data?.sections?.layout ? 'inline' : a.data?.layoutTheme ?? '', behavior: a.data?.sections?.behavior ? 'inline' : a.data?.behaviorTheme ?? '' }, iconPack: a.data?.iconPack ?? '', parts: Object.keys(a.data?.parts ?? {}) }));
 
 /** Save the app's current look as its default. Never replaces a snapshot unless forced. */
 export function snapshot(app, force = false) {
@@ -159,14 +156,13 @@ export function coverage() {
   return { summary: coverageSummary(rows), rows };
 }
 
-/** What one skin (or design package) sets or styles, type by type. */
+/** What one skin sets or styles, type by type. */
 export function covers(skinId) {
-  const a = assetsOf('skin').find((s) => s.id === skinId) ?? assetsOf('design-package').find((s) => s.id === skinId);
+  const a = assetsOf('skin').find((s) => s.id === skinId);
   if (!a) throw new Error(`no skin "${skinId}"`);
   const d = a.data ?? {};
-  const slots = a.type === 'skin'
-    ? { ...(d.assets ?? {}), ...(d.layoutTheme ? { layout: d.layoutTheme } : {}), ...(d.colorTheme ? { 'color-theme': d.colorTheme } : {}), ...(d.styleTheme ? { 'style-theme': d.styleTheme } : {}) }
-    : { ...(d.extras?.slots ?? {}), ...(d.layout ? { layout: d.layout } : {}), ...(d['color-theme'] ? { 'color-theme': d['color-theme'] } : {}), ...(d['style-theme'] ? { 'style-theme': d['style-theme'] } : {}) };
+  const section = (name, type, field) => (d.sections?.[name] ? { [type]: `skin-${skinId}` } : d[field] ? { [type]: d[field] } : {});
+  const slots = { ...(d.assets ?? {}), ...section('layout', 'layout', 'layoutTheme'), ...section('colors', 'color-theme', 'colorTheme'), ...section('style', 'style-theme', 'styleTheme'), ...section('behavior', 'behavior-theme', 'behaviorTheme') };
   const targets = readJson(join(ROOT, 'framework/schemas/customize.json')).targets ?? {};
   return coverage().rows.map((r) => {
     const how = [];

@@ -1,0 +1,38 @@
+{
+  "$axf": "asset@1",
+  "type": "skin",
+  "id": "amberx-app-day",
+  "name": "AmberX · Day",
+  "version": "2.0.0",
+  "description": "The AmberX app's own look (day): geometric style, saffron-day colours, the phone-first console layout, the amber behaviour, the Amber Signature control set, and AmberX's own banner, toolbar and navigation.",
+  "author": "AmberX AXF",
+  "tags": [
+    "amberx",
+    "enterprise",
+    "day",
+    "branded",
+    "skin"
+  ],
+  "data": {
+    "colorTheme": "saffron-day",
+    "styleTheme": "geometric",
+    "layoutTheme": "axhub-console",
+    "behaviorTheme": "amber",
+    "assets": {
+      "button": "amber-signature",
+      "container": "amber-signature",
+      "slider": "amber-signature",
+      "dialog": "amber-signature",
+      "popup": "amber-signature",
+      "tab-group": "amber-signature",
+      "gauge": "classic-arc",
+      "meter": "striped-pill",
+      "banner": "amberx-branded",
+      "toolbar": "amberx-droid",
+      "nav-menu": "amberx-droid",
+      "typography": "compact",
+      "density": "compact",
+      "sizing": "compact"
+    }
+  }
+}

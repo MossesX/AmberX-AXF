@@ -19,7 +19,7 @@
     "context-menu": "roll-demo-seed-context",
     "settings": "roll-demo-seed-settings",
     "branding": "roll-demo-seed-brand",
-    "design-package": "roll-demo-seed-design",
+    "skin": "roll-demo-seed-skin",
     "interface": "roll-demo-seed-iface"
   },
   "rolled": [
@@ -69,7 +69,7 @@
     "animated-logo",
     "icon-pack",
     "branding",
-    "design-package",
+    "skin",
     "interface"
   ]
 }

@@ -151,10 +151,6 @@
       {
         "id": "look",
         "items": [
-          "colors",
-          "styles",
-          "layouts",
-          "s1",
           "random",
           "reset"
         ]
@@ -177,10 +173,6 @@
       {
         "id": "look",
         "items": [
-          "colors",
-          "styles",
-          "layouts",
-          "s1",
           "random",
           "reset"
         ]
@@ -203,10 +195,6 @@
       {
         "id": "look",
         "items": [
-          "colors",
-          "styles",
-          "layouts",
-          "s1",
           "random",
           "reset"
         ]
@@ -242,9 +230,7 @@
       {
         "id": "view",
         "items": [
-          "next-color",
-          "next-style",
-          "next-layout",
+          "next-skin",
           "random",
           "reset",
           "inspector",
@@ -289,9 +275,7 @@
       {
         "id": "view",
         "items": [
-          "next-color",
-          "next-style",
-          "next-layout",
+          "next-skin",
           "random",
           "reset",
           "inspector",
@@ -336,9 +320,7 @@
       {
         "id": "view",
         "items": [
-          "next-color",
-          "next-style",
-          "next-layout",
+          "next-skin",
           "random",
           "reset",
           "inspector",

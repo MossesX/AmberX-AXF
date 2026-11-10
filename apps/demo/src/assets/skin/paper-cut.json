@@ -1,0 +1,57 @@
+{
+  "$axf": "asset@1",
+  "type": "skin",
+  "id": "paper-cut",
+  "name": "Paper Cut",
+  "version": "2.0.0",
+  "description": "Outlines on paper: line buttons, flat outlined cards and plain tabs with a hairline rule. The Fresh look with the Paper Cut controls (was the Paper Cut style package).",
+  "author": "AmberX AXF",
+  "tags": [
+    "paper",
+    "flat",
+    "skin",
+    "controls"
+  ],
+  "data": {
+    "colorTheme": "fresh-light",
+    "styleTheme": "fresh",
+    "layoutTheme": "classic-ide",
+    "behaviorTheme": "standard",
+    "assets": {
+      "app-menu": "standard-desktop",
+      "toolbar": "standard-icons",
+      "nav-menu": "sidebar-list",
+      "context-menu": "compact-classic",
+      "tab-group": "paper-cut",
+      "dialog": "paper-cut",
+      "popup": "paper-cut",
+      "button": "paper-cut",
+      "slider": "paper-cut",
+      "container": "paper-cut",
+      "gauge": "level-bar",
+      "meter": "hairline",
+      "banner": "amberx-thin",
+      "clock": "digital-12h",
+      "search-bar": "everything",
+      "logo": "wordmark",
+      "action-button": "settings",
+      "label": "version",
+      "status": "online",
+      "counter": "alerts",
+      "progress": "build",
+      "avatar": "account",
+      "link": "docs",
+      "theme-switch": "fresh-day-night",
+      "spacer": "gap",
+      "divider": "rule",
+      "badge": "new",
+      "settings": "standard"
+    },
+    "extras": {
+      "spacing": "tight",
+      "hidden": {
+        "toolbar": true
+      }
+    }
+  }
+}

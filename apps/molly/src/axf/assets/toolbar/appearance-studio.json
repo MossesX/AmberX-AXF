@@ -4,7 +4,7 @@
   "id": "appearance-studio",
   "name": "Appearance Studio",
   "version": "1.0.0",
-  "description": "Step design packages and every theme, roll or reset the look, with the day and night switch at the end.",
+  "description": "Step through the skins, roll or reset the look, with the day and night switch at the end.",
   "author": "AmberX AXF",
   "tags": [
     "appearance",
@@ -16,39 +16,27 @@
     "showSearch": false,
     "groups": [
       {
-        "id": "package",
+        "id": "skin",
         "items": [
           {
-            "id": "next-package",
-            "icon": "package",
-            "label": "Next design package",
-            "action": "design.package:next",
-            "requires": "assets.swap"
-          }
-        ]
-      },
-      {
-        "id": "themes",
-        "items": [
-          {
-            "id": "next-color",
+            "id": "next-skin",
             "icon": "palette",
-            "label": "Next colour theme",
-            "action": "swap:color-theme:next",
+            "label": "Next skin",
+            "action": "skin.next",
             "requires": "assets.swap"
           },
           {
-            "id": "next-style",
-            "icon": "type",
-            "label": "Next style theme",
-            "action": "swap:style-theme:next",
+            "id": "prev-skin",
+            "icon": "palette",
+            "label": "Previous skin",
+            "action": "skin.prev",
             "requires": "assets.swap"
           },
           {
-            "id": "next-layout",
-            "icon": "layout",
-            "label": "Next layout",
-            "action": "swap:layout:next",
+            "id": "random-skin",
+            "icon": "shuffle",
+            "label": "A random skin",
+            "action": "skin.random",
             "requires": "assets.swap"
           }
         ]

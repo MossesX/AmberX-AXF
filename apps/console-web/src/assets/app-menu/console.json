@@ -380,43 +380,6 @@
             "order": 23
           },
           {
-            "id": "layouts",
-            "label": "Layouts",
-            "icon": "layout",
-            "order": 24,
-            "items": [
-              {
-                "id": "next",
-                "label": "Next layout",
-                "icon": "layout",
-                "action": "swap:layout:next",
-                "shortcut": "Alt+L"
-              },
-              {
-                "id": "s1",
-                "separator": true
-              },
-              {
-                "id": "focus-top",
-                "label": "Focus top",
-                "icon": "layout",
-                "action": "swap:layout:focus-top"
-              },
-              {
-                "id": "classic-ide",
-                "label": "Classic IDE",
-                "icon": "layout",
-                "action": "swap:layout:classic-ide"
-              },
-              {
-                "id": "studio-dock",
-                "label": "Studio dock",
-                "icon": "layout",
-                "action": "swap:layout:studio-dock"
-              }
-            ]
-          },
-          {
             "id": "s2",
             "separator": true,
             "order": 30
@@ -448,16 +411,6 @@
         "label": "Plugins",
         "order": 40,
         "items": [
-          {
-            "id": "s1",
-            "separator": true,
-            "order": 20
-          },
-          {
-            "id": "s2",
-            "separator": true,
-            "order": 85
-          },
           {
             "id": "all",
             "label": "All plugins",
@@ -557,46 +510,18 @@
         "order": 60,
         "items": [
           {
-            "id": "s1",
-            "separator": true,
-            "order": 10
-          },
-          {
             "id": "look",
             "label": "Look",
             "icon": "palette",
             "order": 20,
             "items": [
               {
-                "id": "next-color",
-                "label": "Next color theme",
+                "id": "next-skin",
+                "label": "Next skin",
                 "icon": "palette",
-                "action": "swap:color-theme:next",
+                "action": "skin.next",
                 "shortcut": "Alt+C",
                 "order": 10
-              },
-              {
-                "id": "next-style",
-                "label": "Next style theme",
-                "icon": "type",
-                "action": "swap:style-theme:next",
-                "shortcut": "Alt+S",
-                "order": 11
-              },
-              {
-                "id": "next-layout",
-                "label": "Next layout",
-                "icon": "layout",
-                "action": "swap:layout:next",
-                "order": 12
-              },
-              {
-                "id": "next-design",
-                "label": "Next design package",
-                "icon": "sparkles",
-                "action": "design.package:next",
-                "requires": "assets.swap",
-                "order": 13
               },
               {
                 "id": "s1",

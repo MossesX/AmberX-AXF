@@ -5,14 +5,17 @@
  * popup (rt.showBannerPopup) pops a short message out to the right of its attachment for a few seconds; tapping it
  * dismisses it early. Theme tokens only.
  */
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BANNER_SIDES, badgeToneToken, bannerSurface, clockTickMs, formatClock, type ClockParts, type PlacedAttachment } from '../../core/engines/banner';
-import type { BadgeData, ClockData } from '../../core/types';
+import { bannerWidgetNumber } from '../../core/engines/bannerwidgets';
+import { statusOn, widgetTone } from '../../core/engines/widgets';
+import type { BadgeData, ClockData, CounterData, StatusData } from '../../core/types';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { ArrangeBar, arrangedSide, useArrange } from './Arrange';
 import { BrandMark, brandHostProps, useBrandPlace } from './Brand';
 import { Icon } from './Icon';
-import { WidgetView } from './Widgets';
+import { BannerMore, bannerItemAttrs, useBannerOverflow } from './BannerWidgets';
+import { Tap, WidgetView } from './Widgets';
 
 function clockParts(tz?: string): ClockParts {
   const now = new Date();
@@ -54,15 +57,36 @@ export function BannerBadge({ data }: { data: BadgeData }) {
     : <span role="img" {...props}>{body}</span>;
 }
 
+/** A widget set to show only its number: its count, tapping it does what the widget does. */
+function WidgetNumber({ type, data }: { type: string; data: Partial<StatusData & CounterData> & { counter?: string } }) {
+  const rt = useRuntime();
+  const n = rt.badge(data.counter ?? '');
+  const on = statusOn(n);
+  const text = bannerWidgetNumber(type === 'status' ? (on ? data.onLabel : data.offLabel) : '', n);
+  const tone = widgetTone(type === 'status' ? (on ? data.onTone : data.offTone) : data.tone);
+  return <Tap action={data.link} className="fx-widget-counter" title={type === 'status' ? (on ? data.onLabel : data.offLabel) : data.label}><span className="fx-widget-counter__num" data-tone={tone}>{text}</span></Tap>;
+}
+
+/** One banner widget as the person set it up (bar, ⋯ menu, a host's banner strip). */
+export function BannerWidgetBody({ type, id }: { type: string; id: string }) {
+  const rt = useRuntime();
+  const asset = rt.registry.get(type as never, id) as { data: unknown } | undefined;
+  if (!asset) return null;
+  const { show } = rt.bannerWidgetView(`${type}:${id}`);
+  if (type === 'badge') return <BannerBadge data={asset.data as BadgeData} />;
+  if (show === 'number' && (type === 'status' || type === 'counter')) return <WidgetNumber type={type} data={asset.data as StatusData} />;
+  // icon only: a status has no icon, its dot is what's left
+  return <WidgetView type={type} id={id} host="banner" patch={show === 'icon' && type === 'status' ? { dot: true } : undefined} />;
+}
+
 function Attached({ a }: { a: PlacedAttachment }) {
   const rt = useRuntime();
   const state = useAxfState();
-  const asset = rt.registry.get(a.type as never, a.id) as { data: unknown } | undefined;
-  if (!asset) return null;
+  if (!rt.registry.has(a.type as never, a.id)) return null;
   const pop = state.bannerPopup && state.bannerPopup.key === a.key ? state.bannerPopup : null;
   return (
     <>
-      {a.type === 'badge' ? <BannerBadge data={asset.data as BadgeData} /> : <WidgetView type={a.type} id={a.id} host="banner" />}
+      <BannerWidgetBody type={a.type} id={a.id} />
       {pop && <span className="fx-banner__pop" role="status" onClick={() => rt.dismissBannerPopup()}>{pop.text}</span>}
     </>
   );
@@ -73,32 +97,42 @@ function bannerMarkPx(data: { height?: number }): number {
   return Math.round(((data.height ?? 24) * 0.55));
 }
 
-export function Banner() {
+/** logo.text that stands for the app's own name, for a banner every app can use (the Windows title bar). */
+const BANNER_APP_NAME = '{app}';
+
+/** `preview`: a look-only copy (the Widgets picker): nothing on it reacts, and nothing moves into the ⋯ menu. */
+export function Banner({ preview = false }: { preview?: boolean }) {
   const rt = useRuntime();
   useAxfState();
   const { data, placed } = rt.banner();
   const arrange = useArrange('banner', placed);
+  const root = useRef<HTMLDivElement>(null);
+  const all = BANNER_SIDES.flatMap((s) => placed[s]);
+  const overflow = useBannerOverflow(root, all, !preview && !arrange.on);
   // branding@1: the banner's brand slot replaces the built-in mark (lockup by default); accent-edge / watermark mark the host
   const brand = useBrandPlace('banner');
   const host = brandHostProps(brand);
   if (!data) return null;
-  const drawsMark = !!brand?.svg;
+  // a banner that names the app draws its own name, never a lockup that carries the brand's
+  const namesApp = data.logo?.text === BANNER_APP_NAME;
+  const drawsMark = !!brand?.svg && (!namesApp || brand.mode === 'mark' || brand.mode === 'animated');
   // a lockup / wordmark already carries the brand name, so the asset's own logo text is only shown next to a plain mark
   const showText = data.logo?.text && (!drawsMark || brand?.mode === 'mark' || brand?.mode === 'animated');
   return (
-    <div className={`fx-banner is-${bannerSurface(data)}${data.divider === false ? '' : ' has-divider'}${arrange.on ? ' is-arranging' : ''} ${host.className}`.trim()} role="banner" data-fx-ctx-target="banner" data-axf-search="off" data-axf-arrange-host="banner" data-fx-brand-mode={host['data-fx-brand-mode']}>
+    <div ref={root} className={`fx-banner is-${bannerSurface(data)}${data.divider === false ? '' : ' has-divider'}${arrange.on && !preview ? ' is-arranging' : ''} ${host.className}`.trim()} {...(preview ? { inert: '' as unknown as boolean, 'data-axf-banner-preview': '' } : { role: 'banner', 'data-fx-ctx-target': 'banner', 'data-axf-arrange-host': 'banner' })} data-axf-search="off" data-fx-brand-mode={host['data-fx-brand-mode']}>
       {BANNER_SIDES.map((side) => (
         <div key={side} className={`fx-banner__side is-${side}`} {...arrange.sideProps(side)}>
           {side === 'left' && data.logo?.show !== false && (
             <span className="fx-banner__logo">
               {drawsMark ? <BrandMark slot="banner" height={bannerMarkPx(data)} /> : <span className="fx-brand__mark" aria-hidden="true" />}
-              {showText && <span className="fx-banner__name">{data.logo?.text}</span>}
+              {showText && <span className="fx-banner__name">{namesApp ? rt.manifest.app.name : data.logo?.text}</span>}
             </span>
           )}
-          {arrangedSide(arrange, side, placed[side], (a, i) => arrange.item(a, i, 'fx-banner__item', { 'data-axf-banner-item': a.key, 'data-axf-origin': a.origin }, <Attached a={a} />))}
+          {arrangedSide(arrange, side, placed[side].filter((a) => !overflow.includes(a.key)), (a, i) => arrange.item(a, i, 'fx-banner__item', { 'data-axf-banner-item': a.key, 'data-axf-origin': a.origin, ...bannerItemAttrs(rt, a.key) }, <Attached a={a} />))}
+          {side === 'right' && <BannerMore keys={overflow} draw={(k) => { const a = all.find((x) => x.key === k); return a ? <span data-axf-banner-item={k} {...bannerItemAttrs(rt, k)}><Attached a={a} /></span> : null; }} />}
         </div>
       ))}
-      <ArrangeBar host="banner" label="banner" />
+      {!preview && <ArrangeBar host="banner" label="banner" />}
     </div>
   );
 }

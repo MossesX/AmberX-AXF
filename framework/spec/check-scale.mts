@@ -1,6 +1,6 @@
 /**
  * typography@1 + density@1 + sizing@1 (core/engines/scale.ts, rules core/engines/scale-rules.mjs): the three scale
- * assets are registered (types, optional, late-optional, in the shared appearance slots, style-package members), the
+ * assets are registered (types, optional, late-optional, in the shared appearance slots), the
  * registry's defaults equal the framework's own look, normalize clamps and fills, errors name the field, the compiled
  * tokens are regular (--fx-type-*, --fx-dens-*, --fx-size-*) and match the fixture, the build engine's validator is the
  * same function, every starter and every app's copy validates, the schemas carry every field, and the defaults name a
@@ -12,7 +12,6 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { validateAsset } from '../core/validate';
 import { ASSET_TYPES, OPTIONAL_TYPES } from '../core/types';
 import { appearanceSlotTypes, mergeAppearance, parseAppearance, resolveAppearance, serializeAppearance } from '../core/engines/appearance';
-import { STYLE_PACKAGE_MEMBERS } from '../core/engines/stylepackage';
 import {
   DEFAULT_DENSITY, DEFAULT_SIZING, DEFAULT_TYPOGRAPHY, SCALE_ENUMS, SCALE_FIELDS, SCALE_PREFIX, SCALE_TYPES, densityVars, normalizeScale, scaleErrors, scaleThemeVars, scaleToken, scaleVars, sizingVars, typographyVars,
 } from '../core/engines/scale';
@@ -30,7 +29,6 @@ for (const t of SCALE_TYPES) {
   ok(ASSET_TYPES.includes(t as never), `${t} is an asset type`);
   ok(OPTIONAL_TYPES.includes(t as never), `${t} is optional (older apps still validate)`);
   ok(appearanceSlotTypes().includes(t), `${t} is a shared appearance slot (axHub carries it to every app)`);
-  ok(!STYLE_PACKAGE_MEMBERS.includes(t), `${t} is not a style-package member (control sets stay controls; a design package carries it in extras.slots)`);
 }
 const spec = read('framework/schemas/asset-types.json');
 const specTypes = Object.keys(spec.types);

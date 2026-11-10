@@ -4,7 +4,7 @@
   "id": "appearance-quick",
   "name": "Appearance Quick",
   "version": "1.0.0",
-  "description": "Restyle from anywhere: step colour, style, layout and design package, pick spacing, randomize or reset.",
+  "description": "Restyle from anywhere: step through the skins, pick spacing, randomize or reset.",
   "author": "AmberX AXF",
   "tags": [
     "appearance",
@@ -17,35 +17,26 @@
     "targets": {
       "default": [
         {
-          "id": "next-package",
-          "label": "Next design package",
-          "icon": "package",
-          "action": "design.package:next",
+          "id": "next-skin",
+          "label": "Next skin",
+          "icon": "palette",
+          "action": "skin.next",
           "shortcut": "Alt+P",
           "requires": "assets.swap"
         },
         {
-          "id": "next-color",
-          "label": "Next colour theme",
+          "id": "prev-skin",
+          "label": "Previous skin",
           "icon": "palette",
-          "action": "swap:color-theme:next",
-          "shortcut": "Alt+C",
+          "action": "skin.prev",
+          "shortcut": "Alt+Shift+P",
           "requires": "assets.swap"
         },
         {
-          "id": "next-style",
-          "label": "Next style theme",
-          "icon": "type",
-          "action": "swap:style-theme:next",
-          "shortcut": "Alt+S",
-          "requires": "assets.swap"
-        },
-        {
-          "id": "next-layout",
-          "label": "Next layout",
-          "icon": "layout",
-          "action": "swap:layout:next",
-          "shortcut": "Alt+L",
+          "id": "random-skin",
+          "label": "A random skin",
+          "icon": "shuffle",
+          "action": "skin.random",
           "requires": "assets.swap"
         },
         {
@@ -151,14 +142,6 @@
           "label": "Next navigation menu",
           "icon": "grid",
           "action": "swap:nav-menu:next",
-          "requires": "assets.swap"
-        },
-        {
-          "id": "next-layout",
-          "label": "Next layout",
-          "icon": "layout",
-          "action": "swap:layout:next",
-          "shortcut": "Alt+L",
           "requires": "assets.swap"
         },
         {

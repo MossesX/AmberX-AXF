@@ -1,0 +1,36 @@
+{
+  "$axf": "asset@1",
+  "type": "skin",
+  "id": "touch-tablet",
+  "name": "Touch Tablet",
+  "version": "2.0.0",
+  "description": "Rounded, roomy and thumb-friendly on soft sage, with navigation on the right and haptic feedback.",
+  "author": "AmberX AXF",
+  "tags": [
+    "light",
+    "touch",
+    "skin"
+  ],
+  "data": {
+    "colorTheme": "meadow",
+    "styleTheme": "soft-touch",
+    "layoutTheme": "right-handed",
+    "behaviorTheme": "touch",
+    "assets": {
+      "button": "touch-friendly",
+      "container": "touch-friendly",
+      "slider": "touch-friendly",
+      "dialog": "touch-friendly",
+      "popup": "touch-friendly",
+      "tab-group": "touch-friendly",
+      "gauge": "classic-arc",
+      "meter": "striped-pill",
+      "toolbar": "touch-dock",
+      "nav-menu": "roomy-touch",
+      "context-menu": "touch-large"
+    },
+    "extras": {
+      "spacing": "regular"
+    }
+  }
+}

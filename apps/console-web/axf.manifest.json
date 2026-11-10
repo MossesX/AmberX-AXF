@@ -48,7 +48,7 @@
     "divider": "rule",
     "badge": "new",
     "uac-policy": "standard",
-    "design-package": "hub-default",
+    "skin": "hub-default",
     "branding": "gizmox",
     "typography": "compact",
     "density": "compact",

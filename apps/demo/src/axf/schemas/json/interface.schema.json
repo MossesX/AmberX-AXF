@@ -34,12 +34,28 @@
     },
     "data": {
       "type": "object",
-      "required": [
-        "design"
-      ],
+      "required": [],
       "properties": {
-        "design": {}
-      }
+        "skin": {
+          "type": "string"
+        },
+        "design": {
+          "type": "string",
+          "description": "the skin under its old name"
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "skin"
+          ]
+        },
+        {
+          "required": [
+            "design"
+          ]
+        }
+      ]
     }
   }
 }

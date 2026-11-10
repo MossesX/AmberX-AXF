@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "axf/skin.schema.json",
-  "title": "AmberX AXF Skin asset",
+  "title": "AmberX AXF Skin asset (skin@2)",
   "type": "object",
   "required": [
     "$axf",
@@ -35,17 +35,120 @@
     "data": {
       "type": "object",
       "required": [
-        "layoutTheme",
-        "colorTheme",
-        "styleTheme",
         "assets"
       ],
       "properties": {
-        "layoutTheme": {},
-        "colorTheme": {},
-        "styleTheme": {},
-        "assets": {}
-      }
+        "layoutTheme": {
+          "type": "string"
+        },
+        "colorTheme": {
+          "type": "string"
+        },
+        "styleTheme": {
+          "type": "string"
+        },
+        "behaviorTheme": {
+          "type": "string"
+        },
+        "sections": {
+          "type": "object",
+          "properties": {
+            "colors": {
+              "type": "object"
+            },
+            "style": {
+              "type": "object"
+            },
+            "layout": {
+              "type": "object"
+            },
+            "behavior": {
+              "type": "object"
+            }
+          },
+          "additionalProperties": false
+        },
+        "assets": {
+          "type": "object"
+        },
+        "iconPack": {
+          "type": "string"
+        },
+        "parts": {
+          "type": "object"
+        },
+        "preview": {
+          "type": "object"
+        },
+        "extras": {
+          "type": "object"
+        }
+      },
+      "allOf": [
+        {
+          "anyOf": [
+            {
+              "required": [
+                "colorTheme"
+              ]
+            },
+            {
+              "properties": {
+                "sections": {
+                  "required": [
+                    "colors"
+                  ]
+                }
+              },
+              "required": [
+                "sections"
+              ]
+            }
+          ]
+        },
+        {
+          "anyOf": [
+            {
+              "required": [
+                "styleTheme"
+              ]
+            },
+            {
+              "properties": {
+                "sections": {
+                  "required": [
+                    "style"
+                  ]
+                }
+              },
+              "required": [
+                "sections"
+              ]
+            }
+          ]
+        },
+        {
+          "anyOf": [
+            {
+              "required": [
+                "layoutTheme"
+              ]
+            },
+            {
+              "properties": {
+                "sections": {
+                  "required": [
+                    "layout"
+                  ]
+                }
+              },
+              "required": [
+                "sections"
+              ]
+            }
+          ]
+        }
+      ]
     }
   }
 }

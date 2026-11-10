@@ -5,6 +5,12 @@ export const APP_LOOK_PROJECT: string;
 export const APP_LOOK_MAX_BYTES: number;
 export const SKIN_NEVER: readonly string[];
 export const SKIN_USES: readonly ('on' | 'off' | 'inherit')[];
+/** The skin's four sections → the asset type holding that section's presets. */
+export const SKIN_SECTIONS: { readonly colors: 'color-theme'; readonly style: 'style-theme'; readonly layout: 'layout'; readonly behavior: 'behavior-theme' };
+export type SkinSection = keyof typeof SKIN_SECTIONS;
+export function isSkinSectionType(type: string): boolean;
+export function sectionOfType(type: string): SkinSection | '';
+export function migrateLegacyLook<T extends AppLookDocument | null>(look: T): T;
 /** A look: what a snapshot holds and what picks add. */
 export interface LookPart { slots?: Record<string, string>; spacing?: string; hidden?: Record<string, boolean>; settings?: Record<string, unknown> }
 /** The app level: Use skin, follow the hub-wide skin while off, the skin and its overrides. */

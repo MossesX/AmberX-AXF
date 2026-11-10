@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type R
 import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION, type NavItem } from '../../core';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
+import { NavTree } from './NavTree';
 import { BrandMark, brandHostProps, useBrandPlace } from './Brand';
 import { AppMenuDropdown } from './AppMenu';
 import { HelpModeButton } from './Help';
@@ -46,7 +47,7 @@ export function MenuBar() {
   };
 
   return (
-    <div className="fx-menubar" ref={ref} role="menubar" onKeyDown={onKey}>
+    <div className="fx-menubar" ref={ref} role="menubar" onKeyDown={onKey} data-fx-ctx-target="app-menu" data-fx-ctx-payload="app">
       <div className="fx-brand">
         {/* the app's own name (manifest): the branding package is one look shared by every app through axHub, so it gives the
             mark, not the name (Nov 1 2026: the console is GizmoX AI Studio, axHub web is AXHub, AmberX is AmberX) */}
@@ -130,7 +131,7 @@ export function Toolbar({ views }: { views: ViewMap }) {
   };
 
   return (
-    <div className={`fx-toolbar fx-toolbar--${tb.data.variant}${arrange.on ? ' is-arranging' : ''} ${brandHost.className}`.trim()} data-align={tb.data.align} role="toolbar" aria-label="Toolbar" data-axf-toolbar="app" data-fx-ctx-target="toolbar" data-axf-arrange-host="toolbar" data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
+    <div className={`fx-toolbar fx-toolbar--${tb.data.variant}${arrange.on ? ' is-arranging' : ''} ${brandHost.className}`.trim()} data-align={tb.data.align} role="toolbar" aria-label="Toolbar" data-axf-toolbar="app" data-fx-ctx-target="toolbar" data-fx-ctx-payload="app" data-axf-arrange-host="toolbar" data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
       <ArrangeBar host="toolbar" label="toolbar" />
       {brand?.svg && <span className="fx-toolbar__brand"><BrandMark slot="toolbar" height={20} /></span>}
       {(arrange.on || widgets.start.length > 0) && <span className="fx-toolbar__widgets is-start" {...arrange.sideProps('start')}>{arrangedSide(arrange, 'start', widgets.start, drawWidget)}</span>}
@@ -243,10 +244,24 @@ export function mergeNavSections<S extends { label?: string | null; items: NavIt
   for (const s of sections) {
     const key = s.label ? s.label.trim().toLowerCase() : '';
     const hit = key ? byLabel.get(key) : undefined;
-    if (hit) { hit.items = [...hit.items, ...s.items.filter((it) => !hit.items.some((x) => x.view === it.view))]; continue; }
+    if (hit) { hit.items = withChildren(hit.items, s.items); continue; }
     const copy = { ...s, items: [...s.items] };
     out.push(copy);
     if (key) byLabel.set(key, copy);
+  }
+  return out;
+}
+
+/**
+ * Items joined by view: a new view is added; one already there keeps its own fields and takes the newcomer's children
+ * (NavItem.items), so a plugin can hang a sub menu on an item the nav-menu asset already has (Molly's apps).
+ */
+function withChildren(have: NavItem[], add: NavItem[]): NavItem[] {
+  const out = [...have];
+  for (const it of add) {
+    const i = out.findIndex((x) => x.view === it.view);
+    if (i === -1) { out.push(it); continue; }
+    if (it.items?.length) { const cur = out[i]!; out[i] = { ...cur, items: [...(cur.items ?? []), ...it.items.filter((c) => !(cur.items ?? []).some((x) => x.id === c.id))] }; }
   }
   return out;
 }
@@ -269,9 +284,12 @@ export function NavMenu({ views }: { views: ViewMap }) {
   const layout = useAsset('layout');
   const state = useAxfState();
   const orient = layout.data.nav === 'top' ? 'horizontal' : 'vertical';
+  // a nav-menu that opts in to nav-style@1 draws sub menus (NavTree); every other nav is drawn as it always was
+  const navStyle = rt.navStyleData();
+  if (navStyle) return <NavTree sections={mergeNavSections([...nav.data.sections, ...rt.navExtras])} views={views} style={navStyle} orient={orient} header={nav.data.header} />;
 
   return (
-    <nav className={`fx-nav fx-nav--${nav.data.style}`} data-orient={orient} aria-label="Main">
+    <nav className={`fx-nav fx-nav--${nav.data.style}`} data-orient={orient} aria-label="Main" data-axf-nav="app" data-fx-ctx-target="nav" data-fx-ctx-payload="app">
       {nav.data.header && orient === 'vertical' && <div className="fx-nav__header">{nav.data.header}</div>}
       {mergeNavSections([...nav.data.sections, ...rt.navExtras]).map((sec, i) => {
         const items = sec.items.filter((it) => views[it.view] && rt.gate(it.requires) !== 'hide' && !rt.takenByHost({ view: it.view }));

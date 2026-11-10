@@ -45,7 +45,7 @@ live groups and toggles: deferred (port on hold, `framework/spec/PORTING.md`).
 | **Developer Ops** `developer-ops` | Developer consoles | icons · start · compact · flat | — | — | progress/build (end), status/ai (end), clock/digital-24h (end) |
 | **Ops Monitor** `ops-monitor` | Monitoring dashboards | icons · spread · regular · raised | — | — | status/online (end), counter/alerts (end), progress/build (end), clock/digital-24h (end) |
 | **Editor Classic** `editor-classic` | Document and form editors | icons · start · compact · flat | — | — | — |
-| **Appearance Studio** `appearance-studio` | Theme and brand work | icons-labels · start · regular · glass · folds | — | — | theme-switch/day-night (end) |
+| **Appearance Studio** `appearance-studio` | Skin and brand work | icons-labels · start · regular · glass · folds | — | — | theme-switch/day-night (end) |
 | **Minimal Glass** `minimal-glass` | Consumer and marketing apps | icons · center · regular · glass | — | badge `alerts.unread` | live search |
 | **Touch Dock** `touch-dock` | Tablets and phones | icons-labels · spread · roomy · flat | `views` ×3 | badge `alerts.unread` | — |
 | **Reader Bar** `reader-bar` | Reading and documentation | labels · spread · compact · flat | — | — | — |
@@ -88,7 +88,7 @@ The active navigation menu drawn as a labelled strip; swapping the nav menu chan
 One button per open floating window to bring it back, beside the window and layout commands.
 
 - **Open windows**: live `windows` up to 8
-- **layout**: Next layout (`swap:layout:next`); Show or hide navigation (`slot.hide:nav-menu:toggle`, slot:nav-menu)
+- **layout**: Show or hide navigation (`slot.hide:nav-menu:toggle`, slot:nav-menu)
 
 ### Chrome Toggles (`chrome-toggles`)
 
@@ -132,10 +132,9 @@ The classic editing row: new, open, save, export, undo, redo and the clipboard.
 
 ### Appearance Studio (`appearance-studio`)
 
-Step design packages and every theme, roll or reset the look, with the day and night switch at the end.
+Step through the skins, roll or reset the look, with the day and night switch at the end.
 
-- **package**: Next design package (`design.package:next`)
-- **themes**: Next colour theme (`swap:color-theme:next`); Next style theme (`swap:style-theme:next`); Next layout (`swap:layout:next`)
+- **skin**: Next skin (`skin.next`); Previous skin (`skin.prev`); A random skin (`skin.random`)
 - **roll**: Randomize the look (`assets.random`); Reset the look (`assets.reset`); Appearance settings… (`settings.open:appearance`)
 
 ### Minimal Glass (`minimal-glass`)

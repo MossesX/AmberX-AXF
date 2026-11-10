@@ -42,19 +42,11 @@
           "separator": true
         },
         {
-          "id": "next-color",
-          "label": "Next colour theme",
+          "id": "next-skin",
+          "label": "Next skin",
           "icon": "palette",
-          "action": "swap:color-theme:next",
+          "action": "skin.next",
           "shortcut": "Alt+C",
-          "requires": "assets.swap"
-        },
-        {
-          "id": "next-layout",
-          "label": "Next layout",
-          "icon": "layout",
-          "action": "swap:layout:next",
-          "shortcut": "Alt+L",
           "requires": "assets.swap"
         },
         {

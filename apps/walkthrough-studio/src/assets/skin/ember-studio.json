@@ -1,0 +1,25 @@
+{
+  "$axf": "asset@1",
+  "type": "skin",
+  "id": "ember-studio",
+  "name": "Ember Studio",
+  "version": "2.0.0",
+  "description": "Soft Studio shapes in warm Amber Ember, docked studio layout, playful motion. Themes only: the rest of the look (bars, controls, spacing) stays as it is.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "warm",
+    "skin"
+  ],
+  "data": {
+    "colorTheme": "amber-ember",
+    "styleTheme": "soft-studio",
+    "layoutTheme": "studio-dock",
+    "behaviorTheme": "playful",
+    "assets": {
+      "typography": "compact",
+      "density": "compact",
+      "sizing": "compact"
+    }
+  }
+}

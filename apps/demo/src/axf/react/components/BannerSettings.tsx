@@ -42,6 +42,7 @@ import {
   setAllBannersHidden, setBannerHidden, setBannerTimer, showAllBanners, anyBannerHide, type BannerHideState,
 } from '../../core/engines/bannerhide';
 import { Icon } from './Icon';
+import { TabGroup } from './TabGroup';
 import { LookEditor, LookLevelSwitch } from './LookEditor';
 import { LOOK_LEVELS, lookChanged, lookCss, lookPrefs, normalizeLook, type LookLevel, type LookValues } from '../../core/engines/looktokens';
 import { useAxfState, useRuntime } from '../AxfProvider';
@@ -76,7 +77,10 @@ export const BANNER_LOOK_KEY = 'axf.banners.look';
 export const BANNER_LOOK_LEVEL_KEY = 'axf.banners.lookLevel';
 export const BANNER_SETTINGS_DIALOG = 'axf.banners.settings';
 export const BANNER_CTX_TARGET = 'axf-banner';
-export const DEFAULT_BANNER_PREFS: BannerPrefs = { tone: 'own', density: 'regular', icon: true, maxRows: 0, show: true, launch: 'expanded', autoHide: 0, order: null, hideInHost: false, workIcon: '', workAnim: '' };
+/** Banners are compact by default (Nov 1 2026, Brett: "How come the refactor didn't compress banners"): compact
+ *  density, launched folded to one line, at most 6 rows when open (the list scrolls past that). A banner's own choice
+ *  or Apply to all still wins. */
+export const DEFAULT_BANNER_PREFS: BannerPrefs = { tone: 'own', density: 'compact', icon: true, maxRows: 6, show: true, launch: 'minimized', autoHide: 0, order: null, hideInHost: false, workIcon: '', workAnim: '' };
 const TONES: BannerTone[] = ['own', 'accent', 'info', 'success', 'warning', 'danger', 'neutral'];
 const DENSITIES: BannerDensity[] = ['compact', 'regular', 'roomy'];
 
@@ -104,11 +108,11 @@ export function bannerPrefs(rt: AxfRuntime, id: string): BannerPrefs {
   const num = (v: unknown, lo: number, hi: number, d: number) => (typeof v === 'number' && Number.isFinite(v) ? Math.min(hi, Math.max(lo, Math.round(v))) : d);
   return {
     tone: TONES.includes(p.tone as BannerTone) ? (p.tone as BannerTone) : 'own',
-    density: DENSITIES.includes(p.density as BannerDensity) ? (p.density as BannerDensity) : 'regular',
+    density: DENSITIES.includes(p.density as BannerDensity) ? (p.density as BannerDensity) : DEFAULT_BANNER_PREFS.density,
     icon: p.icon !== false,
-    maxRows: num(p.maxRows, 0, 60, 0),
+    maxRows: num(p.maxRows, 0, 60, DEFAULT_BANNER_PREFS.maxRows),
     show: p.show !== false,
-    launch: p.launch === 'minimized' ? 'minimized' : 'expanded',
+    launch: p.launch === 'expanded' ? 'expanded' : 'minimized',
     autoHide: num(p.autoHide, 0, 3600, 0),
     order: typeof p.order === 'number' && Number.isFinite(p.order) ? p.order : null,
     hideInHost: p.hideInHost === true,
@@ -478,14 +482,11 @@ export function BannerSettingsPanel({ initial }: { initial?: string }) {
   };
   return (
     <div className="fx-banner-settings">
-      <ApplyToAllLook />
-      <div className="fx-banner-settings__tabs" role="tablist" aria-label="Banners">
-        {list.map((x) => (
-          <button key={x.id} type="button" role="tab" aria-selected={x.id === tab} className={`fx-banner-settings__tab${x.id === tab ? ' is-on' : ''}`} onClick={() => setTab(x.id)}>
-            <Icon name={x.icon ?? 'bell'} size={14} />{bannerLabel(x)}
-          </button>
-        ))}
+      <div className="fx-row fx-row--wrap">
+        <Button tone="ghost" icon="layers" onClick={() => rt.dispatch('banner.widgets')}>Widgets on the top bar…</Button>
       </div>
+      <ApplyToAllLook />
+      <TabGroup id="banner-settings.banners" label="Banners" className="fx-banner-settings__tabs" value={tab} onChange={setTab} tabs={list.map((x) => ({ value: x.id, label: bannerLabel(x), icon: x.icon ?? 'bell' }))} />
       {b && (
         <div className="fx-stack">
           <Section title="Hide">

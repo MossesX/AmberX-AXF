@@ -36,25 +36,11 @@
           "separator": true
         },
         {
-          "id": "next-color",
-          "label": "Next color theme",
+          "id": "next-skin",
+          "label": "Next skin",
           "icon": "palette",
-          "action": "swap:color-theme:next",
+          "action": "skin.next",
           "shortcut": "Alt+C"
-        },
-        {
-          "id": "next-style",
-          "label": "Next style theme",
-          "icon": "type",
-          "action": "swap:style-theme:next",
-          "shortcut": "Alt+S"
-        },
-        {
-          "id": "next-layout",
-          "label": "Next layout",
-          "icon": "layout",
-          "action": "swap:layout:next",
-          "shortcut": "Alt+L"
         },
         {
           "id": "s2",
@@ -123,13 +109,6 @@
           "label": "Next navigation menu",
           "icon": "grid",
           "action": "swap:nav-menu:next"
-        },
-        {
-          "id": "next-layout",
-          "label": "Next layout",
-          "icon": "layout",
-          "action": "swap:layout:next",
-          "shortcut": "Alt+L"
         }
       ]
     }

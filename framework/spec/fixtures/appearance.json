@@ -35,8 +35,6 @@
     "xlayout",
     "nav-style",
     "behavior-theme",
-    "design-package",
-    "style-package",
     "interface",
     "logo-mark",
     "animated-logo",
@@ -97,7 +95,6 @@
     "retired-slot": {
       "$axf": "appearance@1",
       "slots": {
-        "design-package": "hub-default",
         "layout": "classic-ide"
       }
     }
@@ -168,9 +165,7 @@
       },
       "spacing": null,
       "hidden": {},
-      "skipped": [
-        "design-package:hub-default (not in this app)"
-      ]
+      "skipped": []
     }
   },
   "merged": {

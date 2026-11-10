@@ -1,0 +1,32 @@
+{
+  "$axf": "asset@1",
+  "type": "skin",
+  "id": "glass-studio",
+  "name": "Glass Studio",
+  "version": "2.0.0",
+  "description": "Frosted glass panels under an aurora sky, a design-tool frame and fluid, springy motion.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "glass",
+    "creative",
+    "skin"
+  ],
+  "data": {
+    "colorTheme": "aurora-night",
+    "styleTheme": "glass-pro",
+    "layoutTheme": "canvas-studio",
+    "behaviorTheme": "fluid",
+    "assets": {
+      "button": "glass-air",
+      "container": "glass-air",
+      "slider": "glass-air",
+      "dialog": "glass-air",
+      "popup": "glass-air",
+      "tab-group": "glass-air",
+      "gauge": "ring",
+      "meter": "gradient-soft",
+      "toolbar": "appearance-studio"
+    }
+  }
+}

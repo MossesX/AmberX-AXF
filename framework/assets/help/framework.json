@@ -91,7 +91,7 @@
       {
         "target": "menu:look",
         "title": "Look menu",
-        "text": "Themes, layouts and the design package: change how the whole app looks in one tap.",
+        "text": "Themes, layouts and the skins: change how the whole app looks in one tap.",
         "kind": "menu"
       },
       {
@@ -269,27 +269,22 @@
         "target": "action:swap",
         "title": "Hot-swap",
         "text": "Swaps this part of the look for another asset, live — no reload, nothing lost. Every app on the framework is built from swappable assets.",
-        "tryIt": "Try Look → Next color theme and watch everything follow."
+        "tryIt": "Try Look → Next skin and watch everything follow."
       },
       {
-        "target": "action:swap:color-theme:next",
-        "title": "Next color theme",
-        "text": "Switches every colour in the app to the next colour theme, live."
+        "target": "action:skin.next",
+        "title": "Next skin",
+        "text": "Switches this app to the next skin: colours, style, layout, behaviour and every control, live."
       },
       {
-        "target": "action:swap:color-theme:prev",
-        "title": "Previous color theme",
-        "text": "Goes back to the colour theme before this one."
+        "target": "action:skin.prev",
+        "title": "Previous skin",
+        "text": "Goes back to the skin before this one."
       },
       {
-        "target": "action:swap:style-theme:next",
-        "title": "Next style theme",
-        "text": "Switches the shapes, shadows and glass to the next style theme."
-      },
-      {
-        "target": "action:swap:layout:next",
-        "title": "Next layout",
-        "text": "Moves the bars and panels into the next layout. Your pages stay as they are."
+        "target": "action:skin.random",
+        "title": "A random skin",
+        "text": "Picks any other skin for this app. Don't like it? Step on, or Restore to default."
       },
       {
         "target": "action:swap:nav-menu:next",
@@ -327,9 +322,9 @@
         "text": "Copies this asset's JSON to the clipboard."
       },
       {
-        "target": "action:design.package",
-        "title": "Design package",
-        "text": "Applies the next design package: a whole matched look (colours, style, layout, controls) in one go."
+        "target": "action:skin.use",
+        "title": "Skin",
+        "text": "Puts a skin on this app: a whole matched look (colours, style, layout, behaviour, controls) in one go. skins and style packages are skins now."
       },
       {
         "target": "action:spacing",
