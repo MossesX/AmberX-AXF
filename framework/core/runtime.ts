@@ -879,9 +879,13 @@ export class AxfRuntime {
    * The Skin Builder's live preview: a sections map drawn on this app as if it were a skin (nothing saved). The map
    * is registered as a throw-away skin asset; null puts the saved look back and drops it.
    */
+  private lastPreviewSections = '';
   previewSections(sections: SkinSections | null): boolean {
     const PREVIEW_ID = 'skin-builder-preview';
-    if (!sections) { const was = !!this.lookPreview; this.lookPreview = null; if (was) { this.applyAppearance(this.lastAppearance); this.bumpLook(); } return true; }
+    if (!sections) { const was = !!this.lookPreview; this.lookPreview = null; this.lastPreviewSections = ''; if (was) { this.applyAppearance(this.lastAppearance); this.bumpLook(); } return true; }
+    const key = JSON.stringify(sections);
+    if (key === this.lastPreviewSections && this.lookPreview?.id === PREVIEW_ID) return true; // the same pack again: nothing to redraw
+    this.lastPreviewSections = key;
     const r = this.registry.register({ $axf: 'asset@1', type: SKIN_TYPE, id: PREVIEW_ID, name: 'Skin Builder preview', version: '0.0.0', description: 'The Skin Builder\'s live preview; never saved.', data: { sections } }, 'imported', 'skin-builder');
     if (!r.ok) return false;
     this.lookPreview = { id: PREVIEW_ID };

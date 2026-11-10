@@ -901,7 +901,7 @@ const CSS = `
 .axf-skin__dot{display:inline-block;width:calc(var(--fx-space)*.75);height:calc(var(--fx-space)*.75);margin-left:var(--fx-dens-gap-xs);border-radius:999px;background:var(--fx-accent)}
 .axf-skin__thumb{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;border-radius:var(--fx-radius-sm);border:var(--fx-border-w) solid var(--fx-border)}
 .axf-skin__thumb--lg{width:calc(var(--fx-space)*40);flex:0 0 auto}
-.axf-skin__sections{display:flex;flex-direction:column;gap:var(--fx-dens-gap-xs);max-height:calc(var(--fx-space)*52);overflow-y:auto;padding:var(--fx-dens-gap-sm);border:var(--fx-border-w) solid var(--fx-border);border-radius:var(--fx-radius-md);background:var(--fx-surface)}
+.axf-skin__sections{display:flex;flex-direction:column;gap:var(--fx-dens-gap-xs);max-height:calc(var(--fx-space)*96);overflow-y:auto;padding:var(--fx-dens-gap-sm);border:var(--fx-border-w) solid var(--fx-border);border-radius:var(--fx-radius-md);background:var(--fx-surface)}
 .axf-skin__sections-head{display:flex;align-items:center;justify-content:space-between;gap:var(--fx-dens-gap-md)}
 .axf-skin__section{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr);align-items:center;gap:var(--fx-dens-gap-md);padding:var(--fx-dens-gap-xs) var(--fx-dens-gap-sm);border-radius:var(--fx-radius-sm);opacity:var(--fx-opacity-muted);transition:opacity var(--fx-motion) ease,background var(--fx-motion) ease}
 .axf-skin__section.is-on{opacity:1;background:var(--fx-accent-soft)}

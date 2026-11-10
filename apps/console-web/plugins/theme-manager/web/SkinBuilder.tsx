@@ -89,12 +89,15 @@ export function SkinBuilder({ load }: { load?: string } = {}) {
   }, [rt]);
   useEffect(() => { if (load) loadSkin(load); }, [load, loadSkin]);
 
-  // the sections the console previews: the draft over what is in force now (so a half-built pack still shows)
-  const effective = useMemo<SkinSections>(() => ({ ...current.sections, ...draft.sections, ...(hover ? { [hover.section]: hover.id } : {}) }), [current.sections, draft.sections, hover]);
+  // the sections the console previews: the draft over what is in force now (so a half-built pack still shows); keyed by
+  // value, so a render never redraws the same pack
+  const currentKey = JSON.stringify(current.sections);
+  const effectiveKey = useMemo(() => JSON.stringify({ ...(JSON.parse(currentKey) as SkinSections), ...draft.sections, ...(hover ? { [hover.section]: hover.id } : {}) }), [currentKey, draft.sections, hover]);
   useEffect(() => {
     if (!after) { rt.previewSections(null); return; }
+    const effective = JSON.parse(effectiveKey) as SkinSections;
     if (effective.colors && effective.design && effective.layout) rt.previewSections(effective);
-  }, [rt, after, effective]);
+  }, [rt, after, effectiveKey]);
   useEffect(() => () => { rt.previewSections(null); }, [rt]);
 
   const setSlot = useCallback((section: SkinSectionId, id: string | null) => {
