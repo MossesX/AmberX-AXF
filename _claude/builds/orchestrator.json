@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T04:36:16.477Z",
+ "updatedAt": "2026-11-10T04:36:40.892Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -32193,7 +32193,7 @@
    "branch": "claude/context-menu-editor",
    "pr": "",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-10-31T09:07:21.792Z",
+   "updatedAt": "2026-11-10T04:36:21.925Z",
    "builtAt": "",
    "notes": [
     {
@@ -32285,7 +32285,7 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": "",
+     "note": "Audit: done — smart-menus (built Nov 3) ships Pinned sections in every app and context menu",
      "uid": "st-luch99"
     },
     {
@@ -51280,7 +51280,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-22T01:57:53.687Z",
-   "updatedAt": "2026-11-10T04:36:10.113Z",
+   "updatedAt": "2026-11-10T04:36:15.560Z",
    "builtAt": "",
    "notes": [
     {
@@ -51298,6 +51298,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Audit: hold — s1, s2 and the web half of s4 are on main (framework/libs/hub/apps.ts, apps/axhub-web/src/axf/libs/hub/apps.ts); what is left (s3 Kotlin twin, s4 Android Apps tab) is Android work, on hold.",
+     "at": "2026-11-10T04:36:15.560Z"
     }
    ],
    "approvals": [],
@@ -75065,12 +75069,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T21:14:58.067Z",
-   "updatedAt": "2026-11-08T21:16:26.344Z",
+   "updatedAt": "2026-11-10T04:36:27.058Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-08T21:16:26.344Z"
+    },
+    {
+     "text": "Audit: queue — the overflow half is on PR #387 (terminal-header-responsive, open, not on main yet): build on that branch's approach, the new work is every toolbar item as a snappable registry asset.",
+     "at": "2026-11-10T04:36:27.058Z"
     }
    ],
    "approvals": [],

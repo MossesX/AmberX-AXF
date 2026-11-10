@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2346,
- "updatedAt": "2026-11-10T04:36:16.477Z",
+ "rev": 2347,
+ "updatedAt": "2026-11-10T04:36:40.892Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -12058,7 +12058,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-22T01:57:53.687Z",
-   "updatedAt": "2026-11-10T04:36:10.113Z",
+   "updatedAt": "2026-11-10T04:36:15.560Z",
    "builtAt": "",
    "notes": [
     {
@@ -12076,6 +12076,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Audit: hold — s1, s2 and the web half of s4 are on main (framework/libs/hub/apps.ts, apps/axhub-web/src/axf/libs/hub/apps.ts); what is left (s3 Kotlin twin, s4 Android Apps tab) is Android work, on hold.",
+     "at": "2026-11-10T04:36:15.560Z"
     }
    ],
    "approvals": [],
@@ -12200,7 +12204,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -40672,7 +40676,7 @@
    "branch": "claude/context-menu-editor",
    "pr": "",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-10-31T09:07:21.792Z",
+   "updatedAt": "2026-11-10T04:36:21.925Z",
    "builtAt": "",
    "notes": [
     {
@@ -40778,10 +40782,10 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": "",
-     "rev": 5,
+     "note": "Audit: done — smart-menus (built Nov 3) ships Pinned sections in every app and context menu",
+     "rev": 6,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-11-07T10:46:39.420Z"
+     "updatedAt": "2026-11-10T04:36:22.631Z"
     },
     {
      "id": "s5",
@@ -40814,7 +40818,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -123664,12 +123668,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T21:14:58.067Z",
-   "updatedAt": "2026-11-08T21:16:26.344Z",
+   "updatedAt": "2026-11-10T04:36:27.058Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-08T21:16:26.344Z"
+    },
+    {
+     "text": "Audit: queue — the overflow half is on PR #387 (terminal-header-responsive, open, not on main yet): build on that branch's approach, the new work is every toolbar item as a snappable registry asset.",
+     "at": "2026-11-10T04:36:27.058Z"
     }
    ],
    "approvals": [],
@@ -123765,7 +123773,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
