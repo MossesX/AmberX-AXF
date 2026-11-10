@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T15:31:20.383Z",
+ "updatedAt": "2026-11-10T15:31:34.772Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -79700,8 +79700,8 @@
    "pr": "#445",
    "priority": "P2",
    "createdAt": "2026-11-09T18:43:22.318Z",
-   "updatedAt": "2026-11-10T15:30:36.288Z",
-   "builtAt": "2026-11-10T15:30:36.288Z",
+   "updatedAt": "2026-11-10T15:31:03.941Z",
+   "builtAt": "2026-11-10T15:31:03.941Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -79782,6 +79782,10 @@
     {
      "text": "Self-check: file-watchdog-plugin-watch-files-run-scripts-or was marked running on account-1 with no session: released and back in the Queue.",
      "at": "2026-11-10T15:30:23.790Z"
+    },
+    {
+     "text": "Headless run axf-file-watchdog-plugin-watch-files-run-scripts-or--rhonda: brief only · start 0 tokens · cost $2.79 · 67 turns · 6 tools, MCP none",
+     "at": "2026-11-10T15:31:03.941Z"
     }
    ],
    "approvals": [],
