@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 17:41 UTC · `prompt-caching-and-batch-api-support-in-the-buil` → running, note (all) · pipeline
 - 2026-11-09 17:41 UTC · `prompt-caching-and-batch-api-support-in-the-buil` branch claude/prompt-caching-and-batch-api-support-in-the-buil (all) · pipeline
 - 2026-11-09 17:41 UTC · `prompt-caching-and-batch-api-support-in-the-buil` note (all) · orchestrator
 - 2026-11-09 17:41 UTC · `right-click-a-queued-build-to-assign-it-to-a-spe` → running, note (all) · pipeline
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 00:53 UTC · `build-statuses-tell-the-truth-orchestrator-list` PR #423 (all) · builds-live
 - 2026-11-10 00:54 UTC · `build-statuses-tell-the-truth-orchestrator-list` note (all) · orchestrator
 - 2026-11-10 00:54 UTC · `build-statuses-tell-the-truth-orchestrator-list` s3 done, → built (all) · orchestrator
+- 2026-11-10 00:55 UTC · `failed-launches-auto-retry-on-another-working-ac` s1 done (all) · orchestrator
 
 ## Token passes (log)
 
