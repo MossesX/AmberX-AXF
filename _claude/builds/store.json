@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2097,
- "updatedAt": "2026-11-10T00:19:34.275Z",
+ "rev": 2098,
+ "updatedAt": "2026-11-10T00:19:40.910Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -133077,9 +133077,14 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T00:17:45.319Z",
-   "updatedAt": "2026-11-10T00:17:47.112Z",
+   "updatedAt": "2026-11-10T00:19:35.487Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T00:19:35.487Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -133094,7 +133099,99 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-10T00:19:35.487Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw9y0lof01h8ua",
+     "title": "",
+     "text": "Builds on the HR/employees build (assign-an-employee-to-every-role-action-type-and); upgrade that, don't duplicate. 1) Orchestrator and Build Manager tables get columns: model (Opus/Fable/etc.), queue position number, assigned employee (avatar + name, links to profile). Sortable and shown on the expandable root rows. 2) Every build must be assigned to an employee in the builder job category. 3) When there's no available builder, the orchestrator sends Brett an AmberX notification: 'Hire a new builder?' with Approve/Deny. On approve, HR hires one automatically: name, avatar, persona, voice, job category builder, tools and permissions from the builder role, added to the roster, and the waiting build is assigned. No hire without approval. 4) Training: any employee can be trained on website data. Add URLs or a site to crawl from their profile; the content is fetched, stored as that employee's knowledge, viewable and removable, and used in their sessions. Same controls via REST, MCP, CLI and voice. Verify on the live console, desktop and phone.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T00:19:35.487Z",
+     "updatedAt": "2026-11-10T00:19:35.487Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw9y0lof02cesp",
+     "title": "",
+     "text": "You need from the tables too. You need to see what model it's getting built on, show its number in the queue, show the agent it's assigned to. It has to be assigned to an employee. If we don't have any builder employees, you have to hire one. Notify me if I want to hire somebody; if I approve it, you hire somebody new. Give them a persona, give them the tools and all that. You need to be able to train the employees with website data.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T00:19:35.487Z",
+     "updatedAt": "2026-11-10T00:19:35.487Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw9y0lof03dla8",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/orchestrator-table-columns-model-queue-assigned.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/orchestrator-table-columns-model-queue-assigned.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T00:19:35.487Z",
+     "updatedAt": "2026-11-10T00:19:35.487Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -133103,12 +133200,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T00:19:35.487Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
