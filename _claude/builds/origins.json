@@ -926,6 +926,18 @@
    "from": "",
    "addenda": []
   },
+  "auto-requeue-builds-whose-session-stops-early-go": {
+   "said": "Yes, re-queue them and auto-requeue.",
+   "at": "2026-11-10T23:36:56.261Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "auto-switch-claude-account-when-the-active-one-r": {
    "said": "And yeah, I make it automatically do it through the through the um, app hub though and through the console. You do not use AI to fucking use this remote to change accounts. That, it, that the console has to recognize there's no active connection and then connect to the next one without AI.",
    "at": "",
