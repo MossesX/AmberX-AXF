@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 14:33 UTC · `fix-stale-running-counts-per-claude-account-not-cleared` added (1 steps) (all) · claude-ai-voice
 - 2026-11-09 14:33 UTC · `fix-stale-running-counts-per-claude-account-not-cleared` note (all) · claude-ai-voice
 - 2026-11-09 16:02 UTC · `prompt-caching-and-batch-api-support-in-the-buil` added (0 steps) (all) · console
 - 2026-11-09 16:02 UTC · `prompt-caching-and-batch-api-support-in-the-buil` → queued, note (all) · console
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 00:16 UTC · `real-time-slot-tracking-stale-data-reaper` branch claude/real-time-slot-tracking-stale-data-reaper (all) · pipeline
 - 2026-11-10 00:16 UTC · `real-time-slot-tracking-stale-data-reaper` note (all) · orchestrator
 - 2026-11-10 00:16 UTC · `build-statuses-tell-the-truth-orchestrator-list` added (0 steps) (all) · console
+- 2026-11-10 00:16 UTC · `build-statuses-tell-the-truth-orchestrator-list` → queued, note (all) · console
 
 ## Token passes (log)
 
