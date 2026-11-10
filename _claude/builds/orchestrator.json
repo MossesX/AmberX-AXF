@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:56:18.527Z",
+ "updatedAt": "2026-11-10T17:56:31.565Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -89291,8 +89291,8 @@
    "pr": "#462",
    "priority": "P0",
    "createdAt": "2026-11-10T16:51:08.892Z",
-   "updatedAt": "2026-11-10T17:55:47.620Z",
-   "builtAt": "2026-11-10T17:55:47.620Z",
+   "updatedAt": "2026-11-10T17:56:06.164Z",
+   "builtAt": "2026-11-10T17:56:06.164Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -89309,6 +89309,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-conversation-rag-amendment-store-only-short-key--paulie.",
      "at": "2026-11-10T17:47:13.009Z"
+    },
+    {
+     "text": "Headless run axf-conversation-rag-amendment-store-only-short-key--paulie: brief only · start 11.0K tokens ($0.03) · cost $2.17 · 35 turns · 6 tools, MCP none",
+     "at": "2026-11-10T17:56:06.164Z"
     }
    ],
    "approvals": [],

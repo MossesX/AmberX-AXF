@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2618,
- "updatedAt": "2026-11-10T17:56:18.527Z",
+ "rev": 2619,
+ "updatedAt": "2026-11-10T17:56:31.565Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -146640,8 +146640,8 @@
    "pr": "#462",
    "priority": "P0",
    "createdAt": "2026-11-10T16:51:08.892Z",
-   "updatedAt": "2026-11-10T17:55:47.620Z",
-   "builtAt": "2026-11-10T17:55:47.620Z",
+   "updatedAt": "2026-11-10T17:56:06.164Z",
+   "builtAt": "2026-11-10T17:56:06.164Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -146658,6 +146658,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-conversation-rag-amendment-store-only-short-key--paulie.",
      "at": "2026-11-10T17:47:13.009Z"
+    },
+    {
+     "text": "Headless run axf-conversation-rag-amendment-store-only-short-key--paulie: brief only · start 11.0K tokens ($0.03) · cost $2.17 · 35 turns · 6 tools, MCP none",
+     "at": "2026-11-10T17:56:06.164Z"
     }
    ],
    "approvals": [],
@@ -146695,13 +146699,7 @@
     "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T17:46:06.971Z",
-     "why": "subscription account mossesx-max-"
-    },
+    "planned": null,
     "tried": [],
     "pickedAt": ""
    },
