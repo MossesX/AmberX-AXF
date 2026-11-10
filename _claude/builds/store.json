@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2549,
- "updatedAt": "2026-11-10T17:25:46.195Z",
+ "rev": 2550,
+ "updatedAt": "2026-11-10T17:25:57.473Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -140375,7 +140375,7 @@
    "title": "CLAUDE.md standing rule: be proactive, bring up the right way, catches and follow-ups without being asked",
    "category": "",
    "detail": "Add to the shared CLAUDE.md rules every Claude session reads (and the orchestrator brief rules, headless rules, agent profiles): proactively bring up the right/standard way to do things, known catches and needed follow-ups, and include them in the work. Never wait for Brett to figure it out or ask. Don't just agree with his plan; say plainly when something's wrong or missing. Small change: land it right away.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -140383,8 +140383,8 @@
    "pr": "#458",
    "priority": "P0",
    "createdAt": "2026-11-10T16:45:47.022Z",
-   "updatedAt": "2026-11-10T17:25:45.076Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T17:25:45.989Z",
+   "builtAt": "2026-11-10T17:25:45.989Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -140502,12 +140502,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T17:25:45.989Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T16:49:13.765Z",
-     "updatedAt": "2026-11-10T16:49:13.765Z"
+     "updatedAt": "2026-11-10T17:25:46.124Z"
     }
    ],
    "profiles": [
@@ -140518,7 +140518,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

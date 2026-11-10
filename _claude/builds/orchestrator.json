@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:25:46.195Z",
+ "updatedAt": "2026-11-10T17:25:57.473Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -86768,7 +86768,7 @@
    "title": "CLAUDE.md standing rule: be proactive, bring up the right way, catches and follow-ups without being asked",
    "category": "",
    "detail": "Add to the shared CLAUDE.md rules every Claude session reads (and the orchestrator brief rules, headless rules, agent profiles): proactively bring up the right/standard way to do things, known catches and needed follow-ups, and include them in the work. Never wait for Brett to figure it out or ask. Don't just agree with his plan; say plainly when something's wrong or missing. Small change: land it right away.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -86776,8 +86776,8 @@
    "pr": "#458",
    "priority": "P0",
    "createdAt": "2026-11-10T16:45:47.022Z",
-   "updatedAt": "2026-11-10T17:25:45.076Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T17:25:45.989Z",
+   "builtAt": "2026-11-10T17:25:45.989Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -86863,8 +86863,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T17:25:45.989Z",
      "note": "",
      "uid": "st-mwaxda9109twrn"
     }
