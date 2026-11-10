@@ -139,6 +139,10 @@ def _open(kind: str, name: str, to: str, by: str) -> dict[str, Any]:
     cmd: dict[str, Any] = {"op": "act", "target": TARGET_OF[kind], "path": name, "action": action, "by": by, "reason": "Follow Amber: show what Amber is talking about"}
     if to and to != "recent":
         cmd["input"] = {"to": to}
+    if kind == "action":
+        # navigateOnly (Nov 10 2026): the runner checks the action's own effect, so a navigation action runs with the
+        # navigate grant alone (the gate otherwise asks write for any action) and anything else is refused
+        cmd["navigateOnly"] = True
     # navigate only: the runner refuses anything that would change data
     r = svc.run(cmd, NAVIGATE, by)
     if r.get("ok") and not r.get("queued") and "delivered" in r and not _acked(r):

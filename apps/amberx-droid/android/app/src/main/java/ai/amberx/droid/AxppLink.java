@@ -239,10 +239,15 @@ final class AxppLink {
 
     /* ---------------------------------------------------------------- console wake: open one of Brett's pages */
 
-    /** The browser intent for a URL: Chrome when asked for and installed, else whatever handles https. */
+    /**
+     * The browser intent for a URL: Chrome when asked for and installed, else whatever handles https. It carries
+     * AmberX's application id, so Chrome loads every page AmberX opens in the same tab and brings that tab to the front
+     * (Brett, Nov 10 2026: "If Chrome's not in front, bring Chrome to the front and open it"), instead of a new tab each time.
+     */
     static Intent browserIntent(Context c, String url, String browser) {
         Intent i = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(url)).addCategory(Intent.CATEGORY_BROWSABLE)
-            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            .putExtra(android.provider.Browser.EXTRA_APPLICATION_ID, c.getPackageName());
         if ("chrome".equals(browser)) {
             try {
                 c.getPackageManager().getPackageInfo(OpenUrlRules.CHROME, 0);

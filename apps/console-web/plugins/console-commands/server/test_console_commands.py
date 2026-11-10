@@ -214,7 +214,7 @@ eq(j["delivery"]["how"], "live", "a live console: delivery live")
 
 # ======================================================================== console wake: no console connected
 client.post("/api/console/bye", json={"client": "desk-0001"})
-eq(client.get("/api/console/settings").json()["settings"], {"wake": True, "ttlS": 120, "browser": "chrome"}, "default settings: wake on, 2 minutes, Chrome")
+eq(client.get("/api/console/settings").json()["settings"], {"wake": True, "front": True, "ttlS": 120, "browser": "chrome"}, "default settings: wake on, bring to front on, 2 minutes, Chrome")
 
 # a wrong name answers at once (checked against the last catalog the console sent), nothing queued, nobody woken
 r = client.post("/api/console/open", json={"screen": "spreadsheet"})
@@ -259,7 +259,7 @@ time.sleep(0.4)
 eq(len(WOKEN), 1, "no wake when a console came back in time")
 
 # wake off: queued, nobody woken; the call gives up waiting with queued (still delivered later)
-eq(client.post("/api/console/settings", json={"wake": False, "ttlS": 5, "browser": "default"}).json()["settings"], {"wake": False, "ttlS": 30, "browser": "default"}, "settings saved, TTL clamped to 30 s")
+eq(client.post("/api/console/settings", json={"wake": False, "ttlS": 5, "browser": "default"}).json()["settings"], {"wake": False, "front": True, "ttlS": 30, "browser": "default"}, "settings saved, TTL clamped to 30 s")
 eq(client.post("/api/console/settings", json={"wake": True}, headers={"x-user": "sam"}).status_code, 403, "only the owner changes them")
 client.post("/api/console/bye", json={"client": "woke-0001"})
 r = cc.run({"op": "act", "target": "console.screens", "path": "plan studio", "action": "open"}, ["*"], "Amber", cc.OWNER, wait=cc.WAKE_AFTER_S + 0.5)
@@ -357,6 +357,69 @@ cc._fallback_clear()
 eq(resolved[-1], [cc.FALLBACK_KEY], "and goes away once a console took it")
 eq(cc._how({"picked": False, "wake": {"sent": True}}), "after reconnect", "the phone's yes alone is not a wake")
 eq(cc._how({"picked": True, "wake": None}), "woke via AmberX", "the console that opened from the link is")
+
+# ======================================================================== no veto timer on navigation (Nov 10 2026)
+# Brett: "I don't want the timer on Follow Amber. Do stuff right away. If console's not open in Chrome, open it in Chrome
+# and bring the page to the front. If Chrome's not in front, bring Chrome to the front and open it."
+cc.WAKER = lambda url, browser: (WOKEN.append((url, browser)), {"ok": True, "opened": True, "message": "AmberX started the browser on the phone"})[1]
+r = client.post("/api/console/go", json={"id": "terminal.open", "to": "molly-0001"})
+ok(r.status_code == 200 and r.json()["ok"], f"go runs an action that only navigates ({r.json()})")
+r = client.post("/api/console/go", json={"id": "assets.reset", "to": "molly-0001"})
+eq((r.status_code, r.json().get("code")), (403, "denied"), "go refuses an action that deletes or resets (no confirm token offered)")
+r = client.post("/api/console/go", json={"id": "assets.random", "to": "molly-0001"})
+eq((r.status_code, r.json().get("code")), (403, "denied"), "go refuses an action that changes data")
+j = cc.ConsoleCommands().run({"op": "act", "target": "console.actions", "path": "assets.random", "action": "run", "input": {"to": "molly-0001"}, "navigateOnly": True}, ["*"], "mcp")
+eq(j.get("code"), "denied", "navigateOnly refuses a write even with the console token's grants (MCP console_go)")
+r = client.post("/api/console/go", json={"id": "terminal.open"}, headers={"x-user": "sam"})
+ok(r.status_code == 200 and r.json()["ok"], f"a hub user with navigate (no write) can go ({r.json()})")
+r = client.post("/api/console/action", json={"id": "terminal.open"}, headers={"x-user": "sam"})
+eq(r.status_code, 403, "the same user can't run it through action (needs write)")
+r = client.post("/api/console", json={"op": "act", "target": "console.actions", "path": "assets.random", "action": "run", "navigateOnly": True, "input": {"to": "molly-0001"}})
+eq(r.json().get("code"), "denied", "navigateOnly on a whole control@1 command (CLI axf console nav)")
+ok(cc.navigates({"op": "act", "target": "console.screens"}, {}) and cc.navigates({"op": "act", "target": "console.nav"}, {}), "opening a screen and moving are navigation")
+ok(cc.navigates({"op": "act", "target": "console.actions"}, {"data": {"effect": "navigate"}}) and not cc.navigates({"op": "act", "target": "console.actions"}, {"data": {"effect": "write"}}), "an action is navigation only when the runner says so")
+
+# a console behind (Chrome in the background): the command waits for it to come to the front and AmberX is asked at once
+client.post("/api/console/settings", json={"wake": True, "ttlS": 120, "browser": "chrome"})
+behind: list[dict] = []
+client.post("/api/console/hello", json={"client": "back-0001", "device": "phone", "front": False, "catalog": CATALOG})
+fake_console("back-0001", answers=behind)
+wait_for(lambda: stream_open("back-0001"))
+n0 = len(WOKEN)
+res: dict = {}
+th = threading.Thread(target=lambda: res.update(client.post("/api/console/open", json={"screen": "plan studio", "to": "back-0001"}).json()), daemon=True)
+th.start()
+ok(wait_for(lambda: len(WOKEN) > n0, 5.0), "AmberX is asked straight away (no wake delay)")
+ok("/?axf-cmd=cq-" in WOKEN[-1][0] and WOKEN[-1][1] == "chrome", f"in Chrome, on the console, for this command ({WOKEN[-1]})")
+time.sleep(0.2)
+eq(behind, [], "the console behind doesn't run it unseen")
+q = client.get("/api/console/queue").json()["items"]
+ok(any(x["path"] == "plan studio" and x["state"] == "queued" for x in q), "it waits in the queue")
+client.post("/api/console/seen", json={"client": "back-0001", "front": True})
+th.join(15)
+ok(res.get("ok") and res["delivery"]["how"] == "brought to the front", f"Chrome came to the front: it runs there ({res.get('delivery')})")
+ok(behind and behind[-1]["target"] == "plan-studio", "the console now in front ran it")
+r = client.post("/api/console/open", json={"screen": "home", "to": "back-0001"}).json()
+eq(r["delivery"]["how"], "live", "in front: live, as before")
+
+# a change to data on a console behind is never held for this
+client.post("/api/console/seen", json={"client": "back-0001", "front": False})
+n0 = len(WOKEN)
+r = client.post("/api/console/action", json={"id": "assets.random", "to": "back-0001"}).json()
+ok(r["ok"] and r["delivery"]["how"] == "live" and len(WOKEN) == n0, f"data changes go as before, no bring-to-front ({r.get('delivery')})")
+
+# AmberX can't be reached: it goes to the console behind after all
+cc.WAKER = lambda url, browser: {"ok": False, "message": "axHub answered 502"}
+r = client.post("/api/console/open", json={"screen": "build orchestrator", "to": "back-0001"}).json()
+ok(r["ok"] and behind[-1]["target"] == "build-orchestrator", f"phone unreachable: delivered to the console behind ({r.get('delivery')})")
+
+# the setting: off = straight to the console behind, as before
+eq(client.post("/api/console/settings", json={"front": False}).json()["settings"]["front"], False, "front is a setting")
+n0 = len(WOKEN)
+r = client.post("/api/console/open", json={"screen": "plan studio", "to": "back-0001"}).json()
+ok(r["delivery"]["how"] == "live" and len(WOKEN) == n0, "front off: live to the console behind, AmberX not asked")
+client.post("/api/console/settings", json={"front": True})
+eq(cc._how({"picked": False, "front": True, "wake": None}), "brought to the front", "how says brought to the front")
 
 print(f"✓ console commands server — {checks} checks", flush=True)
 os._exit(0)  # the fake consoles' streams are still open

@@ -47,6 +47,14 @@ t('runner: gate, resolve, deliver', () => {
   assert.equal(c1.code, 'confirmation_required');
   assert.ok(runConsole({ op: 'act', target: 'console.actions', path: 'assets.reset', action: 'run', confirm: c1.confirm }, { clients }).ok, 'confirmed');
   assert.equal(runConsole({ op: 'list', target: 'console.screens' }, { clients }).items.length, 2, 'bogus catalog items dropped');
+  // navigateOnly (Nov 10 2026): a navigation action runs with the navigate grant alone; a write or a delete is refused
+  const nav = ['control.console.navigate'];
+  assert.ok(runConsole({ op: 'act', target: 'console.actions', path: 'terminal.open', action: 'run', navigateOnly: true }, { clients, grants: nav }).ok, 'a navigation action with navigate only');
+  assert.equal(runConsole({ op: 'act', target: 'console.actions', path: 'terminal.open', action: 'run' }, { clients, grants: nav }).code, 'denied', 'without navigateOnly an action needs write');
+  const del = runConsole({ op: 'act', target: 'console.actions', path: 'assets.reset', action: 'run', navigateOnly: true }, { clients });
+  assert.ok(del.code === 'denied' && !del.confirm && !del.deliver, 'a destructive action is refused, no confirm token, nothing sent');
+  assert.equal(runConsole({ op: 'act', target: 'console.screens', path: 'plan studio', action: 'open', navigateOnly: true }, { clients, grants: ['control.console.read'] }).code, 'denied', 'navigateOnly still needs the navigate grant');
+  assert.deepEqual(commandFromArgv(['nav', 'terminal.open']).command, { op: 'act', target: 'console.actions', path: 'terminal.open', action: 'run', navigateOnly: true }, 'axf console nav');
   const none = runConsole({ op: 'act', target: 'console.nav', path: 'here', action: 'back' }, { clients: [] });
   assert.equal(none.code, 'not_found', 'no console open');
   assert.equal(none.noConsole, true, 'no console open is flagged, so the server queues it (console-wake)');

@@ -80,6 +80,23 @@ waits up to 60 s. After 3 s with no console, the owner's AmberX phone is asked t
 to open `…/?axf-cmd=<id>`. Every sent answer carries `delivery.how`: `live` · `after reconnect` · `woke via AmberX` · `queued`
 (`queued: true`, still waiting when the call returned). A command for one named client that isn't there still answers `not_found`.
 
+**Navigation runs at once and is seen** (build no-veto-timer-on-navigation-follow-amber-open-x, Nov 10 2026, Brett: "I don't
+want the timer on Follow Amber. Do stuff right away. If console's not open in Chrome, open it in Chrome and bring the page to the
+front. If Chrome's not in front, bring Chrome to the front and open it."):
+- `navigateOnly: true` on a console command runs it only when it navigates: an action the runner rates write or destructive
+  answers `denied` before anything is sent (never a confirm token). It needs `control.console.navigate`, not write. Reached as
+  MCP `console_go {action, args?, to?}` (`readOnlyHint: true`, so axHub's recommended preset runs it with no veto), REST
+  `POST /api/console/go {id, args?, to?}`, CLI `axf console nav <action> [args…]`, and the plugin commands
+  `console_commands_go|open|dialog|back|home|close` (declared read-only). `console_action` stays a write (veto).
+- A navigation command for the owner (open a screen / dialog / settings tab, back / home / close / refresh, or an action rated
+  `navigate`) whose target consoles are all behind (`front: false`) is queued for a console in front, and AmberX is asked at
+  once (no 3 s delay, no 45 s throttle) to open `…/?axf-cmd=<id>` in Chrome; AmberX's intent carries its application id, so
+  Chrome reuses the same tab and comes to the front. The console that comes to the front (a hello with the pick, or a `seen`
+  with `front: true`) runs it: `delivery.how` = `brought to the front` (or `woke via AmberX` when it opened from the link).
+  AmberX unreachable or waking off: it goes to the console behind, as before. Data changes are never held for this. Setting
+  `front` (Settings → Plugins → Console commands → "Bring the console to the front for anything Amber opens", default on;
+  `GET|POST /api/console/settings {front}`).
+
 **Follow Amber** (build follow-amber, Nov 3 2026, Brett): one switch for the owner's consoles. While it is on, a Claude session
 calls MCP `console_show` {target, highlight?, say?} every time it mentions something in the console; the Follow Amber plugin
 (`follow-amber@1`) opens it through `console.screens` / `console.settings` / `console.dialogs` (a bare name is tried in that
@@ -277,7 +294,7 @@ for token set / reset, `all` for every other write, `null` for the pass target) 
 | Tool kind | Policy | Why |
 |---|---|---|
 | `readOnlyHint: true` (every `*_list`, `*_get`, `*_status`, `*_find`, `overview`, `build_queue`, `build_next`, `pending_list`, `pending_steps`, `project_*` reads, `tracker_summary`, `libraries`, `build_options`, `app_validate`, `terminal_tail`, `pass_status`, `token_pass_status`) | **allow**: run at once, no veto | they change nothing; `apps/console-web/server/test_mcp_tools.py` fails CI if a read tool loses the hint |
-| navigation (`console_open`, `console_dialog`, `console_settings`, `console_back`, `console_refresh`, `console_show`, `console_follow`: `readOnlyHint: true`) | **allow**: run at once, no veto | they only open or move the screen, never change data (Brett, Nov 3 2026: navigation never waits 90 s); `console_action` stays a write because an action can change data |
+| navigation (`console_open`, `console_dialog`, `console_settings`, `console_back`, `console_refresh`, `console_show`, `console_follow`, `console_go`: `readOnlyHint: true`) | **allow**: run at once, no veto | they only open or move the screen, never change data (Brett, Nov 3 2026: navigation never waits 90 s); `console_action` stays a write because an action can change data |
 | writes (`readOnlyHint: false`, `destructiveHint: false`) | **veto** (90 s), skipped while an `all` pass (or a narrow pass covering the call) is on | normal changes |
 | `destructiveHint: true` (`control_remove`, `amberx_remove`) | **confirm**; skipped while an `all` pass is on, unless the call is irreversible and the pass doesn't include irreversible | deletes; the runner applies the same rule to its confirm token |
 | `pass_grant`, `token_pass_grant` | **approval** (straight, not veto), forwarded as the signed approval above; never skipped | a pass must trace to Brett |

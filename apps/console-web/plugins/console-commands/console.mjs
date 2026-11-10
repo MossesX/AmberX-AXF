@@ -19,7 +19,7 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { randomBytes } from 'node:crypto';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { CONTROL_TARGETS, controlFailure, controlGate, controlResult, normalizeControl } from '../../../../framework/core/engines/control-rules.mjs';
+import { CONTROL_TARGETS, controlFailure, controlGate, controlGranted, controlResult, normalizeControl } from '../../../../framework/core/engines/control-rules.mjs';
 import { CONSOLE_TOOLS, normalizeConsoleCatalog, runConsoleCommand } from '../../../../framework/core/engines/console-commands.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -27,6 +27,7 @@ const ROOT = resolve(HERE, '../../../..');
 export const FOLDER = 'console-commands';
 export const DATA_DIR = process.env.AXF_CONSOLE_COMMANDS_DATA_DIR || join(ROOT, '.axf-console', 'plugins', FOLDER);
 export const API_PATH = '/api/console';
+const NAVIGATE = 'control.console.navigate';
 
 /** The salt a destructive action's confirm token is made with (AXF_CONSOLE_COMMANDS_SALT, else random in the data folder). */
 export function confirmSalt() {
@@ -42,9 +43,21 @@ export function confirmSalt() {
 /**
  * Run one console command for a caller: the control@1 gate (grants), then resolve against `clients` (the caller's open
  * consoles with their catalogs). The answer is the control@1 envelope; `deliver` ({ to, message }) is for the server.
+ *
+ * `navigateOnly: true` on the command (MCP console_go, REST POST go, `axf console go`; Brett, Nov 10 2026: "I don't
+ * want the timer on Follow Amber. Do stuff right away."): it runs only when it navigates, so axHub can run it with no
+ * veto countdown. The caller needs control.console.navigate (not write); an action the runner rates write or
+ * destructive is refused before anything is sent, and a destructive one never gets a confirm token here.
  */
 export function runConsole(raw, { grants = ['*'], by = '', clients = [], now = Date.now() } = {}) {
+  const navigateOnly = raw?.navigateOnly === true;
+  if (raw && typeof raw === 'object' && 'navigateOnly' in raw) { raw = { ...raw }; delete raw.navigateOnly; }
   const c = normalizeControl(raw);
+  if (navigateOnly) {
+    if (!controlGranted(grants, NAVIGATE)) return controlFailure('denied', `navigation needs ${NAVIGATE}`, { op: c.op, target: c.target, requires: NAVIGATE });
+    // the gate asks write for any console.actions run; the action's own effect is checked below instead
+    grants = c.target === 'console.actions' ? [NAVIGATE, 'control.console.read', 'control.console.write'] : [NAVIGATE, 'control.console.read'];
+  }
   if (!c.by && by) c.by = by;
   if (typeof c.target === 'string' && c.target in CONTROL_TARGETS && CONTROL_TARGETS[c.target].domain !== 'console') {
     return controlFailure('invalid', `${c.target} isn't a console target (console.screens, console.dialogs, console.settings, console.actions, console.nav, console.clients)`, { op: c.op, target: c.target });
@@ -54,6 +67,10 @@ export function runConsole(raw, { grants = ['*'], by = '', clients = [], now = D
   if (!gate.ok) { const { ok: _ok, code, message, ...extra } = gate; return controlFailure(code, message, { op: c.op, target: c.target, ...(c.path ? { path: c.path } : {}), ...extra }); }
   const known = (Array.isArray(clients) ? clients : []).map((x) => ({ ...x, catalog: normalizeConsoleCatalog(x?.catalog) }));
   const r = runConsoleCommand(c, { clients: known, grants, salt, now, id: `cc-${now.toString(36)}-${randomBytes(3).toString('hex')}`, by: c.by ?? '' });
+  if (navigateOnly && c.op === 'act' && c.target === 'console.actions' && (r.ok ? r.data?.effect !== 'navigate' : r.code === 'confirmation_required')) {
+    const effect = r.ok ? r.data?.effect : 'destructive';
+    return controlFailure('denied', `${c.path} ${effect === 'destructive' ? 'deletes or resets something' : 'changes data'}: this call only navigates (use console_action, which waits on the veto)`, { op: c.op, target: c.target, path: c.path, effect, requires: effect === 'destructive' ? 'control.console.delete' : 'control.console.write' });
+  }
   if (!r.ok) { const { ok: _ok, code, message, ...extra } = r; return controlFailure(code, message, { op: c.op, target: c.target, ...(c.path ? { path: c.path } : {}), ...extra }); }
   return { ...controlResult(c, r.data, { by: c.by || 'unknown', reason: c.reason ?? '', at: new Date(now).toISOString() }), ...(r.deliver ? { deliver: r.deliver } : {}) };
 }
@@ -73,7 +90,7 @@ function flags(argv) {
 }
 
 const LIST_KINDS = { screens: 'console.screens', screen: 'console.screens', dialogs: 'console.dialogs', dialog: 'console.dialogs', settings: 'console.settings', actions: 'console.actions', action: 'console.actions', clients: 'console.clients', consoles: 'console.clients' };
-export const USAGE = 'usage: axf console open <screen> | dialog <id> | dialog close [id] | settings <tab> | action <id> [args…] | back | home | close | refresh [--hard] [--all] | where | list [screens|dialogs|settings|actions|clients] [words] | clients   [--to recent|all|<client>]';
+export const USAGE = 'usage: axf console open <screen> | dialog <id> | dialog close [id] | settings <tab> | action <id> [args…] | nav <action> [args…] (navigation only) | back | home | close | refresh [--hard] [--all] | where | list [screens|dialogs|settings|actions|clients] [words] | clients   [--to recent|all|<client>]';
 
 /** `axf console …` words → a control@1 console command, or { error }. */
 export function commandFromArgv(argv) {
@@ -92,6 +109,14 @@ export function commandFromArgv(argv) {
       cmd = act('console.actions', 'run', id);
       if (cmd && args.length) cmd.input = { ...(cmd.input ?? {}), args };
       if (cmd && typeof f.confirm === 'string') cmd.confirm = f.confirm;
+      break;
+    }
+    case 'nav': case 'navigate': {
+      // a navigation-only action: refused when it would change data (MCP console_go, REST POST go)
+      const [id, ...args] = rest;
+      cmd = act('console.actions', 'run', id);
+      if (cmd) cmd.navigateOnly = true;
+      if (cmd && args.length) cmd.input = { ...(cmd.input ?? {}), args };
       break;
     }
     case 'back': case 'home': case 'close': cmd = act('console.nav', verb, 'here'); break;

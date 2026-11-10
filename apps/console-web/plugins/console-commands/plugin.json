@@ -35,7 +35,77 @@
       ".github/workflows/android.yml"
     ]
   },
-  "commands": { "$axf": "plugin-commands@1", "auto": true },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "route": "POST /go",
+        "id": "go",
+        "title": "Run a navigation-only console action (open a screen, tab or page)",
+        "description": "Runs a console action that only navigates; anything that changes data is refused (use console_action). Only moves the console (never changes data), so it runs at once with no veto countdown; a console behind is brought to the front first (AmberX).",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "the action id, spec or label, e.g. terminal.open"
+            },
+            "args": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "to": {
+              "type": "string",
+              "description": "recent (default), all, or a console client id"
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /open",
+        "id": "open",
+        "title": "Open a screen in the open console",
+        "description": "Only moves the console (never changes data), so it runs at once with no veto countdown; a console behind is brought to the front first (AmberX).",
+        "readOnly": true
+      },
+      {
+        "route": "POST /dialog",
+        "id": "dialog",
+        "title": "Open or close a dialog in the open console",
+        "description": "Only moves the console (never changes data), so it runs at once with no veto countdown; a console behind is brought to the front first (AmberX).",
+        "readOnly": true
+      },
+      {
+        "route": "POST /back",
+        "id": "back",
+        "title": "Go back in the open console",
+        "description": "Only moves the console (never changes data), so it runs at once with no veto countdown; a console behind is brought to the front first (AmberX).",
+        "readOnly": true
+      },
+      {
+        "route": "POST /home",
+        "id": "home",
+        "title": "Go home in the open console",
+        "description": "Only moves the console (never changes data), so it runs at once with no veto countdown; a console behind is brought to the front first (AmberX).",
+        "readOnly": true
+      },
+      {
+        "route": "POST /close",
+        "id": "close",
+        "title": "Close the open dialog",
+        "description": "Only moves the console (never changes data), so it runs at once with no veto countdown; a console behind is brought to the front first (AmberX).",
+        "readOnly": true
+      }
+    ]
+  },
   "builtWith": {
     "model": "opus",
     "builtAt": "2026-11-03"

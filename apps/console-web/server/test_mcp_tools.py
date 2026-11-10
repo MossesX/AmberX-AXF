@@ -112,9 +112,9 @@ ok(asyncio.run(s3.call_tool("app_validate", {"dir": "x"})) is not None, "a broke
 csent: list[dict] = []
 cserver = mcp_server.build_server(lambda op, **a: {}, console=lambda c: csent.append(c) or {"ok": True})
 ctools = {t.name: t for t in asyncio.run(cserver.list_tools())}
-for name in (*mcp_server.CONSOLE_TOOLS, *mcp_server.FOLLOW_TOOLS):
+for name in (*mcp_server.CONSOLE_TOOLS, *mcp_server.FOLLOW_TOOLS, *mcp_server.NAV_TOOLS):
     ok(name in ctools, f"{name} exists")
-for name in ("console_open", "console_dialog", "console_settings", "console_back", "console_where", "console_list", "console_clients", "console_show", "console_follow"):
+for name in ("console_open", "console_dialog", "console_settings", "console_back", "console_where", "console_list", "console_clients", "console_show", "console_follow", "console_go"):
     a = ctools[name].annotations
     ok(a.read_only_hint is True and a.destructive_hint is not True, f"{name} only navigates or reads: read-only, so it never waits on a veto")
 ok(ctools["console_action"].annotations.read_only_hint is not True, "console_action can change data: it stays a write")
@@ -125,6 +125,14 @@ r = asyncio.run(cserver.call_tool("console_show", {"target": "plan studio", "hig
 ok(calls[-1] == ("show", {"target": "plan studio", "highlight": "h1", "say": "here's the plan", "to": "recent"}), "console_show → follow-amber show with target, highlight, say")
 asyncio.run(cserver.call_tool("console_follow", {}))
 ok(calls[-1][0] == "state", "console_follow → follow-amber state")
+# No veto timer on navigation (Brett, Nov 10 2026): console_go runs an action navigate-only (the console narrows the
+# grants), and the instructions send opens there instead of console_action.
+asyncio.run(cserver.call_tool("console_go", {"action": "terminal.open"}))
+ok(csent[-1].get("navigateOnly") is True and csent[-1]["target"] == "console.actions" and csent[-1]["path"] == "terminal.open", "console_go → console.actions run, navigateOnly")
+asyncio.run(cserver.call_tool("console_action", {"action": "terminal.open"}))
+ok("navigateOnly" not in csent[-1], "console_action keeps the caller's grants")
+ok("console_go" in mcp_server.INSTRUCTIONS and "no veto countdown" in mcp_server.INSTRUCTIONS, "the instructions send navigation to the no-wait tools")
+ok("console_go" in ctools["console_action"].description, "console_action's description points navigation at console_go")
 mcp_server.follow_call = lambda op, args: {"ok": False, "code": "not_implemented", "message": "off"}
 try:
     asyncio.run(cserver.call_tool("console_show", {"target": "x"}))

@@ -215,7 +215,7 @@ function ConsoleCommandsClient() {
 interface ClientRow { id: string; app?: string; front?: boolean; device: string; user: string; lastUsed: number; live: boolean; here: ConsoleHere; items: number }
 interface RecentRow { at: string; by: string; target: string; path: string; action: string; ok: boolean; message: string; how?: string; delivered: { client: string; ok: boolean; message: string }[] }
 interface QueueRow { id: string; state: string; at: string; expiresAt: string; path: string; action: string; by: string; wake: { sent: boolean; message: string } | null }
-interface WakeSettings { wake: boolean; ttlS: number; browser: 'chrome' | 'default' }
+interface WakeSettings { wake: boolean; front: boolean; ttlS: number; browser: 'chrome' | 'default' }
 
 const TTL_CHOICES = [30, 60, 120, 300, 600, 900].map((s) => ({ value: String(s), label: s < 60 ? `${s} seconds` : `${s / 60} minute${s === 60 ? '' : 's'}` }));
 
@@ -236,6 +236,8 @@ function WakePanel() {
       {err && <Note tone="warning">{err}</Note>}
       <Switch label="Wake the console through AmberX when it's closed" checked={cfg.wake} disabled={!owner} onChange={(on) => void save({ wake: on })}
         hint="A command that finds no open console waits here; after a few seconds AmberX on your phone opens the console so it runs. Needs the AmberX app with console wake." />
+      <Switch label="Bring the console to the front for anything Amber opens" checked={cfg.front} disabled={!owner || !cfg.wake} onChange={(on) => void save({ front: on })}
+        hint="When your console is behind (Chrome in the background, another tab, the phone locked), opening a screen, tab or page brings Chrome to the front on the console first, then opens it there. Changes to data never wait for this." />
       <SelectField label="How long a command waits for a console" value={String(cfg.ttlS)} options={TTL_CHOICES}
         hint="After this it's dropped and never runs late." onChange={(v) => void save({ ttlS: Number(v) })} />
       <SelectField label="Browser AmberX opens" value={cfg.browser} options={[{ value: 'chrome', label: 'Chrome (default browser when Chrome is missing)' }, { value: 'default', label: 'The phone\'s default browser' }]}

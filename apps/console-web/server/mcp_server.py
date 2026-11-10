@@ -62,7 +62,9 @@ Chat and voice sessions (claude.ai, Amber): whenever you act, post one short lin
 live in the Terminal's sessions nav and jumps in from there.
 
 Follow Amber: check `console_follow`; while it is on, call `console_show` every time you mention something in Brett's
-console (a screen, settings tab, dialog, build, plugin, UI Review item), and his approvals pop up in the console."""
+console (a screen, settings tab, dialog, build, plugin, UI Review item), and his approvals pop up in the console.
+To only open or show something use console_show, console_open, console_settings, console_dialog or console_go: they run
+at once with no veto countdown. console_action is for actions that change data (it waits on the veto)."""
 
 
 def _compact(f: dict[str, Any]) -> dict[str, Any]:
@@ -925,6 +927,10 @@ def _register_control_tools(mcp: MCPServer, control: Callable[[dict[str, Any]], 
 
 CONSOLE_TOOLS = ("console_open", "console_dialog", "console_settings", "console_action", "console_back", "console_where", "console_list", "console_clients", "console_refresh")
 FOLLOW_TOOLS = ("console_show", "console_follow")  # Follow Amber plugin (follow-amber@1)
+# console_go: console_action for actions that only navigate (navigateOnly: the console refuses anything that changes
+# data), annotated read-only so axHub runs it at once (Brett, Nov 10 2026: "I don't want the timer on Follow Amber. Do
+# stuff right away."). Kept out of core CONSOLE_TOOLS: the engine is unchanged, the console server narrows the grants.
+NAV_TOOLS = ("console_go",)
 # Opening and moving only navigate, so they are annotated read-only: axHub's recommended preset (decision #112) runs
 # read-only tools at once, and navigation never waits on a veto countdown (Brett, Nov 3 2026: Follow Amber).
 NAVIGATE = ToolAnnotations(readOnlyHint=True, destructiveHint=False, idempotentHint=True, openWorldHint=False)
@@ -978,10 +984,20 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
     @mcp.tool(annotations=WRITE)
     async def console_action(action: str, args: list[str] | None = None, confirm: str = "", to: Delivery = "recent") -> dict[str, Any]:
         """Run a registered action in the open console (menus, toolbar, search all use them): its id ("terminal.open"),
-        a spec with arguments ("swap:color-theme:dark") or its label. Actions that only navigate run straight away; one
+        a spec with arguments ("swap:color-theme:dark") or its label. This tool waits on axHub's veto countdown: for an
+        action that only opens or shows something use console_go (no wait). Actions that only navigate run straight away; one
         that changes data needs the permission the action itself requires; one that deletes or resets answers
         confirmation_required with `confirm`: tell Brett what it will do, then call again with that token."""
         return await go({"op": "act", "target": "console.actions", "path": action, "action": "run", "input": inp(to, args=args or None), "confirm": confirm})
+
+    @mcp.tool(annotations=NAVIGATE)
+    async def console_go(action: str, args: list[str] | None = None, to: Delivery = "recent") -> dict[str, Any]:
+        """Run a console action that only navigates (opens a screen, tab, page, the terminal, help, search; e.g.
+        "terminal.open", "views.plan-studio"): runs at once, never waits on a veto. Anything that changes data is
+        refused (denied, effect write/destructive): use console_action for those. Prefer this (or console_open /
+        console_show) whenever you only open or show something. A console that is behind is brought to the front first
+        (AmberX opens Chrome on it)."""
+        return await go({"op": "act", "target": "console.actions", "path": action, "action": "run", "input": inp(to, args=args or None), "navigateOnly": True})
 
     @mcp.tool(annotations=NAVIGATE)
     async def console_back(move: Literal["back", "home", "close"] = "back", to: Delivery = "recent") -> dict[str, Any]:

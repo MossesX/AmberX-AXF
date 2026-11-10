@@ -14,7 +14,21 @@ command must reach a console: even if the browser is closed, open it"): a comman
 for that user (default 2 minutes, Settings → Plugins → Console commands) and delivered, once, the moment a console says
 hello; the call waits up to a minute for it. When nothing connects within a few seconds, the owner's AmberX phone is
 asked through axHub (`amberx.open_url`) to open the console with `?axf-cmd=<id>`. The answer's `delivery.how` says
-how it got there: `live`, `after reconnect`, `woke via AmberX`, or `queued` (still waiting when the call returned).
+how it got there: `live`, `after reconnect`, `woke via AmberX`, `brought to the front`, or `queued` (still waiting
+when the call returned).
+
+Navigation runs at once and is seen (Brett, Nov 10 2026: "I don't want the timer on Follow Amber. Do stuff right away.
+If console's not open in Chrome, open it in Chrome and bring the page to the front. If Chrome's not in front, bring
+Chrome to the front and open it."):
+  - `navigateOnly: true` on a command (MCP `console_go`, REST `POST go`, CLI `axf console nav`): the runner
+    (console.mjs) runs it only when it navigates and refuses anything that changes data, so axHub can run the tool
+    with no veto countdown (it is annotated read-only). It needs control.console.navigate, not write.
+  - A navigation command (open a screen / dialog / settings tab, back / home / close / refresh, or an action whose
+    effect is navigate) for the owner, when the owner's consoles are all behind (`front: false`: Chrome in the
+    background, another tab, a locked phone), is not run unseen: it is queued for a console in front and AmberX is
+    asked straight away to bring Chrome to the front on the console (`?axf-cmd=<id>`, the same tab every time). The
+    console that comes to the front runs it. AmberX unreachable: it goes to the console behind, as before. Setting
+    `front` (Settings → Plugins → Console commands, on by default).
 
 Mounted twice: /api/plugins/console-commands/… (the plugin mount; the console client uses it) and /api/console/…
 (the contract path, main.py's CAPABILITY_MOUNTS; console token or a hub admin).
@@ -25,9 +39,9 @@ Mounted twice: /api/plugins/console-commands/… (the plugin mount; the console 
   GET  stream?client=<id>                                          server-sent events: one console-command@1 per `data:`
   POST ack   {client, id, ok, message, here?}                      what the console did with a command
   GET  clients · GET recent · GET queue                           the caller's open consoles · the last commands · what waits
-  GET  settings · POST settings {wake, ttlS, browser}              queue + wake settings (the owner changes them)
+  GET  settings · POST settings {wake, front, ttlS, browser}       queue, wake and bring-to-front settings (the owner changes them)
   POST ""                                                          a whole control@1 command of the console domain
-  POST open {screen} · dialog {id, arg?} (close: {"action": "close", id?}) · settings {tab, anchor?} · action {id, args?, confirm?} · back · home · close · refresh {hard?}   (each takes `to`)
+  POST open {screen} · dialog {id, arg?} (close: {"action": "close", id?}) · settings {tab, anchor?} · action {id, args?, confirm?} · go {id, args?} (navigation only, never changes data) · back · home · close · refresh {hard?}   (each takes `to`)
   GET  where · GET list?kind=screens|dialogs|settings|actions&q=…&limit=…
 
 Capability console-commands@1: plugin_services.get("console-commands@1").run(command, grants=[…], by="…", audience="owner").
@@ -69,7 +83,8 @@ FALLBACK_KEY = "console:wake-fallback"
 WAKE_AGAIN_S = 45.0     # one wake per this long per user (Chrome takes a moment to open)
 CONSOLE_URL = (os.environ.get("AXF_CONSOLE_PUBLIC_URL") or "https://console.amberxai.com").rstrip("/")
 DATA_DIR = Path(os.environ.get("AXF_CONSOLE_COMMANDS_DATA_DIR") or ROOT / ".axf-console" / "plugins" / FOLDER)
-DEFAULTS: dict[str, Any] = {"wake": True, "ttlS": 120, "browser": "chrome"}
+DEFAULTS: dict[str, Any] = {"wake": True, "front": True, "ttlS": 120, "browser": "chrome"}
+NAV_TARGETS = ("console.screens", "console.dialogs", "console.settings")
 BROWSERS = ("chrome", "default")
 
 _lock = threading.Lock()
@@ -218,8 +233,9 @@ def settings() -> dict[str, Any]:
 
 def clean_settings(raw: dict[str, Any]) -> dict[str, Any]:
     out = dict(DEFAULTS)
-    if isinstance(raw.get("wake"), bool):
-        out["wake"] = raw["wake"]
+    for k in ("wake", "front"):
+        if isinstance(raw.get(k), bool):
+            out[k] = raw[k]
     try:
         out["ttlS"] = max(30, min(int(raw.get("ttlS", out["ttlS"])), 900))
     except (TypeError, ValueError):
@@ -300,19 +316,29 @@ def _fallback_clear() -> None:
         pass
 
 
-def _wake_later(entry: dict[str, Any]) -> None:
-    """WAKE_AFTER_S after queuing: still no console → open one on the owner's phone (once per WAKE_AGAIN_S)."""
+def _behind_after_all(entry: dict[str, Any]) -> None:
+    """AmberX couldn't bring the console to the front: the command goes to the console behind after all."""
+    with _lock:
+        entry["front"] = False
+    _drain_soon(entry["audience"])
+
+
+def _wake_later(entry: dict[str, Any], delay: float = WAKE_AFTER_S) -> None:
+    """`delay` after queuing: still no console (in front, for a `front` entry) → open the console on the owner's phone
+    (once per WAKE_AGAIN_S for a closed console; a bring-to-front asks every time, Brett said "open X" just now)."""
     def go() -> None:
         with _lock:
             if entry["state"] != "queued":
                 return
             audience = entry["audience"]
-            recent = _now() - _woke_at.get(audience, 0) < WAKE_AGAIN_S
+            recent = not entry.get("front") and _now() - _woke_at.get(audience, 0) < WAKE_AGAIN_S
             if not recent:
                 _woke_at[audience] = _now()
         st = settings()
         if audience != OWNER or not st["wake"]:
             entry["wake"] = {"sent": False, "message": "waking through AmberX is off" if audience == OWNER else "only the owner's console is woken through AmberX"}
+            if entry.get("front"):
+                _behind_after_all(entry)
             return
         if recent:
             entry["wake"] = {"sent": True, "message": "AmberX was already asked to open the console"}
@@ -326,10 +352,13 @@ def _wake_later(entry: dict[str, Any]) -> None:
         if not r.get("ok"):
             with _lock:
                 _woke_at.pop(audience, None)
+        if entry.get("front") and not r.get("ok"):
+            _behind_after_all(entry)  # the phone can't be reached: run it where it is, as before
+            return
         if not r.get("ok") or not (r.get("opened") or r.get("notified")):
             _fallback_alert(entry["id"], str(r.get("message") or ""))
 
-    t = threading.Timer(WAKE_AFTER_S, go)
+    t = threading.Timer(delay, go)
     t.daemon = True
     t.start()
 
@@ -350,13 +379,16 @@ def _expire() -> None:
         _queue[:] = [e for e in _queue if e["state"] in ("queued", "delivering") or now - e["at"] < 600][-200:]
 
 
-def _enqueue(command: dict[str, Any], grants: list[str], by: str, audience: str) -> dict[str, Any]:
+def _enqueue(command: dict[str, Any], grants: list[str], by: str, audience: str, front: bool = False) -> dict[str, Any]:
+    """Queue a command. `front`: it waits for a console in front (one behind is there but Brett can't see it), and
+    AmberX is asked at once to bring Chrome to the front on the console."""
     ttl = float(settings()["ttlS"])
     e = {"id": f"cq-{int(_now() * 1000):x}-{os.urandom(3).hex()}", "audience": audience, "command": command, "grants": grants, "by": by,
-         "at": _now(), "expires": _now() + ttl, "state": "queued", "event": threading.Event(), "result": None, "wake": None, "picked": False}
+         "at": _now(), "expires": _now() + ttl, "state": "queued", "event": threading.Event(), "result": None, "wake": None, "picked": False,
+         "front": front}
     with _lock:
         _queue.append(e)
-    _wake_later(e)
+    _wake_later(e, 0.0 if front else WAKE_AFTER_S)
     return e
 
 
@@ -376,7 +408,23 @@ def queued_for(audience: str) -> list[dict[str, Any]]:
 
 def _how(e: dict[str, Any]) -> str:
     # only the console that opened from the wake link proves the wake; the phone's own yes never does
+    if e.get("front") and not e["picked"]:
+        return "brought to the front"
     return "woke via AmberX" if e["picked"] else "after reconnect"
+
+
+def _in_front(clients: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [c for c in clients if c.get("front") is not False]
+
+
+def _can_take(e: dict[str, Any], front: list[dict[str, Any]]) -> bool:
+    """A queued command can go now: any console for an ordinary one; for one waiting for the front, a console in front
+    (the very console it names, when `to` names one)."""
+    if not e.get("front"):
+        return True
+    inp = e["command"].get("input") if isinstance(e["command"].get("input"), dict) else {}
+    to = str(inp.get("to") or "recent")
+    return any(c["id"] == to for c in front) if to not in ("recent", "all") else bool(front)
 
 
 def drain(audience: str, pick: str = "") -> None:
@@ -392,12 +440,15 @@ def drain(audience: str, pick: str = "") -> None:
                     e["picked"] = True
     try:
         while True:
+            ready = ready_clients(audience)
+            front = _in_front(ready)
             with _lock:
-                e = next((x for x in _queue if x["audience"] == audience and x["state"] == "queued"), None)
+                # a command waiting for a console in front skips consoles behind (Brett wouldn't see it run)
+                e = next((x for x in _queue if x["audience"] == audience and x["state"] == "queued" and _can_take(x, front)), None)
                 if e is None:
                     return
                 e["state"] = "delivering"  # nobody else takes it: delivered once, even if two consoles say hello
-            r = _runner(e["command"], e["grants"], e["by"], ready_clients(audience))
+            r = _runner(e["command"], e["grants"], e["by"], front if e.get("front") else ready)
             d = r.pop("deliver", None)
             if not r.get("ok") and r.get("noConsole"):
                 with _lock:  # the console went away again before it could take it
@@ -460,10 +511,13 @@ def run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", 
     command = {k: v for k, v in (command or {}).items() if v not in (None, "")}
     grants = grants if grants is not None else ["*"]
     by = by or str(command.get("by") or "")
-    r = _runner(command, grants, by, ready_clients(audience))
+    ready = ready_clients(audience)
+    r = _runner(command, grants, by, ready)
     if _queueable(command, r):
         return _run_queued(command, grants, by, audience, DELIVERY_WAIT_S if wait is None else wait)
     d = r.pop("deliver", None)
+    if r.get("ok") and isinstance(d, dict) and _wants_front(command, r, d, ready, audience):
+        return _run_queued(command, grants, by, audience, DELIVERY_WAIT_S if wait is None else wait, front=True)
     if r.get("ok") and isinstance(d, dict):
         r["sent"] = d.get("message")
         r["delivered"] = deliver([str(x) for x in d.get("to") or []], d.get("message") or {}, audience)
@@ -472,18 +526,42 @@ def run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", 
     return r
 
 
-def _run_queued(command: dict[str, Any], grants: list[str], by: str, audience: str, wait: float) -> dict[str, Any]:
+def navigates(command: dict[str, Any], r: dict[str, Any]) -> bool:
+    """Only moves the console: opens or closes a screen, dialog or settings tab, back / home / close / refresh, or an
+    action the runner rated `navigate`."""
+    if command.get("op") != "act":
+        return False
+    t = command.get("target")
+    if t in NAV_TARGETS or t == "console.nav":
+        return True
+    return t == "console.actions" and (r.get("data") or {}).get("effect") == "navigate"
+
+
+def _wants_front(command: dict[str, Any], r: dict[str, Any], d: dict[str, Any], ready: list[dict[str, Any]], audience: str) -> bool:
+    """A navigation command for the owner whose target consoles are all behind: bring one to the front first."""
+    if audience != OWNER or not navigates(command, r):
+        return False
+    st = settings()
+    if not (st["front"] and st["wake"]):
+        return False
+    to = {str(x) for x in d.get("to") or []}
+    targets = [c for c in ready if c["id"] in to]
+    return bool(targets) and not _in_front(targets)
+
+
+def _run_queued(command: dict[str, Any], grants: list[str], by: str, audience: str, wait: float, front: bool = False) -> dict[str, Any]:
     # Checked first against the last catalog this user's console sent, so a wrong name or a missing permission
     # answers now instead of after the console opens.
     pre: dict[str, Any] | None = None
     cat = remembered_catalog(audience)
-    if cat:
+    if cat and not front:  # (front: the runner just checked it against the open consoles)
         pre = _runner(command, grants, by, [{"id": "remembered", "lastSeen": int(_now() * 1000), "lastUsed": int(_now() * 1000), "catalog": cat, "here": {}}])
         pre.pop("deliver", None)
         if not pre.get("ok"):
             return pre
-    e = _enqueue(command, grants, by, audience)
-    if ready_clients(audience):  # a console said hello while this was being checked
+    e = _enqueue(command, grants, by, audience, front)
+    ready_now = ready_clients(audience)
+    if ready_now and _can_take(e, _in_front(ready_now)):  # a console said hello (or came to the front) while this was being checked
         _drain_soon(audience)
     e["event"].wait(max(0.0, min(wait, e["expires"] - _now())))
     with _lock:
@@ -494,7 +572,9 @@ def _run_queued(command: dict[str, Any], grants: list[str], by: str, audience: s
     waiting = state in ("queued", "delivering")
     out = {**base, "ok": waiting, "queued": waiting,
            "delivery": {"how": "queued" if waiting else state, "id": e["id"], "expiresAt": _iso(e["expires"]), **({"wake": e["wake"]} if e["wake"] else {})}}
-    if waiting:
+    if waiting and front:
+        out["message"] = f"the console is behind: AmberX is bringing Chrome to the front on it, and it runs there (until {_iso(e['expires'])})" + (f"; {e['wake']['message']}" if e["wake"] and e["wake"].get("message") else "")
+    elif waiting:
         out["message"] = f"queued, not open yet: it runs the moment a console opens (until {_iso(e['expires'])})" + (f"; {e['wake']['message']}" if e["wake"] else "; AmberX is asked to open it if none does")
     else:
         out.update({"code": "not_found", "message": "no console opened before the command expired (Settings → Plugins → Console commands: how long a command waits)"})
@@ -570,6 +650,9 @@ async def seen(request: Request) -> dict[str, Any]:
         _front_of(c, b)
         if b.get("used"):
             c["lastUsed"] = _now()
+        to_front = c.get("front") is not False and _ready(c) and any(e["audience"] == audience and e["state"] == "queued" and e.get("front") for e in _queue)
+    if to_front:  # this console came to the front: what waited for one runs now
+        _drain_soon(audience)
     return {"ok": True}
 
 
@@ -713,6 +796,14 @@ async def run_action(request: Request) -> JSONResponse:
     if b.get("confirm"):
         cmd["confirm"] = b["confirm"]
     return await go(request, cmd)
+
+
+@router.post("/go")
+async def go_action(request: Request) -> JSONResponse:
+    """Navigation only (open a screen, tab or page through an action): refuses anything that changes data."""
+    b = await _body(request)
+    return await go(request, {"op": "act", "target": "console.actions", "path": b.get("id") or b.get("path") or b.get("q"), "action": "run",
+                              "navigateOnly": True, **_to(b, args=b.get("args")), **_audit(b)})
 
 
 @router.post("/back")
