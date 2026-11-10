@@ -771,10 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 00:49 UTC · `skins-own-everything-colour-theme-swaps-independ` → queued, note (all) · cli
-- 2026-11-10 00:49 UTC · `file-watchdog-plugin-watch-files-run-scripts-or` → queued, note (all) · cli
-- 2026-11-10 00:49 UTC · `urgent-terminal-pops-up-every-time-the-console-o` → queued, note (all) · cli
-- 2026-11-10 00:49 UTC · `orchestrator-and-build-manager-search-bar-collap` → queued, note (all) · cli
 - 2026-11-10 00:49 UTC · `vps-orchestrator-only-rule-vps-settings-console` → queued, note (all) · cli
 - 2026-11-10 00:49 UTC · `home-page-build-queue-card-opens-the-orchestrato` → queued, note (all) · cli
 - 2026-11-10 00:49 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` → queued, note (all) · cli
@@ -1171,6 +1167,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 14:54 UTC · `resolve-the-conflict-and-land-the-orchestrator-l` s2 done (all) · orchestrator
 - 2026-11-10 14:54 UTC · `resolve-the-conflict-and-land-the-orchestrator-l` s3 done, → built (all) · orchestrator
 - 2026-11-10 14:54 UTC · `resolve-the-conflict-and-land-the-orchestrator-l` PR #442 (all) · foreign-write
+- 2026-11-10 14:55 UTC · `resolve-the-conflict-and-land-the-orchestrator-l` → pending, note (all) · pipeline
+- 2026-11-10 14:55 UTC · `molly-fable-version-the-one-interface-for-amberx` → running, note (all) · pipeline
+- 2026-11-10 14:55 UTC · `molly-fable-version-the-one-interface-for-amberx` branch claude/molly-fable-version-the-one-interface-for-amberx (all) · pipeline
+- 2026-11-10 14:55 UTC · `molly-fable-version-the-one-interface-for-amberx` note (all) · orchestrator
 
 ## Token passes (log)
 
