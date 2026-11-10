@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T23:08:18.006Z",
+ "updatedAt": "2026-11-10T23:09:42.133Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -97388,12 +97388,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T23:08:12.434Z",
-   "updatedAt": "2026-11-10T23:08:13.734Z",
+   "updatedAt": "2026-11-10T23:09:40.929Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T23:08:13.734Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T23:09:40.929Z"
     }
    ],
    "approvals": [],
@@ -97410,7 +97414,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Watchdog on the VPS dispatcher: every minute check (a) nothing running while Queue or Pending-urgent has items, (b) a running build with no live session, (c) dispatcher tick not seen for 3+ min. On detect: auto-fix in order (pipeline selfcheck, release dead slots, auto-queue Urgent/High pending builds when queue is empty, restart dispatcher), log each attempt under 'Automatic fixes' in AmberX notes, and send an AmberX FYI notification per attempt and result. Escalate to Brett with what's missing only if every fix fails. Newly filed Urgent builds auto-queue instead of sitting in Pending.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwbayjsx01z3zp"
+    },
+    {
+     "id": "s2",
+     "text": "Why am I not being notified when it stalls? You need to be monitoring it so you know when it stalls, then try to fix it, then let me know.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwbayjsx02bgfn"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/stall-watchdog-detect-when-nothing-is-building-a.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/stall-watchdog-detect-when-nothing-is-building-a.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwbayjsx03vaes"
+    }
+   ]
   }
  ]
 }

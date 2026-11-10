@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2967,
- "updatedAt": "2026-11-10T23:08:18.006Z",
+ "rev": 2968,
+ "updatedAt": "2026-11-10T23:09:42.133Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -156127,12 +156127,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T23:08:12.434Z",
-   "updatedAt": "2026-11-10T23:08:13.734Z",
+   "updatedAt": "2026-11-10T23:09:40.929Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T23:08:13.734Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T23:09:40.929Z"
     }
    ],
    "approvals": [],
@@ -156159,16 +156163,92 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-10T23:09:40.929Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
     "planned": null,
     "tried": [],
     "pickedAt": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwbayjsx01z3zp",
+     "title": "",
+     "text": "Watchdog on the VPS dispatcher: every minute check (a) nothing running while Queue or Pending-urgent has items, (b) a running build with no live session, (c) dispatcher tick not seen for 3+ min. On detect: auto-fix in order (pipeline selfcheck, release dead slots, auto-queue Urgent/High pending builds when queue is empty, restart dispatcher), log each attempt under 'Automatic fixes' in AmberX notes, and send an AmberX FYI notification per attempt and result. Escalate to Brett with what's missing only if every fix fails. Newly filed Urgent builds auto-queue instead of sitting in Pending.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T23:09:40.929Z",
+     "updatedAt": "2026-11-10T23:09:40.929Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwbayjsx02bgfn",
+     "title": "",
+     "text": "Why am I not being notified when it stalls? You need to be monitoring it so you know when it stalls, then try to fix it, then let me know.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T23:09:40.929Z",
+     "updatedAt": "2026-11-10T23:09:40.929Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwbayjsx03vaes",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/stall-watchdog-detect-when-nothing-is-building-a.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/stall-watchdog-detect-when-nothing-is-building-a.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T23:09:40.929Z",
+     "updatedAt": "2026-11-10T23:09:40.929Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -156177,12 +156257,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T23:09:40.929Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
