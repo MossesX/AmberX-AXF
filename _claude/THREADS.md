@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:09 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` → pending (all) · voice
 - 2026-11-10 17:09 UTC · `skins-own-everything-colour-theme-swaps-independ` → pending (all) · voice
 - 2026-11-10 17:09 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → pending (all) · voice
 - 2026-11-10 17:09 UTC · `skins-restyle-finish` → pending (all) · voice
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 21:01 UTC · `make-hulu-actually-take-builds-dispatcher-counts` note (all) · orchestrator
 - 2026-11-10 21:02 UTC · `remove-the-old-theme-manager-style-and-layout-se` s3 done (all) · orchestrator
 - 2026-11-10 21:02 UTC · `api-accounts-need-no-approval-builds-route-there` added (0 steps) (all) · console
+- 2026-11-10 21:02 UTC · `api-accounts-need-no-approval-builds-route-there` → queued, note (all) · console
 
 ## Token passes (log)
 
