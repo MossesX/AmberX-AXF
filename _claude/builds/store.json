@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2976,
- "updatedAt": "2026-11-10T23:13:19.612Z",
+ "rev": 2977,
+ "updatedAt": "2026-11-10T23:13:34.929Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -5480,10 +5480,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.407Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.058Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -5828,7 +5828,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -6425,10 +6425,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.407Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.059Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -6663,7 +6663,7 @@
    },
    "kind": "build",
    "planRef": "x.assets.browser",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -6876,10 +6876,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.407Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.059Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -7202,7 +7202,7 @@
    },
    "kind": "build",
    "planRef": "x.assets.templates",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -7564,10 +7564,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.407Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.059Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -7934,7 +7934,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -8033,10 +8033,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.407Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.059Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -8315,7 +8315,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -9415,10 +9415,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.407Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.059Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -9873,7 +9873,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -12251,10 +12251,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.407Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.059Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -12379,7 +12379,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -14987,10 +14987,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.407Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.059Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -15071,7 +15071,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -19069,10 +19069,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.407Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.059Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -19134,7 +19134,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -19752,10 +19752,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -20122,7 +20122,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -25558,10 +25558,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -25752,7 +25752,7 @@
    },
    "kind": "epic",
    "planRef": "x.modules",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -25814,10 +25814,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -25879,7 +25879,7 @@
    },
    "kind": "epic",
    "planRef": "x.deploy.console",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -25937,10 +25937,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -26131,7 +26131,7 @@
    },
    "kind": "epic",
    "planRef": "x.state",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -26189,10 +26189,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -26361,7 +26361,7 @@
    },
    "kind": "epic",
    "planRef": "x.uikits",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -26419,10 +26419,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -26701,7 +26701,7 @@
    },
    "kind": "epic",
    "planRef": "x.libs.core",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -26759,10 +26759,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -26887,7 +26887,7 @@
    },
    "kind": "epic",
    "planRef": "x.engine.uiport",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -26945,10 +26945,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -27051,7 +27051,7 @@
    },
    "kind": "epic",
    "planRef": "x.engine.dev",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -27109,10 +27109,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -27281,7 +27281,7 @@
    },
    "kind": "epic",
    "planRef": "x.session",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -27339,10 +27339,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -27731,7 +27731,7 @@
    },
    "kind": "epic",
    "planRef": "x.python.port",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -27789,10 +27789,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -28027,7 +28027,7 @@
    },
    "kind": "epic",
    "planRef": "x.plugins",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -28272,10 +28272,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -28422,7 +28422,7 @@
    },
    "kind": "epic",
    "planRef": "x.showcase.packs",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -28480,10 +28480,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -28630,7 +28630,7 @@
    },
    "kind": "epic",
    "planRef": "x.lib.media",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -28688,10 +28688,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -28838,7 +28838,7 @@
    },
    "kind": "epic",
    "planRef": "x.lib.location",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -28896,10 +28896,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -29046,7 +29046,7 @@
    },
    "kind": "epic",
    "planRef": "x.lib.editor",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -29104,10 +29104,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -29254,7 +29254,7 @@
    },
    "kind": "epic",
    "planRef": "x.lib.ai",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -29312,10 +29312,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -29462,7 +29462,7 @@
    },
    "kind": "epic",
    "planRef": "x.lib.vps",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -29520,10 +29520,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -29670,7 +29670,7 @@
    },
    "kind": "epic",
    "planRef": "x.lib.github",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -29728,10 +29728,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -29878,7 +29878,7 @@
    },
    "kind": "epic",
    "planRef": "x.lib.notifications",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -29936,10 +29936,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -30086,7 +30086,7 @@
    },
    "kind": "epic",
    "planRef": "x.lib.sensors",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -30144,10 +30144,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -30294,7 +30294,7 @@
    },
    "kind": "epic",
    "planRef": "x.lib.files",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -30352,10 +30352,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -30502,7 +30502,7 @@
    },
    "kind": "epic",
    "planRef": "x.lib.charts",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -30560,10 +30560,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -30688,7 +30688,7 @@
    },
    "kind": "epic",
    "planRef": "x.console.repo",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -30746,10 +30746,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -30896,7 +30896,7 @@
    },
    "kind": "epic",
    "planRef": "x.lib.hub",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -40391,10 +40391,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -40453,7 +40453,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 53,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -41166,10 +41166,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -41360,7 +41360,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 57,
+   "rev": 58,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -41638,10 +41638,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -41766,7 +41766,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 55,
+   "rev": 56,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -42445,10 +42445,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -42727,7 +42727,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 57,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -42838,10 +42838,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -42988,7 +42988,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -43287,10 +43287,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -43415,7 +43415,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -43523,10 +43523,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -43651,7 +43651,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 55,
+   "rev": 56,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -51224,10 +51224,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -51352,7 +51352,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 53,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -52408,10 +52408,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -52492,7 +52492,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 62,
+   "rev": 63,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -66649,10 +66649,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -66799,7 +66799,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 61,
+   "rev": 62,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -71979,10 +71979,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -72107,7 +72107,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 53,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -73282,10 +73282,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -73652,7 +73652,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 53,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -73973,10 +73973,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -74101,7 +74101,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -75661,10 +75661,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -75811,7 +75811,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -79723,10 +79723,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -79829,7 +79829,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -81724,10 +81724,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -83854,7 +83854,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -86560,10 +86560,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -86732,7 +86732,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -89065,10 +89065,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -89237,7 +89237,7 @@
    },
    "kind": "build",
    "planRef": "build-names-live-to-do-checklists-build-manager-yxjz",
-   "rev": 61,
+   "rev": 62,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -90433,10 +90433,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -90561,7 +90561,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 58,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -91149,10 +91149,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -91387,7 +91387,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -93534,10 +93534,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -93706,7 +93706,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -94220,10 +94220,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -94414,7 +94414,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -95190,10 +95190,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -95318,7 +95318,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -95406,10 +95406,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -95490,7 +95490,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -95931,10 +95931,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -96037,7 +96037,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 62,
+   "rev": 63,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -96267,10 +96267,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -96354,7 +96354,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -97063,10 +97063,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -97150,7 +97150,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -97250,10 +97250,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -97337,7 +97337,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -97429,10 +97429,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -97667,7 +97667,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -97733,10 +97733,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -97883,7 +97883,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -99021,10 +99021,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -100249,7 +100249,7 @@
    },
    "kind": "build",
    "planRef": "token-usage-log-accounts-plan-studio-control-small-steps",
-   "rev": 74,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -101880,10 +101880,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.062Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -102074,7 +102074,7 @@
    },
    "kind": "build",
    "planRef": "headless-progress-file-lean-claude-md-chain",
-   "rev": 55,
+   "rev": 56,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -106204,10 +106204,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -106442,7 +106442,7 @@
    },
    "kind": "build",
    "planRef": "claude-settings-tabs-veto",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -106916,10 +106916,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -107022,7 +107022,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -107101,10 +107101,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -107229,7 +107229,7 @@
    },
    "kind": "build",
    "planRef": "claude-accounts-edit",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -107307,10 +107307,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -107413,7 +107413,7 @@
    },
    "kind": "build",
    "planRef": "amberx-open-any-url",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -107490,10 +107490,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -107596,7 +107596,7 @@
    },
    "kind": "build",
    "planRef": "axhub-google",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -107708,10 +107708,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -108056,7 +108056,7 @@
    },
    "kind": "build",
    "planRef": "notes-tasks-calendar",
-   "rev": 60,
+   "rev": 61,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -109250,10 +109250,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -109518,7 +109518,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -109882,10 +109882,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -109988,7 +109988,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -111035,10 +111035,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -111141,7 +111141,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -111395,10 +111395,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -111589,7 +111589,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -111678,10 +111678,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -111806,7 +111806,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -111872,10 +111872,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -112066,7 +112066,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -112399,10 +112399,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -112637,7 +112637,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -112907,10 +112907,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -113079,7 +113079,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -115334,10 +115334,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -115399,7 +115399,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -115466,10 +115466,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -115531,7 +115531,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -116304,10 +116304,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -116498,7 +116498,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -116662,10 +116662,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -116724,7 +116724,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -116799,10 +116799,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -116886,7 +116886,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -117252,10 +117252,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -117339,7 +117339,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -117415,10 +117415,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -117502,7 +117502,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -117874,10 +117874,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -118024,7 +118024,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -118283,10 +118283,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.408Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -118411,7 +118411,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -118481,10 +118481,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -118631,7 +118631,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -118693,10 +118693,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -118887,7 +118887,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -120425,10 +120425,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -120531,7 +120531,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -120562,7 +120562,7 @@
    "title": "Molly gap: one sign-in reaches every app backend (console token, hub session, Expenses) for native screens",
    "category": "Molly",
    "detail": "Gap found by molly-one-shell. Native screens call each app backend from molly.amberxai.com: the console API takes a bearer token kept in the console origin, axHub uses its own session, Expenses its own. Molly needs one sign-in that hands each native plugin its credentials. No secrets in the repo.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -120570,7 +120570,7 @@
    "pr": "#477",
    "priority": "P0",
    "createdAt": "2026-11-08T16:59:02.204Z",
-   "updatedAt": "2026-11-10T23:13:05.285Z",
+   "updatedAt": "2026-11-10T23:13:19.626Z",
    "builtAt": "",
    "notes": [
     {
@@ -120624,6 +120624,14 @@
     {
      "text": "Session on account-3 ended (exit 1) with 1 step left: back in the Queue (run 1).",
      "at": "2026-11-10T23:13:05.285Z"
+    },
+    {
+     "text": "Started run 2 on account-5 (API key, subscriptions first, then API) (Opus, Phase 2): axf-molly-sign-in-once--sully.",
+     "at": "2026-11-10T23:13:18.336Z"
+    },
+    {
+     "text": "Claude account: account-5 (axf-molly-sign-in-once--sully, own login copy)",
+     "at": "2026-11-10T23:13:19.626Z"
     }
    ],
    "approvals": [],
@@ -120634,8 +120642,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "Landin' Lenny",
-    "brief": "# Build: molly-sign-in-once\n\n## Brett said (verbatim)\nAt: 2026-11-08T16:59:02.204Z\n> Standalone apps keep working until Molly covers them; list gaps as pending builds.\n\n## What to build\nContinue build \"Molly gap: one sign-in reaches every app backend (console token, hub session, Expenses) for native screens\" (molly-sign-in-once) [Molly] — Phase 2, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-08 16:59):\n\"Standalone apps keep working until Molly covers them; list gaps as pending builds.\"\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/molly-sign-in-once · PR #477\nSteps in this phase (1 left, ~?):\n[x] s2 Molly sign-in screen + Settings section for app connections; status in the systems check style\n[ ] s3 Tests + report\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step molly-sign-in-once <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link molly-sign-in-once --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-3 for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step molly-sign-in-once <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note molly-sign-in-once \"…\"); the build goes back to Pending for Brett.\n",
+    "by": "molly-sign-in-once",
+    "brief": "# Build: molly-sign-in-once\n\n## Brett said (verbatim)\nAt: 2026-11-08T16:59:02.204Z\n> Standalone apps keep working until Molly covers them; list gaps as pending builds.\n\n## What to build\nContinue build \"Molly gap: one sign-in reaches every app backend (console token, hub session, Expenses) for native screens\" (molly-sign-in-once) [Molly] — Phase 2, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-08 16:59):\n\"Standalone apps keep working until Molly covers them; list gaps as pending builds.\"\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/molly-sign-in-once · PR #477\nSteps in this phase (1 left, ~?):\n[x] s2 Molly sign-in screen + Settings section for app connections; status in the systems check style\n[ ] s3 Tests + report\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step molly-sign-in-once <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link molly-sign-in-once --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-5 (an API key: billed per token, keep it lean) for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step molly-sign-in-once <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note molly-sign-in-once \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -120643,12 +120651,12 @@
    "pipeline": {
     "queuedAt": "2026-11-10T23:08:05.898Z",
     "queuedBy": "console",
-    "account": "account-3",
-    "session": "",
+    "account": "account-5",
+    "session": "axf-molly-sign-in-once--sully",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-10T23:11:54.396Z",
-    "runs": 1,
+    "launchedAt": "2026-11-10T23:13:17.993Z",
+    "runs": 2,
     "lastRun": {
      "at": "2026-11-10T23:13:04.667Z",
      "exit": 1,
@@ -120659,18 +120667,18 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "Session on account-3 ended (exit 1) with 1 step left: back in the Queue (run 1).",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T23:11:54.396Z",
+    "dispatchedAt": "2026-11-10T23:13:17.993Z",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-10T23:11:54.396Z"
+    "pickedAt": "2026-11-10T23:13:17.993Z"
    },
    "steps": [
     {
@@ -120748,7 +120756,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -121029,10 +121037,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -121116,7 +121124,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -121192,10 +121200,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -121279,7 +121287,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -121758,10 +121766,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -122126,7 +122134,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -122208,10 +122216,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -122676,7 +122684,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -122762,10 +122770,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -123455,7 +123463,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -123550,10 +123558,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -123768,7 +123776,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -123844,10 +123852,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -124112,7 +124120,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124190,10 +124198,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -124358,7 +124366,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124441,10 +124449,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -124569,7 +124577,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124642,10 +124650,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -124814,7 +124822,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124894,10 +124902,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -124981,7 +124989,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125070,10 +125078,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -125157,7 +125165,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125550,10 +125558,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -125637,7 +125645,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125725,10 +125733,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -125812,7 +125820,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -125908,10 +125916,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -125995,7 +126003,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -126071,10 +126079,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -126158,7 +126166,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -126238,10 +126246,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -126325,7 +126333,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -126401,10 +126409,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -126488,7 +126496,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -126564,10 +126572,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -126651,7 +126659,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -126893,10 +126901,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -126980,7 +126988,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -127056,10 +127064,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -127143,7 +127151,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -127219,10 +127227,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -127306,7 +127314,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -128054,10 +128062,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -128138,7 +128146,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -128242,10 +128250,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -128329,7 +128337,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -128425,10 +128433,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -128512,7 +128520,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -128588,10 +128596,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -128675,7 +128683,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -128761,10 +128769,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -128848,7 +128856,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -128924,10 +128932,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -129011,7 +129019,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -129091,10 +129099,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -129544,7 +129552,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -129624,10 +129632,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -129848,7 +129856,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -129932,10 +129940,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -130330,7 +130338,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130434,10 +130442,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -130732,7 +130740,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130884,10 +130892,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -130990,7 +130998,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 62,
+   "rev": 63,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -131035,10 +131043,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -131097,7 +131105,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -131142,10 +131150,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -131182,7 +131190,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -131227,10 +131235,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -131267,7 +131275,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -131312,10 +131320,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -131396,7 +131404,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -133272,10 +133280,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -133587,7 +133595,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -135153,10 +135161,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -135278,7 +135286,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 60,
+   "rev": 61,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -136360,10 +136368,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -136583,7 +136591,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -137080,10 +137088,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -137167,7 +137175,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -137540,10 +137548,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -137627,7 +137635,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -137891,10 +137899,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -137978,7 +137986,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 53,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -138045,10 +138053,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -138479,7 +138487,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -138541,10 +138549,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -138625,7 +138633,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -138683,10 +138691,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -138767,7 +138775,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -140414,10 +140422,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -140664,7 +140672,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -140742,10 +140750,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -141149,7 +141157,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -141526,10 +141534,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -141798,7 +141806,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -142450,10 +142458,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -142730,7 +142738,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -142942,10 +142950,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -143138,7 +143146,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -143209,10 +143217,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -143460,7 +143468,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -143551,10 +143559,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -143828,7 +143836,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -143919,10 +143927,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -144374,7 +144382,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -144461,10 +144469,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -144743,7 +144751,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -145754,10 +145762,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -146027,7 +146035,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -146263,10 +146271,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -146539,7 +146547,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -146606,10 +146614,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -146806,7 +146814,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -147896,10 +147904,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -147983,7 +147991,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -148090,10 +148098,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -148336,7 +148344,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -148837,10 +148845,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -149249,7 +149257,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -149316,10 +149324,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -149698,7 +149706,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -149789,10 +149797,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -149987,7 +149995,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 53,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -150054,10 +150062,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -150250,7 +150258,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -150313,10 +150321,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -150400,7 +150408,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -150463,10 +150471,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -150550,7 +150558,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -150613,10 +150621,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -150700,7 +150708,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -150763,10 +150771,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -150850,7 +150858,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -150917,10 +150925,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -151004,7 +151012,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -151071,10 +151079,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -151158,7 +151166,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -151225,10 +151233,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -151312,7 +151320,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -151379,10 +151387,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -151466,7 +151474,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -151533,10 +151541,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -151620,7 +151628,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -151671,10 +151679,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -151802,7 +151810,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -152631,10 +152639,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -152718,7 +152726,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -152785,10 +152793,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -152872,7 +152880,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -152939,10 +152947,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -153026,7 +153034,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -153093,10 +153101,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -153180,7 +153188,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -153204,7 +153212,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T20:59:45.064Z",
-   "updatedAt": "2026-11-10T23:12:34.313Z",
+   "updatedAt": "2026-11-10T23:13:14.735Z",
    "builtAt": "",
    "notes": [
     {
@@ -153238,6 +153246,18 @@
     {
      "text": "Headless run axf-make-hulu-actually-take-builds-dispatcher-counts--lenny-231150: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
      "at": "2026-11-10T23:12:34.313Z"
+    },
+    {
+     "text": "Session on account-3 ended (exit 1) with 3 steps left: back in the Queue (run 1).",
+     "at": "2026-11-10T23:13:06.748Z"
+    },
+    {
+     "text": "Started run 2 on account-5 (API key, subscriptions first, then API) (Opus, Phase 1): axf-make-hulu-actually-take-builds-dispatcher-counts--paulie.",
+     "at": "2026-11-10T23:13:13.380Z"
+    },
+    {
+     "text": "Claude account: account-5 (axf-make-hulu-actually-take-builds-dispatcher-counts--paulie, own login copy)",
+     "at": "2026-11-10T23:13:14.735Z"
     }
    ],
    "approvals": [],
@@ -153248,8 +153268,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "Landin' Lenny",
-    "brief": "# Build: make-hulu-actually-take-builds-dispatcher-counts\n\n## Brett said (verbatim)\nAt: 2026-11-10T20:59:45.064Z\n> I want five builds on each subscription in parallel, so a total of ten at a time.\n\n## What to build\nContinue build \"Make Hulu actually take builds: dispatcher counts the console account as a worker (5 parallel)\" (make-hulu-actually-take-builds-dispatcher-counts) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 20:59):\n\"I want five builds on each subscription in parallel, so a total of ten at a time.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Hulu (account-3, max plan) is signed in and switched on (pipeline use=on, interactiveTakesJobs=true, removed from excluded) but the dispatcher still marks it standby 'not a worker (workers take every headless job)' because it is the console's interactive account, so it never takes builds. Make the dispatcher treat the console account as a builder when interactiveTakesJobs is on, at the same priority as workers, 5 parallel. Brett wants 5 per subscription = 10 total. Verify with a real launch; notify on AmberX when Hulu takes its first build.\n[ ] s2 (~30 min) I want five builds on each subscription in parallel, so a total of ten at a time.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/make-hulu-actually-take-builds-dispatcher-counts.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/make-hulu-actually-take-builds-dispatcher-counts.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step make-hulu-actually-take-builds-dispatcher-counts <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link make-hulu-actually-take-builds-dispatcher-counts --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-3 for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step make-hulu-actually-take-builds-dispatcher-counts <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note make-hulu-actually-take-builds-dispatcher-counts \"…\"); the build goes back to Pending for Brett.\n",
+    "by": "make-hulu-actually-take-builds-dispatcher-counts",
+    "brief": "# Build: make-hulu-actually-take-builds-dispatcher-counts\n\n## Brett said (verbatim)\nAt: 2026-11-10T20:59:45.064Z\n> I want five builds on each subscription in parallel, so a total of ten at a time.\n\n## What to build\nContinue build \"Make Hulu actually take builds: dispatcher counts the console account as a worker (5 parallel)\" (make-hulu-actually-take-builds-dispatcher-counts) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 20:59):\n\"I want five builds on each subscription in parallel, so a total of ten at a time.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/make-hulu-actually-take-builds-dispatcher-counts\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Hulu (account-3, max plan) is signed in and switched on (pipeline use=on, interactiveTakesJobs=true, removed from excluded) but the dispatcher still marks it standby 'not a worker (workers take every headless job)' because it is the console's interactive account, so it never takes builds. Make the dispatcher treat the console account as a builder when interactiveTakesJobs is on, at the same priority as workers, 5 parallel. Brett wants 5 per subscription = 10 total. Verify with a real launch; notify on AmberX when Hulu takes its first build.\n[ ] s2 (~30 min) I want five builds on each subscription in parallel, so a total of ten at a time.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/make-hulu-actually-take-builds-dispatcher-counts.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/make-hulu-actually-take-builds-dispatcher-counts.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step make-hulu-actually-take-builds-dispatcher-counts <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link make-hulu-actually-take-builds-dispatcher-counts --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-5 (an API key: billed per token, keep it lean) for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step make-hulu-actually-take-builds-dispatcher-counts <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note make-hulu-actually-take-builds-dispatcher-counts \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -153257,27 +153277,34 @@
    "pipeline": {
     "queuedAt": "2026-11-10T23:08:04.673Z",
     "queuedBy": "console",
-    "account": "account-3",
-    "session": "axf-make-hulu-actually-take-builds-dispatcher-counts--lenny-231150",
+    "account": "account-5",
+    "session": "axf-make-hulu-actually-take-builds-dispatcher-counts--paulie",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-10T23:11:50.361Z",
-    "runs": 1,
-    "lastRun": null,
+    "launchedAt": "2026-11-10T23:13:13.038Z",
+    "runs": 2,
+    "lastRun": {
+     "at": "2026-11-10T23:13:06.103Z",
+     "exit": 1,
+     "outcome": "requeued",
+     "stepsLeft": 3,
+     "account": "account-3",
+     "session": "axf-make-hulu-actually-take-builds-dispatcher-counts--lenny-231150"
+    },
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T23:11:50.361Z",
+    "dispatchedAt": "2026-11-10T23:13:13.038Z",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-10T23:11:50.361Z"
+    "pickedAt": "2026-11-10T23:13:13.038Z"
    },
    "steps": [
     {
@@ -153358,7 +153385,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -153548,7 +153575,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:21:49.158Z",
-   "updatedAt": "2026-11-10T23:12:46.823Z",
+   "updatedAt": "2026-11-10T23:13:32.411Z",
    "builtAt": "",
    "notes": [
     {
@@ -153570,6 +153597,14 @@
     {
      "text": "Claude account: account-3 (hulu0241@gmail.com) (axf-orchestrator-merge-first-switch-separate-merger--lenny, own login copy)",
      "at": "2026-11-10T23:12:46.823Z"
+    },
+    {
+     "text": "Started run 1 on account-5 (API key, subscriptions first, then API) (Opus, Phase 1): axf-orchestrator-merge-first-switch-separate-merger--gina.",
+     "at": "2026-11-10T23:13:30.601Z"
+    },
+    {
+     "text": "Claude account: account-5 (axf-orchestrator-merge-first-switch-separate-merger--gina, own login copy)",
+     "at": "2026-11-10T23:13:32.411Z"
     }
    ],
    "approvals": [],
@@ -153580,8 +153615,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "Landin' Lenny",
-    "brief": "# Build: orchestrator-merge-first-switch-separate-merger\n\n## Brett said (verbatim)\nAt: 2026-11-10T21:21:49.158Z\n> I need a switch in the orchestrator to set the number of mergers and the number of builders. It needs to assign merges to an employee just like builds. Put all my processing power towards merging.\n\n## What to build\nContinue build \"Orchestrator: merge-first switch + separate merger and builder counts; merges assigned to employees like builds\" (orchestrator-merge-first-switch-separate-merger) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 21:21):\n\"I need a switch in the orchestrator to set the number of mergers and the number of builders. It needs to assign merges to an employee just like builds. Put all my processing power towards merging.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Add to orchestrator settings: (1) Merge-first switch: when on, free slots go to merge work before new builds. (2) Two counts: Mergers N and Builders N, sharing the account slot pool. (3) Merges (rebase, conflict fix, test, land) become assignable jobs given to an employee/agent profile like builds, shown in the Active banner and tabs. Notify on AmberX at each stage. Move this build to the front of the queue.\n[ ] s2 (~30 min) I need a switch in the orchestrator to set the number of mergers and the number of builders. It needs to assign merges to an employee just like builds. Put all my processing power towards merging.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/orchestrator-merge-first-switch-separate-merger.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/orchestrator-merge-first-switch-separate-merger.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step orchestrator-merge-first-switch-separate-merger <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link orchestrator-merge-first-switch-separate-merger --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-3 for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step orchestrator-merge-first-switch-separate-merger <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note orchestrator-merge-first-switch-separate-merger \"…\"); the build goes back to Pending for Brett.\n",
+    "by": "orchestrator-merge-first-switch-separate-merger",
+    "brief": "# Build: orchestrator-merge-first-switch-separate-merger\n\n## Brett said (verbatim)\nAt: 2026-11-10T21:21:49.158Z\n> I need a switch in the orchestrator to set the number of mergers and the number of builders. It needs to assign merges to an employee just like builds. Put all my processing power towards merging.\n\n## What to build\nContinue build \"Orchestrator: merge-first switch + separate merger and builder counts; merges assigned to employees like builds\" (orchestrator-merge-first-switch-separate-merger) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 21:21):\n\"I need a switch in the orchestrator to set the number of mergers and the number of builders. It needs to assign merges to an employee just like builds. Put all my processing power towards merging.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Add to orchestrator settings: (1) Merge-first switch: when on, free slots go to merge work before new builds. (2) Two counts: Mergers N and Builders N, sharing the account slot pool. (3) Merges (rebase, conflict fix, test, land) become assignable jobs given to an employee/agent profile like builds, shown in the Active banner and tabs. Notify on AmberX at each stage. Move this build to the front of the queue.\n[ ] s2 (~30 min) I need a switch in the orchestrator to set the number of mergers and the number of builders. It needs to assign merges to an employee just like builds. Put all my processing power towards merging.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/orchestrator-merge-first-switch-separate-merger.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/orchestrator-merge-first-switch-separate-merger.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step orchestrator-merge-first-switch-separate-merger <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link orchestrator-merge-first-switch-separate-merger --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-5 (an API key: billed per token, keep it lean) for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step orchestrator-merge-first-switch-separate-merger <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note orchestrator-merge-first-switch-separate-merger \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -153589,27 +153624,27 @@
    "pipeline": {
     "queuedAt": "2026-11-10T23:08:09.958Z",
     "queuedBy": "console",
-    "account": "account-3",
-    "session": "axf-orchestrator-merge-first-switch-separate-merger--lenny",
+    "account": "account-5",
+    "session": "axf-orchestrator-merge-first-switch-separate-merger--gina",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-10T23:12:44.901Z",
+    "launchedAt": "2026-11-10T23:13:30.211Z",
     "runs": 1,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T23:12:44.901Z",
+    "dispatchedAt": "2026-11-10T23:13:30.211Z",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-10T23:12:44.901Z"
+    "pickedAt": "2026-11-10T23:13:30.211Z"
    },
    "steps": [
     {
@@ -153690,7 +153725,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -153793,10 +153828,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -153880,7 +153915,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -153900,11 +153935,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/gizmo-opens-by-voice-link-amberx-web-app-android",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:37:39.627Z",
-   "updatedAt": "2026-11-10T23:12:41.273Z",
+   "updatedAt": "2026-11-10T23:13:27.297Z",
    "builtAt": "",
    "notes": [
     {
@@ -153926,6 +153961,18 @@
     {
      "text": "Headless run axf-gizmo-opens-by-voice-link-amberx-web-app-android--lenny: brief only · start 0 tokens · cost $0.00 · 0 turns · 6 tools, MCP none",
      "at": "2026-11-10T23:12:41.273Z"
+    },
+    {
+     "text": "Session on account-3 ended (exit 1) with 3 steps left: back in the Queue (run 1).",
+     "at": "2026-11-10T23:13:07.907Z"
+    },
+    {
+     "text": "Started run 2 on account-5 (API key, subscriptions first, then API) (Opus, Phase 1): axf-gizmo-opens-by-voice-link-amberx-web-app-android--earl.",
+     "at": "2026-11-10T23:13:25.494Z"
+    },
+    {
+     "text": "Claude account: account-5 (axf-gizmo-opens-by-voice-link-amberx-web-app-android--earl, own login copy)",
+     "at": "2026-11-10T23:13:27.297Z"
     }
    ],
    "approvals": [],
@@ -153936,8 +153983,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "Landin' Lenny",
-    "brief": "# Build: gizmo-opens-by-voice-link-amberx-web-app-android\n\n## Brett said (verbatim)\nAt: 2026-11-10T21:37:39.627Z\n> That Gizmo didn't open. There's an AmberX web app tied to the app, so why won't it work? Now it's loading the old banner again, the old look.\n\n## What to build\nContinue build \"Gizmo opens by voice/link (AmberX web app + Android app) and the new look sticks after reload\" (gizmo-opens-by-voice-link-amberx-web-app-android) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 21:37):\n\"That Gizmo didn't open. There's an AmberX web app tied to the app, so why won't it work? Now it's loading the old banner again, the old look.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Give Gizmo chat a real https deep link on amberxai.com that opens Gizmo in the AmberX Android app (app links) or in the AmberX web app if the app isn't there; make amberx.open_url able to open it; add a Gizmo entry to console.screens. 2) Bug: the new home cards/frame/menus look showed, then a reload brought back the old banner and old look. Persist the chosen skin as the default so reloads keep it.\n[ ] s2 (~30 min) That Gizmo didn't open. There's an AmberX web app tied to the app, so why won't it work? Now it's loading the old banner again, the old look.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/gizmo-opens-by-voice-link-amberx-web-app-android.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/gizmo-opens-by-voice-link-amberx-web-app-android.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step gizmo-opens-by-voice-link-amberx-web-app-android <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link gizmo-opens-by-voice-link-amberx-web-app-android --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-3 for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step gizmo-opens-by-voice-link-amberx-web-app-android <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note gizmo-opens-by-voice-link-amberx-web-app-android \"…\"); the build goes back to Pending for Brett.\n",
+    "by": "gizmo-opens-by-voice-link-amberx-web-app-android",
+    "brief": "# Build: gizmo-opens-by-voice-link-amberx-web-app-android\n\n## Brett said (verbatim)\nAt: 2026-11-10T21:37:39.627Z\n> That Gizmo didn't open. There's an AmberX web app tied to the app, so why won't it work? Now it's loading the old banner again, the old look.\n\n## What to build\nContinue build \"Gizmo opens by voice/link (AmberX web app + Android app) and the new look sticks after reload\" (gizmo-opens-by-voice-link-amberx-web-app-android) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 21:37):\n\"That Gizmo didn't open. There's an AmberX web app tied to the app, so why won't it work? Now it's loading the old banner again, the old look.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Give Gizmo chat a real https deep link on amberxai.com that opens Gizmo in the AmberX Android app (app links) or in the AmberX web app if the app isn't there; make amberx.open_url able to open it; add a Gizmo entry to console.screens. 2) Bug: the new home cards/frame/menus look showed, then a reload brought back the old banner and old look. Persist the chosen skin as the default so reloads keep it.\n[ ] s2 (~30 min) That Gizmo didn't open. There's an AmberX web app tied to the app, so why won't it work? Now it's loading the old banner again, the old look.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/gizmo-opens-by-voice-link-amberx-web-app-android.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/gizmo-opens-by-voice-link-amberx-web-app-android.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step gizmo-opens-by-voice-link-amberx-web-app-android <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link gizmo-opens-by-voice-link-amberx-web-app-android --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-5 (an API key: billed per token, keep it lean) for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step gizmo-opens-by-voice-link-amberx-web-app-android <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note gizmo-opens-by-voice-link-amberx-web-app-android \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -153945,27 +153992,34 @@
    "pipeline": {
     "queuedAt": "2026-11-10T23:08:07.824Z",
     "queuedBy": "console",
-    "account": "account-3",
-    "session": "axf-gizmo-opens-by-voice-link-amberx-web-app-android--lenny",
+    "account": "account-5",
+    "session": "axf-gizmo-opens-by-voice-link-amberx-web-app-android--earl",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-10T23:12:14.268Z",
-    "runs": 1,
-    "lastRun": null,
+    "launchedAt": "2026-11-10T23:13:25.009Z",
+    "runs": 2,
+    "lastRun": {
+     "at": "2026-11-10T23:13:07.383Z",
+     "exit": 1,
+     "outcome": "requeued",
+     "stepsLeft": 3,
+     "account": "account-3",
+     "session": "axf-gizmo-opens-by-voice-link-amberx-web-app-android--lenny"
+    },
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T23:12:14.268Z",
+    "dispatchedAt": "2026-11-10T23:13:25.009Z",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-10T23:12:14.268Z"
+    "pickedAt": "2026-11-10T23:13:25.009Z"
    },
    "steps": [
     {
@@ -154046,7 +154100,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -154113,10 +154167,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -154200,7 +154254,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -154267,10 +154321,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -154354,7 +154408,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -154421,10 +154475,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -154508,7 +154562,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -154575,10 +154629,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -154662,7 +154716,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -154729,10 +154783,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -154816,7 +154870,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -155049,10 +155103,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -155136,7 +155190,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -155203,10 +155257,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -155290,7 +155344,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -155357,10 +155411,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -155444,7 +155498,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -155511,10 +155565,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -155598,7 +155652,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -155660,10 +155714,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -155747,7 +155801,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -155809,10 +155863,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -155896,7 +155950,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -155958,10 +156012,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -156045,7 +156099,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -156107,10 +156161,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "account-3",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:11:47.409Z",
-     "why": "subscription account account-3"
+     "at": "2026-11-10T23:13:09.063Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": ""
@@ -156194,7 +156248,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

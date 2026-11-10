@@ -772,19 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 18:12 UTC · `pass-approval-hook-deep-link-amberx-notification` → running, note (all) · pipeline
-- 2026-11-10 18:12 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
-- 2026-11-10 18:24 UTC · `pass-approval-hook-deep-link-amberx-notification` s1 done, → running (all) · orchestrator
-- 2026-11-10 18:24 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
-- 2026-11-10 18:25 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
-- 2026-11-10 18:26 UTC · `skin-checker-flags-anything-that-breaks-a-profes` → running, note (all) · pipeline
-- 2026-11-10 18:26 UTC · `skin-checker-flags-anything-that-breaks-a-profes` branch claude/skin-checker-flags-anything-that-breaks-a-profes (all) · pipeline
-- 2026-11-10 18:26 UTC · `skin-checker-flags-anything-that-breaks-a-profes` note (all) · orchestrator
-- 2026-11-10 18:28 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
-- 2026-11-10 18:28 UTC · `pass-approval-hook-deep-link-amberx-notification` → queued (all) · orchestrator
-- 2026-11-10 18:28 UTC · `dispatcher-a-worktree-store-write-can-erase-a-fr` added (0 steps) (all) · Claude (gina, pass-approval s1 watcher)
-- 2026-11-10 18:29 UTC · `pass-approval-hook-deep-link-amberx-notification` → running, note (all) · orchestrator
-- 2026-11-10 18:29 UTC · `pass-approval-hook-deep-link-amberx-notification` → running, note (all) · builds-live
 - 2026-11-10 18:29 UTC · `dispatcher-a-worktree-store-write-can-erase-a-fr` note (all) · orchestrator
 - 2026-11-10 18:29 UTC · `resolve-conflicts-and-land-pr-449-account-order` → running, note (all) · pipeline
 - 2026-11-10 18:29 UTC · `resolve-conflicts-and-land-pr-449-account-order` branch claude/resolve-conflicts-and-land-pr-449-account-order (all) · pipeline
@@ -1172,6 +1159,19 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 23:12 UTC · `api-accounts-need-no-approval-builds-route-there` branch claude/api-accounts-need-no-approval-builds-route-there (all) · pipeline
 - 2026-11-10 23:12 UTC · `api-accounts-need-no-approval-builds-route-there` note (all) · orchestrator
 - 2026-11-10 23:13 UTC · `molly-sign-in-once` → queued, note (all) · pipeline
+- 2026-11-10 23:13 UTC · `make-hulu-actually-take-builds-dispatcher-counts` → queued, note (all) · pipeline
+- 2026-11-10 23:13 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` → queued, note (all) · pipeline
+- 2026-11-10 23:13 UTC · `make-hulu-actually-take-builds-dispatcher-counts` → running, note (all) · pipeline
+- 2026-11-10 23:13 UTC · `make-hulu-actually-take-builds-dispatcher-counts` note (all) · orchestrator
+- 2026-11-10 23:13 UTC · `molly-sign-in-once` → running, note (all) · pipeline
+- 2026-11-10 23:13 UTC · `molly-sign-in-once` note (all) · orchestrator
+- 2026-11-10 23:13 UTC · `api-accounts-need-no-approval-builds-route-there` → running, branch claude/api-accounts-need-no-approval-builds-route-there, note (all) · foreign-write
+- 2026-11-10 23:13 UTC · `orchestrator-merge-first-switch-separate-merger` → running, branch claude/orchestrator-merge-first-switch-separate-merger, note (all) · foreign-write
+- 2026-11-10 23:13 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` → running, note (all) · pipeline
+- 2026-11-10 23:13 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` branch claude/gizmo-opens-by-voice-link-amberx-web-app-android (all) · pipeline
+- 2026-11-10 23:13 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` note (all) · orchestrator
+- 2026-11-10 23:13 UTC · `orchestrator-merge-first-switch-separate-merger` note (all) · pipeline
+- 2026-11-10 23:13 UTC · `orchestrator-merge-first-switch-separate-merger` note (all) · orchestrator
 
 ## Token passes (log)
 
