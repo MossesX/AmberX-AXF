@@ -41,6 +41,28 @@ full run decides. #459 and #342 join as their light checks finish. The console r
   builds committed; the check now reads only its own choice set) and a `check-build-hook` flake (the lock folder's
   `mtimeMs` has sub-ms precision and can sit past `Date.now()`, so a 0 ms stale limit sometimes missed; floored).
   Both fixes are on this PR and cherry-picked onto #456, the first of the five in the queue, so its run can go green.
+- The next queue run (#456 with those two fixes, run 42910008551) showed three more failures on main's own code,
+  each hiding the steps behind it:
+  - Kernel `AppearanceConformanceTest`: the Kotlin twin's `AppearanceEngine.NEVER` was only `uac-policy`; the
+    reference engine's `APPEARANCE_NEVER` is `uac-policy, help, appearance-package, skin` (skins and help added them).
+    Synced, so the shared slot types equal the fixture again (82 kernel tests, this was the only red one). A parity
+    fix to an existing twin, no new Kotlin work.
+  - `theme-editor/test.mts` "no Other for the known tokens": the Windows skin's `scrollbar` style token had no
+    category; it is under Layout now.
+  - Deploy helpers shellcheck: `done` used as a word (SC1010) quoted in `axf-deploy.sh` and `test.sh`; `! bash`
+    (SC2251) replaced with an explicit failure. Self-test 51 green.
+- Plugin lifecycle (CI loops every plugin with `set -e`) failed on main for four plugins:
+  - `framework/cli/shipped.mjs` found UI Review by folder name: now by capability (`service:ui-review@1` +
+    `review.mjs`, data dir from its lifecycle block).
+  - Sample data used real plugin names: `approvals-banner` in the shipped-features tests and
+    `check-shipped-manifest.mjs` (now `example-banner`, fixture regenerated), `systems-check` in `pipeline.test.mjs`
+    (now `health-check`), glossary term id `ui-review` (now `ui-review-queue`).
+  - THREADS / RULES lines about the glossary build carry `<!-- axf-plugin:glossary-index -->` and are listed in its
+    lifecycle mentions.
+  - `plugin-lifecycle.mjs` skips the two generated snapshot fixtures (`shipped-manifest.json`, `demo.json`), like
+    the other history files.
+  Every plugin's lifecycle check is clean on a fresh checkout; every plugin `test.mts` passes on Node 22 (docker).
+  All of this is on this PR and cherry-picked onto #456.
 - Main's light checks are red for every PR (`builds-store verify`: retired `breakroom` folder): fixed by #456, which
   is first in the queue.
 
