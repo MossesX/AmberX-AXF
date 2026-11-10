@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2266,
- "updatedAt": "2026-11-10T03:31:31.064Z",
+ "rev": 2267,
+ "updatedAt": "2026-11-10T03:31:49.562Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -115175,7 +115175,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T23:59:35.398Z",
-   "updatedAt": "2026-11-08T19:23:46.974Z",
+   "updatedAt": "2026-11-10T03:31:32.838Z",
    "builtAt": "",
    "notes": [
     {
@@ -115193,6 +115193,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-08T19:23:46.974Z"
+    },
+    {
+     "text": "Upgraded, not duplicated, by one-amberx-build-notification-veto-approval-befo: the start veto pop-up (AmberX + console) shows build, what it will do, steps, model, account and employee before every launch. Left here: the full-brief text view, the Debugging-plugin switch and the orchestrator group-chat log.",
+     "at": "2026-11-10T03:31:32.838Z"
     }
    ],
    "approvals": [],
@@ -115288,7 +115292,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134417,7 +134421,7 @@
    "title": "AmberX phone pop-up for every build start and finish: build name, account, model",
    "category": "",
    "detail": "Upgrade the existing AmberX notification panel and fix-log FYI notifications; don't add a new channel. 1) The orchestrator sends an AmberX phone notification on every build start (dispatcher launch, including retries and reruns) and every finish (succeeded, failed, needs something). 2) It shows as a heads-up pop-up on the phone screen, not silent: 'Started: <build title> on <account label> (<model>)' or 'Finished: <build title> on <account>, <outcome>, <steps done/total>', plus what it needs if anything. 3) Tapping it opens that build in the orchestrator. 4) Settings in the orchestrator and AmberX: on/off per event type, sound, grouping. Defaults on. 5) Also in the Activity Monitor log. Full REST, MCP, CLI and voice control. Test it with one real start and one real finish on the phone.",
-   "status": "built",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -134425,8 +134429,8 @@
    "pr": "#433",
    "priority": "P0",
    "createdAt": "2026-11-10T02:18:30.783Z",
-   "updatedAt": "2026-11-10T03:31:28.962Z",
-   "builtAt": "2026-11-10T03:27:31.484Z",
+   "updatedAt": "2026-11-10T03:31:30.843Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -134572,7 +134576,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

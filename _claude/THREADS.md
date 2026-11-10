@@ -770,8 +770,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 20:18 UTC · `test-button-on-every-claude-account-subscription` note (all) · orchestrator
-- 2026-11-09 20:19 UTC · `test-button-on-every-claude-account-subscription` → queued, note (all) · pipeline
 - 2026-11-09 20:19 UTC · `test-button-on-every-claude-account-subscription` → running, note (all) · pipeline
 - 2026-11-09 20:19 UTC · `test-button-on-every-claude-account-subscription` note (all) · orchestrator
 - 2026-11-09 20:20 UTC · `test-button-on-every-claude-account-subscription` → failed, note (all) · pipeline
@@ -1170,6 +1168,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 03:30 UTC · `self-healing-build-folders-auto-clear-stale-git` → running, note (all) · pipeline
 - 2026-11-10 03:30 UTC · `self-healing-build-folders-auto-clear-stale-git` note (all) · orchestrator
 - 2026-11-10 03:31 UTC · `amberx-phone-pop-up-for-every-build-start-and-fi` note (all) · orchestrator
+- 2026-11-10 03:31 UTC · `amberx-phone-pop-up-for-every-build-start-and-fi` → archived (all) · orchestrator
+- 2026-11-10 03:31 UTC · `brief-approval-dialog-before-every-headless-sess` note (all) · orchestrator
 
 ## Token passes (log)
 
