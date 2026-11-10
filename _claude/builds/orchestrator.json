@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T15:37:26.557Z",
+ "updatedAt": "2026-11-10T15:37:58.558Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -83811,7 +83811,7 @@
    "pr": "#447",
    "priority": "P1",
    "createdAt": "2026-11-10T04:23:08.521Z",
-   "updatedAt": "2026-11-10T15:36:39.167Z",
+   "updatedAt": "2026-11-10T15:37:56.710Z",
    "builtAt": "",
    "notes": [
     {
@@ -83829,6 +83829,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-molly-fable-version-the-one-interface-for-amberx--earl, own login copy)",
      "at": "2026-11-10T14:55:16.518Z"
+    },
+    {
+     "text": "s1 done on Fable: molly-shell@1 (instances, host catalog, host runs, shell state), tabs of copies in the dock, shared widgets, Molly control plugin (REST / MCP / CLI / voice through the console inside Molly), console-commands client forwards host runs. PR #447 open, UI Review waiting (6 items, group 'molly-fable-version-the-one-interface-for-amberx - Nov 10 3:45 PM'). Deploy: Molly + console redeploy after the merge queue lands it. Supersedes molly-multi-instance-tabs #328 (bar the + button / tab menu) and molly-one-shell s12. Report _claude/builds/reports/molly-fable-version-the-one-interface-for-amberx.md",
+     "at": "2026-11-10T15:37:56.710Z"
     }
    ],
    "approvals": [],
