@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T00:25:30.137Z",
+ "updatedAt": "2026-11-10T00:25:43.916Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -81987,9 +81987,14 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T00:23:46.567Z",
-   "updatedAt": "2026-11-10T00:23:49.021Z",
+   "updatedAt": "2026-11-10T00:25:40.910Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T00:25:40.910Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -82004,7 +82009,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Follows the skins-as-section-packages build; upgrade that and reuse existing pieces (the IDE layout and tab groups from walkthrough-player-ide-layout-setting-collapsibl, the Demonstration designer, and UI asset designer). 1) PREVIEW EVERYWHERE: every list and grid that shows skin chunks or assets gets a preview action (hover thumbnail plus a full preview pane). 2) INTERACTIVE DEMO: if a chunk can be demoed (behaviour, layouts, components), Demo opens a live sandbox where you can actually use it. Otherwise it shows a rendered preview of what it looks like. 3) COMPARE: open chunks side by side in any number of containers, docked or floating. 4) IDE STUDIO VIEW (optional view, not forced): floating and dockable tab groups, each holding any asset types, with a chunk info panel (name, category, source skin, tags, used-by). Drag tabs between groups, and drag chunks onto each other or into a pack template to build new skins and assets. 5) SPLIT TAB: any tab can split into editor plus live preview, with real-time updates while editing. 6) Layouts can be saved and restored. Full REST, MCP, CLI and voice control. Desktop and phone screenshots go to UI Review grouped by screen.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9y8fn201y0pf"
+    },
+    {
+     "id": "s2",
+     "text": "When you're looking at these lists and any of the grids of these chunks, you can preview one, or open a demo of it if it can be demoed, an interactive demonstration where you can actually use it, or at the very least a preview of what the chunk looks like. And the ability to view them side by side, multiple containers with tab groups, mix and match elements in multiple floating containers to compare side by side. An IDE-style thing with a bunch of floating tab groups with different types of assets in them, with the info on the chunk, and you can drag them to each other and build new things side by side. Each tab can be split with a preview and an editor so you can see changes in real time.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9y8fn3025k7m"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/skin-chunk-previews-interactive-demos-and-an-ide.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/skin-chunk-previews-interactive-demos-and-an-ide.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mw9y8fn303q4d9"
+    }
+   ]
   }
  ]
 }
