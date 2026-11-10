@@ -56,6 +56,11 @@
         "target": "browser-amberx-opens",
         "title": "Browser AmberX opens",
         "text": "Which browser AmberX uses when it wakes the console: Chrome, or the phone's default browser."
+      },
+      {
+        "target": "view:gizmo",
+        "title": "Gizmo",
+        "text": "Opens Gizmo, your Claude companion in AmberX. \"On my phone\" asks AmberX on your phone to open him (through axHub); \"Here\" opens the AmberX web app in a new tab. The links open the AmberX app when it is installed, else the web app."
       }
     ]
   }

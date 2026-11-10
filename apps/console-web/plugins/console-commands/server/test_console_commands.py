@@ -356,5 +356,18 @@ eq(resolved[-1], [cc.FALLBACK_KEY], "and goes away once a console took it")
 eq(cc._how({"picked": False, "wake": {"sent": True}}), "after reconnect", "the phone's yes alone is not a wake")
 eq(cc._how({"picked": True, "wake": None}), "woke via AmberX", "the console that opened from the link is")
 
+# ---- Gizmo by link (Nov 10 2026): the links, and opening him on the phone
+GIZMO: list = []
+cc.GIZMO_WAKER = lambda url, browser: (GIZMO.append((url, browser)), {"ok": True, "opened": True, "notified": True, "message": "AmberX started the browser on the phone"})[1]
+gl = client.get("/api/console/gizmo").json()
+eq(gl["links"], {"chat": "https://amberx.amberxai.com/gizmo", "new": "https://amberx.amberxai.com/gizmo/new", "talk": "https://amberx.amberxai.com/gizmo/talk"}, "gizmo: the three links")
+gp = client.post("/api/console/gizmo", json={"mode": "talk"}).json()
+eq((gp["ok"], gp["url"], gp["phone"]["opened"], gp["phone"]["message"]), (True, "https://amberx.amberxai.com/gizmo/talk", True, "AmberX opened Gizmo on the phone"), "gizmo: talk mode opens on the phone")
+eq(GIZMO, [("https://amberx.amberxai.com/gizmo/talk", "chrome")], "gizmo: one request to the phone")
+gb = client.post("/api/console/gizmo", json={"mode": "dance"})
+eq((gb.status_code, gb.json()["code"]), (400, "invalid"), "gizmo: an unknown mode is refused")
+eq(cc.gizmo_phone("chat", allowed=False)["code"], "forbidden", "gizmo: a caller without the console's grants can't wake the phone")
+eq(len(GIZMO), 1, "gizmo: refused calls never reach the phone")
+
 print(f"✓ console commands server — {checks} checks", flush=True)
 os._exit(0)  # the fake consoles' streams are still open

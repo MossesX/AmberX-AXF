@@ -109,6 +109,18 @@ else
 fi
 unset CONSOLE_TOKEN
 
+# Android app links (Nov 10 2026): https://$DOMAIN/gizmo opens the AmberX app once Android verifies
+# /.well-known/assetlinks.json against the APK's signing key. APP_CERT_SHA256 = that key's SHA-256 fingerprint(s)
+# (AA:BB:…, comma-separated; `keytool -list -v -keystore ~/.android/debug.keystore` for the CI debug key), remembered.
+CERTF="$STATE/app-cert-sha256"
+axf_save_choice "$CERTF" "${APP_CERT_SHA256:-}"
+if [ -s "$CERTF" ]; then
+  (umask 077; printf 'AMBERX_APP_CERT_SHA256=%s\n' "$(tr -d ' \n' < "$CERTF")" >> "$SRVENV"); chmod 600 "$SRVENV"
+  say "App links: assetlinks.json names the APK's signing key"
+else
+  say "App links: no APP_CERT_SHA256 yet, so /gizmo links open the web app (APP_CERT_SHA256=AA:BB:… bash $APP/deploy/install.sh)"
+fi
+
 if axf_coolify_proxy_running; then
   NET="$(axf_coolify_network)"
   # Its own router name: "amberxweb" (from amberx-web) is also used by the older amberx-app's web container, and
@@ -141,6 +153,11 @@ if axf_coolify_proxy_running; then
     [ "$(axf_wall_secret "$WSECF" "${APP_WALL_SECRET:-}")" = created ] && say "  made a wall secret: put it on the axHub app in Coolify as AXHUB_WALL_SECRET (view it with: cat $WSECF)"
     (umask 077; printf 'AMBERX_TRUST_WALL=1\nAMBERX_WALL_SECRET=%s\n' "$(cat "$WSECF")" >> "$SRVENV"); chmod 600 "$SRVENV"
     axf_wall_labels WALL_ARGS "$R" "$(axf_wall_verify_url "$WALL_HUB" "$USER_PATHS")"
+    # Android checks the app-link file without a session: its own router, above the walled one, no wall.
+    WALL_ARGS+=(-l "traefik.http.routers.$R-links.rule=Host(\`$DOMAIN\`) && Path(\`/.well-known/assetlinks.json\`)"
+      -l "traefik.http.routers.$R-links.entrypoints=https" -l "traefik.http.routers.$R-links.tls=true"
+      -l "traefik.http.routers.$R-links.tls.certresolver=letsencrypt" -l "traefik.http.routers.$R-links.priority=2000"
+      -l "traefik.http.routers.$R-links.service=$R")
   else
     touch "$STATE/wall-waiting"
     say "Sign-in wall waiting: $WALL_HUB can't sign anyone in yet; the 5-minute update turns it on"

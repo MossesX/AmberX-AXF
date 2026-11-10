@@ -20,6 +20,16 @@ public class OpenUrlRulesTest {
     }
 
     @Test
+    public void amberxLinksOpenInTheApp() {
+        assertTrue(OpenUrlRules.inApp("https://amberx.amberxai.com/gizmo"));
+        assertTrue(OpenUrlRules.inApp("https://amberx.amberxai.com/gizmo/talk"));
+        assertFalse(OpenUrlRules.inApp("https://console.amberxai.com/?axf-cmd=cq-1"));
+        assertFalse(OpenUrlRules.inApp("http://amberx.amberxai.com/gizmo"));
+        assertFalse(OpenUrlRules.inApp("https://amberx.amberxai.com.evil.example/gizmo"));
+        assertFalse(OpenUrlRules.inApp(null));
+    }
+
+    @Test
     public void ownSitesOpen() {
         assertEquals("https://console.amberxai.com/?axf-cmd=cq-1a2b-abc123", OpenUrlRules.allowed("https://console.amberxai.com/?axf-cmd=cq-1a2b-abc123"));
         assertEquals("https://amberxai.com/", OpenUrlRules.allowed(" https://amberxai.com/ "));

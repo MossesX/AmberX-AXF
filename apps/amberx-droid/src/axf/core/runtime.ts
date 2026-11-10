@@ -638,7 +638,14 @@ export class AxfRuntime {
 
   private useLookStore(store: AppLookStore | null): void {
     this.lookStoreOff?.();
-    this.lookStoreOff = store?.subscribe(() => { this.applyAppearance(this.lastAppearance); this.bumpLook(); }) ?? null;
+    let warned: string | null = null;
+    this.lookStoreOff = store?.subscribe(() => {
+      // a look that can't reach the hub is kept on this device and sent again; say so once per reason
+      const err = store.saveError?.() ?? null;
+      if (err && err !== warned) { this.terminal.warn('appearance', `look not saved on axHub yet: ${err}`); this.toast(`Your look isn't saved on axHub yet (${err}). It stays on this device and is sent again.`, 'warning', 'Appearance'); }
+      warned = err;
+      this.applyAppearance(this.lastAppearance); this.bumpLook();
+    }) ?? null;
     this.lookStoreRef = store;
   }
 

@@ -152,6 +152,8 @@ export interface NativeApi {
   /** Mic off changed (the tile, the notification, another page) or hands-free let go of / took back the mic. */
   addListener(event: 'mic', fn: (e: MicState) => void): Promise<PluginListenerHandle>;
   addListener(event: 'open', fn: (e: { url: string }) => void): Promise<PluginListenerHandle>;
+  /** An AmberX deep link reached the app (a tapped app link, or `amberx.open_url` for an amberx.amberxai.com page). */
+  addListener(event: 'link', fn: (e: { url: string }) => void): Promise<PluginListenerHandle>;
   /** what hands-free is hearing (only while AmberX is on screen) */
   addListener(event: 'spoken', fn: (e: { id: string; done: boolean; error?: string }) => void): Promise<PluginListenerHandle>;
   addListener(event: 'heard', fn: (e: { text: string; final: boolean; source?: 'listen' }) => void): Promise<PluginListenerHandle>;

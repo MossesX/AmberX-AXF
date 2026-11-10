@@ -350,3 +350,56 @@ console.log(`check-skin (coverage + scopes): ${n} checks passed`);
   eq(f.rt.skinIconPack(), '', 'skin off: no skin pack');
 }
 console.log(`check-skin (runtime scopes): ${n} checks passed`);
+
+/* ---- HubAppLookStore: a chosen look survives a reload (Nov 10 2026: "Now it's loading the old banner again") ---- */
+{
+  const { HubAppLookStore, pendingKey } = await import('../react/hubAppLook');
+  const mem = new Map<string, string>();
+  const storage = { getItem: (k: string) => mem.get(k) ?? null, setItem: (k: string, v: string) => { mem.set(k, v); }, removeItem: (k: string) => { mem.delete(k); } };
+  let hubDoc: string | null = JSON.stringify({ ...newAppLook('demo', { slots: { banner: 'banner-old' } }), updatedAt: '2026-11-10T10:00:00.000Z' });
+  let version = 1;
+  let refuse = 0;
+  const puts: string[] = [];
+  const fetchImpl = (async (_url: string, init?: RequestInit) => {
+    const res = (status: number, body = '') => new Response(status === 204 ? null : body, { status, headers: { 'X-Data-Version': String(version) } });
+    if (init?.method === 'PUT') {
+      if (refuse > 0) { refuse--; return res(503, 'busy'); }
+      hubDoc = String(init.body); version++; puts.push(hubDoc); return res(200, '{}');
+    }
+    return hubDoc === null ? res(404) : res(200, hubDoc);
+  }) as typeof fetch;
+  const tick = (ms = 0) => new Promise((r) => setTimeout(r, ms));
+  const store = () => new HubAppLookStore({ hub: 'https://hub.test', appId: 'demo', fetchImpl, live: false, storage, retryMs: [5, 5] });
+
+  // the hub refuses the save: the look stays drawn, a copy waits on the device, the retry gets it there
+  const a = store();
+  await a.load();
+  refuse = 1;
+  const chosen = { ...setUseSkin(pickSkin(a.get()!, 'home-cards'), true), updatedAt: '2026-11-10T21:30:00.000Z' };
+  a.save(chosen);
+  ok(!!storage.getItem(pendingKey('demo')), 'a save waits on the device until the hub has it');
+  await tick(1);
+  ok(a.saveError()?.includes('503') ?? false, 'a refused save says why');
+  await tick(30);
+  eq(JSON.parse(hubDoc!).skin.id, 'home-cards', 'the retry saves the chosen skin on the hub');
+  eq(a.saveError(), null, 'saved: no error');
+  eq(storage.getItem(pendingKey('demo')), null, 'saved: the device copy is dropped');
+
+  // the tab closed before the hub had it: the reload draws the chosen look and sends it again
+  hubDoc = JSON.stringify({ ...newAppLook('demo', { slots: { banner: 'banner-old' } }), updatedAt: '2026-11-10T10:00:00.000Z' });
+  storage.setItem(pendingKey('demo'), JSON.stringify({ at: Date.now(), doc: chosen }));
+  const b = store();
+  await b.load();
+  eq(b.get()?.skin.id, 'home-cards', 'reload: the unsaved chosen look is drawn, not the old one');
+  await tick(5);
+  eq(JSON.parse(hubDoc!).skin.id, 'home-cards', 'reload: and it is sent to the hub again');
+
+  // a newer look from another device wins over an old unsaved copy
+  hubDoc = JSON.stringify({ ...newAppLook('demo', {}), updatedAt: '2026-11-11T08:00:00.000Z' });
+  storage.setItem(pendingKey('demo'), JSON.stringify({ at: Date.now(), doc: chosen }));
+  const c2 = store();
+  await c2.load();
+  eq(c2.get()?.skin.id, '', "reload: the hub's newer look wins");
+  eq(storage.getItem(pendingKey('demo')), null, 'reload: the stale copy is dropped');
+  console.log(`check-skin (look survives reload): ${n} checks passed`);
+}

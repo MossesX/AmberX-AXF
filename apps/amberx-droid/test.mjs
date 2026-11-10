@@ -1779,5 +1779,43 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   ok(readFileSync(new URL('./android/app/src/test/java/ai/amberx/droid/FocusRulesTest.java', import.meta.url), 'utf8').includes('ourOwnRecognizerTakingFocusIsNotAReasonToStop'), 'android: FocusRulesTest covers our own recognizer, calls and other apps');
 }
 
+/* ---------------------------------------------------------------- deep links: /gizmo opens Gizmo (Nov 10 2026) */
+{
+  const dl = await import('./src/deeplink.ts');
+  eq(dl.linkAction('https://amberx.amberxai.com/gizmo'), 'companion.open', 'deep link: /gizmo opens the chat');
+  eq(dl.linkAction('https://amberx.amberxai.com/gizmo/'), 'companion.open', 'deep link: a trailing slash is fine');
+  eq(dl.linkAction('https://amberx.amberxai.com/Gizmo/Talk'), 'companion.talk', 'deep link: /gizmo/talk, any case');
+  eq(dl.linkAction('https://amberx.amberxai.com/gizmo/new'), 'companion.new', 'deep link: /gizmo/new');
+  eq(dl.linkAction('/?open=gizmo-talk'), 'companion.talk', 'deep link: the open= query on the page itself');
+  eq(dl.linkAction('/gizmo'), 'companion.open', 'deep link: a same-origin path (web app, WebView, dev server)');
+  eq(dl.linkAction('https://evil.example/gizmo'), null, 'deep link: another site never counts');
+  eq(dl.linkAction('https://console.amberxai.com/gizmo'), null, "deep link: only AmberX's own origin");
+  eq(dl.linkAction('/'), null, 'deep link: the home page opens nothing');
+  eq(dl.linkAction('/?open=nope'), null, 'deep link: an unknown open= value opens nothing');
+  eq(dl.linkFor('gizmo-talk'), 'https://amberx.amberxai.com/gizmo/talk', 'deep link: linkFor builds the https link');
+  eq(dl.spentUrl('/gizmo?x=1#h'), '/?x=1#h', 'deep link: the spent URL keeps other params and the hash');
+  eq(dl.spentUrl('/?open=gizmo'), '/', 'deep link: open= is dropped after use');
+  // the runner waits for a late action, then runs it once
+  const ran = [];
+  let registered = false;
+  const rt = { actions: { get: (id) => (registered ? id : undefined) }, dispatch: (id) => { ran.push(id); return true; } };
+  let fire = null;
+  const stop = dl.installDeepLinks(rt, (fn) => { fire = fn; return () => { fire = null; }; });
+  fire('https://amberx.amberxai.com/gizmo/talk');
+  registered = true;
+  await new Promise((r) => setTimeout(r, 450));
+  eq(ran, ['companion.talk'], 'deep link: a link from the phone runs once its action is registered');
+  fire('https://evil.example/gizmo');
+  eq(ran.length, 1, 'deep link: a foreign link from the phone is ignored');
+  stop();
+  eq(fire, null, 'deep link: stop drops the phone listener');
+  const src = (f) => readFileSync(new URL(f, import.meta.url), 'utf8');
+  const man = src('./android/app/src/main/AndroidManifest.xml');
+  ok(/android:autoVerify="true"[\s\S]*?android:host="amberx\.amberxai\.com" android:pathPrefix="\/gizmo"/.test(man), 'android: a verified app link for https://amberx.amberxai.com/gizmo…');
+  ok(/if \(OpenUrlRules\.inApp\(url\)\)[\s\S]*?MainActivity\.class/.test(src('./android/app/src/main/java/ai/amberx/droid/AxppLink.java')), "android: amberx.open_url opens AmberX's own links in the app, not the browser");
+  ok(/notifyListeners\("link"/.test(src('./android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java')), 'android: a deep link reaches the page as a link event');
+  ok(/installDeepLinks\(rt/.test(src('./src/App.tsx')), 'the shell installs the deep links');
+}
+
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);
 process.exit(failed === 0 ? 0 : 1);

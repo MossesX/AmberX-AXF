@@ -23,6 +23,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
+            <!-- Deep links (Nov 10 2026): https://amberx.amberxai.com/gizmo opens Gizmo in the app (verified app link,
+                 the server's /.well-known/assetlinks.json); without the app the same link opens the AmberX web app. -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="amberx.amberxai.com" android:pathPrefix="/gizmo" />
+            </intent-filter>
+
             <!-- Share → AmberX for videos: Audio Extract pulls their audio out (AudioExtractPlugin) -->
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />

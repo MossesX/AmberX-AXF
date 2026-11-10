@@ -73,7 +73,7 @@ function flags(argv) {
 }
 
 const LIST_KINDS = { screens: 'console.screens', screen: 'console.screens', dialogs: 'console.dialogs', dialog: 'console.dialogs', settings: 'console.settings', actions: 'console.actions', action: 'console.actions', clients: 'console.clients', consoles: 'console.clients' };
-export const USAGE = 'usage: axf console open <screen> | dialog <id> | dialog close [id] | settings <tab> | action <id> [args…] | back | home | close | refresh [--hard] [--all] | where | list [screens|dialogs|settings|actions|clients] [words] | clients   [--to recent|all|<client>]';
+export const USAGE = 'usage: axf console open <screen> | dialog <id> | dialog close [id] | settings <tab> | action <id> [args…] | back | home | close | refresh [--hard] [--all] | where | list [screens|dialogs|settings|actions|clients] [words] | clients | gizmo [chat|new|talk] [--link]   [--to recent|all|<client>]';
 
 /** `axf console …` words → a control@1 console command, or { error }. */
 export function commandFromArgv(argv) {
@@ -143,6 +143,27 @@ export async function sendToConsole(command, { base = process.env.AXF_CONSOLE_UR
   }
 }
 
+/**
+ * `axf console gizmo [chat|new|talk] [--link] [--json]`: opens Gizmo on Brett's phone (AmberX through axHub), or with
+ * --link prints the https link (AmberX app when installed, else the AmberX web app). REST: GET|POST /api/console/gizmo.
+ */
+export async function gizmoCli(argv, { base = process.env.AXF_CONSOLE_URL || 'https://console.amberxai.com', token = process.env.AXF_TOKEN || '', fetch: f = globalThis.fetch } = {}) {
+  const mode = argv.find((a) => !a.startsWith('--')) || 'chat';
+  if (!['chat', 'new', 'talk'].includes(mode)) { console.error('usage: axf console gizmo [chat|new|talk] [--link] [--json]'); return 2; }
+  const link = argv.includes('--link');
+  const url = `${String(base).replace(/\/$/, '')}${API_PATH}/gizmo`;
+  const headers = { 'content-type': 'application/json', ...(token ? { authorization: `Bearer ${token}` } : {}) };
+  let j;
+  try {
+    const res = await f(url, link ? { headers } : { method: 'POST', headers, body: JSON.stringify({ mode }) });
+    j = await res.json();
+  } catch (e) { console.error(`could not reach ${url}: ${e?.message ?? e}`); return 1; }
+  if (argv.includes('--json')) console.log(JSON.stringify(j, null, 1));
+  else if (link) console.log(j?.links?.[mode] ?? 'no link');
+  else console.log(`${j?.ok ? '✓' : '✗'} Gizmo (${mode}) → ${j?.phone?.message || j?.message || 'no answer'}`);
+  return j?.ok ? 0 : 1;
+}
+
 const sh = (s) => (/^[\w@%+=:,./-]+$/.test(s) ? s : `'${String(s).replace(/'/g, "'\\''")}'`);
 
 export async function main(argv) {
@@ -153,6 +174,7 @@ export async function main(argv) {
       '', `MCP tools (console /mcp, and through axHub): ${CONSOLE_TOOLS.join(', ')}`, `REST: POST ${API_PATH} (a whole control@1 command), POST ${API_PATH}/open {screen} …`].join('\n'));
     return 0;
   }
+  if (cmd === 'gizmo') return gizmoCli(argv.slice(1));
   if (cmd === 'run') {
     const body = JSON.parse(argv[1] && argv[1].startsWith('{') ? argv[1] : readFileSync(0, 'utf8'));
     console.log(JSON.stringify(runConsole(body.command ?? body, { grants: Array.isArray(body.grants) ? body.grants : ['*'], by: body.by ?? '', clients: Array.isArray(body.clients) ? body.clients : [] })));

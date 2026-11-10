@@ -37,6 +37,17 @@ final class OpenUrlRules {
         return u.toString();
     }
 
+    /** AmberX's own web app (the origin the app's WebView loads): its links open inside AmberX, not in a browser. */
+    static final String APP_HOST = "amberx.amberxai.com";
+
+    /** True for an AmberX deep link (https on {@link #APP_HOST}, e.g. /gizmo): open it in the app, which routes it. */
+    static boolean inApp(String raw) {
+        try {
+            URI u = new URI(allowed(raw));
+            return APP_HOST.equals(u.getHost().toLowerCase(Locale.ROOT));
+        } catch (Exception e) { return false; }
+    }
+
     /** An alert's link when AmberX may open it, else {@code fallback} (a console alert's tap never leaves Brett's sites). */
     static String linkOr(String raw, String fallback) {
         try { return allowed(raw); } catch (IllegalArgumentException e) { return fallback; }

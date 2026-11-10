@@ -65,6 +65,8 @@ export interface AppLookStore {
   status(): 'loading' | 'ready' | 'missing' | 'failed';
   save(doc: AppLookDocument): void;
   subscribe(fn: () => void): () => void;
+  /** Why the last change isn't saved yet (null = saved); stores that can't fail leave it out. */
+  saveError?(): string | null;
 }
 /** One row of the Skin picker. */
 export interface SkinEntry { id: string; name: string; kind: 'skin' | 'design-package'; description: string; data: SkinData }

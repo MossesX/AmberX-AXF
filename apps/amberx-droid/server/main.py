@@ -607,6 +607,13 @@ def make_app(router: Router | None = None, approvals_transport: httpx.BaseTransp
     def healthz() -> Response:
         return Response("ok\n", media_type="text/plain")
 
+    # Android app links (Nov 10 2026): https://amberx.amberxai.com/gizmo opens the AmberX app when Android has verified
+    # this file against the APK's signing key. AMBERX_APP_CERT_SHA256 = the key's SHA-256 fingerprint(s), comma-separated
+    # (AA:BB:… as `keytool -list -v` prints it). Unset: an empty list, so the links open the web app in the browser.
+    @app.get("/.well-known/assetlinks.json", include_in_schema=False)
+    def assetlinks() -> Any:
+        return JSONResponse(asset_links(os.environ.get("AMBERX_APP_CERT_SHA256", "")), headers={"Cache-Control": "public, max-age=3600"})
+
     @app.get("/{path:path}", include_in_schema=False)
     def web(path: str) -> Any:
         if path == "api" or path.startswith("api/"):
@@ -627,6 +634,19 @@ def make_app(router: Router | None = None, approvals_transport: httpx.BaseTransp
         return FileResponse(index, headers={**SEC, "Cache-Control": "no-cache"})
 
     return app
+
+
+_FINGERPRINT = re.compile(r"^[0-9A-F]{2}(:[0-9A-F]{2}){31}$")
+
+
+def asset_links(raw: str) -> list[dict[str, Any]]:
+    """The Digital Asset Links statement for the AmberX APK (ai.amberx.droid), one entry per valid SHA-256 fingerprint."""
+    prints = [p.strip().upper() for p in (raw or "").split(",")]
+    prints = [p for p in prints if _FINGERPRINT.match(p)]
+    if not prints:
+        return []
+    return [{"relation": ["delegate_permission/common.handle_all_urls"],
+             "target": {"namespace": "android_app", "package_name": "ai.amberx.droid", "sha256_cert_fingerprints": prints}}]
 
 
 app = make_app()

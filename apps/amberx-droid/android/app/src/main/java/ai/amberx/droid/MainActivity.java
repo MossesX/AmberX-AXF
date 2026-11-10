@@ -40,11 +40,19 @@ public class MainActivity extends BridgeActivity {
         setIntent(spent(intent));
     }
 
+    /** The AmberX deep link an intent carries (ACTION_VIEW on amberx.amberxai.com, OpenUrlRules.inApp), else null. */
+    static String linkOf(Intent intent) {
+        if (intent == null || !Intent.ACTION_VIEW.equals(intent.getAction()) || intent.getData() == null) return null;
+        String url = intent.getData().toString();
+        return OpenUrlRules.inApp(url) ? url : null;
+    }
+
     /** The intent without its one-time events. */
     static Intent spent(Intent intent) {
         if (intent == null) return null;
         Intent i = new Intent(intent);
         for (String k : new String[] { EXTRA_OPEN, EXTRA_VETO, EXTRA_WAKE, EXTRA_WAKE_TEXT, EXTRA_WAKE_ID, EXTRA_WAKE_AT }) i.removeExtra(k);
+        if (linkOf(i) != null) { i.setAction(Intent.ACTION_MAIN); i.setData(null); } // a deep link is handed over once too
         return i;
     }
 

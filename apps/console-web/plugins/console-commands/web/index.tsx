@@ -22,6 +22,7 @@ import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
 import './console-commands.css';
+import { GIZMO_VIEW, GizmoPage, registerGizmoActions } from './GizmoPage';
 import { consoleCatalogFrom, consoleMessageErrors, type ConsoleHere, type ConsoleMessage } from '@console/axf/core/engines/console-commands.mjs';
 
 const FOLDER = 'console-commands';
@@ -312,6 +313,10 @@ export const plugin: AxfWebLibrary = {
   version: '0.2.0',
   builtWith: { model: 'opus', builtAt: '2026-11-03' },
   appMenu,
+  // Gizmo (Nov 10 2026): a console screen that opens Gizmo in AmberX (phone or web app); console_open "gizmo".
+  views: { [GIZMO_VIEW]: { title: 'Gizmo', icon: 'sparkles', keywords: ['gizmo', 'companion', 'amberx', 'chat', 'talk', 'phone', 'claude'], render: () => <GizmoPage /> } },
+  nav: { label: 'Apps', items: [{ id: GIZMO_VIEW, label: 'Gizmo', icon: 'sparkles', view: GIZMO_VIEW }] },
+  register(rt) { registerGizmoActions(rt); },
   slots: { 'app.frame.cover': [{ id: 'console-commands.client', order: 99, render: () => <ConsoleCommandsClient /> }] },
   settingsTabs: [{ id: FOLDER, label: 'Console commands', icon: 'radio', order: 92, parent: 'plugins', description: 'Let Claude sessions open screens, dialogs and settings in this console' }],
   settings: [{

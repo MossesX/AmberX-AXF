@@ -238,6 +238,11 @@ final class AxppLink {
 
     /** The browser intent for a URL: Chrome when asked for and installed, else whatever handles https. */
     private static Intent browserIntent(Context c, String url, String browser) {
+        // AmberX's own pages (https://amberx.amberxai.com/gizmo…) open in AmberX itself; the page routes the link.
+        if (OpenUrlRules.inApp(url)) {
+            return new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(url), c, MainActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        }
         Intent i = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(url)).addCategory(Intent.CATEGORY_BROWSABLE)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if ("chrome".equals(browser)) {
@@ -295,7 +300,7 @@ final class AxppLink {
                 PendingIntent pi = PendingIntent.getActivity(c, 4, open, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
                 Notification.Builder b = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? new Notification.Builder(c, CHANNEL_OPEN) : new Notification.Builder(c);
                 b.setSmallIcon(android.R.drawable.ic_menu_view)
-                    .setContentTitle("Tap to open the Dev Console")
+                    .setContentTitle(OpenUrlRules.inApp(url) ? "Tap to open AmberX" : "Tap to open the Dev Console")
                     .setContentText("Amber has something to show you.")
                     .setContentIntent(pi)
                     .setFullScreenIntent(pi, true)

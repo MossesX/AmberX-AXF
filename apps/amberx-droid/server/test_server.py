@@ -485,6 +485,16 @@ check("keep-alive pings the active profile", fake.count("api.anthropic.com") >= 
 w = c.get("/assets/app.js")
 check("asset served", w.status_code == 200 and "console.log" in w.text and "immutable" in w.headers.get("cache-control", ""))
 check("SPA fallback", "INDEX" in c.get("/notes/some/page").text)
+check("deep link /gizmo serves the web app", "INDEX" in c.get("/gizmo/talk", headers={"host": HOST}).text)
+FP = ":".join(["AB"] * 32)
+check("assetlinks: nothing without a fingerprint", main.asset_links("") == [])
+check("assetlinks: a bad fingerprint is dropped", main.asset_links("nope, AB:CD") == [])
+al = main.asset_links(f"{FP.lower()}, {FP}")
+check("assetlinks: the APK and its fingerprints", al and al[0]["target"]["package_name"] == "ai.amberx.droid" and al[0]["target"]["sha256_cert_fingerprints"] == [FP, FP], al)
+os.environ["AMBERX_APP_CERT_SHA256"] = FP
+ra = c.get("/.well-known/assetlinks.json", headers={"host": HOST})
+check("assetlinks.json is public JSON (no sign-in)", ra.status_code == 200 and ra.json()[0]["relation"] == ["delegate_permission/common.handle_all_urls"], ra.text[:200])
+os.environ.pop("AMBERX_APP_CERT_SHA256")
 check("index no-cache + nosniff", c.get("/").headers.get("cache-control") == "no-cache" and c.get("/").headers.get("x-content-type-options") == "nosniff")
 for p in ("/.secret", "/assets/../.secret", "/%2e%2e/outside.txt", "/..%2foutside.txt", "/%2e%2e%2f%2e%2e%2fserver/main.py", "/assets/%2e%2e/%2e%2e/outside.txt"):
     t = c.get(p).text

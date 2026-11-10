@@ -13,6 +13,8 @@ import { soundLibrary } from './sound';
 import { micLibrary } from './mic';
 import { VIEW_TAB_KIND, ViewPane, registerWindowActions } from './windows/ViewWindow';
 import './windows/windows.css';
+import { installDeepLinks } from './deeplink';
+import { isNative, native } from './native';
 
 /**
  * AmberX is an empty shell for building and testing plugins (Oct 26 2026): banner, toolbar, nav menu, application menu,
@@ -42,6 +44,11 @@ export function App() {
   const latest = useRef(allViews);
   latest.current = allViews;
   useEffect(() => registerWindowActions(rt, () => latest.current), [rt]);
+  // Deep links (deeplink.ts): https://amberx.amberxai.com/gizmo opens Gizmo here, in the web app or the Android app.
+  useEffect(() => installDeepLinks(rt, isNative() ? (fn) => {
+    const h = native.addListener('link', ({ url }) => fn(url));
+    return () => { void h.then((x) => x.remove()).catch(() => undefined); };
+  } : undefined), [rt]);
   const tabs = useMemo(() => ({ ...contributed.tabs, [VIEW_TAB_KIND]: (t: { payload?: string }) => <ViewPane view={t.payload ?? ''} views={latest.current} /> }), [contributed]);
   return <AppShell views={allViews} dialogs={{ ...contributed.dialogs, ...dialogs }} tabs={tabs} />;
 }

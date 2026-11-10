@@ -747,6 +747,55 @@ async def list_(request: Request, kind: str = "screens", q: str = "", limit: int
     return await go(request, {"op": "list", "target": target, **({"select": select} if select else {})})
 
 
+# ---------------------------------------------------------------------- Gizmo (AmberX) by link
+
+# Gizmo lives in AmberX. These links open him in the AmberX Android app (verified app link) or, without the app, in the
+# AmberX web app; the console's Gizmo screen, console_action gizmo.phone, the CLI (`console.mjs gizmo`) and this route
+# all use them. Same table as apps/amberx-droid/src/deeplink.ts.
+AMBERX_URL = (os.environ.get("AXF_AMBERX_PUBLIC_URL") or "https://amberx.amberxai.com").rstrip("/")
+GIZMO_MODES = {"chat": "/gizmo", "new": "/gizmo/new", "talk": "/gizmo/talk"}
+GIZMO_REASON = {"title": "Open Gizmo on Brett's phone", "description": "Brett (or Amber for him) asked to open Gizmo; AmberX opens its Gizmo screen."}
+
+
+def _gizmo_wake(url: str, browser: str) -> dict[str, Any]:
+    from . import wake
+    return wake.open_url(url, browser, GIZMO_REASON)
+
+
+GIZMO_WAKER: Callable[[str, str], dict[str, Any]] = _gizmo_wake  # tests swap in a fake phone
+
+
+def gizmo_links() -> dict[str, str]:
+    return {m: AMBERX_URL + p for m, p in GIZMO_MODES.items()}
+
+
+def gizmo_phone(mode: str = "chat", allowed: bool = True) -> dict[str, Any]:
+    """Ask Brett's AmberX phone (amberx.open_url through axHub) to open Gizmo. → {ok, url, mode, phone: {opened, notified, message}}."""
+    if mode not in GIZMO_MODES:
+        return {"ok": False, "code": "invalid", "message": f"mode must be one of {', '.join(GIZMO_MODES)}"}
+    if not allowed:
+        return {"ok": False, "code": "forbidden", "message": "opening Gizmo on the phone needs a hub admin or the console token"}
+    url = gizmo_links()[mode]
+    r = GIZMO_WAKER(url, "chrome")
+    msg = str(r.get("message") or "").replace("the console", "Gizmo").replace("started the browser", "opened Gizmo").replace("held the browser back", "held AmberX back")
+    return {"ok": bool(r.get("ok")), "url": url, "mode": mode, "phone": {"opened": r.get("opened") is True, "notified": r.get("notified") is True, "message": msg}}
+
+
+@router.get("/gizmo")
+async def gizmo_get() -> JSONResponse:
+    """Gizmo's links: {ok, links: {chat, new, talk}} (open one in a browser, or POST here to open it on the phone)."""
+    return JSONResponse({"ok": True, "links": gizmo_links()})
+
+
+@router.post("/gizmo")
+async def gizmo_post(request: Request) -> JSONResponse:
+    """Open Gizmo on the phone: {"mode": "chat" | "new" | "talk"}."""
+    b = await _body(request)
+    grants, _name, _aud = caller(request)
+    r = await run_in_threadpool(gizmo_phone, str(b.get("mode") or "chat"), "*" in grants)
+    return JSONResponse(r, status_code=200 if r.get("ok") or "phone" in r else (403 if r.get("code") == "forbidden" else 400))
+
+
 class ConsoleCommands:
     """console-commands@1 for other plugins (Token control's /api/control hands console.* targets here), the /api/console
     mount and the console's MCP tools."""

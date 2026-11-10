@@ -3,3 +3,10 @@
 .axf-cc__row { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs) var(--fx-dens-gap-2xl); padding: var(--fx-dens-gap-xs) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); }
 .axf-cc__id { font-family: var(--fx-font-mono); font-weight: 600; }
 .axf-cc__muted { color: var(--fx-muted); }
+
+/* Gizmo screen (GizmoPage.tsx): layout only. */
+.axp-gizmo { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); }
+.axp-gizmo__rows { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); }
+.axp-gizmo__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); padding: var(--fx-dens-gap-xs) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.axp-gizmo__url { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; font-family: var(--fx-font-mono); color: var(--fx-muted); }
+.axp-gizmo__actions { display: flex; gap: var(--fx-dens-gap-xs); }

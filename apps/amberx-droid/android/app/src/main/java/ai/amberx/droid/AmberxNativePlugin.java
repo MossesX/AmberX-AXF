@@ -172,6 +172,9 @@ public class AmberxNativePlugin extends Plugin {
     static void deliver(Intent intent) {
         AmberxNativePlugin p = current;
         if (p == null || intent == null) return;
+        // An AmberX deep link (a tapped app link, or amberx.open_url for one of AmberX's own pages): the page routes it.
+        String link = MainActivity.linkOf(intent);
+        if (link != null) p.notifyListeners("link", new JSObject().put("url", link), true);
         String open = intent.getStringExtra(MainActivity.EXTRA_OPEN);
         if (open != null) p.notifyListeners("open", new JSObject().put("url", open), true);
         String veto = intent.getStringExtra(MainActivity.EXTRA_VETO);

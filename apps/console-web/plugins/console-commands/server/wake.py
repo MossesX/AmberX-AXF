@@ -82,7 +82,7 @@ def outcome(res: dict[str, Any]) -> dict[str, Any]:
     return {"ok": True, "opened": opened, "notified": notified, "message": message}
 
 
-def open_url(target: str, browser: str = "chrome") -> dict[str, Any]:
+def open_url(target: str, browser: str = "chrome", reason: dict[str, str] | None = None) -> dict[str, Any]:
     """→ {ok, opened, notified, message}. Never raises for a hub or phone failure: the command stays queued and the answer says why."""
     url = (os.environ.get("AXHUB_URL") or "https://axhub.amberxai.com").rstrip("/")
     tok = os.environ.get("AXHUB_TOKEN", "")
@@ -92,7 +92,7 @@ def open_url(target: str, browser: str = "chrome") -> dict[str, Any]:
         return {"ok": False, "opened": False, "notified": False, "message": "the axHub address must be https"}
     try:
         _, sid = _rpc(url, tok, None, "initialize", {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "axf-console-wake", "version": "1"}}, 15)
-        res, _ = _rpc(url, tok, sid, "tools/call", {"name": "call", "arguments": {"tool": TOOL, "arguments": {"url": target, "browser": browser}, "reason": REASON, "timeout_seconds": 20}}, 40)
+        res, _ = _rpc(url, tok, sid, "tools/call", {"name": "call", "arguments": {"tool": TOOL, "arguments": {"url": target, "browser": browser}, "reason": reason or REASON, "timeout_seconds": 20}}, 40)
     except Exception as e:  # noqa: BLE001
         return {"ok": False, "opened": False, "notified": False, "message": f"couldn't reach axHub: {str(e)[:200]}"}
     return outcome(res)

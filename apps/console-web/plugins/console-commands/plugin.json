@@ -13,6 +13,9 @@
   ],
   "provides": [
     "settings-tab:console-commands",
+    "view:gizmo",
+    "action:gizmo.open",
+    "action:gizmo.phone",
     "service:console-commands@1"
   ],
   "scopes": [
