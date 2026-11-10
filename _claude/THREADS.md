@@ -771,8 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 01:34 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` note (all) · orchestrator
-- 2026-11-10 01:40 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → pending, note (all) · reconciler
 - 2026-11-10 01:41 UTC · `let-voice-api-route-a-build-to-an-api-account-wi` s1 done, → running (all) · orchestrator
 - 2026-11-10 01:41 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` note (all) · amber
 - 2026-11-10 01:41 UTC · `prompt-caching-and-batch-api-support-in-the-buil` note (all) · amber
@@ -1171,6 +1169,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 15:40 UTC · `projects-create-a-new-project-and-move-builds-be` note (all) · orchestrator
 - 2026-11-10 15:40 UTC · `project-manager-every-project-its-own-console-in` added (0 steps) (all) · console
 - 2026-11-10 15:40 UTC · `project-manager-every-project-its-own-console-in` → queued, note (all) · console
+- 2026-11-10 15:40 UTC · `project-manager-add-on-new-project-prompt-asks-i` added (0 steps) (all) · console
+- 2026-11-10 15:40 UTC · `project-manager-add-on-new-project-prompt-asks-i` → queued, note (all) · console
 
 ## Token passes (log)
 

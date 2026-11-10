@@ -3445,6 +3445,18 @@
    "from": "brief",
    "addenda": []
   },
+  "project-manager-add-on-new-project-prompt-asks-i": {
+   "said": "When you start a project, it will ask you if it's going to be an internal build or if you want a boilerplate to build an external app.",
+   "at": "2026-11-10T15:40:48.813Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "project-manager-every-project-its-own-console-in": {
    "said": "Build the project manager so everything can be its own project, its own instance of the console. A setting to enable multi-project view, the entire console appears in that group with each project's console running. A project type: one for development of itself or framework tools like the console, one for creating new apps using all the tools in the console. The new app will actively render in a preview window, a floating or dockable section.",
    "at": "2026-11-10T15:40:27.752Z",

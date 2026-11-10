@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T15:40:43.696Z",
+ "updatedAt": "2026-11-10T15:41:00.433Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -85087,6 +85087,43 @@
    "origin": {
     "said": "Build the project manager so everything can be its own project, its own instance of the console. A setting to enable multi-project view, the entire console appears in that group with each project's console running. A project type: one for development of itself or framework tools like the console, one for creating new apps using all the tools in the console. The new app will actively render in a preview window, a floating or dockable section.",
     "at": "2026-11-10T15:40:27.752Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "project-manager-add-on-new-project-prompt-asks-i",
+   "title": "Project Manager add-on: new-project prompt asks internal build or boilerplate for an external app",
+   "category": "",
+   "detail": "Amends the Project Manager build. When starting a new project, ask: Internal build (framework/self development) or External app (start from a boilerplate template). External app shows boilerplate choices. Full API control.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-10T15:40:48.813Z",
+   "updatedAt": "2026-11-10T15:40:50.433Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T15:40:50.433Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "When you start a project, it will ask you if it's going to be an internal build or if you want a boilerplate to build an external app.",
+    "at": "2026-11-10T15:40:48.813Z",
     "source": "",
     "session": "",
     "link": "",
