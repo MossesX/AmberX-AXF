@@ -1,0 +1,48 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.search-bar",
+  "name": "Search bar",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "The console's search bar, as a widget that snaps into the banner and any toolbar (as many as you like, three views: full bar, compact, icon). Globe searches everything: every page, plugin, setting, action, asset, window and plan item; gear searches settings only. Results come up letter by letter with its own matching (words, word starts, exact, regular expressions; case and detail options), ranked by AI only when an Ollama (local Llama) connection exists and AI assistance is on. The drop-down has a category column on the left and a tree of matches on the right; pick one to go to it, right-click it for that setting's options (on/off, choices) and pick straight from the list, confirmed by a small check mark. Replaces the old Search everything box.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "asset:search-bar/globe-bar",
+    "asset:search-bar/gear-bar",
+    "asset:search-bar/globe-compact",
+    "asset:search-bar/globe-icon",
+    "widget-renderer:search-bar",
+    "settings-tab:search-bar"
+  ],
+  "optional": [
+    "service:axf.llm@1"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "commands": { "$axf": "plugin-commands@1", "auto": true, "items": [
+    { "route": "PUT /state", "id": "report-state", "title": "Report the open search bars (sent by the console tab)", "description": "The browser reports its bars here so GET /state can read them; scripts read GET /state instead." },
+    { "route": "POST /ai/rank", "id": "ai-rank", "title": "Rank search candidates with the local Llama", "readOnly": true,
+      "input": { "type": "object", "properties": { "q": { "type": "string" }, "candidates": { "type": "array", "items": { "type": "object", "properties": { "id": { "type": "string" }, "label": { "type": "string" }, "detail": { "type": "string" } }, "required": ["id"] } } }, "required": ["q", "candidates"] } }
+  ] },
+  "builtWith": { "model": "opus", "builtAt": "2026-11-10" },
+  "banner": false,
+  "tabable": false,
+  "help": "help.json",
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/search-bar",
+    "env": [
+      "AXF_SEARCH_BAR_DIR"
+    ],
+    "mentions": [
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "opens": false
+}

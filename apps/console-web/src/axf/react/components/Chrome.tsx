@@ -9,7 +9,7 @@ import { AppMenuDropdown } from './AppMenu';
 import { HelpModeButton } from './Help';
 import { LiveSearch } from './Search';
 import type { ViewMap } from '../AppShell';
-import { WidgetView } from './Widgets';
+import { SearchBarWidget, WidgetView, widgetRenderer } from './Widgets';
 import { ArrangeBar, arrangedSide, useArrange } from './Arrange';
 import type { PlacedAttachment } from '../../core/engines/widgets';
 import type { CompiledMenuItem } from '../../core/engines/appmenu';
@@ -108,6 +108,10 @@ export function Toolbar({ views }: { views: ViewMap }) {
     );
   }
 
+  // A module that replaces the search-bar widget renderer (registerWidgetRenderer('search-bar', …)) also draws the
+  // toolbar's search slot, so an app has one search; otherwise the toolbar keeps its own box below.
+  const searchRenderer = widgetRenderer('search-bar');
+  const SearchSlot = searchRenderer && searchRenderer !== SearchBarWidget ? searchRenderer : null;
   // Search doubles as a mini command palette: jump to a view or hot-swap an asset by name.
   const run = (e: FormEvent) => {
     e.preventDefault();
@@ -137,8 +141,9 @@ export function Toolbar({ views }: { views: ViewMap }) {
       {(arrange.on || widgets.start.length > 0) && <span className="fx-toolbar__widgets is-start" {...arrange.sideProps('start')}>{arrangedSide(arrange, 'start', widgets.start, drawWidget)}</span>}
       {tb.data.groups.map((g) => <ToolbarGroupView key={g.id} group={g} variant={tb.data.variant} />)}
       {(arrange.on || widgets.end.length > 0) && <span className="fx-toolbar__widgets is-end" {...arrange.sideProps('end')}>{arrangedSide(arrange, 'end', widgets.end, drawWidget)}</span>}
-      {tb.data.showSearch && tb.data.search?.live && <LiveSearch config={tb.data.search} />}
-      {tb.data.showSearch && !tb.data.search?.live && (
+      {tb.data.showSearch && SearchSlot && <span className="fx-toolbar__widgets is-end"><SearchSlot host="toolbar" id="toolbar-search" data={{ placeholder: tb.data.search?.placeholder, width: 'compact', view: 'compact', shortcut: false }} /></span>}
+      {tb.data.showSearch && !SearchSlot && tb.data.search?.live && <LiveSearch config={tb.data.search} />}
+      {tb.data.showSearch && !SearchSlot && !tb.data.search?.live && (
         <form className="fx-search" onSubmit={run} role="search">
           <Icon name="search" size={14} />
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Go to view or swap asset…" aria-label="Search views and assets" />

@@ -156,3 +156,4 @@ Web only (Android on hold), Kotlin twins when the Android side resumes:
 - `console.nav` act `refresh` and `console-command@1` op `refresh` (`hard?`).
 - `ui-choices@1` (`framework/core/ui-choices.mjs`): the `choices` and `singleOption` fields of ui-review-item@1.
 
+- Toolbar search slot through a replaced `search-bar` widget renderer (React `Chrome.tsx`, Nov 10 2026): when a module registers its own `search-bar` renderer, the toolbar's `showSearch` box draws it instead of the built-in one; plus the `globe` icon. Kotlin twin deferred (Compose toolbar search + icon set).

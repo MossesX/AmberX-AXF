@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "search-bar-help",
+  "name": "search-bar help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:search-bar.",
+  "author": "AmberX AXF",
+  "tags": ["help"],
+  "data": {
+    "scope": "plugin:search-bar",
+    "entries": [
+      { "target": "action:search-bar.open", "title": "Search", "text": "Puts the cursor in the search bar. Type and matches come up letter by letter. Ctrl+K or / does the same.", "kind": "menu-item" },
+      { "target": "action:search-bar.scope", "title": "Globe or gear", "text": "The button at the start of the bar: globe searches everything, gear searches settings only.", "kind": "button" },
+      { "target": "matching", "title": "Matching", "text": "How typed text is matched: words in any order, word starts, the exact phrase, or a regular expression.", "kind": "field" },
+      { "target": "use-ai-assistance-to-rank-results", "title": "AI assistance", "text": "Ranks results with your local Llama. Used only when an Ollama connection exists and this is on; otherwise the bar's own matching does everything.", "kind": "field" },
+      { "target": "bars", "title": "Bars", "text": "Add more search bars to the banner or a toolbar, each with its own view and scope. Remove them here.", "kind": "tab" }
+    ],
+    "intros": []
+  }
+}
