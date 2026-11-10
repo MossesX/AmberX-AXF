@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2991,
- "updatedAt": "2026-11-10T23:19:42.600Z",
+ "rev": 2992,
+ "updatedAt": "2026-11-10T23:19:55.836Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -153419,10 +153419,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/api-accounts-need-no-approval-builds-route-there",
-   "pr": "",
+   "pr": "#479",
    "priority": "P0",
    "createdAt": "2026-11-10T21:02:31.264Z",
-   "updatedAt": "2026-11-10T23:19:00.796Z",
+   "updatedAt": "2026-11-10T23:19:54.505Z",
    "builtAt": "",
    "notes": [
     {
@@ -153572,7 +153572,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
