@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 15:18 UTC · `file-watchdog-plugin-watch-files-run-scripts-or` → running, note (all) · pipeline
 - 2026-11-10 15:18 UTC · `file-watchdog-plugin-watch-files-run-scripts-or` note (all) · orchestrator
 - 2026-11-10 15:25 UTC · `claude-accounts-manager-plugin-one-ordered-list` added (0 steps) (all) · console
 - 2026-11-10 15:25 UTC · `claude-accounts-manager-plugin-one-ordered-list` → queued, note (all) · console
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 18:26 UTC · `skin-checker-flags-anything-that-breaks-a-profes` note (all) · orchestrator
 - 2026-11-10 18:28 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
 - 2026-11-10 18:28 UTC · `pass-approval-hook-deep-link-amberx-notification` → queued (all) · orchestrator
+- 2026-11-10 18:28 UTC · `dispatcher-a-worktree-store-write-can-erase-a-fr` added (0 steps) (all) · Claude (gina, pass-approval s1 watcher)
 
 ## Token passes (log)
 

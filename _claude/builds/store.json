@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2671,
- "updatedAt": "2026-11-10T18:28:26.471Z",
+ "rev": 2672,
+ "updatedAt": "2026-11-10T18:28:37.616Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -152828,6 +152828,43 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-10T17:54:43.788Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "dispatcher-a-worktree-store-write-can-erase-a-fr",
+   "title": "Dispatcher: a worktree store write can erase a fresh launch record (double launch, then a stuck build)",
+   "category": "",
+   "detail": "Seen on pass-approval-hook-deep-link-amberx-notification, Nov 10 2026 (journal _claude/builds/journal/2026-11-p4.jsonl): 18:11:16 pipeline:launch wrote status running + pipeline.session earl; 18:11:19 the worktree's orchestrator:note ('Claude account: ...', written by claude-headless.sh at start from a store copy taken before the launch) landed with status queued and no pipeline record, and the per-build newer-wins merge kept it; 18:12:11 the next tick launched the same build again (gina), both runs numbered 1. Earl's 's1 done' tick at 18:24:48 erased the second record the same way, so the live build sat in 'running' with no session: checkEnds and reapBuilds both skip a build without pipeline.session / pipeline.account, so the phase end was never handled (set to queued by hand). Fix, in this order: (1) builds-merge-core: merge the pipeline record per field, never let an incoming copy with no pipeline record replace a newer launch record on main (or have orchestrator.mjs act pull main's record before a note/tick write); (2) pipeline-core plan(): never launch a build whose status is running/waiting or that has a running or queued agent slot for its id (agent-slots status lists build per slot); (3) checkEnds/reapBuilds: a build 'running' with no pipeline record and no live slot for it ends by the phase rule (exit 0 + model switch -> queued) instead of being skipped forever; (4) claude-headless.sh: write the 'Claude account' note only after the launch record is published, or through the per-field merge. Add a check in framework/spec/check-builds-live.mjs that replays this journal sequence.",
+   "status": "pending",
+   "hidden": false,
+   "source": "Claude (gina, pass-approval s1 watcher)",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-10T18:28:36.423Z",
+   "updatedAt": "2026-11-10T18:28:36.424Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 579
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
