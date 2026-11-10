@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 02:45 UTC · `split-builds-pages-build-manager-pending-complet` s2 done (all) · orchestrator
 - 2026-11-10 02:46 UTC · `vps-orchestrator-only-rule-vps-settings-console` s3 done, → built (all) · orchestrator
 - 2026-11-10 02:46 UTC · `split-builds-pages-build-manager-pending-complet` PR #432 (all) · builds-live
 - 2026-11-10 02:46 UTC · `split-builds-pages-build-manager-pending-complet` s3 done, → complete (all) · orchestrator
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 16:39 UTC · `molly-flagship-skin-premium-sellable-uncluttered` → queued, note (all) · console
 - 2026-11-10 16:39 UTC · `inline-element-editing-plugin-right-click-any-el` added (0 steps) (all) · console
 - 2026-11-10 16:39 UTC · `inline-element-editing-plugin-right-click-any-el` → queued, note (all) · console
+- 2026-11-10 16:40 UTC · `inline-edit-plugin-install-in-console-molly-and` added (0 steps) (all) · console
 
 ## Token passes (log)
 
