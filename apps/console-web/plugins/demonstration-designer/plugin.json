@@ -15,7 +15,9 @@
     "settings-tab:demonstration-designer",
     "service:demonstrations@1"
   ],
-  "optional": [],
+  "optional": [
+    "axf.speech@1"
+  ],
   "scopes": [
     "ROUTES"
   ],
@@ -55,6 +57,8 @@
       { "id": "media", "route": "GET /media", "title": "List recordings", "description": "Every recording kept as a clip@1: the demo it shows, its file, seconds and whether an MP4 exists.", "readOnly": true, "output": "{ items: [{ id, name, demo, video, seconds, recordedAt, mp4 }] }" },
       { "id": "media-upload", "route": "POST /media", "title": "Upload a recording", "description": "Raw video bytes of a recording the stage made (query: id, seconds, mime); kept under media/, registered as a clip, transcoded to MP4 when ffmpeg is on the server and the export setting says so.", "readOnly": false, "input": { "type": "object", "properties": { "id": { "type": "string" }, "seconds": { "type": "number" }, "mime": { "type": "string" } }, "required": ["id"] }, "output": "{ clip, file, bytes, keywords, mp4? }" },
       { "id": "media-file", "route": "GET /media/file", "title": "One recording file", "description": "The video file of a recording by its name under media/.", "readOnly": true, "input": { "type": "object", "properties": { "name": { "type": "string" } }, "required": ["name"] }, "output": "the file" },
+      { "id": "narrators", "route": "GET /narrators", "title": "Cloud narrator voices", "description": "The agents whose cloud voice can narrate a pitch (from the speech capability, axf.speech@1); a narrator value of agent:<id> uses one, and an exported video then carries the voice.", "readOnly": true, "output": "{ available, items: [{ value, label, agentId, provider, voice }] }" },
+      { "id": "narrate", "route": "POST /narrate", "title": "Speak one line in a cloud narrator voice", "description": "The words of a step as audio/mpeg in an agent's cloud voice (narrator agent:<id>); the stage plays it and mixes it into an exported video. Spends the provider's credits (cached per line).", "readOnly": false, "input": { "type": "object", "properties": { "narrator": { "type": "string", "description": "agent:<agent id>" }, "text": { "type": "string" }, "speed": { "type": "number", "description": "0.5 to 2" } }, "required": ["narrator", "text"] }, "output": "audio/mpeg" },
       { "id": "export", "route": "POST /export", "title": "Export a recording as MP4", "description": "Transcode a recording (clip id) to MP4 with the server's ffmpeg; answers with an error naming the gap when there is none.", "readOnly": false, "input": { "type": "object", "properties": { "clip": { "type": "string" } }, "required": ["clip"] }, "output": "{ clip, mp4, ffmpeg }" }
     ]
   },

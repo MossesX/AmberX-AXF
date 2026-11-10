@@ -235,4 +235,16 @@ ok('plugin.json declares every server route as a command with a description, and
   assert.ok(help.data.entries.some((e) => e.target === 'view:demonstration-designer' && e.kind === 'screen'));
 });
 
+/* ---------------- server: cloud narrator routes (python3 + fastapi, when there) ---------------- */
+{
+  const py = process.env.PYTHON || 'python3';
+  const has = spawnSync(py, ['-c', 'import fastapi, httpx'], { encoding: 'utf8' });
+  if (has.status === 0) {
+    ok('the cloud narrator routes over axf.speech@1 (server_test.py)', () => {
+      const r = spawnSync(py, [join(HERE, 'server_test.py')], { encoding: 'utf8' });
+      assert.equal(r.status, 0, `${r.stdout}\n${r.stderr}`);
+    });
+  } else console.log('  - server_test.py skipped: python3 with fastapi is not here');
+}
+
 console.log(`demonstration-designer: ${n} checks passed`);

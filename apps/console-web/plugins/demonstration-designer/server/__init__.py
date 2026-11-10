@@ -7,7 +7,9 @@ recordings are clip@1 assets with their files under media/. No model, no tokens.
 
 Routes: GET registry · GET demos · GET demo · POST generate · POST demo · DELETE demo · GET script · POST script ·
 POST chain · GET walkthrough · GET share · GET settings · POST settings · GET media · POST media · GET media/file ·
-POST export.
+POST export · GET narrators · POST narrate.
+Cloud narrators come from the speech capability (axf.speech@1, optional): narrator "agent:<id>" speaks a step in that
+agent's cloud voice, so an exported video carries the voice (browser speech never reaches tab capture).
 Capability demonstrations@1: topics(q), demos(), demo(id), generate(topic, minutes, save), walkthrough(id) for other
 plugins (a plugin that wants a pitch of itself asks here).
 """
@@ -22,7 +24,7 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
-from fastapi.responses import FileResponse, PlainTextResponse
+from fastapi.responses import FileResponse, PlainTextResponse, Response
 
 import plugin_services
 
@@ -292,6 +294,45 @@ def post_export(body: dict[str, Any]) -> dict[str, Any]:
     """Make the MP4 of a recording (clip id) with the server's ffmpeg; says so when there is none."""
     clip = _check_id(str(body.get("clip") or ""))
     return _node_json("media", "export", clip, timeout=600)
+
+
+SPEECH = "axf.speech@1"
+_NARRATOR = re.compile(r"^agent:([A-Za-z0-9][A-Za-z0-9._:-]{0,79})$")
+
+
+@router.get("/narrators")
+def get_narrators() -> dict[str, Any]:
+    """Cloud narrator voices: agents whose voice profile allows cloud speech and whose provider has a key."""
+    svc = plugin_services.get(SPEECH)
+    if svc is None:
+        return {"available": False, "items": [], "why": f"no enabled plugin provides {SPEECH}"}
+    try:
+        rows = svc.narrators() or []
+    except Exception as e:  # noqa: BLE001 — the provider's problem; say it, don't fail the page
+        return {"available": False, "items": [], "why": str(e)[:300]}
+    items = [{"value": f"agent:{r['agentId']}", "label": f"{r.get('name') or r['agentId']} · {r.get('provider', '')} cloud voice",
+              "agentId": r["agentId"], "provider": r.get("provider", ""), "voice": r.get("voice", "")} for r in rows if isinstance(r, dict) and r.get("agentId")]
+    return {"available": True, "items": items}
+
+
+@router.post("/narrate")
+def post_narrate(body: dict[str, Any]) -> Response:
+    """One step's words in a cloud narrator voice (narrator agent:<id>) as audio/mpeg."""
+    m = _NARRATOR.match(str(body.get("narrator") or ""))
+    if not m:
+        raise HTTPException(400, "narrator must be agent:<agent id>")
+    text = str(body.get("text") or "").strip()
+    if not text:
+        raise HTTPException(400, "nothing to say")
+    svc = plugin_services.get(SPEECH)
+    if svc is None:
+        raise HTTPException(409, f"no cloud voices here: no enabled plugin provides {SPEECH}")
+    try:
+        speed = min(2.0, max(0.5, float(body.get("speed") or 1)))
+    except (TypeError, ValueError):
+        speed = 1.0
+    audio = svc.say(m.group(1), text[: int(getattr(svc, "max_text", 4096))], speed)
+    return Response(audio, media_type="audio/mpeg")
 
 
 class Service:
