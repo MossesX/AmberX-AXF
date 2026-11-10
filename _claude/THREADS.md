@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 18:58 UTC · `orchestrator-checks-each-build-against-main-righ` → running, note (all) · pipeline
 - 2026-11-10 18:58 UTC · `orchestrator-checks-each-build-against-main-righ` branch claude/orchestrator-checks-each-build-against-main-righ (all) · pipeline
 - 2026-11-10 19:09 UTC · `orchestrator-checks-each-build-against-main-righ` s1 done, → running (all) · orchestrator
 - 2026-11-10 19:09 UTC · `audit-pending-fable-builds-against-main-close-wh` → running, note (all) · orchestrator
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 23:27 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` → pending, note (all) · pipeline
 - 2026-11-10 23:27 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` PR #482, note (all) · reconciler
 - 2026-11-10 23:28 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` → pending, note (all) · pipeline
+- 2026-11-10 23:28 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` PR #483 (all) · builds-live
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3023,
- "updatedAt": "2026-11-10T23:28:10.605Z",
+ "rev": 3024,
+ "updatedAt": "2026-11-10T23:28:14.645Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -154047,10 +154047,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/gizmo-opens-by-voice-link-amberx-web-app-android",
-   "pr": "",
+   "pr": "#483",
    "priority": "P0",
    "createdAt": "2026-11-10T21:37:39.627Z",
-   "updatedAt": "2026-11-10T23:26:15.698Z",
+   "updatedAt": "2026-11-10T23:28:07.251Z",
    "builtAt": "",
    "notes": [
     {
@@ -154223,7 +154223,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
