@@ -18,13 +18,11 @@
     "extras": {
       "slots": {
         "style-package": "swiss-grid",
-        "toolbar": "reader-bar",
-        "nav-menu": "text-only",
         "typography": "reader",
         "density": "compact",
         "sizing": "compact"
       },
-      "spacing": "regular"
+      "chrome": "swiss-editorial"
     }
   }
 }

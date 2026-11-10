@@ -34,3 +34,54 @@
 .axp-theme-manager__toolbar { gap: var(--fx-dens-gap-sm) }
 .axp-theme-manager__tickpick { width: auto; flex: none; max-width: min(45%, calc(var(--fx-space) * 20)) }
 .axp-theme-manager__bar > .fx-input.fx-grow { min-width: 0; flex: 1 1 0 }
+
+/* Skin Builder (skin-sections@1, Nov 10 2026): slice library + pack template, lib-dnd drop zones, snap on drop, phone stacks */
+.axp-skin-builder { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); min-width: 0 }
+.axp-skin-builder__bar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface) }
+.axp-skin-builder__bar .fx-field { margin: 0 }
+.axp-skin-builder__name { flex: 1 1 calc(var(--fx-space) * 22); min-width: calc(var(--fx-space) * 18) }
+.axp-skin-builder__desc { flex: 2 1 calc(var(--fx-space) * 30); min-width: calc(var(--fx-space) * 22) }
+.axp-skin-builder__load { flex: 1 1 calc(var(--fx-space) * 22); min-width: calc(var(--fx-space) * 18) }
+.axp-skin-builder__note { margin: 0; padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-warning) }
+.axp-skin-builder__main { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: var(--fx-dens-gap-xl); align-items: start }
+.axp-skin-builder__main.is-phone, :where([data-fx-narrow]) .axp-skin-builder__main { grid-template-columns: 1fr }
+.axp-skin-builder__library, .axp-skin-builder__pack { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-lg); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface); min-width: 0 }
+.axp-skin-builder__libhead { display: flex; gap: var(--fx-dens-gap-md); align-items: flex-end; flex-wrap: wrap }
+.axp-skin-builder__libhead .fx-field { margin: 0 }
+.axp-skin-builder__search { flex: 2 1 calc(var(--fx-space) * 20); min-width: 0 }
+.axp-skin-builder__filter { flex: 1 1 calc(var(--fx-space) * 16); min-width: 0 }
+.axp-skin-builder__hint { margin: 0; font-size: var(--fx-type-scale-sm) }
+.axp-skin-builder__list { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); max-height: 70vh; overflow: auto; padding-right: var(--fx-dens-gap-xs) }
+.axp-skin-builder__group-head { display: flex; align-items: center; gap: var(--fx-dens-gap-xs); margin: 0 0 var(--fx-dens-gap-xs) }
+.axp-skin-builder__cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-space) * 22), 1fr)); gap: var(--fx-dens-gap-sm) }
+.axp-skin-builder__card { position: relative; display: flex; gap: var(--fx-dens-gap-xs); align-items: flex-start; padding: var(--fx-dens-gap-sm); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-bg); cursor: grab; min-width: 0; user-select: none; transition: transform var(--fx-motion) ease, box-shadow var(--fx-motion) ease, border-color var(--fx-motion) ease }
+.axp-skin-builder__card:hover, .axp-skin-builder__card:focus-visible { border-color: var(--fx-accent); transform: translateY(calc(var(--fx-border-w) * -1)); box-shadow: var(--fx-shadow-sm) }
+.axp-skin-builder__card.is-in-slot { border-color: var(--fx-accent); background: var(--fx-accent-soft) }
+.axp-skin-builder__card:active { cursor: grabbing }
+.axp-skin-builder__grip { flex: none; color: var(--fx-muted); touch-action: none; padding-top: var(--fx-dens-gap-2xs) }
+.axp-skin-builder__card-body { display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs); min-width: 0; flex: 1 }
+.axp-skin-builder__card-head { display: flex; align-items: center; gap: var(--fx-dens-gap-xs); min-width: 0 }
+.axp-skin-builder__card-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fx-type-scale-sm); font-weight: 600 }
+.axp-skin-builder__card-check { position: absolute; top: var(--fx-dens-gap-xs); right: var(--fx-dens-gap-xs); color: var(--fx-accent) }
+.axp-skin-builder__facts { font-size: var(--fx-type-scale-xs); overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-skin-builder__swatches { display: flex; height: calc(var(--fx-space) * 1.5); width: calc(var(--fx-space) * 10); border-radius: var(--fx-radius-sm); overflow: hidden; border: var(--fx-border-w) solid var(--fx-border) }
+.axp-skin-builder__swatches > span { flex: 1 }
+.axp-skin-builder__packhead { display: flex; justify-content: space-between; align-items: baseline; gap: var(--fx-dens-gap-md); flex-wrap: wrap }
+.axp-skin-builder__slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-space) * 28), 1fr)); gap: var(--fx-dens-gap-md) }
+.axp-skin-builder__slot { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-md); border-radius: var(--fx-radius-md); border: calc(var(--fx-border-w) * 2) dashed var(--fx-border); background: var(--fx-bg); min-width: 0; transition: border-color var(--fx-motion) ease, background var(--fx-motion) ease, transform var(--fx-motion) ease, box-shadow var(--fx-motion) ease }
+.axp-skin-builder__slot.is-filled { border-style: solid; border-color: var(--fx-border) }
+.axp-skin-builder__slot.is-empty.is-required { border-color: var(--fx-warning) }
+.axp-skin-builder__slot.is-target { border-color: var(--fx-accent); background: var(--fx-accent-soft) }
+.axp-skin-builder__slot[data-axf-over], .axp-skin-builder__slot.is-picking { border-color: var(--fx-accent); border-style: solid; box-shadow: 0 0 0 calc(var(--fx-border-w) * 3) var(--fx-accent-soft); transform: scale(1.02) }
+.axp-skin-builder__slot.is-snapped { animation: axp-skin-snap var(--fx-motion) ease-out 2 alternate }
+@keyframes axp-skin-snap { from { transform: scale(1); border-color: var(--fx-border) } to { transform: scale(1.04); border-color: var(--fx-accent); background: var(--fx-accent-soft) } }
+.axp-skin-builder__slot-head { display: flex; align-items: center; gap: var(--fx-dens-gap-xs); font-weight: 600 }
+.axp-skin-builder__slot-label { flex: 1; min-width: 0 }
+.axp-skin-builder__slot-body { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); min-width: 0 }
+.axp-skin-builder__slot-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0 }
+.axp-skin-builder__slot-empty { margin: 0; font-size: var(--fx-type-scale-sm) }
+.axp-skin-builder__slot-actions { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-2xs) }
+.axp-skin-builder__slot-save { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-xs) }
+.axp-skin-builder__slot-save .fx-field { margin: 0; flex: 1 1 calc(var(--fx-space) * 16); min-width: 0 }
+.axp-skin-builder__api { margin: 0; font-size: var(--fx-type-scale-xs) }
+@media (prefers-reduced-motion: reduce) { .axp-skin-builder__slot.is-snapped { animation: none } .axp-skin-builder__card, .axp-skin-builder__slot { transition: none } }

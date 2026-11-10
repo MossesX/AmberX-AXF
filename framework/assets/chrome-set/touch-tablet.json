@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "chrome-set",
+  "id": "touch-tablet",
+  "name": "Touch Tablet chrome",
+  "version": "1.0.0",
+  "description": "The chrome of the Touch Tablet design package: toolbar touch-dock, nav-menu roomy-touch, context-menu touch-large, regular spacing. Rounded, roomy and thumb-friendly on soft sage, with navigation on the right and haptic feedback.",
+  "author": "AmberX AXF",
+  "tags": [
+    "light",
+    "touch",
+    "chrome"
+  ],
+  "data": {
+    "slots": {
+      "toolbar": "touch-dock",
+      "nav-menu": "roomy-touch",
+      "context-menu": "touch-large"
+    },
+    "spacing": "regular"
+  }
+}

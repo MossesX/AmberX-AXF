@@ -1,0 +1,41 @@
+{
+  "$axf": "asset@1",
+  "type": "chrome-set",
+  "id": "hub-default",
+  "name": "Hub Default chrome",
+  "version": "1.0.0",
+  "description": "The chrome of the Hub Default design package: 20 slots (app-menu, toolbar, nav-menu, context-menu, banner, clock, search-bar, logo, action-button, label, status, counter, progress, avatar, link, theme-switch, spacer, divider, badge, settings), tight spacing, hidden: toolbar.",
+  "author": "AmberX AXF",
+  "tags": [
+    "default",
+    "chrome"
+  ],
+  "data": {
+    "slots": {
+      "app-menu": "standard-desktop",
+      "toolbar": "standard-icons",
+      "nav-menu": "sidebar-list",
+      "context-menu": "compact-classic",
+      "banner": "amberx-thin",
+      "clock": "digital-12h",
+      "search-bar": "everything",
+      "logo": "wordmark",
+      "action-button": "settings",
+      "label": "version",
+      "status": "online",
+      "counter": "alerts",
+      "progress": "build",
+      "avatar": "account",
+      "link": "docs",
+      "theme-switch": "fresh-day-night",
+      "spacer": "gap",
+      "divider": "rule",
+      "badge": "new",
+      "settings": "standard"
+    },
+    "hidden": {
+      "toolbar": true
+    },
+    "spacing": "tight"
+  }
+}

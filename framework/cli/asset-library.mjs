@@ -421,8 +421,25 @@ const DP_SCALE = {
   'executive-suite': { typography: 'standard', density: 'standard', sizing: 'standard' },
 };
 const scaleSlots = (id) => ({ typography: 'compact', density: 'compact', sizing: 'compact', ...(DP_SCALE[id] ?? {}) });
-const designPackageAssets = () => DP.map(([id, name, style, color, layout, behavior, slots, spacing, tags, description]) => env('design-package', { id, name, tags, description },
-  { 'style-theme': style, 'color-theme': color, layout, 'behavior-theme': behavior, extras: { slots: { ...slots, ...scaleSlots(id) }, ...(spacing ? { spacing } : {}) } }));
+// skin-sections@1 (Nov 10 2026): a package carries no chrome inline. Its chrome slots (toolbar, nav menu, context menu …)
+// and spacing go into a chrome-set asset of the same id (the package's Chrome section); the package keeps the style
+// package and the scale assets as slots and names the chrome set under extras.chrome.
+const CONTROL_MEMBERS = ['button', 'container', 'slider', 'dialog', 'popup', 'tab-group', 'gauge', 'meter'];
+const SECTION_SLOTS = ['style-package', 'typography', 'density', 'sizing', 'behavior-theme', 'icon-pack'];
+const dpChrome = ([id, name, , , , , slots, spacing, tags, description]) => {
+  const chrome = Object.fromEntries(Object.entries(slots).filter(([t]) => !SECTION_SLOTS.includes(t) && !CONTROL_MEMBERS.includes(t)));
+  if (!Object.keys(chrome).length && !spacing) return null;
+  return env('chrome-set', { id, name: `${name} chrome`, tags: [...tags, 'chrome'], description: `The chrome of the ${name} design package: ${Object.entries(chrome).map(([t, a]) => `${t} ${a}`).join(', ')}${spacing ? `, ${spacing} spacing` : ''}. ${description}` },
+    { slots: chrome, ...(spacing ? { spacing } : {}) });
+};
+const chromeSetAssets = () => DP.map(dpChrome).filter(Boolean);
+const designPackageAssets = () => DP.map((row) => {
+  const [id, name, style, color, layout, behavior, slots, , tags, description] = row;
+  const own = Object.fromEntries(Object.entries(slots).filter(([t]) => SECTION_SLOTS.includes(t) || CONTROL_MEMBERS.includes(t)));
+  const chrome = dpChrome(row);
+  return env('design-package', { id, name, tags, description },
+    { 'style-theme': style, 'color-theme': color, layout, 'behavior-theme': behavior, extras: { slots: { ...own, ...scaleSlots(id) }, ...(chrome ? { chrome: chrome.id } : {}) } });
+});
 
 function toolbarDoc() {
   const PROVIDERS = { views: 'every page the app registers (`nav:<view>`)', nav: 'the active navigation menu’s items', settings: 'every settings tab, plugins’ included (`settings.open:<tab>`)', windows: 'every open floating window (`windows.restore:<id>`)', dialogs: 'every registered dialog (`dialog:<id>`)', chrome: 'show/hide toggles for every bar and menu, drawn pressed while shown' };
@@ -487,6 +504,7 @@ const BUILD = {
   'style-package': () => stylePackageAssets(),
   'nav-menu': () => navAssets(),
   'design-package': () => designPackageAssets(),
+  'chrome-set': () => chromeSetAssets(),
 };
 
 /* ───────────────────────── runner ───────────────────────── */

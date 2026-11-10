@@ -1,13 +1,16 @@
 /**
  * skin@1 + app-look@1 (build skins, Nov 2026; coverage, parts, icon pack and scopes added by build skins-asset-types,
- * Fable, Nov 7 2026).
+ * Fable, Nov 7 2026; sections by build skins-as-packages-of-slices, Fable, Nov 10 2026).
  *
- * A skin (asset type `skin`) is a whole look: a layout theme, a colour theme, a style theme and the assets that fill
- * the other slots (title bar, menus, context menus, toolbars, dialogs, buttons, nav menu ...). Every design package
- * also reads as a skin (`skinFromDesignPackage`), so a picker offers both and nothing is kept twice. A skin is a
- * design pack (Brett): it MAY name an icon pack (`iconPack`) and MAY carry style `parts` for any type that has a style
- * target (customize engine), so it reaches widgets, badges, labels and every other drawn piece — the registry says
- * how each type is covered (`skin-coverage.mjs`, `skinCoverage()`), and CI fails on a type it can't reach.
+ * A skin (asset type `skin`) is a package of sections (skin-sections@1, `skin-sections.mjs`): its manifest names one
+ * standalone asset per section — colours, design, layout, behaviour, typography, density, sizing, icons, controls,
+ * chrome (chrome-set) and parts (style-parts) — and nothing inline. `normalizeSkin(raw, resolve)` turns the manifest
+ * into the resolved form the runtime composes with (the themes, every slot, the icon pack, the parts and the extras);
+ * the older monolithic form (those fields written inline) still reads, so an old file imports, but is never written.
+ * Every design package also reads as a skin (`skinFromDesignPackage`), so a picker offers both and nothing is kept
+ * twice. The registry says how each type is covered (`skin-coverage.mjs`, `skinCoverage()`), and CI fails on a type
+ * a skin can't reach. Applying with picks (`skin.sections` on the look document) swaps or leaves out sections
+ * (`applySectionOverrides`); a mix of more than one skin can be saved as a new skin (`mixSkins`, `skinManifest`).
  *
  * app-look@1 is one app's look on the hub (`shared/settings/looks/<app>.json`): the snapshot of its default, its own
  * picks over that default, its skin switch, and a skin state per UI / plugin. It is what keeps apps apart (Brett,
@@ -28,9 +31,14 @@ import { spacingOf } from './spacing';
 import { CUSTOM_TARGETS, customizable, normalizeCustomValues, type CustomValues } from './customize';
 import spec from '../../schemas/asset-types.json';
 import { SKIN_NEVER, normalizeLookPart, resolveLookSkin, type AppLookDocument, type GlobalSkin, type LookPart } from './skin-rules.mjs';
+import { STYLE_PACKAGE_MEMBERS } from './stylepackage';
+import { applySectionOverrides, inlineSectionsOf, normalizeSectionOverrides, normalizeSections, resolveSections, sectionsErrors, sectionsOf, type SectionOverrides, type SectionResolver, type SkinSections } from './skin-sections.mjs';
 import { coverageSummary, coverageTable, partsErrors, partsTypes, skinScopeKey, uncoveredTypes, type CoverageRow, type CoverageSummary, type ResolvedSkin, type SkinScope, type TypeSpecs } from './skin-coverage.mjs';
 
-export { APP_LOOK_FRAME, APP_LOOK_MAX_BYTES, APP_LOOK_PROJECT, SKIN_NEVER, SKIN_USES, appLookPath, backToSkin, newAppLook, normalizeAppLook, normalizeScopeState, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setScopeOverride, setScopeSkin, setUseSkin, undoRestore } from './skin-rules.mjs';
+export { APP_LOOK_FRAME, APP_LOOK_MAX_BYTES, APP_LOOK_PROJECT, SKIN_NEVER, SKIN_USES, appLookPath, backToSkin, backToSkinSection, newAppLook, normalizeAppLook, normalizeScopeState, overriddenSlots, parseAppLook, pickSkin, pickSkinWith, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setScopeOverride, setScopeSkin, setSkinSections, setUseSkin, undoRestore } from './skin-rules.mjs';
+// skin-sections@1: the section registry, the two bundle types, resolving, mixing, manifests, packages, the slice catalog, thumbnails
+export { CHROME_SET_TYPE, REQUIRED_SECTIONS, SKIN_PACKAGE_FRAME, SKIN_SECTIONS, SKIN_SECTIONS_CONTRACT, SKIN_SECTION_IDS, STYLE_PARTS_TYPE, applySectionOverrides, chromeSetErrors, chromeSlotTypes, exportSkinPackage, importSkinPackage, inlineSectionsOf, isSectionId, missingSections, mixSkins, normalizeChromeSet, normalizeSectionOverrides, normalizeSections, normalizeStyleParts, resolveSections, sectionOfType, sectionType, sectionsErrors, sectionsOf, setSection, skinManifest, skinSection, skinThumbnail, sliceCatalog, slicePreview, slug, stripSection, stylePartsErrors, thumbnailDataUri } from './skin-sections.mjs';
+export type { AssetEnvelopeLike, ChromeSetData, SectionOverrides, SectionResolver, SkinAssetEnvelope, SkinManifestMeta, SkinMix, SkinPackage, SkinSectionId, SkinSectionSpec, SkinSections, SliceEntry, SlicePreview, StylePartsData } from './skin-sections.mjs';
 export type { AppLookDocument, AppSkinState, GlobalSkin, LookPart } from './skin-rules.mjs';
 // named, not `export *`: tsx links a star re-export of a .mjs module as empty when the importer is a .mts file
 export { COVERAGE_KINDS, PART_ELEMENTS, SKIN_COVERAGE_CONTRACT, SKIN_SCOPE_APP, SKIN_SCOPE_GLOBAL, SKIN_SCOPE_KINDS, coverageOf, coverageSummary, coverageTable, declarationErrors, declaredCoverage, isSubScopeKey, normalizeSkinScope, partElements, partsErrors, partsTypes, resolveSkinChain, skinScopeChain, skinScopeDomId, skinScopeKey, skinScopeKind, skinScopeOf, skinScopeSelector, uncoveredTypes } from './skin-coverage.mjs';
@@ -50,6 +58,8 @@ export interface SkinData {
   styleTheme: string;
   /** Appearance slot → asset id, for everything but the three themes. */
   assets: Record<string, string>;
+  /** The manifest's sections (skin-sections@1): section → asset id. The fields below are what they resolve to. */
+  sections?: SkinSections;
   /** The icon pack the skin draws its icons from (icon-pack asset id); absent = the branding's. */
   iconPack?: string;
   /** Style parts per asset type (customize tokens): how the type's box, text, icon and items look under this skin. */
@@ -102,21 +112,31 @@ function partsMap(raw: unknown): Record<string, CustomValues> {
   return out;
 }
 
-/** Keep only what skin@1 holds; a malformed field is dropped, never a crash. */
-export function normalizeSkin(raw: unknown): SkinData {
+/**
+ * Keep only what skin@1 holds; a malformed field is dropped, never a crash. A manifest with `sections` is resolved
+ * through `resolve(type, id)` (an asset's data, null = unknown): the controls' members, the chrome set and the style
+ * parts need it; without one only the section ids are kept. The monolithic form (fields inline) reads as before.
+ */
+export function normalizeSkin(raw: unknown, resolve?: SectionResolver | null): SkinData {
   const d = isObj(raw) ? raw : {};
+  if (isObj(d.sections) && Object.keys(normalizeSections(d.sections)).length) {
+    const r = resolveSections(normalizeSections(d.sections), resolve ?? null, STYLE_PACKAGE_MEMBERS);
+    const out: SkinData = { layoutTheme: r.layoutTheme, colorTheme: r.colorTheme, styleTheme: r.styleTheme, assets: idMap(r.assets), sections: r.sections };
+    for (const t of Object.values(THEMES)) delete out.assets[t];
+    if (r.iconPack) out.iconPack = r.iconPack;
+    const parts = partsMap(r.parts);
+    if (Object.keys(parts).length) out.parts = parts;
+    if (isObj(d.preview)) out.preview = previewOf(d.preview);
+    if (r.extras) out.extras = { ...r.extras };
+    return out;
+  }
   const id = (k: keyof typeof THEMES) => (typeof d[k] === 'string' && ID.test(d[k] as string) ? (d[k] as string) : '');
   const out: SkinData = { layoutTheme: id('layoutTheme'), colorTheme: id('colorTheme'), styleTheme: id('styleTheme'), assets: idMap(d.assets) };
   for (const t of Object.values(THEMES)) delete out.assets[t];
   if (typeof d.iconPack === 'string' && ID.test(d.iconPack)) out.iconPack = d.iconPack;
   const parts = partsMap(d.parts);
   if (Object.keys(parts).length) out.parts = parts;
-  if (isObj(d.preview)) {
-    const p: NonNullable<SkinData['preview']> = {};
-    if (typeof d.preview.caption === 'string') p.caption = d.preview.caption.slice(0, 200);
-    if (typeof d.preview.image === 'string') p.image = d.preview.image.slice(0, 500);
-    out.preview = p;
-  }
+  if (isObj(d.preview)) out.preview = previewOf(d.preview);
   if (isObj(d.extras)) {
     const x: SkinExtras = {};
     if (typeof d.extras.spacing === 'string' && spacingOf(d.extras.spacing) === d.extras.spacing) x.spacing = d.extras.spacing;
@@ -127,9 +147,28 @@ export function normalizeSkin(raw: unknown): SkinData {
   return out;
 }
 
-/** Validation messages for a skin's data (validators call it for type `skin`). */
+function previewOf(raw: Record<string, unknown>): NonNullable<SkinData['preview']> {
+  const p: NonNullable<SkinData['preview']> = {};
+  if (typeof raw.caption === 'string') p.caption = raw.caption.slice(0, 200);
+  if (typeof raw.image === 'string') p.image = raw.image.slice(0, 20000);
+  return p;
+}
+
+/** The fields a monolithic skin wrote inline; a sections manifest must not carry them (every section is its own asset). */
+const INLINE_FIELDS = ['layoutTheme', 'colorTheme', 'styleTheme', 'assets', 'iconPack', 'parts', 'extras'];
+
+/**
+ * Validation messages for a skin's data (validators call it for type `skin`). A manifest (`sections`) must name the
+ * required sections and nothing inline; the monolithic form is checked as before so an old file still imports.
+ */
 export function skinErrors(raw: unknown): string[] {
   if (!isObj(raw)) return ['data must be an object'];
+  if ('sections' in raw) {
+    const errors = sectionsErrors(raw.sections);
+    for (const k of INLINE_FIELDS) if (k in raw) errors.push(`data.${k}: a skin is a package of sections; make it a section asset and name it in data.sections`);
+    if ('preview' in raw && !isObj(raw.preview)) errors.push('data.preview must be an object');
+    return errors;
+  }
   const errors: string[] = [];
   for (const [k, t] of Object.entries(THEMES)) if (typeof raw[k] !== 'string' || !ID.test(raw[k] as string)) errors.push(`data.${k} must be a ${t} asset id`);
   if (!isObj(raw.assets)) errors.push('data.assets must be an object (slot → asset id)');
@@ -159,22 +198,54 @@ export function skinSlots(skin: SkinData): Record<string, string> {
   return out;
 }
 
-/** A design package read as a skin: same bundle, so the Skin picker lists them without a second copy of any look. */
-export function skinFromDesignPackage(raw: unknown): SkinData {
+/**
+ * A design package read as a skin: same bundle, so the Skin picker lists them without a second copy of any look. Its
+ * chrome section (`extras.chrome`, a chrome-set id) is resolved through `resolve`; the sections map is derived so
+ * the package shows its slices like any skin.
+ */
+export function skinFromDesignPackage(raw: unknown, resolve?: SectionResolver | null): SkinData {
   const p: DesignPackageData = normalizeDesignPackage(raw);
   const assets = { ...(p.extras?.slots ?? {}) };
   if (p['behavior-theme']) assets['behavior-theme'] = p['behavior-theme'];
-  const skin: SkinData = { layoutTheme: p.layout, colorTheme: p['color-theme'], styleTheme: p['style-theme'], assets };
+  let skin: SkinData = { layoutTheme: p.layout, colorTheme: p['color-theme'], styleTheme: p['style-theme'], assets };
   const x = p.extras;
   if (x && (x.spacing || x.hidden || x.settings)) skin.extras = { ...(x.spacing ? { spacing: x.spacing } : {}), ...(x.hidden ? { hidden: x.hidden } : {}), ...(x.settings ? { settings: x.settings } : {}) };
+  const sections = sectionsOf(skin); // derived from the package's fields before the chrome set folds in
+  if (assets['style-package']) {
+    // the controls section: the style package's members become slots (the package's own extras slots win)
+    const own = { ...skin.assets };
+    skin = applySectionOverrides(skin, { controls: assets['style-package'] }, resolve ?? null, STYLE_PACKAGE_MEMBERS);
+    skin.assets = { ...skin.assets, ...own };
+  }
+  if (x?.chrome) {
+    const before = { ...skin.assets };
+    skin = applySectionOverrides(skin, { chrome: x.chrome }, resolve ?? null, STYLE_PACKAGE_MEMBERS);
+    skin.assets = { ...skin.assets, ...before }; // the package's own extras slots win over the chrome set's
+    if (x.spacing) skin.extras = { ...(skin.extras ?? {}), spacing: x.spacing };
+    sections.chrome = x.chrome;
+  }
+  skin.sections = sections;
   return skin;
 }
 
+/** The sections a skin names as assets (skin-sections@1), from its manifest or derived from a monolithic form. */
+export function skinSections(skin: SkinData): SkinSections { return sectionsOf(skin); }
+/** The chrome and parts a skin still carries inline (a monolithic skin, a design package without a chrome set). */
+export function skinInlineSections(skin: SkinData): ReturnType<typeof inlineSectionsOf> { return inlineSectionsOf(skin, STYLE_PACKAGE_MEMBERS); }
+/** A skin with section picks applied (app-look@1 `skin.sections`): a section swapped for another asset, or left out. */
+export function skinWithSections(skin: SkinData, picks: SectionOverrides | null | undefined, resolve?: SectionResolver | null): SkinData {
+  if (!picks || !Object.keys(picks).length) return skin;
+  const out = applySectionOverrides(skin, picks, resolve ?? null, STYLE_PACKAGE_MEMBERS);
+  const parts = partsMap(out.parts);
+  if (Object.keys(parts).length) out.parts = parts; else delete out.parts;
+  return out;
+}
+
 /** The Skin picker's list: real skins first, then the design packages. */
-export function skinEntries(skins: readonly { id: string; name: string; description?: string; data: unknown }[], packages: readonly { id: string; name: string; description?: string; data: unknown }[]): SkinEntry[] {
-  const out: SkinEntry[] = skins.map((a) => ({ id: a.id, name: a.name, kind: 'skin', description: a.description ?? '', data: normalizeSkin(a.data) }));
+export function skinEntries(skins: readonly { id: string; name: string; description?: string; data: unknown }[], packages: readonly { id: string; name: string; description?: string; data: unknown }[], resolve?: SectionResolver | null): SkinEntry[] {
+  const out: SkinEntry[] = skins.map((a) => ({ id: a.id, name: a.name, kind: 'skin', description: a.description ?? '', data: normalizeSkin(a.data, resolve) }));
   const taken = new Set(out.map((e) => e.id));
-  for (const a of packages) if (!taken.has(a.id)) out.push({ id: a.id, name: a.name, kind: 'design-package', description: a.description ?? '', data: skinFromDesignPackage(a.data) });
+  for (const a of packages) if (!taken.has(a.id)) out.push({ id: a.id, name: a.name, kind: 'design-package', description: a.description ?? '', data: skinFromDesignPackage(a.data, resolve) });
   return out;
 }
 
@@ -209,7 +280,7 @@ export function skinCovers(skin: SkinData): { type: string; by: CoverageRow['by'
 export function globalSkinOf(shared: AppearanceDocument | null | undefined): GlobalSkin | null {
   const s = (shared as { skin?: unknown } | null | undefined)?.skin;
   if (!isObj(s) || typeof s.id !== 'string' || !ID.test(s.id)) return null;
-  return { id: s.id, overrides: idMap(s.overrides) };
+  return { id: s.id, overrides: idMap(s.overrides), sections: normalizeSectionOverrides(s.sections) };
 }
 
 /** The document for a look with `skin` on (or none) and `overrides` over it; `scopeKey` names where the icon pack lands. */
@@ -250,9 +321,9 @@ export function composeLook(shared: AppearanceDocument | null, look: AppLookDocu
  * skin's data by id (a skin or a design package; null = unknown, reads as none), and the result carries the skin's
  * parts for the sheet. With no scope this is the app itself, hub-wide skin included.
  */
-export function composeLookAt(shared: AppearanceDocument | null, look: AppLookDocument, skinOf: (id: string) => SkinData | null, scope?: Partial<SkinScope> | null): ComposedLook {
+export function composeLookAt(shared: AppearanceDocument | null, look: AppLookDocument, skinOf: (id: string, sections?: SectionOverrides) => SkinData | null, scope?: Partial<SkinScope> | null): ComposedLook {
   const resolved = resolveLookSkin(look, globalSkinOf(shared), scope ?? null);
-  const skin = resolved.id ? skinOf(resolved.id) : null;
+  const skin = resolved.id ? skinOf(resolved.id, resolved.sections) : null;
   const scopeKey = skinScopeKey(scope ?? null);
   return { doc: composeWith(shared, look, skin, skin ? resolved.overrides : {}, scopeKey), parts: skin?.parts ?? {}, skin: skin ? resolved : { ...resolved, id: '' }, scopeKey };
 }

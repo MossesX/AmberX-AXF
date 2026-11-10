@@ -9,13 +9,14 @@
  * overrides the parent (skin-coverage.mjs `resolveSkinChain`).
  */
 import { isSubScopeKey, resolveSkinChain, skinScopeChain, SKIN_SCOPE_APP, SKIN_SCOPE_GLOBAL } from './skin-coverage.mjs';
+import { CHROME_SET_TYPE, STYLE_PARTS_TYPE, normalizeSectionOverrides } from './skin-sections.mjs';
 
 export const APP_LOOK_FRAME = 'app-look@1';
 export const APP_LOOK_PROJECT = 'shared';
 export const APP_LOOK_MAX_BYTES = 64 * 1024;
 export const appLookPath = (appId) => `settings/looks/${appId}.json`;
 /** Slots a skin never sets. */
-export const SKIN_NEVER = ['uac-policy', 'help', 'skin', 'design-package', 'interface'];
+export const SKIN_NEVER = ['uac-policy', 'help', 'skin', 'design-package', 'interface', CHROME_SET_TYPE, STYLE_PARTS_TYPE];
 /** The three per-level choices. */
 export const SKIN_USES = ['on', 'off', 'inherit'];
 
@@ -44,25 +45,29 @@ export function normalizeLookPart(raw) {
   if (isObj(d.settings)) out.settings = { ...d.settings };
   return out;
 }
-/** The app level: `use` (the Use skin switch), `inherit` (follow the hub-wide skin while off), the skin and its overrides. */
+/**
+ * The app level: `use` (the Use skin switch), `inherit` (follow the hub-wide skin while off), the skin, its slot
+ * overrides and its section picks (skin-sections@1: `sections` = section → another asset, or null = left out, so
+ * the app's own look shows through there).
+ */
 function normalizeSkinState(raw) {
   const d = isObj(raw) ? raw : {};
-  return { use: d.use === true, inherit: d.inherit === true, id: typeof d.id === 'string' && ID.test(d.id) ? d.id : '', overrides: idMap(d.overrides, SKIN_NEVER) };
+  return { use: d.use === true, inherit: d.inherit === true, id: typeof d.id === 'string' && ID.test(d.id) ? d.id : '', overrides: idMap(d.overrides, SKIN_NEVER), sections: normalizeSectionOverrides(d.sections) };
 }
-/** A UI / plugin level: on | off | inherit (default inherit), the skin and its overrides. */
+/** A UI / plugin level: on | off | inherit (default inherit), the skin, its overrides and its section picks. */
 export function normalizeScopeState(raw) {
   const d = isObj(raw) ? raw : {};
-  return { use: SKIN_USES.includes(d.use) ? d.use : 'inherit', id: typeof d.id === 'string' && ID.test(d.id) ? d.id : '', overrides: idMap(d.overrides, SKIN_NEVER) };
+  return { use: SKIN_USES.includes(d.use) ? d.use : 'inherit', id: typeof d.id === 'string' && ID.test(d.id) ? d.id : '', overrides: idMap(d.overrides, SKIN_NEVER), sections: normalizeSectionOverrides(d.sections) };
 }
 function normalizeScopes(raw) {
   const out = {};
-  if (isObj(raw)) for (const [k, v] of Object.entries(raw)) if (isSubScopeKey(k)) { const st = normalizeScopeState(v); if (st.use !== 'inherit' || st.id || Object.keys(st.overrides).length) out[k] = st; }
+  if (isObj(raw)) for (const [k, v] of Object.entries(raw)) if (isSubScopeKey(k)) { const st = normalizeScopeState(v); if (st.use !== 'inherit' || st.id || Object.keys(st.overrides).length || Object.keys(st.sections).length) out[k] = st; }
   return out;
 }
 
 /** A new app-look: `snapshot` as the default, nothing picked, no skin, every scope inheriting. */
 export function newAppLook(app, snapshot) {
-  return { $axf: APP_LOOK_FRAME, app, default: normalizeLookPart(snapshot), own: {}, skin: { use: false, inherit: false, id: '', overrides: {} }, scopes: {}, undo: null };
+  return { $axf: APP_LOOK_FRAME, app, default: normalizeLookPart(snapshot), own: {}, skin: { use: false, inherit: false, id: '', overrides: {}, sections: {} }, scopes: {}, undo: null };
 }
 
 export function normalizeAppLook(raw) {
@@ -86,8 +91,18 @@ export function parseAppLook(text) {
 export function setUseSkin(look, on) { return { ...look, skin: { ...look.skin, use: on } }; }
 /** Follow the hub-wide skin while Use skin is off (Brett: "a switch to do it, but by default they're all their own"). */
 export function setInheritSkin(look, on) { return { ...look, skin: { ...look.skin, inherit: on } }; }
-/** Pick a skin: a different one starts with no overrides. */
-export function pickSkin(look, id) { return { ...look, skin: { ...look.skin, id, overrides: id === look.skin.id ? look.skin.overrides : {} } }; }
+/** Pick a skin: a different one starts with no overrides and no section picks. */
+export function pickSkin(look, id) { return { ...look, skin: { ...look.skin, id, overrides: id === look.skin.id ? look.skin.overrides : {}, sections: id === look.skin.id ? (look.skin.sections ?? {}) : {} } }; }
+/** Pick a skin with section picks (skin-sections@1): `sections` = section → another asset id, or null = left out. */
+export function pickSkinWith(look, id, sections) { return { ...pickSkin(look, id), skin: { ...pickSkin(look, id).skin, sections: normalizeSectionOverrides(sections) } }; }
+/** Change the section picks of the skin in force at the app level (replaces them). */
+export function setSkinSections(look, sections) { return { ...look, skin: { ...look.skin, sections: normalizeSectionOverrides(sections) } }; }
+/** Per-section "Back to skin": drop one section pick. */
+export function backToSkinSection(look, sec) {
+  const sections = { ...(look.skin.sections ?? {}) };
+  delete sections[sec];
+  return { ...look, skin: { ...look.skin, sections } };
+}
 /** Per-item "Back to skin". */
 export function backToSkin(look, slot) {
   const overrides = { ...look.skin.overrides };
@@ -98,7 +113,7 @@ export function backToSkin(look, slot) {
 export function overriddenSlots(look) { return look?.skin.use ? Object.keys(look.skin.overrides) : []; }
 /** Back to the snapshot. What it replaced is kept as the one undo. Every scope goes back to inherit. */
 export function restoreAppDefault(look, at) {
-  return { ...look, own: {}, skin: { use: false, inherit: false, id: look.skin.id, overrides: {} }, scopes: {}, undo: { own: look.own, skin: look.skin, scopes: look.scopes ?? {}, at } };
+  return { ...look, own: {}, skin: { use: false, inherit: false, id: look.skin.id, overrides: {}, sections: {} }, scopes: {}, undo: { own: look.own, skin: look.skin, scopes: look.scopes ?? {}, at } };
 }
 /** Undo the last Restore; a second undo does nothing. */
 export function undoRestore(look) { return look.undo ? { ...look, own: look.undo.own, skin: look.undo.skin, scopes: look.undo.scopes ?? {}, undo: null } : look; }
@@ -118,17 +133,17 @@ export function setLookSlot(look, slot, id) {
 
 /** The state of one scope key in a document (`app` = the app level, `ui:` / `plugin:` = a sub scope; `global` is not in the document). */
 export function scopeState(look, key) {
-  if (key === SKIN_SCOPE_APP) return { use: look.skin.use ? 'on' : look.skin.inherit ? 'inherit' : 'off', id: look.skin.id, overrides: look.skin.overrides };
-  return isSubScopeKey(key) ? (look.scopes?.[key] ?? { use: 'inherit', id: '', overrides: {} }) : null;
+  if (key === SKIN_SCOPE_APP) return { use: look.skin.use ? 'on' : look.skin.inherit ? 'inherit' : 'off', id: look.skin.id, overrides: look.skin.overrides, sections: look.skin.sections ?? {} };
+  return isSubScopeKey(key) ? (look.scopes?.[key] ?? { use: 'inherit', id: '', overrides: {}, sections: {} }) : null;
 }
 
-/** Set a sub scope's skin: `use` on | off | inherit, `id` the skin (kept when omitted). Inherit with nothing else drops the entry. */
-export function setScopeSkin(look, key, use, id) {
+/** Set a sub scope's skin: `use` on | off | inherit, `id` the skin (kept when omitted), `sections` its section picks (a new skin starts with none). Inherit with nothing else drops the entry. */
+export function setScopeSkin(look, key, use, id, sections) {
   if (!isSubScopeKey(key)) throw new Error(`"${key}" is not a ui: or plugin: scope`);
   const cur = scopeState(look, key);
-  const next = normalizeScopeState({ use, id: id ?? cur.id, overrides: id && id !== cur.id ? {} : cur.overrides });
+  const next = normalizeScopeState({ use, id: id ?? cur.id, overrides: id && id !== cur.id ? {} : cur.overrides, sections: sections ?? (id && id !== cur.id ? {} : cur.sections) });
   const scopes = { ...(look.scopes ?? {}) };
-  if (next.use === 'inherit' && !next.id && !Object.keys(next.overrides).length) delete scopes[key]; else scopes[key] = next;
+  if (next.use === 'inherit' && !next.id && !Object.keys(next.overrides).length && !Object.keys(next.sections).length) delete scopes[key]; else scopes[key] = next;
   return { ...look, scopes };
 }
 
@@ -154,7 +169,7 @@ export function scopeEntries(look) {
 export function resolveLookSkin(look, global, scope) {
   const chain = skinScopeChain({ ...scope, app: look?.app ?? '' });
   return resolveSkinChain(chain, (key) => {
-    if (key === SKIN_SCOPE_GLOBAL) return global?.id ? { use: 'on', id: global.id, overrides: global.overrides ?? {} } : { use: 'off', id: '', overrides: {} };
-    return look ? scopeState(look, key) : { use: 'off', id: '', overrides: {} };
+    if (key === SKIN_SCOPE_GLOBAL) return global?.id ? { use: 'on', id: global.id, overrides: global.overrides ?? {}, sections: normalizeSectionOverrides(global.sections) } : { use: 'off', id: '', overrides: {}, sections: {} };
+    return look ? scopeState(look, key) : { use: 'off', id: '', overrides: {}, sections: {} };
   });
 }

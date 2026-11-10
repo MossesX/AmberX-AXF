@@ -1,5 +1,527 @@
 {
   "contract": "skin@1",
+  "sections": {
+    "ids": [
+      "colors",
+      "design",
+      "layout",
+      "behavior",
+      "typography",
+      "density",
+      "sizing",
+      "icons",
+      "controls",
+      "chrome",
+      "parts"
+    ],
+    "required": [
+      "colors",
+      "design",
+      "layout"
+    ],
+    "types": {
+      "colors": "color-theme",
+      "design": "style-theme",
+      "layout": "layout",
+      "behavior": "behavior-theme",
+      "typography": "typography",
+      "density": "density",
+      "sizing": "sizing",
+      "icons": "icon-pack",
+      "controls": "style-package",
+      "chrome": "chrome-set",
+      "parts": "style-parts"
+    },
+    "manifest": {
+      "sections": {
+        "colors": "windows-light",
+        "design": "windows",
+        "layout": "windows-explorer",
+        "typography": "windows",
+        "icons": "amberx-outline",
+        "controls": "win",
+        "chrome": "win",
+        "parts": "win"
+      },
+      "preview": {
+        "caption": "Windows"
+      }
+    },
+    "resolved": {
+      "layoutTheme": "windows-explorer",
+      "colorTheme": "windows-light",
+      "styleTheme": "windows",
+      "assets": {
+        "typography": "windows",
+        "style-package": "win",
+        "button": "windows",
+        "dialog": "windows",
+        "banner": "windows-titlebar",
+        "toolbar": "windows"
+      },
+      "sections": {
+        "colors": "windows-light",
+        "design": "windows",
+        "layout": "windows-explorer",
+        "typography": "windows",
+        "icons": "amberx-outline",
+        "controls": "win",
+        "chrome": "win",
+        "parts": "win"
+      },
+      "iconPack": "amberx-outline",
+      "parts": {
+        "button": {
+          "radius": "sm"
+        },
+        "label": {
+          "fontWeight": "400"
+        }
+      },
+      "preview": {
+        "caption": "Windows"
+      },
+      "extras": {
+        "spacing": "compact",
+        "hidden": {
+          "toolbar": false
+        }
+      }
+    },
+    "sectionsOf": {
+      "colors": "windows-light",
+      "design": "windows",
+      "layout": "windows-explorer",
+      "typography": "windows",
+      "icons": "amberx-outline",
+      "controls": "win",
+      "chrome": "win",
+      "parts": "win"
+    },
+    "unresolved": {
+      "layoutTheme": "windows-explorer",
+      "colorTheme": "windows-light",
+      "styleTheme": "windows",
+      "assets": {
+        "typography": "windows",
+        "style-package": "win"
+      },
+      "sections": {
+        "colors": "windows-light",
+        "design": "windows",
+        "layout": "windows-explorer",
+        "typography": "windows",
+        "icons": "amberx-outline",
+        "controls": "win",
+        "chrome": "win",
+        "parts": "win"
+      },
+      "iconPack": "amberx-outline",
+      "preview": {
+        "caption": "Windows"
+      }
+    },
+    "errors": {
+      "good": [],
+      "missing": [
+        "data.sections.design must be a style-theme asset id",
+        "data.sections.layout must be a layout asset id"
+      ],
+      "unknown": [
+        "data.sections.widgets: not a skin section (one of colors, design, layout, behavior, typography, density, sizing, icons, controls, chrome, parts)"
+      ],
+      "inline": [
+        "data.parts: a skin is a package of sections; make it a section asset and name it in data.sections"
+      ]
+    },
+    "chromeSet": {
+      "normalized": {
+        "slots": {
+          "banner": "windows-titlebar",
+          "toolbar": "windows"
+        },
+        "hidden": {
+          "toolbar": false
+        },
+        "spacing": "compact"
+      },
+      "errors": [
+        "data.slots.uac-policy: a chrome set never sets uac-policy",
+        "data.slots.button: a control belongs to the Controls section (style-package)"
+      ],
+      "bad": [
+        "data.slots must be an object (asset type → asset id)",
+        "data.spacing must be tight, compact or regular"
+      ]
+    },
+    "styleParts": {
+      "normalized": {
+        "parts": {
+          "button": {
+            "radius": "sm"
+          },
+          "label": {
+            "fontWeight": "400"
+          }
+        }
+      },
+      "errors": [],
+      "bad": [
+        "data.parts.nope: not a registered asset type"
+      ]
+    },
+    "strip": {
+      "controls": {
+        "layoutTheme": "windows-explorer",
+        "colorTheme": "windows-light",
+        "styleTheme": "windows",
+        "assets": {
+          "typography": "windows",
+          "banner": "windows-titlebar",
+          "toolbar": "windows"
+        },
+        "sections": {
+          "colors": "windows-light",
+          "design": "windows",
+          "layout": "windows-explorer",
+          "typography": "windows",
+          "icons": "amberx-outline",
+          "chrome": "win",
+          "parts": "win"
+        },
+        "iconPack": "amberx-outline",
+        "parts": {
+          "button": {
+            "radius": "sm"
+          },
+          "label": {
+            "fontWeight": "400"
+          }
+        },
+        "preview": {
+          "caption": "Windows"
+        },
+        "extras": {
+          "spacing": "compact",
+          "hidden": {
+            "toolbar": false
+          }
+        }
+      },
+      "chrome": {
+        "layoutTheme": "windows-explorer",
+        "colorTheme": "windows-light",
+        "styleTheme": "windows",
+        "assets": {
+          "typography": "windows",
+          "style-package": "win",
+          "button": "windows",
+          "dialog": "windows"
+        },
+        "sections": {
+          "colors": "windows-light",
+          "design": "windows",
+          "layout": "windows-explorer",
+          "typography": "windows",
+          "icons": "amberx-outline",
+          "controls": "win",
+          "parts": "win"
+        },
+        "iconPack": "amberx-outline",
+        "parts": {
+          "button": {
+            "radius": "sm"
+          },
+          "label": {
+            "fontWeight": "400"
+          }
+        },
+        "preview": {
+          "caption": "Windows"
+        }
+      }
+    },
+    "overrides": {
+      "swapColors": "aurora-night",
+      "dropChrome": {
+        "typography": "windows",
+        "style-package": "win",
+        "button": "windows",
+        "dialog": "windows"
+      },
+      "normalized": {
+        "colors": "x",
+        "chrome": null
+      }
+    },
+    "mix": {
+      "colorsOnly": {
+        "sections": {
+          "colors": "windows-light",
+          "design": "glass-pro",
+          "layout": "focus-top",
+          "controls": "glass-air"
+        },
+        "sources": {
+          "colors": "windows",
+          "design": "aurora",
+          "layout": "aurora",
+          "controls": "aurora"
+        },
+        "mixed": true,
+        "from": [
+          "windows",
+          "aurora"
+        ],
+        "left": [
+          "design",
+          "layout",
+          "typography",
+          "icons",
+          "controls",
+          "chrome",
+          "parts"
+        ],
+        "overrides": {
+          "design": "glass-pro",
+          "layout": "focus-top",
+          "typography": null,
+          "icons": null,
+          "controls": "glass-air",
+          "chrome": null,
+          "parts": null
+        }
+      },
+      "all": {
+        "sections": {
+          "colors": "windows-light",
+          "design": "windows",
+          "layout": "windows-explorer",
+          "typography": "windows",
+          "icons": "amberx-outline",
+          "controls": "win",
+          "chrome": "win",
+          "parts": "win"
+        },
+        "sources": {
+          "colors": "windows",
+          "design": "windows",
+          "layout": "windows",
+          "typography": "windows",
+          "icons": "windows",
+          "controls": "windows",
+          "chrome": "windows",
+          "parts": "windows"
+        },
+        "mixed": false,
+        "from": [
+          "windows"
+        ],
+        "left": [],
+        "overrides": {}
+      },
+      "same": {
+        "sections": {
+          "colors": "windows-light",
+          "design": "windows",
+          "layout": "windows-explorer",
+          "typography": "windows",
+          "icons": "amberx-outline",
+          "controls": "win",
+          "chrome": "win",
+          "parts": "win"
+        },
+        "sources": {
+          "colors": "windows",
+          "design": "windows",
+          "layout": "windows",
+          "typography": "windows",
+          "icons": "windows",
+          "controls": "windows",
+          "chrome": "windows",
+          "parts": "windows"
+        },
+        "mixed": false,
+        "from": [
+          "windows"
+        ],
+        "left": [
+          "design",
+          "layout",
+          "typography",
+          "icons",
+          "controls",
+          "chrome",
+          "parts"
+        ],
+        "overrides": {}
+      },
+      "own": {
+        "sections": {
+          "colors": "fresh-light",
+          "layout": "windows-explorer"
+        },
+        "sources": {
+          "colors": "own",
+          "layout": "windows"
+        },
+        "mixed": true,
+        "from": [
+          "own",
+          "windows"
+        ],
+        "left": [
+          "colors",
+          "design",
+          "typography",
+          "icons",
+          "controls",
+          "chrome",
+          "parts"
+        ],
+        "overrides": {
+          "colors": "fresh-light",
+          "design": null,
+          "typography": null,
+          "icons": null,
+          "controls": null,
+          "chrome": null,
+          "parts": null
+        }
+      }
+    },
+    "manifestFromMix": {
+      "$axf": "asset@1",
+      "type": "skin",
+      "id": "my-mix",
+      "name": "My mix",
+      "version": "1.0.0",
+      "description": "Windows colours on Aurora",
+      "author": "",
+      "tags": [
+        "mix"
+      ],
+      "data": {
+        "sections": {
+          "colors": "windows-light",
+          "design": "glass-pro",
+          "layout": "focus-top",
+          "controls": "glass-air"
+        },
+        "preview": {
+          "caption": "A mix"
+        }
+      }
+    },
+    "pkg": {
+      "$axf": "skin-package@1",
+      "exportedAt": "fixed",
+      "skin": {
+        "$axf": "asset@1",
+        "type": "skin",
+        "id": "win",
+        "name": "Win",
+        "data": {
+          "sections": {
+            "colors": "windows-light",
+            "design": "windows",
+            "layout": "windows-explorer",
+            "typography": "windows",
+            "icons": "amberx-outline",
+            "controls": "win",
+            "chrome": "win",
+            "parts": "win"
+          },
+          "preview": {
+            "caption": "Windows"
+          }
+        }
+      },
+      "sections": [
+        {
+          "$axf": "asset@1",
+          "type": "style-package",
+          "id": "win",
+          "name": "win",
+          "data": {
+            "slots": {
+              "button": "windows",
+              "dialog": "windows"
+            }
+          }
+        },
+        {
+          "$axf": "asset@1",
+          "type": "chrome-set",
+          "id": "win",
+          "name": "win",
+          "data": {
+            "slots": {
+              "banner": "windows-titlebar",
+              "toolbar": "windows",
+              "uac-policy": "x",
+              "button": "nope"
+            },
+            "hidden": {
+              "toolbar": false
+            },
+            "spacing": "compact"
+          }
+        },
+        {
+          "$axf": "asset@1",
+          "type": "style-parts",
+          "id": "win",
+          "name": "win",
+          "data": {
+            "parts": {
+              "button": {
+                "radius": "sm"
+              },
+              "label": {
+                "fontWeight": "400"
+              }
+            }
+          }
+        }
+      ],
+      "missing": [
+        "colors: color-theme windows-light",
+        "design: style-theme windows",
+        "layout: layout windows-explorer",
+        "typography: typography windows",
+        "icons: icon-pack amberx-outline"
+      ]
+    },
+    "imported": {
+      "ok": true,
+      "errors": [],
+      "notIncluded": [
+        "colors",
+        "design",
+        "layout",
+        "typography",
+        "icons"
+      ],
+      "sections": [
+        "style-package/win",
+        "chrome-set/win",
+        "style-parts/win"
+      ]
+    },
+    "badPackage": [
+      "color-theme/zzz: the skin does not name it as its colors",
+      "toolbar/a: toolbar is not a skin section type"
+    ],
+    "thumbnail": {
+      "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 160 100\" width=\"160\" height=\"100\" role=\"img\" aria-label=\"Win\"><rect width=\"160\" height=\"100\" fill=\"#1c1c1e\"/><rect x=\"0\" y=\"0\" width=\"160\" height=\"10\" fill=\"#2c2c2e\"/><circle cx=\"7\" cy=\"5\" r=\"2.5\" fill=\"#f5a623\"/><rect x=\"14\" y=\"3.5\" width=\"30\" height=\"3\" rx=\"1.5\" fill=\"#f2f2f7\" opacity=\".7\"/><rect x=\"0\" y=\"10\" width=\"160\" height=\"8\" fill=\"#2c2c2e\" opacity=\".7\"/><rect x=\"6\" y=\"12\" width=\"7\" height=\"4\" rx=\"1\" fill=\"#f2f2f7\" opacity=\".45\"/><rect x=\"17\" y=\"12\" width=\"7\" height=\"4\" rx=\"1\" fill=\"#f2f2f7\" opacity=\".45\"/><rect x=\"28\" y=\"12\" width=\"7\" height=\"4\" rx=\"1\" fill=\"#f2f2f7\" opacity=\".45\"/><rect x=\"39\" y=\"12\" width=\"7\" height=\"4\" rx=\"1\" fill=\"#f2f2f7\" opacity=\".45\"/><rect x=\"50\" y=\"12\" width=\"7\" height=\"4\" rx=\"1\" fill=\"#f2f2f7\" opacity=\".45\"/><rect x=\"0\" y=\"18\" width=\"34\" height=\"82\" fill=\"#2c2c2e\"/><rect x=\"5\" y=\"24\" width=\"18\" height=\"3.5\" rx=\"1.5\" fill=\"#f2f2f7\" opacity=\"0.5\"/><rect x=\"5\" y=\"35\" width=\"22\" height=\"3.5\" rx=\"1.5\" fill=\"#f5a623\" opacity=\"1\"/><rect x=\"5\" y=\"46\" width=\"18\" height=\"3.5\" rx=\"1.5\" fill=\"#f2f2f7\" opacity=\"0.5\"/><rect x=\"5\" y=\"57\" width=\"18\" height=\"3.5\" rx=\"1.5\" fill=\"#f2f2f7\" opacity=\"0.5\"/><rect x=\"5\" y=\"68\" width=\"18\" height=\"3.5\" rx=\"1.5\" fill=\"#f2f2f7\" opacity=\"0.5\"/><rect x=\"41\" y=\"25\" width=\"63\" height=\"5\" rx=\"2\" fill=\"#f2f2f7\" opacity=\".9\"/><rect x=\"41\" y=\"35\" width=\"112\" height=\"22\" rx=\"3\" fill=\"#2c2c2e\" stroke=\"#2c2c2e\" stroke-width=\"1\"/><rect x=\"47\" y=\"41\" width=\"57\" height=\"3\" rx=\"1.5\" fill=\"#f2f2f7\" opacity=\".6\"/><rect x=\"47\" y=\"48\" width=\"38\" height=\"3\" rx=\"1.5\" fill=\"#f2f2f7\" opacity=\".35\"/><rect x=\"41\" y=\"63\" width=\"54\" height=\"18\" rx=\"3\" fill=\"#2c2c2e\" stroke=\"#2c2c2e\" stroke-width=\"1\"/><rect x=\"99\" y=\"63\" width=\"54\" height=\"18\" rx=\"3\" fill=\"#2c2c2e\" stroke=\"#2c2c2e\" stroke-width=\"1\"/><rect x=\"41\" y=\"86\" width=\"30\" height=\"9\" rx=\"2\" fill=\"#f5a623\"/></svg>",
+      "uri": "data:image/svg+xml;utf8,%3Csvg xmlns='ht"
+    },
+    "slug": [
+      "my-skin-2",
+      "d-j-vu"
+    ]
+  },
   "normalize": {
     "good": {
       "layoutTheme": "windows-explorer",
@@ -65,6 +587,12 @@
       "hidden": {
         "toolbar": true
       }
+    },
+    "sections": {
+      "colors": "c",
+      "design": "s",
+      "layout": "l",
+      "behavior": "b"
     }
   },
   "look": {
@@ -208,7 +736,8 @@
           "id": "windows",
           "overrides": {
             "color-theme": "aurora-night"
-          }
+          },
+          "sections": {}
         },
         "scopes": {},
         "undo": null
@@ -293,7 +822,8 @@
           "use": false,
           "inherit": false,
           "id": "",
-          "overrides": {}
+          "overrides": {},
+          "sections": {}
         },
         "scopes": {},
         "undo": null
@@ -343,7 +873,8 @@
           "use": false,
           "inherit": false,
           "id": "windows",
-          "overrides": {}
+          "overrides": {},
+          "sections": {}
         },
         "scopes": {},
         "undo": {
@@ -354,7 +885,8 @@
             "id": "windows",
             "overrides": {
               "color-theme": "aurora-night"
-            }
+            },
+            "sections": {}
           },
           "scopes": {},
           "at": "2026-11-05T00:00:00Z"
@@ -384,7 +916,8 @@
         "id": "windows",
         "overrides": {
           "color-theme": "aurora-night"
-        }
+        },
+        "sections": {}
       },
       "undoneTwice": {
         "use": true,
@@ -392,7 +925,8 @@
         "id": "windows",
         "overrides": {
           "color-theme": "aurora-night"
-        }
+        },
+        "sections": {}
       }
     }
   },
@@ -624,16 +1158,19 @@
       "appOff": {
         "id": "",
         "overrides": {},
+        "sections": {},
         "from": "app"
       },
       "appOn": {
         "id": "windows",
         "overrides": {},
+        "sections": {},
         "from": "app"
       },
       "inheritNoGlobal": {
         "id": "",
         "overrides": {},
+        "sections": {},
         "from": "global"
       },
       "inheritGlobal": {
@@ -641,26 +1178,31 @@
         "overrides": {
           "button": "global-button"
         },
+        "sections": {},
         "from": "global"
       },
       "ownBeatsGlobal": {
         "id": "",
         "overrides": {},
+        "sections": {},
         "from": "app"
       },
       "pluginOn": {
         "id": "aurora",
         "overrides": {},
+        "sections": {},
         "from": "plugin:notes"
       },
       "pluginOff": {
         "id": "",
         "overrides": {},
+        "sections": {},
         "from": "plugin:notes"
       },
       "pluginInheritsApp": {
         "id": "windows",
         "overrides": {},
+        "sections": {},
         "from": "app"
       },
       "uiOverride": {
@@ -668,6 +1210,7 @@
         "overrides": {
           "button": "ui-button"
         },
+        "sections": {},
         "from": "app"
       },
       "chainOverrides": {
@@ -675,6 +1218,7 @@
         "overrides": {
           "dialog": "plugin-dialog"
         },
+        "sections": {},
         "from": "plugin:notes"
       }
     },
@@ -716,6 +1260,7 @@
         "skin": {
           "id": "windows",
           "overrides": {},
+          "sections": {},
           "from": "app"
         },
         "scopeKey": "app"
@@ -750,6 +1295,7 @@
           "overrides": {
             "button": "global-button"
           },
+          "sections": {},
           "from": "global"
         },
         "scopeKey": "app"
@@ -782,6 +1328,7 @@
         "skin": {
           "id": "aurora",
           "overrides": {},
+          "sections": {},
           "from": "plugin:notes"
         },
         "scopeKey": "plugin:notes"
@@ -809,6 +1356,7 @@
         "skin": {
           "id": "",
           "overrides": {},
+          "sections": {},
           "from": "plugin:notes"
         },
         "scopeKey": "plugin:notes"
@@ -836,6 +1384,7 @@
         "skin": {
           "id": "",
           "overrides": {},
+          "sections": {},
           "from": "app"
         },
         "scopeKey": "app"
@@ -867,13 +1416,15 @@
           "use": true,
           "inherit": false,
           "id": "windows",
-          "overrides": {}
+          "overrides": {},
+          "sections": {}
         },
         "scopes": {
           "plugin:notes": {
             "use": "on",
             "id": "aurora",
-            "overrides": {}
+            "overrides": {},
+            "sections": {}
           }
         },
         "undo": null
@@ -903,7 +1454,8 @@
           "use": true,
           "inherit": false,
           "id": "windows",
-          "overrides": {}
+          "overrides": {},
+          "sections": {}
         },
         "scopes": {},
         "undo": null
@@ -915,7 +1467,8 @@
           "id": "aurora",
           "overrides": {
             "dialog": "plugin-dialog"
-          }
+          },
+          "sections": {}
         }
       ],
       "state": {
@@ -923,12 +1476,14 @@
         "id": "aurora",
         "overrides": {
           "dialog": "plugin-dialog"
-        }
+        },
+        "sections": {}
       },
       "appState": {
         "use": "inherit",
         "id": "",
-        "overrides": {}
+        "overrides": {},
+        "sections": {}
       },
       "roundTrip": {
         "$axf": "app-look@1",
@@ -955,7 +1510,8 @@
           "use": true,
           "inherit": false,
           "id": "windows",
-          "overrides": {}
+          "overrides": {},
+          "sections": {}
         },
         "scopes": {
           "plugin:notes": {
@@ -963,7 +1519,8 @@
             "id": "aurora",
             "overrides": {
               "dialog": "plugin-dialog"
-            }
+            },
+            "sections": {}
           }
         },
         "undo": null
@@ -975,7 +1532,8 @@
           "id": "aurora",
           "overrides": {
             "dialog": "plugin-dialog"
-          }
+          },
+          "sections": {}
         }
       }
     },
@@ -1034,7 +1592,7 @@
       {
         "type": "uac-policy",
         "by": "none",
-        "covered": true,
+        "covered": false,
         "how": [
           "no look"
         ]
@@ -1045,7 +1603,8 @@
         "id": "aurora",
         "overrides": {
           "button": "global-button"
-        }
+        },
+        "sections": {}
       },
       "none": null,
       "junk": null

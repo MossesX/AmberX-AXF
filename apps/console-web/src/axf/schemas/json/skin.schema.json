@@ -35,16 +35,10 @@
     "data": {
       "type": "object",
       "required": [
-        "layoutTheme",
-        "colorTheme",
-        "styleTheme",
-        "assets"
+        "sections"
       ],
       "properties": {
-        "layoutTheme": {},
-        "colorTheme": {},
-        "styleTheme": {},
-        "assets": {}
+        "sections": {}
       }
     }
   }

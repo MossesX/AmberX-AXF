@@ -37,6 +37,8 @@
     "behavior-theme",
     "design-package",
     "style-package",
+    "chrome-set",
+    "style-parts",
     "interface",
     "logo-mark",
     "animated-logo",

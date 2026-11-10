@@ -2,11 +2,11 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.theme-manager",
   "name": "Theme manager",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Roll colour, style and layout themes, or every themeable part at once. A tree of every token (built from the asset types, so new types show up by themselves) with tri-state ticks, locks, presets and search picks what a roll may change; rolls stay readable (contrast-checked palettes, sizes within the range the known themes use). Live preview, undo/redo, pin favourites, edit any value by hand, save a roll as standard asset@1 themes and manage them (apply, rename, duplicate, export, import, delete). Phone: drill-down tree. Nav → Plugins → Theme manager; Settings → Plugins → Themes.",
+  "description": "Roll colour, style and layout themes, or every themeable part at once. A tree of every token (built from the asset types, so new types show up by themselves) with tri-state ticks, locks, presets and search picks what a roll may change; rolls stay readable (contrast-checked palettes, sizes within the range the known themes use). Live preview, undo/redo, pin favourites, edit any value by hand, save a roll as standard asset@1 themes and manage them (apply, rename, duplicate, export, import, delete). Phone: drill-down tree. Skin Builder (skin-sections@1, Nov 10 2026): every skin is a package of sections (colours, design, layout, behaviour, typography, density, sizing, icons, controls, chrome, parts), each its own asset; drag slices from the library into the pack template, preview the whole console live, save, apply, export or import as a file. Applying a skin picks which sections to take; a mix of skins is saved as a new skin. Nav → Plugins → Theme manager / Skin Builder; Settings → Plugins → Themes.",
   "targets": [
     "axf-console"
   ],
@@ -14,7 +14,9 @@
     "view:theme-manager",
     "settings-tab:theme-manager",
     "action:theme-manager.open",
-    "service:axf.token-tree@1"
+    "service:axf.token-tree@1",
+    "view:skin-builder",
+    "action:theme-manager.skin-builder"
   ],
   "uiEditor": [
     "theme",
@@ -25,8 +27,14 @@
     "ROUTES"
   ],
   "enabledByDefault": true,
-  "commands": { "$axf": "plugin-commands@1", "auto": true },
-  "builtWith": { "model": "opus", "builtAt": "2026-10-18" },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-10-18"
+  },
   "banner": false,
   "tabable": false,
   "lifecycle": {
@@ -36,8 +44,10 @@
       "AXF_THEME_MANAGER_DIR"
     ],
     "mentions": [
-      "CLAUDE.md", "_claude/memory/STATUS.md",
-      "apps/console-web/plugins/README.md"
+      "CLAUDE.md",
+      "_claude/memory/STATUS.md",
+      "apps/console-web/plugins/README.md",
+      "framework/spec/PORTING.md"
     ]
   },
   "userGrantable": true,

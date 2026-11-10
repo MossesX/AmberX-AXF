@@ -120,12 +120,14 @@ export function resolveSkinChain(chain, stateOf) {
     const st = stateOf(key) || { use: 'inherit' };
     seen.push({ key, st });
     if (st.use === 'inherit') continue;
-    if (st.use !== 'on' || !st.id) return { id: '', overrides: {}, from: key };
+    if (st.use !== 'on' || !st.id) return { id: '', overrides: {}, sections: {}, from: key };
     const overrides = {};
-    for (let i = seen.length - 1; i >= 0; i--) Object.assign(overrides, seen[i].st.overrides ?? {});
-    return { id: st.id, overrides, from: key };
+    const sections = {};
+    // section picks (skin-sections@1: a section swapped or left out) merge the same way as slot overrides
+    for (let i = seen.length - 1; i >= 0; i--) { Object.assign(overrides, seen[i].st.overrides ?? {}); Object.assign(sections, seen[i].st.sections ?? {}); }
+    return { id: st.id, overrides, sections, from: key };
   }
-  return { id: '', overrides: {}, from: '' };
+  return { id: '', overrides: {}, sections: {}, from: '' };
 }
 
 /* ---------------------------------------------------------------- coverage */

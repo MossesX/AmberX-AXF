@@ -18,12 +18,11 @@
     "extras": {
       "slots": {
         "style-package": "data-pro",
-        "toolbar": "data-grid-tools",
         "typography": "compact",
         "density": "dense",
         "sizing": "compact"
       },
-      "spacing": "tight"
+      "chrome": "data-desk"
     }
   }
 }

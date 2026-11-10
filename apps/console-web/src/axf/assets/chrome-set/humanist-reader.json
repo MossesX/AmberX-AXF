@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "chrome-set",
+  "id": "humanist-reader",
+  "name": "Humanist Reader chrome",
+  "version": "1.0.0",
+  "description": "The chrome of the Humanist Reader design package: nav-menu text-only, context-menu reader-minimal, regular spacing. Serif headings on warm linen in a focused reading column; gentle motion and a minimal menu.",
+  "author": "AmberX AXF",
+  "tags": [
+    "light",
+    "reading",
+    "chrome"
+  ],
+  "data": {
+    "slots": {
+      "nav-menu": "text-only",
+      "context-menu": "reader-minimal"
+    },
+    "spacing": "regular"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "chrome-set",
+  "id": "amberx-signature-day",
+  "name": "AmberX Signature Day chrome",
+  "version": "1.0.0",
+  "description": "The chrome of the AmberX Signature Day design package: toolbar amberx-signature, nav-menu amber-signature. The AmberX house look by day: gold on cream, signature controls, the AmberX toolbar and behaviour.",
+  "author": "AmberX AXF",
+  "tags": [
+    "light",
+    "brand",
+    "amber",
+    "chrome"
+  ],
+  "data": {
+    "slots": {
+      "toolbar": "amberx-signature",
+      "nav-menu": "amber-signature"
+    }
+  }
+}

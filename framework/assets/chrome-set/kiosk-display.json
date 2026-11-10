@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "chrome-set",
+  "id": "kiosk-display",
+  "name": "Kiosk Display chrome",
+  "version": "1.0.0",
+  "description": "The chrome of the Kiosk Display design package: toolbar kiosk-lite, context-menu locked-down, regular spacing. Chrome-free, big-target and forgiving: for kiosks, wall displays and shared screens.",
+  "author": "AmberX AXF",
+  "tags": [
+    "light",
+    "kiosk",
+    "chrome"
+  ],
+  "data": {
+    "slots": {
+      "toolbar": "kiosk-lite",
+      "context-menu": "locked-down"
+    },
+    "spacing": "regular"
+  }
+}

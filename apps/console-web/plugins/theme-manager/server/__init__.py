@@ -165,9 +165,12 @@ def put_presets(body: dict = Body(...)):
 SKINS_CLI = cx.ROOT / "framework" / "cli" / "skins.mjs"
 
 
-def _skins(*args: str) -> Any:
+def _skins(*args: str, stdin: str | None = None) -> Any:
+    """Run one skins CLI command. Saved section assets and skins (skin-sections@1) live in this plugin's data folder,
+    under themes/<type>/<id>.json like every other saved theme, so the CLI reads and writes them there."""
+    env = {**os.environ, "AXF_SAVED_ASSETS_DIR": str(data_dir() / "themes")}
     try:
-        proc = subprocess.run(["node", str(SKINS_CLI), *args, "--json"], cwd=cx.ROOT, capture_output=True, text=True, timeout=30)
+        proc = subprocess.run(["node", str(SKINS_CLI), *args, "--json"], cwd=cx.ROOT, capture_output=True, text=True, timeout=60, env=env, input=stdin)
         out = json.loads(proc.stdout or "{}")
     except (OSError, subprocess.TimeoutExpired, json.JSONDecodeError) as e:
         raise HTTPException(status_code=502, detail=f"skins: {e}") from e
@@ -229,10 +232,105 @@ def skin_inherit(app: str, body: dict[str, Any] = Body(...)) -> Any:
     return _skins("inherit", app, str(body.get("scope") or ""))
 
 
+def _picks(body: dict[str, Any]) -> list[str]:
+    """--include / --exclude from a body's `include` / `exclude` (lists or comma-separated strings)."""
+    out: list[str] = []
+    for key in ("include", "exclude"):
+        v = body.get(key)
+        if isinstance(v, str):
+            v = [x.strip() for x in v.split(",") if x.strip()]
+        if isinstance(v, list) and v:
+            out += [f"--{key}", ",".join(str(x) for x in v)]
+    return out
+
+
 @router.post("/skins/{app}/use")
 def skin_use(app: str, body: dict[str, Any] = Body(...)) -> Any:
-    """Use skin on in one app, body {skin, scope?}: 'use the Windows skin in the console', 'skin the notes plugin with Windows' (scope=plugin:<id> | ui:<id>)."""
-    return _skins("use", app, str(body.get("skin") or ""), *_scope_args(body.get("scope")))
+    """Use skin on in one app, body {skin, scope?, include?, exclude?}: 'use the Windows skin in the console', 'skin the notes plugin with Windows'
+    (scope=plugin:<id> | ui:<id>). include / exclude pick sections (colors, design, layout, behavior, typography, density, sizing, icons, controls,
+    chrome, parts): a left-out section keeps what is in force now. The answer says whether the result is a mix of more than one skin (`mixed`, `from`)."""
+    return _skins("use", app, str(body.get("skin") or ""), *_scope_args(body.get("scope")), *_picks(body))
+
+
+@router.get("/skins/{app}/plan")
+def skin_plan(app: str, skin: str, include: str | None = None, exclude: str | None = None) -> Any:
+    """What applying a skin with picks would give, without changing anything: the sections, where each comes from, whether it mixes (skin-sections@1)."""
+    return _skins("plan", app, skin, *_picks({"include": include, "exclude": exclude}))
+
+
+# ---- skin-sections@1: every section its own asset; skins built from sections; export / import as a file ----
+
+
+@router.get("/skins/sections")
+def skin_sections(category: str | None = None, q: str | None = None) -> Any:
+    """The slice library: every section asset (colours, design, layout, behaviour, typography, density, sizing, icons, controls, chrome, parts),
+    built-in and saved, with the skins that use it. category = one section id, q = a search text."""
+    args = ["sections"]
+    if category:
+        args += ["--category", category]
+    if q:
+        args += ["--q", q]
+    return _skins(*args)
+
+
+@router.get("/skins/skin/{skin}")
+def skin_detail(skin: str) -> Any:
+    """One skin's sections (the asset per section), what it still carries inline, and the slots it resolves to."""
+    return _skins("skin", skin)
+
+
+@router.post("/skins/sections")
+def skin_section_save(body: dict[str, Any] = Body(...)) -> Any:
+    """Save one section as a standalone asset, body {section, id, name, description?, tags?, from?: <skin>, data?: <asset data>}:
+    'save the Windows chrome as my-chrome'. `from` copies that skin's section (inline chrome or parts of a design package included); `data` saves what is given."""
+    sec, iid = str(body.get("section") or ""), str(body.get("id") or "")
+    if not sec or not ID_RE.match(iid):
+        raise HTTPException(400, "section and id are required")
+    args = ["save-section", sec, iid, "--name", str(body.get("name") or iid)]
+    if body.get("description"):
+        args += ["--description", str(body["description"])[:500]]
+    if isinstance(body.get("tags"), list) and body["tags"]:
+        args += ["--tags", ",".join(str(t)[:40] for t in body["tags"][:20])]
+    if body.get("from"):
+        args += ["--from", str(body["from"])]
+        return _skins(*args)
+    if not isinstance(body.get("data"), dict):
+        raise HTTPException(400, "give from (a skin) or data (the asset data)")
+    return _skins(*args, "--stdin", stdin=json.dumps(body["data"]))
+
+
+@router.post("/skins/build")
+def skin_build(body: dict[str, Any] = Body(...)) -> Any:
+    """Build a skin from sections, body {id, name, description?, tags?, from?: <skin>, sections: {colors, design, layout, …}}: 'build a skin called
+    Night Desk from Aurora Night colours and the Windows chrome'. `from` starts from that skin's sections; `sections` overrides them (an empty value drops one)."""
+    iid = str(body.get("id") or "")
+    if not ID_RE.match(iid):
+        raise HTTPException(400, "id must be lower-case letters, digits and dashes")
+    args = ["build", iid, "--name", str(body.get("name") or iid)]
+    if body.get("description"):
+        args += ["--description", str(body["description"])[:500]]
+    if isinstance(body.get("tags"), list) and body["tags"]:
+        args += ["--tags", ",".join(str(t)[:40] for t in body["tags"][:20])]
+    if body.get("from"):
+        args += ["--from", str(body["from"])]
+    for sec, sid in (body.get("sections") or {}).items():
+        args += ["--section", f"{sec}={sid or ''}"]
+    return _skins(*args)
+
+
+@router.get("/skins/export/{skin}")
+def skin_export(skin: str) -> Any:
+    """The skin with its section assets inside, as one skin-package@1 document (save it as a file, import it elsewhere)."""
+    return _skins("export", skin)
+
+
+@router.post("/skins/import")
+def skin_import(body: dict[str, Any] = Body(...)) -> Any:
+    """Import a skin-package@1 document, body {package}: its section assets, then the skin, saved with the other themes."""
+    pkg = body.get("package") if isinstance(body.get("package"), dict) else body
+    if not isinstance(pkg, dict) or pkg.get("$axf") != "skin-package@1":
+        raise HTTPException(400, "body.package must be a skin-package@1 document")
+    return _skins("import", "--stdin", stdin=json.dumps(pkg))
 
 
 @router.post("/skins/{app}/off")

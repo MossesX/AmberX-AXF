@@ -4,75 +4,27 @@
   "id": "windows",
   "name": "Windows",
   "version": "1.0.0",
-  "description": "Makes the app look like a Windows 11 program: Segoe UI, Mica colours, a title bar, a menu bar, an Explorer layout, and Windows-style menus, dialogs, buttons and scrollbars, the AmberX outline icon pack, and square-cornered widgets (labels, badges, counters, avatars, progress) through its style parts. It runs inside the browser, so it can't replace the real OS title bar or native pickers such as the file picker. Segoe UI needs a device that has the font.",
+  "description": "Makes the app look like a Windows 11 program: Segoe UI, Mica colours, a title bar, a menu bar, an Explorer layout, and Windows-style menus, dialogs, buttons and scrollbars, the AmberX outline icon pack, and square-cornered widgets (labels, badges, counters, avatars, progress) through its Parts section. It runs inside the browser, so it can't replace the real OS title bar or native pickers such as the file picker. Segoe UI needs a device that has the font. A package of sections: Windows Light colours, the Windows design, the Explorer layout, compact scale, the AmberX outline icons, Windows controls, Windows chrome and Windows parts.",
   "author": "AmberX AXF",
   "tags": [
     "windows",
     "skin"
   ],
   "data": {
-    "layoutTheme": "windows-explorer",
-    "colorTheme": "windows-light",
-    "styleTheme": "windows",
-    "assets": {
-      "banner": "windows-titlebar",
-      "app-menu": "standard-desktop",
-      "button": "windows",
-      "dialog": "windows",
-      "context-menu": "windows",
-      "toolbar": "windows",
-      "container": "windows",
+    "sections": {
+      "colors": "windows-light",
+      "design": "windows",
+      "layout": "windows-explorer",
       "typography": "windows",
       "density": "compact",
-      "sizing": "compact"
+      "sizing": "compact",
+      "icons": "amberx-outline",
+      "controls": "windows",
+      "chrome": "windows",
+      "parts": "windows"
     },
     "preview": {
       "caption": "Windows 11 look: title bar, menu bar, Explorer layout."
-    },
-    "extras": {
-      "hidden": {
-        "toolbar": false,
-        "nav-menu": false,
-        "banner": false,
-        "app-menu": false
-      }
-    },
-    "iconPack": "amberx-outline",
-    "parts": {
-      "button": {
-        "radius": "sm",
-        "hover": "highlight"
-      },
-      "action-button": {
-        "radius": "sm",
-        "hover": "highlight"
-      },
-      "badge": {
-        "radius": "sm"
-      },
-      "counter": {
-        "radius": "sm",
-        "fontWeight": "600"
-      },
-      "label": {
-        "fontWeight": "400"
-      },
-      "link": {
-        "hover": "underline",
-        "textColor": "accent"
-      },
-      "avatar": {
-        "radius": "sm"
-      },
-      "progress": {
-        "radius": "none"
-      },
-      "status": {
-        "fontWeight": "400"
-      },
-      "search-bar": {
-        "radius": "sm"
-      }
     }
   }
 }

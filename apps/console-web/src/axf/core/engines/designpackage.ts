@@ -4,8 +4,11 @@
  * swaps all four at once. It replaced appearance-package@1 (Oct 27 2026, Brett: "replace it"); everything that type
  * held lives on as the optional `extras`, so nothing a saved look carried is lost:
  *
- *  - `extras.slots`    the active asset of every other appearance slot (chrome, controls, widgets); never the access
- *                      policy, never a package, never one of the four themes (those are the package's own fields)
+ *  - `extras.slots`    the active asset of every other appearance slot (the style package, the scale assets); never the
+ *                      access policy, never a package, never one of the four themes (those are the package's own fields)
+ *  - `extras.chrome`   the package's chrome section as a chrome-set asset id (skin-sections@1, Nov 10 2026): title bar,
+ *                      menus, toolbar, nav, context menus, widgets, spacing and hidden chrome live in that asset, so a
+ *                      package carries no chrome inline; `resolveDesignPackage` folds it in (inline extras win)
  *  - `extras.spacing`  the Spacing choice
  *  - `extras.hidden`   chrome shown / hidden overrides
  *  - `extras.settings` every other appearance setting, by key: keys starting with one of APPEARANCE_SETTING_PREFIXES
@@ -94,7 +97,26 @@ function normalizeExtras(d: Record<string, unknown>): DesignPackageExtras {
     for (const [k, v] of Object.entries(d.settings)) if (isAppearanceSetting(k) && v !== undefined) settings[k] = v;
     out.settings = settings;
   }
+  if (typeof d.chrome === 'string' && ID.test(d.chrome)) out.chrome = d.chrome;
   return out;
+}
+
+/**
+ * A package with its chrome section folded in: the chrome set's slots, hidden, spacing and settings under the
+ * package's own extras (the inline ones win). `resolve(type, id)` gives an asset's data; an unknown chrome set is skipped.
+ */
+export function resolveDesignPackage(pkg: DesignPackageData, resolve: (type: string, id: string) => unknown): DesignPackageData {
+  const id = pkg.extras?.chrome;
+  if (!id) return pkg;
+  const raw = resolve('chrome-set', id);
+  if (!isObj(raw)) return pkg;
+  const c = normalizeExtras({ slots: raw.slots, hidden: raw.hidden, spacing: raw.spacing, settings: raw.settings });
+  const x = pkg.extras ?? {};
+  const extras: DesignPackageExtras = { ...x, slots: { ...(c.slots ?? {}), ...(x.slots ?? {}) } };
+  if (c.hidden || x.hidden) extras.hidden = { ...(c.hidden ?? {}), ...(x.hidden ?? {}) };
+  if (x.spacing ?? c.spacing) extras.spacing = x.spacing ?? c.spacing;
+  if (c.settings || x.settings) extras.settings = { ...(c.settings ?? {}), ...(x.settings ?? {}) };
+  return { ...pkg, extras };
 }
 
 /* ---------------- precedence: a loaded design package wins over the individual picks ---------------- */
@@ -189,6 +211,7 @@ export function designPackageErrors(raw: unknown): string[] {
     if (!isObj(x.settings)) errors.push('data.extras.settings must be an object');
     else for (const k of Object.keys(x.settings)) if (!isAppearanceSetting(k)) errors.push(`data.extras.settings.${k} is not an appearance setting`);
   }
+  if ('chrome' in x && (typeof x.chrome !== 'string' || !ID.test(x.chrome))) errors.push('data.extras.chrome must be a chrome-set asset id');
   return errors;
 }
 

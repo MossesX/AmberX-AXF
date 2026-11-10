@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "chrome-set",
+  "id": "creative-plum",
+  "name": "Creative Plum chrome",
+  "version": "1.0.0",
+  "description": "The chrome of the Creative Plum design package: toolbar appearance-studio, context-menu appearance-quick. Geometric type on plum-black, gradient controls and cinematic motion for creative suites.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "creative",
+    "chrome"
+  ],
+  "data": {
+    "slots": {
+      "toolbar": "appearance-studio",
+      "context-menu": "appearance-quick"
+    }
+  }
+}

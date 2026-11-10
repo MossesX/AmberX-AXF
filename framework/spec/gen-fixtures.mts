@@ -6,7 +6,7 @@
 import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
-import { backToSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, lookAfterChange, newAppLook, normalizeSkin, normalizeSkinScope, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setScopeOverride, setScopeSkin, setUseSkin, skinCovers, skinErrors, skinFromDesignPackage, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSlots, snapshotLook, uncoveredTypes, undoRestore } from '../core/engines/skin';
+import { backToSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, lookAfterChange, newAppLook, normalizeSkin, normalizeSkinScope, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setScopeOverride, setScopeSkin, setUseSkin, skinCovers, skinErrors, skinFromDesignPackage, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSlots, snapshotLook, uncoveredTypes, undoRestore, SKIN_SECTIONS, SKIN_SECTION_IDS, REQUIRED_SECTIONS, applySectionOverrides, chromeSetErrors, exportSkinPackage, importSkinPackage, mixSkins, normalizeChromeSet, normalizeSectionOverrides, normalizeStyleParts, sectionsOf, skinManifest, skinThumbnail, slug, stripSection, stylePartsErrors, thumbnailDataUri } from '../core/engines/skin';
 import { SCALE_TYPES, normalizeScale, scaleErrors, scaleThemeVars, scaleVars } from '../core/engines/scale';
 import { AGENT_CARD_SAMPLE, agentCardErrors, avatarColors, avatarModel, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
 import { AVATAR_FACES, AVATAR_GEAR } from '../core/engines/swarm-rules.mjs';
@@ -1971,8 +1971,38 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
   const own = lookAfterChange(look0, { slots: { button: 'terminal' }, hidden: { toolbar: false } }, null);
   const restored = restoreAppDefault(overridden, '2026-11-05T00:00:00Z');
   const movedShared = { ...shared, slots: { ...shared.slots, 'color-theme': 'other-theme' }, settings: { 'axf.tokens.button': 'y', 'axf.banners.group': 'other' } };
+  // skin-sections@1 (build skins-as-packages-of-slices, Nov 10 2026): a skin is a package of section assets
+  const lib: Record<string, Record<string, unknown>> = {
+    'style-package/win': { slots: { button: 'windows', dialog: 'windows' } },
+    'chrome-set/win': { slots: { banner: 'windows-titlebar', toolbar: 'windows', 'uac-policy': 'x', button: 'nope' }, hidden: { toolbar: false }, spacing: 'compact' },
+    'style-parts/win': { parts: { button: { radius: 'sm' }, label: { fontWeight: '400' } } },
+  };
+  const resolve = (t: string, id: string) => lib[`${t}/${id}`] ?? null;
+  const manifest = { sections: { colors: 'windows-light', design: 'windows', layout: 'windows-explorer', typography: 'windows', icons: 'amberx-outline', controls: 'win', chrome: 'win', parts: 'win' }, preview: { caption: 'Windows' } };
+  const resolvedSkin = normalizeSkin(manifest, resolve);
+  const current = { skin: 'aurora', sections: { colors: 'aurora-night', design: 'glass-pro', layout: 'focus-top', controls: 'glass-air' } };
+  const incoming = { skin: 'windows', sections: sectionsOf(resolvedSkin) };
+  const mixColors = mixSkins(current, incoming, ['colors']);
+  const skinAsset = skinManifest({ id: 'my-mix', name: 'My mix', description: 'Windows colours on Aurora', tags: ['mix'] }, mixColors.sections, { caption: 'A mix' });
+  const pkg = exportSkinPackage({ $axf: 'asset@1', type: 'skin', id: 'win', name: 'Win', data: manifest }, (t, id) => (lib[`${t}/${id}`] ? { $axf: 'asset@1', type: t, id, name: id, data: lib[`${t}/${id}`] } : null));
+  const thumb = skinThumbnail({ bg: '#1c1c1e', surface: '#2c2c2e', text: '#f2f2f7', accent: '#f5a623' }, { nav: 'left', showToolbar: true }, { name: 'Win' });
   write('skin.json', {
     contract: 'skin@1',
+    sections: {
+      ids: [...SKIN_SECTION_IDS], required: [...REQUIRED_SECTIONS], types: Object.fromEntries(SKIN_SECTIONS.map((x) => [x.id, x.type])),
+      manifest, resolved: resolvedSkin, sectionsOf: sectionsOf(resolvedSkin), unresolved: normalizeSkin(manifest),
+      errors: { good: skinErrors(manifest), missing: skinErrors({ sections: { colors: 'c' } }), unknown: skinErrors({ sections: { ...manifest.sections, widgets: 'x' } }), inline: skinErrors({ ...manifest, parts: { button: {} } }) },
+      chromeSet: { normalized: normalizeChromeSet(lib['chrome-set/win'], ['button']), errors: chromeSetErrors(lib['chrome-set/win'], ['button']), bad: chromeSetErrors({ slots: 3, spacing: 'huge' }) },
+      styleParts: { normalized: normalizeStyleParts(lib['style-parts/win']), errors: stylePartsErrors(lib['style-parts/win'], { button: { label: 'Button' }, label: { label: 'Label', widget: true } } as never, { button: { root: '.fx-btn' }, label: { root: '.fx-widget-label' } }), bad: stylePartsErrors({ parts: { nope: {} } }, { button: {} } as never, {}) },
+      strip: { controls: stripSection(resolvedSkin, 'controls', ['button', 'dialog']), chrome: stripSection(resolvedSkin, 'chrome', ['button', 'dialog']) },
+      overrides: { swapColors: applySectionOverrides(resolvedSkin, { colors: 'aurora-night' }, resolve, ['button', 'dialog']).colorTheme, dropChrome: applySectionOverrides(resolvedSkin, { chrome: null }, resolve, ['button', 'dialog']).assets, normalized: normalizeSectionOverrides({ colors: 'x', chrome: null, nope: 'y', design: 7 }) },
+      mix: { colorsOnly: mixColors, all: mixSkins(current, incoming, null), same: mixSkins({ skin: 'windows', sections: incoming.sections }, incoming, ['colors']), own: mixSkins({ skin: '', sections: { colors: 'fresh-light' } }, incoming, ['layout']) },
+      manifestFromMix: { ...skinAsset, data: { ...skinAsset.data, preview: { caption: 'A mix' } } },
+      pkg: { ...pkg, exportedAt: 'fixed' }, imported: (() => { const r = importSkinPackage(pkg); return { ok: r.ok, errors: r.errors, notIncluded: r.notIncluded, sections: r.sections.map((x) => `${x.type}/${x.id}`) }; })(),
+      badPackage: importSkinPackage({ $axf: 'skin-package@1', skin: { $axf: 'asset@1', type: 'skin', id: 'x', data: { sections: { colors: 'a', design: 'b', layout: 'c' } } }, sections: [{ $axf: 'asset@1', type: 'color-theme', id: 'zzz', data: {} }, { $axf: 'asset@1', type: 'toolbar', id: 'a', data: {} }] }).errors,
+      thumbnail: { svg: thumb, uri: thumbnailDataUri(thumb).slice(0, 40) },
+      slug: [slug('My Skin 2'), slug('  Déjà vu!  ')],
+    },
     normalize: { good: normalizeSkin(skin), junk: normalizeSkin({ layoutTheme: 'BAD', assets: { 'uac-policy': 'x', button: 'ok', layout: 'nope' }, extras: { spacing: 'huge' } }) },
     errors: { good: skinErrors(skin), noThemes: skinErrors({ assets: {} }), never: skinErrors({ ...skin, assets: { 'uac-policy': 'x', layout: 'y' } }), badExtras: skinErrors({ ...skin, extras: { spacing: 'huge', hidden: { a: 1 } } }) },
     slots: skinSlots(normalizeSkin(skin)),

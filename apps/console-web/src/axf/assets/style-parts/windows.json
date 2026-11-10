@@ -1,0 +1,51 @@
+{
+  "$axf": "asset@1",
+  "type": "style-parts",
+  "id": "windows",
+  "name": "Windows parts",
+  "version": "1.0.0",
+  "description": "Square-cornered widgets and controls the Windows skin draws: small radii on buttons, badges, counters, avatars and search, underlined accent links, flat progress bars, regular-weight labels and status text.",
+  "author": "AmberX AXF",
+  "tags": [
+    "windows",
+    "parts"
+  ],
+  "data": {
+    "parts": {
+      "button": {
+        "radius": "sm",
+        "hover": "highlight"
+      },
+      "action-button": {
+        "radius": "sm",
+        "hover": "highlight"
+      },
+      "badge": {
+        "radius": "sm"
+      },
+      "counter": {
+        "radius": "sm",
+        "fontWeight": "600"
+      },
+      "label": {
+        "fontWeight": "400"
+      },
+      "link": {
+        "hover": "underline",
+        "textColor": "accent"
+      },
+      "avatar": {
+        "radius": "sm"
+      },
+      "progress": {
+        "radius": "none"
+      },
+      "status": {
+        "fontWeight": "400"
+      },
+      "search-bar": {
+        "radius": "sm"
+      }
+    }
+  }
+}

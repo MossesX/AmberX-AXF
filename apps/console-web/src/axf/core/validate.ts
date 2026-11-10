@@ -4,7 +4,9 @@ import { hostSpec, validateHostAttachments } from './engines/widgets';
 import { validateMenuItems } from './engines/appmenu';
 import { designPackageErrors } from './engines/designpackage';
 import { skinErrors } from './engines/skin';
-import { stylePackageErrors } from './engines/stylepackage';
+import { STYLE_PACKAGE_MEMBERS, stylePackageErrors } from './engines/stylepackage';
+import { chromeSetErrors, stylePartsErrors } from './engines/skin-sections.mjs';
+import { CUSTOM_TARGETS } from './engines/customize';
 import { interfaceErrors } from './engines/interface';
 import { brandAssetErrors } from './engines/brand-rules.mjs';
 import { scaleErrors } from './engines/scale-rules.mjs';
@@ -112,6 +114,9 @@ export function validateAsset(raw: unknown): ValidationResult {
   if (raw.type === 'design-package') errors.push(...designPackageErrors(data));
   if (raw.type === 'skin') errors.push(...skinErrors(data));
   if (raw.type === 'style-package') errors.push(...stylePackageErrors(data));
+  // skin-sections@1: the two bundle sections of a skin (core/engines/skin-sections.mjs, shared with the build engine)
+  if (raw.type === 'chrome-set') errors.push(...chromeSetErrors(data, STYLE_PACKAGE_MEMBERS));
+  if (raw.type === 'style-parts') errors.push(...stylePartsErrors(data, spec.types as never, CUSTOM_TARGETS));
   if (raw.type === 'interface') errors.push(...interfaceErrors(data));
   if (raw.type === 'behavior-theme') errors.push(...behaviorErrors(data));
   // dock-layout@1 (core/engines/dock.ts): pane numbers 1..n once each, panes = leaves, ≤ 12

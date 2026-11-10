@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "chrome-set",
+  "id": "ops-center",
+  "name": "Ops Center chrome",
+  "version": "1.0.0",
+  "description": "The chrome of the Ops Center design package: toolbar ops-monitor, nav-menu ops-monitor. Condensed industrial type, mint on graphite, a command-center frame and attention-getting notices.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "ops",
+    "chrome"
+  ],
+  "data": {
+    "slots": {
+      "toolbar": "ops-monitor",
+      "nav-menu": "ops-monitor"
+    }
+  }
+}

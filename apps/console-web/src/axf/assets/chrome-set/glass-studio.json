@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "chrome-set",
+  "id": "glass-studio",
+  "name": "Glass Studio chrome",
+  "version": "1.0.0",
+  "description": "The chrome of the Glass Studio design package: toolbar appearance-studio. Frosted glass panels under an aurora sky, a design-tool frame and fluid, springy motion.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "glass",
+    "creative",
+    "chrome"
+  ],
+  "data": {
+    "slots": {
+      "toolbar": "appearance-studio"
+    }
+  }
+}

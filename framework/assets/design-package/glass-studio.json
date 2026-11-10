@@ -19,11 +19,11 @@
     "extras": {
       "slots": {
         "style-package": "glass-air",
-        "toolbar": "appearance-studio",
         "typography": "compact",
         "density": "compact",
         "sizing": "compact"
-      }
+      },
+      "chrome": "glass-studio"
     }
   }
 }

@@ -1,0 +1,26 @@
+{
+  "$axf": "asset@1",
+  "type": "style-package",
+  "id": "amberx",
+  "name": "AmberX controls",
+  "version": "1.0.0",
+  "description": "The controls of the AmberX design package: tab-group underline, dialog centered-modal, popup corner-solid, button rounded-solid, slider classic-round, container soft-card, gauge classic-arc, meter striped-pill.",
+  "author": "AmberX AXF",
+  "tags": [
+    "default",
+    "rounded"
+  ],
+  "data": {
+    "slots": {
+      "tab-group": "underline",
+      "dialog": "centered-modal",
+      "popup": "corner-solid",
+      "button": "rounded-solid",
+      "slider": "classic-round",
+      "container": "soft-card",
+      "gauge": "classic-arc",
+      "meter": "striped-pill"
+    },
+    "tone": "rounded"
+  }
+}

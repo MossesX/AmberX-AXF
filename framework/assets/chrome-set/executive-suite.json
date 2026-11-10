@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "chrome-set",
+  "id": "executive-suite",
+  "name": "Executive Suite chrome",
+  "version": "1.0.0",
+  "description": "The chrome of the Executive Suite design package: toolbar brand-bar, nav-menu executive-overview, regular spacing. IBM Plex on harbour navy, a centred portal page, soft controls and unhurried motion for presenting.",
+  "author": "AmberX AXF",
+  "tags": [
+    "light",
+    "presentation",
+    "chrome"
+  ],
+  "data": {
+    "slots": {
+      "toolbar": "brand-bar",
+      "nav-menu": "executive-overview"
+    },
+    "spacing": "regular"
+  }
+}

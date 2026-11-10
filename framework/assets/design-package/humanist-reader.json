@@ -18,13 +18,11 @@
     "extras": {
       "slots": {
         "style-package": "calm-reader",
-        "nav-menu": "text-only",
-        "context-menu": "reader-minimal",
         "typography": "reader",
         "density": "standard",
         "sizing": "standard"
       },
-      "spacing": "regular"
+      "chrome": "humanist-reader"
     }
   }
 }

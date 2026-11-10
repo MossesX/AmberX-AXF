@@ -18,12 +18,11 @@
     "extras": {
       "slots": {
         "style-package": "enterprise-crisp",
-        "toolbar": "enterprise-command",
-        "context-menu": "enterprise-standard",
         "typography": "compact",
         "density": "compact",
         "sizing": "compact"
-      }
+      },
+      "chrome": "enterprise-day"
     }
   }
 }

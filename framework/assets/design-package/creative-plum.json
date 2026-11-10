@@ -18,12 +18,11 @@
     "extras": {
       "slots": {
         "style-package": "gradient-pop",
-        "toolbar": "appearance-studio",
-        "context-menu": "appearance-quick",
         "typography": "compact",
         "density": "compact",
         "sizing": "compact"
-      }
+      },
+      "chrome": "creative-plum"
     }
   }
 }

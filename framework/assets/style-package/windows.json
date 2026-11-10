@@ -1,0 +1,26 @@
+{
+  "$axf": "asset@1",
+  "type": "style-package",
+  "id": "windows",
+  "name": "Windows controls",
+  "version": "1.0.0",
+  "description": "Windows 11 controls: the Windows button, dialog and container, with the classic slider, corner pop-up, underline tabs, arc gauge and striped meter.",
+  "author": "AmberX AXF",
+  "tags": [
+    "windows",
+    "square"
+  ],
+  "data": {
+    "slots": {
+      "button": "windows",
+      "dialog": "windows",
+      "container": "windows",
+      "slider": "classic-round",
+      "popup": "corner-solid",
+      "tab-group": "underline",
+      "gauge": "classic-arc",
+      "meter": "striped-pill"
+    },
+    "tone": "square"
+  }
+}

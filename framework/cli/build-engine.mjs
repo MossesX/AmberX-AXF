@@ -13,6 +13,7 @@ import { AGENT_CARD_TYPE, agentCardErrors, agentCardSchemaProperties } from '../
 import { JOB_TYPE, jobTypeErrors, jobTypeSchemaProperties } from '../core/engines/job-type-rules.mjs';
 import { CARD_TYPE, cardErrors, cardSchemaProperties } from '../core/engines/card-rules.mjs';
 import { partsErrors as skinPartsErrors } from '../core/engines/skin-coverage.mjs';
+import { chromeSetErrors, sectionsErrors, stylePartsErrors } from '../core/engines/skin-sections.mjs';
 import { DEMO_TYPES, demoAssetErrors, demoSchemaProperties } from '../core/engines/demo-rules.mjs';
 import { jsonSchemas as uiReviewJsonSchemas, REGISTRY as UI_REVIEW_REGISTRY } from '../core/ui-review-schema.mjs';
 import { jsonSchemas as sessionJsonSchemas, REGISTRY as SESSION_REGISTRY } from '../core/session-schema.mjs';
@@ -133,8 +134,12 @@ export function validateAsset(raw) {
         else if (typeof id !== 'string' || !ID.test(id)) errors.push(`data.extras.slots.${t} must be an asset id`);
       }
       if ('spacing' in x && !['tight', 'compact', 'regular'].includes(x.spacing)) errors.push('data.extras.spacing must be tight, compact or regular');
+      if ('chrome' in x && (typeof x.chrome !== 'string' || !ID.test(x.chrome))) errors.push('data.extras.chrome must be a chrome-set asset id');
     }
   }
+  // skin-sections@1 — the two bundle sections of a skin: ONE validator shared with the core (core/engines/skin-sections.mjs)
+  if (raw.type === 'chrome-set') errors.push(...chromeSetErrors(raw.data, spec.types['style-package']?.members ?? []));
+  if (raw.type === 'style-parts') errors.push(...stylePartsErrors(raw.data, spec.types, customizeSpec.targets));
   // style-package@1 — mirrors stylePackageErrors in core/engines/stylepackage.ts (check-style-packages.mts keeps them equal)
   if (raw.type === 'style-package') {
     const ID = /^[a-z0-9][a-z0-9-]{1,47}$/;
@@ -201,11 +206,18 @@ export function validateAsset(raw) {
 
 /* skin@1 — mirrors core/engines/skin.ts (check-skin.mts keeps the messages equal). */
 const SKIN_THEMES = { layoutTheme: 'layout', colorTheme: 'color-theme', styleTheme: 'style-theme' };
-const SKIN_NEVER = ['uac-policy', 'help', 'skin', 'design-package', 'interface'];
+const SKIN_NEVER = ['uac-policy', 'help', 'skin', 'design-package', 'interface', 'chrome-set', 'style-parts'];
 export function skinErrors(d) {
   const isO = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
   const ID = /^[a-z0-9][a-z0-9-]*$/;
   if (!isO(d)) return ['data must be an object'];
+  // skin-sections@1: a manifest names its sections and nothing inline (the one checker in skin-sections.mjs)
+  if ('sections' in d) {
+    const errors = sectionsErrors(d.sections);
+    for (const k of ['layoutTheme', 'colorTheme', 'styleTheme', 'assets', 'iconPack', 'parts', 'extras']) if (k in d) errors.push(`data.${k}: a skin is a package of sections; make it a section asset and name it in data.sections`);
+    if ('preview' in d && !isO(d.preview)) errors.push('data.preview must be an object');
+    return errors;
+  }
   const errors = [];
   for (const [k, t] of Object.entries(SKIN_THEMES)) if (typeof d[k] !== 'string' || !ID.test(d[k])) errors.push(`data.${k} must be a ${t} asset id`);
   if (!isO(d.assets)) errors.push('data.assets must be an object (slot → asset id)');

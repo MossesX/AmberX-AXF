@@ -38,6 +38,8 @@
     "design-package": false,
     "skin": false,
     "style-package": false,
+    "chrome-set": false,
+    "style-parts": false,
     "interface": false,
     "logo-mark": false,
     "animated-logo": false,

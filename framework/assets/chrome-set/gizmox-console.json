@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "chrome-set",
+  "id": "gizmox-console",
+  "name": "GizmoX Console chrome",
+  "version": "1.0.0",
+  "description": "The chrome of the GizmoX Console design package: toolbar developer-ops, nav-menu gizmo-console, context-menu developer-tools, tight spacing. The GizmoX development console: monospace headings on Obsidian, the console frame, developer toolbar and menus.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "brand",
+    "developer",
+    "chrome"
+  ],
+  "data": {
+    "slots": {
+      "toolbar": "developer-ops",
+      "nav-menu": "gizmo-console",
+      "context-menu": "developer-tools"
+    },
+    "spacing": "tight"
+  }
+}

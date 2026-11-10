@@ -8,7 +8,8 @@
  * Sources, first match wins: framework/assets/<type>/<id>.json, then the brand library
  * (framework/brand-library/<type>/<id>.json). Dependencies are followed recursively:
  *   interface       → design, branding, every slot
- *   design-package  → its four themes + extras.slots
+ *   design-package  → its four themes + extras.slots + extras.chrome (chrome-set)
+ *   skin            → its sections (skin-sections@1); chrome-set → every slot it names
  *   style-package   → every member control
  *   branding        → mark / wordmark / lockup (logo-mark), animated (animated-logo), iconPack (icon-pack)
  *   animated-logo   → its mark
@@ -19,6 +20,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { sectionType } from '../core/engines/skin-sections.mjs';
 
 const REPO = resolve(fileURLToPath(new URL('../..', import.meta.url)));
 const SOURCES = [join(REPO, 'framework/assets'), join(REPO, 'framework/brand-library')];
@@ -36,8 +38,9 @@ export function directDeps(a) {
   const out = [];
   const add = (t, id) => { if (typeof t === 'string' && typeof id === 'string' && id) out.push(`${t}/${id}`); };
   if (a.type === 'interface') { add('design-package', d.design); add('branding', d.branding); for (const [t, id] of Object.entries(d.slots ?? {})) add(t, id); }
-  if (a.type === 'skin') { add('layout', d.layoutTheme); add('color-theme', d.colorTheme); add('style-theme', d.styleTheme); for (const [t, id] of Object.entries(d.assets ?? {})) add(t, id); }
-  if (a.type === 'design-package') { for (const t of ['style-theme', 'color-theme', 'layout', 'behavior-theme']) add(t, d[t]); for (const [t, id] of Object.entries(d.extras?.slots ?? {})) add(t, id); }
+  if (a.type === 'skin') { for (const [sec, id] of Object.entries(d.sections ?? {})) add(sectionType(sec), id); add('layout', d.layoutTheme); add('color-theme', d.colorTheme); add('style-theme', d.styleTheme); add('icon-pack', d.iconPack); for (const [t, id] of Object.entries(d.assets ?? {})) add(t, id); }
+  if (a.type === 'design-package') { for (const t of ['style-theme', 'color-theme', 'layout', 'behavior-theme']) add(t, d[t]); for (const [t, id] of Object.entries(d.extras?.slots ?? {})) add(t, id); add('chrome-set', d.extras?.chrome); }
+  if (a.type === 'chrome-set') for (const [t, id] of Object.entries(d.slots ?? {})) add(t, id);
   if (a.type === 'style-package') for (const [t, id] of Object.entries(d.slots ?? {})) add(t, id);
   if (a.type === 'branding') { for (const [k, id] of Object.entries(d.marks ?? {})) add(k === 'animated' ? 'animated-logo' : 'logo-mark', id); add('icon-pack', d.iconPack); }
   if (a.type === 'animated-logo') add('logo-mark', d.mark);

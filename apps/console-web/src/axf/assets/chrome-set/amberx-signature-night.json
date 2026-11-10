@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "chrome-set",
+  "id": "amberx-signature-night",
+  "name": "AmberX Signature Night chrome",
+  "version": "1.0.0",
+  "description": "The chrome of the AmberX Signature Night design package: toolbar amberx-signature, nav-menu amber-signature. The AmberX house look after dark: molten gold on carbon, with the same signature set.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "brand",
+    "amber",
+    "chrome"
+  ],
+  "data": {
+    "slots": {
+      "toolbar": "amberx-signature",
+      "nav-menu": "amber-signature"
+    }
+  }
+}

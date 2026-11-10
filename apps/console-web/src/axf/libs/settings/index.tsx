@@ -15,7 +15,8 @@
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { SettingsPanel } from '../../core';
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, hideableTypes, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
-import { AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, Icon, IconButton, ModelBadge, setBannerOwnSettingsRenderer, Slider, Switch, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
+import { AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Checkbox, Chip, Container, Icon, IconButton, ModelBadge, setBannerOwnSettingsRenderer, Slider, Switch, TextField, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
+import { SKIN_SECTIONS, type SkinMix, type SkinSectionId } from '../../core/engines/skin';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 import { TabGroup } from '../../react/components/TabGroup';
@@ -562,6 +563,8 @@ type SettingsTabLike = { id: string; label: string };
 const DESIGN_PANEL_ID = 'axf.design-package';
 const RESTORE_DIALOG = 'axf.settings.restore-default';
 const SKIN_DIALOG = 'axf.settings.skin';
+/** Save a mix of skins as a new skin (skin-sections@1): name, description, auto-captured thumbnail. */
+const SKIN_SAVE_DIALOG = 'axf.settings.skin-save';
 const LOCK_PANEL_ID = 'axf.appearance.lock';
 
 /**
@@ -606,7 +609,7 @@ export function AppearancePanel() {
       <div className="axf-settings__row">
         <div className="axf-settings__label">
           <span>Skin</span>
-          <span className="fx-muted axf-settings__hint">{skinOn ? `${skins.find((s) => s.id === skinId)?.name ?? skinId}, in this app only.` : "Off: this app's own look."}</span>
+          <span className="fx-muted axf-settings__hint">{skinOn ? `${skins.find((s) => s.id === skinId)?.name ?? skinId}${Object.keys(look?.skin.sections ?? {}).length ? ` (${Object.keys(look?.skin.sections ?? {}).length} section${Object.keys(look?.skin.sections ?? {}).length === 1 ? '' : 's'} picked)` : ''}, in this app only.` : "Off: this app's own look."}</span>
         </div>
         <div className="axf-settings__control axf-skin__action"><Button size="sm" icon="palette" disabled={locked || !skins.length} onClick={() => rt.openDialog(SKIN_DIALOG, {})}>Choose…</Button></div>
       </div>
@@ -633,41 +636,120 @@ export function AppearancePanel() {
 }
 
 /**
- * The skin picker: tap a skin to see it on the real app (nothing is saved), Apply keeps it in this app, Cancel or closing
- * the dialog puts the look back. Reset is Restore to default, and it asks first.
+ * The skin picker (skin-sections@1): tap a skin to see it on the real app (nothing is saved), tick the sections to
+ * take — a left-out section keeps what is in force now — Apply keeps it in this app. A result drawn from more than
+ * one skin opens the Save as a new skin dialog. Cancel or closing the dialog puts the look back. Reset is Restore
+ * to default, and it asks first. `arg` (console_dialog, deep links) preselects a skin.
  */
-function SkinPickerDialog() {
+function SkinPickerDialog({ arg }: { arg?: string }) {
   const rt = useRuntime();
   useAxfState();
   useSettingsRevision(rt);
   const look = rt.appLook();
   const skins = rt.skinList();
   const applied = look?.skin.use ? look.skin.id : '';
-  const [picked, setPicked] = useState(applied || look?.skin.id || '');
+  const [picked, setPicked] = useState(arg && skins.some((s) => s.id === arg) ? arg : applied || look?.skin.id || '');
+  const [include, setInclude] = useState<Set<string> | null>(null);
   useEffect(() => () => { rt.previewSkin(null); }, [rt]);
-  const tap = (id: string) => { setPicked(id); rt.previewSkin(id === applied ? null : id); };
+  const info = picked ? rt.skinSectionsOf(picked) : null;
+  const sections = SKIN_SECTIONS.filter((sec) => info?.sections[sec.id]);
+  const taken = include ?? new Set(sections.map((sec) => sec.id));
+  const plan: SkinMix | null = picked ? rt.planSkinPicks(picked, [...taken]) : null;
+  const current = rt.currentSkinSections();
+  const show = (id: string, take: Set<string>) => { const p = rt.planSkinPicks(id, [...take]); rt.previewSkin(id, p?.overrides ?? null); };
+  const tap = (id: string) => { setPicked(id); setInclude(null); show(id, new Set(SKIN_SECTIONS.filter((sec) => rt.skinSectionsOf(id)?.sections[sec.id]).map((sec) => sec.id))); };
+  const tick = (sec: string, on: boolean) => { const next = new Set(taken); if (on) next.add(sec); else next.delete(sec); setInclude(next); show(picked, next); };
   const close = () => rt.closeDialog();
-  const current = skins.find((s) => s.id === picked);
+  const entry = skins.find((s) => s.id === picked);
+  const nameOf = (type: string, id: string) => rt.registry.get(type as AssetType, id)?.name ?? id;
   const swatches = (colorTheme: string) => {
     const tokens = (rt.registry.get('color-theme', colorTheme)?.data as { tokens?: Record<string, string> } | undefined)?.tokens;
     return tokens ? [tokens.bg, tokens.surface, tokens.accent, tokens.text] : [];
   };
+  const apply = () => {
+    if (!picked || !plan) return;
+    if (plan.mixed) { rt.openDialog(SKIN_SAVE_DIALOG, { skin: picked, include: [...taken] }); return; }
+    if (rt.applySkinPicks(picked, [...taken])) close();
+  };
+  const allOn = sections.every((sec) => taken.has(sec.id));
   return (
     <div className="fx-stack" data-axf-skin-picker="">
       <div className="axf-skin__grid" role="listbox" aria-label="Skin">
         {skins.map((s) => (
           <Button key={s.id} tone="quiet" size="sm" className={`axf-skin__tile${s.id === picked ? ' is-picked' : ''}`} aria-selected={s.id === picked} role="option" title={s.description} onClick={() => tap(s.id)}>
-            <span className="axf-skin__swatches" aria-hidden="true">{swatches(s.data.colorTheme).map((c, i) => <span key={i} style={{ background: c }} />)}</span>
+            {s.data.preview?.image ? <img className="axf-skin__thumb" src={s.data.preview.image} alt="" /> : <span className="axf-skin__swatches" aria-hidden="true">{swatches(s.data.colorTheme).map((c, i) => <span key={i} style={{ background: c }} />)}</span>}
             <span className="axf-skin__name">{s.name}</span>
           </Button>
         ))}
       </div>
-      <p className="fx-muted axf-settings__desc">{current ? (current.data.preview?.caption || current.description || current.name) : 'Tap a skin to see it on this app.'} Only this app changes.</p>
+      <p className="fx-muted axf-settings__desc">{entry ? (entry.data.preview?.caption || entry.description || entry.name) : 'Tap a skin to see it on this app.'} Only this app changes.</p>
+      {!!sections.length && (
+        <div className="axf-skin__sections" role="group" aria-label="Sections to take">
+          <div className="axf-skin__sections-head">
+            <span className="fx-eyebrow">Sections</span>
+            <Button size="sm" tone="quiet" onClick={() => { const next = allOn ? new Set<string>() : new Set(sections.map((sec) => sec.id)); setInclude(next); show(picked, next); }}>{allOn ? 'None' : 'All'}</Button>
+          </div>
+          {sections.map((sec) => {
+            const id = info!.sections[sec.id]!;
+            const on = taken.has(sec.id);
+            const keeps = current.sections[sec.id as SkinSectionId];
+            return (
+              <div key={sec.id} className={`axf-skin__section${on ? ' is-on' : ''}`} data-axf-skin-section={sec.id}>
+                <Checkbox label={<span className="axf-skin__section-label"><Icon name={sec.icon} size={14} /><span>{sec.label}</span></span>} checked={on} onChange={(v) => tick(sec.id, v)} title={sec.what} />
+                <span className="axf-skin__section-asset">
+                  {sec.id === 'colors' && <span className="axf-skin__swatches axf-skin__swatches--sm" aria-hidden="true">{swatches(id).map((c, i) => <span key={i} style={{ background: c }} />)}</span>}
+                  <span className="axf-skin__section-name">{nameOf(sec.type, id)}</span>
+                </span>
+                <span className="fx-muted axf-settings__hint axf-skin__section-hint">{on ? 'From this skin.' : keeps ? `Keeps ${nameOf(sec.type, keeps)}.` : 'Left out: keeps this app\'s own.'}</span>
+              </div>
+            );
+          })}
+          {plan?.mixed && <p className="fx-muted axf-settings__hint">A mix of {plan.from.map((f) => (f === 'own' ? 'this app\'s own look' : skins.find((s) => s.id === f)?.name ?? f)).join(' and ')}: Apply asks to save it as a new skin.</p>}
+        </div>
+      )}
       <div className="fx-row">
-        <Button tone="primary" disabled={!picked || picked === applied} onClick={() => { if (rt.useSkin(true, picked)) close(); }}>Apply</Button>
+        <Button tone="primary" disabled={!picked || !taken.size || (picked === applied && !plan?.left.length && !Object.keys(look?.skin.sections ?? {}).length)} onClick={apply}>{plan?.mixed ? 'Apply…' : 'Apply'}</Button>
         {!!applied && <Button tone="quiet" onClick={() => { if (rt.useSkin(false)) close(); }}>Turn skin off</Button>}
         <Button tone="quiet" confirm="Put this app back to its default look? Skin and picks are cleared. You can undo it once in Settings → Appearance." onClick={() => { rt.previewSkin(null); rt.restoreDefaultAppearance(); close(); }}>Reset</Button>
         <Button tone="quiet" onClick={close}>Cancel</Button>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Save a mix as a new skin: the sections taken from the picked skin plus the ones kept from the look in force make a
+ * new skin manifest (name, description, thumbnail captured from its colours and layout). Save as new keeps it and
+ * applies it; Apply without saving applies the picks only; Cancel puts the look back.
+ */
+function SkinSaveDialog({ skin, include }: { skin: string; include: string[] }) {
+  const rt = useRuntime();
+  useAxfState();
+  const skins = rt.skinList();
+  const plan = rt.planSkinPicks(skin, include);
+  const from = plan ? plan.from.map((f) => (f === 'own' ? 'this app\'s own look' : skins.find((s) => s.id === f)?.name ?? f)) : [];
+  const [name, setName] = useState(() => `${skins.find((s) => s.id === skin)?.name ?? skin} mix`);
+  const [description, setDescription] = useState(() => (plan ? `${SKIN_SECTIONS.filter((sec) => plan.sources[sec.id] === skin).map((sec) => sec.label.toLowerCase()).join(', ')} from ${skins.find((s) => s.id === skin)?.name ?? skin}, the rest from ${from.filter((f) => f !== (skins.find((s) => s.id === skin)?.name ?? skin)).join(' and ')}.` : ''));
+  const thumb = plan ? rt.skinThumbnailOf(plan.sections, name) : '';
+  const close = () => rt.closeDialog();
+  if (!plan) return <p className="fx-muted">No skin "{skin}" in this app.</p>;
+  return (
+    <div className="fx-stack" data-axf-skin-save="">
+      <div className="axf-skin__save">
+        <img className="axf-skin__thumb axf-skin__thumb--lg" src={thumb} alt={`Thumbnail of ${name}`} />
+        <div className="fx-stack axf-skin__save-fields">
+          <TextField label="Name" value={name} onChange={setName} required autoFocus />
+          <TextField label="Description" value={description} onChange={setDescription} rows={2} />
+        </div>
+      </div>
+      <ul className="axf-skin__mixlist">
+        {SKIN_SECTIONS.filter((sec) => plan.sections[sec.id]).map((sec) => <li key={sec.id}><Icon name={sec.icon} size={14} /> <strong>{sec.label}</strong> <span className="fx-muted">{rt.registry.get(sec.type as AssetType, plan.sections[sec.id]!)?.name ?? plan.sections[sec.id]} · from {plan.sources[sec.id] === 'own' ? 'this app' : skins.find((s) => s.id === plan.sources[sec.id])?.name ?? plan.sources[sec.id]}</span></li>)}
+      </ul>
+      <p className="fx-muted axf-settings__desc">This look mixes {from.join(' and ')}. Save it as a skin of its own, or apply the picks without saving.</p>
+      <div className="fx-row">
+        <Button tone="primary" icon="save" disabled={!name.trim()} onClick={() => { const a = rt.saveSkinFromSections({ name: name.trim(), description: description.trim(), tags: ['skin', 'mix'], caption: description.trim().slice(0, 120) }, plan.sections); if (a && rt.useSkin(true, String(a.id))) close(); }}>Save as new</Button>
+        <Button tone="quiet" onClick={() => { if (rt.applySkinPicks(skin, include)) close(); }}>Apply without saving</Button>
+        <Button tone="quiet" onClick={() => { rt.previewSkin(null); close(); }}>Cancel</Button>
       </div>
     </div>
   );
@@ -817,6 +899,23 @@ const CSS = `
 .axf-skin__name{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;font-size:var(--fx-type-scale-xs)}
 .axf-settings__control.axf-skin__action{flex:0 0 auto;min-width:0;display:flex;gap:var(--fx-dens-gap-xs)}
 .axf-skin__dot{display:inline-block;width:calc(var(--fx-space)*.75);height:calc(var(--fx-space)*.75);margin-left:var(--fx-dens-gap-xs);border-radius:999px;background:var(--fx-accent)}
+.axf-skin__thumb{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;border-radius:var(--fx-radius-sm);border:var(--fx-border-w) solid var(--fx-border)}
+.axf-skin__thumb--lg{width:calc(var(--fx-space)*40);flex:0 0 auto}
+.axf-skin__sections{display:flex;flex-direction:column;gap:var(--fx-dens-gap-xs);max-height:calc(var(--fx-space)*52);overflow-y:auto;padding:var(--fx-dens-gap-sm);border:var(--fx-border-w) solid var(--fx-border);border-radius:var(--fx-radius-md);background:var(--fx-surface)}
+.axf-skin__sections-head{display:flex;align-items:center;justify-content:space-between;gap:var(--fx-dens-gap-md)}
+.axf-skin__section{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr);align-items:center;gap:var(--fx-dens-gap-md);padding:var(--fx-dens-gap-xs) var(--fx-dens-gap-sm);border-radius:var(--fx-radius-sm);opacity:var(--fx-opacity-muted);transition:opacity var(--fx-motion) ease,background var(--fx-motion) ease}
+.axf-skin__section.is-on{opacity:1;background:var(--fx-accent-soft)}
+.axf-skin__section-label{display:inline-flex;align-items:center;gap:var(--fx-dens-gap-xs)}
+.axf-skin__section-asset{display:flex;align-items:center;gap:var(--fx-dens-gap-xs);min-width:0}
+.axf-skin__section-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--fx-type-scale-sm)}
+.axf-skin__section-hint{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.axf-skin__swatches--sm{width:calc(var(--fx-space)*6);height:calc(var(--fx-space)*2);flex:0 0 auto}
+.axf-skin__save{display:flex;gap:var(--fx-dens-gap-lg);align-items:flex-start}
+.axf-skin__save-fields{flex:1;min-width:0}
+.axf-skin__mixlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--fx-dens-gap-2xs);font-size:var(--fx-type-scale-sm)}
+:where([data-fx-narrow]) .axf-skin__section{grid-template-columns:1fr;gap:var(--fx-dens-gap-2xs)}
+:where([data-fx-narrow]) .axf-skin__save{flex-direction:column}
+:where([data-fx-narrow]) .axf-skin__thumb--lg{width:100%}
 .axf-settings__rows{display:flex;flex-direction:column;gap:var(--fx-dens-gap-2xl)}
 .axf-settings__row{display:flex;gap:var(--fx-dens-gap-2xl);align-items:center;justify-content:space-between;flex-wrap:wrap}
 .axf-settings__row--wide{flex-direction:column;align-items:stretch}
@@ -973,7 +1072,8 @@ export const library: AxfWebLibrary = {
   },
   dialogs: {
     [TAB_DIALOG]: { title: 'Settings', icon: 'settings', searchable: false, render: (p: Record<string, unknown>) => <TabDialog id={String(p.tab ?? '')} /> },
-    [SKIN_DIALOG]: { title: 'Choose a skin', icon: 'palette', searchable: false, render: () => <SkinPickerDialog /> },
+    [SKIN_DIALOG]: { title: 'Choose a skin', icon: 'palette', searchable: false, render: (p: Record<string, unknown>) => <SkinPickerDialog arg={typeof p.arg === 'string' ? p.arg : undefined} /> },
+    [SKIN_SAVE_DIALOG]: { title: 'Save as a new skin', icon: 'save', searchable: false, render: (p: Record<string, unknown>) => <SkinSaveDialog skin={String(p.skin ?? '')} include={Array.isArray(p.include) ? (p.include as string[]) : []} /> },
     [SKIN_WHERE_DIALOG]: { title: 'Where the skin applies', icon: 'layers', searchable: false, render: () => <SkinWhereDialog /> },
     [RESTORE_DIALOG]: { title: 'Restore to default', icon: 'refresh', searchable: false, render: () => <RestoreDefaultDialog /> },
     [LEVEL_EDITOR_DIALOG]: { title: 'Settings levels', icon: 'sliders', searchable: true, render: () => <LevelEditor /> },

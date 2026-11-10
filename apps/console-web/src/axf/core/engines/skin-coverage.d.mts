@@ -14,8 +14,8 @@ export type SkinScopeKind = 'global' | 'app' | 'ui' | 'plugin';
 /** One place in an app: the app, a UI / screen in it, a plugin in it. */
 export interface SkinScope { app: string; ui: string; plugin: string }
 /** One level's skin state: on with a skin, off, or inherit from the parent level. */
-export interface SkinScopeState { use: 'on' | 'off' | 'inherit'; id: string; overrides: Record<string, string> }
-export interface ResolvedSkin { id: string; overrides: Record<string, string>; from: string }
+export interface SkinScopeState { use: 'on' | 'off' | 'inherit'; id: string; overrides: Record<string, string>; /** skin-sections@1: a section swapped for another asset, or left out (null) */ sections?: Record<string, string | null> }
+export interface ResolvedSkin { id: string; overrides: Record<string, string>; sections: Record<string, string | null>; from: string }
 
 export interface CoverageRow {
   type: string;

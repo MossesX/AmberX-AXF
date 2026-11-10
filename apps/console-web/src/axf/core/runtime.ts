@@ -31,8 +31,8 @@ import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded,
 import { SearchIndex } from './engines/search';
 import { STYLE_PACKAGE_TYPE, stepPackage, stylePackageSlots, type StylePackageData } from './engines/stylepackage';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, resolveChecked, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
-import { backToSkin, composeLookAt, globalSkinOf, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setUseSkin, skinCoverage, skinCovers, skinEntries, skinFromDesignPackage, skinScopeDomId, skinScopeOf, snapshotLook, undoRestore, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState } from './engines/skin';
-import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, type DesignOverrides } from './engines/designpackage';
+import { backToSkin, backToSkinSection, composeLookAt, exportSkinPackage, globalSkinOf, importSkinPackage, isSubScopeKey, lookAfterChange, mixSkins, newAppLook, normalizeChromeSet, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, pickSkinWith, resolveLookSkin, restoreAppDefault, scopeEntries, sectionType, setInheritSkin, setScopeSkin, setUseSkin, skinCoverage, skinCovers, skinEntries, skinFromDesignPackage, skinInlineSections, skinManifest, skinScopeDomId, skinScopeOf, skinSections, skinThumbnail, skinWithSections, sliceCatalog, snapshotLook, thumbnailDataUri, undoRestore, SKIN_ICON_PACK_KEY, SKIN_SECTIONS, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ChromeSetData, type ComposedLook, type CoverageRow, type ResolvedSkin, type SectionOverrides, type SkinData, type SkinEntry, type SkinMix, type SkinPackage, type SkinScope, type SkinScopeState, type SkinSections, type SliceEntry, type StylePartsData } from './engines/skin';
+import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, resolveDesignPackage, type DesignOverrides } from './engines/designpackage';
 import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
 import { navStyleOutput, normalizeNavStyle, type NavStyleData } from './engines/navstyle';
 import { animationFor, brandingVars, glyphFor, markSvg, resolveBranding, type Glyph, type MarkAnimation, type ResolvedBrand } from './engines/brand';
@@ -537,9 +537,9 @@ export class AxfRuntime {
   private applyAppearance(shared: AppearanceDocument | null): void {
     this.lastAppearance = shared;
     const saved = this.ensureLook();
-    const look = saved && this.lookPreview ? setUseSkin(pickSkin(saved, this.lookPreview), true) : saved;
+    const look = saved && this.lookPreview ? setUseSkin(pickSkinWith(saved, this.lookPreview.id, this.lookPreview.sections), true) : saved;
     // the app level of the chain: this app's own skin, or the hub-wide one while the app follows it (engines/skin.ts)
-    const composed = look ? composeLookAt(shared, look, (id) => this.skinData(id)) : null;
+    const composed = look ? composeLookAt(shared, look, (id, sections) => this.skinData(id, sections)) : null;
     this.lastComposed = composed;
     const doc = composed?.doc ?? shared;
     this.lastEffective = doc;
@@ -633,8 +633,10 @@ export class AxfRuntime {
   private lookStoreRef: AppLookStore | null = null;
   private lookStoreOff: (() => void) | null = null;
   private localLookStore: AppLookStore | null = null;
-  /** The skin the picker is showing; drawn only, never saved. */
-  private lookPreview: string | null = null;
+  /** The skin the picker or the Skin Builder is showing (with its section picks); drawn only, never saved. */
+  private lookPreview: { id: string; sections?: SectionOverrides } | null = null;
+  /** Where a saved asset goes to stay (a plugin's server, a hub folder): registered by hosts (`onSaveAsset`). */
+  private readonly assetSinks = new Set<(asset: Record<string, unknown>) => void | Promise<void>>();
 
   private useLookStore(store: AppLookStore | null): void {
     this.lookStoreOff?.();
@@ -686,16 +688,153 @@ export class AxfRuntime {
     return true;
   }
 
-  private skinData(id: string): SkinData | null {
+  /** skin-sections@1: an asset's data by type and id, for resolving a skin's section assets (null = not in this app). */
+  private readonly sectionResolver = (type: string, id: string): unknown => this.registry.get(type as AssetType, id)?.data ?? null;
+
+  /** A skin's resolved data (a skin or a design package), with section picks applied when given. */
+  private skinData(id: string, sections?: SectionOverrides | null): SkinData | null {
     const s = this.registry.get(SKIN_TYPE as AssetType, id);
-    if (s) return normalizeSkin(s.data);
-    const p = this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, id);
-    return p ? skinFromDesignPackage(p.data) : null;
+    const p = s ? null : this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, id);
+    const skin = s ? normalizeSkin(s.data, this.sectionResolver) : p ? skinFromDesignPackage(p.data, this.sectionResolver) : null;
+    return skin && sections ? skinWithSections(skin, sections, this.sectionResolver) : skin;
   }
 
   /** Every skin this app can use: the skins, then the design packages. */
   skinList(): SkinEntry[] {
-    return skinEntries(this.registry.list(SKIN_TYPE as AssetType) as never, this.registry.list(DESIGN_PACKAGE_TYPE as AssetType) as never);
+    return skinEntries(this.registry.list(SKIN_TYPE as AssetType) as never, this.registry.list(DESIGN_PACKAGE_TYPE as AssetType) as never, this.sectionResolver);
+  }
+
+  /* ---- skin-sections@1: sections, picks, mixes, the slice library, packages (engines/skin-sections.mjs) ---- */
+
+  /** One skin's sections (section → asset id), what it still carries inline, and its resolved data; null = unknown skin. */
+  skinSectionsOf(id: string): { id: string; sections: SkinSections; inline: ReturnType<typeof skinInlineSections>; data: SkinData } | null {
+    const data = this.skinData(id);
+    return data ? { id, sections: skinSections(data), inline: skinInlineSections(data), data } : null;
+  }
+
+  /**
+   * The sections in force at the app level now: the skin in force with its picks applied (`skin` = its id), or the
+   * app's own look (`skin` = '') read from the active assets (the chrome and parts of an own look are not assets).
+   */
+  currentSkinSections(): { skin: string; sections: SkinSections } {
+    const inForce = this.skinInForce();
+    const skin = inForce.id ? this.skinData(inForce.id, inForce.sections) : null;
+    if (skin) return { skin: inForce.id, sections: skinSections(skin) };
+    const active = this.state.active as Record<string, string | undefined>;
+    const sections: SkinSections = {};
+    for (const sec of SKIN_SECTIONS) { const v = sec.id === 'icons' ? '' : active[sec.type]; if (v) sections[sec.id] = v; }
+    return { skin: '', sections };
+  }
+
+  /** What applying skin `id` with only `include` sections would give: the result, where each section comes from, and whether it is a mix. */
+  planSkinPicks(id: string, include?: readonly string[] | null): SkinMix | null {
+    const skin = this.skinSectionsOf(id);
+    return skin ? mixSkins(this.currentSkinSections(), { skin: id, sections: skin.sections }, include ?? null) : null;
+  }
+
+  /**
+   * Apply skin `id` taking only `include` sections (the rest keep what is in force now): Use skin on with the plan's
+   * section picks. Returns the plan (`mixed` says the result draws on more than one skin) or null when refused.
+   */
+  applySkinPicks(id: string, include?: readonly string[] | null): SkinMix | null {
+    const plan = this.planSkinPicks(id, include);
+    if (!plan) { this.toast(`No skin "${id}" in this app.`, 'warning', 'Skin'); return null; }
+    if (!this.useSkin(true, id, plan.overrides)) return null;
+    if (plan.left.length) this.terminal.ok('hot-swap', `skin ${id}: left out ${plan.left.join(', ')}${plan.mixed ? ` (a mix of ${plan.from.join(' + ')})` : ''}`);
+    return plan;
+  }
+
+  /** Per-section "Back to skin": drop one section pick at the app level. */
+  backToSkinSection(sec: string): boolean { return this.changeLook((cur) => backToSkinSection(cur, sec)); }
+
+  /** The slice library: every section asset this app has, by section, with the skins that use it. */
+  sliceLibrary(): SliceEntry[] {
+    return sliceCatalog((type) => this.registry.list(type as AssetType) as never, this.skinList().map((s) => ({ id: s.id, data: s.data })));
+  }
+
+  /**
+   * The current look's section as a standalone asset's data: a theme section gives the active asset's data, the
+   * chrome section is captured from the active slots, spacing and hidden chrome, the parts section from the skin in
+   * force. `{ type, data, from }` (`from` = the asset it copies, '' when captured), or null when there is nothing there.
+   */
+  captureSection(sec: string): { type: string; data: unknown; from: string } | null {
+    const type = sectionType(sec);
+    if (!type) return null;
+    const inForce = this.skinInForce();
+    const skin = inForce.id ? this.skinData(inForce.id, inForce.sections) : null;
+    if (sec === 'chrome') {
+      const members = new Set(['style-package', ...SKIN_SECTIONS.map((x) => x.type)]);
+      const slots: Record<string, string> = {};
+      for (const t of ASSET_TYPES) if (!members.has(t) && !['uac-policy', 'help', 'interface', 'button', 'container', 'slider', 'dialog', 'popup', 'tab-group', 'gauge', 'meter'].includes(t) && this.state.active[t]) slots[t] = this.state.active[t]!;
+      const hidden: Record<string, boolean> = {};
+      for (const t of ASSET_TYPES) { const v = this.settings.get(HIDE_KEY(t)); if (typeof v === 'boolean') hidden[t] = v; }
+      const data: ChromeSetData = normalizeChromeSet({ slots, hidden, spacing: this.spacing() });
+      return { type, data, from: skin?.sections?.chrome ?? '' };
+    }
+    if (sec === 'parts') {
+      const parts = skin?.parts ?? {};
+      const data: StylePartsData = { parts };
+      return Object.keys(parts).length ? { type, data, from: skin?.sections?.parts ?? '' } : null;
+    }
+    const id = sec === 'icons' ? skin?.iconPack ?? '' : (this.state.active as Record<string, string | undefined>)[type] ?? '';
+    const a = id ? this.registry.get(type as AssetType, id) : undefined;
+    return a ? { type, data: a.data, from: id } : null;
+  }
+
+  /** A thumbnail of a sections map (SVG data URI): its colour theme's tokens laid out as its layout says. */
+  skinThumbnailOf(sections: SkinSections, name = 'Skin'): string {
+    const colors = (this.registry.get('color-theme', sections.colors ?? '')?.data as { tokens?: Record<string, string> } | undefined)?.tokens;
+    const layout = this.registry.get('layout', sections.layout ?? '')?.data;
+    return thumbnailDataUri(skinThumbnail(colors, layout, { name }));
+  }
+
+  /**
+   * Save a skin manifest from a sections map: registered in this app at once and handed to every save sink (a host's
+   * server keeps it). The thumbnail is captured from the sections when `meta.image` is not given. Returns the asset.
+   */
+  saveSkinFromSections(meta: { id?: string; name: string; description?: string; tags?: string[]; caption?: string; image?: string }, sections: SkinSections): Record<string, unknown> | null {
+    const asset = skinManifest(meta, sections, { caption: meta.caption, image: meta.image ?? this.skinThumbnailOf(sections, meta.name) });
+    const r = this.saveAsset(asset as unknown as Record<string, unknown>);
+    if (!r.ok) { this.toast(r.errors.join(' '), 'danger', 'Skin'); return null; }
+    this.toast(`${asset.name} saved as a skin.`, 'success', 'Skin');
+    return asset as unknown as Record<string, unknown>;
+  }
+
+  /** A skin and its section assets as one skin-package@1 file (null = unknown skin). */
+  exportSkinPackage(id: string): SkinPackage | null {
+    const a = this.registry.get(SKIN_TYPE as AssetType, id) ?? this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, id);
+    if (!a) return null;
+    const skin = a.type === SKIN_TYPE ? a : { ...a, type: SKIN_TYPE, data: { sections: skinSections(this.skinData(id)!), preview: {} } };
+    return exportSkinPackage(skin as never, (type, sid) => this.registry.get(type as AssetType, sid) as never);
+  }
+
+  /** Import a skin-package@1 file: its section assets, then the skin, each registered and saved. */
+  importSkinPackage(raw: unknown): { ok: boolean; errors: string[]; id?: string } {
+    const r = importSkinPackage(raw);
+    if (!r.ok || !r.skin) return { ok: false, errors: r.errors };
+    const errors: string[] = [];
+    for (const a of r.sections) { const v = this.saveAsset(a as never, { activate: false }); if (!v.ok) errors.push(`${a.type}/${a.id}: ${v.errors.join(', ')}`); }
+    const v = this.saveAsset(r.skin as never, { activate: false });
+    if (!v.ok) errors.push(`skin/${r.skin.id}: ${v.errors.join(', ')}`);
+    return { ok: errors.length === 0, errors, id: r.skin.id };
+  }
+
+  /**
+   * Save an asset: registered in this app (like an import, never activated unless asked) and handed to every save
+   * sink. A host registers a sink with `onSaveAsset` (the Theme manager keeps saved assets on the console server);
+   * without one the asset lives for this session only, and the result says so (`kept: false`).
+   */
+  saveAsset(raw: Record<string, unknown>, opts: { activate?: boolean } = {}): ValidationResult & { kept: boolean } {
+    const r = this.importAsset(raw, opts.activate === true, 'saved');
+    if (!r.ok) return { ...r, kept: false };
+    for (const sink of [...this.assetSinks]) { try { void Promise.resolve(sink(raw)).catch((e) => this.terminal.warn('assets', `save sink failed: ${(e as Error).message}`)); } catch (e) { this.terminal.warn('assets', `save sink failed: ${(e as Error).message}`); } }
+    return { ...r, kept: this.assetSinks.size > 0 };
+  }
+
+  /** Register where saved assets go to stay (returns the unregister). */
+  onSaveAsset(sink: (asset: Record<string, unknown>) => void | Promise<void>): () => void {
+    this.assetSinks.add(sink);
+    return () => { this.assetSinks.delete(sink); };
   }
 
   /** This app's look document (null while it can't be read). */
@@ -704,12 +843,12 @@ export class AxfRuntime {
   /** The slots where a pick beats the skin. */
   skinOverrides(): string[] { return overriddenSlots(this.appLook()); }
 
-  /** The 'Use skin' switch. `id` picks the skin too; on with none picked takes the first skin. */
-  useSkin(on: boolean, id?: string): boolean {
+  /** The 'Use skin' switch. `id` picks the skin too (with `sections` = its section picks); on with none picked takes the first skin. */
+  useSkin(on: boolean, id?: string, sections?: SectionOverrides | null): boolean {
     const pick = id ?? this.appLook()?.skin.id ?? '';
     const skin = pick || (on ? this.skinList()[0]?.id ?? '' : '');
     if (on && !this.skinData(skin)) { this.toast(`No skin "${skin}" in this app.`, 'warning', 'Skin'); return false; }
-    if (!this.changeLook((cur) => setUseSkin(skin ? pickSkin(cur, skin) : cur, on))) return false;
+    if (!this.changeLook((cur) => setUseSkin(skin ? (sections ? pickSkinWith(cur, skin, sections) : pickSkin(cur, skin)) : cur, on))) return false;
     this.terminal.ok('hot-swap', on ? `skin ${skin} on for this app` : 'skin off: back to this app\'s own look');
     this.lookApplied('default', skin);
     return true;
@@ -725,10 +864,10 @@ export class AxfRuntime {
    * Show a skin on this screen without saving anything; null puts the saved look back. The picker's preview: it reaches
    * no document and no other tab, and any saved change ends it.
    */
-  previewSkin(id: string | null): boolean {
-    const want = id ?? null;
-    if (want === this.lookPreview) return true;
-    if (want && !this.skinData(want)) return false;
+  previewSkin(id: string | null, sections?: SectionOverrides | null): boolean {
+    const want = id ? { id, ...(sections ? { sections } : {}) } : null;
+    if (JSON.stringify(want) === JSON.stringify(this.lookPreview)) return true;
+    if (want && !this.skinData(want.id)) return false;
     if (want && (!this.can('assets.swap') || this.lockedByAppearance('assets.swap') || !this.ensureLook())) return false;
     this.lookPreview = want;
     this.applyAppearance(this.lastAppearance);
@@ -736,8 +875,23 @@ export class AxfRuntime {
     return true;
   }
 
+  /**
+   * The Skin Builder's live preview: a sections map drawn on this app as if it were a skin (nothing saved). The map
+   * is registered as a throw-away skin asset; null puts the saved look back and drops it.
+   */
+  previewSections(sections: SkinSections | null): boolean {
+    const PREVIEW_ID = 'skin-builder-preview';
+    if (!sections) { const was = !!this.lookPreview; this.lookPreview = null; if (was) { this.applyAppearance(this.lastAppearance); this.bumpLook(); } return true; }
+    const r = this.registry.register({ $axf: 'asset@1', type: SKIN_TYPE, id: PREVIEW_ID, name: 'Skin Builder preview', version: '0.0.0', description: 'The Skin Builder\'s live preview; never saved.', data: { sections } }, 'imported', 'skin-builder');
+    if (!r.ok) return false;
+    this.lookPreview = { id: PREVIEW_ID };
+    this.applyAppearance(this.lastAppearance);
+    this.bumpLook();
+    return true;
+  }
+
   /** The skin being previewed, if any. */
-  previewedSkin(): string | null { return this.lookPreview; }
+  previewedSkin(): string | null { return this.lookPreview?.id ?? null; }
 
   /** Per-item "Back to skin": drop this slot's override. */
   backToSkin(slot: string): boolean { return this.changeLook((cur) => backToSkin(cur, slot)); }
@@ -766,12 +920,12 @@ export class AxfRuntime {
    * A UI or plugin level of the chain: `key` = `ui:<id>` | `plugin:<id>`, `use` on (with `id`, else the skin already
    * picked there, else the app's), off (no skin inside it) or inherit (the parent decides, the default).
    */
-  scopeSkin(key: string, use: 'on' | 'off' | 'inherit', id?: string): boolean {
+  scopeSkin(key: string, use: 'on' | 'off' | 'inherit', id?: string, sections?: SectionOverrides | null): boolean {
     if (!isSubScopeKey(key)) { this.toast(`"${key}" is not a UI or plugin scope.`, 'warning', 'Skin'); return false; }
     const cur = this.appLook();
     const pick = use === 'on' ? (id || cur?.scopes[key]?.id || cur?.skin.id || this.skinList()[0]?.id || '') : id;
     if (use === 'on' && (!pick || !this.skinData(pick))) { this.toast(`No skin "${pick}" in this app.`, 'warning', 'Skin'); return false; }
-    if (!this.changeLook((look) => setScopeSkin(look, key, use, pick))) return false;
+    if (!this.changeLook((look) => setScopeSkin(look, key, use, pick, sections ?? undefined))) return false;
     this.terminal.ok('hot-swap', use === 'on' ? `skin ${pick} on for ${key}` : use === 'off' ? `no skin inside ${key}` : `${key} follows its parent`);
     return true;
   }
@@ -785,7 +939,7 @@ export class AxfRuntime {
   }
 
   /** The skin in force at the app level (the one Settings → Appearance shows), '' = none. */
-  skinInForce(): ResolvedSkin { return this.lastComposed?.skin ?? { id: '', overrides: {}, from: '' }; }
+  skinInForce(): ResolvedSkin { return this.lastComposed?.skin ?? { id: '', overrides: {}, sections: {}, from: '' }; }
 
   /** How a skin reaches every registered asset type (skin-coverage@1), registry order. */
   skinCoverage(): CoverageRow[] { return skinCoverage(); }
@@ -810,7 +964,7 @@ export class AxfRuntime {
     if (here.id === app.id && JSON.stringify(here.overrides) === JSON.stringify(app.overrides)) { this.dropScope(skinScopeDomId(key)); return null; }
     const scopeId = skinScopeDomId(key);
     const resolve = (): ResolvedInterface => {
-      const composed = composeLookAt(this.lastAppearance, this.appLook() ?? look, (id) => this.skinData(id), skinScopeOf(key, this.manifest.app.id));
+      const composed = composeLookAt(this.lastAppearance, this.appLook() ?? look, (id, sections) => this.skinData(id, sections), skinScopeOf(key, this.manifest.app.id));
       const has = (t: string, id: string) => this.registry.has(t as AssetType, id);
       const r = resolveAppearance(composed.doc, has);
       const active: Record<string, string> = { ...r.slots };
@@ -1681,7 +1835,8 @@ export class AxfRuntime {
     if (!this.can('assets.swap')) { this.toast('Your role cannot change the look.', 'danger', 'Permission denied'); return false; }
     const a = this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, id);
     if (!a) { this.toast(`No design package "${id}".`, 'warning', 'Design package'); return false; }
-    const pkg = normalizeDesignPackage(a.data);
+    // the package's chrome section (a chrome-set asset, skin-sections@1) folds into its extras
+    const pkg = resolveDesignPackage(normalizeDesignPackage(a.data), this.sectionResolver);
     const plan = packageSettingsPlan(pkg, Object.keys(this.settings.savedValues()));
     for (const k of plan.clear) this.settings.clear(k);
     // loading a package (again) clears the individual style / colour overrides (precedence rule)
@@ -2836,7 +2991,9 @@ export class AxfRuntime {
       }
     }, { label: 'Apply a style package (id, next, prev or random)', requires: 'assets.swap', params: true });
     // Skins (engines/skin.ts). skin.use:<id> turns Use skin on for this app, skin.off goes back to its own look.
-    a.register('skin.use', ([id]) => { this.useSkin(true, id || undefined); }, { label: 'Use a skin in this app', requires: 'assets.swap', params: true });
+    a.register('skin.use', ([id, include]) => { if (include && id) this.applySkinPicks(id, include.split(',').map((x) => x.trim()).filter(Boolean)); else this.useSkin(true, id || undefined); }, { label: 'Use a skin in this app (skin.use:<id>[:<sections to take, comma-separated>])', requires: 'assets.swap', params: true });
+    // skin-sections@1: skin.section.back:<section> drops one section pick; skin.preview.off ends a preview
+    a.register('skin.section.back', ([sec]) => { if (sec) this.backToSkinSection(sec); }, { label: 'Back to the skin for one section', requires: 'assets.swap', params: true, searchable: false });
     a.register('skin.off', () => { this.useSkin(false); }, { label: "Back to this app's own look", requires: 'assets.swap' });
     a.register('skin.restore', () => this.restoreDefaultAppearance(), { label: 'Restore this app to its default look', requires: 'assets.swap' });
     a.register('skin.undo', () => { this.undoRestoreDefault(); }, { label: 'Undo Restore to default', requires: 'assets.swap' });

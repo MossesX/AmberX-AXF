@@ -18,14 +18,11 @@
     "extras": {
       "slots": {
         "style-package": "touch-friendly",
-        "toolbar": "touch-dock",
-        "nav-menu": "roomy-touch",
-        "context-menu": "touch-large",
         "typography": "compact",
         "density": "roomy",
         "sizing": "touch"
       },
-      "spacing": "regular"
+      "chrome": "touch-tablet"
     }
   }
 }

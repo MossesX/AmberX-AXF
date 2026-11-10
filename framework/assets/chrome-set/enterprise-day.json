@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "chrome-set",
+  "id": "enterprise-day",
+  "name": "Enterprise Day chrome",
+  "version": "1.0.0",
+  "description": "The chrome of the Enterprise Day design package: toolbar enterprise-command, context-menu enterprise-standard. The dependable business look by day: Inter on porcelain, the full enterprise frame, crisp controls and steady behaviour.",
+  "author": "AmberX AXF",
+  "tags": [
+    "light",
+    "enterprise",
+    "chrome"
+  ],
+  "data": {
+    "slots": {
+      "toolbar": "enterprise-command",
+      "context-menu": "enterprise-standard"
+    }
+  }
+}

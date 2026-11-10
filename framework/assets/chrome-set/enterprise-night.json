@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "chrome-set",
+  "id": "enterprise-night",
+  "name": "Enterprise Night chrome",
+  "version": "1.0.0",
+  "description": "The chrome of the Enterprise Night design package: toolbar enterprise-command, context-menu enterprise-standard. The same enterprise frame and controls on Obsidian for long evenings.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "enterprise",
+    "chrome"
+  ],
+  "data": {
+    "slots": {
+      "toolbar": "enterprise-command",
+      "context-menu": "enterprise-standard"
+    }
+  }
+}

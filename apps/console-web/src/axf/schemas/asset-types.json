@@ -1249,7 +1249,7 @@
         "behavior-theme"
       ],
       "optional_fields": {
-        "extras": "{ slots: asset type → asset id (not the four themes, never the policy), spacing: tight | compact | regular, hidden: asset type → true / false, settings: appearance settings key → value }"
+        "extras": "{ slots: asset type → asset id (not the four themes, never the policy; the scale assets and the style package), chrome: chrome-set asset id (the package's chrome section — title bar, menus, toolbar, nav, widgets, spacing, hidden; skin-sections@1), spacing: tight | compact | regular, hidden: asset type → true / false, settings: appearance settings key → value }"
       },
       "roll": {
         "slot": false,
@@ -1265,18 +1265,13 @@
       "label": "Skin",
       "group": "System",
       "icon": "palette",
-      "description": "A skin (skin@1, engine core/engines/skin.ts) is a whole look for one place: a layout theme, a colour theme, a style theme, the assets that fill the other slots, an optional icon pack and style parts for any drawn type. Apps keep their own look unless Use skin is on (Settings → Appearance); a skin applies hub-wide, per app, per UI / screen or per plugin (the chain plugin → ui → app → global, the child overrides the parent). How a skin reaches every registered type is worked out from this registry (skin-coverage@1, core/engines/skin-coverage.mjs): a type declares `skin: { by: slot | parts | reference | bundle | none, via?, why? }` only when its flags do not say (widgets and attachables are styled through their style target in schemas/customize.json; everything else is a slot); CI fails on a type a skin cannot reach.",
+      "description": "A skin (skin@1, engine core/engines/skin.ts + skin-sections.mjs) is a package of sections (Brett, Nov 10 2026: \"Every skin has to be a package of chunks. Every single thing has to be its own asset\"): `data.sections` names one standalone asset per section — colors (color-theme), design (style-theme), layout (layout), behavior (behavior-theme), typography, density, sizing, icons (icon-pack), controls (style-package), chrome (chrome-set) and parts (style-parts). Colours, design and layout are required; the rest are optional. Apps keep their own look unless Use skin is on (Settings → Appearance); applying a skin lets you take some sections and leave others out (left-out sections keep the current look's), and a result mixed from more than one skin can be saved as a new skin. A skin applies hub-wide, per app, per UI / screen or per plugin (the chain plugin → ui → app → global, the child overrides the parent). How a skin reaches every registered type is worked out from this registry (skin-coverage@1, core/engines/skin-coverage.mjs); CI fails on a type a skin cannot reach. The Skin Builder (Theme manager plugin) builds skins by dropping section assets into a pack template; a skin travels as a skin-package@1 file with its sections inside. Older monolithic skins (layoutTheme / colorTheme / styleTheme / assets / parts / iconPack / extras inline) still read but are no longer written.",
       "required": [
-        "layoutTheme",
-        "colorTheme",
-        "styleTheme",
-        "assets"
+        "sections"
       ],
       "optional_fields": {
-        "preview": "{ caption, image }: what the picker shows",
-        "extras": "{ spacing: tight | compact | regular, hidden: asset type → true / false, settings: appearance settings key → value }",
-        "iconPack": "icon-pack asset id — the icon pack the skin draws with (sets axf.icons.pack.<scope>); absent = the branding's",
-        "parts": "{ <asset type>: { <customize token>: value } } — style parts for any type with a style target (schemas/customize.json): the type's box, text, icon and items under this skin"
+        "sections": "{ colors: color-theme id, design: style-theme id, layout: layout id, behavior?: behavior-theme id, typography?, density?, sizing?, icons?: icon-pack id, controls?: style-package id, chrome?: chrome-set id, parts?: style-parts id }",
+        "preview": "{ caption, image }: what the picker shows (image = a data URI thumbnail, auto-captured when a mix is saved)"
       },
       "roll": {
         "slot": false,
@@ -1317,6 +1312,51 @@
       "skin": {
         "by": "bundle",
         "why": "A style package is one matched set of styles; a skin picks its themes and assets itself."
+      }
+    },
+    "chrome-set": {
+      "label": "Chrome set",
+      "group": "Themes",
+      "icon": "layers",
+      "description": "The Chrome section of a skin (chrome-set@1, engine core/engines/skin-sections.mjs): one matched set of chrome and widget assets — title bar / banner, application menu, toolbar, navigation menu, context menus, clock, logo, search bar, badges and every other non-control slot — plus which chrome is shown or hidden, the spacing choice and any other appearance settings. Never a theme, a control (those are the Controls section, style-package) or a policy. Every skin and design package names one instead of carrying chrome inline; the Skin Builder saves the current chrome as one.",
+      "required": [
+        "slots"
+      ],
+      "optional_fields": {
+        "slots": "asset type → asset id for chrome and widget slots",
+        "hidden": "asset type → true / false",
+        "spacing": "tight | compact | regular",
+        "settings": "appearance settings key → value"
+      },
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional": true,
+      "skin": {
+        "by": "bundle",
+        "why": "A chrome set is one section of a skin; the skin names it."
+      }
+    },
+    "style-parts": {
+      "label": "Style parts",
+      "group": "Themes",
+      "icon": "sliders",
+      "description": "The Parts section of a skin (style-parts@1, engine core/engines/skin-sections.mjs): style tweaks per drawn asset type — `{ parts: { <asset type>: { <customize token>: value } } }` for any type with a style target (schemas/customize.json): the type's box, text, icon and items. A skin names one instead of carrying parts inline.",
+      "required": [
+        "parts"
+      ],
+      "optional_fields": {
+        "parts": "{ <asset type>: { <customize token>: value } }"
+      },
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional": true,
+      "skin": {
+        "by": "bundle",
+        "why": "Style parts are one section of a skin; the skin names it."
       }
     },
     "interface": {

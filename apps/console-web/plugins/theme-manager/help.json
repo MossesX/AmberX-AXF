@@ -60,6 +60,26 @@
         "text": "Shows the “Themes” part of this screen. Part of Theme manager.",
         "kind": "tab",
         "draft": true
+      },
+      {
+        "target": "skin-builder",
+        "title": "Skin Builder",
+        "text": "Build a skin from slices. Every section of a skin (colours, design, layout, behaviour, typography, density, sizing, icons, controls, chrome, parts) is an asset of its own; drag one from the library into its slot in the pack template, or tap Pick then tap a slice. The whole console shows the pack live; After / Before switches the preview. Save, Apply, Export (a file with the sections inside), Import, Duplicate, or Load a skin to edit it."
+      },
+      {
+        "target": "skin-builder-slot",
+        "title": "A slot",
+        "text": "One section of the pack. Pick or Swap opens the library on that section, Clear empties it, Save as asset keeps the current section (the chrome in force, the parts of the skin in force) as a slice of its own. Colours, design and layout are required."
+      },
+      {
+        "target": "skin-builder-library",
+        "title": "Slice library",
+        "text": "Every section asset the console has, built-in and saved, by section. Search by name or tag; hovering a slice shows it on the whole console."
+      },
+      {
+        "target": "skin-picks",
+        "title": "Sections to take",
+        "text": "When you apply a skin, tick the sections to take; a left-out section keeps what is in force now. A result drawn from more than one skin asks to be saved as a new skin (name, description, a thumbnail captured for you), or applied without saving."
       }
     ],
     "intros": []

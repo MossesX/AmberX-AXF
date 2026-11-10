@@ -8,9 +8,9 @@ export const SKIN_USES: readonly ('on' | 'off' | 'inherit')[];
 /** A look: what a snapshot holds and what picks add. */
 export interface LookPart { slots?: Record<string, string>; spacing?: string; hidden?: Record<string, boolean>; settings?: Record<string, unknown> }
 /** The app level: Use skin, follow the hub-wide skin while off, the skin and its overrides. */
-export interface AppSkinState { use: boolean; inherit: boolean; id: string; overrides: Record<string, string> }
+export interface AppSkinState { use: boolean; inherit: boolean; id: string; overrides: Record<string, string>; /** skin-sections@1: section → another asset, or null = left out */ sections: Record<string, string | null> }
 /** The hub-wide skin (kept on the shared appearance document). */
-export interface GlobalSkin { id: string; overrides?: Record<string, string> }
+export interface GlobalSkin { id: string; overrides?: Record<string, string>; sections?: Record<string, string | null> }
 export interface AppLookDocument {
   $axf: typeof APP_LOOK_FRAME;
   app: string;
@@ -33,13 +33,16 @@ export function parseAppLook(text: string | null | undefined): AppLookDocument |
 export function setUseSkin(look: AppLookDocument, on: boolean): AppLookDocument;
 export function setInheritSkin(look: AppLookDocument, on: boolean): AppLookDocument;
 export function pickSkin(look: AppLookDocument, id: string): AppLookDocument;
+export function pickSkinWith(look: AppLookDocument, id: string, sections: Record<string, string | null> | null | undefined): AppLookDocument;
+export function setSkinSections(look: AppLookDocument, sections: Record<string, string | null> | null | undefined): AppLookDocument;
+export function backToSkinSection(look: AppLookDocument, sec: string): AppLookDocument;
 export function backToSkin(look: AppLookDocument, slot: string): AppLookDocument;
 export function overriddenSlots(look: AppLookDocument | null): string[];
 export function restoreAppDefault(look: AppLookDocument, at: string): AppLookDocument;
 export function undoRestore(look: AppLookDocument): AppLookDocument;
 export function setLookSlot(look: AppLookDocument, slot: string, id: string | null): AppLookDocument;
 export function scopeState(look: AppLookDocument, key: string): SkinScopeState | null;
-export function setScopeSkin(look: AppLookDocument, key: string, use: 'on' | 'off' | 'inherit', id?: string): AppLookDocument;
+export function setScopeSkin(look: AppLookDocument, key: string, use: 'on' | 'off' | 'inherit', id?: string, sections?: Record<string, string | null> | null): AppLookDocument;
 export function setScopeOverride(look: AppLookDocument, key: string, slot: string, id: string | null): AppLookDocument;
 export function scopeEntries(look: AppLookDocument | null): ({ key: string } & SkinScopeState)[];
 export function resolveLookSkin(look: AppLookDocument | null, global: GlobalSkin | null | undefined, scope: Partial<SkinScope> | null | undefined): ResolvedSkin;

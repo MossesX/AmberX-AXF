@@ -1,0 +1,27 @@
+{
+  "$axf": "asset@1",
+  "type": "chrome-set",
+  "id": "windows",
+  "name": "Windows chrome",
+  "version": "1.0.0",
+  "description": "The Windows 11 frame: a title bar with minimize, maximize and close, a menu bar, the Windows toolbar and context menus, every bar shown.",
+  "author": "AmberX AXF",
+  "tags": [
+    "windows",
+    "chrome"
+  ],
+  "data": {
+    "slots": {
+      "banner": "windows-titlebar",
+      "app-menu": "standard-desktop",
+      "context-menu": "windows",
+      "toolbar": "windows"
+    },
+    "hidden": {
+      "toolbar": false,
+      "nav-menu": false,
+      "banner": false,
+      "app-menu": false
+    }
+  }
+}
