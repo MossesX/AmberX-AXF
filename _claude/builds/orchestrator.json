@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T04:30:59.217Z",
+ "updatedAt": "2026-11-10T04:31:46.344Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -84197,6 +84197,43 @@
      "uid": "st-mwa6yeif0357oi"
     }
    ]
+  },
+  {
+   "id": "resolve-the-conflict-and-land-the-orchestrator-l",
+   "title": "Resolve the conflict and land the orchestrator list fix (no forced categories, date sort, true statuses)",
+   "category": "",
+   "detail": "Branch claude/build-statuses-tell-the-truth-orchestrator-list (true build statuses, expandable root rows, Group by optional, working date sort) is finished, but merging origin/main conflicts in apps/console-web/plugins/build-orchestrator/pipeline.mjs and pipeline.test.mjs. Work in /root/axf-builds/build-statuses-tell-the-truth-orchestrator-list: merge origin/main, resolve keeping main's newer code plus this branch's statuses and list features, run the orchestrator tests and typecheck, then push to main. Verify on the live console that the queue isn't forced into categories.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-10T04:30:53.617Z",
+   "updatedAt": "2026-11-10T04:30:58.359Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T04:30:58.359Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Why is the queue in categories again? Didn't we change that?",
+    "at": "2026-11-10T04:30:53.617Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
