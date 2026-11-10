@@ -22,6 +22,16 @@
  *                                  Queue. Every former launch path (Build manager Start, Fix with Claude, feature assist) calls this.
  *   … show <id>                    one build as the table shows it (status, steps, pipeline record)
  *   … route <id> api|subscription|auto   the per-build override: run on an API-key account, never on one, or the default
+ *   … failover <id> --from <account> [--kind usage|auth] [--log f] [--tried a,b]   the failover chain (claude-headless.sh
+ *                                  calls it when a pipeline run's login fails or is limited): marks the account limited,
+ *                                  picks the next subscription, then an API account under its caps; prints run <acct> <kind> | none <why>
+ *   … builtby <id>                 who actually built it: per run the account, email, kind, model, cost and steps ticked
+ *
+ * Failover chain (Brett, Nov 9 2026): a pipeline run whose account fails moves to the next subscription account, then
+ * to an API-key account (setting failoverToApi, on by default; a build set to route subscription never goes to API).
+ * Never outside this chain: a pipeline run does not use the console's account switch. On session end the events
+ * stream (session-login / -part / -end) gives every login the run used; each is recorded in pipeline.builtBy with
+ * its email, model, cost and the steps it ticked, and the build's note says who built it.
  *
  * One way to start builds (Brett, Nov 9 2026: "It has to be the orchestrator"): the tick is the only caller of the
  * launcher for a build. It issues a one-build dispatch token (framework/cli/dispatch-gate.mjs) and passes it in
@@ -59,7 +69,7 @@ import { issue as issueDispatch } from '../../../../framework/cli/dispatch-gate.
 import { shipLanded } from '../../../../framework/cli/shipped.mjs';
 import { normPriority } from '../../../../framework/core/build-priority.mjs';
 import { act as orchAct } from './orchestrator.mjs';
-import { status as workersStatus, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
+import { markLimit, status as workersStatus, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
 import { childEnv, release as releaseLogin, snapshot as snapshotLogin } from '../../../../deploy/claude-login.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -130,6 +140,37 @@ export function accountsNow(store, settings = loadSettings()) {
     r.running = [...new Set([...(r.running ?? []), ...mine])];
   }
   return P.accountViews(rows, loadOwnAccounts(), { settings });
+}
+
+/** Accounts for attribution (kind and email); [] when claude-workers can't be read. */
+function accountsFor(store, settings) { try { return accountsNow(store, settings); } catch { return []; } }
+
+/**
+ * The failover chain for a running pipeline build (claude-headless.sh calls this when the run's login fails or hits a
+ * limit): mark that account limited (claude-workers), pick the next link (P.failoverFor: next subscription account,
+ * then an API account under its caps), move the build's record to it and say so on the build. Never a silent move:
+ * every hop is a build note and a log line. → { state: 'run' | 'none', account, kind, why }
+ */
+export function failover(id, { from = '', kind = 'usage', text = '', tried = [], env = process.env } = {}) {
+  const store = loadStore(); const b = storeCore.findBuild(store, id);
+  if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  if (!BP.accountName(from)) throw Object.assign(new Error(`not an account name: ${from}`), { code: 2 });
+  const hit = kind === 'auth' ? 'auth' : 'usage';
+  let lim = null; try { lim = markLimit(from, { kind: hit, text }, env); } catch (e) { lim = { reason: hit === 'auth' ? 'login failed' : 'hit its limit', until: '', error: e.message }; }
+  const settings = loadSettings(env);
+  const accounts = accountsNow(store, settings);
+  const model = b.pipeline?.model || BP.nextModel(b);
+  const d = P.failoverFor(b, accounts, model, settings, [from, ...tried]);
+  const why = `${from} ${lim?.reason || hit}${lim?.until ? ` until ${String(lim.until).slice(0, 16).replace('T', ' ')}` : ''}`;
+  if (!d.account) {
+    setPipeline(id, { note: `failover: nothing left (${str(d.why, 200)})` }, { note: `Account ${why}; the failover chain has nothing left: ${d.why}. The run stops here.`, action: 'pipeline:failover' });
+    logLine({ event: 'failover-none', build: id, from, kind: hit, why: d.why });
+    return { state: 'none', account: '', kind: '', why: d.why };
+  }
+  setPipeline(id, { account: d.account, note: `moved from ${from} (${hit === 'auth' ? 'login failed' : 'limited'})` },
+    { note: `Account ${why}: the run moved to ${d.account}${d.kind === 'api' ? ' (API key, billed per token)' : ''} (${d.why}).`, action: 'pipeline:failover' });
+  logLine({ event: 'failover', build: id, from, to: d.account, kind: d.kind, hit, why: d.why });
+  return { state: 'run', account: d.account, kind: d.kind, why: d.why };
 }
 
 const row = (b) => {
@@ -358,11 +399,17 @@ export function checkEnds({ alert = () => {}, env = process.env } = {}) {
       if (alive !== false || Date.now() - Date.parse(b.pipeline.launchedAt || 0) < GONE_GRACE_MS) continue;
       exit = 1;
     }
-    const r = P.endOutcome(b, { exit, account: b.pipeline.account, session: b.pipeline.session }, settings);
-    if (settled) { r.outcome = 'finished'; r.status = b.status; r.run = { ...r.run, outcome: 'finished' }; r.note = `Session ${b.pipeline.session} on ${b.pipeline.account || '?'} ended (exit ${exit}); the build was already ${b.status}.`; }
-    setPipeline(b.id, { lastRun: r.run, session: '', slot: '', note: r.outcome === 'finished' ? '' : r.note }, { status: r.status, note: r.note, action: 'pipeline:end' });
-    alert(r.outcome === 'failed' ? 'failed' : 'ended', { id: b.id, title: b.title, outcome: r.outcome, note: r.note, account: b.pipeline.account });
-    logLine({ event: 'ended', build: b.id, outcome: r.outcome, exit, account: b.pipeline.account, session: b.pipeline.session });
+    // who actually ran it: every login the session used (a failover adds one), with its cost and the steps it ticked
+    const segs = P.segmentsOf(events, b.pipeline.session, since);
+    const ran = P.builtByEntries(b, segs, accountsFor(store, settings), { session: b.pipeline.session });
+    const last = ran[ran.length - 1];
+    const cost = ran.reduce((n, x) => n + (Number(x.costUsd) || 0), 0) || Number(end?.costUsd) || 0;
+    const r = P.endOutcome(b, { exit, account: last?.account || end?.account || b.pipeline.account, email: last?.email || end?.email || '', costUsd: cost, session: b.pipeline.session }, settings);
+    if (settled) { r.outcome = 'finished'; r.status = b.status; r.run = { ...r.run, outcome: 'finished' }; r.note = `Session ${b.pipeline.session} on ${r.run.account || '?'} ended (exit ${exit}); the build was already ${b.status}.`; }
+    const byNote = ran.length ? ` Built by ${ran.map(P.builtByLine).join(' · ')}.` : '';
+    setPipeline(b.id, { lastRun: r.run, session: '', slot: '', note: r.outcome === 'finished' ? '' : r.note, builtBy: [...(b.pipeline.builtBy ?? []), ...ran] }, { status: r.status, note: `${r.note}${byNote}`, action: 'pipeline:end' });
+    alert(r.outcome === 'failed' ? 'failed' : 'ended', { id: b.id, title: b.title, outcome: r.outcome, note: `${r.note}${byNote}`, account: r.run.account });
+    logLine({ event: 'ended', build: b.id, outcome: r.outcome, exit, account: r.run.account, session: b.pipeline.session, builtBy: ran.map((x) => ({ account: x.account, kind: x.kind, costUsd: x.costUsd, steps: x.steps })) });
     out.push({ id: b.id, outcome: r.outcome, status: r.status, exit });
   }
   return out;
@@ -548,6 +595,18 @@ async function main(argv) {
     return out(r, [`tick ${r.at}`, `split ${r.intake.split.length} · ended ${r.ended.map((e) => `${e.id} ${e.outcome}`).join(', ') || 'none'} · launched ${r.launched.map((l) => `${l.id} on ${l.account} (${l.model})`).join(', ') || 'none'}${r.failed.length ? ` · launch failed ${r.failed.map((f) => `${f.id}: ${f.error}`).join('; ')}` : ''}`,
       ...r.plan.waits.map((w) => `  waits: ${w.id}: ${w.why}`), r.idle ? `IDLE since ${r.idle.since}: ${r.idle.reason}` : ''].filter(Boolean).join('\n'));
   }
+  if (cmd === 'failover') {
+    const flag = (k, d = '') => { const i = rest.indexOf(`--${k}`); return i >= 0 ? rest[i + 1] ?? d : d; };
+    let text = ''; const lf = flag('log'); if (lf) { try { text = readFileSync(lf, 'utf8').slice(-20000); } catch { text = ''; } }
+    const r = failover(rest[0], { from: flag('from'), kind: flag('kind', 'usage'), text, tried: flag('tried').split(',').filter(Boolean) });
+    return out({ ok: true, ...r }, r.state === 'run' ? `run ${r.account} ${r.kind}` : `none ${r.why}`);
+  }
+  if (cmd === 'builtby') {
+    const b = storeCore.findBuild(loadStore(), rest[0]); if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 });
+    const w = P.builtBy(b);
+    return out({ ok: true, id: b.id, builder: w.builder, accounts: w.accounts, steps: Object.fromEntries(Object.entries(w.steps).map(([k, v]) => [k, { account: v.account, email: v.email, kind: v.kind, model: v.model }])), runs: b.pipeline?.builtBy ?? [] },
+      [`${b.id}: built by ${P.builtByLine(w.builder) || 'nobody yet'}`, ...(b.pipeline?.builtBy ?? []).map((x) => `  ${x.from.slice(0, 16).replace('T', ' ')} ${x.outcome.padEnd(7)} ${P.builtByLine(x)}`)].join('\n'));
+  }
   if (cmd === 'accounts') { const a = accountsNow(loadStore()); return out({ ok: true, accounts: a }, a.map((x) => `${x.name.padEnd(16)} ${x.role.padEnd(11)} ${x.fable ? 'Fable' : 'Opus '} (${x.fableFrom}) · ${x.running}/${x.parallel}${x.usable ? '' : ` · ${x.why}`}`).join('\n') || 'no accounts'); }
   if (cmd === 'account') {
     const patch = {};
@@ -562,7 +621,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto | failover <id> --from <account> [--kind usage|auth] [--log f] [--tried a,b] | builtby <id> [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

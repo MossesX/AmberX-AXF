@@ -43,8 +43,21 @@ const NAME_RE = /^[a-z0-9][a-z0-9-]{0,31}$/;
 /** A saved Claude account name (deploy/claude-login.mjs), or ''. */
 export const accountName = (v) => (NAME_RE.test(str(v, 40)) ? str(v, 40) : '');
 
+/**
+ * Who actually ran the build (Brett, Nov 9 2026: "Whatever account or API actually does the job, the orchestrator notes
+ * it"): one entry per login a session ran on, oldest first, at most 40. kind = subscription | api; outcome = ran |
+ * limited (the account stopped and the run moved on); steps = the step ids ticked while it ran.
+ */
+export function normBuiltBy(v) {
+  return (Array.isArray(v) ? v : []).filter((r) => r && typeof r === 'object' && accountName(r.account)).slice(-40).map((r) => ({
+    account: accountName(r.account), email: str(r.email, 200), kind: r.kind === 'api' ? 'api' : 'subscription', model: str(r.model, 40),
+    from: iso(r.from), to: iso(r.to), costUsd: Number(r.costUsd) > 0 ? +Number(r.costUsd).toFixed(4) : 0,
+    steps: (Array.isArray(r.steps) ? r.steps : []).map((x) => str(x, 40)).filter(Boolean).slice(0, 60), session: str(r.session, 120), outcome: r.outcome === 'limited' ? 'limited' : 'ran',
+  }));
+}
+
 export function emptyPipeline() {
-  return { queuedAt: '', queuedBy: '', account: '', session: '', slot: '', model: '', launchedAt: '', runs: 0, lastRun: null, split: null, splitRequested: '', note: '', route: '', dispatchedAt: '' };
+  return { queuedAt: '', queuedBy: '', account: '', session: '', slot: '', model: '', launchedAt: '', runs: 0, lastRun: null, split: null, splitRequested: '', note: '', route: '', dispatchedAt: '', builtBy: [] };
 }
 
 /** The record, every field in shape; null for nothing (a build the pipeline never touched carries none). */
@@ -56,10 +69,11 @@ export function normPipeline(p) {
     queuedAt: iso(p.queuedAt), queuedBy: str(p.queuedBy, 80),
     account: accountName(p.account), session: str(p.session, 120), slot: str(p.slot, 60), model: str(p.model, 20),
     launchedAt: iso(p.launchedAt), runs: Number.isInteger(p.runs) && p.runs > 0 ? p.runs : 0,
-    lastRun: lr ? { at: iso(lr.at), exit: Number.isInteger(lr.exit) ? lr.exit : null, outcome: OUTCOMES.includes(lr.outcome) ? lr.outcome : 'finished', stepsLeft: Number.isInteger(lr.stepsLeft) ? lr.stepsLeft : 0, account: accountName(lr.account), session: str(lr.session, 120) } : null,
+    lastRun: lr ? { at: iso(lr.at), exit: Number.isInteger(lr.exit) ? lr.exit : null, outcome: OUTCOMES.includes(lr.outcome) ? lr.outcome : 'finished', stepsLeft: Number.isInteger(lr.stepsLeft) ? lr.stepsLeft : 0, account: accountName(lr.account), session: str(lr.session, 120), ...(str(lr.email, 200) ? { email: str(lr.email, 200) } : {}), ...(Number(lr.costUsd) > 0 ? { costUsd: +Number(lr.costUsd).toFixed(4) } : {}) } : null,
     split: sp ? { at: iso(sp.at), by: str(sp.by, 80), provider: SPLIT_PROVIDERS.includes(sp.provider) ? sp.provider : 'hand', steps: Number.isInteger(sp.steps) ? sp.steps : 0, note: str(sp.note, 400) } : null,
     splitRequested: iso(p.splitRequested), note: str(p.note, 400),
     route: ROUTES.includes(p.route) ? p.route : '', dispatchedAt: iso(p.dispatchedAt),
+    builtBy: normBuiltBy(p.builtBy),
   };
   const empty = emptyPipeline();
   return JSON.stringify(out) === JSON.stringify(empty) ? null : out;

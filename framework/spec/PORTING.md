@@ -149,6 +149,13 @@ the orchestrator's dispatcher send a build to an API-key account) and `pipeline.
 routing and the one-build dispatch token (`framework/cli/dispatch-gate.mjs`) run only on the VPS host. No Kotlin twin:
 Android work is on hold and builds show only in the web console. A port needs `ROUTES` and the same normalisation.
 
+## Deferred: build-pipeline@1 builtBy (Nov 10 2026)
+
+`framework/core/build-pipeline.mjs` gained `pipeline.builtBy` (`normBuiltBy`: one entry per login a run used, with
+account, email, kind subscription | api, model, from / to, costUsd, steps ticked, session, outcome ran | limited) and
+`lastRun.email` / `lastRun.costUsd`. The failover chain that fills it (next subscription account, then an API account)
+runs only on the VPS host. No Kotlin twin: Android work is on hold. A port needs `normBuiltBy` and the same fields.
+
 ## Deferred: person-only actions, console refresh, UI choices (Nov 7 2026)
 
 Web only (Android on hold), Kotlin twins when the Android side resumes:

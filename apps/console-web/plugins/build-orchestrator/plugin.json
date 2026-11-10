@@ -374,6 +374,26 @@
         "output": "{ id, route }"
       },
       {
+        "id": "pipeline-builtby",
+        "route": "GET /pipeline/builtby/{build}",
+        "title": "Who built it",
+        "readOnly": true,
+        "description": "Which Claude account or API key actually ran a build: per run the account, email, subscription or API, model, cost and the steps it ticked, and the build's builder. A run whose account failed or hit its limit moved along the failover chain (next subscription account, then an API account under its caps); every hop is listed. Say 'who built skins'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ id, builder, accounts, steps, runs }"
+      },
+      {
         "id": "pipeline-settings",
         "route": "GET /pipeline/settings",
         "title": "Pipeline settings",
@@ -391,6 +411,10 @@
           "properties": {
             "apiOverflow": {
               "type": "boolean"
+            },
+            "failoverToApi": {
+              "type": "boolean",
+              "description": "The failover chain's last link: when a run's account fails or is limited and no subscription account can take it, move to an API-key account under its caps (on by default)"
             },
             "apiAccounts": {
               "type": "array",

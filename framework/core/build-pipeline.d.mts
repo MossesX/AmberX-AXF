@@ -7,13 +7,16 @@ export const OUTCOMES: Array<'finished' | 'requeued' | 'returned' | 'failed'>;
 export const SPLIT_PROVIDERS: Array<'claude' | 'rules' | 'hand'>;
 export const DEFAULT_MAX_RUNS: number;
 export const STATUS_AFTER: Readonly<Record<'finished' | 'requeued' | 'returned' | 'failed', string>>;
-export interface PipelineRun { at: string; exit: number | null; outcome: 'finished' | 'requeued' | 'returned' | 'failed'; stepsLeft: number; account: string; session: string }
+export interface PipelineRun { at: string; exit: number | null; outcome: 'finished' | 'requeued' | 'returned' | 'failed'; stepsLeft: number; account: string; session: string; email?: string; costUsd?: number }
+/** One login a session ran on (who actually built it): kind subscription | api; outcome limited = the account stopped and the run moved on. */
+export interface PipelineBuiltBy { account: string; email: string; kind: 'subscription' | 'api'; model: string; from: string; to: string; costUsd: number; steps: string[]; session: string; outcome: 'ran' | 'limited' }
 export interface PipelineSplit { at: string; by: string; provider: 'claude' | 'rules' | 'hand'; steps: number; note: string }
 export interface BuildPipeline {
   queuedAt: string; queuedBy: string; account: string; session: string; slot: string; model: string; launchedAt: string; runs: number;
-  lastRun: PipelineRun | null; split: PipelineSplit | null; splitRequested: string; note: string;
+  lastRun: PipelineRun | null; split: PipelineSplit | null; splitRequested: string; note: string; route: '' | 'api' | 'subscription'; dispatchedAt: string; builtBy: PipelineBuiltBy[];
 }
 export function accountName(v: unknown): string;
+export function normBuiltBy(v: unknown): PipelineBuiltBy[];
 export function emptyPipeline(): BuildPipeline;
 export function normPipeline(p: unknown): BuildPipeline | null;
 export function tableOf(b: { status?: string } | null | undefined): '' | 'pending' | 'queued' | 'building';

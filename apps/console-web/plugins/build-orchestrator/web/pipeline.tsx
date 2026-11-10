@@ -12,14 +12,15 @@ import { TABLE_LABEL } from '@console/axf/core/build-pipeline.mjs';
  * while the tab is on screen; Queue / Back to Pending / Split now go through the same CLI under the store lock.
  */
 
-type Pipeline = { route?: string; queuedAt: string; queuedBy: string; account: string; session: string; model: string; launchedAt: string; runs: number; note: string; splitRequested: string; split: { at: string; by: string; provider: string; steps: number; note: string } | null; lastRun: { at: string; exit: number | null; outcome: string; stepsLeft: number; account: string } | null } | null;
+type Pipeline = { route?: string; queuedAt: string; queuedBy: string; account: string; session: string; model: string; launchedAt: string; runs: number; note: string; splitRequested: string; split: { at: string; by: string; provider: string; steps: number; note: string } | null; lastRun: { at: string; exit: number | null; outcome: string; stepsLeft: number; account: string; email?: string; costUsd?: number } | null; builtBy?: BuiltBy[] } | null;
+type BuiltBy = { account: string; email: string; kind: string; model: string; from: string; to: string; costUsd: number; steps: string[]; outcome: string };
 type Row = { id: string; title: string; status: string; priority: string; steps: { done: number; total: number; left: number }; minutesLeft: number; nextModel: string; nextStep: string; needsApproval: boolean; needsSplit: boolean; pipeline: Pipeline; said: string; branch: string; pr: string; createdAt: string; updatedAt: string };
 type Account = { name: string; email: string; plan: string; role: string; kind?: string; label?: string; fable: boolean; fableFrom: string; parallel: number; running: number; free: number; usable: boolean; why: string; api?: { usable: boolean; why: string; spend: { day: number; week: number; dayCap: number; weekCap: number; state: string } | null } | null };
 type Status = {
   ok: boolean; at: string; table: { pending: Row[]; queued: Row[]; building: Row[] }; accounts: Account[];
   slots: { used: number; cap: number; free: number; queued: number; unavailable: boolean };
   plan: { launches: { id: string; account: string; model: string; phase: string; kind?: string; rule?: string }[]; waits: { id: string; why: string }[]; queue: string[]; idle: { reason: string; kind: string } | null };
-  settings: { parallelPerAccount: number; autoQueue: boolean; splitProvider: string; idleAfterMin: number; maxRuns: number; apiOverflow?: boolean };
+  settings: { parallelPerAccount: number; autoQueue: boolean; splitProvider: string; idleAfterMin: number; maxRuns: number; apiOverflow?: boolean; failoverToApi?: boolean };
   state: { at: string; idle: { reason: string; kind: string; since: string } | null; alerts: { key: string; at: string }[]; recent: { at: string; event: string; id: string; account?: string; model?: string; error?: string }[] };
 };
 type Api = { call: <T>(path: string) => Promise<T>; post: <T>(path: string, body: unknown) => Promise<T> };
@@ -67,6 +68,7 @@ export function PipelineTab({ api, log }: { api: Api; log: (t: string, l?: 'info
         <span className="pl-stat fx-muted" title={s.state.at ? `Last dispatcher tick ${fmtTime(s.state.at)}` : 'The dispatcher has not run yet on this VPS'}><Icon name="refresh" size={14} />{s.state.at ? `tick ${tickAge}` : 'no tick yet'}</span>
         {s.settings.autoQueue && <Chip tone="accent">Launch without asking: new builds queue by themselves</Chip>}
         <Switch label="API overflow" text="Every subscription account full or out → an API-key account (billed per token, under its caps)" checked={!!s.settings.apiOverflow} disabled={busy === 'pipeline/settings'} onChange={(on) => act('pipeline/settings', { apiOverflow: on }, `API overflow ${on ? 'on' : 'off'}`)} />
+        <Switch label="Failover to API" text="A run's account fails or hits its limit and no subscription account is left → an API-key account (under its caps)" checked={s.settings.failoverToApi !== false} disabled={busy === 'pipeline/settings'} onChange={(on) => act('pipeline/settings', { failoverToApi: on }, `Failover to API ${on ? 'on' : 'off'}`)} />
       </div>
       {idle && <Note tone={idle.kind === 'stuck' ? 'warning' : 'info'}>{idle.reason}{(idle as { since?: string }).since ? ` (since ${fmtTime((idle as { since?: string }).since ?? '')})` : ''}</Note>}
       {s.plan.launches.length > 0 && <Note tone="success">Next tick starts {s.plan.launches.map((l) => `${l.id} on ${l.account} (${l.model}${l.phase ? `, ${l.phase}` : ''})`).join(', ')}.</Note>}
@@ -123,6 +125,8 @@ type RouteStep = { to: string; label: string };
 const ROUTE_AUTO: RouteStep = { to: 'api', label: 'Auto' };
 const ROUTE_NEXT: Record<string, RouteStep> = { '': ROUTE_AUTO, api: { to: 'subscription', label: 'API' }, subscription: { to: 'auto', label: 'Subscriptions' } };
 const routeOf = (r?: string): RouteStep => ROUTE_NEXT[r ?? ''] ?? ROUTE_AUTO;
+/** Every login that ran the build (the failover chain's hops), oldest first: account, email, model, cost, steps ticked. */
+const builtByTitle = (runs: BuiltBy[]) => runs.map((x) => `${fmtTime(x.from)} ${x.account}${x.kind === 'api' ? ' [API]' : ''}${x.email ? ` (${x.email})` : ''} · ${x.model || '?'}${x.costUsd > 0 ? ` · $${x.costUsd.toFixed(2)}` : ''}${x.steps.length ? ` · ${x.steps.join(', ')}` : ''}${x.outcome === 'limited' ? ' · stopped, moved on' : ''}`).join('\n');
 
 function PipelineCard({ r, table, busy, wait, launch, act }: { r: Row; table: 'pending' | 'queued' | 'building'; busy: boolean; wait: string; launch?: { account: string; model: string; phase: string; kind?: string; rule?: string }; act: (path: string, body: Record<string, unknown>, what: string) => Promise<void> }) {
   const p = r.pipeline;
@@ -142,6 +146,7 @@ function PipelineCard({ r, table, busy, wait, launch, act }: { r: Row; table: 'p
         {p?.launchedAt && table === 'building' && <span className="fx-muted" title={fmtTime(p.launchedAt)}><Icon name="clock" size={13} />{ago(p.launchedAt)}</span>}
         {p?.queuedAt && table === 'queued' && <span className="fx-muted" title={`Queued ${fmtTime(p.queuedAt)} by ${p.queuedBy}`}><Icon name="clock" size={13} />queued {ago(p.queuedAt)}</span>}
         {p?.lastRun && table !== 'building' && <span className="fx-muted" title={`Last run ended ${fmtTime(p.lastRun.at)}`}><Icon name="clock" size={13} />last run: {p.lastRun.outcome}{p.lastRun.exit != null ? ` (exit ${p.lastRun.exit})` : ''}</span>}
+        {(p?.builtBy?.length ?? 0) > 0 && <span title={builtByTitle(p!.builtBy!)}><Icon name="user" size={13} />built by {[...new Set(p!.builtBy!.map((x) => `${x.account}${x.kind === 'api' ? ' (API)' : ''}`))].join(' → ')}</span>}
         {table === 'building' && <WatchLiveFor branch={r.branch} text={r.id} />}
       </div>
       {launch && <p className="fx-small"><Icon name="play" size={13} /> Next tick: starts on <b>{launch.account}</b> ({launch.model}{launch.phase ? `, ${launch.phase}` : ''}){launch.kind === 'api' ? ` · API key, ${launch.rule === 'override' ? 'set to API' : 'overflow'}` : ''}</p>}

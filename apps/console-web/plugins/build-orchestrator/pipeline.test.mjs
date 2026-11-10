@@ -244,6 +244,48 @@ t('dispatch gate: a build launch needs the orchestrator token for that build; ot
 });
 
 // ---------------- the CLI end to end (scratch store, fake accounts, fake launcher, fake splitter)
+// ---------------- failover chain (Brett, Nov 9 2026: "if it doesn't work, it goes to another subscription, and if there's no subscriptions, it goes to an API")
+t('failoverFor: next subscription, then an API account under its caps; never one already tried; route and setting respected', () => {
+  const s = P.normSettings({ parallelPerAccount: 1 });
+  const acc = P.accountViews([{ name: 'w1', role: 'worker', plan: 'max', limited: null, running: ['x'] }, { name: 'w2', role: 'worker', plan: 'pro', limited: null, running: [] }, apiRow('hulu-api'), apiRow('capped-api', { spend: { day: 9, week: 9, state: 'capped', why: 'daily cap' } })], {}, { settings: s });
+  const b = build('x', 'running', [step('s1', 'Opus')]);
+  assert.deepEqual([P.failoverFor(b, acc, 'Opus', s, ['w1']).account, P.failoverFor(b, acc, 'Opus', s, ['w1']).kind], ['w2', 'subscription'], 'the next subscription first');
+  const api = P.failoverFor(b, acc, 'Opus', s, ['w1', 'w2']);
+  assert.deepEqual([api.account, api.kind], ['hulu-api', 'api'], 'no subscription left: an API account under its caps'); assert.match(api.why, /no subscription account can run it/);
+  assert.equal(P.failoverFor(b, acc, 'Opus', s, ['w1', 'w2', 'hulu-api']).account, '', 'a capped API account is skipped');
+  assert.match(P.failoverFor(b, acc, 'Opus', s, ['w1', 'w2', 'hulu-api']).why, /capped-api: spend cap reached/);
+  const keep = P.failoverFor(build('x', 'running', [], { pipeline: { route: 'subscription' } }), acc, 'Opus', s, ['w1', 'w2']);
+  assert.equal(keep.account, ''); assert.match(keep.why, /kept off API accounts/);
+  const off = P.failoverFor(b, acc, 'Opus', P.normSettings({ failoverToApi: false }), ['w1', 'w2']);
+  assert.equal(off.account, ''); assert.match(off.why, /failover to API is off/);
+  assert.equal(P.failoverFor(build('x', 'running', [], { pipeline: { route: 'api' } }), acc, 'Opus', s, ['hulu-api']).account, '', 'set to API: stays on API accounts');
+  assert.equal(P.failoverFor(b, acc, 'Fable', s, ['w1']).account, 'hulu-api', 'Fable: the Pro account cannot run it, the API key can');
+  assert.equal(P.normSettings({}).failoverToApi, true);
+});
+t('who built it: session events → segments per login with cost; steps ticked in each window; the builder', () => {
+  const ev = [
+    { event: 'session-start', session: 'S', at: '2026-11-09T10:00:00Z' },
+    { event: 'session-login', session: 'S', account: 'w1', email: 'one@x', model: 'opus', at: '2026-11-09T10:00:01Z' },
+    { event: 'session-part', session: 'S', account: 'w1', costUsd: 1.5, at: '2026-11-09T10:20:00Z' },
+    { event: 'session-login', session: 'S', account: 'hulu-api', email: '', model: 'opus', at: '2026-11-09T10:20:05Z' },
+    { event: 'session-login', session: 'OTHER', account: 'w9', at: '2026-11-09T10:21:00Z' },
+    { event: 'session-end', session: 'S', account: 'hulu-api', exit: 0, costUsd: 4, at: '2026-11-09T10:50:00Z' },
+  ];
+  const seg = P.segmentsOf(ev, 'S');
+  assert.equal(seg.length, 2); assert.deepEqual(seg.map((x) => [x.account, x.costUsd, x.cut]), [['w1', 1.5, true], ['hulu-api', 2.5, false]]);
+  const b = build('x', 'running', [{ ...step('s1', 'Opus', true), doneAt: '2026-11-09T10:10:00Z' }, { ...step('s2', 'Opus', true), doneAt: '2026-11-09T10:30:00Z' }, { ...step('s3', 'Opus', true), doneAt: '2026-11-09T10:40:00Z' }]);
+  const acc = P.accountViews([{ name: 'w1', role: 'worker', plan: 'max', email: 'one@x' }, apiRow('hulu-api')], {}, {});
+  const runs = P.builtByEntries(b, seg, acc, { session: 'S' });
+  assert.deepEqual(runs.map((r) => [r.account, r.kind, r.steps, r.outcome]), [['w1', 'subscription', ['s1'], 'limited'], ['hulu-api', 'api', ['s2', 's3'], 'ran']]);
+  const p = BP.normPipeline({ builtBy: runs });
+  assert.equal(p.builtBy.length, 2); assert.equal(p.builtBy[1].costUsd, 2.5);
+  const w = P.builtBy({ ...b, pipeline: p });
+  assert.equal(w.builder.account, 'hulu-api'); assert.equal(w.steps.s1.account, 'w1'); assert.deepEqual(w.accounts, ['w1', 'hulu-api']);
+  assert.match(P.builtByLine(w.builder), /^hulu-api \[API\] \(opus, \$2\.50\): s2, s3$/);
+  const run = P.endOutcome(b, { exit: 0, account: 'hulu-api', email: 'k@x', costUsd: 4 }).run;
+  assert.equal(run.account, 'hulu-api'); assert.equal(run.email, 'k@x'); assert.equal(run.costUsd, 4);
+});
+
 const e2e = process.env.AXF_PIPELINE_TEST_E2E !== 'off' && existsSync(join(HERE, 'pipeline.mjs'));
 if (e2e) {
   const tmp = mkdtempSync(join(tmpdir(), 'axf-pipeline-'));
@@ -353,9 +395,16 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.deepEqual(r.launched.map((l) => l.id), ['alpha']); assert.equal(find('alpha').status, 'running'); assert.equal(find('alpha').pipeline.runs, 2);
     assert.match(find('alpha').notes.map((x) => x.text).join('\n'), /back in the Queue \(run 1\)/);
     // beta's session ticks its step and ends cleanly
+    const bses = find('beta').pipeline.session;
+    writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-login', session: bses, name: 'beta', account: 'w-pro', email: 'pro@x', model: 'opus', at: new Date().toISOString() }) + '\n');
     orch('act', 'step', 'beta', 's1', 'done');
-    writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('beta').pipeline.session, name: 'beta', exit: 0, at: new Date().toISOString() }) + '\n');
+    writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: bses, name: 'beta', account: 'w-pro', email: 'pro@x', exit: 0, costUsd: 0.75, at: new Date(Date.now() + 1000).toISOString() }) + '\n');
     r = json(pipe('tick', '--json'));
+    const bb = find('beta').pipeline;
+    assert.deepEqual(bb.builtBy.map((x) => [x.account, x.email, x.kind, x.steps, x.costUsd]), [['w-pro', 'pro@x', 'subscription', ['s1'], 0.75]], 'the account that actually ran it is recorded');
+    assert.equal(bb.lastRun.account, 'w-pro'); assert.equal(bb.lastRun.email, 'pro@x');
+    assert.match(find('beta').notes.map((x) => x.text).join('\n'), /Built by w-pro \(pro@x, opus, \$0\.75\): s1/);
+    assert.match(json(pipe('builtby', 'beta', '--json')).builder.account, /^w-pro$/);
     assert.ok(['complete', 'built'].includes(find('beta').status), find('beta').status);
     assert.equal(find('beta').pipeline.lastRun.outcome, 'finished');
   });
@@ -385,6 +434,15 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     orch('act', JSON.stringify({ action: 'add', id: 'delta', title: 'Delta', detail: 'Add the delta screen.\nDesign the delta schema.' }));
     const r = json(pipe('intake', '--json')); assert.deepEqual(r.split.map((x) => x.id), ['delta']);
     assert.equal(find('delta').pipeline.split.provider, 'rules'); assert.ok(find('delta').steps.length >= 3); assert.match(find('delta').pipeline.note, /rules/);
+  });
+  t('e2e failover: the account that stopped is marked limited, the run moves to the next subscription, then nothing left (no API account)', () => {
+    const r = json(pipe('failover', 'beta', '--from', 'w-max', '--kind', 'usage', '--json'));
+    assert.deepEqual([r.state, r.account, r.kind], ['run', 'w-pro', 'subscription']);
+    assert.equal(find('beta').pipeline.account, 'w-pro'); assert.match(find('beta').notes.at(-1).text, /Account w-max hit its limit.*moved to w-pro/);
+    const acc = json(pipe('accounts', '--json')).accounts; assert.ok(acc.find((a) => a.name === 'w-max').limited, 'w-max is out now');
+    const none = json(pipe('failover', 'beta', '--from', 'w-pro', '--kind', 'auth', '--tried', 'w-max', '--json'));
+    assert.equal(none.state, 'none'); assert.match(find('beta').notes.at(-1).text, /failover chain has nothing left/);
+    assert.match(pipe('failover', 'beta', '--from', 'w-pro', '--kind', 'auth', '--tried', 'w-max').stdout, /^none /);
   });
 }
 

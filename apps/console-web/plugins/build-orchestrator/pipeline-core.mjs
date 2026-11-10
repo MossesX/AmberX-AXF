@@ -49,6 +49,8 @@ export const DEFAULTS = Object.freeze({
   apiOverflow: false,
   /** API accounts the dispatcher may use ([] = every API worker in claude-workers@1). */
   apiAccounts: [],
+  /** The failover chain: when a run's account fails or is limited and no subscription account is left, go on to an API-key account (under its caps). */
+  failoverToApi: true,
 });
 const LIMITS = { parallelPerAccount: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90] };
 
@@ -69,6 +71,7 @@ export function normSettings(raw = {}) {
     splitProvider: ['claude', 'rules', 'off'].includes(o.splitProvider) ? o.splitProvider : DEFAULTS.splitProvider,
     autoQueue: o.autoQueue === true,
     apiOverflow: o.apiOverflow === true,
+    failoverToApi: o.failoverToApi !== false,
     apiAccounts: [...new Set((typeof o.apiAccounts === 'string' ? o.apiAccounts.split(',') : list(o.apiAccounts)).map((n) => str(n, 32).toLowerCase()).filter((n) => /^[a-z0-9][a-z0-9-]{0,31}$/.test(n)))],
   };
 }
@@ -176,6 +179,92 @@ export function routeFor(b, accounts, model, settings = normSettings()) {
     : { account: '', kind: '', rule: 'overflow', why: `${subWhy}; overflow: ${apiNoAccountWhy(accounts, model)}` };
 }
 
+// ------------------------------------------------------------------ failover chain (Brett, Nov 9 2026)
+// "The orchestrator assigns a model; if it doesn't work, it goes to another subscription, and if there's no
+// subscriptions, it goes to an API. Whatever account or API actually does the job, the orchestrator notes it."
+
+/**
+ * The next link of the chain once the account a run was on failed (login failed or limited): the next subscription
+ * account in priority order (candidates()), then an API-key account under its caps (apiCandidates()). `tried` = every
+ * account this run already used (never retried). A build set to `route subscription` never goes to API; one set to
+ * `route api` stays on API accounts. Settings `failoverToApi: false` stops the chain at the subscriptions.
+ * Returns { account, kind, why } (account '' = the chain is exhausted, `why` says each link's reason).
+ */
+export function failoverFor(b, accounts, model, settings = normSettings(), tried = []) {
+  const skip = new Set(list(tried).map((n) => str(n, 40)));
+  const left = list(accounts).filter((a) => !skip.has(a.name));
+  const route = b?.pipeline?.route || '';
+  if (route !== 'api') {
+    const sub = candidates(left, model)[0];
+    if (sub) return { account: sub.name, kind: 'subscription', why: `next subscription account: ${sub.name}` };
+  }
+  const subWhy = route === 'api' ? 'set to run on API' : noAccountWhy(left.filter((a) => a.kind !== 'api'), model);
+  if (route === 'subscription') return { account: '', kind: '', why: `${subWhy} (this build is kept off API accounts)` };
+  if (settings.failoverToApi === false && route !== 'api') return { account: '', kind: '', why: `${subWhy} (failover to API is off)` };
+  const api = apiCandidates(left, model)[0];
+  return api ? { account: api.name, kind: 'api', why: `no subscription account can run it (${subWhy}): API account ${api.name}` }
+    : { account: '', kind: '', why: `${subWhy}; ${apiNoAccountWhy(left, model)}` };
+}
+
+/**
+ * Who actually ran one session, from the headless event stream (session-login / session-part / session-end lines of
+ * deploy/claude-headless.sh): one segment per login the session used, with what it cost there.
+ * → [{ account, email, model, from, to, costUsd, exit, cut }] (cut = the account stopped it and the run moved on).
+ */
+export function segmentsOf(events, session, since = 0) {
+  const out = []; let cur = null; let base = 0;
+  for (const e of list(events)) {
+    if (!e || e.session !== session || Date.parse(e.at || 0) < since) continue;
+    if (e.event === 'session-login' && e.account) {
+      if (cur) out.push({ ...cur, to: str(e.at, 40), cut: true });
+      cur = { account: str(e.account, 40), email: str(e.email, 200), model: str(e.model, 40), from: str(e.at, 40), to: '', costUsd: 0, exit: null, cut: false };
+    } else if (e.event === 'session-part' && cur) {
+      const total = Number(e.costUsd) || 0; cur.costUsd = +Math.max(0, total - base).toFixed(4); base = total; cur.cut = true;
+    } else if (e.event === 'session-end' && cur) {
+      const total = Number(e.costUsd) || 0;
+      out.push({ ...cur, to: str(e.at, 40), costUsd: +Math.max(0, total - base).toFixed(4), exit: Number.isInteger(e.exit) ? e.exit : null, cut: false, ...(e.account && !cur.account ? { account: str(e.account, 40), email: str(e.email, 200) } : {}) });
+      cur = null;
+    }
+  }
+  if (cur) out.push(cur);
+  return out;
+}
+
+/** Steps of `b` ticked inside [from, to) (to '' = up to now). */
+export function stepsIn(b, from, to = '') {
+  const f = Date.parse(from || 0) || 0; const t = to ? Date.parse(to) : Infinity;
+  return list(b?.steps).filter((s) => s.done && s.doneAt && Date.parse(s.doneAt) >= f && Date.parse(s.doneAt) < t).map((s) => s.id);
+}
+
+/** A session's segments → pipeline.builtBy entries (kind from the account list: api | subscription). */
+export function builtByEntries(b, segments, accounts = [], { session = '' } = {}) {
+  return list(segments).map((s) => {
+    const a = list(accounts).find((x) => x.name === s.account);
+    return { account: s.account, email: s.email || a?.email || '', kind: a?.kind === 'api' ? 'api' : 'subscription', model: s.model, from: s.from, to: s.to, costUsd: s.costUsd, steps: stepsIn(b, s.from, s.to), session, outcome: s.cut ? 'limited' : 'ran' };
+  });
+}
+
+/**
+ * Who built what: per step the builtBy entry whose window holds its tick, and the build's builder (the account that
+ * ticked the most steps; ties go to the latest). → { steps: { s1: entry }, builder: entry | null, accounts: [names] }
+ */
+export function builtBy(b) {
+  const runs = list(b?.pipeline?.builtBy);
+  const steps = {};
+  for (const r of runs) for (const id of list(r.steps)) steps[id] = r;
+  const count = new Map();
+  for (const r of Object.values(steps)) count.set(r.account, (count.get(r.account) ?? 0) + 1);
+  let builder = null; let best = -1;
+  for (const r of runs) { const n = count.get(r.account) ?? 0; if (n >= best && n > 0) { best = n; builder = r; } }
+  return { steps, builder, accounts: [...new Set(runs.map((r) => r.account))] };
+}
+
+/** One line: "mossesx-max (m@x, Opus, $1.20): s1, s2". */
+export function builtByLine(r) {
+  if (!r) return '';
+  return `${r.account}${r.kind === 'api' ? ' [API]' : ''} (${[r.email, r.model, Number(r.costUsd) > 0 ? `$${Number(r.costUsd).toFixed(2)}` : ''].filter(Boolean).join(', ')})${list(r.steps).length ? `: ${r.steps.join(', ')}` : ''}`;
+}
+
 /** Why no account takes `model` right now, in plain words. */
 export function noAccountWhy(accounts, model) {
   const usable = list(accounts).filter((a) => a.usable);
@@ -228,12 +317,12 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
 // ------------------------------------------------------------------ session end
 
 /** A run ended: the build's new status, its lastRun record and a note line. */
-export function endOutcome(b, { exit, account = '', session = '', now = new Date().toISOString() } = {}, settings = normSettings()) {
+export function endOutcome(b, { exit, account = '', email = '', costUsd = 0, session = '', now = new Date().toISOString() } = {}, settings = normSettings()) {
   const stepsLeft = openSteps(b).length;
   const runs = (b.pipeline?.runs ?? 0) || 1;
   const phaseSwitch = stepsLeft > 0 && !!b.pipeline?.model && nextModel(b) !== b.pipeline.model;
   const outcome = outcomeOf({ exit, stepsLeft, runs, phaseSwitch }, settings.maxRuns);
-  const run = { at: now, exit: Number.isInteger(exit) ? exit : null, outcome, stepsLeft, account: account || b.pipeline?.account || '', session: session || b.pipeline?.session || '' };
+  const run = { at: now, exit: Number.isInteger(exit) ? exit : null, outcome, stepsLeft, account: account || b.pipeline?.account || '', session: session || b.pipeline?.session || '', ...(email ? { email } : {}), ...(Number(costUsd) > 0 ? { costUsd: +Number(costUsd).toFixed(4) } : {}) };
   let status = STATUS_AFTER[outcome];
   if (outcome === 'finished') status = b.pr && !b.mergedAt ? 'built' : 'complete';
   return { outcome, status, run, note: outcomeLine({ ...b, pipeline: { ...(b.pipeline ?? {}), runs } }, run) };
