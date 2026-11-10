@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2209,
- "updatedAt": "2026-11-10T02:42:40.018Z",
+ "rev": 2210,
+ "updatedAt": "2026-11-10T02:43:10.341Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -130738,10 +130738,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/vps-orchestrator-only-rule-vps-settings-console",
-   "pr": "",
+   "pr": "#431",
    "priority": "P1",
    "createdAt": "2026-11-09T19:10:08.745Z",
-   "updatedAt": "2026-11-10T02:36:19.879Z",
+   "updatedAt": "2026-11-10T02:43:04.549Z",
    "builtAt": "",
    "notes": [
     {
@@ -130939,7 +130939,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
