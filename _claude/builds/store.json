@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2424,
- "updatedAt": "2026-11-10T15:51:56.564Z",
+ "rev": 2425,
+ "updatedAt": "2026-11-10T15:53:21.178Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -136820,10 +136820,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/claude-accounts-manager-plugin-one-ordered-list",
-   "pr": "",
+   "pr": "#448",
    "priority": "P1",
    "createdAt": "2026-11-10T15:25:48.900Z",
-   "updatedAt": "2026-11-10T15:51:55.143Z",
+   "updatedAt": "2026-11-10T15:53:19.967Z",
    "builtAt": "",
    "notes": [
     {
@@ -136958,7 +136958,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
