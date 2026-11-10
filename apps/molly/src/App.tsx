@@ -1,5 +1,7 @@
 import { useMemo, useSyncExternalStore } from 'react';
-import { AccountView, AppShell, installLibraries, SlotsProvider, useRuntime, type ViewMap } from './axf/react';
+import { AccountView, AppShell, DEFAULT_HUB, installLibraries, SlotsProvider, useRuntime, type ViewMap } from './axf/react';
+import { useHubMenuStatus } from './axf/libs/hub/react';
+import manifest from '../axf.manifest.json';
 import type { AxfWebLibrary } from './axf/react/library';
 import { library as settingsLibrary } from './axf/libs/settings';
 import { toolbarsLibrary } from './axf/libs/toolbars';
@@ -34,6 +36,8 @@ const libraries = [settingsLibrary, toolbarsLibrary, ...plugins];
 
 export function App() {
   const rt = useRuntime();
+  // the axHub connection as a live status (menu rows with `status: source:hub`: green connected, red not)
+  useHubMenuStatus((manifest as { developer?: { hub?: string } }).developer?.hub ?? DEFAULT_HUB);
   const contributed = useMemo(() => installLibraries(rt, libraries), [rt]);
   useSyncExternalStore(onMollyHooks, mollyHooksRev, mollyHooksRev);
   const extra = mollyHooks().views;

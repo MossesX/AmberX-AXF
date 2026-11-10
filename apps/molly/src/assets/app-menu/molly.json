@@ -85,6 +85,196 @@
             ]
           },
           {
+            "id": "appearance",
+            "label": "Appearance",
+            "icon": "palette",
+            "hint": "Skin, day or night, density, text size and motion: a pick applies at once.",
+            "items": [
+              {
+                "id": "skin",
+                "label": "Skin",
+                "icon": "layers",
+                "setting": "molly.look.skin",
+                "status": {
+                  "source": "source:molly.skin",
+                  "tooltip": "Skin in use"
+                },
+                "hint": "The whole look of Molly.",
+                "choices": [
+                  {
+                    "value": "molly-flagship",
+                    "label": "Flagship",
+                    "hint": "Porcelain, ink and violet."
+                  },
+                  {
+                    "value": "molly-flagship-night",
+                    "label": "Flagship Night",
+                    "hint": "Graphite and violet, for after dark."
+                  },
+                  {
+                    "value": "own",
+                    "label": "Molly's own look",
+                    "hint": "No skin: Molly's own assets."
+                  }
+                ]
+              },
+              {
+                "id": "mode",
+                "label": "Day / night",
+                "icon": "moon",
+                "setting": "molly.look.mode",
+                "cycle": true,
+                "hint": "Click to switch between day and night.",
+                "choices": [
+                  {
+                    "value": "day",
+                    "label": "Day",
+                    "hint": "Light surfaces."
+                  },
+                  {
+                    "value": "night",
+                    "label": "Night",
+                    "hint": "Dark surfaces."
+                  }
+                ]
+              },
+              {
+                "id": "density",
+                "label": "Density",
+                "icon": "sliders",
+                "setting": "molly.look.density",
+                "hint": "How tightly rows and controls are packed.",
+                "choices": [
+                  {
+                    "value": "compact",
+                    "label": "Compact",
+                    "hint": "More on screen."
+                  },
+                  {
+                    "value": "standard",
+                    "label": "Standard",
+                    "hint": "Balanced."
+                  },
+                  {
+                    "value": "roomy",
+                    "label": "Roomy",
+                    "hint": "More breathing room."
+                  }
+                ]
+              },
+              {
+                "id": "text",
+                "label": "Text size",
+                "icon": "type",
+                "setting": "molly.look.text",
+                "hint": "The size of text everywhere.",
+                "choices": [
+                  {
+                    "value": "compact",
+                    "label": "Small",
+                    "hint": "Compact text sizes."
+                  },
+                  {
+                    "value": "molly-flagship",
+                    "label": "Medium",
+                    "hint": "The flagship text sizes."
+                  },
+                  {
+                    "value": "reader",
+                    "label": "Large",
+                    "hint": "Larger, easier to read."
+                  }
+                ]
+              },
+              {
+                "id": "motion",
+                "label": "Motion",
+                "icon": "zap",
+                "setting": "molly.look.motion",
+                "hint": "Animations: full, or kept to a minimum.",
+                "choices": [
+                  {
+                    "value": "molly-flagship",
+                    "label": "Full",
+                    "hint": "Quick, quiet animations."
+                  },
+                  {
+                    "value": "minimal-motion",
+                    "label": "Minimal",
+                    "hint": "Almost no animation."
+                  }
+                ]
+              },
+              {
+                "id": "appearance-sep",
+                "separator": true
+              },
+              {
+                "id": "appearance-settings",
+                "label": "Appearance settings…",
+                "icon": "settings",
+                "action": "settings.open:appearance",
+                "hint": "Settings → Appearance: every skin and theme."
+              }
+            ]
+          },
+          {
+            "id": "status",
+            "label": "Status",
+            "icon": "zap",
+            "status": {
+              "source": "source:hub",
+              "tooltip": "axHub connection"
+            },
+            "hint": "Live status: axHub, the shared look, the skin and your role.",
+            "items": [
+              {
+                "id": "status-hub",
+                "label": "axHub connection",
+                "icon": "cloud",
+                "action": "nav:axhub",
+                "status": {
+                  "source": "source:hub",
+                  "tooltip": "axHub connection"
+                },
+                "hint": "Green when Molly is connected to axHub, red when not. Opens axHub."
+              },
+              {
+                "id": "status-look",
+                "label": "Look sync",
+                "icon": "palette",
+                "action": "settings.open:appearance",
+                "status": {
+                  "source": "source:molly.look",
+                  "tooltip": "Look sync"
+                },
+                "hint": "Green when the shared look on axHub is in sync, red when axHub can't be reached."
+              },
+              {
+                "id": "status-skin",
+                "label": "Skin",
+                "icon": "layers",
+                "action": "settings.open:appearance",
+                "status": {
+                  "source": "source:molly.skin",
+                  "tooltip": "Skin"
+                },
+                "hint": "Which skin is on."
+              },
+              {
+                "id": "status-role",
+                "label": "Role",
+                "icon": "user",
+                "action": "nav:account",
+                "status": {
+                  "source": "source:molly.role",
+                  "tooltip": "Role"
+                },
+                "hint": "Who you are in Molly. Opens Account."
+              }
+            ]
+          },
+          {
             "id": "s1",
             "separator": true
           },

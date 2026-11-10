@@ -4,6 +4,8 @@ import { createAxf, type AxfManifest } from './axf/core';
 import { AxfProvider, HubAppearanceSource, DEFAULT_HUB } from './axf/react';
 import manifest from '../axf.manifest.json';
 import { registerActions } from './actions';
+import { installLookChoices } from './molly/look';
+import { installStatusSources } from './molly/status';
 import { App } from './App';
 import { deepLink } from './molly/apps';
 import './axf/ui/axf.css';
@@ -22,6 +24,9 @@ const axf = createAxf({
   assets: Object.values({ ...sharedAssets, ...ownAssets, ...overrideAssets }),
 });
 registerActions(axf);
+// the menu's Appearance choices and Status rows (flagship skin s8)
+installLookChoices(axf);
+installStatusSources(axf);
 window.addEventListener('hashchange', () => { const l = deepLink(window.location.hash); if (l) axf.navigate(l.app.id); });
 
 // The look comes from axHub only (Brett, Nov 1 2026): Molly reads and writes the one shared look on axHub's data server.

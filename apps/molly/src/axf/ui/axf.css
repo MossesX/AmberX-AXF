@@ -570,7 +570,7 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 @media (prefers-reduced-motion: reduce) { .fx-dropdown { animation: none; } .fx-menu__item, .fx-menubar__btn { transition: none; } }
 
 /* Tooltips (components/TipLayer.tsx): a chrome element's title shown as a small inverted tip under it (above when there
-   is no room), fading in once it is placed. */
+   is no room; placeTip.ts), fading in once it is placed. */
 .fx-tip {
   position: fixed; left: var(--fx-tip-x); top: var(--fx-tip-y); z-index: 95; pointer-events: none;
   max-width: min(calc(var(--fx-space) * 40), calc(100vw - var(--fx-dens-gap-3xl) * 2));
@@ -579,8 +579,6 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
   font: 500 var(--fx-type-scale-xs) / 1.35 var(--fx-font); letter-spacing: 0.01em; white-space: normal;
   opacity: 0;
 }
-.fx-tip[data-fx-side='below'] { margin-top: var(--fx-dens-gap-md); }
-.fx-tip[data-fx-side='above'] { transform: translateY(-100%); margin-top: calc(var(--fx-dens-gap-md) * -1); }
 .fx-tip[data-fx-ready='on'] { opacity: 1; transition: opacity var(--fx-motion) var(--fx-ease); }
 @media (prefers-reduced-motion: reduce) { .fx-tip[data-fx-ready='on'] { transition: none; } }
 

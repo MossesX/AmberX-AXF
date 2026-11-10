@@ -191,6 +191,8 @@
     "src/axf/assets/design-package/ink-terminal.json": "a20f4df12e47cbe4",
     "src/axf/assets/design-package/kiosk-display.json": "a9a1221e3f61f23c",
     "src/axf/assets/design-package/midnight-pro.json": "3a5461c7a1b80c5c",
+    "src/axf/assets/design-package/molly-flagship-night.json": "d16e3163174e44aa",
+    "src/axf/assets/design-package/molly-flagship.json": "d280fbcdd15b97ca",
     "src/axf/assets/design-package/neon-night.json": "0d9f72e5dd99d815",
     "src/axf/assets/design-package/ops-center.json": "9b239977c90c9cd5",
     "src/axf/assets/design-package/quiet-focus.json": "7820045d24c0f667",
@@ -784,7 +786,7 @@
     "src/axf/react/components/SkinScope.tsx": "a5afc1f4b2310d80",
     "src/axf/react/components/Slots.tsx": "bab3b097bda69aa1",
     "src/axf/react/components/TabGroup.tsx": "05e0c0ac3854c3c5",
-    "src/axf/react/components/TipLayer.tsx": "49001d8390671bc6",
+    "src/axf/react/components/TipLayer.tsx": "25ce4cb3d5aa2d98",
     "src/axf/react/components/Waiting.tsx": "ca0d5d0572d7b5b0",
     "src/axf/react/components/WatchLive.tsx": "6c447433cdcc43d4",
     "src/axf/react/components/Widgets.tsx": "67a3554da3084a61",
@@ -913,6 +915,6 @@
     "src/axf/schemas/shipped-manifest.json": "b0ed855f1141e630",
     "src/axf/schemas/swarm.json": "35dd72b97f7a4a89",
     "src/axf/schemas/ui-review.json": "0a34b5e29eb76cca",
-    "src/axf/ui/axf.css": "5597d8cb166f58d1"
+    "src/axf/ui/axf.css": "f2414bd7784666ee"
   }
 }
