@@ -22,12 +22,17 @@
  *                                  Queue. Every former launch path (Build manager Start, Fix with Claude, feature assist) calls this.
  *   … show <id>                    one build as the table shows it (status, steps, pipeline record)
  *   … route <id> api|subscription|auto   the per-build override: run on an API-key account, never on one, or the default
+ *   … api-usage [--json]           what the orchestrator's own API calls cost: cache hits, batch vs direct, savings (api-usage@1 ledger)
+ *   … api-poll [--json]            collect ended Message Batches now (the tick does this every round)
  *
  * One way to start builds (Brett, Nov 9 2026: "It has to be the orchestrator"): the tick is the only caller of the
  * launcher for a build. It issues a one-build dispatch token (framework/cli/dispatch-gate.mjs) and passes it in
  * AXF_DISPATCH_TOKEN; claude-headless.sh refuses a build launch without one.
  * API jobs: a build goes to an API-key account (hulu-api, mossesx-api…) by its per-build override (route api) or the
  * overflow rule (apiOverflow, off by default), only with a key, under its caps (pipeline-core.mjs routeFor()).
+ * Orchestrator calls on API keys (Brett, Nov 9 2026): the split, when its login is an API key, goes to the Messages API with
+ * prompt caching (system, rules, tools cached) and, when the build is not urgent (apiUrgent), through the Message Batches
+ * API at half price; the tick collects ended batches first. Usage and savings land in api-usage.jsonl (api-jobs-core.mjs).
  * Watchdog hook: afterTick(fn) registers fn({ state, plan, launched, ended, failed }) to run at the end of every tick
  * (build running-builds-watchdog plugs in here; a hook that throws is logged and never stops the tick).
  * Shipped manifests: the first hook ships every newly landed build's shipped-manifest@1 to Shipped features.
@@ -45,6 +50,8 @@ import { homedir, tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as P from './pipeline-core.mjs';
+import * as AJ from './api-jobs-core.mjs';
+import { costUsd, loadPricing } from '../../../../framework/cli/model-pricing.mjs';
 import * as orch from './web/orchestrator-core.mjs';
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
 import { addendumBlock, saidBlock, subtitle } from '../../../../framework/core/build-origin.mjs';
@@ -81,7 +88,7 @@ export function pipeDir(env = process.env) {
   const hub = join(env.AXHUB_PROJECTS_DIR || '/projects', 'amberx-axf', '_data');
   return existsSync(hub) ? join(hub, 'pipeline') : join(homedir(), '.axf', 'pipeline');
 }
-const files = () => { const d = pipeDir(); return { dir: d, settings: join(d, 'settings.json'), accounts: join(d, 'accounts.json'), state: join(d, 'state.json'), log: join(d, 'log.jsonl') }; };
+const files = () => { const d = pipeDir(); return { dir: d, settings: join(d, 'settings.json'), accounts: join(d, 'accounts.json'), state: join(d, 'state.json'), log: join(d, 'log.jsonl'), usage: join(d, 'api-usage.jsonl'), batches: join(d, 'api-batches.json') }; };
 
 /** The Claude settings document's values (owner-only ones included), {} when unreadable. */
 export function claudeSettings(env = process.env) { return readJson(claudeSettingsFile(env))?.values ?? {}; }
@@ -187,10 +194,92 @@ export function unqueue(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
   return r;
 }
 
+// ------------------------------------------------------------------ API jobs (prompt caching, Message Batches, usage)
+
+const API_JOBS = join(HERE, 'api-jobs.mjs');
+/** Run api-jobs.mjs (async HTTP) from this synchronous dispatcher; the key goes in the child's environment only. */
+export function apiJob(cmd, { input = null, arg = '', key = '', env = process.env } = {}) {
+  const e = { ...env, ANTHROPIC_API_KEY: key };
+  const r = spawnSync(process.execPath, [API_JOBS, cmd, ...(arg ? [arg] : [])], { input: input ? JSON.stringify(input) : '', encoding: 'utf8', timeout: 260e3, env: e, maxBuffer: 32 * 1024 * 1024 });
+  try { return JSON.parse(r.stdout); } catch { return { ok: false, error: `api-jobs ${cmd} exit ${r.status}: ${str((r.stderr || r.stdout || r.error?.message || '').trim(), 300)}` }; }
+}
+
+const PRICE = (() => { let p = null; return (model, t) => costUsd(model, t, (p ??= loadPricing())); })();
+/** Append one api-usage@1 line to the ledger (pipeline dir, api-usage.jsonl). */
+export function recordUsage(e) { const f = files(); mkdirSync(f.dir, { recursive: true }); const line = AJ.ledgerEntry({ at: nowIso(), price: PRICE, ...e }); appendFileSync(f.usage, `${JSON.stringify(line)}\n`); return line; }
+export function loadUsage() { try { return readFileSync(files().usage, 'utf8').split('\n').flatMap((l) => { try { return l.trim() ? [JSON.parse(l)] : []; } catch { return []; } }); } catch { return []; } }
+/** The cost report: totals, today, the last 7 days and the newest lines (CLI api-usage, GET /pipeline/api-usage). */
+export function usageReport({ recent = 20 } = {}) {
+  const rows = loadUsage(); const day = nowIso().slice(0, 10); const week = new Date(Date.now() - 7 * 86400e3).toISOString();
+  return { all: AJ.summarize(rows), today: AJ.summarize(rows, { since: day }), week: AJ.summarize(rows, { since: week }), recent: rows.slice(-recent).reverse(), pending: loadBatches().batches };
+}
+
+/** api-batches.json: the batches still out ({ id, account, at, items: [{ customId, kind, build, model }] }) and builds that go direct next time. */
+export function loadBatches() { const j = readJson(files().batches, {}) ?? {}; return { batches: Array.isArray(j.batches) ? j.batches : [], direct: Array.isArray(j.direct) ? j.direct : [] }; }
+const saveBatches = (v) => writeJson(files().batches, { $axf: 'api-batches@1', batches: v.batches, direct: [...new Set(v.direct)].slice(-200) });
+
+/** One split on an API key: urgent (or a retry after a failed batch) → Messages API now; otherwise a one-request batch. */
+function apiSplit(job, settings, { key, account, env }) {
+  const model = MODEL_IDS.opus;
+  const body = AJ.messageRequest({ model, system: job.parts.system, stable: job.parts.stable, prompt: job.parts.prompt, maxTokens: 8192, cache: settings.apiCache });
+  const path = job.direct ? 'messages' : AJ.pathFor({ priority: job.priority }, settings);
+  if (path === 'batch') {
+    const customId = AJ.customId('split', job.build);
+    const r = apiJob('batch-create', { input: AJ.batchRequest([{ customId, body }]), key, env });
+    if (r.ok && r.batch?.id) {
+      const b = loadBatches(); b.batches.push({ id: r.batch.id, account, at: nowIso(), items: [{ customId, kind: 'split', build: job.build, model }] }); saveBatches(b);
+      return { text: '', provider: 'claude', error: '', pending: r.batch.id, account };
+    }
+    logLine({ event: 'batch-failed', build: job.build, account, error: str(r.error, 300) }); // fall through to the normal path
+  }
+  const r = apiJob('send', { input: body, key, env });
+  recordUsage({ kind: 'split', id: job.build, account, model, path: 'messages', usage: r.message?.usage ?? {}, error: r.ok ? '' : r.error });
+  if (job.direct) { const b = loadBatches(); b.direct = b.direct.filter((x) => x !== job.build); saveBatches(b); }
+  return r.ok ? { text: AJ.messageText(r.message), provider: 'claude', error: '' } : { text: '', provider: 'claude', error: `API: ${str(r.error, 300)}` };
+}
+
+/** The key of an API account, for the length of fn (a login snapshot, released after). */
+function withApiKey(account, fn) {
+  const dir = join(tmpdir(), `axf-apijob-${process.pid}`); mkdirSync(dir, { recursive: true, mode: 0o700 });
+  let snap = null;
+  try { snap = snapshotLogin({ dir, session: 'apijob', account }); return snap?.kind === 'api' && snap.env?.ANTHROPIC_API_KEY ? fn(snap.env.ANTHROPIC_API_KEY) : { ok: false, error: `${account} is not an API-key account any more` }; }
+  catch (e) { return { ok: false, error: e.message }; }
+  finally { if (snap) { try { releaseLogin({ dir, session: 'apijob' }); } catch { /* best effort */ } } try { rmSync(dir, { recursive: true, force: true }); } catch { /* gone */ } }
+}
+
+const BATCH_GIVE_UP_MS = 26 * 3600e3;
+/** Collect every batch that has ended: usage to the ledger, splits written; a failed item's build goes direct on the next intake. */
+export function pollBatches({ env = process.env, alert = () => {} } = {}) {
+  const b = loadBatches(); if (!b.batches.length) return { done: [], waiting: 0 };
+  const keep = []; const done = [];
+  for (const x of b.batches) {
+    const res = withApiKey(x.account, (key) => {
+      const g = apiJob('batch-get', { arg: x.id, key, env });
+      if (!g.ok) return g;
+      if (g.batch?.processing_status !== 'ended') return { ok: true, waiting: true };
+      return { ...apiJob('batch-results', { arg: x.id, key, env }), ended: true };
+    });
+    const old = Date.now() - Date.parse(x.at || 0) > BATCH_GIVE_UP_MS;
+    if (res.ok && res.waiting && !old) { keep.push(x); continue; }
+    if (!res.ok && !old && res.status !== 404) { keep.push(x); logLine({ event: 'batch-poll-failed', batch: x.id, error: str(res.error, 300) }); continue; }
+    const results = new Map((res.results ?? []).map((l) => { const r = AJ.batchResult(l); return [r.customId, r]; }));
+    for (const it of x.items) {
+      const r = results.get(it.customId) ?? { ok: false, error: res.error || (old ? 'batch took over 26 h' : 'no result'), usage: {} };
+      recordUsage({ kind: it.kind, id: it.build, account: x.account, model: r.model || it.model, path: 'batch', batchId: x.id, usage: r.usage, error: r.ok ? '' : r.error });
+      if (it.kind === 'split' && r.ok) {
+        try { const s = splitBuild(it.build, { by: 'orchestrator (batch)', answer: { text: r.text, provider: 'claude', error: '' } }); done.push(s); alert('split', { id: s.id, title: storeCore.findBuild(loadStore(), s.id)?.title || s.id, steps: s.steps, error: s.provider === 'rules' ? s.note : '', note: s.note }); }
+        catch (e) { logLine({ event: 'batch-apply-failed', build: it.build, error: str(e.message, 300) }); }
+      } else if (it.kind === 'split') { b.direct.push(it.build); logLine({ event: 'batch-item-failed', build: it.build, batch: x.id, error: str(r.error, 300) }); }
+    }
+  }
+  saveBatches({ batches: keep, direct: b.direct });
+  return { done, waiting: keep.length };
+}
+
 // ------------------------------------------------------------------ the split
 
 /** Run the configured splitter on a prompt: { text, provider, error }. */
-export function askSplitter(prompt, settings, env = process.env) {
+export function askSplitter(prompt, settings, env = process.env, job = {}) {
   if (env.AXF_PIPELINE_SPLITTER) {
     const r = spawnSync('bash', ['-c', env.AXF_PIPELINE_SPLITTER], { input: prompt, encoding: 'utf8', timeout: 180e3, env });
     return r.status === 0 ? { text: r.stdout, provider: 'claude', error: '' } : { text: '', provider: 'claude', error: `splitter exit ${r.status}: ${str((r.stderr || r.stdout || '').trim(), 300)}` };
@@ -202,6 +291,8 @@ export function askSplitter(prompt, settings, env = process.env) {
   try {
     let account = 'active'; try { account = workerRoute() || 'active'; } catch { account = 'active'; }
     try { snap = snapshotLogin({ dir, session: 'split', account }); } catch { snap = null; }
+    // an API-key account: the Messages API itself, with prompt caching, batched when the build is not urgent
+    if (snap?.kind === 'api' && snap.env?.ANTHROPIC_API_KEY && settings.apiDirect && job.parts) return apiSplit(job, settings, { key: snap.env.ANTHROPIC_API_KEY, account: snap.account, env });
     const e = snap ? childEnv(snap, env) : { ...env };
     e.PATH = `${join(homedir(), '.local', 'bin')}:${e.PATH || ''}`;
     const r = spawnSync('claude', ['-p', '--model', MODEL_IDS.opus, '--output-format', 'json', '--max-turns', '1', '--tools', '', prompt], { encoding: 'utf8', timeout: 240e3, env: e, cwd: REPO_ROOT, maxBuffer: 8 * 1024 * 1024 });
@@ -216,13 +307,18 @@ export function askSplitter(prompt, settings, env = process.env) {
 }
 
 /** Split one build: Claude first, rules when Claude can't answer; writes the steps and the split record. */
-export function splitBuild(id, { provider = '', by = 'orchestrator' } = {}) {
+export function splitBuild(id, { provider = '', by = 'orchestrator', answer = null } = {}) {
   const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
   const b = storeCore.findBuild(store, id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
   if (['built', 'complete', 'archived'].includes(b.status)) throw Object.assign(new Error(`${b.id} is ${b.status}: nothing to split`), { code: 2 });
   let steps = []; let used = 'rules'; let note = ''; let error = '';
   if (provider !== 'rules') {
-    const a = askSplitter(P.splitPrompt(b, rules), settings);
+    const a = answer ?? askSplitter(P.splitPrompt(b, rules), settings, process.env, { build: b.id, priority: effectivePriority(b), parts: P.splitParts(b, rules), direct: loadBatches().direct.includes(b.id) });
+    if (a.pending) {
+      setPipeline(b.id, { splitRequested: '', note: 'split sent to the Message Batches API (half price): the steps arrive on a later tick' }, { note: `Split sent as batch ${a.pending} on ${a.account} (not urgent, so half price).`, by, action: 'pipeline:split-batch' });
+      logLine({ event: 'split-batched', build: b.id, batch: a.pending, account: a.account });
+      return { id: b.id, provider: 'batch', steps: 0, error: '', note: `split batched (${a.pending})`, pending: a.pending };
+    }
     if (!a.error) { const p = P.parseSplit(a.text, rules); if (!p.error && p.steps.length) { steps = p.steps; used = 'claude'; } else error = p.error || 'empty answer'; } else error = a.error;
   }
   if (!steps.length) { steps = P.rulesSplit(b, rules); used = 'rules'; note = `Split by rules${error ? ` (Claude: ${str(error, 200)})` : ''}: one step per line of the request, review the steps.`; }
@@ -252,9 +348,10 @@ export function intake({ max = MAX_SPLITS_PER_TICK, alert = () => {} } = {}) {
   if (settings.splitProvider !== 'off' || process.env.AXF_PIPELINE_SPLITTER) {
     // only a build with no steps at all is split by itself: steps someone wrote by hand (even with a missing estimate) are
     // never replaced unless the console asked for a split (splitRequested); the table flags them as "needs split"
-    const want = live(store).filter((b) => (b.status === 'pending' || b.status === 'queued') && !b.hidden && (b.pipeline?.splitRequested || !b.steps.length));
+    const waiting = new Set(loadBatches().batches.flatMap((x) => x.items.map((i) => i.build)));
+    const want = live(store).filter((b) => (b.status === 'pending' || b.status === 'queued') && !b.hidden && (b.pipeline?.splitRequested || !b.steps.length) && !waiting.has(b.id));
     for (const b of want.slice(0, max)) {
-      try { const r = splitBuild(b.id); out.split.push(r); alert('split', { id: b.id, title: b.title, steps: r.steps, error: r.provider === 'rules' ? r.note : '', note: r.note }); }
+      try { const r = splitBuild(b.id); out.split.push(r); if (!r.pending) alert('split', { id: b.id, title: b.title, steps: r.steps, error: r.provider === 'rules' ? r.note : '', note: r.note }); }
       catch (e) { out.skipped.push({ id: b.id, error: e.message }); }
     }
     for (const b of want.slice(max)) out.skipped.push({ id: b.id, error: 'next round' });
@@ -390,6 +487,7 @@ export function tick({ env = process.env } = {}) {
   const sent = [];
   const alert = (kind, d) => { const a = P.alertFor(kind, d); consoleApi('POST', '/api/alerts', a); sent.push({ key: a.key, kind, at: nowIso(), title: a.title }); };
   const started = nowIso();
+  const batches = pollBatches({ env, alert });
   const inta = intake({ alert });
   const ended = checkEnds({ alert, env });
   const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
@@ -437,7 +535,7 @@ export function tick({ env = process.env } = {}) {
   for (const fn of TICK_HOOKS) {
     try { fn({ state: next, plan, launched, ended, failed, env }); } catch (e) { logLine({ event: 'hook-failed', error: str(e.message, 300) }); }
   }
-  return { ok: true, at: next.at, intake: inta, ended, launched, failed, plan, idle, alertsSent: sent };
+  return { ok: true, at: next.at, batches, intake: inta, ended, launched, failed, plan, idle, alertsSent: sent };
 }
 
 /** Run `fn` at the end of every tick (the running-builds watchdog's way in). Returns a function that removes it. */
@@ -557,12 +655,14 @@ async function main(argv) {
     const r = saveOwnAccount(rest[0], patch); return out({ ok: true, name: rest[0], record: r }, `${rest[0]}: ${JSON.stringify(r)}`);
   }
   if (cmd === 'probe') { const r = probe(rest[0]); return out({ ok: true, name: rest[0], probe: r }, `${rest[0]}: Fable ${r.fable ? 'yes' : 'no'}${r.error ? ` (${r.error})` : ''}`); }
+  if (cmd === 'api-usage') { const r = usageReport({ recent: Number(flag('recent')) || 20 }); return out({ ok: true, ...r }, [`all:   ${AJ.usageLine(r.all)}`, `week:  ${AJ.usageLine(r.week)}`, `today: ${AJ.usageLine(r.today)}`, `batches out: ${r.pending.length ? r.pending.map((x) => `${x.id} (${x.items.map((i) => i.build).join(', ')})`).join('; ') : 'none'}`].join('\n')); }
+  if (cmd === 'api-poll') { const r = pollBatches(); return out({ ok: true, ...r }, `collected ${r.done.length} (${r.done.map((d) => d.id).join(', ') || 'none'}), ${r.waiting} still out`); }
   if (cmd === 'settings') { const s = loadSettings(); return out({ ok: true, settings: s }, Object.entries(s).filter(([k]) => k !== '$axf').map(([k, v]) => `${k} = ${JSON.stringify(v)}`).join('\n')); }
   if (cmd === 'set') {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto | api-usage | api-poll [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

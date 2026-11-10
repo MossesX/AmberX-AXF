@@ -49,6 +49,14 @@ export const DEFAULTS = Object.freeze({
   apiOverflow: false,
   /** API accounts the dispatcher may use ([] = every API worker in claude-workers@1). */
   apiAccounts: [],
+  /** The orchestrator's own Claude calls (the split) on an API-key account go straight to the Messages API (api-jobs-core.mjs). */
+  apiDirect: true,
+  /** Prompt caching on those calls: cache_control on the system prompt, tools and the stable context. */
+  apiCache: true,
+  /** Non-urgent calls go through the Message Batches API (half price, answer within 24 h); urgent ones take the normal path. */
+  apiBatch: true,
+  /** Build priorities whose orchestrator calls are urgent (never batched). */
+  apiUrgent: ['P0', 'P1'],
 });
 const LIMITS = { parallelPerAccount: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90] };
 
@@ -69,6 +77,10 @@ export function normSettings(raw = {}) {
     splitProvider: ['claude', 'rules', 'off'].includes(o.splitProvider) ? o.splitProvider : DEFAULTS.splitProvider,
     autoQueue: o.autoQueue === true,
     apiOverflow: o.apiOverflow === true,
+    apiDirect: o.apiDirect !== false,
+    apiCache: o.apiCache !== false,
+    apiBatch: o.apiBatch !== false,
+    apiUrgent: (() => { const u = [...new Set((typeof o.apiUrgent === 'string' ? o.apiUrgent.split(',') : list(o.apiUrgent)).map((p) => str(p, 4).trim().toUpperCase()).filter((p) => /^P[0-3]$/.test(p)))]; return o.apiUrgent === undefined ? [...DEFAULTS.apiUrgent] : u; })(),
     apiAccounts: [...new Set((typeof o.apiAccounts === 'string' ? o.apiAccounts.split(',') : list(o.apiAccounts)).map((n) => str(n, 32).toLowerCase()).filter((n) => /^[a-z0-9][a-z0-9-]{0,31}$/.test(n)))],
   };
 }
@@ -241,20 +253,31 @@ export function endOutcome(b, { exit, account = '', session = '', now = new Date
 
 // ------------------------------------------------------------------ split
 
-/** The one-shot prompt the orchestrator sends to Claude to split a build. The answer must be JSON only. */
-export function splitPrompt(b, rules = { maxStepMinutes: 30 }) {
+/**
+ * The split prompt in three parts, so an API call can cache what every split shares: `system` (who answers), `stable`
+ * (the rules, the same for every build at one step limit: cached) and `prompt` (this build).
+ */
+export function splitParts(b, rules = { maxStepMinutes: 30 }) {
   const max = rules.maxStepMinutes || 30;
   const said = str(b.origin?.said, 6000).trim();
   const addenda = list(b.origin?.addenda).map((a, i) => `Addendum ${i + 1}: ${str(a.said, 2000)}`).join('\n');
-  return [
-    `You are the AmberX AXF build orchestrator. Split the build below into small steps a headless Claude Code session does one after another in one repo checkout.`,
-    `Rules: every step ${max} minutes or less, with an estimate; 3 to 20 steps; each step is one concrete piece of work naming the files or folders it touches; the last step is tests, report (_claude/builds/reports/<build id>.md), THREADS row and PR.`,
-    `API rule: ${API_RULE} So every step that adds or changes UI names its API part (deep link, state read, actions, settings; REST + MCP + CLI + voice) in the same step or the step right after it.`,
-    `Model per step, Opus by default. Fable ONLY for: ${MODEL_GUIDE.Fable} Opus for: ${MODEL_GUIDE.Opus} Put Fable steps first when the work allows, so the build switches model at most once.`,
-    `Answer with JSON only, no prose: {"steps":[{"text":"…","model":"Fable|Opus","estimate":"<n> min","why":"<one line when Fable>","files":["…"]}]}`,
-    '', `Build id: ${b.id}`, `Title: ${str(b.title, 300)}`, b.category ? `Category: ${str(b.category, 60)}` : '', b.detail ? `Details:\n${str(b.detail, 8000)}` : '',
-    said ? `Brett said (verbatim):\n${said}` : '', addenda,
-  ].filter(Boolean).join('\n');
+  return {
+    system: `You are the AmberX AXF build orchestrator. Split the build below into small steps a headless Claude Code session does one after another in one repo checkout.`,
+    stable: [
+      `Rules: every step ${max} minutes or less, with an estimate; 3 to 20 steps; each step is one concrete piece of work naming the files or folders it touches; the last step is tests, report (_claude/builds/reports/<build id>.md), THREADS row and PR.`,
+      `API rule: ${API_RULE} So every step that adds or changes UI names its API part (deep link, state read, actions, settings; REST + MCP + CLI + voice) in the same step or the step right after it.`,
+      `Model per step, Opus by default. Fable ONLY for: ${MODEL_GUIDE.Fable} Opus for: ${MODEL_GUIDE.Opus} Put Fable steps first when the work allows, so the build switches model at most once.`,
+      `Answer with JSON only, no prose: {"steps":[{"text":"…","model":"Fable|Opus","estimate":"<n> min","why":"<one line when Fable>","files":["…"]}]}`,
+    ].join('\n'),
+    prompt: [`Build id: ${b.id}`, `Title: ${str(b.title, 300)}`, b.category ? `Category: ${str(b.category, 60)}` : '', b.detail ? `Details:\n${str(b.detail, 8000)}` : '',
+      said ? `Brett said (verbatim):\n${said}` : '', addenda].filter(Boolean).join('\n'),
+  };
+}
+
+/** The one-shot prompt the orchestrator sends to Claude to split a build (one text, for the claude CLI). The answer must be JSON only. */
+export function splitPrompt(b, rules = { maxStepMinutes: 30 }) {
+  const p = splitParts(b, rules);
+  return [p.system, p.stable, p.prompt].join('\n');
 }
 
 const EST_RE = /^\s*(\d+(?:\.\d+)?)\s*(m|min|mins|minutes?|h|hr|hrs|hours?)?\s*$/i;

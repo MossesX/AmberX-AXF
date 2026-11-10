@@ -385,7 +385,7 @@
         "id": "pipeline-settings-set",
         "route": "POST /pipeline/settings",
         "title": "Change pipeline settings",
-        "description": "Change dispatcher settings. apiOverflow = when every subscription account is full or out, send builds to an API-key account (off by default; turning it on is Brett's own click, anyone may turn it off).",
+        "description": "Change dispatcher settings. apiOverflow = when every subscription account is full or out, send builds to an API-key account (off by default; turning it on is Brett's own click, anyone may turn it off). apiDirect / apiCache / apiBatch / apiUrgent = how the orchestrator's own calls on an API key run: direct, prompt-cached, batched at half price unless urgent.",
         "input": {
           "type": "object",
           "properties": {
@@ -414,10 +414,44 @@
                 "rules",
                 "off"
               ]
+            },
+            "apiDirect": {
+              "type": "boolean",
+              "description": "the orchestrator's own calls on an API-key account go straight to the Messages API"
+            },
+            "apiCache": {
+              "type": "boolean",
+              "description": "prompt caching on those calls"
+            },
+            "apiBatch": {
+              "type": "boolean",
+              "description": "non-urgent calls go through the Message Batches API (half price)"
+            },
+            "apiUrgent": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "priorities that are urgent (never batched), default P0, P1"
             }
           }
         },
         "output": "{ settings }"
+      },
+      {
+        "id": "pipeline-api-usage",
+        "route": "GET /pipeline/api-usage",
+        "title": "Orchestrator API cost",
+        "readOnly": true,
+        "description": "What the orchestrator's own API calls cost: jobs, batch vs direct, cache hits, USD, and what prompt caching and the Batch API saved (all time, week, today). Say 'what did the orchestrator spend on the API' or 'how much did caching save'.",
+        "output": "{ all, week, today, recent, pending }"
+      },
+      {
+        "id": "pipeline-api-poll",
+        "route": "POST /pipeline/api-poll",
+        "title": "Collect batch results",
+        "description": "Collect ended Message Batches now (the dispatcher does it every minute): batched splits are written and their usage recorded.",
+        "output": "{ done, waiting }"
       }
     ]
   },

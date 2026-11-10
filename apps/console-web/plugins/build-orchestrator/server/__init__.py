@@ -484,10 +484,11 @@ def pipeline_settings() -> dict[str, Any]:
 @router.post("/pipeline/settings")
 async def pipeline_settings_set(request: Request) -> dict[str, Any]:
     """{key: value…} for pipeline-settings@1 (parallelPerAccount, fablePlans, useConsoleAccount, maxRuns, idleAfterMin, probeDays,
-    splitProvider, apiOverflow, apiAccounts). Turning the API overflow rule on spends money per token: only Brett's own click
+    splitProvider, apiOverflow, apiAccounts, apiDirect, apiCache, apiBatch, apiUrgent). Turning the API overflow rule on spends money per token: only Brett's own click
     does that (a session, MCP or voice may turn it off)."""
     body = await _json_body(request)
-    allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "apiOverflow", "apiAccounts"}
+    allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "apiOverflow", "apiAccounts",
+               "apiDirect", "apiCache", "apiBatch", "apiUrgent"}
     if body.get("apiOverflow") is True and not brett_click(request):
         raise HTTPException(403, "turning the API overflow rule on is Brett's own click in the console (it bills per token)")
 
@@ -500,6 +501,19 @@ async def pipeline_settings_set(request: Request) -> dict[str, Any]:
     if not pairs:
         raise HTTPException(400, "nothing to change")
     return _pipeline("set", *pairs)
+
+
+@router.get("/pipeline/api-usage")
+def pipeline_api_usage() -> dict[str, Any]:
+    """What the orchestrator's own API calls cost (api-usage@1): all time, last 7 days and today, each with jobs, batch vs
+    direct, cache hits, tokens, USD and the cache and batch savings; the newest lines and the batches still out."""
+    return _pipeline("api-usage")
+
+
+@router.post("/pipeline/api-poll")
+def pipeline_api_poll() -> dict[str, Any]:
+    """Collect ended Message Batches now (the dispatcher's tick does it every round): splits written, usage recorded."""
+    return _pipeline("api-poll")
 
 
 @router.post("/pipeline/route")
