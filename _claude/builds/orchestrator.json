@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T23:57:54.718Z",
+ "updatedAt": "2026-11-10T23:58:52.929Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -96041,10 +96041,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/convert-every-app-into-a-molly-module-expenses-c",
-   "pr": "",
+   "pr": "#486",
    "priority": "P0",
    "createdAt": "2026-11-10T21:34:57.978Z",
-   "updatedAt": "2026-11-10T23:55:47.825Z",
+   "updatedAt": "2026-11-10T23:58:51.852Z",
    "builtAt": "",
    "notes": [
     {
