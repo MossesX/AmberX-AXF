@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3051,
- "updatedAt": "2026-11-10T23:45:08.258Z",
+ "rev": 3052,
+ "updatedAt": "2026-11-10T23:46:06.628Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -156686,8 +156686,8 @@
    "pr": "#484",
    "priority": "P0",
    "createdAt": "2026-11-10T23:36:56.261Z",
-   "updatedAt": "2026-11-10T23:45:05.094Z",
-   "builtAt": "2026-11-10T23:45:05.094Z",
+   "updatedAt": "2026-11-10T23:45:06.144Z",
+   "builtAt": "2026-11-10T23:44:45.452Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -156706,12 +156706,16 @@
      "at": "2026-11-10T23:38:07.055Z"
     },
     {
-     "text": "Reconciler: PR #484",
-     "at": "2026-11-10T23:45:05.094Z"
-    },
-    {
      "text": "Headless run axf-auto-requeue-builds-whose-session-stops-early-go--gina: brief only · start 10.9K tokens ($0.03) · cost $2.22 · 51 turns · 6 tools, MCP none",
      "at": "2026-11-10T23:44:45.452Z"
+    },
+    {
+     "text": "Session axf-auto-requeue-builds-whose-session-stops-early-go--gina on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-10T23:45:06.144Z"
+    },
+    {
+     "text": "Reconciler: PR #484",
+     "at": "2026-11-10T23:45:05.094Z"
     }
    ],
    "approvals": [],
@@ -156732,12 +156736,19 @@
     "queuedAt": "2026-11-10T23:36:57.448Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-auto-requeue-builds-whose-session-stops-early-go--gina",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-10T23:38:03.674Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-10T23:45:05.447Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-auto-requeue-builds-whose-session-stops-early-go--gina"
+    },
     "split": {
      "at": "2026-11-10T23:37:48.400Z",
      "by": "orchestrator",
@@ -156838,7 +156849,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
