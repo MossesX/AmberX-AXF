@@ -402,7 +402,30 @@ def get_status() -> dict[str, Any]:
     snap = snapshot()
     runs = list_runs(5)
     return {"summary": summary(snap), "levels": levels(snap), "settings": settings(), "hostPart": snap.get("hostPart"),
-            "stale": snap.get("stale"), "note": snap.get("note"), "lastRun": runs[0] if runs else None, "hub": hub.connected()}
+            "stale": snap.get("stale"), "note": snap.get("note"), "lastRun": runs[0] if runs else None, "hub": hub.connected(),
+            "console": console_usage()}
+
+
+_CONSOLE_PREV: dict[str, Any] = {}
+_CONSOLE_LOCK = threading.Lock()
+
+
+def console_usage() -> dict[str, Any]:
+    """The console's own CPU and RAM (its cgroup), CPU averaged since the previous call (at least 0.5 s window)."""
+    with _CONSOLE_LOCK:
+        prev = _CONSOLE_PREV.get("s")
+        if not prev or time.monotonic() - prev["t"] < 0.5:
+            prev = maint.cgroup_sample()
+            time.sleep(0.5)
+        cur = maint.cgroup_sample()
+        if cur:
+            _CONSOLE_PREV["s"] = cur
+    return maint.console_usage(prev, cur)
+
+
+@router.get("/console")
+def get_console() -> dict[str, Any]:
+    return console_usage()
 
 
 @router.get("/summary")

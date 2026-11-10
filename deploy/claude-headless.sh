@@ -438,17 +438,39 @@ elif slots_on; then
   fi
   slot="$slot_id"
 fi
+# Resource limits (console speed, Nov 10 2026, Brett: "The console is mad slow."): every headless session runs in its
+# own systemd scope under axfbuild.slice, so builds can't push the console into swap or starve it of CPU and disk.
+# Per session: MemoryHigh (reclaim above it), MemoryMax (OOM-kill inside the session only), MemorySwapMax; the slice
+# gets CPUWeight/IOWeight 20 against the console container's 100 and a total MemoryHigh. Without systemd (or not root)
+# the session just runs under nice/ionice. AXF_BUILD_LIMITS=off turns it off; sizes: AXF_BUILD_MEM_HIGH (2560M),
+# AXF_BUILD_MEM_MAX (4G), AXF_BUILD_SWAP_MAX (512M), AXF_BUILDS_MEM_HIGH (10G, all sessions together).
+limit_cmd=()
+build_limits() {
+  limit_cmd=()
+  [[ "${AXF_BUILD_LIMITS:-on}" == off ]] && return 0
+  if [[ "$(id -u)" == 0 ]] && command -v systemd-run >/dev/null && [[ -d /run/systemd/system ]]; then
+    systemctl set-property --runtime axfbuild.slice CPUWeight=20 IOWeight=20 "MemoryHigh=${AXF_BUILDS_MEM_HIGH:-10G}" >/dev/null 2>&1 || true
+    limit_cmd=(systemd-run --quiet --scope --collect --slice=axfbuild.slice --unit="axf-build-${session//[^A-Za-z0-9_-]/-}-$$"
+      -p "MemoryHigh=${AXF_BUILD_MEM_HIGH:-2560M}" -p "MemoryMax=${AXF_BUILD_MEM_MAX:-4G}" -p "MemorySwapMax=${AXF_BUILD_SWAP_MAX:-512M}"
+      -p CPUWeight=20 -p IOWeight=20 --)
+  fi
+  command -v nice >/dev/null && limit_cmd+=(nice -n 10)
+  command -v ionice >/dev/null && limit_cmd+=(ionice -c2 -n7)
+  return 0
+}
 if ! command -v tmux >/dev/null; then
+  build_limits
   login_session="$session"; own_login "${account:-active}"
   ctx_plan "$session"; [[ -n "$brief_only" ]] && set -- "$@" "${ctx_args[@]}"
   fb_prompt="$(cat "$brief")"; [[ -n "$brief_only" && -n "$ctx_rules" && -f "$ctx_rules" ]] && fb_prompt="$fb_prompt"$'\n\n'"$(cat "$ctx_rules")"
   # the copy is released when that claude exits (a small watcher, since nothing else stays behind to do it)
-  nohup bash -c 'claude -p "${@:3}" > "$2" 2>&1; st=$?; [ -n "$1" ] && node "'"$LOGIN_JS"'" release --dir "$PWD" --session "'"$login_session"'" >/dev/null 2>&1; exit $st' _ "$login_dir" "$log" "$@" "$fb_prompt" &
+  nohup "${limit_cmd[@]}" bash -c 'claude -p "${@:3}" > "$2" 2>&1; st=$?; [ -n "$1" ] && node "'"$LOGIN_JS"'" release --dir "$PWD" --session "'"$login_session"'" >/dev/null 2>&1; exit $st' _ "$login_dir" "$log" "$@" "$fb_prompt" &
   [[ -n "$slot" ]] && slots_on && node "$SLOTS" bind "$slot" --pid "$!" >/dev/null 2>&1
   echo "started pid $! in $(pwd) (tmux missing: the console can't show it)"
   exit 0
 fi
 tmux has-session -t "=$session" 2>/dev/null && session="$session-$(date +%H%M%S)"
+build_limits
 envs=()   # tmux starts the command in its server's environment: pass what the run needs explicitly
 for v in PATH HOME AXF_SURFACE AXF_MODEL AXF_AGENT AXF_AGENT_NAME AXF_AGENT_BOOKED AXF_HEADLESS_DIR AXF_ADOPT_CHANGE AXF_CLAUDE_AUTH AXF_SESSION AXHUB_URL AXF_SLOTS AXF_SLOTS_DIR AXF_SLOTS_PREFIX AXF_SLOTS_HOST AXF_WATCH_LIVE AXF_CLAUDE_ACCOUNT AXF_OWN_LOGIN AXF_CLAUDE_ACCOUNTS AXF_CLAUDE_HOME AXF_CLAUDE_GLOBAL AXF_CLAUDE_SEEN AXF_LOGIN_NOTE AXF_WORKERS AXF_CLAUDE_WORKERS AXF_WORKER_POLL AXF_WORKERS_ALIVE AXF_BUILD_PROFILE AXF_JOB_TYPE; do
   [[ -n "${!v:-}" ]] && envs+=(-e "$v=${!v}")
@@ -463,7 +485,7 @@ secret="$(umask 077; mktemp "${TMPDIR:-/tmp}/axf-headless-env-XXXXXX")"
   [[ -n "$tok" ]] && printf 'export AXHUB_TOKEN=%q\n' "$tok"
 } > "$secret"
 tmux new-session -d -s "$session" -x 200 -y 50 -c "$(pwd)" "${envs[@]}" \
-  bash "$HERE/claude-headless.sh" --inner --name "$slug" --agent "$agent" ${account:+--account "$account"} --envfile "$secret" --brief "$brief" --log "$log" ${slot:+--slot "$slot"} ${priority:+--priority "$priority"} -- "$@"
+  "${limit_cmd[@]}" bash "$HERE/claude-headless.sh" --inner --name "$slug" --agent "$agent" ${account:+--account "$account"} --envfile "$secret" --brief "$brief" --log "$log" ${slot:+--slot "$slot"} ${priority:+--priority "$priority"} -- "$@"
 tmux set-option -t "$session" history-limit 50000 >/dev/null 2>&1 || true
 # Headless tabs: what the console's Terminal shows on the tab (one `tmux ls` reads them all)
 for kv in "@axf_kind=headless" "@axf_agent=$agent" "@axf_model=$model" "@axf_cwd=$(pwd)" "@axf_meter=$HDIR/$session.meter.json" "@axf_chain=$HDIR/$session.chain.json"; do

@@ -8,7 +8,8 @@
  * the queue (FIFO within its priority: boss, urgent, high, normal, low) and starts by itself when a slot frees and memory
  * allows. Sessions that finished and only wait to close don't count, and are closed after `closeFinishedAfterSec`
  * (their logs stay). Heavy steps (pnpm/vite builds, docker node:22 test runs, Playwright) take a second, smaller lock
- * (`heavy -- <cmd>`).
+ * (`heavy -- <cmd>`): Playwright/browser steps also take `maxBrowser` (one at a time), and Node gets a capped heap
+ * (`heavyNodeHeapMb`) so a test run can't push the console into swap.
  *
  * One store, shared by the host and the console container: <dir>/settings.json (hot-reloaded: read on every call),
  * <dir>/state.json (running, queue, heavy, guard trips, swap), written under a mkdir lock. <dir> = $AXF_SLOTS_DIR, else
@@ -36,6 +37,10 @@ export const LEVELS = ['boss', 'urgent', 'high', 'normal', 'low'];
 export const DEFAULTS = {
   maxAgents: 6,
   maxHeavy: 3,
+  /** Browser steps (Playwright) take a heavy slot and this smaller lock: a headless Chromium is the biggest RAM spike. */
+  maxBrowser: 1,
+  /** Node heap cap (MB) for heavy steps, passed as NODE_OPTIONS=--max-old-space-size unless the step sets its own. 0 = off. */
+  heavyNodeHeapMb: 1536,
   minFreeGb: 2,
   closeFinishedAfterSec: 120,
   pollSec: 10,
@@ -49,7 +54,7 @@ export const DEFAULTS = {
   swapWarnMb: 256,
   swapWarnMin: 30,
 };
-const LIMITS = { maxAgents: [1, 64], maxHeavy: [1, 32], minFreeGb: [0, 64], closeFinishedAfterSec: [0, 86400], pollSec: [2, 300], guardWarnTrips: [1, 1000], swapWarnMb: [0, 65536], swapWarnMin: [1, 1440] };
+const LIMITS = { maxAgents: [1, 64], maxHeavy: [1, 32], maxBrowser: [1, 32], heavyNodeHeapMb: [0, 16384], minFreeGb: [0, 64], closeFinishedAfterSec: [0, 86400], pollSec: [2, 300], guardWarnTrips: [1, 1000], swapWarnMb: [0, 65536], swapWarnMin: [1, 1440] };
 const GRACE_MS = 120_000;      // a slot just taken counts even before its session is bound
 const KEEP_DONE = 50;
 const GIB = 1024 ** 3;
@@ -375,7 +380,17 @@ export async function withSlot(opts, fn) {
   try { return await fn(); } finally { if (id) try { release(id); } catch { /* store gone */ } }
 }
 
-/** Heavy-step lock (pnpm/vite builds, docker test runs, Playwright): at most maxHeavy at once. */
+/** A heavy step that drives a browser (Playwright): those also take the maxBrowser lock. */
+export const isBrowserStep = (cmdv) => /playwright|chromium|\bshots?\b|screenshot/i.test(cmdv.join(' '));
+
+/** The environment a heavy step runs with: a capped Node heap unless the step chose its own. */
+export function heavyEnv(env, settings) {
+  const mb = Number(settings.heavyNodeHeapMb) || 0;
+  if (!mb || /--max-old-space-size/.test(env.NODE_OPTIONS || '')) return env;
+  return { ...env, NODE_OPTIONS: `${env.NODE_OPTIONS ? `${env.NODE_OPTIONS} ` : ''}--max-old-space-size=${mb}` };
+}
+
+/** Heavy-step lock (pnpm/vite builds, docker test runs, Playwright): at most maxHeavy at once, maxBrowser of them browsers. */
 export async function withHeavy(label, fn, opts = {}) {
   const id = `hv-${process.pid}-${Date.now().toString(36)}`;
   for (let first = true; ; first = false) {
@@ -383,7 +398,8 @@ export async function withHeavy(label, fn, opts = {}) {
     const got = withState((st) => {
       prune(st, settings, opts.facts);
       if (st.heavy.length >= settings.maxHeavy) return false;
-      st.heavy.push({ id, label: clip(label, 80), pid: opts.pid ?? process.pid, host: HOST(), startedAt: new Date().toISOString() });
+      if (opts.browser && st.heavy.filter((h) => h.browser).length >= (settings.maxBrowser || 1)) return false;
+      st.heavy.push({ id, label: clip(label, 80), pid: opts.pid ?? process.pid, host: HOST(), startedAt: new Date().toISOString(), ...(opts.browser ? { browser: true } : {}) });
       return true;
     });
     if (got) break;
@@ -493,11 +509,12 @@ async function cli(argv) {
     case 'heavy': {
       const cmdv = f['--'] ?? [];
       if (!cmdv.length) throw new Error('heavy -- <command…>');
+      const browser = isBrowserStep(cmdv);
       const code = await withHeavy(f.label || cmdv.join(' '), () => new Promise((res) => {
-        const c = spawn(cmdv[0], cmdv.slice(1), { stdio: 'inherit' });
+        const c = spawn(cmdv[0], cmdv.slice(1), { stdio: 'inherit', env: heavyEnv(process.env, loadSettings()) });
         c.on('error', (e) => { console.error(e.message); res(127); });
         c.on('close', (n) => res(n ?? 1));
-      }), { onWait: () => console.error(`agent-slots: waiting for a test/build slot (max ${loadSettings().maxHeavy} at once)…`) });
+      }), { browser, onWait: () => console.error(browser ? `agent-slots: waiting for the browser slot (max ${loadSettings().maxBrowser} Playwright run at once)…` : `agent-slots: waiting for a test/build slot (max ${loadSettings().maxHeavy} at once)…`) });
       process.exitCode = code; return;
     }
     case 'sweep': return json(sweep());

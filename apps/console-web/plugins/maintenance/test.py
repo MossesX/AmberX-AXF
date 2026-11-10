@@ -24,7 +24,7 @@ BUILDS, LOGS, TMPS = TMP / "axf-builds", TMP / "log", TMP / "tmp"
 for d in (DATA, BUILDS, LOGS, TMPS):
     d.mkdir(parents=True)
 os.environ.update(AXF_MAINT_DATA_DIR=str(DATA), AXF_MAINT_NO_MONITOR="1", AXF_MAINT_BUILD_ROOTS=str(BUILDS),
-                  AXF_MAINT_TMP_ROOTS=str(TMPS), AXF_MAINT_LOG_ROOTS=str(LOGS), AXF_MAINT_AREAS=f"Logs={LOGS},tmp={TMPS},Builds={BUILDS},Locked=/root/axf-builds", AXF_MAINT_HOST_ROOT="/opt/axf")
+                  AXF_MAINT_TMP_ROOTS=str(TMPS), AXF_MAINT_LOG_ROOTS=str(LOGS), AXF_MAINT_AREAS=f"Logs={LOGS},tmp={TMPS},Builds={BUILDS},Locked={TMP / 'no-such-area'}", AXF_MAINT_HOST_ROOT="/opt/axf")
 os.environ.pop("AXHUB_TOKEN", None)
 sys.path.insert(0, str(HERE.parent.parent / "server"))
 
@@ -415,6 +415,72 @@ ok("profilePreview" not in srv.tick(), "… once a day")
 ok(PC.due({"profileSchedule": "weekly", "profileHour": lt.tm_hour, "profileWeekday": (lt.tm_wday + 1) % 7}, None, time.time()) is False, "weekly waits for its day")
 ok(PC.due({"profileSchedule": "off", "profileHour": lt.tm_hour}, None, time.time()) is False, "off by default")
 ok(M.normalize_settings({"profileMode": "magic", "profileSchedule": "hourly"})["profileMode"] == "auto", "unknown profile settings fall back")
+
+# size cache: snapshots reuse folder sizes and stay bounded; a timed-out du never falls back to a Python walk
+clock = [1000.0]
+calls: list[str] = []
+
+
+def fake_du(cmd: list[str], timeout: int) -> tuple[int, str]:
+    calls.append(cmd[-1])
+    if cmd[-1].endswith("slow"):
+        return 127, "TimeoutExpired: du timed out"
+    return 0, f"4096\t{cmd[-1]}"
+
+
+SC = M.SizeCache(DATA / "sizes-test.json", ttl=600, budget=1000, now=lambda: clock[0])
+M.SIZES = SC
+try:
+    ok(M.du(Path("/x/a"), fake_du) == 4096 and calls == ["/x/a"], "first size is measured")
+    ok(M.du(Path("/x/a"), fake_du) == 4096 and calls == ["/x/a"], "a fresh size is reused, not measured again")
+    clock[0] += 601
+    M.du(Path("/x/a"), fake_du)
+    ok(calls.count("/x/a") == 2, "a size past its ttl is measured again")
+    ok(M.du(Path("/x/vanish"), lambda c, t: (1, "du: cannot access '/x/vanish/f': No such file or directory\n555\t/x/vanish\n")) == 555,
+       "du exiting 1 on a vanished file still gives its total")
+    ok(M.du(Path(str(TMPS / "slow")), fake_du) == 0, "a timed-out du gives 0, not a Python walk of the tree")
+    SC.sizes[str(TMPS / "slow")] = [77, clock[0] - 9999]
+    ok(M.du(Path(str(TMPS / "slow")), fake_du) == 77, "... or the last known size")
+    SC.spent = SC.budget
+    clock[0] += 601
+    before = len(calls)
+    ok(M.du(Path("/x/a"), fake_du) == 4096 and len(calls) == before, "once the budget is spent, stale sizes are reused")
+    SC.save(keep=SC.asked)
+    saved = M.read_json(DATA / "sizes-test.json", {})["sizes"]
+    ok("/x/a" in saved and "/x/gone" not in saved, "the saved cache keeps only paths this run asked for")
+    ok(M.SizeCache(DATA / "sizes-test.json").stale("/x/a") == 4096, "the cache survives between runs")
+    SC2 = M.SizeCache(DATA / "sizes-slow.json", ttl=600, budget=1000, now=lambda: clock[0])
+    SC2.sizes["/big"] = [9, clock[0] - 1200, 300.0]
+    SC2.sizes["/small"] = [9, clock[0] - 1200, 1.0]
+    ok(SC2.get("/big") == 9 and SC2.get("/small") is None, "a size that took minutes to measure is kept longer")
+finally:
+    M.SIZES = None
+
+# console CPU / RAM from its own cgroup
+CG = TMP / "cgroup"
+CG.mkdir()
+(CG / "cpu.stat").write_text("usage_usec 1000000\nuser_usec 800000\n")
+(CG / "memory.current").write_text(str(300 * 1048576))
+(CG / "memory.max").write_text("max\n")
+(CG / "memory.swap.current").write_text(str(10 * 1048576))
+a = M.cgroup_sample(CG)
+ok(a is not None and a["memBytes"] == 300 * 1048576 and a["memMaxBytes"] is None and a["swapBytes"] == 10 * 1048576, f"cgroup sample ({a})")
+b = {**a, "usageUsec": a["usageUsec"] + 1_500_000, "t": a["t"] + 2.0}
+u = M.console_usage(a, b, cpus=4)
+ok(u["available"] and u["cpuPct"] == 75.0 and u["cpuHostPct"] == 18.8 and u["memMb"] == 300 and u["swapMb"] == 10, f"CPU % from two samples ({u})")
+ok(M.console_usage(None, b)["cpuPct"] is None, "one sample: memory only, no CPU figure")
+ok(M.console_usage(None, None) == {"available": False}, "no cgroup: not available")
+ok(M.cgroup_sample(TMP / "no-cgroup") is None, "no cgroup files: None")
+cu = c.get(f"{B}/console").json()
+ok("available" in cu and (not cu["available"] or "memMb" in cu), f"GET /console ({cu})")
+ok("console" in c.get(f"{B}/status").json(), "status carries the console's CPU / RAM")
+
+lk = M.snapshot_lock(DATA)
+ok(lk is not None and M.snapshot_lock(DATA) is None, "a second snapshot is skipped while one runs")
+lk.close()
+ok(M.snapshot_lock(DATA) is not None, "... and runs once the first is done")
+host_sh = (HERE / "deploy" / "host.sh").read_text()
+ok("flock -n" in host_sh and "timeout " in host_sh, "the cron line never stacks runs (flock) and stops a stuck one (timeout)")
 
 # plugin.json commands name only routes that exist
 pj = json.loads((HERE / "plugin.json").read_text())

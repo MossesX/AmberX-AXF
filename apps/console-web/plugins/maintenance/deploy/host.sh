@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Maintenance — host part (plugin-lifecycle@1). Run by deploy/install-console.sh on the VPS as root:
-#   host.sh up     installs /etc/cron.d/axf-maintenance (the engine measures every 10 minutes, at low priority) and
+#   host.sh up     installs /etc/cron.d/axf-maintenance (the engine measures every 10 minutes, at low priority, one run at
+#                  a time: flock skips a tick while the last run is still going, timeout stops a stuck one) and
 #                  prints no docker args (the console reads the snapshot from the checkout it already mounts at /axf)
 #   host.sh down   removes the cron file
 # The cron line removes its own file when the plugin folder is gone, so uninstalling the plugin leaves nothing behind.
@@ -18,7 +19,7 @@ case "${1:-}" in
 # AXF Maintenance plugin (apps/console-web/plugins/maintenance). Removes itself when the plugin is gone.
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-*/10 * * * * root if [ -f "$ENGINE" ]; then nice -n 19 ionice -c3 python3 "$ENGINE" snapshot >/dev/null 2>&1; else rm -f $CRON; fi
+*/10 * * * * root if [ -f "$ENGINE" ]; then flock -n /run/axf-maintenance.lock timeout 1800 nice -n 19 ionice -c3 python3 "$ENGINE" snapshot >/dev/null 2>&1; else rm -f $CRON; fi
 CRONEOF
     install -m 0644 "$tmp" "$CRON"
     rm -f "$tmp"

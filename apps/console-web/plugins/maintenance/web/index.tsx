@@ -34,7 +34,9 @@ interface Job { id: JobId; label: string; safe: boolean; icon: string; what: str
 interface Pct { pct: number | null; usedGb?: number | null; freeGb?: number | null; totalGb?: number | null }
 interface Summary { level: string; swapFull: boolean; hostPart: boolean; stale: boolean; disk: Pct; memory: Pct; swap: Pct; load: Record<string, number | null>; reclaimableGb: number | null; safeReclaimableGb: number | null; at?: string }
 interface Run { id: string; at: string; by: string; kind: string; jobs: JobId[]; count: number; bytes: number; state: 'waiting' | 'done' | 'partial' | 'failed' | 'dropped'; hub: { error?: string; held?: boolean; job?: string }; result?: { done: number; skipped: number; failed: number; freed: number; diskAfter?: { pct: number } } }
-interface Status { summary: Summary; hostPart: boolean; stale: boolean; note?: string; lastRun: Run | null; hub: boolean }
+/** The console's own container (GET /console): CPU % of one core (200 = two cores busy) and of the host, memory now. */
+interface ConsoleUsage { available: boolean; cpuPct?: number | null; cpuHostPct?: number | null; memMb?: number; swapMb?: number }
+interface Status { summary: Summary; hostPart: boolean; stale: boolean; note?: string; lastRun: Run | null; hub: boolean; console?: ConsoleUsage }
 interface Snapshot { biggest: { kind: string; label: string; path: string; size: number; reclaimable?: number }[]; builds: { count: number; size: number; items: { name: string; path: string; size: number; state: string; why: string }[] }; docker: { available: boolean; images?: { count: number; size: number; reclaimable: number }; volumes?: { count: number; size: number }; buildCache?: { size: number; reclaimable: number }; containers?: { count: number; active: number } }; ageS?: number | null }
 interface PreviewJob { label: string; safe: boolean; what: string; items: Item[]; kept: Kept[]; count: number; bytes: number; error?: string | null }
 interface Preview { jobs: Record<string, PreviewJob>; count: number; bytes: number; at?: string; stale?: boolean }
@@ -80,8 +82,9 @@ const useStatus = () => useSyncExternalStore(subscribe, snap);
 
 /* ---------------- the page ---------------- */
 
-function Gauges({ s }: { s: Summary }) {
+function Gauges({ s, c }: { s: Summary; c?: ConsoleUsage }) {
   const load = s.load ?? {};
+  const cpus = Number(load.cpus ?? 1) || 1;
   return (
     <>
       <div className="axp-maintenance__gauges">
@@ -89,11 +92,17 @@ function Gauges({ s }: { s: Summary }) {
         <Gauge label="Memory" value={s.memory.pct ?? 0} max={100} unit="%" />
         <Gauge label="Swap" value={s.swap.pct ?? 0} max={100} unit="%" />
         <Gauge label={`Load (${load.cpus ?? '?'} CPUs)`} value={Number(load['1'] ?? 0)} max={Number(load.cpus ?? 1)} />
+        {c?.available && <Gauge label="Console CPU" value={Number(c.cpuPct ?? 0)} max={100 * cpus} unit="%" />}
       </div>
       <p className="fx-small fx-muted axp-maintenance__meta">
         Disk {s.disk.usedGb ?? '?'} of {s.disk.totalGb ?? '?'} GB ({s.disk.freeGb ?? '?'} GB free) · memory {s.memory.usedGb ?? '?'} of {s.memory.totalGb ?? '?'} GB · swap {s.swap.usedGb ?? 0} of {s.swap.totalGb ?? 0} GB · load {load['1'] ?? '?'} / {load['5'] ?? '?'} / {load['15'] ?? '?'}
         {s.safeReclaimableGb ? ` · safe clean-up frees about ${s.safeReclaimableGb} GB` : ''}
       </p>
+      {c?.available && (
+        <p className="fx-small fx-muted axp-maintenance__meta" data-testid="maintenance-console-usage">
+          Console: CPU {c.cpuPct ?? '?'}% of one core ({c.cpuHostPct ?? '?'}% of the server) · RAM {c.memMb ?? '?'} MB{c.swapMb ? ` · ${c.swapMb} MB in swap` : ''}
+        </p>
+      )}
     </>
   );
 }
@@ -378,7 +387,7 @@ function MaintenanceView() {
       {s && s.level !== 'ok' && s.level !== 'unknown' && <Note tone={s.level === 'warning' ? 'warning' : 'danger'}>The disk is {s.disk.pct}% full. Preview a clean-up below, or use Auto fix on Server health in the systems check.</Note>}
       {s?.swapFull && <Note tone="warning">Swap has been nearly full for a while: builds and containers slow down. Lower the agent cap or stop idle containers.</Note>}
       <Container title={<span>Server {s && <Chip tone={LEVEL_TONE[s.level]}>{s.level}</Chip>}</span>} icon="monitor">
-        {s ? <Gauges s={s} /> : <p className="fx-small fx-muted">Loading…</p>}
+        {s ? <Gauges s={s} c={status?.console} /> : <p className="fx-small fx-muted">Loading…</p>}
       </Container>
       <Container title="Biggest space users" icon="chart"><SpaceUsers snapshot={snapshot} /></Container>
       <Container title={`Build worktrees${snapshot ? ` · ${snapshot.builds.count} · ${human(snapshot.builds.size)}` : ''}`} icon="branch" collapsible defaultOpen={false}><Worktrees snapshot={snapshot} /></Container>

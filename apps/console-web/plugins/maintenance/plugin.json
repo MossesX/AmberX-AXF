@@ -59,6 +59,11 @@
     "title": "Server health in short (disk, memory, swap percentages, load, space a clean-up frees)"
    },
    {
+    "route": "GET /console",
+    "id": "console",
+    "title": "Console CPU and RAM right now (its own container: CPU % of one core and of the host, memory and swap in MB)"
+   },
+   {
     "route": "GET /snapshot",
     "id": "snapshot",
     "title": "The full measurement: biggest space users, Docker, build worktrees, logs, /tmp"

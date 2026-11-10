@@ -222,14 +222,77 @@ def _run(cmd: list[str], timeout: int = 60) -> tuple[int, str]:
         return 127, f"{type(e).__name__}: {e}"
 
 
-def du(path: Path, run: Runner = _run) -> int:
-    """Bytes under a path (du -sxb, one filesystem), 0 when unreadable."""
-    code, out = run(["du", "-sxb", str(path)], 120)
-    if code == 0 and out.strip():
+class SizeCache:
+    """Folder sizes remembered between snapshots, so the 10-minute cron does not crawl every worktree each time.
+
+    A size younger than ``ttl`` seconds is reused. Once ``budget`` seconds of fresh measuring are spent in one run, any
+    size already known is reused even if stale, so a snapshot stays bounded however many worktrees exist. Used only
+    by the measuring snapshot; clean-up runs always measure fresh."""
+
+    def __init__(self, path: Path, ttl: float = 3600, budget: float = 240, now: Callable[[], float] = time.time):
+        self.path, self.ttl, self.budget, self.now = path, ttl, budget, now
+        raw = read_json(path, {})
+        self.sizes: dict[str, list[float]] = {k: v for k, v in (raw.get("sizes") or {}).items()
+                                              if isinstance(v, list) and len(v) in (2, 3)} if isinstance(raw, dict) else {}
+        self.spent = 0.0
+        self.hits = self.misses = 0
+        self.asked: set[str] = set()  # paths this run needed; the rest (removed worktrees) is dropped on save
+
+    def get(self, key: str) -> int | None:
+        self.asked.add(key)
+        hit = self.sizes.get(key)
+        if hit is None:
+            return None
+        slow = len(hit) > 2 and hit[2] > 60  # a size that took minutes to measure (/root, /opt) is kept 6x longer
+        if self.now() - hit[1] < self.ttl * (6 if slow else 1) or self.spent >= self.budget:
+            self.hits += 1
+            return int(hit[0])
+        return None
+
+    def stale(self, key: str) -> int | None:
+        hit = self.sizes.get(key)
+        return int(hit[0]) if hit else None
+
+    def put(self, key: str, size: int, took: float) -> None:
+        self.sizes[key] = [size, self.now(), round(took, 1)]
+        self.spent += took
+        self.misses += 1
+
+    def save(self, keep: Iterable[str] | None = None) -> None:
+        keep = None if keep is None else set(keep)
+        sizes = self.sizes if keep is None else {k: v for k, v in self.sizes.items() if k in keep}
+        write_json(self.path, {"$axf": SCHEMA, "sizes": sizes})
+
+
+SIZES: SizeCache | None = None  # set by the snapshot command only
+
+
+def du(path: Path, run: Runner = _run, timeout: int = 120) -> int:
+    """Bytes under a path (du -sxb, one filesystem), 0 when unreadable. Reuses SIZES when the snapshot set it."""
+    key = str(path)
+    if SIZES is not None:
+        cached = SIZES.get(key)
+        if cached is not None:
+            return cached
+    t0 = time.time()
+    code, out = run(["du", "-sxb", key], timeout)
+    # du exits 1 when a file vanishes or is unreadable mid-scan (normal in live worktrees) but still prints the
+    # total: use it rather than walking the whole tree again in Python
+    total_line = next((ln for ln in reversed(out.splitlines()) if ln.endswith("\t" + key) or ln.split("\t")[-1:] == [key]), "")
+    if (code == 0 or total_line) and out.strip():
         try:
-            return int(out.split()[0])
+            size = int((total_line or out).split()[0])
+            if SIZES is not None:
+                SIZES.put(key, size, time.time() - t0)
+            return size
         except ValueError:
             pass
+    if "TimeoutExpired" in out:
+        # du ran out of time: walking the same tree in Python would take far longer and pile up behind the next run
+        if SIZES is not None:
+            SIZES.spent += time.time() - t0
+            return SIZES.stale(key) or 0
+        return 0
     total = 0
     for root, dirs, files in os.walk(path, onerror=lambda e: None):
         for f in files:
@@ -324,6 +387,45 @@ def newest_mtime(path: Path, depth: int = 2, limit: int = 4000) -> float:
 
 
 # ------------------------------------------------------------------ measurements
+
+CGROUP = Path(os.environ.get("AXF_MAINT_CGROUP") or "/sys/fs/cgroup")
+
+
+def cgroup_sample(root: Path = CGROUP) -> dict[str, Any] | None:
+    """This process's own cgroup (cgroup v2): CPU time used so far and memory/swap now. In the console container that is
+    the whole console. None where cgroup v2 files aren't readable."""
+    try:
+        usage = next(int(ln.split()[1]) for ln in (root / "cpu.stat").read_text().splitlines() if ln.startswith("usage_usec "))
+        mem = int((root / "memory.current").read_text().strip())
+    except (OSError, ValueError, StopIteration):
+        return None
+
+    def num(name: str) -> int | None:
+        try:
+            v = (root / name).read_text().strip()
+            return None if v == "max" else int(v)
+        except (OSError, ValueError):
+            return None
+    return {"usageUsec": usage, "t": time.monotonic(), "memBytes": mem, "memMaxBytes": num("memory.max"),
+            "swapBytes": num("memory.swap.current") or 0}
+
+
+def console_usage(prev: dict[str, Any] | None, cur: dict[str, Any] | None, cpus: int | None = None) -> dict[str, Any]:
+    """Console CPU and RAM from two cgroup samples: cpuPct is percent of one core (like docker stats; 200 = two cores
+    busy), cpuHostPct the share of the whole machine."""
+    if not cur:
+        return {"available": False}
+    out: dict[str, Any] = {"available": True, "at": now_iso(), "memBytes": cur["memBytes"], "memMb": round(cur["memBytes"] / 1048576),
+                           "memMaxBytes": cur.get("memMaxBytes"), "swapBytes": cur.get("swapBytes") or 0,
+                           "swapMb": round((cur.get("swapBytes") or 0) / 1048576), "cpuPct": None, "cpuHostPct": None}
+    if prev and cur["t"] > prev["t"]:
+        pct = (cur["usageUsec"] - prev["usageUsec"]) / ((cur["t"] - prev["t"]) * 1e6) * 100
+        out["cpuPct"] = round(max(0.0, pct), 1)
+        n = cpus or os.cpu_count() or 1
+        out["cpuHostPct"] = round(max(0.0, pct) / n, 1)
+        out["windowSec"] = round(cur["t"] - prev["t"], 1)
+    return out
+
 
 def meminfo(text: str | None = None) -> dict[str, Any]:
     if text is None:
@@ -649,6 +751,19 @@ def biggest(rows: list[dict[str, Any]], n: int = 12) -> list[dict[str, Any]]:
     return sorted([r for r in rows if r.get("size")], key=lambda r: -r["size"])[:n]
 
 
+def snapshot_lock(data_dir: Path = DATA_DIR) -> Any:
+    """Hold <data>/snapshot.lock for this process; None when another snapshot holds it (cron never stacks runs)."""
+    import fcntl
+    data_dir.mkdir(parents=True, exist_ok=True)
+    fh = open(data_dir / "snapshot.lock", "w")  # noqa: SIM115 — kept open for the life of the process
+    try:
+        fcntl.flock(fh, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError:
+        fh.close()
+        return None
+    return fh
+
+
 def snapshot(s: dict[str, Any] | None = None, run: Runner = _run) -> dict[str, Any]:
     s = s or load_settings()
     t0 = time.time()
@@ -668,7 +783,7 @@ def snapshot(s: dict[str, Any] | None = None, run: Runner = _run) -> dict[str, A
     for label, path in area_list():
         p = Path(path)
         if isdir(p):
-            areas.append({"label": label, "path": path, "size": du(p, run)})
+            areas.append({"label": label, "path": path, "size": du(p, run, 900)})
     snap["logs"] = {"size": next((a["size"] for a in areas if a["path"] == "/var/log"), 0)}
     snap["tmp"] = {"size": sum(a["size"] for a in areas if a["path"] in ("/tmp", "/var/tmp"))}
     rows = [{"kind": "area", **a} for a in areas] + [{"kind": "worktree", "label": w["name"], "path": w["path"], "size": w["size"]} for w in wts]
@@ -843,7 +958,15 @@ def _main(argv: list[str]) -> int:
         print(json.dumps(job_catalog(), indent=1))
         return 0
     if args.cmd == "snapshot":
+        lock = snapshot_lock(DATA_DIR)
+        if lock is None:
+            print("snapshot already running, skipped")
+            return 0
+        global SIZES
+        SIZES = SizeCache(DATA_DIR / "sizes.json")
         snap = snapshot()
+        snap["sizeCache"] = {"hits": SIZES.hits, "measured": SIZES.misses, "measureMs": int(SIZES.spent * 1000)}
+        SIZES.save(keep=SIZES.asked)
         out = Path(args.out) if args.out else DATA_DIR / "snapshot.json"
         write_json(out, snap)
         if args.json:
