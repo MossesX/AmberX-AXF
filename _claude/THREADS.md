@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 18:51 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` → running, note (all) · pipeline
 - 2026-11-09 18:51 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · orchestrator
 - 2026-11-09 18:51 UTC · `urgent-terminal-pops-up-every-time-the-console-o` added (0 steps) (all) · console
 - 2026-11-09 18:51 UTC · `orchestrator-and-build-manager-search-bar-collap` added (0 steps) (all) · console
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 02:21 UTC · `split-builds-pages-build-manager-pending-complet-3` s1 done (all) · orchestrator
 - 2026-11-10 02:22 UTC · `one-builds-page-pending-queued-built-tabs-remove` note (all) · foreign-write
 - 2026-11-10 02:22 UTC · `self-healing-build-folders-auto-clear-stale-git` → queued, note (all) · console
+- 2026-11-10 02:23 UTC · `self-healing-build-folders-auto-clear-stale-git` → queued, note (all) · builds-live
 
 ## Token passes (log)
 
