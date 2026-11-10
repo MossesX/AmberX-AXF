@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2714,
- "updatedAt": "2026-11-10T18:58:52.818Z",
+ "rev": 2715,
+ "updatedAt": "2026-11-10T18:59:05.711Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -153413,7 +153413,7 @@
    "title": "Orchestrator checks each build against main right before queuing it (done = close, partly done = queue only what's left)",
    "category": "",
    "detail": "Replaces the bulk pending audit. Plain code first, AI only behind its switch. Right before the orchestrator moves any build into the Queue (and again at dispatch), it checks that one build against main: Shipped Features ledger, merged PRs, and files/features the steps would touch. Already done: mark complete, link the PR/commit, archive. Partly done: tick done steps, queue only what's left. Superseded: archive with the reason. Builds on 'Orchestrator checks Shipped features before splitting any job'; merge them. Notify on AmberX for each closed build.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -153421,7 +153421,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T18:57:34.689Z",
-   "updatedAt": "2026-11-10T18:58:49.818Z",
+   "updatedAt": "2026-11-10T18:58:53.521Z",
    "builtAt": "",
    "notes": [
     {
@@ -153431,6 +153431,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T18:58:41.585Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-orchestrator-checks-each-build-against-main-righ--sully, own login copy)",
+     "at": "2026-11-10T18:58:53.521Z"
     },
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-orchestrator-checks-each-build-against-main-righ--sully.",
@@ -153454,12 +153458,12 @@
    "pipeline": {
     "queuedAt": "2026-11-10T18:57:35.804Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-orchestrator-checks-each-build-against-main-righ--sully",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-10T18:58:49.550Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T18:58:41.585Z",
@@ -153469,9 +153473,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-10T18:58:49.550Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -153480,7 +153484,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-10T18:58:49.550Z"
+    "pickedAt": ""
    },
    "steps": [
     {
