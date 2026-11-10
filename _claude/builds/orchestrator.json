@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:46:05.701Z",
+ "updatedAt": "2026-11-10T17:46:20.238Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -79793,12 +79793,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T17:49:22.125Z",
-   "updatedAt": "2026-11-09T17:51:21.009Z",
+   "updatedAt": "2026-11-10T17:46:18.551Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-09T17:51:21.009Z"
+    },
+    {
+     "text": "Split by Claude into 11 steps (2 Fable).",
+     "at": "2026-11-10T17:46:18.551Z"
     }
    ],
    "approvals": [],
@@ -79818,13 +79822,19 @@
    "steps": [
     {
      "id": "s1",
-     "text": "Replaces one-builds-page-pending-queued-built-tabs-remove (mark superseded).",
-     "model": "Opus",
-     "why": "",
+     "text": "Define the build lifecycle contract between Build Manager and the orchestrator. Pending → Send → Queued. Queued → cancel/return → Pending. Queued → Active. Active → finished → Build Manager Complete. The completion record carries the account that actually built it, model, cost, PR, land status, start/end/duration and steps done/total. Add a store schema version bump plus a migration that moves existing finished, queued and active records into the new buckets. Mark one-builds-page-pending-queued-built-tabs-remove as superseded by this build.",
+     "model": "Fable",
+     "why": "Schema + migration design and the cross-port handoff contract between two apps",
      "phase": "",
      "group": "",
      "estimate": "30 min",
-     "files": [],
+     "files": [
+      "apps/console-web/plugins/build-manager/store.mjs",
+      "apps/console-web/plugins/orchestrator/handoff.mjs",
+      "_claude/builds/store.json",
+      "_claude/builds/orchestrator.json",
+      "apps/console-web/plugins/build-manager/migrations/"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -79832,17 +79842,21 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw9k5bjm01nx51"
+     "uid": "st-mwazeotz18plyp"
     },
     {
      "id": "s2",
-     "text": "Pages: Build Manager owns Pending (create, edit, prioritize, Send to orchestrator) and Complete (finished builds sent back by the orchestrator: account that actually built it, model, cost, PR, land status). Build orchestrator owns only Queued and Active (route, assign account, hold, cancel/return to Pending); finished builds go back to Build Manager Complete. Remove every other builds table and the separate Build queue screen (redirect).",
-     "model": "Opus",
-     "why": "",
+     "text": "Create the shared framework build-table asset used by all four tabs. Each build is one compact line: title, priority, status badge, steps done/total, account, model. The line expands, and the expanded row holds collapsible sections and sub-grids. Use a per-tab column config so extra columns appear only where declared. Include an expand/collapse state API, theme tokens only, and a responsive phone/desktop layout.",
+     "model": "Fable",
+     "why": "New shared framework GUI component that changes how build tables render across apps",
      "phase": "",
      "group": "",
      "estimate": "30 min",
-     "files": [],
+     "files": [
+      "apps/console-web/framework/assets/build-table/build-table.js",
+      "apps/console-web/framework/assets/build-table/build-table.css",
+      "apps/console-web/framework/assets/index.mjs"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -79850,17 +79864,21 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw9k5bjm02p1ho"
+     "uid": "st-mwazeotz19u0ln"
     },
     {
      "id": "s3",
-     "text": "Design: one shared framework build-table asset used by all four tabs so they look the same. Each build is one clean compact line (title, priority, status badge, steps done/total, account, model) that expands; inside the expanded row, collapsible sections/sub-grids (steps with state, runs/sessions, cost, files/PR, Brett's words, log tail). Per-tab columns differ only where needed: Active shows a live elapsed timer, steps complete with a progress bar, current step, account actually running it; Queued shows position and why it's waiting; Complete shows duration, cost, who built it. Clean, minimal, theme tokens only, phone and desktop. Screenshots to UI Review. Full API/voice control.",
+     "text": "Add the build-table section renderers: steps with state, runs/sessions, cost, files/PR, Brett's words, and log tail. Add the live elements: an elapsed timer, a steps-complete progress bar and a current-step cell. Add the Queued position and 'why waiting' cells. Add the Complete duration, cost and built-by cells.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "30 min",
-     "files": [],
+     "files": [
+      "apps/console-web/framework/assets/build-table/sections.js",
+      "apps/console-web/framework/assets/build-table/cells.js",
+      "apps/console-web/framework/assets/build-table/build-table.css"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -79868,17 +79886,21 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw9k5bjm03vlib"
+     "uid": "st-mwazeotz1a4v2s"
     },
     {
      "id": "s4",
-     "text": "Clean those tables up. One line that's expandable, with collapsible grids or sections inside the expanded row. All the tables need to look the same. The active ones need to show the timer, how long they've been going, how many steps are complete. Build manager will have pending and complete. Orchestrator will have active and queued.",
+     "text": "Rebuild the Build Manager Pending tab on the shared build-table, with create, edit, prioritize and Send to orchestrator. Remove the old Pending table markup.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "30 min",
-     "files": [],
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/build-manager/ui/pending.js",
+      "apps/console-web/plugins/build-manager/ui/index.html",
+      "apps/console-web/plugins/build-manager/ui/build-manager.css"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -79886,17 +79908,159 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw9k5bjm04wcah"
+     "uid": "st-mwazeotz1ba6ji"
     },
     {
      "id": "s5",
-     "text": "Tests green, report _claude/builds/reports/split-builds-pages-build-manager-pending-complet-2.md, THREADS row, commit, push, PR",
+     "text": "Add the Build Manager Complete tab on the shared build-table. It shows finished builds sent back by the orchestrator: account that built it, model, cost, PR link, land status and duration. Expanded sections show steps, runs, cost, files/PR, Brett's words and log tail.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/build-manager/ui/complete.js",
+      "apps/console-web/plugins/build-manager/ui/index.html",
+      "apps/console-web/plugins/build-manager/routes.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazeotz1cgxr9"
+    },
+    {
+     "id": "s6",
+     "text": "Give Build Manager full API control for Pending and Complete. Deep links: console_show/console_open targets build-manager/pending, build-manager/complete and build-manager/build/<id>, plus expanded state. State is readable through list/get. Actions: create, edit, prioritize, send-to-orchestrator, open/expand. Expose all of this through REST routes, MCP console actions/plugin commands, the CLI subcommands and AmberX voice intents, with the same behavior on all four.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/build-manager/routes.mjs",
+      "apps/console-web/plugins/build-manager/mcp.mjs",
+      "apps/console-web/plugins/build-manager/cli.mjs",
+      "apps/console-web/plugins/build-manager/voice.json",
+      "apps/console-web/plugins/build-manager/manifest.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazeotz1d4uif"
+    },
+    {
+     "id": "s7",
+     "text": "Rebuild the orchestrator page with only Queued and Active tabs on the shared build-table. Queued shows position and why it's waiting, with route, assign account, hold, and cancel/return to Pending. Active shows the live elapsed timer, steps-complete progress bar, current step and the account actually running it. When a build finishes it is posted to Build Manager Complete through the handoff contract.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator/ui/queued.js",
+      "apps/console-web/plugins/orchestrator/ui/active.js",
+      "apps/console-web/plugins/orchestrator/ui/index.html",
+      "apps/console-web/plugins/orchestrator/handoff.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazeotz1e6xn5"
+    },
+    {
+     "id": "s8",
+     "text": "Give the orchestrator full API control for Queued and Active. Deep links: orchestrator/queued, orchestrator/active and orchestrator/build/<id>. State is readable: position, wait reason, elapsed, steps done/total, current step, account. Actions: route, assign account, hold/unhold, cancel/return to Pending. Expose all of this through REST, MCP (console actions, plugin commands, control@1 where tokens are involved), the CLI and AmberX voice, with the same behavior on all four.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/orchestrator/routes.mjs",
+      "apps/console-web/plugins/orchestrator/mcp.mjs",
+      "apps/console-web/plugins/orchestrator/cli.mjs",
+      "apps/console-web/plugins/orchestrator/voice.json",
+      "apps/console-web/plugins/orchestrator/manifest.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazeotz1fmonb"
+    },
+    {
+     "id": "s9",
+     "text": "Remove every other builds table and the separate Build queue screen. Old routes and deep links (build-queue, builds, built) redirect to the matching new tab in the REST, MCP, CLI and voice aliases. Delete dead CSS and JS.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/build-queue/",
+      "apps/console-web/plugins/builds/",
+      "apps/console-web/server/redirects.mjs",
+      "apps/console-web/plugins/orchestrator/manifest.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazeotz1gcuwv"
+    },
+    {
+     "id": "s10",
+     "text": "Update the docs for the page split, the shared build-table asset and the API reach. Take phone and desktop screenshots of all four tabs, collapsed and expanded, and post them to UI Review.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "20 min",
      "files": [
+      "apps/console-web/framework/assets/build-table/README.md",
+      "apps/console-web/plugins/build-manager/README.md",
+      "apps/console-web/plugins/orchestrator/README.md",
+      "_claude/builds/reports/split-builds-pages-build-manager-pending-complet-2/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazeotz1h1s6w"
+    },
+    {
+     "id": "s11",
+     "text": "Final step: tests, report, THREADS row and PR. Tests cover the build-table render, expand and sections, the store migration, the handoff Pending→Queued→Active→Complete and return-to-Pending, redirects, and REST/MCP/CLI/voice parity for every action. Run the suite. Write the report to _claude/builds/reports/split-builds-pages-build-manager-pending-complet-2.md and add a THREADS row. Open the PR, stating how each UI feature is reached through the deep link, state read, actions and settings via REST, MCP, CLI and voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/framework/assets/build-table/build-table.test.mjs",
+      "apps/console-web/plugins/build-manager/test/",
+      "apps/console-web/plugins/orchestrator/test/",
       "_claude/builds/reports/split-builds-pages-build-manager-pending-complet-2.md",
       "_claude/THREADS.md"
      ],
@@ -79907,7 +80071,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw9k5bjm05q3kf"
+     "uid": "st-mwazeotz1ipxus"
     }
    ]
   },
