@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:44:57.115Z",
+ "updatedAt": "2026-11-10T17:45:21.387Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -77777,7 +77777,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T04:21:03.588Z",
-   "updatedAt": "2026-11-09T04:23:29.791Z",
+   "updatedAt": "2026-11-10T17:45:19.882Z",
    "builtAt": "",
    "notes": [
     {
@@ -77803,6 +77803,10 @@
     {
      "text": "Brett: \"I want a RAG database made of all the transcripts.\" Build a RAG store over every transcript: chunk each transcript (with session, date, timestamps, speaker, topic tags), embed the chunks with a local embedding model on the VPS (no Claude tokens), store them in Postgres with pgvector (reuse the postgres-console container plan if it exists, else its own table), and index every new transcript automatically after transcription. Two ways in: 1) semantic search (meaning, not just exact words) in the same results window, mixed with the keyword hits; 2) 'Ask' (API/MCP/voice): Claude or Gizmo retrieve the top chunks and answer with the sessions and timestamps as sources, each linking to that moment. Share the store with the Agent Manager's RAG knowledge (agent-profile build) so employees can use it. Settings: on/off, re-index, what gets indexed. Tests: retrieval returns the right session for a paraphrased question.",
      "at": "2026-11-09T04:23:29.791Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude not available: spawnSync claude ETIMEDOUT): one step per line of the request, review the steps.",
+     "at": "2026-11-10T17:45:19.882Z"
     }
    ],
    "approvals": [],
@@ -77836,7 +77840,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw8r8vo6018865"
+     "uid": "st-mwazdfka15md2b"
     },
     {
      "id": "s2",
@@ -77854,7 +77858,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw8r8vo6028jhq"
+     "uid": "st-mwazdfka168r0a"
     },
     {
      "id": "s3",
@@ -77875,7 +77879,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw8r8vo603igcy"
+     "uid": "st-mwazdfka17z7k7"
     }
    ]
   },

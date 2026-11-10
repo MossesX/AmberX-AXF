@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2585,
- "updatedAt": "2026-11-10T17:44:57.115Z",
+ "rev": 2586,
+ "updatedAt": "2026-11-10T17:45:21.387Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -127471,7 +127471,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T04:21:03.588Z",
-   "updatedAt": "2026-11-09T04:23:29.791Z",
+   "updatedAt": "2026-11-10T17:45:19.882Z",
    "builtAt": "",
    "notes": [
     {
@@ -127497,6 +127497,10 @@
     {
      "text": "Brett: \"I want a RAG database made of all the transcripts.\" Build a RAG store over every transcript: chunk each transcript (with session, date, timestamps, speaker, topic tags), embed the chunks with a local embedding model on the VPS (no Claude tokens), store them in Postgres with pgvector (reuse the postgres-console container plan if it exists, else its own table), and index every new transcript automatically after transcription. Two ways in: 1) semantic search (meaning, not just exact words) in the same results window, mixed with the keyword hits; 2) 'Ask' (API/MCP/voice): Claude or Gizmo retrieve the top chunks and answer with the sessions and timestamps as sources, each linking to that moment. Share the store with the Agent Manager's RAG knowledge (agent-profile build) so employees can use it. Settings: on/off, re-index, what gets indexed. Tests: retrieval returns the right session for a paraphrased question.",
      "at": "2026-11-09T04:23:29.791Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude not available: spawnSync claude ETIMEDOUT): one step per line of the request, review the steps.",
+     "at": "2026-11-10T17:45:19.882Z"
     }
    ],
    "approvals": [],
@@ -127524,11 +127528,11 @@
     "runs": 0,
     "lastRun": null,
     "split": {
-     "at": "2026-11-09T04:22:18.198Z",
-     "by": "orchestrator",
+     "at": "2026-11-10T17:45:19.882Z",
+     "by": "fix-the-orchestrator-s-splitter-claude-print-get",
      "provider": "rules",
      "steps": 3,
-     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+     "note": "Split by rules (Claude: claude not available: spawnSync claude ETIMEDOUT): one step per line of the request, review the steps."
     },
     "splitRequested": "",
     "note": "steps made by rules: review them",
@@ -127538,7 +127542,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mw8r8vo6018865",
+     "uid": "st-mwazdfka15md2b",
      "title": "",
      "text": "Builds on ui-review-notify-session-audio (landed Nov 7): sessions are recorded by AmberX's Audio Output Recorder (output-recorder plugin) and transcribed by the faster-whisper worker, transcripts saved on the hub, readable in the recorder page. Today output-recorder's plugin.json declares no transcript commands, so nothing outside the page can read them. Add full API (plugin-commands@1, so MCP/axHub, REST, CLI, voice come for free): list sessions with transcripts (date, length, linked Claude session, title); read one transcript (whole or a time range, with timestamps); search across all transcripts (words or phrase, date range, fuzzy), returning the matching session, timestamp, a few lines of context, and a deep link that opens the recorder page at that moment (and plays the audio there). Also a 'find the session where we talked about X' command that ranks sessions by match. Reachable from Claude chat/voice sessions through axHub so Claude or Gizmo can answer 'which session did we talk about this'. Read-only; respects the recorder's settings. Tests; report.",
      "model": "Opus",
@@ -127555,12 +127559,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-09T04:22:18.198Z",
-     "updatedAt": "2026-11-09T04:22:18.198Z"
+     "createdAt": "2026-11-10T17:45:19.882Z",
+     "updatedAt": "2026-11-10T17:45:19.882Z"
     },
     {
      "id": "s2",
-     "uid": "st-mw8r8vo6028jhq",
+     "uid": "st-mwazdfka168r0a",
      "title": "",
      "text": "I want the API to be able to access the transcript so I can tell you or I can tell Gizmo, you know, what session was it that we talked about this or that.",
      "model": "Opus",
@@ -127577,12 +127581,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-09T04:22:18.198Z",
-     "updatedAt": "2026-11-09T04:22:18.198Z"
+     "createdAt": "2026-11-10T17:45:19.882Z",
+     "updatedAt": "2026-11-10T17:45:19.882Z"
     },
     {
      "id": "s3",
-     "uid": "st-mw8r8vo603igcy",
+     "uid": "st-mwazdfka17z7k7",
      "title": "",
      "text": "Tests green, report _claude/builds/reports/session-transcripts-api-search-what-was-said-fin.md, THREADS row, commit, push, PR",
      "model": "Opus",
@@ -127602,8 +127606,8 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-09T04:22:18.198Z",
-     "updatedAt": "2026-11-09T04:22:18.198Z"
+     "createdAt": "2026-11-10T17:45:19.882Z",
+     "updatedAt": "2026-11-10T17:45:19.882Z"
     }
    ],
    "profiles": [
@@ -127633,7 +127637,7 @@
     }
    },
    "queue": null,
-   "defaultAt": "2026-11-09T04:22:18.198Z",
+   "defaultAt": "2026-11-10T17:45:19.882Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
