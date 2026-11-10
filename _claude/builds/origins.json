@@ -3445,6 +3445,18 @@
    "from": "brief",
    "addenda": []
   },
+  "project-manager-every-project-its-own-console-in": {
+   "said": "Build the project manager so everything can be its own project, its own instance of the console. A setting to enable multi-project view, the entire console appears in that group with each project's console running. A project type: one for development of itself or framework tools like the console, one for creating new apps using all the tools in the console. The new app will actively render in a preview window, a floating or dockable section.",
+   "at": "2026-11-10T15:40:27.752Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "projects-create-a-new-project-and-move-builds-be": {
    "said": "I don't want to archive. I want to move to another, you know how we set it up from multiple projects. Each one has its own builds, its own notes, all that. Make a new project, remove those from this project and move them to the new project.",
    "at": "2026-11-10T15:38:42.207Z",

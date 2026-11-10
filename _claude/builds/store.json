@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2414,
- "updatedAt": "2026-11-10T15:39:26.942Z",
+ "rev": 2415,
+ "updatedAt": "2026-11-10T15:40:28.328Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -137733,9 +137733,14 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T15:38:42.207Z",
-   "updatedAt": "2026-11-10T15:38:43.035Z",
+   "updatedAt": "2026-11-10T15:40:25.337Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T15:40:25.337Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -137750,7 +137755,99 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-10T15:40:25.337Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwauwsqh01mirs",
+     "title": "",
+     "text": "Add create-project (valid project manifest, its own builds, notes, data; per the multi-project setup where picking a project switches all data) and move-builds-between-projects, by UI and full API (no AI). 2) Then create a new project and move every Pending build created before 2026-11-08 out of the current project into it, with their notes, steps, branches and history intact; nothing deleted or archived. Builds from the last two days stay. Report the list moved.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T15:40:25.337Z",
+     "updatedAt": "2026-11-10T15:40:25.337Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwauwsqh02sqa2",
+     "title": "",
+     "text": "I don't want to archive. I want to move to another, you know how we set it up from multiple projects. Each one has its own builds, its own notes, all that. Make a new project, remove those from this project and move them to the new project.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T15:40:25.337Z",
+     "updatedAt": "2026-11-10T15:40:25.337Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwauwsqh03vre8",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/projects-create-a-new-project-and-move-builds-be.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/projects-create-a-new-project-and-move-builds-be.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T15:40:25.337Z",
+     "updatedAt": "2026-11-10T15:40:25.337Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -137759,12 +137856,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T15:40:25.337Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
