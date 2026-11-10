@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T23:46:49.928Z",
+ "updatedAt": "2026-11-10T23:47:19.866Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -97978,12 +97978,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T23:46:07.460Z",
-   "updatedAt": "2026-11-10T23:46:09.171Z",
+   "updatedAt": "2026-11-10T23:47:18.616Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T23:46:09.171Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T23:47:18.616Z"
     }
    ],
    "approvals": [],
@@ -98000,7 +98004,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Amends the AI assistant build (#482). 1) AI assistant runs in Molly too (same plugin, Molly owns it, no double render). 2) Give it the full console control API as tools: open/jump to any screen, open dialogs, read and change any setting, run console commands, file/queue builds; uses control@1 + the registry. 3) Hands-free: a switch in AI assistant settings, 'Hands-free voice', easy to reach (top of settings plus a mic toggle in the chat header): always-listening wake/talk mode, replies spoken, works with the screen off on the phone. Notify on AmberX at each stage.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwbcaxuh01fomw"
+    },
+    {
+     "id": "s2",
+     "text": "Give Molly and the AI assistant access to the API so she can drive the console, open screens and configure settings. Easy to reach, hands free. A setting in AI assistant.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwbcaxuh02nr2n"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/ai-assistant-in-molly-console-drives-by-api-open.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/ai-assistant-in-molly-console-drives-by-api-open.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwbcaxuh03co1p"
+    }
+   ]
   },
   {
    "id": "per-agent-api-control-switch-in-each-employee-s",
