@@ -61,7 +61,7 @@ def check(cond: bool, what: str) -> None:
 
 
 # fields every intake needs besides name / app / screen (who sends it)
-WHO = {"source": "headless", "submittedBy": "build:claude/t"}
+WHO = {"source": "headless", "submittedBy": "build:claude/t", "singleOption": "a test fixture"}
 
 
 def stored_ok() -> bool:
@@ -352,7 +352,7 @@ wt = Path(tempfile.mkdtemp(prefix="fake-worktree-"))
 png_bytes = (HERE / "packs" / first).read_bytes()
 (wt / "shots").mkdir()
 (wt / "shots" / "home-phone.png").write_bytes(png_bytes)
-body = {"kind": "screen", "name": "Worktree shot", "app": "console-web", "screen": "home", "source": "headless", "submittedBy": "build:claude/fake",
+body = {"kind": "screen", "name": "Worktree shot", "app": "console-web", "screen": "home", "singleOption": "a test fixture", "source": "headless", "submittedBy": "build:claude/fake",
         "files": [{"name": "home-phone.png", "data": base64.b64encode((wt / "shots" / "home-phone.png").read_bytes()).decode()}]}
 r = c.post("/p/submit", json=body)
 check(r.status_code == 200, f"submit from a fake worktree ({r.status_code} {r.text[:200]})")
@@ -460,6 +460,80 @@ check(c.post("/p/predict", json={"build": "../x", "prediction": PRED, "files": P
 c.put("/p/settings", json={"waitForLook": False})
 check(c.get("/p/predicted?build=other").json()["verdict"]["go"], "setting off = every build goes")
 check(stored_ok(), "stores conform after the predicted flow")
+
+# ---- ui-choices@1: a build's options, Brett's pick, every option an asset, how many to build
+BUILD = {"kind": "toolbar", "name": "Grid toolbar", "app": "Console", "screen": "Grid", "source": "headless", "submittedBy": "build:claude/c", "branch": "claude/c"}
+OPTS = [{"id": x, "label": f"Look {x.upper()}", "files": [{"name": "desktop.png", "data": b64}], "data": {"density": x}} for x in ("a", "b", "c")]
+CH = {"assetType": "toolbar", "owner": "ui-review", "options": OPTS}
+r = c.post("/p/submit", json={**BUILD, "files": SET})
+check(r.status_code == 400 and "at least 3 options" in r.json()["detail"], f"a build without options refused ({r.text[:120]})")
+r = c.post("/p/submit", json={**BUILD, "files": SET, "choices": {**CH, "options": OPTS[:2]}})
+check(r.status_code == 400 and "2 sent, at least 3" in r.json()["detail"], "two options refused")
+r = c.post("/p/submit", json={**BUILD, "files": SET, "singleOption": "one existing dialog"})
+check(r.status_code == 200 and r.json()["item"]["singleOption"] == "one existing dialog", "one option with a reason passes and says so")
+c.post("/p/decide", json={"ids": [r.json()["item"]["id"]], "decision": "approve"})
+r = c.post("/p/submit", json={**BUILD, "choices": CH})
+check(r.status_code == 200, f"three options ({r.text[:160]})")
+ci = r.json()["item"]
+sets = ci["choices"]
+check(sets["multi"] is True and [o["id"] for o in sets["options"]] == ["a", "b", "c"] and sets["chosen"] == [], "the set is stored, nothing picked")
+check(sum("opt-a--" in s["src"] or "opt-a--" in s.get("file", "") for s in ci["files"]["after"]) == 1 or "opt-a--" in json.dumps(ci["files"]), "an option's picture joins the item")
+got = c.get("/p/choices/assets?type=toolbar").json()["assets"]
+check(len(got) == 3 and not any(a["picked"] for a in got) and "ui-choice" in got[0]["tags"] and got[0]["data"] == {"density": "a"}, f"every option is an asset ({len(got)})")
+check(c.get(f"/p/state?branch=claude/c").json()["holds"] is True, "the build waits on the pick like any hold")
+d = c.get(f"/p/choices/decision?id={ci['id']}").json()
+check(d["decided"] is False and d["status"] == "waiting", "no decision yet")
+check(c.post("/p/choices/choose", json={"id": ci["id"], "chosen": ["zz"]}).status_code == 400, "an unknown option refused")
+r = c.post("/p/choices/choose", json={"id": ci["id"], "chosen": ["c", "a"]})
+check(r.status_code == 200 and r.json()["default"] == "c" and r.json()["status"] == "approved", f"several in priority order ({r.text[:140]})")
+d = c.get(f"/p/choices/decision?id={ci['id']}").json()
+check(d["chosen"] == ["c", "a"] and d["default"] == "c", "the decision reads back in order")
+check(c.get("/p/state?branch=claude/c").json()["holds"] is False, "the hold lifts")
+got = {a["option"]: a["picked"] for a in c.get("/p/choices/assets").json()["assets"]}
+check(got == {"a": True, "b": False, "c": True}, f"picked or not, all three stay ({got})")
+r = c.post("/p/submit", json={**BUILD, "kind": "settings", "choices": {**CH, "assetType": "settings"}})
+one = r.json()["item"]
+check(one["choices"]["multi"] is False and c.post("/p/choices/choose", json={"id": one["id"], "chosen": ["a", "b"]}).status_code == 400, "a settings interface takes one pick")
+check(c.get("/p/choices/settings").json() == {"minOptions": 3, "askOptions": False, "askTimeoutMin": 5}, "settings default")
+check(c.put("/p/choices/settings", json={"minOptions": 1}).json()["minOptions"] == 3, "the setting never goes under three")
+check(c.post("/p/choices/ask", json={"build": "b1"}).json() == {"ok": True, "asked": False, "count": 3, "default": 3}, "asking off: the default")
+c.put("/p/choices/settings", json={"askOptions": True, "minOptions": 4, "askTimeoutMin": 1})
+a = c.post("/p/choices/ask", json={"build": "b1", "title": "Grid"}).json()
+check(a["asked"] and a["default"] == 4 and [x["id"] for x in c.get("/p/choices/asks").json()["asks"]] == [a["id"]], "the question waits for him")
+check(c.get(f"/p/choices/ask?id={a['id']}").json()["answered"] is False, "not answered yet")
+check(c.post("/p/choices/answer", json={"id": a["id"], "count": 6}).json()["count"] == 6, "his answer")
+check(c.get(f"/p/choices/ask?id={a['id']}").json()["count"] == 6 and not c.get("/p/choices/asks").json()["asks"], "the build reads it")
+c.put("/p/choices/settings", json={"askOptions": False, "minOptions": 3})
+check(stored_ok(), "stores conform after the choices flow")
+
+# ---- phone notifications (build ui-review-notify-session-audio)
+raised: list[dict] = []
+cleared: list[list[str]] = []
+n = mod.notify
+n.cx = types.SimpleNamespace(raise_alert=lambda a: raised.append(a) or {}, resolve_alerts=lambda k: cleared.append(k), log=lambda *a, **k: None)
+item = lambda gid, st="waiting", build="": {"id": f"i-{len(build)}", "group": gid, "status": st, "build": build}  # noqa: E731
+group = {"id": "g-1", "name": "Notes check - Nov 6 8:20 PM"}
+n.ready({"items": [item("g-1", build="notes-views"), item("g-1"), item("g-2"), item("g-1", "approved")], "groups": [group]}, group)
+check(len(raised) == 1, "one alert per group")
+a = raised[-1]
+check(a["title"] == "notes-views: 2 items waiting", f"build name + count ({a['title']})")
+check(a["severity"] == "warning" and a["key"] == "ui-review:group:g-1", "loud enough for the phone, one key per group")
+check(a["link"].endswith("/?axf-review-group=g-1") and a["meta"]["label"] == "UI Review", "the tap opens this group")
+check(cleared[-1] == ["ui-review:group:g-1"], "read alerts come back: resolved first")
+n.ready({"items": [item("g-1")], "groups": [group]}, group)
+check(raised[-1]["title"].startswith("Notes check") and "1 item waiting" in raised[-1]["title"], "no build: the group's name, singular")
+before = len(raised)
+n.ready({"items": [item("g-1", "approved")], "groups": [group]}, group)
+check(len(raised) == before, "nothing waiting: no buzz")
+n.decided({"items": [item("g-1", "approved")], "groups": [group]}, ["g-1", ""])
+check(cleared[-1] == ["ui-review:group:g-1"], "all decided: the notification goes away")
+before = len(raised)
+n.decided({"items": [item("g-1")], "groups": [group]}, ["g-1"])
+check(len(raised) == before + 1 and "1 item" in raised[-1]["title"], "some left: the count updates")
+plugin_services.provide("axf.claude-settings@1", types.SimpleNamespace(get=lambda: {"settings": [{"key": "notify.uiReview", "value": False}]}), "claude-settings")
+before = len(raised)
+n.ready({"items": [item("g-1")], "groups": [group]}, group)
+check(len(raised) == before, "setting off: no notification")
 
 print(f"ui-review: {ok} checks ok" + (f", {len(fails)} failed" if fails else ""))
 sys.exit(1 if fails else 0)

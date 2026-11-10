@@ -325,7 +325,7 @@ export type VetoAlarmConfig = Record<string, unknown>;
  * Every member is optional; without a host the plugin works from the browser alone.
  */
 export interface VetoHost {
-  /** Deny / Approve now / Shelve with the app's own hub session (hub Origin + CSRF on the native side). */
+  /** Deny / Approve now / Shelve with the app's own hub session (AmberX's native side, the console's relay). */
   act?(id: string, action: VetoAction): Promise<VetoActionResult>;
   /** The alarm settings changed (the native side rings through silent mode on the alarm stream). */
   alarm?(cfg: VetoAlarmConfig): void;
@@ -354,14 +354,15 @@ export const onHubOrigin = (base: string): boolean => {
 };
 
 /**
- * One owner action from any app: the host (the phone's session) first, then a page on the hub's own origin, else the
- * call's page on the hub opens (where the buttons are). Never from an AI client: this runs only on a person's tap.
+ * One owner action from any app: the host (the phone's session, the console's relay) first, whose answer stands; then a
+ * page on the hub's own origin; else the call's page on the hub opens (where the buttons are). Never from an AI client:
+ * this runs only on a person's tap.
  */
 export async function runVetoAction(base: string, c: Pick<VetoCall, 'id' | 'url'>, action: VetoAction, opts: { fetch?: HubFetch } = {}): Promise<VetoActionResult> {
   if (host.act) {
     const r = await host.act(c.id, action).catch((e) => ({ ok: false, error: String((e as Error)?.message ?? e) }) as VetoActionResult);
-    if (r.ok) return r;
-    if (host.open) { host.open(c.url); return { ...r, opened: true }; }
+    // A host decides in place and reports a failure in place: a tap never bounces to axHub (Brett, Nov 7 2026).
+    return r;
   }
   if (onHubOrigin(base)) return vetoAction(base, c.id, action, opts);
   if (host.open) host.open(c.url); else globalThis.open?.(c.url, '_blank', 'noopener,noreferrer');

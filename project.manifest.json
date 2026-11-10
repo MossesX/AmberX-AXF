@@ -42,7 +42,6 @@
       "framework/plan/build-queue.json",
       "framework/plan/profiles.json",
       "framework/plan/media/",
-      "framework/plan/profiles/",
       "framework/catalog/status.json",
       "framework/catalog/libraries.json",
       "framework/schemas/project-rules.json",

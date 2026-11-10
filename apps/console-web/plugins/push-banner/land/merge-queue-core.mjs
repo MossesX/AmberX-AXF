@@ -73,7 +73,7 @@ export function notReady(pr, ctl = {}, { waitUi = true } = {}) {
  */
 export function buildPriority(b) {
   if (/^P[0-3]$/.test(str(b?.priority))) return b.priority;
-  const marked = (b?.profiles ?? []).includes('urgent') || /(^|[^a-z])(urgent|hotfix)([^a-z]|$)/i.test(`${str(b?.id)} ${str(b?.title)}`)
+  const marked = /(^|[^a-z])(urgent|hotfix)([^a-z]|$)/i.test(`${str(b?.id)} ${str(b?.title)}`)
     || /\b(URGENT|HOTFIX)\b/.test(`${str(b?.detail, 8000)}\n${str(b?.origin?.brief, 20000)}`) || /^\s*(urgent|hotfix)\b/im.test(`${str(b?.detail, 8000)}\n${str(b?.origin?.brief, 20000)}`);
   return marked ? 'P0' : 'P2';
 }

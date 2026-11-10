@@ -31,6 +31,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
 
+import plugin_services
+
 import axf_framework  # noqa: F401 — framework/python on sys.path
 from axf_server import storage
 
@@ -192,8 +194,11 @@ class Completer:
         now = int(self.now() * 1000)
         n = notification(it, now)
         res: dict[str, Any] = {"at": now, "title": n["title"], "hub": None, "alert": None}
+        gate = plugin_services.get("axf.notify@1")
         d = self.inbox()
-        if d is None:
+        if gate is not None and not gate.allowed("activity.done", "amberx"):
+            res["hub"] = "off in the Notifications panel"
+        elif d is None:
             res["hub"] = "axHub's shared folder isn't mounted here (/projects)"
         else:
             try:

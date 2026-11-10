@@ -119,33 +119,39 @@
         "target": "view:builds",
         "title": "Builds",
         "text": "Every build of the active profile in one place. Builds view: one row per build with a live progress bar. Steps view: every step on its own row.",
-        "more": "This is the one builds store (builds@1). Everything else — Pending builds, the build queue, the Build manager — is just a view of it, so they can't drift apart. Changes are drafts until you tap Apply; Discard throws them away. Every save is versioned, so Restore default or the history can always get you back.",
+        "more": "This is the one builds store (builds@1). Everything else — Pending builds, the build queue, the Build orchestrator — is just a view of it, so they can't drift apart. Changes are drafts until you tap Apply; Discard throws them away. Every save is versioned, so Restore default or the history can always get you back.",
         "tryIt": "Double-tap a build's name to rename it.",
         "related": [
           "view:build-orchestrator",
-          "view:pending",
-          "view:build-manager"
+          "view:pending"
         ],
         "kind": "screen"
       },
       {
         "target": "view:build-orchestrator",
         "title": "Build orchestrator",
-        "text": "Breaks every build into steps of 30 minutes or less, each pinned to Fable or Opus. When the model switches between phases it waits for your OK.",
-        "more": "Tabs: Builds (like Pending builds, with more options), Approvals (phases waiting for your OK at a model switch) and Rules (the token rules: one session, no sub-agents, briefs carry only the current phase).",
+        "text": "The only place that browses and manages builds. Every build is split into steps of 30 minutes or less as soon as it is filed, with its model and account planned; when its turn comes the dispatcher picks the account (subscriptions first, then any API) and records which one took it.",
+        "more": "Tabs: Pending, Queue (each build's steps, planned model and account), Active, Incomplete (started, stopped with steps left), Complete, Errors, Accounts (health every 5 minutes: sign-in, credits, Fable), All builds, Approvals and Rules. The Build manager was retired on Nov 10 2026; everything it did is here.",
         "related": [
           "view:builds"
         ],
         "kind": "screen"
       },
       {
-        "target": "view:build-manager",
-        "title": "Build manager",
-        "text": "Everything building right now and everything left: model, status, time left, steps. Start a build from here and watch it live.",
-        "related": [
-          "view:builds"
-        ],
-        "kind": "screen"
+        "target": "open-in-build-orchestrator",
+        "title": "Open in Build orchestrator",
+        "text": "Opens this build in the Build orchestrator, on the tab it is in."
+      },
+      {
+        "target": "check-health-now",
+        "title": "Check health now",
+        "text": "Checks every Claude account now in the background (one tiny headless call each): can it sign in, has it credits, does it take Fable. Never touches a running build or signs anything out."
+      },
+      {
+        "target": "then-any-api",
+        "title": "Then any API",
+        "text": "Subscriptions first; when every subscription account is full or out, an API-key account takes the build (billed per token, under its caps). On by default.",
+        "kind": "toggle"
       },
       {
         "target": "view:build-breaker",
@@ -358,15 +364,6 @@
         "kind": "banner"
       },
       {
-        "target": "banner:build-manager",
-        "title": "Build manager banner",
-        "text": "What's building right now, with progress and time left. Tap it for the Build manager.",
-        "related": [
-          "view:build-manager"
-        ],
-        "kind": "banner"
-      },
-      {
         "target": "banner:codebase-changes",
         "title": "Codebase changes banner",
         "text": "Every change Claude made that you haven't closed yet. Closing one clears it on every device; it stays in the log.",
@@ -532,43 +529,6 @@
         "target": "reload-the-console-after-switching",
         "title": "Reload after switching",
         "text": "Reloads the console after a profile switch, so every screen shows the new profile's data.",
-        "kind": "toggle"
-      },
-      {
-        "target": "action:build-manager.live",
-        "title": "Building now",
-        "text": "Opens the Build manager on what's running right now."
-      },
-      {
-        "target": "action:build-manager.built",
-        "title": "Built",
-        "text": "What's been built, with its cost and time."
-      },
-      {
-        "target": "open-in-build-manager",
-        "title": "Open in Build manager",
-        "text": "Opens this build in the Build manager."
-      },
-      {
-        "target": "follow-it-in-the-build-manager",
-        "title": "Follow it in the Build manager",
-        "text": "Opens the Build manager so you can watch this build."
-      },
-      {
-        "target": "open-the-build-manager",
-        "title": "Open the Build manager",
-        "text": "Opens the Build manager."
-      },
-      {
-        "target": "build-manager",
-        "title": "Build manager",
-        "text": "Its settings.",
-        "kind": "tab"
-      },
-      {
-        "target": "banner-while-a-build-runs",
-        "title": "Banner while a build runs",
-        "text": "Shows the Build manager banner whenever a build is running.",
         "kind": "toggle"
       },
       {
@@ -856,7 +816,7 @@
       {
         "target": "api-key",
         "title": "API key",
-        "text": "Paste an Anthropic API key (sk-ant-api…). It's tested before it's saved.",
+        "text": "Paste an Anthropic API key (sk-ant-api03…, sk-ant-usr… or a newer sk-ant- format). It's checked live before it's saved: OK, invalid, or no credit.",
         "kind": "field"
       },
       {
@@ -1063,20 +1023,6 @@
           {
             "say": "It's a view of the one builds store, so it always matches the Builds page and the orchestrator.",
             "target": ""
-          }
-        ]
-      },
-      {
-        "screen": "build-manager",
-        "title": "Build manager",
-        "steps": [
-          {
-            "say": "What's building right now and what's left, with model, status and time left.",
-            "target": ""
-          },
-          {
-            "say": "Watch live on a running build pops up the screen it's changing, hot-rendering.",
-            "target": "watch-live"
           }
         ]
       },

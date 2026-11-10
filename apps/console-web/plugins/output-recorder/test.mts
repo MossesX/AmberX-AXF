@@ -12,7 +12,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import {
   DEFAULTS, HUB_DOC_MAX, K, PART_BYTES, REC_IDLE, HubRecordings, byDay, byGroup, cleanSession, sessionPartName, capHours, chunkBytes, chunkName, cleanProject, dataUrl, fromBase64, hubHours, hubOf,
   idDate, idOfIndex, indexPath, isChunkId, normalizeIndex, partCount, partPath, readSettings, recReduce, splitParts, toBase64,
-  TRACKS, busySpans, micLine,
+  TRACKS, busySpans, micLine, TRANSCRIPT_FORMAT, TRANSCRIPT_MAX, clock, idOfTranscript, normalizeTranscript, searchTranscripts, transcriptPath,
 } from './web/core.ts';
 import { createController } from './web/store.ts';
 
@@ -461,6 +461,39 @@ await t('sessions from axHub: native side names parts, groups them, mic as asked
   assert.match(java('AxppLink.java'), /\.put\("micDefault", OutputRecordQueue\.settings\(c\)\.mic\)/);
   assert.match(java('RecorderControl.java'), /static boolean micFor\(Boolean sessionMic, boolean setting\)/);
   assert.match(java('HubRules.java'), /NEVER_AUTO = Set\.of\("amberx\.recorder_start"\)/);
+});
+
+await t('transcripts: paths, format, search with context, a session by its group', () => {
+  const doc = (id: string, text: string, extra = {}) => normalizeTranscript({ $axf: TRANSCRIPT_FORMAT, name: `Part ${id}`, session: 'Fix the wake word', group: 'cs-1', startedAt: `2026-11-06T${id}:00:00Z`, text, segments: [[1.5, text], ['bad', 2]], model: 'base.en', ...extra }, `20261106-${id}0000-aaaa`)!;
+  assert.equal(transcriptPath('x'), 'output-recorder/transcripts/x.json');
+  assert.equal(idOfTranscript('output-recorder/transcripts/20261106-101500-k3x9.json'), '20261106-101500-k3x9');
+  assert.equal(idOfTranscript('output-recorder/recordings/20261106-101500-k3x9.json'), null);
+  assert.equal(normalizeTranscript({ $axf: 'other' }, 'x'), null);
+  const a = doc('10', 'we talked about the merge queue and the phone notification');
+  assert.deepEqual(a.segments, [[1.5, a.text]], 'a damaged timed line is dropped');
+  const b = doc('11', 'nothing to see', { group: 'cs-2', session: 'Other' });
+  assert.deepEqual(searchTranscripts([a, b], '').length, 0, 'no search, no hits');
+  assert.equal(searchTranscripts([a, b], 'PHONE merge')[0].transcript.id, a.id, 'every word, any case, any order');
+  assert.equal(searchTranscripts([a, b], 'phone zebra').length, 0, 'every word has to be there');
+  assert.match(searchTranscripts([a, b], 'notification')[0].snippet, /notification/);
+  assert.equal(searchTranscripts([a, b], 'wake word')[0].transcript.id, a.id, 'the session name counts');
+  assert.equal(searchTranscripts([a, b], 'cs-2')[0].transcript.id, b.id, 'a session finds its recordings by group');
+  assert.deepEqual(searchTranscripts([a, doc('12', 'merge again')], 'merge').map((h) => h.transcript.id[9]), ['1', '1'], 'newest first');
+  assert.equal(searchTranscripts([a, doc('12', 'merge again')], 'merge')[0].transcript.startedAt, '2026-11-06T12:00:00Z');
+  const long = doc('13', `${'alpha beta '.repeat(40)}needle ${'gamma delta '.repeat(40)}`);
+  const snip = searchTranscripts([long], 'needle')[0].snippet;
+  assert.match(snip, /^… (alpha|beta) /, 'a snippet starts on a whole word');
+  assert.match(snip, / (gamma|delta) …$/, 'and ends on one');
+  assert.equal(clock(725.4), '12:05');
+  assert.ok(TRANSCRIPT_MAX >= 100);
+});
+
+await t('transcripts: a session is asked for, never the mic; AmberX tells the truth about opening a page', () => {
+  assert.doesNotMatch(readFileSync(new URL('../claude-session/server/recording.py', import.meta.url), 'utf8').replace(/^.*mic.*(follows|never sent).*$/gm, ''), /"mic"/);
+  const link = java('AxppLink.java');
+  assert.doesNotMatch(link, /\.put\("notified", true\)/, 'notified is measured, not hard-coded');
+  assert.match(link, /startInForeground/, 'one way to start from the background');
+  assert.match(link, /canDrawOverlays/, 'only with the permission a background start needs');
 });
 
 console.log(`output-recorder: ${n} tests passed`);

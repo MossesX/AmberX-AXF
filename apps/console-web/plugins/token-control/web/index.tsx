@@ -158,7 +158,7 @@ function example(id: string, t: TargetInfo): Partial<ControlCommand> {
   if (id === 'amberx.items') return { op: 'add', target: id, value: { kind: 'todo', text: 'Buy milk' } };
   if (id === 'amberx.lists') return { op: 'list', target: id };
   if (id === 'planner.plans') return { op: 'list', target: id, select: { status: 'parked' } };
-  return { op: 'list', target: id, select: { profile: 'urgent' } };
+  return { op: 'list', target: id, select: { profile: 'all' } };
 }
 
 function DocsTab({ reg, tryIt }: { reg: Registry; tryIt: (c: Partial<ControlCommand>) => void }) {

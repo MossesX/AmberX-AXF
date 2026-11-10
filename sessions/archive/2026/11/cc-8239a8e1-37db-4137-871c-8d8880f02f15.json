@@ -1,0 +1,97 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-8239a8e1-37db-4137-871c-8d8880f02f15",
+ "source": "claude-code",
+ "sessionId": "8239a8e1-37db-4137-871c-8d8880f02f15",
+ "project": "amberx-axf",
+ "title": "JOB job-land-build-2026-11-04-1136: Land a finished build Land branch claude/terminal-no-focus (build terminal-no-focus…",
+ "startedAt": "2026-11-04T13:56:43.244Z",
+ "endedAt": "2026-11-04T14:03:20.696Z",
+ "minutes": 7,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.310",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/opt/axf/.axf-console/plugins/agent-swarm/job-worktrees/job-land-build-2026-11-04-1136",
+  "repo": "",
+  "branch": "claude/terminal-no-focus"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-04T13:56:57.192Z",
+   "kind": "prompt",
+   "text": "JOB job-land-build-2026-11-04-1136: Land a finished build Land branch claude/terminal-no-focus (build terminal-no-focus). 1. git fetch origin; merge origin/main into claude/terminal-no-focus (never rebase, never force). 2. Bookkeeping clashes (_claude/THREADS.md, _claude/memory/STATUS.md, _claude/builds/, tracker.json, catalogs): keep both sides' lines, then regenerate generated files (tracker.mjs). 3. Code clashes: do NOT resolve by guessing. Abort, list the files and both sides' intent in the report, status blocked. 4. Rerun the failing CI checks: Build engine sweep (Node). All green: git p…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 88,
+    "output": 20803,
+    "cacheRead": 3423743,
+    "cacheWrite": 87380,
+    "thinking": 3795
+   },
+   "costUsd": 1.538,
+   "costEstimated": false,
+   "seconds": 383,
+   "tools": {
+    "Bash": 87,
+    "Grep": 4,
+    "Read": 1,
+    "Write": 2
+   },
+   "commands": 87,
+   "files": [
+    "/tmp/land-1136/sweep.sh",
+    "/opt/axf/.axf-console/plugins/agent-swarm/job-worktrees/job-land-build-2026-11-04-1136/_claude/builds/reports/jobs/land-build/2026-11-04-1136.md"
+   ],
+   "changeIds": [
+    "chg-20261104-07ab1e2f60"
+   ],
+   "features": [
+    "pending:terminal-no-focus",
+    "orch:terminal-no-focus"
+   ],
+   "output": "Terminal-no-focus is on main: `d822f9e70..c067d02ec`, a plain fast-forward with no force-push. The branch's old head (2788bf41f) is now part of main, so PR #305 should flip to merged. **What clashed:** nothing. Main merged in clean with no code or bookkeeping conflicts. **What almost blew up:** one…"
+  }
+ ],
+ "files": [
+  "/tmp/land-1136/sweep.sh",
+  "/opt/axf/.axf-console/plugins/agent-swarm/job-worktrees/job-land-build-2026-11-04-1136/_claude/builds/reports/jobs/land-build/2026-11-04-1136.md"
+ ],
+ "changeIds": [
+  "chg-20261104-07ab1e2f60"
+ ],
+ "features": [
+  "pending:terminal-no-focus",
+  "orch:terminal-no-focus"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 88,
+  "output": 20803,
+  "cacheRead": 3423743,
+  "cacheWrite": 87380,
+  "thinking": 3795,
+  "costUsd": 1.538,
+  "costEstimated": false,
+  "toolCalls": 94,
+  "commands": 87,
+  "filesTouched": 2,
+  "reportedUsd": 1.8002
+ },
+ "ingestedAt": "2026-11-04T14:03:21.130Z"
+}

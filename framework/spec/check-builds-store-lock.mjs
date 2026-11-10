@@ -4,7 +4,7 @@
 // another process held the lock for more than 20 s. Reads now fall back to the store as it is.
 //   node framework/spec/check-builds-store-lock.mjs
 import assert from 'node:assert/strict';
-import { appendFileSync, closeSync, existsSync, mkdirSync, mkdtempSync, openSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { appendFileSync, closeSync, existsSync, mkdirSync, mkdtempSync, openSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -13,6 +13,11 @@ process.env.AXF_DATA_DIR = dir; // scratch data folder: the store and its export
 process.env.AXF_BUILDS_LIVE = '0'; // never publish to main from a test
 delete process.env.AXF_BUILDS_STORE;
 delete process.env.AXF_BUILDS_EXPORT;
+// the repo's profiles plus one that has never had a build queue (the last check needs one; since the Nov 7 2026 merge
+// into `all` every real profile has queue history)
+const registry = JSON.parse(readFileSync(new URL('../plan/profiles.json', import.meta.url), 'utf8'));
+mkdirSync(join(dir, 'framework', 'plan'), { recursive: true });
+writeFileSync(join(dir, 'framework', 'plan', 'profiles.json'), JSON.stringify({ ...registry, profiles: [...registry.profiles, { id: 'no-queue', name: 'No queue' }] }));
 
 const io = await import('../cli/builds-store.mjs');
 const { queueView } = await import('../cli/build-queue.mjs');

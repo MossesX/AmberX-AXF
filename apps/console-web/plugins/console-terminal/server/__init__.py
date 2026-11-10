@@ -398,6 +398,14 @@ class HeadlessService:
     def meters(self, names: list[str]) -> dict[str, Any]:
         return sessions.meters(list(names))
 
+    def vps_read(self, remote: str, timeout: int = 15) -> dict[str, Any]:
+        """One short, non-interactive read on the VPS host over the Terminal's key: {ready, out, why}."""
+        st = store.settings()
+        if not sessions._vps_ready(st):
+            return {"ready": False, "out": "", "why": "the VPS tab isn't set up (Settings → Plugins → Terminal → VPS host)"}
+        out, why = sessions._vps_run(st, remote, timeout)
+        return {"ready": not why, "out": out, "why": why}
+
     def kill(self, name: str) -> dict[str, Any]:
         for s in list(sessions.MANAGER.sessions.values()):
             if s.tmux == name and s.where == "vps":

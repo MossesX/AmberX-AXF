@@ -10,8 +10,8 @@
  *    or nothing here when the native side rings). Shelved and approved calls go quiet.
  *  - `AlarmPanel`: the alarm settings that need more than a generated row (his own sound file, Test, Stop).
  *
- * Actions go through lib-hub's `runVetoAction`: the app's host (the phone's own hub session) first, then a page on the
- * hub's origin, else the call's page on the hub opens. Only ever on a person's tap.
+ * Actions go through lib-hub's `runVetoAction`: the app's host (the phone's own hub session, the console's relay) first,
+ * then a page on the hub's origin, else the call's page on the hub opens. Only ever on a person's tap.
  */
 import { useEffect, useState } from 'react';
 import { Button, Chip, Icon, Note } from '@console/axf/react';
@@ -20,7 +20,7 @@ import {
   formatCountdown, notifyPlan, runVetoAction, secondsLeftNow, vetoHost, VETO_ACTION_LABELS, VETO_WARNING_SECONDS,
   type VetoAction, type VetoActionResult, type VetoCall, type VetoPhase,
 } from '@console/axf/libs/hub/veto';
-import { ALARM_KEYS, alarmConfig, alarmDue, BrowserAlarm, CUSTOM_SOUND_MAX, nativeAlarmConfig, soundAllowed, type AlarmConfig } from './alarm';
+import { ALARM_KEYS, alarmConfig, alarmDue, BrowserAlarm, CUSTOM_SOUND_MAX, nativeAlarmConfig, noticeConfig, soundAllowed, type AlarmConfig } from './alarm';
 
 const ACTION_ICON: Record<VetoAction, string> = { deny: 'x-circle', 'approve-now': 'play', shelve: 'pause' };
 /** Green Approve, red Deny (Brett, Oct 30 2026: "Approve/Deny on every row … green/red"). */
@@ -62,10 +62,15 @@ export async function actResult(d: VetoDeps, c: VetoCall, action: VetoAction): P
  */
 export function VetoButtons({ c, deps, row, onDone }: { c: VetoCall; deps: VetoDeps; row?: boolean; onDone?: () => void }) {
   const [busy, setBusy] = useState<VetoAction | null>(null);
+  const [failed, setFailed] = useState('');
   const left = secondsLeftNow(c);
   if (!c.shelved && left <= 0) return null;
-  const run = (a: VetoAction) => { setBusy(a); void act(deps, c, a).then((ok) => { setBusy(null); if (ok) onDone?.(); }); };
+  const run = (a: VetoAction) => {
+    setBusy(a); setFailed('');
+    void actResult(deps, c, a).then((r) => { setBusy(null); if (r.ok) onDone?.(); else if (!r.opened) setFailed(r.error ?? 'That did not go through.'); });
+  };
   return (
+    <>
     <div className="fx-row fx-row--wrap axp-approvals-banner__acts">
       {ORDER.filter((a) => c.actions.includes(a)).map((a) => (row && a === 'shelve'
         ? <button key={a} type="button" className="fx-iconbtn axp-approvals-banner__shelve" aria-label={`Shelve: ${c.title}`} title="Shelve: pause the countdown until you decide" disabled={busy !== null} onClick={() => run(a)}><Icon name={ACTION_ICON[a]} size={18} /></button>
@@ -74,6 +79,8 @@ export function VetoButtons({ c, deps, row, onDone }: { c: VetoCall; deps: VetoD
         </Button>
       ))}
     </div>
+    {failed && !row && <Note tone="danger">{failed}</Note>}
+    </>
   );
 }
 
@@ -115,6 +122,10 @@ export function VetoScreen({ c, deps, onClose }: { c: VetoCall | null; deps: Vet
 }
 
 /* ---------------------------------------------------------------- notices + alarm */
+
+/** The Notifications panel's answer where it is installed (the console); anywhere else, yes. */
+const notifyAllowed = (type: string, channel: string) =>
+  (globalThis as { AXF_NOTIFY?: { allowed(t: string, c: string): boolean } }).AXF_NOTIFY?.allowed(type, channel) !== false;
 
 const SENT_KEY = 'approvals-banner.sent';
 const ALARMED_KEY = 'approvals-banner.alarmed';
@@ -164,20 +175,23 @@ class VetoWatcher {
       if (due) {
         this.alarmed.add(due.id);
         saveAlarmed(this.alarmed);
-        if (may) { this.ringingFor = due.id; this.alarm.start(cfg); }
+        if (may && notifyAllowed('veto.alarm', 'sound')) { this.ringingFor = due.id; this.alarm.start(cfg); }
       }
     }
     // Kept after a call leaves the list (a read that misses it must not ring it again); only the oldest go, past 200.
     for (const id of [...this.alarmed].slice(0, Math.max(0, this.alarmed.size - 200))) this.alarmed.delete(id);
     // Notices: browser notifications while the page is open, unless the native side raises them.
-    if (native || this.get(ALARM_KEYS.notices) === false || !may) return;
+    if (native || this.get(ALARM_KEYS.notices) === false || !may || !notifyAllowed('veto.notice', 'popup')) return;
     const plan = notifyPlan(loadSent(), held, now);
     saveSent(plan.sent);
     if (!plan.send.length || typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
+    // One notice per hold (Brett, Nov 8 2026): the 30 s left / running updates replace it silently unless Repeat is on.
+    const notice = noticeConfig(this.get);
     for (const { call, phase } of plan.send) {
       const { title, text } = noticeText(call, phase, secondsLeftNow(call, now));
+      const again = phase !== 'held';
       try {
-        const n = new Notification(title, { body: text, tag: `veto-${call.id}`, requireInteraction: phase !== 'running' });
+        const n = new Notification(title, { body: text, tag: `veto-${call.id}`, requireInteraction: phase !== 'running', silent: !notice.sound || (again && !notice.repeat), renotify: again && notice.repeat } as NotificationOptions);
         n.onclick = () => { globalThis.focus?.(); this.open(call.id); };
       } catch { /* none */ }
     }
@@ -191,7 +205,7 @@ export function syncNativeAlarm(get: (k: string) => unknown): () => void {
   return () => {
     const host = vetoHost();
     if (!host.alarm) return;
-    const next = JSON.stringify(nativeAlarmConfig(alarmConfig(get)));
+    const next = JSON.stringify(nativeAlarmConfig(alarmConfig(get), noticeConfig(get)));
     if (next === last) return;
     last = next;
     host.alarm(JSON.parse(next) as Record<string, unknown>);
@@ -225,7 +239,7 @@ export function AlarmPanel({ get, set }: { get: (k: string) => unknown; set: (k:
     r.readAsDataURL(f);
   };
   const test = () => {
-    if (host.testAlarm) host.testAlarm(nativeAlarmConfig(cfg));
+    if (host.testAlarm) host.testAlarm(nativeAlarmConfig(cfg, noticeConfig(get)));
     else watch.alarm.start(cfg);
   };
   const stop = () => { host.stopAlarm?.(); watch.alarm.stop(); };

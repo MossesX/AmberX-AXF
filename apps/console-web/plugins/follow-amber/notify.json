@@ -1,0 +1,18 @@
+{
+  "$axf": "notify-types@1",
+  "types": [
+    {
+      "id": "follow.approval",
+      "label": "Approval pop-up in the console",
+      "group": "approvals",
+      "app": "console",
+      "source": "Follow Amber",
+      "description": "With Follow Amber on, a held or confirm call pops up in the console. The veto banner and AmberX still show it when this is off.",
+      "enforced": "gate",
+      "only": [
+        "popup"
+      ],
+      "priority": "high"
+    }
+  ]
+}

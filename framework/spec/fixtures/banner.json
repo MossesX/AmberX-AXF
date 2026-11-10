@@ -30,6 +30,9 @@
     "amberx-thin": {
       "--fx-banner-h": "24px"
     },
+    "windows-titlebar": {
+      "--fx-banner-h": "32px"
+    },
     "hidden": {
       "--fx-banner-h": "0px"
     },

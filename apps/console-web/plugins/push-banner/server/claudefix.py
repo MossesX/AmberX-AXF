@@ -1,13 +1,11 @@
 """Claude on failure for the push banner (Oct 22 2026): a Pull main in that hits conflicts, or a Merge that GitHub refuses
 (conflicts, failed CI, a GitHub error), is handed to headless Claude Code on the VPS when the setting is on.
 
-Setting `claudeOnFail` (off). The launch is handed to Mosses (his `axhub_call` tool), who passes it to axHub's
-`vps.run`, so nothing starts until Brett approves it on
-the hub (the approval page shows the whole command, brief included). The command keeps one clone per repo in
-`/root/axf-fixes/repos/<owner>-<name>` (git's own credentials on the VPS), makes a worktree on the entry's branch and
-starts `claude -p` there in the background with the reporting variables set (`AXF_SURFACE=console-launch`,
-`AXF_ADOPT_CHANGE=<entry id>`), so its hooks report onto the change-log entry opened here: it shows in the Build
-manager's Live list and building banner.
+Setting `claudeOnFail` (off). Vinny's mapped command runs first when he has one (no model). Otherwise the job is filed as
+a build with the Build orchestrator (capability ``axf.build-dispatch@1``) straight into its Queue, priority High (Brett,
+Nov 9 2026: "only one way to start builds … the orchestrator"). Its dispatcher starts the session; the brief opens with
+the setup (one clone per repo in `/root/axf-fixes/repos/<owner>-<name>`, a worktree on the entry's branch) and the
+session works there. This module never runs a launcher or asks axHub `vps.run` for a Claude session.
 
 What the session may run: setting `claudeShell` off (default) = file edits plus git only (fetch, merge, status, diff,
 log, add, commit, and a push of HEAD to that one branch); on = any shell command. It never pushes to the default
@@ -17,9 +15,6 @@ One session per entry at a time; an entry isn't handed over again within COOLDOW
 """
 from __future__ import annotations
 
-import base64
-import gzip
-import json
 import os
 import re
 import threading
@@ -35,13 +30,7 @@ WORK_ROOT = "/root/axf-fixes"
 HELPER = "/opt/axf/deploy/claude-headless.sh"  # the console's own checkout on the VPS
 
 
-def headless(name: str, log: str, args: str) -> str:
-    """Start headless Claude Code in a tmux session the console's Terminal opens and brings to the front (Oct 26 2026);
-    the old nohup launch when the console's checkout doesn't have the helper yet."""
-    n = re.sub(r"[^A-Za-z0-9._-]", "-", name)[:48]
-    return (f"set -- {args}; if [ -f {HELPER} ]; then bash {HELPER} --name {sq(n)} --brief .axf-brief.md --log {log} -- \"$@\"; "
-            f'else nohup claude -p "$@" "$(cat .axf-brief.md)" > {log} 2>&1 & echo "started pid $! in $(pwd)"; fi')
-MAX_COMMAND = 6800  # axHub's ssh run refuses commands over 7000 characters (doubled Oct 23 2026, axHub needs the matching change)
+DISPATCH = "axf.build-dispatch@1"
 REPO_RE = re.compile(r"[A-Za-z0-9-]{1,39}/[A-Za-z0-9._-]{1,100}\Z")
 BRANCH_RE = re.compile(r"(?!.*\.\.)(?!/)(?!-)(?!.*//)[A-Za-z0-9._/-]{1,200}\Z")
 _CHG = re.compile(r"^chg-\d{8}-[0-9a-f]{6,16}$")
@@ -65,7 +54,7 @@ def brief(t: dict[str, Any]) -> str:
     what = f"pull request #{t['number']} ({t.get('title') or t['branch']})" if t.get("number") else f"branch {t['branch']}"
     lines = [f"# Fix {what} in {t['repo']} so it can reach {t['base']}", "",
              f"The Dev Console's push banner tried to {t['action']} and it failed: {t['failure'] or 'unknown'}.", "",
-             f"- Repository: {t['repo']} (this folder is a worktree of it, on branch `{t['branch']}`)",
+             f"- Repository: {t['repo']} (the setup above makes a worktree of it, on branch `{t['branch']}`)",
              f"- Base branch: `{t['base']}`"]
     if t.get("number"):
         lines.append(f"- Pull request: #{t['number']} {t.get('url') or ''}".rstrip())
@@ -93,59 +82,22 @@ def brief(t: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
-def launch_command(t: dict[str, Any], change_id: str, packed: bool = False) -> str:
-    """The one command axHub's vps.run gets (Brett sees all of it on the approval page)."""
+def setup(t: dict[str, Any]) -> str:
+    """The brief's first section: where the session works (the orchestrator starts it in its own build worktree)."""
     repo, branch = t["repo"], t["branch"]
     if not REPO_RE.match(repo) or not all(BRANCH_RE.match(b) for b in [branch, t["base"], *(t.get("rest") or [])]) or t["base"] in (t.get("rest") or []):
         raise HubError("odd repo or branch name: not handed over")
     clone = f"{WORK_ROOT}/repos/{repo.replace('/', '-')}"
     work = f"{WORK_ROOT}/{repo.replace('/', '-')}--{re.sub(r'[^A-Za-z0-9._-]', '-', branch)[:80]}"
-    raw = brief(t).encode()
-    b64 = base64.b64encode(gzip.compress(raw, mtime=0) if packed else raw).decode()
-    adopt = f" AXF_ADOPT_CHANGE={change_id}" if _CHG.match(change_id or "") else ""
-    if t.get("shell"):
-        tools = "--allowedTools Bash"
-    else:  # git only, and a push of HEAD to this one branch
-        allowed = ["Bash(git fetch:*)", "Bash(git merge:*)", "Bash(git status:*)", "Bash(git diff:*)", "Bash(git log:*)",
-                   "Bash(git add:*)", "Bash(git commit:*)", "Bash(git checkout -- :*)", f"Bash(git push origin HEAD:{branch})"]
-        if t.get("rest"):  # switching branches is local; each push still names its one branch
-            allowed += ["Bash(git checkout -B:*)", *[f"Bash(git push origin HEAD:{b})" for b in t["rest"]]]
-        tools = "--allowedTools " + " ".join(sq(a) for a in allowed)
-    return "; ".join([
-        "set -e",
+    return "\n".join([
+        "## Setup (run first, then work only in that folder)", "```",
         f"mkdir -p {sq(WORK_ROOT + '/repos')}",
-        f"if [ ! -d {sq(clone)} ]; then git clone -q {sq('https://github.com/' + repo + '.git')} {sq(clone)}; fi",
-        f"git -C {sq(clone)} fetch -q origin",
-        f"git -C {sq(clone)} worktree prune",
+        f"[ -d {sq(clone)} ] || git clone -q {sq('https://github.com/' + repo + '.git')} {sq(clone)}",
+        f"git -C {sq(clone)} fetch -q origin && git -C {sq(clone)} worktree prune",
         f"if [ -d {sq(work)} ]; then git -C {sq(work)} checkout -q -B {sq(branch)} {sq('origin/' + branch)}; "
         f"else git -C {sq(clone)} worktree add -q -B {sq(branch)} {sq(work)} {sq('origin/' + branch)}; fi",
-        f"cd {sq(work)}",
-        f"echo {sq(b64)} | base64 -d{' | gunzip' if packed else ''} > .axf-brief.md",
-        f"export AXF_SURFACE=console-launch AXF_MODEL=opus{adopt} AXF_CLAUDE_AUTH=${{AXF_CLAUDE_AUTH:-plan}}",
-        headless(f"pr-{branch}", ".axf-fix.log", f"--model opus --permission-mode acceptEdits {tools}"),
-    ])
-
-
-def fitted_command(t: dict[str, Any], change_id: str) -> str:
-    return fit(t, change_id)[0]
-
-
-def fit(t: dict[str, Any], change_id: str) -> tuple[str, list[str]]:
-    """launch_command trimmed until it fits the hub's limit (extra Pull all branches first, then failure and title);
-    also the extra branches that made it in."""
-    t = {**t, "rest": list(t.get("rest") or [])}
-    for _ in range(60):
-        cmd = launch_command(t, change_id)
-        if len(cmd) > MAX_COMMAND and t["rest"]:  # a Pull all hand-over: gzip the brief before dropping branches
-            cmd = launch_command(t, change_id, packed=True)
-        if len(cmd) <= MAX_COMMAND:
-            return cmd, t["rest"]
-        if t.get("rest"):  # drop the last extra branch first: it stays in "Needs main pulled in"
-            t["rest"] = t["rest"][:-1]
-            continue
-        t["failure"] = str(t.get("failure", ""))[:-80]
-        t["title"] = str(t.get("title", ""))[:-40]
-    raise HubError("The brief is too long to send through axHub.")
+        f"cd {sq(work)}", "```",
+        "Do no work in the orchestrator's own build folder: it only hosts this session. Tick the build's steps there when done.", ""])
 
 
 # ---------------------------------------------------------------- through Mosses (Brett, Oct 22 2026)
@@ -179,52 +131,16 @@ def vinny() -> Any:
         return None
 
 
-def call_hub(tool: str, arguments: dict[str, Any], confirmation_id: str | None = None, timeout: float = 180) -> dict[str, Any]:
-    """axHub's `call`, through Vinny's axhub_call first, else Mosses's: {"ok": text} | {"confirm": id}, else HubError.
-    Never falls back once Brett rejected it or the approval expired."""
-    v = vinny()
-    if v is not None:
-        try:
-            return v.call(tool, {**arguments, "timeout_seconds": int(arguments.get("timeout_seconds") or timeout)}, confirmation_id, timeout,
-                          "Push banner: fix a failed pull or merge")
-        except Exception as e:  # noqa: BLE001
-            m = str(e).lower()
-            if "reject" in m or "expired" in m:
-                raise HubError(str(e)[:400]) from None
-    ok, why = mosses_ready()
-    if not ok:
-        raise HubError(why)
-    args: dict[str, Any] = {"tool": tool, "arguments": {**arguments, "timeout_seconds": int(arguments.get("timeout_seconds") or timeout)},
-                            "wait": False, "reason": "Push banner: fix a failed pull or merge"}
-    if confirmation_id:
-        args["confirmation_id"] = confirmation_id
-    try:
-        r = json.loads(plugin_services.get(AGENTS).run_tool(MOSSES, TOOL, args))
-    except Exception as e:  # noqa: BLE001 — the agent manager's own refusal, or an answer that isn't JSON
-        raise HubError(f"Mosses couldn't take it: {str(e)[:200]}") from None
-    if r.get("status") == "confirm" and r.get("confirmationId"):
-        return {"confirm": str(r["confirmationId"])}
-    if r.get("status") == "ok":
-        return {"ok": str(r.get("output", ""))}
-    raise HubError(str(r.get("message") or "axHub refused it")[:400])
-
-
-def retry_delays() -> list[float]:
-    """Approval retries: the first 10 every 15 seconds, then every minute (shared rule, Oct 21 2026)."""
-    return [15.0] * 10 + [60.0] * 40
-
-
 class Launches:
     """One headless Claude Code session per failing entry: ask the hub, wait for the approval, report on the entry."""
 
-    def __init__(self, settings: Callable[[], dict[str, Any]], call: Callable[..., dict[str, Any]] = call_hub,
-                 delays: Callable[[], list[float]] = retry_delays, changes: Callable[[], Any] = lambda: plugin_services.get(CHANGES),
-                 vinny_svc: Callable[[], Any] = vinny, sleep: Callable[[float], None] = time.sleep) -> None:
+    def __init__(self, settings: Callable[[], dict[str, Any]], changes: Callable[[], Any] = lambda: plugin_services.get(CHANGES),
+                 vinny_svc: Callable[[], Any] = vinny, sleep: Callable[[float], None] = time.sleep,
+                 dispatch: Callable[[], Any] = lambda: plugin_services.get(DISPATCH)) -> None:
         self.vinny_svc = vinny_svc
         self.sleep = sleep
         self.settings = settings
-        self.call = call
-        self.delays = delays
+        self.dispatch = dispatch
         self.changes = changes
         self.jobs: dict[str, dict[str, Any]] = {}
         self.lock = threading.RLock()  # maybe_launch reads a job back (get) while it holds the lock
@@ -235,12 +151,20 @@ class Launches:
             return {k: v for k, v in j.items() if k != "command"} if j else None
 
     def all(self) -> list[dict[str, Any]]:
-        """Every hand-over; a launched one carries `fixed` = its change-log entry's status (running / done / failed), so the
-        banner knows when to try the pull again."""
+        """Every hand-over; a launched one carries `fixed` = how it went (running / done / failed): the orchestrator build's
+        status when it went to the Queue, else its change-log entry's (Vinny), so the banner knows when to try the pull again."""
         with self.lock:
             out = [{k: v for k, v in j.items() if k != "command"} for j in self.jobs.values()]
         svc = plugin_services.get(CHANGES)
+        disp = self.dispatch()
         for j in out:
+            if j["state"] == "launched" and j.get("build") and disp is not None:
+                try:
+                    st = str((disp.build(j["build"]) or {}).get("status") or "")
+                except Exception:  # noqa: BLE001
+                    st = ""
+                j["fixed"] = "done" if st in ("built", "complete") else "failed" if st in ("failed", "archived") else "running"
+                continue
             if j["state"] == "launched" and j.get("changeId") and svc is not None:
                 try:
                     e = svc.get(j["changeId"]) or {}
@@ -267,18 +191,18 @@ class Launches:
                 return self.get(key)
             if cur and not force and time.time() - float(cur.get("startedAt", 0)) < COOLDOWN_S:
                 return self.get(key)
-            self.jobs[key] = {"key": key, "state": "asking", "message": "Handing it to Mosses, who asks axHub to start Claude Code on the VPS…", "changeId": "",
+            self.jobs[key] = {"key": key, "state": "asking", "message": "Handing it over: Vinny's mapped command first, else the Build orchestrator's Queue…", "changeId": "",
                               "startedAt": time.time(), "title": t.get("title") or t["branch"], "repo": t["repo"], "branch": t["branch"],
                               "failure": str(t.get("failure", ""))[:300]}
         t = {**t, "shell": bool(s.get("claudeShell"))}
         change_id = self._open_entry(t)
         try:
-            cmd, sent = fit(t, change_id)
+            setup(t)
         except HubError as e:
             self._fail(key, change_id, str(e))
             return self.get(key)
-        self._set(key, changeId=change_id, command=cmd, rest=sent)
-        threading.Thread(target=self._chain, args=(key, cmd, change_id, t), daemon=True).start()
+        self._set(key, changeId=change_id, rest=list(t.get("rest") or []))
+        threading.Thread(target=self._chain, args=(key, change_id, t), daemon=True).start()
         return self.get(key)
 
     def _open_entry(self, t: dict[str, Any]) -> str:
@@ -291,7 +215,7 @@ class Launches:
                           "asked": f"Push banner: {t['action']} failed ({str(t.get('failure', ''))[:200]}); handed to headless Claude Code on the VPS.",
                           "model": "opus", "repos": [t["repo"]], "status": "queued", "surface": "console-launch", "branch": t["branch"],
                           "startedAt": time.strftime("%Y-%m-%dT%H:%M:%S.000Z", time.gmtime()), "who": {"where": "console", "host": "console"},
-                          "steps": [{"text": "Approve on axHub", "state": "running"},
+                          "steps": [{"text": "Vinny first, else the Build orchestrator's Queue", "state": "running"},
                                     {"text": f"Fix and push {t['branch']} ({'shell allowed' if t.get('shell') else 'edits + git only'})", "state": "queued"},
                                     {"text": "CI runs again on the branch", "state": "queued"}]}, "push-banner")
             return str(e.get("id") or "")
@@ -310,11 +234,11 @@ class Launches:
         self._set(key, state="failed", message=msg)
         self._update(change_id, {"status": "failed", "result": {"state": "failed", "summary": msg[:300]}})
 
-    def _chain(self, key: str, cmd: str, change_id: str, t: dict[str, Any]) -> None:
-        """Vinny's mapped command for this failure first (no model); if he has none or it fails, launch Claude."""
+    def _chain(self, key: str, change_id: str, t: dict[str, Any]) -> None:
+        """Vinny's mapped command for this failure first (no model); if he has none or it fails, the orchestrator's Queue."""
         if self._vinny(key, change_id, t):
             return
-        self._run(key, cmd, change_id)
+        self._dispatch(key, change_id, t)
 
     def _vinny(self, key: str, change_id: str, t: dict[str, Any]) -> bool:
         v = self.vinny_svc()
@@ -342,36 +266,22 @@ class Launches:
             self._update(change_id, {"status": "done", "doing": f"Vinny ran “{run.get('name')}”",
                                      "result": {"state": "done", "summary": f"Vinny's mapped command “{run.get('name')}” ran (no model)."}})
             return True
-        self._set(key, state="asking", message=f"Vinny's “{run.get('name')}” didn't work; handing it to Claude Code…")
+        self._set(key, state="asking", message=f"Vinny's “{run.get('name')}” didn't work; sending it to the Build orchestrator…")
         return False
 
-    def _run(self, key: str, cmd: str, change_id: str) -> None:
-        args = {"command": cmd, "timeout_seconds": 300}
+    def _dispatch(self, key: str, change_id: str, t: dict[str, Any]) -> None:
+        """File the fix with the Build orchestrator, straight into its Queue (High). Its dispatcher starts it."""
+        svc = self.dispatch()
+        if svc is None:
+            self._fail(key, change_id, "The Build orchestrator is off: fixes start only from its Queue (Settings → Plugins → Build orchestrator).")
+            return
+        what = f"#{t['number']}" if t.get("number") else t["branch"]
+        title = f"Fix {t['repo'].split('/')[-1]} {what}: {t['action']} failed"[:200]
         try:
-            r = self.call("vps.run", args, None, 360)
-            if "confirm" in r:
-                conf = r["confirm"]
-                self._set(key, state="waiting", message="Approve it on axHub (it shows the whole command and brief).")
-                self._update(change_id, {"doing": "Waiting for approval on axHub"})
-                deadline = time.time() + WAIT_S
-                waits = iter(self.delays())
-                while "confirm" in r:
-                    if time.time() > deadline:
-                        self._fail(key, change_id, "The approval expired."); return
-                    time.sleep(next(waits, 60.0))
-                    try:
-                        r = self.call("vps.run", args, conf, 360)
-                    except HubError as e:
-                        m = str(e).lower()
-                        self._fail(key, change_id, "Rejected on the hub." if "reject" in m else "The approval expired." if "expired" in m else str(e)); return
-            out = r.get("ok", "")
-            if '"status": "started"' in out or not re.search(r"^exit 0\b", out, re.M):
-                tail = out.strip().splitlines()[-1] if out.strip() else "no output"
-                self._fail(key, change_id, f"Couldn't start Claude Code on the VPS: {tail}"[:300]); return
-            self._set(key, state="launched", message="Claude Code is fixing it on the VPS: follow it in the building banner.")
-            self._update(change_id, {"status": "running", "doing": "Launched on the VPS (headless Claude Code)",
-                                     "lastSeenAt": time.strftime("%Y-%m-%dT%H:%M:%S.000Z", time.gmtime())})
-        except HubError as e:
-            self._fail(key, change_id, str(e))
-        except Exception as e:  # noqa: BLE001
-            self._fail(key, change_id, f"Launch stopped ({type(e).__name__}).")
+            r = svc.request(title, f"{setup(t)}\n{brief(t)}"[:8000], by="push-banner", source="push-banner", priority="P1", queue=True)
+        except Exception as e:  # noqa: BLE001 — the orchestrator's own refusal
+            self._fail(key, change_id, f"The orchestrator did not take it: {getattr(e, 'detail', None) or e}"[:300])
+            return
+        bid = str(r.get("id") or "")
+        self._set(key, state="launched", build=bid, message=f"In the Build orchestrator's Queue as {bid}: it starts the fix when a slot is free.")
+        self._update(change_id, {"doing": f"Queued with the Build orchestrator as {bid}"})

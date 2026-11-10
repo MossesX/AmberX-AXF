@@ -1,0 +1,231 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-fable-review-shipped-features-build-hook-contrac",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-09T01:27:04Z",
+ "build": {
+  "id": "fable-review-shipped-features-build-hook-contrac",
+  "title": "Fable review: Shipped features build hook contract",
+  "profile": "all",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Alright, then add the Fable rebuild to the to-do list.",
+  "verbatim": true,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "# Build: shipped-features-fable (pending item fable-review-shipped-features-build-hook-contrac)\n\nBrett (voice): \"The ship features. Yeah, do that now. Do the fable part now.\"\n\nThe Shipped features work is in the unpushed local worktree /root/axf-builds/shipped-features-r4 (branch claude/shipped-features-r4, 10 commits ahead, ~192 behind main; r2/r3 worktrees are older copies).\n1. Bring r4's commits onto this branch (fetch from that worktree, merge or cherry-pick), resolve conflicts with main keeping both sides, get checks green.\n2. Fable review (the pending item): review and fix where needed the build hook contract (s4: one framework event every build creator fires for create, status change, PR open/merge, built on Opus), feature-ledger@1 and deploy-log@1 (cut off before review/tests). Add missing tests.\n3. Progress file _claude/builds/progress/shipped-features.md, report, screenshots to UI Review if UI changed.\n4. One PR to the merge queue (supersedes r2/r3/r4; say so). Do NOT land directly.\n\nOther builds running: notes-tasks-sync, ui-review-notify-audio. Don't touch their areas. One session for the whole build, read only files you need, no full CLAUDE.md chain.",
+ "models": [
+  "Fable"
+ ],
+ "accounts": [
+  "account-1"
+ ],
+ "runs": [
+  {
+   "session": "axf-shipped-features-fable--rhonda",
+   "account": "account-1",
+   "model": "Fable",
+   "startedAt": "2026-11-06T19:47:11.012Z",
+   "endedAt": "2026-11-06T20:35:08.423Z",
+   "exit": 0,
+   "costUsd": 19.6409
+  }
+ ],
+ "steps": [],
+ "branch": "claude/shipped-features-fable",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 364,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/364"
+ },
+ "landedCommit": "aeccdb0a848b520cd60fa4bb412e90f5037042ad",
+ "commits": [
+  "4f5fdb993e0a08567ceeee36fc5af25dd7653868",
+  "f4ee124c1e315996151194d7460d9689bde3ff69",
+  "c07f630a86cfa5c26e7348fb2b3d1661282785a0",
+  "7bf0ef05a7e4704ecdd235ee4432fcb81956e28a"
+ ],
+ "mergedAt": "2026-11-07T16:33:06Z",
+ "landedAt": "2026-11-07T16:33:00Z",
+ "files": [
+  "CLAUDE.md",
+  "_claude/THREADS.md",
+  "_claude/builds/progress/shipped-features.md",
+  "_claude/builds/reports/shipped-features.md",
+  "_claude/memory/STATUS.md",
+  "_claude/memory/builds-registry.md",
+  "_claude/memory/docs/chain-control.md",
+  "_claude/memory/docs/token-log.md",
+  "_claude/memory/handoff-2026-11-05.md",
+  "_claude/memory/todo/features-landed.md",
+  "_claude/memory/todo/install-keys.md",
+  "_claude/sessions/2026-11-04-shipped-features.md",
+  "_claude/sessions/2026-11-04.md",
+  "_claude/sessions/2026-11-05.md",
+  "_claude/shared/memory/vision.md",
+  "_claude/shared/memory/write-ups.md",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/shipped-features/README.md",
+  "apps/console-web/plugins/shipped-features/help.json",
+  "apps/console-web/plugins/shipped-features/ledger/apply.mjs",
+  "apps/console-web/src/axf/core/build-hook.mjs",
+  "apps/console-web/src/axf/core/deploy-log.mjs",
+  "apps/console-web/src/axf/core/feature-ledger.d.mts",
+  "apps/console-web/src/axf/core/feature-ledger.mjs",
+  "apps/console-web/src/axf/schemas/build-hook.json",
+  "apps/expenses/_claude/README.md",
+  "apps/expenses/_claude/instructions/README.md",
+  "apps/expenses/_claude/memory/README.md",
+  "apps/expenses/_claude/rules/README.md",
+  "framework/cli/build-hooks.mjs",
+  "framework/core/build-hook.mjs",
+  "framework/core/deploy-log.mjs",
+  "framework/core/feature-ledger.d.mts",
+  "framework/core/feature-ledger.mjs",
+  "framework/plan/profiles/breakroom/framework/catalog/status.json",
+  "framework/plan/profiles/breakroom/framework/plan/build-queue.json",
+  "framework/plan/profiles/breakroom/framework/plan/plan.json",
+  "framework/schemas/build-hook.json",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-build-hook.mjs",
+  "framework/spec/check-feature-ledger.mjs",
+  "framework/spec/fixtures/build-hook.json",
+  "framework/spec/fixtures/feature-ledger.json"
+ ],
+ "areas": [
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md",
+    "_claude/memory/builds-registry.md",
+    "_claude/memory/docs/chain-control.md",
+    "_claude/memory/docs/token-log.md",
+    "_claude/memory/handoff-2026-11-05.md",
+    "_claude/memory/todo/features-landed.md",
+    "_claude/memory/todo/install-keys.md",
+    "_claude/sessions/2026-11-04-shipped-features.md",
+    "_claude/sessions/2026-11-04.md",
+    "_claude/sessions/2026-11-05.md",
+    "_claude/shared/memory/vision.md",
+    "_claude/shared/memory/write-ups.md"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/src/axf/core/build-hook.mjs",
+    "apps/console-web/src/axf/core/deploy-log.mjs",
+    "apps/console-web/src/axf/core/feature-ledger.d.mts",
+    "apps/console-web/src/axf/core/feature-ledger.mjs",
+    "apps/console-web/src/axf/schemas/build-hook.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-build-hook.mjs",
+    "framework/spec/check-feature-ledger.mjs",
+    "framework/spec/fixtures/build-hook.json",
+    "framework/spec/fixtures/feature-ledger.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "expenses",
+   "files": [
+    "apps/expenses/_claude/README.md",
+    "apps/expenses/_claude/instructions/README.md",
+    "apps/expenses/_claude/memory/README.md",
+    "apps/expenses/_claude/rules/README.md"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/build-hook.mjs",
+    "framework/core/deploy-log.mjs",
+    "framework/core/feature-ledger.d.mts",
+    "framework/core/feature-ledger.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "shipped-features",
+   "files": [
+    "apps/console-web/plugins/shipped-features/README.md",
+    "apps/console-web/plugins/shipped-features/help.json",
+    "apps/console-web/plugins/shipped-features/ledger/apply.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/profiles/breakroom/framework/catalog/status.json",
+    "framework/plan/profiles/breakroom/framework/plan/build-queue.json",
+    "framework/plan/profiles/breakroom/framework/plan/plan.json"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/progress/shipped-features.md",
+    "_claude/builds/reports/shipped-features.md"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/build-hooks.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/build-hook.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261106-f8fd11bb",
+   "name": "Shipped features",
+   "status": "approved",
+   "group": "g-20261106-8769175f",
+   "url": "/review/r-20261106-f8fd11bb"
+  }
+ ],
+ "cost": {
+  "usd": 19.6409,
+  "estimated": false,
+  "tokens": {
+   "input": 1478,
+   "output": 1236,
+   "cacheRead": 8236646,
+   "cacheWrite": 235309
+  }
+ },
+ "report": "",
+ "open": []
+}

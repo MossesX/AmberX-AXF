@@ -22,6 +22,27 @@ Records everything the phone **plays** while it's on and keeps it on axHub. **Th
   delete, and **Audio Extract** (AmberX: the recording is saved to Music/AmberX Recorder and handed over like
   Share → AmberX, for trimming or WAV). The data server has no delete: Delete marks the index and empties every part.
 
+## Every session, automatically (Nov 6 2026)
+
+- **Starts by itself:** when a voice, chat or console session calls `claude_session_start`, the Claude sessions plugin
+  asks this recorder to start for it (`claude-session/server/recording.py`). A recording already running, or asked for in
+  the last 10 minutes, is joined instead of asked for again. Headless builds are skipped. The session that asked stops
+  it when it ends, unless another session is on the same recording.
+- **What still needs you:** `amberx.recorder_start` stays a straight approval on axHub and Android's capture prompt stays
+  on every start. With AmberX allowed to "Display over other apps" the prompt opens by itself; otherwise its notification
+  opens it. `mic` is never sent, so your own *Record my mic too* switch decides.
+- **Transcribed by itself:** the console finds each uploaded part on the hub, puts it back together, checks its SHA-256,
+  and transcribes it with local faster-whisper (`base.en`, 2 threads, lowest priority, its own process, one part at a
+  time, only with 2 GB free). The result is `output-recorder/transcripts/<id>.json` (audio-transcript@1) beside the
+  recording. No key and no model tokens; nothing leaves the VPS except the model's one download from Hugging Face
+  (about 140 MB, kept in the plugin's data folder).
+- **Find it:** *Search what was said* on this page (every word, any order, the newest 200 transcripts), Transcript on
+  each recording with timed lines, and Transcript on a session in Settings → Plugins → Claude sessions. A session's
+  recording group is its session id, which is what links them.
+- **Switches:** Settings → Plugins → Claude → Session recording: *Record every session*, *Transcribe every part*.
+- **Failures:** a part is tried 3 times. `GET /api/plugins/output-recorder/status` says what is waiting and what failed,
+  and the systems check shows **Session transcripts**.
+
 ## Limits to know
 
 axHub's data server holds about 100 MB per project: roughly 5 hours at 32 kbps. Delete old recordings, or lower the
@@ -29,12 +50,13 @@ quality. A binary upload endpoint on axHub (bigger files, real delete) would lif
 
 ## Files
 
-- Web: `web/core.ts` (rules, hub client), `web/store.ts` (controller), `web/index.tsx` (page, settings), `web/bridge.ts`.
+- Server: `server/transcripts.py` (the worker), `server/whisper_job.py` (one transcription), `server/__init__.py` (status, run, health).
+- Web: `web/core.ts` (rules, hub client, transcript search), `web/store.ts` (controller), `web/index.tsx` (page, settings), `web/bridge.ts`.
 - Native (AmberX shell, `apps/amberx-droid/android/…/ai/amberx/droid/`): `OutputRecordService` (capture → AAC → chunks),
   `OutputRecordQueue` (settings + local chunks), `OutputRecordUploader` (parts → axHub, confirm, retry, cap),
   `OutputRecordStartActivity` (the one consent flow), `OutputRecordTile`, `OutputRecorderPlugin` (the bridge).
   The capture path is Audio Extract's (PR #187) without the screen; `AudioExtractPlugin.offer` takes the hand-over.
-- Test: `node --experimental-strip-types apps/console-web/plugins/output-recorder/test.mts` (or `npx -y tsx …`).
+- Test: `node --experimental-strip-types apps/console-web/plugins/output-recorder/test.mts` (or `npx -y tsx …`), `python3 apps/console-web/plugins/output-recorder/test_transcripts.py`.
 
 ## Opt-in mic ("Record my mic too", Nov 1 2026)
 

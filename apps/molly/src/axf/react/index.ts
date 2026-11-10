@@ -23,6 +23,7 @@ export { AGENT_CONTEXT_TARGET, agentInText, agentInitials, clearAgentDirectory, 
 export { HelpLayer, HelpModeButton, HelpPanel, HelpIntroCard, useHelpMode, describeHelpElement, findHelpTarget, placeTip } from './components/Help';
 export { BrandMark, BrandWatermark, brandHostProps, useBrandPlace } from './components/Brand';
 export { InterfaceScope, usePortalRoot, useScopeId } from './components/InterfaceScope';
+export { SkinScope } from './components/SkinScope';
 export { LookEditor, LookLevelSwitch, LookTokenRow } from './components/LookEditor';
 export { WidgetView, SearchBarWidget, registerWidgetRenderer, widgetRenderer, type WidgetRenderer, type WidgetRenderProps } from './components/Widgets';
 export { LiveSearch, useSearchHost, scanPage, flashWhenReady } from './components/Search';

@@ -1,0 +1,68 @@
+{
+  "$axf": "change-log@1",
+  "id": "chg-20261104-531244aaf7",
+  "createdAt": "2026-11-04T01:53:06.754Z",
+  "updatedAt": "2026-11-04T01:53:36.853Z",
+  "kind": "build",
+  "title": "Continue build profile-switcher-widget: check /tmp/psw-tsc.log, fix type errors, then screenshots, …",
+  "asked": "Continue build profile-switcher-widget: check /tmp/psw-tsc.log, fix type errors, then screenshots, UI Review, report, PR.",
+  "repos": [
+    "MossesX/AmberX-AXF"
+  ],
+  "model": "opus",
+  "who": {
+    "session": "d43b8447-563",
+    "where": "vps",
+    "user": "root",
+    "host": "srv1837178"
+  },
+  "steps": [],
+  "result": {
+    "state": "cancelled",
+    "summary": "continuation of chg-20261104-4ba1f4e6c8 (same build)",
+    "commits": [],
+    "tests": {},
+    "links": {}
+  },
+  "closed": null,
+  "state": "cancelled",
+  "status": "failed",
+  "surface": "headless",
+  "startedAt": "2026-11-04T01:53:06.754Z",
+  "finishedAt": "2026-11-04T01:53:36.853Z",
+  "lastSeenAt": "2026-11-04T01:53:28.260Z",
+  "resume": {
+    "repo": "MossesX/AmberX-AXF",
+    "folder": "/root/axf-builds/profile-switcher-widget",
+    "branch": "claude/profile-switcher-widget",
+    "base": "702368a9b753f6b68d295faea35cdbdd0edd8ed2",
+    "head": "75161acc8b573206004e80922d6daf352b86efcb",
+    "pushed": false,
+    "dirty": 0,
+    "files": [
+      "_claude/memory/STATUS.md",
+      "apps/console-web/plugins/README.md",
+      "apps/console-web/plugins/builds-page/builds.mjs",
+      "apps/console-web/plugins/builds-page/server/__init__.py",
+      "apps/console-web/plugins/builds-page/web/ui.tsx",
+      "apps/console-web/plugins/profile-switcher/help.json",
+      "apps/console-web/plugins/profile-switcher/hooks.mjs",
+      "apps/console-web/plugins/profile-switcher/install.mjs",
+      "apps/console-web/plugins/profile-switcher/plugin.json",
+      "apps/console-web/plugins/profile-switcher/server/__init__.py",
+      "apps/console-web/plugins/profile-switcher/switcher.mjs",
+      "apps/console-web/plugins/profile-switcher/test.mjs",
+      "apps/console-web/plugins/profile-switcher/uninstall.mjs",
+      "apps/console-web/plugins/profile-switcher/web/index.tsx",
+      "apps/console-web/plugins/profile-switcher/web/profile-switcher.css",
+      "apps/console-web/src/axf/core/engines/profile-filter.d.mts",
+      "apps/console-web/src/axf/core/engines/profile-filter.mjs",
+      "apps/console-web/src/profileFilter.tsx",
+      "framework/core/engines/profile-filter.d.mts",
+      "framework/core/engines/profile-filter.mjs",
+      "framework/spec/PORTING.md",
+      "framework/spec/check-profile-filter.mjs"
+    ],
+    "at": "2026-11-04T01:53:11.958Z"
+  }
+}

@@ -87,7 +87,7 @@ function fromCatalog() {
 export function buildPlan() {
   const prev = readJson(PLAN, { features: [] });
   const prevById = new Map(prev.features.map((f) => [f.id, f]));
-  // A build profile that doesn't take the framework's sources (a fresh profile, e.g. "refactor") keeps only what was
+  // A build profile that doesn't take the framework's sources (a fresh profile, e.g. "all") keeps only what was
   // added to its own plan; the base profile imports seed.json + the catalog as before.
   const sources = activeProfile().catalog !== false;
   const seed = sources ? readJson(join(PLAN_DIR, 'seed.json'), { features: [] }).features : [];

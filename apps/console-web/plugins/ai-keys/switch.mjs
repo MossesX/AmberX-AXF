@@ -7,7 +7,9 @@
  * Asks the Dev Console's AI keys plugin (POST /api/plugins/ai-keys/switch) to mark the active Claude subscription as
  * limited and make the next saved account that still answers the active one. AI keys then writes that account to
  * Claude Code's credentials on the VPS (directly, or by Vinny after an axHub approval); this waits for that write
- * (GET /api/plugins/ai-keys/vps) up to --wait seconds (default 900).
+ * (GET /api/plugins/ai-keys/vps) up to --wait seconds (default 900). With no subscription saved in AI keys, the switch moves
+ * between the accounts saved on the VPS instead (one held axHub call); this waits for that account to read active, up to
+ * 4 minutes (the veto countdown and some room), so a denied switch doesn't hold the build's slot.
  *
  * Exit 0 and one line "switched to <label> (<email>)" when the new account is on the VPS; exit 1 (reason on stderr)
  * when no other account could take over, the write failed or timed out, or the console can't be reached.
@@ -54,6 +56,18 @@ if (!res.switched) {
 }
 const who = `${res.switched.label}${res.account?.email ? ` (${res.account.email})` : ''}`;
 const started = Date.now();
+if (res.switched.host) {
+  const until = started + Math.min(waitMs, 240_000);
+  for (;;) {
+    let keys;
+    try { keys = await call('GET', 'keys'); } catch (e) { fail(`asked to switch to ${who}, but couldn't read the VPS accounts: ${e.message}`); }
+    if ((keys.vpsAccounts || []).some((a) => a.id === res.switched.to && a.active)) break;
+    if (Date.now() > until) fail(`asked to switch to ${who}, but it didn't go through in time (denied, or still waiting on axHub)`);
+    await new Promise((ok) => setTimeout(ok, 5_000));
+  }
+  console.log(`switched to ${who}`);
+  process.exit(0);
+}
 for (;;) {
   let vps;
   try { vps = await call('GET', 'vps'); } catch (e) { fail(`switched to ${who}, but couldn't read the VPS write: ${e.message}`); }

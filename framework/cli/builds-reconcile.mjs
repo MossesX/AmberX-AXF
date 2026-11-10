@@ -113,7 +113,7 @@ export function applyPlan(p, by = 'reconciler') {
       b.notes.push({ text: `Reconciler: ${c.why.join('; ')}`.slice(0, 2000), at: now });
       b.updatedAt = now;
       merge.settleStatus(b, now);
-      if (c.steps.length && b.status === 'pending') b.status = 'running';
+      if (c.steps.length && (b.status === 'pending' || b.status === 'queued')) b.status = 'running';
       if ((b.status === 'complete' || b.status === 'built') && !b.builtAt) b.builtAt = now;
     }
     return s;

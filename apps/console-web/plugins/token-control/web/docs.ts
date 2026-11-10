@@ -69,10 +69,10 @@ axf plan add "Voice macros" --field category="Apps > AmberX"     # parked: "put 
 axf plan list --select status=parked
 axf plan comment <plan id> "Needs the recorder first"
 axf plan build <plan id> --field profile=main --field buildId=voice-macros   # an orchestrator build
-axf build list --profile urgent
-axf build step token-control s12 --profile urgent               # tick a step (add "undo" to untick)
-axf build note token-control "halfway" --profile urgent
-axf build approve token-control --field phase=1 --profile urgent
+axf build list --profile all
+axf build step token-control s12 --profile all               # tick a step (add "undo" to untick)
+axf build note token-control "halfway" --profile all
+axf build approve token-control --field phase=1 --profile all
 \`\`\`
 
 \`--profile\` (or \`select.profile\` / \`input.profile\`) picks the build profile; without it the active profile is used. Approving a model switch is Brett's call: only send \`approve\` when he said so.`,
@@ -132,6 +132,7 @@ Reads are marked read-only, removes destructive. A failure raises a tool error w
 | open a dialog | \`console_dialog {dialog: "asset-json"}\` | \`POST /api/console/dialog {"id": …}\` | \`axf console dialog asset-json\` |
 | run an action | \`console_action {action: "terminal.open"}\` | \`POST /api/console/action {"id": …}\` | \`axf console action terminal.open\` |
 | back / home / close | \`console_back {move: "back"}\` | \`POST /api/console/back\` | \`axf console back\` |
+| reload the page | \`console_refresh {hard?}\` | \`POST /api/console/refresh\` | \`axf console refresh [--hard]\` |
 | where is it | \`console_where\` | \`GET /api/console/where\` | \`axf console where\` |
 | what can it open | \`console_list {kind: "screens", q: "build"}\` | \`GET /api/console/list?kind=screens&q=build\` | \`axf console list screens build\` |
 

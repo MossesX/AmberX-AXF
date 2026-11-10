@@ -61,8 +61,71 @@ public class AmberxNativePlugin extends Plugin {
     protected void handleOnDestroy() {
         if (tts != null) tts.shutdown();
         WatchService.listener = null;
+        // The page is going: a talk-mode conversation nobody can hear ends with it (the mic goes back to hands-free).
+        if (TalkService.running != null) TalkService.stop(getContext(), "AmberX closed.");
         io.shutdown();
     }
+
+    /* ---------------------------------------------------------------- Gizmo talk mode (TalkService, Nov 6 2026) */
+
+    /** A `talk` event from the service: started | heard {text, final} | paused {reason} | resumed | error | stopped {why}. */
+    static void talkEvent(JSONObject e) {
+        AmberxNativePlugin p = current;
+        if (p != null) p.notifyListeners("talk", js(e));
+    }
+
+    /** Talk mode with the screen off: the foreground service listens turn by turn and the page keeps the conversation. */
+    @PluginMethod
+    public void talkStart(PluginCall call) {
+        if (!ListenerRegistry.allowed(getContext(), ListenerRules.TALK)) { call.reject("Talk mode is switched off in Listeners."); return; }
+        if (!MicGuard.mayOpen(getContext())) { call.reject("Mic off is on. Turn the mic back on to talk to Gizmo."); return; }
+        if (getPermissionState("microphone") != PermissionState.GRANTED) { requestPermissionForAlias("microphone", call, "talkAfterPermission"); return; }
+        call.resolve(js(TalkService.start(getContext(), call.getData())));
+    }
+
+    @PermissionCallback
+    private void talkAfterPermission(PluginCall call) {
+        if (getPermissionState("microphone") == PermissionState.GRANTED) call.resolve(js(TalkService.start(getContext(), call.getData())));
+        else call.reject("The microphone isn't allowed.");
+    }
+
+    @PluginMethod
+    public void talkStop(PluginCall call) {
+        TalkService.stop(getContext(), call.getString("reason", ""));
+        call.resolve(js(TalkService.status()));
+    }
+
+    @PluginMethod
+    public void talkStatus(PluginCall call) { call.resolve(js(TalkService.status())); }
+
+    /** The page's half of a turn: listening (listen again) | thinking | speaking, with the line to show in the notification. */
+    @PluginMethod
+    public void talkPhase(PluginCall call) { call.resolve(js(TalkService.phase(call.getString("phase", "listening"), call.getString("line", "")))); }
+
+    /* ---------------------------------------------------------------- the Listeners control panel (ListenerRegistry) */
+
+    /** Every native listener's state and policy (listener-state@1 rows). */
+    @PluginMethod
+    public void listenersStatus(PluginCall call) { call.resolve(js(ListenerRegistry.status(getContext()))); }
+
+    /** Set a listener's policy (any of on, pauseOnCall, pauseForOtherApps, sound, retries, backoffMs, maxBackoffMs, cooldownMs). */
+    @PluginMethod
+    public void listenerSet(PluginCall call) {
+        String id = call.getString("id", "");
+        if (id == null || !id.matches("[a-z][a-z0-9-]{0,40}")) { call.reject("Not a listener id."); return; }
+        JSONObject policy = call.getObject("policy");
+        ListenerRegistry.set(getContext(), id, policy);
+        call.resolve(js(ListenerRegistry.status(getContext())));
+    }
+
+    /** Something changed on a native listener: the page gets the whole status. */
+    static void listenersChanged() {
+        AmberxNativePlugin p = current;
+        if (p != null) p.notifyListeners("listeners", js(ListenerRegistry.status(p.getContext())));
+    }
+
+    /** True while the Speak button's recognizer runs. */
+    static boolean speakListening() { return cancelSpeak != null; }
 
     private static JSObject js(JSONObject o) {
         try { return JSObject.fromJSONObject(o); } catch (Exception e) { return new JSObject(); }
@@ -150,6 +213,18 @@ public class AmberxNativePlugin extends Plugin {
         });
     }
 
+    /** Approve / Decline a call waiting for an approval with the phone's hub session, in place (no hub view). */
+    @PluginMethod
+    public void approvalDecide(PluginCall call) {
+        String id = call.getString("id", "");
+        String action = call.getString("action", "");
+        if (HubRules.approvalUrl(HubRules.HUB, id) == null || !HubRules.isDecision(action)) { call.reject("Not a request id or decision."); return; }
+        io.execute(() -> {
+            boolean ok = HubRules.decide(HubRules.HUB, id, action, android.webkit.CookieManager.getInstance().getCookie(HubRules.HUB));
+            call.resolve(new JSObject().put("ok", ok));
+        });
+    }
+
     /** The banner plugin's alarm settings (VetoAlarm). */
     @PluginMethod
     public void vetoAlarm(PluginCall call) {
@@ -233,6 +308,7 @@ public class AmberxNativePlugin extends Plugin {
     @PluginMethod
     public void listen(PluginCall call) {
         if (!MicGuard.mayOpen(getContext())) { call.reject("Mic off is on. Turn the mic back on to talk to AmberX."); return; }
+        if (!ListenerRegistry.allowed(getContext(), ListenerRules.SPEAK)) { call.reject("The Speak button is switched off in Listeners."); return; }
         if (getPermissionState("microphone") != PermissionState.GRANTED) { requestPermissionForAlias("microphone", call, "listenAfterPermission"); return; }
         doListen(call);
     }
@@ -269,9 +345,11 @@ public class AmberxNativePlugin extends Plugin {
     public void micState(PluginCall call) { call.resolve(js(MicGuard.state(getContext()))); }
 
     private void doListen(PluginCall call) {
+        // One owner of the microphone (Nov 6 2026): Speak outranks hands-free (which steps aside) but not talk mode.
+        if (!MicGuard.acquire(ListenerRules.SPEAK)) { call.reject("Gizmo's talk mode has the microphone. Stop it first."); return; }
         WatchService.appMic(true); // hands-free lets go of the microphone while the Speak button listens
         getActivity().runOnUiThread(() -> {
-            if (!SpeechRecognizer.isRecognitionAvailable(getContext())) { WatchService.appMic(false); call.reject("No speech recognizer on this phone."); return; }
+            if (!SpeechRecognizer.isRecognitionAvailable(getContext())) { WatchService.appMic(false); MicGuard.releaseOwner(ListenerRules.SPEAK); call.reject("No speech recognizer on this phone."); return; }
             JSONObject voice = WatchService.voice(getContext());
             SpeechRecognizer rec = SpeechRecognizer.createSpeechRecognizer(getContext());
             SpeechTuning.quiet(getContext(), voice); // no tone
@@ -283,6 +361,8 @@ public class AmberxNativePlugin extends Plugin {
                     done = true;
                     cancelSpeak = null;
                     WatchService.appMic(false);
+                    MicGuard.releaseOwner(ListenerRules.SPEAK);
+                    ListenerRegistry.changed();
                     // Classic hands-free keeps it quiet; the silent wake mode mutes only while Google listens.
                     if (WatchService.running == null || WatchService.wakeMode(getContext())) {
                         getActivity().getWindow().getDecorView().postDelayed(() -> SpeechTuning.loud(getContext()), 600);
@@ -309,11 +389,12 @@ public class AmberxNativePlugin extends Plugin {
                 @Override public void onEvent(int t, Bundle b) {}
             });
             cancelSpeak = () -> getActivity().runOnUiThread(() -> { try { rec.cancel(); } catch (Exception ignored) {} self[0].onError(SpeechRecognizer.ERROR_CLIENT); });
+            ListenerRegistry.changed();
             Intent i = SpeechTuning.request(call.getString("lang", "en-US"), voice, false);
             // Give hands-free a moment to release the microphone first.
             getActivity().getWindow().getDecorView().postDelayed(() -> {
                 if (!MicGuard.mayOpen(getContext())) { self[0].onError(SpeechRecognizer.ERROR_CLIENT); return; }
-                try { rec.startListening(i); } catch (Exception e) { WatchService.appMic(false); call.reject("The microphone is busy."); }
+                try { rec.startListening(i); } catch (Exception e) { WatchService.appMic(false); MicGuard.releaseOwner(ListenerRules.SPEAK); cancelSpeak = null; ListenerRegistry.error(ListenerRules.SPEAK, "the microphone is busy"); call.reject("The microphone is busy."); }
             }, 250);
         });
     }

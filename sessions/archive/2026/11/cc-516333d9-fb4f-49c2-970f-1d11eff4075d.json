@@ -1,0 +1,152 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-516333d9-fb4f-49c2-970f-1d11eff4075d",
+ "source": "claude-code",
+ "sessionId": "516333d9-fb4f-49c2-970f-1d11eff4075d",
+ "project": "axhub",
+ "title": "# Style override rule (Brett, Nov 7) — contract + enforcement The rule: 1. Main apps — Dev Console, axHub web, AmberX, …",
+ "startedAt": "2026-11-07T12:22:39.295Z",
+ "endedAt": "2026-11-07T13:51:42.262Z",
+ "minutes": 89,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.319",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/style-override-rule",
+  "repo": "",
+  "branch": "claude/style-override-rule"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-fable-5-1"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-07T12:22:41.899Z",
+   "kind": "prompt",
+   "text": "# Style override rule (Brett, Nov 7) — contract + enforcement The rule: 1. Main apps — Dev Console, axHub web, AmberX, Patches — SHARE one style/theme/design. Their override switch is OFF by default. 2. Every plugin and every UI asset has its own override switch, ON by default. On first install it stores its own copy seeded from the shared style, so everything looks the same until someone changes it. 3. A plugin/asset override changes ONLY that plugin/asset. It never changes the app it belongs to, other plugins, or the shared style. 4. Turning a plugin's override OFF makes it follow its app's…",
+   "model": "claude-fable-5-1",
+   "tokens": {
+    "input": 5644,
+    "output": 179989,
+    "cacheRead": 54790569,
+    "cacheWrite": 435255,
+    "thinking": 74516
+   },
+   "costUsd": 28.1938,
+   "costEstimated": false,
+   "seconds": 5145,
+   "tools": {
+    "Bash": 136,
+    "Read": 5,
+    "Write": 7,
+    "Edit": 32,
+    "ToolSearch": 1
+   },
+   "commands": 136,
+   "files": [
+    "/root/axf-builds/style-override-rule/framework/core/engines/style-override.mjs",
+    "/root/axf-builds/style-override-rule/framework/core/engines/style-override.d.mts",
+    "/root/axf-builds/style-override-rule/framework/spec/check-style-override.mts",
+    "/root/axf-builds/style-override-rule/framework/libs/plugintheme/core.ts",
+    "/root/axf-builds/style-override-rule/framework/core/runtime.ts",
+    "/root/axf-builds/style-override-rule/framework/react/AxfProvider.tsx",
+    "/root/axf-builds/style-override-rule/framework/libs/plugintheme/index.tsx",
+    "/root/axf-builds/style-override-rule/framework/libs/settings/index.tsx",
+    "/root/axf-builds/style-override-rule/framework/core/engines/settingsui.ts",
+    "/root/axf-builds/style-override-rule/framework/libs/settings/styleoverride.tsx",
+    "/root/axf-builds/style-override-rule/apps/console-web/scripts/theme-swap.mjs",
+    "/root/axf-builds/style-override-rule/_claude/builds/reports/style-override-rule.md",
+    "/root/axf-builds/style-override-rule/_claude/THREADS.md",
+    "/tmp/so-shots.mjs",
+    "/root/axf-builds/style-override-rule/.axf-claude/axf-style-override-rule--joey/projects/-opt-axf/memory/settings-listener-cascades-and-preview.md"
+   ],
+   "changeIds": [
+    "chg-20261107-b6291e114a"
+   ],
+   "features": [
+    "orchestrator:style-override-rule"
+   ],
+   "output": "Waiting on the rebuild; the next three steps (reshoot, submit with the three options, commit) all depend on it, so nothing to run in parallel right now."
+  },
+  {
+   "i": 2,
+   "at": "2026-11-07T13:49:27.460Z",
+   "kind": "task-notification",
+   "text": "<task-notification> <task-id>blwzjtk6m</task-id> <tool-use-id>toolu_0185hPoqfNNSdoJmg7mu8hYP</tool-use-id> <output-file>/tmp/claude-0/-root-axf-builds-style-override-rule/516333d9-fb4f-49c2-970f-1d11eff4075d/tasks/blwzjtk6m.output</output-file> <status>completed</status> <summary>Background command \"Rebake, typecheck and rebuild the console\" completed (exit code 0)</summary> </task-notification>",
+   "model": "claude-fable-5-1",
+   "tokens": {
+    "input": 168,
+    "output": 6408,
+    "cacheRead": 3614260,
+    "cacheWrite": 10640,
+    "thinking": 1154
+   },
+   "costUsd": 1.3586,
+   "costEstimated": false,
+   "seconds": 133,
+   "tools": {
+    "Bash": 6,
+    "Read": 1
+   },
+   "commands": 6,
+   "files": [],
+   "changeIds": [
+    "chg-20261107-b6291e114a"
+   ],
+   "features": [
+    "orchestrator:style-override-rule"
+   ],
+   "output": "Done, Brett. Committed on `claude/style-override-rule` (9ebdd40b8), not pushed, like the brief said. **What landed** - **The rule is an engine now:** `framework/core/engines/style-override.mjs` (style-override@1). Resolution owner → app → shared, seeding, migration, declarations, scoped CSS. Fixtur…"
+  }
+ ],
+ "files": [
+  "/root/axf-builds/style-override-rule/framework/core/engines/style-override.mjs",
+  "/root/axf-builds/style-override-rule/framework/core/engines/style-override.d.mts",
+  "/root/axf-builds/style-override-rule/framework/spec/check-style-override.mts",
+  "/root/axf-builds/style-override-rule/framework/libs/plugintheme/core.ts",
+  "/root/axf-builds/style-override-rule/framework/core/runtime.ts",
+  "/root/axf-builds/style-override-rule/framework/react/AxfProvider.tsx",
+  "/root/axf-builds/style-override-rule/framework/libs/plugintheme/index.tsx",
+  "/root/axf-builds/style-override-rule/framework/libs/settings/index.tsx",
+  "/root/axf-builds/style-override-rule/framework/core/engines/settingsui.ts",
+  "/root/axf-builds/style-override-rule/framework/libs/settings/styleoverride.tsx",
+  "/root/axf-builds/style-override-rule/apps/console-web/scripts/theme-swap.mjs",
+  "/root/axf-builds/style-override-rule/_claude/builds/reports/style-override-rule.md",
+  "/root/axf-builds/style-override-rule/_claude/THREADS.md",
+  "/tmp/so-shots.mjs",
+  "/root/axf-builds/style-override-rule/.axf-claude/axf-style-override-rule--joey/projects/-opt-axf/memory/settings-listener-cascades-and-preview.md"
+ ],
+ "changeIds": [
+  "chg-20261107-b6291e114a"
+ ],
+ "features": [
+  "orchestrator:style-override-rule"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 2,
+  "input": 5812,
+  "output": 186397,
+  "cacheRead": 58404829,
+  "cacheWrite": 445895,
+  "thinking": 75670,
+  "costUsd": 29.5524,
+  "costEstimated": false,
+  "toolCalls": 188,
+  "commands": 142,
+  "filesTouched": 15,
+  "reportedUsd": 32.8971
+ },
+ "ingestedAt": "2026-11-07T13:51:43.616Z"
+}

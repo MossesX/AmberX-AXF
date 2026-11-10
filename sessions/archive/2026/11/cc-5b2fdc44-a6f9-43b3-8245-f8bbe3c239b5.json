@@ -1,0 +1,88 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-5b2fdc44-a6f9-43b3-8245-f8bbe3c239b5",
+ "source": "claude-code",
+ "sessionId": "5b2fdc44-a6f9-43b3-8245-f8bbe3c239b5",
+ "project": "axhub",
+ "title": "# Finish the one-profile merge (main @ df77d2cc9) Brett approved both open questions from merge-profiles-one: 1. Fold t…",
+ "startedAt": "2026-11-07T10:16:06.840Z",
+ "endedAt": "2026-11-07T10:32:06.302Z",
+ "minutes": 16,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.319",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/profiles-all-finish",
+  "repo": "",
+  "branch": "claude/profiles-all-finish"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-07T10:16:28.623Z",
+   "kind": "prompt",
+   "text": "# Finish the one-profile merge (main @ df77d2cc9) Brett approved both open questions from merge-profiles-one: 1. Fold the `main-framework` profile into `all` too (same rules: keep ids/status/steps, add fromProfile, suffix clashes). 2. Delete the old profile folders (angel, big-dog, breakroom, current, refactor, urgent, main-framework) everywhere: repo AND the hub copy (claude-sync / axHub projects tree). Also: build_land's resolver just 'settled' the six old orchestrator.json files during the merge. Check they did not come back on main or re-gain builds; if they did, move any builds not alrea…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 180,
+    "output": 58222,
+    "cacheRead": 13895703,
+    "cacheWrite": 210109,
+    "thinking": 21497
+   },
+   "costUsd": 4.9947,
+   "costEstimated": false,
+   "seconds": 937,
+   "tools": {
+    "Bash": 92
+   },
+   "commands": 92,
+   "files": [],
+   "changeIds": [
+    "chg-20261107-ff1dad8664"
+   ],
+   "features": [
+    "pending:merge-profiles-one",
+    "orchestrator:merge-profiles-one"
+   ],
+   "output": "Done, boss. The merge is finished and committed as `8eb21fb69` on `claude/profiles-all-finish`. Not pushed. **What changed** - **main-framework is folded into `all`.** Its 189 builds joined `all`: 175 moved and got `fromProfile` plus a note, and 14 were already in `all`. Ids, statuses and steps are…"
+  }
+ ],
+ "files": [],
+ "changeIds": [
+  "chg-20261107-ff1dad8664"
+ ],
+ "features": [
+  "pending:merge-profiles-one",
+  "orchestrator:merge-profiles-one"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 180,
+  "output": 58222,
+  "cacheRead": 13895703,
+  "cacheWrite": 210109,
+  "thinking": 21497,
+  "costUsd": 4.9947,
+  "costEstimated": false,
+  "toolCalls": 92,
+  "commands": 92,
+  "filesTouched": 0,
+  "reportedUsd": 5.6252
+ },
+ "ingestedAt": "2026-11-07T10:32:06.825Z"
+}

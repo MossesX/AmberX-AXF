@@ -1,0 +1,96 @@
+{
+ "$axf": "session-archive@1",
+ "id": "cc-2298e6aa-72db-4278-920b-075d82b5b76d",
+ "source": "claude-code",
+ "sessionId": "2298e6aa-72db-4278-920b-075d82b5b76d",
+ "project": "other",
+ "title": "# Blueprints switch notes, tasks and to-dos too (Brett, Nov 7) Depends on build `plan-blueprints` (blueprint@1, Plan St…",
+ "startedAt": "2026-11-07T14:44:13.455Z",
+ "endedAt": "2026-11-07T15:12:01.167Z",
+ "minutes": 28,
+ "system": {
+  "host": "srv1837178",
+  "container": "",
+  "app": "Claude Code (headless)",
+  "appVersion": "2.1.319",
+  "entrypoint": "sdk-cli",
+  "surface": "headless",
+  "device": "server",
+  "via": "ssh/mosh + tmux",
+  "os": "linux 6.8.0-147-generic",
+  "cwd": "/root/axf-builds/blueprint-notes-tasks",
+  "repo": "",
+  "branch": "claude/blueprint-notes-tasks"
+ },
+ "user": "Brett (root)",
+ "models": [
+  "claude-opus-5-5"
+ ],
+ "prompts": [
+  {
+   "i": 1,
+   "at": "2026-11-07T14:44:16.619Z",
+   "kind": "prompt",
+   "text": "# Blueprints switch notes, tasks and to-dos too (Brett, Nov 7) Depends on build `plan-blueprints` (blueprint@1, Plan Studio Blueprints, context submenu). If it hasn't landed yet, base on branch claude/plan-blueprints (fetch it) and coordinate; don't duplicate its contract. 1. Switching the active blueprint switches EVERYTHING scoped to it: Plan Studio plans, AND AmberX/console notes, tasks, to-do items and lists (notes-tasks plugin, amberx.items, amberx.lists). 2. Items/lists get an optional `blueprint` field (backward compatible). Existing notes/tasks/to-dos go to the same blueprint the exis…",
+   "model": "claude-opus-5-5",
+   "tokens": {
+    "input": 344,
+    "output": 136890,
+    "cacheRead": 41590587,
+    "cacheWrite": 365647,
+    "thinking": 26779
+   },
+   "costUsd": 12.8855,
+   "costEstimated": false,
+   "seconds": 1664,
+   "tools": {
+    "Bash": 166,
+    "Write": 2,
+    "Read": 8
+   },
+   "commands": 166,
+   "files": [
+    "/root/axf-builds/blueprint-notes-tasks/apps/amberx-droid/src/plugins/notes/web/blueprints.tsx",
+    "/root/axf-builds/blueprint-notes-tasks/_claude/builds/reports/blueprint-notes-tasks.md"
+   ],
+   "changeIds": [
+    "chg-20261107-ffae6bd0f1"
+   ],
+   "features": [
+    "queue:blueprint-notes-tasks",
+    "queue:plan-blueprints"
+   ],
+   "output": "Built and committed on `claude/blueprint-notes-tasks`. Not pushed, like you said. `plan-blueprints` is built but only exists locally, never pushed. So I merged its branch in as my base and didn't redo its contract. The two have to land together, plan-blueprints first or as one stack. **What it does…"
+  }
+ ],
+ "files": [
+  "/root/axf-builds/blueprint-notes-tasks/apps/amberx-droid/src/plugins/notes/web/blueprints.tsx",
+  "/root/axf-builds/blueprint-notes-tasks/_claude/builds/reports/blueprint-notes-tasks.md"
+ ],
+ "changeIds": [
+  "chg-20261107-ffae6bd0f1"
+ ],
+ "features": [
+  "queue:blueprint-notes-tasks",
+  "queue:plan-blueprints"
+ ],
+ "subagents": 0,
+ "costSource": "transcript",
+ "notes": [],
+ "totals": {
+  "prompts": 1,
+  "turns": 1,
+  "input": 344,
+  "output": 136890,
+  "cacheRead": 41590587,
+  "cacheWrite": 365647,
+  "thinking": 26779,
+  "costUsd": 12.8855,
+  "costEstimated": false,
+  "toolCalls": 176,
+  "commands": 166,
+  "filesTouched": 2,
+  "reportedUsd": 13.9825
+ },
+ "ingestedAt": "2026-11-07T15:12:02.383Z"
+}

@@ -70,7 +70,8 @@ and absorbs it back under one lock (`withStore`). The old files are **read-only 
 ## Versioning
 
 Every write: store `rev` + 1, changed records `rev` + 1, one line in `_claude/builds/journal/<YYYY-MM>.jsonl` with each
-changed build before and after (`diffStores`). `builds-store.mjs history <id>` lists revisions, `restore <id> <rev>` puts
+changed build before and after (`diffStores`). At 80 MB a month rolls into `<YYYY-MM>-p2.jsonl`, `-p3`… (GitHub refuses a file
+over 100 MiB, which would stop every live status commit); a full part is never rewritten and history reads them all. `builds-store.mjs history <id>` lists revisions, `restore <id> <rev>` puts
 a build back (itself a journalled write). Removals are soft; a record missing from a written state is put back deleted.
 
 ## Steps view ops (draft until Apply)

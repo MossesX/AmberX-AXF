@@ -4,7 +4,7 @@
  * Build orchestrator. Every builds list (orchestrator, Pending builds, build queue) reads and writes it here.
  *
  *   _claude/builds/store.json            the store (repo file, synced with the hub by claude-sync, committed)
- *   _claude/builds/journal/<YYYY-MM>.jsonl  every write, append-only: rev, when, who, what, and each changed build
+ *   _claude/builds/journal/<YYYY-MM>[-pN].jsonl  every write, append-only: rev, when, who, what, and each changed build
  *                                        before and after. Nothing can vanish: any build can be put back from here.
  *
  *   node framework/cli/builds-store.mjs                    status: builds per profile, rev, draft, journal size
@@ -29,8 +29,10 @@ import { execFileSync } from 'node:child_process';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from '../plan/builds-store-core.mjs';
+import * as merge from '../plan/builds-merge-core.mjs';
 import { mergeOrigin } from '../core/build-origin.mjs';
 import { enqueueLive, flushLiveSoon } from './builds-live.mjs';
+import { emitChanges } from './build-hooks.mjs';
 import { BASE_PROFILE, REPO_ROOT, activeProfile, orchestratorPath, persistRoot, profileRel, readProfiles } from './persist.mjs';
 
 export const STORE_REL = '_claude/builds/store.json';
@@ -187,12 +189,39 @@ function writeKeepingOwner(f, text) {
   writeFileSync(f, text);
   if (process.getuid?.() === 0) { try { const st = statSync(d); for (const x of [...made, ...(fresh ? [f] : [])]) chownSync(x, st.uid, st.gid); if (fresh) chmodSync(f, 0o664); } catch { /* best effort */ } }
 }
+/**
+ * Fold the retired profiles into `all` in the store file itself (Brett, Nov 7 2026: one profile for everything).
+ * Reads are already healed in memory (normBuild); this writes the merge for good, in each old profile's order, with
+ * `fromProfile`, a note and `priority: 'P0'` on Urgent's builds. Works on the raw file because a normalized read has
+ * already folded the profiles. Idempotent: a store with no retired profile left is not touched.
+ */
+export function mergeRetiredNow({ by = 'profiles-merge' } = {}) {
+  const f = storeFile(); const unlock = lock(f);
+  try {
+    if (!existsSync(f)) return { changed: 0, report: null };
+    const raw = JSON.parse(readFileSync(f, 'utf8'));
+    const retired = core.RETIRED_PROFILES.filter((p) => (raw.builds ?? []).some((b) => (b.profiles ?? []).includes(p)) || [raw.rules, raw.meta?.queue, raw.meta?.pending, raw.drafts].some((m) => m?.[p] !== undefined));
+    if (!retired.length) return { changed: 0, report: null };
+    const { store: merged, report } = core.mergeProfiles({ ...raw, builds: (raw.builds ?? []).map((b) => ({ ...b, order: { ...(b.order ?? {}) }, profiles: [...(b.profiles ?? [])], notes: [...(b.notes ?? [])] })) }, core.RETIRED_PROFILES, core.MERGED_PROFILE);
+    const before = readStore();
+    const after = healOrigins(core.normalizeStore(merged));
+    const saved = saveStore(before, after, { by, action: 'merge-profiles', note: `${report.from.map((p) => `${p.id} (${p.builds})`).join(', ')} → ${report.into}: ${report.moved} build(s)` });
+    if (exportsOn()) exportAll(saved.store);
+    return { changed: saved.changes.length, report, store: saved.store };
+  } finally { unlock(); flushLiveSoon(); }
+}
+
 /** Write every export now (after the migration, or by hand: `builds-store.mjs export`). */
 export function exportNow() { const f = storeFile(); const unlock = lock(f); try { exportAll(readStore()); } finally { unlock(); } }
 
+/** Bytes a journal file may reach (AXF_BUILDS_JOURNAL_BYTES moves it for tests). */
+export const journalMax = () => Number(process.env.AXF_BUILDS_JOURNAL_BYTES) || merge.JOURNAL_PART_BYTES;
+
 function journal(entry) {
   const d = journalDir(); mkdirSync(d, { recursive: true });
-  appendFileSync(join(d, `${entry.at.slice(0, 7)}.jsonl`), `${JSON.stringify(entry)}\n`);
+  const line = `${JSON.stringify(entry)}\n`;
+  const sizes = Object.fromEntries(readdirSync(d).filter((f) => f.endsWith('.jsonl')).map((f) => [f.slice(0, -6), statSync(join(d, f)).size]));
+  appendFileSync(join(d, `${merge.journalPart(entry.at.slice(0, 7), sizes, Buffer.byteLength(line), journalMax())}.jsonl`), line);
   // every change to a build goes live to main (builds-live.mjs); draft-only writes stay local
   if (entry.builds?.length) enqueueLive(entry);
 }
@@ -204,6 +233,11 @@ function journal(entry) {
 export function adoptStore(next, { journals = {} } = {}) {
   const f = storeFile(); const unlock = lock(f);
   try {
+    // build-hook@1: builds changed in another checkout (a build session's worktree) arrive here, not through saveStore;
+    // their events fire now, so the ledger hears about ticks, PRs and shipped manifests made elsewhere (ids are the
+    // writer's revs, so an event a listener already took is skipped)
+    let before = null; try { before = existsSync(f) ? core.normalizeStore(JSON.parse(readFileSync(f, 'utf8'))) : null; } catch { /* unreadable: nothing to compare */ }
+    if (before) { const changes = adoptedChanges(before, next); if (changes.length) emitChanges(changes, { at: new Date().toISOString(), by: 'builds-live' }); }
     healOrigins(next);
     const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, storeText(next)); renameSync(tmp, f);
     foldOrigins(next);
@@ -211,6 +245,17 @@ export function adoptStore(next, { journals = {} } = {}) {
     for (const [m, text] of Object.entries(journals)) writeFileSync(join(d, `${m}.jsonl`), text);
     if (exportsOn()) exportAll(next);
   } finally { unlock(); }
+}
+/** The builds that differ between the store on disk and one taken from elsewhere, as diffStores changes (nothing mutated). */
+export function adoptedChanges(before, next) {
+  const old = new Map((before?.builds ?? []).map((b) => [b.id, b]));
+  const out = [];
+  for (const b of next?.builds ?? []) {
+    const o = old.get(b.id);
+    if (o && JSON.stringify(core.compactBuild(o)) === JSON.stringify(core.compactBuild(b))) continue;
+    out.push({ id: b.id, op: !o ? 'add' : b.deleted && !o.deleted ? 'delete' : !b.deleted && o.deleted ? 'restore' : 'change', before: o ?? null, after: b });
+  }
+  return out;
 }
 /** The store as it is on disk now (no foreign-write absorb). */
 export const readStoreNow = () => readStore();
@@ -227,6 +272,8 @@ export function saveStore(before, after, { by = 'cli', action = 'write', note = 
   const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, storeText(after)); renameSync(tmp, f);
   foldOrigins(after);
   journal({ rev: after.rev, at: now, by, action, note, builds: changes.map((c) => ({ id: c.id, op: c.op, rev: c.after?.rev, before: core.compactBuild(c.before), after: core.compactBuild(c.after) })), ...(draftChanged ? { drafts: after.drafts } : {}), ...(metaChanged ? { meta: after.meta, rules: after.rules } : {}) });
+  // build-hook@1: every creator's write fires the same events (Shipped features ledger and other listeners)
+  if (changes.length) emitChanges(changes, { at: now, by });
   return { store: after, changes, rev: after.rev };
 }
 
