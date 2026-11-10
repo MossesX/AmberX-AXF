@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2145,
- "updatedAt": "2026-11-10T01:03:52.460Z",
+ "rev": 2146,
+ "updatedAt": "2026-11-10T01:04:04.953Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -96300,7 +96300,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "builtBy": []
    },
    "steps": [
     {
@@ -116811,7 +116812,8 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T00:16:15.395Z"
+    "dispatchedAt": "2026-11-10T00:16:15.395Z",
+    "builtBy": []
    },
    "steps": [
     {
@@ -117039,7 +117041,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "builtBy": []
    },
    "steps": [
     {
@@ -124717,7 +124720,8 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "builtBy": []
    },
    "steps": [
     {
@@ -125075,7 +125079,8 @@
     "splitRequested": "",
     "note": "Session on account-3 ended (exit 0) with 2 steps left: back in the Queue (run 1).",
     "route": "",
-    "dispatchedAt": "2026-11-09T02:31:11.152Z"
+    "dispatchedAt": "2026-11-09T02:31:11.152Z",
+    "builtBy": []
    },
    "steps": [
     {
@@ -126186,7 +126191,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "builtBy": []
    },
    "steps": [
     {
@@ -126346,7 +126352,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "builtBy": []
    },
    "steps": [
     {
@@ -126510,7 +126517,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "builtBy": []
    },
    "steps": [
     {
@@ -126690,7 +126698,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "builtBy": []
    },
    "steps": [
     {
@@ -126919,7 +126928,8 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T20:25:15.903Z"
+    "dispatchedAt": "2026-11-09T20:25:15.903Z",
+    "builtBy": []
    },
    "steps": [
     {
@@ -127523,7 +127533,8 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:53:07.552Z"
+    "dispatchedAt": "2026-11-09T18:53:07.552Z",
+    "builtBy": []
    },
    "steps": [
     {
@@ -127810,7 +127821,8 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (limit / credits)); resumes at s4 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:24:37.196Z"
+    "dispatchedAt": "2026-11-09T19:24:37.196Z",
+    "builtBy": []
    },
    "steps": [
     {
@@ -128130,7 +128142,8 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:10:30.633Z"
+    "dispatchedAt": "2026-11-09T18:10:30.633Z",
+    "builtBy": []
    },
    "steps": [
     {
@@ -128293,7 +128306,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "builtBy": []
    },
    "steps": [
     {
@@ -128460,7 +128474,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "builtBy": []
    },
    "steps": [
     {
@@ -128627,7 +128642,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "builtBy": []
    },
    "steps": [
     {
@@ -128732,8 +128748,8 @@
    "pr": "#425",
    "priority": "P0",
    "createdAt": "2026-11-09T17:44:47.652Z",
-   "updatedAt": "2026-11-10T01:03:50.813Z",
-   "builtAt": "2026-11-10T01:03:50.813Z",
+   "updatedAt": "2026-11-10T01:03:51.953Z",
+   "builtAt": "2026-11-10T01:03:25.374Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -128816,12 +128832,12 @@
      "at": "2026-11-10T00:58:11.734Z"
     },
     {
-     "text": "Headless run axf-account-failover-chain-subscription-next-subscri--paulie: brief only · start 11.3K tokens ($0.03) · cost $1.47 · 43 turns · 6 tools, MCP none",
-     "at": "2026-11-10T01:03:50.813Z"
-    },
-    {
      "text": "PR #425. No UI Review shots: Playwright is missing in the worktree, so the capture failed. The UI change is one switch and one 'built by' line on the Pipeline card.",
      "at": "2026-11-10T01:03:22.621Z"
+    },
+    {
+     "text": "Headless run axf-account-failover-chain-subscription-next-subscri--paulie: brief only · start 11.3K tokens ($0.03) · cost $1.47 · 43 turns · 6 tools, MCP none",
+     "at": "2026-11-10T01:03:50.813Z"
     }
    ],
    "approvals": [],
@@ -128865,7 +128881,8 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T17:58:10.111Z"
+    "dispatchedAt": "2026-11-09T17:58:10.111Z",
+    "builtBy": []
    },
    "steps": [
     {
@@ -128906,11 +128923,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-10T01:02:18.280Z",
+     "doneAt": "2026-11-10T01:03:51.953Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-09T17:45:57.126Z",
-     "updatedAt": "2026-11-10T01:02:18.535Z"
+     "updatedAt": "2026-11-10T01:03:52.148Z"
     },
     {
      "id": "s3",
@@ -128946,7 +128963,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -129099,7 +129116,8 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:05:17.080Z"
+    "dispatchedAt": "2026-11-09T18:05:17.080Z",
+    "builtBy": []
    },
    "steps": [
     {
@@ -129246,7 +129264,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "builtBy": []
    },
    "steps": [
     {
@@ -129476,7 +129495,8 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:09:09.055Z"
+    "dispatchedAt": "2026-11-09T18:09:09.055Z",
+    "builtBy": []
    },
    "steps": [
     {
@@ -129862,7 +129882,8 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:02:10.280Z"
+    "dispatchedAt": "2026-11-09T18:02:10.280Z",
+    "builtBy": []
    },
    "steps": [
     {
@@ -130072,7 +130093,8 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:49:06.246Z"
+    "dispatchedAt": "2026-11-09T18:49:06.246Z",
+    "builtBy": []
    },
    "steps": [
     {
@@ -130282,7 +130304,8 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:23:07.733Z"
+    "dispatchedAt": "2026-11-09T19:23:07.733Z",
+    "builtBy": []
    },
    "steps": [
     {
@@ -130492,7 +130515,8 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T18:55:16.286Z"
+    "dispatchedAt": "2026-11-09T18:55:16.286Z",
+    "builtBy": []
    },
    "steps": [
     {
@@ -130702,7 +130726,8 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:13:07.725Z"
+    "dispatchedAt": "2026-11-09T19:13:07.725Z",
+    "builtBy": []
    },
    "steps": [
     {
@@ -130912,7 +130937,8 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:25:10.063Z"
+    "dispatchedAt": "2026-11-09T19:25:10.063Z",
+    "builtBy": []
    },
    "steps": [
     {
@@ -131122,7 +131148,8 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-1 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T19:27:06.719Z"
+    "dispatchedAt": "2026-11-09T19:27:06.719Z",
+    "builtBy": []
    },
    "steps": [
     {
@@ -131300,7 +131327,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "builtBy": []
    },
    "steps": [
     {
@@ -131532,7 +131560,8 @@
     "splitRequested": "",
     "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (login expired)); resumes at s1 on the next working account.",
     "route": "",
-    "dispatchedAt": "2026-11-09T20:19:06.480Z"
+    "dispatchedAt": "2026-11-09T20:19:06.480Z",
+    "builtBy": []
    },
    "steps": [
     {
@@ -131699,7 +131728,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "builtBy": []
    },
    "steps": [
     {
@@ -131870,7 +131900,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "builtBy": []
    },
    "steps": [
     {
@@ -132037,7 +132068,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "builtBy": []
    },
    "steps": [
     {
@@ -132184,7 +132216,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "builtBy": []
    },
    "steps": [
     {
@@ -132362,7 +132395,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "builtBy": []
    },
    "steps": [
     {
@@ -132607,7 +132641,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "builtBy": []
    },
    "steps": [
     {
@@ -132781,7 +132816,8 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T00:10:34.054Z"
+    "dispatchedAt": "2026-11-10T00:10:34.054Z",
+    "builtBy": []
    },
    "steps": [
     {
@@ -132944,7 +132980,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "builtBy": []
    },
    "steps": [
     {
@@ -133111,7 +133148,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "builtBy": []
    },
    "steps": [
     {
@@ -133258,7 +133296,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "builtBy": []
    },
    "steps": [
     {
@@ -133436,7 +133475,8 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T00:42:13.778Z"
+    "dispatchedAt": "2026-11-10T00:42:13.778Z",
+    "builtBy": []
    },
    "steps": [
     {
@@ -133587,7 +133627,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "builtBy": []
    },
    "steps": [
     {
@@ -133734,7 +133775,8 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "builtBy": []
    },
    "steps": [
     {
@@ -133862,7 +133904,8 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "builtBy": []
    },
    "steps": [
     {
@@ -133987,7 +134030,8 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "builtBy": []
    },
    "steps": [
     {
