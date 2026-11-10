@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2526,
- "updatedAt": "2026-11-10T17:09:29.491Z",
+ "rev": 2527,
+ "updatedAt": "2026-11-10T17:09:44.486Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -137713,7 +137713,7 @@
    "title": "Search bar plugin add-on: search builds, session histories and build notes; jump to the highlighted spot in the log",
    "category": "",
    "detail": "Amends the Search bar plugin build. 1) Builds scope: search all session histories, build logs and build notes for related matches. 2) Results list every hit in the drop-down, each with an icon by type (session, log entry, note, build, etc.). Clicking a hit opens that session's log scrolled to the spot, highlighted. Multiple hits in one session listed as instance 1, 2, 3, 4... 3) Make it very powerful: extensive integrations and easy actions; users can add sources and actions by typing. 4) Everything fully API-controlled without AI. Anything that needs AI has its own enable/disable switch, OFF by default; never uses AI automatically even when an AI connection exists. Full API control.",
-   "status": "built",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -137721,8 +137721,8 @@
    "pr": "#451",
    "priority": "P1",
    "createdAt": "2026-11-10T15:36:52.351Z",
-   "updatedAt": "2026-11-10T16:56:39.975Z",
-   "builtAt": "2026-11-10T16:56:39.975Z",
+   "updatedAt": "2026-11-10T17:09:43.019Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -137860,7 +137860,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
