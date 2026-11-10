@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T18:55:52.479Z",
+ "updatedAt": "2026-11-10T18:56:07.229Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -85534,7 +85534,7 @@
    "title": "Audit Pending Fable builds against main: close what's done, queue only what's left",
    "category": "",
    "detail": "Many Pending builds (especially the old Fable ones from Oct 18 to Nov 9) are already done on main or covered by later builds, but still sit in Pending. 1) For every Pending build whose next model is Fable, check main (git log, the Shipped features ledger, reports, the files each step names) for whether each step's work already exists. 2) Mark steps that are done as done, with evidence (commit or file). Mark whole builds that are done or superseded as complete or superseded, with a one-line reason. 3) Queue only what's really left, with steps trimmed to the remaining work. 4) Write a short list: done, superseded, queued, with each queued build's remaining steps. 5) Run this audit automatically before any bulk queue, so finished work never gets rebuilt (plain code where possible). Runs on Opus, not Fable.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -85542,7 +85542,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T04:25:09.866Z",
-   "updatedAt": "2026-11-10T18:55:42.006Z",
+   "updatedAt": "2026-11-10T18:55:52.586Z",
    "builtAt": "",
    "notes": [
     {
@@ -85568,6 +85568,10 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-10T18:55:42.006Z"
+    },
+    {
+     "text": "Brett (voice, Nov 10): widen scope to ALL pending builds, not just Fable ones, especially the 11 x.* builds (x.modules, x.deploy.console, x.state, x.uikits, x.libs.core, x.engine.uiport, x.engine.dev, x.session, x.lib.notifications, x.lib.files, x.lib.hub). Close what main already covers, archive what's obsolete, keep only what's left.",
+     "at": "2026-11-10T18:55:52.586Z"
     }
    ],
    "approvals": [],
