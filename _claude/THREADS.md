@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 17:42 UTC · `prompt-caching-and-batch-api-support-in-the-buil` note (all) · orchestrator
 - 2026-11-09 17:43 UTC · `prompt-caching-and-batch-api-support-in-the-buil` → queued, note (all) · pipeline
 - 2026-11-09 17:44 UTC · `account-failover-chain-subscription-next-subscri` added (0 steps) (all) · console
 - 2026-11-09 17:44 UTC · `account-failover-chain-subscription-next-subscri` → queued, note (all) · console
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 00:57 UTC · `failed-launches-auto-retry-on-another-working-ac` PR #424 (all) · builds-live
 - 2026-11-10 00:57 UTC · `failed-launches-auto-retry-on-another-working-ac` note (all) · orchestrator
 - 2026-11-10 00:57 UTC · `failed-launches-auto-retry-on-another-working-ac` s3 done, → built (all) · orchestrator
+- 2026-11-10 00:58 UTC · `failed-launches-auto-retry-on-another-working-ac` note (all) · pipeline
 
 ## Token passes (log)
 
