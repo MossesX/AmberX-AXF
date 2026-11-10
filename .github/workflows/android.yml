@@ -251,6 +251,8 @@ jobs:
             npx -y tsx framework/spec/check-menu-keys.mts              # keyboard focus into / out of sub-menus (app menu + context menus, jsdom) and the page scroll lock while a menu is open
             npx -y tsx framework/spec/check-menu-items.mts             # menu-item@2 in the DOM: choice settings apply at once with the value beside the entry, live status slots (green / red / pulsing), a tooltip on every icon, context menus compiled the same way
             npx -y tsx framework/spec/check-menu-settings.mts          # right-click any menu row → item-settings dialog; per-item tokens written to axf.tokens.menu (runtime, actions, control@1 tokens.menu runner), persist and reload, rows restyle from theme tokens
+            npx -y tsx framework/spec/check-tip-layer.mts             # styled tooltips on chrome (TipLayer): delay, title held back while shown and given back, chrome only, Escape / press / touch
+            npx -y tsx apps/molly/menus/test.mts                       # Molly: short app menu with hints, no dead actions, a context menu per surface without stub rows, deep links, flagship skins
             npx -y tsx framework/spec/check-windows.mts                # window engine: 8 resize handles, maximize / restore, frames, snapping (windows.json)
             npx -y tsx framework/spec/check-dock.mts                   # dock engine (dock@1): pane tree, drop zones, pane limit, splitters, snapshots, dock-layout@1 presets (dock.json)
             npx -y tsx framework/spec/check-xlayout.mts                # xlayout@1 (Molly as one app): apps, merge modes, IDE block, toolbar slots, guest URLs (xlayout.json)
