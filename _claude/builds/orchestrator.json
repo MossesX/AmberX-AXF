@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T15:40:28.328Z",
+ "updatedAt": "2026-11-10T15:40:43.696Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -85060,6 +85060,43 @@
      "uid": "st-mwauwsqh03vre8"
     }
    ]
+  },
+  {
+   "id": "project-manager-every-project-its-own-console-in",
+   "title": "Project Manager: every project its own console instance, multi-project tab view, project types (self/framework dev vs new app), live app preview window",
+   "category": "",
+   "detail": "Builds on the create/move-projects build. 1) Project Manager plugin: create, open, rename and switch projects; each project is its own instance of the console with its own builds, notes, data. 2) Setting: Multi-project view. When on, the console shows a group (tab group) with each project's console running side by side. 3) Project type: (a) Framework/self development: developing the console itself or framework tools (the console builds itself); (b) New app: uses all the console's tools to generate a new, real app. 4) Live preview: the app being built renders live in a separate floating or dockable preview window while you work in the console. Full API control, no AI needed.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-10T15:40:27.752Z",
+   "updatedAt": "2026-11-10T15:40:29.748Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T15:40:29.748Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Build the project manager so everything can be its own project, its own instance of the console. A setting to enable multi-project view, the entire console appears in that group with each project's console running. A project type: one for development of itself or framework tools like the console, one for creating new apps using all the tools in the console. The new app will actively render in a preview window, a floating or dockable section.",
+    "at": "2026-11-10T15:40:27.752Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
