@@ -1092,6 +1092,18 @@
    "from": "",
    "addenda": []
   },
+  "build-statuses-tell-the-truth-orchestrator-list": {
+   "said": "You gotta fix the status of these. They can't say running, and you gotta show if they need something. Show what they need. And I can't sort by day either. I don't want to be forced to view everything by category. I don't want a flat list by default, it's got to at least have an expanding row, depending on the root.",
+   "at": "2026-11-10T00:16:50.544Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "build-todo-sync": {
    "said": "For every build from now on, like this plugin build, prompt me for a name which will be used to reference it in the to-do manager. Then we're going to add a list in the to-do manager with all the steps that Orchestrator broke it into. And then it will check off each one in real time as the orchestrator processes each step. So the to-do list for every build has the same exact steps as items in the to-do list that the orchestrator broke the build down into. The builds into categories: plugins, plugin extensions, add-ons, framework, app, feature, module. Sync the build manager with the to-do manager and the real-time checklist. Put this in the planner.",
    "at": "2026-11-04T16:00:00Z",
