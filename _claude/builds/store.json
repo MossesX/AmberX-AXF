@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2508,
- "updatedAt": "2026-11-10T16:59:53.135Z",
+ "rev": 2509,
+ "updatedAt": "2026-11-10T17:00:15.749Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -138016,10 +138016,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/project-manager-every-project-its-own-console-in",
-   "pr": "",
+   "pr": "#453",
    "priority": "P1",
    "createdAt": "2026-11-10T15:40:27.752Z",
-   "updatedAt": "2026-11-10T16:59:16.072Z",
+   "updatedAt": "2026-11-10T17:00:12.209Z",
    "builtAt": "",
    "notes": [
     {
@@ -138154,7 +138154,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
