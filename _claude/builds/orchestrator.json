@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:55:47.751Z",
+ "updatedAt": "2026-11-10T17:56:06.463Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -89283,7 +89283,7 @@
    "title": "Conversation RAG amendment: store only short key/value entries, never full transcripts",
    "category": "",
    "detail": "Amends the conversation RAG build. Do NOT store or inject whole sessions (too costly). Store only brief two-field entries: key (the entry, e.g. a rule, mistake, or decision) and value (a one-line summary, e.g. what Claude failed to do and what to do instead). Briefs pull only the matching entries. Extraction by plain rules where possible; AI only behind its switch.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -89291,8 +89291,8 @@
    "pr": "#462",
    "priority": "P0",
    "createdAt": "2026-11-10T16:51:08.892Z",
-   "updatedAt": "2026-11-10T17:55:46.359Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T17:55:47.620Z",
+   "builtAt": "2026-11-10T17:55:47.620Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -89378,8 +89378,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T17:55:47.620Z",
      "note": "",
      "uid": "st-mwaxhe09039jas"
     }

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2616,
- "updatedAt": "2026-11-10T17:55:47.751Z",
+ "rev": 2617,
+ "updatedAt": "2026-11-10T17:56:06.463Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -146626,7 +146626,7 @@
    "title": "Conversation RAG amendment: store only short key/value entries, never full transcripts",
    "category": "",
    "detail": "Amends the conversation RAG build. Do NOT store or inject whole sessions (too costly). Store only brief two-field entries: key (the entry, e.g. a rule, mistake, or decision) and value (a one-line summary, e.g. what Claude failed to do and what to do instead). Briefs pull only the matching entries. Extraction by plain rules where possible; AI only behind its switch.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -146634,8 +146634,8 @@
    "pr": "#462",
    "priority": "P0",
    "createdAt": "2026-11-10T16:51:08.892Z",
-   "updatedAt": "2026-11-10T17:55:46.359Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T17:55:47.620Z",
+   "builtAt": "2026-11-10T17:55:47.620Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -146762,12 +146762,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T17:55:47.620Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T16:52:25.257Z",
-     "updatedAt": "2026-11-10T16:52:25.257Z"
+     "updatedAt": "2026-11-10T17:55:47.832Z"
     }
    ],
    "profiles": [
@@ -146778,7 +146778,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
