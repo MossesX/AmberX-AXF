@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2510,
- "updatedAt": "2026-11-10T17:00:30.237Z",
+ "rev": 2511,
+ "updatedAt": "2026-11-10T17:00:48.182Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -129958,7 +129958,7 @@
    "pr": "#429",
    "priority": "P0",
    "createdAt": "2026-11-09T17:52:45.295Z",
-   "updatedAt": "2026-11-10T17:00:27.581Z",
+   "updatedAt": "2026-11-10T17:00:46.811Z",
    "builtAt": "2026-11-10T17:00:27.581Z",
    "notes": [
     {
@@ -130060,6 +130060,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skins-own-everything-colour-theme-swaps-independ--lenny, own login copy)",
      "at": "2026-11-10T16:57:12.966Z"
+    },
+    {
+     "text": "Phase 2 done (c7fa09e2e on PR #429): fixed control@1 tokens.slots never reaching app looks (dead code in token-control writeAppearance, pre-existing on main); a colour pick now lands inside each app's skin as colorTheme, skin unchanged. Tests green. Phase 1 UI Review item stands.",
+     "at": "2026-11-10T17:00:46.811Z"
     }
    ],
    "approvals": [
@@ -130193,7 +130197,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
