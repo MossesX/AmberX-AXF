@@ -772,9 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 19:24 UTC · `skin-checker-flags-anything-that-breaks-a-profes` s12 done (all) · orchestrator
-- 2026-11-10 19:25 UTC · `agent-manager-training-wizard-for-employee-agent` → running, note (all) · pipeline
-- 2026-11-10 19:25 UTC · `agent-manager-training-wizard-for-employee-agent` branch claude/agent-manager-training-wizard-for-employee-agent (all) · pipeline
 - 2026-11-10 19:25 UTC · `agent-manager-training-wizard-for-employee-agent` note (all) · orchestrator
 - 2026-11-10 19:30 UTC · `skin-checker-flags-anything-that-breaks-a-profes` PR #466 (all) · builds-live
 - 2026-11-10 19:31 UTC · `skin-checker-flags-anything-that-breaks-a-profes` s13 done, → built (all) · orchestrator
@@ -1172,6 +1169,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 23:43 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` note (all) · orchestrator
 - 2026-11-10 23:43 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` note (all) · pipeline
 - 2026-11-10 23:43 UTC · `molly-banner-match` → queued, note (all) · auto-requeue (Brett: re-queue them)
+- 2026-11-10 23:43 UTC · `home-page-build-queue-card-opens-the-orchestrato` → queued, note (all) · auto-requeue (Brett: re-queue them)
+- 2026-11-10 23:43 UTC · `resolve-conflicts-and-land-pr-449-account-order` → queued, note (all) · auto-requeue (Brett: re-queue them)
+- 2026-11-10 23:43 UTC · `convert-every-app-into-a-molly-module-expenses-c` → queued, note (all) · auto-requeue (Brett: re-queue them)
 
 ## Token passes (log)
 

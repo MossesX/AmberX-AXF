@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3041,
- "updatedAt": "2026-11-10T23:43:19.605Z",
+ "rev": 3042,
+ "updatedAt": "2026-11-10T23:43:25.501Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -135322,7 +135322,7 @@
    "title": "Home page Build queue card opens the orchestrator, not the old build queue",
    "category": "",
    "detail": "On the console Home page, the Build queue card/link still opens the old build queue screen. Point it at the Build orchestrator screen (Pending / Queued / Building), and retire any remaining links to the old queue.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -135330,7 +135330,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T19:21:03.353Z",
-   "updatedAt": "2026-11-10T17:47:13.860Z",
+   "updatedAt": "2026-11-10T23:43:19.145Z",
    "builtAt": "",
    "notes": [
     {
@@ -135412,6 +135412,10 @@
     {
      "text": "Split by Claude into 4 steps (0 Fable).",
      "at": "2026-11-10T17:47:13.860Z"
+    },
+    {
+     "text": "Queued by auto-requeue (Brett: re-queue them).",
+     "at": "2026-11-10T23:43:19.145Z"
     }
    ],
    "approvals": [],
@@ -135429,8 +135433,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
+    "queuedAt": "2026-11-10T23:43:18.850Z",
+    "queuedBy": "auto-requeue (Brett: re-queue them)",
     "account": "",
     "session": "",
     "slot": "",
@@ -135572,7 +135576,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 61,
+   "rev": 62,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -150054,7 +150058,7 @@
    "title": "Resolve conflicts and land PR #449 (account order switch)",
    "category": "",
    "detail": "PR #449 (claude/account-order-switch-custom-drag-and-drop-order) failed to merge: merge conflicts with main. Merge latest main into the branch, resolve conflicts keeping both sides' intent, tests green, push, then merge the PR and redeploy the console. Notify on AmberX.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -150062,7 +150066,7 @@
    "pr": "#449",
    "priority": "P0",
    "createdAt": "2026-11-10T17:34:43.785Z",
-   "updatedAt": "2026-11-10T18:58:42.418Z",
+   "updatedAt": "2026-11-10T23:43:19.782Z",
    "builtAt": "",
    "notes": [
     {
@@ -150096,6 +150100,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
      "at": "2026-11-10T18:58:42.418Z"
+    },
+    {
+     "text": "Queued by auto-requeue (Brett: re-queue them).",
+     "at": "2026-11-10T23:43:19.782Z"
     }
    ],
    "approvals": [],
@@ -150113,8 +150121,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
+    "queuedAt": "2026-11-10T23:43:19.494Z",
+    "queuedBy": "auto-requeue (Brett: re-queue them)",
     "account": "",
     "session": "",
     "slot": "",
@@ -150329,7 +150337,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -154208,7 +154216,7 @@
    "title": "Convert every app into a Molly module (Expenses, console, hub, AmberX screens)",
    "category": "",
    "detail": "Turn each standalone app into a self-contained module that loads natively inside Molly: own manifest, routes, settings, isolated failure so one broken module cannot crash Molly. Start with Expense Tracker, then console plugins, axHub screens, AmberX. Depends on molly-one-shell and molly-sign-in-once; run after them. Notify on AmberX at each stage.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -154216,7 +154224,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:34:57.978Z",
-   "updatedAt": "2026-11-10T21:50:08.629Z",
+   "updatedAt": "2026-11-10T23:43:20.432Z",
    "builtAt": "",
    "notes": [
     {
@@ -154262,6 +154270,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 3 steps left: back in Pending for Brett.",
      "at": "2026-11-10T21:50:08.629Z"
+    },
+    {
+     "text": "Queued by auto-requeue (Brett: re-queue them).",
+     "at": "2026-11-10T23:43:20.432Z"
     }
    ],
    "approvals": [],
@@ -154279,8 +154291,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
+    "queuedAt": "2026-11-10T23:43:20.142Z",
+    "queuedBy": "auto-requeue (Brett: re-queue them)",
     "account": "",
     "session": "",
     "slot": "",
@@ -154384,7 +154396,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
