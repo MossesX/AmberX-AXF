@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T19:44:17.934Z",
+ "updatedAt": "2026-11-10T19:44:31.490Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -85423,8 +85423,8 @@
    "pr": "#447",
    "priority": "P1",
    "createdAt": "2026-11-10T04:23:08.521Z",
-   "updatedAt": "2026-11-10T19:44:06.033Z",
-   "builtAt": "2026-11-10T19:44:06.033Z",
+   "updatedAt": "2026-11-10T19:44:21.932Z",
+   "builtAt": "2026-11-10T19:44:21.932Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -85469,6 +85469,10 @@
     {
      "text": "Phase 2 (Opus) done. s2: + on dock tab rows (DockHost onNewTab) and a tab menu in Molly (new / float / pane / close, xlayout.tab); commit adf6a251b on PR #447, checks green. The UI Review items r-20261110-78bbq01 and r-20261110-g4lvv01 are only in this worktree: the headless session had no AXF_CONSOLE_URL / AXF_TOKEN, so --console could not upload them. Resubmit with --console (shots in /tmp/molly-s2/shots) and give dispatched sessions those variables.",
      "at": "2026-11-10T19:44:04.441Z"
+    },
+    {
+     "text": "Headless run axf-molly-fable-version-the-one-interface-for-amberx--rhonda: brief only · start 10.8K tokens ($0.03) · cost $2.09 · 67 turns · 6 tools, MCP none",
+     "at": "2026-11-10T19:44:21.932Z"
     }
    ],
    "approvals": [
