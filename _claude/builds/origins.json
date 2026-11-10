@@ -3466,6 +3466,18 @@
    "from": "",
    "addenda": []
   },
+  "overrides-summary-highlight-colour-setting-asset": {
+   "said": "Every settings interface needs a setting to select the color of controlled items. The top of Appearance will state if any assets have been edited or are controlled by the asset's own settings. Click it and it lists all the assets that have edits; expand a row and it lists all the asset's properties that have changed, highlighted in whatever color you choose.",
+   "at": "2026-11-10T21:50:48.036Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "owner-only-settings-brett-s-admin-console-login-counts-as-owner": {
    "said": "",
    "at": "",

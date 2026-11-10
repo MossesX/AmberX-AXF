@@ -772,8 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:48 UTC · `standing-rule-in-every-brief-fix-problems-yourse` note (all) · builds-live
-- 2026-11-10 17:48 UTC · `standing-rule-in-every-brief-fix-problems-yourse` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-10 17:48 UTC · `conversation-rag-amendment-store-only-short-key` s1 done, → running (all) · orchestrator
 - 2026-11-10 17:49 UTC · `skin-chunk-previews-interactive-demos-and-an-ide` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-10 17:49 UTC · `skin-chunk-previews-interactive-demos-and-an-ide` note (all) · builds-live
@@ -1172,6 +1170,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 21:50 UTC · `convert-every-app-into-a-molly-module-expenses-c` → pending, note (all) · pipeline
 - 2026-11-10 21:50 UTC · `molly-one-shell` → running, note (all) · pipeline
 - 2026-11-10 21:50 UTC · `molly-one-shell` note (all) · orchestrator
+- 2026-11-10 21:50 UTC · `overrides-summary-highlight-colour-setting-asset` added (0 steps) (all) · console
+- 2026-11-10 21:50 UTC · `overrides-summary-highlight-colour-setting-asset` → queued, note (all) · console
 
 ## Token passes (log)
 
