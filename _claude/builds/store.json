@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2152,
- "updatedAt": "2026-11-10T01:08:36.669Z",
+ "rev": 2153,
+ "updatedAt": "2026-11-10T01:08:59.401Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -132732,7 +132732,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T23:59:19.114Z",
-   "updatedAt": "2026-11-10T01:08:32.410Z",
+   "updatedAt": "2026-11-10T01:08:58.019Z",
    "builtAt": "",
    "notes": [
     {
@@ -132754,6 +132754,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-walkthrough-player-ide-layout-setting-collapsibl--gina, own login copy)",
      "at": "2026-11-10T00:10:38.861Z"
+    },
+    {
+     "text": "Headless run axf-walkthrough-player-ide-layout-setting-collapsibl--gina: brief only · start 13.6K tokens ($0.11) · cost $29.41 · 185 turns · 6 tools, MCP none",
+     "at": "2026-11-10T01:08:58.019Z"
     }
    ],
    "approvals": [],
@@ -132886,7 +132890,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
