@@ -769,8 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 17:50 UTC · `split-builds-pages-build-manager-pending-complet-3` added (0 steps) (all) · console
-- 2026-11-09 17:50 UTC · `split-builds-pages-build-manager-pending-complet-3` → queued, note (all) · console
 - 2026-11-09 17:51 UTC · `split-builds-pages-build-manager-pending-complet-2` note (all) · orchestrator
 - 2026-11-09 17:52 UTC · `split-builds-pages-build-manager-pending-complet-3` note (all) · orchestrator
 - 2026-11-09 17:52 UTC · `skins-own-everything-colour-theme-swaps-independ` added (0 steps) (all) · console
@@ -1169,6 +1167,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 01:02 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (all) · orchestrator
 - 2026-11-10 01:02 UTC · `auto-switch-claude-account-when-the-active-one-r` note (all) · orchestrator
 - 2026-11-10 01:03 UTC · `account-failover-chain-subscription-next-subscri` PR #425 (all) · builds-live
+- 2026-11-10 01:03 UTC · `account-failover-chain-subscription-next-subscri` note (all) · orchestrator
+- 2026-11-10 01:03 UTC · `account-failover-chain-subscription-next-subscri` s3 done, → built (all) · orchestrator
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T01:03:23.033Z",
+ "updatedAt": "2026-11-10T01:03:41.824Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -78595,7 +78595,7 @@
    "title": "Account failover chain: subscription, next subscription, then API; record who actually built it",
    "category": "",
    "detail": "When the orchestrator launches a step on its chosen account and the login fails or is limited, it marks that account limited and retries on the next subscription account in priority order; if no subscription can run it, it goes to an API-key account under its caps. Whichever account or API key actually ran the step is recorded on the step and build (account, email, model, cost) and shown in the orchestrator. Never silently fall back outside this chain. Builds on fix-account-attribution (running now, which records the real login) and overlaps pending running-builds-follow-the-active-claude-account-fail-over-when-it-dies and auto-switch-claude-account-when-the-active-one-r: fold them in.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -78603,8 +78603,8 @@
    "pr": "#425",
    "priority": "P0",
    "createdAt": "2026-11-09T17:44:47.652Z",
-   "updatedAt": "2026-11-10T01:03:19.521Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T01:03:25.374Z",
+   "builtAt": "2026-11-10T01:03:25.374Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -78685,6 +78685,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-account-failover-chain-subscription-next-subscri--paulie, own login copy)",
      "at": "2026-11-10T00:58:11.734Z"
+    },
+    {
+     "text": "PR #425. No UI Review shots: Playwright is missing in the worktree, so the capture failed. The UI change is one switch and one 'built by' line on the Pipeline card.",
+     "at": "2026-11-10T01:03:22.621Z"
     }
    ],
    "approvals": [],
@@ -78754,8 +78758,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T01:03:25.374Z",
      "note": "",
      "uid": "st-mw9jydmv03yq8x"
     }
