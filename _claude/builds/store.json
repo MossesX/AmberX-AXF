@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2779,
- "updatedAt": "2026-11-10T20:20:41.309Z",
+ "rev": 2780,
+ "updatedAt": "2026-11-10T20:20:56.709Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -147589,7 +147589,7 @@
    "title": "Remove the old theme manager, style and layout settings everywhere; skins replace them",
    "category": "",
    "detail": "Goes with appearance-skins-colour-themes-only-remove-design-packs. Remove the old Theme manager, style themes, layout settings and any other look/layout pickers from Appearance in Molly, console and every app. Skins (with their colour theme) are the only appearance control. Migrate current picks into the active skin so nothing breaks; keep API parity.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -147597,7 +147597,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T16:42:29.017Z",
-   "updatedAt": "2026-11-10T20:14:12.257Z",
+   "updatedAt": "2026-11-10T20:20:45.465Z",
    "builtAt": "",
    "notes": [
     {
@@ -147638,12 +147638,12 @@
    "pipeline": {
     "queuedAt": "2026-11-10T16:42:30.484Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-remove-the-old-theme-manager-style-and-layout-se--earl",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
-    "launchedAt": "2026-11-10T20:14:09.790Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T18:02:14.975Z",
@@ -147655,7 +147655,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T20:14:09.790Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -147664,7 +147664,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-10T20:14:09.790Z"
+    "pickedAt": ""
    },
    "steps": [
     {
