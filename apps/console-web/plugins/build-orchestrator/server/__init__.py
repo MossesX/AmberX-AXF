@@ -493,6 +493,17 @@ async def pipeline_unqueue(request: Request) -> dict[str, Any]:
     return _pipeline("unqueue", _build_id(body.get("id")), "--by", (brett_click(request) or "console")[:80])
 
 
+@router.post("/pipeline/requeue-returned")
+async def pipeline_requeue_returned(request: Request) -> dict[str, Any]:
+    """{dry?: bool}: every Pending build a session handed back (it stopped early with steps left) goes back to the Queue,
+    keeping its priority; the next run continues from its next step. dry = list them only."""
+    body = await _json_body(request)
+    args = ["requeue-returned", "--by", (brett_click(request) or "console")[:80]]
+    if body.get("dry") is True:
+        args.append("--dry")
+    return _pipeline(*args)
+
+
 @router.post("/pipeline/split")
 async def pipeline_split(request: Request) -> dict[str, Any]:
     """{id}: ask the orchestrator to (re)split a build into ≤ 30-min steps on its next tick (the console container has no
@@ -527,11 +538,11 @@ def pipeline_settings() -> dict[str, Any]:
 
 @router.post("/pipeline/settings")
 async def pipeline_settings_set(request: Request) -> dict[str, Any]:
-    """{key: value…} for pipeline-settings@1 (parallelPerAccount, fablePlans, useConsoleAccount, maxRuns, idleAfterMin, probeDays,
+    """{key: value…} for pipeline-settings@1 (parallelPerAccount, fablePlans, useConsoleAccount, maxRuns, maxEarlyStops, idleAfterMin, probeDays,
     splitProvider, apiOverflow, apiAccounts). Turning the API overflow rule on spends money per token: only Brett's own click
     does that (a session, MCP or voice may turn it off)."""
     body = await _json_body(request)
-    allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "apiOverflow", "apiAccounts"}
+    allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "maxEarlyStops", "idleAfterMin", "probeDays", "splitProvider", "apiOverflow", "apiAccounts"}
     if body.get("apiOverflow") is True and not brett_click(request):
         raise HTTPException(403, "turning the API overflow rule on is Brett's own click in the console (it bills per token)")
 

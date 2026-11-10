@@ -10,6 +10,11 @@
  *   node apps/console-web/plugins/build-orchestrator/pipeline.mjs status [--json]    the table (Pending / Queue / Building), accounts, slots, what the next tick would do
  *   … queue <id> [--by who]        Pending → Queue (Brett's move; the console calls it with his name)
  *   … unqueue <id>                 Queue → Pending
+ *   … requeue-returned [--dry] [--by who]   every Pending build a session handed back (stopped early) → Queue
+ * Early stops (Brett, Nov 10 2026: "Yes, re-queue them and auto-requeue."): a session that exits cleanly with steps left
+ * puts its build straight back in the Queue (same priority, same place) and the next run continues from the next step;
+ * only after maxEarlyStops (3) such stops in a row with no step done does it go to Pending, with the 'ended' alert
+ * (pushed to AmberX) carrying the session's last note as the reason. This is the stall watchdog's end-of-run half.
  *   … split <id> [--request] [--provider claude|rules]   split a build now (or ask the next tick to)
  *   … intake [--json]              split every build with no steps (and every split the console asked for); auto-queue when the Claude setting says so
  *   … tick [--json]                one dispatcher round: intake, session ends, launches, idle alert, state file
@@ -223,9 +228,29 @@ export function queue(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
   const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
   if (!BP.canQueue(b)) throw Object.assign(new Error(`${b.id} is ${b.status}${b.hidden ? ' (hidden)' : ''}: only a Pending build can be queued`), { code: 2 });
   const now = nowIso();
-  const r = setPipeline(b.id, { queuedAt: now, queuedBy: str(by, 80), note: b.steps.length ? '' : 'waiting for the split before it can start' }, { status: 'queued', note: `Queued by ${by}.`, by, action: 'pipeline:queue' });
+  const r = setPipeline(b.id, { queuedAt: now, queuedBy: str(by, 80), earlyStops: 0, note: b.steps.length ? '' : 'waiting for the split before it can start' }, { status: 'queued', note: `Queued by ${by}.`, by, action: 'pipeline:queue' });
   logLine({ event: 'queued', build: b.id, by });
   return r;
+}
+
+/** Pending builds a session handed back (lastRun returned) with steps left: the ones `requeueReturned` would queue. */
+export function returnedBuilds(store = loadStore()) {
+  return live(store).filter((b) => BP.canQueue(b) && b.pipeline?.lastRun?.outcome === 'returned' && BP.openSteps(b).length);
+}
+
+/**
+ * Put every build a session handed back to Pending back in the Queue (Brett, Nov 10 2026: "Yes, re-queue them and
+ * auto-requeue."). Each keeps its priority; the next run continues from its next open step. `dry` lists them only.
+ */
+export function requeueReturned({ by = process.env.AXF_ACTOR || 'console', dry = false } = {}) {
+  const want = returnedBuilds();
+  const out = { queued: [], skipped: [], dry: !!dry, ids: want.map((b) => b.id) };
+  if (dry) return out;
+  for (const b of want) {
+    try { queue(b.id, { by }); out.queued.push(b.id); } catch (e) { out.skipped.push({ id: b.id, error: str(e.message, 300) }); }
+  }
+  logLine({ event: 'requeued-returned', by, queued: out.queued, skipped: out.skipped.map((x) => x.id) });
+  return out;
 }
 export function unqueue(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
   const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
@@ -408,10 +433,11 @@ export function checkEnds({ alert = () => {}, env = process.env } = {}) {
     }
     const r = P.endOutcome(b, { exit, account: b.pipeline.account, session: b.pipeline.session }, settings);
     if (settled) { r.outcome = 'finished'; r.status = b.status; r.run = { ...r.run, outcome: 'finished' }; r.note = `Session ${b.pipeline.session} on ${b.pipeline.account || '?'} ended (exit ${exit}); the build was already ${b.status}.`; }
-    setPipeline(b.id, { lastRun: r.run, session: '', slot: '', note: r.outcome === 'finished' ? '' : r.note }, { status: r.status, note: r.note, action: 'pipeline:end' });
-    alert(r.outcome === 'failed' ? 'failed' : 'ended', { id: b.id, title: b.title, outcome: r.outcome, note: r.note, account: b.pipeline.account });
-    logLine({ event: 'ended', build: b.id, outcome: r.outcome, exit, account: b.pipeline.account, session: b.pipeline.session });
-    out.push({ id: b.id, outcome: r.outcome, status: r.status, exit });
+    // a clean early stop goes back to the Queue as it was (queuedAt and priority untouched: same place in the start order)
+    setPipeline(b.id, { lastRun: r.run, session: '', slot: '', ...(r.patch ?? {}), note: r.outcome === 'finished' ? '' : r.note }, { status: r.status, note: r.note, action: 'pipeline:end' });
+    alert(r.outcome === 'failed' ? 'failed' : 'ended', { id: b.id, title: b.title, outcome: r.outcome, note: r.note, account: b.pipeline.account, early: !!r.early, reason: r.reason ?? '' });
+    logLine({ event: 'ended', build: b.id, outcome: r.outcome, exit, early: !!r.early, earlyStops: r.patch?.earlyStops ?? 0, account: b.pipeline.account, session: b.pipeline.session });
+    out.push({ id: b.id, outcome: r.outcome, status: r.status, exit, early: !!r.early });
   }
   return out;
 }
@@ -534,7 +560,7 @@ export function tick({ env = process.env } = {}) {
       if (!r) throw lastErr ?? new Error('no account accepted the launch');
       const runs = (b.pipeline?.runs ?? 0) + 1;
       const moved = tried.length ? ` after ${tried.join(', ')} refused` : '';
-      setPipeline(b.id, { account: l.account, session: r.session, slot: r.slot, model: l.model, launchedAt: nowIso(), dispatchedAt: nowIso(), pickedAt: nowIso(), tried, runs, note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : r.lookWait ? 'waiting for the predicted look approval in UI Review' : '' },
+      setPipeline(b.id, { account: l.account, session: r.session, slot: r.slot, model: l.model, openAtLaunch: BP.openSteps(b).length, launchedAt: nowIso(), dispatchedAt: nowIso(), pickedAt: nowIso(), tried, runs, note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : r.lookWait ? 'waiting for the predicted look approval in UI Review' : '' },
         { status: 'running', note: `Started run ${runs} on ${l.account}${moved}${l.kind === 'api' ? ` (API key, ${l.rule === 'override' ? 'this build is set to API' : 'subscriptions first, then API'})` : ''} (${l.model}${l.phase ? `, ${l.phase}` : ''}): ${r.session || 'queued in agent slots'}.`, action: 'pipeline:launch' });
       if (!b.branch) withStore((s) => { const rec = storeCore.findBuild(s, b.id); if (rec && !rec.branch) rec.branch = `claude/${b.id}`; return s; }, { by: 'pipeline', action: 'pipeline:branch', note: b.id });
       alert('launched', { id: b.id, title: b.title, account: l.account, model: l.model, phase: l.phase, session: r.session });
@@ -773,6 +799,10 @@ async function main(argv) {
     ].filter(Boolean).join('\n'));
   }
   if (cmd === 'queue') { const b = queue(rest[0], { by }); return out({ ok: true, id: b.id, status: b.status, pipeline: b.pipeline }, `${b.id} → Queue (by ${by})`); }
+  if (cmd === 'requeue-returned') {
+    const r = requeueReturned({ by, dry: has('dry') });
+    return out({ ok: true, ...r }, r.dry ? `would queue ${r.ids.length}: ${r.ids.join(', ') || 'none'}` : [`queued ${r.queued.length}: ${r.queued.join(', ') || 'none'}`, ...r.skipped.map((x) => `  skipped ${x.id}: ${x.error}`)].join('\n'));
+  }
   if (cmd === 'unqueue') { const b = unqueue(rest[0], { by }); return out({ ok: true, id: b.id, status: b.status }, `${b.id} → Pending`); }
   if (cmd === 'split') {
     if (has('request')) { const b = setPipeline(rest[0], { splitRequested: nowIso() }, { note: `Split asked for by ${by}.`, by, action: 'pipeline:split-request' }); return out({ ok: true, id: b.id, requested: b.pipeline.splitRequested }, `${b.id}: split on the next tick`); }
@@ -823,7 +853,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | requeue-returned [--dry] | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

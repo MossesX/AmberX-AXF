@@ -42,6 +42,21 @@ t('outcomeOf: finished / returned / requeued / failed after maxRuns', () => {
   assert.equal(BP.outcomeOf({ exit: 1, stepsLeft: 2, runs: 3 }), 'failed');
   assert.equal(BP.outcomeOf({ exit: 1, stepsLeft: 2, runs: 2 }, 2), 'failed');
   assert.equal(BP.outcomeOf({ exit: 0, stepsLeft: 2, runs: 1, phaseSwitch: true }), 'requeued', 'a phase ended: the next phase queues for its own account');
+  assert.equal(BP.outcomeOf({ exit: 0, stepsLeft: 2, runs: 1, earlyStops: 1 }), 'requeued', 'an early stop goes back to the Queue');
+  assert.equal(BP.outcomeOf({ exit: 0, stepsLeft: 2, runs: 5, earlyStops: 0 }), 'requeued', 'early stops never count against maxRuns');
+  assert.equal(BP.outcomeOf({ exit: 0, stepsLeft: 2, runs: 3, earlyStops: 3 }), 'returned', 'third early stop in a row with no progress: Pending');
+  assert.equal(BP.outcomeOf({ exit: 0, stepsLeft: 2, runs: 1, earlyStops: 1, waiting: true }), 'returned', 'waiting on an approval: Pending');
+  assert.equal(BP.outcomeOf({ exit: 0, stepsLeft: 2, runs: 1, earlyStops: 2 }, 3, 2), 'returned', 'maxEarlyStops is a setting');
+});
+t('earlyStopsAfter: progress resets the count, no progress adds one; normPipeline keeps both fields', () => {
+  const b = (p) => ({ pipeline: p });
+  assert.equal(BP.earlyStopsAfter(b({ openAtLaunch: 3, earlyStops: 2 }), 2), 0, 'a step was ticked');
+  assert.equal(BP.earlyStopsAfter(b({ openAtLaunch: 3, earlyStops: 1 }), 3), 2, 'nothing ticked');
+  assert.equal(BP.earlyStopsAfter(b({ lastRun: { stepsLeft: 4 } }), 3), 0, 'no openAtLaunch: the last run tells');
+  assert.equal(BP.earlyStopsAfter(b({}), 3), 1, 'unknown counts as no progress');
+  const n = BP.normPipeline({ openAtLaunch: 4, earlyStops: 2, runs: 1 });
+  assert.equal(n.openAtLaunch, 4); assert.equal(n.earlyStops, 2);
+  assert.equal(BP.normPipeline({ openAtLaunch: -1, earlyStops: 'x', runs: 1 }).earlyStops, 0);
 });
 
 // ---------------- accounts
@@ -128,8 +143,20 @@ t('endOutcome: finished → built with a PR, complete without; crash requeues; c
   assert.equal(P.endOutcome({ ...done, pr: '12' }, { exit: 0 }).status, 'built');
   const crashed = P.endOutcome(build('c', 'running', [step('s1', 'Opus')], { pipeline: { runs: 1, account: 'w-pro' } }), { exit: 1 });
   assert.equal(crashed.status, 'queued'); assert.match(crashed.note, /back in the Queue/);
-  const stopped = P.endOutcome(build('s', 'running', [step('s1', 'Opus')], { pipeline: { runs: 1, model: 'Opus' } }), { exit: 0 });
-  assert.equal(stopped.status, 'pending'); assert.match(stopped.note, /back in Pending for Brett/);
+  const stopped = P.endOutcome(build('s', 'running', [step('s1', 'Opus')], { pipeline: { runs: 1, model: 'Opus', openAtLaunch: 1 } }), { exit: 0 });
+  assert.equal(stopped.status, 'queued'); assert.equal(stopped.outcome, 'requeued'); assert.match(stopped.note, /back in the Queue to continue from the next step .*early stop 1 of 3/);
+  assert.equal(stopped.patch.earlyStops, 1); assert.ok(stopped.early);
+  const moved = P.endOutcome(build('m', 'running', [step('s1', 'Opus', true), step('s2', 'Opus')], { pipeline: { runs: 2, model: 'Opus', openAtLaunch: 2, earlyStops: 2 } }), { exit: 0 });
+  assert.equal(moved.status, 'queued'); assert.equal(moved.patch.earlyStops, 0, 'a ticked step resets the count'); assert.match(moved.note, /made progress/);
+  const t0 = '2026-11-10T10:00:00.000Z';
+  const stuck = build('k', 'running', [step('s1', 'Opus')], { pipeline: { runs: 3, model: 'Opus', openAtLaunch: 1, earlyStops: 2, launchedAt: t0 }, notes: [{ text: 'old note', at: '2026-11-09T10:00:00.000Z' }, { text: 'Needs the hub token: cannot reach axHub.', at: '2026-11-10T10:05:00.000Z' }, { text: 'Started run 3 on w-pro (Opus): axf-k.', at: '2026-11-10T10:00:01.000Z' }] });
+  const gave = P.endOutcome(stuck, { exit: 0 });
+  assert.equal(gave.status, 'pending'); assert.equal(gave.outcome, 'returned'); assert.match(gave.note, /stopped early 3 times in a row with no step done .*back in Pending for Brett\. Reason: Needs the hub token/);
+  assert.equal(gave.patch.earlyStops, 0, 'the count starts over for when Brett queues it again');
+  const p3 = P.endOutcome({ ...stuck, notes: [] }, { exit: 0 }, P.normSettings({ maxEarlyStops: 5 }));
+  assert.equal(p3.status, 'queued', 'maxEarlyStops 5: still requeued at 3');
+  const wait = P.endOutcome(build('w', 'waiting', [step('s1', 'Opus')], { pipeline: { runs: 1, model: 'Opus', openAtLaunch: 1 } }), { exit: 0 });
+  assert.equal(wait.status, 'pending'); assert.match(wait.note, /waits on an approval/);
   const phase = P.endOutcome(build('p', 'running', [step('s1', 'Fable', true), step('s2', 'Opus')], { pipeline: { runs: 1, model: 'Fable' } }), { exit: 0 });
   assert.equal(phase.status, 'queued', 'Fable phase done, Opus phase next: back in the Queue for an Opus account');
   const dead = P.endOutcome(build('f', 'running', [step('s1', 'Opus')], { pipeline: { runs: 3 } }), { exit: 137 });
@@ -431,11 +458,30 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.ok(['complete', 'built'].includes(find('beta').status), find('beta').status);
     assert.equal(find('beta').pipeline.lastRun.outcome, 'finished');
   });
-  t('e2e session end: a clean stop with steps left goes back to Pending for Brett', () => {
-    writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('alpha').pipeline.session, name: 'alpha', exit: 0, at: new Date().toISOString() }) + '\n');
-    const r = json(pipe('tick', '--json'));
-    assert.deepEqual(r.ended.map((e) => [e.id, e.outcome]), [['alpha', 'returned']]);
-    assert.equal(find('alpha').status, 'pending'); assert.match(find('alpha').notes.at(-1).text, /back in Pending/);
+  t('e2e session end: a clean early stop goes back to the Queue in its place; 3 in a row with no step done = Pending', () => {
+    const queuedAt = find('alpha').pipeline.queuedAt;
+    assert.equal(find('alpha').pipeline.openAtLaunch, BP.openSteps(find('alpha')).length, 'launch records the open steps');
+    for (let i = 1; i <= 3; i++) {
+      orch('act', 'note', 'alpha', `stopped: try ${i}`);
+      writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('alpha').pipeline.session, name: 'alpha', exit: 0, at: new Date().toISOString() }) + '\n');
+      const r = json(pipe('tick', '--json'));
+      if (i < 3) {
+        assert.deepEqual(r.ended.map((e) => [e.id, e.outcome]), [['alpha', 'requeued']], `stop ${i}`);
+        assert.equal(find('alpha').pipeline.earlyStops, i); assert.equal(find('alpha').pipeline.queuedAt, queuedAt, 'same place in the Queue');
+        assert.deepEqual(r.launched.map((l) => l.id), ['alpha'], 'started again in the same tick');
+        assert.match(find('alpha').notes.map((x) => x.text).join('\n'), new RegExp(`early stop ${i} of 3`));
+      } else {
+        assert.deepEqual(r.ended.map((e) => [e.id, e.outcome]), [['alpha', 'returned']]);
+        assert.equal(find('alpha').status, 'pending'); assert.match(find('alpha').notes.at(-1).text, /3 times in a row .*back in Pending for Brett\. Reason: stopped: try 3/);
+      }
+    }
+  });
+  t('e2e requeue-returned: every build a session handed back goes to the Queue (dry lists only)', () => {
+    assert.deepEqual(json(pipe('requeue-returned', '--dry', '--json')).ids, ['alpha']);
+    assert.equal(find('alpha').status, 'pending', 'dry changes nothing');
+    const r = json(pipe('requeue-returned', '--by', 'brett', '--json'));
+    assert.deepEqual(r.queued, ['alpha']); assert.equal(find('alpha').status, 'queued'); assert.equal(find('alpha').pipeline.earlyStops, 0);
+    json(pipe('unqueue', 'alpha', '--json'));
   });
   t('e2e idle: nothing running with work in Pending raises the idle alert once, cleared when a build runs', () => {
     const st = JSON.parse(readFileSync(join(pipeDir, 'state.json'), 'utf8'));

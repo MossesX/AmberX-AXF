@@ -8,8 +8,9 @@
  * Queue build and starts a headless session on an account that can run the next phase's model (**Building**).
  *
  *   status flow:  pending → queued → running (Building) → built → complete
- *                 a session that ends with steps left goes back to queued (crash / limit, up to maxRuns) or to pending
- *                 (stopped on purpose: UI Review wait, a question); failed after maxRuns.
+ *                 a session that ends with steps left goes back to queued (crash / limit, up to maxRuns; a clean early
+ *                 stop, keeping its priority and place); after MAX_EARLY_STOPS clean stops in a row with no step done,
+ *                 or a stop while it waits on an approval, it goes to pending for Brett; failed after maxRuns.
  *
  * `pipeline` on a build (kept across orchestrator, Pending and queue writes; only the dispatcher and the queue
  * actions change it):
@@ -28,6 +29,9 @@
  *              Nov 10 2026: "He'll plan what model, what account"); refreshed while it waits
  *   tried      accounts the final pick tried and that refused this run (launch failed), in order; '' list on a clean pick
  *   pickedAt   ISO of the final account decision (the moment the build's turn came in the Queue)
+ *   openAtLaunch  open steps when the current / last run started (how the end tells whether the run made progress)
+ *   earlyStops consecutive clean early stops with no step done (Brett, Nov 10 2026: "re-queue them and auto-requeue");
+ *              0 after a run that ticked a step, a finish, or Brett queueing it again
  *
  * The orchestrator's tabs (Brett, Nov 10 2026: "Tabs: pending, active, incomplete, complete, errors, queue"): tabOf().
  */
@@ -42,15 +46,18 @@ export const OUTCOMES = ['finished', 'requeued', 'returned', 'failed'];
 export const ROUTES = ['', 'api', 'subscription'];
 export const SPLIT_PROVIDERS = ['claude', 'rules', 'hand'];
 export const DEFAULT_MAX_RUNS = 3;
+/** Clean early stops in a row with no step done before a build goes to Pending for Brett instead of back to the Queue. */
+export const MAX_EARLY_STOPS = 3;
 
 const str = (v, max = 400) => (typeof v === 'string' ? v.slice(0, max) : v == null ? '' : String(v).slice(0, max));
 const iso = (v) => { const s = str(v, 40).trim(); return s && Number.isFinite(Date.parse(s)) ? s : ''; };
+const count = (v) => (Number.isInteger(v) && v > 0 ? Math.min(v, 999) : 0);
 const NAME_RE = /^[a-z0-9][a-z0-9-]{0,31}$/;
 /** A saved Claude account name (deploy/claude-login.mjs), or ''. */
 export const accountName = (v) => (NAME_RE.test(str(v, 40)) ? str(v, 40) : '');
 
 export function emptyPipeline() {
-  return { queuedAt: '', queuedBy: '', account: '', session: '', slot: '', model: '', launchedAt: '', runs: 0, lastRun: null, split: null, splitRequested: '', note: '', route: '', dispatchedAt: '', planned: null, tried: [], pickedAt: '' };
+  return { queuedAt: '', queuedBy: '', account: '', session: '', slot: '', model: '', launchedAt: '', runs: 0, lastRun: null, split: null, splitRequested: '', note: '', route: '', dispatchedAt: '', planned: null, tried: [], pickedAt: '', openAtLaunch: 0, earlyStops: 0 };
 }
 
 /** The record, every field in shape; null for nothing (a build the pipeline never touched carries none). */
@@ -69,6 +76,7 @@ export function normPipeline(p) {
     route: ROUTES.includes(p.route) ? p.route : '', dispatchedAt: iso(p.dispatchedAt),
     planned: pl ? { model: str(pl.model, 20), account: accountName(pl.account), kind: pl.kind === 'api' ? 'api' : pl.kind === 'subscription' ? 'subscription' : '', at: iso(pl.at), why: str(pl.why, 300) } : null,
     tried: (Array.isArray(p.tried) ? p.tried : []).map(accountName).filter(Boolean).slice(0, 12), pickedAt: iso(p.pickedAt),
+    openAtLaunch: count(p.openAtLaunch), earlyStops: count(p.earlyStops),
   };
   const empty = emptyPipeline();
   return JSON.stringify(out) === JSON.stringify(empty) ? null : out;
@@ -117,13 +125,28 @@ export const nextModel = (b) => openSteps(b)[0]?.model ?? '';
 
 /**
  * What a run's end means for the build. A clean exit with nothing left = finished. A failed exit (crash, usage limit,
- * killed) = requeued, until `runs` reaches maxRuns, then failed. A clean exit with steps left = the session stopped on
- * purpose (a question, UI Review, a step marked for a new session): back to Pending for Brett, with the reason.
+ * killed) = requeued, until `runs` reaches maxRuns, then failed. A clean exit with steps left = the session stopped early
+ * (Brett, Nov 10 2026: "re-queue them and auto-requeue"): requeued, so the next run continues from the next open step;
+ * returned (Pending for Brett) only after `earlyStops` (this stop included) reaches maxEarlyStops with no step done, or
+ * when the build waits on an approval (a relaunch can't get past that). A phase switch always requeues.
  */
-export function outcomeOf({ exit, stepsLeft, runs, phaseSwitch = false }, maxRuns = DEFAULT_MAX_RUNS) {
+export function outcomeOf({ exit, stepsLeft, runs, phaseSwitch = false, earlyStops = MAX_EARLY_STOPS, waiting = false }, maxRuns = DEFAULT_MAX_RUNS, maxEarlyStops = MAX_EARLY_STOPS) {
   if (!stepsLeft) return 'finished';
-  if (exit === 0) return phaseSwitch ? 'requeued' : 'returned'; // a phase ended on purpose: the next phase runs on its own model's account
+  if (exit === 0) {
+    if (phaseSwitch) return 'requeued'; // a phase ended on purpose: the next phase runs on its own model's account
+    return waiting || earlyStops >= maxEarlyStops ? 'returned' : 'requeued';
+  }
   return runs >= maxRuns ? 'failed' : 'requeued';
+}
+
+/**
+ * Consecutive clean early stops with no step done, this run's end included. Progress = fewer open steps than when the run
+ * started (pipeline.openAtLaunch, else the last run's stepsLeft); unknown counts as none. A run with progress resets it.
+ */
+export function earlyStopsAfter(b, stepsLeft) {
+  const p = b?.pipeline ?? {};
+  const before = count(p.openAtLaunch) || (p.lastRun && Number.isInteger(p.lastRun.stepsLeft) ? p.lastRun.stepsLeft : 0);
+  return before > stepsLeft ? 0 : count(p.earlyStops) + 1;
 }
 export const STATUS_AFTER = Object.freeze({ finished: 'built', requeued: 'queued', returned: 'pending', failed: 'failed' });
 
@@ -133,8 +156,12 @@ export function outcomeLine(b, run) {
   const where = run.account ? ` on ${run.account}` : '';
   switch (run.outcome) {
     case 'finished': return `Session ${run.session || ''}${where} finished: ${left}.`.replace('  ', ' ');
-    case 'requeued': return `Session${where} ended (exit ${run.exit}) with ${left}: back in the Queue (run ${b.pipeline?.runs ?? 1}).`;
-    case 'returned': return `Session${where} stopped on its own with ${left}: back in Pending for Brett.`;
+    case 'requeued': return run.exit === 0
+      ? `Session${where} stopped early with ${left}: back in the Queue to continue from the next step (run ${b.pipeline?.runs ?? 1}${run.earlyStops ? `, early stop ${run.earlyStops} of ${run.maxEarlyStops ?? MAX_EARLY_STOPS} with no step done` : ', made progress'}).`
+      : `Session${where} ended (exit ${run.exit}) with ${left}: back in the Queue (run ${b.pipeline?.runs ?? 1}).`;
+    case 'returned': return run.waiting
+      ? `Session${where} stopped with ${left} while the build waits on an approval: back in Pending for Brett.${run.reason ? ` Reason: ${run.reason}` : ''}`
+      : `Session${where} stopped early ${run.earlyStops ?? MAX_EARLY_STOPS} times in a row with no step done (${left}): back in Pending for Brett.${run.reason ? ` Reason: ${run.reason}` : ' The session left no note.'}`;
     default: return `Session${where} ended (exit ${run.exit}) with ${left} after ${b.pipeline?.runs ?? 0} runs: failed.`;
   }
 }

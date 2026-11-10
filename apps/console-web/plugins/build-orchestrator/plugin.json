@@ -351,6 +351,22 @@
         "output": "{ id, status }"
       },
       {
+        "id": "pipeline-requeue-returned",
+        "route": "POST /pipeline/requeue-returned",
+        "title": "Re-queue builds that stopped early",
+        "description": "Put every Pending build whose session stopped early (steps left) back in the Queue, keeping its priority; the next run continues from its next step. New early stops do this by themselves; a build lands in Pending only after 3 early stops in a row with no step done. Say 're-queue the builds that stopped early'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "dry": {
+              "type": "boolean",
+              "description": "List them only"
+            }
+          }
+        },
+        "output": "{ queued, skipped, ids, dry }"
+      },
+      {
         "id": "pipeline-split",
         "route": "POST /pipeline/split",
         "title": "Split a build into steps",
@@ -468,6 +484,10 @@
             },
             "maxRuns": {
               "type": "integer"
+            },
+            "maxEarlyStops": {
+              "type": "integer",
+              "description": "Early stops in a row with no step done before a build goes to Pending instead of back to the Queue (default 3)"
             },
             "idleAfterMin": {
               "type": "integer"

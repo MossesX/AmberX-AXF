@@ -133,6 +133,12 @@ try:
         except srv.HTTPException as e:
             code = e.status_code
         check(code == want, f"route {route} by {'Brett' if brett else 'a session'}: {want}")
+    asyncio.run(srv.pipeline_requeue_returned(_Req({"dry": True})))
+    check(_calls[-1][2] == "requeue-returned" and "--dry" in _calls[-1], "requeue-returned: dry reaches the CLI")
+    asyncio.run(srv.pipeline_requeue_returned(_Req({}, True)))
+    check("--dry" not in _calls[-1] and _calls[-1][_calls[-1].index("--by") + 1] == "Brett", "requeue-returned: queues them, by Brett")
+    asyncio.run(srv.pipeline_settings_set(_Req({"maxEarlyStops": 4})))
+    check(_calls[-1][-2] == "maxEarlyStops=4", "maxEarlyStops is a setting the API changes")
 finally:
     srv.subprocess.run = _real_run
 

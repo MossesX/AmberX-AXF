@@ -142,6 +142,14 @@ Regenerate fixtures after changing a reference engine: `npx -y tsx framework/spe
 
 `framework/core/engines/skin.ts` and `skin-rules.mjs` (web only, built on Opus, format marked for a possible Fable review: plan `skins-possible-fable-review-6xha`) have no Kotlin twin. Android work is on hold. A port needs the same pure functions, the same `skin` asset type and the same document on the hub: `normalizeSkin`, `skinFromDesignPackage`, `composeLook`, `lookAfterChange`, `pickSkin`, `setUseSkin`, `backToSkin`, `restoreAppDefault`, `undoRestore`, pinned by `spec/fixtures/skin.json` and `spec/check-skin.mts`. Build skins-asset-types (Fable, Nov 7 2026) added `skin-coverage.mjs` (coverage of every registered type from the registry, the scope chain global → app → UI → plugin with `resolveSkinChain`, `partsErrors`), `composeLookAt`, `resolveLookSkin`, per-scope states in app-look@1 (`scopes`, `skin.inherit`), the hub-wide `skin` field on appearance@1, `iconPack` + `parts` on skin@1, and the runtime's `skinScoped` views; a port carries the same functions and the `coverage` / `scopes` blocks of the fixture. `theme.ts`'s scrollbar tokens stay out of the output Kotlin is tested against until then. Until a port does this, an Android app keeps reading `appearance@1` directly and shows no skin.
 
+## Deferred: build-pipeline@1 early-stop requeue (Nov 10 2026)
+
+`framework/core/build-pipeline.mjs` gained `pipeline.openAtLaunch`, `pipeline.earlyStops`, `MAX_EARLY_STOPS` and
+`earlyStopsAfter()`; `outcomeOf()` takes `earlyStops` / `waiting` and a `maxEarlyStops` limit: a clean early stop with
+steps left is `requeued` (back in the Queue, same place), `returned` (Pending) only after 3 in a row with no step done or
+while the build waits on an approval. Dispatcher-only (VPS host); no Kotlin twin while Android is on hold. A port needs the
+two fields in the normalisation and the same outcome table.
+
 ## Deferred: build-pipeline@1 route + dispatch (Nov 9 2026)
 
 `framework/core/build-pipeline.mjs` gained `pipeline.route` ('' | api | subscription: the per-build override that lets

@@ -33,7 +33,7 @@
  *              healthOf() reads one tiny call's answer; a fresh health record (own.health) decides usable / Fable,
  *              so the dispatcher never tests an account at launch time. healthDue() says when the next sweep runs.
  */
-import { DEFAULT_MAX_RUNS, STATUS_AFTER, nextModel, openSteps, outcomeLine, outcomeOf, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
+import { DEFAULT_MAX_RUNS, MAX_EARLY_STOPS, STATUS_AFTER, earlyStopsAfter, nextModel, openSteps, outcomeLine, outcomeOf, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { FOUNDATION_MODEL, MODEL_LABELS, modelForWork, modelKey } from '../../../../framework/core/model-policy.mjs';
 import { API_RULE, estimateMinutes, nextUp as orchNextUp, MODEL_GUIDE } from './web/orchestrator-core.mjs';
@@ -48,6 +48,8 @@ export const DEFAULTS = Object.freeze({
   useConsoleAccount: true,
   /** A crashed or cut-off session is relaunched this many times, then the build is failed. */
   maxRuns: DEFAULT_MAX_RUNS,
+  /** A session that stops early (clean exit, steps left) goes back to the Queue; after this many in a row with no step done, to Pending for Brett. */
+  maxEarlyStops: 3,
   /** Nothing running while the Queue has work for this long = a phone alert. */
   idleAfterMin: 5,
   /** A probe of an account's Fable access is good for this long. */
@@ -63,7 +65,7 @@ export const DEFAULTS = Object.freeze({
   /** The account health sweep runs this often (minutes; 0 = off). */
   healthEveryMin: 5,
 });
-const LIMITS = { parallelPerAccount: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90], healthEveryMin: [0, 120] };
+const LIMITS = { parallelPerAccount: [1, 12], maxRuns: [1, 10], maxEarlyStops: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90], healthEveryMin: [0, 120] };
 /** A health record older than this many sweeps is stale: the account falls back to its probe / plan. */
 const HEALTH_STALE_SWEEPS = 4;
 
@@ -79,6 +81,7 @@ export function normSettings(raw = {}) {
     fablePlans: list(o.fablePlans).map((p) => str(p, 20).toLowerCase()).filter(Boolean).length ? list(o.fablePlans).map((p) => str(p, 20).toLowerCase()).filter(Boolean) : [...DEFAULTS.fablePlans],
     useConsoleAccount: o.useConsoleAccount !== false,
     maxRuns: o.maxRuns === undefined ? DEFAULTS.maxRuns : clamp('maxRuns', o.maxRuns),
+    maxEarlyStops: o.maxEarlyStops === undefined ? DEFAULTS.maxEarlyStops : clamp('maxEarlyStops', o.maxEarlyStops),
     idleAfterMin: o.idleAfterMin === undefined ? DEFAULTS.idleAfterMin : clamp('idleAfterMin', o.idleAfterMin),
     probeDays: o.probeDays === undefined ? DEFAULTS.probeDays : clamp('probeDays', o.probeDays),
     splitProvider: ['claude', 'rules', 'off'].includes(o.splitProvider) ? o.splitProvider : DEFAULTS.splitProvider,
@@ -323,16 +326,35 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
 
 // ------------------------------------------------------------------ session end
 
-/** A run ended: the build's new status, its lastRun record and a note line. */
+/** The session's own last note since the run started (why it stopped), or ''. Dispatcher notes are not the session's. */
+export function stopReason(b) {
+  const since = Date.parse(b?.pipeline?.launchedAt || 0) || 0;
+  const own = list(b?.notes).filter((n) => (Date.parse(n?.at || 0) || 0) >= since && !/^(Session |Started run |Queued by |Back to Pending|Launch failed|Self-check:)/.test(str(n?.text, 40)));
+  return str(own.at(-1)?.text, 500).trim();
+}
+
+/**
+ * A run ended: the build's new status, its lastRun record, a note line and the pipeline fields to write (earlyStops).
+ * A clean early stop goes back to the Queue (priority and queuedAt kept, so its place too) and the next run continues
+ * from the next open step; maxEarlyStops in a row with no step done (or a stop while it waits on an approval) = Pending,
+ * with the session's own last note as the reason (the 'ended' alert carries it to AmberX).
+ */
 export function endOutcome(b, { exit, account = '', session = '', now = new Date().toISOString() } = {}, settings = normSettings()) {
   const stepsLeft = openSteps(b).length;
   const runs = (b.pipeline?.runs ?? 0) || 1;
   const phaseSwitch = stepsLeft > 0 && !!b.pipeline?.model && nextModel(b) !== b.pipeline.model;
-  const outcome = outcomeOf({ exit, stepsLeft, runs, phaseSwitch }, settings.maxRuns);
+  const early = exit === 0 && stepsLeft > 0 && !phaseSwitch;
+  const earlyStops = early ? earlyStopsAfter(b, stepsLeft) : stepsLeft === 0 || phaseSwitch ? 0 : (b.pipeline?.earlyStops ?? 0);
+  const waiting = early && b.status === 'waiting';
+  const maxEarlyStops = settings.maxEarlyStops ?? MAX_EARLY_STOPS;
+  const outcome = outcomeOf({ exit, stepsLeft, runs, phaseSwitch, earlyStops, waiting }, settings.maxRuns, maxEarlyStops);
   const run = { at: now, exit: Number.isInteger(exit) ? exit : null, outcome, stepsLeft, account: account || b.pipeline?.account || '', session: session || b.pipeline?.session || '' };
   let status = STATUS_AFTER[outcome];
   if (outcome === 'finished') status = b.pr && !b.mergedAt ? 'built' : 'complete';
-  return { outcome, status, run, note: outcomeLine({ ...b, pipeline: { ...(b.pipeline ?? {}), runs } }, run) };
+  const reason = outcome === 'returned' ? stopReason(b) : '';
+  const note = outcomeLine({ ...b, pipeline: { ...(b.pipeline ?? {}), runs } }, { ...run, earlyStops, maxEarlyStops, waiting, reason });
+  // after a give-up the count starts over, so Brett queueing it again gives it a fresh set of tries
+  return { outcome, status, run, note, early, reason, patch: { earlyStops: outcome === 'returned' ? 0 : earlyStops } };
 }
 
 // ------------------------------------------------------------------ split
