@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3014,
- "updatedAt": "2026-11-10T23:25:45.387Z",
+ "rev": 3015,
+ "updatedAt": "2026-11-10T23:25:59.677Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -156360,7 +156360,7 @@
    "title": "Stall watchdog: detect when nothing is building, auto-fix, notify on AmberX",
    "category": "",
    "detail": "Watchdog on the VPS dispatcher: every minute check (a) nothing running while Queue or Pending-urgent has items, (b) a running build with no live session, (c) dispatcher tick not seen for 3+ min. On detect: auto-fix in order (pipeline selfcheck, release dead slots, auto-queue Urgent/High pending builds when queue is empty, restart dispatcher), log each attempt under 'Automatic fixes' in AmberX notes, and send an AmberX FYI notification per attempt and result. Escalate to Brett with what's missing only if every fix fails. Newly filed Urgent builds auto-queue instead of sitting in Pending.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -156369,7 +156369,7 @@
    "priority": "P0",
    "createdAt": "2026-11-10T23:08:12.434Z",
    "updatedAt": "2026-11-10T23:24:31.015Z",
-   "builtAt": "",
+   "builtAt": "2026-11-10T23:24:31.015Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -156500,12 +156500,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T23:24:10.009Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T23:09:40.929Z",
-     "updatedAt": "2026-11-10T23:09:40.929Z"
+     "updatedAt": "2026-11-10T23:24:10.275Z"
     }
    ],
    "profiles": [
@@ -156516,7 +156516,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
