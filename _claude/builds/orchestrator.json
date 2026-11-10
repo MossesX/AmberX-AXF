@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T16:40:57.233Z",
+ "updatedAt": "2026-11-10T16:41:37.309Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -85859,12 +85859,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T16:39:13.034Z",
-   "updatedAt": "2026-11-10T16:39:15.094Z",
+   "updatedAt": "2026-11-10T16:41:35.736Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T16:39:15.094Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T16:41:35.736Z"
     }
    ],
    "approvals": [],
@@ -85881,7 +85885,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Master switch in the main app settings to enable inline edit mode. 2) With it on, right-click any element (app menu items and sub-menus down to the child, navigation menus, toolbars, banners, widgets, everything) to open a dialog with every token that can be set for it, viewable as a tree, classic tree, or grid with expandable rows; edit any token (text color, background, etc.) for the single item or a whole parent. Dialog notes that changes override axHub inheritance (existing override rules). 3) Overrides list in the same plugin: every single thing changed from axHub's inherited defaults. Reset items one by one to axHub (restores just that item, does not re-inherit everything). Searchable, filterable, tree view with selectable roots, multi-tab column with different roots. Full API/CLI control.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwax3gu004g1g0"
+    },
+    {
+     "id": "s2",
+     "text": "Right-click elements right down to the child, it opens a dialog with all the different tokens, in a tree or a classical tree or a grid with expandable rows, edit every token, notes that it overrides inheritance. A master switch in the main application settings to enable inline edit mode. Same with navigation menus, toolbars, banners, widgets, every single thing. Part of the plugin gives a monster list of everything changed from axHub's inheritance, reset them individually to axHub's. Searchable, filterable, a tree with selectable roots and a multi-tab column with different roots.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwax3gu005od5h"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/inline-element-editing-plugin-right-click-any-el.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/inline-element-editing-plugin-right-click-any-el.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwax3gu006w8st"
+    }
+   ]
   },
   {
    "id": "inline-edit-plugin-install-in-console-molly-and",
