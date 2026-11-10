@@ -64,6 +64,12 @@ DEFAULTS: dict[str, Any] = {
     "worktreeIdleHours": 24,  # a build worktree must be idle this long
     "createdHours": 1,        # a container stuck in "Created" for this long
     "buildCacheHours": 24,    # Docker build cache unused for this long
+    "exitedDays": 7,          # an exited container stopped this long (container prune; check first)
+    "gitLockMinutes": 30,     # a git *.lock file untouched this long, with no git process running, is stale
+    # Auto-cleanup over a threshold (VPS plugin): when the disk passes this, the safe jobs are sent for approval. Off by default.
+    "autoClean": False,
+    "autoCleanPct": 88,
+    "autoCleanJobs": ["docker", "logs", "tmp", "created", "caches", "gitlocks"],
     # Clean up build profiles (profile clean-up, engine/profiles.mjs)
     "profileMode": "auto",    # auto = Deep (AI) when an AI model is available, else Basic; basic = never use AI
     "profileSchedule": "off", # off | daily | weekly: a scheduled preview (Brett is notified; nothing is applied)
@@ -78,7 +84,8 @@ LIMITS: dict[str, tuple[float, float]] = {
     "diskWarnPct": (50, 99), "diskHighPct": (50, 99), "diskCriticalPct": (50, 99), "swapFullPct": (50, 100),
     "swapMinutes": (1, 1440), "nightlyHour": (0, 23), "logDays": (1, 365), "journalDays": (1, 365), "tmpDays": (1, 365),
     "worktreeIdleHours": (1, 24 * 90), "createdHours": (1, 24 * 30), "buildCacheHours": (1, 24 * 90),
-    "profileHour": (0, 23), "profileWeekday": (0, 6),
+    "profileHour": (0, 23), "profileWeekday": (0, 6), "exitedDays": (1, 365), "gitLockMinutes": (5, 24 * 60),
+    "autoCleanPct": (50, 99),
 }
 
 
@@ -90,13 +97,13 @@ def normalize_settings(raw: Any) -> dict[str, Any]:
     for k, v in raw.items():
         if k not in DEFAULTS:
             continue
-        if k == "nightly":
+        if k in ("nightly", "autoClean"):
             out[k] = bool(v)
         elif k == "profileMode":
             out[k] = v if v in PROFILE_MODES else DEFAULTS[k]
         elif k == "profileSchedule":
             out[k] = v if v in PROFILE_SCHEDULES else DEFAULTS[k]
-        elif k == "nightlyJobs":
+        elif k in ("nightlyJobs", "autoCleanJobs"):
             if isinstance(v, list):
                 out[k] = [j for j in dict.fromkeys(str(x) for x in v) if j in JOBS and JOBS[j]["safe"]]
         elif isinstance(v, (int, float)) and not isinstance(v, bool):
@@ -145,6 +152,18 @@ JOBS: dict[str, dict[str, Any]] = {
     "created": {"label": "Containers stuck in Created", "safe": True, "icon": "alert",
                 "what": "Containers that were created but never started, older than the set hours. Running, paused, "
                         "restarting and exited containers are never touched."},
+    "exited": {"label": "Stopped containers", "safe": False, "icon": "box",
+               "what": "Containers that exited more than the set days ago (docker container prune, one by one). A container "
+                       "with restart policy always / unless-stopped, or one Coolify manages, is kept: it may be started again."},
+    "caches": {"label": "apt, npm and pip caches", "safe": True, "icon": "package",
+               "what": "Downloaded packages in /var/cache/apt/archives, the npm cache (~/.npm/_cacache) and the pip cache "
+                       "(~/.cache/pip) of root and axfbuild. They refill on the next install; nothing installed is touched."},
+    "playwright": {"label": "Playwright browser cache", "safe": False, "icon": "globe",
+                   "what": "Old browser builds in ~/.cache/ms-playwright of root and axfbuild. The newest build of each "
+                           "browser is kept; screenshot and UI test runs re-download anything else they need."},
+    "gitlocks": {"label": "Stale git lock files", "safe": True, "icon": "lock",
+                 "what": "index.lock, HEAD.lock and other *.lock files in the repo's .git folders untouched for the set "
+                         "minutes while no git process is running. These block every git command after a crash."},
 }
 SAFE_JOBS = [j for j, d in JOBS.items() if d["safe"]]
 
@@ -615,6 +634,137 @@ def plan_created(ctx: Ctx) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     return items, []
 
 
+def cache_roots() -> list[tuple[str, Path]]:
+    """(kind, folder) of the package caches; AXF_MAINT_CACHE_ROOTS = kind=path:kind=path overrides them (tests)."""
+    env = os.environ.get("AXF_MAINT_CACHE_ROOTS")
+    if env:
+        return [(k, Path(v)) for k, v in (x.split("=", 1) for x in env.split(":") if "=" in x)]
+    homes = [Path("/root"), Path("/home/axfbuild")]
+    return [("apt", Path("/var/cache/apt/archives"))] + [(k, h / rel) for h in homes for k, rel in (("npm", ".npm/_cacache"), ("pip", ".cache/pip"))]
+
+
+def playwright_roots() -> list[Path]:
+    env = os.environ.get("AXF_MAINT_PLAYWRIGHT_ROOTS")
+    return [Path(p) for p in env.split(":") if p] if env else [Path("/root/.cache/ms-playwright"), Path("/home/axfbuild/.cache/ms-playwright")]
+
+
+def git_dirs() -> list[Path]:
+    """The .git folders whose locks are checked: the repo checkouts and every worktree's admin folder."""
+    env = os.environ.get("AXF_MAINT_GIT_DIRS")
+    if env:
+        return [Path(p) for p in env.split(":") if p]
+    out = [Path(p) / ".git" for p in ("/opt/axf", "/root/axf")]
+    return [p for p in out if isdir(p)]
+
+
+def plan_caches(ctx: Ctx) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    items: list[dict[str, Any]] = []
+    for kind, root in cache_roots():
+        if not isdir(root) or root.is_symlink():
+            continue
+        if kind == "apt":
+            debs = [e for e in root.glob("*.deb") if e.is_file() and not e.is_symlink()]
+            size = sum(os.lstat(e).st_size for e in debs)
+            if debs:
+                items.append(_item("caches", str(root), size, f"{len(debs)} downloaded package(s)", kind="apt", path=str(root)))
+            continue
+        if busy(root, ctx.files, ctx.cwds):
+            continue
+        size = du(root, ctx.run)
+        if size:
+            items.append(_item("caches", str(root), size, f"{kind} cache", kind=kind, path=str(root)))
+    return items, []
+
+
+_PW_BUILD = re.compile(r"^([a-z_-]+?)-(\d+)$")
+
+
+def plan_playwright(ctx: Ctx) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    items, kept = [], []
+    for root in playwright_roots():
+        try:
+            entries = sorted(e for e in root.iterdir() if e.is_dir() and not e.is_symlink())
+        except OSError:
+            continue
+        newest: dict[str, int] = {}
+        for e in entries:
+            m = _PW_BUILD.match(e.name)
+            if m:
+                newest[m.group(1)] = max(newest.get(m.group(1), 0), int(m.group(2)))
+        for e in entries:
+            m = _PW_BUILD.match(e.name)
+            if not m:
+                continue
+            if int(m.group(2)) == newest[m.group(1)]:
+                kept.append({"path": str(e), "why": "newest build of this browser"})
+                continue
+            if busy(e, ctx.files, ctx.cwds):
+                kept.append({"path": str(e), "why": "in use"})
+                continue
+            items.append(_item("playwright", str(e), du(e, ctx.run), f"older {m.group(1)} build (newest is {newest[m.group(1)]})", path=str(e)))
+    return items, kept
+
+
+def git_running(run: Runner) -> bool:
+    code, out = run(["pgrep", "-x", "git"], 10)
+    return code == 0 and bool(out.strip())
+
+
+def plan_gitlocks(ctx: Ctx) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    items, kept = [], []
+    cutoff = ctx.now - ctx.s["gitLockMinutes"] * 60
+    locks: list[Path] = []
+    for g in git_dirs():
+        for pat in ("*.lock", "refs/heads/**/*.lock", "worktrees/*/*.lock"):
+            try:
+                locks.extend(p for p in g.glob(pat) if p.is_file() and not p.is_symlink())
+            except OSError:
+                continue
+    if not locks:
+        return items, kept
+    if git_running(ctx.run):
+        return items, [{"path": str(p), "why": "a git process is running"} for p in locks]
+    for p in locks:
+        try:
+            st = os.lstat(p)
+        except OSError:
+            continue
+        if st.st_mtime > cutoff or str(p) in ctx.files:
+            kept.append({"path": str(p), "why": "recent or open"})
+            continue
+        items.append(_item("gitlocks", str(p), st.st_size, f"untouched for {int((ctx.now - st.st_mtime) / 60)} min, no git running", path=str(p)))
+    return items, kept
+
+
+def plan_exited(ctx: Ctx) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    items, kept = [], []
+    code, out = ctx.run(["docker", "ps", "-a", "--filter", "status=exited", "--no-trunc", "--format", "{{json .}}"], 30)
+    if code != 0:
+        return items, kept
+    for row in _jsonl(out):
+        cid = str(row.get("ID") or "")
+        if not re.match(r"^[0-9a-f]{12,64}$", cid):
+            continue
+        name = str(row.get("Names") or cid[:12])
+        labels = str(row.get("Labels") or "")
+        if "coolify" in labels:
+            kept.append({"path": name, "why": "managed by Coolify"})
+            continue
+        c2, pol = ctx.run(["docker", "inspect", "-f", "{{.HostConfig.RestartPolicy.Name}}|{{.State.FinishedAt}}", cid], 20)
+        policy, _, finished = pol.strip().partition("|")
+        if c2 != 0 or policy in ("always", "unless-stopped"):
+            kept.append({"path": name, "why": f"restart policy {policy or '?'}"})
+            continue
+        try:
+            done = _dt.datetime.fromisoformat(finished[:19]).replace(tzinfo=_dt.timezone.utc).timestamp()
+        except ValueError:
+            done = None
+        if done and ctx.now - done < ctx.s["exitedDays"] * 86400:
+            continue
+        items.append(_item("exited", cid, 0, f"{name} ({row.get('Image') or '?'}) {row.get('Status') or 'exited'}", name=name))
+    return items, kept
+
+
 def _parse_docker_time(text: str) -> float | None:
     m = re.match(r"(\d{4}-\d\d-\d\d \d\d:\d\d:\d\d) ([+-]\d{4})", text)
     if not m:
@@ -627,6 +777,7 @@ def _parse_docker_time(text: str) -> float | None:
 
 PLANNERS: dict[str, Callable[[Ctx], tuple[list[dict[str, Any]], list[dict[str, Any]]]]] = {
     "worktrees": plan_worktrees, "docker": plan_docker, "logs": plan_logs, "tmp": plan_tmp, "created": plan_created,
+    "exited": plan_exited, "caches": plan_caches, "playwright": plan_playwright, "gitlocks": plan_gitlocks,
 }
 
 
@@ -647,6 +798,18 @@ def plan(ctx: Ctx, jobs: Iterable[str]) -> dict[str, dict[str, Any]]:
 
 def biggest(rows: list[dict[str, Any]], n: int = 12) -> list[dict[str, Any]]:
     return sorted([r for r in rows if r.get("size")], key=lambda r: -r["size"])[:n]
+
+
+def _gauges() -> Any:
+    """server/gauges.py (standard library only), loaded by path so the engine stays one file on the host."""
+    import importlib.util
+    name = "axf_plugin_maintenance_gauges"
+    if name not in sys.modules:
+        spec = importlib.util.spec_from_file_location(name, PLUGIN_DIR / "server" / "gauges.py")
+        mod = importlib.util.module_from_spec(spec)  # type: ignore[arg-type]
+        sys.modules[name] = mod
+        spec.loader.exec_module(mod)  # type: ignore[union-attr]
+    return sys.modules[name]
 
 
 def snapshot(s: dict[str, Any] | None = None, run: Runner = _run) -> dict[str, Any]:
@@ -677,6 +840,10 @@ def snapshot(s: dict[str, Any] | None = None, run: Runner = _run) -> dict[str, A
         if v.get("size"):
             rows.append({"kind": "docker", "label": lbl, "path": f"docker:{k}", "size": v["size"], "reclaimable": v.get("reclaimable")})
     snap["biggest"] = biggest(rows)
+    try:  # the VPS plugin's live parts (filesystems, containers, top processes) as the host sees them
+        snap["live"] = _gauges().live(sys.modules[__name__], run)
+    except Exception as e:  # noqa: BLE001 — the snapshot never fails for its gauges
+        snap["live"] = {"error": f"{type(e).__name__}: {e}"[:200]}
     snap["tookMs"] = int((time.time() - t0) * 1000)
     return snap
 
@@ -801,6 +968,35 @@ def _execute_item(it: dict[str, Any], ctx: Ctx) -> int:
         if code != 0:
             raise RuntimeError(out.strip()[-200:])
         return 0
+    if job == "exited":
+        code, out = ctx.run(["docker", "inspect", "-f", "{{.State.Status}}", ref], 30)
+        if code != 0 or out.strip() != "exited":
+            raise PermissionError(f"not stopped any more ({out.strip()[:40] or 'gone'})")
+        code, out = ctx.run(["docker", "rm", ref], 60)  # no -f: never stops anything
+        if code != 0:
+            raise RuntimeError(out.strip()[-200:])
+        return 0
+    if job == "caches":
+        if it.get("kind") == "apt":
+            root = Path(ref)
+            if root not in [r for k, r in cache_roots() if k == "apt"]:
+                raise PermissionError("not the apt cache")
+            freed = 0
+            for e in root.glob("*.deb"):
+                if e.is_file() and not e.is_symlink() and str(e) not in ctx.files:
+                    freed += os.lstat(e).st_size
+                    e.unlink()
+            return freed
+        roots = [r.parent for _, r in cache_roots()]
+        if Path(ref) not in [r for _, r in cache_roots()]:
+            raise PermissionError("not a known cache folder")
+        return _remove_path(Path(ref), roots, ctx.files, ctx.cwds)
+    if job == "playwright":
+        return _remove_path(Path(ref), playwright_roots(), ctx.files, ctx.cwds)
+    if job == "gitlocks":
+        if git_running(ctx.run):
+            raise PermissionError("a git process is running now")
+        return _remove_path(Path(ref), git_dirs(), ctx.files, ctx.cwds)
     raise ValueError(f"unknown job {job}")
 
 

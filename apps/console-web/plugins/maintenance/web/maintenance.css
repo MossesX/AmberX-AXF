@@ -15,3 +15,26 @@
 .axp-maintenance__preview { margin-top: var(--fx-dens-gap-sm); }
 .axp-maintenance__pc details { border-bottom: var(--fx-border-w) solid var(--fx-border); padding: var(--fx-dens-gap-sm) 0; }
 .axp-maintenance__pcname { flex: 0 1 18em; min-width: 0; overflow-wrap: anywhere; }
+/* VPS plugin (web/vps.tsx): layout only; heat colours are theme tokens mixed by the code, never literals. */
+.axp-vps__bar-row { display: flex; align-items: center; gap: var(--fx-dens-gap-md); flex-wrap: wrap; }
+.axp-vps__radial { display: grid; grid-template-columns: repeat(auto-fit, minmax(10em, 1fr)); gap: var(--fx-dens-gap-md); align-items: end; }
+.axp-vps__strip { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-lg); }
+.axp-vps__stripitem { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); font-variant-numeric: tabular-nums; }
+.axp-vps__rows { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
+.axp-vps__row { display: flex; align-items: center; gap: var(--fx-dens-gap-md); flex-wrap: wrap; padding: var(--fx-dens-gap-xs) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.axp-vps__row:last-child { border-bottom: 0; }
+.axp-vps__name { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); flex: 0 1 12em; min-width: 0; overflow-wrap: anywhere; }
+.axp-vps__bar { flex: 1 1 8em; min-width: 6em; }
+.axp-vps__val { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.axp-vps__dot { display: inline-block; flex: none; width: 0.7em; height: 0.7em; border-radius: 999px; border: var(--fx-border-w) solid var(--fx-border); }
+.axp-vps__spark { width: 100%; height: 1.6em; display: block; }
+.axp-vps__spark polyline { fill: none; stroke: var(--fx-accent); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.axp-vps__load { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--fx-dens-gap-md); }
+.axp-vps__loadcell { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); font-variant-numeric: tabular-nums; }
+.axp-vps__drop { position: fixed; z-index: 60; width: min(24em, calc(100vw - 1em)); display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); }
+.axp-vps__droplist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.axp-vps__droprow { display: grid; grid-template-columns: auto 1fr auto; column-gap: var(--fx-dens-gap-sm); align-items: center; padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-sm); border-radius: var(--fx-radius-sm); }
+.axp-vps__droprow > .fx-small { grid-column: 2 / -1; }
+.axp-vps__droprow[data-on] { background: var(--fx-accent-soft); }
+.axp-vps__droppct { font-variant-numeric: tabular-nums; font-weight: var(--fx-type-weights-strong); }
+.axp-vps__dropfoot { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); flex-wrap: wrap; border-top: var(--fx-border-w) solid var(--fx-border); padding-top: var(--fx-dens-gap-sm); }

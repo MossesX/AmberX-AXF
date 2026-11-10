@@ -67,6 +67,52 @@
         "target": "open",
         "title": "Open",
         "text": "Opens a saved build profile clean-up preview so you can untick items and apply it."
+      },
+      {
+        "target": "view:vps",
+        "kind": "screen",
+        "title": "VPS",
+        "text": "Everything about the server in one place: live gauges, clean-up, space users, every other VPS tool and build profile clean-up, one tab each."
+      },
+      {
+        "target": "maintenance.vps.tabs",
+        "title": "VPS tabs",
+        "text": "Status shows live gauges, Clean-up previews and sends clean-ups for approval, Space lists the biggest space users, VPS tools gathers every other server feature."
+      },
+      {
+        "target": "View",
+        "title": "Gauge view",
+        "text": "Radial dials, bars, a compact strip or history sparklines. Your pick is remembered."
+      },
+      {
+        "target": "Read now",
+        "title": "Read now",
+        "text": "Reads load, memory, swap and the disks again right away instead of waiting for the next refresh."
+      },
+      {
+        "target": "Open VPS plugin",
+        "title": "Open VPS plugin",
+        "text": "Opens the VPS page on its Status tab."
+      },
+      {
+        "target": "Quick clean-up",
+        "title": "Quick clean-up",
+        "text": "Opens the Clean-up tab: preview what goes, then send it for approval."
+      },
+      {
+        "target": "maintenance.widget",
+        "title": "Banner widget",
+        "text": "VPS gauges on the banner: icon only in a heat colour, icon and value, or mini meters. Tap one for every gauge."
+      },
+      {
+        "target": "maintenance.heat",
+        "title": "Heat colours",
+        "text": "The colours an icon runs through from low to high. Each stop is a theme colour, so a theme can recolour them."
+      },
+      {
+        "target": "maintenance.autoclean",
+        "title": "Auto-cleanup",
+        "text": "When the disk passes the threshold the safe jobs are sent to axHub. Nothing is removed until you approve it. Off by default."
       }
     ],
     "intros": [

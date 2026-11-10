@@ -1,5 +1,8 @@
 /**
- * Maintenance console plugin (ai.amberx.axf.console.maintenance): server health and safe clean-up for the VPS.
+ * Maintenance console plugin (ai.amberx.axf.console.maintenance), shown as VPS & maintenance: everything VPS in one
+ * plugin (Brett, Nov 10 2026). Tabs Status (live gauges, web/vps.tsx) · Clean-up · Space · VPS tools · Build profiles;
+ * the banner widget and its dropdown also live in web/vps.tsx. Nav: Plugins → VPS (Status) and Plugins → Maintenance
+ * (Clean-up). Actions `vps.tab.<tab>` open a tab; `vps.drop.<metric>` opens the banner dropdown.
  *
  * - Page `maintenance` (Plugins → Maintenance, Console → Server health and clean-up): disk, memory, swap and load, the
  *   biggest space users, Docker, build worktrees, then the clean-up jobs. Preview first (what goes and how much space),
@@ -15,11 +18,14 @@
  * Server health uses no AI: plain reads of what the host engine measured.
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
-import { Button, Checkbox, Chip, Container, Gauge, Icon, Note, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, Container, Gauge, Icon, Note, TabGroup, useRuntime } from '@console/axf/react';
+import type { AxfRuntime } from '@console/axf/core';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginApi } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
+import { closeDrop, dropState, readGauges, saveVps, startBanner, paintBanner, StatusTab, ToolsTab, trackPress, VpsDrop } from './vps';
+import { HEAT_TOKENS, MODES, TOKEN_LABEL, VIEWS, type VpsSettings } from './vpsmodel';
 import './maintenance.css';
 
 const FOLDER = 'maintenance';
@@ -27,7 +33,7 @@ const PROFILES_DIALOG = 'maintenance.profiles';
 const POLL_MS = 30_000;
 const api = pluginApi(FOLDER, 'Maintenance', { unavailable: 'The Maintenance plugin is switched off or its server part is not running.' });
 
-type JobId = 'worktrees' | 'docker' | 'logs' | 'tmp' | 'created';
+type JobId = 'worktrees' | 'docker' | 'logs' | 'tmp' | 'created' | 'exited' | 'caches' | 'playwright' | 'gitlocks';
 interface Item { id: string; job: JobId; ref: string; size: number | null; why: string; approx?: boolean }
 interface Kept { path: string; name?: string; size?: number; state?: string; why: string }
 interface Job { id: JobId; label: string; safe: boolean; icon: string; what: string; count?: number | null; bytes?: number | null; error?: string | null }
@@ -142,7 +148,7 @@ function Worktrees({ snapshot }: { snapshot: Snapshot | null }) {
 function CleanUp({ status, onSent }: { status: Status | null; onSent: () => void }) {
   const rt = useRuntime();
   const [jobs, setJobs] = useState<Job[]>([]);
-  const [picked, setPicked] = useState<Set<JobId>>(new Set(['docker', 'logs', 'tmp', 'created']));
+  const [picked, setPicked] = useState<Set<JobId>>(new Set(['docker', 'logs', 'tmp', 'created', 'caches', 'gitlocks']));
   const [preview, setPreview] = useState<Preview | null>(null);
   const [busy, setBusy] = useState('');
   useEffect(() => { api.call<{ jobs: Job[] }>('jobs').then((j) => setJobs(j.jobs), () => setJobs([])); }, [status?.summary.at]);
@@ -359,7 +365,25 @@ function ProfileCleanUp() {
   );
 }
 
-function MaintenanceView() {
+type Tab = 'status' | 'cleanup' | 'space' | 'tools' | 'profiles';
+const TABS: { value: Tab; label: string; icon: string }[] = [
+  { value: 'status', label: 'Status', icon: 'monitor' }, { value: 'cleanup', label: 'Clean-up', icon: 'trash' },
+  { value: 'space', label: 'Space', icon: 'chart' }, { value: 'tools', label: 'VPS tools', icon: 'terminal' },
+  { value: 'profiles', label: 'Build profiles', icon: 'layers' },
+];
+const TAB_KEY = 'axf.vps.tab';
+let tabNow: Tab | null = null;
+const tabSubs = new Set<() => void>();
+function setTab(rt: AxfRuntime, t: Tab) { tabNow = t; void rt.settings.set(TAB_KEY, t); tabSubs.forEach((f) => f()); }
+const useTab = (rt: AxfRuntime, first: Tab): Tab => {
+  useSyncExternalStore((f) => { tabSubs.add(f); return () => { tabSubs.delete(f); }; }, () => tabNow);
+  const saved = rt.settings.get(TAB_KEY);
+  return tabNow ?? (TABS.some((t) => t.value === saved) ? (saved as Tab) : first);
+};
+
+function MaintenanceView({ first }: { first: Tab }) {
+  const rt = useRuntime();
+  const tab = useTab(rt, first);
   const { status, error } = useStatus();
   const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
   const [tick, setTick] = useState(0);
@@ -369,7 +393,7 @@ function MaintenanceView() {
   return (
     <div className="fx-stack fx-stack--lg">
       <header className="fx-pagehead">
-        <div><p className="fx-eyebrow">Plugin · VPS</p><h1>Maintenance</h1><p className="fx-muted" style={{ margin: 0 }}>Server health and safe clean-up.{s?.at ? ` Measured ${ago(s.at)}.` : ''}</p></div>
+        <div><p className="fx-eyebrow">Plugin · Server maintenance</p><h1>VPS</h1><p className="fx-muted" style={{ margin: 0 }}>Live gauges, clean-up and every VPS tool in one place.{s?.at ? ` Host measured ${ago(s.at)}.` : ''}</p></div>
         <Button icon="refresh" onClick={refresh}>Check now</Button>
       </header>
       {error && <Note tone="danger">{error}</Note>}
@@ -377,14 +401,23 @@ function MaintenanceView() {
       {status?.stale && <Note tone="warning">The host part hasn't reported for over 30 minutes. Disk, memory and swap are live; the rest is from the last report.</Note>}
       {s && s.level !== 'ok' && s.level !== 'unknown' && <Note tone={s.level === 'warning' ? 'warning' : 'danger'}>The disk is {s.disk.pct}% full. Preview a clean-up below, or use Auto fix on Server health in the systems check.</Note>}
       {s?.swapFull && <Note tone="warning">Swap has been nearly full for a while: builds and containers slow down. Lower the agent cap or stop idle containers.</Note>}
-      <Container title={<span>Server {s && <Chip tone={LEVEL_TONE[s.level]}>{s.level}</Chip>}</span>} icon="monitor">
-        {s ? <Gauges s={s} /> : <p className="fx-small fx-muted">Loading…</p>}
-      </Container>
-      <Container title="Biggest space users" icon="chart"><SpaceUsers snapshot={snapshot} /></Container>
-      <Container title={`Build worktrees${snapshot ? ` · ${snapshot.builds.count} · ${human(snapshot.builds.size)}` : ''}`} icon="branch" collapsible defaultOpen={false}><Worktrees snapshot={snapshot} /></Container>
-      <Container title="Clean-up" icon="trash"><CleanUp status={status} onSent={() => { void loadStatus(); setTick((t) => t + 1); }} /></Container>
-      <Container title="Runs" icon="clock"><Runs tick={tick} /></Container>
-      <Container title="Build profiles" icon="layers"><ProfileCleanUp /></Container>
+      <TabGroup id="maintenance.vps.tabs" label="VPS" value={tab} onChange={(t) => setTab(rt, t)} tabs={TABS}>
+        {tab === 'status' && <StatusTab />}
+        {tab === 'cleanup' && <>
+          {s && <p className="fx-small fx-muted" style={{ margin: 0 }}>Disk {s.disk.pct ?? '?'}% · {s.disk.freeGb ?? '?'} GB free{s.safeReclaimableGb ? ` · the safe jobs free about ${s.safeReclaimableGb} GB` : ''}.</p>}
+          <Container title="Clean-up" icon="trash"><CleanUp status={status} onSent={() => { void loadStatus(); setTick((t) => t + 1); }} /></Container>
+          <Container title="Runs" icon="clock"><Runs tick={tick} /></Container>
+        </>}
+        {tab === 'space' && <>
+          <Container title={<span>Server {s && <Chip tone={LEVEL_TONE[s.level]}>{s.level}</Chip>}</span>} icon="monitor">
+            {s ? <Gauges s={s} /> : <p className="fx-small fx-muted">Loading…</p>}
+          </Container>
+          <Container title="Biggest space users" icon="chart"><SpaceUsers snapshot={snapshot} /></Container>
+          <Container title={`Build worktrees${snapshot ? ` · ${snapshot.builds.count} · ${human(snapshot.builds.size)}` : ''}`} icon="branch" collapsible defaultOpen={false}><Worktrees snapshot={snapshot} /></Container>
+        </>}
+        {tab === 'tools' && <ToolsTab />}
+        {tab === 'profiles' && <Container title="Build profiles" icon="layers"><ProfileCleanUp /></Container>}
+      </TabGroup>
     </div>
   );
 }
@@ -410,7 +443,19 @@ const K = {
   profileSchedule: 'axf.maintenance.profileSchedule',
   profileHour: 'axf.maintenance.profileHour',
   profileWeekday: 'axf.maintenance.profileWeekday',
+  exitedDays: 'axf.maintenance.exitedDays',
+  gitLockMinutes: 'axf.maintenance.gitLockMinutes',
+  autoClean: 'axf.maintenance.autoClean',
+  autoCleanPct: 'axf.maintenance.autoCleanPct',
+  autoCleanJobs: 'axf.maintenance.autoCleanJobs',
 } as const;
+/** The VPS view and banner widget settings, kept on the server (PUT /vps/settings) so the API, MCP, CLI and voice reach them. */
+const KV = {
+  view: 'axf.vps.view', warnPct: 'axf.vps.warnPct', highPct: 'axf.vps.highPct', bannerShow: 'axf.vps.bannerShow',
+  bannerMode: 'axf.vps.bannerMode', bannerMetrics: 'axf.vps.bannerMetrics', bannerSide: 'axf.vps.bannerSide', refreshS: 'axf.vps.refreshS',
+} as const;
+const HEAT_KEYS: { at: string; token: string }[] = [0, 1, 2, 3].map((i) => ({ at: `axf.vps.heat${i}.at`, token: `axf.vps.heat${i}.token` }));
+const BY_KV = Object.fromEntries(Object.entries(KV).map(([k, v]) => [v, k])) as Record<string, keyof typeof KV>;
 type ServerKey = keyof typeof K;
 const BY_KEY = Object.fromEntries(Object.entries(K).map(([k, v]) => [v, k])) as Record<string, ServerKey>;
 const SAFE_OPTIONS = [
@@ -418,7 +463,10 @@ const SAFE_OPTIONS = [
   { value: 'logs', label: 'Old logs' },
   { value: 'tmp', label: '/tmp leftovers' },
   { value: 'created', label: 'Containers stuck in Created' },
+  { value: 'caches', label: 'apt, npm and pip caches' },
+  { value: 'gitlocks', label: 'Stale git lock files' },
 ];
+const DEFAULT_HEAT: { at: number; token: string }[] = [{ at: 0, token: 'text' }, { at: 40, token: 'muted' }, { at: 70, token: 'bg' }, { at: 100, token: 'danger' }];
 const num = (key: string, label: string, def: number, min: number, max: number, description: string) => ({ key, label, kind: 'number' as const, default: def, min, max, step: 1, description, scope: 'app' as const });
 
 function StatusPanel() {
@@ -433,15 +481,22 @@ function StatusPanel() {
   );
 }
 
+let pressTracked = false;
+
 export const plugin: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.maintenance',
-  label: 'Maintenance',
-  version: '0.2.0',
-  builtWith: { model: 'opus', builtAt: '2026-11-04' },
+  label: 'VPS & maintenance',
+  version: '0.3.0',
+  builtWith: { model: 'opus', builtAt: '2026-11-10' },
   appMenu,
-  views: { maintenance: { title: 'Maintenance', icon: 'monitor', render: () => <MaintenanceView /> } },
-  nav: { label: 'Plugins', items: [{ id: 'maintenance', label: 'Maintenance', icon: 'monitor', view: 'maintenance' }] },
-  settingsTabs: [{ id: FOLDER, label: 'Maintenance', icon: 'monitor', order: 47, parent: 'plugins' }],
+  provides: ['banner.widget.vps'],
+  views: {
+    vps: { title: 'VPS', icon: 'monitor', render: () => <MaintenanceView first="status" /> },
+    maintenance: { title: 'Maintenance', icon: 'monitor', render: () => <MaintenanceView first="cleanup" /> },
+  },
+  nav: { label: 'Plugins', items: [{ id: 'vps', label: 'VPS', icon: 'monitor', view: 'vps' }, { id: 'maintenance', label: 'Maintenance', icon: 'trash', view: 'maintenance' }] },
+  slots: { 'app.frame.cover': [{ id: 'maintenance.vps.drop', order: 96, render: () => <VpsDrop /> }] },
+  settingsTabs: [{ id: FOLDER, label: 'VPS & maintenance', icon: 'monitor', order: 47, parent: 'plugins' }],
   settings: [
     {
       id: 'maintenance.nightly', label: 'Nightly auto-clean', icon: 'clock', tab: FOLDER, order: 10,
@@ -472,7 +527,46 @@ export const plugin: AxfWebLibrary = {
         num(K.worktreeIdleHours, 'Worktree idle for (hours)', 24, 1, 2160, 'A finished build worktree must be idle this long.'),
         num(K.createdHours, 'Stuck in Created for (hours)', 1, 1, 720, 'Containers created but never started.'),
         num(K.buildCacheHours, 'Build cache unused for (hours)', 24, 1, 2160, 'docker builder prune --filter until=…'),
+        num(K.exitedDays, 'Stopped container for (days)', 7, 1, 365, 'Containers exited this long (never ones with a restart policy, never Coolify’s).'),
+        num(K.gitLockMinutes, 'Git lock untouched for (minutes)', 30, 5, 1440, 'A *.lock in .git this old, while no git runs, is stale.'),
       ],
+    },
+    {
+      id: 'maintenance.autoclean', label: 'Auto-cleanup', icon: 'zap', tab: FOLDER, order: 25,
+      description: 'When the disk passes the threshold, the chosen safe jobs go to axHub as one held call (at most once an hour). It still waits for your approval. Off by default.',
+      settings: [
+        { key: K.autoClean, label: 'Clean up over the threshold', kind: 'toggle', default: false, scope: 'app' },
+        num(K.autoCleanPct, 'Disk threshold (%)', 88, 50, 99, 'Disk use at or above this sends the clean-up.'),
+        { key: K.autoCleanJobs, label: 'Jobs', kind: 'multi_choice', default: SAFE_OPTIONS.map((o) => o.value), options: SAFE_OPTIONS, scope: 'app' },
+      ],
+    },
+    {
+      id: 'maintenance.vps', label: 'VPS gauges', icon: 'monitor', tab: FOLDER, order: 3,
+      description: 'The Status tab: its view and the levels where a gauge turns amber and red.',
+      settings: [
+        { key: KV.view, label: 'View', kind: 'choice', default: 'radial', scope: 'app', options: VIEWS.map((v) => ({ value: v.value, label: v.label })) },
+        num(KV.warnPct, 'Warning from (%)', 70, 1, 99, 'A gauge turns amber here.'),
+        num(KV.highPct, 'High from (%)', 90, 1, 100, 'A gauge turns red here.'),
+        num(KV.refreshS, 'Read every (seconds)', 15, 5, 600, 'How often the Status tab and the banner widget read the VPS.'),
+      ],
+    },
+    {
+      id: 'maintenance.widget', label: 'Banner widget', icon: 'monitor', tab: FOLDER, order: 4,
+      description: 'VPS gauges on the banner (and title bars). Tap one for the dropdown with every gauge.',
+      settings: [
+        { key: KV.bannerShow, label: 'Show on the banner', kind: 'toggle', default: true, scope: 'app' },
+        { key: KV.bannerMode, label: 'Mode', kind: 'choice', default: 'icon', scope: 'app', options: MODES },
+        { key: KV.bannerMetrics, label: 'Gauges', kind: 'multi_choice', default: ['load', 'ram', 'swap', 'disk'], scope: 'app', options: [{ value: 'load', label: 'Load' }, { value: 'ram', label: 'RAM' }, { value: 'swap', label: 'Swap' }, { value: 'disk', label: 'Disk /' }] },
+        { key: KV.bannerSide, label: 'Side', kind: 'choice', default: 'right', scope: 'app', options: [{ value: 'left', label: 'Left' }, { value: 'right', label: 'Right' }] },
+      ],
+    },
+    {
+      id: 'maintenance.heat', label: 'Heat colours', icon: 'palette', tab: FOLDER, order: 6,
+      description: 'Icon-only colours run smoothly between these stops, low to high: white, gray, black, red by default. Each stop is a theme colour, so a theme recolours them.',
+      settings: HEAT_KEYS.flatMap((h, i) => [
+        { key: h.token, label: `Stop ${i + 1} colour`, kind: 'choice' as const, default: DEFAULT_HEAT[i]!.token, scope: 'app' as const, options: HEAT_TOKENS.map((t) => ({ value: t, label: TOKEN_LABEL[t] ?? t })) },
+        num(h.at, `Stop ${i + 1} at (%)`, DEFAULT_HEAT[i]!.at, 0, 100, 'Where on the 0–100% scale this colour is reached.'),
+      ]),
     },
     {
       id: 'maintenance.profiles', label: 'Build profile clean-up', icon: 'layers', tab: FOLDER, order: 40,
@@ -493,6 +587,13 @@ export const plugin: AxfWebLibrary = {
     { id: 'maintenance.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
   register(rt) {
+    // Deep links: a tab of the VPS page (console_open / console_show target vps.tab.<tab>), the banner dropdown.
+    for (const t of TABS) rt.actions.register(`vps.tab.${t.value}`, () => { setTab(rt, t.value); rt.navigate('vps'); }, { label: `VPS: ${t.label}` });
+    rt.actions.register('vps.drop.close', () => closeDrop(), { label: 'VPS: close the gauge dropdown' });
+    rt.actions.register('vps.drop.state', () => dropState(), { label: 'VPS: is the gauge dropdown open' });
+    rt.actions.register('vps.read', () => readGauges(), { label: 'VPS: read the gauges now' });
+    if (!pressTracked) { pressTracked = true; trackPress(); }
+    startBanner(rt);
     rt.actions.register('maintenance.profiles', async () => {
       const plan = await api.post<PcPlan>('profiles/preview', {});
       bumpRuns();
@@ -511,6 +612,30 @@ export const plugin: AxfWebLibrary = {
         }
       } finally { syncing = false; }
     }, () => { /* server part off: the settings interface still shows the defaults */ });
+    // The VPS view and banner settings: pulled the same way, pushed to /vps/settings (heat stops as one list).
+    api.call<{ settings: VpsSettings }>('vps/settings').then(({ settings }) => {
+      syncing = true;
+      try {
+        for (const [k, key] of Object.entries(KV)) {
+          const v = settings[k as keyof VpsSettings];
+          if (v !== undefined && JSON.stringify(rt.settings.get(key)) !== JSON.stringify(v)) rt.settings.set(key, v as never);
+        }
+        settings.heat.slice(0, 4).forEach((h, i) => {
+          const k = HEAT_KEYS[i]!;
+          if (rt.settings.get(k.at) !== h.at) rt.settings.set(k.at, h.at as never);
+          if (rt.settings.get(k.token) !== h.token) rt.settings.set(k.token, h.token as never);
+        });
+      } finally { syncing = false; }
+    }, () => { /* server part off */ });
+    rt.settings.onAnyChange((key, value) => {
+      if (syncing || value === null) return;
+      const kv = BY_KV[key];
+      if (kv) { void saveVps({ [kv]: value } as Partial<VpsSettings>).then(() => paintBanner(rt)).catch((e: Error) => rt.toast(`VPS settings not saved: ${e.message}`, 'danger')); return; }
+      if (HEAT_KEYS.some((h) => h.at === key || h.token === key)) {
+        const heat = HEAT_KEYS.map((h, i) => ({ at: Number(rt.settings.get(h.at) ?? DEFAULT_HEAT[i]!.at), token: String(rt.settings.get(h.token) ?? DEFAULT_HEAT[i]!.token) }));
+        void saveVps({ heat }).catch((e: Error) => rt.toast(`Heat colours not saved: ${e.message}`, 'danger'));
+      }
+    });
     rt.settings.onAnyChange((key, value) => {
       const k = BY_KEY[key];
       if (syncing || !k || value === null) return;

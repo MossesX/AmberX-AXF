@@ -21,10 +21,12 @@ HERE = Path(__file__).resolve().parent
 TMP = Path(tempfile.mkdtemp(prefix="axf-maint-test-"))
 DATA = TMP / "data"
 BUILDS, LOGS, TMPS = TMP / "axf-builds", TMP / "log", TMP / "tmp"
-for d in (DATA, BUILDS, LOGS, TMPS):
+APT, NPM, PW, GIT = TMP / "apt", TMP / "home" / ".npm" / "_cacache", TMP / "pw", TMP / "repo" / ".git"
+for d in (DATA, BUILDS, LOGS, TMPS, APT, NPM, PW, GIT):
     d.mkdir(parents=True)
 os.environ.update(AXF_MAINT_DATA_DIR=str(DATA), AXF_MAINT_NO_MONITOR="1", AXF_MAINT_BUILD_ROOTS=str(BUILDS),
-                  AXF_MAINT_TMP_ROOTS=str(TMPS), AXF_MAINT_LOG_ROOTS=str(LOGS), AXF_MAINT_AREAS=f"Logs={LOGS},tmp={TMPS},Builds={BUILDS},Locked=/root/axf-builds", AXF_MAINT_HOST_ROOT="/opt/axf")
+                  AXF_MAINT_TMP_ROOTS=str(TMPS), AXF_MAINT_LOG_ROOTS=str(LOGS), AXF_MAINT_AREAS=f"Logs={LOGS},tmp={TMPS},Builds={BUILDS},Locked=/root/axf-builds", AXF_MAINT_HOST_ROOT="/opt/axf",
+                  AXF_MAINT_CACHE_ROOTS=f"apt={APT}:npm={NPM}", AXF_MAINT_PLAYWRIGHT_ROOTS=str(PW), AXF_MAINT_GIT_DIRS=str(GIT))
 os.environ.pop("AXHUB_TOKEN", None)
 sys.path.insert(0, str(HERE.parent.parent / "server"))
 
@@ -74,7 +76,9 @@ ok(M.swap_state(40, since, 5000.0, S) == (None, False), "swap: clock resets when
 ok(M.swap_state(None, None, 1.0, S) == (None, False), "no swap = never alerts")
 ok(M.parse_size("1.5GB") == 1_500_000_000 and M.parse_size("3.4GB (40%)") == 3_400_000_000 and M.parse_size("0B") == 0 and M.parse_size("") == 0, "docker sizes")
 ok(M.inside(BUILDS / "x", [BUILDS]) and not M.inside(BUILDS, [BUILDS]) and not M.inside(TMP / "other", [BUILDS]) and not M.inside(BUILDS / ".." / "etc", [BUILDS]), "inside() is strict")
-ok(all(not j["safe"] for j in M.job_catalog() if j["id"] == "worktrees") and set(M.SAFE_JOBS) == {"docker", "logs", "tmp", "created"}, "job catalog and safe jobs")
+ok(all(not j["safe"] for j in M.job_catalog() if j["id"] == "worktrees") and set(M.SAFE_JOBS) == {"docker", "logs", "tmp", "created", "caches", "gitlocks"}, "job catalog and safe jobs")
+ok(not M.JOBS["playwright"]["safe"] and not M.JOBS["exited"]["safe"], "Playwright cache and stopped containers need a look first")
+ok(S["autoClean"] is False and M.normalize_settings({"autoCleanJobs": ["playwright", "caches"], "autoCleanPct": 10})["autoCleanJobs"] == ["caches"], "auto-clean: off by default, safe jobs only")
 
 # ---------------------------------------------------------------- scratch machine
 
@@ -94,6 +98,14 @@ age(BUILDS / "_archive")
 (LOGS / "recent.1.gz").write_text("r")
 os.utime(LOGS / "syslog.2.gz", (OLD, OLD))
 os.utime(LOGS / "syslog", (OLD, OLD))
+(APT / "pkg_1.deb").write_bytes(b"d" * 300)
+(NPM / "blob").write_bytes(b"n" * 700)
+for b in ("chromium-1100", "chromium-1200", "firefox-900"):
+    (PW / b).mkdir()
+    (PW / b / "bin").write_bytes(b"p" * 200)
+(GIT / "index.lock").write_text("")
+os.utime(GIT / "index.lock", (OLD, OLD))
+(GIT / "HEAD.lock").write_text("")  # fresh: kept
 (TMPS / "leftover").mkdir()
 (TMPS / "leftover" / "big.bin").write_bytes(b"0" * 4096)
 age(TMPS / "leftover")
@@ -133,6 +145,13 @@ def fake(cmd: list[str], timeout: int = 60) -> tuple[int, str]:
                      {"Type": "Build Cache", "TotalCount": "20", "Active": "0", "Size": "2GB", "Reclaimable": "2GB"}])
     if cmd[:2] == ["docker", "images"]:
         return 0, j([{"ID": IMG_USED, "Size": "100MB", "CreatedSince": "3 weeks ago"}, {"ID": IMG_FREE, "Size": "250MB", "CreatedSince": "2 weeks ago"}])
+    if cmd[0] == "pgrep":
+        return 1, ""
+    if cmd[:3] == ["docker", "ps", "-a"] and "status=exited" in cmd:
+        return 0, j([{"ID": "e" * 64, "Names": "old_job", "Image": "y:1", "Status": "Exited (0) 3 weeks ago"},
+                     {"ID": "f" * 64, "Names": "web", "Image": "z:1", "Status": "Exited (1) 2 weeks ago"}])
+    if cmd[:2] == ["docker", "inspect"] and "{{.HostConfig.RestartPolicy.Name}}|{{.State.FinishedAt}}" in cmd:
+        return 0, ("unless-stopped" if cmd[-1] == "f" * 64 else "no") + "|2026-01-01T00:00:00.0Z\n"
     if cmd[:3] == ["docker", "ps", "-a"] and "--filter" in cmd:
         return 0, j([{"ID": CID, "Names": "stuck_1", "Image": "x:1", "CreatedAt": "2026-01-01 10:00:00 +0000 UTC", "RunningFor": "10 months ago"}]) if docker_state["created"] == "created" else ""
     if cmd[:3] == ["docker", "ps", "-a"]:
@@ -162,6 +181,10 @@ ok(refs("tmp") == {"leftover"}, f"tmp: only the old leftover (not fresh, system,
 ok(refs("created") == {CID}, "created: the stuck container")
 ok(all(not c[:2] == ["docker", "volume"] for c in calls), "nothing ever lists or touches volumes")
 ok(P["tmp"]["bytes"] >= 4096, "sizes are measured")
+ok({i["kind"] for i in P["caches"]["items"]} == {"apt", "npm"} and P["caches"]["bytes"] >= 1000, f"caches: apt packages and the npm cache ({P['caches']})")
+ok(refs("playwright") == {"chromium-1100"} and len(P["playwright"]["kept"]) == 2, "playwright: older builds go, the newest of each browser stays")
+ok(refs("gitlocks") == {"index.lock"}, "git locks: only the stale one, never a fresh lock")
+ok(refs("exited") == {"e" * 64} and P["exited"]["kept"][0]["path"] == "web", "stopped containers: restart-policy containers are kept")
 
 # ---------------------------------------------------------------- an approved run
 
@@ -415,6 +438,40 @@ ok("profilePreview" not in srv.tick(), "… once a day")
 ok(PC.due({"profileSchedule": "weekly", "profileHour": lt.tm_hour, "profileWeekday": (lt.tm_wday + 1) % 7}, None, time.time()) is False, "weekly waits for its day")
 ok(PC.due({"profileSchedule": "off", "profileHour": lt.tm_hour}, None, time.time()) is False, "off by default")
 ok(M.normalize_settings({"profileMode": "magic", "profileSchedule": "hourly"})["profileMode"] == "auto", "unknown profile settings fall back")
+
+# ---------------------------------------------------------------- VPS gauges, view and banner settings
+
+GG = srv.gg
+fs = GG.filesystems("/dev/sda1 / ext4 rw 0 0\ntmpfs /run tmpfs rw 0 0\n/dev/sda1 /var/lib/docker ext4 rw 0 0\n")
+ok(len(fs) == 1 and fs[0]["mount"] == "/" and fs[0]["pct"] is not None, "filesystems: real ones once per device, no tmpfs")
+mets = GG.metrics({"load": {"1": 4.0, "cpus": 8}, "memory": {"pct": 50, "used": 8, "total": 16}, "swap": {"total": 0}, "disks": [{"mount": "/", "pct": 70}, {"mount": "/data", "pct": 20}]})
+ok([m["id"] for m in mets] == ["load", "ram", "swap", "disk", "disk:/data"] and mets[0]["pct"] == 50.0 and mets[2]["pct"] == 0, "metrics: load as % of CPUs, RAM, swap (none = 0), each disk")
+st_ = GG.containers(M.parse_size, lambda c, t=0: (0, json.dumps({"Name": "web", "CPUPerc": "12.5%", "MemPerc": "3.1%", "MemUsage": "512MiB / 16GiB"})))
+ok(st_ == [{"name": "web", "cpu": 12.5, "memPct": 3.1, "mem": 512 * 1024 ** 2, "memLimit": 16 * 1024 ** 3}], f"docker stats per container ({st_})")
+tp = GG.top_processes(run=lambda c, t=0: (0, "  12  55.0  1.5  2048 node\n  13 1.0 0.1 10 sh\n"))
+ok(tp[0] == {"pid": 12, "cpu": 55.0, "memPct": 1.5, "rss": 2048 * 1024, "name": "node"}, "top processes")
+V = GG.normalize_vps({})
+ok(V["bannerMode"] == "icon" and [s_["token"] for s_ in V["heat"]] == ["text", "muted", "bg", "danger"], "defaults: icon only, white → gray → black → red from theme tokens")
+V2 = GG.normalize_vps({"view": "nope", "warnPct": 95, "highPct": 40, "heat": [{"at": 0, "token": "text"}, {"at": 100, "token": "#f00"}], "refreshS": 1})
+ok(V2["view"] == "radial" and V2["highPct"] == 96 and V2["heat"] == V["heat"] and V2["refreshS"] == 5, "VPS settings checked (no literal colours, thresholds in order, clamped)")
+ok(GG.heat_mix(0, V["heat"]) == {"from": "text", "to": "muted", "t": 0.0} and GG.heat_mix(100, V["heat"])["to"] == "danger" and GG.heat_mix(55, V["heat"]) == {"from": "muted", "to": "bg", "t": 0.5}, "heat scale: where each level sits")
+g = srv.get_gauges()
+ok({"metrics", "history", "disks", "containers", "top", "settings"} <= set(g) and all("heat" in m and m["level"] in ("ok", "warn", "high") for m in g["metrics"]), "GET /gauges: metrics with heat and level, history")
+import asyncio  # noqa: E402
+
+
+class _Req:
+    def __init__(self, body: dict) -> None:
+        self._b = body
+
+    async def json(self) -> dict:
+        return self._b
+
+
+ok(asyncio.run(srv.put_vps_settings(_Req({"bannerMode": "meters", "bannerMetrics": ["ram", "disk"]})))["settings"]["bannerMode"] == "meters"
+   and srv.get_vps_settings()["settings"]["bannerMetrics"] == ["ram", "disk"], "PUT /vps/settings saves the banner widget settings")
+auto = srv.auto_clean({"disk": {"pct": 95}, "hostPart": True}, M.normalize_settings({}))
+ok(auto is None, "auto-clean does nothing while it is off")
 
 # plugin.json commands name only routes that exist
 pj = json.loads((HERE / "plugin.json").read_text())

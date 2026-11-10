@@ -34,6 +34,7 @@ from fastapi import APIRouter, HTTPException, Request
 import console_context as cx
 import plugin_services
 
+from . import gauges as gg
 from . import hub
 from . import profiles as pc
 
@@ -298,10 +299,58 @@ def tick(now: float | None = None) -> dict[str, Any]:
         except pc.ProfileError as e:
             scheduled = {"error": str(e)}
             cx.log("maintenance", f"scheduled profile clean-up preview failed: {e}", "warn")
+    auto = auto_clean(snap, s)
+    log_fixes()
+    gg.sample(snap, now)
     _set_state(swapHighSince=since, swapAlert=swap_alert, diskLevel=lvl, lastTick=maint.now_iso(now))
     ensure_health()
-    return {"disk": lvl, "swapFull": swap_alert, **({"nightly": nightly} if nightly else {}),
+    return {"disk": lvl, "swapFull": swap_alert, **({"nightly": nightly} if nightly else {}), **({"autoClean": auto} if auto else {}),
             **({"profilePreview": scheduled} if scheduled else {})}
+
+
+def auto_clean(snap: dict[str, Any], s: dict[str, Any]) -> dict[str, Any] | None:
+    """Auto-cleanup over a threshold (off by default): once the disk passes it, the chosen safe jobs go to axHub as one
+    held call, at most once an hour and never while another run waits. Still nothing is removed until Brett approves."""
+    pct = (snap.get("disk") or {}).get("pct")
+    if not s.get("autoClean") or pct is None or pct < s["autoCleanPct"] or not snap.get("hostPart") or snap.get("stale"):
+        return None
+    last = _state().get("lastAutoClean") or 0
+    if time.time() - last < 3600:
+        return None
+    _set_state(lastAutoClean=time.time())
+    jobs = [j for j in s["autoCleanJobs"] if maint.JOBS[j]["safe"]]
+    try:
+        r = start_run(jobs, by="auto-clean", kind="auto")
+        return {"run": r["id"], "bytes": r.get("bytes")}
+    except HTTPException as e:
+        cx.log("maintenance", f"auto-clean at {pct}% not sent: {e.detail}", "warn")
+        return {"error": e.detail}
+
+
+def log_fixes() -> int:
+    """Every finished clean-up run goes into the fix log once (axf.changes@1: Build manager's change log)."""
+    svc = plugin_services.get("axf.changes@1")
+    if svc is None:
+        return 0
+    done = set(_state().get("fixLogged") or [])
+    n = 0
+    for r in list_runs(20):
+        if r["id"] in done or r["state"] not in ("done", "partial", "dropped", "failed"):
+            continue
+        res = r.get("result") or {}
+        summary = (f"Freed {maint.human(res.get('freed'))}: {res.get('done', 0)} removed, {res.get('skipped', 0)} skipped, "
+                   f"{res.get('failed', 0)} failed." if res else f"Not run ({r['state']}).")
+        try:
+            svc.open({"kind": "fix", "title": f"VPS clean-up: {', '.join(r.get('jobs') or [])}"[:160],
+                      "asked": f"Clean-up {r['id']} ({r.get('kind')}, by {r.get('by')}): {r.get('count')} items, about {maint.human(r.get('bytes'))}.",
+                      "result": {"state": "done" if r["state"] in ("done", "partial") else "failed", "summary": summary}}, by="maintenance")
+        except Exception:  # noqa: BLE001 — the change log is optional
+            continue
+        done.add(r["id"])
+        n += 1
+    if n:
+        _set_state(fixLogged=sorted(done)[-300:])
+    return n
 
 
 def health_probe() -> dict[str, Any]:
@@ -354,7 +403,7 @@ def ensure_health() -> bool:
                       "breaks": "When the disk fills up, builds, Docker pulls, databases and the console itself start failing.",
                       "links": [{"label": "Open Maintenance", "href": "view:maintenance"}],
                       "instructions": ["Maintenance → preview a clean-up, then approve it on axHub.",
-                                       "Auto fix sends the safe clean-up (dangling images and build cache, old logs, /tmp leftovers, stuck Created containers) for approval."],
+                                       "Auto fix sends the safe clean-up (dangling images and build cache, old logs, /tmp leftovers, stuck Created containers, apt/npm/pip caches, stale git locks) for approval."],
                       "autoFix": {"label": "Run the safe clean-up", "run": autofix}}, FOLDER)
     except Exception:  # noqa: BLE001 — the plugin works without its row
         return False
@@ -467,6 +516,34 @@ async def put_settings(request: Request) -> dict[str, Any]:
         merged = maint.normalize_settings({**settings(), **patch})
         maint.write_json(data_dir() / "settings.json", merged)
     return {"settings": merged}
+
+
+@router.get("/gauges")
+def get_gauges() -> dict[str, Any]:
+    """Live gauges: load, RAM, swap, every filesystem, Docker per container, top processes, history, heat per metric."""
+    snap = maint.read_json(data_dir() / "snapshot.json")
+    fresh = isinstance(snap, dict) and (_age_s(snap) or STALE_S + 1) <= STALE_S
+    out = gg.gauges(maint, snap if fresh else None, fresh)
+    v = gg.load_vps(data_dir())
+    for m in out["metrics"]:
+        m["heat"] = gg.heat_mix(m["pct"], v["heat"])
+        m["level"] = "high" if (m["pct"] or 0) >= v["highPct"] else "warn" if (m["pct"] or 0) >= v["warnPct"] else "ok"
+    return {**out, "settings": v}
+
+
+@router.get("/vps/settings")
+def get_vps_settings() -> dict[str, Any]:
+    return {"settings": gg.load_vps(data_dir()), "defaults": gg.VPS_DEFAULTS, "views": gg.VIEWS, "modes": gg.MODES, "heatTokens": gg.HEAT_TOKENS}
+
+
+@router.put("/vps/settings")
+async def put_vps_settings(request: Request) -> dict[str, Any]:
+    b = await _body(request)
+    patch = {k: v for k, v in b.items() if k in gg.VPS_DEFAULTS}
+    if not patch:
+        raise HTTPException(400, f"nothing to save (keys: {', '.join(gg.VPS_DEFAULTS)})")
+    with _lock:
+        return {"settings": gg.save_vps(data_dir(), patch)}
 
 
 @router.post("/check")
