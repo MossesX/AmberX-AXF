@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:39:41.463Z",
+ "updatedAt": "2026-11-10T17:39:51.455Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -88285,6 +88285,38 @@
      "uid": "st-mwaz5qdv03ovh6"
     }
    ]
+  },
+  {
+   "id": "skins-consistent-across-plugins-full-state-saves",
+   "title": "Skins consistent across plugins: full-state saves, skins as asset-name manifests, shared naming contract mapping plugin assets to canonical roles",
+   "category": "",
+   "detail": "Amends per-plugin appearance saves and skins-as-packages. 1) A save captures the plugin's full state: behavior, style, layout, colour, icons and any code-level overrides, not just the changed category. 2) A skin is only a manifest of asset names per section. 3) Skins must apply consistently to every plugin screen even though plugins use different asset names than the host app: add a shared asset naming contract + alias map (plugin asset -> canonical role, e.g. toolbar, panel, primary button) so one skin resolves the same look across apps and plugins. CI check flags plugin assets with no canonical role. Rebuild existing skins to the contract.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-10T17:39:40.556Z",
+   "updatedAt": "2026-11-10T17:39:41.263Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "The save is going to include everything, behavior, style, the code, not just the category changed. Every skin consists only of asset names. The skins build needs to make the skin compatible with all the plugin screens since the plugins have different asset names than the apps. The style has to stay consistent.",
+    "at": "2026-11-10T17:39:40.556Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
