@@ -372,9 +372,9 @@ export interface SkinCheckSurface {
   action: SkinCheckAction;
   /** control@1 effect. */
   effect: 'read' | 'write' | 'navigate';
-  /** REST, under the console API. `:skin` = skin or design-package id. */
+  /** REST, relative to the mount of the console plugin that hosts the checker (`/api/plugins/<host>/`). `:skin` = skin or design-package id. */
   rest: { method: 'GET' | 'POST' | 'PUT' | 'DELETE'; path: string };
-  /** MCP console action / plugin command name. */
+  /** MCP tool: the plugin command (plugin-commands@1 names it `skin_editor_<command>`), or console_show for `open`. */
   mcp: string;
   /** `axf skin …` */
   cli: string;
@@ -389,14 +389,14 @@ export interface SkinCheckSurface {
  * (what the editor shows without re-running); `check` runs and replaces it.
  */
 export const SKIN_CHECK_SURFACES: readonly SkinCheckSurface[] = [
-  { action: 'check', effect: 'write', rest: { method: 'POST', path: '/api/skin-checker/:skin/check' }, mcp: 'skin_check', cli: 'skin check <skin>', voice: 'skin.check', what: 'Run the checker on a skin; returns skin-check@1.' },
-  { action: 'state', effect: 'read', rest: { method: 'GET', path: '/api/skin-checker/:skin' }, mcp: 'skin_check_state', cli: 'skin check <skin> --cached', voice: 'skin.check.state', what: 'The last result for a skin (runs the check if there is none).' },
-  { action: 'fix', effect: 'write', rest: { method: 'POST', path: '/api/skin-checker/:skin/fix' }, mcp: 'skin_check_fix', cli: 'skin fix <skin> <issueId…>', voice: 'skin.check.fix', what: 'Apply the fix of one or more issues (body: { issues: string[] }); returns the writes and the new result.' },
-  { action: 'fix_all', effect: 'write', rest: { method: 'POST', path: '/api/skin-checker/:skin/fix-all' }, mcp: 'skin_check_fix_all', cli: 'skin fix <skin> --all', voice: 'skin.check.fix.all', what: 'Apply every fix the last result offers.' },
-  { action: 'settings_get', effect: 'read', rest: { method: 'GET', path: '/api/skin-checker/settings' }, mcp: 'skin_check_settings_get', cli: 'skin settings', voice: 'skin.check.settings.get', what: 'The threshold settings (skin-check-settings@1) with defaults filled in.' },
-  { action: 'settings_set', effect: 'write', rest: { method: 'PUT', path: '/api/skin-checker/settings' }, mcp: 'skin_check_settings_set', cli: 'skin settings set <key> <value>', voice: 'skin.check.settings.set', what: 'Write one or more settings (body: partial, dotted keys or nested); validated against the schema.' },
-  { action: 'settings_reset', effect: 'write', rest: { method: 'DELETE', path: '/api/skin-checker/settings' }, mcp: 'skin_check_settings_reset', cli: 'skin settings reset', voice: 'skin.check.settings.reset', what: 'Back to the defaults.' },
-  { action: 'open', effect: 'navigate', rest: { method: 'POST', path: '/api/console/show' }, mcp: 'console_show', cli: 'skin open <skin> [issueId]', voice: 'skin.check.open', what: `Open the checker panel (target ${SKIN_CHECK_TARGET}, ?skin=&issue=).` },
+  { action: 'check', effect: 'write', rest: { method: 'POST', path: 'checker/:skin/check' }, mcp: 'skin_editor_check', cli: 'skin check <skin>', voice: 'skin.check', what: 'Run the checker on a skin; returns skin-check@1.' },
+  { action: 'state', effect: 'read', rest: { method: 'GET', path: 'checker/:skin' }, mcp: 'skin_editor_state', cli: 'skin check <skin> --cached', voice: 'skin.check.state', what: 'The last result for a skin (runs the check if there is none).' },
+  { action: 'fix', effect: 'write', rest: { method: 'POST', path: 'checker/:skin/fix' }, mcp: 'skin_editor_fix', cli: 'skin fix <skin> <issueId…>', voice: 'skin.check.fix', what: 'Apply the fix of one or more issues (body: { issues: string[] }); returns the writes and the new result.' },
+  { action: 'fix_all', effect: 'write', rest: { method: 'POST', path: 'checker/:skin/fix-all' }, mcp: 'skin_editor_fix_all', cli: 'skin fix <skin> --all', voice: 'skin.check.fix.all', what: 'Apply every fix the last result offers.' },
+  { action: 'settings_get', effect: 'read', rest: { method: 'GET', path: 'checker/settings' }, mcp: 'skin_editor_settings_get', cli: 'skin settings', voice: 'skin.check.settings.get', what: 'The threshold settings (skin-check-settings@1) with defaults filled in.' },
+  { action: 'settings_set', effect: 'write', rest: { method: 'PUT', path: 'checker/settings' }, mcp: 'skin_editor_settings_set', cli: 'skin settings set <key> <value>', voice: 'skin.check.settings.set', what: 'Write one or more settings (body: partial, dotted keys or nested); validated against the schema.' },
+  { action: 'settings_reset', effect: 'write', rest: { method: 'DELETE', path: 'checker/settings' }, mcp: 'skin_editor_settings_reset', cli: 'skin settings reset', voice: 'skin.check.settings.reset', what: 'Back to the defaults.' },
+  { action: 'open', effect: 'navigate', rest: { method: 'GET', path: 'checker/link' }, mcp: 'console_show', cli: 'skin open <skin> [issueId]', voice: 'skin.check.open', what: `Open the checker panel (target ${SKIN_CHECK_TARGET}, ?skin=&issue=).` },
 ];
 export const skinCheckSurface = (action: SkinCheckAction): SkinCheckSurface => SKIN_CHECK_SURFACES.find((s) => s.action === action)!;
 

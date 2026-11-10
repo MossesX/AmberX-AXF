@@ -16,4 +16,4 @@ declare module 'node:url' {
   export function fileURLToPath(u: string | URL): string;
 }
 interface ImportMeta { url: string }
-declare const process: { argv: string[]; env: Record<string, string | undefined>; exitCode?: number; stdout: { write(s: string): boolean }; stderr: { write(s: string): boolean }; cwd(): string };
+declare const process: { argv: string[]; env: Record<string, string | undefined>; exitCode?: number; stdout: { write(s: string): boolean; on(e: 'error', f: () => void): void }; stderr: { write(s: string): boolean }; cwd(): string };

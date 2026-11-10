@@ -60,7 +60,7 @@ The per-category cap keeps one runaway rule (forty off-scale paddings) from zero
 
 ## The result
 
-`SkinCheckResult` (`$axf: 'skin-check@1'`) is the same JSON from the engine, `GET/POST /api/skin-checker/:skin`, the MCP tools, `axf skin check --json` and the CI artifact: skin `{ id, name, kind }`, `at`, `score`, `grade`, `pass`, `counts` per severity, `byCategory` `{ issues, penalty }`, `issues` (sorted by `sortIssues`: errors first, then category order, then token), `rules` run, `skipped`, the effective `settings`, and `fixable` (how many issues carry a fix).
+`SkinCheckResult` (`$axf: 'skin-check@1'`) is the same JSON from the engine, `GET/POST checker/:skin` (REST), the MCP tools, `axf skin check --json` and the CI artifact: skin `{ id, name, kind }`, `at`, `score`, `grade`, `pass`, `counts` per severity, `byCategory` `{ issues, penalty }`, `issues` (sorted by `sortIssues`: errors first, then category order, then token), `rules` run, `skipped`, the effective `settings`, and `fixable` (how many issues carry a fix).
 
 ## Settings: skin-check-settings@1
 
@@ -86,7 +86,7 @@ One field table (`SKIN_CHECK_SETTING_FIELDS`) gives every setting its key, group
 
 `normalizeSettings(raw)` fills every field from a flat (dotted keys) or nested document, clamps numbers into range and drops unknown keys; it never throws, so a stored file always loads. `settingsErrors(raw)` is what a write runs first: unknown key, wrong kind, out of range, unknown rule or severity each give one line, and the write is refused. `setSetting(settings, key, value)` is the one-key write the CLI, voice and MCP use; strings are accepted (`"7"`, `"off"`, `"true"`). `settingsJsonSchema()` generates the JSON schema from the table, `settingsGroups()` the panel's sections (Passing plus the five categories, each with its fields and the rules whose severity it sets), `changedSettings()` what differs from the defaults. `ruleSeverity(settings, rule)` is the severity a rule reports with, or `off`.
 
-Persisted by the console at `apps/console-web/server/data/skin-checker-settings.json`; one document, hub-wide.
+Persisted in the data folder of the console plugin that hosts the checker (`settings.json`; `AXF_SKIN_EDITOR_DIR` overrides); one document, shared by the console, the CLI and CI on that machine. The last result per skin is kept next to it (`results/<skin>.json`), and applied fixes are written as asset copies under `assets/<type>/<id>.json` that shadow the built-ins for the checker; built-in asset files are only rewritten by `axf skin fix … --in-place`.
 
 ## The engine interface
 
@@ -106,16 +106,20 @@ Pure: the same subject and settings give the same result; `now` is injectable fo
 
 `SKIN_CHECK_SURFACES` is one table of every action with its REST route, MCP name, CLI form and voice intent. The route file, the MCP tools, the CLI and the voice intents are generated from or checked against it, and the parity test calls every action through every surface and expects the same JSON.
 
-| Action | REST | MCP | CLI | Voice |
+| Action | REST (under the hosting console plugin's mount, `…/checker`) | MCP | CLI | Voice |
 | --- | --- | --- | --- | --- |
-| check | `POST /api/skin-checker/:skin/check` | `skin_check` | `axf skin check <skin>` | `skin.check` |
-| state | `GET /api/skin-checker/:skin` | `skin_check_state` | `axf skin check <skin> --cached` | `skin.check.state` |
-| fix | `POST /api/skin-checker/:skin/fix` `{ issues }` | `skin_check_fix` | `axf skin fix <skin> <issueId…>` | `skin.check.fix` |
-| fix_all | `POST /api/skin-checker/:skin/fix-all` | `skin_check_fix_all` | `axf skin fix <skin> --all` | `skin.check.fix.all` |
-| settings_get | `GET /api/skin-checker/settings` | `skin_check_settings_get` | `axf skin settings` | `skin.check.settings.get` |
-| settings_set | `PUT /api/skin-checker/settings` | `skin_check_settings_set` | `axf skin settings set <key> <value>` | `skin.check.settings.set` |
-| settings_reset | `DELETE /api/skin-checker/settings` | `skin_check_settings_reset` | `axf skin settings reset` | `skin.check.settings.reset` |
-| open | `console_show` target `skin-editor/checker` | `console_show` | `axf skin open <skin> [issueId]` | `skin.check.open` |
+| check | `POST /:skin/check` | `skin_editor_check` | `axf skin check <skin>` | `skin.check` |
+| state | `GET /:skin` | `skin_editor_state` | `axf skin check <skin> --cached` | `skin.check.state` |
+| fix | `POST /:skin/fix` `{ issues }` | `skin_editor_fix` | `axf skin fix <skin> <issueId…>` | `skin.check.fix` |
+| fix_all | `POST /:skin/fix-all` | `skin_editor_fix_all` | `axf skin fix <skin> --all` | `skin.check.fix.all` |
+| settings_get | `GET /settings` | `skin_editor_settings_get` | `axf skin settings` | `skin.check.settings.get` |
+| settings_set | `PUT /settings` | `skin_editor_settings_set` | `axf skin settings set <key> <value>` | `skin.check.settings.set` |
+| settings_reset | `DELETE /settings` | `skin_editor_settings_reset` | `axf skin settings reset` | `skin.check.settings.reset` |
+| open | `GET /link?skin=&issue=` (the link); `console_show` opens it | `console_show` target `skin-editor/checker` | `axf skin open <skin> [issueId]` | `skin.check.open` |
+
+Also `GET /skins` (`skin_editor_skins`, `axf skin list`): every skin and design package with its last score.
+
+One implementation: `src/core.ts` holds every handler. The hosting console plugin's Python routes run it through `bin/skin-check.mjs call <action> '<json>'`, the CLI calls it in-process, the MCP tools are the plugin's commands (generated from plugin.json) and the voice intents run those commands. `bin/skin-check.mjs` runs the TypeScript with Node's type stripping (Node 22.6+) or tsx.
 
 Deep link: `skin-editor/checker?skin=<id>&issue=<issueId>` (`skinCheckLink`) opens the panel on that skin and scrolls to the issue. `state` returns the last result kept per skin and runs a check when there is none; `check` runs and replaces it. `axf skin check` exits 0 when the skin passes, 1 when it does not (CI), 2 on a usage or load error; `--all` checks every skin and fails if any does not pass.
 

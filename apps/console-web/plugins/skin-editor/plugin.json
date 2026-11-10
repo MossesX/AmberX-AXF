@@ -1,0 +1,136 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.skin-editor",
+  "name": "Skin editor",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Skin editor: the skin checker (skin-check@1) for every skin and design package. A live score and grade, the issue list (spacing off the token scale, more than two typefaces or type sizes off the scale, palette sprawl and near-duplicate colours, WCAG contrast, inconsistent radius / border / shadow), a one-click jump to each token with an inline edit that re-runs the check, Fix and Fix all, and the threshold settings. Nav → Plugins → Skin editor; deep link skin-editor/checker?skin=&issue=; REST /api/plugins/skin-editor/checker, MCP skin_editor_*, CLI axf skin, AmberX voice.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:skin-editor",
+    "settings-tab:skin-editor",
+    "action:skin-editor.open"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "optional": [],
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/skin-editor",
+    "env": [
+      "AXF_SKIN_EDITOR_DIR"
+    ],
+    "mentions": [
+      "apps/console-web/plugins/README.md",
+      "_claude/THREADS.md"
+    ],
+    "keeps": [
+      "packages/skin-checker: the checker engine, `axf skin` and the CI step are a framework package and stay"
+    ]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "route": "GET /checker/skins",
+        "id": "skins",
+        "title": "Every skin and design package with its last checker score",
+        "readOnly": true
+      },
+      {
+        "route": "GET /checker/{skin}",
+        "id": "state",
+        "title": "The skin checker's last result for a skin (skin-check@1: score, grade, pass, issues with fixes); runs the check when there is none",
+        "readOnly": true
+      },
+      {
+        "route": "POST /checker/{skin}/check",
+        "id": "check",
+        "title": "Run the skin checker on a skin (spacing scale, typefaces and type scale, palette, WCAG contrast, radius/border/shadow); returns skin-check@1"
+      },
+      {
+        "route": "POST /checker/{skin}/fix",
+        "id": "fix",
+        "title": "Apply the one-click fix of one or more checker issues on a skin; returns the writes and the new result",
+        "input": {
+          "type": "object",
+          "properties": {
+            "skin": {
+              "type": "string",
+              "description": "skin or design package id (fresh, windows, …; skin_editor_skins lists them)"
+            },
+            "issues": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "issue ids from the result (e.g. spacing.off-scale@sizing:compact/button.padX)"
+            }
+          },
+          "required": [
+            "skin",
+            "issues"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /checker/{skin}/fix-all",
+        "id": "fix-all",
+        "title": "Apply every fix the skin checker offers for a skin"
+      },
+      {
+        "route": "GET /checker/settings",
+        "id": "settings-get",
+        "title": "The skin checker's threshold settings (skin-check-settings@1) with defaults filled in",
+        "readOnly": true
+      },
+      {
+        "route": "PUT /checker/settings",
+        "id": "settings-set",
+        "title": "Write skin checker settings (minScore, failOnError, spacing.tolerance, typography.maxFamilies, palette.maxColors, palette.nearDuplicateDeltaE, contrast.text, contrast.largeText, contrast.ui, shape.maxRadii, …, rules.<ruleId> = error|warning|info|off)",
+        "input": {
+          "type": "object",
+          "properties": {
+            "settings": {
+              "type": "object",
+              "description": "setting key → value, dotted keys or nested; rules: { ruleId: severity }"
+            },
+            "key": {
+              "type": "string"
+            },
+            "value": {}
+          },
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "DELETE /checker/settings",
+        "id": "settings-reset",
+        "title": "Put every skin checker setting back to its default"
+      },
+      {
+        "route": "GET /checker/link",
+        "id": "link",
+        "title": "The deep link of the checker panel for a skin and issue (open it with console_show)",
+        "readOnly": true
+      }
+    ]
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-10"
+  },
+  "help": "help.json",
+  "opens": "main",
+  "userGrantable": true
+}
