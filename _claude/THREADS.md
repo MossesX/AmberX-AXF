@@ -772,9 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 16:48 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` note (all) · orchestrator
-- 2026-11-10 16:48 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` note (all) · builds-live
-- 2026-11-10 16:49 UTC · `claude-md-standing-rule-be-proactive-bring-up-th` note (all) · orchestrator
 - 2026-11-10 16:50 UTC · `conversation-rag-index-every-voice-chat-session` added (0 steps) (all) · console
 - 2026-11-10 16:50 UTC · `conversation-rag-index-every-voice-chat-session` → queued, note (all) · console
 - 2026-11-10 16:50 UTC · `fix-the-orchestrator-s-splitter-claude-print-get` note (all) · orchestrator
@@ -1172,6 +1169,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 20:39 UTC · `molly-flagship-skin-premium-sellable-uncluttered` note (all) · orchestrator
 - 2026-11-10 20:39 UTC · `remove-the-old-theme-manager-style-and-layout-se` s2 done (all) · orchestrator
 - 2026-11-10 20:40 UTC · `molly-flagship-skin-premium-sellable-uncluttered` → queued, note (all) · pipeline
+- 2026-11-10 20:40 UTC · `resolve-conflicts-and-land-460-456-457-459-342` added (0 steps) (all) · console
+- 2026-11-10 20:40 UTC · `resolve-conflicts-and-land-460-456-457-459-342` → queued, note (all) · console
+- 2026-11-10 20:40 UTC · `molly-flagship-skin-premium-sellable-uncluttered` → running, note (all) · pipeline
 
 ## Token passes (log)
 

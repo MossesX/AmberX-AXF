@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T20:40:13.143Z",
+ "updatedAt": "2026-11-10T20:40:40.844Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -89101,7 +89101,7 @@
    "title": "Molly flagship skin: premium, sellable, uncluttered; short main menu with smart sub-menus, live status and instant settings",
    "category": "",
    "detail": "Flagship skin for Molly: powerful, beautiful, expensive-looking, professional, sellable. Uncluttered UI. Everything reachable (redundantly is fine). 1) Context menus fully mapped, no junk items. 2) Application menu: short top level, everything else in sub-menus. Sub-menus flip left when they'd go off screen; long menus scroll inside the menu (never the page). 3) Choice settings live right in the app menu: click to change instantly, current value shown beside the entry. 4) Live info beside entries (e.g. tiny green/red axHub status icon); hover tooltips explain every icon; animated indicators allowed. 5) Right-click any menu item: dialog to set that item's behavior and appearance. Depends on the inline-edit build for per-element token editing.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -89109,7 +89109,7 @@
    "pr": "#469",
    "priority": "P1",
    "createdAt": "2026-11-10T16:39:09.087Z",
-   "updatedAt": "2026-11-10T20:40:09.960Z",
+   "updatedAt": "2026-11-10T20:40:38.511Z",
    "builtAt": "",
    "notes": [
     {
@@ -89143,6 +89143,10 @@
     {
      "text": "Session on mossesx-max- ended (exit 0) with 8 steps left: back in the Queue (run 1).",
      "at": "2026-11-10T20:40:09.960Z"
+    },
+    {
+     "text": "Started run 2 on mossesx-max- (Opus, Phase 2): axf-molly-flagship-skin-premium-sellable-uncluttered--gina.",
+     "at": "2026-11-10T20:40:38.511Z"
     }
    ],
    "approvals": [],
@@ -94445,6 +94449,43 @@
      "uid": "st-mwb1zrxt03ohq3"
     }
    ]
+  },
+  {
+   "id": "resolve-conflicts-and-land-460-456-457-459-342",
+   "title": "Resolve conflicts and land #460, #456, #457, #459, #342",
+   "category": "",
+   "detail": "Merges failed. #460 (splitter fix), #457 (merge batching), #459 (failed-batch split), #342 (build optimizer) have merge conflicts with main; #456 (enforce merge queue) is still a draft. In order: #460 first (it fixes every build's steps), then #456 (mark ready), #457, #459, #342. For each: merge latest main into the branch, resolve conflicts keeping both sides' intent, tests green, push, merge. Then redeploy the console. Notify on AmberX only when all are landed.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-10T20:40:20.356Z",
+   "updatedAt": "2026-11-10T20:40:30.009Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T20:40:30.009Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "If anything doesn't work, just fix it. Don't tell me, just tell me when it's fixed.",
+    "at": "2026-11-10T20:40:20.356Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

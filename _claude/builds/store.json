@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2794,
- "updatedAt": "2026-11-10T20:40:13.143Z",
+ "rev": 2795,
+ "updatedAt": "2026-11-10T20:40:40.844Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -146178,7 +146178,7 @@
    "title": "Molly flagship skin: premium, sellable, uncluttered; short main menu with smart sub-menus, live status and instant settings",
    "category": "",
    "detail": "Flagship skin for Molly: powerful, beautiful, expensive-looking, professional, sellable. Uncluttered UI. Everything reachable (redundantly is fine). 1) Context menus fully mapped, no junk items. 2) Application menu: short top level, everything else in sub-menus. Sub-menus flip left when they'd go off screen; long menus scroll inside the menu (never the page). 3) Choice settings live right in the app menu: click to change instantly, current value shown beside the entry. 4) Live info beside entries (e.g. tiny green/red axHub status icon); hover tooltips explain every icon; animated indicators allowed. 5) Right-click any menu item: dialog to set that item's behavior and appearance. Depends on the inline-edit build for per-element token editing.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -146186,7 +146186,7 @@
    "pr": "#469",
    "priority": "P1",
    "createdAt": "2026-11-10T16:39:09.087Z",
-   "updatedAt": "2026-11-10T20:40:09.960Z",
+   "updatedAt": "2026-11-10T20:40:38.511Z",
    "builtAt": "",
    "notes": [
     {
@@ -146220,6 +146220,10 @@
     {
      "text": "Session on mossesx-max- ended (exit 0) with 8 steps left: back in the Queue (run 1).",
      "at": "2026-11-10T20:40:09.960Z"
+    },
+    {
+     "text": "Started run 2 on mossesx-max- (Opus, Phase 2): axf-molly-flagship-skin-premium-sellable-uncluttered--gina.",
+     "at": "2026-11-10T20:40:38.511Z"
     }
    ],
    "approvals": [],
@@ -146240,11 +146244,11 @@
     "queuedAt": "2026-11-10T16:39:10.516Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "",
+    "session": "axf-molly-flagship-skin-premium-sellable-uncluttered--gina",
     "slot": "",
-    "model": "Fable",
-    "launchedAt": "2026-11-10T19:39:11.590Z",
-    "runs": 1,
+    "model": "Opus",
+    "launchedAt": "2026-11-10T20:40:33.524Z",
+    "runs": 2,
     "lastRun": {
      "at": "2026-11-10T20:40:08.508Z",
      "exit": 0,
@@ -146261,18 +146265,18 @@
      "note": "Split by Claude into 12 steps (4 Fable)."
     },
     "splitRequested": "",
-    "note": "Session on mossesx-max- ended (exit 0) with 8 steps left: back in the Queue (run 1).",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T19:39:11.590Z",
+    "dispatchedAt": "2026-11-10T20:40:33.524Z",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T18:53:03.053Z",
+     "at": "2026-11-10T20:40:12.309Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-10T19:39:11.590Z"
+    "pickedAt": "2026-11-10T20:40:33.524Z"
    },
    "steps": [
     {
@@ -146592,7 +146596,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -153735,6 +153739,80 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-10T18:58:41.585Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "resolve-conflicts-and-land-460-456-457-459-342",
+   "title": "Resolve conflicts and land #460, #456, #457, #459, #342",
+   "category": "",
+   "detail": "Merges failed. #460 (splitter fix), #457 (merge batching), #459 (failed-batch split), #342 (build optimizer) have merge conflicts with main; #456 (enforce merge queue) is still a draft. In order: #460 first (it fixes every build's steps), then #456 (mark ready), #457, #459, #342. For each: merge latest main into the branch, resolve conflicts keeping both sides' intent, tests green, push, merge. Then redeploy the console. Notify on AmberX only when all are landed.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-10T20:40:20.356Z",
+   "updatedAt": "2026-11-10T20:40:30.009Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T20:40:30.009Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "If anything doesn't work, just fix it. Don't tell me, just tell me when it's fixed.",
+    "at": "2026-11-10T20:40:20.356Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-10T20:40:24.923Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": ""
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 581
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
