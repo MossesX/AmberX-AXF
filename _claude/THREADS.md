@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 02:42 UTC · `amberx-phone-pop-up-for-every-build-start-and-fi` → running, note (all) · pipeline
 - 2026-11-10 02:42 UTC · `amberx-phone-pop-up-for-every-build-start-and-fi` note (all) · orchestrator
 - 2026-11-10 02:42 UTC · `amberx-phone-pop-up-for-every-build-start-and-fi` branch claude/amberx-phone-pop-up-for-every-build-start-and-fi (all) · pipeline
 - 2026-11-10 02:43 UTC · `vps-orchestrator-only-rule-vps-settings-console` PR #431 (all) · builds-live
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 16:30 UTC · `agent-manager-training-wizard-for-employee-agent` note (all) · orchestrator
 - 2026-11-10 16:31 UTC · `skins-own-everything-colour-theme-swaps-independ` → queued, note (all) · console
 - 2026-11-10 16:32 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → queued, note (all) · console
+- 2026-11-10 16:32 UTC · `search-bar-plugin-add-on-search-builds-session-h` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
