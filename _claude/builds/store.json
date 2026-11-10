@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2350,
- "updatedAt": "2026-11-10T04:39:56.943Z",
+ "rev": 2351,
+ "updatedAt": "2026-11-10T04:40:20.339Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -12051,14 +12051,14 @@
    "title": "Harvest the AXHub web app’s hub rules into lib-hub (one contract for web + Android)",
    "category": "Module",
    "detail": "The AXHub web app (apps/axhub-web, built on Opus Oct 21 2026) reads axHub from the browser: the approvals feed through lib-hub, and the app catalog (/apps.json, hub decision #90) through its own module src/hub/feed.ts — interpretApps, the rebuilt-download-link rule, caps and the size/time/expiry wording, with 52 self-test checks. Those rules belong in lib-hub next to the approvals feed so the Android AXHub app’s Apps tab and any future app share one contract, pinned by one fixture on both ports.\n\nFable because it adds a section to a cross-port contract (spec/fixtures/hub-approvals.json) with a Kotlin twin. Related: axhub-theme-freeze (appearance@1 carrying theme bodies) touches the same apps; patches-web-settings-notify must follow the hub appearance the same way the web app does.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "session",
    "pendingId": "axhub-web-hub-rules",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-22T01:57:53.687Z",
-   "updatedAt": "2026-11-10T04:39:54.411Z",
+   "updatedAt": "2026-11-10T04:40:06.728Z",
    "builtAt": "",
    "notes": [
     {
@@ -12100,12 +12100,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T04:39:56.967Z",
      "note": "Audit: done — framework/libs/hub/apps.ts (interpretApps); commit d5a064394 harvests the hub rules into lib-hub (axhub-web-console-look)",
-     "rev": 6,
+     "rev": 7,
      "createdAt": "2026-10-22T01:57:53.687Z",
-     "updatedAt": "2026-11-10T04:39:54.606Z"
+     "updatedAt": "2026-11-10T04:39:56.967Z"
     },
     {
      "id": "s2",
@@ -12204,7 +12204,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -136035,7 +136035,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T04:25:09.866Z",
-   "updatedAt": "2026-11-10T04:28:57.137Z",
+   "updatedAt": "2026-11-10T04:40:11.629Z",
    "builtAt": "",
    "notes": [
     {
@@ -136107,12 +136107,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T04:40:11.629Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T04:27:21.668Z",
-     "updatedAt": "2026-11-10T04:27:21.668Z"
+     "updatedAt": "2026-11-10T04:40:12.019Z"
     },
     {
      "id": "s2",
@@ -136170,7 +136170,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

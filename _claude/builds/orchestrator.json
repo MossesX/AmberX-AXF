@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T04:39:56.943Z",
+ "updatedAt": "2026-11-10T04:40:20.339Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -51141,14 +51141,14 @@
    "title": "Harvest the AXHub web app’s hub rules into lib-hub (one contract for web + Android)",
    "category": "Module",
    "detail": "The AXHub web app (apps/axhub-web, built on Opus Oct 21 2026) reads axHub from the browser: the approvals feed through lib-hub, and the app catalog (/apps.json, hub decision #90) through its own module src/hub/feed.ts — interpretApps, the rebuilt-download-link rule, caps and the size/time/expiry wording, with 52 self-test checks. Those rules belong in lib-hub next to the approvals feed so the Android AXHub app’s Apps tab and any future app share one contract, pinned by one fixture on both ports.\n\nFable because it adds a section to a cross-port contract (spec/fixtures/hub-approvals.json) with a Kotlin twin. Related: axhub-theme-freeze (appearance@1 carrying theme bodies) touches the same apps; patches-web-settings-notify must follow the hub appearance the same way the web app does.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "session",
    "pendingId": "axhub-web-hub-rules",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-22T01:57:53.687Z",
-   "updatedAt": "2026-11-10T04:39:54.411Z",
+   "updatedAt": "2026-11-10T04:40:06.728Z",
    "builtAt": "",
    "notes": [
     {
@@ -51188,8 +51188,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T04:39:56.967Z",
      "note": "Audit: done — framework/libs/hub/apps.ts (interpretApps); commit d5a064394 harvests the hub rules into lib-hub (axhub-web-console-look)",
      "uid": "st-1h05sb5"
     },
@@ -83822,7 +83822,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T04:25:09.866Z",
-   "updatedAt": "2026-11-10T04:28:57.137Z",
+   "updatedAt": "2026-11-10T04:40:11.629Z",
    "builtAt": "",
    "notes": [
     {
@@ -83870,8 +83870,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T04:40:11.629Z",
      "note": "",
      "uid": "st-mwa6v8hw01cvgp"
     },

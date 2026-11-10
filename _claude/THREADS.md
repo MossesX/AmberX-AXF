@@ -771,9 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 00:16 UTC · `build-statuses-tell-the-truth-orchestrator-list` added (0 steps) (all) · console
-- 2026-11-10 00:16 UTC · `build-statuses-tell-the-truth-orchestrator-list` → queued, note (all) · console
-- 2026-11-10 00:17 UTC · `build-statuses-tell-the-truth-orchestrator-list` → queued, note (all) · builds-live
 - 2026-11-10 00:17 UTC · `orchestrator-table-columns-model-queue-assigned` added (0 steps) (all) · console
 - 2026-11-10 00:17 UTC · `build-statuses-tell-the-truth-orchestrator-list` note (all) · orchestrator
 - 2026-11-10 00:19 UTC · `failed-launches-auto-retry-on-another-working-ac` added (0 steps) (all) · console
@@ -1171,6 +1168,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 04:39 UTC · `claude-settings-tabs-veto` note (all) · audit-pending-fable-builds-against-main-close-wh
 - 2026-11-10 04:39 UTC · `briefs-list-the-existing-files-each-step-needs` note (all) · audit-pending-fable-builds-against-main-close-wh
 - 2026-11-10 04:39 UTC · `axhub-web-hub-rules` → running (all) · audit-pending-fable-builds-against-main-close-wh
+- 2026-11-10 04:39 UTC · `axhub-web-hub-rules` s1 done (all) · audit-pending-fable-builds-against-main-close-wh
+- 2026-11-10 04:40 UTC · `axhub-web-hub-rules` → pending (all) · audit-pending-fable-builds-against-main-close-wh
+- 2026-11-10 04:40 UTC · `audit-pending-fable-builds-against-main-close-wh` s1 done (all) · audit-pending-fable-builds-against-main-close-wh
 
 ## Token passes (log)
 
