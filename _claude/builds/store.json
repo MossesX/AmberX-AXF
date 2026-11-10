@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2319,
- "updatedAt": "2026-11-10T04:23:23.481Z",
+ "rev": 2320,
+ "updatedAt": "2026-11-10T04:24:30.482Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -135891,12 +135891,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T04:23:08.521Z",
-   "updatedAt": "2026-11-10T04:23:10.104Z",
+   "updatedAt": "2026-11-10T04:24:27.270Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T04:23:10.104Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T04:24:27.270Z"
     }
    ],
    "approvals": [],
@@ -135923,13 +135927,89 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-10T04:24:27.270Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwa6rhxj01tkx3",
+     "title": "",
+     "text": "The Fable version of Molly that the molly-opus build promised ('a Fable version comes later in its own build'), never filed until now. Run every step on Fable (model: fable); don't fall back to Opus without saying so in the report. Start from what's on main: apps/molly (the Opus shell), the dock@1 engine, dock-layout@1 presets and DockHost from claude/molly-fable (PR #245, landed bffc2601), xlayout@1/chrome@1, and the molly-* builds (one-shell, sign-in-once, multi-instance-tabs, banner-match, nav-submenus, console-commands, native-expenses). Goal: Molly as the one interface that shows AmberX, axHub and the console (and the other apps) while they stay separate apps. One sign-in, docked multi-instance tabs, shared banner and widgets, nested menus, Molly-to-app messages. First read the open molly-* builds and reports: upgrade what exists, fold in unfinished molly steps where they overlap instead of duplicating, and list which builds this supersedes. Deploy at molly.amberxai.com (or a Fable variant URL if the Opus one must stay; say which). Full REST, MCP, CLI and voice control. Tests, desktop and phone screenshots to UI Review grouped by screen, report, PR.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T04:24:27.270Z",
+     "updatedAt": "2026-11-10T04:24:27.270Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwa6rhxj024m0u",
+     "title": "",
+     "text": "Build the molly apps fable",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T04:24:27.270Z",
+     "updatedAt": "2026-11-10T04:24:27.270Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwa6rhxj031s4h",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/molly-fable-version-the-one-interface-for-amberx.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/molly-fable-version-the-one-interface-for-amberx.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T04:24:27.270Z",
+     "updatedAt": "2026-11-10T04:24:27.270Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -135938,12 +136018,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T04:24:27.270Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

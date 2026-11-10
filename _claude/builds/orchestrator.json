@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T04:23:23.481Z",
+ "updatedAt": "2026-11-10T04:24:30.482Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -83757,12 +83757,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T04:23:08.521Z",
-   "updatedAt": "2026-11-10T04:23:10.104Z",
+   "updatedAt": "2026-11-10T04:24:27.270Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T04:23:10.104Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T04:24:27.270Z"
     }
    ],
    "approvals": [],
@@ -83779,7 +83783,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "The Fable version of Molly that the molly-opus build promised ('a Fable version comes later in its own build'), never filed until now. Run every step on Fable (model: fable); don't fall back to Opus without saying so in the report. Start from what's on main: apps/molly (the Opus shell), the dock@1 engine, dock-layout@1 presets and DockHost from claude/molly-fable (PR #245, landed bffc2601), xlayout@1/chrome@1, and the molly-* builds (one-shell, sign-in-once, multi-instance-tabs, banner-match, nav-submenus, console-commands, native-expenses). Goal: Molly as the one interface that shows AmberX, axHub and the console (and the other apps) while they stay separate apps. One sign-in, docked multi-instance tabs, shared banner and widgets, nested menus, Molly-to-app messages. First read the open molly-* builds and reports: upgrade what exists, fold in unfinished molly steps where they overlap instead of duplicating, and list which builds this supersedes. Deploy at molly.amberxai.com (or a Fable variant URL if the Opus one must stay; say which). Full REST, MCP, CLI and voice control. Tests, desktop and phone screenshots to UI Review grouped by screen, report, PR.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwa6rhxj01tkx3"
+    },
+    {
+     "id": "s2",
+     "text": "Build the molly apps fable",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwa6rhxj024m0u"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/molly-fable-version-the-one-interface-for-amberx.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/molly-fable-version-the-one-interface-for-amberx.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwa6rhxj031s4h"
+    }
+   ]
   }
  ]
 }
