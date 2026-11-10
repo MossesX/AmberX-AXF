@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2228,
- "updatedAt": "2026-11-10T02:56:51.849Z",
+ "rev": 2229,
+ "updatedAt": "2026-11-10T02:57:58.808Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -131613,7 +131613,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T20:16:02.957Z",
-   "updatedAt": "2026-11-10T01:48:13.306Z",
+   "updatedAt": "2026-11-10T02:57:56.046Z",
    "builtAt": "",
    "notes": [
     {
@@ -131728,12 +131728,12 @@
    "pipeline": {
     "queuedAt": "2026-11-09T20:16:04.178Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-test-button-on-every-claude-account-subscription--gina",
+    "account": "account-3",
+    "session": "",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-10T01:48:10.377Z",
-    "runs": 1,
+    "launchedAt": "2026-11-09T20:19:06.480Z",
+    "runs": 0,
     "lastRun": {
      "at": "2026-11-09T20:20:05.208Z",
      "exit": 1,
@@ -131750,9 +131750,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "API run asked for by amber: waiting for Brett's approval",
     "route": "",
-    "dispatchedAt": "2026-11-10T01:48:10.377Z"
+    "dispatchedAt": "2026-11-09T20:19:06.480Z"
    },
    "steps": [
     {
@@ -131770,12 +131770,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T02:57:56.046Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-09T20:17:22.310Z",
-     "updatedAt": "2026-11-09T20:17:22.310Z"
+     "updatedAt": "2026-11-10T02:57:56.431Z"
     },
     {
      "id": "s2",
