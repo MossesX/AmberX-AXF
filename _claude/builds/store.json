@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3036,
- "updatedAt": "2026-11-10T23:40:56.565Z",
+ "rev": 3037,
+ "updatedAt": "2026-11-10T23:41:05.721Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -155033,7 +155033,7 @@
    "pr": "#482",
    "priority": "P0",
    "createdAt": "2026-11-10T21:54:10.024Z",
-   "updatedAt": "2026-11-10T23:40:55.056Z",
+   "updatedAt": "2026-11-10T23:41:04.083Z",
    "builtAt": "2026-11-10T23:37:56.116Z",
    "notes": [
     {
@@ -155091,6 +155091,10 @@
     {
      "text": "Headless run axf-ai-assistant-gizmo-moved-to-the-console-remove-t--earl: brief only · start 11.3K tokens ($0.03) · cost $0.40 · 17 turns · 6 tools, MCP none",
      "at": "2026-11-10T23:40:55.056Z"
+    },
+    {
+     "text": "Session axf-ai-assistant-gizmo-moved-to-the-console-remove-t--earl on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-10T23:41:04.083Z"
     }
    ],
    "approvals": [],
@@ -155111,18 +155115,18 @@
     "queuedAt": "2026-11-10T23:36:53.010Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-ai-assistant-gizmo-moved-to-the-console-remove-t--earl",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-10T23:37:53.361Z",
     "runs": 2,
     "lastRun": {
-     "at": "2026-11-10T23:28:03.830Z",
+     "at": "2026-11-10T23:41:03.521Z",
      "exit": 0,
-     "outcome": "returned",
-     "stepsLeft": 1,
+     "outcome": "finished",
+     "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-ai-assistant-gizmo-moved-to-the-console-remove-t--lenny"
+     "session": "axf-ai-assistant-gizmo-moved-to-the-console-remove-t--earl"
     },
     "split": null,
     "splitRequested": "",
@@ -155218,7 +155222,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

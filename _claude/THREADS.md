@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 19:22 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` s2 done (all) · orchestrator
 - 2026-11-10 19:23 UTC · `skin-checker-flags-anything-that-breaks-a-profes` s11 done (all) · orchestrator
 - 2026-11-10 19:23 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` PR #465 (all) · builds-live
 - 2026-11-10 19:23 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` note (all) · orchestrator
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 23:38 UTC · `auto-requeue-builds-whose-session-stops-early-go` branch claude/auto-requeue-builds-whose-session-stops-early-go (all) · pipeline
 - 2026-11-10 23:38 UTC · `auto-requeue-builds-whose-session-stops-early-go` note (all) · orchestrator
 - 2026-11-10 23:40 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` note (all) · orchestrator
+- 2026-11-10 23:41 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` note (all) · pipeline
 
 ## Token passes (log)
 
