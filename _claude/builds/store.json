@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2462,
- "updatedAt": "2026-11-10T16:31:59.281Z",
+ "rev": 2463,
+ "updatedAt": "2026-11-10T16:32:17.484Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -127704,7 +127704,7 @@
    "title": "Appearance = skins + colour themes only (remove design packs)",
    "category": "Appearance",
    "detail": "Brett: \"can we remove design packs as a thing since everything's covered in a skin? So it's just skins and color themes.\" Simplify appearance to two concepts: skins (look, style, layout, behaviour of every asset) and colour themes. 1) Convert every existing design pack (design-package / style-package assets, Design packs screen picks) into a skin so nothing is lost. 2) Remove the Design packs screen, settings, menu entries and asset types (design-package, style-package), redirect old references to skins. 3) Appearance settings shows only Skin and Colour theme pickers. Check if style-theme / layout themes should also fold into skins and list it in the report for Brett, don't remove those without asking. Default look must stay identical; screenshots to UI Review.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -127712,7 +127712,7 @@
    "pr": "#430",
    "priority": "P0",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-10T03:04:20.532Z",
+   "updatedAt": "2026-11-10T16:32:02.242Z",
    "builtAt": "",
    "notes": [
     {
@@ -127830,6 +127830,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-10T03:04:20.532Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T16:32:02.242Z"
     }
    ],
    "approvals": [],
@@ -127847,7 +127851,7 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-09T18:49:58.353Z",
+    "queuedAt": "2026-11-10T16:32:01.454Z",
     "queuedBy": "console",
     "account": "account-3",
     "session": "",
@@ -127865,7 +127869,7 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "Rerun: back in the Queue with a fresh run count (its last run died on account-3 (limit / credits)); resumes at s4 on the next working account.",
+    "note": "",
     "route": "",
     "dispatchedAt": "2026-11-09T19:24:37.196Z"
    },
@@ -127989,7 +127993,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
