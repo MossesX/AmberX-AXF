@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2206,
- "updatedAt": "2026-11-10T02:40:36.756Z",
+ "rev": 2207,
+ "updatedAt": "2026-11-10T02:41:14.384Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -127719,7 +127719,7 @@
    "pr": "#430",
    "priority": "P0",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-10T02:40:34.129Z",
+   "updatedAt": "2026-11-10T02:41:12.271Z",
    "builtAt": "",
    "notes": [
     {
@@ -127829,6 +127829,10 @@
     {
      "text": "Correction to the browser-walk note: the leftover console API was only alive during the first (interrupted) walk; the clean second walk had port 7311 free and still recorded ~30 failed /api/plugins/* and /api/alerts requests, a failed console-commands catalogue and short menus (framework 10 vs 68 in the baseline). Cause not established; candidates: lazy plugin chunks loading after the walker reads the catalogue, or the throwaway data folder the walker gives the console API. s5 should compare against the baseline's walker settings before trusting any shot diff; the static half is the trustworthy signal for now (clean).",
      "at": "2026-11-10T02:40:34.129Z"
+    },
+    {
+     "text": "Headless run axf-appearance-skins-colour-themes-only-remove-desig--earl: brief only · start 0 tokens · cost $30.92 · 251 turns · 6 tools, MCP none",
+     "at": "2026-11-10T02:41:12.271Z"
     }
    ],
    "approvals": [],
@@ -127988,7 +127992,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
