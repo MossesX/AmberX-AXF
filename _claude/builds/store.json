@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2552,
- "updatedAt": "2026-11-10T17:26:16.747Z",
+ "rev": 2553,
+ "updatedAt": "2026-11-10T17:27:28.663Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -140224,7 +140224,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T16:45:23.543Z",
-   "updatedAt": "2026-11-10T17:22:17.929Z",
+   "updatedAt": "2026-11-10T17:27:27.185Z",
    "builtAt": "",
    "notes": [
     {
@@ -140261,12 +140261,12 @@
    "pipeline": {
     "queuedAt": "2026-11-10T16:45:24.956Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-merge-batching-add-on-when-a-batch-fails-ci-spli--gina",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-10T17:22:15.390Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T16:48:29.235Z",
@@ -140276,9 +140276,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-10T17:22:15.390Z"
+    "dispatchedAt": ""
    },
    "steps": [
     {
@@ -140296,12 +140296,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T17:27:27.185Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T16:48:29.235Z",
-     "updatedAt": "2026-11-10T16:48:29.235Z"
+     "updatedAt": "2026-11-10T17:27:27.351Z"
     },
     {
      "id": "s2",
