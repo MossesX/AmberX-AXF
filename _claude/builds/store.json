@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2915,
- "updatedAt": "2026-11-10T21:49:31.668Z",
+ "rev": 2916,
+ "updatedAt": "2026-11-10T21:49:48.188Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -155700,7 +155700,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:34:57.978Z",
-   "updatedAt": "2026-11-10T21:48:30.329Z",
+   "updatedAt": "2026-11-10T21:49:46.884Z",
    "builtAt": "",
    "notes": [
     {
@@ -155734,6 +155734,10 @@
     {
      "text": "Stopped before s1, nothing built: its dependencies are not done. molly-one-shell: s7 (console native host), s8 (axHub/AmberX native host), s10-s14 open; its shell-surface@1 contract (the module manifest + native mount seam this build needs) is only on unmerged PR #395 (claude/molly-one-shell-r4). molly-sign-in-once: 0/3 steps (no credential seam, so Expenses/hub modules cannot sign in). Building modules now would invent a second manifest contract or stack on an unlanded 14k-line PR. Next: land #395, finish molly-one-shell s7/s8 and molly-sign-in-once s1, then re-queue this. Also: s2 is Brett's raw sentence, a duplicate of s1; drop it or fold it into s1 when re-queued.",
      "at": "2026-11-10T21:48:21.577Z"
+    },
+    {
+     "text": "Stopped before s1, nothing built. s1 says run after molly-one-shell and molly-sign-in-once; neither has landed. molly-one-shell (#395, branch claude/molly-one-shell-r4) is queued with s7, s8, s10-s14 open; its shell-surface@1 module manifest and menu-index@1 contracts (s4-s6) are not on main. molly-sign-in-once has 0 of 3 steps done (no credential seam, so native modules cannot reach the console, hub or Expenses backends). Building modules now would mean a second manifest format next to shell-surface@1 and overlapping molly-native-expenses. Order: land #395 (molly-one-shell s7/s8/s11), run molly-sign-in-once, then re-run this build. Fable could take on: the per-module error isolation boundary as part of shell-surface@1.",
+     "at": "2026-11-10T21:49:46.884Z"
     }
    ],
    "approvals": [],
@@ -155860,7 +155864,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
