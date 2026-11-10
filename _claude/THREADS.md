@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 02:49 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` → queued, note (all) · console
 - 2026-11-10 02:47 UTC · `split-builds-pages-build-manager-pending-complet-3` s2 done (all) · orchestrator
 - 2026-11-10 02:52 UTC · `console-speed-profile-and-cut-axf-console-cpu-pl` note (all) · orchestrator
 - 2026-11-10 02:54 UTC · `amberx-phone-pop-up-for-every-build-start-and-fi` s1 done, → running (all) · orchestrator
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 16:43 UTC · `remove-the-old-theme-manager-style-and-layout-se` note (all) · orchestrator
 - 2026-11-10 16:43 UTC · `enforce-the-merge-queue-every-finished-build-goe` added (0 steps) (all) · console
 - 2026-11-10 16:43 UTC · `enforce-the-merge-queue-every-finished-build-goe` → queued, note (all) · console
+- 2026-11-10 16:44 UTC · `enforce-the-merge-queue-every-finished-build-goe` added (0 steps) (all) · builds-live
 
 ## Token passes (log)
 
