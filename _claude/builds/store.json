@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2444,
- "updatedAt": "2026-11-10T16:18:23.660Z",
+ "rev": 2445,
+ "updatedAt": "2026-11-10T16:20:28.588Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -133938,7 +133938,7 @@
    "pr": "#446",
    "priority": "P1",
    "createdAt": "2026-11-10T00:21:59.738Z",
-   "updatedAt": "2026-11-10T16:06:48.950Z",
+   "updatedAt": "2026-11-10T16:20:27.107Z",
    "builtAt": "",
    "notes": [
     {
@@ -133980,6 +133980,10 @@
     {
      "text": "Claude account: account-5 (axf-skins-as-packages-of-slices-every-section-its-ow--joey, own login copy)",
      "at": "2026-11-10T15:39:13.748Z"
+    },
+    {
+     "text": "Second run (Joey) found the first run (Paulie) still active on the same worktree; waited until it ended (16:06, s1 ticked, PR #446, UI Review filed), then fixed three things seen in the shots: a whole-skin apply no longer opens Save-as-new (mix rule), the preview skin never lists, slot titles stay whole. Commits 73a8cac28 + c27db003a pushed; corrected shots filed in the same UI Review group. Phase 1 complete; nothing left for this phase.",
+     "at": "2026-11-10T16:20:27.107Z"
     },
     {
      "text": "Headless run axf-skins-as-packages-of-slices-every-section-its-ow--paulie: brief only · start 13.1K tokens ($0.10) · cost $24.02 · 209 turns · 6 tools, MCP none",
