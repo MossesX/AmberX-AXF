@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2293,
- "updatedAt": "2026-11-10T03:54:46.271Z",
+ "rev": 2294,
+ "updatedAt": "2026-11-10T03:55:12.183Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -135161,7 +135161,7 @@
    "pr": "#437",
    "priority": "P0",
    "createdAt": "2026-11-10T02:49:14.121Z",
-   "updatedAt": "2026-11-10T03:54:44.564Z",
+   "updatedAt": "2026-11-10T03:55:08.921Z",
    "builtAt": "2026-11-10T03:53:49.891Z",
    "notes": [
     {
@@ -135187,6 +135187,10 @@
     {
      "text": "Headless run axf-console-speed-profile-and-cut-axf-console-cpu-pl--gina: brief only · start 11.3K tokens ($0.03) · cost $4.62 · 136 turns · 6 tools, MCP none",
      "at": "2026-11-10T03:54:44.564Z"
+    },
+    {
+     "text": "Session axf-console-speed-profile-and-cut-axf-console-cpu-pl--gina on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-10T03:55:08.921Z"
     }
    ],
    "approvals": [],
@@ -135207,12 +135211,19 @@
     "queuedAt": "2026-11-10T02:49:21.674Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-console-speed-profile-and-cut-axf-console-cpu-pl--gina",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-10T03:33:16.699Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-10T03:55:05.712Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-console-speed-profile-and-cut-axf-console-cpu-pl--gina"
+    },
     "split": {
      "at": "2026-11-10T02:52:12.001Z",
      "by": "orchestrator",
@@ -135304,7 +135315,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
