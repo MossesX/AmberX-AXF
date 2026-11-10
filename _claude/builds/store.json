@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2728,
- "updatedAt": "2026-11-10T19:23:43.518Z",
+ "rev": 2729,
+ "updatedAt": "2026-11-10T19:23:55.596Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -144872,7 +144872,7 @@
    "pr": "#465",
    "priority": "P1",
    "createdAt": "2026-11-10T16:28:04.849Z",
-   "updatedAt": "2026-11-10T19:23:42.506Z",
+   "updatedAt": "2026-11-10T19:23:43.565Z",
    "builtAt": "",
    "notes": [
     {
@@ -144894,6 +144894,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-orchestrator-assigns-builds-steps-to-employee-ag--paulie, own login copy)",
      "at": "2026-11-10T18:53:13.628Z"
+    },
+    {
+     "text": "Phase 1 done (s1 contract, s2 store schema + migration) on Fable. The brief's read-first paths did not exist; built on the swarm chat engines (framework/core/engines) and builds-store-core. Migration on the real store: nothing to carry (no older assignedEmployee column existed), 4217 records untouched. No UI this phase.",
+     "at": "2026-11-10T19:23:43.565Z"
     }
    ],
    "approvals": [],
@@ -145210,7 +145214,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
