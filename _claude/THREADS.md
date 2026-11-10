@@ -772,8 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 15:10 UTC · `one-vps-plugin-everything-vps-in-one-place-gauge` note (all) · reconciler
-- 2026-11-10 15:11 UTC · `prompt-caching-and-batch-api-support-in-the-buil` → running, note (all) · pipeline
 - 2026-11-10 15:11 UTC · `prompt-caching-and-batch-api-support-in-the-buil` note (all) · orchestrator
 - 2026-11-10 15:15 UTC · `prompt-caching-and-batch-api-support-in-the-buil` s1 done, → running (all) · orchestrator
 - 2026-11-10 15:16 UTC · `prompt-caching-and-batch-api-support-in-the-buil` → queued, note (all) · pipeline
@@ -1172,6 +1170,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 18:11 UTC · `pass-approval-hook-deep-link-amberx-notification` branch claude/pass-approval-hook-deep-link-amberx-notification (all) · pipeline
 - 2026-11-10 18:11 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` PR #463 (all) · builds-live
 - 2026-11-10 18:11 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` note (all) · orchestrator
+- 2026-11-10 18:12 UTC · `pass-approval-hook-deep-link-amberx-notification` → running, note (all) · pipeline
+- 2026-11-10 18:12 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
 
 ## Token passes (log)
 
