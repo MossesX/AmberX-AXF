@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2348,
- "updatedAt": "2026-11-10T04:39:08.619Z",
+ "rev": 2349,
+ "updatedAt": "2026-11-10T04:39:24.245Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -5851,15 +5851,15 @@
    "title": "Asset Designer plugin (no-code)",
    "category": "Plugin",
    "detail": "No-code editors for nav menus, drawers, app menus, context menus, toolbars, layouts, style packs and color themes. Every asset validates against its schema before save. Adds a drawer asset type. Installed by default.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "plan",
    "pendingId": "asset-designer",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-18T04:10:00.000Z",
-   "updatedAt": "2026-11-10T04:35:30.072Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T04:39:20.621Z",
+   "builtAt": "2026-11-10T04:39:20.621Z",
    "notes": [
     {
      "text": "Superseded in part by build ui-asset-designer (Current, Nov 7 2026, Fable): the menu editor (s5), toolbar editor (s6) and the generic designer shell / storage / validation gate are built from scratch there (designer@1 host + add-ons, framework/spec/DESIGNER.md). What stays here: the drawer asset type (s7, s8), layout editor (s9), colour-theme editor (s10), style-theme editor (s11); build them on the designer@1 host when picked up.",
@@ -6238,7 +6238,7 @@
    },
    "kind": "build",
    "planRef": "x.assets.designer",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -12058,7 +12058,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-22T01:57:53.687Z",
-   "updatedAt": "2026-11-10T04:36:15.560Z",
+   "updatedAt": "2026-11-10T04:39:20.621Z",
    "builtAt": "",
    "notes": [
     {
@@ -12122,12 +12122,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T04:39:20.621Z",
      "note": "Audit: done — apps section in framework/spec/fixtures/hub-approvals.json",
-     "rev": 6,
+     "rev": 7,
      "createdAt": "2026-10-22T01:57:53.687Z",
-     "updatedAt": "2026-11-10T04:36:11.163Z"
+     "updatedAt": "2026-11-10T04:39:20.622Z"
     },
     {
      "id": "s3",
@@ -12204,7 +12204,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -14063,15 +14063,15 @@
    "title": "Walkthrough Studio: workspace engine (panes, layouts, dockable + floating toolbars) as a framework contract (Fable rebuild)",
    "category": "App",
    "detail": "Fable rebuild of the Opus build `walkthrough-studio` (branch claude/framework-walkthrough-video-builder-qocfr1; Brett Oct 22 2026: Fable was offered for new cross-app engines, Opus chosen). Lift the studio-local workspace (ui.ts: pane areas, layouts, floats; toolbars docked on any edge or floating, the command catalog + customizer; pointer DnD with the pop-up trash can) into framework/core + framework/react as an engine every app can use (asset types for workspace layouts and user toolbars?), with fixtures; then switch the studio onto it and remove its private copy. Android twin deferred (PORTING.md).",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "chat",
    "pendingId": "walkthrough-studio-fable",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-22T22:32:28.215Z",
-   "updatedAt": "2026-10-22T22:57:58.594Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T04:39:20.621Z",
+   "builtAt": "2026-11-10T04:39:20.621Z",
    "notes": [
     {
      "text": "Oct 22 2026: Opus harvested the studio into lib-dnd, lib-workspace, lib-datagrid, lib-tree, lib-recorder, lib-docstore + library@1 parts (pending walkthrough-harvest). This Fable rebuild now covers reviewing those libraries and the parts contract (Fable suggested, Opus chosen), plus the Kotlin twins once the Android hold lifts.",
@@ -14080,6 +14080,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Audit: superseded — Fable rebuild filed before the \"No Fable rebuilds\" rule (Oct 27 2026); the Opus build shipped (walkthrough-studio, complete)",
+     "at": "2026-11-10T04:39:20.621Z"
     }
    ],
    "approvals": [],
@@ -14238,7 +14242,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -15071,15 +15075,15 @@
    "title": "lib-hubstore as a cross-port contract (Fable rebuild)",
    "category": "Module",
    "detail": "Fable was offered for the voice notes / hub storage build and Opus was chosen (Oct 23 2026, branch claude/project-thread-l3b0qo). Start by reviewing/replacing the Opus lib-hubstore: hub-settings@1 + hub-table@1 frames as a fixture, a SettingsRegistry storage seam instead of mirroring, live follow via /data-events, Kotlin twin recorded (Android on hold).",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "chat",
    "pendingId": "hubstore-fable",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-23T12:30:10.672Z",
-   "updatedAt": "2026-10-24T15:07:33.295Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T04:39:20.621Z",
+   "builtAt": "2026-11-10T04:39:20.621Z",
    "notes": [
     {
      "text": "Oct 24 2026: lib-hubsync (framework/libs/hubsync) builds on lib-hubstore; Voice Vault carries a Kotlin twin in app code (sync/HubSync.kt). Fold both into the cross-port contract.",
@@ -15088,6 +15092,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Audit: superseded — Fable rebuild filed before the \"No Fable rebuilds\" rule (Oct 27 2026); the Opus build shipped",
+     "at": "2026-11-10T04:39:20.621Z"
     }
    ],
    "approvals": [],
@@ -15212,7 +15220,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -16547,19 +16555,23 @@
    "title": "Banner group window: Fable rebuild",
    "category": "Framework",
    "detail": "Rebuild of the Opus banner group (branch claude/project-thread-1d9f6k, BannerGroup.tsx). Start by replacing the Opus version. Fable suggested, Opus chosen.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "chat",
    "pendingId": "banner-group-fable",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-23T17:46:25.439Z",
-   "updatedAt": "2026-10-23T17:46:25.439Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T04:39:20.621Z",
+   "builtAt": "2026-11-10T04:39:20.621Z",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Audit: superseded — Fable rebuild filed before the \"No Fable rebuilds\" rule (Oct 27 2026); the Opus build shipped (banner-group, complete)",
+     "at": "2026-11-10T04:39:20.621Z"
     }
    ],
    "approvals": [],
@@ -16640,7 +16652,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -17162,19 +17174,23 @@
    "title": "Fable rebuild: banner working icon animation",
    "category": "Plugin",
    "detail": "Rebuild the Opus build (branch claude/project-thread-c4954d) of BannerIcon / workIcon / workAnim in framework BannerSettings: a runtime working signal on banners instead of per-plugin props, fixtures. Starts by replacing the Opus version.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "chat",
    "pendingId": "banner-working-icon-fable",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-23T17:50:04.987Z",
-   "updatedAt": "2026-10-23T17:50:04.987Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T04:39:20.621Z",
+   "builtAt": "2026-11-10T04:39:20.621Z",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Audit: superseded — Fable rebuild filed before the \"No Fable rebuilds\" rule (Oct 27 2026); the Opus build shipped (banner-working-icon, complete)",
+     "at": "2026-11-10T04:39:20.621Z"
     }
    ],
    "approvals": [],
@@ -17233,7 +17249,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -17413,15 +17429,15 @@
    "title": "Settings interface asset type (Fable rebuild)",
    "category": "Framework",
    "detail": "Fable was suggested for the settings asset type and Opus was chosen (Oct 23 2026, branch claude/project-thread-55oakl). Start by reviewing/replacing the Opus build: settings-ui@1 as a full cross-port contract, a validator check for groups/tabs in all three validators, Settings → Appearance preview of each settings asset, theme-manager / asset designer support, Kotlin twin recorded (Android on hold). Build together with patches-settings-banner-hide-fable (same settings code).",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "chat",
    "pendingId": "settings-asset-fable",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-23T18:22:53.000Z",
-   "updatedAt": "2026-11-03T14:24:44.230Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T04:39:20.621Z",
+   "builtAt": "2026-11-10T04:39:20.621Z",
    "notes": [
     {
      "text": "Oct 25 2026: shared-settings-interface (Opus) adds framework asset settings/console as the default for every web app with settings, a dedicated Appearance → Settings interface picker, and ships the same settings assets in every app. The Fable rebuild should keep those ids.",
@@ -17434,6 +17450,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Audit: superseded — Fable rebuild filed before the \"No Fable rebuilds\" rule (Oct 27 2026); the Opus build shipped (settings-asset, complete)",
+     "at": "2026-11-10T04:39:20.621Z"
     }
    ],
    "approvals": [],
@@ -17558,7 +17578,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -17947,19 +17967,23 @@
    "title": "Tab group asset + per-asset appearance tokens (Fable rebuild)",
    "category": "Framework",
    "detail": "Fable rebuild of the Opus build appearance-asset-tokens (branch claude/project-thread-g27t3y). Start by removing/replacing the Opus version.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "chat",
    "pendingId": "appearance-asset-tokens-fable",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-24T16:25:12.368Z",
-   "updatedAt": "2026-10-24T16:25:12.368Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T04:39:20.621Z",
+   "builtAt": "2026-11-10T04:39:20.621Z",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Audit: superseded — Fable rebuild filed before the \"No Fable rebuilds\" rule (Oct 27 2026); the Opus build shipped (appearance-asset-tokens, complete)",
+     "at": "2026-11-10T04:39:20.621Z"
     }
    ],
    "approvals": [],
@@ -18084,7 +18108,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -20462,19 +20486,23 @@
    "title": "Drag and snap widgets (Fable rebuild, with Kotlin twin)",
    "category": "Framework",
    "detail": "Fable rebuild of widget-arrange (Opus, PR #92, branch claude/project-thread-c4xw4s). Start by replacing the Opus version; review the arrangement layer as a cross-port contract and record/port the Kotlin WidgetEngine twin when Android is unpaused.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "chat",
    "pendingId": "widget-arrange-fable",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-25T20:59:28.940Z",
-   "updatedAt": "2026-10-25T20:59:28.940Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T04:39:20.621Z",
+   "builtAt": "2026-11-10T04:39:20.621Z",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Audit: superseded — Fable rebuild filed before the \"No Fable rebuilds\" rule (Oct 27 2026); the Opus build shipped (widget-arrange, complete)",
+     "at": "2026-11-10T04:39:20.621Z"
     }
    ],
    "approvals": [],
@@ -20577,7 +20605,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -21752,19 +21780,23 @@
    "title": "Banner text on one line (Fable rebuild)",
    "category": "Plugin",
    "detail": "Fable offered, Opus chosen. Replace the Opus build (branch claude/banner-one-line): per-plugin one-line CSS + the BannerFrame full-text tooltip. Consider one framework banner-row primitive every banner plugin uses, so one-line text is enforced in one place.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "chat",
    "pendingId": "banner-one-line-fable",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-26T23:31:24.530Z",
-   "updatedAt": "2026-10-26T23:31:24.530Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T04:39:20.621Z",
+   "builtAt": "2026-11-10T04:39:20.621Z",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Audit: superseded — Fable rebuild filed before the \"No Fable rebuilds\" rule (Oct 27 2026); the Opus build shipped (banner-one-line, complete)",
+     "at": "2026-11-10T04:39:20.621Z"
     }
    ],
    "approvals": [],
@@ -21823,7 +21855,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -21974,19 +22006,23 @@
    "title": "Banner settings Apply to all (Fable rebuild)",
    "category": "App",
    "detail": "Fable suggested, Opus chosen. Rebuild the Apply to all pane in framework/react/components/BannerSettings.tsx (Opus build: branch claude/banner-apply-all-keys-recheck). Replace the Opus version first; move the shared-value/Mixed rules into a pure engine with a fixture.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "chat",
    "pendingId": "banner-apply-all-fable",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-26T22:28:29.624Z",
-   "updatedAt": "2026-10-26T22:28:29.624Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T04:39:20.621Z",
+   "builtAt": "2026-11-10T04:39:20.621Z",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Audit: superseded — Fable rebuild filed before the \"No Fable rebuilds\" rule (Oct 27 2026); the Opus build shipped",
+     "at": "2026-11-10T04:39:20.621Z"
     }
    ],
    "approvals": [],
@@ -22045,7 +22081,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -23054,15 +23090,15 @@
    "title": "AmberX Design Package + Behaviour theme: Fable rebuild",
    "category": "App",
    "detail": "Fable rebuild of the Opus build on rebuild/design-package-opus (Fable suggested, Opus chosen). Starts by reading _claude/memory/docs/rebuilds/design-package.md and replacing the Opus build in place: same type names (design-package, behavior-theme), data format and setting keys unless the report says why. Wire the stored-only behaviour fields (windows.stack/minimize/snap, feedback.busyCursor) into the window manager, review the Settings → Appearance picker + Everything else container, screenshots before/after, differences report.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "chat",
    "pendingId": "design-package-fable",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-27T17:16:22.917Z",
-   "updatedAt": "2026-10-27T19:30:00.000Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T04:39:20.621Z",
+   "builtAt": "2026-11-10T04:39:20.621Z",
    "notes": [
     {
      "text": "Merged into enterprise-branding (Oct 27 2026); build it there.",
@@ -23079,6 +23115,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Audit: superseded — Fable rebuild filed before the \"No Fable rebuilds\" rule (Oct 27 2026); the Opus build shipped",
+     "at": "2026-11-10T04:39:20.621Z"
     }
    ],
    "approvals": [],
@@ -23269,7 +23309,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -27511,15 +27551,15 @@
    "title": "Background work scheduler",
    "category": "Kernel & engines",
    "detail": "WorkSpec / Worker / WorkRegistry contracts and a placeholder scheduler. Real implementation is WorkManager on Android.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-11-10T04:35:23.951Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T04:39:20.621Z",
+   "builtAt": "2026-11-10T04:39:20.621Z",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
@@ -27674,7 +27714,7 @@
    },
    "kind": "epic",
    "planRef": "x.work",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -40487,7 +40527,7 @@
    "title": "Element inspector (Android first)",
    "category": "Feature",
    "detail": "Brett, Oct 30 2026 (voice): Left click only. Press-drag: panel follows, live updates to element under pointer. Release closes. Double click pins; pinned panel drags and resizes. Current fields + size.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -40495,8 +40535,8 @@
    "pr": "#192",
    "priority": "P0",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-11-10T04:39:05.140Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T04:39:20.621Z",
+   "builtAt": "2026-11-10T04:39:20.621Z",
    "notes": [
     {
      "text": "Reconciler: PR #192; PR #192 names s1, s2, s4 done",
@@ -40627,7 +40667,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -40676,12 +40716,16 @@
    "branch": "claude/context-menu-editor",
    "pr": "",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-11-10T04:36:21.925Z",
+   "updatedAt": "2026-11-10T04:39:20.621Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Merged from build profile \"angel\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Audit: trimmed 1 done step(s) (s4) and 0 duplicate(s) (none) against main.",
+     "at": "2026-11-10T04:39:20.621Z"
     }
    ],
    "approvals": [],
@@ -40780,12 +40824,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T04:39:20.621Z",
      "note": "Audit: done — smart-menus (built Nov 3) ships Pinned sections in every app and context menu",
-     "rev": 6,
+     "rev": 7,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-11-10T04:36:22.631Z"
+     "updatedAt": "2026-11-10T04:39:20.622Z"
     },
     {
      "id": "s5",
@@ -40818,7 +40862,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -41039,19 +41083,23 @@
    "title": "Approve/Deny on every row",
    "category": "App",
    "detail": "Brett, Oct 30 2026 (voice): Visible on collapsed rows, big targets, green/red, title truncates first. Console, AmberX, axHub. On claude/veto-complete (#179).",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/approval-row-buttons",
    "pr": "",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-10-31T09:07:21.792Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T04:39:20.621Z",
+   "builtAt": "2026-11-10T04:39:20.621Z",
    "notes": [
     {
      "text": "Merged from build profile \"angel\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Audit: done — every open step has evidence on main",
+     "at": "2026-11-10T04:39:20.621Z"
     }
    ],
    "approvals": [],
@@ -41084,12 +41132,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 5,
+     "done": true,
+     "doneAt": "2026-11-10T04:39:20.621Z",
+     "note": "Audit: done — commit 9e4c268ab approval-row-buttons s1: Approve/Deny on every row (console + AmberX veto banner, AmberX title bar, axHub web)",
+     "rev": 6,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-11-07T10:46:39.420Z"
+     "updatedAt": "2026-11-10T04:39:20.622Z"
     },
     {
      "id": "s2",
@@ -41106,12 +41154,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 5,
+     "done": true,
+     "doneAt": "2026-11-10T04:39:20.621Z",
+     "note": "Audit: done — commit 56413535d approval-row-buttons s2: phone pass (44 px targets on phones, 32 px desktop; axHub held rows wrap under the title, Shelv",
+     "rev": 6,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-11-07T10:46:39.420Z"
+     "updatedAt": "2026-11-10T04:39:20.622Z"
     }
    ],
    "profiles": [
@@ -41122,7 +41170,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -87663,7 +87711,7 @@
    "title": "Build to-do sync plugin: build names + categories, live to-do checklists, Plan Studio plan per build with Planned & fixes and docs",
    "category": "Plugin",
    "detail": "Spec: /root/axf-builds/build-todo-sync/.brief.md (brief + 4 addenda). Agent Snap Sully. Branch claude/brett-todo-sync.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "code",
    "pendingId": "",
@@ -87671,7 +87719,7 @@
    "pr": "#333",
    "priority": "P0",
    "createdAt": "2026-11-04T18:24:34.029Z",
-   "updatedAt": "2026-11-10T04:35:54.516Z",
+   "updatedAt": "2026-11-10T04:39:08.950Z",
    "builtAt": "",
    "notes": [
     {
@@ -87910,7 +87958,7 @@
    },
    "kind": "build",
    "planRef": "build-names-live-to-do-checklists-build-manager-yxjz",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -104492,7 +104540,7 @@
    "branch": "claude/claude-settings-tabs-veto",
    "pr": "#371",
    "createdAt": "2026-11-07T00:13:39.002Z",
-   "updatedAt": "2026-11-09T00:10:02.704Z",
+   "updatedAt": "2026-11-10T04:39:20.621Z",
    "builtAt": "",
    "notes": [
     {
@@ -104502,6 +104550,10 @@
     {
      "text": "Watchdog: the session ended cleanly with 13 steps left; the next step runs on another model: queued for the next phase.",
      "at": "2026-11-09T00:10:02.704Z"
+    },
+    {
+     "text": "Audit: trimmed 0 done step(s) (none) and 8 duplicate(s) (s14, s17, s7, s7-1, s7-2, s8, s8-1, s8-2) against main.",
+     "at": "2026-11-10T04:39:20.621Z"
     }
    ],
    "approvals": [
@@ -104698,28 +104750,6 @@
      "updatedAt": "2026-11-07T00:50:11.241Z"
     },
     {
-     "id": "s14",
-     "uid": "st-mw5ose5l02d65z",
-     "title": "",
-     "text": "The approvals/veto policy settings are their own framework-level settings asset (settings-ui@1), owned by the framework, not the claude-settings plugin. Store: framework settings. Exposed on REST + MCP + CLI.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-07T00:50:11.152Z",
-     "updatedAt": "2026-11-07T00:50:11.241Z"
-    },
-    {
      "id": "s15",
      "uid": "st-mw5ose5l03ulwu",
      "title": "",
@@ -104764,28 +104794,6 @@
      "updatedAt": "2026-11-07T00:50:11.241Z"
     },
     {
-     "id": "s17",
-     "uid": "st-mw5ose5l05kk45",
-     "title": "",
-     "text": "BEFORE building the UI: submit 10 predicted screenshots (ui-review-predicted) of where/how Framework settings and the Approvals & veto settings sit in the main settings interface: e.g. own top-level Framework tab; a section inside General; a left-rail group; a settings home card; a gear in the banner; icon tabs top/left/right/bottom variants; a compact phone layout; a two-pane layout. Phone + desktop each.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-07T00:50:11.152Z",
-     "updatedAt": "2026-11-07T00:50:11.241Z"
-    },
-    {
      "id": "s18",
      "uid": "st-mw5ose5l06ojd4",
      "title": "",
@@ -104806,138 +104814,6 @@
      "rev": 1,
      "createdAt": "2026-11-07T00:50:11.152Z",
      "updatedAt": "2026-11-07T00:50:11.241Z"
-    },
-    {
-     "id": "s7",
-     "uid": "st-mw5orwzg012fgl",
-     "title": "",
-     "text": "Addendum 1: The approvals/veto policy settings are their own framework-level settings asset (settings-ui@1), owned by the framework, not the claude-settings plugin. Store: framework settings. Exposed on REST + MCP + CLI. Mounted in two places as the same asset: Framework settings and a tab in Claude settings. O",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-07T00:49:48.987Z",
-     "updatedAt": "2026-11-07T00:49:48.987Z"
-    },
-    {
-     "id": "s7-1",
-     "uid": "st-mw5orwzg02t4gt",
-     "title": "",
-     "text": "The approvals/veto policy settings are their own framework-level settings asset (settings-ui@1), owned by the framework, not the claude-settings plugin. Store: framework settings. Exposed on REST + MCP + CLI.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-07T00:49:48.987Z",
-     "updatedAt": "2026-11-07T00:49:48.987Z"
-    },
-    {
-     "id": "s7-2",
-     "uid": "st-mw5orwzg03ls7q",
-     "title": "",
-     "text": "Mounted in two places as the same asset: Framework settings and a tab in Claude settings. One source of truth.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-07T00:49:48.987Z",
-     "updatedAt": "2026-11-07T00:49:48.987Z"
-    },
-    {
-     "id": "s8",
-     "uid": "st-mw5orwzg04him0",
-     "title": "",
-     "text": "Addendum 2: BEFORE building the UI: submit 10 predicted screenshots (ui-review-predicted) of where/how Framework settings and the Approvals & veto settings sit in the main settings interface: e.g. own top-level Framework tab; a section inside General; a left-rail group; a settings home card; a gear in the banne",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-07T00:49:48.987Z",
-     "updatedAt": "2026-11-07T00:49:48.987Z"
-    },
-    {
-     "id": "s8-1",
-     "uid": "st-mw5orwzg05m9c0",
-     "title": "",
-     "text": "BEFORE building the UI: submit 10 predicted screenshots (ui-review-predicted) of where/how Framework settings and the Approvals & veto settings sit in the main settings interface: e.g. own top-level Framework tab; a section inside General; a left-rail group; a settings home card; a gear in the banner; icon tabs top/left/right/bottom variants; a compact phone layout; a two-pane layout. Phone + desktop each.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-07T00:49:48.987Z",
-     "updatedAt": "2026-11-07T00:49:48.987Z"
-    },
-    {
-     "id": "s8-2",
-     "uid": "st-mw5orwzg06hxrz",
-     "title": "",
-     "text": "Wait for Brett's pick in UI Review, then build that one. The 10 are mockups only, no code written for the losers.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-07T00:49:48.987Z",
-     "updatedAt": "2026-11-07T00:49:48.987Z"
     }
    ],
    "profiles": [
@@ -104948,7 +104824,7 @@
    },
    "kind": "build",
    "planRef": "claude-settings-tabs-veto",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -125379,12 +125255,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T00:47:08.187Z",
-   "updatedAt": "2026-11-09T00:48:38.808Z",
+   "updatedAt": "2026-11-10T04:39:20.621Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-09T00:48:38.808Z"
+    },
+    {
+     "text": "Audit: trimmed 0 done step(s) (none) and 3 duplicate(s) (s4-3, s5-4, s6-5) against main.",
+     "at": "2026-11-10T04:39:20.621Z"
     }
    ],
    "approvals": [],
@@ -125467,75 +125347,6 @@
      "rev": 1,
      "createdAt": "2026-11-09T00:48:39.428Z",
      "updatedAt": "2026-11-09T00:48:39.497Z"
-    },
-    {
-     "id": "s4-3",
-     "uid": "st-mw8jm46001il4k",
-     "title": "",
-     "text": "Today every orchestrator brief says 'read only the files listed' but lists no files. When the orchestrator splits a build into steps, it looks up the existing files each step will need (plugin folders, plugin.json, server/web entry points, schemas, the CLI/engine files it extends) from the plugin/UI registry, the Shipped features ledger and a quick grep, and writes them into the brief per step as 'Start with these files'. New files are not listed. Keep the list short (the files that matter, not whole folders). Also trim the brief: Brett's words once (not twice), steps, files, how to tick steps; drop boilerplate that doesn't apply to the step (look/token rules only for UI steps). Tests: brief template lists files per step; a UI step gets the look rules, a non-UI step doesn't; Brett's words appear once.",
-     "model": "Fable",
-     "why": "foundation words in the step",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-09T00:48:38.808Z",
-     "updatedAt": "2026-11-09T00:48:38.808Z"
-    },
-    {
-     "id": "s5-4",
-     "uid": "st-mw8jm460028jdn",
-     "title": "",
-     "text": "Better to have it list the files that it already knows it's gonna need, and then it can read those files and determine what to do. It will help it determine what to do.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-09T00:48:38.808Z",
-     "updatedAt": "2026-11-09T00:48:38.808Z"
-    },
-    {
-     "id": "s6-5",
-     "uid": "st-mw8jm46003wr1s",
-     "title": "",
-     "text": "Tests green, report _claude/builds/reports/briefs-list-the-existing-files-each-step-needs.md, THREADS row, commit, push, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [
-      "_claude/builds/reports/briefs-list-the-existing-files-each-step-needs.md",
-      "_claude/THREADS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-09T00:48:38.808Z",
-     "updatedAt": "2026-11-09T00:48:38.808Z"
     }
    ],
    "profiles": [
@@ -125546,7 +125357,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {

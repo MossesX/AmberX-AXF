@@ -771,25 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 00:07 UTC · `fix-it-yourself-rule-in-every-brief-and-session` branch claude/fix-it-yourself-rule-in-every-brief-and-session (all) · pipeline
-- 2026-11-10 00:07 UTC · `fix-it-yourself-rule-in-every-brief-and-session` note (all) · orchestrator
-- 2026-11-10 00:08 UTC · `assign-an-employee-to-every-role-action-type-and` s2 done (all) · orchestrator
-- 2026-11-10 00:08 UTC · `activity-monitor-plugin-live-plain-english-log-o` s1 done, → running (all) · orchestrator
-- 2026-11-10 00:09 UTC · `assign-an-employee-to-every-role-action-type-and` PR #419 (all) · builds-live
-- 2026-11-10 00:09 UTC · `assign-an-employee-to-every-role-action-type-and` note (all) · orchestrator
-- 2026-11-10 00:09 UTC · `assign-an-employee-to-every-role-action-type-and` s3 done, → built (all) · orchestrator
-- 2026-11-10 00:10 UTC · `walkthrough-player-ide-layout-setting-collapsibl` → running, note (all) · pipeline
-- 2026-11-10 00:10 UTC · `walkthrough-player-ide-layout-setting-collapsibl` branch claude/walkthrough-player-ide-layout-setting-collapsibl (all) · pipeline
-- 2026-11-10 00:10 UTC · `walkthrough-player-ide-layout-setting-collapsibl` note (all) · orchestrator
-- 2026-11-10 00:11 UTC · `fix-it-yourself-rule-in-every-brief-and-session` s1 done, → running (all) · orchestrator
-- 2026-11-10 00:12 UTC · `fix-it-yourself-rule-in-every-brief-and-session` s2 done (all) · orchestrator
-- 2026-11-10 00:13 UTC · `fix-it-yourself-rule-in-every-brief-and-session` branch claude/fix-it-yourself-rule-in-every-brief-and-session, PR #420 (all) · builds-live
-- 2026-11-10 00:14 UTC · `fix-it-yourself-rule-in-every-brief-and-session` s3 done, → complete (all) · orchestrator
-- 2026-11-10 00:14 UTC · `fix-it-yourself-rule-in-every-brief-and-session` → built, PR #420 (all) · builds-live
-- 2026-11-10 00:14 UTC · `fix-it-yourself-rule-in-every-brief-and-session` note (all) · orchestrator
-- 2026-11-10 00:14 UTC · `real-time-slot-tracking-stale-data-reaper` → queued, note (all) · console
-- 2026-11-10 00:16 UTC · `real-time-slot-tracking-stale-data-reaper` → running, note (all) · pipeline
-- 2026-11-10 00:16 UTC · `real-time-slot-tracking-stale-data-reaper` branch claude/real-time-slot-tracking-stale-data-reaper (all) · pipeline
 - 2026-11-10 00:16 UTC · `real-time-slot-tracking-stale-data-reaper` note (all) · orchestrator
 - 2026-11-10 00:16 UTC · `build-statuses-tell-the-truth-orchestrator-list` added (0 steps) (all) · console
 - 2026-11-10 00:16 UTC · `build-statuses-tell-the-truth-orchestrator-list` → queued, note (all) · console
@@ -1171,6 +1152,25 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 04:36 UTC · `axhub-web-hub-rules` note (all) · audit-pending-fable-builds-against-main-close-wh
 - 2026-11-10 04:36 UTC · `terminal-toolbar-responsive-overflow-every-item-` note (all) · audit-pending-fable-builds-against-main-close-wh
 - 2026-11-10 04:39 UTC · `element-inspector` → pending (all) · audit-pending-fable-builds-against-main-close-wh
+- 2026-11-10 04:39 UTC · `build-todo-sync` → pending (all) · audit-pending-fable-builds-against-main-close-wh
+- 2026-11-10 04:39 UTC · `asset-designer` → complete (all) · audit-pending-fable-builds-against-main-close-wh
+- 2026-11-10 04:39 UTC · `axhub-web-hub-rules` s2 done (all) · audit-pending-fable-builds-against-main-close-wh
+- 2026-11-10 04:39 UTC · `walkthrough-studio-fable` → complete, note (all) · audit-pending-fable-builds-against-main-close-wh
+- 2026-11-10 04:39 UTC · `hubstore-fable` → complete, note (all) · audit-pending-fable-builds-against-main-close-wh
+- 2026-11-10 04:39 UTC · `banner-group-fable` → complete, note (all) · audit-pending-fable-builds-against-main-close-wh
+- 2026-11-10 04:39 UTC · `banner-working-icon-fable` → complete, note (all) · audit-pending-fable-builds-against-main-close-wh
+- 2026-11-10 04:39 UTC · `settings-asset-fable` → complete, note (all) · audit-pending-fable-builds-against-main-close-wh
+- 2026-11-10 04:39 UTC · `appearance-asset-tokens-fable` → complete, note (all) · audit-pending-fable-builds-against-main-close-wh
+- 2026-11-10 04:39 UTC · `widget-arrange-fable` → complete, note (all) · audit-pending-fable-builds-against-main-close-wh
+- 2026-11-10 04:39 UTC · `banner-one-line-fable` → complete, note (all) · audit-pending-fable-builds-against-main-close-wh
+- 2026-11-10 04:39 UTC · `banner-apply-all-fable` → complete, note (all) · audit-pending-fable-builds-against-main-close-wh
+- 2026-11-10 04:39 UTC · `design-package-fable` → complete, note (all) · audit-pending-fable-builds-against-main-close-wh
+- 2026-11-10 04:39 UTC · `x.work` → complete (all) · audit-pending-fable-builds-against-main-close-wh
+- 2026-11-10 04:39 UTC · `element-inspector` → complete (all) · audit-pending-fable-builds-against-main-close-wh
+- 2026-11-10 04:39 UTC · `context-menu-editor` s4 done, note (all) · audit-pending-fable-builds-against-main-close-wh
+- 2026-11-10 04:39 UTC · `approval-row-buttons` s1 done, s2 done, → complete, note (all) · audit-pending-fable-builds-against-main-close-wh
+- 2026-11-10 04:39 UTC · `claude-settings-tabs-veto` note (all) · audit-pending-fable-builds-against-main-close-wh
+- 2026-11-10 04:39 UTC · `briefs-list-the-existing-files-each-step-needs` note (all) · audit-pending-fable-builds-against-main-close-wh
 
 ## Token passes (log)
 
