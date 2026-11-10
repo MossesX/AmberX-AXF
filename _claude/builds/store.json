@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2473,
- "updatedAt": "2026-11-10T16:41:53.894Z",
+ "rev": 2474,
+ "updatedAt": "2026-11-10T16:42:19.730Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -139187,12 +139187,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T16:40:38.588Z",
-   "updatedAt": "2026-11-10T16:40:44.352Z",
+   "updatedAt": "2026-11-10T16:42:17.833Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T16:40:44.352Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T16:42:17.833Z"
     }
    ],
    "approvals": [],
@@ -139219,13 +139223,89 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-10T16:42:17.833Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwax4dbd013fxi",
+     "title": "",
+     "text": "Amends the inline element editing build. 1) Install the plugin in the console, Molly and AmberX web. Not the AmberX Android app. 2) Molly rule for every plugin: when a console page is open inside Molly, render the console's plugin only if Molly doesn't already have that plugin, so nothing ever renders twice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T16:42:17.833Z",
+     "updatedAt": "2026-11-10T16:42:17.833Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwax4dbd02z40r",
+     "title": "",
+     "text": "I want it installed in console, Molly, AmberX, except for the Android app. When things are opened in Molly, none of the plugins need to render twice. Molly is only to render the console's plugin if Molly doesn't have it already.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T16:42:17.833Z",
+     "updatedAt": "2026-11-10T16:42:17.833Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwax4dbd03oqbn",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/inline-edit-plugin-install-in-console-molly-and.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/inline-edit-plugin-install-in-console-molly-and.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T16:42:17.833Z",
+     "updatedAt": "2026-11-10T16:42:17.833Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -139234,12 +139314,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T16:42:17.833Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
