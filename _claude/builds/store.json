@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2539,
- "updatedAt": "2026-11-10T17:20:45.254Z",
+ "rev": 2540,
+ "updatedAt": "2026-11-10T17:21:47.277Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -139876,10 +139876,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/enforce-the-merge-queue-every-finished-build-goe",
-   "pr": "",
+   "pr": "#456",
    "priority": "P0",
    "createdAt": "2026-11-10T16:43:57.553Z",
-   "updatedAt": "2026-11-10T17:19:29.599Z",
+   "updatedAt": "2026-11-10T17:21:45.829Z",
    "builtAt": "",
    "notes": [
     {
@@ -140014,7 +140014,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
