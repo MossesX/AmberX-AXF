@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2541,
- "updatedAt": "2026-11-10T17:21:56.528Z",
+ "rev": 2542,
+ "updatedAt": "2026-11-10T17:22:08.019Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -139879,7 +139879,7 @@
    "pr": "#456",
    "priority": "P0",
    "createdAt": "2026-11-10T16:43:57.553Z",
-   "updatedAt": "2026-11-10T17:21:45.829Z",
+   "updatedAt": "2026-11-10T17:22:06.035Z",
    "builtAt": "",
    "notes": [
     {
@@ -139897,6 +139897,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-enforce-the-merge-queue-every-finished-build-goe--sully, own login copy)",
      "at": "2026-11-10T17:02:12.507Z"
+    },
+    {
+     "text": "Headless run axf-enforce-the-merge-queue-every-finished-build-goe--sully: brief only · start 11.0K tokens ($0.03) · cost $6.47 · 119 turns · 6 tools, MCP none",
+     "at": "2026-11-10T17:22:06.035Z"
     }
    ],
    "approvals": [],
@@ -140014,7 +140018,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
