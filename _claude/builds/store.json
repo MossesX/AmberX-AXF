@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2302,
- "updatedAt": "2026-11-10T04:04:58.643Z",
+ "rev": 2303,
+ "updatedAt": "2026-11-10T04:05:25.116Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -135343,8 +135343,8 @@
    "pr": "#438",
    "priority": "P0",
    "createdAt": "2026-11-10T03:10:30.744Z",
-   "updatedAt": "2026-11-10T04:04:36.913Z",
-   "builtAt": "2026-11-10T04:04:36.913Z",
+   "updatedAt": "2026-11-10T04:05:01.206Z",
+   "builtAt": "2026-11-10T04:05:01.206Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -135371,12 +135371,16 @@
      "at": "2026-11-10T03:44:09.339Z"
     },
     {
+     "text": "Headless run axf-demo-designer-finish-phase-2-s2-s3-resuming-from--lenny: brief only · start 11.5K tokens ($0.03) · cost $1.39 · 47 turns · 6 tools, MCP none",
+     "at": "2026-11-10T04:03:45.090Z"
+    },
+    {
      "text": "Duplicate dispatch: two headless sessions were started on this build in the same worktree (Reel Rhonda 03:37, Landin' Lenny 03:44). Lenny stood down with no repo edits, no commits, no ticks and no UI Review submissions so Rhonda's run finishes the build. Lenny did verify Rhonda's uncommitted work: demonstration-designer test.mjs 22/22, agent-voice test.py 41/41, tsc clean, check-theme/controls/toolbars/chrome-assets clean, plugin-lifecycle clean for both plugins. Lenny also overwrote /tmp/dd2-shots.json and wrote settings shots into /tmp/dd2-out/after (same code, valid captures). Dispatcher should guard against a second launch on a build that already has a live session.",
      "at": "2026-11-10T04:03:31.787Z"
     },
     {
-     "text": "Headless run axf-demo-designer-finish-phase-2-s2-s3-resuming-from--lenny: brief only · start 11.5K tokens ($0.03) · cost $1.39 · 47 turns · 6 tools, MCP none",
-     "at": "2026-11-10T04:03:45.090Z"
+     "text": "Reconciler: PR #438; PR #438 names s2, s3 done",
+     "at": "2026-11-10T04:05:01.206Z"
     }
    ],
    "approvals": [],
@@ -135454,11 +135458,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-10T04:04:34.782Z",
-     "note": "",
+     "doneAt": "2026-11-10T04:05:01.206Z",
+     "note": "PR #438 (claude/demo-designer-finish-phase-2-s2-s3-resuming-from)",
      "rev": 2,
      "createdAt": "2026-11-10T03:12:10.221Z",
-     "updatedAt": "2026-11-10T04:04:34.986Z"
+     "updatedAt": "2026-11-10T04:05:01.262Z"
     },
     {
      "id": "s3",
@@ -135479,11 +135483,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-10T04:04:36.913Z",
-     "note": "",
+     "doneAt": "2026-11-10T04:05:01.206Z",
+     "note": "PR #438 (claude/demo-designer-finish-phase-2-s2-s3-resuming-from)",
      "rev": 2,
      "createdAt": "2026-11-10T03:12:10.221Z",
-     "updatedAt": "2026-11-10T04:04:37.262Z"
+     "updatedAt": "2026-11-10T04:05:01.262Z"
     }
    ],
    "profiles": [
