@@ -15,7 +15,6 @@
     "skin": "gizmox-console",
     "branding": "gizmox-brand-006",
     "slots": {
-      "style-package": "gizmo-console",
       "toolbar": "developer-ops",
       "nav-menu": "developer-rail",
       "context-menu": "developer-tools"

@@ -108,7 +108,7 @@ for (const a of starters) eq(validateAsset(a).errors, [], `interface/${a.id} val
   rt.setRole('admin');
   const before = { ...rt.getState().active };
   let looked = 0;
-  const offLook = rt.onLookApplied(() => { looked++; });
+  const offLook = rt.onLookApplied((ev) => { if (ev.kind === 'skin') looked++; }); // the 'hub' event of the re-applied look is not an apply
   ok(v.applySkin('midnight-pro'), 'skin applied through a scope');
   const after = rt.getState().active as Record<string, string>;
   ok(after['color-theme'] === 'midnight-ink' && after['style-theme'] === 'glass-orbit' && rt.appliedSkin() === 'midnight-pro', 'the app takes the skin\'s sections and the skin is in force');

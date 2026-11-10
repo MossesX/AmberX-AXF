@@ -160,23 +160,24 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   ok(!/plugins\//.test(app), 'no console plugin is imported');
 }
 
-// Enterprise design language + branding (enterprise-branding s31, Oct 28 2026): the app names its own design package
-// and the AmberX branding package; every asset they name ships with the app, and the banner stays one line (§11).
+// Enterprise design language + branding (enterprise-branding s31, Oct 28 2026; skins since Nov 10 2026): the app names
+// its own skins and the AmberX branding package; every asset they name ships with the app, and the banner stays one line (§11).
 {
   const { readFileSync, existsSync } = await import('node:fs');
   const here = new URL('.', import.meta.url).pathname;
   const man = JSON.parse(readFileSync(`${here}axf.manifest.json`, 'utf8'));
   const read = (t, id) => mine.get(`${t}/${id}`).asset;
-  // Nov 1 2026 (Brett): every app inherits one default look from axHub, the Hub Default design theme; AmberX's own
-  // day/night packages still ship and can be picked.
-  eq(man.defaults['design-package'], 'hub-default', 'default design package is Hub Default (shared by every app)');
-  { const hd = read('design-package', 'hub-default').data; for (const t of ['style-theme', 'color-theme']) eq(man.defaults[t], hd[t], `default ${t} matches the default design package`); }
+  // Nov 1 2026 (Brett): every app inherits one default look from axHub, the Hub Default skin; AmberX's own
+  // day/night skins (the former design packages, same ids) still ship and can be picked.
+  eq(man.defaults.skin, 'hub-default', 'default skin is Hub Default (shared by every app)');
+  ok(!('design-package' in man.defaults) && !('style-package' in man.defaults), 'no retired package in the defaults');
+  { const hd = read('skin', 'hub-default').data; for (const [t, f] of [['style-theme', 'styleTheme'], ['color-theme', 'colorTheme']]) eq(man.defaults[t], hd[f], `default ${t} matches the default skin's section`); }
   eq(man.defaults.branding, 'amberx-app', 'default branding is the AmberX app branding package');
   for (const id of ['amberx-app-day', 'amberx-app-night']) {
-    ok(mine.has(`design-package/${id}`), `ships design-package/${id}`);
-    const d = read('design-package', id).data;
-    for (const t of ['style-theme', 'color-theme', 'layout', 'behavior-theme']) ok(mine.has(`${t}/${d[t]}`), `${id}: ${t} ${d[t]} ships`);
-    for (const [t, sid] of Object.entries(d.extras?.slots ?? {})) ok(mine.has(`${t}/${sid}`), `${id}: ${t} ${sid} ships`);
+    ok(mine.has(`skin/${id}`), `ships skin/${id}`);
+    const d = read('skin', id).data;
+    for (const [t, f] of [['style-theme', 'styleTheme'], ['color-theme', 'colorTheme'], ['layout', 'layoutTheme'], ['behavior-theme', 'behaviorTheme']]) if (d[f]) ok(mine.has(`${t}/${d[f]}`), `${id}: ${t} ${d[f]} ships`);
+    for (const [t, sid] of Object.entries(d.assets ?? {})) ok(mine.has(`${t}/${sid}`), `${id}: ${t} ${sid} ships`);
   }
   const b = read('branding', 'amberx-app').data;
   for (const [slot, mode] of Object.entries({ banner: 'lockup', toolbar: 'none', container: 'none', 'tab-group': 'none', dialog: 'mark', window: 'mark' })) eq(b.decorations[slot], mode, `brand ${slot} = ${mode} (DESIGN-LANGUAGE §10)`);
@@ -196,7 +197,7 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
 }
 
 // Windows (enterprise-branding s32): any page opens in a floating window on the framework's window engine, and the
-// app's dialogs, containers, tab groups and popups are the Amber Signature set the design package names.
+// app's dialogs, containers, tab groups and popups are the Amber Signature set the skin names.
 {
   const { readFileSync } = await import('node:fs');
   const here = new URL('.', import.meta.url).pathname;

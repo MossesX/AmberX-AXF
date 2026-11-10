@@ -1,7 +1,7 @@
 /**
  * The console is a developer app (Brett's decision, Oct 20 2026): its look and settings come from axHub's data server
  * (`shared/settings/appearance.json`, framework `HubAppearanceSource`), it waits for the hub instead of running
- * without it, and every change made here (Settings → Appearance, the theme manager, a roll) is saved there, so every
+ * without it, and every change made here (Settings → Appearance, a skin, a roll) is saved there, so every
  * other developer app (the AXHub phone app, the Android console, axHub's own pages) follows it live.
  *
  * The hub's address comes from the console server (`GET /api/me` → `hub`, the same AXF_WALL_HUB the wall uses), so a
@@ -72,7 +72,7 @@ function HubLookPanel() {
         {st?.status === 'unauthorized' && <Chip tone="warning">{st.reason}</Chip>}
         {st?.status === 'unreachable' && <Chip tone="danger">unreachable · {st.reason}</Chip>}
       </div>
-      <p className="fx-muted">Design packages: Settings → Appearance → AmberX Design Package.</p>
+      <p className="fx-muted">Skins: Settings → Appearance → Skin.</p>
       {skipped.length > 0 && (
         <p className="fx-small fx-muted" style={{ margin: 0 }}>
           Saved on the hub but not in this app (that slot keeps this app's default): {skipped.join(', ')}.

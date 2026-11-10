@@ -3,11 +3,10 @@
     "active": {
       "toolbar": "tb-b",
       "nav-menu": "nav-a",
-      "style-theme": "fresh",
       "color-theme": "light",
+      "style-theme": "fresh",
       "layout": "classic",
       "behavior-theme": "standard",
-      "design-package": "fresh",
       "banner": "thin",
       "branding": "amberx"
     },
@@ -23,13 +22,13 @@
       }
     },
     "branding": "amberx",
-    "design": "fresh",
+    "skin": "fresh",
     "missing": [
       "banner/gone"
     ]
   },
   "capture": {
-    "design": "fresh",
+    "skin": "fresh",
     "branding": "amberx",
     "slots": {
       "toolbar": "tb-b"

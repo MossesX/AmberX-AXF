@@ -51,7 +51,6 @@
     "uac-policy": "standard",
     "skin": "hub-default",
     "branding": "amberx-app",
-    "style-package": "amber-signature",
     "typography": "compact",
     "density": "compact",
     "sizing": "compact"

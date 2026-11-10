@@ -15,7 +15,6 @@
     "skin": "amberx-signature-day",
     "branding": "amberx-brand-014",
     "slots": {
-      "style-package": "amber-signature",
       "toolbar": "amberx-signature",
       "nav-menu": "amber-signature",
       "context-menu": "appearance-quick"
