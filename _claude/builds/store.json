@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2701,
- "updatedAt": "2026-11-10T18:53:05.201Z",
+ "rev": 2702,
+ "updatedAt": "2026-11-10T18:53:16.379Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -144569,15 +144569,15 @@
    "title": "Orchestrator assigns builds/steps to employee agents via group chat, with match % dialog and 90 s veto",
    "category": "",
    "detail": "1) When the orchestrator assigns a build or step, it posts in the group chat asking which employee has the skills/tools/capabilities. 2) The first agent to claim it opens a dialog listing all matching agents with a percentage for how likely each is the best choice. 3) 90-second veto: if Brett doesn't pick, the orchestrator assigns the highest-probability agent by default. 4) The chosen employee uses its own brief set and its training data in the brief, and sends its briefs back to the orchestrator. Builds on orchestrator-table-columns (assigned employee) and the Brownie/Molly group chat handoffs; reuse. Full API/CLI control.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/orchestrator-assigns-builds-steps-to-employee-ag",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T16:28:04.849Z",
-   "updatedAt": "2026-11-10T17:56:44.230Z",
+   "updatedAt": "2026-11-10T18:53:13.628Z",
    "builtAt": "",
    "notes": [
     {
@@ -144591,6 +144591,14 @@
     {
      "text": "Split by Claude into 10 steps (2 Fable).",
      "at": "2026-11-10T17:56:44.230Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-orchestrator-assigns-builds-steps-to-employee-ag--paulie.",
+     "at": "2026-11-10T18:53:11.166Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-orchestrator-assigns-builds-steps-to-employee-ag--paulie, own login copy)",
+     "at": "2026-11-10T18:53:13.628Z"
     }
    ],
    "approvals": [],
@@ -144601,8 +144609,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "orchestrator-assigns-builds-steps-to-employee-ag",
+    "brief": "# Build: orchestrator-assigns-builds-steps-to-employee-ag\n\n## Brett said (verbatim)\nAt: 2026-11-10T16:28:04.849Z\n> When the orchestrator assigns builds or steps they are sent to the right employee who has its own set of briefs to send back to the orchestrator and uses the employee data in the brief. In the group chat the orchestrator asks if anyone can do something, if they have skills or tools or capabilities; the first one to take it opens a dialog listing all the matching agents with a percentage of each one being the best choice for the job. After the 90 second veto it chooses the best probable one by default.\n\n## What to build\nContinue build \"Orchestrator assigns builds/steps to employee agents via group chat, with match % dialog and 90 s veto\" (orchestrator-assigns-builds-steps-to-employee-ag) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 16:28):\n\"When the orchestrator assigns builds or steps they are sent to the right employee who has its own set of briefs to send back to the orchestrator and uses the employee data in the brief. In the group chat the orchestrator asks if anyone can do something, if they have skills or tools or capabilities; the first one to take it opens a dialog listing all the matching agents with a percentage of each one being the best choice for the job. After the 90 second veto it chooses the best probable one by default.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (2 left, ~50 min):\n[ ] s1 (~25 min) Design the assignment contract shared by orchestrator, group chat and employee agents: message types for ask (build/step id, required skills/tools/capabilities), claim (first claimer opens the dialog), candidate list with match %, veto window (90 s, deadline timestamp), pick (Brett or default), and brief return (employee brief set to orchestrator). Write it as a versioned contract doc plus JSON schema; reuse the Brownie/Molly handoff envelope instead of a new one.\n[ ] s2 (~25 min) Schema and migration for assignment state: per build/step record with candidates[] {employee, match %, reasons}, claimedBy, vetoDeadline, pickedBy (brett|default), assignedEmployee, and returned brief refs. Extend the orchestrator table's assigned-employee column data instead of adding a parallel store; migrate existing orchestrator.json entries (assignedEmployee stays, new fields empty).\nRead first: _claude/builds/contracts/assignment@1.md, _claude/builds/contracts/assignment@1.schema.json, apps/console-web/plugins/group-chat/handoff.mjs, _claude/builds/orchestrator.json, apps/console-web/plugins/orchestrator/schema.mjs, apps/console-web/plugins/orchestrator/migrations/\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step orchestrator-assigns-builds-steps-to-employee-ag <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link orchestrator-assigns-builds-steps-to-employee-ag --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Tick every step as you finish it (orchestrator.mjs act step orchestrator-assigns-builds-steps-to-employee-ag <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note orchestrator-assigns-builds-steps-to-employee-ag \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -144610,12 +144618,12 @@
    "pipeline": {
     "queuedAt": "2026-11-10T16:28:06.356Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-orchestrator-assigns-builds-steps-to-employee-ag--paulie",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "launchedAt": "2026-11-10T18:53:10.823Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T16:29:21.276Z",
@@ -144625,9 +144633,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-10T18:53:10.823Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -144636,7 +144644,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "2026-11-10T18:53:10.823Z"
    },
    "steps": [
     {
@@ -144907,7 +144915,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

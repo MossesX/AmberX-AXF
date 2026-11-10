@@ -772,9 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 15:37 UTC · `molly-fable-version-the-one-interface-for-amberx` note (all) · orchestrator
-- 2026-11-10 15:38 UTC · `search-bar-plugin-add-on-search-builds-session-h` note (all) · orchestrator
-- 2026-11-10 15:38 UTC · `molly-fable-version-the-one-interface-for-amberx` note (all) · orchestrator
 - 2026-11-10 15:38 UTC · `projects-create-a-new-project-and-move-builds-be` added (0 steps) (all) · console
 - 2026-11-10 15:39 UTC · `skins-as-packages-of-slices-every-section-its-ow` → running, note (all) · pipeline
 - 2026-11-10 15:39 UTC · `skins-as-packages-of-slices-every-section-its-ow` note (all) · orchestrator
@@ -1172,6 +1169,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 18:51 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · orchestrator
 - 2026-11-10 18:52 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · foreign-write
 - 2026-11-10 18:52 UTC · `appearance-skins-colour-themes-only-remove-design-packs` note (all) · orchestrator
+- 2026-11-10 18:53 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` → running, note (all) · pipeline
+- 2026-11-10 18:53 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` branch claude/orchestrator-assigns-builds-steps-to-employee-ag (all) · pipeline
+- 2026-11-10 18:53 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` note (all) · orchestrator
 
 ## Token passes (log)
 
