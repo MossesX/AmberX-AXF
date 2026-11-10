@@ -783,20 +783,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 17:38 UTC · `plugin-appearance-save-button-for-custom-looks-n` added (0 steps) (all) · console
-- 2026-11-10 17:39 UTC · `plugin-appearance-save-button-for-custom-looks-n` note (all) · orchestrator
-- 2026-11-10 17:39 UTC · `skins-are-a-complete-rework-look-layout-behavior` note (all) · builds-live
-- 2026-11-10 17:39 UTC · `retire-build-manager-the-orchestrator-is-the-onl` → complete, merged, note (all) · builds-live
-- 2026-11-10 17:39 UTC · `skins-consistent-across-plugins-full-state-saves` added (0 steps) (all) · console
-- 2026-11-08 21:15 UTC · `nested-menus-for-console-amberx-and-molly-overri` note (all) · orchestrator
-- 2026-11-10 17:38 UTC · `retire-build-manager-the-orchestrator-is-the-onl` → complete, merged, note (all) · reconciler
-- 2026-11-10 17:39 UTC · `skins-are-a-complete-rework-look-layout-behavior` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
-- 2026-11-10 17:40 UTC · `reserve-build-ids-at-once-add-returns-the-id-wit` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
-- 2026-11-10 17:40 UTC · `skins-consistent-across-plugins-full-state-saves` note (all) · orchestrator
-- 2026-11-10 17:40 UTC · `skin-rule-overrides-are-local-only-global-change` added (0 steps) (all) · console
-- 2026-11-10 17:41 UTC · `skin-rule-overrides-are-local-only-global-change` added (0 steps) (all) · builds-live
-- 2026-11-10 17:41 UTC · `permissions-control-panel-every-axhub-tool-s-pol` note (all) · builds-live
-- 2026-11-10 17:41 UTC · `permissions-control-panel-every-axhub-tool-s-pol` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-10 17:41 UTC · `skin-rule-overrides-are-local-only-global-change` note (all) · orchestrator
 - 2026-11-10 17:42 UTC · `apply-skin-dialog-tree-of-everything-overridden` added (0 steps) (all) · console
 - 2026-11-10 17:42 UTC · `fix-the-orchestrator-s-splitter-claude-print-get` PR #460 (all) · builds-live
@@ -1183,6 +1169,20 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 21:45 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` added (0 steps) (all) · console
 - 2026-11-10 21:45 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` → queued, note (all) · console
 - 2026-11-10 21:46 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` added (0 steps) (all) · builds-live
+- 2026-11-10 21:47 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` note (all) · orchestrator
+- 2026-11-10 21:47 UTC · `finish-and-land-the-git-status-board-every-ready` note (all) · pipeline
+- 2026-11-10 21:47 UTC · `asset-overrides-changed-asset-settings-override` added (0 steps) (all) · console
+- 2026-11-10 21:47 UTC · `asset-overrides-changed-asset-settings-override` → queued, note (all) · console
+- 2026-11-10 21:47 UTC · `convert-every-app-into-a-molly-module-expenses-c` → running, note (all) · pipeline
+- 2026-11-10 21:47 UTC · `convert-every-app-into-a-molly-module-expenses-c` branch claude/convert-every-app-into-a-molly-module-expenses-c (all) · pipeline
+- 2026-11-10 21:47 UTC · `convert-every-app-into-a-molly-module-expenses-c` note (all) · orchestrator
+- 2026-11-10 21:47 UTC · `no-veto-timer-on-navigation-follow-amber-open-x` PR #476 (all) · builds-live
+- 2026-11-10 21:47 UTC · `no-veto-timer-on-navigation-follow-amber-open-x` s3 done, → built (all) · orchestrator
+- 2026-11-10 21:48 UTC · `no-veto-timer-on-navigation-follow-amber-open-x` note (all) · orchestrator
+- 2026-11-10 21:48 UTC · `asset-overrides-changed-asset-settings-override` note (all) · orchestrator
+- 2026-11-10 21:48 UTC · `convert-every-app-into-a-molly-module-expenses-c` → running, note (all) · pipeline
+- 2026-11-10 21:48 UTC · `convert-every-app-into-a-molly-module-expenses-c` note (all) · orchestrator
+- 2026-11-10 21:48 UTC · `convert-every-app-into-a-molly-module-expenses-c` note (all) · orchestrator
 
 ## Token passes (log)
 

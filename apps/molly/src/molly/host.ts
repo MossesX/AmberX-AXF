@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import type { ViewMap } from '../axf/react';
 import { mollyApp, type MollyApp } from './apps';
+import { CredentialSeam, type AppConnection, type AuthProvider, type SeamDeps } from './credentials';
 
 /**
  * Molly's extension points for its plugins (plugins/<folder>/web, loaded by App.tsx without naming them). Each one is
@@ -38,8 +39,32 @@ export function clearMollyHooks(owner: string): void {
     owners.delete(k); any = true;
     if (k === 'views') hooks.views = {}; else (hooks as unknown as Record<string, unknown>)[k] = null;
   }
+  seam?.clearOwner(owner);
   if (any) changed();
 }
+
+/**
+ * The credential seam (molly/credentials.ts): per app, the API base in force and the provider that signs a call
+ * (console token, hub session, Expenses session). Molly attaches it at start with its settings; a native screen calls
+ * `mollyApi('console').call('builds')` or `mollyFetch('axhub', 'auth/api/session')` and never sees a token or a cookie;
+ * a plugin may supply an app's provider (`setAuthProvider`), restored when the plugin is switched off.
+ */
+let seam: CredentialSeam | null = null;
+export function attachMollyCredentials(deps: SeamDeps): CredentialSeam { seam = new CredentialSeam(deps); return seam; }
+export function mollyCredentials(): CredentialSeam {
+  if (!seam) throw new Error('Molly has not attached its credentials yet (attachMollyCredentials runs in main.tsx).');
+  return seam;
+}
+/** `app`'s provider in force, or null for an app Molly doesn't hold. */
+export const mollyAuth = (app: string): AuthProvider | null => mollyCredentials().provider(app);
+/** fetch on `app`'s API with its credentials. */
+export const mollyFetch = (app: string, path: string, init?: RequestInit) => mollyCredentials().fetch(app, path, init);
+/** The framework API client over `app`'s credentials. */
+export const mollyApi = (app: string) => mollyCredentials().api(app);
+/** Every app's connection as last checked. */
+export const mollyConnections = (): AppConnection[] => mollyCredentials().connections();
+/** A plugin (`owner`) supplies `app`'s provider; returns the function that restores the default. */
+export const setAuthProvider = (owner: string, app: string, provider: AuthProvider): (() => void) => mollyCredentials().set(owner, app, provider);
 
 /** The app a Molly view belongs to: the app's own view (`console`) or one of its pages (`console/nav:build`). */
 export function appOfView(view: string | null | undefined): MollyApp | undefined {

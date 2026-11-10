@@ -16,6 +16,18 @@ Big Dog profile, Opus; a Fable version comes later as its own build).
   menu and toolbar (`src/assets/*/molly.json`). The app list is `src/molly/apps.ts`.
 - For development, `localStorage['molly.surface.<app>']` points an app at another surface module (https or localhost).
 
+- **Credentials** (`src/molly/credentials.ts`, molly-credentials@1): per app, the API base in force and the provider
+  that signs a call, so a native screen reaches an app's backend from Molly's address without knowing its sign-in:
+  the Console by its token (kept in this browser for Molly's origin), axHub by the browser's hub session (CSRF on
+  writes), Expenses by its session or a pasted API token, AmberX nothing. `mollyApi(app)` / `mollyFetch(app, path)`
+  from `src/molly/host.ts`; `molly.auth.<app>.base` overrides a base; a plugin may supply a provider
+  (`setAuthProvider`). Actions `molly.auth.status` / `check` / `sign-in` / `sign-out` / `base` do everything without
+  a screen. Today each app's server still has to allow Molly's origin (listed as their own builds).
+- **App connections** (`src/molly/Connections.tsx`): the one sign-in screen, in the systems check's look (a row per app:
+  status, how it signs in, one line; open a row to paste a token, sign in on the app's page, sign out or check again),
+  and Settings → App connections (status, API addresses). Deep link `#/connections[/<app>]`, `molly.auth.open[:app]`,
+  navigation and the Molly menu; every button runs a `molly.auth.*` action (`molly.auth.user:<app>[:name]` sets the user
+  an Expenses token acts as).
 - **Plugins** live in `plugins/<folder>/` (found by folder: `plugins/*/web/index.tsx` exporting `plugin`; deleting a
   folder removes it) and change Molly only through `src/molly/host.ts` (what an app's view shows, extra views, capability services).
 - **xLayout** (`plugins/xlayout`, asset `src/assets/xlayout/molly.json`): Molly as ONE app. IDE mode puts the apps' screens in

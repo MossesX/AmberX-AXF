@@ -36,3 +36,13 @@ export function deepLink(hash: string): { app: MollyApp; src: string } | null {
   const route = parts.slice(1).join('/');
   return { app, src: route ? `${app.url}/#/${route}` : app.url };
 }
+
+/** Molly's own pages that take a deep link (`#/<page>[/<app>]`), e.g. `#/connections/console`. */
+export const MOLLY_PAGES: readonly string[] = ['connections'];
+
+/** `#/<page>[/<app>]` → the page and the app it is about ('' when none or not a Molly app). */
+export function pageLink(hash: string): { view: string; app: string } | null {
+  const [view = '', app = ''] = hash.replace(/^#\/?/, '').split('/');
+  if (!MOLLY_PAGES.includes(view)) return null;
+  return { view, app: mollyApp(app) ? app : '' };
+}
