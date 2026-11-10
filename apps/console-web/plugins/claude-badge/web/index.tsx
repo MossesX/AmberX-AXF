@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import type { AxfRuntime } from '@console/axf/core';
-import { Button, Chip, Icon, Meter, useIsPhone } from '@console/axf/react';
+import { Button, Chip, Container, Icon, Meter, useIsPhone } from '@console/axf/react';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
@@ -417,7 +417,11 @@ export const plugin: AxfWebLibrary = {
   provides: ['banner.badge.claude', 'banner.badge.claude-vps', 'banner.badge.axhub', 'banner.badge.amberx-phone', 'banner.badge.claude-usage'],
   // Only badges on the app's banner: inside a host that hides the banner it isn't loaded (embed@1 skipWhen).
   embed: { skipWhen: ['hidden:banner'] },
-  slots: { 'app.frame.cover': [{ id: 'claude-badge.drop', order: 97, render: () => <Drop /> }] },
+  slots: {
+    'app.frame.cover': [{ id: 'claude-badge.drop', order: 97, render: () => <Drop /> }],
+    // the VPS plugin's VPS tools tab (slot vps.tools): the Claude Code login check on the VPS, the same panel and store
+    'vps.tools': [{ id: 'claude-badge.vps', order: 10, render: () => (runtime ? <Container title="Claude Code login on the VPS" icon="cloud" collapsible defaultOpen={false}><VpsPanel rt={runtime} /></Container> : null) }],
+  },
   register(rt) {
     runtime = rt;
     moveHubBadge(rt);

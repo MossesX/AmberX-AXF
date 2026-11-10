@@ -225,6 +225,8 @@ export const plugin: AxfWebLibrary = {
   ],
   slots: {
     'activity.summary': [{ id: 'agent-slots.summary', render: () => <SummaryChip /> }],
+    // the VPS plugin's VPS tools tab: the agent cap, memory guard and swap warning live with the other VPS settings too
+    'vps.tools': [{ id: 'agent-slots.vps', order: 20, render: () => <Container title="Agent cap, memory guard and queue" icon="layers" collapsible defaultOpen={false}><div className="fx-stack"><SettingsPanel /><QueuePanel /></div></Container> }],
     'builds.top': [{ id: 'agent-slots.queue', render: () => <QueuePanel /> }],
     'build.queue.top': [{ id: 'agent-slots.build-queue', render: () => <QueuePanel /> }], // the real queue, on the Build queue screen
     // the Breakroom (agent swarm) settings show the same panel: one store, so a change in either place is the same change

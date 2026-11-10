@@ -1,4 +1,5 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
+import { Container } from '@console/axf/react';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { FOLDER, ID } from './api';
 import { AuditPanel, BatchesPanel, ContainersPanel, ProtectionPanel, StatusPanel } from './panels';
@@ -16,6 +17,8 @@ export const plugin: AxfWebLibrary = {
   appMenu,
   provides: ['axf.container-access'],
   settingsTabs: [{ id: 'container-access', label: 'Container access', icon: 'box', parent: 'plugins', order: 40, description: 'Which containers on the VPS the console can reach, the protected list, change batches waiting for approval and the audit log.' }],
+  // the VPS plugin's VPS tools tab: the containers the console can reach, next to the other VPS parts
+  slots: { 'vps.tools': [{ id: 'container-access.vps', order: 30, render: () => <Container title="Containers the console can reach" icon="box" collapsible defaultOpen={false}><div className="fx-stack"><StatusPanel /><ContainersPanel /></div></Container> }] },
   settingsPanels: [
     { id: 'container-access.status', tab: 'container-access', title: 'Connection', icon: 'zap', order: 10, render: () => <div className="axp-container-access"><StatusPanel /></div> },
     { id: 'container-access.batches', tab: 'container-access', title: 'Changes waiting for approval', icon: 'shield', order: 20, render: () => <div className="axp-container-access"><BatchesPanel /></div> },
