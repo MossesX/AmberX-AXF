@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T19:31:38.657Z",
+ "updatedAt": "2026-11-10T19:31:49.812Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -91724,7 +91724,7 @@
    "pr": "#466",
    "priority": "P0",
    "createdAt": "2026-11-10T17:11:27.008Z",
-   "updatedAt": "2026-11-10T19:31:24.543Z",
+   "updatedAt": "2026-11-10T19:31:39.687Z",
    "builtAt": "2026-11-10T19:31:24.543Z",
    "notes": [
     {
@@ -91762,6 +91762,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skin-checker-flags-anything-that-breaks-a-profes--joey, own login copy)",
      "at": "2026-11-10T18:38:13.037Z"
+    },
+    {
+     "text": "Headless run axf-skin-checker-flags-anything-that-breaks-a-profes--joey: brief only · start 12.2K tokens ($0.03) · cost $13.88 · 207 turns · 6 tools, MCP none",
+     "at": "2026-11-10T19:31:39.687Z"
     }
    ],
    "approvals": [
