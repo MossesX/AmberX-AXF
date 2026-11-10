@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T04:18:10.739Z",
+ "updatedAt": "2026-11-10T04:18:22.758Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -83523,8 +83523,8 @@
    "pr": "#439",
    "priority": "P0",
    "createdAt": "2026-11-10T03:11:27.944Z",
-   "updatedAt": "2026-11-10T04:17:53.405Z",
-   "builtAt": "2026-11-10T04:17:53.405Z",
+   "updatedAt": "2026-11-10T04:18:16.681Z",
+   "builtAt": "2026-11-10T04:18:16.681Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -83541,6 +83541,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-ui-review-timeout-after-1-hour-notify-brett-and--joey, own login copy)",
      "at": "2026-11-10T03:55:26.172Z"
+    },
+    {
+     "text": "Headless run axf-ui-review-timeout-after-1-hour-notify-brett-and--joey: brief only · start 11.1K tokens ($0.03) · cost $4.90 · 105 turns · 6 tools, MCP none",
+     "at": "2026-11-10T04:18:16.681Z"
     },
     {
      "text": "PR #439: UI Review items now go ahead after 1 h (phone told, first option picked, logged; changing it files a follow-up build). Upgrades PR #343's alarm, which never landed. Not in UI Review: settings panel screenshots failed (capture console waits on axHub; Playwright 1.56 vs chromium 1234 on the VPS). Report _claude/builds/reports/ui-review-timeout-after-1-hour-notify-brett-and.md",
