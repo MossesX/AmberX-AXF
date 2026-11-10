@@ -2311,6 +2311,18 @@
    "from": "",
    "addenda": []
   },
+  "inline-element-editing-plugin-right-click-any-el": {
+   "said": "Right-click elements right down to the child, it opens a dialog with all the different tokens, in a tree or a classical tree or a grid with expandable rows, edit every token, notes that it overrides inheritance. A master switch in the main application settings to enable inline edit mode. Same with navigation menus, toolbars, banners, widgets, every single thing. Part of the plugin gives a monster list of everything changed from axHub's inheritance, reset them individually to axHub's. Searchable, filterable, a tree with selectable roots and a multi-tab column with different roots.",
+   "at": "2026-11-10T16:39:13.034Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "interface-roller": {
    "said": "Create 3 completely different looks, feels, behavior. Existing look now in a tab holding main window and 2 more tabs with entirely worked out GUIs that are essentially different apps as far as look is concerned. Make plugin for this app and every app to roll a new interface that rebuilds every single thing about user interface, menus, context menus, logos, etc.",
    "at": "2026-10-27",

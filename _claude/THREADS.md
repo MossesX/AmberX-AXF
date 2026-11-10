@@ -771,9 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 02:44 UTC · `one-vps-plugin-everything-vps-in-one-place-gauge` → queued, note (all) · console
-- 2026-11-10 02:45 UTC · `split-builds-pages-build-manager-pending-complet` s1 done (all) · orchestrator
-- 2026-11-10 02:45 UTC · `vps-orchestrator-only-rule-vps-settings-console` note (all) · orchestrator
 - 2026-11-10 02:45 UTC · `split-builds-pages-build-manager-pending-complet` s2 done (all) · orchestrator
 - 2026-11-10 02:46 UTC · `vps-orchestrator-only-rule-vps-settings-console` s3 done, → built (all) · orchestrator
 - 2026-11-10 02:46 UTC · `split-builds-pages-build-manager-pending-complet` PR #432 (all) · builds-live
@@ -1171,6 +1168,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 16:34 UTC · `molly-fable-version-the-one-interface-for-amberx` → queued, note (all) · console
 - 2026-11-10 16:36 UTC · `project-manager-every-project-its-own-console-in` s1 done, → running (all) · orchestrator
 - 2026-11-10 16:39 UTC · `molly-flagship-skin-premium-sellable-uncluttered` added (0 steps) (all) · console
+- 2026-11-10 16:39 UTC · `molly-flagship-skin-premium-sellable-uncluttered` → queued, note (all) · console
+- 2026-11-10 16:39 UTC · `inline-element-editing-plugin-right-click-any-el` added (0 steps) (all) · console
+- 2026-11-10 16:39 UTC · `inline-element-editing-plugin-right-click-any-el` → queued, note (all) · console
 
 ## Token passes (log)
 
