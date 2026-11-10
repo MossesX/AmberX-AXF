@@ -12,6 +12,7 @@
  *   … conditions --json                 the condition list (the editor reads it)
  *   … preview --task-file <f> [--build id] [--model m] [--agent a] --json     what a launch would get
  *
+ * compose / preview also carry the conversation ledger (conversation-ledger@1, ledgerFile()) as one last brief.
  * Store: /projects/_shared/_data/claude/rules-briefs.json on the hub (AXF_RULES_BRIEFS_FILE elsewhere); the seed
  * framework/schemas/rules-briefs.json applies until a document exists. Exit codes: 0 ok · 1 failed · 2 usage · 3 no brief.
  */
@@ -31,6 +32,24 @@ export function storeFile() {
   return existsSync(projects) ? join(projects, '_shared', '_data', 'claude', 'rules-briefs.json') : join(ROOT, '.axf-console', 'plugins', 'claude-settings', 'rules-briefs.json');
 }
 export const load = () => normDoc(readJson(storeFile()), readJson(SEED));
+
+/** The conversation ledger (conversation-ledger@1): standing rules and decisions pulled out of Brett's conversations by
+ * whichever plugin indexes them, already rendered as `briefText`. Hub file; AXF_CONVERSATION_LEDGER_FILE elsewhere. */
+export function ledgerFile() {
+  if (process.env.AXF_CONVERSATION_LEDGER_FILE) return process.env.AXF_CONVERSATION_LEDGER_FILE;
+  const projects = process.env.AXHUB_PROJECTS_DIR || '/projects';
+  return existsSync(projects) ? join(projects, '_shared', '_data', 'claude', 'conversation-ledger.json') : join(ROOT, '.axf-console', 'conversation-ledger.json');
+}
+export const LEDGER_BRIEF_ID = 'conversation-ledger';
+/** The doc plus the ledger as one last saved brief (applies to every launch; the character cap trims it first, being
+ * last). Never stored: `save`/`delete` work on load(). No ledger file, switched off or empty = the doc as it was. */
+export function withLedger(doc, ledger = readJson(ledgerFile())) {
+  const text = ledger && ledger.$axf === 'conversation-ledger@1' && ledger.enabled !== false ? String(ledger.briefText || '').trim() : '';
+  if (!text || doc.briefs.some((b) => b.id === LEDGER_BRIEF_ID)) return doc;
+  const order = Math.max(0, ...doc.briefs.map((b) => b.order)) + 10;
+  return { ...doc, briefs: [...doc.briefs, normBrief({ id: LEDGER_BRIEF_ID, name: 'Conversation ledger', mode: 'saved', order, text })] };
+}
+export const loadForLaunch = () => withLedger(load());
 function store(doc, by) {
   const file = storeFile();
   mkdirSync(dirname(file), { recursive: true });
@@ -52,7 +71,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const stdin = () => { try { return JSON.parse(readFileSync(0, 'utf8') || '{}'); } catch { return null; } };
   const context = (task) => launchContext({ task, surface: flag('--surface') || process.env.AXF_SURFACE || 'headless', model: flag('--model') || process.env.AXF_MODEL || '', agent: flag('--agent') || process.env.AXF_AGENT || '', job: flag('--job') || process.env.AXF_AGENT_JOB || '', build: flag('--build') || process.env.AXF_BUILD_ID || flag('--name') || '', profile: process.env.AXF_BUILD_PROFILE || '' });
   const cmd = args.shift() || 'list';
-  const doc = load();
+  const doc = ['compose', 'preview'].includes(cmd) ? loadForLaunch() : load();
   if (cmd === 'compose') {
     if (!doc.lean) fail('off', 'lean launches are switched off', 3);
     const file = flag('--brief');

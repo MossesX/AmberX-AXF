@@ -1,0 +1,14 @@
+/* Conversations page: layout only, theme tokens only. */
+.axp-conv__stack { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
+.axp-conv__bar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-md) }
+.axp-conv__bar > :first-child { flex: 1 1 0; min-width: 0 }
+.axp-conv__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); overflow: auto; overscroll-behavior: contain }
+.axp-conv__item { border-radius: var(--fx-radius-sm); background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border) }
+button.axp-conv__hit { all: unset; box-sizing: border-box; width: 100%; cursor: pointer; display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg) }
+.axp-conv__hit:hover { background: var(--fx-surface2) }
+.axp-conv__hit:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
+.axp-conv__entry { display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg) }
+.axp-conv__meta { color: var(--fx-muted); font-size: var(--fx-type-root-sm); font-variant-numeric: tabular-nums }
+.axp-conv__snippet { white-space: pre-wrap; overflow-wrap: anywhere }
+.axp-conv__chips, .axp-conv__actions { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs) }
+.axp-conv__brief { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font-size: var(--fx-type-root-sm) }

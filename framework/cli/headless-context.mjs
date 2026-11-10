@@ -29,7 +29,7 @@ import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { MCP_SERVERS, briefBudget, briefNeeds, briefTools, composeRules, launchPlan, leanSettings, loadedFrom, policyOf, startOf, startWarning } from '../core/headless-context.mjs';
 import { compose as composeRulesBrief, launchContext } from '../core/rules-brief.mjs';
-import { load as loadRulesBriefs } from './rules-brief.mjs';
+import { loadForLaunch as loadRulesBriefs } from './rules-brief.mjs';
 import { settingsFile } from './upgrade-policy.mjs';
 import { costUsd, loadPricing } from './model-pricing.mjs';
 

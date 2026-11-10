@@ -152,6 +152,22 @@ def _register_later(tries: int = 12) -> None:
         t.start()
 
 
+class TranscriptsService:
+    """axf.session-transcripts@1: the saved transcripts for other plugins (conversation search), read-only.
+    docs() → [{key, version, doc (audio-transcript@1), link (console_open target of the recording)}]."""
+    version = 1
+
+    def docs(self) -> list[dict[str, Any]]:
+        out = []
+        for p in sorted((base() / "transcripts").glob("*.json")):
+            doc = T.read_json(p)
+            if doc and doc.get("$axf") == T.FORMAT:
+                out.append({"key": p.stem, "version": str(doc.get("transcribedAt") or p.stat().st_mtime), "doc": doc, "link": f"output-recorder?rec={p.stem}"})
+        return out
+
+
+plugin_services.provide("axf.session-transcripts@1", TranscriptsService(), FOLDER)
+
 if not os.environ.get("AXF_OUTPUT_RECORDER_NO_WORKER"):
     threading.Thread(target=_loop, name="output-recorder-transcripts", daemon=True).start()
     _register_later()
