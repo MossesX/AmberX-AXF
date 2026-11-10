@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3026,
- "updatedAt": "2026-11-10T23:28:26.738Z",
+ "rev": 3027,
+ "updatedAt": "2026-11-10T23:33:32.352Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -154050,8 +154050,8 @@
    "pr": "#483",
    "priority": "P0",
    "createdAt": "2026-11-10T21:37:39.627Z",
-   "updatedAt": "2026-11-10T23:28:25.491Z",
-   "builtAt": "2026-11-10T23:28:25.491Z",
+   "updatedAt": "2026-11-10T23:33:30.995Z",
+   "builtAt": "2026-11-10T23:28:08.303Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -154098,12 +154098,16 @@
      "at": "2026-11-10T23:26:15.698Z"
     },
     {
-     "text": "Headless run axf-gizmo-opens-by-voice-link-amberx-web-app-android--earl: brief only · start 10.8K tokens ($0.03) · cost $4.92 · 130 turns · 6 tools, MCP none",
-     "at": "2026-11-10T23:28:25.491Z"
-    },
-    {
      "text": "PR #483 in the merge queue. UI Review shots of the console Gizmo screen weren't taken: Playwright isn't installed on the runner. App-link verification needs APP_CERT_SHA256 (systems check amberx-app-links has the steps).",
      "at": "2026-11-10T23:28:12.668Z"
+    },
+    {
+     "text": "Duplicate dispatch (run sully, 23:26): run lenny had already finished s2 and s3 and opened PR #483 (head a018fe8, CI running), so this run changed nothing. Extra finding on the old look: the hub's AmberX look document (settings/looks/amberx-droid.json) has a default copied from the console look (banner amberx-thin, nav sidebar-list), not AmberX's own manifest look (banner amberx-branded). AmberX itself ran Restore at 21:42:14 (updatedBy amberx-droid, one undo kept: nav-menu wrapper-tabs). Every reload draws that default. If that's the old look, 'node framework/cli/skins.mjs undo amberx' brings back the state from before the restore, and 'skins.mjs use amberx <skin>' or 'snapshot amberx --force' from the look Brett wants makes it stick. I didn't change the live look data.",
+     "at": "2026-11-10T23:33:30.995Z"
+    },
+    {
+     "text": "Headless run axf-gizmo-opens-by-voice-link-amberx-web-app-android--earl: brief only · start 10.8K tokens ($0.03) · cost $4.92 · 130 turns · 6 tools, MCP none",
+     "at": "2026-11-10T23:28:25.491Z"
     }
    ],
    "approvals": [],
@@ -154231,7 +154235,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
