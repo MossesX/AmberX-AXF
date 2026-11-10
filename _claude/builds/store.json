@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2233,
- "updatedAt": "2026-11-10T03:00:02.090Z",
+ "rev": 2234,
+ "updatedAt": "2026-11-10T03:00:58.273Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -131605,7 +131605,7 @@
    "title": "Test button on every Claude account (subscription and API)",
    "category": "",
    "detail": "Claude accounts page (Settings > Plugins > Claude accounts) and Job routing: a Test button on every account row that runs a tiny no-tool check with that account's saved login or API key (no AI build, minimal tokens) and shows alive / expired login / bad key / out of credits / limit hit, which models it can run (Opus, Fable), and when it was last checked. Test all button. Same check runs before the orchestrator launches on an account. Full API control.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -131613,8 +131613,8 @@
    "pr": "#434",
    "priority": "P0",
    "createdAt": "2026-11-09T20:16:02.957Z",
-   "updatedAt": "2026-11-10T02:59:56.085Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T03:00:53.547Z",
+   "builtAt": "2026-11-10T03:00:53.547Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -131817,12 +131817,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T03:00:53.547Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-09T20:17:22.310Z",
-     "updatedAt": "2026-11-09T20:17:22.310Z"
+     "updatedAt": "2026-11-10T03:00:53.993Z"
     }
    ],
    "profiles": [
@@ -131833,7 +131833,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
