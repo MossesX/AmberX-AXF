@@ -771,9 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 02:17 UTC · `split-builds-pages-build-manager-pending-complet` note (all) · orchestrator
-- 2026-11-10 02:17 UTC · `vps-orchestrator-only-rule-vps-settings-console` → running, note (all) · pipeline
-- 2026-11-10 02:17 UTC · `vps-orchestrator-only-rule-vps-settings-console` note (all) · orchestrator
 - 2026-11-10 02:18 UTC · `amberx-phone-pop-up-for-every-build-start-and-fi` added (0 steps) (all) · console
 - 2026-11-10 02:18 UTC · `amberx-phone-pop-up-for-every-build-start-and-fi` → queued, note (all) · console
 - 2026-11-10 02:19 UTC · `orchestrator-table-columns-model-queue-assigned` → queued, note (all) · console
@@ -1171,6 +1168,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 16:16 UTC · `account-order-switch-custom-drag-and-drop-order` s3 done, → built (all) · orchestrator
 - 2026-11-10 16:17 UTC · `account-order-switch-custom-drag-and-drop-order` note (all) · orchestrator
 - 2026-11-10 16:18 UTC · `account-order-switch-custom-drag-and-drop-order` note (all) · pipeline
+- 2026-11-10 16:18 UTC · `search-bar-plugin-snappable-search-asset-globe-e` → running, note (all) · pipeline
+- 2026-11-10 16:18 UTC · `search-bar-plugin-snappable-search-asset-globe-e` branch claude/search-bar-plugin-snappable-search-asset-globe-e (all) · pipeline
+- 2026-11-10 16:18 UTC · `search-bar-plugin-snappable-search-asset-globe-e` note (all) · orchestrator
 
 ## Token passes (log)
 
