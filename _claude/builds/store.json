@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2345,
- "updatedAt": "2026-11-10T04:35:29.791Z",
+ "rev": 2346,
+ "updatedAt": "2026-11-10T04:36:16.477Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -5858,7 +5858,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-18T04:10:00.000Z",
-   "updatedAt": "2026-11-07T02:14:26.562Z",
+   "updatedAt": "2026-11-10T04:35:30.072Z",
    "builtAt": "",
    "notes": [
     {
@@ -5868,6 +5868,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Audit: superseded — ui-asset-designer (built Nov 7: designer host plugin + add-ons for app menu, nav menu, toolbar, banner, embed, widgets) and context-menu-designer (complete Oct 25) cover it; the drawer type is in framework/schemas/asset-types.json",
+     "at": "2026-11-10T04:35:30.072Z"
     }
    ],
    "approvals": [],
@@ -6234,7 +6238,7 @@
    },
    "kind": "build",
    "planRef": "x.assets.designer",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -12054,7 +12058,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-22T01:57:53.687Z",
-   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "updatedAt": "2026-11-10T04:36:10.113Z",
    "builtAt": "",
    "notes": [
     {
@@ -12116,10 +12120,10 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": "",
-     "rev": 5,
+     "note": "Audit: done — apps section in framework/spec/fixtures/hub-approvals.json",
+     "rev": 6,
      "createdAt": "2026-10-22T01:57:53.687Z",
-     "updatedAt": "2026-11-07T10:46:39.420Z"
+     "updatedAt": "2026-11-10T04:36:11.163Z"
     },
     {
      "id": "s3",
@@ -12196,7 +12200,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -19464,12 +19468,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-25T20:26:24.616Z",
-   "updatedAt": "2026-10-25T20:26:24.629Z",
+   "updatedAt": "2026-11-10T04:35:42.688Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Audit: hold — every step is Kotlin/Compose: Android port on hold (no new Android or Kotlin work; deferred twins are listed in framework/spec/PORTING.md). Queue when Brett lifts the hold.",
+     "at": "2026-11-10T04:35:42.688Z"
     }
    ],
    "approvals": [],
@@ -19836,7 +19844,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -40475,7 +40483,7 @@
    "title": "Element inspector (Android first)",
    "category": "Feature",
    "detail": "Brett, Oct 30 2026 (voice): Left click only. Press-drag: panel follows, live updates to element under pointer. Release closes. Double click pins; pinned panel drags and resizes. Current fields + size.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -40483,7 +40491,7 @@
    "pr": "#192",
    "priority": "P0",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-11-10T02:23:45.058Z",
+   "updatedAt": "2026-11-10T04:35:37.818Z",
    "builtAt": "",
    "notes": [
     {
@@ -40497,6 +40505,10 @@
     {
      "text": "Merged from build profile \"angel\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Audit: superseded — the web inspector shipped as AshesUI (framework/libs/ashes, build ashes-ui, complete Oct 23); s3's Compose port is Android work, on hold (framework/spec/PORTING.md)",
+     "at": "2026-11-10T04:35:37.818Z"
     }
    ],
    "approvals": [],
@@ -40611,7 +40623,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -42226,12 +42238,16 @@
    "branch": "claude/audio-mic-filters",
    "pr": "",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-10-31T09:07:21.792Z",
+   "updatedAt": "2026-11-10T04:35:47.093Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Merged from build profile \"angel\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Audit: hold — AmberX Android recorders: Android port on hold. Queue when Brett lifts the hold.",
+     "at": "2026-11-10T04:35:47.093Z"
     }
    ],
    "approvals": [],
@@ -42368,7 +42384,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -42418,7 +42434,7 @@
    "branch": "claude/transcription-engine",
    "pr": "",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-11-04T14:38:22.335Z",
+   "updatedAt": "2026-11-10T04:35:50.583Z",
    "builtAt": "",
    "notes": [
     {
@@ -42428,6 +42444,10 @@
     {
      "text": "Merged from build profile \"angel\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Audit: hold — on-phone Whisper in AmberX (Android, on hold) leads the build; the server engine (s2) can be split out if Brett wants it now.",
+     "at": "2026-11-10T04:35:50.583Z"
     }
    ],
    "approvals": [
@@ -42575,7 +42595,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -87639,7 +87659,7 @@
    "title": "Build to-do sync plugin: build names + categories, live to-do checklists, Plan Studio plan per build with Planned & fixes and docs",
    "category": "Plugin",
    "detail": "Spec: /root/axf-builds/build-todo-sync/.brief.md (brief + 4 addenda). Agent Snap Sully. Branch claude/brett-todo-sync.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "code",
    "pendingId": "",
@@ -87647,7 +87667,7 @@
    "pr": "#333",
    "priority": "P0",
    "createdAt": "2026-11-04T18:24:34.029Z",
-   "updatedAt": "2026-11-09T00:09:59.599Z",
+   "updatedAt": "2026-11-10T04:35:54.516Z",
    "builtAt": "",
    "notes": [
     {
@@ -87673,6 +87693,10 @@
     {
      "text": "Watchdog: no session and no claude process; last sign of life 47 h ago (1 step left). Back in Pending, not relaunched: queue it again if it is still wanted.",
      "at": "2026-11-09T00:09:59.599Z"
+    },
+    {
+     "text": "Audit: hold — s1-s6 are on PR #333 (open, not on main); s7 is the after-merge backfill and runs once #333 lands.",
+     "at": "2026-11-10T04:35:54.516Z"
     }
    ],
    "approvals": [],
@@ -87882,7 +87906,7 @@
    },
    "kind": "build",
    "planRef": "build-names-live-to-do-checklists-build-manager-yxjz",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": {

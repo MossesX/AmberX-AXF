@@ -771,12 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 00:03 UTC · `fix-it-yourself-rule-in-every-brief-and-session` added (0 steps) (all) · console
-- 2026-11-10 00:03 UTC · `fix-it-yourself-rule-in-every-brief-and-session` → queued, note (all) · console
-- 2026-11-10 00:06 UTC · `assign-an-employee-to-every-role-action-type-and` s1 done, → running (all) · orchestrator
-- 2026-11-10 00:06 UTC · `fix-log-fyi-phone-notifications-from-claude-sess` PR #418 (all) · builds-live
-- 2026-11-10 00:06 UTC · `fix-log-fyi-phone-notifications-from-claude-sess` note (all) · orchestrator
-- 2026-11-10 00:06 UTC · `fix-log-fyi-phone-notifications-from-claude-sess` s3 done, → built (all) · orchestrator
 - 2026-11-10 00:05 UTC · `fix-it-yourself-rule-in-every-brief-and-session` note (all) · orchestrator
 - 2026-11-10 00:06 UTC · `fix-log-fyi-phone-notifications-from-claude-sess` PR #418 (all) · foreign-write
 - 2026-11-10 00:07 UTC · `fix-it-yourself-rule-in-every-brief-and-session` → running, note (all) · pipeline
@@ -1171,6 +1165,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 04:34 UTC · `molly-banner-match` → running, note (all) · pipeline
 - 2026-11-10 04:34 UTC · `molly-banner-match` note (all) · orchestrator
 - 2026-11-10 04:35 UTC · `x.work` note (all) · audit-pending-fable-builds-against-main-close-wh
+- 2026-11-10 04:35 UTC · `asset-designer` note (all) · audit-pending-fable-builds-against-main-close-wh
+- 2026-11-10 04:35 UTC · `element-inspector` → running, note (all) · audit-pending-fable-builds-against-main-close-wh
+- 2026-11-10 04:35 UTC · `android-framework-update` note (all) · audit-pending-fable-builds-against-main-close-wh
+- 2026-11-10 04:35 UTC · `audio-mic-filters` note (all) · audit-pending-fable-builds-against-main-close-wh
+- 2026-11-10 04:35 UTC · `transcription-engine` note (all) · audit-pending-fable-builds-against-main-close-wh
+- 2026-11-10 04:35 UTC · `build-todo-sync` → running, note (all) · audit-pending-fable-builds-against-main-close-wh
 
 ## Token passes (log)
 
