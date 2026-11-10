@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2339,
- "updatedAt": "2026-11-10T04:32:16.244Z",
+ "rev": 2340,
+ "updatedAt": "2026-11-10T04:32:48.830Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -135843,7 +135843,7 @@
    "title": "Resolve merge conflicts and land: running-builds-watchdog and amberx-approvals-fix",
    "category": "",
    "detail": "Two finished builds can't land because they clash with main. 1) claude/running-builds-watchdog clashes in build-orchestrator pipeline-core.mjs, pipeline.mjs, server/__init__.py and web/pipeline.tsx. 2) claude/amberx-approvals-fix (PR #353) failed with 'Merge with strategy ort failed' and is 1054 commits behind. For each: merge origin/main into the branch, resolve conflicts keeping both behaviours (main's newer code wins on structure, with the branch's feature re-applied), run the plugin tests, then land with build_land. Redo nothing that main already has. Report what each kept.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -135851,8 +135851,8 @@
    "pr": "#441",
    "priority": "P0",
    "createdAt": "2026-11-10T03:14:09.017Z",
-   "updatedAt": "2026-11-10T04:31:59.612Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T04:32:31.657Z",
+   "builtAt": "2026-11-10T04:32:11.736Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -135869,6 +135869,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-resolve-merge-conflicts-and-land-running-builds--paulie, own login copy)",
      "at": "2026-11-10T04:04:20.974Z"
+    },
+    {
+     "text": "Done: #400 and #353 merged with main, tested, pushed; main's red builds-store verify fixed in #441 (lands first, then the queue lands #400/#353). build_land not called: this session had no axHub token. VPS disk hit 100% mid-run; pruned Docker build cache (8.8 GB) -> 6.8 GB free. 218 build worktrees in /root/axf-builds hold the rest: systems check Disk space item is red; clear finished-build worktrees (self-healing-build-folders build). Backup of 305 moved files: /root/axf-builds/_backup-amberx-approvals-fix-untracked.",
+     "at": "2026-11-10T04:32:31.657Z"
     }
    ],
    "approvals": [],
@@ -135945,12 +135949,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T04:32:05.589Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T03:17:06.231Z",
-     "updatedAt": "2026-11-10T03:17:06.231Z"
+     "updatedAt": "2026-11-10T04:32:06.454Z"
     },
     {
      "id": "s3",
@@ -135970,12 +135974,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T04:32:11.736Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T03:17:06.231Z",
-     "updatedAt": "2026-11-10T03:17:06.231Z"
+     "updatedAt": "2026-11-10T04:32:12.364Z"
     }
    ],
    "profiles": [
@@ -135986,7 +135990,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
