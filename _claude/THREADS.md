@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 04:13 UTC · `plan-studio-receives-a-valid-shipped-feature-man` s3 done, → built (all) · orchestrator
 - 2026-11-09 04:14 UTC · `plan-studio-receives-a-valid-shipped-feature-man` note (all) · orchestrator
 - 2026-11-09 04:19 UTC · `demonstration-designer-plugin-new-standalone` note (all) · pending
 - 2026-11-09 04:20 UTC · `demonstration-designer-plugin-new-standalone` merged, note (all) · reconciler
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-09 23:59 UTC · `walkthrough-player-ide-layout-setting-collapsibl` → queued, note (all) · console
 - 2026-11-10 00:01 UTC · `walkthrough-player-ide-layout-setting-collapsibl` note (all) · orchestrator
 - 2026-11-10 00:03 UTC · `fix-it-yourself-rule-in-every-brief-and-session` added (0 steps) (all) · console
+- 2026-11-10 00:03 UTC · `fix-it-yourself-rule-in-every-brief-and-session` → queued, note (all) · console
 
 ## Token passes (log)
 
