@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 19:23 UTC · `urgent-terminal-pops-up-every-time-the-console-o` → running, note (all) · pipeline
 - 2026-11-09 19:23 UTC · `urgent-terminal-pops-up-every-time-the-console-o` note (all) · orchestrator
 - 2026-11-09 19:23 UTC · `home-page-build-queue-card-opens-the-orchestrato` → running, note (all) · pipeline
 - 2026-11-09 19:23 UTC · `home-page-build-queue-card-opens-the-orchestrato` note (all) · orchestrator
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 03:04 UTC · `appearance-skins-colour-themes-only-remove-design-packs` → pending, note (all) · reconciler
 - 2026-11-10 03:04 UTC · `split-builds-pages-build-manager-pending-complet` → built, PR #432, note (all) · reconciler
 - 2026-11-10 03:04 UTC · `test-button-on-every-claude-account-subscription` note (all) · orchestrator
+- 2026-11-10 03:04 UTC · `orchestrator-table-columns-model-queue-assigned` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
