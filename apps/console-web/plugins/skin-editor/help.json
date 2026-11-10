@@ -1,0 +1,46 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "skin-editor-help",
+  "name": "Skin editor help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:skin-editor.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:skin-editor",
+    "entries": [
+      {
+        "target": "view:skin-editor",
+        "title": "Skin checker",
+        "text": "Scores a skin or design package out of 100 and lists what breaks a professional look: spacing off the token scale, more than two typefaces or off-scale type sizes, palette sprawl and near-duplicate colours, contrast below WCAG AA, and inconsistent radius, borders and shadows. Most issues have a one-click fix.",
+        "kind": "screen"
+      },
+      {
+        "target": "skin-editor",
+        "title": "Skin editor settings",
+        "text": "The checker's thresholds (minimum score, typefaces, palette size, contrast ratios, radii, border widths, shadows) and each rule's severity, plus install & uninstall."
+      },
+      {
+        "target": "Fix all",
+        "title": "Fix all",
+        "text": "Applies every fix the checker offers for this skin. Fixed assets are saved as copies in the plugin's data folder; the built-in asset files are not changed.",
+        "kind": "control"
+      },
+      {
+        "target": "Check again",
+        "title": "Check again",
+        "text": "Runs the checker again with the current settings and assets.",
+        "kind": "control"
+      },
+      {
+        "target": "Token",
+        "title": "Token",
+        "text": "The value an issue points at. Edit it here and the check runs again when you stop typing.",
+        "kind": "control"
+      }
+    ]
+  }
+}

@@ -15,9 +15,10 @@
  */
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { SKIN_CHECK_SURFACES, parseIssueId, skinCheckLink, type SkinCheckAction, type SkinCheckApplied, type SkinCheckResult } from './contract.ts';
+import { SKIN_CHECK_SURFACES, SKIN_CHECK_TARGET, parseIssueId, parseTokenKey, skinCheckLink, type SkinCheckAction, type SkinCheckApplied, type SkinCheckResult } from './contract.ts';
 import { changedSettings, defaultSettings, flattenSettings, normalizeSettings, setSetting, settingsErrors, settingsGroups, type SkinCheckSettings } from './settings-schema.ts';
 import { skinChecker } from './index.ts';
+import { readToken } from './engine.ts';
 import { REPO_ROOT, listSkins, loadSubject, persistWrites } from './load-skin.ts';
 
 export interface CoreOptions {
@@ -102,7 +103,7 @@ function applyAndSave(skin: string, o: CoreOptions, pick: (r: SkinCheckResult) =
 
 /* ---------------- the actions ---------------- */
 
-export const ACTIONS = ['skins', 'check', 'check_all', 'state', 'fix', 'fix_all', 'settings_get', 'settings_set', 'settings_reset', 'open', 'surfaces'] as const;
+export const ACTIONS = ['skins', 'check', 'check_all', 'state', 'fix', 'fix_all', 'set', 'settings_get', 'settings_set', 'settings_reset', 'open', 'surfaces'] as const;
 export type CoreAction = typeof ACTIONS[number];
 
 export function call(action: string, args: Record<string, unknown> = {}, o: CoreOptions = {}): CoreAnswer {
@@ -145,6 +146,27 @@ export function call(action: string, args: Record<string, unknown> = {}, o: Core
     }
     case 'fix_all':
       return applyAndSave(skin, o, (r) => r.issues.filter((i) => i.fix).map((i) => i.id));
+    case 'set': {
+      // one token write (the editor's inline edit), then a fresh check: { skin, token: '<type>:<id>/<path>', value }
+      if (!SKIN_ID.test(skin)) return bad('skin must be a skin or design package id');
+      const token = typeof args.token === 'string' ? parseTokenKey(args.token) : null;
+      if (!token) return bad('token must be a token key: <type>:<id>/<path> (as on an issue)');
+      if (typeof args.value !== 'string' && typeof args.value !== 'number') return bad('value must be a string or a number');
+      const got = loadSubject(skin, { root: o.root, overlayDir: dataDirOf(o) });
+      if (!got.subject) return { ok: false, code: 'not_found', message: got.error };
+      const was = readToken(got.subject, token);
+      if (was === undefined || (typeof was === 'object' && was !== null)) return { ok: false, code: 'not_found', message: `${args.token} is not a value of this skin` };
+      // keep the token's kind: a number stays a number
+      const value = typeof was === 'number' ? Number(args.value) : String(args.value).trim();
+      if (typeof value === 'number' && !Number.isFinite(value)) return bad(`${args.token} is a number`);
+      if (typeof value === 'string' && (!value || value.length > 300)) return bad('value must be 1-300 characters');
+      const write = { token, value };
+      const subject = skinChecker.write(got.subject, write);
+      const files = persistWrites(subject, [write], { root: o.root, overlayDir: dataDirOf(o), inPlace: o.inPlace });
+      const after = runCheck(skin, o);
+      if (after.error) return after.error;
+      return { ok: true, write: { ...write, was }, files: files.map((f) => f.replace(`${o.root ?? REPO_ROOT}/`, '')), result: after.result };
+    }
     case 'settings_get':
       return { ...settingsAnswer(loadSettings(o)), ...(args.schema ? { groups: settingsGroups() } : {}) };
     case 'settings_set': {
@@ -172,7 +194,9 @@ export function call(action: string, args: Record<string, unknown> = {}, o: Core
       const issue = typeof args.issue === 'string' && args.issue ? args.issue : undefined;
       if (skin && !SKIN_ID.test(skin)) return bad('skin must be a skin or design package id');
       if (issue && !parseIssueId(issue)) return bad('issue must be an issue id');
-      return { ok: true, target: skinCheckLink(skin || undefined, issue) };
+      // the console action form too: console_show `action:skin-editor.checker:<skin>:<issueId>`
+      const action = [SKIN_CHECK_TARGET.replace('/', '.'), ...(skin ? [skin] : []), ...(skin && issue ? [issue] : [])].join(':');
+      return { ok: true, target: skinCheckLink(skin || undefined, issue), action };
     }
     case 'surfaces':
       return { ok: true, surfaces: SKIN_CHECK_SURFACES };

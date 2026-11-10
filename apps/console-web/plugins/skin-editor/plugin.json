@@ -89,6 +89,32 @@
         "title": "Apply every fix the skin checker offers for a skin"
       },
       {
+        "route": "POST /checker/{skin}/set",
+        "id": "set",
+        "title": "Write one token of a skin (the token key from an issue, <type>:<id>/<path>) and re-run the checker",
+        "input": {
+          "type": "object",
+          "properties": {
+            "skin": {
+              "type": "string"
+            },
+            "token": {
+              "type": "string",
+              "description": "token key, e.g. color-theme:fresh-light/tokens.muted"
+            },
+            "value": {
+              "description": "the new value (a number stays a number)"
+            }
+          },
+          "required": [
+            "skin",
+            "token",
+            "value"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
         "route": "GET /checker/settings",
         "id": "settings-get",
         "title": "The skin checker's threshold settings (skin-check-settings@1) with defaults filled in",

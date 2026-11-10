@@ -7,6 +7,7 @@
  *   axf skin fix <skin> <issueId…> [--json]         apply those fixes
  *   axf skin fix <skin> --all [--json]              apply every fix
  *       --in-place                                  rewrite the repo's asset files instead of the console's copies
+ *   axf skin set <skin> <tokenKey> <value> [--json] write one token (type:id/path, as on an issue) and re-check
  *   axf skin settings [--json]                      the threshold settings
  *   axf skin settings set <key> <value> [--json]    one setting (contrast.text 7, rules.palette.sprawl off)
  *   axf skin settings reset [--json]
@@ -19,7 +20,7 @@ import { writeFileSync } from 'node:fs';
 import { SKIN_CHECK_EXIT_FAIL, SKIN_CHECK_CATEGORY_LABEL, SKIN_CHECK_CATEGORIES, type SkinCheckResult } from './contract.ts';
 import { call, type CoreAnswer } from './core.ts';
 
-const USAGE = `usage: axf skin list | check <skin>|--all [--cached] [--json] [--out file] | fix <skin> <issueId…>|--all [--in-place] [--json]
+const USAGE = `usage: axf skin list | check <skin>|--all [--cached] [--json] [--out file] | fix <skin> <issueId…>|--all [--in-place] [--json] | set <skin> <tokenKey> <value>
        | settings [set <key> <value> | reset] [--json] | open [<skin>] [<issueId>] | call <action> ['<json>']`;
 
 function out(s: string): void { process.stdout.write(`${s}\n`); }
@@ -94,6 +95,17 @@ export function main(argv: string[]): number {
       for (const w of ap.writes) out(`  ${w.token.type}:${w.token.id}/${w.token.path} = ${JSON.stringify(w.value)}`);
       for (const f of ap.files) out(`  wrote ${f}`);
       return 0;
+    }
+    case 'set': {
+      const [skin, token, value] = rest;
+      if (!skin || !token || value === undefined) { err(USAGE); return 2; }
+      const a = call('set', { skin, token, value }, opts);
+      if (!a.ok) return fail(a);
+      if (json) { out(JSON.stringify(a)); return 0; }
+      const w = a.write as { value: unknown; was: unknown };
+      const r = a.result as SkinCheckResult;
+      out(`${token}: ${JSON.stringify(w.was)} → ${JSON.stringify(w.value)}; score ${r.score} (${r.grade}, ${r.pass ? 'passes' : 'fails'})`);
+      return r.pass ? 0 : SKIN_CHECK_EXIT_FAIL;
     }
     case 'settings': {
       const [sub, key, value] = rest;

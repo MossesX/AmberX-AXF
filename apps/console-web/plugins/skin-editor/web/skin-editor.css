@@ -1,0 +1,21 @@
+/* Skin editor plugin. Theme tokens only, axp-skin-editor prefix (framework/spec/THEMING.md). */
+.axp-skin-editor__bar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-md); min-width: 0 }
+.axp-skin-editor__pick { flex: 1 1 calc(var(--fx-space) * 30); min-width: 0; max-width: calc(var(--fx-space) * 50) }
+.axp-skin-editor__scorerow { display: flex; align-items: center; gap: var(--fx-dens-gap-xl); min-width: 0 }
+.axp-skin-editor__num { flex: none; font-size: var(--fx-type-scale-2xl); font-weight: var(--fx-heading-weight); font-variant-numeric: tabular-nums; line-height: 1 }
+.axp-skin-editor__scoremeta { flex: 1; display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); min-width: 0 }
+.axp-skin-editor__chips { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm) }
+.axp-skin-editor__main { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--fx-dens-gap-xl); align-items: start }
+:where([data-fx-medium]) .axp-skin-editor__main { grid-template-columns: 1fr }
+.axp-skin-editor__cat { min-width: calc(var(--fx-space) * 22) }
+.axp-skin-editor__issues { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column }
+.axp-skin-editor__issue { display: flex; align-items: flex-start; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); border-bottom: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); min-width: 0 }
+.axp-skin-editor__issue:last-child { border-bottom: 0 }
+.axp-skin-editor__issue.is-sel { background: var(--fx-accent-soft) }
+.axp-skin-editor__text { flex: 1; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); min-width: 0 }
+.axp-skin-editor__token { font-family: var(--fx-font-mono); overflow-wrap: anywhere }
+.axp-skin-editor__rowacts { flex: none; display: flex; align-items: center; gap: var(--fx-dens-gap-xs) }
+.axp-skin-editor__tokenbox { position: sticky; top: var(--fx-dens-gap-md) }
+.axp-skin-editor__fields { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); max-width: calc(var(--fx-space) * 80) }
+.axp-skin-editor__field { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); min-width: 0 }
+.axp-skin-editor__field p { margin: 0 }

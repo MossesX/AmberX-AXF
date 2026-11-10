@@ -14,6 +14,7 @@ settings.json (skin-check-settings@1), results/<skin>.json (the last result per 
   POST   checker/{skin}/check             run the checker                                      [check]
   POST   checker/{skin}/fix               { issues: [issueId, ...] } apply those fixes           [fix]
   POST   checker/{skin}/fix-all           apply every fix the skin has                          [fix_all]
+  POST   checker/{skin}/set               { token: '<type>:<id>/<path>', value } one token edit, re-check  [set]
   GET    checker/link?skin=&issue=        the deep link (console_show target skin-editor/checker)  [open]
 """
 from __future__ import annotations
@@ -122,3 +123,11 @@ async def fix(skin: str, request: Request) -> JSONResponse:
 @router.post("/checker/{skin}/fix-all")
 async def fix_all(skin: str) -> JSONResponse:
     return answer(await run_in_threadpool(core, "fix_all", {"skin": skin}))
+
+
+@router.post("/checker/{skin}/set")
+async def set_token(skin: str, request: Request) -> JSONResponse:
+    body = await _body(request)
+    if body is None:
+        return _bad_body()
+    return answer(await run_in_threadpool(core, "set", {"skin": skin, "token": body.get("token"), "value": body.get("value")}))
