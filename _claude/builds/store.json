@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2404,
- "updatedAt": "2026-11-10T15:33:57.487Z",
+ "rev": 2405,
+ "updatedAt": "2026-11-10T15:34:25.747Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -137415,12 +137415,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T15:33:40.111Z",
-   "updatedAt": "2026-11-10T15:33:41.444Z",
+   "updatedAt": "2026-11-10T15:34:24.186Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T15:33:41.444Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T15:34:24.186Z"
     }
    ],
    "approvals": [],
@@ -137447,13 +137451,89 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-10T15:34:24.186Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwaup22i01fc2y",
+     "title": "",
+     "text": "New plugin providing a search bar asset: snappable/embeddable widget for toolbars and banners like any other asset; multiple instances allowed; multiple view types. 1) Scope switch: globe = search everywhere (whole program, every plugin, every setting); gear = settings only. 2) Matching: its own built-in logic, live letter-by-letter results; regular expressions, exact match and other options in its own settings. Uses AI only if an Ollama (local Llama) connection exists AND AI assistance is enabled; otherwise no AI. 3) Results drop-down: left column = categories (plugins, settings interfaces, etc., named sensibly); right side = tree listing of the matches under each. Selecting a result navigates to it. 4) Right-click a result: spawns a sub-menu tree to the right or left (whichever fits on screen) with that setting's options (on/off, multi-choice); pick directly from the drop-down with no confirmation, just the small check-mark confirmation toast in place. 5) Remove the existing Search everywhere. Full API control.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T15:34:24.186Z",
+     "updatedAt": "2026-11-10T15:34:24.186Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwaup22i026l7b",
+     "title": "",
+     "text": "I want to make a plugin that is a search bar. Multiple types of views, you can have multiple of them, an asset. Globe searches everywhere, the whole program, every plugin, every setting; gear only searches settings. Regular expressions; unless there's a Llama connection and AI assistant use enabled, it uses its own logic. Letter by letter the possibilities come up. Drop menu with categories column on the left, tree of matches. Select one, it goes to it. Right click spawns a sub-menu with the options for that switch, quick select with no confirmation except the little check mark notification. Embeddable widget that snaps into toolbars and banners. Remove the other search everywhere.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T15:34:24.186Z",
+     "updatedAt": "2026-11-10T15:34:24.186Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwaup22i03gu37",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/search-bar-plugin-snappable-search-asset-globe-e.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/search-bar-plugin-snappable-search-asset-globe-e.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T15:34:24.186Z",
+     "updatedAt": "2026-11-10T15:34:24.186Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -137462,12 +137542,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T15:34:24.186Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

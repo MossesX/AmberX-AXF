@@ -771,7 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 01:10 UTC · `appearance-skins-colour-themes-only-remove-design-packs` s4 done, → running (all) · orchestrator
 - 2026-11-10 01:16 UTC · `orchestrator-and-build-manager-search-bar-collap` s1 done, → running (all) · orchestrator
 - 2026-11-10 01:16 UTC · `orchestrator-and-build-manager-search-bar-collap` s2 done (all) · orchestrator
 - 2026-11-10 01:17 UTC · `orchestrator-and-build-manager-search-bar-collap` PR #426 (all) · builds-live
@@ -1171,6 +1170,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 15:33 UTC · `search-bar-plugin-snappable-search-asset-globe-e` added (0 steps) (all) · console
 - 2026-11-10 15:33 UTC · `search-bar-plugin-snappable-search-asset-globe-e` → queued, note (all) · console
 - 2026-11-10 15:34 UTC · `search-bar-plugin-snappable-search-asset-globe-e` → queued, note (all) · builds-live
+- 2026-11-10 15:34 UTC · `search-bar-plugin-snappable-search-asset-globe-e` note (all) · orchestrator
 
 ## Token passes (log)
 
