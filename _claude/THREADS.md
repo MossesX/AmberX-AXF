@@ -772,7 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 18:53 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` note (all) · orchestrator
 - 2026-11-10 18:55 UTC · `x.modules` → pending (all) · voice
 - 2026-11-10 18:55 UTC · `x.deploy.console` → pending (all) · voice
 - 2026-11-10 18:55 UTC · `x.uikits` → pending (all) · voice
@@ -1172,6 +1171,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 23:22 UTC · `molly-sign-in-once` note (all) · orchestrator
 - 2026-11-10 23:18 UTC · `make-hulu-actually-take-builds-dispatcher-counts` s3 done, → built (all) · orchestrator
 - 2026-11-10 23:23 UTC · `stall-watchdog-detect-when-nothing-is-building-a` s2 done (all) · orchestrator
+- 2026-11-10 23:23 UTC · `api-accounts-need-no-approval-builds-route-there` → queued, note (all) · pipeline
 
 ## Token passes (log)
 

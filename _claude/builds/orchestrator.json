@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T23:23:17.878Z",
+ "updatedAt": "2026-11-10T23:23:30.982Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -95674,7 +95674,7 @@
    "title": "API accounts need no approval: builds route there like any other account (spend caps still apply)",
    "category": "",
    "detail": "Remove the owner-click requirement for routing builds to API-key accounts (pipeline_route api, overflow, voice/API). API accounts are treated like any other account in the order: builds go there automatically with no approval. Keep the daily/weekly spend caps and the 80% alert as the safety net; when a cap is hit, stop sending there and notify on AmberX. Supersedes the confirm-approval rule for API runs in token-usage-log s10.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -95682,7 +95682,7 @@
    "pr": "#479",
    "priority": "P0",
    "createdAt": "2026-11-10T21:02:31.264Z",
-   "updatedAt": "2026-11-10T23:20:52.378Z",
+   "updatedAt": "2026-11-10T23:23:03.920Z",
    "builtAt": "",
    "notes": [
     {
@@ -95720,6 +95720,10 @@
     {
      "text": "Reconciler: PR #479",
      "at": "2026-11-10T23:20:52.378Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 1) with 1 step left: back in the Queue (run 1).",
+     "at": "2026-11-10T23:23:03.920Z"
     }
    ],
    "approvals": [],
