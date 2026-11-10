@@ -771,9 +771,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 04:24 UTC · `molly-fable-version-the-one-interface-for-amberx` note (all) · orchestrator
-- 2026-11-10 04:25 UTC · `audit-pending-fable-builds-against-main-close-wh` added (0 steps) (all) · console
-- 2026-11-10 04:25 UTC · `audit-pending-fable-builds-against-main-close-wh` → queued, note (all) · console
 - 2026-11-10 04:26 UTC · `split-builds-pages-build-manager-pending-complet-3` s9 done (all) · orchestrator
 - 2026-11-10 04:26 UTC · `landing-tool-takes-long-build-names-and-auto-fix` added (0 steps) (all) · console
 - 2026-11-10 04:26 UTC · `split-builds-pages-build-manager-pending-complet-3` s10 done (all) · orchestrator
@@ -1171,6 +1168,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 17:32 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` note (all) · builds-live
 - 2026-11-10 17:31 UTC · `merge-batching-add-on-when-a-batch-fails-ci-spli` s3 done, → built (all) · orchestrator
 - 2026-11-10 17:32 UTC · `plugin-ui-inventory-per-plugin-reskin-one-button` note (all) · orchestrator
+- 2026-11-10 17:33 UTC · `conversation-rag-index-every-voice-chat-session` → running, note (all) · pipeline
+- 2026-11-10 17:33 UTC · `conversation-rag-index-every-voice-chat-session` branch claude/conversation-rag-index-every-voice-chat-session (all) · pipeline
+- 2026-11-10 17:33 UTC · `conversation-rag-index-every-voice-chat-session` note (all) · orchestrator
 
 ## Token passes (log)
 
