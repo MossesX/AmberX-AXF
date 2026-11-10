@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T16:26:08.675Z",
+ "updatedAt": "2026-11-10T16:26:21.816Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -84595,7 +84595,7 @@
    "title": "Retire Build Manager: the orchestrator is the only place that browses and manages builds (tabs, planned + final account pick, 5-min account health check)",
    "category": "",
    "detail": "1) Uninstall/remove the Build Manager plugin. Audit its responsibilities first and hand each to the orchestrator (or the right owner); nothing lost. Supersedes split-builds-pages-build-manager-pending-complet-2. 2) Orchestrator screen tabs: Pending (everything it's been asked to do), Queue, Active, Incomplete, Complete, Errors. 3) Splitting happens right away when a build is filed, so the Queue shows steps. At that point the orchestrator plans model + account. When the build's turn comes in the queue it makes the final account decision and records which account took it. 4) Account pick: subscriptions first (any subscription), then any API account, moving on until one accepts, if what it believed about an account turns out wrong. 5) Account health: every 5 minutes a background check (headless, never touches running builds, never signs anything out) confirms each account can sign in, has credits, and can run the needed model (Fable). The orchestrator always knows every account's status from this, so it doesn't test at dispatch time. Note: reconcile with the Claude Accounts Manager plugin's drag-and-drop account order. Full API control.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -84604,7 +84604,7 @@
    "priority": "P1",
    "createdAt": "2026-11-10T15:29:42.107Z",
    "updatedAt": "2026-11-10T16:26:07.261Z",
-   "builtAt": "",
+   "builtAt": "2026-11-10T16:26:07.261Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -84625,6 +84625,10 @@
     {
      "text": "Headless run axf-retire-build-manager-the-orchestrator-is-the-onl--paulie: brief only · start 11.7K tokens ($0.03) · cost $7.16 · 121 turns · 6 tools, MCP none",
      "at": "2026-11-10T16:26:07.261Z"
+    },
+    {
+     "text": "PR #450 open. Build manager removed; orchestrator tabs, plan at split, final pick (subscriptions then API), 5-min account health done, tests green. Not done: no screenshots (the scratch console's lazy loader never shows the orchestrator view), so UI Review is not submitted yet. Needs desktop + phone shots of the Queue and Accounts tabs, then UI Review.",
+     "at": "2026-11-10T16:25:51.666Z"
     }
    ],
    "approvals": [],
@@ -84694,8 +84698,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T16:25:52.714Z",
      "note": "",
      "uid": "st-mwaujv9u03omjr"
     }
