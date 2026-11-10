@@ -769,7 +769,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 17:59 UTC · `skins-own-everything-colour-theme-swaps-independ` note (all) · orchestrator
 - 2026-11-09 18:00 UTC · `skins-own-everything-colour-theme-swaps-independ` → queued, note (all) · pipeline
 - 2026-11-09 18:00 UTC · `skins-own-everything-colour-theme-swaps-independ` note (all) · pipeline
 - 2026-11-09 18:00 UTC · `skins-own-everything-colour-theme-swaps-independ` note (all) · orchestrator
@@ -1169,6 +1168,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 01:18 UTC · `orchestrator-and-build-manager-search-bar-collap` note (all) · orchestrator
 - 2026-11-10 01:19 UTC · `urgent-terminal-pops-up-every-time-the-console-o` → running, note (all) · pipeline
 - 2026-11-10 01:19 UTC · `urgent-terminal-pops-up-every-time-the-console-o` note (all) · orchestrator
+- 2026-11-10 01:30 UTC · `walkthrough-player-ide-layout-setting-collapsibl` → pending, note (all) · reconciler
 
 ## Token passes (log)
 

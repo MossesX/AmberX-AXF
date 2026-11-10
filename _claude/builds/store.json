@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2162,
- "updatedAt": "2026-11-10T01:19:18.313Z",
+ "rev": 2163,
+ "updatedAt": "2026-11-10T01:30:52.939Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -132744,7 +132744,7 @@
    "title": "Walkthrough player: IDE layout setting, collapsible panels, build books from clips; merge with the Demonstration manager",
    "category": "",
    "detail": "Upgrade the existing walkthrough/demonstration tools, don't make new ones. 1) Player setting: Layout = Player or IDE. IDE style: collapsible side columns and panels (clips library, book outline, properties, picture-in-picture group chat, captions/script). 2) Books: drag and drop clips into a book, reorder, nest chapters. 3) Merge the walkthrough player and the already-built Demonstration manager into one plugin (harvest its code, keep its data: demonstration, book, clip asset types), one source of truth. 4) Keep the playback controls (voice switch, speed, hide parts). Full API control.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -132752,7 +132752,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T23:59:19.114Z",
-   "updatedAt": "2026-11-10T01:08:58.019Z",
+   "updatedAt": "2026-11-10T01:30:51.404Z",
    "builtAt": "",
    "notes": [
     {
@@ -132778,6 +132778,10 @@
     {
      "text": "Headless run axf-walkthrough-player-ide-layout-setting-collapsibl--gina: brief only · start 13.6K tokens ($0.11) · cost $29.41 · 185 turns · 6 tools, MCP none",
      "at": "2026-11-10T01:08:58.019Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-10T01:30:51.404Z"
     }
    ],
    "approvals": [],
@@ -132910,7 +132914,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
