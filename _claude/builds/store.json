@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2255,
- "updatedAt": "2026-11-10T03:22:35.266Z",
+ "rev": 2256,
+ "updatedAt": "2026-11-10T03:22:58.717Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -134576,7 +134576,7 @@
    "title": "Self-healing build folders: auto-clear stale git locks and stray files, plain script, no AI",
    "category": "",
    "detail": "Plain code (no AI, zero tokens), run by the dispatcher tick and before every launch, land and rerun. 1) Stale git locks: find index.lock, HEAD.lock, refs locks and worktree locks under /opt/axf/.git and every /root/axf-builds/* folder. If no live git process holds them and they're older than 2 minutes, remove them. 2) Stray files that block landing (assets.log, build logs, _claude/builds sync files): restore tracked ones and stash or ignore untracked ones, then retry the land automatically. 3) Crashed sessions: tmux or claude processes dead with the build marked running get reset and requeued (works with the reaper). 4) Every auto-fix is logged in the fix log and Automatic fixes notes, with an AmberX FYI. 5) Same guard after any git operation fails with a lock error: clear it and retry once. 6) Tests with fake locks and crashed runs. Same bug twice gets a guard, per it-has-to-work.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -134584,7 +134584,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T02:22:06.131Z",
-   "updatedAt": "2026-11-10T03:22:26.698Z",
+   "updatedAt": "2026-11-10T03:22:46.563Z",
    "builtAt": "",
    "notes": [
     {
@@ -134606,6 +134606,14 @@
     {
      "text": "Claude account: account-5 (axf-self-healing-build-folders-auto-clear-stale-git--joey, own login copy)",
      "at": "2026-11-10T03:21:09.506Z"
+    },
+    {
+     "text": "Started run 2 on mossesx-max- (Opus, Phase 1): axf-self-healing-build-folders-auto-clear-stale-git--paulie.",
+     "at": "2026-11-10T03:22:43.153Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-self-healing-build-folders-auto-clear-stale-git--paulie, own login copy)",
+     "at": "2026-11-10T03:22:46.563Z"
     }
    ],
    "approvals": [],
@@ -134625,12 +134633,12 @@
    "pipeline": {
     "queuedAt": "2026-11-10T02:22:12.571Z",
     "queuedBy": "console",
-    "account": "account-5",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-self-healing-build-folders-auto-clear-stale-git--paulie",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-10T02:48:43.040Z",
-    "runs": 1,
+    "launchedAt": "2026-11-10T03:22:38.579Z",
+    "runs": 2,
     "lastRun": {
      "at": "2026-11-10T02:59:04.608Z",
      "exit": 1,
@@ -134647,9 +134655,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Session on account-5 ended (exit 1) with 3 steps left: back in the Queue (run 1).",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T02:48:43.040Z"
+    "dispatchedAt": "2026-11-10T03:22:38.579Z"
    },
    "steps": [
     {
@@ -134730,7 +134738,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

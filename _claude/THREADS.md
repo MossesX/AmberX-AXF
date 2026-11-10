@@ -770,8 +770,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-09 20:14 UTC · `saved-claude-logins-never-end-up-on-a-spent-refr` added (0 steps) (all) · console
-- 2026-11-09 20:14 UTC · `saved-claude-logins-never-end-up-on-a-spent-refr` → queued, note (all) · console
 - 2026-11-09 20:15 UTC · `saved-claude-logins-never-end-up-on-a-spent-refr` note (all) · orchestrator
 - 2026-11-09 20:15 UTC · `saved-claude-logins-never-end-up-on-a-spent-refr` → running, note (all) · pipeline
 - 2026-11-09 20:15 UTC · `saved-claude-logins-never-end-up-on-a-spent-refr` branch claude/saved-claude-logins-never-end-up-on-a-spent-refr (all) · pipeline
@@ -1170,6 +1168,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 03:21 UTC · `self-healing-build-folders-auto-clear-stale-git` note (all) · orchestrator
 - 2026-11-10 03:21 UTC · `split-builds-pages-build-manager-pending-complet` note (all) · orchestrator
 - 2026-11-10 03:22 UTC · `split-builds-pages-build-manager-pending-complet-3` → queued, note (all) · pipeline
+- 2026-11-10 03:22 UTC · `self-healing-build-folders-auto-clear-stale-git` → running, note (all) · pipeline
+- 2026-11-10 03:22 UTC · `self-healing-build-folders-auto-clear-stale-git` note (all) · orchestrator
 
 ## Token passes (log)
 
