@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T16:31:08.432Z",
+ "updatedAt": "2026-11-10T16:31:59.281Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -79513,7 +79513,7 @@
    "title": "Skins own everything; colour theme swaps independently inside the active skin",
    "category": "",
    "detail": "Standing rule for skins work (applies to appearance-skins-colour-themes-only-remove-design-packs, skins-restyle-everything and skins-are-a-complete-rework): a skin controls everything (look, layout, behavior, every section/asset type) and includes a colour theme section. The user can change the colour theme on its own without changing the skin: picking a colour theme applies it inside the current skin and does NOT create a new skin or fork/duplicate the skin. Skin sections stay separate; the colour theme is one switchable part. Update contracts, pickers (skin picker + colour theme picker), API/voice, and tests. Check the running builds' changes against this and fix any that make a new skin on theme change.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -79521,7 +79521,7 @@
    "pr": "#429",
    "priority": "P0",
    "createdAt": "2026-11-09T17:52:45.295Z",
-   "updatedAt": "2026-11-10T03:34:03.927Z",
+   "updatedAt": "2026-11-10T16:31:58.142Z",
    "builtAt": "",
    "notes": [
     {
@@ -79611,6 +79611,10 @@
     {
      "text": "Automatic fix (self-heal, no AI): Removed stale git lock /opt/axf/.git/worktrees/skins-own-everything-colour-theme-swaps-independ/index.lock (stale)",
      "at": "2026-11-10T03:34:03.927Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-10T16:31:58.142Z"
     }
    ],
    "approvals": [],
