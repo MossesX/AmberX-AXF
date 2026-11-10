@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T17:49:05.756Z",
+ "updatedAt": "2026-11-10T17:49:19.527Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -83638,12 +83638,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T00:23:46.567Z",
-   "updatedAt": "2026-11-10T00:25:40.910Z",
+   "updatedAt": "2026-11-10T17:49:12.686Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T00:25:40.910Z"
+    },
+    {
+     "text": "Split by Claude into 16 steps (3 Fable).",
+     "at": "2026-11-10T17:49:12.686Z"
     }
    ],
    "approvals": [],
@@ -83663,13 +83667,17 @@
    "steps": [
     {
      "id": "s1",
-     "text": "Follows the skins-as-section-packages build; upgrade that and reuse existing pieces (the IDE layout and tab groups from walkthrough-player-ide-layout-setting-collapsibl, the Demonstration designer, and UI asset designer). 1) PREVIEW EVERYWHERE: every list and grid that shows skin chunks or assets gets a preview action (hover thumbnail plus a full preview pane). 2) INTERACTIVE DEMO: if a chunk can be demoed (behaviour, layouts, components), Demo opens a live sandbox where you can actually use it. Otherwise it shows a rendered preview of what it looks like. 3) COMPARE: open chunks side by side in any number of containers, docked or floating. 4) IDE STUDIO VIEW (optional view, not forced): floating and dockable tab groups, each holding any asset types, with a chunk info panel (name, category, source skin, tags, used-by). Drag tabs between groups, and drag chunks onto each other or into a pack template to build new skins and assets. 5) SPLIT TAB: any tab can split into editor plus live preview, with real-time updates while editing. 6) Layouts can be saved and restored. Full REST, MCP, CLI and voice control. Desktop and phone screenshots go to UI Review grouped by screen.",
+     "text": "Design the chunk preview and demo contract and the studio layout schema. Chunk manifest fields: demo capability (interactive kind: behaviour, layout or component; sandbox entry; rendered-preview fallback) and a thumbnail spec. Studio layout document: tab groups (docked or floating, position and size), tabs (asset ref, type, split state), compare containers, and named saved layouts. Add a migration that upgrades the existing IDE layout settings from walkthrough-player-ide-layout and the skin section-package manifests from skins-as-section-packages.",
      "model": "Fable",
-     "why": "foundation words in the step",
+     "why": "Schema and migration design shared by the skins, demo and studio ports",
      "phase": "",
      "group": "",
      "estimate": "30 min",
-     "files": [],
+     "files": [
+      "apps/console-web/plugins/skins/schema/",
+      "apps/console-web/framework/ide-layout/schema/",
+      "apps/console-web/framework/ide-layout/migrations/"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -83677,17 +83685,86 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw9y8fn201y0pf"
+     "uid": "st-mwazif721v1jek"
     },
     {
      "id": "s2",
-     "text": "When you're looking at these lists and any of the grids of these chunks, you can preview one, or open a demo of it if it can be demoed, an interactive demonstration where you can actually use it, or at the very least a preview of what the chunk looks like. And the ability to view them side by side, multiple containers with tab groups, mix and match elements in multiple floating containers to compare side by side. An IDE-style thing with a bunch of floating tab groups with different types of assets in them, with the info on the chunk, and you can drag them to each other and build new things side by side. Each tab can be split with a preview and an editor so you can see changes in real time.",
+     "text": "Extend the framework IDE layout engine taken from walkthrough-player-ide-layout. Tab groups become dockable or floating. Groups hold tabs of any asset type through a tab-type registry. Tabs can be dragged between groups and between docked and floating groups. Groups can be nested into compare containers. All of this is driven by the new layout document.",
+     "model": "Fable",
+     "why": "Changes how the IDE-layout GUI works for every app that uses it",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/framework/ide-layout/",
+      "apps/console-web/framework/ide-layout/tab-registry.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazif721w2ywo"
+    },
+    {
+     "id": "s3",
+     "text": "Add the split-tab primitive and the live-update channel. Any tab can split into an editor pane and a preview pane. Edits flow to the preview in real time over a debounced change stream with the same contract for every asset type. Bad edits show an error overlay in the preview and keep the last good render.",
+     "model": "Fable",
+     "why": "Engine internals and a cross-port editor/preview contract",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/framework/ide-layout/split-tab.mjs",
+      "apps/console-web/framework/live-preview/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazif721x0qdp"
+    },
+    {
+     "id": "s4",
+     "text": "Add server-side preview rendering for skin chunks and UI assets: a cached thumbnail renderer and a full-preview render endpoint. Thumbnails are invalidated when a chunk changes. Reuse the UI asset designer renderer.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/skins/server/preview.mjs",
+      "apps/console-web/plugins/ui-asset-designer/server/render.mjs",
+      "apps/console-web/plugins/skins/server/routes.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazif721ycsot"
+    },
+    {
+     "id": "s5",
+     "text": "Add a preview action to every list and grid that shows skin chunks or assets: the skins section-package lists, pack grids, the UI asset designer library and the demonstration designer pickers. Hovering shows a thumbnail and Preview opens a full preview pane.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "30 min",
-     "files": [],
+     "files": [
+      "apps/console-web/plugins/skins/ui/",
+      "apps/console-web/plugins/ui-asset-designer/ui/library/",
+      "apps/console-web/plugins/demo-designer/ui/pickers/",
+      "apps/console-web/framework/components/preview-pane/"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -83695,17 +83772,239 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw9y8fn3025k7m"
+     "uid": "st-mwazif721zele3"
     },
     {
-     "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/skin-chunk-previews-interactive-demos-and-an-ide.md, THREADS row, commit, push, PR",
+     "id": "s6",
+     "text": "Add full API control for preview. Deep link console_open target skins/preview/<chunk>. Readable preview state. Actions preview.open, preview.close and preview.thumbnail. All of it reachable the same way through REST routes, MCP console actions and plugin commands, the CLI and AmberX voice intents.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/skins/server/routes.mjs",
+      "apps/console-web/plugins/skins/mcp/",
+      "apps/console-web/plugins/skins/cli/",
+      "apps/amberx/voice/intents/skins.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazif7220ymz9"
+    },
+    {
+     "id": "s7",
+     "text": "Add the interactive demo. Demo opens a live sandbox for demoable chunks (behaviour, layouts, components) by reusing the Demonstration designer sandbox, so you can actually use the chunk. Chunks that cannot be demoed fall back to a rendered preview. The Demo action is added next to Preview in every list and grid.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/demo-designer/sandbox/",
+      "apps/console-web/plugins/skins/ui/demo/",
+      "apps/console-web/framework/components/preview-pane/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazif7221ad51"
+    },
+    {
+     "id": "s8",
+     "text": "Add full API control for demo. Deep link console_open skins/demo/<chunk>. Readable sandbox state (running, mode interactive or rendered). Actions demo.open, demo.reset and demo.close. All of it reachable through REST, MCP, CLI and voice.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "20 min",
      "files": [
+      "apps/console-web/plugins/skins/server/routes.mjs",
+      "apps/console-web/plugins/skins/mcp/",
+      "apps/console-web/plugins/skins/cli/",
+      "apps/amberx/voice/intents/skins.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazif7222o097"
+    },
+    {
+     "id": "s9",
+     "text": "Add the compare view. Open any number of chunks side by side in containers that can be docked or floating. Containers can mix asset types, and each container is a tab group from the extended layout engine.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/skins/ui/compare/",
+      "apps/console-web/framework/ide-layout/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazif7223izta"
+    },
+    {
+     "id": "s10",
+     "text": "Add the IDE studio as an optional view, off by default and switched on with a setting, not forced. It shows floating and dockable tab groups holding any asset types, plus a chunk info panel with name, category, source skin, tags and used-by. Used-by comes from a reverse-reference index built on the server.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/skins/ui/studio/",
+      "apps/console-web/plugins/skins/server/used-by-index.mjs",
+      "apps/console-web/plugins/skins/settings.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazif7224mtym"
+    },
+    {
+     "id": "s11",
+     "text": "Add drag-to-compose in the studio. Dropping a chunk onto another chunk, or into a pack template, creates a new skin or asset draft through the UI asset designer and the skins section-package builder, then opens the draft in a new tab.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/skins/ui/studio/compose.mjs",
+      "apps/console-web/plugins/skins/server/compose.mjs",
+      "apps/console-web/plugins/ui-asset-designer/server/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazif7225ge0d"
+    },
+    {
+     "id": "s12",
+     "text": "Wire split tabs into the studio and compare views for every asset tab type. Each type gets an editor and a live preview that updates in real time over the live-preview channel, with a split toggle on every tab.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/skins/ui/studio/",
+      "apps/console-web/plugins/ui-asset-designer/ui/editor/",
+      "apps/console-web/framework/live-preview/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazif7226umtp"
+    },
+    {
+     "id": "s13",
+     "text": "Add saving and restoring of layouts. Named studio and compare layouts can be saved, listed, restored, renamed and deleted. They are stored per profile and the last-used layout is restored automatically.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "apps/console-web/plugins/skins/server/layouts.mjs",
+      "apps/console-web/plugins/skins/ui/studio/layouts.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazif7227ko92"
+    },
+    {
+     "id": "s14",
+     "text": "Add full API control for compare, the studio, split tabs, compose and layouts. Deep links: console_open skins/studio, skins/compare?chunks=… and skins/studio?layout=…. Readable state: groups, tabs, split state, info panel. Actions: open, close and move tabs; float and dock groups; split and unsplit; compose; layout save, restore and delete; the studio-view setting. All of it the same through REST, MCP (console actions and plugin commands, control@1 for tokens), the CLI and voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/skins/server/routes.mjs",
+      "apps/console-web/plugins/skins/mcp/",
+      "apps/console-web/plugins/skins/cli/",
+      "apps/amberx/voice/intents/skins.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazif72288mcg"
+    },
+    {
+     "id": "s15",
+     "text": "Capture desktop and phone screenshots of the list previews, demo sandbox, rendered fallback, compare, studio, info panel, split tab and layouts, and send them to UI Review grouped by screen.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "apps/console-web/plugins/skins/tests/screenshots/",
+      "apps/console-web/plugins/ui-review/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwazif7229dtv3"
+    },
+    {
+     "id": "s16",
+     "text": "Add tests for the schema migration, the layout engine (drag, float, dock), split live updates, the preview, demo, compose and layout routes, and REST/MCP/CLI/voice parity. Then write the report at _claude/builds/reports/skin-chunk-previews-interactive-demos-and-an-ide.md, add the THREADS row, and open the PR. The PR lists how each UI feature is reached through deep link, REST, MCP, CLI and voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/skins/tests/",
+      "apps/console-web/framework/ide-layout/tests/",
       "_claude/builds/reports/skin-chunk-previews-interactive-demos-and-an-ide.md",
       "_claude/THREADS.md"
      ],
@@ -83716,7 +84015,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mw9y8fn303q4d9"
+     "uid": "st-mwazif722abhpy"
     }
    ]
   },
