@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T16:22:23.333Z",
+ "updatedAt": "2026-11-10T16:25:51.902Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -84600,10 +84600,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/retire-build-manager-the-orchestrator-is-the-onl",
-   "pr": "",
+   "pr": "#450",
    "priority": "P1",
    "createdAt": "2026-11-10T15:29:42.107Z",
-   "updatedAt": "2026-11-10T16:09:07.402Z",
+   "updatedAt": "2026-11-10T16:25:50.744Z",
    "builtAt": "",
    "notes": [
     {
