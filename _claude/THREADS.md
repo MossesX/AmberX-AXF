@@ -772,9 +772,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 18:01 UTC · `inline-edit-plugin-install-in-console-molly-and` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
-- 2026-11-10 18:01 UTC · `inline-edit-plugin-install-in-console-molly-and` note (all) · builds-live
-- 2026-11-10 18:02 UTC · `remove-the-old-theme-manager-style-and-layout-se` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-10 18:02 UTC · `remove-the-old-theme-manager-style-and-layout-se` note (all) · builds-live
 - 2026-11-10 18:02 UTC · `amberx-android-web-view-top-banner-hidden-behind` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-10 18:02 UTC · `amberx-android-web-view-top-banner-hidden-behind` note (all) · builds-live
@@ -1172,6 +1169,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 23:08 UTC · `stall-watchdog-detect-when-nothing-is-building-a` added (0 steps) (all) · console
 - 2026-11-10 23:08 UTC · `stall-watchdog-detect-when-nothing-is-building-a` → queued, note (all) · console
 - 2026-11-10 23:09 UTC · `stall-watchdog-detect-when-nothing-is-building-a` note (all) · orchestrator
+- 2026-11-10 23:09 UTC · `make-hulu-actually-take-builds-dispatcher-counts` → running, note (all) · pipeline
+- 2026-11-10 23:09 UTC · `make-hulu-actually-take-builds-dispatcher-counts` branch claude/make-hulu-actually-take-builds-dispatcher-counts (all) · pipeline
+- 2026-11-10 23:09 UTC · `make-hulu-actually-take-builds-dispatcher-counts` note (all) · orchestrator
 
 ## Token passes (log)
 
