@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2388,
- "updatedAt": "2026-11-10T15:26:46.534Z",
+ "rev": 2389,
+ "updatedAt": "2026-11-10T15:26:58.375Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -136799,12 +136799,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T15:25:48.900Z",
-   "updatedAt": "2026-11-10T15:25:50.251Z",
+   "updatedAt": "2026-11-10T15:26:50.061Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-10T15:25:50.251Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-10T15:26:50.061Z"
     }
    ],
    "approvals": [],
@@ -136831,13 +136835,89 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-10T15:26:50.061Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwaufbnx01qp8y",
+     "title": "",
+     "text": "New console plugin. 1) ACCOUNTS LIST: reads every Claude account stored on the VPS and lists each: name/label, email, plan, subscription or API, active builder / active worker / not, out of credits, order number, usage used / total, percent left, plan size; usage converted to dollars everywhere usage is shown. 2) ONE ORDER: drag and drop to set the order; subscriptions and API keys are equal to the orchestrator, it follows the order. Remove the 'fall back to API' concept (apiOverflow); API is just another entry. 3) MANAGE: rename, rearrange, add accounts (API keys or subscriptions) in the console; adding opens the terminal and automatically attempts the Claude login. Right-click any account anywhere: rename, reorder, open a Claude Code session in the terminal. 4) TERMINAL COLUMN: plugin adds a collapsible column (hamburger button) to the Terminal listing all VPS Claude accounts with the same management. Uninstalling the plugin removes the column. 5) BANNER WIDGET: drop-down to pick an account; settings choose what it shows (name, number, usage left, API/subscription, email, any combination). 6) FLOATING OVERLAY WINDOW (not a toolbar): small narrow professional window with customizable buttons; editable behavior and sub-menus in plugin settings; resizable, size lock, dockable where the console allows, minimize to main screen, overlay scope (whole OS vs just the console/browser), styleable like any asset. 7) Full API control for everything.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T15:26:50.061Z",
+     "updatedAt": "2026-11-10T15:26:50.061Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwaufbnx02b1jv",
+     "title": "",
+     "text": "Make a plugin that reads all the accounts stored on the VPS, lists them, says if they're active builders, workers, out of credits, API or not, number in the order, usage left, percentage, plan, usage in dollars. Drag and drop to arrange the order. API is no longer a fallback, it's included like any other. Rename, add accounts and APIs in the console; it pops up the terminal and attempts the login. Terminal gets a collapsible column of all Claude accounts, managed the same; the plugin adds that column. Configurable banner widget drop-down. Floating overlay window with custom buttons, editable behavior and sub-menus, resizable, lockable, dockable, minimizable, overlay the whole OS or just the console. Right-click any account to open a Claude Code session.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T15:26:50.061Z",
+     "updatedAt": "2026-11-10T15:26:50.061Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwaufbnx03zbmt",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/claude-accounts-manager-plugin-one-ordered-list.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/claude-accounts-manager-plugin-one-ordered-list.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-10T15:26:50.061Z",
+     "updatedAt": "2026-11-10T15:26:50.061Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -136846,12 +136926,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-10T15:26:50.061Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
