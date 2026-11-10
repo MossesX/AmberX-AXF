@@ -27,7 +27,7 @@ const REFRESH_MS = 10_000;
 const fmtTime = (v: string) => { const d = new Date(v); return Number.isNaN(d.getTime()) ? '' : d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); };
 const ago = (v: string) => { const ms = Date.now() - new Date(v).getTime(); if (!Number.isFinite(ms)) return ''; const m = Math.round(ms / 60000); return m < 1 ? 'just now' : m < 60 ? `${m} min ago` : `${Math.round(m / 60)} h ago`; };
 
-export function PipelineTab({ api, log }: { api: Api; log: (t: string, l?: 'info' | 'ok' | 'warn' | 'error') => void }) {
+export function PipelineTab({ api, log, lane = '' }: { api: Api; log: (t: string, l?: 'info' | 'ok' | 'warn' | 'error') => void; lane?: string }) {
   const rt = useRuntime();
   const [s, setS] = useState<Status | null>(null);
   const [error, setError] = useState('');
@@ -45,6 +45,9 @@ export function PipelineTab({ api, log }: { api: Api; log: (t: string, l?: 'info
     document.addEventListener('visibilitychange', tickIt);
     return () => { if (timer.current) window.clearInterval(timer.current); document.removeEventListener('visibilitychange', tickIt); };
   }, []);
+  // opened on one lane (Home card, orchestrator.open:<lane>): bring that column into view once the table is drawn
+  const loaded = !!s;
+  useEffect(() => { if (lane && loaded) document.querySelector(`.pl-col[data-lane="${lane}"]`)?.scrollIntoView({ block: 'start', behavior: 'smooth' }); }, [lane, loaded]);
   const act = async (path: string, body: Record<string, unknown>, what: string) => {
     setBusy(String(body.id ?? body.name ?? path));
     try { const r = await api.post<{ ok: boolean; error?: string }>(path, body); if (!r.ok) throw new Error(r.error); log(what, 'ok'); rt.toast(what, 'success'); await load(); }
@@ -100,7 +103,7 @@ export function PipelineTab({ api, log }: { api: Api; log: (t: string, l?: 'info
       </section>
       <div className="pl-cols">
         {(['pending', 'queued', 'building'] as const).map((t) => (
-          <section key={t} className="fx-stack pl-col" aria-label={TABLE_LABEL[t]}>
+          <section key={t} className="fx-stack pl-col" aria-label={TABLE_LABEL[t]} data-lane={t}>
             <h2 className="pd-card__title">{TABLE_LABEL[t]} <span className="oc-count">{s.table[t].length}</span>
               {t === 'pending' && <span className="fx-muted fx-small"> · tap Queue to send one to the dispatcher</span>}
               {t === 'queued' && <span className="fx-muted fx-small"> · in start order</span>}

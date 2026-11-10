@@ -136,4 +136,15 @@ try:
 finally:
     srv.subprocess.run = _real_run
 
+# Home page Build queue card: the REST route runs the same CLI (`pipeline.mjs card`) the MCP command and the CLI use
+hc = srv.home_card("queued")
+check(hc["ok"] and set(hc["counts"]) == {"pending", "queued", "building"}, "home-card: counts per lane")
+check(hc["target"]["id"] == "build-orchestrator" and hc["target"]["action"] == "orchestrator.open:queued", "home-card: target is the orchestrator on the lane")
+check(srv.home_card()["target"]["action"] == "nav:build-orchestrator", "home-card: no lane opens the orchestrator")
+try:
+    srv.home_card("../x")
+    check(False, "home-card: a bad tab is a 400")
+except srv.HTTPException as e:
+    check(e.status_code == 400, "home-card: a bad tab is a 400")
+
 print(f"build-orchestrator: {n} checks passed")

@@ -39,8 +39,9 @@
       {
         "target": "view:build",
         "title": "Build queue",
-        "text": "The queue of build steps waiting their turn. The MCP tools build_next and build_step work through it.",
+        "text": "Opens the Build orchestrator on its Pipeline tab: builds Pending, Queued and Building. The Home page Build queue card, console_open \"build queue\" / \"orchestrator\" and orchestrator.open:<pending|queued|building> all land there.",
         "related": [
+          "view:build-orchestrator",
           "view:builds"
         ],
         "kind": "screen"

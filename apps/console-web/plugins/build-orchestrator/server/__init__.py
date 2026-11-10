@@ -435,6 +435,16 @@ def pipeline_status() -> dict[str, Any]:
     return _pipeline("status")
 
 
+@router.get("/home-card")
+def home_card(tab: str = "") -> dict[str, Any]:
+    """The Home page Build queue card: counts per lane (pending / queued / building) and the target it opens, the
+    orchestrator screen (optionally on one lane). The same answer as `pipeline.mjs card` and the MCP command."""
+    lane = str(tab or "").strip().lower()
+    if lane and not re.match(r"^[a-z]{1,16}$", lane):
+        raise HTTPException(400, "bad tab")
+    return _pipeline("card", *(["--tab", lane] if lane else []))
+
+
 @router.post("/pipeline/queue")
 async def pipeline_queue(request: Request) -> dict[str, Any]:
     """{id}: Pending → Queue. Brett's move: the dispatcher starts it when a slot and an account for its model are free."""

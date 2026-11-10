@@ -314,7 +314,8 @@ export function needsSplit(b, rules = { maxStepMinutes: 30 }) {
 // ------------------------------------------------------------------ alerts (the console alerts API; types in notify.json)
 
 export const ALERT_SOURCE = 'pipeline';
-export const ALERT_LINK = '#/build-orchestrator';
+// view:<id> is what the alerts panel's Open follows (a #/ hash was ignored, so the button did nothing)
+export const ALERT_LINK = 'view:build-orchestrator';
 /**
  * The payload POST /api/alerts takes. kind = idle | launched | ended | failed | split. `key` makes repeats bump a count
  * instead of a new alert, and lets the dispatcher resolve one (idle) when a build runs again. Key prefixes are what

@@ -164,9 +164,13 @@ function Shell() {
   const rtTitle = useRuntime();
   const st = useAxfState();
   const brandName = rtTitle.manifest.app.name || rtTitle.branding()?.name || 'GizmoX AI Studio';
+  // A plugin may take over one of the console's own screens by contributing a view with the same id (the old Build
+  // queue, `build`, now opens the build pipeline's screen when that plugin is on); without it the console's own shows.
+  const takenOver = Object.fromEntries(Object.entries(plugins.contributed.views).filter(([id]) => id in views));
   const allViews: ViewMap = {
     ...plugins.contributed.views,
     ...views,
+    ...takenOver,
     // Old link: the plugin manager now lives in Settings → Plugins.
     plugins: { title: 'Plugins', icon: 'package', render: () => <OpenSettingsTab tab="plugins" /> },
   };

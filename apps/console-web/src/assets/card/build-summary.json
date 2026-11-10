@@ -2,24 +2,33 @@
   "$axf": "asset@1",
   "type": "card",
   "id": "build-summary",
-  "name": "Build summary",
-  "version": "1.0.0",
-  "description": "Builds and steps (the Build manager's summary panel).",
+  "name": "Build queue",
+  "version": "2.0.0",
+  "description": "Builds Pending, Queued and Building (the build pipeline); opens the Build orchestrator.",
   "author": "AmberX AXF",
   "tags": [
     "home",
     "starter"
   ],
   "data": {
-    "title": "Builds",
+    "title": "Build queue",
     "icon": "layers",
     "source": {
-      "kind": "console",
-      "id": "builds.summary"
+      "kind": "command",
+      "plugin": "build-orchestrator",
+      "command": "home-card"
     },
-    "view": "panel",
+    "path": "lanes",
+    "view": "table",
+    "fields": {
+      "columns": [
+        "label",
+        "count"
+      ]
+    },
     "refresh": {
-      "kind": "live"
+      "kind": "every",
+      "every": 30
     },
     "size": "m"
   }

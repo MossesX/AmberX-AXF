@@ -339,3 +339,57 @@ export function apply(state, change) {
   s.updatedAt = now();
   return { state: s, build: b && s.builds.includes(b) ? b : undefined, log };
 }
+
+// ------------------------------------------------------------------ where "the build queue" opens (Brett, Nov 9 2026)
+
+/**
+ * Brett, Nov 9 2026: "Build queue doesn't open the orchestrator. It opens the old build queue." Every way of asking for
+ * the build queue (the Home card, console_open / console_show, an old link, voice) lands on this plugin's screen, on the
+ * Pipeline tab, optionally scrolled to one lane. One resolver, used by the page, the CLI, the server part and the tests.
+ */
+export const ORCH_VIEW = 'build-orchestrator';
+export const LANES = ['pending', 'queued', 'building'];
+export const LANE_LABEL = { pending: 'Pending', queued: 'Queued', building: 'Building' };
+/** The old Build queue screen and the names callers used for it; each one resolves to the orchestrator. */
+export const OLD_QUEUE_TARGETS = ['build', 'build-queue', 'build queue', 'builds/queue', 'queue'];
+const ORCH_TARGETS = [ORCH_VIEW, 'orchestrator', 'build orchestrator', 'pipeline'];
+const LANE_WORDS = { pending: 'pending', queue: 'queued', queued: 'queued', building: 'building', running: 'building', build: 'building' };
+
+/** A lane from a tab word (`pending`, `queue` / `queued`, `building` / `running`), '' for none or unknown. */
+export function laneOf(tab) {
+  return LANE_WORDS[String(tab ?? '').trim().toLowerCase()] ?? '';
+}
+
+/** The canonical target: screen `build-orchestrator` (+ lane). `action` is what the console runs to open it there. */
+export function orchestratorTarget(tab = '') {
+  const lane = laneOf(tab);
+  return { kind: 'screen', id: ORCH_VIEW, tab: lane, link: `view:${ORCH_VIEW}`, action: lane ? `orchestrator.open:${lane}` : `nav:${ORCH_VIEW}` };
+}
+
+/**
+ * A console target, link or hash route a caller used → the orchestrator target when it names the build queue or the
+ * orchestrator (`build`, `build-queue`, `#/builds/queue`, `view:build`, `orchestrator?tab=queued`, …), else null.
+ */
+export function resolveQueueTarget(raw, tab = '') {
+  let s = String(raw ?? '').trim().toLowerCase().replace(/^view:/, '').replace(/^#\/?/, '').replace(/^\/+/, '');
+  let t = tab;
+  const q = s.indexOf('?');
+  if (q >= 0) { t = t || new URLSearchParams(s.slice(q + 1)).get('tab') || ''; s = s.slice(0, q); }
+  const colon = s.indexOf(':');
+  if (colon >= 0 && s.startsWith('orchestrator.open')) { t = t || s.slice(colon + 1); s = 'orchestrator'; }
+  const words = (x) => x.replace(/[-_/\s]+/g, ' ').trim();
+  const known = [...OLD_QUEUE_TARGETS, ...ORCH_TARGETS].map(words);
+  return known.includes(words(s)) ? orchestratorTarget(t) : null;
+}
+
+/** The Home page Build queue card: counts per lane from the pipeline table, and where tapping it goes. */
+export function homeCard(table = {}, tab = '') {
+  const counts = Object.fromEntries(LANES.map((l) => [l, Array.isArray(table[l]) ? table[l].length : Number(table[l]) || 0]));
+  return {
+    title: 'Build queue',
+    counts,
+    total: LANES.reduce((a, l) => a + counts[l], 0),
+    lanes: LANES.map((l) => ({ lane: l, label: LANE_LABEL[l], count: counts[l] })),
+    target: orchestratorTarget(tab),
+  };
+}

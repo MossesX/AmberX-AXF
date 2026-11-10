@@ -957,7 +957,8 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
     async def console_open(screen: str, to: Delivery = "recent") -> dict[str, Any]:
         """Open a screen in Brett's open Dev Console (the one he used last; to="all" for every open one, or a client id).
         `screen` = the view id ("plan-studio"), its title ("Plan Studio") or a few words ("plan studio", "builds",
-        "orchestrator"); plugins' screens count. Not sure of the name? console_list(kind="screens", q="…") first."""
+        "orchestrator"); plugins' screens count. "build queue" opens the Build orchestrator (Pending / Queued / Building);
+        console_action("orchestrator.open:queued") opens it on one lane. Not sure of the name? console_list(kind="screens", q="…") first."""
         return await go({"op": "act", "target": "console.screens", "path": screen, "action": "open", "input": inp(to)})
 
     @mcp.tool(annotations=NAVIGATE)

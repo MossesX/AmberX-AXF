@@ -198,6 +198,7 @@ export function HomeCardView({ entry, index, onDropAt }: { entry: HomeCard; inde
   if (panel && card.view === 'panel') {
     return <div {...drag} data-fx-ctx-target={HOME_CARD_CTX} data-fx-ctx-payload={entry.id}>{panel()}</div>;
   }
+  const opens = card.source.kind === 'command' || !!CONSOLE_READS[card.source.id ?? '']?.open;
   const more = (
     <IconButton icon="more" label={`${card.title}: card menu`} onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); rt.openContext(r.left, r.bottom, HOME_CARD_CTX, entry.id); }} />
   );
@@ -206,10 +207,27 @@ export function HomeCardView({ entry, index, onDropAt }: { entry: HomeCard; inde
       <DataCard
         title={card.title || 'Card'} icon={card.icon} model={model} loading={loading} error={error} size={entry.size}
         ctx={HOME_CARD_CTX} ctxPayload={entry.id}
-        actions={<>{card.source.kind === 'command' && <IconButton icon="refresh" label="Read again" onClick={reload} />}{more}</>}
+        actions={<>{card.source.kind === 'command' && <IconButton icon="refresh" label="Read again" onClick={reload} />}{opens && <IconButton icon="external" label={`${card.title || 'Card'}: open`} onClick={() => openCard(rt, card, value)} />}{more}</>}
       />
     </div>
   );
+}
+
+/**
+ * Where tapping a card goes. A read that names its own screen (`target: { action }` or `target: { id }`, e.g. the build
+ * pipeline's Home card → the orchestrator on its Pipeline tab) wins; else a command card opens its plugin's screen.
+ */
+export function cardOpenTarget(card: CardData, value: unknown): { action?: string; view: string } {
+  const t = (value && typeof value === 'object' ? (value as { target?: { action?: unknown; id?: unknown } }).target : undefined) ?? {};
+  if (typeof t.action === 'string' && t.action) return { action: t.action, view: typeof t.id === 'string' ? t.id : '' };
+  if (typeof t.id === 'string' && t.id) return { view: t.id };
+  return { view: card.source.kind === 'command' ? (card.source.plugin || 'home') : (CONSOLE_READS[card.source.id ?? '']?.open ?? 'home') };
+}
+
+function openCard(rt: AxfRuntime, card: CardData, value: unknown) {
+  const t = cardOpenTarget(card, value);
+  if (t.action && rt.dispatch(t.action)) return;
+  rt.navigate(t.view || (card.source.kind === 'command' ? card.source.plugin || 'home' : 'home'));
 }
 
 const accepts = (e: DragEvent) => [HOME_CARD_DRAG, CARD_DROP_MIME, 'text/plain'].some((t) => e.dataTransfer.types.includes(t));
@@ -248,7 +266,8 @@ export function useHomeCardMenu(rt: AxfRuntime) {
         else homeLayout.apply({ op: 'update', id, card: { ...c.card, view: val, fields: {} } });
       } else if (verb === 'open') {
         const src = c.card.source;
-        rt.navigate(src.kind === 'command' ? (src.plugin ?? 'home') : (CONSOLE_READS[src.id ?? '']?.open ?? 'home'));
+        if (src.kind !== 'command') { rt.navigate(CONSOLE_READS[src.id ?? '']?.open ?? 'home'); return; }
+        void readCommand(src.plugin ?? '', src.command ?? '', c.card.args).then((v) => openCard(rt, c.card, v), () => openCard(rt, c.card, undefined));
       }
     }, { label: 'Home card', params: true });
     return () => { rt.contextExtras.delete(HOME_CARD_CTX); off(); };

@@ -248,6 +248,28 @@
         "output": "{ table: { pending, queued, building }, accounts, slots, plan: { launches, waits, idle }, state }"
       },
       {
+        "id": "home-card",
+        "route": "GET /home-card",
+        "title": "Build queue card",
+        "description": "The Home page Build queue card: how many builds are Pending, Queued and Building, and the screen it opens (the Build orchestrator, optionally on one lane). Say 'open build queue', 'open orchestrator' or 'how many builds are queued'.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "tab": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "queued",
+                "building"
+              ],
+              "description": "Lane the target opens on (optional)"
+            }
+          }
+        },
+        "output": "{ title, counts: { pending, queued, building }, total, lanes: [{ lane, label, count }], target: { kind, id, tab, link, action } }"
+      },
+      {
         "id": "pipeline-queue",
         "route": "POST /pipeline/queue",
         "title": "Queue a build",

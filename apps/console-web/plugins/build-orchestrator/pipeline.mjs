@@ -8,6 +8,7 @@
  * dispatcher takes the next Queue build and starts a headless session on an account that runs its next phase's model.
  *
  *   node apps/console-web/plugins/build-orchestrator/pipeline.mjs status [--json]    the table (Pending / Queue / Building), accounts, slots, what the next tick would do
+ *   … card [pending|queued|building]  the Home page Build queue card: counts per lane + the target it opens (orchestrator)
  *   … queue <id> [--by who]        Pending → Queue (Brett's move; the console calls it with his name)
  *   … unqueue <id>                 Queue → Pending
  *   … split <id> [--request] [--provider claude|rules]   split a build now (or ask the next tick to)
@@ -151,6 +152,13 @@ export function status() {
   byTable.building.sort((a, b) => str(b.pipeline?.launchedAt).localeCompare(str(a.pipeline?.launchedAt)));
   const st = loadState();
   return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), table: byTable, accounts, slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable }, plan, settings, state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails } };
+}
+
+/** The Home page Build queue card: counts per lane (the same table status() draws, without the accounts) + its target. */
+export function homeCardNow(tab = '') {
+  const table = { pending: 0, queued: 0, building: 0 };
+  for (const b of live(loadStore())) { const t = BP.tableOf(b); if (t && !b.hidden) table[t] += 1; }
+  return { ok: true, at: nowIso(), ...orch.homeCard(table, tab) };
 }
 
 // ------------------------------------------------------------------ store writes
@@ -529,6 +537,10 @@ async function main(argv) {
       s.plan.idle ? `IDLE: ${s.plan.idle.reason}` : '',
     ].filter(Boolean).join('\n'));
   }
+  if (cmd === 'card') {
+    const c = homeCardNow(flag('tab', rest[0] && !rest[0].startsWith('--') ? rest[0] : ''));
+    return out(c, `${c.title}: ${c.lanes.map((l) => `${l.count} ${l.label.toLowerCase()}`).join(' · ')} → opens ${c.target.id}${c.target.tab ? ` (${c.target.tab})` : ''}`);
+  }
   if (cmd === 'queue') { const b = queue(rest[0], { by }); return out({ ok: true, id: b.id, status: b.status, pipeline: b.pipeline }, `${b.id} → Queue (by ${by})`); }
   if (cmd === 'unqueue') { const b = unqueue(rest[0], { by }); return out({ ok: true, id: b.id, status: b.status }, `${b.id} → Pending`); }
   if (cmd === 'split') {
@@ -562,7 +574,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | card [pending|queued|building] | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

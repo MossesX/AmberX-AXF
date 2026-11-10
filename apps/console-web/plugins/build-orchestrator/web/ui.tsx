@@ -8,6 +8,7 @@ import * as pendingCore from '@console/axf/plan/pending-core.mjs';
 import pricing from '@console/axf/schemas/model-pricing.json';
 import { DataGrid, RowHookButtons, registerRowRefTarget, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 import { PipelineTab } from './pipeline';
+import { useOpenRequest } from './open';
 import './orchestrator.css';
 
 /*
@@ -49,6 +50,10 @@ export function OrchestratorPage() {
   const [busy, setBusy] = useState(false);
   const [tab, setTab] = useState<Tab>(() => consoleApi.readLocal<Tab>('orch-tab', 'pipeline'));
   useEffect(() => { consoleApi.writeLocal('orch-tab', tab); }, [tab]);
+  // opened as the build queue (Home card, old Build queue link, orchestrator.open[:lane]): Pipeline tab, then the lane
+  const open = useOpenRequest();
+  const [lane, setLane] = useState<string>('');
+  useEffect(() => { if (open.seq) { setTab('pipeline'); setLane(open.lane); } }, [open]);
 
   const load = async () => {
     try { const r = await api.call<Res>('state'); if (!r.ok) throw new Error(r.error); if (r.upgradePolicy) core.setUpgradePolicy(r.upgradePolicy); setState(r.state!); setError(''); }
@@ -82,7 +87,7 @@ export function OrchestratorPage() {
       </header>
       {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
       <TabGroup id="build-orchestrator.tabs" label="Build orchestrator" value={tab} onChange={setTab} tabs={TABS.map((t) => ({ value: t.id, label: t.label, icon: t.icon, badge: t.id === 'approvals' && waiting > 0 ? waiting : undefined }))} />
-      {tab === 'pipeline' && <PipelineTab api={api} log={log} />}
+      {tab === 'pipeline' && <PipelineTab api={api} log={log} lane={lane} />}
       {tab === 'builds' && <BuildsTab state={state} busy={busy} act={act} />}
       {tab === 'approvals' && <ApprovalsTab state={state} busy={busy} act={act} />}
       {tab === 'rules' && <RulesTab rules={state.rules} busy={busy} act={act} />}

@@ -168,4 +168,62 @@ t('approvals off: an open request filed while they were on is closed when the ph
   try { x = c.apply(x, { action: 'step', id: 'old', step: 's2' }).state; assert.equal(x.builds[0].upgradeRequests[0].state, 'approved'); }
   finally { c.setUpgradePolicy({ approvalRequired: true, source: 'test' }); }
 });
+// Home page Build queue card → the orchestrator (Brett, Nov 9 2026: "Build queue doesn't open the orchestrator. It opens the old build queue.")
+{
+  const { spawnSync } = await import('node:child_process');
+  const { consoleResolve } = await import('../../../../framework/core/engines/console-commands.mjs');
+  const { alertFor } = await import('./pipeline-core.mjs');
+  const here = new URL('.', import.meta.url).pathname;
+  const root = join(here, '../../../..');
+  t('old build-queue targets, links and routes all resolve to the orchestrator; other screens do not', () => {
+    for (const x of ['build', 'build-queue', 'Build queue', '#/builds/queue', '#/build', 'view:build', 'queue', 'orchestrator', 'build-orchestrator', 'view:build-orchestrator']) assert.equal(c.resolveQueueTarget(x)?.id, c.ORCH_VIEW, x);
+    for (const x of ['plan', 'builds', 'pending', '']) assert.equal(c.resolveQueueTarget(x), null, x);
+    assert.equal(c.resolveQueueTarget('orchestrator?tab=queue').action, 'orchestrator.open:queued');
+    assert.equal(c.resolveQueueTarget('orchestrator.open:running').tab, 'building');
+    assert.deepEqual(c.orchestratorTarget(), { kind: 'screen', id: 'build-orchestrator', tab: '', link: 'view:build-orchestrator', action: 'nav:build-orchestrator' });
+    assert.equal(c.orchestratorTarget('nonsense').tab, '');
+  });
+  t('home card: counts per lane from the pipeline table, target = the orchestrator', () => {
+    const h = c.homeCard({ pending: [1, 2], queued: [3], building: [] }, 'pending');
+    assert.deepEqual(h.counts, { pending: 2, queued: 1, building: 0 }); assert.equal(h.total, 3);
+    assert.deepEqual(h.lanes.map((l) => l.label), ['Pending', 'Queued', 'Building']);
+    assert.equal(h.target.id, 'build-orchestrator'); assert.equal(h.target.action, 'orchestrator.open:pending');
+  });
+  t('the Home starter card reads the orchestrator (not the old queue store) and opens it', () => {
+    const card = JSON.parse(readFileSync(join(root, 'apps/console-web/src/assets/card/build-summary.json'), 'utf8')).data;
+    assert.deepEqual(card.source, { kind: 'command', plugin: 'build-orchestrator', command: 'home-card' });
+    assert.equal(card.path, 'lanes'); assert.equal(card.title, 'Build queue');
+    const home = readFileSync(join(root, 'apps/console-web/src/views/HomeCards.tsx'), 'utf8');
+    assert.match(home, /cardOpenTarget/); assert.match(home, /t\.action && rt\.dispatch\(t\.action\)/);
+  });
+  t('the old Build queue screen id is taken over by a redirect; console_action orchestrator.open is registered', () => {
+    const idx = readFileSync(join(here, 'web/index.tsx'), 'utf8');
+    assert.match(idx, /build: \{ title: 'Build queue'[^\n]*<OldQueueRedirect \/>/);
+    assert.match(idx, /rt\.actions\.register\('orchestrator\.open'/);
+    assert.match(readFileSync(join(root, 'apps/console-web/src/App.tsx'), 'utf8'), /\.\.\.takenOver/);
+  });
+  t('console_open / voice (control@1 console.screens): "build queue" and "orchestrator" land on the orchestrator', () => {
+    const items = [
+      { kind: 'screen', id: 'plan', label: 'Plan' }, { kind: 'screen', id: 'pending', label: 'Pending builds' }, { kind: 'screen', id: 'builds', label: 'Builds' },
+      { kind: 'screen', id: 'build', label: 'Build queue', keywords: ['build queue', 'orchestrator'] },
+      { kind: 'screen', id: 'build-orchestrator', label: 'Build orchestrator', keywords: ['orchestrator', 'build queue', 'queue', 'pipeline'] },
+    ];
+    for (const q of ['build queue', 'Build queue', 'build-queue', 'build', 'orchestrator', 'build orchestrator', 'open orchestrator', 'build-orchestrator']) {
+      const r = consoleResolve(items, 'screen', q);
+      assert.ok(r.item, q); assert.equal(c.resolveQueueTarget(r.item.id)?.id, 'build-orchestrator', q);
+    }
+  });
+  t('CLI (pipeline.mjs card) = the REST / MCP answer: same shape, counts and target', () => {
+    const r = spawnSync('node', [join(here, 'pipeline.mjs'), 'card', '--tab', 'queued', '--json'], { encoding: 'utf8', cwd: root });
+    assert.equal(r.status, 0, r.stderr);
+    const out = JSON.parse(r.stdout.trim().split('\n').pop());
+    assert.equal(out.ok, true); assert.deepEqual(Object.keys(out.counts), ['pending', 'queued', 'building']);
+    assert.deepEqual(out.target, c.orchestratorTarget('queued'));
+    assert.deepEqual({ ...out, ok: undefined, at: undefined }, { ...c.homeCard(out.counts, 'queued'), ok: undefined, at: undefined });
+    const cmd = JSON.parse(readFileSync(join(here, 'plugin.json'), 'utf8')).commands.items.find((i) => i.id === 'home-card');
+    assert.equal(cmd.route, 'GET /home-card'); assert.equal(cmd.readOnly, true); assert.match(cmd.description, /open build queue/);
+    assert.match(readFileSync(join(here, 'server/__init__.py'), 'utf8'), /@router\.get\("\/home-card"\)[\s\S]{0,600}_pipeline\("card"/);
+  });
+  t('pipeline notifications open the orchestrator (view: link the alerts panel follows)', () => assert.equal(alertFor('idle', { reason: 'x' }).link, 'view:build-orchestrator'));
+}
 console.log(`build-orchestrator: ${n} checks passed`);

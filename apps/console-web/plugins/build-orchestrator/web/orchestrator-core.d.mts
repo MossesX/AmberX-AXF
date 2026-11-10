@@ -31,3 +31,14 @@ export interface UpgradePolicy { approvalRequired: boolean; source: string }
 export function setUpgradePolicy(p: Partial<UpgradePolicy> | null | undefined): UpgradePolicy;
 export function upgradePolicy(): UpgradePolicy;
 export function apply(state: any, change: any): { state: any; build?: any; log: string[] };
+export const ORCH_VIEW: string;
+export type Lane = 'pending' | 'queued' | 'building';
+export const LANES: Lane[];
+export const LANE_LABEL: Record<Lane, string>;
+export const OLD_QUEUE_TARGETS: string[];
+export interface OrchestratorTarget { kind: 'screen'; id: string; tab: Lane | ''; link: string; action: string }
+export function laneOf(tab: unknown): Lane | '';
+export function orchestratorTarget(tab?: string): OrchestratorTarget;
+export function resolveQueueTarget(raw: unknown, tab?: string): OrchestratorTarget | null;
+export interface HomeCardState { title: string; counts: Record<Lane, number>; total: number; lanes: { lane: Lane; label: string; count: number }[]; target: OrchestratorTarget }
+export function homeCard(table?: Record<string, unknown>, tab?: string): HomeCardState;

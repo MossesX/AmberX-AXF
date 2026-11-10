@@ -349,7 +349,7 @@ export function BuildSummaryCard() {
   const view = useMemo(() => (loaded && state !== undefined ? core.computeQueue(features as unknown as QFeature[], state) : null), [features, loaded, state]);
   const next = view?.steps.find((s) => s.id === view.next);
   return (
-    <Container title="Build queue" icon="play" actions={<Button icon="external" onClick={() => rt.navigate('build')}>Open</Button>}>
+    <Container title="Plan build steps" icon="play" actions={<Button icon="external" onClick={() => rt.navigate('build')}>Open</Button>}>
       {!view ? <p className="fx-muted">Loading…</p> : (
         <table className="fx-table"><tbody>
           <tr><th>Built</th><td>{(view.counts.done ?? 0) + (view.counts.rework ?? 0)}/{view.steps.length} steps</td></tr>
