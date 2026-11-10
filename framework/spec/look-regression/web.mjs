@@ -55,7 +55,8 @@ export async function serve(root, app, port) {
     // fails and the walk records a broken console (Nov 10 2026), so a taken port is refused before anything starts
     if (await waitUp(`http://127.0.0.1:${port}/api/health`, 1500)) { rmSync(tmp, { recursive: true, force: true }); throw new Error(`port ${port} is already answering: stop the leftover console API (pgrep -f "uvicorn main:app --host 127.0.0.1 --port ${port}") or set LOOK_REGRESSION_PORT`); }
     child = spawn('python3', ['-m', 'uvicorn', 'main:app', '--host', '127.0.0.1', '--port', String(port), '--log-level', 'warning'], { cwd: join(root, 'apps/console-web/server'), env, stdio: ['ignore', 'pipe', 'pipe'] });
-    const stop = () => { child.kill('SIGTERM'); rmSync(tmp, { recursive: true, force: true }); };
+    // the API may still write its data folder while it shuts down: retry the removal, and a leftover temp folder never fails the record
+    const stop = () => { child.kill('SIGTERM'); try { rmSync(tmp, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 }); } catch { /* left in the temp dir */ } };
     const logs = [];
     child.stderr.on('data', (d) => logs.push(String(d)));
     if (!(await waitUp(`http://127.0.0.1:${port}/api/health`))) { stop(); throw new Error(`console API did not start on ${port}: ${logs.join('').slice(-800)}`); }
