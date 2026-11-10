@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 2264,
- "updatedAt": "2026-11-10T03:30:25.225Z",
+ "rev": 2265,
+ "updatedAt": "2026-11-10T03:30:41.724Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -134592,7 +134592,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T02:22:06.131Z",
-   "updatedAt": "2026-11-10T03:30:21.354Z",
+   "updatedAt": "2026-11-10T03:30:23.138Z",
    "builtAt": "",
    "notes": [
     {
@@ -134634,6 +134634,10 @@
     {
      "text": "Started run 2 on mossesx-max- (Opus, Phase 1): axf-self-healing-build-folders-auto-clear-stale-git--earl.",
      "at": "2026-11-10T03:30:21.354Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-self-healing-build-folders-auto-clear-stale-git--earl, own login copy)",
+     "at": "2026-11-10T03:30:23.138Z"
     }
    ],
    "approvals": [],
@@ -134758,7 +134762,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
