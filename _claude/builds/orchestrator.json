@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-10T03:26:59.963Z",
+ "updatedAt": "2026-11-10T03:27:22.393Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -82720,7 +82720,7 @@
    "title": "AmberX phone pop-up for every build start and finish: build name, account, model",
    "category": "",
    "detail": "Upgrade the existing AmberX notification panel and fix-log FYI notifications; don't add a new channel. 1) The orchestrator sends an AmberX phone notification on every build start (dispatcher launch, including retries and reruns) and every finish (succeeded, failed, needs something). 2) It shows as a heads-up pop-up on the phone screen, not silent: 'Started: <build title> on <account label> (<model>)' or 'Finished: <build title> on <account>, <outcome>, <steps done/total>', plus what it needs if anything. 3) Tapping it opens that build in the orchestrator. 4) Settings in the orchestrator and AmberX: on/off per event type, sound, grouping. Defaults on. 5) Also in the Activity Monitor log. Full REST, MCP, CLI and voice control. Test it with one real start and one real finish on the phone.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -82728,8 +82728,8 @@
    "pr": "#433",
    "priority": "P0",
    "createdAt": "2026-11-10T02:18:30.783Z",
-   "updatedAt": "2026-11-10T03:26:57.530Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-10T03:27:05.384Z",
+   "builtAt": "2026-11-10T03:27:05.389Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -82819,8 +82819,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-10T03:27:05.384Z",
      "note": "",
      "uid": "st-mwa2bk4l0394l9"
     }
