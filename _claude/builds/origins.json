@@ -1667,6 +1667,18 @@
    "from": "brief",
    "addenda": []
   },
+  "console-commands-reliable": {
+   "said": "console commands from Claude/MCP (console_open, console_show / Follow Amber) keep failing ... Fix: keep console client connections alive, deliver to the most recently active live client, retry, wake via AmberX; console_show/console_open accept a build id or tab; truthful result.",
+   "at": "2026-11-11T23:25:41.956Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "console-speed-profile-and-cut-axf-console-cpu-pl": {
    "said": "The console is mad slow. Ridiculous slow. How do I make this faster? ... I guess.",
    "at": "2026-11-10T02:49:14.121Z",
