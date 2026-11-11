@@ -96,8 +96,9 @@ def run_plan(plan: dict[str, Any], control: Runner | None) -> dict[str, Any]:
             return {"ok": False, "code": "not_implemented", "message": "no control@1 runner here"}
         return control(dict(plan["command"]))
     if via == "provider":
-        return rpc({"op": "provider", "provider": plan.get("provider"), "providerOp": plan.get("op"), "params": plan.get("params") or {},
-                    "reason": plan.get("reason") or "", "by": plan.get("by") or "registry"}, timeout=120)
+        import registry_providers  # noqa: PLC0415 - the axHub bridge (server/registry_providers.py)
+        return registry_providers.call(str(plan.get("provider") or ""), str(plan.get("op") or ""), dict(plan.get("params") or {}),
+                                       effect=str(plan.get("effect") or "write"), reason=plan.get("reason"), title=str(plan.get("title") or ""))
     if via in ("channel", "intent", "url", "rest", "mcp", "cli", "value"):
         return {"ok": True, "handoff": plan, "message": f"this runs on the caller's side ({via}); follow the handoff"}
     return {"ok": False, "code": "not_implemented", "message": plan.get("why") or "nothing to run"}
@@ -171,7 +172,7 @@ def _status(r: dict[str, Any]) -> Any:
     if r.get("ok"):
         return r
     code = r.get("code")
-    status = {"not_found": 404, "validation": 422, "ambiguous": 409, "needs_ai": 409, "forbidden": 403, "confirmation_required": 202, "not_implemented": 501}.get(str(code), 500)
+    status = {"not_found": 404, "validation": 422, "ambiguous": 409, "needs_ai": 409, "forbidden": 403, "confirmation_required": 202, "held": 202, "not_implemented": 501}.get(str(code), 500)
     return JSONResponse(r, status_code=status)
 
 

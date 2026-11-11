@@ -57,7 +57,7 @@ function controlCommand(ref, params) {
 }
 
 /** The plan for running `ref` with `params` (effect = the action's effect). → { via, command?, … } | { via: 'none', why }. */
-export function planRef(ref, params = {}, { effect = 'write', confirm = '', reason = '', by = 'registry', plugin = '' } = {}) {
+export function planRef(ref, params = {}, { effect = 'write', confirm = '', reason = '', by = 'registry', plugin = '', title = '' } = {}) {
   const r = parseRef(ref);
   const extra = { by, ...(confirm ? { confirm } : {}), ...(reason ? { reason } : {}) };
   const control = (cmd) => ({ via: cmd.target.startsWith('console.') ? 'console' : 'control', command: { ...cmd, ...extra } });
@@ -81,7 +81,7 @@ export function planRef(ref, params = {}, { effect = 'write', confirm = '', reas
     case 'provider': {
       const i = r.rest.indexOf('/');
       if (i < 1) return { via: 'none', why: `"${ref}" needs provider:<connection>/<op>` };
-      return { via: 'provider', provider: r.rest.slice(0, i), op: r.rest.slice(i + 1), params: omit(params, CALL_PARAMS), ...extra };
+      return { via: 'provider', provider: r.rest.slice(0, i), op: r.rest.slice(i + 1), params: omit(params, CALL_PARAMS), effect, ...(title ? { title } : {}), ...extra };
     }
     case 'channel': { const i = r.rest.indexOf('/'); return { via: 'channel', app: i > 0 ? r.rest.slice(0, i) : '', op: i > 0 ? r.rest.slice(i + 1) : r.rest, params: omit(params, CALL_PARAMS) }; }
     case 'intent': return { via: 'intent', uri: fill(r.rest, params) };

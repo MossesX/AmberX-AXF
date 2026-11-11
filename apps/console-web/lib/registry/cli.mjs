@@ -89,6 +89,7 @@ export function runLocal(plan, { root = ROOT } = {}) {
     }
   }
   if (plan.via === 'none') return { ok: false, code: 'not_implemented', message: plan.why };
+  if (plan.via === 'provider') return { ok: false, code: 'not_implemented', message: `${plan.provider}.${plan.op} runs through axHub from the console (its hub token stays there): set AXF_TOKEN to reach the console` };
   return { ok: true, handoff: plan, message: `this runs on the caller's side (${plan.via}); follow the handoff` };
 }
 

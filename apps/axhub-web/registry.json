@@ -1,0 +1,899 @@
+{
+ "$axf": "control-registry@1",
+ "note": "axHub in the control registry (build full-api-cli-control-of-everything-plus-an-offli, s9): the app and its pages (deep links #/<route>, a URL handoff), the hub's connections and tools through the provider bridge (provider:axhub/catalog, provider:axhub/call: the console's own hub token, reads at once, changes sent once with a reason and approved by Brett on axHub), the look kept on axHub (control@1 tokens) and the areas axHub has not built yet as gaps with the hub's own reason. Hostinger, Coolify and VPS are providers/<name>/registry.json beside this file. Merged by id.",
+ "entries": [
+  {
+   "id": "axhub-web/app/axhub",
+   "type": "app",
+   "label": "axHub",
+   "description": "The connector hub (axhub.amberxai.com): approvals, passes, users, and every connected service (Hostinger, Coolify, VPS, GitHub, AmberX \u2026) called through it. The console reaches it with its own hub token; secrets stay on the hub.",
+   "where": {
+    "app": "axhub-web",
+    "file": "apps/axhub-web/src/App.tsx"
+   },
+   "open": {
+    "kind": "url",
+    "target": "https://axhub.amberxai.com",
+    "deepLink": "https://axhub.amberxai.com/#/home"
+   },
+   "state": {
+    "read": "provider:axhub/catalog",
+    "shape": "the hub's tools (service.tool names)"
+   },
+   "actions": [
+    {
+     "id": "open",
+     "label": "Open axHub on a page",
+     "effect": "navigate",
+     "run": "url:https://axhub.amberxai.com/#/{page}",
+     "params": [
+      {
+       "name": "page",
+       "type": "enum",
+       "enum": [
+        "account",
+        "approval",
+        "approvals-log",
+        "apps",
+        "assets",
+        "audit",
+        "devices",
+        "go-pass",
+        "handoff",
+        "handoff-run",
+        "home",
+        "hub",
+        "jobs",
+        "passes",
+        "projects",
+        "services",
+        "users",
+        "vault"
+       ],
+       "default": "home",
+       "position": 0
+      }
+     ],
+     "phrases": [
+      "open axhub",
+      "open {page} in axhub"
+     ]
+    }
+   ],
+   "synonyms": [
+    "hub",
+    "ax hub",
+    "connector hub"
+   ],
+   "tags": [
+    "app"
+   ]
+  },
+  {
+   "id": "axhub-web/page/home",
+   "type": "page",
+   "label": "axHub Approvals",
+   "description": "What axHub is waiting on, one tap to each request",
+   "where": {
+    "app": "axhub-web",
+    "view": "home",
+    "file": "apps/axhub-web/src/App.tsx"
+   },
+   "open": {
+    "kind": "url",
+    "target": "https://axhub.amberxai.com/#/home",
+    "deepLink": "https://axhub.amberxai.com/#/home"
+   },
+   "actions": [
+    {
+     "id": "open",
+     "label": "Open axHub Approvals",
+     "effect": "navigate",
+     "run": "url:https://axhub.amberxai.com/#/home",
+     "phrases": [
+      "open axhub approvals"
+     ]
+    }
+   ],
+   "synonyms": [
+    "approvals",
+    "waiting"
+   ],
+   "parent": "axhub-web/app/axhub",
+   "tags": [
+    "page"
+   ],
+   "gaps": [
+    {
+     "what": "state",
+     "why": "this page reads the hub's session API (/auth/api, signed-in browser + CSRF); the console's hub token reaches the MCP tools only",
+     "plan": "read through hub MCP tools once the admin API (hub step 4) exposes them"
+    }
+   ]
+  },
+  {
+   "id": "axhub-web/page/hub",
+   "type": "page",
+   "label": "axHub Hub",
+   "description": "The hub session: sign in, who is connected",
+   "where": {
+    "app": "axhub-web",
+    "view": "hub",
+    "file": "apps/axhub-web/src/App.tsx"
+   },
+   "open": {
+    "kind": "url",
+    "target": "https://axhub.amberxai.com/#/hub",
+    "deepLink": "https://axhub.amberxai.com/#/hub"
+   },
+   "actions": [
+    {
+     "id": "open",
+     "label": "Open axHub Hub",
+     "effect": "navigate",
+     "run": "url:https://axhub.amberxai.com/#/hub",
+     "phrases": [
+      "open axhub hub"
+     ]
+    }
+   ],
+   "synonyms": [
+    "axhub session"
+   ],
+   "parent": "axhub-web/app/axhub",
+   "tags": [
+    "page"
+   ],
+   "gaps": [
+    {
+     "what": "state",
+     "why": "this page reads the hub's session API (/auth/api, signed-in browser + CSRF); the console's hub token reaches the MCP tools only",
+     "plan": "read through hub MCP tools once the admin API (hub step 4) exposes them"
+    }
+   ]
+  },
+  {
+   "id": "axhub-web/page/go-pass",
+   "type": "page",
+   "label": "axHub Go pass",
+   "description": "Session rules and threads that may run without asking",
+   "where": {
+    "app": "axhub-web",
+    "view": "go-pass",
+    "file": "apps/axhub-web/src/App.tsx"
+   },
+   "open": {
+    "kind": "url",
+    "target": "https://axhub.amberxai.com/#/go-pass",
+    "deepLink": "https://axhub.amberxai.com/#/go-pass"
+   },
+   "actions": [
+    {
+     "id": "open",
+     "label": "Open axHub Go pass",
+     "effect": "navigate",
+     "run": "url:https://axhub.amberxai.com/#/go-pass",
+     "phrases": [
+      "open axhub go pass"
+     ]
+    }
+   ],
+   "synonyms": [
+    "go pass"
+   ],
+   "parent": "axhub-web/app/axhub",
+   "tags": [
+    "page"
+   ],
+   "gaps": [
+    {
+     "what": "state",
+     "why": "this page reads the hub's session API (/auth/api, signed-in browser + CSRF); the console's hub token reaches the MCP tools only",
+     "plan": "read through hub MCP tools once the admin API (hub step 4) exposes them"
+    }
+   ]
+  },
+  {
+   "id": "axhub-web/page/passes",
+   "type": "page",
+   "label": "axHub Passes",
+   "description": "Veto passes: allow, timers, scope",
+   "where": {
+    "app": "axhub-web",
+    "view": "passes",
+    "file": "apps/axhub-web/src/App.tsx"
+   },
+   "open": {
+    "kind": "url",
+    "target": "https://axhub.amberxai.com/#/passes",
+    "deepLink": "https://axhub.amberxai.com/#/passes"
+   },
+   "actions": [
+    {
+     "id": "open",
+     "label": "Open axHub Passes",
+     "effect": "navigate",
+     "run": "url:https://axhub.amberxai.com/#/passes",
+     "phrases": [
+      "open axhub passes"
+     ]
+    }
+   ],
+   "synonyms": [
+    "veto passes"
+   ],
+   "parent": "axhub-web/app/axhub",
+   "tags": [
+    "page"
+   ],
+   "gaps": [
+    {
+     "what": "state",
+     "why": "this page reads the hub's session API (/auth/api, signed-in browser + CSRF); the console's hub token reaches the MCP tools only",
+     "plan": "read through hub MCP tools once the admin API (hub step 4) exposes them"
+    }
+   ]
+  },
+  {
+   "id": "axhub-web/page/approvals-log",
+   "type": "page",
+   "label": "axHub Approvals log",
+   "description": "History of approvals and auto-approvals",
+   "where": {
+    "app": "axhub-web",
+    "view": "approvals-log",
+    "file": "apps/axhub-web/src/App.tsx"
+   },
+   "open": {
+    "kind": "url",
+    "target": "https://axhub.amberxai.com/#/approvals-log",
+    "deepLink": "https://axhub.amberxai.com/#/approvals-log"
+   },
+   "actions": [
+    {
+     "id": "open",
+     "label": "Open axHub Approvals log",
+     "effect": "navigate",
+     "run": "url:https://axhub.amberxai.com/#/approvals-log",
+     "phrases": [
+      "open axhub approvals log"
+     ]
+    }
+   ],
+   "synonyms": [
+    "approval history"
+   ],
+   "parent": "axhub-web/app/axhub",
+   "tags": [
+    "page"
+   ],
+   "gaps": [
+    {
+     "what": "state",
+     "why": "this page reads the hub's session API (/auth/api, signed-in browser + CSRF); the console's hub token reaches the MCP tools only",
+     "plan": "read through hub MCP tools once the admin API (hub step 4) exposes them"
+    }
+   ]
+  },
+  {
+   "id": "axhub-web/page/apps",
+   "type": "page",
+   "label": "axHub Apps",
+   "description": "Every framework app's APK to download",
+   "where": {
+    "app": "axhub-web",
+    "view": "apps",
+    "file": "apps/axhub-web/src/App.tsx"
+   },
+   "open": {
+    "kind": "url",
+    "target": "https://axhub.amberxai.com/#/apps",
+    "deepLink": "https://axhub.amberxai.com/#/apps"
+   },
+   "actions": [
+    {
+     "id": "open",
+     "label": "Open axHub Apps",
+     "effect": "navigate",
+     "run": "url:https://axhub.amberxai.com/#/apps",
+     "phrases": [
+      "open axhub apps"
+     ]
+    }
+   ],
+   "synonyms": [
+    "apk catalog"
+   ],
+   "parent": "axhub-web/app/axhub",
+   "tags": [
+    "page"
+   ],
+   "gaps": [
+    {
+     "what": "state",
+     "why": "this page reads the hub's session API (/auth/api, signed-in browser + CSRF); the console's hub token reaches the MCP tools only",
+     "plan": "read through hub MCP tools once the admin API (hub step 4) exposes them"
+    }
+   ]
+  },
+  {
+   "id": "axhub-web/page/users",
+   "type": "page",
+   "label": "axHub Users",
+   "description": "Hub users, permissions and roles",
+   "where": {
+    "app": "axhub-web",
+    "view": "users",
+    "file": "apps/axhub-web/src/App.tsx"
+   },
+   "open": {
+    "kind": "url",
+    "target": "https://axhub.amberxai.com/#/users",
+    "deepLink": "https://axhub.amberxai.com/#/users"
+   },
+   "actions": [
+    {
+     "id": "open",
+     "label": "Open axHub Users",
+     "effect": "navigate",
+     "run": "url:https://axhub.amberxai.com/#/users",
+     "phrases": [
+      "open axhub users"
+     ]
+    }
+   ],
+   "synonyms": [
+    "hub users"
+   ],
+   "parent": "axhub-web/app/axhub",
+   "tags": [
+    "page"
+   ],
+   "gaps": [
+    {
+     "what": "state",
+     "why": "this page reads the hub's session API (/auth/api, signed-in browser + CSRF); the console's hub token reaches the MCP tools only",
+     "plan": "read through hub MCP tools once the admin API (hub step 4) exposes them"
+    }
+   ]
+  },
+  {
+   "id": "axhub-web/page/handoff",
+   "type": "page",
+   "label": "axHub Handoff",
+   "description": "Claude handoff results",
+   "where": {
+    "app": "axhub-web",
+    "view": "handoff",
+    "file": "apps/axhub-web/src/App.tsx"
+   },
+   "open": {
+    "kind": "url",
+    "target": "https://axhub.amberxai.com/#/handoff",
+    "deepLink": "https://axhub.amberxai.com/#/handoff"
+   },
+   "actions": [
+    {
+     "id": "open",
+     "label": "Open axHub Handoff",
+     "effect": "navigate",
+     "run": "url:https://axhub.amberxai.com/#/handoff",
+     "phrases": [
+      "open axhub handoff"
+     ]
+    }
+   ],
+   "synonyms": [
+    "handoffs"
+   ],
+   "parent": "axhub-web/app/axhub",
+   "tags": [
+    "page"
+   ],
+   "gaps": [
+    {
+     "what": "state",
+     "why": "this page reads the hub's session API (/auth/api, signed-in browser + CSRF); the console's hub token reaches the MCP tools only",
+     "plan": "read through hub MCP tools once the admin API (hub step 4) exposes them"
+    }
+   ]
+  },
+  {
+   "id": "axhub-web/page/assets",
+   "type": "page",
+   "label": "axHub Assets",
+   "description": "axHub's asset studio",
+   "where": {
+    "app": "axhub-web",
+    "view": "assets",
+    "file": "apps/axhub-web/src/App.tsx"
+   },
+   "open": {
+    "kind": "url",
+    "target": "https://axhub.amberxai.com/#/assets",
+    "deepLink": "https://axhub.amberxai.com/#/assets"
+   },
+   "actions": [
+    {
+     "id": "open",
+     "label": "Open axHub Assets",
+     "effect": "navigate",
+     "run": "url:https://axhub.amberxai.com/#/assets",
+     "phrases": [
+      "open axhub assets"
+     ]
+    }
+   ],
+   "synonyms": [
+    "hub assets"
+   ],
+   "parent": "axhub-web/app/axhub",
+   "tags": [
+    "page"
+   ],
+   "gaps": [
+    {
+     "what": "state",
+     "why": "this page reads the hub's session API (/auth/api, signed-in browser + CSRF); the console's hub token reaches the MCP tools only",
+     "plan": "read through hub MCP tools once the admin API (hub step 4) exposes them"
+    }
+   ]
+  },
+  {
+   "id": "axhub-web/page/account",
+   "type": "page",
+   "label": "axHub Account",
+   "description": "Your hub account: password, sign out, browsers",
+   "where": {
+    "app": "axhub-web",
+    "view": "account",
+    "file": "apps/axhub-web/src/App.tsx"
+   },
+   "open": {
+    "kind": "url",
+    "target": "https://axhub.amberxai.com/#/account",
+    "deepLink": "https://axhub.amberxai.com/#/account"
+   },
+   "actions": [
+    {
+     "id": "open",
+     "label": "Open axHub Account",
+     "effect": "navigate",
+     "run": "url:https://axhub.amberxai.com/#/account",
+     "phrases": [
+      "open axhub account"
+     ]
+    }
+   ],
+   "synonyms": [
+    "hub account"
+   ],
+   "parent": "axhub-web/app/axhub",
+   "tags": [
+    "page"
+   ],
+   "gaps": [
+    {
+     "what": "state",
+     "why": "this page reads the hub's session API (/auth/api, signed-in browser + CSRF); the console's hub token reaches the MCP tools only",
+     "plan": "read through hub MCP tools once the admin API (hub step 4) exposes them"
+    }
+   ]
+  },
+  {
+   "id": "axhub-web/page/approval",
+   "type": "page",
+   "label": "axHub request",
+   "description": "One approval request, by id.",
+   "where": {
+    "app": "axhub-web",
+    "view": "approval"
+   },
+   "open": {
+    "kind": "url",
+    "target": "https://axhub.amberxai.com/#/approval",
+    "deepLink": "https://axhub.amberxai.com/#/approval"
+   },
+   "actions": [
+    {
+     "id": "open",
+     "label": "Open one request",
+     "effect": "navigate",
+     "run": "url:https://axhub.amberxai.com/#/approval/{id}",
+     "params": [
+      {
+       "name": "id",
+       "type": "string",
+       "pattern": "^[0-9a-f-]{8,64}$",
+       "required": true,
+       "position": 0
+      }
+     ],
+     "phrases": [
+      "open approval {id}"
+     ]
+    }
+   ],
+   "parent": "axhub-web/app/axhub",
+   "tags": [
+    "page"
+   ]
+  },
+  {
+   "id": "axhub-web/page/services",
+   "type": "page",
+   "label": "axHub Services",
+   "description": "Every connected service, its tools and their input schemas, and a way to run one with arguments.",
+   "where": {
+    "app": "axhub-web",
+    "view": "services",
+    "file": "apps/axhub-web/src/views/Planned.tsx"
+   },
+   "open": {
+    "kind": "url",
+    "target": "https://axhub.amberxai.com/#/services",
+    "deepLink": "https://axhub.amberxai.com/#/services"
+   },
+   "actions": [
+    {
+     "id": "open",
+     "label": "Open axHub Services",
+     "effect": "navigate",
+     "run": "url:https://axhub.amberxai.com/#/services"
+    }
+   ],
+   "parent": "axhub-web/app/axhub",
+   "tags": [
+    "page",
+    "planned"
+   ],
+   "gaps": [
+    {
+     "what": "actions",
+     "why": "axHub Services is a planned area: it waits on the hub's admin API (step 4)",
+     "plan": "register its actions when the hub's admin API (step 4) lands"
+    }
+   ]
+  },
+  {
+   "id": "axhub-web/page/jobs",
+   "type": "page",
+   "label": "axHub Jobs",
+   "description": "Long-running calls with their progress, and a way to cancel one.",
+   "where": {
+    "app": "axhub-web",
+    "view": "jobs",
+    "file": "apps/axhub-web/src/views/Planned.tsx"
+   },
+   "open": {
+    "kind": "url",
+    "target": "https://axhub.amberxai.com/#/jobs",
+    "deepLink": "https://axhub.amberxai.com/#/jobs"
+   },
+   "actions": [
+    {
+     "id": "open",
+     "label": "Open axHub Jobs",
+     "effect": "navigate",
+     "run": "url:https://axhub.amberxai.com/#/jobs"
+    }
+   ],
+   "parent": "axhub-web/app/axhub",
+   "tags": [
+    "page",
+    "planned"
+   ],
+   "gaps": [
+    {
+     "what": "actions",
+     "why": "axHub Jobs is a planned area: it waits on the hub's admin API (step 4)",
+     "plan": "register its actions when the hub's admin API (step 4) lands"
+    }
+   ]
+  },
+  {
+   "id": "axhub-web/page/audit",
+   "type": "page",
+   "label": "axHub Audit log",
+   "description": "Who called what, where it went and how it ended.",
+   "where": {
+    "app": "axhub-web",
+    "view": "audit",
+    "file": "apps/axhub-web/src/views/Planned.tsx"
+   },
+   "open": {
+    "kind": "url",
+    "target": "https://axhub.amberxai.com/#/audit",
+    "deepLink": "https://axhub.amberxai.com/#/audit"
+   },
+   "actions": [
+    {
+     "id": "open",
+     "label": "Open axHub Audit log",
+     "effect": "navigate",
+     "run": "url:https://axhub.amberxai.com/#/audit"
+    }
+   ],
+   "parent": "axhub-web/app/axhub",
+   "tags": [
+    "page",
+    "planned"
+   ],
+   "gaps": [
+    {
+     "what": "actions",
+     "why": "axHub Audit log is a planned area: it waits on the hub's admin API (step 4)",
+     "plan": "register its actions when the hub's admin API (step 4) lands"
+    }
+   ]
+  },
+  {
+   "id": "axhub-web/page/vault",
+   "type": "page",
+   "label": "axHub Vault",
+   "description": "The names of stored secrets, and setting or rotating one (values write-only).",
+   "where": {
+    "app": "axhub-web",
+    "view": "vault",
+    "file": "apps/axhub-web/src/views/Planned.tsx"
+   },
+   "open": {
+    "kind": "url",
+    "target": "https://axhub.amberxai.com/#/vault",
+    "deepLink": "https://axhub.amberxai.com/#/vault"
+   },
+   "actions": [
+    {
+     "id": "open",
+     "label": "Open axHub Vault",
+     "effect": "navigate",
+     "run": "url:https://axhub.amberxai.com/#/vault"
+    }
+   ],
+   "parent": "axhub-web/app/axhub",
+   "tags": [
+    "page",
+    "planned"
+   ],
+   "gaps": [
+    {
+     "what": "actions",
+     "why": "axHub Vault is a planned area: it waits on the hub's admin API (step 4)",
+     "plan": "register its actions when the hub's admin API (step 4) lands"
+    }
+   ]
+  },
+  {
+   "id": "axhub-web/page/projects",
+   "type": "page",
+   "label": "axHub Projects",
+   "description": "The projects tree the hub serves: each project's Claude files and shared data.",
+   "where": {
+    "app": "axhub-web",
+    "view": "projects",
+    "file": "apps/axhub-web/src/views/Planned.tsx"
+   },
+   "open": {
+    "kind": "url",
+    "target": "https://axhub.amberxai.com/#/projects",
+    "deepLink": "https://axhub.amberxai.com/#/projects"
+   },
+   "actions": [
+    {
+     "id": "open",
+     "label": "Open axHub Projects",
+     "effect": "navigate",
+     "run": "url:https://axhub.amberxai.com/#/projects"
+    }
+   ],
+   "parent": "axhub-web/app/axhub",
+   "tags": [
+    "page",
+    "planned"
+   ],
+   "gaps": [
+    {
+     "what": "actions",
+     "why": "axHub Projects is a planned area: it waits on the hub's admin API (step 4)",
+     "plan": "register its actions when the hub's admin API (step 4) lands"
+    }
+   ]
+  },
+  {
+   "id": "axhub-web/page/devices",
+   "type": "page",
+   "label": "axHub Devices",
+   "description": "Phones and computers connected over the hub protocol, and what each may do.",
+   "where": {
+    "app": "axhub-web",
+    "view": "devices",
+    "file": "apps/axhub-web/src/views/Planned.tsx"
+   },
+   "open": {
+    "kind": "url",
+    "target": "https://axhub.amberxai.com/#/devices",
+    "deepLink": "https://axhub.amberxai.com/#/devices"
+   },
+   "actions": [
+    {
+     "id": "open",
+     "label": "Open axHub Devices",
+     "effect": "navigate",
+     "run": "url:https://axhub.amberxai.com/#/devices"
+    }
+   ],
+   "parent": "axhub-web/app/axhub",
+   "tags": [
+    "page",
+    "planned"
+   ],
+   "gaps": [
+    {
+     "what": "actions",
+     "why": "axHub Devices is a planned area: it waits on the device agent (hub step 6, AXPP)",
+     "plan": "register its actions when the device agent (hub step 6, AXPP) lands"
+    }
+   ]
+  },
+  {
+   "id": "axhub-web/tool/connections",
+   "type": "tool",
+   "label": "axHub connections",
+   "description": "Every service connected to axHub and its tools (service.tool). catalog lists them from the live hub; call runs one with arguments: a read runs at once, anything else goes to axHub once with a reason and waits for Brett's approval there. The provider bridge (server/registry_providers.py) that Hostinger, Coolify and VPS entries run through.",
+   "where": {
+    "app": "axhub-web",
+    "file": "apps/console-web/server/registry_providers.py"
+   },
+   "state": {
+    "read": "provider:axhub/catalog",
+    "shape": "{ tools: [service.tool \u2026] }"
+   },
+   "actions": [
+    {
+     "id": "catalog",
+     "label": "List the hub's tools",
+     "effect": "read",
+     "run": "provider:axhub/catalog",
+     "params": [
+      {
+       "name": "service",
+       "type": "enum",
+       "enum": [
+        "",
+        "hostinger",
+        "coolify",
+        "vps",
+        "github",
+        "amberx",
+        "axhub",
+        "notes"
+       ],
+       "default": "",
+       "position": 0,
+       "description": "only this service's tools ('' = all)"
+      }
+     ],
+     "phrases": [
+      "list axhub tools",
+      "what can axhub do"
+     ]
+    },
+    {
+     "id": "call",
+     "label": "Call a hub tool",
+     "effect": "write",
+     "run": "provider:axhub/call",
+     "params": [
+      {
+       "name": "tool",
+       "type": "string",
+       "pattern": "^[a-z][a-z0-9_-]{0,40}\\.[A-Za-z0-9_./-]{1,120}$",
+       "required": true,
+       "position": 0,
+       "description": "service.tool (catalog lists them)"
+      },
+      {
+       "name": "arguments",
+       "type": "object",
+       "default": {},
+       "description": "what the tool takes"
+      }
+     ],
+     "confirm": false
+    }
+   ],
+   "synonyms": [
+    "connections",
+    "services",
+    "connectors",
+    "hub tools"
+   ],
+   "keywords": [
+    "provider",
+    "bridge",
+    "mcp"
+   ],
+   "parent": "axhub-web/app/axhub",
+   "tags": [
+    "tool",
+    "provider"
+   ]
+  },
+  {
+   "id": "axhub-web/setting/hub-sync",
+   "type": "setting",
+   "label": "axHub sync",
+   "description": "lib-hubsync: an app's settings kept on axHub, the same on every device (Settings \u2192 Plugins \u2192 axHub sync in each app). The values themselves are the apps' settings, registered on their own entries (the console's look: console-web/display/tokens.*).",
+   "where": {
+    "app": "axhub-web",
+    "library": "hubsync",
+    "file": "apps/axhub-web/src/axf/libs/hubsync/sync.ts"
+   },
+   "actions": [],
+   "gaps": [
+    {
+     "what": "actions",
+     "why": "sync start, stop and refresh run inside each app's window (lib-hubsync), not on a server the console can call",
+     "plan": "an app command channel (as for Molly)"
+    }
+   ],
+   "parent": "axhub-web/app/axhub",
+   "tags": [
+    "setting"
+   ]
+  },
+  {
+   "id": "axhub-web/setting/look",
+   "type": "setting",
+   "label": "axHub look",
+   "description": "The look every app reads from axHub (developer.hub): the same tokens as the console's display entries, written through control@1 (stored on axHub).",
+   "where": {
+    "app": "axhub-web"
+   },
+   "state": {
+    "read": "control:tokens.theme/list"
+   },
+   "actions": [
+    {
+     "id": "get",
+     "label": "Read the hub look",
+     "effect": "read",
+     "run": "control:tokens.theme/list"
+    },
+    {
+     "id": "set",
+     "label": "Set a look token",
+     "effect": "write",
+     "run": "control:tokens.theme/set",
+     "params": [
+      {
+       "name": "path",
+       "type": "id",
+       "of": "tokens.theme",
+       "required": true,
+       "position": 0
+      },
+      {
+       "name": "value",
+       "type": "color",
+       "required": true,
+       "position": 1
+      }
+     ],
+     "phrases": [
+      "set the hub {path} to {value}"
+     ]
+    }
+   ],
+   "parent": "axhub-web/app/axhub",
+   "synonyms": [
+    "hub look",
+    "hub theme"
+   ],
+   "tags": [
+    "setting",
+    "display"
+   ]
+  }
+ ]
+}

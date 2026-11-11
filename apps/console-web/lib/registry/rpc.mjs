@@ -41,7 +41,7 @@ function resolution(r, input, req) {
   if (field?.errors.length) return { ok: false, code: 'validation', message: `${res.entry} · ${res.action}: ${field.errors.join('; ')}`, errors: field.errors, entry: res.entry, action: res.action, ai: res.ai, plan: { via: 'none', why: 'not valid' } };
   if (field) res.params = { ...res.params, value: field.value };
   let plan = null;
-  const out = { ...res, plan: (plan = planResolution(res, { ...opts, plugin: res.ok ? getEntry(r.index, res.entry)?.where?.plugin ?? '' : '' })) };
+  const out = { ...res, plan: (plan = planResolution(res, { ...opts, ...titleOf(r.index, res) })) };
   const cg = channelGap(plan);
   if (cg) out.plan = { via: 'none', why: cg, channel: plan };
   if (!res.ok && res.ai?.fallback && !res.ai.asked) out.brief = aiFallbackBrief(r.index, input, res);
@@ -60,6 +60,14 @@ export function fieldCheck(index, res) {
   if (!f) return (e.state?.fields ?? []).length && res.effect !== 'read' ? { errors: [`path "${p.path}" is not one of ${e.label}'s fields (axf ctl get ${e.id} lists them)`], value: p.value } : null;
   const c = checkParams({ id: res.action, params: [{ ...f, name: 'value', required: true, position: undefined }] }, { value: p.value });
   return { errors: c.errors.map((x) => x.replace(/^value\b/, `${p.path}`)), value: c.params.value };
+}
+
+/** The owning plugin and an approval title ("<entry>: <action>") for a resolution. */
+function titleOf(index, res) {
+  const e = res.ok ? getEntry(index, res.entry) : null;
+  if (!e) return { plugin: '', title: '' };
+  const a = e.actions.find((x) => x.id === res.action);
+  return { plugin: e.where?.plugin ?? '', title: `${e.label}: ${a?.label ?? res.action}`.slice(0, 120) };
 }
 
 /** Handle one request. → a JSON-able answer (always has `ok`). */
