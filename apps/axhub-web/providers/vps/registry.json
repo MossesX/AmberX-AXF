@@ -1,0 +1,584 @@
+{
+ "$axf": "control-registry@1",
+ "note": "The VPS through axHub (build full-api-cli-control-of-everything-plus-an-offli, s12). provider:vps/run#<template> is an allow-listed command: only these templates exist, every {param} is validated by the registry (pattern, enum, range) and shell-quoted, and axHub's vps.run asks Brett before it runs. Destructive commands also need the registry's confirm token. Merged by id.",
+ "entries": [
+  {
+   "id": "vps/app/vps",
+   "type": "app",
+   "owner": "vps",
+   "label": "VPS",
+   "description": "The one server everything runs on (Hostinger VPS, Coolify, Traefik, the console), through axHub's VPS connector. Every action here is an allow-listed command (the entries are the allow-list): the registry validates each value and shell-quotes it into a fixed template, and axHub's vps.run asks Brett before anything runs. Destructive ones (stop, restart, kill, reboot, prune) also need the registry's confirm token. Power and backups at Hostinger level: hostinger/tool/vps.",
+   "where": {
+    "app": "axhub-web",
+    "provider": "vps",
+    "connection": "axhub"
+   },
+   "state": {
+    "read": "provider:vps/state",
+    "shape": "vps.state: the hub's view of the server"
+   },
+   "actions": [
+    {
+     "id": "state",
+     "label": "Server state (axHub)",
+     "effect": "read",
+     "run": "provider:vps/state"
+    },
+    {
+     "id": "check",
+     "label": "Check the server (axHub)",
+     "effect": "read",
+     "run": "provider:vps/check",
+     "phrases": [
+      "check the server",
+      "check the vps"
+     ]
+    }
+   ],
+   "synonyms": [
+    "server",
+    "box",
+    "vps"
+   ],
+   "tags": [
+    "provider",
+    "vps"
+   ]
+  },
+  {
+   "id": "vps/tool/health",
+   "type": "tool",
+   "owner": "vps",
+   "label": "VPS health",
+   "description": "Load, memory, disk and uptime.",
+   "where": {
+    "app": "axhub-web",
+    "provider": "vps",
+    "connection": "axhub",
+    "file": "apps/axhub-web/providers/vps/registry.json"
+   },
+   "state": {
+    "read": "provider:vps/run#uptime && free -m && df -h -x tmpfs -x overlay"
+   },
+   "actions": [
+    {
+     "id": "summary",
+     "label": "Load, memory and disk",
+     "effect": "read",
+     "run": "provider:vps/run#uptime && free -m && df -h -x tmpfs -x overlay",
+     "phrases": [
+      "how is the server",
+      "server health"
+     ]
+    },
+    {
+     "id": "disk",
+     "label": "Disk usage",
+     "effect": "read",
+     "run": "provider:vps/run#df -h -x tmpfs -x overlay",
+     "phrases": [
+      "disk space",
+      "how much disk is left"
+     ]
+    },
+    {
+     "id": "memory",
+     "label": "Memory",
+     "effect": "read",
+     "run": "provider:vps/run#free -m",
+     "phrases": [
+      "memory usage"
+     ]
+    },
+    {
+     "id": "du",
+     "label": "Size of a folder",
+     "effect": "read",
+     "run": "provider:vps/run#du -sh {path}",
+     "params": [
+      {
+       "name": "path",
+       "type": "path",
+       "pattern": "^/(?!.*\\.\\.)[A-Za-z0-9._/-]{0,200}$",
+       "required": true,
+       "position": 0
+      }
+     ]
+    }
+   ],
+   "parent": "vps/app/vps",
+   "tags": [
+    "provider",
+    "vps"
+   ],
+   "synonyms": [
+    "health",
+    "disk",
+    "memory",
+    "load"
+   ]
+  },
+  {
+   "id": "vps/tool/systemd",
+   "type": "tool",
+   "owner": "vps",
+   "label": "VPS services (systemd)",
+   "description": "systemd services: list, status, start, stop, restart, enable, disable.",
+   "where": {
+    "app": "axhub-web",
+    "provider": "vps",
+    "connection": "axhub",
+    "file": "apps/axhub-web/providers/vps/registry.json"
+   },
+   "state": {
+    "read": "provider:vps/run#systemctl list-units --type=service --no-pager --plain"
+   },
+   "actions": [
+    {
+     "id": "list",
+     "label": "List services",
+     "effect": "read",
+     "run": "provider:vps/run#systemctl list-units --type=service --no-pager --plain"
+    },
+    {
+     "id": "status",
+     "label": "Service status",
+     "effect": "read",
+     "run": "provider:vps/run#systemctl status {unit} --no-pager",
+     "params": [
+      {
+       "name": "unit",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9@._-]{1,128}$",
+       "required": true,
+       "position": 0,
+       "description": "a systemd unit (list shows them), e.g. docker.service"
+      }
+     ]
+    },
+    {
+     "id": "start",
+     "label": "Start a service",
+     "effect": "write",
+     "run": "provider:vps/run#systemctl start {unit}",
+     "params": [
+      {
+       "name": "unit",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9@._-]{1,128}$",
+       "required": true,
+       "position": 0,
+       "description": "a systemd unit (list shows them), e.g. docker.service"
+      }
+     ]
+    },
+    {
+     "id": "stop",
+     "label": "Stop a service",
+     "effect": "destructive",
+     "run": "provider:vps/run#systemctl stop {unit}",
+     "params": [
+      {
+       "name": "unit",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9@._-]{1,128}$",
+       "required": true,
+       "position": 0,
+       "description": "a systemd unit (list shows them), e.g. docker.service"
+      }
+     ],
+     "confirm": true
+    },
+    {
+     "id": "restart",
+     "label": "Restart a service",
+     "effect": "destructive",
+     "run": "provider:vps/run#systemctl restart {unit}",
+     "params": [
+      {
+       "name": "unit",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9@._-]{1,128}$",
+       "required": true,
+       "position": 0,
+       "description": "a systemd unit (list shows them), e.g. docker.service"
+      }
+     ],
+     "confirm": true
+    },
+    {
+     "id": "enable",
+     "label": "Enable a service at boot",
+     "effect": "write",
+     "run": "provider:vps/run#systemctl enable {unit}",
+     "params": [
+      {
+       "name": "unit",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9@._-]{1,128}$",
+       "required": true,
+       "position": 0,
+       "description": "a systemd unit (list shows them), e.g. docker.service"
+      }
+     ]
+    },
+    {
+     "id": "disable",
+     "label": "Disable a service at boot",
+     "effect": "destructive",
+     "run": "provider:vps/run#systemctl disable {unit}",
+     "params": [
+      {
+       "name": "unit",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9@._-]{1,128}$",
+       "required": true,
+       "position": 0,
+       "description": "a systemd unit (list shows them), e.g. docker.service"
+      }
+     ],
+     "confirm": true
+    }
+   ],
+   "parent": "vps/app/vps",
+   "tags": [
+    "provider",
+    "vps"
+   ],
+   "synonyms": [
+    "systemd",
+    "services",
+    "units"
+   ]
+  },
+  {
+   "id": "vps/tool/processes",
+   "type": "tool",
+   "owner": "vps",
+   "label": "VPS processes",
+   "description": "The busiest processes, and stopping one.",
+   "where": {
+    "app": "axhub-web",
+    "provider": "vps",
+    "connection": "axhub",
+    "file": "apps/axhub-web/providers/vps/registry.json"
+   },
+   "state": {
+    "read": "provider:vps/run#ps aux --sort=-%cpu | head -n 25"
+   },
+   "actions": [
+    {
+     "id": "top",
+     "label": "Busiest processes",
+     "effect": "read",
+     "run": "provider:vps/run#ps aux --sort=-%cpu | head -n {n}",
+     "params": [
+      {
+       "name": "n",
+       "type": "integer",
+       "min": 5,
+       "max": 200,
+       "default": 25
+      }
+     ],
+     "phrases": [
+      "what is using the cpu"
+     ]
+    },
+    {
+     "id": "memtop",
+     "label": "Biggest processes by memory",
+     "effect": "read",
+     "run": "provider:vps/run#ps aux --sort=-%mem | head -n {n}",
+     "params": [
+      {
+       "name": "n",
+       "type": "integer",
+       "min": 5,
+       "max": 200,
+       "default": 25
+      }
+     ]
+    },
+    {
+     "id": "kill",
+     "label": "Stop a process",
+     "effect": "destructive",
+     "run": "provider:vps/run#kill -s {signal} {pid}",
+     "params": [
+      {
+       "name": "pid",
+       "type": "integer",
+       "min": 2,
+       "max": 4194304,
+       "required": true,
+       "position": 0
+      },
+      {
+       "name": "signal",
+       "type": "enum",
+       "enum": [
+        "TERM",
+        "INT",
+        "HUP",
+        "KILL"
+       ],
+       "default": "TERM"
+      }
+     ],
+     "confirm": true
+    }
+   ],
+   "parent": "vps/app/vps",
+   "tags": [
+    "provider",
+    "vps"
+   ],
+   "synonyms": [
+    "processes",
+    "ps",
+    "top"
+   ]
+  },
+  {
+   "id": "vps/tool/logs",
+   "type": "tool",
+   "owner": "vps",
+   "label": "VPS logs",
+   "description": "The system journal, one service's journal, one container's log.",
+   "where": {
+    "app": "axhub-web",
+    "provider": "vps",
+    "connection": "axhub",
+    "file": "apps/axhub-web/providers/vps/registry.json"
+   },
+   "state": {
+    "read": "provider:vps/run#journalctl -n 200 --no-pager"
+   },
+   "actions": [
+    {
+     "id": "system",
+     "label": "System log",
+     "effect": "read",
+     "run": "provider:vps/run#journalctl -n {lines} --no-pager -p {priority}",
+     "params": [
+      {
+       "name": "lines",
+       "type": "integer",
+       "min": 1,
+       "max": 5000,
+       "default": 200
+      },
+      {
+       "name": "priority",
+       "type": "enum",
+       "enum": [
+        "emerg",
+        "alert",
+        "crit",
+        "err",
+        "warning",
+        "notice",
+        "info",
+        "debug"
+       ],
+       "default": "warning"
+      }
+     ]
+    },
+    {
+     "id": "unit",
+     "label": "A service's log",
+     "effect": "read",
+     "run": "provider:vps/run#journalctl -u {unit} -n {lines} --no-pager",
+     "params": [
+      {
+       "name": "unit",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9@._-]{1,128}$",
+       "required": true,
+       "position": 0,
+       "description": "a systemd unit (list shows them), e.g. docker.service"
+      },
+      {
+       "name": "lines",
+       "type": "integer",
+       "min": 1,
+       "max": 5000,
+       "default": 200
+      }
+     ]
+    },
+    {
+     "id": "container",
+     "label": "A container's log",
+     "effect": "read",
+     "run": "provider:vps/run#docker logs --tail {lines} {container}",
+     "params": [
+      {
+       "name": "container",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$",
+       "required": true,
+       "position": 0,
+       "description": "a container name or id (docker ps shows them)"
+      },
+      {
+       "name": "lines",
+       "type": "integer",
+       "min": 1,
+       "max": 5000,
+       "default": 200
+      }
+     ]
+    }
+   ],
+   "parent": "vps/app/vps",
+   "tags": [
+    "provider",
+    "vps"
+   ],
+   "synonyms": [
+    "logs",
+    "journal"
+   ]
+  },
+  {
+   "id": "vps/tool/docker",
+   "type": "tool",
+   "owner": "vps",
+   "label": "VPS containers",
+   "description": "Docker containers on the box (Coolify's apps among them): list, stats, restart one.",
+   "where": {
+    "app": "axhub-web",
+    "provider": "vps",
+    "connection": "axhub",
+    "file": "apps/axhub-web/providers/vps/registry.json"
+   },
+   "state": {
+    "read": "provider:vps/run#docker ps --format '{{.Names}}\\t{{.Status}}\\t{{.Image}}'"
+   },
+   "actions": [
+    {
+     "id": "ps",
+     "label": "List containers",
+     "effect": "read",
+     "run": "provider:vps/run#docker ps --format '{{.Names}}\\t{{.Status}}\\t{{.Image}}'",
+     "phrases": [
+      "list containers"
+     ]
+    },
+    {
+     "id": "stats",
+     "label": "Container CPU and memory",
+     "effect": "read",
+     "run": "provider:vps/run#docker stats --no-stream --format '{{.Name}}\\t{{.CPUPerc}}\\t{{.MemUsage}}'"
+    },
+    {
+     "id": "restart",
+     "label": "Restart a container",
+     "effect": "destructive",
+     "run": "provider:vps/run#docker restart {container}",
+     "params": [
+      {
+       "name": "container",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$",
+       "required": true,
+       "position": 0,
+       "description": "a container name or id (docker ps shows them)"
+      }
+     ],
+     "confirm": true
+    }
+   ],
+   "parent": "vps/app/vps",
+   "tags": [
+    "provider",
+    "vps"
+   ],
+   "synonyms": [
+    "docker",
+    "containers"
+   ]
+  },
+  {
+   "id": "vps/tool/maintenance",
+   "type": "tool",
+   "owner": "vps",
+   "label": "VPS maintenance",
+   "description": "Allow-listed upkeep: package lists, journal size, unused Docker data, reboot.",
+   "where": {
+    "app": "axhub-web",
+    "provider": "vps",
+    "connection": "axhub",
+    "file": "apps/axhub-web/providers/vps/registry.json"
+   },
+   "state": {
+    "read": "provider:vps/run#journalctl --disk-usage && docker system df"
+   },
+   "actions": [
+    {
+     "id": "usage",
+     "label": "Journal and Docker disk use",
+     "effect": "read",
+     "run": "provider:vps/run#journalctl --disk-usage && docker system df"
+    },
+    {
+     "id": "apt-update",
+     "label": "Refresh package lists",
+     "effect": "write",
+     "run": "provider:vps/run#apt-get update"
+    },
+    {
+     "id": "upgradable",
+     "label": "List upgradable packages",
+     "effect": "read",
+     "run": "provider:vps/run#apt list --upgradable"
+    },
+    {
+     "id": "vacuum",
+     "label": "Trim the journal",
+     "effect": "destructive",
+     "run": "provider:vps/run#journalctl --vacuum-time={days}d",
+     "params": [
+      {
+       "name": "days",
+       "type": "integer",
+       "min": 1,
+       "max": 365,
+       "default": 14
+      }
+     ],
+     "confirm": true
+    },
+    {
+     "id": "prune",
+     "label": "Remove unused Docker data",
+     "effect": "destructive",
+     "run": "provider:vps/run#docker system prune -f",
+     "confirm": true
+    },
+    {
+     "id": "reboot",
+     "label": "Reboot the server",
+     "effect": "destructive",
+     "run": "provider:vps/run#systemctl reboot",
+     "confirm": true,
+     "phrases": [
+      "reboot the server"
+     ]
+    }
+   ],
+   "parent": "vps/app/vps",
+   "tags": [
+    "provider",
+    "vps"
+   ],
+   "synonyms": [
+    "maintenance",
+    "upkeep"
+   ]
+  }
+ ]
+}

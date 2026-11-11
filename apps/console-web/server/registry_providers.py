@@ -26,6 +26,7 @@ from typing import Any, Callable
 Transport = Callable[[str, dict[str, Any], "str | None"], "tuple[dict[str, Any], str | None]"]
 TOOL_RE = re.compile(r"^[a-z][a-z0-9_-]{0,40}\.[A-Za-z0-9_./-]{1,120}$")
 CONNECTIONS = ("axhub", "hostinger", "coolify", "vps")
+ALWAYS_APPROVED = frozenset({"vps.run"})
 
 
 class ProviderError(Exception):
@@ -135,7 +136,7 @@ def call(provider: str, op: str, params: dict[str, Any], *, effect: str = "write
             return catalog(str(params.get("service") or ""))
         tool, args = tool_for(provider, op, params)
         sid = _session()
-        hold = effect not in ("read", "navigate")
+        hold = effect not in ("read", "navigate") or tool in ALWAYS_APPROVED  # axHub asks Brett for every vps.run, reads too
         call_args: dict[str, Any] = {"tool": tool, "arguments": args, "hold": hold}
         if hold:
             call_args["reason"] = reason_of(reason, title, tool)
