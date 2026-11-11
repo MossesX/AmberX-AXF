@@ -3,6 +3,8 @@
 export const SKIN_COVERAGE_CONTRACT: 'skin-coverage@1';
 export const COVERAGE_KINDS: readonly CoverageKind[];
 export const PART_ELEMENTS: readonly PartElement[];
+export const SKIN_THEME_FIELDS: readonly string[];
+export const NO_SKIN_ENTRY: string;
 export const SKIN_SCOPE_KINDS: readonly SkinScopeKind[];
 export const SKIN_SCOPE_GLOBAL: 'global';
 export const SKIN_SCOPE_APP: 'app';
@@ -14,8 +16,10 @@ export type SkinScopeKind = 'global' | 'app' | 'ui' | 'plugin';
 /** One place in an app: the app, a UI / screen in it, a plugin in it. */
 export interface SkinScope { app: string; ui: string; plugin: string }
 /** One level's skin state: on with a skin, off, or inherit from the parent level. */
-export interface SkinScopeState { use: 'on' | 'off' | 'inherit'; id: string; overrides: Record<string, string> }
-export interface ResolvedSkin { id: string; overrides: Record<string, string>; from: string }
+/** `colorTheme` = the colour theme picked inside the skin at this level (absent = the skin's own). */
+export interface SkinScopeState { use: 'on' | 'off' | 'inherit'; id: string; overrides: Record<string, string>; colorTheme?: string }
+/** `colorTheme` = the colour theme picked inside the skin by the nearest level that has one (absent = the skin's own). */
+export interface ResolvedSkin { id: string; overrides: Record<string, string>; from: string; colorTheme?: string }
 
 export interface CoverageRow {
   type: string;
@@ -27,13 +31,15 @@ export interface CoverageRow {
   /** the elements its style parts reach (composite assets) */
   elements: PartElement[];
   declared: boolean;
+  /** the type is what a skin is made of (a theme or a scale asset): picked, never styled with parts */
+  ingredient: boolean;
   via: string;
   why: string;
 }
 export interface CoverageSummary { total: number; uncovered: number; slot: number; parts: number; reference: number; bundle: number; none: number }
 
 export type TypeSpecs = Record<string, Record<string, unknown>>;
-export type StyleTargets = Record<string, { root: string; item?: string }>;
+export type StyleTargets = Record<string, { root: string; item?: string; text?: string }>;
 
 export function normalizeSkinScope(raw: unknown): SkinScope;
 export function skinScopeKey(scope: Partial<SkinScope> | null | undefined): string;
@@ -45,8 +51,11 @@ export function skinScopeDomId(key: string): string;
 export function skinScopeSelector(key: string): string;
 export function resolveSkinChain(chain: readonly string[], stateOf: (key: string) => Partial<SkinScopeState> | null | undefined): ResolvedSkin;
 
-export function declaredCoverage(typeSpec: unknown): { by: CoverageKind | ''; via: string; why: string } | null;
+export function declaredCoverage(typeSpec: unknown): { by: CoverageKind | ''; parts: boolean; ingredient: boolean; via: string; why: string } | null;
 export function declarationErrors(type: string, typeSpec: unknown): string[];
+export function declarationConflicts(type: string, typeSpec: unknown, target: unknown, never?: readonly string[]): string[];
+export function skinIngredients(spec: TypeSpecs): string[];
+export function ingredientOfField(spec: TypeSpecs, field: string): string;
 export function partElements(target: unknown): PartElement[];
 export function coverageOf(type: string, spec: TypeSpecs, targets?: StyleTargets, never?: readonly string[]): CoverageRow;
 export function coverageTable(spec: TypeSpecs, targets?: StyleTargets, never?: readonly string[]): CoverageRow[];

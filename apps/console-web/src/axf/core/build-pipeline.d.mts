@@ -15,9 +15,21 @@ export interface BuildPipeline {
   route: '' | 'api' | 'subscription'; dispatchedAt: string;
   /** The orchestrator's plan, made at split time; the final pick (account, pickedAt) can differ. */
   planned: PipelinePlan | null; tried: string[]; pickedAt: string;
+  /** On hold: stays in the Queue, the dispatcher skips it until released ('' = not held). */
+  heldAt: string; heldBy: string; heldWhy: string;
 }
 export interface PipelinePlan { model: string; account: string; kind: '' | 'api' | 'subscription'; at: string; why: string }
-export type PipelineTab = 'pending' | 'queue' | 'active' | 'incomplete' | 'complete' | 'errors';
+export type PipelineTab = 'pending' | 'queue' | 'active' | 'incomplete' | 'complete' | 'errors' | 'archive' | 'deleted';
+export type BuildAction = 'unqueue' | 'hold' | 'release' | 'archive' | 'unarchive' | 'delete' | 'restore';
+export const BUILD_ACTIONS: BuildAction[];
+type BuildLike = { status?: string; deleted?: boolean; hidden?: boolean; mergedAt?: string; steps?: { done?: boolean; skip?: boolean }[]; pipeline?: Partial<BuildPipeline> | null } | null | undefined;
+export function isHeld(b: BuildLike): boolean;
+export function canHold(b: BuildLike): boolean;
+export function isLive(b: BuildLike): boolean;
+export function canArchive(b: BuildLike): boolean;
+export function canDelete(b: BuildLike): boolean;
+export function unarchivedStatus(b: BuildLike): 'built' | 'complete' | 'pending';
+export function actionsFor(b: BuildLike): BuildAction[];
 export const TABS: PipelineTab[];
 export const TAB_LABEL: Readonly<Record<PipelineTab, string>>;
 export function tabOf(b: { status?: string; deleted?: boolean; hidden?: boolean; steps?: { done?: boolean }[]; pipeline?: Partial<BuildPipeline> | null } | null | undefined): '' | PipelineTab;

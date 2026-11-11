@@ -58,7 +58,7 @@
         "by": "slot",
         "ingredient": true,
         "via": "colorTheme",
-        "why": "The skin's colour theme section (skin@1 data.colorTheme): every --fx-* colour comes from it. Picking another colour theme while a skin is on changes that section of the current skin (an override, Back to skin drops it); it never makes a new skin."
+        "why": "The skin's colour theme section (skin@1 data.colorTheme): every --fx-* colour comes from it. Picking another colour theme while a skin is on switches that section inside the current skin (skin.colorTheme, not an override; Back to skin on the colour slot returns to the skin's own); it never makes a new skin."
       }
     },
     "style-theme": {

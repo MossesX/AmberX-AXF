@@ -112,7 +112,9 @@ Look values written in, which no theme, asset or part changes:
   after a fix; never grow it to pass). Looks whose sheet is the default's (`fresh`, `quiet-focus`: layout and
   behaviour only) are skipped. `--out` saves `<skin>-desktop.png` / `-phone.png`; the Nov 9 set is in UI Review.
   Baseline today: `coral-play` and `fresh-night` are colour only everywhere (themes-only packages on the Fresh shapes);
-  `enterprise-day` / `-night` leave 22 widget and slider / gauge / tab-picker elements colour only. Slot assets a React
+  `enterprise-day` / `-night` leave 22 widget and slider / gauge / tab-picker elements colour only. The gallery freezes
+  entrance animations and transitions before it reads computed styles (Nov 11 2026): an opacity caught mid-animation
+  made the context menu and the banner pop-up read as restyled on one run and colour only on the next. Slot assets a React
   component reads as props (a button asset's shape) are covered by `check-skin.mts`, not by the gallery.
 - **Still theme-only (no asset type)**: tables (`.fx-table`, datagrid), inputs and fields, chips, switches, toasts,
   scrollbars, terminal, cards that aren't containers (`.fx-idcard`, `.fx-dcard`). They follow the skin's colour, style,
@@ -125,6 +127,7 @@ Look values written in, which no theme, asset or part changes:
   three theme ingredients name their skin@1 field (`via`: `colorTheme`, `styleTheme`, `layoutTheme`;
   `skinIngredients`, `ingredientOfField`), and `check-skin-coverage` fails if a theme field has no ingredient. Brett's
   rule, pinned by `check-skin.mts`: a skin controls everything and contains a colour theme section, so a colour theme
-  change under a skin is an override inside that skin and never a new skin. Left as they are on purpose: tone pairs
+  change under a skin switches that section inside the skin (`skin.colorTheme`, not an override) and never makes a
+  new skin. Left as they are on purpose: tone pairs
   that set a background with its text colour (filled dialog head, avatar initials, slider value chip, gauge digits) and
   search results, which are a pop-up and take the popup parts.

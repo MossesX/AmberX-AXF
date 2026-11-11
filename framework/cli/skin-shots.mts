@@ -96,7 +96,10 @@ export function galleryElements(): { key: string; html: string }[] {
 export function galleryHtml(look: Look): string {
   const axf = readFileSync(join(FW, 'ui/axf.css'), 'utf8');
   // page layout only: the cells hold every element in flow, so a hidden or popup element still has a computed look
-  const page = 'body{margin:0;padding:var(--fx-dens-gap-md);background:var(--fx-bg);color:var(--fx-text);font-family:var(--fx-font)}'
+  // entrance animations and transitions are frozen: a computed opacity or transform read mid-animation is timing noise,
+  // not a look the skin gives the element (it made the same element read as restyled on one run and colour only on the next)
+  const page = '*,*::before,*::after{animation:none !important;transition:none !important}'
+    + 'body{margin:0;padding:var(--fx-dens-gap-md);background:var(--fx-bg);color:var(--fx-text);font-family:var(--fx-font)}'
     + '.sk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(calc(var(--fx-font-size) * 16),1fr));gap:var(--fx-dens-gap-md)}'
     + '.sk-cell{position:relative;display:flex;flex-direction:column;gap:var(--fx-dens-gap-sm);padding:var(--fx-dens-gap-sm);border:var(--fx-border-w) solid var(--fx-border);border-radius:var(--fx-radius-md)}'
     + '.sk-cell > *{position:relative !important;inset:auto !important;transform:none !important;visibility:visible !important;max-width:100%}'

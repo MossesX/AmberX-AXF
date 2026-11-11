@@ -12,8 +12,11 @@
  *   node framework/cli/skins.mjs inherit <app> <scope>     a screen / plugin follows its parent again (drops its own state)
  *   node framework/cli/skins.mjs follow <app> on|off       the app follows the hub-wide skin while Use skin is off
  *   node framework/cli/skins.mjs global <skin>|off         the hub-wide skin (every app that follows it)
+ *   node framework/cli/skins.mjs global-color <colour theme>|default   the colour theme inside the hub-wide skin (the skin stays)
  *   node framework/cli/skins.mjs at <app> [--scope …]      which skin is in force at a place, and which level decided
  *   node framework/cli/skins.mjs back <app> <slot>         drop one override ("Back to skin")
+ *   node framework/cli/skins.mjs color <app> <colour theme>|default [--scope …]   switch the colour theme inside the skin in force (same skin,
+ *                                                           no new skin; default = the skin's own colours); --scope = inside one screen / plugin only
  *   node framework/cli/skins.mjs restore <app>             back to the snapshot (keeps one undo)
  *   node framework/cli/skins.mjs undo <app>                undo the last restore
  *   node framework/cli/skins.mjs coverage                  how a skin reaches every registered asset type (CI: spec/check-skin-coverage.mjs)
@@ -26,7 +29,7 @@
 import { chownSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { backToSkin, newAppLook, normalizeAppLook, normalizeLookPart, overriddenSlots, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setLookSlot, setScopeSkin, setUseSkin, undoRestore, SKIN_NEVER } from '../core/engines/skin-rules.mjs';
+import { backToSkin, newAppLook, normalizeAppLook, normalizeLookPart, overriddenSlots, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setLookSlot, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorTheme, undoRestore, SKIN_COLOR_SLOT, SKIN_NEVER } from '../core/engines/skin-rules.mjs';
 import { coverageSummary, coverageTable, isSubScopeKey, partElements, skinScopeOf } from '../core/engines/skin-coverage.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
@@ -67,18 +70,34 @@ export function writeLook(doc, by = 'skins-cli') {
   chownLike(f);
 }
 
-/** The hub-wide skin on the shared document (`skin: { id, overrides }`), null = none. */
+/**
+ * The hub-wide skin on the shared document (`skin: { id, overrides, colorTheme? }`), null = none. `colorTheme` = the
+ * colour theme picked inside it (a document saved before the rule kept that pick among the overrides; it is read as the
+ * colour theme, engines/skin-rules.mjs).
+ */
 export function readGlobal() {
   const s = readJson(sharedFile())?.skin;
-  return s && typeof s.id === 'string' && ID.test(s.id) ? { id: s.id, overrides: s.overrides ?? {} } : null;
+  if (!s || typeof s.id !== 'string' || !ID.test(s.id)) return null;
+  const overrides = { ...(s.overrides ?? {}) };
+  const colorTheme = typeof s.colorTheme === 'string' && ID.test(s.colorTheme) ? s.colorTheme : overrides[SKIN_COLOR_SLOT] ?? '';
+  delete overrides[SKIN_COLOR_SLOT];
+  return colorTheme ? { id: s.id, overrides, colorTheme } : { id: s.id, overrides };
 }
 
-/** Set or clear the hub-wide skin: the one field this CLI writes on the shared document. */
-export function writeGlobal(skin, by = 'skins-cli') {
+/**
+ * Set or clear the hub-wide skin, or switch the colour theme inside it (`colorTheme`: a colour theme id, '' = the skin's
+ * own; the skin id stays): the one field this CLI writes on the shared document.
+ */
+export function writeGlobal(skin, by = 'skins-cli', colorTheme) {
   const f = sharedFile();
   const doc = readJson(f);
   if (!doc) throw new Error(`can't read the shared look at ${f}`);
-  if (skin) doc.skin = { id: skin }; else delete doc.skin;
+  if (skin) {
+    const cur = readGlobal();
+    const keep = cur && cur.id === skin ? cur : { id: skin, overrides: {} };
+    const pick = colorTheme === undefined ? keep.colorTheme ?? '' : colorTheme;
+    doc.skin = { id: skin, ...(Object.keys(keep.overrides ?? {}).length ? { overrides: keep.overrides } : {}), ...(pick ? { colorTheme: pick } : {}) };
+  } else delete doc.skin;
   doc.updatedBy = by;
   doc.updatedAt = new Date().toISOString();
   const tmp = `${f}.${process.pid}.tmp`;
@@ -109,12 +128,13 @@ export function snapshot(app, force = false) {
 
 const need = (app) => { const l = readLook(app); if (!l) throw new Error(`${app} has no look document yet: run snapshot first`); return l; };
 const skinKnown = (id) => skinRows().some((s) => s.id === id);
+const colorThemeKnown = (id) => assetsOf(SKIN_COLOR_SLOT).some((a) => a.id === id);
 const scopeArg = (argv) => { const i = argv.indexOf('--scope'); const v = i >= 0 ? argv[i + 1] : ''; if (v && !isSubScopeKey(v)) throw new Error(`"${v}" is not a scope: ui:<id> or plugin:<id>`); return v || ''; };
 
 export const status = (app) => {
   const l = readLook(app);
   const inForce = resolveLookSkin(l, readGlobal(), null);
-  return { app, snapshot: !!l, useSkin: !!l?.skin.use, follow: !!l?.skin.inherit, skin: l?.skin.id ?? '', inForce: inForce.id, from: inForce.from, overrides: overriddenSlots(l), scopes: scopeEntries(l), canUndo: !!l?.undo, own: Object.keys(l?.own.slots ?? {}) };
+  return { app, snapshot: !!l, useSkin: !!l?.skin.use, follow: !!l?.skin.inherit, skin: l?.skin.id ?? '', inForce: inForce.id, from: inForce.from, colorTheme: inForce.colorTheme ?? '', overrides: overriddenSlots(l), scopes: scopeEntries(l), canUndo: !!l?.undo, own: Object.keys(l?.own.slots ?? {}) };
 };
 
 /** Which skin is in force at a place and which level decided. */
@@ -134,6 +154,14 @@ export function change(op, app, arg, scopeKey = '') {
   else if (op === 'inherit') { if (!isSubScopeKey(arg)) throw new Error('inherit needs a scope: ui:<id> or plugin:<id>'); writeLook(setScopeSkin(l, arg, 'inherit', '')); }
   else if (op === 'follow') writeLook(setInheritSkin(l, arg !== 'off'));
   else if (op === 'back') writeLook(backToSkin(l, arg));
+  else if (op === 'color') {
+    // the colour theme inside the skin in force: the skin id never moves and no skin is created (Brett, Nov 9 2026)
+    const pick = arg === 'default' || arg === 'skin' || arg === 'off' ? '' : arg;
+    if (pick && !colorThemeKnown(pick)) throw new Error(`no colour theme "${pick}"`);
+    const scope = scopeKey ? skinScopeOf(scopeKey, app) : { app };
+    if (!resolveLookSkin(l, readGlobal(), scope).id) throw new Error(`${app}${scopeKey ? ` ${scopeKey}` : ''} has no skin in force: pick the colour theme with the app's own look (control@1 tokens.slots) or use a skin first`);
+    writeLook(setSkinColorTheme(l, pick, scopeKey || undefined));
+  }
   else if (op === 'restore') writeLook(restoreAppDefault(l, new Date().toISOString()));
   else if (op === 'undo') { if (!l.undo) throw new Error(`${app} has nothing to undo`); writeLook(undoRestore(l)); } else throw new Error(`unknown change ${op}`);
   return status(app);
@@ -146,9 +174,30 @@ export function global(arg) {
   return { global: writeGlobal(arg) };
 }
 
-/** control@1 tokens.slots: a slot set from outside reaches every app's look. */
+/** The colour theme inside the hub-wide skin: `skins.mjs global-color <colour theme>|default`. The skin stays. */
+export function globalColor(arg) {
+  const cur = readGlobal();
+  if (!cur) throw new Error('there is no hub-wide skin: set one with `skins.mjs global <skin>` first');
+  const pick = arg === 'default' || arg === 'skin' || arg === 'off' ? '' : arg;
+  if (pick && !colorThemeKnown(pick)) throw new Error(`no colour theme "${pick}"`);
+  return { global: writeGlobal(cur.id, 'skins-cli', pick) };
+}
+
+/** The colour theme in force at a place and whether it was switched inside the skin. */
+export function color(app, scopeKey = '') {
+  const l = readLook(app);
+  const scope = scopeKey ? skinScopeOf(scopeKey, app) : { app };
+  const inForce = resolveLookSkin(l, readGlobal(), scope);
+  const skin = inForce.id ? assetsOf('skin').find((a) => a.id === inForce.id) ?? assetsOf('design-package').find((a) => a.id === inForce.id) : null;
+  const own = skin ? (skin.type === 'skin' ? skin.data?.colorTheme : skin.data?.['color-theme']) ?? '' : '';
+  const shows = inForce.colorTheme || own;
+  return { app, scope: scopeKey || 'app', skin: inForce.id, from: inForce.from, colorTheme: shows, own, picked: !!shows && shows !== own, pickedHere: l ? skinColorTheme(l, scopeKey || undefined) : '' };
+}
+
+/** control@1 tokens.slots: a slot set from outside reaches every app's look (the colour theme lands inside a skin in force; never a new skin). */
 export function setSlotEverywhere(slot, id, by) {
-  for (const app of appIds()) { const l = readLook(app); if (l) writeLook(setLookSlot(l, slot, id), by); }
+  const global = readGlobal();
+  for (const app of appIds()) { const l = readLook(app); if (l) writeLook(setLookSlot(l, slot, id, global), by); }
 }
 
 /** skin-coverage@1 over the real registry and style targets. */
@@ -190,6 +239,8 @@ function main(argv) {
   else if (cmd === 'list') out = skinRows();
   else if (cmd === 'snapshot') out = (argv.includes('--all') ? appIds() : [appId(app)]).map((a) => snapshot(a, argv.includes('--force')));
   else if (['use', 'back', 'inherit', 'follow'].includes(cmd)) { if (!arg) throw new Error(`${cmd} needs <app> and ${cmd === 'use' ? 'a skin' : cmd === 'back' ? 'a slot' : cmd === 'inherit' ? 'a scope' : 'on | off'}`); out = change(cmd, appId(app), arg, scope); }
+  else if (cmd === 'color' || cmd === 'colour') { if (!app) throw new Error('color needs <app> [colour theme | default]'); out = arg ? change('color', appId(app), arg, scope) : color(appId(app), scope); }
+  else if (cmd === 'global-color' || cmd === 'global-colour') { if (!app) throw new Error('global-color needs a colour theme or default'); out = globalColor(app); }
   else if (['off', 'restore', 'undo'].includes(cmd)) out = change(cmd, appId(app), undefined, scope);
   else if (cmd === 'at') out = at(appId(app), scope);
   else if (cmd === 'global') { if (!app) out = { global: readGlobal() }; else out = global(app); }

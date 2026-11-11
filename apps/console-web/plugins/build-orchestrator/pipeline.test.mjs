@@ -254,12 +254,37 @@ t('tabs: pending / queue / active / incomplete / complete / errors', () => {
   assert.equal(tab('pending'), 'pending'); assert.equal(tab('queued'), 'queue'); assert.equal(tab('running'), 'active'); assert.equal(tab('waiting'), 'active');
   assert.equal(tab('pending', {}, [step('s1', 'Opus', true), step('s2', 'Opus')]), 'incomplete', 'started, stopped with steps left');
   assert.equal(tab('pending', { pipeline: { runs: 1 } }), 'incomplete'); assert.equal(tab('blocked'), 'incomplete');
-  assert.equal(tab('built'), 'complete'); assert.equal(tab('complete'), 'complete'); assert.equal(tab('failed'), 'errors');
+  assert.equal(tab('built'), 'complete'); assert.equal(tab('complete'), 'archive', 'merged builds go to the Archive'); assert.equal(tab('failed'), 'errors');
   assert.equal(tab('queued', { pipeline: { note: 'launch failed: launcher exit 1' } }), 'errors');
-  assert.equal(tab('archived'), ''); assert.equal(tab('pending', { hidden: true }), '');
-  assert.deepEqual(BP.TABS, ['pending', 'queue', 'active', 'incomplete', 'complete', 'errors']);
+  assert.equal(tab('archived'), 'archive'); assert.equal(tab('pending', { hidden: true }), '');
+  assert.equal(tab('queued', { deleted: true }), 'deleted'); assert.equal(tab('archived', { deleted: true, hidden: true }), 'deleted');
+  assert.deepEqual(BP.TABS, ['pending', 'queue', 'active', 'incomplete', 'complete', 'errors', 'archive', 'deleted']);
   const p = BP.normPipeline({ planned: { model: 'Fable', account: 'w-max', kind: 'subscription', at: now, why: 'x' }, tried: ['a-1', 'Bad Name'], pickedAt: now });
   assert.deepEqual([p.planned.account, p.planned.kind, p.tried, p.pickedAt], ['w-max', 'subscription', ['a-1'], now]);
+});
+t('hold: a queued build On hold stays in the Queue tab, the dispatcher skips it, the idle alert ignores it', () => {
+  const held = build('held', 'queued', [step('s1', 'Opus')], { pipeline: { queuedAt: '2026-11-08T00:01:00Z', heldAt: now, heldBy: 'brett', heldWhy: 'later' } });
+  const next = build('next', 'queued', [step('s1', 'Opus')], { pipeline: { queuedAt: '2026-11-08T00:02:00Z' } });
+  assert.equal(BP.isHeld(held), true); assert.equal(BP.tabOf(held), 'queue'); assert.equal(BP.isHeld(next), false);
+  assert.deepEqual(BP.normPipeline({ heldBy: 'x' }), null, 'no heldAt: not held, nothing kept');
+  assert.equal(BP.normPipeline(held.pipeline).heldWhy, 'later');
+  const accts = P.accountViews([{ name: 'w-max', role: 'worker', plan: 'max', running: [] }], {}, { settings: P.normSettings({}) });
+  const r = P.plan({ builds: [held, next], accounts: accts, slots: { free: 4, used: 0, cap: 6 }, settings: P.normSettings({}) });
+  assert.deepEqual(r.launches.map((l) => l.id), ['next']); assert.deepEqual(r.held, ['held']);
+  assert.match(r.waits.find((w) => w.id === 'held').why, /on hold \(brett\)/);
+  const only = P.plan({ builds: [held], accounts: accts, slots: { free: 4, used: 0, cap: 6 }, settings: P.normSettings({}) });
+  assert.equal(only.launches.length, 0); assert.equal(only.idle, null, 'a Queue of held builds is not stuck');
+});
+t('actions: Queue → back to Pending / hold / archive / delete; live builds are never archived or deleted; Deleted → restore', () => {
+  const q = build('q', 'queued', [step('s1', 'Opus')], { pipeline: { queuedAt: now } });
+  assert.deepEqual(BP.actionsFor(q), ['unqueue', 'hold', 'archive', 'delete']);
+  assert.deepEqual(BP.actionsFor(build('h', 'queued', [], { pipeline: { queuedAt: now, heldAt: now } })), ['unqueue', 'release', 'archive', 'delete']);
+  assert.deepEqual(BP.actionsFor(build('r', 'running', [])), []); assert.deepEqual(BP.actionsFor(build('w', 'waiting', [])), []);
+  assert.deepEqual(BP.actionsFor(build('a', 'archived', [])), ['unarchive', 'delete']);
+  assert.deepEqual(BP.actionsFor(build('d', 'pending', [], { deleted: true })), ['restore']);
+  assert.equal(BP.unarchivedStatus(build('x', 'archived', [step('s1', 'Opus', true)])), 'built');
+  assert.equal(BP.unarchivedStatus(build('x', 'archived', [step('s1', 'Opus', true)], { mergedAt: now })), 'complete');
+  assert.equal(BP.unarchivedStatus(build('x', 'archived', [step('s1', 'Opus')])), 'pending');
 });
 t('routeOptions: every subscription in Brett\'s order, then every API account; route overrides respected', () => {
   const s = P.normSettings({});
@@ -406,10 +431,10 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.equal(h3.status, 3); assert.match(h3.stdout, /build launch outside the orchestrator/);
   });
   t('e2e request: every other path files a build with the orchestrator and queues it; route api is the per-build override', () => {
-    const r = json(pipe('request', '--title', 'Fix systems check: mosh server', '--detail', 'Install mosh.', '--priority', 'P1', '--queue', '--by', 'systems-check', '--json'));
-    assert.equal(r.id, 'fix-systems-check-mosh-server'); assert.equal(find(r.id).status, 'queued'); assert.equal(find(r.id).priority, 'P1'); assert.equal(find(r.id).pipeline.queuedBy, 'systems-check');
-    const r2 = json(pipe('request', '--title', 'Fix systems check: mosh server', '--json'));
-    assert.equal(r2.id, 'fix-systems-check-mosh-server-2'); assert.equal(find(r2.id).status, 'pending', 'unique id; without --queue it waits in Pending');
+    const r = json(pipe('request', '--title', 'Fix the health check: mosh server', '--detail', 'Install mosh.', '--priority', 'P1', '--queue', '--by', 'health-check', '--json'));
+    assert.equal(r.id, 'fix-the-health-check-mosh-server'); assert.equal(find(r.id).status, 'queued'); assert.equal(find(r.id).priority, 'P1'); assert.equal(find(r.id).pipeline.queuedBy, 'health-check');
+    const r2 = json(pipe('request', '--title', 'Fix the health check: mosh server', '--json'));
+    assert.equal(r2.id, 'fix-the-health-check-mosh-server-2'); assert.equal(find(r2.id).status, 'pending', 'unique id; without --queue it waits in Pending');
     json(pipe('route', r2.id, 'api', '--json')); assert.equal(find(r2.id).pipeline.route, 'api');
     json(pipe('route', r2.id, 'auto', '--json')); assert.equal(find(r2.id).pipeline?.route ?? '', '');
     assert.notEqual(pipe('route', r2.id, 'nowhere', '--json', '--expect-fail').status, 0);
@@ -480,6 +505,38 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.ok(r.fixes.some((f) => /requeued ghost/.test(f)), r.fixes.join('; '));
     assert.equal(find('ghost').status, 'queued'); assert.equal(find('ghost').pipeline.account || '', '');
     json(pipe('unqueue', 'ghost', '--json'));
+  });
+  t('e2e hold / release / archive / delete / restore, one and many at once (bulk select)', () => {
+    for (const id of ['h1', 'h2', 'h3']) { orch('act', JSON.stringify({ action: 'add', id, title: id.toUpperCase(), steps: [{ text: `do ${id}`, model: 'Opus', estimate: '20 min' }] })); json(pipe('queue', id, '--json')); }
+    let r = json(pipe('hold', 'h1', 'h2', '--why', 'waiting on Brett', '--by', 'brett', '--json'));
+    assert.deepEqual(r.done.map((d) => [d.id, d.tab]), [['h1', 'queue'], ['h2', 'queue']]);
+    assert.equal(find('h1').status, 'queued'); assert.equal(find('h1').pipeline.heldBy, 'brett'); assert.equal(find('h1').pipeline.heldWhy, 'waiting on Brett');
+    const s = json(pipe('status', '--json'));
+    assert.ok(s.tabs.queue.find((x) => x.id === 'h1').held); assert.deepEqual(s.tabs.queue.find((x) => x.id === 'h1').actions, ['unqueue', 'release', 'archive', 'delete']);
+    assert.ok(s.plan.held.includes('h1') && !s.plan.launches.some((l) => l.id === 'h1'));
+    assert.notEqual(pipe('hold', 'h1', '--json', '--expect-fail').status, 0, 'holding a held build is refused');
+    r = json(pipe('release', 'h2', '--json')); assert.equal(find('h2').pipeline?.heldAt ?? '', '');
+    r = json(pipe('unqueue', 'h1', '--json')); assert.equal(find('h1').status, 'pending'); assert.equal(find('h1').pipeline?.heldAt ?? '', '', 'back to Pending drops the hold');
+    // archive: one queued, one pending; a running build is refused, the rest still go
+    { const st = store(); st.builds.find((b) => b.id === 'ghost').status = 'running'; writeFileSync(storeFile, JSON.stringify(st)); }
+    r = json(pipe('archive', 'h1', 'h2', 'ghost', '--json'));
+    assert.deepEqual(r.done.map((d) => [d.id, d.tab]), [['h1', 'archive'], ['h2', 'archive']]);
+    assert.equal(r.refused[0].id, 'ghost'); assert.match(r.refused[0].error, /live session/);
+    assert.equal(find('h2').pipeline?.queuedAt ?? '', '', 'leaving the Queue clears it');
+    assert.ok(json(pipe('tab', 'archive', '--json')).rows.some((x) => x.id === 'h1'));
+    r = json(pipe('unarchive', 'h1', '--json')); assert.equal(find('h1').status, 'pending');
+    // delete: soft, kept forever, restorable; a queued build comes back in Pending
+    r = json(pipe('delete', 'h3', 'h1', '--why', 'not wanted', '--json'));
+    assert.deepEqual(r.done.map((d) => d.tab), ['deleted', 'deleted']);
+    assert.equal(find('h3').deleted, true); assert.ok(find('h3').deletedAt); assert.equal(find('h3').status, 'pending');
+    const del = json(pipe('tab', 'deleted', '--json')).rows; assert.deepEqual(del.map((x) => x.id).sort(), ['h1', 'h3']); assert.deepEqual(del[0].actions, ['restore']);
+    assert.ok(!json(pipe('status', '--json')).plan.queue.includes('h3'));
+    orch('act', JSON.stringify({ action: 'note', id: 'beta', text: 'an orchestrator write after the delete' }));
+    assert.equal(find('h3').deleted, true, 'an orchestrator write never drops or revives a deleted build');
+    r = json(pipe('restore', 'h3', '--json')); assert.equal(find('h3').deleted, false); assert.equal(r.done[0].tab, 'pending');
+    assert.notEqual(pipe('restore', 'h3', '--json', '--expect-fail').status, 0, 'restoring a live build is refused');
+    assert.notEqual(pipe('archive', 'nope', '--json', '--expect-fail').status, 0, 'unknown build: refused');
+    assert.match(readFileSync(join(pipeDir, 'log.jsonl'), 'utf8'), /"event":"hold"/);
   });
   t('e2e rules fallback when the splitter fails', () => {
     writeFileSync(splitter, '#!/usr/bin/env bash\nexit 1\n');

@@ -13,9 +13,39 @@ Project `shared`, path `settings/looks/<app>.json`. Written only by that app, or
 MCP and REST. The format is in one module, `framework/core/engines/skin.ts` + `skin-rules.mjs`.
 
 - `default`: the snapshot of the look the app had when skins landed (`skins.mjs snapshot --all`), so nothing changed.
-- `own`: picks made with no skin on. `skin`: `{ use, id, overrides }`, the Use skin switch, the skin and the picks that
-  beat it. `undo`: the one step Restore to default can take back.
-- Effective look = default + own picks; with Use skin on, that + the skin + its overrides.
+- `own`: picks made with no skin on. `skin`: `{ use, id, overrides, colorTheme? }`, the Use skin switch, the skin, the
+  picks that beat it, and the colour theme switched inside it. `undo`: the one step Restore to default can take back.
+- Effective look = default + own picks; with Use skin on, that + the skin + its overrides + the colour theme picked
+  inside the skin (when one is).
+
+### The colour theme is switched inside the skin (Brett, Nov 9 2026)
+
+> "All the skins control everything. The skins have different sections, but the skins have the color theme in them. You
+> can change the color theme without changing the skin. If you change the color theme, it makes a new skin, don't like
+> that."
+
+The standing rule for every skins build (appearance-skins-colour-themes-only-remove-design-packs, skins-restyle-everything,
+skins-are-a-complete-rework, skins-as-packages-of-slices): **a skin owns everything** (look, layout, behaviour, every
+section and asset type) **and includes a colour theme section; the user switches that section on its own.** Picking a
+colour theme while a skin is in force:
+
+- applies it inside the current skin: the skin id, the skin asset, the list of skins and every other section stay as
+  they were. Nothing is created, copied, forked or renamed; a skin never becomes "<skin> (colour changed)".
+- is kept as the level's `colorTheme` field (`skin.colorTheme` at the app level, `scopes[key].colorTheme` for one
+  screen / plugin, `skin.colorTheme` on the hub-wide skin of appearance@1), never as `overrides["color-theme"]`. Absent
+  = the skin's own colour theme. Settings → Appearance shows no overridden dot for it; "Skin's colours" (`backToSkin
+  ('color-theme')`, `setSkinColorTheme(null)`, `skin.color:default`) goes back to the skin's own.
+- is the same document from every entry point: the picker's select, `rt.swap('color-theme', …)`, `rt.setSkinColorTheme`,
+  the `skin.color:<theme>` action, control@1 `tokens.slots`, `skins.mjs color <app> <theme>` and the REST / MCP route
+  `POST /skins/{app}/color` (`setLookSlot`, `lookAfterChange`, `setSkinColorTheme`, `setScopeOverride` all land there).
+- never leaks: Use skin off shows the app's own colours; another skin starts with its own colour theme; the pick comes
+  back with the skin it was made in. Restore clears it (one undo).
+- A document saved before the rule kept the pick in `overrides["color-theme"]`: it is read as `colorTheme`
+  (`normalizeAppLook`, `globalSkinOf`, `normalizeAppearance`) and draws the same look.
+
+Sections stay separate: the colour theme is one switchable part of the skin, the others (style, layout, behaviour,
+chrome assets, parts, icon pack) are the skin's until a pick overrides that one part. Pinned by `spec/fixtures/skin.json`
+(`colour`) and `spec/check-skin.mts` (engine, runtime, every entry point, legacy documents).
 
 An app without a hub source keeps the same document in a setting (`axf.skin.look`), so a new app from a template gets the
 same Settings → Appearance. The sections below describe the shared document, which stays the transport and the source
@@ -51,9 +81,10 @@ before that most were derived from flags), so a new type fails CI until it says 
 
 **A skin contains a colour theme section** (Brett, Nov 9 2026: "a skin controls everything and contains a colour theme
 section"): `color-theme` is the ingredient with `via: colorTheme`. Changing the colour theme while a skin is in force
-applies inside that skin (`skin.overrides['color-theme']` on the app's look document, shown with the overridden dot,
-dropped by Back to skin); it never creates a new skin and never lands in the app's own picks (`lookAfterChange`,
-pinned by `spec/check-skin.mts`). The same holds for every other slot the skin sets.
+applies inside that skin (`skin.colorTheme` on the app's look document, the scope or the hub-wide skin: never an
+override, no overridden dot; `skin.color:default` or Back to skin on the colour slot returns to the skin's own); it
+never creates a new skin and never lands in the app's own picks (`setSkinColorTheme`, `skinColorTheme`, pinned by
+`spec/check-skin.mts`). Every other slot the skin sets is an override when picked over.
 
 `node framework/spec/check-skin-coverage.mjs` fails on a type with no entry, a bad entry (a kind outside the list, a
 `none` without a why, a `reference` without a via, `parts` / `ingredient` on anything but a slot), an entry the
@@ -73,7 +104,7 @@ unchanged. `check-skin-coverage` fails on a `text` selector naming a class nothi
 level that is not *inherit* decides; its overrides and those of every level nearer the leaf apply (child over parent).
 `global` is the `skin` field of the shared appearance@1 document (`skins.mjs global <skin>`); an app takes it only while
 `skin.inherit` is on (Follow the hub-wide skin; off by default: "by default they're all their own"). `ui:` and `plugin:`
-states live in the app's look document under `scopes` (`{ use: on | off | inherit, id, overrides }`). The runtime draws
+states live in the app's look document under `scopes` (`{ use: on | off | inherit, id, overrides, colorTheme? }`). The runtime draws
 a sub level that resolves differently from the app as a scoped view (`rt.skinScoped(key)`, like an interface scope)
 under `<SkinScope>` on every view root and every plugin root; a skin's `iconPack` lands in `axf.icons.pack.<scopeKey>`
 and its `parts` in the customize sheet. Pure functions: `resolveSkinChain`, `resolveLookSkin`, `composeLookAt`,
