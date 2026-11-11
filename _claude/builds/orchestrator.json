@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-11T00:24:05.927Z",
+ "updatedAt": "2026-11-11T00:30:30.431Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -94724,7 +94724,7 @@
    "pr": "#473",
    "priority": "P0",
    "createdAt": "2026-11-10T20:40:20.356Z",
-   "updatedAt": "2026-11-10T21:24:10.424Z",
+   "updatedAt": "2026-11-11T00:30:27.926Z",
    "builtAt": "2026-11-10T21:24:10.425Z",
    "notes": [
     {
@@ -94746,6 +94746,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-resolve-conflicts-and-land-460-456-457-459-342--rhonda, own login copy)",
      "at": "2026-11-10T21:04:01.950Z"
+    },
+    {
+     "text": "Landed: #456 (Nov 11 00:00 UTC), with the main CI fixes (ui-review test, build-hook lock, kernel AppearanceEngine.NEVER, theme-editor scrollbar, deploy shellcheck, plugin-lifecycle clean). Ready, conflict-free on current main, held only by Brett's merge review (merge-review-one-by-one, 'waiting for Brett'): #473 FIRST (its Dockerfile fix re-bakes the framework; every console redeploy fails until it lands: src/axf lacks TAB_LABEL), then #457, #459, #460, #342. To land: answer 'merge' on each in the merge review (POST /api/plugins/build-orchestrator/merge-review/decide {build, decision: merge}, or 'merge it' by voice). The review shows #460 / #473 as 'CI red': that was main's old breakroom verify failure, fixed by #456; the full queue run decides. AmberX notice goes out when all five are on main.",
+     "at": "2026-11-11T00:30:27.926Z"
     }
    ],
    "approvals": [],
