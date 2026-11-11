@@ -41,6 +41,7 @@ import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppear
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, HELP_SEEN_KEY, buildHelpIndex, helpTarget, introFor, introToShow, markSeen, resolveHelp, type HelpDescriptor, type HelpEntry, type HelpIndex, type HelpIntro } from './engines/help';
 import { Diagnostics } from './diagnostics';
 import { OutputTerminal } from './terminal';
+import { SkinLibrary, SKIN_DRAFT_ID } from './skin-library';
 import {
   ASSET_TYPES,
   OPTIONAL_TYPES,
@@ -274,6 +275,8 @@ export class AxfRuntime {
   private readonly navSections = new Map<string, NavExtraSection>();
   /** Settings schema, panels and values (see settings.ts); the settings library renders them. */
   readonly settings: SettingsRegistry;
+  /** The skin library: the asset store's Skins category (skin-library.ts). */
+  readonly skins: SkinLibrary;
   /** Search index the toolbar's live search reads (engines/search.ts); anyone can add providers. */
   readonly search = new SearchIndex(this);
   /** Libraries installed with installLibraries, for the settings About / Plugins tabs. */
@@ -418,6 +421,7 @@ export class AxfRuntime {
       swaps: 0,
       appearance: null,
     };
+    this.skins = new SkinLibrary(this);
     this.actions.withModule(FRAMEWORK_MODULE, () => this.registerBuiltinActions());
     this.registerBuiltinAppMenuProviders();
     // Help mode in every app's Help menu (Brett, Nov 1 2026): the switch, replay the intro, intros again.
@@ -697,7 +701,7 @@ export class AxfRuntime {
 
   /** Every skin this app can use: the skins, then the design packages. */
   skinList(): SkinEntry[] {
-    return skinEntries(this.registry.list(SKIN_TYPE as AssetType) as never, this.registry.list(DESIGN_PACKAGE_TYPE as AssetType) as never);
+    return skinEntries(this.registry.list(SKIN_TYPE as AssetType) as never, this.registry.list(DESIGN_PACKAGE_TYPE as AssetType) as never).filter((e) => e.id !== SKIN_DRAFT_ID);
   }
 
   /** This app's look document (null while it can't be read). */
@@ -767,6 +771,9 @@ export class AxfRuntime {
     this.bumpLook();
     return true;
   }
+
+  /** Draw the look again (a saved skin in use was overwritten). */
+  refreshLook(): void { this.applyAppearance(this.lastAppearance); this.bumpLook(); }
 
   /** The skin being previewed, if any. */
   previewedSkin(): string | null { return this.lookPreview; }
@@ -2872,6 +2879,7 @@ export class AxfRuntime {
       }
     }, { label: 'Apply a style package (id, next, prev or random)', requires: 'assets.swap', params: true });
     // Skins (engines/skin.ts). skin.use:<id> turns Use skin on for this app, skin.off goes back to its own look.
+    this.skins.registerActions(a);
     a.register('skin.use', ([id]) => { this.useSkin(true, id || undefined); }, { label: 'Use a skin in this app', requires: 'assets.swap', params: true });
     a.register('skin.off', () => { this.useSkin(false); }, { label: "Back to this app's own look", requires: 'assets.swap' });
     // skin.color:<colour theme> switches the colour theme inside the skin in force (the skin stays the same skin; nothing

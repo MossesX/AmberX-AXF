@@ -29,6 +29,7 @@ export { WidgetView, SearchBarWidget, registerWidgetRenderer, widgetRenderer, ty
 export { LiveSearch, useSearchHost, scanPage, flashWhenReady } from './components/Search';
 export { DialogHost, ToastHost, ContextMenuHost, type DialogDef, type DialogMap } from './components/Overlays';
 export { AssetStudio } from './studio/AssetStudio';
+export { SkinBrowser, SkinEditor, SkinThumb, skinDialogs } from './studio/SkinBrowser';
 export { AccountView } from './studio/AccountView';
 export { Inspector } from './studio/Inspector';
 export { AssetPreview } from './studio/AssetPreview';

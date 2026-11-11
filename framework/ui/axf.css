@@ -1026,6 +1026,26 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
   border: var(--fx-border-w) solid var(--fx-border); display: flex; flex-direction: column; justify-content: center;
 }
 
+/* ---------------- skins in the asset store (studio/SkinBrowser.tsx) ---------------- */
+/* A thumbnail is drawn in the skin's own colour theme: --sk-* carry that theme's colours (set from the asset). */
+.axf-skinthumb {
+  display: grid; gap: var(--fx-dens-gap-sm); min-height: 96px; padding: var(--fx-dens-gap-lg);
+  background: var(--sk-bg); border-color: var(--sk-border);
+}
+.axf-skinthumb > div { border-radius: var(--fx-radius-sm); background: var(--sk-surface); min-height: var(--fx-dens-gap-md); }
+.axf-skinthumb > .axf-skinthumb__nav { background: var(--sk-accent); opacity: var(--fx-opacity-muted); }
+.axf-skinthumb > .axf-skinthumb__inspector, .axf-skinthumb > .axf-skinthumb__status, .axf-skinthumb > .axf-skinthumb__toolbar { opacity: var(--fx-opacity-glass); }
+.axf-skinthumb__main { display: flex; align-items: center; justify-content: center; border: var(--fx-border-w) solid var(--sk-border); }
+.axf-skinthumb__aa {
+  font-size: var(--fx-type-scale-lg); line-height: 1; padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-lg);
+  background: var(--sk-accent); color: var(--sk-accent-text);
+}
+.axf-skins__bar { align-items: flex-end; }
+.axf-skins__search { min-width: min(100%, 220px); flex: 1 1 220px; max-width: 360px; }
+.axf-skineditor { display: grid; gap: var(--fx-dens-gap-2xl); grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); align-items: start; }
+.axf-skineditor__parts { display: grid; gap: var(--fx-dens-gap-lg); grid-template-columns: repeat(auto-fill, minmax(min(100%, 180px), 1fr)); }
+:where([data-fx-narrow]) .axf-skineditor { grid-template-columns: minmax(0, 1fr); }
+
 /* ---------------- account ---------------- */
 
 .fx-rolegrid { display: grid; gap: var(--fx-dens-gap-xl); grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); }

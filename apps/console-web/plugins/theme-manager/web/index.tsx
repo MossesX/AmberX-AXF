@@ -1,8 +1,8 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
-import type { AxfRuntime } from '@console/axf/core';
+import { SKIN_STORE_SERVICE, type AssetEnvelope, type AxfRuntime, type SkinStore } from '@console/axf/core';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { AppearancePanel } from '@console/axf/libs/settings';
-import { FOLDER, ID, call, type SavedTheme } from './api';
+import { FOLDER, ID, call, del, post, type SavedTheme } from './api';
 import { ThemeManager, lastApplied } from './ThemeManager';
 import './theme-manager.css';
 import { appMenu } from './menu';
@@ -33,14 +33,30 @@ async function loadSaved(rt: AxfRuntime) {
   } catch { loaded = false; }
 }
 
+/**
+ * Capability `axf.skin-store@1` (web): saved skins and skin favourites kept in this plugin's data folder, so the asset
+ * store's Skins category, the REST API (/skin-library), MCP, the CLI and voice all see one list. The framework's skin
+ * library (core/skin-library.ts) uses it while this plugin is loaded and falls back to app settings without it.
+ */
+const skinStore: SkinStore = {
+  list: () => call<{ items: AssetEnvelope[] }>('skin-library/saved').then((r) => r.items),
+  save: (asset, overwrite) => post<{ asset: AssetEnvelope }>('skin-library', { asset, overwrite }).then((r) => r.asset),
+  remove: (id) => del(`skin-library/${encodeURIComponent(id)}`).then(() => undefined),
+  favourites: () => call<{ favourites: string[] }>('skin-library').then((r) => r.favourites),
+  setFavourite: (id, on) => post<{ favourites: string[] }>(`skin-library/${encodeURIComponent(id)}/favourite`, { on }).then((r) => r.favourites),
+  setGlobal: (id) => post('skins/global', { skin: id ?? 'off' }).then(() => undefined),
+};
+
 export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'Theme manager',
   version: '0.2.0',
   appMenu,
-  provides: ['axf.theme-manager', TOKEN_TREE],
+  provides: ['axf.theme-manager', TOKEN_TREE, SKIN_STORE_SERVICE],
   register(rt) {
     services()[TOKEN_TREE] = { version: 1, buildTree, leaves, getAt, setAt };
+    services()[SKIN_STORE_SERVICE] = skinStore;
+    void rt.skins?.useStore(skinStore);
     void loadSaved(rt);
     rt.actions.register('theme-manager.open', () => rt.navigate('theme-manager'), { label: 'Open the theme manager' });
   },

@@ -275,3 +275,153 @@ def skin_restore(app: str) -> Any:
 def skin_undo(app: str) -> Any:
     """Undo the last restore of an app."""
     return _skins("undo", app)
+
+
+# ---- skin library: the asset store's Skins category (framework core/skin-library.ts, web service axf.skin-store@1) ----
+# Saved skins are skin@1 assets in themes/skin/ (the same folder the theme list uses); favourites are a list of ids.
+
+def _favs_path() -> Path:
+    return data_dir() / "skin-favourites.json"
+
+
+def _favourites() -> list[str]:
+    try:
+        v = json.loads(_favs_path().read_text("utf-8"))
+        return [str(x) for x in v if isinstance(x, str) and ID_RE.match(x)] if isinstance(v, list) else []
+    except (OSError, ValueError):
+        return []
+
+
+def _saved_skins() -> list[dict[str, Any]]:
+    return [a for a in themes() if a.get("type") == "skin"]
+
+
+def _skin_or_404(iid: str) -> dict[str, Any]:
+    for a in _saved_skins():
+        if a.get("id") == iid:
+            return a
+    raise HTTPException(404, f"no saved skin {iid!r}")
+
+
+def _free_id(base: str, taken: set[str]) -> str:
+    b = re.sub(r"[^a-z0-9]+", "-", base.lower()).strip("-")[:48] or "skin"
+    if b not in taken:
+        return b
+    n = 2
+    while f"{b}-{n}" in taken:
+        n += 1
+    return f"{b}-{n}"
+
+
+def _all_skin_ids() -> set[str]:
+    return {str(s.get("id")) for s in _skins("list")} | {str(a.get("id")) for a in _saved_skins()} | builtin_ids("skin")
+
+
+@router.get("/skin-library")
+def skin_library(q: str | None = None, show: str | None = None) -> dict[str, Any]:
+    """Every skin in the asset store (built-in skins, design packages, saved skins) with favourite and saved flags: 'list my skins', 'show my favourite skins'. show = all | favourites | custom | skins | packages."""
+    favs = set(_favourites())
+    saved = {a["id"]: a for a in _saved_skins()}
+    rows = [{**s, "custom": False} for s in _skins("list") if s.get("id") not in saved]
+    rows += [{"id": a["id"], "name": a.get("name", a["id"]), "kind": "skin", "description": a.get("description", ""), "custom": True, "tags": a.get("tags", [])} for a in saved.values()]
+    for r in rows:
+        r["favourite"] = r["id"] in favs
+    words = (q or "").lower().split()
+    mode = show or "all"
+    out = []
+    for r in rows:
+        if mode == "favourites" and not r["favourite"] or mode == "custom" and not r["custom"]:
+            continue
+        if mode == "skins" and r.get("kind") != "skin" or mode == "packages" and r.get("kind") != "design-package":
+            continue
+        hay = f"{r['id']} {r.get('name', '')} {r.get('description', '')} {' '.join(r.get('tags', []) or [])}".lower()
+        if all(w in hay for w in words):
+            out.append(r)
+    return {"items": out, "favourites": sorted(favs), "global": _skins("global").get("global")}
+
+
+@router.get("/skin-library/saved")
+def skin_library_saved() -> dict[str, Any]:
+    """The saved skins as skin@1 assets (what the app registers)."""
+    return {"items": _saved_skins()}
+
+
+@router.get("/skin-library/{iid}/export")
+def skin_export(iid: str) -> Any:
+    """One saved skin as skin@1 JSON: 'export my skin'. Built-in skins export from framework/assets/skin."""
+    if iid in builtin_ids("skin"):
+        p = cx.ROOT / "framework" / "assets" / "skin" / f"{iid}.json"
+        if p.is_file():
+            return json.loads(p.read_text("utf-8"))
+    return _skin_or_404(iid)
+
+
+@router.post("/skin-library")
+def skin_save(body: dict[str, Any] = Body(...)) -> Any:
+    """Save a skin made in the skin editor, body {asset, overwrite?}: a new id must be free; overwrite replaces a saved skin, never a built-in one."""
+    a = clean(body.get("asset"))
+    if a["type"] != "skin":
+        raise HTTPException(400, "not a skin")
+    overwrite = bool(body.get("overwrite"))
+    with _lock:
+        p = _path("skin", a["id"])
+        if p.exists() and not overwrite:
+            raise HTTPException(409, f"{a['id']} is taken; overwrite it or save under another name")
+        if not p.exists() and a["id"] in {str(s.get("id")) for s in _skins("list")}:
+            raise HTTPException(409, f"{a['id']} is a built-in skin or design package; save under another name")
+        if not p.exists() and len(themes()) >= MAX_THEMES:
+            raise HTTPException(409, f"at most {MAX_THEMES} saved themes and skins; delete some first")
+        _write(p, a)
+    return {"asset": a}
+
+
+@router.post("/skin-library/import")
+def skin_import(body: dict[str, Any] = Body(...)) -> Any:
+    """Import skin@1 JSON, body {asset} or {assets: [...]}: taken ids get a free one. 'import this skin'."""
+    items = body.get("assets") if isinstance(body.get("assets"), list) else [body.get("asset")]
+    done, errors = [], []
+    for raw in items:
+        try:
+            if isinstance(raw, dict) and raw.get("id") in _all_skin_ids():
+                raw = {**raw, "id": _free_id(str(raw["id"]), _all_skin_ids())}
+            done.append(skin_save({"asset": raw})["asset"]["id"])
+        except HTTPException as e:
+            errors.append(str(e.detail))
+    return {"imported": done, "errors": errors}
+
+
+@router.post("/skin-library/{iid}/duplicate")
+def skin_duplicate(iid: str, body: dict[str, Any] | None = Body(None)) -> Any:
+    """Duplicate any skin (built-in, design package or saved) under a free id, body {name?}: 'duplicate the Windows skin'."""
+    name = str((body or {}).get("name") or "").strip()
+    try:
+        src = _skin_or_404(iid)
+    except HTTPException:
+        src = skin_export(iid) if iid in builtin_ids("skin") else None
+    if not src:
+        raise HTTPException(404, f"{iid} is a design package or unknown: duplicate it in the asset store (it is converted to a skin there)")
+    new_id = _free_id(name or f"{iid}-copy", _all_skin_ids())
+    copy = {**src, "id": new_id, "name": name or f"{src.get('name', iid)} copy", "tags": sorted({*(src.get("tags") or []), "custom"})}
+    return skin_save({"asset": copy})
+
+
+@router.delete("/skin-library/{iid}")
+def skin_delete(iid: str) -> Any:
+    """Delete a saved skin: 'delete my skin'. Built-in skins and design packages cannot be deleted."""
+    _skin_or_404(iid)
+    _path("skin", iid).unlink()
+    favs = [f for f in _favourites() if f != iid]
+    _write(_favs_path(), favs)
+    return {"ok": True, "favourites": favs}
+
+
+@router.post("/skin-library/{iid}/favourite")
+def skin_favourite(iid: str, body: dict[str, Any] | None = Body(None)) -> Any:
+    """Favourite a skin or not, body {on} (default true): 'favourite the Windows skin'."""
+    if not ID_RE.match(iid):
+        raise HTTPException(404, "no such skin")
+    on = bool((body or {}).get("on", True))
+    with _lock:
+        favs = [f for f in _favourites() if f != iid] + ([iid] if on else [])
+        _write(_favs_path(), favs)
+    return {"favourites": favs}

@@ -55,6 +55,14 @@ export class AssetRegistry {
     return ASSET_TYPES.flatMap((t) => [...this.store.get(t)!.values()]);
   }
 
+  /** Drop an asset the app or a user added (an edited draft, a deleted saved skin). Built-in assets are never removed. */
+  remove(type: AssetType, id: string): boolean {
+    const m = this.store.get(type);
+    const a = m?.get(id);
+    if (!m || !a || a.__source === 'builtin') return false;
+    return m.delete(id);
+  }
+
   sourceOf(type: AssetType, id: string): AssetSource | undefined {
     return this.store.get(type)?.get(id)?.__source;
   }

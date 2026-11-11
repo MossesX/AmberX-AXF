@@ -85,6 +85,33 @@ check(p == {"menus only": ["nav-menu:indicator"]}, "preset saved (non-strings dr
 check(c.get("/p/presets").json()["presets"] == p, "presets persist")
 check(c.put("/p/presets", json={str(i): [] for i in range(60)}).status_code == 400, "preset count capped")
 
+# skin library: the asset store's Skins category (save / overwrite / duplicate / import / favourite / delete)
+check(paths.index("/skin-library/saved") < paths.index("/skin-library/{iid}/export"), "the fixed skin-library paths come first")
+win = json.loads((REPO / "framework" / "assets" / "skin" / "windows.json").read_text("utf-8"))
+lib = c.get("/p/skin-library").json()
+check(any(r["id"] == "windows" and not r["custom"] for r in lib["items"]), "the built-in skins are listed")
+check(c.post("/p/skin-library", json={"asset": win}).status_code == 409, "a built-in skin id is refused")
+mine_skin = {**win, "id": "my-skin", "name": "My skin"}
+check(c.post("/p/skin-library", json={"asset": mine_skin}).status_code == 200, "save a skin")
+check(c.post("/p/skin-library", json={"asset": mine_skin}).status_code == 409, "save as new never takes a used id")
+check(c.post("/p/skin-library", json={"asset": {**mine_skin, "name": "Mine"}, "overwrite": True}).json()["asset"]["name"] == "Mine", "overwrite a saved skin")
+check(c.post("/p/skin-library", json={"asset": {**mine, "id": "x"}}).status_code == 400, "only skins")
+d = c.post("/p/skin-library/windows/duplicate", json={}).json()["asset"]
+check(d["id"] == "windows-copy" and "custom" in d["tags"], "duplicate a built-in skin under a free id")
+check(c.post("/p/skin-library/windows/duplicate", json={}).json()["asset"]["id"] == "windows-copy-2", "the next copy gets the next id")
+imp = c.post("/p/skin-library/import", json={"asset": mine_skin}).json()
+check(imp["imported"] == ["my-skin-2"] and imp["errors"] == [], "import gives a taken id a free one")
+check(c.get("/p/skin-library/my-skin/export").json()["name"] == "Mine", "export a saved skin")
+check(c.get("/p/skin-library/windows/export").json()["id"] == "windows", "export a built-in skin")
+check(c.post("/p/skin-library/my-skin/favourite", json={"on": True}).json()["favourites"] == ["my-skin"], "favourite")
+check([r["id"] for r in c.get("/p/skin-library?show=favourites").json()["items"]] == ["my-skin"], "favourites filter")
+check({r["id"] for r in c.get("/p/skin-library?show=custom").json()["items"]} == {"my-skin", "my-skin-2", "windows-copy", "windows-copy-2"}, "mine filter")
+check([r["id"] for r in c.get("/p/skin-library?q=mine").json()["items"]] == ["my-skin"], "search")
+r = c.delete("/p/skin-library/my-skin").json()
+check(r["ok"] and r["favourites"] == [], "delete drops it from favourites too")
+check(c.delete("/p/skin-library/windows").status_code == 404, "a built-in skin is never deleted")
+check(len(c.get("/p/skin-library/saved").json()["items"]) == 3, "saved skins listed as assets")
+
 npx = shutil.which("npx")
 if not npx:
     print("  - roll engine checks skipped (no node/npx)")

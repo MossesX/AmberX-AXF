@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
-import { ASSET_TYPES, assetTypeSpecs, type AssetType } from '../../core';
+import { useEffect, useState, useSyncExternalStore } from 'react';
+import { ASSET_STORE_TAB_KEY, ASSET_TYPES, assetTypeSpecs, type AssetType } from '../../core';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { Button, Chip } from '../components/Controls';
 import { Icon } from '../components/Icon';
 import { TabGroup } from '../components/TabGroup';
 import { AssetPreview } from './AssetPreview';
+import { SkinBrowser } from './SkinBrowser';
 
 const GROUPS = [...new Set(ASSET_TYPES.map((t) => assetTypeSpecs[t].group))];
 
@@ -13,7 +14,11 @@ export function AssetStudio() {
   const rt = useRuntime();
   const state = useAxfState();
   const [auto, setAuto] = useState(false);
-  const [filter, setFilter] = useState<string>('all');
+  // Skins are a category of their own (core/skin-library.ts); `skins.browse` opens this view on it
+  useSyncExternalStore(rt.settings.subscribe, rt.settings.getRevision);
+  const saved = rt.settings.get(ASSET_STORE_TAB_KEY);
+  const filter = typeof saved === 'string' && (saved === 'skins' || saved === 'all' || GROUPS.includes(saved)) ? saved : 'all';
+  const setFilter = (v: string) => rt.settings.set(ASSET_STORE_TAB_KEY, v);
 
   // Stress test: keep hot-swapping random slots.
   useEffect(() => {
@@ -26,7 +31,7 @@ export function AssetStudio() {
     return () => clearInterval(id);
   }, [auto, rt]);
 
-  const types = ASSET_TYPES.filter((t) => filter === 'all' || assetTypeSpecs[t].group === filter);
+  const types = filter === 'skins' ? [] : ASSET_TYPES.filter((t) => filter === 'all' || assetTypeSpecs[t].group === filter);
 
   return (
     <div className="fx-stack fx-stack--lg">
@@ -49,9 +54,9 @@ export function AssetStudio() {
         </div>
       </header>
 
-      <TabGroup id="asset-studio.groups" label="Asset groups" value={filter} onChange={setFilter} tabs={['all', ...GROUPS].map((g) => ({ value: g, label: g === 'all' ? 'All slots' : g }))} />
+      <TabGroup id="asset-studio.groups" label="Asset groups" value={filter} onChange={setFilter} tabs={['skins', 'all', ...GROUPS].map((g) => ({ value: g, label: g === 'all' ? 'All slots' : g === 'skins' ? 'Skins' : g }))} />
 
-      {types.map((t) => (
+      {filter === 'skins' ? <SkinBrowser /> : types.map((t) => (
         <Slot key={t} type={t} activeId={state.active[t] ?? ''} />
       ))}
     </div>
