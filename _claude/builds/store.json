@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3131,
- "updatedAt": "2026-11-11T01:49:07.054Z",
+ "rev": 3132,
+ "updatedAt": "2026-11-11T01:49:24.883Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -158112,7 +158112,7 @@
    "pr": "#493",
    "priority": "P0",
    "createdAt": "2026-11-11T01:11:27.164Z",
-   "updatedAt": "2026-11-11T01:49:05.611Z",
+   "updatedAt": "2026-11-11T01:49:23.538Z",
    "builtAt": "2026-11-11T01:49:05.611Z",
    "notes": [
     {
@@ -158130,6 +158130,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skins-in-the-asset-store-skin-browser-skin-edito--paulie, own login copy)",
      "at": "2026-11-11T01:12:30.425Z"
+    },
+    {
+     "text": "Headless run axf-skins-in-the-asset-store-skin-browser-skin-edito--paulie: brief only · start 11.1K tokens ($0.03) · cost $15.67 · 167 turns · 6 tools, MCP none",
+     "at": "2026-11-11T01:49:23.538Z"
     }
    ],
    "approvals": [],
@@ -158259,7 +158263,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
