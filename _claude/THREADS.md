@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 21:02 UTC · `remove-the-old-theme-manager-style-and-layout-se` s3 done (all) · orchestrator
 - 2026-11-10 21:02 UTC · `api-accounts-need-no-approval-builds-route-there` added (0 steps) (all) · console
 - 2026-11-10 21:02 UTC · `api-accounts-need-no-approval-builds-route-there` → queued, note (all) · console
 - 2026-11-10 21:02 UTC · `remove-the-old-theme-manager-style-and-layout-se` PR #472 (all) · builds-live
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-11 23:40 UTC · `console-commands-reliable` branch claude/console-commands-reliable, PR #496 (all) · builds-live
 - 2026-11-11 23:40 UTC · `full-api-cli-control-of-everything-plus-an-offli` s8 done (all) · orchestrator
 - 2026-11-11 23:40 UTC · `console-commands-reliable` note (all) · reconciler
+- 2026-11-11 23:43 UTC · `full-api-cli-control-of-everything-plus-an-offli` s9 done (all) · orchestrator
 
 ## Token passes (log)
 
