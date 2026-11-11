@@ -149,6 +149,11 @@ the orchestrator's dispatcher send a build to an API-key account) and `pipeline.
 routing and the one-build dispatch token (`framework/cli/dispatch-gate.mjs`) run only on the VPS host. No Kotlin twin:
 Android work is on hold and builds show only in the web console. A port needs `ROUTES` and the same normalisation.
 
+Nov 10 2026 (build `orchestrator-hold-status-archive-tab-deleted-tab`): `pipeline.heldAt / heldBy / heldWhy` (On hold:
+stays in the Queue, the dispatcher skips it), the `archive` and `deleted` tabs in `TABS` / `tabOf()` (complete and
+archived builds → archive; soft-deleted → deleted), and the action rules `isHeld`, `canHold`, `isLive`, `canArchive`,
+`canDelete`, `unarchivedStatus`, `actionsFor`, `BUILD_ACTIONS`. Same deferral: no Kotlin twin while Android is on hold.
+
 ## Deferred: person-only actions, console refresh, UI choices (Nov 7 2026)
 
 Web only (Android on hold), Kotlin twins when the Android side resumes:

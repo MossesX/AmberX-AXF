@@ -43,3 +43,6 @@ button.oc-model { cursor: pointer }
 /* Queue / Pending cards list their steps (Nov 10 2026): layout only */
 .pl-steps { margin: 0; padding-left: var(--fx-dens-gap-xl); display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
 .pl-steps > li { overflow-wrap: anywhere }
+
+/* Bulk select (Nov 10 2026: hold, archive, delete, restore on many builds at once): layout only */
+.pl-bulk { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
