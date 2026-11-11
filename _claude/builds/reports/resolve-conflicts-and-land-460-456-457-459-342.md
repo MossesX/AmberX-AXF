@@ -19,8 +19,7 @@ pushed to the PR branch. Nothing was merged by hand: the merge queue lands them 
 | #459 red-batch send-back | 4 files against resolved #457 | Union: send-back (`fixJob`, bisect tracking, `autoFix` / `fixTries`) + enlist / green-first / `split` / `enlisted`. Added the missing help entry for the **Red run** link (help coverage was 1602/1603 under the 100% ratchet). | merge-queue.test 25, test.py 192, land.test 92, help-coverage ratchet |
 | #342 build optimizer | 8 files (main moved 2,278 commits) | Kept main's tabs, search, priority host, pipeline routes and retired Build manager; added the packager / optimizer actions, dialogs, `builds.toolbar` slot, context menus, Build optimizer settings tab, menu entries. `plugin.json` / `help.json` merged structurally by command / target id (30 commands); version 0.6.0. `builds-store-core`: main's `priority` + `foldRetired`, plus `package` / `optimized` / `packagedInto` and `meta.optimize`. CSS: both blocks. | test.py 54, test.mjs 52, pipeline.test 42, check-builds-store 40, check-builds-live 62, theme, controls, toolbars, chrome-assets, help-coverage |
 
-Console typecheck (`tsc --noEmit`) could not run on the host (no `node_modules` in any checkout); the queue's full CI
-run covers it.
+Console typecheck: the console builds (tsc + vite) in node:22 from current main with the re-bake.
 
 ### Landing
 
@@ -63,6 +62,20 @@ full run decides. #459 and #342 join as their light checks finish. The console r
     the other history files.
   Every plugin's lifecycle check is clean on a fresh checkout; every plugin `test.mts` passes on Node 22 (docker).
   All of this is on this PR and cherry-picked onto #456.
+- **#456 landed** (Nov 11, 00:00 UTC). Then:
+  - #457 / #459: their new job types (`queue-conflict`, `queue-fix`) shared the `landing` home specialty with
+    `land-build` (check-job-type: one home specialty per starter) and agent-swarm's test counted nine job types. Each
+    now has its own specialty (the job crew, skills `*`, still takes them; the lander's skill page is the fallback),
+    counts updated (10 on #457, 11 on #459).
+  - #342: its optimizer tests used `changes-grid` paths as sample data (plugin-lifecycle stale reference): now
+    `example-grid`.
+  - **Console redeploy was failing** on every update (`/opt/axf/.axf-console/update-status.json` state failed): the
+    image builds `apps/console-web` from the committed `src/axf` copy, which lacked `TAB_LABEL`
+    (`framework/core/build-pipeline.mjs`), so vite failed. CI re-bakes `src/axf` before building; the Dockerfile now
+    does the same. The full image was built from current main to check it. The console redeploys by itself once
+    this PR is on main.
+  - All six branches (#457, #459, #460, #342, this PR) merge cleanly onto main and together pass plugin-lifecycle,
+    merge-queue, pipeline, help-coverage, theme and controls checks.
 - Main's light checks are red for every PR (`builds-store verify`: retired `breakroom` folder): fixed by #456, which
   is first in the queue.
 
