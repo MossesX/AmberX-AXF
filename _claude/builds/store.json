@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3093,
- "updatedAt": "2026-11-11T00:16:07.259Z",
+ "rev": 3094,
+ "updatedAt": "2026-11-11T00:16:14.204Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -156853,7 +156853,7 @@
    "title": "AI assistant in Molly + console drives by API (open screens, change settings) + hands-free voice setting",
    "category": "",
    "detail": "Amends the AI assistant build (#482). 1) AI assistant runs in Molly too (same plugin, Molly owns it, no double render). 2) Give it the full console control API as tools: open/jump to any screen, open dialogs, read and change any setting, run console commands, file/queue builds; uses control@1 + the registry. 3) Hands-free: a switch in AI assistant settings, 'Hands-free voice', easy to reach (top of settings plus a mic toggle in the chat header): always-listening wake/talk mode, replies spoken, works with the screen off on the phone. Notify on AmberX at each stage.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -156861,7 +156861,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T23:46:07.460Z",
-   "updatedAt": "2026-11-11T00:16:05.731Z",
+   "updatedAt": "2026-11-11T00:16:10.541Z",
    "builtAt": "",
    "notes": [
     {
@@ -156883,6 +156883,14 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-ai-assistant-in-molly-console-drives-by-api-open--sully, own login copy)",
      "at": "2026-11-10T23:47:46.503Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-ai-assistant-in-molly-console-drives-by-api-open--rhonda.",
+     "at": "2026-11-11T00:16:08.204Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-ai-assistant-in-molly-console-drives-by-api-open--rhonda, own login copy)",
+     "at": "2026-11-11T00:16:10.541Z"
     }
    ],
    "approvals": [],
@@ -156902,12 +156910,12 @@
    "pipeline": {
     "queuedAt": "2026-11-10T23:46:08.866Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-ai-assistant-in-molly-console-drives-by-api-open--rhonda",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "launchedAt": "2026-11-11T00:16:07.794Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-10T23:47:18.616Z",
@@ -156917,9 +156925,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-11T00:16:07.794Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -156928,7 +156936,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": ""
+    "pickedAt": "2026-11-11T00:16:07.794Z"
    },
    "steps": [
     {
@@ -157009,7 +157017,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

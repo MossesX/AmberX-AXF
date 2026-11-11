@@ -773,8 +773,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 20:29 UTC · `inline-element-editing-plugin-right-click-any-el` s5 done (all) · orchestrator
-- 2026-11-10 20:30 UTC · `inline-element-editing-plugin-right-click-any-el` s5 done, → running (all) · foreign-write
 - 2026-11-10 20:30 UTC · `inline-element-editing-plugin-right-click-any-el` → queued, note (all) · pipeline
 - 2026-11-10 20:37 UTC · `molly-flagship-skin-premium-sellable-uncluttered` s4 done (all) · orchestrator
 - 2026-11-10 20:38 UTC · `molly-flagship-skin-premium-sellable-uncluttered` note (all) · orchestrator
@@ -1173,6 +1171,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-11 00:08 UTC · `merge-review-one-by-one-every-built-but-unmerged` branch claude/merge-review-one-by-one-every-built-but-unmerged (all) · pipeline
 - 2026-11-11 00:08 UTC · `merge-review-one-by-one-every-built-but-unmerged` note (all) · orchestrator
 - 2026-11-11 00:15 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
+- 2026-11-11 00:16 UTC · `ai-assistant-in-molly-console-drives-by-api-open` → running, note (all) · pipeline
+- 2026-11-11 00:16 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
 
 ## Token passes (log)
 

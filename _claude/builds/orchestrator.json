@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-11T00:16:07.259Z",
+ "updatedAt": "2026-11-11T00:16:14.204Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -98003,7 +98003,7 @@
    "title": "AI assistant in Molly + console drives by API (open screens, change settings) + hands-free voice setting",
    "category": "",
    "detail": "Amends the AI assistant build (#482). 1) AI assistant runs in Molly too (same plugin, Molly owns it, no double render). 2) Give it the full console control API as tools: open/jump to any screen, open dialogs, read and change any setting, run console commands, file/queue builds; uses control@1 + the registry. 3) Hands-free: a switch in AI assistant settings, 'Hands-free voice', easy to reach (top of settings plus a mic toggle in the chat header): always-listening wake/talk mode, replies spoken, works with the screen off on the phone. Notify on AmberX at each stage.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -98011,7 +98011,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T23:46:07.460Z",
-   "updatedAt": "2026-11-11T00:16:05.731Z",
+   "updatedAt": "2026-11-11T00:16:10.541Z",
    "builtAt": "",
    "notes": [
     {
@@ -98033,6 +98033,14 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-ai-assistant-in-molly-console-drives-by-api-open--sully, own login copy)",
      "at": "2026-11-10T23:47:46.503Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-ai-assistant-in-molly-console-drives-by-api-open--rhonda.",
+     "at": "2026-11-11T00:16:08.204Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-ai-assistant-in-molly-console-drives-by-api-open--rhonda, own login copy)",
+     "at": "2026-11-11T00:16:10.541Z"
     }
    ],
    "approvals": [],
