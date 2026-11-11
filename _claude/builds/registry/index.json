@@ -1,9 +1,9 @@
 {
  "$axf": "control-registry@1",
  "version": 1,
- "generatedAt": "2026-11-11T23:50:56.298Z",
+ "generatedAt": "2026-11-11T23:52:33.138Z",
  "source": {
-  "commit": "ef9ad1cb3921dd4320c8e12d1d4d279001f35c9f",
+  "commit": "2698a7da975c601cb9ba0baf9a65777ff4768319",
   "collectors": [
    "control",
    "plugins",
@@ -13,15 +13,15 @@
    "declared"
   ]
  },
- "hash": "434e78eeb191d2a4",
+ "hash": "a5735319eba470bf",
  "counts": {
-  "entries": 1531,
-  "actions": 1928,
+  "entries": 1534,
+  "actions": 1931,
   "byType": {
-   "app": 6,
+   "app": 7,
    "page": 163,
    "plugin": 82,
-   "tool": 1156,
+   "tool": 1158,
    "setting": 49,
    "behavior": 2,
    "display": 73
@@ -33,32 +33,34 @@
    "coolify": 6,
    "hostinger": 6,
    "molly": 31,
+   "moshi": 3,
    "vps": 7
   },
   "bySource": {
-   "declared": 144,
+   "declared": 147,
    "plugin-manifest": 1356,
    "voice": 8,
    "control": 23
   },
   "needsAI": 0,
   "surfaces": {
-   "rest": 1425,
-   "mcp": 1425,
-   "cli": 1445,
-   "voice": 694,
-   "deepLink": 311
+   "rest": 1428,
+   "mcp": 1428,
+   "cli": 1448,
+   "voice": 697,
+   "deepLink": 312
   },
-  "gaps": 643,
+  "gaps": 648,
   "gapsBy": {
    "deepLink": 27,
-   "rest": 85,
+   "rest": 86,
    "mcp": 85,
    "voice": 316,
    "cli": 65,
-   "state": 10,
-   "actions": 32,
-   "params": 23
+   "state": 11,
+   "actions": 34,
+   "params": 23,
+   "setting": 1
   }
  },
  "owners": [
@@ -98,6 +100,12 @@
    "label": "Molly",
    "kind": "app",
    "via": "console"
+  },
+  {
+   "id": "moshi",
+   "label": "Moshi",
+   "kind": "service",
+   "via": "intent"
   },
   {
    "id": "vps",
@@ -1632,6 +1640,9 @@
 {"id":"molly/tool/xlayout/xlayout.ide","type":"tool","owner":"molly","label":"IDE mode on / off","where":{"app":"molly","plugin":"xlayout","file":"apps/molly/plugins/xlayout/web/index.tsx"},"actions":[{"id":"run","effect":"navigate","run":"channel:molly/xlayout.ide","label":"IDE mode on / off","params":[{"name":"args","type":"string","description":"its arguments (a:b:c), when it takes any","maxLength":500}],"phrases":["open ide mode on off"],"surfaces":{"rest":false,"mcp":false,"cli":false}}],"surfaces":{"rest":false,"mcp":false,"cli":false,"voice":["open ide mode on off"],"deepLink":false},"tags":["action"],"parent":"molly/plugin/xlayout","source":{"kind":"plugin-manifest","file":"apps/molly/plugins/xlayout/web/index.tsx","frame":"actions"},"gaps":[{"what":"rest","why":"runs only inside molly's window: molly has no remote command channel yet","plan":"a molly command client on console-commands@1 (app 'molly')"},{"what":"mcp","why":"runs only inside molly's window: molly has no remote command channel yet","plan":"a molly command client on console-commands@1 (app 'molly')"},{"what":"cli","why":"runs only inside molly's window: molly has no remote command channel yet","plan":"a molly command client on console-commands@1 (app 'molly')"}],"hash":"c45b90b3cd760410"},
 {"id":"molly/tool/xlayout/xlayout.layout","type":"tool","owner":"molly","label":"Pane layout…","where":{"app":"molly","plugin":"xlayout","file":"apps/molly/plugins/xlayout/web/index.tsx"},"actions":[{"id":"run","effect":"navigate","run":"channel:molly/xlayout.layout","label":"Pane layout…","params":[{"name":"args","type":"string","description":"its arguments (a:b:c), when it takes any","maxLength":500}],"phrases":["open pane layout"],"surfaces":{"rest":false,"mcp":false,"cli":false}}],"surfaces":{"rest":false,"mcp":false,"cli":false,"voice":["open pane layout"],"deepLink":false},"tags":["action"],"parent":"molly/plugin/xlayout","source":{"kind":"plugin-manifest","file":"apps/molly/plugins/xlayout/web/index.tsx","frame":"actions"},"gaps":[{"what":"rest","why":"runs only inside molly's window: molly has no remote command channel yet","plan":"a molly command client on console-commands@1 (app 'molly')"},{"what":"mcp","why":"runs only inside molly's window: molly has no remote command channel yet","plan":"a molly command client on console-commands@1 (app 'molly')"},{"what":"cli","why":"runs only inside molly's window: molly has no remote command channel yet","plan":"a molly command client on console-commands@1 (app 'molly')"}],"hash":"2dbe1d9ace43611a"},
 {"id":"molly/tool/xlayout/xlayout.open","type":"tool","owner":"molly","label":"Open an app in the main area, a floating window or a pane","where":{"app":"molly","plugin":"xlayout","file":"apps/molly/plugins/xlayout/web/index.tsx"},"actions":[{"id":"run","effect":"navigate","run":"channel:molly/xlayout.open","label":"Open an app in the main area, a floating window or a pane","params":[{"name":"args","type":"string","description":"its arguments (a:b:c), when it takes any","maxLength":500}],"phrases":["open open an app in the main area a floating window or a pane"],"surfaces":{"rest":false,"mcp":false,"cli":false}}],"surfaces":{"rest":false,"mcp":false,"cli":false,"voice":["open open an app in the main area a floating window or a pane"],"deepLink":false},"tags":["action"],"parent":"molly/plugin/xlayout","source":{"kind":"plugin-manifest","file":"apps/molly/plugins/xlayout/web/index.tsx","frame":"actions"},"gaps":[{"what":"rest","why":"runs only inside molly's window: molly has no remote command channel yet","plan":"a molly command client on console-commands@1 (app 'molly')"},{"what":"mcp","why":"runs only inside molly's window: molly has no remote command channel yet","plan":"a molly command client on console-commands@1 (app 'molly')"},{"what":"cli","why":"runs only inside molly's window: molly has no remote command channel yet","plan":"a molly command client on console-commands@1 (app 'molly')"}],"hash":"c927464d2c0071b8"},
+{"id":"moshi/app/moshi","type":"app","owner":"moshi","label":"Moshi","description":"Moshi, the third-party mosh / SSH terminal on Brett's phone (Android app.getmoshi.android; axHub's handoff copies a ready claude command for it). Controllable only through what Moshi publishes: its launcher and two deep links that resume an already active tmux or Herdr session card. Source: https://getmoshi.app/docs/notifications (Open active sessions with deep links; Moshi 3.9.3+, pane and tab 3.13.0+).","where":{"app":"moshi","file":"docs/integrations/moshi.md"},"open":{"kind":"intent","target":"intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=app.getmoshi.android;end","deepLink":"intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=app.getmoshi.android;end"},"actions":[{"id":"launch","effect":"navigate","run":"intent:intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=app.getmoshi.android;end","label":"Open Moshi","phrases":["open moshi"]}],"surfaces":{"rest":true,"mcp":true,"cli":true,"voice":["open moshi"],"deepLink":"intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=app.getmoshi.android;end"},"synonyms":["moshi","mosh","ssh app","terminal app"],"tags":["app","third-party"],"source":{"kind":"declared","file":"apps/amberx-droid/registry/moshi.json","frame":"control-registry@1"},"gaps":[{"what":"actions","why":"opening a host or a new connection: Moshi publishes no link or intent for it (its deep links never create a connection from a saved one)","plan":"none: Moshi is a third-party app; only what its docs publish is registered (docs/integrations/moshi.md)"},{"what":"actions","why":"running a command, sending keys or typing into a session: not exposed by Moshi","plan":"none: Moshi is a third-party app; only what its docs publish is registered (docs/integrations/moshi.md)"},{"what":"state","why":"what Moshi shows (connections, cards, sessions): Moshi exposes no state read; tmux / Herdr state is read on the host (vps/tool/processes, vps/tool/logs)","plan":"none: Moshi is a third-party app; only what its docs publish is registered (docs/integrations/moshi.md)"},{"what":"setting","why":"Moshi's settings (keys, hooks, notifications, look): changed only inside Moshi","plan":"none: Moshi is a third-party app; only what its docs publish is registered (docs/integrations/moshi.md)"},{"what":"rest","why":"Moshi runs on the phone with no API: REST and MCP answer the link to open (a handoff), they cannot press anything in Moshi","plan":"none: Moshi is a third-party app; only what its docs publish is registered (docs/integrations/moshi.md)"}],"hash":"5eaa6de6836b90e1"},
+{"id":"moshi/tool/herdr","type":"tool","owner":"moshi","label":"Moshi Herdr session","description":"Resume an active Herdr session card in Moshi (moshi://herdr), optionally on a workspace, tab and pane. It never opens a new session or connection.","where":{"app":"moshi","file":"docs/integrations/moshi.md"},"actions":[{"id":"resume","effect":"navigate","run":"url:moshi://herdr?session={session}&workspace={workspace}&tab={tab}&pane={pane}","label":"Resume a Herdr session in Moshi","params":[{"name":"session","type":"string","description":"the Herdr server session (herdr session list)","pattern":"^[A-Za-z0-9._-]{1,100}$","default":"default"},{"name":"workspace","type":"string","description":"the stable workspace id","pattern":"^[^\\s]{1,200}$"},{"name":"tab","type":"string","description":"Herdr tab id (e.g. w1:t1); Moshi 3.13.0+","pattern":"^[A-Za-z0-9:._-]{1,64}$"},{"name":"pane","type":"string","description":"Herdr pane id (e.g. w1:p2); Moshi 3.13.0+","pattern":"^[A-Za-z0-9:._-]{1,64}$"}],"phrases":["open herdr in moshi"]}],"surfaces":{"rest":true,"mcp":true,"cli":true,"voice":["open herdr in moshi"],"deepLink":false},"synonyms":["herdr"],"tags":["tool","deep-link"],"parent":"moshi/app/moshi","source":{"kind":"declared","file":"apps/amberx-droid/registry/moshi.json","frame":"control-registry@1"},"hash":"fdee4c0c7b4a7425"},
+{"id":"moshi/tool/tmux","type":"tool","owner":"moshi","label":"Moshi tmux session","description":"Resume an active or minimized tmux session card in Moshi (moshi://tmux). It never opens a new connection: no matching card = Moshi shows an error.","where":{"app":"moshi","file":"docs/integrations/moshi.md"},"actions":[{"id":"resume","effect":"navigate","run":"url:moshi://tmux?session={session}&window={window}&pane={pane}","label":"Resume a tmux session in Moshi","params":[{"name":"session","type":"string","description":"the tmux session name","pattern":"^[^\\n]{1,200}$","required":true,"position":0},{"name":"window","type":"integer","description":"window index 0-9 (sends the tmux prefix and the digit)","min":0,"max":9},{"name":"pane","type":"string","description":"stable pane id (#{pane_id}, e.g. %5 or 5); Moshi 3.13.0+","pattern":"^%?[0-9]{1,6}$"}],"phrases":["open the {session} session in moshi","resume {session} in moshi"]}],"surfaces":{"rest":true,"mcp":true,"cli":true,"voice":["open the {session} session in moshi","resume {session} in moshi"],"deepLink":false},"synonyms":["tmux"],"tags":["tool","deep-link"],"parent":"moshi/app/moshi","source":{"kind":"declared","file":"apps/amberx-droid/registry/moshi.json","frame":"control-registry@1"},"hash":"ea4296a185bafe29"},
 {"id":"vps/app/vps","type":"app","owner":"vps","label":"VPS","description":"The one server everything runs on (Hostinger VPS, Coolify, Traefik, the console), through axHub's VPS connector. Every action here is an allow-listed command (the entries are the allow-list): the registry validates each value and shell-quotes it into a fixed template, and axHub's vps.run asks Brett before anything runs. Destructive ones (stop, restart, kill, reboot, prune) also need the registry's confirm token. Power and backups at Hostinger level: hostinger/tool/vps.","where":{"app":"axhub-web"},"state":{"read":"provider:vps/state","shape":"vps.state: the hub's view of the server"},"actions":[{"id":"state","effect":"read","run":"provider:vps/state","label":"Server state (axHub)"},{"id":"check","effect":"read","run":"provider:vps/check","label":"Check the server (axHub)","phrases":["check the server","check the vps"]}],"surfaces":{"rest":true,"mcp":true,"cli":true,"voice":["check the server","check the vps"],"deepLink":false},"synonyms":["server","box","vps"],"tags":["provider","vps"],"source":{"kind":"declared","file":"apps/axhub-web/providers/vps/registry.json","frame":"control-registry@1"},"gaps":[{"what":"deepLink","why":"nothing to open: it has no view, dialog or settings tab"}],"hash":"7cde64c42a15b261"},
 {"id":"vps/tool/docker","type":"tool","owner":"vps","label":"VPS containers","description":"Docker containers on the box (Coolify's apps among them): list, stats, restart one.","where":{"app":"axhub-web","file":"apps/axhub-web/providers/vps/registry.json"},"state":{"read":"provider:vps/run#docker ps --format '{{.Names}}\\t{{.Status}}\\t{{.Image}}'"},"actions":[{"id":"ps","effect":"read","run":"provider:vps/run#docker ps --format '{{.Names}}\\t{{.Status}}\\t{{.Image}}'","label":"List containers","phrases":["list containers"]},{"id":"stats","effect":"read","run":"provider:vps/run#docker stats --no-stream --format '{{.Name}}\\t{{.CPUPerc}}\\t{{.MemUsage}}'","label":"Container CPU and memory"},{"id":"restart","effect":"destructive","run":"provider:vps/run#docker restart {container}","label":"Restart a container","params":[{"name":"container","type":"string","description":"a container name or id (docker ps shows them)","pattern":"^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$","required":true,"position":0}],"confirm":true}],"surfaces":{"rest":true,"mcp":true,"cli":true,"voice":["list containers"],"deepLink":false},"synonyms":["docker","containers"],"tags":["provider","vps"],"parent":"vps/app/vps","source":{"kind":"declared","file":"apps/axhub-web/providers/vps/registry.json","frame":"control-registry@1"},"hash":"ef9df4a7045156a7"},
 {"id":"vps/tool/health","type":"tool","owner":"vps","label":"VPS health","description":"Load, memory, disk and uptime.","where":{"app":"axhub-web","file":"apps/axhub-web/providers/vps/registry.json"},"state":{"read":"provider:vps/run#uptime && free -m && df -h -x tmpfs -x overlay"},"actions":[{"id":"summary","effect":"read","run":"provider:vps/run#uptime && free -m && df -h -x tmpfs -x overlay","label":"Load, memory and disk","phrases":["how is the server","server health"]},{"id":"disk","effect":"read","run":"provider:vps/run#df -h -x tmpfs -x overlay","label":"Disk usage","phrases":["disk space","how much disk is left"]},{"id":"memory","effect":"read","run":"provider:vps/run#free -m","label":"Memory","phrases":["memory usage"]},{"id":"du","effect":"read","run":"provider:vps/run#du -sh {path}","label":"Size of a folder","params":[{"name":"path","type":"path","pattern":"^/(?!.*\\.\\.)[A-Za-z0-9._/-]{0,200}$","required":true,"position":0}]}],"surfaces":{"rest":true,"mcp":true,"cli":true,"voice":["how is the server","server health","disk space","how much disk is left","memory usage"],"deepLink":false},"synonyms":["health","disk","memory","load"],"tags":["provider","vps"],"parent":"vps/app/vps","source":{"kind":"declared","file":"apps/axhub-web/providers/vps/registry.json","frame":"control-registry@1"},"hash":"454c46cb61554eea"},

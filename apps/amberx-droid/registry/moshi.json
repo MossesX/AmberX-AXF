@@ -1,0 +1,184 @@
+{
+ "$axf": "control-registry@1",
+ "note": "Moshi (third-party SSH / mosh app) in the control registry (build full-api-cli-control-of-everything-plus-an-offli, s14): only what Moshi publishes is registered: its launcher intent and the moshi://tmux and moshi://herdr deep links that resume an active session card (https://getmoshi.app/docs/notifications (Open active sessions with deep links; Moshi 3.9.3+, pane and tab 3.13.0+)). Everything else is a gap with the reason. Merged by id.",
+ "entries": [
+  {
+   "id": "moshi/app/moshi",
+   "type": "app",
+   "owner": "moshi",
+   "label": "Moshi",
+   "description": "Moshi, the third-party mosh / SSH terminal on Brett's phone (Android app.getmoshi.android; axHub's handoff copies a ready claude command for it). Controllable only through what Moshi publishes: its launcher and two deep links that resume an already active tmux or Herdr session card. Source: https://getmoshi.app/docs/notifications (Open active sessions with deep links; Moshi 3.9.3+, pane and tab 3.13.0+).",
+   "where": {
+    "app": "moshi",
+    "package": "app.getmoshi.android",
+    "file": "docs/integrations/moshi.md"
+   },
+   "open": {
+    "kind": "intent",
+    "target": "intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=app.getmoshi.android;end",
+    "deepLink": "intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=app.getmoshi.android;end"
+   },
+   "actions": [
+    {
+     "id": "launch",
+     "label": "Open Moshi",
+     "effect": "navigate",
+     "run": "intent:intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=app.getmoshi.android;end",
+     "phrases": [
+      "open moshi"
+     ]
+    }
+   ],
+   "synonyms": [
+    "moshi",
+    "mosh",
+    "ssh app",
+    "terminal app"
+   ],
+   "tags": [
+    "app",
+    "third-party"
+   ],
+   "gaps": [
+    {
+     "what": "actions",
+     "why": "opening a host or a new connection: Moshi publishes no link or intent for it (its deep links never create a connection from a saved one)",
+     "plan": "none: Moshi is a third-party app; only what its docs publish is registered (docs/integrations/moshi.md)"
+    },
+    {
+     "what": "actions",
+     "why": "running a command, sending keys or typing into a session: not exposed by Moshi",
+     "plan": "none: Moshi is a third-party app; only what its docs publish is registered (docs/integrations/moshi.md)"
+    },
+    {
+     "what": "state",
+     "why": "what Moshi shows (connections, cards, sessions): Moshi exposes no state read; tmux / Herdr state is read on the host (vps/tool/processes, vps/tool/logs)",
+     "plan": "none: Moshi is a third-party app; only what its docs publish is registered (docs/integrations/moshi.md)"
+    },
+    {
+     "what": "setting",
+     "why": "Moshi's settings (keys, hooks, notifications, look): changed only inside Moshi",
+     "plan": "none: Moshi is a third-party app; only what its docs publish is registered (docs/integrations/moshi.md)"
+    },
+    {
+     "what": "rest",
+     "why": "Moshi runs on the phone with no API: REST and MCP answer the link to open (a handoff), they cannot press anything in Moshi",
+     "plan": "none: Moshi is a third-party app; only what its docs publish is registered (docs/integrations/moshi.md)"
+    }
+   ]
+  },
+  {
+   "id": "moshi/tool/tmux",
+   "type": "tool",
+   "owner": "moshi",
+   "label": "Moshi tmux session",
+   "description": "Resume an active or minimized tmux session card in Moshi (moshi://tmux). It never opens a new connection: no matching card = Moshi shows an error.",
+   "where": {
+    "app": "moshi",
+    "package": "app.getmoshi.android",
+    "file": "docs/integrations/moshi.md"
+   },
+   "actions": [
+    {
+     "id": "resume",
+     "label": "Resume a tmux session in Moshi",
+     "effect": "navigate",
+     "run": "url:moshi://tmux?session={session}&window={window}&pane={pane}",
+     "params": [
+      {
+       "name": "session",
+       "type": "string",
+       "pattern": "^[^\\n]{1,200}$",
+       "required": true,
+       "position": 0,
+       "description": "the tmux session name"
+      },
+      {
+       "name": "window",
+       "type": "integer",
+       "min": 0,
+       "max": 9,
+       "description": "window index 0-9 (sends the tmux prefix and the digit)"
+      },
+      {
+       "name": "pane",
+       "type": "string",
+       "pattern": "^%?[0-9]{1,6}$",
+       "description": "stable pane id (#{pane_id}, e.g. %5 or 5); Moshi 3.13.0+"
+      }
+     ],
+     "phrases": [
+      "open the {session} session in moshi",
+      "resume {session} in moshi"
+     ]
+    }
+   ],
+   "parent": "moshi/app/moshi",
+   "synonyms": [
+    "tmux"
+   ],
+   "tags": [
+    "tool",
+    "deep-link"
+   ]
+  },
+  {
+   "id": "moshi/tool/herdr",
+   "type": "tool",
+   "owner": "moshi",
+   "label": "Moshi Herdr session",
+   "description": "Resume an active Herdr session card in Moshi (moshi://herdr), optionally on a workspace, tab and pane. It never opens a new session or connection.",
+   "where": {
+    "app": "moshi",
+    "package": "app.getmoshi.android",
+    "file": "docs/integrations/moshi.md"
+   },
+   "actions": [
+    {
+     "id": "resume",
+     "label": "Resume a Herdr session in Moshi",
+     "effect": "navigate",
+     "run": "url:moshi://herdr?session={session}&workspace={workspace}&tab={tab}&pane={pane}",
+     "params": [
+      {
+       "name": "session",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9._-]{1,100}$",
+       "default": "default",
+       "description": "the Herdr server session (herdr session list)"
+      },
+      {
+       "name": "workspace",
+       "type": "string",
+       "pattern": "^[^\\s]{1,200}$",
+       "description": "the stable workspace id"
+      },
+      {
+       "name": "tab",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9:._-]{1,64}$",
+       "description": "Herdr tab id (e.g. w1:t1); Moshi 3.13.0+"
+      },
+      {
+       "name": "pane",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9:._-]{1,64}$",
+       "description": "Herdr pane id (e.g. w1:p2); Moshi 3.13.0+"
+      }
+     ],
+     "phrases": [
+      "open herdr in moshi"
+     ]
+    }
+   ],
+   "parent": "moshi/app/moshi",
+   "synonyms": [
+    "herdr"
+   ],
+   "tags": [
+    "tool",
+    "deep-link"
+   ]
+  }
+ ]
+}

@@ -116,8 +116,14 @@ export const shellFill = (template, params = {}) => String(template).replace(/\{
 
 /** `{name}` slots in a template filled from params (URL-encoded). */
 export function fill(template, params = {}) {
-  const out = String(template).replace(/\{([A-Za-z0-9_]+)\}/g, (m, k) => (params[k] === undefined || params[k] === '' ? '' : String(params[k]).split('/').map(encodeURIComponent).join('/')));
-  return out.replace(/([^:/])\/{2,}/g, '$1/').replace(/\/+$/, '') || out;
+  const t = String(template);
+  const q = t.indexOf('?');
+  const slot = (inQuery) => (m, k) => (params[k] === undefined || params[k] === '' ? '' : inQuery ? encodeURIComponent(String(params[k])) : String(params[k]).split('/').map(encodeURIComponent).join('/'));
+  const path = (q < 0 ? t : t.slice(0, q)).replace(/\{([A-Za-z0-9_]+)\}/g, slot(false));
+  // query values are encoded whole; a parameter left empty drops out with its name
+  const query = q < 0 ? '' : t.slice(q + 1).replace(/\{([A-Za-z0-9_]+)\}/g, slot(true)).split('&').filter((kv) => kv && !/^[^=]+=$/.test(kv)).join('&');
+  const p = path.replace(/([^:/])\/{2,}/g, '$1/').replace(/\/+$/, '') || path;
+  return query ? `${p}?${query}` : p;
 }
 
 /** The plan for a resolution from dispatch(). A failed resolution plans nothing. */
