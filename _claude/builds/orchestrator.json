@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-11T23:05:59.422Z",
+ "updatedAt": "2026-11-11T23:24:08.311Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -88530,7 +88530,7 @@
    "title": "Full API + CLI control of everything, plus an offline index/registry; AI only as fallback",
    "category": "",
    "detail": "1) Extensive API and CLI control over every page, app, plugin, tool, behavior, display and setting, covering every option and every possible parameter value. Scope: console, Molly, axHub, AmberX app, and through axHub: Hostinger, Coolify, VPS. Moshi is a third-party phone SSH app: cover it only as far as it can be driven (deep links/intents), otherwise record the gap. 2) A complete index and registry of everything controllable (ids, types, actions, parameters, allowed values, where it lives) for offline management and internal logic. 3) Rule: anything that can be done without AI is done without AI. AI is only a fallback, and only when 'Make Claude available to the console' is on in Claude settings. Builds on universal-voice-api-control and the ui-api-parity builds; reuse them, don't duplicate.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -88538,7 +88538,7 @@
    "pr": "#468",
    "priority": "P1",
    "createdAt": "2026-11-10T16:28:24.043Z",
-   "updatedAt": "2026-11-10T20:20:40.080Z",
+   "updatedAt": "2026-11-11T23:24:07.312Z",
    "builtAt": "",
    "notes": [
     {
@@ -88572,6 +88572,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-10T20:20:40.080Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-11T23:24:07.312Z"
     }
    ],
    "approvals": [],
