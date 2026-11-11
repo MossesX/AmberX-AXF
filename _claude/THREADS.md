@@ -773,7 +773,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 20:13 UTC · `inline-edit-plugin-install-in-console-molly-and` s2 done (all) · orchestrator
 - 2026-11-10 20:13 UTC · `inline-edit-plugin-install-in-console-molly-and` note (all) · orchestrator
 - 2026-11-10 20:14 UTC · `remove-the-old-theme-manager-style-and-layout-se` → running, note (all) · pipeline
 - 2026-11-10 20:14 UTC · `remove-the-old-theme-manager-style-and-layout-se` branch claude/remove-the-old-theme-manager-style-and-layout-se (all) · pipeline
@@ -1173,6 +1172,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-10 23:58 UTC · `convert-every-app-into-a-molly-module-expenses-c` PR #486 (all) · builds-live
 - 2026-11-10 23:59 UTC · `convert-every-app-into-a-molly-module-expenses-c` s3 done, → built (all) · orchestrator
 - 2026-11-10 23:59 UTC · `convert-every-app-into-a-molly-module-expenses-c` note (all) · orchestrator
+- 2026-11-11 00:02 UTC · `per-agent-api-control-switch-in-each-employee-s` PR #487 (all) · builds-live
 
 ## Token passes (log)
 
