@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-11T00:07:56.519Z",
+ "updatedAt": "2026-11-11T00:08:06.600Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -98233,12 +98233,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-11T00:06:50.193Z",
-   "updatedAt": "2026-11-11T00:06:51.567Z",
+   "updatedAt": "2026-11-11T00:07:57.417Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-11T00:06:51.567Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-11T00:07:57.417Z"
     }
    ],
    "approvals": [],
@@ -98255,7 +98259,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Supersedes land-all-97 auto landing. For each of the 118 built builds, oldest first: rebase a scratch copy on current main, report what it changes, which files/features it would overwrite or revert, conflicts, whether a newer build already covers it, and test result. Present one at a time to Brett (console card + AmberX notification) with Merge / Skip (archive) / Rebuild on current main. Never merge without his yes. Never overwrite or revert newer code; conflicts resolve toward current main. Pause land-all-97 and any auto-land until this review is done.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwbd1hpl017q5l"
+    },
+    {
+     "id": "s2",
+     "text": "I gotta make sure nothing that's built or that I've written gets overwritten or broken from one of those old branches. Go one by one and I'll tell you to merge it or not.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwbd1hpl02xkvi"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/merge-review-one-by-one-every-built-but-unmerged.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/merge-review-one-by-one-every-built-but-unmerged.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwbd1hpl03mdc3"
+    }
+   ]
   }
  ]
 }
