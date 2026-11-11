@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3106,
- "updatedAt": "2026-11-11T00:33:31.738Z",
+ "rev": 3107,
+ "updatedAt": "2026-11-11T00:34:25.344Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -156904,7 +156904,7 @@
    "pr": "#488",
    "priority": "P0",
    "createdAt": "2026-11-10T23:46:07.460Z",
-   "updatedAt": "2026-11-11T00:33:30.308Z",
+   "updatedAt": "2026-11-11T00:34:24.001Z",
    "builtAt": "",
    "notes": [
     {
@@ -156938,6 +156938,10 @@
     {
      "text": "Stage 2 of 3: PR #488 open on branch claude/ai-assistant-in-molly-console-drives-by-api-open. Taking desktop and phone shots of the chat header mic toggle and the Hands-free voice panel for UI Review now.",
      "at": "2026-11-11T00:17:06.572Z"
+    },
+    {
+     "text": "Headless run axf-ai-assistant-in-molly-console-drives-by-api-open--rhonda: brief only · start 12.9K tokens ($0.06) · cost $5.82 · 95 turns · 6 tools, MCP none",
+     "at": "2026-11-11T00:34:24.001Z"
     }
    ],
    "approvals": [],
@@ -157064,7 +157068,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
