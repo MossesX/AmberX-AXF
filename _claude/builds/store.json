@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3102,
- "updatedAt": "2026-11-11T00:23:23.356Z",
+ "rev": 3103,
+ "updatedAt": "2026-11-11T00:24:05.927Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -157225,7 +157225,7 @@
    "pr": "#492",
    "priority": "P0",
    "createdAt": "2026-11-11T00:06:50.193Z",
-   "updatedAt": "2026-11-11T00:23:18.379Z",
+   "updatedAt": "2026-11-11T00:24:04.044Z",
    "builtAt": "2026-11-11T00:23:18.379Z",
    "notes": [
     {
@@ -157247,6 +157247,10 @@
     {
      "text": "Headless run axf-merge-review-one-by-one-every-built-but-unmerged--gina: brief only · start 11.1K tokens ($0.03) · cost $1.92 · 45 turns · 6 tools, MCP none",
      "at": "2026-11-11T00:23:18.379Z"
+    },
+    {
+     "text": "Session axf-merge-review-one-by-one-every-built-but-unmerged--gina on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-11T00:24:04.044Z"
     }
    ],
    "approvals": [],
@@ -157267,12 +157271,19 @@
     "queuedAt": "2026-11-11T00:06:51.278Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-merge-review-one-by-one-every-built-but-unmerged--gina",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-11T00:08:16.721Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-11T00:24:02.559Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-merge-review-one-by-one-every-built-but-unmerged--gina"
+    },
     "split": {
      "at": "2026-11-11T00:07:57.417Z",
      "by": "orchestrator",
@@ -157373,7 +157384,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
