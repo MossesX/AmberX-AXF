@@ -16,7 +16,7 @@
 import { readFileSync } from 'node:fs';
 import { resolve as resolvePath } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { aiFallbackBrief, getEntry } from '../../../../framework/core/engines/control-registry.mjs';
+import { aiFallbackBrief, checkParams, getEntry } from '../../../../framework/core/engines/control-registry.mjs';
 import { dispatch } from './dispatch.mjs';
 import { consoleTargets, planResolution, planState, providerIds } from './execute.mjs';
 import { surfacesOf } from '../../../../framework/core/engines/control-registry.mjs';
@@ -37,9 +37,26 @@ function resolution(r, input, req) {
   const opts = { confirm: str(req.confirm), reason: str(req.reason), by: str(req.by) || 'registry' };
   const answer = isObj(req.answer) ? req.answer : null;
   const res = dispatch(r.index, input, { ask: answer ? () => answer : null, ...(typeof req.available === 'boolean' ? { available: req.available } : {}) });
+  const field = res.ok ? fieldCheck(r.index, res) : null;
+  if (field?.errors.length) return { ok: false, code: 'validation', message: `${res.entry} · ${res.action}: ${field.errors.join('; ')}`, errors: field.errors, entry: res.entry, action: res.action, ai: res.ai, plan: { via: 'none', why: 'not valid' } };
+  if (field) res.params = { ...res.params, value: field.value };
   const out = { ...res, plan: planResolution(res, opts) };
   if (!res.ok && res.ai?.fallback && !res.ai.asked) out.brief = aiFallbackBrief(r.index, input, res);
   return out;
+}
+
+/**
+ * A `path` + `value` action (a token set's set, a record field) checks the value against the field `path` names in
+ * the entry's state.fields: its type, enum, range and step. → null (nothing to check) | { errors, value }.
+ */
+export function fieldCheck(index, res) {
+  const e = getEntry(index, res.entry);
+  const p = res.params ?? {};
+  if (!e || p.path === undefined || !('value' in p)) return null;
+  const f = (e.state?.fields ?? []).find((x) => x.name === String(p.path));
+  if (!f) return (e.state?.fields ?? []).length && res.effect !== 'read' ? { errors: [`path "${p.path}" is not one of ${e.label}'s fields (axf ctl get ${e.id} lists them)`], value: p.value } : null;
+  const c = checkParams({ id: res.action, params: [{ ...f, name: 'value', required: true, position: undefined }] }, { value: p.value });
+  return { errors: c.errors.map((x) => x.replace(/^value\b/, `${p.path}`)), value: c.params.value };
 }
 
 /** Handle one request. → a JSON-able answer (always has `ok`). */

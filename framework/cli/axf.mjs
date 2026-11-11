@@ -26,6 +26,7 @@
  *   axf modules                 list Android framework modules
  *   axf boilerplates            list boilerplates (framework/boilerplates)
  *   axf dev [dir] [--port 7070] [--host 0.0.0.0] [--framework]   live-reload server: watches assets, pushes changes to devices
+ *   axf ctl list|get|search|state|set|do|open|resolve|export …   the control registry: everything controllable, offline too
  *   axf focus <app> [route] [selector] [--note "…"]   Watch live: the screen + element this session is changing
  *                               (writes .axf-focus.json; the console's Watch live popup scrolls to and outlines it)
  *   axf serve [--port 7080] [--token secret]    HTTP driver for the build engine (the Dev Console / VPS)
@@ -77,6 +78,12 @@ if (CONTROL_WORDS.has(cmd) || (cmd === 'list' && CONTROL_LIST_WORDS.has(rest[0])
   if (!dir) { console.error('no plugin provides control@1 (install the Token control plugin)'); process.exit(1); }
   const { main } = await import(pathToFileURL(joinPath(plugins, dir, 'control.mjs')).href);
   process.exit(await main([cmd, ...rest]));
+}
+// `axf ctl …`: the control registry (control-registry@1): every page, plugin, tool, display, behavior and setting of
+// every app, with REST over the console when AXF_TOKEN is set and the offline index otherwise.
+if (cmd === 'ctl') {
+  const { main } = await import('../../apps/console-web/lib/registry/cli.mjs');
+  process.exit(await main(rest));
 }
 // console commands (control@1 console domain) go to the plugin that provides console-commands@1 (never by folder name).
 if (cmd === 'console') {
