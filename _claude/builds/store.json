@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3151,
- "updatedAt": "2026-11-11T23:38:25.742Z",
+ "rev": 3152,
+ "updatedAt": "2026-11-11T23:40:15.603Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -158312,10 +158312,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/console-commands-reliable",
+   "pr": "#496",
    "createdAt": "2026-11-11T23:25:41.956Z",
-   "updatedAt": "2026-11-11T23:38:19.346Z",
+   "updatedAt": "2026-11-11T23:40:14.236Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -158430,7 +158430,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
