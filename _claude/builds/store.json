@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3104,
- "updatedAt": "2026-11-11T00:30:30.431Z",
+ "rev": 3105,
+ "updatedAt": "2026-11-11T00:30:59.044Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -152049,7 +152049,7 @@
    "pr": "#473",
    "priority": "P0",
    "createdAt": "2026-11-10T20:40:20.356Z",
-   "updatedAt": "2026-11-11T00:30:27.926Z",
+   "updatedAt": "2026-11-11T00:30:56.924Z",
    "builtAt": "2026-11-10T21:24:10.425Z",
    "notes": [
     {
@@ -152075,6 +152075,10 @@
     {
      "text": "Landed: #456 (Nov 11 00:00 UTC), with the main CI fixes (ui-review test, build-hook lock, kernel AppearanceEngine.NEVER, theme-editor scrollbar, deploy shellcheck, plugin-lifecycle clean). Ready, conflict-free on current main, held only by Brett's merge review (merge-review-one-by-one, 'waiting for Brett'): #473 FIRST (its Dockerfile fix re-bakes the framework; every console redeploy fails until it lands: src/axf lacks TAB_LABEL), then #457, #459, #460, #342. To land: answer 'merge' on each in the merge review (POST /api/plugins/build-orchestrator/merge-review/decide {build, decision: merge}, or 'merge it' by voice). The review shows #460 / #473 as 'CI red': that was main's old breakroom verify failure, fixed by #456; the full queue run decides. AmberX notice goes out when all five are on main.",
      "at": "2026-11-11T00:30:27.926Z"
+    },
+    {
+     "text": "Headless run axf-resolve-conflicts-and-land-460-456-457-459-342--rhonda: brief only · start 11.0K tokens ($0.03) · cost $18.21 · 293 turns · 6 tools, MCP none",
+     "at": "2026-11-11T00:30:56.924Z"
     }
    ],
    "approvals": [],
@@ -152201,7 +152205,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
