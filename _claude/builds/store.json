@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3096,
- "updatedAt": "2026-11-11T00:17:14.590Z",
+ "rev": 3097,
+ "updatedAt": "2026-11-11T00:20:00.987Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -152182,7 +152182,7 @@
    "title": "Land all 97 built-but-unmerged builds, skins first, in batches of 5",
    "category": "",
    "detail": "Land every build in status 'built' (97, see Nov 10 list). Order: 1) skins and appearance first: #430 Appearance = skins + colour themes, #409 Skins restyle everything, #355 Three layouts per screen, #376 UI asset designer, then the rest of today's (#460 splitter first if not yet landed), then Nov 9, Nov 7-8, Nov 3-5. Batch related PRs up to 5 at a time: merge latest main in, resolve conflicts keeping both intents, CI once, merge. Before each, check main: if already covered or superseded (e.g. #432/#440/#269 by #450), close and archive with the reason instead of merging. Redeploy the console after each batch. Fix any failure and retry; notify on AmberX only per batch landed, and a final summary.",
-   "status": "pending",
+   "status": "blocked",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -152190,7 +152190,7 @@
    "pr": "#474",
    "priority": "P0",
    "createdAt": "2026-11-10T20:43:36.267Z",
-   "updatedAt": "2026-11-10T23:37:46.993Z",
+   "updatedAt": "2026-11-11T00:19:59.124Z",
    "builtAt": "",
    "notes": [
     {
@@ -152356,7 +152356,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
