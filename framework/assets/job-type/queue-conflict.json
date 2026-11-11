@@ -12,7 +12,7 @@
     "merge-queue"
   ],
   "data": {
-    "specialty": "landing",
+    "specialty": "queue-conflict",
     "model": "opus",
     "budget": {
       "tokens": 300000,
