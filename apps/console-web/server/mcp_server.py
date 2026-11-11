@@ -560,6 +560,10 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
     if console is not None:
         _register_console_tools(mcp, console)
 
+    # ------------------------------------------------------------------ control registry (control-registry@1): everything, one dispatcher
+
+    _register_registry_tools(mcp, control)
+
     # ------------------------------------------------------------------ Claude settings (Claude plugin, claude-settings@1)
 
     _register_claude_settings_tools(mcp)
@@ -922,6 +926,70 @@ def _register_control_tools(mcp: MCPServer, control: Callable[[dict[str, Any]], 
 
 
 # ---------------------------------------------------------------------- console commands (control@1 console domain)
+
+REGISTRY_TOOLS = ("registry_list", "registry_get", "registry_search", "control_state", "control_invoke", "control_resolve")
+
+
+def _register_registry_tools(mcp: MCPServer, control: Callable[[dict[str, Any]], dict[str, Any]] | None) -> None:
+    """The control registry's six tools (control-registry@1; the same functions as REST /api/registry and /api/control,
+    server/registry_api.py, and `axf ctl`). Every page, plugin, tool, display, behavior and setting of every app is an
+    entry with its actions, parameters and allowed values; control_invoke runs one action through control@1 (so
+    permissions, confirm tokens for deletes and the audit are control@1's); control_resolve maps a phrase or a CLI call
+    onto an entry deterministically and asks Claude only when nothing matched and Claude settings' "Make Claude available
+    to the console" is on. Token sets (tokens.*) and planner items (planner.plans, planner.builds) are entries too, run
+    as control@1 commands. An entry's `open` is exactly what console_open / console_show take (kind:target)."""
+    import registry_api as ra  # noqa: PLC0415 - FastAPI only loads when the tools are registered
+
+    def fail(r: dict[str, Any]) -> dict[str, Any]:
+        if not r.get("ok") and r.get("code") not in ("confirmation_required", "ambiguous", "validation", "not_found", "needs_ai"):
+            raise ToolError(f"{r.get('code', 'unexpected')}: {r.get('message', 'failed')}")
+        return r
+
+    async def off(fn: Callable[[], dict[str, Any]]) -> dict[str, Any]:
+        return fail(await anyio.to_thread.run_sync(fn))
+
+    @mcp.tool(annotations=READ)
+    async def registry_list(owner: str = "", type: str = "", tag: str = "", surface: str = "", plugin: str = "", q: str = "",
+                            needsAI: str = "", limit: int = 50, offset: int = 0) -> dict[str, Any]:
+        """List registry entries (one per controllable thing). Filters: owner (console-web, molly, axhub, hostinger,
+        coolify, vps, amberx, moshi …: registry_list with no filter shows totals), type (page, app, plugin, tool, behavior,
+        display, setting), tag, surface (rest, mcp, cli, voice, deepLink), plugin, q (words), needsAI ("true"/"false")."""
+        f = {"owner": owner, "type": type, "tag": tag, "surface": surface, "plugin": plugin, "q": q, "needsAI": needsAI,
+             "limit": max(1, min(limit, 500)), "offset": max(0, offset)}
+        return await off(lambda: ra.read({"op": "list", "filter": f}))
+
+    @mcp.tool(annotations=READ)
+    async def registry_get(id: str) -> dict[str, Any]:
+        """One entry by id or alias: where it lives, how to open it (console_open / console_show target and deep link),
+        its state read, every action with typed parameters and allowed values, its surfaces and gaps."""
+        return await off(lambda: ra.read({"op": "get", "id": id}))
+
+    @mcp.tool(annotations=READ)
+    async def registry_search(q: str, limit: int = 20, type: str = "", owner: str = "") -> dict[str, Any]:
+        """Ranked whole-word search over labels, aliases, synonyms and keywords."""
+        return await off(lambda: ra.read({"op": "search", "q": q, "limit": max(1, min(limit, 200)), "type": type, "owner": owner}))
+
+    @mcp.tool(annotations=READ)
+    async def control_state(id: str, params: dict[str, Any] | None = None) -> dict[str, Any]:
+        """An entry's current state, read through its state ref (read-only)."""
+        return await off(lambda: ra.state(id, params or {}, control, by="mcp"))
+
+    @mcp.tool(annotations=WRITE)
+    async def control_invoke(id: str, action: str = "", params: dict[str, Any] | None = None, confirm: str = "", reason: str = "",
+                             dry: bool = False) -> dict[str, Any]:
+        """Run one action of one entry (registry_get lists them with their parameters and allowed values). Parameters
+        are validated against the registry first; a wrong one answers code=validation naming the allowed values. A
+        delete answers confirmation_required with a confirm token: send it back as `confirm`. dry=true only plans."""
+        return await off(lambda: ra.invoke(id, action, params or {}, control, confirm=confirm, reason=reason, by="mcp", dry=dry))
+
+    @mcp.tool(annotations=WRITE)
+    async def control_resolve(input: str | list[str] | dict[str, Any], run: bool = False, confirm: str = "", reason: str = "") -> dict[str, Any]:
+        """Map a phrase ("open plan studio"), a CLI argv (["follow-amber", "switch", "--on", "off"]) or a command
+        ({id, action, params}) onto one entry, action and validated parameters, deterministically. Nothing matched: the
+        closest entries and the gap to declare; Claude is asked only when "Make Claude available to the console" is on,
+        and its proposal is resolved again. run=true also runs it."""
+        return await off(lambda: ra.resolve(input, control, run=run, confirm=confirm, reason=reason, by="mcp"))
+
 
 CONSOLE_TOOLS = ("console_open", "console_dialog", "console_settings", "console_action", "console_back", "console_where", "console_list", "console_clients", "console_refresh")
 FOLLOW_TOOLS = ("console_show", "console_follow")  # Follow Amber plugin (follow-amber@1)

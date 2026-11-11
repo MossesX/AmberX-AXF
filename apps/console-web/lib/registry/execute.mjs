@@ -116,6 +116,36 @@ export function planState(index, id, params = {}, opts = {}) {
   return { entry: e.id, read: '', fields: e.state?.fields ?? [], plan: { via: 'none', why: 'this entry declares no state read' } };
 }
 
+/**
+ * The console tools that open an entry, kept in step with its deep link: `open.kind` + `open.target` is exactly what
+ * console_open / console_dialog / console_settings / console_action take, and `console_show` takes it as kind:target.
+ * → { tool, args, show, deepLink } | null (nothing to open in the console: an app intent, a URL or nothing).
+ */
+export function consoleTargets(entry) {
+  const o = entry?.open;
+  if (!o?.target) return null;
+  const map = { screen: ['console_open', { screen: o.target }], dialog: ['console_dialog', { dialog: o.target }], settings: ['console_settings', { tab: o.target }], action: ['console_action', { action: o.target }] };
+  const m = map[o.kind ?? 'screen'];
+  if (!m) return { tool: null, args: {}, show: null, deepLink: o.deepLink ?? null, kind: o.kind };
+  return { tool: m[0], args: m[1], show: `${o.kind ?? 'screen'}:${o.target}`, deepLink: o.deepLink ?? null, kind: o.kind ?? 'screen' };
+}
+
+/** The deep link deep-link@1 gives each console open kind. */
+export const DEEP_LINK = Object.freeze({ screen: (t) => `?axf-view=${t}`, settings: (t) => `?axf-settings=${t}`, dialog: (t) => `?axf-dialog=${t}`, action: (t) => `?axf-action=${t}` });
+
+/** Entries whose console target and deep link disagree (console_open / console_show must open what the link opens). */
+export function consoleSyncProblems(index) {
+  const out = [];
+  for (const e of index.entries) {
+    const t = consoleTargets(e);
+    if (!t?.tool) continue;
+    const want = DEEP_LINK[t.kind]?.(e.open.target);
+    if (want && t.deepLink && t.deepLink !== want && !t.deepLink.startsWith(`${want}&`)) out.push({ entry: e.id, open: t.show, deepLink: t.deepLink, want });
+    if (!t.deepLink) out.push({ entry: e.id, open: t.show, deepLink: null, want });
+  }
+  return out;
+}
+
 /** A provider bridge: providers register `{ id, call(op, params, ctx) }` here (axHub step s9 onwards). */
 const providers = new Map();
 export const registerProvider = (p) => { if (isObj(p) && p.id && typeof p.call === 'function') providers.set(p.id, p); return providers; };

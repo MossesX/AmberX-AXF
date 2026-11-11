@@ -18,7 +18,8 @@ import { resolve as resolvePath } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { aiFallbackBrief, getEntry } from '../../../../framework/core/engines/control-registry.mjs';
 import { dispatch } from './dispatch.mjs';
-import { planResolution, planState, providerIds } from './execute.mjs';
+import { consoleTargets, planResolution, planState, providerIds } from './execute.mjs';
+import { surfacesOf } from '../../../../framework/core/engines/control-registry.mjs';
 import { ControlRegistry } from './index.mjs';
 
 const isObj = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
@@ -51,7 +52,7 @@ export function handle(req) {
       const l = r.list({ owner: str(f.owner), type: str(f.type), tag: str(f.tag), surface: str(f.surface), plugin: str(f.plugin), q: str(f.q), limit: Number(f.limit) || 50, offset: Number(f.offset) || 0, ...(f.needsAI !== undefined && f.needsAI !== '' ? { needsAI: f.needsAI === true || f.needsAI === 'true' } : {}) });
       return { ok: true, total: l.total, items: (f.full ? l.items : l.items.map(summary)), hash: r.hash };
     }
-    case 'get': { const e = r.get(str(req.id)); return e ? { ok: true, entry: e, text: r.describe(e.id) } : { ok: false, code: 'not_found', message: `no registry entry "${str(req.id)}"`, candidates: r.search(str(req.id).replace(/[/._:-]/g, ' '), { limit: 6 }).map((h) => summary(h.entry)) }; }
+    case 'get': { const e = r.get(str(req.id)); return e ? { ok: true, entry: e, ways: { ...surfacesOf(e), console: consoleTargets(e) }, text: r.describe(e.id) } : { ok: false, code: 'not_found', message: `no registry entry "${str(req.id)}"`, candidates: r.search(str(req.id).replace(/[/._:-]/g, ' '), { limit: 6 }).map((h) => summary(h.entry)) }; }
     case 'search': { const hits = r.search(str(req.q), { limit: Number(req.limit) || 20, type: str(req.type), owner: str(req.owner) }); return { ok: true, items: hits.map((h) => ({ ...summary(h.entry), score: h.score })) }; }
     case 'export': return { ok: true, index: { ...r.index, exportedAt: new Date().toISOString() } };
     case 'stats': return { ok: true, ...r.stats(), providers: providerIds() };

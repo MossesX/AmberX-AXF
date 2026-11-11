@@ -29,7 +29,7 @@ tools = {t.name: t for t in asyncio.run(server.list_tools())}
 
 # Tools that only read: names that look up, list, show or check something. Each must say so (readOnlyHint), so the
 # recommended axHub policy (reads run, writes veto, deletes confirm) can run them with no countdown.
-READ_NAME = re.compile(r"(^|_)(list|get|status|find|search|overview|queue|next|summary|libraries|templates|validate|tail|feature|rules)$")
+READ_NAME = re.compile(r"(^|_)(list|get|status|state|find|search|overview|queue|next|summary|libraries|templates|validate|tail|feature|rules)$")
 READ_TOOLS = {n for n in tools if READ_NAME.search(n) and "_set_" not in n} | {"build_options", "pending_steps"}
 for name in sorted(READ_TOOLS):
     a = tools[name].annotations
@@ -133,5 +133,17 @@ except Exception as e:  # noqa: BLE001
     ok("not_implemented" in str(e), "a failed show raises with its wire code")
 mcp_server.follow_call = real_follow
 ok("console_show" in mcp_server.INSTRUCTIONS and "console_follow" in mcp_server.INSTRUCTIONS, "the server instructions tell Amber to call console_show")
+
+# control registry (control-registry@1): the six tools, reads read-only, and an invoke lands on control@1 as one command
+for name in mcp_server.REGISTRY_TOOLS:
+    ok(name in tools, f"{name} exists")
+for name in ("registry_list", "registry_get", "registry_search", "control_state"):
+    ok(tools[name].annotations.read_only_hint is True, f"{name} reads")
+os.environ["AXF_CLAUDE_AVAILABLE"] = "0"
+before = len(sent)
+out = asyncio.run(server.call_tool("control_invoke", {"id": "console-web/display/tokens.layout", "action": "set", "params": {"path": "navWidth", "value": 200}}))
+ok(len(sent) == before + 1 and sent[-1]["op"] == "set" and sent[-1]["target"] == "tokens.layout" and sent[-1]["by"] == "mcp", "control_invoke runs one control@1 command")
+asyncio.run(server.call_tool("control_resolve", {"input": "open plan studio", "run": True}))
+ok(sent[-1]["target"] == "console.screens" and sent[-1]["path"] == "plan-studio", "control_resolve opens the console_open target")
 
 print(f"✓ console MCP tools — {checks} checks, {len(tools)} tools, {len(READ_TOOLS)} read-only")
