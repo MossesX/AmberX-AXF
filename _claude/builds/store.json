@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3115,
- "updatedAt": "2026-11-11T00:36:15.179Z",
+ "rev": 3116,
+ "updatedAt": "2026-11-11T00:37:28.638Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -156904,7 +156904,7 @@
    "pr": "#488",
    "priority": "P0",
    "createdAt": "2026-11-10T23:46:07.460Z",
-   "updatedAt": "2026-11-11T00:36:13.080Z",
+   "updatedAt": "2026-11-11T00:37:27.174Z",
    "builtAt": "",
    "notes": [
     {
@@ -156976,7 +156976,16 @@
      "at": "2026-11-11T00:36:13.080Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-11T00:37:27.174Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "Give Molly and the AI assistant access to the API so she can drive the console, open screens and configure settings. Easy to reach, hands free. A setting in AI assistant.",
@@ -156994,11 +157003,11 @@
     "queuedAt": "2026-11-10T23:46:08.866Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-ai-assistant-in-molly-console-drives-by-api-open--joey",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-11T00:36:10.184Z",
-    "runs": 2,
+    "model": "Fable",
+    "launchedAt": "2026-11-11T00:16:07.794Z",
+    "runs": 1,
     "lastRun": {
      "at": "2026-11-11T00:36:03.217Z",
      "exit": 0,
@@ -157015,9 +157024,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- ended (exit 0) with 2 steps left: back in the Queue (run 1).",
     "route": "",
-    "dispatchedAt": "2026-11-11T00:36:10.184Z",
+    "dispatchedAt": "2026-11-11T00:16:07.794Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -157026,7 +157035,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-11T00:36:10.184Z"
+    "pickedAt": "2026-11-11T00:16:07.794Z"
    },
    "steps": [
     {
@@ -157066,12 +157075,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-11T00:37:27.174Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T23:47:18.616Z",
-     "updatedAt": "2026-11-10T23:47:18.616Z"
+     "updatedAt": "2026-11-11T00:37:27.372Z"
     },
     {
      "id": "s3",
