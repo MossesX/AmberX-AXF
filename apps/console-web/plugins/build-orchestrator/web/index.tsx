@@ -4,6 +4,7 @@ import { appMenu } from './menu';
 import { setPriorityHost, type PriorityHost } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { FOLDER, OrchestratorPage, TABS, openTab } from './ui';
+import { focusBuild } from './focus';
 import { BUILD_ACTIONS, type BuildAction } from '@console/axf/core/build-pipeline.mjs';
 
 const ACTION_LABEL: Record<BuildAction, string> = { unqueue: 'Back to Pending', hold: 'Hold (stays in the Queue)', release: 'Release from hold', archive: 'Move to the Archive', unarchive: 'Bring back from the Archive', delete: 'Delete (kept in Deleted)', restore: 'Restore' };
@@ -15,6 +16,10 @@ const ACTION_ICON: Record<BuildAction, string> = { unqueue: 'arrow-left', hold: 
  * active|incomplete|complete|errors|archive|deleted|accounts|builds|approvals|rules>, build-orchestrator.start:<build> (Start
  * = Queue: the dispatcher starts it when its turn comes). Search: every build, by its tab. Context menu: Open / Queue on
  * build rows, plus the actions the build offers.
+ * build-orchestrator.focus:<tab|build> (Nov 11 2026, console-commands-reliable): what a console command's `focus` runs
+ * ("build-orchestrator pending", console_show "build:<id>"): a tab by id or label opens; a build opens its tab with its
+ * row scrolled into view, expanded and highlighted. open / tab / focus only navigate (effect navigate), so Follow Amber's
+ * navigate-only grant may run them.
  * Build actions (Brett, Nov 10 2026: hold, archive, delete, deleted builds kept forever): build-orchestrator.<unqueue|hold|
  * release|archive|unarchive|delete|restore>:<build>[,<build>…] → POST pipeline/action (the same call as the cards, the
  * bulk toolbar, the MCP command pipeline-build-action and `pipeline.mjs <action> <id…>`).
@@ -44,16 +49,23 @@ export const plugin: AxfWebLibrary = {
   version: '0.5.0',
   appMenu,
   register(rt) {
+    /** A tab by id or label ("pending", "Pending", "all builds"), or ''. */
+    const tabOf = (s: string) => { const low = s.trim().toLowerCase(); return TABS.find((t) => t.id === low || t.label.toLowerCase() === low)?.id ?? ''; };
     const open = async (arg = '') => {
       rt.navigate('build-orchestrator');
-      const id = decodeURIComponent(arg);
+      let id = '';
+      try { id = decodeURIComponent(arg).trim(); } catch { id = arg.trim(); }
       if (!id) return;
-      if (TABS.some((t) => t.id === id)) { openTab(id); return; }
+      const tab = tabOf(id);
+      if (tab) { openTab(tab); return; }
+      // the build: its tab opens and the row there scrolls into view, expands and stays highlighted
+      focusBuild(id);
       try { const b = (await loadRows(true)).find((x) => x.id === id); openTab(b?.tab || 'builds'); if (!b) rt.toast(`No open build "${id}" in the tabs: showing All builds.`, 'warning'); }
       catch { openTab('builds'); }
     };
-    rt.actions.register('build-orchestrator.open', ([arg]) => void open(arg ?? ''), { label: 'Open the Build orchestrator (a build or a tab)' });
-    rt.actions.register('build-orchestrator.tab', ([arg]) => { rt.navigate('build-orchestrator'); openTab(decodeURIComponent(arg ?? 'queue')); }, { label: 'Build orchestrator: open a tab' });
+    rt.actions.register('build-orchestrator.open', ([arg]) => void open(arg ?? ''), { label: 'Open the Build orchestrator (a build or a tab)', effect: 'navigate' });
+    rt.actions.register('build-orchestrator.focus', ([arg]) => void open(arg ?? ''), { label: 'Build orchestrator: bring a tab or a build forward', params: true, effect: 'navigate' });
+    rt.actions.register('build-orchestrator.tab', ([arg]) => { rt.navigate('build-orchestrator'); openTab(tabOf(decodeURIComponent(arg ?? 'queue')) || 'queue'); }, { label: 'Build orchestrator: open a tab', effect: 'navigate' });
     rt.actions.register('build-orchestrator.start', ([arg]) => {
       const id = decodeURIComponent(arg ?? '');
       if (!id) { void open('pending'); return; }

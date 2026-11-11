@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { Button, Checkbox, Chip, Icon, Note, PriorityTag, Switch, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, Icon, Note, PriorityTag, Switch, flashWhenReady, useRuntime } from '@console/axf/react';
+import { buildRowSelector, settleFocus, useFocusedBuild } from './focus';
 import { WatchLiveFor } from '@console/watchLive';
 import { TAB_LABEL, type BuildAction, type PipelineTab as BuildTab } from '@console/axf/core/build-pipeline.mjs';
 
@@ -106,6 +107,15 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
     finally { setBusy(''); }
   };
   const toggle = (id: string, on: boolean) => setSel((cur) => { const n = new Set(cur); if (on) n.add(id); else n.delete(id); return n; });
+  // a build asked for (console command, search, menu): once this tab lists it, scroll it into view and flash it; the
+  // card stays expanded (its steps) and marked as the current one
+  const focusId = useFocusedBuild();
+  const hasFocus = !!focusId && !!s && view !== 'accounts' && (s.tabs?.[view] ?? []).some((r) => r.id === focusId);
+  useEffect(() => {
+    if (!hasFocus) return;
+    flashWhenReady(() => document.querySelector(buildRowSelector(focusId)), 5000);
+    settleFocus(focusId);
+  }, [hasFocus, focusId, view]);
   if (!s) return <div className="fx-empty">{error ? `Pipeline: ${error}` : 'Loading the pipeline…'}</div>;
   const waitsFor = (id: string) => s.plan.waits.find((w) => w.id === id)?.why ?? '';
   const launchFor = (id: string) => s.plan.launches.find((l) => l.id === id);
@@ -204,7 +214,7 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
               </div>
             )}
             {rows.length === 0 ? <div className="fx-empty">{EMPTY[view]}</div>
-              : <div className="pl-cols">{rows.map((r) => <PipelineCard key={r.id} r={r} busy={busy === r.id || busy === 'bulk'} wait={waitsFor(r.id)} launch={launchFor(r.id)} act={act} run={runAction} selected={sel.has(r.id)} onSelect={(on) => toggle(r.id, on)} showSteps={view === 'queue' || view === 'pending'} />)}</div>}
+              : <div className="pl-cols">{rows.map((r) => <PipelineCard key={r.id} r={r} busy={busy === r.id || busy === 'bulk'} wait={waitsFor(r.id)} launch={launchFor(r.id)} act={act} run={runAction} selected={sel.has(r.id)} onSelect={(on) => toggle(r.id, on)} showSteps={view === 'queue' || view === 'pending' || r.id === focusId} focused={r.id === focusId} />)}</div>}
           </section>
         );
       })()}
@@ -222,12 +232,12 @@ const ROUTE_AUTO: RouteStep = { to: 'api', label: 'Auto' };
 const ROUTE_NEXT: Record<string, RouteStep> = { '': ROUTE_AUTO, api: { to: 'subscription', label: 'API' }, subscription: { to: 'auto', label: 'Subscriptions' } };
 const routeOf = (r?: string): RouteStep => ROUTE_NEXT[r ?? ''] ?? ROUTE_AUTO;
 
-function PipelineCard({ r, busy, wait, launch, act, run, selected, onSelect, showSteps }: { r: Row; busy: boolean; wait: string; launch?: { account: string; model: string; phase: string; kind?: string; rule?: string }; act: (path: string, body: Record<string, unknown>, what: string) => Promise<void>; run: (action: BuildAction, ids: string[]) => Promise<void>; selected: boolean; onSelect: (on: boolean) => void; showSteps: boolean }) {
+function PipelineCard({ r, busy, wait, launch, act, run, selected, onSelect, showSteps, focused = false }: { r: Row; busy: boolean; wait: string; launch?: { account: string; model: string; phase: string; kind?: string; rule?: string }; act: (path: string, body: Record<string, unknown>, what: string) => Promise<void>; run: (action: BuildAction, ids: string[]) => Promise<void>; selected: boolean; onSelect: (on: boolean) => void; showSteps: boolean; focused?: boolean }) {
   const p = r.pipeline;
   const table = r.deleted ? 'done' : r.status === 'queued' ? 'queued' : r.status === 'running' || r.status === 'waiting' ? 'building' : r.status === 'pending' ? 'pending' : 'done';
   const pl = p?.planned ?? null;
   return (
-    <article className={`pd-card is-${table === 'building' ? 'running' : 'pending'}`} data-fx-ctx-target="axf-orchestrator-build" data-fx-ctx-payload={r.id}>
+    <article className={`pd-card is-${table === 'building' ? 'running' : 'pending'}${focused ? ' is-focused' : ''}`} aria-current={focused ? 'true' : undefined} data-fx-ctx-target="axf-orchestrator-build" data-fx-ctx-payload={r.id}>
       <div className="pd-card__top">
         <h3 className="pd-card__title">{r.title}<span className="fx-muted fx-small fx-mono"> {r.id}</span></h3>
         {r.held && <Chip tone="warning">On hold</Chip>}

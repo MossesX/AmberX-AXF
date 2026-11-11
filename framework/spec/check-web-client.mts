@@ -74,6 +74,39 @@ const response = (chunks: string[], status = 200, headers: Record<string, string
   await done; stop();
   eq(frames, ['{"alerts":[1]}'], 'followSse hands frames over'); eq(waits, [2000, 4000, 2000], 'followSse backs off, resets after an open stream');
 }
+{
+  // idle watchdog: a stream that goes silent (no data, no keep-alive) is dropped and reopened
+  let opens = 0; const drops: unknown[] = [];
+  const reopened = new Promise<void>((resolve) => {
+    const f = followSse(async (signal) => {
+      opens++;
+      if (opens === 2) { resolve(); setTimeout(() => f(), 0); }
+      // a body that never sends anything and only ends when aborted
+      return new Response(new ReadableStream<Uint8Array>({ start(c) { signal.addEventListener('abort', () => { try { c.close(); } catch { /* closed */ } }); } }));
+    }, () => {}, { idleTimeoutMs: 300, sleep: async () => {}, onDrop: (e) => drops.push(e) });
+  });
+  await Promise.race([reopened, new Promise((_, rej) => setTimeout(() => rej(new Error('the silent stream was never dropped')), 4000))]);
+  eq(opens >= 2 && drops.length >= 1, true, 'followSse drops a silent stream after idleTimeoutMs and reopens');
+}
+{
+  // reconnect(): drop the open stream and open a new one now, without a back-off wait
+  let opens = 0; const waits: number[] = []; let idleOpen = -1;
+  const ctrl: { f?: ReturnType<typeof followSse> } = {};
+  const second = new Promise<void>((resolve) => {
+    ctrl.f = followSse(async (signal) => {
+      opens++;
+      if (opens === 2) resolve();
+      return new Response(new ReadableStream<Uint8Array>({ start(c) { c.enqueue(new TextEncoder().encode(': keepalive\n\n')); signal.addEventListener('abort', () => { try { c.close(); } catch { /* closed */ } }); } }));
+    }, () => {}, { sleep: async (ms) => { waits.push(ms); } });
+  });
+  await new Promise((r) => setTimeout(r, 30));
+  idleOpen = ctrl.f!.idleMs();
+  eq(ctrl.f!.open() && idleOpen >= 0 && idleOpen < 1000, true, 'idleMs counts from the last keep-alive while open');
+  ctrl.f!.reconnect();
+  await Promise.race([second, new Promise((_, rej) => setTimeout(() => rej(new Error('reconnect did not reopen')), 2000))]);
+  ctrl.f!();
+  eq([opens, waits], [2, []], 'reconnect reopens at once (no back-off)');
+}
 
 /* ---------------- token store ---------------- */
 {

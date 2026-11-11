@@ -8,8 +8,8 @@
 import assert from 'node:assert/strict';
 import { controlGate } from '../core/engines/control-rules.mjs';
 import {
-  CONSOLE_CLIENT_STALE_MS, CONSOLE_TOOLS, consoleActionConfirm, consoleActionEffect, consoleActionNeeds, consoleCatalogFrom, consoleMessage, consoleMessageErrors,
-  consolePickClients, consoleResolve, consoleSearch, normalizeConsoleCatalog, runConsoleCommand,
+  CONSOLE_CLIENT_STALE_MS, CONSOLE_LATE_MS, CONSOLE_TOOLS, consoleActionConfirm, consoleActionEffect, consoleActionNeeds, consoleCatalogFrom, consoleMessage, consoleMessageErrors,
+  consoleMessageLate, consolePickClients, consoleResolve, consoleSearch, consoleSplitFocus, normalizeConsoleCatalog, runConsoleCommand,
 } from '../core/engines/console-commands.mjs';
 
 let n = 0;
@@ -152,5 +152,36 @@ ok(consoleMessageErrors({ $axf: 'console-command@1', op: 'explode' }).length ===
 ok(consoleMessageErrors({ op: 'back' }).length === 1, 'frame required');
 eq(consoleMessage({ op: 'back' }, { id: 'x', by: 'me', now: NOW }), { $axf: 'console-command@1', id: 'x', op: 'back', by: 'me', at: new Date(NOW).toISOString() }, 'message shape');
 eq(CONSOLE_TOOLS.length, 9, 'nine MCP shortcut tools');
+
+/* ---- focus on a screen (console-commands-reliable, Nov 11 2026): a tab or an item after the screen's name ---- */
+{
+  const screens = cat.items.filter((i) => i.kind === 'screen');
+  eq(consoleResolve(screens, 'screen', 'build-orchestrator pending'), { item: screens.find((i) => i.id === 'build-orchestrator'), focus: 'pending' }, 'screen id + tab');
+  eq(consoleResolve(screens, 'screen', 'Build orchestrator / my-build').focus, 'my-build', 'screen title + item');
+  eq(consoleResolve(screens, 'screen', 'build-orchestrator:console-commands-reliable').focus, 'console-commands-reliable', 'screen id: item');
+  eq(consoleResolve(screens, 'screen', 'builds queue').item?.id, 'builds', 'the longest exact screen name wins, and only a whole name');
+  eq(consoleResolve(screens, 'screen', 'plan studio').focus, undefined, 'a plain title has no focus');
+  eq(consoleResolve(screens, 'screen', 'open the build orchestrator approvals').focus, 'approvals', 'leading words people add');
+  eq(consoleSplitFocus(screens, 'build-orchestrator'), null, 'nothing after the name');
+  eq(consoleSplitFocus(screens, 'build-orchestratorx y'), null, 'a name must end at a separator');
+  const live = [{ id: 'tab', lastUsed: Date.now(), lastSeen: Date.now(), catalog: cat }];
+  const g = (path: string, input?: Record<string, unknown>) => runConsoleCommand({ op: 'act', target: 'console.screens', path, action: 'open', ...(input ? { input } : {}) } as never, { clients: live, id: 'f1' });
+  const a = g('build-orchestrator pending');
+  ok(a.ok && a.deliver?.message.focus === 'pending' && a.deliver.message.target === 'build-orchestrator' && (a.data as { focus?: string }).focus === 'pending', 'open carries focus');
+  const b = g('build-orchestrator', { focus: 'my-build' });
+  ok(b.ok && b.deliver?.message.focus === 'my-build', 'input.focus wins');
+  const c = runConsoleCommand({ op: 'act', target: 'console.settings', path: 'appearance', action: 'open', input: { focus: 'x' } } as never, { clients: live, id: 'f2' });
+  ok(c.ok && c.deliver?.message.focus === undefined, 'focus only on screens');
+}
+
+/* ---- liveness + late commands ---- */
+ok(CONSOLE_CLIENT_STALE_MS <= 60_000, 'a console that stopped beating drops within a minute');
+{
+  const NOW2 = Date.parse('2026-11-11T10:00:00Z');
+  const m = consoleMessage({ op: 'open', kind: 'screen', target: 'home' }, { id: 'l', now: NOW2 });
+  eq(consoleMessageLate(m, NOW2 + 1_000), false, 'on time');
+  eq(consoleMessageLate(m, NOW2 + CONSOLE_LATE_MS + 1), true, 'a live command that reached a waking tab late is skipped');
+  eq(consoleMessageLate({ ...m, delivery: 'queued' }, NOW2 + CONSOLE_LATE_MS * 10), false, 'a queued command always runs');
+}
 
 console.log(`✓ console commands — ${n} checks`);
