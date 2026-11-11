@@ -933,11 +933,8 @@ class _FakeControl:
 tl = c.get(f"{P}/tools").json()
 check("console" in tl["groups"] and any(t["name"] == "console_open" and t["group"] == "console" and t["on"] for t in tl["builtin"]), "/tools lists the console group, on by default")
 check(not [s for s in tools_mod.specs({"console": True}) if s["name"] == "console_open" and "group" in s], "console specs are offered without the group field")
-try:
-    tools_mod.run("console_where", {})
-    check(False, "console tools refuse to run without control@1")
-except ValueError as e:
-    check("control@1" in str(e), "console tools say the Token control plugin is missing")
+_r = json.loads(tools_mod.run("console_where", {}))
+check(_r["ok"] is False and _r["code"] == "not_implemented" and "control@1" in _r["message"], "without the Token control plugin the console tools answer not_implemented and say so")
 plugin_services.provide("control@1", _FakeControl(), "fake-token-control")
 _r = json.loads(tools_mod.run("console_where", {}, by="ai-assistant:brett"))
 check(_r["ok"] and _r["data"]["value"]["screen"] == "builds" and _ctl_calls[-1]["command"]["$axf"] == "control@1" and _ctl_calls[-1]["by"] == "ai-assistant:brett", "console_where → get console.nav here through the capability")
