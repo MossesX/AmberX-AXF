@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 21:02 UTC · `remove-the-old-theme-manager-style-and-layout-se` PR #472 (all) · builds-live
 - 2026-11-10 21:03 UTC · `remove-the-old-theme-manager-style-and-layout-se` note (all) · orchestrator
 - 2026-11-10 21:03 UTC · `api-accounts-need-no-approval-builds-route-there` note (all) · orchestrator
 - 2026-11-10 21:03 UTC · `resolve-conflicts-and-land-460-456-457-459-342` → running, note (all) · pipeline
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-11 23:43 UTC · `full-api-cli-control-of-everything-plus-an-offli` s9 done (all) · orchestrator
 - 2026-11-11 23:45 UTC · `full-api-cli-control-of-everything-plus-an-offli` s10 done (all) · orchestrator
 - 2026-11-11 23:45 UTC · `full-api-cli-control-of-everything-plus-an-offli` s11 done (all) · orchestrator
+- 2026-11-11 23:46 UTC · `full-api-cli-control-of-everything-plus-an-offli` s12 done (all) · orchestrator
 
 ## Token passes (log)
 
