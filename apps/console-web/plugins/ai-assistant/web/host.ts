@@ -43,7 +43,7 @@ export function parseHostMessage(raw: unknown): HostMessage | null {
   switch (o.type) {
     case 'owned': return { $axf: HOST_MESSAGE, type: 'owned', on: o.on !== false };
     case 'open': case 'start': {
-      const out: HostMessage = { $axf: HOST_MESSAGE, type: o.type };
+      const out: Extract<HostMessage, { type: 'open' | 'start' }> = { $axf: HOST_MESSAGE, type: o.type };
       const s = o.start as Record<string, unknown> | undefined;
       if (s && typeof s.message === 'string' && s.message) {
         out.start = { message: s.message.slice(0, 8000) };

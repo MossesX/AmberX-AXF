@@ -73,7 +73,7 @@ export const plugin: AxfWebLibrary = {
     // Hands-free voice from anywhere (menus, toolbars, search, console_action, voice): on | off | toggle (default toggle).
     rt.actions.register('ai-assistant.hands-free', ([how]) => {
       const want = how === 'on' ? { on: true } : how === 'off' ? { on: false } : { toggle: true };
-      void setHandsFree(want).then((hf) => rt.toast(`Hands-free voice ${hf.on ? 'on: say the wake word, then your message' : 'off'}`, 'success', 'AI assistant'), (e: Error) => rt.toast(e.message, 'error', 'AI assistant'));
+      void setHandsFree(want).then((hf) => rt.toast(`Hands-free voice ${hf.on ? 'on: say the wake word, then your message' : 'off'}`, 'success', 'AI assistant'), (e: Error) => rt.toast(e.message, 'danger', 'AI assistant'));
     }, { label: 'Hands-free voice on / off', params: true });
   },
   views: { 'ai-assistant': { title: 'AI assistant', icon: 'sparkles', render: () => <AssistantView /> } },

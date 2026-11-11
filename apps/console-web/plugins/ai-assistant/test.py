@@ -409,7 +409,8 @@ fake = _os.path.join(fake_dir, "claude")
 with open(fake, "w") as f:
     f.write(f"""#!{sys.executable}
 import json, subprocess, sys
-json.dump(sys.argv, open({argv_file!r}, "w"))
+if "--mcp-config" in sys.argv:  # the chat turn; a background title call must not overwrite its argv
+    json.dump(sys.argv, open({argv_file!r}, "w"))
 sys.stdin.read()
 cfg = json.load(open(sys.argv[sys.argv.index("--mcp-config") + 1]))["mcpServers"]["axf"]
 p = subprocess.Popen([cfg["command"], *cfg["args"]], env=cfg["env"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
