@@ -2,6 +2,7 @@ import { installConsoleSearch } from './consoleSearch';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AccountView, AppShell, AssetStudio, bannerSlotDefs, FRAME_BANNERS_SLOT, SlotsProvider, useBannerPrefsTick, useAxfState, useRuntime, type ViewMap } from './axf/react';
 import { installLibraries } from './axf/react/library';
+import { ASSET_STORE_TAB_KEY } from './axf/core';
 import { dialogs } from './dialogs';
 import { ConsoleStoreProvider, useStore } from './store';
 import { Home } from './views/Home';
@@ -60,8 +61,16 @@ const views: ViewMap = {
   boilerplates: { title: 'Boilerplates', icon: 'layout', render: () => <Boilerplates /> },
   components: { title: 'Components', icon: 'grid', render: () => <Components /> },
   assets: { title: 'Assets', icon: 'palette', render: () => <AssetStudio /> },
+  skins: { title: 'Skins', icon: 'palette', render: () => <SkinsScreen /> },
   account: { title: 'Account', icon: 'shield', render: () => <AccountView /> },
 };
+
+/** Deep link to the asset store's Skins category (console_open screen skins). */
+function SkinsScreen() {
+  const rt = useRuntime();
+  useEffect(() => { rt.settings.set(ASSET_STORE_TAB_KEY, 'skins'); }, [rt]);
+  return <AssetStudio />;
+}
 
 function OpenSettingsTab({ tab }: { tab: string }) {
   const rt = useRuntime();

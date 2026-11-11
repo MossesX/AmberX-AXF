@@ -8,7 +8,7 @@
  * voice, the command palette); the editor and import are dialogs (console_open dialog axf.skin.editor / axf.skin.import).
  */
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type CSSProperties } from 'react';
-import { compileLayout, skinAsset, freeSkinId, SKIN_EDITOR_DIALOG, SKIN_IMPORT_DIALOG, type Asset, type AssetType, type LibraryEntry, type LibraryShow, type SkinData } from '../../core';
+import { compileLayout, skinAsset, freeSkinId, SKIN_DRAFT_ID, SKIN_EDITOR_DIALOG, SKIN_IMPORT_DIALOG, type Asset, type AssetType, type LibraryEntry, type LibraryShow, type SkinData } from '../../core';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { Button, Chip, Segmented } from '../components/Controls';
 import { Note, SelectField, TextField } from '../components/Forms';
@@ -66,7 +66,7 @@ export function SkinBrowser() {
   const here = rt.skinAt();
   const global = rt.globalSkin();
   const previewing = rt.previewedSkin();
-  useEffect(() => () => { if (rt.previewedSkin() && rt.previewedSkin() !== 'skin-editor-draft') rt.previewSkin(null); }, [rt]);
+  useEffect(() => () => { if (rt.previewedSkin() && rt.previewedSkin() !== SKIN_DRAFT_ID) rt.previewSkin(null); }, [rt]);
 
   return (
     <section className="fx-stack" aria-labelledby="axf-skins-title" data-axf-skin-browser="">
@@ -151,6 +151,9 @@ export function SkinEditor({ id, from, close }: { id?: string; from?: string; cl
 
   useEffect(() => { if (live) lib.previewDraft(draft.data, draft.name); else lib.previewDraft(null); }, [lib, draft, live]);
   useEffect(() => () => { lib.previewDraft(null); }, [lib]);
+  // a look change underneath (the day / night colour switch, another tab) ends any preview: show the draft again
+  const swaps = useAxfState().swaps;
+  useEffect(() => { if (live && rt.previewedSkin() !== SKIN_DRAFT_ID) lib.previewDraft(draft.data, draft.name); }, [swaps]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const opts = (type: string) => rt.registry.list(type as AssetType).map((a) => ({ value: a.id, label: a.name }));
   const setTheme = (k: 'layoutTheme' | 'colorTheme' | 'styleTheme', v: string) => setDraft((d) => ({ ...d, data: { ...d.data, [k]: v } }));
