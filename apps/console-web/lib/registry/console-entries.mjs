@@ -211,3 +211,71 @@ export function generatePhrases(entries) {
   for (const { a, e, ph } of proposals) if (taken.get(ph) === `${e.id}#${a.id}`) { a.phrases = [ph]; n++; }
   return n;
 }
+
+/* ================================================================== app plugins outside the plugin homes */
+
+const ACTION_RE = /(?:actions\.register|\bon)\(\s*'([a-z0-9][a-z0-9.:-]*)'[\s\S]{0,600}?\{\s*label:\s*'([^']+)'/g;
+
+/**
+ * Plugins of apps the plugin-commands registry does not cover (apps/<app>/plugins/<folder>/plugin.json, e.g. Molly):
+ * a plugin entry, a page per view / dialog / settings tab and a tool per action it registers in code. They run only
+ * inside that app's window, so each says so as a gap (no remote command channel yet) instead of claiming a surface.
+ */
+export function collectAppPlugins(root, { apps = ['molly'] } = {}) {
+  const out = [];
+  for (const app of apps) {
+    const dir = join(root, 'apps', app, 'plugins');
+    if (!existsSync(dir)) continue;
+    const why = `runs only inside ${app}'s window: ${app} has no remote command channel yet`;
+    const gaps = ['rest', 'mcp', 'cli'].map((what) => ({ what, why, plan: `a ${app} command client on console-commands@1 (app '${app}')` }));
+    const surf = { rest: false, mcp: false, cli: false };
+    for (const folder of readdirSync(dir).sort()) {
+      const m = readJson(join(dir, folder, 'plugin.json'));
+      if (!m || folder.startsWith('_')) continue;
+      const file = `apps/${app}/plugins/${folder}/plugin.json`;
+      const name = m.name ?? folder;
+      const src = { kind: 'plugin-manifest', file, frame: 'plugin@1' };
+      out.push({ type: 'plugin', id: `${app}/plugin/${folder}`, owner: app, label: name, description: String(m.description ?? '').slice(0, 2000), where: { app, plugin: folder, file },
+        actions: [], surfaces: { ...surf, voice: false }, gaps: [{ what: 'actions', why, plan: gaps[0].plan }], aliases: [`${app}:${folder}`], tags: ['plugin'], source: src });
+      for (const pr of (m.provides ?? []).map(String)) {
+        const [kind, ...rest] = pr.split(':'); const pname = rest.join(':');
+        if (!['view', 'dialog', 'settings-tab'].includes(kind) || !pname) continue;
+        out.push({ type: 'page', id: `${app}/page/${kind === 'settings-tab' ? `settings/${pname}` : kind === 'dialog' ? `dialog/${pname}` : pname}`, owner: app,
+          label: `${name} ${kind === 'view' ? '' : kind === 'dialog' ? 'dialog' : 'settings'}`.trim(), where: { app, plugin: folder, [kind === 'view' ? 'view' : kind === 'dialog' ? 'dialog' : 'settingsTab']: pname, file },
+          actions: [{ id: 'open', label: `Open ${name}${kind === 'settings-tab' ? ' settings' : ''}`, effect: 'navigate', run: `channel:${app}/${kind === 'view' ? 'nav' : kind === 'dialog' ? 'dialog' : 'settings.open'}:${pname}`, surfaces: surf }],
+          surfaces: { ...surf }, gaps: [...gaps, { what: 'deepLink', why: `${app} deep links open its framed apps only (#/<app>/<route>), not its own ${kind === 'view' ? 'views' : kind === 'dialog' ? 'dialogs' : 'settings tabs'}`, plan: gaps[0].plan }],
+          aliases: [`${app}:${pr}`], tags: [kind], parent: `${app}/plugin/${folder}`, source: src });
+      }
+      const web = join(dir, folder, 'web');
+      for (const f of existsSync(web) ? readdirSync(web).filter((n) => /\.(tsx?|mjs)$/.test(n)) : []) {
+        const text = readFileSync(join(web, f), 'utf8');
+        for (const [, id, label] of text.matchAll(ACTION_RE)) {
+          out.push({ type: 'tool', id: `${app}/tool/${folder}/${id}`, owner: app, label, where: { app, plugin: folder, action: id, file: `apps/${app}/plugins/${folder}/web/${f}` },
+            actions: [{ id: 'run', label, effect: /reset|clear/.test(id) ? 'write' : /open|settings|dialog|layout|get/.test(id) ? 'navigate' : 'write', run: `channel:${app}/${id}`, params: [cleanParam({ name: 'args', type: 'string', maxLength: 500, description: 'its arguments (a:b:c), when it takes any' })], surfaces: surf }],
+            surfaces: { ...surf }, gaps, tags: ['action'], parent: `${app}/plugin/${folder}`, source: { kind: 'plugin-manifest', file: `apps/${app}/plugins/${folder}/web/${f}`, frame: 'actions' } });
+        }
+      }
+    }
+    // the app's own actions (src/actions.ts)
+    const own = join(root, 'apps', app, 'src', 'actions.ts');
+    if (existsSync(own)) for (const [, id, label] of readFileSync(own, 'utf8').matchAll(ACTION_RE)) {
+      out.push({ type: 'tool', id: `${app}/tool/${id}`, owner: app, label, where: { app, action: id, file: `apps/${app}/src/actions.ts` },
+        actions: [{ id: 'run', label, effect: /own-tab|open/.test(id) ? 'navigate' : 'write', run: `channel:${app}/${id}`, surfaces: surf }], surfaces: { ...surf }, gaps, tags: ['action'], parent: `${app}/app/${app}`, source: { kind: 'declared', file: `apps/${app}/src/actions.ts`, frame: 'actions' } });
+    }
+  }
+  return out;
+}
+
+/** control-registry@1 declarations an app or a provider keeps beside its code: apps/<app>/registry.json, apps/<app>/registry/*.json, apps/<app>/providers/<p>/registry.json. */
+export function appDeclarationFiles(root) {
+  const out = [];
+  const appsDir = join(root, 'apps');
+  for (const app of existsSync(appsDir) ? readdirSync(appsDir).sort() : []) {
+    const base = join(appsDir, app);
+    const cands = [join(base, 'registry.json')];
+    const regDir = join(base, 'registry'); if (existsSync(regDir)) { try { cands.push(...readdirSync(regDir).filter((f) => f.endsWith('.json')).sort().map((f) => join(regDir, f))); } catch { /* not a folder */ } }
+    const prov = join(base, 'providers'); if (existsSync(prov)) for (const p of readdirSync(prov).sort()) cands.push(join(prov, p, 'registry.json'));
+    for (const f of cands) { const d = existsSync(f) ? readJson(f) : null; if (d?.$axf === 'control-registry@1') out.push({ file: relative(root, f), declaration: d }); }
+  }
+  return out;
+}

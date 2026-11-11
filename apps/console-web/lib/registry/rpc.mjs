@@ -18,7 +18,7 @@ import { resolve as resolvePath } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { aiFallbackBrief, checkParams, getEntry } from '../../../../framework/core/engines/control-registry.mjs';
 import { dispatch } from './dispatch.mjs';
-import { consoleTargets, planResolution, planState, providerIds } from './execute.mjs';
+import { channelGap, consoleTargets, planResolution, planState, providerIds } from './execute.mjs';
 import { surfacesOf } from '../../../../framework/core/engines/control-registry.mjs';
 import { ControlRegistry } from './index.mjs';
 
@@ -40,7 +40,10 @@ function resolution(r, input, req) {
   const field = res.ok ? fieldCheck(r.index, res) : null;
   if (field?.errors.length) return { ok: false, code: 'validation', message: `${res.entry} · ${res.action}: ${field.errors.join('; ')}`, errors: field.errors, entry: res.entry, action: res.action, ai: res.ai, plan: { via: 'none', why: 'not valid' } };
   if (field) res.params = { ...res.params, value: field.value };
-  const out = { ...res, plan: planResolution(res, { ...opts, plugin: res.ok ? getEntry(r.index, res.entry)?.where?.plugin ?? '' : '' }) };
+  let plan = null;
+  const out = { ...res, plan: (plan = planResolution(res, { ...opts, plugin: res.ok ? getEntry(r.index, res.entry)?.where?.plugin ?? '' : '' })) };
+  const cg = channelGap(plan);
+  if (cg) out.plan = { via: 'none', why: cg, channel: plan };
   if (!res.ok && res.ai?.fallback && !res.ai.asked) out.brief = aiFallbackBrief(r.index, input, res);
   return out;
 }

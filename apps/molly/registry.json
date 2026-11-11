@@ -1,0 +1,314 @@
+{
+ "$axf": "control-registry@1",
+ "note": "Molly (apps/molly) in the control registry: the app, its framed apps (deep links #/<app>/<route>, run as a URL handoff the caller opens: a browser, AmberX's open_url, axf ctl open) and its navigation look (control@1 tokens.nav, executable from every surface). Molly's own plugins, pages and runtime actions are collected from apps/molly/plugins by the registry's app collector; everything that runs only inside Molly's window is listed as a gap with the reason. Merged by id.",
+ "entries": [
+  {
+   "id": "molly/app/molly",
+   "type": "app",
+   "label": "Molly",
+   "description": "One interface for AmberX, axHub, the Dev Console and Expenses (apps/molly). Each app is framed at its own address; deep links #/<app>/<route>.",
+   "where": {
+    "app": "molly",
+    "file": "apps/molly/src/molly/apps.ts"
+   },
+   "open": {
+    "kind": "url",
+    "target": "https://molly.amberxai.com",
+    "deepLink": "https://molly.amberxai.com/#/"
+   },
+   "actions": [
+    {
+     "id": "open",
+     "label": "Open Molly on an app",
+     "effect": "navigate",
+     "run": "url:https://molly.amberxai.com/#/{app}/{route}",
+     "params": [
+      {
+       "name": "app",
+       "type": "enum",
+       "enum": [
+        "amberx",
+        "axhub",
+        "console",
+        "expenses"
+       ],
+       "enumLabels": {
+        "amberx": "AmberX",
+        "axhub": "axHub",
+        "console": "Console",
+        "expenses": "Expenses"
+       },
+       "required": true,
+       "position": 0
+      },
+      {
+       "name": "route",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9._~:/?#=&%+-]{0,300}$",
+       "description": "the app's own route (e.g. builds), optional",
+       "position": 1
+      }
+     ],
+     "phrases": [
+      "open molly",
+      "open {app} in molly"
+     ]
+    }
+   ],
+   "synonyms": [
+    "molly"
+   ],
+   "tags": [
+    "app"
+   ]
+  },
+  {
+   "id": "molly/page/amberx",
+   "type": "page",
+   "label": "AmberX in Molly",
+   "description": "The AmberX app: plugins, voice, walkthroughs.",
+   "where": {
+    "app": "molly",
+    "view": "amberx",
+    "file": "apps/molly/src/molly/apps.ts"
+   },
+   "open": {
+    "kind": "url",
+    "target": "https://molly.amberxai.com/#/amberx",
+    "deepLink": "https://molly.amberxai.com/#/amberx"
+   },
+   "actions": [
+    {
+     "id": "open",
+     "label": "Open AmberX in Molly",
+     "effect": "navigate",
+     "run": "url:https://molly.amberxai.com/#/amberx/{route}",
+     "params": [
+      {
+       "name": "route",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9._~:/?#=&%+-]{0,300}$",
+       "description": "the app's own route (e.g. builds), optional",
+       "position": 0
+      }
+     ],
+     "phrases": [
+      "open amberx in molly",
+      "molly amberx"
+     ]
+    }
+   ],
+   "parent": "molly/app/molly",
+   "tags": [
+    "page"
+   ]
+  },
+  {
+   "id": "molly/page/axhub",
+   "type": "page",
+   "label": "axHub in Molly",
+   "description": "The connector hub: approvals, go pass, services.",
+   "where": {
+    "app": "molly",
+    "view": "axhub",
+    "file": "apps/molly/src/molly/apps.ts"
+   },
+   "open": {
+    "kind": "url",
+    "target": "https://molly.amberxai.com/#/axhub",
+    "deepLink": "https://molly.amberxai.com/#/axhub"
+   },
+   "actions": [
+    {
+     "id": "open",
+     "label": "Open axHub in Molly",
+     "effect": "navigate",
+     "run": "url:https://molly.amberxai.com/#/axhub/{route}",
+     "params": [
+      {
+       "name": "route",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9._~:/?#=&%+-]{0,300}$",
+       "description": "the app's own route (e.g. builds), optional",
+       "position": 0
+      }
+     ],
+     "phrases": [
+      "open axhub in molly",
+      "molly axhub"
+     ]
+    }
+   ],
+   "parent": "molly/app/molly",
+   "tags": [
+    "page"
+   ]
+  },
+  {
+   "id": "molly/page/console",
+   "type": "page",
+   "label": "Console in Molly",
+   "description": "The AXF Dev Console: builds, plugins, UI Review.",
+   "where": {
+    "app": "molly",
+    "view": "console",
+    "file": "apps/molly/src/molly/apps.ts"
+   },
+   "open": {
+    "kind": "url",
+    "target": "https://molly.amberxai.com/#/console",
+    "deepLink": "https://molly.amberxai.com/#/console"
+   },
+   "actions": [
+    {
+     "id": "open",
+     "label": "Open Console in Molly",
+     "effect": "navigate",
+     "run": "url:https://molly.amberxai.com/#/console/{route}",
+     "params": [
+      {
+       "name": "route",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9._~:/?#=&%+-]{0,300}$",
+       "description": "the app's own route (e.g. builds), optional",
+       "position": 0
+      }
+     ],
+     "phrases": [
+      "open console in molly",
+      "molly console"
+     ]
+    }
+   ],
+   "parent": "molly/app/molly",
+   "tags": [
+    "page"
+   ]
+  },
+  {
+   "id": "molly/page/expenses",
+   "type": "page",
+   "label": "Expenses in Molly",
+   "description": "The Expense Tracker: ledger, paydays, reports, assistant.",
+   "where": {
+    "app": "molly",
+    "view": "expenses",
+    "file": "apps/molly/src/molly/apps.ts"
+   },
+   "open": {
+    "kind": "url",
+    "target": "https://molly.amberxai.com/#/expenses",
+    "deepLink": "https://molly.amberxai.com/#/expenses"
+   },
+   "actions": [
+    {
+     "id": "open",
+     "label": "Open Expenses in Molly",
+     "effect": "navigate",
+     "run": "url:https://molly.amberxai.com/#/expenses/{route}",
+     "params": [
+      {
+       "name": "route",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9._~:/?#=&%+-]{0,300}$",
+       "description": "the app's own route (e.g. builds), optional",
+       "position": 0
+      }
+     ],
+     "phrases": [
+      "open expenses in molly",
+      "molly expenses"
+     ]
+    }
+   ],
+   "parent": "molly/app/molly",
+   "tags": [
+    "page"
+   ]
+  },
+  {
+   "id": "molly/setting/navigation",
+   "type": "setting",
+   "label": "Molly navigation look",
+   "description": "Molly's navigation menu style (nav-style@1): the same look settings as control@1 tokens.nav, kept on axHub, so a change here is a change everywhere that reads axf.tokens.nav. The preset swap and collapse to icons run inside Molly's window only.",
+   "where": {
+    "app": "molly",
+    "plugin": "navigation",
+    "file": "apps/molly/plugins/navigation/plugin.json"
+   },
+   "state": {
+    "read": "control:tokens.nav/list",
+    "shape": "every nav-style field in force with its allowed values (axf ctl get console-web/display/tokens.nav)"
+   },
+   "actions": [
+    {
+     "id": "get",
+     "label": "Read the navigation settings",
+     "effect": "read",
+     "run": "control:tokens.nav/list"
+    },
+    {
+     "id": "set",
+     "label": "Change one navigation setting",
+     "effect": "write",
+     "run": "control:tokens.nav/set",
+     "params": [
+      {
+       "name": "path",
+       "type": "id",
+       "of": "tokens.nav",
+       "required": true,
+       "position": 0,
+       "description": "a nav-style field (axf ctl get console-web/display/tokens.nav lists them with their allowed values)"
+      },
+      {
+       "name": "value",
+       "type": "json",
+       "required": true,
+       "position": 1
+      }
+     ],
+     "phrases": [
+      "set molly navigation {path} to {value}"
+     ]
+    },
+    {
+     "id": "reset",
+     "label": "Reset the navigation settings",
+     "effect": "write",
+     "run": "control:tokens.nav/reset",
+     "phrases": [
+      "reset molly navigation"
+     ]
+    }
+   ],
+   "gaps": [
+    {
+     "what": "actions",
+     "why": "navigation.preset (swap the nav-style asset: standard, glide, accordion, soft-fade, push, still) and navigation.collapse run only inside Molly's window: Molly has no remote command channel yet",
+     "plan": "a Molly command client on console-commands@1 (app 'molly')"
+    }
+   ],
+   "parent": "molly/plugin/navigation",
+   "synonyms": [
+    "molly nav",
+    "molly menu"
+   ],
+   "tags": [
+    "setting"
+   ]
+  },
+  {
+   "id": "molly/tool/navigation/navigation.get",
+   "remove": true
+  },
+  {
+   "id": "molly/tool/navigation/navigation.set",
+   "remove": true
+  },
+  {
+   "id": "molly/tool/navigation/navigation.reset",
+   "remove": true
+  }
+ ]
+}

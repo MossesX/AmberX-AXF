@@ -25,7 +25,7 @@ import { applyDeclaration, cleanParam, paramFromDecl, paramsFromSchema, REGISTRY
 import { readPlugins, registry as pluginRegistry } from '../../../../framework/cli/plugin-commands.mjs';
 import { applyUiApi } from '../ui-api-parity/index.mjs';
 import { applyVoiceIntents, readVoiceIntents, scanVoiceCommands } from '../voice-api/index.mjs';
-import { applyConventions, collectDisplayOptions, collectSettingsRegistries, generatePhrases } from './console-entries.mjs';
+import { appDeclarationFiles, applyConventions, collectAppPlugins, collectDisplayOptions, collectSettingsRegistries, generatePhrases } from './console-entries.mjs';
 
 export const ROOT = resolve(process.env.AXF_ROOT || join(dirname(fileURLToPath(import.meta.url)), '../../../..'));
 export const DECL_DIR = process.env.AXF_REGISTRY_DECL_DIR || join(ROOT, '_claude', 'builds', 'registry', 'registry.d');
@@ -184,6 +184,7 @@ export function collectAmberxVoice() {
 export function collectDeclarations(plugins) {
   const out = [];
   for (const p of plugins) if (p.manifest?.control !== undefined) out.push({ file: `${p.dir}/plugin.json`, declaration: p.manifest.control, app: p.app, folder: p.folder });
+  out.push(...appDeclarationFiles(ROOT));
   if (existsSync(DECL_DIR)) for (const f of readdirSync(DECL_DIR).filter((n) => n.endsWith('.json')).sort()) { const d = readJson(join(DECL_DIR, f)); out.push({ file: rel(join(DECL_DIR, f)), declaration: d ?? { $axf: REGISTRY_FRAME, error: 'not JSON' } }); }
   return out;
 }
@@ -209,7 +210,7 @@ export function collectAll({ apps = null, collectors = COLLECTORS } = {}) {
     const ax = collectAmberxVoice(); errors.push(...ax.errors);
     for (const { app, folder, file, intent } of ax.intents) { const r = applyVoiceIntents(entries, [intent], { app, folder, file }); entries = r.entries; errors.push(...r.errors); }
   }
-  if (on.has('console')) { const have = new Set(entries.map((e) => e.id)); entries.push(...[...collectSettingsRegistries(ROOT, plugins), ...collectDisplayOptions(ROOT)].filter((e) => !have.has(e.id))); }
+  if (on.has('console')) { const have = new Set(entries.map((e) => e.id)); entries.push(...[...collectSettingsRegistries(ROOT, plugins), ...collectDisplayOptions(ROOT), ...collectAppPlugins(ROOT)].filter((e) => !have.has(e.id))); }
   if (on.has('declared')) for (const d of collectDeclarations(plugins)) { const r = applyDeclaration(entries, d.declaration, { file: d.file }); entries = r.entries; owners.push(...r.owners); errors.push(...r.errors); }
   if (on.has('console')) { applyConventions(entries); generatePhrases(entries); }
   return { entries, owners, errors, collectors: [...on] };

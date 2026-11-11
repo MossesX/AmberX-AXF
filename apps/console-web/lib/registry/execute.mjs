@@ -83,7 +83,7 @@ export function planRef(ref, params = {}, { effect = 'write', confirm = '', reas
       if (i < 1) return { via: 'none', why: `"${ref}" needs provider:<connection>/<op>` };
       return { via: 'provider', provider: r.rest.slice(0, i), op: r.rest.slice(i + 1), params: omit(params, CALL_PARAMS), ...extra };
     }
-    case 'channel': return { via: 'channel', op: r.rest, params: omit(params, CALL_PARAMS) };
+    case 'channel': { const i = r.rest.indexOf('/'); return { via: 'channel', app: i > 0 ? r.rest.slice(0, i) : '', op: i > 0 ? r.rest.slice(i + 1) : r.rest, params: omit(params, CALL_PARAMS) }; }
     case 'intent': return { via: 'intent', uri: fill(r.rest, params) };
     case 'url': return { via: 'url', url: fill(r.rest, params) };
     case 'rest': { const [method, ...p] = r.rest.split(' '); return { via: 'rest', method, path: fill(p.join(' '), params), body: omit(params, CALL_PARAMS) }; }
@@ -101,7 +101,10 @@ export function planRef(ref, params = {}, { effect = 'write', confirm = '', reas
 }
 
 /** `{name}` slots in a template filled from params (URL-encoded). */
-export function fill(template, params = {}) { return String(template).replace(/\{([A-Za-z0-9_]+)\}/g, (m, k) => (params[k] === undefined ? m : encodeURIComponent(String(params[k])))); }
+export function fill(template, params = {}) {
+  const out = String(template).replace(/\{([A-Za-z0-9_]+)\}/g, (m, k) => (params[k] === undefined || params[k] === '' ? '' : String(params[k]).split('/').map(encodeURIComponent).join('/')));
+  return out.replace(/([^:/])\/{2,}/g, '$1/').replace(/\/+$/, '') || out;
+}
 
 /** The plan for a resolution from dispatch(). A failed resolution plans nothing. */
 export function planResolution(res, opts = {}) {
@@ -151,6 +154,11 @@ export function consoleSyncProblems(index) {
   }
   return out;
 }
+
+/** Apps with a remote command channel the surfaces can hand a `channel:` plan to (AmberX joins in s13). */
+export const CHANNEL_APPS = new Set();
+/** Why a channel plan can't run from here, or '' when it can. */
+export const channelGap = (plan) => (plan.via === 'channel' && !CHANNEL_APPS.has(plan.app) ? `${plan.app || 'this app'} has no remote command channel yet: this runs only inside its own window` : '');
 
 /** A provider bridge: providers register `{ id, call(op, params, ctx) }` here (axHub step s9 onwards). */
 const providers = new Map();
