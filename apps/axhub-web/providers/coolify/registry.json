@@ -1,0 +1,565 @@
+{
+ "$axf": "control-registry@1",
+ "note": "Coolify through axHub (build full-api-cli-control-of-everything-plus-an-offli, s11): provider:coolify/<op> = the hub tool coolify.<op>, called by the console's provider bridge with its hub token (no Coolify token in the console). Destructive actions (stop, restart, cancel, delete) also need the registry's confirm token. GET /api/registry/providers/check compares these ops with the live hub. Merged by id.",
+ "entries": [
+  {
+   "id": "coolify/app/coolify",
+   "type": "app",
+   "owner": "coolify",
+   "label": "Coolify",
+   "description": "Coolify on the VPS (builds and runs every app as a container behind Traefik) through axHub's Coolify connector: the console holds no Coolify token. Reads run at once; deploys, restarts, stops and env changes go to axHub once with a reason and wait for Brett there. Op names follow the connector's tools (coolify.<op>); the provider check compares them with the live hub.",
+   "where": {
+    "app": "axhub-web",
+    "provider": "coolify",
+    "connection": "axhub"
+   },
+   "state": {
+    "read": "provider:axhub/catalog",
+    "shape": "the Coolify tools axHub has"
+   },
+   "actions": [
+    {
+     "id": "tools",
+     "label": "List the Coolify tools on axHub",
+     "effect": "read",
+     "run": "provider:axhub/catalog",
+     "params": [
+      {
+       "name": "service",
+       "type": "enum",
+       "enum": [
+        "coolify"
+       ],
+       "default": "coolify"
+      }
+     ]
+    }
+   ],
+   "synonyms": [
+    "coolify"
+   ],
+   "tags": [
+    "provider"
+   ]
+  },
+  {
+   "id": "coolify/tool/projects",
+   "type": "tool",
+   "owner": "coolify",
+   "label": "Coolify projects",
+   "description": "Projects and their environments.",
+   "where": {
+    "app": "axhub-web",
+    "provider": "coolify",
+    "connection": "axhub",
+    "file": "apps/axhub-web/providers/coolify/registry.json"
+   },
+   "state": {
+    "read": "provider:coolify/list_projects"
+   },
+   "actions": [
+    {
+     "id": "list",
+     "label": "List projects",
+     "effect": "read",
+     "run": "provider:coolify/list_projects",
+     "phrases": [
+      "list coolify projects"
+     ]
+    },
+    {
+     "id": "get",
+     "label": "Project details",
+     "effect": "read",
+     "run": "provider:coolify/get_project",
+     "params": [
+      {
+       "name": "uuid",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9-]{4,64}$",
+       "required": true,
+       "position": 0,
+       "description": "the project's uuid (list shows it)"
+      }
+     ]
+    }
+   ],
+   "parent": "coolify/app/coolify",
+   "tags": [
+    "provider"
+   ],
+   "synonyms": [
+    "projects"
+   ]
+  },
+  {
+   "id": "coolify/tool/applications",
+   "type": "tool",
+   "owner": "coolify",
+   "label": "Coolify applications",
+   "description": "Every application: details, logs, start, stop, restart and deploy (redeploy). Stop and restart take that app down for a moment: confirm token plus Brett's approval on axHub.",
+   "where": {
+    "app": "axhub-web",
+    "provider": "coolify",
+    "connection": "axhub",
+    "file": "apps/axhub-web/providers/coolify/registry.json"
+   },
+   "state": {
+    "read": "provider:coolify/list_applications"
+   },
+   "actions": [
+    {
+     "id": "list",
+     "label": "List applications",
+     "effect": "read",
+     "run": "provider:coolify/list_applications",
+     "phrases": [
+      "list coolify apps",
+      "show coolify applications"
+     ]
+    },
+    {
+     "id": "get",
+     "label": "Application details and status",
+     "effect": "read",
+     "run": "provider:coolify/get_application",
+     "params": [
+      {
+       "name": "uuid",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9-]{4,64}$",
+       "required": true,
+       "position": 0,
+       "description": "the application's uuid (list shows it)"
+      }
+     ]
+    },
+    {
+     "id": "logs",
+     "label": "Application logs",
+     "effect": "read",
+     "run": "provider:coolify/get_application_logs",
+     "params": [
+      {
+       "name": "uuid",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9-]{4,64}$",
+       "required": true,
+       "position": 0,
+       "description": "the application's uuid (list shows it)"
+      },
+      {
+       "name": "lines",
+       "type": "integer",
+       "min": 1,
+       "max": 10000,
+       "default": 200
+      }
+     ]
+    },
+    {
+     "id": "start",
+     "label": "Start the application",
+     "effect": "write",
+     "run": "provider:coolify/start_application",
+     "params": [
+      {
+       "name": "uuid",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9-]{4,64}$",
+       "required": true,
+       "position": 0,
+       "description": "the application's uuid (list shows it)"
+      }
+     ]
+    },
+    {
+     "id": "stop",
+     "label": "Stop the application",
+     "effect": "destructive",
+     "run": "provider:coolify/stop_application",
+     "params": [
+      {
+       "name": "uuid",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9-]{4,64}$",
+       "required": true,
+       "position": 0,
+       "description": "the application's uuid (list shows it)"
+      }
+     ],
+     "confirm": true
+    },
+    {
+     "id": "restart",
+     "label": "Restart the application",
+     "effect": "destructive",
+     "run": "provider:coolify/restart_application",
+     "params": [
+      {
+       "name": "uuid",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9-]{4,64}$",
+       "required": true,
+       "position": 0,
+       "description": "the application's uuid (list shows it)"
+      }
+     ],
+     "confirm": true
+    },
+    {
+     "id": "deploy",
+     "label": "Deploy (redeploy) the application",
+     "effect": "write",
+     "run": "provider:coolify/deploy",
+     "params": [
+      {
+       "name": "uuid",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9-]{4,64}$",
+       "required": true,
+       "position": 0,
+       "description": "the application's uuid (list shows it)"
+      },
+      {
+       "name": "force",
+       "type": "boolean",
+       "default": false,
+       "description": "rebuild without the cache"
+      }
+     ],
+     "phrases": [
+      "redeploy {uuid}"
+     ]
+    }
+   ],
+   "parent": "coolify/app/coolify",
+   "tags": [
+    "provider"
+   ],
+   "synonyms": [
+    "apps",
+    "applications",
+    "containers"
+   ]
+  },
+  {
+   "id": "coolify/tool/envs",
+   "type": "tool",
+   "owner": "coolify",
+   "label": "Coolify environment variables",
+   "description": "An application's environment variables: list names, set one (create or update), delete one. Values go to axHub only.",
+   "where": {
+    "app": "axhub-web",
+    "provider": "coolify",
+    "connection": "axhub",
+    "file": "apps/axhub-web/providers/coolify/registry.json"
+   },
+   "state": {
+    "read": "provider:coolify/list_application_envs"
+   },
+   "actions": [
+    {
+     "id": "list",
+     "label": "List variables",
+     "effect": "read",
+     "run": "provider:coolify/list_application_envs",
+     "params": [
+      {
+       "name": "uuid",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9-]{4,64}$",
+       "required": true,
+       "position": 0,
+       "description": "the application's uuid (list shows it)"
+      }
+     ]
+    },
+    {
+     "id": "set",
+     "label": "Set a variable",
+     "effect": "write",
+     "run": "provider:coolify/update_application_env",
+     "params": [
+      {
+       "name": "uuid",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9-]{4,64}$",
+       "required": true,
+       "position": 0,
+       "description": "the application's uuid (list shows it)"
+      },
+      {
+       "name": "key",
+       "type": "string",
+       "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,127}$",
+       "required": true,
+       "position": 1,
+       "description": "the variable name"
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "maxLength": 32768,
+       "required": true,
+       "position": 2,
+       "description": "its value (sent to axHub, never stored by the console)"
+      },
+      {
+       "name": "is_build_time",
+       "type": "boolean",
+       "default": false
+      },
+      {
+       "name": "is_preview",
+       "type": "boolean",
+       "default": false
+      }
+     ]
+    },
+    {
+     "id": "create",
+     "label": "Add a variable",
+     "effect": "write",
+     "run": "provider:coolify/create_application_env",
+     "params": [
+      {
+       "name": "uuid",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9-]{4,64}$",
+       "required": true,
+       "position": 0,
+       "description": "the application's uuid (list shows it)"
+      },
+      {
+       "name": "key",
+       "type": "string",
+       "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,127}$",
+       "required": true,
+       "position": 1,
+       "description": "the variable name"
+      },
+      {
+       "name": "value",
+       "type": "string",
+       "maxLength": 32768,
+       "required": true,
+       "position": 2,
+       "description": "its value (sent to axHub, never stored by the console)"
+      },
+      {
+       "name": "is_build_time",
+       "type": "boolean",
+       "default": false
+      },
+      {
+       "name": "is_preview",
+       "type": "boolean",
+       "default": false
+      }
+     ]
+    },
+    {
+     "id": "delete",
+     "label": "Delete a variable",
+     "effect": "destructive",
+     "run": "provider:coolify/delete_application_env",
+     "params": [
+      {
+       "name": "uuid",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9-]{4,64}$",
+       "required": true,
+       "position": 0,
+       "description": "the application's uuid (list shows it)"
+      },
+      {
+       "name": "env_uuid",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9-]{4,64}$",
+       "required": true,
+       "position": 1
+      }
+     ],
+     "confirm": true
+    }
+   ],
+   "parent": "coolify/app/coolify",
+   "tags": [
+    "provider"
+   ],
+   "synonyms": [
+    "env vars",
+    "environment",
+    "secrets"
+   ]
+  },
+  {
+   "id": "coolify/tool/services",
+   "type": "tool",
+   "owner": "coolify",
+   "label": "Coolify services",
+   "description": "One-click services (databases, tools): details, start, stop, restart.",
+   "where": {
+    "app": "axhub-web",
+    "provider": "coolify",
+    "connection": "axhub",
+    "file": "apps/axhub-web/providers/coolify/registry.json"
+   },
+   "state": {
+    "read": "provider:coolify/list_services"
+   },
+   "actions": [
+    {
+     "id": "list",
+     "label": "List services",
+     "effect": "read",
+     "run": "provider:coolify/list_services"
+    },
+    {
+     "id": "get",
+     "label": "Service details",
+     "effect": "read",
+     "run": "provider:coolify/get_service",
+     "params": [
+      {
+       "name": "uuid",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9-]{4,64}$",
+       "required": true,
+       "position": 0,
+       "description": "the service's uuid (list shows it)"
+      }
+     ]
+    },
+    {
+     "id": "start",
+     "label": "Start the service",
+     "effect": "write",
+     "run": "provider:coolify/start_service",
+     "params": [
+      {
+       "name": "uuid",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9-]{4,64}$",
+       "required": true,
+       "position": 0,
+       "description": "the service's uuid (list shows it)"
+      }
+     ]
+    },
+    {
+     "id": "stop",
+     "label": "Stop the service",
+     "effect": "destructive",
+     "run": "provider:coolify/stop_service",
+     "params": [
+      {
+       "name": "uuid",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9-]{4,64}$",
+       "required": true,
+       "position": 0,
+       "description": "the service's uuid (list shows it)"
+      }
+     ],
+     "confirm": true
+    },
+    {
+     "id": "restart",
+     "label": "Restart the service",
+     "effect": "destructive",
+     "run": "provider:coolify/restart_service",
+     "params": [
+      {
+       "name": "uuid",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9-]{4,64}$",
+       "required": true,
+       "position": 0,
+       "description": "the service's uuid (list shows it)"
+      }
+     ],
+     "confirm": true
+    }
+   ],
+   "parent": "coolify/app/coolify",
+   "tags": [
+    "provider"
+   ],
+   "synonyms": [
+    "services",
+    "databases"
+   ]
+  },
+  {
+   "id": "coolify/tool/deployments",
+   "type": "tool",
+   "owner": "coolify",
+   "label": "Coolify deployments",
+   "description": "Running and recent deployments and one deployment's log.",
+   "where": {
+    "app": "axhub-web",
+    "provider": "coolify",
+    "connection": "axhub",
+    "file": "apps/axhub-web/providers/coolify/registry.json"
+   },
+   "state": {
+    "read": "provider:coolify/list_deployments"
+   },
+   "actions": [
+    {
+     "id": "list",
+     "label": "List deployments",
+     "effect": "read",
+     "run": "provider:coolify/list_deployments",
+     "phrases": [
+      "show coolify deployments",
+      "what is deploying"
+     ]
+    },
+    {
+     "id": "get",
+     "label": "Deployment details and log",
+     "effect": "read",
+     "run": "provider:coolify/get_deployment",
+     "params": [
+      {
+       "name": "uuid",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9-]{4,64}$",
+       "required": true,
+       "position": 0,
+       "description": "the deployment's uuid (list shows it)"
+      }
+     ]
+    },
+    {
+     "id": "cancel",
+     "label": "Cancel a deployment",
+     "effect": "destructive",
+     "run": "provider:coolify/cancel_deployment",
+     "params": [
+      {
+       "name": "uuid",
+       "type": "string",
+       "pattern": "^[A-Za-z0-9-]{4,64}$",
+       "required": true,
+       "position": 0,
+       "description": "the deployment's uuid (list shows it)"
+      }
+     ],
+     "confirm": true
+    }
+   ],
+   "parent": "coolify/app/coolify",
+   "tags": [
+    "provider"
+   ],
+   "synonyms": [
+    "deploys",
+    "deployments"
+   ]
+  }
+ ]
+}
