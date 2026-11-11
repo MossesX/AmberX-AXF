@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 20:58 UTC · `amberx-notify-panel` → queued, note (all) · console
 - 2026-11-10 20:58 UTC · `molly-flagship-skin-premium-sellable-uncluttered` → queued, note (all) · pipeline
 - 2026-11-10 20:59 UTC · `build-notifications-same-notification-per-build` note (all) · orchestrator
 - 2026-11-10 20:59 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` added (0 steps) (all) · console
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-11 23:27 UTC · `background-token-for-every-ui-background-designe` → archived (all) · Claude voice (Gizmo)
 - 2026-11-11 23:27 UTC · `overrides-summary-highlight-colour-setting-asset` → archived (all) · Claude voice (Gizmo)
 - 2026-11-11 23:27 UTC · `correction-to-overrides-list-expanded-asset-show` → archived (all) · Claude voice (Gizmo)
+- 2026-11-11 23:30 UTC · `full-api-cli-control-of-everything-plus-an-offli` s4 done (all) · orchestrator
 
 ## Token passes (log)
 
