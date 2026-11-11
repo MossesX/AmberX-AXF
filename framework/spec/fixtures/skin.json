@@ -399,6 +399,18 @@
   "coverage": {
     "table": [
       {
+        "type": "color-theme",
+        "label": "Color theme",
+        "group": "Themes",
+        "also": [],
+        "elements": [],
+        "declared": true,
+        "ingredient": true,
+        "via": "colorTheme",
+        "why": "the skin's colour theme section",
+        "by": "slot"
+      },
+      {
         "type": "button",
         "label": "Button",
         "group": "Controls",
@@ -410,7 +422,8 @@
           "text",
           "icon"
         ],
-        "declared": false,
+        "declared": true,
+        "ingredient": false,
         "via": "",
         "why": "",
         "by": "slot"
@@ -425,7 +438,8 @@
           "text",
           "icon"
         ],
-        "declared": false,
+        "declared": true,
+        "ingredient": false,
         "via": "",
         "why": "",
         "by": "parts"
@@ -436,9 +450,10 @@
         "group": "Chrome",
         "also": [],
         "elements": [],
-        "declared": false,
+        "declared": true,
+        "ingredient": false,
         "via": "",
-        "why": "a widget or attachable type with no style target (schemas/customize.json targets)",
+        "why": "declares style parts but has no style target (schemas/customize.json targets)",
         "by": "uncovered"
       },
       {
@@ -448,6 +463,7 @@
         "also": [],
         "elements": [],
         "declared": true,
+        "ingredient": false,
         "via": "iconPack",
         "why": "named by the skin",
         "by": "reference"
@@ -459,6 +475,7 @@
         "also": [],
         "elements": [],
         "declared": true,
+        "ingredient": false,
         "via": "",
         "why": "no look",
         "by": "none"
@@ -470,8 +487,9 @@
         "also": [],
         "elements": [],
         "declared": false,
+        "ingredient": false,
         "via": "",
-        "why": "excluded from appearance slots and not declared (add \"skin\": { \"by\": … } to its registry entry)",
+        "why": "no skin entry: add \"skin\": { \"by\": … } to its registry entry (schemas/asset-types.json)",
         "by": "uncovered"
       },
       {
@@ -481,6 +499,7 @@
         "also": [],
         "elements": [],
         "declared": true,
+        "ingredient": false,
         "via": "",
         "why": "",
         "by": "bundle"
@@ -492,8 +511,9 @@
         "also": [],
         "elements": [],
         "declared": true,
+        "ingredient": false,
         "via": "",
-        "why": "mystery: skin.by must be one of slot, parts, reference, bundle, none",
+        "why": "skin.by must be one of slot, parts, reference, bundle, none",
         "by": "uncovered"
       },
       {
@@ -503,8 +523,61 @@
         "also": [],
         "elements": [],
         "declared": true,
+        "ingredient": false,
         "via": "",
-        "why": "hush: skin.by \"none\" needs a why",
+        "why": "skin.by \"none\" needs a why",
+        "by": "uncovered"
+      },
+      {
+        "type": "dialog",
+        "label": "Dialog",
+        "group": "Overlays",
+        "also": [],
+        "elements": [
+          "box",
+          "text",
+          "icon"
+        ],
+        "declared": true,
+        "ingredient": false,
+        "via": "",
+        "why": "has a style target its skin entry doesn't mention (skin.by \"parts\", or \"parts\": true on a slot)",
+        "by": "uncovered"
+      },
+      {
+        "type": "clock",
+        "label": "Clock",
+        "group": "Widgets",
+        "also": [],
+        "elements": [],
+        "declared": true,
+        "ingredient": false,
+        "via": "",
+        "why": "a widget or attachable type has many copies, not one slot (skin.by \"parts\")",
+        "by": "uncovered"
+      },
+      {
+        "type": "interface",
+        "label": "Interface",
+        "group": "System",
+        "also": [],
+        "elements": [],
+        "declared": true,
+        "ingredient": false,
+        "via": "",
+        "why": "a skin never sets this slot (skin.by \"bundle\", \"reference\" or \"none\")",
+        "by": "uncovered"
+      },
+      {
+        "type": "density",
+        "label": "Density",
+        "group": "Themes",
+        "also": [],
+        "elements": [],
+        "declared": true,
+        "ingredient": false,
+        "via": "",
+        "why": "a skin ingredient is picked, not styled with parts",
         "by": "uncovered"
       }
     ],
@@ -512,12 +585,16 @@
       "badge",
       "help",
       "mystery",
-      "hush"
+      "hush",
+      "dialog",
+      "clock",
+      "interface",
+      "density"
     ],
     "summary": {
-      "total": 9,
-      "uncovered": 4,
-      "slot": 1,
+      "total": 14,
+      "uncovered": 8,
+      "slot": 2,
       "parts": 1,
       "reference": 1,
       "bundle": 1,
@@ -525,7 +602,8 @@
     },
     "partsTypes": [
       "button",
-      "label"
+      "label",
+      "dialog"
     ],
     "elements": {
       "plain": [
@@ -554,8 +632,19 @@
     },
     "declarationErrors": [
       "mystery: skin.by must be one of slot, parts, reference, bundle, none",
-      "hush: skin.by \"none\" needs a why"
-    ]
+      "hush: skin.by \"none\" needs a why",
+      "density: a skin ingredient is picked, not styled with parts"
+    ],
+    "declarationConflicts": [
+      "badge: declares style parts but has no style target (schemas/customize.json targets)",
+      "dialog: has a style target its skin entry doesn't mention (skin.by \"parts\", or \"parts\": true on a slot)",
+      "clock: a widget or attachable type has many copies, not one slot (skin.by \"parts\")",
+      "interface: a skin never sets this slot (skin.by \"bundle\", \"reference\" or \"none\")"
+    ],
+    "ingredients": [
+      "color-theme"
+    ],
+    "colorThemeType": "color-theme"
   },
   "scopes": {
     "skinned": {
@@ -1034,7 +1123,7 @@
       {
         "type": "uac-policy",
         "by": "none",
-        "covered": true,
+        "covered": false,
         "how": [
           "no look"
         ]

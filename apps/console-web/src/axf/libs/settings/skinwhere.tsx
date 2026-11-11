@@ -172,7 +172,7 @@ export function SkinCovers({ skinId, compact = false }: { skinId: string; compac
           <div className={`axf-skin__chips${compact ? ' is-compact' : ''}`}>
             {list.map((r) => {
               const c = by.get(r.type);
-              return <span key={r.type} className={`fx-chip axf-skin__chip${c?.covered ? ' is-set' : ''}${k === 'uncovered' ? ' is-missing' : ''}`} title={`${r.label}: ${KIND_HINT[k]}${r.elements.length ? ` · parts: ${r.elements.join(', ')}` : ''}${c?.how.length ? ` · ${c.how.join('; ')}` : ''}`}>{r.label}</span>;
+              return <span key={r.type} className={`fx-chip axf-skin__chip${c?.covered ? ' is-set' : ''}${k === 'uncovered' ? ' is-missing' : ''}`} title={`${r.label}: ${r.ingredient ? 'part of what a skin is made of: changing it applies inside the current skin' : KIND_HINT[k]}${r.elements.length ? ` · parts: ${r.elements.join(', ')}` : ''}${c?.how.length ? ` · ${c.how.join('; ')}` : ''}`}>{r.label}</span>;
             })}
           </div>
         </div>

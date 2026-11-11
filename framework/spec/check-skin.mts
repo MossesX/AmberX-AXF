@@ -7,7 +7,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { backToSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, lookAfterChange, newAppLook, normalizeSkin, normalizeSkinScope, partElements, partsErrors, partsTypes, resolveLookSkin, resolveSkinChain, scopeEntries, scopeState, setInheritSkin, setScopeOverride, setScopeSkin, skinCoverage, skinCoverageSummary, skinCovers, skinPartsTypes, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinUncovered, uncoveredTypes, parseAppLook, pickSkin, restoreAppDefault, setUseSkin, skinErrors, skinFromDesignPackage, skinSlots, snapshotLook, undoRestore, type AppLookDocument, type AppLookStore } from '../core/engines/skin';
+import { backToSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationConflicts, declarationErrors, globalSkinOf, ingredientOfField, lookAfterChange, newAppLook, normalizeSkin, normalizeSkinScope, partElements, partsErrors, partsTypes, resolveLookSkin, resolveSkinChain, scopeEntries, scopeState, setInheritSkin, setScopeOverride, setScopeSkin, skinCoverage, skinCoverageSummary, skinCovers, skinPartsTypes, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinUncovered, uncoveredTypes, NO_SKIN_ENTRY, SKIN_THEME_FIELDS, parseAppLook, pickSkin, restoreAppDefault, setUseSkin, skinErrors, skinFromDesignPackage, skinIngredients, skinSlots, snapshotLook, undoRestore, type AppLookDocument, type AppLookStore } from '../core/engines/skin';
 import { validateAsset } from '../core/validate';
 import { AxfRuntime, type AppearanceSource } from '../core/runtime';
 import { mergeAppearance, parseAppearance, type AppearanceDocument, type AppearanceSourceState } from '../core/engines/appearance';
@@ -48,6 +48,10 @@ eq(over, fx.look.overridden.doc, 'a pick overrides just that part');
 eq(composeLook(shared, over, skin), fx.look.overridden.composed, 'override wins');
 eq(composeLook(shared, backToSkin(over, 'color-theme'), skin), fx.look.overridden.backToSkin, 'back to skin');
 eq(lookAfterChange(over, { slots: { 'color-theme': skin.colorTheme } }, skin).skin.overrides, {}, "picking the skin's own theme drops the override");
+// Brett, Nov 9 2026: "Changing the colour theme applies inside the current skin and never creates a new skin."
+eq({ use: over.skin.use, id: over.skin.id, overrides: over.skin.overrides }, { use: true, id: 'windows', overrides: { 'color-theme': 'aurora-night' } }, 'a colour theme pick lands inside the current skin: same skin, one override');
+eq(over.own, on.own, "a colour theme pick under a skin leaves the app's own picks alone");
+eq({ ...composeLook(shared, over, skin).slots, 'color-theme': skin.colorTheme }, composeLook(shared, on, skin).slots, 'only the colour theme section moved: every other part is still the skin\'s');
 eq(lookAfterChange(look0, { slots: { button: 'terminal' }, hidden: { toolbar: false } }, null), fx.look.own.doc, 'no skin: picks are the app\'s own');
 const restored = restoreAppDefault(over, '2026-11-05T00:00:00Z');
 eq(restored, fx.look.restored.doc, 'restore keeps one undo');
@@ -115,6 +119,7 @@ ok(a.store.doc?.default.slots?.['style-theme'] === 'hub', 'the first read saves 
 eq(a.src.saved, [], 'the snapshot writes nothing to the shared document');
 
 ok(a.rt.useSkin(true, 'windows'), 'Use skin on');
+const skinsBefore = a.rt.skinList().map((e) => e.id);
 eq(a.active()['color-theme'], 'windows-light', 'the skin colour is on');
 eq(a.active()['style-theme'], 'windows', 'the skin style beats the design package');
 eq(a.active().layout, 'windows-explorer', 'the skin layout is on');
@@ -126,6 +131,9 @@ a.rt.swap('color-theme' as never, 'aurora-night');
 eq(a.active()['color-theme'], 'aurora-night', 'a pick overrides the skin');
 eq(a.rt.skinOverrides(), ['color-theme'], 'the overridden dot');
 eq(a.active()['style-theme'], 'windows', 'the rest stays the skin');
+eq(a.rt.skinAt(), { id: 'windows', overrides: { 'color-theme': 'aurora-night' }, from: 'app' }, 'a colour theme change applies inside the current skin');
+eq(a.rt.skinList().map((e) => e.id), skinsBefore, 'a colour theme change never creates a new skin');
+eq(a.store.doc?.own.slots?.['color-theme'], undefined, "the colour theme pick is the skin's, not the app's own");
 ok(a.rt.backToSkin('color-theme'), 'Back to skin');
 eq(a.active()['color-theme'], 'windows-light', 'the skin colour is back');
 
@@ -196,32 +204,36 @@ console.log(`check-skin: ${n} checks passed`);
 /* ---- skin-coverage@1 (build skins-asset-types): every registered type is covered, scopes, parts, icon pack ---- */
 {
   const cv = fx.coverage;
-  const types = { button: { label: 'Button', group: 'Controls' }, label: { label: 'Label', group: 'Widgets', widget: true, attachable: true }, badge: { label: 'Badge', group: 'Chrome', attachable: true }, 'icon-pack': { label: 'Icon pack', group: 'Brand', skin: { by: 'reference', via: 'iconPack', why: 'named by the skin' } }, 'uac-policy': { label: 'Access policy', group: 'System', skin: { by: 'none', why: 'no look' } }, help: { label: 'Help', group: 'System' }, 'design-package': { label: 'Design package', group: 'System', skin: { by: 'bundle' } }, mystery: { label: 'Mystery', group: 'Data', skin: { by: 'sometimes' } }, hush: { label: 'Hush', group: 'System', skin: { by: 'none' } } };
-  const targets = { button: { root: '.fx-btn' }, label: { root: '.fx-widget-label' }, toolbar: { root: '.fx-toolbar', item: '.fx-toolbar .fx-btn' } };
+  const types = { 'color-theme': { label: 'Color theme', group: 'Themes', skin: { by: 'slot', ingredient: true, via: 'colorTheme', why: "the skin's colour theme section" } }, button: { label: 'Button', group: 'Controls', skin: { by: 'slot', parts: true } }, label: { label: 'Label', group: 'Widgets', widget: true, attachable: true, skin: { by: 'parts' } }, badge: { label: 'Badge', group: 'Chrome', attachable: true, skin: { by: 'parts' } }, 'icon-pack': { label: 'Icon pack', group: 'Brand', skin: { by: 'reference', via: 'iconPack', why: 'named by the skin' } }, 'uac-policy': { label: 'Access policy', group: 'System', skin: { by: 'none', why: 'no look' } }, help: { label: 'Help', group: 'System' }, 'design-package': { label: 'Design package', group: 'System', skin: { by: 'bundle' } }, mystery: { label: 'Mystery', group: 'Data', skin: { by: 'sometimes' } }, hush: { label: 'Hush', group: 'System', skin: { by: 'none' } }, dialog: { label: 'Dialog', group: 'Overlays', skin: { by: 'slot' } }, clock: { label: 'Clock', group: 'Widgets', widget: true, skin: { by: 'slot' } }, interface: { label: 'Interface', group: 'System', skin: { by: 'slot' } }, density: { label: 'Density', group: 'Themes', skin: { by: 'slot', ingredient: true, parts: true } } };
+  const targets = { button: { root: '.fx-btn' }, label: { root: '.fx-widget-label' }, toolbar: { root: '.fx-toolbar', item: '.fx-toolbar .fx-btn' }, dialog: { root: '.fx-dialog' } };
   const never = ['uac-policy', 'help', 'skin', 'design-package', 'interface'];
   const table = coverageTable(types as never, targets, never);
   eq(table, cv.table, 'coverage table = fixture');
-  eq(uncoveredTypes(types as never, targets, never).map((r) => r.type), ['badge', 'help', 'mystery', 'hush'], 'uncovered: an attachable without a target, an excluded type with no declaration, bad declarations');
-  eq(table.find((r) => r.type === 'button')!.by, 'slot', 'a plain type is a slot');
-  eq(table.find((r) => r.type === 'button')!.also, ['parts'], 'a slot with a style target also takes parts');
+  eq(uncoveredTypes(types as never, targets, never).map((r) => r.type), ['badge', 'help', 'mystery', 'hush', 'dialog', 'clock', 'interface', 'density'], 'uncovered: parts without a target, no skin entry, bad entries, a target the entry leaves out, a widget as a slot, a slot a skin never sets, an ingredient with parts');
+  eq(table.find((r) => r.type === 'help')!.why, NO_SKIN_ENTRY, 'a type with no skin entry is uncovered: nothing is derived');
+  eq(table.find((r) => r.type === 'button')!.by, 'slot', 'a declared slot');
+  eq(table.find((r) => r.type === 'button')!.also, ['parts'], 'a slot declared with parts also takes parts');
   eq(table.find((r) => r.type === 'label')!.by, 'parts', 'a widget is covered by parts');
   eq(table.find((r) => r.type === 'icon-pack')!.by, 'reference', 'a declared reference');
+  eq(table.find((r) => r.type === 'color-theme'), { type: 'color-theme', label: 'Color theme', group: 'Themes', also: [], elements: [], declared: true, ingredient: true, via: 'colorTheme', why: "the skin's colour theme section", by: 'slot' }, 'the colour theme is a skin ingredient: a slot, never parts');
   eq(coverageSummary(table), cv.summary, 'summary');
-  eq(partsTypes(types as never, targets), ['button', 'label'], 'parts types = registered types with a target');
+  eq(partsTypes(types as never, targets), ['button', 'label', 'dialog'], 'parts types = registered types with a target');
   eq(partElements(targets.toolbar), ['box', 'text', 'icon', 'items'], 'composite elements with items');
   eq(partElements(targets.button), ['box', 'text', 'icon'], 'composite elements without items');
   eq(partsErrors({ nope: {}, badge: { x: 1 }, label: 7 }, types as never, targets), cv.partsErrors.bad, 'parts errors');
   eq(declarationErrors('mystery', types.mystery), ['mystery: skin.by must be one of slot, parts, reference, bundle, none'], 'a kind outside the list');
   eq(declarationErrors('hush', types.hush), ['hush: skin.by "none" needs a why'], 'none needs a why');
-  // skin ingredients (build skins-restyle-everything): the themes and scale assets a skin is made of draw nothing and take no parts
-  const ing = { typography: { label: 'Typography', group: 'Themes', skin: { by: 'slot', ingredient: true, why: 'the skin picks it' } }, badge: { label: 'Badge', group: 'Chrome', attachable: true, skin: { by: 'parts', ingredient: true, why: 'wrong' } } };
-  const ingRow = coverageTable(ing as never, { typography: { root: '.fx-type' }, badge: { root: '.fx-badge' } }, never).find((r) => r.type === 'typography')!;
-  eq({ by: ingRow.by, also: ingRow.also, elements: ingRow.elements, ingredient: (ingRow as { ingredient?: boolean }).ingredient }, { by: 'slot', also: [], elements: [], ingredient: true }, 'an ingredient is a slot with no parts even if a target names it');
-  eq(declarationErrors('badge', ing.badge), ['badge: skin.ingredient is only for a slot type (the themes and scale assets a skin is made of)'], 'ingredient needs by: slot');
-  eq(partsTypes(ing as never, { typography: { root: '.fx-type' } }), [], 'an ingredient never takes parts');
-  eq(partsErrors({ typography: { fontWeight: '300' } }, ing as never, { typography: { root: '.fx-type' } }), ['data.parts.typography: a skin ingredient (the skin picks it; it draws nothing of its own, so it has no parts)'], 'parts on an ingredient are refused');
-  eq(skinCoverage().filter((r) => (r as { ingredient?: boolean }).ingredient).map((r) => r.type), ['color-theme', 'style-theme', 'layout', 'behavior-theme', 'typography', 'density', 'sizing'], 'the real registry: seven ingredients');
-  ok(skinCoverage().every((r) => r.declared), 'the real registry: every type declares how a skin reaches it');
+  eq(declarationErrors('density', types.density), ['density: a skin ingredient is picked, not styled with parts'], 'an ingredient never takes parts');
+  eq(declarationErrors('x', { skin: { by: 'parts', parts: true } }), ['x: skin.parts is for a slot that also takes style parts (skin.by "parts" already says it)'], 'parts: true only on a slot');
+  eq(declarationErrors('x', { skin: { by: 'none', why: 'w', ingredient: true } }), ['x: a skin ingredient is a slot the skin picks (skin.by "slot")'], 'an ingredient is a slot');
+  eq(declarationErrors('x', { skin: { by: 'slot', ingredient: true, via: 'assets' } }), ["x: an ingredient's skin.via names a theme field of the skin (layoutTheme, colorTheme, styleTheme)"], "an ingredient's via is a theme field");
+  eq(declarationErrors('x', { skin: { by: 'slot', parts: 'yes' } }), ['x: skin.parts must be true or false'], 'parts is a boolean');
+  eq(['badge', 'dialog', 'clock', 'interface'].flatMap((t) => declarationConflicts(t, (types as Record<string, unknown>)[t], (targets as Record<string, unknown>)[t], never)), cv.declarationConflicts, 'conflicts = fixture');
+  eq(declarationConflicts('badge', types.badge, undefined, never), ['badge: declares style parts but has no style target (schemas/customize.json targets)'], 'parts need a style target');
+  eq(declarationConflicts('dialog', types.dialog, targets.dialog, never), ['dialog: has a style target its skin entry doesn\'t mention (skin.by "parts", or "parts": true on a slot)'], 'a style target must be declared');
+  eq(skinIngredients(types as never), ['color-theme'], 'ingredients: valid entries only');
+  eq(ingredientOfField(types as never, 'colorTheme'), 'color-theme', "the skin's colour theme section belongs to color-theme");
+  eq(ingredientOfField(types as never, 'styleTheme'), '', 'a theme field nobody declares');
 
   // the real registry: nothing uncovered (CI: spec/check-skin-coverage.mjs says the same from plain node)
   eq(skinUncovered().map((r) => `${r.type}: ${r.why}`), [], 'every registered asset type has skin coverage');
@@ -230,6 +242,13 @@ console.log(`check-skin: ${n} checks passed`);
   ok(real.filter((r) => r.by === 'parts').every((r) => r.elements.length >= 3), 'every widget has box, text and icon parts');
   ok(skinPartsTypes().includes('label') && skinPartsTypes().includes('badge') && skinPartsTypes().includes('button'), 'labels, badges and buttons take parts');
   ok(skinCoverageSummary().uncovered === 0 && skinCoverageSummary().total === real.length, 'summary counts');
+  ok(real.every((r) => r.declared), 'every registered type carries its own skin entry (nothing derived)');
+  // Brett, Nov 9 2026: "a skin controls everything and contains a colour theme section"
+  const realSpec = JSON.parse(readFileSync(join(root, 'schemas/asset-types.json'), 'utf8')).types;
+  eq(SKIN_THEME_FIELDS.map((f) => ingredientOfField(realSpec, f)), ['layout', 'color-theme', 'style-theme'], "the skin's three theme sections are the layout, colour theme and style theme types");
+  eq(skinIngredients(realSpec), ['color-theme', 'style-theme', 'layout', 'behavior-theme', 'typography', 'density', 'sizing'], 'what a skin is made of');
+  ok(real.filter((r) => r.ingredient).every((r) => r.by === 'slot' && !r.also.length && !r.elements.length), 'ingredients are picked, never styled with parts');
+  ok(real.filter((r) => r.elements.length).every((r) => r.by === 'parts' || r.also.includes('parts')), 'every type with a style target says it takes parts');
 
   // scopes: plugin → ui → app → global, the child overrides the parent
   const sc = fx.scopes;

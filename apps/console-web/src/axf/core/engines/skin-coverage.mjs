@@ -4,24 +4,29 @@
  * automatically going forward (no hardcoded list); add a CI check that fails if a registered asset type has no skin
  * coverage.").
  *
- * How a skin reaches each registered asset type is worked out from the registry itself (`schemas/asset-types.json`,
- * passed in: this file never imports JSON so the console can bake it), plus the style targets the customize engine
- * draws with (`schemas/customize.json` targets). Nothing here names a type; the registry declares the few exceptions
- * on the type entry (`"skin": { "by": … }`) and everything else is derived from the type's flags:
+ * How a skin reaches each registered asset type is declared on the type's registry entry (`schemas/asset-types.json`,
+ * passed in: this file never imports JSON so the console can bake it) and checked against the type's flags and the
+ * style targets the customize engine draws with (`schemas/customize.json` targets). Nothing here names a type. Every
+ * type carries `"skin": { "by": …, "parts"?, "ingredient"?, "via"?, "why"? }` (build skins-restyle-everything, Nov 9
+ * 2026: explicit on every type, so a new type can't merge without saying how a skin reaches it):
  *
- *   slot       the skin picks the active asset of the type (an appearance slot: every type not in `never`)
+ *   slot       the skin picks the active asset of the type (an appearance slot). `parts: true` = it also styles the
+ *              type's drawn elements (needs a style target). `ingredient: true` = the type is what a skin is made of
+ *              (its colour theme, style theme, layout, typography, density, sizing …): picked, never styled with
+ *              parts; `via` names the skin@1 field that holds a theme (`colorTheme` = the skin's colour theme section)
  *   parts      the skin styles the type's drawn elements with style parts (customize tokens) under the type's style
  *              target; widgets and attachables (many copies on banners and toolbars) are covered this way
  *   reference  the skin names an asset of the type through a field (`iconPack` → icon-pack) or through another asset
  *              it picks (`via`, e.g. logo marks through the branding slot)
  *   bundle     the type is itself a whole look the skin stands in for (design package, style package, interface, skin)
  *   none       the type has no look (an access policy, help text, a job type); declared with a `why`
- *   uncovered  a type the skin can't reach: a widget without a style target, or an excluded type with no declaration.
- *              `uncoveredTypes()` is what CI fails on.
+ *   uncovered  a type the skin can't reach: no `skin` entry, a bad one, or one its flags or style target contradict
+ *              (parts without a style target, a style target the entry doesn't mention, a widget declared as a slot,
+ *              a slot a skin never sets). `uncoveredTypes()` is what CI fails on.
  *
  * Every registered type carries an explicit declaration (build skins-restyle-everything, Nov 2026) so a reader of the
- * registry sees how a skin reaches it without running this engine; the derivation above stays the fallback for a type
- * added without one. A skin ingredient (`ingredient: true`, with `by: slot`) is a type the skin is made of: the colour,
+ * registry sees how a skin reaches it without running this engine; nothing is derived from flags any more, so a type
+ * added without one is uncovered. A skin ingredient (`ingredient: true`, with `by: slot`) is a type the skin is made of: the colour,
  * style and layout themes, typography, density, sizing and the behaviour theme set the `--fx-*` tokens every rule
  * reads and draw nothing of their own, so they never get a style target or parts and a screenshot gate skips them.
  *
@@ -41,6 +46,8 @@ export const SKIN_COVERAGE_CONTRACT = 'skin-coverage@1';
 export const COVERAGE_KINDS = ['slot', 'parts', 'reference', 'bundle', 'none'];
 /** The elements a style target can reach (composite assets). */
 export const PART_ELEMENTS = ['box', 'text', 'icon', 'items'];
+/** The skin@1 fields that hold a theme: what a theme ingredient's `via` may name. */
+export const SKIN_THEME_FIELDS = ['layoutTheme', 'colorTheme', 'styleTheme'];
 
 /* ---------------------------------------------------------------- scopes */
 
@@ -138,12 +145,12 @@ export function resolveSkinChain(chain, stateOf) {
 
 const isObj = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
 
-/** The `skin` block a type may declare in the registry, checked; null when it has none. */
+/** The `skin` block a type declares in the registry, checked; null when it has none. */
 export function declaredCoverage(typeSpec) {
   const d = isObj(typeSpec) && isObj(typeSpec.skin) ? typeSpec.skin : null;
   if (!d) return null;
   const by = COVERAGE_KINDS.includes(d.by) ? d.by : '';
-  return { by, via: str(d.via, 80), why: str(d.why, 300), ingredient: d.ingredient === true };
+  return { by, parts: d.parts === true, ingredient: d.ingredient === true, via: str(d.via, 80), why: str(d.why, 300) };
 }
 
 /** Is the type a skin ingredient (declared `skin: { by: slot, ingredient: true }`)? */
@@ -152,8 +159,9 @@ export function isIngredient(typeSpec) {
 }
 
 /**
- * Problems with a type's declaration (CI lists them): a kind outside the list, `none` without a why, `reference`
- * without a via, `ingredient` on anything but a slot.
+ * Problems with a type's declaration alone (CI lists them): a kind outside the list, `none` without a why, a
+ * `reference` without a via, `parts` or `ingredient` on anything but a slot, an ingredient that also takes parts or
+ * names a field that is not one of the skin's themes.
  */
 export function declarationErrors(type, typeSpec) {
   const d = isObj(typeSpec) && isObj(typeSpec.skin) ? typeSpec.skin : null;
@@ -162,15 +170,28 @@ export function declarationErrors(type, typeSpec) {
   if (!COVERAGE_KINDS.includes(d.by)) out.push(`${type}: skin.by must be one of ${COVERAGE_KINDS.join(', ')}`);
   if (d.by === 'none' && !str(d.why, 300).trim()) out.push(`${type}: skin.by "none" needs a why`);
   if (d.by === 'reference' && !str(d.via, 80).trim()) out.push(`${type}: skin.by "reference" needs via (the field or slot that names it)`);
-  if (d.ingredient === true && d.by !== 'slot') out.push(`${type}: skin.ingredient is only for a slot type (the themes and scale assets a skin is made of)`);
+  for (const k of ['parts', 'ingredient']) if (k in d && typeof d[k] !== 'boolean') out.push(`${type}: skin.${k} must be true or false`);
+  if (d.parts === true && d.by !== 'slot') out.push(`${type}: skin.parts is for a slot that also takes style parts (skin.by "parts" already says it)`);
+  if (d.ingredient === true && d.by !== 'slot') out.push(`${type}: a skin ingredient is a slot the skin picks (skin.by "slot")`);
+  if (d.ingredient === true && d.parts === true) out.push(`${type}: a skin ingredient is picked, not styled with parts`);
+  if (d.ingredient === true && str(d.via, 80) && !SKIN_THEME_FIELDS.includes(d.via)) out.push(`${type}: an ingredient's skin.via names a theme field of the skin (${SKIN_THEME_FIELDS.join(', ')})`);
   return out;
 }
 
-/** Problems between a declaration and the style targets: a skin ingredient draws nothing, so a target for it is a mistake. */
-export function ingredientErrors(spec, targets = {}) {
+/**
+ * Where a (valid) declaration and the rest of the registry disagree: parts with no style target to draw them under, a
+ * style target the entry doesn't mention, a widget or attachable declared as one slot, a slot a skin never sets.
+ */
+export function declarationConflicts(type, typeSpec, target, never = []) {
+  const d = declaredCoverage(typeSpec);
+  if (!d || !d.by) return [];
   const out = [];
-  if (!isObj(spec)) return out;
-  for (const [type, t] of Object.entries(spec)) if (isIngredient(t) && isObj(targets) && targets[type]) out.push(`${type}: a skin ingredient has no drawn element; remove its style target from schemas/customize.json`);
+  const takesParts = d.by === 'parts' || d.parts;
+  const hasTarget = partElements(target).length > 0;
+  if (takesParts && !hasTarget) out.push(`${type}: declares style parts but has no style target (schemas/customize.json targets)`);
+  if (!takesParts && hasTarget) out.push(`${type}: has a style target its skin entry doesn't mention (skin.by "parts", or "parts": true on a slot)`);
+  if (d.by === 'slot' && (typeSpec.widget === true || typeSpec.attachable === true)) out.push(`${type}: a widget or attachable type has many copies, not one slot (skin.by "parts")`);
+  if (d.by === 'slot' && never.includes(type)) out.push(`${type}: a skin never sets this slot (skin.by "bundle", "reference" or "none")`);
   return out;
 }
 
@@ -180,31 +201,28 @@ export function partElements(target) {
   return target.item ? ['box', 'text', 'icon', 'items'] : ['box', 'text', 'icon'];
 }
 
+/** The line an undeclared type gets. */
+export const NO_SKIN_ENTRY = 'no skin entry: add "skin": { "by": … } to its registry entry (schemas/asset-types.json)';
+
 /**
  * How a skin covers one type. `spec` = asset-types.json `types`, `targets` = customize.json `targets`, `never` = the
- * slot types a skin never sets (skin-rules SKIN_NEVER). Returns `{ type, by, also, elements, declared, via, why }`.
+ * slot types a skin never sets (skin-rules SKIN_NEVER). Returns `{ type, by, also, elements, declared, ingredient,
+ * via, why }`; `by: 'uncovered'` carries the reason in `why`.
  */
 export function coverageOf(type, spec, targets = {}, never = []) {
   const t = isObj(spec) ? spec[type] : null;
   const target = isObj(targets) ? targets[type] : null;
   const elements = partElements(target);
-  const base = { type, label: str(t?.label, 80) || type, group: str(t?.group, 40), also: [], elements, declared: false, via: '', why: '' };
+  const base = { type, label: str(t?.label, 80) || type, group: str(t?.group, 40), also: [], elements, declared: false, ingredient: false, via: '', why: '' };
   if (!t) return { ...base, by: 'uncovered', why: 'not a registered asset type' };
-  const errors = declarationErrors(type, t);
-  if (errors.length) return { ...base, by: 'uncovered', declared: true, why: errors.join('; ') };
   const d = declaredCoverage(t);
-  if (d) {
-    if (d.ingredient) return { ...base, by: d.by, also: [], elements: [], declared: true, via: d.via, why: d.why, ingredient: true };
-    const also = d.by !== 'parts' && elements.length ? ['parts'] : [];
-    return { ...base, by: d.by, also, declared: true, via: d.via, why: d.why };
-  }
-  const widget = t.widget === true || t.attachable === true;
-  if (widget) {
-    if (elements.length) return { ...base, by: 'parts' };
-    return { ...base, by: 'uncovered', why: 'a widget or attachable type with no style target (schemas/customize.json targets)' };
-  }
-  if (never.includes(type)) return { ...base, by: 'uncovered', why: 'excluded from appearance slots and not declared (add "skin": { "by": … } to its registry entry)' };
-  return { ...base, by: 'slot', also: elements.length ? ['parts'] : [] };
+  if (!d) return { ...base, by: 'uncovered', why: NO_SKIN_ENTRY };
+  const strip = (e) => e.slice(type.length + 2);
+  const errors = declarationErrors(type, t);
+  if (errors.length) return { ...base, by: 'uncovered', declared: true, why: errors.map(strip).join('; ') };
+  const conflicts = declarationConflicts(type, t, target, never);
+  if (conflicts.length) return { ...base, by: 'uncovered', declared: true, why: conflicts.map(strip).join('; ') };
+  return { ...base, by: d.by, also: d.parts ? ['parts'] : [], declared: true, ingredient: d.ingredient, via: d.via, why: d.why };
 }
 
 /** Every registered type in registry order with its coverage. */
@@ -223,6 +241,16 @@ export function coverageSummary(rows) {
   for (const k of COVERAGE_KINDS) out[k] = 0;
   for (const r of rows) { if (r.by in out) out[r.by]++; else out.uncovered++; }
   return out;
+}
+
+/** The types a skin is made of (declared `ingredient`), registry order: its themes and scale assets. */
+export function skinIngredients(spec) {
+  return Object.keys(isObj(spec) ? spec : {}).filter((t) => declaredCoverage(spec[t])?.ingredient && !declarationErrors(t, spec[t]).length);
+}
+
+/** The registry type whose assets a skin theme field holds (`colorTheme` → color-theme), '' when none declares it. */
+export function ingredientOfField(spec, field) {
+  return skinIngredients(spec).find((t) => declaredCoverage(spec[t]).via === field) ?? '';
 }
 
 /** The types a skin's `parts` may name: everything with a style target, registry order. */

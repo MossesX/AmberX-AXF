@@ -110,7 +110,10 @@ for (const r of rules) {
 }
 const untypedList = [...untyped.values()].sort((a, b) => b.rules - a.rules);
 
-const report = { css: relative(ROOT, cssFile), target, shadowed, untyped: untypedList, literal };
+/* ---------- text targets: every text child class is styled in the stylesheet (rendered is checked above) ---------- */
+for (const t of targets) for (const c of t.text) if (c && !css.includes(`.${c}`) && !target.some((x) => x.class === c)) target.push({ type: t.type, class: c });
+
+const report = { css: relative(ROOT, cssFile), target, shadowed, text: targets.flatMap((t) => t.text.map((cls) => ({ type: t.type, class: cls }))), untyped: untypedList, literal };
 if (json) { console.log(JSON.stringify(report, null, 1)); process.exit(0); }
 console.log(`skin-audit — ${report.css}`);
 console.log(`\ntarget (${target.length}): style-target classes nothing renders`);

@@ -4,14 +4,15 @@ Build `skins-restyle-everything-badges-banner-and-every-visual-element` (Nov 202
 change every single visual thing everywhere, in every framework app … I need it to look professional."
 
 Re-run at any time: `node framework/cli/skin-audit.mjs` (`--json` for the full list with line numbers). The registry
-side is `node framework/cli/skins.mjs coverage` (every asset type has a way in: 0 uncovered).
+side is `node framework/cli/skins.mjs coverage` (every asset type carries its own `skin` entry: 0 uncovered).
 
 ## How a skin reaches the screen
 
 1. **Themes**: the colour, style and layout themes set the `--fx-*` tokens every rule reads.
 2. **Slots**: the assets the skin picks for each appearance slot (banner, toolbar, button, dialog …).
 3. **Parts**: `skin.data.parts.<type>` style tokens, drawn by the customize engine (`core/engines/customize.ts`) under
-   the type's style target in `schemas/customize.json` (`root` + `item`), as `:root body <root>{…}`.
+   the type's style target in `schemas/customize.json` (`root` + `item`, and `text` for text children that set their
+   own colour or font), as `:root body <root>{…}`.
 
 Anything only (1) reaches changes colour with the skin but keeps its shape, weight and type. Anything inside a typed
 element that sets its own colour or font is not reached by (3) even when its parent is.
@@ -116,3 +117,14 @@ Look values written in, which no theme, asset or part changes:
 - **Still theme-only (no asset type)**: tables (`.fx-table`, datagrid), inputs and fields, chips, switches, toasts,
   scrollbars, terminal, cards that aren't containers (`.fx-idcard`, `.fx-dcard`). They follow the skin's colour, style,
   typography, density and sizing assets; a skin can't give them their own parts until they get asset types (Fable).
+- **s6, the registry contract (Fable, finished Nov 11 2026)**: a type's `skin` entry is the whole story and nothing
+  is derived from flags any more: a type with no entry is uncovered (`NO_SKIN_ENTRY`), and so is an entry the registry
+  contradicts (`declarationConflicts`: parts with no style target, a style target the entry leaves out, a widget or
+  attachable declared as one slot, a slot a skin never sets). A slot that also takes parts says so (`parts: true`;
+  menus, toolbar, nav menu, tab group, dialog, pop-up, button, slider, container, gauge, meter, banner). The skin's
+  three theme ingredients name their skin@1 field (`via`: `colorTheme`, `styleTheme`, `layoutTheme`;
+  `skinIngredients`, `ingredientOfField`), and `check-skin-coverage` fails if a theme field has no ingredient. Brett's
+  rule, pinned by `check-skin.mts`: a skin controls everything and contains a colour theme section, so a colour theme
+  change under a skin is an override inside that skin and never a new skin. Left as they are on purpose: tone pairs
+  that set a background with its text colour (filled dialog head, avatar initials, slider value chip, gauge digits) and
+  search results, which are a pop-up and take the popup parts.

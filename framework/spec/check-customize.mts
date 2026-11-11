@@ -47,6 +47,20 @@ ok(customizeCss('meter', { textColor: 'accent' }).split('\n').length === 1, 'a t
 ok(customizeSheet({}) === '' && customizeSheet({ banner: {}, 'nav-menu': {} }) === '', 'no parts (the default look) = an empty sheet, before and after text children');
 for (const [type, t] of Object.entries(CUSTOM_TARGETS)) if (t.text) for (const sel of t.text.split(',').map((s) => s.trim())) ok(t.root.split(',').some((r) => sel.startsWith(r.trim().replace(/^\.(fx-[a-z-]+).*$/, '.$1'))) || type === 'tab-group', `${type}: text child ${sel} is an element of the root block`);
 for (const s of ICON_SETS.filter((x) => x.id !== 'outline-regular')) ok(customizeCss('button', { iconSet: s.id }).includes('stroke-width'), `icon set ${s.id} compiles`);
+/* text children, the rest: italic, case and spacing flow; a target without any draws none; every selector is one class axf.css styles */
+{
+  const nav = customizeCss('nav-menu', { textColor: 'accent', textTransform: 'lowercase', italic: true, letterSpacing: 'wide' });
+  const header = nav.split('\n').find((l) => l.startsWith(':root body .fx-nav .fx-nav__header, :root body .fx-nav .fx-nav__label{')) ?? '';
+  for (const frag of ['color:var(--fx-accent)', 'text-transform:lowercase', 'font-style:italic', 'letter-spacing:0.04em']) ok(header.includes(frag), `a nav text child takes ${frag}`);
+  ok(customizeCss('container', { fontFamily: 'serif' }).includes(':root body .fx-card .fx-card__head{font-family:ui-serif, Georgia, serif}'), 'card heads follow the container font');
+  ok(customizeCss('progress', { textColor: 'info' }).includes(':root body .fx-widget-progress .fx-widget-progress__label, :root body .fx-widget-progress .fx-widget-progress__value{'), 'progress label and value follow the widget');
+  ok(!customizeCss('button', { textColor: 'accent' }).includes(' .fx-btn .'), 'a target without text children draws none');
+  const axfCss = readFileSync(new URL('../ui/axf.css', import.meta.url), 'utf8');
+  for (const [type, t] of Object.entries(CUSTOM_TARGETS)) for (const sel of (t.text ?? '').split(',').map((x) => x.trim()).filter(Boolean)) {
+    ok(/^\.fx-[a-z0-9_-]+$/.test(sel), `${type}: text target ${sel} is one class`);
+    ok(axfCss.includes(`${sel} {`) || axfCss.includes(`${sel},`), `${type}: text target ${sel} is styled in axf.css`);
+  }
+}
 ok(tabGroupStyle(null).attrs['data-fx-tabs'] === 'underline', 'missing tab-group = underline');
 ok(normalizeTabGroup({ style: 'x' as never, align: 'center' }).align === 'center', 'tab-group normalize');
 ok(tabGroupStyle({ style: 'pills', align: 'start' }, true).attrs['data-fx-tabs-hidden'] === 'on', 'hidden attr');

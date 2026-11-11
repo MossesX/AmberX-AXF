@@ -57,7 +57,8 @@
       "skin": {
         "by": "slot",
         "ingredient": true,
-        "why": "A skin ingredient: the skin names its colour theme (data.colorTheme); every --fx-* colour token comes from it. It draws nothing of its own, so it has no style target and no parts."
+        "via": "colorTheme",
+        "why": "The skin's colour theme section (skin@1 data.colorTheme): every --fx-* colour comes from it. Picking another colour theme while a skin is on changes that section of the current skin (an override, Back to skin drops it); it never makes a new skin."
       }
     },
     "style-theme": {
@@ -105,7 +106,8 @@
       "skin": {
         "by": "slot",
         "ingredient": true,
-        "why": "A skin ingredient: the skin names its style theme (data.styleTheme); fonts, radii, border width, shadows and the space unit come from it. It draws nothing of its own, so it has no style target and no parts."
+        "via": "styleTheme",
+        "why": "The skin's style theme (skin@1 data.styleTheme): fonts, radii, borders, shadows and motion every part reads. A pick over it is an override inside the current skin."
       }
     },
     "layout": {
@@ -211,7 +213,8 @@
       "skin": {
         "by": "slot",
         "ingredient": true,
-        "why": "A skin ingredient: the skin names its layout theme (data.layoutTheme); where the chrome sits comes from it. It draws nothing of its own, so it has no style target and no parts."
+        "via": "layoutTheme",
+        "why": "The skin's layout theme (skin@1 data.layoutTheme): the shell grid and every layout token. A pick over it is an override inside the current skin."
       }
     },
     "app-menu": {
@@ -242,7 +245,8 @@
       "hideable": true,
       "skin": {
         "by": "slot",
-        "why": "The skin picks the active app menu; its parts style the menu bar, its buttons and the dropdown items under the style target."
+        "parts": true,
+        "why": "The skin picks the menu bar asset and styles the bar, its buttons and the dropdown's items with parts."
       }
     },
     "toolbar": {
@@ -301,7 +305,8 @@
       },
       "skin": {
         "by": "slot",
-        "why": "The skin picks the active toolbar; its parts style the bar and its tool buttons."
+        "parts": true,
+        "why": "The skin picks the toolbar asset and styles the bar and its tool buttons with parts."
       }
     },
     "nav-menu": {
@@ -340,7 +345,8 @@
       "hideable": true,
       "skin": {
         "by": "slot",
-        "why": "The skin picks the active navigation menu; its parts style the nav, its items, and its headers and labels (text)."
+        "parts": true,
+        "why": "The skin picks the navigation menu asset and styles the menu, its items and its section headers with parts."
       }
     },
     "context-menu": {
@@ -375,7 +381,8 @@
       },
       "skin": {
         "by": "slot",
-        "why": "The skin picks the active context menu; its parts style the menu and its items."
+        "parts": true,
+        "why": "The skin picks the context menu asset and styles the menu and its items with parts."
       }
     },
     "tab-group": {
@@ -443,7 +450,8 @@
       "optional": true,
       "skin": {
         "by": "slot",
-        "why": "The skin picks the active tab group; its parts style the tab row, its tabs and the dropdown picker (text)."
+        "parts": true,
+        "why": "The skin picks the tab group asset and styles the tab row and its tabs with parts."
       }
     },
     "dialog": {
@@ -482,7 +490,8 @@
       },
       "skin": {
         "by": "slot",
-        "why": "The skin picks the active dialog; its parts style the dialog and its header (text)."
+        "parts": true,
+        "why": "The skin picks the dialog asset and styles the dialog box with parts."
       }
     },
     "popup": {
@@ -511,7 +520,8 @@
       },
       "skin": {
         "by": "slot",
-        "why": "The skin picks the active popup; its parts style popovers, dropdowns and the banner pop-up bubble."
+        "parts": true,
+        "why": "The skin picks the pop-up asset and styles popovers, dropdowns and the banner's pop-up bubble with parts."
       }
     },
     "button": {
@@ -546,7 +556,8 @@
       },
       "skin": {
         "by": "slot",
-        "why": "The skin picks the active button; its parts style buttons and icon buttons."
+        "parts": true,
+        "why": "The skin picks the button asset and styles every button and icon button with parts."
       }
     },
     "slider": {
@@ -580,7 +591,8 @@
       },
       "skin": {
         "by": "slot",
-        "why": "The skin picks the active slider; its parts style the slider and its head and value (text)."
+        "parts": true,
+        "why": "The skin picks the slider asset and styles the slider with parts."
       }
     },
     "container": {
@@ -614,7 +626,8 @@
       },
       "skin": {
         "by": "slot",
-        "why": "The skin picks the active container; its parts style cards and their headers (text)."
+        "parts": true,
+        "why": "The skin picks the container asset and styles every card and its head with parts."
       }
     },
     "gauge": {
@@ -650,7 +663,8 @@
       "optional": true,
       "skin": {
         "by": "slot",
-        "why": "The skin picks the active gauge; its parts style the gauge and its readouts (text)."
+        "parts": true,
+        "why": "The skin picks the gauge asset and styles the gauge with parts."
       }
     },
     "meter": {
@@ -687,7 +701,8 @@
       "optional": true,
       "skin": {
         "by": "slot",
-        "why": "The skin picks the active meter; its parts style the meter."
+        "parts": true,
+        "why": "The skin picks the progress meter asset and styles the meter with parts."
       }
     },
     "banner": {
@@ -730,7 +745,8 @@
       },
       "skin": {
         "by": "slot",
-        "why": "The skin picks the active banner; its parts style the banner, its items and its logo (text)."
+        "parts": true,
+        "why": "The skin picks the banner asset and styles the bar, its items and its logo with parts; the badges and widgets on it are styled through their own types."
       }
     },
     "clock": {
@@ -767,7 +783,7 @@
       "widget": true,
       "skin": {
         "by": "parts",
-        "why": "A banner widget with many copies: the skin styles them with parts under the clock style target."
+        "why": "A widget with many copies on banners and toolbars: the skin styles every clock with parts."
       }
     },
     "search-bar": {
@@ -800,7 +816,7 @@
       },
       "skin": {
         "by": "parts",
-        "why": "A chrome widget: parts style the search box and its hits, details, kinds and empty message (text)."
+        "why": "A widget with many copies on banners and toolbars: the skin styles every search bar with parts."
       }
     },
     "action-button": {
@@ -839,7 +855,7 @@
       },
       "skin": {
         "by": "parts",
-        "why": "A widget: parts style every action button on banners and toolbars."
+        "why": "A widget with many copies on banners and toolbars: the skin styles every action button with parts."
       }
     },
     "logo": {
@@ -880,7 +896,7 @@
       },
       "skin": {
         "by": "parts",
-        "why": "A widget: parts style every logo widget on banners and toolbars."
+        "why": "A widget with many copies on banners and toolbars: the skin styles every logo widget with parts (the artwork comes from the branding it picks)."
       }
     },
     "label": {
@@ -916,7 +932,7 @@
       },
       "skin": {
         "by": "parts",
-        "why": "A widget: parts style every label on banners and toolbars."
+        "why": "A widget with many copies on banners and toolbars: the skin styles every label with parts."
       }
     },
     "status": {
@@ -962,7 +978,7 @@
       },
       "skin": {
         "by": "parts",
-        "why": "A widget: parts style every status widget on banners and toolbars."
+        "why": "A widget with many copies on banners and toolbars: the skin styles every status widget with parts (tone colours stay on the colour theme)."
       }
     },
     "counter": {
@@ -1000,7 +1016,7 @@
       },
       "skin": {
         "by": "parts",
-        "why": "A widget: parts style every counter, its number and its label (text)."
+        "why": "A widget with many copies on banners and toolbars: the skin styles every counter and its label with parts (tone colours stay on the colour theme)."
       }
     },
     "progress": {
@@ -1042,7 +1058,7 @@
       },
       "skin": {
         "by": "parts",
-        "why": "A widget: parts style every progress widget, its label and its value (text)."
+        "why": "A widget with many copies on banners and toolbars: the skin styles every progress widget, its label and value with parts."
       }
     },
     "avatar": {
@@ -1086,7 +1102,7 @@
       },
       "skin": {
         "by": "parts",
-        "why": "A widget: parts style every avatar and its initials (text)."
+        "why": "A widget with many copies on banners and toolbars: the skin styles every avatar with parts."
       }
     },
     "link": {
@@ -1113,7 +1129,7 @@
       },
       "skin": {
         "by": "parts",
-        "why": "A widget: parts style every link widget on banners and toolbars."
+        "why": "A widget with many copies on banners and toolbars: the skin styles every link with parts."
       }
     },
     "theme-switch": {
@@ -1147,7 +1163,7 @@
       },
       "skin": {
         "by": "parts",
-        "why": "A widget: parts style every theme switch on banners and toolbars."
+        "why": "A widget with many copies on banners and toolbars: the skin styles every theme switch with parts."
       }
     },
     "spacer": {
@@ -1175,7 +1191,7 @@
       },
       "skin": {
         "by": "parts",
-        "why": "A widget: parts style every spacer (its size and background)."
+        "why": "A widget with many copies on banners and toolbars: the skin styles every spacer with parts."
       }
     },
     "divider": {
@@ -1198,7 +1214,7 @@
       },
       "skin": {
         "by": "parts",
-        "why": "A widget: parts style every divider (its colour and width)."
+        "why": "A widget with many copies on banners and toolbars: the skin styles every divider with parts."
       }
     },
     "badge": {
@@ -1239,7 +1255,7 @@
       },
       "skin": {
         "by": "parts",
-        "why": "An attachable: parts style every badge, on banners, tool buttons, nav items, tabs and menu items."
+        "why": "Badges attach to banners and plugins supply their own, so there is no one slot: the skin styles every badge (banner badges and the count badges on tool buttons, nav items, tabs and menu items) with parts; tone colours stay on the colour theme."
       }
     },
     "settings": {
@@ -1281,7 +1297,7 @@
       "optional": true,
       "skin": {
         "by": "slot",
-        "why": "The skin picks the settings interface; the page it describes is drawn with typed elements (tab groups, cards, buttons) the skin styles."
+        "why": "The skin picks the settings interface asset; the page is drawn with the tabs, toolbar, containers and controls the skin styles."
       }
     },
     "dock-layout": {
@@ -1305,7 +1321,7 @@
       "optional": true,
       "skin": {
         "by": "slot",
-        "why": "The skin picks the pane layout; the panes are drawn with typed chrome the skin styles."
+        "why": "The skin picks the pane layout preset; the panes are drawn with the tabs and containers the skin styles."
       }
     },
     "xlayout": {
@@ -1330,7 +1346,7 @@
       "optional": true,
       "skin": {
         "by": "slot",
-        "why": "The skin picks the host layout; the chrome it frames is typed and styled by the skin."
+        "why": "A host's skin picks the xLayout asset (which apps, how their chrome merges); the frame is drawn with the chrome the skin styles."
       }
     },
     "nav-style": {
@@ -1354,7 +1370,7 @@
       "optional": true,
       "skin": {
         "by": "slot",
-        "why": "The skin picks the navigation style; it reads the colour and style theme tokens the skin sets, and the nav-menu parts reach what it draws."
+        "why": "The skin picks the navigation style asset: the nav menu's colours, fonts, density and sub-menu behaviour, on top of the nav-menu parts."
       }
     },
     "behavior-theme": {
@@ -1378,7 +1394,7 @@
       "skin": {
         "by": "slot",
         "ingredient": true,
-        "why": "A skin ingredient: the skin picks it as assets.behavior-theme; motion, interaction and window behaviour tokens come from it. It draws nothing of its own, so it has no style target and no parts."
+        "why": "A skin ingredient picked in skin@1 data.assets: motion, interaction, window and feedback behaviour every part follows. Picked, not styled with parts."
       }
     },
     "design-package": {
@@ -1409,7 +1425,7 @@
       "label": "Skin",
       "group": "System",
       "icon": "palette",
-      "description": "A skin (skin@1, engine core/engines/skin.ts) is a whole look for one place: a layout theme, a colour theme, a style theme, the assets that fill the other slots, an optional icon pack and style parts for any drawn type. Apps keep their own look unless Use skin is on (Settings → Appearance); a skin applies hub-wide, per app, per UI / screen or per plugin (the chain plugin → ui → app → global, the child overrides the parent). How a skin reaches every registered type is worked out from this registry (skin-coverage@1, core/engines/skin-coverage.mjs): every type declares `skin: { by: slot | parts | reference | bundle | none, via?, why?, ingredient? }` (widgets and attachables are styled through their style target in schemas/customize.json; everything else is a slot; `ingredient: true` marks the themes and scale assets the skin is made of, which draw nothing and take no parts); a type added without one is derived from its flags, and CI fails on a type a skin cannot reach.",
+      "description": "A skin (skin@1, engine core/engines/skin.ts) is a whole look for one place: a layout theme, a colour theme, a style theme, the assets that fill the other slots, an optional icon pack and style parts for any drawn type. Apps keep their own look unless Use skin is on (Settings → Appearance); a skin applies hub-wide, per app, per UI / screen or per plugin (the chain plugin → ui → app → global, the child overrides the parent). How a skin reaches every registered type is worked out from this registry (skin-coverage@1, core/engines/skin-coverage.mjs): every type declares `skin: { by: slot | parts | reference | bundle | none, parts?, ingredient?, via?, why? }` (`parts: true` = a slot that also takes style parts under its style target in schemas/customize.json; `ingredient: true` = what a skin is made of: its colour theme, style theme, layout, behaviour theme, typography, density and sizing, picked and never styled with parts); CI fails on a type with no entry or one a skin cannot reach. A skin contains a colour theme section (`colorTheme`): changing the colour theme while a skin is on applies inside that skin (an override) and never creates a new skin.",
       "required": [
         "layoutTheme",
         "colorTheme",
@@ -1621,7 +1637,7 @@
       },
       "skin": {
         "by": "slot",
-        "why": "The skin picks the branding package; logo marks, animated logos and the icon pack follow through it."
+        "why": "The skin picks the branding package: name, logo marks, animated logo and brand palette."
       }
     },
     "typography": {
@@ -1642,7 +1658,7 @@
       "skin": {
         "by": "slot",
         "ingredient": true,
-        "why": "A skin ingredient: the skin picks it as assets.typography; the --fx-type-* tokens every text rule reads come from it. It draws nothing of its own, so it has no style target and no parts."
+        "why": "A skin ingredient picked in skin@1 data.assets: the --fx-type-* scale (sizes, weights, line heights) every part reads. Picked, not styled with parts."
       }
     },
     "density": {
@@ -1660,7 +1676,7 @@
       "skin": {
         "by": "slot",
         "ingredient": true,
-        "why": "A skin ingredient: the skin picks it as assets.density; the --fx-dens-* gap, padding and row tokens come from it. It draws nothing of its own, so it has no style target and no parts."
+        "why": "A skin ingredient picked in skin@1 data.assets: the --fx-dens-* scale (gaps, paddings, row heights) every part reads. Picked, not styled with parts."
       }
     },
     "sizing": {
@@ -1686,7 +1702,7 @@
       "skin": {
         "by": "slot",
         "ingredient": true,
-        "why": "A skin ingredient: the skin picks it as assets.sizing; the --fx-size-* tokens every control reads come from it. It draws nothing of its own, so it has no style target and no parts."
+        "why": "A skin ingredient picked in skin@1 data.assets: the --fx-size-* scale (how big each kind of piece is) every part reads. Picked, not styled with parts."
       }
     },
     "agent-card": {
@@ -1757,7 +1773,7 @@
       },
       "skin": {
         "by": "slot",
-        "why": "The skin picks the agent card design; it colours itself from the theme roles the skin sets."
+        "why": "The skin picks the agent card design; its colours and sizes come from the skin's colour and style themes."
       }
     },
     "job-type": {
@@ -1915,7 +1931,7 @@
       },
       "skin": {
         "by": "none",
-        "why": "A demonstration is narrated content, not a look; the player that shows it is drawn with typed elements the skin styles."
+        "why": "A demonstration is narrated steps, not a look: the player that runs it is drawn with the containers, buttons and typography the skin sets."
       }
     },
     "book": {
@@ -1946,7 +1962,7 @@
       },
       "skin": {
         "by": "none",
-        "why": "A book is generated content, not a look; the reader is drawn with typed elements the skin styles."
+        "why": "A book is a plan of chapters, not a look: the builder and reader that show it are drawn with parts the skin styles."
       }
     },
     "clip": {
@@ -1990,7 +2006,7 @@
       },
       "skin": {
         "by": "none",
-        "why": "A clip is a generated recording, not a look; the player is drawn with typed elements the skin styles."
+        "why": "A clip is recorded media and its transcript, not a look: the player around it is drawn with parts the skin styles."
       }
     },
     "docs": {
@@ -2042,7 +2058,7 @@
       },
       "skin": {
         "by": "none",
-        "why": "Generated documentation is content, not a look; the viewer is drawn with typed elements the skin styles."
+        "why": "Generated documentation is content, not a look: the pages that show it take the skin's themes and typography."
       }
     },
     "uac-policy": {

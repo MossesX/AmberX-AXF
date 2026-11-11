@@ -33,28 +33,41 @@ own local settings. Voice Vault is deliberately out (offline password vault).
 
 ## Every asset type, at any scope: skin-coverage@1 (build skins-asset-types, Nov 7 2026)
 
-How a skin reaches each registered asset type is derived from the registry (`framework/schemas/asset-types.json`) and
-the style targets (`framework/schemas/customize.json`) by `framework/core/engines/skin-coverage.mjs`; nothing names a
-type by hand, so a new type is covered (or fails CI) the moment it is registered:
+How a skin reaches each registered asset type is declared on the type's registry entry
+(`framework/schemas/asset-types.json`: `"skin": { "by": …, "parts"?, "ingredient"?, "via"?, "why"? }`) and checked
+against its flags and the style targets (`framework/schemas/customize.json`) by
+`framework/core/engines/skin-coverage.mjs`. Every type carries an entry (Nov 9 2026, build skins-restyle-everything:
+before that most were derived from flags), so a new type fails CI until it says how a skin reaches it:
 
 | by | how the skin reaches it | which types |
 | --- | --- | --- |
-| `slot` | the skin picks the active asset (`assets[type]`, the three themes) | every type not excluded from appearance slots |
-| `parts` | the skin styles the type's drawn elements (`parts[type]`: customize tokens under the type's style target; composite: box / text / icon / items, plus the target's `text` children) | widgets and attachables (label, badge, clock, counter …); slot types with a target take parts too |
-| `reference` | the skin names it through a field (`iconPack`) or an asset it picks (`via: branding` for logo marks) | declared on the registry entry |
-| `bundle` | a whole look the skin stands in for | design package, style package, interface, skin (declared) |
+| `slot` | the skin picks the active asset (`assets[type]`, the three themes) | settings, pane layout, xLayout, nav style, branding, agent card |
+| `slot` + `parts: true` | it picks the asset and styles the type's drawn elements (`parts[type]`: customize tokens under the type's style target; composite: box / text / icon / items) | menus, toolbar, nav menu, tab group, dialog, pop-up, button, slider, container, gauge, meter, banner |
+| `slot` + `ingredient: true` | what a skin is made of: picked, never styled with parts. `via` names the skin's theme field | colour theme (`colorTheme`), style theme (`styleTheme`), layout (`layoutTheme`), behaviour theme, typography, density, sizing |
+| `parts` | the skin styles every copy of the type with parts (many copies on banners and toolbars, no one slot) | widgets and badges (label, badge, clock, counter …) |
+| `reference` | the skin names it through a field (`iconPack`) or an asset it picks (`via: branding` for logo marks) | icon pack, logo mark, animated logo |
+| `bundle` | a whole look the skin stands in for | design package, style package, interface, skin |
 | `none` | no look (declared with a `why`) | access policy, help, job type, card, demonstration, book, clip, docs |
 
-Since build skins-restyle-everything (Nov 9 2026) every registered type carries the declaration
-(`"skin": { "by", "why", "via"?, "ingredient"? }`) and the check fails on a type without one; the derivation from flags
-stays the fallback for a type added mid-build. `ingredient: true` (a slot) marks the seven assets a skin is made of
-(colour, style and layout themes, behaviour theme, typography, density, sizing): they set the `--fx-*` tokens, draw
-nothing, never get a style target or parts, and a screenshot gate skips them.
+**A skin contains a colour theme section** (Brett, Nov 9 2026: "a skin controls everything and contains a colour theme
+section"): `color-theme` is the ingredient with `via: colorTheme`. Changing the colour theme while a skin is in force
+applies inside that skin (`skin.overrides['color-theme']` on the app's look document, shown with the overridden dot,
+dropped by Back to skin); it never creates a new skin and never lands in the app's own picks (`lookAfterChange`,
+pinned by `spec/check-skin.mts`). The same holds for every other slot the skin sets.
 
-`node framework/spec/check-skin-coverage.mjs` fails on any type with none of these (a widget without a style target, an
-excluded type with no declaration, a bad declaration, an ingredient with a target, a `text` selector nothing renders).
-`node framework/cli/skins.mjs coverage` and `covers <skin>` print the table (REST: `GET /api/skins/coverage` in the
-theme-manager plugin); Settings → Appearance → *What a skin covers* shows it.
+`node framework/spec/check-skin-coverage.mjs` fails on a type with no entry, a bad entry (a kind outside the list, a
+`none` without a why, a `reference` without a via, `parts` / `ingredient` on anything but a slot), an entry the
+registry contradicts (parts with no style target, a style target the entry leaves out, a widget or attachable declared
+as one slot, a slot a skin never sets) and a skin theme field no ingredient claims. `node framework/cli/skins.mjs
+coverage` and `covers <skin>` print the table; Settings → Appearance → *What a skin covers* shows it.
+
+**Text children** (`text` on a style target): elements inside a typed element that carry its text but set their own
+colour or font (the banner's logo, a nav menu's section headers and labels, the tab picker, dialog and card heads, the
+slider, gauge, search, counter, progress and avatar text) take the type's text parts too: weight, family, letter
+spacing, case, italic, line height and colour. The size stays the element's own scale step, so a title still reads as
+a title. Nothing is drawn until a part (or a user's customize value) sets one of those tokens, so the default look is
+unchanged. `check-skin-coverage` fails on a `text` selector naming a class nothing renders; the screenshot gate
+(`framework/cli/skin-shots.mts`) renders one element per text child and skips the ingredients.
 
 **Scopes** (the icon-map model): the chain for a place is `plugin:<id>` → `ui:<view>` → `app` → `global`, and the first
 level that is not *inherit* decides; its overrides and those of every level nearer the leaf apply (child over parent).
