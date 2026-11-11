@@ -75,6 +75,21 @@
       "channels": {
         "amberx": false
       }
+    },
+    {
+      "id": "merge-review.next",
+      "label": "Merge review: next build to decide",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator merge review",
+      "description": "One built-but-unmerged build checked against current main (what it changes, what newer code it would overwrite, conflicts, CI), waiting for your answer: merge, skip or rebuild. One at a time, oldest first; nothing merges without your yes.",
+      "match": {
+        "source": "merge-review",
+        "keyPrefix": "merge-review:"
+      },
+      "setting": "notify.blocked",
+      "push": true,
+      "priority": "high"
     }
   ]
 }
