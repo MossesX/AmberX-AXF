@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3087,
- "updatedAt": "2026-11-11T00:06:57.697Z",
+ "rev": 3088,
+ "updatedAt": "2026-11-11T00:07:56.519Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -146885,15 +146885,16 @@
    "title": "Enforce the merge queue: every finished build goes into it and is batched into one combined build before CI",
    "category": "",
    "detail": "Enforce for all builds, no exceptions: when a build finishes it goes into the merge queue (never straight to main or its own CI run). The merge queue combines the queued builds into one batch build, resolves conflicts, then sends that single build to CI; on green it lands and redeploys. Reconcile with auto-land-every-build and the Batch Manager build. No AI for the queue logic. Full API control.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/enforce-the-merge-queue-every-finished-build-goe",
    "pr": "#456",
+   "mergedAt": "2026-11-11T00:01:05Z",
    "priority": "P0",
    "createdAt": "2026-11-10T16:43:57.553Z",
-   "updatedAt": "2026-11-10T17:22:07.151Z",
+   "updatedAt": "2026-11-11T00:07:54.537Z",
    "builtAt": "2026-11-10T17:22:07.151Z",
    "notes": [
     {
@@ -146923,6 +146924,10 @@
     {
      "text": "Two PRs. #455 (claude/enforce-the-merge-queue-main-green, no UI) makes main green again: the retired breakroom profile came back on Nov 7 and failed builds-store verify, so every PR's light checks were red and the queue sat empty. It goes through the current queue now. #456 (batch mode + UI) is a draft until UI Review shots exist: Settings → Push banner Batch switch + batch size, and the queue view's batch line (desktop and phone). This session couldn't render the console.",
      "at": "2026-11-10T17:21:47.019Z"
+    },
+    {
+     "text": "Reconciler: PR #456 merged",
+     "at": "2026-11-11T00:07:54.537Z"
     }
    ],
    "approvals": [],
@@ -147018,7 +147023,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

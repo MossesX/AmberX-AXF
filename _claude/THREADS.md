@@ -773,7 +773,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 20:20 UTC · `full-api-cli-control-of-everything-plus-an-offli` → pending, note (all) · reconciler
 - 2026-11-10 20:20 UTC · `remove-the-old-theme-manager-style-and-layout-se` branch claude/remove-the-old-theme-manager-style-and-layout-se (all) · builds-live
 - 2026-11-10 20:23 UTC · `molly-flagship-skin-premium-sellable-uncluttered` s3 done (all) · orchestrator
 - 2026-11-10 20:24 UTC · `remove-the-old-theme-manager-style-and-layout-se` s1 done, → running (all) · orchestrator
@@ -1173,6 +1172,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-11 00:02 UTC · `per-agent-api-control-switch-in-each-employee-s` s3 done, → built (all) · orchestrator
 - 2026-11-11 00:06 UTC · `merge-review-one-by-one-every-built-but-unmerged` added (0 steps) (all) · console
 - 2026-11-11 00:06 UTC · `merge-review-one-by-one-every-built-but-unmerged` → queued, note (all) · console
+- 2026-11-11 00:07 UTC · `enforce-the-merge-queue-every-finished-build-goe` → complete, merged, note (all) · reconciler
 
 ## Token passes (log)
 
