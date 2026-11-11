@@ -776,15 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 21:00 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` note (all) · orchestrator
-- 2026-11-10 21:01 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` note (all) · builds-live
-- 2026-11-10 21:01 UTC · `make-hulu-actually-take-builds-dispatcher-counts` note (all) · orchestrator
-- 2026-11-10 21:02 UTC · `remove-the-old-theme-manager-style-and-layout-se` s3 done (all) · orchestrator
-- 2026-11-10 21:02 UTC · `api-accounts-need-no-approval-builds-route-there` added (0 steps) (all) · console
-- 2026-11-10 21:02 UTC · `api-accounts-need-no-approval-builds-route-there` → queued, note (all) · console
-- 2026-11-10 21:02 UTC · `remove-the-old-theme-manager-style-and-layout-se` PR #472 (all) · builds-live
-- 2026-11-10 21:03 UTC · `remove-the-old-theme-manager-style-and-layout-se` note (all) · orchestrator
-- 2026-11-10 21:03 UTC · `api-accounts-need-no-approval-builds-route-there` note (all) · orchestrator
 - 2026-11-10 21:03 UTC · `resolve-conflicts-and-land-460-456-457-459-342` → running, note (all) · pipeline
 - 2026-11-10 21:03 UTC · `resolve-conflicts-and-land-460-456-457-459-342` branch claude/resolve-conflicts-and-land-460-456-457-459-342 (all) · pipeline
 - 2026-11-10 21:04 UTC · `resolve-conflicts-and-land-460-456-457-459-342` note (all) · orchestrator
@@ -1176,6 +1167,15 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-11 23:38 UTC · `console-commands-reliable` s1 done, → running (all) · orchestrator
 - 2026-11-11 23:38 UTC · `console-commands-reliable` s2 done (all) · orchestrator
 - 2026-11-11 23:38 UTC · `console-commands-reliable` s3 done (all) · orchestrator
+- 2026-11-11 23:40 UTC · `console-commands-reliable` branch claude/console-commands-reliable, PR #496 (all) · builds-live
+- 2026-11-11 23:40 UTC · `full-api-cli-control-of-everything-plus-an-offli` s8 done (all) · orchestrator
+- 2026-11-11 23:40 UTC · `console-commands-reliable` note (all) · reconciler
+- 2026-11-11 23:43 UTC · `full-api-cli-control-of-everything-plus-an-offli` s9 done (all) · orchestrator
+- 2026-11-11 23:45 UTC · `full-api-cli-control-of-everything-plus-an-offli` s10 done (all) · orchestrator
+- 2026-11-11 23:45 UTC · `full-api-cli-control-of-everything-plus-an-offli` s11 done (all) · orchestrator
+- 2026-11-11 23:46 UTC · `full-api-cli-control-of-everything-plus-an-offli` s12 done (all) · orchestrator
+- 2026-11-11 23:51 UTC · `full-api-cli-control-of-everything-plus-an-offli` s13 done (all) · orchestrator
+- 2026-11-11 23:52 UTC · `full-api-cli-control-of-everything-plus-an-offli` s14 done (all) · orchestrator
 
 ## Token passes (log)
 
