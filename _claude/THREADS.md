@@ -776,18 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 20:41 UTC · `resolve-conflicts-and-land-460-456-457-459-342` note (all) · orchestrator
-- 2026-11-10 20:41 UTC · `molly-flagship-skin-premium-sellable-uncluttered` → queued, note (all) · pipeline
-- 2026-11-10 20:43 UTC · `molly-flagship-skin-premium-sellable-uncluttered` s5 done, → running (all) · orchestrator
-- 2026-11-10 20:43 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` added (0 steps) (all) · console
-- 2026-11-10 20:43 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` → queued, note (all) · console
-- 2026-11-10 20:44 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` note (all) · orchestrator
-- 2026-11-10 20:44 UTC · `finish-and-land-the-git-status-board-every-ready` added (0 steps) (all) · console
-- 2026-11-10 20:44 UTC · `finish-and-land-the-git-status-board-every-ready` → queued, note (all) · console
-- 2026-11-10 20:44 UTC · `molly-flagship-skin-premium-sellable-uncluttered` → queued, note (all) · pipeline
-- 2026-11-10 20:45 UTC · `inline-element-editing-plugin-right-click-any-el` s6 done (all) · orchestrator
-- 2026-11-10 20:45 UTC · `no-veto-timer-on-navigation-follow-amber-open-x` added (0 steps) (all) · console
-- 2026-11-10 20:45 UTC · `no-veto-timer-on-navigation-follow-amber-open-x` → queued, note (all) · console
 - 2026-11-10 20:45 UTC · `finish-and-land-the-git-status-board-every-ready` note (all) · orchestrator
 - 2026-11-10 20:45 UTC · `inline-element-editing-plugin-right-click-any-el` s7 done (all) · orchestrator
 - 2026-11-10 20:46 UTC · `open-any-website-by-voice-on-the-phone-optionall` added (0 steps) (all) · console
@@ -1176,6 +1164,18 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-11 00:24 UTC · `merge-review-one-by-one-every-built-but-unmerged` note (all) · pipeline
 - 2026-11-11 00:30 UTC · `resolve-conflicts-and-land-460-456-457-459-342` note (all) · orchestrator
 - 2026-11-11 00:33 UTC · `ai-assistant-in-molly-console-drives-by-api-open` s1 done (all) · orchestrator
+- 2026-11-11 00:34 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
+- 2026-11-11 00:35 UTC · `ai-assistant-in-molly-console-drives-by-api-open` → queued, note (all) · pipeline
+- 2026-11-11 00:35 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · pipeline
+- 2026-11-11 00:35 UTC · `ai-assistant-in-molly-console-drives-by-api-open` → running (all) · builds-live
+- 2026-11-11 00:35 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
+- 2026-11-11 00:36 UTC · `ai-assistant-in-molly-console-drives-by-api-open` → queued, note (all) · pipeline
+- 2026-11-11 00:36 UTC · `ai-assistant-in-molly-console-drives-by-api-open` → running, note (all) · pipeline
+- 2026-11-11 00:36 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
+- 2026-11-11 00:37 UTC · `ai-assistant-in-molly-console-drives-by-api-open` s2 done, → running (all) · orchestrator
+- 2026-11-11 00:38 UTC · `ai-assistant-in-molly-console-drives-by-api-open` s3 done, → built (all) · orchestrator
+- 2026-11-11 00:38 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
+- 2026-11-11 00:41 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
 
 ## Token passes (log)
 
