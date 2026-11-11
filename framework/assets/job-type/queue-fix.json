@@ -13,7 +13,7 @@
     "ci"
   ],
   "data": {
-    "specialty": "landing",
+    "specialty": "queue-fix",
     "model": "opus",
     "tools": [
       "Read",
