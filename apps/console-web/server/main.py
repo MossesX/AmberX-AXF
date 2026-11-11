@@ -1323,6 +1323,13 @@ console_context.set_context(ROOT=ROOT, GITHUB_REPO=GITHUB_REPO, PLUGINS=PLUGINS,
                             asgi_app=app, mcp_server=_mcp,
                             log=log, plugin_enabled=plugin_enabled, set_plugin_enabled=lambda f, on: set_plugin_enabled(f, {"enabled": on}), terminal_lines=lambda: list(_state.get("terminal", [])))
 
+# The registry and generic control (control-registry@1, server/registry_api.py): GET /api/registry…, GET
+# /api/control/<registry id>/state, POST /api/control/<registry id>/<action>, POST /api/control/resolve. Mounted before
+# control@1's capability router: its `regid` convertor only matches registry ids, never a control@1 target.
+import registry_api  # noqa: E402
+
+app.include_router(registry_api.router(auth, auth_always, control_runner(ROOT), log))
+
 load_plugins()
 _prune_plugin_state()
 
