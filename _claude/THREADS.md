@@ -773,7 +773,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 20:40 UTC · `molly-flagship-skin-premium-sellable-uncluttered` → running, note (all) · pipeline
 - 2026-11-10 20:40 UTC · `molly-flagship-skin-premium-sellable-uncluttered` → running, note (all) · orchestrator
 - 2026-11-10 20:41 UTC · `molly-flagship-skin-premium-sellable-uncluttered` note (all) · builds-live
 - 2026-11-10 20:41 UTC · `inline-edit-plugin-install-in-console-molly-and` → pending, note (all) · reconciler
@@ -1173,6 +1172,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-11 00:21 UTC · `merge-review-one-by-one-every-built-but-unmerged` s2 done (all) · orchestrator
 - 2026-11-11 00:23 UTC · `merge-review-one-by-one-every-built-but-unmerged` PR #492 (all) · builds-live
 - 2026-11-11 00:23 UTC · `merge-review-one-by-one-every-built-but-unmerged` s3 done, → built (all) · orchestrator
+- 2026-11-11 00:23 UTC · `merge-review-one-by-one-every-built-but-unmerged` note (all) · orchestrator
 
 ## Token passes (log)
 

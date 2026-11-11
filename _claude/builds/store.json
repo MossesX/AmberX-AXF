@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3101,
- "updatedAt": "2026-11-11T00:23:15.986Z",
+ "rev": 3102,
+ "updatedAt": "2026-11-11T00:23:23.356Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -157225,8 +157225,8 @@
    "pr": "#492",
    "priority": "P0",
    "createdAt": "2026-11-11T00:06:50.193Z",
-   "updatedAt": "2026-11-11T00:23:07.013Z",
-   "builtAt": "2026-11-11T00:23:07.013Z",
+   "updatedAt": "2026-11-11T00:23:18.379Z",
+   "builtAt": "2026-11-11T00:23:18.379Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -157243,6 +157243,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-merge-review-one-by-one-every-built-but-unmerged--gina, own login copy)",
      "at": "2026-11-11T00:08:21.392Z"
+    },
+    {
+     "text": "Headless run axf-merge-review-one-by-one-every-built-but-unmerged--gina: brief only · start 11.1K tokens ($0.03) · cost $1.92 · 45 turns · 6 tools, MCP none",
+     "at": "2026-11-11T00:23:18.379Z"
     }
    ],
    "approvals": [],
