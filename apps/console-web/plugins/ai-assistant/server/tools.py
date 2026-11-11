@@ -49,6 +49,33 @@ def groups_for(offered: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return [{"id": g, "name": g, "triggers": _GROUP_TRIGGERS.get(g, []), "tools": [s["name"] for s in SPECS if s["group"] == g and s["name"] in names]} for g in GROUPS]
 
 
+# Per-agent console API control (agent-api-access@1, Nov 10 2026): a tool that drives the console through its API needs
+# the scope it falls under, granted to the agent picked in the chat (Amber = the assistant itself). A tool names its
+# scope with "apiScope"; console tools without one are matched by name. Tools in no scope are not affected.
+API_SCOPES = ("screens", "settings", "commands", "builds")
+_API_SCOPE_BY_NAME = [
+    ("screens", re.compile(r"^(console_(show|open|navigate|jump|dialog|view)|open_(screen|dialog|view)|navigate)", re.I)),
+    ("settings", re.compile(r"^(console_(setting|settings|set|get_setting|tokens?)|settings_|control_(set|get|token)|set_(setting|token))", re.I)),
+    ("commands", re.compile(r"^(console_(command|run|action|dispatch)|run_command|plugin_command|dispatch_action)", re.I)),
+    ("builds", re.compile(r"^(console_build|build_(file|queue|start|add|step)|orchestrator_|file_build|queue_build)", re.I)),
+]
+
+
+def api_scope(spec: dict[str, Any]) -> str | None:
+    """The console API scope a tool needs (screens | settings | commands | builds), or None for any other tool."""
+    sc = spec.get("apiScope")
+    if sc in API_SCOPES:
+        return str(sc)
+    name = str(spec.get("name") or "")
+    return next((s for s, rx in _API_SCOPE_BY_NAME if rx.match(name)), None)
+
+
+def api_gate(offered: list[dict[str, Any]], scopes: list[str] | set[str]) -> list[dict[str, Any]]:
+    """Only the console API tools whose scope the agent holds; every other tool passes."""
+    have = set(scopes or [])
+    return [t for t in offered if (api_scope(t) is None or api_scope(t) in have)]
+
+
 def specs(enabled: dict[str, bool]) -> list[dict[str, Any]]:
     return [{k: v for k, v in s.items() if k != "group"} for s in SPECS if enabled.get(s["group"], s["group"] != "web")]
 

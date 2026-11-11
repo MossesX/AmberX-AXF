@@ -2,6 +2,7 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { FOLDER, ID } from './api';
 import { AddonsTab, AgentManagerView } from './views';
+import { ApiControlChip, openApiControl } from './apiaccess';
 import { WIZARDS, WizardDialog } from './wizards';
 import { MemoryDefaultsPanel, ModelPanel, SafetyPanel, TrainingPanel, WizardsPanel } from './settings';
 import './agent-manager.css';
@@ -13,6 +14,8 @@ import { VinnyCommandsDialog, VinnyPanel } from './vinny';
  *  - view "agent-manager" (nav → Plugins → Agent manager)
  *  - dialog "agent-manager.vinny" — Vinny's commands and triggers (runs without Claude, through axHub)
  *  - dialog "agent-manager.wizard" { kind: builder | agent | skill | tool | training, agentId? } — open it from anywhere
+ *  - action "agent-manager.api-control[:agentId]" — the API control tab (per-agent console API permission, agent-api-access@1),
+ *    on that employee; the Crew employee cards show the grant (slot swarm.agent.actions)
  *  - Settings → Plugins → Agent manager: wizards, add-ons, model, training & Firecrawl, memory defaults, install & uninstall
  * The AI assistant chats as these agents through the server's axf.agents@1 service; nothing here names that plugin.
  */
@@ -24,8 +27,11 @@ export const plugin: AxfWebLibrary = {
   provides: ['axf.agent-manager'],
   register(rt) {
     rt.actions.register('agent-manager.vinny', () => rt.openDialog('agent-manager.vinny'), { label: "Vinny's commands and triggers" });
+    rt.actions.register('agent-manager.api-control', ([agent]) => { openApiControl(agent ? String(agent) : ''); rt.navigate('agent-manager'); }, { label: 'Agent manager: API control (who may drive the console)', params: true });
     rt.actions.register('agent-manager.wizard', ([kind]) => rt.openDialog('agent-manager.wizard', { kind: kind && WIZARDS[kind] ? kind : 'builder' }), { label: 'Open an agent manager wizard' });
   },
+  // API control on every Crew employee card (agent-api-access@1)
+  slots: { 'swarm.agent.actions': [{ id: 'agent-manager.api-control', order: 20, render: (p) => <ApiControlChip agentId={String(p?.agentId ?? '')} name={String(p?.name ?? '')} /> }] },
   views: { 'agent-manager': { title: 'Agent manager', icon: 'layers', render: () => <AgentManagerView /> } },
   dialogs: {
     // Vinny's commands (vinny-commands@1): triggers → VPS / git / GitHub commands he runs with no model, through axHub

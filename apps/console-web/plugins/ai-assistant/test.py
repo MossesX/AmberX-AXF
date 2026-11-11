@@ -132,6 +132,24 @@ def check(cond, msg):
     print(f"  ✓ {msg}")
 
 
+# ---- per-agent console API control (agent-api-access@1, Nov 10 2026): the picked agent's scopes gate console tools
+_t = mod.tools
+check([_t.api_scope({"name": n}) for n in ("console_open", "console_settings_set", "console_command", "build_queue", "repo_read")] == ["screens", "settings", "commands", "builds", None],
+      "console tools map to their API scope by name; other tools have none")
+check(_t.api_scope({"name": "x", "apiScope": "builds"}) == "builds", "a tool can name its scope")
+_offer = [{"name": "console_open"}, {"name": "console_command"}, {"name": "repo_read"}]
+check([x["name"] for x in _t.api_gate(_offer, ["screens"])] == ["console_open", "repo_read"] and [x["name"] for x in _t.api_gate(_offer, [])] == ["repo_read"],
+      "the gate keeps only the console tools whose scope the agent holds")
+check(mod._api_scopes("") == list(_t.API_SCOPES) and mod._api_scopes("molly") == list(_t.API_SCOPES) and mod._api_scopes("coder") == [],
+      "no permission store: Amber (no agent) and Molly on, everyone else off")
+class _FakeApi:
+    ASSISTANT_ID = "amber"
+    def scopes(self, aid): return {"amber": ["screens"], "rio": ["builds"]}.get(aid, [])
+plugin_services.provide("axf.agent-api@1", _FakeApi(), "fake-api-access")
+check(mod._api_scopes("") == ["screens"] and mod._api_scopes("rio") == ["builds"] and mod._api_scopes("molly") == [], "with the permission store, the picked agent's grant is used (no agent = amber)")
+plugin_services.withdraw("fake-api-access")
+
+
 _LIFE = {"session.open", "session.close", "turn.start", "turn.end", "wait", "resume", "interrupted", "replay", "session"}
 
 

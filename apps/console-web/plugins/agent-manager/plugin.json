@@ -15,12 +15,14 @@
   "provides": [
     "view:agent-manager",
     "settings-tab:agent-manager",
-    "service:axf.agents@1"
+    "service:axf.agents@1",
+    "service:axf.agent-api@1"
   ],
   "optional": [
     "service:axf.llm@1",
     "service:axf.containers@1",
-    "service:axf.snapshots@1"
+    "service:axf.snapshots@1",
+    "service:axf.swarm-roster@1"
   ],
   "scopes": [
     "ROUTES",
@@ -30,7 +32,139 @@
   "uiEditor": [
     "builder"
   ],
-  "commands": { "$axf": "plugin-commands@1", "auto": true },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "route": "GET /api-access",
+        "id": "api-control",
+        "title": "Who has API control",
+        "description": "Every employee (Amber = the AI assistant, the agents, the crew) and whether it may drive the console through its API, with its scopes and last change. Amber and Molly are on by default, everyone else off. Say 'who has API control'.",
+        "readOnly": true
+      },
+      {
+        "route": "GET /api-access/{aid}",
+        "id": "api-control-get",
+        "title": "An agent's API control",
+        "description": "One employee's API control grant, scopes and its last 20 changes. Say 'does Rio have API control'.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "aid": {
+              "type": "string",
+              "description": "agent id: amber (the AI assistant), an Agent manager agent (molly, coder, …) or a crew member (rio, kat, …)"
+            }
+          },
+          "required": [
+            "aid"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "PUT /api-access/{aid}",
+        "id": "api-control-set",
+        "title": "Give or take API control",
+        "description": "Switch an employee's console API control on or off and pick its scopes (audited, shows on the employee card). Say 'give Rio API control for screens and settings' or 'take API control from Molly'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "aid": {
+              "type": "string",
+              "description": "agent id: amber (the AI assistant), an Agent manager agent (molly, coder, …) or a crew member (rio, kat, …)"
+            },
+            "on": {
+              "type": "boolean"
+            },
+            "scopes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "screens",
+                  "settings",
+                  "commands",
+                  "builds"
+                ]
+              },
+              "description": "what API control covers: screens (open screens), settings (change settings), commands (run commands), builds (file/queue builds); leave out for all"
+            },
+            "reason": {
+              "type": "string",
+              "description": "why (kept in the audit)"
+            }
+          },
+          "required": [
+            "aid",
+            "on"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /api-access/{aid}/reset",
+        "id": "api-control-reset",
+        "title": "Reset API control to default",
+        "description": "Put an employee back to the default (Amber and Molly on, everyone else off). Audited.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "aid": {
+              "type": "string",
+              "description": "agent id: amber (the AI assistant), an Agent manager agent (molly, coder, …) or a crew member (rio, kat, …)"
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "aid"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "GET /api-access/audit",
+        "id": "api-control-audit",
+        "title": "API control changes",
+        "description": "The audit of API control changes: who changed whose, from what to what, when and why. Optional agent filter.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "agent": {
+              "type": "string"
+            },
+            "limit": {
+              "type": "integer"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      {
+        "action": "agent-manager.api-control",
+        "id": "api-control-open",
+        "title": "Open API control",
+        "description": "Open the Agent manager's API control tab in the open console, on one employee. args: [agentId].",
+        "input": {
+          "type": "object",
+          "properties": {
+            "args": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "[agentId]: amber, molly, rio, … (empty = the list)"
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    ]
+  },
   "builtWith": { "model": "fable", "builtAt": "2026-10-20", "rebuildOf": "Opus build of Oct 18 2026 (pending item agent-manager-plugin)" },
   "banner": false,
   "tabable": false,

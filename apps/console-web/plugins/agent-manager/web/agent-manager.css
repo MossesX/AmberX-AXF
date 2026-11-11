@@ -100,3 +100,7 @@
 :where([data-fx-small]) .axp-agent-manager .axp-agent-manager__tabs { display: none } :where([data-fx-small]) .axp-agent-manager .axp-agent-manager__tabpick { display: block }
 .axp-agent-manager__cmdhead { display: flex; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0 }
 .axp-agent-manager__item > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100% }
+
+/* Per-agent API control (agent-api-access@1) */
+.axp-agent-manager__api-audit { margin: 0; padding-left: var(--fx-dens-gap-2xl); display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); overflow-wrap: anywhere }
+.axp-agent-manager__api-chip { padding-top: var(--fx-dens-gap-md) }

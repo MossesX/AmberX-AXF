@@ -69,11 +69,20 @@ marked dangerous; container tools always are. Add-on items are listed and editab
 - `GET /memory` lists every memory store (shared scopes show their agents; orphans flagged); `GET /export` = every user-made item as one agent-addon@1 bundle.
 - Data from the Opus build loads unchanged (same files and tags); `store.migrate()` normalises older records once on start.
 
+## API control (per agent, agent-api-access@1)
+Who may drive the console through its API (open screens, change settings, run commands, file/queue builds). Off by default; **Amber** (the AI assistant itself, no agent picked) and **Molly** are on until changed. Every change is audited and shows on the Crew employee cards.
+- UI: Agent manager → **API control** tab (every employee: Amber, the agents, the crew) and the API control panel under each agent's editor; the switch on each Crew employee card (slot `swarm.agent.actions`).
+- Deep link: action `agent-manager.api-control[:agentId]`.
+- REST: `GET /api-access`, `GET|PUT /api-access/{id}` (`{on, scopes?, reason?}`), `POST /api-access/{id}/reset`, `GET /api-access/audit`.
+- Plugin commands / MCP / CLI / voice: `agent-manager/api-control`, `api-control-get`, `api-control-set`, `api-control-reset`, `api-control-audit`, `api-control-open` (`axf agent-manager api-control-set --aid rio --on true`).
+- Capability `axf.agent-api@1` (`grant`, `scopes`, `allowed`, `set`, `list`, `audit`): the AI assistant offers console tools only in the scopes of the agent picked in its chat.
+- Data: `api-access.json` in the data folder (grants + the last 500 changes).
+
 ## Lifecycle (plugin-lifecycle@1)
 Data: `.axf-console/plugins/agent-manager/` (collections, `memory/`, `versions/`, imported `addons/`, `runs.json`, `settings.json`).
 ```bash
 node apps/console-web/plugins/agent-manager/install.mjs
 node apps/console-web/plugins/agent-manager/uninstall.mjs            # data only (backed up)
 node apps/console-web/plugins/agent-manager/uninstall.mjs --all      # + code (bundled add-ons too) + doc lines; --publish pushes the removal
-python3 apps/console-web/plugins/agent-manager/test.py               # self-test (116 checks), scripted fake model, contract fixture replay
+python3 apps/console-web/plugins/agent-manager/test.py               # self-test (193 checks), scripted fake model, contract fixture replay
 ```

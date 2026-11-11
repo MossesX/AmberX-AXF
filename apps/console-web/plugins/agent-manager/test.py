@@ -296,6 +296,7 @@ for folder in consumers:
         plugin_services.withdraw("agent-manager")
         check(not c.get(f"/x-{folder}/status").json()["integrations"]["agents"], "…and stops when the agent manager is gone")
         plugin_services.provide("axf.agents@1", am.AgentsService(), "agent-manager")
+        plugin_services.provide("axf.agent-api@1", am.AgentApiService(), "agent-manager")
 if not consumers:
     print("  · no consumer of axf.agents@1 installed — integration checks skipped")
 # add-ons: listing carries risks and agent names; a bundle with forward references installs (skill → tool defined later in the same bundle)
@@ -620,4 +621,30 @@ except RuntimeError as e:
 if _tok is not None:
     os.environ["GITHUB_TOKEN"] = _tok
 check(gt._redact("https://x-access-token:abc123@github.com", "abc123") == "https://x-access-token:***@github.com", "the token is redacted from git output")
+
+# ---- per-agent console API control (agent-api-access@1, Nov 10 2026): Amber and Molly on by default, everyone else off
+api = plugin_services.get("axf.agent-api@1")
+check(api is not None and api.ASSISTANT_ID == "amber", "the agent manager provides axf.agent-api@1 (amber = the AI assistant)")
+lst = c.get("/am/api-access").json()
+by = {r["id"]: r for r in lst["agents"]}
+check(lst["defaults"] == ["amber", "molly"] and [s["id"] for s in lst["scopes"]] == ["screens", "settings", "commands", "builds"], "defaults and the four scopes are listed")
+check(by["amber"]["grant"]["on"] and by["amber"]["kind"] == "assistant" and by["amber"]["summary"] == "on: full", "Amber (the AI assistant) has full API control by default")
+check(api.allowed("molly", "builds") and api.scopes("molly") == ["screens", "settings", "commands", "builds"], "Molly has full API control by default")
+check(not api.allowed("coder", "screens") and by.get("coder", {}).get("summary") == "off", "everyone else is off by default")
+r = c.put("/am/api-access/coder", json={"on": True, "scopes": ["screens", "settings"], "reason": "help with themes"})
+check(r.status_code == 200 and r.json()["summary"] == "on: open screens, change settings", "turning an agent on with two scopes")
+check(api.allowed("coder", "settings") and not api.allowed("coder", "commands"), "only the picked scopes are allowed")
+au = c.get("/am/api-access/audit?agent=coder").json()["audit"]
+check(len(au) == 1 and au[0]["from"]["on"] is False and au[0]["to"]["scopes"] == ["screens", "settings"] and au[0]["reason"] == "help with themes" and au[0]["by"] == "brett", "the change is audited (from, to, who, why)")
+check(c.put("/am/api-access/coder", json={"on": True, "scopes": ["root"]}).status_code == 400, "an unknown scope is refused")
+check(c.put("/am/api-access/coder", json={"on": True, "scopes": []}).status_code == 400, "on with no scopes is refused")
+check(c.put("/am/api-access/coder", json={}).status_code == 400, "on is required")
+c.put("/am/api-access/molly", json={"on": False, "reason": "test"})
+check(not api.allowed("molly", "screens") and c.get("/am/api-access/molly").json()["grant"]["default"] is False, "Molly can be switched off")
+c.post("/am/api-access/molly/reset", json={})
+check(api.allowed("molly", "screens") and c.get("/am/api-access/molly").json()["grant"]["default"], "reset puts Molly back to the default (on)")
+check(len(c.get("/am/api-access/audit?agent=molly").json()["audit"]) == 2, "switch-off and reset are both audited")
+c.put("/am/api-access/coder", json={"on": True, "scopes": ["screens", "settings"]})
+check(len(c.get("/am/api-access/audit?agent=coder").json()["audit"]) == 1, "saving the same grant again adds no audit row")
+c.put("/am/api-access/coder", json={"on": False})
 print(f"all {ok} checks passed")

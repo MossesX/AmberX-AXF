@@ -13,6 +13,8 @@ Integration (plugin_services, capability names only — never another plugin's f
   provides  axf.llm@1            complete(), embed(), profiles() for any plugin that needs a model (the agent manager uses it)
   provides  axf.live-sessions@1  read-only session views + register_host() for new session hosts
   consumes  axf.agents@1         when an agent manager is installed: chat *as* one of its agents (its prompt, tools, memory)
+  consumes  axf.agent-api@1      per-agent console API control: console tools only in the scopes the agent picked in
+                                 the chat holds (no agent = Amber, the assistant itself)
   consumes  axf.containers@1     change batches (approval cards) for write-mode agents
   consumes  axf.ai-keys@1         when a keyring plugin is installed: its active key replaces the profile's own for that kind
   consumes  axf.live-host@1      a module's session host (e.g. axHub's workers) replaces the axHub placeholder
@@ -150,6 +152,21 @@ _turns: dict[str, threading.Event] = {}
 
 def _agents():
     return plugin_services.get("axf.agents@1")
+
+
+# Without an agent manager the defaults of agent-api-access@1 hold: Amber (the assistant itself) and Molly on.
+_API_DEFAULT_ON = {"", "amber", "molly"}
+
+
+def _api_scopes(agent_id: str) -> list[str]:
+    """The console API scopes of the agent picked in the chat ("" = Amber, the assistant itself)."""
+    svc = plugin_services.get("axf.agent-api@1")
+    if svc is not None:
+        try:
+            return list(svc.scopes(agent_id or svc.ASSISTANT_ID))
+        except Exception:  # noqa: BLE001 — a broken permission store grants nothing
+            return []
+    return list(tools.API_SCOPES) if (agent_id or "") in _API_DEFAULT_ON else []
 
 
 def _err(e: Exception) -> HTTPException:
@@ -301,7 +318,7 @@ _host.on_interrupted = _keep_interrupted
 
 # ---------------------------------------------------------------- prompts
 
-def _system_prompt(cfg: dict[str, Any], conv: dict[str, Any], agent: dict[str, Any] | None, context: dict[str, Any] | None, tool_specs: list[dict[str, Any]], memory: str) -> str:
+def _system_prompt(cfg: dict[str, Any], conv: dict[str, Any], agent: dict[str, Any] | None, context: dict[str, Any] | None, tool_specs: list[dict[str, Any]], memory: str, api_scopes: list[str] | None = None) -> str:
     st = conv.get("settings") or {}
     name = cfg.get("assistantName") or "Amber"
     parts: list[str] = []
@@ -315,6 +332,9 @@ def _system_prompt(cfg: dict[str, Any], conv: dict[str, Any], agent: dict[str, A
             parts.append(persona)
     if any(t["name"].startswith("repo_") for t in tool_specs):
         parts.append("You can read the AXF repository with repo_list, repo_read and repo_search. Read files before making claims about the code, and cite paths.")
+    if api_scopes is not None and (not api_scopes or any(tools.api_scope(t) for t in tool_specs)):
+        parts.append(f"Console API control for you: {', '.join(api_scopes)}. Use only those console tools." if api_scopes else
+                     "You have no console API control: you cannot open screens, change settings, run commands or file builds for Brett. If he asks, tell him to switch on API control for you in your employee control panel (Agent manager).")
     if cfg.get("instructions", "").strip() and not agent:
         parts.append(f"Owner instructions:\n{cfg['instructions'].strip()}")
     if st.get("systemPrompt", "").strip():
@@ -517,10 +537,13 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
         tool_on = st.get("tools", True) is not False
         base_specs = tools.specs(groups) if tool_on else []
 
+        # Console API control is per agent (agent-api-access@1): only admins' chats, only the picked agent's scopes.
+        api_scopes = _api_scopes(agent_id) if me.admin else []
+
         def offered(ag: dict[str, Any] | None) -> tuple[list[dict[str, Any]], dict[str, dict[str, Any]]]:
             """Every tool this caller may use in this chat, and the agent's own among them."""
-            own = {t["name"]: t for t in (ag or {}).get("tools", [])} if tool_on else {}
-            return [t for t in base_specs if t["name"] not in own] + list(own.values()), own
+            own = {t["name"]: t for t in tools.api_gate((ag or {}).get("tools", []), api_scopes)} if tool_on else {}
+            return [t for t in tools.api_gate(base_specs, api_scopes) if t["name"] not in own] + list(own.values()), own
 
         all_specs = offered(agent)[0]
         tool_groups = (agent or {}).get("toolGroups") or (tools.groups_for(all_specs) if not agent else [])
@@ -565,7 +588,7 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
                 own = {k: v for k, v in own.items() if k in r.names}
             mem = recall()
             recalled = bool(mem)
-            return specs, own, _system_prompt(cfg, conv, agent, context, specs, mem), _wire_history(msgs, int(cfg.get("contextMessages") or 40))
+            return specs, own, _system_prompt(cfg, conv, agent, context, specs, mem, api_scopes if me.admin else None), _wire_history(msgs, int(cfg.get("contextMessages") or 40))
 
         tool_specs, agent_tools, system, wire = load(route)
         if recalled:
@@ -584,7 +607,7 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
             params["thinking"] = bool(st["thinking"])
         params = contract.clamp_user_params(params, me.admin, me.can("assistant.models"))
 
-        yield _sse("start", {"turnId": turn_id, "agent": {"id": agent["id"], "name": agent.get("name"), "icon": agent.get("icon"), "writeMode": agent.get("writeMode")} if agent else None, "mode": route.public()})
+        yield _sse("start", {"turnId": turn_id, "agent": {"id": agent["id"], "name": agent.get("name"), "icon": agent.get("icon"), "writeMode": agent.get("writeMode")} if agent else None, "mode": route.public(), "apiScopes": api_scopes})
 
         staged: list[dict[str, Any]] = []
 

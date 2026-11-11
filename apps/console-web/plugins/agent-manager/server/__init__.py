@@ -11,7 +11,11 @@ load the same agents; the safety helpers come from `axf.assistant_host.safety` (
 Integration (plugin_services, capability names only — never another plugin's folder):
   provides  axf.agents@1  list_agents / get_agent / memory_context / run_tool / record_turn — the AI assistant uses it
                           to chat *as* an agent when both plugins are installed
+  provides  axf.agent-api@1  per-agent console API control (agent-api-access@1, server/apiaccess.py): which agents may
+                          open screens, change settings, run commands and file builds through the console API; the AI
+                          assistant asks it for the agent picked in its chat (Amber = the assistant itself)
   consumes  axf.llm@1     models from the AI assistant when it's installed (else the manager's own model settings)
+  consumes  axf.swarm-roster@1  the crew, so every employee gets an API control switch
 """
 from __future__ import annotations
 
@@ -33,7 +37,7 @@ if str(_PY) not in sys.path:
 
 from axf.contracts import agents as contract  # noqa: E402
 
-from . import addons, containers, engine, library, llm, memory, store, toolkit, training  # noqa: E402
+from . import addons, apiaccess, containers, engine, library, llm, memory, store, toolkit, training  # noqa: E402
 from . import hubtools  # noqa: E402,F401 — registers Mosses's axhub_call builtin before add-ons are checked
 from . import vinny  # noqa: E402 — Vinny's command book (vinny-commands@1), provides axf.vinny@1
 
@@ -122,6 +126,45 @@ def _voice(agent: dict[str, Any]) -> dict[str, Any] | None:
 
 
 plugin_services.provide("axf.agents@1", AgentsService(), FOLDER)
+
+
+class AgentApiService:
+    """Capability `axf.agent-api@1`: per-agent console API control (agent-api-access@1). `amber` = the AI assistant."""
+    version = 1
+    ASSISTANT_ID = apiaccess.ASSISTANT_ID
+    SCOPES = apiaccess.SCOPE_IDS
+
+    def grant(self, agent_id: str) -> dict[str, Any]:
+        return apiaccess.grant(agent_id)
+
+    def scopes(self, agent_id: str) -> list[str]:
+        return apiaccess.scopes(agent_id)
+
+    def allowed(self, agent_id: str, scope: str) -> bool:
+        return apiaccess.allowed(agent_id, scope)
+
+    def set(self, agent_id: str, on: bool, scopes: list[str] | None = None, by: str = "service", source: str = "service", reason: str = "") -> dict[str, Any]:
+        return apiaccess.set_grant(agent_id, on, scopes, by=by, source=source, reason=reason)
+
+    def list(self) -> list[dict[str, Any]]:
+        return _api_roster()
+
+    def audit(self, agent_id: str = "", limit: int = 100) -> list[dict[str, Any]]:
+        return apiaccess.audit(agent_id, limit)
+
+
+def _api_roster() -> list[dict[str, Any]]:
+    crew_svc = plugin_services.get("axf.swarm-roster@1")
+    crew: list[dict[str, Any]] = []
+    if crew_svc is not None:
+        try:
+            crew = crew_svc.agents()
+        except Exception:  # noqa: BLE001 — the crew is optional
+            crew = []
+    return apiaccess.roster(list(store.items("agents").values()), crew)
+
+
+plugin_services.provide("axf.agent-api@1", AgentApiService(), FOLDER)
 
 
 def _migrate_mosses() -> None:
@@ -792,3 +835,47 @@ def vinny_run(cid: str, body: dict[str, Any] | None = None) -> dict[str, Any]:
 @router.get("/vinny/runs")
 def vinny_runs(since: int = 0) -> dict[str, Any]:
     return {"runs": vinny.runner().all(since)}
+
+
+# ---------------------------------------------------------------- per-agent console API control (agent-api-access@1)
+
+@router.get("/api-access")
+def api_access_list() -> dict[str, Any]:
+    """Every employee (Amber = the AI assistant, the agents, the crew) with its API control grant and last change."""
+    return {"$axf": apiaccess.FORMAT, "scopes": apiaccess.SCOPES, "defaults": sorted(apiaccess.DEFAULT_ON), "agents": _api_roster()}
+
+
+@router.get("/api-access/audit")
+def api_access_audit(agent: str = "", limit: int = 100) -> dict[str, Any]:
+    return {"audit": apiaccess.audit(agent, limit)}
+
+
+@router.get("/api-access/{aid}")
+def api_access_get(aid: str) -> dict[str, Any]:
+    g = apiaccess.grant(aid)
+    return {"grant": g, "summary": apiaccess.summary(g), "audit": apiaccess.audit(aid, 20), "scopes": apiaccess.SCOPES}
+
+
+@router.put("/api-access/{aid}")
+def api_access_set(aid: str, body: dict[str, Any]) -> dict[str, Any]:
+    """Turn API control on or off for one agent: {on, scopes?: [screens|settings|commands|builds], reason?, by?, source?}.
+    On with no scopes = every scope. Audited."""
+    b = body or {}
+    if "on" not in b:
+        raise HTTPException(400, "on is required (true or false)")
+    try:
+        g = apiaccess.set_grant(aid, bool(b["on"]), b.get("scopes"), by=str(b.get("by") or "brett"), source=str(b.get("source") or "console"), reason=str(b.get("reason") or ""))
+    except Exception as e:  # noqa: BLE001
+        raise _err(e) from None
+    return {"grant": g, "summary": apiaccess.summary(g), "audit": apiaccess.audit(aid, 20)}
+
+
+@router.post("/api-access/{aid}/reset")
+def api_access_reset(aid: str, body: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Back to the default (Amber and Molly on, everyone else off). Audited."""
+    b = body or {}
+    try:
+        g = apiaccess.reset(aid, by=str(b.get("by") or "brett"), source=str(b.get("source") or "console"), reason=str(b.get("reason") or ""))
+    except Exception as e:  # noqa: BLE001
+        raise _err(e) from None
+    return {"grant": g, "summary": apiaccess.summary(g), "audit": apiaccess.audit(aid, 20)}

@@ -5,6 +5,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react';
 import { Button, Chip, Icon, TabGroup, useEditorSync, useRuntime } from '@console/axf/react';
 import { MoreMenu } from './more';
+import { API_EVENT, ApiControlPanel, ApiControlTab, takePendingApiAgent } from './apiaccess';
 import { AgentForm, Field, LingoForm, OriginChip, PersonaForm, SkillForm, Text, ToolForm, TrainingForm, WorkflowForm } from './forms';
 import { useData, WIZARDS } from './wizards';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
@@ -13,9 +14,9 @@ import {
   type Addon, type Agent, type Cache, type Coll, type MemItem, type MemScope, type MemStats, type Run, type Status, type Training, type Validation, type Workflow,
 } from './api';
 
-type Tab = 'agents' | 'skills' | 'personas' | 'tools' | 'training' | 'workflows' | 'memory' | 'addons' | 'runs';
+type Tab = 'agents' | 'api' | 'skills' | 'personas' | 'tools' | 'training' | 'workflows' | 'memory' | 'addons' | 'runs';
 const TABS: { id: Tab; label: string; icon: string }[] = [
-  { id: 'agents', label: 'Agents', icon: 'user' }, { id: 'skills', label: 'Skills', icon: 'star' }, { id: 'personas', label: 'Personas & lingo', icon: 'palette' },
+  { id: 'agents', label: 'Agents', icon: 'user' }, { id: 'api', label: 'API control', icon: 'shield' }, { id: 'skills', label: 'Skills', icon: 'star' }, { id: 'personas', label: 'Personas & lingo', icon: 'palette' },
   { id: 'tools', label: 'Tools', icon: 'zap' }, { id: 'training', label: 'Training', icon: 'download' }, { id: 'workflows', label: 'Workflows', icon: 'branch' },
   { id: 'memory', label: 'Memory', icon: 'layers' }, { id: 'addons', label: 'Add-ons', icon: 'package' }, { id: 'runs', label: 'Runs', icon: 'clock' },
 ];
@@ -23,8 +24,11 @@ const TABS: { id: Tab; label: string; icon: string }[] = [
 export function AgentManagerView() {
   const rt = useRuntime();
   const { cache, status } = useData();
-  const [tab, setTab] = useState<Tab>('agents');
+  // the agent-manager.api-control deep link (an agent id, or '' for the list) opens the API control tab
+  const [apiAgent, setApiAgent] = useState<string | null>(() => takePendingApiAgent());
+  const [tab, setTab] = useState<Tab>(apiAgent !== null ? 'api' : 'agents');
   const [err, setErr] = useState('');
+  useEffect(() => { const on = (e: Event) => { takePendingApiAgent(); setApiAgent(String((e as CustomEvent).detail ?? '')); setTab('api'); }; window.addEventListener(API_EVENT, on); return () => window.removeEventListener(API_EVENT, on); }, []);
   useEffect(() => { void refresh().catch((e: Error) => setErr(e.message)); }, []);
   // UI-editor rule: whenever the view opens or comes back into focus, reload what is saved now (another tab may have saved).
   useEditorSync({ onRefresh: () => { void refresh().catch(() => undefined); } });
@@ -60,6 +64,7 @@ export function AgentManagerView() {
       {!cache ? <LoadingSkeleton /> : (
         <>
           {tab === 'agents' && <AgentsTab cache={cache} status={status} wizard={wizard} />}
+          {tab === 'api' && <ApiControlTab initial={apiAgent || undefined} />}
           {tab === 'skills' && <CollTab coll="skills" cache={cache} status={status} wizardKind="skill" render={(v, set) => <SkillForm v={v} set={set} tools={cache.tools} />} />}
           {tab === 'personas' && <div className="fx-stack fx-stack--lg"><CollTab coll="personas" cache={cache} status={status} render={(v, set) => <PersonaForm v={v} set={set} />} /><CollTab coll="lingo" cache={cache} status={status} render={(v, set) => <LingoForm v={v} set={set} />} /></div>}
           {tab === 'tools' && <CollTab coll="tools" cache={cache} status={status} wizardKind="tool" render={(v, set) => <ToolForm key={String(v.id ?? 'new')} v={v} set={set} status={status} cache={cache} />} extra={(v) => v.id ? <ToolTester id={String(v.id)} /> : null} blank={{ kind: 'builtin', config: {} }} />}
@@ -345,6 +350,7 @@ function AgentsTab({ cache, status, wizard }: { cache: Cache; status?: Status; w
                     { label: 'Delete', icon: 'trash', onPick: () => { if (confirm(`Delete ${draft.name}? Its memory and training jobs go too.`)) void remove('agents', draft.id!).then(async () => { setDraft(null); setSel(''); await refresh(); }); } },
                   ]} />}
                 </div>
+                {draft.id && <ApiControlPanel key={draft.id} agentId={draft.id} name={draft.name || draft.id} />}
               </>
             )}
             {view === 'chat' && draft.id && <Playground agent={draft as Agent} />}
