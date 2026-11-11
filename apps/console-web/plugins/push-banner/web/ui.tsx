@@ -1,6 +1,6 @@
 /** Push banner UI: the banner (open pull requests + branches not on main, grouped by what's ready) and the settings panel. Theme tokens only. */
 import { useEffect, useState, type ReactNode } from 'react';
-import { Button, Icon, RefText, Switch, useAxfState, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
+import { Button, Icon, RefText, SelectField, Switch, useAxfState, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
 import { MergeQueueChip, MergeQueueView } from './queue';
 import { ago, bannerOn, doneKeys, doneRows, failedKeys, failedRows, fixWithClaude, jobOf, REPAIR_ALL, removeFailed, repair, repairAll, load, loadDetail, mergePr, needsPull, openPr, PULL_ALL, pullAll, pullMain, pullRows, removeDone, rows, saveClaude, setHidden, useStore, api, type Done, type Failed, type PullRow, type Row } from './store';
 
@@ -429,7 +429,7 @@ export function PushSettings() {
 }
 
 type AutoLast = { pr?: string; branch?: string; merged?: boolean; opened?: number | null; pulled?: boolean; why?: string };
-type AutoState = { on: boolean; autoPr: boolean; mergeQueue?: boolean; everyS: number; last: AutoLast[]; protection: Record<string, { base: string; state: string; error?: string; checks?: string[] }> };
+type AutoState = { on: boolean; autoPr: boolean; mergeQueue?: boolean; queueMode?: 'batch' | 'stack'; batchSize?: number; batchSizeMax?: number; everyS: number; last: AutoLast[]; protection: Record<string, { base: string; state: string; error?: string; checks?: string[] }> };
 
 /** Auto-merge (Oct 30 2026, Brett: "When stuff needs to merge automatic merge"; 0.5.0: "I want everything to need a PR
  * and to pull against main before it's merged"): every branch gets a PR, and ready PRs merge oldest first, one per round,
@@ -440,7 +440,7 @@ function AutoMergeSettings() {
   const read = () => api.call<AutoState>('auto-merge').then(setSt, (e: Error) => setErr(e.message));
   useEffect(() => { void read(); }, []);
   if (!st) return err ? <p className="fx-small axp-push-banner__note is-danger">{err}</p> : null;
-  const set = (patch: { autoMerge?: boolean; autoPr?: boolean; mergeQueue?: boolean }) => { setErr(''); api.put('config', patch).then(read, (e: Error) => setErr(e.message)); };
+  const set = (patch: { autoMerge?: boolean; autoPr?: boolean; mergeQueue?: boolean; queueMode?: 'batch' | 'stack'; batchSize?: number }) => { setErr(''); api.put('config', patch).then(read, (e: Error) => setErr(e.message)); };
   const said = (x: AutoLast) => x.branch ? (x.opened ? `PR #${x.opened}${x.why ? '' : ' open'}` : x.why || 'no PR') : x.merged ? 'merged' : x.why || 'not merged';
   const prot = Object.entries(st.protection ?? {});
   return (
@@ -450,8 +450,20 @@ function AutoMergeSettings() {
         hint={`Every ${Math.round(st.everyS / 60)} min the console takes the open PRs oldest first, one at a time per repo: one behind main gets main pulled in and waits for CI on its new head; it merges only when it is up to date with main, has no conflicts, isn't a draft and CI passed on its head commit (pinned). At most one merge per round, so the next PR is brought up to date with the new main first. Forks, hidden PRs and repos without CI never auto-merge. No Claude session, no tokens.`} />
       <Switch label="Open a pull request for every branch" checked={st.autoPr} disabled={!st.on} onChange={(v) => set({ autoPr: v })}
         hint="Each round, every branch ahead of main without an open PR gets one (never main, site, go-pass, gh-pages or hidden branches). Nothing reaches main without a PR." />
-      <Switch label="Merge queue: test each PR once" checked={st.mergeQueue !== false} onChange={(v) => set({ mergeQueue: v })}
-        hint="Ready PRs line up and each is tested once on top of main + every PR ahead of it (queue/pr-<n> branches); a green one merges with no retest, a red one is kicked out with the reason and the ones behind it are retested without it. While it is on, PRs run only the light checks and the console doesn't merge AmberX-AXF itself (the queue does). GitHub's own merge queue needs an organisation-owned repo, so this one is ours." />
+      <Switch label="Merge queue: everything lands through it" checked={st.mergeQueue !== false} onChange={(v) => set({ mergeQueue: v })}
+        hint="Every finished build gets a PR and goes into the queue; nothing reaches AmberX-AXF's main on its own (Merge puts a PR in the queue). While it is on, PRs run only the light checks. GitHub's own merge queue needs an organisation-owned repo, so this one is ours." />
+      {st.mergeQueue !== false && (
+        <>
+          <Switch label="Batch: one build, one CI run" checked={st.queueMode !== 'stack'} onChange={(v) => set({ queueMode: v ? 'batch' : 'stack' })}
+            hint="On: the ready PRs are combined into one build (queue/batch), conflicts between them resolved or held for the next batch, CI runs once on it, and a green batch lands on main as that one commit and redeploys once. A red batch is split in half until the PR that broke it is found and kicked out. Off: each PR is tested on its own queue/pr-<n> branch on top of the ones ahead (one run per PR)." />
+          {st.queueMode !== 'stack' && (
+            <SelectField label="PRs in one batch" value={String(st.batchSize ?? 8)}
+              options={Array.from({ length: st.batchSizeMax ?? 20 }, (_, i) => ({ value: String(i + 1), label: String(i + 1) }))}
+              hint="More in a batch means fewer CI runs; a red batch costs a few extra runs to find the PR that broke it."
+              onChange={(v) => set({ batchSize: Number(v) })} />
+          )}
+        </>
+      )}
       <div className="fx-row"><Button size="sm" icon="play" onClick={() => { setErr(''); api.post('auto-merge', {}).then(read, (e: Error) => setErr(e.message)); }}>Run a round now</Button></div>
       {st.last.length > 0 && <ul className="axp-push-banner__list">{st.last.slice(0, 8).map((x, i) => <li key={`${x.pr ?? x.branch}-${i}`} className="axp-push-banner__item"><span className="fx-small">{x.pr ?? x.branch}: {said(x)}</span></li>)}</ul>}
       {prot.length > 0 && <ul className="axp-push-banner__list">{prot.map(([repo, p]) => <li key={repo} className="axp-push-banner__item"><span className={`fx-small${p.state === 'protected' ? '' : ' axp-push-banner__note is-danger'}`}>{repo} {p.base}: {p.state === 'protected' ? `protected (PR, up to date${p.checks?.length ? `, ${p.checks.join(', ')}` : ''})` : `not protected: ${p.error ?? ''} (systems check → Auto fix)`}</span></li>)}</ul>}

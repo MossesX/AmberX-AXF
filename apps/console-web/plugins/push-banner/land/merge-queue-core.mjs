@@ -11,20 +11,32 @@
  *   passed: that PR is kicked out with the failing jobs in plain words, and the ones behind it are rebuilt without it.
  *   Main moving in code outside the queue invalidates the stack (rebuilt on the new main); status-only `[skip ci]`
  *   commits under _claude/ never do.
+ *
+ * Batch mode (the default since Nov 10 2026, Brett: "Everything needs to go into the merge queue so we can make one
+ * build out of it before we send it to CI"): every finished build gets a PR and joins; up to `batchSize` ready PRs are
+ * combined into one commit on queue/batch (a PR that conflicts with the others waits for the next batch), CI runs once on
+ * it, and a green batch lands on main as exactly that commit. A red batch is split in half (bisection) until the one PR
+ * that broke it is kicked out; the halves that pass land. `queueMode: 'stack'` keeps the per-PR stack above.
  */
 
 export const QUEUE_FRAME = 'merge-queue@1';
 export const QUEUE_CONTROL_FRAME = 'merge-queue-control@1';
 /** Settings (push banner config.json): the queue is on unless switched off; `queueDepth` PRs are tested at once. */
-export const QUEUE_DEFAULTS = Object.freeze({ mergeQueue: true, queueDepth: 3 });
+export const QUEUE_DEFAULTS = Object.freeze({ mergeQueue: true, queueDepth: 3, queueMode: 'batch', batchSize: 8 });
 export const QUEUE_DEPTH_MAX = 6;
+/** Batch mode (Nov 10 2026, Brett: "Everything needs to go into the merge queue so we can make one build out of it
+ *  before we send it to CI"): the ready PRs are combined into one commit on `queue/batch`, CI runs once on it, and a
+ *  green batch lands on main as that one commit. `stack` keeps the Nov 4 per-PR stack. */
+export const QUEUE_MODES = Object.freeze(['batch', 'stack']);
+export const BATCH_SIZE_MAX = 20;
+export const BATCH_BRANCH = 'queue/batch';
 /** Minutes a queue commit may sit with no CI run before the runner starts one itself (workflow_dispatch). */
 export const NO_RUN_MIN = 10;
 /** Minutes one CI run takes when the queue has no history yet (learned from finished runs after that). */
 export const DEFAULT_RUN_MIN = 14;
 export const QUEUE_PREFIX = 'queue/pr-';
 export const queueBranch = (n) => `${QUEUE_PREFIX}${n}`;
-export const isQueueBranch = (b) => typeof b === 'string' && /^queue\/pr-\d+$/.test(b);
+export const isQueueBranch = (b) => typeof b === 'string' && (/^queue\/pr-\d+$/.test(b) || b === BATCH_BRANCH);
 
 const str = (v, n = 300) => (typeof v === 'string' ? v.slice(0, n) : '');
 const num = (v) => (Number.isInteger(v) && v > 0 ? v : 0);
@@ -43,7 +55,7 @@ export const STATES = Object.freeze({
  *     landHeld: auto-land hold reason, conflicts: [code files] }
  * `ctl` is the control document: removed[pr] = {head} (Remove from queue, until a new commit), kicked[pr] = {head}.
  */
-export function notReady(pr, ctl = {}, { waitUi = true } = {}) {
+export function notReady(pr, ctl = {}, { waitUi = true, redJoins = false } = {}) {
   const n = num(pr?.number);
   if (!n) return 'not a pull request';
   if (pr.draft) return 'it is a draft';
@@ -55,11 +67,13 @@ export function notReady(pr, ctl = {}, { waitUi = true } = {}) {
   if (pr.landHeld) return `held by hand in auto-land (${str(String(pr.landHeld), 120)})`;
   if (waitUi && pr.ui) return pr.ui === 'waiting' ? 'its screenshots wait for Brett in UI Review' : `UI Review holds it (${str(pr.ui, 40)})`;
   if (pr.conflicts?.length) return `it conflicts with main in code (${pr.conflicts.slice(0, 3).join(', ')})`;
-  if (pr.ci === 'failure') return 'its PR checks are red';
+  // batch mode: the batch's one full run is the gate, so red light checks (often red only because main was, Nov 10 2026)
+  // don't keep a finished build out; it goes behind the green ones and a split finds it if it really breaks CI
+  if (pr.ci === 'failure' && !redJoins) return 'its PR checks are red';
   if (pr.ci === 'running') return 'its PR checks are still running';
   // GitHub runs no PR checks on a PR that conflicts with main: the queue commit resolves data conflicts itself (and kicks
   // a code conflict out with the files named), so such a PR goes straight to its one full run
-  if (pr.ci === 'none' && !pr.conflicted) return 'its PR checks have not run yet';
+  if (pr.ci === 'none' && !pr.conflicted && !redJoins) return 'its PR checks have not run yet';
   return '';
 }
 
@@ -132,6 +146,54 @@ export function decide(stack, ci = {}) {
   return { merge, kick, keep: kick ? i : stack.length };
 }
 
+/** Batch order: PRs with green PR checks first, then the ones with none, then the red ones; Brett's manual order (`ctl.order`) stays first. */
+export function greenFirst(prs, ctl = {}) {
+  const manual = new Set((Array.isArray(ctl.order) ? ctl.order : []).filter(num));
+  const pinned = prs.filter((p) => manual.has(p.number));
+  const rest = prs.filter((p) => !manual.has(p.number));
+  const tier = (p) => (p.ci === 'success' ? 0 : p.ci === 'failure' ? 2 : 1);
+  return [...pinned, ...[0, 1, 2].flatMap((t) => rest.filter((p) => tier(p) === t))];
+}
+
+/**
+ * Which ready PRs go into the next batch: while a red batch is being split (`split` = the PR numbers still under
+ * suspicion, in order), the first half of them that is still ready; otherwise the first `size` of the queue. Pure.
+ */
+export function batchMembers(ready, { size = QUEUE_DEFAULTS.batchSize, split = [] } = {}) {
+  const n = Math.min(BATCH_SIZE_MAX, Math.max(1, num(size) || QUEUE_DEFAULTS.batchSize));
+  const live = (split || []).filter((x) => ready.some((p) => p.number === x));
+  if (live.length) {
+    const half = live.slice(0, Math.ceil(live.length / 2));
+    return ready.filter((p) => half.includes(p.number));
+  }
+  return ready.slice(0, n);
+}
+
+/**
+ * Does last round's batch still hold? Same members with the same heads, all still ready, and main not moved in code
+ * since the batch was built (status-only `[skip ci]` commits under _claude/ never count).
+ *   batch: { members: [{ pr, head }], sha, base }; ready: ordered ready PRs [{ number, head }]
+ */
+export function batchHolds(batch, ready, { mainMoved = false } = {}) {
+  if (!batch?.sha || !Array.isArray(batch.members) || !batch.members.length || mainMoved) return false;
+  return batch.members.every((m) => ready.some((p) => p.number === m.pr && p.head === m.head));
+}
+
+/**
+ * What a finished batch run means (`ci` = success|failure|running|none), deterministic, no model:
+ *   land:  every member (the batch commit lands on main as one build)
+ *   kick:  the one member to blame (a batch of one that went red)
+ *   split: the members still under suspicion: the next batch tests the first half of them (bisection), and a green
+ *          half lands while the other half is tested next
+ */
+export function decideBatch(batch, ci, { split = [] } = {}) {
+  const prs = (batch?.members || []).map((m) => m.pr);
+  if (ci === 'success') return { land: prs, kick: null, split: (split || []).filter((n) => !prs.includes(n)) };
+  if (ci !== 'failure') return { land: [], kick: null, split: [...(split || [])] };
+  if (prs.length === 1) return { land: [], kick: prs[0], split: (split || []).filter((n) => n !== prs[0]) };
+  return { land: [], kick: null, split: prs };
+}
+
 /** The plain-words reason a PR was kicked out (shown in the view, the alert and on the bugs board). */
 export function kickReason(pr, { failing = [], ahead = [], url = '' } = {}) {
   const jobs = failing.filter(Boolean).slice(0, 4);
@@ -150,6 +212,7 @@ export function runMinutes(history = []) {
  * one more run per `depth` entries ahead of it.
  */
 export function etaMinutes(index, { depth = 3, avg = DEFAULT_RUN_MIN, startedMin = null } = {}) {
+  // batch mode passes depth = batch size: everything in the batch lands with its one run, the rest with the next ones
   if (index < depth) return Math.max(1, Math.round(avg - (startedMin ?? 0)));
   return Math.round(avg * (1 + Math.floor((index - depth) / depth) + 1));
 }
@@ -159,6 +222,7 @@ export const QUEUE_COMMANDS = Object.freeze([
   { id: 'mergequeue-list', method: 'GET', path: '/queue', cli: 'list', title: 'Merge queue: the line', description: 'Every PR in the merge queue in order: title, agent, test state (waiting, testing, passed, kicked out and why), ETA; and the open PRs not in it, with why.', effect: 'read' },
   { id: 'mergequeue-add', method: 'POST', path: '/queue/add', cli: 'add', title: 'Merge queue: add a PR', description: 'Put a PR (back) in the merge queue: undoes Remove from queue or a kick-out at the same head. It still has to be ready (PR checks green, not held by UI Review).', effect: 'write', input: { pr: 'PR number' } },
   { id: 'mergequeue-remove', method: 'POST', path: '/queue/remove', cli: 'remove', title: 'Merge queue: remove a PR', description: 'Take a PR out of the merge queue until it gets a new commit or is added again; the ones behind it are retested without it.', effect: 'write', input: { pr: 'PR number', why: 'optional reason' } },
+  { id: 'mergequeue-settings', method: 'POST', path: '/queue/settings', cli: 'settings', title: 'Merge queue: settings', description: "Batch mode (one build, one CI run, lands as one commit) or the per-PR stack, the batch size, the queue on. Off is Brett's own click.", effect: 'write', input: { on: 'true | false', mode: 'batch | stack', batchSize: '1-20' } },
   { id: 'mergequeue-move', method: 'POST', path: '/queue/move', cli: 'move', title: 'Merge queue: move a PR', description: "Move a PR to a place in the merge queue (0 = front). Jump to front from the console is Brett's own click.", effect: 'write', input: { pr: 'PR number', to: 'new index, 0 = front' } },
 ]);
 

@@ -92,6 +92,7 @@ const heads = { 1: branch('b1', 'one.txt', '1\n'), 2: branch('b2', 'two.txt', '2
 sh(repo, 'fetch', '-q', 'origin');
 
 const s = { repo, slug: 'o/r', dataDir: data, remote: 'origin', base: 'main', archive: join(root, 'archive') };
+writeFileSync(join(data, 'config.json'), JSON.stringify({ queueMode: 'stack' })); // the Nov 4 per-PR stack; batch mode is tested below
 const git = makeGit(repo);
 const ciBySha = {}; const merges = []; const comments = []; const vars = [];
 const open = () => [1, 2, 3].filter((x) => !merges.includes(x)).map((x) => ({ number: x, title: `PR ${x}`, html_url: `u/${x}`, created_at: `2026-11-0${x}`, base: { ref: 'main' }, head: { ref: `b${x}`, sha: heads[x], repo: { full_name: 'o/r' } }, user: { login: 'bot' } }));
@@ -177,5 +178,114 @@ await t('priority: the host copy of the rule matches framework/core/build-priori
     assert.equal(q.buildPriority(b), effectivePriority(b), JSON.stringify(b));
   }
 });
+
+// ------------------------------------------------------------------ batch mode (default since Nov 10 2026)
+
+await t('batch rules: members, holds, decide (land all / split in half / kick the one), green first', () => {
+  const ready = [1, 2, 3, 4, 5].map((x) => ({ number: x, head: `h${x}` }));
+  assert.deepEqual(q.batchMembers(ready, { size: 3 }).map((p) => p.number), [1, 2, 3]);
+  assert.deepEqual(q.batchMembers(ready, { size: 3, split: [2, 3, 4, 5] }).map((p) => p.number), [2, 3], 'a red batch: first half of the suspects');
+  assert.deepEqual(q.batchMembers(ready, { split: [9] }).map((p) => p.number), [1, 2, 3, 4, 5], 'suspects no longer ready: a normal batch');
+  const b = { sha: 's', base: 'm', members: [{ pr: 1, head: 'h1' }, { pr: 2, head: 'h2' }] };
+  assert.equal(q.batchHolds(b, ready), true);
+  assert.equal(q.batchHolds(b, ready, { mainMoved: true }), false);
+  assert.equal(q.batchHolds(b, [{ number: 1, head: 'h1' }, { number: 2, head: 'NEW' }]), false);
+  assert.deepEqual(q.decideBatch(b, 'success', { split: [1, 2, 3] }), { land: [1, 2], kick: null, split: [3] });
+  assert.deepEqual(q.decideBatch(b, 'failure'), { land: [], kick: null, split: [1, 2] });
+  assert.deepEqual(q.decideBatch({ members: [{ pr: 2 }] }, 'failure', { split: [2, 3] }), { land: [], kick: 2, split: [3] });
+  assert.deepEqual(q.decideBatch(b, 'running', { split: [7] }), { land: [], kick: null, split: [7] });
+  assert.equal(q.notReady({ number: 1, head: 'a', ci: 'failure' }, {}, { redJoins: true }), '', 'batch mode: the batch run is the gate');
+  assert.equal(q.notReady({ number: 1, head: 'a', ci: 'none' }, {}, { redJoins: true }), '');
+  assert.match(q.notReady({ number: 1, head: 'a', ci: 'running' }, {}, { redJoins: true }), /running/);
+  assert.deepEqual(q.greenFirst([{ number: 1, ci: 'failure' }, { number: 2, ci: 'none' }, { number: 3, ci: 'success' }]).map((p) => p.number), [3, 2, 1]);
+  assert.deepEqual(q.greenFirst([{ number: 1, ci: 'failure' }, { number: 3, ci: 'success' }], { order: [1] }).map((p) => p.number), [1, 3], "Brett's order wins");
+  assert.equal(q.isQueueBranch(q.BATCH_BRANCH), true);
+});
+
+{
+  const root2 = mkdtempSync(join(tmpdir(), 'mq-batch-'));
+  const origin2 = join(root2, 'origin.git'); const repo2 = join(root2, 'repo'); const data2 = join(root2, 'data');
+  mkdirSync(data2);
+  sh(root2, 'init', '-q', '--bare', '-b', 'main', origin2);
+  sh(root2, 'clone', '-q', origin2, repo2);
+  const commit2 = (file, text, msg) => { mkdirSync(join(repo2, file, '..'), { recursive: true }); writeFileSync(join(repo2, file), text); sh(repo2, 'add', file); sh(repo2, ...cfg, 'commit', '-q', '-m', msg); };
+  // main's builds store: build b4 is finished and has no PR yet
+  commit2('a.txt', 'base\n', 'base');
+  commit2('_claude/builds/store.json', JSON.stringify({ builds: [{ id: 'four', title: 'Build four', branch: 'b4', status: 'built' }] }), 'store');
+  sh(repo2, 'push', '-q', 'origin', 'HEAD:main');
+  const branch2 = (name, file, text) => { sh(repo2, 'checkout', '-q', '-b', name, 'origin/main'); commit2(file, text, name); sh(repo2, 'push', '-q', 'origin', `HEAD:${name}`); sh(repo2, 'checkout', '-q', '--detach'); return sh(repo2, 'rev-parse', 'HEAD'); };
+  const h = { 1: branch2('b1', 'one.txt', '1\n'), 2: branch2('b2', 'two.txt', '2\n'), 3: branch2('b3', 'three.txt', '3\n') };
+  branch2('b4', 'four.txt', '4\n');
+  sh(repo2, 'fetch', '-q', 'origin');
+  const s2 = { repo: repo2, slug: 'o/r', dataDir: data2, remote: 'origin', base: 'main', archive: join(root2, 'archive') };
+  const git2 = makeGit(repo2);
+  const ci2 = {}; const opened = []; const comments2 = []; const deleted = [];
+  const onMain = (sha) => spawnSync('git', ['merge-base', '--is-ancestor', sha, 'main'], { cwd: origin2 }).status === 0;
+  const open2 = () => [1, 2, 3].filter((x) => !onMain(h[x])).map((x) => ({ number: x, title: `PR ${x}`, html_url: `u/${x}`, created_at: `2026-11-0${x}`, base: { ref: 'main' }, head: { ref: `b${x}`, sha: h[x], repo: { full_name: 'o/r' } }, user: { login: 'bot' } }));
+  const gh2 = async (method, path, body) => {
+    if (method === 'GET' && path.startsWith('/repos/o/r/pulls?')) return open2();
+    if (method === 'POST' && path === '/repos/o/r/pulls') { opened.push(body.head); return { number: 40 + opened.length }; }
+    const m = path.match(/commits\/([0-9a-f]+)\/check-runs/);
+    if (m) return { check_runs: Object.values(h).includes(m[1]) ? runs('failure') : runs(ci2[m[1]] || 'running') }; // every PR's own light checks are red
+    if (path.includes('/issues/') && method === 'POST') { comments2.push(body.body); return {}; }
+    if (path.includes('/actions/variables')) return {};
+    if (method === 'DELETE') { deleted.push(path.split('/heads/')[1]); return {}; }
+    if (path.includes('/pulls/') && path.endsWith('/merge')) throw new Error('batch mode never merges PR by PR');
+    throw new Error(`unexpected ${method} ${path}`);
+  };
+  const files = (ref) => sh(origin2, 'ls-tree', '--name-only', ref).split('\n').sort();
+
+  await t('batch round 1: every ready PR combined into one commit on queue/batch; the finished build without a PR gets one', async () => {
+    const st = await queueRound({ s: s2, git: git2, gh: gh2, api });
+    assert.equal(st.mode, 'batch');
+    assert.deepEqual(st.batch.members.map((m) => m.pr), [1, 2, 3], 'red PR checks still join: the batch run decides');
+    assert.deepEqual(st.items.map((x) => [x.pr, x.state, x.inBatch]), [[1, 'testing', true], [2, 'testing', true], [3, 'testing', true]]);
+    assert.deepEqual(files('queue/batch'), ['_claude', 'a.txt', 'one.txt', 'three.txt', 'two.txt']);
+    assert.deepEqual(opened, ['b4'], 'every finished build goes into the queue');
+  });
+
+  await t('batch round 2: the batch is red, so it is split; the first half is tested as the next batch', async () => {
+    ci2[readQueue(s2).batch.sha] = 'failure';
+    const st = await queueRound({ s: s2, git: git2, gh: gh2, api });
+    assert.deepEqual(st.batch.members.map((m) => m.pr), [1, 2]);
+    assert.deepEqual(st.split, [1, 2, 3]);
+    assert.equal(st.batch.bisect, true);
+    assert.match(st.items.find((x) => x.pr === 3).why, /smaller batch/);
+  });
+
+  await t('batch round 3: the green half lands on main as the one tested commit; #3 is tested alone', async () => {
+    const tested = readQueue(s2).batch.sha; ci2[tested] = 'success';
+    const st = await queueRound({ s: s2, git: git2, gh: gh2, api });
+    assert.equal(sh(origin2, 'rev-parse', 'main'), tested, 'main is exactly the commit CI ran on');
+    assert.deepEqual(st.merged.map((m) => m.pr), [1, 2]);
+    assert.ok(st.merged.every((m) => m.retested === false && m.queueSha === tested));
+    assert.deepEqual(st.batch.members.map((m) => m.pr), [3]);
+    assert.deepEqual(st.lastLanded, ['b1', 'b2']);
+  });
+
+  await t('batch round 4: a batch of one goes red and is kicked out with the reason; landed branches are tidied', async () => {
+    ci2[readQueue(s2).batch.sha] = 'failure';
+    const st = await queueRound({ s: s2, git: git2, gh: gh2, api });
+    assert.match(st.kicked.at(-1).why, /#3 broke CI/);
+    assert.match(comments2[0], /Kicked out of the merge queue/);
+    assert.equal(st.batch, null);
+    assert.equal(st.waiting.find((w) => w.pr === 3).state, 'kicked');
+    assert.deepEqual(deleted.sort(), ['b1', 'b2']);
+  });
+
+  await t('batch: main moving in status only (skip ci) still lands, with the status commits merged in', async () => {
+    // #3 gets a fix: a new head rejoins by itself
+    sh(repo2, 'checkout', '-q', '--detach', h[3]); commit2('three.txt', '3 fixed\n', 'fix'); sh(repo2, 'push', '-q', 'origin', 'HEAD:b3'); h[3] = sh(repo2, 'rev-parse', 'HEAD');
+    let st = await queueRound({ s: s2, git: git2, gh: gh2, api });
+    assert.deepEqual(st.batch.members.map((m) => m.pr), [3]);
+    const tested = st.batch.sha; ci2[tested] = 'success';
+    sh(repo2, 'fetch', '-q', 'origin'); sh(repo2, 'checkout', '-q', '--detach', 'origin/main');
+    commit2('_claude/status.md', 'x\n', 'Builds live [skip ci]'); sh(repo2, 'push', '-q', 'origin', 'HEAD:main');
+    st = await queueRound({ s: s2, git: git2, gh: gh2, api });
+    assert.equal(st.merged.at(-1).pr, 3);
+    const main = sh(origin2, 'rev-parse', 'main');
+    assert.equal(sh(origin2, 'diff', '--name-only', tested, main), '_claude/status.md', 'only status differs from what CI tested');
+  });
+}
 
 console.log(`merge queue: ${n} checks passed`);

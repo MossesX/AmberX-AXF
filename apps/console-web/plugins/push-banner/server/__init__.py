@@ -108,6 +108,8 @@ LAND_SCRIPT = Path(__file__).resolve().parent.parent / "land" / "land.mjs"
 # merge queue (Nov 4 2026): land/merge-queue.mjs on the VPS host runs it every auto-land round; commands go through it too
 QUEUE_SCRIPT = Path(__file__).resolve().parent.parent / "land" / "merge-queue.mjs"
 QUEUE_DEPTH_MAX = 6
+QUEUE_MODES = ("batch", "stack")  # land/merge-queue-core.mjs QUEUE_MODES
+BATCH_SIZE_MAX = 20  # land/merge-queue-core.mjs BATCH_SIZE_MAX
 AGENT_HEADERS = ("x-axhub-session", "x-axhub-source")
 LAND_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,80}\Z")
 UI_REVIEW_CAP = "ui-review@1"  # PRs whose UI is waiting, has changes asked or is rejected in UI Review don't merge
@@ -224,10 +226,15 @@ class Pushes:
                 # Merge queue (Nov 4 2026, Brett: "We're paying to do these CI checks twice."): each ready PR is tested
                 # once on top of main + the PRs ahead of it and merges with no retest. On unless switched off.
                 "mergeQueue": raw.get("mergeQueue") is not False,
-                "queueDepth": raw["queueDepth"] if isinstance(raw.get("queueDepth"), int) and not isinstance(raw.get("queueDepth"), bool) and 1 <= raw["queueDepth"] <= QUEUE_DEPTH_MAX else 3}
+                "queueDepth": raw["queueDepth"] if isinstance(raw.get("queueDepth"), int) and not isinstance(raw.get("queueDepth"), bool) and 1 <= raw["queueDepth"] <= QUEUE_DEPTH_MAX else 3,
+                # Batch mode (Nov 10 2026, Brett: "Everything needs to go into the merge queue so we can make one build out of
+                # it before we send it to CI"): the ready PRs are combined into one commit, CI runs once, it lands as one.
+                # "stack" keeps the Nov 4 per-PR stack (one run per PR).
+                "queueMode": raw["queueMode"] if raw.get("queueMode") in QUEUE_MODES else "batch",
+                "batchSize": raw["batchSize"] if isinstance(raw.get("batchSize"), int) and not isinstance(raw.get("batchSize"), bool) and 1 <= raw["batchSize"] <= BATCH_SIZE_MAX else 8}
 
     def save_config(self, body: Any) -> dict[str, Any]:
-        if not isinstance(body, dict) or set(body) - {"repos", "hidden", "claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "mergeQueue", "queueDepth"}:
+        if not isinstance(body, dict) or set(body) - {"repos", "hidden", "claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "mergeQueue", "queueDepth", "queueMode", "batchSize"}:
             raise HTTPException(400, "send {repos: [owner/name …], hidden: [\"owner/name:branch\" …]}")
         cur = self.config()
         repos, hidden = cur["repos"], cur["hidden"]
@@ -251,6 +258,12 @@ class Pushes:
         if "queueDepth" in body and (not isinstance(body["queueDepth"], int) or isinstance(body["queueDepth"], bool) or not 1 <= body["queueDepth"] <= QUEUE_DEPTH_MAX):
             raise HTTPException(400, f"queueDepth is 1 to {QUEUE_DEPTH_MAX}")
         flags["queueDepth"] = body.get("queueDepth", cur["queueDepth"])
+        if "queueMode" in body and body["queueMode"] not in QUEUE_MODES:
+            raise HTTPException(400, f"queueMode is one of {', '.join(QUEUE_MODES)}")
+        flags["queueMode"] = body.get("queueMode", cur["queueMode"])
+        if "batchSize" in body and (not isinstance(body["batchSize"], int) or isinstance(body["batchSize"], bool) or not 1 <= body["batchSize"] <= BATCH_SIZE_MAX):
+            raise HTTPException(400, f"batchSize is 1 to {BATCH_SIZE_MAX}")
+        flags["batchSize"] = body.get("batchSize", cur["batchSize"])
         storage.write_json(data_dir() / "config.json", {"$axf": "push-banner-config@1", "repos": repos, "hidden": hidden, **flags})
         with self._lock:
             self._cache = None
@@ -388,7 +401,13 @@ class Pushes:
         lst = lambda k: [x for x in st.get(k, []) if isinstance(x, dict)] if isinstance(st.get(k), list) else []  # noqa: E731
         items = lst("items")
         kicked = lst("kicked")
-        return {"$axf": "merge-queue@1", "on": cfg["mergeQueue"], "depth": cfg["queueDepth"], "repo": UI_REVIEW_REPO, "at": st.get("at"),
+        b = st.get("batch") if isinstance(st.get("batch"), dict) else None
+        batch = None if not b else {"prs": [m.get("pr") for m in b.get("members", []) if isinstance(m, dict)], "sha": _text(b.get("sha"), 40), "ci": _text(b.get("ci"), 20),
+                                     "runUrl": _safe_url(b.get("runUrl")), "builtAt": _text(b.get("builtAt"), 40), "bisect": b.get("bisect") is True, "why": _text(b.get("why"), 300)}
+        return {"$axf": "merge-queue@1", "on": cfg["mergeQueue"], "depth": cfg["queueDepth"], "mode": cfg["queueMode"], "batchSize": cfg["batchSize"], "batch": batch,
+                "split": [n for n in st.get("split", []) if isinstance(n, int)] if isinstance(st.get("split"), list) else [],
+                "enlisted": [x for x in st.get("enlisted", []) if isinstance(x, dict)][:10] if isinstance(st.get("enlisted"), list) else [],
+                "repo": UI_REVIEW_REPO, "at": st.get("at"),
                 "items": items, "waiting": lst("waiting"), "kicked": kicked, "merged": lst("merged")[-10:],
                 "avgMin": st.get("avgMin") if isinstance(st.get("avgMin"), int) else None,
                 "variable": _text(st.get("variable"), 10), "variableError": _text(st.get("variableError"), 300),
@@ -794,6 +813,12 @@ class Pushes:
             raise HTTPException(400, "number is the PR number")
         if body.get("confirm") != f"{repo}#{number}":
             raise HTTPException(400, f'confirm with "{repo}#{number}"')
+        if repo == UI_REVIEW_REPO and self.config()["mergeQueue"]:
+            # Enforced (Nov 10 2026, Brett: "Everything needs to go into the merge queue"): nothing reaches this repo's main
+            # on its own. Merge puts the PR in the queue; it lands with the next batch once that batch's one CI run is green.
+            self.queue_command("add", {"pr": number})
+            return {"merged": False, "queued": True, "sha": "", "url": "",
+                    "text": f"#{number} is in the merge queue: it lands with the next batch once that batch's CI run is green."}
         gh = self.gh()
         try:
             p = gh.get(github.repo_path(repo, "pulls", number))
@@ -1358,7 +1383,7 @@ def auto_merge_now() -> dict[str, Any]:
 def auto_merge_last() -> dict[str, Any]:
     raw = storage.read_json(data_dir() / "auto-merge.json", {}) or {}
     cfg = PUSHES.config()
-    return {"on": cfg["autoMerge"], "autoPr": cfg["autoPr"], "mergeQueue": cfg["mergeQueue"], "everyS": AUTO_MERGE_EVERY_S, "last": raw.get("last", []), "at": raw.get("at"),
+    return {"on": cfg["autoMerge"], "autoPr": cfg["autoPr"], "mergeQueue": cfg["mergeQueue"], "queueMode": cfg["queueMode"], "batchSize": cfg["batchSize"], "batchSizeMax": BATCH_SIZE_MAX, "everyS": AUTO_MERGE_EVERY_S, "last": raw.get("last", []), "at": raw.get("at"),
             "protection": PUSHES.protection()["repos"]}
 
 
@@ -1472,6 +1497,19 @@ def queue_remove(body: Any = Body(None)) -> dict[str, Any]:
 @router.post("/queue/move")
 def queue_move(request: Request, body: Any = Body(None)) -> dict[str, Any]:
     return PUSHES.queue_command("move", body, owner=_owner(request))
+
+
+@router.post("/queue/settings")
+def queue_settings(request: Request, body: Any = Body(None)) -> dict[str, Any]:
+    """The queue's settings without the UI: {on?, mode?: batch|stack, batchSize?: 1-20}. Switching the queue off is Brett's
+    own click (Nov 10 2026: everything lands through the queue, no exceptions); a session or agent gets 403."""
+    if not isinstance(body, dict) or not body or set(body) - {"on", "mode", "batchSize"}:
+        raise HTTPException(400, "send {on?, mode?: batch|stack, batchSize?}")
+    if body.get("on") is False and not _owner(request):
+        raise HTTPException(403, "switching the merge queue off is Brett's own click in the console (signed in on axHub)")
+    patch = {k2: body[k1] for k1, k2 in (("on", "mergeQueue"), ("mode", "queueMode"), ("batchSize", "batchSize")) if k1 in body}
+    PUSHES.save_config(patch)
+    return PUSHES.queue()
 
 
 @router.get("/config")

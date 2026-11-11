@@ -179,7 +179,7 @@ axf_deploy_log() {
   local _f="$1" _t="$2" _sha="$3" _who="${4:-${AXF_DEPLOY_WHO:-install}}" _st="${5:-done}" _from="${6:-}" _ver="${7:-}"
   case "$_t" in ''|*[!a-z0-9:-]*) echo "[axf] deploy log: bad target '$_t'" >&2; return 0 ;; esac
   case "$_sha" in ''|*[!0-9a-f]*) echo "[axf] deploy log: bad sha for $_t" >&2; return 0 ;; esac
-  case "$_st" in done|failed) ;; *) _st=done ;; esac
+  case "$_st" in "done"|failed) ;; *) _st="done" ;; esac
   case "$_from" in *[!0-9a-f]*) _from="" ;; esac
   local _at _id _host
   _at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"; _host="$(hostname 2>/dev/null | tr -cd 'A-Za-z0-9._-')"
