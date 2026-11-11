@@ -5,7 +5,12 @@
 FROM node:22-bookworm-slim AS web
 WORKDIR /axf
 COPY . .
-RUN cd apps/console-web && npm ci && npm run build
+# Re-bake the framework into the console first, exactly like CI does: the committed src/axf copy goes stale whenever
+# framework/ changes, and a stale copy fails the build (e.g. an export the plugins import is missing).
+RUN cd apps/console-web \
+ && rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas libs; do cp -r ../../framework/$d src/axf/; done \
+ && node ../../framework/cli/shared-assets.mjs bake . \
+ && npm ci && npm run build
 
 FROM python:3.12-slim
 RUN apt-get update && apt-get install -y --no-install-recommends curl git ca-certificates openssh-client procps tmux tini && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && apt-get install -y nodejs && rm -rf /var/lib/apt/lists/*
