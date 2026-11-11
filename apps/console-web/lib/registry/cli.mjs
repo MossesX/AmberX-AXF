@@ -140,7 +140,9 @@ function setArgs(entry, words, raw) {
   if (name === undefined) return { raw };
   const takesPath = (a.params ?? []).some((p) => p.name === 'path');
   if (takesPath) return { raw: ['--path', name, ...(value !== undefined ? ['--value', value] : []), ...raw] };
-  return { raw: [`--${name}`, ...(value !== undefined ? [value] : []), ...raw] };
+  // one word: the value of the action's first parameter (a setting's value); two: <param name> <value>
+  if (value === undefined) { const first = (a.params ?? []).find((p) => p.position === 0) ?? (a.params ?? [])[0]; return first ? { raw: [`--${first.name}`, name, ...raw] } : { error: `${entry.id} · set takes no value` }; }
+  return { raw: [`--${name}`, value, ...raw] };
 }
 
 async function open(words, flags) {

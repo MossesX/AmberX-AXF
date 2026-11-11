@@ -40,7 +40,7 @@ function resolution(r, input, req) {
   const field = res.ok ? fieldCheck(r.index, res) : null;
   if (field?.errors.length) return { ok: false, code: 'validation', message: `${res.entry} · ${res.action}: ${field.errors.join('; ')}`, errors: field.errors, entry: res.entry, action: res.action, ai: res.ai, plan: { via: 'none', why: 'not valid' } };
   if (field) res.params = { ...res.params, value: field.value };
-  const out = { ...res, plan: planResolution(res, opts) };
+  const out = { ...res, plan: planResolution(res, { ...opts, plugin: res.ok ? getEntry(r.index, res.entry)?.where?.plugin ?? '' : '' }) };
   if (!res.ok && res.ai?.fallback && !res.ai.asked) out.brief = aiFallbackBrief(r.index, input, res);
   return out;
 }

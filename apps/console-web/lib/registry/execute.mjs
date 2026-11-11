@@ -57,7 +57,7 @@ function controlCommand(ref, params) {
 }
 
 /** The plan for running `ref` with `params` (effect = the action's effect). → { via, command?, … } | { via: 'none', why }. */
-export function planRef(ref, params = {}, { effect = 'write', confirm = '', reason = '', by = 'registry' } = {}) {
+export function planRef(ref, params = {}, { effect = 'write', confirm = '', reason = '', by = 'registry', plugin = '' } = {}) {
   const r = parseRef(ref);
   const extra = { by, ...(confirm ? { confirm } : {}), ...(reason ? { reason } : {}) };
   const control = (cmd) => ({ via: cmd.target.startsWith('console.') ? 'console' : 'control', command: { ...cmd, ...extra } });
@@ -74,7 +74,8 @@ export function planRef(ref, params = {}, { effect = 'write', confirm = '', reas
     case 'action': {
       const [id, ...fixed] = r.rest.split(':');
       const given = params.args === undefined ? [] : Array.isArray(params.args) ? params.args : String(params.args).split(':').filter(Boolean);
-      const args = [...fixed, ...given.map(String)];
+      const named = Object.entries(params).filter(([k, v]) => k !== 'args' && !CALL_PARAMS.includes(k) && v !== undefined).map(([, v]) => v);
+      const args = [...fixed, ...named.map(String), ...given.map(String)];
       return control({ $axf: 'control@1', op: 'act', target: 'console.actions', path: id, action: 'run', input: withTo(args.length ? { args } : {}, params) });
     }
     case 'provider': {
@@ -88,7 +89,12 @@ export function planRef(ref, params = {}, { effect = 'write', confirm = '', reas
     case 'rest': { const [method, ...p] = r.rest.split(' '); return { via: 'rest', method, path: fill(p.join(' '), params), body: omit(params, CALL_PARAMS) }; }
     case 'mcp': return { via: 'mcp', tool: r.rest, args: omit(params, CALL_PARAMS) };
     case 'cli': return { via: 'cli', command: r.rest, params: omit(params, CALL_PARAMS) };
-    case 'value': return { via: 'value', key: r.rest };
+    case 'value': {
+      // a settings-registry key: read through the owning plugin's GET settings/{key}, written through PUT settings { values }
+      if (!plugin) return { via: 'value', key: r.rest, ...(effect === 'read' ? {} : { value: params.value }) };
+      if (effect === 'read') return control({ $axf: 'control@1', op: 'act', target: 'plugins.reads', path: `${plugin}/settings-by-key`, action: 'read', input: { key: r.rest } });
+      return control({ $axf: 'control@1', op: 'act', target: 'plugins.commands', path: `${plugin}/settings-set`, action: 'run', input: { values: { [r.rest]: params.value } } });
+    }
     case 'none': return { via: 'none', why: 'this action has nothing to run (ref "none")' };
     default: return { via: 'none', why: `no runner for ref "${ref}"` };
   }
@@ -111,7 +117,7 @@ export function planState(index, id, params = {}, opts = {}) {
   const e = getEntry(index, id);
   if (!e) return null;
   const readRef = e.state?.read || e.actions.find((a) => a.effect === 'read')?.run || '';
-  if (readRef) return { entry: e.id, read: readRef, fields: e.state?.fields ?? [], plan: planRef(readRef, params, { effect: 'read', ...opts }) };
+  if (readRef) return { entry: e.id, read: readRef, fields: e.state?.fields ?? [], plan: planRef(readRef, params, { effect: 'read', plugin: e.where?.plugin ?? '', ...opts }) };
   if (e.open?.kind && ['screen', 'dialog', 'settings'].includes(e.open.kind)) return { entry: e.id, read: 'control:console.nav/get/here', fields: [], plan: planRef('control:console.nav/get', { path: 'here' }, { effect: 'read', ...opts }), note: 'no state read declared: answering where the console is' };
   return { entry: e.id, read: '', fields: e.state?.fields ?? [], plan: { via: 'none', why: 'this entry declares no state read' } };
 }

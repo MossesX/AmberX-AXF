@@ -11,6 +11,7 @@
  *             entry per command and read (input schema → params)
  *   ui-api    plugin.json `ui` (ui-api@1): state refs and control → ref actions onto the page entries
  *   voice     plugin.json `voice` (voice-intents@1) and AmberX registerVoiceCommands calls: phrases onto entries
+ *   console   the console's own settings registries, display options and parameter conventions (console-entries.mjs)
  *   declared  plugin.json `control` and _claude/builds/registry/registry.d/*.json: hand-written facts win
  *
  *   node apps/console-web/lib/registry/collect.mjs [--json]     the entries (summary, or all of them)
@@ -24,10 +25,11 @@ import { applyDeclaration, cleanParam, paramFromDecl, paramsFromSchema, REGISTRY
 import { readPlugins, registry as pluginRegistry } from '../../../../framework/cli/plugin-commands.mjs';
 import { applyUiApi } from '../ui-api-parity/index.mjs';
 import { applyVoiceIntents, readVoiceIntents, scanVoiceCommands } from '../voice-api/index.mjs';
+import { applyConventions, collectDisplayOptions, collectSettingsRegistries, generatePhrases } from './console-entries.mjs';
 
 export const ROOT = resolve(process.env.AXF_ROOT || join(dirname(fileURLToPath(import.meta.url)), '../../../..'));
 export const DECL_DIR = process.env.AXF_REGISTRY_DECL_DIR || join(ROOT, '_claude', 'builds', 'registry', 'registry.d');
-export const COLLECTORS = ['control', 'plugins', 'ui-api', 'voice', 'declared'];
+export const COLLECTORS = ['control', 'plugins', 'ui-api', 'voice', 'console', 'declared'];
 const CONSOLE = 'console-web';
 const readJson = (f) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return null; } };
 const read = (f) => { try { return readFileSync(f, 'utf8'); } catch { return ''; } };
@@ -207,7 +209,9 @@ export function collectAll({ apps = null, collectors = COLLECTORS } = {}) {
     const ax = collectAmberxVoice(); errors.push(...ax.errors);
     for (const { app, folder, file, intent } of ax.intents) { const r = applyVoiceIntents(entries, [intent], { app, folder, file }); entries = r.entries; errors.push(...r.errors); }
   }
+  if (on.has('console')) { const have = new Set(entries.map((e) => e.id)); entries.push(...[...collectSettingsRegistries(ROOT, plugins), ...collectDisplayOptions(ROOT)].filter((e) => !have.has(e.id))); }
   if (on.has('declared')) for (const d of collectDeclarations(plugins)) { const r = applyDeclaration(entries, d.declaration, { file: d.file }); entries = r.entries; owners.push(...r.owners); errors.push(...r.errors); }
+  if (on.has('console')) { applyConventions(entries); generatePhrases(entries); }
   return { entries, owners, errors, collectors: [...on] };
 }
 
