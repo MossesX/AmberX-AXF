@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-11T01:49:24.883Z",
+ "updatedAt": "2026-11-11T19:36:07.693Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -78872,7 +78872,7 @@
    "pr": "#430",
    "priority": "P0",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-10T18:52:22.922Z",
+   "updatedAt": "2026-11-11T19:36:05.056Z",
    "builtAt": "2026-11-10T18:51:53.510Z",
    "notes": [
     {
@@ -79113,7 +79113,7 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-11-10T18:51:52.264Z",
-     "note": "",
+     "note": "Resume Nov 11: Appearance = Skin + Colour theme (colour switched inside the skin, never a new skin); before/after screenshots and UI Review submission SKIPPED per the resume brief (non-essential).",
      "uid": "st-mw9ai6p606isiz"
     },
     {

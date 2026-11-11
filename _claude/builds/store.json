@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3132,
- "updatedAt": "2026-11-11T01:49:24.883Z",
+ "rev": 3133,
+ "updatedAt": "2026-11-11T19:36:07.693Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -132177,7 +132177,7 @@
    "pr": "#430",
    "priority": "P0",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-10T18:52:22.922Z",
+   "updatedAt": "2026-11-11T19:36:05.056Z",
    "builtAt": "2026-11-10T18:51:53.510Z",
    "notes": [
     {
@@ -132432,10 +132432,10 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-11-10T18:51:52.264Z",
-     "note": "",
-     "rev": 3,
+     "note": "Resume Nov 11: Appearance = Skin + Colour theme (colour switched inside the skin, never a new skin); before/after screenshots and UI Review submission SKIPPED per the resume brief (non-essential).",
+     "rev": 4,
      "createdAt": "2026-11-09T13:21:25.005Z",
-     "updatedAt": "2026-11-10T18:51:52.422Z"
+     "updatedAt": "2026-11-11T19:36:05.368Z"
     },
     {
      "id": "s5",
@@ -132468,7 +132468,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 74,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
