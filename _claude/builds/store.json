@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3142,
- "updatedAt": "2026-11-11T23:26:12.649Z",
+ "rev": 3143,
+ "updatedAt": "2026-11-11T23:26:20.485Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -155242,7 +155242,7 @@
    "title": "Asset overrides: changed asset settings override the app's global settings, with a reset note; app settings grey out and link to the asset",
    "category": "",
    "detail": "Inheritance model for every asset (tab group, nav menu, toolbar, banner, etc.): by default an asset inherits the app's global settings. Any change in the asset's own settings becomes an override of the app's global settings for that asset. The asset settings panel shows a small note on overridden fields with a Reset action that removes the override and goes back to inheriting. In the app's main Settings, every option overridden by an asset is greyed out with the note 'Controlled by <asset name>' and a link that opens that asset's settings interface. Pairs with the bug fix that makes asset settings target the right-clicked asset.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -155250,7 +155250,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:47:24.390Z",
-   "updatedAt": "2026-11-10T21:48:21.770Z",
+   "updatedAt": "2026-11-11T23:26:16.100Z",
    "builtAt": "",
    "notes": [
     {
@@ -155383,7 +155383,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

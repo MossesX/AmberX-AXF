@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-11T23:26:12.649Z",
+ "updatedAt": "2026-11-11T23:26:20.485Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -96602,7 +96602,7 @@
    "title": "Asset overrides: changed asset settings override the app's global settings, with a reset note; app settings grey out and link to the asset",
    "category": "",
    "detail": "Inheritance model for every asset (tab group, nav menu, toolbar, banner, etc.): by default an asset inherits the app's global settings. Any change in the asset's own settings becomes an override of the app's global settings for that asset. The asset settings panel shows a small note on overridden fields with a Reset action that removes the override and goes back to inheriting. In the app's main Settings, every option overridden by an asset is greyed out with the note 'Controlled by <asset name>' and a link that opens that asset's settings interface. Pairs with the bug fix that makes asset settings target the right-clicked asset.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -96610,7 +96610,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:47:24.390Z",
-   "updatedAt": "2026-11-10T21:48:21.770Z",
+   "updatedAt": "2026-11-11T23:26:16.100Z",
    "builtAt": "",
    "notes": [
     {
