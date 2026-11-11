@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 20:59 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` → queued, note (all) · console
 - 2026-11-10 20:59 UTC · `make-hulu-actually-take-builds-dispatcher-counts` added (0 steps) (all) · console
 - 2026-11-10 20:59 UTC · `make-hulu-actually-take-builds-dispatcher-counts` → queued, note (all) · console
 - 2026-11-10 21:00 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` note (all) · orchestrator
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-11 23:31 UTC · `full-api-cli-control-of-everything-plus-an-offli` s5 done (all) · orchestrator
 - 2026-11-11 23:33 UTC · `full-api-cli-control-of-everything-plus-an-offli` s6 done (all) · orchestrator
 - 2026-11-11 23:37 UTC · `full-api-cli-control-of-everything-plus-an-offli` s7 done (all) · orchestrator
+- 2026-11-11 23:38 UTC · `console-commands-reliable` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
