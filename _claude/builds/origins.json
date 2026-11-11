@@ -2959,6 +2959,18 @@
    "from": "",
    "addenda": []
   },
+  "merge-review-one-by-one-every-built-but-unmerged": {
+   "said": "I gotta make sure nothing that's built or that I've written gets overwritten or broken from one of those old branches. Go one by one and I'll tell you to merge it or not.",
+   "at": "2026-11-11T00:06:50.193Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "model-thinking-audit": {
    "said": "Go through my list of things that can be done and see what should be redone with Fable and put that next to it, and put the level of thinking that it should be on.",
    "at": "2026-11-04T15:50:00Z",

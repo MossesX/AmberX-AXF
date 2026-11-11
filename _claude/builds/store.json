@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3085,
- "updatedAt": "2026-11-11T00:02:29.075Z",
+ "rev": 3086,
+ "updatedAt": "2026-11-11T00:06:51.326Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -157176,6 +157176,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-10T23:47:34.514Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "merge-review-one-by-one-every-built-but-unmerged",
+   "title": "Merge review, one by one: every built-but-unmerged build checked against current main, Brett decides merge or not",
+   "category": "",
+   "detail": "Supersedes land-all-97 auto landing. For each of the 118 built builds, oldest first: rebase a scratch copy on current main, report what it changes, which files/features it would overwrite or revert, conflicts, whether a newer build already covers it, and test result. Present one at a time to Brett (console card + AmberX notification) with Merge / Skip (archive) / Rebuild on current main. Never merge without his yes. Never overwrite or revert newer code; conflicts resolve toward current main. Pause land-all-97 and any auto-land until this review is done.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-11T00:06:50.193Z",
+   "updatedAt": "2026-11-11T00:06:50.194Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I gotta make sure nothing that's built or that I've written gets overwritten or broken from one of those old branches. Go one by one and I'll tell you to merge it or not.",
+    "at": "2026-11-11T00:06:50.193Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 612
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
