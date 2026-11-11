@@ -24,6 +24,14 @@
  *   route      '' (auto: subscriptions, then API only when the overflow rule is on) | 'api' (run on an API-key account,
  *              billed per token, under its caps) | 'subscription' (never an API account). Brett's per-build override.
  *   dispatchedAt  ISO of the orchestrator dispatch that started the current run (its token is in the dispatcher's files)
+ *   planned    { model, account, kind, at, why }  the orchestrator's plan, made as soon as the build is split (Brett,
+ *              Nov 10 2026: "He'll plan what model, what account"); refreshed while it waits
+ *   tried      accounts the final pick tried and that refused this run (launch failed), in order; '' list on a clean pick
+ *   pickedAt   ISO of the final account decision (the moment the build's turn came in the Queue)
+ *   heldAt, heldBy, heldWhy  On hold (Brett, Nov 10 2026: "Make a hold status … leave in queue on hold"): the build stays
+ *              in the Queue, keeps its place, and the dispatcher skips it until it is released. '' = not held.
+ *
+ * The orchestrator's tabs (Brett, Nov 10 2026: "Tabs: pending, active, incomplete, complete, errors, queue"): tabOf().
  */
 
 export const SCHEMA = 'build-pipeline@1';
@@ -44,7 +52,7 @@ const NAME_RE = /^[a-z0-9][a-z0-9-]{0,31}$/;
 export const accountName = (v) => (NAME_RE.test(str(v, 40)) ? str(v, 40) : '');
 
 export function emptyPipeline() {
-  return { queuedAt: '', queuedBy: '', account: '', session: '', slot: '', model: '', launchedAt: '', runs: 0, lastRun: null, split: null, splitRequested: '', note: '', route: '', dispatchedAt: '' };
+  return { queuedAt: '', queuedBy: '', account: '', session: '', slot: '', model: '', launchedAt: '', runs: 0, lastRun: null, split: null, splitRequested: '', note: '', route: '', dispatchedAt: '', planned: null, tried: [], pickedAt: '', heldAt: '', heldBy: '', heldWhy: '' };
 }
 
 /** The record, every field in shape; null for nothing (a build the pipeline never touched carries none). */
@@ -52,6 +60,7 @@ export function normPipeline(p) {
   if (!p || typeof p !== 'object') return null;
   const lr = p.lastRun && typeof p.lastRun === 'object' ? p.lastRun : null;
   const sp = p.split && typeof p.split === 'object' ? p.split : null;
+  const pl = p.planned && typeof p.planned === 'object' ? p.planned : null;
   const out = {
     queuedAt: iso(p.queuedAt), queuedBy: str(p.queuedBy, 80),
     account: accountName(p.account), session: str(p.session, 120), slot: str(p.slot, 60), model: str(p.model, 20),
@@ -60,6 +69,9 @@ export function normPipeline(p) {
     split: sp ? { at: iso(sp.at), by: str(sp.by, 80), provider: SPLIT_PROVIDERS.includes(sp.provider) ? sp.provider : 'hand', steps: Number.isInteger(sp.steps) ? sp.steps : 0, note: str(sp.note, 400) } : null,
     splitRequested: iso(p.splitRequested), note: str(p.note, 400),
     route: ROUTES.includes(p.route) ? p.route : '', dispatchedAt: iso(p.dispatchedAt),
+    planned: pl ? { model: str(pl.model, 20), account: accountName(pl.account), kind: pl.kind === 'api' ? 'api' : pl.kind === 'subscription' ? 'subscription' : '', at: iso(pl.at), why: str(pl.why, 300) } : null,
+    tried: (Array.isArray(p.tried) ? p.tried : []).map(accountName).filter(Boolean).slice(0, 12), pickedAt: iso(p.pickedAt),
+    heldAt: iso(p.heldAt), heldBy: iso(p.heldAt) ? str(p.heldBy, 80) : '', heldWhy: iso(p.heldAt) ? str(p.heldWhy, 300) : '',
   };
   const empty = emptyPipeline();
   return JSON.stringify(out) === JSON.stringify(empty) ? null : out;
@@ -68,10 +80,69 @@ export function normPipeline(p) {
 /** Which table a build sits in ('' for builds the table does not show: built, complete, failed, blocked, archived). */
 export const tableOf = (b) => TABLE[b?.status] ?? '';
 
+/** The orchestrator's tabs, in screen order. */
+export const TABS = ['pending', 'queue', 'active', 'incomplete', 'complete', 'errors', 'archive', 'deleted'];
+export const TAB_LABEL = Object.freeze({ pending: 'Pending', queue: 'Queue', active: 'Active', incomplete: 'Incomplete', complete: 'Complete', errors: 'Errors', archive: 'Archive', deleted: 'Deleted' });
+
+/**
+ * Which tab a build shows in ('' = none: archived, deleted or hidden).
+ *   pending     filed, not started yet (no step done, never run)       queue       queued, waiting for its turn
+ *   active      running or waiting on an approval                       incomplete  started, then stopped with steps left (back in Pending), or blocked
+ *   complete    built, its PR not merged yet                          errors      failed, or its last launch / run failed
+ *   archive     complete (merged) or archived: every finished and retired build (Brett, Nov 10 2026: "All completed
+ *               builds go to the archive")
+ *   deleted     soft-deleted: kept in the store forever, restorable ("A deleted tab where all deleted builds stay saved forever")
+ * A queued build On hold stays in the Queue tab (isHeld()).
+ */
+export function tabOf(b) {
+  if (!b) return '';
+  if (b.deleted) return 'deleted';
+  if (b.hidden) return '';
+  if (b.status === 'archived' || b.status === 'complete') return 'archive';
+  const p = b.pipeline ?? {};
+  if (b.status === 'failed' || /^launch failed/.test(str(p.note, 40))) return 'errors';
+  if (b.status === 'running' || b.status === 'waiting') return 'active';
+  if (b.status === 'queued') return 'queue';
+  if (b.status === 'built') return 'complete';
+  if (b.status === 'blocked') return 'incomplete';
+  const started = (b.steps ?? []).some((s) => s.done) || (Number(p.runs) || 0) > 0 || !!p.lastRun;
+  return started ? 'incomplete' : 'pending';
+}
+
 /** A build may be queued: it is in Pending and not finished. */
 export const canQueue = (b) => !!b && b.status === 'pending' && !b.deleted && !b.hidden;
 /** A build may leave the Queue for Pending: queued and not launched yet. */
-export const canUnqueue = (b) => !!b && b.status === 'queued';
+export const canUnqueue = (b) => !!b && b.status === 'queued' && !b.deleted;
+/** On hold: queued, kept in the Queue, skipped by the dispatcher until released. */
+export const isHeld = (b) => !!b && b.status === 'queued' && !!b.pipeline?.heldAt;
+/** A build may be put on hold: queued (not launched) and not held already. */
+export const canHold = (b) => !!b && b.status === 'queued' && !b.deleted && !isHeld(b);
+/** A build with a live session (running or waiting on an approval) is never archived or deleted underneath it. */
+export const isLive = (b) => !!b && (b.status === 'running' || b.status === 'waiting');
+/** A build may move to the Archive: not live, not deleted, not archived already. */
+export const canArchive = (b) => !!b && !b.deleted && !isLive(b) && b.status !== 'archived';
+/** A build may be (soft-)deleted: not live, not deleted already. Deleting never drops the record. */
+export const canDelete = (b) => !!b && !b.deleted && !isLive(b);
+/** The status an archived build comes back with: built / complete when every step is done, else pending. */
+export function unarchivedStatus(b) {
+  const left = openSteps(b).length;
+  if (!left && (b?.steps ?? []).length) return str(b?.mergedAt) ? 'complete' : 'built';
+  return 'pending';
+}
+/** The actions the Build orchestrator offers on a build (Queue: back to Pending, hold / release, archive, delete). */
+export const BUILD_ACTIONS = ['unqueue', 'hold', 'release', 'archive', 'unarchive', 'delete', 'restore'];
+export function actionsFor(b) {
+  if (!b) return [];
+  if (b.deleted) return ['restore'];
+  const out = [];
+  if (canUnqueue(b)) out.push('unqueue');
+  if (canHold(b)) out.push('hold');
+  if (isHeld(b)) out.push('release');
+  if (canArchive(b)) out.push('archive');
+  if (b.status === 'archived') out.push('unarchive');
+  if (canDelete(b)) out.push('delete');
+  return out;
+}
 
 /** Builds of the Queue in start order: priority first (P0 before P3), then the moment they were queued. */
 export function queueOrder(builds, priorityOf = () => 'P2') {

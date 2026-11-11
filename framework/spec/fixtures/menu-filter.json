@@ -231,6 +231,7 @@
         "id": "view",
         "items": [
           "next-skin",
+          "next-color",
           "random",
           "reset",
           "inspector",
@@ -276,6 +277,7 @@
         "id": "view",
         "items": [
           "next-skin",
+          "next-color",
           "random",
           "reset",
           "inspector",
@@ -321,6 +323,7 @@
         "id": "view",
         "items": [
           "next-skin",
+          "next-color",
           "random",
           "reset",
           "inspector",

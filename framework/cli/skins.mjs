@@ -185,8 +185,9 @@ export function color(app, scopeKey = '') {
   const l = readLook(app);
   const scope = scopeKey ? skinScopeOf(scopeKey, app) : { app };
   const inForce = resolveLookSkin(l, readGlobal(), scope);
-  const skin = inForce.id ? assetsOf('skin').find((a) => a.id === inForce.id) ?? assetsOf('design-package').find((a) => a.id === inForce.id) : null;
-  const own = skin ? (skin.type === 'skin' ? skin.data?.colorTheme : skin.data?.['color-theme']) ?? '' : '';
+  const skin = inForce.id ? assetsOf('skin').find((a) => a.id === inForce.id) : null;
+  // the skin's colours section: written in the skin (registered as `skin-<id>`) or the colour preset it names
+  const own = skin ? (skin.data?.sections?.colors ? `skin-${skin.id}` : skin.data?.colorTheme ?? '') : '';
   const shows = inForce.colorTheme || own;
   return { app, scope: scopeKey || 'app', skin: inForce.id, from: inForce.from, colorTheme: shows, own, picked: !!shows && shows !== own, pickedHere: l ? skinColorTheme(l, scopeKey || undefined) : '' };
 }

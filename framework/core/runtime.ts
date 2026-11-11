@@ -30,7 +30,7 @@ import { hostSpec, hostSpecs, moveOnHost, normalizeArrangement, placeHost, place
 import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
 import { SearchIndex } from './engines/search';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, resolveChecked, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
-import { backToSkin, captureSkin, composeLookAt, globalSkinOf, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCoverage, skinCovers, skinEntries, skinScopeDomId, skinScopeOf, skinSectionAssets, skinSlots, snapshotLook, undoRestore, LEGACY_DESIGN_APPLIED_KEY, SKIN_COLOR_SLOT, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinColor, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState } from './engines/skin';
+import { backToSkin, captureSkin, composeLookAt, globalSkinOf, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, defaultsWithSkin, setInheritSkin, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCoverage, skinCovers, skinEntries, skinScopeDomId, skinScopeOf, skinSectionAssets, skinSlots, snapshotLook, undoRestore, LEGACY_DESIGN_APPLIED_KEY, SKIN_COLOR_SLOT, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinColor, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState } from './engines/skin';
 import { isAppearanceSetting, isRetiredLookSetting } from './engines/looksettings';
 import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
 import { navStyleOutput, normalizeNavStyle, type NavStyleData } from './engines/navstyle';
@@ -389,13 +389,20 @@ export class AxfRuntime {
       const r = this.registry.register(raw, 'builtin');
       if (!r.ok) this.loadErrors.push({ id: String((raw as { id?: string })?.id), errors: r.errors });
     }
+    // The app's default skin decides its default colour and style theme (as the default design package did)
+    const defSkinId = (opts.manifest.defaults as Record<string, string | undefined>).skin ?? '';
+    if (defSkinId && this.registry.has(SKIN_TYPE as AssetType, defSkinId)) {
+      const defSkin = normalizeSkin(this.registry.get(SKIN_TYPE as AssetType, defSkinId)!.data);
+      if (defSkin.sections) { this.sectionPresetsOf.add(defSkinId); for (const a of skinSectionAssets(defSkinId, defSkin, this.registry.get(SKIN_TYPE as AssetType, defSkinId)!.name)) this.registry.register(a, 'builtin', `skin:${defSkinId}`); }
+      this.manifest = { ...opts.manifest, defaults: defaultsWithSkin(opts.manifest.defaults as Record<string, string | undefined>, defSkin, defSkinId, (t, id) => this.registry.has(t as AssetType, id)) as AxfManifest['defaults'] };
+    }
     const saved = safeStorage.get(this.storageKey);
     const active = {} as ActiveAssets;
     for (const t of ASSET_TYPES) {
       // When the app ships a new default for a slot (its manifest default differs from the one saved alongside
       // the user's choices), the new default wins once; the user's later swaps persist as usual.
-      const appChanged = saved?.defaults !== undefined && saved.defaults[t] !== opts.manifest.defaults[t];
-      const candidates = [appChanged ? undefined : saved?.active?.[t], opts.manifest.defaults[t], this.registry.list(t)[0]?.id];
+      const appChanged = saved?.defaults !== undefined && saved.defaults[t] !== this.manifest.defaults[t];
+      const candidates = [appChanged ? undefined : saved?.active?.[t], this.manifest.defaults[t], this.registry.list(t)[0]?.id];
       const pick = candidates.find((id) => id && this.registry.has(t, id));
       if (!pick && (OPTIONAL_TYPES as readonly string[]).includes(t)) { active[t] = ''; continue; } // optional type, none shipped
       if (!pick) throw new Error(`AmberX AXF: no "${t}" asset is available — every slot needs at least one asset.`);
@@ -763,6 +770,9 @@ export class AxfRuntime {
     const pick = id ?? this.appLook()?.skin.id ?? '';
     const skin = pick || (on ? this.skinList()[0]?.id ?? '' : '');
     if (on && !this.skinData(skin)) { this.toast(`No skin "${skin}" in this app.`, 'warning', 'Skin'); return false; }
+    // no app-look document to keep it in (a source without the layer, or the hub's copy can't be read): the skin is
+    // written into the shared look itself, so Apply always shows it
+    if (on && (!this.lookLayerOn() || this.lookStore().status() === 'failed')) return this.applySkinToShared(skin);
     if (!this.changeLook((cur) => setUseSkin(skin ? pickSkin(cur, skin) : cur, on))) return false;
     this.terminal.ok('hot-swap', on ? `skin ${skin} on for this app` : 'skin off: back to this app\'s own look');
     this.lookApplied(on ? 'skin' : 'default', skin);
@@ -1681,9 +1691,15 @@ export class AxfRuntime {
       const step = id === 'random' ? 1 + Math.floor(Math.random() * Math.max(1, list.length - 1)) : id === 'next' ? 1 : -1;
       pick = list[((cur < 0 ? (step > 0 ? -1 : 0) : cur) + step + list.length * 2) % list.length]!;
     }
-    if (this.lookLayerOn()) return this.useSkin(true, pick);
-    // a source without an app-look layer (older sources): the shared document alone is the look, so the skin is written
-    // into it slot by slot, spacing and chrome included (what applyDesignPackage did), and every app on that document follows
+    return this.useSkin(true, pick);
+  }
+
+  /**
+   * A source without an app-look layer (older sources, the hub off): the shared document alone is the look, so the skin
+   * is written into it slot by slot, spacing and chrome included (what applyDesignPackage did), and every app on that
+   * document follows.
+   */
+  private applySkinToShared(pick: string): boolean {
     if (!this.can('assets.swap')) { this.toast('Your role cannot change the look.', 'danger', 'Permission denied'); return false; }
     const s = this.registry.get(SKIN_TYPE as AssetType, pick);
     const skin = this.skinData(pick);

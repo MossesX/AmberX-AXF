@@ -6,7 +6,7 @@
 import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
-import { backToSkin, captureSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, lookAfterChange, migrateLegacyLook, newAppLook, normalizeAppLook, normalizeSkin, normalizeSkinScope, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setScopeOverride, setScopeSkin, setUseSkin, skinCovers, skinErrors, skinFromDesignPackage, skinFromStylePackage, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSectionAssets, skinSectionErrors, skinSlots, snapshotLook, uncoveredTypes, undoRestore, overriddenSlots, setLookSlot, setSkinColorTheme, skinColorOf } from '../core/engines/skin';
+import { backToSkin, captureSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, lookAfterChange, migrateLegacyLook, newAppLook, normalizeAppLook, normalizeSkin, normalizeSkinScope, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setScopeOverride, setScopeSkin, setUseSkin, skinCovers, skinErrors, skinFromDesignPackage, skinFromStylePackage, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSectionAssets, skinSectionErrors, skinSlots, snapshotLook, uncoveredTypes, undoRestore, overriddenSlots, setLookSlot, setSkinColorTheme, skinColorOf, defaultsWithSkin } from '../core/engines/skin';
 import { SCALE_TYPES, normalizeScale, scaleErrors, scaleThemeVars, scaleVars } from '../core/engines/scale';
 import { AGENT_CARD_SAMPLE, agentCardErrors, avatarColors, avatarModel, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
 import { AVATAR_FACES, AVATAR_GEAR } from '../core/engines/swarm-rules.mjs';
@@ -2045,6 +2045,18 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     })(),
     // The colour theme inside a skin (Brett, Nov 9 2026): switched on its own, kept as `colorTheme` beside the skin,
     // never an override and never another skin. Every way of changing it leaves the skin id where it was.
+    // the app's default skin decides its default colour and style theme (inline sections resolve as skin-<id>)
+    defaultsWithSkin: (() => {
+      const defaults = { 'color-theme': 'fresh-light', 'style-theme': 'fresh', layout: 'classic-ide', button: 'rounded-solid', skin: 'windows' };
+      const has = (t: string, id: string) => !(t === 'style-theme' && id === 'missing');
+      return {
+        defaults,
+        withSkin: defaultsWithSkin(defaults, normalizeSkin(skin), 'windows', has),
+        inline: defaultsWithSkin(defaults, normalizeSkin({ ...skin, sections: { colors: { scheme: 'dark', tokens: { bg: '#000000' } } } }), 'windows', has),
+        notShipped: defaultsWithSkin(defaults, normalizeSkin({ ...skin, styleTheme: 'missing' }), 'windows', has),
+        noSkin: defaultsWithSkin(defaults, null, '', has),
+      };
+    })(),
     colour: (() => {
       const skinData = normalizeSkin(skin);
       const skins: Record<string, typeof skinData> = { windows: skinData, aurora: normalizeSkin({ ...skin, colorTheme: 'aurora-night' }) };

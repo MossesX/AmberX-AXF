@@ -30,7 +30,7 @@ import { hostSpec, hostSpecs, moveOnHost, normalizeArrangement, placeHost, place
 import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
 import { SearchIndex } from './engines/search';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, resolveChecked, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
-import { backToSkin, captureSkin, composeLookAt, globalSkinOf, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setUseSkin, skinCoverage, skinCovers, skinEntries, skinScopeDomId, skinScopeOf, skinSectionAssets, skinSlots, snapshotLook, undoRestore, LEGACY_DESIGN_APPLIED_KEY, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState } from './engines/skin';
+import { backToSkin, captureSkin, composeLookAt, globalSkinOf, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, defaultsWithSkin, setInheritSkin, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCoverage, skinCovers, skinEntries, skinScopeDomId, skinScopeOf, skinSectionAssets, skinSlots, snapshotLook, undoRestore, LEGACY_DESIGN_APPLIED_KEY, SKIN_COLOR_SLOT, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinColor, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState } from './engines/skin';
 import { isAppearanceSetting, isRetiredLookSetting } from './engines/looksettings';
 import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
 import { navStyleOutput, normalizeNavStyle, type NavStyleData } from './engines/navstyle';
@@ -389,13 +389,20 @@ export class AxfRuntime {
       const r = this.registry.register(raw, 'builtin');
       if (!r.ok) this.loadErrors.push({ id: String((raw as { id?: string })?.id), errors: r.errors });
     }
+    // The app's default skin decides its default colour and style theme (as the default design package did)
+    const defSkinId = (opts.manifest.defaults as Record<string, string | undefined>).skin ?? '';
+    if (defSkinId && this.registry.has(SKIN_TYPE as AssetType, defSkinId)) {
+      const defSkin = normalizeSkin(this.registry.get(SKIN_TYPE as AssetType, defSkinId)!.data);
+      if (defSkin.sections) { this.sectionPresetsOf.add(defSkinId); for (const a of skinSectionAssets(defSkinId, defSkin, this.registry.get(SKIN_TYPE as AssetType, defSkinId)!.name)) this.registry.register(a, 'builtin', `skin:${defSkinId}`); }
+      this.manifest = { ...opts.manifest, defaults: defaultsWithSkin(opts.manifest.defaults as Record<string, string | undefined>, defSkin, defSkinId, (t, id) => this.registry.has(t as AssetType, id)) as AxfManifest['defaults'] };
+    }
     const saved = safeStorage.get(this.storageKey);
     const active = {} as ActiveAssets;
     for (const t of ASSET_TYPES) {
       // When the app ships a new default for a slot (its manifest default differs from the one saved alongside
       // the user's choices), the new default wins once; the user's later swaps persist as usual.
-      const appChanged = saved?.defaults !== undefined && saved.defaults[t] !== opts.manifest.defaults[t];
-      const candidates = [appChanged ? undefined : saved?.active?.[t], opts.manifest.defaults[t], this.registry.list(t)[0]?.id];
+      const appChanged = saved?.defaults !== undefined && saved.defaults[t] !== this.manifest.defaults[t];
+      const candidates = [appChanged ? undefined : saved?.active?.[t], this.manifest.defaults[t], this.registry.list(t)[0]?.id];
       const pick = candidates.find((id) => id && this.registry.has(t, id));
       if (!pick && (OPTIONAL_TYPES as readonly string[]).includes(t)) { active[t] = ''; continue; } // optional type, none shipped
       if (!pick) throw new Error(`AmberX AXF: no "${t}" asset is available — every slot needs at least one asset.`);
@@ -607,8 +614,10 @@ export class AxfRuntime {
     if (this.lookLayerOn() && store.status() === 'failed') { this.terminal.warn('appearance', "this app's look document can't be read, so this change isn't saved"); return; }
     const look = this.lookLayerOn() ? store.get() : null;
     if (look) {
-      const inForce = resolveLookSkin(look, globalSkinOf(this.lastAppearance), null);
-      this.saveLook(lookAfterChange(look, change, inForce.id ? this.skinData(inForce.id) : null));
+      const global = globalSkinOf(this.lastAppearance);
+      const inForce = resolveLookSkin(look, global, null);
+      // a colour theme pick under a skin is switched inside that skin: the skin itself is never changed or copied
+      this.saveLook(lookAfterChange(look, change, inForce.id ? this.skinData(inForce.id) : null, inForce.from === 'global' ? global?.colorTheme ?? '' : '', inForce.id));
       // the hub's own pages take their colours from axHub's look, the one thing the shared document still carries
       if (change.palette && this.manifest.app.id === HUB_PALETTE_APP && this.appearanceRunning) this.appearanceSource?.save({ palette: change.palette });
       return;
@@ -723,8 +732,38 @@ export class AxfRuntime {
   /** This app's look document (null while it can't be read). */
   appLook(): AppLookDocument | null { return this.ensureLook(); }
 
-  /** The slots where a pick beats the skin. */
+  /** The slots where a pick beats the skin. Never the colour theme: that is switched inside the skin (`skinColorTheme`). */
   skinOverrides(): string[] { return overriddenSlots(this.appLook()); }
+
+  /**
+   * The colour theme of the skin in force at the app level: `id` = what shows, `own` = the skin's own, `picked` = it
+   * was switched inside the skin. No skin in force = all empty (the colour theme is the app's own pick then).
+   */
+  skinColorTheme(): SkinColor {
+    const at = this.skinAt(); // read from the look document itself, so a pick just saved is seen before the store echoes it back
+    return skinColorOf(at.id ? this.skinData(at.id) : null, at);
+  }
+
+  /**
+   * Switch the colour theme (Brett, Nov 9 2026: "You can change the color theme without changing the skin"). With a
+   * skin in force the pick lands inside that skin: the skin, its id and its other parts stay, and no skin is created.
+   * With none it is this app's own colour theme. `id` null = back to the skin's own colours. `key` (`ui:<id>` |
+   * `plugin:<id>`) switches it inside one screen or plugin only.
+   */
+  setSkinColorTheme(id: string | null, key?: string): boolean {
+    if (id && !this.registry.has(SKIN_COLOR_SLOT as AssetType, id)) { this.toast(`No colour theme "${id}" in this app.`, 'warning', 'Colour theme'); return false; }
+    if (key !== undefined && key !== 'app') {
+      if (!isSubScopeKey(key)) { this.toast(`"${key}" is not a UI or plugin scope.`, 'warning', 'Colour theme'); return false; }
+      if (!this.changeLook((cur) => setSkinColorTheme(cur, id, key))) return false;
+      this.terminal.ok('hot-swap', id ? `colour theme ${id} inside ${key}` : `${key} shows its skin's own colours`);
+      return true;
+    }
+    if (id) return this.swap(SKIN_COLOR_SLOT as AssetType, id);
+    if (!this.skinInForce().id) return false; // no skin: there is no "skin's own" to go back to
+    if (!this.changeLook((cur) => setSkinColorTheme(cur, null))) return false;
+    this.terminal.ok('hot-swap', "back to the skin's own colours");
+    return true;
+  }
 
   /** The 'Use skin' switch. `id` picks the skin too; on with none picked takes the first skin. */
   useSkin(on: boolean, id?: string): boolean {
@@ -828,8 +867,10 @@ export class AxfRuntime {
     const look = this.appLook();
     if (!look) return null;
     const here = resolveLookSkin(look, this.globalSkin(), skinScopeOf(key, this.manifest.app.id));
-    const app = this.skinInForce();
-    if (here.id === app.id && JSON.stringify(here.overrides) === JSON.stringify(app.overrides)) { this.dropScope(skinScopeDomId(key)); return null; }
+    // the app level from the same document (not the last composed look, which a store without a change feed leaves behind
+    // for a moment after a pick): a colour theme switched inside the skin must not make every screen a scope of its own
+    const app = resolveLookSkin(look, this.globalSkin(), { app: this.manifest.app.id });
+    if (here.id === app.id && JSON.stringify(here.overrides) === JSON.stringify(app.overrides) && (here.colorTheme ?? '') === (app.colorTheme ?? '')) { this.dropScope(skinScopeDomId(key)); return null; }
     const scopeId = skinScopeDomId(key);
     const resolve = (): ResolvedInterface => {
       const composed = composeLookAt(this.lastAppearance, this.appLook() ?? look, (id) => this.skinData(id), skinScopeOf(key, this.manifest.app.id));
@@ -2598,6 +2639,8 @@ export class AxfRuntime {
       previewSkin: { value: (sid: string | null) => base.previewSkin(sid) },
       previewedSkin: { value: () => base.previewedSkin() },
       backToSkin: { value: (slot: string) => base.backToSkin(slot) },
+      setSkinColorTheme: { value: (cid: string | null, key?: string) => base.setSkinColorTheme(cid, key) },
+      skinColorTheme: { value: () => base.skinColorTheme() },
       undoRestoreDefault: { value: () => base.undoRestoreDefault() },
       scoped: { value: (sid: string, iid: string) => base.scoped(sid, iid) },
       // anything opened through the scoped view belongs to the scope (its own hosts draw it)
@@ -2788,6 +2831,13 @@ export class AxfRuntime {
     a.register('design.package', ([id]) => { if (id) this.applySkin(id); }, { label: 'Use a skin (old name: design package)', requires: 'assets.swap', params: true, searchable: false });
     a.register('style.package', ([id]) => { if (id) this.applySkin(id); }, { label: 'Use a skin (old name: style package)', requires: 'assets.swap', params: true, searchable: false });
     a.register('skin.off', () => { this.useSkin(false); }, { label: "Back to this app's own look", requires: 'assets.swap' });
+    // skin.color:<colour theme> switches the colour theme inside the skin in force (the skin stays the same skin; nothing
+    // is created); skin.color:default goes back to the skin's own colours; skin.color:<ui|plugin>:<id>:<theme|default> = one scope
+    a.register('skin.color', ([x, id, theme]) => {
+      const pick = (v?: string) => (!v || v === 'default' || v === 'skin' ? null : v);
+      if ((x === 'ui' || x === 'plugin') && id) this.setSkinColorTheme(pick(theme), `${x}:${id}`);
+      else this.setSkinColorTheme(pick(x));
+    }, { label: 'Change the colour theme inside the skin', requires: 'assets.swap', params: true });
     a.register('skin.restore', () => this.restoreDefaultAppearance(), { label: 'Restore this app to its default look', requires: 'assets.swap' });
     a.register('skin.undo', () => { this.undoRestoreDefault(); }, { label: 'Undo Restore to default', requires: 'assets.swap' });
     // Scopes (skin-coverage@1): skin.inherit:on|off follows the hub-wide skin; skin.scope:<ui|plugin>:<id>:<on|off|inherit>[:<skin>] sets one level

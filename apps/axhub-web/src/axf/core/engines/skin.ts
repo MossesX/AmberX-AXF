@@ -273,6 +273,23 @@ export function skinSlots(skin: SkinData, skinId = ''): Record<string, string> {
   return out;
 }
 
+/** The sections an app's default skin decides at first start, as the default design package did before skins (style and colours). */
+export const SKIN_DEFAULT_SLOTS: readonly string[] = ['color-theme', 'style-theme'];
+
+/**
+ * An app's manifest defaults with its default skin (`defaults.skin`) applied: the skin's colour and style sections become
+ * the default colour and style theme, so an app starts in the look its default skin gives (the default design package
+ * did the same until Nov 10 2026). A section the app doesn't ship (`has` false) keeps the manifest's own default. No
+ * default skin, or none of that id, = the defaults unchanged.
+ */
+export function defaultsWithSkin<T extends Record<string, string | undefined>>(defaults: T, skin: SkinData | null, skinId: string, has: (type: string, id: string) => boolean): T {
+  if (!skin) return defaults;
+  const slots = skinSlots(skin, skinId);
+  const out: Record<string, string | undefined> = { ...defaults };
+  for (const t of SKIN_DEFAULT_SLOTS) { const v = slots[t]; if (v && has(t, v)) out[t] = v; }
+  return out as T;
+}
+
 /* ---------------- conversion: design packages and style packages became skins (Nov 10 2026) ---------------- */
 
 /** What a design package (design-package@1) held. */

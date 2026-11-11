@@ -156,6 +156,13 @@ aliases; the design precedence rule (`designLookSlots`, `DESIGN_OVERRIDES_KEY`) 
 `sectionedSlots`, `sectionAssets`, `fromDesignPackage`, `fromStylePackage`, `capture`, `legacyLook`); until then an
 Android app keeps reading `appearance@1` directly and shows no skin.
 
+Resume (Nov 11 2026, skins + colour themes): the colour theme stays a section of the skin that is switched on its own
+(the `colour` block above, merged with skin@2: `skinColorOf(skin, resolved, skinId)` reads an inline colours section as
+`skin-<id>`; `lookAfterChange(look, change, skin, parentColor, skinId)`). The app's default skin decides its default
+colour and style theme at first start, as the default design package did: `defaultsWithSkin(defaults, skin, skinId, has)`
++ `SKIN_DEFAULT_SLOTS` (fixture block `defaultsWithSkin`). **Android twin deferred:** the same function in the Kotlin
+`SkinEngine` once it exists.
+
 ## Deferred: skin@1 + app-look@1 (Nov 2026)
 
 `framework/core/engines/skin.ts` and `skin-rules.mjs` (web only, built on Opus, format marked for a possible Fable review: plan `skins-possible-fable-review-6xha`) have no Kotlin twin. Android work is on hold. A port needs the same pure functions, the same `skin` asset type and the same document on the hub: `normalizeSkin`, `skinFromDesignPackage`, `composeLook`, `lookAfterChange`, `pickSkin`, `setUseSkin`, `backToSkin`, `restoreAppDefault`, `undoRestore`, pinned by `spec/fixtures/skin.json` and `spec/check-skin.mts`. Build skins-asset-types (Fable, Nov 7 2026) added `skin-coverage.mjs` (coverage of every registered type from the registry, the scope chain global → app → UI → plugin with `resolveSkinChain`, `partsErrors`), `composeLookAt`, `resolveLookSkin`, per-scope states in app-look@1 (`scopes`, `skin.inherit`), the hub-wide `skin` field on appearance@1, `iconPack` + `parts` on skin@1, and the runtime's `skinScoped` views; a port carries the same functions and the `coverage` / `scopes` blocks of the fixture. Build skins-own-everything-colour-theme-swaps-independ (Fable, Nov 10 2026) added the colour theme switched inside the skin: `colorTheme` on the app level, on a scope and on the hub-wide skin (never an override, never a new skin), `setSkinColorTheme`, `skinColorTheme`, `skinColorOf`, `setLookSlot(look, slot, id, global)`, the legacy `overrides["color-theme"]` migration on read, and the `colour` block of the fixture; a port carries those too. `theme.ts`'s scrollbar tokens stay out of the output Kotlin is tested against until then. Until a port does this, an Android app keeps reading `appearance@1` directly and shows no skin.

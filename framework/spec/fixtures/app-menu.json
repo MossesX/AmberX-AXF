@@ -3278,6 +3278,14 @@
                   "shortcut": "Alt+C"
                 },
                 {
+                  "id": "next-color",
+                  "label": "Next color theme",
+                  "locked": false,
+                  "origin": "asset",
+                  "icon": "palette",
+                  "action": "swap:color-theme:next"
+                },
+                {
                   "id": "next-button",
                   "label": "Next button",
                   "locked": false,
@@ -3520,6 +3528,14 @@
                   "shortcut": "Alt+C"
                 },
                 {
+                  "id": "next-color",
+                  "label": "Next color theme",
+                  "locked": false,
+                  "origin": "asset",
+                  "icon": "palette",
+                  "action": "swap:color-theme:next"
+                },
+                {
                   "id": "next-button",
                   "label": "Next button",
                   "locked": false,
@@ -3760,6 +3776,14 @@
                   "icon": "palette",
                   "action": "skin.next",
                   "shortcut": "Alt+C"
+                },
+                {
+                  "id": "next-color",
+                  "label": "Next color theme",
+                  "locked": false,
+                  "origin": "asset",
+                  "icon": "palette",
+                  "action": "swap:color-theme:next"
                 },
                 {
                   "id": "next-button",

@@ -11,7 +11,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { backToSkin, captureSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, lookAfterChange, migrateLegacyLook, newAppLook, normalizeAppLook, normalizeSkin, normalizeSkinScope, partElements, partsErrors, partsTypes, resolveLookSkin, resolveSkinChain, scopeEntries, scopeState, setInheritSkin, setScopeOverride, setScopeSkin, skinCoverage, skinCoverageSummary, skinCovers, skinPartsTypes, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinUncovered, uncoveredTypes, parseAppLook, pickSkin, restoreAppDefault, setUseSkin, skinErrors, skinFromDesignPackage, skinFromStylePackage, skinSectionAssets, skinSectionErrors, skinSlots, snapshotLook, undoRestore, SKIN_SECTIONS, type AppLookDocument, type AppLookStore, overriddenSlots, setLookSlot, setSkinColorTheme, skinColorOf, skinColorTheme, SKIN_COLOR_SLOT } from '../core/engines/skin';
+import { backToSkin, captureSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, lookAfterChange, migrateLegacyLook, newAppLook, normalizeAppLook, normalizeSkin, normalizeSkinScope, partElements, partsErrors, partsTypes, resolveLookSkin, resolveSkinChain, scopeEntries, scopeState, setInheritSkin, setScopeOverride, setScopeSkin, skinCoverage, skinCoverageSummary, skinCovers, skinPartsTypes, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinUncovered, uncoveredTypes, parseAppLook, pickSkin, restoreAppDefault, setUseSkin, skinErrors, skinFromDesignPackage, skinFromStylePackage, skinSectionAssets, skinSectionErrors, skinSlots, snapshotLook, undoRestore, defaultsWithSkin, RETIRED_PACKAGE_TYPES, SKIN_SECTIONS, type AppLookDocument, type AppLookStore, overriddenSlots, setLookSlot, setSkinColorTheme, skinColorOf, skinColorTheme, SKIN_COLOR_SLOT } from '../core/engines/skin';
 import { validateAsset } from '../core/validate';
 import { AxfRuntime, type AppearanceSource } from '../core/runtime';
 import { mergeAppearance, parseAppearance, type AppearanceDocument, type AppearanceSourceState } from '../core/engines/appearance';
@@ -127,7 +127,7 @@ ok(parseAppLook('{"$axf":"appearance@1"}') === null, 'wrong frame refused');
   eq(pickSkin(picked, 'aurora').skin, cf.otherSkin, 'another skin starts with its own colours');
   ok(!('colorTheme' in pickSkin(picked, 'aurora').skin), 'no pick is carried into another skin');
   eq(setUseSkin(setUseSkin(picked, false), true).skin, cf.offAndOn, 'Use skin off and on keeps the colour theme');
-  eq(composeLook(shared, setUseSkin(picked, false), skin).slots, shared.slots, 'skin off: the pick inside the skin does not leak into the app\'s own look');
+  eq(composeLook(shared, setUseSkin(picked, false), skin).slots, Object.fromEntries(Object.entries(shared.slots!).filter(([t]) => !RETIRED_PACKAGE_TYPES.includes(t))), 'skin off: the pick inside the skin does not leak into the app\'s own look');
   eq(lookAfterChange(look0, pick, null), cf.noSkin, 'no skin: the colour theme is the app\'s own pick');
   // documents saved before the rule kept the pick among the overrides
   const legacy = { ...on, skin: { ...on.skin, overrides: { 'color-theme': 'plum-noir', button: 'terminal' } }, scopes: { 'plugin:notes': { use: 'on', id: 'aurora', overrides: { 'color-theme': 'harbor' } } } };
@@ -200,6 +200,19 @@ ok(parseAppLook('{"$axf":"appearance@1"}') === null, 'wrong frame refused');
   eq(JSON.stringify(skin), frozen, "the skin's own data is never written to");
 }
 console.log(`check-skin (colour theme inside the skin): ${n} checks passed`);
+
+/* ---- the app's default skin decides its default colour and style theme ---- */
+{
+  const d = fx.defaultsWithSkin;
+  const has = (t: string, id: string) => !(t === 'style-theme' && id === 'missing');
+  eq(defaultsWithSkin(d.defaults, skin, 'windows', has), d.withSkin, 'defaultsWithSkin = fixture');
+  eq(d.withSkin['color-theme'], skin.colorTheme, "the default colour theme is the default skin's");
+  eq(d.withSkin['style-theme'], skin.styleTheme, "the default style theme is the default skin's");
+  eq(d.withSkin.layout, d.defaults.layout, 'every other default stays the manifest\'s');
+  eq(d.inline['color-theme'], 'skin-windows', 'an inline colours section is the default as skin-<id>');
+  eq(d.notShipped['style-theme'], d.defaults['style-theme'], "a section the app doesn't ship keeps the manifest default");
+  eq(d.noSkin, d.defaults, 'no default skin: defaults unchanged');
+}
 
 /* ---- every framework skin is real assets ---- */
 const assets: Record<string, unknown>[] = [];
@@ -576,5 +589,19 @@ console.log(`check-skin (coverage + scopes): ${n} checks passed`);
   i.dispatch('skin.use:fresh');
   eq(i.appliedSkin(), 'fresh', 'skin.use:<id>');
   for (const act of ['skin.next', 'skin.prev', 'skin.random', 'design.package', 'style.package']) ok(i.actions.list().some((x) => x.id === act), `action ${act} registered`);
+  // the app's default skin decides the colour and style theme it starts with (as the default design package did)
+  const winSkin = normalizeSkin(assets.find((x) => x.type === 'skin' && x.id === 'windows')!.data);
+  const j = new AxfRuntime({ manifest: { ...manifest('app-j'), defaults: { ...defaults, skin: 'windows' } } as AxfManifest, assets: assets as never, storageKey: 'skin-app-j' });
+  eq((j.getState().active as Record<string, string>)['color-theme'], winSkin.colorTheme, "boot: the default skin's colour theme");
+  eq((j.getState().active as Record<string, string>)['style-theme'], winSkin.styleTheme, "boot: the default skin's style theme");
+  eq((j.getState().active as Record<string, string>).layout, defaults.layout, 'boot: every other slot is the manifest default');
+  eq(j.appliedSkin(), 'windows', 'the default skin is the one the app reports');
+  // no app-look document to keep a pick in (a source without the layer, the hub off): Apply still shows the skin
+  const k = new AxfRuntime({ manifest: manifest('app-k'), assets: assets as never, storageKey: 'skin-app-k' });
+  const olderK = new Older(new Store(), hubDoc); delete (olderK as { appLook?: unknown }).appLook;
+  k.attachAppearanceSource(olderK);
+  ok(k.useSkin(true, 'windows'), 'Use skin with no app-look layer');
+  eq((k.getState().active as Record<string, string>)['color-theme'], winSkin.colorTheme, 'the skin colours show');
+  eq((k.getState().active as Record<string, string>).button, winSkin.assets.button, 'the skin assets show');
 }
 console.log(`check-skin (runtime scopes): ${n} checks passed`);
