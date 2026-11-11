@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-11T00:35:37.519Z",
+ "updatedAt": "2026-11-11T00:35:43.336Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -98023,7 +98023,7 @@
    "pr": "#488",
    "priority": "P0",
    "createdAt": "2026-11-10T23:46:07.460Z",
-   "updatedAt": "2026-11-11T00:35:14.989Z",
+   "updatedAt": "2026-11-11T00:35:37.701Z",
    "builtAt": "",
    "notes": [
     {
@@ -98077,6 +98077,10 @@
     {
      "text": "Stage 3 of 3: s1 done. PR #488 ready for review; two UI Review items wait for you (r-20261111-r9jdg01 chat header mic toggle incl. the page as Molly frames it, r-20261111-v2asl01 Hands-free voice settings panel). All checks green; the one failing self-test check is the pre-existing /tmp chat-folder check that fails on main too. No AmberX push from this session: no console URL/token in the headless environment, so the stage notes are these build notes.",
      "at": "2026-11-11T00:35:08.982Z"
+    },
+    {
+     "text": "Headless run axf-ai-assistant-in-molly-console-drives-by-api-open--sully: brief only · start 12.8K tokens ($0.10) · cost $19.93 · 224 turns · 6 tools, MCP none",
+     "at": "2026-11-11T00:35:37.701Z"
     }
    ],
    "approvals": [],
