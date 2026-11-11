@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-11T00:08:16.172Z",
+ "updatedAt": "2026-11-11T00:08:24.180Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -98225,15 +98225,15 @@
    "title": "Merge review, one by one: every built-but-unmerged build checked against current main, Brett decides merge or not",
    "category": "",
    "detail": "Supersedes land-all-97 auto landing. For each of the 118 built builds, oldest first: rebase a scratch copy on current main, report what it changes, which files/features it would overwrite or revert, conflicts, whether a newer build already covers it, and test result. Present one at a time to Brett (console card + AmberX notification) with Merge / Skip (archive) / Rebuild on current main. Never merge without his yes. Never overwrite or revert newer code; conflicts resolve toward current main. Pause land-all-97 and any auto-land until this review is done.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/merge-review-one-by-one-every-built-but-unmerged",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-11T00:06:50.193Z",
-   "updatedAt": "2026-11-11T00:08:12.528Z",
+   "updatedAt": "2026-11-11T00:08:21.392Z",
    "builtAt": "",
    "notes": [
     {
@@ -98243,6 +98243,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-11T00:07:57.417Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-merge-review-one-by-one-every-built-but-unmerged--gina.",
+     "at": "2026-11-11T00:08:17.178Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-merge-review-one-by-one-every-built-but-unmerged--gina, own login copy)",
+     "at": "2026-11-11T00:08:21.392Z"
     }
    ],
    "approvals": [],
