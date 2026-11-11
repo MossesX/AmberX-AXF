@@ -56,8 +56,9 @@ export interface AppearanceDocument {
   /**
    * The hub-wide skin (build skins-asset-types, Nov 2026): the `global` level of the skin chain. An app follows it only
    * while its own look says so (`skin.inherit`, Brett: "a switch to do it, but by default they're all their own").
+   * `colorTheme` = the colour theme picked inside that skin (absent = the skin's own): switching it never changes `id`.
    */
-  skin?: { id: string; overrides?: Record<string, string> };
+  skin?: { id: string; overrides?: Record<string, string>; colorTheme?: string };
   /** who saved it last (app id), when; informational */
   updatedBy?: string;
   updatedAt?: string;
@@ -132,7 +133,10 @@ export function normalizeAppearance(raw: unknown): AppearanceDocument | null {
       if (s.overrides && typeof s.overrides === 'object' && !Array.isArray(s.overrides)) {
         for (const [t, id] of Object.entries(s.overrides as Record<string, unknown>)) if (ID.test(t) && typeof id === 'string' && ID.test(id) && !APPEARANCE_NEVER.includes(t)) overrides[t] = id;
       }
-      doc.skin = Object.keys(overrides).length ? { id: s.id, overrides } : { id: s.id };
+      // the colour theme picked inside the hub-wide skin is its own field, never an override (engines/skin-rules.mjs)
+      const colorTheme = typeof s.colorTheme === 'string' && ID.test(s.colorTheme) ? s.colorTheme : overrides['color-theme'] ?? '';
+      delete overrides['color-theme'];
+      doc.skin = { id: s.id, ...(Object.keys(overrides).length ? { overrides } : {}), ...(colorTheme ? { colorTheme } : {}) };
     }
   }
   if (typeof o.updatedBy === 'string' && o.updatedBy.length <= 80) doc.updatedBy = o.updatedBy;

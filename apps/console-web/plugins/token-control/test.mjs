@@ -4,7 +4,7 @@
  * document, the AmberX tables, the plans and an orchestrator@1 file (AXF_ORCH_FILE), so nothing shared is touched.
  */
 import assert from 'node:assert/strict';
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -69,6 +69,26 @@ await test('tokens: slots swap, override under a design package, reset needs a s
   assert.equal((await runControl({ op: 'reset', target: 'tokens.slots' })).code, 'validation');
   assert.equal((await runControl({ op: 'reset', target: 'tokens.slots', path: 'color-theme' })).ok, true);
   assert.equal(doc().settings['axf.appearance.overrides'], undefined);
+});
+await test('tokens: a colour theme set from outside lands inside each app\'s skin (same skin, no new one)', async () => {
+  const rules = await import('../../../../framework/core/engines/skin-rules.mjs');
+  const looks = join(T, 'looks');
+  mkdirSync(looks, { recursive: true });
+  const skinned = rules.setUseSkin(rules.pickSkin(rules.newAppLook('tc-skinned', {}), 'windows'), true);
+  writeFileSync(join(looks, 'tc-skinned.json'), JSON.stringify(skinned));
+  writeFileSync(join(looks, 'tc-own.json'), JSON.stringify(rules.newAppLook('tc-own', {})));
+  const look = (app) => JSON.parse(readFileSync(join(looks, `${app}.json`), 'utf8'));
+  assert.equal((await runControl({ op: 'set', target: 'tokens.slots', path: 'color-theme', value: 'arctic-daylight' })).ok, true);
+  const after = look('tc-skinned');
+  assert.equal(after.skin.id, 'windows', 'the skin stays');
+  assert.equal(after.skin.colorTheme, 'arctic-daylight', 'the pick is the colour theme inside the skin');
+  assert.equal(after.skin.overrides?.['color-theme'], undefined, 'never a skin override');
+  assert.deepEqual(readdirSync(looks).sort(), ['tc-own.json', 'tc-skinned.json'], 'no other look or skin is written');
+  assert.equal(look('tc-own').own.slots['color-theme'], 'arctic-daylight', 'an app without a skin takes it as its own pick');
+  await runControl({ op: 'reset', target: 'tokens.slots', path: 'color-theme' });
+  assert.equal(look('tc-skinned').skin.colorTheme, undefined, 'reset = the skin\'s own colours');
+  assert.equal(look('tc-skinned').skin.id, 'windows');
+  rmSync(looks, { recursive: true, force: true });
 });
 await test('tokens: look / custom are retired', async () => {
   assert.equal((await runControl({ op: 'set', target: 'tokens.look', path: 'compact', value: true })).code, 'not_implemented');

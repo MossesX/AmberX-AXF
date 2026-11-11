@@ -14,7 +14,7 @@
  */
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { SettingsPanel } from '../../core';
-import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, hideableTypes, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
+import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, SKIN_COLOR_SLOT, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, hideableTypes, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
 import { AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, Icon, IconButton, ModelBadge, setBannerOwnSettingsRenderer, Slider, Switch, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
@@ -569,6 +569,10 @@ const LOCK_PANEL_ID = 'axf.appearance.lock';
  * (picker + the Use skin switch, off = the app's own look), Style / Colour / Layout theme, Visible parts, Navigation
  * menu, Restore to default. With a skin on, a pick overrides just that part (a dot + Back to skin); with no skin, it
  * sets this app's own look. Every change stays in this app (engines/skin.ts).
+ *
+ * The colour theme is the one section switched inside the skin (Brett, Nov 9 2026: "You can change the color theme
+ * without changing the skin"): picking one keeps the same skin, shows no overridden dot and makes no new skin;
+ * "Skin's colours" goes back to the skin's own (rt.skinColorTheme / rt.setSkinColorTheme).
  */
 export function AppearancePanel() {
   const rt = useRuntime();
@@ -580,16 +584,21 @@ export function AppearancePanel() {
   const skinId = look?.skin.id ?? '';
   const skinOn = !!look?.skin.use;
   const overridden = rt.skinOverrides();
+  const colour = rt.skinColorTheme();
+  const inForce = !!colour.own; // a skin with data is in force here (read from the look document, so a pick just made is seen at once)
   const [confirm, setConfirm] = useState(false);
   const row = (label: string, type: string) => {
     const list = rt.registry.list(type as AssetType);
     const value = st.active[type as AssetType] ?? '';
-    const isOver = overridden.includes(type);
+    // the colour theme is switched inside the skin: same skin, no override, no dot (engines/skin.ts)
+    const isColour = type === SKIN_COLOR_SLOT && inForce;
+    const isOver = !isColour && overridden.includes(type);
+    const hint = isColour ? (colour.picked ? "Switched inside the skin. The skin is unchanged." : "The skin's own colours.") : skinOn ? (isOver ? 'Overridden.' : 'From the skin.') : '';
     return (
-      <div className="axf-settings__row" key={type}>
+      <div className="axf-settings__row" key={type} data-axf-skin-section={isColour ? 'color-theme' : undefined}>
         <div className="axf-settings__label">
           <span>{label}{isOver && <span className="axf-skin__dot" title="Overridden: this part isn't the skin's" aria-label="Overridden" />}</span>
-          {skinOn && <span className="fx-muted axf-settings__hint">{isOver ? 'Overridden.' : 'From the skin.'}</span>}
+          {!!hint && <span className="fx-muted axf-settings__hint">{hint}</span>}
         </div>
         <div className="axf-settings__control">
           <select className="axf-settings__field" aria-label={label} value={value} disabled={locked || !list.length} onChange={(e) => rt.swap(type as AssetType, e.target.value)}>
@@ -597,6 +606,7 @@ export function AppearancePanel() {
             {list.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
           </select>
           {isOver && <Button size="sm" tone="quiet" disabled={locked} onClick={() => rt.backToSkin(type)}>Back to skin</Button>}
+          {isColour && colour.picked && <Button size="sm" tone="quiet" disabled={locked} title="Back to the colour theme this skin came with" onClick={() => rt.setSkinColorTheme(null)}>Skin's colours</Button>}
         </div>
       </div>
     );
@@ -634,7 +644,8 @@ export function AppearancePanel() {
 
 /**
  * The skin picker: tap a skin to see it on the real app (nothing is saved), Apply keeps it in this app, Cancel or closing
- * the dialog puts the look back. Reset is Restore to default, and it asks first.
+ * the dialog puts the look back. Reset is Restore to default, and it asks first. Under the grid, the colour theme inside
+ * the applied skin: switching it keeps the skin and adds nothing to the grid.
  */
 function SkinPickerDialog() {
   const rt = useRuntime();
@@ -643,6 +654,9 @@ function SkinPickerDialog() {
   const look = rt.appLook();
   const skins = rt.skinList();
   const applied = look?.skin.use ? look.skin.id : '';
+  const colour = rt.skinColorTheme();
+  const colourThemes = rt.registry.list(SKIN_COLOR_SLOT as AssetType);
+  const locked = !rt.can('assets.swap') || rt.lockedByAppearance('assets.swap');
   const [picked, setPicked] = useState(applied || look?.skin.id || '');
   useEffect(() => () => { rt.previewSkin(null); }, [rt]);
   const tap = (id: string) => { setPicked(id); rt.previewSkin(id === applied ? null : id); };
@@ -663,6 +677,20 @@ function SkinPickerDialog() {
         ))}
       </div>
       <p className="fx-muted axf-settings__desc">{current ? (current.data.preview?.caption || current.description || current.name) : 'Tap a skin to see it on this app.'} Only this app changes.</p>
+      {!!applied && (
+        <div className="axf-settings__row" data-axf-skin-section="color-theme">
+          <div className="axf-settings__label">
+            <span>Colour theme</span>
+            <span className="fx-muted axf-settings__hint">{colour.picked ? 'Switched inside this skin; the skin itself is unchanged.' : "This skin's own colours. Switching keeps the skin and makes no new one."}</span>
+          </div>
+          <div className="axf-settings__control axf-skin__action">
+            <select className="axf-settings__field" aria-label="Colour theme inside this skin" value={colour.id} disabled={locked || picked !== applied || !colourThemes.length} onChange={(e) => rt.setSkinColorTheme(e.target.value)}>
+              {colourThemes.map((a) => <option key={a.id} value={a.id}>{a.name}{a.id === colour.own ? ' (skin\'s own)' : ''}</option>)}
+            </select>
+            {colour.picked && <Button size="sm" tone="quiet" disabled={locked || picked !== applied} onClick={() => rt.setSkinColorTheme(null)}>Skin's colours</Button>}
+          </div>
+        </div>
+      )}
       <div className="fx-row">
         <Button tone="primary" disabled={!picked || picked === applied} onClick={() => { if (rt.useSkin(true, picked)) close(); }}>Apply</Button>
         {!!applied && <Button tone="quiet" onClick={() => { if (rt.useSkin(false)) close(); }}>Turn skin off</Button>}

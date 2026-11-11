@@ -9,6 +9,14 @@
  * target (customize engine), so it reaches widgets, badges, labels and every other drawn piece — the registry says
  * how each type is covered (`skin-coverage.mjs`, `skinCoverage()`), and CI fails on a type it can't reach.
  *
+ * A skin owns everything, and its colour theme is the one section switched on its own (Brett, Nov 9 2026: "You can
+ * change the color theme without changing the skin. If you change the color theme, it makes a new skin, don't like
+ * that."). `colorTheme` on the skin is the skin's own; a pick made while the skin is in force is kept beside the skin
+ * in the look document (`skin.colorTheme`, a scope's `colorTheme`, the hub-wide skin's `colorTheme`: skin-rules.mjs),
+ * never as an override and never as another skin. Changing the colour theme leaves the skin id, the skin asset and
+ * the list of skins exactly as they were (`lookAfterChange`, `setSkinColorTheme`, `setLookSlot`); `skinColorOf` says
+ * what a place shows.
+ *
  * app-look@1 is one app's look on the hub (`shared/settings/looks/<app>.json`): the snapshot of its default, its own
  * picks over that default, its skin switch, and a skin state per UI / plugin. It is what keeps apps apart (Brett,
  * Nov 4 2026: "by default they're all their own"): the shared appearance@1 document stays the transport and the
@@ -17,6 +25,7 @@
  *
  *   effective look at a place = default snapshot + own picks                        (no skin in the chain)
  *                             = that + the skin in force + the chain's overrides     (plugin → ui → app → global)
+ *                               + the colour theme picked inside the skin, when one is
  *
  * Pure and port-neutral; Kotlin twin deferred (spec/PORTING.md, "skin@1 + app-look@1").
  */
@@ -27,10 +36,10 @@ import type { DesignPackageData } from '../types';
 import { spacingOf } from './spacing';
 import { CUSTOM_TARGETS, customizable, normalizeCustomValues, type CustomValues } from './customize';
 import spec from '../../schemas/asset-types.json';
-import { SKIN_NEVER, normalizeLookPart, resolveLookSkin, type AppLookDocument, type GlobalSkin, type LookPart } from './skin-rules.mjs';
+import { SKIN_COLOR_SLOT, SKIN_NEVER, normalizeLookPart, resolveLookSkin, setSkinColorTheme, type AppLookDocument, type GlobalSkin, type LookPart } from './skin-rules.mjs';
 import { coverageSummary, coverageTable, partsErrors, partsTypes, skinScopeKey, uncoveredTypes, type CoverageRow, type CoverageSummary, type ResolvedSkin, type SkinScope, type TypeSpecs } from './skin-coverage.mjs';
 
-export { APP_LOOK_FRAME, APP_LOOK_MAX_BYTES, APP_LOOK_PROJECT, SKIN_NEVER, SKIN_USES, appLookPath, backToSkin, newAppLook, normalizeAppLook, normalizeScopeState, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setScopeOverride, setScopeSkin, setUseSkin, undoRestore } from './skin-rules.mjs';
+export { APP_LOOK_FRAME, APP_LOOK_MAX_BYTES, APP_LOOK_PROJECT, SKIN_COLOR_SLOT, SKIN_NEVER, SKIN_USES, appLookPath, backToSkin, newAppLook, normalizeAppLook, normalizeScopeState, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorTheme, undoRestore } from './skin-rules.mjs';
 export type { AppLookDocument, AppSkinState, GlobalSkin, LookPart } from './skin-rules.mjs';
 // named, not `export *`: tsx links a star re-export of a .mjs module as empty when the importer is a .mts file
 export { COVERAGE_KINDS, PART_ELEMENTS, SKIN_COVERAGE_CONTRACT, SKIN_SCOPE_APP, SKIN_SCOPE_GLOBAL, SKIN_SCOPE_KINDS, coverageOf, coverageSummary, coverageTable, declarationErrors, declaredCoverage, isSubScopeKey, normalizeSkinScope, partElements, partsErrors, partsTypes, resolveSkinChain, skinScopeChain, skinScopeDomId, skinScopeKey, skinScopeKind, skinScopeOf, skinScopeSelector, uncoveredTypes } from './skin-coverage.mjs';
@@ -68,6 +77,8 @@ export interface AppLookStore {
 }
 /** One row of the Skin picker. */
 export interface SkinEntry { id: string; name: string; kind: 'skin' | 'design-package'; description: string; data: SkinData }
+/** The colour theme of a skin at a place: `id` = what shows, `own` = the skin's own, `picked` = the user switched it inside the skin. */
+export interface SkinColor { id: string; own: string; picked: boolean }
 /** What a place in an app draws: the composed document, the skin's parts and which level decided. */
 export interface ComposedLook { doc: AppearanceDocument; parts: Record<string, CustomValues>; skin: ResolvedSkin; scopeKey: string }
 
@@ -205,15 +216,32 @@ export function skinCovers(skin: SkinData): { type: string; by: CoverageRow['by'
 
 /* ---------------- composing ---------------- */
 
-/** The hub-wide skin a shared document carries (null = none). */
+/** The hub-wide skin a shared document carries (null = none); `colorTheme` only when one was picked inside it. */
 export function globalSkinOf(shared: AppearanceDocument | null | undefined): GlobalSkin | null {
   const s = (shared as { skin?: unknown } | null | undefined)?.skin;
   if (!isObj(s) || typeof s.id !== 'string' || !ID.test(s.id)) return null;
-  return { id: s.id, overrides: idMap(s.overrides) };
+  const overrides = idMap(s.overrides);
+  // a document saved before the colour theme had its own field kept the pick among the overrides
+  const pick = typeof s.colorTheme === 'string' && ID.test(s.colorTheme) ? s.colorTheme : overrides[SKIN_COLOR_SLOT] ?? '';
+  delete overrides[SKIN_COLOR_SLOT];
+  return pick ? { id: s.id, overrides, colorTheme: pick } : { id: s.id, overrides };
 }
 
-/** The document for a look with `skin` on (or none) and `overrides` over it; `scopeKey` names where the icon pack lands. */
-function composeWith(shared: AppearanceDocument | null, look: AppLookDocument, skin: SkinData | null, overrides: Record<string, string>, scopeKey: string): AppearanceDocument {
+/**
+ * The colour theme a skin shows where `resolved` is in force: the pick made inside the skin (the nearest level that
+ * has one), else the skin's own. `picked` is false when the pick is the skin's own theme. No skin = all empty.
+ */
+export function skinColorOf(skin: SkinData | null, resolved: { colorTheme?: string } | null | undefined): SkinColor {
+  if (!skin) return { id: '', own: '', picked: false };
+  const pick = resolved?.colorTheme ?? '';
+  return { id: pick || skin.colorTheme, own: skin.colorTheme, picked: !!pick && pick !== skin.colorTheme };
+}
+
+/**
+ * The document for a look with `skin` on (or none) and `overrides` over it; `scopeKey` names where the icon pack lands;
+ * `colorTheme` is the colour theme picked inside the skin ('' = the skin's own).
+ */
+function composeWith(shared: AppearanceDocument | null, look: AppLookDocument, skin: SkinData | null, overrides: Record<string, string>, scopeKey: string, colorTheme = ''): AppearanceDocument {
   const slots = { ...look.default.slots, ...look.own.slots };
   const hidden = { ...look.default.hidden, ...look.own.hidden };
   let spacing = look.own.spacing ?? look.default.spacing;
@@ -221,6 +249,7 @@ function composeWith(shared: AppearanceDocument | null, look: AppLookDocument, s
   for (const [k, v] of Object.entries(shared?.settings ?? {})) if (SHARED_SETTING_PREFIXES.some((p) => k.startsWith(p))) settings[k] = v;
   if (skin) {
     Object.assign(slots, skinSlots(skin), overrides);
+    if (colorTheme) slots[SKIN_COLOR_SLOT] = colorTheme; // switched inside the skin: same skin, other colours
     if (skin.extras?.spacing) spacing = skin.extras.spacing;
     Object.assign(hidden, skin.extras?.hidden);
     Object.assign(settings, skin.extras?.settings);
@@ -242,7 +271,7 @@ function composeWith(shared: AppearanceDocument | null, look: AppLookDocument, s
  */
 export function composeLook(shared: AppearanceDocument | null, look: AppLookDocument, skin: SkinData | null): AppearanceDocument {
   const on = look.skin.use && !!skin;
-  return composeWith(shared, look, on ? skin : null, on ? look.skin.overrides : {}, 'app');
+  return composeWith(shared, look, on ? skin : null, on ? look.skin.overrides : {}, 'app', on ? look.skin.colorTheme : '');
 }
 
 /**
@@ -254,19 +283,24 @@ export function composeLookAt(shared: AppearanceDocument | null, look: AppLookDo
   const resolved = resolveLookSkin(look, globalSkinOf(shared), scope ?? null);
   const skin = resolved.id ? skinOf(resolved.id) : null;
   const scopeKey = skinScopeKey(scope ?? null);
-  return { doc: composeWith(shared, look, skin, skin ? resolved.overrides : {}, scopeKey), parts: skin?.parts ?? {}, skin: skin ? resolved : { ...resolved, id: '' }, scopeKey };
+  return { doc: composeWith(shared, look, skin, skin ? resolved.overrides : {}, scopeKey, skin ? resolved.colorTheme : ''), parts: skin?.parts ?? {}, skin: skin ? resolved : { id: '', overrides: resolved.overrides, from: resolved.from }, scopeKey };
 }
 
 /**
  * A local change after the runtime made it. A skin in force (Use skin on, or the hub-wide skin while the app follows
- * it): a slot pick overrides that part of the skin. No skin: it is the app's own. `skin` is the data of the skin in force.
+ * it): a colour theme pick is switched inside the skin (`skin.colorTheme`; the skin stays the same skin and nothing is
+ * created), any other slot pick overrides that part of the skin. No skin: it is the app's own. `skin` is the data of
+ * the skin in force; `parentColor` is the colour theme a level above already picked inside it (the hub-wide skin's),
+ * so picking the theme that shows anyway keeps no pick.
  */
-export function lookAfterChange(look: AppLookDocument, change: AppearanceChange, skin: SkinData | null): AppLookDocument {
-  const next: AppLookDocument = { ...look, own: { ...look.own }, skin: { ...look.skin, overrides: { ...look.skin.overrides } } };
+export function lookAfterChange(look: AppLookDocument, change: AppearanceChange, skin: SkinData | null, parentColor = ''): AppLookDocument {
+  let next: AppLookDocument = { ...look, own: { ...look.own }, skin: { ...look.skin, overrides: { ...look.skin.overrides } } };
   const skinOn = (look.skin.use || look.skin.inherit) && !!skin;
   const inSkin = skinOn ? skinSlots(skin!) : {};
   for (const [t, id] of Object.entries(change.slots ?? {})) {
-    if (skinOn && t in inSkin) {
+    if (skinOn && t === SKIN_COLOR_SLOT) {
+      next = setSkinColorTheme(next, id === (parentColor || skin!.colorTheme) ? null : id);
+    } else if (skinOn && t in inSkin) {
       if (id === null || id === inSkin[t]) delete next.skin.overrides[t];
       else next.skin.overrides[t] = id;
     } else {
