@@ -481,11 +481,11 @@ t('manifest: lifecycle, builtWith, page and settings tab', () => {
   const site = types.find((x) => x.id === 'site-check');
   const crew = roster.agents.filter((a) => a.jobsOnly);
   const allOff = (st0, except = []) => crew.filter((a) => !except.includes(a.id)).reduce((st, a) => c.applyChange(st, { action: 'status', agent: a.id, status: 'off-duty', note: 'nap' }, roster, at).state, st0);
-  t('job types: nine, all valid, every crew member can take each, the home agent listed first', () => {
-    assert.equal(types.length, 9); for (const jt of types) { assert.deepEqual(jt.errors, [], jt.id); const o = jc.owners(jt, roster, c.normState({}, roster)); assert.equal(o.length, crew.length, jt.id); assert.ok(o.every((a) => a.jobsOnly), jt.id); }
+  t('job types: ten, all valid, every crew member can take each, the home agent listed first', () => {
+    assert.equal(types.length, 10); for (const jt of types) { assert.deepEqual(jt.errors, [], jt.id); const o = jc.owners(jt, roster, c.normState({}, roster)); assert.equal(o.length, crew.length, jt.id); assert.ok(o.every((a) => a.jobsOnly), jt.id); }
     for (const a of crew) assert.equal(jc.owners(types.find((x) => x.id === a.home), roster, c.normState({}, roster))[0].id, a.id, a.home);
     assert.ok(['feature-build', 'ops-fix'].every((id) => types.some((x) => x.id === id)));
-    assert.equal(jc.jobsOf(types, crew[0]).length, 9); assert.equal(jc.jobsOf(types, crew[0])[0].home, true);
+    assert.equal(jc.jobsOf(types, crew[0]).length, 10); assert.equal(jc.jobsOf(types, crew[0])[0].home, true);
     assert.ok(!jc.canTake(site, roster.agents.find((a) => a.id === 'rio')), 'build agents keep their own skill');
   });
   t('job-type validation: a bad job type is named and never routed', () => {
