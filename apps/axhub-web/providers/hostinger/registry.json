@@ -1,0 +1,573 @@
+{
+ "$axf": "control-registry@1",
+ "note": "Hostinger through axHub (build full-api-cli-control-of-everything-plus-an-offli, s10). Every action is provider:hostinger/<op> = the hub tool hostinger.<op>, called by the console's provider bridge with its hub token; the console holds no Hostinger secret. Reads run at once; changes go to axHub once with a reason; destructive ones (stop, restart, restore, delete, reset, DNS overwrite) also need the registry's confirm token. GET /api/registry/providers/check compares these ops with the live hub. Merged by id.",
+ "entries": [
+  {
+   "id": "hostinger/app/hostinger",
+   "type": "app",
+   "owner": "hostinger",
+   "label": "Hostinger",
+   "description": "Hostinger (domains, DNS, the VPS, backups, billing) through axHub's Hostinger connector: the console holds no Hostinger secret. Reads run at once; every change goes to axHub once with a reason and waits for Brett there. The op names follow the connector's tools (hostinger.<op>); the provider check compares them with the live hub.",
+   "where": {
+    "app": "axhub-web",
+    "provider": "hostinger",
+    "connection": "axhub"
+   },
+   "open": {
+    "kind": "url",
+    "target": "https://hpanel.hostinger.com",
+    "deepLink": "https://hpanel.hostinger.com"
+   },
+   "state": {
+    "read": "provider:axhub/catalog",
+    "shape": "the Hostinger tools axHub has (catalog with service hostinger)"
+   },
+   "actions": [
+    {
+     "id": "tools",
+     "label": "List the Hostinger tools on axHub",
+     "effect": "read",
+     "run": "provider:axhub/catalog",
+     "params": [
+      {
+       "name": "service",
+       "type": "enum",
+       "enum": [
+        "hostinger"
+       ],
+       "default": "hostinger"
+      }
+     ]
+    },
+    {
+     "id": "open",
+     "label": "Open hPanel",
+     "effect": "navigate",
+     "run": "url:https://hpanel.hostinger.com"
+    }
+   ],
+   "synonyms": [
+    "hostinger",
+    "hpanel"
+   ],
+   "tags": [
+    "provider"
+   ]
+  },
+  {
+   "id": "hostinger/tool/domains",
+   "type": "tool",
+   "owner": "hostinger",
+   "label": "Hostinger domains",
+   "description": "Every domain on the account and one domain's details.",
+   "where": {
+    "app": "axhub-web",
+    "provider": "hostinger",
+    "connection": "axhub",
+    "file": "apps/axhub-web/providers/hostinger/registry.json"
+   },
+   "state": {
+    "read": "provider:hostinger/domains_getDomainListV1"
+   },
+   "actions": [
+    {
+     "id": "list",
+     "label": "List domains",
+     "effect": "read",
+     "run": "provider:hostinger/domains_getDomainListV1",
+     "phrases": [
+      "list my domains",
+      "show hostinger domains"
+     ]
+    },
+    {
+     "id": "get",
+     "label": "Domain details",
+     "effect": "read",
+     "run": "provider:hostinger/domains_getDomainDetailsV1",
+     "params": [
+      {
+       "name": "domain",
+       "type": "string",
+       "pattern": "^([a-z0-9-]{1,63}\\.)+[a-z]{2,24}$",
+       "default": "amberxai.com",
+       "position": 0,
+       "description": "the domain (amberxai.com \u2026)"
+      }
+     ]
+    }
+   ],
+   "parent": "hostinger/app/hostinger",
+   "tags": [
+    "provider"
+   ],
+   "synonyms": [
+    "domains"
+   ]
+  },
+  {
+   "id": "hostinger/tool/dns",
+   "type": "tool",
+   "owner": "hostinger",
+   "label": "Hostinger DNS",
+   "description": "A domain's DNS zone: read the records, validate, update or delete records, list and restore zone snapshots. Every change waits for Brett on axHub; overwrite and delete also need the registry's confirm token.",
+   "where": {
+    "app": "axhub-web",
+    "provider": "hostinger",
+    "connection": "axhub",
+    "file": "apps/axhub-web/providers/hostinger/registry.json"
+   },
+   "state": {
+    "read": "provider:hostinger/DNS_getDNSRecordsV1"
+   },
+   "actions": [
+    {
+     "id": "records",
+     "label": "DNS records",
+     "effect": "read",
+     "run": "provider:hostinger/DNS_getDNSRecordsV1",
+     "params": [
+      {
+       "name": "domain",
+       "type": "string",
+       "pattern": "^([a-z0-9-]{1,63}\\.)+[a-z]{2,24}$",
+       "default": "amberxai.com",
+       "position": 0,
+       "description": "the domain (amberxai.com \u2026)"
+      }
+     ],
+     "phrases": [
+      "show dns records"
+     ]
+    },
+    {
+     "id": "validate",
+     "label": "Validate DNS records",
+     "effect": "read",
+     "run": "provider:hostinger/DNS_validateDNSRecordsV1",
+     "params": [
+      {
+       "name": "domain",
+       "type": "string",
+       "pattern": "^([a-z0-9-]{1,63}\\.)+[a-z]{2,24}$",
+       "default": "amberxai.com",
+       "position": 0,
+       "description": "the domain (amberxai.com \u2026)"
+      },
+      {
+       "name": "zone",
+       "type": "array",
+       "items": "object",
+       "required": true,
+       "description": "records: [{ name, type (A, AAAA, CNAME, ALIAS, MX, TXT, NS, SOA, SRV, CAA), ttl (60-86400), records: [{ content }] }]"
+      },
+      {
+       "name": "overwrite",
+       "type": "boolean",
+       "default": false
+      }
+     ]
+    },
+    {
+     "id": "update",
+     "label": "Update DNS records",
+     "effect": "write",
+     "run": "provider:hostinger/DNS_updateDNSRecordsV1",
+     "params": [
+      {
+       "name": "domain",
+       "type": "string",
+       "pattern": "^([a-z0-9-]{1,63}\\.)+[a-z]{2,24}$",
+       "default": "amberxai.com",
+       "position": 0,
+       "description": "the domain (amberxai.com \u2026)"
+      },
+      {
+       "name": "zone",
+       "type": "array",
+       "items": "object",
+       "required": true,
+       "description": "records: [{ name, type (A, AAAA, CNAME, ALIAS, MX, TXT, NS, SOA, SRV, CAA), ttl (60-86400), records: [{ content }] }]"
+      },
+      {
+       "name": "overwrite",
+       "type": "boolean",
+       "default": false,
+       "description": "true replaces every record of the same name and type"
+      }
+     ],
+     "confirm": true
+    },
+    {
+     "id": "delete",
+     "label": "Delete DNS records",
+     "effect": "destructive",
+     "run": "provider:hostinger/DNS_deleteDNSRecordsV1",
+     "params": [
+      {
+       "name": "domain",
+       "type": "string",
+       "pattern": "^([a-z0-9-]{1,63}\\.)+[a-z]{2,24}$",
+       "default": "amberxai.com",
+       "position": 0,
+       "description": "the domain (amberxai.com \u2026)"
+      },
+      {
+       "name": "filters",
+       "type": "array",
+       "items": "object",
+       "required": true,
+       "description": "[{ name, type (A, AAAA, CNAME, ALIAS, MX, TXT, NS, SOA, SRV, CAA) }]"
+      }
+     ],
+     "confirm": true
+    },
+    {
+     "id": "snapshots",
+     "label": "DNS snapshots",
+     "effect": "read",
+     "run": "provider:hostinger/DNS_getDNSSnapshotListV1",
+     "params": [
+      {
+       "name": "domain",
+       "type": "string",
+       "pattern": "^([a-z0-9-]{1,63}\\.)+[a-z]{2,24}$",
+       "default": "amberxai.com",
+       "position": 0,
+       "description": "the domain (amberxai.com \u2026)"
+      }
+     ]
+    },
+    {
+     "id": "restore",
+     "label": "Restore a DNS snapshot",
+     "effect": "destructive",
+     "run": "provider:hostinger/DNS_restoreDNSSnapshotV1",
+     "params": [
+      {
+       "name": "domain",
+       "type": "string",
+       "pattern": "^([a-z0-9-]{1,63}\\.)+[a-z]{2,24}$",
+       "default": "amberxai.com",
+       "position": 0,
+       "description": "the domain (amberxai.com \u2026)"
+      },
+      {
+       "name": "snapshotId",
+       "type": "integer",
+       "min": 1,
+       "max": 999999999,
+       "required": true
+      }
+     ],
+     "confirm": true
+    },
+    {
+     "id": "reset",
+     "label": "Reset DNS to Hostinger defaults",
+     "effect": "destructive",
+     "run": "provider:hostinger/DNS_resetDNSRecordsV1",
+     "params": [
+      {
+       "name": "domain",
+       "type": "string",
+       "pattern": "^([a-z0-9-]{1,63}\\.)+[a-z]{2,24}$",
+       "default": "amberxai.com",
+       "position": 0,
+       "description": "the domain (amberxai.com \u2026)"
+      },
+      {
+       "name": "sync",
+       "type": "boolean",
+       "default": true
+      },
+      {
+       "name": "reset_email_records",
+       "type": "boolean",
+       "default": false
+      }
+     ],
+     "confirm": true
+    }
+   ],
+   "parent": "hostinger/app/hostinger",
+   "tags": [
+    "provider"
+   ],
+   "synonyms": [
+    "dns",
+    "dns records",
+    "zone"
+   ]
+  },
+  {
+   "id": "hostinger/tool/vps",
+   "type": "tool",
+   "owner": "hostinger",
+   "label": "Hostinger VPS",
+   "description": "The VPS: list, details, metrics, and power (start, stop, restart). Stop and restart take the console and every app down for a while: confirm token plus Brett's approval on axHub.",
+   "where": {
+    "app": "axhub-web",
+    "provider": "hostinger",
+    "connection": "axhub",
+    "file": "apps/axhub-web/providers/hostinger/registry.json"
+   },
+   "state": {
+    "read": "provider:hostinger/VPS_getVirtualMachinesV1"
+   },
+   "actions": [
+    {
+     "id": "list",
+     "label": "List VPS",
+     "effect": "read",
+     "run": "provider:hostinger/VPS_getVirtualMachinesV1",
+     "phrases": [
+      "list my servers",
+      "show the vps"
+     ]
+    },
+    {
+     "id": "get",
+     "label": "VPS details and state",
+     "effect": "read",
+     "run": "provider:hostinger/VPS_getVirtualMachineDetailsV1",
+     "params": [
+      {
+       "name": "virtualMachineId",
+       "type": "integer",
+       "min": 1,
+       "max": 99999999,
+       "required": true,
+       "position": 0,
+       "description": "the VPS id (vps list shows it)"
+      }
+     ],
+     "phrases": [
+      "vps state"
+     ]
+    },
+    {
+     "id": "metrics",
+     "label": "VPS metrics",
+     "effect": "read",
+     "run": "provider:hostinger/VPS_getMetricsV1",
+     "params": [
+      {
+       "name": "virtualMachineId",
+       "type": "integer",
+       "min": 1,
+       "max": 99999999,
+       "required": true,
+       "position": 0,
+       "description": "the VPS id (vps list shows it)"
+      },
+      {
+       "name": "date_from",
+       "type": "date",
+       "pattern": "^\\d{4}-\\d{2}-\\d{2}(T[0-9:]+Z)?$",
+       "required": true
+      },
+      {
+       "name": "date_to",
+       "type": "date",
+       "pattern": "^\\d{4}-\\d{2}-\\d{2}(T[0-9:]+Z)?$",
+       "required": true
+      }
+     ]
+    },
+    {
+     "id": "start",
+     "label": "Start the VPS",
+     "effect": "write",
+     "run": "provider:hostinger/VPS_startVirtualMachineV1",
+     "params": [
+      {
+       "name": "virtualMachineId",
+       "type": "integer",
+       "min": 1,
+       "max": 99999999,
+       "required": true,
+       "position": 0,
+       "description": "the VPS id (vps list shows it)"
+      }
+     ],
+     "phrases": [
+      "start the vps"
+     ]
+    },
+    {
+     "id": "stop",
+     "label": "Stop the VPS",
+     "effect": "destructive",
+     "run": "provider:hostinger/VPS_stopVirtualMachineV1",
+     "params": [
+      {
+       "name": "virtualMachineId",
+       "type": "integer",
+       "min": 1,
+       "max": 99999999,
+       "required": true,
+       "position": 0,
+       "description": "the VPS id (vps list shows it)"
+      }
+     ],
+     "confirm": true
+    },
+    {
+     "id": "restart",
+     "label": "Restart the VPS",
+     "effect": "destructive",
+     "run": "provider:hostinger/VPS_restartVirtualMachineV1",
+     "params": [
+      {
+       "name": "virtualMachineId",
+       "type": "integer",
+       "min": 1,
+       "max": 99999999,
+       "required": true,
+       "position": 0,
+       "description": "the VPS id (vps list shows it)"
+      }
+     ],
+     "confirm": true,
+     "phrases": [
+      "restart the vps"
+     ]
+    }
+   ],
+   "parent": "hostinger/app/hostinger",
+   "tags": [
+    "provider",
+    "power"
+   ],
+   "synonyms": [
+    "vps",
+    "server",
+    "virtual machine"
+   ]
+  },
+  {
+   "id": "hostinger/tool/vps-backups",
+   "type": "tool",
+   "owner": "hostinger",
+   "label": "Hostinger VPS backups",
+   "description": "The VPS's backups: list them, restore one (replaces the whole disk).",
+   "where": {
+    "app": "axhub-web",
+    "provider": "hostinger",
+    "connection": "axhub",
+    "file": "apps/axhub-web/providers/hostinger/registry.json"
+   },
+   "state": {
+    "read": "provider:hostinger/VPS_getBackupsV1"
+   },
+   "actions": [
+    {
+     "id": "list",
+     "label": "List backups",
+     "effect": "read",
+     "run": "provider:hostinger/VPS_getBackupsV1",
+     "params": [
+      {
+       "name": "virtualMachineId",
+       "type": "integer",
+       "min": 1,
+       "max": 99999999,
+       "required": true,
+       "position": 0,
+       "description": "the VPS id (vps list shows it)"
+      }
+     ],
+     "phrases": [
+      "list vps backups"
+     ]
+    },
+    {
+     "id": "restore",
+     "label": "Restore a backup",
+     "effect": "destructive",
+     "run": "provider:hostinger/VPS_restoreBackupV1",
+     "params": [
+      {
+       "name": "virtualMachineId",
+       "type": "integer",
+       "min": 1,
+       "max": 99999999,
+       "required": true,
+       "position": 0,
+       "description": "the VPS id (vps list shows it)"
+      },
+      {
+       "name": "backupId",
+       "type": "integer",
+       "min": 1,
+       "max": 999999999,
+       "required": true
+      }
+     ],
+     "confirm": true
+    }
+   ],
+   "parent": "hostinger/app/hostinger",
+   "tags": [
+    "provider"
+   ],
+   "synonyms": [
+    "backups"
+   ]
+  },
+  {
+   "id": "hostinger/tool/billing",
+   "type": "tool",
+   "owner": "hostinger",
+   "label": "Hostinger plan and billing",
+   "description": "Subscriptions on the account (plans, renewal dates) and the catalog of plans.",
+   "where": {
+    "app": "axhub-web",
+    "provider": "hostinger",
+    "connection": "axhub",
+    "file": "apps/axhub-web/providers/hostinger/registry.json"
+   },
+   "state": {
+    "read": "provider:hostinger/billing_getSubscriptionListV1"
+   },
+   "actions": [
+    {
+     "id": "subscriptions",
+     "label": "Subscriptions",
+     "effect": "read",
+     "run": "provider:hostinger/billing_getSubscriptionListV1",
+     "phrases": [
+      "show my hostinger plan"
+     ]
+    },
+    {
+     "id": "catalog",
+     "label": "Plan catalog",
+     "effect": "read",
+     "run": "provider:hostinger/billing_getCatalogItemListV1",
+     "params": [
+      {
+       "name": "category",
+       "type": "enum",
+       "enum": [
+        "DOMAIN",
+        "VPS"
+       ],
+       "default": "VPS"
+      }
+     ]
+    }
+   ],
+   "parent": "hostinger/app/hostinger",
+   "tags": [
+    "provider"
+   ],
+   "synonyms": [
+    "plan",
+    "billing",
+    "subscription"
+   ]
+  }
+ ]
+}

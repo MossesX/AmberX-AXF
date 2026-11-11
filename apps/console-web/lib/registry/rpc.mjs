@@ -16,7 +16,7 @@
 import { readFileSync } from 'node:fs';
 import { resolve as resolvePath } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { aiFallbackBrief, checkParams, getEntry } from '../../../../framework/core/engines/control-registry.mjs';
+import { aiFallbackBrief, canonical, checkParams, fnv1a64, getEntry } from '../../../../framework/core/engines/control-registry.mjs';
 import { dispatch } from './dispatch.mjs';
 import { channelGap, consoleTargets, planResolution, planState, providerIds } from './execute.mjs';
 import { surfacesOf } from '../../../../framework/core/engines/control-registry.mjs';
@@ -42,6 +42,13 @@ function resolution(r, input, req) {
   if (field) res.params = { ...res.params, value: field.value };
   let plan = null;
   const out = { ...res, plan: (plan = planResolution(res, { ...opts, ...titleOf(r.index, res) })) };
+  // a confirm-gated action that does not run through control@1 (which has its own tokens) needs the registry's token:
+  // bound to the exact entry, action and parameters, good for the day it was issued
+  const gated = res.ok && plan.via !== 'control' && plan.via !== 'console' && plan.via !== 'none' && getEntry(r.index, res.entry)?.actions.find((a) => a.id === res.action)?.confirm;
+  if (gated) {
+    const token = confirmToken(res);
+    if (str(req.confirm) !== token) return { ok: false, code: 'confirmation_required', message: `${res.entry} · ${res.action} is destructive: send it again with confirm ${token}`, confirm: token, entry: res.entry, action: res.action, params: res.params, effect: res.effect, ai: res.ai, plan: { via: 'none', why: 'waiting for the confirm token', next: plan } };
+  }
   const cg = channelGap(plan);
   if (cg) out.plan = { via: 'none', why: cg, channel: plan };
   if (!res.ok && res.ai?.fallback && !res.ai.asked) out.brief = aiFallbackBrief(r.index, input, res);
@@ -61,6 +68,9 @@ export function fieldCheck(index, res) {
   const c = checkParams({ id: res.action, params: [{ ...f, name: 'value', required: true, position: undefined }] }, { value: p.value });
   return { errors: c.errors.map((x) => x.replace(/^value\b/, `${p.path}`)), value: c.params.value };
 }
+
+/** The registry's confirm token for one exact call (entry, action, params), valid on the UTC day it was made. */
+export const confirmToken = (res, day = new Date().toISOString().slice(0, 10)) => fnv1a64(`${res.entry}|${res.action}|${JSON.stringify(canonical(res.params ?? {}))}|${day}`).slice(0, 12);
 
 /** The owning plugin and an approval title ("<entry>: <action>") for a resolution. */
 function titleOf(index, res) {
@@ -85,6 +95,12 @@ export function handle(req) {
     case 'export': return { ok: true, index: { ...r.index, exportedAt: new Date().toISOString() } };
     case 'stats': return { ok: true, ...r.stats(), providers: providerIds() };
     case 'owners': return { ok: true, owners: r.owners() };
+    case 'providerOps': {
+      // every provider op the registry declares, per connection (the provider check compares them with the live hub)
+      const ops = {};
+      for (const e of r.entries) for (const a of e.actions) { const m = /^provider:([a-z0-9-]+)\/([^#]+)/.exec(a.run); if (m && m[1] !== 'axhub') (ops[m[1]] ??= new Set()).add(m[2]); }
+      return { ok: true, providers: Object.fromEntries(Object.entries(ops).map(([k, v]) => [k, [...v].sort()])) };
+    }
     case 'gaps': return { ok: true, gaps: r.gaps({ what: str(req.what), owner: str(req.owner) }) };
     case 'state': {
       const s = planState(r.index, str(req.id), isObj(req.params) ? req.params : {}, { by: str(req.by) || 'registry' });

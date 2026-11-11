@@ -81,6 +81,15 @@ export function planRef(ref, params = {}, { effect = 'write', confirm = '', reas
     case 'provider': {
       const i = r.rest.indexOf('/');
       if (i < 1) return { via: 'none', why: `"${ref}" needs provider:<connection>/<op>` };
+      const hash = r.rest.indexOf('#');
+      if (hash > i) {
+        // provider:<conn>/<op>#<command template>: an allow-listed command; each {param} is shell-quoted after the
+        // registry validated it, nothing else from the caller reaches the command line
+        const template = r.rest.slice(hash + 1);
+        const missing = [...template.matchAll(/\{([A-Za-z0-9_]+)\}/g)].map((m) => m[1]).filter((k) => params[k] === undefined || params[k] === '');
+        if (missing.length) return { via: 'none', why: `the command needs ${missing.join(', ')}` };
+        return { via: 'provider', provider: r.rest.slice(0, i), op: r.rest.slice(i + 1, hash), params: { command: shellFill(template, params) }, effect, ...(title ? { title } : {}), ...extra };
+      }
       return { via: 'provider', provider: r.rest.slice(0, i), op: r.rest.slice(i + 1), params: omit(params, CALL_PARAMS), effect, ...(title ? { title } : {}), ...extra };
     }
     case 'channel': { const i = r.rest.indexOf('/'); return { via: 'channel', app: i > 0 ? r.rest.slice(0, i) : '', op: i > 0 ? r.rest.slice(i + 1) : r.rest, params: omit(params, CALL_PARAMS) }; }
@@ -99,6 +108,11 @@ export function planRef(ref, params = {}, { effect = 'write', confirm = '', reas
     default: return { via: 'none', why: `no runner for ref "${ref}"` };
   }
 }
+
+/** A value as one shell word: single-quoted, embedded quotes escaped. */
+export const shellQuote = (v) => `'${String(v).replace(/'/g, `'\\''`)}'`;
+/** `{name}` slots in a command template, each value shell-quoted. */
+export const shellFill = (template, params = {}) => String(template).replace(/\{([A-Za-z0-9_]+)\}/g, (m, k) => (params[k] === undefined ? m : shellQuote(params[k])));
 
 /** `{name}` slots in a template filled from params (URL-encoded). */
 export function fill(template, params = {}) {

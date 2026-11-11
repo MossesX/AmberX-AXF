@@ -165,6 +165,21 @@ def resolve(inp: Any, control: Runner | None, *, run: bool = False, confirm: str
     return {**r, "result": run_plan(r["plan"], control)}
 
 
+def providers_check() -> dict[str, Any]:
+    """Every provider op the registry declares, checked against the live hub's tool list: `missing` = declared here but
+    not on axHub (a renamed or absent tool), `undeclared` = on axHub but not in the registry yet."""
+    import registry_providers  # noqa: PLC0415
+    declared = read({"op": "providerOps"}).get("providers") or {}
+    if not registry_providers.connected():
+        return {"ok": False, "code": "not_implemented", "message": "axHub isn't connected on this console (no AXHUB_TOKEN)", "declared": declared}
+    out: dict[str, Any] = {}
+    for prov, ops in declared.items():
+        cat = registry_providers.catalog(prov)
+        live = {t.split(".", 1)[1] for t in cat.get("tools", []) if "." in t}
+        out[prov] = {"declared": len(ops), "live": len(live), "missing": sorted(set(ops) - live), "undeclared": sorted(live - set(ops))}
+    return {"ok": all(not v["missing"] for v in out.values()), "providers": out}
+
+
 # ---------------------------------------------------------------- REST
 
 
@@ -215,6 +230,10 @@ def router(auth: Callable[..., None], auth_read: Callable[..., None], control: R
     @rt.get("/api/registry/search", dependencies=[Depends(auth_read)])
     def registry_search(q: str, limit: int = 20, type: str = "", owner: str = "") -> Any:
         return _status(read({"op": "search", "q": q, "limit": max(1, min(limit, 200)), "type": type, "owner": owner}))
+
+    @rt.get("/api/registry/providers/check", dependencies=[Depends(auth)])
+    def registry_providers_check() -> Any:
+        return _status(providers_check())
 
     @rt.get("/api/registry/{entry_id:regid}", dependencies=[Depends(auth_read)])
     def registry_get(entry_id: str) -> Any:
