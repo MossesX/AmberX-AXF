@@ -147,6 +147,7 @@
 /* Hands-free voice (handsfree.ts): the header toggle breathes while listening, glows while speaking; the settings
    panel's switch is the first thing on the tab (Brett: "easy to reach"). */
 .axp-ai-assistant__hf { position: relative; flex: none }
+.axp-ai-assistant__hf:not(.is-on) { opacity: var(--fx-opacity-muted) }
 .axp-ai-assistant__hf-dot { position: absolute; top: var(--fx-dens-gap-xs); right: var(--fx-dens-gap-xs); width: var(--fx-dens-gap-md); height: var(--fx-dens-gap-md); border-radius: 999px; background: var(--fx-accent) }
 .axp-ai-assistant__hf.is-listening .axp-ai-assistant__hf-dot { animation: axp-ai-assistant-breathe 1.6s ease-in-out infinite }
 .axp-ai-assistant__hf.is-speaking .axp-ai-assistant__hf-dot { background: var(--fx-success) }

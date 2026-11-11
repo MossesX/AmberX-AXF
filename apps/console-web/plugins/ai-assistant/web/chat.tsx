@@ -402,7 +402,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
             aria-pressed={hf.cfg.on} aria-label={hf.cfg.on ? 'Hands-free voice: on (tap to stop listening)' : 'Hands-free voice: off (tap to listen all the time)'}
             title={hf.cfg.on ? `Hands-free is on: ${hf.speaking ? 'speaking' : hf.listening ? 'listening' : 'waiting for the microphone'}${hf.error ? ` · ${hf.error}` : ''}${hf.heard ? ` · heard “${hf.heard.slice(0, 60)}”` : ''}. Tap to turn it off.` : 'Hands-free voice: listen all the time and read replies out loud. Tap to turn it on; settings in Settings → AI assistant.'}
             onClick={() => void setHandsFree({ toggle: true }).catch((e: Error) => setErr(e.message))}>
-            <Icon name={hf.cfg.on ? 'mic' : 'mic-off'} size={16} />
+            <Icon name="mic" size={16} />
             {hf.cfg.on && <span className="axp-ai-assistant__hf-dot" aria-hidden="true" />}
           </button>
           {/* Title-bar extension point: e.g. the agent voice plugin's live status light + speech controls. */}
