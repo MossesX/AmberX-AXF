@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3099,
- "updatedAt": "2026-11-11T00:21:03.383Z",
+ "rev": 3100,
+ "updatedAt": "2026-11-11T00:23:07.061Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -157222,10 +157222,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/merge-review-one-by-one-every-built-but-unmerged",
-   "pr": "",
+   "pr": "#492",
    "priority": "P0",
    "createdAt": "2026-11-11T00:06:50.193Z",
-   "updatedAt": "2026-11-11T00:20:59.808Z",
+   "updatedAt": "2026-11-11T00:23:05.470Z",
    "builtAt": "",
    "notes": [
     {
@@ -157369,7 +157369,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
