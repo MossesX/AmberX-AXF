@@ -158,7 +158,7 @@ Android app keeps reading `appearance@1` directly and shows no skin.
 
 ## Deferred: skin@1 + app-look@1 (Nov 2026)
 
-`framework/core/engines/skin.ts` and `skin-rules.mjs` (web only, built on Opus, format marked for a possible Fable review: plan `skins-possible-fable-review-6xha`) have no Kotlin twin. Android work is on hold. A port needs the same pure functions, the same `skin` asset type and the same document on the hub: `normalizeSkin`, `skinFromDesignPackage`, `composeLook`, `lookAfterChange`, `pickSkin`, `setUseSkin`, `backToSkin`, `restoreAppDefault`, `undoRestore`, pinned by `spec/fixtures/skin.json` and `spec/check-skin.mts`. Build skins-asset-types (Fable, Nov 7 2026) added `skin-coverage.mjs` (coverage of every registered type from the registry, the scope chain global → app → UI → plugin with `resolveSkinChain`, `partsErrors`), `composeLookAt`, `resolveLookSkin`, per-scope states in app-look@1 (`scopes`, `skin.inherit`), the hub-wide `skin` field on appearance@1, `iconPack` + `parts` on skin@1, and the runtime's `skinScoped` views; a port carries the same functions and the `coverage` / `scopes` blocks of the fixture. `theme.ts`'s scrollbar tokens stay out of the output Kotlin is tested against until then. Until a port does this, an Android app keeps reading `appearance@1` directly and shows no skin.
+`framework/core/engines/skin.ts` and `skin-rules.mjs` (web only, built on Opus, format marked for a possible Fable review: plan `skins-possible-fable-review-6xha`) have no Kotlin twin. Android work is on hold. A port needs the same pure functions, the same `skin` asset type and the same document on the hub: `normalizeSkin`, `skinFromDesignPackage`, `composeLook`, `lookAfterChange`, `pickSkin`, `setUseSkin`, `backToSkin`, `restoreAppDefault`, `undoRestore`, pinned by `spec/fixtures/skin.json` and `spec/check-skin.mts`. Build skins-asset-types (Fable, Nov 7 2026) added `skin-coverage.mjs` (coverage of every registered type from the registry, the scope chain global → app → UI → plugin with `resolveSkinChain`, `partsErrors`), `composeLookAt`, `resolveLookSkin`, per-scope states in app-look@1 (`scopes`, `skin.inherit`), the hub-wide `skin` field on appearance@1, `iconPack` + `parts` on skin@1, and the runtime's `skinScoped` views; a port carries the same functions and the `coverage` / `scopes` blocks of the fixture. Build skins-own-everything-colour-theme-swaps-independ (Fable, Nov 10 2026) added the colour theme switched inside the skin: `colorTheme` on the app level, on a scope and on the hub-wide skin (never an override, never a new skin), `setSkinColorTheme`, `skinColorTheme`, `skinColorOf`, `setLookSlot(look, slot, id, global)`, the legacy `overrides["color-theme"]` migration on read, and the `colour` block of the fixture; a port carries those too. `theme.ts`'s scrollbar tokens stay out of the output Kotlin is tested against until then. Until a port does this, an Android app keeps reading `appearance@1` directly and shows no skin.
 
 ## Deferred: build-pipeline@1 route + dispatch (Nov 9 2026)
 
@@ -166,6 +166,11 @@ Android app keeps reading `appearance@1` directly and shows no skin.
 the orchestrator's dispatcher send a build to an API-key account) and `pipeline.dispatchedAt`. The dispatcher, its API
 routing and the one-build dispatch token (`framework/cli/dispatch-gate.mjs`) run only on the VPS host. No Kotlin twin:
 Android work is on hold and builds show only in the web console. A port needs `ROUTES` and the same normalisation.
+
+Nov 10 2026 (build `orchestrator-hold-status-archive-tab-deleted-tab`): `pipeline.heldAt / heldBy / heldWhy` (On hold:
+stays in the Queue, the dispatcher skips it), the `archive` and `deleted` tabs in `TABS` / `tabOf()` (complete and
+archived builds → archive; soft-deleted → deleted), and the action rules `isHeld`, `canHold`, `isLive`, `canArchive`,
+`canDelete`, `unarchivedStatus`, `actionsFor`, `BUILD_ACTIONS`. Same deferral: no Kotlin twin while Android is on hold.
 
 ## Deferred: person-only actions, console refresh, UI choices (Nov 7 2026)
 

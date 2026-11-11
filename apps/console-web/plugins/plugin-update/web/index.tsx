@@ -105,9 +105,9 @@ function PluginUpdate() {
     setBusy('');
     if (!res.ok) { setNote({ tone: 'danger', text: `${r.name}: ${res.error}` }); return; }
     const id = (res as { item?: { id?: string } }).item?.id ?? '';
-    const canStart = Boolean(rt.actions.get('build-manager.start'));
-    setNote({ tone: 'success', text: `A ${label(model)} rebuild of ${r.name} is on the pending list (${id}).${canStart ? ' Start it from the Build manager.' : ''} When it is published to the catalog, this row offers Replace.` });
-    if (canStart && id) rt.dispatch(`build-manager.start:${encodeURIComponent(`pending:${id}`)}`);
+    const canOpen = Boolean(rt.actions.get('build-orchestrator.open'));
+    setNote({ tone: 'success', text: `A ${label(model)} rebuild of ${r.name} is on the pending list (${id}).${canOpen ? ' Queue it from the Build orchestrator\'s Pending tab.' : ''} When it is published to the catalog, this row offers Replace.` });
+    if (canOpen && id) rt.dispatch('build-orchestrator.open:pending');
     void u.load();
   };
 

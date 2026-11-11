@@ -101,6 +101,94 @@
         "title": "API overflow",
         "text": "When every subscription account is full or out, the orchestrator sends the next build to an API-key account (billed per token, under its daily and weekly caps). Off by default; only your own click turns it on.",
         "kind": "toggle"
+      },
+      {
+        "target": "action:build-orchestrator.tab:queue",
+        "title": "Build queue",
+        "text": "Opens the Build orchestrator on the Queue: every queued build in start order, with its steps and the planned model and account.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:build-orchestrator.tab:active",
+        "title": "Building now",
+        "text": "Opens the Build orchestrator on Active: what is building now and which account took each build.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:build-orchestrator.tab:errors",
+        "title": "Build errors",
+        "text": "Opens the Build orchestrator on Errors: failed builds and builds whose launch failed, with the accounts that refused them.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:build-orchestrator.tab:accounts",
+        "title": "Claude account health",
+        "text": "Opens the Build orchestrator on Accounts: the 5-minute health check of every Claude account (sign-in, credits, Fable).",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "hold",
+        "title": "Hold",
+        "text": "Puts this queued build on hold. It stays in the Queue in its place, but the dispatcher skips it until you release it.",
+        "kind": "button"
+      },
+      {
+        "target": "release",
+        "title": "Release",
+        "text": "Takes the build off hold. The dispatcher can start it when its turn comes.",
+        "kind": "button"
+      },
+      {
+        "target": "archive",
+        "title": "Archive",
+        "text": "Moves the build to the Archive tab, out of the working tabs. Unarchive brings it back.",
+        "kind": "button"
+      },
+      {
+        "target": "unarchive",
+        "title": "Unarchive",
+        "text": "Brings the build back from the Archive: to Pending, or Complete when every step is done.",
+        "kind": "button"
+      },
+      {
+        "target": "delete",
+        "title": "Delete",
+        "text": "Deletes the build. It moves to the Deleted tab and stays saved there for good. Restore brings it back.",
+        "kind": "button"
+      },
+      {
+        "target": "restore",
+        "title": "Restore",
+        "text": "Brings a deleted build back where it was. A build deleted from the Queue comes back in Pending.",
+        "kind": "button"
+      },
+      {
+        "target": "select-all",
+        "title": "Select all",
+        "text": "Selects every build in this tab so one action runs on all of them. Builds that cannot take the action are skipped and listed.",
+        "kind": "button"
+      },
+      {
+        "target": "select",
+        "title": "Select",
+        "text": "Adds this build to the selection for the bulk actions above the cards.",
+        "kind": "button"
+      },
+      {
+        "target": "action:build-orchestrator.tab:archive",
+        "title": "Build archive",
+        "text": "Opens the Archive: every completed and archived build.",
+        "kind": "menu"
+      },
+      {
+        "target": "action:build-orchestrator.tab:deleted",
+        "title": "Deleted builds",
+        "text": "Opens the Deleted tab: every deleted build, kept for good and restorable.",
+        "kind": "menu"
       }
     ],
     "intros": []

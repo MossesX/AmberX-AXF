@@ -9,13 +9,28 @@
  *
  *   node apps/console-web/plugins/build-orchestrator/pipeline.mjs status [--json]    the table (Pending / Queue / Building), accounts, slots, what the next tick would do
  *   … queue <id> [--by who]        Pending → Queue (Brett's move; the console calls it with his name)
- *   … unqueue <id>                 Queue → Pending
+ *   … unqueue <id…>                Queue → Pending
+ *   … hold <id…> [--why w] | release <id…>   On hold: stays in the Queue, the dispatcher skips it until released
+ *   … archive <id…> | unarchive <id…>        the Archive (finished and retired builds; complete ones show there by themselves)
+ *   … delete <id…> [--why w] | restore <id…> soft delete: kept in the store forever, Deleted tab, restorable
  *   … split <id> [--request] [--provider claude|rules]   split a build now (or ask the next tick to)
  *   … intake [--json]              split every build with no steps (and every split the console asked for); auto-queue when the Claude setting says so
  *   … tick [--json]                one dispatcher round: intake, session ends, launches, idle alert, state file
  *   … accounts [--json]            every account as the pipeline sees it (Fable yes / no, parallel, running)
+ *   … selfcheck [--request] [--reason r] [--json]   check every account one by one, release stale claims / slots / builds,
+ *                                  rebuild the account snapshot, alert AmberX on a fix or an unusable account. Off the host
+ *                                  (the console container) or with --request it asks the next tick to run it.
+ * The console's container has no ~/.claude-accounts: there the accounts come from accounts-host.json, the snapshot every
+ * host tick writes (status.accountsFrom says which, and how old).
  *   … account <name> [--fable on|off|auto] [--parallel n] [--use on|off]   the pipeline's own record of an account
  *   … probe <name>                 ask the account's login whether it can run Fable (one tiny call), recorded for probeDays
+ *   … health [--request] [--json]  the account health sweep: every account, one tiny headless Fable call each on a private
+ *                                  copy of its login: can it sign in, has it credits, does it take Fable. The tick starts it
+ *                                  in the background every healthEveryMin (5) minutes; it never touches a running build,
+ *                                  never claims a slot and never signs anything out (a renewed token is saved back to the
+ *                                  login's stores; a login due to renew is not called, so no build's copy is left on a spent
+ *                                  token). The dispatcher reads the answers and never tests an account at launch time.
+ *   … tab <pending|queue|active|incomplete|complete|errors|archive|deleted> [--json]   one of the orchestrator's tabs
  *   … settings [--json] | set k=v…  pipeline settings (pipeline-settings@1; apiOverflow=true|false is the overflow rule)
  *   … request --title T [--detail D | --detail-file F] [--said S] [--priority P0-P3] [--route api|subscription] [--queue] [--by who]
  *                                  file a build with the orchestrator (the id is assigned here) and, with --queue, put it in the
@@ -39,7 +54,7 @@
  * /root/axf-builds), AXF_PIPELINE_WORKTREE_MODE=mkdir (no git), AXF_PIPELINE_CONSOLE=off | <container> (alerts),
  * AXF_PIPELINE_SETTINGS (a JSON patch over settings.json). Exit 0 ok, 2 usage / refused.
  */
-import { spawnSync } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, statSync, symlinkSync, writeFileSync } from 'node:fs';
 import { homedir, tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
@@ -59,8 +74,8 @@ import { issue as issueDispatch } from '../../../../framework/cli/dispatch-gate.
 import { shipLanded } from '../../../../framework/cli/shipped.mjs';
 import { normPriority } from '../../../../framework/core/build-priority.mjs';
 import { act as orchAct } from './orchestrator.mjs';
-import { status as workersStatus, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
-import { childEnv, release as releaseLogin, snapshot as snapshotLogin } from '../../../../deploy/claude-login.mjs';
+import { reap as workersReap, status as workersStatus, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
+import { childEnv, paths as loginPaths, release as releaseLogin, snapshot as snapshotLogin } from '../../../../deploy/claude-login.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = resolve(HERE, '../../../..');
@@ -81,7 +96,7 @@ export function pipeDir(env = process.env) {
   const hub = join(env.AXHUB_PROJECTS_DIR || '/projects', 'amberx-axf', '_data');
   return existsSync(hub) ? join(hub, 'pipeline') : join(homedir(), '.axf', 'pipeline');
 }
-const files = () => { const d = pipeDir(); return { dir: d, settings: join(d, 'settings.json'), accounts: join(d, 'accounts.json'), state: join(d, 'state.json'), log: join(d, 'log.jsonl') }; };
+const files = () => { const d = pipeDir(); return { dir: d, settings: join(d, 'settings.json'), accounts: join(d, 'accounts.json'), state: join(d, 'state.json'), log: join(d, 'log.jsonl'), host: join(d, 'accounts-host.json'), checkRequest: join(d, 'selfcheck-request.json'), health: join(d, 'health.json'), healthLock: join(d, 'health.lock'), healthRequest: join(d, 'health-request.json') }; };
 
 /** The Claude settings document's values (owner-only ones included), {} when unreadable. */
 export function claudeSettings(env = process.env) { return readJson(claudeSettingsFile(env))?.values ?? {}; }
@@ -120,37 +135,74 @@ export function slotsNow() {
   catch { return { used: 0, cap: 1, free: 1, running: [], queue: [], unavailable: true }; }
 }
 
-/** Accounts as the pipeline sees them: claude-workers rows + what the store says runs on each + the pipeline's own records. */
-export function accountsNow(store, settings = loadSettings()) {
-  let rows = [];
-  try { rows = workersStatus().accounts; } catch { rows = []; }
+/** Does this process see the saved Claude logins? The VPS host does; the console container does not (no ~/.claude-accounts). */
+export const seesAccounts = (env = process.env) => { try { return statSync(loginPaths(env).accounts).isDirectory(); } catch { return false; } };
+
+/** The host's claude-workers rows as the last tick on the host wrote them (no credential: names, roles, limits, counts). */
+export const SCHEMA_HOST = 'pipeline-host-accounts@1';
+export function writeHostAccounts(rows, at = nowIso()) { writeJson(files().host, { $axf: SCHEMA_HOST, at, rows }); }
+export function readHostAccounts() { const j = readJson(files().host); return j && Array.isArray(j.rows) ? { at: str(j.at, 40), rows: j.rows } : null; }
+
+/**
+ * claude-workers rows and where they came from: { rows, source: host | snapshot | none, at, why }. The console runs in a
+ * container that has no ~/.claude-accounts, so there claude-workers sees no account at all ("no Claude account is signed in
+ * on the VPS" while the host had several). There the host's last snapshot (written every tick) stands in.
+ */
+export function workerRows(env = process.env) {
+  if (seesAccounts(env)) {
+    try { const s = workersStatus(env); return { rows: s.accounts, source: 'host', at: s.at, why: '' }; }
+    catch (e) { return { rows: [], source: 'none', at: '', why: `claude-workers failed: ${str(e.message, 200)}` }; }
+  }
+  const snap = readHostAccounts();
+  if (snap) return { rows: snap.rows, source: 'snapshot', at: snap.at, why: '' };
+  return { rows: [], source: 'none', at: '', why: 'this process can\'t see the Claude logins and the dispatcher on the host has not written its account snapshot yet' };
+}
+
+/** Accounts as the pipeline sees them, with where they came from: { accounts, source, at, why }. */
+export function accountsRead(store, settings = loadSettings(), env = process.env) {
+  const w = workerRows(env);
+  const rows = w.rows.map((r) => ({ ...r }));
   const running = live(store).filter((b) => (b.status === 'running' || b.status === 'waiting') && b.pipeline?.account);
   for (const r of rows) {
     const mine = running.filter((b) => b.pipeline.account === r.name).map((b) => b.pipeline.session || `build:${b.id}`);
     r.running = [...new Set([...(r.running ?? []), ...mine])];
   }
-  return P.accountViews(rows, loadOwnAccounts(), { settings });
+  return { accounts: P.accountViews(rows, loadOwnAccounts(), { settings }), rows: w.rows, source: w.source, at: w.at, why: w.why };
 }
+
+/** Accounts as the pipeline sees them: claude-workers rows + what the store says runs on each + the pipeline's own records. */
+export function accountsNow(store, settings = loadSettings()) { return accountsRead(store, settings).accounts; }
 
 const row = (b) => {
   const p = orch.progress(b); const nx = orch.nextUp(b);
   return { id: b.id, title: b.title, status: b.status, priority: priorityLabel(effectivePriority(b)), steps: { done: p.done, total: p.total, left: p.total - p.done - p.skipped }, minutesLeft: p.minutesLeft,
-    nextModel: BP.nextModel(b), nextStep: nx.step ? `${nx.step.id} ${nx.step.text}`.slice(0, 200) : '', needsApproval: nx.needsApproval, needsSplit: P.needsSplit(b), pipeline: b.pipeline ?? null, said: subtitle(b.origin, 160), branch: b.branch, pr: b.pr, createdAt: b.createdAt, updatedAt: b.updatedAt };
+    nextModel: BP.nextModel(b), nextStep: nx.step ? `${nx.step.id} ${nx.step.text}`.slice(0, 200) : '', needsApproval: nx.needsApproval, needsSplit: P.needsSplit(b), pipeline: b.pipeline ?? null, said: subtitle(b.origin, 160), branch: b.branch, pr: b.pr, createdAt: b.createdAt, updatedAt: b.updatedAt,
+    tab: BP.tabOf(b), held: BP.isHeld(b), actions: BP.actionsFor(b), deleted: !!b.deleted, deletedAt: b.deletedAt ?? '', builtAt: b.builtAt ?? '', stepList: (b.steps ?? []).slice(0, 40).map((x) => ({ id: x.id, text: str(x.text, 160), model: x.model, estimate: x.estimate ?? '', done: !!x.done, skip: !!x.skip })) };
 };
 
 /** The whole picture for the console and the CLI. */
 export function status() {
   loadUpgradePolicy();
-  const store = loadStore(); const settings = loadSettings(); const accounts = accountsNow(store, settings); const sl = slotsNow();
+  const store = loadStore(); const settings = loadSettings(); const read = accountsRead(store, settings); const accounts = read.accounts; const sl = slotsNow();
   const builds = live(store);
+  const ageMin = read.at ? Math.max(0, Math.round((Date.now() - Date.parse(read.at)) / 60e3)) : null;
+  const accountsFrom = { source: read.source, at: read.at, ageMin, why: read.why || (read.source === 'snapshot' && ageMin > 5 ? `the host's account snapshot is ${ageMin} min old: the dispatcher cron may be stopped` : '') };
   const plan = P.plan({ builds, accounts, slots: sl, settings, rules: rulesOf(store) });
   const byTable = { pending: [], queued: [], building: [] };
   for (const b of builds) { const t = BP.tableOf(b); if (t && !b.hidden) byTable[t].push(row(b)); }
   byTable.queued.sort((a, b) => plan.queue.indexOf(a.id) - plan.queue.indexOf(b.id));
   byTable.pending.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   byTable.building.sort((a, b) => str(b.pipeline?.launchedAt).localeCompare(str(a.pipeline?.launchedAt)));
+  const tabs = Object.fromEntries(BP.TABS.map((t) => [t, []]));
+  for (const b of store.builds) { const t = BP.tabOf(b); if (t) tabs[t].push(row(b)); } // every record: the Deleted tab shows soft-deleted builds
+  tabs.queue.sort((a, b) => plan.queue.indexOf(a.id) - plan.queue.indexOf(b.id));
+  tabs.active.sort((a, b) => str(b.pipeline?.launchedAt).localeCompare(str(a.pipeline?.launchedAt)));
+  for (const t of ['pending', 'incomplete', 'errors']) tabs[t].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+  for (const t of ['complete', 'archive']) tabs[t].sort((a, b) => str(b.builtAt || b.updatedAt).localeCompare(str(a.builtAt || a.updatedAt)));
+  tabs.deleted.sort((a, b) => str(b.deletedAt).localeCompare(str(a.deletedAt)));
   const st = loadState();
-  return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), table: byTable, accounts, slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable }, plan, settings, state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails } };
+  return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), table: byTable, tabs, accounts, accountsFrom, health: loadHealth(), slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable }, plan, settings,
+    state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails, selfCheck: st.selfCheck ?? null, selfCheckRequested: readJson(files().checkRequest)?.at || '' } };
 }
 
 // ------------------------------------------------------------------ store writes
@@ -182,9 +234,66 @@ export function queue(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
 export function unqueue(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
   const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
   if (!BP.canUnqueue(b)) throw Object.assign(new Error(`${b.id} is ${b.status}: only a queued build goes back to Pending`), { code: 2 });
-  const r = setPipeline(b.id, { queuedAt: '', queuedBy: '', note: '' }, { status: 'pending', note: `Back to Pending (${by}).`, by, action: 'pipeline:unqueue' });
+  const r = setPipeline(b.id, { queuedAt: '', queuedBy: '', note: '', heldAt: '', heldBy: '', heldWhy: '' }, { status: 'pending', note: `Back to Pending (${by}).`, by, action: 'pipeline:unqueue' });
   logLine({ event: 'unqueued', build: b.id, by });
   return r;
+}
+
+/**
+ * The Queue / Archive / Deleted actions (Brett, Nov 10 2026: "Anything in the queue you can send back to pending, leave in
+ * queue on hold, move to the archive, or delete … A deleted tab where all deleted builds stay saved forever"):
+ *   unqueue    Queue → Pending                         hold / release   stays in the Queue, the dispatcher skips it / not
+ *   archive    any build without a live session → Archive (status archived; the Queue fields are cleared)
+ *   unarchive  Archive → built / complete when every step is done, else Pending
+ *   delete     soft delete: the record stays in the store forever (Deleted tab); a queued build leaves the Queue first
+ *   restore    Deleted → back where it was (a build that was queued comes back in Pending)
+ * Many ids at once (bulk select). Each id is checked on its own: one refused build never stops the others.
+ * Returns { action, done: [{ id, status, tab }], refused: [{ id, error }] }.
+ */
+export function buildAction(action, ids, { by = process.env.AXF_ACTOR || 'console', why = '' } = {}) {
+  if (!BP.BUILD_ACTIONS.includes(action)) throw Object.assign(new Error(`action is one of ${BP.BUILD_ACTIONS.join(', ')}`), { code: 2 });
+  const list = [...new Set((Array.isArray(ids) ? ids : [ids]).map((x) => str(x, 120).trim()).filter(Boolean))];
+  if (!list.length) throw Object.assign(new Error('no build id given'), { code: 2 });
+  const done = []; const refused = [];
+  const reason = str(why, 300).trim(); const tail = reason ? `: ${reason}` : '';
+  for (const id of list) {
+    try {
+      if (action === 'unqueue') { const b = unqueue(id, { by }); done.push({ id: b.id, status: b.status, tab: BP.tabOf(b) }); continue; }
+      let out = null;
+      withStore((s) => {
+        const b = storeCore.findBuild(s, id); if (!b) throw new Error(`no build "${id}"`);
+        const now = nowIso();
+        const pipe = (patch) => { b.pipeline = BP.normPipeline({ ...(b.pipeline ?? {}), ...patch }) ?? undefined; if (!b.pipeline) delete b.pipeline; };
+        const unq = { queuedAt: '', queuedBy: '', heldAt: '', heldBy: '', heldWhy: '' };
+        let note = '';
+        if (action === 'hold') {
+          if (!BP.canHold(b)) throw new Error(BP.isHeld(b) ? `${b.id} is on hold already` : `${b.id} is ${b.deleted ? 'deleted' : b.status}: only a queued build can be put on hold`);
+          pipe({ heldAt: now, heldBy: str(by, 80), heldWhy: reason }); note = `On hold (${by})${tail}. It keeps its place in the Queue; the dispatcher skips it until released.`;
+        } else if (action === 'release') {
+          if (!BP.isHeld(b)) throw new Error(`${b.id} is not on hold`);
+          pipe({ heldAt: '', heldBy: '', heldWhy: '' }); note = `Released from hold (${by}): the dispatcher may start it.`;
+        } else if (action === 'archive') {
+          if (!BP.canArchive(b)) throw new Error(b.deleted ? `${b.id} is deleted: restore it first` : BP.isLive(b) ? `${b.id} is ${b.status}: a build with a live session is not archived under it` : `${b.id} is archived already`);
+          const was = b.status; if (was === 'queued') pipe(unq); b.status = 'archived'; b.builtAt = ''; note = `Moved to the Archive from ${was} (${by})${tail}.`;
+        } else if (action === 'unarchive') {
+          if (b.deleted || b.status !== 'archived') throw new Error(`${b.id} is not in the Archive`);
+          b.status = BP.unarchivedStatus(b); b.builtAt = storeCore.FINISHED.includes(b.status) ? (b.builtAt || now) : ''; note = `Back from the Archive as ${b.status} (${by}).`;
+        } else if (action === 'delete') {
+          if (!BP.canDelete(b)) throw new Error(b.deleted ? `${b.id} is deleted already` : `${b.id} is ${b.status}: a build with a live session is not deleted under it`);
+          if (b.status === 'queued') { pipe(unq); b.status = 'pending'; }
+          b.deleted = true; b.deletedAt = now; note = `Deleted (${by})${tail}. Kept in the builds store for good: Deleted tab, restorable.`;
+        } else if (action === 'restore') {
+          if (!b.deleted) throw new Error(`${b.id} is not deleted`);
+          b.deleted = false; b.deletedAt = ''; note = `Restored from Deleted (${by}): back in ${BP.TAB_LABEL[BP.tabOf(b)] || b.status}.`;
+        }
+        b.notes.push({ text: note, at: now }); b.updatedAt = now; out = b;
+        return s;
+      }, { by, action: `pipeline:${action}`, note: id });
+      logLine({ event: action, build: out.id, by });
+      done.push({ id: out.id, status: out.status, tab: BP.tabOf(out) });
+    } catch (e) { refused.push({ id, error: e.message }); }
+  }
+  return { action, done, refused };
 }
 
 // ------------------------------------------------------------------ the split
@@ -381,6 +490,74 @@ export function makeConsole(env = process.env) {
   };
 }
 
+// ------------------------------------------------------------------ self-check and stale reaper
+
+/**
+ * Builds the store calls running on an account that hold nothing on the VPS: no session, and their agent slot is neither
+ * running nor queued (a launch that never started, a slot that was cleared). After the grace period they go back to the
+ * Queue (the dispatcher starts them again) and their account count drops. Builds with a session are checkEnds()'s.
+ */
+export function reapBuilds({ sl = slotsNow(), now = Date.now() } = {}) {
+  if (sl.unavailable) return [];
+  const held = new Set([...(sl.running ?? []), ...(sl.queue ?? [])].flatMap((x) => [x.id, x.session].filter(Boolean)));
+  const out = [];
+  for (const b of live(loadStore())) {
+    const p = b.pipeline;
+    if (!(b.status === 'running' || b.status === 'waiting') || !p?.account || p.session) continue;
+    if ((p.slot && held.has(p.slot)) || now - Date.parse(p.launchedAt || p.dispatchedAt || b.updatedAt || 0) < GONE_GRACE_MS) continue;
+    const note = `Self-check: ${b.id} was marked running on ${p.account} with no session${p.slot ? ` and agent slot ${p.slot} gone` : ''}: released and back in the Queue.`;
+    setPipeline(b.id, { account: '', slot: '', session: '', note: 'released by the self-check (nothing ran): back in the Queue' }, { status: 'queued', note, action: 'pipeline:reap' });
+    logLine({ event: 'reaped', build: b.id, account: p.account, slot: p.slot || '' });
+    out.push({ id: b.id, account: p.account, slot: p.slot || '' });
+  }
+  return out;
+}
+
+/** Ask the host for a self-check (the console and voice: the next tick runs it, within a minute). */
+export function requestSelfCheck({ by = process.env.AXF_ACTOR || 'console', reason = 'on demand' } = {}) {
+  const r = { at: nowIso(), by: str(by, 80), reason: str(reason, 80) };
+  writeJson(files().checkRequest, r);
+  logLine({ event: 'self-check-requested', ...r });
+  return r;
+}
+
+/**
+ * The orchestrator's self-check (Brett, Nov 9 2026: the dispatcher said no account was signed in while several were).
+ * On the host only: reap dead worker claims and expired limits, reap builds that hold nothing, then check every saved
+ * account one by one (subscription: signed in, limited, free slots; API key: saved, not rejected, caps, free slots),
+ * write the account snapshot the console reads, log it, keep it as state.selfCheck, and alert when it fixed something or
+ * an account it can't use turned up. Returns the result.
+ */
+export function selfCheck({ reason = 'on demand', by = 'pipeline', env = process.env, alert = null } = {}) {
+  if (!seesAccounts(env)) {
+    const r = requestSelfCheck({ by, reason });
+    return { ran: false, requested: r.at, why: 'the Claude logins live on the VPS host: the dispatcher runs the self-check on its next tick (within a minute)' };
+  }
+  const fixes = [];
+  try {
+    const r = workersReap(env);
+    for (const c of r.claims) fixes.push(`released ${c.account || '?'} slot held by ended session ${c.session}`);
+    for (const n of r.limits) fixes.push(`cleared ${n}'s expired limit`);
+  } catch (e) { logLine({ event: 'self-check-reap-failed', error: str(e.message, 300) }); }
+  for (const b of reapBuilds()) fixes.push(`requeued ${b.id} (marked running on ${b.account}, nothing ran)`);
+  const store = loadStore(); const settings = loadSettings();
+  const read = accountsRead(store, settings, env);
+  if (read.source === 'host') writeHostAccounts(read.rows, read.at || nowIso());
+  const findings = read.accounts.map((v) => P.checkAccount(v, read.rows.find((r) => r.name === v.name)));
+  const sum = P.checkSummary(findings, fixes);
+  const prev = loadState().selfCheck;
+  const result = { at: nowIso(), reason: str(reason, 80), by: str(by, 80), ran: true, line: sum.line, fixes, problems: sum.problems, signature: sum.signature, findings, notified: false };
+  if (P.checkNotify(result, prev)) {
+    try { result.notified = !!(alert ?? ((kind, d) => makeConsole(env)('POST', '/api/alerts', P.alertFor(kind, d))))('selfcheck', { fixes, problems: sum.problems, line: sum.line }); }
+    catch (e) { logLine({ event: 'self-check-alert-failed', error: str(e.message, 300) }); }
+  }
+  // the state file is the tick's too: re-read it so this never undoes what the tick wrote
+  saveState({ ...loadState(), selfCheck: result });
+  try { rmSync(files().checkRequest, { force: true }); } catch { /* gone */ }
+  logLine({ event: 'self-check', reason: result.reason, by: result.by, line: sum.line, fixes, problems: sum.problems, accounts: findings.map((f) => `${f.name}:${f.state}`) });
+  return result;
+}
+
 // ------------------------------------------------------------------ the tick
 
 export function tick({ env = process.env } = {}) {
@@ -393,19 +570,33 @@ export function tick({ env = process.env } = {}) {
   const inta = intake({ alert });
   const ended = checkEnds({ alert, env });
   const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
-  const accounts = accountsNow(store, settings); const sl = slotsNow();
+  const read = accountsRead(store, settings, env); const accounts = read.accounts; const sl = slotsNow();
+  // the console (in its container) can't see the logins: it reads what the host saw here
+  if (read.source === 'host') { try { writeHostAccounts(read.rows, read.at || nowIso()); } catch (e) { logLine({ event: 'snapshot-failed', error: str(e.message, 300) }); } }
   const plan = P.plan({ builds: live(store), accounts, slots: sl, settings, rules });
+  planAhead(store, accounts, settings);
   const launched = []; const failed = [];
   const hourAgo = Date.now() - 3600e3;
-  for (const l of plan.launches) {
-    const fails = (state.launchFails[l.id] ?? []).filter((t) => Date.parse(t) > hourAgo);
-    if (fails.length >= LAUNCH_FAILS_PER_HOUR) { plan.waits.push({ id: l.id, why: `launch failed ${fails.length} times in the last hour: waiting` }); continue; }
-    const b = live(store).find((x) => x.id === l.id);
+  for (const first of plan.launches) {
+    const fails = (state.launchFails[first.id] ?? []).filter((t) => Date.parse(t) > hourAgo);
+    if (fails.length >= LAUNCH_FAILS_PER_HOUR) { plan.waits.push({ id: first.id, why: `launch failed ${fails.length} times in the last hour: waiting` }); continue; }
+    const b = live(store).find((x) => x.id === first.id);
+    // the final pick: the plan's account first, then every other account that may take it (subscriptions, then API),
+    // moving on until one accepts the launch
+    const options = [first, ...P.routeOptions(b, accounts, first.model, settings).filter((o) => o.account !== first.account).map((o) => ({ ...first, ...o }))].slice(0, MAX_PICK_TRIES);
+    const tried = [];
+    let l = first; let r = null; let lastErr = null;
+    for (const o of options) {
+      l = o;
+      try { r = launch(b, l, { rules, env }); break; }
+      catch (e) { lastErr = e; tried.push(l.account); logLine({ event: 'launch-refused', build: b.id, account: l.account, error: str(e.message, 300) }); }
+    }
     try {
-      const r = launch(b, l, { rules, env });
+      if (!r) throw lastErr ?? new Error('no account accepted the launch');
       const runs = (b.pipeline?.runs ?? 0) + 1;
-      setPipeline(b.id, { account: l.account, session: r.session, slot: r.slot, model: l.model, launchedAt: nowIso(), dispatchedAt: nowIso(), runs, note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : r.lookWait ? 'waiting for the predicted look approval in UI Review' : '' },
-        { status: 'running', note: `Started run ${runs} on ${l.account}${l.kind === 'api' ? ` (API key, ${l.rule === 'override' ? 'this build is set to API' : 'overflow rule'})` : ''} (${l.model}${l.phase ? `, ${l.phase}` : ''}): ${r.session || 'queued in agent slots'}.`, action: 'pipeline:launch' });
+      const moved = tried.length ? ` after ${tried.join(', ')} refused` : '';
+      setPipeline(b.id, { account: l.account, session: r.session, slot: r.slot, model: l.model, launchedAt: nowIso(), dispatchedAt: nowIso(), pickedAt: nowIso(), tried, runs, note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : r.lookWait ? 'waiting for the predicted look approval in UI Review' : '' },
+        { status: 'running', note: `Started run ${runs} on ${l.account}${moved}${l.kind === 'api' ? ` (API key, ${l.rule === 'override' ? 'this build is set to API' : 'subscriptions first, then API'})` : ''} (${l.model}${l.phase ? `, ${l.phase}` : ''}): ${r.session || 'queued in agent slots'}.`, action: 'pipeline:launch' });
       if (!b.branch) withStore((s) => { const rec = storeCore.findBuild(s, b.id); if (rec && !rec.branch) rec.branch = `claude/${b.id}`; return s; }, { by: 'pipeline', action: 'pipeline:branch', note: b.id });
       alert('launched', { id: b.id, title: b.title, account: l.account, model: l.model, phase: l.phase, session: r.session });
       launched.push({ ...l, session: r.session, dir: r.dir });
@@ -413,9 +604,9 @@ export function tick({ env = process.env } = {}) {
       delete state.launchFails[l.id];
     } catch (e) {
       state.launchFails[l.id] = [...fails, nowIso()];
-      failed.push({ id: l.id, error: e.message });
-      setPipeline(l.id, { note: `launch failed: ${str(e.message, 300)}` }, { note: `Launch on ${l.account} failed: ${str(e.message, 500)}`, action: 'pipeline:launch-failed' });
-      logLine({ event: 'launch-failed', build: l.id, account: l.account, error: e.message });
+      failed.push({ id: l.id, error: e.message, tried });
+      setPipeline(l.id, { note: `launch failed: ${str(e.message, 300)}`, tried }, { note: `Launch failed on ${tried.join(', ') || l.account}: ${str(e.message, 500)}`, action: 'pipeline:launch-failed' });
+      logLine({ event: 'launch-failed', build: l.id, account: l.account, tried, error: e.message });
     }
   }
   // idle: nothing running while work waits. Recorded at once; the phone hears about it after idleAfterMin, once per idle spell.
@@ -434,10 +625,44 @@ export function tick({ env = process.env } = {}) {
   const next = { ...state, at: nowIso(), plan: { launches: plan.launches, waits: plan.waits, queue: plan.queue, running: plan.running, pending: plan.pending }, slots: { used: sl.used, cap: sl.cap, free: sl.free }, accounts: accounts.map((a) => ({ name: a.name, fable: a.fable, parallel: a.parallel, running: a.running, usable: a.usable, why: a.why })), idle, alerts,
     recent: [...state.recent, ...launched.map((l) => ({ at: nowIso(), event: 'launched', id: l.id, account: l.account, model: l.model })), ...ended.map((e) => ({ at: nowIso(), event: e.outcome, id: e.id })), ...failed.map((f) => ({ at: nowIso(), event: 'launch-failed', id: f.id, error: f.error }))].slice(-50) };
   saveState(next);
+  // self-check: asked for (console load, voice, API), or queued work waits and this tick started nothing
+  const asked = readJson(files().checkRequest);
+  let check = null;
+  if (asked || (plan.queue.length && !launched.length && plan.waits.length)) {
+    try { check = selfCheck({ reason: asked ? asked.reason || 'on demand' : 'queued builds wait, nothing launched', by: asked?.by || 'dispatcher', env, alert: (kind, d) => consoleApi('POST', '/api/alerts', P.alertFor(kind, d)) }); }
+    catch (e) { logLine({ event: 'self-check-failed', error: str(e.message, 300) }); }
+  }
+  // account health: every healthEveryMin minutes, in the background, so the tick never waits on it
+  let health = null;
+  try { health = kickHealth({ env, settings }); } catch (e) { logLine({ event: 'health-kick-failed', error: str(e.message, 300) }); }
   for (const fn of TICK_HOOKS) {
     try { fn({ state: next, plan, launched, ended, failed, env }); } catch (e) { logLine({ event: 'hook-failed', error: str(e.message, 300) }); }
   }
-  return { ok: true, at: next.at, intake: inta, ended, launched, failed, plan, idle, alertsSent: sent };
+  return { ok: true, at: next.at, intake: inta, ended, launched, failed, plan, idle, alertsSent: sent, selfCheck: check, health };
+}
+
+const MAX_PICK_TRIES = 4;
+
+/**
+ * The orchestrator's plan for every split build that waits (Pending, Queue): its next model and the account it expects
+ * to take it (pipeline.planned). Written only when it changed, in one store write.
+ */
+export function planAhead(store, accounts, settings = loadSettings()) {
+  const want = new Map();
+  for (const b of live(store)) {
+    if ((b.status !== 'pending' && b.status !== 'queued') || b.hidden || !BP.openSteps(b).length) continue;
+    const p = P.planFor(b, accounts, settings);
+    const cur = b.pipeline?.planned;
+    if (!p || (cur && cur.model === p.model && cur.account === p.account && cur.kind === p.kind)) continue;
+    want.set(b.id, p);
+  }
+  if (!want.size) return [];
+  withStore((s) => {
+    for (const [id, p] of want) { const rec = storeCore.findBuild(s, id); if (rec) rec.pipeline = BP.normPipeline({ ...(rec.pipeline ?? {}), planned: p }) ?? undefined; }
+    return s;
+  }, { by: 'pipeline', action: 'pipeline:plan', note: [...want.keys()].join(', ').slice(0, 300) });
+  for (const [id, p] of want) logLine({ event: 'planned', build: id, model: p.model, account: p.account, kind: p.kind });
+  return [...want.keys()];
 }
 
 /** Run `fn` at the end of every tick (the running-builds watchdog's way in). Returns a function that removes it. */
@@ -487,22 +712,101 @@ export function setRoute(id, route, { by = process.env.AXF_ACTOR || 'console' } 
 
 // ------------------------------------------------------------------ probe
 
+/** A login that renews within this window is not called: a renewal would leave a running build's copy on a spent token. */
+const RENEW_GUARD_MS = 15 * 60e3;
+
+/**
+ * One tiny headless call on a private copy of an account's login (claude -p, Fable, one turn, no tools), in a temp
+ * folder: no build, no slot, no worker claim. The copy is released with save-back, so a renewed token reaches the
+ * login's stores. A subscription login without a saved long-lived token whose access token is about to renew is not
+ * called ({ skipped }): renewing it here would spend the refresh token a running build's copy still holds.
+ */
+export function callAccount(name, env = process.env, { session = 'probe' } = {}) {
+  if (!BP.accountName(name)) throw Object.assign(new Error(`not an account name: ${name}`), { code: 2 });
+  const dir = join(tmpdir(), `axf-${session}-${process.pid}-${name}`); mkdirSync(dir, { recursive: true, mode: 0o700 });
+  let snap = null;
+  try {
+    snap = snapshotLogin({ dir, session, account: name });
+    if (snap.kind !== 'api' && !snap.token) {
+      const exp = Number(readJson(join(snap.dir, '.credentials.json'))?.claudeAiOauth?.expiresAt) || 0;
+      if (exp && exp - Date.now() < RENEW_GUARD_MS) return { skipped: true, status: null, out: '', error: 'its login renews soon: not called, so no running build is left on a spent token' };
+    }
+    const e = childEnv(snap, env); e.PATH = `${join(homedir(), '.local', 'bin')}:${e.PATH || ''}`;
+    const r = spawnSync('claude', ['-p', '--model', MODEL_IDS.fable, '--output-format', 'json', '--max-turns', '1', '--tools', '', 'Reply with the single word ok.'], { encoding: 'utf8', timeout: 120e3, env: e, cwd: tmpdir() });
+    return { skipped: false, status: r.status, out: `${r.stdout || ''}${r.stderr || ''}`, error: r.error?.message || '' };
+  } catch (e) { return { skipped: false, status: null, out: '', error: str(e.message, 200) }; }
+  finally { if (snap) { try { releaseLogin({ dir, session }); } catch { /* best effort */ } } try { rmSync(dir, { recursive: true, force: true }); } catch { /* gone */ } }
+}
+
 /** Ask an account's login whether it can run Fable: one tiny call; the answer is recorded on the account for probeDays. */
 export function probe(name, env = process.env) {
-  if (!BP.accountName(name)) throw Object.assign(new Error(`not an account name: ${name}`), { code: 2 });
-  const dir = join(tmpdir(), `axf-probe-${process.pid}`); mkdirSync(dir, { recursive: true, mode: 0o700 });
-  let snap = null; let rec;
-  try {
-    snap = snapshotLogin({ dir, session: 'probe', account: name });
-    const e = childEnv(snap, env); e.PATH = `${join(homedir(), '.local', 'bin')}:${e.PATH || ''}`;
-    const r = spawnSync('claude', ['-p', '--model', MODEL_IDS.fable, '--output-format', 'json', '--max-turns', '1', '--tools', '', 'Reply with the single word ok.'], { encoding: 'utf8', timeout: 120e3, env: e, cwd: REPO_ROOT });
-    const out = `${r.stdout || ''}${r.stderr || ''}`;
-    const ok = !r.error && r.status === 0 && !/not available|no access|permission|does not exist|invalid model|not found/i.test(out);
-    rec = { fable: ok, at: nowIso(), error: ok ? '' : str((r.error?.message || out).trim().split('\n').pop(), 200) };
-  } catch (e) { rec = { fable: false, at: nowIso(), error: str(e.message, 200) }; }
-  finally { if (snap) { try { releaseLogin({ dir, session: 'probe' }); } catch { /* best effort */ } } try { rmSync(dir, { recursive: true, force: true }); } catch { /* gone */ } }
-  saveOwnAccount(name, { probe: rec });
+  const r = callAccount(name, env, { session: 'probe' });
+  const h = P.healthOf(r);
+  const rec = { fable: h.fable === true, at: nowIso(), error: h.fable ? '' : str(r.error || h.error || 'no answer', 200) };
+  if (!r.skipped) saveOwnAccount(name, { probe: rec });
   return rec;
+}
+
+// ------------------------------------------------------------------ account health (every 5 minutes, in the background)
+
+export const SCHEMA_HEALTH = 'pipeline-health@1';
+export const loadHealth = () => { const j = readJson(files().health); return j && typeof j === 'object' ? j : null; };
+const HEALTH_LOCK_MS = 15 * 60e3;
+const healthLocked = () => { try { return Date.now() - statSync(files().healthLock).mtimeMs < HEALTH_LOCK_MS; } catch { return false; } };
+
+/** Ask for a sweep now (the console, voice, MCP): the next tick starts it. */
+export function requestHealth({ by = process.env.AXF_ACTOR || 'console' } = {}) {
+  const r = { at: nowIso(), by: str(by, 80) };
+  writeJson(files().healthRequest, r);
+  logLine({ event: 'health-requested', ...r });
+  return r;
+}
+
+/**
+ * Start a sweep in the background when one is due (or asked for) and none runs. Host only (the logins live there).
+ * Off with healthEveryMin 0, AXF_PIPELINE_HEALTH=off, or a test launcher (AXF_PIPELINE_LAUNCHER) without AXF_PIPELINE_HEALTH=on.
+ */
+export function kickHealth({ env = process.env, settings = loadSettings(env), now = Date.now() } = {}) {
+  if (env.AXF_PIPELINE_HEALTH === 'off' || (env.AXF_PIPELINE_LAUNCHER && env.AXF_PIPELINE_HEALTH !== 'on')) return null;
+  if (!seesAccounts(env)) return null;
+  const asked = readJson(files().healthRequest);
+  if (!asked && !P.healthDue(loadHealth()?.startedAt, settings, now)) return null;
+  if (healthLocked()) return { started: false, why: 'a sweep is running' };
+  const child = spawn(process.execPath, [fileURLToPath(import.meta.url), 'health', '--by', asked?.by || 'dispatcher'], { cwd: REPO_ROOT, env, detached: true, stdio: 'ignore' });
+  child.unref();
+  return { started: true, pid: child.pid };
+}
+
+/**
+ * The sweep: every saved account, one by one, one tiny call each (callAccount). Each answer is kept on the account
+ * (accounts.json: health { at, signedIn, credits, fable, error }) and the sweep in health.json; accountView() reads them.
+ * Never touches the builds store, a running build, a slot or a worker claim.
+ */
+export function health({ env = process.env, by = 'dispatcher' } = {}) {
+  if (!seesAccounts(env)) return { ran: false, requested: requestHealth({ by }).at, why: 'the Claude logins live on the VPS host: the dispatcher runs the sweep on its next tick (within a minute)' };
+  if (healthLocked()) return { ran: false, why: 'a sweep is already running' };
+  mkdirSync(files().dir, { recursive: true }); writeFileSync(files().healthLock, `${process.pid}\n`);
+  const startedAt = nowIso();
+  try {
+    try { rmSync(files().healthRequest, { force: true }); } catch { /* gone */ }
+    const rows = workerRows(env).rows;
+    const out = [];
+    for (const row of rows) {
+      const name = BP.accountName(row?.name); if (!name) continue;
+      const r = callAccount(name, env, { session: 'health' });
+      const prev = loadOwnAccounts()[name]?.health;
+      // a skipped call keeps what the last sweep knew, marked as such
+      const h = r.skipped ? { ...(prev ?? { signedIn: null, credits: null, fable: null }), at: prev?.at || nowIso(), error: r.error, skipped: true } : { ...P.healthOf(r), at: nowIso() };
+      saveOwnAccount(name, { health: h, ...(typeof h.fable === 'boolean' && !r.skipped ? { probe: { fable: h.fable, at: h.at, error: h.fable ? '' : h.error } } : {}) });
+      out.push({ name, kind: row?.kind === 'api' || /^api/.test(str(row?.role, 20)) ? 'api' : 'subscription', ...h });
+      writeFileSync(files().healthLock, `${process.pid}\n`);
+    }
+    const sum = P.healthSummary(out);
+    const rec = { $axf: SCHEMA_HEALTH, startedAt, at: nowIso(), by: str(by, 80), line: sum.line, problems: sum.problems, accounts: out };
+    writeJson(files().health, rec);
+    logLine({ event: 'health', line: sum.line, problems: sum.problems });
+    return { ran: true, ...rec };
+  } finally { try { rmSync(files().healthLock, { force: true }); } catch { /* gone */ } }
 }
 
 // ------------------------------------------------------------------ CLI
@@ -526,11 +830,18 @@ async function main(argv) {
       `Building (${s.table.building.length})`, ...s.table.building.map(line),
       s.plan.launches.length ? `Next tick starts: ${s.plan.launches.map((l) => `${l.id} on ${l.account} (${l.model})`).join(', ')}` : 'Next tick starts nothing.',
       ...s.plan.waits.map((w) => `  waits: ${w.id}: ${w.why}`),
+      `Archive ${s.tabs.archive.length} · Deleted ${s.tabs.deleted.length} (kept forever)`,
       s.plan.idle ? `IDLE: ${s.plan.idle.reason}` : '',
     ].filter(Boolean).join('\n'));
   }
   if (cmd === 'queue') { const b = queue(rest[0], { by }); return out({ ok: true, id: b.id, status: b.status, pipeline: b.pipeline }, `${b.id} → Queue (by ${by})`); }
-  if (cmd === 'unqueue') { const b = unqueue(rest[0], { by }); return out({ ok: true, id: b.id, status: b.status }, `${b.id} → Pending`); }
+  if (BP.BUILD_ACTIONS.includes(cmd)) {
+    const ids = rest.filter((a, i) => !a.startsWith('--') && !(i > 0 && ['--by', '--why'].includes(rest[i - 1])));
+    const r = buildAction(cmd, ids, { by, why: flag('why') });
+    if (!r.done.length) throw Object.assign(new Error(r.refused.map((x) => x.error).join('; ')), { code: 2 });
+    const one = r.done.length === 1 ? { id: r.done[0].id, status: r.done[0].status } : {};
+    return out({ ok: true, ...one, ...r }, [...r.done.map((d) => `${d.id} → ${BP.TAB_LABEL[d.tab] || d.status}${cmd === 'hold' ? ' (on hold)' : ''}`), ...r.refused.map((x) => `refused ${x.id}: ${x.error}`)].join('\n'));
+  }
   if (cmd === 'split') {
     if (has('request')) { const b = setPipeline(rest[0], { splitRequested: nowIso() }, { note: `Split asked for by ${by}.`, by, action: 'pipeline:split-request' }); return out({ ok: true, id: b.id, requested: b.pipeline.splitRequested }, `${b.id}: split on the next tick`); }
     const r = splitBuild(rest[0], { provider: flag('provider'), by }); return out({ ok: true, ...r }, `${r.id}: ${r.note}`);
@@ -546,7 +857,14 @@ async function main(argv) {
   if (cmd === 'tick') {
     const r = tick();
     return out(r, [`tick ${r.at}`, `split ${r.intake.split.length} · ended ${r.ended.map((e) => `${e.id} ${e.outcome}`).join(', ') || 'none'} · launched ${r.launched.map((l) => `${l.id} on ${l.account} (${l.model})`).join(', ') || 'none'}${r.failed.length ? ` · launch failed ${r.failed.map((f) => `${f.id}: ${f.error}`).join('; ')}` : ''}`,
-      ...r.plan.waits.map((w) => `  waits: ${w.id}: ${w.why}`), r.idle ? `IDLE since ${r.idle.since}: ${r.idle.reason}` : ''].filter(Boolean).join('\n'));
+      ...r.plan.waits.map((w) => `  waits: ${w.id}: ${w.why}`), r.idle ? `IDLE since ${r.idle.since}: ${r.idle.reason}` : '', r.selfCheck ? `self-check: ${r.selfCheck.line}` : ''].filter(Boolean).join('\n'));
+  }
+  if (cmd === 'selfcheck') {
+    const reason = flag('reason', 'on demand');
+    if (has('request')) { const r = requestSelfCheck({ by, reason }); return out({ ok: true, ran: false, requested: r.at, last: loadState().selfCheck ?? null }, `self-check asked for: the next tick runs it (last: ${loadState().selfCheck?.line || 'none yet'})`); }
+    const r = selfCheck({ reason, by });
+    if (!r.ran) return out({ ok: true, ...r, last: loadState().selfCheck ?? null }, r.why);
+    return out({ ok: true, ...r }, [`self-check ${r.at}: ${r.line}`, ...r.fixes.map((f) => `  fixed: ${f}`), ...r.findings.map((f) => `  ${f.name.padEnd(16)} ${f.kind.padEnd(12)} ${f.state.padEnd(8)} ${f.running}/${f.parallel} · ${f.note}`), r.notified ? '  (AmberX told)' : ''].filter(Boolean).join('\n'));
   }
   if (cmd === 'accounts') { const a = accountsNow(loadStore()); return out({ ok: true, accounts: a }, a.map((x) => `${x.name.padEnd(16)} ${x.role.padEnd(11)} ${x.fable ? 'Fable' : 'Opus '} (${x.fableFrom}) · ${x.running}/${x.parallel}${x.usable ? '' : ` · ${x.why}`}`).join('\n') || 'no accounts'); }
   if (cmd === 'account') {
@@ -556,13 +874,24 @@ async function main(argv) {
     if (has('use')) patch.use = flag('use') !== 'off';
     const r = saveOwnAccount(rest[0], patch); return out({ ok: true, name: rest[0], record: r }, `${rest[0]}: ${JSON.stringify(r)}`);
   }
+  if (cmd === 'health') {
+    if (has('request')) { const r = requestHealth({ by }); return out({ ok: true, ran: false, requested: r.at, last: loadHealth() }, `health sweep asked for: the next tick starts it (last: ${loadHealth()?.line || 'none yet'})`); }
+    const r = health({ by });
+    if (!r.ran) return out({ ok: true, ...r, last: loadHealth() }, r.why);
+    return out({ ok: true, ...r }, [`health ${r.at}: ${r.line}`, ...r.accounts.map((a) => `  ${a.name.padEnd(16)} sign-in ${a.signedIn == null ? '?' : a.signedIn ? 'yes' : 'NO'} · credits ${a.credits == null ? '?' : a.credits ? 'yes' : 'NO'} · Fable ${a.fable == null ? '?' : a.fable ? 'yes' : 'NO'}${a.error ? ` · ${a.error}` : ''}`)].join('\n'));
+  }
+  if (cmd === 'tab') {
+    const t = rest[0]; if (!BP.TABS.includes(t)) throw Object.assign(new Error(`tab is one of ${BP.TABS.join(', ')}`), { code: 2 });
+    const rows = status().tabs[t];
+    return out({ ok: true, tab: t, rows }, [`${BP.TAB_LABEL[t]} (${rows.length})`, ...rows.map((r) => `  ${r.id.padEnd(40)} ${r.status.padEnd(9)} ${r.steps.done}/${r.steps.total}${r.pipeline?.planned ? ` · planned ${r.pipeline.planned.model} on ${r.pipeline.planned.account || '—'}` : ''}${r.pipeline?.account ? ` · took ${r.pipeline.account}` : ''}`)].join('\n'));
+  }
   if (cmd === 'probe') { const r = probe(rest[0]); return out({ ok: true, name: rest[0], probe: r }, `${rest[0]}: Fable ${r.fable ? 'yes' : 'no'}${r.error ? ` (${r.error})` : ''}`); }
   if (cmd === 'settings') { const s = loadSettings(); return out({ ok: true, settings: s }, Object.entries(s).filter(([k]) => k !== '$axf').map(([k, v]) => `${k} = ${JSON.stringify(v)}`).join('\n')); }
   if (cmd === 'set') {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue <id> | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

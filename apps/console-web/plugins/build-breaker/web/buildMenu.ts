@@ -16,7 +16,7 @@ export const BUILD_ENTRIES: BuildEntry[] = [
   { id: 'breaker', label: 'Build Breaker', icon: 'hammer', action: 'nav:build-breaker' },
   { id: 'matrix', label: 'Feature matrix', icon: 'check-circle', action: 'nav:feature-matrix' },
   { id: 'orchestrator', label: 'Build orchestrator', icon: 'layers', action: 'nav:build-orchestrator' },
-  { id: 'manager', label: 'Build manager', icon: 'play', action: 'build-manager.open' },
+  { id: 'orchestrator', label: 'Build orchestrator', icon: 'layers', action: 'build-orchestrator.open' },
   { id: 'pending', label: 'Pending builds', icon: 'clock', action: 'nav:pending' },
   { id: 'queue', label: 'Build queue', icon: 'play', action: 'nav:build' },
   { id: 'plan', label: 'Plan', icon: 'layers', action: 'nav:plan' },

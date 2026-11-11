@@ -435,6 +435,51 @@ def pipeline_status() -> dict[str, Any]:
     return _pipeline("status")
 
 
+SELFCHECK_REASONS = {"console-load", "on demand", "voice"}
+
+
+@router.post("/pipeline/selfcheck")
+async def pipeline_selfcheck(request: Request) -> dict[str, Any]:
+    """{reason?: console-load | on demand | voice}: ask the dispatcher for a self-check (every Claude account one by one,
+    stale claims / slots / builds released). The console can't see the logins, so the host runs it on its next tick
+    (within a minute); the answer carries the last result (state.selfCheck in GET /pipeline after that)."""
+    try:
+        body = await request.json()
+    except (ValueError, UnicodeDecodeError):
+        body = {}
+    reason = str((body or {}).get("reason") or "on demand") if isinstance(body, dict) else "on demand"
+    if reason not in SELFCHECK_REASONS:
+        reason = "on demand"
+    return _pipeline("selfcheck", "--request", "--reason", reason, who=(brett_click(request) or "console")[:80])
+
+
+PIPELINE_TABS = ("pending", "queue", "active", "incomplete", "complete", "errors", "archive", "deleted")
+
+
+@router.get("/pipeline/tab/{name}")
+def pipeline_tab(name: str) -> dict[str, Any]:
+    """One of the orchestrator's tabs (pending, queue, active, incomplete, complete, errors, archive, deleted): every build
+    in it, with its steps, the planned model + account, the account that took it, whether it is on hold and the actions
+    it offers."""
+    if name not in PIPELINE_TABS:
+        raise HTTPException(400, f"tab is one of {', '.join(PIPELINE_TABS)}")
+    return _pipeline("tab", name)
+
+
+@router.get("/pipeline/health")
+def pipeline_health() -> dict[str, Any]:
+    """The last account health sweep (every 5 minutes on the VPS host): per account, can sign in, has credits, takes Fable."""
+    res = _pipeline("status")
+    return {"ok": True, "health": res.get("health"), "every": (res.get("settings") or {}).get("healthEveryMin")}
+
+
+@router.post("/pipeline/health")
+async def pipeline_health_now(request: Request) -> dict[str, Any]:
+    """Ask for an account health sweep now: the dispatcher starts it in the background on its next tick (within a
+    minute). Headless, on private login copies: never touches a running build, never signs anything out."""
+    return _pipeline("health", "--request", "--by", (brett_click(request) or "console")[:80])
+
+
 @router.post("/pipeline/queue")
 async def pipeline_queue(request: Request) -> dict[str, Any]:
     """{id}: Pending → Queue. Brett's move: the dispatcher starts it when a slot and an account for its model are free."""
@@ -447,6 +492,31 @@ async def pipeline_unqueue(request: Request) -> dict[str, Any]:
     """{id}: Queue → Pending (a queued build that has not started)."""
     body = await _json_body(request)
     return _pipeline("unqueue", _build_id(body.get("id")), "--by", (brett_click(request) or "console")[:80])
+
+
+BUILD_ACTIONS = ("unqueue", "hold", "release", "archive", "unarchive", "delete", "restore")
+
+
+@router.post("/pipeline/action")
+async def pipeline_action(request: Request) -> dict[str, Any]:
+    """{action, ids: [id…] | id, why?}: the Queue / Archive / Deleted actions on one build or many (bulk select).
+    unqueue = back to Pending; hold / release = stays in the Queue, skipped by the dispatcher until released; archive /
+    unarchive; delete = soft delete (kept in the builds store forever, Deleted tab) / restore. Builds with a live session
+    are refused, the others still go: { done: [{ id, status, tab }], refused: [{ id, error }] }."""
+    body = await _json_body(request)
+    action = str(body.get("action") or "")
+    if action not in BUILD_ACTIONS:
+        raise HTTPException(400, f"action is one of {', '.join(BUILD_ACTIONS)}")
+    raw = body.get("ids")
+    ids = raw if isinstance(raw, list) else [body.get("id")]
+    ids = [_build_id(x) for x in ids[:200]]
+    if not ids:
+        raise HTTPException(400, "no build id given")
+    why = str(body.get("why") or "")[:300]
+    args = [action, *ids, "--by", (brett_click(request) or "console")[:80]]
+    if why.strip():
+        args += ["--why", why]
+    return _pipeline(*args)
 
 
 @router.post("/pipeline/split")

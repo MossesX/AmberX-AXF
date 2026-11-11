@@ -5,7 +5,7 @@ name: Android framework + console
 
 on:
   push:
-    # main, and the merge queue's queue/pr-<n> branches (main + every PR ahead + this one: the one full run a PR gets)
+    # main, and the merge queue's branches: queue/batch (main + every PR in the batch: the one full run a batch gets) or queue/pr-<n> in stack mode
     branches: [main, 'queue/**']
   pull_request:
   workflow_dispatch:

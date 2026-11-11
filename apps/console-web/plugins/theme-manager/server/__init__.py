@@ -211,6 +211,12 @@ def skin_global_set(body: dict[str, Any] = Body(...)) -> Any:
     return _skins("global", str(body.get("skin") or "off"))
 
 
+@router.post("/skins/global/color")
+def skin_global_color(body: dict[str, Any] = Body(...)) -> Any:
+    """Switch the colour theme inside the hub-wide skin, body {theme} ('default' = the skin's own): the skin stays."""
+    return _skins("global-color", str(body.get("theme") or "default"))
+
+
 @router.get("/skins/{app}/at")
 def skin_at(app: str, scope: str | None = None) -> Any:
     """Which skin is in force in an app, or in one of its screens / plugins (scope=ui:<id> | plugin:<id>), and which level decided."""
@@ -245,6 +251,18 @@ def skin_off(app: str, body: dict[str, Any] | None = Body(None)) -> Any:
 def skin_back(app: str, body: dict[str, Any] = Body(...)) -> Any:
     """Drop one override, body {slot}."""
     return _skins("back", app, str(body.get("slot") or ""))
+
+
+@router.get("/skins/{app}/color")
+def skin_color(app: str, scope: str | None = None) -> Any:
+    """The colour theme inside the skin in force in an app (or one screen / plugin, scope=ui:<id> | plugin:<id>): what shows, the skin's own, and whether it was switched."""
+    return _skins("color", app, *_scope_args(scope))
+
+
+@router.post("/skins/{app}/color")
+def skin_color_set(app: str, body: dict[str, Any] = Body(...)) -> Any:
+    """Switch the colour theme inside the skin in force, body {theme, scope?}: 'make the console's skin aurora night'. The skin stays the same skin and no skin is created; theme 'default' = the skin's own colours."""
+    return _skins("color", app, str(body.get("theme") or "default"), *_scope_args(body.get("scope")))
 
 
 @router.post("/skins/{app}/restore")

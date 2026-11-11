@@ -1692,7 +1692,7 @@
         "asset": false
       },
       "optional_fields": {
-        "about": "the glossary entry id it demonstrates (plugin:build-manager, concept:asset, control:console-web:ui-review:approve)",
+        "about": "the glossary entry id it demonstrates (plugin:build-orchestrator, concept:asset, control:console-web:ui-review:approve)",
         "entries": "glossary entry ids it covers (the about entry is always one)",
         "app": "the app it runs in (console, axhub-web, amberx-droid); default console",
         "voice": "{ narrator: a voice id or '' for the browser's, speed: 0.5–2 }",

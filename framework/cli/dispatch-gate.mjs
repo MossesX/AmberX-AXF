@@ -4,7 +4,7 @@
  * way to start builds. It can't be two. It needs to be one. It has to be the orchestrator. The orchestrator has to take
  * the build from the queue and then start them. Not the build manager.").
  *
- * The orchestrator's dispatcher (apps/console-web/plugins/build-orchestrator/pipeline.mjs tick) issues a one-build
+ * The orchestrator's dispatcher (its pipeline tick) issues a one-build
  * dispatch token right before it runs deploy/claude-headless.sh and hands it over in AXF_DISPATCH_TOKEN. The launcher asks
  * this gate before anything starts: a launch that belongs to a build (an orchestrator build named by --build /
  * AXF_BUILD_ID, the session name or the brief's "Continue build … (<id>)" line, or any session named build-* / build:*)
@@ -75,8 +75,8 @@ export function verdict({ b = null, name = '', rec = null, token = '', now = Dat
   if (!b && !byName) return { ok: true, build: '', why: 'not a build: no dispatch needed' };
   const id = b?.id || bare.replace(/^build[-:]/, '');
   const how = b
-    ? `Only the orchestrator starts builds. Queue it (Build orchestrator → Pipeline → Queue, Build manager → Send to queue, or \`node apps/console-web/plugins/build-orchestrator/pipeline.mjs queue ${b.id}\`): the dispatcher starts it within a minute.`
-    : 'Only the orchestrator starts builds. File it as an orchestrator build (`node apps/console-web/plugins/build-orchestrator/pipeline.mjs request --title "…" --detail "…" --queue`): the dispatcher starts it within a minute.';
+    ? `Only the orchestrator starts builds. Queue it (Build orchestrator → Pending → Queue, or its pipeline-queue command: console API, MCP, or the orchestrator plugin CLI \`pipeline.mjs queue ${b.id}\`): the dispatcher starts it within a minute.`
+    : 'Only the orchestrator starts builds. File it as an orchestrator build (its pipeline-request command: console API, MCP, or the orchestrator plugin CLI `pipeline.mjs request --title "…" --detail "…" --queue`): the dispatcher starts it within a minute.';
   if (!b) return { ok: false, build: id, why: `refused: "${bare}" is a build launch outside the orchestrator. ${how}` };
   if (!token) return { ok: false, build: id, why: `refused: ${id} has no orchestrator dispatch token. ${how}` };
   if (!rec?.hash) return { ok: false, build: id, why: `refused: ${id} was not dispatched by the orchestrator (no token on file). ${how}` };

@@ -149,12 +149,25 @@ export function parseReport(md) {
   const open = items.filter((x) => x.kind === 'open').map((x) => x.text.replace(/\*\*/g, '').slice(0, 500));
   return { tests: tests.slice(0, 60), open: open.slice(0, 40) };
 }
+/** The plugin that provides service:ui-review@1 and ships review.mjs: { dir, dataDir } or null (found by capability, never by folder). */
+function findUiReview() {
+  const plugins = join(REPO_ROOT, 'apps/console-web/plugins');
+  if (!existsSync(plugins)) return null;
+  for (const n of readdirSync(plugins).sort()) {
+    const d = join(plugins, n);
+    try {
+      const m = JSON.parse(readFileSync(join(d, 'plugin.json'), 'utf8'));
+      if (m.provides?.includes('service:ui-review@1') && existsSync(join(d, 'review.mjs'))) return { dir: d, dataDir: m.lifecycle?.dataDir || `.axf-console/plugins/${n}` };
+    } catch { /* not a plugin */ }
+  }
+  return null;
+}
 /** UI Review items of the build (by branch or build id), read from the console checkout's UI Review data. */
 export function uiReviewOf(b, env = process.env) {
   if (env.AXF_SHIPPED_UI_REVIEW === 'off') return [];
   const root = env.AXF_CONSOLE_ROOT && env.AXF_CONSOLE_ROOT !== 'off' ? env.AXF_CONSOLE_ROOT : existsSync('/opt/axf/.axf-console') ? '/opt/axf' : REPO_ROOT;
-  const cli = join(REPO_ROOT, 'apps/console-web/plugins/ui-review/review.mjs'); if (!existsSync(cli)) return [];
-  const r = spawnSync(process.execPath, [cli, 'list', '--json'], { cwd: REPO_ROOT, encoding: 'utf8', timeout: 30e3, env: { ...env, AXF_UI_REVIEW_DIR: env.AXF_UI_REVIEW_DIR || join(root, '.axf-console/plugins/ui-review') } });
+  const ur = findUiReview(); if (!ur) return [];
+  const r = spawnSync(process.execPath, [join(ur.dir, 'review.mjs'), 'list', '--json'], { cwd: REPO_ROOT, encoding: 'utf8', timeout: 30e3, env: { ...env, AXF_UI_REVIEW_DIR: env.AXF_UI_REVIEW_DIR || join(root, ur.dataDir) } });
   let items = []; try { items = JSON.parse(r.stdout).items ?? []; } catch { return []; }
   return items.filter((x) => (b.branch && x.branch === b.branch) || x.build === b.id || x.submittedBy?.id === b.branch).map((x) => ({ id: x.id, name: x.title || x.name || '', status: x.status || '', group: x.group || '', url: `/review/${x.id}` }));
 }
