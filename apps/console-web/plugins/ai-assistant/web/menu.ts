@@ -9,6 +9,7 @@ export const appMenu: NonNullable<AxfWebLibrary['appMenu']> = [
       items: [
         { id: 'page', label: 'Chat page', icon: 'sparkles', action: 'nav:ai-assistant' },
         { id: 'window', label: 'Chat in a window', icon: 'monitor', action: 'ai-assistant.open' },
+        { id: 'hands-free', label: 'Hands-free voice on / off', icon: 'mic', action: 'ai-assistant.hands-free' },
         { id: 'settings', label: 'Assistant settings', icon: 'settings', action: 'settings.open:ai-assistant' },
       ],
     }],

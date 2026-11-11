@@ -4,7 +4,9 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { APPROVALS_BADGE_KEY, FOLDER, ID, type Ctx } from './api';
 import { ActivityIcon } from './activity';
 import { ChatPanel, type ChatStart, useStatus } from './chat';
-import { BehaviorPanel, PromptsPanel, ProvidersPanel, SessionsPanel, SetupWizard, UsagePanel } from './settings';
+import { BehaviorPanel, HandsFreePanel, PromptsPanel, ProvidersPanel, SessionsPanel, SetupWizard, UsagePanel } from './settings';
+import { setHandsFree } from './handsfree';
+import { isAssistantPage, openInHost, startHostBridge, type HostStart } from './host';
 import './ai-assistant.css';
 import { appMenu } from './menu';
 
@@ -43,18 +45,36 @@ function WizardIntro() {
 export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'AI assistant',
-  version: '0.2.2',
+  version: '0.4.0',
   appMenu,
   provides: ['axf.ai-assistant', 'axf.llm@1', 'axf.live-sessions@1'],
   register(rt) {
-    rt.actions.register('ai-assistant.open', ([prompt]) => rt.openDialog('ai-assistant.chat', prompt ? { note: prompt } : {}), { label: 'Open the AI assistant' });
+    // Inside a host that owns the assistant (Molly's AI assistant plugin, host.ts), opening it asks the host: one copy on
+    // screen. The page the host frames (`axf-embed-page=view:ai-assistant`) is that copy and starts chats it is handed.
+    startHostBridge(({ start, note }) => {
+      if (start?.agentId) window.dispatchEvent(new CustomEvent('axf:assistant.focus', { detail: { agentId: start.agentId } }));
+      if (start?.message) setTimeout(() => window.dispatchEvent(new CustomEvent('axf:assistant.input', { detail: { text: start.message, send: true, partial: false } })), start.agentId ? 300 : 0);
+      else if (note) window.dispatchEvent(new CustomEvent('axf:assistant.input', { detail: { text: note, send: false, partial: false } }));
+    });
+    rt.actions.register('ai-assistant.open', ([prompt]) => {
+      if (openInHost(prompt ? { note: prompt } : {})) return;
+      if (isAssistantPage()) { if (prompt) window.dispatchEvent(new CustomEvent('axf:assistant.input', { detail: { text: prompt, send: false, partial: false } })); return; }
+      rt.openDialog('ai-assistant.chat', prompt ? { note: prompt } : {});
+    }, { label: 'Open the AI assistant' });
     // Generic, capability-style action other plugins use (never this folder's name):
     //   ai.chat.start:<uri-encoded JSON {agentId?, message, title?, profileId?, model?}>
     rt.actions.register('ai.chat.start', ([arg]) => {
       let start: ChatStart | null = null;
       try { start = JSON.parse(decodeURIComponent(arg ?? '')) as ChatStart; } catch { /* bad payload */ }
-      if (start?.message) rt.openDialog('ai-assistant.chat', { start });
+      if (!start?.message) return;
+      if (openInHost({ start: start as HostStart })) return;
+      rt.openDialog('ai-assistant.chat', { start });
     }, { label: 'Start an AI chat with an agent', params: true, searchable: false });
+    // Hands-free voice from anywhere (menus, toolbars, search, console_action, voice): on | off | toggle (default toggle).
+    rt.actions.register('ai-assistant.hands-free', ([how]) => {
+      const want = how === 'on' ? { on: true } : how === 'off' ? { on: false } : { toggle: true };
+      void setHandsFree(want).then((hf) => rt.toast(`Hands-free voice ${hf.on ? 'on: say the wake word, then your message' : 'off'}`, 'success', 'AI assistant'), (e: Error) => rt.toast(e.message, 'error', 'AI assistant'));
+    }, { label: 'Hands-free voice on / off', params: true });
   },
   views: { 'ai-assistant': { title: 'AI assistant', icon: 'sparkles', render: () => <AssistantView /> } },
   dialogs: {
@@ -72,6 +92,8 @@ export const plugin: AxfWebLibrary = {
     ] },
   ],
   settingsPanels: [
+    // First on the tab (Brett: "Easy to reach, hands free. A setting in AI assistant.")
+    { id: 'ai-assistant.hands-free', tab: 'ai-assistant', title: 'Hands-free voice', icon: 'mic', order: 1, render: () => <HandsFreePanel /> },
     { id: 'ai-assistant.quick', tab: 'ai-assistant', title: 'Open the assistant', icon: 'sparkles', order: 5, render: () => <QuickOpen /> },
     { id: 'ai-assistant.wizard', tab: 'ai-assistant', title: 'Setup wizard', icon: 'rocket', order: 10, render: () => <WizardIntro /> },
     { id: 'ai-assistant.providers', tab: 'ai-assistant', title: 'Providers', icon: 'cloud', order: 20, render: () => <ProvidersPanel /> },

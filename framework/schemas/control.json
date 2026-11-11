@@ -27,7 +27,9 @@
       "close": "navigate"
     },
     "console.settings": {
-      "open": "navigate"
+      "open": "navigate",
+      "read": "read",
+      "change": "write"
     },
     "console.actions": {
       "run": "write"
@@ -1591,12 +1593,18 @@
         "client": "string"
       },
       "acts": {
-        "open": {}
+        "open": {},
+        "read": {},
+        "change": {
+          "value": "any"
+        }
       },
       "actEffect": {
-        "open": "navigate"
+        "open": "navigate",
+        "read": "read",
+        "change": "write"
       },
-      "doc": "Every Settings tab and sub-tab (Settings → Plugins → <plugin> is a sub-tab: its id, \"plugins/<id>\" or its title); act open shows it, input.anchor scrolls to one setting or group. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
+      "doc": "Every Settings tab and sub-tab (Settings → Plugins → <plugin> is a sub-tab: its id, \"plugins/<id>\" or its title); act open shows it, input.anchor scrolls to one setting or group. Setting values (build ai-assistant-console-api, Nov 10 2026): act read with path = the setting key answers its current value in the open console; act change with path = the key and input.value sets it there (the console's own settings registry, every plugin's keys too). Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
     },
     "console.actions": {
       "domain": "console",
@@ -3734,7 +3742,7 @@
         "paths": "host"
       },
       "console.settings": {
-        "description": "Every Settings tab and sub-tab (Settings → Plugins → <plugin> is a sub-tab: its id, \"plugins/<id>\" or its title); act open shows it, input.anchor scrolls to one setting or group. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them).",
+        "description": "Every Settings tab and sub-tab (Settings → Plugins → <plugin> is a sub-tab: its id, \"plugins/<id>\" or its title); act open shows it, input.anchor scrolls to one setting or group. Setting values (build ai-assistant-console-api, Nov 10 2026): act read with path = the setting key answers its current value in the open console; act change with path = the key and input.value sets it there (the console's own settings registry, every plugin's keys too). Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them).",
         "ops": [
           "list",
           "get",
@@ -3752,7 +3760,13 @@
           }
         },
         "acts": {
-          "open": {}
+          "open": {},
+          "read": {},
+          "change": {
+            "value": {
+              "type": "any"
+            }
+          }
         },
         "paths": "host"
       },

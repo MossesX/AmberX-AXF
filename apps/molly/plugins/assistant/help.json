@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "molly-assistant-help",
+  "name": "AI assistant help",
+  "version": "0.1.0",
+  "description": "Help mode entries for Molly's AI assistant plugin (help@1).",
+  "author": "Brett",
+  "tags": ["help"],
+  "data": {
+    "scope": "plugin:assistant",
+    "entries": [
+      { "target": "molly-assistant-frame", "title": "AI assistant", "text": "The Dev Console's assistant, the same chat you have in the console: every provider, the console control API (open screens, change settings, run commands, file builds) and hands-free voice. Molly owns it here, so Ask the assistant anywhere in the console opens this window." },
+      { "target": "molly-assistant-open", "title": "Open the assistant", "text": "Opens the assistant as a floating window over Molly (Molly menu → AI assistant, or the toolbar). The page button opens it in the main area instead." },
+      { "target": "molly-assistant-hands-free", "title": "Hands-free voice", "text": "Flips the assistant's hands-free switch: always listening for the wake word, replies read out loud. The same switch as Settings → AI assistant → Hands-free voice in the console and the microphone toggle in the chat header." },
+      { "target": "molly-assistant-settings", "title": "Assistant settings", "text": "Providers, behaviour, hands-free voice and tools live in the console's own settings (Settings → Plugins → AI assistant); this tab opens them and the assistant window." }
+    ],
+    "intros": []
+  }
+}

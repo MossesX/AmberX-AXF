@@ -342,7 +342,9 @@
         "close": "navigate"
       },
       "console.settings": {
-        "open": "navigate"
+        "open": "navigate",
+        "read": "read",
+        "change": "write"
       },
       "console.actions": {
         "run": "write"

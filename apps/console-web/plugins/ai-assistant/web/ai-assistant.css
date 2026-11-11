@@ -144,6 +144,13 @@
 :where([data-fx-small]) .axp-ai-assistant__pick-card { flex-direction: row; flex-wrap: wrap; align-items: center; padding: var(--fx-dens-gap-md) var(--fx-dens-gap-xl) }
 :where([data-fx-small]) .axp-ai-assistant__card { padding: var(--fx-dens-gap-xl) }
 .fx-pagehead > div:first-child:has(> .axp-ai-assistant__lede) { flex: 1 1 16em; min-width: 0; max-width: 100% }
+/* Hands-free voice (handsfree.ts): the header toggle breathes while listening, glows while speaking; the settings
+   panel's switch is the first thing on the tab (Brett: "easy to reach"). */
+.axp-ai-assistant__hf { position: relative; flex: none }
+.axp-ai-assistant__hf-dot { position: absolute; top: var(--fx-dens-gap-xs); right: var(--fx-dens-gap-xs); width: var(--fx-dens-gap-md); height: var(--fx-dens-gap-md); border-radius: 999px; background: var(--fx-accent) }
+.axp-ai-assistant__hf.is-listening .axp-ai-assistant__hf-dot { animation: axp-ai-assistant-breathe 1.6s ease-in-out infinite }
+.axp-ai-assistant__hf.is-speaking .axp-ai-assistant__hf-dot { background: var(--fx-success) }
+.axp-ai-assistant__hf-switch { font-size: var(--fx-type-root-lg) }
 /* the stand-in microphone (no voice plugin): a muted mic with an install popover */
 .axp-ai-assistant__micwrap { position: relative; display: inline-flex; align-self: center }
 .axp-ai-assistant__mic.is-missing { opacity: var(--fx-opacity-muted) }

@@ -149,6 +149,21 @@ the orchestrator's dispatcher send a build to an API-key account) and `pipeline.
 routing and the one-build dispatch token (`framework/cli/dispatch-gate.mjs`) run only on the VPS host. No Kotlin twin:
 Android work is on hold and builds show only in the web console. A port needs `ROUTES` and the same normalisation.
 
+## Deferred: console setting values, hands-free voice, the assistant inside a host (Nov 10 2026)
+
+Build `ai-assistant-in-molly-console-drives-by-api-open` (Fable), web only; Kotlin twins when the Android side resumes:
+- control@1 `console.settings` acts `read` and `change` (path = a settings-registry key, `input.value` = any JSON value) and
+  the console-command@1 op `setting` (`key`, `value` as JSON text) in `core/engines/console-commands.mjs` (`SETTING_KEY`).
+  A port's console client answers `setting` from its own settings store the same way (read → the value as JSON text in
+  the ack; a value → set it, then say what it set).
+- Hands-free voice (`apps/console-web/plugins/ai-assistant/web/handsfree.ts`): the server switch <!-- axf-plugin:ai-assistant -->
+  (`/api/plugins/ai-assistant/hands-free`), wake-word parsing (`messageFrom`), spoken replies (`speakable`), the screen <!-- axf-plugin:ai-assistant -->
+  wake lock. On Android the AmberX app's native recognizer (always-on with the screen off) would take the same switch. <!-- axf-plugin:ai-assistant -->
+- The assistant inside a host (`web/host.ts`, protocol `ai-assistant-host@1` over postMessage; Molly's plugin <!-- axf-plugin:ai-assistant -->
+  `apps/molly/plugins/assistant`): a Kotlin host would carry the same four messages through `AxfEmbedGuest.receive`. <!-- axf-plugin:assistant -->
+
+The AI assistant plugin's own Kotlin twin (the chat UI on `assistant@1`) stays deferred as before. <!-- axf-plugin:ai-assistant -->
+
 ## Deferred: person-only actions, console refresh, UI choices (Nov 7 2026)
 
 Web only (Android on hold), Kotlin twins when the Android side resumes:

@@ -116,7 +116,7 @@ export function FrameDeck() {
             data-app={a.id}
             data-on={rect ? 'true' : 'false'}
             src={frameUrl ? frameUrl(a, start) : start}
-            allow="clipboard-read; clipboard-write; microphone; fullscreen; autoplay"
+            allow="clipboard-read; clipboard-write; microphone; fullscreen; autoplay; screen-wake-lock"
             style={rect ? { top: rect.top, left: rect.left, width: rect.width, height: rect.height } : undefined}
           />
         );

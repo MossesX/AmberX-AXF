@@ -915,4 +915,79 @@ check(c.put(f"{P}/config", json={"chatMode": {"default": "chat", "historyMessage
 c.put(f"{P}/config", json={"chatMode": {"default": "auto", "historyMessages": 16}})
 plugin_services.withdraw("fake-agent-manager")
 
+# --- the console control API as tools + hands-free voice (build ai-assistant-in-molly-console-drives-by-api-open) ------
+print("console control tools + hands-free")
+_ctl_calls: list[dict] = []
+
+
+class _FakeControl:
+    def run(self, command, grants, by):  # noqa: ANN001
+        _ctl_calls.append({"command": command, "grants": grants, "by": by})
+        if command.get("op") == "remove" or (command.get("target") == "console.actions" and "reset" in str(command.get("path"))):
+            return {"$axf": "control@1", "ok": False, "code": "confirmation_required", "confirm": "tok123", "message": "deletes something"}
+        if command.get("op") == "get" and command.get("target") == "console.nav":
+            return {"$axf": "control@1", "ok": True, "op": "get", "target": "console.nav", "data": {"value": {"screen": "builds"}}}
+        return {"$axf": "control@1", "ok": True, "op": command.get("op"), "target": command.get("target"), "data": {"changed": [command.get("path")]}}
+
+
+tl = c.get(f"{P}/tools").json()
+check("console" in tl["groups"] and any(t["name"] == "console_open" and t["group"] == "console" and t["on"] for t in tl["builtin"]), "/tools lists the console group, on by default")
+check(not [s for s in tools_mod.specs({"console": True}) if s["name"] == "console_open" and "group" in s], "console specs are offered without the group field")
+try:
+    tools_mod.run("console_where", {})
+    check(False, "console tools refuse to run without control@1")
+except ValueError as e:
+    check("control@1" in str(e), "console tools say the Token control plugin is missing")
+plugin_services.provide("control@1", _FakeControl(), "fake-token-control")
+_r = json.loads(tools_mod.run("console_where", {}, by="ai-assistant:brett"))
+check(_r["ok"] and _r["data"]["value"]["screen"] == "builds" and _ctl_calls[-1]["command"]["$axf"] == "control@1" and _ctl_calls[-1]["by"] == "ai-assistant:brett", "console_where → get console.nav here through the capability")
+tools_mod.run("console_open", {"kind": "settings", "target": "plugins/ai-assistant", "anchor": "hands-free"}, by="x", reason="AI assistant chat: open it")
+_cmd = _ctl_calls[-1]["command"]
+check(_cmd["op"] == "act" and _cmd["target"] == "console.settings" and _cmd["path"] == "plugins/ai-assistant" and _cmd["action"] == "open" and _cmd["input"]["anchor"] == "hands-free" and _cmd["reason"].startswith("AI assistant chat"), "console_open settings → act open with the anchor and the reason")
+tools_mod.run("console_setting_set", {"key": "ai-assistant.approvalsBadge", "value": False})
+_cmd = _ctl_calls[-1]["command"]
+check(_cmd["action"] == "change" and _cmd["input"]["value"] is False and _cmd["path"] == "ai-assistant.approvalsBadge", "console_setting_set → act change with the value")
+tools_mod.run("console_setting_get", {"key": "ai-assistant.approvalsBadge"})
+check(_ctl_calls[-1]["command"]["action"] == "read", "console_setting_get → act read")
+tools_mod.run("console_action", {"action": "swap", "args": ["color-theme", "dark"]})
+_cmd = _ctl_calls[-1]["command"]
+check(_cmd["target"] == "console.actions" and _cmd["path"] == "swap" and _cmd["input"]["args"] == ["color-theme", "dark"], "console_action → act run with args")
+_r = tools_mod.run("console_action", {"action": "assets.reset"})
+check("confirmation_required" in _r and "explicit yes" in _r, "a destructive action's confirm token comes back with the rule to ask the owner first")
+tools_mod.run("build_file", {"title": "Dark mode", "request": "Make the console dark at night"})
+_cmd = _ctl_calls[-1]["command"]
+check(_cmd["op"] == "add" and _cmd["target"] == "planner.builds" and _cmd["value"] == {"title": "Dark mode", "detail": "Make the console dark at night"}, "build_file → planner.builds add")
+tools_mod.run("control", {"op": "act", "target": "plugins.commands", "path": "notify-control/master", "action": "run", "input": {"on": False}})
+check(_ctl_calls[-1]["command"]["path"] == "notify-control/master" and _ctl_calls[-1]["command"]["input"] == {"on": False}, "control → any control@1 command")
+try:
+    tools_mod.run("control", {"op": "explode", "target": "x"})
+    check(False, "control refuses a bad op")
+except ValueError:
+    check(True, "control refuses a bad op")
+try:
+    tools_mod.run("console_open", {"kind": "action", "target": "x"})
+    check(False, "console_open refuses kind action")
+except ValueError:
+    check(True, "console_open refuses kind action")
+# the owner only: a hub user with every assistant permission still never gets the console group (the same expression
+# run_turn uses to narrow a non-admin's groups)
+_offered = mod.tools.specs({g: True for g in mod.tools.GROUPS})
+check(any(t["name"] == "control" for t in _offered), "an admin's full offer includes control")
+import importlib as _il  # noqa: E402
+_wall = _il.import_module("wall")
+_bea = _wall.Caller("bea", "user", frozenset({"assistant.tools", "assistant.web"}), "session")
+_groups = {g: bool(v) and g != mod.tools.CONSOLE_GROUP and _bea.can("assistant.web" if g == "web" else "assistant.tools") for g, v in {"repo": True, "utility": True, "web": True, "console": True}.items()}
+check(_groups == {"repo": True, "utility": True, "web": True, "console": False}, "a hub user's groups never include console (the owner only)")
+plugin_services.withdraw("fake-token-control")
+
+hf = c.get(f"{P}/hands-free").json()["handsFree"]
+check(hf == {"on": False, "mode": "wake", "wakeWords": [], "speak": True, "keepScreenOn": True}, "hands-free starts off, wake mode")
+r = c.put(f"{P}/hands-free", json={"toggle": True, "wakeWords": ["computer", " hey console "], "mode": "talk"}).json()
+check(r["handsFree"]["on"] is True and r["handsFree"]["mode"] == "talk" and r["handsFree"]["wakeWords"] == ["computer", "hey console"] and "on" in r["changed"], "PUT hands-free: toggle, words trimmed, mode")
+check(c.put(f"{P}/hands-free", json={"mode": "shout"}).status_code == 400, "a bad mode is refused")
+check(c.put(f"{P}/hands-free", json={"on": False}).json()["handsFree"]["on"] is False and c.get(f"{P}/status").json()["handsFree"]["on"] is False, "PUT on=false; status carries the switch")
+check(c.get(f"{P}/config").json()["handsFree"]["mode"] == "talk" and c.put(f"{P}/config", json={"handsFree": {"mode": "wake"}}).json()["handsFree"]["mode"] == "wake", "config carries handsFree too, and normalizes it")
+check(sys.modules["axf_console_plugins.ai_assistant.store"].normalize_hands_free({"on": "yes", "mode": 3, "wakeWords": "nope"}) == {"on": True, "mode": "wake", "wakeWords": [], "speak": True, "keepScreenOn": True}, "a broken saved hands-free block falls back field by field")
+check(c.get(f"{P}/status").json()["consoleControl"] is False, "status says the console control API is off while no control@1 provider is installed")
+
 print(f"all {ok} checks passed")

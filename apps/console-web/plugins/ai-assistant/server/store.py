@@ -59,7 +59,11 @@ DEFAULT_CONFIG: dict[str, Any] = {
     "fallback": [],
     "params": {"temperature": 0.7, "max_tokens": 4096, "top_p": None, "thinking": False, "thinking_budget": 4096, "reasoning_effort": ""},
     "contextMessages": 40,
-    "tools": {"repo": True, "utility": True, "web": False},
+    "tools": {"repo": True, "utility": True, "web": False, "console": True},
+    # Hands-free voice (build ai-assistant-console-api, Nov 10 2026): one switch for every open chat window of the
+    # owner's, kept here so the API, the CLI, AmberX and the settings tab flip the same thing. mode wake = listens for
+    # the wake words (the assistant's name, "Molly", "Amber") then takes the sentence; talk = every sentence is a message.
+    "handsFree": {"on": False, "mode": "wake", "wakeWords": [], "speak": True, "keepScreenOn": True},
     "maxToolRounds": 12,
     "autoTitle": True,
     "showUsage": True,
@@ -146,7 +150,21 @@ def load_config() -> dict[str, Any]:
         cfg["params"] = {**DEFAULT_CONFIG["params"], **(raw.get("params") or {})}
         cfg["tools"] = {**DEFAULT_CONFIG["tools"], **(raw.get("tools") or {})}
         cfg["chatMode"] = chatmode.normalize(raw.get("chatMode"))
+        cfg["handsFree"] = normalize_hands_free(raw.get("handsFree"))
         return cfg
+
+
+HANDS_FREE_MODES = ("wake", "talk")
+
+
+def normalize_hands_free(raw: Any) -> dict[str, Any]:
+    """The hands-free block with every field present and typed (a broken saved value falls back to its default)."""
+    d = DEFAULT_CONFIG["handsFree"]
+    r = raw if isinstance(raw, dict) else {}
+    mode = str(r.get("mode") or d["mode"])
+    words = [str(w).strip()[:40] for w in (r.get("wakeWords") or []) if str(w).strip()] if isinstance(r.get("wakeWords"), list) else list(d["wakeWords"])
+    return {"on": bool(r.get("on", d["on"])), "mode": mode if mode in HANDS_FREE_MODES else d["mode"], "wakeWords": words[:8],
+            "speak": bool(r.get("speak", d["speak"])), "keepScreenOn": bool(r.get("keepScreenOn", d["keepScreenOn"]))}
 
 
 def save_config(cfg: dict[str, Any]) -> None:

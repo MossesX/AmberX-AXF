@@ -149,6 +149,19 @@ ok(!run('assets.reset', ['control.console.write']).ok, 'write does not cover a d
 /* ---- messages ---- */
 ok(consoleMessageErrors({ $axf: 'console-command@1', op: 'open', kind: 'action', target: 'x' }).length === 1, 'open of an action refused');
 ok(consoleMessageErrors({ $axf: 'console-command@1', op: 'explode' }).length === 1, 'unknown op refused');
+
+/* ---- setting values (console.settings act read / change, build ai-assistant-console-api) ---- */
+const rd = runConsoleCommand({ op: 'act', target: 'console.settings', path: 'ai-assistant.approvalsBadge', action: 'read', by: 'claude' }, ctx);
+ok(rd.ok && rd.deliver!.message.op === 'setting' && rd.deliver!.message.key === 'ai-assistant.approvalsBadge' && rd.deliver!.message.value === undefined, 'read → a setting message with the key and no value');
+eq(consoleMessageErrors(rd.ok ? rd.deliver!.message : null), [], 'the read message is valid');
+const ch = runConsoleCommand({ op: 'act', target: 'console.settings', path: 'ai-assistant.approvalsBadge', action: 'change', input: { value: false }, by: 'claude' }, ctx);
+ok(ch.ok && ch.deliver!.message.value === 'false' && (ch.data as { changed: string[] }).changed[0] === 'ai-assistant.approvalsBadge', 'change → the value as JSON text, the key in changed');
+eq(consoleMessageErrors(ch.ok ? ch.deliver!.message : null), [], 'the change message is valid');
+ok(!runConsoleCommand({ op: 'act', target: 'console.settings', path: 'ai-assistant.approvalsBadge', action: 'change', by: 'claude' }, ctx).ok, 'change without a value is refused');
+ok(!runConsoleCommand({ op: 'act', target: 'console.settings', path: 'not a key!', action: 'read', by: 'claude' }, ctx).ok, 'a bad key is refused');
+ok(gated({ op: 'act', target: 'console.settings', path: 'x.y', action: 'read', by: 'claude' }, ['control.console.read']).ok, 'read passes the gate with console read');
+ok(!gated({ op: 'act', target: 'console.settings', path: 'x.y', action: 'change', input: { value: 1 }, by: 'claude' }, ['control.console.read']).ok, 'change needs console write');
+ok(consoleMessageErrors({ $axf: 'console-command@1', op: 'setting', key: 'x.y', value: '{bad' }).length === 1, 'a setting value that is not JSON is refused');
 ok(consoleMessageErrors({ op: 'back' }).length === 1, 'frame required');
 eq(consoleMessage({ op: 'back' }, { id: 'x', by: 'me', now: NOW }), { $axf: 'console-command@1', id: 'x', op: 'back', by: 'me', at: new Date(NOW).toISOString() }, 'message shape');
 eq(CONSOLE_TOOLS.length, 9, 'nine MCP shortcut tools');

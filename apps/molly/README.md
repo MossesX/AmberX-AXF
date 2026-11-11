@@ -25,6 +25,12 @@ Big Dog profile, Opus; a Fable version comes later as its own build).
 - **Toolbar designer** (`plugins/toolbar-designer`, capability `axf.toolbar-designer@1`): picks what each toolbar holds
   from every app and screen and where each item opens (main area, floating window, pane); from its settings tab, View
   → Toolbar designer and right-click on any toolbar. <!-- axf-plugin:toolbar-designer -->
+- **AI assistant** (`plugins/assistant`): the Dev Console's assistant inside Molly, owned by Molly. It frames the console
+  plugin's own chat page (`?axf-embed=molly&axf-embed-page=view:ai-assistant`) as a Molly view and a floating window
+  (Molly menu → AI assistant; actions `molly-assistant.open | page | hands-free`) and tells the console frame it owns
+  the assistant (`ai-assistant-host@1` over postMessage), so Ask the assistant anywhere in the console opens Molly's
+  window and the console never draws a second copy. Hands-free voice and the console control API are the console
+  plugin's (Settings → Plugins → AI assistant there). <!-- axf-plugin:assistant -->
 - **Banners** (`plugins/banners`): Molly's one banner region. The Dev Console draws its own live banners and banner chips
   in a strip (its banner-strip page, `framework/react/bannerStrip.ts`) in Molly's `app.frame.banners` slot; a dialog or
   menu it opens covers Molly's window, a view it opens opens in the console's frame. Settings → Plugins → Banners

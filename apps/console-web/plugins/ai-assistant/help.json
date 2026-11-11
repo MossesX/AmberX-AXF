@@ -20,6 +20,24 @@
         "draft": true
       },
       {
+        "target": "action:ai-assistant.hands-free",
+        "title": "Hands-free voice on / off",
+        "text": "Flips hands-free voice: the assistant listens all the time for its wake word (its name, Molly, Amber or your own words), sends what you say, and reads the reply out loud. The same switch as the microphone toggle in every chat header and Settings → Plugins → AI assistant → Hands-free voice; also PUT /api/plugins/ai-assistant/hands-free, MCP ai-assistant_hands-free and the CLI axf ai-assistant hands-free.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "hands-free-voice",
+        "title": "Hands-free voice",
+        "text": "Tap once to listen all the time, tap again to stop. Breathes while listening, glows while a reply is read out; the tooltip shows the last sentence heard. Wake mode wants the wake word first (“Molly, open the builds”); talk mode sends every sentence. A phone's browser needs the screen on (hands-free holds a wake lock); inside the AmberX app it keeps listening with the screen off.",
+        "kind": "button"
+      },
+      {
+        "target": "console-tools",
+        "title": "Drive the console",
+        "text": "With the Console tool group on (Settings → Plugins → AI assistant → Tools), the assistant opens any screen, dialog or settings tab in your open console, reads and changes any setting, runs console actions and plugin commands, files builds and sends any control@1 command (tokens, AmberX notes, plans). Owner only. Anything that deletes or resets asks you first and runs only after you say yes.",
+        "kind": "section"
+      },
+      {
         "target": "open-the-setup-wizard",
         "title": "Open the setup wizard",
         "text": "Opens the setup wizard. Part of AI assistant.",

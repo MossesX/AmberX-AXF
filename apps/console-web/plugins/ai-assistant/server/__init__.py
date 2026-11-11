@@ -251,6 +251,17 @@ def tools_root() -> Path:
 
 plugin_services.provide("axf.llm@1", LlmService(), FOLDER)
 
+
+def _control_run(command: dict[str, Any], by: str) -> dict[str, Any]:
+    """control@1 through the capability (the Token control plugin), looked up per call so installs and switches follow."""
+    svc = plugin_services.get("control@1")
+    if svc is None:
+        return {"$axf": "control@1", "ok": False, "code": "not_implemented", "message": "the console control API isn't available: the Token control plugin (control@1) is off or not installed"}
+    return svc.run({"$axf": "control@1", **command}, ["*"], by)
+
+
+tools.set_control_runner(_control_run)
+
 # Live sessions (live-session@1): every conversation is a session owned by its host; replies run detached from the
 # browser and viewers reattach + replay. Hosts are an open registry: `local` is built, `axhub` is a placeholder until a
 # module provides `axf.live-host@1`. See axf.assistant_host.sessions and framework/spec/LIVE-SESSIONS.md.
@@ -315,6 +326,12 @@ def _system_prompt(cfg: dict[str, Any], conv: dict[str, Any], agent: dict[str, A
             parts.append(persona)
     if any(t["name"].startswith("repo_") for t in tool_specs):
         parts.append("You can read the AXF repository with repo_list, repo_read and repo_search. Read files before making claims about the code, and cite paths.")
+    if any(t["name"] in tools.CONSOLE_NAMES for t in tool_specs):
+        parts.append("You can drive the owner's open console: console_open shows any screen, dialog or settings tab (console_list finds names), console_where says where it is, "
+                     "console_setting_get / console_setting_set read and change any setting, console_action runs a console action, build_file files a build, and control sends any "
+                     "control@1 command (tokens, AmberX notes and to-dos, plans, builds, plugin commands). When asked to open or show something, do it with the tool rather than describing "
+                     "where it is, then say in one short line what you opened. A command that deletes or resets answers confirmation_required: explain it and resend with the confirm token "
+                     "only after the owner clearly says yes. Spoken (voice) replies are read out loud: keep them to one or two short sentences.")
     if cfg.get("instructions", "").strip() and not agent:
         parts.append(f"Owner instructions:\n{cfg['instructions'].strip()}")
     if st.get("systemPrompt", "").strip():
@@ -512,7 +529,8 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
                 agent = {**agent, "tools": []}
         groups = dict(cfg.get("tools", {}))
         if not me.admin:
-            groups = {g: bool(v) and me.can("assistant.web" if g == "web" else "assistant.tools") for g, v in groups.items()}
+            # The console group drives the owner's open console and every control@1 target: the owner only.
+            groups = {g: bool(v) and g != tools.CONSOLE_GROUP and me.can("assistant.web" if g == "web" else "assistant.tools") for g, v in groups.items()}
         context = contract.normalize_chat_context(body.get("context"))
         tool_on = st.get("tools", True) is not False
         base_specs = tools.specs(groups) if tool_on else []
@@ -599,7 +617,7 @@ def run_turn(cid: str, body: dict[str, Any], caller: "wall.Caller | None" = None
                 if name in agent_tools and svc:
                     res = str(svc.run_tool(agent_id, name, args, {"conversationId": cid, "turnId": turn_id, "stage": stage}))
                 elif name in tools.BUILTIN_NAMES and any(sp["name"] == name for sp in tool_specs):
-                    res = tools.run(name, args)
+                    res = tools.run(name, args, by=f"ai-assistant:{me.name}", reason=f"AI assistant chat: {user_text[:120]}")
                 else:
                     raise ValueError(f"tool {name} is not available")
                 return True, res[:50_000]
@@ -854,7 +872,8 @@ def status() -> dict[str, Any]:
             "defaultProfile": default, "profiles": len(profs), "ready": len(ready), "cliInstalled": providers.cli_available(),
             "integrations": {"agents": bool(svc) and cfg.get("agentIntegration", True), "agentCount": len(agents)},
             "agents": agents, "defaultAgent": cfg.get("defaultAgent", ""), "tokensToday": store.tokens_today(), "budget": cfg.get("dailyTokenBudget", 0),
-            "suggestions": cfg.get("suggestions", []), "prompts": cfg.get("prompts", []), "showUsage": cfg.get("showUsage", True), "defaultToolMode": chatmode.normalize(cfg.get("chatMode"))["default"]}
+            "suggestions": cfg.get("suggestions", []), "prompts": cfg.get("prompts", []), "showUsage": cfg.get("showUsage", True), "defaultToolMode": chatmode.normalize(cfg.get("chatMode"))["default"],
+            "handsFree": cfg["handsFree"], "consoleControl": plugin_services.get("control@1") is not None and bool(cfg["tools"].get(tools.CONSOLE_GROUP))}
 
 
 @router.get("/catalog")
@@ -892,7 +911,7 @@ def get_config() -> dict[str, Any]:
 _CONFIG_KEYS = {"userDailyTokens": int, "setupComplete": bool, "assistantName": str, "persona": str, "instructions": str, "defaultProfile": str, "fallback": list,
                 "params": dict, "contextMessages": int, "tools": dict, "maxToolRounds": int, "autoTitle": bool, "showUsage": bool, "keepInterrupted": bool,
                 "showThinking": bool, "redactSecrets": bool, "dailyTokenBudget": int, "agentIntegration": bool, "defaultAgent": str,
-                "suggestions": list, "prompts": list, "sessionHost": str, "chatMode": dict}
+                "suggestions": list, "prompts": list, "sessionHost": str, "chatMode": dict, "handsFree": dict}
 
 
 @router.put("/config")
@@ -922,6 +941,8 @@ def put_config(body: dict[str, Any]) -> dict[str, Any]:
             v = [str(s)[:200] for s in v][:12]
         if k == "chatMode":
             v = chatmode.normalize({**cfg.get("chatMode", {}), **v})
+        if k == "handsFree":
+            v = store.normalize_hands_free({**cfg.get("handsFree", {}), **v})
         if k == "sessionHost" and _hosts().get(v) is None:
             raise HTTPException(400, "unknown session host")
         if k == "fallback":
@@ -931,6 +952,30 @@ def put_config(body: dict[str, Any]) -> dict[str, Any]:
     cfg["maxToolRounds"] = max(1, min(int(cfg.get("maxToolRounds") or 12), 50))
     store.save_config(cfg)
     return store.public_config(cfg)
+
+
+# ---------------------------------------------------------------- routes: hands-free voice (build ai-assistant-console-api)
+# One switch for the owner's chat windows (settings tab, chat header mic, REST, MCP ai-assistant_hands-free, CLI
+# `axf ai-assistant hands-free`, AmberX). The web side polls it, so a change made anywhere reaches every open chat.
+
+@router.get("/hands-free")
+def hands_free() -> dict[str, Any]:
+    return {"handsFree": store.load_config()["handsFree"]}
+
+
+@router.put("/hands-free")
+def put_hands_free(body: dict[str, Any] | None = None) -> dict[str, Any]:
+    b = body if isinstance(body, dict) else {}
+    cfg = store.load_config()
+    cur = cfg["handsFree"]
+    change = {k: b[k] for k in ("on", "mode", "wakeWords", "speak", "keepScreenOn") if k in b}
+    if "toggle" in b and b["toggle"]:
+        change["on"] = not cur["on"]
+    if "mode" in change and str(change["mode"]) not in store.HANDS_FREE_MODES:
+        raise HTTPException(400, "mode must be wake or talk")
+    cfg["handsFree"] = store.normalize_hands_free({**cur, **change})
+    store.save_config(cfg)
+    return {"handsFree": cfg["handsFree"], "changed": sorted(change)}
 
 
 # ---------------------------------------------------------------- routes: provider profiles

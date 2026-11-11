@@ -23,7 +23,10 @@ export type {
 } from '@console/axf/core';
 export { TOOL_MODES, applyStreamEvent, contextExtra, emptyLiveReply, normalizeChatContext, turnModeLabel, watchReply } from '@console/axf/core';
 export type { LiveSessionInfo } from '@console/axf/core';
-export type Status = AssistantStatus;
+/** Hands-free voice (handsfree.ts): the server switch every chat window follows. */
+export interface HandsFreeConfig { on: boolean; mode: 'wake' | 'talk'; wakeWords: string[]; speak: boolean; keepScreenOn: boolean }
+/** The console's status plus what this plugin adds: the hands-free switch and whether the console control API is on. */
+export type Status = AssistantStatus & { handsFree?: HandsFreeConfig; consoleControl?: boolean };
 
 export interface PromptItem { id: string; title: string; shortcut: string; text: string }
 export interface Params { temperature: number | null; max_tokens: number | null; top_p: number | null; thinking: boolean; thinking_budget: number; reasoning_effort: string }
@@ -35,6 +38,7 @@ export interface Config {
   params: Params; contextMessages: number; tools: Record<string, boolean>; maxToolRounds: number; autoTitle: boolean; showUsage: boolean;
   showThinking: boolean; redactSecrets: boolean; dailyTokenBudget: number; agentIntegration: boolean; defaultAgent: string; userDailyTokens: number; keepInterrupted: boolean;
   suggestions: string[]; prompts: PromptItem[]; profiles: ProviderProfile[]; sessionHost?: string; schema?: number;
+  handsFree?: HandsFreeConfig;
 }
 export interface Catalog { providers: ProviderKind[]; protocols: string[]; personas: string[]; toolGroups: Record<string, string>; cliInstalled: boolean }
 export interface SessionHostInfo { id: string; label: string; available: boolean; note: string }

@@ -13,6 +13,7 @@ import { ActivityIcon, useReportActivity } from './activity';
 import { MoreMenu } from './more';
 import { ChatSettingsDialog } from './settings';
 import { VoiceMicStandIn } from './voicemic';
+import { attachHandsFree, setAssistantName, setHandsFree, useHandsFree } from './handsfree';
 import {
   APPROVALS_BADGE_KEY, FOLDER, TOOL_MODES, call, client, consoleHub, emptyLiveReply, fileToImage, fmtNum, fmtTime, normalizeChatContext, post, statusStore, turnModeLabel, watchReply,
   type ConvSettings, type ConvSummary, type Conversation, type Ctx, type Image, type LiveReply, type Message, type Status, type WriteMode,
@@ -120,6 +121,10 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
   const settingsRef = useRef<(s: Partial<ConvSettings>) => Promise<void>>(async () => undefined);
   const voiceSlot = useSlotFilled('assistant.mic');
   const voiceProps = useMemo(() => ({ agentId: activeAgent?.id ?? '', agentName: activeAgent?.name ?? '', compact: !!compact }), [activeAgent?.id, activeAgent?.name, compact]);
+  // Hands-free voice (handsfree.ts): this window follows the server switch while it is open; the header has the toggle.
+  const hf = useHandsFree();
+  useEffect(() => attachHandsFree(), []);
+  useEffect(() => { if (status?.assistantName) setAssistantName(status.assistantName); }, [status?.assistantName]);
   useEffect(() => {
     const tell = () => window.dispatchEvent(new CustomEvent('axf:assistant.agent', { detail: { window: winId.current, agentId: agentRef.current.id, agentName: agentRef.current.name, open: true } }));
     tell();
@@ -392,6 +397,14 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
           {/* axHub approvals + held calls (lib-approvals): nothing drawn while nothing waits; click = popover with
               Approve / Decline (the hub's own page, framed: the hub allows the console's origin) or countdown + Deny. */}
           {rt.settings.get(APPROVALS_BADGE_KEY) !== false && <ApprovalsBadge resolveHub={consoleHub} frame className="axp-ai-assistant__approvals" />}
+          {/* Hands-free voice: one tap on, one tap off (the same switch as Settings → AI assistant → Hands-free voice). */}
+          <button type="button" className={`fx-iconbtn axp-ai-assistant__hf${hf.cfg.on ? ' is-on' : ''}${hf.listening ? ' is-listening' : ''}${hf.speaking ? ' is-speaking' : ''}`}
+            aria-pressed={hf.cfg.on} aria-label={hf.cfg.on ? 'Hands-free voice: on (tap to stop listening)' : 'Hands-free voice: off (tap to listen all the time)'}
+            title={hf.cfg.on ? `Hands-free is on: ${hf.speaking ? 'speaking' : hf.listening ? 'listening' : 'waiting for the microphone'}${hf.error ? ` · ${hf.error}` : ''}${hf.heard ? ` · heard “${hf.heard.slice(0, 60)}”` : ''}. Tap to turn it off.` : 'Hands-free voice: listen all the time and read replies out loud. Tap to turn it on; settings in Settings → AI assistant.'}
+            onClick={() => void setHandsFree({ toggle: true }).catch((e: Error) => setErr(e.message))}>
+            <Icon name={hf.cfg.on ? 'mic' : 'mic-off'} size={16} />
+            {hf.cfg.on && <span className="axp-ai-assistant__hf-dot" aria-hidden="true" />}
+          </button>
           {/* Title-bar extension point: e.g. the agent voice plugin's live status light + speech controls. */}
           <Slot name="assistant.head" props={voiceProps} />
           {live && <span className="axp-ai-assistant__livepill" title="This reply runs on its host: closing the chat only detaches, and any device can follow it."><Icon name="cloud" size={12} /> live</span>}

@@ -132,6 +132,17 @@ function runMessage(rt: AxfRuntime, m: ConsoleMessage, history: string[]): [bool
       rt.closeDialog();
       return [true, `closed ${m.label ?? open.id}`];
     }
+    case 'setting': {
+      // a setting's value in this console (build ai-assistant-console-api): read answers it as JSON text, a value sets it
+      const key = m.key!;
+      if (m.value === undefined) return [true, JSON.stringify(rt.settings.get(key) ?? null)];
+      let v: unknown;
+      try { v = JSON.parse(m.value); } catch { return [false, `${key}: the value is not JSON`]; }
+      const okList = Array.isArray(v) && v.every((x) => typeof x === 'string');
+      if (v !== null && typeof v === 'object' && !okList) return [false, `${key}: a setting holds a string, number, boolean, null or a list of strings, not an object`];
+      rt.settings.set(key, v as string | number | boolean | string[] | null);
+      return [true, `set ${key} = ${JSON.stringify(rt.settings.get(key) ?? null)}`];
+    }
     case 'home': rt.navigate(rt.manifest.startView ?? 'home'); return [true, `went home (${rt.getState().view})`];
     case 'refresh': return [true, m.hard ? 'hard reloading (caches cleared)' : 'reloading']; // after the ack: see reloadPage
     case 'back': {

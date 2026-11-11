@@ -3,12 +3,13 @@
  * providers, behaviour, prompts, usage). The plugin never ships its own settings screen — these are settings-tab panels.
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
-import { Button, Chip, Icon, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, Note, SelectField, Switch, TextField, useRuntime } from '@console/axf/react';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import {
   call, catalogStore, configStore, del, fmtNum, fmtTime, post, put, statusStore,
-  type AgentRef, type Config, type ContractInfo, type ConvSettings, type LiveSessionInfo, type SessionHostInfo, type Profile, type PromptItem, type ProviderKind, type Usage,
+  type AgentRef, type Config, type ContractInfo, type ConvSettings, type HandsFreeConfig, type LiveSessionInfo, type SessionHostInfo, type Profile, type PromptItem, type ProviderKind, type Usage,
 } from './api';
+import { attachHandsFree, setHandsFree, useHandsFree, wakeWords } from './handsfree';
 import { MoreMenu } from './more';
 
 function useStore<T>(s: { get: () => T | undefined; subscribe: (f: () => void) => () => void; reload: () => Promise<T | undefined>; error: () => string }) {
@@ -31,6 +32,46 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
 }
 function Toggle({ label, checked, onChange, hint }: { label: string; checked: boolean; onChange: (v: boolean) => void; hint?: string }) {
   return <label className="axp-ai-assistant__toggle"><input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} /><span>{label}{hint && <span className="fx-small fx-muted"> — {hint}</span>}</span></label>;
+}
+
+/* ================================================================ hands-free voice (top of the tab) */
+
+/**
+ * Settings → Plugins → AI assistant → Hands-free voice (first panel, Brett: "Easy to reach, hands free. A setting in AI
+ * assistant."). The switch is the server's (handsfree.ts): the chat header's mic toggle, REST, MCP, the CLI and AmberX
+ * flip the same one. Same thing without the UI: `PUT /api/plugins/ai-assistant/hands-free {on | toggle | mode | wakeWords
+ * | speak | keepScreenOn}`, MCP `ai-assistant_hands-free`, CLI `axf ai-assistant hands-free --on true`.
+ */
+export function HandsFreePanel() {
+  const hf = useHandsFree();
+  const [busy, setBusy] = useState(false);
+  const [words, setWords] = useState<string | null>(null);
+  useEffect(() => attachHandsFree(), []);
+  const change = async (c: Partial<HandsFreeConfig> & { toggle?: boolean }) => {
+    setBusy(true);
+    try { await setHandsFree(c); } finally { setBusy(false); }
+  };
+  const cfg = hf.cfg;
+  const state = !cfg.on ? 'Off' : hf.speaking ? 'Speaking' : hf.listening ? 'Listening' : hf.loaded ? 'On (waiting for the microphone)' : 'On';
+  return (
+    <div className="fx-stack">
+      <Switch label="Hands-free voice" checked={cfg.on} disabled={busy} onChange={(v) => void change({ on: v })} className="axp-ai-assistant__hf-switch"
+        hint={<>Always listening while a chat is open: say the wake word and your message, hear the reply read out. State: <strong>{state}</strong>{hf.heard ? <> · last heard “{hf.heard.slice(0, 80)}”</> : null}</>} />
+      {!hf.supported && <Note tone="warning">This browser has no speech recognition. Hands-free listens in Chrome, Edge and Safari, and inside the AmberX app (where it keeps listening with the screen off).</Note>}
+      {hf.error && <Note tone="warning">{hf.error}</Note>}
+      <div className="axp-ai-assistant__cols">
+        <SelectField label="Mode" value={cfg.mode} onChange={(v) => void change({ mode: v as HandsFreeConfig['mode'] })}
+          options={[{ value: 'wake', label: 'Wake word, then the message' }, { value: 'talk', label: 'Talk: every sentence is a message' }]}
+          hint={cfg.mode === 'wake' ? `Say “${wakeWords(cfg)[0] ?? 'Molly'}, …” (hey / ok before it is fine). Built in: ${wakeWords(cfg).join(', ')}.` : 'Everything you say goes to the chat. Best with the phone to yourself.'} />
+        <TextField label="Extra wake words" value={words ?? cfg.wakeWords.join(', ')} onChange={setWords} placeholder="e.g. computer, hey console"
+          hint="Comma-separated; the assistant's name, Molly and Amber always work. Saved when you leave the field." />
+      </div>
+      {words !== null && words !== cfg.wakeWords.join(', ') && <div className="fx-row"><Button size="sm" tone="primary" icon="check" disabled={busy} onClick={() => { void change({ wakeWords: words.split(',').map((w) => w.trim()).filter(Boolean) }); setWords(null); }}>Save wake words</Button><Button size="sm" onClick={() => setWords(null)}>Cancel</Button></div>}
+      <Switch label="Read replies out loud" checked={cfg.speak} disabled={busy} onChange={(v) => void change({ speak: v })} hint="With the device's voice (an installed voice plugin keeps its own voice when it is already speaking)." />
+      <Switch label="Keep the screen on while hands-free" checked={cfg.keepScreenOn} disabled={busy} onChange={(v) => void change({ keepScreenOn: v })} hint="A phone's browser stops listening when the screen goes dark; this holds a screen wake lock while hands-free is on. Inside the AmberX app the native recognizer keeps listening with the screen off." />
+      <p className="fx-small fx-muted">Also: the microphone toggle in every chat header · <code>PUT /api/plugins/ai-assistant/hands-free</code> · MCP <code>ai-assistant_hands-free</code> · CLI <code>axf ai-assistant hands-free --toggle true</code> · AmberX: “hands-free on”.</p>
+    </div>
+  );
 }
 
 /* ================================================================ in-chat settings dialog */
