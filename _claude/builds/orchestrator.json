@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-11T00:41:30.393Z",
+ "updatedAt": "2026-11-11T00:50:40.778Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -80730,16 +80730,17 @@
    "title": "Skins own everything; colour theme swaps independently inside the active skin",
    "category": "",
    "detail": "Standing rule for skins work (applies to appearance-skins-colour-themes-only-remove-design-packs, skins-restyle-everything and skins-are-a-complete-rework): a skin controls everything (look, layout, behavior, every section/asset type) and includes a colour theme section. The user can change the colour theme on its own without changing the skin: picking a colour theme applies it inside the current skin and does NOT create a new skin or fork/duplicate the skin. Skin sections stay separate; the colour theme is one switchable part. Update contracts, pickers (skin picker + colour theme picker), API/voice, and tests. Check the running builds' changes against this and fix any that make a new skin on theme change.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/skins-own-everything-colour-theme-swaps-independ",
    "pr": "#429",
+   "mergedAt": "2026-11-11T00:48:50Z",
    "priority": "P0",
    "createdAt": "2026-11-09T17:52:45.295Z",
-   "updatedAt": "2026-11-10T17:09:48.572Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-11T00:50:38.563Z",
+   "builtAt": "2026-11-11T00:50:38.563Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -80852,6 +80853,10 @@
     {
      "text": "Phase 2 done (c7fa09e2e on PR #429): fixed control@1 tokens.slots never reaching app looks (dead code in token-control writeAppearance, pre-existing on main); a colour pick now lands inside each app's skin as colorTheme, skin unchanged. Tests green. Phase 1 UI Review item stands.",
      "at": "2026-11-10T17:00:46.811Z"
+    },
+    {
+     "text": "Reconciler: PR #429 merged",
+     "at": "2026-11-11T00:50:38.563Z"
     }
    ],
    "approvals": [
@@ -91708,9 +91713,10 @@
    "pendingId": "",
    "branch": "claude/orchestrator-hold-status-archive-tab-deleted-tab",
    "pr": "#463",
+   "mergedAt": "2026-11-11T00:48:50Z",
    "priority": "P0",
    "createdAt": "2026-11-10T17:07:33.143Z",
-   "updatedAt": "2026-11-10T18:38:52.562Z",
+   "updatedAt": "2026-11-11T00:50:38.563Z",
    "builtAt": "",
    "notes": [
     {
@@ -91736,6 +91742,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-10T18:38:52.562Z"
+    },
+    {
+     "text": "Reconciler: PR #463 merged",
+     "at": "2026-11-11T00:50:38.563Z"
     }
    ],
    "approvals": [],
@@ -94841,9 +94851,10 @@
    "pendingId": "",
    "branch": "claude/land-all-97-built-but-unmerged-builds-skins-firs",
    "pr": "#474",
+   "mergedAt": "2026-11-11T00:48:50Z",
    "priority": "P0",
    "createdAt": "2026-11-10T20:43:36.267Z",
-   "updatedAt": "2026-11-11T00:20:00.797Z",
+   "updatedAt": "2026-11-11T00:50:38.563Z",
    "builtAt": "",
    "notes": [
     {
@@ -94893,6 +94904,10 @@
     {
      "text": "Paused: superseded by merge-review-one-by-one-every-built-but-unmerged. Brett decides each built build one at a time (merge, skip or rebuild); nothing lands without his yes.",
      "at": "2026-11-11T00:20:00.797Z"
+    },
+    {
+     "text": "Reconciler: PR #474 merged",
+     "at": "2026-11-11T00:50:38.563Z"
     }
    ],
    "approvals": [],

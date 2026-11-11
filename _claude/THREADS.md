@@ -776,9 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 20:45 UTC · `finish-and-land-the-git-status-board-every-ready` note (all) · orchestrator
-- 2026-11-10 20:45 UTC · `inline-element-editing-plugin-right-click-any-el` s7 done (all) · orchestrator
-- 2026-11-10 20:46 UTC · `open-any-website-by-voice-on-the-phone-optionall` added (0 steps) (all) · console
 - 2026-11-10 20:46 UTC · `open-any-website-by-voice-on-the-phone-optionall` → queued, note (all) · console
 - 2026-11-10 20:47 UTC · `no-veto-timer-on-navigation-follow-amber-open-x` note (all) · orchestrator
 - 2026-11-10 20:47 UTC · `no-veto-timer-on-navigation-follow-amber-open-x` note (all) · builds-live
@@ -1176,6 +1173,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-11 00:38 UTC · `ai-assistant-in-molly-console-drives-by-api-open` s3 done, → built (all) · orchestrator
 - 2026-11-11 00:38 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
 - 2026-11-11 00:41 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
+- 2026-11-11 00:50 UTC · `skins-own-everything-colour-theme-swaps-independ` → complete, merged, note (all) · reconciler
+- 2026-11-11 00:50 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` merged, note (all) · reconciler
+- 2026-11-11 00:50 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` merged, note (all) · reconciler
 
 ## Token passes (log)
 
