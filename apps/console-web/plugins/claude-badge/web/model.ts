@@ -97,6 +97,18 @@ export const labelOf = (read: Read, kind: BadgeKind) => { const v = read(keyOf(k
 export const orderOf = (read: Read, kind: BadgeKind) => { const v = Number(read(keyOf(kind, 'order'))); return Number.isFinite(v) && read(keyOf(kind, 'order')) !== undefined ? v : BADGES[kind].order; };
 export const sideOf = (read: Read, kind: BadgeKind) => { const v = read(keyOf(kind, 'side')); return v === 'left' || v === 'right' ? v : BADGES[kind].side; };
 
+/** The connection badges (everything but the usage meter). The banner guard test requires them on the bar by default. */
+export const CONNECTION_KINDS: BadgeKind[] = ['console', 'vps', 'axhub', 'amberx'];
+
+/** What one badge attaches to the banner (rt.attachToBanner), from its settings. One source for the plugin and its tests. */
+export function badgeAttachment(read: Read, kind: BadgeKind, origin: string) {
+  const d = BADGES[kind];
+  return {
+    type: 'badge' as const, id: d.id, at: sideOf(read, kind), order: orderOf(read, kind), origin,
+    widget: { label: d.title, priority: 8, aliases: d.aliases, ...(kind === 'usage' ? { size: 'wide' as const } : {}) },
+  };
+}
+
 export interface TapPlan { do: 'drop' | 'dispatch' | 'toggle' | 'none'; spec?: string; key?: string }
 /** What a tap does right now. A screen is an action (`x.open`, `settings.open:x`) or a view id; a bad setting does nothing. */
 export function tapPlan(read: Read, kind: BadgeKind): TapPlan {

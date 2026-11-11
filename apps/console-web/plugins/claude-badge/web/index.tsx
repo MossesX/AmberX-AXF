@@ -8,7 +8,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
 
 import { ASSET_ID as HUB_ASSET, COUNTER as HUB_COUNTER } from '@console/axf/libs/hubstatus';
-import { BADGES, CHIPS, ICONS, KINDS, STATE_IDS, STATE_NAMES, TAPS, TONES, iconKey, iconOf, keyOf, labelOf, meterText, orderOf, shapeOf, shownOf, sideOf, statusWord, tapPlan, typeWord } from './model';
+import { BADGES, CHIPS, ICONS, KINDS, STATE_IDS, STATE_NAMES, TAPS, TONES, badgeAttachment, iconKey, iconOf, keyOf, labelOf, meterText, shapeOf, shownOf, statusWord, tapPlan, typeWord } from './model';
 import type { BadgeKind, BadgeState, BadgeTone, UsageAccount, UsageResult, UsageWindow } from './model';
 import './badges.css';
 
@@ -133,11 +133,11 @@ function paint(rt: AxfRuntime, kind: BadgeKind) {
   const key = `badge:${d.id}`;
   if (!shownOf(read(rt), kind)) { rt.detachFromBanner(key); delete placed[kind]; return; }
   rt.registry.register(ASSETS[kind](rt) as never, 'app', ID);
-  const at = sideOf(read(rt), kind); const order = orderOf(read(rt), kind);
-  const place = `${at}:${order}`;
+  const a = badgeAttachment(read(rt), kind, ID);
+  const place = `${a.at}:${a.order}`;
   if (placed[kind] && placed[kind] !== place) rt.detachFromBanner(key);
   placed[kind] = place;
-  rt.attachToBanner({ type: 'badge', id: d.id, at, order, origin: ID, widget: { label: d.title, priority: 8, aliases: d.aliases, ...(kind === 'usage' ? { size: 'wide' as const } : {}) } });
+  rt.attachToBanner(a);
 }
 
 /** Run the connection test, repaint the badge and pop the tooltip out for 5 s. */
