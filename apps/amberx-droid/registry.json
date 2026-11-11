@@ -1,0 +1,313 @@
+{
+ "$axf": "control-registry@1",
+ "note": "AmberX (apps/amberx-droid) in the control registry (build full-api-cli-control-of-everything-plus-an-offli, s13): the Android app and its intents (launcher, video share) from its AndroidManifest, its phone-side tools through axHub's AmberX connection (provider:amberx/<op> = amberx.<op>: open a page on the phone, the session recorder), and its notes, to-dos and tasks through control@1 amberx.items. Its web-view plugin actions are collected from its plugins and carry a gap: they run inside the app until AmberX joins the command channel. Voice: a phrase goes to POST /api/control/resolve (control_resolve, axf ctl resolve), deterministic first, Claude only behind the gate; wiring AmberX's own voice fallback to it is deferred (framework/spec/PORTING.md). Merged by id.",
+ "entries": [
+  {
+   "id": "amberx-droid/app/amberx",
+   "type": "app",
+   "label": "AmberX",
+   "description": "The AmberX Android app (ai.amberx.droid): voice, notes, to-dos, tasks, approvals, the session recorder. Reached from the console through axHub's AmberX connection (amberx.*: open a page on the phone, the recorder), its data through control@1 amberx.items / amberx.lists, and on the phone by its launcher intent. Its in-app plugin actions run inside its web view (gaps say so).",
+   "where": {
+    "app": "amberx-droid",
+    "file": "apps/amberx-droid/android/app/src/main/AndroidManifest.xml"
+   },
+   "open": {
+    "kind": "intent",
+    "target": "intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=ai.amberx.droid;end",
+    "deepLink": "intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=ai.amberx.droid;end"
+   },
+   "state": {
+    "read": "provider:amberx/recorder_status",
+    "shape": "is the phone connected, is it recording"
+   },
+   "actions": [
+    {
+     "id": "launch",
+     "label": "Open AmberX (Android)",
+     "effect": "navigate",
+     "run": "intent:intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=ai.amberx.droid;end",
+     "phrases": [
+      "open amberx"
+     ]
+    },
+    {
+     "id": "status",
+     "label": "Is the phone connected",
+     "effect": "read",
+     "run": "provider:amberx/recorder_status",
+     "phrases": [
+      "is my phone connected"
+     ]
+    }
+   ],
+   "synonyms": [
+    "amberx",
+    "amber x",
+    "the phone app",
+    "droid"
+   ],
+   "tags": [
+    "app",
+    "android"
+   ]
+  },
+  {
+   "id": "amberx-droid/page/home",
+   "type": "page",
+   "label": "AmberX approvals",
+   "description": "AmberX's home screen: what axHub waits on.",
+   "where": {
+    "app": "amberx-droid",
+    "file": "apps/amberx-droid/src/App.tsx",
+    "view": "home"
+   },
+   "open": {
+    "kind": "intent",
+    "target": "intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=ai.amberx.droid;end",
+    "deepLink": "intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=ai.amberx.droid;end"
+   },
+   "actions": [
+    {
+     "id": "open",
+     "label": "Open AmberX approvals",
+     "effect": "navigate",
+     "run": "intent:intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=ai.amberx.droid;end",
+     "phrases": [
+      "open amberx approvals"
+     ]
+    }
+   ],
+   "parent": "amberx-droid/app/amberx",
+   "tags": [
+    "page"
+   ],
+   "gaps": [
+    {
+     "what": "deepLink",
+     "why": "the app declares only its launcher intent: no deep link opens one screen yet",
+     "plan": "an axf-view intent filter in AmberX (deferred twin, framework/spec/PORTING.md)"
+    }
+   ]
+  },
+  {
+   "id": "amberx-droid/tool/phone",
+   "type": "tool",
+   "label": "AmberX on the phone",
+   "description": "Open a page on Brett's phone through AmberX (axHub amberx.open_url): the console uses it to wake a console; any https page works.",
+   "where": {
+    "app": "amberx-droid",
+    "connection": "axhub"
+   },
+   "actions": [
+    {
+     "id": "open-url",
+     "label": "Open a page on the phone",
+     "effect": "write",
+     "run": "provider:amberx/open_url",
+     "params": [
+      {
+       "name": "url",
+       "type": "url",
+       "pattern": "^https://[^\\s]{1,2000}$",
+       "required": true,
+       "position": 0
+      },
+      {
+       "name": "browser",
+       "type": "enum",
+       "enum": [
+        "chrome",
+        "amberx"
+       ],
+       "default": "chrome",
+       "description": "chrome, or AmberX's own web view"
+      }
+     ],
+     "phrases": [
+      "open {url} on my phone"
+     ]
+    }
+   ],
+   "parent": "amberx-droid/app/amberx",
+   "synonyms": [
+    "phone"
+   ],
+   "tags": [
+    "tool",
+    "provider"
+   ]
+  },
+  {
+   "id": "amberx-droid/tool/recorder",
+   "type": "tool",
+   "label": "AmberX session recorder",
+   "description": "AmberX records each Claude session and transcribes every part (axHub amberx.recorder_*). Android's capture prompt and Brett's own mic switch still decide.",
+   "where": {
+    "app": "amberx-droid",
+    "connection": "axhub"
+   },
+   "state": {
+    "read": "provider:amberx/recorder_status"
+   },
+   "actions": [
+    {
+     "id": "status",
+     "label": "Recorder status",
+     "effect": "read",
+     "run": "provider:amberx/recorder_status"
+    },
+    {
+     "id": "start",
+     "label": "Start recording",
+     "effect": "write",
+     "run": "provider:amberx/recorder_start",
+     "phrases": [
+      "start recording the session"
+     ]
+    },
+    {
+     "id": "stop",
+     "label": "Stop recording",
+     "effect": "write",
+     "run": "provider:amberx/recorder_stop",
+     "phrases": [
+      "stop recording the session"
+     ]
+    }
+   ],
+   "parent": "amberx-droid/app/amberx",
+   "synonyms": [
+    "recorder",
+    "recording"
+   ],
+   "tags": [
+    "tool",
+    "provider"
+   ]
+  },
+  {
+   "id": "amberx-droid/tool/share-video",
+   "type": "tool",
+   "label": "Share a video to AmberX",
+   "description": "AmberX takes shared videos (SEND / SEND_MULTIPLE video/*) for audio extraction.",
+   "where": {
+    "app": "amberx-droid",
+    "file": "apps/amberx-droid/android/app/src/main/AndroidManifest.xml"
+   },
+   "open": {
+    "kind": "intent",
+    "target": "intent:#Intent;action=android.intent.action.SEND;type=video/*;package=ai.amberx.droid;end",
+    "deepLink": "intent:#Intent;action=android.intent.action.SEND;type=video/*;package=ai.amberx.droid;end"
+   },
+   "actions": [
+    {
+     "id": "share",
+     "label": "Share a video to AmberX",
+     "effect": "navigate",
+     "run": "intent:intent:#Intent;action=android.intent.action.SEND;type=video/*;package=ai.amberx.droid;end"
+    }
+   ],
+   "parent": "amberx-droid/app/amberx",
+   "tags": [
+    "tool",
+    "android"
+   ]
+  },
+  {
+   "id": "amberx-droid/tool/items",
+   "type": "tool",
+   "label": "AmberX notes, to-dos and tasks",
+   "description": "AmberX's notes, to-dos, tasks and lists are control@1 targets: list, add, change, done, move, remove from every surface.",
+   "where": {
+    "app": "amberx-droid"
+   },
+   "state": {
+    "read": "control:amberx.items/list"
+   },
+   "actions": [
+    {
+     "id": "list",
+     "label": "List notes, to-dos and tasks",
+     "effect": "read",
+     "run": "control:amberx.items/list",
+     "params": [
+      {
+       "name": "kind",
+       "type": "enum",
+       "enum": [
+        "note",
+        "todo",
+        "task"
+       ]
+      },
+      {
+       "name": "status",
+       "type": "enum",
+       "enum": [
+        "open",
+        "doing",
+        "done",
+        "not-done"
+       ]
+      },
+      {
+       "name": "q",
+       "type": "text",
+       "maxLength": 500
+      },
+      {
+       "name": "limit",
+       "type": "integer",
+       "min": 1,
+       "max": 500,
+       "default": 50
+      }
+     ],
+     "phrases": [
+      "show my {kind}s",
+      "list my notes"
+     ]
+    },
+    {
+     "id": "add",
+     "label": "Add a note, to-do or task",
+     "effect": "write",
+     "run": "control:amberx.items/add",
+     "params": [
+      {
+       "name": "kind",
+       "type": "enum",
+       "enum": [
+        "note",
+        "todo",
+        "task"
+       ],
+       "required": true,
+       "position": 0
+      },
+      {
+       "name": "title",
+       "type": "string",
+       "maxLength": 160,
+       "required": true,
+       "position": 1
+      }
+     ],
+     "phrases": [
+      "add a {kind} {title}"
+     ]
+    }
+   ],
+   "parent": "amberx-droid/app/amberx",
+   "synonyms": [
+    "notes",
+    "to-dos",
+    "todos",
+    "tasks"
+   ],
+   "tags": [
+    "tool"
+   ]
+  }
+ ]
+}

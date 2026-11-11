@@ -25,7 +25,7 @@ from typing import Any, Callable
 
 Transport = Callable[[str, dict[str, Any], "str | None"], "tuple[dict[str, Any], str | None]"]
 TOOL_RE = re.compile(r"^[a-z][a-z0-9_-]{0,40}\.[A-Za-z0-9_./-]{1,120}$")
-CONNECTIONS = ("axhub", "hostinger", "coolify", "vps")
+CONNECTIONS = ("axhub", "hostinger", "coolify", "vps", "amberx")
 ALWAYS_APPROVED = frozenset({"vps.run"})
 
 
@@ -130,7 +130,7 @@ def catalog(service: str = "") -> dict[str, Any]:
 def call(provider: str, op: str, params: dict[str, Any], *, effect: str = "write", reason: Any = None, title: str = "") -> dict[str, Any]:
     """Run one provider op through axHub. → {ok, output} | {ok: False, code, message, confirmationId?, held?}."""
     if provider not in CONNECTIONS:
-        return {"ok": False, "code": "not_found", "message": f"no provider connection '{provider}' (axhub, hostinger, coolify, vps)"}
+        return {"ok": False, "code": "not_found", "message": f"no provider connection '{provider}' (axhub, hostinger, coolify, vps, amberx)"}
     try:
         if provider == "axhub" and op == "catalog":
             return catalog(str(params.get("service") or ""))

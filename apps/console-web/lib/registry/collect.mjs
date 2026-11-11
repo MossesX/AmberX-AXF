@@ -114,7 +114,7 @@ export function collectPlugins({ apps = null } = {}) {
     const entry = reg.plugins.find((x) => x.folder === p.folder && x.app === app);
     const name = typeof m.name === 'string' && m.name.trim() ? m.name.trim() : humanize(p.folder);
     const offConsole = app !== CONSOLE;
-    const channelGap = (what) => ({ what, why: `runs inside ${app}; reached over its app channel (step s13)`, plan: 'full-api-cli-control s13' });
+    const channelGap = (what) => ({ what, why: `runs inside ${app}'s own web view: reached on the phone (its voice commands, its screens); the console reaches ${app} through axHub's AmberX connection and control@1 amberx.items, not this action`, plan: `${app} on the command channel (console-commands@1), deferred: framework/spec/PORTING.md` });
     const src = (frame) => ({ kind: 'plugin-manifest', file, ...(frame ? { frame } : {}) });
     // the plugin itself
     out.push({ id: `${app}/plugin/${p.folder}`, type: 'plugin', owner: app, label: name, description: String(m.description ?? '').slice(0, 2000), where: { app, plugin: p.folder, file },

@@ -709,7 +709,7 @@ export function resolveCli(index, argv, opts = {}) {
 function phraseRegex(phrase) {
   const slots = [];
   const src = foldPhrase(phrase.replace(/\{([a-z0-9_.-]+)\}/gi, (_, n) => { slots.push(n); return ` zzslot${slots.length - 1}zz `; })).replace(/zzslot(\d+)zz/g, '__slot$1__')
-    .split(' ').filter(Boolean).map((w) => (/^__slot\d+__$/.test(w) ? '(.+?)' : w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))).join(' ');
+    .split(' ').filter(Boolean).map((w, i, all) => (/^__slot\d+__$/.test(w) ? (i === all.length - 1 ? '(.+)' : '(.+?)') : w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))).join(' ');
   return { re: new RegExp(`(?:^| )${src}(?: |$)`), slots };
 }
 

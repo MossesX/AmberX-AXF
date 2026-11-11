@@ -163,4 +163,14 @@ Web only (Android on hold), Kotlin twins when the Android side resumes:
 dispatcher: entry normalisation, FNV-1a hashing, index diff, the JSON Schema subset validator, `resolvePhrase` /
 `resolveCli` / `resolveCommand`, `aiGate`). Web and Node only. The AmberX twin would let the phone resolve a phrase against
 an imported index without the console; until then AmberX voice phrases are collected into the index
-(`apps/console-web/lib/voice-api`) and the console resolves them. A port keeps `foldPhrase` = voice core `normalize`.
+(`apps/console-web/lib/voice-api`) and the console resolves them. A port keeps `foldPhrase` = voice core `normalize`. A phrase's last `{slot}` takes the rest of
+the sentence (Nov 11 2026); a port does the same.
+
+Also deferred for AmberX (build full-api-cli-control-of-everything-plus-an-offli, s13; no new Android or Kotlin work):
+- **voice fallback**: when AmberX's own voice matcher finds nothing, send the phrase to the console's
+  `POST /api/control/resolve` (`run: true`), so it is resolved by the registry, deterministically first and by Claude only
+  behind "Make Claude available to the console". Today the console, MCP (`control_resolve`) and `axf ctl resolve` do it.
+- **screen deep links**: an intent filter for `?axf-view=<id>` (and settings / dialog) so one AmberX screen opens from a
+  link; the registry lists AmberX screens with a `deepLink` gap until then (only the launcher intent exists).
+- **command channel**: AmberX (and Molly) as a console-commands@1 client (`app: amberx-droid`), so the in-app plugin
+  actions collected into the registry become callable over REST, MCP and the CLI; until then they carry a gap.

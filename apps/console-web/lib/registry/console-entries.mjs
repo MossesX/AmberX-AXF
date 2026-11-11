@@ -193,6 +193,8 @@ export function generatePhrases(entries) {
   const claim = (ph, key) => taken.set(ph, taken.has(ph) && taken.get(ph) !== key ? null : key);
   for (const e of entries) for (const a of e.actions ?? []) for (const ph of a.phrases ?? []) claim(foldPhrase(ph), `${e.id}#${a.id}`);
   const proposals = [];
+  const labels = new Map();
+  for (const e of entries) { const l = foldPhrase(e.label ?? ''); labels.set(l, (labels.get(l) ?? 0) + 1); }
   for (const e of entries) {
     if ((e.actions ?? []).some((a) => a.phrases?.length) || (Array.isArray(e.surfaces?.voice) && e.surfaces.voice.length)) continue;
     for (const a of e.actions ?? []) {
@@ -201,7 +203,10 @@ export function generatePhrases(entries) {
       if (!label || label.length < 3) continue;
       const verb = VERB[a.effect ?? 'write'];
       const al = foldPhrase(a.label ?? '');
-      const ph = verb ? `${verb} ${label}` : al && al.includes(label) ? al : `${foldPhrase(a.id)} ${label}`;
+      const settings = e.type === 'plugin' && a.effect === 'navigate';
+      // a label two entries share would make "<verb> <label>" pick one at random: only the action's own label is safe then
+      if (labels.get(label) > 1 && !settings && !(al && al !== label && al.split(' ').length > 2)) continue;
+      const ph = settings ? `open ${label} settings` : verb ? `${verb} ${label}` : al && al.includes(label) ? al : `${foldPhrase(a.id)} ${label}`;
       if (ph.split(' ').length < 2) continue;
       proposals.push({ e, a, ph });
       claim(ph, `${e.id}#${a.id}`);

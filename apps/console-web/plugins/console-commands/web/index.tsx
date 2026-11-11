@@ -68,6 +68,37 @@ function pickedCommand(): string {
   } catch { return ''; }
 }
 
+/**
+ * Deep links (control-registry@1 `open.deepLink`): `?axf-view=<id>`, `?axf-dialog=<id>[&axf-arg=…]`,
+ * `?axf-settings=<tab>[&anchor=…]` and `?axf-action=<id>` open what they name once, the same way a console command
+ * does, then leave the address. A link only navigates: `axf-action` runs an action only when it only opens something
+ * (open, show, settings, view, focus, help) and isn't one Brett must tap himself; anything else is refused.
+ */
+export function openDeepLink(rt: AxfRuntime): string {
+  try {
+    const u = new URL(window.location.href);
+    const p = u.searchParams;
+    const ID = /^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,120}$/;
+    const take = (k: string) => { const v = p.get(k) ?? ''; p.delete(k); return ID.test(v) ? v : ''; };
+    const view = take('axf-view'); const dialog = take('axf-dialog'); const tab = take('axf-settings'); const action = take('axf-action');
+    const arg = p.get('axf-arg') ?? ''; p.delete('axf-arg');
+    const anchor = p.get('anchor') ?? ''; if (tab) p.delete('anchor');
+    if (!view && !dialog && !tab && !action) return '';
+    window.history.replaceState(window.history.state, '', u.toString());
+    if (view) rt.search.focus({ id: `view:${view}`, kind: 'view', label: view, focus: { kind: 'view', view } });
+    if (tab) rt.search.focus({ id: `settings-tab:${tab}`, kind: 'setting', label: tab, focus: { kind: 'setting', tab, ...(anchor ? { anchor: anchor.slice(0, 200) } : {}) } });
+    if (dialog) rt.openDialog(dialog, arg ? { arg: arg.slice(0, 500) } : undefined);
+    if (action) {
+      const id = action.split(':')[0] ?? action;
+      const meta = rt.actions.list().find((a) => a.id === id)?.meta;
+      const navigates = /(^|[.:_-])(open|show|settings|view|focus|help|nav)([.:_-]|$)/i.test(id) || id === 'nav' || id === 'dialog';
+      if (!meta || meta.personOnly === true || !navigates) return `link refused: ${id} does more than open something`;
+      rt.dispatch(action);
+    }
+    return view || dialog || tab || action;
+  } catch { return ''; }
+}
+
 /** Who the toast names: the session's name when it gave one, else Amber. */
 const who = (by?: string) => (by && !['mcp', 'console', 'unknown', 'cli'].includes(by) ? by : 'Amber');
 /** "opened Terminal" → "opening Terminal" for a command that waited for this console. */
@@ -162,6 +193,7 @@ function ConsoleCommandsClient() {
     const history: string[] = [rt.getState().view];
     let catalogKey = '';
     let pick = pickedCommand();
+    openDeepLink(rt);
     const announce = (used = false) => {
       const catalog = catalogOf(rt);
       const key = `${catalog.items.length}:${catalog.items.map((i) => i.id).join(',').length}`;
