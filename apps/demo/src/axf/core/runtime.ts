@@ -770,6 +770,9 @@ export class AxfRuntime {
     const pick = id ?? this.appLook()?.skin.id ?? '';
     const skin = pick || (on ? this.skinList()[0]?.id ?? '' : '');
     if (on && !this.skinData(skin)) { this.toast(`No skin "${skin}" in this app.`, 'warning', 'Skin'); return false; }
+    // no app-look document to keep it in (a source without the layer, or the hub's copy can't be read): the skin is
+    // written into the shared look itself, so Apply always shows it
+    if (on && (!this.lookLayerOn() || this.lookStore().status() === 'failed')) return this.applySkinToShared(skin);
     if (!this.changeLook((cur) => setUseSkin(skin ? pickSkin(cur, skin) : cur, on))) return false;
     this.terminal.ok('hot-swap', on ? `skin ${skin} on for this app` : 'skin off: back to this app\'s own look');
     this.lookApplied(on ? 'skin' : 'default', skin);
@@ -1688,9 +1691,15 @@ export class AxfRuntime {
       const step = id === 'random' ? 1 + Math.floor(Math.random() * Math.max(1, list.length - 1)) : id === 'next' ? 1 : -1;
       pick = list[((cur < 0 ? (step > 0 ? -1 : 0) : cur) + step + list.length * 2) % list.length]!;
     }
-    if (this.lookLayerOn()) return this.useSkin(true, pick);
-    // a source without an app-look layer (older sources): the shared document alone is the look, so the skin is written
-    // into it slot by slot, spacing and chrome included (what applyDesignPackage did), and every app on that document follows
+    return this.useSkin(true, pick);
+  }
+
+  /**
+   * A source without an app-look layer (older sources, the hub off): the shared document alone is the look, so the skin
+   * is written into it slot by slot, spacing and chrome included (what applyDesignPackage did), and every app on that
+   * document follows.
+   */
+  private applySkinToShared(pick: string): boolean {
     if (!this.can('assets.swap')) { this.toast('Your role cannot change the look.', 'danger', 'Permission denied'); return false; }
     const s = this.registry.get(SKIN_TYPE as AssetType, pick);
     const skin = this.skinData(pick);
