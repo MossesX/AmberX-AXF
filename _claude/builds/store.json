@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3097,
- "updatedAt": "2026-11-11T00:20:00.987Z",
+ "rev": 3098,
+ "updatedAt": "2026-11-11T00:20:15.773Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -152190,7 +152190,7 @@
    "pr": "#474",
    "priority": "P0",
    "createdAt": "2026-11-10T20:43:36.267Z",
-   "updatedAt": "2026-11-11T00:19:59.124Z",
+   "updatedAt": "2026-11-11T00:20:00.797Z",
    "builtAt": "",
    "notes": [
     {
@@ -152236,6 +152236,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-10T23:37:46.993Z"
+    },
+    {
+     "text": "Paused: superseded by merge-review-one-by-one-every-built-but-unmerged. Brett decides each built build one at a time (merge, skip or rebuild); nothing lands without his yes.",
+     "at": "2026-11-11T00:20:00.797Z"
     }
    ],
    "approvals": [],
@@ -152356,7 +152360,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -157221,7 +157225,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-11T00:06:50.193Z",
-   "updatedAt": "2026-11-11T00:08:21.392Z",
+   "updatedAt": "2026-11-11T00:20:14.017Z",
    "builtAt": "",
    "notes": [
     {
@@ -157302,12 +157306,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-11T00:20:14.017Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-11T00:07:57.417Z",
-     "updatedAt": "2026-11-11T00:07:57.417Z"
+     "updatedAt": "2026-11-11T00:20:14.282Z"
     },
     {
      "id": "s2",
@@ -157365,7 +157369,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

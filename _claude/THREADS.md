@@ -773,8 +773,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 20:39 UTC · `molly-flagship-skin-premium-sellable-uncluttered` note (all) · orchestrator
-- 2026-11-10 20:39 UTC · `remove-the-old-theme-manager-style-and-layout-se` s2 done (all) · orchestrator
 - 2026-11-10 20:40 UTC · `molly-flagship-skin-premium-sellable-uncluttered` → queued, note (all) · pipeline
 - 2026-11-10 20:40 UTC · `resolve-conflicts-and-land-460-456-457-459-342` added (0 steps) (all) · console
 - 2026-11-10 20:40 UTC · `resolve-conflicts-and-land-460-456-457-459-342` → queued, note (all) · console
@@ -1173,6 +1171,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-11 00:17 UTC · `ai-assistant-in-molly-console-drives-by-api-open` PR #488 (all) · builds-live
 - 2026-11-11 00:17 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
 - 2026-11-11 00:19 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` → blocked (all) · merge-review
+- 2026-11-11 00:20 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` note (all) · merge-review
+- 2026-11-11 00:20 UTC · `merge-review-one-by-one-every-built-but-unmerged` s1 done (all) · orchestrator
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-11T00:20:00.987Z",
+ "updatedAt": "2026-11-11T00:20:15.773Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -94835,7 +94835,7 @@
    "pr": "#474",
    "priority": "P0",
    "createdAt": "2026-11-10T20:43:36.267Z",
-   "updatedAt": "2026-11-11T00:19:59.124Z",
+   "updatedAt": "2026-11-11T00:20:00.797Z",
    "builtAt": "",
    "notes": [
     {
@@ -94881,6 +94881,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-10T23:37:46.993Z"
+    },
+    {
+     "text": "Paused: superseded by merge-review-one-by-one-every-built-but-unmerged. Brett decides each built build one at a time (merge, skip or rebuild); nothing lands without his yes.",
+     "at": "2026-11-11T00:20:00.797Z"
     }
    ],
    "approvals": [],
@@ -98249,7 +98253,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-11T00:06:50.193Z",
-   "updatedAt": "2026-11-11T00:08:21.392Z",
+   "updatedAt": "2026-11-11T00:20:14.017Z",
    "builtAt": "",
    "notes": [
     {
@@ -98297,8 +98301,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-11T00:20:14.017Z",
      "note": "",
      "uid": "st-mwbd1hpl017q5l"
     },
