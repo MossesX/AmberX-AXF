@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-11T01:11:36.002Z",
+ "updatedAt": "2026-11-11T01:12:20.961Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -98446,12 +98446,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-11T01:11:27.164Z",
-   "updatedAt": "2026-11-11T01:11:31.318Z",
+   "updatedAt": "2026-11-11T01:12:19.794Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-11T01:11:31.318Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-11T01:12:19.794Z"
     }
    ],
    "approvals": [],
@@ -98468,7 +98472,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Skins become a first-class category in the asset store. Skin browser: grid of every skin with live preview thumbnails, search/filter, apply to an app or everywhere, favourite, duplicate, delete, import/export. Skin editor: edit a skin's look, layout, behaviour, background asset and colour theme with a live preview; save as new or overwrite; ties into asset overrides (apply-skin override dialog). Open from Settings > Appearance, the banner Skins context menu and the asset store. Full API/MCP/CLI/voice parity. Safe merge: rebase on current main, never overwrite newer code.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwbfc9xu010vsh"
+    },
+    {
+     "id": "s2",
+     "text": "Get the skin stuff done. In the asset store, the skins.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwbfc9xu02zh4h"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/skins-in-the-asset-store-skin-browser-skin-edito.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/skins-in-the-asset-store-skin-browser-skin-edito.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwbfc9xu03kft4"
+    }
+   ]
   }
  ]
 }
