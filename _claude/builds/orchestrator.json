@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-11T00:36:05.713Z",
+ "updatedAt": "2026-11-11T00:36:15.179Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -98015,7 +98015,7 @@
    "title": "AI assistant in Molly + console drives by API (open screens, change settings) + hands-free voice setting",
    "category": "",
    "detail": "Amends the AI assistant build (#482). 1) AI assistant runs in Molly too (same plugin, Molly owns it, no double render). 2) Give it the full console control API as tools: open/jump to any screen, open dialogs, read and change any setting, run console commands, file/queue builds; uses control@1 + the registry. 3) Hands-free: a switch in AI assistant settings, 'Hands-free voice', easy to reach (top of settings plus a mic toggle in the chat header): always-listening wake/talk mode, replies spoken, works with the screen off on the phone. Notify on AmberX at each stage.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -98023,7 +98023,7 @@
    "pr": "#488",
    "priority": "P0",
    "createdAt": "2026-11-10T23:46:07.460Z",
-   "updatedAt": "2026-11-11T00:36:04.150Z",
+   "updatedAt": "2026-11-11T00:36:13.080Z",
    "builtAt": "",
    "notes": [
     {
@@ -98085,6 +98085,14 @@
     {
      "text": "Session on mossesx-max- ended (exit 0) with 2 steps left: back in the Queue (run 1).",
      "at": "2026-11-11T00:36:04.150Z"
+    },
+    {
+     "text": "Started run 2 on mossesx-max- (Opus, Phase 2): axf-ai-assistant-in-molly-console-drives-by-api-open--joey.",
+     "at": "2026-11-11T00:36:10.780Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-ai-assistant-in-molly-console-drives-by-api-open--joey, own login copy)",
+     "at": "2026-11-11T00:36:13.080Z"
     }
    ],
    "approvals": [],
