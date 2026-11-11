@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3084,
- "updatedAt": "2026-11-11T00:02:19.882Z",
+ "rev": 3085,
+ "updatedAt": "2026-11-11T00:02:29.075Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -157018,8 +157018,8 @@
    "pr": "#487",
    "priority": "P0",
    "createdAt": "2026-11-10T23:46:39.715Z",
-   "updatedAt": "2026-11-11T00:02:10.743Z",
-   "builtAt": "2026-11-11T00:02:10.743Z",
+   "updatedAt": "2026-11-11T00:02:27.408Z",
+   "builtAt": "2026-11-11T00:02:27.408Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -157036,6 +157036,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-per-agent-api-control-switch-in-each-employee-s--earl, own login copy)",
      "at": "2026-11-10T23:47:56.228Z"
+    },
+    {
+     "text": "Headless run axf-per-agent-api-control-switch-in-each-employee-s--earl: brief only · start 11.1K tokens ($0.03) · cost $4.31 · 99 turns · 6 tools, MCP none",
+     "at": "2026-11-11T00:02:27.408Z"
     },
     {
      "text": "PR #487. UI Review shots not taken: the local console waits for axHub (CORS blocks 127.0.0.1), so rebuild-shots can't render it. Shots are needed from a session with a local hub, or after deploy. Crew headless runs don't get console tools yet (grant recorded only). Sibling ai-assistant build should tag its console tools with apiScope.",
