@@ -776,12 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 20:56 UTC · `amberx-build-notifications-for-every-stage-start` → queued, note (all) · console
-- 2026-11-10 20:57 UTC · `amberx-build-notifications-for-every-stage-start` → queued, note (all) · builds-live
-- 2026-11-10 20:57 UTC · `molly-flagship-skin-premium-sellable-uncluttered` s9 done (all) · orchestrator
-- 2026-11-10 20:57 UTC · `build-notifications-same-notification-per-build` added (0 steps) (all) · console
-- 2026-11-10 20:57 UTC · `build-notifications-same-notification-per-build` → queued, note (all) · console
-- 2026-11-10 20:58 UTC · `amberx-build-notifications-for-every-stage-start` note (all) · orchestrator
 - 2026-11-10 20:58 UTC · `amberx-notify-panel` → queued, note (all) · console
 - 2026-11-10 20:58 UTC · `molly-flagship-skin-premium-sellable-uncluttered` → queued, note (all) · pipeline
 - 2026-11-10 20:59 UTC · `build-notifications-same-notification-per-build` note (all) · orchestrator
@@ -1176,6 +1170,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-11 23:26 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · orchestrator
 - 2026-11-11 23:26 UTC · `asset-overrides-changed-asset-settings-override` → archived (all) · Claude voice (Gizmo)
 - 2026-11-11 23:27 UTC · `banner-skins-context-menu-item-with-sub-menu-of-all-skins-widget-hidden-by-def` → archived (all) · Claude voice (Gizmo)
+- 2026-11-11 23:27 UTC · `skins-are-a-complete-rework-look-layout-behavior` → archived (all) · Claude voice (Gizmo)
+- 2026-11-11 23:27 UTC · `remove-the-old-theme-manager-style-and-layout-se` → archived (all) · Claude voice (Gizmo)
+- 2026-11-11 23:27 UTC · `background-is-its-own-asset-type-with-asset-sett` → archived (all) · Claude voice (Gizmo)
+- 2026-11-11 23:27 UTC · `background-token-for-every-ui-background-designe` → archived (all) · Claude voice (Gizmo)
+- 2026-11-11 23:27 UTC · `overrides-summary-highlight-colour-setting-asset` → archived (all) · Claude voice (Gizmo)
+- 2026-11-11 23:27 UTC · `correction-to-overrides-list-expanded-asset-show` → archived (all) · Claude voice (Gizmo)
 
 ## Token passes (log)
 

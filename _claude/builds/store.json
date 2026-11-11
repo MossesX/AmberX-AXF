@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3144,
- "updatedAt": "2026-11-11T23:27:35.037Z",
+ "rev": 3145,
+ "updatedAt": "2026-11-11T23:27:42.315Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -129450,7 +129450,7 @@
    "title": "Skins are a complete rework: look + layout + behavior, and professional skins",
    "category": "",
    "detail": "After skins-finish lands (skin@1 + skin-coverage@1 for every asset type). Today a skin covers look only; layout and behavior live in design packs. Change: a skin is the complete rework of an app. Extend skin@1 (contract, Fable) to carry everything a design pack does: look (colors, grid and hover/selection colors, typography sizes, spacing/density, radius, borders, shadows, icons, motion), layout (nav placement, app menu, toolbars, banners, panel arrangement, grid density) and behavior (how menus open/slide/collapse, context menu style, hover/press feedback, transitions, overflow rules) for every registry asset type: nav menu, app menu, context menu, grids, dialogs, windows, bars, widgets, text. Design packs fold into skins (migrate, keep a compatibility alias). Applying a skin swaps all of it at once and resets rolled assets (UI Roller rule). CI: every asset type has skin coverage for look, layout and behavior. Then design at least 5 complete professional skins (clean enterprise, dark pro, compact data, modern SaaS, plus one more), applied to the real console, AmberX and Molly; post each to UI Review with desktop and phone shots; the pick becomes the default. Full API/MCP/CLI/voice control. Tests; report.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "mcp",
    "pendingId": "skins-are-a-complete-rework-look-layout-behavior",
@@ -129458,7 +129458,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T02:57:30.536Z",
-   "updatedAt": "2026-11-11T01:11:25.619Z",
+   "updatedAt": "2026-11-11T23:27:34.758Z",
    "builtAt": "",
    "notes": [
     {
@@ -129957,7 +129957,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146722,7 +146722,7 @@
    "title": "Remove the old theme manager, style and layout settings everywhere; skins replace them",
    "category": "",
    "detail": "Goes with appearance-skins-colour-themes-only-remove-design-packs. Remove the old Theme manager, style themes, layout settings and any other look/layout pickers from Appearance in Molly, console and every app. Skins (with their colour theme) are the only appearance control. Migrate current picks into the active skin so nothing breaks; keep API parity.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -146730,7 +146730,7 @@
    "pr": "#472",
    "priority": "P0",
    "createdAt": "2026-11-10T16:42:29.017Z",
-   "updatedAt": "2026-11-11T01:11:25.619Z",
+   "updatedAt": "2026-11-11T23:27:35.842Z",
    "builtAt": "",
    "notes": [
     {
@@ -147076,7 +147076,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 57,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -155399,7 +155399,7 @@
    "title": "Overrides summary: highlight colour setting + 'Assets with edits' list at the top of Appearance",
    "category": "",
    "detail": "Builds on the per-field asset overrides build (e69479a3). 1) Every settings interface gets a setting: 'Controlled item colour' (colour picker), used to highlight overridden/controlled options everywhere. 2) Top of Settings > Appearance: a notice when any asset has edits ('N assets are controlled by their own settings'). Tapping it opens a list of every edited asset; each row expands to list that asset's changed properties (old app value vs asset value), highlighted in the chosen colour, with a link to the asset's settings and a per-property reset.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -155407,7 +155407,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:50:48.036Z",
-   "updatedAt": "2026-11-10T21:51:28.744Z",
+   "updatedAt": "2026-11-11T23:27:38.748Z",
    "builtAt": "",
    "notes": [
     {
@@ -155540,7 +155540,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -155556,7 +155556,7 @@
    "title": "Correction to overrides list: expanded asset shows ALL its settings, changed ones highlighted, all editable and saved as asset overrides",
    "category": "",
    "detail": "Amends 'Overrides summary' build (job a58efebb). In the Appearance 'Assets with edits' list, expanding an asset row shows every setting of that asset row by row (not only the changed ones). Changed/overridden ones are highlighted in the chosen controlled-item colour. Every row is editable inline; any edit writes to that asset's own settings (never the app's global settings) and becomes a new override, which then highlights too.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -155564,7 +155564,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:51:35.883Z",
-   "updatedAt": "2026-11-10T21:52:59.225Z",
+   "updatedAt": "2026-11-11T23:27:40.628Z",
    "builtAt": "",
    "notes": [
     {
@@ -155697,7 +155697,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -156080,7 +156080,7 @@
    "title": "Background token for every UI + Background Designer (animated, logos, brand library, design import, semi-transparent foreground)",
    "category": "",
    "detail": "1) New token 'background' in the token sets (tokens.look/style) for every app, screen and asset, exposed in axHub style settings and Appearance, inheriting/overridable like other tokens. Values: colour, gradient, image, video/animation (Lottie, CSS/WebGL, GIF/MP4), logo/brand marks from Brand library, pattern. 2) Background Designer plugin: layers, animated backgrounds, generators, brand integration, design import (Figma/SVG/image/Lottie), presets saved as assets and usable in skins. 3) Foreground transparency control: make panels/cards/banners in front semi-transparent (opacity + blur) per app or skin. Respects reduced-motion and phone battery.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -156088,7 +156088,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:56:52.404Z",
-   "updatedAt": "2026-11-10T21:58:09.525Z",
+   "updatedAt": "2026-11-11T23:27:37.666Z",
    "builtAt": "",
    "notes": [
     {
@@ -156221,7 +156221,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -156394,7 +156394,7 @@
    "title": "Background is its own asset type (with asset settings, right-click, overrides)",
    "category": "",
    "detail": "Addition to the background token + Background Designer build (4c4f05f2): add 'background' as a named asset type like nav menus, tab groups, toolbars and banners. Every screen/app/panel background is an asset: right-click > Settings opens its asset settings, follows per-field override rules and the Appearance 'Assets with edits' list, saveable/reusable from Background Designer and skins.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -156402,7 +156402,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:57:17.444Z",
-   "updatedAt": "2026-11-10T21:59:17.083Z",
+   "updatedAt": "2026-11-11T23:27:36.696Z",
    "builtAt": "",
    "notes": [
     {
@@ -156535,7 +156535,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
