@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3137,
- "updatedAt": "2026-11-11T23:24:08.311Z",
+ "rev": 3138,
+ "updatedAt": "2026-11-11T23:25:11.218Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -144353,7 +144353,7 @@
    "title": "Full API + CLI control of everything, plus an offline index/registry; AI only as fallback",
    "category": "",
    "detail": "1) Extensive API and CLI control over every page, app, plugin, tool, behavior, display and setting, covering every option and every possible parameter value. Scope: console, Molly, axHub, AmberX app, and through axHub: Hostinger, Coolify, VPS. Moshi is a third-party phone SSH app: cover it only as far as it can be driven (deep links/intents), otherwise record the gap. 2) A complete index and registry of everything controllable (ids, types, actions, parameters, allowed values, where it lives) for offline management and internal logic. 3) Rule: anything that can be done without AI is done without AI. AI is only a fallback, and only when 'Make Claude available to the console' is on in Claude settings. Builds on universal-voice-api-control and the ui-api-parity builds; reuse them, don't duplicate.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -144361,7 +144361,7 @@
    "pr": "#468",
    "priority": "P1",
    "createdAt": "2026-11-10T16:28:24.043Z",
-   "updatedAt": "2026-11-11T23:24:07.312Z",
+   "updatedAt": "2026-11-11T23:25:09.098Z",
    "builtAt": "",
    "notes": [
     {
@@ -144399,6 +144399,10 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-11T23:24:07.312Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 2): axf-full-api-cli-control-of-everything-plus-an-offli--joey.",
+     "at": "2026-11-11T23:25:09.098Z"
     }
    ],
    "approvals": [],
@@ -144418,18 +144422,18 @@
    "pipeline": {
     "queuedAt": "2026-11-11T23:24:06.945Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-full-api-cli-control-of-everything-plus-an-offli--joey",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-11T23:25:08.702Z",
+    "runs": 1,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-11T23:25:08.702Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -144438,7 +144442,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-11T23:25:08.702Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -144890,7 +144894,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 53,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
