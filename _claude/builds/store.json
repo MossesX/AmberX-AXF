@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3129,
- "updatedAt": "2026-11-11T01:34:14.614Z",
+ "rev": 3130,
+ "updatedAt": "2026-11-11T01:48:57.549Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -158109,10 +158109,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/skins-in-the-asset-store-skin-browser-skin-edito",
-   "pr": "",
+   "pr": "#493",
    "priority": "P0",
    "createdAt": "2026-11-11T01:11:27.164Z",
-   "updatedAt": "2026-11-11T01:34:13.417Z",
+   "updatedAt": "2026-11-11T01:48:56.486Z",
    "builtAt": "",
    "notes": [
     {
@@ -158259,7 +158259,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
