@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3094,
- "updatedAt": "2026-11-11T00:16:14.204Z",
+ "rev": 3095,
+ "updatedAt": "2026-11-11T00:17:06.552Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -156858,10 +156858,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/ai-assistant-in-molly-console-drives-by-api-open",
-   "pr": "",
+   "pr": "#488",
    "priority": "P0",
    "createdAt": "2026-11-10T23:46:07.460Z",
-   "updatedAt": "2026-11-11T00:16:10.541Z",
+   "updatedAt": "2026-11-11T00:17:04.899Z",
    "builtAt": "",
    "notes": [
     {
@@ -157017,7 +157017,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
