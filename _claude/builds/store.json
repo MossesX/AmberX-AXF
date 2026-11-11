@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3116,
- "updatedAt": "2026-11-11T00:37:28.638Z",
+ "rev": 3117,
+ "updatedAt": "2026-11-11T00:38:04.915Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -156896,7 +156896,7 @@
    "title": "AI assistant in Molly + console drives by API (open screens, change settings) + hands-free voice setting",
    "category": "",
    "detail": "Amends the AI assistant build (#482). 1) AI assistant runs in Molly too (same plugin, Molly owns it, no double render). 2) Give it the full console control API as tools: open/jump to any screen, open dialogs, read and change any setting, run console commands, file/queue builds; uses control@1 + the registry. 3) Hands-free: a switch in AI assistant settings, 'Hands-free voice', easy to reach (top of settings plus a mic toggle in the chat header): always-listening wake/talk mode, replies spoken, works with the screen off on the phone. Notify on AmberX at each stage.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -156904,8 +156904,8 @@
    "pr": "#488",
    "priority": "P0",
    "createdAt": "2026-11-10T23:46:07.460Z",
-   "updatedAt": "2026-11-11T00:37:27.174Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-11T00:38:01.222Z",
+   "builtAt": "2026-11-11T00:38:01.223Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -157100,12 +157100,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-11T00:38:01.222Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T23:47:18.616Z",
-     "updatedAt": "2026-11-10T23:47:18.616Z"
+     "updatedAt": "2026-11-11T00:38:01.786Z"
     }
    ],
    "profiles": [
@@ -157116,7 +157116,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
