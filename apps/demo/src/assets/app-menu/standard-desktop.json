@@ -135,6 +135,12 @@
             "shortcut": "Alt+C"
           },
           {
+            "id": "next-color",
+            "label": "Next color theme",
+            "icon": "palette",
+            "action": "swap:color-theme:next"
+          },
+          {
             "id": "random",
             "label": "Randomize all assets",
             "icon": "shuffle",

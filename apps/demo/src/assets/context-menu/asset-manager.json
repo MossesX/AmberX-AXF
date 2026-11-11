@@ -4,7 +4,7 @@
   "id": "asset-manager",
   "name": "Asset Manager",
   "version": "1.0.0",
-  "description": "For asset browsers: use, inspect, copy and import assets, plus stepping through the look.",
+  "description": "For asset browsers: use, inspect, copy and import assets, plus stepping through the skins.",
   "author": "AmberX AXF",
   "tags": [
     "designer",
@@ -33,6 +33,29 @@
           "icon": "palette",
           "action": "skin.next",
           "shortcut": "Alt+P",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "prev-skin",
+          "label": "Previous skin",
+          "icon": "palette",
+          "action": "skin.prev",
+          "shortcut": "Alt+Shift+P",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "random-skin",
+          "label": "A random skin",
+          "icon": "shuffle",
+          "action": "skin.random",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "next-color",
+          "label": "Next colour theme",
+          "icon": "palette",
+          "action": "swap:color-theme:next",
+          "shortcut": "Alt+C",
           "requires": "assets.swap"
         },
         {

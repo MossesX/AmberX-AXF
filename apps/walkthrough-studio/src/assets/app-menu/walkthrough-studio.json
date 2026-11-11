@@ -768,6 +768,12 @@
             "label": "Next skin",
             "icon": "palette",
             "action": "skin.next"
+          },
+          {
+            "id": "theme",
+            "label": "Next colour theme",
+            "icon": "palette",
+            "action": "swap:color-theme:next"
           }
         ]
       },

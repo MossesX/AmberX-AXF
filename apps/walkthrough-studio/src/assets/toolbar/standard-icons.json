@@ -81,6 +81,12 @@
             "action": "skin.next"
           },
           {
+            "id": "color",
+            "icon": "palette",
+            "label": "Next color theme",
+            "action": "swap:color-theme:next"
+          },
+          {
             "id": "random",
             "icon": "shuffle",
             "label": "Randomize",

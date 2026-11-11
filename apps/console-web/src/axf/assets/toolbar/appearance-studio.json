@@ -4,7 +4,7 @@
   "id": "appearance-studio",
   "name": "Appearance Studio",
   "version": "1.0.0",
-  "description": "Step through the skins, roll or reset the look, with the day and night switch at the end.",
+  "description": "Step through the skins and their colour themes, roll or reset the look, with the day and night switch at the end.",
   "author": "AmberX AXF",
   "tags": [
     "appearance",
@@ -37,6 +37,13 @@
             "icon": "shuffle",
             "label": "A random skin",
             "action": "skin.random",
+            "requires": "assets.swap"
+          },
+          {
+            "id": "next-color",
+            "icon": "palette",
+            "label": "Next colour theme",
+            "action": "swap:color-theme:next",
             "requires": "assets.swap"
           }
         ]

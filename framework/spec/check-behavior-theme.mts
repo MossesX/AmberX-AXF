@@ -135,5 +135,6 @@ eq(amber.contributions, false, 'amber shows only its own items');
 eq(items[0]?.provider, 'amber.plugins', 'Plugins live list first');
 eq(items.slice(-2).map((i) => i.spacer ?? i.action), [true, 'app.settings'], 'spacer then Settings at the bottom');
 for (const a of ['ashes.toggle', 'terminal.new', 'claude-handoff.open', 'plugin-switches.open', 'edit.cut', 'edit.copy', 'edit.paste', 'skin.next', 'skin.prev']) ok(items.some((i) => i.action === a), `amber has ${a}`);
-ok(!items.some((i) => /^swap:(color-theme|style-theme|layout)|design\.package/.test(i.action ?? '')), 'amber steps skins, never a theme on its own');
+ok(!items.some((i) => /^swap:(style-theme|layout)|design\.package/.test(i.action ?? '')), 'amber steps skins (and the colour theme inside one), never a style or layout on its own');
+ok(items.some((i) => i.action === 'swap:color-theme:next'), 'amber steps the colour theme inside the skin');
 console.log(`check-behavior-theme: ${n} checks passed`);

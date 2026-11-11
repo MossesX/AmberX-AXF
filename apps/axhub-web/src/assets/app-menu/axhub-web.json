@@ -282,6 +282,12 @@
                 "shortcut": "Alt+C"
               },
               {
+                "id": "next-color",
+                "label": "Next color theme",
+                "icon": "palette",
+                "action": "swap:color-theme:next"
+              },
+              {
                 "id": "l1",
                 "separator": true
               },

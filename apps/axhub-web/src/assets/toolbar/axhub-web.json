@@ -70,6 +70,12 @@
             "icon": "palette",
             "label": "Next skin",
             "action": "skin.next"
+          },
+          {
+            "id": "color",
+            "icon": "palette",
+            "label": "Next color theme",
+            "action": "swap:color-theme:next"
           }
         ]
       },

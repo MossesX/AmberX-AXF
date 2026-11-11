@@ -46,6 +46,14 @@
           "label": "Next skin",
           "icon": "palette",
           "action": "skin.next",
+          "shortcut": "Alt+P",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "next-color",
+          "label": "Next colour theme",
+          "icon": "palette",
+          "action": "swap:color-theme:next",
           "shortcut": "Alt+C",
           "requires": "assets.swap"
         },

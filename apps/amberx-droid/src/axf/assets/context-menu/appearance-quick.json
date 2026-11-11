@@ -4,7 +4,7 @@
   "id": "appearance-quick",
   "name": "Appearance Quick",
   "version": "1.0.0",
-  "description": "Restyle from anywhere: step through the skins, pick spacing, randomize or reset.",
+  "description": "Restyle from anywhere: step through the skins and their colour themes, pick spacing, randomize or reset.",
   "author": "AmberX AXF",
   "tags": [
     "appearance",
@@ -37,6 +37,14 @@
           "label": "A random skin",
           "icon": "shuffle",
           "action": "skin.random",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "next-color",
+          "label": "Next colour theme",
+          "icon": "palette",
+          "action": "swap:color-theme:next",
+          "shortcut": "Alt+C",
           "requires": "assets.swap"
         },
         {

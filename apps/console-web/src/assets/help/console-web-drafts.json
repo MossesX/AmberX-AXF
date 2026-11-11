@@ -780,6 +780,20 @@
         "title": "Reload for the new version",
         "text": "The console was updated while this page was open. Reloads the page so the plugin loads from the new version.",
         "kind": "button"
+      },
+      {
+        "target": "skin",
+        "title": "Skin",
+        "text": "Opens the skin picker: choose the skin for this app. The colour theme can be switched inside the skin without changing it.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:skin.restore",
+        "title": "Default skin",
+        "text": "Puts this app back to its default look: the skin and every pick are cleared. You can undo it once in Settings → Appearance.",
+        "kind": "menu-item",
+        "draft": true
       }
     ],
     "intros": []

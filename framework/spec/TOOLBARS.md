@@ -132,9 +132,9 @@ The classic editing row: new, open, save, export, undo, redo and the clipboard.
 
 ### Appearance Studio (`appearance-studio`)
 
-Step through the skins, roll or reset the look, with the day and night switch at the end.
+Step through the skins and their colour themes, roll or reset the look, with the day and night switch at the end.
 
-- **skin**: Next skin (`skin.next`); Previous skin (`skin.prev`); A random skin (`skin.random`)
+- **skin**: Next skin (`skin.next`); Previous skin (`skin.prev`); A random skin (`skin.random`); Next colour theme (`swap:color-theme:next`)
 - **roll**: Randomize the look (`assets.random`); Reset the look (`assets.reset`); Appearance settings… (`settings.open:appearance`)
 
 ### Minimal Glass (`minimal-glass`)

@@ -89,6 +89,12 @@
                 "shortcut": "Alt+C"
               },
               {
+                "id": "next-color",
+                "label": "Next color theme",
+                "icon": "palette",
+                "action": "swap:color-theme:next"
+              },
+              {
                 "id": "next-button",
                 "label": "Next button",
                 "icon": "zap",

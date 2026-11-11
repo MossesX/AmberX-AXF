@@ -117,6 +117,12 @@
           "shortcut": "Alt+C"
         },
         {
+          "id": "next-theme",
+          "label": "Next theme",
+          "icon": "palette",
+          "action": "swap:color-theme:next"
+        },
+        {
           "id": "prev-skin",
           "label": "Previous skin",
           "icon": "palette",
