@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3095,
- "updatedAt": "2026-11-11T00:17:06.552Z",
+ "rev": 3096,
+ "updatedAt": "2026-11-11T00:17:14.590Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -156861,7 +156861,7 @@
    "pr": "#488",
    "priority": "P0",
    "createdAt": "2026-11-10T23:46:07.460Z",
-   "updatedAt": "2026-11-11T00:17:04.899Z",
+   "updatedAt": "2026-11-11T00:17:06.572Z",
    "builtAt": "",
    "notes": [
     {
@@ -156891,6 +156891,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-ai-assistant-in-molly-console-drives-by-api-open--rhonda, own login copy)",
      "at": "2026-11-11T00:16:10.541Z"
+    },
+    {
+     "text": "Stage 2 of 3: PR #488 open on branch claude/ai-assistant-in-molly-console-drives-by-api-open. Taking desktop and phone shots of the chat header mic toggle and the Hands-free voice panel for UI Review now.",
+     "at": "2026-11-11T00:17:06.572Z"
     }
    ],
    "approvals": [],
@@ -157017,7 +157021,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
