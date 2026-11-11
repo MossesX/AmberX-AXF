@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 20:55 UTC · `molly-flagship-skin-premium-sellable-uncluttered` → queued, note (all) · pipeline
 - 2026-11-10 20:55 UTC · `inline-element-editing-plugin-right-click-any-el` → queued, note (all) · pipeline
 - 2026-11-10 20:56 UTC · `amberx-build-notifications-for-every-stage-start` added (0 steps) (all) · console
 - 2026-11-10 20:56 UTC · `amberx-build-notifications-for-every-stage-start` → queued, note (all) · console
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-11 23:25 UTC · `full-api-cli-control-of-everything-plus-an-offli` → running, note (all) · pipeline
 - 2026-11-11 23:25 UTC · `full-api-cli-control-of-everything-plus-an-offli` note (all) · orchestrator
 - 2026-11-11 23:25 UTC · `console-commands-reliable` added (4 steps) (all) · orchestrator
+- 2026-11-11 23:26 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · orchestrator
 
 ## Token passes (log)
 

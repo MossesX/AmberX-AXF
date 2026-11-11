@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-11T23:26:06.553Z",
+ "updatedAt": "2026-11-11T23:26:12.649Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -78595,7 +78595,7 @@
    "pr": "#409",
    "priority": "P0",
    "createdAt": "2026-11-09T13:17:25.806Z",
-   "updatedAt": "2026-11-11T23:05:58.115Z",
+   "updatedAt": "2026-11-11T23:26:07.948Z",
    "builtAt": "2026-11-09T23:50:28.253Z",
    "notes": [
     {
@@ -78725,6 +78725,10 @@
     {
      "text": "Finished on Fable (Nov 11): s6 registry contract completed from the earlier worktree (claude/skins-restyle-finish ran out of credits; its uncommitted work merged, parts/via/declarationConflicts/ingredients API, fixtures, CLI, docs). s5: CI light check was red from a stale builds-store verify (retired breakroom profile folder); took main's fix, verify green; skin-shots gate green (0 new unchanged); screenshots and UI Review SKIPPED on instruction (step kept). PR #409 ready.",
      "at": "2026-11-11T23:05:58.115Z"
+    },
+    {
+     "text": "PR #409 conflicted with main (GitHub ran no checks: mergeable=dirty). Merged main in per the merge queue's own rule, resolved 3 spec conflicts toward main's colorTheme-inside-the-skin model; skin-shots gate made deterministic (animations frozen), baseline +4 colour-only entries for the themes-only packages. All local checks green; pushed.",
+     "at": "2026-11-11T23:26:07.948Z"
     }
    ],
    "approvals": [
