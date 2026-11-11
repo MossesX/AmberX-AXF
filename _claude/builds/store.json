@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3138,
- "updatedAt": "2026-11-11T23:25:11.218Z",
+ "rev": 3139,
+ "updatedAt": "2026-11-11T23:25:20.701Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -144361,7 +144361,7 @@
    "pr": "#468",
    "priority": "P1",
    "createdAt": "2026-11-10T16:28:24.043Z",
-   "updatedAt": "2026-11-11T23:25:09.098Z",
+   "updatedAt": "2026-11-11T23:25:13.277Z",
    "builtAt": "",
    "notes": [
     {
@@ -144403,6 +144403,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 2): axf-full-api-cli-control-of-everything-plus-an-offli--joey.",
      "at": "2026-11-11T23:25:09.098Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-full-api-cli-control-of-everything-plus-an-offli--joey, own login copy)",
+     "at": "2026-11-11T23:25:13.277Z"
     }
    ],
    "approvals": [],
@@ -144894,7 +144898,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
