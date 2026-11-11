@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-11T19:36:07.693Z",
+ "updatedAt": "2026-11-11T19:36:16.287Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -78872,7 +78872,7 @@
    "pr": "#430",
    "priority": "P0",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-11T19:36:05.056Z",
+   "updatedAt": "2026-11-11T19:36:07.552Z",
    "builtAt": "2026-11-10T18:51:53.510Z",
    "notes": [
     {
@@ -79131,7 +79131,7 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-11-10T18:51:53.510Z",
-     "note": "",
+     "note": "Resume Nov 11: blockers 1 (default skin at boot) and 3 (Apply with hub off) fixed with checks; static half 58/58; full browser shot rerun and UI Review post SKIPPED per the resume brief. Blocker 2 (console default look) left for Brett, likely resolved by blocker 1 fix.",
      "uid": "st-mw9isnnq019fb5"
     }
    ]

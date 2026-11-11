@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3133,
- "updatedAt": "2026-11-11T19:36:07.693Z",
+ "rev": 3134,
+ "updatedAt": "2026-11-11T19:36:16.287Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -132177,7 +132177,7 @@
    "pr": "#430",
    "priority": "P0",
    "createdAt": "2026-11-09T13:21:25.004Z",
-   "updatedAt": "2026-11-11T19:36:05.056Z",
+   "updatedAt": "2026-11-11T19:36:07.552Z",
    "builtAt": "2026-11-10T18:51:53.510Z",
    "notes": [
     {
@@ -132454,10 +132454,10 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-11-10T18:51:53.510Z",
-     "note": "",
-     "rev": 3,
+     "note": "Resume Nov 11: blockers 1 (default skin at boot) and 3 (Apply with hub off) fixed with checks; static half 58/58; full browser shot rerun and UI Review post SKIPPED per the resume brief. Blocker 2 (console default look) left for Brett, likely resolved by blocker 1 fix.",
+     "rev": 4,
      "createdAt": "2026-11-09T17:13:30.448Z",
-     "updatedAt": "2026-11-10T18:52:20.525Z"
+     "updatedAt": "2026-11-11T19:36:07.783Z"
     }
    ],
    "profiles": [
@@ -132468,7 +132468,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 75,
+   "rev": 76,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
