@@ -326,4 +326,25 @@ ok(st["state"] == "unreachable" and resolved == [f"approvals:{ID}"], "an outage 
 down_c.close()
 del os.environ["AXF_HUB_RELAY_USER"], os.environ["AXF_HUB_RELAY_PASSWORD"]
 
+# ---- s6: the console's approvals screen (feed with versions, one call, comments, settings)
+srv.WATCH.items, srv.WATCH.version = [], 0
+srv.WATCH._keep([{"id": ID, "tool": "vps.run", "summary": "Deploy", "title": "Deploy console", "held": False, "url": f"{HUB}/auth/admin/approvals/{ID}"}])
+f1 = c.get("/pending").json()
+ok(f1["count"] == 1 and f1["pending"][0]["id"] == ID and f1["version"] == 1, f"feed lists the waiting call {f1}")
+ok(c.get(f"/pending?since={f1['version']}").json().get("unchanged") is True, "same version: unchanged, no list")
+srv.WATCH._keep(list(srv.WATCH.items))
+ok(srv.WATCH.version == 1, "the same calls keep the version")
+ok(c.get(f"/approval?id={ID}").json()["waiting"] is True, "one call")
+ok(c.get(f"/approval?id={ID2}").status_code == 404, "a call the console never saw: 404")
+ok(c.get("/approval?id=nope").status_code == 400, "a bad id: 400")
+ok(c.post("/comment", json={"id": ID, "text": ""}, headers=ORIGIN).status_code == 400, "an empty comment refused")
+cm = c.post("/comment", json={"id": ID, "text": "  check   the  target first "}, headers=ORIGIN).json()
+ok(cm["ok"] and cm["comment"]["text"] == "check the target first", f"comment kept, spaces folded {cm}")
+ok(c.get(f"/comments?id={ID}").json()["count"] == 1, "comments read back")
+srv.WATCH._keep([])
+ok(srv.WATCH.version == 2 and c.get(f"/approval?id={ID}").json()["waiting"] is False, "decided: still readable with its comments")
+ok(c.get("/settings").json()["settings"]["pollSeconds"] == 30, "settings default")
+ok(c.put("/settings", json={"pollSeconds": 5}, headers=ORIGIN).status_code == 400, "poll range")
+ok(c.put("/settings", json={"pollSeconds": 60}, headers=ORIGIN).json()["settings"]["pollSeconds"] == 60 and srv.WATCH.interval() == 60, "poll interval follows the setting")
+
 print(f"approvals-banner relay ok ({checks} checks)")

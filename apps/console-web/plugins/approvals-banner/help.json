@@ -14,7 +14,7 @@
     "entries": [
       {
         "target": "and-more",
-        "title": "…and more",
+        "title": "\u2026and more",
         "text": "More calls are waiting than fit here. Tap for the full list.",
         "kind": "button"
       },
@@ -69,30 +69,45 @@
       {
         "target": "notices-one-per-held-call",
         "title": "Notices (one per held call)",
-        "text": "Where you set “Notices (one per held call)”. Change it and the app uses the new value. Part of Approvals banner.",
+        "text": "Where you set \u201cNotices (one per held call)\u201d. Change it and the app uses the new value. Part of Approvals banner.",
         "kind": "field",
         "draft": true
       },
       {
         "target": "notice-sound",
         "title": "Notice sound",
-        "text": "Where you set “Notice sound”. Change it and the app uses the new value. Part of Approvals banner.",
+        "text": "Where you set \u201cNotice sound\u201d. Change it and the app uses the new value. Part of Approvals banner.",
         "kind": "field",
         "draft": true
       },
       {
         "target": "notice-vibration",
         "title": "Notice vibration",
-        "text": "Where you set “Notice vibration”. Change it and the app uses the new value. Part of Approvals banner.",
+        "text": "Where you set \u201cNotice vibration\u201d. Change it and the app uses the new value. Part of Approvals banner.",
         "kind": "field",
         "draft": true
       },
       {
         "target": "alert-again-at-s-left-and-when-it-runs",
         "title": "Alert again at 30 s left and when it runs",
-        "text": "Where you set “Alert again at 30 s left and when it runs”. Change it and the app uses the new value. Part of Approvals banner.",
+        "text": "Where you set \u201cAlert again at 30 s left and when it runs\u201d. Change it and the app uses the new value. Part of Approvals banner.",
         "kind": "field",
         "draft": true
+      },
+      {
+        "target": "view:approvals",
+        "title": "Approvals",
+        "text": "Every axHub call waiting for your approval and every held (veto) call, in the console. Review opens the call with Approve and Decline; a held call opens Deny, Approve now and Shelve. Comments are notes kept on the console, never a decision. Claude reads the same list (approvals-banner_pending) but can never decide."
+      },
+      {
+        "target": "action:approvals.focus",
+        "title": "Open an approval",
+        "text": "Opens the Approvals page on one call (its id)."
+      },
+      {
+        "target": "action:approvals.page",
+        "title": "Approvals page",
+        "text": "Opens the Approvals page."
       }
     ],
     "intros": []

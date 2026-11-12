@@ -32,7 +32,7 @@
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
-import { Button, Icon, Note, useBannerLaunchOpen, BannerIcon } from '@console/axf/react';
+import { Button, Container, Icon, Note, SelectField, TextField, useBannerLaunchOpen, BannerIcon } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { HUB_DEFAULT, approvalUrl, normalizeHub, approvalsUrl, type HubApproval, type HubFeedStatus } from '@console/axf/libs/hub/hub';
 import { onVetoHost, setVetoHost, vetoHost, VETO_ACTIONS, type VetoAction, type VetoCall } from '@console/axf/libs/hub/veto';
@@ -466,6 +466,92 @@ function StatusPanel() {
   );
 }
 
+/* ---------------- the Approvals page (s6): every waiting and held call, comments, deep link approvals.focus:<id> ---------------- */
+
+interface ApprovalComment { id: string; text: string; by: string; at: string }
+const PAGE_VIEW = 'approvals';
+
+function CommentBox({ id }: { id: string }) {
+  const [rows, setRows] = useState<ApprovalComment[]>([]);
+  const [text, setText] = useState('');
+  const [busy, setBusy] = useState(false);
+  const load = () => void pluginFetch(FOLDER, `comments?id=${encodeURIComponent(id)}`).then((r) => r.json()).then((j: { comments?: ApprovalComment[] }) => setRows(j.comments ?? []), () => undefined);
+  useEffect(load, [id]);
+  const add = async () => {
+    setBusy(true);
+    const r = await pluginFetch(FOLDER, 'comment', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id, text }) });
+    setBusy(false);
+    if (!r.ok) { runtime?.toast('The comment was not saved.', 'danger', 'Approvals'); return; }
+    setText(''); load();
+  };
+  return (
+    <div className="axp-approvals-page__comments">
+      {rows.map((c, i) => <p key={i} className="fx-small axp-approvals-page__comment"><strong>{c.by}</strong> <span className="fx-muted">{ago(c.at)}</span> {c.text}</p>)}
+      <div className="axp-approvals-page__row">
+        <TextField label="Comment" value={text} onChange={setText} placeholder="A note for yourself or the session (kept on the console; not a decision)" />
+        <Button size="sm" busy={busy} disabled={!text.trim()} onClick={() => void add()}>Add comment</Button>
+      </div>
+    </div>
+  );
+}
+
+export function ApprovalsPage() {
+  const s = useApprovals();
+  const [focus, setFocus] = useState('');
+  useEffect(() => { start(); void checkNow(); }, []);
+  useEffect(() => {
+    const on = (e: Event) => setFocus(decodeURIComponent(String((e as CustomEvent).detail ?? '')));
+    window.addEventListener('approvals:focus', on);
+    return () => window.removeEventListener('approvals:focus', on);
+  }, []);
+  useEffect(() => { if (focus) document.querySelector(`[data-approval="${CSS.escape(focus)}"]`)?.scrollIntoView({ block: 'center' }); }, [focus, s.checkedAt]);
+  const rows = [...s.held.map((c) => ({ id: c.id, title: c.tool, summary: c.summary ?? '', held: true })), ...s.pending.map((p) => ({ id: p.id, title: p.tool, summary: p.summary ?? '', held: false }))];
+  return (
+    <div className="axp-approvals-page" data-help="view:approvals">
+      <header className="fx-pagehead">
+        <div>
+          <p className="fx-eyebrow">axHub</p>
+          <h1>Approvals</h1>
+          <p className="fx-muted">{s.status === 'ok' ? `${s.count} waiting${s.held.length ? ` · ${s.held.length} held` : ''}` : s.status === 'idle' ? 'Checking…' : s.error || 'axHub is not reachable from this browser.'}. Review opens the call; deciding stays your own tap.</p>
+        </div>
+        <div className="axp-approvals-page__row" role="toolbar" aria-label="Approvals">
+          <Button icon="refresh" onClick={() => void checkNow()}>Check now</Button>
+          <Button tone="ghost" icon="external" onClick={() => openOnHub(s.approvalsUrl)}>Open on axHub</Button>
+        </div>
+      </header>
+      {relayReason && <Note tone="warning">{relayReason}</Note>}
+      {s.status === 'ok' && !rows.length && <Note tone="info">Nothing is waiting.</Note>}
+      {rows.map((r) => (
+        <Container key={r.id} title={r.title || 'Call'} icon={r.held ? 'clock' : 'shield'} actions={<span className="axp-approvals-page__row" role="toolbar" aria-label="Approval actions"><Button size="sm" tone="primary" onClick={() => (r.held ? openVeto(r.id) : openReview(r.id))}>{r.held ? 'Deny / Approve / Shelve' : 'Review'}</Button></span>}>
+          <div className={`axp-approvals-page__item${r.id === focus ? ' is-focused' : ''}`} data-approval={r.id}>
+            {r.held && <Note tone="danger">Runs by itself when its countdown ends unless you stop it.</Note>}
+            {r.summary && <p className="axp-approvals-page__summary">{r.summary}</p>}
+            <CommentBox id={r.id} />
+          </div>
+        </Container>
+      ))}
+    </div>
+  );
+}
+
+function PageSettings() {
+  const [s, setS] = useState<{ pollSeconds: number; keepComments: number } | null>(null);
+  useEffect(() => { void pluginFetch(FOLDER, 'settings').then((r) => r.json()).then((j: { settings?: { pollSeconds: number; keepComments: number } }) => setS(j.settings ?? null), () => undefined); }, []);
+  const set = async (patch: Record<string, number>) => {
+    const r = await pluginFetch(FOLDER, 'settings', { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify(patch) });
+    const j = (await r.json().catch(() => ({}))) as { settings?: { pollSeconds: number; keepComments: number }; detail?: string };
+    if (!r.ok) { runtime?.toast(j.detail || 'Not saved.', 'danger', 'Approvals'); return; }
+    setS(j.settings ?? null);
+  };
+  if (!s) return <p className="fx-muted">Reading…</p>;
+  return (
+    <div className="axp-approvals-page__comments">
+      <SelectField label="The console reads axHub's waiting calls every" value={String(s.pollSeconds)} onChange={(v) => void set({ pollSeconds: Number(v) })} options={[10, 15, 30, 60, 120, 300].map((n) => ({ value: String(n), label: `${n} s` }))} hint="For approval alerts on the phone and the feed the Approvals page and Claude read." />
+      <SelectField label="Comments kept" value={String(s.keepComments)} onChange={(v) => void set({ keepComments: Number(v) })} options={[100, 500, 1000, 5000].map((n) => ({ value: String(n), label: String(n) }))} />
+    </div>
+  );
+}
+
 export const plugin: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
   label: 'Approvals banner',
@@ -543,7 +629,18 @@ export const plugin: AxfWebLibrary = {
     };
     rt.actions.register('approvals.view', view, { label: 'Show an axHub approval', params: true, searchable: false, effect: 'navigate' });
     rt.actions.register('approvals.review', view, { label: 'Review an axHub approval', params: true, searchable: false, effect: 'navigate' });
+    // approvals.focus:<id> — what console_open("approvals", focus=<id>) runs: the Approvals page on that call (s6)
+    rt.actions.register('approvals.focus', ([id]) => {
+      rt.navigate(PAGE_VIEW);
+      setTimeout(() => window.dispatchEvent(new CustomEvent('approvals:focus', { detail: id ?? '' })), 0);
+    }, { label: 'Approvals page: bring a call forward', params: true, searchable: false, effect: 'navigate' });
+    rt.actions.register('approvals.page', () => rt.navigate(PAGE_VIEW), { label: 'Approvals page' });
+    (globalThis as { amberxVoice?: { register: (m: string, c: { id: string; phrases: string[]; action: string; owner?: string }[]) => () => void } }).amberxVoice?.register(ID, [
+      { id: 'approvals.page', phrases: ['open the approvals page', 'show the approvals page', 'console approvals'], action: 'approvals.page', owner: 'Approvals' },
+      { id: 'approvals.check-now', phrases: ['check approvals', 'check the hub'], action: 'approvals.check', owner: 'Approvals' },
+    ]);
   },
+  views: { [PAGE_VIEW]: { title: 'Approvals', icon: 'shield', keywords: ['approvals', 'approve', 'deny', 'veto', 'waiting', 'held', 'comment', 'axhub'], render: () => <ApprovalsPage /> } },
   banners: [{ id: 'approvals', label: 'Approvals', icon: 'shield', settingsTab: 'approvals-banner', order: 5, render: () => <ApprovalsBanner /> }],
   dialogs: {
     'approvals.review': { title: 'Approval waiting', icon: 'shield', render: (p) => <ReviewDialog id={typeof p.id === 'string' ? p.id : ''} /> },
@@ -576,6 +673,7 @@ export const plugin: AxfWebLibrary = {
   settingsPanels: [
     { id: 'approvals-banner.status', tab: 'approvals-banner', title: 'Approvals', icon: 'shield', order: 5, render: () => <StatusPanel /> },
     { id: 'approvals-banner.alarm.panel', tab: 'approvals-banner', title: 'Alarm sound and test', icon: 'bell', order: 11, render: () => <AlarmPanel get={(k) => runtime?.settings.get(k)} set={(k, v) => runtime?.settings.set(k, v)} /> },
+    { id: 'approvals-banner.page', tab: 'approvals-banner', title: 'Approvals page and watch', icon: 'shield', order: 6, render: () => <PageSettings /> },
     { id: 'approvals-banner.lifecycle', tab: 'approvals-banner', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

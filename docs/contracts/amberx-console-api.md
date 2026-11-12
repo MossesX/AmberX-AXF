@@ -193,6 +193,13 @@ knows what is waiting, and it also tells the phone about veto calls and console-
 
 Deep links: `console_open("approvals", focus="<approval id>")`; `console_dialog("approvals.veto", arg="<id>")` for a held veto call.
 
+Built in s6 (Approvals banner plugin): the Approvals page (view `approvals`, action `approvals.focus:<id>`) lists every <!-- axf-plugin:approvals-banner -->
+waiting and held call with Review and comments. C20 is `GET pending?since=` from the console's own watch (the stream <!-- axf-plugin:approvals-banner -->
+is left for s12: the phone polls `since`). New: `GET approval?id=`, `GET comments?id=`, `POST comment {id, text}` <!-- axf-plugin:approvals-banner -->
+(axHub has no comment field: comments stay on the console and never decide), `GET|PUT settings` (`pollSeconds`, <!-- axf-plugin:approvals-banner -->
+`keepComments`). MCP `approvals-banner_pending|approval|comments|comment|settings|set-settings`. Deciding is unchanged <!-- axf-plugin:approvals-banner -->
+(rule 3): `decide` stays skipped from MCP and the CLI. Voice "open the approvals page", "check approvals". <!-- axf-plugin:approvals-banner -->
+
 ### 4.5 Molly, walkthroughs, forwarded console plugins
 
 | Call | Replaces | REST | MCP | CLI |

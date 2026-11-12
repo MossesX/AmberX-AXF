@@ -44,3 +44,12 @@ button.axp-approvals-banner__more { all: unset; cursor: pointer; padding-left: v
 .axp-veto-screen__count.is-urgent { color: var(--fx-danger); }
 .axp-veto-screen__cmd { display: block; white-space: pre-wrap; word-break: break-word; padding: var(--fx-dens-gap-xl); border-radius: var(--fx-radius-sm); background: color-mix(in srgb, var(--fx-text) calc(var(--fx-opacity-tint) * 100%), transparent); }
 .axp-approvals-banner > .axf-apx { background: var(--fx-surface) }
+
+/* The Approvals page (s6): layout only. */
+.axp-approvals-page { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); }
+.axp-approvals-page__row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-md); }
+.axp-approvals-page__item { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-width: 0; }
+.axp-approvals-page__item.is-focused { outline: var(--fx-border-w) solid var(--fx-accent); outline-offset: var(--fx-dens-gap-xs); border-radius: var(--fx-radius-md); }
+.axp-approvals-page__summary { margin: 0; overflow-wrap: anywhere; white-space: pre-wrap; }
+.axp-approvals-page__comments { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); }
+.axp-approvals-page__comment { margin: 0; overflow-wrap: anywhere; }

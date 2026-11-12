@@ -323,3 +323,144 @@ def get_watch() -> dict[str, Any]:
 async def post_watch_poll() -> dict[str, Any]:
     """Read axHub's approvals feed now and bring the approval alerts in line (it reads by itself every 30 s)."""
     return {"ok": True, **(await run_in_threadpool(WATCH.poll))}
+
+
+# ---- the console's own approvals screen (build move-amberx-web-app-into-the-console-amberx-andr, s6; contract C20)
+#
+#   GET  pending?since=<version>   the waiting calls the watch last read: {pending[], count, version, signedIn, admin}
+#                                  (`unchanged: true` and no list when `since` is the current version)
+#   GET  approval?id=              one waiting call with its comments (404 once it is no longer waiting and has none)
+#   GET  comments?id=              the comments on one call (every call when no id), newest last
+#   POST comment {id, text}        a comment on a call, kept on the console with who wrote it (axHub has no comment
+#                                  field: the comment never changes the call and is not a decision)
+#   GET  settings · PUT settings {pollSeconds?, keepComments?}
+# Deciding is unchanged: POST decide, a signed-in admin browser only (the console token, MCP and the CLI are refused).
+
+COMMENT_MAX = 2000
+SETTINGS_DEFAULTS: dict[str, Any] = {"pollSeconds": _watch.POLL_S, "keepComments": 500}
+SETTINGS_RANGES: dict[str, tuple[int, int]] = {"pollSeconds": (10, 300), "keepComments": (10, 5000)}
+
+
+def read_settings() -> dict[str, Any]:
+    out = dict(SETTINGS_DEFAULTS)
+    try:
+        saved = json.loads((_data() / "settings.json").read_text())
+    except (OSError, ValueError):
+        saved = {}
+    if isinstance(saved, dict):
+        for k, (lo, hi) in SETTINGS_RANGES.items():
+            v = saved.get(k)
+            if isinstance(v, int) and not isinstance(v, bool) and lo <= v <= hi:
+                out[k] = v
+    return out
+
+
+WATCH.interval = lambda: read_settings()["pollSeconds"]
+
+
+def _author(request: Request) -> str:
+    c = wall.wall_caller(request.headers)
+    if c is not None and c.name and c.via == "session":
+        return f"web:{c.name}"[:80]
+    u = getattr(request.state, "axf_user", None)
+    name = getattr(u, "name", None) or (u.get("name") if isinstance(u, dict) else None)
+    return f"console:{str(name)[:40]}" if name and name != "console-token" else "console"
+
+
+def _comments(aid: str = "") -> list[dict[str, Any]]:
+    try:
+        lines = (_data() / "comments.jsonl").read_text().splitlines()
+    except OSError:
+        return []
+    out = []
+    for line in lines:
+        try:
+            c = json.loads(line)
+        except ValueError:
+            continue
+        if isinstance(c, dict) and (not aid or c.get("id") == aid):
+            out.append(c)
+    return out
+
+
+def _add_comment(entry: dict[str, Any]) -> None:
+    d = _data()
+    d.mkdir(parents=True, exist_ok=True)
+    rows = _comments() + [entry]
+    keep = read_settings()["keepComments"]
+    tmp = d / f".comments-{os.getpid()}"
+    tmp.write_text("".join(json.dumps(r) + "\n" for r in rows[-keep:]))
+    os.replace(tmp, d / "comments.jsonl")
+
+
+@router.get("/pending")
+def get_pending(since: int = -1) -> dict[str, Any]:
+    f = WATCH.feed()
+    st = WATCH.state()
+    signed = st.get("state") not in ("off",)
+    base = {"ok": True, "version": f["version"], "count": f["count"], "lastAt": f["lastAt"], "state": st.get("state"), "signedIn": signed, "admin": signed and st.get("state") != "error"}
+    if since == f["version"]:
+        return {**base, "unchanged": True}
+    return {**base, "pending": f["pending"]}
+
+
+@router.get("/approval")
+def get_approval(id: str = "") -> Any:  # noqa: A002
+    if not ID_RE.match(id or ""):
+        raise HTTPException(400, "send ?id=<approval id>")
+    item = next((i for i in WATCH.feed()["pending"] if i["id"] == id), None)
+    notes = _comments(id)
+    if item is None and not notes:
+        raise HTTPException(404, "that call is not waiting (decided, expired or never seen by the console)")
+    return {"ok": True, "approval": item, "waiting": item is not None, "comments": notes}
+
+
+@router.get("/comments")
+def get_comments(id: str = "") -> dict[str, Any]:  # noqa: A002
+    if id and not ID_RE.match(id):
+        raise HTTPException(400, "id is an approval id")
+    rows = _comments(id)
+    return {"ok": True, "comments": rows, "count": len(rows)}
+
+
+@router.post("/comment")
+async def post_comment(request: Request) -> dict[str, Any]:
+    raw = await request.body()
+    try:
+        b = json.loads(raw or b"{}") if len(raw) <= 16 * 1024 else {}
+    except ValueError:
+        b = {}
+    aid, text = (b.get("id"), b.get("text")) if isinstance(b, dict) else (None, None)
+    if not isinstance(aid, str) or not ID_RE.match(aid) or not isinstance(text, str) or not text.strip():
+        raise HTTPException(400, "send { id: <approval id>, text }")
+    entry = {"id": aid, "text": " ".join(text.split())[:COMMENT_MAX], "by": _author(request), "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
+    await run_in_threadpool(_add_comment, entry)
+    return {"ok": True, "comment": entry}
+
+
+@router.get("/settings")
+def get_settings() -> dict[str, Any]:
+    return {"ok": True, "settings": read_settings(), "defaults": SETTINGS_DEFAULTS}
+
+
+@router.put("/settings")
+async def put_settings(request: Request) -> dict[str, Any]:
+    try:
+        b = json.loads(await request.body() or b"{}")
+    except ValueError:
+        b = None
+    if not isinstance(b, dict) or not b:
+        raise HTTPException(400, "send { pollSeconds?: 10-300, keepComments?: 10-5000 }")
+    for k, v in b.items():
+        lo_hi = SETTINGS_RANGES.get(k)
+        if lo_hi is None:
+            raise HTTPException(400, f"no setting {k} ({', '.join(SETTINGS_RANGES)})")
+        if not isinstance(v, int) or isinstance(v, bool) or not lo_hi[0] <= v <= lo_hi[1]:
+            raise HTTPException(400, f"{k} is a whole number from {lo_hi[0]} to {lo_hi[1]}")
+    s = {**read_settings(), **b}
+    d = _data()
+    d.mkdir(parents=True, exist_ok=True)
+    tmp = d / f".settings-{os.getpid()}"
+    tmp.write_text(json.dumps(s, indent=1))
+    os.replace(tmp, d / "settings.json")
+    return {"ok": True, "settings": s, "changed": sorted(b)}

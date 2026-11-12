@@ -12,7 +12,8 @@ that is no longer waiting (decided anywhere, expired) resolves its alert and the
 It only reads. Deciding stays a person's tap (`POST decide`), never this loop.
 
   GET  watch        {ok, on, state, waiting, lastAt, error}: what the watch saw last
-  POST watch/poll   read the feed now (otherwise every POLL_S seconds)
+  POST watch/poll   read the feed now (otherwise every POLL_S seconds, or the pollSeconds setting)
+  feed()            the waiting calls the last good read saw, with a version that moves when they change (s6, C20)
 """
 from __future__ import annotations
 
@@ -88,6 +89,20 @@ class Watch:
         self.raise_alert, self.resolve, self.open_keys, self.on = raise_alert, resolve, open_keys, on
         self.lock = threading.Lock()
         self.last: dict[str, Any] = {"state": "idle", "waiting": 0, "lastAt": 0, "error": ""}
+        # the waiting calls the last good read saw (C20 feed) and a version that moves when they change
+        self.items: list[dict[str, Any]] = []
+        self.version = 0
+        self.interval: Callable[[], int] = lambda: POLL_S
+
+    def feed(self) -> dict[str, Any]:
+        """The waiting calls as the console last read them: {pending, count, version, lastAt, state}."""
+        return {"pending": [dict(i) for i in self.items], "count": len(self.items), "version": self.version, "lastAt": self.last.get("lastAt", 0), "state": self.state().get("state")}
+
+    def _keep(self, items: list[dict[str, Any]]) -> None:
+        sig = lambda xs: [(i["id"], i["held"], i["summary"]) for i in xs]  # noqa: E731
+        if sig(items) != sig(self.items):
+            self.version += 1
+        self.items = items
 
     def state(self) -> dict[str, Any]:
         on = bool(self.hub() and self.cred())
@@ -134,6 +149,7 @@ class Watch:
             if body.get("signedIn") is False or body.get("admin") is False:
                 return self._note("error", error="The console's axHub sign-in isn't an admin.")
             items = items_of(hub, body, self.id_ok)
+            self._keep(items)
             fresh, gone = plan(self.open_keys(KEY), items)
             if gone:
                 self.resolve(gone)
@@ -148,7 +164,11 @@ class Watch:
                 self.poll()
             except Exception as e:  # noqa: BLE001 — the watch must never take the console down
                 self._note("error", error=f"{type(e).__name__}: {str(e)[:200]}")
-            stop.wait(POLL_S)
+            try:
+                wait = max(10, min(300, int(self.interval())))
+            except Exception:  # noqa: BLE001
+                wait = POLL_S
+            stop.wait(wait)
 
 
 def start(w: Watch) -> threading.Event | None:
