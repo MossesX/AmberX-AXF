@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 23:44 UTC · `auto-requeue-builds-whose-session-stops-early-go` PR #484 (all) · builds-live
 - 2026-11-10 23:44 UTC · `auto-requeue-builds-whose-session-stops-early-go` s3 done, → built (all) · orchestrator
 - 2026-11-10 23:44 UTC · `auto-requeue-builds-whose-session-stops-early-go` note (all) · orchestrator
 - 2026-11-10 23:45 UTC · `auto-requeue-builds-whose-session-stops-early-go` PR #484, note (all) · reconciler
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:23 UTC · `molly-gap-remote-actions` → running, note (all) · pipeline
 - 2026-11-12 02:22 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` s3 done, → built (all) · orchestrator
 - 2026-11-12 02:23 UTC · `molly-gap-remote-actions` → running, note (all) · orchestrator
+- 2026-11-12 02:27 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` → queued, note (all) · pipeline
 
 ## Token passes (log)
 
