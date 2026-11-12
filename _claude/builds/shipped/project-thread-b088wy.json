@@ -1,0 +1,68 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-b088wy",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:33:09Z",
+ "build": {
+  "id": "project-thread-b088wy",
+  "title": "project-thread-b088wy",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-b088wy",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-b088wy",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "4444f07872c2b57fdbc11b18aad690987cd69000",
+ "commits": [
+  "abe8883c17bf7889b621700373bf0853b65e3702"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-24T16:26:51Z",
+ "files": [
+  "deploy/console-doctor.sh"
+ ],
+ "areas": [
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/console-doctor.sh"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

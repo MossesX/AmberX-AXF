@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T03:33:05.980Z",
+ "updatedAt": "2026-11-12T03:33:20.667Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -38,6 +38,416 @@
    "upgradeRequests": [],
    "origin": {
     "said": "From a chat prompt (source chat). Serve apps/axhub-web on the hub host, page paths only via Traefik priority; hub container untouched. Branch claude/axhub-web-on-hub.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "project-thread-c4954d",
+   "title": "project-thread-c4954d",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/project-thread-c4954d",
+   "pr": "",
+   "mergedAt": "2026-10-23T23:14:56Z",
+   "createdAt": "2026-10-23T23:14:56Z",
+   "updatedAt": "2026-11-12T03:33:18Z",
+   "builtAt": "2026-10-23T23:14:56Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 52fb3a1b5.",
+     "at": "2026-11-12T03:33:18Z"
+    },
+    {
+     "text": "Shipped manifest sm-project-thread-c4954d rev 1 sent to Shipped features (backfill): landed 52fb3a1b5, 20 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:33:18Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "project-thread-c4954d",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "project-thread-55oakl",
+   "title": "project-thread-55oakl",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/project-thread-55oakl",
+   "pr": "",
+   "mergedAt": "2026-10-23T23:24:50Z",
+   "createdAt": "2026-10-23T23:24:50Z",
+   "updatedAt": "2026-11-12T03:33:16Z",
+   "builtAt": "2026-10-23T23:24:50Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 2e487e348.",
+     "at": "2026-11-12T03:33:16Z"
+    },
+    {
+     "text": "Shipped manifest sm-project-thread-55oakl rev 1 sent to Shipped features (backfill): landed 2e487e348, 60 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:33:16Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "project-thread-55oakl",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "project-thread-u0oyjm",
+   "title": "project-thread-u0oyjm",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/project-thread-u0oyjm",
+   "pr": "",
+   "mergedAt": "2026-10-24T15:29:34Z",
+   "createdAt": "2026-10-24T15:29:34Z",
+   "updatedAt": "2026-11-12T03:33:15Z",
+   "builtAt": "2026-10-24T15:29:34Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as d5ab7cae4.",
+     "at": "2026-11-12T03:33:15Z"
+    },
+    {
+     "text": "Shipped manifest sm-project-thread-u0oyjm rev 1 sent to Shipped features (backfill): landed d5ab7cae4, 38 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:33:15Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "project-thread-u0oyjm",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "project-thread-jg1stb",
+   "title": "project-thread-jg1stb",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/project-thread-jg1stb",
+   "pr": "",
+   "mergedAt": "2026-10-24T15:37:10Z",
+   "createdAt": "2026-10-24T15:37:10Z",
+   "updatedAt": "2026-11-12T03:33:14Z",
+   "builtAt": "2026-10-24T15:37:10Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 95ebf4b1b.",
+     "at": "2026-11-12T03:33:14Z"
+    },
+    {
+     "text": "Shipped manifest sm-project-thread-jg1stb rev 1 sent to Shipped features (backfill): landed 95ebf4b1b, 47 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:33:14Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "project-thread-jg1stb",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "project-thread-28v1xw",
+   "title": "project-thread-28v1xw",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/project-thread-28v1xw",
+   "pr": "",
+   "mergedAt": "2026-10-24T15:39:14Z",
+   "createdAt": "2026-10-24T15:39:14Z",
+   "updatedAt": "2026-11-12T03:33:12Z",
+   "builtAt": "2026-10-24T15:39:14Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 91a820978.",
+     "at": "2026-11-12T03:33:12Z"
+    },
+    {
+     "text": "Shipped manifest sm-project-thread-28v1xw rev 1 sent to Shipped features (backfill): landed 91a820978, 5 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:33:12Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "project-thread-28v1xw",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "project-thread-7hzl6f",
+   "title": "project-thread-7hzl6f",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/project-thread-7hzl6f",
+   "pr": "",
+   "mergedAt": "2026-10-24T16:24:00Z",
+   "createdAt": "2026-10-24T16:24:00Z",
+   "updatedAt": "2026-11-12T03:33:11Z",
+   "builtAt": "2026-10-24T16:24:00Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as fd7a000f2.",
+     "at": "2026-11-12T03:33:11Z"
+    },
+    {
+     "text": "Shipped manifest sm-project-thread-7hzl6f rev 1 sent to Shipped features (backfill): landed fd7a000f2, 14 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:33:11Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "project-thread-7hzl6f",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "project-thread-b088wy",
+   "title": "project-thread-b088wy",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/project-thread-b088wy",
+   "pr": "",
+   "mergedAt": "2026-10-24T16:26:51Z",
+   "createdAt": "2026-10-24T16:26:51Z",
+   "updatedAt": "2026-11-12T03:33:09Z",
+   "builtAt": "2026-10-24T16:26:51Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 4444f0787.",
+     "at": "2026-11-12T03:33:09Z"
+    },
+    {
+     "text": "Shipped manifest sm-project-thread-b088wy rev 1 sent to Shipped features (backfill): landed 4444f0787, 1 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:33:09Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "project-thread-b088wy",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "project-thread-1nc43b",
+   "title": "project-thread-1nc43b",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/project-thread-1nc43b",
+   "pr": "",
+   "mergedAt": "2026-10-24T17:49:16Z",
+   "createdAt": "2026-10-24T17:49:16Z",
+   "updatedAt": "2026-11-12T03:33:08Z",
+   "builtAt": "2026-10-24T17:49:16Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as ac5d2e76a.",
+     "at": "2026-11-12T03:33:08Z"
+    },
+    {
+     "text": "Shipped manifest sm-project-thread-1nc43b rev 1 sent to Shipped features (backfill): landed ac5d2e76a, 21 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:33:08Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "project-thread-1nc43b",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "project-thread-1f6dcd",
+   "title": "project-thread-1f6dcd",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/project-thread-1f6dcd",
+   "pr": "",
+   "mergedAt": "2026-10-24T18:04:14Z",
+   "createdAt": "2026-10-24T18:04:14Z",
+   "updatedAt": "2026-11-12T03:33:06Z",
+   "builtAt": "2026-10-24T18:04:14Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as e34741a2f.",
+     "at": "2026-11-12T03:33:06Z"
+    },
+    {
+     "text": "Shipped manifest sm-project-thread-1f6dcd rev 1 sent to Shipped features (backfill): landed e34741a2f, 5 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:33:06Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "project-thread-1f6dcd",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "project-thread-g27t3y",
+   "title": "project-thread-g27t3y",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/project-thread-g27t3y",
+   "pr": "",
+   "mergedAt": "2026-10-24T18:35:44Z",
+   "createdAt": "2026-10-24T18:35:44Z",
+   "updatedAt": "2026-11-12T03:33:04Z",
+   "builtAt": "2026-10-24T18:35:44Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 0074aee41.",
+     "at": "2026-11-12T03:33:04Z"
+    },
+    {
+     "text": "Shipped manifest sm-project-thread-g27t3y rev 1 sent to Shipped features (backfill): landed 0074aee41, 77 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:33:04Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "project-thread-g27t3y",
     "at": "",
     "source": "",
     "session": "",

@@ -776,16 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 02:42 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` → running, note (all) · pipeline
-- 2026-11-12 02:42 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` branch claude/one-source-of-truth-console-shows-only-what-the-server-says-is-running (all) · pipeline
-- 2026-11-12 02:42 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` s7 done (all) · foreign-write
-- 2026-11-12 02:42 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` note (all) · orchestrator
-- 2026-11-12 02:42 UTC · `molly-gap-console-token-handoff` note (all) · orchestrator
-- 2026-11-12 02:43 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` note (all) · orchestrator
-- 2026-11-12 02:42 UTC · `molly-gap-axhub-cors` → running, note (all) · pipeline
-- 2026-11-12 02:42 UTC · `molly-gap-axhub-cors` note (all) · orchestrator
-- 2026-11-12 02:43 UTC · `molly-gap-console-token-handoff` note (all) · orchestrator
-- 2026-11-12 02:43 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` → running, note (all) · pipeline
 - 2026-11-12 02:43 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` note (all) · orchestrator
 - 2026-11-12 02:43 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` note (all) · Claude voice (Gizmo)
 - 2026-11-12 02:44 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` → queued, note (all) · pipeline
@@ -1176,6 +1166,16 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:32 UTC · `project-thread-vfc6wi` added (0 steps) (all) · backfill
 - 2026-11-12 03:32 UTC · `project-thread-jx0w7u` added (0 steps) (all) · backfill
 - 2026-11-12 03:33 UTC · `project-thread-9jsom2` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-g27t3y` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-1f6dcd` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-1nc43b` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-b088wy` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-7hzl6f` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-28v1xw` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-jg1stb` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-u0oyjm` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-55oakl` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-c4954d` added (0 steps) (all) · backfill
 
 ## Token passes (log)
 

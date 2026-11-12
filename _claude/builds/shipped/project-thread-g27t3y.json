@@ -1,0 +1,319 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-g27t3y",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:33:04Z",
+ "build": {
+  "id": "project-thread-g27t3y",
+  "title": "project-thread-g27t3y",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-g27t3y",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-g27t3y",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "0074aee414ab3d441f4379b1afedc57ecb06454b",
+ "commits": [
+  "d1e409ec0a47d4477a5642585684794aa4a4d49f",
+  "eaaa86fe99851b3406e1e08d94da8be014a3781f",
+  "f3851511f4c7e655fea2045f171155afe1a1beef",
+  "8085fb29514c6ceda53fa3a29f931f1aadbc2f1c"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-24T18:35:44Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "CLAUDE.md",
+  "_claude/memory/docs/appearance-asset-tokens/README.md",
+  "_claude/memory/docs/appearance-asset-tokens/shots/after/assets-desktop.png",
+  "_claude/memory/docs/appearance-asset-tokens/shots/after/assets-phone.png",
+  "_claude/memory/docs/appearance-asset-tokens/shots/after/tab-group-all-off-desktop.png",
+  "_claude/memory/docs/appearance-asset-tokens/shots/after/tab-group-all-off-phone.png",
+  "_claude/memory/docs/appearance-asset-tokens/shots/after/tab-group-card-desktop.png",
+  "_claude/memory/docs/appearance-asset-tokens/shots/after/tab-group-card-phone.png",
+  "_claude/memory/docs/appearance-asset-tokens/shots/before/assets-desktop.png",
+  "_claude/memory/docs/appearance-asset-tokens/shots/before/assets-phone.png",
+  "apps/axhub-web/axf.manifest.json",
+  "apps/axhub-web/src/assets/tab-group/boxed.json",
+  "apps/axhub-web/src/assets/tab-group/pills.json",
+  "apps/axhub-web/src/assets/tab-group/plain-centered.json",
+  "apps/axhub-web/src/assets/tab-group/segmented.json",
+  "apps/axhub-web/src/assets/tab-group/underline.json",
+  "apps/console-web/axf.manifest.json",
+  "apps/console-web/scripts/theme-swap.mjs",
+  "apps/console-web/src/assets/tab-group/boxed.json",
+  "apps/console-web/src/assets/tab-group/pills.json",
+  "apps/console-web/src/assets/tab-group/plain-centered.json",
+  "apps/console-web/src/assets/tab-group/segmented.json",
+  "apps/console-web/src/assets/tab-group/underline.json",
+  "apps/console-web/src/axf/core/engines/components.ts",
+  "apps/console-web/src/axf/core/engines/customize.ts",
+  "apps/console-web/src/axf/core/index.ts",
+  "apps/console-web/src/axf/core/runtime.ts",
+  "apps/console-web/src/axf/core/types.ts",
+  "apps/console-web/src/axf/libs/settings/index.tsx",
+  "apps/console-web/src/axf/react/AxfProvider.tsx",
+  "apps/console-web/src/axf/react/components/Controls.tsx",
+  "apps/console-web/src/axf/schemas/asset-types.json",
+  "apps/console-web/src/axf/schemas/customize.json",
+  "apps/console-web/src/axf/schemas/icon-sets.json",
+  "apps/console-web/src/axf/ui/axf.css",
+  "apps/patches-web/axf.manifest.json",
+  "apps/patches-web/src/assets/tab-group/boxed.json",
+  "apps/patches-web/src/assets/tab-group/pills.json",
+  "apps/patches-web/src/assets/tab-group/plain-centered.json",
+  "apps/patches-web/src/assets/tab-group/segmented.json",
+  "apps/patches-web/src/assets/tab-group/underline.json",
+  "apps/walkthrough-studio/axf.manifest.json",
+  "apps/walkthrough-studio/src/assets/tab-group/boxed.json",
+  "apps/walkthrough-studio/src/assets/tab-group/pills.json",
+  "apps/walkthrough-studio/src/assets/tab-group/plain-centered.json",
+  "apps/walkthrough-studio/src/assets/tab-group/segmented.json",
+  "apps/walkthrough-studio/src/assets/tab-group/underline.json",
+  "framework/assets/tab-group/boxed.json",
+  "framework/assets/tab-group/pills.json",
+  "framework/assets/tab-group/plain-centered.json",
+  "framework/assets/tab-group/segmented.json",
+  "framework/assets/tab-group/underline.json",
+  "framework/catalog/libraries.json",
+  "framework/core/engines/components.ts",
+  "framework/core/engines/customize.ts",
+  "framework/core/index.ts",
+  "framework/core/runtime.ts",
+  "framework/core/types.ts",
+  "framework/defaults.json",
+  "framework/libs/settings/index.tsx",
+  "framework/plan/pending.json",
+  "framework/react/AxfProvider.tsx",
+  "framework/react/components/Controls.tsx",
+  "framework/schemas/asset-types.json",
+  "framework/schemas/customize.json",
+  "framework/schemas/icon-sets.json",
+  "framework/schemas/json/tab-group.schema.json",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-customize.mts",
+  "framework/spec/fixtures/app-menu.json",
+  "framework/spec/fixtures/appearance.json",
+  "framework/spec/fixtures/embed-takes.json",
+  "framework/spec/fixtures/hide.json",
+  "framework/spec/fixtures/roll.json",
+  "framework/ui/axf.css",
+  "tracker.json"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.manifest.json",
+    "apps/console-web/scripts/theme-swap.mjs",
+    "apps/console-web/src/assets/tab-group/boxed.json",
+    "apps/console-web/src/assets/tab-group/pills.json",
+    "apps/console-web/src/assets/tab-group/plain-centered.json",
+    "apps/console-web/src/assets/tab-group/segmented.json",
+    "apps/console-web/src/assets/tab-group/underline.json",
+    "apps/console-web/src/axf/core/engines/components.ts",
+    "apps/console-web/src/axf/core/engines/customize.ts",
+    "apps/console-web/src/axf/core/index.ts",
+    "apps/console-web/src/axf/core/runtime.ts",
+    "apps/console-web/src/axf/core/types.ts",
+    "apps/console-web/src/axf/libs/settings/index.tsx",
+    "apps/console-web/src/axf/react/AxfProvider.tsx",
+    "apps/console-web/src/axf/react/components/Controls.tsx",
+    "apps/console-web/src/axf/schemas/asset-types.json",
+    "apps/console-web/src/axf/schemas/customize.json",
+    "apps/console-web/src/axf/schemas/icon-sets.json",
+    "apps/console-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/memory/docs/appearance-asset-tokens/README.md",
+    "_claude/memory/docs/appearance-asset-tokens/shots/after/assets-desktop.png",
+    "_claude/memory/docs/appearance-asset-tokens/shots/after/assets-phone.png",
+    "_claude/memory/docs/appearance-asset-tokens/shots/after/tab-group-all-off-desktop.png",
+    "_claude/memory/docs/appearance-asset-tokens/shots/after/tab-group-all-off-phone.png",
+    "_claude/memory/docs/appearance-asset-tokens/shots/after/tab-group-card-desktop.png",
+    "_claude/memory/docs/appearance-asset-tokens/shots/after/tab-group-card-phone.png",
+    "_claude/memory/docs/appearance-asset-tokens/shots/before/assets-desktop.png",
+    "_claude/memory/docs/appearance-asset-tokens/shots/before/assets-phone.png"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-customize.mts",
+    "framework/spec/fixtures/app-menu.json",
+    "framework/spec/fixtures/appearance.json",
+    "framework/spec/fixtures/embed-takes.json",
+    "framework/spec/fixtures/hide.json",
+    "framework/spec/fixtures/roll.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.manifest.json",
+    "apps/axhub-web/src/assets/tab-group/boxed.json",
+    "apps/axhub-web/src/assets/tab-group/pills.json",
+    "apps/axhub-web/src/assets/tab-group/plain-centered.json",
+    "apps/axhub-web/src/assets/tab-group/segmented.json",
+    "apps/axhub-web/src/assets/tab-group/underline.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "patches-web",
+   "files": [
+    "apps/patches-web/axf.manifest.json",
+    "apps/patches-web/src/assets/tab-group/boxed.json",
+    "apps/patches-web/src/assets/tab-group/pills.json",
+    "apps/patches-web/src/assets/tab-group/plain-centered.json",
+    "apps/patches-web/src/assets/tab-group/segmented.json",
+    "apps/patches-web/src/assets/tab-group/underline.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "walkthrough-studio",
+   "files": [
+    "apps/walkthrough-studio/axf.manifest.json",
+    "apps/walkthrough-studio/src/assets/tab-group/boxed.json",
+    "apps/walkthrough-studio/src/assets/tab-group/pills.json",
+    "apps/walkthrough-studio/src/assets/tab-group/plain-centered.json",
+    "apps/walkthrough-studio/src/assets/tab-group/segmented.json",
+    "apps/walkthrough-studio/src/assets/tab-group/underline.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "assets",
+   "files": [
+    "framework/assets/tab-group/boxed.json",
+    "framework/assets/tab-group/pills.json",
+    "framework/assets/tab-group/plain-centered.json",
+    "framework/assets/tab-group/segmented.json",
+    "framework/assets/tab-group/underline.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/components.ts",
+    "framework/core/engines/customize.ts",
+    "framework/core/index.ts",
+    "framework/core/runtime.ts",
+    "framework/core/types.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/asset-types.json",
+    "framework/schemas/customize.json",
+    "framework/schemas/icon-sets.json",
+    "framework/schemas/json/tab-group.schema.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/AxfProvider.tsx",
+    "framework/react/components/Controls.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "catalog",
+   "files": [
+    "framework/catalog/libraries.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "libs",
+   "files": [
+    "framework/libs/settings/index.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/pending.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "ui",
+   "files": [
+    "framework/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": "framework",
+   "files": [
+    "framework/defaults.json"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": "tracker.json",
+   "files": [
+    "tracker.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}
