@@ -12,6 +12,10 @@
  *   … list | blocked [--json]            what the last round found (landing order, PR, state, reason)
  *   … now <build> | hold <build> [--why "…"] | release <build> | after <build> <other>
  *   … queue list | add <pr> | remove <pr> | move <pr> <index>   the merge queue (merge-queue.mjs; it runs in every round)
+ *   … gate log | show <build> | retry|fix|rebuild|merge|skip|automerge|clear|restore|archive <build…> | settings
+ *        the merge gate (merge-gate.mjs; runs after the queue in every round): a build that can't merge is auto-fixed or
+ *        rebuilt on fresh main, up to 3 attempts, then held for Brett. With the gate on it is the one that hands a
+ *        conflict or red CI to a session (through the orchestrator), so auto-land's own agent job stays out.
  *
  * One round, per finished build (land-core.mjs isCandidate), in dependency order:
  *   1. its worktree: synced files committed on its own branch, scratch files skipped, untracked copies of hub files
@@ -42,7 +46,8 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './land-core.mjs';
-import { queueRound, readQueue, readQueueConfig, main as queueMain } from './merge-queue.mjs';
+import { queueRound, queueControl, readQueue, readQueueConfig, main as queueMain } from './merge-queue.mjs';
+import { gateRound, readGateConfig, main as gateMain } from './merge-gate.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SELF_REPO = resolve(HERE, '../../../../..');
@@ -388,7 +393,7 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
       }
       it.pushed = { kind: it.reason.kind, head: it.head, at };
     }
-    if (it.reason?.agent && !(old.agent && old.agent.kind === it.reason.kind && old.agent.head === it.head)) {
+    if (it.reason?.agent && !readGateConfig(s).on && !(old.agent && old.agent.kind === it.reason.kind && old.agent.head === it.head)) {
       const job = core.agentJobFor(b, it.reason);
       if (job && !dry) {
         it.agent = { kind: it.reason.kind, head: it.head, at, ...agentJob(job) };
@@ -434,14 +439,21 @@ export async function main(argv) {
     const st = await round({ s, gh, dry, only: opt('only'), log: (m) => !json && console.error(m) });
     // the merge queue takes its turn in the same round (same cron, same lock): it merges what auto-land made ready
     if (!opt('only')) {
-      try { const git = makeGit(s.repo); const mq = await queueRound({ s, git, gh, api: makeConsole(s), dry, fetched: true, log: (m) => !json && console.error(m) }); st.queue = { on: mq.on, items: (mq.items || []).length, kicked: (mq.kicked || []).length }; }
+      const git = makeGit(s.repo); let mq = null;
+      try { mq = await queueRound({ s, git, gh, api: makeConsole(s), dry, fetched: true, log: (m) => !json && console.error(m) }); st.queue = { on: mq.on, items: (mq.items || []).length, kicked: (mq.kicked || []).length }; }
       catch (e) { if (!json) console.error(`merge queue: ${e.message}`); }
+      // the merge gate: whatever couldn't merge this round is auto-fixed or rebuilt (never pushes to main)
+      try {
+        const g = await gateRound({ s, git, gh, api: makeConsole(s), dry, queue: mq, land: st, queueCtl: (c, pr, o) => queueControl(s, c, pr, o), say: (ev, text, ref) => crewSay('landing', ev, text, { ref, repo: s.repo }), log: (m) => !json && console.error(m) });
+        st.gate = { on: g.on, working: g.entries.filter((e) => ['fixing', 'rebuilding'].includes(e.state)).length, held: g.entries.filter((e) => e.state === 'failed').length };
+      } catch (e) { if (!json) console.error(`merge gate: ${e.message}`); }
     }
     gh.save(); st.github = { calls: gh.calls, cached: gh.cached, left: Number.isFinite(gh.left()) ? gh.left() : null };
     if (!json) console.error(`github: ${gh.calls} billed call(s), ${gh.cached} answered from cache (304)`);
     return print(st, st.on === false ? 'auto-land is off (Settings → Plugins → Push banner → Auto-land)' : st.items.map(line).join('\n') || 'no finished builds to land');
   }
   if (cmd === 'queue') return queueMain(argv.slice(argv.indexOf('queue') + 1));
+  if (cmd === 'gate') return gateMain(argv.slice(argv.indexOf('gate') + 1));
   if (cmd === 'list' || cmd === 'blocked') {
     const st = readState(s); const items = (st.items || []).filter((x) => cmd === 'list' || x.state === 'blocked');
     return print({ ...st, items }, items.map(line).join('\n') || (cmd === 'blocked' ? 'nothing blocked' : 'no finished builds to land'));

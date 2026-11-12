@@ -2,18 +2,19 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.push-banner",
   "name": "Push banner",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "A banner listing every branch that isn't on main yet in AmberX-AXF and axHub (commits ahead/behind, age, last commit, its open PR and that PR's CI), with Open PR and Merge: every change reaches main only through its PR (one is opened for every branch), brought up to date with main and re-tested before it merges (not behind, CI passed on the pinned head; re-checked on the server). Auto-merge takes ready PRs oldest first, one merge per round, and sets branch protection on main where the token may. Auto-land (land/land.mjs, plain scripts on the VPS, no model calls) lands every finished build: worktree cleaned, main merged in with the builds files newer-wins, PR opened, CI started, merged here in dependency order once green and not held by UI Review; blocked builds are pushed to Brett once, in plain words. The console server talks to GitHub with its own token, which never reaches the browser. Merge queue (0.7.0): GitHub's own merge queue needs an organisation-owned repo, so the queue is ours: ready PRs line up, each is tested once on top of main + every PR ahead of it (queue/pr-<n> branches), the green head merges with no retest, a red one is kicked out with the reason in plain words and the ones behind it are retested without it; CI runs only what a change touches, PRs run light checks while the queue is on. Merge queue view, banner chip, REST + MCP + CLI. 0.7.1 (Nov 4 2026, Brett: \"Stop merging these things one at a time\"): auto-land is off by default and only the merge queue merges AmberX-AXF; GitHub reads are cached with ETags (a 304 costs no API call) and held back when the shared limit runs low; the console redeploys once per stack. 0.8.0 (Nov 10 2026, Brett: \"Everything needs to go into the merge queue so we can make one build out of it before we send it to CI\"): batch mode by default: every finished build gets a PR and joins the queue, up to batchSize ready PRs are combined into one commit on queue/batch, CI runs once, and a green batch lands on main as that one commit (one redeploy); a red batch is split in half until the PR that broke it is kicked out. Merge on AmberX-AXF puts the PR in the queue.",
+  "description": "A banner listing every branch that isn't on main yet in AmberX-AXF and axHub (commits ahead/behind, age, last commit, its open PR and that PR's CI), with Open PR and Merge: every change reaches main only through its PR (one is opened for every branch), brought up to date with main and re-tested before it merges (not behind, CI passed on the pinned head; re-checked on the server). Auto-merge takes ready PRs oldest first, one merge per round, and sets branch protection on main where the token may. Auto-land (land/land.mjs, plain scripts on the VPS, no model calls) lands every finished build: worktree cleaned, main merged in with the builds files newer-wins, PR opened, CI started, merged here in dependency order once green and not held by UI Review; blocked builds are pushed to Brett once, in plain words. The console server talks to GitHub with its own token, which never reaches the browser. Merge queue (0.7.0): GitHub's own merge queue needs an organisation-owned repo, so the queue is ours: ready PRs line up, each is tested once on top of main + every PR ahead of it (queue/pr-<n> branches), the green head merges with no retest, a red one is kicked out with the reason in plain words and the ones behind it are retested without it; CI runs only what a change touches, PRs run light checks while the queue is on. Merge queue view, banner chip, REST + MCP + CLI. 0.7.1 (Nov 4 2026, Brett: \"Stop merging these things one at a time\"): auto-land is off by default and only the merge queue merges AmberX-AXF; GitHub reads are cached with ETags (a 304 costs no API call) and held back when the shared limit runs low; the console redeploys once per stack. 0.8.0 (Nov 10 2026, Brett: \"Everything needs to go into the merge queue so we can make one build out of it before we send it to CI\"): batch mode by default: every finished build gets a PR and joins the queue, up to batchSize ready PRs are combined into one commit on queue/batch, CI runs once, and a green batch lands on main as that one commit (one redeploy); a red batch is split in half until the PR that broke it is kicked out. Merge on AmberX-AXF puts the PR in the queue. 0.9.0 (Nov 11 2026, Brett: \"If something fails, re-pull in main and rebuild it\"): the merge gate (land/merge-gate.mjs, after the queue every round, plain scripts): a finished build that can't merge (code conflict, red test gate, too far behind) is auto-fixed (main pulled in, a fix session filed with the orchestrator) or fully rebuilt as <name>-rN on fresh main, up to 3 attempts, then held for Brett with the why of each attempt and a merge.blocked push; never pushes to main. Banner groups (yellow auto-fixing, blue rebuild, green passed / merged, red failed) with Clear, and the Merge log page: a grid of every entry with expandable rows, links and row commands (REST + MCP + CLI + voice).",
   "targets": [
     "axf-console"
   ],
   "provides": [
     "banner:push-banner",
     "service:axf.merge-queue@1",
-    "settings-tab:push-banner"
+    "settings-tab:push-banner",
+    "view:merge-log"
   ],
   "optional": [
     "service:axf.activity@1"
@@ -196,6 +197,329 @@
             }
           }
         }
+      },
+      {
+        "id": "mergegate-log",
+        "title": "Merge log: every build the gate fixed or rebuilt",
+        "description": "Every merge gate entry, cleared or not: build, state (auto-fixing yellow, full rebuild blue, passed / merged green, failed 3 times red), attempts with the why of each (conflicting files, failing checks and error lines, what the fix or rebuild changed), branch, PR, timeline, superseded builds; the banner groups and the settings.",
+        "route": "GET /merge-log",
+        "readOnly": true
+      },
+      {
+        "id": "mergegate-entry",
+        "title": "Merge log: one entry",
+        "description": "One merge gate entry by build id or PR number, with every attempt, its why and its links.",
+        "route": "GET /merge-log/entry/{ref}",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "ref": {
+              "type": "string",
+              "description": "build id or PR number"
+            }
+          },
+          "required": [
+            "ref"
+          ]
+        }
+      },
+      {
+        "id": "mergegate-retry",
+        "title": "Merge gate: retry now",
+        "description": "Start the next attempt now (auto-fix or full rebuild by the rules); a red one gets one more attempt. Voice: \"retry the failed merges\".",
+        "route": "POST /merge-log/retry",
+        "input": {
+          "type": "object",
+          "properties": {
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": [
+                  "string",
+                  "integer"
+                ]
+              },
+              "description": "build ids or PR numbers (multi-select)"
+            },
+            "group": {
+              "type": "string",
+              "enum": [
+                "failed",
+                "merged",
+                "working"
+              ],
+              "description": "every entry of a banner group instead of ids (Clear reds = clear + failed)"
+            }
+          }
+        }
+      },
+      {
+        "id": "mergegate-fix",
+        "title": "Merge gate: auto-fix now",
+        "description": "Pull main into the branch and file a fix session with the orchestrator for the conflicts / failing checks.",
+        "route": "POST /merge-log/fix",
+        "input": {
+          "type": "object",
+          "properties": {
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": [
+                  "string",
+                  "integer"
+                ]
+              },
+              "description": "build ids or PR numbers (multi-select)"
+            },
+            "group": {
+              "type": "string",
+              "enum": [
+                "failed",
+                "merged",
+                "working"
+              ],
+              "description": "every entry of a banner group instead of ids (Clear reds = clear + failed)"
+            }
+          }
+        }
+      },
+      {
+        "id": "mergegate-rebuild",
+        "title": "Merge gate: full rebuild now",
+        "description": "File a fresh <name>-rN build from main with the original brief and the failure list; the old build is superseded and its PR closed. Voice: \"rebuild X\".",
+        "route": "POST /merge-log/rebuild",
+        "input": {
+          "type": "object",
+          "properties": {
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": [
+                  "string",
+                  "integer"
+                ]
+              },
+              "description": "build ids or PR numbers (multi-select)"
+            },
+            "group": {
+              "type": "string",
+              "enum": [
+                "failed",
+                "merged",
+                "working"
+              ],
+              "description": "every entry of a banner group instead of ids (Clear reds = clear + failed)"
+            }
+          }
+        }
+      },
+      {
+        "id": "mergegate-merge",
+        "title": "Merge gate: merge",
+        "description": "Put its PR (back) in the merge queue, the normal merge path.",
+        "route": "POST /merge-log/merge",
+        "input": {
+          "type": "object",
+          "properties": {
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": [
+                  "string",
+                  "integer"
+                ]
+              },
+              "description": "build ids or PR numbers (multi-select)"
+            },
+            "group": {
+              "type": "string",
+              "enum": [
+                "failed",
+                "merged",
+                "working"
+              ],
+              "description": "every entry of a banner group instead of ids (Clear reds = clear + failed)"
+            }
+          }
+        }
+      },
+      {
+        "id": "mergegate-skip",
+        "title": "Merge gate: skip",
+        "description": "No more attempts; it stays in the log.",
+        "route": "POST /merge-log/skip",
+        "input": {
+          "type": "object",
+          "properties": {
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": [
+                  "string",
+                  "integer"
+                ]
+              },
+              "description": "build ids or PR numbers (multi-select)"
+            },
+            "group": {
+              "type": "string",
+              "enum": [
+                "failed",
+                "merged",
+                "working"
+              ],
+              "description": "every entry of a banner group instead of ids (Clear reds = clear + failed)"
+            }
+          }
+        }
+      },
+      {
+        "id": "mergegate-automerge",
+        "title": "Merge gate: toggle auto-merge",
+        "description": "Auto-merge for this build on or off: off, a passed attempt waits for Merge.",
+        "route": "POST /merge-log/automerge",
+        "input": {
+          "type": "object",
+          "properties": {
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": [
+                  "string",
+                  "integer"
+                ]
+              },
+              "description": "build ids or PR numbers (multi-select)"
+            },
+            "group": {
+              "type": "string",
+              "enum": [
+                "failed",
+                "merged",
+                "working"
+              ],
+              "description": "every entry of a banner group instead of ids (Clear reds = clear + failed)"
+            }
+          }
+        }
+      },
+      {
+        "id": "mergegate-clear",
+        "title": "Merge gate: clear from the banner",
+        "description": "Take entries off the merge banner (ids, or group failed = Clear reds, merged = Clear merged). They stay in the merge log.",
+        "route": "POST /merge-log/clear",
+        "input": {
+          "type": "object",
+          "properties": {
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": [
+                  "string",
+                  "integer"
+                ]
+              },
+              "description": "build ids or PR numbers (multi-select)"
+            },
+            "group": {
+              "type": "string",
+              "enum": [
+                "failed",
+                "merged",
+                "working"
+              ],
+              "description": "every entry of a banner group instead of ids (Clear reds = clear + failed)"
+            }
+          }
+        }
+      },
+      {
+        "id": "mergegate-restore",
+        "title": "Merge gate: restore to the banner",
+        "description": "Put cleared or archived entries back on the banner.",
+        "route": "POST /merge-log/restore",
+        "input": {
+          "type": "object",
+          "properties": {
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": [
+                  "string",
+                  "integer"
+                ]
+              },
+              "description": "build ids or PR numbers (multi-select)"
+            },
+            "group": {
+              "type": "string",
+              "enum": [
+                "failed",
+                "merged",
+                "working"
+              ],
+              "description": "every entry of a banner group instead of ids (Clear reds = clear + failed)"
+            }
+          }
+        }
+      },
+      {
+        "id": "mergegate-archive",
+        "title": "Merge gate: archive",
+        "description": "Archive entries (off the banner and out of the grid unless Archived is shown); kept forever.",
+        "route": "POST /merge-log/archive",
+        "input": {
+          "type": "object",
+          "properties": {
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": [
+                  "string",
+                  "integer"
+                ]
+              },
+              "description": "build ids or PR numbers (multi-select)"
+            },
+            "group": {
+              "type": "string",
+              "enum": [
+                "failed",
+                "merged",
+                "working"
+              ],
+              "description": "every entry of a banner group instead of ids (Clear reds = clear + failed)"
+            }
+          }
+        }
+      },
+      {
+        "id": "mergegate-settings",
+        "title": "Merge gate: settings",
+        "description": "The gate on, the attempt cap (1-6, default 3) and how far behind main a branch may be before it goes straight to a full rebuild (default 150 commits). Switching it off is Brett's own click. Returns the merge log.",
+        "route": "POST /merge-log/settings",
+        "input": {
+          "type": "object",
+          "properties": {
+            "on": {
+              "type": "boolean",
+              "description": "gate on (off is Brett's click only)"
+            },
+            "cap": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 6,
+              "description": "attempts before it is held (default 3)"
+            },
+            "behind": {
+              "type": "integer",
+              "minimum": 10,
+              "maximum": 5000,
+              "description": "commits behind main before a rebuild (default 150)"
+            }
+          }
+        }
       }
     ]
   },
@@ -206,7 +530,11 @@
   "banner": [
     "push-banner"
   ],
-  "tabable": false,
+  "tabable": {
+    "view": "merge-log",
+    "label": "Merge log",
+    "icon": "branch"
+  },
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/push-banner",
@@ -224,5 +552,5 @@
       ".github/workflows/android.yml"
     ]
   },
-  "opens": false
+  "opens": "main"
 }

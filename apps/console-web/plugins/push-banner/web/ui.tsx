@@ -2,6 +2,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { Button, Icon, RefText, SelectField, Switch, useAxfState, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
 import { MergeQueueChip, MergeQueueView } from './queue';
+import { MergeGateGroups, useGateCount } from './gate';
 import { ago, bannerOn, doneKeys, doneRows, failedKeys, failedRows, fixWithClaude, jobOf, REPAIR_ALL, removeFailed, repair, repairAll, load, loadDetail, mergePr, needsPull, openPr, PULL_ALL, pullAll, pullMain, pullRows, removeDone, rows, saveClaude, setHidden, useStore, api, type Done, type Failed, type PullRow, type Row } from './store';
 
 const CI_WORD: Record<string, string> = { success: 'CI passed', failure: 'CI failed', running: 'CI running', none: 'no CI yet', unknown: 'CI unknown' };
@@ -330,6 +331,7 @@ export function PushBanner() {
   // Launches expanded like the other banners; "_" folds it to its summary line.
   const [open, setOpen] = useBannerLaunchOpen();
   const [queueOpen, setQueueOpen] = useState(false);
+  const gateCount = useGateCount();
   if (!bannerOn((k) => rt.settings.get(k))) return null;
   const finished = doneRows(s.answer);
   const fails = failedRows(s.answer).filter((f) => !doneKeys(s.answer).has(f.key));
@@ -349,10 +351,11 @@ export function PushBanner() {
   const bare = allBare.filter((r) => !needsPull(r.behind) && !r.clean);
   const behindCount = behindPulls.length + behindBare.length;
   const baseOf = (key: string) => allPulls.find((p) => p.key === key)?.base ?? allRows.find((r) => r.key === key)?.base ?? 'main';
-  if (!pulls.length && !allBare.length && !finished.length && !fails.length) return null;
+  if (!pulls.length && !allBare.length && !finished.length && !fails.length && !gateCount) return null;
   const repos = [...new Set([...pulls.map((p) => short(p.repo)), ...allBare.map((r) => short(r.repo)), ...finished.map((d) => short(d.repo))])];
   const mergeable = ready.length;
-  const headline = mergeable ? `${plural(mergeable, 'merge', 'merges')} ready to go`
+  const headline = gateCount && !mergeable && !pulls.length && !allBare.length ? plural(gateCount, 'build being fixed or held', 'builds being fixed or held')
+    : mergeable ? `${plural(mergeable, 'merge', 'merges')} ready to go`
     : pulls.length + allBare.length ? plural(pulls.length + allBare.length, 'change waiting for main', 'changes waiting for main')
     : `${plural(finished.length, 'change', 'changes')} done`;
   return (
@@ -364,13 +367,14 @@ export function PushBanner() {
             <strong>{headline}</strong>
             <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} />
           </span>
-          <span className="axp-push-banner__lead">{[pulls.length ? plural(pulls.length, 'pull request', 'pull requests') : '', fails.length ? `${fails.length} pull${fails.length === 1 ? '' : 's'} failed` : '', behindCount ? `${behindCount} need main pulled in` : '', clean.length ? `${clean.length} need a PR` : '', allBare.length ? `${plural(allBare.length, 'branch', 'branches')} without a PR` : '', finished.length ? `${finished.length} done` : '', repos.join(' · ')].filter(Boolean).join(' · ')}</span>
+          <span className="axp-push-banner__lead">{[gateCount ? `merge gate: ${gateCount}` : '', pulls.length ? plural(pulls.length, 'pull request', 'pull requests') : '', fails.length ? `${fails.length} pull${fails.length === 1 ? '' : 's'} failed` : '', behindCount ? `${behindCount} need main pulled in` : '', clean.length ? `${clean.length} need a PR` : '', allBare.length ? `${plural(allBare.length, 'branch', 'branches')} without a PR` : '', finished.length ? `${finished.length} done` : '', repos.join(' · ')].filter(Boolean).join(' · ')}</span>
         </button>
         <MergeQueueChip open={queueOpen} onToggle={() => { setQueueOpen(!queueOpen); if (!open) setOpen(true); }} />
       </div>
       {open && (
         <div className="axp-push-banner__body">
           {queueOpen && <section className="axp-push-banner__group" aria-label="Merge queue"><h4 className="axp-push-banner__group-title">Merge queue</h4><MergeQueueView compact /></section>}
+          <MergeGateGroups />
           <Group title="Done" count={finished.length}>{finished.map((d) => <DoneItem key={d.key} d={d} sha={d.kind === 'pulled' ? headOf(d.key) : undefined} />)}</Group>
           <Group title="Pull failed" tone="warning" count={fails.length} action={<RepairAllButton list={fails} />}>{fails.map((f) => <FailedItem key={f.key} f={f} base={baseOf(f.key)} />)}</Group>
           <Group title="Ready to merge" count={ready.length}>{ready.map((p) => <PullItem key={p.key} p={p} />)}</Group>

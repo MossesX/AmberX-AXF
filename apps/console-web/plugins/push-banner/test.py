@@ -725,6 +725,30 @@ STATE["bsha"] = {b: f"{b}-sha1" for b in STATE["branches"]}
 mod.PUSHES._mem = {"checks": {}, "branch": {}, "full": {}, "base": {}}
 cmp_n = lambda: sum(1 for s in SEEN if s["path"].startswith(R + "/compare/main..."))  # one per branch
 mod.PUSHES._forget(); mod.PUSHES.branches(force=True)
+# ---------------------------------------------------------------- merge gate: the merge log and its commands (land/merge-gate.mjs)
+gd = Path(os.environ["AXF_PUSH_BANNER_DIR"])
+(gd / "merge-log.json").write_text(json.dumps({"$axf": "merge-log@1", "applied": [], "entries": [
+    {"id": "feat", "build": "feat", "title": "Feature", "branch": "claude/feat-r2", "pr": 9, "state": "failed", "updatedAt": "2026-11-12T10:00:00Z", "banner": {"cleared": False}, "archived": False, "timeline": [],
+     "attempts": [{"n": 1, "kind": "fix", "why": "Conflicts with main in a.mjs.", "failedWhy": "Conflicts with main in a.mjs."}, {"n": 2, "kind": "rebuild", "why": "x", "failedWhy": "Failed the test gate: test."}, {"n": 3, "kind": "fix", "why": "y", "failedWhy": "Failed the test gate: lint."}]},
+    {"id": "other", "build": "other", "title": "Other", "branch": "claude/other", "pr": 11, "state": "fixing", "updatedAt": "2026-11-12T09:00:00Z", "banner": {"cleared": False}, "archived": False, "timeline": [],
+     "attempts": [{"n": 1, "kind": "fix", "why": "Failed the test gate: test.", "result": "running"}]}]}))
+ml = c.get("/p/merge-log").json()
+check(ml["settings"] == {"on": True, "cap": 3, "behindLimit": 150}, "merge gate: on by default, 3 attempts")
+check([g["id"] for g in ml["groups"]] == ["working", "failed"] and ml["groups"][1]["entries"][0]["tone"] == "danger", "merge log: banner groups, red for the held one")
+check(len(ml["groups"][1]["entries"][0]["lines"]) == 3, "red: the why of each of the 3 attempts")
+check(ml["rows"][0]["id"] == "feat" and ml["rows"][0]["attempts"] == 3, "merge log: grid rows")
+u = c.post("/p/merge-log/clear", json={"group": "failed"})
+check(u.status_code == 200 and [g["id"] for g in u.json()["groups"]] == ["working"] and len(u.json()["entries"]) == 2, "Clear reds: off the banner at once, still in the log")
+u = c.post("/p/merge-log/retry", json={"ids": [9]})
+check(u.status_code == 200 and "next round" in u.json()["note"], "Retry now by PR number: queued for the runner")
+check(c.post("/p/merge-log/nuke", json={"ids": ["feat"]}).status_code == 404, "unknown command refused")
+check(c.post("/p/merge-log/retry", json={}).status_code == 400, "a command needs ids or a group")
+check(c.get("/p/merge-log/entry/feat").json()["build"] == "feat", "one entry with every attempt")
+check(c.post("/p/merge-log/settings", json={"on": False}).status_code == 403, "switching the gate off is Brett's own click")
+check(c.post("/p/merge-log/settings", json={"cap": 4}).json()["settings"]["cap"] == 4, "the cap is a setting")
+check(c.put("/p/config", json={"mergeGateCap": 9}).status_code == 400, "cap is 1 to 6")
+c.put("/p/config", json={"mergeGateCap": 3})
+
 n1 = cmp_n()
 mod.PUSHES._forget(); st1 = mod.PUSHES.branches(force=True)
 check(cmp_n() == n1, "same commits everywhere: the second refresh makes no compare call")

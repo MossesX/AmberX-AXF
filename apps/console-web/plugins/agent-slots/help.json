@@ -30,7 +30,7 @@
         "target": "vps-hard-build-limit",
         "title": "VPS hard build limit",
         "text": "How many headless builds may really run on the VPS at once. The VPS counts live claude -p sessions itself and refuses the next launch past the limit, whoever asks (dispatcher, axHub, swarm, a hand launch). All builds share one CPU and memory budget (the axf-builds.slice), and docker test runs get their own CPU and memory cap. Only Brett changes these, from his own signed-in console.",
-        "kind": "panel"
+        "kind": "card"
       },
       {
         "target": "hard-limit-builds-at-once",

@@ -26,6 +26,19 @@
         "keyPrefix": "queue:"
       },
       "priority": "high"
+    },
+    {
+      "id": "merge.gate",
+      "label": "Merge gate: auto-fixing / rebuilding",
+      "group": "merge",
+      "app": "console",
+      "source": "Merge gate",
+      "description": "A build that couldn't merge is being auto-fixed (yellow) or rebuilt on fresh main (blue), passed or merged (green), or failed 3 times (red), with the why. One notification per build, updated in place.",
+      "match": {
+        "source": "push-banner",
+        "keyPrefix": "gate:"
+      },
+      "priority": "normal"
     }
   ]
 }
