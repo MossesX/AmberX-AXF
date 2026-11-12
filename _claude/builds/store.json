@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3432,
- "updatedAt": "2026-11-12T03:13:41.458Z",
+ "rev": 3433,
+ "updatedAt": "2026-11-12T03:13:59.991Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -157299,14 +157299,14 @@
    "title": "Molly gap: axHub allows Molly's origin on /auth/api/* (CORS with credentials) so native screens read the hub session",
    "category": "",
    "detail": "Found by molly-sign-in-once s1. From https://molly.amberxai.com, GET https://axhub.amberxai.com/auth/api/session answers 200 with no Access-Control-Allow-Origin, and the preflight OPTIONS /auth/api/logout answers 200 with no CORS headers, so a browser on Molly cannot read the hub session or post a write. The hub should answer an allow-list of amberxai.com app origins (Molly first) on /auth/api/* with Access-Control-Allow-Origin echoing the origin, Access-Control-Allow-Credentials true, Access-Control-Allow-Headers content-type, accept, x-axhub-csrf, Vary Origin; never * with credentials. The session cookie is same-site (SameSite=Lax is enough). Molly side is in place: apps/molly/src/molly/credentials.ts (axhub provider, credentials include, X-AxHub-CSRF on writes).",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "molly-sign-in-once",
    "pendingId": "",
    "branch": "claude/molly-gap-axhub-cors",
    "pr": "",
    "createdAt": "2026-11-10T22:09:27.000Z",
-   "updatedAt": "2026-11-12T02:47:36.882Z",
+   "updatedAt": "2026-11-12T03:13:58.304Z",
    "builtAt": "",
    "notes": [
     {
@@ -157348,6 +157348,10 @@
     {
      "text": "Headless run axf-molly-gap-axhub-cors--earl: brief only · start 10.8K tokens ($0.03) · cost $1.06 · 49 turns · 6 tools, MCP none",
      "at": "2026-11-12T02:47:36.882Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-12T03:13:58.304Z"
     }
    ],
    "approvals": [],
@@ -157478,7 +157482,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -160789,14 +160793,14 @@
    "title": "Owner recognized everywhere + veto countdown only on shell commands",
    "category": "axhub",
    "detail": "URGENT, boss order from Brett, Nov 12. Two problems: 1) The console and axHub do not recognize Brett as the owner, so owner-only settings (Claude settings > Approvals & veto tab, policy changes) don't work for him. Fix owner detection so Brett's admin console login and his axHub session count as owner everywhere (check the earlier owner-only-settings-brett-s-admin-console-login-counts-as-owner build and claude-settings-tabs-veto s4, axHub owner-only policy API GET/PUT /auth/api/policy; finish whatever is missing). 2) Change the axHub approval policies: a veto countdown ONLY on shell commands that run on the VPS (vps.run and anything executing a shell). Everything in the console/orchestrator (axf-console control_add, control_set, control_act, build_orchestrator_pipeline_queue, priority_set, agent_slots settings, console_open/show, etc.) becomes allow, no countdown. Keep confirm on the few owner-only items that already need it (model upgrades). Repos: axHub and AmberX-AXF. Tests: Brett's session is owner; vps.run still held on veto; console/orchestrator tools run immediately. PR, land through the gate, redeploy, AmberX FYI when live. Don't stop to ask.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/owner-recognized-everywhere-veto-countdown-only-on-shell-commands",
    "pr": "",
    "createdAt": "2026-11-12T02:04:11.564Z",
-   "updatedAt": "2026-11-12T02:51:46.627Z",
+   "updatedAt": "2026-11-12T03:13:58.304Z",
    "builtAt": "",
    "notes": [
     {
@@ -160846,6 +160850,10 @@
     {
      "text": "PR bodies saved at /root/axf-runs/policy-backup/axf-pr.md and axhub-pr.md.",
      "at": "2026-11-12T02:51:32.268Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-12T03:13:58.304Z"
     }
    ],
    "approvals": [],
@@ -160973,7 +160981,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

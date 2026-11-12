@@ -776,8 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 01:44 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` branch claude/bug-asset-settings-nav-menu-tab-bar-toolbar-chan (all) · pipeline
-- 2026-11-12 01:44 UTC · `orchestrator-checks-shipped-features-before-spli` → queued, note (all) · console
 - 2026-11-12 01:44 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` → running, note (all) · pipeline
 - 2026-11-12 01:44 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` branch claude/rebuild-gizmo-from-scratch-full-claude-style-cha (all) · pipeline
 - 2026-11-12 01:44 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` note (all) · orchestrator
@@ -1176,6 +1174,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:13 UTC · `orchestrator-checks-shipped-features-before-spli` → running, note (all) · pipeline
 - 2026-11-12 03:13 UTC · `orchestrator-checks-shipped-features-before-spli` branch claude/orchestrator-checks-shipped-features-before-spli (all) · pipeline
 - 2026-11-12 03:13 UTC · `orchestrator-checks-shipped-features-before-spli` note (all) · orchestrator
+- 2026-11-12 03:13 UTC · `molly-gap-axhub-cors` → pending, note (all) · reconciler
+- 2026-11-12 03:13 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` → pending, note (all) · reconciler
 
 ## Token passes (log)
 
