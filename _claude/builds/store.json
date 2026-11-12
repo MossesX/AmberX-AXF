@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3172,
- "updatedAt": "2026-11-12T01:43:47.785Z",
+ "rev": 3173,
+ "updatedAt": "2026-11-12T01:43:54.154Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -153753,7 +153753,7 @@
    "title": "Queue drag-and-drop reorder (dispatcher follows the order)",
    "category": "",
    "detail": "Orchestrator Queue tab: drag and drop builds to reorder; the dispatcher follows the order. Also right-click: Move to top / bottom / position N. Order persists; full API/CLI control.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -153761,7 +153761,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T20:59:27.366Z",
-   "updatedAt": "2026-11-10T21:00:50.366Z",
+   "updatedAt": "2026-11-12T01:43:51.703Z",
    "builtAt": "",
    "notes": [
     {
@@ -153771,6 +153771,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T21:00:50.366Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T01:43:51.703Z"
     }
    ],
    "approvals": [],
@@ -153788,8 +153792,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
+    "queuedAt": "2026-11-12T01:43:51.415Z",
+    "queuedBy": "console",
     "account": "",
     "session": "",
     "slot": "",
@@ -153894,7 +153898,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
