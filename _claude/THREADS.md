@@ -776,20 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 02:45 UTC · `all-banners-hide-when-empty` added (3 steps) (all) · Claude voice (Gizmo)
-- 2026-11-12 02:45 UTC · `molly-gap-console-token-handoff` → queued, note (all) · pipeline
-- 2026-11-12 02:45 UTC · `all-banners-hide-when-empty` → queued, note (all) · console
-- 2026-11-12 02:45 UTC · `molly-gap-axhub-cors` → queued, note (all) · pipeline
-- 2026-11-12 02:46 UTC · `molly-gap-axhub-cors-live` added (2 steps) (all) · orchestrator
-- 2026-11-12 02:46 UTC · `molly-gap-axhub-cors` s2 done (all) · orchestrator
-- 2026-11-12 02:47 UTC · `molly-gap-axhub-cors` → queued, note (all) · pipeline
-- 2026-11-12 02:47 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` s1 done, → running (all) · orchestrator
-- 2026-11-12 02:47 UTC · `molly-gap-axhub-cors` → running, note (all) · orchestrator
-- 2026-11-12 02:47 UTC · `merge-all-ready-buttons-server-side-lander` added (3 steps) (all) · Claude voice (Gizmo)
-- 2026-11-12 02:48 UTC · `merge-all-ready-buttons-server-side-lander` → queued, note (all) · console
-- 2026-11-12 02:48 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` s2 done, → running (all) · orchestrator
-- 2026-11-12 02:49 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` → queued, note (all) · pipeline
-- 2026-11-12 02:49 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` s1 done, → running (all) · orchestrator
 - 2026-11-12 02:49 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` s3 done, → built (all) · orchestrator
 - 2026-11-12 02:49 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` note (all) · orchestrator
 - 2026-11-12 02:50 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` → running, note (all) · pipeline
@@ -1176,6 +1162,20 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:32 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` → pending, note (all) · reconciler
 - 2026-11-12 03:34 UTC · `merge-all-ready-buttons-server-side-lander` note (all) · orchestrator
 - 2026-11-12 03:34 UTC · `merge-all-ready-buttons-server-side-lander` s3 done, → built (all) · orchestrator
+- 2026-11-12 03:33 UTC · `project-thread-farg39` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-tbz3ro` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `axhub-web-wall-msg` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-v9io2i` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-j1ri9d` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-1d9f6k` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-32ym2e` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-t9zktq` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `axhub-web-on-hub` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `framework-walkthrough-video-builder-qocfr1` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `laughing-thompson-eqfjw1` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-eew3jm` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `amberx-cloning-plugin-hzcj78` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `yo-a7qg14` added (0 steps) (all) · backfill
 
 ## Token passes (log)
 

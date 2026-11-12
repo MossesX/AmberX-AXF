@@ -1,0 +1,398 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-eew3jm",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:33:32Z",
+ "build": {
+  "id": "project-thread-eew3jm",
+  "title": "project-thread-eew3jm",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-eew3jm",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-eew3jm",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "992abfcab3560243e68ddd4b8e4a68c80eacef09",
+ "commits": [
+  "d9c9ebb54426221c15488abde75362f060ee8e01",
+  "cf7b64242aad7f45526b7130f77c758a4f7f3d6f",
+  "bf56fc846fe50f4e68ec508e2d4292c4a0f4cafd",
+  "64c30eedd307afce07b4a85114bf5483c4ef4db2",
+  "95325a6ba946553bf6246cdb7a508f23c95b2b09"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-22T19:36:45Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "CLAUDE.md",
+  "_claude/memory/decisions.md",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/approvals-banner/hooks.mjs",
+  "apps/console-web/plugins/approvals-banner/install.mjs",
+  "apps/console-web/plugins/approvals-banner/plugin.json",
+  "apps/console-web/plugins/approvals-banner/uninstall.mjs",
+  "apps/console-web/plugins/push-banner/plugin.json",
+  "apps/console-web/plugins/push-banner/server/__init__.py",
+  "apps/console-web/plugins/push-banner/server/batch.py",
+  "apps/console-web/plugins/push-banner/test.py",
+  "apps/console-web/plugins/push-banner/web/push-banner.css",
+  "apps/console-web/plugins/push-banner/web/store.ts",
+  "apps/console-web/plugins/push-banner/web/ui.tsx",
+  "apps/console-web/src/App.tsx",
+  "apps/console-web/src/axf/core/engines/embed.ts",
+  "apps/console-web/src/axf/core/runtime.ts",
+  "apps/console-web/src/bannerStrip.tsx",
+  "apps/console-web/src/console.css",
+  "apps/patches-web/axf.lock.json",
+  "apps/patches-web/deploy/install.sh",
+  "apps/patches-web/plugins.lock.json",
+  "apps/patches-web/scripts/bake-banner-plugins.mjs",
+  "apps/patches-web/server/main.py",
+  "apps/patches-web/server/test_server.py",
+  "apps/patches-web/src/App.tsx",
+  "apps/patches-web/src/axf/core/engines/embed.ts",
+  "apps/patches-web/src/axf/core/runtime.ts",
+  "apps/patches-web/src/axf/plan/build-queue-core.d.mts",
+  "apps/patches-web/src/axf/plan/build-queue-core.mjs",
+  "apps/patches-web/src/axf/plan/pending-core.d.mts",
+  "apps/patches-web/src/axf/plan/pending-core.mjs",
+  "apps/patches-web/src/bannerPlugins.tsx",
+  "apps/patches-web/src/console/api.ts",
+  "apps/patches-web/src/console/commandText.tsx",
+  "apps/patches-web/src/console/hubAppearance.ts",
+  "apps/patches-web/src/console/pluginLifecycle.tsx",
+  "apps/patches-web/src/console/plugins.ts",
+  "apps/patches-web/src/console/tokens.ts",
+  "apps/patches-web/src/patches.css",
+  "apps/patches-web/src/patches.ts",
+  "apps/patches-web/src/patchesLibrary.tsx",
+  "apps/patches-web/src/plugins/activity/plugin.json",
+  "apps/patches-web/src/plugins/activity/web/activity.css",
+  "apps/patches-web/src/plugins/activity/web/index.tsx",
+  "apps/patches-web/src/plugins/activity/web/menu.ts",
+  "apps/patches-web/src/plugins/approvals-banner/plugin.json",
+  "apps/patches-web/src/plugins/approvals-banner/web/approvals-banner.css",
+  "apps/patches-web/src/plugins/approvals-banner/web/index.tsx",
+  "apps/patches-web/src/plugins/approvals-banner/web/menu.ts",
+  "apps/patches-web/src/plugins/build-manager/plugin.json",
+  "apps/patches-web/src/plugins/build-manager/web/build-manager.css",
+  "apps/patches-web/src/plugins/build-manager/web/history.d.mts",
+  "apps/patches-web/src/plugins/build-manager/web/history.mjs",
+  "apps/patches-web/src/plugins/build-manager/web/index.tsx",
+  "apps/patches-web/src/plugins/build-manager/web/menu.ts",
+  "apps/patches-web/src/plugins/build-manager/web/merge.d.mts",
+  "apps/patches-web/src/plugins/build-manager/web/merge.mjs",
+  "apps/patches-web/src/plugins/build-manager/web/orchestrate.mjs",
+  "apps/patches-web/src/plugins/build-manager/web/plan-cli.mjs",
+  "apps/patches-web/src/plugins/build-manager/web/store.ts",
+  "apps/patches-web/src/plugins/build-manager/web/ui.tsx",
+  "apps/patches-web/src/plugins/claude-handoff/plugin.json",
+  "apps/patches-web/src/plugins/claude-handoff/web/claude-handoff.css",
+  "apps/patches-web/src/plugins/claude-handoff/web/demoPlan.ts",
+  "apps/patches-web/src/plugins/claude-handoff/web/files.tsx",
+  "apps/patches-web/src/plugins/claude-handoff/web/index.tsx",
+  "apps/patches-web/src/plugins/claude-handoff/web/installer-core.ts",
+  "apps/patches-web/src/plugins/claude-handoff/web/installer.tsx",
+  "apps/patches-web/src/plugins/claude-handoff/web/look-core.ts",
+  "apps/patches-web/src/plugins/claude-handoff/web/look.ts",
+  "apps/patches-web/src/plugins/claude-handoff/web/lookDialog.tsx",
+  "apps/patches-web/src/plugins/claude-handoff/web/menu.ts",
+  "apps/patches-web/src/plugins/claude-handoff/web/store.ts",
+  "apps/patches-web/src/plugins/claude-handoff/web/ui.tsx",
+  "apps/patches-web/src/plugins/codebase-changes/plugin.json",
+  "apps/patches-web/src/plugins/codebase-changes/web/codebase-changes.css",
+  "apps/patches-web/src/plugins/codebase-changes/web/index.tsx",
+  "apps/patches-web/src/plugins/codebase-changes/web/menu.ts",
+  "apps/patches-web/src/plugins/codebase-changes/web/store.ts",
+  "apps/patches-web/src/plugins/codebase-changes/web/ui.tsx",
+  "apps/patches-web/src/plugins/push-banner/plugin.json",
+  "apps/patches-web/src/plugins/push-banner/web/index.tsx",
+  "apps/patches-web/src/plugins/push-banner/web/menu.ts",
+  "apps/patches-web/src/plugins/push-banner/web/push-banner.css",
+  "apps/patches-web/src/plugins/push-banner/web/store.ts",
+  "apps/patches-web/src/plugins/push-banner/web/ui.tsx",
+  "apps/patches-web/src/plugins/systems-check/plugin.json",
+  "apps/patches-web/src/plugins/systems-check/web/KeysBanner.tsx",
+  "apps/patches-web/src/plugins/systems-check/web/SystemCheck.tsx",
+  "apps/patches-web/src/plugins/systems-check/web/WhatsNew.tsx",
+  "apps/patches-web/src/plugins/systems-check/web/index.tsx",
+  "apps/patches-web/src/plugins/systems-check/web/menu.ts",
+  "apps/patches-web/src/plugins/systems-check/web/panels.tsx",
+  "apps/patches-web/src/plugins/systems-check/web/systems-check.css",
+  "apps/patches-web/tsconfig.json",
+  "apps/patches-web/vite.config.ts",
+  "apps/patches/app/src/main/AndroidManifest.xml",
+  "apps/patches/app/src/main/kotlin/ai/amberx/axf/patches/AppModule.kt",
+  "apps/patches/app/src/main/kotlin/ai/amberx/axf/patches/views/BannerStrip.kt",
+  "apps/patches/app/src/main/kotlin/ai/amberx/axf/patches/watch/PatchesAlerts.kt",
+  "framework/catalog/libraries.json",
+  "framework/cli/plugin-lifecycle.mjs",
+  "framework/core/engines/embed.ts",
+  "framework/core/runtime.ts",
+  "framework/plan/pending.json",
+  "framework/plan/plan.json",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-embed.mts",
+  "framework/spec/fixtures/embed-takes.json",
+  "framework/spec/gen-fixtures.mts",
+  "tracker.json"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "patches-web",
+   "files": [
+    "apps/patches-web/axf.lock.json",
+    "apps/patches-web/deploy/install.sh",
+    "apps/patches-web/plugins.lock.json",
+    "apps/patches-web/scripts/bake-banner-plugins.mjs",
+    "apps/patches-web/server/main.py",
+    "apps/patches-web/server/test_server.py",
+    "apps/patches-web/src/App.tsx",
+    "apps/patches-web/src/axf/core/engines/embed.ts",
+    "apps/patches-web/src/axf/core/runtime.ts",
+    "apps/patches-web/src/axf/plan/build-queue-core.d.mts",
+    "apps/patches-web/src/axf/plan/build-queue-core.mjs",
+    "apps/patches-web/src/axf/plan/pending-core.d.mts",
+    "apps/patches-web/src/axf/plan/pending-core.mjs",
+    "apps/patches-web/src/bannerPlugins.tsx",
+    "apps/patches-web/src/console/api.ts",
+    "apps/patches-web/src/console/commandText.tsx",
+    "apps/patches-web/src/console/hubAppearance.ts",
+    "apps/patches-web/src/console/pluginLifecycle.tsx",
+    "apps/patches-web/src/console/plugins.ts",
+    "apps/patches-web/src/console/tokens.ts",
+    "apps/patches-web/src/patches.css",
+    "apps/patches-web/src/patches.ts",
+    "apps/patches-web/src/patchesLibrary.tsx",
+    "apps/patches-web/tsconfig.json",
+    "apps/patches-web/vite.config.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-handoff",
+   "files": [
+    "apps/patches-web/src/plugins/claude-handoff/plugin.json",
+    "apps/patches-web/src/plugins/claude-handoff/web/claude-handoff.css",
+    "apps/patches-web/src/plugins/claude-handoff/web/demoPlan.ts",
+    "apps/patches-web/src/plugins/claude-handoff/web/files.tsx",
+    "apps/patches-web/src/plugins/claude-handoff/web/index.tsx",
+    "apps/patches-web/src/plugins/claude-handoff/web/installer-core.ts",
+    "apps/patches-web/src/plugins/claude-handoff/web/installer.tsx",
+    "apps/patches-web/src/plugins/claude-handoff/web/look-core.ts",
+    "apps/patches-web/src/plugins/claude-handoff/web/look.ts",
+    "apps/patches-web/src/plugins/claude-handoff/web/lookDialog.tsx",
+    "apps/patches-web/src/plugins/claude-handoff/web/menu.ts",
+    "apps/patches-web/src/plugins/claude-handoff/web/store.ts",
+    "apps/patches-web/src/plugins/claude-handoff/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "push-banner",
+   "files": [
+    "apps/console-web/plugins/push-banner/plugin.json",
+    "apps/console-web/plugins/push-banner/server/__init__.py",
+    "apps/console-web/plugins/push-banner/server/batch.py",
+    "apps/console-web/plugins/push-banner/test.py",
+    "apps/console-web/plugins/push-banner/web/push-banner.css",
+    "apps/console-web/plugins/push-banner/web/store.ts",
+    "apps/console-web/plugins/push-banner/web/ui.tsx",
+    "apps/patches-web/src/plugins/push-banner/plugin.json",
+    "apps/patches-web/src/plugins/push-banner/web/index.tsx",
+    "apps/patches-web/src/plugins/push-banner/web/menu.ts",
+    "apps/patches-web/src/plugins/push-banner/web/push-banner.css",
+    "apps/patches-web/src/plugins/push-banner/web/store.ts",
+    "apps/patches-web/src/plugins/push-banner/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-manager",
+   "files": [
+    "apps/patches-web/src/plugins/build-manager/plugin.json",
+    "apps/patches-web/src/plugins/build-manager/web/build-manager.css",
+    "apps/patches-web/src/plugins/build-manager/web/history.d.mts",
+    "apps/patches-web/src/plugins/build-manager/web/history.mjs",
+    "apps/patches-web/src/plugins/build-manager/web/index.tsx",
+    "apps/patches-web/src/plugins/build-manager/web/menu.ts",
+    "apps/patches-web/src/plugins/build-manager/web/merge.d.mts",
+    "apps/patches-web/src/plugins/build-manager/web/merge.mjs",
+    "apps/patches-web/src/plugins/build-manager/web/orchestrate.mjs",
+    "apps/patches-web/src/plugins/build-manager/web/plan-cli.mjs",
+    "apps/patches-web/src/plugins/build-manager/web/store.ts",
+    "apps/patches-web/src/plugins/build-manager/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "approvals-banner",
+   "files": [
+    "apps/console-web/plugins/approvals-banner/hooks.mjs",
+    "apps/console-web/plugins/approvals-banner/install.mjs",
+    "apps/console-web/plugins/approvals-banner/plugin.json",
+    "apps/console-web/plugins/approvals-banner/uninstall.mjs",
+    "apps/patches-web/src/plugins/approvals-banner/plugin.json",
+    "apps/patches-web/src/plugins/approvals-banner/web/approvals-banner.css",
+    "apps/patches-web/src/plugins/approvals-banner/web/index.tsx",
+    "apps/patches-web/src/plugins/approvals-banner/web/menu.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "systems-check",
+   "files": [
+    "apps/patches-web/src/plugins/systems-check/plugin.json",
+    "apps/patches-web/src/plugins/systems-check/web/KeysBanner.tsx",
+    "apps/patches-web/src/plugins/systems-check/web/SystemCheck.tsx",
+    "apps/patches-web/src/plugins/systems-check/web/WhatsNew.tsx",
+    "apps/patches-web/src/plugins/systems-check/web/index.tsx",
+    "apps/patches-web/src/plugins/systems-check/web/menu.ts",
+    "apps/patches-web/src/plugins/systems-check/web/panels.tsx",
+    "apps/patches-web/src/plugins/systems-check/web/systems-check.css"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "codebase-changes",
+   "files": [
+    "apps/patches-web/src/plugins/codebase-changes/plugin.json",
+    "apps/patches-web/src/plugins/codebase-changes/web/codebase-changes.css",
+    "apps/patches-web/src/plugins/codebase-changes/web/index.tsx",
+    "apps/patches-web/src/plugins/codebase-changes/web/menu.ts",
+    "apps/patches-web/src/plugins/codebase-changes/web/store.ts",
+    "apps/patches-web/src/plugins/codebase-changes/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/src/App.tsx",
+    "apps/console-web/src/axf/core/engines/embed.ts",
+    "apps/console-web/src/axf/core/runtime.ts",
+    "apps/console-web/src/bannerStrip.tsx",
+    "apps/console-web/src/console.css"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "activity",
+   "files": [
+    "apps/patches-web/src/plugins/activity/plugin.json",
+    "apps/patches-web/src/plugins/activity/web/activity.css",
+    "apps/patches-web/src/plugins/activity/web/index.tsx",
+    "apps/patches-web/src/plugins/activity/web/menu.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "patches",
+   "files": [
+    "apps/patches/app/src/main/AndroidManifest.xml",
+    "apps/patches/app/src/main/kotlin/ai/amberx/axf/patches/AppModule.kt",
+    "apps/patches/app/src/main/kotlin/ai/amberx/axf/patches/views/BannerStrip.kt",
+    "apps/patches/app/src/main/kotlin/ai/amberx/axf/patches/watch/PatchesAlerts.kt"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-embed.mts",
+    "framework/spec/fixtures/embed-takes.json",
+    "framework/spec/gen-fixtures.mts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/embed.ts",
+    "framework/core/runtime.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/pending.json",
+    "framework/plan/plan.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/memory/decisions.md"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "catalog",
+   "files": [
+    "framework/catalog/libraries.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/plugin-lifecycle.mjs"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": "tracker.json",
+   "files": [
+    "tracker.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

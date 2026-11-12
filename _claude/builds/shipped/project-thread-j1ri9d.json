@@ -1,0 +1,252 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-j1ri9d",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:33:24Z",
+ "build": {
+  "id": "project-thread-j1ri9d",
+  "title": "project-thread-j1ri9d",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-j1ri9d",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-j1ri9d",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "f8b815ec0edaef9715d6c700007eb3bbba3ee6e8",
+ "commits": [
+  "7c91bbc7c2facd06d40b7f46d3bfd332f0b56855",
+  "d5a064394bbdfb2a12a4c04023055e2565625d72",
+  "45d59e2b5ac708d6ca36e6110b8c9cbe65071303"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-23T18:22:40Z",
+ "files": [
+  "CLAUDE.md",
+  "_claude/memory/decisions.md",
+  "_claude/memory/docs/axhub-web.md",
+  "_claude/memory/docs/rebuilds/LOG.md",
+  "_claude/memory/docs/rebuilds/axhub-web-console-look.md",
+  "_claude/memory/docs/rebuilds/axhub-web-console-look/shots/after/desktop-approvals.png",
+  "_claude/memory/docs/rebuilds/axhub-web-console-look/shots/after/desktop-menu.png",
+  "_claude/memory/docs/rebuilds/axhub-web-console-look/shots/after/phone-approvals.png",
+  "_claude/memory/docs/rebuilds/axhub-web-console-look/shots/before/desktop-approvals.png",
+  "_claude/memory/docs/rebuilds/axhub-web-console-look/shots/before/desktop-menu.png",
+  "_claude/memory/docs/rebuilds/axhub-web-console-look/shots/before/phone-approvals.png",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/axf.manifest.json",
+  "apps/axhub-web/src/App.tsx",
+  "apps/axhub-web/src/actions.ts",
+  "apps/axhub-web/src/assets/app-menu/axhub-web.json",
+  "apps/axhub-web/src/assets/banner/amberx-thin.json",
+  "apps/axhub-web/src/assets/counter/approvals.json",
+  "apps/axhub-web/src/assets/layout/axhub-console.json",
+  "apps/axhub-web/src/assets/toolbar/axhub-web.json",
+  "apps/axhub-web/src/assets/toolbar/labeled-actions.json",
+  "apps/axhub-web/src/assets/toolbar/standard-icons.json",
+  "apps/axhub-web/src/assets/toolbar/text-commands.json",
+  "apps/axhub-web/src/axf/core/catalog.ts",
+  "apps/axhub-web/src/axf/core/library.ts",
+  "apps/axhub-web/src/axf/libs/README.md",
+  "apps/axhub-web/src/axf/libs/datagrid/datagrid.css",
+  "apps/axhub-web/src/axf/libs/datagrid/index.tsx",
+  "apps/axhub-web/src/axf/libs/datagrid/library.json",
+  "apps/axhub-web/src/axf/libs/dnd/dnd.css",
+  "apps/axhub-web/src/axf/libs/dnd/index.tsx",
+  "apps/axhub-web/src/axf/libs/dnd/library.json",
+  "apps/axhub-web/src/axf/libs/docstore/index.ts",
+  "apps/axhub-web/src/axf/libs/docstore/library.json",
+  "apps/axhub-web/src/axf/libs/hub/apps.ts",
+  "apps/axhub-web/src/axf/libs/hub/index.ts",
+  "apps/axhub-web/src/axf/libs/hub/library.json",
+  "apps/axhub-web/src/axf/libs/hub/menu.ts",
+  "apps/axhub-web/src/axf/libs/hub/react.tsx",
+  "apps/axhub-web/src/axf/libs/recorder/engine.ts",
+  "apps/axhub-web/src/axf/libs/recorder/index.tsx",
+  "apps/axhub-web/src/axf/libs/recorder/library.json",
+  "apps/axhub-web/src/axf/libs/recorder/recorder.css",
+  "apps/axhub-web/src/axf/libs/tree/index.tsx",
+  "apps/axhub-web/src/axf/libs/tree/library.json",
+  "apps/axhub-web/src/axf/libs/tree/tree.css",
+  "apps/axhub-web/src/axf/libs/workspace/index.tsx",
+  "apps/axhub-web/src/axf/libs/workspace/library.json",
+  "apps/axhub-web/src/axf/libs/workspace/store.ts",
+  "apps/axhub-web/src/axf/libs/workspace/workspace.css",
+  "apps/axhub-web/src/hub/client.ts",
+  "apps/axhub-web/src/hub/useHub.ts",
+  "apps/axhub-web/src/views/Approvals.tsx",
+  "apps/axhub-web/src/views/Apps.tsx",
+  "apps/axhub-web/src/views/HubView.tsx",
+  "apps/axhub-web/test.mjs",
+  "apps/console-web/plugins/agent-manager/test.py",
+  "framework/catalog/libraries.json",
+  "framework/libs/README.md",
+  "framework/libs/hub/apps.ts",
+  "framework/libs/hub/index.ts",
+  "framework/libs/hub/library.json",
+  "framework/libs/hub/menu.ts",
+  "framework/libs/hub/react.tsx",
+  "framework/plan/pending.json",
+  "framework/plan/plan.json",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-hub.mts",
+  "framework/spec/fixtures/hub-approvals.json",
+  "framework/spec/gen-fixtures.mts",
+  "tracker.json"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/axf.manifest.json",
+    "apps/axhub-web/src/App.tsx",
+    "apps/axhub-web/src/actions.ts",
+    "apps/axhub-web/src/assets/app-menu/axhub-web.json",
+    "apps/axhub-web/src/assets/banner/amberx-thin.json",
+    "apps/axhub-web/src/assets/counter/approvals.json",
+    "apps/axhub-web/src/assets/layout/axhub-console.json",
+    "apps/axhub-web/src/assets/toolbar/axhub-web.json",
+    "apps/axhub-web/src/assets/toolbar/labeled-actions.json",
+    "apps/axhub-web/src/assets/toolbar/standard-icons.json",
+    "apps/axhub-web/src/assets/toolbar/text-commands.json",
+    "apps/axhub-web/src/axf/core/catalog.ts",
+    "apps/axhub-web/src/axf/core/library.ts",
+    "apps/axhub-web/src/axf/libs/README.md",
+    "apps/axhub-web/src/axf/libs/datagrid/datagrid.css",
+    "apps/axhub-web/src/axf/libs/datagrid/index.tsx",
+    "apps/axhub-web/src/axf/libs/datagrid/library.json",
+    "apps/axhub-web/src/axf/libs/dnd/dnd.css",
+    "apps/axhub-web/src/axf/libs/dnd/index.tsx",
+    "apps/axhub-web/src/axf/libs/dnd/library.json",
+    "apps/axhub-web/src/axf/libs/docstore/index.ts",
+    "apps/axhub-web/src/axf/libs/docstore/library.json",
+    "apps/axhub-web/src/axf/libs/hub/apps.ts",
+    "apps/axhub-web/src/axf/libs/hub/index.ts",
+    "apps/axhub-web/src/axf/libs/hub/library.json",
+    "apps/axhub-web/src/axf/libs/hub/menu.ts",
+    "apps/axhub-web/src/axf/libs/hub/react.tsx",
+    "apps/axhub-web/src/axf/libs/recorder/engine.ts",
+    "apps/axhub-web/src/axf/libs/recorder/index.tsx",
+    "apps/axhub-web/src/axf/libs/recorder/library.json",
+    "apps/axhub-web/src/axf/libs/recorder/recorder.css",
+    "apps/axhub-web/src/axf/libs/tree/index.tsx",
+    "apps/axhub-web/src/axf/libs/tree/library.json",
+    "apps/axhub-web/src/axf/libs/tree/tree.css",
+    "apps/axhub-web/src/axf/libs/workspace/index.tsx",
+    "apps/axhub-web/src/axf/libs/workspace/library.json",
+    "apps/axhub-web/src/axf/libs/workspace/store.ts",
+    "apps/axhub-web/src/axf/libs/workspace/workspace.css",
+    "apps/axhub-web/src/hub/client.ts",
+    "apps/axhub-web/src/hub/useHub.ts",
+    "apps/axhub-web/src/views/Approvals.tsx",
+    "apps/axhub-web/src/views/Apps.tsx",
+    "apps/axhub-web/src/views/HubView.tsx",
+    "apps/axhub-web/test.mjs"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/memory/decisions.md",
+    "_claude/memory/docs/axhub-web.md",
+    "_claude/memory/docs/rebuilds/LOG.md",
+    "_claude/memory/docs/rebuilds/axhub-web-console-look.md",
+    "_claude/memory/docs/rebuilds/axhub-web-console-look/shots/after/desktop-approvals.png",
+    "_claude/memory/docs/rebuilds/axhub-web-console-look/shots/after/desktop-menu.png",
+    "_claude/memory/docs/rebuilds/axhub-web-console-look/shots/after/phone-approvals.png",
+    "_claude/memory/docs/rebuilds/axhub-web-console-look/shots/before/desktop-approvals.png",
+    "_claude/memory/docs/rebuilds/axhub-web-console-look/shots/before/desktop-menu.png",
+    "_claude/memory/docs/rebuilds/axhub-web-console-look/shots/before/phone-approvals.png"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "libs",
+   "files": [
+    "framework/libs/README.md",
+    "framework/libs/hub/apps.ts",
+    "framework/libs/hub/index.ts",
+    "framework/libs/hub/library.json",
+    "framework/libs/hub/menu.ts",
+    "framework/libs/hub/react.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-hub.mts",
+    "framework/spec/fixtures/hub-approvals.json",
+    "framework/spec/gen-fixtures.mts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/pending.json",
+    "framework/plan/plan.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-manager",
+   "files": [
+    "apps/console-web/plugins/agent-manager/test.py"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "catalog",
+   "files": [
+    "framework/catalog/libraries.json"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": "tracker.json",
+   "files": [
+    "tracker.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}
