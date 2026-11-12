@@ -147,6 +147,17 @@ try:
             code = e.status_code
         check(code == want, f"action {body}: {want}")
     check(set(srv.BUILD_ACTIONS) == {"unqueue", "hold", "release", "archive", "unarchive", "delete", "restore"} and "archive" in srv.PIPELINE_TABS and "deleted" in srv.PIPELINE_TABS, "no hard delete: actions and the Archive / Deleted tabs")
+    for decision, want in (("approve", 200), ("deny", 200), ("maybe", 400)):
+        try:
+            asyncio.run(srv.pipeline_start_decide(_Req({"id": "alpha", "decision": decision}, True)))
+            code = 200
+        except srv.HTTPException as e:
+            code = e.status_code
+        check(code == want and (want != 200 or _calls[-1][2:4] == [decision, "alpha"]), f"start veto {decision}: {want}")
+    srv.pipeline_holds()
+    check(_calls[-1][2] == "holds", "GET pipeline/holds reads the held starts")
+    asyncio.run(srv.pipeline_settings_set(_Req({"vetoSeconds": 0, "autoApprove": False}, False)))
+    check("vetoSeconds=0" in _calls[-1] and "autoApprove=false" in _calls[-1], "the veto countdown and auto-approve reach the CLI")
 finally:
     srv.subprocess.run = _real_run
 

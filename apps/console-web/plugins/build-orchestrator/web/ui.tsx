@@ -21,6 +21,17 @@ import './orchestrator.css';
  */
 
 export const FOLDER = 'build-orchestrator';
+/** The deep link to one build (pipeline-core.mjs buildLink; the AmberX start / finish pop-ups use it): ?orch-build=<id>. */
+export const BUILD_PARAM = 'orch-build';
+const FOCUS_EVENT = 'axf-orch-focus';
+export const focusedBuild = () => (typeof location === 'undefined' ? '' : (new URLSearchParams(location.search).get(BUILD_PARAM) ?? '').trim());
+/** Open one build on top of the page (the build-orchestrator.open-build action, console_open, voice). */
+export function focusBuild(id: string): void {
+  const u = new URL(location.href);
+  if (id) u.searchParams.set(BUILD_PARAM, id); else u.searchParams.delete(BUILD_PARAM);
+  history.replaceState(history.state, '', u.toString());
+  window.dispatchEvent(new Event(FOCUS_EVENT));
+}
 // grid-hook@1: a build card's right-click finds the row hooks for orchestrator builds
 registerRowRefTarget('axf-orchestrator-build', (id) => (id ? { kind: 'orchestrator', id } : null));
 const api = pluginApi(FOLDER, 'Build orchestrator', { unavailable: 'The build orchestrator is switched off or its server part is not running.' });
@@ -67,6 +78,8 @@ export function OrchestratorPage() {
     catch (e) { setError((e as Error).message); setState((s) => s ?? (core.emptyState() as State)); }
   };
   useEffect(() => { void load(); }, []);
+  const [focus, setFocus] = useState(focusedBuild);
+  useEffect(() => { const on = () => setFocus(focusedBuild()); window.addEventListener(FOCUS_EVENT, on); return () => window.removeEventListener(FOCUS_EVENT, on); }, []);
 
   const act: Act = async (change) => {
     setBusy(true);
@@ -93,6 +106,18 @@ export function OrchestratorPage() {
         <div className="fx-row fx-row--wrap"><Button icon="refresh" disabled={busy} onClick={() => load().then(() => log('reloaded', 'ok'))}>Reload</Button><Slot name="builds.toolbar" props={{ page: 'build-orchestrator' }} /></div>
       </header>
       {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
+      {focus && (() => {
+        const fb = state.builds.find((b) => b.id === focus);
+        return (
+          <section className="fx-stack oc-focus" aria-label="Opened build">
+            <div className="fx-row fx-row--wrap" role="toolbar" aria-label="Opened build">
+              <h2 className="pd-card__title">Opened from a link</h2>
+              <Button size="sm" tone="neutral" icon="x" onClick={() => focusBuild('')}>Close</Button>
+            </div>
+            {fb ? <BuildCard b={fb} rules={state.rules} busy={busy} act={act} /> : <div className="fx-empty">No build "{focus}" here (it may be deleted or on another profile).</div>}
+          </section>
+        );
+      })()}
       <TabGroup id="build-orchestrator.tabs" label="Build orchestrator" value={tab} onChange={setTab} tabs={TABS.map((t) => ({ value: t.id, label: t.label, icon: t.icon, badge: t.id === 'approvals' && waiting > 0 ? waiting : undefined }))} />
       {PIPELINE_VIEWS.has(tab) && <PipelineTab key={tab} api={api} log={log} view={tab as PipelineView} />}
       {tab === 'builds' && <BuildsTab state={state} busy={busy} act={act} />}

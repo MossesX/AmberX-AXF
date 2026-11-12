@@ -96,7 +96,7 @@ export function pipeDir(env = process.env) {
   const hub = join(env.AXHUB_PROJECTS_DIR || '/projects', 'amberx-axf', '_data');
   return existsSync(hub) ? join(hub, 'pipeline') : join(homedir(), '.axf', 'pipeline');
 }
-const files = () => { const d = pipeDir(); return { dir: d, settings: join(d, 'settings.json'), accounts: join(d, 'accounts.json'), state: join(d, 'state.json'), log: join(d, 'log.jsonl'), host: join(d, 'accounts-host.json'), checkRequest: join(d, 'selfcheck-request.json'), health: join(d, 'health.json'), healthLock: join(d, 'health.lock'), healthRequest: join(d, 'health-request.json') }; };
+const files = () => { const d = pipeDir(); return { dir: d, settings: join(d, 'settings.json'), accounts: join(d, 'accounts.json'), state: join(d, 'state.json'), log: join(d, 'log.jsonl'), host: join(d, 'accounts-host.json'), checkRequest: join(d, 'selfcheck-request.json'), health: join(d, 'health.json'), healthLock: join(d, 'health.lock'), healthRequest: join(d, 'health-request.json'), holds: join(d, 'start-holds.json'), decisions: join(d, 'start-decisions.json'), stages: join(d, 'stages.json') }; };
 
 /** The Claude settings document's values (owner-only ones included), {} when unreadable. */
 export function claudeSettings(env = process.env) { return readJson(claudeSettingsFile(env))?.values ?? {}; }
@@ -202,7 +202,7 @@ export function status() {
   tabs.deleted.sort((a, b) => str(b.deletedAt).localeCompare(str(a.deletedAt)));
   const st = loadState();
   return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), table: byTable, tabs, accounts, accountsFrom, health: loadHealth(), slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable }, plan, settings,
-    state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails, selfCheck: st.selfCheck ?? null, selfCheckRequested: readJson(files().checkRequest)?.at || '' } };
+    state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails, selfCheck: st.selfCheck ?? null, selfCheckRequested: readJson(files().checkRequest)?.at || '' }, holds: startHolds() };
 }
 
 // ------------------------------------------------------------------ store writes
@@ -470,7 +470,11 @@ export function checkEnds({ alert = () => {}, env = process.env } = {}) {
     const r = P.endOutcome(b, { exit, account: b.pipeline.account, session: b.pipeline.session }, settings);
     if (settled) { r.outcome = 'finished'; r.status = b.status; r.run = { ...r.run, outcome: 'finished' }; r.note = `Session ${b.pipeline.session} on ${b.pipeline.account || '?'} ended (exit ${exit}); the build was already ${b.status}.`; }
     setPipeline(b.id, { lastRun: r.run, session: '', slot: '', note: r.outcome === 'finished' ? '' : r.note }, { status: r.status, note: r.note, action: 'pipeline:end' });
-    alert(r.outcome === 'failed' ? 'failed' : 'ended', { id: b.id, title: b.title, outcome: r.outcome, note: r.note, account: b.pipeline.account });
+    const steps = Array.isArray(b.steps) ? b.steps : [];
+    const lastNote = [...(Array.isArray(b.notes) ? b.notes : [])].reverse().find((n) => n && typeof n.text === 'string' && !/^(Started run|Session |Headless run )/.test(n.text));
+    const needs = r.outcome === 'returned' ? (lastNote?.text || 'a look: it stopped with steps left') : r.outcome === 'failed' ? 'a look: it failed after too many runs' : '';
+    alert(r.outcome === 'failed' ? 'failed' : 'ended', { id: b.id, title: b.title, outcome: r.outcome, status: r.status, note: r.note, account: b.pipeline.account, model: b.pipeline.model,
+      run: b.pipeline.runs || 1, phaseSwitch: r.outcome === 'requeued' && exit === 0, needs, done: settled ? steps.length : steps.filter((s) => s.done).length, total: steps.length });
     logLine({ event: 'ended', build: b.id, outcome: r.outcome, exit, account: b.pipeline.account, session: b.pipeline.session });
     out.push({ id: b.id, outcome: r.outcome, status: r.status, exit });
   }
@@ -558,6 +562,33 @@ export function selfCheck({ reason = 'on demand', by = 'pipeline', env = process
   return result;
 }
 
+// ------------------------------------------------------------------ start veto
+
+/**
+ * Start = veto (Brett, Nov 10 2026). The dispatcher owns start-holds.json ({ <build id>: hold }); Approve / Deny land in
+ * start-decisions.json ({ <build id>: { decision, by, at } }) so the console, MCP, CLI and voice never race the tick's own
+ * write. Deny also moves the build back to Pending at once; the next tick turns the pop-up into "Denied".
+ * hold: { id, title, account, model, phase, kind, run, steps[], what, employee, at, runsAt, seconds }
+ */
+export function startHolds() {
+  const h = readJson(files().holds, {}) ?? {}; const d = readJson(files().decisions, {}) ?? {};
+  return Object.values(h).filter((x) => x && x.id).map((x) => ({ ...x, decision: d[x.id] ?? null, secondsLeft: Math.max(0, Math.ceil((Date.parse(x.runsAt) - Date.now()) / 1000)) || 0 }));
+}
+
+export function decideStart(id, decision, { by = process.env.AXF_ACTOR || 'console' } = {}) {
+  if (!['approve', 'deny'].includes(decision)) throw Object.assign(new Error('decision is approve or deny'), { code: 2 });
+  const hold = (readJson(files().holds, {}) ?? {})[id];
+  if (!hold) throw Object.assign(new Error(`no build "${id}" waiting to start (nothing to ${decision})`), { code: 2 });
+  const d = readJson(files().decisions, {}) ?? {};
+  d[id] = { decision, by: str(by, 80), at: nowIso() }; writeJson(files().decisions, d);
+  if (decision === 'deny') {
+    const b = storeCore.findBuild(loadStore(), id);
+    if (b && BP.canUnqueue(b)) setPipeline(id, { queuedAt: '', queuedBy: '', note: '' }, { status: 'pending', note: `Start denied by ${by}: back to Pending.`, by, action: 'pipeline:start-deny' });
+  }
+  logLine({ event: `start-${decision}`, build: id, by });
+  return { ...hold, decision: d[id] };
+}
+
 // ------------------------------------------------------------------ the tick
 
 export function tick({ env = process.env } = {}) {
@@ -565,7 +596,32 @@ export function tick({ env = process.env } = {}) {
   const consoleApi = makeConsole(env);
   const state = loadState();
   const sent = [];
-  const alert = (kind, d) => { const a = P.alertFor(kind, d); consoleApi('POST', '/api/alerts', a); sent.push({ key: a.key, kind, at: nowIso(), title: a.title }); };
+  const ns = loadSettings();
+  // the account's label (claude-workers@1) when it has one, else its name: what Brett calls it on the phone
+  let labels = null;
+  const labelOf = (name) => {
+    if (!name) return '';
+    if (!labels) { labels = new Map(); try { for (const x of accountsNow(loadStore(), ns)) if (x.label) labels.set(x.name, x.label); } catch { /* names only */ } }
+    return labels.get(name) || name;
+  };
+  const consoleUrl = (env.AXF_CONSOLE_PUBLIC_URL || 'https://console.amberxai.com').replace(/\/+$/, '');
+  const alert = (kind, d) => {
+    const start = kind === 'launched' || kind === 'veto' || kind === 'denied'; const finish = kind === 'ended' || kind === 'failed';
+    // the veto (and the launch / deny that update it in place) always goes; with autoApprove on, notifyStart decides the
+    // Started pop-up; notifyFinish the finish one (the Notifications panel still decides the channels)
+    if ((kind === 'launched' && !d.held && !ns.notifyStart) || (finish && !ns.notifyFinish)) { logLine({ event: 'notify-off', kind, build: d.id }); return; }
+    const link = start || finish ? P.buildLink(d.id, consoleUrl) : '';
+    const account = start || finish ? `${labelOf(d.account)}${d.api ? ' (API key)' : ''}` : d.account;
+    const a = P.alertFor(kind, { ...d, account, link, sound: ns.notifySound });
+    const gone = P.supersededKeys(kind, d, ns.notifyGrouping);
+    if (gone.length) consoleApi('POST', '/api/alerts/resolve', { keys: gone });
+    consoleApi('POST', '/api/alerts', a);
+    if ((start && kind !== 'veto') || finish) {
+      consoleApi('POST', '/api/plugins/build-orchestrator/pipeline/activity', { event: start ? 'start' : 'finish', id: d.id, run: a.meta.run, url: link,
+        title: `${a.meta.label}: ${a.title}`, detail: a.body, state: kind === 'failed' ? 'failed' : 'done' });
+    }
+    sent.push({ key: a.key, kind, at: nowIso(), title: a.meta.label ? `${a.meta.label}: ${a.title}` : a.title });
+  };
   const started = nowIso();
   const inta = intake({ alert });
   const ended = checkEnds({ alert, env });
@@ -575,12 +631,39 @@ export function tick({ env = process.env } = {}) {
   if (read.source === 'host') { try { writeHostAccounts(read.rows, read.at || nowIso()); } catch (e) { logLine({ event: 'snapshot-failed', error: str(e.message, 300) }); } }
   const plan = P.plan({ builds: live(store), accounts, slots: sl, settings, rules });
   planAhead(store, accounts, settings);
-  const launched = []; const failed = [];
+  const launched = []; const failed = []; const denied = [];
   const hourAgo = Date.now() - 3600e3;
+  // start veto: holds whose build left the Queue (denied, or moved by hand) end here
+  const holds = readJson(files().holds, {}) ?? {}; const decisions = readJson(files().decisions, {}) ?? {}; const used = new Set();
+  for (const h of Object.values(holds)) {
+    const b = storeCore.findBuild(store, h.id);
+    if (b && b.status === 'queued' && !b.hidden && decisions[h.id]?.decision !== 'deny') continue;
+    delete holds[h.id]; used.add(h.id);
+    if (decisions[h.id]?.decision === 'deny') { alert('denied', { id: h.id, title: h.title, account: h.account, run: h.run, by: decisions[h.id].by }); denied.push(h.id); }
+    else consoleApi('POST', '/api/alerts/resolve', { keys: [`pipeline:run:${h.id}:${h.run}`] });
+  }
   for (const first of plan.launches) {
     const fails = (state.launchFails[first.id] ?? []).filter((t) => Date.parse(t) > hourAgo);
     if (fails.length >= LAUNCH_FAILS_PER_HOUR) { plan.waits.push({ id: first.id, why: `launch failed ${fails.length} times in the last hour: waiting` }); continue; }
     const b = live(store).find((x) => x.id === first.id);
+    let held = null;
+    if (!settings.autoApprove) {
+      if (!holds[first.id]) {
+        const n = orch.nextUp(b, rules); const run = (b.pipeline?.runs ?? 0) + 1;
+        const phaseSteps = (b.steps ?? []).filter((x) => !x.done && (!n.phase || (n.phase.steps ?? []).some((p) => p.id === x.id))).slice(0, 8);
+        const h = { id: b.id, title: b.title, account: first.account, model: first.model, phase: first.phase || '', kind: first.kind || '', run, at: nowIso(),
+          runsAt: new Date(Date.now() + settings.vetoSeconds * 1000).toISOString(), seconds: settings.vetoSeconds,
+          what: str(b.origin?.said || b.detail || b.title, 300), steps: phaseSteps.map((x) => `${x.id} ${str(x.text, 80)}`), employee: '' };
+        holds[first.id] = h;
+        alert('veto', { ...h, api: first.kind === 'api' });
+        logLine({ event: 'start-held', build: b.id, account: first.account, model: first.model, seconds: settings.vetoSeconds });
+      }
+      const h = holds[first.id];
+      const verdict = P.holdVerdict(h, decisions[first.id]);
+      if (verdict !== 'launch') { if (verdict === 'wait') plan.waits.push({ id: first.id, why: `waiting for your veto: starts in ${Math.max(0, Math.ceil((Date.parse(h.runsAt) - Date.now()) / 1000))} s unless you deny it` }); continue; }
+      held = { by: decisions[first.id]?.by ? `approved by ${decisions[first.id].by}` : 'countdown ran out' };
+      delete holds[first.id]; used.add(first.id);
+    }
     // the final pick: the plan's account first, then every other account that may take it (subscriptions, then API),
     // moving on until one accepts the launch
     const options = [first, ...P.routeOptions(b, accounts, first.model, settings).filter((o) => o.account !== first.account).map((o) => ({ ...first, ...o }))].slice(0, MAX_PICK_TRIES);
@@ -598,7 +681,7 @@ export function tick({ env = process.env } = {}) {
       setPipeline(b.id, { account: l.account, session: r.session, slot: r.slot, model: l.model, launchedAt: nowIso(), dispatchedAt: nowIso(), pickedAt: nowIso(), tried, runs, note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : r.lookWait ? 'waiting for the predicted look approval in UI Review' : '' },
         { status: 'running', note: `Started run ${runs} on ${l.account}${moved}${l.kind === 'api' ? ` (API key, ${l.rule === 'override' ? 'this build is set to API' : 'subscriptions first, then API'})` : ''} (${l.model}${l.phase ? `, ${l.phase}` : ''}): ${r.session || 'queued in agent slots'}.`, action: 'pipeline:launch' });
       if (!b.branch) withStore((s) => { const rec = storeCore.findBuild(s, b.id); if (rec && !rec.branch) rec.branch = `claude/${b.id}`; return s; }, { by: 'pipeline', action: 'pipeline:branch', note: b.id });
-      alert('launched', { id: b.id, title: b.title, account: l.account, model: l.model, phase: l.phase, session: r.session });
+      alert('launched', { id: b.id, title: b.title, account: l.account, api: l.kind === 'api', model: l.model, phase: l.phase, session: r.session, run: runs, employee: P.employeeOf(r.session), held: !!held, approvedBy: held?.by || '' });
       launched.push({ ...l, session: r.session, dir: r.dir });
       logLine({ event: 'launched', build: b.id, account: l.account, kind: l.kind || 'subscription', rule: l.rule || '', model: l.model, session: r.session });
       delete state.launchFails[l.id];
@@ -609,9 +692,11 @@ export function tick({ env = process.env } = {}) {
       logLine({ event: 'launch-failed', build: l.id, account: l.account, tried, error: e.message });
     }
   }
+  writeJson(files().holds, holds);
+  if (used.size) { const d = readJson(files().decisions, {}) ?? {}; for (const id of used) delete d[id]; writeJson(files().decisions, d); }
   // idle: nothing running while work waits. Recorded at once; the phone hears about it after idleAfterMin, once per idle spell.
   let idle = null;
-  if (plan.idle && !launched.length) {
+  if (plan.idle && !launched.length && !Object.keys(holds).length) {
     const since = state.idle?.kind === plan.idle.kind ? state.idle.since : started;
     idle = { ...plan.idle, since };
     const dueAt = Date.parse(since) + settings.idleAfterMin * 60e3;
@@ -638,7 +723,7 @@ export function tick({ env = process.env } = {}) {
   for (const fn of TICK_HOOKS) {
     try { fn({ state: next, plan, launched, ended, failed, env }); } catch (e) { logLine({ event: 'hook-failed', error: str(e.message, 300) }); }
   }
-  return { ok: true, at: next.at, intake: inta, ended, launched, failed, plan, idle, alertsSent: sent, selfCheck: check, health };
+  return { ok: true, at: next.at, intake: inta, ended, launched, failed, denied, held: Object.values(holds), plan, idle, alertsSent: sent, selfCheck: check, health };
 }
 
 const MAX_PICK_TRIES = 4;
@@ -866,6 +951,8 @@ async function main(argv) {
     if (!r.ran) return out({ ok: true, ...r, last: loadState().selfCheck ?? null }, r.why);
     return out({ ok: true, ...r }, [`self-check ${r.at}: ${r.line}`, ...r.fixes.map((f) => `  fixed: ${f}`), ...r.findings.map((f) => `  ${f.name.padEnd(16)} ${f.kind.padEnd(12)} ${f.state.padEnd(8)} ${f.running}/${f.parallel} · ${f.note}`), r.notified ? '  (AmberX told)' : ''].filter(Boolean).join('\n'));
   }
+  if (cmd === 'holds') { const h = startHolds(); return out({ ok: true, holds: h, autoApprove: loadSettings().autoApprove, vetoSeconds: loadSettings().vetoSeconds }, h.map((x) => `${x.id} on ${x.account} (${x.model}) · starts in ${x.secondsLeft} s${x.decision ? ` · ${x.decision.decision} by ${x.decision.by}` : ''}`).join('\n') || 'Nothing is waiting to start.'); }
+  if (cmd === 'approve' || cmd === 'deny') { const h = decideStart(rest[0], cmd, { by }); return out({ ok: true, id: h.id, decision: h.decision }, `${h.id}: ${cmd === 'approve' ? 'approved, starts on the next tick' : 'denied, back to Pending'}`); }
   if (cmd === 'accounts') { const a = accountsNow(loadStore()); return out({ ok: true, accounts: a }, a.map((x) => `${x.name.padEnd(16)} ${x.role.padEnd(11)} ${x.fable ? 'Fable' : 'Opus '} (${x.fableFrom}) · ${x.running}/${x.parallel}${x.usable ? '' : ` · ${x.why}`}`).join('\n') || 'no accounts'); }
   if (cmd === 'account') {
     const patch = {};
@@ -891,7 +978,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | holds | approve <id> | deny <id> [--by who] | stages [--check] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

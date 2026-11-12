@@ -189,6 +189,12 @@
         "title": "Deleted builds",
         "text": "Opens the Deleted tab: every deleted build, kept for good and restorable.",
         "kind": "menu"
+      },
+      {
+        "target": "phone-popups",
+        "title": "Phone pop-ups",
+        "text": "One AmberX notification per build. Before every start (first run, retry, rerun, next phase) a veto pop-up shows the build, what it will do, its steps, model, account and employee, with Approve, Deny and a countdown (90 s by default, down to 0). No answer = it starts; Deny = back to Pending. The same holds show here under Waiting to start. When it finishes, the same notification turns into the outcome (built, failed, needs you and what), then Ready to merge (PR open, CI green), Merged (on main) and Live (the console redeployed with it), each with its own switch (notifyReady, notifyMerged, notifyLive). A tap opens that build. Auto-approve starts skips the hold. Also: POST pipeline/start {id, decision}, MCP pipeline-start / pipeline-holds, pipeline.mjs approve|deny <id>, console actions build-orchestrator.start-approve / start-deny, or ask Amber.",
+        "kind": "toggle"
       }
     ],
     "intros": []

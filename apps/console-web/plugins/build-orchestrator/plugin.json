@@ -495,7 +495,7 @@
         "id": "pipeline-settings-set",
         "route": "POST /pipeline/settings",
         "title": "Change pipeline settings",
-        "description": "Change dispatcher settings. apiOverflow = when every subscription account is full or out, send builds to an API-key account (off by default; turning it on is Brett's own click, anyone may turn it off).",
+        "description": "Change dispatcher settings. apiOverflow = when every subscription account is full or out, send builds to an API-key account (off by default; turning it on is Brett's own click, anyone may turn it off). Start veto (Brett, Nov 10 2026): before every launch one AmberX pop-up (mirrored in the console) with Approve, Deny and a countdown; it starts on Approve or when the countdown ends, Deny sends it back to Pending. vetoSeconds = the approvals countdown (default 90, 0-600; 0 = no wait, the pop-up still goes out); autoApprove = no hold, it starts at once (notifyStart then decides whether a 'Started' pop-up is sent). notifyFinish sends 'Finished: <build> on <account>, <outcome>, <done>/<total> steps' (plus what it needs); notifySound; notifyGrouping build = one pop-up per build, each = every event stays. A tap opens the build (action build-orchestrator.open-build:<id>).",
         "input": {
           "type": "object",
           "properties": {
@@ -524,10 +524,69 @@
                 "rules",
                 "off"
               ]
+            },
+            "notifyStart": {
+              "type": "boolean"
+            },
+            "notifyFinish": {
+              "type": "boolean"
+            },
+            "notifySound": {
+              "type": "boolean"
+            },
+            "notifyGrouping": {
+              "type": "string",
+              "enum": [
+                "build",
+                "each"
+              ]
+            },
+            "autoApprove": {
+              "type": "boolean"
+            },
+            "vetoSeconds": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 600
             }
           }
         },
         "output": "{ settings }"
+      },
+      {
+        "id": "pipeline-holds",
+        "route": "GET /pipeline/holds",
+        "title": "Builds waiting on the start veto",
+        "readOnly": true,
+        "description": "Every build held behind the start veto: build, what it will do, steps, model, account, run, seconds left and any decision so far.",
+        "output": "{ holds, autoApprove, vetoSeconds }"
+      },
+      {
+        "id": "pipeline-start",
+        "route": "POST /pipeline/start",
+        "title": "Approve or deny a build start",
+        "description": "Answer the start veto for one build: approve = it starts on the dispatcher's next tick (within a minute); deny = back to Pending at once. The same as the AmberX pop-up's buttons and the console's Waiting to start card.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            },
+            "decision": {
+              "type": "string",
+              "enum": [
+                "approve",
+                "deny"
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "decision"
+          ]
+        },
+        "output": "{ id, decision }"
       }
     ]
   },

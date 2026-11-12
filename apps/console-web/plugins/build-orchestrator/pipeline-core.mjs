@@ -62,8 +62,34 @@ export const DEFAULTS = Object.freeze({
   apiAccounts: [],
   /** The account health sweep runs this often (minutes; 0 = off). */
   healthEveryMin: 5,
+  /**
+   * Start = veto (Brett, Nov 10 2026: "Before the orchestrator starts anything, I want a veto approval notification"): before
+   * every launch (first run, retry, rerun, next phase) one AmberX pop-up, mirrored in the console, with Approve, Deny and a
+   * countdown. It launches on Approve or when the countdown ends; Deny sends the build back to Pending. autoApprove = no hold:
+   * it launches at once and the pop-up says Started (notifyStart decides whether that one is sent).
+   */
+  autoApprove: false,
+  /** The approvals countdown: seconds a start waits for a veto (0 = launches on the same tick, the pop-up still goes out). */
+  vetoSeconds: 90,
+  /** With autoApprove on: a Started pop-up on every launch. (With the veto on, the veto pop-up is the start notice.) */
+  notifyStart: true,
+  /** AmberX phone pop-up when a build's session ends: built, failed, back in the Queue, or needs Brett. */
+  notifyFinish: true,
+  /**
+   * After the finish (Brett, Nov 10 2026: "I'll get a notification every time a build starts, completes, ready for merge,
+   * and goes live, right?"): the same build's notification moves on to Ready to merge (PR open, CI green), Merged (on main)
+   * and Live (the console was redeployed with it). Each stage has its own switch.
+   */
+  notifyReady: true,
+  notifyMerged: true,
+  notifyLive: true,
+  /** The pop-up makes a sound (meta.sound on the alert; the console chime follows it, AmberX from the next APK). */
+  notifySound: true,
+  /** build = one pop-up per build (each stage replaces the one before it); each = every event stays. */
+  notifyGrouping: 'build',
 });
-const LIMITS = { parallelPerAccount: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90], healthEveryMin: [0, 120] };
+export const NOTIFY_GROUPINGS = Object.freeze(['build', 'each']);
+const LIMITS = { parallelPerAccount: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90], healthEveryMin: [0, 120], vetoSeconds: [0, 600] };
 /** A health record older than this many sweeps is stale: the account falls back to its probe / plan. */
 const HEALTH_STALE_SWEEPS = 4;
 
@@ -85,6 +111,15 @@ export function normSettings(raw = {}) {
     autoQueue: o.autoQueue === true,
     apiOverflow: o.apiOverflow === undefined ? DEFAULTS.apiOverflow : o.apiOverflow === true,
     healthEveryMin: o.healthEveryMin === undefined ? DEFAULTS.healthEveryMin : clamp('healthEveryMin', o.healthEveryMin),
+    autoApprove: o.autoApprove === true,
+    vetoSeconds: o.vetoSeconds === undefined || o.vetoSeconds === '' ? DEFAULTS.vetoSeconds : clamp('vetoSeconds', o.vetoSeconds),
+    notifyStart: o.notifyStart !== false,
+    notifyFinish: o.notifyFinish !== false,
+    notifyReady: o.notifyReady !== false,
+    notifyMerged: o.notifyMerged !== false,
+    notifyLive: o.notifyLive !== false,
+    notifySound: o.notifySound !== false,
+    notifyGrouping: NOTIFY_GROUPINGS.includes(o.notifyGrouping) ? o.notifyGrouping : DEFAULTS.notifyGrouping,
     apiAccounts: [...new Set((typeof o.apiAccounts === 'string' ? o.apiAccounts.split(',') : list(o.apiAccounts)).map((n) => str(n, 32).toLowerCase()).filter((n) => /^[a-z0-9][a-z0-9-]{0,31}$/.test(n)))],
   };
 }
@@ -412,11 +447,44 @@ export function needsSplit(b, rules = { maxStepMinutes: 30 }) {
 // ------------------------------------------------------------------ alerts (the console alerts API; types in notify.json)
 
 export const ALERT_SOURCE = 'pipeline';
-export const ALERT_LINK = '#/build-orchestrator';
+/** The console's alerts API takes http(s)://, view:<id> or settings:<tab>. A build's own alert links to that build. */
+export const ALERT_LINK = 'view:build-orchestrator';
+/**
+ * The deep link that opens one build in the orchestrator: <console>/?axf-action=build-orchestrator.open-build:<id>.
+ * The console runs a navigate action named in `axf-action` once it has started, loading this plugin if it is lazy
+ * (console src/urlAction.ts); `orch-build` is the page's own parameter, read when the plugin is already loaded.
+ */
+export const BUILD_PARAM = 'orch-build';
+export const OPEN_BUILD_ACTION = 'build-orchestrator.open-build';
+/** Console actions behind the veto's Approve / Deny (console_open, voice and the pop-up's buttons all run these). */
+export const START_APPROVE_ACTION = 'build-orchestrator.start-approve';
+export const START_DENY_ACTION = 'build-orchestrator.start-deny';
+export const buildLink = (id, base = '') => (id && base
+  ? `${base.replace(/\/+$/, '')}/?axf-action=${encodeURIComponent(`${OPEN_BUILD_ACTION}:${id}`)}&${BUILD_PARAM}=${encodeURIComponent(id)}`
+  : ALERT_LINK);
+
+/** One word or phrase for how a run ended, as the phone shows it. */
+export function outcomeWord(outcome, { status = '', phaseSwitch = false } = {}) {
+  switch (outcome) {
+    case 'finished': return status === 'complete' ? 'complete' : 'built';
+    case 'requeued': return phaseSwitch ? 'phase done, next phase queued' : 'stopped, back in the Queue';
+    case 'returned': return 'needs you';
+    case 'failed': return 'failed';
+    default: return str(outcome, 40) || 'ended';
+  }
+}
+
 /**
  * The payload POST /api/alerts takes. kind = idle | launched | ended | failed | split. `key` makes repeats bump a count
  * instead of a new alert, and lets the dispatcher resolve one (idle) when a build runs again. Key prefixes are what
- * notify.json's types match on: pipeline:idle, pipeline:run:<id> (started), pipeline:end:<id> (ended / failed), pipeline:split:<id>.
+ * notify.json's types match on: pipeline:idle, pipeline:run:<id>:<run> (started), pipeline:end:<id>:<run> (ended /
+ * failed), pipeline:split:<id>. Start and finish are keyed per run so a retry or rerun pops up again on the phone.
+ *
+ * Start / finish (Brett, Nov 10 2026: "pop up on my screen and say what build is starting or finishing and what account
+ * it's being run on"): AmberX shows `<meta.label>: <title>`, so the phone reads
+ *   Started: <build> on <account> (<model>)
+ *   Finished: <build> on <account>, <outcome>, <done>/<total> steps   (+ "Needs: …" in the text when it needs Brett)
+ * d: { id, title, account, model, phase, session, run, outcome, status, note, needs, done, total, link, sound }
  */
 // ------------------------------------------------------------------ self-check
 
@@ -465,16 +533,69 @@ export function checkNotify(cur, prev) {
 }
 
 export function alertFor(kind, d = {}) {
+  const run = Number.isInteger(d.run) && d.run > 0 ? d.run : 1;
+  const link = str(d.link, 500) || ALERT_LINK;
   const base = { source: ALERT_SOURCE, link: ALERT_LINK, meta: { kind, build: d.id ?? '', account: d.account ?? '' } };
+  const acct = str(d.account, 60) || 'an unknown account';
+  const steps = Number.isInteger(d.total) && d.total > 0 ? `, ${d.done ?? 0}/${d.total} steps` : '';
+  const sound = d.sound !== false;
   switch (kind) {
     case 'idle': return { ...base, key: 'pipeline:idle', severity: d.kind === 'empty' ? 'info' : 'warning', title: d.kind === 'empty' ? 'Nothing is building: the Queue is empty' : 'Nothing is building while the Queue has work', body: str(d.reason, 1500) };
-    case 'launched': return { ...base, key: `pipeline:run:${d.id}`, severity: 'info', title: `Building: ${str(d.title, 120)}`, body: `Started on ${d.account} (${d.model}${d.phase ? `, ${d.phase}` : ''}) · session ${d.session || ''}`.trim() };
-    case 'ended': return { ...base, key: `pipeline:end:${d.id}`, severity: d.outcome === 'finished' ? 'success' : 'warning', title: `${d.outcome === 'finished' ? 'Built' : d.outcome === 'requeued' ? 'Back in the Queue' : 'Back in Pending'}: ${str(d.title, 120)}`, body: str(d.note, 1500) };
-    case 'failed': return { ...base, key: `pipeline:end:${d.id}`, severity: 'error', title: `Build failed: ${str(d.title, 120)}`, body: str(d.note, 1500) };
+    case 'veto': {
+      // one notification type: the veto shares the start key, so the launch updates it in place (no second pop-up)
+      const secs = Math.max(0, Math.round(Number(d.seconds) || 0));
+      const line = `${str(d.title, 120)} on ${acct} (${str(d.model, 20) || '?'})`;
+      const stepsLine = list(d.steps).length ? `Steps: ${list(d.steps).map((x) => str(x, 90)).join(' · ')}` : '';
+      return { ...base, link, key: `pipeline:run:${d.id}:${run}`, severity: 'warning', title: str(`${secs ? `Starts in ${secs} s` : 'Starting now'}: ${line}`, 200),
+        body: str([str(d.what, 300) ? `Will do: ${str(d.what, 300)}` : '', stepsLine, `Model ${str(d.model, 20) || '?'} · account ${acct} · employee ${str(d.employee, 40) || 'picked by the job router at start'}`,
+          `${d.phase ? `${str(d.phase, 40)} · ` : ''}run ${run}`, secs ? 'Approve starts it now, Deny sends it back to Pending; no answer = it starts.' : ''].filter(Boolean).join('\n'), 1500),
+        meta: { ...base.meta, label: 'Veto', event: 'veto', model: d.model ?? '', run, sound, runsAt: str(d.runsAt, 40), seconds: secs, employee: str(d.employee, 40),
+          actions: [{ id: 'approve', label: 'Approve', action: `${START_APPROVE_ACTION}:${d.id}` }, { id: 'deny', label: 'Deny', action: `${START_DENY_ACTION}:${d.id}` }] } };
+    }
+    case 'denied': return { ...base, link, key: `pipeline:run:${d.id}:${run}`, severity: 'info', title: str(`Denied, back in Pending: ${str(d.title, 120)}`, 200),
+      body: `Not started (${str(d.by, 60) || 'denied'}).`, meta: { ...base.meta, label: 'Denied', event: 'deny', run, sound: false } };
+    case 'launched': {
+      const line = `${str(d.title, 120)} on ${acct} (${str(d.model, 20) || '?'})`;
+      return { ...base, link, key: `pipeline:run:${d.id}:${run}`, severity: 'info', title: str(line, 200),
+        body: [`Started: ${line}`, `${d.phase ? `${str(d.phase, 40)} · ` : ''}run ${run}`, d.session ? `session ${str(d.session, 80)}` : ''].filter(Boolean).join(' · '),
+        meta: { ...base.meta, label: 'Started', event: 'start', model: d.model ?? '', run, sound, employee: str(d.employee, 40), approvedBy: str(d.approvedBy, 60) } };
+    }
+    case 'ended': case 'failed': {
+      const word = kind === 'failed' ? 'failed' : outcomeWord(d.outcome, d);
+      const line = `${str(d.title, 120)} on ${acct}, ${word}${steps}`;
+      const needs = str(d.needs, 600);
+      const severity = kind === 'failed' ? 'error' : d.outcome === 'finished' ? 'success' : d.outcome === 'returned' ? 'warning' : 'info';
+      return { ...base, link, key: `pipeline:end:${d.id}:${run}`, severity, title: str(line, 200),
+        body: [needs ? `Needs: ${needs}` : '', str(d.note, 900)].filter(Boolean).join('\n') || `Finished: ${line}`,
+        meta: { ...base.meta, label: 'Finished', event: 'finish', outcome: kind === 'failed' ? 'failed' : d.outcome ?? '', run, done: d.done ?? 0, total: d.total ?? 0, sound } };
+    }
     case 'selfcheck': return { ...base, key: 'pipeline:selfcheck', severity: list(d.problems).length ? 'warning' : 'info',
       title: `Dispatcher self-check: ${list(d.fixes).length ? `fixed ${list(d.fixes).length}` : 'nothing fixed'}${list(d.problems).length ? `, ${list(d.problems).length} account${list(d.problems).length === 1 ? '' : 's'} can't work` : ''}`,
       body: str([...list(d.fixes).map((x) => `Fixed: ${x}`), ...list(d.problems).map((x) => `Can't use ${x}`), d.line ? `Now: ${d.line}` : ''].filter(Boolean).join('\n'), 1500) };
     case 'split': return { ...base, key: `pipeline:split:${d.id}`, severity: d.error ? 'warning' : 'info', title: d.error ? `Split needs a look: ${str(d.title, 120)}` : `Split into ${d.steps} steps: ${str(d.title, 120)}`, body: str(d.error || d.note, 1500) };
     default: throw new Error(`unknown alert kind ${kind}`);
   }
+}
+
+/** The employee (named crew agent) from a session name: axf-<slug>--<agent>. */
+export const employeeOf = (session) => /--([a-z0-9][a-z0-9-]{0,31})$/.exec(str(session, 200))?.[1] ?? '';
+
+/**
+ * Should a held start launch now? hold = { id, runsAt }, decision = { decision: approve | deny } | null.
+ * → 'launch' (approved, or the countdown ran out), 'deny', or 'wait'.
+ */
+export function holdVerdict(hold, decision, now = Date.now()) {
+  if (decision?.decision === 'deny') return 'deny';
+  if (decision?.decision === 'approve') return 'launch';
+  const at = Date.parse(hold?.runsAt || '');
+  return !Number.isFinite(at) || now >= at ? 'launch' : 'wait';
+}
+
+/** The earlier alerts a start or finish replaces when notifyGrouping is "build" (the console resolves them; AmberX takes them away). */
+export function supersededKeys(kind, d = {}, grouping = 'build') {
+  if (grouping !== 'build' || !d.id) return [];
+  const run = Number.isInteger(d.run) && d.run > 0 ? d.run : 1;
+  if (kind === 'launched' || kind === 'veto') return run > 1 ? [`pipeline:end:${d.id}:${run - 1}`, `pipeline:run:${d.id}:${run - 1}`] : [];
+  if (kind === 'ended' || kind === 'failed') return [`pipeline:run:${d.id}:${run}`];
+  return [];
 }

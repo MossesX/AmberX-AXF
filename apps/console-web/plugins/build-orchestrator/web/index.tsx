@@ -3,7 +3,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
 import { setPriorityHost, type PriorityHost } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
-import { FOLDER, OrchestratorPage, TABS, openTab } from './ui';
+import { FOLDER, OrchestratorPage, TABS, focusBuild, focusedBuild, openTab } from './ui';
 import { BUILD_ACTIONS, type BuildAction } from '@console/axf/core/build-pipeline.mjs';
 
 const ACTION_LABEL: Record<BuildAction, string> = { unqueue: 'Back to Pending', hold: 'Hold (stays in the Queue)', release: 'Release from hold', archive: 'Move to the Archive', unarchive: 'Bring back from the Archive', delete: 'Delete (kept in Deleted)', restore: 'Restore' };
@@ -94,6 +94,17 @@ export const plugin: AxfWebLibrary = {
       for (const a of b?.actions ?? []) out.push({ id: `build-orchestrator.${a}`, label: ACTION_LABEL[a], icon: ACTION_ICON[a], action: `build-orchestrator.${a}:${encodeURIComponent(id)}` });
       return out;
     });
+    // one build: the AmberX start / finish pop-up's tap (?orch-build=<id>), console_open, voice
+    rt.actions.register('build-orchestrator.open-build', ([id = '']) => { focusBuild(decodeURIComponent(String(id))); rt.navigate('build-orchestrator'); }, { label: 'Open a build in the orchestrator', params: true, effect: 'navigate' });
+    // the start veto's Approve / Deny (the AmberX pop-up's buttons, voice, console_open): same as POST pipeline/start
+    const decide = (decision: 'approve' | 'deny') => async ([id = '']: string[]) => {
+      const build = decodeURIComponent(String(id));
+      await pipeApi.post('pipeline/start', { id: build, decision });
+      focusBuild(build); rt.navigate('build-orchestrator');
+    };
+    rt.actions.register('build-orchestrator.start-approve', decide('approve'), { label: 'Approve a build start (it starts on the next tick)', params: true });
+    rt.actions.register('build-orchestrator.start-deny', decide('deny'), { label: 'Deny a build start (back to Pending)', params: true });
+    if (focusedBuild()) setTimeout(() => rt.navigate('build-orchestrator'), 0);
   },
   views: { 'build-orchestrator': { title: 'Build orchestrator', icon: 'layers', keywords: ['orchestrator', 'builds', 'build manager', 'pending', 'queue', 'active', 'incomplete', 'complete', 'errors', 'archive', 'deleted', 'hold', 'on hold', 'restore', 'accounts', 'health', 'fable', 'opus', 'steps', 'phases', 'approve model'], render: () => <OrchestratorPage /> } },
   nav: { label: 'Builds', items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', view: 'build-orchestrator' }] },

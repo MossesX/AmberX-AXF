@@ -33,31 +33,30 @@
     },
     {
       "id": "pipeline.launched",
-      "label": "Build started",
+      "label": "Build start (veto)",
       "group": "builds",
       "app": "console",
       "source": "Build orchestrator dispatcher",
-      "description": "The dispatcher started a headless session for a Queue build: which account, which model, which phase.",
+      "description": "Before every build start (first run, retry, rerun, next phase): one heads-up pop-up on AmberX, mirrored in the console (Build orchestrator \u2192 Pipeline \u2192 Waiting to start), with the build, what it will do, steps, model, account and employee, Approve, Deny and a countdown (vetoSeconds, default 90 s). It starts on Approve or when the countdown ends; Deny sends it back to Pending. The launch then updates the same notification to 'Started: <build> on <account> (<model>)'. A tap opens that build. With auto-approve on there is no hold and notifyStart decides the Started pop-up.",
       "match": {
         "source": "pipeline",
         "keyPrefix": "pipeline:run:"
       },
-      "channels": {
-        "amberx": false
-      }
+      "push": true,
+      "priority": "high"
     },
     {
       "id": "pipeline.ended",
-      "label": "Build ended, returned or failed",
+      "label": "Build finished (built, failed or needs you)",
       "group": "builds",
       "app": "console",
       "source": "Build orchestrator dispatcher",
-      "description": "A dispatcher session ended: every step done (built), crashed and back in the Queue, stopped early and back in Pending for you, or failed after too many runs.",
+      "description": "Every time a build's session ends: a heads-up pop-up on AmberX reading 'Finished: <build> on <account>, <outcome>, <done>/<total> steps', plus what it needs when it needs you. A tap opens that build. Also in the Activity feed. Off in Build orchestrator \u2192 Pipeline \u2192 Phone pop-ups (notifyFinish), with the Claude setting Build done, or here.",
       "match": {
         "source": "pipeline",
         "keyPrefix": "pipeline:end:"
       },
-      "setting": "notify.blocked",
+      "setting": "notify.buildDone",
       "push": true,
       "priority": "high"
     },

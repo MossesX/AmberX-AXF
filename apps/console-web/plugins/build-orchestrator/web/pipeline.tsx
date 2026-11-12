@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Button, Checkbox, Chip, Icon, Note, PriorityTag, Switch, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, Icon, Note, PriorityTag, Segmented, Switch, useRuntime } from '@console/axf/react';
 import { WatchLiveFor } from '@console/watchLive';
 import { TAB_LABEL, type BuildAction, type PipelineTab as BuildTab } from '@console/axf/core/build-pipeline.mjs';
 
@@ -33,13 +33,16 @@ type Status = {
   ok: boolean; at: string; table: { pending: Row[]; queued: Row[]; building: Row[] }; tabs?: Record<BuildTab, Row[]>; health?: Health; accounts: Account[];
   slots: { used: number; cap: number; free: number; queued: number; unavailable: boolean };
   plan: { launches: { id: string; account: string; model: string; phase: string; kind?: string; rule?: string }[]; waits: { id: string; why: string }[]; queue: string[]; idle: { reason: string; kind: string } | null };
-  settings: { parallelPerAccount: number; autoQueue: boolean; splitProvider: string; idleAfterMin: number; maxRuns: number; apiOverflow?: boolean; healthEveryMin?: number };
+  settings: { parallelPerAccount: number; autoQueue: boolean; splitProvider: string; idleAfterMin: number; maxRuns: number; apiOverflow?: boolean; healthEveryMin?: number;
+    autoApprove?: boolean; vetoSeconds?: number; notifyStart?: boolean; notifyFinish?: boolean; notifyReady?: boolean; notifyMerged?: boolean; notifyLive?: boolean; notifySound?: boolean; notifyGrouping?: 'build' | 'each' };
+  holds?: Hold[];
   accountsFrom?: { source: 'host' | 'snapshot' | 'none'; at: string; ageMin: number | null; why: string };
   state: { at: string; idle: { reason: string; kind: string; since: string } | null; alerts: { key: string; at: string }[]; recent: { at: string; event: string; id: string; account?: string; model?: string; error?: string }[]; selfCheck?: SelfCheck | null; selfCheckRequested?: string };
 };
 type Finding = { name: string; kind: string; role: string; state: 'ready' | 'busy' | 'standby' | 'blocked'; running: number; parallel: number; note: string };
 type SelfCheck = { at: string; reason: string; by: string; line: string; fixes: string[]; problems: string[]; findings: Finding[]; notified: boolean };
 const CHECK_TONE: Record<Finding['state'], 'success' | 'accent' | undefined | 'danger'> = { ready: 'success', busy: 'accent', standby: undefined, blocked: 'danger' };
+type Hold = { id: string; title: string; account: string; model: string; phase: string; run: number; what: string; steps: string[]; employee: string; runsAt: string; seconds: number; secondsLeft: number; decision: { decision: 'approve' | 'deny'; by: string } | null };
 type Api = { call: <T>(path: string) => Promise<T>; post: <T>(path: string, body: unknown) => Promise<T> };
 const REFRESH_MS = 10_000;
 const fmtTime = (v: string) => { const d = new Date(v); return Number.isNaN(d.getTime()) ? '' : d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); };
@@ -126,6 +129,8 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
         {s.settings.autoQueue && <Chip tone="accent">Launch without asking: new builds queue by themselves</Chip>}
         <Switch label="Then any API" text="Subscriptions first; when every subscription account is full or out, an API-key account takes it (billed per token, under its caps)" checked={!!s.settings.apiOverflow} disabled={busy === 'pipeline/settings'} onChange={(on) => act('pipeline/settings', { apiOverflow: on }, `API overflow ${on ? 'on' : 'off'}`)} />
       </div>
+      <PhonePopups settings={s.settings} busy={busy === 'pipeline/settings'} set={(patch, what) => act('pipeline/settings', patch, what)} />
+      <StartVeto holds={s.holds ?? []} busy={busy} act={act} />
       {idle && <Note tone={idle.kind === 'stuck' ? 'warning' : 'info'}>{idle.reason}{(idle as { since?: string }).since ? ` (since ${fmtTime((idle as { since?: string }).since ?? '')})` : ''}</Note>}
       {s.plan.launches.length > 0 && <Note tone="success">Next tick starts {s.plan.launches.map((l) => `${l.id} on ${l.account} (${l.model}${l.phase ? `, ${l.phase}` : ''})`).join(', ')}.</Note>}
       {view === 'accounts' && <section className="fx-stack">
@@ -266,5 +271,71 @@ function PipelineCard({ r, busy, wait, launch, act, run, selected, onSelect, sho
         {ACTION_ORDER.filter((a) => r.actions?.includes(a)).map((a) => <Button key={a} size="sm" tone={ACTION[a].tone} icon={ACTION[a].icon} disabled={busy} title={ACTION[a].title} onClick={() => void run(a, [r.id])}>{ACTION[a].label}</Button>)}
       </div>
     </article>
+  );
+}
+
+/**
+ * Start veto (Brett, Nov 10 2026: "Before the orchestrator starts anything, I want a veto approval notification"): the
+ * console mirror of the AmberX pop-up. Every held start with what it will do, its steps, model, account, employee and a
+ * live countdown; Approve starts it on the next tick, Deny sends it back to Pending (POST pipeline/start, the same as the
+ * console actions build-orchestrator.start-approve / start-deny, MCP pipeline-start, the CLI and voice).
+ */
+function StartVeto({ holds, busy, act }: { holds: Hold[]; busy: string; act: (path: string, body: Record<string, unknown>, what: string) => Promise<void> }) {
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => { if (!holds.length) return undefined; const t = window.setInterval(() => setNow(Date.now()), 1000); return () => window.clearInterval(t); }, [holds.length]);
+  if (!holds.length) return null;
+  return (
+    <section className="fx-stack" aria-label="Waiting to start" data-help="start-veto">
+      <h2 className="pd-card__title">Waiting to start <span className="oc-count">{holds.length}</span><span className="fx-muted fx-small"> · starts when the countdown ends unless you deny it</span></h2>
+      {holds.map((h) => {
+        const left = Math.max(0, Math.ceil((Date.parse(h.runsAt) - now) / 1000));
+        return (
+          <article key={h.id} className="pd-card is-pending" data-fx-ctx-target="axf-orchestrator-build" data-fx-ctx-payload={h.id}>
+            <div className="pd-card__top">
+              <h3 className="pd-card__title">{h.title}<span className="fx-muted fx-small fx-mono"> {h.id}</span></h3>
+              <Chip tone={h.decision ? (h.decision.decision === 'approve' ? 'success' : 'danger') : 'accent'}>{h.decision ? `${h.decision.decision === 'approve' ? 'Approved' : 'Denied'} by ${h.decision.by}` : left ? `Starts in ${left} s` : 'Starting'}</Chip>
+            </div>
+            {h.what && <p className="fx-small">{h.what}</p>}
+            {h.steps.length > 0 && <div className="fx-stack">{h.steps.map((x) => <p key={x} className="fx-small fx-muted"><Icon name="check-circle" size={13} /> {x}</p>)}</div>}
+            <div className="pd-meta">
+              <span className={`oc-model is-${h.model.toLowerCase()}`}>{h.model}{h.phase ? ` · ${h.phase}` : ''}</span>
+              <span><Icon name="user" size={13} />{h.account} · run {h.run}</span>
+              <span className="fx-muted">employee: {h.employee || 'picked by the job router at start'}</span>
+            </div>
+            <div className="fx-row fx-row--wrap" role="toolbar" aria-label={`Start veto for ${h.id}`}>
+              <Button size="sm" tone="primary" icon="check" disabled={busy === h.id || !!h.decision} onClick={() => act('pipeline/start', { id: h.id, decision: 'approve' }, `${h.id}: approved, starts on the next tick`)}>Approve</Button>
+              <Button size="sm" tone="danger" icon="x" disabled={busy === h.id || h.decision?.decision === 'deny'} onClick={() => act('pipeline/start', { id: h.id, decision: 'deny' }, `${h.id}: denied, back to Pending`)}>Deny</Button>
+            </div>
+          </article>
+        );
+      })}
+    </section>
+  );
+}
+
+const VETO_PRESETS = [0, 30, 60, 90, 180] as const;
+
+/**
+ * Phone pop-ups (Brett, Nov 10 2026: "a notification on AmberX every time the orchestrator starts a build and every time a
+ * build finishes"). pipeline-settings@1 notifyStart / notifyFinish / notifySound / notifyGrouping; the same keys through
+ * REST (POST pipeline/settings), MCP and the CLI (pipeline-settings-set), and voice. Channels and quiet hours stay in the
+ * Notifications panel (types pipeline.launched and pipeline.ended).
+ */
+function PhonePopups({ settings, busy, set }: { settings: Status['settings']; busy: boolean; set: (patch: Record<string, unknown>, what: string) => Promise<void> }) {
+  const on = (k: 'notifyStart' | 'notifyFinish' | 'notifySound') => settings[k] !== false;
+  return (
+    <section className="fx-stack oc-popups" aria-label="Phone pop-ups" data-help="phone-popups">
+      <h2 className="pd-card__title">Phone pop-ups <span className="fx-muted fx-small">· one AmberX notification per build: a veto before it starts (Approve, Deny, countdown), then the outcome when it finishes. A tap opens the build here.</span></h2>
+      <div className="pl-strip" role="toolbar" aria-label="Phone pop-up settings">
+        <Switch label="Auto-approve starts" text={settings.autoApprove ? 'Starts at once, no veto' : 'Every start waits for the veto countdown'} checked={!!settings.autoApprove} disabled={busy} onChange={(v) => set({ autoApprove: v }, v ? 'Starts auto-approved: no veto' : 'Start veto on')} />
+        {!settings.autoApprove && <Segmented size="sm" label="Countdown" value={String(settings.vetoSeconds ?? 90)} onChange={(v) => set({ vetoSeconds: Number(v) }, `Veto countdown ${v} s`)}
+          options={[...new Set([...VETO_PRESETS, settings.vetoSeconds ?? 90])].sort((a, b) => a - b).map((n) => ({ value: String(n), label: `${n} s` }))} />}
+        {settings.autoApprove && <Switch label="Build started" text="Started: build on account (model)" checked={on('notifyStart')} disabled={busy} onChange={(v) => set({ notifyStart: v }, `Start pop-ups ${v ? 'on' : 'off'}`)} />}
+        <Switch label="Build finished" text="Finished: build on account, outcome, steps (and what it needs)" checked={on('notifyFinish')} disabled={busy} onChange={(v) => set({ notifyFinish: v }, `Finish pop-ups ${v ? 'on' : 'off'}`)} />
+        <Switch label="Sound" checked={on('notifySound')} disabled={busy} onChange={(v) => set({ notifySound: v }, `Pop-up sound ${v ? 'on' : 'off'}`)} />
+        <Segmented size="sm" label="Grouping" value={settings.notifyGrouping ?? 'build'} onChange={(v) => set({ notifyGrouping: v }, v === 'build' ? 'One pop-up per build' : 'Every start and finish stays')}
+          options={[{ value: 'build', label: 'One per build', icon: 'layers' }, { value: 'each', label: 'Every event', icon: 'list' }]} />
+      </div>
+    </section>
   );
 }

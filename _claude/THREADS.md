@@ -221,6 +221,12 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 ## To carry on
 
+### One AmberX build notification: veto before every start, pop-up on every finish (`one-amberx-build-notification-veto-approval-befo`, All, Opus) — branch `claude/one-amberx-build-notification-veto-approval-befo`
+- **Asked:** "Before the orchestrator starts anything, I want a veto approval notification. I don't need two. Get rid of the other one and just make it a veto approval for the AmberX notification."
+- **State:** built. Every launch held behind one AmberX pop-up on the start key (build, what it will do, steps, model, account, employee, Approve / Deny, countdown `vetoSeconds` 90 s, 0-600); no answer = starts, Deny = Pending; launch / finish update the same notification. Console card Waiting to start; `autoApprove` skips the hold. REST `pipeline/start` + `pipeline/holds`, MCP `pipeline-start` / `pipeline-holds`, CLI `pipeline.mjs approve|deny|holds`, actions `build-orchestrator.start-approve|start-deny`. Supersedes `amberx-phone-pop-up-for-every-build-start-and-fi` (archived; PR #433 folded in and closed); upgrades part of `brief-approval-dialog-before-every-headless-sess`.
+- **Left:** UI Review shots, merge queue, real phone test. AmberX native Approve / Deny buttons + countdown deferred (PORTING.md).
+- **Read:** `_claude/builds/reports/one-amberx-build-notification-veto-approval-befo.md`.
+
 ### Skins cover every asset type, at any scope (`skins-asset-types`)
 
 - **Asked (in full):** Brett (voice, Nov 7 2026): "What about skins? How's skins doing? Is skins gonna um, be upgraded since we've we've made um so many more asset types?" Brief: upgrade the skins system so it styles every asset type in the registry (embeddable widget, icon pack, composite assets, data set bar, embed, text blocks / labels); skins at any scope global / app / UI / plugin with child-overrides-parent inheritance (the design / icon pack model); a skin is a design pack that may reference an icon pack; the type list comes from the registry dynamically with a CI check that fails on an uncovered type; voice + API / MCP / CLI parity; at least 3 UI options to UI Review first.

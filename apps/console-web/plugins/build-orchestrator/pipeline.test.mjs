@@ -20,6 +20,17 @@ const step = (id, model, done = false) => ({ id, uid: `u-${id}`, text: `${id} wo
 const build = (id, status, steps, extra = {}) => ({ id, title: id, status, steps, createdAt: now, updatedAt: now, notes: [], approvals: [], upgradeRequests: [], deleted: false, hidden: false, ...extra });
 
 // ---------------- build-pipeline@1 record
+t('holdVerdict: approve launches now, deny denies, otherwise it waits for the countdown', () => {
+  const h = { runsAt: new Date(Date.now() + 60e3).toISOString() };
+  assert.equal(P.holdVerdict(h, null), 'wait'); assert.equal(P.holdVerdict(h, { decision: 'approve' }), 'launch'); assert.equal(P.holdVerdict(h, { decision: 'deny' }), 'deny');
+  assert.equal(P.holdVerdict({ runsAt: new Date(Date.now() - 1).toISOString() }, null), 'launch', 'the countdown ran out');
+  assert.equal(P.normSettings({}).vetoSeconds, 90); assert.equal(P.normSettings({ vetoSeconds: 0 }).vetoSeconds, 0); assert.equal(P.normSettings({ vetoSeconds: 9999 }).vetoSeconds, 600); assert.equal(P.normSettings({}).autoApprove, false);
+  assert.equal(P.employeeOf('axf-some-build--rhonda'), 'rhonda'); assert.equal(P.employeeOf('hl-abc'), '');
+  const a = P.alertFor('veto', { id: 'x', title: 'X', account: 'w', model: 'Opus', seconds: 90, steps: ['s1 do'], what: 'thing', run: 1 });
+  assert.equal(a.key, 'pipeline:run:x:1'); assert.deepEqual(a.meta.actions.map((y) => y.action), ['build-orchestrator.start-approve:x', 'build-orchestrator.start-deny:x']);
+  assert.match(a.body, /Will do: thing/); assert.match(a.body, /Steps: s1 do/); assert.match(a.body, /employee/);
+});
+
 t('normPipeline: empty → null, fields in shape', () => {
   assert.equal(BP.normPipeline(null), null); assert.equal(BP.normPipeline({}), null);
   const p = BP.normPipeline({ queuedAt: now, queuedBy: 'brett', account: 'Bad Name', runs: 2.5, lastRun: { exit: 1, outcome: 'nope', stepsLeft: 3 }, split: { provider: 'claude', steps: 8 } });
@@ -190,8 +201,9 @@ t('self-check: each account gets a state; blocked ones are the alert; a new prob
 t('alertFor: idle keyed once, per-build run keys, every kind has a title', () => {
   const idle = P.alertFor('idle', { kind: 'stuck', reason: 'why' }); assert.equal(idle.key, 'pipeline:idle'); assert.equal(idle.severity, 'warning'); assert.equal(idle.source, 'pipeline');
   assert.equal(P.alertFor('idle', { kind: 'empty', reason: 'why' }).severity, 'info');
-  assert.equal(P.alertFor('launched', { id: 'b', title: 'B', account: 'w', model: 'Opus' }).key, 'pipeline:run:b');
-  assert.equal(P.alertFor('failed', { id: 'b', title: 'B', note: 'n' }).severity, 'error'); assert.equal(P.alertFor('failed', { id: 'b' }).key, 'pipeline:end:b');
+  assert.equal(P.alertFor('launched', { id: 'b', title: 'B', account: 'w', model: 'Opus' }).key, 'pipeline:run:b:1');
+  assert.equal(P.alertFor('launched', { id: 'b', title: 'B', account: 'w', model: 'Opus', run: 3 }).key, 'pipeline:run:b:3');
+  assert.equal(P.alertFor('failed', { id: 'b', title: 'B', note: 'n' }).severity, 'error'); assert.equal(P.alertFor('failed', { id: 'b', run: 2 }).key, 'pipeline:end:b:2');
   assert.equal(P.alertFor('ended', { id: 'b', outcome: 'finished' }).severity, 'success');
   assert.throws(() => P.alertFor('bogus'), /unknown alert kind/);
 });
@@ -403,6 +415,32 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     json(pipe('queue', 'beta', '--json'));
     const bad = pipe('queue', 'alpha', '--json', '--expect-fail'); assert.notEqual(bad.status, 0, 'queueing a queued build is refused');
   });
+  t('e2e start veto: every start is held behind one AmberX veto pop-up; no answer = wait, Deny = back to Pending', () => {
+    let r = json(pipe('tick', '--json'));
+    assert.equal(r.launched.length, 0, 'nothing starts before the veto');
+    assert.deepEqual(r.held.map((h) => h.id).sort(), ['alpha', 'beta']);
+    const veto = r.alertsSent.filter((x) => x.kind === 'veto');
+    assert.deepEqual(veto.map((x) => x.key).sort(), ['pipeline:run:alpha:1', 'pipeline:run:beta:1'], 'the veto uses the start key: one notification, not two');
+    assert.ok(veto.some((x) => x.title === 'Veto: Starts in 90 s: Alpha feature on w-max (Fable)'), JSON.stringify(veto));
+    assert.ok(r.plan.waits.some((w) => w.id === 'alpha' && /waiting for your veto/.test(w.why)));
+    r = json(pipe('tick', '--json'));
+    assert.equal(r.launched.length, 0); assert.equal(r.alertsSent.filter((x) => x.kind === 'veto').length, 0, 'a held start does not pop up again');
+    const holds = json(pipe('holds', '--json')); assert.equal(holds.holds.length, 2); assert.ok(holds.holds.every((h) => h.secondsLeft > 0 && h.secondsLeft <= 90));
+    json(pipe('deny', 'beta', '--by', 'brett', '--json'));
+    assert.equal(find('beta').status, 'pending', 'Deny sends it back to Pending at once');
+    const ok = json(pipe('approve', 'alpha', '--by', 'brett', '--json')); assert.equal(ok.decision.decision, 'approve');
+    assert.equal(json(pipe('holds', '--json')).holds.find((h) => h.id === 'alpha').decision.by, 'brett', 'the hold shows who approved it');
+    json(pipe('deny', 'alpha', '--by', 'brett', '--json'));
+    r = json(pipe('tick', '--json'));
+    assert.equal(r.launched.length, 0);
+    assert.deepEqual(r.denied.sort(), ['alpha', 'beta']);
+    assert.ok(r.alertsSent.some((x) => x.key === 'pipeline:run:beta:1' && x.kind === 'denied' && /^Denied: Denied, back in Pending: Beta feature/.test(x.title)), JSON.stringify(r.alertsSent));
+    assert.equal(json(pipe('holds', '--json')).holds.length, 0);
+    assert.notEqual(pipe('approve', 'beta', '--json', '--expect-fail').status, 0, 'nothing to approve once it is gone');
+    // back in the Queue; from here starts go on a 0 s countdown (the veto pop-up, then the launch on the same tick)
+    json(pipe('queue', 'alpha', '--json')); json(pipe('queue', 'beta', '--json'));
+    env.AXF_PIPELINE_SETTINGS = JSON.stringify({ parallelPerAccount: 1, idleAfterMin: 0, vetoSeconds: 0 });
+  });
   t('e2e tick: one slot per account cap; the Fable build goes to the Max account, the Opus build to the Pro one', () => {
     const r = json(pipe('tick', '--json'));
     assert.deepEqual(r.launched.map((l) => [l.id, l.account, l.model]).sort(), [['alpha', 'w-max', 'Fable'], ['beta', 'w-pro', 'Opus']], JSON.stringify({ waits: r.plan.waits, failed: r.failed }));
@@ -411,6 +449,9 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     const a = find('alpha'); assert.equal(a.status, 'running'); assert.equal(a.pipeline.account, 'w-max'); assert.equal(a.pipeline.runs, 1); assert.match(a.pipeline.session, /^axf-alpha/); assert.equal(a.pipeline.model, 'Fable');
     assert.ok(existsSync(join(wtRoot, 'alpha', '.axf-brief.md')), 'a brief file is written in the worktree');
     const brief = readFileSync(join(wtRoot, 'alpha', '.axf-brief.md'), 'utf8'); assert.match(brief, /## Brett said \(verbatim\)/); assert.match(brief, /build me alpha, kid/); assert.match(brief, /Continue build "Alpha feature" \(alpha\)/);
+    // Brett, Nov 10 2026: a pop-up on every start saying which build and which account
+    assert.deepEqual(r.alertsSent.filter((x) => x.kind === 'launched').map((x) => [x.key, x.title]).sort(),
+      [['pipeline:run:alpha:1', 'Started: Alpha feature on w-max (Fable)'], ['pipeline:run:beta:1', `Started: ${find('beta').title} on w-pro (Opus)`]]);
     assert.equal(json(pipe('tick', '--json')).launched.length, 0, 'nothing free: no second launch');
   });
   t('e2e one way to start builds: every dispatcher launch carries a token the gate accepts once; anything else is refused', () => {
@@ -449,18 +490,24 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     // the account it freed takes it again in the same tick: run 2
     assert.deepEqual(r.launched.map((l) => l.id), ['alpha']); assert.equal(find('alpha').status, 'running'); assert.equal(find('alpha').pipeline.runs, 2);
     assert.match(find('alpha').notes.map((x) => x.text).join('\n'), /back in the Queue \(run 1\)/);
+    // the crash is a finish, the retry a new start that pops up again (its own key)
+    assert.ok(r.alertsSent.some((x) => x.key === 'pipeline:end:alpha:1' && /^Finished: Alpha feature on w-max, stopped, back in the Queue, 0\/\d+ steps$/.test(x.title)), JSON.stringify(r.alertsSent));
+    assert.ok(r.alertsSent.some((x) => x.key === 'pipeline:run:alpha:2' && x.title.startsWith('Started: Alpha feature on ')), JSON.stringify(r.alertsSent));
     // beta's session ticks its step and ends cleanly
     orch('act', 'step', 'beta', 's1', 'done');
     writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('beta').pipeline.session, name: 'beta', exit: 0, at: new Date().toISOString() }) + '\n');
     r = json(pipe('tick', '--json'));
     assert.ok(['complete', 'built'].includes(find('beta').status), find('beta').status);
     assert.equal(find('beta').pipeline.lastRun.outcome, 'finished');
+    const fin = r.alertsSent.find((x) => x.key === 'pipeline:end:beta:1');
+    assert.ok(fin && /^Finished: .* on w-pro, (built|complete), 1\/1 steps$/.test(fin.title), JSON.stringify(r.alertsSent));
   });
   t('e2e session end: a clean stop with steps left goes back to Pending for Brett', () => {
     writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('alpha').pipeline.session, name: 'alpha', exit: 0, at: new Date().toISOString() }) + '\n');
     const r = json(pipe('tick', '--json'));
     assert.deepEqual(r.ended.map((e) => [e.id, e.outcome]), [['alpha', 'returned']]);
     assert.equal(find('alpha').status, 'pending'); assert.match(find('alpha').notes.at(-1).text, /back in Pending/);
+    assert.ok(r.alertsSent.some((x) => /^pipeline:end:alpha:\d+$/.test(x.key) && /, needs you, /.test(x.title)), JSON.stringify(r.alertsSent));
   });
   t('e2e idle: nothing running with work in Pending raises the idle alert once, cleared when a build runs', () => {
     const st = JSON.parse(readFileSync(join(pipeDir, 'state.json'), 'utf8'));
@@ -545,5 +592,31 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.equal(find('delta').pipeline.split.provider, 'rules'); assert.ok(find('delta').steps.length >= 3); assert.match(find('delta').pipeline.note, /rules/);
   });
 }
+
+t('start / finish pop-ups: the phone line, per-run keys, the deep link, grouping, settings defaults', () => {
+  const link = P.buildLink('my-build', 'https://console.example.com/');
+  assert.equal(link, 'https://console.example.com/?axf-action=build-orchestrator.open-build%3Amy-build&orch-build=my-build');
+  assert.equal(new URL(link).searchParams.get('axf-action'), 'build-orchestrator.open-build:my-build');
+  assert.equal(P.buildLink('x', ''), P.ALERT_LINK);
+  const s = P.alertFor('launched', { id: 'my-build', title: 'My build', account: 'Work max', model: 'Fable', run: 2, link });
+  assert.equal(`${s.meta.label}: ${s.title}`, 'Started: My build on Work max (Fable)');
+  assert.equal(s.link, link); assert.equal(s.meta.event, 'start'); assert.equal(s.meta.sound, true);
+  const f = P.alertFor('ended', { id: 'my-build', title: 'My build', account: 'Work max', outcome: 'finished', status: 'built', done: 3, total: 3, run: 2, link, sound: false });
+  assert.equal(`${f.meta.label}: ${f.title}`, 'Finished: My build on Work max, built, 3/3 steps');
+  assert.equal(f.severity, 'success'); assert.equal(f.meta.sound, false); assert.equal(f.key, 'pipeline:end:my-build:2');
+  const n = P.alertFor('ended', { id: 'b', title: 'B', account: 'w', outcome: 'returned', needs: 'approve the model switch', done: 1, total: 4 });
+  assert.equal(n.title, 'B on w, needs you, 1/4 steps'); assert.match(n.body, /^Needs: approve the model switch/); assert.equal(n.severity, 'warning');
+  assert.equal(P.alertFor('failed', { id: 'b', title: 'B', account: 'w', done: 0, total: 2 }).title, 'B on w, failed, 0/2 steps');
+  assert.equal(P.alertFor('ended', { id: 'b', title: 'B', account: 'w', outcome: 'requeued', phaseSwitch: true }).title, 'B on w, phase done, next phase queued');
+  assert.deepEqual(P.supersededKeys('ended', { id: 'b', run: 2 }), ['pipeline:run:b:2']);
+  assert.deepEqual(P.supersededKeys('launched', { id: 'b', run: 2 }), ['pipeline:end:b:1', 'pipeline:run:b:1']);
+  assert.deepEqual(P.supersededKeys('launched', { id: 'b', run: 1 }), []);
+  assert.deepEqual(P.supersededKeys('ended', { id: 'b', run: 2 }, 'each'), []);
+  const d = P.normSettings({});
+  assert.equal(d.notifyStart, true); assert.equal(d.notifyFinish, true); assert.equal(d.notifySound, true); assert.equal(d.notifyGrouping, 'build');
+  const o = P.normSettings({ notifyStart: false, notifyGrouping: 'each', notifySound: false });
+  assert.equal(o.notifyStart, false); assert.equal(o.notifyGrouping, 'each'); assert.equal(o.notifySound, false);
+  assert.equal(P.normSettings({ notifyGrouping: 'nope' }).notifyGrouping, 'build');
+});
 
 console.log(`pipeline: ${n} checks passed${e2e ? '' : ' (CLI end-to-end skipped)'}`);
