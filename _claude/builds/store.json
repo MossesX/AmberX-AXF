@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3494,
- "updatedAt": "2026-11-12T03:36:02.371Z",
+ "rev": 3495,
+ "updatedAt": "2026-11-12T03:36:53.082Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -123626,9 +123626,9 @@
    "source": "mcp",
    "pendingId": "orchestrator-checks-shipped-features-before-spli",
    "branch": "claude/orchestrator-checks-shipped-features-before-spli",
-   "pr": "",
+   "pr": "#515",
    "createdAt": "2026-11-08T17:22:53.861Z",
-   "updatedAt": "2026-11-12T03:35:59.259Z",
+   "updatedAt": "2026-11-12T03:36:51.619Z",
    "builtAt": "",
    "notes": [
     {
@@ -123785,7 +123785,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 58,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": {
