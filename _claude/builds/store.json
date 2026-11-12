@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3630,
- "updatedAt": "2026-11-12T18:42:29.842Z",
+ "rev": 3631,
+ "updatedAt": "2026-11-12T18:44:10.868Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -170619,7 +170619,7 @@
    "branch": "claude/new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans",
    "pr": "",
    "createdAt": "2026-11-12T17:35:35.216Z",
-   "updatedAt": "2026-11-12T18:38:29.950Z",
+   "updatedAt": "2026-11-12T18:44:09.341Z",
    "builtAt": "",
    "notes": [
     {
@@ -170680,7 +170680,13 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-12T17:36:06.463Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -170791,12 +170797,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T18:44:09.341Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T17:35:35.217Z",
-     "updatedAt": "2026-11-12T17:35:35.217Z"
+     "updatedAt": "2026-11-12T18:44:09.521Z"
     },
     {
      "id": "s6",
@@ -170829,7 +170835,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
