@@ -2496,6 +2496,10 @@
                 {
                   "id": "cx.buildengine.shipped",
                   "title": "Shipped manifests: every landed build's prompt, brief, models, steps, commit, files, tests and cost in Shipped features (shipped-manifest@1)"
+                },
+                {
+                  "id": "cx.webbrowser",
+                  "title": "Open any website by voice: AmberX \"go to <site>\" opens the phone browser (optionally with the recorder); console/Molly Web browser pane, audit-logged, REST/MCP/CLI"
                 }
               ]
             },

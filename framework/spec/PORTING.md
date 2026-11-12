@@ -142,6 +142,23 @@ Regenerate fixtures after changing a reference engine: `npx -y tsx framework/spe
 
 `framework/core/engines/skin.ts` and `skin-rules.mjs` (web only, built on Opus, format marked for a possible Fable review: plan `skins-possible-fable-review-6xha`) have no Kotlin twin. Android work is on hold. A port needs the same pure functions, the same `skin` asset type and the same document on the hub: `normalizeSkin`, `skinFromDesignPackage`, `composeLook`, `lookAfterChange`, `pickSkin`, `setUseSkin`, `backToSkin`, `restoreAppDefault`, `undoRestore`, pinned by `spec/fixtures/skin.json` and `spec/check-skin.mts`. Build skins-asset-types (Fable, Nov 7 2026) added `skin-coverage.mjs` (coverage of every registered type from the registry, the scope chain global → app → UI → plugin with `resolveSkinChain`, `partsErrors`), `composeLookAt`, `resolveLookSkin`, per-scope states in app-look@1 (`scopes`, `skin.inherit`), the hub-wide `skin` field on appearance@1, `iconPack` + `parts` on skin@1, and the runtime's `skinScoped` views; a port carries the same functions and the `coverage` / `scopes` blocks of the fixture. Build skins-own-everything-colour-theme-swaps-independ (Fable, Nov 10 2026) added the colour theme switched inside the skin: `colorTheme` on the app level, on a scope and on the hub-wide skin (never an override, never a new skin), `setSkinColorTheme`, `skinColorTheme`, `skinColorOf`, `setLookSlot(look, slot, id, global)`, the legacy `overrides["color-theme"]` migration on read, and the `colour` block of the fixture; a port carries those too. `theme.ts`'s scrollbar tokens stay out of the output Kotlin is tested against until then. Until a port does this, an Android app keeps reading `appearance@1` directly and shows no skin.
 
+## Deferred: open any website on the phone from the hub (Nov 12 2026)
+
+Build `open-any-website-by-voice-on-the-phone-optionall` (supersedes `amberx-open-any-url`, `amberx-open-any-url-apk`).
+Shipped web-side only: AmberX's Web plugin reads "go to <site>" (`parseGoTo`, any http(s) host; javascript:, file:, data:,
+intent: refused) and opens it in the phone's browser in front through the Capacitor shell's navigation rule, with the
+Audio Output Recorder started first on "… and record it"; the console's Web browser plugin (`web-browser@1`) opens any
+site in a pane, audit-logged, from REST, MCP, the CLI and the page. Android twins deferred (no new Android work):
+- `OpenUrlRules.allowed` still allows only amberxai.com, so axHub's `amberx.open_url` (and `browser.open` over AXPP)
+  can't open another host from a Claude session or the console. A port adds a `browse` mode: any https host, same
+  scheme / user-info / length rules as `parseGoTo` + `clean_url`, plus the same list on axHub's side.
+- Chrome by package: the Web plugin hands the URL to the default browser (Chrome on Brett's phone); pinning
+  `com.android.chrome` needs a native `openUrl` bridge method (`AxppLink.browserIntent` already does it).
+- Background starts: a "go to" heard with AmberX off screen (wake word, screen off) needs the overlay-window start of
+  `AxppLink.startInForeground`; the page-side open only works while AmberX is in front.
+- Recorder session name: a "record" open tags the recording with a Web note (URL + time, synced to axHub); passing the
+  URL as the recorder's session (`RecorderControl.sessionOf`) needs a `start({session})` bridge argument.
+
 ## Deferred: build-pipeline@1 route + dispatch (Nov 9 2026)
 
 `framework/core/build-pipeline.mjs` gained `pipeline.route` ('' | api | subscription: the per-build override that lets

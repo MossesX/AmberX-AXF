@@ -1,0 +1,29 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "web-browser-help",
+  "name": "Web browser help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the Web browser plugin (help@1).",
+  "author": "Brett",
+  "tags": ["help"],
+  "data": {
+    "scope": "plugin:web-browser",
+    "entries": [
+      { "target": "view:web-browser", "title": "Web browser", "text": "Opens any website in a pane inside the console. Amber, the API and the CLI can open pages here too; every page opened is logged.", "kind": "screen" },
+      { "target": "address", "title": "Address", "text": "Type a web address (example.com or a full https link) and tap Go. Only http and https pages open." },
+      { "target": "go", "title": "Go", "text": "Opens the address in the pane below and adds it to the log." },
+      { "target": "reload", "title": "Reload", "text": "Loads the page in the pane again." },
+      { "target": "open-in-a-new-tab", "title": "Open in a new tab", "text": "Opens the page in a normal browser tab. Use it when the pane stays blank: many big sites refuse to be shown inside other pages." },
+      { "target": "close-the-page", "title": "Close the page", "text": "Clears the pane. The close is logged too." },
+      { "target": "web-browser-recent", "title": "Recently opened", "text": "The last pages opened here, from any source. Tap one to open it again." },
+      { "target": "web-browser", "title": "Web browser settings", "text": "Install or uninstall the Web browser plugin. Uninstalling removes its log." }
+    ],
+    "intros": [
+      { "screen": "web-browser", "title": "Web browser", "steps": [
+        { "say": "Type an address and tap Go to open any website here.", "target": "address" },
+        { "say": "Pages Amber opens for you show up here too, and every one is logged below.", "target": "web-browser-recent" }
+      ] }
+    ]
+  }
+}

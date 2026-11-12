@@ -1777,3 +1777,8 @@ One line per veto pass grant, change made under it, revoke, undo and end (Token 
 - Checks: `npx -y tsx framework/spec/check-tab-group.mts`, `check-chrome-settings.mts`, `check-customize.mts`, `check-settings-ui.mts`; `node framework/cli/chrome-settings.mjs check`, `check-chrome-assets.mjs`, `check-theme.mjs`, `check-controls.mjs`, `check-toolbars.mjs`, `axf.mjs validate --framework`.
 - Waits on: nothing from Brett (UI Review shots are non-blocking for this build).
 - First message to carry on: "Carry on tab-group-assets from the typecheck step on branch claude/tab-group-assets (see THREADS.md To carry on)."
+
+### Open any website by voice on the phone (`open-any-website-by-voice-on-the-phone-optionall`, Current, Opus) — branch `claude/open-any-website-by-voice-on-the-phone-optionall`
+- Asked (verbatim): "I need to be able to tell you to go to any website and open the web browser with the recorder in AmberX, or in a plugin somewhere."
+- Done: AmberX Web plugin "go to <site>" voice router (any http(s) host, recorder on "… and record it", audit log); console/Molly `web-browser` plugin <!-- axf-plugin:web-browser --> (embedded pane, audit log, REST/MCP/CLI). Report `_claude/builds/reports/open-any-website-by-voice-on-the-phone-optionall.md`. Supersedes `amberx-open-any-url`, `amberx-open-any-url-apk`.
+- Left: Brett approves the UI Review shots; merge queue lands the PR; redeploy console + AmberX. Deferred (Android on hold, PORTING.md): hub open of any host on the phone, Chrome pinning, background starts.

@@ -1144,7 +1144,7 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
 /* ---------------------------------------------------------------- console plugins' voice phrases (generic seam) */
 {
   const voiceUi = readFileSync(new URL('./src/plugins/voice/web/index.tsx', import.meta.url), 'utf8');
-  ok(/amberxVoice = \{ register: registerVoiceCommands \}/.test(voiceUi), 'voice: console plugins add phrases through globalThis.amberxVoice');
+  ok(/amberxVoice = \{ register: registerVoiceCommands(, route: [^}]+)? \}/.test(voiceUi), 'voice: console plugins add phrases through globalThis.amberxVoice');
 }
 
 /* ---------------------------------------------------------------- speech gate (Oct 31 2026: the "nothing in Inbox" loop) */
@@ -1777,6 +1777,27 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   ok(/else if \("speaking"\.equals\(phase\)\) SpeechTuning\.quietMode\(this,/.test(ts), "android: the interrupt listener never mutes media while Gizmo's voice plays there");
   ok(/try \{ ServiceCompat\.startForeground\(this, ID_ONGOING, ongoing\(\), 0\); \} catch/.test(ts), 'android: a refused start still calls startForeground (no crash for a service started in the foreground)');
   ok(readFileSync(new URL('./android/app/src/test/java/ai/amberx/droid/FocusRulesTest.java', import.meta.url), 'utf8').includes('ourOwnRecognizerTakingFocusIsNotAReasonToStop'), 'android: FocusRulesTest covers our own recognizer, calls and other apps');
+}
+
+/* ---------------------------------------------------------------- go to any website (plugins/web/web/core.ts) */
+{
+  const web = await import('./src/plugins/web/web/core.ts');
+  const g = (s) => web.parseGoTo(s);
+  eq(g('go to example.com')?.url, 'https://example.com/', 'go to: a spoken address');
+  eq(g('go to example com')?.url, 'https://example.com/', 'go to: the recognizer drops the dot');
+  eq(g('go to example dot com')?.url, 'https://example.com/', 'go to: "dot" spelled out');
+  eq(g('go to bbc co uk slash news')?.url, 'https://bbc.co.uk/news', 'go to: a second-level domain and a path');
+  eq(g('go to amber x ai com')?.host, 'amberxai.com', 'go to: a name spoken in pieces');
+  eq(g('go to https://news.ycombinator.com/item?id=1')?.url, 'https://news.ycombinator.com/item?id=1', 'go to: a full https URL');
+  eq(g('open github dot com and record it')?.record, true, 'go to: "and record it" turns the recorder on');
+  eq(g('record nytimes com')?.record, true, 'go to: "record <site>" turns the recorder on');
+  eq(g('go to example.com')?.record, false, 'go to: no recorder unless asked');
+  eq(g('go to website wikipedia')?.url, `${web.LUCKY}wikipedia`, 'go to: "website <name>" finds it');
+  for (const bad of ['go to notes', 'open inbox', 'go to settings', 'go to javascript:alert(1)', 'go to file:///etc/passwd', 'go to data:text/html,hi', 'go to intent://x#Intent;end', 'go to chrome://settings', 'hello there'])
+    eq(g(bad), null, `go to: "${bad}" is not a website`);
+  const e = { at: 'x', url: 'https://a.com/', host: 'a.com', record: false, via: 'voice', where: 'phone' };
+  eq(web.logOpen(Array.from({ length: 100 }, () => e), { ...e, url: 'https://b.com/' }).length, 100, 'go to: the opened log is capped');
+  eq(web.logOpen([e], { ...e, url: 'https://b.com/' })[0].url, 'https://b.com/', 'go to: newest first');
 }
 
 console.log(`\n${failed === 0 ? '✓' : '✗'} ${checks - failed}/${checks} checks passed`);

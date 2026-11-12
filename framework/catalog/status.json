@@ -2268,5 +2268,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "Orchestrator tick ships each landed build's manifest; ledger shows it per entry; API/MCP/CLI/voice/deep link; backfill --since. Kotlin twin deferred."
+  },
+  "cx.webbrowser": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "AmberX Web plugin voice router + recorder option; console web-browser plugin (web-browser@1). Phone open from the hub for any host, Chrome pinning and background starts deferred (Android on hold, PORTING.md)."
   }
 }

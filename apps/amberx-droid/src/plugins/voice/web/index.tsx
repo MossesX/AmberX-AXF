@@ -87,7 +87,8 @@ export function registerVoiceCommands(module: string, commands: PluginVoiceComma
  * Console plugins loaded into AmberX can't import this file, so the page carries the same registry for them:
  * `globalThis.amberxVoice.register(module, commands)` (set when this module loads, before any library registers).
  */
-(globalThis as { amberxVoice?: { register: typeof registerVoiceCommands } }).amberxVoice = { register: registerVoiceCommands };
+// `route`: sentences a plugin reads itself ("go to <any website>", Web plugin); registerVoiceRouter is declared below.
+(globalThis as { amberxVoice?: { register: typeof registerVoiceCommands; route?: typeof registerVoiceRouter } }).amberxVoice = { register: registerVoiceCommands, route: (module, fn) => registerVoiceRouter(module, fn) };
 const usePluginRev = () => useSyncExternalStore((f) => { pluginSubs.add(f); return () => { pluginSubs.delete(f); }; }, () => pluginRev);
 
 /** Every page the app has right now (from the search index the React layer fills). */
