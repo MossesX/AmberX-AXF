@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3572,
- "updatedAt": "2026-11-12T11:14:31.968Z",
+ "rev": 3573,
+ "updatedAt": "2026-11-12T11:14:44.429Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174005,12 +174005,19 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "mossesx-max-",
-    "session": "axf-show-commits-behind-main-on-every-build-table-an--lenny",
+    "session": "axf-show-commits-behind-main-on-every-build-table-an--earl",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-12T10:51:59.354Z",
-    "runs": 1,
-    "lastRun": null,
+    "launchedAt": "2026-11-12T11:08:09.491Z",
+    "runs": 2,
+    "lastRun": {
+     "at": "2026-11-12T11:08:03.189Z",
+     "exit": 1,
+     "outcome": "requeued",
+     "stepsLeft": 2,
+     "account": "mossesx-max-",
+     "session": "axf-show-commits-behind-main-on-every-build-table-an--lenny"
+    },
     "split": {
      "at": "2026-11-12T10:40:28.980Z",
      "by": "orchestrator",
@@ -174021,7 +174028,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-12T10:51:59.354Z",
+    "dispatchedAt": "2026-11-12T11:08:09.491Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -174030,7 +174037,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-12T10:51:59.354Z",
+    "pickedAt": "2026-11-12T11:08:09.491Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -174114,7 +174121,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
