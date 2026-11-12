@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3374,
- "updatedAt": "2026-11-12T02:44:44.319Z",
+ "rev": 3375,
+ "updatedAt": "2026-11-12T02:44:53.148Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -160896,7 +160896,7 @@
    "branch": "claude/console-and-axhub-retry-failed-calls-themselves-no-claude-needed",
    "pr": "",
    "createdAt": "2026-11-12T02:37:24.132Z",
-   "updatedAt": "2026-11-12T02:44:36.040Z",
+   "updatedAt": "2026-11-12T02:44:39.948Z",
    "builtAt": "",
    "notes": [
     {
@@ -160922,6 +160922,10 @@
     {
      "text": "CHANGE from Brett (02:43): s5 changed. NO separate banner. Auto-fixes gets a banner widget plus a setting to pick WHICH existing banner its entries appear in (dropdown of all banners). Re-read s5 from the store before doing it.",
      "at": "2026-11-12T02:43:47.356Z"
+    },
+    {
+     "text": "CHANGE again from Brett (02:45): s5 final: setting chooses its OWN banner (only appears when non-empty) OR any existing banner from a dropdown, plus the banner widget. Re-read s5 from the store.",
+     "at": "2026-11-12T02:44:39.948Z"
     }
    ],
    "approvals": [],
@@ -161086,7 +161090,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -161510,7 +161514,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T02:42:15.357Z",
-   "updatedAt": "2026-11-12T02:43:41.333Z",
+   "updatedAt": "2026-11-12T02:44:37.802Z",
    "builtAt": "",
    "notes": [
     {
@@ -161619,7 +161623,7 @@
      "id": "s5",
      "uid": "st-mwcy1mba01ib96",
      "title": "",
-     "text": "Server gate log banner widget (snappable asset) with count badge showing latest gate hits; tap opens the Server gate log page. Setting: pick which existing banner its entries appear in (dropdown of all banners), switchable live; also via REST/MCP/CLI/voice.",
+     "text": "Server gate log banner widget (snappable asset) with count badge showing latest gate hits; tap opens the Server gate log page. Setting for where its entries show: its OWN banner (a strip across the top that only appears when there's something in it) OR any existing banner Brett picks (dropdown of all banners); switchable live; also via REST/MCP/CLI/voice.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -161633,9 +161637,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T02:43:41.334Z",
-     "updatedAt": "2026-11-12T02:43:41.494Z"
+     "updatedAt": "2026-11-12T02:44:38.013Z"
     },
     {
      "id": "s3",
@@ -161668,7 +161672,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
