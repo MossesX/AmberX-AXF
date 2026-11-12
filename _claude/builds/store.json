@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3553,
- "updatedAt": "2026-11-12T11:04:39.686Z",
+ "rev": 3554,
+ "updatedAt": "2026-11-12T11:05:17.701Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174661,7 +174661,7 @@
    "branch": "claude/fix-the-step-splitter-claude-exit-1-input-must-b",
    "pr": "",
    "createdAt": "2026-11-12T10:51:23.133Z",
-   "updatedAt": "2026-11-12T11:04:19.985Z",
+   "updatedAt": "2026-11-12T11:05:15.491Z",
    "builtAt": "",
    "notes": [
     {
@@ -174694,12 +174694,12 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "mossesx-max-",
-    "session": "axf-fix-the-step-splitter-claude-exit-1-input-must-b--sully",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-12T11:04:16.958Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T10:53:18.716Z",
@@ -174709,9 +174709,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-12T11:04:16.958Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -174720,7 +174720,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-12T11:04:16.958Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -174741,12 +174741,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T11:05:15.491Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T10:55:11.097Z",
-     "updatedAt": "2026-11-12T10:55:11.235Z"
+     "updatedAt": "2026-11-12T11:05:15.743Z"
     },
     {
      "id": "s2",
