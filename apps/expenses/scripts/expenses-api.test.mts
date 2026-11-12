@@ -108,6 +108,29 @@ try {
   j = await r.json();
   ok(r.status === 200 && j.statement.period.from === "2026-11-01" && j.statement.income >= 150000 && j.periods.length >= 2 && typeof j.markdown === "string", "statement → month totals and periods");
   ok((await route.GET(req("GET", "statement?date=nope"), ctx("statement"))).status === 400, "statement with a bad date → 400");
+
+  // settings: the decl's rows over the app's kv document; checked values; null = default
+  r = await route.GET(req("GET", "settings"), ctx("settings"));
+  j = await r.json();
+  ok(r.status === 200 && j.values.paydayAmount === 1500 && j.values.confirmDelete === true && j.sections.length === 6 && j.rows.some((x: { key: string; section: string }) => x.key === "paydayEvery" && x.section === "paydays"), "settings → values with defaults, rows, sections");
+  r = await route.PATCH(req("PATCH", "settings", { toastSeconds: 8, paydayEvery: "weekly", confirmDelete: false }), ctx("settings"));
+  j = await r.json();
+  ok(r.status === 200 && j.values.toastSeconds === 8 && j.values.paydayEvery === "weekly" && j.values.confirmDelete === false, "settings PATCH saves checked values");
+  const storedSettings = JSON.parse(readFileSync(path.join(dir, "expenses-settings.json"), "utf8"));
+  ok(storedSettings.doc.settings.paydayPayer === "Acme" && storedSettings.doc.settings.toastSeconds === 8 && storedSettings.doc.v === 1, "settings keep the app's document shape and other values");
+  ok((await route.PATCH(req("PATCH", "settings", { toastSeconds: 99 }), ctx("settings"))).status === 400, "out-of-range number → 400");
+  ok((await route.PATCH(req("PATCH", "settings", { paydayEvery: "hourly" }), ctx("settings"))).status === 400, "unknown option → 400");
+  ok((await route.PATCH(req("PATCH", "settings", { nope: 1 }), ctx("settings"))).status === 400, "unknown key → 400");
+  j = await (await route.PATCH(req("PATCH", "settings", { toastSeconds: null }), ctx("settings"))).json();
+  ok(j.values.toastSeconds === 4 && !j.changed.includes("toastSeconds"), "null puts a setting back to its default");
+
+  // the assistant routes' wrapper: a Molly call needs a signed-in session; same-origin runs unchanged
+  const { corsRoute } = await import("../src/server/cors.ts");
+  const h = corsRoute(async () => Response.json({ ok: true }));
+  r = await h(new Request("http://x/api/ai/status", { headers: { origin: MOLLY } }));
+  ok(r.status === 401 && r.headers.get("access-control-allow-origin") === MOLLY, "assistant: signed-out Molly call → 401 with CORS");
+  r = await h(new Request("http://x/api/ai/status"));
+  ok(r.status === 200 && !r.headers.get("access-control-allow-origin"), "assistant: same-origin call unchanged");
 } finally {
   rmSync(root, { recursive: true, force: true });
 }

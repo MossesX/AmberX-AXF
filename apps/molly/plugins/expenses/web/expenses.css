@@ -13,3 +13,10 @@
 /* phone: the meter takes its own row */
 :where([data-fx-tiny], [data-fx-small]) .axp-exp__bar { grid-template-columns: 1fr minmax(5rem, auto); }
 :where([data-fx-tiny], [data-fx-small]) .axp-exp__bar > :nth-child(2) { grid-column: 1 / -1; grid-row: 2; }
+/* assistant: the conversation scrolls, the composer stays under it */
+.axp-exp[data-screen='expenses.assistant'] { height: 100%; }
+.axp-exp__chat { flex: 1 1 auto; min-height: 0; overflow: auto; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); }
+.axp-exp__msg { max-width: 75ch; }
+.axp-exp__msg[data-role='user'] { align-self: flex-end; }
+.axp-exp__composer { display: flex; align-items: flex-end; gap: var(--fx-dens-gap-xl); }
+.axp-exp__settings { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); }

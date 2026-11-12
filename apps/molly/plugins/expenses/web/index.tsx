@@ -3,6 +3,7 @@ import type { AxfWebLibrary } from '../../../src/axf/react/library';
 import helpPack from '../help.json';
 import { API_BASE_KEY, DEFAULT_API_BASE, apiBase, call, ledgerChanged, ledgerQuery, todayIso, type EntryInput, type PaydaysData, type StatementData } from './api';
 import { LedgerScreen, PaydaysScreen, ReportsScreen, reportState } from './screens';
+import { AssistantScreen, SETTINGS_SECTIONS, SettingsSection, ask, assistantChanged, assistantState, listConversations, newConversation, patchSettings, readConversation, type SettingsData } from './assistant';
 import './expenses.css';
 
 /**
@@ -18,6 +19,7 @@ export const SCREENS = [
   { id: 'ledger', label: 'Ledger', icon: 'list', render: () => <LedgerScreen /> },
   { id: 'paydays', label: 'Paydays', icon: 'clock', render: () => <PaydaysScreen /> },
   { id: 'reports', label: 'Reports', icon: 'chart', render: () => <ReportsScreen /> },
+  { id: 'assistant', label: 'Assistant', icon: 'sparkles', render: () => <AssistantScreen /> },
 ] as const;
 
 const argsOf = (args: string[], payload?: string) => (args.length ? args.join(':') : payload ?? '');
@@ -37,7 +39,7 @@ export const plugin: AxfWebLibrary = {
   id: PLUGIN_ID,
   label: 'Expenses',
   version: '0.1.0',
-  provides: ['view:expenses/ledger', 'view:expenses/paydays', 'view:expenses/reports', 'settings-tab:expenses'],
+  provides: ['view:expenses/ledger', 'view:expenses/paydays', 'view:expenses/reports', 'view:expenses/assistant', 'settings-tab:expenses'],
   builtWith: { model: 'opus', builtAt: '2026-11-12' },
   help: helpPack.data as AxfWebLibrary['help'],
   views: Object.fromEntries(SCREENS.map((s) => [`expenses/${s.id}`, { title: `Expenses ${s.label.toLowerCase()}`, icon: s.icon, render: s.render, keywords: ['expenses', 'money', s.id] }])),
@@ -90,15 +92,58 @@ export const plugin: AxfWebLibrary = {
       rt.toast('Report copied as text.', 'success', 'Expenses');
       return d.markdown;
     }, { label: 'Copy the report on screen as text' });
+    on('expenses.assistant.list', () => listConversations(rt).catch((e) => report(rt, e)), { label: 'List assistant conversations' });
+    on('expenses.assistant.read', (args, ctx) => readConversation(rt, Number(argsOf(args, ctx.payload))).catch((e) => report(rt, e)), { label: 'Read one assistant conversation' });
+    on('expenses.assistant.new', async () => {
+      const out = await newConversation(rt).catch((e) => report(rt, e));
+      assistantState.id = out.conversation.id; assistantChanged();
+      return out;
+    }, { label: 'Start a new assistant conversation' });
+    on('expenses.assistant.ask', async (args, ctx) => {
+      const raw = argsOf(args, ctx.payload);
+      const j = jsonOf<{ text?: string; conversation?: number }>(raw);
+      const text = (j.text ?? raw).trim();
+      if (!text) return report(rt, new Error('expenses.assistant.ask needs a question'));
+      let id = j.conversation ?? assistantState.id;
+      if (id == null) { id = (await newConversation(rt).catch((e) => report(rt, e))).conversation.id; assistantState.id = id; }
+      const reply = await ask(rt, id, text).catch((e) => report(rt, e));
+      assistantChanged();
+      return { conversation: id, reply };
+    }, { label: 'Ask the Expenses assistant' });
+    on('expenses.settings.get', () => call<SettingsData>(rt, 'settings').catch((e) => report(rt, e)), { label: 'Read the Expense Tracker settings' });
+    on('expenses.settings.set', async (args, ctx) => {
+      const raw = argsOf(args, ctx.payload);
+      let patch: Record<string, unknown> = jsonOf(raw);
+      if (!Object.keys(patch).length) {
+        const [key = '', ...rest] = raw.split(':');
+        const v = rest.join(':');
+        patch = { [key]: v === 'true' ? true : v === 'false' ? false : v };
+      }
+      const out = await patchSettings(rt, patch).catch((e) => report(rt, e));
+      ledgerChanged(); rt.toast('Expenses settings saved.', 'success', 'Expenses');
+      return out;
+    }, { label: 'Change Expense Tracker settings (key:value or JSON)' });
+    on('expenses.settings.reset', async (args, ctx) => {
+      const keys = argsOf(args, ctx.payload).split(/[,:\s]+/).filter(Boolean);
+      if (!keys.length) return report(rt, new Error('expenses.settings.reset needs the keys to reset'));
+      const out = await patchSettings(rt, Object.fromEntries(keys.map((k) => [k, null]))).catch((e) => report(rt, e));
+      ledgerChanged();
+      return out;
+    }, { label: 'Put Expense Tracker settings back to their defaults' });
     on('expenses.refresh', () => ledgerChanged(), { label: 'Re-read the ledger' });
     on('expenses.settings', () => rt.dispatch(`settings.open:${TAB}`), { label: 'Expenses settings…' });
   },
   // Settings → Plugins → Expenses
   settingsTabs: [{ id: TAB, label: 'Expenses', icon: 'chart', order: 40, parent: 'plugins', description: 'The Expense Tracker inside Molly: where its ledger lives.' }],
+  settingsPanels: SETTINGS_SECTIONS.map((x, i) => ({ id: `expenses.${x.id}`, tab: TAB, title: x.title, icon: x.icon, order: 20 + i * 10, render: () => <SettingsSection section={x.id} /> })),
   settings: [{ id: 'expenses.connection', label: 'Connection', icon: 'cloud', tab: TAB, order: 10, description: 'The Expense Tracker API Molly reads and writes. You stay signed in through expenses.amberxai.com.',
     settings: [{ key: API_BASE_KEY, label: 'Ledger API address', kind: 'text', default: DEFAULT_API_BASE, scope: 'device' }] }],
+  // Molly's own menu (its index of every app): the Expenses screens under the Expenses entry
   appMenu: [
-    { id: 'expenses.go', menu: 'go', menuLabel: 'Go', menuOrder: 40, order: 40, items: SCREENS.map((s) => ({ id: `expenses.go.${s.id}`, label: `Expenses ${s.label.toLowerCase()}`, icon: s.icon, action: `expenses.open:${s.id}` })) },
+    { id: 'expenses.apps', menu: 'molly', menuLabel: 'Molly', after: 'go-expenses', items: [
+      ...SCREENS.map((s) => ({ id: `expenses.go.${s.id}`, label: `Expenses ${s.label.toLowerCase()}`, icon: s.icon, action: `expenses.open:${s.id}` })),
+      { id: 'expenses.go.settings', label: 'Expenses settings…', icon: 'settings', action: 'expenses.settings' },
+    ] },
   ],
   contextMenu: [
     { id: 'expenses.ctx.entry', target: 'expenses-entry', items: [

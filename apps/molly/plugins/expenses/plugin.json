@@ -6,53 +6,357 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "The Expense Tracker's ledger, paydays and reports drawn natively in Molly on framework controls, over the app's own ledger API (same document as expenses.amberxai.com, which keeps working on its own).",
-  "targets": ["molly"],
-  "provides": ["view:expenses/ledger", "view:expenses/paydays", "view:expenses/reports", "settings-tab:expenses"],
+  "description": "The Expense Tracker's ledger, paydays, reports, assistant and settings drawn natively in Molly on framework controls, over the app's own APIs (same ledger, conversations and settings as expenses.amberxai.com, which keeps working on its own).",
+  "targets": [
+    "molly"
+  ],
+  "provides": [
+    "view:expenses/ledger",
+    "view:expenses/paydays",
+    "view:expenses/reports",
+    "view:expenses/assistant",
+    "settings-tab:expenses"
+  ],
   "scopes": [],
   "enabledByDefault": true,
   "optional": [],
   "banner": false,
   "tabable": false,
-  "uiEditor": ["style"],
+  "uiEditor": [
+    "style"
+  ],
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/expenses",
     "env": [],
-    "mentions": ["apps/molly/README.md"]
+    "mentions": [
+      "apps/molly/README.md"
+    ]
   },
   "surface": {
     "$axf": "shell-surface@1",
     "app": "expenses",
     "source": "https://expenses.amberxai.com",
-    "api": "https://expenses.amberxai.com/api/expenses/v1",
-    "screens": [
-      { "id": "ledger", "view": "expenses/ledger", "deepLink": "#/expenses/ledger", "replaces": "Expense Tracker → Ledger grid", "reads": ["entries", "totals"], "writes": ["entries"] },
-      { "id": "paydays", "view": "expenses/paydays", "deepLink": "#/expenses/paydays", "replaces": "Expense Tracker → Paydays dialog", "reads": ["paydays"], "writes": ["paydays"] },
-      { "id": "reports", "view": "expenses/reports", "deepLink": "#/expenses/reports", "replaces": "Expense Tracker → Report tab", "reads": ["statement"] }
+    "api": [
+      "https://expenses.amberxai.com/api/expenses/v1",
+      "https://expenses.amberxai.com/api/ai"
     ],
-    "pending": ["assistant", "settings", "receipt and statement import", "vault", "delete"]
+    "screens": [
+      {
+        "id": "ledger",
+        "view": "expenses/ledger",
+        "deepLink": "#/expenses/ledger",
+        "replaces": "Expense Tracker → Ledger grid",
+        "reads": [
+          "entries",
+          "totals"
+        ],
+        "writes": [
+          "entries"
+        ]
+      },
+      {
+        "id": "paydays",
+        "view": "expenses/paydays",
+        "deepLink": "#/expenses/paydays",
+        "replaces": "Expense Tracker → Paydays dialog",
+        "reads": [
+          "paydays"
+        ],
+        "writes": [
+          "paydays"
+        ]
+      },
+      {
+        "id": "reports",
+        "view": "expenses/reports",
+        "deepLink": "#/expenses/reports",
+        "replaces": "Expense Tracker → Report tab",
+        "reads": [
+          "statement"
+        ]
+      },
+      {
+        "id": "assistant",
+        "view": "expenses/assistant",
+        "deepLink": "#/expenses/assistant",
+        "replaces": "Expense Tracker → Assistant panel",
+        "reads": [
+          "ai/conversations"
+        ],
+        "writes": [
+          "ai/conversations"
+        ]
+      },
+      {
+        "id": "settings",
+        "settingsTab": "expenses",
+        "opens": "expenses.settings",
+        "replaces": "Expense Tracker → Settings dialog",
+        "reads": [
+          "settings"
+        ],
+        "writes": [
+          "settings"
+        ]
+      }
+    ],
+    "pending": [
+      "assistant edit and build modes, workspace diff",
+      "AI connection keys (stay in the standalone app)",
+      "receipt and statement import",
+      "vault",
+      "delete"
+    ]
   },
   "commands": {
     "$axf": "plugin-commands@1",
     "auto": true,
     "items": [
-      { "id": "open", "title": "Open an Expenses screen", "description": "ledger, paydays or reports, inside Molly.", "action": "expenses.open", "input": { "type": "object", "properties": { "screen": { "type": "string", "enum": ["ledger", "paydays", "reports"] } } } },
-      { "id": "list", "title": "List ledger entries", "description": "JSON filter: q, kind, from, to, category, account, limit.", "action": "expenses.list", "readOnly": true, "input": { "type": "object" } },
-      { "id": "get", "title": "Read one entry", "action": "expenses.get", "readOnly": true, "input": { "type": "object", "properties": { "id": { "type": "string" } }, "required": ["id"] } },
-      { "id": "add", "title": "Add an entry", "description": "merchant, amount (dollars), date, category, account, kind (expense|income), note.", "action": "expenses.add", "input": { "type": "object", "properties": { "merchant": { "type": "string" }, "amount": { "type": "number" } }, "required": ["merchant", "amount"] } },
-      { "id": "edit", "title": "Change an entry", "description": "id plus the fields to change.", "action": "expenses.edit", "input": { "type": "object", "properties": { "id": { "type": "string" } }, "required": ["id"] } },
-      { "id": "totals", "title": "Ledger totals", "action": "expenses.totals", "readOnly": true, "input": { "type": "object", "properties": { "by": { "type": "string", "enum": ["category", "account", "month", "merchant"] } } } },
-      { "id": "paydays", "title": "Read paydays", "description": "Schedule, next payday, missing paydays, recent ones.", "action": "expenses.paydays.get", "readOnly": true },
-      { "id": "paydays-fill", "title": "Add the missing paydays", "action": "expenses.paydays.fill" },
-      { "id": "report", "title": "Read a report", "description": "kind:date, e.g. month:2026-11-01.", "action": "expenses.report.get", "readOnly": true, "input": { "type": "object", "properties": { "period": { "type": "string" } } } },
-      { "id": "report-open", "title": "Open a report", "action": "expenses.report", "input": { "type": "object", "properties": { "period": { "type": "string" } } } },
-      { "id": "export", "title": "Export the ledger as CSV", "action": "expenses.export", "readOnly": true },
-      { "id": "settings", "title": "Open Expenses settings", "action": "expenses.settings" }
+      {
+        "id": "open",
+        "title": "Open an Expenses screen",
+        "description": "ledger, paydays or reports, inside Molly.",
+        "action": "expenses.open",
+        "input": {
+          "type": "object",
+          "properties": {
+            "screen": {
+              "type": "string",
+              "enum": [
+                "ledger",
+                "paydays",
+                "reports"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": "list",
+        "title": "List ledger entries",
+        "description": "JSON filter: q, kind, from, to, category, account, limit.",
+        "action": "expenses.list",
+        "readOnly": true,
+        "input": {
+          "type": "object"
+        }
+      },
+      {
+        "id": "get",
+        "title": "Read one entry",
+        "action": "expenses.get",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        }
+      },
+      {
+        "id": "add",
+        "title": "Add an entry",
+        "description": "merchant, amount (dollars), date, category, account, kind (expense|income), note.",
+        "action": "expenses.add",
+        "input": {
+          "type": "object",
+          "properties": {
+            "merchant": {
+              "type": "string"
+            },
+            "amount": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "merchant",
+            "amount"
+          ]
+        }
+      },
+      {
+        "id": "edit",
+        "title": "Change an entry",
+        "description": "id plus the fields to change.",
+        "action": "expenses.edit",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        }
+      },
+      {
+        "id": "totals",
+        "title": "Ledger totals",
+        "action": "expenses.totals",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "by": {
+              "type": "string",
+              "enum": [
+                "category",
+                "account",
+                "month",
+                "merchant"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": "paydays",
+        "title": "Read paydays",
+        "description": "Schedule, next payday, missing paydays, recent ones.",
+        "action": "expenses.paydays.get",
+        "readOnly": true
+      },
+      {
+        "id": "paydays-fill",
+        "title": "Add the missing paydays",
+        "action": "expenses.paydays.fill"
+      },
+      {
+        "id": "report",
+        "title": "Read a report",
+        "description": "kind:date, e.g. month:2026-11-01.",
+        "action": "expenses.report.get",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "period": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      {
+        "id": "report-open",
+        "title": "Open a report",
+        "action": "expenses.report",
+        "input": {
+          "type": "object",
+          "properties": {
+            "period": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      {
+        "id": "export",
+        "title": "Export the ledger as CSV",
+        "action": "expenses.export",
+        "readOnly": true
+      },
+      {
+        "id": "assistant-list",
+        "title": "List assistant conversations",
+        "action": "expenses.assistant.list",
+        "readOnly": true
+      },
+      {
+        "id": "assistant-read",
+        "title": "Read an assistant conversation",
+        "action": "expenses.assistant.read",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        }
+      },
+      {
+        "id": "assistant-new",
+        "title": "Start a new assistant conversation",
+        "action": "expenses.assistant.new"
+      },
+      {
+        "id": "assistant-ask",
+        "title": "Ask the Expenses assistant",
+        "description": "text, and optionally conversation (id). Answers with the reply.",
+        "action": "expenses.assistant.ask",
+        "input": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string"
+            },
+            "conversation": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "text"
+          ]
+        }
+      },
+      {
+        "id": "settings-get",
+        "title": "Read the Expense Tracker settings",
+        "description": "values, changed keys, rows and sections.",
+        "action": "expenses.settings.get",
+        "readOnly": true
+      },
+      {
+        "id": "settings-set",
+        "title": "Change Expense Tracker settings",
+        "description": "JSON {key: value}, or key:value. Checked against the app's own rows.",
+        "action": "expenses.settings.set",
+        "input": {
+          "type": "object"
+        }
+      },
+      {
+        "id": "settings-reset",
+        "title": "Reset Expense Tracker settings",
+        "description": "Keys (comma separated) back to their defaults.",
+        "action": "expenses.settings.reset",
+        "input": {
+          "type": "object",
+          "properties": {
+            "keys": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "keys"
+          ]
+        }
+      },
+      {
+        "id": "settings",
+        "title": "Open Expenses settings",
+        "action": "expenses.settings"
+      }
     ],
-    "noReads": "no data folder: the ledger lives in the Expense Tracker (kv expenses), read through its API"
+    "noReads": "no data folder: the ledger, conversations and settings live in the Expense Tracker, read through its APIs"
   },
-  "builtWith": { "model": "opus", "builtAt": "2026-11-12", "branch": "claude/molly-native-expenses" },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-12",
+    "branch": "claude/molly-native-expenses"
+  },
   "help": "help.json",
   "opens": "main"
 }

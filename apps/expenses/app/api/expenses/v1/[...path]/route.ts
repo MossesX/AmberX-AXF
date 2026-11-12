@@ -12,6 +12,8 @@
  *   GET   /api/expenses/v1/paydays?today                                    → { schedule, ready, next, missing, recent }
  *   POST  /api/expenses/v1/paydays?today  (adds the missing paydays)        → { added, entries }
  *   GET   /api/expenses/v1/statement?kind=month|quarter|year&date&today     → { statement, periods, markdown }
+ *   GET   /api/expenses/v1/settings                                         → { values, changed, rows, sections }
+ *   PATCH /api/expenses/v1/settings      body { key: value | null }         → same (null = back to the default)
  *   GET   /api/expenses/v1/me                                               → { user } (who this call acts as)
  *
  * Molly (molly.amberxai.com) calls these cross-origin with the user's session cookie: an allowed Origin gets CORS
@@ -25,6 +27,7 @@ import {
   type EntryInput,
 } from "../../../../../src/server/expensesApi";
 import { preflight, withCors } from "../../../../../src/server/cors";
+import { patchSettings, settingsView } from "../../../../../src/server/expensesSettings";
 
 export const dynamic = "force-dynamic";
 
@@ -65,6 +68,7 @@ async function handleGET(request: Request, ctx: Ctx): Promise<Response> {
     const user = apiUser(request);
     const [what, id] = (await ctx.params).path ?? [];
     if (what === "me") return Response.json({ user });
+    if (what === "settings") return Response.json(await settingsView(user));
     const url = new URL(request.url);
     const q = queryOf(url);
     const list = await readLedger(user);
@@ -82,7 +86,7 @@ async function handleGET(request: Request, ctx: Ctx): Promise<Response> {
       if ((url.searchParams.get("format") ?? "csv") === "json") return Response.json({ entries: entries.map(row), count: entries.length });
       return new Response(toCsv(entries), { headers: { "content-type": "text/csv; charset=utf-8", "content-disposition": `attachment; filename="expenses-${new Date().toISOString().slice(0, 10)}.csv"` } });
     }
-    return Response.json({ error: "unknown endpoint", endpoints: ["entries", "entries/<id>", "accounts", "totals", "paydays", "statement", "export", "me"] }, { status: 404 });
+    return Response.json({ error: "unknown endpoint", endpoints: ["entries", "entries/<id>", "accounts", "totals", "paydays", "statement", "settings", "export", "me"] }, { status: 404 });
   } catch (e) { return fail(e); }
 }
 
@@ -116,7 +120,8 @@ async function handlePATCH(request: Request, ctx: Ctx): Promise<Response> {
   try {
     const user = apiUser(request);
     const [what, id] = (await ctx.params).path ?? [];
-    if (what !== "entries" || !id) return Response.json({ error: "PATCH /api/expenses/v1/entries/<id>" }, { status: 404 });
+    if (what === "settings" && !id) return Response.json(await patchSettings(user, (await body(request)) as Record<string, unknown>));
+    if (what !== "entries" || !id) return Response.json({ error: "PATCH /api/expenses/v1/entries/<id> or /settings" }, { status: 404 });
     const input = await body(request);
     const list = await readLedger(user);
     const i = list.findIndex((x) => x.id === id);

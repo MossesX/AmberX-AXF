@@ -11,6 +11,8 @@
  * `http://localhost:5173`).
  */
 
+import { axsUserFromCookieHeader } from "@axs/modules/accounts/lib/session";
+
 const DEFAULT_ORIGINS = ["https://molly.amberxai.com"];
 
 export function allowedOrigins(): string[] {
@@ -50,4 +52,17 @@ export function preflight(request: Request): Response {
   const origin = corsOrigin(request);
   if (!origin) return new Response(null, { status: 403 });
   return new Response(null, { status: 204, headers: corsHeaders(origin) });
+}
+
+/**
+ * Wraps a route handler for Molly: an allowed cross-origin call must carry a signed-in session (never the signed-out
+ * "local" owner the app itself falls back to) and gets CORS headers; same-origin and tool calls run unchanged.
+ */
+export function corsRoute<A extends unknown[]>(handler: (request: Request, ...rest: A) => Promise<Response>) {
+  return async (request: Request, ...rest: A): Promise<Response> => {
+    if (corsOrigin(request) && !axsUserFromCookieHeader(request.headers.get("cookie"))) {
+      return withCors(request, Response.json({ error: "sign in to Expenses" }, { status: 401 }));
+    }
+    return withCors(request, await handler(request, ...rest));
+  };
 }
