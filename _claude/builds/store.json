@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3508,
- "updatedAt": "2026-11-12T10:36:47.317Z",
+ "rev": 3509,
+ "updatedAt": "2026-11-12T10:36:57.532Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -146151,7 +146151,7 @@
    "pr": "#452",
    "priority": "P1",
    "createdAt": "2026-11-10T15:33:40.111Z",
-   "updatedAt": "2026-11-10T17:06:57.437Z",
+   "updatedAt": "2026-11-12T10:36:47Z",
    "builtAt": "2026-11-12T10:35:49.272Z",
    "notes": [
     {
@@ -146177,6 +146177,10 @@
     {
      "text": "Session axf-search-bar-plugin-snappable-search-asset-globe-e--earl on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-10T16:58:03.738Z"
+    },
+    {
+     "text": "Shipped manifest sm-search-bar-plugin-snappable-search-asset-globe-e rev 1 sent to Shipped features (orchestrator): PR #452, 48 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T10:36:47Z"
     }
    ],
    "approvals": [],
@@ -146192,6 +146196,12 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "shipped": {
+    "id": "sm-search-bar-plugin-snappable-search-asset-globe-e",
+    "rev": 1,
+    "at": "2026-11-12T10:36:47Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -146272,7 +146282,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146310,7 +146320,7 @@
    "pr": "#451",
    "priority": "P1",
    "createdAt": "2026-11-10T15:36:52.351Z",
-   "updatedAt": "2026-11-10T17:09:43.019Z",
+   "updatedAt": "2026-11-12T10:36:49Z",
    "builtAt": "2026-11-12T10:35:49.272Z",
    "notes": [
     {
@@ -146332,6 +146342,10 @@
     {
      "text": "Headless run axf-search-bar-plugin-add-on-search-builds-session-h--gina: brief only · start 11.4K tokens ($0.03) · cost $7.53 · 151 turns · 6 tools, MCP none",
      "at": "2026-11-10T16:56:39.975Z"
+    },
+    {
+     "text": "Shipped manifest sm-search-bar-plugin-add-on-search-builds-session-h rev 1 sent to Shipped features (orchestrator): PR #451, 37 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T10:36:49Z"
     }
    ],
    "approvals": [],
@@ -146347,6 +146361,12 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "shipped": {
+    "id": "sm-search-bar-plugin-add-on-search-builds-session-h",
+    "rev": 1,
+    "at": "2026-11-12T10:36:49Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -146427,7 +146447,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146844,7 +146864,7 @@
    "pr": "#453",
    "priority": "P1",
    "createdAt": "2026-11-10T15:40:27.752Z",
-   "updatedAt": "2026-11-10T17:09:45.177Z",
+   "updatedAt": "2026-11-12T10:36:50Z",
    "builtAt": "2026-11-12T10:35:49.272Z",
    "notes": [
     {
@@ -146866,6 +146886,10 @@
     {
      "text": "Headless run axf-project-manager-every-project-its-own-console-in--rhonda: brief only · start 11.2K tokens ($0.03) · cost $5.69 · 131 turns · 6 tools, MCP none",
      "at": "2026-11-10T17:01:18.101Z"
+    },
+    {
+     "text": "Shipped manifest sm-project-manager-every-project-its-own-console-in rev 1 sent to Shipped features (orchestrator): PR #453, 36 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T10:36:50Z"
     }
    ],
    "approvals": [],
@@ -146881,6 +146905,12 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "shipped": {
+    "id": "sm-project-manager-every-project-its-own-console-in",
+    "rev": 1,
+    "at": "2026-11-12T10:36:50Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -146961,7 +146991,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -173767,7 +173797,13 @@
     "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-12T10:36:47.087Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -173853,7 +173889,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {

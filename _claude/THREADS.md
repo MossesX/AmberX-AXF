@@ -777,9 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:04 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` note (all) · orchestrator
-- 2026-11-12 02:59 UTC · `server-gate-one-session-per-build-no-duplicate-launches` s4 done (all) · orchestrator
-- 2026-11-12 03:05 UTC · `server-gate-one-session-per-build-no-duplicate-launches` s5 done (all) · orchestrator
 - 2026-11-12 03:05 UTC · `merge-all-ready-buttons-server-side-lander` → running, note (all) · pipeline
 - 2026-11-12 03:05 UTC · `merge-all-ready-buttons-server-side-lander` branch claude/merge-all-ready-buttons-server-side-lander (all) · pipeline
 - 2026-11-12 03:05 UTC · `merge-all-ready-buttons-server-side-lander` note (all) · orchestrator
@@ -1177,6 +1174,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 10:35 UTC · `project-manager-every-project-its-own-console-in` → complete (all) · pending
 - 2026-11-12 10:35 UTC · `focus-on-every-screen-console-open-console-show-` added (0 steps) (all) · pending
 - 2026-11-12 10:36 UTC · `focus-on-every-screen-console-open-console-show-` note (all) · orchestrator
+- 2026-11-12 10:36 UTC · `search-bar-plugin-snappable-search-asset-globe-e` note (all) · orchestrator
+- 2026-11-12 10:36 UTC · `search-bar-plugin-add-on-search-builds-session-h` note (all) · orchestrator
+- 2026-11-12 10:36 UTC · `project-manager-every-project-its-own-console-in` note (all) · orchestrator
 
 ## Token passes (log)
 
