@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3798,
- "updatedAt": "2026-11-12T23:14:48.296Z",
+ "rev": 3799,
+ "updatedAt": "2026-11-12T23:16:07.150Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -172927,7 +172927,7 @@
    "pr": "#530",
    "priority": "P1",
    "createdAt": "2026-11-12T20:40:19.258Z",
-   "updatedAt": "2026-11-12T23:09:41.081Z",
+   "updatedAt": "2026-11-12T23:16:05.173Z",
    "builtAt": "2026-11-12T23:08:14.129Z",
    "notes": [
     {
@@ -173222,11 +173222,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-12T23:00:44.345Z",
+     "doneAt": "2026-11-12T23:16:05.173Z",
      "note": "PR #530 (claude/github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro)",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-12T20:40:19.259Z",
-     "updatedAt": "2026-11-12T23:00:44.346Z"
+     "updatedAt": "2026-11-12T23:16:05.440Z"
     }
    ],
    "profiles": [
@@ -173237,7 +173237,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T23:14:48.296Z",
+ "updatedAt": "2026-11-12T23:16:07.150Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -109431,7 +109431,7 @@
    "pr": "#530",
    "priority": "P1",
    "createdAt": "2026-11-12T20:40:19.258Z",
-   "updatedAt": "2026-11-12T23:09:41.081Z",
+   "updatedAt": "2026-11-12T23:16:05.173Z",
    "builtAt": "2026-11-12T23:08:14.129Z",
    "notes": [
     {
@@ -109657,7 +109657,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-12T23:00:44.345Z",
+     "doneAt": "2026-11-12T23:16:05.173Z",
      "note": "PR #530 (claude/github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro)",
      "uid": "st-mwe0i6fq0gbypl"
     }
