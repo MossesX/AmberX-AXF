@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T11:12:09.951Z",
+ "updatedAt": "2026-11-12T11:14:31.968Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -106933,7 +106933,7 @@
    "branch": "claude/show-commits-behind-main-on-every-build-table-an",
    "pr": "",
    "createdAt": "2026-11-12T10:39:34.736Z",
-   "updatedAt": "2026-11-12T11:11:56.598Z",
+   "updatedAt": "2026-11-12T11:14:30.663Z",
    "builtAt": "",
    "notes": [
     {
@@ -106963,6 +106963,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-show-commits-behind-main-on-every-build-table-an--earl, own login copy)",
      "at": "2026-11-12T11:08:11.662Z"
+    },
+    {
+     "text": "s1 and s2 are done and pushed. The merge queue rows now show behind main too. s3 is left open for 2 reasons. (1) GitHub's secondary rate limit blocked creating the PR (403 at 11:14 UTC); the PR body is written and needs one retry later. (2) No UI Review shots yet: the headless capture could not reach axHub from the build sandbox, so every screen showed 'Waiting for axHub'. Tests, typecheck and the UI checks pass. The report and THREADS row are committed.",
+     "at": "2026-11-12T11:14:30.663Z"
     }
    ],
    "approvals": [],

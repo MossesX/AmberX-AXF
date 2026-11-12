@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3571,
- "updatedAt": "2026-11-12T11:12:09.951Z",
+ "rev": 3572,
+ "updatedAt": "2026-11-12T11:14:31.968Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -173951,7 +173951,7 @@
    "branch": "claude/show-commits-behind-main-on-every-build-table-an",
    "pr": "",
    "createdAt": "2026-11-12T10:39:34.736Z",
-   "updatedAt": "2026-11-12T11:11:56.598Z",
+   "updatedAt": "2026-11-12T11:14:30.663Z",
    "builtAt": "",
    "notes": [
     {
@@ -173981,6 +173981,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-show-commits-behind-main-on-every-build-table-an--earl, own login copy)",
      "at": "2026-11-12T11:08:11.662Z"
+    },
+    {
+     "text": "s1 and s2 are done and pushed. The merge queue rows now show behind main too. s3 is left open for 2 reasons. (1) GitHub's secondary rate limit blocked creating the PR (403 at 11:14 UTC); the PR body is written and needs one retry later. (2) No UI Review shots yet: the headless capture could not reach axHub from the build sandbox, so every screen showed 'Waiting for axHub'. Tests, typecheck and the UI checks pass. The report and THREADS row are committed.",
+     "at": "2026-11-12T11:14:30.663Z"
     }
    ],
    "approvals": [],
@@ -174001,19 +174005,12 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "mossesx-max-",
-    "session": "axf-show-commits-behind-main-on-every-build-table-an--earl",
+    "session": "axf-show-commits-behind-main-on-every-build-table-an--lenny",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-12T11:08:09.491Z",
-    "runs": 2,
-    "lastRun": {
-     "at": "2026-11-12T11:08:03.189Z",
-     "exit": 1,
-     "outcome": "requeued",
-     "stepsLeft": 2,
-     "account": "mossesx-max-",
-     "session": "axf-show-commits-behind-main-on-every-build-table-an--lenny"
-    },
+    "launchedAt": "2026-11-12T10:51:59.354Z",
+    "runs": 1,
+    "lastRun": null,
     "split": {
      "at": "2026-11-12T10:40:28.980Z",
      "by": "orchestrator",
@@ -174024,7 +174021,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-12T11:08:09.491Z",
+    "dispatchedAt": "2026-11-12T10:51:59.354Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -174033,7 +174030,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-12T11:08:09.491Z",
+    "pickedAt": "2026-11-12T10:51:59.354Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
