@@ -776,15 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 02:08 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `briefs-list-the-existing-files-each-step-needs` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `terminal-toolbar-responsive-overflow-every-item-` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `transcription-engine` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `audio-mic-filters` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `android-framework-update` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `brief-approval-dialog-before-every-headless-sess` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `auto-switch-claude-account-when-the-active-one-r` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` → archived, note (all) · console
 - 2026-11-12 02:08 UTC · `toast-manager-plugin` → archived, note (all) · console
 - 2026-11-12 02:08 UTC · `pending-builds-steps-column-first-done-total-sortable` → archived, note (all) · console
 - 2026-11-12 02:08 UTC · `approve-deny-anywhere-send-in-background-never-navigate` → archived, note (all) · console
@@ -1176,6 +1167,15 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:28 UTC · `xlayout` note (all) · backfill
 - 2026-11-12 03:28 UTC · `walkthrough-random-look` note (all) · backfill
 - 2026-11-12 03:28 UTC · `dock-engine` note (all) · backfill
+- 2026-11-12 03:28 UTC · `md-studio` note (all) · backfill
+- 2026-11-12 03:29 UTC · `theme-editor` note (all) · backfill
+- 2026-11-12 03:29 UTC · `token-control` note (all) · backfill
+- 2026-11-12 03:29 UTC · `orch-live-sync` note (all) · backfill
+- 2026-11-12 03:29 UTC · `land-everything` note (all) · backfill
+- 2026-11-12 03:29 UTC · `crew-retrain` note (all) · backfill
+- 2026-11-12 03:29 UTC · `notes-vault` note (all) · backfill
+- 2026-11-12 03:29 UTC · `kill-patches-pilot` note (all) · backfill
+- 2026-11-12 03:29 UTC · `headless-tabs` note (all) · backfill
 
 ## Token passes (log)
 
