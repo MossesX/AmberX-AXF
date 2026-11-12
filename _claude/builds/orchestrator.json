@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T22:44:08.521Z",
+ "updatedAt": "2026-11-12T22:44:23.777Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -109431,7 +109431,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-12T20:40:19.258Z",
-   "updatedAt": "2026-11-12T22:43:41.589Z",
+   "updatedAt": "2026-11-12T22:44:22.435Z",
    "builtAt": "",
    "notes": [
     {
@@ -109449,6 +109449,10 @@
     {
      "text": "s1 done: design + contract pushed on branch claude/github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro (eb9a5c413). PR not opened: GitHub answered 'secondary rate limit, temporarily blocked from content creation' for 12 min on the fallback token (the GitHub App is not set up on this console, so the old PAT is in use). A detached retry opens the PR and links it when the block clears; if it is still unlinked at phase 2 start, run: gh pr create --base main --head <branch> --body-file /tmp/pr-body.md, then builds-live.mjs link <build> --pr <n>.",
      "at": "2026-11-12T22:43:41.589Z"
+    },
+    {
+     "text": "Headless run axf-github-client-plugin-see-and-control-every-pr-st--rhonda: brief only · start 12.6K tokens ($0.06) · cost $6.88 · 33 turns · 6 tools, MCP none",
+     "at": "2026-11-12T22:44:22.435Z"
     }
    ],
    "approvals": [],
