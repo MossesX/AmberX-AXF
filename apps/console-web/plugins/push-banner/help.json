@@ -195,6 +195,96 @@
         "text": "Where you set “PRs in one batch”. Change it and the app uses the new value. Part of Push banner.",
         "kind": "field",
         "draft": true
+      },
+      {
+        "target": "off-the-banner-still-in-the-merge-log",
+        "title": "Clear reds / Clear merged",
+        "text": "Takes every entry of this group off the banner. They stay in the Merge log.",
+        "kind": "button"
+      },
+      {
+        "target": "view-log",
+        "title": "View log",
+        "text": "Opens the Merge log: every build the merge gate fixed, rebuilt or held, with why.",
+        "kind": "button"
+      },
+      {
+        "target": "open-build",
+        "title": "Open build",
+        "text": "Opens this build in the Build orchestrator.",
+        "kind": "button"
+      },
+      {
+        "target": "clear-selection",
+        "title": "Clear selection",
+        "text": "Unselects the rows you picked.",
+        "kind": "button"
+      },
+      {
+        "target": "old-pr",
+        "title": "Old PR",
+        "text": "Opens the pull request of the build this one replaced, on GitHub.",
+        "kind": "button"
+      },
+      {
+        "target": "session-log",
+        "title": "Session log",
+        "text": "Opens the fix or rebuild build in the orchestrator, where its session and log are.",
+        "kind": "button"
+      },
+      {
+        "target": "action:push-banner.merge-log",
+        "title": "Merge log",
+        "text": "Every build that couldn't merge: auto-fixing (yellow), full rebuild (blue), passed or merged (green), failed 3 times (red), with why.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "retry-now",
+        "title": "Retry now",
+        "text": "Starts the next attempt now: an auto-fix, or a full rebuild if a fix already failed. A red one gets one more try.",
+        "kind": "button"
+      },
+      {
+        "target": "auto-fix-now",
+        "title": "Auto-fix now",
+        "text": "Pulls main into the branch and files a fix session for the conflicts or failing checks.",
+        "kind": "button"
+      },
+      {
+        "target": "full-rebuild-now",
+        "title": "Full rebuild now",
+        "text": "Starts a fresh <name>-rN build from main with the original brief. The old build is superseded and its PR closed.",
+        "kind": "button"
+      },
+      {
+        "target": "skip",
+        "title": "Skip",
+        "text": "Stops working on it. It stays in the log.",
+        "kind": "button"
+      },
+      {
+        "target": "toggle-auto-merge",
+        "title": "Toggle auto-merge",
+        "text": "Off: a passed attempt waits for Merge instead of landing by itself.",
+        "kind": "button"
+      },
+      {
+        "target": "clear-from-banner",
+        "title": "Clear from banner",
+        "text": "Takes it off the banner. It stays in the Merge log.",
+        "kind": "button"
+      },
+      {
+        "target": "restore-to-banner",
+        "title": "Restore to banner",
+        "text": "Puts a cleared entry back on the banner.",
+        "kind": "button"
+      },
+      {
+        "target": "copy-why",
+        "title": "Copy why",
+        "text": "Copies why it failed, attempt by attempt.",
+        "kind": "button"
       }
     ],
     "intros": []

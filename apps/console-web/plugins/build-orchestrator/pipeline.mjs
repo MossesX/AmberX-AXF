@@ -32,7 +32,8 @@
  *                                  token). The dispatcher reads the answers and never tests an account at launch time.
  *   … tab <pending|queue|active|incomplete|complete|errors|archive|deleted> [--json]   one of the orchestrator's tabs
  *   … settings [--json] | set k=v…  pipeline settings (pipeline-settings@1; apiOverflow=true|false is the overflow rule)
- *   … request --title T [--detail D | --detail-file F] [--said S] [--priority P0-P3] [--route api|subscription] [--queue] [--by who]
+ *   … request --title T [--detail D | --detail-file F] [--said S] [--priority P0-P3] [--route api|subscription] [--queue] [--by who] [--id I]
+ *                                  (--id: a chosen id, e.g. the merge gate's <name>-rN rebuilds and <name>-fixN sessions; refused when taken)
  *                                  file a build with the orchestrator (the id is assigned here) and, with --queue, put it in the
  *                                  Queue. Every former launch path (Build manager Start, Fix with Claude, feature assist) calls this.
  *   … show <id>                    one build as the table shows it (status, steps, pipeline record)
@@ -729,11 +730,12 @@ const slugId = (t) => String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').
  * `queue` it goes straight to the Queue. Returns the build. This replaces every direct launch (Build manager Start,
  * Fix with Claude, feature assist): they all end here and the dispatcher starts the build.
  */
-export function request({ title, detail = '', said = '', priority = '', route = '', queue: toQueue = false, by = process.env.AXF_ACTOR || 'console', source = '' } = {}) {
+export function request({ title, detail = '', said = '', priority = '', route = '', queue: toQueue = false, by = process.env.AXF_ACTOR || 'console', source = '', id: want = '' } = {}) {
   const t = str(title, 300).trim(); if (!t) throw Object.assign(new Error('a build needs a title'), { code: 2 });
   if (route && !BP.ROUTES.includes(route)) throw Object.assign(new Error(`route is api, subscription or auto, not ${route}`), { code: 2 });
   const taken = new Set(loadStore().builds.map((b) => b.id));
-  const base = slugId(t); let id = base; let k = 2;
+  const base = want ? String(want).toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80) : slugId(t); let id = base; let k = 2;
+  if (want && taken.has(id)) throw Object.assign(new Error(`build id ${id} is taken`), { code: 2 });
   while (taken.has(id)) id = `${base}-${k++}`;
   orchAct({ action: 'add', id, title: t, detail: str(detail, 8000), ...(said ? { said: str(said, 6000) } : {}), source: str(source || by, 60) }, by);
   const p = normPriority(priority);
@@ -889,7 +891,7 @@ async function main(argv) {
   }
   if (cmd === 'request') {
     const df = flag('detail-file'); const detail = df ? readFileSync(df, 'utf8') : flag('detail');
-    const b = request({ title: flag('title'), detail, said: flag('said'), priority: flag('priority'), route: flag('route') === 'auto' ? '' : flag('route'), queue: has('queue'), by, source: flag('source') });
+    const b = request({ title: flag('title'), detail, said: flag('said'), priority: flag('priority'), route: flag('route') === 'auto' ? '' : flag('route'), queue: has('queue'), by, source: flag('source'), id: flag('id') });
     return out({ ok: true, id: b.id, status: b.status, build: { id: b.id, title: b.title, status: b.status } }, `${b.id} filed${b.status === 'queued' ? ' and queued: the dispatcher starts it' : ' in Pending'}`);
   }
   if (cmd === 'show') { const b = storeCore.findBuild(loadStore(), rest[0]); if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 }); const r = row(b); return out({ ok: true, build: r }, `${r.id} ${r.status} ${r.steps.done}/${r.steps.total}${r.pipeline?.account ? ` on ${r.pipeline.account}` : ''}`); }

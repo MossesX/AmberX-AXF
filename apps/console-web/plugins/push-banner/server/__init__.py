@@ -110,6 +110,17 @@ QUEUE_SCRIPT = Path(__file__).resolve().parent.parent / "land" / "merge-queue.mj
 QUEUE_DEPTH_MAX = 6
 QUEUE_MODES = ("batch", "stack")  # land/merge-queue-core.mjs QUEUE_MODES
 BATCH_SIZE_MAX = 20  # land/merge-queue-core.mjs BATCH_SIZE_MAX
+# merge gate (Nov 11 2026, Brett: "If something fails, re-pull in main and rebuild it"): land/merge-gate.mjs on the VPS host
+# runs after the queue every round; the log (merge-log.json) and its commands go through the same file
+GATE_SCRIPT = Path(__file__).resolve().parent.parent / "land" / "merge-gate.mjs"
+GATE_CAP_MAX = 6  # land/merge-gate-core.mjs CAP_MAX
+GATE_CMDS = ("retry", "fix", "rebuild", "merge", "skip", "automerge", "clear", "restore", "archive")  # merge-gate-core.mjs CMD_IDS
+GATE_GROUPS = ("failed", "merged", "working")
+
+
+def _int_in(v: Any, lo: int, hi: int) -> bool:
+    return isinstance(v, int) and not isinstance(v, bool) and lo <= v <= hi
+
 AGENT_HEADERS = ("x-axhub-session", "x-axhub-source")
 LAND_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,80}\Z")
 UI_REVIEW_CAP = "ui-review@1"  # PRs whose UI is waiting, has changes asked or is rejected in UI Review don't merge
@@ -231,10 +242,15 @@ class Pushes:
                 # it before we send it to CI"): the ready PRs are combined into one commit, CI runs once, it lands as one.
                 # "stack" keeps the Nov 4 per-PR stack (one run per PR).
                 "queueMode": raw["queueMode"] if raw.get("queueMode") in QUEUE_MODES else "batch",
-                "batchSize": raw["batchSize"] if isinstance(raw.get("batchSize"), int) and not isinstance(raw.get("batchSize"), bool) and 1 <= raw["batchSize"] <= BATCH_SIZE_MAX else 8}
+                "batchSize": raw["batchSize"] if isinstance(raw.get("batchSize"), int) and not isinstance(raw.get("batchSize"), bool) and 1 <= raw["batchSize"] <= BATCH_SIZE_MAX else 8,
+                # Merge gate (Nov 11 2026, Brett: "You gotta redo anything automatically. Make that a server gate."): a build
+                # that can't merge is auto-fixed, then rebuilt on fresh main, up to mergeGateCap attempts. On unless off.
+                "mergeGate": raw.get("mergeGate") is not False,
+                "mergeGateCap": raw["mergeGateCap"] if _int_in(raw.get("mergeGateCap"), 1, GATE_CAP_MAX) else 3,
+                "mergeGateBehind": raw["mergeGateBehind"] if _int_in(raw.get("mergeGateBehind"), 10, 5000) else 150}
 
     def save_config(self, body: Any) -> dict[str, Any]:
-        if not isinstance(body, dict) or set(body) - {"repos", "hidden", "claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "mergeQueue", "queueDepth", "queueMode", "batchSize"}:
+        if not isinstance(body, dict) or set(body) - {"repos", "hidden", "claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "mergeQueue", "queueDepth", "queueMode", "batchSize", "mergeGate", "mergeGateCap", "mergeGateBehind"}:
             raise HTTPException(400, "send {repos: [owner/name …], hidden: [\"owner/name:branch\" …]}")
         cur = self.config()
         repos, hidden = cur["repos"], cur["hidden"]
@@ -251,7 +267,7 @@ class Pushes:
                     raise HTTPException(400, f"hidden entries look like owner/name:branch[@sha] ({_text(e, 80)!r})")
             hidden = list(dict.fromkeys(h))
         flags = {}
-        for k in ("claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "mergeQueue"):
+        for k in ("claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "mergeQueue", "mergeGate"):
             if k in body and not isinstance(body[k], bool):
                 raise HTTPException(400, f"{k} is true or false")
             flags[k] = body[k] if k in body else cur[k]
@@ -264,6 +280,10 @@ class Pushes:
         if "batchSize" in body and (not isinstance(body["batchSize"], int) or isinstance(body["batchSize"], bool) or not 1 <= body["batchSize"] <= BATCH_SIZE_MAX):
             raise HTTPException(400, f"batchSize is 1 to {BATCH_SIZE_MAX}")
         flags["batchSize"] = body.get("batchSize", cur["batchSize"])
+        for k, lo, hi in (("mergeGateCap", 1, GATE_CAP_MAX), ("mergeGateBehind", 10, 5000)):
+            if k in body and not _int_in(body[k], lo, hi):
+                raise HTTPException(400, f"{k} is {lo} to {hi}")
+            flags[k] = body.get(k, cur[k])
         storage.write_json(data_dir() / "config.json", {"$axf": "push-banner-config@1", "repos": repos, "hidden": hidden, **flags})
         with self._lock:
             self._cache = None
@@ -447,6 +467,57 @@ class Pushes:
         if r.returncode != 0:
             raise HTTPException(400, _text(r.stderr.strip() or r.stdout.strip() or f"merge-queue.mjs {cmd} failed"))
         return {"ok": True, "command": cmd, "pr": pr, "note": "takes effect at the next queue round (within 3 minutes)", **self.queue()}
+
+    # ---- merge gate (land/merge-gate.mjs on the VPS host writes merge-log.json; commands write merge-gate-control.json)
+    def _gate(self, args: list[str]) -> dict[str, Any]:
+        try:
+            r = subprocess.run(["node", str(GATE_SCRIPT), *args, "--json"], capture_output=True, text=True, timeout=30, env={**os.environ, "AXF_PUSH_BANNER_DIR": str(data_dir())})
+        except (OSError, subprocess.TimeoutExpired) as e:
+            raise HTTPException(502, _text(str(e))) from None
+        if r.returncode != 0:
+            raise HTTPException(400, _text(r.stderr.strip() or r.stdout.strip() or f"merge-gate.mjs {args[0]} failed"))
+        try:
+            out = json.loads(r.stdout.strip().splitlines()[-1])
+        except (ValueError, IndexError):
+            raise HTTPException(502, "merge-gate.mjs answered no JSON") from None
+        return out if isinstance(out, dict) else {}
+
+    def gate(self, archived: bool = False) -> dict[str, Any]:
+        """The merge log (merge-log@1): every entry, banner groups, grid rows, settings. Commands still waiting for the
+        runner that only change the log (clear / restore / archive) already show."""
+        d = self._gate(["log", *(["--all"] if archived else [])])
+        cfg = self.config()
+        d["settings"] = {"on": cfg["mergeGate"], "cap": cfg["mergeGateCap"], "behindLimit": cfg["mergeGateBehind"]}
+        return d
+
+    def gate_entry(self, ref: str) -> dict[str, Any]:
+        if not LAND_ID.match(ref.lstrip("#")):
+            raise HTTPException(400, "a build id or PR number")
+        return self._gate(["show", ref.lstrip("#")])
+
+    def gate_command(self, cmd: str, body: Any, by: str = "") -> dict[str, Any]:
+        """retry | fix | rebuild | merge | skip | automerge | clear | restore | archive on {ids: [build id | PR number …]}
+        or {group: failed | merged | working} (Clear reds, Clear merged). One implementation: land/merge-gate.mjs."""
+        if cmd not in GATE_CMDS:
+            raise HTTPException(404, f"unknown command {cmd}")
+        if not isinstance(body, dict) or set(body) - {"ids", "group"}:
+            raise HTTPException(400, "send {ids: [build id or PR number …]} or {group: failed | merged | working}")
+        ids = body.get("ids", [])
+        if isinstance(ids, (str, int)) and not isinstance(ids, bool):
+            ids = [ids]
+        if not isinstance(ids, list) or len(ids) > 100 or not all(isinstance(x, (str, int)) and not isinstance(x, bool) and LAND_ID.match(str(x).lstrip("#")) for x in ids):
+            raise HTTPException(400, "ids are build ids or PR numbers (up to 100)")
+        group = body.get("group") or ""
+        if group and group not in GATE_GROUPS:
+            raise HTTPException(400, "group is failed, merged or working")
+        if not ids and not group:
+            raise HTTPException(400, "send ids or a group")
+        args = [cmd, *[str(x).lstrip("#") for x in ids]]
+        if group:
+            args += ["--group", group]
+        args += ["--by", _text(by or "console", 80)]
+        r = self._gate(args)
+        return {"ok": True, "command": r.get("command"), "note": "shown at once" if cmd in ("clear", "restore", "archive") else "carried out at the next round (within 3 minutes)", **self.gate()}
 
     def _repo(self, gh: github.GitHubClient, repo: str, hidden: set[str]) -> dict[str, Any]:
         out: dict[str, Any] = {"repo": repo, "base": "main", "url": f"{github.GIT_BASE}/{repo}", "branches": [], "pulls": [], "error": ""}
@@ -1518,6 +1589,32 @@ def queue_settings(request: Request, body: Any = Body(None)) -> dict[str, Any]:
     patch = {k2: body[k1] for k1, k2 in (("on", "mergeQueue"), ("mode", "queueMode"), ("batchSize", "batchSize")) if k1 in body}
     PUSHES.save_config(patch)
     return PUSHES.queue()
+
+
+@router.get("/merge-log")
+def merge_log(archived: bool = False) -> dict[str, Any]:
+    return PUSHES.gate(archived)
+
+
+@router.get("/merge-log/entry/{ref}")
+def merge_log_entry(ref: str) -> dict[str, Any]:
+    return PUSHES.gate_entry(ref)
+
+
+@router.post("/merge-log/settings")
+def merge_log_settings(request: Request, body: Any = Body(None)) -> dict[str, Any]:
+    """The merge gate's settings without the UI: {on?, cap?: 1-6, behind?: 10-5000}. Switching it off is Brett's own click."""
+    if not isinstance(body, dict) or not body or set(body) - {"on", "cap", "behind"}:
+        raise HTTPException(400, "send {on?, cap?, behind?}")
+    if body.get("on") is False and not _owner(request):
+        raise HTTPException(403, "switching the merge gate off is Brett's own click in the console (signed in on axHub)")
+    PUSHES.save_config({k2: body[k1] for k1, k2 in (("on", "mergeGate"), ("cap", "mergeGateCap"), ("behind", "mergeGateBehind")) if k1 in body})
+    return PUSHES.gate()
+
+
+@router.post("/merge-log/{cmd}")
+def merge_log_command(cmd: str, request: Request, body: Any = Body(None)) -> dict[str, Any]:
+    return PUSHES.gate_command(cmd, body, by=_owner(request) or "console")
 
 
 @router.get("/config")

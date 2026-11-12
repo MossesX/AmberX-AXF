@@ -90,3 +90,36 @@ a.axp-push-banner__name:hover { text-decoration: underline }
 .axp-mq__row.is-passed { border-color: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-muted) * 100%), transparent) }
 .axp-mq__chip { flex: none; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); cursor: pointer }
 .axp-mq__why { display: block; white-space: normal; overflow-wrap: anywhere }
+/* merge gate (Nov 11 2026): yellow auto-fixing, blue full rebuild, green passed / merged, red failed - theme tones only */
+.axp-gate__item.is-warning { border-color: var(--fx-warning) }
+.axp-gate__item.is-info { border-color: var(--fx-info) }
+.axp-gate__item.is-success { border-color: var(--fx-success) }
+.axp-gate__item.is-danger { border-color: var(--fx-danger) }
+.axp-gate__pill { flex: none; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); padding: 0 var(--fx-dens-gap-md); border-radius: var(--fx-radius-lg); font-size: var(--fx-type-root-xs); font-weight: 600; border: var(--fx-border-w) solid var(--fx-border); color: var(--fx-muted); background: var(--fx-surface2); white-space: nowrap }
+.axp-gate__pill.is-warning { color: var(--fx-warning); border-color: var(--fx-warning); background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-gate__pill.is-info { color: var(--fx-info); border-color: var(--fx-info); background: color-mix(in srgb, var(--fx-info) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-gate__pill.is-success { color: var(--fx-success); border-color: var(--fx-success); background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-gate__pill.is-danger { color: var(--fx-danger); border-color: var(--fx-danger); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.axp-gate__why { white-space: normal }
+.axp-gate__lines { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs); font-size: var(--fx-type-root-sm); white-space: pre-wrap }
+.axp-gate { gap: var(--fx-dens-gap-md) }
+.axp-gate__bar { display: flex; align-items: center; flex-wrap: wrap; gap: var(--fx-dens-gap-sm) }
+.axp-gate__search { flex: 1 1 calc(var(--fx-space) * 30); min-width: 0 }
+.axp-gate__note { margin: 0; color: var(--fx-success) }
+.axp-gate__build { display: flex; flex-direction: column; min-width: 0 }
+.axp-gate__title, .axp-gate__clip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0 }
+.axp-gate__detail { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md) }
+.axp-gate__acts, .axp-gate__links { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs) }
+.axp-gate__sec h5 { margin: 0 0 var(--fx-dens-gap-xs); font-size: var(--fx-type-root-xs); font-weight: 700; color: var(--fx-muted); text-transform: uppercase; letter-spacing: 0.05em }
+.axp-gate__attempts { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm) }
+.axp-gate__attempt { display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs); padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); border-radius: var(--fx-radius-sm); border: var(--fx-border-w) solid var(--fx-border); border-inline-start-width: calc(var(--fx-border-w) * 3) }
+.axp-gate__attempt.is-running { border-inline-start-color: var(--fx-warning) }
+.axp-gate__attempt.is-passed { border-inline-start-color: var(--fx-success) }
+.axp-gate__attempt.is-failed { border-inline-start-color: var(--fx-danger) }
+.axp-gate__line { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--fx-dens-gap-sm) }
+.axp-gate__bad { color: var(--fx-danger) }
+.axp-gate__pre { margin: 0; padding: var(--fx-dens-gap-sm); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); font-family: var(--fx-font-mono); font-size: var(--fx-type-root-xs); white-space: pre-wrap; overflow-wrap: anywhere }
+.axp-gate__timeline { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs); font-size: var(--fx-type-root-sm) }
+.axp-gate { min-width: 0 }
+.axp-gate__grid { min-width: 0; overflow-x: auto; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md) }
+.axp-gate__grid .axf-grid-cell { white-space: nowrap; min-width: 0; overflow: hidden; text-overflow: ellipsis }
