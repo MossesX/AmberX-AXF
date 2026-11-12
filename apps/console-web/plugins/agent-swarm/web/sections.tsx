@@ -36,10 +36,10 @@ export function SectionOwnersPanel() {
       <p className="fx-small fx-muted" style={{ margin: 0 }}>Each section that runs on its own has one owner. The owner posts its key moments in the group chat: starts, done, failed, blocked, waiting for you. Nothing is posted while the chat is off.</p>
       {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
       {board.groups.map((g) => (
-        <section key={g} className="fx-stack sw-sections__group" aria-label={g}>
+        <section key={g} data-fx-focus-key={g} className="fx-stack sw-sections__group" aria-label={g}>
           <h4 className="fx-small fx-muted sw-sections__head">{g}</h4>
           {board.sections.filter((s) => s.group === g).map((s) => (
-            <div key={s.id} className="sw-sections__row" data-section={s.id}>
+            <div key={s.id} data-fx-focus-key={s.id} className="sw-sections__row" data-section={s.id}>
               <div className="sw-sections__what">
                 <strong>{s.label}</strong>{s.reassigned && <Chip tone="accent">reassigned</Chip>}
                 <div className="fx-small fx-muted">{s.about}</div>
@@ -55,7 +55,7 @@ export function SectionOwnersPanel() {
       {board.history.length > 0 && (
         <details className="sw-sections__history">
           <summary className="fx-small">Reassignments ({board.history.length})</summary>
-          <ul className="fx-small fx-muted">{board.history.map((h, i) => <li key={`${h.at}-${i}`}>{fmtTime(h.at)} · {board.sections.find((s) => s.id === h.section)?.label ?? h.section}: {nameOf(h.from)} → {nameOf(h.to)} ({h.by}){h.note ? ` · ${h.note}` : ''}</li>)}</ul>
+          <ul className="fx-small fx-muted">{board.history.map((h, i) => <li key={`${h.at}-${i}`} data-fx-focus-key={`${h.at}-${i}`}>{fmtTime(h.at)} · {board.sections.find((s) => s.id === h.section)?.label ?? h.section}: {nameOf(h.from)} → {nameOf(h.to)} ({h.by}){h.note ? ` · ${h.note}` : ''}</li>)}</ul>
         </details>
       )}
     </div>

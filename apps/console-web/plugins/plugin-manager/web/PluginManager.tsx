@@ -126,7 +126,7 @@ function Studio(p: LayoutProps) {
         <h1 className="axp-plugin-manager-studio__title">Plugins</h1>
         <nav className="axp-plugin-manager-studio__filters" aria-label="Filter">
           {FILTERS.map((f) => (
-            <button key={f} type="button" className={`fx-chip axp-plugin-manager-studio__filter ${p.prefs.filter === f ? 'is-on' : ''}`} onClick={() => p.set('filter', f)}>
+            <button key={f} data-fx-focus-key={f} type="button" className={`fx-chip axp-plugin-manager-studio__filter ${p.prefs.filter === f ? 'is-on' : ''}`} onClick={() => p.set('filter', f)}>
               <span>{FILTER_LABEL[f]}</span><span className="axp-plugin-manager-count">{p.inv.items.filter((r) => matches(r, f)).length}</span>
             </button>
           ))}
@@ -137,7 +137,7 @@ function Studio(p: LayoutProps) {
         <p className="axp-plugin-manager-eyebrow">Layout</p>
         <div className="axp-plugin-manager-studio__layouts">
           {LAYOUTS.map((l) => (
-            <button key={l.id} type="button" data-fx-row className={`axp-plugin-manager-studio__layout ${p.prefs.layout === l.id ? 'is-active' : ''}`} onClick={() => p.set('layout', l.id)}>
+            <button key={l.id} data-fx-focus-key={l.id} type="button" data-fx-row className={`axp-plugin-manager-studio__layout ${p.prefs.layout === l.id ? 'is-active' : ''}`} onClick={() => p.set('layout', l.id)}>
               <Icon name={l.icon} size={14} /><span><strong>{l.label}</strong><span className="fx-muted fx-small">{l.note}</span></span>
             </button>
           ))}
@@ -210,7 +210,7 @@ function Mission(p: LayoutProps) {
       </header>
       <div className="axp-plugin-manager-mission__tiles">
         {tiles.map((t) => (
-          <button key={t.label} type="button" data-fx-row className={`axp-plugin-manager-tile ${t.tone ? `is-${t.tone}` : ''} ${t.filter && p.prefs.filter === t.filter ? 'is-active' : ''}`} onClick={() => t.filter && p.set('filter', t.filter)}>
+          <button key={t.label} data-fx-focus-key={t.label} type="button" data-fx-row className={`axp-plugin-manager-tile ${t.tone ? `is-${t.tone}` : ''} ${t.filter && p.prefs.filter === t.filter ? 'is-active' : ''}`} onClick={() => t.filter && p.set('filter', t.filter)}>
             <span className="axp-plugin-manager-tile__value">{t.value}</span>
             <span className="axp-plugin-manager-tile__label">{t.label}</span>
           </button>
@@ -236,7 +236,7 @@ function Mission(p: LayoutProps) {
           <p className="axp-plugin-manager-eyebrow">Signals · {signals.length}</p>
           {signals.length === 0 && <p className="axp-plugin-manager-signal is-ok"><Icon name="check-circle" size={14} /> All systems nominal.</p>}
           {signals.map((s) => (
-            <button key={s.id} type="button" data-fx-row className={`axp-plugin-manager-signal is-${s.tone}`} onClick={() => s.folder && p.select(s.folder)}>
+            <button key={s.id} data-fx-focus-key={s.id} type="button" data-fx-row className={`axp-plugin-manager-signal is-${s.tone}`} onClick={() => s.folder && p.select(s.folder)}>
               <strong>{s.title}</strong><span className="fx-small">{s.text}</span>
             </button>
           ))}
@@ -401,7 +401,7 @@ function Catalog(p: LayoutProps) {
         ? SHELVES.map((s) => {
           const rows = p.rows.filter(s.test);
           return rows.length ? (
-            <section key={s.id} className="axp-plugin-manager-shelf">
+            <section key={s.id} data-fx-focus-key={s.id} className="axp-plugin-manager-shelf">
               <h3 className="axp-plugin-manager-shelf__title">{s.label} <span className="fx-muted fx-small">{rows.length}</span></h3>
               <CardsView {...vp} rows={rows} />
             </section>

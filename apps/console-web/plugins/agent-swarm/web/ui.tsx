@@ -194,7 +194,7 @@ function JobsTab({ state }: { state: SwarmState }) {
           <div className="sw-scroll"><table className="sw-table">
             <thead><tr><th>Step</th><th>Agent</th><th>Model</th><th className="is-num">Budget</th><th>Leases</th></tr></thead>
             <tbody>{w.map((id) => { const j = plan.jobs.find((x) => x.id === id)!; return (
-              <tr key={id}>
+              <tr key={id} data-fx-focus-key={id}>
                 <td title={j.text}><b>{j.stepId}</b> {j.text.length > 90 ? `${j.text.slice(0, 87)}…` : j.text}</td>
                 <td>{agents.get(j.agent)?.name ?? j.agent}</td>
                 <td><ModelChip m={j.model} /></td>

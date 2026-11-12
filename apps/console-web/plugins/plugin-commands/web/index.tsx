@@ -99,7 +99,7 @@ function PluginCommandsView() {
       </div>
       <p className="axf-pc__muted">{plugins === null ? 'Loading…' : `${(plugins ?? []).length} plugins · ${total} commands and reads`}</p>
       {shown.map((p) => (
-        <Container key={`${p.app}:${p.folder}`} title={`${p.name}${p.app === 'console-web' ? '' : ` (${p.app})`}`} icon="package">
+        <Container key={`${p.app}:${p.folder}`} focusKey={`${p.app}:${p.folder}`} title={`${p.name}${p.app === 'console-web' ? '' : ` (${p.app})`}`} icon="package">
           {p.app !== 'console-web' && <p className="axf-pc__muted">Runs in {p.app}: listed here, run there.</p>}
           {p.enabled === false && <p className="axf-pc__muted">Turned off: its commands come back when it is turned on.</p>}
           <ul className="axf-pc__list">{p.commands.map((c) => <CommandRow key={c.id} p={p} c={c} />)}</ul>
@@ -137,7 +137,7 @@ function SettingsPanel() {
       <Container title="Last commands" icon="list">
         {!audit.length ? <p className="axf-pc__muted">None yet.</p> : (
           <ul className="axf-pc__list">
-            {audit.map((a, i) => <li key={`${a.at}-${i}`} className="axf-pc__row"><span className="axf-pc__id">{a.ok ? '✓' : '✗'} {a.path}</span><span className="axf-pc__muted">{a.by} · {new Date(a.at).toLocaleString()}</span></li>)}
+            {audit.map((a, i) => <li key={`${a.at}-${i}`} data-fx-focus-key={`${a.at}-${i}`} className="axf-pc__row"><span className="axf-pc__id">{a.ok ? '✓' : '✗'} {a.path}</span><span className="axf-pc__muted">{a.by} · {new Date(a.at).toLocaleString()}</span></li>)}
           </ul>
         )}
       </Container>

@@ -60,7 +60,7 @@ function TopicPicker({ topics, value, onPick }: { topics: Topic[]; value: Topic 
       {!topics.length ? <LoadingSkeleton rows={4} label="Loading what can be shown" /> : !hits.length ? <EmptyState compact icon="search">Nothing matches. Try another word, or another kind.</EmptyState> : (
         <ul className="axp-demonstration-designer__rows" aria-label="Things to show">
           {hits.map((t) => (
-            <li key={t.id}>
+            <li key={t.id} data-fx-focus-key={t.id}>
               <button type="button" data-fx-row className="axp-demonstration-designer__row" onClick={() => onPick(t)}>
                 <span className="axp-demonstration-designer__kind" data-kind={t.kind}>{t.kind.replace('-', ' ')}</span>
                 <strong>{t.label}</strong>
@@ -317,7 +317,7 @@ export function DesignerPage() {
         {!m.demosLoaded ? <LoadingSkeleton rows={3} label="Loading pitches" /> : !rows.length ? <EmptyState compact icon="play">No pitches yet. Pick something above and press Generate.</EmptyState> : (
           <ul className="axp-demonstration-designer__rows" aria-label="Saved pitches">
             {rows.map((s) => (
-              <li key={s.id} className={`axp-demonstration-designer__saved${demo?.id === s.id ? ' is-selected' : ''}`}>
+              <li key={s.id} data-fx-focus-key={s.id} className={`axp-demonstration-designer__saved${demo?.id === s.id ? ' is-selected' : ''}`}>
                 <button type="button" data-fx-row className="axp-demonstration-designer__row" onClick={() => void openDemo(s.id)}>
                   <strong>{s.name}</strong>
                   <span className="fx-muted">{s.steps} steps · {fmtSeconds(s.seconds)}{s.chain.length ? ` · +${s.chain.length} in the tour` : ''}{s.clips ? ` · ${s.clips} recording${s.clips === 1 ? '' : 's'}` : ''}</span>

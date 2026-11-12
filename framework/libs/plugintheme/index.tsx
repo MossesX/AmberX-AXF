@@ -287,7 +287,7 @@ function FormView({ id, look, save }: EditProps & { id: string }) {
       {PLUGIN_THEME_GROUPS.map((g, i) => {
         const c = changedCount(look, g.id);
         return (
-          <Container key={g.id} title={`${g.label}${c ? ` (${c})` : ''}`} icon={g.icon} collapsible defaultOpen={i === 0}
+          <Container key={g.id} focusKey={String(g.id)} title={`${g.label}${c ? ` (${c})` : ''}`} icon={g.icon} collapsible defaultOpen={i === 0}
             actions={<IconButton icon="undo" label={`Reset ${g.label}`} disabled={!c} onClick={() => save(resetTokens(look, g.id))} />}>
             <div className="fx-stack">
               <p className="fx-muted" style={{ margin: 0 }}>{g.hint}</p>

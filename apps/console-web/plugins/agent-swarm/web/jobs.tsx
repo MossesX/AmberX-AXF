@@ -86,7 +86,7 @@ function JobCard({ j, reload, onAgent }: { j: JobView; reload: () => Promise<voi
       <p className="fx-muted sw-job__about">{j.description}</p>
       <dl className="sw-card__stats">
         <div><dt>Skills</dt><dd>{(j.skills ?? []).join(', ') || '—'}</dd></div>
-        <div><dt>Home</dt><dd>{j.owners.filter((o) => o.home).map((o) => <button key={o.id} type="button" className="fx-btn fx-btn--sm fx-btn--quiet" onClick={() => onAgent(o.id)}>{o.name} · {o.busy ? 'busy' : o.status}</button>)}{j.owners.some((o) => o.home) ? null : '—'}</dd></div>
+        <div><dt>Home</dt><dd>{j.owners.filter((o) => o.home).map((o) => <button key={o.id} data-fx-focus-key={o.id} type="button" className="fx-btn fx-btn--sm fx-btn--quiet" onClick={() => onAgent(o.id)}>{o.name} · {o.busy ? 'busy' : o.status}</button>)}{j.owners.some((o) => o.home) ? null : '—'}</dd></div>
         <div><dt>Crew</dt><dd>{j.owners.length ? `${j.owners.length} can take it · ${j.owners.filter((o) => !o.busy).length} free` : '—'}</dd></div>
         <div><dt>Trigger</dt><dd>{triggerText(j.trigger)}</dd></div>
         <div><dt>Last run</dt><dd>{j.lastRun ? `${fmtTime(j.lastRun.at)} · ${j.lastRun.status}` : 'never'}</dd></div>
@@ -104,7 +104,7 @@ function JobCard({ j, reload, onAgent }: { j: JobView; reload: () => Promise<voi
       {open && !j.unassigned && (
         <form className="fx-stack" onSubmit={(e) => { e.preventDefault(); void run(false); }}>
           {j.inputs.map((i) => (
-            <label key={i.id} className="sw-slider">
+            <label key={i.id} data-fx-focus-key={i.id} className="sw-slider">
               <span>{i.label}{i.required ? ' *' : ''}{i.about ? <span className="fx-muted"> · {i.about}</span> : null}</span>
               <input className="fx-input" value={inputs[i.id] ?? ''} placeholder={i.default || (i.required ? 'required' : '')} onChange={(e) => setInputs({ ...inputs, [i.id]: e.target.value })} />
             </label>

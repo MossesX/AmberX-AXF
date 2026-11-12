@@ -958,7 +958,10 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         """Open a screen in Brett's open Dev Console (the live one he used last, then the next live one if it doesn't
         answer; to="all" for every open one, or a client id). `screen` = the view id ("plan-studio"), its title ("Plan
         Studio") or a few words ("plan studio", "orchestrator"); plugins' screens count. A tab or item on the screen:
-        "build-orchestrator pending", or `focus` ("pending", a build id). A build: "build:<build id>" (or the bare id)
+        "build-orchestrator pending", or `focus` ("pending", a build id). Every screen takes `focus`: a tab label, an
+        item id or a group ("ui-review" + "r-20261112-…", "plan-studio" + a plan id or title, "settings" +
+        "appearance#motion" or a setting key); the item's tab opens and it is scrolled into view, expanded and
+        highlighted, and a dialog left on top closes. A build: "build:<build id>" (or the bare id)
         opens the Build orchestrator on its tab with that build scrolled into view, expanded and highlighted.
         Read `status`: delivered (a console acked it), pending (no console answered yet; queued and AmberX opens the
         console on Brett's phone) or failed. Not sure of the name? console_list(kind="screens", q="…") first."""
@@ -1029,7 +1032,9 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         `target` = a screen, settings tab, dialog or navigation-only action by id, title or words ("plan studio",
         "plugins/<plugin>"), or kind:name (screen:, settings:, dialog:, action:, approval:<id> pops up a waiting
         axHub approval). A build: "build:<build id>" (or the bare id) opens the Build orchestrator on that build's tab,
-        scrolled into view, expanded and highlighted. A tab: "build-orchestrator pending", or `focus` = the tab or item.
+        scrolled into view, expanded and highlighted. A tab: "build-orchestrator pending", or `focus` = the tab, group
+        or item on any screen (a UI Review item id, a Plan Studio plan, a settings row "appearance#motion", a plugin
+        row): its tab opens, it scrolls into view, expands and is highlighted; a covering dialog closes first.
         `highlight` = a CSS selector or exact visible text to flash once it's open. Only navigates. `status` says
         whether it is on screen: delivered, pending (no console answered yet; it opens when one does) or failed."""
         return await follow("show", target=target, highlight=highlight, say=say, to=to, focus=focus)

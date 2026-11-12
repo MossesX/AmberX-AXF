@@ -111,7 +111,7 @@ export function InstallView({ inv, onChanged }: ViewProps) {
         {items.map((it) => {
           const state = it.clash ? 'clash' : !it.installed ? 'new' : newer(it.version, it.installed) ? 'update' : 'current';
           return (
-            <li key={`${it.kind}:${it.folder}`} className="fx-card axp-plugin-manager-install__item">
+            <li key={`${it.kind}:${it.folder}`} data-fx-focus-key={`${it.kind}:${it.folder}`} className="fx-card axp-plugin-manager-install__item">
               <div className="fx-stack">
                 <div className="fx-row fx-row--wrap">
                   <strong>{it.name}</strong>

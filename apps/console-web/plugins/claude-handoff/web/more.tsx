@@ -35,7 +35,7 @@ export function MoreMenu({ items, label = 'More', icon = 'more' }: { items: (Mor
         <div ref={pop} className="fx-popover fx-dropdown axp-claude-handoff__more" style={{ top: at.top, left: at.left }} role="menu" aria-label={label}>
           <ul className="fx-menu">
             {list.map((it) => (
-              <li key={it.label} className="fx-menu__li">
+              <li key={it.label} data-fx-focus-key={it.label} className="fx-menu__li">
                 <button type="button" role="menuitem" className="fx-menu__item" disabled={it.disabled} title={it.title} onClick={() => { setAt(null); it.onPick(); }}>
                   <span className="fx-menu__icon">{it.icon && <Icon name={it.icon} size={14} />}</span><span className="fx-menu__label">{it.label}</span>
                 </button>

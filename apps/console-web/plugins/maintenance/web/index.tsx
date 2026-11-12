@@ -106,7 +106,7 @@ function SpaceUsers({ snapshot }: { snapshot: Snapshot | null }) {
       {snapshot.biggest.length ? (
         <ul className="axp-maintenance__list" aria-label="Biggest space users">
           {snapshot.biggest.map((b) => (
-            <li key={b.path} className="axp-maintenance__row">
+            <li key={b.path} data-fx-focus-key={b.path} className="axp-maintenance__row">
               <span className="axp-maintenance__name"><b>{b.label}</b><span className="fx-small fx-muted fx-mono">{b.path}</span></span>
               {b.reclaimable ? <Chip tone="warning">{human(b.reclaimable)} reclaimable</Chip> : null}
               <span className="axp-maintenance__size">{human(b.size)}</span>
@@ -129,7 +129,7 @@ function Worktrees({ snapshot }: { snapshot: Snapshot | null }) {
   return (
     <ul className="axp-maintenance__list" aria-label="Build worktrees">
       {items.map((w) => (
-        <li key={w.path} className="axp-maintenance__row">
+        <li key={w.path} data-fx-focus-key={w.path} className="axp-maintenance__row">
           <span className="axp-maintenance__name"><b>{w.name}</b><span className="fx-small fx-muted">{w.why}</span></span>
           <Chip tone={w.state === 'removable' ? 'warning' : w.state === 'active' ? 'accent' : undefined}>{w.state}</Chip>
           <span className="axp-maintenance__size">{human(w.size)}</span>
@@ -165,7 +165,7 @@ function CleanUp({ status, onSent }: { status: Status | null; onSent: () => void
       <p className="fx-small fx-muted" style={{ margin: 0 }}>Preview first, then send it for approval. Each run is one held call on axHub: nothing is removed until you approve it there. Running containers, volumes and app data are never touched.</p>
       <div>
         {jobs.map((j) => (
-          <div key={j.id} className="axp-maintenance__job">
+          <div key={j.id} data-fx-focus-key={j.id} className="axp-maintenance__job">
             <div className="axp-maintenance__jobhead">
               <Checkbox label={<span><Icon name={j.icon} size={14} /> {j.label}</span>} checked={picked.has(j.id)} onChange={(v) => toggle(j.id, v)} />
               {j.safe ? <Chip tone="success">Safe</Chip> : <Chip tone="warning">Check first</Chip>}
@@ -185,18 +185,18 @@ function CleanUp({ status, onSent }: { status: Status | null; onSent: () => void
           <p className="fx-small" style={{ margin: 0 }}><b>{preview.count} item{preview.count === 1 ? '' : 's'}, about {human(preview.bytes)}</b> <span className="fx-muted">· measured {ago(preview.at)}; the VPS checks each one again before removing it</span></p>
           {preview.stale && <Note tone="warning">This preview is old: the host part hasn't reported for a while, so more items may be skipped.</Note>}
           {Object.entries(preview.jobs).map(([id, pj]) => (
-            <details key={id} open={pj.count > 0 && pj.count <= 12}>
+            <details key={id} data-fx-focus-key={id} open={pj.count > 0 && pj.count <= 12}>
               <summary className="fx-small">{pj.label}: {pj.count} · {human(pj.bytes)}{pj.kept.length ? ` · ${pj.kept.length} kept` : ''}</summary>
               <ul className="axp-maintenance__list">
                 {pj.items.slice(0, 60).map((i) => (
-                  <li key={i.id} className="axp-maintenance__row">
+                  <li key={i.id} data-fx-focus-key={i.id} className="axp-maintenance__row">
                     <span className="axp-maintenance__name"><span className="fx-mono fx-small">{i.ref}</span><span className="fx-small fx-muted">{i.why}</span></span>
                     <span className="axp-maintenance__size">{i.approx ? 'up to ' : ''}{human(i.size)}</span>
                   </li>
                 ))}
                 {pj.items.length > 60 && <li className="fx-small fx-muted">…and {pj.items.length - 60} more</li>}
                 {pj.kept.map((k) => (
-                  <li key={`kept-${k.path}`} className="axp-maintenance__row">
+                  <li key={`kept-${k.path}`} data-fx-focus-key={`kept-${k.path}`} className="axp-maintenance__row">
                     <span className="axp-maintenance__name"><span className="fx-mono fx-small">{k.path}</span><span className="fx-small fx-muted">kept: {k.why}</span></span>
                     <Chip>{k.state ?? 'kept'}</Chip>
                   </li>
@@ -217,7 +217,7 @@ function Runs({ tick }: { tick: number }) {
   return (
     <ul className="axp-maintenance__list" aria-label="Clean-up runs">
       {runs.map((r) => (
-        <li key={r.id} className="axp-maintenance__row">
+        <li key={r.id} data-fx-focus-key={r.id} className="axp-maintenance__row">
           <span className="axp-maintenance__name">
             <b>{r.jobs.join(', ')} · {r.count} items · {human(r.bytes)}</b>
             <span className="fx-small fx-muted">{r.kind} by {r.by} · {ago(r.at)}{r.result ? ` · freed ${human(r.result.freed)}, ${r.result.done} removed, ${r.result.skipped} skipped, ${r.result.failed} failed${r.result.diskAfter ? `, disk now ${r.result.diskAfter.pct}%` : ''}` : ''}{r.hub.error ? ` · ${r.hub.error}` : ''}</span>
@@ -278,14 +278,14 @@ function ProfilesDialog({ run, close }: { run: string; close: () => void }) {
       </Note>
       <p className="fx-small" style={{ margin: 0 }}><b>{plan.totals.items} items</b> · {VERDICTS.map((v) => `${plan.totals[v]} ${VERDICT[v].label.toLowerCase()}`).join(' · ')} <span className="fx-muted">· checked {ago(plan.at)}</span></p>
       {plan.profiles.filter((p) => p.items.length).map((p) => (
-        <details key={p.id} open={p.items.some(actionable)}>
+        <details key={p.id} data-fx-focus-key={p.id} open={p.items.some(actionable)}>
           <summary className="fx-small">
             <b>{p.name}</b> · {VERDICTS.filter((v) => p.totals[v]).map((v) => `${p.totals[v]} ${VERDICT[v].label.toLowerCase()}`).join(', ')}{p.finished ? ` · ${p.finished} finished before` : ''}
             {p.emptyAfter && <> <Chip tone="warning">Empty after</Chip></>}
           </summary>
           <ul className="axp-maintenance__list" aria-label={`${p.name} items`}>
             {p.items.map((i) => (
-              <li key={i.key} className="axp-maintenance__row">
+              <li key={i.key} data-fx-focus-key={i.key} className="axp-maintenance__row">
                 {actionable(i)
                   ? <Checkbox label={<span className="fx-small">{i.title}</span>} checked={!off.has(i.key)} onChange={(v) => toggle(i.key, v)} />
                   : <span className="fx-small axp-maintenance__pcname">{i.title}</span>}
@@ -343,7 +343,7 @@ function ProfileCleanUp() {
       {runs.length > 0 && (
         <ul className="axp-maintenance__list" aria-label="Profile clean-up runs">
           {runs.map((r) => (
-            <li key={r.run} className="axp-maintenance__row">
+            <li key={r.run} data-fx-focus-key={r.run} className="axp-maintenance__row">
               <span className="axp-maintenance__name">
                 <b>{r.state === 'preview' ? 'Preview' : r.state === 'applied' ? `Applied ${r.applied}` : `Undone (${r.applied})`} · {r.totals?.items ?? 0} items</b>
                 <span className="fx-small fx-muted">{r.mode === 'deep' ? 'Deep (AI)' : 'Basic'} · {ago(r.at)}{r.skipped ? ` · ${r.skipped} skipped` : ''}</span>

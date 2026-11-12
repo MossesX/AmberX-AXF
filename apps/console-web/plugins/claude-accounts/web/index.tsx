@@ -205,7 +205,7 @@ function WorkerRuns({ view }: { view: View | null }) {
   return (
     <div>
       {runs.map((r) => (
-        <div key={`${r.session}-${r.account}-${r.at}`} className="axp-ca-row">
+        <div key={`${r.session}-${r.account}-${r.at}`} data-fx-focus-key={`${r.session}-${r.account}-${r.at}`} className="axp-ca-row">
           <div className="axp-ca-row__who">
             <b>{r.name}</b>
             <p className="axp-ca-row__sub">{[r.account, r.agent, when(r.at)].filter(Boolean).join(' · ')}</p>

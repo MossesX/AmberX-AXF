@@ -77,11 +77,11 @@ export function FilesDialog() {
         const list = shown.filter((f) => f.section === sec.id);
         if (!list.length) return null;
         return (
-          <section key={sec.id} className="axp-claude-handoff-files__section">
+          <section key={sec.id} data-fx-focus-key={sec.id} className="axp-claude-handoff-files__section">
             <header className="axp-claude-handoff-files__head"><Icon name={sec.icon} size={15} /><strong>{sec.label}</strong><span className="axp-claude-handoff__meta">{sec.note}</span></header>
             <ul className="axp-claude-handoff-files__list">
               {list.map((f) => (
-                <li key={f.id}>
+                <li key={f.id} data-fx-focus-key={f.id}>
                   <button type="button" data-fx-row className={`axp-claude-handoff-files__row${openIds.has(tabIdFor(f)) ? ' is-open' : ''}${f.exists || f.remote ? '' : ' is-missing'}`} onClick={() => { rt.closeDialog(); openFile(rt, f); }} title={f.by}>
                     <Icon name="file" size={14} />
                     <span className="axp-claude-handoff-files__text">

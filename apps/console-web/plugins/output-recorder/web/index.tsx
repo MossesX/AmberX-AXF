@@ -76,7 +76,7 @@ function Recorder() {
         {!!s.queue.length && (
           <ul className="axp-output-recorder-list">
             {s.queue.map((q) => (
-              <li key={q.id} className="axp-output-recorder-row">
+              <li key={q.id} data-fx-focus-key={q.id} className="axp-output-recorder-row">
                 <div className="axp-output-recorder-rowhead">
                   <span className="axp-output-recorder-name">{chunkName(q.id)}</span>
                   <span className="fx-small fx-muted">{formatTime(q.durationMs)} · {formatSize(q.bytes)}{q.parts ? ` · ${q.uploadedParts}/${q.parts} sent` : ''}</span>
@@ -169,7 +169,7 @@ function HubList() {
           <ul className="axp-output-recorder-list">
             {hits.map(({ transcript: t, snippet }) => {
               const rec = s.hub.items.find((x) => x.id === t.id);
-              return <li key={t.id} className="axp-output-recorder-row">
+              return <li key={t.id} data-fx-focus-key={t.id} className="axp-output-recorder-row">
                 <div className="axp-output-recorder-rowhead"><span className="axp-output-recorder-name">{t.session || t.name}</span><span className="fx-small fx-muted">{new Date(t.startedAt).toLocaleString()}</span></div>
                 <p className="fx-small">{snippet}</p>
                 {rec ? <ul className="axp-output-recorder-list"><RecordingRow r={rec} transcript={t} /></ul> : <TranscriptText t={t} />}
@@ -181,7 +181,7 @@ function HubList() {
         : !s.hub.loaded ? <p className="fx-muted">Loading…</p>
           : !days.length ? <p className="fx-muted">No recordings on axHub yet.</p>
             : days.map((d) => (
-              <div key={d.key} className="fx-stack">
+              <div key={d.key} data-fx-focus-key={d.key} className="fx-stack">
                 <p className="fx-eyebrow">{d.group ? `Session · ${d.label}` : d.label}</p>
                 <ul className="axp-output-recorder-list">{d.items.map((r) => <RecordingRow key={r.id} r={r} transcript={byId.get(r.id)} />)}</ul>
               </div>

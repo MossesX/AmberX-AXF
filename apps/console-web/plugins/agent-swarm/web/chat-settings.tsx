@@ -92,7 +92,7 @@ export function ChatSettingsTab({ state, act }: { state: SwarmState; act: Act })
           <tbody>{state.roster.agents.map((a) => {
             const o: Partial<Record<Key, number>> = cs.overrides[a.id] ?? {};
             return (
-              <tr key={a.id}>
+              <tr key={a.id} data-fx-focus-key={a.id}>
                 <td>{a.name}</td>
                 {(Object.keys(SLIDER_INFO) as Key[]).map((k) => (
                   <td key={k} className="is-num"><input className="fx-input sw-num" type="number" min={k === 'vibe' ? 1 : 0} max={SLIDER_INFO[k].max} aria-label={`${a.name} ${SLIDER_INFO[k].label}`} placeholder={String(cs[k])} defaultValue={o[k] ?? ''} key={`${a.id}${k}${o[k] ?? ''}`}

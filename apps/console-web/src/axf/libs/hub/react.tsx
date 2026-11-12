@@ -156,7 +156,7 @@ export function HubApprovalList({ state }: { state: HubWatchState }) {
       {state.pending.map((a) => {
         const left = expiry(a);
         return (
-          <Container key={a.id} title={a.title || a.tool} icon="shield">
+          <Container key={a.id} focusKey={String(a.id)} title={a.title || a.tool} icon="shield">
             <div className="fx-stack">
               {/* Who asked (axHub 109), then the tool as a small chip under the reason title. */}
               <div className="fx-row fx-row--wrap">

@@ -138,7 +138,7 @@ function WorkersLimits({ data }: { data: Routing }) {
         <Button tone="primary" icon="save" busy={s.busy} disabled={s.busy} onClick={() => void s.run(call('routing/settings', 'POST', { building: num(building), queue: num(queue) }))}>Save limits</Button>
       </div>
       <div>{subsRows.map((a) => (
-        <div key={a.name} className="axp-ca-row">
+        <div key={a.name} data-fx-focus-key={a.name} className="axp-ca-row">
           <div className="axp-ca-row__who"><b>{a.label || a.name}</b><p className="axp-ca-row__sub">{a.email || a.name} · {ROLE_LABEL[a.role] ?? a.role}</p></div>
           <div className="axp-ca-row__actions">
             {!a.active && <Switch label="Takes jobs" checked={a.role === 'worker'} disabled={s.busy} onChange={(v) => void s.run(call('role', 'POST', { name: a.name, role: v ? 'worker' : 'saved' }))} />}
@@ -331,7 +331,7 @@ function TestJob({ data }: { data: Routing }) {
         <Note tone={d.state === 'none' ? 'warning' : 'info'}>
           <b>{d.state === 'run' ? `Runs on ${d.label || d.account} (${d.kind === 'api' ? 'API, billed per token' : 'subscription'})` : d.state === 'queue' ? `Waits for ${d.label || d.account} (position ${d.position})` : 'No account can take it'}</b>
           <span>{` · ${d.why}`}</span>
-          {d.considered.length > 0 && <ul className="axp-ca-considered">{d.considered.map((c) => <li key={c.rule}>{c.match ? '✓' : '·'} {c.name}: {c.why}</li>)}</ul>}
+          {d.considered.length > 0 && <ul className="axp-ca-considered">{d.considered.map((c) => <li key={c.rule} data-fx-focus-key={c.rule}>{c.match ? '✓' : '·'} {c.name}: {c.why}</li>)}</ul>}
         </Note>
       )}
     </div>
@@ -364,7 +364,7 @@ export function JobRouting() {
       </div>
       <div className={view === 'rule-cards' ? 'axp-ca-grid' : 'fx-stack'}>
         {asset.data.order.map((k) => (
-          <Container key={`${view}-${k}`} title={SECTION_TITLE[k]} icon={SECTION_ICON[k]} collapsible defaultOpen={open.has(k)} className={`axp-ca-section axp-ca-section--${k}`}>{body[k]}</Container>
+          <Container key={`${view}-${k}`} focusKey={`${view}-${k}`} title={SECTION_TITLE[k]} icon={SECTION_ICON[k]} collapsible defaultOpen={open.has(k)} className={`axp-ca-section axp-ca-section--${k}`}>{body[k]}</Container>
         ))}
       </div>
     </div>

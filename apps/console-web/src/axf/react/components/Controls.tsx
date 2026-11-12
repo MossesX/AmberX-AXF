@@ -136,13 +136,15 @@ export interface ContainerProps {
   /** context-menu target name for right-click / long-press */
   ctx?: string;
   ctxPayload?: string;
+  /** The key `<view>.focus:<key>` finds this group by (screen-focus.ts): it unfolds, scrolls into view and is highlighted. */
+  focusKey?: string;
   /** this card folds whatever the container asset says (a settings card, say); the toggle is the asset's own */
   collapsible?: boolean;
   /** starts folded when false (only with a collapsible card) */
   defaultOpen?: boolean;
 }
 
-export function Container({ title, icon, actions, children, className, ctx, ctxPayload, collapsible: own, defaultOpen = true }: ContainerProps) {
+export function Container({ title, icon, actions, children, className, ctx, ctxPayload, focusKey, collapsible: own, defaultOpen = true }: ContainerProps) {
   const c = useAsset('container').data;
   // style-theme `wrapGroups` (build option --wrap-groups) makes every titled group collapsible.
   const collapsible = own === true || containerCollapsible(c, useAsset('style-theme').data);
@@ -152,7 +154,7 @@ export function Container({ title, icon, actions, children, className, ctx, ctxP
   const brand = useBrandPlace('container', 14);
   const brandHost = brandHostProps(brand);
   return (
-    <section className={`fx-card ${className ?? ''} ${brandHost.className}`.trim()} data-fx-collapsible={collapsible ? (shown ? 'open' : 'closed') : undefined} data-fx-ctx-target={ctx} data-fx-ctx-payload={ctxPayload} data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
+    <section className={`fx-card ${className ?? ''} ${brandHost.className}`.trim()} data-fx-collapsible={collapsible ? (shown ? 'open' : 'closed') : undefined} data-fx-ctx-target={ctx} data-fx-ctx-payload={ctxPayload} data-fx-focus-key={focusKey} data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
       {title && (
         <header className="fx-card__head">
           {brand?.svg && title && <BrandMark slot="container" height={14} className="fx-card__brand" />}

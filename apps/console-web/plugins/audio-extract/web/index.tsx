@@ -38,7 +38,7 @@ function Offers() {
   return (
     <div className="fx-stack">
       {s.offers.map((v) => (
-        <Container key={v.uri} title="New screen recording: extract audio?" icon="monitor">
+        <Container key={v.uri} focusKey={String(v.uri)} title="New screen recording: extract audio?" icon="monitor">
           <p className="axp-audio-extract-name">{v.name}{v.durationMs ? <span className="fx-muted"> · {formatTime(v.durationMs)}</span> : null}</p>
           <div className="fx-row fx-row--wrap fx-row--end">
             <Button size="sm" tone="quiet" onClick={() => c.dismissOffer(v.uri)}>Not now</Button>
@@ -63,7 +63,7 @@ function Folders({ compact = false }: { compact?: boolean }) {
         ? <Note tone="info">To find your screen recordings (Last screen recording, new-recording cards), choose your Screen recordings folder once. Samsung: DCIM → Screen recordings. No storage permission needed.</Note>
         : <p className="fx-small fx-muted">AmberX reads only the folders you choose here (Android’s folder picker; no storage permission). Samsung: DCIM → Screen recordings. Pixel: Movies → Screen recordings.</p>}
       {!compact && list.map((f) => (
-        <div key={f.uri} className="axp-audio-extract-rowhead">
+        <div key={f.uri} data-fx-focus-key={f.uri} className="axp-audio-extract-rowhead">
           <span className="axp-audio-extract-name">{f.name}</span>
           <Button size="sm" tone="quiet" icon="x" onClick={() => void c.removeFolder(f.uri)}>Remove</Button>
         </div>

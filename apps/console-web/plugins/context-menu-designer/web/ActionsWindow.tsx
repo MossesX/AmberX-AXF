@@ -105,11 +105,11 @@ export function ActionsTab() {
       {!rows.length && <Note>Nothing matches. Change the search or the filter.</Note>}
       <div className="axp-ctxd-act__list">
         {groups.map((g) => (
-          <section key={g.key} className="axp-ctxd-act__group">
+          <section key={g.key} data-fx-focus-key={g.key} className="axp-ctxd-act__group">
             <header className="axp-ctxd-act__head"><Icon name={srcIcon(g.source)} size={14} /><strong>{SOURCES.find((s) => s.id === g.source)?.label}</strong><span className="axp-ctxd-muted">› {g.label} · {g.rows.length}</span></header>
             <ul className="axp-ctxd-list">
               {g.rows.map((r) => (
-                <li key={r.spec}>
+                <li key={r.spec} data-fx-focus-key={r.spec}>
                   <button type="button" data-fx-row className="axp-ctxd-row axp-ctxd-act__row" disabled={!pick} onClick={() => pick?.pick(r)} title={pick ? `Use ${r.spec}` : undefined}>
                     {r.icon ? <Icon name={r.icon} size={14} /> : <Icon name="zap" size={14} />}
                     <span className="axp-ctxd-act__text"><span>{r.label}</span><code className="axp-ctxd-muted">{r.spec}</code></span>
@@ -147,11 +147,11 @@ export function FilterDialog({ close }: { close: () => void }) {
         const list = who.filter((o) => o.source === s.id);
         if (list.length < 2) return null;
         return (
-          <details key={s.id} className="axp-ctxd-filter__owners" open={list.some((o) => f.owners.includes(o.owner))}>
+          <details key={s.id} data-fx-focus-key={s.id} className="axp-ctxd-filter__owners" open={list.some((o) => f.owners.includes(o.owner))}>
             <summary><strong>{s.label}: only these</strong> <span className="axp-ctxd-muted">({list.length})</span></summary>
             <div className="axp-ctxd-filter__chips">
               {list.map((o) => (
-                <button key={o.owner || '_app'} type="button" className={`fx-chip${f.owners.includes(o.owner) ? ' is-on' : ''}`} aria-pressed={f.owners.includes(o.owner)} onClick={() => toggleOwner(o.owner)}>{o.label} · {o.count}</button>
+                <button key={o.owner || '_app'} data-fx-focus-key={o.owner || '_app'} type="button" className={`fx-chip${f.owners.includes(o.owner) ? ' is-on' : ''}`} aria-pressed={f.owners.includes(o.owner)} onClick={() => toggleOwner(o.owner)}>{o.label} · {o.count}</button>
               ))}
             </div>
           </details>

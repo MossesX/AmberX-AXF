@@ -51,7 +51,7 @@ export function LookDialog() {
     if (t === 'color-theme') {
       const light = opts.filter((o) => o.scheme !== 'dark' && o.id !== customId(t)), dark = opts.filter((o) => o.scheme === 'dark' && o.id !== customId(t));
       return (
-        <div className="axp-claude-handoff-look__pick" key={t}>
+        <div className="axp-claude-handoff-look__pick" key={t} data-fx-focus-key={t}>
           <span className="axp-claude-handoff-look__picklabel">Color</span>
           {/* one dropdown (light / dark groups) instead of a wall of theme chips (screens-compact) */}
           <select className="fx-input" value={cur} aria-label="Color theme" onChange={(e) => pickAsset(t, e.target.value)}>
@@ -63,7 +63,7 @@ export function LookDialog() {
       );
     }
     return (
-      <div className="axp-claude-handoff-look__pick" key={t}>
+      <div className="axp-claude-handoff-look__pick" key={t} data-fx-focus-key={t}>
         <span className="axp-claude-handoff-look__picklabel">{LABEL[t]}</span>
         {items.length <= 6
           ? <Segmented size="sm" label={LABEL[t]} value={cur} options={items} onChange={(v) => pickAsset(t, v)} />

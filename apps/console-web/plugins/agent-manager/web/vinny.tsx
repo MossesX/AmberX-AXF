@@ -118,7 +118,7 @@ export function VinnyCommandsDialog() {
           {shown.map((c) => edit?.id === c.id
             ? <Editor key={c.id} value={edit} onDone={(saved) => { setEdit(null); if (saved) void load(); }} />
             : (
-              <div key={c.id} className="axp-agent-manager__flatrow">
+              <div key={c.id} data-fx-focus-key={c.id} className="axp-agent-manager__flatrow">
                 <div className="axp-agent-manager__cmdhead">
                   <Switch label={c.name} hideLabel checked={c.enabled} onChange={(on) => void toggle(c, on)} />
                   <strong className="axp-agent-manager__clip">{c.name}</strong>
@@ -146,7 +146,7 @@ export function VinnyCommandsDialog() {
             <Button size="sm" tone="primary" icon="zap" onClick={() => void send()} disabled={!msg.trim() || !book.ready}>Send to Vinny</Button>
           </div>
           {hits && (hits.length ? hits.map((h) => (
-            <div key={h.id} className="fx-small">{h.error ? `✗ ${h.name}: ${h.error}` : `▸ ${h.name}: ${h.tool} ${String(h.arguments?.command ?? JSON.stringify(h.arguments))}`}</div>
+            <div key={h.id} data-fx-focus-key={h.id} className="fx-small">{h.error ? `✗ ${h.name}: ${h.error}` : `▸ ${h.name}: ${h.tool} ${String(h.arguments?.command ?? JSON.stringify(h.arguments))}`}</div>
           )) : <span className="fx-small fx-muted">No trigger in that message.</span>)}
         </div>
       </Section>
@@ -155,7 +155,7 @@ export function VinnyCommandsDialog() {
         <div className="fx-stack">
           {book.runs.length === 0 && <span className="fx-small fx-muted">Nothing run yet.</span>}
           {[...book.runs].reverse().map((r) => (
-            <div key={r.id} className="axp-agent-manager__flatrow">
+            <div key={r.id} data-fx-focus-key={r.id} className="axp-agent-manager__flatrow">
               <div className="axp-agent-manager__row">
                 <Chip tone={r.state === 'done' ? 'success' : r.state === 'failed' ? 'danger' : 'warning'}>{r.state}</Chip>
                 <strong>{r.name}</strong>

@@ -212,11 +212,11 @@ function AlertsView() {
       <div className={`${P}__filters`}>
         <div className={`${P}__chips`} role="group" aria-label="Severity">
           {(['all', ...[...ALERT_SEVERITIES].reverse()] as const).map((x) => (
-            <button key={x} type="button" className={`fx-chip ${P}__chip ${sev === x ? 'is-on' : ''}`} aria-pressed={sev === x} onClick={() => setSev(x)}>{x}</button>
+            <button key={x} data-fx-focus-key={x} type="button" className={`fx-chip ${P}__chip ${sev === x ? 'is-on' : ''}`} aria-pressed={sev === x} onClick={() => setSev(x)}>{x}</button>
           ))}
         </div>
         <div className={`${P}__chips`} role="group" aria-label="Show">
-          {(['open', 'all'] as const).map((x) => <button key={x} type="button" className={`fx-chip ${P}__chip ${show === x ? 'is-on' : ''}`} aria-pressed={show === x} onClick={() => setShow(x)}>{x === 'open' ? 'Open' : 'Include resolved'}</button>)}
+          {(['open', 'all'] as const).map((x) => <button key={x} data-fx-focus-key={x} type="button" className={`fx-chip ${P}__chip ${show === x ? 'is-on' : ''}`} aria-pressed={show === x} onClick={() => setShow(x)}>{x === 'open' ? 'Open' : 'Include resolved'}</button>)}
         </div>
         {sources.length > 1 && (
           <select className="fx-input" value={source} onChange={(e) => setSource(e.target.value)} aria-label="Source">
@@ -229,7 +229,7 @@ function AlertsView() {
       {rows.length > 0 && (
         <div className={`${P}__list`} role="list">
           {rows.map((a) => (
-            <div key={a.id} role="listitem" className={`${P}__item ${a.ack || a.resolved ? '' : 'is-unread'} ${a.resolved ? 'is-resolved' : ''}`}>
+            <div key={a.id} data-fx-focus-key={a.id} role="listitem" className={`${P}__item ${a.ack || a.resolved ? '' : 'is-unread'} ${a.resolved ? 'is-resolved' : ''}`}>
               <button type="button" data-fx-row="" className={`${P}__row`} aria-expanded={open === a.id} onClick={() => { setOpen(open === a.id ? null : a.id); if (!a.ack) void s.act(() => s.transport.ack([a.id])); }}>
                 <span className={`${P}__sev is-${a.severity}`}><Icon name={ICON[a.severity]} size={16} /></span>
                 <span className={`${P}__main`}>
@@ -301,7 +301,7 @@ function RulesPanel() {
           <tbody>
             <tr><th>Everything</th>{channels.map((c) => <td key={c}><MinSelect value={rules.channels[c]!.min} onChange={(m) => setMin(c, m)} label={`${c} default`} /></td>)}</tr>
             {sources.map((src) => (
-              <tr key={src}><th className={`${P}__muted-th`}>{src}</th>{channels.map((c) => {
+              <tr key={src} data-fx-focus-key={src}><th className={`${P}__muted-th`}>{src}</th>{channels.map((c) => {
                 const v = rules.channels[c]!.sources?.[src];
                 return <td key={c}><MinSelect value={v ?? rules.channels[c]!.min} inherited={v === undefined} onChange={(m) => setMin(c, m, src)} label={`${c} for ${src}`} /></td>;
               })}</tr>
@@ -328,7 +328,7 @@ function SourcesPanel() {
   return (
     <div className="fx-stack">
       {cfg.sources.map((x) => (
-        <label key={x.id} className={`${P}__choice`}>
+        <label key={x.id} data-fx-focus-key={x.id} className={`${P}__choice`}>
           <input type="checkbox" checked={x.enabled} onChange={(e) => void save({ sources: { [x.id]: e.target.checked } })} />
           <span><strong>{x.label}</strong>{x.description && <><br /><span className="fx-muted fx-small">{x.description}</span></>}</span>
         </label>

@@ -170,7 +170,7 @@ function Wizard({ st, onDone }: { st: Status; onDone: () => void }) {
     <div className="fx-stack">
       <span className={`${P}__stepnow fx-small fx-muted`}>Step {step + 1} of {STEPS.length} · <strong>{STEPS[step]}</strong></span>
       <ol className={`${P}__steps`}>
-        {STEPS.map((s, i) => <li key={s} className={`${P}__step ${i === step ? 'is-active' : ''} ${i < step ? 'is-done' : ''}`}><button type="button" className={`fx-chip ${i === step ? 'is-on' : ''}`} disabled={!!busy || (i > 0 && !info)} onClick={() => (i === 4 ? void review() : setStep(i))}>{i + 1}. {s}</button></li>)}
+        {STEPS.map((s, i) => <li key={s} data-fx-focus-key={s} className={`${P}__step ${i === step ? 'is-active' : ''} ${i < step ? 'is-done' : ''}`}><button type="button" className={`fx-chip ${i === step ? 'is-on' : ''}`} disabled={!!busy || (i > 0 && !info)} onClick={() => (i === 4 ? void review() : setStep(i))}>{i + 1}. {s}</button></li>)}
       </ol>
 
       {step === 0 && <SourceStep st={st} plan={plan} setSource={setSource} info={info} />}
@@ -268,7 +268,7 @@ function Picker({ location, label, value, onChange, placeholder, hint }: { locat
           {items && !shown.length && <p className="fx-muted" style={{ margin: 0 }}>Nothing found.</p>}
           <div className={`${P}__items`} role="listbox" aria-label={label}>
             {shown.slice(0, 80).map((i) => (
-              <button key={i.id} type="button" role="option" aria-selected={value === i.id} data-fx-row className={`${P}__item ${value === i.id ? 'is-selected' : ''}`} onClick={() => { onChange(i.id); setOpen(false); }}>
+              <button key={i.id} data-fx-focus-key={i.id} type="button" role="option" aria-selected={value === i.id} data-fx-row className={`${P}__item ${value === i.id ? 'is-selected' : ''}`} onClick={() => { onChange(i.id); setOpen(false); }}>
                 <span className={`${P}__item-label`}>{i.label}</span><span className={`${P}__item-note`}>{i.note}</span>
               </button>
             ))}
@@ -356,7 +356,7 @@ function Modes({ value, modes, onChange, disabled, name }: { value: HomeMode; mo
   return (
     <div className={`${P}__modes`} role="radiogroup">
       {modes.map(([m, label]) => (
-        <label key={m} className={`${P}__mode ${value === m ? 'is-selected' : ''}`}>
+        <label key={m} data-fx-focus-key={m} className={`${P}__mode ${value === m ? 'is-selected' : ''}`}>
           <input type="radio" name={name} checked={value === m} disabled={disabled && m !== 'skip'} onChange={() => onChange(m)} /> {label}
         </label>
       ))}
@@ -480,7 +480,7 @@ function KitPanel({ st, project, files: initial, onChange }: { st: Status; proje
       {files && (
         <div className={`${P}__files`}>
           {files.map((f) => (
-            <details key={f.path} className={`${P}__details`}>
+            <details key={f.path} data-fx-focus-key={f.path} className={`${P}__details`}>
               <summary><span className="fx-mono">{f.path}</span> <span className="fx-muted fx-small">{Math.max(1, Math.round(f.bytes / 1024))} KB</span></summary>
               <div className="fx-row fx-row--wrap"><Button icon="copy" onClick={() => copyText(rt, f.text)}>Copy</Button><Button icon="download" onClick={() => download(`${project.name}-${f.path}`, f.text)}>Download</Button></div>
               <pre className={`${P}__pre`}>{f.text}</pre>
@@ -512,7 +512,7 @@ function Projects({ st, reload }: { st: Status; reload: () => void }) {
   return (
     <div className={`${P}__list`} role="list">
       {st.projects.map((p) => (
-        <div key={p.name} role="listitem">
+        <div key={p.name} data-fx-focus-key={p.name} role="listitem">
           <button type="button" data-fx-row className={`${P}__row ${open === p.name ? 'is-selected' : ''}`} aria-expanded={open === p.name} onClick={() => setOpen(open === p.name ? null : p.name)}>
             <span className={`${P}__main`}>
               <span className={`${P}__name`}>{p.display}</span>

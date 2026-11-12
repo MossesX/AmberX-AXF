@@ -160,7 +160,7 @@ function Picker({ onAdd, onPreview, chapterLabel }: { onAdd: (ref: string) => vo
       {!rows.length ? <EmptyState compact icon="search">Nothing matches.</EmptyState> : (
         <ul className="axp-glossary-index__rows" aria-label="Content">
           {rows.slice(0, limit).map((r) => (
-            <li key={r.ref} className="axp-glossary-index__row axp-glossary-index__row--pick">
+            <li key={r.ref} data-fx-focus-key={r.ref} className="axp-glossary-index__row axp-glossary-index__row--pick">
               <span className="axf-dnd-grip axp-glossary-index__grip" onPointerDown={(e) => dragStart(e, r)} title="Drag into a chapter"><Icon name="grip" size={13} /></span>
               <button type="button" data-fx-row className="axp-glossary-index__row-btn" onPointerDown={(e) => dragStart(e, r)} onClick={() => onPreview(r.ref)}>
                 <span><span className="axp-glossary-index__kind" data-kind={r.kind}>{cat?.kinds[r.kind] ?? r.kind}</span> <strong>{r.label}</strong></span>
@@ -223,7 +223,7 @@ function ChapterEditor({ book, chapterId, onChange, onPreview, busy }: { book: B
           const l = refLabel(it.ref, cat, items);
           const r = parseRef(it.ref);
           return (
-            <li key={`${it.ref}-${j}`} className="axp-glossary-index__item" data-axf-drop={ZONE} data-axf-drop-id={`item:${c.id}:${j}`}>
+            <li key={`${it.ref}-${j}`} data-fx-focus-key={`${it.ref}-${j}`} className="axp-glossary-index__item" data-axf-drop={ZONE} data-axf-drop-id={`item:${c.id}:${j}`}>
               <span className="axf-dnd-grip axp-glossary-index__grip" onPointerDown={(e) => startDrag(e, { kind: ITEM_DRAG, id: `${c.id}/${j}`, label: l.label, icon: l.icon, data: { chapter: c.id, index: j } })} title="Drag to move"><Icon name="grip" size={13} /></span>
               <div className="axp-glossary-index__item-body">
                 <button type="button" data-fx-row className="axp-glossary-index__row-btn" onClick={() => onPreview(it.ref)}><span><span className="axp-glossary-index__kind" data-kind={l.kind}>{cat?.kinds[l.kind] ?? l.kind}</span> <strong>{l.label}</strong></span>{it.note && <span className="fx-muted">{it.note}</span>}</button>
@@ -267,7 +267,7 @@ function DocsPanel({ book, docs, onChange, onGenerated }: { book: BookAsset; doc
       {docs && (
         <div className="fx-stack">
           <p className="fx-muted">{docs.name}: {docs.data.depth} · {docs.data.format} · {docs.data.interactive} · {docs.data.files.length} files · generated {docs.data.generatedAt ? new Date(docs.data.generatedAt).toLocaleString() : ''}</p>
-          <ul className="axp-glossary-index__files">{docs.data.files.slice(0, 80).map((f) => <li key={f.path}><button type="button" data-fx-row className="axp-glossary-index__link fx-mono" onClick={() => void open(f.path)}>{f.path}</button> <span className="fx-muted">{f.kind}{f.title ? ` · ${f.title}` : ''}</span></li>)}</ul>
+          <ul className="axp-glossary-index__files">{docs.data.files.slice(0, 80).map((f) => <li key={f.path} data-fx-focus-key={f.path}><button type="button" data-fx-row className="axp-glossary-index__link fx-mono" onClick={() => void open(f.path)}>{f.path}</button> <span className="fx-muted">{f.kind}{f.title ? ` · ${f.title}` : ''}</span></li>)}</ul>
           {docs.data.files.length > 80 && <p className="fx-muted">…and {docs.data.files.length - 80} more.</p>}
         </div>
       )}
@@ -405,7 +405,7 @@ export function BooksPage() {
                         <h3 className="axp-glossary-index__h3">Style</h3>
                         <ChoiceGrid choices={STYLES} selected={[book.data.plan.style]} onToggle={(id) => void change({ op: 'set-plan', plan: { style: id } })} label="Book style" />
                         <h3 className="axp-glossary-index__h3">Time</h3>
-                        <ul className="axp-glossary-index__minutes">{minutes?.chapters.map((c) => <li key={c.id}><strong>{c.title}</strong> <span className="fx-muted">{fmtMinutes(c.minutes)} · {c.items.length} items</span></li>)}</ul>
+                        <ul className="axp-glossary-index__minutes">{minutes?.chapters.map((c) => <li key={c.id} data-fx-focus-key={c.id}><strong>{c.title}</strong> <span className="fx-muted">{fmtMinutes(c.minutes)} · {c.items.length} items</span></li>)}</ul>
                         <p className="fx-muted">Total {fmtMinutes(minutes?.total ?? 0)}. A chapter or item without minutes takes its share of what is left.</p>
                         {!!book.data.keywords.length && <p className="axp-glossary-index__keywords">{book.data.keywords.map((k) => <Chip key={k}>{k}</Chip>)}</p>}
                       </div>

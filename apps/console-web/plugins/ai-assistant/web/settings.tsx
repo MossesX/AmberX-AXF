@@ -208,7 +208,7 @@ export function SetupWizard() {
   return (
     <div className="axp-ai-assistant__wizard fx-stack">
       <span className="axp-ai-assistant__stepnow fx-small fx-muted">Step {step + 1} of {STEPS.length} · <strong>{STEPS[step]}</strong></span>
-      <ol className="axp-ai-assistant__steps">{STEPS.map((s, i) => <li key={s} className={i === step ? 'is-active' : i < step ? 'is-done' : ''}><button type="button" className={`fx-chip${i === step ? ' is-on' : ''}`} onClick={() => setStep(i)}>{i + 1}. {s}</button></li>)}</ol>
+      <ol className="axp-ai-assistant__steps">{STEPS.map((s, i) => <li key={s} data-fx-focus-key={s} className={i === step ? 'is-active' : i < step ? 'is-done' : ''}><button type="button" className={`fx-chip${i === step ? ' is-on' : ''}`} onClick={() => setStep(i)}>{i + 1}. {s}</button></li>)}</ol>
 
       {step === 0 && (
         <div className="fx-stack">
@@ -235,7 +235,7 @@ export function SetupWizard() {
               const on = picked.includes(k.kind);
               const have = cfg.profiles.some((p) => p.kind === k.kind && p.keyReady);
               return (
-                <button key={k.kind} type="button" data-fx-row className={`axp-ai-assistant__pick${on ? ' is-active' : ''}`} onClick={() => setPicked((x) => (on ? x.filter((y) => y !== k.kind) : [...x, k.kind]))} aria-pressed={on}>
+                <button key={k.kind} data-fx-focus-key={k.kind} type="button" data-fx-row className={`axp-ai-assistant__pick${on ? ' is-active' : ''}`} onClick={() => setPicked((x) => (on ? x.filter((y) => y !== k.kind) : [...x, k.kind]))} aria-pressed={on}>
                   <span className="fx-card axp-ai-assistant__pick-card">
                     <strong>{k.label}</strong>
                     <span className="fx-small fx-muted">{k.local ? 'local · no key' : k.protocol === 'claude-cli' ? (cat.cliInstalled ? 'CLI found' : 'needs the claude CLI') : k.keyEnv}</span>
@@ -355,7 +355,7 @@ export function ProvidersPanel() {
       {cfg.profiles.map((p) => edit?.profile?.id === p.id ? (
         <ProfileForm key={p.id} kind={edit.kind} profile={p} onSaved={() => setEdit(null)} onCancel={() => setEdit(null)} />
       ) : (
-        <div key={p.id} className="axp-ai-assistant__flatrow">
+        <div key={p.id} data-fx-focus-key={p.id} className="axp-ai-assistant__flatrow">
           <div className="axp-ai-assistant__strip">
             <strong className="fx-grow">{p.label}</strong>
             {cfg.defaultProfile === p.id && <Chip tone="accent">default</Chip>}
@@ -433,8 +433,8 @@ export function BehaviorPanel() {
         <Field label="Messages of history in a chat turn"><input className="fx-input" type="number" min={2} max={200} value={v.chatMode.historyMessages} onChange={(e) => setChat({ historyMessages: Number(e.target.value) })} /></Field>
         <Field label="Keep agent and memory for (seconds)" hint="0 = read them every turn"><input className="fx-input" type="number" min={0} value={v.chatMode.cacheSec} onChange={(e) => setChat({ cacheSec: Number(e.target.value) })} /></Field>
       </div>
-      <Field label="Action words" hint="Tools load when a sentence starts with one, comma separated"><textarea className="fx-input" rows={3} key={cfg.chatMode.actionWords.join()} defaultValue={v.chatMode.actionWords.join(', ')} onBlur={(e) => setChat({ actionWords: words(e.target.value) })} /></Field>
-      <Field label="Live-data words" hint="Tools load when one appears anywhere in a message, comma separated"><textarea className="fx-input" rows={3} key={cfg.chatMode.liveWords.join()} defaultValue={v.chatMode.liveWords.join(', ')} onBlur={(e) => setChat({ liveWords: words(e.target.value) })} /></Field>
+      <Field label="Action words" hint="Tools load when a sentence starts with one, comma separated"><textarea className="fx-input" rows={3} key={cfg.chatMode.actionWords.join()} data-fx-focus-key={cfg.chatMode.actionWords.join()} defaultValue={v.chatMode.actionWords.join(', ')} onBlur={(e) => setChat({ actionWords: words(e.target.value) })} /></Field>
+      <Field label="Live-data words" hint="Tools load when one appears anywhere in a message, comma separated"><textarea className="fx-input" rows={3} key={cfg.chatMode.liveWords.join()} data-fx-focus-key={cfg.chatMode.liveWords.join()} defaultValue={v.chatMode.liveWords.join(', ')} onBlur={(e) => setChat({ liveWords: words(e.target.value) })} /></Field>
       <Toggle label="Let the model ask for tools" hint="A plain-looking message that really needs tools is run again with them, instead of a guess" checked={v.chatMode.escalate} onChange={(c) => setChat({ escalate: c })} />
       <span className="fx-small fx-muted">Behaviour</span>
       <Toggle label="Extended thinking by default" hint="Anthropic models" checked={v.params.thinking} onChange={(c) => set({ params: { ...v.params, thinking: c } })} />
@@ -468,7 +468,7 @@ export function PromptsPanel() {
     <div className="fx-stack">
       <p className="fx-small fx-muted">Prompts appear when you type their shortcut (e.g. /review) in the chat, and insert their text.</p>
       {items.map((p, i) => (
-        <div key={p.id || i} className="axp-ai-assistant__card fx-stack">
+        <div key={p.id || i} data-fx-focus-key={p.id || i} className="axp-ai-assistant__card fx-stack">
           <div className="axp-ai-assistant__cols">
             <Field label="Title"><input className="fx-input" value={p.title} onChange={(e) => upd(i, { title: e.target.value })} /></Field>
             <Field label="Shortcut"><input className="fx-input fx-mono" value={p.shortcut} onChange={(e) => upd(i, { shortcut: e.target.value.startsWith('/') ? e.target.value.replace(/\s/g, '') : `/${e.target.value.replace(/\s/g, '')}` })} /></Field>
@@ -500,11 +500,11 @@ export function UsagePanel() {
         </div>
       )}
       <div className="fx-tablewrap"><table className="fx-table"><thead><tr><th>Provider</th><th>Model</th><th>Calls</th><th>In</th><th>Out</th></tr></thead>
-        <tbody>{u.byProfileModel.map((r) => <tr key={`${r.profile}|${r.model}`}><td>{r.profile}</td><td className="fx-mono">{r.model}</td><td>{fmtNum(r.calls)}</td><td>{fmtNum(r.input)}</td><td>{fmtNum(r.output)}</td></tr>)}</tbody></table></div>
+        <tbody>{u.byProfileModel.map((r) => <tr key={`${r.profile}|${r.model}`} data-fx-focus-key={`${r.profile}|${r.model}`}><td>{r.profile}</td><td className="fx-mono">{r.model}</td><td>{fmtNum(r.calls)}</td><td>{fmtNum(r.input)}</td><td>{fmtNum(r.output)}</td></tr>)}</tbody></table></div>
       {u.byProfileModel.length === 0 && <p className="fx-muted fx-small">No calls yet.</p>}
       {u.users && u.users.length > 0 && (
         <div className="fx-tablewrap"><table className="fx-table"><thead><tr><th>Hub user</th><th>Today</th><th>Last 30 days</th></tr></thead>
-          <tbody>{u.users.map((r) => <tr key={r.user}><td>{r.user}</td><td>{fmtNum(r.today)}</td><td>{fmtNum(r.month)}</td></tr>)}</tbody></table></div>
+          <tbody>{u.users.map((r) => <tr key={r.user} data-fx-focus-key={r.user}><td>{r.user}</td><td>{fmtNum(r.today)}</td><td>{fmtNum(r.month)}</td></tr>)}</tbody></table></div>
       )}
     </div>
   );
@@ -542,7 +542,7 @@ export function SessionsPanel() {
       {d.items.length === 0 ? <p className="fx-muted fx-small">No live sessions yet.</p> : (
         <div className="fx-tablewrap"><table className="fx-table"><thead><tr><th>Chat</th><th>State</th><th>Watching</th><th>Last activity</th><th /></tr></thead>
           <tbody>{d.items.map((s) => (
-            <tr key={s.id}>
+            <tr key={s.id} data-fx-focus-key={s.id}>
               <td>{s.title || s.id}</td>
               <td><Chip tone={s.state === 'running' ? 'accent' : s.state === 'waiting' ? 'warning' : undefined}>{s.state}</Chip></td>
               <td>{s.viewers}</td>

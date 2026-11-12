@@ -74,7 +74,7 @@ function Groups({ s, act }: { s: Shared; act: Act }) {
         <p className={`${P}__muted`}>Any types in a group, on or off together, with their own command buttons on each notification. Approvals and veto stay on whatever a group says.</p>
         {rows.map(([id, g]) => (
           edit === id ? <GroupEditor key={id} s={s} id={id} start={g} act={act} done={() => setEdit(null)} /> : (
-            <div key={id} className={`${P}__row`} data-group={id}>
+            <div key={id} data-fx-focus-key={id} className={`${P}__row`} data-group={id}>
               <div className={`${P}__top`}>
                 <div className={`${P}__name`}><Switch label={g.name} checked={g.on} hint={`${g.types.length} type${g.types.length === 1 ? '' : 's'}${g.commands.length ? ` · commands: ${g.commands.map((c) => c.label).join(', ')}` : ''}`} onChange={(v) => void act('group', { id, on: v })} /></div>
                 <Button size="sm" tone="ghost" icon="edit" onClick={() => setEdit(id)}>Edit</Button>

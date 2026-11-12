@@ -141,9 +141,9 @@ function KitStatus() {
             <Button tone="ghost" icon={open ? 'chevron-up' : 'chevron-down'} onClick={() => setOpen(!open)}>{ch.count} repo file{ch.count === 1 ? '' : 's'} changed since the kit</Button>
             {open && (
               <ul className="axp-claude-handoff__list">
-                {ch.changed.map((p) => <li key={p}><Chip>changed</Chip> <code>{p}</code></li>)}
-                {ch.added.map((p) => <li key={p}><Chip tone="accent">new</Chip> <code>{p}</code></li>)}
-                {ch.removed.map((p) => <li key={p}><Chip tone="danger">gone</Chip> <code>{p}</code></li>)}
+                {ch.changed.map((p) => <li key={p} data-fx-focus-key={p}><Chip>changed</Chip> <code>{p}</code></li>)}
+                {ch.added.map((p) => <li key={p} data-fx-focus-key={p}><Chip tone="accent">new</Chip> <code>{p}</code></li>)}
+                {ch.removed.map((p) => <li key={p} data-fx-focus-key={p}><Chip tone="danger">gone</Chip> <code>{p}</code></li>)}
               </ul>
             )}
           </div>
@@ -211,7 +211,7 @@ function Machines() {
         {ms.length ? (
           <ul className="axp-claude-handoff__list">
             {ms.map((m) => (
-              <li key={m.host} className="axp-claude-handoff__machine">
+              <li key={m.host} data-fx-focus-key={m.host} className="axp-claude-handoff__machine">
                 <strong>{m.host}</strong>
                 <span className="axp-claude-handoff__meta">{m.files} files · sent {ago(m.collectedAt)}</span>
                 {!m.inKit && <Chip tone="warning">not in the kit yet</Chip>}

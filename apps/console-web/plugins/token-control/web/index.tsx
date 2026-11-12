@@ -172,7 +172,7 @@ function DocsTab({ reg, tryIt }: { reg: Registry; tryIt: (c: Partial<ControlComm
       </Container>
       <Container title="Targets" icon="list">
         {Object.entries(reg.targets).map(([id, t]) => (
-          <section key={id} className="axf-tc-target">
+          <section key={id} data-fx-focus-key={id} className="axf-tc-target">
             <div className="fx-row fx-row--wrap"><h3 className="fx-mono axf-tc-h">{id}</h3><span className="fx-chip">{t.domain}</span>{t.ops.map((o) => <span key={o} className="fx-chip fx-chip--accent">{o}</span>)}<Button size="sm" tone="ghost" icon="play" onClick={() => tryIt(example(id, t))}>Try it</Button></div>
             <p className="fx-muted">{t.doc}</p>
             {Array.isArray(t.paths) && <p className="axf-tc-small"><b>Tokens:</b> <span className="fx-mono">{(t.paths as { id: string }[]).map((p) => p.id).join(', ')}</span></p>}
@@ -183,10 +183,10 @@ function DocsTab({ reg, tryIt }: { reg: Registry; tryIt: (c: Partial<ControlComm
         ))}
       </Container>
       <Container title="REST routes" icon="cloud">
-        <table className="fx-table"><tbody>{reg.routes.map((r) => <tr key={`${r.method} ${r.path}`}><td className="fx-mono">{r.method}</td><td className="fx-mono">{r.path}</td><td>{r.op}</td><td className="fx-muted">{r.body ?? ''}{r.note ? ` · ${r.note}` : ''}</td></tr>)}</tbody></table>
+        <table className="fx-table"><tbody>{reg.routes.map((r) => <tr key={`${r.method} ${r.path}`} data-fx-focus-key={`${r.method} ${r.path}`}><td className="fx-mono">{r.method}</td><td className="fx-mono">{r.path}</td><td>{r.op}</td><td className="fx-muted">{r.body ?? ''}{r.note ? ` · ${r.note}` : ''}</td></tr>)}</tbody></table>
       </Container>
       <Container title="MCP tools" icon="code">
-        <table className="fx-table"><tbody>{reg.tools.map((x) => <tr key={x.name}><td className="fx-mono">{x.name}</td><td><span className={`fx-chip${x.effect === 'destructive' ? ' fx-chip--danger' : x.effect === 'read' ? '' : ' fx-chip--warning'}`}>{x.effect}</span></td><td>{x.description}</td></tr>)}</tbody></table>
+        <table className="fx-table"><tbody>{reg.tools.map((x) => <tr key={x.name} data-fx-focus-key={x.name}><td className="fx-mono">{x.name}</td><td><span className={`fx-chip${x.effect === 'destructive' ? ' fx-chip--danger' : x.effect === 'read' ? '' : ' fx-chip--warning'}`}>{x.effect}</span></td><td>{x.description}</td></tr>)}</tbody></table>
         <p className="fx-muted">Also on the console MCP: amberx_find, amberx_add, amberx_update, amberx_done, amberx_move, amberx_remove, plan_park.</p>
       </Container>
       <Container title="CLI" icon="terminal">

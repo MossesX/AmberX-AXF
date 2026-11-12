@@ -159,7 +159,7 @@ export function SettingsPanel() {
       {m.error && <Note tone="warning">{m.error}</Note>}
       <div className="axp-demonstration-designer-settings__grid">
         {order.map((k, i) => (
-          <Container key={`${view}-${k}`} title={view === 'wizard' ? `${i + 1}. ${TITLE[k]}` : TITLE[k]} icon={ICON[k]} collapsible defaultOpen={open.has(k)} className="axp-demonstration-designer-settings__section">
+          <Container key={`${view}-${k}`} focusKey={`${view}-${k}`} title={view === 'wizard' ? `${i + 1}. ${TITLE[k]}` : TITLE[k]} icon={ICON[k]} collapsible defaultOpen={open.has(k)} className="axp-demonstration-designer-settings__section">
             {view !== 'two-column' && <p className="fx-muted axp-demonstration-designer-settings__about">{ABOUT[k]}</p>}
             {body[k]}
           </Container>

@@ -161,7 +161,7 @@ function HarvestDialog({ picked, onClose }: { picked: StepV[]; onClose: () => vo
       <p className="fx-small fx-muted">The grey name is the one picked to match what the steps do; tap the box to type your own, leave it to keep the grey one.{k > 1 ? ' Drag rows (or use the arrows) to set their order.' : ''}</p>
       <div className="axp-builds__proposals">
         {rows.map((r, i) => (
-          <div key={r.uids.join(',')} className={`axp-builds__proposal${drag === i ? ' is-dragging' : ''}`} draggable={k > 1}
+          <div key={r.uids.join(',')} data-fx-focus-key={r.uids.join(',')} className={`axp-builds__proposal${drag === i ? ' is-dragging' : ''}`} draggable={k > 1}
             onDragStart={() => setDrag(i)} onDragOver={(e) => e.preventDefault()} onDrop={() => { if (drag != null) move(drag, i); setDrag(null); }} onDragEnd={() => setDrag(null)}>
             <div className="axp-builds__proposal-head">
               {k > 1 && <Icon name="move" size={14} />}
@@ -170,7 +170,7 @@ function HarvestDialog({ picked, onClose }: { picked: StepV[]; onClose: () => vo
               {k > 1 && <><IconButton icon="chevron-up" label="Earlier" disabled={i === 0} onClick={() => move(i, i - 1)} /><IconButton icon="chevron-down" label="Later" disabled={i === rows.length - 1} onClick={() => move(i, i + 1)} /></>}
               <IconButton icon={r.open ? 'chevron-up' : 'chevron-down'} label={r.open ? 'Hide steps' : 'Show steps'} onClick={() => setRows(rows.map((x, j) => (j === i ? { ...x, open: !x.open } : x)))} />
             </div>
-            {r.open && <ol className="axp-builds__proposal-steps">{r.steps.map((s) => <li key={s.uid}><span>{s.title || s.text}</span>{s.estimate && <span className="fx-small fx-muted"> · ~{s.estimate}</span>}</li>)}</ol>}
+            {r.open && <ol className="axp-builds__proposal-steps">{r.steps.map((s) => <li key={s.uid} data-fx-focus-key={s.uid}><span>{s.title || s.text}</span>{s.estimate && <span className="fx-small fx-muted"> · ~{s.estimate}</span>}</li>)}</ol>}
           </div>
         ))}
       </div>
@@ -334,7 +334,7 @@ function BuildDetail({ b }: { b: BuildV }) {
       <p className="fx-small fx-muted">{b.kind === 'epic' ? `Plan epic ${b.planRef} · ` : ''}{b.branch ? `branch ${b.branch} · ` : ''}{b.pr ? `PR ${b.pr} · ` : ''}rev {b.rev}{b.rearranged ? ' · rearranged (Restore default in the Steps view)' : ''}</p>
       <ol className="axp-builds__steps">
         {b.steps.map((s) => (
-          <li key={s.uid} className={s.done ? 'is-done' : s.next ? 'is-next' : ''}>
+          <li key={s.uid} data-fx-focus-key={s.uid} className={s.done ? 'is-done' : s.next ? 'is-next' : ''}>
             <StepTick s={s} toast={rt.toast} />
             <Bar p={{ total: 1, done: s.done ? 1 : 0, pct: s.done ? 100 : 0, active: s.next && b.status === 'running' }} label={`${s.id}: ${s.done ? 'done' : s.next ? 'next' : 'to do'}`} />
             <span className="fx-mono fx-small">{s.id}</span> <Chip tone={s.model === 'Fable' ? 'accent' : undefined}>{s.model}</Chip> <span>{stepName(s)}</span>{s.estimate && <span className="fx-small fx-muted"> · ~{s.estimate}</span>}
@@ -463,7 +463,7 @@ export function StorePanel() {
   return (
     <div className="fx-stack">
       <p className="fx-small" style={{ margin: 0 }}>One builds store for every profile: <code className="fx-mono">_claude/builds/store.json</code>, every write versioned in <code className="fx-mono">_claude/builds/journal/</code>. The old Pending, queue and orchestrator files are read-only exports of it.</p>
-      {s.state && <ul className="fx-small axp-builds__notes">{s.state.profiles.map((p) => <li key={p.id}><strong>{p.name}</strong> <span className="fx-mono">{p.id}</span>: {p.builds} builds, {p.progress.pct}% ({p.progress.done}/{p.progress.total} steps)</li>)}</ul>}
+      {s.state && <ul className="fx-small axp-builds__notes">{s.state.profiles.map((p) => <li key={p.id} data-fx-focus-key={p.id}><strong>{p.name}</strong> <span className="fx-mono">{p.id}</span>: {p.builds} builds, {p.progress.pct}% ({p.progress.done}/{p.progress.total} steps)</li>)}</ul>}
     </div>
   );
 }

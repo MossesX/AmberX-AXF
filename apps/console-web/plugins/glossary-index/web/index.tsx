@@ -62,7 +62,7 @@ function Detail({ entry, cat, onOpen }: { entry: Entry; cat: Catalog; onOpen: (i
   const generate = () => { setBusy(true); setNote(''); generateDemo(entry.id, true).then((a) => { openInDesigner('demonstration', a.id); rt.navigate('demo-designer'); }, (e: Error) => setNote(e.message)).finally(() => setBusy(false)); };
   const link = (id: string) => {
     const e = byId.get(id);
-    return e ? <li key={id}><button type="button" data-fx-row className="axp-glossary-index__link" onClick={() => onOpen(id)}>{e.term}</button> <KindChip kind={e.kind} kinds={cat.kinds} /></li> : null;
+    return e ? <li key={id} data-fx-focus-key={id}><button type="button" data-fx-row className="axp-glossary-index__link" onClick={() => onOpen(id)}>{e.term}</button> <KindChip kind={e.kind} kinds={cat.kinds} /></li> : null;
   };
   const children = (entry.children ?? []).filter((id) => byId.has(id));
   return (
@@ -83,7 +83,7 @@ function Detail({ entry, cat, onOpen }: { entry: Entry; cat: Catalog; onOpen: (i
         <dt>Id</dt><dd className="fx-mono">{entry.id}</dd>
       </dl>
       {apiGroups(entry.api).map((g) => (
-        <section key={g.kind} className="axp-glossary-index__api">
+        <section key={g.kind} data-fx-focus-key={g.kind} className="axp-glossary-index__api">
           <h3>{g.label}</h3>
           <ul>{g.names.map((n) => <li key={n} className="fx-mono">{n}</li>)}</ul>
         </section>
@@ -119,14 +119,14 @@ function GlossaryList({ entries, cat, selected, onSelect, limit }: { entries: En
   return (
     <div className="axp-glossary-index__glossary">
       <nav className="axp-glossary-index__letters" aria-label="Jump to a letter" data-axf-not-nav="letter jump strip inside the glossary list (a pager)">
-        {letters.map((g) => <button key={g.letter} type="button" data-fx-row className="axp-glossary-index__letter" onClick={() => jump(g.letter)}>{g.letter}</button>)}
+        {letters.map((g) => <button key={g.letter} data-fx-focus-key={g.letter} type="button" data-fx-row className="axp-glossary-index__letter" onClick={() => jump(g.letter)}>{g.letter}</button>)}
       </nav>
       {letters.map((g) => (
-        <section key={g.letter} id={`axp-glossary-index-letter-${g.letter}`} className="axp-glossary-index__letter-group" aria-label={`Letter ${g.letter}`}>
+        <section key={g.letter} data-fx-focus-key={g.letter} id={`axp-glossary-index-letter-${g.letter}`} className="axp-glossary-index__letter-group" aria-label={`Letter ${g.letter}`}>
           <h2 className="axp-glossary-index__letter-head">{g.letter}</h2>
           <dl className="axp-glossary-index__terms">
             {g.entries.map((e) => (
-              <div key={e.id} className={`axp-glossary-index__term${selected === e.id ? ' is-selected' : ''}`}>
+              <div key={e.id} data-fx-focus-key={e.id} className={`axp-glossary-index__term${selected === e.id ? ' is-selected' : ''}`}>
                 <dt><button type="button" data-fx-row className="axp-glossary-index__term-btn" onClick={() => onSelect(e.id)}>{e.term}</button> <KindChip kind={e.kind} kinds={cat.kinds} /></dt>
                 <dd>{e.summary}</dd>
               </div>
@@ -149,7 +149,7 @@ function IndexBranch({ node, depth, selected, onSelect, open, toggle }: { node: 
         <ul className="axp-glossary-index__ix-children">
           {node.children.map((c) => <IndexBranch key={c.key} node={c} depth={depth + 1} selected={selected} onSelect={onSelect} open={open} toggle={toggle} />)}
           {node.entries.map((e) => (
-            <li key={e.id} className={`axp-glossary-index__ix-entry${selected === e.id ? ' is-selected' : ''}`}>
+            <li key={e.id} data-fx-focus-key={e.id} className={`axp-glossary-index__ix-entry${selected === e.id ? ' is-selected' : ''}`}>
               <button type="button" data-fx-row className="axp-glossary-index__term-btn" onClick={() => onSelect(e.id)}>{e.term}</button>
             </li>
           ))}

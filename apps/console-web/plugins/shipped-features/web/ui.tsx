@@ -60,7 +60,7 @@ function Filters({ view, set }: { view: L.View; set: (p: Partial<L.View>) => voi
       <Checkbox label="Being edited now" checked={view.beingEdited} onChange={(v) => set({ beingEdited: v })} title="Only features with an edit still in progress" />
       <span className="axp-shipped__statuses" role="group" aria-label="Status">
         {L.STATUSES.map((s) => (
-          <button key={s} type="button" className={`fx-chip ${view.statuses.includes(s) ? 'fx-chip--accent' : ''}`} aria-pressed={view.statuses.includes(s)} onClick={() => toggleStatus(s)} title={`Show only ${L.STATUS_LABEL[s]} (pick several)`}>{L.STATUS_LABEL[s]}</button>
+          <button key={s} data-fx-focus-key={s} type="button" className={`fx-chip ${view.statuses.includes(s) ? 'fx-chip--accent' : ''}`} aria-pressed={view.statuses.includes(s)} onClick={() => toggleStatus(s)} title={`Show only ${L.STATUS_LABEL[s]} (pick several)`}>{L.STATUS_LABEL[s]}</button>
         ))}
       </span>
       <SelectField label="Edit status" value={view.editStatus} onChange={(v) => set({ editStatus: v as L.Status | '' })} options={[{ value: '', label: 'Any edit status' }, ...L.STATUSES.map((s) => ({ value: s, label: L.STATUS_LABEL[s] }))]} />
@@ -106,10 +106,10 @@ export function ManifestPanel({ m }: { m: Manifest }) {
       </div>
       {m.brief ? <Section title="Full brief" count={`${m.brief.length.toLocaleString()} chars`}><pre className="axp-shipped__pre">{m.brief}</pre></Section> : null}
       <Section title="Steps" count={`${done.length}/${m.steps.length} · est. ${mins(est)} · actual ${mins(act)}`}>
-        <ol className="axp-shipped__steps">{m.steps.map((s) => <li key={s.id}><b>{s.id}</b> <ModelBadge model={s.model} /> <span className="fx-muted">est. {s.estimate || '—'} · {s.done ? `took ${mins(s.actualMin)}${s.doneAt ? ` · done ${fmtTime(s.doneAt)}` : ''}` : 'not done'}</span><p>{s.text}</p></li>)}</ol>
+        <ol className="axp-shipped__steps">{m.steps.map((s) => <li key={s.id} data-fx-focus-key={s.id}><b>{s.id}</b> <ModelBadge model={s.model} /> <span className="fx-muted">est. {s.estimate || '—'} · {s.done ? `took ${mins(s.actualMin)}${s.doneAt ? ` · done ${fmtTime(s.doneAt)}` : ''}` : 'not done'}</span><p>{s.text}</p></li>)}</ol>
       </Section>
       <Section title="Models and accounts" count={m.accounts.join(', ') || '—'}>
-        <ul className="axp-shipped__list">{m.runs.length ? m.runs.map((r) => <li key={r.session}><code>{r.session}</code> · {r.account || '?'} · {r.model || '?'} · {fmtTime(r.startedAt)}{r.endedAt ? ` → ${fmtTime(r.endedAt)}` : ''}{r.exit !== null ? ` · exit ${r.exit}` : ''}{r.costUsd ? ` · ${usd(r.costUsd)}` : ''}</li>) : <li className="fx-muted">No session record found.</li>}</ul>
+        <ul className="axp-shipped__list">{m.runs.length ? m.runs.map((r) => <li key={r.session} data-fx-focus-key={r.session}><code>{r.session}</code> · {r.account || '?'} · {r.model || '?'} · {fmtTime(r.startedAt)}{r.endedAt ? ` → ${fmtTime(r.endedAt)}` : ''}{r.exit !== null ? ` · exit ${r.exit}` : ''}{r.costUsd ? ` · ${usd(r.costUsd)}` : ''}</li>) : <li className="fx-muted">No session record found.</li>}</ul>
       </Section>
       <Section title="Branch, PR and commits" count={m.commits.length}>
         <dl className="axp-shipped__facts">
@@ -120,13 +120,13 @@ export function ManifestPanel({ m }: { m: Manifest }) {
         </dl>
       </Section>
       <Section title="Files and areas" count={`${m.files.length} files · ${m.areas.length} areas`}>
-        <ul className="axp-shipped__list">{m.areas.map((a) => <li key={`${a.kind}:${a.id}`}><b>{a.kind}</b> {a.id} <span className="fx-muted">({a.files.length})</span><p className="axp-shipped__files fx-muted">{a.files.join(', ')}</p></li>)}</ul>
+        <ul className="axp-shipped__list">{m.areas.map((a) => <li key={`${a.kind}:${a.id}`} data-fx-focus-key={`${a.kind}:${a.id}`}><b>{a.kind}</b> {a.id} <span className="fx-muted">({a.files.length})</span><p className="axp-shipped__files fx-muted">{a.files.join(', ')}</p></li>)}</ul>
       </Section>
       <Section title="Tests" count={m.tests.length || 'none recorded'}>
         <ul className="axp-shipped__list">{m.tests.map((x, i) => <li key={i}><Chip tone={RESULT_TONE[x.result]}>{x.result}</Chip> {x.name}{x.command ? <> · <code>{x.command}</code></> : null}</li>)}</ul>
       </Section>
       <Section title="UI Review" count={m.uiReview.length || 'none'}>
-        <ul className="axp-shipped__list">{m.uiReview.map((r) => <li key={r.id || r.name}>{r.name || r.id} · <span className="fx-muted">{r.status}{r.group ? ` · ${r.group}` : ''}</span></li>)}</ul>
+        <ul className="axp-shipped__list">{m.uiReview.map((r) => <li key={r.id || r.name} data-fx-focus-key={r.id || r.name}>{r.name || r.id} · <span className="fx-muted">{r.status}{r.group ? ` · ${r.group}` : ''}</span></li>)}</ul>
       </Section>
       <Section title="Cost and tokens" count={m.cost.usd ? usd(m.cost.usd) : '—'}>
         <p>{usd(m.cost.usd)}{m.cost.estimated ? ' (estimated)' : ''} · input {t.input.toLocaleString()} · output {t.output.toLocaleString()} · cache read {t.cacheRead.toLocaleString()} · cache write {t.cacheWrite.toLocaleString()}</p>
@@ -156,7 +156,7 @@ function FeatureDetail({ f, ledger }: { f: L.Feature; ledger: Ledger }) {
       <section aria-label="What Brett said">
         <h4><Icon name="mic" /> What Brett said</h4>
         {said.length ? said.map((p) => (
-          <blockquote key={p.id} className="axp-shipped__said" title={p.verbatim ? 'His exact words' : 'May be paraphrased'}>
+          <blockquote key={p.id} data-fx-focus-key={p.id} className="axp-shipped__said" title={p.verbatim ? 'His exact words' : 'May be paraphrased'}>
             {p.highlight ? <>{p.said.slice(0, p.highlight[0])}<mark>{p.said.slice(p.highlight[0], p.highlight[1])}</mark>{p.said.slice(p.highlight[1])}</> : p.said}
             <footer className="fx-muted">{p.kind === 'addendum' ? `Addendum ${p.index}` : 'Started it'}{p.at ? ` · ${fmtTime(p.at)}` : ''}{p.source ? ` · ${p.source}` : ''}{p.verbatim ? '' : ' · may be paraphrased'}</footer>
           </blockquote>
@@ -177,7 +177,7 @@ function FeatureDetail({ f, ledger }: { f: L.Feature; ledger: Ledger }) {
             {d.edits.map((e) => {
               const isOpen = open.includes(e.id); const p = editPrompt(e.prompt);
               return (
-                <li key={e.id} className={`axp-shipped__edit ${isOpen ? 'is-open' : ''}`}>
+                <li key={e.id} data-fx-focus-key={e.id} className={`axp-shipped__edit ${isOpen ? 'is-open' : ''}`}>
                   <button type="button" data-fx-row className="axp-shipped__edithead" aria-expanded={isOpen} onClick={() => setOpen((o) => (isOpen ? o.filter((x) => x !== e.id) : [...o, e.id]))}>
                     <Icon name={isOpen ? 'chevron-down' : 'chevron-right'} /> <span>{fmtDay(e.at)}</span> <StatusChip rec={e} /> <span className="axp-shipped__editsum">{e.summary}</span>
                   </button>
@@ -198,7 +198,7 @@ function FeatureDetail({ f, ledger }: { f: L.Feature; ledger: Ledger }) {
       {original && d && d.history.length ? (
         <details className="axp-shipped__history">
           <summary>Earlier versions ({d.history.length}) · original: {original.name} ({L.STATUS_LABEL[original.status]}, {fmtDay(original.plannedAt || original.createdAt)})</summary>
-          <ul>{d.history.map((h) => <li key={h.rev}>v{h.rev} · {fmtTime(h.at)} · {h.why || 'changed'} · {L.STATUS_LABEL[h.doc.status]}</li>)}</ul>
+          <ul>{d.history.map((h) => <li key={h.rev} data-fx-focus-key={h.rev}>v{h.rev} · {fmtTime(h.at)} · {h.why || 'changed'} · {L.STATUS_LABEL[h.doc.status]}</li>)}</ul>
         </details>
       ) : null}
     </div>

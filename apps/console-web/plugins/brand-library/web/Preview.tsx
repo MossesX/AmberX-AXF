@@ -69,7 +69,7 @@ export function Preview({ asset: a, marks, config, onClose, onApplied }: Preview
         {a.type !== 'branding' && (
           <div className="axp-brand-library__sizes">
             {PREVIEW_SIZES.slice(0, -1).map((h) => (
-              <figure key={h} className="axp-brand-library__size"><Art a={a} marks={marks} h={h} play={play} motion={config.motion} /><figcaption>{h}</figcaption></figure>
+              <figure key={h} data-fx-focus-key={h} className="axp-brand-library__size"><Art a={a} marks={marks} h={h} play={play} motion={config.motion} /><figcaption>{h}</figcaption></figure>
             ))}
           </div>
         )}

@@ -69,7 +69,7 @@ export function AgentVoiceConsole({ initialAgent }: { initialAgent?: string }) {
             {agents.map((a) => {
               const ap = d.store.profiles[a.id];
               return (
-                <button key={a.id} type="button" role="option" aria-selected={a.id === sel} className={`fx-btn axp-agent-voice__agent${a.id === sel ? ' is-on' : ''}`} onClick={() => setSel(a.id)}>
+                <button key={a.id} data-fx-focus-key={a.id} type="button" role="option" aria-selected={a.id === sel} className={`fx-btn axp-agent-voice__agent${a.id === sel ? ' is-on' : ''}`} onClick={() => setSel(a.id)}>
                   <Icon name={a.icon || 'user'} size={14} />
                   <span className="axp-agent-voice__agentname">{a.name}</span>
                   {ap?.enabled ? <Chip tone="success">voice</Chip> : <span className="fx-small fx-muted">off</span>}
@@ -248,7 +248,7 @@ function PronunciationEditor({ list, onChange }: { list: Pronunciation[]; onChan
         <Button icon="plus" onClick={add} disabled={!from.trim()}>Add</Button>
       </div>
       {list.map((x, i) => (
-        <div key={`${x.from}-${i}`} className="axp-agent-voice__pronrow">
+        <div key={`${x.from}-${i}`} data-fx-focus-key={`${x.from}-${i}`} className="axp-agent-voice__pronrow">
           <span className="fx-mono">{x.from}</span><Icon name="arrow-right" size={12} /><span>{x.to || <em className="fx-muted">(silent)</em>}</span>
           <Switch label="Whole word" checked={x.whole} onChange={(v) => onChange(list.map((y, j) => (j === i ? { ...y, whole: v } : y)))} text="whole word" hideLabel />
           <Switch label="Match case" checked={x.caseSensitive} onChange={(v) => onChange(list.map((y, j) => (j === i ? { ...y, caseSensitive: v } : y)))} text="case" hideLabel />
@@ -361,7 +361,7 @@ export function CloudPanel() {
       <p className="fx-small fx-muted">Keys stay on the server (0600 files, never sent to a browser). An agent only uses a cloud voice when its Permissions allow cloud voices.</p>
       {msg && <Note tone={msg.tone}>{msg.text}</Note>}
       {keys.map((k) => (
-        <div key={k.id} className="axp-agent-voice__key">
+        <div key={k.id} data-fx-focus-key={k.id} className="axp-agent-voice__key">
           <strong>{k.id === 'openai' ? 'OpenAI' : 'ElevenLabs'}</strong>
           {k.set ? <Chip tone="success">{k.stored ? 'key saved' : `from ${k.envName}`}</Chip> : <Chip tone="warning">no key</Chip>}
           <TextField label="New key" type="password" value={input[k.id] ?? ''} onChange={(v) => setInput({ ...input, [k.id]: v })} placeholder={k.id === 'openai' ? 'sk-…' : 'xi-…'} />

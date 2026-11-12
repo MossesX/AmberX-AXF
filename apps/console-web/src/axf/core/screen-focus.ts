@@ -82,13 +82,25 @@ export function textMatch(root: ParentNode, key: string): HTMLElement | null {
   return best;
 }
 
+/** A fold toggle (opens a part of the row), not a menu or picker button that happens to carry aria-expanded. */
+export function isFoldToggle(x: Element): boolean {
+  const pop = x.getAttribute('aria-haspopup');
+  if (pop && pop !== 'false') return false;
+  if (x.closest('[role="menu"], [role="menubar"], [role="toolbar"]')) return false;
+  if (x.hasAttribute('aria-controls')) return true;
+  const label = `${x.getAttribute('aria-label') ?? ''} ${x.getAttribute('title') ?? ''}`.toLowerCase();
+  return /\b(expand|collapse|unfold|fold|show details|details)\b/.test(label) || /toggle|fold|__hit|__head|summary|disclos/.test(String(x.getAttribute('class') ?? ''));
+}
+
 /** Open a folded hit: <details>, its own aria-expanded toggle or the first folded toggle inside it. */
 export function expand(el: HTMLElement): void {
   if (el instanceof HTMLDetailsElement) { el.open = true; return; }
   const own = el.closest('details');
   if (own && !own.open) own.open = true;
-  if (el.getAttribute('aria-expanded') === 'false') { el.click(); return; }
-  const t = el.querySelector<HTMLElement>(':scope > [aria-expanded="false"], :scope > * > [aria-expanded="false"]');
+  if (el.getAttribute('aria-expanded') === 'false') { if (isFoldToggle(el) || el.hasAttribute('data-fx-row')) el.click(); return; }
+  // the hit's own fold toggle: the first folded one that isn't inside a nested item
+  const t = Array.from(el.querySelectorAll<HTMLElement>('[aria-expanded="false"]'))
+    .find((x) => { const owner = x.parentElement?.closest(`[${FOCUS_KEY_ATTR}]`); return isFoldToggle(x) && (!owner || owner === el || !el.contains(owner)); });
   if (t) t.click();
 }
 

@@ -116,7 +116,7 @@ export function ConflictList({ conflicts }: { conflicts: Conflict[] }) {
     <div className="fx-stack">
       <h3 className="axp-plugin-manager-h">Clashes</h3>
       {conflicts.map((c) => (
-        <div key={c.id} className={`axp-plugin-manager-clash is-${c.severity}`}>
+        <div key={c.id} data-fx-focus-key={c.id} className={`axp-plugin-manager-clash is-${c.severity}`}>
           <strong>{c.kind}</strong> <code>{c.key}</code> <span className="fx-muted">· {c.folders.join(', ')}</span>
           <p className="fx-small">{c.detail}</p>
         </div>
@@ -143,10 +143,10 @@ function Dependencies({ row, conflicts, onSelect }: { row: PluginRow; conflicts:
       </p>
       <h3 className="axp-plugin-manager-h">Needs</h3>
       {groups.map(([kind, deps]) => (
-        <div key={kind} className="axp-plugin-manager-depgroup">
+        <div key={kind} data-fx-focus-key={kind} className="axp-plugin-manager-depgroup">
           <p className="axp-plugin-manager-depgroup__label">{KIND_LABEL[kind]}</p>
           {deps.map((d) => (
-            <div key={`${d.kind}:${d.name}`} className={`axp-plugin-manager-dep is-${DEP_TONE(d.status) ?? 'neutral'}`}>
+            <div key={`${d.kind}:${d.name}`} data-fx-focus-key={`${d.kind}:${d.name}`} className={`axp-plugin-manager-dep is-${DEP_TONE(d.status) ?? 'neutral'}`}>
               <div className="axp-plugin-manager-dep__top">
                 <code className="axp-plugin-manager-dep__name">{d.name}</code>
                 <Chip>{d.required ? 'required' : 'optional'}</Chip>
@@ -170,7 +170,7 @@ function Dependencies({ row, conflicts, onSelect }: { row: PluginRow; conflicts:
       <h3 className="axp-plugin-manager-h">Needed by</h3>
       {row.dependents.length === 0 && <p className="fx-muted fx-small" style={{ margin: 0 }}>Nothing depends on it, so it can be switched off or removed without affecting other plugins.</p>}
       {row.dependents.map((d) => (
-        <div key={`${d.folder}:${d.service}`} className="axp-plugin-manager-dep">
+        <div key={`${d.folder}:${d.service}`} data-fx-focus-key={`${d.folder}:${d.service}`} className="axp-plugin-manager-dep">
           <div className="axp-plugin-manager-dep__top">
             <Button size="sm" tone="quiet" onClick={() => onSelect(d.folder)}>{d.name}</Button>
             <Chip>{d.required ? 'requires' : 'optional'}</Chip>
@@ -195,13 +195,13 @@ function UiAndSettings({ row }: { row: PluginRow }) {
       <h3 className="axp-plugin-manager-h">Its UI</h3>
       {!hasUi(row) && <p className="fx-muted fx-small" style={{ margin: 0 }}>No page or window of its own{row.ui.contextItems ? `; it adds ${row.ui.contextItems} context-menu item${row.ui.contextItems > 1 ? 's' : ''}` : ''}.</p>}
       {row.ui.views.map((v) => (
-        <div key={v.id} className="axp-plugin-manager-entry">
+        <div key={v.id} data-fx-focus-key={v.id} className="axp-plugin-manager-entry">
           <Icon name={v.icon ?? 'layout'} size={16} /> <span className="fx-grow">{v.title} <span className="fx-muted fx-small">page · {v.id}</span></span>
           <Button tone="ghost" icon="external" disabled={!row.enabled} onClick={() => openUi(rt, row, v.id)}>Open</Button>
         </div>
       ))}
       {row.ui.dialogs.map((d) => (
-        <div key={d.id} className="axp-plugin-manager-entry">
+        <div key={d.id} data-fx-focus-key={d.id} className="axp-plugin-manager-entry">
           <Icon name="monitor" size={16} /> <span className="fx-grow">{d.title} <span className="fx-muted fx-small">window · {d.id}</span></span>
           <Button tone="ghost" icon="external" disabled={!row.enabled} onClick={() => openUi(rt, row, d.id)}>Open</Button>
         </div>
@@ -209,7 +209,7 @@ function UiAndSettings({ row }: { row: PluginRow }) {
       <h3 className="axp-plugin-manager-h">Its settings</h3>
       {!hasSettings(row) && <p className="fx-muted fx-small" style={{ margin: 0 }}>No settings.</p>}
       {row.ui.settingsTabs.map((t) => (
-        <div key={t.id} className="axp-plugin-manager-entry">
+        <div key={t.id} data-fx-focus-key={t.id} className="axp-plugin-manager-entry">
           <Icon name="settings" size={16} /> <span className="fx-grow">{t.label} <span className="fx-muted fx-small">Settings → Plugins → {t.label}</span></span>
           <Button tone="ghost" icon="eye" disabled={!row.enabled} onClick={() => setInline(inline === t.id ? '' : t.id)}>{inline === t.id ? 'Hide' : 'Show here'}</Button>
           <Button tone="ghost" icon="external" disabled={!row.enabled} onClick={() => openSettings(rt, row, t.id)}>Open</Button>
@@ -220,7 +220,7 @@ function UiAndSettings({ row }: { row: PluginRow }) {
         <div className="axp-plugin-manager-inline">
           {panels.length === 0 && <p className="fx-muted fx-small">This tab only has generated settings. Open it in Settings to edit them.</p>}
           {panels.map((p) => (
-            <section key={p.id} className="axp-plugin-manager-inline__panel">
+            <section key={p.id} data-fx-focus-key={p.id} className="axp-plugin-manager-inline__panel">
               <h4><Icon name={p.icon ?? 'settings'} size={14} /> {p.title}</h4>
               {p.render() as ReactNode}
             </section>
@@ -249,7 +249,7 @@ function Logs({ row }: { row: PluginRow }) {
       {lines && lines.length > 0 && (
         <ol className="axp-plugin-manager-log">
           {[...lines].reverse().map((l, i) => (
-            <li key={`${l.at}-${i}`} className={`axp-plugin-manager-log__line is-${l.level}`}>
+            <li key={`${l.at}-${i}`} data-fx-focus-key={`${l.at}-${i}`} className={`axp-plugin-manager-log__line is-${l.level}`}>
               <span className="axp-plugin-manager-log__time">{new Date(l.at).toLocaleTimeString()}</span>
               <span className="axp-plugin-manager-log__level">{l.level}</span>
               <span className="axp-plugin-manager-log__text">{l.text}</span>
@@ -268,7 +268,7 @@ function Files({ row }: { row: PluginRow }) {
   if (!files.length) return <p className="fx-muted fx-small">No file list (the console API is offline).</p>;
   return (
     <ul className="axp-plugin-manager-files">
-      {files.map((f) => <li key={f.path}><code>{f.path}</code><span className="fx-muted fx-small">{fmtBytes(f.bytes)}</span></li>)}
+      {files.map((f) => <li key={f.path} data-fx-focus-key={f.path}><code>{f.path}</code><span className="fx-muted fx-small">{fmtBytes(f.bytes)}</span></li>)}
     </ul>
   );
 }

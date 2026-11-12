@@ -159,7 +159,7 @@ function McpView({ host, store, perms }: { host: McpHost; store: ServerStore; pe
                         const effect = toolEffect(t.annotations);
                         const gate = callGate(effect, granted, perms);
                         return (
-                          <button key={t.name} type="button" role="listitem" data-fx-row="" className={`${P}__item ${tool?.name === t.name ? 'is-active' : ''} ${gate.allowed ? '' : 'is-denied'}`} onClick={() => setTool(t)} title={gate.allowed ? undefined : gate.error?.message}>
+                          <button key={t.name} data-fx-focus-key={t.name} type="button" role="listitem" data-fx-row="" className={`${P}__item ${tool?.name === t.name ? 'is-active' : ''} ${gate.allowed ? '' : 'is-denied'}`} onClick={() => setTool(t)} title={gate.allowed ? undefined : gate.error?.message}>
                             <span className="fx-mono">{t.name} <span className={`${P}__effect is-${effect}`}>{effect}</span></span>
                             {t.description && <span className={`${P}__desc`}>{t.description}</span>}
                           </button>
@@ -272,7 +272,7 @@ function Resources({ session, conn, granted, perms, log }: { session: McpSession
     finally { setBusy(''); }
   };
   const row = (r: McpResource) => (
-    <div key={r.uri} className={`${P}__card`}>
+    <div key={r.uri} data-fx-focus-key={r.uri} className={`${P}__card`}>
       <div className="fx-row fx-row--wrap"><strong className="fx-grow">{r.title || r.name || r.uri}</strong><Button icon="eye" disabled={busy === r.uri || !may} requires={perms.CALL} onClick={() => read(r.uri)}>Read</Button></div>
       <span className={`fx-small fx-muted fx-mono ${P}__url`}>{r.uri}{r.mimeType ? ` · ${r.mimeType}` : ''}</span>
       {r.description && <p className="fx-small">{r.description}</p>}
@@ -284,7 +284,7 @@ function Resources({ session, conn, granted, perms, log }: { session: McpSession
       {conn.resourcesError && <Note>{conn.resourcesError}</Note>}
       {conn.resources.length === 0 && conn.resourceTemplates.length === 0 ? <p className="fx-muted">This server offers no resources.</p> : conn.resources.map(row)}
       {conn.resourceTemplates.map((t) => (
-        <div key={t.uriTemplate} className={`${P}__card`}>
+        <div key={t.uriTemplate} data-fx-focus-key={t.uriTemplate} className={`${P}__card`}>
           <strong>{t.title || t.name || t.uriTemplate} <span className="fx-small fx-muted">template</span></strong>
           <span className={`fx-small fx-muted fx-mono ${P}__url`}>{t.uriTemplate}</span>
           {t.description && <p className="fx-small">{t.description}</p>}
@@ -308,11 +308,11 @@ function Prompts({ session, prompts, error, granted, perms, log }: { session: Mc
     <div className="fx-stack">
       {error && <Note>{error}</Note>}
       {prompts.length === 0 ? <p className="fx-muted">This server offers no prompts.</p> : prompts.map((p) => (
-        <div key={p.name} className={`${P}__card`}>
+        <div key={p.name} data-fx-focus-key={p.name} className={`${P}__card`}>
           <div className="fx-row fx-row--wrap"><strong className="fx-mono fx-grow">{p.title ?? p.name}</strong><Button icon="eye" disabled={!may} requires={perms.CALL} onClick={() => void get(p)}>Get</Button></div>
           {p.description && <p className="fx-small fx-muted">{p.description}</p>}
           {p.arguments?.map((a) => (
-            <label key={a.name} className={`${P}__field`}>{a.name}{a.required ? '*' : ''}{a.description ? ` — ${a.description}` : ''}
+            <label key={a.name} data-fx-focus-key={a.name} className={`${P}__field`}>{a.name}{a.required ? '*' : ''}{a.description ? ` — ${a.description}` : ''}
               <input className="fx-input" value={args[p.name]?.[a.name] ?? ''} onChange={(e) => setArgs({ ...args, [p.name]: { ...(args[p.name] ?? {}), [a.name]: e.target.value } })} />
             </label>
           ))}
@@ -380,7 +380,7 @@ function ServersPanel({ host, store, envAuth, perms }: { host: McpHost; store: S
       {!manage && <Note tone="info">Your role can view servers; adding or changing them needs {perms.MANAGE}.</Note>}
       {list.length === 0 && !draft && <p className="fx-muted" style={{ margin: 0 }}>No MCP servers yet.</p>}
       {list.map((s) => (
-        <div key={s.id} className={`${P}__card`}>
+        <div key={s.id} data-fx-focus-key={s.id} className={`${P}__card`}>
           <div className="fx-row fx-row--wrap">
             <strong className="fx-grow">{s.name}</strong>
             {s.auth === 'env' && <Chip tone={s.envPresent ? 'success' : 'warning'}>{s.envPresent ? `token from ${s.tokenEnv}` : `${s.tokenEnv} not set`}</Chip>}

@@ -30,7 +30,7 @@ function Shell({ steps, step, setStep, children, canNext = true, onFinish, finis
   return (
     <div className="axp-agent-manager__wizard fx-stack">
       <span className="axp-agent-manager__stepnow fx-small fx-muted">Step {step + 1} of {steps.length} · <strong>{steps[step]}</strong></span>
-      <ol className="axp-agent-manager__steps">{steps.map((s, i) => <li key={s} className={i === step ? 'is-active' : i < step ? 'is-done' : ''}><button type="button" className={`fx-chip${i === step ? ' is-on' : ''}`} onClick={() => i < step && setStep(i)}>{i + 1}. {s}</button></li>)}</ol>
+      <ol className="axp-agent-manager__steps">{steps.map((s, i) => <li key={s} data-fx-focus-key={s} className={i === step ? 'is-active' : i < step ? 'is-done' : ''}><button type="button" className={`fx-chip${i === step ? ' is-on' : ''}`} onClick={() => i < step && setStep(i)}>{i + 1}. {s}</button></li>)}</ol>
       <div className="axp-agent-manager__wizard-body">{children}</div>
       {error && <div className="axp-agent-manager__note is-warn"><Icon name="alert" size={14} />{error}</div>}
       <div className="fx-row fx-row--wrap axp-agent-manager__wizard-nav">
@@ -187,7 +187,7 @@ function BuilderWizard({ done }: { done: (msg: string) => void }) {
       {step === 0 && <AgentForm v={agent} set={setAgent} cache={cache} status={status} only={['identity', 'instructions']} />}
       {step === 1 && (
         <div className="fx-stack">
-          <div className="axp-agent-manager__picks">{(['new', 'pick', 'none'] as const).map((m) => <button key={m} type="button" className={`fx-chip axp-agent-manager__pick${personaMode === m ? ' is-on' : ''}`} onClick={() => setPersonaMode(m)}>{m === 'new' ? 'Create a persona' : m === 'pick' ? 'Use an existing one' : 'No persona'}</button>)}</div>
+          <div className="axp-agent-manager__picks">{(['new', 'pick', 'none'] as const).map((m) => <button key={m} data-fx-focus-key={m} type="button" className={`fx-chip axp-agent-manager__pick${personaMode === m ? ' is-on' : ''}`} onClick={() => setPersonaMode(m)}>{m === 'new' ? 'Create a persona' : m === 'pick' ? 'Use an existing one' : 'No persona'}</button>)}</div>
           {personaMode === 'new' && <PersonaForm v={persona} set={setPersona} />}
           {personaMode === 'pick' && <AgentForm v={agent} set={setAgent} cache={cache} status={status} only={['persona']} />}
         </div>

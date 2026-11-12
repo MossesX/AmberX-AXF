@@ -141,7 +141,7 @@ export function SafetyPanel() {
         {cache.agents.map((a) => {
           const w = wants(a);
           return (
-            <label key={a.id} className="axp-agent-manager__toggle">
+            <label key={a.id} data-fx-focus-key={a.id} className="axp-agent-manager__toggle">
               <input type="checkbox" checked={allowed.has(a.id)} onChange={() => flip(a.id)} /> <Icon name={a.icon || 'user'} size={14} /> {a.name} <span className="fx-small fx-muted">{a.id}</span>
               {w.length > 0 && <Chip tone={allowed.has(a.id) ? 'warning' : undefined}>{allowed.has(a.id) ? `gets ${w.length}: ` : `wants ${w.length} (off): `}{w.slice(0, 4).join(', ')}{w.length > 4 ? '…' : ''}</Chip>}
             </label>
@@ -154,7 +154,7 @@ export function SafetyPanel() {
       <p className="fx-small fx-muted">Build agents work in the console's AmberX-AXF checkout from the AI assistant (admins only, Claude Code provider): Edit, Write and Bash there without asking, plus git push and open PR (the GitHub token stays in the console). Merging is still yours, through a merge approval. They must be ticked above too.</p>
       <div className="fx-stack">
         {cache.agents.map((a) => (
-          <label key={a.id} className="axp-agent-manager__toggle">
+          <label key={a.id} data-fx-focus-key={a.id} className="axp-agent-manager__toggle">
             <input type="checkbox" checked={builders.has(a.id)} onChange={() => flipBuild(a.id)} /> <Icon name={a.icon || 'user'} size={14} /> {a.name} <span className="fx-small fx-muted">{a.id}</span>
             {builders.has(a.id) && <Chip tone={allowed.has(a.id) ? 'warning' : undefined}>{allowed.has(a.id) ? 'builds in the repo' : 'needs dangerous tools on'}</Chip>}
           </label>

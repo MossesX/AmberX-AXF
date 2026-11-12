@@ -42,7 +42,7 @@ function EntryPicker({ onPick, label = 'Glossary entry', hint }: { onPick: (e: E
       {!!hits.length && (
         <ul className="axp-glossary-index__picker-list" aria-label="Matches">
           {hits.map((e) => (
-            <li key={e.id}>
+            <li key={e.id} data-fx-focus-key={e.id}>
               <button type="button" data-fx-row className="axp-glossary-index__picker-row" onClick={() => { onPick(e); setQ(''); }}>
                 <span className="axp-glossary-index__kind" data-kind={e.kind}>{cat!.kinds[e.kind] ?? e.kind}</span> <strong>{e.term}</strong> <span className="fx-muted">{e.summary}</span>
               </button>
@@ -194,7 +194,7 @@ function ClipDetail({ clip, onDeleted }: { clip: ClipAsset; onDeleted: () => voi
         {d.recorded.app && <><dt>Recorded in</dt><dd>{d.recorded.app}{d.recorded.designPackage ? `, look ${d.recorded.designPackage}` : ''}{d.recorded.voice ? `, voice ${d.recorded.voice}` : ''}</dd></>}
         <dt>Id</dt><dd className="fx-mono">clip/{clip.id}</dd>
       </dl>
-      {!!d.entries.length && <section><h3 className="axp-glossary-index__h3">Shows</h3><ul className="axp-glossary-index__links">{d.entries.map((id) => { const e = cat?.entries.find((x) => x.id === id); return <li key={id}>{e ? <><strong>{e.term}</strong> <span className="axp-glossary-index__kind" data-kind={e.kind}>{cat?.kinds[e.kind]}</span></> : <span className="fx-mono">{id}</span>}</li>; })}</ul></section>}
+      {!!d.entries.length && <section><h3 className="axp-glossary-index__h3">Shows</h3><ul className="axp-glossary-index__links">{d.entries.map((id) => { const e = cat?.entries.find((x) => x.id === id); return <li key={id} data-fx-focus-key={id}>{e ? <><strong>{e.term}</strong> <span className="axp-glossary-index__kind" data-kind={e.kind}>{cat?.kinds[e.kind]}</span></> : <span className="fx-mono">{id}</span>}</li>; })}</ul></section>}
       {!!d.transcript.length && <section><h3 className="axp-glossary-index__h3">Transcript</h3><ol className="axp-glossary-index__transcript">{d.transcript.map((t, i) => <li key={i}><span className="fx-mono fx-muted">{fmtSeconds(t.at)}</span> {t.say}</li>)}</ol></section>}
       {!!d.chain.length && <p className="fx-muted">Chained after it: {d.chain.join(', ')}</p>}
       <section><h3 className="axp-glossary-index__h3">Keywords ({d.keywords.length})</h3><p className="axp-glossary-index__keywords">{d.keywords.map((k) => <Chip key={k}>{k}</Chip>)}</p></section>
@@ -290,7 +290,7 @@ export function DesignerPage() {
                   : (
                     <ul className="axp-glossary-index__rows" aria-label={tab === 'clip' ? 'Clips' : 'Demonstrations'}>
                       {list.map((s) => (
-                        <li key={s.id} className={`axp-glossary-index__row${selected?.id === s.id && selected.type === tab ? ' is-selected' : ''}`}>
+                        <li key={s.id} data-fx-focus-key={s.id} className={`axp-glossary-index__row${selected?.id === s.id && selected.type === tab ? ' is-selected' : ''}`}>
                           <button type="button" data-fx-row className="axp-glossary-index__row-btn" onClick={() => pick(tab, s.id)}>
                             <strong>{s.name}</strong>
                             <span className="fx-muted">{tab === 'clip' ? `${s.kind} · ${fmtSeconds(s.seconds ?? 0)} · ${s.keywords} keywords` : `${s.steps} steps · ${fmtSeconds(s.seconds ?? 0)}${s.generated === 'glossary' ? ' · generated' : ''}${s.chain?.length ? ` · +${s.chain.length} chained` : ''}`}</span>

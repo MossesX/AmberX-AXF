@@ -160,7 +160,7 @@ function PluginUpdate() {
         {list.map((r) => {
           const parked = r.rebuildWith.map((m) => ({ m, p: r.parked.find((x) => x.model === m) }));
           return (
-            <li key={r.folder} className={`axp-plugin-update__row ${r.enabled ? '' : 'is-off'}`}>
+            <li key={r.folder} data-fx-focus-key={r.folder} className={`axp-plugin-update__row ${r.enabled ? '' : 'is-off'}`}>
               <div className="axp-plugin-update__head">
                 <strong className="axp-plugin-update__name">{r.name}</strong>
                 <ModelBadge compact model={r.model} builtAt={r.builtAt} />

@@ -59,7 +59,7 @@ function EntryRows({ entries, path, selected, onSelect, all }: { entries: Entry[
         const on = selected?.join('.') === p.join('.');
         const chunk = e.kind === 'chunk' ? findChunk(e.chunk, all) : undefined;
         return (
-          <li key={e.id}>
+          <li key={e.id} data-fx-focus-key={e.id}>
             <button type="button" data-fx-row className={`axp-ctxd-row${on ? ' is-on' : ''}`} aria-pressed={on} onClick={() => onSelect(p)}>
               {e.kind === 'separator' && <span className="axp-ctxd-row__sep">— separator —</span>}
               {e.kind === 'chunk' && <span><strong>Chunk:</strong> {chunk?.name ?? e.chunk}{!chunk && ' (missing)'}</span>}
@@ -287,7 +287,7 @@ export function Designer() {
   const ListRows = ({ list }: { list: Design[] }) => (
     <ul className="axp-ctxd-list">
       {list.map((d) => (
-        <li key={d.id}>
+        <li key={d.id} data-fx-focus-key={d.id}>
           <button type="button" data-fx-row className={`axp-ctxd-row${draft?.id === d.id ? ' is-on' : ''}`} onClick={() => open(d)}>
             <span>{d.name}</span>
             {d.kind === 'menu' && active === `${ASSET_PREFIX}${d.id}` && <small className="axp-ctxd-muted"> · in use</small>}

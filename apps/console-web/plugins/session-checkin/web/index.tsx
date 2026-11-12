@@ -115,7 +115,7 @@ function SessionsView() {
       {shown.length > 0 && (
         <div className={`${P}__list`} role="list">
           {shown.map((r) => (
-            <div key={r.id} role="listitem">
+            <div key={r.id} data-fx-focus-key={r.id} role="listitem">
               <button type="button" data-fx-row className={`${P}__row ${sel === r.id ? 'is-selected' : ''}`} onClick={() => setSel(sel === r.id ? null : r.id)} aria-expanded={sel === r.id}>
                 <span className={`${P}__when`}>{when(r.startedAt)}</span>
                 <span className={`${P}__main`}>
@@ -265,14 +265,14 @@ function InstallWizard() {
     <div className="fx-stack">
       <span className={`${P}__stepnow fx-small fx-muted`}>Step {step + 1} of {STEPS.length} · <strong>{STEPS[step]}</strong></span>
       <ol className={`${P}__steps`}>
-        {STEPS.map((s, i) => <li key={s} className={`${P}__step ${i === step ? 'is-active' : ''} ${i < step ? 'is-done' : ''}`}><button type="button" className={`fx-chip ${i === step ? 'is-on' : ''}`} onClick={() => void go(i)} disabled={busy}>{i + 1}. {s}</button></li>)}
+        {STEPS.map((s, i) => <li key={s} data-fx-focus-key={s} className={`${P}__step ${i === step ? 'is-active' : ''} ${i < step ? 'is-done' : ''}`}><button type="button" className={`fx-chip ${i === step ? 'is-on' : ''}`} onClick={() => void go(i)} disabled={busy}>{i + 1}. {s}</button></li>)}
       </ol>
 
       {step === 0 && (
         <fieldset className={`${P}__fieldset`}>
           <legend>Where should new sessions ask the questions?</legend>
           {(['local', 'shared'] as const).map((t) => (
-            <label key={t} className={`${P}__choice`}>
+            <label key={t} data-fx-focus-key={t} className={`${P}__choice`}>
               <input type="radio" name="sc-target" checked={target === t} onChange={() => setTarget(t)} />
               <span><strong>{t === 'local' ? 'This clone only' : 'Every clone of the repo'}</strong>{st.targets[t].installed ? ' · installed' : ''}<br />
                 <span className="fx-muted fx-small">{t === 'local' ? `Claude Code sessions started in ${st.repo} on the server. Not committed (.claude/settings.local.json).` : 'Commits .claude/settings.json to GitHub from here, so every clone gets it: phone/cloud sessions, the VPS, your laptop. Needs the console\'s GITHUB_TOKEN with write access.'}</span></span>
@@ -286,7 +286,7 @@ function InstallWizard() {
         <fieldset className={`${P}__fieldset`}>
           <legend>Which questions? Location is always asked first.</legend>
           {st.questions.map((q) => (
-            <label key={q.id} className={`${P}__choice`}>
+            <label key={q.id} data-fx-focus-key={q.id} className={`${P}__choice`}>
               <input type="checkbox" checked={q.required || cfg.questions[q.id] !== false} disabled={q.required} onChange={(e) => set({ questions: { ...cfg.questions, [q.id]: e.target.checked } })} />
               <span><strong>{q.label}</strong>{q.required ? ' · always' : ''}<br /><span className="fx-muted fx-small">{q.help}</span></span>
             </label>
@@ -371,13 +371,13 @@ function BaselinePanel() {
       <p className="fx-small fx-muted" style={{ margin: 0 }}>The cost of one fixed reference build ({b.version}, <span className="fx-mono">baseline/BASELINE-v1.md</span>) per model and effort, so every check-in quotes comparable numbers. "uncalibrated" = placeholder token counts until a real run is measured with <span className="fx-mono">checkin.mjs calibrate</span> ({b.runs.length} run{b.runs.length === 1 ? '' : 's'} so far).</p>
       <div className={`${P}__scroll`}>
         <table className="fx-table"><thead><tr><th>Model</th>{EFFORTS.map((e) => <th key={e}>{e}</th>)}</tr></thead><tbody>
-          {MODELS.map(([m, label]) => <tr key={m}><th>{label}</th>{EFFORTS.map((e) => { const x = b.estimates[m]?.[e]; return <td key={e}>{money(x)}{x && x.usd != null && !x.calibrated ? <span className="fx-muted fx-small"> est.</span> : null}</td>; })}</tr>)}
+          {MODELS.map(([m, label]) => <tr key={m} data-fx-focus-key={m}><th>{label}</th>{EFFORTS.map((e) => { const x = b.estimates[m]?.[e]; return <td key={e}>{money(x)}{x && x.usd != null && !x.calibrated ? <span className="fx-muted fx-small"> est.</span> : null}</td>; })}</tr>)}
         </tbody></table>
       </div>
       <p className="fx-small" style={{ margin: 0 }}>Prices {b.pricing.asOf ? `from ${b.pricing.asOf}${b.pricing.source ? ` (${b.pricing.source})` : ''}` : 'not set yet'}. USD per million tokens; copy them from docs.claude.com.</p>
       <div className={`${P}__scroll`}>
         <table className="fx-table"><thead><tr><th>Model</th><th>Input</th><th>Output</th><th>Cache read</th></tr></thead><tbody>
-          {MODELS.map(([m, label]) => <tr key={m}><th>{label}</th>{(['input', 'output', 'cacheRead'] as const).map((k) => <td key={k}><input className={`fx-input ${P}__num`} inputMode="decimal" value={edit[`${m}.${k}`] ?? ''} onChange={(e) => setEdit({ ...edit, [`${m}.${k}`]: e.target.value })} aria-label={`${label} ${k} price`} /></td>)}</tr>)}
+          {MODELS.map(([m, label]) => <tr key={m} data-fx-focus-key={m}><th>{label}</th>{(['input', 'output', 'cacheRead'] as const).map((k) => <td key={k}><input className={`fx-input ${P}__num`} inputMode="decimal" value={edit[`${m}.${k}`] ?? ''} onChange={(e) => setEdit({ ...edit, [`${m}.${k}`]: e.target.value })} aria-label={`${label} ${k} price`} /></td>)}</tr>)}
         </tbody></table>
       </div>
       <div className="fx-row fx-row--wrap">

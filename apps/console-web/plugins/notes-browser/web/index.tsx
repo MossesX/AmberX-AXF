@@ -134,14 +134,14 @@ function NotesView() {
             {!list && <p className="fx-muted">Loading…</p>}
             {list?.available && !groups.length && <p className="fx-muted">{q ? 'No note matches.' : 'No notes yet.'}</p>}
             {groups.map(([folder, notes]) => (
-              <div key={folder || '.'} className="axp-notes-browser__group">
+              <div key={folder || '.'} data-fx-focus-key={folder || '.'} className="axp-notes-browser__group">
                 {folder && (
                   <button type="button" className="fx-nav__item axp-notes-browser__folder" aria-expanded={!closed[folder]} onClick={() => setClosed({ ...closed, [folder]: !closed[folder] })}>
                     <Icon name={closed[folder] ? 'chevron-right' : 'chevron-down'} size={12} /><Icon name="folder" size={14} /><span className="axp-notes-browser__label">{folder}</span><span className="fx-small fx-muted">{notes.length}</span>
                   </button>
                 )}
                 {!closed[folder] && notes.map((n) => (
-                  <button key={n.path} type="button" title={n.path} className={`fx-nav__item axp-notes-browser__note${folder ? ' is-nested' : ''}${open?.path === n.path ? ' is-active' : ''}`} onClick={() => void openNote(n.path)}>
+                  <button key={n.path} data-fx-focus-key={n.path} type="button" title={n.path} className={`fx-nav__item axp-notes-browser__note${folder ? ' is-nested' : ''}${open?.path === n.path ? ' is-active' : ''}`} onClick={() => void openNote(n.path)}>
                     <Icon name="file" size={13} />
                     <span className="axp-notes-browser__label"><span className="axp-notes-browser__sub">{n.title}</span><span className="fx-small fx-muted axp-notes-browser__sub">{n.snippet ?? day(n.updatedAt)}</span></span>
                   </button>

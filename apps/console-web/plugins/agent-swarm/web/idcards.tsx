@@ -60,7 +60,7 @@ export function CardsTab({ state, stats, act, photo }: { state: SwarmState; stat
       </div>
       <div className="sw-idcards" role="list">
         {designs.map((d) => (
-          <figure key={d.id} role="listitem" className="sw-idcards__item">
+          <figure key={d.id} data-fx-focus-key={d.id} role="listitem" className="sw-idcards__item">
             {a ? <AgentIdCard state={state} a={a} st={stats[a.id]} designs={designs} design={d.data} photo={photo(a)} /> : <AgentCard identity={AGENT_CARD_SAMPLE.identity} stats={AGENT_CARD_SAMPLE.stats} design={d.data} />}
             <figcaption className="fx-stack">
               <span><b>{d.name}</b> {d.id === current && <Chip tone="accent">Default</Chip>} {d.saved && <Chip>Saved here</Chip>}</span>
@@ -89,7 +89,7 @@ function SideEditor({ title, side, value, labels, onChange, onLabel }: { title: 
     <fieldset className="fx-stack sw-fields">
       <legend className="sw-wave">{title}</legend>
       {value.map((f, i) => (
-        <div key={f} className="sw-bar">
+        <div key={f} data-fx-focus-key={f} className="sw-bar">
           <span className="sw-grow">{CARD_FIELDS[f]}</span>
           <input className="fx-input sw-bar__pick" aria-label={`${CARD_FIELDS[f]} label on the ${side}`} placeholder={CARD_FIELDS[f]} value={labels[f] ?? ''} maxLength={24} onChange={(e) => onLabel(f, e.target.value)} />
           <IconButton icon="chevron-up" label="Move up" disabled={i === 0} onClick={() => move(i, -1)} />

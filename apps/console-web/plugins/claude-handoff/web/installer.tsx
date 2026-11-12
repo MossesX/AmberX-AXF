@@ -207,7 +207,7 @@ export function InstallerView({ cats, run: r, project, layout, speed = 1, footer
   const catList = (
     <ol className="axp-claude-handoff-inst__cats">
       {cats.map((c, i) => (
-        <li key={c.id} className={`axp-claude-handoff-inst__cat is-${catState(i)}`}>
+        <li key={c.id} data-fx-focus-key={c.id} className={`axp-claude-handoff-inst__cat is-${catState(i)}`}>
           <span className="axp-claude-handoff-inst__caticon" aria-hidden><Icon name={catState(i) === 'done' ? 'check' : c.icon} size={14} /></span>
           <span className="axp-claude-handoff-inst__catname">{c.label}</span>
           <span className="axp-claude-handoff-inst__catcount">{catCount(i, c)}</span>
@@ -219,7 +219,7 @@ export function InstallerView({ cats, run: r, project, layout, speed = 1, footer
   const catCards = (
     <div className="axp-claude-handoff-inst__cards">
       {cats.map((c, i) => (
-        <div key={c.id} className={`axp-claude-handoff-inst__card is-${catState(i)}`}>
+        <div key={c.id} data-fx-focus-key={c.id} className={`axp-claude-handoff-inst__card is-${catState(i)}`}>
           <span className="axp-claude-handoff-inst__cardhead"><Icon name={catState(i) === 'done' ? 'check' : c.icon} size={14} /><span>{c.label}</span><span className="axp-claude-handoff-inst__catcount">{catCount(i, c)}</span></span>
           <Meter small value={v.catPct(i) * 100} active={catState(i) === 'working'} done={catState(i) === 'done'} label={c.label} />
         </div>
@@ -240,7 +240,7 @@ export function InstallerView({ cats, run: r, project, layout, speed = 1, footer
       <ul className="axp-claude-handoff-inst__features">
         {cur.features.map((f, k) => {
           const fdone = r.done || v.catPct(r.ci) >= (k + 1) / cur.features.length;
-          return <li key={f} className={fdone ? 'is-done' : ''}><Icon name={fdone ? 'check' : 'minus'} size={12} />{f}</li>;
+          return <li key={f} data-fx-focus-key={f} className={fdone ? 'is-done' : ''}><Icon name={fdone ? 'check' : 'minus'} size={12} />{f}</li>;
         })}
       </ul>
       <StepList cats={cats} r={r} cur={cur} short={variant === 'compact' || compactPreview} />
@@ -305,7 +305,7 @@ function StepList({ cats: _cats, r, cur, short }: { cats: Category[]; r: Run; cu
         const k = kk + offset;
         const state = r.done || k < r.si ? 'done' : k === r.si ? 'current' : 'todo';
         return (
-          <li key={s.id} className={`axp-claude-handoff-inst__step is-${state}${s.kind === 'skip' ? ' is-skip' : ''}`}>
+          <li key={s.id} data-fx-focus-key={s.id} className={`axp-claude-handoff-inst__step is-${state}${s.kind === 'skip' ? ' is-skip' : ''}`}>
             <span className="axp-claude-handoff-inst__tick" aria-hidden>
               {state === 'done' ? <Icon name={s.kind === 'skip' ? 'minus' : 'check'} size={12} /> : state === 'current' ? <span className="axp-claude-handoff-inst__spin"><Icon name="refresh" size={12} /></span> : null}
             </span>

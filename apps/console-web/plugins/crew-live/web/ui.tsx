@@ -169,7 +169,7 @@ function Files({ run }: { run: Run }) {
   return (
     <ul className="axp-crew__files">
       {files.map((f) => (
-        <li key={f.path}>
+        <li key={f.path} data-fx-focus-key={f.path}>
           <button type="button" data-fx-row className="axp-crew__file" aria-expanded={open === f.path} onClick={() => setOpen(open === f.path ? '' : f.path)}>
             <Icon name={open === f.path ? 'chevron-down' : 'chevron-right'} size={12} />
             <span className={`axp-crew__kind is-${KIND_TONE[f.kind]}`}>{f.kind}</span>
@@ -219,7 +219,7 @@ export function Detail({ r }: { r: Run }) {
         <Section title={`Steps · ${r.build.title}`}>
           <ol className="axp-crew__steps">
             {r.build.steps.map((s) => (
-              <li key={s.id} className={`axp-crew__step is-${s.state}`}>
+              <li key={s.id} data-fx-focus-key={s.id} className={`axp-crew__step is-${s.state}`}>
                 <span className="axp-crew__stepMark" aria-label={s.state}>{s.state === 'done' ? <Icon name="check" size={12} /> : s.state === 'now' ? <Icon name="play" size={12} /> : <Icon name="minus" size={12} />}</span>
                 <span className="fx-grow">{s.id} {s.text}</span>
                 {s.model ? <ModelBadge model={s.model} compact /> : null}
@@ -233,7 +233,7 @@ export function Detail({ r }: { r: Run }) {
         {r.tools.length ? (
           <ul className="axp-crew__tools" data-axf-not-toolbar="a list of the agent's recent tool calls">
             {r.tools.map((t) => (
-              <li key={t.id} className={`axp-crew__tool is-${t.state}`}>
+              <li key={t.id} data-fx-focus-key={t.id} className={`axp-crew__tool is-${t.state}`}>
                 <span className="axp-crew__toolName fx-mono">{t.tool}</span>
                 <span className="fx-grow axp-crew__toolWhat" title={t.target}>{t.what}{t.target && t.tool === 'Bash' ? <span className="fx-mono fx-muted axp-crew__toolCmd">{t.target}</span> : null}</span>
                 <span className="fx-mono fx-small">{usd(t.costUsd)}</span>
@@ -340,7 +340,7 @@ export function CrewView() {
         {groupsShut.includes('off') ? null : (
           <ul className="axp-crew__offList">
             {off.map((a) => (
-              <li key={a.id} className="axp-crew__offItem">
+              <li key={a.id} data-fx-focus-key={a.id} className="axp-crew__offItem">
                 <AgentAvatar info={{ id: a.id, name: a.name, role: a.role, avatar: a.avatar }} size="small" label />
                 <span className="fx-small fx-muted">{a.role}</span>
               </li>

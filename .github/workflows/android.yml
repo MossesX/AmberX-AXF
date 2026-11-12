@@ -125,6 +125,8 @@ jobs:
         run: node framework/cli/check-controls.mjs
       - name: Toolbars — every toolbar is a framework toolbar (role="toolbar" + settings id; tap-to-confirm off in code only with a recorded reason)
         run: node framework/cli/check-toolbars.mjs
+      - name: Screen focus — every screen with items can jump to one (console_show / console_open focus; data-fx-focus-key or its own <view>.focus)
+        run: node framework/cli/check-screen-focus.mjs
       - name: Banner widgets — every banner chip comes through the one widget registry, none hard-coded
         run: node framework/cli/check-banner-widgets.mjs
       - name: Asset conformance — the checker and the adopter agree (scale-adopt self-test)
@@ -286,6 +288,7 @@ jobs:
             npx -y tsx framework/spec/check-brand.mts                  # logo-mark / animated-logo / icon-pack / branding rules, SVG output, starters
             npx -y tsx framework/spec/check-design-language.mts        # DESIGN-LANGUAGE.md quality bar over every starter + the brand generators
             npx -y tsx framework/spec/check-toolbars.mts               # toolbar library: live groups (providers), toggles, widgets, TOOLBARS.md + asset-library.mjs --check
+            npx -y tsx framework/spec/check-screen-focus.mts          # screen focus: list / marker detection, focus asks, the repo passing
             npx -y tsx framework/spec/check-style-packages.mts         # style-package@1: validators agree, 25 starter sets ship + are distinct, runtime apply paths
             node framework/cli/brand-gen.mjs library --check                # brand library: 250 logos + 250 animated + 100 icon packs, valid, in sync, within the size budget
             npx -y tsx framework/spec/check-interface.mts              # interface@1 + scopes: rules, resolution, scoped sheets, runtime scoped view

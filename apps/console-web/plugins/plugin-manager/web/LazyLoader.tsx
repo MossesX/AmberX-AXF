@@ -85,7 +85,7 @@ export function LazyLoaderPanel() {
       <p className="fx-muted axp-plugin-manager-lazy__hint">Drag to change the order (or use the arrows). Pinned plugins always preload.</p>
       <ol className="axp-plugin-manager-lazy__order">
         {start.map((x, i) => (
-          <li key={x.folder} className={`axp-plugin-manager-lazy__item${drag === x.folder ? ' is-dragging' : ''}`} draggable
+          <li key={x.folder} data-fx-focus-key={x.folder} className={`axp-plugin-manager-lazy__item${drag === x.folder ? ' is-dragging' : ''}`} draggable
             onDragStart={() => setDrag(x.folder)} onDragEnd={() => setDrag(null)} onDragOver={(e) => e.preventDefault()} onDrop={(e) => onDrop(e, i)}>
             <span className="axp-plugin-manager-count">{i + 1}</span>
             <span className="axp-plugin-manager-lazy__name">{nameOf(x.folder)}</span>
@@ -117,7 +117,7 @@ export function LazyLoaderPanel() {
             {rows.map((r) => {
               const pinned = cfg.pins.includes(r.folder);
               return (
-                <tr key={r.folder} title={r.error ?? r.eager ?? undefined}>
+                <tr key={r.folder} data-fx-focus-key={r.folder} title={r.error ?? r.eager ?? undefined}>
                   <td>
                     <span className="axp-plugin-manager-lazy__name">{nameOf(r.folder)}</span>
                     {r.banner && <Chip tone="accent">Banner</Chip>}

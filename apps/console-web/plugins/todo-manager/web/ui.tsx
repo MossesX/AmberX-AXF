@@ -146,7 +146,7 @@ function OpenList() {
         : v.groupBy === 'structure'
           ? <Structure listId={open.list.id} entries={shown} sel={sel} toggle={toggle} onAdd={newEntry} />
           : groupEntries(shown, v.groupBy, types).map((g) => (
-            <Container key={g.key || '_'} title={`${g.label} · ${g.entries.length}`}>
+            <Container key={g.key || '_'} focusKey={String(g.key || '_')} title={`${g.label} · ${g.entries.length}`}>
               <ul className="axp-todo__entries">{g.entries.map((e) => <EntryRow key={e.id} e={e} sel={sel} toggle={toggle} />)}</ul>
             </Container>
           ))}
@@ -201,7 +201,7 @@ function Structure({ listId, entries, sel, toggle, onAdd }: { listId: number; en
     <>
       {top.length > 0 && <ul className="axp-todo__entries">{top.map((e) => <EntryTree key={e.id} e={e} all={entries} sel={sel} toggle={toggle} />)}</ul>}
       {groups.map((g) => (
-        <Container key={g.id} title={g.title} icon="folder" actions={<GroupActions g={g} onAdd={onAdd} />}>
+        <Container key={g.id} focusKey={String(g.id)} title={g.title} icon="folder" actions={<GroupActions g={g} onAdd={onAdd} />}>
           <Structure listId={g.id} entries={entries} sel={sel} toggle={toggle} onAdd={onAdd} />
         </Container>
       ))}

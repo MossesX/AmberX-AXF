@@ -61,7 +61,7 @@ function DeviceCard({ d, onSet, onRestart }: { d: Device; onSet: (id: string, pa
       </div>
       <div className="axp-amberx-listeners__grid">
         {d.listeners.map((l) => (
-          <div key={l.id} className="axp-amberx-listeners__row" data-listener={l.id} data-state={l.state}>
+          <div key={l.id} data-fx-focus-key={l.id} className="axp-amberx-listeners__row" data-listener={l.id} data-state={l.state}>
             <div className="axp-amberx-listeners__state">
               <strong className="axp-amberx-listeners__name">{l.label}</strong>
               <Chip tone={stateTone(l.state as ListenerState)}>{l.stateLabel || stateLabel(l)}</Chip>
@@ -123,7 +123,7 @@ export function ListenersPage() {
           <p className="fx-muted">The same switches the phone shows under Listeners, as the hub holds them{st.updatedAt ? ` (last change ${new Date(st.updatedAt).toLocaleString()} by ${st.updatedBy || 'unknown'})` : ''}. One owner of the microphone at a time; a listener that keeps getting refused backs off and stops with the reason; restarts never replay the start tone.</p>
           <div className="axp-amberx-listeners__grid">
             {policies.map(([id, p]) => (
-              <div key={id} className="axp-amberx-listeners__row" data-policy={id}>
+              <div key={id} data-fx-focus-key={id} className="axp-amberx-listeners__row" data-policy={id}>
                 <strong className="axp-amberx-listeners__name">{p.label}</strong>
                 <Controls id={id} policy={p} fields={p.fields} onSet={onSet} onRestart={onRestart} restartable={st.registry.find((r) => r.id === id)?.side === 'native' && p.fields.includes('on')} />
                 {p.restartAskedAt && <span className="fx-muted">Restart asked {new Date(p.restartAskedAt).toLocaleString()}</span>}

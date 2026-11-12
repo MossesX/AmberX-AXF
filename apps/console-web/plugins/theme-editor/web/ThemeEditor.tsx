@@ -156,7 +156,7 @@ function Editor({ tt }: { tt: TokenTree }) {
       <div className={`${P}__main`}>
         <div className="fx-stack">
           {SECTIONS.map((s) => (
-            <Container key={s.type} collapsible defaultOpen title={`${s.label} · ${drafts[s.type].fromName}${drafts[s.type].dirty ? ' (edited)' : ''}`} icon={s.icon}
+            <Container key={s.type} focusKey={String(s.type)} collapsible defaultOpen title={`${s.label} · ${drafts[s.type].fromName}${drafts[s.type].dirty ? ' (edited)' : ''}`} icon={s.icon}
               actions={<span className="fx-small fx-muted">{cats[s.type].reduce((n, c) => n + c.tokens.length, 0)} tokens</span>}>
               {view === 'tree' && <TreeView cats={shown(s.type)} closed={closed} toggle={toggle} editor={editor} />}
               {view === 'grid' && <GridView cats={shown(s.type)} editor={editor} />}
@@ -184,7 +184,7 @@ function Editor({ tt }: { tt: TokenTree }) {
             {!saved.length ? <p className="fx-small fx-muted">Nothing saved yet. Name a draft and tap Save &amp; apply.</p> : (
               <ul className={`${P}__saved`}>
                 {saved.map((a) => (
-                  <li key={`${a.type}/${a.id}`}>
+                  <li key={`${a.type}/${a.id}`} data-fx-focus-key={`${a.type}/${a.id}`}>
                     <span className={`${P}__savedname`} title={`${a.type} · ${a.id}`}><strong>{a.name}</strong> <span className="fx-small fx-muted">{a.type === 'color-theme' ? 'colour' : 'style'}</span></span>
                     <Button size="sm" tone="ghost" icon="edit" onClick={() => load(a.type as SectionType, a.id)}>Load</Button>
                     <IconButton icon="trash" label={`Delete ${a.name}`} onClick={() => void removeSaved(a)} />
@@ -209,7 +209,7 @@ function TreeView({ cats, closed, toggle, editor }: { cats: Category[]; closed: 
         const id = `${c.tokens[0]?.type}:${c.id}`;
         const open = !closed.has(id);
         return (
-          <li key={id}>
+          <li key={id} data-fx-focus-key={id}>
             <button type="button" data-fx-row className={`${P}__cathead`} aria-expanded={open} onClick={() => toggle(id)}>
               <Icon name={open ? 'chevron-down' : 'chevron-right'} size={13} /><Icon name={c.icon} size={13} /><span className="fx-grow">{c.label}</span><span className="fx-small fx-muted">{c.tokens.length}</span>
             </button>
@@ -226,7 +226,7 @@ function GridView({ cats, editor }: { cats: Category[]; editor: (t: Token) => JS
     <div className={`${P}__grid`} role="table" aria-label="Tokens">
       <div className={`${P}__gridhead`} role="row"><span role="columnheader">Category</span><span role="columnheader">Token</span></div>
       {cats.flatMap((c) => c.tokens.map((t) => (
-        <div key={t.id} className={`${P}__gridrow`} role="row"><span role="cell" className="fx-small fx-muted">{c.label}</span><span role="cell">{editor(t)}</span></div>
+        <div key={t.id} data-fx-focus-key={t.id} className={`${P}__gridrow`} role="row"><span role="cell" className="fx-small fx-muted">{c.label}</span><span role="cell">{editor(t)}</span></div>
       )))}
     </div>
   );
@@ -248,7 +248,7 @@ function SwatchView({ cats, value, editor }: { cats: Category[]; value: (t: Toke
     <div className="fx-stack">
       <div className={`${P}__swatches`}>
         {all.map((t) => (
-          <button key={t.id} type="button" data-fx-row className={`${P}__swatch ${pick === t.id ? 'is-sel' : ''} ${t.set ? '' : 'is-unset'}`} title={`${t.label} · ${t.path}`} onClick={() => setPick(t.id)}>
+          <button key={t.id} data-fx-focus-key={t.id} type="button" data-fx-row className={`${P}__swatch ${pick === t.id ? 'is-sel' : ''} ${t.set ? '' : 'is-unset'}`} title={`${t.label} · ${t.path}`} onClick={() => setPick(t.id)}>
             <span className={`${P}__chipbox ${t.leaf.kind === 'color' ? 'is-color' : ''}`} style={sample(t)} aria-hidden>{t.leaf.kind === 'color' ? '' : t.leaf.kind === 'number' || t.leaf.kind === 'enum' || t.leaf.kind === 'bool' ? String(value(t) ?? '') : 'Aa'}</span>
             <span className="fx-small">{t.label}</span>
           </button>
@@ -281,7 +281,7 @@ function CompareView({ tt, type, cats, draft, other, otherId, options, setOther,
             const a = tt.getAt(draft, t.path), b = tt.getAt(other, t.path);
             const color = t.leaf.kind === 'color';
             return (
-              <div key={t.id} className={`${P}__cmprow ${diffs.has(t.path) ? 'is-diff' : ''}`} role="row">
+              <div key={t.id} data-fx-focus-key={t.id} className={`${P}__cmprow ${diffs.has(t.path) ? 'is-diff' : ''}`} role="row">
                 <span role="cell">{t.label}</span>
                 <span role="cell" className={`${P}__cmpval fx-mono fx-small`}>{color && <span className={`${P}__dot`} style={{ background: String(a ?? '') }} aria-hidden />}{show(a)}</span>
                 <span role="cell" className={`${P}__cmpval fx-mono fx-small`}>{color && <span className={`${P}__dot`} style={{ background: String(b ?? '') }} aria-hidden />}{show(b)}</span>

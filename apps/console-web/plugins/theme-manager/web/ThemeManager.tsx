@@ -334,7 +334,7 @@ function SavedThemes({ onApply }: { onApply: (type: string, id: string) => void 
       {items && !items.length && <p className="fx-small fx-muted" title="Saved themes are standard asset@1 files every AXF app and port can load.">Nothing saved yet: roll something you like, then “Save as asset”.</p>}
       <ul className={`${P}__saved`}>
         {(items ?? []).map((a) => (
-          <li key={key(a)}>
+          <li key={key(a)} data-fx-focus-key={key(a)}>
             {edit === key(a)
               ? <form className={`${P}__bar fx-grow`} onSubmit={(e) => { e.preventDefault(); void rename(a); }}><input className="fx-input fx-grow" autoFocus value={name} onChange={(e) => setName(e.target.value)} aria-label="New name" /><Button size="sm" tone="primary" onClick={() => void rename(a)}>Rename</Button></form>
               : <span className={`${P}__savedname`} title={`${a.type} · ${a.id}${a.tags?.length ? ` · ${a.tags.join(', ')}` : ''}`}><strong>{a.name}</strong> <span className="fx-small fx-muted">{a.type}{a.tags?.length ? ` · ${a.tags.join(', ')}` : ''}</span></span>}

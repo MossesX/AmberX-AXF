@@ -348,7 +348,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
           <div className="axp-ai-assistant__convs">
             {list.length === 0 && <p className="fx-muted fx-small">{q || tag ? 'No matches.' : 'No conversations yet.'}</p>}
             {list.map((c) => (
-              <div key={c.id} className={`axp-ai-assistant__conv${c.id === conv?.id ? ' is-active' : ''}`}>
+              <div key={c.id} data-fx-focus-key={c.id} className={`axp-ai-assistant__conv${c.id === conv?.id ? ' is-active' : ''}`}>
                 {renaming === c.id ? (
                   <input className="fx-input" autoFocus defaultValue={c.title} aria-label="Conversation title"
                     onBlur={(e) => { void client.patchConversation(c.id, { title: e.target.value }).then(() => { setRenaming(''); void loadList(); if (conv?.id === c.id) void open(c.id, false); }); }}
@@ -423,7 +423,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
               <Icon name={activeAgent?.icon || 'sparkles'} size={28} />
               <h3>{activeAgent ? `Ask ${activeAgent.name}` : `Ask ${name} anything`}</h3>
               <p className="fx-muted fx-small">{activeAgent?.description || 'About this framework and its code (it reads the real repository), or anything else. Type / for prompts and commands; paste or drop images and files. Replies keep running if you leave.'}</p>
-              <div className="axp-ai-assistant__suggest">{(status?.suggestions ?? []).map((s) => <button key={s} type="button" className="fx-chip" onClick={() => { setText(s); inputRef.current?.focus(); }}>{s}</button>)}</div>
+              <div className="axp-ai-assistant__suggest">{(status?.suggestions ?? []).map((s) => <button key={s} data-fx-focus-key={s} type="button" className="fx-chip" onClick={() => { setText(s); inputRef.current?.focus(); }}>{s}</button>)}</div>
             </div>
           )}
           {visible.map((m) => (
@@ -455,7 +455,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
           {slashMatches.length > 0 && (
             <div className="axp-ai-assistant__slash" role="listbox">
               {slashMatches.map((p) => (
-                <button key={p.shortcut} type="button" role="option" aria-selected="false" data-fx-row className="axp-ai-assistant__slash-item"
+                <button key={p.shortcut} data-fx-focus-key={p.shortcut} type="button" role="option" aria-selected="false" data-fx-row className="axp-ai-assistant__slash-item"
                   onClick={() => { if (p.text) setText(p.text); else if (p.shortcut.endsWith(' ')) setText(p.shortcut); else { slash(p.shortcut); setText(''); } inputRef.current?.focus(); }}>
                   <span className="fx-mono">{p.shortcut.trim()}</span><span className="fx-small fx-muted">{p.title}</span>
                 </button>

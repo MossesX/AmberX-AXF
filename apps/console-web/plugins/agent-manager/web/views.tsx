@@ -125,7 +125,7 @@ function CollTab({ coll, cache, status, render, extra, wizardKind, blank = {} }:
           {allTags.length > 0 && <select className="fx-input axp-agent-manager__narrow" value={tag} onChange={(e) => setTag(e.target.value)} aria-label="Tag"><option value="">all tags</option>{allTags.map((t) => <option key={t} value={t}>#{t}</option>)}</select>}
         </div>
         {shown.map((it) => (
-          <button key={String(it.id)} type="button" data-fx-row className={`axp-agent-manager__item${sel === it.id ? ' is-active' : ''}`} onClick={() => open(it)}>
+          <button key={String(it.id)} data-fx-focus-key={String(it.id)} type="button" data-fx-row className={`axp-agent-manager__item${sel === it.id ? ' is-active' : ''}`} onClick={() => open(it)}>
             <strong>{String(it.name ?? it.id)}{coll === 'tools' && isDangerousTool(it as { dangerous?: boolean; kind?: string; config?: Record<string, unknown> }, status) ? <Chip tone="warning">dangerous</Chip> : null}{it.forkedFrom ? <Chip>fork</Chip> : null}</strong>
             <span className="fx-small fx-muted">{String(it.description ?? it.role ?? it.kind ?? it.mode ?? (it as unknown as Training).status ?? '')}{it.origin && it.origin !== 'user' ? ` · ${String(it.origin).replace('addon:', 'add-on ')}` : ''}</span>
           </button>
@@ -216,7 +216,7 @@ function LibraryPanel({ coll, item, onChanged }: { coll: Coll; item: Rec; onChan
           {users && !users.length && <p className="fx-small fx-muted">No agent uses it yet. Attach it in an agent’s editor.</p>}
           <ul className="axp-agent-manager__uses">
             {(users ?? []).map((u) => (
-              <li key={`${u.kind ?? 'agent'}-${u.id}`}>
+              <li key={`${u.kind ?? 'agent'}-${u.id}`} data-fx-focus-key={`${u.kind ?? 'agent'}-${u.id}`}>
                 <Icon name={u.kind === 'skill' ? 'star' : 'user'} size={13} /> <strong>{u.name}</strong> <span className="fx-small fx-muted">{u.how}</span>
                 {u.kind !== 'skill' && <Button tone="ghost" icon="branch" title="A private copy for this agent only; the others keep the shared one" onClick={() => void fork(u.id)}>Fork for {u.name}</Button>}
               </li>
@@ -230,7 +230,7 @@ function LibraryPanel({ coll, item, onChanged }: { coll: Coll; item: Rec; onChan
         {vers && !vers.length && <p className="fx-small fx-muted">Each save keeps the previous version here (last 30).</p>}
         <ul className="axp-agent-manager__uses">
           {(vers ?? []).map((v) => (
-            <li key={v.at}>
+            <li key={v.at} data-fx-focus-key={v.at}>
               <span className="fx-small">{fmtTime(v.at)}</span> <span className="fx-small fx-muted">{v.note}</span>
               <Button tone="ghost" icon="eye" onClick={() => setShowV(showV === v.at ? null : v.at)}>{showV === v.at ? 'Hide' : 'Diff'}</Button>
               <Button tone="ghost" icon="undo" onClick={() => void rollback(v.at)}>Roll back</Button>
@@ -315,7 +315,7 @@ function AgentsTab({ cache, status, wizard }: { cache: Cache; status?: Status; w
         <div className="axp-agent-manager__row"><strong className="fx-grow">Agents ({cache.agents.length})</strong><Button icon="rocket" onClick={() => wizard('builder')}>Build</Button></div>
         {cache.agents.length > 4 && <input className="fx-input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Filter agents" aria-label="Filter agents" />}
         {shown.map((a) => (
-          <button key={a.id} type="button" data-fx-row className={`axp-agent-manager__item${sel === a.id ? ' is-active' : ''}`} onClick={() => open(a)}>
+          <button key={a.id} data-fx-focus-key={a.id} type="button" data-fx-row className={`axp-agent-manager__item${sel === a.id ? ' is-active' : ''}`} onClick={() => open(a)}>
             <strong><Icon name={a.icon || 'user'} size={13} /> {a.name}{a.enabled === false ? ' (off)' : ''}{dangerous.has(a.id) && <Chip tone="warning">dangerous tools</Chip>}</strong>
             <span className="fx-small fx-muted">{a.memory?.type ?? 'hybrid'} memory · {(a.skillIds ?? []).length} skills{a.origin && a.origin !== 'user' ? ` · ${a.origin.replace('addon:', 'add-on ')}` : ''}</span>
           </button>
@@ -541,7 +541,7 @@ function MemoryTab({ cache }: { cache: Cache }) {
           </div>
           <div className="axp-agent-manager__mem">
             {data.items.map((m) => (
-              <div key={m.id} className="axp-agent-manager__memitem">
+              <div key={m.id} data-fx-focus-key={m.id} className="axp-agent-manager__memitem">
                 <div className="fx-row fx-row--wrap"><Chip>{m.kind}</Chip>{m.score !== undefined && <span className="fx-small fx-muted">score {m.score}</span>}<span className="fx-small fx-muted fx-grow">{m.source} · {fmtTime(m.createdAt)}{m.hits ? ` · used ${m.hits}×` : ''}</span>
                   <button type="button" className="fx-iconbtn" aria-label="Forget" onClick={() => void del(`memory/${aid}/${m.id}`).then(load)}><Icon name="trash" size={12} /></button></div>
                 <p>{m.text.length > 600 ? `${m.text.slice(0, 600)}…` : m.text}</p>
@@ -563,7 +563,7 @@ function MemoryTab({ cache }: { cache: Cache }) {
           <summary><strong>All memory stores</strong> <span className="fx-small fx-muted">{scopes.length} — shared scopes show every agent that uses them</span></summary>
           <ul className="axp-agent-manager__uses">
             {scopes.map((s) => (
-              <li key={s.scope}><span className="fx-mono">{s.scope}</span><Chip>{s.items} items</Chip><span className="fx-small fx-muted">{Math.round(s.bytes / 1024)} KB · {s.agents.length ? s.agents.map((id) => cache.agents.find((a) => a.id === id)?.name ?? id).join(', ') : 'no agent uses it'}</span>
+              <li key={s.scope} data-fx-focus-key={s.scope}><span className="fx-mono">{s.scope}</span><Chip>{s.items} items</Chip><span className="fx-small fx-muted">{Math.round(s.bytes / 1024)} KB · {s.agents.length ? s.agents.map((id) => cache.agents.find((a) => a.id === id)?.name ?? id).join(', ') : 'no agent uses it'}</span>
                 {s.orphan && <Chip tone="warning">orphan</Chip>}</li>
             ))}
           </ul>
@@ -605,7 +605,7 @@ export function AddonsTab() {
       {err && <div className="axp-agent-manager__note is-warn"><Icon name="alert" size={14} />{err}</div>}
       <div className="axp-agent-manager__flat">
         {items.map((a) => (
-          <div key={a.id} className="axp-agent-manager__flatrow">
+          <div key={a.id} data-fx-focus-key={a.id} className="axp-agent-manager__flatrow">
             <div className="axp-agent-manager__row"><Icon name={a.icon || 'package'} size={16} /><strong className="fx-grow">{a.name}</strong>{a.installed ? <Chip tone="success">installed</Chip> : <Chip>{a.source}</Chip>}{a.updateAvailable && <Chip tone="warning">update {a.version}</Chip>}</div>
             <span className="fx-small axp-agent-manager__clip" title={a.description}>{a.description}</span>
             <span className="fx-small fx-muted">{a.agents?.length ? `agents: ${a.agents.map((x) => x.name).join(', ')} · ` : ''}{Object.entries(a.provides).filter(([, n]) => n).map(([k, n]) => `${n} ${k}`).join(' · ')} · v{a.installedVersion ?? a.version}</span>
@@ -642,7 +642,7 @@ function RunsTab({ cache }: { cache: Cache }) {
     <div className="fx-stack axp-agent-manager__flat">
       <select className="fx-input axp-agent-manager__narrow" value={kind} onChange={(e) => setKind(e.target.value)} aria-label="Run kind"><option value="">all runs</option><option value="workflow">workflows</option><option value="training">training</option><option value="playground">playground</option></select>
       {items.map((r) => (
-        <details key={r.id} className="axp-agent-manager__flatrow">
+        <details key={r.id} data-fx-focus-key={r.id} className="axp-agent-manager__flatrow">
           <summary><Chip>{r.kind}</Chip> {r.name ?? agentName[r.agentId ?? ''] ?? r.workflowId ?? r.agentId} · <span className="fx-small fx-muted">{fmtTime(r.at)}{r.status ? ` · ${r.status}` : ''}{r.added !== undefined ? ` · ${r.added} chunks` : ''}</span></summary>
           {r.input && <><strong className="fx-small">Input</strong><pre className="axp-agent-manager__out">{r.input}</pre></>}
           {r.output && <><strong className="fx-small">Output</strong><pre className="axp-agent-manager__out">{r.output}</pre></>}

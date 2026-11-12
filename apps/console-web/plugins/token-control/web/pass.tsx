@@ -171,7 +171,7 @@ export function PassesTab() {
       </Container>
       <Container title="Scopes" icon="shield">
         <table className="fx-table"><tbody>{rows.map((r) => (
-          <tr key={r.id}>
+          <tr key={r.id} data-fx-focus-key={r.id}>
             <td><b>{r.label}</b><div className="fx-muted fx-mono axf-tc-small">{r.id}</div></td>
             <td>{r.active ? <>{r.text} <span className="fx-mono">{countdown(r.active.expiresAt, now)}</span></> : r.text}</td>
             <td><div className="fx-row fx-row--tight fx-row--end">
@@ -184,7 +184,7 @@ export function PassesTab() {
       </Container>
       {!!status?.recent?.length && (
         <Container title="Recent passes" icon="clock">
-          <table className="fx-table"><tbody>{status.recent.filter(Boolean).map((p) => <tr key={p!.id}><td className="fx-mono axf-tc-small">{p!.id}</td><td>{p!.scope}</td><td>{p!.state}</td><td className="fx-muted">{p!.text}</td></tr>)}</tbody></table>
+          <table className="fx-table"><tbody>{status.recent.filter(Boolean).map((p) => <tr key={p!.id} data-fx-focus-key={p!.id}><td className="fx-mono axf-tc-small">{p!.id}</td><td>{p!.scope}</td><td>{p!.state}</td><td className="fx-muted">{p!.text}</td></tr>)}</tbody></table>
         </Container>
       )}
     </div>

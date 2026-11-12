@@ -147,7 +147,7 @@ function UpdateNote({ report, checking, importing, status }: { report: SyncRepor
   return (
     <Note tone={r.errors?.length ? 'warning' : r.new || r.continued || r.changed ? 'success' : 'info'} icon={r.kind === 'import' ? 'upload' : 'check-circle'}>
       <b>{r.kind === 'import' ? 'Export imported' : 'Checked'} {core.fmtWhen(r.at)}:</b> {core.summary(r)}{r.took !== undefined ? ` (${r.took} s)` : ''}
-      {!!r.errors?.length && <details className="axp-chat-viewer-errs"><summary>{r.errors.length} problem{r.errors.length > 1 ? 's' : ''}</summary><ul>{r.errors.slice(0, 30).map((e) => <li key={e}>{e}</li>)}</ul></details>}
+      {!!r.errors?.length && <details className="axp-chat-viewer-errs"><summary>{r.errors.length} problem{r.errors.length > 1 ? 's' : ''}</summary><ul>{r.errors.slice(0, 30).map((e) => <li key={e} data-fx-focus-key={e}>{e}</li>)}</ul></details>}
     </Note>
   );
 }
@@ -162,7 +162,7 @@ function Hits({ hits, q, onOpen }: { hits: Hit[]; q: string; onOpen: (h: Hit) =>
     <div className="fx-stack axp-chat-viewer-hits" role="list" aria-label="Search hits">
       <p className="fx-muted axp-chat-viewer-lede">{hits.length} hit{hits.length > 1 ? 's' : ''}{hits.length >= 100 ? ' (first 100)' : ''} — tap one to jump there</p>
       {hits.map((h) => (
-        <button key={`${h.sessionId}:${h.seq}`} type="button" role="listitem" data-fx-row className="axp-chat-viewer-hit" onClick={() => onOpen(h)}>
+        <button key={`${h.sessionId}:${h.seq}`} data-fx-focus-key={`${h.sessionId}:${h.seq}`} type="button" role="listitem" data-fx-row className="axp-chat-viewer-hit" onClick={() => onOpen(h)}>
           <span className="axp-chat-viewer-hit__head"><SourceChip s={h.source} /><b className="axp-chat-viewer-title__text">{h.title}</b><span className="axp-chat-viewer-when">{core.fmtWhen(h.updatedAt)}</span></span>
           <span className="axp-chat-viewer-hit__snip">{h.seq < 0 ? 'in the title' : <Snippet s={h.snippet} />}</span>
         </button>
@@ -274,7 +274,7 @@ function Tools({ items, flash }: { items: { seq: number; m: Message }[]; flash: 
     <details className="axp-chat-viewer-tools" data-axf-not-toolbar="tool steps of a chat transcript, not actions" open={has}>
       <summary><Icon name="terminal" size={12} />{items.length} tool {items.length > 1 ? 'steps' : 'step'} · {names}</summary>
       {items.map((i) => (
-        <div key={i.seq} id={`axp-cv-m-${i.seq}`} className={`axp-chat-viewer-tool${flash === i.seq ? ' is-active' : ''}`}>
+        <div key={i.seq} data-fx-focus-key={i.seq} id={`axp-cv-m-${i.seq}`} className={`axp-chat-viewer-tool${flash === i.seq ? ' is-active' : ''}`}>
           <b>{i.m.toolName || 'Tool'}</b>{i.m.at && <time dateTime={i.m.at}> {core.fmtWhen(i.m.at)}</time>}
           <pre className="axp-chat-viewer-pre">{i.m.text}</pre>
         </div>
@@ -426,7 +426,7 @@ export function ChatViewerSettings() {
         <TextField label="Hub drop folder (empty = the hub's sessions/claude-ai)" mono value={draft.drop} placeholder={status?.sources.hubDrop.path} onChange={(v) => setDraft({ ...draft, drop: v })} />
         <div className="fx-row"><Button icon="save" onClick={saveSources}>Save sources</Button><Button icon="undo" onClick={() => void save({ reset: true } as Partial<Settings>).then(reload)}>Back to defaults</Button></div>
         {status && <ul className="axp-chat-viewer-srcs">
-          {status.sources.claudeDirs.map((d) => <li key={d.path}><Icon name={d.exists ? 'check-circle' : 'x-circle'} size={12} /> {d.path} {d.exists ? '' : '(not on this machine)'}</li>)}
+          {status.sources.claudeDirs.map((d) => <li key={d.path} data-fx-focus-key={d.path}><Icon name={d.exists ? 'check-circle' : 'x-circle'} size={12} /> {d.path} {d.exists ? '' : '(not on this machine)'}</li>)}
           <li><Icon name={status.sources.hubDrop.exists ? 'check-circle' : 'x-circle'} size={12} /> drop folder {status.sources.hubDrop.path || '(no hub mounted)'}</li>
           <li><Icon name="folder" size={12} /> audio files go to {status.audioDir}</li>
         </ul>}
@@ -451,7 +451,7 @@ export function ChatViewerSettings() {
         </div>
         {job && <JobLine job={job} />}
         {(['openai', 'elevenlabs'] as const).map((p) => (
-          <div key={p} className="fx-row axp-chat-viewer-key">
+          <div key={p} data-fx-focus-key={p} className="fx-row axp-chat-viewer-key">
             <TextField label={`${p === 'openai' ? 'OpenAI' : 'ElevenLabs'} key ${tts.keys[p] ? '(saved)' : ''}`} type="password" value={keyIn[p] ?? ''} onChange={(v) => setKeyIn({ ...keyIn, [p]: v })} />
             <Button size="sm" icon="save" disabled={!keyIn[p]} onClick={() => void api.put(`tts/keys/${p}`, { key: keyIn[p] }).then(() => { setKeyIn({ ...keyIn, [p]: '' }); void reload(); })}>Save</Button>
             {tts.keys[p] && <Button size="sm" icon="trash" onClick={() => void api.del(`tts/keys/${p}`).then(reload)}>Remove</Button>}

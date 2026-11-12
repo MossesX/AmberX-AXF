@@ -27,7 +27,7 @@ export function CardsView({ rows, layout, selected, onSelect, onChanged }: ViewP
   return (
     <div className="axp-plugin-manager-cards">
       {rows.map((r) => (
-        <div key={r.folder} className={`axp-plugin-manager-card is-${r.health} ${selected === r.folder ? 'is-selected' : ''} ${r.enabled ? '' : 'is-disabled'}`} {...ctx(r)}>
+        <div key={r.folder} data-fx-focus-key={r.folder} className={`axp-plugin-manager-card is-${r.health} ${selected === r.folder ? 'is-selected' : ''} ${r.enabled ? '' : 'is-disabled'}`} {...ctx(r)}>
           <button type="button" data-fx-row className="axp-plugin-manager-card__hit" onClick={() => onSelect(r.folder)} aria-label={`Show ${r.name}`} />
           <div className="axp-plugin-manager-card__cover"><Monogram row={r} size={layout === 'catalog' ? 'lg' : 'md'} /></div>
           <div className="axp-plugin-manager-card__body">
@@ -92,7 +92,7 @@ export function TableView({ rows, layout, selected, onSelect }: ViewProps) {
         </thead>
         <tbody>
           {sorted.map((r) => (
-            <tr key={r.folder} className={`axp-plugin-manager-tr is-${r.health} ${selected === r.folder ? 'is-selected' : ''}`} onClick={() => onSelect(r.folder)} {...ctx(r)}>
+            <tr key={r.folder} data-fx-focus-key={r.folder} className={`axp-plugin-manager-tr is-${r.health} ${selected === r.folder ? 'is-selected' : ''}`} onClick={() => onSelect(r.folder)} {...ctx(r)}>
               <td><span className="axp-plugin-manager-namecell"><Monogram row={r} size="sm" /><span><strong>{r.name}</strong><span className="fx-mono fx-small fx-muted"> {r.folder}</span></span></span></td>
               <td className="fx-mono">{r.version} <ModelBadge model={r.builtWith?.model} builtAt={r.builtWith?.builtAt} compact /></td>
               <td>{layout === 'terminal' ? <span className={`axp-plugin-manager-tag is-${r.health}`}>{HEALTH_LABEL[r.health].toUpperCase()}</span> : <HealthChip row={r} />}</td>
@@ -126,7 +126,7 @@ export function MasterDetailView(props: ViewProps) {
     <div className="axp-plugin-manager-md">
       <nav className="axp-plugin-manager-md__list" aria-label="Plugins">
         {rows.map((r) => (
-          <button key={r.folder} type="button" data-fx-row className={`axp-plugin-manager-md__item ${row?.folder === r.folder ? 'is-selected' : ''}`} onClick={() => onSelect(r.folder)} {...ctx(r)}>
+          <button key={r.folder} data-fx-focus-key={r.folder} type="button" data-fx-row className={`axp-plugin-manager-md__item ${row?.folder === r.folder ? 'is-selected' : ''}`} onClick={() => onSelect(r.folder)} {...ctx(r)}>
             <Monogram row={r} size="sm" />
             <span className="axp-plugin-manager-md__name">{r.name}<span className="fx-muted fx-small">{r.version}</span> <ModelBadge model={r.builtWith?.model} compact /></span>
             <span className={`axp-plugin-manager-dot is-${r.health}`} title={HEALTH_LABEL[r.health]} />

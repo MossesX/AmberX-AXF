@@ -140,7 +140,7 @@ function WherePanel() {
       {w.settings && <p className="fx-small fx-muted" style={{ margin: 0 }}>Settings: <code>{w.settings}</code><br />Lists: <code>{w.lists}</code></p>}
       {s.state.status === 'unauthorized' && <Note tone="warning">{s.state.reason}</Note>}
       {s.state.status === 'unreachable' && <Note tone="danger">{s.state.reason}</Note>}
-      {issues.length > 0 && <Note tone="warning">{issues.map((x) => <div key={x}>{x}</div>)}</Note>}
+      {issues.length > 0 && <Note tone="warning">{issues.map((x) => <div key={x} data-fx-focus-key={x}>{x}</div>)}</Note>}
       {s.loaded && !issues.length && s.state.status === 'ready' && <Note tone="success">Everything the listener needs is set.</Note>}
       <p className="fx-small fx-muted" style={{ margin: 0 }}>Voice Vault on Android is the listener: it hears these triggers (in the background too) and saves notes here.</p>
     </div>
@@ -237,7 +237,7 @@ function SubcategoryRows({ list, onChange, disabled }: { list: NoteList; onChang
         <Switch label="Ask which subcategory after picking this list" checked={list.askSubcategory} disabled={disabled || !list.subcategories.length} onChange={(v) => onChange({ ...list, askSubcategory: v })} />
         {list.askSubcategory && <TextField label="Subcategory question" hint="{list}" value={list.subcategoryPrompt} disabled={disabled} onChange={(v) => onChange({ ...list, subcategoryPrompt: v })} />}
         {list.subcategories.map((sc, i) => (
-          <div key={sc.id} className="fx-row fx-row--wrap axp-voice-notes-sub">
+          <div key={sc.id} data-fx-focus-key={sc.id} className="fx-row fx-row--wrap axp-voice-notes-sub">
             <Num label="No." value={sc.number} min={1} max={MAX_LISTS} disabled={disabled} onChange={(n) => put(i, { ...sc, number: n })} />
             <TextField label="Name" value={sc.name} disabled={disabled} onChange={(v) => put(i, { ...sc, name: v })} />
             <TextField label="Also called" hint="comma separated" value={sc.aliases.join(', ')} disabled={disabled} onChange={(v) => put(i, { ...sc, aliases: v.split(',').map((x) => x.trim()).filter(Boolean) })} />
@@ -269,7 +269,7 @@ function QuestionSetEditor({ list, set, onChange, onRemove, disabled, lang }: { 
       </div>
       {mic.err && <Note tone="warning">{mic.err}</Note>}
       {set.questions.map((q, i) => (
-        <div key={q.id} className="fx-row fx-row--wrap axp-voice-notes-q">
+        <div key={q.id} data-fx-focus-key={q.id} className="fx-row fx-row--wrap axp-voice-notes-q">
           <TextField label={`Question ${i + 1}`} value={q.ask} disabled={disabled} onChange={(v) => onChange({ ...set, questions: set.questions.map((x, k) => (k === i ? { ...x, ask: v } : x)) })} placeholder="e.g. Which store?" />
           <TextField label="Save the answer as" value={q.field} disabled={disabled} mono onChange={(v) => onChange({ ...set, questions: set.questions.map((x, k) => (k === i ? { ...x, field: v.replace(/[^a-z0-9_-]/gi, '').slice(0, 40) } : x)) })} placeholder="store" />
           <IconButton icon="x" label="Remove question" disabled={disabled} onClick={() => onChange({ ...set, questions: set.questions.filter((_, k) => k !== i) })} />
@@ -325,7 +325,7 @@ function ListsPanel() {
         </div>
         {draft && open === draft.id && <ListEditor initial={draft} ready={ready} lang={snap.settings.language} onDone={() => { setDraft(null); setOpen(null); }} />}
         {snap.lists.map((l) => (
-          <div key={l.id} className="fx-stack axp-voice-notes-list">
+          <div key={l.id} data-fx-focus-key={l.id} className="fx-stack axp-voice-notes-list">
             <button type="button" data-fx-row className="fx-row axp-voice-notes-listrow" aria-expanded={open === l.id} onClick={() => { setDraft(null); setOpen(open === l.id ? null : l.id); }}>
               <Chip tone="accent">{l.number}</Chip>
               <strong>{l.name || '(no name)'}</strong>

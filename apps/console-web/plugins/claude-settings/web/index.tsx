@@ -101,7 +101,7 @@ function SettingRow({ s }: { s: Setting }) {
     );
   }
   return (
-    <div className="axp-cs-row" data-key={s.key}>
+    <div className="axp-cs-row" data-key={s.key} data-fx-focus-key={s.key}>
       <div className="axp-cs-row__control">{control}</div>
       {(badge || busy) && <div className="axp-cs-row__badge">{busy ? <span className="axp-cs-row__when" role="status">Saving…</span> : badge}</div>}
       {error && <Note tone="danger">{error}</Note>}
@@ -161,7 +161,7 @@ function ClaudePage() {
       </header>
       <Status view={view} error={error} />
       {view?.groups.filter((g) => view.settings.some((s) => s.group === g.id)).map((g) => (
-        <Container key={g.id} title={g.label} icon={g.icon}><GroupBody view={view} group={g} /></Container>
+        <Container key={g.id} focusKey={g.id} title={g.label} icon={g.icon}><GroupBody view={view} group={g} /></Container>
       ))}
     </div>
   );

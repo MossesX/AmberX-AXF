@@ -167,13 +167,13 @@ function Panel() {
       <Note tone="info" icon="info">{s.priorities.map((p) => PRIORITY_TEXT[p]).join('. ')}.</Note>
       <TextField label="Find a notification" value={q} onChange={setQ} placeholder="CI, veto, review…" />
       {groups.map((g) => (
-        <Container key={g.id} title={`${g.label} (${g.rows.length})`} icon={g.icon}>
+        <Container key={g.id} focusKey={String(g.id)} title={`${g.label} (${g.rows.length})`} icon={g.icon}>
           <div>{g.rows.map((t) => <TypeRowView key={t.id} t={t} s={s} act={act} />)}</div>
         </Container>
       ))}
       <Container title="Sent and blocked lately" icon="list">
         {s.recent.length ? s.recent.map((r) => (
-          <div key={`${r.key}${r.at}`} className={`${P}__recent`}>
+          <div key={`${r.key}${r.at}`} data-fx-focus-key={`${r.key}${r.at}`} className={`${P}__recent`}>
             <b>{r.title}</b>
             <span className={`${P}__why`}>{r.label} · {r.allow ? `sent to ${r.channels.map((c) => s.channels.find((x) => x.id === c)?.label ?? c).join(', ') || 'nowhere'}` : r.why}{r.count > 1 ? ` · ${r.count}×` : ''} · {new Date(r.at).toLocaleTimeString()}</span>
           </div>
