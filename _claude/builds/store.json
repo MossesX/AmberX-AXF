@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3329,
- "updatedAt": "2026-11-12T02:34:14.149Z",
+ "rev": 3330,
+ "updatedAt": "2026-11-12T02:34:25.424Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -157603,7 +157603,7 @@
    "branch": "claude/molly-gap-console-token-handoff",
    "pr": "",
    "createdAt": "2026-11-10T22:09:29.615Z",
-   "updatedAt": "2026-11-12T02:34:11.614Z",
+   "updatedAt": "2026-11-12T02:34:18.102Z",
    "builtAt": "",
    "notes": [
     {
@@ -157637,6 +157637,10 @@
     {
      "text": "Started run 2 on account-5 (API key, subscriptions first, then API) (Opus, Phase 1): axf-molly-gap-console-token-handoff--gina.",
      "at": "2026-11-12T02:34:11.614Z"
+    },
+    {
+     "text": "Claude account: account-5 (axf-molly-gap-console-token-handoff--gina, own login copy)",
+     "at": "2026-11-12T02:34:18.102Z"
     }
    ],
    "approvals": [],
@@ -157767,7 +157771,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

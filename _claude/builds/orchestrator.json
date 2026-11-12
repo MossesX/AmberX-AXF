@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:34:14.149Z",
+ "updatedAt": "2026-11-12T02:34:25.424Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -97779,7 +97779,7 @@
    "branch": "claude/molly-gap-console-token-handoff",
    "pr": "",
    "createdAt": "2026-11-10T22:09:29.615Z",
-   "updatedAt": "2026-11-12T02:34:11.614Z",
+   "updatedAt": "2026-11-12T02:34:18.102Z",
    "builtAt": "",
    "notes": [
     {
@@ -97813,6 +97813,10 @@
     {
      "text": "Started run 2 on account-5 (API key, subscriptions first, then API) (Opus, Phase 1): axf-molly-gap-console-token-handoff--gina.",
      "at": "2026-11-12T02:34:11.614Z"
+    },
+    {
+     "text": "Claude account: account-5 (axf-molly-gap-console-token-handoff--gina, own login copy)",
+     "at": "2026-11-12T02:34:18.102Z"
     }
    ],
    "approvals": [],
