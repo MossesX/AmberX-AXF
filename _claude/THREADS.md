@@ -221,6 +221,12 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 ## To carry on
 
+### AmberX build notifications for every stage (`amberx-build-notifications-for-every-stage-start`, All, Opus) — branch `claude/amberx-build-notifications-for-every-stage-start`
+- **Asked:** "I'll get a notification every time a build starts, completes, ready for merge, and goes live, right?"
+- **State:** built, stacked on #436 (contains it). After the finish the build's one AmberX notification moves on to Ready to merge (PR open, CI green), Merged and Live (console deploy contains the merge commit); each replaces the one before. `checkStages` every 3 min in the dispatcher tick, every built/complete build with a PR, first check records only. Switches `notifyReady` / `notifyMerged` / `notifyLive` (Phone pop-ups) + notify types `pipeline.ready|merged|live`. REST `GET pipeline/stages`, MCP `pipeline-stages`, CLI `pipeline.mjs stages [--check]`.
+- **Left:** UI Review shots (Phone pop-ups), land #436 first or close it for this PR, real phone test after deploy, AmberX in-place twin deferred (PORTING.md).
+- **Read:** `_claude/builds/reports/amberx-build-notifications-for-every-stage-start.md`.
+
 ### One AmberX build notification: veto before every start, pop-up on every finish (`one-amberx-build-notification-veto-approval-befo`, All, Opus) — branch `claude/one-amberx-build-notification-veto-approval-befo`
 - **Asked:** "Before the orchestrator starts anything, I want a veto approval notification. I don't need two. Get rid of the other one and just make it a veto approval for the AmberX notification."
 - **State:** built. Every launch held behind one AmberX pop-up on the start key (build, what it will do, steps, model, account, employee, Approve / Deny, countdown `vetoSeconds` 90 s, 0-600); no answer = starts, Deny = Pending; launch / finish update the same notification. Console card Waiting to start; `autoApprove` skips the hold. REST `pipeline/start` + `pipeline/holds`, MCP `pipeline-start` / `pipeline-holds`, CLI `pipeline.mjs approve|deny|holds`, actions `build-orchestrator.start-approve|start-deny`. Supersedes `amberx-phone-pop-up-for-every-build-start-and-fi` (archived; PR #433 folded in and closed); upgrades part of `brief-approval-dialog-before-every-headless-sess`.
