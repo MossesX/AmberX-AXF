@@ -37,14 +37,13 @@
       "group": "builds",
       "app": "console",
       "source": "Build orchestrator dispatcher",
-      "description": "The dispatcher started a headless session for a Queue build: which account, which model, which phase.",
+      "description": "The dispatcher started a headless session for a Queue build: which account, which model, which phase. Same notification as the build's end (one per build, key pipeline:run:<id>): it updates in place and alerts again on every stage.",
       "match": {
         "source": "pipeline",
         "keyPrefix": "pipeline:run:"
       },
-      "channels": {
-        "amberx": false
-      }
+      "push": true,
+      "priority": "high"
     },
     {
       "id": "pipeline.ended",
@@ -52,7 +51,7 @@
       "group": "builds",
       "app": "console",
       "source": "Build orchestrator dispatcher",
-      "description": "A dispatcher session ended: every step done (built), crashed and back in the Queue, stopped early and back in Pending for you, or failed after too many runs.",
+      "description": "A dispatcher session ended: every step done (built), crashed and back in the Queue, stopped early and back in Pending for you, or failed after too many runs. It updates the build's one notification (the one that said it started) and alerts again: sound, vibration and heads-up.",
       "match": {
         "source": "pipeline",
         "keyPrefix": "pipeline:end:"

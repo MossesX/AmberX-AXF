@@ -565,7 +565,7 @@ export function tick({ env = process.env } = {}) {
   const consoleApi = makeConsole(env);
   const state = loadState();
   const sent = [];
-  const alert = (kind, d) => { const a = P.alertFor(kind, d); consoleApi('POST', '/api/alerts', a); sent.push({ key: a.key, kind, at: nowIso(), title: a.title }); };
+  const alert = (kind, d) => { const { alert: a, calls } = P.alertCalls(kind, d); for (const c of calls) consoleApi(...c); sent.push({ key: a.key, kind, at: nowIso(), title: a.title }); };
   const started = nowIso();
   const inta = intake({ alert });
   const ended = checkEnds({ alert, env });

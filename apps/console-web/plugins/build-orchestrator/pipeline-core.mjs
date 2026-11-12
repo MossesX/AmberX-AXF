@@ -413,11 +413,36 @@ export function needsSplit(b, rules = { maxStepMinutes: 30 }) {
 
 export const ALERT_SOURCE = 'pipeline';
 export const ALERT_LINK = '#/build-orchestrator';
+
 /**
  * The payload POST /api/alerts takes. kind = idle | launched | ended | failed | split. `key` makes repeats bump a count
  * instead of a new alert, and lets the dispatcher resolve one (idle) when a build runs again. Key prefixes are what
- * notify.json's types match on: pipeline:idle, pipeline:run:<id> (started), pipeline:end:<id> (ended / failed), pipeline:split:<id>.
+ * notify.json's types match on: pipeline:idle, pipeline:run:<id>, pipeline:split:<id>.
+ *
+ * One notification per build (Brett, Nov 10 2026: "It's the same notification, but I want an alert each time at least."):
+ * started, ended and failed share the key pipeline:run:<id>, so the phone, the browser push and the bell keep one entry per
+ * build that updates in place. `meta.stage` names the stage; `meta.notifyType` keeps each stage under its own Notifications
+ * type, so start and end can still be switched separately.
+ *
+ * A plain repeat on an open key only bumps its count (stays read, no push). A stage must alert, so alertCalls() closes the
+ * build's notification and raises it again: the hub sees "reopened" (unread, pushed: ntfy / Web Push with renotify on the
+ * same tag), and AmberX sees a new key@lastAt stamp on the same key and re-posts the same notification. `meta.realert` marks
+ * an update that must sound again: AmberX still posts console alerts with setOnlyAlertOnce, so until it honours the flag an
+ * update to a notification that is still showing is silent on the AmberX app (deferred gap, framework/spec/PORTING.md).
  */
+export const RUN_KEY = (id) => `pipeline:run:${id}`;
+export const STAGE_TYPES = { started: 'pipeline.launched', built: 'pipeline.ended', requeued: 'pipeline.ended', returned: 'pipeline.ended', failed: 'pipeline.ended' };
+export const endStage = (outcome) => (outcome === 'finished' ? 'built' : outcome === 'requeued' ? 'requeued' : outcome === 'failed' ? 'failed' : 'returned');
+const staged = (base, stage) => ({ ...base, meta: { ...base.meta, stage, notifyType: STAGE_TYPES[stage], realert: true } });
+
+/** The console calls for one alert, in order: [method, path, body]. A build stage first closes the build's notification so the raise alerts again. */
+export function alertCalls(kind, d = {}) {
+  const a = alertFor(kind, d);
+  const calls = [];
+  if (a.meta?.stage) calls.push(['POST', '/api/alerts/resolve', { keys: [a.key] }]);
+  calls.push(['POST', '/api/alerts', a]);
+  return { alert: a, calls };
+}
 // ------------------------------------------------------------------ self-check
 
 /**
@@ -468,9 +493,9 @@ export function alertFor(kind, d = {}) {
   const base = { source: ALERT_SOURCE, link: ALERT_LINK, meta: { kind, build: d.id ?? '', account: d.account ?? '' } };
   switch (kind) {
     case 'idle': return { ...base, key: 'pipeline:idle', severity: d.kind === 'empty' ? 'info' : 'warning', title: d.kind === 'empty' ? 'Nothing is building: the Queue is empty' : 'Nothing is building while the Queue has work', body: str(d.reason, 1500) };
-    case 'launched': return { ...base, key: `pipeline:run:${d.id}`, severity: 'info', title: `Building: ${str(d.title, 120)}`, body: `Started on ${d.account} (${d.model}${d.phase ? `, ${d.phase}` : ''}) · session ${d.session || ''}`.trim() };
-    case 'ended': return { ...base, key: `pipeline:end:${d.id}`, severity: d.outcome === 'finished' ? 'success' : 'warning', title: `${d.outcome === 'finished' ? 'Built' : d.outcome === 'requeued' ? 'Back in the Queue' : 'Back in Pending'}: ${str(d.title, 120)}`, body: str(d.note, 1500) };
-    case 'failed': return { ...base, key: `pipeline:end:${d.id}`, severity: 'error', title: `Build failed: ${str(d.title, 120)}`, body: str(d.note, 1500) };
+    case 'launched': return { ...staged(base, 'started'), key: RUN_KEY(d.id), severity: 'info', title: `Building: ${str(d.title, 120)}`, body: `Started on ${d.account} (${d.model}${d.phase ? `, ${d.phase}` : ''}) · session ${d.session || ''}`.trim() };
+    case 'ended': return { ...staged(base, endStage(d.outcome)), key: RUN_KEY(d.id), severity: d.outcome === 'finished' ? 'success' : 'warning', title: `${d.outcome === 'finished' ? 'Built' : d.outcome === 'requeued' ? 'Back in the Queue' : 'Back in Pending'}: ${str(d.title, 120)}`, body: str(d.note, 1500) };
+    case 'failed': return { ...staged(base, 'failed'), key: RUN_KEY(d.id), severity: 'error', title: `Build failed: ${str(d.title, 120)}`, body: str(d.note, 1500) };
     case 'selfcheck': return { ...base, key: 'pipeline:selfcheck', severity: list(d.problems).length ? 'warning' : 'info',
       title: `Dispatcher self-check: ${list(d.fixes).length ? `fixed ${list(d.fixes).length}` : 'nothing fixed'}${list(d.problems).length ? `, ${list(d.problems).length} account${list(d.problems).length === 1 ? '' : 's'} can't work` : ''}`,
       body: str([...list(d.fixes).map((x) => `Fixed: ${x}`), ...list(d.problems).map((x) => `Can't use ${x}`), d.line ? `Now: ${d.line}` : ''].filter(Boolean).join('\n'), 1500) };

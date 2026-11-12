@@ -52,6 +52,25 @@ def check_fixture() -> None:
     print("engine matches the fixture")
 
 
+def check_stage_realert() -> None:
+    """One notification per build (pipeline:run:<id>): the dispatcher closes it and raises the next stage, so the same key
+    comes back unread and pushed instead of a silent repeat (Brett, Nov 10 2026: "I want an alert each time at least")."""
+    rules = {"channels": {"bell": {"min": "info"}, "webpush": {"min": "info"}}}
+    key, a = "pipeline:run:b", {"source": "pipeline", "severity": "info", "title": "Building: B", "key": "pipeline:run:b", "meta": {"stage": "started"}}
+    items, alert, event = A.apply_alert([], a, 100)
+    assert event == "new" and "webpush" in A.delivery_targets(alert, event, rules)
+    items = A.ack_alerts(items, None)  # Brett read "started"
+    items, alert, event = A.apply_alert(items, {**a, "title": "Building: B (phase 2)"}, 200)
+    assert event == "repeat" and alert["ack"] and A.delivery_targets(alert, event, rules) == ["bell"], "a bare repeat stays silent"
+    items = A.ack_alerts(items, None)
+    items = A.resolve_alerts(items, [key], 300)
+    items, alert, event = A.apply_alert(items, {**a, "severity": "success", "title": "Built: B", "meta": {"stage": "built"}}, 300)
+    assert event == "reopened" and not alert["ack"] and alert["lastAt"] == 300, (event, alert)
+    assert A.delivery_targets(alert, event, rules) == ["bell", "webpush"], "a stage pushes again"
+    assert [x["key"] for x in items] == [key] and alert["title"] == "Built: B" and alert["meta"]["stage"] == "built", "same notification, updated in place"
+    print("build stages re-alert on one key OK")
+
+
 class Fake(BaseHTTPRequestHandler):
     """ntfy (POST /) and GitHub (GET /repos/...) in one tiny server."""
     posts: list[dict] = []
@@ -287,6 +306,7 @@ def check_console_app() -> None:
 
 if __name__ == "__main__":
     check_fixture()
+    check_stage_realert()
     check_webpush()
     check_hub()
     check_damaged_store()

@@ -191,9 +191,26 @@ t('alertFor: idle keyed once, per-build run keys, every kind has a title', () =>
   const idle = P.alertFor('idle', { kind: 'stuck', reason: 'why' }); assert.equal(idle.key, 'pipeline:idle'); assert.equal(idle.severity, 'warning'); assert.equal(idle.source, 'pipeline');
   assert.equal(P.alertFor('idle', { kind: 'empty', reason: 'why' }).severity, 'info');
   assert.equal(P.alertFor('launched', { id: 'b', title: 'B', account: 'w', model: 'Opus' }).key, 'pipeline:run:b');
-  assert.equal(P.alertFor('failed', { id: 'b', title: 'B', note: 'n' }).severity, 'error'); assert.equal(P.alertFor('failed', { id: 'b' }).key, 'pipeline:end:b');
+  assert.equal(P.alertFor('failed', { id: 'b', title: 'B', note: 'n' }).severity, 'error'); assert.equal(P.alertFor('failed', { id: 'b' }).key, 'pipeline:run:b');
   assert.equal(P.alertFor('ended', { id: 'b', outcome: 'finished' }).severity, 'success');
   assert.throws(() => P.alertFor('bogus'), /unknown alert kind/);
+});
+t('build stages: one notification per build, every stage alerts again', () => {
+  const st = P.alertFor('launched', { id: 'b', title: 'B', account: 'w', model: 'Opus' });
+  const end = P.alertFor('ended', { id: 'b', title: 'B', outcome: 'finished' });
+  assert.equal(st.key, end.key, 'start and end share the one notification');
+  assert.equal(st.meta.stage, 'started'); assert.equal(st.meta.notifyType, 'pipeline.launched');
+  assert.equal(end.meta.stage, 'built'); assert.equal(end.meta.realert, true); assert.equal(end.meta.notifyType, 'pipeline.ended');
+  assert.equal(P.alertFor('ended', { id: 'b', outcome: 'requeued' }).meta.stage, 'requeued');
+  assert.equal(P.alertFor('ended', { id: 'b', outcome: 'stopped' }).meta.stage, 'returned');
+  assert.equal(P.alertFor('failed', { id: 'b' }).meta.stage, 'failed');
+  for (const [kind, d] of [['launched', { id: 'b', account: 'w', model: 'Opus' }], ['ended', { id: 'b', outcome: 'finished' }], ['failed', { id: 'b' }]]) {
+    const { alert, calls } = P.alertCalls(kind, d);
+    assert.deepEqual(calls.map((c) => c[1]), ['/api/alerts/resolve', '/api/alerts'], `${kind}: close, then raise (reopened = unread + pushed)`);
+    assert.deepEqual(calls[0][2], { keys: ['pipeline:run:b'] }); assert.equal(calls[1][2], alert);
+  }
+  assert.deepEqual(P.alertCalls('idle', { kind: 'stuck', reason: 'r' }).calls.map((c) => c[1]), ['/api/alerts'], 'not a stage: a repeat only bumps the count');
+  assert.equal(P.alertFor('idle', { kind: 'stuck' }).meta.realert, undefined);
 });
 t('settings normalise and clamp', () => {
   const s = P.normSettings({ parallelPerAccount: 99, maxRuns: 0, fablePlans: ['Max', 'TEAM'], splitProvider: 'nope', autoQueue: 'yes' });
