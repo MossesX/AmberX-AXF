@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T23:08:07.619Z",
+ "updatedAt": "2026-11-12T23:08:20.792Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -109423,7 +109423,7 @@
    "title": "GitHub client plugin: see and control every PR (status, merge, pull main in, group, bulk)",
    "category": "github",
    "detail": "Brett said: \"We need to build that GitHub plugin that shows all the PRs and everything, where you can completely control them, see their status, merge and pull them in, group them into one... You need a full, powerful GitHub plugin-based client.\" Console plugin, full API (REST, MCP, CLI, voice), works per project.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -109431,8 +109431,8 @@
    "pr": "#530",
    "priority": "P1",
    "createdAt": "2026-11-12T20:40:19.258Z",
-   "updatedAt": "2026-11-12T23:08:05.558Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-12T23:08:14.129Z",
+   "builtAt": "2026-11-12T23:08:14.129Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -109548,8 +109548,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T23:08:07.509Z",
      "note": "",
      "uid": "st-mwe0i6fp0b71bc"
     },
@@ -109566,8 +109566,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T23:08:09.556Z",
      "note": "",
      "uid": "st-mwe0i6fp0c6t21"
     },
@@ -109584,8 +109584,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T23:08:11.155Z",
      "note": "",
      "uid": "st-mwe0i6fp0dmlkz"
     },
@@ -109602,8 +109602,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T23:08:12.693Z",
      "note": "",
      "uid": "st-mwe0i6fq0e2lwq"
     },
@@ -109620,8 +109620,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T23:08:14.129Z",
      "note": "",
      "uid": "st-mwe465op01901g"
     },

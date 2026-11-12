@@ -778,11 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:33 UTC · `axhub-web-wall-msg` added (0 steps) (all) · backfill
-- 2026-11-12 03:33 UTC · `project-thread-v9io2i` added (0 steps) (all) · backfill
-- 2026-11-12 03:33 UTC · `project-thread-j1ri9d` added (0 steps) (all) · backfill
-- 2026-11-12 03:33 UTC · `project-thread-1d9f6k` added (0 steps) (all) · backfill
-- 2026-11-12 03:33 UTC · `project-thread-32ym2e` added (0 steps) (all) · backfill
 - 2026-11-12 03:33 UTC · `project-thread-t9zktq` added (0 steps) (all) · backfill
 - 2026-11-12 03:33 UTC · `axhub-web-on-hub` added (0 steps) (all) · backfill
 - 2026-11-12 03:33 UTC · `framework-walkthrough-video-builder-qocfr1` added (0 steps) (all) · backfill
@@ -1178,6 +1173,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 23:05 UTC · `move-amberx-web-app-into-the-console-amberx-andr` s10 done (all) · orchestrator
 - 2026-11-12 23:07 UTC · `move-amberx-web-app-into-the-console-amberx-andr` s11 done (all) · orchestrator
 - 2026-11-12 23:08 UTC · `github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro` s2 done (all) · orchestrator
+- 2026-11-12 23:08 UTC · `github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro` s3 done (all) · orchestrator
+- 2026-11-12 23:08 UTC · `github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro` s4 done (all) · orchestrator
+- 2026-11-12 23:08 UTC · `github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro` s5 done (all) · orchestrator
+- 2026-11-12 23:08 UTC · `github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro` s6 done (all) · orchestrator
+- 2026-11-12 23:08 UTC · `github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro` s9 done (all) · orchestrator
 
 ## Token passes (log)
 
