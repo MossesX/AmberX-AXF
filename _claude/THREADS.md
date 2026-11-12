@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 22:30 UTC · `molly-one-shell` note (all) · reconciler
 - 2026-11-10 22:33 UTC · `molly-one-shell` s13 done (all) · orchestrator
 - 2026-11-10 22:39 UTC · `molly-one-shell` s14 done, → built (all) · orchestrator
 - 2026-11-10 22:40 UTC · `molly-one-shell` note (all) · orchestrator
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:04 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` → queued, note (all) · console
 - 2026-11-12 02:04 UTC · `molly-native-expenses` s2 done (all) · orchestrator
 - 2026-11-12 02:04 UTC · `amberx-build-notifications-for-every-stage-start` s2 done (all) · orchestrator
+- 2026-11-12 02:05 UTC · `amberx-build-notifications-for-every-stage-start` s2 done (all) · foreign-write
 
 ## Token passes (log)
 
