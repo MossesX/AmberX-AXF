@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T20:32:06.446Z",
+ "updatedAt": "2026-11-12T20:32:59.720Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -108564,7 +108564,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T20:31:23.288Z",
-   "updatedAt": "2026-11-12T20:31:23.288Z",
+   "updatedAt": "2026-11-12T20:32:58.558Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -108608,7 +108608,7 @@
     },
     {
      "id": "s3",
-     "text": "Wizard step: optional starter code from Boilerplates",
+     "text": "Wizard step: starter boilerplate = a React + TypeScript + Python app like the console, with user accounts, console login and axHub login already wired in",
      "model": "Opus",
      "why": "",
      "phase": "",
