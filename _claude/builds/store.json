@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3219,
- "updatedAt": "2026-11-12T01:57:12.638Z",
+ "rev": 3220,
+ "updatedAt": "2026-11-12T01:57:28.120Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -120684,10 +120684,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/molly-native-expenses",
-   "pr": "",
+   "pr": "#497",
    "priority": "P0",
    "createdAt": "2026-11-08T16:58:59.537Z",
-   "updatedAt": "2026-11-12T01:57:09.288Z",
+   "updatedAt": "2026-11-12T01:57:26.676Z",
    "builtAt": "",
    "notes": [
     {
@@ -120748,12 +120748,12 @@
    "pipeline": {
     "queuedAt": "2026-11-12T01:43:45.787Z",
     "queuedBy": "console",
-    "account": "account-5",
-    "session": "axf-molly-native-expenses--lenny",
+    "account": "",
+    "session": "",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-12T01:57:07.629Z",
-    "runs": 2,
+    "launchedAt": "2026-11-12T01:44:38.113Z",
+    "runs": 1,
     "lastRun": {
      "at": "2026-11-12T01:55:06.415Z",
      "exit": 1,
@@ -120764,9 +120764,9 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
-    "dispatchedAt": "2026-11-12T01:57:07.629Z",
+    "dispatchedAt": "2026-11-12T01:44:38.113Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -120775,7 +120775,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-12T01:57:07.629Z",
+    "pickedAt": "2026-11-12T01:44:38.113Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""

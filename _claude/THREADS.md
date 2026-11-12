@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 21:57 UTC · `background-is-its-own-asset-type-with-asset-sett` added (0 steps) (all) · console
 - 2026-11-10 21:57 UTC · `background-is-its-own-asset-type-with-asset-sett` → queued, note (all) · console
 - 2026-11-10 21:57 UTC · `background-token-for-every-ui-background-designe` → queued, note (all) · builds-live
 - 2026-11-10 21:57 UTC · `employee-hooks-plain-tap-on-an-employee-name-ope` added (0 steps) (all) · builds-live
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 01:56 UTC · `console-commands-reliable` → pending, note (all) · reconciler
 - 2026-11-12 01:57 UTC · `molly-native-expenses` → running, note (all) · pipeline
 - 2026-11-12 01:57 UTC · `molly-native-expenses` note (all) · orchestrator
+- 2026-11-12 01:57 UTC · `molly-native-expenses` → running, PR #497 (all) · builds-live
 
 ## Token passes (log)
 
