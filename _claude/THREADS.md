@@ -777,7 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:27 UTC · `amberx-handsfree` note (all) · backfill
 - 2026-11-12 03:27 UTC · `amberx-notes` note (all) · backfill
 - 2026-11-12 03:27 UTC · `fix-interface-scope-settings` note (all) · backfill
 - 2026-11-12 03:27 UTC · `amberx-voice-fix` merged, note (all) · backfill
@@ -1177,6 +1176,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 11:10 UTC · `focus-on-every-screen-console-open-console-show-` note (all) · orchestrator
 - 2026-11-12 11:10 UTC · `focus-on-every-screen-console-open-console-show-` s3 done, → built (all) · orchestrator
 - 2026-11-12 11:11 UTC · `show-commits-behind-main-on-every-build-table-an` s2 done (all) · orchestrator
+- 2026-11-12 11:12 UTC · `show-commits-behind-main-on-every-build-table-an` s2 done (all) · foreign-write
 
 ## Token passes (log)
 
