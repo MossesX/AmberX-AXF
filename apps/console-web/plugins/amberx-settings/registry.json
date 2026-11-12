@@ -210,6 +210,18 @@
    "kind": "toggle",
    "default": true,
    "group": "Links"
+  },
+  {
+   "key": "backend",
+   "doc": "amberx.backend",
+   "label": "The phone app shows",
+   "kind": "choice",
+   "default": "console",
+   "options": [
+    "console",
+    "amberx-web"
+   ],
+   "group": "App"
   }
  ]
 }

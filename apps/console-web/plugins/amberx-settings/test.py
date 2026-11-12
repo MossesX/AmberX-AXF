@@ -85,5 +85,10 @@ v = json.loads(DOC.read_text())["values"]
 eq((v["amberx.voice.swears"], "amberx.phone.own" in v, v["amberx.phone.new"]), (False, False, "x"), "merge: set, remove, keep unknown keys")
 eq(c.put("/document", json={"values": {"other.key": 1}}).status_code, 400, "only AmberX keys")
 
+eq(c.get("/settings/backend").json()["setting"]["value"], "console", "backend: console by default")
+eq(c.put("/settings/backend", json={"value": "nowhere"}).status_code, 400, "backend: only console or amberx-web")
+eq(c.put("/settings/backend", json={"value": "amberx-web"}).json()["setting"]["value"], "amberx-web", "backend: switched (token: not sensitive)")
+eq(json.loads(DOC.read_text())["values"]["amberx.backend"], "amberx-web", "backend: in the document the phone reads")
+
 print("amberx-settings:", "ok" if not fails else f"{fails} failed")
 sys.exit(1 if fails else 0)

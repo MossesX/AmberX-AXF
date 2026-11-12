@@ -75,6 +75,29 @@ public class AmberxNativePlugin extends Plugin {
     }
 
     /** Talk mode with the screen off: the foreground service listens turn by turn and the page keeps the conversation. */
+    /** The backend switch (s13): {backend: console | amberx-web, site, applied}; `applied` false = from the next start. */
+    @PluginMethod
+    public void backendGet(PluginCall call) {
+        JSObject o = new JSObject();
+        String b = ConsoleBackend.get(getContext());
+        o.put("backend", b);
+        o.put("site", ConsoleBackend.siteUrl(b));
+        call.resolve(o);
+    }
+
+    /** Save the backend on this phone ({backend}); the console's own setting wins on the watch's next round. */
+    @PluginMethod
+    public void backendSet(PluginCall call) {
+        boolean changed = ConsoleBackend.set(getContext(), call.getString("backend", ConsoleBackend.CONSOLE));
+        JSObject o = new JSObject();
+        String b = ConsoleBackend.get(getContext());
+        o.put("backend", b);
+        o.put("site", ConsoleBackend.siteUrl(b));
+        o.put("changed", changed);
+        o.put("applied", false);
+        call.resolve(o);
+    }
+
     @PluginMethod
     public void talkStart(PluginCall call) {
         if (!ListenerRegistry.allowed(getContext(), ListenerRules.TALK)) { call.reject("Talk mode is switched off in Listeners."); return; }

@@ -13,7 +13,9 @@
   "provides": [
     "settings-tab:amberx",
     "action:amberx-settings.open",
-    "action:amberx-settings.focus"
+    "action:amberx-settings.focus",
+    "action:amberx-settings.backend-console",
+    "action:amberx-settings.backend-amberx-web"
   ],
   "scopes": [
     "ROUTES"

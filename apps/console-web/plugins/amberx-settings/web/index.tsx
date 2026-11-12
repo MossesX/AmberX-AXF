@@ -115,7 +115,14 @@ export const plugin: AxfWebLibrary = {
       rt.dispatch(`settings.open:${TAB}`);
       setTimeout(() => window.dispatchEvent(new CustomEvent(FOCUS_EVENT, { detail: key ?? '' })), 50);
     }, { label: 'AmberX settings: one setting (its key, e.g. voice.lang)', params: true, effect: 'navigate' });
+    // the backend switch (s13): which site the phone app opens on its next start
+    const backend = (value: 'console' | 'amberx-web') => void pluginFetch(FOLDER, 'settings/backend', { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ value }) })
+      .then((r) => rt.toast(r.ok ? `The phone app opens ${value === 'console' ? 'the console' : 'the old AmberX web app'} from its next start.` : `Not switched (${r.status}).`, r.ok ? 'success' : 'danger', 'AmberX settings'));
+    rt.actions.register('amberx-settings.backend-console', () => backend('console'), { label: 'Phone app: open the console' });
+    rt.actions.register('amberx-settings.backend-amberx-web', () => backend('amberx-web'), { label: 'Phone app: open the old AmberX web app' });
     (globalThis as { amberxVoice?: VoiceRegistry }).amberxVoice?.register(ID, [
+      { id: 'amberx-settings.backend-console', phrases: ['switch the phone to the console', 'use the console backend'], action: 'amberx-settings.backend-console', owner: 'Settings' },
+      { id: 'amberx-settings.backend-amberx-web', phrases: ['switch the phone back to amberx', 'use the old amberx backend'], action: 'amberx-settings.backend-amberx-web', owner: 'Settings' },
       { id: 'amberx-settings.open', phrases: ['open amberx settings', 'phone settings'], action: 'amberx-settings.open', owner: 'Settings' },
     ]);
   },
