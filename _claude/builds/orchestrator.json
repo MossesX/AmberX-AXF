@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T01:46:22.778Z",
+ "updatedAt": "2026-11-12T01:46:39.628Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -97460,7 +97460,7 @@
    "branch": "claude/molly-gap-remote-actions",
    "pr": "",
    "createdAt": "2026-11-10T22:09:30.792Z",
-   "updatedAt": "2026-11-12T01:45:43.953Z",
+   "updatedAt": "2026-11-12T01:46:38.240Z",
    "builtAt": "",
    "notes": [
     {
@@ -97482,6 +97482,10 @@
     {
      "text": "Opus session stopped before s1: raised s1 to Fable (cross-app protocol). Found: Molly has no console token (that is molly-gap-console-token-handoff), so Molly cannot be its own client on console-commands. The working path is the console frame Molly already keeps warm (host: molly, authenticated): Molly sends that frame its catalog (actions incl. molly.*, navigation.*, xlayout.*, its views, its settings tabs) and the frame merges it into its hello catalog as app molly; a run/open for a Molly item goes frame -> Molly and Molly answers with ok + message, which the frame acks. That needs new embed@1 messages (host -> guest catalog, guest -> host run, host -> guest result) with fixtures in framework/spec and the Kotlin twin deferred in PORTING.md, so Fable per the brief. Files: framework/core/engines/embed.ts + runtime.ts (listenToHost), apps/console-web/plugins/console-commands/web/index.tsx (catalogOf, runMessage), apps/molly/plugins/xlayout/web/host.ts (answers the frame), apps/molly/src/actions.ts. molly.auth.* is not on main yet (molly-sign-in-once); relaying every registered Molly action covers it when it lands. s2 and s3 stay on Opus after s1. Nothing committed.",
      "at": "2026-11-12T01:45:43.953Z"
+    },
+    {
+     "text": "Headless run axf-molly-gap-remote-actions--paulie: brief only · start 10.9K tokens ($0.03) · cost $0.96 · 27 turns · 6 tools, MCP none",
+     "at": "2026-11-12T01:46:38.240Z"
     }
    ],
    "approvals": [],
