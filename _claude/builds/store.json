@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3643,
- "updatedAt": "2026-11-12T19:46:55.214Z",
+ "rev": 3644,
+ "updatedAt": "2026-11-12T19:47:39.743Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -170618,8 +170618,9 @@
    "pendingId": "",
    "branch": "claude/new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans",
    "pr": "#523",
+   "priority": "P0",
    "createdAt": "2026-11-12T17:35:35.216Z",
-   "updatedAt": "2026-11-12T18:56:38.976Z",
+   "updatedAt": "2026-11-12T19:47:38.211Z",
    "builtAt": "2026-11-12T18:56:38.976Z",
    "notes": [
     {
@@ -170843,7 +170844,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
