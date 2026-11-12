@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3820,
- "updatedAt": "2026-11-12T23:25:18.397Z",
+ "rev": 3821,
+ "updatedAt": "2026-11-12T23:25:45.046Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175059,6 +175059,43 @@
    ],
    "order": {
     "all": 756
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou",
+   "title": "Rename every crew agent (Agent Swarm, Agent Manager, agent cards, sessions, group chat) to a cat name from Brett's list of 200 cat names, keeping the existing cat names (Amber, Marco, Patches, Polo, Gizmo, Brownie, Ashes, Jennifer). Update everything that shows an agent name, everywhere. Android twi",
+   "category": "",
+   "detail": "",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-12T23:25:43.887Z",
+   "updatedAt": "2026-11-12T23:25:43.888Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 757
    },
    "kind": "build",
    "planRef": "",
