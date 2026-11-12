@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:50:50.131Z",
+ "updatedAt": "2026-11-12T02:51:27.988Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -100497,7 +100497,7 @@
    "branch": "claude/owner-recognized-everywhere-veto-countdown-only-on-shell-commands",
    "pr": "",
    "createdAt": "2026-11-12T02:04:11.564Z",
-   "updatedAt": "2026-11-12T02:38:56.423Z",
+   "updatedAt": "2026-11-12T02:51:26.290Z",
    "builtAt": "",
    "notes": [
     {
@@ -100535,6 +100535,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-owner-recognized-everywhere-veto-countdown-only---lenny, own login copy)",
      "at": "2026-11-12T02:38:25.365Z"
+    },
+    {
+     "text": "s1+s2 done; live axHub policy already applied (veto only on vps.run/launch + console terminal-open/Vinny command run; 229 console/orchestrator tools allow; upgrade confirm; backup /root/axf-runs/policy-backup). s3 stopped: GitHub secondary rate limit blocked PR creation (403, 02:40-02:48 UTC). Branches pushed, tests green. Left: open PR AmberX-AXF head claude/owner-recognized-everywhere-veto-countdown-only-on-shell-commands (body /tmp/axf-pr.md, supersedes #415 #416 #371) and axHub PR head claude/owner-policy-api (body /tmp/axhub-pr.md); link with builds-live; merge queue lands; redeploy axHub so GET/PUT /auth/api/policy goes live; AmberX FYI.",
+     "at": "2026-11-12T02:51:26.290Z"
     }
    ],
    "approvals": [],
