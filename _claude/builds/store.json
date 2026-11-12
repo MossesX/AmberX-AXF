@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3277,
- "updatedAt": "2026-11-12T02:14:21.037Z",
+ "rev": 3278,
+ "updatedAt": "2026-11-12T02:14:30.077Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -155496,7 +155496,7 @@
    "title": "Rebuild Gizmo from scratch: full Claude-style chat interface, switch between Claude and local Ollama/Llama",
    "category": "",
    "detail": "Replace the current Gizmo chat. Full Claude.ai-quality interface: conversation list, streaming replies, markdown/code, attachments, voice talk mode, history search. Model switcher per chat: Claude (accounts/API) or local Ollama (amberx-llama container, Mistral Small 24B default, 7B option) via the internal API. Works in AmberX app, AmberX web app and console, with a real deep link. Keep what worked before the Nov 7 Fable rebuild.",
-   "status": "built",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -155505,7 +155505,7 @@
    "priority": "P0",
    "createdAt": "2026-11-10T21:38:57.321Z",
    "updatedAt": "2026-11-12T02:14:08.491Z",
-   "builtAt": "2026-11-12T02:14:08.491Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -155664,12 +155664,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-12T02:13:46.012Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-10T21:39:38.105Z",
-     "updatedAt": "2026-11-12T02:13:46.410Z"
+     "updatedAt": "2026-11-12T02:14:14.223Z"
     }
    ],
    "profiles": [
@@ -155680,7 +155680,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
