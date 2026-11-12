@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:45:20.649Z",
+ "updatedAt": "2026-11-12T02:46:19.433Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -101148,6 +101148,74 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mwcy3hpe06rgs4"
+    }
+   ]
+  },
+  {
+   "id": "molly-gap-axhub-cors-live",
+   "title": "Molly gap: verify axHub CORS live from molly.amberxai.com once the axHub PR is deployed",
+   "category": "",
+   "detail": "Found by molly-gap-axhub-cors s2. The hub change (MossesX/axHub branch claude/molly-gap-axhub-cors: AXHUB_API_ORIGINS, default https://molly.amberxai.com, CORS with credentials on /auth/api/*) is tested but not live: on Nov 12 GET /auth/api/session with Origin https://molly.amberxai.com still answers 200 with no Access-Control-Allow-Origin and OPTIONS /auth/api/logout answers 200 with no CORS headers. Once the axHub PR is merged and the hub redeployed (Coolify), check: session GET echoes the origin + Allow-Credentials true + Vary Origin; preflight 204 with Allow-Headers content-type, accept, x-axhub-csrf; an unlisted origin gets none. Then Molly App connections shows axHub signed in (molly.auth.* state) and a hub write (logout) works from Molly. Do not set AXHUB_API_ORIGINS unless more apps need it (unset = Molly).",
+   "status": "pending",
+   "hidden": false,
+   "source": "molly-gap-axhub-cors",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-12T02:46:12.077Z",
+   "updatedAt": "2026-11-12T02:46:12.077Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Standalone apps keep working until Molly covers them; list gaps as pending builds.",
+    "at": "2026-11-10T22:09:27.000Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "After the axHub PR is deployed: curl checks from Molly origin + unlisted origin; Molly App connections reads the hub session; a write with X-AxHub-CSRF works",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwcy4uo403d15o"
+    },
+    {
+     "id": "s2",
+     "text": "Report, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwcy4uo404yj5z"
     }
    ]
   }
