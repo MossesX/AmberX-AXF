@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3792,
- "updatedAt": "2026-11-12T23:12:41.639Z",
+ "rev": 3793,
+ "updatedAt": "2026-11-12T23:12:52.995Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174369,18 +174369,46 @@
    "title": "Banners page: focus, scroll to and highlight any banner or badge",
    "category": "banner",
    "detail": "Brett said: \"Make it focus, bring it in focus... Highlight the VPS one.\" console_show/console_open with focus on the Banners screen answers \"it has no way to focus\". Every screen must support focus (standing rule).",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-12T23:12:31.496Z",
-   "updatedAt": "2026-11-12T23:12:31.496Z",
+   "updatedAt": "2026-11-12T23:12:35.587Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T23:12:34.264Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "2026-11-12T23:12:33.833Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
    "steps": [
     {
      "id": "s1",
@@ -174435,7 +174463,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
