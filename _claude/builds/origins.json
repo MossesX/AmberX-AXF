@@ -4330,6 +4330,18 @@
    "from": "notes",
    "addenda": []
   },
+  "pending-tab-one-collapsed-row-per-build-tap-to-e": {
+   "said": "No! Every building pending should have its own row that opens, that expands to show everything.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "per-account-queues-long-press-a-queued-build-to": {
    "said": "I want to be able to hold a job down in the build manager or in the orchestrator in the queue and send it to an API immediately. An API queue. I want every account to have its own queue.",
    "at": "2026-11-09T20:26:06.899Z",
