@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3715,
- "updatedAt": "2026-11-12T22:03:25.602Z",
+ "rev": 3716,
+ "updatedAt": "2026-11-12T22:03:38.462Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -173353,7 +173353,7 @@
    "branch": "claude/one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx",
    "pr": "#527",
    "createdAt": "2026-11-12T21:51:44.012Z",
-   "updatedAt": "2026-11-12T22:03:11.979Z",
+   "updatedAt": "2026-11-12T22:03:27.689Z",
    "builtAt": "",
    "notes": [
     {
@@ -173367,6 +173367,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-one-to-do-notes-and-tasks-plugin-in-the-console---joey, own login copy)",
      "at": "2026-11-12T21:52:17.945Z"
+    },
+    {
+     "text": "s1 done: design in apps/console-web/plugins/notes-tasks/DESIGN.md (+ schema/notes-tasks.schema.json), PR #527. Store: notes-tasks@1, superset of amberx-notes@1, one hub folder per project (base = amberx-notes/ in place, others notes-<id>/). Next phases proposed in DESIGN.md: s2 engine framework/core/engines/notes-rules.mjs + fixture (Fable), s3 server store + REST + import, s4 web view, s5 settings/types editor, s6 AmberX on the engine, s7 retire todo-manager + notes-browser.",
+     "at": "2026-11-12T22:03:27.689Z"
     }
    ],
    "approvals": [],
@@ -173525,7 +173529,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
