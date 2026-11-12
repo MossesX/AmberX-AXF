@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:30:37.033Z",
+ "updatedAt": "2026-11-12T02:30:59.520Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -95948,7 +95948,7 @@
    "pr": "#506",
    "priority": "P1",
    "createdAt": "2026-11-10T20:57:38.838Z",
-   "updatedAt": "2026-11-12T02:30:24.361Z",
+   "updatedAt": "2026-11-12T02:30:53.669Z",
    "builtAt": "",
    "notes": [
     {
@@ -95982,6 +95982,10 @@
     {
      "text": "Claude account: account-5 (axf-build-notifications-same-notification-per-build--joey, own login copy)",
      "at": "2026-11-12T02:22:26.278Z"
+    },
+    {
+     "text": "Headless run axf-build-notifications-same-notification-per-build--joey: brief only · start 10.6K tokens ($0.02) · cost $1.00 · 39 turns · 6 tools, MCP none",
+     "at": "2026-11-12T02:30:53.669Z"
     }
    ],
    "approvals": [],
