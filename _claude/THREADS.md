@@ -777,9 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:28 UTC · `refactor-all` note (all) · backfill
-- 2026-11-12 03:28 UTC · `mosses-build-tools` note (all) · backfill
-- 2026-11-12 03:28 UTC · `assistant-no-subagents` note (all) · backfill
 - 2026-11-12 03:28 UTC · `shared-look-fix` note (all) · backfill
 - 2026-11-12 03:28 UTC · `veto-everywhere` note (all) · backfill
 - 2026-11-12 03:28 UTC · `agent-voice` note (all) · backfill
@@ -1177,6 +1174,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 17:35 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` added (6 steps) (all) · claude-voice
 - 2026-11-12 17:47 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` added (3 steps) (all) · claude-voice
 - 2026-11-12 17:48 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` → queued, note (all) · console
+- 2026-11-12 17:49 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` → running, note (all) · pipeline
+- 2026-11-12 17:49 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` branch claude/plugin-review-map-what-each-plugin-does-depends-on-and-breaks (all) · pipeline
+- 2026-11-12 17:49 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` note (all) · orchestrator
 
 ## Token passes (log)
 
