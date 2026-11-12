@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T23:16:52.509Z",
+ "updatedAt": "2026-11-12T23:17:03.627Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -109431,7 +109431,7 @@
    "pr": "#530",
    "priority": "P1",
    "createdAt": "2026-11-12T20:40:19.258Z",
-   "updatedAt": "2026-11-12T23:16:30.966Z",
+   "updatedAt": "2026-11-12T23:16:43.572Z",
    "builtAt": "2026-11-12T23:08:14.129Z",
    "notes": [
     {
@@ -109473,6 +109473,10 @@
     {
      "text": "Reconciler: PR #530 names s1, s7, s8 done",
      "at": "2026-11-12T23:00:44.345Z"
+    },
+    {
+     "text": "Session axf-github-client-plugin-see-and-control-every-pr-st--paulie on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-12T23:16:43.572Z"
     },
     {
      "text": "Headless run axf-github-client-plugin-see-and-control-every-pr-st--paulie: brief only · start 11.4K tokens ($0.03) · cost $9.94 · 135 turns · 6 tools, MCP none",
@@ -110569,12 +110573,93 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T23:14:47.128Z",
-   "updatedAt": "2026-11-12T23:14:47.128Z",
+   "updatedAt": "2026-11-12T23:16:42.326Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-12T23:16:42.326Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Stop the Molly guide from popping up and talking every time the console loads: no auto-open, it only opens when Brett asks.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe63aae052gwu"
+    },
+    {
+     "id": "s2",
+     "text": "Carry out the Nov 3 decision: Molly is no longer an agent, so swap the Molly guide, Ask Molly and walkthrough texts over to Gizmo.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe63aaf06jjoo"
+    },
+    {
+     "id": "s3",
+     "text": "Android twin too.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe63aaf07oyt5"
+    },
+    {
+     "id": "s4",
+     "text": "Tests green, report _claude/builds/reports/stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe63aaf08z2hm"
+    }
+   ]
   }
  ]
 }
