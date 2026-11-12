@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:31 UTC · `urgent-approval-links-say-method-not-allowed` note (all) · backfill
 - 2026-11-12 03:31 UTC · `fix-stale-running-counts-per-claude-account-not-cleared` note (all) · backfill
 - 2026-11-12 03:31 UTC · `skins-own-everything-colour-theme-swaps-independ` note (all) · backfill
 - 2026-11-12 03:31 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` note (all) · backfill
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 21:52 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` → running, note (all) · pipeline
 - 2026-11-12 21:52 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` branch claude/one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx (all) · pipeline
 - 2026-11-12 21:52 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` note (all) · orchestrator
+- 2026-11-12 21:53 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` note (all) · pipeline
 
 ## Token passes (log)
 
