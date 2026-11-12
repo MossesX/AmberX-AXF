@@ -776,8 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-11 23:26 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · orchestrator
-- 2026-11-11 23:26 UTC · `asset-overrides-changed-asset-settings-override` → archived (all) · Claude voice (Gizmo)
 - 2026-11-11 23:27 UTC · `banner-skins-context-menu-item-with-sub-menu-of-all-skins-widget-hidden-by-def` → archived (all) · Claude voice (Gizmo)
 - 2026-11-11 23:27 UTC · `skins-are-a-complete-rework-look-layout-behavior` → archived (all) · Claude voice (Gizmo)
 - 2026-11-11 23:27 UTC · `remove-the-old-theme-manager-style-and-layout-se` → archived (all) · Claude voice (Gizmo)
@@ -1176,6 +1174,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:49 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` s1 done, → running (all) · orchestrator
 - 2026-11-12 02:49 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` s3 done, → built (all) · orchestrator
 - 2026-11-12 02:49 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` note (all) · orchestrator
+- 2026-11-12 02:50 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` → running, note (all) · pipeline
+- 2026-11-12 02:50 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` note (all) · orchestrator
 
 ## Token passes (log)
 
