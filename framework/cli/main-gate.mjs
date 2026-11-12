@@ -179,7 +179,11 @@ async function ciFor(o, git, sha) {
       if (c !== sha && !statusOnly(lines(git(['diff', '--name-only', c, sha]).out))) continue;
       let runs;
       try { runs = (await gh(o, 'GET', `/repos/${o.slug}/commits/${c}/check-runs?per_page=100`))?.check_runs || []; }
-      catch (e) { return { ok: false, state: 'error', why: `couldn't read CI (${e.message.slice(0, 160)})` }; }
+      catch (e) {
+        if (e.status === 422 && c !== sha) continue; // an ancestor GitHub never saw
+        return e.status === 422 ? { ok: false, state: 'none', why: 'this commit was never on GitHub, so no CI ran on it: push the branch and land it through its PR' }
+          : { ok: false, state: 'error', why: `couldn't read CI (${e.message.slice(0, 160)})` };
+      }
       const v = ciVerdict(runs);
       if (v.ok) return c === sha ? v : { ...v, why: `${v.why} on ${c.slice(0, 8)} (same code)`, tested: c };
       if (!first || (first.state === 'none' && v.state !== 'none')) first = v;
