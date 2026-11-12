@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 21:56 UTC · `background-token-for-every-ui-background-designe` added (0 steps) (all) · console
 - 2026-11-10 21:56 UTC · `background-token-for-every-ui-background-designe` → queued, note (all) · console
 - 2026-11-10 21:56 UTC · `employee-hooks-plain-tap-on-an-employee-name-ope` added (0 steps) (all) · console
 - 2026-11-10 21:56 UTC · `employee-hooks-plain-tap-on-an-employee-name-ope` → queued, note (all) · console
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 01:55 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` → running, note (all) · pipeline
 - 2026-11-12 01:55 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` note (all) · orchestrator
 - 2026-11-12 01:56 UTC · `molly-gap-axhub-cors` → queued, note (all) · pipeline
+- 2026-11-12 01:56 UTC · `molly-native-expenses` → queued, note (all) · pipeline
 
 ## Token passes (log)
 

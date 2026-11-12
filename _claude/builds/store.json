@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3215,
- "updatedAt": "2026-11-12T01:56:05.318Z",
+ "rev": 3216,
+ "updatedAt": "2026-11-12T01:56:12.891Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -120679,7 +120679,7 @@
    "title": "Molly gap: Expense Tracker screens load natively in Molly (Next.js 16 / React 19 app today)",
    "category": "Molly",
    "detail": "Gap found by molly-one-shell. Expenses is a Next.js 16 + React 19 app; Molly is AXF React 18 + Vite, so its screens cannot mount natively as they are. Standalone expenses.amberxai.com keeps working until this lands.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -120687,7 +120687,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-08T16:58:59.537Z",
-   "updatedAt": "2026-11-12T01:55:28.690Z",
+   "updatedAt": "2026-11-12T01:56:05.103Z",
    "builtAt": "",
    "notes": [
     {
@@ -120717,6 +120717,10 @@
     {
      "text": "Started run 2 on account-5 (API key, subscriptions first, then API) (Opus, Phase 1): axf-molly-native-expenses--gina.",
      "at": "2026-11-12T01:55:26.286Z"
+    },
+    {
+     "text": "Self-check: molly-native-expenses was marked running on account-5 with no session: released and back in the Queue.",
+     "at": "2026-11-12T01:56:05.103Z"
     }
    ],
    "approvals": [],
@@ -120736,7 +120740,7 @@
    "pipeline": {
     "queuedAt": "2026-11-12T01:43:45.787Z",
     "queuedBy": "console",
-    "account": "account-5",
+    "account": "",
     "session": "",
     "slot": "",
     "model": "Opus",
@@ -120752,7 +120756,7 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "Session on account-5 ended (exit 1) with 3 steps left: back in the Queue (run 1).",
+    "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
     "dispatchedAt": "2026-11-12T01:44:38.113Z",
     "planned": {
@@ -120866,7 +120870,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
