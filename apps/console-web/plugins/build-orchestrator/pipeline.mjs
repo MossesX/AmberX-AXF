@@ -10,6 +10,8 @@
  *   node apps/console-web/plugins/build-orchestrator/pipeline.mjs status [--json]    the table (Pending / Queue / Building), accounts, slots, what the next tick would do
  *   … queue <id> [--by who]        Pending → Queue (Brett's move; the console calls it with his name)
  *   … unqueue <id…>                Queue → Pending
+ *   … move <id> top|bottom|up|down|<N> | --before <id> | --after <id>   Brett's Queue order (drag and drop): the dispatcher follows it
+ *   … order [<id…>]                the Queue in start order; with ids, save that whole order
  *   … hold <id…> [--why w] | release <id…>   On hold: stays in the Queue, the dispatcher skips it until released
  *   … archive <id…> | unarchive <id…>        the Archive (finished and retired builds; complete ones show there by themselves)
  *   … delete <id…> [--why w] | restore <id…> soft delete: kept in the store forever, Deleted tab, restorable
@@ -96,7 +98,7 @@ export function pipeDir(env = process.env) {
   const hub = join(env.AXHUB_PROJECTS_DIR || '/projects', 'amberx-axf', '_data');
   return existsSync(hub) ? join(hub, 'pipeline') : join(homedir(), '.axf', 'pipeline');
 }
-const files = () => { const d = pipeDir(); return { dir: d, settings: join(d, 'settings.json'), accounts: join(d, 'accounts.json'), state: join(d, 'state.json'), log: join(d, 'log.jsonl'), host: join(d, 'accounts-host.json'), checkRequest: join(d, 'selfcheck-request.json'), health: join(d, 'health.json'), healthLock: join(d, 'health.lock'), healthRequest: join(d, 'health-request.json') }; };
+const files = () => { const d = pipeDir(); return { dir: d, settings: join(d, 'settings.json'), accounts: join(d, 'accounts.json'), state: join(d, 'state.json'), log: join(d, 'log.jsonl'), host: join(d, 'accounts-host.json'), checkRequest: join(d, 'selfcheck-request.json'), health: join(d, 'health.json'), healthLock: join(d, 'health.lock'), healthRequest: join(d, 'health-request.json'), queueOrder: join(d, 'queue-order.json') }; };
 
 /** The Claude settings document's values (owner-only ones included), {} when unreadable. */
 export function claudeSettings(env = process.env) { return readJson(claudeSettingsFile(env))?.values ?? {}; }
@@ -187,7 +189,7 @@ export function status() {
   const builds = live(store);
   const ageMin = read.at ? Math.max(0, Math.round((Date.now() - Date.parse(read.at)) / 60e3)) : null;
   const accountsFrom = { source: read.source, at: read.at, ageMin, why: read.why || (read.source === 'snapshot' && ageMin > 5 ? `the host's account snapshot is ${ageMin} min old: the dispatcher cron may be stopped` : '') };
-  const plan = P.plan({ builds, accounts, slots: sl, settings, rules: rulesOf(store) });
+  const plan = P.plan({ builds, accounts, slots: sl, settings, rules: rulesOf(store), order: loadQueueOrder().order });
   const byTable = { pending: [], queued: [], building: [] };
   for (const b of builds) { const t = BP.tableOf(b); if (t && !b.hidden) byTable[t].push(row(b)); }
   byTable.queued.sort((a, b) => plan.queue.indexOf(a.id) - plan.queue.indexOf(b.id));
@@ -237,6 +239,42 @@ export function unqueue(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
   const r = setPipeline(b.id, { queuedAt: '', queuedBy: '', note: '', heldAt: '', heldBy: '', heldWhy: '' }, { status: 'pending', note: `Back to Pending (${by}).`, by, action: 'pipeline:unqueue' });
   logLine({ event: 'unqueued', build: b.id, by });
   return r;
+}
+
+/** Brett's Queue order (drag and drop on the Queue tab): { order: [id…], at, by }, empty when he never moved one. */
+export function loadQueueOrder() {
+  const j = readJson(files().queueOrder, {}) ?? {};
+  return { order: Array.isArray(j.order) ? j.order.map((x) => str(x, 80)).filter(Boolean).slice(0, 500) : [], at: str(j.at, 40), by: str(j.by, 80) };
+}
+/** The Queue in start order now (Brett's order merged with priority; what the dispatcher follows). */
+export function queueNow(store = loadStore()) { return P.withManualOrder(BP.queueOrder(live(store), (b) => effectivePriority(b)), loadQueueOrder().order).map((b) => b.id); }
+/**
+ * Move one queued build (Brett, Nov 10 2026: drag and drop in the Queue, the dispatcher follows the order). `to` as in
+ * pipeline-core moveInQueue(): top | bottom | up | down | 1-based position | { before } | { after }. Saves the whole
+ * Queue in its new order and notes the move on the build. Returns { id, position, queue }.
+ */
+export function moveQueue(id, to, { by = process.env.AXF_ACTOR || 'console' } = {}) {
+  const store = loadStore();
+  const b = storeCore.findBuild(store, id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  if (b.status !== 'queued' || b.deleted) throw Object.assign(new Error(`${b.id} is ${b.deleted ? 'deleted' : b.status}: only a queued build can be moved in the Queue`), { code: 2 });
+  const next = P.moveInQueue(queueNow(store), b.id, to);
+  return saveQueueOrder(next, { by, moved: b.id });
+}
+/** Save a whole Queue order (ids not queued are dropped; queued ones left out keep their place by priority). */
+export function saveQueueOrder(ids, { by = process.env.AXF_ACTOR || 'console', moved = '' } = {}) {
+  const store = loadStore();
+  const queued = new Set(BP.queueOrder(live(store), (b) => effectivePriority(b)).map((b) => b.id));
+  const order = [...new Set((Array.isArray(ids) ? ids : []).map((x) => str(x, 80)))].filter((x) => queued.has(x));
+  writeJson(files().queueOrder, { order, at: nowIso(), by: str(by, 80) });
+  const queue = queueNow(loadStore());
+  if (moved) {
+    const position = queue.indexOf(moved) + 1;
+    setPipeline(moved, {}, { note: `Moved to position ${position} of ${queue.length} in the Queue (${by}).`, by, action: 'pipeline:move' });
+    logLine({ event: 'queue-move', build: moved, position, by });
+    return { id: moved, position, queue };
+  }
+  logLine({ event: 'queue-order', by, count: order.length });
+  return { queue };
 }
 
 /**
@@ -573,7 +611,7 @@ export function tick({ env = process.env } = {}) {
   const read = accountsRead(store, settings, env); const accounts = read.accounts; const sl = slotsNow();
   // the console (in its container) can't see the logins: it reads what the host saw here
   if (read.source === 'host') { try { writeHostAccounts(read.rows, read.at || nowIso()); } catch (e) { logLine({ event: 'snapshot-failed', error: str(e.message, 300) }); } }
-  const plan = P.plan({ builds: live(store), accounts, slots: sl, settings, rules });
+  const plan = P.plan({ builds: live(store), accounts, slots: sl, settings, rules, order: loadQueueOrder().order });
   planAhead(store, accounts, settings);
   const launched = []; const failed = [];
   const hourAgo = Date.now() - 3600e3;
@@ -835,6 +873,15 @@ async function main(argv) {
     ].filter(Boolean).join('\n'));
   }
   if (cmd === 'queue') { const b = queue(rest[0], { by }); return out({ ok: true, id: b.id, status: b.status, pipeline: b.pipeline }, `${b.id} → Queue (by ${by})`); }
+  if (cmd === 'move') {
+    const to = flag('before') ? { before: flag('before') } : flag('after') ? { after: flag('after') } : rest[1];
+    const r = moveQueue(rest[0], to, { by }); return out({ ok: true, ...r }, `${r.id} → position ${r.position} of ${r.queue.length} in the Queue`);
+  }
+  if (cmd === 'order') {
+    const ids = rest.filter((a, i) => !a.startsWith('--') && !(i > 0 && rest[i - 1] === '--by'));
+    if (!ids.length) { const q = queueNow(); const o = loadQueueOrder(); return out({ ok: true, queue: q, saved: o }, [`Queue in start order (${q.length})${o.at ? ` · Brett's order saved ${o.at} by ${o.by}` : ' · by priority, then the moment queued'}`, ...q.map((id, i) => `  ${String(i + 1).padStart(2)}. ${id}`)].join('\n')); }
+    const r = saveQueueOrder(ids, { by }); return out({ ok: true, ...r }, r.queue.map((id, i) => `  ${String(i + 1).padStart(2)}. ${id}`).join('\n'));
+  }
   if (BP.BUILD_ACTIONS.includes(cmd)) {
     const ids = rest.filter((a, i) => !a.startsWith('--') && !(i > 0 && ['--by', '--why'].includes(rest[i - 1])));
     const r = buildAction(cmd, ids, { by, why: flag('why') });
@@ -891,7 +938,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | move <id> top|bottom|up|down|<N>|--before <id>|--after <id> | order [<id…>] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

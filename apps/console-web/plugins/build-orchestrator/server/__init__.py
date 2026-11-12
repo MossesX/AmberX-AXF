@@ -494,6 +494,43 @@ async def pipeline_unqueue(request: Request) -> dict[str, Any]:
     return _pipeline("unqueue", _build_id(body.get("id")), "--by", (brett_click(request) or "console")[:80])
 
 
+QUEUE_MOVES = ("top", "bottom", "up", "down")
+
+
+@router.post("/pipeline/move")
+async def pipeline_move(request: Request) -> dict[str, Any]:
+    """{id, to: top|bottom|up|down|N} or {id, before: id} / {id, after: id}: Brett's Queue order (the Queue tab's drag and
+    drop and its Move to top / bottom / position N menu). The dispatcher starts queued builds in this order; the whole
+    order is saved. Returns { id, position, queue: [id…] }."""
+    body = await _json_body(request)
+    bid = _build_id(body.get("id"))
+    who = (brett_click(request) or "console")[:80]
+    if body.get("before") or body.get("after"):
+        side = "before" if body.get("before") else "after"
+        return _pipeline("move", bid, f"--{side}", _build_id(body.get(side)), "--by", who)
+    to = str(body.get("to") or "").strip()
+    if to not in QUEUE_MOVES and not (to.isdigit() and 0 < int(to) < 10000):
+        raise HTTPException(400, "to is top, bottom, up, down or a position (1, 2, …), or give before / after")
+    return _pipeline("move", bid, to, "--by", who)
+
+
+@router.get("/pipeline/order")
+def pipeline_order() -> dict[str, Any]:
+    """The Queue in start order (what the dispatcher follows) and Brett's saved order { order, at, by }."""
+    return _pipeline("order")
+
+
+@router.post("/pipeline/order")
+async def pipeline_order_set(request: Request) -> dict[str, Any]:
+    """{ids: [id…]}: save a whole Queue order at once. Ids not queued are dropped; queued ones left out keep their place by
+    priority."""
+    body = await _json_body(request)
+    raw = body.get("ids")
+    if not isinstance(raw, list) or not raw:
+        raise HTTPException(400, "ids is a list of queued build ids")
+    return _pipeline("order", *[_build_id(x) for x in raw[:500]], "--by", (brett_click(request) or "console")[:80])
+
+
 BUILD_ACTIONS = ("unqueue", "hold", "release", "archive", "unarchive", "delete", "restore")
 
 

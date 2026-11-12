@@ -282,6 +282,60 @@ export function noAccountWhy(accounts, model) {
   return `${able.map((a) => `${a.name} ${a.running}/${a.parallel}`).join(', ')}: every ${needFable ? 'Fable ' : ''}account is at its parallel cap`;
 }
 
+// ------------------------------------------------------------------ Brett's Queue order
+
+/**
+ * Brett, Nov 10 2026: "Can I drag and drop builds in the queue? Yes, make it." The Queue tab's drag and drop (and
+ * Move to top / bottom / position N) saves the Queue's ids in Brett's order (queue-order.json, pipeline.mjs); the
+ * dispatcher starts builds in that order. `sorted` = queueOrder() (priority, then the moment queued); `order` = the
+ * saved ids. Listed builds keep Brett's order; a build he has not placed (queued after his last move) is merged in by
+ * priority: it goes in front of the first placed build of a lower priority (a P0 still jumps ahead), else after the
+ * placed ones of its own priority. Ids no longer queued are ignored.
+ */
+const prioRank = (b) => { const n = parseInt(String(effectivePriority(b)).replace(/^P/, ''), 10); return Number.isInteger(n) ? n : 2; };
+export function withManualOrder(sorted, order = []) {
+  const ids = list(order).map((x) => str(x, 80)).filter(Boolean);
+  if (!ids.length) return sorted;
+  const pos = new Map(); ids.forEach((id, i) => { if (!pos.has(id)) pos.set(id, i); });
+  const placed = sorted.filter((b) => pos.has(b.id)).sort((a, b) => pos.get(a.id) - pos.get(b.id));
+  const rest = sorted.filter((b) => !pos.has(b.id));
+  const out = [];
+  let i = 0, j = 0;
+  while (i < placed.length || j < rest.length) {
+    if (j < rest.length && (i >= placed.length || prioRank(rest[j]) < prioRank(placed[i]))) out.push(rest[j++]);
+    else out.push(placed[i++]);
+  }
+  return out;
+}
+
+/**
+ * The new Queue order after one move. `ids` = the Queue as shown now (start order); `id` = the build moved; `to` =
+ * 'top' | 'bottom' | 'up' | 'down' | a 1-based position | { before: id } | { after: id } (a drop on another card).
+ * Returns the whole new order (what is saved), or throws a plain error.
+ */
+export function moveInQueue(ids, id, to) {
+  const cur = list(ids).map((x) => str(x, 80));
+  const from = cur.indexOf(id);
+  if (from < 0) throw Object.assign(new Error(`${id} is not in the Queue`), { code: 2 });
+  const rest = cur.filter((x) => x !== id);
+  let at;
+  if (to === 'top') at = 0;
+  else if (to === 'bottom') at = rest.length;
+  else if (to === 'up') at = Math.max(0, from - 1);
+  else if (to === 'down') at = Math.min(rest.length, from + 1);
+  else if (to && typeof to === 'object' && (to.before || to.after)) {
+    const ref = str(to.before || to.after, 80); const k = rest.indexOf(ref);
+    if (k < 0) throw Object.assign(new Error(`${ref} is not in the Queue`), { code: 2 });
+    at = to.before ? k : k + 1;
+  } else {
+    const n = Number(to);
+    if (!Number.isInteger(n) || n < 1) throw Object.assign(new Error('move to top, bottom, up, down, a position (1, 2, …), before <id> or after <id>'), { code: 2 });
+    at = Math.min(rest.length, n - 1);
+  }
+  rest.splice(at, 0, id);
+  return rest;
+}
+
 // ------------------------------------------------------------------ the plan of one tick
 
 /**
@@ -291,9 +345,9 @@ export function noAccountWhy(accounts, model) {
  *   waits     [{ id, why }]                    queued builds that stay put this tick, and why
  *   idle      null, or { reason, since? }      nothing is running while work waits
  */
-export function plan({ builds, accounts, slots, settings = normSettings(), rules, now = Date.now() }) {
+export function plan({ builds, accounts, slots, settings = normSettings(), rules, now = Date.now(), order = [] }) {
   const live = list(builds).filter((b) => !b.deleted);
-  const queue = queueOrder(live, (b) => effectivePriority(b));
+  const queue = withManualOrder(queueOrder(live, (b) => effectivePriority(b)), order);
   const running = live.filter((b) => b.status === 'running' || b.status === 'waiting');
   const pending = live.filter((b) => b.status === 'pending' && !b.hidden);
   const acc = list(accounts).map((a) => ({ ...a }));

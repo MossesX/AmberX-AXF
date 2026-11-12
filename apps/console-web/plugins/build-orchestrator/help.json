@@ -131,6 +131,12 @@
         "draft": true
       },
       {
+        "target": "queue-order",
+        "title": "Queue order",
+        "text": "Drag a queued build by its handle to change when it starts: the dispatcher starts the Queue top to bottom. Right-click a card (or use its Move menu) for Move to top, Move to bottom or Move to position N. A build queued later slots in by priority.",
+        "kind": "menu"
+      },
+      {
         "target": "hold",
         "title": "Hold",
         "text": "Puts this queued build on hold. It stays in the Queue in its place, but the dispatcher skips it until you release it.",

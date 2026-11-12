@@ -18,6 +18,10 @@ const ACTION_ICON: Record<BuildAction, string> = { unqueue: 'arrow-left', hold: 
  * Build actions (Brett, Nov 10 2026: hold, archive, delete, deleted builds kept forever): build-orchestrator.<unqueue|hold|
  * release|archive|unarchive|delete|restore>:<build>[,<build>…] → POST pipeline/action (the same call as the cards, the
  * bulk toolbar, the MCP command pipeline-build-action and `pipeline.mjs <action> <id…>`).
+ * Queue order (Brett, Nov 10 2026: drag and drop in the Queue, the dispatcher follows the order):
+ * build-orchestrator.move:<build>:<top|bottom|up|down|N|before=<id>|after=<id>> → POST pipeline/move (the same call as
+ * the Queue cards' drag and drop and up / down buttons, the right-click Move items, the MCP command pipeline-move and
+ * `pipeline.mjs move <id> …`).
  */
 type TabRow = { id: string; title: string; status: string; tab: string; nextModel: string; actions?: BuildAction[]; pipeline?: { planned?: { account: string; model: string } | null; account?: string } | null };
 const pipeApi = pluginApi(FOLDER, 'Build orchestrator', { unavailable: 'The build orchestrator is switched off or its server part is not running.' });
@@ -28,6 +32,8 @@ async function loadRows(force = false): Promise<TabRow[]> {
   rows = Object.values(r.tabs ?? {}).flat(); loadedAt = Date.now();
   return rows;
 }
+/** Right-click Move to position N items, one per place up to this many (any position: the MCP command, CLI or voice). */
+const MAX_POSITION_ITEMS = 10;
 const TAB_NAME: Record<string, string> = Object.fromEntries(TABS.map((t) => [t.id, t.label]));
 
 // the tags on every build screen read through this plugin; with it removed they simply draw nothing
@@ -61,6 +67,14 @@ export const plugin: AxfWebLibrary = {
         .then((r) => { if (!r.ok) throw new Error(r.error); rt.toast(`${id} is in the Queue: the dispatcher starts it when its turn comes.`, 'success'); void open('queue'); })
         .catch((e: Error) => rt.toast(e.message, 'danger'));
     }, { label: 'Start a build (put it in the Queue)' });
+    rt.actions.register('build-orchestrator.move', ([arg, where]) => {
+      const id = decodeURIComponent(arg ?? ''); const w = decodeURIComponent(where ?? '');
+      const m = /^(before|after)=(.+)$/.exec(w);
+      if (!id || !w) { rt.toast('Name a build and where: build-orchestrator.move:<build>:<top|bottom|up|down|N>', 'warning'); return; }
+      void pipeApi.post<{ ok: boolean; error?: string; position?: number; queue?: string[] }>('pipeline/move', m ? { id, [m[1] ?? 'before']: m[2] } : { id, to: w })
+        .then((r) => { if (!r.ok) throw new Error(r.error); rt.toast(`${id} → position ${r.position} of ${r.queue?.length ?? '?'} in the Queue`, 'success'); void loadRows(true).catch(() => undefined); void open('queue'); })
+        .catch((e: Error) => rt.toast(e.message, 'danger'));
+    }, { label: 'Build orchestrator: move a queued build (top, bottom, up, down or a position)' });
     for (const action of BUILD_ACTIONS) {
       rt.actions.register(`build-orchestrator.${action}`, ([arg]) => {
         const ids = decodeURIComponent(arg ?? '').split(',').map((x) => x.trim()).filter(Boolean);
@@ -91,6 +105,14 @@ export const plugin: AxfWebLibrary = {
       const out = [{ id: 'build-orchestrator.open', label: 'Open in Build orchestrator', icon: 'layers', action: `build-orchestrator.open:${encodeURIComponent(id)}` }];
       const b = rows.find((x) => x.id === id);
       if (b && b.status === 'pending') out.push({ id: 'build-orchestrator.start', label: 'Queue it (start when its turn comes)', icon: 'play', action: `build-orchestrator.start:${encodeURIComponent(id)}` });
+      const queue = rows.filter((x) => x.tab === 'queue');
+      const pos = queue.findIndex((x) => x.id === id) + 1;
+      if (b && b.tab === 'queue' && pos > 0 && queue.length > 1) {
+        const mv = (key: string, label: string, icon: string, to: string) => out.push({ id: `build-orchestrator.move.${key}`, label, icon, action: `build-orchestrator.move:${encodeURIComponent(id)}:${to}` });
+        if (pos > 1) mv('top', 'Move to top of the Queue', 'chevron-up', 'top');
+        if (pos < queue.length) mv('bottom', 'Move to bottom of the Queue', 'chevron-down', 'bottom');
+        for (let n = 1; n <= Math.min(queue.length, MAX_POSITION_ITEMS); n += 1) if (n !== pos) mv(`pos${n}`, `Move to position ${n}`, 'layers', String(n));
+      }
       for (const a of b?.actions ?? []) out.push({ id: `build-orchestrator.${a}`, label: ACTION_LABEL[a], icon: ACTION_ICON[a], action: `build-orchestrator.${a}:${encodeURIComponent(id)}` });
       return out;
     });

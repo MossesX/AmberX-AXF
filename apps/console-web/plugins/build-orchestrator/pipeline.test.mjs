@@ -80,6 +80,26 @@ t('candidates: Fable only on Fable accounts, fewest running first', () => {
 });
 
 // ---------------- the plan of a tick
+t("Brett's Queue order: placed builds keep his order; a new one merges in by priority; moves", () => {
+  const q = (id, pr, at) => build(id, 'queued', [], { pipeline: { queuedAt: `2026-11-08T00:${at}:00Z` }, priority: pr });
+  const all = [q('a', 'P2', '01'), q('b', 'P2', '02'), q('c', 'P2', '03'), q('u', 'P0', '04'), q('v', 'P3', '05')];
+  const sorted = BP.queueOrder(all, (x) => x.priority);
+  assert.deepEqual(P.withManualOrder(sorted, []).map((x) => x.id), ['u', 'a', 'b', 'c', 'v'], 'no saved order: priority, then time');
+  assert.deepEqual(P.withManualOrder(sorted, ['c', 'a', 'b', 'gone']).map((x) => x.id), ['u', 'c', 'a', 'b', 'v'], 'a P0 not placed still jumps ahead; a P3 goes after');
+  assert.deepEqual(P.withManualOrder(sorted, ['v', 'u', 'c', 'a', 'b']).map((x) => x.id), ['v', 'u', 'c', 'a', 'b'], 'every one placed: his order wins over priority');
+  const ids = ['a', 'b', 'c', 'd'];
+  assert.deepEqual(P.moveInQueue(ids, 'c', 'top'), ['c', 'a', 'b', 'd']);
+  assert.deepEqual(P.moveInQueue(ids, 'a', 'bottom'), ['b', 'c', 'd', 'a']);
+  assert.deepEqual(P.moveInQueue(ids, 'd', 2), ['a', 'd', 'b', 'c']);
+  assert.deepEqual(P.moveInQueue(ids, 'a', '99'), ['b', 'c', 'd', 'a']);
+  assert.deepEqual(P.moveInQueue(ids, 'b', 'up'), ['b', 'a', 'c', 'd']);
+  assert.deepEqual(P.moveInQueue(ids, 'b', 'down'), ['a', 'c', 'b', 'd']);
+  assert.deepEqual(P.moveInQueue(ids, 'a', { before: 'd' }), ['b', 'c', 'a', 'd']);
+  assert.deepEqual(P.moveInQueue(ids, 'a', { after: 'd' }), ['b', 'c', 'd', 'a']);
+  assert.throws(() => P.moveInQueue(ids, 'x', 'top'), /not in the Queue/); assert.throws(() => P.moveInQueue(ids, 'a', 0), /position/);
+  const pl = P.plan({ builds: all, accounts: [], slots: { free: 0 }, settings: P.normSettings(), rules: {}, order: ['b', 'a'] });
+  assert.deepEqual(pl.queue, ['u', 'b', 'a', 'c', 'v'], 'the dispatcher plan follows the saved order');
+});
 const q1 = build('q1', 'queued', [step('s1', 'Fable'), step('s2', 'Opus')], { pipeline: { queuedAt: '2026-11-08T00:01:00Z' }, priority: 'P1' });
 const q2 = build('q2', 'queued', [step('s1', 'Opus')], { pipeline: { queuedAt: '2026-11-08T00:02:00Z' } });
 const q3 = build('q3', 'queued', [], { pipeline: { queuedAt: '2026-11-08T00:03:00Z' } });
@@ -402,6 +422,17 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     json(pipe('unqueue', 'beta', '--json')); assert.equal(find('beta').status, 'pending'); assert.equal(find('beta').pipeline?.queuedAt ?? '', '');
     json(pipe('queue', 'beta', '--json'));
     const bad = pipe('queue', 'alpha', '--json', '--expect-fail'); assert.notEqual(bad.status, 0, 'queueing a queued build is refused');
+  });
+  t('e2e move: drag and drop order saved, the status Queue and the plan follow it, a note on the build; only queued builds move', () => {
+    const r = json(pipe('move', 'beta', 'top', '--by', 'brett', '--json'));
+    assert.equal(r.position, 1); assert.equal(r.queue[0], 'beta');
+    const st = json(pipe('status', '--json'));
+    assert.deepEqual(st.tabs.queue.map((x) => x.id).slice(0, 2), ['beta', 'alpha']); assert.equal(st.plan.queue[0], 'beta');
+    assert.match(find('beta').notes.at(-1).text, /Moved to position 1 of \d+ in the Queue \(brett\)/);
+    assert.equal(json(pipe('move', 'beta', '--after', 'alpha', '--json')).position, 2);
+    assert.deepEqual(json(pipe('order', '--json')).queue.slice(0, 2), ['alpha', 'beta']);
+    assert.notEqual(pipe('move', 'gamma', 'top', '--json', '--expect-fail').status, 0, 'a build not in the Queue is refused');
+    json(pipe('order', 'alpha', 'beta', '--json'));
   });
   t('e2e tick: one slot per account cap; the Fable build goes to the Max account, the Opus build to the Pro one', () => {
     const r = json(pipe('tick', '--json'));

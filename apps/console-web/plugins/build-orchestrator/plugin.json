@@ -6,7 +6,7 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Breaks every build into small steps (30 min or less), each pinned to Fable or Opus, and runs the build pipeline (Brett, Nov 8 2026): every build gets an id and a Claude split (Fable only where needed) and sits in Pending; Brett moves it to the Queue; the dispatcher (pipeline.mjs on the VPS, every minute) watches the Claude accounts (which have Fable, parallel per account) and the agent slots and, when a slot is free, starts a headless session for the next Queue build on an account that runs its next phase's model. The only place that browses and manages builds (Brett, Nov 10 2026; the Build manager is retired): tabs Pending, Queue (each build's steps, planned model and account), Active, Incomplete, Complete, Errors, Archive (every completed and archived build), Deleted (soft-deleted builds kept forever, restorable), then Accounts (health every 5 minutes: sign-in, credits, Fable), All builds, Approvals and Rules. When a build's turn comes the dispatcher makes the final account pick, subscriptions first (in Brett's order), then any API account, moving on until one accepts, and records which account took it. Tracker is the one builds store, _claude/builds/store.json, so any session or account continues the build (orchestrator.mjs next | brief | act; pipeline.mjs status | queue | unqueue | hold | release | archive | unarchive | delete | restore | split | tick).",
+  "description": "Breaks every build into small steps (30 min or less), each pinned to Fable or Opus, and runs the build pipeline (Brett, Nov 8 2026): every build gets an id and a Claude split (Fable only where needed) and sits in Pending; Brett moves it to the Queue; the dispatcher (pipeline.mjs on the VPS, every minute) watches the Claude accounts (which have Fable, parallel per account) and the agent slots and, when a slot is free, starts a headless session for the next Queue build on an account that runs its next phase's model. The only place that browses and manages builds (Brett, Nov 10 2026; the Build manager is retired): tabs Pending, Queue (each build's steps, planned model and account), Active, Incomplete, Complete, Errors, Archive (every completed and archived build), Deleted (soft-deleted builds kept forever, restorable), then Accounts (health every 5 minutes: sign-in, credits, Fable), All builds, Approvals and Rules. When a build's turn comes the dispatcher makes the final account pick, subscriptions first (in Brett's order), then any API account, moving on until one accepts, and records which account took it. Tracker is the one builds store, _claude/builds/store.json, so any session or account continues the build (orchestrator.mjs next | brief | act; pipeline.mjs status | queue | unqueue | move | order | hold | release | archive | unarchive | delete | restore | split | tick).",
   "targets": [
     "axf-console"
   ],
@@ -351,6 +351,70 @@
           ]
         },
         "output": "{ id, status }"
+      },
+      {
+        "id": "pipeline-move",
+        "route": "POST /pipeline/move",
+        "title": "Move a build in the Queue",
+        "description": "Reorder the Queue (the Queue tab's drag and drop and its Move to top / bottom / position N menu): the dispatcher starts queued builds in this order. Give to (top, bottom, up, down or a position 1, 2, …) or before / after another queued build. Say 'move the icon browser build to the top of the queue' or 'put the toast build third in the queue'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id (must be queued)"
+            },
+            "to": {
+              "type": "string",
+              "description": "top, bottom, up, down or a 1-based position"
+            },
+            "before": {
+              "type": "string",
+              "description": "Put it just before this queued build (instead of to)"
+            },
+            "after": {
+              "type": "string",
+              "description": "Put it just after this queued build (instead of to)"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "{ id, position, queue: [id…] }"
+      },
+      {
+        "id": "pipeline-order",
+        "route": "GET /pipeline/order",
+        "title": "Queue start order",
+        "description": "The Queue in the order the dispatcher starts it (Brett's drag-and-drop order, new builds merged in by priority) and when that order was last saved and by whom. Say 'what order is the queue in'.",
+        "input": {
+          "type": "object",
+          "properties": {}
+        },
+        "output": "{ queue: [id…], saved: { order, at, by } }"
+      },
+      {
+        "id": "pipeline-order-set",
+        "route": "POST /pipeline/order",
+        "title": "Set the whole Queue order",
+        "description": "Save the whole Queue order at once. Ids not queued are dropped; queued builds left out keep their place by priority.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Queued build ids in start order"
+            }
+          },
+          "required": [
+            "ids"
+          ]
+        },
+        "output": "{ queue: [id…] }"
       },
       {
         "id": "pipeline-build-action",

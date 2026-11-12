@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { Button, Checkbox, Chip, Icon, Note, PriorityTag, Switch, useRuntime } from '@console/axf/react';
+import { useEffect, useRef, useState, type DragEvent } from 'react';
+import { Button, Checkbox, Chip, Icon, IconButton, Note, PriorityTag, Switch, useRuntime } from '@console/axf/react';
 import { WatchLiveFor } from '@console/watchLive';
 import { TAB_LABEL, type BuildAction, type PipelineTab as BuildTab } from '@console/axf/core/build-pipeline.mjs';
 
@@ -67,6 +67,8 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
   const [error, setError] = useState('');
   const [busy, setBusy] = useState('');
   const [sel, setSel] = useState<Set<string>>(() => new Set());
+  const [drag, setDrag] = useState('');
+  const [drop, setDrop] = useState<{ id: string; side: 'before' | 'after' } | null>(null);
   const timer = useRef<number | null>(null);
   const load = async () => {
     try { const r = await api.call<Status & { error?: string }>('pipeline'); if (!r.ok) throw new Error(r.error); setS(r); setError(''); }
@@ -104,6 +106,43 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
       await load();
     } catch (e) { log((e as Error).message, 'error'); rt.toast((e as Error).message, 'danger'); }
     finally { setBusy(''); }
+  };
+  /**
+   * Brett's Queue order (Nov 10 2026: "Can I drag and drop builds in the queue? Yes, make it."): drag a card onto another
+   * (before / after it), or the up / down buttons, or right-click Move to top / bottom / position N. The order is saved
+   * on the host and the dispatcher starts the Queue top to bottom. The card moves at once; the reload confirms it.
+   */
+  const move = async (id: string, to: QueueMove) => {
+    setBusy(id);
+    setS((cur) => {
+      if (!cur?.tabs?.queue) return cur;
+      const ids = cur.tabs.queue.map((r) => r.id); const next = localMove(ids, id, to); if (!next) return cur;
+      const byId = new Map(cur.tabs.queue.map((r) => [r.id, r]));
+      return { ...cur, tabs: { ...cur.tabs, queue: next.map((x) => byId.get(x)).filter((r): r is Row => !!r) } };
+    });
+    try {
+      const body = typeof to === 'object' ? { id, ...to } : { id, to: String(to) };
+      const r = await api.post<{ ok: boolean; error?: string; position?: number; queue?: string[] }>('pipeline/move', body);
+      if (!r.ok) throw new Error(r.error);
+      const what = `${id} → position ${r.position} of ${r.queue?.length ?? '?'} in the Queue`;
+      log(what, 'ok'); rt.toast(what, 'success');
+    } catch (e) { log((e as Error).message, 'error'); rt.toast((e as Error).message, 'danger'); }
+    finally { setBusy(''); await load(); }
+  };
+  const dragFor = (r: Row, i: number, total: number): QueueDrag | undefined => view !== 'queue' ? undefined : {
+    pos: i + 1, total, dragging: drag === r.id, drop: drop?.id === r.id ? drop.side : '',
+    start: (e) => { e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', r.id); setDrag(r.id); },
+    over: (e) => {
+      if (!drag || drag === r.id) return;
+      e.preventDefault(); e.dataTransfer.dropEffect = 'move';
+      const b = e.currentTarget.getBoundingClientRect();
+      const side = (e.clientX - b.left) / b.width + (e.clientY - b.top) / b.height < 1 ? 'before' : 'after'; // grid or one column: the card's first half is before
+      if (drop?.id !== r.id || drop.side !== side) setDrop({ id: r.id, side });
+    },
+    leave: () => setDrop((d) => (d?.id === r.id ? null : d)),
+    end: () => { setDrag(''); setDrop(null); },
+    dropIt: (e) => { e.preventDefault(); const id = drag || e.dataTransfer.getData('text/plain'); const side = drop?.id === r.id ? drop.side : 'before'; setDrag(''); setDrop(null); if (id && id !== r.id) void move(id, side === 'before' ? { before: r.id } : { after: r.id }); },
+    move: (to) => void move(r.id, to),
   };
   const toggle = (id: string, on: boolean) => setSel((cur) => { const n = new Set(cur); if (on) n.add(id); else n.delete(id); return n; });
   if (!s) return <div className="fx-empty">{error ? `Pipeline: ${error}` : 'Loading the pipeline…'}</div>;
@@ -188,7 +227,7 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
           <section className="fx-stack" aria-label={TAB_LABEL[view]}>
             <h2 className="pd-card__title">{TAB_LABEL[view]} <span className="oc-count">{rows.length}</span>
               {view === 'pending' && <span className="fx-muted fx-small"> · split as soon as filed, model and account planned · tap Queue to send one to the dispatcher</span>}
-              {view === 'queue' && <span className="fx-muted fx-small"> · in start order · the final account pick happens when its turn comes</span>}
+              {view === 'queue' && <span className="fx-muted fx-small"> · in start order: drag a card (or right-click it) to change when it starts · the final account pick happens when its turn comes</span>}
               {view === 'incomplete' && <span className="fx-muted fx-small"> · started, then stopped with steps left</span>}
               {view === 'complete' && <span className="fx-muted fx-small"> · built, waiting for its PR to merge · merged builds move to the Archive</span>}
               {view === 'archive' && <span className="fx-muted fx-small"> · every completed and archived build</span>}
@@ -204,7 +243,7 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
               </div>
             )}
             {rows.length === 0 ? <div className="fx-empty">{EMPTY[view]}</div>
-              : <div className="pl-cols">{rows.map((r) => <PipelineCard key={r.id} r={r} busy={busy === r.id || busy === 'bulk'} wait={waitsFor(r.id)} launch={launchFor(r.id)} act={act} run={runAction} selected={sel.has(r.id)} onSelect={(on) => toggle(r.id, on)} showSteps={view === 'queue' || view === 'pending'} />)}</div>}
+              : <div className="pl-cols" role={view === 'queue' ? 'list' : undefined} aria-label={view === 'queue' ? 'Queue, in start order' : undefined}>{rows.map((r, i) => <PipelineCard key={r.id} r={r} order={dragFor(r, i, rows.length)} busy={busy === r.id || busy === 'bulk'} wait={waitsFor(r.id)} launch={launchFor(r.id)} act={act} run={runAction} selected={sel.has(r.id)} onSelect={(on) => toggle(r.id, on)} showSteps={view === 'queue' || view === 'pending'} />)}</div>}
           </section>
         );
       })()}
@@ -222,13 +261,28 @@ const ROUTE_AUTO: RouteStep = { to: 'api', label: 'Auto' };
 const ROUTE_NEXT: Record<string, RouteStep> = { '': ROUTE_AUTO, api: { to: 'subscription', label: 'API' }, subscription: { to: 'auto', label: 'Subscriptions' } };
 const routeOf = (r?: string): RouteStep => ROUTE_NEXT[r ?? ''] ?? ROUTE_AUTO;
 
-function PipelineCard({ r, busy, wait, launch, act, run, selected, onSelect, showSteps }: { r: Row; busy: boolean; wait: string; launch?: { account: string; model: string; phase: string; kind?: string; rule?: string }; act: (path: string, body: Record<string, unknown>, what: string) => Promise<void>; run: (action: BuildAction, ids: string[]) => Promise<void>; selected: boolean; onSelect: (on: boolean) => void; showSteps: boolean }) {
+type QueueMove = 'top' | 'bottom' | 'up' | 'down' | number | { before: string } | { after: string };
+type QueueDrag = { pos: number; total: number; dragging: boolean; drop: '' | 'before' | 'after'; start: (e: DragEvent<HTMLElement>) => void; over: (e: DragEvent<HTMLElement>) => void; leave: () => void; end: () => void; dropIt: (e: DragEvent<HTMLElement>) => void; move: (to: QueueMove) => void };
+/** The same move as pipeline-core moveInQueue(), for the card's instant jump (the host's answer replaces it). */
+function localMove(ids: string[], id: string, to: QueueMove): string[] | null {
+  const from = ids.indexOf(id); if (from < 0) return null;
+  const rest = ids.filter((x) => x !== id);
+  let at: number;
+  if (to === 'top') at = 0; else if (to === 'bottom') at = rest.length; else if (to === 'up') at = Math.max(0, from - 1); else if (to === 'down') at = Math.min(rest.length, from + 1);
+  else if (typeof to === 'number') at = Math.min(rest.length, Math.max(0, to - 1));
+  else { const ref = 'before' in to ? to.before : to.after; const k = rest.indexOf(ref); if (k < 0) return null; at = 'before' in to ? k : k + 1; }
+  rest.splice(at, 0, id); return rest;
+}
+
+function PipelineCard({ r, order, busy, wait, launch, act, run, selected, onSelect, showSteps }: { r: Row; order?: QueueDrag; busy: boolean; wait: string; launch?: { account: string; model: string; phase: string; kind?: string; rule?: string }; act: (path: string, body: Record<string, unknown>, what: string) => Promise<void>; run: (action: BuildAction, ids: string[]) => Promise<void>; selected: boolean; onSelect: (on: boolean) => void; showSteps: boolean }) {
   const p = r.pipeline;
   const table = r.deleted ? 'done' : r.status === 'queued' ? 'queued' : r.status === 'running' || r.status === 'waiting' ? 'building' : r.status === 'pending' ? 'pending' : 'done';
   const pl = p?.planned ?? null;
   return (
-    <article className={`pd-card is-${table === 'building' ? 'running' : 'pending'}`} data-fx-ctx-target="axf-orchestrator-build" data-fx-ctx-payload={r.id}>
+    <article className={`pd-card is-${table === 'building' ? 'running' : 'pending'}${order?.dragging ? ' is-dragging' : ''}${order?.drop ? ` is-drop-${order.drop}` : ''}`} data-fx-ctx-target="axf-orchestrator-build" data-fx-ctx-payload={r.id}
+      role={order ? 'listitem' : undefined} draggable={order && !busy ? true : undefined} onDragStart={order?.start} onDragOver={order?.over} onDragLeave={order?.leave} onDragEnd={order?.end} onDrop={order?.dropIt}>
       <div className="pd-card__top">
+        {order && <span className="pl-grip" title="Drag to change when it starts (or right-click: Move to top / bottom / position)"><Icon name="grip" size={14} /><b>{order.pos}</b></span>}
         <h3 className="pd-card__title">{r.title}<span className="fx-muted fx-small fx-mono"> {r.id}</span></h3>
         {r.held && <Chip tone="warning">On hold</Chip>}
         {r.deleted ? <Chip tone="danger">Deleted</Chip> : <PriorityTag build={r.id} />}
@@ -264,6 +318,10 @@ function PipelineCard({ r, busy, wait, launch, act, run, selected, onSelect, sho
         {(table === 'pending' || table === 'queued') && <Button size="sm" tone="neutral" icon="zap" disabled={busy} title="Where this build may run: Auto (subscriptions first, then any API), API (API-key accounts only, billed per token) or Subscriptions (never API). Tap to switch." onClick={() => { const n = routeOf(p?.route); void act('pipeline/route', { id: r.id, route: n.to }, `${r.id}: route ${n.to}`); }}>Runs on: {routeOf(p?.route).label}</Button>}
         {(table === 'pending' || table === 'queued') && <Button size="sm" tone="neutral" icon="edit" disabled={busy || !!p?.splitRequested} title={p?.splitRequested ? 'Split asked for: the dispatcher does it within a minute' : 'Ask the orchestrator to (re)split this build into steps of 30 min or less'} onClick={() => act('pipeline/split', { id: r.id }, `${r.id}: split on the next tick`)}>{p?.splitRequested ? 'Splitting…' : 'Split now'}</Button>}
         {ACTION_ORDER.filter((a) => r.actions?.includes(a)).map((a) => <Button key={a} size="sm" tone={ACTION[a].tone} icon={ACTION[a].icon} disabled={busy} title={ACTION[a].title} onClick={() => void run(a, [r.id])}>{ACTION[a].label}</Button>)}
+        {order && order.total > 1 && <span className="pl-order" role="group" aria-label={`${r.id}: Queue order`}>
+          <IconButton icon="chevron-up" label="Move up in the Queue (starts sooner)" disabled={busy || order.pos === 1} onClick={() => order.move('up')} />
+          <IconButton icon="chevron-down" label="Move down in the Queue (starts later)" disabled={busy || order.pos === order.total} onClick={() => order.move('down')} />
+        </span>}
       </div>
     </article>
   );

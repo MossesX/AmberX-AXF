@@ -46,3 +46,11 @@ button.oc-model { cursor: pointer }
 
 /* Bulk select (Nov 10 2026: hold, archive, delete, restore on many builds at once): layout only */
 .pl-bulk { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
+
+/* Queue order (Nov 10 2026: drag and drop, the dispatcher follows it): layout and drop marks only */
+.pl-grip { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); cursor: grab; color: var(--fx-muted) }
+.pd-card[draggable="true"] { cursor: grab }
+.pd-card.is-dragging { opacity: var(--fx-opacity-muted) }
+.pd-card.is-drop-before { box-shadow: inset calc(var(--fx-border-w) * 3) calc(var(--fx-border-w) * 3) 0 0 var(--fx-accent) }
+.pd-card.is-drop-after { box-shadow: inset calc(var(--fx-border-w) * -3) calc(var(--fx-border-w) * -3) 0 0 var(--fx-accent) }
+.pl-order { display: inline-flex; gap: var(--fx-dens-gap-xs); margin-left: auto }
