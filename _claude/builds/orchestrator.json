@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T23:25:45.046Z",
+ "updatedAt": "2026-11-12T23:26:23.741Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -110795,12 +110795,93 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T23:25:10.539Z",
-   "updatedAt": "2026-11-12T23:25:10.539Z",
+   "updatedAt": "2026-11-12T23:26:22.319Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-12T23:26:22.319Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Agent Swarm group chat read aloud: add a setting (off by default, with quick on/off) so new group chat messages are read out loud to Brett on his phone through AmberX, each in the speaking agent's voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe6fptb01datb"
+    },
+    {
+     "id": "s2",
+     "text": "Include pause and skip, and choose which agents or chats get read.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe6fptb02i3n9"
+    },
+    {
+     "id": "s3",
+     "text": "Full API, MCP, CLI and voice",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe6fptb03sjy5"
+    },
+    {
+     "id": "s4",
+     "text": "Tests green, report _claude/builds/reports/agent-swarm-group-chat-read-aloud-add-a-setting-off-by-default-with-quick-on.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/agent-swarm-group-chat-read-aloud-add-a-setting-off-by-default-with-quick-on.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe6fptb049qwi"
+    }
+   ]
   },
   {
    "id": "rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou",

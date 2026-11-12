@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 10:36 UTC · `search-bar-plugin-snappable-search-asset-globe-e` note (all) · orchestrator
 - 2026-11-12 10:36 UTC · `search-bar-plugin-add-on-search-builds-session-h` note (all) · orchestrator
 - 2026-11-12 10:36 UTC · `project-manager-every-project-its-own-console-in` note (all) · orchestrator
 - 2026-11-12 10:39 UTC · `show-commits-behind-main-on-every-build-table-an` added (0 steps) (all) · pending
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 23:25 UTC · `server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until` note (all) · foreign-write
 - 2026-11-12 23:25 UTC · `agent-swarm-group-chat-read-aloud-add-a-setting-off-by-default-with-quick-on` added (0 steps) (all) · mcp
 - 2026-11-12 23:25 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` added (0 steps) (all) · mcp
+- 2026-11-12 23:26 UTC · `agent-swarm-group-chat-read-aloud-add-a-setting-off-by-default-with-quick-on` note (all) · orchestrator
 
 ## Token passes (log)
 
