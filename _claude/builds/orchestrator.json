@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T21:53:05.630Z",
+ "updatedAt": "2026-11-12T21:53:19.278Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -109755,6 +109755,85 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mwe320ma0a5ycc"
+    }
+   ]
+  },
+  {
+   "id": "server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until",
+   "title": "Server: every failed merge alerts Brett immediately and retries by itself until merged",
+   "category": "merge",
+   "detail": "Brett said: \"anytime you try to merge something, this needs to go on the server. Anytime you try to merge something and it fails, I need to know right away because you need to try again.\" Server-side, not left to Claude. Builds on auto-rebuild-failed-merges-r6 if present.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-12T21:53:13.014Z",
+   "updatedAt": "2026-11-12T21:53:17.316Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T21:53:17.316Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Server gate: every merge attempt (console, GitHub plugin, Claude, CLI) goes through one server lander; on failure it sends an AmberX phone alert right away with what failed and why",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe33x7204rqhu"
+    },
+    {
+     "id": "s2",
+     "text": "Auto-retry ladder on the server: pull main in, resolve, re-run checks, retry merge; each attempt logged and sent as an FYI; only stops when merged or every way failed, then says exactly what's missing",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe33x7205iyys"
+    },
+    {
+     "id": "s3",
+     "text": "Tests, report, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe33x7206ge96"
     }
    ]
   }
