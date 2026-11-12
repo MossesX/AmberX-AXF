@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3412,
- "updatedAt": "2026-11-12T03:00:26.343Z",
+ "rev": 3413,
+ "updatedAt": "2026-11-12T03:00:36.863Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -162218,7 +162218,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T02:59:45.402Z",
-   "updatedAt": "2026-11-12T02:59:52.521Z",
+   "updatedAt": "2026-11-12T03:00:20.024Z",
    "builtAt": "",
    "notes": [
     {
@@ -162228,28 +162228,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "2026-11-12T02:59:52.199Z",
-    "queuedBy": "console",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": "",
-    "heldAt": "",
-    "heldBy": "",
-    "heldWhy": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -162265,13 +162243,13 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "skip": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T02:59:45.404Z",
-     "updatedAt": "2026-11-12T02:59:45.404Z"
+     "updatedAt": "2026-11-12T03:00:20.242Z"
     },
     {
      "id": "s2",
@@ -162326,7 +162304,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
