@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/notes-tasks.schema.json",
+  "title": "notes-tasks@1",
+  "description": "One store for notes, to-dos and tasks per project on axHub (hub-table@1 tables `lists` and `items`, hub-settings@1 document `types`). A strict superset of amberx-notes@1: every row AmberX has written is valid here. Design: apps/console-web/plugins/notes-tasks/DESIGN.md.",
+  "type": "object",
+  "required": ["$axf", "lists", "items"],
+  "properties": {
+    "$axf": { "const": "notes-tasks@1" },
+    "project": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,39}$", "description": "projects@1 id the store belongs to (amberx-axf = the base project, folder amberx-notes/)." },
+    "lists": { "type": "object", "additionalProperties": { "$ref": "#/$defs/list" } },
+    "items": { "type": "object", "additionalProperties": { "$ref": "#/$defs/item" } },
+    "types": { "$ref": "#/$defs/types" }
+  },
+  "$defs": {
+    "iso": { "type": "string", "description": "ISO 8601 date-time; '' where a field allows none." },
+    "tone": { "enum": ["accent", "info", "success", "warning", "danger", "neutral"] },
+    "kind": { "enum": ["note", "todo", "task"] },
+    "status": { "enum": ["open", "doing", "blocked", "done"] },
+    "priority": { "type": "integer", "minimum": 0, "maximum": 3, "description": "0 none · 1 low · 2 medium · 3 high" },
+    "list": {
+      "type": "object",
+      "required": ["id", "name", "parent", "order", "createdAt", "updatedAt"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "parent": { "type": ["string", "null"] },
+        "order": { "type": "number" },
+        "system": { "enum": ["inbox", "plugins", "voice-notes", "documents", "plugin"] },
+        "pluginId": { "type": "string", "maxLength": 120 },
+        "icon": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,39}$" },
+        "tone": { "$ref": "#/$defs/tone" },
+        "aliases": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 80 } },
+        "createdAt": { "$ref": "#/$defs/iso" },
+        "updatedAt": { "$ref": "#/$defs/iso" }
+      },
+      "additionalProperties": false
+    },
+    "checklistItem": {
+      "type": "object",
+      "required": ["id", "text", "done"],
+      "properties": {
+        "id": { "type": "string", "maxLength": 40 },
+        "text": { "type": "string", "maxLength": 300 },
+        "done": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "item": {
+      "type": "object",
+      "required": ["id", "kind", "list", "title", "text", "tags", "status", "priority", "due", "checklist", "parent", "order", "createdAt", "updatedAt"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "kind": { "$ref": "#/$defs/kind" },
+        "list": { "type": "string", "maxLength": 120 },
+        "title": { "type": "string", "maxLength": 160 },
+        "text": { "type": "string", "maxLength": 20000 },
+        "summary": { "type": "string", "maxLength": 2000 },
+        "transcript": { "type": "string", "maxLength": 20000 },
+        "tags": { "type": "array", "maxItems": 20, "items": { "type": "string", "maxLength": 30 } },
+        "pinned": { "type": "boolean" },
+        "starred": { "type": "boolean" },
+        "status": { "$ref": "#/$defs/status" },
+        "priority": { "$ref": "#/$defs/priority" },
+        "due": { "type": "string", "description": "YYYY-MM-DD, an ISO date-time, or '' for none" },
+        "checklist": { "type": "array", "maxItems": 100, "items": { "$ref": "#/$defs/checklistItem" } },
+        "parent": { "type": "string", "description": "id of the task this is a subtask of; '' = top level" },
+        "order": { "type": "number" },
+        "source": { "enum": ["voice", "typed", "ai", "web", "import", "console"] },
+        "url": { "type": "string", "maxLength": 2000 },
+        "fields": {
+          "type": "object",
+          "description": "Custom fields by key as the kind's type schema declares them.",
+          "additionalProperties": { "type": ["string", "number", "boolean", "null", "array"] }
+        },
+        "createdAt": { "$ref": "#/$defs/iso" },
+        "updatedAt": { "$ref": "#/$defs/iso" },
+        "doneAt": { "$ref": "#/$defs/iso" },
+        "by": { "type": "string", "maxLength": 80 },
+        "device": { "type": "string", "maxLength": 80 }
+      },
+      "additionalProperties": false
+    },
+    "coreRule": { "enum": ["required", "optional", "hidden"] },
+    "field": {
+      "type": "object",
+      "required": ["key", "label", "type"],
+      "properties": {
+        "key": { "type": "string", "pattern": "^[a-z0-9_]{1,32}$" },
+        "label": { "type": "string", "maxLength": 40 },
+        "type": { "enum": ["text", "textarea", "number", "date", "select", "checkbox", "url", "tags"] },
+        "required": { "type": "boolean" },
+        "options": { "type": "array", "maxItems": 30, "items": { "type": "string", "maxLength": 40 } },
+        "placeholder": { "type": "string", "maxLength": 80 },
+        "showInGrid": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "kindType": {
+      "type": "object",
+      "required": ["label", "icon", "tone", "core", "statuses", "defaultStatus", "defaultPriority", "fields"],
+      "properties": {
+        "label": { "type": "string", "maxLength": 30 },
+        "icon": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,39}$" },
+        "tone": { "$ref": "#/$defs/tone" },
+        "core": {
+          "type": "object",
+          "required": ["body", "status", "priority", "due", "tags", "checklist", "subtasks"],
+          "properties": {
+            "body": { "$ref": "#/$defs/coreRule" },
+            "status": { "$ref": "#/$defs/coreRule" },
+            "priority": { "$ref": "#/$defs/coreRule" },
+            "due": { "$ref": "#/$defs/coreRule" },
+            "tags": { "$ref": "#/$defs/coreRule" },
+            "checklist": { "$ref": "#/$defs/coreRule" },
+            "subtasks": { "$ref": "#/$defs/coreRule" }
+          },
+          "additionalProperties": false
+        },
+        "statuses": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/status" }, "description": "The statuses this kind may use, a subset of the four canonical ones." },
+        "statusLabels": { "type": "object", "additionalProperties": { "type": "string", "maxLength": 30 } },
+        "priorityLabels": { "type": "array", "minItems": 4, "maxItems": 4, "items": { "type": "string", "maxLength": 20 } },
+        "defaultStatus": { "$ref": "#/$defs/status" },
+        "defaultPriority": { "$ref": "#/$defs/priority" },
+        "fields": { "type": "array", "maxItems": 24, "items": { "$ref": "#/$defs/field" } }
+      },
+      "additionalProperties": false
+    },
+    "types": {
+      "type": "object",
+      "description": "Per-kind type schema (hub-settings@1 document settings/notes-tasks[-<project>].json, key `types`).",
+      "required": ["note", "todo", "task"],
+      "properties": {
+        "note": { "$ref": "#/$defs/kindType" },
+        "todo": { "$ref": "#/$defs/kindType" },
+        "task": { "$ref": "#/$defs/kindType" }
+      },
+      "additionalProperties": false
+    }
+  }
+}
