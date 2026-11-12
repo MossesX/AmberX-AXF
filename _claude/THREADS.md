@@ -776,9 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-11 00:19 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` → blocked (all) · merge-review
-- 2026-11-11 00:20 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` note (all) · merge-review
-- 2026-11-11 00:20 UTC · `merge-review-one-by-one-every-built-but-unmerged` s1 done (all) · orchestrator
 - 2026-11-11 00:21 UTC · `merge-review-one-by-one-every-built-but-unmerged` s2 done (all) · orchestrator
 - 2026-11-11 00:23 UTC · `merge-review-one-by-one-every-built-but-unmerged` PR #492 (all) · builds-live
 - 2026-11-11 00:23 UTC · `merge-review-one-by-one-every-built-but-unmerged` s3 done, → built (all) · orchestrator
@@ -1176,6 +1173,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:38 UTC · `molly-gap-console-token-handoff` s1 done (all) · orchestrator
 - 2026-11-12 02:40 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` → running, note (all) · pipeline
 - 2026-11-12 02:40 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` note (all) · orchestrator
+- 2026-11-12 02:40 UTC · `molly-gap-expenses-token-handoff` added (2 steps) (all) · orchestrator
+- 2026-11-12 02:40 UTC · `molly-gap-console-token-handoff` s2 done (all) · orchestrator
+- 2026-11-12 02:40 UTC · `molly-gap-console-warm-token` added (2 steps) (all) · orchestrator
 
 ## Token passes (log)
 
