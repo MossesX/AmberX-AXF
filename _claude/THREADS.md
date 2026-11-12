@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:36 UTC · `orchestrator-checks-shipped-features-before-spli` PR #515 (all) · builds-live
 - 2026-11-12 03:36 UTC · `orchestrator-checks-shipped-features-before-spli` s3 done, → built (all) · orchestrator
 - 2026-11-12 03:37 UTC · `orchestrator-checks-shipped-features-before-spli` note (all) · orchestrator
 - 2026-11-12 03:38 UTC · `orchestrator-checks-shipped-features-before-spli` note (all) · pipeline
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 23:14 UTC · `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` added (0 steps) (all) · mcp
 - 2026-11-12 23:14 UTC · `stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n` added (0 steps) (all) · mcp
 - 2026-11-12 23:16 UTC · `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` note (all) · orchestrator
+- 2026-11-12 23:16 UTC · `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` note (all) · builds-live
 
 ## Token passes (log)
 
