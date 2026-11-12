@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:42:49.140Z",
+ "updatedAt": "2026-11-12T02:42:58.677Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -97795,7 +97795,7 @@
    "branch": "claude/molly-gap-console-token-handoff",
    "pr": "",
    "createdAt": "2026-11-10T22:09:29.615Z",
-   "updatedAt": "2026-11-12T02:40:48.537Z",
+   "updatedAt": "2026-11-12T02:42:53.859Z",
    "builtAt": "",
    "notes": [
     {
@@ -97833,6 +97833,10 @@
     {
      "text": "Claude account: account-5 (axf-molly-gap-console-token-handoff--gina, own login copy)",
      "at": "2026-11-12T02:34:18.102Z"
+    },
+    {
+     "text": "s1, s2 done; s3 done except the PR. Branch claude/molly-gap-console-token-handoff pushed (b844af7c1), tests green, report and THREADS row in the commit. PR creation was refused by GitHub's secondary rate limit for content creation (gh pr create and REST, 02:42 UTC). Next: open the PR from the branch (title and body in the report), link it with builds-live link --pr, tick s3. Gap filed: molly-gap-expenses-token-handoff.",
+     "at": "2026-11-12T02:42:53.859Z"
     }
    ],
    "approvals": [],
