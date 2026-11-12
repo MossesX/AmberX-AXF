@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3227,
- "updatedAt": "2026-11-12T01:59:07.115Z",
+ "rev": 3228,
+ "updatedAt": "2026-11-12T01:59:16.644Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -153874,15 +153874,15 @@
    "title": "Queue drag-and-drop reorder (dispatcher follows the order)",
    "category": "",
    "detail": "Orchestrator Queue tab: drag and drop builds to reorder; the dispatcher follows the order. Also right-click: Move to top / bottom / position N. Order persists; full API/CLI control.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/queue-drag-and-drop-reorder-dispatcher-follows-t",
-   "pr": "",
+   "pr": "#498",
    "priority": "P0",
    "createdAt": "2026-11-10T20:59:27.366Z",
-   "updatedAt": "2026-11-12T01:59:05.284Z",
+   "updatedAt": "2026-11-12T01:59:08.541Z",
    "builtAt": "",
    "notes": [
     {
@@ -153939,7 +153939,7 @@
    "pipeline": {
     "queuedAt": "2026-11-12T01:43:51.415Z",
     "queuedBy": "console",
-    "account": "",
+    "account": "account-5",
     "session": "",
     "slot": "",
     "model": "Opus",
@@ -153955,7 +153955,7 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "released by the self-check (nothing ran): back in the Queue",
+    "note": "Session on account-5 ended (exit 1) with 3 steps left: back in the Queue (run 1).",
     "route": "",
     "dispatchedAt": "2026-11-12T01:44:52.810Z",
     "planned": {
