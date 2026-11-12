@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3189,
- "updatedAt": "2026-11-12T01:47:27.477Z",
+ "rev": 3190,
+ "updatedAt": "2026-11-12T01:47:35.224Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -153298,15 +153298,15 @@
    "title": "Open any website by voice on the phone, optionally with the AmberX recorder running",
    "category": "",
    "detail": "Merges/supersedes amberx-open-any-url and amberx-open-any-url-apk. 1) Voice: 'go to <any website>' opens it on the phone in Chrome (any https host, not just amberxai.com; block non-http schemes), brought to the front. 2) Option to open it with AmberX's recorder running (screen/audio recorder plugin), recordings saved to axHub with the URL and time. 3) Also available as a browser plugin in the console/Molly (embedded browser pane). Audit-log every open. Full API control.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/open-any-website-by-voice-on-the-phone-optionall",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T20:46:28.820Z",
-   "updatedAt": "2026-11-12T01:47:25.631Z",
+   "updatedAt": "2026-11-12T01:47:29.870Z",
    "builtAt": "",
    "notes": [
     {
@@ -153320,6 +153320,14 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-12T01:44:11.545Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-open-any-website-by-voice-on-the-phone-optionall--sully.",
+     "at": "2026-11-12T01:47:28.102Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-open-any-website-by-voice-on-the-phone-optionall--sully, own login copy)",
+     "at": "2026-11-12T01:47:29.870Z"
     }
    ],
    "approvals": [],
@@ -153339,18 +153347,18 @@
    "pipeline": {
     "queuedAt": "2026-11-12T01:44:11.175Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-open-any-website-by-voice-on-the-phone-optionall--sully",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-12T01:47:27.720Z",
+    "runs": 1,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-12T01:47:27.720Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -153359,7 +153367,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-12T01:47:27.720Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -153443,7 +153451,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
