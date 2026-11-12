@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3332,
- "updatedAt": "2026-11-12T02:35:14.874Z",
+ "rev": 3333,
+ "updatedAt": "2026-11-12T02:35:27.265Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -160211,14 +160211,14 @@
    "title": "Main gate: nothing reaches main without passing",
    "category": "orchestrator",
    "detail": "URGENT. Brett, Nov 12, boss order: NOTHING gets pushed or merged to main unless it passes. Enforce at the server/repo level, not by Claude: 1) GitHub branch protection on main (AmberX-AXF, axHub): required CI checks, up to date with main, no force-push, no direct pushes, merge queue only. 2) VPS gate: build_land and every land/merge script runs full tests + theme/controls checks on the merged result and refuses to push to main unless they pass; failure leaves only the branch. 3) Log refusals, AmberX FYI. Owner-only override, off by default.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/main-gate-nothing-reaches-main-without-passing",
-   "pr": "",
+   "pr": "#508",
    "createdAt": "2026-11-12T02:00:17.612Z",
-   "updatedAt": "2026-11-12T02:14:30.814Z",
+   "updatedAt": "2026-11-12T02:35:19.190Z",
    "builtAt": "",
    "notes": [
     {
@@ -160251,18 +160251,18 @@
    "pipeline": {
     "queuedAt": "2026-11-12T02:00:48.716Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-main-gate-nothing-reaches-main-without-passing--earl",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-12T02:14:26.286Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-12T02:14:26.286Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -160271,7 +160271,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-12T02:14:26.286Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
