@@ -777,7 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:27 UTC · `banner-details-reveal` note (all) · backfill
 - 2026-11-12 03:27 UTC · `voice-notes-tab` note (all) · backfill
 - 2026-11-12 03:27 UTC · `voicevault-mic-actions` note (all) · backfill
 - 2026-11-12 03:27 UTC · `widget-arrange` note (all) · backfill
@@ -1177,6 +1176,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 11:01 UTC · `remove-the-console-s-own-notes-manager-console-u` s1 done, → running (all) · orchestrator
 - 2026-11-12 11:02 UTC · `remove-the-console-s-own-notes-manager-console-u` s2 done (all) · orchestrator
 - 2026-11-12 11:02 UTC · `remove-the-console-s-own-notes-manager-console-u` PR #519 (all) · builds-live
+- 2026-11-12 11:03 UTC · `remove-the-console-s-own-notes-manager-console-u` note (all) · orchestrator
 
 ## Token passes (log)
 
