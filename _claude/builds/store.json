@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3216,
- "updatedAt": "2026-11-12T01:56:12.891Z",
+ "rev": 3217,
+ "updatedAt": "2026-11-12T01:56:20.056Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -158581,19 +158581,23 @@
    "title": "Console commands reliable: live clients, failover, wake, focus a build or tab",
    "category": "Console",
    "detail": "",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/console-commands-reliable",
    "pr": "#496",
    "createdAt": "2026-11-11T23:25:41.956Z",
-   "updatedAt": "2026-11-11T23:40:30.332Z",
+   "updatedAt": "2026-11-12T01:56:06.711Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Reconciler: branch claude/console-commands-reliable (PR #496); PR #496",
      "at": "2026-11-11T23:40:30.332Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-12T01:56:06.711Z"
     }
    ],
    "approvals": [],
@@ -158708,7 +158712,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
