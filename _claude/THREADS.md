@@ -776,19 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 23:21 UTC · `orchestrator-merge-first-switch-separate-merger` note (all) · orchestrator
-- 2026-11-10 23:21 UTC · `orchestrator-merge-first-switch-separate-merger` note (all) · orchestrator
-- 2026-11-10 23:21 UTC · `orchestrator-merge-first-switch-separate-merger` s3 done, → built, PR #480, note (all) · builds-live
-- 2026-11-10 23:21 UTC · `orchestrator-merge-first-switch-separate-merger` PR #480 (all) · builds-live
-- 2026-11-10 23:21 UTC · `orchestrator-merge-first-switch-separate-merger` s3 done, → built (all) · orchestrator
-- 2026-11-10 23:21 UTC · `stall-watchdog-detect-when-nothing-is-building-a` s1 done, → running (all) · orchestrator
-- 2026-11-10 23:22 UTC · `molly-sign-in-once` note (all) · orchestrator
-- 2026-11-10 23:18 UTC · `make-hulu-actually-take-builds-dispatcher-counts` s3 done, → built (all) · orchestrator
-- 2026-11-10 23:23 UTC · `stall-watchdog-detect-when-nothing-is-building-a` s2 done (all) · orchestrator
-- 2026-11-10 23:23 UTC · `api-accounts-need-no-approval-builds-route-there` → queued, note (all) · pipeline
-- 2026-11-10 23:23 UTC · `api-accounts-need-no-approval-builds-route-there` → running, note (all) · pipeline
-- 2026-11-10 23:23 UTC · `api-accounts-need-no-approval-builds-route-there` note (all) · orchestrator
-- 2026-11-10 23:19 UTC · `api-accounts-need-no-approval-builds-route-there` s3 done, → built (all) · orchestrator
 - 2026-11-10 23:23 UTC · `orchestrator-merge-first-switch-separate-merger` note (all) · orchestrator
 - 2026-11-10 23:24 UTC · `orchestrator-merge-first-switch-separate-merger` note (all) · pipeline
 - 2026-11-10 23:24 UTC · `stall-watchdog-detect-when-nothing-is-building-a` note (all) · orchestrator
@@ -1176,6 +1163,19 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:09 UTC · `ui-api-parity-builds` → archived, note (all) · console
 - 2026-11-12 02:09 UTC · `amberx-build-notifications-for-every-stage-start` s3 done, → built (all) · orchestrator
 - 2026-11-12 02:09 UTC · `amberx-build-notifications-for-every-stage-start` note (all) · orchestrator
+- 2026-11-12 02:09 UTC · `orchestrator-full-api-control` → archived, note (all) · console
+- 2026-11-12 02:09 UTC · `ui-api-parity-framework` → archived, note (all) · console
+- 2026-11-12 02:09 UTC · `ui-api-parity-media` → archived, note (all) · console
+- 2026-11-12 02:09 UTC · `ui-api-parity-look` → archived, note (all) · console
+- 2026-11-12 02:09 UTC · `ui-api-parity-console` → archived, note (all) · console
+- 2026-11-12 02:09 UTC · `ui-api-parity-agents` → archived, note (all) · console
+- 2026-11-12 02:09 UTC · `amberx-open-any-url` → archived, note (all) · console
+- 2026-11-12 02:09 UTC · `axhub-google` → archived, note (all) · console
+- 2026-11-12 02:09 UTC · `slot-aware-plan-optimizer-pre-launch` → archived, note (all) · console
+- 2026-11-12 02:09 UTC · `demo-sandbox-system-sandbox-settings-panel` → archived, note (all) · console
+- 2026-11-12 02:09 UTC · `molly-ri-court-records` → archived, note (all) · console
+- 2026-11-12 02:09 UTC · `amberx-build-notifications-for-every-stage-start` PR #499 (all) · foreign-write
+- 2026-11-12 02:09 UTC · `fix-follow-amber-highlight-console-search-ignoring-its-text` → archived, note (all) · console
 
 ## Token passes (log)
 

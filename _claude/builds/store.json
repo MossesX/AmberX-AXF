@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3262,
- "updatedAt": "2026-11-12T02:09:37.550Z",
+ "rev": 3263,
+ "updatedAt": "2026-11-12T02:10:11.839Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -107568,19 +107568,23 @@
    "title": "We need a plugin that will let AmberX open up any website I tell her to.",
    "category": "",
    "detail": "Launched without an orchestrator entry; record made from its brief (amberx-open-any-url).",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "headless",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T00:48:19.057Z",
-   "updatedAt": "2026-11-08T02:31:24.097Z",
+   "updatedAt": "2026-11-12T02:09:25.408Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:09:25.408Z"
     }
    ],
    "approvals": [],
@@ -107723,7 +107727,7 @@
    },
    "kind": "build",
    "planRef": "amberx-open-any-url",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -107754,19 +107758,23 @@
    "title": "It's gonna be linked to our Gmail through axHub's MCP server, not Claude's. axHub is gonna connect to my Gmail, my Googl",
    "category": "",
    "detail": "Launched without an orchestrator entry; record made from its brief (axhub-google).",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "headless",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T00:48:21.380Z",
-   "updatedAt": "2026-11-08T02:31:23.050Z",
+   "updatedAt": "2026-11-12T02:09:26.276Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:09:26.276Z"
     }
    ],
    "approvals": [],
@@ -107909,7 +107917,7 @@
    },
    "kind": "build",
    "planRef": "axhub-google",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -112169,19 +112177,23 @@
    "title": "molly-ri-court-records",
    "category": "agents",
    "detail": "Train the agent Molly to search Rhode Island's public court records portal (RI Judiciary public portal) for Brett's OWN records on request: open the portal, search by Brett's name/DOB as he provides, list matching cases (case number, court, type, status, dates), and summarize. Respect the portal's terms of use and any CAPTCHA (hand off to Brett when a human check appears; never bypass it). Read-only; no account logins unless Brett supplies them. Reuse the existing browser-automation work. Voice + API/MCP/CLI parity. Orchestrator assigns models.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "pending",
    "pendingId": "molly-ri-court-records",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T00:17:38.161Z",
-   "updatedAt": "2026-11-08T00:17:38.161Z",
+   "updatedAt": "2026-11-12T02:09:29.982Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:09:29.982Z"
     }
    ],
    "approvals": [],
@@ -112400,7 +112412,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -116990,16 +117002,21 @@
    "title": "Fix Follow Amber highlight + console.search ignoring its text",
    "category": "console",
    "detail": "Two bugs seen live Nov 7 2026 on Brett's console (client cc-vq31s2eri7lw, Plan Studio):\n1. console_show with a highlight reports 'opened Plan Studio and highlighted <text>' but nothing is highlighted, scrolled to or focused: the row stays at the top of the dataset. The tool must only report highlighted when the element was really found, scrolled into view and flashed; fuzzy-match row text in DataGrids.\n2. console_action 'console.search' with args ['auto session recording and transcripts'] opens the Search everything dialog but leaves the query empty. It must fill the box with the args and show results (and pick the first when it's an exact match).\nAlso: a split-screen action Claude can call (two screens side by side) would help; add one if cheap.\nBrett: \"Log both as one fix build. Work it out.\"",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T21:00:54.493Z",
-   "updatedAt": "2026-11-07T21:00:54.493Z",
+   "updatedAt": "2026-11-12T02:09:33.732Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:09:33.732Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "pipeline": {
@@ -117084,7 +117101,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -118226,16 +118243,21 @@
    "title": "Demo sandbox system + sandbox settings panel",
    "category": "new feature",
    "detail": "Sandboxes for interactive investor walkthroughs. Each sandbox = small throwaway container of the app with demo data, served via browser link from the VPS. Walkthroughs are pre-generated (no live Claude in sandbox). Sandbox settings panel: max simultaneous sandboxes; queue when full showing 'You are number N in the queue, waiting for a sandbox slot' (live updates); session time limit; idle timeout; per-sandbox reset; nuke-all (force stop, clear caches, reset all). Spin up on link open, destroy on leave/timeout.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T00:44:18.580Z",
-   "updatedAt": "2026-11-08T00:44:18.580Z",
+   "updatedAt": "2026-11-12T02:09:28.581Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:09:28.581Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "pipeline": {
@@ -118408,7 +118430,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -118633,19 +118655,23 @@
    "title": "Orchestrator full API control",
    "category": "new feature",
    "detail": "The API must have full control over the orchestrator. Existing: skip/remove/move/add/edit steps, build status, archive/hide, pending remove. Add: put a step on hold and resume it; kill a running headless session; remove/kill items straight out of the queue (and pending); detect stuck steps (no progress marker within the timeout) and flag them for hold or skip; every API action logged.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T00:45:55.038Z",
-   "updatedAt": "2026-11-08T17:38:57.280Z",
+   "updatedAt": "2026-11-12T02:09:19.736Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Clash note (Nov 8 2026, ui-api-parity-rule): ui-api-parity-builds maps the Build orchestrator's view to named ops (plugin.json ui, ui-api@1). Build these together or map the new hold/resume/kill controls in its ui block as they land; ui-parity.mjs check fails a mapped view that isn't full.",
      "at": "2026-11-08T17:38:57.280Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:09:19.736Z"
     }
    ],
    "approvals": [],
@@ -118798,7 +118824,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -119054,16 +119080,21 @@
    "title": "Slot-aware plan optimizer (pre-launch)",
    "category": "new feature",
    "detail": "Before the orchestrator launches a plan from the queue, it checks how many parallel sessions are enabled and how many slots are open, then optimizes/refactors the plan to use all available slots: build a dependency graph of the steps, group independent steps into parallel tracks (one per free slot), keep dependent steps in order, and give each track its own brief. Re-check slots at launch time; if slots change, re-balance.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T00:47:19.843Z",
-   "updatedAt": "2026-11-08T00:49:46.364Z",
+   "updatedAt": "2026-11-12T02:09:27.368Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:09:27.368Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "pipeline": {
@@ -119280,7 +119311,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -122660,16 +122691,21 @@
    "title": "UI = API parity: agents, Claude and sessions screens",
    "category": "Framework > API",
    "detail": "Part of the \"every UI is fully API-controllable\" rule (ui-api@1; build ui-api-parity-rule, which did the Demonstration Designer and Book Builder and the CI check). 549 gaps across 14 UI area(s) today (framework/spec/ui-parity-baseline.json). Per area: `node framework/cli/ui-parity.mjs gaps <area>`, then map each view/dialog in its plugin.json `ui` block (open = deep link, state = read command or value:<key>, actions = commands / console actions / settings, uiOnly with why), add any op that is missing, and `ui-parity.mjs write-baseline` once it went down. Model of a full map: apps/console-web/plugins/glossary-index/plugin.json `ui`. Audit: _claude/builds/reports/ui-api-parity-rule/audit.md.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T17:38:36.556Z",
-   "updatedAt": "2026-11-08T17:38:36.558Z",
+   "updatedAt": "2026-11-12T02:09:24.209Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:09:24.209Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -123172,7 +123208,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -123217,16 +123253,21 @@
    "title": "UI = API parity: console core, plugins and system screens",
    "category": "Framework > API",
    "detail": "Part of the \"every UI is fully API-controllable\" rule (ui-api@1; build ui-api-parity-rule, which did the Demonstration Designer and Book Builder and the CI check). 718 gaps across 23 UI area(s) today (framework/spec/ui-parity-baseline.json). Per area: `node framework/cli/ui-parity.mjs gaps <area>`, then map each view/dialog in its plugin.json `ui` block (open = deep link, state = read command or value:<key>, actions = commands / console actions / settings, uiOnly with why), add any op that is missing, and `ui-parity.mjs write-baseline` once it went down. Model of a full map: apps/console-web/plugins/glossary-index/plugin.json `ui`. Audit: _claude/builds/reports/ui-api-parity-rule/audit.md.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T17:38:38.031Z",
-   "updatedAt": "2026-11-08T17:38:38.032Z",
+   "updatedAt": "2026-11-12T02:09:23.404Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:09:23.404Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -123954,7 +123995,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124008,16 +124049,21 @@
    "title": "UI = API parity: look, design and review screens",
    "category": "Framework > API",
    "detail": "Part of the \"every UI is fully API-controllable\" rule (ui-api@1; build ui-api-parity-rule, which did the Demonstration Designer and Book Builder and the CI check). 277 gaps across 7 UI area(s) today (framework/spec/ui-parity-baseline.json). Per area: `node framework/cli/ui-parity.mjs gaps <area>`, then map each view/dialog in its plugin.json `ui` block (open = deep link, state = read command or value:<key>, actions = commands / console actions / settings, uiOnly with why), add any op that is missing, and `ui-parity.mjs write-baseline` once it went down. Model of a full map: apps/console-web/plugins/glossary-index/plugin.json `ui`. Audit: _claude/builds/reports/ui-api-parity-rule/audit.md.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T17:38:39.309Z",
-   "updatedAt": "2026-11-08T17:38:39.309Z",
+   "updatedAt": "2026-11-12T02:09:22.482Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:09:22.482Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -124270,7 +124316,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124305,16 +124351,21 @@
    "title": "UI = API parity: media, notes and listener screens",
    "category": "Framework > API",
    "detail": "Part of the \"every UI is fully API-controllable\" rule (ui-api@1; build ui-api-parity-rule, which did the Demonstration Designer and Book Builder and the CI check). 233 gaps across 10 UI area(s) today (framework/spec/ui-parity-baseline.json). Per area: `node framework/cli/ui-parity.mjs gaps <area>`, then map each view/dialog in its plugin.json `ui` block (open = deep link, state = read command or value:<key>, actions = commands / console actions / settings, uiOnly with why), add any op that is missing, and `ui-parity.mjs write-baseline` once it went down. Model of a full map: apps/console-web/plugins/glossary-index/plugin.json `ui`. Audit: _claude/builds/reports/ui-api-parity-rule/audit.md.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T17:38:40.980Z",
-   "updatedAt": "2026-11-08T17:38:40.980Z",
+   "updatedAt": "2026-11-12T02:09:21.640Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:09:21.640Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -124617,7 +124668,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -124654,16 +124705,21 @@
    "title": "UI = API parity: framework React layer and libs (controls every app uses)",
    "category": "Framework > API",
    "detail": "Part of the \"every UI is fully API-controllable\" rule (ui-api@1; build ui-api-parity-rule, which did the Demonstration Designer and Book Builder and the CI check). 335 gaps across 1 UI area(s) today (framework/spec/ui-parity-baseline.json). Per area: `node framework/cli/ui-parity.mjs gaps <area>`, then map each view/dialog in its plugin.json `ui` block (open = deep link, state = read command or value:<key>, actions = commands / console actions / settings, uiOnly with why), add any op that is missing, and `ui-parity.mjs write-baseline` once it went down. Model of a full map: apps/console-web/plugins/glossary-index/plugin.json `ui`. Audit: _claude/builds/reports/ui-api-parity-rule/audit.md.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T17:38:42.522Z",
-   "updatedAt": "2026-11-08T17:38:42.522Z",
+   "updatedAt": "2026-11-12T02:09:20.703Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:09:20.703Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -124866,7 +124922,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -153829,8 +153885,8 @@
    "pr": "#499",
    "priority": "P1",
    "createdAt": "2026-11-10T20:56:54.475Z",
-   "updatedAt": "2026-11-12T02:09:15.611Z",
-   "builtAt": "2026-11-12T02:09:08.722Z",
+   "updatedAt": "2026-11-12T02:09:35.392Z",
+   "builtAt": "2026-11-12T02:09:35.392Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -153851,6 +153907,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-amberx-build-notifications-for-every-stage-start--rhonda, own login copy)",
      "at": "2026-11-12T01:51:17.869Z"
+    },
+    {
+     "text": "Headless run axf-amberx-build-notifications-for-every-stage-start--rhonda: brief only · start 10.8K tokens ($0.03) · cost $4.80 · 110 turns · 6 tools, MCP none",
+     "at": "2026-11-12T02:09:35.392Z"
     },
     {
      "text": "Built, PR #499 (contains #436: land #436 first or close it for this). After the finish the one AmberX notification moves on to Ready to merge, Merged, Live; switches notifyReady/notifyMerged/notifyLive. UI Review shots not taken (no console to capture from in the headless session): capture Pipeline > Phone pop-ups, desktop and phone, and submit. Real phone test after deploy.",
