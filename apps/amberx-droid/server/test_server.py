@@ -578,5 +578,44 @@ ac.cookies.update({"axhub_session": "stale"})
 r5 = ac.post("/api/approvals/decide", headers=W, json={"id": AID, "action": "approve"}).json()
 check("a session the hub dropped: no_session", r5["ok"] is False and r5["code"] == "no_session", r5)
 
+# ---------------------------------------------------------------- forwarding the old addresses (s11, forward.py)
+import forward  # noqa: E402
+
+wall_off()
+os.environ["AMBERX_DEV_OPEN"] = "1"
+fc = TestClient(main.make_app(fresh(77)[1]))
+logf = main.DATA / forward.LOG_NAME
+if logf.exists():
+    logf.unlink()
+fc.get("/api/health", headers={"user-agent": "Dalvik/2.1.0 (Linux; Android 15)"})
+fc.get("/api/ai/status")
+fc.get("/", headers={"accept": "text/html"})
+fc.get("/assets/app.js", headers={"accept": "*/*"})
+rows = [json.loads(x) for x in logf.read_text().splitlines()]
+check("forward: each old address logged once (assets are not)", [r["route"] for r in rows] == ["health", "ai.status", "page"], rows)
+check("forward: the log says where it lives on the console", rows[1]["console"] == "/api/plugins/amberx-ai/status" and rows[1]["mode"] == "local", rows[1])
+lg = fc.get("/api/forward/log").json()
+check("forward: summary per route with the phone's client", any(r["route"] == "health" and r["clients"].get("phone (native)") == 1 for r in lg["routes"]), lg["routes"])
+check("forward: still answered here lists the AI", "ai.status" in lg["stillLocal"], lg["stillLocal"])
+check("forward: the table covers every API route this server has",
+      all(forward.route_of(m, p) is not None and forward.route_of(m, p)[0].id != "api.other"
+          for p, m in [("/api/ai/parse", "POST"), ("/api/ai/keys/x", "POST"), ("/api/walkthrough/amberx-app/walkthrough.mp4", "GET"),
+                       ("/api/walkthrough/w1/chapters/c.json", "GET"), ("/api/approvals/decide", "POST"), ("/api/console/plugins/ai-assistant/chat", "POST"),
+                       ("/api/ai/molly", "POST"), ("/api/walkthrough/w1/render", "POST"), ("/api/me", "GET")]))
+check("forward: console plugins map to the console's own plugin route",
+      forward.route_of("POST", "/api/console/plugins/ai-assistant/chat/x")[0].target(forward.route_of("POST", "/api/console/plugins/ai-assistant/chat/x")[1]) == "/api/plugins/ai-assistant/chat/x")
+os.environ["AMBERX_FORWARD_PAGES"] = "redirect"
+r = fc.get("/notes?x=1", headers={"accept": "text/html"}, follow_redirects=False)
+check("forward: a page goes to the console when switched on", r.status_code == 302 and r.headers["location"] == "https://console.amberxai.com/?x=1", r.headers)
+check("forward: API routes are never redirected", fc.get("/api/health", follow_redirects=False).status_code == 200)
+check("forward: scripts still load", fc.get("/assets/app.js", headers={"accept": "*/*"}, follow_redirects=False).status_code == 200)
+os.environ.pop("AMBERX_FORWARD_PAGES")
+os.environ["AMBERX_FORWARD"] = "off"
+n = len(logf.read_text().splitlines())
+fc.get("/api/me")
+check("forward: AMBERX_FORWARD=off writes nothing", len(logf.read_text().splitlines()) == n)
+os.environ.pop("AMBERX_FORWARD")
+os.environ.pop("AMBERX_DEV_OPEN")
+
 print(f"amberx server: {ok} passed, {fail} failed")
 sys.exit(1 if fail else 0)

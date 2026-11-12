@@ -36,6 +36,7 @@ Molly: AMBERX_CONSOLE_URL (default http://axf-console:7090) + the console token 
 AXF_TOKEN line in AMBERX_CONSOLE_TOKEN_FILE). Without them Molly is reported as not connected, with how to fix it.
 
 Env: AMBERX_DATA_DIR (default ./data), AMBERX_DIST (default ../dist), AMBERX_WALL_HUB, AMBERX_AI_KEEPALIVE=off,
+AMBERX_FORWARD=off (no request log), AMBERX_FORWARD_PAGES=redirect (old pages go to AMBERX_CONSOLE_PUBLIC_URL; forward.py),
 AMBERX_AI_TIMEOUT, AMBERX_AI_RETRIES, AMBERX_AI_MAX_BYTES, AMBERX_AI_HTTP_HOSTS, key variables (router.py), PORT.
 Run (dev): AMBERX_DEV_OPEN=1 uvicorn main:app --app-dir server --port 7492   (npm run dev proxies /api here)
 """
@@ -59,6 +60,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import FileResponse, JSONResponse, Response, StreamingResponse
 
+import forward
 import intent as intents
 from router import AllFailed, Router
 
@@ -122,6 +124,8 @@ def walkthrough_edits(raw: Any) -> dict[str, Any]:
         raise HTTPException(413, "too many edits for one re-voice (64 KB at most)")
     return out
 CONSOLE_URL = (os.environ.get("AMBERX_CONSOLE_URL") or "http://axf-console:7090").rstrip("/")
+# where an old page of this site sends the browser when AMBERX_FORWARD_PAGES=redirect (forward.py, s11)
+CONSOLE_PUBLIC_URL = (os.environ.get("AMBERX_CONSOLE_PUBLIC_URL") or "https://console.amberxai.com").rstrip("/")
 _CONSOLE_TOKEN = TokenFile(os.environ.get("AMBERX_CONSOLE_TOKEN_FILE") or None, fallback=lambda: os.environ.get("AMBERX_CONSOLE_TOKEN", ""))
 MOLLY_TIMEOUT = 300.0
 # Where the console serves Molly's guide (its walkthrough plugin's folder). If that plugin is removed the console answers
@@ -194,6 +198,36 @@ def make_app(router: Router | None = None, approvals_transport: httpx.BaseTransp
         if not path.startswith("/api/walkthrough/"):
             resp.headers["Cache-Control"] = "no-store"
         return resp
+
+    # Old addresses → the console (s11): every request is matched against forward.TABLE and logged; an old page is
+    # sent to the console when AMBERX_FORWARD_PAGES=redirect. Added after the gate, so it runs first (outermost).
+    flog = forward.Log(DATA)
+
+    @app.middleware("http")
+    async def forwarding(request: Request, call_next):  # type: ignore[no-untyped-def]
+        path, method = request.url.path, request.method.upper()
+        if path == "/healthz":
+            return await call_next(request)
+        found = forward.route_of(method, path)
+        ua = request.headers.get("user-agent", "")
+        is_page = found is not None and found[0].mode == "redirect"
+        wants_html = "text/html" in request.headers.get("accept", "") and "." not in path.rsplit("/", 1)[-1]
+        if is_page and wants_html and (os.environ.get("AMBERX_FORWARD_PAGES") or "").lower() == "redirect":
+            flog.write({**forward.record(method, path, 302, ua, found), "console": CONSOLE_PUBLIC_URL + "/"})
+            return Response(status_code=302, headers={"location": forward.page_target(CONSOLE_PUBLIC_URL, path, request.url.query), "cache-control": "no-store"})
+        resp = await call_next(request)
+        if not is_page or wants_html:  # pages: the document only, not every script and image
+            flog.write(forward.record(method, path, resp.status_code, ua, found))
+        return resp
+
+    @app.get("/api/forward/log")
+    def forward_log(recent: int = 50) -> dict[str, Any]:
+        """What still hits the old addresses: per route, how often, when last, from which clients, and where it lives on
+        the console (forward.py TABLE)."""
+        rows = flog.rows()
+        return {"ok": True, "on": flog.on(), "pagesRedirect": (os.environ.get("AMBERX_FORWARD_PAGES") or "").lower() == "redirect",
+                **forward.summary(rows), "recent": rows[-max(1, min(recent, forward.RECENT)):][::-1],
+                "table": [{"id": r.id, "methods": list(r.methods), "console": r.console, "mode": r.mode, "why": r.why} for r in forward.TABLE]}
 
     async def body_of(request: Request) -> dict[str, Any]:
         raw = b""

@@ -362,6 +362,15 @@ commands); the console never holds a microphone.
 | hub `/axpp/v1/*` (`browser.open`, `recorder.*`) | `/api/plugins/amberx-devices/stream` (+ `console-commands/open-url`) | s8, s12 |
 | console `/api/alerts` | unchanged, plus `since`, `stream`, `history` | s9, s15 |
 
+Built in s11 (`apps/amberx-droid/server/forward.py`): every address the AmberX server answers is in one table with its
+console address and how it is handled today: `proxy` (console plugins, `/api/console/plugins/…` → `/api/plugins/…`),
+`relayed` (Molly, the walkthrough re-voice), `redirect` (pages, only with `AMBERX_FORWARD_PAGES=redirect`) or `local`
+with the reason (the AI routes wait for the `amberx-ai` plugin; walkthrough media for a console media route; the
+approvals relay and decide answer for the calling browser's own hub session). Every request is logged
+(`$AMBERX_DATA_DIR/forward-log.jsonl`); `GET /api/forward/log` (admins) and `python forward.py summary` show per
+route how often, when last, from which client (phone native, phone page, browser) and which routes are still answered
+here; `python forward.py table` prints the table. Nothing changes for the current phone until the switches are set.
+
 ## 6. What this contract does not decide
 
 - The Android client code (s12, s13): this is the server side the client is written against. No Kotlin or Java changes are part of
