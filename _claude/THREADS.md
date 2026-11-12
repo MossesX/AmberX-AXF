@@ -776,9 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 21:47 UTC · `convert-every-app-into-a-molly-module-expenses-c` branch claude/convert-every-app-into-a-molly-module-expenses-c (all) · pipeline
-- 2026-11-10 21:47 UTC · `convert-every-app-into-a-molly-module-expenses-c` note (all) · orchestrator
-- 2026-11-10 21:47 UTC · `no-veto-timer-on-navigation-follow-amber-open-x` PR #476 (all) · builds-live
 - 2026-11-10 21:47 UTC · `no-veto-timer-on-navigation-follow-amber-open-x` s3 done, → built (all) · orchestrator
 - 2026-11-10 21:48 UTC · `no-veto-timer-on-navigation-follow-amber-open-x` note (all) · orchestrator
 - 2026-11-10 21:48 UTC · `asset-overrides-changed-asset-settings-override` note (all) · orchestrator
@@ -1176,6 +1173,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 01:51 UTC · `amberx-build-notifications-for-every-stage-start` → running, note (all) · pipeline
 - 2026-11-12 01:51 UTC · `amberx-build-notifications-for-every-stage-start` branch claude/amberx-build-notifications-for-every-stage-start (all) · pipeline
 - 2026-11-12 01:51 UTC · `amberx-build-notifications-for-every-stage-start` note (all) · orchestrator
+- 2026-11-12 01:51 UTC · `fix-axhub-36-pull-main-in-failed` → running, note (all) · pipeline
+- 2026-11-12 01:51 UTC · `fix-axhub-36-pull-main-in-failed` branch claude/fix-axhub-36-pull-main-in-failed (all) · pipeline
+- 2026-11-12 01:51 UTC · `fix-axhub-36-pull-main-in-failed` note (all) · orchestrator
 
 ## Token passes (log)
 
