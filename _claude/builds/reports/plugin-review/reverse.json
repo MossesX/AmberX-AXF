@@ -1,0 +1,3872 @@
+{
+  "$axf": "plugin-review-reverse@1",
+  "generatedAt": "2026-11-12T18:06:26.787Z",
+  "source": "deps.json (plugin-review-deps@1)",
+  "count": 66,
+  "summary": {
+    "core": [
+      "plugin-switches",
+      "agent-manager",
+      "ai-assistant",
+      "container-access",
+      "build-orchestrator",
+      "console-terminal",
+      "token-control",
+      "theme-manager",
+      "systems-check",
+      "codebase-changes",
+      "console-commands",
+      "plugin-commands",
+      "follow-amber",
+      "plugin-manager"
+    ],
+    "shared": [
+      "agent-swarm",
+      "claude-settings",
+      "agent-voice",
+      "ai-keys",
+      "snapshot-manager",
+      "ui-review",
+      "agent-slots",
+      "claude-accounts",
+      "notify-control",
+      "plan-studio",
+      "activity",
+      "feature-assist",
+      "notes-browser",
+      "push-banner"
+    ],
+    "leaf": [
+      "alerts-bell",
+      "amberx-listeners",
+      "approvals-banner",
+      "audio-extract",
+      "basic-filter",
+      "brand-library",
+      "build-breaker",
+      "build-profiles",
+      "builds-page",
+      "changes-grid",
+      "chat-viewer",
+      "claude-badge",
+      "claude-handoff",
+      "claude-session",
+      "context-menu-designer",
+      "crew-live",
+      "demonstration-designer",
+      "fable-rebuilds",
+      "feature-matrix",
+      "github-app",
+      "glossary-index",
+      "hub-sync",
+      "main-build-status",
+      "maintenance",
+      "mcp-client",
+      "md-studio",
+      "molly-guide",
+      "output-recorder",
+      "plugin-update",
+      "plugins-menu",
+      "project-wizard",
+      "ref-links",
+      "session-checkin",
+      "shipped-features",
+      "theme-editor",
+      "todo-manager",
+      "voice-notes",
+      "whats-shipped"
+    ],
+    "undeclaredDependencies": 36
+  },
+  "plugins": [
+    {
+      "folder": "plugin-switches",
+      "name": "Plugin switches",
+      "tier": "core",
+      "core": true,
+      "coreReasons": [
+        "hard dependents: ai-assistant, basic-filter"
+      ],
+      "provides": [],
+      "actions": [
+        "plugin-switches.open"
+      ],
+      "usedBy": [
+        {
+          "plugin": "ai-assistant",
+          "kind": "action",
+          "target": "plugin-switches.open",
+          "via": "dispatch",
+          "files": []
+        },
+        {
+          "plugin": "basic-filter",
+          "kind": "action",
+          "target": "plugin-switches.open",
+          "via": "dispatch",
+          "files": []
+        }
+      ],
+      "usedByPlugins": [
+        "ai-assistant",
+        "basic-filter"
+      ],
+      "breaks": {
+        "hard": [
+          {
+            "plugin": "ai-assistant",
+            "kind": "action",
+            "target": "plugin-switches.open",
+            "via": "dispatch",
+            "files": []
+          },
+          {
+            "plugin": "basic-filter",
+            "kind": "action",
+            "target": "plugin-switches.open",
+            "via": "dispatch",
+            "files": []
+          }
+        ],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [
+        "agent-voice",
+        "ai-assistant",
+        "basic-filter"
+      ],
+      "fixes": [
+        "folder word quoted in apps/console-web/server/test_plugin_catalog.py (check by hand)"
+      ]
+    },
+    {
+      "folder": "agent-manager",
+      "name": "Agent manager",
+      "tier": "core",
+      "core": true,
+      "coreReasons": [
+        "hard dependents: claude-accounts",
+        "used by 11 plugins"
+      ],
+      "provides": [
+        "axf.agents@1",
+        "axf.hub-runs@1",
+        "axf.vinny@1"
+      ],
+      "actions": [
+        "agent-manager.vinny",
+        "agent-manager.wizard"
+      ],
+      "usedBy": [
+        {
+          "plugin": "agent-voice",
+          "kind": "service",
+          "target": "axf.agents@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "ai-assistant",
+          "kind": "service",
+          "target": "axf.agents@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "ai-keys",
+          "kind": "service",
+          "target": "axf.vinny@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "claude-accounts",
+          "kind": "service",
+          "target": "axf.vinny@1",
+          "via": "required",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "claude-badge",
+          "kind": "service",
+          "target": "axf.vinny@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "console-terminal",
+          "kind": "service",
+          "target": "axf.hub-runs@1",
+          "via": "undeclared",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "feature-assist",
+          "kind": "service",
+          "target": "axf.agents@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "molly-guide",
+          "kind": "service",
+          "target": "axf.agents@1",
+          "via": "undeclared",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "molly-guide",
+          "kind": "service",
+          "target": "axf.vinny@1",
+          "via": "undeclared",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "push-banner",
+          "kind": "service",
+          "target": "axf.agents@1",
+          "via": "undeclared",
+          "files": [
+            "server/claudefix.py"
+          ]
+        },
+        {
+          "plugin": "push-banner",
+          "kind": "service",
+          "target": "axf.vinny@1",
+          "via": "undeclared",
+          "files": [
+            "server/claudefix.py"
+          ]
+        },
+        {
+          "plugin": "ref-links",
+          "kind": "service",
+          "target": "axf.agents@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "systems-check",
+          "kind": "service",
+          "target": "axf.agents@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py",
+            "server/derive.py",
+            "server/mosses.py",
+            "server/routine.py",
+            "server/whatsnew.py"
+          ]
+        },
+        {
+          "plugin": "systems-check",
+          "kind": "service",
+          "target": "axf.vinny@1",
+          "via": "undeclared",
+          "files": [
+            "server/__init__.py",
+            "server/mosses.py"
+          ]
+        }
+      ],
+      "usedByPlugins": [
+        "agent-voice",
+        "ai-assistant",
+        "ai-keys",
+        "claude-accounts",
+        "claude-badge",
+        "console-terminal",
+        "feature-assist",
+        "molly-guide",
+        "push-banner",
+        "ref-links",
+        "systems-check"
+      ],
+      "breaks": {
+        "hard": [
+          {
+            "plugin": "claude-accounts",
+            "kind": "service",
+            "target": "axf.vinny@1",
+            "via": "required",
+            "files": [
+              "server/__init__.py"
+            ]
+          }
+        ],
+        "degrades": [
+          {
+            "plugin": "agent-voice",
+            "kind": "service",
+            "target": "axf.agents@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "ai-assistant",
+            "kind": "service",
+            "target": "axf.agents@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "ai-keys",
+            "kind": "service",
+            "target": "axf.vinny@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "claude-badge",
+            "kind": "service",
+            "target": "axf.vinny@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "console-terminal",
+            "kind": "service",
+            "target": "axf.hub-runs@1",
+            "via": "undeclared",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "feature-assist",
+            "kind": "service",
+            "target": "axf.agents@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "molly-guide",
+            "kind": "service",
+            "target": "axf.agents@1",
+            "via": "undeclared",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "molly-guide",
+            "kind": "service",
+            "target": "axf.vinny@1",
+            "via": "undeclared",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "push-banner",
+            "kind": "service",
+            "target": "axf.agents@1",
+            "via": "undeclared",
+            "files": [
+              "server/claudefix.py"
+            ]
+          },
+          {
+            "plugin": "push-banner",
+            "kind": "service",
+            "target": "axf.vinny@1",
+            "via": "undeclared",
+            "files": [
+              "server/claudefix.py"
+            ]
+          },
+          {
+            "plugin": "ref-links",
+            "kind": "service",
+            "target": "axf.agents@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "systems-check",
+            "kind": "service",
+            "target": "axf.agents@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py",
+              "server/derive.py",
+              "server/mosses.py",
+              "server/routine.py",
+              "server/whatsnew.py"
+            ]
+          },
+          {
+            "plugin": "systems-check",
+            "kind": "service",
+            "target": "axf.vinny@1",
+            "via": "undeclared",
+            "files": [
+              "server/__init__.py",
+              "server/mosses.py"
+            ]
+          }
+        ],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [
+        "claude-accounts"
+      ],
+      "fixes": [
+        "console-terminal uses axf.hub-runs@1 without declaring it",
+        "molly-guide uses axf.agents@1 without declaring it",
+        "molly-guide uses axf.vinny@1 without declaring it",
+        "push-banner uses axf.agents@1 without declaring it",
+        "push-banner uses axf.vinny@1 without declaring it",
+        "systems-check uses axf.vinny@1 without declaring it",
+        "provides axf.hub-runs@1 in code but not in plugin.json",
+        "provides axf.vinny@1 in code but not in plugin.json",
+        "folder word quoted in framework/core/engines/card-rules.mjs (check by hand)"
+      ]
+    },
+    {
+      "folder": "ai-assistant",
+      "name": "AI assistant",
+      "tier": "core",
+      "core": true,
+      "coreReasons": [
+        "named by the console shell / framework: apps/console-web/src/axf/core/assistant.ts",
+        "hard dependents: agent-voice",
+        "used by 8 plugins"
+      ],
+      "provides": [
+        "axf.llm@1",
+        "axf.live-sessions@1"
+      ],
+      "actions": [
+        "ai-assistant.open",
+        "ai.chat.start"
+      ],
+      "usedBy": [
+        {
+          "plugin": "activity",
+          "kind": "service",
+          "target": "axf.live-sessions@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "agent-manager",
+          "kind": "service",
+          "target": "axf.llm@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py",
+            "server/llm.py"
+          ]
+        },
+        {
+          "plugin": "agent-voice",
+          "kind": "action",
+          "target": "ai-assistant.open",
+          "via": "dispatch",
+          "files": []
+        },
+        {
+          "plugin": "claude-badge",
+          "kind": "service",
+          "target": "axf.llm@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "feature-assist",
+          "kind": "service",
+          "target": "axf.llm@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "maintenance",
+          "kind": "service",
+          "target": "axf.llm@1",
+          "via": "undeclared",
+          "files": [
+            "server/profiles.py"
+          ]
+        },
+        {
+          "plugin": "plan-studio",
+          "kind": "service",
+          "target": "axf.llm@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "systems-check",
+          "kind": "service",
+          "target": "axf.llm@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py",
+            "server/checks.py",
+            "server/derive.py",
+            "server/mosses.py",
+            "server/routine.py",
+            "server/whatsnew.py"
+          ]
+        }
+      ],
+      "usedByPlugins": [
+        "activity",
+        "agent-manager",
+        "agent-voice",
+        "claude-badge",
+        "feature-assist",
+        "maintenance",
+        "plan-studio",
+        "systems-check"
+      ],
+      "breaks": {
+        "hard": [
+          {
+            "plugin": "agent-voice",
+            "kind": "action",
+            "target": "ai-assistant.open",
+            "via": "dispatch",
+            "files": []
+          }
+        ],
+        "degrades": [
+          {
+            "plugin": "activity",
+            "kind": "service",
+            "target": "axf.live-sessions@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "agent-manager",
+            "kind": "service",
+            "target": "axf.llm@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py",
+              "server/llm.py"
+            ]
+          },
+          {
+            "plugin": "claude-badge",
+            "kind": "service",
+            "target": "axf.llm@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "feature-assist",
+            "kind": "service",
+            "target": "axf.llm@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "maintenance",
+            "kind": "service",
+            "target": "axf.llm@1",
+            "via": "undeclared",
+            "files": [
+              "server/profiles.py"
+            ]
+          },
+          {
+            "plugin": "plan-studio",
+            "kind": "service",
+            "target": "axf.llm@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "systems-check",
+            "kind": "service",
+            "target": "axf.llm@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py",
+              "server/checks.py",
+              "server/derive.py",
+              "server/mosses.py",
+              "server/routine.py",
+              "server/whatsnew.py"
+            ]
+          }
+        ],
+        "silenced": [
+          {
+            "plugin": "agent-voice",
+            "kind": "event",
+            "target": "axf:assistant.focus",
+            "via": "emits",
+            "files": []
+          }
+        ],
+        "covered": [],
+        "shell": [
+          {
+            "file": "apps/console-web/src/axf/core/assistant.ts",
+            "lines": [
+              "18: * module/plugin — in the console, plugins/ai-assistant (capability `axf.llm@1`). Nothing here is console-specific.",
+              "451: /** base URL of the assistant API, e.g. `/api/plugins/ai-assistant` (no trailing slash) */"
+            ]
+          }
+        ]
+      },
+      "cascade": [
+        "agent-voice"
+      ],
+      "fixes": [
+        "maintenance uses axf.llm@1 without declaring it",
+        "folder word quoted in apps/console-web/src/lazyEngine.ts (check by hand)",
+        "folder word quoted in apps/console-web/server/plugin_services.py (check by hand)",
+        "folder word quoted in framework/core/engines/card-rules.mjs (check by hand)"
+      ]
+    },
+    {
+      "folder": "container-access",
+      "name": "Container access",
+      "tier": "core",
+      "core": true,
+      "coreReasons": [
+        "hard dependents: snapshot-manager",
+        "used by 6 plugins"
+      ],
+      "provides": [
+        "axf.containers@1"
+      ],
+      "actions": [],
+      "usedBy": [
+        {
+          "plugin": "agent-manager",
+          "kind": "service",
+          "target": "axf.containers@1",
+          "via": "optional",
+          "files": [
+            "server/containers.py"
+          ]
+        },
+        {
+          "plugin": "ai-assistant",
+          "kind": "service",
+          "target": "axf.containers@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "console-terminal",
+          "kind": "service",
+          "target": "axf.containers@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py",
+            "server/sessions.py"
+          ]
+        },
+        {
+          "plugin": "feature-assist",
+          "kind": "service",
+          "target": "axf.containers@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "snapshot-manager",
+          "kind": "service",
+          "target": "axf.containers@1",
+          "via": "required",
+          "files": [
+            "server/__init__.py",
+            "server/snapshots.py"
+          ]
+        },
+        {
+          "plugin": "systems-check",
+          "kind": "service",
+          "target": "axf.containers@1",
+          "via": "undeclared",
+          "files": [
+            "server/healthchecks.py"
+          ]
+        }
+      ],
+      "usedByPlugins": [
+        "agent-manager",
+        "ai-assistant",
+        "console-terminal",
+        "feature-assist",
+        "snapshot-manager",
+        "systems-check"
+      ],
+      "breaks": {
+        "hard": [
+          {
+            "plugin": "snapshot-manager",
+            "kind": "service",
+            "target": "axf.containers@1",
+            "via": "required",
+            "files": [
+              "server/__init__.py",
+              "server/snapshots.py"
+            ]
+          }
+        ],
+        "degrades": [
+          {
+            "plugin": "agent-manager",
+            "kind": "service",
+            "target": "axf.containers@1",
+            "via": "optional",
+            "files": [
+              "server/containers.py"
+            ]
+          },
+          {
+            "plugin": "ai-assistant",
+            "kind": "service",
+            "target": "axf.containers@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "console-terminal",
+            "kind": "service",
+            "target": "axf.containers@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py",
+              "server/sessions.py"
+            ]
+          },
+          {
+            "plugin": "feature-assist",
+            "kind": "service",
+            "target": "axf.containers@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "systems-check",
+            "kind": "service",
+            "target": "axf.containers@1",
+            "via": "undeclared",
+            "files": [
+              "server/healthchecks.py"
+            ]
+          }
+        ],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [
+        "snapshot-manager"
+      ],
+      "fixes": [
+        "systems-check uses axf.containers@1 without declaring it"
+      ]
+    },
+    {
+      "folder": "build-orchestrator",
+      "name": "Build orchestrator",
+      "tier": "core",
+      "core": true,
+      "coreReasons": [
+        "hard dependents: systems-check"
+      ],
+      "provides": [
+        "orchestrator@1",
+        "axf.build-dispatch@1",
+        "console-focus@1"
+      ],
+      "actions": [
+        "build-orchestrator.focus",
+        "build-orchestrator.open",
+        "build-orchestrator.start",
+        "build-orchestrator.tab"
+      ],
+      "usedBy": [
+        {
+          "plugin": "console-commands",
+          "kind": "service",
+          "target": "console-focus@1",
+          "via": "undeclared",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "feature-assist",
+          "kind": "service",
+          "target": "axf.build-dispatch@1",
+          "via": "undeclared",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "push-banner",
+          "kind": "service",
+          "target": "axf.build-dispatch@1",
+          "via": "undeclared",
+          "files": [
+            "server/claudefix.py"
+          ]
+        },
+        {
+          "plugin": "systems-check",
+          "kind": "service",
+          "target": "axf.build-dispatch@1",
+          "via": "undeclared",
+          "files": [
+            "server/claudefix.py"
+          ]
+        },
+        {
+          "plugin": "systems-check",
+          "kind": "action",
+          "target": "build-orchestrator.open",
+          "via": "dispatch",
+          "files": []
+        }
+      ],
+      "usedByPlugins": [
+        "console-commands",
+        "feature-assist",
+        "push-banner",
+        "systems-check"
+      ],
+      "breaks": {
+        "hard": [
+          {
+            "plugin": "systems-check",
+            "kind": "action",
+            "target": "build-orchestrator.open",
+            "via": "dispatch",
+            "files": []
+          }
+        ],
+        "degrades": [
+          {
+            "plugin": "console-commands",
+            "kind": "service",
+            "target": "console-focus@1",
+            "via": "undeclared",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "feature-assist",
+            "kind": "service",
+            "target": "axf.build-dispatch@1",
+            "via": "undeclared",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "push-banner",
+            "kind": "service",
+            "target": "axf.build-dispatch@1",
+            "via": "undeclared",
+            "files": [
+              "server/claudefix.py"
+            ]
+          },
+          {
+            "plugin": "systems-check",
+            "kind": "service",
+            "target": "axf.build-dispatch@1",
+            "via": "undeclared",
+            "files": [
+              "server/claudefix.py"
+            ]
+          }
+        ],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [
+        "systems-check"
+      ],
+      "fixes": [
+        "console-commands uses console-focus@1 without declaring it",
+        "feature-assist uses axf.build-dispatch@1 without declaring it",
+        "push-banner uses axf.build-dispatch@1 without declaring it",
+        "systems-check uses axf.build-dispatch@1 without declaring it",
+        "provides console-focus@1 in code but not in plugin.json",
+        "declares orchestrator@1 but no provide call found (check by hand: may be web-side or a data contract)",
+        "folder word quoted in apps/console-web/server/mcp_server.py (check by hand)",
+        "folder word quoted in apps/console-web/server/test_mcp_tools.py (check by hand)",
+        "folder word quoted in framework/core/build-priority.mjs (check by hand)",
+        "folder word quoted in framework/core/engines/card-rules.mjs (check by hand)",
+        "folder word quoted in framework/core/headless-context.mjs (check by hand)"
+      ]
+    },
+    {
+      "folder": "console-terminal",
+      "name": "Terminal",
+      "tier": "core",
+      "core": true,
+      "coreReasons": [
+        "hard dependents: claude-accounts"
+      ],
+      "provides": [
+        "axf.headless@1",
+        "axf.session-feed@1"
+      ],
+      "actions": [
+        "terminal.attach",
+        "terminal.claude",
+        "terminal.jump",
+        "terminal.mirror",
+        "terminal.new",
+        "terminal.open",
+        "terminal.sessions",
+        "terminal.toolbar"
+      ],
+      "usedBy": [
+        {
+          "plugin": "claude-accounts",
+          "kind": "service",
+          "target": "axf.headless@1",
+          "via": "required",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "claude-accounts",
+          "kind": "action",
+          "target": "terminal.claude",
+          "via": "dispatch",
+          "files": []
+        },
+        {
+          "plugin": "claude-badge",
+          "kind": "service",
+          "target": "axf.headless@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "crew-live",
+          "kind": "service",
+          "target": "axf.headless@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        }
+      ],
+      "usedByPlugins": [
+        "claude-accounts",
+        "claude-badge",
+        "crew-live"
+      ],
+      "breaks": {
+        "hard": [
+          {
+            "plugin": "claude-accounts",
+            "kind": "service",
+            "target": "axf.headless@1",
+            "via": "required",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "claude-accounts",
+            "kind": "action",
+            "target": "terminal.claude",
+            "via": "dispatch",
+            "files": []
+          }
+        ],
+        "degrades": [
+          {
+            "plugin": "claude-badge",
+            "kind": "service",
+            "target": "axf.headless@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "crew-live",
+            "kind": "service",
+            "target": "axf.headless@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          }
+        ],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [
+        "claude-accounts"
+      ],
+      "fixes": [
+        "folder word quoted in apps/console-web/src/lazyEngine.ts (check by hand)"
+      ]
+    },
+    {
+      "folder": "token-control",
+      "name": "Token control",
+      "tier": "core",
+      "core": true,
+      "coreReasons": [
+        "hard dependents: claude-settings",
+        "provides framework contract control@1"
+      ],
+      "provides": [
+        "control@1"
+      ],
+      "actions": [],
+      "usedBy": [
+        {
+          "plugin": "claude-settings",
+          "kind": "service",
+          "target": "control@1",
+          "via": "required",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "notify-control",
+          "kind": "service",
+          "target": "control@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "plugin-commands",
+          "kind": "service",
+          "target": "control@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        }
+      ],
+      "usedByPlugins": [
+        "claude-settings",
+        "notify-control",
+        "plugin-commands"
+      ],
+      "breaks": {
+        "hard": [
+          {
+            "plugin": "claude-settings",
+            "kind": "service",
+            "target": "control@1",
+            "via": "required",
+            "files": [
+              "server/__init__.py"
+            ]
+          }
+        ],
+        "degrades": [
+          {
+            "plugin": "notify-control",
+            "kind": "service",
+            "target": "control@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "plugin-commands",
+            "kind": "service",
+            "target": "control@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          }
+        ],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [
+        "claude-settings"
+      ],
+      "fixes": [
+        "folder word quoted in apps/console-web/src/lazyEngine.ts (check by hand)"
+      ]
+    },
+    {
+      "folder": "theme-manager",
+      "name": "Theme manager",
+      "tier": "core",
+      "core": true,
+      "coreReasons": [
+        "hard dependents: theme-editor"
+      ],
+      "provides": [
+        "axf.token-tree@1"
+      ],
+      "actions": [
+        "theme-manager.open"
+      ],
+      "usedBy": [
+        {
+          "plugin": "theme-editor",
+          "kind": "service",
+          "target": "axf.token-tree@1",
+          "via": "required",
+          "files": [
+            "web/model.ts"
+          ]
+        }
+      ],
+      "usedByPlugins": [
+        "theme-editor"
+      ],
+      "breaks": {
+        "hard": [
+          {
+            "plugin": "theme-editor",
+            "kind": "service",
+            "target": "axf.token-tree@1",
+            "via": "required",
+            "files": [
+              "web/model.ts"
+            ]
+          }
+        ],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [
+        "theme-editor"
+      ],
+      "fixes": [
+        "folder word quoted in framework/cli/plugin-instances.mjs (check by hand)"
+      ]
+    },
+    {
+      "folder": "systems-check",
+      "name": "Systems check banner",
+      "tier": "core",
+      "core": true,
+      "coreReasons": [
+        "used by 11 plugins"
+      ],
+      "provides": [
+        "axf.syscheck@1",
+        "axf.health@1",
+        "axf.github@1"
+      ],
+      "actions": [
+        "keys-needed.open",
+        "system-check.open"
+      ],
+      "usedBy": [
+        {
+          "plugin": "activity",
+          "kind": "service",
+          "target": "axf.github@1",
+          "via": "undeclared",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "activity",
+          "kind": "service",
+          "target": "axf.health@1",
+          "via": "undeclared",
+          "files": [
+            "server/health.py"
+          ]
+        },
+        {
+          "plugin": "agent-slots",
+          "kind": "service",
+          "target": "axf.health@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "approvals-banner",
+          "kind": "service",
+          "target": "axf.health@1",
+          "via": "undeclared",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "build-orchestrator",
+          "kind": "service",
+          "target": "axf.health@1",
+          "via": "undeclared",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "claude-accounts",
+          "kind": "service",
+          "target": "axf.health@1",
+          "via": "undeclared",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "console-terminal",
+          "kind": "service",
+          "target": "axf.health@1",
+          "via": "undeclared",
+          "files": [
+            "server/health.py"
+          ]
+        },
+        {
+          "plugin": "github-app",
+          "kind": "service",
+          "target": "axf.health@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "maintenance",
+          "kind": "service",
+          "target": "axf.health@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "output-recorder",
+          "kind": "service",
+          "target": "axf.health@1",
+          "via": "undeclared",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "push-banner",
+          "kind": "service",
+          "target": "axf.github@1",
+          "via": "undeclared",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "push-banner",
+          "kind": "service",
+          "target": "axf.health@1",
+          "via": "undeclared",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "ui-review",
+          "kind": "service",
+          "target": "axf.health@1",
+          "via": "undeclared",
+          "files": [
+            "server/__init__.py"
+          ]
+        }
+      ],
+      "usedByPlugins": [
+        "activity",
+        "agent-slots",
+        "approvals-banner",
+        "build-orchestrator",
+        "claude-accounts",
+        "console-terminal",
+        "github-app",
+        "maintenance",
+        "output-recorder",
+        "push-banner",
+        "ui-review"
+      ],
+      "breaks": {
+        "hard": [],
+        "degrades": [
+          {
+            "plugin": "activity",
+            "kind": "service",
+            "target": "axf.github@1",
+            "via": "undeclared",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "activity",
+            "kind": "service",
+            "target": "axf.health@1",
+            "via": "undeclared",
+            "files": [
+              "server/health.py"
+            ]
+          },
+          {
+            "plugin": "agent-slots",
+            "kind": "service",
+            "target": "axf.health@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "approvals-banner",
+            "kind": "service",
+            "target": "axf.health@1",
+            "via": "undeclared",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "build-orchestrator",
+            "kind": "service",
+            "target": "axf.health@1",
+            "via": "undeclared",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "claude-accounts",
+            "kind": "service",
+            "target": "axf.health@1",
+            "via": "undeclared",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "console-terminal",
+            "kind": "service",
+            "target": "axf.health@1",
+            "via": "undeclared",
+            "files": [
+              "server/health.py"
+            ]
+          },
+          {
+            "plugin": "github-app",
+            "kind": "service",
+            "target": "axf.health@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "maintenance",
+            "kind": "service",
+            "target": "axf.health@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "output-recorder",
+            "kind": "service",
+            "target": "axf.health@1",
+            "via": "undeclared",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "push-banner",
+            "kind": "service",
+            "target": "axf.github@1",
+            "via": "undeclared",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "push-banner",
+            "kind": "service",
+            "target": "axf.health@1",
+            "via": "undeclared",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "ui-review",
+            "kind": "service",
+            "target": "axf.health@1",
+            "via": "undeclared",
+            "files": [
+              "server/__init__.py"
+            ]
+          }
+        ],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "activity uses axf.github@1 without declaring it",
+        "activity uses axf.health@1 without declaring it",
+        "approvals-banner uses axf.health@1 without declaring it",
+        "build-orchestrator uses axf.health@1 without declaring it",
+        "claude-accounts uses axf.health@1 without declaring it",
+        "console-terminal uses axf.health@1 without declaring it",
+        "output-recorder uses axf.health@1 without declaring it",
+        "push-banner uses axf.github@1 without declaring it",
+        "push-banner uses axf.health@1 without declaring it",
+        "ui-review uses axf.health@1 without declaring it",
+        "declares axf.github@1 but no provide call found (check by hand: may be web-side or a data contract)",
+        "folder word quoted in apps/console-web/src/lazyEngine.ts (check by hand)"
+      ]
+    },
+    {
+      "folder": "codebase-changes",
+      "name": "Codebase changes banner",
+      "tier": "core",
+      "core": true,
+      "coreReasons": [
+        "used by 5 plugins"
+      ],
+      "provides": [
+        "axf.changes@1"
+      ],
+      "actions": [
+        "codebase-changes.open"
+      ],
+      "usedBy": [
+        {
+          "plugin": "activity",
+          "kind": "service",
+          "target": "axf.changes@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "changes-grid",
+          "kind": "service",
+          "target": "axf.changes@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "feature-matrix",
+          "kind": "service",
+          "target": "axf.changes@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "push-banner",
+          "kind": "service",
+          "target": "axf.changes@1",
+          "via": "undeclared",
+          "files": [
+            "server/__init__.py",
+            "server/claudefix.py"
+          ]
+        },
+        {
+          "plugin": "systems-check",
+          "kind": "service",
+          "target": "axf.changes@1",
+          "via": "undeclared",
+          "files": [
+            "server/__init__.py",
+            "server/claudefix.py",
+            "server/healthchecks.py"
+          ]
+        }
+      ],
+      "usedByPlugins": [
+        "activity",
+        "changes-grid",
+        "feature-matrix",
+        "push-banner",
+        "systems-check"
+      ],
+      "breaks": {
+        "hard": [],
+        "degrades": [
+          {
+            "plugin": "activity",
+            "kind": "service",
+            "target": "axf.changes@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "changes-grid",
+            "kind": "service",
+            "target": "axf.changes@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "feature-matrix",
+            "kind": "service",
+            "target": "axf.changes@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "push-banner",
+            "kind": "service",
+            "target": "axf.changes@1",
+            "via": "undeclared",
+            "files": [
+              "server/__init__.py",
+              "server/claudefix.py"
+            ]
+          },
+          {
+            "plugin": "systems-check",
+            "kind": "service",
+            "target": "axf.changes@1",
+            "via": "undeclared",
+            "files": [
+              "server/__init__.py",
+              "server/claudefix.py",
+              "server/healthchecks.py"
+            ]
+          }
+        ],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "push-banner uses axf.changes@1 without declaring it",
+        "systems-check uses axf.changes@1 without declaring it",
+        "folder word quoted in apps/console-web/src/lazyEngine.ts (check by hand)",
+        "folder word quoted in framework/core/engines/card-rules.mjs (check by hand)",
+        "folder word quoted in framework/core/headless-context.mjs (check by hand)"
+      ]
+    },
+    {
+      "folder": "console-commands",
+      "name": "Console commands",
+      "tier": "core",
+      "core": true,
+      "coreReasons": [
+        "provides framework contract console-commands@1"
+      ],
+      "provides": [
+        "console-commands@1"
+      ],
+      "actions": [],
+      "usedBy": [
+        {
+          "plugin": "follow-amber",
+          "kind": "service",
+          "target": "console-commands@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "plugin-commands",
+          "kind": "service",
+          "target": "console-commands@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "ref-links",
+          "kind": "service",
+          "target": "console-commands@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "token-control",
+          "kind": "service",
+          "target": "console-commands@1",
+          "via": "undeclared",
+          "files": [
+            "server/__init__.py"
+          ]
+        }
+      ],
+      "usedByPlugins": [
+        "follow-amber",
+        "plugin-commands",
+        "ref-links",
+        "token-control"
+      ],
+      "breaks": {
+        "hard": [],
+        "degrades": [
+          {
+            "plugin": "follow-amber",
+            "kind": "service",
+            "target": "console-commands@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "plugin-commands",
+            "kind": "service",
+            "target": "console-commands@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "ref-links",
+            "kind": "service",
+            "target": "console-commands@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "token-control",
+            "kind": "service",
+            "target": "console-commands@1",
+            "via": "undeclared",
+            "files": [
+              "server/__init__.py"
+            ]
+          }
+        ],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "token-control uses console-commands@1 without declaring it",
+        "folder word quoted in apps/console-web/src/lazyEngine.ts (check by hand)"
+      ]
+    },
+    {
+      "folder": "plugin-commands",
+      "name": "Plugin commands",
+      "tier": "core",
+      "core": true,
+      "coreReasons": [
+        "provides framework contract plugin-commands@1"
+      ],
+      "provides": [
+        "plugin-commands@1"
+      ],
+      "actions": [
+        "plugin-commands.open"
+      ],
+      "usedBy": [
+        {
+          "plugin": "token-control",
+          "kind": "service",
+          "target": "plugin-commands@1",
+          "via": "undeclared",
+          "files": [
+            "server/__init__.py"
+          ]
+        }
+      ],
+      "usedByPlugins": [
+        "token-control"
+      ],
+      "breaks": {
+        "hard": [],
+        "degrades": [
+          {
+            "plugin": "token-control",
+            "kind": "service",
+            "target": "plugin-commands@1",
+            "via": "undeclared",
+            "files": [
+              "server/__init__.py"
+            ]
+          }
+        ],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "token-control uses plugin-commands@1 without declaring it",
+        "folder word quoted in apps/console-web/src/views/HomeCards.tsx (check by hand)"
+      ]
+    },
+    {
+      "folder": "follow-amber",
+      "name": "Follow Amber",
+      "tier": "core",
+      "core": true,
+      "coreReasons": [
+        "named by the console shell / framework: apps/console-web/server/mcp_server.py"
+      ],
+      "provides": [
+        "follow-amber@1"
+      ],
+      "actions": [
+        "follow-amber.approvals",
+        "follow-amber.toggle"
+      ],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": [
+          {
+            "file": "apps/console-web/server/mcp_server.py",
+            "lines": [
+              "1062: base = os.environ.get(\"AXF_CONSOLE_URL\", \"https://console.amberxai.com\").rstrip(\"/\") + \"/api/plugins/follow-amber/\"  # axf-plugin:follow-amb"
+            ]
+          }
+        ]
+      },
+      "cascade": [],
+      "fixes": [
+        "folder word quoted in apps/console-web/src/lazyEngine.ts (check by hand)"
+      ]
+    },
+    {
+      "folder": "plugin-manager",
+      "name": "Plugin Manager",
+      "tier": "core",
+      "core": true,
+      "coreReasons": [
+        "named by the console shell / framework: apps/console-web/src/pluginLoader.tsx"
+      ],
+      "provides": [],
+      "actions": [
+        "plugin-manager.install",
+        "plugin-manager.layout",
+        "plugin-manager.open",
+        "plugin-manager.view",
+        "plugin-manager.window"
+      ],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": [
+          {
+            "file": "apps/console-web/src/pluginLoader.tsx",
+            "lines": [
+              "487: void fetch('/api/plugins/plugin-manager/lazy/report', { method: 'POST', headers: authHeaders(consoleTokens, { headers: { 'content-type': 'ap",
+              "494: const r = await fetch('/api/plugins/plugin-manager/lazy', { headers: authHeaders(consoleTokens, {}), cache: 'no-store' }); // axf-plugin:plu"
+            ]
+          }
+        ]
+      },
+      "cascade": [],
+      "fixes": [
+        "folder word quoted in apps/console-web/src/axf/core/engines/embed.ts (check by hand)",
+        "folder word quoted in apps/console-web/src/lazyEngine.ts (check by hand)",
+        "folder word quoted in framework/cli/rebuild-shots.mjs (check by hand)"
+      ]
+    },
+    {
+      "folder": "agent-swarm",
+      "name": "Agent swarm",
+      "tier": "shared",
+      "core": false,
+      "coreReasons": [],
+      "provides": [
+        "agent-jobs@1",
+        "axf.crew@1",
+        "axf.swarm-roster@1",
+        "crew-sections@1",
+        "axf.crew-sections@1"
+      ],
+      "actions": [
+        "agent-swarm.open",
+        "agent-swarm.profile"
+      ],
+      "usedBy": [
+        {
+          "plugin": "claude-session",
+          "kind": "service",
+          "target": "axf.crew@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "crew-live",
+          "kind": "service",
+          "target": "axf.swarm-roster@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "notify-control",
+          "kind": "service",
+          "target": "axf.crew-sections@1",
+          "via": "undeclared",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "systems-check",
+          "kind": "service",
+          "target": "axf.crew-sections@1",
+          "via": "undeclared",
+          "files": [
+            "server/__init__.py"
+          ]
+        }
+      ],
+      "usedByPlugins": [
+        "claude-session",
+        "crew-live",
+        "notify-control",
+        "systems-check"
+      ],
+      "breaks": {
+        "hard": [],
+        "degrades": [
+          {
+            "plugin": "claude-session",
+            "kind": "service",
+            "target": "axf.crew@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "crew-live",
+            "kind": "service",
+            "target": "axf.swarm-roster@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "notify-control",
+            "kind": "service",
+            "target": "axf.crew-sections@1",
+            "via": "undeclared",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "systems-check",
+            "kind": "service",
+            "target": "axf.crew-sections@1",
+            "via": "undeclared",
+            "files": [
+              "server/__init__.py"
+            ]
+          }
+        ],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "notify-control uses axf.crew-sections@1 without declaring it",
+        "systems-check uses axf.crew-sections@1 without declaring it",
+        "declares agent-jobs@1 but no provide call found (check by hand: may be web-side or a data contract)",
+        "declares crew-sections@1 but no provide call found (check by hand: may be web-side or a data contract)",
+        "folder word quoted in framework/core/engines/card-rules.mjs (check by hand)"
+      ]
+    },
+    {
+      "folder": "claude-settings",
+      "name": "Claude",
+      "tier": "shared",
+      "core": false,
+      "coreReasons": [],
+      "provides": [
+        "axf.claude-settings@1"
+      ],
+      "actions": [
+        "claude-settings.open"
+      ],
+      "usedBy": [
+        {
+          "plugin": "claude-session",
+          "kind": "service",
+          "target": "axf.claude-settings@1",
+          "via": "undeclared",
+          "files": [
+            "server/recording.py"
+          ]
+        },
+        {
+          "plugin": "notify-control",
+          "kind": "service",
+          "target": "axf.claude-settings@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "output-recorder",
+          "kind": "service",
+          "target": "axf.claude-settings@1",
+          "via": "undeclared",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "ui-review",
+          "kind": "service",
+          "target": "axf.claude-settings@1",
+          "via": "undeclared",
+          "files": [
+            "server/notify.py"
+          ]
+        }
+      ],
+      "usedByPlugins": [
+        "claude-session",
+        "notify-control",
+        "output-recorder",
+        "ui-review"
+      ],
+      "breaks": {
+        "hard": [],
+        "degrades": [
+          {
+            "plugin": "claude-session",
+            "kind": "service",
+            "target": "axf.claude-settings@1",
+            "via": "undeclared",
+            "files": [
+              "server/recording.py"
+            ]
+          },
+          {
+            "plugin": "notify-control",
+            "kind": "service",
+            "target": "axf.claude-settings@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "output-recorder",
+            "kind": "service",
+            "target": "axf.claude-settings@1",
+            "via": "undeclared",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "ui-review",
+            "kind": "service",
+            "target": "axf.claude-settings@1",
+            "via": "undeclared",
+            "files": [
+              "server/notify.py"
+            ]
+          }
+        ],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "claude-session uses axf.claude-settings@1 without declaring it",
+        "output-recorder uses axf.claude-settings@1 without declaring it",
+        "ui-review uses axf.claude-settings@1 without declaring it",
+        "folder word quoted in apps/console-web/src/lazyEngine.ts (check by hand)",
+        "folder word quoted in apps/console-web/server/mcp_server.py (check by hand)",
+        "folder word quoted in framework/cli/rules-brief.mjs (check by hand)"
+      ]
+    },
+    {
+      "folder": "agent-voice",
+      "name": "Agent voice",
+      "tier": "shared",
+      "core": false,
+      "coreReasons": [],
+      "provides": [
+        "axf.agent-voice@1",
+        "axf.speech@1"
+      ],
+      "actions": [
+        "agent-voice.configure",
+        "agent-voice.open",
+        "agent-voice.pause",
+        "agent-voice.resume",
+        "agent-voice.settings",
+        "agent-voice.stop"
+      ],
+      "usedBy": [
+        {
+          "plugin": "ai-assistant",
+          "kind": "event",
+          "target": "axf:assistant.focus",
+          "via": "listens",
+          "files": []
+        },
+        {
+          "plugin": "demonstration-designer",
+          "kind": "service",
+          "target": "axf.speech@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "plan-studio",
+          "kind": "service",
+          "target": "axf.agent-voice@1",
+          "via": "optional",
+          "files": []
+        }
+      ],
+      "usedByPlugins": [
+        "ai-assistant",
+        "demonstration-designer",
+        "plan-studio"
+      ],
+      "breaks": {
+        "hard": [],
+        "degrades": [
+          {
+            "plugin": "ai-assistant",
+            "kind": "event",
+            "target": "axf:assistant.focus",
+            "via": "listens",
+            "files": []
+          },
+          {
+            "plugin": "demonstration-designer",
+            "kind": "service",
+            "target": "axf.speech@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "plan-studio",
+            "kind": "service",
+            "target": "axf.agent-voice@1",
+            "via": "optional",
+            "files": []
+          }
+        ],
+        "silenced": [
+          {
+            "plugin": "plan-studio",
+            "kind": "event",
+            "target": "axf:agent-voice.say",
+            "via": "emits",
+            "files": []
+          }
+        ],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "folder word quoted in apps/console-web/src/lazyEngine.ts (check by hand)"
+      ]
+    },
+    {
+      "folder": "ai-keys",
+      "name": "AI keys",
+      "tier": "shared",
+      "core": false,
+      "coreReasons": [],
+      "provides": [
+        "axf.ai-keys@1"
+      ],
+      "actions": [
+        "ai-keys.accounts",
+        "ai-keys.open"
+      ],
+      "usedBy": [
+        {
+          "plugin": "ai-assistant",
+          "kind": "service",
+          "target": "axf.ai-keys@1",
+          "via": "undeclared",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "claude-badge",
+          "kind": "service",
+          "target": "axf.ai-keys@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "systems-check",
+          "kind": "service",
+          "target": "axf.ai-keys@1",
+          "via": "undeclared",
+          "files": [
+            "server/healthchecks.py"
+          ]
+        }
+      ],
+      "usedByPlugins": [
+        "ai-assistant",
+        "claude-badge",
+        "systems-check"
+      ],
+      "breaks": {
+        "hard": [],
+        "degrades": [
+          {
+            "plugin": "ai-assistant",
+            "kind": "service",
+            "target": "axf.ai-keys@1",
+            "via": "undeclared",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "claude-badge",
+            "kind": "service",
+            "target": "axf.ai-keys@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "systems-check",
+            "kind": "service",
+            "target": "axf.ai-keys@1",
+            "via": "undeclared",
+            "files": [
+              "server/healthchecks.py"
+            ]
+          }
+        ],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "ai-assistant uses axf.ai-keys@1 without declaring it",
+        "systems-check uses axf.ai-keys@1 without declaring it"
+      ]
+    },
+    {
+      "folder": "snapshot-manager",
+      "name": "Snapshot Manager",
+      "tier": "shared",
+      "core": false,
+      "coreReasons": [],
+      "provides": [
+        "axf.snapshots@1"
+      ],
+      "actions": [
+        "snapshots.show"
+      ],
+      "usedBy": [
+        {
+          "plugin": "agent-manager",
+          "kind": "service",
+          "target": "axf.snapshots@1",
+          "via": "optional",
+          "files": [
+            "server/containers.py"
+          ]
+        },
+        {
+          "plugin": "container-access",
+          "kind": "service",
+          "target": "axf.snapshots@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py",
+            "server/service.py"
+          ]
+        },
+        {
+          "plugin": "feature-assist",
+          "kind": "service",
+          "target": "axf.snapshots@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        }
+      ],
+      "usedByPlugins": [
+        "agent-manager",
+        "container-access",
+        "feature-assist"
+      ],
+      "breaks": {
+        "hard": [],
+        "degrades": [
+          {
+            "plugin": "agent-manager",
+            "kind": "service",
+            "target": "axf.snapshots@1",
+            "via": "optional",
+            "files": [
+              "server/containers.py"
+            ]
+          },
+          {
+            "plugin": "container-access",
+            "kind": "service",
+            "target": "axf.snapshots@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py",
+              "server/service.py"
+            ]
+          },
+          {
+            "plugin": "feature-assist",
+            "kind": "service",
+            "target": "axf.snapshots@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          }
+        ],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": []
+    },
+    {
+      "folder": "ui-review",
+      "name": "UI Review",
+      "tier": "shared",
+      "core": false,
+      "coreReasons": [],
+      "provides": [
+        "ui-review@1",
+        "ui-screenshots@1"
+      ],
+      "actions": [
+        "ui-review.design-packs",
+        "ui-review.open",
+        "ui-review.screenshots"
+      ],
+      "usedBy": [
+        {
+          "plugin": "build-orchestrator",
+          "kind": "service",
+          "target": "ui-review@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "push-banner",
+          "kind": "service",
+          "target": "ui-review@1",
+          "via": "undeclared",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "ref-links",
+          "kind": "service",
+          "target": "ui-review@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        }
+      ],
+      "usedByPlugins": [
+        "build-orchestrator",
+        "push-banner",
+        "ref-links"
+      ],
+      "breaks": {
+        "hard": [],
+        "degrades": [
+          {
+            "plugin": "build-orchestrator",
+            "kind": "service",
+            "target": "ui-review@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "push-banner",
+            "kind": "service",
+            "target": "ui-review@1",
+            "via": "undeclared",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "ref-links",
+            "kind": "service",
+            "target": "ui-review@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          }
+        ],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "push-banner uses ui-review@1 without declaring it",
+        "declares ui-screenshots@1 but no provide call found (check by hand: may be web-side or a data contract)",
+        "folder word quoted in framework/core/build-priority.mjs (check by hand)",
+        "folder word quoted in framework/core/engines/card-rules.mjs (check by hand)",
+        "folder word quoted in framework/core/headless-context.mjs (check by hand)",
+        "folder word quoted in framework/core/ui-predict.mjs (check by hand)"
+      ]
+    },
+    {
+      "folder": "agent-slots",
+      "name": "Agent cap",
+      "tier": "shared",
+      "core": false,
+      "coreReasons": [],
+      "provides": [
+        "axf.agent-slots@1"
+      ],
+      "actions": [],
+      "usedBy": [
+        {
+          "plugin": "build-orchestrator",
+          "kind": "service",
+          "target": "axf.agent-slots@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "claude-session",
+          "kind": "service",
+          "target": "axf.agent-slots@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        }
+      ],
+      "usedByPlugins": [
+        "build-orchestrator",
+        "claude-session"
+      ],
+      "breaks": {
+        "hard": [],
+        "degrades": [
+          {
+            "plugin": "build-orchestrator",
+            "kind": "service",
+            "target": "axf.agent-slots@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "claude-session",
+            "kind": "service",
+            "target": "axf.agent-slots@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          }
+        ],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "folder word quoted in framework/cli/agent-slots.mjs (check by hand)",
+        "folder word quoted in framework/cli/build-limit.mjs (check by hand)"
+      ]
+    },
+    {
+      "folder": "claude-accounts",
+      "name": "Claude accounts",
+      "tier": "shared",
+      "core": false,
+      "coreReasons": [],
+      "provides": [
+        "axf.claude-accounts@1"
+      ],
+      "actions": [
+        "claude-accounts.open",
+        "claude-accounts.routing",
+        "claude-accounts.switch"
+      ],
+      "usedBy": [
+        {
+          "plugin": "ai-keys",
+          "kind": "service",
+          "target": "axf.claude-accounts@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        },
+        {
+          "plugin": "claude-badge",
+          "kind": "service",
+          "target": "axf.claude-accounts@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        }
+      ],
+      "usedByPlugins": [
+        "ai-keys",
+        "claude-badge"
+      ],
+      "breaks": {
+        "hard": [],
+        "degrades": [
+          {
+            "plugin": "ai-keys",
+            "kind": "service",
+            "target": "axf.claude-accounts@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          },
+          {
+            "plugin": "claude-badge",
+            "kind": "service",
+            "target": "axf.claude-accounts@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          }
+        ],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "folder word quoted in apps/console-web/src/lazyEngine.ts (check by hand)"
+      ]
+    },
+    {
+      "folder": "notify-control",
+      "name": "Notifications",
+      "tier": "shared",
+      "core": false,
+      "coreReasons": [],
+      "provides": [
+        "axf.notify@1"
+      ],
+      "actions": [
+        "notify-control.open"
+      ],
+      "usedBy": [
+        {
+          "plugin": "activity",
+          "kind": "service",
+          "target": "axf.notify@1",
+          "via": "undeclared",
+          "files": [
+            "server/complete.py"
+          ]
+        },
+        {
+          "plugin": "follow-amber",
+          "kind": "service",
+          "target": "axf.notify@1",
+          "via": "undeclared",
+          "files": [
+            "server/__init__.py"
+          ]
+        }
+      ],
+      "usedByPlugins": [
+        "activity",
+        "follow-amber"
+      ],
+      "breaks": {
+        "hard": [],
+        "degrades": [
+          {
+            "plugin": "activity",
+            "kind": "service",
+            "target": "axf.notify@1",
+            "via": "undeclared",
+            "files": [
+              "server/complete.py"
+            ]
+          },
+          {
+            "plugin": "follow-amber",
+            "kind": "service",
+            "target": "axf.notify@1",
+            "via": "undeclared",
+            "files": [
+              "server/__init__.py"
+            ]
+          }
+        ],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "activity uses axf.notify@1 without declaring it",
+        "follow-amber uses axf.notify@1 without declaring it",
+        "folder word quoted in apps/console-web/src/lazyEngine.ts (check by hand)"
+      ]
+    },
+    {
+      "folder": "plan-studio",
+      "name": "Plan Studio",
+      "tier": "shared",
+      "core": false,
+      "coreReasons": [],
+      "provides": [
+        "plans@1"
+      ],
+      "actions": [
+        "plan-studio.capture",
+        "plan-studio.open"
+      ],
+      "usedBy": [
+        {
+          "plugin": "agent-voice",
+          "kind": "event",
+          "target": "axf:agent-voice.say",
+          "via": "listens",
+          "files": []
+        },
+        {
+          "plugin": "build-orchestrator",
+          "kind": "service",
+          "target": "plans@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        }
+      ],
+      "usedByPlugins": [
+        "agent-voice",
+        "build-orchestrator"
+      ],
+      "breaks": {
+        "hard": [],
+        "degrades": [
+          {
+            "plugin": "agent-voice",
+            "kind": "event",
+            "target": "axf:agent-voice.say",
+            "via": "listens",
+            "files": []
+          },
+          {
+            "plugin": "build-orchestrator",
+            "kind": "service",
+            "target": "plans@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          }
+        ],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "folder word quoted in apps/console-web/src/lazyEngine.ts (check by hand)",
+        "folder word quoted in apps/console-web/server/mcp_server.py (check by hand)",
+        "folder word quoted in framework/core/build-priority.mjs (check by hand)"
+      ]
+    },
+    {
+      "folder": "activity",
+      "name": "Activity banner",
+      "tier": "shared",
+      "core": false,
+      "coreReasons": [],
+      "provides": [
+        "axf.activity@1"
+      ],
+      "actions": [
+        "activity.check",
+        "activity.open"
+      ],
+      "usedBy": [
+        {
+          "plugin": "push-banner",
+          "kind": "service",
+          "target": "axf.activity@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        }
+      ],
+      "usedByPlugins": [
+        "push-banner"
+      ],
+      "breaks": {
+        "hard": [],
+        "degrades": [
+          {
+            "plugin": "push-banner",
+            "kind": "service",
+            "target": "axf.activity@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          }
+        ],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "folder word quoted in apps/console-web/src/axf/libs/hubsync/index.tsx (check by hand)",
+        "folder word quoted in apps/console-web/src/lazyEngine.ts (check by hand)"
+      ]
+    },
+    {
+      "folder": "feature-assist",
+      "name": "Feature assistant",
+      "tier": "shared",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [
+        "feature-assist.build"
+      ],
+      "usedBy": [
+        {
+          "plugin": "fable-rebuilds",
+          "kind": "event",
+          "target": "axf:plan-changed",
+          "via": "listens",
+          "files": []
+        }
+      ],
+      "usedByPlugins": [
+        "fable-rebuilds"
+      ],
+      "breaks": {
+        "hard": [],
+        "degrades": [
+          {
+            "plugin": "fable-rebuilds",
+            "kind": "event",
+            "target": "axf:plan-changed",
+            "via": "listens",
+            "files": []
+          }
+        ],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": []
+    },
+    {
+      "folder": "notes-browser",
+      "name": "Notes",
+      "tier": "shared",
+      "core": false,
+      "coreReasons": [],
+      "provides": [
+        "axf.notes@1"
+      ],
+      "actions": [],
+      "usedBy": [
+        {
+          "plugin": "md-studio",
+          "kind": "service",
+          "target": "axf.notes@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        }
+      ],
+      "usedByPlugins": [
+        "md-studio"
+      ],
+      "breaks": {
+        "hard": [],
+        "degrades": [
+          {
+            "plugin": "md-studio",
+            "kind": "service",
+            "target": "axf.notes@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          }
+        ],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "folder word quoted in framework/core/engines/card-rules.mjs (check by hand)"
+      ]
+    },
+    {
+      "folder": "push-banner",
+      "name": "Push banner",
+      "tier": "shared",
+      "core": false,
+      "coreReasons": [],
+      "provides": [
+        "axf.merge-queue@1"
+      ],
+      "actions": [
+        "push-banner.check",
+        "push-banner.queue"
+      ],
+      "usedBy": [
+        {
+          "plugin": "build-orchestrator",
+          "kind": "service",
+          "target": "axf.merge-queue@1",
+          "via": "optional",
+          "files": [
+            "server/__init__.py"
+          ]
+        }
+      ],
+      "usedByPlugins": [
+        "build-orchestrator"
+      ],
+      "breaks": {
+        "hard": [],
+        "degrades": [
+          {
+            "plugin": "build-orchestrator",
+            "kind": "service",
+            "target": "axf.merge-queue@1",
+            "via": "optional",
+            "files": [
+              "server/__init__.py"
+            ]
+          }
+        ],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "folder word quoted in apps/console-web/src/lazyEngine.ts (check by hand)"
+      ]
+    },
+    {
+      "folder": "alerts-bell",
+      "name": "Alerts bell",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "folder word quoted in apps/console-web/src/lazyEngine.ts (check by hand)"
+      ]
+    },
+    {
+      "folder": "amberx-listeners",
+      "name": "AmberX listeners",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [
+        "amberx-listeners.open"
+      ],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": []
+    },
+    {
+      "folder": "approvals-banner",
+      "name": "Approvals banner",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [
+        "approvals.check",
+        "approvals.notice",
+        "approvals.open",
+        "approvals.review",
+        "approvals.veto",
+        "approvals.view"
+      ],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "folder word quoted in apps/console-web/src/lazyEngine.ts (check by hand)",
+        "folder word quoted in framework/core/engines/card-rules.mjs (check by hand)"
+      ]
+    },
+    {
+      "folder": "audio-extract",
+      "name": "Audio Extract",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [
+        "audio-extract.latest",
+        "audio-extract.pause",
+        "audio-extract.pick",
+        "audio-extract.record",
+        "audio-extract.resume",
+        "audio-extract.stop"
+      ],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": []
+    },
+    {
+      "folder": "basic-filter",
+      "name": "Basic filter",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [
+        "basic-filter.open"
+      ],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": []
+    },
+    {
+      "folder": "brand-library",
+      "name": "Brand library",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [
+        "brand-library.open"
+      ],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "folder word quoted in framework/cli/brand-gen.mjs (check by hand)"
+      ]
+    },
+    {
+      "folder": "build-breaker",
+      "name": "Build Breaker",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [
+        "build-breaker.open"
+      ],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": []
+    },
+    {
+      "folder": "build-profiles",
+      "name": "Build profiles",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [
+        "build-profiles.open"
+      ],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "folder word quoted in apps/console-web/src/lazyEngine.ts (check by hand)"
+      ]
+    },
+    {
+      "folder": "builds-page",
+      "name": "Builds",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [
+        "builds.open",
+        "builds.view"
+      ],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "folder word quoted in apps/console-web/src/lazyEngine.ts (check by hand)",
+        "folder word quoted in framework/core/engines/card-rules.mjs (check by hand)"
+      ]
+    },
+    {
+      "folder": "changes-grid",
+      "name": "Changes & features grid",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [
+        "changes-grid.open"
+      ],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": []
+    },
+    {
+      "folder": "chat-viewer",
+      "name": "Chat viewer",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": []
+    },
+    {
+      "folder": "claude-badge",
+      "name": "Badges",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "folder word quoted in apps/console-web/src/lazyEngine.ts (check by hand)"
+      ]
+    },
+    {
+      "folder": "claude-handoff",
+      "name": "Claude handoff banner",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [
+        "claude-handoff.assemble",
+        "claude-handoff.files",
+        "claude-handoff.last",
+        "claude-handoff.look",
+        "claude-handoff.open",
+        "claude-handoff.preview",
+        "claude-handoff.publish",
+        "claude-handoff.session"
+      ],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "folder word quoted in apps/console-web/src/lazyEngine.ts (check by hand)"
+      ]
+    },
+    {
+      "folder": "claude-session",
+      "name": "Claude sessions",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [
+        "claude.assign",
+        "claude.pick"
+      ],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": []
+    },
+    {
+      "folder": "context-menu-designer",
+      "name": "Context menu designer",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [
+        "context-menu-designer.actions",
+        "context-menu-designer.filter",
+        "context-menu-designer.open"
+      ],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": []
+    },
+    {
+      "folder": "crew-live",
+      "name": "Crew",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [
+        "crew.agent",
+        "crew.assign",
+        "crew.chat",
+        "crew.history",
+        "crew.open",
+        "crew.session",
+        "crew.stop",
+        "crew.terminal"
+      ],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "folder word quoted in apps/console-web/src/axf/core/agent-directory.ts (check by hand)"
+      ]
+    },
+    {
+      "folder": "demonstration-designer",
+      "name": "Demonstration Designer",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [
+        "demonstrations@1"
+      ],
+      "actions": [
+        "pitch.export",
+        "pitch.generate",
+        "pitch.next",
+        "pitch.open",
+        "pitch.pause",
+        "pitch.play",
+        "pitch.prev",
+        "pitch.resume",
+        "pitch.stop"
+      ],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "malformed provide string service:demonstrations@1"
+      ]
+    },
+    {
+      "folder": "fable-rebuilds",
+      "name": "Fable rebuilds",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [
+        "fable-rebuilds.open",
+        "fable-rebuilds.park-feature",
+        "fable-rebuilds.park-plugin"
+      ],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [
+          {
+            "plugin": "feature-assist",
+            "kind": "event",
+            "target": "axf:plan-changed",
+            "via": "emits",
+            "files": []
+          }
+        ],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": []
+    },
+    {
+      "folder": "feature-matrix",
+      "name": "Feature matrix",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [
+        "feature-matrix.open"
+      ],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": []
+    },
+    {
+      "folder": "github-app",
+      "name": "GitHub",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [
+        "axf.github-app@1"
+      ],
+      "actions": [],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "folder word quoted in framework/cli/github-app.mjs (check by hand)",
+        "folder word quoted in framework/cli/github.mjs (check by hand)"
+      ]
+    },
+    {
+      "folder": "glossary-index",
+      "name": "Glossary, Index & Demos",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [
+        "glossary@1"
+      ],
+      "actions": [
+        "book.add",
+        "book.new",
+        "book.open",
+        "demo.generate",
+        "demo.next",
+        "demo.play",
+        "demo.prev",
+        "demo.repeat",
+        "demo.replay",
+        "demo.stop"
+      ],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": []
+    },
+    {
+      "folder": "hub-sync",
+      "name": "axHub sync",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": []
+    },
+    {
+      "folder": "main-build-status",
+      "name": "Main build status",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [
+        "main-build-status.check",
+        "main-build-status.github",
+        "main-build-status.open"
+      ],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "folder word quoted in apps/console-web/src/lazyEngine.ts (check by hand)"
+      ]
+    },
+    {
+      "folder": "maintenance",
+      "name": "Maintenance",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [
+        "maintenance.profiles"
+      ],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "folder word quoted in framework/core/engines/card-rules.mjs (check by hand)"
+      ]
+    },
+    {
+      "folder": "mcp-client",
+      "name": "MCP client",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": []
+    },
+    {
+      "folder": "md-studio",
+      "name": "MD Studio",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [
+        "md-studio.context",
+        "md-studio.edit",
+        "md-studio.notes",
+        "md-studio.open",
+        "md-studio.open-below",
+        "md-studio.open-right",
+        "md-studio.save",
+        "md-studio.show",
+        "md-studio.toggle-edit",
+        "md-studio.view"
+      ],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": []
+    },
+    {
+      "folder": "molly-guide",
+      "name": "Molly guide",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [
+        "molly.ask",
+        "molly.next",
+        "molly.prev",
+        "molly.replay"
+      ],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": []
+    },
+    {
+      "folder": "output-recorder",
+      "name": "Audio Output Recorder",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [
+        "output-recorder.start",
+        "output-recorder.stop",
+        "output-recorder.toggle"
+      ],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": []
+    },
+    {
+      "folder": "plugin-update",
+      "name": "Plugin Update",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [
+        "plugin-update.open"
+      ],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": []
+    },
+    {
+      "folder": "plugins-menu",
+      "name": "Plugins menu",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [
+        "plugins-menu.disable",
+        "plugins-menu.enable",
+        "plugins-menu.info",
+        "plugins-menu.install",
+        "plugins-menu.manage",
+        "plugins-menu.settings",
+        "plugins-menu.toggle"
+      ],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "folder word quoted in apps/console-web/src/lazyEngine.ts (check by hand)"
+      ]
+    },
+    {
+      "folder": "project-wizard",
+      "name": "Project wizard",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": []
+    },
+    {
+      "folder": "ref-links",
+      "name": "Reference links",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [
+        "ref-links@1"
+      ],
+      "actions": [],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": []
+    },
+    {
+      "folder": "session-checkin",
+      "name": "Session check-in",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": []
+    },
+    {
+      "folder": "shipped-features",
+      "name": "Shipped features",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [
+        "shipped-features.open",
+        "shipped-features.show",
+        "shipped-features.sync"
+      ],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "folder word quoted in apps/console-web/src/lazyEngine.ts (check by hand)"
+      ]
+    },
+    {
+      "folder": "theme-editor",
+      "name": "Theme editor",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [
+        "theme-editor.open"
+      ],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": []
+    },
+    {
+      "folder": "todo-manager",
+      "name": "Todo manager",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [
+        "todo-manager.delete",
+        "todo-manager.done",
+        "todo-manager.edit",
+        "todo-manager.new",
+        "todo-manager.open",
+        "todo-manager.reload",
+        "todo-manager.subtask"
+      ],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": []
+    },
+    {
+      "folder": "voice-notes",
+      "name": "Voice notes",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "folder word quoted in framework/core/engines/control-rules.mjs (check by hand)"
+      ]
+    },
+    {
+      "folder": "whats-shipped",
+      "name": "What's new",
+      "tier": "leaf",
+      "core": false,
+      "coreReasons": [],
+      "provides": [],
+      "actions": [
+        "whats-new.open",
+        "whats-shipped.check",
+        "whats-shipped.open",
+        "whats-shipped.read-all"
+      ],
+      "usedBy": [],
+      "usedByPlugins": [],
+      "breaks": {
+        "hard": [],
+        "degrades": [],
+        "silenced": [],
+        "covered": [],
+        "shell": []
+      },
+      "cascade": [],
+      "fixes": [
+        "folder word quoted in apps/console-web/src/lazyEngine.ts (check by hand)"
+      ]
+    }
+  ]
+}
