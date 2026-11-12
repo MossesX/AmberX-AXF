@@ -4,7 +4,7 @@ import { appMenu } from './menu';
 import { setPriorityHost, type PriorityHost } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { FOLDER, OrchestratorPage, TABS, openTab } from './ui';
-import { focusBuild } from './focus';
+import { buildRowSelector, expandBuilds, focusBuild } from './focus';
 import { BUILD_ACTIONS, type BuildAction } from '@console/axf/core/build-pipeline.mjs';
 
 const ACTION_LABEL: Record<BuildAction, string> = { unqueue: 'Back to Pending', hold: 'Hold (stays in the Queue)', release: 'Release from hold', archive: 'Move to the Archive', unarchive: 'Bring back from the Archive', delete: 'Delete (kept in Deleted)', restore: 'Restore' };
@@ -20,6 +20,9 @@ const ACTION_ICON: Record<BuildAction, string> = { unqueue: 'arrow-left', hold: 
  * ("build-orchestrator pending", console_show "build:<id>"): a tab by id or label opens; a build opens its tab with its
  * row scrolled into view, expanded and highlighted. open / tab / focus only navigate (effect navigate), so Follow Amber's
  * navigate-only grant may run them.
+ * build-orchestrator.expand:<build[,build…]|all> / build-orchestrator.collapse:<…> (Nov 12 2026: every build tab is one
+ * collapsed row per build that opens to show everything): open or close rows on the tab on screen; a single build that
+ * is not on screen is brought forward (its tab opens with the row open). Navigate-only, like open / focus.
  * Build actions (Brett, Nov 10 2026: hold, archive, delete, deleted builds kept forever): build-orchestrator.<unqueue|hold|
  * release|archive|unarchive|delete|restore>:<build>[,<build>…] → POST pipeline/action (the same call as the cards, the
  * bulk toolbar, the MCP command pipeline-build-action and `pipeline.mjs <action> <id…>`).
@@ -66,6 +69,14 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('build-orchestrator.open', ([arg]) => void open(arg ?? ''), { label: 'Open the Build orchestrator (a build or a tab)', effect: 'navigate' });
     rt.actions.register('build-orchestrator.focus', ([arg]) => void open(arg ?? ''), { label: 'Build orchestrator: bring a tab or a build forward', params: true, effect: 'navigate' });
     rt.actions.register('build-orchestrator.tab', ([arg]) => { rt.navigate('build-orchestrator'); openTab(tabOf(decodeURIComponent(arg ?? 'queue')) || 'queue'); }, { label: 'Build orchestrator: open a tab', effect: 'navigate' });
+    const rowsArg = (arg = ''): string[] | 'all' => { let v = ''; try { v = decodeURIComponent(arg); } catch { v = arg; } const ids = v.split(',').map((x) => x.trim()).filter(Boolean); return !ids.length || ids.includes('all') ? 'all' : ids; };
+    rt.actions.register('build-orchestrator.expand', ([arg]) => {
+      const ids = rowsArg(arg);
+      rt.navigate('build-orchestrator');
+      if (ids !== 'all' && ids.length === 1 && !document.querySelector(buildRowSelector(ids[0]!))) { void open(ids[0]!); return; }
+      expandBuilds(ids, true);
+    }, { label: 'Build orchestrator: open build rows (a build, several comma separated, or all)', params: true, effect: 'navigate' });
+    rt.actions.register('build-orchestrator.collapse', ([arg]) => expandBuilds(rowsArg(arg), false), { label: 'Build orchestrator: close build rows (a build, several comma separated, or all)', params: true, effect: 'navigate' });
     rt.actions.register('build-orchestrator.start', ([arg]) => {
       const id = decodeURIComponent(arg ?? '');
       if (!id) { void open('pending'); return; }

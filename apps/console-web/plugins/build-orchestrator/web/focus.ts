@@ -39,6 +39,31 @@ export function useFocusedBuild(): string {
   return id;
 }
 
+/*
+ * Expand / collapse build rows without the UI (Brett, Nov 12 2026: every build is one collapsed row that opens to show
+ * everything). Actions build-orchestrator.expand:<build|all> and build-orchestrator.collapse:<build|all> send this event;
+ * every orchestrator build table on screen applies it. An open row carries aria-expanded="true" (DataGrid).
+ */
+const EXPAND_EVENT = 'axf:orchestrator-expand';
+export type ExpandAsk = { ids: string[] | 'all'; open: boolean };
+export function expandBuilds(ids: string[] | 'all', open: boolean): void {
+  window.dispatchEvent(new CustomEvent<ExpandAsk>(EXPAND_EVENT, { detail: { ids, open } }));
+}
+/** Open rows of one table: starts collapsed (the build asked for opens), follows the expand / collapse actions. */
+export function useOpenRows(allIds: readonly string[]): [string[], (f: (o: string[]) => string[]) => void] {
+  const [open, setOpen] = useState<string[]>(() => { const w = wantedBuild(); return w ? [w] : []; });
+  useEffect(() => {
+    const on = (e: Event) => {
+      const { ids, open: want } = (e as CustomEvent<ExpandAsk>).detail;
+      const list = ids === 'all' ? [...allIds] : ids;
+      setOpen((o) => (want ? [...new Set([...o, ...list])] : ids === 'all' ? [] : o.filter((x) => !list.includes(x))));
+    };
+    window.addEventListener(EXPAND_EVENT, on);
+    return () => window.removeEventListener(EXPAND_EVENT, on);
+  }, [allIds.join('\n')]);
+  return [open, setOpen];
+}
+
 /** The row or card of a build on any orchestrator tab (both carry the build's context-menu target). */
 export function buildRowSelector(id: string): string {
   const esc = typeof CSS !== 'undefined' && CSS.escape ? CSS.escape(id) : id.replace(/["\\]/g, '\\$&');

@@ -39,12 +39,13 @@ button.oc-model { cursor: pointer }
 .pl-col { min-width: 0 }
 .pl-acct.is-off { opacity: var(--fx-opacity-muted) }
 .pd-card.is-running { border-color: var(--fx-accent) }
-/* the build a console command or search asked for (Nov 11 2026): marked until another one is asked for */
-.pd-card.is-focused { border-color: var(--fx-accent); box-shadow: 0 0 0 var(--fx-border-w) var(--fx-accent) }
 
-/* Queue / Pending cards list their steps (Nov 10 2026): layout only */
+/* Every build tab is one collapsed row per build (Nov 12 2026); an open row lists the steps: layout only */
 .pl-steps { margin: 0; padding-left: var(--fx-dens-gap-xl); display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
 .pl-steps > li { overflow-wrap: anywhere }
 
 /* Bulk select (Nov 10 2026: hold, archive, delete, restore on many builds at once): layout only */
 .pl-bulk { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
+
+/* a row's flags cell (hold, approval, split, account): one line */
+.pl-flags { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); min-width: 0; overflow: hidden }

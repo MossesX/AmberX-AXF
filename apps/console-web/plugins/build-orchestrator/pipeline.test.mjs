@@ -395,6 +395,8 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     const r = json(pipe('tick', '--json'));
     assert.equal(r.launched.length, 0); assert.equal(r.plan.pending, 2);
     const s = json(pipe('status', '--json')); assert.equal(s.table.pending.length, 2); assert.equal(s.table.queued.length, 0); assert.equal(s.accounts.length, 3);
+    // every row carries its commits behind main (null when the build has no branch yet)
+    for (const r of s.tabs.pending) assert.ok('behind' in r && (r.behind === null || Number.isInteger(r.behind)));
     assert.equal(s.accounts.find((a) => a.name === 'console').usable, false, 'workers exist: the console account stays out');
     assert.equal(s.accounts.find((a) => a.name === 'w-max').fable, true); assert.equal(s.accounts.find((a) => a.name === 'w-pro').fable, false);
   });
@@ -546,6 +548,14 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     const r = json(pipe('intake', '--json')); assert.deepEqual(r.split.map((x) => x.id), ['delta']);
     assert.equal(find('delta').pipeline.split.provider, 'rules'); assert.ok(find('delta').steps.length >= 3); assert.match(find('delta').pipeline.note, /rules/);
   });
+}
+
+// behindMain: commits behind origin/main per claude/* branch, or nothing when switched off
+{
+  const { behindMain } = await import('./pipeline.mjs');
+  const off = behindMain({ AXF_PIPELINE_BEHIND: 'off' }); assert.equal(off.size, 0);
+  const m = behindMain(); for (const [k, v] of m) { assert.ok(!k.startsWith('refs/')); assert.ok(Number.isInteger(v) && v >= 0); }
+  n += 1;
 }
 
 console.log(`pipeline: ${n} checks passed${e2e ? '' : ' (CLI end-to-end skipped)'}`);

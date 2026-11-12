@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
-import { Button, Checkbox, Chip, Icon, Note, PriorityTag, Switch, flashWhenReady, useRuntime } from '@console/axf/react';
-import { buildRowSelector, settleFocus, useFocusedBuild } from './focus';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { Button, Checkbox, Chip, Icon, Note, PriorityTag, Switch, flashWhenReady, useIsPhone, useRuntime } from '@console/axf/react';
+import { DataGrid, type GridColumn } from '@console/axf/libs/datagrid';
+import { buildRowSelector, expandBuilds, settleFocus, useFocusedBuild, useOpenRows } from './focus';
 import { WatchLiveFor } from '@console/watchLive';
 import { TAB_LABEL, type BuildAction, type PipelineTab as BuildTab } from '@console/axf/core/build-pipeline.mjs';
 
@@ -28,7 +29,7 @@ type Planned = { model: string; account: string; kind: string; at: string; why: 
 type Health = { at: string; startedAt: string; line: string; problems: string[]; accounts: { name: string; kind: string; signedIn: boolean | null; credits: boolean | null; fable: boolean | null; error: string; skipped?: boolean; at: string }[] } | null;
 type Pipeline = { route?: string; planned?: Planned; tried?: string[]; pickedAt?: string; heldAt?: string; heldBy?: string; heldWhy?: string; queuedAt: string; queuedBy: string; account: string; session: string; model: string; launchedAt: string; runs: number; note: string; splitRequested: string; split: { at: string; by: string; provider: string; steps: number; note: string } | null; lastRun: { at: string; exit: number | null; outcome: string; stepsLeft: number; account: string } | null } | null;
 type StepRow = { id: string; text: string; model: string; estimate: string; done: boolean; skip: boolean };
-type Row = { id: string; title: string; status: string; tab: BuildTab | ''; stepList: StepRow[]; builtAt: string; priority: string; steps: { done: number; total: number; left: number }; minutesLeft: number; nextModel: string; nextStep: string; needsApproval: boolean; needsSplit: boolean; pipeline: Pipeline; said: string; branch: string; pr: string; createdAt: string; updatedAt: string; held?: boolean; actions?: BuildAction[]; deleted?: boolean; deletedAt?: string };
+type Row = { id: string; title: string; status: string; behind?: number | null; tab: BuildTab | ''; stepList: StepRow[]; builtAt: string; priority: string; steps: { done: number; total: number; left: number }; minutesLeft: number; nextModel: string; nextStep: string; needsApproval: boolean; needsSplit: boolean; pipeline: Pipeline; said: string; branch: string; pr: string; createdAt: string; updatedAt: string; held?: boolean; actions?: BuildAction[]; deleted?: boolean; deletedAt?: string };
 type Account = { name: string; email: string; plan: string; role: string; kind?: string; label?: string; fable: boolean; fableFrom: string; parallel: number; running: number; free: number; usable: boolean; why: string; api?: { usable: boolean; why: string; spend: { day: number; week: number; dayCap: number; weekCap: number; state: string } | null } | null };
 type Status = {
   ok: boolean; at: string; table: { pending: Row[]; queued: Row[]; building: Row[] }; tabs?: Record<BuildTab, Row[]>; health?: Health; accounts: Account[];
@@ -44,7 +45,9 @@ const CHECK_TONE: Record<Finding['state'], 'success' | 'accent' | undefined | 'd
 type Api = { call: <T>(path: string) => Promise<T>; post: <T>(path: string, body: unknown) => Promise<T> };
 const REFRESH_MS = 10_000;
 const fmtTime = (v: string) => { const d = new Date(v); return Number.isNaN(d.getTime()) ? '' : d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); };
-const ago = (v: string) => { const ms = Date.now() - new Date(v).getTime(); if (!Number.isFinite(ms)) return ''; const m = Math.round(ms / 60000); return m < 1 ? 'just now' : m < 60 ? `${m} min ago` : `${Math.round(m / 60)} h ago`; };
+const ago = (v: string) => { const ms = Date.now() - new Date(v).getTime(); if (!Number.isFinite(ms)) return ''; const m = Math.round(ms / 60000); return m < 1 ? 'just now' : m < 60 ? `${m} min ago` : m < 2880 ? `${Math.round(m / 60)} h ago` : `${Math.round(m / 1440)} d ago`; };
+/** A row's age, short: 5m, 3h, 2d. */
+const age = (v: string) => { const ms = Date.now() - new Date(v).getTime(); if (!Number.isFinite(ms) || !v) return '—'; const m = Math.max(0, Math.round(ms / 60000)); return m < 60 ? `${m}m` : m < 2880 ? `${Math.round(m / 60)}h` : `${Math.round(m / 1440)}d`; };
 
 export type PipelineView = BuildTab | 'accounts';
 const EMPTY: Record<BuildTab, string> = { pending: 'Nothing pending.', queue: 'The Queue is empty.', active: 'Nothing is building.', incomplete: 'Nothing stopped half way.', complete: 'Nothing waiting to merge.', errors: 'No errors.', archive: 'The Archive is empty.', deleted: 'Nothing deleted.' };
@@ -62,7 +65,7 @@ const ACTION_ORDER = Object.keys(ACTION) as BuildAction[];
 type ActionResult = { ok: boolean; error?: string; done?: { id: string; tab: string }[]; refused?: { id: string; error: string }[] };
 const yn = (v: boolean | null | undefined) => (v == null ? '?' : v ? 'yes' : 'no');
 
-export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?: 'info' | 'ok' | 'warn' | 'error') => void; view: PipelineView }) {
+export function PipelineTab({ api, log, view, renderBuild, onExpand }: { api: Api; log: (t: string, l?: 'info' | 'ok' | 'warn' | 'error') => void; view: PipelineView; renderBuild?: (id: string) => ReactNode; onExpand?: (id: string) => void }) {
   const rt = useRuntime();
   const [s, setS] = useState<Status | null>(null);
   const [error, setError] = useState('');
@@ -214,7 +217,7 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
               </div>
             )}
             {rows.length === 0 ? <div className="fx-empty">{EMPTY[view]}</div>
-              : <div className="pl-cols">{rows.map((r) => <PipelineCard key={r.id} r={r} busy={busy === r.id || busy === 'bulk'} wait={waitsFor(r.id)} launch={launchFor(r.id)} act={act} run={runAction} selected={sel.has(r.id)} onSelect={(on) => toggle(r.id, on)} showSteps={view === 'queue' || view === 'pending' || r.id === focusId} focused={r.id === focusId} />)}</div>}
+              : <PipelineGrid view={view} rows={rows} busy={busy} waitsFor={waitsFor} launchFor={launchFor} act={act} run={runAction} sel={sel} toggle={toggle} focusId={hasFocus ? focusId : ''} renderBuild={renderBuild} onExpand={onExpand} />}
           </section>
         );
       })()}
@@ -232,24 +235,91 @@ const ROUTE_AUTO: RouteStep = { to: 'api', label: 'Auto' };
 const ROUTE_NEXT: Record<string, RouteStep> = { '': ROUTE_AUTO, api: { to: 'subscription', label: 'API' }, subscription: { to: 'auto', label: 'Subscriptions' } };
 const routeOf = (r?: string): RouteStep => ROUTE_NEXT[r ?? ''] ?? ROUTE_AUTO;
 
-function PipelineCard({ r, busy, wait, launch, act, run, selected, onSelect, showSteps, focused = false }: { r: Row; busy: boolean; wait: string; launch?: { account: string; model: string; phase: string; kind?: string; rule?: string }; act: (path: string, body: Record<string, unknown>, what: string) => Promise<void>; run: (action: BuildAction, ids: string[]) => Promise<void>; selected: boolean; onSelect: (on: boolean) => void; showSteps: boolean; focused?: boolean }) {
+type Launch = { account: string; model: string; phase: string; kind?: string; rule?: string };
+type Act = (path: string, body: Record<string, unknown>, what: string) => Promise<void>;
+type Run = (action: BuildAction, ids: string[]) => Promise<void>;
+const tableOf = (r: Row) => (r.deleted ? 'done' : r.status === 'queued' ? 'queued' : r.status === 'running' || r.status === 'waiting' ? 'building' : r.status === 'pending' ? 'pending' : 'done');
+const TONE: Record<string, string> = { pending: 'muted', queued: 'info', building: 'accent', done: 'success' };
+/** Columns a phone leaves out (the row stays one line; everything is in the expanded row). */
+const PHONE_HIDDEN = ['priority', 'flags', 'age'];
+
+/**
+ * Brett, Nov 12 2026: "Every building pending should have its own row that opens, that expands to show everything."
+ * Every build tab is one compact row per build (title, next model, steps done / total, commits behind main, age);
+ * tapping the row opens it: the build's origin, detail, steps, notes, branch / PR and every command (renderBuild from
+ * the orchestrator page), plus the pipeline's own part (planned account, wait, hold, Queue / Runs on / Split / actions).
+ * Nothing is inline by default. API: build-orchestrator.expand:<build|all>, build-orchestrator.collapse:<build|all>.
+ */
+function PipelineGrid({ view, rows, busy, waitsFor, launchFor, act, run, sel, toggle, focusId, renderBuild, onExpand }: { view: BuildTab; rows: Row[]; busy: string; waitsFor: (id: string) => string; launchFor: (id: string) => Launch | undefined; act: Act; run: Run; sel: Set<string>; toggle: (id: string, on: boolean) => void; focusId: string; renderBuild?: (id: string) => ReactNode; onExpand?: (id: string) => void }) {
+  const phone = useIsPhone();
+  const ids = useMemo(() => rows.map((r) => r.id), [rows]);
+  const [open, setOpen] = useOpenRows(ids);
+  useEffect(() => { if (focusId) setOpen((o) => (o.includes(focusId) ? o : [...o, focusId])); }, [focusId]);
+  const flip = (id: string) => { setOpen((o) => (o.includes(id) ? o.filter((x) => x !== id) : [...o, id])); if (!open.includes(id)) onExpand?.(id); };
+  const selectable = rows.some((r) => (r.actions?.length ?? 0) > 0);
+  const cols: GridColumn<Row>[] = [
+    ...(selectable ? [{ id: 'sel', label: '', width: 'calc(var(--fx-font-size) * 2)', render: (r: Row) => (r.actions?.length ?? 0) > 0
+      ? <span onClick={(e) => e.stopPropagation()}><Checkbox label="" title={`Select ${r.title}`} checked={sel.has(r.id)} onChange={(on) => toggle(r.id, on)} /></span> : null }] : []),
+    { id: 'title', label: 'Build', width: 'minmax(calc(var(--fx-font-size) * 10), 1fr)', fixed: true,
+      render: (r) => <span className="oc-cell-title" title={r.said ? `“${r.said}”` : r.title}><strong>{r.title}</strong>{!phone && <span className="fx-small fx-muted fx-mono">{r.id}</span>}</span> },
+    { id: 'model', label: 'Model', width: 'calc(var(--fx-font-size) * 4.5)',
+      render: (r) => r.nextModel ? <span className={`oc-model is-${r.nextModel.toLowerCase()}`} title={r.nextStep ? `Next: ${r.nextStep}` : 'The model of the next step'}>{r.nextModel}</span> : <span className="fx-muted">—</span> },
+    { id: 'steps', label: 'Steps', width: 'calc(var(--fx-font-size) * 3.5)', align: 'end',
+      render: (r) => <span className="fx-small" title={r.nextStep ? `Next: ${r.nextStep}` : ''}>{r.steps.done}/{r.steps.total}</span> },
+    { id: 'behind', label: 'Behind', width: 'calc(var(--fx-font-size) * 4)', align: 'end',
+      render: (r) => r.behind == null ? <span className="fx-muted" title="No branch for this build yet">—</span> : <span className="fx-small" title={`${r.branch || `claude/${r.id}`} is ${r.behind} commit${r.behind === 1 ? '' : 's'} behind main`}>{r.behind}</span> },
+    { id: 'age', label: 'Age', width: 'calc(var(--fx-font-size) * 3)', align: 'end',
+      render: (r) => <span className="fx-small" title={`Added ${fmtTime(r.createdAt)} · updated ${fmtTime(r.updatedAt)}`}>{age(r.createdAt)}</span> },
+    { id: 'priority', label: 'Priority', width: 'calc(var(--fx-font-size) * 8)', render: (r) => <span onClick={(e) => e.stopPropagation()}>{r.deleted ? <Chip tone="danger">Deleted</Chip> : <PriorityTag build={r.id} />}</span> },
+    { id: 'flags', label: '', width: 'calc(var(--fx-font-size) * 7)', render: (r) => (
+      <span className="pl-flags">
+        {r.held && <Chip tone="warning">On hold</Chip>}
+        {r.needsApproval && <span className="oc-flag" title="The next phase upgrades the model: only you can approve it"><Icon name="alert" size={13} />your OK</span>}
+        {r.needsSplit && <span className="pd-split" title="No steps yet, a step over 30 min or one without an estimate"><Icon name="alert" size={13} />split</span>}
+        {tableOf(r) === 'building' && r.pipeline?.account && <span className="fx-small" title={`Session ${r.pipeline.session || '(queued in agent slots)'}`}><Icon name="user" size={13} />{r.pipeline.account}</span>}
+      </span>
+    ) },
+  ];
+  return (
+    <div className="fx-stack">
+      <div className="pd-sortbar" role="toolbar" aria-label={`${TAB_LABEL[view]}: rows`}>
+        <Button size="sm" tone="neutral" icon={open.length ? 'chevron-up' : 'chevron-down'} onClick={() => expandBuilds('all', !open.length)}>{open.length ? 'Collapse all' : 'Expand all'}</Button>
+        <span className="fx-small fx-muted">Tap a build to open everything about it</span>
+      </div>
+      <div className="oc-grid">
+        <DataGrid<Row> id={`orch-pipeline-${view}`} label={TAB_LABEL[view]} groups={[{ id: view, title: TAB_LABEL[view], rows, groups: [], fixed: true }]} columns={cols}
+          rowId={(r) => r.id} rowLabel={(r) => r.title} rowTone={(r) => TONE[tableOf(r)] ?? 'muted'} selected={focusId || undefined}
+          hidden={phone ? PHONE_HIDDEN : []} expanded={open} onToggleExpand={flip} onRowClick={(r) => flip(r.id)}
+          rowCtx={(r) => ({ target: 'axf-orchestrator-build', payload: r.id })}
+          renderDetail={(r) => (
+            <div className="oc-detail">
+              <PipelinePart r={r} said={!renderBuild} busy={busy === r.id || busy === 'bulk'} wait={waitsFor(r.id)} launch={launchFor(r.id)} act={act} run={run} />
+              {renderBuild ? renderBuild(r.id) : r.stepList.length > 0 && (
+                <ol className="pl-steps" aria-label={`${r.id} steps`}>
+                  {r.stepList.map((x) => <li key={x.id} className={x.done || x.skip ? 'oc-done' : ''}><span className={`oc-model is-${x.model.toLowerCase()}`}>{x.model}</span> <span className="fx-small">{x.id} · {x.text}{x.estimate ? ` · ${x.estimate}` : ''}</span></li>)}
+                </ol>
+              )}
+            </div>
+          )} />
+      </div>
+    </div>
+  );
+}
+
+/** The pipeline's part of an open row: where it runs, why it waits, hold / delete, and the pipeline commands. */
+function PipelinePart({ r, said, busy, wait, launch, act, run }: { r: Row; said: boolean; busy: boolean; wait: string; launch?: Launch; act: Act; run: Run }) {
   const p = r.pipeline;
-  const table = r.deleted ? 'done' : r.status === 'queued' ? 'queued' : r.status === 'running' || r.status === 'waiting' ? 'building' : r.status === 'pending' ? 'pending' : 'done';
+  const table = tableOf(r);
   const pl = p?.planned ?? null;
   return (
-    <article className={`pd-card is-${table === 'building' ? 'running' : 'pending'}${focused ? ' is-focused' : ''}`} aria-current={focused ? 'true' : undefined} data-fx-ctx-target="axf-orchestrator-build" data-fx-ctx-payload={r.id}>
-      <div className="pd-card__top">
-        <h3 className="pd-card__title">{r.title}<span className="fx-muted fx-small fx-mono"> {r.id}</span></h3>
-        {r.held && <Chip tone="warning">On hold</Chip>}
-        {r.deleted ? <Chip tone="danger">Deleted</Chip> : <PriorityTag build={r.id} />}
-        {(r.actions?.length ?? 0) > 0 && <Checkbox label="Select" checked={selected} onChange={onSelect} />}
-      </div>
-      {r.said && <p className="fx-small fx-muted">“{r.said}”</p>}
+    <div className="fx-stack">
+      {said && r.said && <p className="fx-small fx-muted">“{r.said}”</p>}
       <div className="pd-meta">
-        <span title={r.nextStep}><Icon name="check-circle" size={13} />{r.steps.done}/{r.steps.total} steps</span>
-        {r.nextModel && <span className={`oc-model is-${r.nextModel.toLowerCase()}`} title="The model of the next step: a Fable step needs an account with Fable">{r.nextModel} next</span>}
-        {r.needsSplit && <span className="pd-split" title="No steps yet, a step over 30 min or one without an estimate: the orchestrator splits it (or tap Split now)"><Icon name="alert" size={13} />needs split</span>}
-        {r.needsApproval && <span className="oc-flag"><Icon name="alert" size={13} />needs your upgrade approval</span>}
+        <span className="fx-mono">{r.id}</span>
+        {r.branch && <span className="fx-mono" title={r.behind == null ? '' : `${r.behind} commits behind main`}><Icon name="layers" size={13} />{r.branch}{r.behind != null ? ` · ${r.behind} behind main` : ''}</span>}
+        {r.pr && <span className="fx-mono">PR #{r.pr.replace(/^#/, '')}</span>}
+        {r.nextStep && <span title="The next step"><Icon name="check-circle" size={13} />next {r.nextStep}</span>}
+        {r.minutesLeft > 0 && <span><Icon name="clock" size={13} />{r.minutesLeft} min left</span>}
         {p?.account && table === 'building' && <span title={`Session ${p.session || '(queued in agent slots)'}`}><Icon name="user" size={13} />{p.account} · run {p.runs}{p.model ? ` · ${p.model}` : ''}</span>}
         {p?.launchedAt && table === 'building' && <span className="fx-muted" title={fmtTime(p.launchedAt)}><Icon name="clock" size={13} />{ago(p.launchedAt)}</span>}
         {p?.queuedAt && table === 'queued' && <span className="fx-muted" title={`Queued ${fmtTime(p.queuedAt)} by ${p.queuedBy}`}><Icon name="clock" size={13} />queued {ago(p.queuedAt)}</span>}
@@ -259,22 +329,17 @@ function PipelineCard({ r, busy, wait, launch, act, run, selected, onSelect, sho
       {pl && table !== 'building' && table !== 'done' && <p className="fx-small" title={pl.why}><Icon name="layers" size={13} /> Planned: <b>{pl.model}</b> on <b>{pl.account || 'no account yet'}</b>{pl.kind === 'api' ? ' (API key)' : ''}</p>}
       {p?.account && p.pickedAt && (table === 'building' || table === 'done') && <p className="fx-small" title={`Picked ${fmtTime(p.pickedAt)}`}><Icon name="user" size={13} /> Taken by <b>{p.account}</b>{pl && pl.account && pl.account !== p.account ? ` (planned ${pl.account})` : ''}{p.tried?.length ? ` · refused: ${p.tried.join(', ')}` : ''}</p>}
       {table === 'done' && p?.tried?.length ? <p className="fx-small oc-flag"><Icon name="alert" size={13} /> Refused by {p.tried.join(', ')}</p> : null}
-      {showSteps && r.stepList.length > 0 && (
-        <ol className="pl-steps" aria-label={`${r.id} steps`}>
-          {r.stepList.map((x) => <li key={x.id} className={x.done || x.skip ? 'oc-done' : ''}><span className={`oc-model is-${x.model.toLowerCase()}`}>{x.model}</span> <span className="fx-small">{x.id} · {x.text}{x.estimate ? ` · ${x.estimate}` : ''}</span></li>)}
-        </ol>
-      )}
       {launch && <p className="fx-small"><Icon name="play" size={13} /> Next tick: starts on <b>{launch.account}</b> ({launch.model}{launch.phase ? `, ${launch.phase}` : ''}){launch.kind === 'api' ? ` · API key, ${launch.rule === 'override' ? 'set to API' : 'overflow'}` : ''}</p>}
       {!launch && wait && table === 'queued' && <p className="fx-small fx-muted"><Icon name="clock" size={13} /> {wait}</p>}
       {r.held && p?.heldAt && <p className="fx-small" title={fmtTime(p.heldAt)}><Icon name="pause" size={13} /> On hold since {fmtTime(p.heldAt)}{p.heldBy ? ` (${p.heldBy})` : ''}{p.heldWhy ? `: ${p.heldWhy}` : ''}</p>}
       {r.deleted && r.deletedAt && <p className="fx-small fx-muted"><Icon name="trash" size={13} /> Deleted {fmtTime(r.deletedAt)} · status before: {r.status}</p>}
       {p?.note && <p className="fx-small fx-muted">{p.note}</p>}
-      <div className="fx-row fx-row--wrap">
+      <div className="fx-row fx-row--wrap" role="toolbar" aria-label={`${r.title}: pipeline`}>
         {table === 'pending' && <Button size="sm" tone="primary" icon="arrow-right" disabled={busy} onClick={() => act('pipeline/queue', { id: r.id }, `${r.id} → Queue`)}>Queue</Button>}
         {(table === 'pending' || table === 'queued') && <Button size="sm" tone="neutral" icon="zap" disabled={busy} title="Where this build may run: Auto (subscriptions first, then any API), API (API-key accounts only, billed per token) or Subscriptions (never API). Tap to switch." onClick={() => { const n = routeOf(p?.route); void act('pipeline/route', { id: r.id, route: n.to }, `${r.id}: route ${n.to}`); }}>Runs on: {routeOf(p?.route).label}</Button>}
         {(table === 'pending' || table === 'queued') && <Button size="sm" tone="neutral" icon="edit" disabled={busy || !!p?.splitRequested} title={p?.splitRequested ? 'Split asked for: the dispatcher does it within a minute' : 'Ask the orchestrator to (re)split this build into steps of 30 min or less'} onClick={() => act('pipeline/split', { id: r.id }, `${r.id}: split on the next tick`)}>{p?.splitRequested ? 'Splitting…' : 'Split now'}</Button>}
         {ACTION_ORDER.filter((a) => r.actions?.includes(a)).map((a) => <Button key={a} size="sm" tone={ACTION[a].tone} icon={ACTION[a].icon} disabled={busy} title={ACTION[a].title} onClick={() => void run(a, [r.id])}>{ACTION[a].label}</Button>)}
       </div>
-    </article>
+    </div>
   );
 }
