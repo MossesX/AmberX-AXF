@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:33 UTC · `project-thread-7hzl6f` added (0 steps) (all) · backfill
 - 2026-11-12 03:33 UTC · `project-thread-28v1xw` added (0 steps) (all) · backfill
 - 2026-11-12 03:33 UTC · `project-thread-jg1stb` added (0 steps) (all) · backfill
 - 2026-11-12 03:33 UTC · `project-thread-u0oyjm` added (0 steps) (all) · backfill
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 22:51 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` note (all) · pipeline
 - 2026-11-12 22:52 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` note (all) · pipeline
 - 2026-11-12 22:52 UTC · `move-amberx-web-app-into-the-console-amberx-andr` s7 done (all) · orchestrator
+- 2026-11-12 22:53 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` note (all) · pipeline
 
 ## Token passes (log)
 
