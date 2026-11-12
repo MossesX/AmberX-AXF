@@ -220,6 +220,12 @@ if [[ -z "$inner" && -z "$queued" ]] && command -v node >/dev/null && [[ -f "$DI
   dverdict="$(node "$DISPATCH" check --name "$name" --brief "$brief" 2>&1)"; d_st=$?
   if (( d_st == 3 )); then echo "claude-headless: $dverdict" >&2; echo "$dverdict"; exit 3; fi
 fi
+# The launcher's own re-entries (--queued slot waiter, --inner tmux run) skip the checks above; a build re-entry still
+# needs the orchestrator-issued ID and a dispatcher launch that spent its token, so --inner by hand can't start a build.
+if [[ -n "$inner" || -n "$queued" ]] && command -v node >/dev/null && [[ -f "$DISPATCH" ]]; then
+  rverdict="$(node "$DISPATCH" reentry --name "$name" --brief "$brief" 2>&1)"; r_st=$?
+  if (( r_st == 3 )); then echo "claude-headless: $rverdict" >&2; echo "$rverdict"; exit 3; fi
+fi
 
 # What Brett said (build-origin@1, Nov 3 2026): the brief's "## Brett said (verbatim)" block (and any "## Addendum N"
 # blocks) go onto the build's record in the builds store as origin.said / addenda, with the brief and who launched it,
