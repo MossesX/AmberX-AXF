@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T01:58:39.529Z",
+ "updatedAt": "2026-11-12T01:59:07.115Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -95667,7 +95667,7 @@
    "title": "Queue drag-and-drop reorder (dispatcher follows the order)",
    "category": "",
    "detail": "Orchestrator Queue tab: drag and drop builds to reorder; the dispatcher follows the order. Also right-click: Move to top / bottom / position N. Order persists; full API/CLI control.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -95675,7 +95675,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T20:59:27.366Z",
-   "updatedAt": "2026-11-12T01:58:31.284Z",
+   "updatedAt": "2026-11-12T01:59:05.284Z",
    "builtAt": "",
    "notes": [
     {
@@ -95709,6 +95709,10 @@
     {
      "text": "Claude account: account-5 (axf-queue-drag-and-drop-reorder-dispatcher-follows-t--rhonda, own login copy)",
      "at": "2026-11-12T01:55:35.054Z"
+    },
+    {
+     "text": "Self-check: queue-drag-and-drop-reorder-dispatcher-follows-t was marked running on account-5 with no session: released and back in the Queue.",
+     "at": "2026-11-12T01:59:05.284Z"
     }
    ],
    "approvals": [],

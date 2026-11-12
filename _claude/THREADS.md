@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 21:59 UTC · `background-is-its-own-asset-type-with-asset-sett` note (all) · orchestrator
 - 2026-11-10 22:03 UTC · `molly-one-shell` s7 done, → running (all) · orchestrator
 - 2026-11-10 22:09 UTC · `molly-gap-axhub-cors` added (0 steps) (all) · orchestrator
 - 2026-11-10 22:09 UTC · `molly-gap-expenses-cors` added (0 steps) (all) · orchestrator
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 01:58 UTC · `open-any-website-by-voice-on-the-phone-optionall` note (all) · orchestrator
 - 2026-11-12 01:58 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` s1 done, → running (all) · orchestrator
 - 2026-11-12 01:58 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` s2 done (all) · orchestrator
+- 2026-11-12 01:59 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` → queued, note (all) · pipeline
 
 ## Token passes (log)
 
