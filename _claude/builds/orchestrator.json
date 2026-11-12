@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T20:45:04.781Z",
+ "updatedAt": "2026-11-12T20:45:18.313Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -109362,6 +109362,80 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mwe0i6fq0gbypl"
+    }
+   ]
+  },
+  {
+   "id": "tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch",
+   "title": "Tap-to-confirm follows label visibility + quick-switches pane at top of every chrome settings",
+   "category": "ui",
+   "detail": "Follow-up to PR #524 (tap-to-confirm). Brett: \"By default, if you turn text on or off, it switches that tap to confirm on or off. If there's no text, it turns double tap on.\" and \"a collapsible pane at the top of the settings interface that has switches like override or double tap... at the top, easy to see.\"",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-12T20:45:12.311Z",
+   "updatedAt": "2026-11-12T20:45:12.311Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Default link: hiding labels (icons only) turns tap-to-confirm on; showing labels turns it off, on every toolbar, tab group, nav menu and app menu; a manual setting overrides",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe0oghv048c1u"
+    },
+    {
+     "id": "s2",
+     "text": "Collapsible quick-switches pane at the top of every toolbar, tab group, nav menu and app menu settings dialog (tap to confirm, override, etc.)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe0oghw05voca"
+    },
+    {
+     "id": "s3",
+     "text": "Tests, report, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe0oghw06192u"
     }
    ]
   }
