@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:08:36.240Z",
+ "updatedAt": "2026-11-12T02:08:52.011Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -14218,14 +14218,14 @@
    "title": "Auto-switch Claude account when the active one runs out (no AI)",
    "category": "",
    "detail": "Console + axHub detect the active Claude account has no working connection (limit hit, auth dead) and switch to the next saved account in priority order by plain script, zero tokens, no AI session involved. Reuse ai-keys switch logic and account order. Running builds keep their account; new launches use the new active one. Log each switch + banner notice.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "mcp",
    "pendingId": "auto-switch-claude-account-when-the-active-one-r",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T04:47:39.335Z",
-   "updatedAt": "2026-11-10T01:02:22.397Z",
+   "updatedAt": "2026-11-12T02:08:36.484Z",
    "builtAt": "",
    "notes": [
     {
@@ -14255,6 +14255,10 @@
     {
      "text": "Folded into account-failover-chain-subscription-next-subscri: a pipeline run whose account fails or hits its limit moves to the next subscription account, then an API account under its caps (pipeline.mjs failover); the account that ran it is recorded in pipeline.builtBy.",
      "at": "2026-11-10T01:02:22.397Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:36.484Z"
     }
    ],
    "approvals": [],
@@ -14822,14 +14826,14 @@
    "title": "Running builds follow the active Claude account, fail over when it dies",
    "category": "Builds",
    "detail": "## Brett said (verbatim)\nSource: voice · At: 2026-11-06\n> the running builds need to run on whatever account's connected. If, if the account dies, they need to switch over.\n> Every time you log in with a refresh token, you need to update the refresh token.\n> why doesn't it switch over? It needs to switch over on its own.\n\nContext: claude_accounts_use to account-2 succeeded and marked it active, but the live VPS login stayed gizmox1111 (loginChanged: true) and the banner clock badge stayed gray. Reverses part of build-own-login (#357). Related: ai-keys-console-store (#358), console-account-picker. Check overlap first.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T13:05:53.940Z",
-   "updatedAt": "2026-11-10T01:02:20.521Z",
+   "updatedAt": "2026-11-12T02:08:37.696Z",
    "builtAt": "",
    "notes": [
     {
@@ -14863,6 +14867,10 @@
     {
      "text": "Folded into account-failover-chain-subscription-next-subscri: a pipeline run whose account fails or hits its limit moves to the next subscription account, then an API account under its caps (pipeline.mjs failover); the account that ran it is recorded in pipeline.builtBy.",
      "at": "2026-11-10T01:02:20.521Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:37.696Z"
     }
    ],
    "approvals": [],
@@ -68684,14 +68692,14 @@
    "title": "Brief approval dialog before every headless session",
    "category": "",
    "detail": "Before the orchestrator launches any headless Claude session, it sends Gizmo an approval dialog (console + AmberX phone) showing the exact brief it is sending: build, steps, model, account, estimate. Session starts only on approve; veto sends it back to re-plan.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "mcp",
    "pendingId": "brief-approval-dialog-before-every-headless-sess",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T23:59:35.398Z",
-   "updatedAt": "2026-11-10T03:31:32.838Z",
+   "updatedAt": "2026-11-12T02:08:35.405Z",
    "builtAt": "",
    "notes": [
     {
@@ -68713,6 +68721,10 @@
     {
      "text": "Upgraded, not duplicated, by one-amberx-build-notification-veto-approval-befo: the start veto pop-up (AmberX + console) shows build, what it will do, steps, model, account and employee before every launch. Left here: the full-brief text view, the Debugging-plugin switch and the orchestrator group-chat log.",
      "at": "2026-11-10T03:31:32.838Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:35.405Z"
     }
    ],
    "approvals": [],
@@ -74797,14 +74809,14 @@
    "title": "Rebase + land approve-button-fix (Approve goes straight through)",
    "category": "",
    "detail": "Branch claude/approve-button-fix is 73 behind main and the merge fails. Rebase/merge it onto main, resolve conflicts, CI green, land. Goal (Brett): tapping Approve in the console's approval dialog approves right away and closes the dialog; no 'opened in axHub, approve or deny there'. Uses a console-relay hub account (AXF_HUB_RELAY_USER/PASSWORD); if not set, say exactly what Brett must set. Every UI action gets API control. Queue after the Demonstration Designer.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "mcp",
    "pendingId": "rebase-land-approve-button-fix-approve-goes-stra",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T19:23:04.271Z",
-   "updatedAt": "2026-11-08T22:41:10.797Z",
+   "updatedAt": "2026-11-12T02:08:48.758Z",
    "builtAt": "",
    "notes": [
     {
@@ -74814,6 +74826,10 @@
     {
      "text": "Superseded: ported and landed with urgent-amberx-veto-notice-alarm-too-loud-approve, PR #397",
      "at": "2026-11-08T22:41:10.797Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:48.758Z"
     }
    ],
    "approvals": [],
@@ -75809,19 +75825,23 @@
    "title": "Style rule: every design element overrides axHub's, except the color theme",
    "category": "",
    "detail": "Brett standing rule (updates the style-override rule): all design elements (layout, spacing, sizing, typography, shapes/radius, shadows, motion, density, component styles, bars, widgets) in every app, plugin and UI asset override axHub's shared style by default. The ONLY thing still shared from axHub is the color theme: colors always follow axHub unless a color override is explicitly turned on. Update RULES.md, the style-override engine, settings defaults and the CI check. Full API + voice + MCP/CLI control. Tests; report. Must create its Plan Studio plan.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "mcp",
    "pendingId": "style-rule-every-design-element-overrides-axhub-",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T21:29:54.434Z",
-   "updatedAt": "2026-11-08T21:31:11.753Z",
+   "updatedAt": "2026-11-12T02:08:49.691Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-08T21:31:11.753Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:49.691Z"
     }
    ],
    "approvals": [],
@@ -76489,14 +76509,14 @@
    "title": "Headless loop guards: stop endless loops and searches",
    "category": "",
    "detail": "Guards on every headless session the orchestrator launches (claude-headless.sh + agent-slots + the running-builds watchdog's afterTick hook in pipeline.mjs): 1) Hard caps per session: --max-turns, wall time and cost cap derived from the step estimates (e.g. 2x estimate), settings with defaults. 2) Step progress timer: no step tick within 1.5x the step's estimate -> warn note, at 2x -> stop the session, build back to pending with the reason. 3) Loop detector reading the live log: the same command/tool call (or near-identical grep/find/sed) repeated N times, or M searches in a row with no edit/commit -> stop and note. 4) Search budget per step (e.g. 15 greps/finds) written into the brief and enforced by the detector. 5) Every stop: build note with the reason and last log lines, AmberX notification (normal notification, not an alarm), slot released, no auto-relaunch of a looped step until Brett says. 6) Brief line: 'If you can't find something in 3 searches, stop and leave a note.' Settings in orchestrator settings (categorized sections), full API/MCP/CLI/voice control. Tests with fake logs: repeated command, search spree, no tick, cost cap.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "mcp",
    "pendingId": "headless-loop-guards-stop-endless-loops-and-sear",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T00:48:58.297Z",
-   "updatedAt": "2026-11-09T00:53:38.909Z",
+   "updatedAt": "2026-11-12T02:08:47.927Z",
    "builtAt": "",
    "notes": [
     {
@@ -76530,6 +76550,10 @@
     {
      "text": "Brett: \"And they pop up in a categorized tree.\" The live type-ahead drop-down shows its matches as a categorized collapsible tree (e.g. app > plugin > folder > file; queue > build > step; account type > account), branches with matches auto-expand, counts per branch, empty branches hidden; picking a branch can select all under it where the rule allows several.",
      "at": "2026-11-09T00:53:38.909Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:47.927Z"
     }
    ],
    "approvals": [],
@@ -76611,14 +76635,14 @@
    "title": "Shipped Features: live manifests from dispatch to done, badges + progress meter",
    "category": "",
    "detail": "Builds on shipped-manifest-api (landed 79ed472c0f1f, shipped-manifest@1). Today the manifest is sent only when a build lands. Change: the orchestrator sends a manifest to Shipped Features (and Plan Studio, per the queued Plan Studio manifest build) at every event: when it dispatches the job, on every build update (model/account change, note, hold, guard stop), on every step completed, and on completion/land. Each manifest is versioned (sequence number, previous version kept as history) and validated. The Shipped Features entry exists from dispatch, not only after landing, and shows a live status badge (dispatched, building, step x/y, waiting on UI Review, held, stopped by guard, failed, landed, shipped) plus a progress meter (steps done / total, time and cost used vs estimate), updated in real time (live push, no refresh). History view per entry shows every manifest. Full API/MCP/CLI/voice control and deep link. Tests: dispatch creates the entry, each step tick bumps the version and meter, land sets shipped; invalid manifest is refused with the reason.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "mcp",
    "pendingId": "shipped-features-live-manifests-from-dispatch-to",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T01:23:14.933Z",
-   "updatedAt": "2026-11-09T01:26:56.278Z",
+   "updatedAt": "2026-11-12T02:08:47.059Z",
    "builtAt": "",
    "notes": [
     {
@@ -76644,6 +76668,10 @@
     {
      "text": "Brett: prompt field to jump into a headless session. A running claude -p can't take input, so: a prompt field (on the build's Shipped Features entry, the Errors column line, and the session window) that, on send, does NOT send right away: it opens a confirm dialog warning that the running session will be stopped and any unfinished, uncommitted work in progress may be lost, showing what's at risk (current step, uncommitted files count, time/cost so far). Only on Confirm: stop the session cleanly (let it commit if it can), then resume the SAME session (claude --resume <session id>) with Brett's prompt so its context is kept; logged as a build note and a manifest update. Cancel keeps the prompt as a draft. Full API/MCP/CLI/voice control, with the same confirm step.",
      "at": "2026-11-09T01:26:56.278Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:47.059Z"
     }
    ],
    "approvals": [],
@@ -76725,19 +76753,23 @@
    "title": "UI Roller: roll a random style on any UI element",
    "category": "",
    "detail": "New UI Roller plugin (console, AmberX, Molly, axHub web; every app built on the framework). 1) Context menu on EVERY UI element (dialogs, windows, panels, bars, buttons, inputs, menus, text, widgets; all registry assets): 'Roll style' and, when the element has a roll, 'Reset element'. 2) 'Roll style' opens a dialog: checkboxes for what to roll (colours, typography, spacing/density, size, radius/shape, borders, shadows, motion, icons), optional scope (this element / all of its type / its plugin), live preview, Re-roll, Apply. Rolls stay within valid token ranges and keep contrast readable. Apply saves the result as asset token overrides (local-first, like other overrides). 3) Main Settings > Rolled assets page: lists every app and plugin with its rolled assets (tree, counts, filters, search); each shows a live preview of the asset and its roll; actions: Reset (one), Reset selected (multi-select), Reset all. Undo/history per roll. 4) Applying a skin, design pack or theme clears EVERY rolled asset: covered ones take the new look, all others go back to their defaults. 5) Full API/MCP/CLI/voice control and deep links for roll, reset, reset selected/all and the page. Stock framework controls; 3 layout options to UI Review; tests (roll writes tokens, reset restores, theme apply clears all rolls); report.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "mcp",
    "pendingId": "ui-roller-roll-a-random-style-on-any-ui-element",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T02:24:24.342Z",
-   "updatedAt": "2026-11-09T02:25:49.369Z",
+   "updatedAt": "2026-11-12T02:08:45.597Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-09T02:25:49.369Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:45.597Z"
     }
    ],
    "approvals": [],
@@ -76923,19 +76955,23 @@
    "title": "Go-to hooks: every shipped feature, build and plan opens the UI or setting it touched",
    "category": "",
    "detail": "Every Shipped Features entry, build (Pending/Queued/Built) and Plan Studio plan that relates to a UI, screen, dialog, plugin or setting carries go-to hooks. The manifest records the UI targets it touched (view ids, dialogs, settings tabs/keys, plugin, element selectors) from the registry. In the row: an 'Open' button (opens the main target), and in the expanded row a 'Go to' list of every target. Clicking opens it in the console (or Molly/AmberX) via deep link / console_show, focused, scrolled into view, centered and highlighted. Works on desktop and phone; targets that no longer exist show as 'removed'. Backfill hooks for already shipped entries from their reports/plugin.json ui blocks. Full API/MCP/CLI/voice control ('open what build X changed'). Tests: a hook opens the right view and highlights the element.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "mcp",
    "pendingId": "go-to-hooks-every-shipped-feature-build-and-plan",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T02:46:50.916Z",
-   "updatedAt": "2026-11-09T02:47:41.066Z",
+   "updatedAt": "2026-11-12T02:08:43.535Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-09T02:47:41.066Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:43.535Z"
     }
    ],
    "approvals": [],
@@ -78508,16 +78544,21 @@
    "title": "Approve/Deny anywhere: send in background, never navigate",
    "category": "console",
    "detail": "Bug: clicking Approve keeps bringing Brett to the console. Rule: Approve or Deny anywhere (a dialog, the approvals banner, AmberX notification, the floating toolbar, any framework app, axHub page) sends the decision in the background and does nothing else: no navigation, no opening the console, no app switch. At most a small confirmation flash in place. Brett: \"If I click approve anywhere, I don't want it to do anything... Just send it in the background.\" Check earlier approvals-in-place work first.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T13:12:03.226Z",
-   "updatedAt": "2026-11-09T13:12:03.226Z",
+   "updatedAt": "2026-11-12T02:08:42.260Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:42.260Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -78564,16 +78605,21 @@
    "title": "Pending builds: steps column first (done / total), sortable",
    "category": "Builds",
    "detail": "In the Pending builds list/table, make the very first column Steps showing completed and total (e.g. 5 / 6, with a small progress bar). Sortable by it (by steps left, percent done, or total). Same DataGrid/asset rules as other tables; column order and sort saved in settings. Brett: \"the very first column to show the steps, the number total and the number completed, so I can sort them by that.\"",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T13:13:03.323Z",
-   "updatedAt": "2026-11-09T13:13:03.323Z",
+   "updatedAt": "2026-11-12T02:08:40.778Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:40.778Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -78641,16 +78687,21 @@
    "title": "Toast manager plugin",
    "category": "Console > Plugins",
    "detail": "New plugin that owns all toasts across every AXF framework app (shared via axHub). One toast asset (default look like the activity test toast: black box, amber, green check). Settings page: appearance (colours, icon, size, position, animation, per-type styles: success, info, warning, error) and behaviour (duration, default longer ~6 s, hover pauses, click to dismiss, stacking/max on screen, sound). List of every toast source (plugins, builds, approvals, skins) with on/off and per-source overrides; toast history; test button. API/control@1 so any plugin or Claude can fire a toast. The Skins banner build's toast should use this plugin. Brett: \"I want a toast manager plugin.\"",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T13:15:37.662Z",
-   "updatedAt": "2026-11-09T13:15:37.662Z",
+   "updatedAt": "2026-11-12T02:08:38.819Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:38.819Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [

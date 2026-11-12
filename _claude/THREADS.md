@@ -776,18 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 23:13 UTC · `molly-sign-in-once` note (all) · orchestrator
-- 2026-11-10 23:13 UTC · `api-accounts-need-no-approval-builds-route-there` → running, branch claude/api-accounts-need-no-approval-builds-route-there, note (all) · foreign-write
-- 2026-11-10 23:13 UTC · `orchestrator-merge-first-switch-separate-merger` → running, branch claude/orchestrator-merge-first-switch-separate-merger, note (all) · foreign-write
-- 2026-11-10 23:13 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` → running, note (all) · pipeline
-- 2026-11-10 23:13 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` branch claude/gizmo-opens-by-voice-link-amberx-web-app-android (all) · pipeline
-- 2026-11-10 23:13 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` note (all) · orchestrator
-- 2026-11-10 23:13 UTC · `orchestrator-merge-first-switch-separate-merger` note (all) · pipeline
-- 2026-11-10 23:13 UTC · `orchestrator-merge-first-switch-separate-merger` note (all) · orchestrator
-- 2026-11-10 23:13 UTC · `orchestrator-merge-first-switch-separate-merger` note (all) · builds-live
-- 2026-11-10 23:13 UTC · `api-accounts-need-no-approval-builds-route-there` note (all) · pipeline
-- 2026-11-10 23:13 UTC · `api-accounts-need-no-approval-builds-route-there` note (all) · orchestrator
-- 2026-11-10 23:14 UTC · `stall-watchdog-detect-when-nothing-is-building-a` → running, note (all) · pipeline
 - 2026-11-10 23:14 UTC · `stall-watchdog-detect-when-nothing-is-building-a` branch claude/stall-watchdog-detect-when-nothing-is-building-a (all) · pipeline
 - 2026-11-10 23:14 UTC · `stall-watchdog-detect-when-nothing-is-building-a` note (all) · orchestrator
 - 2026-11-10 23:15 UTC · `make-hulu-actually-take-builds-dispatcher-counts` note (all) · orchestrator
@@ -1176,6 +1164,18 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:08 UTC · `transcription-engine` → archived, note (all) · console
 - 2026-11-12 02:08 UTC · `audio-mic-filters` → archived, note (all) · console
 - 2026-11-12 02:08 UTC · `android-framework-update` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `brief-approval-dialog-before-every-headless-sess` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `auto-switch-claude-account-when-the-active-one-r` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `toast-manager-plugin` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `pending-builds-steps-column-first-done-total-sortable` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `approve-deny-anywhere-send-in-background-never-navigate` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `go-to-hooks-every-shipped-feature-build-and-plan` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `ui-roller-roll-a-random-style-on-any-ui-element` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `shipped-features-live-manifests-from-dispatch-to` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `headless-loop-guards-stop-endless-loops-and-sear` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `rebase-land-approve-button-fix-approve-goes-stra` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `style-rule-every-design-element-overrides-axhub-` → archived, note (all) · console
 
 ## Token passes (log)
 
