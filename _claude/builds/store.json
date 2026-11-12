@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3662,
- "updatedAt": "2026-11-12T20:36:43.194Z",
+ "rev": 3663,
+ "updatedAt": "2026-11-12T20:37:31.214Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -171830,7 +171830,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T20:31:23.288Z",
-   "updatedAt": "2026-11-12T20:33:59.256Z",
+   "updatedAt": "2026-11-12T20:37:29.879Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -171885,6 +171885,28 @@
      "rev": 1,
      "createdAt": "2026-11-12T20:31:23.289Z",
      "updatedAt": "2026-11-12T20:31:23.289Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwe0ejo3017jjp",
+     "title": "",
+     "text": "Wizard UX for every optional step: show the current project's value filled in and grayed out, with a checkbox to unlock it for a new choice. Where available, pick from a dropdown, or a list/grid in a dialog. Brett: \"you'll see the current things entered and grayed out with a checkbox... where available, allow selecting from drop-down menus or lists in a dialog. Grid or something.\"",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T20:37:29.880Z",
+     "updatedAt": "2026-11-12T20:37:30.003Z"
     },
     {
      "id": "s2",
@@ -172049,7 +172071,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
