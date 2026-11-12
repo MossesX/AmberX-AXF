@@ -777,11 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:23 UTC · `merge-all-ready-buttons-server-side-lander` s5 done (all) · orchestrator
-- 2026-11-12 03:24 UTC · `x.engine.dev` PR #513 (all) · builds-live
-- 2026-11-12 03:24 UTC · `x.engine.dev` s4 done, → built (all) · orchestrator
-- 2026-11-12 03:24 UTC · `x.engine.dev` note (all) · orchestrator
-- 2026-11-12 03:24 UTC · `x.engine.dev` PR #513 (all) · foreign-write
 - 2026-11-12 03:26 UTC · `enterprise-branding` note (all) · backfill
 - 2026-11-12 03:26 UTC · `asset-designer` note (all) · backfill
 - 2026-11-12 03:26 UTC · `plugin-manager` note (all) · backfill
@@ -1177,6 +1172,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 10:52 UTC · `remove-the-console-s-own-notes-manager-console-u` → running, note (all) · pipeline
 - 2026-11-12 10:52 UTC · `remove-the-console-s-own-notes-manager-console-u` branch claude/remove-the-console-s-own-notes-manager-console-u (all) · pipeline
 - 2026-11-12 10:52 UTC · `remove-the-console-s-own-notes-manager-console-u` note (all) · orchestrator
+- 2026-11-12 10:52 UTC · `handoff-2-addenda-r2` → archived (all) · claude-voice
+- 2026-11-12 10:52 UTC · `console-account-picker` → archived (all) · claude-voice
+- 2026-11-12 10:52 UTC · `ai-keys-console-store` → archived (all) · claude-voice
+- 2026-11-12 10:52 UTC · `amberx-slim-down-voice-queue` → archived (all) · claude-voice
+- 2026-11-12 10:52 UTC · `headless-progress-file-lean-claude-md-chain` → archived (all) · claude-voice
 
 ## Token passes (log)
 

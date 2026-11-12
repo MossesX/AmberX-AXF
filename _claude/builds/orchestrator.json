@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T10:52:29.107Z",
+ "updatedAt": "2026-11-12T10:52:41.396Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -17298,14 +17298,14 @@
    "title": "Handoff 2 add-ons (session chip, helper subscriptions, model bounce, Brownie's helper desk, account switcher)",
    "category": "Plugin extension (session-sync)",
    "detail": "Resume of handoff-2-addenda (died on credits on turn 1, nothing to salvage). All Opus by Brett's override; credential/role/protocol steps are marked 'Opus, possible Fable review'.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/handoff-2-addenda-r2",
    "pr": "",
    "createdAt": "2026-11-05T11:07:45.303Z",
-   "updatedAt": "2026-11-05T11:50:16.057Z",
+   "updatedAt": "2026-11-12T10:52:29.027Z",
    "builtAt": "",
    "notes": [
     {
@@ -17903,14 +17903,14 @@
    "title": "Flip the VPS Claude accounts from the console",
    "category": "",
    "detail": "Console picker for /root/.claude-accounts (logins, tokens, API key): list with type, label, email, active; one tap switch; per-account status test; labels beside the account folder; launchers source .token.env; one source of truth with build-own-login and ai-keys /switch. Branch claude/console-account-picker.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/console-account-picker",
    "pr": "",
    "createdAt": "2026-11-05T23:30:48.450Z",
-   "updatedAt": "2026-11-12T03:30:28Z",
+   "updatedAt": "2026-11-12T10:52:31.026Z",
    "builtAt": "",
    "notes": [
     {
@@ -18046,7 +18046,7 @@
    "title": "AI keys: one console-wide store, VPS accounts listed and switchable by API",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -18055,7 +18055,7 @@
    "mergedAt": "2026-11-06T00:33:19Z",
    "priority": "P0",
    "createdAt": "2026-11-05T23:51:02.650Z",
-   "updatedAt": "2026-11-12T03:30:30Z",
+   "updatedAt": "2026-11-12T10:52:32.893Z",
    "builtAt": "",
    "notes": [
     {
@@ -18151,7 +18151,7 @@
    "title": "AmberX: slim down + voice queue",
    "category": "",
    "detail": "1) Voice queue: AmberX holds everything Brett says; nothing sent to Claude until he says \"process\", then sends the whole batch in one turn (save tokens).\n2) Scrap the bloat. AmberX keeps ONLY: to-do, notes, task manager, session recorder, screen recording, Gizmo chat (agent chat). Remove/disable everything else.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "mcp",
    "pendingId": "amberx-slim-down-voice-queue",
@@ -18159,7 +18159,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-06T02:27:27.755Z",
-   "updatedAt": "2026-11-10T02:23:45.058Z",
+   "updatedAt": "2026-11-12T10:52:37.733Z",
    "builtAt": "",
    "notes": [
     {
@@ -20184,7 +20184,7 @@
    "title": "Headless progress file + lean CLAUDE.md chain",
    "category": "Builds",
    "detail": "Every headless build session writes progress to a small status file in the build and never stops to update the console; console reads it when needed. Also make headless sessions efficient with the CLAUDE.md chain (Brett, voice, Nov 6 2026).",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -20192,7 +20192,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-06T14:24:50.004Z",
-   "updatedAt": "2026-11-10T02:23:45.058Z",
+   "updatedAt": "2026-11-12T10:52:39.656Z",
    "builtAt": "",
    "notes": [
     {
