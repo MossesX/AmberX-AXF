@@ -776,18 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 01:55 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` → queued, note (all) · pipeline
-- 2026-11-12 01:55 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` → queued, note (all) · pipeline
-- 2026-11-12 01:55 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` → running, note (all) · pipeline
-- 2026-11-12 01:55 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` note (all) · orchestrator
-- 2026-11-12 01:55 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` → running, note (all) · pipeline
-- 2026-11-12 01:55 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` note (all) · orchestrator
-- 2026-11-12 01:55 UTC · `molly-native-expenses` → running, note (all) · pipeline
-- 2026-11-12 01:55 UTC · `molly-native-expenses` → running, note (all) · orchestrator
-- 2026-11-12 01:55 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` → running, note (all) · pipeline
-- 2026-11-12 01:55 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` note (all) · orchestrator
-- 2026-11-12 01:56 UTC · `molly-gap-axhub-cors` → queued, note (all) · pipeline
-- 2026-11-12 01:56 UTC · `molly-native-expenses` → queued, note (all) · pipeline
 - 2026-11-12 01:56 UTC · `console-commands-reliable` → pending, note (all) · reconciler
 - 2026-11-12 01:57 UTC · `molly-native-expenses` → running, note (all) · pipeline
 - 2026-11-12 01:57 UTC · `molly-native-expenses` note (all) · orchestrator
@@ -1176,6 +1164,18 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:27 UTC · `banner-working-icon-fable` note (all) · backfill
 - 2026-11-12 03:27 UTC · `settings-asset` note (all) · backfill
 - 2026-11-12 03:27 UTC · `settings-asset-fable` note (all) · backfill
+- 2026-11-12 03:27 UTC · `hubsync` note (all) · backfill
+- 2026-11-12 03:27 UTC · `hub-status-badge` note (all) · backfill
+- 2026-11-12 03:27 UTC · `appearance-asset-tokens` note (all) · backfill
+- 2026-11-12 03:27 UTC · `appearance-asset-tokens-fable` note (all) · backfill
+- 2026-11-12 03:27 UTC · `codebase-changes-resume` note (all) · backfill
+- 2026-11-12 03:27 UTC · `vinny-offline-commands` note (all) · backfill
+- 2026-11-12 03:27 UTC · `vinny-app-tokens` note (all) · backfill
+- 2026-11-12 03:27 UTC · `handoff-session-button` note (all) · backfill
+- 2026-11-12 03:27 UTC · `changes-grid` note (all) · backfill
+- 2026-11-12 03:27 UTC · `amberx-droid` note (all) · backfill
+- 2026-11-12 03:27 UTC · `context-menu-designer` note (all) · backfill
+- 2026-11-12 03:27 UTC · `shared-settings-interface` note (all) · backfill
 
 ## Token passes (log)
 

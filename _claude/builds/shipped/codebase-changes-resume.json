@@ -1,0 +1,56 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-codebase-changes-resume",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:27:12Z",
+ "build": {
+  "id": "codebase-changes-resume",
+  "title": "Codebase changes: resume details (carry on from another Claude account) + log the first edit",
+  "profile": "all",
+  "category": "Feature",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "change-log@1 gains `resume` (repo, folder, branch, base, head, pushed, dirty, files, plan, next, notes, tests, read, pr); the hook records the git part by itself; the first edit after a prompt not worded as a change opens an entry with machine, session and session type; `changes.mjs resume <id> --prompt` + console Copy resume prompt (GET entries/{id}/resume). Still open from the log-every-change rule: a project-level hook so cloud and headless sessions log without a per-machine install.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-10-25T14:47:07.826Z",
+ "landedAt": "2026-10-25T14:47:07.826Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

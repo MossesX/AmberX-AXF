@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T03:27:09.524Z",
+ "updatedAt": "2026-11-12T03:27:21.314Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -55013,7 +55013,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-24T15:07:33.262Z",
-   "updatedAt": "2026-10-24T15:07:33.289Z",
+   "updatedAt": "2026-11-12T03:27:08Z",
    "builtAt": "2026-10-24T15:07:33.289Z",
    "notes": [
     {
@@ -55023,6 +55023,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-hubsync rev 1 sent to Shipped features (backfill): complete 2026-10-24 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:27:08Z"
     }
    ],
    "approvals": [],
@@ -55041,7 +55045,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-24T12:40:52.292Z",
-   "updatedAt": "2026-10-24T12:46:13.418Z",
+   "updatedAt": "2026-11-12T03:27:09Z",
    "builtAt": "2026-10-24T12:46:13.128Z",
    "notes": [
     {
@@ -55051,6 +55055,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-hub-status-badge rev 1 sent to Shipped features (backfill): complete 2026-10-24 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:27:09Z"
     }
    ],
    "approvals": [],
@@ -55124,7 +55132,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-24T16:25:12.359Z",
-   "updatedAt": "2026-10-24T16:25:12.359Z",
+   "updatedAt": "2026-11-12T03:27:10Z",
    "builtAt": "2026-10-24T16:25:29.459Z",
    "notes": [
     {
@@ -55134,6 +55142,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-appearance-asset-tokens rev 1 sent to Shipped features (backfill): complete 2026-10-24 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:27:10Z"
     }
    ],
    "approvals": [],
@@ -55225,7 +55237,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-24T16:25:12.368Z",
-   "updatedAt": "2026-11-10T04:39:20.621Z",
+   "updatedAt": "2026-11-12T03:27:11Z",
    "builtAt": "2026-11-10T04:39:20.621Z",
    "notes": [
     {
@@ -55235,6 +55247,10 @@
     {
      "text": "Audit: superseded — Fable rebuild filed before the \"No Fable rebuilds\" rule (Oct 27 2026); the Opus build shipped (appearance-asset-tokens, complete)",
      "at": "2026-11-10T04:39:20.621Z"
+    },
+    {
+     "text": "Shipped manifest sm-appearance-asset-tokens-fable rev 1 sent to Shipped features (backfill): complete 2026-11-10 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 5 open.",
+     "at": "2026-11-12T03:27:11Z"
     }
    ],
    "approvals": [],
@@ -55524,12 +55540,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-25T10:46:22.879Z",
-   "updatedAt": "2026-10-25T14:47:07.826Z",
+   "updatedAt": "2026-11-12T03:27:12Z",
    "builtAt": "2026-10-25T14:47:07.826Z",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-codebase-changes-resume rev 1 sent to Shipped features (backfill): complete 2026-10-25 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:27:12Z"
     }
    ],
    "approvals": [],
@@ -55548,12 +55568,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-24T17:53:56.154Z",
-   "updatedAt": "2026-10-25T14:46:42.221Z",
+   "updatedAt": "2026-11-12T03:27:13Z",
    "builtAt": "2026-10-25T14:46:42.221Z",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-vinny-offline-commands rev 1 sent to Shipped features (backfill): complete 2026-10-25 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 6 open.",
+     "at": "2026-11-12T03:27:13Z"
     }
    ],
    "approvals": [],
@@ -55681,12 +55705,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-25T10:22:26.878Z",
-   "updatedAt": "2026-10-25T10:22:26.878Z",
+   "updatedAt": "2026-11-12T03:27:14Z",
    "builtAt": "2026-10-25T10:22:26.878Z",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-vinny-app-tokens rev 1 sent to Shipped features (backfill): complete 2026-10-25 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:27:14Z"
     }
    ],
    "approvals": [],
@@ -55705,7 +55733,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-25T10:39:16.114Z",
-   "updatedAt": "2026-10-25T10:39:16.195Z",
+   "updatedAt": "2026-11-12T03:27:15Z",
    "builtAt": "2026-10-25T10:39:16.155Z",
    "notes": [
     {
@@ -55715,6 +55743,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-handoff-session-button rev 1 sent to Shipped features (backfill): complete 2026-10-25 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:27:15Z"
     }
    ],
    "approvals": [],
@@ -55805,12 +55837,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-25T16:38:09.847Z",
-   "updatedAt": "2026-10-25T16:38:09.847Z",
+   "updatedAt": "2026-11-12T03:27:16Z",
    "builtAt": "2026-10-25T16:38:09.847Z",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-changes-grid rev 1 sent to Shipped features (backfill): complete 2026-10-25 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:27:16Z"
     }
    ],
    "approvals": [],
@@ -55829,7 +55865,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-25T16:17:42.679Z",
-   "updatedAt": "2026-10-25T16:17:42.692Z",
+   "updatedAt": "2026-11-12T03:27:17Z",
    "builtAt": "2026-10-25T16:17:42.679Z",
    "notes": [
     {
@@ -55839,6 +55875,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-amberx-droid rev 1 sent to Shipped features (backfill): complete 2026-10-25 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 6 open.",
+     "at": "2026-11-12T03:27:17Z"
     }
    ],
    "approvals": [],
@@ -55966,12 +56006,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-25T16:44:19.565Z",
-   "updatedAt": "2026-10-25T16:44:19.565Z",
+   "updatedAt": "2026-11-12T03:27:18Z",
    "builtAt": "2026-10-25T16:44:19.565Z",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-context-menu-designer rev 1 sent to Shipped features (backfill): complete 2026-10-25 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:27:18Z"
     }
    ],
    "approvals": [],
@@ -56045,7 +56089,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-25T20:12:14.972Z",
-   "updatedAt": "2026-10-25T20:14:56.178Z",
+   "updatedAt": "2026-11-12T03:27:19Z",
    "builtAt": "2026-10-25T20:14:56.178Z",
    "notes": [
     {
@@ -56055,6 +56099,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-shared-settings-interface rev 1 sent to Shipped features (backfill): complete 2026-10-25 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:27:19Z"
     }
    ],
    "approvals": [],
