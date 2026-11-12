@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:16:55.934Z",
+ "updatedAt": "2026-11-12T02:17:12.225Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -96945,7 +96945,7 @@
    "title": "Rebuild Gizmo from scratch: full Claude-style chat interface, switch between Claude and local Ollama/Llama",
    "category": "",
    "detail": "Replace the current Gizmo chat. Full Claude.ai-quality interface: conversation list, streaming replies, markdown/code, attachments, voice talk mode, history search. Model switcher per chat: Claude (accounts/API) or local Ollama (amberx-llama container, Mistral Small 24B default, 7B option) via the internal API. Works in AmberX app, AmberX web app and console, with a real deep link. Keep what worked before the Nov 7 Fable rebuild.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -96953,7 +96953,7 @@
    "pr": "#501",
    "priority": "P0",
    "createdAt": "2026-11-10T21:38:57.321Z",
-   "updatedAt": "2026-11-12T02:14:08.491Z",
+   "updatedAt": "2026-11-12T02:17:07.630Z",
    "builtAt": "",
    "notes": [
     {
@@ -96999,6 +96999,10 @@
     {
      "text": "PR #501. UI Review shots still needed: headless, the AmberX web app stops at 'Waiting for axHub' (needs a hub session). amberx-llama container + model pulls are not part of this build.",
      "at": "2026-11-12T02:13:48.107Z"
+    },
+    {
+     "text": "Self-check: rebuild-gizmo-from-scratch-full-claude-style-cha was marked running on mossesx-max- with no session: released and back in the Queue.",
+     "at": "2026-11-12T02:17:07.630Z"
     }
    ],
    "approvals": [],
@@ -97981,14 +97985,14 @@
    "title": "Molly gap: Molly's own actions (molly.*) reachable from the console API, MCP, CLI and AmberX",
    "category": "",
    "detail": "Found by molly-sign-in-once s1. The console-commands relay reaches the console frame inside Molly, not Molly itself, so Molly-level actions (molly.auth.status / check / sign-in / sign-out / base, molly.reload, navigation.*, xlayout.*) can only be run inside Molly (menus, toolbar, command search). Give Molly a client on the same relay (console_show / console_open target molly, plugin commands listing Molly's actions, control@1 for its settings) so every Molly action has the same four reaches (REST, MCP, CLI, voice). Needed before molly-sign-in-once s2 can call its screen done.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "molly-sign-in-once",
    "pendingId": "",
    "branch": "claude/molly-gap-remote-actions",
    "pr": "#502",
    "createdAt": "2026-11-10T22:09:30.792Z",
-   "updatedAt": "2026-11-12T02:16:41.654Z",
+   "updatedAt": "2026-11-12T02:17:09.304Z",
    "builtAt": "",
    "notes": [
     {
@@ -98038,6 +98042,10 @@
     {
      "text": "Reconciler: PR #502 names s1, s2 done",
      "at": "2026-11-12T02:16:41.654Z"
+    },
+    {
+     "text": "Self-check: molly-gap-remote-actions was marked running on account-5 with no session: released and back in the Queue.",
+     "at": "2026-11-12T02:17:09.304Z"
     }
    ],
    "approvals": [],

@@ -776,8 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 23:41 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` note (all) · pipeline
-- 2026-11-10 23:42 UTC · `auto-requeue-builds-whose-session-stops-early-go` s1 done (all) · orchestrator
 - 2026-11-10 23:43 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` note (all) · orchestrator
 - 2026-11-10 23:43 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` note (all) · pipeline
 - 2026-11-10 23:43 UTC · `molly-banner-match` → queued, note (all) · auto-requeue (Brett: re-queue them)
@@ -1176,6 +1174,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:16 UTC · `molly-gap-remote-actions` s2 done, → running, note (all) · reconciler
 - 2026-11-12 02:16 UTC · `fix-axhub-36-pull-main-in-failed` → pending, note (all) · reconciler
 - 2026-11-12 02:16 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` note (all) · orchestrator
+- 2026-11-12 02:17 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` → queued, note (all) · pipeline
+- 2026-11-12 02:17 UTC · `molly-gap-remote-actions` → queued, note (all) · pipeline
 
 ## Token passes (log)
 
