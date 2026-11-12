@@ -236,7 +236,8 @@ async function main(argv) {
   const brief = briefFile && existsSync(briefFile) ? readFileSync(briefFile, 'utf8').slice(0, 64 * 1024) : '';
   const common = { build: opt('build') || process.env.AXF_BUILD_ID || '', name: opt('name'), brief, token: process.env.AXF_DISPATCH_TOKEN || '' };
   if (cmd === 'check' || cmd === 'consume' || cmd === 'reentry') {
-    const r = cmd === 'check' ? check(common) : cmd === 'consume' ? consume(common) : reentry(common);
+    // a re-entry runs inside tmux, whose server environment can hold another build's AXF_BUILD_ID: name + brief only
+    const r = cmd === 'check' ? check(common) : cmd === 'consume' ? consume(common) : reentry({ ...common, build: opt('build') });
     if (cmd !== 'consume') record(r, { kind: cmd === 'reentry' ? 'reentry' : 'launch', name: common.name || common.build });
     console.log(json ? JSON.stringify(r) : `${r.ok ? 'ok' : 'refused'}: ${r.why.replace(/^refused: /, '')}`);
     if (!r.ok) process.exitCode = 3;

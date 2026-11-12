@@ -8,7 +8,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as P from './pipeline-core.mjs';
 import * as OC from './web/orchestrator-core.mjs';
-import { verdict as dispatchVerdict } from '../../../../framework/cli/dispatch-gate.mjs';
+import { verdict as dispatchVerdict, check as dispatchCheck, issue as dispatchIssue, reentry as dispatchReentry, record as dispatchRecord, readRefusals, status as gateStatus, alertOf as gateAlert } from '../../../../framework/cli/dispatch-gate.mjs';
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
 import { setUpgradePolicy } from '../../../../framework/core/model-switch.mjs';
 
@@ -340,6 +340,57 @@ t('dispatch gate: a build launch needs the orchestrator token for that build; ot
   assert.match(dispatchVerdict({ b, name: 'alpha', token: 'axd_x', rec: { ...rec, hash: 'f'.repeat(64) } }).why, /not alpha's/);
 });
 
+// ---------------- the server gate: the builds store is the registry of orchestrator-issued IDs
+{
+  const gdir = mkdtempSync(join(tmpdir(), 'axf-gate-'));
+  const genv = { AXF_DISPATCH_DIR: gdir, AXF_CLAUDE_SETTINGS_FILE: join(gdir, 'settings.json'), AXF_PIPELINE_CONSOLE: 'off' };
+  const reg = { builds: [build('queued-one', 'queued', [step('s1', 'Opus')]), build('pending-one', 'pending', [step('s1', 'Opus')]), build('built-one', 'built', [step('s1', 'Opus', true)]), build('running-one', 'running', [step('s1', 'Opus')])] };
+  const tok = Object.fromEntries(reg.builds.map((b) => [b.id, dispatchIssue(b.id, { account: 'w-max', model: 'Opus', env: genv })]));
+  const go = (o) => dispatchCheck({ env: genv, store: reg, ...o });
+  t('server gate: a build launch with no orchestrator-issued ID is refused', () => {
+    const r = go({ name: 'build-sneaky' }); assert.equal(r.ok, false); assert.equal(r.reason, 'no-id'); assert.match(r.why, /no orchestrator-issued ID/);
+  });
+  t('server gate: an ID the registry does not know is refused (--build, # Build: heading, Continue build line)', () => {
+    assert.equal(go({ build: 'made-up-id', token: tok['queued-one'] }).reason, 'unknown-id');
+    assert.equal(go({ name: 'whatever', brief: '# Build: made-up-id\n' }).reason, 'unknown-id');
+    assert.equal(go({ name: 'whatever', brief: 'Continue build "X" (made-up-id) [orchestrator]' }).reason, 'unknown-id');
+    assert.equal(go({ name: 'walkthrough-shots', brief: '# Job: shots\n' }).ok, true, 'not a build: passes');
+  });
+  t('server gate: a Pending (or Built) build is refused even with its own valid token', () => {
+    const r = go({ name: 'pending-one', token: tok['pending-one'] }); assert.equal(r.ok, false); assert.equal(r.reason, 'not-queued'); assert.match(r.why, /pending-one is pending, not Queued/);
+    assert.equal(go({ name: 'built-one', token: tok['built-one'] }).reason, 'not-queued');
+  });
+  t('server gate: a Queued build with its valid orchestrator token is allowed; a wrong or missing token is not', () => {
+    const r = go({ name: 'queued-one', token: tok['queued-one'] }); assert.equal(r.ok, true, r.why); assert.match(r.why, /dispatched by the orchestrator on w-max \(Opus\)/);
+    assert.equal(go({ name: 'queued-one', token: tok['pending-one'] }).reason, 'wrong-token');
+    assert.equal(go({ name: 'queued-one' }).reason, 'no-token');
+    assert.equal(go({ name: 'running-one', token: tok['running-one'] }).ok, true, 'Running with an unspent token: the dispatcher\'s own launch (look-approval relaunch)');
+  });
+  t('server gate: launcher re-entries (--inner, --queued) need a dispatcher launch that spent the token', () => {
+    assert.equal(dispatchReentry({ env: genv, store: reg, name: 'queued-one' }).reason, 'not-dispatched', 'claude-headless.sh --inner by hand');
+    assert.equal(dispatchReentry({ env: genv, store: reg, name: 'build-x' }).reason, 'no-id');
+    const doc = JSON.parse(readFileSync(join(gdir, 'dispatch.json'), 'utf8')); doc.tokens['queued-one'].used = new Date().toISOString(); writeFileSync(join(gdir, 'dispatch.json'), JSON.stringify(doc));
+    assert.equal(dispatchReentry({ env: genv, store: reg, name: 'queued-one' }).ok, true);
+    assert.equal(dispatchReentry({ env: genv, store: reg, name: 'walkthrough' }).ok, true, 'non-build re-entries pass');
+  });
+  t('server gate: refusals are logged and become an AmberX FYI (console alert); status reads them', () => {
+    const r = go({ name: 'build-sneaky' }); const row = dispatchRecord(r, { name: 'build-sneaky', env: genv });
+    assert.equal(row.reason, 'no-id'); assert.equal(readRefusals(genv)[0].name, 'build-sneaky');
+    const a = gateAlert(row); assert.equal(a.source, 'pipeline'); assert.equal(a.key, 'pipeline:gate:sneaky'); assert.match(a.title, /Build launch refused/);
+    assert.equal(dispatchRecord({ ok: true, build: 'x', why: 'fine' }, { env: genv }), null, 'allowed launches are not logged');
+    const st = gateStatus(genv); assert.equal(st.override, false); assert.equal(st.refusals.length, 1); assert.match(st.line, /only orchestrator-issued, Queued builds start/);
+  });
+  t('server gate: the owner-only override is off by default; on, a refused launch starts and is still logged', () => {
+    assert.equal(go({ name: 'pending-one', token: tok['pending-one'] }).ok, false, 'no settings file: off');
+    writeFileSync(genv.AXF_CLAUDE_SETTINGS_FILE, JSON.stringify({ values: { 'builds.dispatchGateOverride': true } }));
+    const r = go({ name: 'pending-one', token: tok['pending-one'] }); assert.equal(r.ok, true); assert.equal(r.overridden, true); assert.equal(r.refusal, 'not-queued');
+    assert.equal(dispatchRecord(r, { name: 'pending-one', env: genv }).overridden, true); assert.equal(gateStatus(genv).override, true);
+    assert.equal(dispatchCheck({ env: { ...genv, AXF_DISPATCH_OVERRIDE: 'off' }, store: reg, name: 'pending-one', token: tok['pending-one'] }).ok, false, 'the environment can force it off, never on');
+    writeFileSync(genv.AXF_CLAUDE_SETTINGS_FILE, JSON.stringify({ values: { 'builds.dispatchGateOverride': false } }));
+    assert.equal(go({ name: 'pending-one', token: tok['pending-one'] }).ok, false);
+  });
+}
+
 // ---------------- the CLI end to end (scratch store, fake accounts, fake launcher, fake splitter)
 const e2e = process.env.AXF_PIPELINE_TEST_E2E !== 'off' && existsSync(join(HERE, 'pipeline.mjs'));
 if (e2e) {
@@ -429,6 +480,17 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     writeFileSync(join(tmp, 'plain.md'), 'Fix the thing.\n');
     const h3 = spawnSync('bash', [join(ROOT, 'deploy/claude-headless.sh'), '--name', 'build-feat-x', '--brief', join(tmp, 'plain.md'), '--log', 'x.log', '--', '-p'], { cwd: tmp, env, encoding: 'utf8', timeout: 60000 });
     assert.equal(h3.status, 3); assert.match(h3.stdout, /build launch outside the orchestrator/);
+    // a Pending build holding a freshly issued token is still refused by the real launcher (not Queued)
+    orch('act', JSON.stringify({ action: 'add', id: 'gate-pending', title: 'Gate pending', steps: [{ text: 'do it', model: 'Opus', estimate: '20 min' }] }));
+    assert.equal(find('gate-pending').status, 'pending');
+    const ptok = g('issue', 'gate-pending', '--account', 'w-pro', '--model', 'Opus').stdout.trim();
+    writeFileSync(join(tmp, 'gate-pending.md'), '# Build: gate-pending\n\nContinue build "Gate pending" (gate-pending) [orchestrator]\n');
+    const h4 = spawnSync('bash', [join(ROOT, 'deploy/claude-headless.sh'), '--name', 'gate-pending', '--brief', join(tmp, 'gate-pending.md'), '--log', 'x.log', '--', '-p'], { cwd: tmp, env: { ...env, AXF_DISPATCH_TOKEN: ptok }, encoding: 'utf8', timeout: 60000 });
+    assert.equal(h4.status, 3, h4.stdout + h4.stderr); assert.match(h4.stdout, /gate-pending is pending, not Queued/);
+    // the launcher's tmux re-entry started by hand: no dispatcher launch spent a token for it
+    const h5 = spawnSync('bash', [join(ROOT, 'deploy/claude-headless.sh'), '--inner', '--name', 'build-feat-x', '--brief', join(tmp, 'plain.md'), '--log', 'x.log', '--', '-p'], { cwd: tmp, env, encoding: 'utf8', timeout: 60000 });
+    assert.equal(h5.status, 3, h5.stdout + h5.stderr); assert.match(h5.stdout, /without an orchestrator-issued ID/);
+    const refused = readFileSync(join(pipeDir, 'dispatch-refusals.jsonl'), 'utf8'); assert.match(refused, /"reason":"no-token"/); assert.match(refused, /"kind":"reentry"/);
   });
   t('e2e request: every other path files a build with the orchestrator and queues it; route api is the per-build override', () => {
     const r = json(pipe('request', '--title', 'Fix the health check: mosh server', '--detail', 'Install mosh.', '--priority', 'P1', '--queue', '--by', 'health-check', '--json'));
