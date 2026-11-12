@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3576,
- "updatedAt": "2026-11-12T11:16:49.946Z",
+ "rev": 3577,
+ "updatedAt": "2026-11-12T11:30:38.268Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174707,14 +174707,14 @@
    "title": "Fix the step splitter: 'claude exit 1: Input must be provided'",
    "category": "",
    "detail": "When a build is added, the splitter runs claude -p without the prompt (stdin or argument missing), fails with 'Error: Input must be provided either through stdin or as a prompt argument when using --print', and falls back to one step per line, pasting Brett's raw words in as a step. Fix the invocation so the request is passed, split into real <=30 min steps, and re-split today's queued builds whose steps are the fallback. Test: adding a build yields proper steps, no fallback note.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "mcp",
    "pendingId": "fix-the-step-splitter-claude-exit-1-input-must-b",
    "branch": "claude/fix-the-step-splitter-claude-exit-1-input-must-b",
    "pr": "",
    "createdAt": "2026-11-12T10:51:23.133Z",
-   "updatedAt": "2026-11-12T11:07:50.448Z",
+   "updatedAt": "2026-11-12T11:30:36.631Z",
    "builtAt": "",
    "notes": [
     {
@@ -174732,6 +174732,10 @@
     {
      "text": "Headless run axf-fix-the-step-splitter-claude-exit-1-input-must-b--sully: brief only · start 11.2K tokens ($0.03) · cost $0.35 · 16 turns · 6 tools, MCP none",
      "at": "2026-11-12T11:07:50.448Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-12T11:30:36.631Z"
     }
    ],
    "approvals": [],
@@ -174971,7 +174975,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
