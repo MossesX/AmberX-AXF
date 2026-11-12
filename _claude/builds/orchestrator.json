@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T22:55:59.852Z",
+ "updatedAt": "2026-11-12T22:56:11.530Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -110104,7 +110104,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-12T21:54:49.855Z",
-   "updatedAt": "2026-11-12T21:57:04.971Z",
+   "updatedAt": "2026-11-12T22:56:04.650Z",
    "builtAt": "",
    "notes": [
     {
@@ -110122,6 +110122,10 @@
     {
      "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
      "at": "2026-11-12T21:57:04.971Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-12T22:56:04.650Z"
     }
    ],
    "approvals": [],
