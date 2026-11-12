@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3500,
- "updatedAt": "2026-11-12T03:50:47.634Z",
+ "rev": 3501,
+ "updatedAt": "2026-11-12T03:51:05.659Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -42716,6 +42716,34 @@
     "from": "detail",
     "addenda": []
    },
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Fable",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-12T03:51:03.563Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
    "shipped": {
     "id": "sm-element-inspector",
     "rev": 1,
@@ -42820,7 +42848,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
