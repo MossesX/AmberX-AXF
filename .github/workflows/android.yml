@@ -268,6 +268,7 @@ jobs:
             node framework/spec/check-nightly-deploy.mjs
             node framework/spec/check-plugin-commands.mjs               # plugin-commands@1: every plugin's commands and reads from routes, actions, data folder and plugin.json; projections; every plugin covered
             node framework/spec/check-control-registry.mjs              # control-registry@1: schema, hashing, index build / diff / export / import, queries, deterministic dispatcher (fixture replay), AI gate on the Claude setting, committed index validates
+            node apps/console-web/lib/registry/test.mjs                 # control-registry@1 surfaces: index fresh, dispatcher no-AI paths + gate, planner, confirm tokens, axf ctl, parity, coverage
             node scripts/check-registry-coverage.mjs                    # control-registry@1 parity: every UI page, dialog, settings tab, action and setting has an entry, every entry reaches REST / MCP / CLI / voice or says why, every parameter has allowed values, console targets match deep links, the committed index is fresh (new findings fail; known ones held in _claude/builds/registry/coverage-baseline.json)
             npx -y tsx framework/spec/check-agent-card.mts             # agent-card@1: registry, fixture replay, validators agree, four starters, schema
             npx -y tsx framework/spec/check-job-type.mts               # job-type@1: registry, fixture replay, validators agree, starter job types, schema
@@ -336,6 +337,7 @@ jobs:
             python apps/console-web/plugins/follow-amber/test.py  # axf-plugin:follow-amber
             python apps/console-web/plugins/ref-links/server/test_ref_links.py  # reference links: targets (catalog, agents, UI Review), find, resolve, open → refs.<how> through console-commands@1  # axf-plugin:ref-links
             python apps/console-web/server/test_mcp_tools.py         # console MCP: read tools read-only, deletes destructive, veto pass tools
+            python apps/console-web/server/test_registry_api.py      # control-registry@1 surfaces: REST routes + auth, REST = MCP, AI gate on/off, axHub bridge vs a mock hub (Hostinger, Coolify, VPS: hold, reason, confirm tokens)
             python apps/console-web/plugins/plugin-commands/server/test_plugin_commands.py  # plugin commands: /api/control/<plugin>/<command>, deletes confirm, actions to the console, MCP tools follow the plugins  # axf-plugin:plugin-commands
             python apps/amberx-droid/server/test_server.py           # AmberX server: wall, admin-only AI config, write-only keys, fallback, intent checks, caps, SPA paths
           } 2>&1 | tee /tmp/web-tests.log
