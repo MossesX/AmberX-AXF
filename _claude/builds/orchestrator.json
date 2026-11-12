@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:58:22.427Z",
+ "updatedAt": "2026-11-12T02:59:46.588Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -101406,6 +101406,80 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mwcy746j06kmda"
+    }
+   ]
+  },
+  {
+   "id": "account-order-hulu-moses-x-api-account-shown-on-every-build",
+   "title": "Account order (Hulu -> Moses X -> API) + account shown on every build",
+   "category": "orchestrator",
+   "detail": "URGENT, boss order from Brett, Nov 12. (1) Account ORDER setting for the dispatcher, drag-and-drop in Claude accounts + REST/MCP/CLI/voice: new builds go to the first account in the order that has a free slot and isn't limited. Brett's order now: Hulu subscription (account-3) -> Moses X subscription (mossesx-max-) -> API keys (account-5 Hulu API, mossesx-api) last, under their caps. When one runs out, move to the next; move back when it resets. Today the dispatcher picks the least busy subscription and ignores order, and ai-keys/order does nothing for the dispatcher. (2) Show the account on every build row in Queue, Active and Pending: the planned account before it starts, the account it's running on, and the last run's account; filter by account. (3) Fix the Hulu login: Brett re-signed the Hulu subscription and it went to /root/.claude-add; move/link it to account-3's folder so account-3 uses the fresh token, and remove the stray 'add' folder.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-12T02:59:45.402Z",
+   "updatedAt": "2026-11-12T02:59:45.403Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Dispatcher honours an account order (first free, not limited); order setting with drag-and-drop in Claude accounts + API; set Brett's order Hulu -> Moses X -> API keys; failover and switch back logged + AmberX FYI.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwcyma6604iguz"
+    },
+    {
+     "id": "s2",
+     "text": "Account column on every build row (Queue, Active, Pending): planned account, running account, last run account; filter by account; also via API/voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwcyma6605jqt7"
+    },
+    {
+     "id": "s3",
+     "text": "Move the fresh Hulu login from /root/.claude-add into account-3's folder, verify a headless run on account-3 works; tests, PR, land through the gate, AmberX FYI when live.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwcyma6606zt32"
     }
    ]
   }
