@@ -24,7 +24,8 @@
     "service:axf.agent-slots@1",
     "service:axf.merge-queue@1",
     "service:plans@1",
-    "service:ui-review@1"
+    "service:ui-review@1",
+    "service:claude-usage@1"
   ],
   "banner": false,
   "tabable": {
@@ -454,6 +455,26 @@
           ]
         },
         "output": "{ id, status }"
+      },
+      {
+        "id": "pipeline-builtby",
+        "route": "GET /pipeline/builtby/{build}",
+        "title": "Who built it",
+        "readOnly": true,
+        "description": "Which Claude login or API key actually ran a build: per login the account, email, subscription or API, model, cost and the steps it ticked, the build's builder, and every failover hop (an account's login failed or it hit its limit, and the run moved to the next subscription with usage left, then an API account only when Brett has API switched on). Say 'who built skins'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ id, builder, accounts, steps, runs, failovers }"
       },
       {
         "id": "pipeline-route",

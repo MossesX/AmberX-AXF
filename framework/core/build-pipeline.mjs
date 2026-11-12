@@ -28,6 +28,12 @@
  *              Nov 10 2026: "He'll plan what model, what account"); refreshed while it waits
  *   tried      accounts the final pick tried and that refused this run (launch failed), in order; '' list on a clean pick
  *   pickedAt   ISO of the final account decision (the moment the build's turn came in the Queue)
+ *   failovers  the failover chain's hops (Brett, Nov 9 2026: "if it doesn't work, it goes to another subscription, and
+ *              if there's no subscriptions, it goes to an API"): [{ at, from, to, kind, hit, why }], oldest first, at
+ *              most 20. hit = auth | usage | rate (what stopped `from`); to '' = nothing was left and the run stopped
+ *   builtBy    who actually ran it ("Whatever account or API actually does the job, the orchestrator notes it"): one
+ *              entry per login a session ran on, [{ account, email, kind, model, from, to, costUsd, steps, session,
+ *              outcome }], oldest first, at most 40. outcome = ran | limited (the account stopped, the run moved on)
  *   heldAt, heldBy, heldWhy  On hold (Brett, Nov 10 2026: "Make a hold status … leave in queue on hold"): the build stays
  *              in the Queue, keeps its place, and the dispatcher skips it until it is released. '' = not held.
  *
@@ -50,9 +56,28 @@ const iso = (v) => { const s = str(v, 40).trim(); return s && Number.isFinite(Da
 const NAME_RE = /^[a-z0-9][a-z0-9-]{0,31}$/;
 /** A saved Claude account name (deploy/claude-login.mjs), or ''. */
 export const accountName = (v) => (NAME_RE.test(str(v, 40)) ? str(v, 40) : '');
+const arr = (v) => (Array.isArray(v) ? v : []);
+const usd = (v) => (Number(v) > 0 ? +Number(v).toFixed(4) : 0);
+
+/** The failover chain's hops, oldest first, at most 20 (to '' = the chain had nothing left). */
+export function normFailovers(v) {
+  return arr(v).filter((r) => r && typeof r === 'object' && accountName(r.from)).slice(-20).map((r) => ({
+    at: iso(r.at), from: accountName(r.from), to: accountName(r.to), kind: r.kind === 'api' ? 'api' : accountName(r.to) ? 'subscription' : '',
+    hit: ['auth', 'rate'].includes(r.hit) ? r.hit : 'usage', why: str(r.why, 300),
+  }));
+}
+
+/** Who actually ran the build: one entry per login a session ran on, oldest first, at most 40. */
+export function normBuiltBy(v) {
+  return arr(v).filter((r) => r && typeof r === 'object' && accountName(r.account)).slice(-40).map((r) => ({
+    account: accountName(r.account), email: str(r.email, 200), kind: r.kind === 'api' ? 'api' : 'subscription', model: str(r.model, 40),
+    from: iso(r.from), to: iso(r.to), costUsd: usd(r.costUsd),
+    steps: arr(r.steps).map((x) => str(x, 40)).filter(Boolean).slice(0, 60), session: str(r.session, 120), outcome: r.outcome === 'limited' ? 'limited' : 'ran',
+  }));
+}
 
 export function emptyPipeline() {
-  return { queuedAt: '', queuedBy: '', account: '', session: '', slot: '', model: '', launchedAt: '', runs: 0, lastRun: null, split: null, splitRequested: '', note: '', route: '', dispatchedAt: '', planned: null, tried: [], pickedAt: '', heldAt: '', heldBy: '', heldWhy: '' };
+  return { queuedAt: '', queuedBy: '', account: '', session: '', slot: '', model: '', launchedAt: '', runs: 0, lastRun: null, split: null, splitRequested: '', note: '', route: '', dispatchedAt: '', planned: null, tried: [], pickedAt: '', heldAt: '', heldBy: '', heldWhy: '', failovers: [], builtBy: [] };
 }
 
 /** The record, every field in shape; null for nothing (a build the pipeline never touched carries none). */
@@ -65,13 +90,14 @@ export function normPipeline(p) {
     queuedAt: iso(p.queuedAt), queuedBy: str(p.queuedBy, 80),
     account: accountName(p.account), session: str(p.session, 120), slot: str(p.slot, 60), model: str(p.model, 20),
     launchedAt: iso(p.launchedAt), runs: Number.isInteger(p.runs) && p.runs > 0 ? p.runs : 0,
-    lastRun: lr ? { at: iso(lr.at), exit: Number.isInteger(lr.exit) ? lr.exit : null, outcome: OUTCOMES.includes(lr.outcome) ? lr.outcome : 'finished', stepsLeft: Number.isInteger(lr.stepsLeft) ? lr.stepsLeft : 0, account: accountName(lr.account), session: str(lr.session, 120) } : null,
+    lastRun: lr ? { at: iso(lr.at), exit: Number.isInteger(lr.exit) ? lr.exit : null, outcome: OUTCOMES.includes(lr.outcome) ? lr.outcome : 'finished', stepsLeft: Number.isInteger(lr.stepsLeft) ? lr.stepsLeft : 0, account: accountName(lr.account), session: str(lr.session, 120), ...(str(lr.email, 200) ? { email: str(lr.email, 200) } : {}), ...(usd(lr.costUsd) ? { costUsd: usd(lr.costUsd) } : {}) } : null,
     split: sp ? { at: iso(sp.at), by: str(sp.by, 80), provider: SPLIT_PROVIDERS.includes(sp.provider) ? sp.provider : 'hand', steps: Number.isInteger(sp.steps) ? sp.steps : 0, note: str(sp.note, 400) } : null,
     splitRequested: iso(p.splitRequested), note: str(p.note, 400),
     route: ROUTES.includes(p.route) ? p.route : '', dispatchedAt: iso(p.dispatchedAt),
     planned: pl ? { model: str(pl.model, 20), account: accountName(pl.account), kind: pl.kind === 'api' ? 'api' : pl.kind === 'subscription' ? 'subscription' : '', at: iso(pl.at), why: str(pl.why, 300) } : null,
     tried: (Array.isArray(p.tried) ? p.tried : []).map(accountName).filter(Boolean).slice(0, 12), pickedAt: iso(p.pickedAt),
     heldAt: iso(p.heldAt), heldBy: iso(p.heldAt) ? str(p.heldBy, 80) : '', heldWhy: iso(p.heldAt) ? str(p.heldWhy, 300) : '',
+    failovers: normFailovers(p.failovers), builtBy: normBuiltBy(p.builtBy),
   };
   const empty = emptyPipeline();
   return JSON.stringify(out) === JSON.stringify(empty) ? null : out;
