@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T11:07:43.213Z",
+ "updatedAt": "2026-11-12T11:07:55.530Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -107349,7 +107349,7 @@
    "branch": "claude/fix-the-step-splitter-claude-exit-1-input-must-b",
    "pr": "",
    "createdAt": "2026-11-12T10:51:23.133Z",
-   "updatedAt": "2026-11-12T11:05:17.805Z",
+   "updatedAt": "2026-11-12T11:07:50.448Z",
    "builtAt": "",
    "notes": [
     {
@@ -107363,6 +107363,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-the-step-splitter-claude-exit-1-input-must-b--sully, own login copy)",
      "at": "2026-11-12T11:04:19.985Z"
+    },
+    {
+     "text": "Headless run axf-fix-the-step-splitter-claude-exit-1-input-must-b--sully: brief only · start 11.2K tokens ($0.03) · cost $0.35 · 16 turns · 6 tools, MCP none",
+     "at": "2026-11-12T11:07:50.448Z"
     }
    ],
    "approvals": [],
