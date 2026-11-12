@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3300,
- "updatedAt": "2026-11-12T02:19:41.684Z",
+ "rev": 3301,
+ "updatedAt": "2026-11-12T02:20:11.769Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -155520,7 +155520,7 @@
    "pr": "#501",
    "priority": "P0",
    "createdAt": "2026-11-10T21:38:57.321Z",
-   "updatedAt": "2026-11-12T02:19:38.931Z",
+   "updatedAt": "2026-11-12T02:20:09.297Z",
    "builtAt": "2026-11-12T02:19:38.931Z",
    "notes": [
     {
@@ -155582,6 +155582,10 @@
     {
      "text": "Headless run axf-rebuild-gizmo-from-scratch-full-claude-style-cha--lenny: brief only · start 10.9K tokens ($0.03) · cost $0.10 · 7 turns · 6 tools, MCP none",
      "at": "2026-11-12T02:19:38.931Z"
+    },
+    {
+     "text": "Session axf-rebuild-gizmo-from-scratch-full-claude-style-cha--lenny on account-5 ended (exit 0); the build was already built.",
+     "at": "2026-11-12T02:20:09.297Z"
     }
    ],
    "approvals": [],
@@ -155602,18 +155606,18 @@
     "queuedAt": "2026-11-12T01:43:38.089Z",
     "queuedBy": "console",
     "account": "account-5",
-    "session": "axf-rebuild-gizmo-from-scratch-full-claude-style-cha--lenny",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-12T02:18:11.326Z",
     "runs": 2,
     "lastRun": {
-     "at": "2026-11-12T01:55:09.063Z",
-     "exit": 1,
-     "outcome": "requeued",
-     "stepsLeft": 3,
-     "account": "mossesx-max-",
-     "session": "axf-rebuild-gizmo-from-scratch-full-claude-style-cha--gina"
+     "at": "2026-11-12T02:20:07.523Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "account-5",
+     "session": "axf-rebuild-gizmo-from-scratch-full-claude-style-cha--lenny"
     },
     "split": null,
     "splitRequested": "",
@@ -155712,7 +155716,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
