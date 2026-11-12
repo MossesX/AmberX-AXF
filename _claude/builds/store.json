@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3540,
- "updatedAt": "2026-11-12T10:55:10.810Z",
+ "rev": 3541,
+ "updatedAt": "2026-11-12T10:55:31.007Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174201,9 +174201,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-12T10:44:42.157Z",
-     "updatedAt": "2026-11-12T10:51:52.469Z"
+     "updatedAt": "2026-11-12T10:55:11.672Z"
     },
     {
      "id": "s2",
@@ -174223,9 +174223,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-12T10:44:42.157Z",
-     "updatedAt": "2026-11-12T10:51:56.070Z"
+     "updatedAt": "2026-11-12T10:55:11.672Z"
     },
     {
      "id": "s3",
@@ -174711,6 +174711,94 @@
    "steps": [
     {
      "id": "s1",
+     "uid": "st-mwdfloqr01rcc6",
+     "title": "",
+     "text": "When a build is added, the splitter runs claude -p without the prompt (stdin or argument missing), fails with 'Error: Input must be provided either through stdin or as a prompt argument when using --print', and falls back to one step per line, pasting Brett's raw words in as a step.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T10:55:11.097Z",
+     "updatedAt": "2026-11-12T10:55:11.235Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwdfloqr029a9d",
+     "title": "",
+     "text": "Fix the invocation so the request is passed, split into real <=30 min steps, and re-split today's queued builds whose steps are the fallback.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T10:55:11.097Z",
+     "updatedAt": "2026-11-12T10:55:11.235Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwdfloqr03y30p",
+     "title": "",
+     "text": "Test: adding a build yields proper steps, no fallback note.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T10:55:11.097Z",
+     "updatedAt": "2026-11-12T10:55:11.235Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwdfloqr04eh0k",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/fix-the-step-splitter-claude-exit-1-input-must-b.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T10:55:11.097Z",
+     "updatedAt": "2026-11-12T10:55:11.235Z"
+    },
+    {
+     "id": "s5-4",
      "uid": "st-mwdfj9x8015jsn",
      "title": "",
      "text": "When a build is added, the splitter runs claude -p without the prompt (stdin or argument missing), fails with 'Error: Input must be provided either through stdin or as a prompt argument when using --print', and falls back to one step per line, pasting Brett's raw words in as a step.",
@@ -174732,7 +174820,7 @@
      "updatedAt": "2026-11-12T10:53:18.716Z"
     },
     {
-     "id": "s2",
+     "id": "s6-5",
      "uid": "st-mwdfj9x802fmib",
      "title": "",
      "text": "Fix the invocation so the request is passed, split into real <=30 min steps, and re-split today's queued builds whose steps are the fallback.",
@@ -174754,7 +174842,7 @@
      "updatedAt": "2026-11-12T10:53:18.716Z"
     },
     {
-     "id": "s3",
+     "id": "s7-6",
      "uid": "st-mwdfj9x803s305",
      "title": "",
      "text": "Test: adding a build yields proper steps, no fallback note.",
@@ -174776,7 +174864,7 @@
      "updatedAt": "2026-11-12T10:53:18.716Z"
     },
     {
-     "id": "s4",
+     "id": "s8-7",
      "uid": "st-mwdfj9x8046rch",
      "title": "",
      "text": "Tests green, report _claude/builds/reports/fix-the-step-splitter-claude-exit-1-input-must-b.md, THREADS row, commit, push, PR",
