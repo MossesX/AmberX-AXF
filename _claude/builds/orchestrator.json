@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T03:17:21.507Z",
+ "updatedAt": "2026-11-12T03:17:33.889Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -101566,8 +101566,8 @@
    "branch": "claude/account-order-hulu-moses-x-api-account-shown-on-every-build",
    "pr": "#512",
    "createdAt": "2026-11-12T02:59:45.402Z",
-   "updatedAt": "2026-11-12T03:16:55.508Z",
-   "builtAt": "2026-11-12T03:16:55.508Z",
+   "updatedAt": "2026-11-12T03:17:22.994Z",
+   "builtAt": "2026-11-12T03:17:22.994Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -101580,6 +101580,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-account-order-hulu-moses-x-api-account-shown-on---earl, own login copy)",
      "at": "2026-11-12T03:13:16.907Z"
+    },
+    {
+     "text": "Headless run axf-account-order-hulu-moses-x-api-account-shown-on---earl: brief only · start 10.8K tokens ($0.02) · cost $0.72 · 29 turns · 6 tools, MCP none",
+     "at": "2026-11-12T03:17:22.993Z"
     }
    ],
    "approvals": [],
