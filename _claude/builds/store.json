@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3417,
- "updatedAt": "2026-11-12T03:04:34.999Z",
+ "rev": 3418,
+ "updatedAt": "2026-11-12T03:04:48.176Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -161170,7 +161170,7 @@
    "branch": "claude/one-source-of-truth-console-shows-only-what-the-server-says-is-running",
    "pr": "",
    "createdAt": "2026-11-12T02:37:57.927Z",
-   "updatedAt": "2026-11-12T03:04:33.083Z",
+   "updatedAt": "2026-11-12T03:04:46.058Z",
    "builtAt": "",
    "notes": [
     {
@@ -161184,6 +161184,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-one-source-of-truth-console-shows-only-what-the---sully, own login copy)",
      "at": "2026-11-12T02:42:45.576Z"
+    },
+    {
+     "text": "Headless run axf-one-source-of-truth-console-shows-only-what-the---sully: brief only · start 10.8K tokens ($0.03) · cost $7.99 · 91 turns · 6 tools, MCP none",
+     "at": "2026-11-12T03:04:46.058Z"
     },
     {
      "text": "s1 and s2 done; s3 code and tests done and pushed (branch claude/one-source-of-truth-console-shows-only-what-the-server-says-is-running, 3 commits: check-live-truth 27/27, pipeline 46/46, agent-slots 19/19, orchestrator 33/33, tsc clean). Not done: the PR. GitHub returned 'secondary rate limit, blocked from content creation' for this token on 7 tries over 12 min (gh GraphQL and REST), so there's no PR, no landing, no redeploy and no AmberX FYI. Next: open the PR with the body in .axf-pr-body.md in the worktree (or let auto-land open it), link it, then tick s3 once it's live. UI Review shots weren't taken (headless, no branch build of the console); the PR says so.",
