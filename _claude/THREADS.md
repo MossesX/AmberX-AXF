@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 23:19 UTC · `molly-sign-in-once` note (all) · orchestrator
 - 2026-11-10 23:19 UTC · `api-accounts-need-no-approval-builds-route-there` PR #479 (all) · builds-live
 - 2026-11-10 23:20 UTC · `orchestrator-merge-first-switch-separate-merger` s1 done (all) · orchestrator
 - 2026-11-10 23:20 UTC · `molly-sign-in-once` note (all) · pipeline
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:08 UTC · `orchestrator-chain-trace-brownie-molly-group-cha` → archived, note (all) · console
 - 2026-11-12 02:09 UTC · `investor-demo-player-shell-with-login-gate-skins` → archived, note (all) · console
 - 2026-11-12 02:09 UTC · `slotstest-2208251-b` → archived, note (all) · console
+- 2026-11-12 02:09 UTC · `amberx-build-notifications-for-every-stage-start` PR #499 (all) · builds-live
 
 ## Token passes (log)
 
