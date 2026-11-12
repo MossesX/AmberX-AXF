@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T10:51:16.456Z",
+ "updatedAt": "2026-11-12T10:51:37.866Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -5408,7 +5408,7 @@
      "uid": "st-mw16ycsa04dqei"
     },
     {
-     "id": "s5",
+     "id": "s110-109",
      "text": "Tests, report, THREADS, PR, redeploy",
      "model": "Opus",
      "why": "",
@@ -5426,7 +5426,7 @@
      "uid": "st-mw16ycsa05yizd"
     },
     {
-     "id": "s6",
+     "id": "s111-110",
      "text": "Addendum: apps_list + app-scoped targets (molly.*, axhub.*, amberx.*) on API, MCP and CLI",
      "model": "Opus",
      "why": "",
@@ -5444,7 +5444,7 @@
      "uid": "st-mw16ycsa06y7dy"
     },
     {
-     "id": "s7",
+     "id": "s112-111",
      "text": "Addendum: app clients in Molly / axHub web / AmberX + template ships it; Plugin commands page grouped by app",
      "model": "Opus",
      "why": "",
@@ -106814,7 +106814,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T10:35:49.272Z",
-   "updatedAt": "2026-11-12T10:50:17.406Z",
+   "updatedAt": "2026-11-12T10:51:30.363Z",
    "builtAt": "",
    "notes": [
     {
@@ -106834,8 +106834,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "focus-on-every-screen-console-open-console-show-",
+    "brief": "# Build: focus-on-every-screen-console-open-console-show-\n\n## Brett said (verbatim)\n> Everything, everything needs to plan studio, UI review, everything. What the fuck?\n\n## What to build\nContinue build \"Focus on every screen: console_open/console_show can jump to any item (UI Review, Plan Studio, all screens)\" (focus-on-every-screen-console-open-console-show-) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said:\n\"Everything, everything needs to plan studio, UI review, everything. What the fuck?\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) PR #496 added <screen>.focus only for the Build orchestrator. Opening UI Review with focus r-20261112-4ec56890 answered: opened UI Review; it has no way to focus. Every screen (UI Review, Plan Studio, Pending, All builds, settings tabs, plugins' screens) must declare a <screen>.focus action that opens the right tab, scrolls the item/row/group into view, expands and highlights it. Add a check that fails if any screen with items lacks a focus action. Also: opening a screen should close a covering dialog (settings dialog was left on top).\n[ ] s2 (~30 min) Everything, everything needs to plan studio, UI review, everything. What the fuck?\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/focus-on-every-screen-console-open-console-show-.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/focus-on-every-screen-console-open-console-show-.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step focus-on-every-screen-console-open-console-show- <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link focus-on-every-screen-console-open-console-show- --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step focus-on-every-screen-console-open-console-show- <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note focus-on-every-screen-console-open-console-show- \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -106996,9 +106996,9 @@
   },
   {
    "id": "remove-the-console-s-own-notes-manager-console-u",
-   "title": "Remove the console's own Notes manager; console uses AmberX's notes/to-do manager",
+   "title": "Don't install the Notes plugin in the console (keep its code)",
    "category": "",
-   "detail": "The console has its own Notes screen that doesn't show AmberX's notes/to-do items (Inbox, lists). Remove the console's separate Notes manager and make the console's Notes entry open AmberX's notes/to-do manager (same amberx.items store), with deep links to an item (focus by id). Migrate anything only in the console's notes store into amberx.items first. Full API parity.",
+   "detail": "Do NOT remove or delete the console's Notes plugin code. Just don't install it in the console: take it off the console's installed/enabled plugin list so the Notes screen and nav entry are gone. Notes and to-dos live in AmberX's notes/to-do manager. Nothing else changes.",
    "status": "queued",
    "hidden": false,
    "source": "mcp",
@@ -107006,7 +107006,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T10:43:54.592Z",
-   "updatedAt": "2026-11-12T10:50:29.778Z",
+   "updatedAt": "2026-11-12T10:51:33.838Z",
    "builtAt": "",
    "notes": [
     {
@@ -107031,7 +107031,7 @@
    "steps": [
     {
      "id": "s1",
-     "text": "The console has its own Notes screen that doesn't show AmberX's notes/to-do items (Inbox, lists). Remove the console's separate Notes manager and make the console's Notes entry open AmberX's notes/to-do manager (same amberx.items store), with deep links to an item (focus by id). Migrate anything only in the console's notes store into amberx.items first. Full API parity.",
+     "text": "Don't install the Notes plugin in the console: take it off the console's installed/enabled plugin list so its screen and nav entry are gone. Keep all its code; delete nothing.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -107049,7 +107049,7 @@
     },
     {
      "id": "s2",
-     "text": "Delete the console with no manager. That's whack. Open the Amber X's no manager.",
+     "text": "Check the console no longer lists or opens Notes; AmberX's notes/to-do manager is unchanged.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -107291,6 +107291,37 @@
      "uid": "st-mwdfft4g03m4rw"
     }
    ]
+  },
+  {
+   "id": "fix-the-step-splitter-claude-exit-1-input-must-b",
+   "title": "Fix the step splitter: 'claude exit 1: Input must be provided'",
+   "category": "",
+   "detail": "When a build is added, the splitter runs claude -p without the prompt (stdin or argument missing), fails with 'Error: Input must be provided either through stdin or as a prompt argument when using --print', and falls back to one step per line, pasting Brett's raw words in as a step. Fix the invocation so the request is passed, split into real <=30 min steps, and re-split today's queued builds whose steps are the fallback. Test: adding a build yields proper steps, no fallback note.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "fix-the-step-splitter-claude-exit-1-input-must-b",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-12T10:51:23.133Z",
+   "updatedAt": "2026-11-12T10:51:23.133Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Yeah",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
