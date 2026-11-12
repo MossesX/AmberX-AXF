@@ -1,0 +1,434 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-urgent-builds",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:39Z",
+ "build": {
+  "id": "urgent-builds",
+  "title": "Urgent: master cleanup (one builds store) + Steps view + live progress bars",
+  "profile": "all",
+  "category": "Builds > Data cleanup",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "/projects/amberx-axf/_data/framework/plan/specs/prompt-profiles-and-queue-reconciler.md items 4, 4b, 4c. One Orchestrator-owned builds store (profiles = a field), every write versioned (journal), Console init regenerate-from-plan removed, old files read-only one release; one Builds plugin; Steps view (atomic step records, drag reorder steps + builds, multi-select, divide, harvest + split-into-N, Restore default, draft until Apply/Discard, rename builds/steps/profiles); live progress bars per build and profile.",
+  "verbatim": false,
+  "at": "2026-10-31T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Dry-run migration report: inventory every profile's orchestrator, pending (repo + hub), build queue, plan epics and git history; what merges, dedupes, conflicts; _claude/builds/reports/urgent-migration-dryrun.md",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-31T23:38:22.885Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "builds@1 store core (pure): build + step records with rev, profile field, order, default snapshot, legacy origins; migrate(); projections to orchestrator@1 / pending@1 / build-queue@1 and absorb back",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-31T23:38:22.885Z",
+   "doneAt": "2026-10-31T23:45:09.695Z",
+   "actualMin": 7,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Store IO: _claude/builds/store.json + append-only journal (every write versioned, soft delete), run the migration for real",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-31T23:45:09.695Z",
+   "doneAt": "2026-10-31T23:45:10.007Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Rewire writers: orchestrator.mjs, pending.mjs, build-queue.mjs read/write the store; old files read-only; orch-sync bridge retired",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-31T23:45:10.007Z",
+   "doneAt": "2026-10-31T23:45:10.314Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Remove Console init regenerate-from-plan (BuildManager console:init sync) and fix syncQueue first-run so a queue is only created when missing",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "2026-10-31T23:45:10.314Z",
+   "doneAt": "2026-10-31T23:45:10.671Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "One Builds plugin: Builds page with switchable views (Builds, Steps, Pending, Queue) on the store; server routes; deep links",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-31T23:45:10.671Z",
+   "doneAt": "2026-11-01T00:01:36.016Z",
+   "actualMin": 16,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Steps view: grid of step records, scope one build / whole profile, expandable rows, multi-select, drag reorder steps and builds",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-01T00:01:36.016Z",
+   "doneAt": "2026-11-01T00:01:36.442Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Steps view: divide a step, harvest selected steps into a new build or split into N builds (dialog with default names), Restore default",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-01T00:01:36.442Z",
+   "doneAt": "2026-11-01T00:01:36.856Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "Draft until Apply: saved draft with pending-change count, Apply / Discard; rename builds, steps and profiles inline (Enter/Esc, empty refused, id unchanged)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-01T00:01:36.856Z",
+   "doneAt": "2026-11-01T00:01:37.240Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s10",
+   "text": "Live progress bars per build, per step and per profile; banner percentage with animation while active",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-01T00:01:37.240Z",
+   "doneAt": "2026-11-01T00:01:37.657Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s11",
+   "text": "Tests: migration (nothing lost), reorder, rename, apply/discard; full local CI block + theme/controls/lifecycle checks",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-01T00:01:37.657Z",
+   "doneAt": "2026-11-01T00:36:04.420Z",
+   "actualMin": 34,
+   "done": true
+  },
+  {
+   "id": "s12",
+   "text": "Report _claude/builds/reports/urgent-builds.md, THREADS.md, merge main, push",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-01T00:36:04.420Z",
+   "doneAt": "2026-11-01T02:26:59.508Z",
+   "actualMin": 111,
+   "done": true
+  }
+ ],
+ "branch": "claude/urgent-builds",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "2a057cc43c3cd7146532122a54155dfd9037e2be",
+ "commits": [
+  "0f2e8897e8a2980beb41729edc0ec32cdcc4d49e",
+  "b680bef40d88241bc0b98c667e1a064158670def",
+  "031e954d01e07dc03f50712dac2747ef171fb003",
+  "35aae9e4e83ff1fd5a919c51f3ee192a1578a38d",
+  "4edf6bf01c2a5e73b26e732fd2657e3876b97005",
+  "9a3e9a10e9196d6e3072ac7a341215c4b8b745ce",
+  "c5b4bb82e0f7bb660a39fac7a983887806be8df3",
+  "374b4a6b074f52ab79fdc4b6e4962e83b0017c4b",
+  "f70ab45fb2f24c81afcc3d1982a817317519ccfc",
+  "e309da7ca126f7400048180827affb947c7a87ac",
+  "449f85df1294f2e1fc6aafeb41f15799ddc39f8b"
+ ],
+ "mergedAt": "2026-11-01T00:00:00Z",
+ "landedAt": "2026-11-01T01:17:14Z",
+ "files": [
+  ".github/workflows/android.yml",
+  ".gitignore",
+  "CLAUDE.md",
+  "_claude/THREADS.md",
+  "_claude/builds/README.md",
+  "_claude/builds/journal/2026-10.jsonl",
+  "_claude/builds/journal/2026-11.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/builds/profiles/breakroom/orchestrator.json",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/builds/profiles/urgent/orchestrator.json",
+  "_claude/builds/reports/urgent-builds.md",
+  "_claude/builds/reports/urgent-migration-dryrun.md",
+  "_claude/builds/store.json",
+  "_claude/memory/STATUS.md",
+  "_claude/memory/decisions.md",
+  "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+  "apps/console-web/plugins/build-orchestrator/test.mjs",
+  "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+  "apps/console-web/plugins/builds-page/builds.mjs",
+  "apps/console-web/plugins/builds-page/hooks.mjs",
+  "apps/console-web/plugins/builds-page/install.mjs",
+  "apps/console-web/plugins/builds-page/plugin.json",
+  "apps/console-web/plugins/builds-page/server/__init__.py",
+  "apps/console-web/plugins/builds-page/test.py",
+  "apps/console-web/plugins/builds-page/uninstall.mjs",
+  "apps/console-web/plugins/builds-page/web/builds.css",
+  "apps/console-web/plugins/builds-page/web/index.tsx",
+  "apps/console-web/plugins/builds-page/web/menu.ts",
+  "apps/console-web/plugins/builds-page/web/ui.tsx",
+  "apps/console-web/plugins/plan-studio/web/voice.ts",
+  "apps/console-web/plugins/push-banner/server/__init__.py",
+  "apps/console-web/plugins/push-banner/test.py",
+  "apps/console-web/src/axf/plan/build-queue-core.mjs",
+  "apps/console-web/src/views/BuildManager.tsx",
+  "framework/cli/build-queue.mjs",
+  "framework/cli/builds-store.mjs",
+  "framework/cli/engine-rpc.mjs",
+  "framework/cli/orch-sync.mjs",
+  "framework/cli/pending.mjs",
+  "framework/plan/build-queue-core.mjs",
+  "framework/plan/build-queue.json",
+  "framework/plan/builds-store-core.mjs",
+  "framework/plan/orch-sync.mjs",
+  "framework/plan/pending.json",
+  "framework/plan/profiles/angel/framework/plan/build-queue.json",
+  "framework/plan/profiles/angel/framework/plan/pending.json",
+  "framework/plan/profiles/breakroom/framework/plan/pending.json",
+  "framework/plan/profiles/refactor/framework/plan/build-queue.json",
+  "framework/plan/profiles/refactor/framework/plan/pending.json",
+  "framework/plan/profiles/urgent/framework/plan/pending.json",
+  "framework/spec/check-builds-store.mjs",
+  "framework/spec/check-orch-sync.mjs"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "builds-page",
+   "files": [
+    "apps/console-web/plugins/builds-page/builds.mjs",
+    "apps/console-web/plugins/builds-page/hooks.mjs",
+    "apps/console-web/plugins/builds-page/install.mjs",
+    "apps/console-web/plugins/builds-page/plugin.json",
+    "apps/console-web/plugins/builds-page/server/__init__.py",
+    "apps/console-web/plugins/builds-page/test.py",
+    "apps/console-web/plugins/builds-page/uninstall.mjs",
+    "apps/console-web/plugins/builds-page/web/builds.css",
+    "apps/console-web/plugins/builds-page/web/index.tsx",
+    "apps/console-web/plugins/builds-page/web/menu.ts",
+    "apps/console-web/plugins/builds-page/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/build-queue-core.mjs",
+    "framework/plan/build-queue.json",
+    "framework/plan/builds-store-core.mjs",
+    "framework/plan/orch-sync.mjs",
+    "framework/plan/pending.json",
+    "framework/plan/profiles/angel/framework/plan/build-queue.json",
+    "framework/plan/profiles/angel/framework/plan/pending.json",
+    "framework/plan/profiles/breakroom/framework/plan/pending.json",
+    "framework/plan/profiles/refactor/framework/plan/build-queue.json",
+    "framework/plan/profiles/refactor/framework/plan/pending.json",
+    "framework/plan/profiles/urgent/framework/plan/pending.json"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/README.md",
+    "_claude/builds/journal/2026-10.jsonl",
+    "_claude/builds/journal/2026-11.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/profiles/angel/orchestrator.json",
+    "_claude/builds/profiles/breakroom/orchestrator.json",
+    "_claude/builds/profiles/refactor/orchestrator.json",
+    "_claude/builds/profiles/urgent/orchestrator.json",
+    "_claude/builds/reports/urgent-builds.md",
+    "_claude/builds/reports/urgent-migration-dryrun.md",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/build-queue.mjs",
+    "framework/cli/builds-store.mjs",
+    "framework/cli/engine-rpc.mjs",
+    "framework/cli/orch-sync.mjs",
+    "framework/cli/pending.mjs"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md",
+    "_claude/memory/decisions.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+    "apps/console-web/plugins/build-orchestrator/test.mjs",
+    "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "push-banner",
+   "files": [
+    "apps/console-web/plugins/push-banner/server/__init__.py",
+    "apps/console-web/plugins/push-banner/test.py"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/src/axf/plan/build-queue-core.mjs",
+    "apps/console-web/src/views/BuildManager.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/check-builds-store.mjs",
+    "framework/spec/check-orch-sync.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plan-studio",
+   "files": [
+    "apps/console-web/plugins/plan-studio/web/voice.ts"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".gitignore",
+   "files": [
+    ".gitignore"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "First block: validate, tracker, plugins, projects, fixtures, plugin-catalog, axf-server, build-steps, profiles, feature-matrix, **builds-store (34)**, **builds-store verify**, pending/queue --check-steps, github, theme, controls, plugin pages, project-wizard, session-checkin (outside the headless en",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "Plugin lifecycle for every plugin: 0 failures. Init sweep (4 templates + 16 boilerplates), library templates (8), deploy self-test (42): green.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "tsx/spec block (39 commands): green, incl. menu-reach (293) and AmberX test (1996).",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "Python block + every plugin test.py (console image container): green (codebase-changes 173 and systems-check 216 need git reachable in the container).",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "Console (CI re-bake), axhub-web, AmberX (bundles builds-page), Walkthrough builds: green. Theme swap + interface-scope: green. API + MCP smoke (33 tools, queue, pending, Builds + orchestrator routes): green.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  }
+ ],
+ "uiReview": [
+  {
+   "id": "r-20261101-itzed01",
+   "name": "Builds page: Builds + Steps views, harvest dialog, draft bar, live progress bars (Urgent)",
+   "status": "approved",
+   "group": "g-20261101-urgent-builds-2026-11-01",
+   "url": "/review/r-20261101-itzed01"
+  }
+ ],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "_claude/builds/reports/urgent-builds.md",
+ "open": [
+  "Pushed and merged (Nov 1 2026): `claude/urgent-builds` reached main through `2a057cc4` once the host had git credentials; the `blocked:push` banner alert no longer applies. Wrap-up step s12 closed by the Leftovers session (`_claude/builds/reports/leftovers.md`).",
+  "The old pages (Build manager, Pending builds, Build queue, Fable rebuilds, Tracker) still exist; they now read the same store, so they can't drift, but folding their UIs into the Builds page and removing them is the follow-up. Duplicate-view candidates from the audit: build-manager, pending (core view), build-queue (core view), fable-rebuilds, feature-matrix (reads pending/queue directly), changes-grid vs codebase-changes, main-build-status vs push-banner.",
+  "\"Divide further\" proposes parts by splitting the step's text; a Claude-driven split (axf.llm@1) isn't wired. \"Open the target live with focus highlight\" and the toolbar-asset right-click editor (4c) are not built.",
+  "Versioning is the store's own journal; writes don't go through `axhub.memory_write`, so axHub's memory_history only sees them via claude-sync.",
+  "Model rule: schema + migration design would be Fable; Brett's brief pinned this whole build to Opus.",
+  "`output-recorder/test.mts` fails on untouched main too (extension-less import under `--experimental-strip-types`).",
+  "Hub path oddity: the spec lives at `/projects/projects/amberx-axf/...` (nested), so `axhub.memory_read` for it 404s.",
+  "claude-sync still holds 6 shared files (both sides changed); every one of them is now an export of the store, so either copy is safe, but Brett picks (`claude-sync resolve <id> --keep local|hub`).",
+  "During testing, `docker inspect` printed the console container's `AXF_WALL_SECRET` into this session's local log (not committed anywhere). Rotating it is advised."
+ ]
+}

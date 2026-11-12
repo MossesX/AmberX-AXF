@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T03:28:31.491Z",
+ "updatedAt": "2026-11-12T03:28:44.689Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -24669,7 +24669,7 @@
    "mergedAt": "2026-11-01T00:00:00.000Z",
    "priority": "P0",
    "createdAt": "2026-10-31T23:31:50.472Z",
-   "updatedAt": "2026-11-03T13:56:31.369Z",
+   "updatedAt": "2026-11-12T03:28:39Z",
    "builtAt": "",
    "notes": [
     {
@@ -24687,6 +24687,10 @@
     {
      "text": "Merged from build profile \"urgent\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-urgent-builds rev 1 sent to Shipped features (backfill): landed 2a057cc43, 54 file(s), 5 test line(s), 9 open.",
+     "at": "2026-11-12T03:28:39Z"
     }
    ],
    "approvals": [],
@@ -32431,7 +32435,7 @@
    "branch": "claude/approval-row-buttons",
    "pr": "",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-11-10T04:39:20.621Z",
+   "updatedAt": "2026-11-12T03:28:30Z",
    "builtAt": "2026-11-10T04:39:20.621Z",
    "notes": [
     {
@@ -32441,6 +32445,10 @@
     {
      "text": "Audit: done — every open step has evidence on main",
      "at": "2026-11-10T04:39:20.621Z"
+    },
+    {
+     "text": "Shipped manifest sm-approval-row-buttons rev 1 sent to Shipped features (backfill): complete 2026-11-10 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:30Z"
     }
    ],
    "approvals": [],
@@ -33132,7 +33140,7 @@
    "pr": "#194",
    "mergedAt": "2026-10-31T07:26:36Z",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:28:31Z",
    "builtAt": "2026-11-01T02:37:25.448Z",
    "notes": [
     {
@@ -33150,6 +33158,10 @@
     {
      "text": "Merged from build profile \"angel\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-audio-output-recorder rev 1 sent to Shipped features (backfill): landed 7603d68c4, 21 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:31Z"
     }
    ],
    "approvals": [],
@@ -33557,7 +33569,7 @@
    "pr": "#182",
    "mergedAt": "2026-10-31T07:26:37Z",
    "createdAt": "2026-10-30T18:21:59.378Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:28:33Z",
    "builtAt": "2026-11-01T02:34:24.794Z",
    "notes": [
     {
@@ -33575,6 +33587,10 @@
     {
      "text": "Merged from build profile \"angel\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-live-key-checks rev 1 sent to Shipped features (backfill): landed 6b0b9714d, 31 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:33Z"
     }
    ],
    "approvals": [],
@@ -33823,7 +33839,7 @@
    "pr": "#184",
    "mergedAt": "2026-10-31T07:26:36Z",
    "createdAt": "2026-10-30T17:59:21.357Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:28:34Z",
    "builtAt": "2026-11-01T02:36:07.629Z",
    "notes": [
     {
@@ -33841,6 +33857,10 @@
     {
      "text": "Merged from build profile \"angel\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-ui-review rev 1 sent to Shipped features (backfill): landed 073b035c6, 263 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:34Z"
     }
    ],
    "approvals": [],
@@ -34035,7 +34055,7 @@
    "pr": "#185",
    "mergedAt": "2026-10-31T07:26:37Z",
    "createdAt": "2026-10-30T18:21:11.429Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:28:35Z",
    "builtAt": "2026-10-30T19:00:33.461Z",
    "notes": [
     {
@@ -34049,6 +34069,10 @@
     {
      "text": "Merged from build profile \"angel\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-plan-studio rev 1 sent to Shipped features (backfill): landed 89930ac6c, 46 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:35Z"
     }
    ],
    "approvals": [],
@@ -34297,7 +34321,7 @@
    "pr": "#187",
    "mergedAt": "2026-10-31T07:26:36Z",
    "createdAt": "2026-10-30T21:56:25.813Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:28:37Z",
    "builtAt": "2026-11-01T02:36:25.826Z",
    "notes": [
     {
@@ -34315,6 +34339,10 @@
     {
      "text": "Merged from build profile \"angel\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-audio-extract rev 1 sent to Shipped features (backfill): landed faccf9b02, 20 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:37Z"
     }
    ],
    "approvals": [],
@@ -36461,7 +36489,7 @@
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/196",
    "mergedAt": "2026-11-01T00:13:51Z",
    "createdAt": "2026-10-31T05:27:46.906Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:28:38Z",
    "builtAt": "2026-10-31T23:53:03.392Z",
    "notes": [
     {
@@ -36479,6 +36507,10 @@
     {
      "text": "Merged from build profile \"breakroom\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-agent-swarm rev 1 sent to Shipped features (backfill): landed d9ea1692a, 122 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:38Z"
     }
    ],
    "approvals": [
@@ -36884,7 +36916,7 @@
    "pr": "#247",
    "mergedAt": "2026-11-03T12:10:18Z",
    "createdAt": "2026-10-31T05:27:48.056Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:28:40Z",
    "builtAt": "2026-11-03T12:01:23.473Z",
    "notes": [
     {
@@ -36902,6 +36934,10 @@
     {
      "text": "Merged from build profile \"breakroom\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-agent-swarm-fable-rebuild rev 1 sent to Shipped features (backfill): landed e1ced4d7c, 69 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:40Z"
     }
    ],
    "approvals": [
@@ -46458,8 +46494,9 @@
    "pendingId": "watch-live",
    "branch": "claude/watch-live",
    "pr": "",
+   "mergedAt": "2026-11-01T01:27:57Z",
    "createdAt": "2026-11-01T00:35:23.969Z",
-   "updatedAt": "2026-11-01T01:40:06.584Z",
+   "updatedAt": "2026-11-12T03:28:42Z",
    "builtAt": "2026-11-01T01:40:06.071Z",
    "notes": [
     {
@@ -46469,6 +46506,10 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-watch-live rev 1 sent to Shipped features (backfill): landed 60752f869, 44 file(s), 0 test line(s), 4 open.",
+     "at": "2026-11-12T03:28:42Z"
     }
    ],
    "approvals": [],

@@ -776,16 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 02:07 UTC · `project-manager-add-on-new-project-prompt-asks-i` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `amberx-llama-axhub-service-hooks-so-amberx-and-e` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `projects-create-a-new-project-and-move-builds-be` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `ollama-own-docker-container-amberx-llama-interna` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `approval-page-allow-all-deny-all-for-a-set-time` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `ollama-model-pick-mistral-small-24b-q4-default-m` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `local-ai-ollama-mistral-on-the-vps-wired-into-th` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `auto-land-every-build-the-moment-it-finishes-red` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `landing-tool-takes-long-build-names-and-auto-fix` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `skin-chunk-previews-interactive-demos-and-an-ide` → archived, note (all) · console
 - 2026-11-12 02:08 UTC · `standing-rule-in-every-brief-fix-problems-yourse` → archived, note (all) · console
 - 2026-11-12 02:08 UTC · `split-builds-pages-build-manager-pending-complet-2` → archived, note (all) · console
 - 2026-11-12 02:08 UTC · `apply-skin-dialog-tree-of-everything-overridden` → archived, note (all) · console
@@ -1176,6 +1166,16 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:28 UTC · `ui-all-assets` note (all) · backfill
 - 2026-11-12 03:28 UTC · `element-inspector` note (all) · backfill
 - 2026-11-12 03:28 UTC · `layout-repeating-slots` note (all) · backfill
+- 2026-11-12 03:28 UTC · `approval-row-buttons` note (all) · backfill
+- 2026-11-12 03:28 UTC · `audio-output-recorder` note (all) · backfill
+- 2026-11-12 03:28 UTC · `live-key-checks` note (all) · backfill
+- 2026-11-12 03:28 UTC · `ui-review` note (all) · backfill
+- 2026-11-12 03:28 UTC · `plan-studio` note (all) · backfill
+- 2026-11-12 03:28 UTC · `audio-extract` note (all) · backfill
+- 2026-11-12 03:28 UTC · `agent-swarm` note (all) · backfill
+- 2026-11-12 03:28 UTC · `urgent-builds` note (all) · backfill
+- 2026-11-12 03:28 UTC · `agent-swarm-fable-rebuild` note (all) · backfill
+- 2026-11-12 03:28 UTC · `watch-live` merged, note (all) · backfill
 
 ## Token passes (log)
 

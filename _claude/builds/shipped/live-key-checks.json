@@ -1,0 +1,288 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-live-key-checks",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:33Z",
+ "build": {
+  "id": "live-key-checks",
+  "title": "Live key + health checks in the banners: every key tested against its service every 15 min, red banner item with a fix, health@1 registry, push to AmberX",
+  "profile": "all",
+  "category": "Console",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "the console's GITHUB_TOKEN went dead (401) and nothing told him. 'You need to make sure things like that go into one of the banners. I need to see that kind of shit.' Live checks (GitHub /user + scopes + expiry, axHub MCP, Anthropic/Claude, Hostinger, ntfy, OpenAI/ElevenLabs, AmberX push path, git push creds), red banner items with what broke / what it breaks / since when / Fix, amber a week before expiry, health@1 registry, stuck builds, veto denied/expired, CI on main, restarting containers, disk >85%, one push per new red item. Profile: Angel. Web/Python only.",
+  "verbatim": false,
+  "at": "2026-10-30T00:00:00Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Read systems-check + keys banner; health@1 registry (server: register, run, severity, fix) + scheduler (15 min, console start, Check now) + cached results with since-times",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-30T18:52:13.330Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Live key checks on health@1: GitHub /user + scopes + expiry header, axHub MCP, Anthropic/Claude Code, Hostinger, ntfy, OpenAI/ElevenLabs, AmberX push path, git push credentials",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T18:52:13.330Z",
+   "doneAt": "2026-10-30T18:52:13.387Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "System health on health@1: stuck builds (change-log no heartbeat 30 min, headless launch exited at once), veto denied/expired, CI failing on main, container restarting, disk over 85%",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T18:52:13.387Z",
+   "doneAt": "2026-10-30T18:52:13.440Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Banner UI: red/amber items with what broke, what it breaks, since when, Fix / Auto fix (test-before-save field or token page); framework controls + tokens only",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T18:52:13.440Z",
+   "doneAt": "2026-10-30T18:52:13.495Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Push every new red item to AmberX once (existing push path); rule in shared RULES.md",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-10-30T18:52:13.495Z",
+   "doneAt": "2026-10-30T18:52:13.544Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Tests with fake services (ok, 401, missing scope, expiring, unreachable); console tsc + vite build, check-theme, check-controls, plugin-lifecycle; screenshots",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T18:52:13.544Z",
+   "doneAt": "2026-10-30T18:52:13.598Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Follow-up (after claude/pr-only-merge lands): move push-banner's token check onto health@1",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-10-31T00:46:05.582Z",
+   "doneAt": "2026-11-01T02:34:24.360Z",
+   "actualMin": 1548,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Fix it yourself: rule in shared RULES.md (near the top) + CLAUDE.md",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-10-30T18:52:13.598Z",
+   "doneAt": "2026-10-31T00:46:05.408Z",
+   "actualMin": 354,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "health@1 autoFix: run it first when a check goes red (veto for host commands), re-check, red only if still broken; per-check setting auto / ask first / off; history + change log",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-31T00:46:05.408Z",
+   "doneAt": "2026-10-31T00:46:05.466Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s10",
+   "text": "github@1: GitHub through axHub (framework lib axf_server.github_hub + capability), hub first, local GITHUB_TOKEN fallback (or reversed by setting); dead console token autoFix = switch to the hub route",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-31T00:46:05.466Z",
+   "doneAt": "2026-10-31T00:46:05.528Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s11",
+   "text": "Tests with a fake hub (routes, fallback, pagination, auto-fix flows); UI setting + history; tsc, vite build, check-theme, check-controls, lifecycle",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-10-31T00:46:05.528Z",
+   "doneAt": "2026-10-31T00:46:05.582Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s12",
+   "text": "Follow-up (claude/pr-only-merge): push banner builds its client from axf.github@1 (hub route) instead of GITHUB_TOKEN",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-01T02:34:24.360Z",
+   "doneAt": "2026-11-01T02:34:24.794Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/live-key-checks",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 182,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/182"
+ },
+ "landedCommit": "6b0b9714d60559366d6370e992f58eb21936b7f6",
+ "commits": [
+  "899009c3e786d9115b16ae60b0909210ca705901",
+  "971ec52f4eadb382e6a8c9573d0ae9971a5c3b4f"
+ ],
+ "mergedAt": "2026-10-31T07:26:37Z",
+ "landedAt": "2026-10-31T07:26:25Z",
+ "files": [
+  "CLAUDE.md",
+  "_claude/THREADS.md",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/memory/STATUS.md",
+  "_claude/memory/docs/live-key-checks/README.md",
+  "_claude/memory/docs/live-key-checks/shots/banners-desktop.png",
+  "_claude/memory/docs/live-key-checks/shots/banners-phone.png",
+  "_claude/memory/docs/live-key-checks/shots/fix-it-yourself-desktop.png",
+  "_claude/memory/docs/live-key-checks/shots/fix-it-yourself-phone.png",
+  "_claude/memory/docs/live-key-checks/shots/keys-dialog-desktop.png",
+  "_claude/memory/docs/live-key-checks/shots/keys-dialog-phone.png",
+  "_claude/shared/rules/RULES.md",
+  "apps/console-web/plugins/systems-check/README.md",
+  "apps/console-web/plugins/systems-check/plugin.json",
+  "apps/console-web/plugins/systems-check/server/__init__.py",
+  "apps/console-web/plugins/systems-check/server/checks.py",
+  "apps/console-web/plugins/systems-check/server/githubsvc.py",
+  "apps/console-web/plugins/systems-check/server/health.py",
+  "apps/console-web/plugins/systems-check/server/healthchecks.py",
+  "apps/console-web/plugins/systems-check/server/probes.py",
+  "apps/console-web/plugins/systems-check/server/store.py",
+  "apps/console-web/plugins/systems-check/test.py",
+  "apps/console-web/plugins/systems-check/web/KeysBanner.tsx",
+  "apps/console-web/plugins/systems-check/web/SystemCheck.tsx",
+  "apps/console-web/plugins/systems-check/web/index.tsx",
+  "apps/console-web/plugins/systems-check/web/panels.tsx",
+  "apps/console-web/plugins/systems-check/web/systems-check.css",
+  "apps/console-web/server/credentials.py",
+  "framework/python/axf_server/README.md",
+  "framework/python/axf_server/github_hub.py",
+  "framework/python/axf_server/test.py"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "systems-check",
+   "files": [
+    "apps/console-web/plugins/systems-check/README.md",
+    "apps/console-web/plugins/systems-check/plugin.json",
+    "apps/console-web/plugins/systems-check/server/__init__.py",
+    "apps/console-web/plugins/systems-check/server/checks.py",
+    "apps/console-web/plugins/systems-check/server/githubsvc.py",
+    "apps/console-web/plugins/systems-check/server/health.py",
+    "apps/console-web/plugins/systems-check/server/healthchecks.py",
+    "apps/console-web/plugins/systems-check/server/probes.py",
+    "apps/console-web/plugins/systems-check/server/store.py",
+    "apps/console-web/plugins/systems-check/test.py",
+    "apps/console-web/plugins/systems-check/web/KeysBanner.tsx",
+    "apps/console-web/plugins/systems-check/web/SystemCheck.tsx",
+    "apps/console-web/plugins/systems-check/web/index.tsx",
+    "apps/console-web/plugins/systems-check/web/panels.tsx",
+    "apps/console-web/plugins/systems-check/web/systems-check.css"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md",
+    "_claude/memory/docs/live-key-checks/README.md",
+    "_claude/memory/docs/live-key-checks/shots/banners-desktop.png",
+    "_claude/memory/docs/live-key-checks/shots/banners-phone.png",
+    "_claude/memory/docs/live-key-checks/shots/fix-it-yourself-desktop.png",
+    "_claude/memory/docs/live-key-checks/shots/fix-it-yourself-phone.png",
+    "_claude/memory/docs/live-key-checks/shots/keys-dialog-desktop.png",
+    "_claude/memory/docs/live-key-checks/shots/keys-dialog-phone.png",
+    "_claude/shared/rules/RULES.md"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "python",
+   "files": [
+    "framework/python/axf_server/README.md",
+    "framework/python/axf_server/github_hub.py",
+    "framework/python/axf_server/test.py"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/server/credentials.py"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/profiles/angel/orchestrator.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}
