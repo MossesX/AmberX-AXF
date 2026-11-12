@@ -778,9 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:32 UTC · `amberx-router-name` added (0 steps) (all) · backfill
-- 2026-11-12 03:32 UTC · `threads-110-merged` added (0 steps) (all) · backfill
-- 2026-11-12 03:32 UTC · `threads-oauth-soft` added (0 steps) (all) · backfill
 - 2026-11-12 03:32 UTC · `approval-reasons` added (0 steps) (all) · backfill
 - 2026-11-12 03:32 UTC · `axhub-oauth-thread` added (0 steps) (all) · backfill
 - 2026-11-12 03:32 UTC · `project-thread-139zmj` added (0 steps) (all) · backfill
@@ -1178,6 +1175,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 22:17 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` branch claude/fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o (all) · pipeline
 - 2026-11-12 22:17 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` note (all) · orchestrator
 - 2026-11-12 22:22 UTC · `github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro` → queued, note (all) · console
+- 2026-11-12 22:23 UTC · `github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro` → running, note (all) · pipeline
+- 2026-11-12 22:23 UTC · `github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro` branch claude/github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro (all) · pipeline
+- 2026-11-12 22:23 UTC · `github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro` note (all) · orchestrator
 
 ## Token passes (log)
 
