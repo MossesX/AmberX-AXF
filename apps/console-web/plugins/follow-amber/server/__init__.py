@@ -5,8 +5,12 @@ about opens on his screen right away, and axHub's held / confirm calls pop up in
 
   GET  state                                      {on, by, at, clients}: is it on (Amber reads this before showing)
   POST state {on, by?}                            switch it (the owner's signed-in console, the CLI or the API)
-  POST show  {target, kind?, highlight?, say?, to?, by?}
-                                                  open what Amber names, focused and highlighted; a no-op when off
+  POST show  {target, kind?, focus?, highlight?, say?, to?, by?}
+                                                  open what Amber names, focused and highlighted; a no-op when off.
+                                                  target `build:<id>` (or a bare build id) opens the Build orchestrator
+                                                  on that build; "<screen> <tab>" (e.g. "build-orchestrator pending") or
+                                                  `focus` opens that tab or item on the screen. The answer's `status` is
+                                                  delivered (a console acked it), pending or failed.
   POST approval {id?, by?}                        a held / confirm call is waiting: every follow client reads the
                                                   approvals feed now and pops it up (a no-op when off)
   GET  stream?client=<id>                         server-sent events, one follow-amber@1 frame per `data:`
@@ -115,11 +119,16 @@ def client_count() -> int:
 # ---------------------------------------------------------------------- showing
 
 def parse_target(target: str, kind: str = "") -> tuple[str, str]:
-    """`kind:name` or a bare name → (kind or "", name). Known prefixes: screen, settings, dialog, action, approval."""
+    """`kind:name` or a bare name → (kind or "", name). Known prefixes: screen, settings, dialog, action, approval, and
+    build (`build:<id>` is a screen command: Console commands opens the Build orchestrator focused on that build)."""
     t = _text(target, 200)
     k = _text(kind, 20).lower()
+    if k == "build" and t:
+        return "screen", f"build:{t}"
     if not k and ":" in t:
         head, rest = t.split(":", 1)
+        if head.lower() == "build" and rest.strip():
+            return "screen", f"build:{rest.strip()}"
         if head.lower() in (*KINDS, "approval") and rest.strip():
             k, t = head.lower(), rest.strip()
     return k, t
@@ -131,16 +140,19 @@ def _console() -> Any | None:
     return plugin_services.get("console-commands@1")
 
 
-def _open(kind: str, name: str, to: str, by: str) -> dict[str, Any]:
+def _open(kind: str, name: str, to: str, by: str, focus: str = "") -> dict[str, Any]:
     svc = _console()
     if svc is None:
         return {"ok": False, "code": "not_implemented", "message": "the Console commands plugin is off or missing (Settings → Plugins), so nothing can be opened"}
     action = "run" if kind == "action" else "open"
     cmd: dict[str, Any] = {"op": "act", "target": TARGET_OF[kind], "path": name, "action": action, "by": by, "reason": "Follow Amber: show what Amber is talking about"}
-    if to and to != "recent":
-        cmd["input"] = {"to": to}
+    inp = {k: v for k, v in {"to": to if to and to != "recent" else "", "focus": focus if kind == "screen" else ""}.items() if v}
+    if inp:
+        cmd["input"] = inp
     # navigate only: the runner refuses anything that would change data
     r = svc.run(cmd, NAVIGATE, by)
+    if "status" in r:  # Console commands tried every live console, queued and woke one itself: its answer is the truth
+        return r
     if r.get("ok") and not r.get("queued") and "delivered" in r and not _acked(r):
         # a connected console that never answered (a frozen phone tab): it opens on the next console, AmberX wakes one
         q = svc.queue_for_owner(cmd, NAVIGATE, by)
@@ -153,7 +165,7 @@ def _acked(r: dict[str, Any]) -> bool:
     return any(x.get("ok") for x in r.get("delivered") or [] if isinstance(x, dict))
 
 
-def show(target: str, kind: str = "", highlight: str = "", say: str = "", to: str = "recent", by: str = "amber") -> dict[str, Any]:
+def show(target: str, kind: str = "", highlight: str = "", say: str = "", to: str = "recent", by: str = "amber", focus: str = "") -> dict[str, Any]:
     """Open what Amber names in the owner's consoles (focused + highlighted), or nothing when Follow Amber is off."""
     st = load_state()
     k, name = parse_target(target, kind)
@@ -173,22 +185,25 @@ def show(target: str, kind: str = "", highlight: str = "", say: str = "", to: st
         r = {}
         for kk in ([k] if k else list(TRY_ORDER)):
             tried.append(kk)
-            r = _open(kk, name, to, by)
+            r = _open(kk, name, to, by, _text(focus, 200))
             # another kind is tried only when this one has no such name (no console open = the same for every kind)
             if r.get("ok") or r.get("code") != "not_found" or r.get("noConsole") or "no console is open" in str(r.get("message", "")):
                 k = kk
                 break
         if not r.get("ok"):
-            r = {**{x: v for x, v in r.items() if x not in ("op", "path", "action")}, "shown": False, **base, "tried": tried}
-        elif r.get("queued"):
+            r = {**{x: v for x, v in r.items() if x not in ("op", "path", "action")}, "shown": False, **base, "tried": tried, "status": "failed"}
+        elif r.get("queued") or r.get("status") == "pending":
             # not on screen yet: never say "opened" for something only waiting for a console
-            r = {"ok": True, "shown": False, "queued": True, **base, "kind": k, "delivery": r.get("delivery") or {}, "message": str(r.get("message") or "queued until a console opens")}
+            r = {"ok": True, "shown": False, "queued": bool(r.get("queued")), "status": "pending", **base, "kind": k, "delivery": r.get("delivery") or {},
+                 "delivered": r.get("delivered") or [], "message": str(r.get("message") or "queued until a console opens")}
         else:
             item = r.get("item") or {}
             label = item.get("label") or name
             n = broadcast({"type": "show", "kind": k, "target": name, "label": label, "highlight": highlight, "say": say, "by": by})
-            r = {"ok": True, "shown": True, **base, "kind": k, "label": label, "consoles": n, "delivered": r.get("delivered") or [], **({"delivery": r["delivery"]} if r.get("delivery") else {}),
-                 "message": f"opened {label}" + (f" and highlighted {highlight}" if highlight else "")}
+            fx = str(r.get("focus") or "")
+            r = {"ok": True, "shown": True, "status": "delivered", **base, "kind": k, "label": label, "consoles": n, "delivered": r.get("delivered") or [], **({"delivery": r["delivery"]} if r.get("delivery") else {}),
+                 **({"focus": fx} if fx else {}),
+                 "message": f"opened {label}" + (f" on {fx}" if fx else "") + (f" and highlighted {highlight}" if highlight else "")}
     with _lock:
         _recent.appendleft({"at": _now_iso(), "by": by, "kind": r.get("kind", k), "target": name, "ok": bool(r.get("ok")), "shown": bool(r.get("shown")), "message": _text(r.get("message"))})
     return r
@@ -248,7 +263,7 @@ async def post_show(request: Request) -> dict[str, Any]:
     name = _owner(request)
     b = await _body(request)
     return await run_in_threadpool(show, _text(b.get("target"), 200), _text(b.get("kind"), 20), _text(b.get("highlight"), 200), _text(b.get("say")),
-                                   _text(b.get("to"), 64) or "recent", _text(b.get("by"), 80) or name)
+                                   _text(b.get("to"), 64) or "recent", _text(b.get("by"), 80) or name, _text(b.get("focus"), 200))
 
 
 @router.post("/approval")
@@ -305,8 +320,8 @@ class FollowAmber:
     def state(self) -> dict[str, Any]:
         return {**load_state(), "clients": client_count()}
 
-    def show(self, target: str, kind: str = "", highlight: str = "", say: str = "", to: str = "recent", by: str = "amber") -> dict[str, Any]:
-        return show(target, kind, highlight, say, to, by)
+    def show(self, target: str, kind: str = "", highlight: str = "", say: str = "", to: str = "recent", by: str = "amber", focus: str = "") -> dict[str, Any]:
+        return show(target, kind, highlight, say, to, by, focus)
 
     def approval(self, aid: str = "", by: str = "amber", say: str = "") -> dict[str, Any]:
         return approval(aid, by, say)

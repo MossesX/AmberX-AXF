@@ -80,6 +80,21 @@ waits up to 60 s. After 3 s with no console, the owner's AmberX phone is asked t
 to open `…/?axf-cmd=<id>`. Every sent answer carries `delivery.how`: `live` · `after reconnect` · `woke via AmberX` · `queued`
 (`queued: true`, still waiting when the call returned). A command for one named client that isn't there still answers `not_found`.
 
+Reliable delivery (build console-commands-reliable, Nov 11 2026). Only the console proves it is alive (hello, seen every
+`CONSOLE_HEARTBEAT_MS` = 15 s and on every wake, ack, opening its stream); the server's stream keep-alive never counts, because a
+frozen phone tab keeps its socket open. Quiet for `CONSOLE_CLIENT_STALE_MS` (45 s) = gone. A beat from a console the server holds
+no catalog for (a restart) answers `hello: true`, and the console sends its catalog again. A `recent` command goes to the live console
+used last; no ack within 3.5 s → the next live console of the same app (up to 3), and the silent one stays out of `recent` until it
+beats again. Nobody answered: a navigate-only command is queued and AmberX is asked at once; a command that changes data is not
+re-sent and answers `failed`. A console that gets a live command more than `CONSOLE_LATE_MS` (30 s) after it was sent skips it
+(`consoleMessageLate`) and acks `skipped`; a late ack from the console asked first settles the queued copy (`how: late ack`).
+Every act answer carries `status`: `delivered` (a console acked it as done) · `pending` (nobody acked yet) · `failed`, and
+`delivery.tried` (the consoles asked, in turn) with `delivery.how` `live` · `after retry` · the ones above.
+Focus on a screen: `act open` on `console.screens` takes `input.focus` or a path "<screen id or title> <rest>" ("build-orchestrator
+pending", `consoleSplitFocus`); the message carries `focus` and the console runs the screen's own `<screen>.focus:<focus>` action.
+The console server asks the capability `console-focus@1` (the Build orchestrator provides it) to map `build:<id>` (or a bare build id that is no screen id) to its screen with that focus: the build's
+tab opens, its row scrolls into view, expands and stays highlighted.
+
 **Follow Amber** (build follow-amber, Nov 3 2026, Brett): one switch for the owner's consoles. While it is on, a Claude session
 calls MCP `console_show` {target, highlight?, say?} every time it mentions something in the console; the Follow Amber plugin
 (`follow-amber@1`) opens it through `console.screens` / `console.settings` / `console.dialogs` (a bare name is tried in that

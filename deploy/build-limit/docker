@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+# docker shim for headless builds (build-limit@1, Brett, Nov 12 2026: "docker test containers get --cpus/--memory
+# limits"). deploy/claude-headless.sh puts this folder first on PATH inside a build, and agent-slots.mjs heavy runs
+# docker through it. `docker run` / `docker container run` / `docker create` of a test image (node:*, Playwright; the
+# dockerImages pattern in build-limit.json) gets --cpus, --memory, --memory-swap and --cgroup-parent=axf-builds.slice
+# unless the command already sets them. Everything else passes through untouched to the real docker.
+set -uo pipefail
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+real=""
+IFS=: read -r -a dirs <<<"$PATH"
+for d in "${dirs[@]}"; do
+  [[ -z "$d" || "$(cd "$d" 2>/dev/null && pwd)" == "$HERE" ]] && continue
+  [[ -x "$d/docker" ]] && { real="$d/docker"; break; }
+done
+[[ -n "$real" ]] || { echo "docker: not found" >&2; exit 127; }
+
+args=("$@")
+# where the subcommand is: skip global options (-H host, --context c, --log-level l, -D …)
+i=0
+while (( i < ${#args[@]} )); do
+  case "${args[i]}" in
+    -H|--host|-c|--context|-l|--log-level|--config|--tlscacert|--tlscert|--tlskey) i=$((i + 2)) ;;
+    -*) i=$((i + 1)) ;;
+    *) break ;;
+  esac
+done
+sub="${args[i]:-}" at=$((i + 1))
+if [[ "$sub" == container ]]; then sub="${args[i + 1]:-}" at=$((i + 2)); fi
+if [[ "$sub" == run || "$sub" == create ]] && command -v node >/dev/null; then
+  # the image: the first word after the options of `run` (options with a value are the common ones; = forms are one word)
+  j=$at image=""
+  while (( j < ${#args[@]} )); do
+    a="${args[j]}"
+    case "$a" in
+      --) j=$((j + 1)); image="${args[j]:-}"; break ;;
+      -e|--env|-v|--volume|-w|--workdir|-u|--user|-p|--publish|--name|--network|--net|--entrypoint|--mount|--env-file|-l|--label|--platform|--pull|--add-host|--cpus|-m|--memory|--memory-swap|--cgroup-parent|--shm-size|--ulimit|--tmpfs|--hostname|-h|--device|--cap-add|--cap-drop|--security-opt|--restart|--stop-timeout|--log-driver|--log-opt|--ipc|--pid|--gpus|--dns|--cidfile) j=$((j + 2)) ;;
+      -*) j=$((j + 1)) ;;
+      *) image="$a"; break ;;
+    esac
+  done
+  have=" ${args[*]:at} "
+  add=()
+  while IFS= read -r x; do
+    [[ -z "$x" ]] && continue
+    k="${x%%=*}"
+    [[ "$have" == *" $k "* || "$have" == *" $k="* || ( "$k" == --memory && "$have" == *" -m "* ) ]] && continue
+    add+=("$x")
+  done < <(node "$HERE/../../framework/cli/build-limit.mjs" docker-args "$image" 2>/dev/null)
+  if (( ${#add[@]} )); then
+    exec "$real" "${args[@]:0:at}" "${add[@]}" "${args[@]:at}"
+  fi
+fi
+exec "$real" "$@"

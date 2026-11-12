@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AgentAvatar, BuildOrigin, Button, Icon, PriorityTag, Segmented, Slot, TabGroup, originSubtitle, useRuntime } from '@console/axf/react';
+import { AgentAvatar, BuildOrigin, Button, Icon, PriorityTag, Segmented, Slot, TabGroup, flashWhenReady, originSubtitle, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import * as consoleApi from '@console/api';
 import { WatchLiveFor } from '@console/watchLive';
@@ -8,6 +8,7 @@ import * as pendingCore from '@console/axf/plan/pending-core.mjs';
 import pricing from '@console/axf/schemas/model-pricing.json';
 import { DataGrid, RowHookButtons, registerRowRefTarget, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 import { PipelineTab, type PipelineView } from './pipeline';
+import { buildRowSelector, settleFocus, useFocusedBuild } from './focus';
 import './orchestrator.css';
 
 /*
@@ -439,6 +440,16 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
   const [stepHidden, setStepHidden] = useState<string[]>(() => consoleApi.readLocal<string[]>('orch-step-hidden', ['doneAt']));
   const [open, setOpen] = useState<string[]>([]);
   const [collapsed, setCollapsed] = useState<string[]>([]);
+  // a build asked for: its row expands, stays selected (highlighted), scrolls into view and flashes once it is drawn
+  const focusId = useFocusedBuild();
+  const listed = !!focusId && builds.some((b) => b.id === focusId);
+  useEffect(() => {
+    if (!listed) return;
+    setOpen((o) => (o.includes(focusId) ? o : [...o, focusId]));
+    setCollapsed((c) => c.filter((g) => g !== `cat:${builds.find((b) => b.id === focusId)?.category || core.UNCATEGORISED}`));
+    flashWhenReady(() => document.querySelector(`.axf-grid-row${buildRowSelector(focusId)}`), 5000);
+    settleFocus(focusId);
+  }, [listed, focusId]);
   useEffect(() => { consoleApi.writeLocal('orch-grid-sort', sort); consoleApi.writeLocal('orch-grid-hidden', hidden); consoleApi.writeLocal('orch-step-hidden', stepHidden); }, [sort, hidden, stepHidden]);
   const fig = useMemo(() => new Map(builds.map((b) => [b.id, figures(b)])), [builds]);
   const groups: GridGroup<Build>[] = useMemo(() => {
@@ -477,7 +488,7 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
       </div>
       <div className="oc-grid">
         <DataGrid<Build> id="orch-builds" label="Builds" groups={groups} columns={cols} rowId={(b) => b.id} rowLabel={(b) => b.title}
-          rowTone={(b) => STATUS_TONE[b.status] ?? 'muted'}
+          rowTone={(b) => STATUS_TONE[b.status] ?? 'muted'} selected={listed ? focusId : undefined}
           hidden={hidden} onToggleColumn={(c, show) => setHidden((h) => toggleIn(h, c, show))} onShowAll={() => setHidden([])}
           sort={sort} onSort={(c) => setSort((s) => nextSort(s, c))}
           expanded={open} onToggleExpand={(id) => setOpen((o) => toggleIn(o, id))} onRowClick={(b) => setOpen((o) => toggleIn(o, b.id))}

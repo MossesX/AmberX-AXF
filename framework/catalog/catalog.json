@@ -2496,6 +2496,10 @@
                 {
                   "id": "cx.buildengine.shipped",
                   "title": "Shipped manifests: every landed build's prompt, brief, models, steps, commit, files, tests and cost in Shipped features (shipped-manifest@1)"
+                },
+                {
+                  "id": "cx.buildengine.hardlimit",
+                  "title": "VPS hard build limit: the host refuses the N+1st headless build, every build in a CPU/memory-capped systemd slice, docker test runs capped (build-limit@1)"
                 }
               ]
             },

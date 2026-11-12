@@ -2268,5 +2268,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "Orchestrator tick ships each landed build's manifest; ledger shows it per entry; API/MCP/CLI/voice/deep link; backfill --since. Kotlin twin deferred."
+  },
+  "cx.buildengine.hardlimit": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "framework/cli/build-limit.mjs: launch gate (exit 3 at the limit, default 8, one config file) in claude-headless.sh, inner run gate before claude -p, swarm runner; axf-builds.slice + 30 s enforcer timer (adopt strays, docker test-run limits); only Queued builds take slots; console/REST/MCP/CLI/voice read, Brett-only set. Host-only: no Kotlin twin."
   }
 }
