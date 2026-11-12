@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 23:44 UTC · `resolve-conflicts-and-land-pr-449-account-order` → running, note (all) · orchestrator
 - 2026-11-10 23:44 UTC · `convert-every-app-into-a-molly-module-expenses-c` → running, note (all) · pipeline
 - 2026-11-10 23:44 UTC · `convert-every-app-into-a-molly-module-expenses-c` note (all) · orchestrator
 - 2026-11-10 23:44 UTC · `home-page-build-queue-card-opens-the-orchestrato` → running, note (all) · pipeline
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:22 UTC · `build-notifications-same-notification-per-build` → running, note (all) · pipeline
 - 2026-11-12 02:22 UTC · `build-notifications-same-notification-per-build` note (all) · orchestrator
 - 2026-11-12 02:22 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` PR #504 (all) · builds-live
+- 2026-11-12 02:22 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` note (all) · orchestrator
 
 ## Token passes (log)
 
