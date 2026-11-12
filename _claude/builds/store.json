@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3165,
- "updatedAt": "2026-11-12T00:14:30.462Z",
+ "rev": 3166,
+ "updatedAt": "2026-11-12T00:15:06.357Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -144365,7 +144365,7 @@
    "pr": "#468",
    "priority": "P1",
    "createdAt": "2026-11-10T16:28:24.043Z",
-   "updatedAt": "2026-11-12T00:14:29.071Z",
+   "updatedAt": "2026-11-12T00:15:04.361Z",
    "builtAt": "2026-11-12T00:14:12.134Z",
    "notes": [
     {
@@ -144419,6 +144419,10 @@
     {
      "text": "Headless run axf-full-api-cli-control-of-everything-plus-an-offli--joey: brief only · start 12.9K tokens ($0.04) · cost $20.96 · 263 turns · 6 tools, MCP none",
      "at": "2026-11-12T00:14:29.071Z"
+    },
+    {
+     "text": "Session axf-full-api-cli-control-of-everything-plus-an-offli--joey on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-12T00:15:04.361Z"
     }
    ],
    "approvals": [
@@ -144448,12 +144452,19 @@
     "queuedAt": "2026-11-11T23:24:06.945Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-full-api-cli-control-of-everything-plus-an-offli--joey",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-11T23:25:08.702Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-12T00:15:03.308Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-full-api-cli-control-of-everything-plus-an-offli--joey"
+    },
     "split": null,
     "splitRequested": "",
     "note": "",
@@ -144919,7 +144930,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

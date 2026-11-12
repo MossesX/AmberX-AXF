@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 21:07 UTC · `molly-flagship-skin-premium-sellable-uncluttered` → queued, note (all) · pipeline
 - 2026-11-10 21:08 UTC · `molly-flagship-skin-premium-sellable-uncluttered` s11 done (all) · orchestrator
 - 2026-11-10 21:10 UTC · `molly-flagship-skin-premium-sellable-uncluttered` → queued, note (all) · pipeline
 - 2026-11-10 21:13 UTC · `molly-flagship-skin-premium-sellable-uncluttered` s12 done, → built (all) · orchestrator
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 00:09 UTC · `full-api-cli-control-of-everything-plus-an-offli` s16 done (all) · orchestrator
 - 2026-11-12 00:14 UTC · `full-api-cli-control-of-everything-plus-an-offli` s17 done, → built (all) · orchestrator
 - 2026-11-12 00:14 UTC · `full-api-cli-control-of-everything-plus-an-offli` note (all) · orchestrator
+- 2026-11-12 00:15 UTC · `full-api-cli-control-of-everything-plus-an-offli` note (all) · pipeline
 
 ## Token passes (log)
 
