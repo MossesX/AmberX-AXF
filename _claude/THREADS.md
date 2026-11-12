@@ -776,13 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-11 00:24 UTC · `merge-review-one-by-one-every-built-but-unmerged` note (all) · pipeline
-- 2026-11-11 00:30 UTC · `resolve-conflicts-and-land-460-456-457-459-342` note (all) · orchestrator
-- 2026-11-11 00:33 UTC · `ai-assistant-in-molly-console-drives-by-api-open` s1 done (all) · orchestrator
-- 2026-11-11 00:34 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
-- 2026-11-11 00:35 UTC · `ai-assistant-in-molly-console-drives-by-api-open` → queued, note (all) · pipeline
-- 2026-11-11 00:35 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · pipeline
-- 2026-11-11 00:35 UTC · `ai-assistant-in-molly-console-drives-by-api-open` → running (all) · builds-live
 - 2026-11-11 00:35 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
 - 2026-11-11 00:36 UTC · `ai-assistant-in-molly-console-drives-by-api-open` → queued, note (all) · pipeline
 - 2026-11-11 00:36 UTC · `ai-assistant-in-molly-console-drives-by-api-open` → running, note (all) · pipeline
@@ -1176,6 +1169,13 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:42 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` s7 done (all) · orchestrator
 - 2026-11-12 02:42 UTC · `server-gate-one-session-per-build-no-duplicate-launches` added (3 steps) (all) · Claude voice (Gizmo)
 - 2026-11-12 02:42 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` → running, note (all) · pipeline
+- 2026-11-12 02:42 UTC · `server-gate-one-session-per-build-no-duplicate-launches` → queued, note (all) · console
+- 2026-11-12 02:42 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` note (all) · orchestrator
+- 2026-11-12 02:42 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` branch claude/console-and-axhub-retry-failed-calls-themselves-no-claude-needed (all) · pipeline
+- 2026-11-12 02:42 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` → running, note (all) · pipeline
+- 2026-11-12 02:42 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` branch claude/one-source-of-truth-console-shows-only-what-the-server-says-is-running (all) · pipeline
+- 2026-11-12 02:42 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` s7 done (all) · foreign-write
+- 2026-11-12 02:42 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` note (all) · orchestrator
 
 ## Token passes (log)
 
