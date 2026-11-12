@@ -13,64 +13,79 @@
     "scope": "plugin:control-registry",
     "entries": [
       {
-        "target": "registry-search",
+        "target": "search",
         "title": "Search",
         "text": "Words, an entry id or an alias. Finds every controllable thing in every app: pages, plugins, tools, display options, settings."
       },
       {
-        "target": "registry-app",
+        "target": "app",
         "title": "App",
         "text": "Show only one app's entries: the console, Molly, axHub, Hostinger, Coolify, the VPS, AmberX or Moshi."
       },
       {
-        "target": "registry-type",
+        "target": "type",
         "title": "Type",
         "text": "Show only one kind: page, app, plugin, tool, behaviour, display option or setting."
       },
       {
-        "target": "registry-surface",
+        "target": "reached-by",
         "title": "Reached by",
         "text": "Show only entries a surface reaches: REST, MCP, the CLI, voice or a deep link."
       },
       {
-        "target": "registry-gaps",
+        "target": "gaps",
         "title": "Gaps",
         "text": "Show only entries with gaps (something not controllable yet, with the reason), or only complete ones."
       },
       {
-        "target": "registry-run",
+        "target": "run",
         "title": "Run",
         "text": "Runs this action now with the values above. The registry checks every value first; a delete asks for a confirm, and anything through axHub waits for your approval there."
       },
       {
-        "target": "registry-plan",
+        "target": "plan-only",
         "title": "Plan only",
         "text": "Shows exactly what would run (the control@1 command, the axHub call or the link) without running anything."
       },
       {
-        "target": "registry-confirm",
+        "target": "confirm-and-run",
         "title": "Confirm and run",
         "text": "Runs a destructive action with the confirm token the first try gave back."
       },
       {
-        "target": "registry-read-state",
+        "target": "read-state",
         "title": "Read state",
         "text": "Reads this entry's current state through its state read, without changing anything."
       },
       {
-        "target": "registry-resolve",
+        "target": "resolve",
         "title": "Resolve",
         "text": "Finds the entry and action a phrase means, the way voice does: exact names, aliases and phrases only. Claude is asked only when nothing matches and the Claude fallback is on."
       },
       {
-        "target": "registry-resolve-run",
+        "target": "resolve-and-run",
         "title": "Resolve and run",
         "text": "Resolves the phrase and runs what it found, with the same checks as Run."
       },
       {
-        "target": "registry-close",
+        "target": "close",
         "title": "Close",
         "text": "Back to the phrase box."
+      },
+      {
+        "target": "say-or-type",
+        "title": "Say or type",
+        "text": "A phrase the way you would say it to AmberX (\"open plan studio\", \"restart the vps\"). Resolve shows which entry and action it means; nothing runs until you tap Resolve and run."
+      },
+      {
+        "target": "view:registry",
+        "title": "Registry",
+        "text": "Everything you can control in the console, Molly, axHub, Hostinger, Coolify, the VPS, AmberX and Moshi, with every action and allowed value, and how each is reached by REST, MCP, the CLI and voice."
+      },
+      {
+        "target": "registry",
+        "title": "Registry settings",
+        "text": "Install or uninstall the Registry page. The registry itself (the offline index and the API) stays: this only removes the page."
       }
     ]
   }
