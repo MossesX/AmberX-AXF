@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T01:59:32.209Z",
+ "updatedAt": "2026-11-12T01:59:38.616Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -95667,7 +95667,7 @@
    "title": "Queue drag-and-drop reorder (dispatcher follows the order)",
    "category": "",
    "detail": "Orchestrator Queue tab: drag and drop builds to reorder; the dispatcher follows the order. Also right-click: Move to top / bottom / position N. Order persists; full API/CLI control.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -95676,7 +95676,7 @@
    "priority": "P0",
    "createdAt": "2026-11-10T20:59:27.366Z",
    "updatedAt": "2026-11-12T01:59:24.174Z",
-   "builtAt": "",
+   "builtAt": "2026-11-12T01:59:24.174Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -95717,6 +95717,10 @@
     {
      "text": "Headless run axf-queue-drag-and-drop-reorder-dispatcher-follows-t--rhonda: brief only · start 11.0K tokens ($0.03) · cost $0.51 · 22 turns · 6 tools, MCP none",
      "at": "2026-11-12T01:59:24.174Z"
+    },
+    {
+     "text": "PR #498 (draft). Done: drag and drop, Move menu, saved order the dispatcher follows, REST/MCP/CLI. Left: Queue tab desktop + phone shots to UI Review, then mark ready.",
+     "at": "2026-11-12T01:59:11.818Z"
     }
    ],
    "approvals": [],
@@ -95786,8 +95790,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T01:59:09.883Z",
      "note": "",
      "uid": "st-mwb6cuv503e1k4"
     }
