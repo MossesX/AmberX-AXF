@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T01:53:47.746Z",
+ "updatedAt": "2026-11-12T01:53:55.820Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -98851,7 +98851,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-12T01:46:10.127Z",
-   "updatedAt": "2026-11-12T01:53:39.080Z",
+   "updatedAt": "2026-11-12T01:53:49.655Z",
    "builtAt": "",
    "notes": [
     {
@@ -98873,6 +98873,10 @@
     {
      "text": "axHub claude-sync-hold (#36) and amberx-open-url: main merged in, no conflicts, both pushed. Report branch claude/fix-axhub-36-pull-main-in-failed is pushed; GitHub's secondary rate limit blocked opening its AmberX-AXF PR. The merge queue or a later retry opens it.",
      "at": "2026-11-12T01:53:37.872Z"
+    },
+    {
+     "text": "Headless run axf-fix-axhub-36-pull-main-in-failed--lenny: brief only · start 11.4K tokens ($0.03) · cost $0.23 · 15 turns · 6 tools, MCP none",
+     "at": "2026-11-12T01:53:49.655Z"
     }
    ],
    "approvals": [],
