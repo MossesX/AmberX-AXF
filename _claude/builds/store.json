@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3548,
- "updatedAt": "2026-11-12T11:03:15.625Z",
+ "rev": 3549,
+ "updatedAt": "2026-11-12T11:03:31.850Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174116,7 +174116,7 @@
    "title": "Don't install the Notes plugin in the console (keep its code)",
    "category": "",
    "detail": "Do NOT remove or delete the console's Notes plugin code. Just don't install it in the console: take it off the console's installed/enabled plugin list so the Notes screen and nav entry are gone. Notes and to-dos live in AmberX's notes/to-do manager. Nothing else changes.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "mcp",
    "pendingId": "remove-the-console-s-own-notes-manager-console-u",
@@ -174124,7 +174124,7 @@
    "pr": "#519",
    "createdAt": "2026-11-12T10:43:54.592Z",
    "updatedAt": "2026-11-12T11:03:13.773Z",
-   "builtAt": "",
+   "builtAt": "2026-11-12T11:03:13.773Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -174254,12 +174254,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T11:03:00.000Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T10:44:42.157Z",
-     "updatedAt": "2026-11-12T10:44:42.157Z"
+     "updatedAt": "2026-11-12T11:03:00.408Z"
     }
    ],
    "profiles": [
@@ -174270,7 +174270,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {

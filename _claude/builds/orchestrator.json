@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T11:03:15.625Z",
+ "updatedAt": "2026-11-12T11:03:31.850Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -107020,7 +107020,7 @@
    "title": "Don't install the Notes plugin in the console (keep its code)",
    "category": "",
    "detail": "Do NOT remove or delete the console's Notes plugin code. Just don't install it in the console: take it off the console's installed/enabled plugin list so the Notes screen and nav entry are gone. Notes and to-dos live in AmberX's notes/to-do manager. Nothing else changes.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "mcp",
    "pendingId": "remove-the-console-s-own-notes-manager-console-u",
@@ -107028,7 +107028,7 @@
    "pr": "#519",
    "createdAt": "2026-11-12T10:43:54.592Z",
    "updatedAt": "2026-11-12T11:03:13.773Z",
-   "builtAt": "",
+   "builtAt": "2026-11-12T11:03:13.773Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -107114,8 +107114,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T11:03:00.000Z",
      "note": "",
      "uid": "st-mwdf87ce0354ls"
     }
