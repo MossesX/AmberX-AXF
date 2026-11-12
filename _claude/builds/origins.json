@@ -5389,6 +5389,18 @@
    "from": "report",
    "addenda": []
   },
+  "remove-the-console-s-own-notes-manager-console-u": {
+   "said": "Delete the console with no manager. That's whack. Open the Amber X's no manager.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "remove-the-old-theme-manager-style-and-layout-se": {
    "said": "We need to remove all the styling and theme and layout stuff. Remove it all because the new thing's going to override it.",
    "at": "2026-11-10T16:42:29.017Z",

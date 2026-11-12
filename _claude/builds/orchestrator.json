@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T10:42:52.825Z",
+ "updatedAt": "2026-11-12T10:43:56.668Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -106989,6 +106989,37 @@
      "uid": "st-mwdf2rzo03ecaj"
     }
    ]
+  },
+  {
+   "id": "remove-the-console-s-own-notes-manager-console-u",
+   "title": "Remove the console's own Notes manager; console uses AmberX's notes/to-do manager",
+   "category": "",
+   "detail": "The console has its own Notes screen that doesn't show AmberX's notes/to-do items (Inbox, lists). Remove the console's separate Notes manager and make the console's Notes entry open AmberX's notes/to-do manager (same amberx.items store), with deep links to an item (focus by id). Migrate anything only in the console's notes store into amberx.items first. Full API parity.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "remove-the-console-s-own-notes-manager-console-u",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-12T10:43:54.592Z",
+   "updatedAt": "2026-11-12T10:43:54.592Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Delete the console with no manager. That's whack. Open the Amber X's no manager.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
