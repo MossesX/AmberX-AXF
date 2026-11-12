@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3174,
- "updatedAt": "2026-11-12T01:44:01.012Z",
+ "rev": 3175,
+ "updatedAt": "2026-11-12T01:44:09.783Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -153439,7 +153439,7 @@
    "title": "AmberX build notifications for every stage: start, complete, ready to merge, merged, live",
    "category": "",
    "detail": "Extends #436 (one AmberX build notification: start + finish). Add AmberX notifications for: ready to merge (PR open, CI green), merged/landed, and live (console redeployed with it). One notification per build that updates in place through the stages rather than spamming; per-stage on/off in notification settings.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -153447,7 +153447,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T20:56:54.475Z",
-   "updatedAt": "2026-11-10T20:58:09.728Z",
+   "updatedAt": "2026-11-12T01:44:04.824Z",
    "builtAt": "",
    "notes": [
     {
@@ -153457,6 +153457,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T20:58:09.728Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T01:44:04.824Z"
     }
    ],
    "approvals": [],
@@ -153474,8 +153478,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
+    "queuedAt": "2026-11-12T01:44:04.125Z",
+    "queuedBy": "console",
     "account": "",
     "session": "",
     "slot": "",
@@ -153580,7 +153584,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T01:44:01.012Z",
+ "updatedAt": "2026-11-12T01:44:09.783Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -95369,7 +95369,7 @@
    "title": "AmberX build notifications for every stage: start, complete, ready to merge, merged, live",
    "category": "",
    "detail": "Extends #436 (one AmberX build notification: start + finish). Add AmberX notifications for: ready to merge (PR open, CI green), merged/landed, and live (console redeployed with it). One notification per build that updates in place through the stages rather than spamming; per-stage on/off in notification settings.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -95377,7 +95377,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T20:56:54.475Z",
-   "updatedAt": "2026-11-10T20:58:09.728Z",
+   "updatedAt": "2026-11-12T01:44:04.824Z",
    "builtAt": "",
    "notes": [
     {
@@ -95387,6 +95387,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T20:58:09.728Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T01:44:04.824Z"
     }
    ],
    "approvals": [],
