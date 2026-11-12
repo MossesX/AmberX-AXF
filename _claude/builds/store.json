@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3372,
- "updatedAt": "2026-11-12T02:44:15.792Z",
+ "rev": 3373,
+ "updatedAt": "2026-11-12T02:44:37.273Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -160896,7 +160896,7 @@
    "branch": "claude/console-and-axhub-retry-failed-calls-themselves-no-claude-needed",
    "pr": "",
    "createdAt": "2026-11-12T02:37:24.132Z",
-   "updatedAt": "2026-11-12T02:43:47.356Z",
+   "updatedAt": "2026-11-12T02:44:36.040Z",
    "builtAt": "",
    "notes": [
     {
@@ -161015,7 +161015,7 @@
      "id": "s5",
      "uid": "st-mwcxwntl01ty4w",
      "title": "",
-     "text": "'Auto-fixes' plugin with a banner widget (snappable asset) and a setting to pick WHICH existing banner its entries appear in (dropdown of all banners), switchable live; no separate banner of its own. Also via REST/MCP/CLI/voice. Shows in console, Molly and AmberX. Lists every call that failed and is being retried: what failed, which fix on the ladder it is trying now (e.g. 'store locked: clearing stale lock, step 2 of 3'), attempts so far, live updates, and items that gave up after the whole ladder (with what's missing). Count badge; tap a row to open its 'Automatic fixes' log entry. Voice: 'what's failing'.",
+     "text": "'Auto-fixes' plugin with a banner widget (snappable asset) and a setting for where its entries show: its OWN banner (a strip across the top that only appears when there's something in it) OR any existing banner Brett picks (dropdown of all banners); switchable live, also via REST/MCP/CLI/voice. Shows in console, Molly and AmberX. Lists every call that failed and is being retried: what failed, which fix on the ladder it is trying now (e.g. 'store locked: clearing stale lock, step 2 of 3'), attempts so far, live updates, and items that gave up after the whole ladder (with what's missing). Count badge; tap a row to open its 'Automatic fixes' log entry. Voice: 'what's failing'.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -161029,9 +161029,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 3,
+     "rev": 4,
      "createdAt": "2026-11-12T02:39:49.993Z",
-     "updatedAt": "2026-11-12T02:43:43.805Z"
+     "updatedAt": "2026-11-12T02:44:36.146Z"
     },
     {
      "id": "s2",
@@ -161086,7 +161086,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
