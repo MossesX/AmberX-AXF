@@ -776,14 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 02:50 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` s6 done, → built, note (all) · reconciler
-- 2026-11-12 02:51 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` note (all) · orchestrator
-- 2026-11-12 02:51 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` s2 done (all) · orchestrator
-- 2026-11-12 02:52 UTC · `all-banners-hide-when-empty` → running, note (all) · pipeline
-- 2026-11-12 02:52 UTC · `all-banners-hide-when-empty` branch claude/all-banners-hide-when-empty (all) · pipeline
-- 2026-11-12 02:52 UTC · `all-banners-hide-when-empty` note (all) · orchestrator
-- 2026-11-12 02:54 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` s2 done (all) · orchestrator
-- 2026-11-12 02:55 UTC · `server-gate-one-session-per-build-no-duplicate-launches` s1 done, → running (all) · orchestrator
 - 2026-11-12 02:56 UTC · `all-banners-hide-when-empty` s1 done, → running (all) · orchestrator
 - 2026-11-12 02:56 UTC · `server-gate-one-session-per-build-no-duplicate-launches` s2 done (all) · orchestrator
 - 2026-11-12 02:57 UTC · `merge-all-ready-buttons-server-side-lander` note (all) · Claude voice (Gizmo)
@@ -1176,6 +1168,14 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:36 UTC · `orchestrator-checks-shipped-features-before-spli` s3 done, → built (all) · orchestrator
 - 2026-11-12 03:37 UTC · `orchestrator-checks-shipped-features-before-spli` note (all) · orchestrator
 - 2026-11-12 03:38 UTC · `orchestrator-checks-shipped-features-before-spli` note (all) · pipeline
+- 2026-11-12 03:40 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` → pending, note (all) · reconciler
+- 2026-11-12 03:40 UTC · `server-gate-one-session-per-build-no-duplicate-launches` → pending, note (all) · reconciler
+- 2026-11-12 03:40 UTC · `orch-self-check-stuck` PR #406, note (all) · reconciler
+- 2026-11-12 03:40 UTC · `shipped-manifest-api` PR #402, note (all) · reconciler
+- 2026-11-12 03:40 UTC · `land-batch-1` PR #339, note (all) · reconciler
+- 2026-11-12 03:40 UTC · `maintenance-plugin-acct2` PR #332, note (all) · reconciler
+- 2026-11-12 03:40 UTC · `window-resize-fix-threads` PR #279, note (all) · reconciler
+- 2026-11-12 03:40 UTC · `axhub-veto-pass-web` PR #261, note (all) · reconciler
 
 ## Token passes (log)
 

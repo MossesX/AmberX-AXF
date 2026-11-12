@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3498,
- "updatedAt": "2026-11-12T03:38:04.794Z",
+ "rev": 3499,
+ "updatedAt": "2026-11-12T03:40:42.464Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -163268,14 +163268,14 @@
    "title": "Console and axHub retry failed calls themselves (no Claude needed)",
    "category": "orchestrator",
    "detail": "URGENT, boss order from Brett, Nov 12. When a call from Claude/MCP/voice/CLI fails for a transient reason (e.g. 'builds store is locked', timeout, console client asleep, rate limit, 5xx), the console and axHub must retry it THEMSELVES on the server, whether or not the Claude session is still connected. Retry with backoff until it succeeds (bounded, e.g. 10 tries over ~10 min), then the result is stored on the job so get_job shows success. Only permanent errors (validation, not found) fail, and those send Brett an AmberX FYI with what's missing. Fix the root cause of store.json.lock contention too (stale lock cleanup, short waits for the lock instead of failing). Applies to control_add/set/act, pipeline_queue, console_open/show and all axf-console write tools. Tests: locked store -> call waits/retries and succeeds; session disconnect mid-retry -> still completes.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/console-and-axhub-retry-failed-calls-themselves-no-claude-needed",
    "pr": "#510",
    "createdAt": "2026-11-12T02:37:24.132Z",
-   "updatedAt": "2026-11-12T03:14:46.486Z",
+   "updatedAt": "2026-11-12T03:40:41.113Z",
    "builtAt": "",
    "notes": [
     {
@@ -163313,6 +163313,10 @@
     {
      "text": "Headless run axf-console-and-axhub-retry-failed-calls-themselves---paulie: brief only · start 11.5K tokens ($0.03) · cost $15.93 · 156 turns · 6 tools, MCP none",
      "at": "2026-11-12T03:14:46.486Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-12T03:40:41.113Z"
     }
    ],
    "approvals": [],
@@ -163477,7 +163481,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -163906,14 +163910,14 @@
    "title": "Server gate: one session per build, no duplicate launches",
    "category": "orchestrator",
    "detail": "URGENT, boss order from Brett, Nov 12. The dispatcher double/triple-launched builds: owner-recognized-everywhere ran 3 sessions and molly-gap-console-token-handoff ran 2, in the same worktree folders, clobbering each other and wasting slots. Add a SERVER GATE on the VPS, enforced by the server itself: only ONE live session per build ID and per worktree folder, ever. Every launch path (vps build_start, dispatcher, agent-slots, any claude -p/tmux axf-* launcher) takes an exclusive lock per build ID + folder (flock), and refuses a second launch while a session for that build is alive. A watchdog finds any duplicates that slip through, keeps the oldest, stops the rest, and logs it in 'Automatic fixes' with an AmberX FYI. Also fix the dispatcher's double-launch root cause (see pending dispatcher-a-worktree-store-write-can-erase-a-fr: store write erases the fresh launch record). Tests: second launch of the same build refused; duplicates reaped.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/server-gate-one-session-per-build-no-duplicate-launches",
    "pr": "",
    "createdAt": "2026-11-12T02:42:15.357Z",
-   "updatedAt": "2026-11-12T03:12:39.099Z",
+   "updatedAt": "2026-11-12T03:40:41.113Z",
    "builtAt": "",
    "notes": [
     {
@@ -163931,6 +163935,10 @@
     {
      "text": "Headless run axf-server-gate-one-session-per-build-no-duplicate-l--lenny: brief only · start 11.1K tokens ($0.03) · cost $6.86 · 125 turns · 6 tools, MCP none",
      "at": "2026-11-12T03:12:39.099Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-12T03:40:41.113Z"
     }
    ],
    "approvals": [],
@@ -164095,7 +164103,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -165099,10 +165107,10 @@
    "source": "shipped",
    "pendingId": "",
    "branch": "claude/orch-self-check-stuck",
-   "pr": "",
+   "pr": "#406",
    "mergedAt": "2026-11-10T03:11:02Z",
    "createdAt": "2026-11-09T16:25:09.655Z",
-   "updatedAt": "2026-11-12T03:31:24Z",
+   "updatedAt": "2026-11-12T03:40:41.113Z",
    "builtAt": "2026-11-10T03:11:02Z",
    "notes": [
     {
@@ -165112,6 +165120,10 @@
     {
      "text": "Shipped manifest sm-orch-self-check-stuck rev 1 sent to Shipped features (backfill): landed 45aad4cef, 11 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:31:24Z"
+    },
+    {
+     "text": "Reconciler: PR #406",
+     "at": "2026-11-12T03:40:41.113Z"
     }
    ],
    "approvals": [],
@@ -165143,7 +165155,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -165164,10 +165176,10 @@
    "source": "shipped",
    "pendingId": "",
    "branch": "claude/shipped-manifest-api",
-   "pr": "",
+   "pr": "#402",
    "mergedAt": "2026-11-09T01:20:30Z",
    "createdAt": "2026-11-09T00:36:11.714Z",
-   "updatedAt": "2026-11-12T03:31:25Z",
+   "updatedAt": "2026-11-12T03:40:41.113Z",
    "builtAt": "2026-11-09T01:20:30Z",
    "notes": [
     {
@@ -165177,6 +165189,10 @@
     {
      "text": "Shipped manifest sm-shipped-manifest-api rev 1 sent to Shipped features (backfill): landed 79ed472c0, 42 file(s), 7 test line(s), 5 open.",
      "at": "2026-11-12T03:31:25Z"
+    },
+    {
+     "text": "Reconciler: PR #402",
+     "at": "2026-11-12T03:40:41.113Z"
     }
    ],
    "approvals": [],
@@ -165208,7 +165224,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -165229,10 +165245,10 @@
    "source": "shipped",
    "pendingId": "",
    "branch": "claude/land-batch-1",
-   "pr": "",
+   "pr": "#339",
    "mergedAt": "2026-11-04T22:15:37Z",
    "createdAt": "2026-11-04T22:15:37Z",
-   "updatedAt": "2026-11-12T03:31:26Z",
+   "updatedAt": "2026-11-12T03:40:41.113Z",
    "builtAt": "2026-11-04T22:15:37Z",
    "notes": [
     {
@@ -165242,6 +165258,10 @@
     {
      "text": "Shipped manifest sm-land-batch-1 rev 1 sent to Shipped features (backfill): landed 01259edad, 29 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:31:26Z"
+    },
+    {
+     "text": "Reconciler: PR #339",
+     "at": "2026-11-12T03:40:41.113Z"
     }
    ],
    "approvals": [],
@@ -165273,7 +165293,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -165294,10 +165314,10 @@
    "source": "shipped",
    "pendingId": "",
    "branch": "claude/maintenance-plugin-acct2",
-   "pr": "",
+   "pr": "#332",
    "mergedAt": "2026-11-04T20:36:23Z",
    "createdAt": "2026-11-04T20:36:23Z",
-   "updatedAt": "2026-11-12T03:31:28Z",
+   "updatedAt": "2026-11-12T03:40:41.113Z",
    "builtAt": "2026-11-04T20:36:23Z",
    "notes": [
     {
@@ -165307,6 +165327,10 @@
     {
      "text": "Shipped manifest sm-maintenance-plugin-acct2 rev 1 sent to Shipped features (backfill): landed 4b80f6b21, 1 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:31:28Z"
+    },
+    {
+     "text": "Reconciler: PR #332",
+     "at": "2026-11-12T03:40:41.113Z"
     }
    ],
    "approvals": [],
@@ -165338,7 +165362,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -165359,10 +165383,10 @@
    "source": "shipped",
    "pendingId": "",
    "branch": "claude/window-resize-fix-threads",
-   "pr": "",
+   "pr": "#279",
    "mergedAt": "2026-11-04T04:00:59Z",
    "createdAt": "2026-11-04T04:00:59Z",
-   "updatedAt": "2026-11-12T03:31:29Z",
+   "updatedAt": "2026-11-12T03:40:41.113Z",
    "builtAt": "2026-11-04T04:00:59Z",
    "notes": [
     {
@@ -165372,6 +165396,10 @@
     {
      "text": "Shipped manifest sm-window-resize-fix-threads rev 1 sent to Shipped features (backfill): landed d5e787014, 1 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:31:29Z"
+    },
+    {
+     "text": "Reconciler: PR #279",
+     "at": "2026-11-12T03:40:41.113Z"
     }
    ],
    "approvals": [],
@@ -165403,7 +165431,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -165424,10 +165452,10 @@
    "source": "shipped",
    "pendingId": "",
    "branch": "claude/axhub-veto-pass-web",
-   "pr": "",
+   "pr": "#261",
    "mergedAt": "2026-11-03T17:35:39Z",
    "createdAt": "2026-11-03T17:35:39Z",
-   "updatedAt": "2026-11-12T03:31:30Z",
+   "updatedAt": "2026-11-12T03:40:41.113Z",
    "builtAt": "2026-11-03T17:35:39Z",
    "notes": [
     {
@@ -165437,6 +165465,10 @@
     {
      "text": "Shipped manifest sm-axhub-veto-pass-web rev 1 sent to Shipped features (backfill): landed 9f4c6a285, 1 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:31:30Z"
+    },
+    {
+     "text": "Reconciler: PR #261",
+     "at": "2026-11-12T03:40:41.113Z"
     }
    ],
    "approvals": [],
@@ -165468,7 +165500,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
