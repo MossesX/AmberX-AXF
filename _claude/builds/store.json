@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3558,
- "updatedAt": "2026-11-12T11:06:20.862Z",
+ "rev": 3559,
+ "updatedAt": "2026-11-12T11:06:35.440Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174305,9 +174305,9 @@
    "source": "mcp",
    "pendingId": "pending-tab-one-collapsed-row-per-build-tap-to-e",
    "branch": "claude/pending-tab-one-collapsed-row-per-build-tap-to-e",
-   "pr": "",
+   "pr": "#520",
    "createdAt": "2026-11-12T10:48:25.123Z",
-   "updatedAt": "2026-11-12T11:05:42.217Z",
+   "updatedAt": "2026-11-12T11:06:33.852Z",
    "builtAt": "",
    "notes": [
     {
@@ -174450,7 +174450,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
