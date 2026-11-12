@@ -1221,6 +1221,14 @@ class MergeQueueService:
 
     def stacked(self) -> list[dict[str, Any]]:
         return [p for rows in PUSHES._stacked.values() for p in rows]
+
+    def add(self, pr: int, why: str = "") -> dict[str, Any]:
+        """Put a PR of the queue's repo in the merge queue (the same path as the banner's Merge with the queue on)."""
+        return PUSHES.queue_command("add", {"pr": pr})
+
+    def remove(self, pr: int, why: str = "") -> dict[str, Any]:
+        """Take a PR out of the merge queue."""
+        return PUSHES.queue_command("remove", {"pr": pr, **({"why": why} if why else {})})
 CLAUDE = claudefix.Launches(lambda: PUSHES.config())
 
 

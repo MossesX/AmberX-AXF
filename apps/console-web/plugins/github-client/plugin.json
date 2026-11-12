@@ -1,0 +1,937 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.github-client",
+  "name": "GitHub client",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "See and control every pull request of the project's repos from the console: status, checks, commits behind main, conflicts, review, linked build and merge-queue position, with filters, sort and expandable rows. Merge (through the merge queue), pull main in, rebase, close, reopen, comment, re-run checks, labels. Batch merge pulls main into a set of PRs, merges them on one branch, has Claude fix clashes between them and lands them as one PR. Bulk actions (merge all ready, close all stale, update all from main), branches and commits with diffs, and one searchable git log with Restore for deleted branches. Every view and action is on REST, MCP, the CLI and voice.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:github-client",
+    "settings-tab:github-client"
+  ],
+  "optional": [
+    "service:axf.merge-queue@1",
+    "service:axf.build-dispatch@1"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "route": "GET /events",
+        "skip": "server-sent events stream, not a command"
+      },
+      {
+        "route": "GET /prs",
+        "id": "prs",
+        "title": "Pull requests",
+        "description": "Open PRs of a repo with status, checks, commits behind main, conflicts, review, linked build, merge-queue position and readiness (ready + why not). filter: all|ready|failing|conflicts|behind|stale|drafts|mine; sort: updated|oldest|number|behind; q searches number, title, branch, author, build.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "repo": {
+              "type": "string"
+            },
+            "filter": {
+              "enum": [
+                "all",
+                "ready",
+                "failing",
+                "conflicts",
+                "behind",
+                "stale",
+                "drafts",
+                "mine"
+              ]
+            },
+            "sort": {
+              "enum": [
+                "updated",
+                "oldest",
+                "number",
+                "behind"
+              ]
+            },
+            "q": {
+              "type": "string"
+            },
+            "refresh": {
+              "type": "boolean"
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /pr/{owner}/{name}/{n}/merge",
+        "id": "merge",
+        "title": "Merge a pull request",
+        "description": "Merge queue on for the repo: adds it to the queue (it lands with the next green batch). Off: GitHub merges it with the policy's method. Refused unless ready. Brett's: a Claude session gets 403.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "owner": {
+              "type": "string",
+              "description": "repo owner (MossesX)"
+            },
+            "name": {
+              "type": "string",
+              "description": "repo name (AmberX-AXF)"
+            },
+            "n": {
+              "type": "integer",
+              "description": "PR number"
+            },
+            "method": {
+              "enum": [
+                "queue",
+                "squash",
+                "merge",
+                "rebase"
+              ]
+            },
+            "why": {
+              "type": "string"
+            },
+            "by": {
+              "type": "string",
+              "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+            }
+          },
+          "required": [
+            "owner",
+            "name",
+            "n"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /pr/{owner}/{name}/{n}/update-main",
+        "id": "update-main",
+        "title": "Pull main into a pull request",
+        "description": "GitHub update-branch; when GitHub can't (a conflict) a job merges main in a scratch clone, heals builds files and reports any other conflict. Brett's: a Claude session gets 403.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "owner": {
+              "type": "string",
+              "description": "repo owner (MossesX)"
+            },
+            "name": {
+              "type": "string",
+              "description": "repo name (AmberX-AXF)"
+            },
+            "n": {
+              "type": "integer",
+              "description": "PR number"
+            },
+            "by": {
+              "type": "string",
+              "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+            }
+          },
+          "required": [
+            "owner",
+            "name",
+            "n"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /pr/{owner}/{name}/{n}/rebase",
+        "id": "rebase",
+        "title": "Rebase a pull request onto its base",
+        "description": "A job: rebase in a scratch clone, force-push with lease to the PR's own branch; the old head SHA is saved in the git log.",
+        "confirm": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "owner": {
+              "type": "string",
+              "description": "repo owner (MossesX)"
+            },
+            "name": {
+              "type": "string",
+              "description": "repo name (AmberX-AXF)"
+            },
+            "n": {
+              "type": "integer",
+              "description": "PR number"
+            },
+            "by": {
+              "type": "string",
+              "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+            }
+          },
+          "required": [
+            "owner",
+            "name",
+            "n"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /pr/{owner}/{name}/{n}/close",
+        "id": "close",
+        "title": "Close a pull request",
+        "input": {
+          "type": "object",
+          "properties": {
+            "owner": {
+              "type": "string",
+              "description": "repo owner (MossesX)"
+            },
+            "name": {
+              "type": "string",
+              "description": "repo name (AmberX-AXF)"
+            },
+            "n": {
+              "type": "integer",
+              "description": "PR number"
+            },
+            "why": {
+              "type": "string"
+            },
+            "by": {
+              "type": "string",
+              "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+            }
+          },
+          "required": [
+            "owner",
+            "name",
+            "n"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /pr/{owner}/{name}/{n}/reopen",
+        "id": "reopen",
+        "title": "Reopen a pull request",
+        "input": {
+          "type": "object",
+          "properties": {
+            "owner": {
+              "type": "string",
+              "description": "repo owner (MossesX)"
+            },
+            "name": {
+              "type": "string",
+              "description": "repo name (AmberX-AXF)"
+            },
+            "n": {
+              "type": "integer",
+              "description": "PR number"
+            },
+            "by": {
+              "type": "string",
+              "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+            }
+          },
+          "required": [
+            "owner",
+            "name",
+            "n"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /pr/{owner}/{name}/{n}/comment",
+        "id": "comment",
+        "title": "Comment on a pull request",
+        "input": {
+          "type": "object",
+          "properties": {
+            "owner": {
+              "type": "string",
+              "description": "repo owner (MossesX)"
+            },
+            "name": {
+              "type": "string",
+              "description": "repo name (AmberX-AXF)"
+            },
+            "n": {
+              "type": "integer",
+              "description": "PR number"
+            },
+            "body": {
+              "type": "string",
+              "minLength": 1
+            },
+            "by": {
+              "type": "string",
+              "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+            }
+          },
+          "required": [
+            "owner",
+            "name",
+            "n",
+            "body"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /pr/{owner}/{name}/{n}/rerun-checks",
+        "id": "rerun-checks",
+        "title": "Re-run checks",
+        "description": "Re-run the failed jobs (failedOnly, default true) or every workflow run on the PR's head commit.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "owner": {
+              "type": "string",
+              "description": "repo owner (MossesX)"
+            },
+            "name": {
+              "type": "string",
+              "description": "repo name (AmberX-AXF)"
+            },
+            "n": {
+              "type": "integer",
+              "description": "PR number"
+            },
+            "failedOnly": {
+              "type": "boolean",
+              "default": true
+            },
+            "by": {
+              "type": "string",
+              "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+            }
+          },
+          "required": [
+            "owner",
+            "name",
+            "n"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /pr/{owner}/{name}/{n}/ready",
+        "id": "ready",
+        "title": "Mark a draft ready for review",
+        "input": {
+          "type": "object",
+          "properties": {
+            "owner": {
+              "type": "string",
+              "description": "repo owner (MossesX)"
+            },
+            "name": {
+              "type": "string",
+              "description": "repo name (AmberX-AXF)"
+            },
+            "n": {
+              "type": "integer",
+              "description": "PR number"
+            },
+            "by": {
+              "type": "string",
+              "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+            }
+          },
+          "required": [
+            "owner",
+            "name",
+            "n"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /pr/{owner}/{name}/{n}/label",
+        "id": "label",
+        "title": "Add or remove labels",
+        "input": {
+          "type": "object",
+          "properties": {
+            "owner": {
+              "type": "string",
+              "description": "repo owner (MossesX)"
+            },
+            "name": {
+              "type": "string",
+              "description": "repo name (AmberX-AXF)"
+            },
+            "n": {
+              "type": "integer",
+              "description": "PR number"
+            },
+            "add": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "remove": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "by": {
+              "type": "string",
+              "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+            }
+          },
+          "required": [
+            "owner",
+            "name",
+            "n"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /pr/{owner}/{name}/{n}/queue-remove",
+        "id": "queue-remove",
+        "title": "Take a pull request out of the merge queue",
+        "input": {
+          "type": "object",
+          "properties": {
+            "owner": {
+              "type": "string",
+              "description": "repo owner (MossesX)"
+            },
+            "name": {
+              "type": "string",
+              "description": "repo name (AmberX-AXF)"
+            },
+            "n": {
+              "type": "integer",
+              "description": "PR number"
+            },
+            "why": {
+              "type": "string"
+            },
+            "by": {
+              "type": "string",
+              "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+            }
+          },
+          "required": [
+            "owner",
+            "name",
+            "n"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /pr/{owner}/{name}/{n}/fix-conflicts",
+        "id": "fix-conflicts",
+        "title": "Ask Claude to fix a PR's conflicts",
+        "description": "Files a build in the orchestrator's Queue that merges the base into the PR branch, resolves the conflicts and pushes; it never merges.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "owner": {
+              "type": "string",
+              "description": "repo owner (MossesX)"
+            },
+            "name": {
+              "type": "string",
+              "description": "repo name (AmberX-AXF)"
+            },
+            "n": {
+              "type": "integer",
+              "description": "PR number"
+            },
+            "by": {
+              "type": "string",
+              "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+            }
+          },
+          "required": [
+            "owner",
+            "name",
+            "n"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /group",
+        "id": "group-create",
+        "title": "Batch merge several pull requests",
+        "description": "Pull main into each PR, merge them all on one queue/group-<name> branch, open one PR into main (checks run once). A clash between members goes to Claude (a build) and alerts Brett; Retry carries on. autoLand lands it as soon as it is green.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "repo": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "prs": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "minItems": 2
+            },
+            "autoLand": {
+              "type": "boolean"
+            },
+            "by": {
+              "type": "string",
+              "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+            }
+          },
+          "required": [
+            "prs"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /group/{gid}/add",
+        "id": "group-add",
+        "title": "Add pull requests to a batch",
+        "input": {
+          "type": "object",
+          "properties": {
+            "gid": {
+              "type": "string"
+            },
+            "prs": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "by": {
+              "type": "string",
+              "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+            }
+          },
+          "required": [
+            "gid",
+            "prs"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /group/{gid}/remove",
+        "id": "group-remove",
+        "title": "Remove pull requests from a batch",
+        "input": {
+          "type": "object",
+          "properties": {
+            "gid": {
+              "type": "string"
+            },
+            "prs": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "by": {
+              "type": "string",
+              "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+            }
+          },
+          "required": [
+            "gid",
+            "prs"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /group/{gid}/retry",
+        "id": "group-retry",
+        "title": "Retry a batch",
+        "description": "Carry on from the batch branch (after Claude or a person fixed a clash), or fresh: true rebuilds it on the newest main.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "gid": {
+              "type": "string"
+            },
+            "fresh": {
+              "type": "boolean"
+            },
+            "by": {
+              "type": "string",
+              "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+            }
+          },
+          "required": [
+            "gid"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /group/{gid}/land",
+        "id": "group-land",
+        "title": "Land a batch",
+        "description": "The batch PR goes through the merge queue (or merges); its members close as landed by the batch. Brett's: a Claude session gets 403.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "gid": {
+              "type": "string"
+            },
+            "by": {
+              "type": "string",
+              "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+            }
+          },
+          "required": [
+            "gid"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /group/{gid}/dissolve",
+        "id": "group-dissolve",
+        "title": "Dissolve a batch",
+        "description": "Close the batch PR and delete its branch (SHA saved); member PRs are untouched.",
+        "confirm": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "gid": {
+              "type": "string"
+            },
+            "by": {
+              "type": "string",
+              "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+            }
+          },
+          "required": [
+            "gid"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /bulk",
+        "id": "bulk",
+        "title": "Bulk action on many pull requests",
+        "description": "action: merge-ready (only ready PRs), close-stale (only stale), update-main (only behind), rerun-failed (only failing), label. prs: the numbers, or filter. One job with a result per PR. Brett's: a Claude session gets 403.",
+        "confirm": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "repo": {
+              "type": "string"
+            },
+            "action": {
+              "enum": [
+                "merge-ready",
+                "close-stale",
+                "update-main",
+                "rerun-failed",
+                "label"
+              ]
+            },
+            "prs": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "filter": {
+              "enum": [
+                "ready",
+                "stale",
+                "behind",
+                "failing",
+                "all"
+              ]
+            },
+            "why": {
+              "type": "string"
+            },
+            "add": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "remove": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "by": {
+              "type": "string",
+              "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+            }
+          },
+          "required": [
+            "action"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /bulk/preview",
+        "id": "bulk-preview",
+        "title": "Preview a bulk action",
+        "description": "Which PRs a bulk action would take and which it skips (and why), without doing anything.",
+        "readOnly": true
+      },
+      {
+        "route": "DELETE /branch/{owner}/{name}/{branch:path}",
+        "id": "branch-delete",
+        "title": "Delete a branch (SHA saved, restorable)",
+        "destructive": true,
+        "confirm": true
+      },
+      {
+        "route": "POST /log/{lid}/restore",
+        "id": "restore",
+        "title": "Restore a deleted branch at its saved SHA",
+        "input": {
+          "type": "object",
+          "properties": {
+            "lid": {
+              "type": "string",
+              "description": "the git log entry id"
+            },
+            "by": {
+              "type": "string",
+              "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+            }
+          },
+          "required": [
+            "lid"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /log/import",
+        "id": "log-import",
+        "title": "Import deleted-branch lists",
+        "description": "Reads every _deleted-branches-*.txt in the repo root and the plugin's imports folder into the git log as restorable entries (idempotent)."
+      },
+      {
+        "route": "POST /refresh",
+        "id": "refresh",
+        "title": "Refresh from GitHub now"
+      },
+      {
+        "route": "PUT /config",
+        "id": "config-set",
+        "title": "Change settings",
+        "description": "Partial object: extraRepos, pollMinutes, staleDays, mergeMethod (queue|squash|merge|rebase), requireGreenChecks, allowNoChecks, requireReview, doNotMergeLabel, me, autoRetry (0-3), conflictHelp (claude|report)."
+      },
+      {
+        "route": "POST /job/{jid}/cancel",
+        "id": "job-cancel",
+        "title": "Cancel a running job"
+      },
+      {
+        "route": "GET /repos",
+        "id": "repos",
+        "title": "Repos of this project",
+        "readOnly": true,
+        "description": "The console's repo, the project's manifest repos, the merge queue's repo and the extra repos setting."
+      },
+      {
+        "route": "GET /pr/{owner}/{name}/{n}",
+        "id": "pr",
+        "title": "One pull request",
+        "readOnly": true,
+        "description": "One PR read fresh: status, checks, behind/ahead, conflicts, review, linked build, queue position, ready and why not."
+      },
+      {
+        "route": "GET /pr/{owner}/{name}/{n}/checks",
+        "id": "pr-checks",
+        "title": "Checks of a pull request",
+        "readOnly": true
+      },
+      {
+        "route": "GET /pr/{owner}/{name}/{n}/commits",
+        "id": "pr-commits",
+        "title": "Commits of a pull request",
+        "readOnly": true
+      },
+      {
+        "route": "GET /pr/{owner}/{name}/{n}/files",
+        "id": "pr-files",
+        "title": "Files of a pull request",
+        "readOnly": true,
+        "description": "Changed files with patches."
+      },
+      {
+        "route": "GET /checks",
+        "id": "checks",
+        "title": "Checks for a ref",
+        "readOnly": true,
+        "description": "Check runs and statuses for a branch, a SHA or pr:<n>."
+      },
+      {
+        "route": "GET /status",
+        "id": "status",
+        "title": "GitHub client status",
+        "readOnly": true,
+        "description": "Token set or not (never the token), rate limit left, last poll, last error, merge queue on/off, running jobs, last failure."
+      },
+      {
+        "route": "GET /config",
+        "id": "config",
+        "title": "Settings",
+        "readOnly": true
+      },
+      {
+        "route": "GET /jobs",
+        "id": "jobs",
+        "title": "Jobs",
+        "readOnly": true,
+        "description": "Recent long actions (pull main in, rebase, batch, bulk) with a result per PR."
+      },
+      {
+        "route": "GET /job/{jid}",
+        "id": "job",
+        "title": "One job",
+        "readOnly": true
+      },
+      {
+        "route": "GET /groups",
+        "id": "groups",
+        "title": "Batches",
+        "readOnly": true,
+        "description": "Batch merges: state, members, the batch PR, clashes and who is fixing them."
+      },
+      {
+        "route": "GET /group/{gid}",
+        "id": "group",
+        "title": "One batch",
+        "readOnly": true
+      },
+      {
+        "route": "GET /branches",
+        "id": "branches",
+        "title": "Branches",
+        "readOnly": true,
+        "description": "Every branch with ahead/behind main, last commit, PR, protected and default flags."
+      },
+      {
+        "route": "GET /branch/{owner}/{name}/{branch:path}",
+        "id": "branch",
+        "title": "One branch",
+        "readOnly": true
+      },
+      {
+        "route": "GET /commits",
+        "id": "commits",
+        "title": "Commits",
+        "readOnly": true,
+        "description": "Commits on a branch, newest first, 50 a page."
+      },
+      {
+        "route": "GET /commit/{owner}/{name}/{sha}",
+        "id": "commit",
+        "title": "One commit",
+        "readOnly": true,
+        "description": "A commit with its files and patches."
+      },
+      {
+        "route": "GET /diff",
+        "id": "diff",
+        "title": "Compare two refs",
+        "readOnly": true,
+        "description": "Commits and files with patches between base and head."
+      },
+      {
+        "route": "GET /log",
+        "id": "log",
+        "title": "Git log",
+        "readOnly": true,
+        "description": "Every git action, newest first: merges, failed merges and why, retries, branch deletes (saved SHA, restorable), pushes, main pulled in, PRs opened/closed, batches, bulk runs. q searches; kind, repo, since (ISO or today), outcome (ok|failed), page."
+      },
+      {
+        "action": "github-client.focus",
+        "id": "open",
+        "title": "Open the GitHub client (deep link)",
+        "description": "Opens the page in the open console on a focus: pr 123, pr owner/name 123, prs ready|failing|conflicts|behind|stale|drafts|mine, branches, branch <name>, commits <branch>, commit <sha>, checks <ref>, log <query>, batches, batch <id>.",
+        "navigate": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "args": {
+              "type": "string",
+              "description": "the focus, e.g. \"pr 123\" or \"prs ready\""
+            },
+            "to": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      {
+        "action": "github-client.batch",
+        "id": "open-batch",
+        "title": "Open the Batch merge dialog",
+        "navigate": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "args": {
+              "type": "string",
+              "description": "PR numbers to pre-select, e.g. \"120,121\""
+            },
+            "to": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      {
+        "action": "github-client.refresh",
+        "skip": "the same as the refresh command (POST /refresh)"
+      }
+    ]
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-12"
+  },
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/github-client",
+    "env": [
+      "AXF_GITHUB_CLIENT_DIR",
+      "AXF_GITHUB_CLIENT_NO_TICK"
+    ],
+    "mentions": [
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "help": "help.json",
+  "opens": "main"
+}
