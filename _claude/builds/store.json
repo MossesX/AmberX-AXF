@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3597,
- "updatedAt": "2026-11-12T18:07:09.036Z",
+ "rev": 3598,
+ "updatedAt": "2026-11-12T18:07:22.723Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175445,14 +175445,14 @@
    "title": "Plugin review: map what each plugin does, depends on, and breaks",
    "category": "report",
    "detail": "Brett said: \"For each plugin put a list for everything that it does, what will be broken, what it depends on, and what other plugins use it.\"\n\nREAD-ONLY analysis, change no code. For every folder in apps/console-web/plugins (68, skip _template): read plugin.json, README.md and web/ + server/ code. Find real dependencies from imports, requires, service contracts (service:xxx@1), API routes it calls (/api/plugins/<other>/...), events, settings keys and banner/slot ids it reads. Build the reverse map (used by). Then fill the existing Plan Studio plan 'Plugin review: what to disable' (planner.plans, via control_set) so each plugin's step holds four plain-English lists: What it does / What breaks if disabled (including other plugins, banners, voice commands, AmberX features) / Depends on / Used by. Mark core plugins that must never be disabled (e.g. plugin-manager, build-orchestrator, approvals-banner, hub-sync) with a warning. Also write _claude/builds/reports/plugin-review.md with the same table.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/plugin-review-map-what-each-plugin-does-depends-on-and-breaks",
    "pr": "#522",
    "createdAt": "2026-11-12T17:47:56.247Z",
-   "updatedAt": "2026-11-12T18:07:04.618Z",
+   "updatedAt": "2026-11-12T18:07:13.461Z",
    "builtAt": "",
    "notes": [
     {
@@ -175494,6 +175494,14 @@
     {
      "text": "Session on mossesx-max- ended (exit 0) with 1 step left: back in the Queue (run 2).",
      "at": "2026-11-12T18:07:04.618Z"
+    },
+    {
+     "text": "Started run 3 on mossesx-max- (Fable, Phase 3): axf-plugin-review-map-what-each-plugin-does-depends---lenny.",
+     "at": "2026-11-12T18:07:12.000Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-plugin-review-map-what-each-plugin-does-depends---lenny, own login copy)",
+     "at": "2026-11-12T18:07:13.461Z"
     }
    ],
    "approvals": [],
@@ -175505,7 +175513,7 @@
     "session": "",
     "link": "",
     "by": "plugin-review-map-what-each-plugin-does-depends-on-and-breaks",
-    "brief": "# Build: plugin-review-map-what-each-plugin-does-depends-on-and-breaks\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Plugin review: map what each plugin does, depends on, and breaks\" (plugin-review-map-what-each-plugin-does-depends-on-and-breaks) [report] — Phase 2, model Opus.\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/plugin-review-map-what-each-plugin-does-depends-on-and-breaks · PR #522\nSteps in this phase (1 left, ~30 min):\n[ ] s2 (~30m) Build reverse map (used by) and what-breaks list per plugin; flag core plugins\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step plugin-review-map-what-each-plugin-does-depends-on-and-breaks <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link plugin-review-map-what-each-plugin-does-depends-on-and-breaks --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step plugin-review-map-what-each-plugin-does-depends-on-and-breaks <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note plugin-review-map-what-each-plugin-does-depends-on-and-breaks \"…\"); the build goes back to Pending for Brett.\n",
+    "brief": "# Build: plugin-review-map-what-each-plugin-does-depends-on-and-breaks\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Plugin review: map what each plugin does, depends on, and breaks\" (plugin-review-map-what-each-plugin-does-depends-on-and-breaks) [report] — Phase 3, model Fable.\nThis phase upgrades Opus → Fable: no approval needed (Fable upgrades need my approval is off); it is recorded when you tick its first step.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/plugin-review-map-what-each-plugin-does-depends-on-and-breaks · PR #522\nSteps in this phase (1 left, ~20 min):\n[ ] s3 (~20m) Write the four lists into each step of the Plugin review plan + report file\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step plugin-review-map-what-each-plugin-does-depends-on-and-breaks <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link plugin-review-map-what-each-plugin-does-depends-on-and-breaks --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Tick every step as you finish it (orchestrator.mjs act step plugin-review-map-what-each-plugin-does-depends-on-and-breaks <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note plugin-review-map-what-each-plugin-does-depends-on-and-breaks \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": false,
     "from": "",
     "addenda": []
@@ -175514,11 +175522,11 @@
     "queuedAt": "2026-11-12T17:48:35.850Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "",
+    "session": "axf-plugin-review-map-what-each-plugin-does-depends---lenny",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-12T18:04:10.671Z",
-    "runs": 2,
+    "model": "Fable",
+    "launchedAt": "2026-11-12T18:07:11.653Z",
+    "runs": 3,
     "lastRun": {
      "at": "2026-11-12T18:07:04.151Z",
      "exit": 0,
@@ -175529,18 +175537,18 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "Session on mossesx-max- ended (exit 0) with 1 step left: back in the Queue (run 2).",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-12T18:04:10.671Z",
+    "dispatchedAt": "2026-11-12T18:07:11.653Z",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-12T18:07:06.426Z",
+     "at": "2026-11-12T18:04:05.293Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-12T18:04:10.671Z",
+    "pickedAt": "2026-11-12T18:07:11.653Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -175621,7 +175629,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
