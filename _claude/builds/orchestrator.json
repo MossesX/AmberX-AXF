@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:31:31.210Z",
+ "updatedAt": "2026-11-12T02:31:42.645Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -98021,15 +98021,15 @@
    "title": "Molly gap: Molly's own actions (molly.*) reachable from the console API, MCP, CLI and AmberX",
    "category": "",
    "detail": "Found by molly-sign-in-once s1. The console-commands relay reaches the console frame inside Molly, not Molly itself, so Molly-level actions (molly.auth.status / check / sign-in / sign-out / base, molly.reload, navigation.*, xlayout.*) can only be run inside Molly (menus, toolbar, command search). Give Molly a client on the same relay (console_show / console_open target molly, plugin commands listing Molly's actions, control@1 for its settings) so every Molly action has the same four reaches (REST, MCP, CLI, voice). Needed before molly-sign-in-once s2 can call its screen done.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "molly-sign-in-once",
    "pendingId": "",
    "branch": "claude/molly-gap-remote-actions",
    "pr": "#502",
    "createdAt": "2026-11-10T22:09:30.792Z",
-   "updatedAt": "2026-11-12T02:30:55.954Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-12T02:31:10.151Z",
+   "builtAt": "2026-11-12T02:31:02.862Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -98084,6 +98084,10 @@
      "at": "2026-11-12T02:17:09.304Z"
     },
     {
+     "text": "s3 done: checks green, report + THREADS row pushed (63b742a79), PR #502 updated. UI Review still not submitted: local Molly stops at Waiting for axHub (hub refuses localhost origin); needs a session that can reach axHub for desktop + phone shots of Settings > Plugins > Remote commands.",
+     "at": "2026-11-12T02:31:10.151Z"
+    },
+    {
      "text": "Claude account: account-5 (axf-molly-gap-remote-actions--paulie, own login copy)",
      "at": "2026-11-12T02:23:21.851Z"
     },
@@ -98092,7 +98096,16 @@
      "at": "2026-11-12T02:23:16.186Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-12T02:31:02.861Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "Standalone apps keep working until Molly covers them; list gaps as pending builds.",
@@ -98159,8 +98172,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T02:31:02.861Z",
      "note": "",
      "uid": "st-mwb8wr6o03xq2p"
     }
