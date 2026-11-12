@@ -171,3 +171,11 @@ Web only (Android on hold), Kotlin twins when the Android side resumes:
 - `console.nav` act `refresh` and `console-command@1` op `refresh` (`hard?`).
 - `ui-choices@1` (`framework/core/ui-choices.mjs`): the `choices` and `singleOption` fields of ui-review-item@1.
 
+
+## Deferred: skin stepping, banner Skins menu, asset overrides list (Nov 12 2026)
+
+Build `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides`. Web only; the Kotlin twin is deferred (Android on hold):
+- `rt.stepSkin(±1)` and `skin.use:next|prev`; the retired `swap:<style-theme|layout|behavior-theme>:next|prev` step the skin.
+- Banner right-click → Skins (every skin, `skin.use:<id>`), the Skins action-button widget hidden by default.
+- `chromeOverrideList(saved)`, `CONTROLLED_COLOR_KEY` / `controlledColorOf()` (chrome-settings-rules.mjs), actions `chrome.unset`, `chrome.edits`, `settings.controlled-colour`; spec `check-asset-overrides.mjs`.
+- look-migration@1: a folded colour pick lands as the skin's `colorTheme`, never `overrides['color-theme']` (fixture regenerated).
