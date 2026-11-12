@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3252,
- "updatedAt": "2026-11-12T02:07:21.270Z",
+ "rev": 3253,
+ "updatedAt": "2026-11-12T02:07:40.128Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -29779,19 +29779,23 @@
    "title": "Library: Notifications & push",
    "category": "Showcase",
    "detail": "Library lib-notifications with a demo app; covers dv.notif, w.push.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-11-10T18:55:22.086Z",
+   "updatedAt": "2026-11-12T02:07:38.462Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:07:38.462Z"
     }
    ],
    "approvals": [],
@@ -29966,7 +29970,7 @@
    },
    "kind": "epic",
    "planRef": "x.lib.notifications",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

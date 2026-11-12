@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 23:08 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` → queued, note (all) · console
 - 2026-11-10 23:08 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` → queued, note (all) · console
 - 2026-11-10 23:08 UTC · `orchestrator-merge-first-switch-separate-merger` → queued, note (all) · console
 - 2026-11-10 23:08 UTC · `api-accounts-need-no-approval-builds-route-there` → queued, note (all) · console
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:07 UTC · `employee-hooks-everywhere-any-mention-of-an-agen` → archived (all) · Claude voice (Gizmo)
 - 2026-11-12 02:07 UTC · `x.lib.hub` → archived (all) · Claude voice (Gizmo)
 - 2026-11-12 02:07 UTC · `employee-hooks-plain-tap-on-an-employee-name-ope` → archived (all) · Claude voice (Gizmo)
+- 2026-11-12 02:07 UTC · `x.lib.notifications` → archived, note (all) · console
 
 ## Token passes (log)
 
