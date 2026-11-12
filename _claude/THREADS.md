@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:30 UTC · `orchestrator-start-a-build-through-the-api-mcp-and-cli` note (all) · backfill
 - 2026-11-12 03:30 UTC · `idle-alert-phone-flag-when-nothing-is-building` note (all) · backfill
 - 2026-11-12 03:31 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits` added (8 steps) (all) · backfill
 - 2026-11-12 03:31 UTC · `workers-api-routing` note (all) · backfill
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 21:51 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` → running, note (all) · pipeline
 - 2026-11-12 21:51 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` branch claude/new-project-wizard-name-linked-repo-required-starter-code-skin-accounts (all) · pipeline
 - 2026-11-12 21:51 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` note (all) · orchestrator
+- 2026-11-12 21:51 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` note (all) · pipeline
 
 ## Token passes (log)
 
