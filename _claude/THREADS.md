@@ -777,7 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:28 UTC · `agent-jobs` note (all) · backfill
 - 2026-11-12 03:28 UTC · `amberx-walkthrough` note (all) · backfill
 - 2026-11-12 03:28 UTC · `chat-viewer` note (all) · backfill
 - 2026-11-12 03:28 UTC · `help-mode` merged, note (all) · backfill
@@ -1177,6 +1176,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 18:21 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` note (all) · pipeline
 - 2026-11-12 18:21 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` → running, note (all) · pipeline
 - 2026-11-12 18:21 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` note (all) · orchestrator
+- 2026-11-12 18:24 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
