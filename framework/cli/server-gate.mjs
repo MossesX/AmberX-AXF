@@ -345,7 +345,9 @@ async function main(argv) {
   if (['acquire', 'hold', 'release'].includes(cmd)) {
     const briefFile = opt('brief');
     const brief = briefFile && existsSync(briefFile) ? readFileSync(briefFile, 'utf8').slice(0, 64 * 1024) : '';
-    const build = await resolveBuild({ build: opt('build') || process.env.AXF_BUILD_ID || '', name: opt('name'), brief });
+    // from --build, else the session name / brief (the dispatcher names the session after the build). Never from
+    // AXF_BUILD_ID / AXF_DISPATCH_TOKEN: a long-lived tmux server's environment can carry another build's values.
+    const build = opt('build') || await resolveBuild({ name: opt('name'), brief });
     const common = { build, worktree: opt('worktree') || process.cwd(), pid: Number(opt('pid')) || 0, session: opt('session'), by: opt('by') || process.env.AXF_SURFACE || 'launcher', owner: opt('owner') || (cmd === 'acquire' ? '' : process.env.AXF_GATE_OWNER || '') };
     const r = cmd === 'acquire' ? acquire(common) : cmd === 'hold' ? hold(common) : release(common);
     if (cmd === 'acquire') {
