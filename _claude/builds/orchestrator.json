@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T18:07:22.723Z",
+ "updatedAt": "2026-11-12T18:18:57.514Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -107969,6 +107969,25 @@
      "uid": "st-mwduchov06tpf7"
     }
    ]
+  },
+  {
+   "id": "one-to-do-list-amberx-and-console-read-the-same-source",
+   "title": "One to-do list: AmberX and console read the same source",
+   "category": "feature",
+   "detail": "Brett: \"One, and they both read from the same. True source.\" AmberX (phone app mirrors the web app) has its own to-do list; the console has Todo manager (ported from xGallery, currently off). Make one source of truth on axHub that both read and write, migrate existing AmberX to-dos and any console todo-manager data into it, nothing deleted. Must be per-project: ties into the 'new project start fresh with its own builds, notes, to-dos and plans' build already pending. Remove the duplicate store and all references to it after migration; test both apps show the same list live.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-12T18:18:56.110Z",
+   "updatedAt": "2026-11-12T18:18:56.110Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": []
   }
  ]
 }
