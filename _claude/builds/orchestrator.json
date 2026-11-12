@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T18:20:14.183Z",
+ "updatedAt": "2026-11-12T18:20:31.180Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -107845,15 +107845,15 @@
    "title": "Plugin review: map what each plugin does, depends on, and breaks",
    "category": "report",
    "detail": "Brett said: \"For each plugin put a list for everything that it does, what will be broken, what it depends on, and what other plugins use it.\"\n\nREAD-ONLY analysis, change no code. For every folder in apps/console-web/plugins (68, skip _template): read plugin.json, README.md and web/ + server/ code. Find real dependencies from imports, requires, service contracts (service:xxx@1), API routes it calls (/api/plugins/<other>/...), events, settings keys and banner/slot ids it reads. Build the reverse map (used by). Then fill the existing Plan Studio plan 'Plugin review: what to disable' (planner.plans, via control_set) so each plugin's step holds four plain-English lists: What it does / What breaks if disabled (including other plugins, banners, voice commands, AmberX features) / Depends on / Used by. Mark core plugins that must never be disabled (e.g. plugin-manager, build-orchestrator, approvals-banner, hub-sync) with a warning. Also write _claude/builds/reports/plugin-review.md with the same table.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/plugin-review-map-what-each-plugin-does-depends-on-and-breaks",
    "pr": "#522",
    "createdAt": "2026-11-12T17:47:56.247Z",
-   "updatedAt": "2026-11-12T18:07:13.461Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-12T18:20:17.820Z",
+   "builtAt": "2026-11-12T18:20:17.821Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -107902,9 +107902,24 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-plugin-review-map-what-each-plugin-does-depends---lenny, own login copy)",
      "at": "2026-11-12T18:07:13.461Z"
+    },
+    {
+     "text": "Model switch: phase 3 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
+     "at": "2026-11-12T18:20:17.820Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 2,
+     "from": "Opus",
+     "to": "Fable",
+     "at": "2026-11-12T18:20:17.820Z",
+     "by": "auto",
+     "via": "policy",
+     "kind": "upgrade",
+     "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "",
@@ -107968,8 +107983,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T18:20:17.820Z",
      "note": "",
      "uid": "st-mwduchov06tpf7"
     }
