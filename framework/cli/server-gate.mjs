@@ -89,8 +89,8 @@ export function pidAlive(pid) {
 
 /** Every tmux session: [{ name, cwd, created (epoch s), build }] ([] when tmux is off or missing). */
 export function listSessions(env = process.env) {
-  if (env.AXF_GATE_SESSIONS) { const j = readJson(env.AXF_GATE_SESSIONS); return Array.isArray(j) ? j : []; }
-  if (env.AXF_GATE_TMUX === 'off') return [];
+  if (env.AXF_GATE_SESSIONS) { const j = readJson(env.AXF_GATE_SESSIONS); return Array.isArray(j) ? j.filter((s) => s && !s.ended) : []; }
+  if (env.AXF_GATE_TMUX === 'off' || env.AXF_SLOTS_TMUX === 'off') return [];
   const r = spawnSync('tmux', ['list-sessions', '-F', '#{session_name}\t#{@axf_cwd}\t#{session_created}\t#{@axf_build}\t#{@axf_ended}'], { encoding: 'utf8', timeout: 10e3 });
   if (r.error || r.status !== 0) return [];
   // a session whose run ended (it waits a minute or two before it closes) is not a live session of its build
@@ -228,15 +228,16 @@ export function reap({ builds = null, dry = false, by = 'watchdog', env = proces
   if (dry) return { ok: true, dry: true, duplicates: dups };
   for (const d of dups) {
     for (const name of d.end) {
-      const ok = kill(name);
+      const ok = kill(name, env);
       record({ gate: 'duplicate-reaped', build: d.build, by, action: ok ? `ended duplicate session ${name}, kept ${d.keep}` : `could not end duplicate session ${name}`, detail: `${d.build} had ${d.end.length + 1} live sessions; the oldest (${d.keep}) keeps running.`, session: name }, { env });
     }
     fyi({ title: `Duplicate session reaped: ${d.build}`, body: `Ended ${d.end.join(', ')}; kept the oldest, ${d.keep}.`, build: d.build }, env);
   }
   return { ok: true, duplicates: dups };
 }
-export function killSession(name) {
-  if (process.env.AXF_GATE_TMUX === 'off') return false;
+export function killSession(name, env = process.env) {
+  if (env.AXF_GATE_SESSIONS) { const f = env.AXF_GATE_SESSIONS; const j = readJson(f) ?? []; writeFileSync(f, JSON.stringify(j.filter((s) => s.name !== name))); return true; }
+  if (env.AXF_GATE_TMUX === 'off' || env.AXF_SLOTS_TMUX === 'off') return false;
   const r = spawnSync('tmux', ['kill-session', '-t', `=${name}`], { encoding: 'utf8', timeout: 10e3 });
   return !r.error && r.status === 0;
 }

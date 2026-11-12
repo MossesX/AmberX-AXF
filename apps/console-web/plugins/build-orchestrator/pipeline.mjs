@@ -71,6 +71,7 @@ import { activeProfile } from '../../../../framework/cli/persist.mjs';
 import { loadUpgradePolicy, settingsFile as claudeSettingsFile } from '../../../../framework/cli/upgrade-policy.mjs';
 import * as slots from '../../../../framework/cli/agent-slots.mjs';
 import { issue as issueDispatch } from '../../../../framework/cli/dispatch-gate.mjs';
+import * as gate from '../../../../framework/cli/server-gate.mjs';
 import { shipLanded } from '../../../../framework/cli/shipped.mjs';
 import { normPriority } from '../../../../framework/core/build-priority.mjs';
 import { act as orchAct } from './orchestrator.mjs';
@@ -581,6 +582,15 @@ export function tick({ env = process.env } = {}) {
     const fails = (state.launchFails[first.id] ?? []).filter((t) => Date.parse(t) > hourAgo);
     if (fails.length >= LAUNCH_FAILS_PER_HOUR) { plan.waits.push({ id: first.id, why: `launch failed ${fails.length} times in the last hour: waiting` }); continue; }
     const b = live(store).find((x) => x.id === first.id);
+    // one session per build (server-gate): a build that still has a live session is not started again. Its record lost
+    // the session (an older store copy won a merge): the record is put right and the build stays running.
+    const alive = gate.sessionsOf(b.id, { env });
+    if (alive.length) {
+      plan.waits.push({ id: b.id, why: `already has a live session (${alive[0].name}): not started again` });
+      gate.record({ gate: 'duplicate-launch', build: b.id, by: 'dispatcher', action: 'skipped the launch: the build has a live session', detail: `The store showed ${b.id} as ${b.status} with no session, but ${alive.map((s) => s.name).join(', ')} is running. The record was given its session back.`, session: alive[0].name }, { env });
+      setPipeline(b.id, { session: alive[0].name, launchedAt: b.pipeline?.launchedAt || nowIso() }, { status: 'running', note: `Dispatcher: ${b.id} already runs in ${alive[0].name}; not started a second time, the run record was restored.`, action: 'pipeline:gate' });
+      continue;
+    }
     // the final pick: the plan's account first, then every other account that may take it (subscriptions, then API),
     // moving on until one accepts the launch
     const options = [first, ...P.routeOptions(b, accounts, first.model, settings).filter((o) => o.account !== first.account).map((o) => ({ ...first, ...o }))].slice(0, MAX_PICK_TRIES);
@@ -589,7 +599,9 @@ export function tick({ env = process.env } = {}) {
     for (const o of options) {
       l = o;
       try { r = launch(b, l, { rules, env }); break; }
-      catch (e) { lastErr = e; tried.push(l.account); logLine({ event: 'launch-refused', build: b.id, account: l.account, error: str(e.message, 300) }); }
+      catch (e) { lastErr = e; tried.push(l.account); logLine({ event: 'launch-refused', build: b.id, account: l.account, error: str(e.message, 300) });
+        // the server gate refused a duplicate: no other account may start it either
+        if (/One session per build/.test(e.message)) break; }
     }
     try {
       if (!r) throw lastErr ?? new Error('no account accepted the launch');
@@ -668,6 +680,16 @@ export function planAhead(store, accounts, settings = loadSettings()) {
 /** Run `fn` at the end of every tick (the running-builds watchdog's way in). Returns a function that removes it. */
 const TICK_HOOKS = [];
 export function afterTick(fn) { if (typeof fn === 'function') TICK_HOOKS.push(fn); return () => { const i = TICK_HOOKS.indexOf(fn); if (i >= 0) TICK_HOOKS.splice(i, 1); }; }
+
+/**
+ * The duplicate-session watchdog (server-gate): after every tick, any build with more than one live session keeps its
+ * oldest one; the rest are ended, logged in the server gate log and sent to AmberX. AXF_GATE_REAP=off = look only.
+ */
+afterTick(({ env }) => {
+  const r = gate.reap({ builds: buildIds(), by: 'watchdog', dry: env.AXF_GATE_REAP === 'off', env });
+  for (const d of r.duplicates ?? []) logLine({ event: 'duplicates-reaped', build: d.build, kept: d.keep, ended: d.end, dry: Boolean(r.dry) });
+});
+function buildIds() { try { return live(loadStore()).map((b) => b.id); } catch { return []; } }
 
 /**
  * shipped-manifest@1 (Brett, Nov 9 2026: "The orchestrator should send a manifest with the information on the shipped
