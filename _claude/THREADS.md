@@ -777,12 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:26 UTC · `lib-mcp` note (all) · backfill
-- 2026-11-12 03:26 UTC · `claude-pick-api-key` note (all) · backfill
-- 2026-11-12 03:26 UTC · `ai-assistant-plugin` note (all) · backfill
-- 2026-11-12 03:26 UTC · `agent-manager-plugin` note (all) · backfill
-- 2026-11-12 03:26 UTC · `banner-assets` note (all) · backfill
-- 2026-11-12 03:26 UTC · `widget-assets` note (all) · backfill
 - 2026-11-12 03:26 UTC · `console-android-app-tabs` note (all) · backfill
 - 2026-11-12 03:26 UTC · `build-manager-history` note (all) · backfill
 - 2026-11-12 03:26 UTC · `todo-manager-tabs` note (all) · backfill
@@ -1177,6 +1171,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 10:52 UTC · `claude-settings-tabs-veto` → archived (all) · claude-voice
 - 2026-11-12 10:53 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` note (all) · orchestrator
 - 2026-11-12 10:54 UTC · `plugin-floatable` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `claude-accounts-edit` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `notes-tasks-calendar` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `icon-browser-manager` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `library-harvest` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `follow-amber-stay-connected` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `voice-ui-edit-library` → archived (all) · claude-voice
 
 ## Token passes (log)
 

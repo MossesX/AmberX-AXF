@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T10:54:21.315Z",
+ "updatedAt": "2026-11-12T10:54:36.153Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -25530,14 +25530,14 @@
    "title": "claude-accounts-edit",
    "category": "",
    "detail": "Launched without an orchestrator entry; record made from its brief (claude-accounts-edit-r2).",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "headless",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T00:47:40.021Z",
-   "updatedAt": "2026-11-07T05:14:18.101Z",
+   "updatedAt": "2026-11-12T10:54:26.405Z",
    "builtAt": "",
    "notes": [
     {
@@ -25887,7 +25887,7 @@
    "title": "In the notes, task manager and to-do (one plugin), we're gonna add a calendar where we can set events and schedules. We",
    "category": "",
    "detail": "Launched without an orchestrator entry; record made from its brief (notes-tasks-calendar).",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "headless",
    "pendingId": "",
@@ -25895,7 +25895,7 @@
    "pr": "#374",
    "priority": "P0",
    "createdAt": "2026-11-07T00:48:23.622Z",
-   "updatedAt": "2026-11-10T02:23:45.058Z",
+   "updatedAt": "2026-11-12T10:54:27.695Z",
    "builtAt": "",
    "notes": [
     {
@@ -27086,14 +27086,14 @@
    "title": "Icon Browser plugin + Icon Manager (icon library, icon maps, icon packs)",
    "category": "Assets",
    "detail": "Icon Browser plugin: starter library of open-licensed icon sets stored as icon-pack assets (framework/icon-library, served by the plugin, never bundled); tree / grid / list views with categories, sort, filter, search and a thumbnails toggle; configurable sources of any kind (local, HTTP, REST, MCP, FTP/SFTP, Google Drive, Google Photos, Dropbox, known online repositories) with per-type forms and secrets in the plugin's private store; packs composed by drag and drop between collapsible / floatable panes; selected icons open into docked or floating tab groups; packs saved as icon-pack assets. Icon Manager: every UI and plugin has an icon map (icon-map@1: slot -> icon ref, inheritance app root -> UI -> plugin, child overrides parent); list / grid of every UI with a map, filterable by app; map editor + live preview with drops; Save / Apply; a global pack listing every icon; switch packs globally, randomize, generate cohesive packs. Everything is assets with API / MCP / CLI parity and voice actions; settings in categorized collapsible sections; UI options to UI Review first (3+).",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/icon-browser-manager",
    "pr": "#377",
    "createdAt": "2026-11-07T02:52:29.111Z",
-   "updatedAt": "2026-11-07T04:49:27.594Z",
+   "updatedAt": "2026-11-12T10:54:29.071Z",
    "builtAt": "",
    "notes": [
     {
@@ -27546,14 +27546,14 @@
    "title": "library-harvest",
    "category": "",
    "detail": "Harvest reusable libraries from our code into versioned installable packages; no-code import wizard (configure, connect to data sets/UIs/plugins). Goal: assemble apps by voice in minutes. Brief: /root/axf-builds/library-harvest/.brief.md. Was queued directly; orchestrator to assign models.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "library-harvest",
    "branch": "claude/library-harvest",
    "pr": "#378",
    "createdAt": "2026-11-07T04:02:13.457Z",
-   "updatedAt": "2026-11-07T05:00:50.940Z",
+   "updatedAt": "2026-11-12T10:54:30.521Z",
    "builtAt": "",
    "notes": [
     {
@@ -28202,14 +28202,14 @@
    "title": "follow-amber-stay-connected",
    "category": "console",
    "detail": "The Dev Console keeps disconnecting from Follow Amber: console_follow shows clients 0 a few minutes after a refresh, so approval pop-ups and console_show never arrive. Likely the phone browser backgrounding or killing the socket. Make the console's Follow Amber connection survive: auto-reconnect with backoff, heartbeat, reconnect on visibility/focus/online events, resend queued shows and approvals on reconnect, keep-alive where Android allows, and a visible connected/disconnected indicator. Also: when no console is connected, deliver approvals through AmberX push so they still pop up. Find the root cause first. Orchestrator assigns models.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T04:53:28.338Z",
-   "updatedAt": "2026-11-07T04:53:51.925Z",
+   "updatedAt": "2026-11-12T10:54:32.047Z",
    "builtAt": "",
    "notes": [
     {
@@ -28438,14 +28438,14 @@
    "title": "voice-ui-edit-library",
    "category": "framework",
    "detail": "Build the voice UI edit system that was appended to the finished ui-registry-shortcuts brief (see /root/axf-builds/ui-registry-shortcuts/.brief.md, all addenda after its original scope). Registry Browser; changed-from-default view; edited indicator on every asset; UI Development mode with floating control dial; tooltip toggle with click-to-open floating editable property box (tree-grid, changeable root); color-coded identify labels; swap/combine/split; scoped reset (element/UI/plugin/global); every element down to text blocks as mapped assets with composition (button = box + text); all edits write to the registry; local-first assets (axHub holds only defaults); end-to-end voice chain; target-scoped so it edits any app preview, not just the console; packaged as ONE installable library including all designers (nav, toolbar, context menu, app menu, banner, embed, widget). Attach the library to any new project and build its UI by voice. Orchestrator assigns models.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T04:55:10.101Z",
-   "updatedAt": "2026-11-07T04:55:10.101Z",
+   "updatedAt": "2026-11-12T10:54:33.779Z",
    "builtAt": "",
    "notes": [
     {
