@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:22:10.877Z",
+ "updatedAt": "2026-11-12T02:22:25.699Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -95940,7 +95940,7 @@
    "title": "Build notifications: same notification per build, but it alerts (sound/vibrate) on every stage",
    "category": "",
    "detail": "Amends build-stage notifications: keep one notification per build that updates in place, but each stage change (started, complete, ready to merge, merged, live) re-alerts: sound/vibration and heads-up, not a silent update.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -95948,7 +95948,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T20:57:38.838Z",
-   "updatedAt": "2026-11-12T02:22:08.352Z",
+   "updatedAt": "2026-11-12T02:22:12.491Z",
    "builtAt": "",
    "notes": [
     {
@@ -95974,6 +95974,10 @@
     {
      "text": "Session on account-5 ended (exit 1) with 3 steps left: back in the Queue (run 1).",
      "at": "2026-11-12T01:58:04.308Z"
+    },
+    {
+     "text": "Started run 2 on account-5 (API key, subscriptions first, then API) (Opus, Phase 1): hl-mwcx9z46-f6.",
+     "at": "2026-11-12T02:22:12.491Z"
     }
    ],
    "approvals": [],

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3302,
- "updatedAt": "2026-11-12T02:22:10.877Z",
+ "rev": 3303,
+ "updatedAt": "2026-11-12T02:22:25.699Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -154082,7 +154082,7 @@
    "title": "Build notifications: same notification per build, but it alerts (sound/vibrate) on every stage",
    "category": "",
    "detail": "Amends build-stage notifications: keep one notification per build that updates in place, but each stage change (started, complete, ready to merge, merged, live) re-alerts: sound/vibration and heads-up, not a silent update.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -154090,7 +154090,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T20:57:38.838Z",
-   "updatedAt": "2026-11-12T02:22:08.352Z",
+   "updatedAt": "2026-11-12T02:22:12.491Z",
    "builtAt": "",
    "notes": [
     {
@@ -154116,6 +154116,10 @@
     {
      "text": "Session on account-5 ended (exit 1) with 3 steps left: back in the Queue (run 1).",
      "at": "2026-11-12T01:58:04.308Z"
+    },
+    {
+     "text": "Started run 2 on account-5 (API key, subscriptions first, then API) (Opus, Phase 1): hl-mwcx9z46-f6.",
+     "at": "2026-11-12T02:22:12.491Z"
     }
    ],
    "approvals": [],
@@ -154136,11 +154140,11 @@
     "queuedAt": "2026-11-12T01:43:58.673Z",
     "queuedBy": "console",
     "account": "account-5",
-    "session": "",
-    "slot": "",
+    "session": "hl-mwcx9z46-f6",
+    "slot": "hl-mwcx9z46-f6",
     "model": "Opus",
-    "launchedAt": "2026-11-12T01:47:37.538Z",
-    "runs": 1,
+    "launchedAt": "2026-11-12T02:22:11.770Z",
+    "runs": 2,
     "lastRun": {
      "at": "2026-11-12T01:58:03.900Z",
      "exit": 1,
@@ -154151,9 +154155,9 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "Session on account-5 ended (exit 1) with 3 steps left: back in the Queue (run 1).",
+    "note": "in the agent-slots queue (starts when the VPS cap frees)",
     "route": "",
-    "dispatchedAt": "2026-11-12T01:47:37.538Z",
+    "dispatchedAt": "2026-11-12T02:22:11.770Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -154162,7 +154166,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-12T01:47:37.538Z",
+    "pickedAt": "2026-11-12T02:22:11.770Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -154246,7 +154250,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
