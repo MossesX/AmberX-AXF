@@ -16,6 +16,7 @@
  * changes still go through Android Studio's Live Edit / Apply Changes — this covers everything in JSON.
  */
 import { createServer } from 'node:http';
+import { networkInterfaces } from 'node:os';
 import { existsSync, readFileSync, watch } from 'node:fs';
 import { basename, dirname, join, relative, resolve } from 'node:path';
 import { appTemplate, FRAMEWORK_DIR, loadAssets, validateAsset } from './build-engine.mjs';
@@ -33,6 +34,13 @@ export function assetChange(file, action) {
     const raw = JSON.parse(readFileSync(file, 'utf8'));
     return validateAsset(raw).ok ? { type: raw.type ?? type, id: raw.id ?? id, action, ok: true, raw } : { type, id, action, ok: false };
   } catch { return { type, id, action, ok: false }; }
+}
+
+/** The URLs this server answers on: every IPv4 address when bound to all interfaces, else the bound host. */
+export function devServerUrls(host, port) {
+  if (host !== '0.0.0.0' && host !== '::') return [`http://${host}:${port}`];
+  const ips = Object.values(networkInterfaces()).flat().filter((i) => i && i.family === 'IPv4' && !i.internal).map((i) => i.address);
+  return [`http://localhost:${port}`, ...ips.map((ip) => `http://${ip}:${port}`)];
 }
 
 export function startDevServer({ dir = '.', port = 7070, host = '0.0.0.0', framework = false, log = console.log } = {}) {
@@ -103,6 +111,13 @@ export function startDevServer({ dir = '.', port = 7070, host = '0.0.0.0', frame
     }
     respond(res, { error: 'not found' }, 404);
   });
-  server.listen(port, host, () => log(`AXF dev server on http://${host}:${port}  watching ${relative(process.cwd(), assetsDir)} (${snapshot().length} assets)\n  on the device: Settings → Developer → Dev server URL = http://<this machine's IP>:${port}`));
+  server.listen(port, host, () => {
+    const urls = devServerUrls(host, server.address()?.port ?? port);
+    log(`AXF dev server watching ${relative(process.cwd(), assetsDir) || '.'} (${snapshot().length} assets)`);
+    for (const u of urls) log(`  ${u}`);
+    const lan = urls.find((u) => !/localhost|127\.0\.0\.1/.test(u)) ?? urls[0];
+    log(`  web app:  open it with ?axfDev=${lan}`);
+    log(`  phone:    Settings → Developer → Dev server URL = ${lan} (same Wi-Fi; emulator: http://10.0.2.2:${port})`);
+  });
   return server;
 }
