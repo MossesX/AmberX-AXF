@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3778,
- "updatedAt": "2026-11-12T22:56:11.530Z",
+ "rev": 3779,
+ "updatedAt": "2026-11-12T22:56:23.915Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -172927,7 +172927,7 @@
    "pr": "#530",
    "priority": "P1",
    "createdAt": "2026-11-12T20:40:19.258Z",
-   "updatedAt": "2026-11-12T22:55:58.438Z",
+   "updatedAt": "2026-11-12T22:55:59.743Z",
    "builtAt": "",
    "notes": [
     {
@@ -172961,6 +172961,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-github-client-plugin-see-and-control-every-pr-st--paulie, own login copy)",
      "at": "2026-11-12T22:46:10.676Z"
+    },
+    {
+     "text": "PR #530 opened and linked once GitHub's content-creation block cleared.",
+     "at": "2026-11-12T22:55:59.743Z"
     }
    ],
    "approvals": [],
@@ -173220,7 +173224,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T22:56:11.530Z",
+ "updatedAt": "2026-11-12T22:56:23.915Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -109431,7 +109431,7 @@
    "pr": "#530",
    "priority": "P1",
    "createdAt": "2026-11-12T20:40:19.258Z",
-   "updatedAt": "2026-11-12T22:55:58.438Z",
+   "updatedAt": "2026-11-12T22:55:59.743Z",
    "builtAt": "",
    "notes": [
     {
@@ -109465,6 +109465,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-github-client-plugin-see-and-control-every-pr-st--paulie, own login copy)",
      "at": "2026-11-12T22:46:10.676Z"
+    },
+    {
+     "text": "PR #530 opened and linked once GitHub's content-creation block cleared.",
+     "at": "2026-11-12T22:55:59.743Z"
     }
    ],
    "approvals": [],
