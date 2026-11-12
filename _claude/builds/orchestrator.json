@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:13:46.011Z",
+ "updatedAt": "2026-11-12T02:13:57.097Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -96937,7 +96937,7 @@
    "title": "Rebuild Gizmo from scratch: full Claude-style chat interface, switch between Claude and local Ollama/Llama",
    "category": "",
    "detail": "Replace the current Gizmo chat. Full Claude.ai-quality interface: conversation list, streaming replies, markdown/code, attachments, voice talk mode, history search. Model switcher per chat: Claude (accounts/API) or local Ollama (amberx-llama container, Mistral Small 24B default, 7B option) via the internal API. Works in AmberX app, AmberX web app and console, with a real deep link. Keep what worked before the Nov 7 Fable rebuild.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -96945,8 +96945,8 @@
    "pr": "#501",
    "priority": "P0",
    "createdAt": "2026-11-10T21:38:57.321Z",
-   "updatedAt": "2026-11-12T02:13:43.230Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-12T02:13:48.107Z",
+   "builtAt": "2026-11-12T02:13:46.013Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -96983,6 +96983,10 @@
     {
      "text": "Self-check: rebuild-gizmo-from-scratch-full-claude-style-cha was marked running on mossesx-max- with no session: released and back in the Queue.",
      "at": "2026-11-12T02:06:07.749Z"
+    },
+    {
+     "text": "PR #501. UI Review shots still needed: headless, the AmberX web app stops at 'Waiting for axHub' (needs a hub session). amberx-llama container + model pulls are not part of this build.",
+     "at": "2026-11-12T02:13:48.107Z"
     }
    ],
    "approvals": [],
@@ -97052,8 +97056,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T02:13:46.012Z",
      "note": "",
      "uid": "st-mwb7qqyi03q7rd"
     }
