@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 10:48 UTC · `profile-filter-tables` → archived (all) · claude-voice
 - 2026-11-12 10:48 UTC · `fable-review-nov3` → archived (all) · claude-voice
 - 2026-11-12 10:48 UTC · `molly-banner-match` → archived (all) · claude-voice
 - 2026-11-12 10:48 UTC · `build-todo-sync` → archived (all) · claude-voice
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 23:32 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` note (all) · orchestrator
 - 2026-11-12 23:32 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` → queued, note (all) · console
 - 2026-11-12 23:33 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` → pending (all) · builds-live
+- 2026-11-12 23:33 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` note (all) · orchestrator
 
 ## Token passes (log)
 
