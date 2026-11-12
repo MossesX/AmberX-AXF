@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3513,
- "updatedAt": "2026-11-12T10:42:41.928Z",
+ "rev": 3514,
+ "updatedAt": "2026-11-12T10:42:52.825Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -73883,7 +73883,7 @@
    "title": "Terminal: tab position setting (top, left / right stack, bottom)",
    "category": "Terminal",
    "detail": "Brett (Nov 3 2026, voice): \"I want a setting in terminal to put all the tabs on the left side in a stack instead of across the top.\" Setting Tab position: Top | Left stack | Right stack | Bottom, per device, also in the tab context menu. Stack: title, agent, model, live cost, status dot, close; collapse to icons; resizable; drag to reorder; scrolls; title bar still drags. Phone: slide-out. Server default + REST/MCP/CLI get/set. Agent: Janitor Joey (headless worktree session; router not on this branch's main). Overlaps: terminal-sessions-nav (#286, open, adds a left rail) and terminal-drag-chain-tree (running, rewrites strip pointer handling): changes kept to a new TabStack file + CSS so all three merge cleanly.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -73891,7 +73891,7 @@
    "pr": "#293",
    "priority": "P0",
    "createdAt": "2026-11-03T22:02:33.805Z",
-   "updatedAt": "2026-11-10T02:23:45.058Z",
+   "updatedAt": "2026-11-12T10:42:42.411Z",
    "builtAt": "",
    "notes": [
     {
@@ -74065,7 +74065,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 63,
+   "rev": 64,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -75215,14 +75215,14 @@
    "title": "Automated Browser plugin (drive, record, edit, schedule)",
    "category": "Console > Plugins",
    "detail": "Brett, Nov 3 2026 (voice), verbatim: \"Make me a plugin that shows a browser that can be driven by the app, give it the ability to be automated and to record automation routines through the browser, like make it record in real time what you do and save the events, so you can redo everything that you just recorded, and have a powerful editor to see what each step is doing. Make it so that you can create workflows through the automated browser and record the steps, or do them automatically and record as you go, or record manually, and full powerful editing, able to tweak the JavaScript and whatever you gotta do to make it follow a routine, like go to a site and log in, or go to a site and go to a products page and grab something, and then have a scheduler built into it that you can schedule when to perform these routines.\" Addendum: \"Be able to manually record, or tell you to do it, so it needs to be integrated with the assistant or with its own access to the assistant.\" Browser runs on the VPS (Playwright + headless Chromium), live view over CDP screencast; REST + MCP + CLI; secrets by vault reference only. Booked to Snap Sully (no Polo card).",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/browser-automation",
    "pr": "#299",
    "createdAt": "2026-11-04T00:31:47.837Z",
-   "updatedAt": "2026-11-04T15:00:21.664Z",
+   "updatedAt": "2026-11-12T10:42:44.101Z",
    "builtAt": "",
    "notes": [
     {
@@ -75653,7 +75653,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 63,
+   "rev": 64,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -75936,14 +75936,14 @@
    "title": "Main area tab group (tabs, positions, float and dock, split)",
    "category": "Console > Shell",
    "detail": "What Brett said (Nov 3 2026, voice, verbatim): \"Which build loads the windows in a tab group in the main area?\" -> none yet -> \"Build that now.\" Earlier (follow-ups.md): main-area tab group - persistent tabs, right-click for settings, position top/left/right/bottom, drag out to float, drop back to dock, built on the dock engine #245. Folds in 'detach anything in the main area' (pending plugin-floatable). Booked to Snap Sully (no Polo card).",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/main-area-tabs",
    "pr": "#301",
    "createdAt": "2026-11-04T01:34:59.457Z",
-   "updatedAt": "2026-11-04T03:12:51.746Z",
+   "updatedAt": "2026-11-12T10:42:45.934Z",
    "builtAt": "",
    "notes": [
     {
@@ -76105,7 +76105,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 57,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -77623,14 +77623,14 @@
    "title": "App style override: axHub is the style source, per-app Override design / colors, reload + save to axHub",
    "category": "Appearance",
    "detail": "What Brett said (Nov 3 2026, voice): \"Put a button in each app's settings to override axHub's style, in design and colors.\" Addendum 1: \"And the hook will reload axHub, and you can also save design back to axHub.\" Context: axHub defines the default look for every app; apps inherit it live; manual edits override per setting with an 'Overriding axHub' note (same rule as molly-nav-submenus Addendum 6 and gizmo-companion's appearance add-on). Agent: Ping Paulie (no Polo card). Model: Opus for every step (Claude decides); additive web-only contract, Android twin deferred in PORTING.md; Fable review recommended per the shared rule.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/app-style-override",
    "pr": "#302",
    "createdAt": "2026-11-04T01:44:48.256Z",
-   "updatedAt": "2026-11-04T12:44:12.117Z",
+   "updatedAt": "2026-11-12T10:42:47.650Z",
    "builtAt": "",
    "notes": [
     {
@@ -77818,7 +77818,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 60,
+   "rev": 61,
    "deleted": false,
    "deletedAt": "",
    "pending": {
