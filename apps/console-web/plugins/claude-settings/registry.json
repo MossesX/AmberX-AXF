@@ -18,7 +18,7 @@
     { "id": "builds", "label": "Builds", "icon": "layers", "order": 20, "groups": ["builds", "headless", "verification", "deploy"], "description": "How Claude starts, pays for and checks builds." },
     { "id": "talking", "label": "Talking", "icon": "mic", "order": 30, "groups": ["talking"], "description": "How Amber talks to Brett." },
     { "id": "notifications", "label": "Notifications", "icon": "bell", "order": 40, "groups": ["notifications"], "description": "What gets pushed, and when it stays quiet." },
-    { "id": "session", "label": "Follow & memory", "icon": "eye", "order": 50, "groups": ["follow", "memory"], "description": "Following Amber around the console, and what sessions write down." }
+    { "id": "session", "label": "Follow & memory", "icon": "eye", "order": 50, "groups": ["follow", "recording", "memory"], "description": "Following Amber around the console, and what sessions write down." }
   ],
   "policyDefaults": {
     "readme": "Brett, Nov 6 2026: hold only VPS writes and account switches. Only used to work out the 'Apply the default' plan; Brett's click applies it. Reads run at once; destructive tools keep the hub's confirm.",
