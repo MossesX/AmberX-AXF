@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3556,
- "updatedAt": "2026-11-12T11:05:53.411Z",
+ "rev": 3557,
+ "updatedAt": "2026-11-12T11:06:09.893Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174307,7 +174307,7 @@
    "branch": "claude/pending-tab-one-collapsed-row-per-build-tap-to-e",
    "pr": "",
    "createdAt": "2026-11-12T10:48:25.123Z",
-   "updatedAt": "2026-11-12T11:05:39.760Z",
+   "updatedAt": "2026-11-12T11:05:42.217Z",
    "builtAt": "",
    "notes": [
     {
@@ -174409,12 +174409,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T11:05:42.217Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T10:49:48.779Z",
-     "updatedAt": "2026-11-12T10:49:48.779Z"
+     "updatedAt": "2026-11-12T11:05:42.516Z"
     },
     {
      "id": "s3",

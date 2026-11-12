@@ -777,7 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:27 UTC · `no-login-questions-headless-terminal` note (all) · backfill
 - 2026-11-12 03:27 UTC · `axhub-oauth-config-soft` note (all) · backfill
 - 2026-11-12 03:27 UTC · `banner-one-line` note (all) · backfill
 - 2026-11-12 03:27 UTC · `banner-one-line-fable` note (all) · backfill
@@ -1177,6 +1176,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 11:05 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` s1 done, → running (all) · orchestrator
 - 2026-11-12 11:05 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` s5-4 done (all) · orchestrator
 - 2026-11-12 11:05 UTC · `pending-tab-one-collapsed-row-per-build-tap-to-e` s1 done, → running (all) · orchestrator
+- 2026-11-12 11:05 UTC · `pending-tab-one-collapsed-row-per-build-tap-to-e` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
