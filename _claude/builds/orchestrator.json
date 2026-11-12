@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:52:13.029Z",
+ "updatedAt": "2026-11-12T02:52:23.335Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -101146,19 +101146,27 @@
    "title": "All banners hide when empty",
    "category": "framework",
    "detail": "URGENT, Brett's rule, Nov 12: EVERY banner (console, Molly, AmberX, plugin banners, Auto-fixes, Server gate log, any future banner) only appears when it has something in it. Empty = fully hidden, takes no space; appears live when an entry arrives, hides again when it empties. Make it a framework rule in the banner base component, so new banners get it automatically. Audit all existing banners and fix any that show when empty. Add a check (CI) that fails if a banner renders with no entries.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/all-banners-hide-when-empty",
    "pr": "",
    "createdAt": "2026-11-12T02:45:08.669Z",
-   "updatedAt": "2026-11-12T02:52:11.395Z",
+   "updatedAt": "2026-11-12T02:52:18.698Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-12T02:45:12.497Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-all-banners-hide-when-empty--joey.",
+     "at": "2026-11-12T02:52:16.123Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-all-banners-hide-when-empty--joey, own login copy)",
+     "at": "2026-11-12T02:52:18.698Z"
     }
    ],
    "approvals": [],

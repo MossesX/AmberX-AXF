@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3401,
- "updatedAt": "2026-11-12T02:52:13.029Z",
+ "rev": 3402,
+ "updatedAt": "2026-11-12T02:52:23.335Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -161765,19 +161765,27 @@
    "title": "All banners hide when empty",
    "category": "framework",
    "detail": "URGENT, Brett's rule, Nov 12: EVERY banner (console, Molly, AmberX, plugin banners, Auto-fixes, Server gate log, any future banner) only appears when it has something in it. Empty = fully hidden, takes no space; appears live when an entry arrives, hides again when it empties. Make it a framework rule in the banner base component, so new banners get it automatically. Audit all existing banners and fix any that show when empty. Add a check (CI) that fails if a banner renders with no entries.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/all-banners-hide-when-empty",
    "pr": "",
    "createdAt": "2026-11-12T02:45:08.669Z",
-   "updatedAt": "2026-11-12T02:52:11.395Z",
+   "updatedAt": "2026-11-12T02:52:18.698Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-12T02:45:12.497Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-all-banners-hide-when-empty--joey.",
+     "at": "2026-11-12T02:52:16.123Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-all-banners-hide-when-empty--joey, own login copy)",
+     "at": "2026-11-12T02:52:18.698Z"
     }
    ],
    "approvals": [],
@@ -161797,18 +161805,18 @@
    "pipeline": {
     "queuedAt": "2026-11-12T02:45:11.466Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-all-banners-hide-when-empty--joey",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-12T02:52:13.861Z",
+    "runs": 1,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-12T02:52:13.861Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -161817,7 +161825,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-12T02:52:13.861Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -161898,7 +161906,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
