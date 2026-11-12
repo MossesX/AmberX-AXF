@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3844,
- "updatedAt": "2026-11-12T23:48:05.148Z",
+ "rev": 3845,
+ "updatedAt": "2026-11-12T23:50:08.728Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -173292,7 +173292,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T20:45:12.311Z",
-   "updatedAt": "2026-11-12T23:48:03.828Z",
+   "updatedAt": "2026-11-12T23:50:06.163Z",
    "builtAt": "",
    "notes": [
     {
@@ -173338,6 +173338,10 @@
     {
      "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
      "at": "2026-11-12T23:48:03.828Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-12T23:50:06.163Z"
     }
    ],
    "approvals": [],
@@ -173448,7 +173452,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
