@@ -776,8 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-11 00:17 UTC · `ai-assistant-in-molly-console-drives-by-api-open` PR #488 (all) · builds-live
-- 2026-11-11 00:17 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
 - 2026-11-11 00:19 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` → blocked (all) · merge-review
 - 2026-11-11 00:20 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` note (all) · merge-review
 - 2026-11-11 00:20 UTC · `merge-review-one-by-one-every-built-but-unmerged` s1 done (all) · orchestrator
@@ -1176,6 +1174,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:39 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` → queued, note (all) · console
 - 2026-11-12 02:40 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` → queued, note (all) · pipeline
 - 2026-11-12 02:38 UTC · `molly-gap-console-token-handoff` s1 done (all) · orchestrator
+- 2026-11-12 02:40 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` → running, note (all) · pipeline
+- 2026-11-12 02:40 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` note (all) · orchestrator
 
 ## Token passes (log)
 
