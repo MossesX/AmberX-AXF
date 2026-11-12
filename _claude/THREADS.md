@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:30 UTC · `priority-tags` note (all) · backfill
 - 2026-11-12 03:30 UTC · `build-own-login` note (all) · backfill
 - 2026-11-12 03:30 UTC · `ai-keys-new-format` note (all) · backfill
 - 2026-11-12 03:30 UTC · `console-account-picker` note (all) · backfill
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 20:46 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` s3 done (all) · orchestrator
 - 2026-11-12 20:46 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` s7-6 done (all) · orchestrator
 - 2026-11-12 20:48 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note (all) · pipeline
+- 2026-11-12 20:50 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` → complete, merged, note (all) · reconciler
 
 ## Token passes (log)
 
