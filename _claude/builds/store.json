@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3496,
- "updatedAt": "2026-11-12T03:37:07.918Z",
+ "rev": 3497,
+ "updatedAt": "2026-11-12T03:37:17.342Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -123628,8 +123628,8 @@
    "branch": "claude/orchestrator-checks-shipped-features-before-spli",
    "pr": "#515",
    "createdAt": "2026-11-08T17:22:53.861Z",
-   "updatedAt": "2026-11-12T03:36:52.965Z",
-   "builtAt": "2026-11-12T03:36:52.965Z",
+   "updatedAt": "2026-11-12T03:37:07.380Z",
+   "builtAt": "2026-11-12T03:37:07.380Z",
    "notes": [
     {
      "text": "Conflict flow (Brett): a conflicting step is moved to a special Conflicts section and removed from the build; the other steps still build. Brett gets an AmberX notification-panel item that explains the conflict and offers suggested resolutions; he taps a suggestion or types a prompt, which goes to the orchestrator, and the orchestrator makes a new build from it. Then test it: Brett will send a 3-4 step build that deliberately overlaps existing shipped features to confirm the orchestrator catches it.",
@@ -123662,6 +123662,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-orchestrator-checks-shipped-features-before-spli--rhonda, own login copy)",
      "at": "2026-11-12T03:13:39.515Z"
+    },
+    {
+     "text": "Headless run axf-orchestrator-checks-shipped-features-before-spli--rhonda: brief only · start 11.2K tokens ($0.03) · cost $3.20 · 60 turns · 6 tools, MCP none",
+     "at": "2026-11-12T03:37:07.380Z"
     }
    ],
    "approvals": [],
