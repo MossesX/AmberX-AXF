@@ -194,18 +194,22 @@ export function generatePhrases(entries) {
   for (const e of entries) for (const a of e.actions ?? []) for (const ph of a.phrases ?? []) claim(foldPhrase(ph), `${e.id}#${a.id}`);
   const proposals = [];
   const labels = new Map();
-  for (const e of entries) { const l = foldPhrase(e.label ?? ''); labels.set(l, (labels.get(l) ?? 0) + 1); }
+  // when entries share a label, the one a person most likely means owns "<verb> <label>": a page, then an app, …
+  const RANK = { page: 0, app: 1, display: 2, setting: 3, behavior: 4, tool: 5, plugin: 6 };
+  const owner = new Map();
+  for (const e of entries) { const l = foldPhrase(e.label ?? ''); labels.set(l, (labels.get(l) ?? 0) + 1); const o = owner.get(l); if (!o || RANK[e.type] < RANK[o.type]) owner.set(l, e); }
   for (const e of entries) {
     if ((e.actions ?? []).some((a) => a.phrases?.length) || (Array.isArray(e.surfaces?.voice) && e.surfaces.voice.length)) continue;
     for (const a of e.actions ?? []) {
       if (a.effect === 'read' && e.type === 'tool') continue;
       const label = foldPhrase(e.label ?? '');
       if (!label || label.length < 3) continue;
-      const verb = VERB[a.effect ?? 'write'];
+      const verb = a.effect === 'navigate' && !['open', 'launch', 'run'].includes(a.id) ? foldPhrase(a.id) : VERB[a.effect ?? 'write'];
       const al = foldPhrase(a.label ?? '');
       const settings = e.type === 'plugin' && a.effect === 'navigate';
+      if (settings && labels.has(`${label} settings`)) continue; // its settings-tab page says the same and opens the same tab
       // a label two entries share would make "<verb> <label>" pick one at random: only the action's own label is safe then
-      if (labels.get(label) > 1 && !settings && !(al && al !== label && al.split(' ').length > 2)) continue;
+      if (labels.get(label) > 1 && !settings && owner.get(label) !== e && !(al && al !== label && al.split(' ').length > 2)) continue;
       const ph = settings ? `open ${label} settings` : verb ? `${verb} ${label}` : al && al.includes(label) ? al : `${foldPhrase(a.id)} ${label}`;
       if (ph.split(' ').length < 2) continue;
       proposals.push({ e, a, ph });
@@ -213,7 +217,7 @@ export function generatePhrases(entries) {
     }
   }
   let n = 0;
-  for (const { a, e, ph } of proposals) if (taken.get(ph) === `${e.id}#${a.id}`) { a.phrases = [ph]; n++; }
+  for (const { a, e, ph } of proposals) if (taken.get(ph) === `${e.id}#${a.id}`) { a.phrases = [ph]; if (e.surfaces?.voice === false) delete e.surfaces.voice; n++; }
   return n;
 }
 

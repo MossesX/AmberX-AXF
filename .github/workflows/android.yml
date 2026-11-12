@@ -268,6 +268,7 @@ jobs:
             node framework/spec/check-nightly-deploy.mjs
             node framework/spec/check-plugin-commands.mjs               # plugin-commands@1: every plugin's commands and reads from routes, actions, data folder and plugin.json; projections; every plugin covered
             node framework/spec/check-control-registry.mjs              # control-registry@1: schema, hashing, index build / diff / export / import, queries, deterministic dispatcher (fixture replay), AI gate on the Claude setting, committed index validates
+            node scripts/check-registry-coverage.mjs                    # control-registry@1 parity: every UI page, dialog, settings tab, action and setting has an entry, every entry reaches REST / MCP / CLI / voice or says why, every parameter has allowed values, console targets match deep links, the committed index is fresh (new findings fail; known ones held in _claude/builds/registry/coverage-baseline.json)
             npx -y tsx framework/spec/check-agent-card.mts             # agent-card@1: registry, fixture replay, validators agree, four starters, schema
             npx -y tsx framework/spec/check-job-type.mts               # job-type@1: registry, fixture replay, validators agree, starter job types, schema
             npx -y tsx framework/spec/check-demo.mts                   # demonstration@1 / book@1 / clip@1 / docs@1: registry, fixture replay (generator, book plan, moves, clip tags, docs plan), validators agree, starters, schemas
