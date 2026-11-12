@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 23:43 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` note (all) · orchestrator
 - 2026-11-10 23:43 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` note (all) · pipeline
 - 2026-11-10 23:43 UTC · `molly-banner-match` → queued, note (all) · auto-requeue (Brett: re-queue them)
 - 2026-11-10 23:43 UTC · `home-page-build-queue-card-opens-the-orchestrato` → queued, note (all) · auto-requeue (Brett: re-queue them)
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:16 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` note (all) · orchestrator
 - 2026-11-12 02:17 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` → queued, note (all) · pipeline
 - 2026-11-12 02:17 UTC · `molly-gap-remote-actions` → queued, note (all) · pipeline
+- 2026-11-12 02:17 UTC · `open-any-website-by-voice-on-the-phone-optionall` note (all) · orchestrator
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:17:12.225Z",
+ "updatedAt": "2026-11-12T02:17:25.804Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -95678,8 +95678,8 @@
    "pr": "#500",
    "priority": "P0",
    "createdAt": "2026-11-10T20:46:28.820Z",
-   "updatedAt": "2026-11-12T02:15:18.702Z",
-   "builtAt": "2026-11-12T02:15:18.702Z",
+   "updatedAt": "2026-11-12T02:17:12.383Z",
+   "builtAt": "2026-11-12T02:15:00.042Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -95728,6 +95728,10 @@
     {
      "text": "Claude account: account-5 (axf-open-any-website-by-voice-on-the-phone-optionall--sully, own login copy)",
      "at": "2026-11-12T02:13:14.168Z"
+    },
+    {
+     "text": "UI Review shots still needed: headless capture stops at 'Waiting for axHub' (sandbox can't reach the hub). Capture the console Web browser pane and AmberX Web page, phone + desktop, from a console that reaches axHub, then submit to UI Review for PR #500.",
+     "at": "2026-11-12T02:17:12.383Z"
     },
     {
      "text": "Headless run axf-open-any-website-by-voice-on-the-phone-optionall--joey: brief only · start 11.0K tokens ($0.03) · cost $4.22 · 98 turns · 6 tools, MCP none",
