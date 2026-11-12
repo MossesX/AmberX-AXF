@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T11:10:45.416Z",
+ "updatedAt": "2026-11-12T11:10:56.679Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -106812,7 +106812,7 @@
    "title": "Focus on every screen: console_open/console_show can jump to any item (UI Review, Plan Studio, all screens)",
    "category": "",
    "detail": "PR #496 added <screen>.focus only for the Build orchestrator. Opening UI Review with focus r-20261112-4ec56890 answered: opened UI Review; it has no way to focus. Every screen (UI Review, Plan Studio, Pending, All builds, settings tabs, plugins' screens) must declare a <screen>.focus action that opens the right tab, scrolls the item/row/group into view, expands and highlights it. Add a check that fails if any screen with items lacks a focus action. Also: opening a screen should close a covering dialog (settings dialog was left on top).",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "mcp",
    "pendingId": "focus-on-every-screen-console-open-console-show-",
@@ -106820,7 +106820,7 @@
    "pr": "#521",
    "createdAt": "2026-11-12T10:35:49.272Z",
    "updatedAt": "2026-11-12T11:10:43.772Z",
-   "builtAt": "",
+   "builtAt": "2026-11-12T11:10:43.772Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -106841,6 +106841,10 @@
     {
      "text": "Headless run axf-focus-on-every-screen-console-open-console-show--rhonda: brief only · start 11.1K tokens ($0.03) · cost $4.53 · 127 turns · 6 tools, MCP none",
      "at": "2026-11-12T11:10:43.772Z"
+    },
+    {
+     "text": "PR #521. Every screen has <view>.focus; UI Review / Plan Studio / Settings have their own; check-screen-focus in CI. No screenshots: Playwright isn't installed in this worktree, so UI Review submission is still owed.",
+     "at": "2026-11-12T11:10:32.352Z"
     }
    ],
    "approvals": [],
@@ -106910,8 +106914,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T11:10:30.685Z",
      "note": "",
      "uid": "st-mwdexzyo03negf"
     }
