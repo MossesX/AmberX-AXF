@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T20:40:21.832Z",
+ "updatedAt": "2026-11-12T20:41:06.266Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -108470,7 +108470,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-12T19:46:41.501Z",
-   "updatedAt": "2026-11-12T19:47:54.922Z",
+   "updatedAt": "2026-11-12T20:41:04.899Z",
    "builtAt": "",
    "notes": [
     {
@@ -108495,7 +108495,7 @@
    "steps": [
     {
      "id": "s1",
-     "text": "Move every AmberX web app feature (notes, to-dos, lists, approvals, recorder, open_url, notifications, settings) into the console. Repoint the AmberX Android app to read and call the console instead of the AmberX web app. Keep old AmberX web addresses forwarding to the console until the phone app is switched, so nothing breaks. Each feature moved is its own step.",
+     "text": "Merge AmberX web app, axHub and the console into ONE app (the console). Brett: \"I want to get merging AmberX, axHub, and the console into one app.\" AmberX Android stays and reads the console. Old AmberX and axHub web addresses forward to the console until everything is switched, so nothing breaks.",
      "model": "Opus",
      "why": "",
      "phase": "",
