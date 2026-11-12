@@ -776,16 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 02:35 UTC · `main-gate-nothing-reaches-main-without-passing` s3 done, → built (all) · orchestrator
-- 2026-11-12 02:36 UTC · `main-gate-nothing-reaches-main-without-passing` note (all) · orchestrator
-- 2026-11-12 02:35 UTC · `main-gate-nothing-reaches-main-without-passing` note (all) · orchestrator
-- 2026-11-12 02:36 UTC · `main-gate-nothing-reaches-main-without-passing` note (all) · builds-live
-- 2026-11-12 02:36 UTC · `main-gate-nothing-reaches-main-without-passing` → running, note (all) · pipeline
-- 2026-11-12 02:37 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` → queued, note (all) · pipeline
-- 2026-11-12 02:37 UTC · `molly-gap-remote-actions` note (all) · orchestrator
-- 2026-11-12 02:37 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` added (3 steps) (all) · Claude voice (Gizmo)
-- 2026-11-12 02:37 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` added (3 steps) (all) · Claude voice (Gizmo)
-- 2026-11-12 02:38 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` → running, note (all) · pipeline
 - 2026-11-12 02:38 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` note (all) · orchestrator
 - 2026-11-12 02:38 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` s1 done (all) · orchestrator
 - 2026-11-12 02:38 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` s5 done (all) · orchestrator
@@ -1176,6 +1166,16 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:32 UTC · `amberx-router-name` added (0 steps) (all) · backfill
 - 2026-11-12 03:32 UTC · `threads-110-merged` added (0 steps) (all) · backfill
 - 2026-11-12 03:32 UTC · `threads-oauth-soft` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `approval-reasons` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `axhub-oauth-thread` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-139zmj` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-kxgzso` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-usdp87` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-74063i` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-jjbcw6` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-qwqfp4` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-i70ntv` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-24jq9j` added (0 steps) (all) · backfill
 
 ## Token passes (log)
 

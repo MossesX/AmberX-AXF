@@ -1,0 +1,90 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-i70ntv",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:32:28Z",
+ "build": {
+  "id": "project-thread-i70ntv",
+  "title": "project-thread-i70ntv",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-i70ntv",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-i70ntv",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "e0193013277543c7bab8e4b8d7f205f1b90198f5",
+ "commits": [
+  "8bc51d1b98f1d770b038c2851bd61feb1183c251"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-25T23:29:44Z",
+ "files": [
+  "CLAUDE.md",
+  "apps/console-web/plugins/README.md",
+  "apps/console-web/plugins/ai-keys/plugin.json",
+  "apps/console-web/plugins/ai-keys/server/__init__.py",
+  "apps/console-web/plugins/ai-keys/test.py",
+  "apps/console-web/plugins/ai-keys/web/index.tsx"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "ai-keys",
+   "files": [
+    "apps/console-web/plugins/ai-keys/plugin.json",
+    "apps/console-web/plugins/ai-keys/server/__init__.py",
+    "apps/console-web/plugins/ai-keys/test.py",
+    "apps/console-web/plugins/ai-keys/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/plugins/README.md"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}
