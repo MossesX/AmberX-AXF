@@ -29,6 +29,7 @@
  *   node deploy/claude-workers.mjs rule add --json '{rule}' [--at i] · rule update <id> --json '{…}' · rule remove <id>
  *   node deploy/claude-workers.mjs rule move <id> up|down|<index> · rule on|off <id> · rules
  *   node deploy/claude-workers.mjs signin <name> · remove <name> · note <session>
+ *   node deploy/claude-workers.mjs adopt <name> --from <dir> [--force] [--json]   a login made in <dir> becomes <name>'s
  *
  * A session may lower a spend cap but never raise or remove one: that is Brett's own click in the console (Settings →
  * Plugins → Claude accounts → Job routing), which writes workers.json itself.
@@ -329,6 +330,36 @@ export function signin(name, env = process.env) {
   return session;
 }
 
+/**
+ * Adopt a login made elsewhere (e.g. `CLAUDE_CONFIG_DIR=~/.claude-add claude auth login`) into a saved account: its
+ * claudeAiOauth replaces the account's, every other key (mcpOAuth…) stays, the old file goes to .removed/ first.
+ * Refused when the login's email is not the account's known email (seen.json), unless force. Never prints a credential.
+ */
+export function adopt(name, from, { force = false } = {}, env = process.env, now = Date.now()) {
+  if (!NAME_RE.test(name || '')) throw Object.assign(new Error(`not an account name: ${name}`), { code: 2 });
+  if (!from) throw Object.assign(new Error('--from <folder with .credentials.json> is required'), { code: 2 });
+  const p = paths(env);
+  const dir = join(p.accounts, name);
+  const src = readJson(join(from, '.credentials.json'))?.claudeAiOauth;
+  if (!src?.accessToken) throw Object.assign(new Error(`no Claude login in ${from}`), { code: 2 });
+  const email = String(readJson(join(from, '.claude.json'))?.oauthAccount?.emailAddress || '');
+  const known = status(env, now).accounts.find((a) => a.name === name)?.email || '';
+  if (!force && known && email !== known) throw Object.assign(new Error(`${from} is ${email || 'an unknown login'}, ${name} is ${known} (--force to adopt anyway)`), { code: 2 });
+  mkdirSync(dir, { recursive: true, mode: 0o700 }); chmodSync(dir, 0o700);
+  const file = join(dir, '.credentials.json');
+  const old = readJson(file) || {};
+  let backup = '';
+  if (existsSync(file)) {
+    backup = join(p.accounts, '.removed', `${name}-credentials-${new Date(now).toISOString().replace(/[:.]/g, '-')}`);
+    mkdirSync(dirname(backup), { recursive: true, mode: 0o700 });
+    renameSync(file, backup);
+  }
+  writeFileSync(`${file}.tmp`, JSON.stringify({ ...old, claudeAiOauth: src }), { mode: 0o600 });
+  renameSync(`${file}.tmp`, file);
+  chmodSync(file, 0o600);
+  return { account: name, email: email || known, subscription: src.subscriptionType || '', expiresAt: src.expiresAt || 0, backup };
+}
+
 /** Move a saved account to .removed/ (restorable by hand). The active account and one with a running job stay. */
 export function remove(name, env = process.env, now = Date.now()) {
   if (!NAME_RE.test(name)) throw Object.assign(new Error(`not an account name: ${name}`), { code: 2 });
@@ -445,9 +476,10 @@ const main = async () => {
       if (rest.includes('--json') && op !== 'add' && op !== 'update') console.log(JSON.stringify(c.rules));
       else console.log(c.rules.map((r, i) => `${i + 1}. ${r.enabled ? 'on ' : 'off'} ${r.id} → ${r.to}`).join('\n') || 'no rules');
     } else if (cmd === 'signin') console.log(`started ${signin(rest[0])}: finish the sign-in in the console's Terminal`);
+    else if (cmd === 'adopt') { const r = adopt(rest[0], flag('from'), { force: rest.includes('--force') }); out(r, `${r.account} now holds ${r.email || 'the login'} (${r.subscription || 'subscription'})${r.backup ? `; old login set aside in ${r.backup}` : ''}`); }
     else if (cmd === 'remove') console.log(`set aside in ${remove(rest[0])}`);
     else if (cmd === 'note') console.log(noteFor(rest[0]));
-    else { console.error('usage: claude-workers.mjs claim|release|route|test|status|alerts|config|rules|set|worker|label|api|rule|limit|hit|signin|remove|note (see the header)'); process.exit(2); }
+    else { console.error('usage: claude-workers.mjs claim|release|route|test|status|alerts|config|rules|set|worker|label|api|rule|limit|hit|signin|adopt|remove|note (see the header)'); process.exit(2); }
   } catch (e) { console.error(`claude-workers: ${e.message}`); process.exit(2); }
 };
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main();

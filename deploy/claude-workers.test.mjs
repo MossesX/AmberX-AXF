@@ -160,6 +160,24 @@ ok(!existsSync(join(A, 'w3')) && existsSync(join(to, '.credentials.json')), 'mov
 ok(!X.status(env, now).accounts.some((a) => a.name === 'w3'), 'gone from the list');
 ok(spawnSync(process.execPath, [join(HERE, 'claude-workers.mjs'), 'signin', '../evil'], { env, encoding: 'utf8' }).status === 2, 'a bad name is refused');
 
+console.log('adopt');
+const ADD = join(tmp, 'claude-add'); mkdirSync(ADD, { recursive: true });
+writeFileSync(join(ADD, '.credentials.json'), JSON.stringify({ claudeAiOauth: { accessToken: 'fake-new', refreshToken: 'fake-new-r', subscriptionType: 'max' } }));
+writeFileSync(join(ADD, '.claude.json'), JSON.stringify({ oauthAccount: { emailAddress: 'other@example.com' } }));
+writeFileSync(join(A, 'w2', '.claude.json'), JSON.stringify({ oauthAccount: { emailAddress: 'w2@example.com' } }));
+writeFileSync(join(A, 'w2', '.credentials.json'), JSON.stringify({ claudeAiOauth: { accessToken: 'fake-w2' }, mcpOAuth: { keep: 1 } }));
+ok(/is other@example.com, w2 is w2@example.com/.test((() => { try { X.adopt('w2', ADD, {}, env, now); } catch (e) { return e.message; } return ''; })()), 'another person\'s login is refused');
+ok(JSON.parse(read(join(A, 'w2', '.credentials.json'))).claudeAiOauth.accessToken === 'fake-w2', 'a refused adopt changes nothing');
+writeFileSync(join(ADD, '.claude.json'), JSON.stringify({ oauthAccount: { emailAddress: 'w2@example.com' } }));
+const ad = X.adopt('w2', ADD, {}, env, now);
+const w2c = JSON.parse(read(join(A, 'w2', '.credentials.json')));
+ok(w2c.claudeAiOauth.accessToken === 'fake-new' && w2c.mcpOAuth.keep === 1, 'the new login lands, other keys stay');
+ok(ad.backup && JSON.parse(read(ad.backup)).claudeAiOauth.accessToken === 'fake-w2', 'the old login is set aside');
+ok(!JSON.stringify(ad).includes('fake-new'), 'the result carries no credential');
+const adc = spawnSync(process.execPath, [join(HERE, 'claude-workers.mjs'), 'adopt', 'w1', '--from', ADD, '--force', '--json'], { env, encoding: 'utf8' });
+ok(adc.status === 0 && JSON.parse(adc.stdout).account === 'w1' && !adc.stdout.includes('fake-new'), 'the CLI adopts (--force), no credential printed');
+writeFileSync(join(A, 'w1', '.credentials.json'), creds('w1')); writeFileSync(join(A, 'w2', '.credentials.json'), creds('w2')); rmSync(join(A, 'w2', '.claude.json'));
+
 const hasTmux = spawnSync('tmux', ['-V']).status === 0;
 if (hasTmux) {
   console.log('end to end (claude-headless.sh, fake claude)');
