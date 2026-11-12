@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3281,
- "updatedAt": "2026-11-12T02:14:55.866Z",
+ "rev": 3282,
+ "updatedAt": "2026-11-12T02:15:13.361Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -157711,14 +157711,14 @@
    "title": "Molly gap: Molly's own actions (molly.*) reachable from the console API, MCP, CLI and AmberX",
    "category": "",
    "detail": "Found by molly-sign-in-once s1. The console-commands relay reaches the console frame inside Molly, not Molly itself, so Molly-level actions (molly.auth.status / check / sign-in / sign-out / base, molly.reload, navigation.*, xlayout.*) can only be run inside Molly (menus, toolbar, command search). Give Molly a client on the same relay (console_show / console_open target molly, plugin commands listing Molly's actions, control@1 for its settings) so every Molly action has the same four reaches (REST, MCP, CLI, voice). Needed before molly-sign-in-once s2 can call its screen done.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "molly-sign-in-once",
    "pendingId": "",
    "branch": "claude/molly-gap-remote-actions",
    "pr": "#502",
    "createdAt": "2026-11-10T22:09:30.792Z",
-   "updatedAt": "2026-11-12T02:14:37.729Z",
+   "updatedAt": "2026-11-12T02:15:09.906Z",
    "builtAt": "",
    "notes": [
     {
@@ -157760,6 +157760,10 @@
     {
      "text": "s1 done: PR #502. Molly plugin remote-commands = Molly's own client on the console-commands relay (app molly); to=molly / to=console, recent resolves per catalog, lists span clients; Molly plugins in the plugin-commands registry. All checks pass. UI Review NOT submitted: no Playwright package in this session, so no shots of Settings > Plugins > Remote commands; next phase should build Molly and submit desktop + phone shots.",
      "at": "2026-11-12T02:14:20.575Z"
+    },
+    {
+     "text": "Session on account-5 ended (exit 0) with 2 steps left: back in the Queue (run 1).",
+     "at": "2026-11-12T02:15:09.906Z"
     }
    ],
    "approvals": [],
@@ -157780,15 +157784,22 @@
     "queuedAt": "2026-11-12T01:42:50.020Z",
     "queuedBy": "console",
     "account": "account-5",
-    "session": "axf-molly-gap-remote-actions--paulie",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "launchedAt": "2026-11-12T01:54:08.639Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-12T02:15:08.982Z",
+     "exit": 0,
+     "outcome": "requeued",
+     "stepsLeft": 2,
+     "account": "account-5",
+     "session": "axf-molly-gap-remote-actions--paulie"
+    },
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "Session on account-5 ended (exit 0) with 2 steps left: back in the Queue (run 1).",
     "route": "",
     "dispatchedAt": "2026-11-12T01:54:08.639Z",
     "planned": {
@@ -157883,7 +157894,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
