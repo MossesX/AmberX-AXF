@@ -776,8 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 23:21 UTC · `orchestrator-merge-first-switch-separate-merger` → queued, note (all) · pipeline
-- 2026-11-10 23:21 UTC · `orchestrator-merge-first-switch-separate-merger` note (all) · pipeline
 - 2026-11-10 23:21 UTC · `orchestrator-merge-first-switch-separate-merger` note (all) · orchestrator
 - 2026-11-10 23:21 UTC · `orchestrator-merge-first-switch-separate-merger` note (all) · orchestrator
 - 2026-11-10 23:21 UTC · `orchestrator-merge-first-switch-separate-merger` s3 done, → built, PR #480, note (all) · builds-live
@@ -1176,6 +1174,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:09 UTC · `handoff-session-threads` → archived, note (all) · console
 - 2026-11-12 02:09 UTC · `slot-watchdog` → archived, note (all) · console
 - 2026-11-12 02:09 UTC · `ui-api-parity-builds` → archived, note (all) · console
+- 2026-11-12 02:09 UTC · `amberx-build-notifications-for-every-stage-start` s3 done, → built (all) · orchestrator
+- 2026-11-12 02:09 UTC · `amberx-build-notifications-for-every-stage-start` note (all) · orchestrator
 
 ## Token passes (log)
 

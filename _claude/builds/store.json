@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3261,
- "updatedAt": "2026-11-12T02:09:27.405Z",
+ "rev": 3262,
+ "updatedAt": "2026-11-12T02:09:37.550Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -153821,7 +153821,7 @@
    "title": "AmberX build notifications for every stage: start, complete, ready to merge, merged, live",
    "category": "",
    "detail": "Extends #436 (one AmberX build notification: start + finish). Add AmberX notifications for: ready to merge (PR open, CI green), merged/landed, and live (console redeployed with it). One notification per build that updates in place through the stages rather than spamming; per-stage on/off in notification settings.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -153829,8 +153829,8 @@
    "pr": "#499",
    "priority": "P1",
    "createdAt": "2026-11-10T20:56:54.475Z",
-   "updatedAt": "2026-11-12T02:09:05.188Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-12T02:09:15.611Z",
+   "builtAt": "2026-11-12T02:09:08.722Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -153851,6 +153851,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-amberx-build-notifications-for-every-stage-start--rhonda, own login copy)",
      "at": "2026-11-12T01:51:17.869Z"
+    },
+    {
+     "text": "Built, PR #499 (contains #436: land #436 first or close it for this). After the finish the one AmberX notification moves on to Ready to merge, Merged, Live; switches notifyReady/notifyMerged/notifyLive. UI Review shots not taken (no console to capture from in the headless session): capture Pipeline > Phone pop-ups, desktop and phone, and submit. Real phone test after deploy.",
+     "at": "2026-11-12T02:09:15.611Z"
     }
    ],
    "approvals": [],
@@ -153958,12 +153962,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T02:09:08.722Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T20:58:09.728Z",
-     "updatedAt": "2026-11-10T20:58:09.728Z"
+     "updatedAt": "2026-11-12T02:09:09.100Z"
     }
    ],
    "profiles": [
@@ -153974,7 +153978,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
