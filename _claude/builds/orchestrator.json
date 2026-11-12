@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:08:23.116Z",
+ "updatedAt": "2026-11-12T02:08:36.240Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -31748,14 +31748,14 @@
    "title": "PR browser + Batch Manager",
    "category": "Plugin",
    "detail": "Brett, Oct 30 2026 (voice): Grid of push batches with live badges, Merge/Hold on rows, expandable PR sub-grid, failing check + Fix. Dense: small type, small badges, no clutter. Left click opens review, right click menu. PR BROWSER (Brett, Oct 31): a tab listing every open PR across AmberX-AXF, axHub and Build-Pilot. One dense line per PR with everything: number, title, branch, built by (agent/session), live checks badge, behind main, mergeable/conflict, in which batch, age, cost. Expand a row: every check with its error lines, files changed, commits, description, linked build/plan, and actions: Fix, Merge (via batch), Add to batch, Close. Sort/search/filter like every grid; live updates. ROW LEAD (Brett): every row starts with the PR number + a plain-English line of what it does (e.g. '#187 Audio Extract: pulls audio out of screen recordings, no mic'), written from the actual diff not just the title; badges follow on the same line. SCREENSHOTS (Brett): every PR gets BEFORE (main) and AFTER (PR branch) screenshots of the screens it touches, captured automatically by CI/headless browser (web) and emulator (Android); small before/after thumbnails on the row, side-by-side or slider compare in the expanded view, stored with the PR. SCREENSHOT CORRECTION (Brett): do NOT build a new capture system - REUSE the existing pre-build and post-build screenshots the framework already takes (find them first). BEFORE = the existing pre-build screenshot. AFTER: if the PR/build is not done yet, show a PREDICTED screenshot (rendered mockup of the expected result from the build spec + diff so far, clearly badged 'Predicted'); as soon as the build finishes, the real post-build screenshot replaces it automatically (badge 'Real'), live, no refresh. FEATURE SHOTS (Brett): the existing pre/post-build screenshots are NOT enough - they must show the ACTUAL FEATURE the PR built. Per PR, build a feature map from the diff (changed plugins, components, routes, menus, dialogs -> the screens and states that show them). Drive the existing capture tooling to navigate to each one, open it (expand the row, open the dialog/menu, switch the tab, put it in the right state with demo data), and shoot it: BEFORE on main, AFTER on the PR branch. Each shot cropped to the feature plus a full-screen version, web + Android. Brand-new UI has no before: show a 'New' card. Every feature shot shows Predicted (mockup from spec + diff) until the build is done, then the real shot replaces it live. Captions say which feature each shot is. Missed features (no shot) flagged on the row.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/batch-manager",
    "pr": "",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-11-10T17:14:08.950Z",
+   "updatedAt": "2026-11-12T02:08:26.663Z",
    "builtAt": "",
    "notes": [
     {
@@ -31777,6 +31777,10 @@
     {
      "text": "Reconciled with enforce-the-merge-queue (Nov 10 2026): a 'batch' is now the merge queue's batch (GET /api/plugins/push-banner/queue → batch {prs, sha, ci, runUrl, bisect}, split, items[].inBatch; settings POST /queue/settings {mode, batchSize}). The Batch Manager grid should read that, not build its own batching; Merge on a row = queue add (push-banner Merge already queues AmberX-AXF PRs).",
      "at": "2026-11-10T17:14:08.950Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:26.663Z"
     }
    ],
    "approvals": [
@@ -33167,14 +33171,14 @@
    "title": "AmberX audio: opt-in mic + filters (both recorders)",
    "category": "Framework",
    "detail": "Brett, Oct 30 2026 (voice): add an optional microphone to BOTH the Audio Extract screen recorder and the Output Recorder: a switch, off by default, never used as a fallback, visible indicator while on (this replaces the earlier no-mic rule for these two recorders only when the user turns it on). Add sophisticated filters you can run on any recording and re-save: noise reduction/cancellation, voice boost, EQ, loudness leveling, hum and hiss removal, silence trim; preview, presets, Save as new, original never overwritten. Runs after audio-output-recorder, on its branch.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/audio-mic-filters",
    "pr": "",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-11-10T04:35:47.093Z",
+   "updatedAt": "2026-11-12T02:08:32.892Z",
    "builtAt": "",
    "notes": [
     {
@@ -33184,6 +33188,10 @@
     {
      "text": "Audit: hold — AmberX Android recorders: Android port on hold. Queue when Brett lifts the hold.",
      "at": "2026-11-10T04:35:47.093Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:32.892Z"
     }
    ],
    "approvals": [],
@@ -33298,14 +33306,14 @@
    "title": "Transcription engine: on-demand, on-phone Whisper + server switch",
    "category": "Framework",
    "detail": "Brett, Oct 30 2026 (voice): his own transcription engine, no paid API. ON DEMAND ONLY: nothing is transcribed automatically; a Transcribe button on any recording. DEFAULT: Whisper runs on the phone (whisper.cpp / on-device model in AmberX). SWITCH: send it to the self-hosted Whisper on axHub instead (own container, low priority, CPU cap) for bigger models or when not using the phone. Timestamps per line, tap a line to jump the audio, search all transcripts, export text/SRT, send to AmberX notes. Transcripts saved on axHub with the recording.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/transcription-engine",
    "pr": "",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-11-10T04:35:50.583Z",
+   "updatedAt": "2026-11-12T02:08:32.081Z",
    "builtAt": "",
    "notes": [
     {
@@ -33319,6 +33327,10 @@
     {
      "text": "Audit: hold — on-phone Whisper in AmberX (Android, on hold) leads the build; the server engine (s2) can be split out if Brett wants it now.",
      "at": "2026-11-10T04:35:50.583Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:32.081Z"
     }
    ],
    "approvals": [
@@ -55894,14 +55906,14 @@
    "title": "Update the Android framework: every deferred Android twin (PORTING.md)",
    "category": "Framework",
    "detail": "Held in the Activity banner until Continue (Gizmo, Oct 25 2026). Brings the Kotlin kernel + Compose layer level with the web port: every gap PORTING.md records as deferred while Android was on hold. Continue starts it through the Build manager (axHub approval). Lifting the Android hold for this build is the person's Continue tap.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "chat",
    "pendingId": "android-framework-update",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-25T20:26:24.616Z",
-   "updatedAt": "2026-11-10T04:35:42.688Z",
+   "updatedAt": "2026-11-12T02:08:34.518Z",
    "builtAt": "",
    "notes": [
     {
@@ -55911,6 +55923,10 @@
     {
      "text": "Audit: hold — every step is Kotlin/Compose: Android port on hold (no new Android or Kotlin work; deferred twins are listed in framework/spec/PORTING.md). Queue when Brett lifts the hold.",
      "at": "2026-11-10T04:35:42.688Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:34.518Z"
     }
    ],
    "approvals": [],
@@ -75193,14 +75209,14 @@
    "title": "Terminal toolbar: responsive overflow, every item a snappable asset",
    "category": "",
    "detail": "Brett: the Terminal toolbar items overlap when the window gets small. Make the toolbar measure its width and drop items into a three-dot overflow (same framework overflow control as the top banner) by priority; never overlap at any width. Every toolbar item is a snappable registry asset (can be moved, docked, reordered, hidden). Check the unlanded terminal-header-responsive branch and reuse it. Full API + voice + MCP/CLI control. Shots at 3 widths; tests; report. Must create its Plan Studio plan.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "mcp",
    "pendingId": "terminal-toolbar-responsive-overflow-every-item-",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T21:14:58.067Z",
-   "updatedAt": "2026-11-10T04:36:27.058Z",
+   "updatedAt": "2026-11-12T02:08:31.115Z",
    "builtAt": "",
    "notes": [
     {
@@ -75210,6 +75226,10 @@
     {
      "text": "Audit: queue — the overflow half is on PR #387 (terminal-header-responsive, open, not on main yet): build on that branch's approach, the new work is every toolbar item as a snappable registry asset.",
      "at": "2026-11-10T04:36:27.058Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:31.115Z"
     }
    ],
    "approvals": [],
@@ -76370,14 +76390,14 @@
    "title": "Briefs list the existing files each step needs",
    "category": "",
    "detail": "Today every orchestrator brief says 'read only the files listed' but lists no files. When the orchestrator splits a build into steps, it looks up the existing files each step will need (plugin folders, plugin.json, server/web entry points, schemas, the CLI/engine files it extends) from the plugin/UI registry, the Shipped features ledger and a quick grep, and writes them into the brief per step as 'Start with these files'. New files are not listed. Keep the list short (the files that matter, not whole folders). Also trim the brief: Brett's words once (not twice), steps, files, how to tick steps; drop boilerplate that doesn't apply to the step (look/token rules only for UI steps). Tests: brief template lists files per step; a UI step gets the look rules, a non-UI step doesn't; Brett's words appear once.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "mcp",
    "pendingId": "briefs-list-the-existing-files-each-step-needs",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T00:47:08.187Z",
-   "updatedAt": "2026-11-10T04:39:20.621Z",
+   "updatedAt": "2026-11-12T02:08:30.070Z",
    "builtAt": "",
    "notes": [
     {
@@ -76387,6 +76407,10 @@
     {
      "text": "Audit: trimmed 0 done step(s) (none) and 3 duplicate(s) (s4-3, s5-4, s6-5) against main.",
      "at": "2026-11-10T04:39:20.621Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:30.070Z"
     }
    ],
    "approvals": [],
@@ -77402,14 +77426,14 @@
    "title": "Reserve build IDs at once: add returns the ID with the veto countdown",
    "category": "",
    "detail": "Today pending_change add (and control_add on planner.builds/plans) is held on the 90 s veto countdown and the orchestrator only assigns the build ID when it runs, so callers (Claude sessions) must guess the ID from the title to add notes. Fix: the orchestrator (ID registry) reserves the ID the moment the call arrives, before the hold, and returns it in the held result (e.g. reservedId). Notes, sub prompts and status calls on a reserved ID queue up and apply in order once the add runs; if Brett denies the add, the reservation and anything queued on it are dropped. IDs never collide (registry check). Same for plan_park and plan_add. Tests: add returns the id while held; a note on the reserved id lands after the add; deny drops both.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "mcp",
    "pendingId": "reserve-build-ids-at-once-add-returns-the-id-wit",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T02:59:26.044Z",
-   "updatedAt": "2026-11-10T17:40:18.857Z",
+   "updatedAt": "2026-11-12T02:08:25.269Z",
    "builtAt": "",
    "notes": [
     {
@@ -77419,6 +77443,10 @@
     {
      "text": "Split by Claude into 8 steps (2 Fable).",
      "at": "2026-11-10T17:40:18.857Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:25.269Z"
     }
    ],
    "approvals": [],
@@ -77617,14 +77645,14 @@
    "title": "Permissions control panel: every axHub tool's policy in one place",
    "category": "",
    "detail": "Repo: axHub (policy store) + console/axhub-web screen. One Permissions panel listing every connected service and every tool (vps.build_start, vps.run, axf-console.*, github, hostinger, amberx...) with its policy (allow / veto countdown / confirm / deny), countdown length, who may call it (Brett's sessions, Claude sessions, headless builds, agents), and passes. Brett changes a policy with a dropdown; bulk change per service or by filter (destructive, writes, reads). Tree grouped by service > category, search, filters, live type-ahead. Every change logged with history and undo. Claude sessions and builds can read policies but never change them (owner-only, enforced on the hub, not just the UI). First change: set vps.build_start to deny so only the orchestrator launches builds. Full API (read for all, write owner-only), voice for Brett. 3 layout options to UI Review.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "mcp",
    "pendingId": "permissions-control-panel-every-axhub-tool-s-pol",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T03:02:16.421Z",
-   "updatedAt": "2026-11-10T17:41:15.891Z",
+   "updatedAt": "2026-11-12T02:08:23.409Z",
    "builtAt": "",
    "notes": [
     {
@@ -77638,6 +77666,10 @@
     {
      "text": "Split by Claude into 15 steps (2 Fable).",
      "at": "2026-11-10T17:41:15.891Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:23.409Z"
     }
    ],
    "approvals": [],
@@ -78287,14 +78319,14 @@
    "title": "AmberX floating toolbar (always on top): mic + approvals + build status",
    "category": "amberx",
    "detail": "AmberX Android app: a small floating toolbar (overlay bubble, draw over other apps) that stays on top everywhere. Main items: mic button (talk to Claude / hands-free toggle) and approvals (badge with count of waiting axHub approvals; tap to approve/deny in place). Also build status (running count, failures). Draggable, collapsible, snaps to edges; every piece an asset, styled from tokens, configurable in settings (items, size, opacity, position). Brett: \"add a floating toolbar to AmberX that's always on top... the main thing was the mic and the approvals.\"",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/amberx-floating-toolbar-always-on-top-mic-approvals-build-status",
    "pr": "",
    "createdAt": "2026-11-09T13:08:03.151Z",
-   "updatedAt": "2026-11-10T17:09:47.648Z",
+   "updatedAt": "2026-11-12T02:08:29.024Z",
    "builtAt": "",
    "notes": [
     {
@@ -78368,6 +78400,10 @@
     {
      "text": "Runs on API-key accounts only (billed per token, under their caps) (brett).",
      "at": "2026-11-10T03:09:40.766Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:29.024Z"
     }
    ],
    "approvals": [],
@@ -84490,14 +84526,14 @@
    "title": "Skins: a colour theme pick is its own setting, never a skin override (resume after credits ran out)",
    "category": "",
    "detail": "Rerun of a headless Fable session (axf-skins-theme-rule--earl, Moses X, Nov 9 18:38-18:47 UTC) that stopped on \"You are out of usage credits\" with its work uncommitted in /root/axf-builds/skins-theme-rule (11 files: framework/core/engines/appearance.ts, skin-coverage, skin-rules …). Its own words: \"the colour pick becomes its own colorTheme field in the skin state (never an override, never a new skin), with old documents migrated on read. Engine and runtime are changed; now updating the tests and fixture to pin the rule, then the CLI/API, pickers and docs.\" Read git diff and the run log first; keep that work.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "failed-launches-auto-retry-on-another-wo",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-10T00:50:40.704Z",
-   "updatedAt": "2026-11-10T17:09:53.596Z",
+   "updatedAt": "2026-11-12T02:08:27.462Z",
    "builtAt": "",
    "notes": [
     {
@@ -84515,6 +84551,10 @@
     {
      "text": "Runs on API-key accounts only (billed per token, under their caps) (brett).",
      "at": "2026-11-10T03:09:25.078Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:27.462Z"
     }
    ],
    "approvals": [],
@@ -84581,14 +84621,14 @@
    "title": "Skins restyle: finish the coverage engine, registry and text targets (resume after credits ran out)",
    "category": "",
    "detail": "Rerun of a headless Fable session (axf-skins-restyle-finish--sully, Moses X, Nov 9 UTC) that stopped on \"You are out of usage credits\" with its work uncommitted in /root/axf-builds/skins-restyle-finish (28 files). It was finishing s6 of skins-restyle-everything-badges-banner-and-every-visual-element. Its own words: \"coverage engine first (explicit entries required, parts and ingredient flags), then the registry, then the customize text targets … s6 tests pass (skin spec, customize spec, coverage check). Now finishing the surrounding pieces: CLI output, the coverage panel hint, the audit and the docs.\" Read git diff and the run log first; keep that work.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "failed-launches-auto-retry-on-another-wo",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-10T00:50:42.579Z",
-   "updatedAt": "2026-11-10T17:09:50.461Z",
+   "updatedAt": "2026-11-12T02:08:28.366Z",
    "builtAt": "",
    "notes": [
     {
@@ -84602,6 +84642,10 @@
     {
      "text": "Runs on API-key accounts only (billed per token, under their caps) (brett).",
      "at": "2026-11-10T03:09:26.648Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:28.366Z"
     }
    ],
    "approvals": [],
@@ -93808,7 +93852,7 @@
    "title": "Plugin Appearance: Save button for custom looks, named saves as per-plugin assets, restore dialog with side-by-side preview",
    "category": "",
    "detail": "In every plugin's Appearance settings: 1) When inherit-from-axHub is off and there are unsaved changes, a Save button lights up; no changes = no Save button. Saved = Save turns grey and disabled until the next edit. 2) Save opens a dialog prefilled with a default name (date + type of change), editable. Each save stores a new per-plugin appearance asset (layout, style, behavior, colour etc. for that plugin only); every later change makes a new save. 3) Switching back to inherit from axHub keeps the custom state saved so it can be restored. 4) A Revert/Restore button opens a dialog listing all saves for that plugin with a side-by-side preview: what it will look like restored vs now. Full API/CLI control.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -93816,12 +93860,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T17:38:24.452Z",
-   "updatedAt": "2026-11-10T17:39:20.659Z",
+   "updatedAt": "2026-11-12T02:08:25.962Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T17:39:20.659Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:25.962Z"
     }
    ],
    "approvals": [],
@@ -93903,7 +93951,7 @@
    "title": "Skins consistent across plugins: full-state saves, skins as asset-name manifests, shared naming contract mapping plugin assets to canonical roles",
    "category": "",
    "detail": "Amends per-plugin appearance saves and skins-as-packages. 1) A save captures the plugin's full state: behavior, style, layout, colour, icons and any code-level overrides, not just the changed category. 2) A skin is only a manifest of asset names per section. 3) Skins must apply consistently to every plugin screen even though plugins use different asset names than the host app: add a shared asset naming contract + alias map (plugin asset -> canonical role, e.g. toolbar, panel, primary button) so one skin resolves the same look across apps and plugins. CI check flags plugin assets with no canonical role. Rebuild existing skins to the contract.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -93911,12 +93959,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T17:39:40.556Z",
-   "updatedAt": "2026-11-10T17:40:28.648Z",
+   "updatedAt": "2026-11-12T02:08:24.293Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T17:40:28.648Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:24.293Z"
     }
    ],
    "approvals": [],
@@ -93998,7 +94050,7 @@
    "title": "Skin rule: overrides are local only; global changes only by applying a whole skin",
    "category": "",
    "detail": "Amends the skins naming-contract build. Precedence: axHub base < skin (by canonical role) < per-screen skin < per-element override. An override changes only that element. Global changes are made ONLY by applying a whole skin; editing a button inside one plugin or app never propagates to other plugins/apps. Enforce in the inline editor (no 'apply everywhere' outside the skin editor) and document in CLAUDE.md rules.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -94006,12 +94058,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T17:40:55.347Z",
-   "updatedAt": "2026-11-10T17:41:35.529Z",
+   "updatedAt": "2026-11-12T02:08:22.565Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T17:41:35.529Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:22.565Z"
     }
    ],
    "approvals": [],

@@ -776,20 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 23:12 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` note (all) · orchestrator
-- 2026-11-10 23:12 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` note (all) · orchestrator
-- 2026-11-10 23:12 UTC · `orchestrator-merge-first-switch-separate-merger` → running, note (all) · pipeline
-- 2026-11-10 23:12 UTC · `orchestrator-merge-first-switch-separate-merger` branch claude/orchestrator-merge-first-switch-separate-merger (all) · pipeline
-- 2026-11-10 23:12 UTC · `orchestrator-merge-first-switch-separate-merger` note (all) · orchestrator
-- 2026-11-10 23:12 UTC · `api-accounts-need-no-approval-builds-route-there` → running, note (all) · pipeline
-- 2026-11-10 23:12 UTC · `api-accounts-need-no-approval-builds-route-there` branch claude/api-accounts-need-no-approval-builds-route-there (all) · pipeline
-- 2026-11-10 23:12 UTC · `api-accounts-need-no-approval-builds-route-there` note (all) · orchestrator
-- 2026-11-10 23:13 UTC · `molly-sign-in-once` → queued, note (all) · pipeline
-- 2026-11-10 23:13 UTC · `make-hulu-actually-take-builds-dispatcher-counts` → queued, note (all) · pipeline
-- 2026-11-10 23:13 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` → queued, note (all) · pipeline
-- 2026-11-10 23:13 UTC · `make-hulu-actually-take-builds-dispatcher-counts` → running, note (all) · pipeline
-- 2026-11-10 23:13 UTC · `make-hulu-actually-take-builds-dispatcher-counts` note (all) · orchestrator
-- 2026-11-10 23:13 UTC · `molly-sign-in-once` → running, note (all) · pipeline
 - 2026-11-10 23:13 UTC · `molly-sign-in-once` note (all) · orchestrator
 - 2026-11-10 23:13 UTC · `api-accounts-need-no-approval-builds-route-there` → running, branch claude/api-accounts-need-no-approval-builds-route-there, note (all) · foreign-write
 - 2026-11-10 23:13 UTC · `orchestrator-merge-first-switch-separate-merger` → running, branch claude/orchestrator-merge-first-switch-separate-merger, note (all) · foreign-write
@@ -1176,6 +1162,20 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:08 UTC · `standing-rule-in-every-brief-fix-problems-yourse` → archived, note (all) · console
 - 2026-11-12 02:08 UTC · `split-builds-pages-build-manager-pending-complet-2` → archived, note (all) · console
 - 2026-11-12 02:08 UTC · `apply-skin-dialog-tree-of-everything-overridden` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `skin-rule-overrides-are-local-only-global-change` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `permissions-control-panel-every-axhub-tool-s-pol` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `skins-consistent-across-plugins-full-state-saves` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `reserve-build-ids-at-once-add-returns-the-id-wit` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `plugin-appearance-save-button-for-custom-looks-n` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `batch-manager` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `skins-theme-rule` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `skins-restyle-finish` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `briefs-list-the-existing-files-each-step-needs` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `terminal-toolbar-responsive-overflow-every-item-` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `transcription-engine` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `audio-mic-filters` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `android-framework-update` → archived, note (all) · console
 
 ## Token passes (log)
 
