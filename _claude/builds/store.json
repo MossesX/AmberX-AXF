@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3220,
- "updatedAt": "2026-11-12T01:57:28.120Z",
+ "rev": 3221,
+ "updatedAt": "2026-11-12T01:57:36.674Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -120687,7 +120687,7 @@
    "pr": "#497",
    "priority": "P0",
    "createdAt": "2026-11-08T16:58:59.537Z",
-   "updatedAt": "2026-11-12T01:57:26.676Z",
+   "updatedAt": "2026-11-12T01:57:27.978Z",
    "builtAt": "",
    "notes": [
     {
@@ -120721,6 +120721,10 @@
     {
      "text": "Self-check: molly-native-expenses was marked running on account-5 with no session: released and back in the Queue.",
      "at": "2026-11-12T01:56:05.103Z"
+    },
+    {
+     "text": "Stopped after s1 (PR #497, CORS + v1/me, 23 tests pass). s2-s4 still blocked: shell-surface@1 manifest + native mount seam exist only on open PR #395 (claude/molly-one-shell-r4, 148 files, +16.6k lines), and native modules can't sign in until molly-sign-in-once lands. Building now would invent a second manifest contract or stack on an unlanded PR. Next: land #395 and molly-sign-in-once, then re-queue s2-s4. Also cleaned up a stale half-finished rebase that was left in this worktree.",
+     "at": "2026-11-12T01:57:27.978Z"
     },
     {
      "text": "Started run 2 on account-5 (API key, subscriptions first, then API) (Opus, Phase 1): axf-molly-native-expenses--lenny.",
