@@ -1,7 +1,11 @@
 /** Companion settings keys (Settings → Plugins → Gizmo). One place, so the view, talk mode and the settings agree. */
 export const K = {
-  /** '' = the assistant's default (Opus); else a model-policy key (opus | fable) */
+  /** '' = the assistant's default (Opus); else a model-policy key (opus | fable). Superseded by `brain`, still read. */
   model: 'companion.model',
+  /** who answers new chats: claude-opus | claude-fable | local-24b | local-7b (core BRAINS) */
+  brain: 'companion.brain',
+  /** the chat list stays open beside the chat on a wide screen */
+  sidebar: 'companion.sidebar',
   /** Brett's own words added to every new chat's instructions (personality, how to answer) */
   persona: 'companion.persona',
   /** tools and connectors (axHub services, the repo, the crew) in new chats */

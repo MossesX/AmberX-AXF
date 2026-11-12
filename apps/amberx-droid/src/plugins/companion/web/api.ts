@@ -4,8 +4,9 @@
  * connection). This page reaches it only through AmberX's own server (its console plugin proxy for FOLDER below, behind the
  * axHub wall), which adds the console token: no key or token is ever in the page or the APK.
  */
-import { HttpAssistantClient, type Conversation, type ConversationSummary } from '../../../axf/core';
+import { HttpAssistantClient, type Conversation, type ConversationSettings, type ConversationSummary } from '../../../axf/core';
 import { pluginFetch } from '../../../console/plugins';
+import { BRAINS, type Brain } from './core';
 
 export const FOLDER = 'ai-assistant';
 export const COMPANION_ID = 'ai.amberx.amberx.companion';
@@ -61,3 +62,17 @@ export function fileToImage(f: File): Promise<{ media_type: string; data: string
     rd.readAsDataURL(f);
   });
 }
+
+/* ---------------------------------------------------------------- brains: Claude or the local Ollama (brains@1) */
+export interface BrainsInfo { items: Brain[]; default: string; localDefault: string; local: { url: string; reachable: boolean | null; models: string[]; error: string; profileExists: boolean } }
+/** The brains the console assistant offers, with what is ready. Falls back to the built-in list (nothing marked ready). */
+export async function brains(): Promise<BrainsInfo> {
+  try { return await call<BrainsInfo>('brains'); }
+  catch (e) { return { items: BRAINS.map((b) => ({ ...b, ready: undefined, why: (e as Error).message })), default: 'claude-opus', localDefault: 'local-24b', local: { url: '', reachable: null, models: [], error: (e as Error).message, profileExists: false } }; }
+}
+/** Switch who answers a chat. */
+export const setBrain = (id: string, brain: string) => call<{ conversation: Conversation; brain: string }>(`conversations/${encodeURIComponent(id)}/brain`, { method: 'PUT', body: JSON.stringify({ brain }) });
+/** A new chat on a brain (the server applies the brain's profile + model). */
+export const createOn = (settings: ConversationSettings, brain: string) => call<{ conversation: Conversation }>('conversations', { method: 'POST', body: JSON.stringify({ settings, brain }) }).then((r) => r.conversation);
+/** Add (or repoint) the amberx-llama provider profile on the console. */
+export const setupLocal = () => call<BrainsInfo>('brains/local', { method: 'POST', body: '{}' });

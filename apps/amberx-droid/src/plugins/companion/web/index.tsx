@@ -8,21 +8,26 @@
  *   action `companion.open`          open Gizmo (where it was)
  *   action `companion.new`           open Gizmo on a new chat
  *   action `companion.talk`          open Gizmo in talk mode (hands-free)
- *   voice  "hey gizmo", "talk to gizmo", "open gizmo" (voice plugin commands)
+ *   action `companion.link`          [open, brain?, q?]: open = new | talk | <conversation id> (deep link, console_action)
+ *   action `companion.brain`         [brain]: who answers the open chat (claude-opus | claude-fable | local-24b | local-7b)
+ *   URL    ?gizmo=new|talk|<id>&brain=<id>&q=<message>   on the AmberX app / web app (./link)
+ *   voice  "hey gizmo", "talk to gizmo", "open gizmo", "gizmo use ollama", "gizmo use claude" (voice plugin commands)
  */
 import { useEffect, useState } from 'react';
 import type { AxfRuntime } from '../../../axf/core';
 import { Button, SelectField, useRuntime, type AxfWebLibrary } from '../../../axf/react';
-import { COMPANION, chatModels } from '../../../axf/libs/claude-session';
+import { COMPANION } from '../../../axf/libs/claude-session';
 import { registerVoiceCommands } from '../../voice/web';
 import { COMPANION_ID, download, exportAll, client } from './api';
 import { CompanionView } from './Chat';
+import { BRAINS, DEFAULT_BRAIN, LOCAL_DEFAULT, parseGizmoLink } from './core';
+import { linkFromLocation, requestLink } from './link';
 import { K } from './keys';
 import { MIRROR, forgetChat } from './mirror';
 import { requestTalk, sample, voices } from './talk';
 import './companion.css';
 
-const VERSION = '0.1.0';
+const VERSION = '0.2.0';
 
 function VoicePanel() {
   const rt = useRuntime();
@@ -105,7 +110,8 @@ export const library: AxfWebLibrary = {
   settingsTabs: [{ id: 'companion', label: COMPANION.name, icon: 'sparkles', order: 12, parent: 'plugins', description: "Gizmo, your Claude companion: model, voice, how he talks, tools, chats and privacy." }],
   settings: [
     { id: 'companion.brain', label: 'Model and personality', icon: 'sparkles', tab: 'companion', order: 1, settings: [
-      { key: K.model, label: 'Model for new chats', kind: 'choice', default: '', options: [{ value: '', label: 'Default (Opus)' }, ...chatModels().map((m) => ({ value: m.key, label: m.label }))], description: 'Opus or Fable only (model policy): Sonnet and Haiku run as Opus. Each chat can switch in its title bar.' },
+      { key: K.brain, label: 'Who answers new chats', kind: 'choice', default: '', options: [{ value: '', label: 'Default (Claude Opus)' }, ...BRAINS.map((b) => ({ value: b.id, label: b.label }))], description: 'Claude (Opus or Fable on the Claude plan) or your own Ollama on the VPS (amberx-llama: Mistral Small 24B, or 7B). Each chat switches in its title bar; the local models start in chat mode.' },
+      { key: K.sidebar, label: 'Keep the chat list open on a wide screen', kind: 'toggle', default: true },
       { key: K.persona, label: 'Personality and instructions', kind: 'text', default: '', description: "Your own words added to every new chat's instructions (how Gizmo talks, what to remember about you)." },
     ] },
     { id: 'companion.voice', label: 'Talk mode and voice', icon: 'mic', tab: 'companion', order: 10, settings: [
@@ -134,9 +140,19 @@ export const library: AxfWebLibrary = {
     rt.actions.register('companion.open', () => open(rt), { label: `Chat with ${COMPANION.name}` });
     rt.actions.register('companion.new', () => { try { localStorage.removeItem('companion.last'); } catch { /* private mode */ } open(rt); }, { label: `New chat with ${COMPANION.name}` });
     rt.actions.register('companion.talk', () => { requestTalk(); open(rt); }, { label: `Talk to ${COMPANION.name}` });
+    // deep links: the same fields as the ?gizmo= URL, so console_action / voice / other plugins open exactly that chat
+    const go = (q: string) => { const l = parseGizmoLink(q); if (!l.open) return; requestLink(l); rt.navigate('companion'); };
+    rt.actions.register('companion.link', ([target, brain, msg]) => go(`?${new URLSearchParams({ gizmo: String(target ?? ''), brain: String(brain ?? ''), q: String(msg ?? '') })}`), { label: `Open a ${COMPANION.name} chat`, params: true });
+    rt.actions.register('companion.brain', ([b]) => go(`?gizmo=open&brain=${encodeURIComponent(String(b ?? DEFAULT_BRAIN))}`), { label: `Who answers in ${COMPANION.name}`, params: true });
+    rt.actions.register('companion.local', () => go(`?gizmo=open&brain=${LOCAL_DEFAULT}`), { label: `${COMPANION.name} on your Ollama` });
+    rt.actions.register('companion.claude', () => go(`?gizmo=open&brain=${DEFAULT_BRAIN}`), { label: `${COMPANION.name} on Claude` });
+    const atStart = linkFromLocation();
+    if (atStart) { requestLink(atStart); setTimeout(() => rt.navigate('companion'), 0); }
     registerVoiceCommands(COMPANION_ID, [
       { id: 'companion.open', phrases: ['open gizmo', 'hey gizmo', 'chat with gizmo'], action: 'companion.open', reply: "Gizmo's here.", group: 'plugins', owner: COMPANION.name, defaultOn: true },
       { id: 'companion.talk', phrases: ['talk to gizmo', 'gizmo talk mode'], action: 'companion.talk', reply: 'Go ahead, I am listening.', group: 'plugins', owner: COMPANION.name, defaultOn: true },
+      { id: 'companion.local', phrases: ['gizmo use ollama', 'gizmo go local', 'talk to my ollama'], action: 'companion.local', reply: 'Switched to your Ollama.', group: 'plugins', owner: COMPANION.name, defaultOn: true },
+      { id: 'companion.claude', phrases: ['gizmo use claude', 'gizmo back to claude'], action: 'companion.claude', reply: 'Back on Claude.', group: 'plugins', owner: COMPANION.name, defaultOn: true },
     ]);
   },
 };

@@ -45,3 +45,51 @@ export function judgeHeard(i: HeardInput): HeardVerdict {
   if (!i.listening || i.echo || i.ownWords) return 'ignore';
   return 'send';
 }
+
+/* ---------------------------------------------------------------- brains (build rebuild-gizmo-from-scratch, Nov 2026) */
+/** Who answers a chat: Claude (the Claude plan) or Brett's Ollama on the VPS (amberx-llama). The console assistant's
+ * GET /brains (brains@1) is the source; this list is what the switcher shows while that answer is on its way or the
+ * console is unreachable. Mirrors apps/console-web/plugins/ai-assistant/server/brains.py. */
+export type BrainFamily = 'claude' | 'local';
+export interface Brain { id: string; family: BrainFamily; label: string; short: string; model: string; description: string; ready?: boolean; why?: string }
+export const LOCAL_PROFILE = 'amberx-llama';
+export const BRAINS: Brain[] = [
+  { id: 'claude-opus', family: 'claude', label: 'Claude Opus', short: 'Opus', model: 'claude-opus-5-5', description: 'Claude on the Claude plan: tools, connectors, the crew.' },
+  { id: 'claude-fable', family: 'claude', label: 'Claude Fable', short: 'Fable', model: 'claude-fable-5-1', description: "Claude's most capable model, for the hard ones." },
+  { id: 'local-24b', family: 'local', label: 'Mistral Small 24B (local)', short: 'Mistral 24B', model: 'mistral-small:24b', description: 'Your Ollama on the VPS (amberx-llama). Private, free, slower.' },
+  { id: 'local-7b', family: 'local', label: 'Mistral 7B (local)', short: 'Mistral 7B', model: 'mistral:7b', description: 'Your Ollama, the small fast model.' },
+];
+export const DEFAULT_BRAIN = 'claude-opus';
+export const LOCAL_DEFAULT = 'local-24b';
+
+/** Which brain a chat's settings amount to (same rule as the server's brain_of). Pure. */
+export function brainOf(settings: { profileId?: string; model?: string } | undefined, list: Brain[] = BRAINS): string {
+  const model = settings?.model ?? '';
+  if (settings?.profileId === LOCAL_PROFILE) return list.find((b) => b.family === 'local' && b.model === model)?.id ?? LOCAL_DEFAULT;
+  return list.find((b) => b.family === 'claude' && b.model === model)?.id ?? DEFAULT_BRAIN;
+}
+/** The brain for new chats from the saved setting (the old `companion.model` = opus | fable still counts). Pure. */
+export function savedBrain(brain: string, legacyModel: string): string {
+  if (BRAINS.some((b) => b.id === brain)) return brain;
+  return legacyModel === 'fable' ? 'claude-fable' : DEFAULT_BRAIN;
+}
+/** Flipping the Claude / Ollama switch: back to the last brain used in that family, else its default. Pure. */
+export function brainForFamily(family: BrainFamily, lastUsed: Partial<Record<BrainFamily, string>>): string {
+  const last = lastUsed[family];
+  if (last && BRAINS.some((b) => b.id === last && b.family === family)) return last;
+  return family === 'local' ? LOCAL_DEFAULT : DEFAULT_BRAIN;
+}
+export const familyOf = (id: string): BrainFamily => (BRAINS.find((b) => b.id === id)?.family ?? 'claude');
+
+/** `?gizmo=` deep link: new | talk | <conversation id>, with `&brain=<id>` and `&q=<first message>`. Pure. */
+export interface GizmoLink { open: 'new' | 'talk' | 'chat' | ''; id: string; brain: string; q: string }
+export function parseGizmoLink(search: string): GizmoLink {
+  const p = new URLSearchParams(search);
+  const g = (p.get('gizmo') ?? '').trim();
+  const brain = BRAINS.some((b) => b.id === p.get('brain')) ? String(p.get('brain')) : '';
+  const q = (p.get('q') ?? '').slice(0, 4000);
+  if (!p.has('gizmo')) return { open: '', id: '', brain: '', q: '' };
+  if (g === '' || g === 'open' || g === '1') return { open: 'chat', id: '', brain, q };
+  if (g === 'new' || g === 'talk') return { open: g, id: '', brain, q };
+  return { open: 'chat', id: /^[\w-]{1,80}$/.test(g) ? g : '', brain, q };
+}

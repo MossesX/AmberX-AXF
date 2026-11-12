@@ -43,7 +43,7 @@ if str(_PY) not in sys.path:
 from axf.assistant_host import providers, sessions  # noqa: E402
 from axf.contracts import assistant as contract  # noqa: E402
 
-from . import chatmode, store, tools  # noqa: E402
+from . import brains, chatmode, store, tools  # noqa: E402
 
 # Host hooks of the shared runtime: what makes this host the console (never a copy of the runtime).
 providers.extra_kinds = store.extra_provider_kinds
@@ -985,6 +985,68 @@ def draft_models(body: dict[str, Any]) -> dict[str, Any]:
         raise _err(e) from None
 
 
+# ---------------------------------------------------------------- routes: brains (Claude or the local Ollama)
+
+@router.get("/brains")
+def brains_list(check: bool = True) -> dict[str, Any]:
+    """brains@1: Claude Opus / Fable and the local Ollama models (amberx-llama), with what is ready."""
+    return brains.describe(store, check)
+
+
+@router.post("/brains/local")
+def brains_local() -> dict[str, Any]:
+    """Create or repoint the amberx-llama provider profile (admins; idempotent)."""
+    if not _me().admin:
+        raise HTTPException(403, "only an admin can add the local model")
+    try:
+        return {"profile": brains.ensure_local_profile(store), **brains.describe(store)}
+    except ValueError as e:
+        raise HTTPException(400, str(e)) from None
+
+
+def _apply_brain(c: dict[str, Any], brain_id: str) -> dict[str, Any]:
+    try:
+        patch = brains.settings_for(brain_id)
+    except ValueError as e:
+        raise HTTPException(400, str(e)) from None
+    me = _me()
+    if not me.admin and not me.can("assistant.models"):
+        raise HTTPException(403, "this account can't change models")
+    if patch.get("profileId") == brains.LOCAL_PROFILE and brains.LOCAL_PROFILE not in (store.load_config().get("profiles") or {}):
+        if not me.admin:
+            raise HTTPException(409, "the local model isn't set up yet; ask an admin")
+        brains.ensure_local_profile(store)
+    s = c.setdefault("settings", {})
+    for k, v in patch.items():
+        if v == "":
+            s.pop(k, None)
+        else:
+            s[k] = v
+    return c
+
+
+@router.get("/conversations/{cid}/brain")
+def conversation_brain(cid: str) -> dict[str, Any]:
+    try:
+        c = store.get_conversation(cid)
+    except KeyError:
+        raise HTTPException(404, "conversation not found") from None
+    return {"brain": brains.brain_of(c.get("settings")), "settings": {k: c.get("settings", {}).get(k) for k in ("profileId", "model", "toolMode")}}
+
+
+@router.put("/conversations/{cid}/brain")
+def set_conversation_brain(cid: str, body: dict[str, Any]) -> dict[str, Any]:
+    """Switch who answers this chat: {brain: claude-opus | claude-fable | local-24b | local-7b}."""
+    try:
+        c = store.get_conversation(cid)
+    except KeyError:
+        raise HTTPException(404, "conversation not found") from None
+    c = _apply_brain(c, str(body.get("brain") or ""))
+    c["updatedAt"] = store.now_ms()
+    store.save_conversation(c)
+    return {"conversation": c, "brain": brains.brain_of(c.get("settings"))}
+
+
 # ---------------------------------------------------------------- routes: conversations
 
 @router.get("/conversations")
@@ -1001,6 +1063,9 @@ def new_conversation(body: dict[str, Any] | None = None) -> dict[str, Any]:
     if "agentId" not in settings and cfg.get("defaultAgent") and _agents() and me.can("assistant.agents"):
         settings["agentId"] = cfg["defaultAgent"]
     c = store.create_conversation(settings, owner=None if me.admin else me.name)
+    if (body or {}).get("brain"):
+        c = _apply_brain(c, str(body["brain"]))
+        store.save_conversation(c)
     title = str((body or {}).get("title") or "").strip()
     if title:
         c["title"] = re.sub(r"\s+", " ", title)[:120]

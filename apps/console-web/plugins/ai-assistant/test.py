@@ -409,7 +409,8 @@ fake = _os.path.join(fake_dir, "claude")
 with open(fake, "w") as f:
     f.write(f"""#!{sys.executable}
 import json, subprocess, sys
-json.dump(sys.argv, open({argv_file!r}, "w"))
+if "--mcp-config" in sys.argv:  # the background title call (no tools) must not overwrite the turn's argv
+    json.dump(sys.argv, open({argv_file!r}, "w"))
 sys.stdin.read()
 cfg = json.load(open(sys.argv[sys.argv.index("--mcp-config") + 1]))["mcpServers"]["axf"]
 p = subprocess.Popen([cfg["command"], *cfg["args"]], env=cfg["env"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
@@ -832,7 +833,8 @@ def _calls():
     except OSError:
         return []
     _os.remove(_os.path.join(_cd, "calls.jsonl"))
-    return out
+    # the background title call after a first reply races into the log; only the turn's own calls count here
+    return [x for x in out if not x["msg"].startswith("Write a 3-6 word title")]
 _cli2 = c.post(f"{P}/profiles", json={"kind": "claude-code", "label": "Sub2", "key": "sk-ant-oat01-" + "y" * 40, "defaultModel": "claude-opus-4-1"}).json()["profile"]["id"]
 class FakeGizmo:
     reads = 0
@@ -913,6 +915,43 @@ check(cm.normalize({"historyMessages": "lots", "cacheSec": None}) == {**cm.DEFAU
 check(c.get(f"{P}/status").json()["defaultToolMode"] == "auto", "status: says what a chat with no mode does")
 check(c.put(f"{P}/config", json={"chatMode": {"default": "chat", "historyMessages": 8}}).json()["chatMode"]["default"] == "chat" and c.get(f"{P}/config").json()["chatMode"]["historyMessages"] == 8, "chat mode settings save")
 c.put(f"{P}/config", json={"chatMode": {"default": "auto", "historyMessages": 16}})
+
+# Brains (build rebuild-gizmo-from-scratch-full-claude-style-cha): Claude or the local Ollama, per chat.
+class _Tags(BaseHTTPRequestHandler):
+    def log_message(self, *a):  # noqa: ANN002
+        pass
+
+    def do_GET(self):  # noqa: N802
+        b = json.dumps({"models": [{"name": "mistral-small:24b"}]}).encode() if self.path == "/api/tags" else b"{}"
+        self.send_response(200 if self.path == "/api/tags" else 404)
+        self.send_header("content-type", "application/json")
+        self.send_header("content-length", str(len(b)))
+        self.end_headers()
+        self.wfile.write(b)
+
+
+_ts = ThreadingHTTPServer(("127.0.0.1", 0), _Tags)
+threading.Thread(target=_ts.serve_forever, daemon=True).start()
+os.environ["AXF_OLLAMA_URL"] = f"http://127.0.0.1:{_ts.server_address[1]}/v1"
+_b = c.get(f"{P}/brains").json()
+_bi = {x["id"]: x for x in _b["items"]}
+check(_b["$axf"] == "brains@1" and set(_bi) == {"claude-opus", "claude-fable", "local-24b", "local-7b"} and _b["local"]["url"].endswith(str(_ts.server_address[1])), "brains: four brains, the local URL without /v1")
+check(_bi["local-24b"]["ready"] and not _bi["local-7b"]["ready"] and "ollama pull mistral:7b" in _bi["local-7b"]["why"], "brains: a pulled local model is ready, one not pulled says how to pull it")
+_cb = c.post(f"{P}/conversations", json={"brain": "local-24b"}).json()["conversation"]
+check(_cb["settings"].get("profileId") == "amberx-llama" and _cb["settings"].get("model") == "mistral-small:24b" and _cb["settings"].get("toolMode") == "chat", "brains: a new chat on the local brain pins the amberx-llama profile, Mistral Small 24B, chat mode")
+_lp = c.get(f"{P}/config").json()["profiles"]
+_lp = next(p for p in (_lp if isinstance(_lp, list) else _lp.values()) if p["id"] == "amberx-llama")
+check(_lp["kind"] == "ollama" and _lp["baseUrl"].endswith("/v1") and not _lp.get("hasKey"), "brains: the local profile is created on first use, OpenAI-compatible, no key")
+_sw = c.put(f"{P}/conversations/{_cb['id']}/brain", json={"brain": "claude-fable"}).json()
+check(_sw["brain"] == "claude-fable" and "profileId" not in _sw["conversation"]["settings"] and _sw["conversation"]["settings"]["model"] == "claude-fable-5-1", "brains: switching to Claude clears the local profile and sets the model")
+check(c.get(f"{P}/conversations/{_cb['id']}/brain").json()["brain"] == "claude-fable", "brains: a chat's brain is readable")
+check(c.put(f"{P}/conversations/{_cb['id']}/brain", json={"brain": "gpt"}).status_code == 400, "brains: an unknown brain is refused")
+check(c.put(f"{P}/conversations/{_cb['id']}/brain", json={"brain": "local-7b"}).json()["brain"] == "local-7b", "brains: the 7B option")
+check(c.post(f"{P}/brains/local").json()["profile"]["id"] == "amberx-llama", "brains: ensuring the local profile again is idempotent")
+os.environ["AXF_OLLAMA_URL"] = "http://127.0.0.1:9/"
+_b = c.get(f"{P}/brains").json()
+check(not _b["local"]["reachable"] and not any(x["ready"] for x in _b["items"] if x["family"] == "local") and "isn't reachable" in _b["items"][2]["why"], "brains: Ollama down: the local brains say so, nothing throws")
+_ts.shutdown()
 plugin_services.withdraw("fake-agent-manager")
 
 print(f"all {ok} checks passed")

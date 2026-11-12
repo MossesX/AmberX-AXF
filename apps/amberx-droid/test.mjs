@@ -1736,6 +1736,26 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
     eq(C.judgeHeard({ ...base, talking: true }), 'ignore', 'judge: anything else said over him is not sent');
   }
 
+  // Gizmo brains (Claude or the local Ollama) + the ?gizmo= deep link (build rebuild-gizmo-from-scratch)
+  {
+    const C = await import('./src/plugins/companion/web/core.ts');
+    eq(C.BRAINS.map((b) => b.id), ['claude-opus', 'claude-fable', 'local-24b', 'local-7b'], 'brains: Opus, Fable, Mistral Small 24B, Mistral 7B');
+    eq(C.brainOf(undefined), 'claude-opus', 'brains: a chat with no settings is on Claude Opus');
+    eq(C.brainOf({ model: 'claude-fable-5-1' }), 'claude-fable', 'brains: the Fable model is the Fable brain');
+    eq(C.brainOf({ profileId: 'amberx-llama', model: 'mistral:7b' }), 'local-7b', 'brains: the local profile + 7B is the 7B brain');
+    eq(C.brainOf({ profileId: 'amberx-llama', model: 'llama3' }), 'local-24b', 'brains: an unlisted local model counts as the local default');
+    eq(C.savedBrain('', 'fable'), 'claude-fable', 'brains: the old companion.model=fable setting still counts');
+    eq(C.savedBrain('local-7b', 'fable'), 'local-7b', 'brains: the new setting wins over the old one');
+    eq(C.brainForFamily('local', {}), 'local-24b', 'brains: flipping to Ollama lands on Mistral Small 24B');
+    eq(C.brainForFamily('local', { local: 'local-7b' }), 'local-7b', 'brains: flipping back remembers the last local model');
+    eq(C.brainForFamily('claude', { claude: 'local-7b' }), 'claude-opus', 'brains: a remembered brain from the other family is ignored');
+    eq(C.parseGizmoLink('?x=1'), { open: '', id: '', brain: '', q: '' }, 'link: no gizmo param = no link');
+    eq(C.parseGizmoLink('?gizmo=new&brain=local-24b'), { open: 'new', id: '', brain: 'local-24b', q: '' }, 'link: new chat on the local model');
+    eq(C.parseGizmoLink('?gizmo=c-abc_12&brain=gpt'), { open: 'chat', id: 'c-abc_12', brain: '', q: '' }, 'link: a chat id; an unknown brain is dropped');
+    eq(C.parseGizmoLink('?gizmo=../x').id, '', 'link: an id with path characters is refused');
+    eq(C.parseGizmoLink('?gizmo=talk&q=hi').open, 'talk', 'link: talk mode');
+  }
+
   // A whole talk-mode turn, replayed: Gizmo's reply comes back through the mic at every moment; Brett then talks.
   {
     const C = await import('./src/plugins/companion/web/core.ts');

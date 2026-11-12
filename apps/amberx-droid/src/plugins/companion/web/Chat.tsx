@@ -3,17 +3,25 @@
  * replies stream in and survive a dropped connection or a closed app (opening the chat again re-attaches), stop works
  * from any device. Markdown with copyable code blocks, photos / images / text files attached, edit a message and
  * resend, regenerate, copy, read aloud; the conversation list (search, pinned, day groups, rename, pin, delete, new) is
- * a drawer. Talk mode (./talk) sends what Brett says and speaks the reply as it streams.
+ * a drawer on a phone and docked beside the chat on a wide screen, and its search reads every message, not only titles.
+ * Talk mode (./talk) sends what Brett says and speaks the reply as it streams.
+ *
+ * Who answers is per chat (build rebuild-gizmo-from-scratch, Nov 2026): Claude (Opus / Fable on the Claude plan) or
+ * Brett's own Ollama on the VPS (amberx-llama: Mistral Small 24B, or 7B). The switch in the title bar flips the family,
+ * the chip by the message box picks the model; both are the assistant's brains@1 routes, so REST / MCP / CLI / voice
+ * switch the same way. `?gizmo=<id>|new|talk&brain=…&q=…` (./link) opens a chat straight from a URL.
  */
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
-import { Button, Icon, IconButton, Markdown, WindowGrip, useAxfState, useRuntime, useWindowFrame } from '../../../axf/react';
+import { Button, Icon, IconButton, Markdown, Segmented, WindowGrip, useAxfState, useRuntime, useWindowFrame } from '../../../axf/react';
 import {
   TOOL_MODES, emptyLiveReply, normalizeChatContext, turnModeLabel, watchReply,
   type AgentRef, type AssistantStatus, type ChatImage, type Conversation, type ConversationSettings, type ConversationSummary, type LiveReply, type Message, type ToolMode,
 } from '../../../axf/core';
-import { COMPANION, budgetState, chatModelId, chatModels, groupConversations, modelName, money, toolCard, tokenCost, type ToolCardView } from '../../../axf/libs/claude-session';
+import { COMPANION, budgetState, chatModelId, groupConversations, modelName, money, toolCard, tokenCost, type ToolCardView } from '../../../axf/libs/claude-session';
 import pricing from '../../../axf/schemas/model-pricing.json';
-import { client, download, exportText, fileToImage, usage } from './api';
+import { brains, client, createOn, download, exportText, fileToImage, setBrain as putBrain, setupLocal, usage, type BrainsInfo } from './api';
+import { BRAINS, brainForFamily, brainOf, familyOf, savedBrain, type BrainFamily } from './core';
+import { LINK_EVENT, linkFor, takeLink } from './link';
 import { K } from './keys';
 import { forgetChat, mirrorChat } from './mirror';
 import { pushToTalk, replyDone, replyStarted, resetSpeech, speakStreaming, startTalk, stopSpeaking, stopTalk, takeTalkRequest, talkState, useTalk } from './talk';
@@ -21,6 +29,11 @@ import { pushToTalk, replyDone, replyStarted, resetSpeech, speakStreaming, start
 const LAST = 'companion.last';
 const remember = (id: string) => { try { if (id) localStorage.setItem(LAST, id); else localStorage.removeItem(LAST); } catch { /* private mode */ } };
 const recall = () => { try { return localStorage.getItem(LAST) ?? ''; } catch { return ''; } };
+const LAST_BRAINS = 'companion.lastBrains';
+const lastBrains = (): Partial<Record<BrainFamily, string>> => { try { return JSON.parse(localStorage.getItem(LAST_BRAINS) ?? '{}') as Partial<Record<BrainFamily, string>>; } catch { return {}; } };
+const keepBrain = (id: string) => { try { localStorage.setItem(LAST_BRAINS, JSON.stringify({ ...lastBrains(), [familyOf(id)]: id })); } catch { /* private mode */ } };
+/** Wide enough to keep the chat list docked beside the chat. */
+const WIDE_PX = 860;
 const snapshot = (r: LiveReply): LiveReply => ({ ...r, tools: r.tools.map((t) => ({ ...t })) });
 const MODE_NAME: Record<ToolMode, string> = { auto: 'Auto', chat: 'Chat only', tools: 'Tools on' };
 /** A reply's footer: how it ran, what it used, how fast the first word came. */
@@ -88,6 +101,12 @@ export function CompanionView() {
   const [err, setErr] = useState('');
   const [spentUsd, setSpent] = useState(0);
   const [newMode, setNewMode] = useState<ToolMode | ''>('');
+  const [info, setInfo] = useState<BrainsInfo | null>(null);
+  const [newBrain, setNewBrain] = useState('');
+  const [hits, setHits] = useState<ConversationSummary[] | null>(null);
+  const [wide, setWide] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
   const abort = useRef<AbortController | null>(null);
   const convId = useRef('');
   const viaVoice = useRef(false);
@@ -101,13 +120,39 @@ export function CompanionView() {
   const capUsd = Number(rt.settings.get(K.dailyCapUsd) ?? 0);
   const budget = budgetState(spentUsd, capUsd);
   const showTools = rt.settings.get(K.showTools) !== false;
-  const models = chatModels();
   const savedMode = String(rt.settings.get(K.toolMode) ?? 'auto');
+  const brain = conv ? brainOf(conv.settings) : (newBrain || savedBrain(String(rt.settings.get(K.brain) ?? ''), pickedModel));
+  const brainDef = (info?.items ?? BRAINS).find((b) => b.id === brain) ?? BRAINS[0]!;
+  const family = brainDef.family;
+  const docked = wide && rt.settings.get(K.sidebar) !== false;
   const toolMode: ToolMode = conv?.settings.toolMode || (newMode || (TOOL_MODES.includes(savedMode as ToolMode) ? savedMode as ToolMode : 'auto'));
 
   const loadList = () => client.listConversations('').then((items) => setList(items.filter((c) => !c.agentId || c.agentId === COMPANION.agentId)), (e: Error) => setErr(e.message));
   const loadSpend = () => usage().then((u) => setSpent(tokenCost(u.today, chatModelId(pickedModel) || 'opus', pricing as { models: Record<string, { input: number; output: number }> })), () => undefined);
-  useEffect(() => { void loadList(); void loadSpend(); const last = recall(); if (last) void open(last); return () => { abort.current?.abort(); stopTalk(); }; }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const loadBrains = () => brains().then(setInfo);
+  useEffect(() => {
+    void loadList(); void loadSpend(); void loadBrains();
+    const link = takeLink();
+    if (link) void follow(link); else { const last = recall(); if (last) void open(last); }
+    const onLink = () => { const l = takeLink(); if (l) void follow(l); };
+    window.addEventListener(LINK_EVENT, onLink);
+    return () => { window.removeEventListener(LINK_EVENT, onLink); abort.current?.abort(); stopTalk(); };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  // the chat list docks beside the chat when the pane (the window, not the screen) is wide enough
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(([e]) => setWide((e?.contentRect.width ?? 0) >= WIDE_PX));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  // history search: the assistant searches every message on the VPS, not only the titles in the list
+  useEffect(() => {
+    const term = q.trim();
+    if (!term) { setHits(null); return; }
+    const t = setTimeout(() => void client.listConversations(term).then((items) => setHits(items.filter((c) => !c.agentId || c.agentId === COMPANION.agentId)), () => setHits(null)), 250);
+    return () => clearTimeout(t);
+  }, [q]);
   useEffect(() => { endRef.current?.scrollIntoView({ block: 'end' }); }, [conv?.messages.length, live?.text, live?.tools.length]);
 
   const open = async (id: string, follow = true) => {
@@ -119,13 +164,23 @@ export function CompanionView() {
       if (follow) void attach(c);
     } catch { setConv(null); remember(''); }
   };
-  const newChat = () => { abort.current?.abort(); convId.current = ''; setConv(null); remember(''); setEditing(''); setText(''); setDrawer(false); setNewMode(''); setTimeout(() => inputRef.current?.focus(), 30); };
+  const newChat = (onBrain = '') => { abort.current?.abort(); convId.current = ''; setConv(null); remember(''); setEditing(''); setText(''); setDrawer(false); setNewMode(''); setNewBrain(onBrain); setTimeout(() => inputRef.current?.focus(), 30); };
+
+  /** A deep link (URL, the companion.link action, voice): open that chat / a new one, on a brain, maybe with a first message. */
+  const follow = async (link: { open: string; id: string; brain: string; q: string }) => {
+    let l = link;
+    if (l.open === 'chat' && l.id) await open(l.id);
+    else if (l.open === 'new' || l.q) { newChat(l.brain); l = { ...l, brain: '' }; }
+    else if (!convId.current) { const last = recall(); if (last) await open(last); }
+    if (l.brain) await switchBrain(l.brain); // the open chat (or the next new one) switches
+    if (l.open === 'talk' && !talkState().on) startTalk(rt, (t) => sendRef.current(t, true));
+    if (l.q) setTimeout(() => sendRef.current(l.q), 60);
+  };
 
   const settingsForNew = (): ConversationSettings => {
     const persona = String(rt.settings.get(K.persona) ?? '').trim();
     return {
       ...(gizmo ? { agentId: gizmo.id } : {}),
-      ...(chatModelId(pickedModel) ? { model: chatModelId(pickedModel) } : {}),
       ...(persona ? { systemPrompt: persona } : {}),
       tools: rt.settings.get(K.tools) !== false,
       ...(newMode ? { toolMode: newMode } : {}), // otherwise the chat follows the setting, even after it changes
@@ -133,7 +188,7 @@ export function CompanionView() {
   };
   const ensureConv = async (): Promise<Conversation> => {
     if (conv) return conv;
-    const c = await client.createConversation(settingsForNew());
+    const c = await createOn(settingsForNew(), brain);
     setConv(c); remember(c.id); convId.current = c.id;
     return c;
   };
@@ -163,7 +218,7 @@ export function CompanionView() {
 
   const run = async (body: Record<string, unknown>, optimistic?: Message) => {
     if (live) return;
-    if (budget.level === 'over') { refuse(`Today's cap (${money(capUsd)}) is reached. Raise it in Settings → Plugins → Gizmo.`); return; }
+    if (budget.level === 'over' && family === 'claude') { refuse(`Today's cap (${money(capUsd)}) is reached. Raise it in Settings → Plugins → Gizmo.`); return; }
     setErr('');
     let c: Conversation;
     try { c = await ensureConv(); } catch (e) { refuse((e as Error).message); return; }
@@ -227,16 +282,37 @@ export function CompanionView() {
     }
   };
 
+  // Ctrl/Cmd+K searches chats, Ctrl/Cmd+Shift+O starts a new one (Claude's own keys)
+  useEffect(() => {
+    const k = (e: globalThis.KeyboardEvent) => {
+      if (!(e.ctrlKey || e.metaKey) || !rootRef.current?.isConnected) return;
+      if (e.key.toLowerCase() === 'k' && !e.shiftKey) { e.preventDefault(); setDrawer(true); setTimeout(() => searchRef.current?.focus(), 30); }
+      else if (e.key.toLowerCase() === 'o' && e.shiftKey) { e.preventDefault(); newChat(); }
+    };
+    window.addEventListener('keydown', k);
+    return () => window.removeEventListener('keydown', k);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const onKey = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); send(); }
     else if (e.key === 'Escape' && live) stop();
     else if (e.key === 'Escape' && editing) { setEditing(''); setText(''); }
   };
 
-  const setModel = async (key: string) => {
-    rt.settings.set(K.model, key);
-    if (conv) setConv(await client.patchConversation(conv.id, { settings: { model: chatModelId(key) } }));
+  /** Who answers this chat (a new chat: the one it will start on). Never mid-reply. */
+  const switchBrain = async (id: string) => {
+    keepBrain(id);
+    const target = convId.current;
+    if (!target) { setNewBrain(id); return; }
+    try { const r = await putBrain(target, id); if (convId.current === target) setConv(r.conversation); setErr(''); }
+    catch (e) { setErr((e as Error).message); }
   };
+  const switchFamily = (f: BrainFamily) => void switchBrain(brainForFamily(f, lastBrains()));
+  const setUpLocal = async () => {
+    try { setInfo(await setupLocal()); rt.toast('Local model added to the assistant', 'success', 'Gizmo'); }
+    catch (e) { rt.toast((e as Error).message, 'danger', 'Gizmo'); }
+  };
+  const copyLink = () => { void navigator.clipboard?.writeText(linkFor(conv?.id ?? '', conv ? '' : brain)); rt.toast('Link copied', 'success', 'Gizmo'); };
   const cycleMode = async () => {
     const next = TOOL_MODES[(TOOL_MODES.indexOf(toolMode) + 1) % TOOL_MODES.length] ?? 'auto';
     if (!conv) { setNewMode(next); return; }
@@ -270,11 +346,11 @@ export function CompanionView() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const toggleTool = (id: string) => setOpenTools((s) => { const n = new Set(s); if (n.has(id)) n.delete(id); else n.add(id); return n; });
 
-  const groups = useMemo(() => groupConversations(list, q), [list, q]);
+  const groups = useMemo(() => (hits ? groupConversations(hits, '') : groupConversations(list, q)), [list, q, hits]);
   const visible = (conv?.messages ?? []).filter((m) => m.role === 'user' || (m.role === 'assistant' && !m.meta?.step));
   const lastAssistant = [...visible].reverse().find((m) => m.role === 'assistant');
-  const convModel = conv?.settings.model ?? chatModelId(pickedModel);
-  const modelKey = models.find((m) => m.id === convModel)?.key ?? models[0]?.key ?? 'opus';
+  const familyBrains = (info?.items ?? BRAINS).filter((b) => b.family === family);
+  const notReady = info && brainDef.ready === false ? (brainDef.why || 'not ready') : '';
   const turnMode = turnModeLabel(live?.mode ?? lastAssistant?.meta?.mode);
   const toolsOf = (m: Message) => (m.meta?.tools ?? []).map((t) => toolCard({ ...t, done: true }));
 
@@ -289,23 +365,21 @@ export function CompanionView() {
   }
 
   return (
-    <div className={`axp-companion axp-companion--wt ${frame ? 'axp-companion--window' : ''}`} data-talk={talk.phase}>
+    <div ref={rootRef} className={`axp-companion axp-companion--wt ${frame ? 'axp-companion--window' : ''} ${docked ? 'axp-companion--docked' : ''}`} data-talk={talk.phase} data-brain={brain}>
       <header className={`axp-companion__bar ${frame ? 'axp-companion__bar--titlebar' : ''}`} onPointerDown={barDown}>
         {frame && <WindowGrip className="axp-companion__grip" />}
-        <IconButton icon="menu" label="Chats" onClick={() => setDrawer((d) => !d)} />
+        <IconButton icon="menu" label={docked ? 'Hide the chat list' : 'Chats'} onClick={() => (wide ? rt.settings.set(K.sidebar, !docked) : setDrawer((d) => !d))} />
         <div className="axp-companion__title">
           <Icon name="sparkles" size={16} />
           <strong className="axp-companion__clip">{conv?.title || COMPANION.name}</strong>
           {live && <span className="fx-muted axp-companion__clip">{live.status || 'typing…'}</span>}
         </div>
-        <div className="fx-seg" role="radiogroup" aria-label="Model">
-          {models.map((m) => (
-            <button key={m.key} type="button" role="radio" aria-checked={m.key === modelKey} className={`fx-seg__opt ${m.key === modelKey ? 'is-active' : ''}`} onClick={() => void setModel(m.key)}>{modelName(m.id).split(' ')[0]}</button>
-          ))}
-        </div>
+        <Segmented<BrainFamily> size="sm" label="Who answers" value={family} disabled={!!live} onChange={switchFamily} className="axp-companion__family"
+          options={[{ value: 'claude', label: 'Claude', icon: 'sparkles', title: 'Claude on the Claude plan' }, { value: 'local', label: 'Ollama', icon: 'monitor', title: 'Your Ollama on the VPS (amberx-llama)' }]} />
+        <IconButton icon="external" label="Copy a link to this chat" onClick={copyLink} />
         <IconButton icon="download" label="Export this chat" onClick={() => void exportConv()} disabled={!conv} />
-        <IconButton icon="plus" label="New chat" onClick={newChat} />
-        {!frame && <IconButton icon="external" label="Open in a window" onClick={() => rt.dispatch('companion.open')} />}
+        <IconButton icon="plus" label="New chat" onClick={() => newChat()} />
+        {!frame && <IconButton icon="layers" label="Open in a window" onClick={() => rt.dispatch('companion.open')} />}
         {frame && (
           <div className="axp-companion__caption" role="group" aria-label="Window">
             {frame.canMinimize && <button type="button" className="fx-iconbtn axp-companion__cap" title="Minimize" aria-label="Minimize" onPointerDown={(e) => e.stopPropagation()} onClick={frame.minimize}><Icon name="minimize" size={14} /></button>}
@@ -315,14 +389,15 @@ export function CompanionView() {
         )}
       </header>
 
-      {drawer && (
-        <aside className="axp-companion__drawer" aria-label="Chats">
+      <div className="axp-companion__body">
+      {(drawer || docked) && (
+        <aside className={`axp-companion__drawer ${docked ? 'axp-companion__drawer--docked' : ''}`} aria-label="Chats">
           <div className="axp-companion__drawerhead">
-            <input className="fx-input axp-companion__grow" type="search" value={q} placeholder="Search chats" aria-label="Search chats" onChange={(e) => setQ(e.target.value)} />
-            <Button tone="primary" size="sm" icon="plus" onClick={newChat}>New</Button>
+            <input ref={searchRef} className="fx-input axp-companion__grow" type="search" value={q} placeholder="Search every message (Ctrl+K)" aria-label="Search chats" onChange={(e) => setQ(e.target.value)} />
+            <Button tone="primary" size="sm" icon="plus" onClick={() => newChat()}>New</Button>
           </div>
           <div className="axp-companion__drawerlist">
-            {!groups.length && <p className="fx-muted axp-companion__pad">{q ? 'No chat matches.' : 'No chats yet. Say hi to Gizmo.'}</p>}
+            {!groups.length && <p className="fx-muted axp-companion__pad">{q ? 'No chat mentions that.' : 'No chats yet. Say hi to Gizmo.'}</p>}
             {groups.map((g) => (
               <section key={g.group} className="axp-companion__group">
                 <h4 className="fx-eyebrow">{g.group}</h4>
@@ -347,6 +422,7 @@ export function CompanionView() {
         </aside>
       )}
 
+      <div className="axp-companion__pane">
       <main className="axp-companion__log" aria-live="polite">
         {statusErr && <p className="axp-companion__note axp-companion__note--danger">{statusErr}</p>}
         {status && !gizmo && <p className="axp-companion__note">Gizmo's agent isn't on the console yet (Agent manager installs him on its next start); chatting with the plain assistant until then.</p>}
@@ -354,7 +430,7 @@ export function CompanionView() {
           <div className="axp-companion__hello fx-stack">
             <Icon name="sparkles" size={32} />
             <h2>Hey Brett, it's {COMPANION.name}.</h2>
-            <p className="fx-muted">{COMPANION.tagline}</p>
+            <p className="fx-muted">{family === 'local' ? `On your own Ollama: ${brainDef.label}. Private, nothing leaves the VPS.` : COMPANION.tagline}</p>
             <div className="axp-companion__starters">
               {STARTERS.map((s) => <Button key={s.label} size="sm" icon={s.icon} onClick={() => send(s.text)}>{s.label}</Button>)}
             </div>
@@ -395,7 +471,14 @@ export function CompanionView() {
         )}
         {talk.on && talk.background && <p className="axp-companion__note">Talk mode keeps going with the screen off. Stop it here or from the notification.</p>}
         {!talk.on && talk.stopped && <p className="axp-companion__note">{talk.stopped}</p>}
-        {budget.level === 'warn' && <p className="axp-companion__note">Today: {money(spentUsd)} of your {money(capUsd)} cap ({budget.left} left).</p>}
+        {notReady && (
+          <p className="axp-companion__note axp-companion__note--danger">
+            {brainDef.label}: {notReady}{' '}
+            {family === 'local' && info && !info.local.profileExists && <Button size="sm" icon="plus" onClick={() => void setUpLocal()}>Add it to the assistant</Button>}
+            {' '}<Button size="sm" icon="refresh" onClick={() => void loadBrains()}>Check again</Button>
+          </p>
+        )}
+        {budget.level === 'warn' && family === 'claude' && <p className="axp-companion__note">Today: {money(spentUsd)} of your {money(capUsd)} cap ({budget.left} left).</p>}
         {editing && <p className="axp-companion__note">Editing a message: send to replace it and everything after. <Button size="sm" icon="x" onClick={() => { setEditing(''); setText(''); }}>Cancel</Button></p>}
         {(images.length > 0 || files.length > 0) && (
           <div className="axp-companion__attached">
@@ -413,12 +496,18 @@ export function CompanionView() {
           <Button size="sm" icon={(live?.mode ?? lastAssistant?.meta?.mode)?.mode === 'tools' ? 'zap' : 'sparkles'} className="axp-companion__mode" title={`Tools: ${MODE_NAME[toolMode]}${turnMode ? `. This turn: ${turnMode}` : ''}. Tap to change.`} onClick={() => void cycleMode()}>
             <span className="axp-companion__clip">{toolMode === 'auto' && turnMode ? `Auto · ${turnMode}` : MODE_NAME[toolMode]}</span>
           </Button>
+          {familyBrains.length > 1 && (
+            <Segmented<string> size="sm" label="Model" value={brain} disabled={!!live} onChange={(v) => void switchBrain(v)} className="axp-companion__model"
+              options={familyBrains.map((b) => ({ value: b.id, label: b.short, title: b.ready === false ? `${b.label}: ${b.why}` : `${b.label}. ${b.description}` }))} />
+          )}
           <span className="axp-companion__grow" />
           <IconButton icon="mic" label="Push to talk" onClick={ptt} disabled={!!live} />
           <IconButton icon={talk.on ? 'pause' : 'play'} label={talk.on ? 'Leave talk mode' : 'Talk mode (hands-free)'} onClick={toggleTalk} />
           {live ? <Button tone="danger" size="sm" icon="x-circle" onClick={stop}>Stop</Button> : <Button tone="primary" size="sm" icon="arrow-right" onClick={() => send()} disabled={!text.trim() && !images.length && !files.length}>Send</Button>}
         </div>
       </footer>
+      </div>
+      </div>
     </div>
   );
 }
