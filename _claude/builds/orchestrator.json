@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T03:26:42.224Z",
+ "updatedAt": "2026-11-12T03:26:56.216Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -9,6 +9,47 @@
   "maxStepMinutes": 30
  },
  "builds": [
+  {
+   "id": "axhub-web-app-live-at-axhub-amberxai-com-banner",
+   "title": "axHub web app live at axhub.amberxai.com (banner, toolbar, nav)",
+   "category": "App",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "mergedAt": "2026-10-23T11:41:00.284Z",
+   "createdAt": "2026-10-23T11:41:00.284Z",
+   "updatedAt": "2026-11-12T03:26:46Z",
+   "builtAt": "2026-10-23T11:41:00.284Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as PR #0.",
+     "at": "2026-11-12T03:26:46Z"
+    },
+    {
+     "text": "Shipped manifest sm-axhub-web-app-live-at-axhub-amberxai-com-banner rev 1 sent to Shipped features (backfill): complete 2026-10-23 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:26:46Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "From a chat prompt (source chat). Serve apps/axhub-web on the hub host, page paths only via Traefik priority; hub container untouched. Branch claude/axhub-web-on-hub.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
   {
    "id": "merge-profiles-one",
    "title": "Merge every build profile into one (all)",
@@ -52352,12 +52393,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-23T01:13:32.733Z",
-   "updatedAt": "2026-10-23T01:13:32.733Z",
+   "updatedAt": "2026-11-12T03:26:41Z",
    "builtAt": "2026-10-23T01:13:32.733Z",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-credits-switch-ai-keys rev 1 sent to Shipped features (backfill): complete 2026-10-23 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:26:41Z"
     }
    ],
    "approvals": [],
@@ -52376,7 +52421,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-22T22:00:29.631Z",
-   "updatedAt": "2026-10-22T22:32:40.585Z",
+   "updatedAt": "2026-11-12T03:26:42Z",
    "builtAt": "2026-10-22T22:32:32.202Z",
    "notes": [
     {
@@ -52386,6 +52431,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-walkthrough-studio rev 1 sent to Shipped features (backfill): complete 2026-10-22 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:26:42Z"
     }
    ],
    "approvals": [],
@@ -52549,7 +52598,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-22T22:32:28.215Z",
-   "updatedAt": "2026-11-10T04:39:20.621Z",
+   "updatedAt": "2026-11-12T03:26:43Z",
    "builtAt": "2026-11-10T04:39:20.621Z",
    "notes": [
     {
@@ -52563,6 +52612,10 @@
     {
      "text": "Audit: superseded — Fable rebuild filed before the \"No Fable rebuilds\" rule (Oct 27 2026); the Opus build shipped (walkthrough-studio, complete)",
      "at": "2026-11-10T04:39:20.621Z"
+    },
+    {
+     "text": "Shipped manifest sm-walkthrough-studio-fable rev 1 sent to Shipped features (backfill): complete 2026-11-10 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 6 open.",
+     "at": "2026-11-12T03:26:43Z"
     }
    ],
    "approvals": [],
@@ -52702,7 +52755,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-22T22:57:58.529Z",
-   "updatedAt": "2026-10-22T23:20:51.984Z",
+   "updatedAt": "2026-11-12T03:26:44Z",
    "builtAt": "2026-10-22T23:20:51.501Z",
    "notes": [
     {
@@ -52712,6 +52765,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-walkthrough-harvest rev 1 sent to Shipped features (backfill): complete 2026-10-22 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:26:44Z"
     }
    ],
    "approvals": [],
@@ -52903,12 +52960,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-23T05:32:20.790Z",
-   "updatedAt": "2026-10-23T05:33:18.970Z",
+   "updatedAt": "2026-11-12T03:26:47Z",
    "builtAt": "2026-10-23T05:33:18.963Z",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-axhub-web-rebuild rev 1 sent to Shipped features (backfill): complete 2026-10-23 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:26:47Z"
     }
    ],
    "approvals": [],
@@ -52927,12 +52988,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-23T05:37:28.383Z",
-   "updatedAt": "2026-10-23T05:40:04.677Z",
+   "updatedAt": "2026-11-12T03:26:48Z",
    "builtAt": "2026-10-23T05:40:04.677Z",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-syscheck-rebake rev 1 sent to Shipped features (backfill): complete 2026-10-23 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:26:48Z"
     }
    ],
    "approvals": [],
@@ -53085,7 +53150,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-23T12:18:42.098Z",
-   "updatedAt": "2026-10-23T12:30:55.345Z",
+   "updatedAt": "2026-11-12T03:26:49Z",
    "builtAt": "2026-10-23T12:30:55.345Z",
    "notes": [
     {
@@ -53095,6 +53160,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-hubstore-voice-notes rev 1 sent to Shipped features (backfill): complete 2026-10-23 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:26:49Z"
     }
    ],
    "approvals": [],
@@ -53198,7 +53267,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-23T12:30:10.672Z",
-   "updatedAt": "2026-11-10T04:39:20.621Z",
+   "updatedAt": "2026-11-12T03:26:51Z",
    "builtAt": "2026-11-10T04:39:20.621Z",
    "notes": [
     {
@@ -53212,6 +53281,10 @@
     {
      "text": "Audit: superseded — Fable rebuild filed before the \"No Fable rebuilds\" rule (Oct 27 2026); the Opus build shipped",
      "at": "2026-11-10T04:39:20.621Z"
+    },
+    {
+     "text": "Shipped manifest sm-hubstore-fable rev 1 sent to Shipped features (backfill): complete 2026-11-10 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 5 open.",
+     "at": "2026-11-12T03:26:51Z"
     }
    ],
    "approvals": [],
@@ -53639,7 +53712,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-23T14:29:44.678Z",
-   "updatedAt": "2026-10-23T14:55:49.072Z",
+   "updatedAt": "2026-11-12T03:26:52Z",
    "builtAt": "2026-10-23T14:55:49.000Z",
    "notes": [
     {
@@ -53649,6 +53722,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-plugin-model-badges-update rev 1 sent to Shipped features (backfill): complete 2026-10-23 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:26:52Z"
     }
    ],
    "approvals": [],
@@ -53860,7 +53937,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-23T14:57:50.296Z",
-   "updatedAt": "2026-10-23T15:09:52.146Z",
+   "updatedAt": "2026-11-12T03:26:54Z",
    "builtAt": "2026-10-23T15:09:52.083Z",
    "notes": [
     {
@@ -53870,6 +53947,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-plugins-menu rev 1 sent to Shipped features (backfill): complete 2026-10-23 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:26:54Z"
     }
    ],
    "approvals": [],

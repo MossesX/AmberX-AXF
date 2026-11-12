@@ -776,17 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s6 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s7 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s8 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s9 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s10 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s11 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s12 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s13 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s14 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s15 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s16 done (all) · orchestrator
 - 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s17 done (all) · orchestrator
 - 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s18 done (all) · orchestrator
 - 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s19 done (all) · orchestrator
@@ -1176,6 +1165,17 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:26 UTC · `push-banner-branches-that-can-merge-cleanly` note (all) · backfill
 - 2026-11-12 03:26 UTC · `ai-keys` note (all) · backfill
 - 2026-11-12 03:26 UTC · `syscheck-live-keys-credits` note (all) · backfill
+- 2026-11-12 03:26 UTC · `credits-switch-ai-keys` note (all) · backfill
+- 2026-11-12 03:26 UTC · `walkthrough-studio` note (all) · backfill
+- 2026-11-12 03:26 UTC · `walkthrough-studio-fable` note (all) · backfill
+- 2026-11-12 03:26 UTC · `walkthrough-harvest` note (all) · backfill
+- 2026-11-12 03:26 UTC · `axhub-web-app-live-at-axhub-amberxai-com-banner` added (0 steps) (all) · backfill
+- 2026-11-12 03:26 UTC · `axhub-web-rebuild` note (all) · backfill
+- 2026-11-12 03:26 UTC · `syscheck-rebake` note (all) · backfill
+- 2026-11-12 03:26 UTC · `hubstore-voice-notes` note (all) · backfill
+- 2026-11-12 03:26 UTC · `hubstore-fable` note (all) · backfill
+- 2026-11-12 03:26 UTC · `plugin-model-badges-update` note (all) · backfill
+- 2026-11-12 03:26 UTC · `plugins-menu` note (all) · backfill
 
 ## Token passes (log)
 

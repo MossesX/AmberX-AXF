@@ -1010,6 +1010,18 @@
    "from": "",
    "addenda": []
   },
+  "axhub-web-app-live-at-axhub-amberxai-com-banner": {
+   "said": "From a chat prompt (source chat). Serve apps/axhub-web on the hub host, page paths only via Traefik priority; hub container untouched. Branch claude/axhub-web-on-hub.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": false,
+   "from": "report",
+   "addenda": []
+  },
   "axhub-web-console-look": {
    "said": "rebuild the axHub web app (served at axhub.amberxai.com since Oct 23) with the framework, look and layout matching the Dev Console and Patches, and harvest reusable libraries from it. Web only (Android on hold). Branch claude/project-thread-j1ri9d, PR #30. The Kotlin twin of the catalog rules stays with axhub-web-hub-rules (Fable).",
    "at": "2026-10-22",
