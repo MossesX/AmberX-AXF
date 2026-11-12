@@ -15,7 +15,7 @@
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { SettingsPanel } from '../../core';
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, SKIN_COLOR_SLOT, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, hideableTypes, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
-import { AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, Icon, IconButton, ModelBadge, setBannerOwnSettingsRenderer, Slider, Switch, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
+import { AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, CHROME_INTERFACE_DIALOG, Container, Icon, IconButton, ModelBadge, setBannerOwnSettingsRenderer, Slider, Switch, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 import { TabGroup } from '../../react/components/TabGroup';
@@ -630,6 +630,15 @@ export function AppearancePanel() {
         <Switch key={t} label={assetTypeSpecs[t as AssetType]?.label ?? t} checked={!rt.slotHidden(t as AssetType)} disabled={locked} onChange={(on) => rt.setSlotHidden(t as AssetType, !on)} />
       ))}
       {row('Navigation menu', 'nav-menu')}
+      {/* chrome-settings@1: the settings interface that draws each chrome kind's right-click dialog is edited here, never
+          from the piece's own dialog (Brett, Nov 10 2026: those settings apply to the piece in the app, not the panel) */}
+      <div className="axf-settings__row">
+        <div className="axf-settings__label">
+          <span>Chrome settings interfaces</span>
+          <span className="fx-muted axf-settings__hint">How the Settings dialog of a toolbar, nav menu, tab row or banner is laid out. The pieces themselves are set from their own right-click → Settings…</span>
+        </div>
+        <div className="axf-settings__control axf-skin__action"><Button size="sm" icon="settings" disabled={locked} onClick={() => rt.openDialog(CHROME_INTERFACE_DIALOG, {})}>Choose…</Button></div>
+      </div>
       <SkinWhere locked={locked} />
       <div className="axf-settings__row">
         <div className="axf-settings__label"><span>Restore to default</span><span className="fx-muted axf-settings__hint">Back to the look this app had when skins landed.</span></div>

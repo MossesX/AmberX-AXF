@@ -25,6 +25,7 @@ import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
 import { detectEmbedFull, embedHostLabel, embedTakeSpec, embedLockedBy, embedLockNote, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type EmbedPlugin } from './engines/embed';
 import { SPACING_DEFAULT as SPACING_DEFAULT_VALUE, spacingOf, type Spacing } from './engines/spacing';
 import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, type PlacedBanner } from './engines/banner';
+import { chromeLiveData } from './engines/chrome-settings-rules.mjs';
 import { BANNER_FIXED_SHAPE, bannerWidgetEmpty, bannerWidgetView, findBannerWidget, normalizeBannerWidgetPrefs, patchBannerWidget, BANNER_WIDGET_SIZES, type BannerWidgetHint, type BannerWidgetPrefs, type BannerWidgetSize, type BannerWidgetView } from './engines/bannerwidgets';
 import { hostSpec, hostSpecs, moveOnHost, normalizeArrangement, placeHost, placeToolbarWidgets, type HostArrangement, type HostAttachment, type PlacedAttachment } from './engines/widgets';
 import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
@@ -905,7 +906,7 @@ export class AxfRuntime {
    * the nav doesn't opt in (nav-menu `navStyle` is not true) or the app ships no nav-style asset.
    */
   navStyleData(): NavStyleData | null {
-    if (this.assetOrNull('nav-menu')?.data.navStyle !== true) return null;
+    if (this.chromeDataOrNull('nav-menu')?.navStyle !== true) return null;
     const a = this.assetOrNull('nav-style' as AssetType);
     if (!a) return null;
     return normalizeNavStyle(this.withTokenOverrides('tokens.nav', 'nav-style' as AssetType, a.data));
@@ -1166,6 +1167,22 @@ export class AxfRuntime {
     return id ? this.registry.get(type, id) ?? null : null;
   }
 
+  /**
+   * What the live chrome of a kind draws with (chrome-settings@1): the active asset's data with the app instance's
+   * overrides (`axf.chrome.<type>.app`, what the right-click Settings dialog edits) written over it. For a type that
+   * is not chrome this is the asset's data as is. Fix Nov 10 2026 (Brett): the dialog's changes used to go nowhere
+   * visible, so the only thing that changed on screen was the panel itself.
+   */
+  chromeData<K extends AssetType>(type: K): Asset<K>['data'] {
+    return chromeLiveData(type, this.asset(type).data as object, (k) => this.settings.get(k)) as Asset<K>['data'];
+  }
+
+  /** `chromeData` for an optional kind (the banner): null when the app has none. */
+  chromeDataOrNull<K extends AssetType>(type: K): Asset<K>['data'] | null {
+    const a = this.assetOrNull(type);
+    return a ? (chromeLiveData(type, a.data as object, (k) => this.settings.get(k)) as Asset<K>['data']) : null;
+  }
+
   /* ---------------- widget hosts (core/engines/widgets.ts): banner + toolbar ---------------- */
 
   /** Run-time attachments per host (`banner`, `toolbar`, any host a library registers). */
@@ -1222,7 +1239,7 @@ export class AxfRuntime {
 
   /** The banner to draw: its data (null = no banner or hidden) and where every attachment goes. `all` keeps the widgets the person hid. */
   banner(opts?: { all?: boolean }): { data: Asset<'banner'>['data'] | null; placed: PlacedBanner } {
-    const b = this.slotHidden('banner') ? null : this.assetOrNull('banner')?.data ?? null;
+    const b = this.slotHidden('banner') ? null : this.chromeDataOrNull('banner');
     const placed = placeAttachments(b, b ? (this.hostExtra.get('banner') as BannerAttachment[] | undefined) ?? [] : [], (t, id) => this.registry.has(t as AssetType, id), this.hostArrangement('banner'));
     if (opts?.all) return { data: b, placed };
     const shown = Object.fromEntries(Object.entries(placed).map(([s, list]) => [s, list.filter((p) => this.bannerWidgetShown(p.key))])) as PlacedBanner;
@@ -1562,7 +1579,7 @@ export class AxfRuntime {
 
   /** Is a collapsible toolbar folded to its handle on this device? (setting `axf.toolbar.collapsed`, same key on Android) */
   toolbarCollapsed(): boolean {
-    return this.asset('toolbar').data.collapsible === true && this.settings.get(TOOLBAR_COLLAPSED_KEY) === true;
+    return this.chromeData('toolbar').collapsible === true && this.settings.get(TOOLBAR_COLLAPSED_KEY) === true;
   }
 
   setToolbarCollapsed(on: boolean): void {
@@ -2481,10 +2498,11 @@ export class AxfRuntime {
       containerStyle(this.asset('container').data),
       dialogStyle(this.asset('dialog').data),
       popupStyle(this.asset('popup').data),
-      contextMenuStyle(this.asset('context-menu').data),
-      toolbarStyle(this.asset('toolbar').data),
-      navMenuStyle(this.asset('nav-menu').data),
-      appMenuStyle(this.asset('app-menu').data),
+      // chrome kinds draw with the app instance's overrides (the right-click Settings dialog) over the asset
+      contextMenuStyle(this.chromeData('context-menu')),
+      toolbarStyle(this.chromeData('toolbar')),
+      navMenuStyle(this.chromeData('nav-menu')),
+      appMenuStyle(this.chromeData('app-menu')),
       // optional control types (older apps without them get the defaults)
       gaugeStyle(this.assetOrNull('gauge')?.data),
       meterStyle(this.assetOrNull('meter')?.data),
@@ -2501,7 +2519,7 @@ export class AxfRuntime {
         sizing: this.withTokenOverrides('tokens.sizing', 'sizing' as AssetType, this.assetOrNull('sizing' as AssetType)?.data ?? (this.settings.get(CONTROL_TOKEN_SLOTS['tokens.sizing'].key) ? {} : undefined)),
       }),
       ...layoutVars(this.inspectorLayout(this.withTokenOverrides('tokens.layout', 'layout', this.asset('layout').data)), this.hiddenSlots()),
-      ...bannerVars(this.assetOrNull('banner')?.data, this.slotHidden('banner')),
+      ...bannerVars(this.chromeDataOrNull('banner'), this.slotHidden('banner')),
       // branding package (optional): palette slots as --fx-brand-1/2/3, the brand name, the accent when it asks for it
       ...brandingVars(this.assetOrNull('branding' as AssetType)?.data ?? { brand: { name: '' }, marks: {} }),
     };

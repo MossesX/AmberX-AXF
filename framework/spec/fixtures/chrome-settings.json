@@ -94,25 +94,29 @@
       "id": "look",
       "label": "Look",
       "icon": "palette",
-      "order": 10
+      "order": 10,
+      "scope": "asset"
     },
     {
       "id": "behaviour",
       "label": "Behaviour",
       "icon": "sliders",
-      "order": 20
+      "order": 20,
+      "scope": "asset"
     },
     {
       "id": "asset",
       "label": "Asset",
       "icon": "layers",
-      "order": 30
+      "order": 30,
+      "scope": "asset"
     },
     {
       "id": "interface",
       "label": "Interface",
       "icon": "settings",
-      "order": 40
+      "order": 40,
+      "scope": "panel"
     }
   ],
   "fields": {
@@ -871,5 +875,377 @@
     "chrome-app-menu-molly",
     "chrome-context-menu",
     "chrome-context-menu-molly"
-  ]
+  ],
+  "appInstance": "app",
+  "dialogTabs": [
+    "look",
+    "behaviour",
+    "asset"
+  ],
+  "panelKeys": {
+    "tab-group": [
+      "axf.chrome.settings.tab-group",
+      "axf.chrome.settings.custom.tab-group"
+    ],
+    "toolbar": [
+      "axf.chrome.settings.toolbar",
+      "axf.chrome.settings.custom.toolbar"
+    ],
+    "banner": [
+      "axf.chrome.settings.banner",
+      "axf.chrome.settings.custom.banner"
+    ],
+    "nav-menu": [
+      "axf.chrome.settings.nav-menu",
+      "axf.chrome.settings.custom.nav-menu"
+    ],
+    "app-menu": [
+      "axf.chrome.settings.app-menu",
+      "axf.chrome.settings.custom.app-menu"
+    ],
+    "context-menu": [
+      "axf.chrome.settings.context-menu",
+      "axf.chrome.settings.custom.context-menu"
+    ]
+  },
+  "live": {
+    "tab-group": {
+      "field": "style",
+      "asset": "underline",
+      "changed": "pills",
+      "app": {
+        "style": "pills"
+      },
+      "other": {
+        "style": "underline"
+      },
+      "none": {
+        "style": "underline"
+      }
+    },
+    "toolbar": {
+      "field": "variant",
+      "asset": "icons",
+      "changed": "icons-labels",
+      "app": {
+        "variant": "icons-labels"
+      },
+      "other": {
+        "variant": "icons"
+      },
+      "none": {
+        "variant": "icons"
+      }
+    },
+    "banner": {
+      "field": "surface",
+      "asset": "flat",
+      "changed": "raised",
+      "app": {
+        "surface": "raised"
+      },
+      "other": {
+        "surface": "flat"
+      },
+      "none": {
+        "surface": "flat"
+      }
+    },
+    "nav-menu": {
+      "field": "style",
+      "asset": "list",
+      "changed": "pills",
+      "app": {
+        "style": "pills"
+      },
+      "other": {
+        "style": "list"
+      },
+      "none": {
+        "style": "list"
+      }
+    },
+    "app-menu": {
+      "field": "density",
+      "asset": "regular",
+      "changed": "compact",
+      "app": {
+        "density": "compact"
+      },
+      "other": {
+        "density": "regular"
+      },
+      "none": {
+        "density": "regular"
+      }
+    },
+    "context-menu": {
+      "field": "variant",
+      "asset": "compact",
+      "changed": "roomy",
+      "app": {
+        "variant": "roomy"
+      },
+      "other": {
+        "variant": "compact"
+      },
+      "none": {
+        "variant": "compact"
+      }
+    }
+  },
+  "reset": {
+    "tab-group": {
+      "app": {
+        "type": "tab-group",
+        "instance": "app",
+        "clear": [
+          "axf.chrome.tab-group.app",
+          "axf.chrome.tab-group.app.asset"
+        ],
+        "swap": null,
+        "layoutField": null
+      },
+      "atDefault": {
+        "type": "tab-group",
+        "instance": "app",
+        "clear": [
+          "axf.chrome.tab-group.app",
+          "axf.chrome.tab-group.app.asset"
+        ],
+        "swap": null,
+        "layoutField": null
+      },
+      "row": {
+        "type": "tab-group",
+        "instance": "ui-review.sections",
+        "clear": [
+          "axf.chrome.tab-group.ui-review.sections",
+          "axf.chrome.tab-group.ui-review.sections.asset"
+        ],
+        "swap": null,
+        "layoutField": null
+      },
+      "badInstance": {
+        "type": "tab-group",
+        "instance": "app",
+        "clear": [
+          "axf.chrome.tab-group.app",
+          "axf.chrome.tab-group.app.asset"
+        ],
+        "swap": null,
+        "layoutField": null
+      }
+    },
+    "toolbar": {
+      "app": {
+        "type": "toolbar",
+        "instance": "app",
+        "clear": [
+          "axf.chrome.toolbar.app",
+          "axf.chrome.toolbar.app.asset"
+        ],
+        "swap": "plain",
+        "layoutField": "toolbarPosition"
+      },
+      "atDefault": {
+        "type": "toolbar",
+        "instance": "app",
+        "clear": [
+          "axf.chrome.toolbar.app",
+          "axf.chrome.toolbar.app.asset"
+        ],
+        "swap": null,
+        "layoutField": "toolbarPosition"
+      },
+      "row": {
+        "type": "toolbar",
+        "instance": "ui-review.sections",
+        "clear": [
+          "axf.chrome.toolbar.ui-review.sections",
+          "axf.chrome.toolbar.ui-review.sections.asset"
+        ],
+        "swap": "plain",
+        "layoutField": "toolbarPosition"
+      },
+      "badInstance": {
+        "type": "toolbar",
+        "instance": "app",
+        "clear": [
+          "axf.chrome.toolbar.app",
+          "axf.chrome.toolbar.app.asset"
+        ],
+        "swap": null,
+        "layoutField": "toolbarPosition"
+      }
+    },
+    "banner": {
+      "app": {
+        "type": "banner",
+        "instance": "app",
+        "clear": [
+          "axf.chrome.banner.app",
+          "axf.chrome.banner.app.asset"
+        ],
+        "swap": "plain",
+        "layoutField": null
+      },
+      "atDefault": {
+        "type": "banner",
+        "instance": "app",
+        "clear": [
+          "axf.chrome.banner.app",
+          "axf.chrome.banner.app.asset"
+        ],
+        "swap": null,
+        "layoutField": null
+      },
+      "row": {
+        "type": "banner",
+        "instance": "ui-review.sections",
+        "clear": [
+          "axf.chrome.banner.ui-review.sections",
+          "axf.chrome.banner.ui-review.sections.asset"
+        ],
+        "swap": "plain",
+        "layoutField": null
+      },
+      "badInstance": {
+        "type": "banner",
+        "instance": "app",
+        "clear": [
+          "axf.chrome.banner.app",
+          "axf.chrome.banner.app.asset"
+        ],
+        "swap": null,
+        "layoutField": null
+      }
+    },
+    "nav-menu": {
+      "app": {
+        "type": "nav-menu",
+        "instance": "app",
+        "clear": [
+          "axf.chrome.nav-menu.app",
+          "axf.chrome.nav-menu.app.asset"
+        ],
+        "swap": "plain",
+        "layoutField": "nav"
+      },
+      "atDefault": {
+        "type": "nav-menu",
+        "instance": "app",
+        "clear": [
+          "axf.chrome.nav-menu.app",
+          "axf.chrome.nav-menu.app.asset"
+        ],
+        "swap": null,
+        "layoutField": "nav"
+      },
+      "row": {
+        "type": "nav-menu",
+        "instance": "ui-review.sections",
+        "clear": [
+          "axf.chrome.nav-menu.ui-review.sections",
+          "axf.chrome.nav-menu.ui-review.sections.asset"
+        ],
+        "swap": "plain",
+        "layoutField": "nav"
+      },
+      "badInstance": {
+        "type": "nav-menu",
+        "instance": "app",
+        "clear": [
+          "axf.chrome.nav-menu.app",
+          "axf.chrome.nav-menu.app.asset"
+        ],
+        "swap": null,
+        "layoutField": "nav"
+      }
+    },
+    "app-menu": {
+      "app": {
+        "type": "app-menu",
+        "instance": "app",
+        "clear": [
+          "axf.chrome.app-menu.app",
+          "axf.chrome.app-menu.app.asset"
+        ],
+        "swap": "plain",
+        "layoutField": null
+      },
+      "atDefault": {
+        "type": "app-menu",
+        "instance": "app",
+        "clear": [
+          "axf.chrome.app-menu.app",
+          "axf.chrome.app-menu.app.asset"
+        ],
+        "swap": null,
+        "layoutField": null
+      },
+      "row": {
+        "type": "app-menu",
+        "instance": "ui-review.sections",
+        "clear": [
+          "axf.chrome.app-menu.ui-review.sections",
+          "axf.chrome.app-menu.ui-review.sections.asset"
+        ],
+        "swap": "plain",
+        "layoutField": null
+      },
+      "badInstance": {
+        "type": "app-menu",
+        "instance": "app",
+        "clear": [
+          "axf.chrome.app-menu.app",
+          "axf.chrome.app-menu.app.asset"
+        ],
+        "swap": null,
+        "layoutField": null
+      }
+    },
+    "context-menu": {
+      "app": {
+        "type": "context-menu",
+        "instance": "app",
+        "clear": [
+          "axf.chrome.context-menu.app",
+          "axf.chrome.context-menu.app.asset"
+        ],
+        "swap": "plain",
+        "layoutField": null
+      },
+      "atDefault": {
+        "type": "context-menu",
+        "instance": "app",
+        "clear": [
+          "axf.chrome.context-menu.app",
+          "axf.chrome.context-menu.app.asset"
+        ],
+        "swap": null,
+        "layoutField": null
+      },
+      "row": {
+        "type": "context-menu",
+        "instance": "ui-review.sections",
+        "clear": [
+          "axf.chrome.context-menu.ui-review.sections",
+          "axf.chrome.context-menu.ui-review.sections.asset"
+        ],
+        "swap": "plain",
+        "layoutField": null
+      },
+      "badInstance": {
+        "type": "context-menu",
+        "instance": "app",
+        "clear": [
+          "axf.chrome.context-menu.app",
+          "axf.chrome.context-menu.app.asset"
+        ],
+        "swap": null,
+        "layoutField": null
+      }
+    }
+  }
 }

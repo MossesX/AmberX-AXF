@@ -29,6 +29,17 @@ export function useAsset<K extends AssetType>(type: K) {
   return rt.asset(type);
 }
 
+/**
+ * What the live chrome of a kind draws with: the active asset's data with the app instance's overrides from the
+ * right-click Settings dialog written over it (chrome-settings@1, `rt.chromeData`). Re-renders on a swap and on every
+ * settings change, so a change in the dialog shows on the piece itself at once.
+ */
+export function useChromeData<K extends AssetType>(type: K) {
+  const rt = useRuntime();
+  useAxfState();
+  return rt.chromeData(type);
+}
+
 export function useGate(requires?: string) {
   const rt = useRuntime();
   useAxfState();

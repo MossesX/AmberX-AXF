@@ -1,7 +1,7 @@
 /** Shell chrome: application menu bar, toolbar, navigation menu, status bar. */
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from 'react';
 import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION, type NavItem } from '../../core';
-import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
+import { useAsset, useAxfState, useChromeData, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 import { NavTree } from './NavTree';
 import { BrandMark, brandHostProps, useBrandPlace } from './Brand';
@@ -86,8 +86,8 @@ export function MenuBar() {
 
 export function Toolbar({ views }: { views: ViewMap }) {
   const rt = useRuntime();
-  const tb = useAsset('toolbar');
-  useAxfState();
+  // the asset + the app toolbar's own overrides (right-click → Toolbar settings…; chrome-settings@1)
+  const tb = { data: useChromeData('toolbar') };
   const [q, setQ] = useState('');
   // Widgets (clock, search bar) at the toolbar's start / end: its own `widgets` + run-time ones (core/engines/widgets.ts).
   const widgets = rt.toolbarWidgets();
@@ -280,7 +280,8 @@ function NavBadge({ badge }: { badge?: string }) {
 
 export function NavMenu({ views }: { views: ViewMap }) {
   const rt = useRuntime();
-  const nav = useAsset('nav-menu');
+  // the asset + the app nav's own overrides (right-click → Navigation menu settings…; chrome-settings@1)
+  const nav = { data: useChromeData('nav-menu') };
   const layout = useAsset('layout');
   const state = useAxfState();
   const orient = layout.data.nav === 'top' ? 'horizontal' : 'vertical';

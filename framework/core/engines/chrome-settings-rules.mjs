@@ -32,6 +32,13 @@ export const CHROME_ICONS = { 'tab-group': 'layers', toolbar: 'sliders', banner:
 /** How many assets of the type one app shows at once: tab groups are many (each row its own instance), the rest one. */
 export const CHROME_MANY = { 'tab-group': true, toolbar: false, banner: false, 'nav-menu': false, 'app-menu': false, 'context-menu': false };
 
+/**
+ * The instance id of a kind the app shows once (toolbar, banner, nav, menu bar): its overrides live under
+ * `axf.chrome.<type>.app`, and the live chrome of that kind draws with them (`chromeLiveData`). Tab groups are many,
+ * each row its own instance id.
+ */
+export const CHROME_APP_INSTANCE = 'app';
+
 export const CHROME_SETTINGS_PREFIX = 'chrome-';
 export const CHROME_SETTINGS_MAX_DEPTH = 4;
 const ID = /^[a-z0-9][a-z0-9-]{0,79}$/;
@@ -150,13 +157,23 @@ export const CHROME_FIELDS = {
   ],
 };
 
-/** The tabs every chrome settings interface starts with (a settings asset may relabel, reorder or hide them). */
+/**
+ * The tabs every chrome settings interface starts with (a settings asset may relabel, reorder or hide them). `scope`
+ * says what a tab edits: `asset` = the right-clicked piece of chrome itself (its look, behaviour, which asset it uses);
+ * `panel` = the settings interface the dialog is drawn with. The dialog a right-click opens shows only the `asset` tabs
+ * (Brett, Nov 10 2026: "the settings need to apply to the app, not the settings panel"); the panel's own interface is
+ * picked from Settings → Appearance (`chrome.interfaces`), never from the asset's own dialog.
+ */
 export const CHROME_SETTINGS_TABS = [
-  { id: 'look', label: 'Look', icon: 'palette', order: 10 },
-  { id: 'behaviour', label: 'Behaviour', icon: 'sliders', order: 20 },
-  { id: 'asset', label: 'Asset', icon: 'layers', order: 30 },
-  { id: 'interface', label: 'Interface', icon: 'settings', order: 40 },
+  { id: 'look', label: 'Look', icon: 'palette', order: 10, scope: 'asset' },
+  { id: 'behaviour', label: 'Behaviour', icon: 'sliders', order: 20, scope: 'asset' },
+  { id: 'asset', label: 'Asset', icon: 'layers', order: 30, scope: 'asset' },
+  { id: 'interface', label: 'Interface', icon: 'settings', order: 40, scope: 'panel' },
 ];
+/** The tabs the right-click dialog of a chrome piece shows: every tab that edits the asset, none that edits the panel. */
+export const chromeDialogTabs = () => CHROME_SETTINGS_TABS.filter((t) => t.scope === 'asset');
+/** The settings keys that shape the panel itself (its interface pick and the edits to the app's copy); no asset action touches them. */
+export const CHROME_PANEL_KEYS = (type) => [CHROME_SETTINGS_PICK_KEY(type), CHROME_SETTINGS_PATCH_KEY(type)];
 
 const isObj = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
 
@@ -185,6 +202,36 @@ export function chromeFieldValue(type, base, override, key) {
   if (key in o) return o[key];
   if (isObj(base) && base[key] !== undefined && base[key] !== null) return base[key];
   return CHROME_FIELDS[type]?.find((f) => f.key === key)?.default;
+}
+
+/**
+ * What the live chrome of a kind draws with: the active asset's data with the instance's overrides written over it.
+ * `get(key)` reads a setting. The app instance (`app`) is the one every single-instance kind (toolbar, banner, nav,
+ * menu bar, context menu) renders; tab groups pass their own row id. Fix Nov 10 2026 (Brett: a change in the nav
+ * menu's dialog changed nothing but the panel): the runtime and every chrome component read through this, so a change
+ * made in the right-click dialog lands on the right-clicked piece in the app.
+ */
+export function chromeLiveData(type, base, get, instance = CHROME_APP_INSTANCE) {
+  const override = typeof get === 'function' && isChromeType(type) && isChromeInstanceId(instance) ? get(CHROME_INSTANCE_KEY(type, instance)) : undefined;
+  return chromeInstanceData(type, base, override);
+}
+
+/**
+ * Reset to default for one piece of chrome: the settings to clear and the swap to make, nothing else. The instance's
+ * overrides and its own asset pick go; a single-instance kind also goes back to the app's default asset for its slot
+ * (`swap`, null when it is already there or the app names none) and drops the layout move its Move menu made
+ * (`layoutField`, the tokens.layout override to remove). The panel's own keys (CHROME_PANEL_KEYS) are never in `clear`.
+ * `env.active` = the asset in the slot now, `env.defaultAsset` = the app's default for the type (manifest.defaults).
+ */
+export function chromeResetPlan(type, instance, env = {}) {
+  const inst = isChromeInstanceId(instance) ? instance : CHROME_APP_INSTANCE;
+  const clear = [CHROME_INSTANCE_KEY(type, inst), CHROME_INSTANCE_ASSET_KEY(type, inst)];
+  const many = CHROME_MANY[type] === true;
+  const def = typeof env.defaultAsset === 'string' && env.defaultAsset ? env.defaultAsset : null;
+  const swap = !many && def && def !== env.active ? def : null;
+  const m = CHROME_MOVES[type];
+  const layoutField = !many && m && m.via === 'layout' ? m.field : null;
+  return { type, instance: inst, clear, swap, layoutField };
 }
 
 /** What is wrong with a settings asset that names a chrome type (data.for / data.extends); [] when nothing. */

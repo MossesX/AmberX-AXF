@@ -107,6 +107,57 @@ eq(cs.normalizeInstanceOverride('banner', { height: 999.6, surface: 'raised' }),
 eq(f.errors, { ok: cs.chromeSettingsErrors(copy), badFor: cs.chromeSettingsErrors({ id: 'chrome-x', data: { for: 'clock' } }), self: cs.chromeSettingsErrors({ id: 'chrome-toolbar-a', data: { for: 'toolbar', extends: 'chrome-toolbar-a' } }), badName: cs.chromeSettingsErrors({ id: 'my-settings', data: { for: 'toolbar' } }), notAsset: cs.chromeSettingsErrors(null) }, 'errors fixture');
 ok(cs.chromeSettingsErrors({ id: 'chrome-x', data: { for: 'clock' } }).length === 2 && cs.chromeSettingsErrors({ id: 'chrome-toolbar-a', data: { for: 'toolbar', extends: 'chrome-toolbar-a' } }).length === 1, 'error counts');
 
+/* ---- the dialog binds to the right-clicked piece, never to the panel (Brett, Nov 10 2026) ---- */
+// Bug: a change in a nav menu's / toolbar's / banner's dialog changed nothing but the settings panel, and Reset to
+// default reset the panel. Per chrome type: a change for the app instance reaches what the live piece draws with,
+// another instance and the asset itself are untouched, Reset to default clears that piece (and, for a single-instance
+// kind, its slot and its move) and never the keys that shape the panel.
+eq(f.appInstance, cs.CHROME_APP_INSTANCE, 'app instance fixture');
+eq(f.dialogTabs, cs.chromeDialogTabs().map((t) => t.id), 'dialog tabs fixture');
+eq(cs.chromeDialogTabs().map((t) => t.id), ['look', 'behaviour', 'asset'], 'the dialog shows the tabs that edit the piece; the Interface tab (the panel itself) is not one of them');
+ok(cs.CHROME_SETTINGS_TABS.every((t) => t.scope === 'asset' || t.scope === 'panel') && cs.CHROME_SETTINGS_TABS.find((t) => t.id === 'interface')!.scope === 'panel', 'every tab says what it edits; Interface edits the panel');
+eq(f.panelKeys, Object.fromEntries(cs.CHROME_TYPES.map((t) => [t, cs.CHROME_PANEL_KEYS(t)])), 'panel keys fixture');
+eq(f.live, Object.fromEntries(cs.CHROME_TYPES.map((t) => {
+  const fd = cs.CHROME_FIELDS[t][0]!;
+  const changed = fd.kind === 'toggle' ? !fd.default : fd.kind === 'number' ? fd.min : fd.options!.find((o) => o !== fd.default);
+  const store: Record<string, unknown> = { [cs.CHROME_INSTANCE_KEY(t, cs.CHROME_APP_INSTANCE)]: { [fd.key]: changed }, [cs.CHROME_INSTANCE_KEY(t, 'other')]: { [fd.key]: fd.default } };
+  return [t, { field: fd.key, asset: fd.default, changed, app: cs.chromeLiveData(t, { [fd.key]: fd.default }, (k) => store[k]), other: cs.chromeLiveData(t, { [fd.key]: fd.default }, (k) => store[k], 'other'), none: cs.chromeLiveData(t, { [fd.key]: fd.default }, () => undefined) }];
+})), 'live data fixture');
+eq(f.reset, Object.fromEntries(cs.CHROME_TYPES.map((t) => [t, { app: cs.chromeResetPlan(t, cs.CHROME_APP_INSTANCE, { active: 'fancy', defaultAsset: 'plain' }), atDefault: cs.chromeResetPlan(t, cs.CHROME_APP_INSTANCE, { active: 'plain', defaultAsset: 'plain' }), row: cs.chromeResetPlan(t, 'ui-review.sections', { active: 'fancy', defaultAsset: 'plain' }), badInstance: cs.chromeResetPlan(t, 'a b', { active: 'fancy', defaultAsset: null }) }])), 'reset plan fixture');
+for (const t of cs.CHROME_TYPES) {
+  const fd = cs.CHROME_FIELDS[t][0]!;
+  const asset = { [fd.key]: fd.default, sections: [], groups: [], targets: {} };
+  const changed = fd.kind === 'toggle' ? !fd.default : fd.kind === 'number' ? fd.min : fd.options!.find((o) => o !== fd.default);
+  const store = new Map<string, unknown>();
+  const get = (k: string) => store.get(k);
+  const instance = cs.CHROME_MANY[t] ? 'settings.tabs' : cs.CHROME_APP_INSTANCE;
+  // 1. nothing set: the live piece is the asset
+  eq(cs.chromeLiveData(t, asset, get, instance), asset, `${t}: with nothing set the live ${t} draws the asset as is`);
+  // 2. the dialog sets the first field for the right-clicked instance (what setChromeField writes)
+  store.set(cs.CHROME_INSTANCE_KEY(t, instance), cs.normalizeInstanceOverride(t, { [fd.key]: changed }));
+  eq(cs.chromeLiveData(t, asset, get, instance)[fd.key], changed, `${t}: the change reaches the live ${t} (${fd.key} = ${String(changed)})`);
+  eq(cs.chromeLiveData(t, asset, get, 'another-row')[fd.key], fd.default, `${t}: another instance is untouched`);
+  eq(asset[fd.key], fd.default, `${t}: the asset itself is untouched`);
+  ok(!cs.CHROME_PANEL_KEYS(t).some((k) => store.has(k)), `${t}: setting a field never writes the panel's own keys`);
+  ok(cs.chromeFieldValue(t, asset, store.get(cs.CHROME_INSTANCE_KEY(t, instance)), fd.key) === changed, `${t}: the dialog reads back what it set`);
+  // 3. Reset to default: the piece, not the panel
+  store.set(cs.CHROME_INSTANCE_ASSET_KEY(t, instance), 'fancy');
+  for (const k of cs.CHROME_PANEL_KEYS(t)) store.set(k, 'panel-stays');
+  const plan = cs.chromeResetPlan(t, instance, { active: 'fancy', defaultAsset: 'plain' });
+  eq(plan.instance, instance, `${t}: the plan is for the right-clicked instance`);
+  ok(plan.clear.includes(cs.CHROME_INSTANCE_KEY(t, instance)) && plan.clear.includes(cs.CHROME_INSTANCE_ASSET_KEY(t, instance)), `${t}: reset drops the overrides and the own asset pick`);
+  ok(!plan.clear.some((k) => cs.CHROME_PANEL_KEYS(t).includes(k)), `${t}: reset never clears the panel's interface pick or its edits`);
+  eq(plan.swap, cs.CHROME_MANY[t] ? null : 'plain', `${t}: ${cs.CHROME_MANY[t] ? 'a row keeps the app slot' : 'a single-instance kind goes back to the app default asset'}`);
+  eq(plan.layoutField, !cs.CHROME_MANY[t] && cs.CHROME_MOVES[t].via === 'layout' ? cs.CHROME_MOVES[t].field : null, `${t}: reset drops the layout move only when Move works through the layout`);
+  eq(cs.chromeResetPlan(t, instance, { active: 'plain', defaultAsset: 'plain' }).swap, null, `${t}: already on the default asset = no swap`);
+  eq(cs.chromeResetPlan(t, instance, { active: 'fancy', defaultAsset: null }).swap, null, `${t}: no app default = no swap`);
+  for (const k of plan.clear) store.delete(k);
+  eq(cs.chromeLiveData(t, asset, get, instance), asset, `${t}: after reset the live ${t} is the asset again`);
+  ok(cs.CHROME_PANEL_KEYS(t).every((k) => store.get(k) === 'panel-stays'), `${t}: the panel's keys survived the reset`);
+}
+ok(cs.chromeResetPlan('toolbar', 'a b', {}).instance === cs.CHROME_APP_INSTANCE, 'a bad instance id resets the app instance');
+eq(cs.chromeLiveData('clock', { format: '12h' }, () => ({ format: '24h' })), { format: '12h' }, 'a type that is not chrome draws its asset as is');
+
 /* ---- plan + every app (shared-assets apps + Expenses) ---- */
 eq(f.plan, cs.chromeSettingsPlan('molly'), 'plan fixture');
 eq(f.missing, cs.chromeSettingsMissing('molly', ['chrome-tab-group', 'chrome-tab-group-molly', 'chrome-toolbar']), 'missing fixture');

@@ -1,6 +1,6 @@
 /** Overlay engines: dialogs, toasts/popups, and the context menu. */
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
-import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
+import { useAsset, useAxfState, useChromeData, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 import { BrandMark, BrandWatermark, brandHostProps } from './Brand';
 import { useScopeId } from './InterfaceScope';
@@ -128,7 +128,8 @@ export function ToastHost() {
 export function ContextMenuHost() {
   const rt = useRuntime();
   const state = useAxfState();
-  const cm = useAsset('context-menu').data;
+  // the asset + the app's own overrides (Context menu settings…; chrome-settings@1)
+  const cm = useChromeData('context-menu');
   const ref = useRef<HTMLDivElement>(null);
   const scope = useScopeId();
 

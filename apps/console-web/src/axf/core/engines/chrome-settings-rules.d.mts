@@ -20,7 +20,10 @@ export interface ChromeField {
   level: ChromeLevel;
 }
 export interface ChromeMove { positions: ChromePosition[]; via: 'instance' | 'layout' | 'none'; field: string }
-export interface ChromeSettingsTab { id: string; label: string; icon: string; order: number }
+/** `scope`: what the tab edits — the right-clicked piece of chrome (`asset`) or the dialog's own settings interface (`panel`). */
+export interface ChromeSettingsTab { id: string; label: string; icon: string; order: number; scope: 'asset' | 'panel' }
+/** Reset to default for one piece of chrome: settings to clear, the slot swap to make (null = none), the layout move to drop (null = none). */
+export interface ChromeResetPlan { type: ChromeType; instance: string; clear: string[]; swap: string | null; layoutField: string | null }
 export interface ChromeSettingsChoice { id: string; name: string; custom: boolean; extends: string }
 export interface ChromeSettingsPlanEntry { type: ChromeType; defaultId: string; customId: string }
 export interface AssetLike { id: string; name?: string; data?: Record<string, unknown> }
@@ -51,9 +54,14 @@ export const CHROME_MOVES: Record<ChromeType, ChromeMove>;
 export const POSITION_LABELS: Record<ChromePosition, string>;
 export const CHROME_FIELDS: Record<ChromeType, ChromeField[]>;
 export const CHROME_SETTINGS_TABS: ChromeSettingsTab[];
+export function chromeDialogTabs(): ChromeSettingsTab[];
+export function CHROME_PANEL_KEYS(type: string): string[];
+export const CHROME_APP_INSTANCE: 'app';
 export function normalizeInstanceOverride(type: string, raw: unknown): Record<string, string | number | boolean>;
 export function chromeInstanceData<T extends object>(type: string, base: T | null | undefined, override: unknown): T;
 export function chromeFieldValue(type: string, base: unknown, override: unknown, key: string): unknown;
+export function chromeLiveData<T extends object>(type: string, base: T | null | undefined, get: (key: string) => unknown, instance?: string): T;
+export function chromeResetPlan(type: ChromeType | string, instance: string, env?: { active?: string | null; defaultAsset?: string | null }): ChromeResetPlan;
 export function chromeSettingsErrors(asset: unknown): string[];
 export function resolveSettingsChain(get: (id: string) => AssetLike | null | undefined, id: string, seen?: string[]): Record<string, unknown> | null;
 export function chromeSettingsPick(saved: unknown, type: ChromeType | string, ids: string[]): string | null;

@@ -1,4 +1,4 @@
-export { AxfProvider, useRuntime, useAxfState, useAsset, useGate, useShortcutMap, useOptionalRuntime } from './AxfProvider';
+export { AxfProvider, useRuntime, useAxfState, useAsset, useChromeData, useGate, useShortcutMap, useOptionalRuntime } from './AxfProvider';
 export { AppShell, type ViewDef, type ViewMap, type AppShellProps } from './AppShell';
 export { Button, IconButton, Segmented, Slider, Container, Chip, Kbd, type ButtonProps, type SegmentedOption, type SliderProps, type ContainerProps } from './components/Controls';
 export { ModelBadge, modelLabel, modelFamily } from './components/ModelBadge';
@@ -51,4 +51,4 @@ export { installTapConfirm, toolbarOf, toolbarElementId, tipTextOf, type TapConf
 export { RefText, REFS_SETTING, addRefSource, refSourcesChanged, refIndexOf, openRef, refLink, type RefTextProps, type RefHow } from './components/RefText';
 export { TabGroup, useTabGroupData, tabGroupDataFor, type TabDef, type TabGroupProps } from './components/TabGroup';
 export { BannerWidgetsPanel, BannerMore, bannerItemAttrs, bannerWidgetsDialog, useBannerOverflow } from './components/BannerWidgets';
-export { CHROME_SETTINGS_DIALOG, CHROME_PICK_DIALOG, CHROME_APP_INSTANCE, CHROME_ACTION_IDS, ChromeSettingsPanel, ChromeAssetPicker, chromeDialogs, chromeMenu, chromeSettingsUi, installChrome, moveChrome, setChromeField, swapChrome } from './components/ChromeContext';
+export { CHROME_SETTINGS_DIALOG, CHROME_PICK_DIALOG, CHROME_INTERFACE_DIALOG, CHROME_APP_INSTANCE, CHROME_ACTION_IDS, ChromeSettingsPanel, ChromeAssetPicker, ChromeInterfacePanel, chromeDialogs, chromeMenu, chromeResetNeeded, chromeSettingsUi, installChrome, moveChrome, resetChrome, setChromeField, swapChrome } from './components/ChromeContext';

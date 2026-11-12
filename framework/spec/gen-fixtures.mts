@@ -699,6 +699,18 @@ write('spacing.json', {
     },
     plan: cs.chromeSettingsPlan('molly'),
     missing: cs.chromeSettingsMissing('molly', ['chrome-tab-group', 'chrome-tab-group-molly', 'chrome-toolbar']),
+    // Nov 10 2026 (Brett): the dialog binds to the right-clicked piece in the app, never to the panel. Per type: what the
+    // live piece draws with once its first field is set for the app instance, and what Reset to default does.
+    appInstance: cs.CHROME_APP_INSTANCE,
+    dialogTabs: cs.chromeDialogTabs().map((t) => t.id),
+    panelKeys: Object.fromEntries(cs.CHROME_TYPES.map((t) => [t, cs.CHROME_PANEL_KEYS(t)])),
+    live: Object.fromEntries(cs.CHROME_TYPES.map((t) => {
+      const f = cs.CHROME_FIELDS[t][0]!;
+      const changed = f.kind === 'toggle' ? !f.default : f.kind === 'number' ? f.min : f.options!.find((o) => o !== f.default);
+      const store: Record<string, unknown> = { [cs.CHROME_INSTANCE_KEY(t, cs.CHROME_APP_INSTANCE)]: { [f.key]: changed }, [cs.CHROME_INSTANCE_KEY(t, 'other')]: { [f.key]: f.default } };
+      return [t, { field: f.key, asset: f.default, changed, app: cs.chromeLiveData(t, { [f.key]: f.default }, (k) => store[k]), other: cs.chromeLiveData(t, { [f.key]: f.default }, (k) => store[k], 'other'), none: cs.chromeLiveData(t, { [f.key]: f.default }, () => undefined) }];
+    })),
+    reset: Object.fromEntries(cs.CHROME_TYPES.map((t) => [t, { app: cs.chromeResetPlan(t, cs.CHROME_APP_INSTANCE, { active: 'fancy', defaultAsset: 'plain' }), atDefault: cs.chromeResetPlan(t, cs.CHROME_APP_INSTANCE, { active: 'plain', defaultAsset: 'plain' }), row: cs.chromeResetPlan(t, 'ui-review.sections', { active: 'fancy', defaultAsset: 'plain' }), badInstance: cs.chromeResetPlan(t, 'a b', { active: 'fancy', defaultAsset: null }) }])),
   });
 }
 write('components.json', {
