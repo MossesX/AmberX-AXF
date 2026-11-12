@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T01:55:37.383Z",
+ "updatedAt": "2026-11-12T01:56:05.318Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -96957,14 +96957,14 @@
    "title": "Molly gap: axHub allows Molly's origin on /auth/api/* (CORS with credentials) so native screens read the hub session",
    "category": "",
    "detail": "Found by molly-sign-in-once s1. From https://molly.amberxai.com, GET https://axhub.amberxai.com/auth/api/session answers 200 with no Access-Control-Allow-Origin, and the preflight OPTIONS /auth/api/logout answers 200 with no CORS headers, so a browser on Molly cannot read the hub session or post a write. The hub should answer an allow-list of amberxai.com app origins (Molly first) on /auth/api/* with Access-Control-Allow-Origin echoing the origin, Access-Control-Allow-Credentials true, Access-Control-Allow-Headers content-type, accept, x-axhub-csrf, Vary Origin; never * with credentials. The session cookie is same-site (SameSite=Lax is enough). Molly side is in place: apps/molly/src/molly/credentials.ts (axhub provider, credentials include, X-AxHub-CSRF on writes).",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "molly-sign-in-once",
    "pendingId": "",
    "branch": "claude/molly-gap-axhub-cors",
    "pr": "",
    "createdAt": "2026-11-10T22:09:27.000Z",
-   "updatedAt": "2026-11-12T01:45:57.964Z",
+   "updatedAt": "2026-11-12T01:56:03.913Z",
    "builtAt": "",
    "notes": [
     {
@@ -96982,6 +96982,10 @@
     {
      "text": "Claude account: account-5 (axf-molly-gap-axhub-cors--paulie, own login copy)",
      "at": "2026-11-12T01:45:57.964Z"
+    },
+    {
+     "text": "Session on account-5 ended (exit 1) with 3 steps left: back in the Queue (run 1).",
+     "at": "2026-11-12T01:56:03.913Z"
     }
    ],
    "approvals": [],
