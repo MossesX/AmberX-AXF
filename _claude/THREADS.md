@@ -777,11 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:12 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` note (all) · orchestrator
-- 2026-11-12 03:12 UTC · `server-gate-one-session-per-build-no-duplicate-launches` note (all) · orchestrator
-- 2026-11-12 03:13 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` note (all) · pipeline
-- 2026-11-12 03:13 UTC · `account-order-hulu-moses-x-api-account-shown-on-every-build` → running, note (all) · pipeline
-- 2026-11-12 03:13 UTC · `account-order-hulu-moses-x-api-account-shown-on-every-build` branch claude/account-order-hulu-moses-x-api-account-shown-on-every-build (all) · pipeline
 - 2026-11-12 03:13 UTC · `account-order-hulu-moses-x-api-account-shown-on-every-build` note (all) · orchestrator
 - 2026-11-12 03:13 UTC · `molly-gap-console-token-handoff` → running, note (all) · pipeline
 - 2026-11-12 03:13 UTC · `molly-gap-console-token-handoff` note (all) · orchestrator
@@ -1177,6 +1172,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 10:44 UTC · `remove-the-console-s-own-notes-manager-console-u` note (all) · orchestrator
 - 2026-11-12 10:45 UTC · `focus-on-every-screen-console-open-console-show-` note (all) · pending
 - 2026-11-12 10:48 UTC · `gizmo-terminal` → archived (all) · claude-voice
+- 2026-11-12 10:48 UTC · `profile-filter-tables` → archived (all) · claude-voice
+- 2026-11-12 10:48 UTC · `fable-review-nov3` → archived (all) · claude-voice
+- 2026-11-12 10:48 UTC · `molly-banner-match` → archived (all) · claude-voice
+- 2026-11-12 10:48 UTC · `build-todo-sync` → archived (all) · claude-voice
+- 2026-11-12 10:48 UTC · `banner-widgets` → archived (all) · claude-voice
 
 ## Token passes (log)
 
