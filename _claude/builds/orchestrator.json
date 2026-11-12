@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T18:20:45.347Z",
+ "updatedAt": "2026-11-12T18:21:03.326Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -107712,19 +107712,23 @@
    "title": "New project: start fresh with its own builds, notes, to-dos and plans",
    "category": "new feature",
    "detail": "Merged build (Brett: \"Put them all into one build and run it, so it only has to pull main once.\")\n\nPART 1: Projects. Start a new project that has its own notes, to-do list, builds, plans, everything, starting fresh. Move all current builds, notes, to-dos and plans into a project called \"AmberX AXF\". Nothing deleted.\n\nPART 2: One to-do list. AmberX (phone app mirrors the web app) has its own to-do list; the console has Todo manager (ported from xGallery, currently off). Make one source of truth on axHub that both read and write, per project. Migrate the existing AmberX to-dos and any console todo-manager data into it, nothing deleted. Remove the duplicate store and its references after migration.\n\nTest: create a project, confirm it starts empty; switch back to AmberX AXF and confirm everything's there; confirm both apps show the same to-do list live.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans",
    "pr": "",
    "createdAt": "2026-11-12T17:35:35.216Z",
-   "updatedAt": "2026-11-12T18:20:27.041Z",
+   "updatedAt": "2026-11-12T18:20:33.708Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-12T18:19:38.601Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-new-project-start-fresh-with-its-own-builds-note--joey, own login copy)",
+     "at": "2026-11-12T18:20:33.708Z"
     },
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-new-project-start-fresh-with-its-own-builds-note--joey.",
@@ -107862,14 +107866,14 @@
    "category": "report",
    "detail": "Brett said: \"For each plugin put a list for everything that it does, what will be broken, what it depends on, and what other plugins use it.\"\n\nREAD-ONLY analysis, change no code. For every folder in apps/console-web/plugins (68, skip _template): read plugin.json, README.md and web/ + server/ code. Find real dependencies from imports, requires, service contracts (service:xxx@1), API routes it calls (/api/plugins/<other>/...), events, settings keys and banner/slot ids it reads. Build the reverse map (used by). Then fill the existing Plan Studio plan 'Plugin review: what to disable' (planner.plans, via control_set) so each plugin's step holds four plain-English lists: What it does / What breaks if disabled (including other plugins, banners, voice commands, AmberX features) / Depends on / Used by. Mark core plugins that must never be disabled (e.g. plugin-manager, build-orchestrator, approvals-banner, hub-sync) with a warning. Also write _claude/builds/reports/plugin-review.md with the same table.",
    "status": "built",
-   "hidden": true,
+   "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/plugin-review-map-what-each-plugin-does-depends-on-and-breaks",
    "pr": "#522",
    "createdAt": "2026-11-12T17:47:56.247Z",
-   "updatedAt": "2026-11-12T18:20:31.273Z",
-   "builtAt": "2026-11-12T18:20:31.273Z",
+   "updatedAt": "2026-11-12T18:20:35.390Z",
+   "builtAt": "2026-11-12T18:20:35.390Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -107918,6 +107922,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-plugin-review-map-what-each-plugin-does-depends---lenny, own login copy)",
      "at": "2026-11-12T18:07:13.461Z"
+    },
+    {
+     "text": "Headless run axf-plugin-review-map-what-each-plugin-does-depends---lenny: brief only · start 12.7K tokens ($0.06) · cost $4.58 · 36 turns · 6 tools, MCP none",
+     "at": "2026-11-12T18:20:35.390Z"
     },
     {
      "text": "Model switch: phase 3 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
