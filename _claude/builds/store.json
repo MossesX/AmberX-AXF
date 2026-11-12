@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3723,
- "updatedAt": "2026-11-12T22:06:11.896Z",
+ "rev": 3724,
+ "updatedAt": "2026-11-12T22:06:24.486Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -171776,7 +171776,7 @@
    "title": "Move AmberX web app into the console; AmberX Android reads the console",
    "category": "",
    "detail": "Move every AmberX web app feature (notes, to-dos, lists, approvals, recorder, open_url, notifications, settings) into the console. Repoint the AmberX Android app to read and call the console instead of the AmberX web app. Keep old AmberX web addresses forwarding to the console until the phone app is switched, so nothing breaks. Each feature moved is its own step.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -171784,7 +171784,7 @@
    "pr": "#528",
    "priority": "P2",
    "createdAt": "2026-11-12T19:46:41.501Z",
-   "updatedAt": "2026-11-12T22:06:07.788Z",
+   "updatedAt": "2026-11-12T22:06:13.582Z",
    "builtAt": "",
    "notes": [
     {
@@ -171830,6 +171830,14 @@
     {
      "text": "Session on mossesx-max- ended (exit 0) with 14 steps left: back in the Queue (run 1).",
      "at": "2026-11-12T22:06:03.658Z"
+    },
+    {
+     "text": "Started run 2 on mossesx-max- (Opus, Phase 2): axf-move-amberx-web-app-into-the-console-amberx-andr--sully.",
+     "at": "2026-11-12T22:06:11.775Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-move-amberx-web-app-into-the-console-amberx-andr--sully, own login copy)",
+     "at": "2026-11-12T22:06:13.582Z"
     }
    ],
    "approvals": [],
@@ -171850,11 +171858,11 @@
     "queuedAt": "2026-11-12T20:41:12.483Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "",
+    "session": "axf-move-amberx-web-app-into-the-console-amberx-andr--sully",
     "slot": "",
-    "model": "Fable",
-    "launchedAt": "2026-11-12T21:55:28.950Z",
-    "runs": 1,
+    "model": "Opus",
+    "launchedAt": "2026-11-12T22:06:11.244Z",
+    "runs": 2,
     "lastRun": {
      "at": "2026-11-12T22:06:02.841Z",
      "exit": 0,
@@ -171871,9 +171879,9 @@
      "note": "Split by Claude into 14 steps (2 Fable)."
     },
     "splitRequested": "",
-    "note": "Session on mossesx-max- ended (exit 0) with 14 steps left: back in the Queue (run 1).",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-12T21:55:28.950Z",
+    "dispatchedAt": "2026-11-12T22:06:11.244Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -171882,7 +171890,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-12T21:55:28.950Z",
+    "pickedAt": "2026-11-12T22:06:11.244Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -172282,7 +172290,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
