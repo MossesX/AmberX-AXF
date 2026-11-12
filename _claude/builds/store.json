@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3415,
- "updatedAt": "2026-11-12T03:00:58.420Z",
+ "rev": 3416,
+ "updatedAt": "2026-11-12T03:02:05.804Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -162055,7 +162055,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T02:47:57.796Z",
-   "updatedAt": "2026-11-12T02:57:30.638Z",
+   "updatedAt": "2026-11-12T03:00:52.163Z",
    "builtAt": "",
    "notes": [
     {
@@ -162165,6 +162165,28 @@
      "updatedAt": "2026-11-12T02:48:31.954Z"
     },
     {
+     "id": "s5",
+     "uid": "st-mwcynpqn01sorw",
+     "title": "",
+     "text": "MERGE ON FINISH, NO MERGE QUEUE (Brett, Nov 12): the moment a build finishes, the orchestrator pulls latest main into its PR, runs the tests, and if they pass merges it into main right away through the main gate. Conflicts: auto-resolve/rebase once, else mark the build with why and AmberX FYI. Retire the old merge queue (it doesn't work); the merge banner just shows what's merging and what's blocked. The overnight lander only clears the old backlog, then every new build merges itself.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T03:00:52.165Z",
+     "updatedAt": "2026-11-12T03:00:52.367Z"
+    },
+    {
      "id": "s3",
      "uid": "st-mwcy746j06kmda",
      "title": "",
@@ -162195,7 +162217,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
