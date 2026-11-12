@@ -7,7 +7,7 @@
  * Parts (installed config `libraries.datagrid.parts`): groups, column-menu {hidden}, sort, expand, drag {trash}, compact.
  */
 import { useEffect, useMemo, useState, type CSSProperties, type ReactNode, type MouseEvent as RMouseEvent, type PointerEvent as RPointerEvent } from 'react';
-import { Icon, IconButton, Meter, Slot, useRuntime } from '../../react';
+import { Icon, IconButton, Meter, ROW_COMMANDS_EXTRA, Slot, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { partOn, partParams, type LibraryPart } from '../../core/library';
 import { registerZone, startDrag, type DropPos } from '../dnd';
@@ -333,7 +333,7 @@ export const library: AxfWebLibrary = {
       return rowHooks(ref).map((h) => ({ id: `row-hook-${h.id}`, label: h.label, icon: h.icon ?? 'link', action: `axf.grid.hook:${encodeURIComponent(h.id)}:${encodeURIComponent(ref.kind)}:${encodeURIComponent(ref.id)}:${encodeURIComponent(ref.dataset ?? '')}` }));
     });
     // row commands (grid-row@1): every command of the row's kind in its menu (multi-select aware), plus "Select"
-    rt.contextExtras.set('*:axf.row-commands', (target, payload) => {
+    rt.contextExtras.set(ROW_COMMANDS_EXTRA, (target, payload) => {
       const ref = rowRefForContext(target, payload); if (!ref) return [];
       const k = rowKind(ref.kind); if (!k) return [];
       const ds = ref.dataset ?? '';

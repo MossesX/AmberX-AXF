@@ -7,6 +7,9 @@ import { useScopeId } from './InterfaceScope';
 import { MenuList, MenuScroll } from './MenuList';
 import { useMenuFit } from './menuFit';
 
+/** The context-menu extra lib-datagrid registers for row commands (grid-row@1); drawn as the row's own items. */
+export const ROW_COMMANDS_EXTRA = '*:axf.row-commands';
+
 export interface DialogDef {
   title: string;
   icon?: string;
@@ -210,11 +213,14 @@ export function ContextMenuHost() {
   // `contributions: false`: a target the asset defines shows only the asset's own items (e.g. context-menu/amber)
   const own = cm.contributions === false && !!(cm.targets[ctx.target] ?? (!ctx.target || ctx.target === 'default' ? cm.targets.default : undefined));
   const contributed = own ? [] : rt.contributedContext(ctx.target);
-  const extra = own ? [] : [...(rt.contextExtras.get(ctx.target)?.(ctx.target, ctx.payload) ?? []), ...contributed];
+  // grid-row@1: a row's commands (lib-datagrid, ROW_COMMANDS_EXTRA) are that row's own menu, first, never a tail item
+  // under the whole default menu
+  const rowCmds = own ? [] : rt.contextExtras.get(ROW_COMMANDS_EXTRA)?.(ctx.target, ctx.payload) ?? [];
+  const extra = own ? [] : [...rowCmds, ...(rt.contextExtras.get(ctx.target)?.(ctx.target, ctx.payload) ?? []), ...contributed];
   // chrome-settings@1: the shared Settings / Change / Move block of a tab group, toolbar, banner, nav or menu bar is
   // that element's own menu (right after the kind's items), never a tail item under the whole default menu
   const chrome = own ? [] : rt.contextExtras.get('*:chrome')?.(ctx.target, ctx.payload) ?? [];
-  const everywhere = own ? [] : [...rt.contextExtras.entries()].filter(([k]) => (k === '*' || k.startsWith('*:')) && k !== '*:chrome').flatMap(([, f]) => f(ctx.target, ctx.payload));
+  const everywhere = own ? [] : [...rt.contextExtras.entries()].filter(([k]) => (k === '*' || k.startsWith('*:')) && k !== '*:chrome' && k !== ROW_COMMANDS_EXTRA).flatMap(([, f]) => f(ctx.target, ctx.payload));
   const base = cm.targets[ctx.target] ?? (extra.length || chrome.length ? [] : cm.targets.default ?? []);
   // An element naming a target the asset doesn't know still gets the default menu's contributions (e.g. a plugin link).
   const fallback = !own && !cm.targets[ctx.target] && !extra.length && !chrome.length ? rt.contributedContext('default') : [];

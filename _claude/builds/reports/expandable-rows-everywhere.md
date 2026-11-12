@@ -66,7 +66,13 @@ There is no separate "file watchdog" grid in the console: the watchdog is a sect
 
 - `tsc --noEmit` clean: console-web, molly, axhub-web, amberx-droid, walkthrough-studio (the baked lib-datagrid / lib-alerts copies updated in all five).
 - check-theme, check-controls, check-toolbars, check-chrome-assets, check-grids, check-rowkinds, `axf validate --framework`, tracker --check, plugin-lifecycle on all 20 touched plugins (two pre-existing stale references on build-orchestrator and session-checkin, not from this build).
-- In the browser (rebuild-shots, local API): 653 pending cards each with Details; expanding one renders Commands / Related / All fields; no render loop (about 3 DOM mutations a second, the page's own polling).
+- In the browser (rebuild-shots, local API): 653 pending cards each with Details; expanding one renders Commands / Related / All fields; no render loop (about 3 DOM mutations a second, the page's own polling). Tracker: rows expand, the row menu leads with the row commands (lib Overlays now treats a row's commands as that row's own items instead of a tail under the default menu).
+
+## UI Review
+
+r-20261112-74tov01, group "expandable-rows-everywhere - Nov 12 6:25 AM": the Tracker table with an expanded row (Commands, All fields) and its right-click menu with the row commands first, desktop and phone. PR #518 waits there.
+
+Shots: Tracker, not the orchestrator or Pending. In the headless capture (local API, VPS load ~6) the 653-card Pending page rendered about 2 frames a second before and after this change (1 with a row open, 4 closed), so Chromium's screenshot timed out there; Tracker ran at full frame rate. That Pending page weight predates this build and is worth its own fix (windowing), noted here rather than fixed in this PR.
 
 ## Deferred / gaps
 
