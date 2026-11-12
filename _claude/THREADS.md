@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 21:21 UTC · `orchestrator-merge-first-switch-separate-merger` added (0 steps) (all) · console
 - 2026-11-10 21:21 UTC · `orchestrator-merge-first-switch-separate-merger` → queued, note (all) · console
 - 2026-11-10 21:22 UTC · `orchestrator-merge-first-switch-separate-merger` → queued, note (all) · builds-live
 - 2026-11-10 21:23 UTC · `orchestrator-merge-first-switch-separate-merger` note (all) · orchestrator
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 01:43 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` → queued, note (all) · console
 - 2026-11-12 01:43 UTC · `molly-native-expenses` → queued, note (all) · console
 - 2026-11-12 01:43 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` → queued, note (all) · console
+- 2026-11-12 01:43 UTC · `build-notifications-same-notification-per-build` → queued, note (all) · console
 
 ## Token passes (log)
 

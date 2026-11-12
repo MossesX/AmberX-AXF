@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3173,
- "updatedAt": "2026-11-12T01:43:54.154Z",
+ "rev": 3174,
+ "updatedAt": "2026-11-12T01:44:01.012Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -153596,7 +153596,7 @@
    "title": "Build notifications: same notification per build, but it alerts (sound/vibrate) on every stage",
    "category": "",
    "detail": "Amends build-stage notifications: keep one notification per build that updates in place, but each stage change (started, complete, ready to merge, merged, live) re-alerts: sound/vibration and heads-up, not a silent update.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -153604,7 +153604,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T20:57:38.838Z",
-   "updatedAt": "2026-11-10T20:59:19.999Z",
+   "updatedAt": "2026-11-12T01:43:59.053Z",
    "builtAt": "",
    "notes": [
     {
@@ -153614,6 +153614,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T20:59:19.999Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T01:43:59.053Z"
     }
    ],
    "approvals": [],
@@ -153631,8 +153635,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
+    "queuedAt": "2026-11-12T01:43:58.673Z",
+    "queuedBy": "console",
     "account": "",
     "session": "",
     "slot": "",
@@ -153737,7 +153741,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
