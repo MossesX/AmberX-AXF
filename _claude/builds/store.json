@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3268,
- "updatedAt": "2026-11-12T02:11:47.547Z",
+ "rev": 3269,
+ "updatedAt": "2026-11-12T02:12:08.589Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -153689,7 +153689,7 @@
    "title": "Open any website by voice on the phone, optionally with the AmberX recorder running",
    "category": "",
    "detail": "Merges/supersedes amberx-open-any-url and amberx-open-any-url-apk. 1) Voice: 'go to <any website>' opens it on the phone in Chrome (any https host, not just amberxai.com; block non-http schemes), brought to the front. 2) Option to open it with AmberX's recorder running (screen/audio recorder plugin), recordings saved to axHub with the URL and time. 3) Also available as a browser plugin in the console/Molly (embedded browser pane). Audit-log every open. Full API control.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -153697,7 +153697,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T20:46:28.820Z",
-   "updatedAt": "2026-11-12T02:11:36.736Z",
+   "updatedAt": "2026-11-12T02:12:06.410Z",
    "builtAt": "",
    "notes": [
     {
@@ -153731,6 +153731,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-open-any-website-by-voice-on-the-phone-optionall--joey, own login copy)",
      "at": "2026-11-12T01:58:09.886Z"
+    },
+    {
+     "text": "Self-check: open-any-website-by-voice-on-the-phone-optionall was marked running on mossesx-max- with no session: released and back in the Queue.",
+     "at": "2026-11-12T02:12:06.410Z"
     }
    ],
    "approvals": [],
@@ -153750,7 +153754,7 @@
    "pipeline": {
     "queuedAt": "2026-11-12T01:44:11.175Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
+    "account": "",
     "session": "",
     "slot": "",
     "model": "Opus",
@@ -153766,7 +153770,7 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "Session on mossesx-max- ended (exit 1) with 3 steps left: back in the Queue (run 1).",
+    "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
     "dispatchedAt": "2026-11-12T01:47:27.720Z",
     "planned": {
@@ -153861,7 +153865,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
