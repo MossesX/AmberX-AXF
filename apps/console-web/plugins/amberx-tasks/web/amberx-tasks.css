@@ -1,0 +1,10 @@
+/* AmberX to-dos (console): layout only (THEMING.md); controls are framework controls, sizes and colours are tokens. */
+.axp-amberx-tasks { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); }
+.axp-amberx-tasks__row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-md); }
+.axp-amberx-tasks__list { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
+.axp-amberx-tasks__item { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-sm); border-radius: var(--fx-radius-md); min-width: 0; }
+.axp-amberx-tasks__item.is-focused { outline: var(--fx-border-w) solid var(--fx-accent); }
+.axp-amberx-tasks__item > :first-child { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+.axp-amberx-tasks__meta { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs); }
+.axp-amberx-tasks__actions { display: flex; gap: var(--fx-dens-gap-xs); }
+.axp-amberx-tasks__settings { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); }

@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "amberx-tasks-help",
+  "name": "AmberX to-dos help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the AmberX to-dos plugin (help@1): the page, its controls and its settings tab.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:amberx-tasks",
+    "entries": [
+      {
+        "target": "view:amberx-tasks",
+        "title": "AmberX to-dos",
+        "text": "Every AmberX to-do and task on every device. Today shows what is due today (and overdue, unless switched off); Upcoming the next seven days. Tick a box to finish one; the arrows change the order. Claude reaches the same to-dos with amberx-tasks_* and amberx_*, the CLI with axf todo."
+      },
+      {
+        "target": "amberx-tasks.add",
+        "title": "New to-do",
+        "text": "Type it, pick a due day if it has one, Add. It goes to the list picked above, or to the default list in settings."
+      },
+      {
+        "target": "amberx-tasks.list",
+        "title": "To-dos",
+        "text": "The to-dos and tasks on this tab. Delete asks first and can't be undone."
+      },
+      {
+        "target": "amberx-tasks",
+        "title": "AmberX to-dos settings",
+        "text": "Which tab opens first, where new to-dos go, to-do or task by default, how many show, and whether overdue ones show under Today. Kept on the console: axf amberx-tasks set-settings changes them too."
+      },
+      {
+        "target": "action:amberx-tasks.open",
+        "title": "AmberX to-dos",
+        "text": "Opens the AmberX to-dos page."
+      },
+      {
+        "target": "action:amberx-tasks.focus",
+        "title": "Open a tab or a to-do",
+        "text": "Opens the to-dos page on a tab (today, upcoming, todo, all, done), one to-do (item:<id>) or the new to-do field (new)."
+      }
+    ]
+  }
+}

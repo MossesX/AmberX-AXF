@@ -137,6 +137,11 @@ Built in s3 (console plugin `amberx-notes`, Apps → AmberX → Notes): the Note
 `amberx-notes_set-settings`, `amberx-notes_reset-settings`; CLI `axf amberx-notes …`); deep link focus `<list id>`, <!-- axf-plugin:amberx-notes -->
 `item:<id>`, `search:<words>` or `new` (action `amberx-notes.focus`); voice "open notes", "new note", "read my inbox". <!-- axf-plugin:amberx-notes -->
 
+Built in s4 (console plugin `amberx-tasks`, Apps → AmberX → To-dos): tabs Today · Upcoming · To-dos · All · Done over <!-- axf-plugin:amberx-tasks -->
+C2–C7; routes `GET state`, `GET items?tab=`, `POST add|complete|reorder|remove`, `GET|PUT settings` (MCP <!-- axf-plugin:amberx-tasks -->
+`amberx-tasks_*`; CLI `axf amberx-tasks …`; `reorder` sets control@1 `order` per item, so `axf todo set <id> --field <!-- axf-plugin:amberx-tasks -->
+order=N` is the same); deep link focus as above plus `item:<id>`, `new`; voice "what's due today", "show todos", "new todo". <!-- axf-plugin:amberx-tasks -->
+
 Voice notes (T12) stay read-only under the `voice-notes` system list; the console's `voice-notes` plugin keeps owning them.
 
 ### 4.3 AI
