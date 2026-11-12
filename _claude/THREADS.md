@@ -776,10 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 01:43 UTC · `molly-gap-console-token-handoff` → running, note (all) · pipeline
-- 2026-11-12 01:43 UTC · `molly-gap-console-token-handoff` branch claude/molly-gap-console-token-handoff (all) · pipeline
-- 2026-11-12 01:43 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` → queued, note (all) · console
-- 2026-11-12 01:43 UTC · `molly-gap-console-token-handoff` note (all) · orchestrator
 - 2026-11-12 01:43 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` → queued, note (all) · console
 - 2026-11-12 01:43 UTC · `molly-native-expenses` → queued, note (all) · console
 - 2026-11-12 01:43 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` → queued, note (all) · console
@@ -1176,6 +1172,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:10 UTC · `all-banners-hide-when-empty` s3 done, → built (all) · orchestrator
 - 2026-11-12 03:11 UTC · `console-commands-reliable` s4 done, → built (all) · orchestrator
 - 2026-11-12 03:11 UTC · `merge-all-ready-buttons-server-side-lander` s1 done (all) · orchestrator
+- 2026-11-12 03:10 UTC · `all-banners-hide-when-empty` note (all) · orchestrator
+- 2026-11-12 03:12 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` note (all) · orchestrator
+- 2026-11-12 03:12 UTC · `server-gate-one-session-per-build-no-duplicate-launches` note (all) · orchestrator
+- 2026-11-12 03:13 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` note (all) · pipeline
 
 ## Token passes (log)
 

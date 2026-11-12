@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3428,
- "updatedAt": "2026-11-12T03:12:03.116Z",
+ "rev": 3429,
+ "updatedAt": "2026-11-12T03:13:06.542Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -160487,7 +160487,7 @@
    "branch": "claude/build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides",
    "pr": "#505",
    "createdAt": "2026-11-12T02:02:25.273Z",
-   "updatedAt": "2026-11-12T02:50:48.540Z",
+   "updatedAt": "2026-11-12T03:13:04.132Z",
    "builtAt": "2026-11-12T02:50:48.540Z",
    "notes": [
     {
@@ -160525,6 +160525,14 @@
     {
      "text": "Reconciler: PR #505 names s3, s6 done",
      "at": "2026-11-12T02:50:48.540Z"
+    },
+    {
+     "text": "Headless run axf-build-plan-1-skins-one-row-build-tables-backgrou--rhonda: brief only · start 12.7K tokens ($0.06) · cost $10.58 · 116 turns · 6 tools, MCP none",
+     "at": "2026-11-12T03:12:35.601Z"
+    },
+    {
+     "text": "Session axf-build-plan-1-skins-one-row-build-tables-backgrou--rhonda on mossesx-max- ended (exit 1); the build was already built.",
+     "at": "2026-11-12T03:13:04.132Z"
     }
    ],
    "approvals": [
@@ -160554,18 +160562,18 @@
     "queuedAt": "2026-11-12T02:02:48.683Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-build-plan-1-skins-one-row-build-tables-backgrou--rhonda",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "launchedAt": "2026-11-12T02:50:14.085Z",
     "runs": 2,
     "lastRun": {
-     "at": "2026-11-12T02:44:04.385Z",
-     "exit": 0,
-     "outcome": "requeued",
-     "stepsLeft": 1,
-     "account": "account-5",
-     "session": "axf-build-plan-1-skins-one-row-build-tables-backgrou--gina"
+     "at": "2026-11-12T03:13:03.345Z",
+     "exit": 1,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-build-plan-1-skins-one-row-build-tables-backgrou--rhonda"
     },
     "split": null,
     "splitRequested": "",
@@ -160749,7 +160757,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -161602,7 +161610,7 @@
    "branch": "claude/server-gate-one-session-per-build-no-duplicate-launches",
    "pr": "",
    "createdAt": "2026-11-12T02:42:15.357Z",
-   "updatedAt": "2026-11-12T03:05:08.452Z",
+   "updatedAt": "2026-11-12T03:12:39.099Z",
    "builtAt": "",
    "notes": [
     {
@@ -161616,6 +161624,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-server-gate-one-session-per-build-no-duplicate-l--lenny, own login copy)",
      "at": "2026-11-12T02:50:30.298Z"
+    },
+    {
+     "text": "Headless run axf-server-gate-one-session-per-build-no-duplicate-l--lenny: brief only · start 11.1K tokens ($0.03) · cost $6.86 · 125 turns · 6 tools, MCP none",
+     "at": "2026-11-12T03:12:39.099Z"
     }
    ],
    "approvals": [],
@@ -161780,7 +161792,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -161803,8 +161815,8 @@
    "branch": "claude/all-banners-hide-when-empty",
    "pr": "#509",
    "createdAt": "2026-11-12T02:45:08.669Z",
-   "updatedAt": "2026-11-12T03:10:30.881Z",
-   "builtAt": "2026-11-12T03:10:30.881Z",
+   "updatedAt": "2026-11-12T03:10:51.460Z",
+   "builtAt": "2026-11-12T03:10:51.460Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -161821,6 +161833,10 @@
     {
      "text": "Opus phase: banner frame/strip/group hide when empty (live), BannerBase, CI check-banner-empty. Gap for a Fable step: banner empty/shown state readable over REST/MCP needs console-commands normalizeHere to carry a banners field (contract change). UI Review shots not taken (no preview build of the branch).",
      "at": "2026-11-12T03:00:08.943Z"
+    },
+    {
+     "text": "Headless run axf-all-banners-hide-when-empty--joey: brief only · start 10.6K tokens ($0.02) · cost $5.05 · 75 turns · 6 tools, MCP none",
+     "at": "2026-11-12T03:10:51.460Z"
     }
    ],
    "approvals": [],
