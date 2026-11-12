@@ -776,9 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 23:08 UTC · `make-hulu-actually-take-builds-dispatcher-counts` → queued, note (all) · console
-- 2026-11-10 23:08 UTC · `molly-sign-in-once` → queued, note (all) · console
-- 2026-11-10 23:08 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` → queued, note (all) · console
 - 2026-11-10 23:08 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` → queued, note (all) · console
 - 2026-11-10 23:08 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` → queued, note (all) · console
 - 2026-11-10 23:08 UTC · `orchestrator-merge-first-switch-separate-merger` → queued, note (all) · console
@@ -1176,6 +1173,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:05 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` s1 done (all) · orchestrator
 - 2026-11-12 02:06 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` → queued, note (all) · pipeline
 - 2026-11-12 02:06 UTC · `molly-gap-expenses-delete` → archived (all) · Claude voice (Gizmo)
+- 2026-11-12 02:07 UTC · `employee-hooks-everywhere-any-mention-of-an-agen` → archived (all) · Claude voice (Gizmo)
+- 2026-11-12 02:07 UTC · `x.lib.hub` → archived (all) · Claude voice (Gizmo)
+- 2026-11-12 02:07 UTC · `employee-hooks-plain-tap-on-an-employee-name-ope` → archived (all) · Claude voice (Gizmo)
 
 ## Token passes (log)
 

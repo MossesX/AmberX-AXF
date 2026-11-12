@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:07:00.648Z",
+ "updatedAt": "2026-11-12T02:07:21.270Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -62476,14 +62476,14 @@
    "title": "lib-hub: axHub connector for every AXF app (first slice: approvals feed, hub address, locked web view)",
    "category": "Kernel & engines",
    "detail": "Framework library so any AXF app (web + Android) talks to axHub. First slice (Opus, Oct 20 2026 harvest) = only what the hub serves today: hub address rules, hub URLs, the approvals feed GET /auth/admin/approvals.json (axHub decision #85) read with the app's own hub session and mapped to ok / signed-out / not-admin / unreachable, seen ids, sign-out on the hub, an origin-locked web view and hub APK downloads (Android). The hub protocol contract (AXPP) stays parked for Fable (placeholder axf.hub.axpp).",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-11-10T18:55:24.185Z",
+   "updatedAt": "2026-11-12T02:07:15.016Z",
    "builtAt": "",
    "notes": [
     {
@@ -97707,7 +97707,7 @@
    "title": "Employee hooks everywhere: any mention of an agent/employee gets a context menu (sub menu of actions) to open its group chats, training, employee info, or its dialogs on the spot; merge Gizmo rebuild into AI assistant",
    "category": "",
    "detail": "1) Shared employee hook (framework-wide): every place an agent/employee is shown or mentioned (agent picker in AI assistant, Crew, orchestrator rows, banners, builds, chats) gets right-click/long-press context menu > employee name > sub menu: Open employee info (ID card/profile), Group chats, Direct chat, Training, Assigned builds, Settings. Each item can open in place as a dialog over the current screen or jump to its page. Register as a reusable hook so new screens get it automatically. 2) Merge the earlier Gizmo rebuild build (Claude-style chat, Claude/Ollama switch) into the 'AI assistant' console plugin build (d2180ddc); one build, not two.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -97715,7 +97715,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:55:14.370Z",
-   "updatedAt": "2026-11-10T21:56:18.242Z",
+   "updatedAt": "2026-11-12T02:07:08.770Z",
    "builtAt": "",
    "notes": [
     {
@@ -97905,7 +97905,7 @@
    "title": "Employee hooks: plain tap on an employee name opens a quick card (info + shortcuts)",
    "category": "",
    "detail": "Addition to the employee hooks build (ff07a8b1): besides right-click/long-press context menu with sub menu, a plain tap/click on any employee mention opens a quick card popover with ID card info and shortcuts (group chats, direct chat, training, builds, open full profile).",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -97913,7 +97913,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:56:55.046Z",
-   "updatedAt": "2026-11-10T21:58:32.426Z",
+   "updatedAt": "2026-11-12T02:07:17.783Z",
    "builtAt": "",
    "notes": [
     {
