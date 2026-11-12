@@ -1777,3 +1777,8 @@ One line per veto pass grant, change made under it, revoke, undo and end (Token 
 - Checks: `npx -y tsx framework/spec/check-tab-group.mts`, `check-chrome-settings.mts`, `check-customize.mts`, `check-settings-ui.mts`; `node framework/cli/chrome-settings.mjs check`, `check-chrome-assets.mjs`, `check-theme.mjs`, `check-controls.mjs`, `check-toolbars.mjs`, `axf.mjs validate --framework`.
 - Waits on: nothing from Brett (UI Review shots are non-blocking for this build).
 - First message to carry on: "Carry on tab-group-assets from the typecheck step on branch claude/tab-group-assets (see THREADS.md To carry on)."
+
+### Asset settings apply to the asset, not the panel (`bug-asset-settings-nav-menu-tab-bar-toolbar-chan`, P0, Fable → Opus) — branch `claude/bug-asset-settings-nav-menu-tab-bar-toolbar-chan`, PR #503
+- Asked (verbatim): "When I click on a navigation menu settings and change it, it changes the settings interface, not the navigation menu itself. Reset to default only resets that asset, the settings panel. When you right click an asset like a nav menu, tab bar or toolbar, the settings need to apply to the app, not the settings panel."
+- Done: everything in the report `_claude/builds/reports/bug-asset-settings-nav-menu-tab-bar-toolbar-chan.md` (live chrome reads the instance overrides, Reset to default resets the piece, panel keys never touched; `Settings.clear` no longer wipes other session values). Checks: `npx -y tsx framework/spec/check-chrome-settings.mts`, `check-chrome-settings-live.mts`; `node framework/cli/check-theme.mjs`, `check-controls.mjs`, `check-toolbars.mjs`, `check-chrome-assets.mjs`.
+- Left: Brett approves the Phase 1 UI Review shots; merge queue lands #503.
