@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3386,
- "updatedAt": "2026-11-12T02:48:12.931Z",
+ "rev": 3387,
+ "updatedAt": "2026-11-12T02:48:33.061Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -161970,7 +161970,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T02:47:57.796Z",
-   "updatedAt": "2026-11-12T02:48:00.453Z",
+   "updatedAt": "2026-11-12T02:48:31.837Z",
    "builtAt": "",
    "notes": [
     {
@@ -162054,6 +162054,28 @@
      "updatedAt": "2026-11-12T02:47:57.796Z"
     },
     {
+     "id": "s4",
+     "uid": "st-mwcy7ufm01q7gq",
+     "title": "",
+     "text": "SERVER RULE (Brett, Nov 12): the lander runs NON-STOP all night as a server service (systemd/supervisor, restart=always, survives crashes and reboots), never stopped by kill-alls or slot caps. If the account runs out on mossesx-max (Moses X), switch automatically to Hulu (account-5 'Hulu API', then account-3 Hulu), and back when Moses X resets. Every switch and restart logged in the Server gate log and sent as an AmberX FYI. Start it the moment this lands.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T02:48:31.838Z",
+     "updatedAt": "2026-11-12T02:48:31.954Z"
+    },
+    {
      "id": "s3",
      "uid": "st-mwcy746j06kmda",
      "title": "",
@@ -162084,7 +162106,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
