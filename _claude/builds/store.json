@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3320,
- "updatedAt": "2026-11-12T02:31:55.233Z",
+ "rev": 3321,
+ "updatedAt": "2026-11-12T02:32:14.904Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -154082,7 +154082,7 @@
    "title": "Build notifications: same notification per build, but it alerts (sound/vibrate) on every stage",
    "category": "",
    "detail": "Amends build-stage notifications: keep one notification per build that updates in place, but each stage change (started, complete, ready to merge, merged, live) re-alerts: sound/vibration and heads-up, not a silent update.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -154091,7 +154091,7 @@
    "priority": "P1",
    "createdAt": "2026-11-10T20:57:38.838Z",
    "updatedAt": "2026-11-12T02:30:53.669Z",
-   "builtAt": "",
+   "builtAt": "2026-11-12T02:30:53.669Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -154242,12 +154242,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T02:30:29.277Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T20:59:19.999Z",
-     "updatedAt": "2026-11-10T20:59:19.999Z"
+     "updatedAt": "2026-11-12T02:30:29.901Z"
     }
    ],
    "profiles": [
@@ -154258,7 +154258,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

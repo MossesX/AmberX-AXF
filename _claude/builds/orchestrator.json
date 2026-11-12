@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:31:55.233Z",
+ "updatedAt": "2026-11-12T02:32:14.904Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -95940,7 +95940,7 @@
    "title": "Build notifications: same notification per build, but it alerts (sound/vibrate) on every stage",
    "category": "",
    "detail": "Amends build-stage notifications: keep one notification per build that updates in place, but each stage change (started, complete, ready to merge, merged, live) re-alerts: sound/vibration and heads-up, not a silent update.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -95949,7 +95949,7 @@
    "priority": "P1",
    "createdAt": "2026-11-10T20:57:38.838Z",
    "updatedAt": "2026-11-12T02:30:53.669Z",
-   "builtAt": "",
+   "builtAt": "2026-11-12T02:30:53.669Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -96055,8 +96055,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T02:30:29.277Z",
      "note": "",
      "uid": "st-mwb6ax4v035xp5"
     }
