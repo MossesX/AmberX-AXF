@@ -569,6 +569,17 @@ export function alertFor(kind, d = {}) {
         body: [needs ? `Needs: ${needs}` : '', str(d.note, 900)].filter(Boolean).join('\n') || `Finished: ${line}`,
         meta: { ...base.meta, label: 'Finished', event: 'finish', outcome: kind === 'failed' ? 'failed' : d.outcome ?? '', run, done: d.done ?? 0, total: d.total ?? 0, sound } };
     }
+    case 'ready': case 'merged': case 'live': {
+      const pr = prNumber(d.pr); const at = str(d.at, 40);
+      const what = kind === 'ready' ? `ready to merge${pr ? `, PR #${pr}` : ''}, CI green`
+        : kind === 'merged' ? `merged${pr ? `, PR #${pr}` : ''}`
+        : `live on ${str(d.target, 40) || 'the console'}`;
+      const body = kind === 'ready' ? 'The merge queue takes it from here: it lands when its batch is green.'
+        : kind === 'merged' ? `On main${at ? ` since ${at}` : ''}. Live once the console is redeployed with it.`
+        : `Deployed${at ? ` ${at}` : ''}${d.sha ? ` (${str(d.sha, 40).slice(0, 8)})` : ''}. It is in use now.`;
+      return { ...base, link, key: stageKey(kind, d.id), severity: kind === 'ready' ? 'info' : 'success', title: str(`${str(d.title, 120)}: ${what}`, 200), body,
+        meta: { ...base.meta, label: STAGE_LABEL[kind], event: kind, pr, run, sound, ...(d.sha ? { sha: str(d.sha, 40) } : {}) } };
+    }
     case 'selfcheck': return { ...base, key: 'pipeline:selfcheck', severity: list(d.problems).length ? 'warning' : 'info',
       title: `Dispatcher self-check: ${list(d.fixes).length ? `fixed ${list(d.fixes).length}` : 'nothing fixed'}${list(d.problems).length ? `, ${list(d.problems).length} account${list(d.problems).length === 1 ? '' : 's'} can't work` : ''}`,
       body: str([...list(d.fixes).map((x) => `Fixed: ${x}`), ...list(d.problems).map((x) => `Can't use ${x}`), d.line ? `Now: ${d.line}` : ''].filter(Boolean).join('\n'), 1500) };
@@ -595,7 +606,68 @@ export function holdVerdict(hold, decision, now = Date.now()) {
 export function supersededKeys(kind, d = {}, grouping = 'build') {
   if (grouping !== 'build' || !d.id) return [];
   const run = Number.isInteger(d.run) && d.run > 0 ? d.run : 1;
-  if (kind === 'launched' || kind === 'veto') return run > 1 ? [`pipeline:end:${d.id}:${run - 1}`, `pipeline:run:${d.id}:${run - 1}`] : [];
+  // a new start begins the build's chain again: the last finish and any stage it had reached go
+  if (kind === 'launched' || kind === 'veto') return [...(run > 1 ? [`pipeline:end:${d.id}:${run - 1}`, `pipeline:run:${d.id}:${run - 1}`] : []), ...STAGES.map((k) => stageKey(k, d.id))];
   if (kind === 'ended' || kind === 'failed') return [`pipeline:run:${d.id}:${run}`];
+  // each stage replaces the start, the finish and the stages before it: one notification per build, moving on
+  if (STAGES.includes(kind)) return [`pipeline:run:${d.id}:${run}`, `pipeline:end:${d.id}:${run}`, ...STAGES.slice(0, STAGES.indexOf(kind)).map((k) => stageKey(k, d.id))];
   return [];
+}
+
+// ------------------------------------------------------------------ after the finish: ready to merge, merged, live
+
+/**
+ * Brett, Nov 10 2026: "I'll get a notification every time a build starts, completes, ready for merge, and goes live,
+ * right?" After the finish the build's one notification moves on through three stages, each replacing the one before
+ * (notifyGrouping 'build'):
+ *   ready  : its PR is open, not a draft, and the PR's checks are green (the merge queue can take it)
+ *   merged : the PR is merged, or the build carries mergedAt (the merge queue lands batches on main; GitHub marks
+ *            every member PR merged)
+ *   live   : the console's latest deploy (deploy-log@1) contains the merge commit
+ * A build jumping several stages between two checks gets one pop-up, for the furthest stage. Stages never go back.
+ * Keys: pipeline:ready:<id>, pipeline:merged:<id>, pipeline:live:<id> (notify.json types pipeline.ready / .merged / .live).
+ */
+export const STAGES = Object.freeze(['ready', 'merged', 'live']);
+export const STAGE_SETTING = Object.freeze({ ready: 'notifyReady', merged: 'notifyMerged', live: 'notifyLive' });
+export const STAGE_LABEL = Object.freeze({ ready: 'Ready to merge', merged: 'Merged', live: 'Live' });
+/** How often the dispatcher asks GitHub about the tracked PRs, and how long after its finish a build stays tracked. */
+export const STAGE_EVERY_MIN = 3;
+export const STAGE_MAX_DAYS = 14;
+export const stageKey = (stage, id) => `pipeline:${stage}:${id}`;
+export const stageRank = (stage) => STAGES.indexOf(stage) + 1;
+export const prNumber = (pr) => { const n = Number(String(pr ?? '').trim().replace(/^#/, '')); return Number.isInteger(n) && n > 0 ? n : 0; };
+
+/**
+ * Builds whose stages the dispatcher follows: ones it ran itself (pipeline.runs), built or complete, finished within
+ * STAGE_MAX_DAYS, not yet live. rec = the stage record kept for it ({ stage }), if any.
+ */
+export function stageTracked(b, rec = null, now = Date.now()) {
+  if (!b || b.deleted || b.hidden || rec?.stage === 'live') return false;
+  if (!['built', 'complete'].includes(b.status) || !(b.pipeline?.runs > 0)) return false;
+  const at = Date.parse(b.mergedAt || b.builtAt || b.updatedAt || '');
+  return Number.isFinite(at) && now - at <= STAGE_MAX_DAYS * 864e5;
+}
+
+/**
+ * The furthest stage a build has reached. pr = { state: open | merged | closed, draft, ci: success | failure | pending | '' }
+ * (GitHub's view, null when unknown); live = the console runs a commit that contains it.
+ */
+export function stageOf(b, { pr = null, live = false } = {}) {
+  if (live) return 'live';
+  if (b?.mergedAt || pr?.state === 'merged') return 'merged';
+  if (pr?.state === 'open' && !pr.draft && pr.ci === 'success') return 'ready';
+  return '';
+}
+
+/** The stage to tell Brett about now: the reached one when it is past the recorded one, else ''. */
+export const stageDue = (prevStage, reached) => (stageRank(reached) > stageRank(prevStage || '') ? reached : '');
+
+/** GitHub's statusCheckRollup state → success | failure | pending | ''. */
+export function rollupCi(state) {
+  switch (String(state || '').toUpperCase()) {
+    case 'SUCCESS': return 'success';
+    case 'FAILURE': case 'ERROR': return 'failure';
+    case 'PENDING': case 'EXPECTED': return 'pending';
+    default: return '';
+  }
 }

@@ -495,7 +495,7 @@
         "id": "pipeline-settings-set",
         "route": "POST /pipeline/settings",
         "title": "Change pipeline settings",
-        "description": "Change dispatcher settings. apiOverflow = when every subscription account is full or out, send builds to an API-key account (off by default; turning it on is Brett's own click, anyone may turn it off). Start veto (Brett, Nov 10 2026): before every launch one AmberX pop-up (mirrored in the console) with Approve, Deny and a countdown; it starts on Approve or when the countdown ends, Deny sends it back to Pending. vetoSeconds = the approvals countdown (default 90, 0-600; 0 = no wait, the pop-up still goes out); autoApprove = no hold, it starts at once (notifyStart then decides whether a 'Started' pop-up is sent). notifyFinish sends 'Finished: <build> on <account>, <outcome>, <done>/<total> steps' (plus what it needs); notifySound; notifyGrouping build = one pop-up per build, each = every event stays. A tap opens the build (action build-orchestrator.open-build:<id>).",
+        "description": "Change dispatcher settings. apiOverflow = when every subscription account is full or out, send builds to an API-key account (off by default; turning it on is Brett's own click, anyone may turn it off). Start veto (Brett, Nov 10 2026): before every launch one AmberX pop-up (mirrored in the console) with Approve, Deny and a countdown; it starts on Approve or when the countdown ends, Deny sends it back to Pending. vetoSeconds = the approvals countdown (default 90, 0-600; 0 = no wait, the pop-up still goes out); autoApprove = no hold, it starts at once (notifyStart then decides whether a 'Started' pop-up is sent). notifyFinish sends 'Finished: <build> on <account>, <outcome>, <done>/<total> steps' (plus what it needs); After the finish the same notification moves on: notifyReady (PR open, CI green), notifyMerged (on main), notifyLive (the console redeployed with it). notifySound; notifyGrouping build = one pop-up per build, each = every event stays. A tap opens the build (action build-orchestrator.open-build:<id>).",
         "input": {
           "type": "object",
           "properties": {
@@ -531,6 +531,15 @@
             "notifyFinish": {
               "type": "boolean"
             },
+            "notifyReady": {
+              "type": "boolean"
+            },
+            "notifyMerged": {
+              "type": "boolean"
+            },
+            "notifyLive": {
+              "type": "boolean"
+            },
             "notifySound": {
               "type": "boolean"
             },
@@ -560,6 +569,14 @@
         "readOnly": true,
         "description": "Every build held behind the start veto: build, what it will do, steps, model, account, run, seconds left and any decision so far.",
         "output": "{ holds, autoApprove, vetoSeconds }"
+      },
+      {
+        "id": "pipeline-stages",
+        "route": "GET /pipeline/stages",
+        "title": "Where finished builds stand: ready to merge, merged, live",
+        "readOnly": true,
+        "description": "After a build's finish its one AmberX notification moves on to Ready to merge (PR open, CI green), Merged (on main) and Live (the console redeployed with it). Lists every tracked build's stage, PR, commit and when it got there, plus the per-stage switches (notifyReady, notifyMerged, notifyLive; change them with pipeline-settings-set).",
+        "output": "{ at, builds: [{ id, stage, at, pr, sha, run, notified }], settings }"
       },
       {
         "id": "pipeline-start",

@@ -61,6 +61,48 @@
       "priority": "high"
     },
     {
+      "id": "pipeline.ready",
+      "label": "Build ready to merge",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator dispatcher",
+      "description": "After a build's finish, when its PR is open, not a draft and its checks are green: the same AmberX notification turns into 'Ready to merge: <build>, PR #n, CI green'. A tap opens the build. Off in Build orchestrator \u2192 Pipeline \u2192 Phone pop-ups (notifyReady) or here.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:ready:"
+      },
+      "push": true,
+      "priority": "normal"
+    },
+    {
+      "id": "pipeline.merged",
+      "label": "Build merged",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator dispatcher",
+      "description": "When a build's PR is merged (the merge queue landed it on main): the build's notification turns into 'Merged: <build>, PR #n'. Off in Phone pop-ups (notifyMerged) or here.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:merged:"
+      },
+      "push": true,
+      "priority": "normal"
+    },
+    {
+      "id": "pipeline.live",
+      "label": "Build live",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator dispatcher",
+      "description": "When the console is redeployed with a build's merge commit (deploy log): the build's notification turns into 'Live: <build> live on the console'. Off in Phone pop-ups (notifyLive) or here.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:live:"
+      },
+      "push": true,
+      "priority": "high"
+    },
+    {
       "id": "pipeline.split",
       "label": "Build split into steps",
       "group": "builds",

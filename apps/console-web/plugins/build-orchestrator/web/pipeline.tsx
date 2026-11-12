@@ -317,21 +317,25 @@ const VETO_PRESETS = [0, 30, 60, 90, 180] as const;
 
 /**
  * Phone pop-ups (Brett, Nov 10 2026: "a notification on AmberX every time the orchestrator starts a build and every time a
- * build finishes"). pipeline-settings@1 notifyStart / notifyFinish / notifySound / notifyGrouping; the same keys through
+ * build finishes"; Nov 10: "…every time a build starts, completes, ready for merge, and goes live"). pipeline-settings@1
+ * notifyStart / notifyFinish / notifyReady / notifyMerged / notifyLive / notifySound / notifyGrouping; the same keys through
  * REST (POST pipeline/settings), MCP and the CLI (pipeline-settings-set), and voice. Channels and quiet hours stay in the
- * Notifications panel (types pipeline.launched and pipeline.ended).
+ * Notifications panel (types pipeline.launched, .ended, .ready, .merged, .live). Where each build stands: GET pipeline/stages.
  */
 function PhonePopups({ settings, busy, set }: { settings: Status['settings']; busy: boolean; set: (patch: Record<string, unknown>, what: string) => Promise<void> }) {
-  const on = (k: 'notifyStart' | 'notifyFinish' | 'notifySound') => settings[k] !== false;
+  const on = (k: 'notifyStart' | 'notifyFinish' | 'notifyReady' | 'notifyMerged' | 'notifyLive' | 'notifySound') => settings[k] !== false;
   return (
     <section className="fx-stack oc-popups" aria-label="Phone pop-ups" data-help="phone-popups">
-      <h2 className="pd-card__title">Phone pop-ups <span className="fx-muted fx-small">· one AmberX notification per build: a veto before it starts (Approve, Deny, countdown), then the outcome when it finishes. A tap opens the build here.</span></h2>
+      <h2 className="pd-card__title">Phone pop-ups <span className="fx-muted fx-small">· one AmberX notification per build: a veto before it starts (Approve, Deny, countdown), the outcome when it finishes, then ready to merge, merged and live. A tap opens the build here.</span></h2>
       <div className="pl-strip" role="toolbar" aria-label="Phone pop-up settings">
         <Switch label="Auto-approve starts" text={settings.autoApprove ? 'Starts at once, no veto' : 'Every start waits for the veto countdown'} checked={!!settings.autoApprove} disabled={busy} onChange={(v) => set({ autoApprove: v }, v ? 'Starts auto-approved: no veto' : 'Start veto on')} />
         {!settings.autoApprove && <Segmented size="sm" label="Countdown" value={String(settings.vetoSeconds ?? 90)} onChange={(v) => set({ vetoSeconds: Number(v) }, `Veto countdown ${v} s`)}
           options={[...new Set([...VETO_PRESETS, settings.vetoSeconds ?? 90])].sort((a, b) => a - b).map((n) => ({ value: String(n), label: `${n} s` }))} />}
         {settings.autoApprove && <Switch label="Build started" text="Started: build on account (model)" checked={on('notifyStart')} disabled={busy} onChange={(v) => set({ notifyStart: v }, `Start pop-ups ${v ? 'on' : 'off'}`)} />}
         <Switch label="Build finished" text="Finished: build on account, outcome, steps (and what it needs)" checked={on('notifyFinish')} disabled={busy} onChange={(v) => set({ notifyFinish: v }, `Finish pop-ups ${v ? 'on' : 'off'}`)} />
+        <Switch label="Ready to merge" text="PR open, CI green" checked={on('notifyReady')} disabled={busy} onChange={(v) => set({ notifyReady: v }, `Ready to merge pop-ups ${v ? 'on' : 'off'}`)} />
+        <Switch label="Merged" text="Landed on main" checked={on('notifyMerged')} disabled={busy} onChange={(v) => set({ notifyMerged: v }, `Merged pop-ups ${v ? 'on' : 'off'}`)} />
+        <Switch label="Live" text="The console redeployed with it" checked={on('notifyLive')} disabled={busy} onChange={(v) => set({ notifyLive: v }, `Live pop-ups ${v ? 'on' : 'off'}`)} />
         <Switch label="Sound" checked={on('notifySound')} disabled={busy} onChange={(v) => set({ notifySound: v }, `Pop-up sound ${v ? 'on' : 'off'}`)} />
         <Segmented size="sm" label="Grouping" value={settings.notifyGrouping ?? 'build'} onChange={(v) => set({ notifyGrouping: v }, v === 'build' ? 'One pop-up per build' : 'Every start and finish stays')}
           options={[{ value: 'build', label: 'One per build', icon: 'layers' }, { value: 'each', label: 'Every event', icon: 'list' }]} />

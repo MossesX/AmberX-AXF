@@ -158,6 +158,10 @@ try:
     check(_calls[-1][2] == "holds", "GET pipeline/holds reads the held starts")
     asyncio.run(srv.pipeline_settings_set(_Req({"vetoSeconds": 0, "autoApprove": False}, False)))
     check("vetoSeconds=0" in _calls[-1] and "autoApprove=false" in _calls[-1], "the veto countdown and auto-approve reach the CLI")
+    srv.pipeline_stages()
+    check(_calls[-1][2] == "stages", "GET pipeline/stages reads where finished builds stand")
+    asyncio.run(srv.pipeline_settings_set(_Req({"notifyReady": False, "notifyMerged": True, "notifyLive": False}, False)))
+    check(all(x in _calls[-1] for x in ("notifyReady=false", "notifyMerged=true", "notifyLive=false")), "the per-stage switches reach the CLI")
 finally:
     srv.subprocess.run = _real_run
 

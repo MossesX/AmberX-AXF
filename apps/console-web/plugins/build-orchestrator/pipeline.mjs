@@ -62,6 +62,8 @@ import { fileURLToPath } from 'node:url';
 import * as P from './pipeline-core.mjs';
 import * as orch from './web/orchestrator-core.mjs';
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
+import * as Dl from '../../../../framework/core/deploy-log.mjs';
+import { createGitHub, parseRepo } from '../../../../framework/cli/github.mjs';
 import { addendumBlock, saidBlock, subtitle } from '../../../../framework/core/build-origin.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { MODEL_IDS, modelKey } from '../../../../framework/core/model-policy.mjs';
@@ -202,7 +204,8 @@ export function status() {
   tabs.deleted.sort((a, b) => str(b.deletedAt).localeCompare(str(a.deletedAt)));
   const st = loadState();
   return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), table: byTable, tabs, accounts, accountsFrom, health: loadHealth(), slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable }, plan, settings,
-    state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails, selfCheck: st.selfCheck ?? null, selfCheckRequested: readJson(files().checkRequest)?.at || '' }, holds: startHolds() };
+    state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails, selfCheck: st.selfCheck ?? null, selfCheckRequested: readJson(files().checkRequest)?.at || '' }, holds: startHolds(),
+    stages: { at: loadStages()?.at || '', builds: loadStages()?.builds ?? {} } };
 }
 
 // ------------------------------------------------------------------ store writes
@@ -589,14 +592,108 @@ export function decideStart(id, decision, { by = process.env.AXF_ACTOR || 'conso
   return { ...hold, decision: d[id] };
 }
 
+// ------------------------------------------------------------------ after the finish: ready to merge, merged, live
+
+/**
+ * stages.json: { $axf, at (last check), builds: { <id>: { stage, at, pr, sha, notified } } }. The dispatcher's own file:
+ * the console, MCP and voice read it through `pipeline.mjs stages` (GET pipeline/stages). See P.STAGES for the rules.
+ */
+export function loadStages() {
+  const d = readJson(files().stages, null);
+  return d && typeof d === 'object' && d.builds && typeof d.builds === 'object' ? d : null;
+}
+
+const repoSlug = (env = process.env) => {
+  if (env.AXF_GITHUB_REPO) return env.AXF_GITHUB_REPO;
+  const url = git(REPO_ROOT, 'remote', 'get-url', 'origin').stdout?.trim() ?? '';
+  return /github\.com[/:]([^/]+\/[^/.]+?)(?:\.git)?$/.exec(url)?.[1] || 'MossesX/AmberX-AXF';
+};
+
+/** GitHub's view of the PRs, one GraphQL query: { <n>: { state, draft, ci, mergedAt, mergeSha, headSha } }. */
+export async function prFacts(numbers, { env = process.env, gh = null } = {}) {
+  const ns = [...new Set(numbers.filter((n) => Number.isInteger(n) && n > 0))].slice(0, 50);
+  if (!ns.length) return {};
+  const r = parseRepo(repoSlug(env)); if (!r) throw new Error('no GitHub repo for the stage check');
+  const [owner, name] = r.split('/');
+  const fields = 'state isDraft mergedAt mergeCommit { oid } headRefOid commits(last: 1) { nodes { commit { statusCheckRollup { state } } } }';
+  const query = `query($owner: String!, $name: String!) { repository(owner: $owner, name: $name) { ${ns.map((n) => `p${n}: pullRequest(number: ${n}) { ${fields} }`).join(' ')} } }`;
+  const client = gh ?? createGitHub({ userAgent: 'axf-pipeline-stages' });
+  const d = await client.json('POST', '/graphql', { query, variables: { owner, name } });
+  if (d?.errors?.length && !d?.data?.repository) throw new Error(`GitHub GraphQL: ${d.errors.map((e) => e.message).join('; ').slice(0, 300)}`);
+  const out = {};
+  for (const n of ns) {
+    const p = d?.data?.repository?.[`p${n}`]; if (!p) continue;
+    out[n] = { state: p.mergedAt ? 'merged' : p.state === 'OPEN' ? 'open' : 'closed', draft: !!p.isDraft, mergedAt: p.mergedAt || '',
+      ci: P.rollupCi(p.commits?.nodes?.[0]?.commit?.statusCheckRollup?.state), mergeSha: p.mergeCommit?.oid || '', headSha: p.headRefOid || '' };
+  }
+  return out;
+}
+
+/** The deploy log (deploy-log@1) the deploy scripts append to: AXF_DEPLOY_LOG, else <repo>/.axf-console/deploys/log.jsonl. */
+export function consoleDeploy(env = process.env) {
+  const file = env.AXF_DEPLOY_LOG || join(REPO_ROOT, '.axf-console', 'deploys', 'log.jsonl');
+  let records = []; try { records = Dl.parseLog(readFileSync(file, 'utf8')).records; } catch { return null; }
+  return Dl.latestPerTarget(records.filter((x) => x.state !== 'failed')).console ?? null;
+}
+
+/** Does commit `deploySha` contain `sha`? (git in this checkout; unknown = no, so nothing is called live too early). */
+export const gitContains = (deploySha, sha) => !!deploySha && !!sha && git(REPO_ROOT, 'merge-base', '--is-ancestor', sha, deploySha).status === 0;
+
+/**
+ * One stage check (the tick runs it every P.STAGE_EVERY_MIN minutes; `force` = now). For every tracked build: GitHub's
+ * PR state and checks, then whether the console's latest deploy contains its merge commit. A build that moved on gets
+ * its one notification updated to the furthest stage it reached. The very first check only records where every
+ * build stands (no pop-ups for old builds).
+ */
+export async function checkStages({ env = process.env, alert = null, force = false, now = Date.now(), facts = prFacts, deploy = consoleDeploy, contains = gitContains } = {}) {
+  const prev = loadStages(); const first = !prev;
+  const cur = prev ?? { $axf: 'pipeline-stages@1', at: '', builds: {} };
+  if (!force && !first && now - (Date.parse(cur.at) || 0) < P.STAGE_EVERY_MIN * 60e3) return { ok: true, checked: false, why: 'checked less than a few minutes ago', moved: [] };
+  const store = loadStore();
+  const tracked = (store.builds ?? []).filter((b) => P.stageTracked(b, cur.builds[b.id], now));
+  let prs = {}; let error = '';
+  try { prs = await facts(tracked.map((b) => P.prNumber(b.pr)), { env }); } catch (e) { error = str(e.message, 300); logLine({ event: 'stages-github-failed', error }); }
+  const dep = (() => { try { return deploy(env); } catch { return null; } })();
+  const send = alert ?? makeAlerter({ env });
+  const moved = [];
+  for (const b of tracked) {
+    const run = b.pipeline?.runs || 1;
+    // a new run starts the chain again (its start cleared the old stage notification)
+    const rec = (cur.builds[b.id]?.run ?? run) === run ? cur.builds[b.id] ?? {} : {};
+    const n = P.prNumber(b.pr); const pr = prs[n] ?? null;
+    const branchHead = () => (b.branch ? git(REPO_ROOT, 'rev-parse', '--verify', '-q', `refs/remotes/origin/${b.branch}`).stdout?.trim() ?? '' : '');
+    const sha = pr?.mergeSha || pr?.headSha || rec.sha || (b.mergedAt ? branchHead() : '');
+    const merged = !!(b.mergedAt || pr?.state === 'merged');
+    const live = merged && !!dep?.sha && contains(dep.sha, sha);
+    const reached = P.stageOf(b, { pr, live });
+    const due = P.stageDue(rec.stage, reached);
+    cur.builds[b.id] = { stage: P.stageRank(reached) > P.stageRank(rec.stage || '') ? reached : rec.stage || '', at: due ? new Date(now).toISOString() : rec.at || '', pr: n, sha, run, notified: rec.notified ?? [] };
+    if (!due) continue;
+    const at = due === 'live' ? dep.at : due === 'merged' ? (b.mergedAt || pr?.mergedAt || '') : '';
+    if (!first) {
+      const a = send(due, { id: b.id, title: b.title, account: b.pipeline?.account || b.pipeline?.lastRun?.account || '', run, pr: n, at, sha: due === 'live' ? dep.sha : sha, target: due === 'live' ? 'the console' : '' });
+      if (a) cur.builds[b.id].notified = [...cur.builds[b.id].notified, due];
+    }
+    logLine({ event: first ? 'stage-seen' : 'stage', build: b.id, stage: due, pr: n });
+    moved.push({ id: b.id, stage: due, notified: !first });
+  }
+  // builds no longer tracked (live, deleted, too old) leave the file after their tracking window
+  for (const id of Object.keys(cur.builds)) { const b = (store.builds ?? []).find((x) => x.id === id); if (!b || (!tracked.includes(b) && Date.now() - (Date.parse(cur.builds[id].at || '') || 0) > P.STAGE_MAX_DAYS * 864e5)) delete cur.builds[id]; }
+  cur.at = new Date(now).toISOString();
+  writeJson(files().stages, cur);
+  return { ok: true, checked: true, seeded: first, tracked: tracked.length, moved, error, deploy: dep ? { sha: dep.sha, at: dep.at } : null };
+}
+
 // ------------------------------------------------------------------ the tick
 
-export function tick({ env = process.env } = {}) {
-  loadUpgradePolicy();
-  const consoleApi = makeConsole(env);
-  const state = loadState();
-  const sent = [];
-  const ns = loadSettings();
+/**
+ * The build notification sender the tick and the stage check share: one AmberX notification per build (start veto,
+ * start, finish, ready to merge, merged, live), each replacing the one before it when notifyGrouping is 'build'. The
+ * per-event switches (notifyStart, notifyFinish, notifyReady, notifyMerged, notifyLive) decide what is sent; the
+ * Notifications panel still decides the channels. `sent` collects what went out.
+ */
+export function makeAlerter({ env = process.env, settings = loadSettings(), consoleApi = makeConsole(env), sent = [] } = {}) {
+  const ns = settings;
   // the account's label (claude-workers@1) when it has one, else its name: what Brett calls it on the phone
   let labels = null;
   const labelOf = (name) => {
@@ -607,21 +704,32 @@ export function tick({ env = process.env } = {}) {
   const consoleUrl = (env.AXF_CONSOLE_PUBLIC_URL || 'https://console.amberxai.com').replace(/\/+$/, '');
   const alert = (kind, d) => {
     const start = kind === 'launched' || kind === 'veto' || kind === 'denied'; const finish = kind === 'ended' || kind === 'failed';
+    const stage = P.STAGES.includes(kind);
     // the veto (and the launch / deny that update it in place) always goes; with autoApprove on, notifyStart decides the
-    // Started pop-up; notifyFinish the finish one (the Notifications panel still decides the channels)
-    if ((kind === 'launched' && !d.held && !ns.notifyStart) || (finish && !ns.notifyFinish)) { logLine({ event: 'notify-off', kind, build: d.id }); return; }
-    const link = start || finish ? P.buildLink(d.id, consoleUrl) : '';
-    const account = start || finish ? `${labelOf(d.account)}${d.api ? ' (API key)' : ''}` : d.account;
+    // Started pop-up; notifyFinish the finish one; notifyReady / notifyMerged / notifyLive the stages after it
+    if ((kind === 'launched' && !d.held && !ns.notifyStart) || (finish && !ns.notifyFinish) || (stage && !ns[P.STAGE_SETTING[kind]])) { logLine({ event: 'notify-off', kind, build: d.id }); return null; }
+    const link = start || finish || stage ? P.buildLink(d.id, consoleUrl) : '';
+    const account = start || finish || stage ? `${labelOf(d.account)}${d.api ? ' (API key)' : ''}` : d.account;
     const a = P.alertFor(kind, { ...d, account, link, sound: ns.notifySound });
     const gone = P.supersededKeys(kind, d, ns.notifyGrouping);
     if (gone.length) consoleApi('POST', '/api/alerts/resolve', { keys: gone });
     consoleApi('POST', '/api/alerts', a);
-    if ((start && kind !== 'veto') || finish) {
-      consoleApi('POST', '/api/plugins/build-orchestrator/pipeline/activity', { event: start ? 'start' : 'finish', id: d.id, run: a.meta.run, url: link,
+    if ((start && kind !== 'veto') || finish || stage) {
+      consoleApi('POST', '/api/plugins/build-orchestrator/pipeline/activity', { event: start ? 'start' : finish ? 'finish' : kind, id: d.id, run: a.meta.run, url: link,
         title: `${a.meta.label}: ${a.title}`, detail: a.body, state: kind === 'failed' ? 'failed' : 'done' });
     }
     sent.push({ key: a.key, kind, at: nowIso(), title: a.meta.label ? `${a.meta.label}: ${a.title}` : a.title });
+    return a;
   };
+  return alert;
+}
+
+export function tick({ env = process.env } = {}) {
+  loadUpgradePolicy();
+  const consoleApi = makeConsole(env);
+  const state = loadState();
+  const sent = [];
+  const alert = makeAlerter({ env, settings: loadSettings(), consoleApi, sent });
   const started = nowIso();
   const inta = intake({ alert });
   const ended = checkEnds({ alert, env });
@@ -941,6 +1049,8 @@ async function main(argv) {
   if (cmd === 'intake') { const r = intake(); return out({ ok: true, ...r }, [`split: ${r.split.map((x) => `${x.id} (${x.provider}, ${x.steps})`).join(', ') || 'nothing'}`, `queued: ${r.queued.join(', ') || 'nothing'}`, ...r.skipped.map((x) => `skipped ${x.id}: ${x.error}`)].join('\n')); }
   if (cmd === 'tick') {
     const r = tick();
+    // after the finish: ready to merge, merged, live (every few minutes; GitHub is asked once for every tracked PR)
+    try { r.stages = await checkStages({}); } catch (e) { r.stages = { ok: false, error: str(e.message, 300) }; logLine({ event: 'stages-failed', error: r.stages.error }); }
     return out(r, [`tick ${r.at}`, `split ${r.intake.split.length} · ended ${r.ended.map((e) => `${e.id} ${e.outcome}`).join(', ') || 'none'} · launched ${r.launched.map((l) => `${l.id} on ${l.account} (${l.model})`).join(', ') || 'none'}${r.failed.length ? ` · launch failed ${r.failed.map((f) => `${f.id}: ${f.error}`).join('; ')}` : ''}`,
       ...r.plan.waits.map((w) => `  waits: ${w.id}: ${w.why}`), r.idle ? `IDLE since ${r.idle.since}: ${r.idle.reason}` : '', r.selfCheck ? `self-check: ${r.selfCheck.line}` : ''].filter(Boolean).join('\n'));
   }
@@ -950,6 +1060,14 @@ async function main(argv) {
     const r = selfCheck({ reason, by });
     if (!r.ran) return out({ ok: true, ...r, last: loadState().selfCheck ?? null }, r.why);
     return out({ ok: true, ...r }, [`self-check ${r.at}: ${r.line}`, ...r.fixes.map((f) => `  fixed: ${f}`), ...r.findings.map((f) => `  ${f.name.padEnd(16)} ${f.kind.padEnd(12)} ${f.state.padEnd(8)} ${f.running}/${f.parallel} · ${f.note}`), r.notified ? '  (AmberX told)' : ''].filter(Boolean).join('\n'));
+  }
+  if (cmd === 'stages') {
+    const r = has('check') ? await checkStages({ force: true }) : null;
+    const d = loadStages() ?? { at: '', builds: {} }; const st = loadSettings();
+    const rows = Object.entries(d.builds).map(([id, x]) => ({ id, ...x }));
+    return out({ ok: true, at: d.at, builds: rows, check: r, settings: { notifyReady: st.notifyReady, notifyMerged: st.notifyMerged, notifyLive: st.notifyLive } },
+      [`stages checked ${d.at || 'never'}${r ? ` · now: ${r.moved.map((m) => `${m.id} ${m.stage}`).join(', ') || 'nothing moved'}${r.error ? ` (GitHub: ${r.error})` : ''}` : ''}`,
+        ...rows.map((x) => `  ${x.id.padEnd(48)} ${(x.stage ? P.STAGE_LABEL[x.stage] : 'built, waiting').padEnd(15)} ${x.pr ? `#${x.pr}` : ''}`)].join('\n'));
   }
   if (cmd === 'holds') { const h = startHolds(); return out({ ok: true, holds: h, autoApprove: loadSettings().autoApprove, vetoSeconds: loadSettings().vetoSeconds }, h.map((x) => `${x.id} on ${x.account} (${x.model}) · starts in ${x.secondsLeft} s${x.decision ? ` · ${x.decision.decision} by ${x.decision.by}` : ''}`).join('\n') || 'Nothing is waiting to start.'); }
   if (cmd === 'approve' || cmd === 'deny') { const h = decideStart(rest[0], cmd, { by }); return out({ ok: true, id: h.id, decision: h.decision }, `${h.id}: ${cmd === 'approve' ? 'approved, starts on the next tick' : 'denied, back to Pending'}`); }

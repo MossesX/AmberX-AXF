@@ -609,8 +609,9 @@ t('start / finish pop-ups: the phone line, per-run keys, the deep link, grouping
   assert.equal(P.alertFor('failed', { id: 'b', title: 'B', account: 'w', done: 0, total: 2 }).title, 'B on w, failed, 0/2 steps');
   assert.equal(P.alertFor('ended', { id: 'b', title: 'B', account: 'w', outcome: 'requeued', phaseSwitch: true }).title, 'B on w, phase done, next phase queued');
   assert.deepEqual(P.supersededKeys('ended', { id: 'b', run: 2 }), ['pipeline:run:b:2']);
-  assert.deepEqual(P.supersededKeys('launched', { id: 'b', run: 2 }), ['pipeline:end:b:1', 'pipeline:run:b:1']);
-  assert.deepEqual(P.supersededKeys('launched', { id: 'b', run: 1 }), []);
+  const stageKeys = ['pipeline:ready:b', 'pipeline:merged:b', 'pipeline:live:b'];
+  assert.deepEqual(P.supersededKeys('launched', { id: 'b', run: 2 }), ['pipeline:end:b:1', 'pipeline:run:b:1', ...stageKeys], 'a new start clears the last finish and any stage it reached');
+  assert.deepEqual(P.supersededKeys('launched', { id: 'b', run: 1 }), stageKeys);
   assert.deepEqual(P.supersededKeys('ended', { id: 'b', run: 2 }, 'each'), []);
   const d = P.normSettings({});
   assert.equal(d.notifyStart, true); assert.equal(d.notifyFinish, true); assert.equal(d.notifySound, true); assert.equal(d.notifyGrouping, 'build');
@@ -618,5 +619,84 @@ t('start / finish pop-ups: the phone line, per-run keys, the deep link, grouping
   assert.equal(o.notifyStart, false); assert.equal(o.notifyGrouping, 'each'); assert.equal(o.notifySound, false);
   assert.equal(P.normSettings({ notifyGrouping: 'nope' }).notifyGrouping, 'build');
 });
+
+// ---------------- after the finish: ready to merge, merged, live (Brett, Nov 10 2026)
+t('stages: stageOf, stageDue, tracking window, rollup', () => {
+  const b = build('s', 'built', [], { pr: '#12', pipeline: { runs: 1 }, builtAt: new Date().toISOString() });
+  assert.equal(P.stageOf(b, {}), '', 'no PR facts: still just built');
+  assert.equal(P.stageOf(b, { pr: { state: 'open', ci: 'pending' } }), '', 'CI still running: not ready');
+  assert.equal(P.stageOf(b, { pr: { state: 'open', ci: 'success', draft: true } }), '', 'a draft is not ready');
+  assert.equal(P.stageOf(b, { pr: { state: 'open', ci: 'success' } }), 'ready');
+  assert.equal(P.stageOf(b, { pr: { state: 'merged', ci: '' } }), 'merged');
+  assert.equal(P.stageOf({ ...b, mergedAt: now }, {}), 'merged', 'the store says merged (merge queue / reconciler)');
+  assert.equal(P.stageOf({ ...b, status: 'complete' }, {}), '', 'complete alone is not proof it merged');
+  assert.equal(P.stageOf(b, { pr: { state: 'merged' }, live: true }), 'live');
+  assert.equal(P.stageDue('', 'ready'), 'ready'); assert.equal(P.stageDue('ready', 'ready'), ''); assert.equal(P.stageDue('', 'live'), 'live', 'a jump sends the furthest stage only');
+  assert.equal(P.stageDue('merged', 'ready'), '', 'stages never go back');
+  assert.equal(P.stageTracked(b), true); assert.equal(P.stageTracked(b, { stage: 'live' }), false, 'live is the end');
+  assert.equal(P.stageTracked({ ...b, pipeline: { runs: 0 } }), false, 'only builds the dispatcher ran');
+  assert.equal(P.stageTracked({ ...b, status: 'running' }), false);
+  assert.equal(P.stageTracked({ ...b, builtAt: '2026-01-01T00:00:00Z', updatedAt: '2026-01-01T00:00:00Z' }), false, 'old builds are not followed');
+  assert.equal(P.rollupCi('SUCCESS'), 'success'); assert.equal(P.rollupCi('ERROR'), 'failure'); assert.equal(P.rollupCi('EXPECTED'), 'pending'); assert.equal(P.rollupCi(null), '');
+  assert.equal(P.prNumber(`#${436}`), 436); assert.equal(P.prNumber(''), 0); assert.equal(P.prNumber('x'), 0);
+  const s = P.normSettings({}); assert.equal(s.notifyReady && s.notifyMerged && s.notifyLive, true, 'every stage on by default');
+  assert.equal(P.normSettings({ notifyLive: false }).notifyLive, false);
+});
+t('stages: alerts, keys, labels and what each replaces', () => {
+  const r = P.alertFor('ready', { id: 'my-build', title: 'My build', account: 'w', pr: '#12', run: 2, link: 'https://c/x' });
+  assert.equal(`${r.meta.label}: ${r.title}`, 'Ready to merge: My build: ready to merge, PR #12, CI green');
+  assert.equal(r.key, 'pipeline:ready:my-build'); assert.equal(r.link, 'https://c/x'); assert.equal(r.meta.event, 'ready'); assert.equal(r.meta.pr, 12);
+  const m = P.alertFor('merged', { id: 'my-build', title: 'My build', pr: 12, at: '2026-11-10T21:00:00Z' });
+  assert.equal(m.title, 'My build: merged, PR #12'); assert.match(m.body, /since 2026-11-10T21:00:00Z/); assert.equal(m.severity, 'success');
+  const l = P.alertFor('live', { id: 'my-build', title: 'My build', sha: 'abcdef0123456789', at: '2026-11-10T22:00:00Z', target: 'the console' });
+  assert.equal(l.title, 'My build: live on the console'); assert.match(l.body, /abcdef01/); assert.equal(l.meta.label, 'Live');
+  assert.deepEqual(P.supersededKeys('ready', { id: 'b', run: 2 }), ['pipeline:run:b:2', 'pipeline:end:b:2']);
+  assert.deepEqual(P.supersededKeys('merged', { id: 'b', run: 2 }), ['pipeline:run:b:2', 'pipeline:end:b:2', 'pipeline:ready:b']);
+  assert.deepEqual(P.supersededKeys('live', { id: 'b', run: 1 }), ['pipeline:run:b:1', 'pipeline:end:b:1', 'pipeline:ready:b', 'pipeline:merged:b']);
+  assert.deepEqual(P.supersededKeys('live', { id: 'b' }, 'each'), [], 'every event stays');
+  // notify.json: one type per stage, so each can be switched off in the Notifications panel too
+  const types = JSON.parse(readFileSync(join(HERE, 'notify.json'), 'utf8')).types;
+  for (const k of P.STAGES) assert.ok(types.some((x) => x.id === `pipeline.${k}` && x.match.keyPrefix === `pipeline:${k}:`), `notify type pipeline.${k}`);
+});
+
+// checkStages in-process: a scratch store and pipeline dir, GitHub, the deploy log and git faked
+if (e2e) {
+  const tmp = mkdtempSync(join(tmpdir(), 'axf-stages-'));
+  Object.assign(process.env, { AXF_BUILDS_STORE: join(tmp, 'store.json'), AXF_BUILD_HOOKS: 'off', AXF_BUILDS_LIVE: '0', AXF_SHIPPED: 'off', AXF_PIPELINE_DIR: join(tmp, 'pipe'),
+    AXF_PIPELINE_CONSOLE: 'off', AXF_DATA_DIR: 'off', AXF_BUILD_PROFILE: 'all', AXF_PIPELINE_SETTINGS: JSON.stringify({ notifyMerged: false }) });
+  const fresh = new Date().toISOString();
+  const mk = (id, pr, extra = {}) => build(id, 'built', [step('s1', 'Opus', true)], { pr, branch: `claude/${id}`, builtAt: fresh, pipeline: { runs: 1, account: 'w-max' }, ...extra });
+  const write = (builds) => writeFileSync(process.env.AXF_BUILDS_STORE, JSON.stringify({ version: 1, builds, updatedAt: fresh }));
+  write([mk('a', '#1'), mk('b', '#2'), mk('c', '#3')]);
+  const PL = await import('./pipeline.mjs');
+  let facts = { 1: { state: 'open', ci: 'success', headSha: 'aaa1111' }, 2: { state: 'open', ci: 'pending', headSha: 'bbb2222' }, 3: { state: 'open', ci: 'failure' } };
+  let dep = null; const sent = [];
+  const opts = () => ({ force: true, facts: async () => facts, deploy: () => dep, contains: (d, x) => d === 'deploy-2' && x === 'ccc3333', alert: (kind, d) => { const a = P.alertFor(kind, d); sent.push(a); return a; } });
+  const seed = await PL.checkStages(opts());
+  t('stages: the first check only records (no pop-ups for builds already past a stage)', () => { assert.equal(seed.seeded, true); assert.equal(sent.length, 0); assert.equal(PL.loadStages().builds.a.stage, 'ready'); });
+  facts = { ...facts, 2: { state: 'open', ci: 'success', headSha: 'bbb2222' } };
+  await PL.checkStages(opts());
+  t('stages: CI turns green → one Ready to merge pop-up', () => { assert.deepEqual(sent.map((a) => a.key), ['pipeline:ready:b']); });
+  facts = { ...facts, 2: { state: 'merged', ci: 'success', mergeSha: 'ccc3333', headSha: 'bbb2222', mergedAt: fresh } };
+  sent.length = 0;
+  const r1 = await PL.checkStages({ ...opts(), alert: PL.makeAlerter({ sent: [] }) });
+  t('stages: merged with notifyMerged off: recorded, nothing sent', () => { assert.equal(PL.loadStages().builds.b.stage, 'merged'); assert.deepEqual(PL.loadStages().builds.b.notified, ['ready']); assert.equal(r1.moved[0].stage, 'merged'); });
+  dep = { sha: 'deploy-2', at: fresh };
+  await PL.checkStages(opts());
+  t('stages: the console redeployed with the merge commit → Live, and it stops being followed', () => {
+    assert.deepEqual(sent.map((a) => a.key), ['pipeline:live:b']); assert.match(sent[0].body, /Deployed/);
+    assert.equal(PL.loadStages().builds.b.stage, 'live'); assert.equal(P.stageTracked(mk('b', '#2'), PL.loadStages().builds.b), false);
+  });
+  sent.length = 0;
+  await PL.checkStages(opts());
+  t('stages: nothing moved, nothing sent', () => { assert.equal(sent.length, 0); });
+  const skipped = await PL.checkStages({ ...opts(), force: false });
+  t('stages: throttled between checks unless forced', () => { assert.equal(skipped.checked, false); });
+  write([mk('a', '#1', { pipeline: { runs: 2, account: 'w-max' } }), mk('b', '#2'), mk('c', '#3')]);
+  await PL.checkStages(opts());
+  t('stages: a new run starts the chain again', () => { assert.deepEqual(sent.map((a) => a.key), ['pipeline:ready:a']); assert.equal(PL.loadStages().builds.a.run, 2); });
+  const cli = spawnSync('node', [join(HERE, 'pipeline.mjs'), 'stages', '--json'], { encoding: 'utf8', env: process.env });
+  t('stages: pipeline.mjs stages lists every followed build', () => { const j = JSON.parse(cli.stdout.trim().split('\n').pop()); assert.equal(j.ok, true); assert.ok(j.builds.some((x) => x.id === 'b' && x.stage === 'live')); assert.equal(j.settings.notifyMerged, false); });
+}
 
 console.log(`pipeline: ${n} checks passed${e2e ? '' : ' (CLI end-to-end skipped)'}`);
