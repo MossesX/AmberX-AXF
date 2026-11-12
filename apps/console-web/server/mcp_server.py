@@ -141,7 +141,9 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
         _watch_calls(mcp, on_call)
 
     async def run(op: str, **args: Any) -> dict[str, Any]:
-        r = await anyio.to_thread.run_sync(lambda: call(op, **args))
+        # retried on the server (retry-ladder@1): a locked store, a timeout or a 5xx is fixed here, not by the caller
+        r = await retried(f"engine {op}", "mcp", lambda ctx: call(op, **args),
+                          ok=lambda r: None if r.get("ok", True) else {"code": r.get("code", ""), "message": r.get("error") or f"{op} failed"})
         if not r.get("ok", True):
             raise ToolError(r.get("error") or f"{op} failed")
         r.pop("ok", None)
@@ -931,6 +933,89 @@ NAVIGATE = ToolAnnotations(readOnlyHint=True, destructiveHint=False, idempotentH
 Delivery = str  # "recent" (the console used last), "all", or a client id from console_clients
 
 
+# ---------------------------------------------------------------------- automatic fixes (retry-ladder@1)
+# Every engine op and console command is run through the ladder on the server: a transient failure (store locked,
+# timeout, console asleep, rate limit, 5xx, …) is retried different ways, one fix per rung, on a worker thread. The
+# caller waits for the answer; when it goes away (MCP call cancelled, chat closed) the retry carries on and still lands.
+# The ledger (axf_server.retry.default_dir()/jobs) is what the Auto-fixes view lists; capability auto-fixes@1, when a
+# plugin provides it, hears every change and sends the "Automatic fixes" log and the one AmberX FYI.
+
+_RUNNER: Any = None
+
+
+def _auto_fixes_svc() -> Any:
+    try:
+        import plugin_services  # the console's registry (absent in stdio mode)
+    except ImportError:
+        return None
+    return plugin_services.get("auto-fixes@1")
+
+
+def retry_runner() -> Any:
+    global _RUNNER
+    if _RUNNER is None:
+        try:
+            from axf_server import retry as _retry
+        except ImportError:  # stdio against a clone: framework/python is not on the path yet
+            sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "framework" / "python"))
+            from axf_server import retry as _retry
+
+        def changed(job: dict[str, Any]) -> None:
+            svc = _auto_fixes_svc()
+            if svc is not None:
+                svc.changed(job)
+
+        def fyi(job: dict[str, Any]) -> None:
+            svc = _auto_fixes_svc()
+            if svc is not None:
+                svc.fyi(job)
+
+        _RUNNER = _retry.Runner(on_change=changed, on_fyi=fyi)
+    return _RUNNER
+
+
+async def retried(title: str, source: str, call: Callable[[dict[str, Any]], dict[str, Any]], *, ok: Callable[[Any], Any],
+                  fixes: dict[str, Callable[[dict[str, Any], dict[str, Any]], Any]] | None = None) -> dict[str, Any]:
+    """Run `call(ctx)` through the ladder on a worker thread and wait for its last answer. Cancelled (the caller went
+    away): the thread carries on; a permanent error is then logged and FYI'd, since nobody saw it."""
+    runner = retry_runner()
+    ctx: dict[str, Any] = {}
+    if fixes:
+        runner.fixes.update(fixes)
+    _, done, box = runner.submit(title, call, source=source, ctx=ctx, ok=ok)
+    try:
+        await anyio.to_thread.run_sync(done.wait, abandon_on_cancel=True)
+    except BaseException:
+        ctx["_detached"] = True
+        raise
+    job, r = box.get("job") or {}, box.get("result")
+    if isinstance(r, dict):
+        if job.get("attempts"):
+            r.setdefault("autoFix", {"job": job.get("id"), "status": job.get("status"), "attempts": len(job.get("attempts") or [])})
+        return r
+    return {"ok": False, "code": job.get("kind") or "unexpected", "message": job.get("error") or "failed", "error": job.get("error") or "failed"}
+
+
+def _console_fixed(command: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
+    """The console command with what the fixes so far changed (another console: to=all)."""
+    if ctx.get("to"):
+        return {**command, "input": {**(command.get("input") or {}), "to": ctx["to"]}}
+    return command
+
+
+def _wake(ctx: dict[str, Any], job: dict[str, Any]) -> None:
+    # console-commands@1 queues a command no console took and asks AmberX (amberx.open_url) to open the console; the
+    # next send queues it again, which wakes again once the plugin's wake window has passed
+    ctx["wake"] = True
+
+
+CONSOLE_FIXES: dict[str, Callable[[dict[str, Any], dict[str, Any]], Any]] = {
+    "wake-console": _wake,
+    "other-console": lambda ctx, job: ctx.update(to="all"),
+    "queue-next-console": lambda ctx, job: ctx.update(queued=True),
+}
+
+
 def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], dict[str, Any]]) -> None:
     """The console_* tools (= CONSOLE_TOOLS in core/engines/console-commands.mjs): what a Claude session calls when Brett
     says "open Plan Studio". Each answer says what the open console did (`delivered`: per console ok + message) and how
@@ -942,7 +1027,10 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
     async def go(command: dict[str, Any]) -> dict[str, Any]:
         command = {k: v for k, v in command.items() if v not in (None, "", {})}
         command.setdefault("by", "mcp")
-        r = await anyio.to_thread.run_sync(lambda: console(command))
+        what = f"console {command.get('action') or command.get('op')} {command.get('path') or command.get('target') or ''}".strip()
+        r = await retried(what, "console", lambda ctx: console(_console_fixed(command, ctx)),
+                          ok=lambda r: None if r.get("ok") or r.get("code") == "confirmation_required" else {"code": r.get("code", ""), "message": r.get("message", "failed")},
+                          fixes=CONSOLE_FIXES)
         if not r.get("ok") and r.get("code") != "confirmation_required":
             raise ToolError(f"{r.get('code', 'unexpected')}: {r.get('message', 'failed')}")
         return r

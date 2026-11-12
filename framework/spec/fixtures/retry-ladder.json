@@ -1,0 +1,1622 @@
+{
+ "$axf": "fixture",
+ "about": "retry-ladder@1: framework/core/retry-ladder.mjs = framework/python/axf_server/retry.py",
+ "kinds": {
+  "store-locked": {
+   "label": "store locked",
+   "ladder": [
+    "wait",
+    "clear-stale-lock",
+    "restart-store-writer"
+   ]
+  },
+  "console-asleep": {
+   "label": "console asleep",
+   "ladder": [
+    "retry",
+    "wake-console",
+    "other-console",
+    "queue-next-console"
+   ]
+  },
+  "auth": {
+   "label": "login or account limit",
+   "ladder": [
+    "refresh-token",
+    "next-subscription",
+    "api-key"
+   ]
+  },
+  "rate-limit": {
+   "label": "rate limit or server error",
+   "ladder": [
+    "backoff",
+    "other-route"
+   ]
+  },
+  "timeout": {
+   "label": "timeout",
+   "ladder": [
+    "longer-timeout",
+    "background-job"
+   ]
+  },
+  "stale-state": {
+   "label": "stale state",
+   "ladder": [
+    "reload-state",
+    "retry"
+   ]
+  },
+  "service-down": {
+   "label": "service down",
+   "ladder": [
+    "health-check",
+    "restart-container",
+    "retry"
+   ]
+  },
+  "network": {
+   "label": "network",
+   "ladder": [
+    "retry",
+    "internal-address"
+   ]
+  },
+  "validation": {
+   "label": "bad arguments",
+   "ladder": [
+    "reread-schema"
+   ]
+  },
+  "permanent": {
+   "label": "permanent error",
+   "ladder": []
+  }
+ },
+ "fixes": {
+  "wait": {
+   "label": "waiting for the lock",
+   "done": "waited for the lock",
+   "delayMs": 2000
+  },
+  "clear-stale-lock": {
+   "label": "clearing stale lock",
+   "done": "cleared a stale lock"
+  },
+  "restart-store-writer": {
+   "label": "restarting the store writer",
+   "done": "restarted the store writer"
+  },
+  "retry": {
+   "label": "retrying",
+   "done": "retried",
+   "delayMs": 1000
+  },
+  "wake-console": {
+   "label": "waking the console via AmberX",
+   "done": "asked AmberX to open the console"
+  },
+  "other-console": {
+   "label": "sending to another open console",
+   "done": "sent to another open console"
+  },
+  "queue-next-console": {
+   "label": "queueing for the next console that opens",
+   "done": "queued for the next console"
+  },
+  "refresh-token": {
+   "label": "refreshing the token",
+   "done": "refreshed the token"
+  },
+  "next-subscription": {
+   "label": "switching to the next working subscription",
+   "done": "switched subscription"
+  },
+  "api-key": {
+   "label": "switching to an API key",
+   "done": "switched to an API key"
+  },
+  "backoff": {
+   "label": "backing off",
+   "done": "backed off",
+   "delayMs": 5000
+  },
+  "other-route": {
+   "label": "retrying on another account or route",
+   "done": "retried on another account or route"
+  },
+  "longer-timeout": {
+   "label": "retrying with a longer timeout",
+   "done": "retried with a longer timeout"
+  },
+  "background-job": {
+   "label": "running it as a background job",
+   "done": "ran it as a background job"
+  },
+  "reload-state": {
+   "label": "reloading state from the server",
+   "done": "reloaded state from the server"
+  },
+  "health-check": {
+   "label": "health-checking the service",
+   "done": "health-checked the service"
+  },
+  "restart-container": {
+   "label": "restarting the container via Coolify",
+   "done": "restarted the container via Coolify"
+  },
+  "internal-address": {
+   "label": "retrying via the internal address",
+   "done": "retried via the internal address"
+  },
+  "reread-schema": {
+   "label": "re-reading the tool schema and fixing the arguments",
+   "done": "re-read the schema and fixed the arguments"
+  }
+ },
+ "classify": [
+  {
+   "input": {
+    "message": "builds store is locked (/x/store.json.lock)"
+   },
+   "kind": "store-locked"
+  },
+  {
+   "input": {
+    "code": "store_locked"
+   },
+   "kind": "store-locked"
+  },
+  {
+   "input": {
+    "message": "database is locked"
+   },
+   "kind": "store-locked"
+  },
+  {
+   "input": {
+    "code": "no_console",
+    "message": "no console open"
+   },
+   "kind": "console-asleep"
+  },
+  {
+   "input": {
+    "message": "the console is asleep"
+   },
+   "kind": "console-asleep"
+  },
+  {
+   "input": {
+    "status": 429
+   },
+   "kind": "rate-limit"
+  },
+  {
+   "input": {
+    "message": "Too Many Requests"
+   },
+   "kind": "rate-limit"
+  },
+  {
+   "input": {
+    "message": "Overloaded"
+   },
+   "kind": "rate-limit"
+  },
+  {
+   "input": {
+    "status": 401
+   },
+   "kind": "auth"
+  },
+  {
+   "input": {
+    "code": "token_expired"
+   },
+   "kind": "auth"
+  },
+  {
+   "input": {
+    "message": "Claude usage limit reached"
+   },
+   "kind": "auth"
+  },
+  {
+   "input": {
+    "status": 504
+   },
+   "kind": "timeout"
+  },
+  {
+   "input": {
+    "code": "ETIMEDOUT"
+   },
+   "kind": "timeout"
+  },
+  {
+   "input": {
+    "message": "request timed out after 30s"
+   },
+   "kind": "timeout"
+  },
+  {
+   "input": {
+    "code": "ENOTFOUND",
+    "message": "getaddrinfo ENOTFOUND hub"
+   },
+   "kind": "network"
+  },
+  {
+   "input": {
+    "message": "socket hang up"
+   },
+   "kind": "network"
+  },
+  {
+   "input": {
+    "status": 503
+   },
+   "kind": "service-down"
+  },
+  {
+   "input": {
+    "code": "ECONNREFUSED"
+   },
+   "kind": "service-down"
+  },
+  {
+   "input": {
+    "status": 502
+   },
+   "kind": "service-down"
+  },
+  {
+   "input": {
+    "status": 409
+   },
+   "kind": "stale-state"
+  },
+  {
+   "input": {
+    "message": "rev mismatch: changed since read"
+   },
+   "kind": "stale-state"
+  },
+  {
+   "input": {
+    "status": 500
+   },
+   "kind": "rate-limit"
+  },
+  {
+   "input": {
+    "status": 422
+   },
+   "kind": "validation"
+  },
+  {
+   "input": {
+    "message": "validation error: missing required field id"
+   },
+   "kind": "validation"
+  },
+  {
+   "input": {
+    "status": 404,
+    "message": "not found"
+   },
+   "kind": "permanent"
+  },
+  {
+   "input": {
+    "code": "forbidden"
+   },
+   "kind": "permanent"
+  },
+  {
+   "input": "plain words",
+   "kind": "permanent"
+  },
+  {
+   "input": {},
+   "kind": "permanent"
+  }
+ ],
+ "walks": [
+  {
+   "title": "store locked to success",
+   "steps": [
+    {
+     "fail": {
+      "code": "store_locked"
+     }
+    },
+    {
+     "fail": {
+      "code": "store_locked"
+     }
+    },
+    {
+     "ok": true
+    }
+   ],
+   "out": [
+    {
+     "next": {
+      "fix": "wait",
+      "step": 1,
+      "of": 3,
+      "delayMs": 2000
+     }
+    },
+    {
+     "job": {
+      "$axf": "retry-job@1",
+      "id": "job-1",
+      "title": "store locked to success",
+      "source": "fixture",
+      "status": "retrying",
+      "kind": "store-locked",
+      "error": "store_locked",
+      "attempts": [
+       {
+        "n": 1,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "store-locked",
+        "fix": "wait",
+        "step": 1,
+        "of": 3,
+        "ok": false,
+        "error": "store_locked"
+       }
+      ],
+      "tried": {
+       "store-locked": [
+        "wait"
+       ]
+      },
+      "missing": [],
+      "createdAt": "2026-11-12T10:00:00.000Z",
+      "updatedAt": "2026-11-12T10:00:00.000Z"
+     },
+     "text": "store locked: waiting for the lock, step 1 of 3"
+    },
+    {
+     "next": {
+      "fix": "clear-stale-lock",
+      "step": 2,
+      "of": 3,
+      "delayMs": 0
+     }
+    },
+    {
+     "job": {
+      "$axf": "retry-job@1",
+      "id": "job-1",
+      "title": "store locked to success",
+      "source": "fixture",
+      "status": "retrying",
+      "kind": "store-locked",
+      "error": "store_locked",
+      "attempts": [
+       {
+        "n": 1,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "store-locked",
+        "fix": "wait",
+        "step": 1,
+        "of": 3,
+        "ok": false,
+        "error": "store_locked"
+       },
+       {
+        "n": 2,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "store-locked",
+        "fix": "clear-stale-lock",
+        "step": 2,
+        "of": 3,
+        "ok": false,
+        "error": "store_locked"
+       }
+      ],
+      "tried": {
+       "store-locked": [
+        "wait",
+        "clear-stale-lock"
+       ]
+      },
+      "missing": [],
+      "createdAt": "2026-11-12T10:00:00.000Z",
+      "updatedAt": "2026-11-12T10:00:00.000Z"
+     },
+     "text": "store locked: clearing stale lock, step 2 of 3"
+    },
+    {
+     "job": {
+      "$axf": "retry-job@1",
+      "id": "job-1",
+      "title": "store locked to success",
+      "source": "fixture",
+      "status": "fixed",
+      "kind": "store-locked",
+      "error": "",
+      "attempts": [
+       {
+        "n": 1,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "store-locked",
+        "fix": "wait",
+        "step": 1,
+        "of": 3,
+        "ok": false,
+        "error": "store_locked"
+       },
+       {
+        "n": 2,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "store-locked",
+        "fix": "clear-stale-lock",
+        "step": 2,
+        "of": 3,
+        "ok": true,
+        "error": "store_locked"
+       }
+      ],
+      "tried": {
+       "store-locked": [
+        "wait",
+        "clear-stale-lock"
+       ]
+      },
+      "missing": [],
+      "createdAt": "2026-11-12T10:00:00.000Z",
+      "updatedAt": "2026-11-12T10:00:00.000Z"
+     },
+     "text": "fixed: cleared a stale lock"
+    }
+   ]
+  },
+  {
+   "title": "store locked gives up",
+   "steps": [
+    {
+     "fail": {
+      "code": "store_locked"
+     }
+    },
+    {
+     "fail": {
+      "code": "store_locked"
+     }
+    },
+    {
+     "missing": [
+      "restart-store-writer",
+      "no writer to restart"
+     ]
+    },
+    {
+     "fail": {
+      "code": "store_locked"
+     }
+    },
+    {
+     "fail": {
+      "code": "store_locked"
+     }
+    }
+   ],
+   "out": [
+    {
+     "next": {
+      "fix": "wait",
+      "step": 1,
+      "of": 3,
+      "delayMs": 2000
+     }
+    },
+    {
+     "job": {
+      "$axf": "retry-job@1",
+      "id": "job-1",
+      "title": "store locked gives up",
+      "source": "fixture",
+      "status": "retrying",
+      "kind": "store-locked",
+      "error": "store_locked",
+      "attempts": [
+       {
+        "n": 1,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "store-locked",
+        "fix": "wait",
+        "step": 1,
+        "of": 3,
+        "ok": false,
+        "error": "store_locked"
+       }
+      ],
+      "tried": {
+       "store-locked": [
+        "wait"
+       ]
+      },
+      "missing": [],
+      "createdAt": "2026-11-12T10:00:00.000Z",
+      "updatedAt": "2026-11-12T10:00:00.000Z"
+     },
+     "text": "store locked: waiting for the lock, step 1 of 3"
+    },
+    {
+     "next": {
+      "fix": "clear-stale-lock",
+      "step": 2,
+      "of": 3,
+      "delayMs": 0
+     }
+    },
+    {
+     "job": {
+      "$axf": "retry-job@1",
+      "id": "job-1",
+      "title": "store locked gives up",
+      "source": "fixture",
+      "status": "retrying",
+      "kind": "store-locked",
+      "error": "store_locked",
+      "attempts": [
+       {
+        "n": 1,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "store-locked",
+        "fix": "wait",
+        "step": 1,
+        "of": 3,
+        "ok": false,
+        "error": "store_locked"
+       },
+       {
+        "n": 2,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "store-locked",
+        "fix": "clear-stale-lock",
+        "step": 2,
+        "of": 3,
+        "ok": false,
+        "error": "store_locked"
+       }
+      ],
+      "tried": {
+       "store-locked": [
+        "wait",
+        "clear-stale-lock"
+       ]
+      },
+      "missing": [],
+      "createdAt": "2026-11-12T10:00:00.000Z",
+      "updatedAt": "2026-11-12T10:00:00.000Z"
+     },
+     "text": "store locked: clearing stale lock, step 2 of 3"
+    },
+    {
+     "job": {
+      "$axf": "retry-job@1",
+      "id": "job-1",
+      "title": "store locked gives up",
+      "source": "fixture",
+      "status": "retrying",
+      "kind": "store-locked",
+      "error": "store_locked",
+      "attempts": [
+       {
+        "n": 1,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "store-locked",
+        "fix": "wait",
+        "step": 1,
+        "of": 3,
+        "ok": false,
+        "error": "store_locked"
+       },
+       {
+        "n": 2,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "store-locked",
+        "fix": "clear-stale-lock",
+        "step": 2,
+        "of": 3,
+        "ok": false,
+        "error": "store_locked"
+       }
+      ],
+      "tried": {
+       "store-locked": [
+        "wait",
+        "clear-stale-lock"
+       ]
+      },
+      "missing": [
+       "restarting the store writer: no writer to restart"
+      ],
+      "createdAt": "2026-11-12T10:00:00.000Z",
+      "updatedAt": "2026-11-12T10:00:00.000Z"
+     },
+     "text": "store locked: clearing stale lock, step 2 of 3"
+    },
+    {
+     "next": {
+      "fix": "restart-store-writer",
+      "step": 3,
+      "of": 3,
+      "delayMs": 0
+     }
+    },
+    {
+     "job": {
+      "$axf": "retry-job@1",
+      "id": "job-1",
+      "title": "store locked gives up",
+      "source": "fixture",
+      "status": "retrying",
+      "kind": "store-locked",
+      "error": "store_locked",
+      "attempts": [
+       {
+        "n": 1,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "store-locked",
+        "fix": "wait",
+        "step": 1,
+        "of": 3,
+        "ok": false,
+        "error": "store_locked"
+       },
+       {
+        "n": 2,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "store-locked",
+        "fix": "clear-stale-lock",
+        "step": 2,
+        "of": 3,
+        "ok": false,
+        "error": "store_locked"
+       },
+       {
+        "n": 3,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "store-locked",
+        "fix": "restart-store-writer",
+        "step": 3,
+        "of": 3,
+        "ok": false,
+        "error": "store_locked"
+       }
+      ],
+      "tried": {
+       "store-locked": [
+        "wait",
+        "clear-stale-lock",
+        "restart-store-writer"
+       ]
+      },
+      "missing": [
+       "restarting the store writer: no writer to restart"
+      ],
+      "createdAt": "2026-11-12T10:00:00.000Z",
+      "updatedAt": "2026-11-12T10:00:00.000Z"
+     },
+     "text": "store locked: restarting the store writer, step 3 of 3"
+    },
+    {
+     "next": null
+    },
+    {
+     "job": {
+      "$axf": "retry-job@1",
+      "id": "job-1",
+      "title": "store locked gives up",
+      "source": "fixture",
+      "status": "gave-up",
+      "kind": "store-locked",
+      "error": "store_locked",
+      "attempts": [
+       {
+        "n": 1,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "store-locked",
+        "fix": "wait",
+        "step": 1,
+        "of": 3,
+        "ok": false,
+        "error": "store_locked"
+       },
+       {
+        "n": 2,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "store-locked",
+        "fix": "clear-stale-lock",
+        "step": 2,
+        "of": 3,
+        "ok": false,
+        "error": "store_locked"
+       },
+       {
+        "n": 3,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "store-locked",
+        "fix": "restart-store-writer",
+        "step": 3,
+        "of": 3,
+        "ok": false,
+        "error": "store_locked"
+       }
+      ],
+      "tried": {
+       "store-locked": [
+        "wait",
+        "clear-stale-lock",
+        "restart-store-writer"
+       ]
+      },
+      "missing": [
+       "restarting the store writer: no writer to restart"
+      ],
+      "createdAt": "2026-11-12T10:00:00.000Z",
+      "updatedAt": "2026-11-12T10:00:00.000Z",
+      "fyi": "store locked gives up still fails after every automatic fix (store locked): store_locked. Tried: waited for the lock, cleared a stale lock, restarted the store writer. Missing: restarting the store writer: no writer to restart."
+     },
+     "text": "store locked: gave up after 3 fixes"
+    }
+   ]
+  },
+  {
+   "title": "console asleep ladder",
+   "steps": [
+    {
+     "fail": {
+      "code": "no_console"
+     }
+    },
+    {
+     "fail": {
+      "code": "no_console"
+     }
+    },
+    {
+     "fail": {
+      "code": "no_console"
+     }
+    },
+    {
+     "fail": {
+      "code": "no_console"
+     }
+    },
+    {
+     "fail": {
+      "code": "no_console"
+     }
+    }
+   ],
+   "out": [
+    {
+     "next": {
+      "fix": "retry",
+      "step": 1,
+      "of": 4,
+      "delayMs": 1000
+     }
+    },
+    {
+     "job": {
+      "$axf": "retry-job@1",
+      "id": "job-1",
+      "title": "console asleep ladder",
+      "source": "fixture",
+      "status": "retrying",
+      "kind": "console-asleep",
+      "error": "no_console",
+      "attempts": [
+       {
+        "n": 1,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "console-asleep",
+        "fix": "retry",
+        "step": 1,
+        "of": 4,
+        "ok": false,
+        "error": "no_console"
+       }
+      ],
+      "tried": {
+       "console-asleep": [
+        "retry"
+       ]
+      },
+      "missing": [],
+      "createdAt": "2026-11-12T10:00:00.000Z",
+      "updatedAt": "2026-11-12T10:00:00.000Z"
+     },
+     "text": "console asleep: retrying, step 1 of 4"
+    },
+    {
+     "next": {
+      "fix": "wake-console",
+      "step": 2,
+      "of": 4,
+      "delayMs": 0
+     }
+    },
+    {
+     "job": {
+      "$axf": "retry-job@1",
+      "id": "job-1",
+      "title": "console asleep ladder",
+      "source": "fixture",
+      "status": "retrying",
+      "kind": "console-asleep",
+      "error": "no_console",
+      "attempts": [
+       {
+        "n": 1,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "console-asleep",
+        "fix": "retry",
+        "step": 1,
+        "of": 4,
+        "ok": false,
+        "error": "no_console"
+       },
+       {
+        "n": 2,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "console-asleep",
+        "fix": "wake-console",
+        "step": 2,
+        "of": 4,
+        "ok": false,
+        "error": "no_console"
+       }
+      ],
+      "tried": {
+       "console-asleep": [
+        "retry",
+        "wake-console"
+       ]
+      },
+      "missing": [],
+      "createdAt": "2026-11-12T10:00:00.000Z",
+      "updatedAt": "2026-11-12T10:00:00.000Z"
+     },
+     "text": "console asleep: waking the console via AmberX, step 2 of 4"
+    },
+    {
+     "next": {
+      "fix": "other-console",
+      "step": 3,
+      "of": 4,
+      "delayMs": 0
+     }
+    },
+    {
+     "job": {
+      "$axf": "retry-job@1",
+      "id": "job-1",
+      "title": "console asleep ladder",
+      "source": "fixture",
+      "status": "retrying",
+      "kind": "console-asleep",
+      "error": "no_console",
+      "attempts": [
+       {
+        "n": 1,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "console-asleep",
+        "fix": "retry",
+        "step": 1,
+        "of": 4,
+        "ok": false,
+        "error": "no_console"
+       },
+       {
+        "n": 2,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "console-asleep",
+        "fix": "wake-console",
+        "step": 2,
+        "of": 4,
+        "ok": false,
+        "error": "no_console"
+       },
+       {
+        "n": 3,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "console-asleep",
+        "fix": "other-console",
+        "step": 3,
+        "of": 4,
+        "ok": false,
+        "error": "no_console"
+       }
+      ],
+      "tried": {
+       "console-asleep": [
+        "retry",
+        "wake-console",
+        "other-console"
+       ]
+      },
+      "missing": [],
+      "createdAt": "2026-11-12T10:00:00.000Z",
+      "updatedAt": "2026-11-12T10:00:00.000Z"
+     },
+     "text": "console asleep: sending to another open console, step 3 of 4"
+    },
+    {
+     "next": {
+      "fix": "queue-next-console",
+      "step": 4,
+      "of": 4,
+      "delayMs": 0
+     }
+    },
+    {
+     "job": {
+      "$axf": "retry-job@1",
+      "id": "job-1",
+      "title": "console asleep ladder",
+      "source": "fixture",
+      "status": "retrying",
+      "kind": "console-asleep",
+      "error": "no_console",
+      "attempts": [
+       {
+        "n": 1,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "console-asleep",
+        "fix": "retry",
+        "step": 1,
+        "of": 4,
+        "ok": false,
+        "error": "no_console"
+       },
+       {
+        "n": 2,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "console-asleep",
+        "fix": "wake-console",
+        "step": 2,
+        "of": 4,
+        "ok": false,
+        "error": "no_console"
+       },
+       {
+        "n": 3,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "console-asleep",
+        "fix": "other-console",
+        "step": 3,
+        "of": 4,
+        "ok": false,
+        "error": "no_console"
+       },
+       {
+        "n": 4,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "console-asleep",
+        "fix": "queue-next-console",
+        "step": 4,
+        "of": 4,
+        "ok": false,
+        "error": "no_console"
+       }
+      ],
+      "tried": {
+       "console-asleep": [
+        "retry",
+        "wake-console",
+        "other-console",
+        "queue-next-console"
+       ]
+      },
+      "missing": [],
+      "createdAt": "2026-11-12T10:00:00.000Z",
+      "updatedAt": "2026-11-12T10:00:00.000Z"
+     },
+     "text": "console asleep: queueing for the next console that opens, step 4 of 4"
+    },
+    {
+     "next": null
+    },
+    {
+     "job": {
+      "$axf": "retry-job@1",
+      "id": "job-1",
+      "title": "console asleep ladder",
+      "source": "fixture",
+      "status": "gave-up",
+      "kind": "console-asleep",
+      "error": "no_console",
+      "attempts": [
+       {
+        "n": 1,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "console-asleep",
+        "fix": "retry",
+        "step": 1,
+        "of": 4,
+        "ok": false,
+        "error": "no_console"
+       },
+       {
+        "n": 2,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "console-asleep",
+        "fix": "wake-console",
+        "step": 2,
+        "of": 4,
+        "ok": false,
+        "error": "no_console"
+       },
+       {
+        "n": 3,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "console-asleep",
+        "fix": "other-console",
+        "step": 3,
+        "of": 4,
+        "ok": false,
+        "error": "no_console"
+       },
+       {
+        "n": 4,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "console-asleep",
+        "fix": "queue-next-console",
+        "step": 4,
+        "of": 4,
+        "ok": false,
+        "error": "no_console"
+       }
+      ],
+      "tried": {
+       "console-asleep": [
+        "retry",
+        "wake-console",
+        "other-console",
+        "queue-next-console"
+       ]
+      },
+      "missing": [],
+      "createdAt": "2026-11-12T10:00:00.000Z",
+      "updatedAt": "2026-11-12T10:00:00.000Z",
+      "fyi": "console asleep ladder still fails after every automatic fix (console asleep): no_console. Tried: retried, asked AmberX to open the console, sent to another open console, queued for the next console."
+     },
+     "text": "console asleep: gave up after 4 fixes"
+    }
+   ]
+  },
+  {
+   "title": "kind changes mid-ladder",
+   "steps": [
+    {
+     "fail": {
+      "status": 503
+     }
+    },
+    {
+     "fail": {
+      "status": 429
+     }
+    },
+    {
+     "fail": {
+      "status": 503
+     }
+    },
+    {
+     "ok": true
+    }
+   ],
+   "out": [
+    {
+     "next": {
+      "fix": "health-check",
+      "step": 1,
+      "of": 3,
+      "delayMs": 0
+     }
+    },
+    {
+     "job": {
+      "$axf": "retry-job@1",
+      "id": "job-1",
+      "title": "kind changes mid-ladder",
+      "source": "fixture",
+      "status": "retrying",
+      "kind": "service-down",
+      "error": "failed",
+      "attempts": [
+       {
+        "n": 1,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "service-down",
+        "fix": "health-check",
+        "step": 1,
+        "of": 3,
+        "ok": false,
+        "error": "failed"
+       }
+      ],
+      "tried": {
+       "service-down": [
+        "health-check"
+       ]
+      },
+      "missing": [],
+      "createdAt": "2026-11-12T10:00:00.000Z",
+      "updatedAt": "2026-11-12T10:00:00.000Z"
+     },
+     "text": "service down: health-checking the service, step 1 of 3"
+    },
+    {
+     "next": {
+      "fix": "backoff",
+      "step": 1,
+      "of": 2,
+      "delayMs": 5000
+     }
+    },
+    {
+     "job": {
+      "$axf": "retry-job@1",
+      "id": "job-1",
+      "title": "kind changes mid-ladder",
+      "source": "fixture",
+      "status": "retrying",
+      "kind": "rate-limit",
+      "error": "failed",
+      "attempts": [
+       {
+        "n": 1,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "service-down",
+        "fix": "health-check",
+        "step": 1,
+        "of": 3,
+        "ok": false,
+        "error": "failed"
+       },
+       {
+        "n": 2,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "rate-limit",
+        "fix": "backoff",
+        "step": 1,
+        "of": 2,
+        "ok": false,
+        "error": "failed"
+       }
+      ],
+      "tried": {
+       "service-down": [
+        "health-check"
+       ],
+       "rate-limit": [
+        "backoff"
+       ]
+      },
+      "missing": [],
+      "createdAt": "2026-11-12T10:00:00.000Z",
+      "updatedAt": "2026-11-12T10:00:00.000Z"
+     },
+     "text": "rate limit or server error: backing off, step 1 of 2"
+    },
+    {
+     "next": {
+      "fix": "restart-container",
+      "step": 2,
+      "of": 3,
+      "delayMs": 0
+     }
+    },
+    {
+     "job": {
+      "$axf": "retry-job@1",
+      "id": "job-1",
+      "title": "kind changes mid-ladder",
+      "source": "fixture",
+      "status": "retrying",
+      "kind": "service-down",
+      "error": "failed",
+      "attempts": [
+       {
+        "n": 1,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "service-down",
+        "fix": "health-check",
+        "step": 1,
+        "of": 3,
+        "ok": false,
+        "error": "failed"
+       },
+       {
+        "n": 2,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "rate-limit",
+        "fix": "backoff",
+        "step": 1,
+        "of": 2,
+        "ok": false,
+        "error": "failed"
+       },
+       {
+        "n": 3,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "service-down",
+        "fix": "restart-container",
+        "step": 2,
+        "of": 3,
+        "ok": false,
+        "error": "failed"
+       }
+      ],
+      "tried": {
+       "service-down": [
+        "health-check",
+        "restart-container"
+       ],
+       "rate-limit": [
+        "backoff"
+       ]
+      },
+      "missing": [],
+      "createdAt": "2026-11-12T10:00:00.000Z",
+      "updatedAt": "2026-11-12T10:00:00.000Z"
+     },
+     "text": "service down: restarting the container via Coolify, step 2 of 3"
+    },
+    {
+     "job": {
+      "$axf": "retry-job@1",
+      "id": "job-1",
+      "title": "kind changes mid-ladder",
+      "source": "fixture",
+      "status": "fixed",
+      "kind": "service-down",
+      "error": "",
+      "attempts": [
+       {
+        "n": 1,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "service-down",
+        "fix": "health-check",
+        "step": 1,
+        "of": 3,
+        "ok": false,
+        "error": "failed"
+       },
+       {
+        "n": 2,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "rate-limit",
+        "fix": "backoff",
+        "step": 1,
+        "of": 2,
+        "ok": false,
+        "error": "failed"
+       },
+       {
+        "n": 3,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "service-down",
+        "fix": "restart-container",
+        "step": 2,
+        "of": 3,
+        "ok": true,
+        "error": "failed"
+       }
+      ],
+      "tried": {
+       "service-down": [
+        "health-check",
+        "restart-container"
+       ],
+       "rate-limit": [
+        "backoff"
+       ]
+      },
+      "missing": [],
+      "createdAt": "2026-11-12T10:00:00.000Z",
+      "updatedAt": "2026-11-12T10:00:00.000Z"
+     },
+     "text": "fixed: restarted the container via Coolify"
+    }
+   ]
+  },
+  {
+   "title": "permanent fails at once",
+   "steps": [
+    {
+     "fail": {
+      "status": 404,
+      "message": "not found"
+     }
+    }
+   ],
+   "out": [
+    {
+     "next": null
+    },
+    {
+     "job": {
+      "$axf": "retry-job@1",
+      "id": "job-1",
+      "title": "permanent fails at once",
+      "source": "fixture",
+      "status": "failed",
+      "kind": "permanent",
+      "error": "not found",
+      "attempts": [],
+      "tried": {},
+      "missing": [],
+      "createdAt": "2026-11-12T10:00:00.000Z",
+      "updatedAt": "2026-11-12T10:00:00.000Z",
+      "fyi": "permanent fails at once failed: not found. Not retried (a permanent error)."
+     },
+     "text": "permanent error: not retried (not found)"
+    }
+   ]
+  },
+  {
+   "title": "timeout then background",
+   "steps": [
+    {
+     "fail": {
+      "code": "timeout"
+     }
+    },
+    {
+     "fail": {
+      "code": "timeout"
+     }
+    },
+    {
+     "fail": {
+      "code": "timeout"
+     }
+    }
+   ],
+   "out": [
+    {
+     "next": {
+      "fix": "longer-timeout",
+      "step": 1,
+      "of": 2,
+      "delayMs": 0
+     }
+    },
+    {
+     "job": {
+      "$axf": "retry-job@1",
+      "id": "job-1",
+      "title": "timeout then background",
+      "source": "fixture",
+      "status": "retrying",
+      "kind": "timeout",
+      "error": "timeout",
+      "attempts": [
+       {
+        "n": 1,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "timeout",
+        "fix": "longer-timeout",
+        "step": 1,
+        "of": 2,
+        "ok": false,
+        "error": "timeout"
+       }
+      ],
+      "tried": {
+       "timeout": [
+        "longer-timeout"
+       ]
+      },
+      "missing": [],
+      "createdAt": "2026-11-12T10:00:00.000Z",
+      "updatedAt": "2026-11-12T10:00:00.000Z"
+     },
+     "text": "timeout: retrying with a longer timeout, step 1 of 2"
+    },
+    {
+     "next": {
+      "fix": "background-job",
+      "step": 2,
+      "of": 2,
+      "delayMs": 0
+     }
+    },
+    {
+     "job": {
+      "$axf": "retry-job@1",
+      "id": "job-1",
+      "title": "timeout then background",
+      "source": "fixture",
+      "status": "retrying",
+      "kind": "timeout",
+      "error": "timeout",
+      "attempts": [
+       {
+        "n": 1,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "timeout",
+        "fix": "longer-timeout",
+        "step": 1,
+        "of": 2,
+        "ok": false,
+        "error": "timeout"
+       },
+       {
+        "n": 2,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "timeout",
+        "fix": "background-job",
+        "step": 2,
+        "of": 2,
+        "ok": false,
+        "error": "timeout"
+       }
+      ],
+      "tried": {
+       "timeout": [
+        "longer-timeout",
+        "background-job"
+       ]
+      },
+      "missing": [],
+      "createdAt": "2026-11-12T10:00:00.000Z",
+      "updatedAt": "2026-11-12T10:00:00.000Z"
+     },
+     "text": "timeout: running it as a background job, step 2 of 2"
+    },
+    {
+     "next": null
+    },
+    {
+     "job": {
+      "$axf": "retry-job@1",
+      "id": "job-1",
+      "title": "timeout then background",
+      "source": "fixture",
+      "status": "gave-up",
+      "kind": "timeout",
+      "error": "timeout",
+      "attempts": [
+       {
+        "n": 1,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "timeout",
+        "fix": "longer-timeout",
+        "step": 1,
+        "of": 2,
+        "ok": false,
+        "error": "timeout"
+       },
+       {
+        "n": 2,
+        "at": "2026-11-12T10:00:00.000Z",
+        "kind": "timeout",
+        "fix": "background-job",
+        "step": 2,
+        "of": 2,
+        "ok": false,
+        "error": "timeout"
+       }
+      ],
+      "tried": {
+       "timeout": [
+        "longer-timeout",
+        "background-job"
+       ]
+      },
+      "missing": [],
+      "createdAt": "2026-11-12T10:00:00.000Z",
+      "updatedAt": "2026-11-12T10:00:00.000Z",
+      "fyi": "timeout then background still fails after every automatic fix (timeout): timeout. Tried: retried with a longer timeout, ran it as a background job."
+     },
+     "text": "timeout: gave up after 2 fixes"
+    }
+   ]
+  }
+ ],
+ "view": {
+  "count": 3,
+  "retrying": 0,
+  "gaveUp": 3,
+  "rows": [
+   {
+    "id": "job-5",
+    "title": "timeout then background",
+    "source": "fixture",
+    "status": "gave-up",
+    "kind": "timeout",
+    "error": "timeout",
+    "now": "timeout: gave up after 2 fixes",
+    "attempts": 2,
+    "missing": [],
+    "updatedAt": "2026-11-12T10:05:00.000Z",
+    "note": ""
+   },
+   {
+    "id": "job-2",
+    "title": "console asleep ladder",
+    "source": "fixture",
+    "status": "gave-up",
+    "kind": "console-asleep",
+    "error": "no_console",
+    "now": "console asleep: gave up after 4 fixes",
+    "attempts": 4,
+    "missing": [],
+    "updatedAt": "2026-11-12T10:02:00.000Z",
+    "note": ""
+   },
+   {
+    "id": "job-1",
+    "title": "store locked gives up",
+    "source": "fixture",
+    "status": "gave-up",
+    "kind": "store-locked",
+    "error": "store_locked",
+    "now": "store locked: gave up after 3 fixes",
+    "attempts": 3,
+    "missing": [
+     "restarting the store writer: no writer to restart"
+    ],
+    "updatedAt": "2026-11-12T10:01:00.000Z",
+    "note": ""
+   },
+   {
+    "id": "job-4",
+    "title": "permanent fails at once",
+    "source": "fixture",
+    "status": "failed",
+    "kind": "permanent",
+    "error": "not found",
+    "now": "permanent error: not retried (not found)",
+    "attempts": 0,
+    "missing": [],
+    "updatedAt": "2026-11-12T10:04:00.000Z",
+    "note": ""
+   },
+   {
+    "id": "job-3",
+    "title": "kind changes mid-ladder",
+    "source": "fixture",
+    "status": "fixed",
+    "kind": "service-down",
+    "error": "",
+    "now": "fixed: restarted the container via Coolify",
+    "attempts": 3,
+    "missing": [],
+    "updatedAt": "2026-11-12T10:03:00.000Z",
+    "note": ""
+   },
+   {
+    "id": "job-0",
+    "title": "store locked to success",
+    "source": "fixture",
+    "status": "fixed",
+    "kind": "store-locked",
+    "error": "",
+    "now": "fixed: cleared a stale lock",
+    "attempts": 2,
+    "missing": [],
+    "updatedAt": "2026-11-12T10:00:00.000Z",
+    "note": ""
+   }
+  ]
+ }
+}
