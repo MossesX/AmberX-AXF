@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T03:28:19.430Z",
+ "updatedAt": "2026-11-12T03:28:31.491Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -30738,7 +30738,7 @@
    "pr": "#171",
    "mergedAt": "2026-10-30T16:37:20Z",
    "createdAt": "2026-10-29T18:34:09.323Z",
-   "updatedAt": "2026-11-03T19:43:37.219Z",
+   "updatedAt": "2026-11-12T03:28:23Z",
    "builtAt": "",
    "notes": [
     {
@@ -30752,6 +30752,10 @@
     {
      "text": "Merged from build profile \"angel\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-home-cards rev 1 sent to Shipped features (backfill): landed b2351e130, 10 file(s), 0 test line(s), 18 open.",
+     "at": "2026-11-12T03:28:23Z"
     }
    ],
    "approvals": [],
@@ -31190,7 +31194,7 @@
    "pr": "#175",
    "mergedAt": "2026-10-30T16:37:18Z",
    "createdAt": "2026-10-30T13:01:42.736Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:28:24Z",
    "builtAt": "2026-10-30T13:06:41.972Z",
    "notes": [
     {
@@ -31200,6 +31204,10 @@
     {
      "text": "Merged from build profile \"angel\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-settings-compact rev 1 sent to Shipped features (backfill): landed 6a8ec6e95, 31 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:24Z"
     }
    ],
    "approvals": [],
@@ -31415,7 +31423,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-30T16:37:47.955Z",
-   "updatedAt": "2026-10-30T16:44:13.181Z",
+   "updatedAt": "2026-11-12T03:28:25Z",
    "builtAt": "2026-10-30T16:44:13.129Z",
    "notes": [
     {
@@ -31425,6 +31433,10 @@
     {
      "text": "Merged from build profile \"angel\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-app-compact rev 1 sent to Shipped features (backfill): complete 2026-10-30 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:25Z"
     }
    ],
    "approvals": [],
@@ -31546,12 +31558,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-30T17:25:36.020Z",
-   "updatedAt": "2026-10-30T21:21:37.559Z",
+   "updatedAt": "2026-11-12T03:28:26Z",
    "builtAt": "2026-10-30T21:21:37.560Z",
    "notes": [
     {
      "text": "Merged from build profile \"angel\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-screens-compact rev 1 sent to Shipped features (backfill): complete 2026-10-30 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:26Z"
     }
    ],
    "approvals": [],
@@ -31674,7 +31690,7 @@
    "pr": "#181",
    "mergedAt": "2026-10-31T07:02:46Z",
    "createdAt": "2026-10-30T17:31:49.428Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:28:27Z",
    "builtAt": "2026-10-31T09:07:22.007Z",
    "notes": [
     {
@@ -31688,6 +31704,10 @@
     {
      "text": "Merged from build profile \"angel\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-ui-all-assets rev 1 sent to Shipped features (backfill): landed 08ca3cda2, 93 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:27Z"
     }
    ],
    "approvals": [
@@ -32033,7 +32053,7 @@
    "pr": "#192",
    "priority": "P0",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-11-10T04:39:20.621Z",
+   "updatedAt": "2026-11-12T03:28:28Z",
    "builtAt": "2026-11-10T04:39:20.621Z",
    "notes": [
     {
@@ -32051,6 +32071,10 @@
     {
      "text": "Audit: superseded — the web inspector shipped as AshesUI (framework/libs/ashes, build ashes-ui, complete Oct 23); s3's Compose port is Android work, on hold (framework/spec/PORTING.md)",
      "at": "2026-11-10T04:35:37.818Z"
+    },
+    {
+     "text": "Shipped manifest sm-element-inspector rev 1 sent to Shipped features (backfill): PR #192, 31 file(s), 0 test line(s), 1 open.",
+     "at": "2026-11-12T03:28:28Z"
     }
    ],
    "approvals": [],
@@ -32286,7 +32310,7 @@
    "pr": "#191",
    "mergedAt": "2026-10-31T07:26:36Z",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-11-04T12:44:12.117Z",
+   "updatedAt": "2026-11-12T03:28:29Z",
    "builtAt": "2026-11-04T12:44:12.117Z",
    "notes": [
     {
@@ -32300,6 +32324,10 @@
     {
      "text": "Merged from build profile \"angel\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-layout-repeating-slots rev 1 sent to Shipped features (backfill): landed 86657f721, 20 file(s), 0 test line(s), 3 open.",
+     "at": "2026-11-12T03:28:29Z"
     }
    ],
    "approvals": [],
@@ -45286,7 +45314,7 @@
    "pr": "#177",
    "mergedAt": "2026-10-31T07:26:37Z",
    "createdAt": "2026-10-30T11:36:24.622Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:28:18Z",
    "builtAt": "2026-11-01T02:31:46.110Z",
    "notes": [
     {
@@ -45304,6 +45332,10 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-agent-voice rev 1 sent to Shipped features (backfill): landed ed7aa480a, 35 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:18Z"
     }
    ],
    "approvals": [],
@@ -45498,7 +45530,7 @@
    "pr": "#183",
    "mergedAt": "2026-10-31T07:26:36Z",
    "createdAt": "2026-10-30T17:55:48.511Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:28:19Z",
    "builtAt": "2026-10-30T18:04:28.210Z",
    "notes": [
     {
@@ -45512,6 +45544,10 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-pr-only-merge rev 1 sent to Shipped features (backfill): landed 23aea3d73, 14 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:19Z"
     }
    ],
    "approvals": [],
@@ -46207,7 +46243,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-26T01:05:34.314Z",
-   "updatedAt": "2026-10-27T19:25:27.054Z",
+   "updatedAt": "2026-11-12T03:28:21Z",
    "builtAt": "2026-10-27T19:25:27.054Z",
    "notes": [
     {
@@ -46221,6 +46257,10 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-amberx-web-host rev 1 sent to Shipped features (backfill): complete 2026-10-27 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:21Z"
     }
    ],
    "approvals": [],
@@ -46307,7 +46347,7 @@
    "pr": "#143",
    "mergedAt": "2026-10-31T07:26:37Z",
    "createdAt": "2026-10-28T01:07:25.673Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:28:22Z",
    "builtAt": "2026-11-01T02:28:34.899Z",
    "notes": [
     {
@@ -46325,6 +46365,10 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-orch-pending-sync rev 1 sent to Shipped features (backfill): landed 5348a1bb9, 12 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:22Z"
     }
    ],
    "approvals": [],

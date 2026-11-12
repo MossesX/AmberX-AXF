@@ -776,17 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 02:07 UTC · `x.uikits` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `x.deploy.console` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `x.modules` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `dispatcher-a-worktree-store-write-can-erase-a-fr` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `session-transcripts-api-search-what-was-said-fin` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `shipped-features-show-each-landed-build-s-screen` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `shared-screenshot-registry-hooked-everywhere-liv` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `plugin-ui-inventory-per-plugin-reskin-one-button` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `amberx-android-web-view-top-banner-hidden-behind` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `project-manager-add-on-drag-a-build-to-another-p` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `amberx-llama-llama-amberxai-com-via-coolify-trae` → archived, note (all) · console
 - 2026-11-12 02:07 UTC · `project-manager-add-on-new-project-prompt-asks-i` → archived, note (all) · console
 - 2026-11-12 02:07 UTC · `amberx-llama-axhub-service-hooks-so-amberx-and-e` → archived, note (all) · console
 - 2026-11-12 02:07 UTC · `projects-create-a-new-project-and-move-builds-be` → archived, note (all) · console
@@ -1176,6 +1165,17 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:28 UTC · `assistant-no-subagents` note (all) · backfill
 - 2026-11-12 03:28 UTC · `shared-look-fix` note (all) · backfill
 - 2026-11-12 03:28 UTC · `veto-everywhere` note (all) · backfill
+- 2026-11-12 03:28 UTC · `agent-voice` note (all) · backfill
+- 2026-11-12 03:28 UTC · `pr-only-merge` note (all) · backfill
+- 2026-11-12 03:28 UTC · `amberx-web-host` note (all) · backfill
+- 2026-11-12 03:28 UTC · `orch-pending-sync` note (all) · backfill
+- 2026-11-12 03:28 UTC · `home-cards` note (all) · backfill
+- 2026-11-12 03:28 UTC · `settings-compact` note (all) · backfill
+- 2026-11-12 03:28 UTC · `app-compact` note (all) · backfill
+- 2026-11-12 03:28 UTC · `screens-compact` note (all) · backfill
+- 2026-11-12 03:28 UTC · `ui-all-assets` note (all) · backfill
+- 2026-11-12 03:28 UTC · `element-inspector` note (all) · backfill
+- 2026-11-12 03:28 UTC · `layout-repeating-slots` note (all) · backfill
 
 ## Token passes (log)
 
