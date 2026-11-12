@@ -168,3 +168,13 @@ Web only (Android on hold, build `console-commands-reliable`), Kotlin twins when
   `CONSOLE_HEARTBEAT_MS`, and `CONSOLE_CLIENT_STALE_MS` down from 90 s to 45 s (`core/engines/console-commands.mjs`).
 - `followSse` options `idleTimeoutMs` and the follower's `reconnect()` / `idleMs()` / `open()` (`core/sse.ts`); the Kotlin `Sse`
   parser is unchanged, only an Android stream follower would need the idle watchdog.
+
+## Deferred: dev server launch extras + saved dev settings (Nov 12 2026)
+Build `x.engine.dev` s2 (Android on hold, no new Kotlin). `axf dev` and the web hook (`framework/react/devServer.ts`
+`useDevServer`, `?axfDev=`) work; the Android `HotReloader` (axf-devtools) exists but nothing feeds it:
+- the `axf.devServer` / `axf.hotReload` settings (SettingScope.DEVICE) are never copied into `kernel.config` / `kernel.flags`,
+  and `kernel.flags.set` is in memory only, so the reloader never starts after a restart;
+- debug builds should accept launch extras `--es axf.devServer <url> --ez axf.hotReload true` (config + flag, USER layer)
+  so CI and `adb` can turn it on; `.github/workflows/dev-reload-android.yml` (manual) passes them and asserts a pixel diff;
+- the reloader should start or restart when either setting changes (today: once, in `start()`);
+- invalid changes (`ok: false`, `error` on the change record, s3) should write a terminal line instead of being skipped.
