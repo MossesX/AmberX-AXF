@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3546,
- "updatedAt": "2026-11-12T11:02:22.253Z",
+ "rev": 3547,
+ "updatedAt": "2026-11-12T11:03:00.135Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174121,9 +174121,9 @@
    "source": "mcp",
    "pendingId": "remove-the-console-s-own-notes-manager-console-u",
    "branch": "claude/remove-the-console-s-own-notes-manager-console-u",
-   "pr": "",
+   "pr": "#519",
    "createdAt": "2026-11-12T10:43:54.592Z",
-   "updatedAt": "2026-11-12T11:02:19.455Z",
+   "updatedAt": "2026-11-12T11:02:58.584Z",
    "builtAt": "",
    "notes": [
     {
@@ -174266,7 +174266,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {
