@@ -280,6 +280,33 @@
         "output": "{ total, counts: { <gate>: n }, gates: [{ id, label, count }], matched, shown, entries: [{ at, gate, build, by, action, detail, session? }] }"
       },
       {
+        "id": "gate-banner",
+        "route": "GET /gate-banner",
+        "title": "Where the gate log widget shows",
+        "description": "Where the Server gate log banner widget (count of gate hits in the last day; tap opens the Server gate log) shows: own (its own banner strip, only while it has something), bar (the app banner bar), off, or the id of an existing banner it is snapped into. Say 'where is the gate log widget'.",
+        "readOnly": true,
+        "output": "{ place, by, at }"
+      },
+      {
+        "id": "gate-banner-set",
+        "route": "POST /gate-banner",
+        "title": "Move the gate log widget",
+        "description": "Move the Server gate log banner widget: own (its own banner strip that shows only when there are gate hits), bar (the app banner bar), off, or any existing banner's id (e.g. approvals, systems-check) to snap it into that banner. Live: every open console follows. Say 'put the gate log in the approvals banner' or 'give the gate log its own banner'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "place": {
+              "type": "string",
+              "description": "own | bar | off | <banner id>"
+            }
+          },
+          "required": [
+            "place"
+          ]
+        },
+        "output": "{ place, by, at }"
+      },
+      {
         "id": "pipeline-selfcheck",
         "route": "POST /pipeline/selfcheck",
         "title": "Dispatcher self-check",

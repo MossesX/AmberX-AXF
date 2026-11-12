@@ -27,6 +27,7 @@
  *   … log [--gate <g>] [--build <id>] [--limit n] [--json]      the gate log, newest first
  *   … record --gate <g> [--build <id> | --name <session> --brief <file>] [--by <who>] --action <what> [--detail <text>]
  *   … gates [--json]               the gate kinds and their counts
+ *   … banner [--place own|bar|off|<banner id>] [--json]   where the console shows the gate log widget (read / set)
  *
  * Env: AXF_GATE_DIR (else the pipeline folder: AXF_PIPELINE_DIR, the hub's _data/pipeline, ~/.axf/pipeline),
  * AXF_GATE_OWNER (set by the launcher), AXF_GATE_ALERTS=off (no FYI), AXF_GATE_TMUX=off (no tmux: tests),
@@ -283,6 +284,31 @@ export function readLog(opts = {}, env = process.env) {
   return query(entries, opts);
 }
 
+// ------------------------------------------------------------------ where the gate log's banner widget shows
+
+/*
+ * The Server gate log widget (a counter: gate hits in the last day, tap opens the log) shows in one place, kept here on
+ * the server so the console, its REST / MCP command, this CLI and voice all switch the same one, live:
+ *   own   its own banner strip across the top, only while there is something in it (default)
+ *   bar   the app banner bar (a widget beside the clock and the other banner widgets)
+ *   off   nowhere
+ *   <id>  snapped into an existing banner (any banner id the console has: its banner.extras slot)
+ */
+export const BANNER_PLACES = Object.freeze(['own', 'bar', 'off']);
+const PLACE_RE = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,79}$/;
+const bannerFile = (env) => join(gateDir(env), 'server-gate-banner.json');
+export function bannerPlace(env = process.env) {
+  const j = readJson(bannerFile(env));
+  return { place: j && PLACE_RE.test(String(j.place)) ? j.place : 'own', by: str(j?.by, 120), at: str(j?.at, 40) };
+}
+export function setBannerPlace(place, { by = 'cli', env = process.env } = {}) {
+  const p = String(place || '').trim();
+  if (!PLACE_RE.test(p)) throw Object.assign(new Error(`place is own, bar, off or a banner id (got "${p}")`), { code: 2 });
+  const rec = { $axf: 'server-gate-banner@1', place: p, by: str(by, 120), at: nowIso() };
+  const f = bannerFile(env); mkdirSync(dirname(f), { recursive: true }); rewrite(f, rec);
+  return rec;
+}
+
 // ------------------------------------------------------------------ AmberX FYI (the console's alerts API, from the host)
 
 export function fyi({ title, body, build = '' }, env = process.env) {
@@ -340,12 +366,18 @@ async function main(argv) {
     const e = record({ gate: opt('gate'), build, by: opt('by') || process.env.AXF_SURFACE || 'cli', action: opt('action'), detail: opt('detail'), session: opt('session') });
     return out(e, `logged: ${e.gate} ${e.build}`);
   }
+  if (cmd === 'banner') {
+    try {
+      const r = opt('place') ? setBannerPlace(opt('place'), { by: opt('by') || process.env.AXF_SURFACE || 'cli' }) : bannerPlace();
+      return out(r, `Server gate log widget: ${r.place === 'own' ? 'its own banner' : r.place === 'bar' ? 'the app banner bar' : r.place === 'off' ? 'off' : `in the ${r.place} banner`}${r.by ? ` (set by ${r.by})` : ''}`);
+    } catch (e) { console.error(e.message); process.exitCode = 2; return; }
+  }
   if (cmd === 'log' || cmd === 'gates') {
     const q = readLog({ gate: opt('gate'), build: opt('build'), limit: Number(opt('limit')) || 50 });
     if (cmd === 'gates') return out({ total: q.total, gates: q.gates }, q.gates.map((g) => `${String(g.count).padStart(5)}  ${g.label}`).join('\n'));
     return out(q, [`Server gate log: ${q.total} hit${q.total === 1 ? '' : 's'}${opt('gate') ? ` (${GATE_LABEL[opt('gate')] || opt('gate')}: ${q.matched})` : ''}`, ...q.entries.map((e) => `${e.at.slice(0, 16).replace('T', ' ')}  ${GATE_LABEL[e.gate]}  ${e.build || '-'}  by ${e.by}: ${e.action}`)].join('\n'));
   }
-  console.error('usage: server-gate.mjs acquire|hold|release|status|sessions <build>|reap [--dry]|log [--gate g] [--build id]|record --gate g --action a|gates  [--json]');
+  console.error('usage: server-gate.mjs acquire|hold|release|status|sessions <build>|reap [--dry]|log [--gate g] [--build id]|record --gate g --action a|gates|banner [--place p]  [--json]');
   process.exitCode = 2;
 }
 

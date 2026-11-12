@@ -5,6 +5,7 @@ import { setPriorityHost, type PriorityHost } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { FOLDER, OrchestratorPage, TABS, openTab } from './ui';
 import { GateLogPage, openGate } from './gate-log';
+import { GateBannerPanel, GateInBanner, GateOwnBanner, OWN_BANNER, setGatePlace, startGateBanner } from './gate-banner';
 import { BUILD_ACTIONS, type BuildAction } from '@console/axf/core/build-pipeline.mjs';
 
 const ACTION_LABEL: Record<BuildAction, string> = { unqueue: 'Back to Pending', hold: 'Hold (stays in the Queue)', release: 'Release from hold', archive: 'Move to the Archive', unarchive: 'Bring back from the Archive', delete: 'Delete (kept in Deleted)', restore: 'Restore' };
@@ -57,6 +58,13 @@ export const plugin: AxfWebLibrary = {
     // Server gate log (Nov 12 2026): the page, optionally filtered to one gate (duplicate-launch, duplicate-reaped,
     // slot-limit, dispatch, main). Same data: GET gate-log, MCP command gate-log, `server-gate.mjs log`, voice.
     rt.actions.register('build-orchestrator.gate-log', ([arg]) => { openGate(decodeURIComponent(arg ?? '')); rt.navigate('server-gate-log'); }, { label: 'Open the Server gate log (optionally one gate)' });
+    // its banner widget: own banner | app banner bar | snapped into any banner | off (GET / POST gate-banner, MCP, CLI, voice)
+    startGateBanner(rt);
+    rt.actions.register('build-orchestrator.gate-banner', ([arg]) => {
+      const place = decodeURIComponent(arg ?? '').trim();
+      if (!place) { rt.navigate('settings'); return; }
+      void setGatePlace(place).then((p) => rt.toast(`Server gate log widget: ${p === 'own' ? 'its own banner' : p === 'bar' ? 'the app banner bar' : p === 'off' ? 'off' : `in the ${p} banner`}`, 'success')).catch((e: Error) => rt.toast(e.message, 'danger'));
+    }, { label: 'Move the Server gate log widget (own, bar, off or a banner id)' });
     rt.actions.register('build-orchestrator.tab', ([arg]) => { rt.navigate('build-orchestrator'); openTab(decodeURIComponent(arg ?? 'queue')); }, { label: 'Build orchestrator: open a tab' });
     rt.actions.register('build-orchestrator.start', ([arg]) => {
       const id = decodeURIComponent(arg ?? '');
@@ -104,6 +112,13 @@ export const plugin: AxfWebLibrary = {
   nav: { label: 'Builds', items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', view: 'build-orchestrator' }, { id: 'server-gate-log', label: 'Server gate log', icon: 'shield', view: 'server-gate-log' }] },
   contextMenu: [{ id: 'build-orchestrator.pending', target: 'axf-pending-item', items: [{ id: 'build-orchestrator.open', label: 'Open in Build orchestrator', icon: 'layers', action: 'build-orchestrator.open' }] },
     { id: 'build-orchestrator.default', target: 'default', order: 91, items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', action: 'nav:build-orchestrator' }] }],
+  // the gate log's own strip sits in the frame's banner region as a slot (not a `banners` entry: that would drop the
+  // orchestrator's "Opens in" choice, which banner plugins don't get); banner.extras snaps it into a picked banner
+  slots: {
+    'app.frame.banners': [{ id: `build-orchestrator.${OWN_BANNER}`, order: 40, render: () => <GateOwnBanner /> }],
+    'banner.extras': [{ id: 'build-orchestrator.gate', order: 50, render: (p) => <GateInBanner banner={String(p.banner ?? '')} /> }],
+  },
   settingsTabs: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', order: 90, parent: 'plugins' }],
-  settingsPanels: [{ id: 'build-orchestrator.lifecycle', tab: 'build-orchestrator', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
+  settingsPanels: [{ id: 'build-orchestrator.gate-banner', tab: 'build-orchestrator', title: 'Server gate log widget', icon: 'shield', order: 20, render: () => <GateBannerPanel /> },
+    { id: 'build-orchestrator.lifecycle', tab: 'build-orchestrator', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };

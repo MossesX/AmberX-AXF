@@ -42,6 +42,7 @@ import {
   setAllBannersHidden, setBannerHidden, setBannerTimer, showAllBanners, anyBannerHide, type BannerHideState,
 } from '../../core/engines/bannerhide';
 import { Icon } from './Icon';
+import { Slot } from './Slots';
 import { TabGroup } from './TabGroup';
 import { LookEditor, LookLevelSwitch } from './LookEditor';
 import { LOOK_LEVELS, lookChanged, lookCss, lookPrefs, normalizeLook, type LookLevel, type LookValues } from '../../core/engines/looktokens';
@@ -384,7 +385,8 @@ function BannerFrame({ id, children }: { id: string; children: ReactNode }) {
       data-icon={p.icon ? undefined : 'off'}
       style={p.maxRows ? { maxHeight: `calc(var(--fx-row-h) * ${p.maxRows})`, overflow: 'auto' } : undefined}
     >
-      <IdCtx.Provider value={id}><LaunchCtx.Provider value={p.launch}>{children}</LaunchCtx.Provider></IdCtx.Provider>
+      {/* banner.extras: widgets a person snapped into this banner (props.banner = this banner's id); each draws nothing elsewhere */}
+      <IdCtx.Provider value={id}><LaunchCtx.Provider value={p.launch}>{children}<Slot name="banner.extras" props={{ banner: id }} /></LaunchCtx.Provider></IdCtx.Provider>
     </div>
   );
   if (until === undefined) return frame;
