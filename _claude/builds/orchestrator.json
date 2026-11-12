@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T05:14:24.036Z",
+ "updatedAt": "2026-11-12T05:24:29.063Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -85139,10 +85139,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/account-failover-chain-r2",
-   "pr": "#425",
+   "pr": "#516",
    "priority": "P0",
    "createdAt": "2026-11-09T17:44:47.652Z",
-   "updatedAt": "2026-11-12T05:14:16.469Z",
+   "updatedAt": "2026-11-12T05:24:27.959Z",
    "builtAt": "2026-11-10T01:03:25.374Z",
    "notes": [
     {

@@ -777,7 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 02:58 UTC · `all-banners-hide-when-empty` s2 done (all) · orchestrator
 - 2026-11-12 02:59 UTC · `account-order-hulu-moses-x-api-account-shown-on-every-build` added (3 steps) (all) · Claude voice (Gizmo)
 - 2026-11-12 02:59 UTC · `account-order-hulu-moses-x-api-account-shown-on-every-build` → queued, note (all) · console
 - 2026-11-12 03:00 UTC · `all-banners-hide-when-empty` note (all) · orchestrator
@@ -1177,6 +1176,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:50 UTC · `element-inspector` → pending, note (all) · reconciler
 - 2026-11-12 05:14 UTC · `account-failover-chain-subscription-next-subscri` branch claude/account-failover-chain-r2 (all) · builds-live
 - 2026-11-12 05:14 UTC · `account-failover-chain-subscription-next-subscri` note (all) · orchestrator
+- 2026-11-12 05:24 UTC · `account-failover-chain-subscription-next-subscri` PR #516 (all) · builds-live
 
 ## Token passes (log)
 
