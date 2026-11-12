@@ -21,9 +21,10 @@
     { "id": "session", "label": "Follow & memory", "icon": "eye", "order": 50, "groups": ["follow", "recording", "memory"], "description": "Following Amber around the console, and what sessions write down." }
   ],
   "policyDefaults": {
-    "readme": "Brett, Nov 6 2026: hold only VPS writes and account switches. Only used to work out the 'Apply the default' plan; Brett's click applies it. Reads run at once; destructive tools keep the hub's confirm.",
-    "hold": [{ "service": "vps", "tools": ["run"], "why": "writes to the VPS" }],
-    "holdMatch": ["(switch|change|use)[._-]?account", "account[._-]?(switch|change)"]
+    "readme": "Brett, Nov 12 2026: a veto countdown ONLY on shell commands that run on the VPS; everything in the console and the orchestrator runs at once; model upgrades keep their confirm. Only used to work out the 'Apply the default' plan; Brett's click applies it. Reads run at once; destructive tools keep the hub's confirm.",
+    "hold": [{ "service": "vps", "tools": ["run", "launch"], "why": "runs a shell command on the VPS" }],
+    "holdMatch": [],
+    "confirm": [{ "service": "axf-console", "tools": ["orchestrator_upgrade_approve"], "why": "a model upgrade" }]
   },
   "settings": [
     { "key": "noWait.enabled", "group": "no-wait", "label": "No wait", "kind": "toggle", "default": false, "owner": true, "level": "simple", "effect": "pass",

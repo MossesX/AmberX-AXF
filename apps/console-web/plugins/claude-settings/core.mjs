@@ -263,7 +263,7 @@ export async function readPolicy({ env = process.env, fetch: f = globalThis.fetc
   if (!token) return { hub, available: false, message: 'No axHub token here, so the table cannot be read.' };
   try {
     const r = await f(`${hub}/auth/api/policy`, { headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' }, redirect: 'error', signal: AbortSignal.timeout(20000) });
-    if (r.status === 404) return { hub, available: false, message: "axHub doesn't have the policy API yet (build claude-settings-tabs-veto, step s4)." };
+    if (r.status === 404) return { hub, available: false, message: "axHub doesn't have the policy API yet: it needs axHub decision 119 (GET/PUT /auth/api/policy) deployed." };
     if (!r.ok) return { hub, available: false, message: `axHub answered ${r.status}.` };
     return { hub, available: true, table: await r.json() };
   } catch (e) { return { hub, available: false, message: `Can't reach axHub: ${String(e?.message ?? e).slice(0, 120)}` }; }

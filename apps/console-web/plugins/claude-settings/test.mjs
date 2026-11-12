@@ -121,6 +121,9 @@ const T = { services: [
   { namespace: 'github', type: 'rest', enabled: true, defaultPolicy: 'allow', policyPreset: 'recommended', tools: [
     { name: 'repos/get', annotations: { readOnly: true }, policy: 'allow' }, { name: 'pulls/create', policy: 'veto' }, { name: 'repos/delete', annotations: { destructive: true }, policy: 'confirm' }] },
   { namespace: 'axhub', type: 'builtin', enabled: true, defaultPolicy: 'allow', tools: [{ name: 'pass_grant', annotations: { ownerGrant: true }, policy: 'confirm' }, { name: 'switch_account', policy: 'allow' }] },
+  { namespace: 'axf-console', type: 'mcp', enabled: true, defaultPolicy: 'confirm', policyPreset: 'recommended', tools: [
+    { name: 'control_set', policy: 'veto' }, { name: 'build_orchestrator_pipeline_queue', policy: 'veto' }, { name: 'orchestrator_upgrade_approve', policy: 'veto' },
+    { name: 'control_remove', annotations: { destructive: true }, policy: 'confirm' }] },
   { namespace: 'amberx', type: 'device', enabled: true, defaultPolicy: 'confirm', tools: [{ name: 'recorder_start', annotations: { explicitApproval: true }, policy: 'confirm' }, { name: 'deny_me', explicit: 'deny', policy: 'deny' }] },
   { namespace: 'off', type: 'rest', enabled: false, defaultPolicy: 'allow', tools: [{ name: 'x', policy: 'deny' }] },
 ] };
@@ -133,12 +136,16 @@ ok(!planned('vps.build_land'), 'fixed build tools already let through stay throu
 ok(P.defaultFor(T.services[0], { name: 'other', policy: 'confirm' }, rules).decision === 'veto', 'any other shell tool holds: it may write to the VPS');
 ok(planned('github.pulls/create')?.to === 'allow', 'a non-VPS write stops holding');
 ok(!planned('github.repos/delete') && !planned('axhub.pass_grant') && !planned('amberx.recorder_start') && !planned('amberx.deny_me') && !planned('off.x'), 'destructive, owner grants, explicit approvals, denied and switched-off tools are left alone');
-ok(planned('axhub.switch_account')?.to === 'veto', 'an account switch holds');
+ok(!planned('axhub.switch_account'), 'an account switch runs at once (Nov 12: only shell commands hold)');
+ok(planned('axf-console.control_set')?.to === 'allow' && planned('axf-console.build_orchestrator_pipeline_queue')?.to === 'allow', 'console and orchestrator tools run at once');
+ok(planned('axf-console.orchestrator_upgrade_approve')?.to === 'confirm', 'a model upgrade keeps its confirm');
+ok(!planned('axf-console.control_remove'), 'a console delete keeps the hub rule');
+ok(P.defaultFor(T.services[0], { name: 'launch', policy: 'veto' }, rules).decision === 'veto', 'vps.launch holds: it runs a shell');
 ok(P.planDefaults({ services: [{ namespace: 's', type: 'rest', enabled: true, defaultPolicy: 'deny', tools: [{ name: 'w', policy: 'deny' }] }] }, rules).length === 0, 'a service denied by default is not opened up');
 ok(P.onHoldList('x', 'y', { holdMatch: ['('] }) === '', 'a bad pattern holds nothing and does not throw');
 ok(P.groupDecision(T.services[1]) === 'mixed' && P.groupDecision({ tools: [{ policy: 'veto' }] }) === 'veto', 'a service shows one decision or Mixed');
 ok(P.groupChanges(T.services[1], 'veto').length === 3, 'a group change covers each tool');
-ok(P.counts(T).veto === 3, 'counts');
+ok(P.counts(T).veto === 6, 'counts');
 ok(P.changesProblem([]) && P.changesProblem([{ service: 'a', tool: 'b', policy: 'maybe' }]) && P.changesProblem([{ service: 'a', tool: 'b', vetoSeconds: 5 }]) && !P.changesProblem([{ service: 'a', tool: 'b', policy: null, vetoSeconds: 60 }]), 'changes checked (decision, hold 10-1800)');
 {
   const seen = [];

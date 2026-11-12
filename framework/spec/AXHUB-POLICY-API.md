@@ -1,8 +1,9 @@
 # axHub policy API (policy-table@1)
 
-Contract between the Dev Console's Approvals & veto tab and axHub. **Proposed** by build `claude-settings-tabs-veto`
-(Nov 7 2026): the console side is built against it; axHub's routes are step s4 of that build, pinned to Fable, which
-may refine this page. The console answers "axHub doesn't have the policy API yet" on a 404 and changes nothing.
+Contract between the Dev Console's Approvals & veto tab and axHub. The console side came with build
+`claude-settings-tabs-veto` (Nov 7 2026); axHub's routes with `owner-recognized-everywhere-veto-countdown-only-on-shell-commands`
+(axHub decision #119, Nov 12 2026, `packages/server/src/policy-web.ts`). Against an older hub (404) the console says
+"axHub doesn't have the policy API yet" and changes nothing.
 
 Why it exists: axHub changes tool policy only through its in-container CLI (`axhub services tool-policy`, `veto`,
 `preset`). A console tab needs routes, and they must keep policy in the owner's hands.
@@ -16,7 +17,8 @@ Why it exists: axHub changes tool policy only through its in-container CLI (`axh
 
 A write needs the admin session cookie and an `Origin` that is the hub's own or passes `crossSiteOk` (https, under the
 cookie domain). Cross-site reads and writes get CORS with credentials for those origins only, and an `OPTIONS` answer.
-A request carrying a bearer is treated as a bearer, whatever cookie comes with it. Every write is audited.
+A request carrying a bearer is treated as a bearer, whatever cookie comes with it. A write needs a JSON body (so a
+cross-site write always takes the preflight). Every write is audited (one entry per change, by the admin, via `web`).
 
 ## GET
 

@@ -11,15 +11,22 @@ export const VETO_MAX = 1800;
 
 export const secondsOk = (n) => Number.isInteger(n) && n >= VETO_MIN && n <= VETO_MAX;
 
-/** Is this tool on the hold list? rules = registry `policyDefaults`: { hold: [{ service, tools }], holdMatch: [regex] }. */
+/** Is this tool on the hold list? rules = registry `policyDefaults`: { hold: [{ service, tools }], holdMatch: [regex], confirm: [{ service, tools }] }. */
 export function onHoldList(service, tool, rules) {
   for (const h of rules?.hold ?? []) if (h.service === service && (h.tools === '*' || (h.tools ?? []).includes(tool))) return h.why || 'on the hold list';
   for (const m of rules?.holdMatch ?? []) { try { if (new RegExp(m, 'i').test(`${service}.${tool}`)) return 'switches accounts'; } catch { /* a bad pattern holds nothing */ } }
   return '';
 }
 
+/** Is this tool on the confirm list (model upgrades)? → its reason, or ''. */
+export function onConfirmList(service, tool, rules) {
+  for (const h of rules?.confirm ?? []) if (h.service === service && (h.tools === '*' || (h.tools ?? []).includes(tool))) return h.why || 'on the confirm list';
+  return '';
+}
+
 /**
- * What Brett's rule gives a tool (Nov 6 2026: hold only what writes to the VPS or switches accounts):
+ * What Brett's rule gives a tool (Nov 12 2026: a veto countdown only on shell commands on the VPS; model upgrades
+ * keep their confirm; everything else runs at once):
  * → { decision, why }. Decision null = leave it alone: the hub decides these, or they are stricter on purpose.
  */
 export function defaultFor(service, tool, rules) {
@@ -28,6 +35,8 @@ export function defaultFor(service, tool, rules) {
   if (tool.policy === 'deny') return { decision: null, why: 'denied stays denied' }; // the plan never opens anything up
   if (a.explicitApproval || a.ownerGrant) return { decision: null, why: 'always needs Brett' };
   if (a.destructive) return { decision: null, why: 'destructive: the hub keeps its confirm' };
+  const confirm = onConfirmList(service.namespace, tool.name, rules);
+  if (confirm) return { decision: 'confirm', why: confirm };
   const held = onHoldList(service.namespace, tool.name, rules);
   if (held) return { decision: 'veto', why: held };
   if (a.readOnly) return { decision: 'allow', why: 'a read' };
@@ -35,7 +44,7 @@ export function defaultFor(service, tool, rules) {
     // tools Brett already let through stay through (axHub decision 110, the vps build tools); any other shell tool may write to the VPS
     return tool.policy === 'allow' ? { decision: null, why: 'a fixed tool already let through' } : { decision: 'veto', why: 'shell tool: may write to the VPS' };
   }
-  return { decision: 'allow', why: 'not a VPS write or an account switch' };
+  return { decision: 'allow', why: 'not a shell command on the VPS' };
 }
 
 /** The changes that bring the table to the default. → [{ service, tool, from, to, why }] */

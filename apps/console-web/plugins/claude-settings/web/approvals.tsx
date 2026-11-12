@@ -6,7 +6,7 @@
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Container, Note, SelectField, TextField } from '@console/axf/react';
-import { pluginFetch } from '@console/plugins';
+import { ownerFetch, pluginFetch } from '@console/plugins';
 import { VETO_MAX, VETO_MIN, counts, groupChanges, groupDecision, planDefaults, putPolicy, secondsOk, type Decision, type PlanRow, type PolicyChange, type PolicyRules, type PolicyService, type PolicyTable, type PolicyTool } from './policy-core.mjs';
 
 const FOLDER = 'claude-settings';
@@ -94,7 +94,7 @@ function LongestPass() {
   useEffect(() => { void pluginFetch(FOLDER, 'passes').then((r) => r.json()).then((j: { maxMinutes?: number }) => { if (j.maxMinutes) { setMax(String(j.maxMinutes)); setSaved(String(j.maxMinutes)); } }).catch(() => undefined); }, []);
   const save = async () => {
     setError('');
-    const r = await pluginFetch(FOLDER, 'passes', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ maxMinutes: Number(max) }) });
+    const r = await ownerFetch(FOLDER, 'passes', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ maxMinutes: Number(max) }) });
     const j = (await r.json().catch(() => ({}))) as { ok?: boolean; maxMinutes?: number; message?: string };
     if (j.ok && j.maxMinutes) { setMax(String(j.maxMinutes)); setSaved(String(j.maxMinutes)); } else setError(j.message ?? 'Not saved');
   };
