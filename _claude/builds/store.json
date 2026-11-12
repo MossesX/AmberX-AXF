@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3352,
- "updatedAt": "2026-11-12T02:40:07.552Z",
+ "rev": 3353,
+ "updatedAt": "2026-11-12T02:40:18.513Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -155756,7 +155756,7 @@
    "title": "Bug: asset settings (nav menu, tab bar, toolbar) change the settings panel instead of the asset; reset to default resets the wrong thing",
    "category": "",
    "detail": "Right-click > Settings on any asset (nav menu, tab bar, toolbar, banner) opens a settings panel whose changes and Reset to default currently target the settings panel's own assets. Fix: the panel binds to the asset that was right-clicked (and the app it lives in); every change and Reset to default applies to that target asset in the live app. The settings panel's own look is never edited from there. Add a test per asset type.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -155764,7 +155764,7 @@
    "pr": "#503",
    "priority": "P0",
    "createdAt": "2026-11-10T21:45:52.947Z",
-   "updatedAt": "2026-11-12T02:39:13.659Z",
+   "updatedAt": "2026-11-12T02:40:13.623Z",
    "builtAt": "",
    "notes": [
     {
@@ -155802,6 +155802,10 @@
     {
      "text": "Headless run axf-bug-asset-settings-nav-menu-tab-bar-toolbar-chan--sully: brief only · start 13.0K tokens ($0.07) · cost $13.53 · 170 turns · 6 tools, MCP none",
      "at": "2026-11-12T02:39:13.659Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 0) with 2 steps left: back in the Queue (run 2).",
+     "at": "2026-11-12T02:40:13.623Z"
     }
    ],
    "approvals": [],
@@ -155822,29 +155826,29 @@
     "queuedAt": "2026-11-12T01:43:28.836Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-bug-asset-settings-nav-menu-tab-bar-toolbar-chan--sully",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "launchedAt": "2026-11-12T01:55:14.610Z",
     "runs": 2,
     "lastRun": {
-     "at": "2026-11-12T01:55:10.311Z",
-     "exit": 1,
+     "at": "2026-11-12T02:40:12.374Z",
+     "exit": 0,
      "outcome": "requeued",
-     "stepsLeft": 3,
+     "stepsLeft": 2,
      "account": "mossesx-max-",
-     "session": "axf-bug-asset-settings-nav-menu-tab-bar-toolbar-chan--earl"
+     "session": "axf-bug-asset-settings-nav-menu-tab-bar-toolbar-chan--sully"
     },
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- ended (exit 0) with 2 steps left: back in the Queue (run 2).",
     "route": "",
     "dispatchedAt": "2026-11-12T01:55:14.610Z",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-10T23:57:03.854Z",
+     "at": "2026-11-12T02:40:15.908Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -155932,7 +155936,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

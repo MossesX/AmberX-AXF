@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:40:07.552Z",
+ "updatedAt": "2026-11-12T02:40:18.513Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -97132,7 +97132,7 @@
    "title": "Bug: asset settings (nav menu, tab bar, toolbar) change the settings panel instead of the asset; reset to default resets the wrong thing",
    "category": "",
    "detail": "Right-click > Settings on any asset (nav menu, tab bar, toolbar, banner) opens a settings panel whose changes and Reset to default currently target the settings panel's own assets. Fix: the panel binds to the asset that was right-clicked (and the app it lives in); every change and Reset to default applies to that target asset in the live app. The settings panel's own look is never edited from there. Add a test per asset type.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -97140,7 +97140,7 @@
    "pr": "#503",
    "priority": "P0",
    "createdAt": "2026-11-10T21:45:52.947Z",
-   "updatedAt": "2026-11-12T02:39:13.659Z",
+   "updatedAt": "2026-11-12T02:40:13.623Z",
    "builtAt": "",
    "notes": [
     {
@@ -97178,6 +97178,10 @@
     {
      "text": "Headless run axf-bug-asset-settings-nav-menu-tab-bar-toolbar-chan--sully: brief only · start 13.0K tokens ($0.07) · cost $13.53 · 170 turns · 6 tools, MCP none",
      "at": "2026-11-12T02:39:13.659Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 0) with 2 steps left: back in the Queue (run 2).",
+     "at": "2026-11-12T02:40:13.623Z"
     }
    ],
    "approvals": [],
