@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T23:30:34.426Z",
+ "updatedAt": "2026-11-12T23:31:26.620Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -110989,17 +110989,97 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T23:30:16.119Z",
-   "updatedAt": "2026-11-12T23:30:20.571Z",
+   "updatedAt": "2026-11-12T23:31:24.959Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-12T23:30:20.571Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-12T23:31:24.959Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Claude badge = can Claude build: green when at least one build account in the orchestrator's account health sweep can sign in and has credits (the same check the dispatcher uses), red when none can.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe6m7bz01xql0"
+    },
+    {
+     "id": "s2",
+     "text": "Stop using the VPS root `claude auth status` / .active login.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe6m7bz02uh8k"
+    },
+    {
+     "id": "s3",
+     "text": "Tap shows which accounts are ready.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe6m7bz03uat2"
+    },
+    {
+     "id": "s4",
+     "text": "Tests green, report _claude/builds/reports/claude-badge-can-claude-build-green-when-at-least-one-build-account-in-the-or.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/claude-badge-can-claude-build-green-when-at-least-one-build-account-in-the-or.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe6m7bz04a2ze"
+    }
+   ]
   }
  ]
 }
