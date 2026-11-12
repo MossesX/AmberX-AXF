@@ -1,0 +1,114 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-approval-reasons-go-pass",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:27:32Z",
+ "build": {
+  "id": "approval-reasons-go-pass",
+  "title": "Approvals say what they're for + Go pass for sessions that can't reach axHub",
+  "profile": "all",
+  "category": "App",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "axHub decision #99 + AXHub web app + console callers. Rule: a session that can't load the rules and THREADS.md from axHub does nothing until Brett gives a go on axHub (Go pass, written to the go-pass branch). Approval page: what is being approved first, what it does when expanded, the code in its own collapsible section; calls needing approval must carry a reason.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "axHub: Call/Confirmation reason, MCP call requires it, approvals JSON layers",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-26T13:28:08.552Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "axHub: Go pass (go-pass branch, routes, tests, decision #98, docs)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-26T13:28:08.552Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "AXHub web app: approval row + detail layers, Go pass page",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-26T13:28:08.552Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Console callers send reasons (hubtools, build manager), rules + Project instructions",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-26T13:28:08.552Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Tests, logs, PRs",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-26T13:28:08.552Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-10-26T13:28:08.552Z",
+ "landedAt": "2026-10-26T13:28:08.552Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

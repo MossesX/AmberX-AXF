@@ -776,18 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 01:59 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` → queued, note (all) · pipeline
-- 2026-11-12 01:59 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` PR #498 (all) · builds-live
-- 2026-11-12 01:59 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` added (3 steps) (all) · Claude voice (Gizmo)
-- 2026-11-12 01:59 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` → running, note (all) · orchestrator
-- 2026-11-12 01:59 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` s3 done, → built (all) · orchestrator
-- 2026-11-12 01:59 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` note (all) · orchestrator
-- 2026-11-12 01:59 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` → queued, note (all) · console
-- 2026-11-12 02:00 UTC · `main-gate-nothing-reaches-main-without-passing` added (3 steps) (all) · Claude voice (Gizmo)
-- 2026-11-12 02:00 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` → running, note (all) · pipeline
-- 2026-11-12 02:00 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` branch claude/vps-server-gate-no-build-starts-without-an-orchestrator-issued-id (all) · pipeline
-- 2026-11-12 02:00 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` note (all) · orchestrator
-- 2026-11-12 02:00 UTC · `main-gate-nothing-reaches-main-without-passing` → queued, note (all) · console
 - 2026-11-12 02:02 UTC · `amberx-build-notifications-for-every-stage-start` s1 done, → running (all) · orchestrator
 - 2026-11-12 02:02 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` added (7 steps) (all) · Claude voice (Gizmo)
 - 2026-11-12 02:02 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` → queued, note (all) · console
@@ -1176,6 +1164,18 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:27 UTC · `axhub-pages-console-style` note (all) · backfill
 - 2026-11-12 03:27 UTC · `rebake-console` note (all) · backfill
 - 2026-11-12 03:27 UTC · `axhub-oauth` note (all) · backfill
+- 2026-11-12 03:27 UTC · `approval-reasons-go-pass` note (all) · backfill
+- 2026-11-12 03:27 UTC · `no-login-questions-headless-terminal` note (all) · backfill
+- 2026-11-12 03:27 UTC · `axhub-oauth-config-soft` note (all) · backfill
+- 2026-11-12 03:27 UTC · `banner-one-line` note (all) · backfill
+- 2026-11-12 03:27 UTC · `banner-one-line-fable` note (all) · backfill
+- 2026-11-12 03:27 UTC · `amberx-router-clash` note (all) · backfill
+- 2026-11-12 03:27 UTC · `banner-apply-all-keys` note (all) · backfill
+- 2026-11-12 03:27 UTC · `banner-apply-all-fable` note (all) · backfill
+- 2026-11-12 03:27 UTC · `apply-all-levels` note (all) · backfill
+- 2026-11-12 03:27 UTC · `amberx-empty-shell` note (all) · backfill
+- 2026-11-12 03:27 UTC · `fresh-look` note (all) · backfill
+- 2026-11-12 03:27 UTC · `design-package-fable` note (all) · backfill
 
 ## Token passes (log)
 

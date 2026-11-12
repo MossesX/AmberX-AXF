@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3461,
- "updatedAt": "2026-11-12T03:27:34.585Z",
+ "rev": 3462,
+ "updatedAt": "2026-11-12T03:27:47.673Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -22274,7 +22274,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-26T13:28:08.552Z",
-   "updatedAt": "2026-10-26T13:28:08.552Z",
+   "updatedAt": "2026-11-12T03:27:32Z",
    "builtAt": "2026-10-26T13:28:08.552Z",
    "notes": [
     {
@@ -22284,10 +22284,20 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-approval-reasons-go-pass rev 1 sent to Shipped features (backfill): complete 2026-10-26 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:27:32Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "shipped": {
+    "id": "sm-approval-reasons-go-pass",
+    "rev": 1,
+    "at": "2026-11-12T03:27:32Z",
+    "landedCommit": ""
+   },
    "steps": [
     {
      "id": "s1",
@@ -22408,7 +22418,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -22453,7 +22463,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-26T14:39:17.269Z",
-   "updatedAt": "2026-10-26T14:39:17.269Z",
+   "updatedAt": "2026-11-12T03:27:34Z",
    "builtAt": "2026-10-26T14:39:17.269Z",
    "notes": [
     {
@@ -22463,10 +22473,20 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-no-login-questions-headless-terminal rev 1 sent to Shipped features (backfill): complete 2026-10-26 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:27:34Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "shipped": {
+    "id": "sm-no-login-questions-headless-terminal",
+    "rev": 1,
+    "at": "2026-11-12T03:27:34Z",
+    "landedCommit": ""
+   },
    "steps": [
     {
      "id": "s1",
@@ -22565,7 +22585,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -22609,16 +22629,26 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-26T23:13:52.182Z",
-   "updatedAt": "2026-10-26T23:13:52.182Z",
+   "updatedAt": "2026-11-12T03:27:35Z",
    "builtAt": "2026-10-26T23:13:52.182Z",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-axhub-oauth-config-soft rev 1 sent to Shipped features (backfill): complete 2026-10-26 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:27:35Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "shipped": {
+    "id": "sm-axhub-oauth-config-soft",
+    "rev": 1,
+    "at": "2026-11-12T03:27:35Z",
+    "landedCommit": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -22628,7 +22658,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -22667,16 +22697,26 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-26T23:31:24.422Z",
-   "updatedAt": "2026-10-26T23:31:24.422Z",
+   "updatedAt": "2026-11-12T03:27:36Z",
    "builtAt": "2026-10-26T23:31:24.422Z",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-banner-one-line rev 1 sent to Shipped features (backfill): complete 2026-10-26 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:27:36Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "shipped": {
+    "id": "sm-banner-one-line",
+    "rev": 1,
+    "at": "2026-11-12T03:27:36Z",
+    "landedCommit": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -22686,7 +22726,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -22725,7 +22765,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-26T23:31:24.530Z",
-   "updatedAt": "2026-11-10T04:39:20.621Z",
+   "updatedAt": "2026-11-12T03:27:37Z",
    "builtAt": "2026-11-10T04:39:20.621Z",
    "notes": [
     {
@@ -22735,10 +22775,20 @@
     {
      "text": "Audit: superseded — Fable rebuild filed before the \"No Fable rebuilds\" rule (Oct 27 2026); the Opus build shipped (banner-one-line, complete)",
      "at": "2026-11-10T04:39:20.621Z"
+    },
+    {
+     "text": "Shipped manifest sm-banner-one-line-fable rev 1 sent to Shipped features (backfill): complete 2026-11-10 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 2 open.",
+     "at": "2026-11-12T03:27:37Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "shipped": {
+    "id": "sm-banner-one-line-fable",
+    "rev": 1,
+    "at": "2026-11-12T03:27:37Z",
+    "landedCommit": ""
+   },
    "steps": [
     {
      "id": "s1",
@@ -22793,7 +22843,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -22835,16 +22885,26 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-26T23:45:55.448Z",
-   "updatedAt": "2026-10-26T23:45:55.448Z",
+   "updatedAt": "2026-11-12T03:27:38Z",
    "builtAt": "2026-10-26T23:45:55.448Z",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-amberx-router-clash rev 1 sent to Shipped features (backfill): complete 2026-10-26 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:27:38Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "shipped": {
+    "id": "sm-amberx-router-clash",
+    "rev": 1,
+    "at": "2026-11-12T03:27:38Z",
+    "landedCommit": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -22854,7 +22914,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -22893,16 +22953,26 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-26T22:28:29.520Z",
-   "updatedAt": "2026-10-26T22:28:29.520Z",
+   "updatedAt": "2026-11-12T03:27:39Z",
    "builtAt": "2026-10-26T22:28:29.520Z",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-banner-apply-all-keys rev 1 sent to Shipped features (backfill): complete 2026-10-26 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:27:39Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "shipped": {
+    "id": "sm-banner-apply-all-keys",
+    "rev": 1,
+    "at": "2026-11-12T03:27:39Z",
+    "landedCommit": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -22912,7 +22982,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -22951,7 +23021,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-26T22:28:29.624Z",
-   "updatedAt": "2026-11-10T04:39:20.621Z",
+   "updatedAt": "2026-11-12T03:27:40Z",
    "builtAt": "2026-11-10T04:39:20.621Z",
    "notes": [
     {
@@ -22961,10 +23031,20 @@
     {
      "text": "Audit: superseded — Fable rebuild filed before the \"No Fable rebuilds\" rule (Oct 27 2026); the Opus build shipped",
      "at": "2026-11-10T04:39:20.621Z"
+    },
+    {
+     "text": "Shipped manifest sm-banner-apply-all-fable rev 1 sent to Shipped features (backfill): complete 2026-11-10 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 2 open.",
+     "at": "2026-11-12T03:27:40Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "shipped": {
+    "id": "sm-banner-apply-all-fable",
+    "rev": 1,
+    "at": "2026-11-12T03:27:40Z",
+    "landedCommit": ""
+   },
    "steps": [
     {
      "id": "s1",
@@ -23019,7 +23099,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -23062,7 +23142,7 @@
    "pr": "#115",
    "mergedAt": "2026-10-27T03:33:15Z",
    "createdAt": "2026-10-27T03:19:49.625Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:27:41Z",
    "builtAt": "2026-10-27T03:19:49.625Z",
    "notes": [
     {
@@ -23080,6 +23160,10 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-apply-all-levels rev 1 sent to Shipped features (backfill): landed 4edceb422, 63 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:27:41Z"
     }
    ],
    "approvals": [],
@@ -23095,6 +23179,12 @@
     "verbatim": false,
     "from": "notes",
     "addenda": []
+   },
+   "shipped": {
+    "id": "sm-apply-all-levels",
+    "rev": 1,
+    "at": "2026-11-12T03:27:41Z",
+    "landedCommit": "4edceb422a342ece6356efdb4bac1394b8883da5"
    },
    "steps": [
     {
@@ -23194,7 +23284,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -23630,7 +23720,7 @@
    "pr": "#118",
    "mergedAt": "2026-10-27T03:54:31Z",
    "createdAt": "2026-10-27T03:48:42.596Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:27:42Z",
    "builtAt": "2026-10-27T03:48:42.596Z",
    "notes": [
     {
@@ -23652,6 +23742,10 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-amberx-empty-shell rev 1 sent to Shipped features (backfill): landed c97552679, 19 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:27:42Z"
     }
    ],
    "approvals": [],
@@ -23667,6 +23761,12 @@
     "verbatim": false,
     "from": "notes",
     "addenda": []
+   },
+   "shipped": {
+    "id": "sm-amberx-empty-shell",
+    "rev": 1,
+    "at": "2026-11-12T03:27:42Z",
+    "landedCommit": "c9755267920d470e0afa2bb5d76f1304655ec60d"
    },
    "steps": [
     {
@@ -23766,7 +23866,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -23921,7 +24021,7 @@
    "pr": "#120",
    "mergedAt": "2026-10-27T22:25:38Z",
    "createdAt": "2026-10-27T04:05:32.031Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:27:44Z",
    "builtAt": "2026-10-27T04:05:32.031Z",
    "notes": [
     {
@@ -23939,6 +24039,10 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-fresh-look rev 1 sent to Shipped features (backfill): landed c455fd8cf, 1 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:27:44Z"
     }
    ],
    "approvals": [],
@@ -23955,6 +24059,12 @@
     "from": "detail",
     "addenda": []
    },
+   "shipped": {
+    "id": "sm-fresh-look",
+    "rev": 1,
+    "at": "2026-11-12T03:27:44Z",
+    "landedCommit": "c455fd8cfdbffef17db2c3357ef1020314ad3e8c"
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -23964,7 +24074,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -24035,7 +24145,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-27T17:16:22.917Z",
-   "updatedAt": "2026-11-10T04:39:20.621Z",
+   "updatedAt": "2026-11-12T03:27:46Z",
    "builtAt": "2026-11-10T04:39:20.621Z",
    "notes": [
     {
@@ -24057,10 +24167,20 @@
     {
      "text": "Audit: superseded — Fable rebuild filed before the \"No Fable rebuilds\" rule (Oct 27 2026); the Opus build shipped",
      "at": "2026-11-10T04:39:20.621Z"
+    },
+    {
+     "text": "Shipped manifest sm-design-package-fable rev 1 sent to Shipped features (backfill): complete 2026-11-10 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 8 open.",
+     "at": "2026-11-12T03:27:46Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "shipped": {
+    "id": "sm-design-package-fable",
+    "rev": 1,
+    "at": "2026-11-12T03:27:46Z",
+    "landedCommit": ""
+   },
    "steps": [
     {
      "id": "s1",
@@ -24247,7 +24367,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
