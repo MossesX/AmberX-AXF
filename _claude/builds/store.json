@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3543,
- "updatedAt": "2026-11-12T10:55:58.672Z",
+ "rev": 3544,
+ "updatedAt": "2026-11-12T11:01:20.782Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -14051,10 +14051,11 @@
    "hidden": false,
    "source": "chat",
    "pendingId": "ai-keys",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/ai-keys-console-store-2",
+   "pr": "#358",
+   "mergedAt": "2026-11-06T00:33:19Z",
    "createdAt": "2026-10-23T00:40:17.479Z",
-   "updatedAt": "2026-11-12T03:26:38Z",
+   "updatedAt": "2026-11-12T11:01:18.651Z",
    "builtAt": "2026-10-23T00:40:17.479Z",
    "notes": [
     {
@@ -14064,6 +14065,10 @@
     {
      "text": "Shipped manifest sm-ai-keys rev 1 sent to Shipped features (backfill): complete 2026-10-23 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:26:38Z"
+    },
+    {
+     "text": "Reconciler: branch claude/ai-keys-console-store-2 (PR #358); PR #358; PR #358 merged",
+     "at": "2026-11-12T11:01:18.651Z"
     }
    ],
    "approvals": [],
@@ -14083,7 +14088,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": {
