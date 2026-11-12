@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:33 UTC · `project-thread-g27t3y` added (0 steps) (all) · backfill
 - 2026-11-12 03:33 UTC · `project-thread-1f6dcd` added (0 steps) (all) · backfill
 - 2026-11-12 03:33 UTC · `project-thread-1nc43b` added (0 steps) (all) · backfill
 - 2026-11-12 03:33 UTC · `project-thread-b088wy` added (0 steps) (all) · backfill
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 22:47 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note (all) · pipeline
 - 2026-11-12 22:48 UTC · `move-amberx-web-app-into-the-console-amberx-andr` s6 done (all) · orchestrator
 - 2026-11-12 22:49 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note (all) · pipeline
+- 2026-11-12 22:50 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note (all) · pipeline
 
 ## Token passes (log)
 
