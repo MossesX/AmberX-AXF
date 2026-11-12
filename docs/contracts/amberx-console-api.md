@@ -132,6 +132,11 @@ Deep links: `console_open("amberx-notes", focus="<list id>")` opens the Notes sc
 focus="item:<id>")` opens one item; `console_show({target: "screen:amberx-notes/<list>"})` while Follow Amber is on. Tasks:
 `console_open("amberx-tasks", focus="today|upcoming|todo|all|done")`.
 
+Built in s3 (console plugin `amberx-notes`, Apps → AmberX → Notes): the Notes screen over C2–C8; its own routes <!-- axf-plugin:amberx-notes -->
+`GET state`, `GET|PUT settings`, `POST settings/reset` (MCP `amberx-notes_state`, `amberx-notes_settings`, <!-- axf-plugin:amberx-notes -->
+`amberx-notes_set-settings`, `amberx-notes_reset-settings`; CLI `axf amberx-notes …`); deep link focus `<list id>`, <!-- axf-plugin:amberx-notes -->
+`item:<id>`, `search:<words>` or `new` (action `amberx-notes.focus`); voice "open notes", "new note", "read my inbox". <!-- axf-plugin:amberx-notes -->
+
 Voice notes (T12) stay read-only under the `voice-notes` system list; the console's `voice-notes` plugin keeps owning them.
 
 ### 4.3 AI

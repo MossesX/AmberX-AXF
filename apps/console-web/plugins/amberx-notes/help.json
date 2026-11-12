@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "amberx-notes-help",
+  "name": "AmberX notes help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the AmberX notes plugin (help@1): the page, its controls and its settings tab.",
+  "author": "Brett",
+  "tags": ["help"],
+  "data": {
+    "scope": "plugin:amberx-notes",
+    "entries": [
+      { "target": "view:amberx-notes", "title": "AmberX notes", "text": "Every AmberX note on every device, as the phone shows them. Search, pick a list, tap a note to edit it. The same notes are reached by Claude (MCP amberx_*), the CLI (axf note) and the REST API (/api/control/amberx.items)." },
+      { "target": "amberx-notes.list", "title": "Notes", "text": "The notes that match the search and the list picked. Pinned notes come first." },
+      { "target": "amberx-notes.editor", "title": "Edit note", "text": "Title, text and list of one note. Save writes it for every device; Delete asks first and can't be undone." },
+      { "target": "amberx-notes", "title": "AmberX notes settings", "text": "Where new notes go, how many show at once, the sort, whether done notes show and the preview line. Kept on the console, so axf amberx-notes set-settings changes them too." },
+      { "target": "action:amberx-notes.open", "title": "AmberX notes", "text": "Opens the AmberX notes page." },
+      { "target": "action:amberx-notes.new", "title": "New AmberX note", "text": "Opens the notes page on a blank note." },
+      { "target": "action:amberx-notes.focus", "title": "Open a list or a note", "text": "Opens the notes page on a list (its id), one note (item:<id>), a search (search:<words>) or a new note (new)." }
+    ]
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.amberx-notes",
+  "name": "AmberX notes",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "The AmberX web app's Notes screen on the console (Apps \u2192 AmberX \u2192 Notes): every amberx-notes@1 note on every device, with search, lists, new / edit / pin / delete (two-step confirm), through control@1 amberx.items / amberx.lists. Deep link console_open(\"amberx-notes\", focus=\"<list>\" | \"item:<id>\" | \"search:<words>\" | \"new\"). REST /api/plugins/amberx-notes (state, settings) and /api/control/amberx.items; MCP amberx-notes_* and amberx_* / control_*; CLI axf amberx-notes \u2026 and axf note \u2026; voice \"open notes\", \"new note\", \"read my inbox\".",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:amberx-notes",
+    "settings-tab:amberx-notes",
+    "action:amberx-notes.open",
+    "action:amberx-notes.focus",
+    "action:amberx-notes.new"
+  ],
+  "optional": [
+    "control@1"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "banner": false,
+  "tabable": {
+    "view": "amberx-notes",
+    "label": "Notes",
+    "icon": "file-text"
+  },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/amberx-notes",
+    "env": [
+      "AXF_AMBERX_NOTES_DATA_DIR"
+    ],
+    "mentions": [
+      "docs/contracts/amberx-console-api.md",
+      "_claude/THREADS.md"
+    ],
+    "keeps": [
+      "/projects/amberx-axf/_data/amberx-notes on axHub: every note, list and to-do (AmberX's own, read and written through control@1)"
+    ]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "route": "GET /state",
+        "id": "state",
+        "title": "The Notes screen's state: settings, every list, the note count and the latest notes",
+        "readOnly": true
+      },
+      {
+        "route": "GET /settings",
+        "id": "settings",
+        "title": "The Notes screen's settings and their defaults",
+        "readOnly": true
+      },
+      {
+        "route": "PUT /settings",
+        "id": "set-settings",
+        "title": "Change Notes screen settings (defaultList, pageSize 10\u2013500, sort updated|created|title, showDone, preview)",
+        "input": {
+          "type": "object",
+          "properties": {
+            "defaultList": {
+              "type": "string"
+            },
+            "pageSize": {
+              "type": "integer",
+              "minimum": 10,
+              "maximum": 500
+            },
+            "sort": {
+              "type": "string",
+              "enum": [
+                "updated",
+                "created",
+                "title"
+              ]
+            },
+            "showDone": {
+              "type": "boolean"
+            },
+            "preview": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /settings/reset",
+        "id": "reset-settings",
+        "title": "Put the Notes screen's settings back to the defaults"
+      },
+      {
+        "route": "POST /control",
+        "skip": "the page's own control@1 relay: MCP and the CLI call control_* / amberx_* and axf note directly"
+      }
+    ]
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-12"
+  },
+  "help": "help.json",
+  "opens": "main"
+}

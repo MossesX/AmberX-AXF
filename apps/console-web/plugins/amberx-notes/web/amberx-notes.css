@@ -1,0 +1,11 @@
+/* AmberX notes (console): layout only (THEMING.md); controls are framework controls, sizes and colours are tokens. */
+.axp-amberx-notes { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); }
+.axp-amberx-notes__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); }
+.axp-amberx-notes__filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(var(--fx-space) * 60)), 1fr)); gap: var(--fx-dens-gap-lg); }
+.axp-amberx-notes__body { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(var(--fx-space) * 80)), 1fr)); gap: var(--fx-dens-gap-xl); align-items: start; }
+.axp-amberx-notes__list { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); min-width: 0; }
+.axp-amberx-notes__item { display: flex; flex-direction: column; align-items: flex-start; gap: var(--fx-dens-gap-xs); text-align: start; min-width: 0; }
+.axp-amberx-notes__title { font-weight: var(--fx-type-weights-strong); overflow-wrap: anywhere; }
+.axp-amberx-notes__preview { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+.axp-amberx-notes__meta { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs); }
+.axp-amberx-notes__editor { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); }
