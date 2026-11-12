@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3760,
- "updatedAt": "2026-11-12T22:43:33.886Z",
+ "rev": 3761,
+ "updatedAt": "2026-11-12T22:43:42.852Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -172919,7 +172919,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-12T20:40:19.258Z",
-   "updatedAt": "2026-11-12T22:32:43.548Z",
+   "updatedAt": "2026-11-12T22:43:41.589Z",
    "builtAt": "",
    "notes": [
     {
@@ -172933,6 +172933,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-github-client-plugin-see-and-control-every-pr-st--rhonda, own login copy)",
      "at": "2026-11-12T22:23:16.178Z"
+    },
+    {
+     "text": "s1 done: design + contract pushed on branch claude/github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro (eb9a5c413). PR not opened: GitHub answered 'secondary rate limit, temporarily blocked from content creation' for 12 min on the fallback token (the GitHub App is not set up on this console, so the old PAT is in use). A detached retry opens the PR and links it when the block clears; if it is still unlinked at phase 2 start, run: gh pr create --base main --head <branch> --body-file /tmp/pr-body.md, then builds-live.mjs link <build> --pr <n>.",
+     "at": "2026-11-12T22:43:41.589Z"
     }
    ],
    "approvals": [],
@@ -173185,7 +173189,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
