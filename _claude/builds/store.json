@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3205,
- "updatedAt": "2026-11-12T01:52:56.773Z",
+ "rev": 3206,
+ "updatedAt": "2026-11-12T01:53:39.182Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -158622,7 +158622,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-12T01:46:10.127Z",
-   "updatedAt": "2026-11-12T01:52:55.383Z",
+   "updatedAt": "2026-11-12T01:53:37.872Z",
    "builtAt": "",
    "notes": [
     {
@@ -158640,6 +158640,10 @@
     {
      "text": "Claude account: account-5 (axf-fix-axhub-36-pull-main-in-failed--lenny, own login copy)",
      "at": "2026-11-12T01:51:27.793Z"
+    },
+    {
+     "text": "axHub claude-sync-hold (#36) and amberx-open-url: main merged in, no conflicts, both pushed. Report branch claude/fix-axhub-36-pull-main-in-failed is pushed; GitHub's secondary rate limit blocked opening its AmberX-AXF PR. The merge queue or a later retry opens it.",
+     "at": "2026-11-12T01:53:37.872Z"
     }
    ],
    "approvals": [],
@@ -159143,7 +159147,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
