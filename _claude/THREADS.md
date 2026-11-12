@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 23:57 UTC · `per-agent-api-control-switch-in-each-employee-s` s2 done (all) · orchestrator
 - 2026-11-10 23:58 UTC · `convert-every-app-into-a-molly-module-expenses-c` PR #486 (all) · builds-live
 - 2026-11-10 23:59 UTC · `convert-every-app-into-a-molly-module-expenses-c` s3 done, → built (all) · orchestrator
 - 2026-11-10 23:59 UTC · `convert-every-app-into-a-molly-module-expenses-c` note (all) · orchestrator
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:35 UTC · `main-gate-nothing-reaches-main-without-passing` s3 done, → built (all) · orchestrator
 - 2026-11-12 02:36 UTC · `main-gate-nothing-reaches-main-without-passing` note (all) · orchestrator
 - 2026-11-12 02:35 UTC · `main-gate-nothing-reaches-main-without-passing` note (all) · orchestrator
+- 2026-11-12 02:36 UTC · `main-gate-nothing-reaches-main-without-passing` note (all) · builds-live
 
 ## Token passes (log)
 
