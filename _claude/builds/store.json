@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3744,
- "updatedAt": "2026-11-12T22:27:49.077Z",
+ "rev": 3745,
+ "updatedAt": "2026-11-12T22:30:44.697Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -166604,10 +166604,10 @@
    "source": "shipped",
    "pendingId": "",
    "branch": "claude/project-thread-k6ckjv",
-   "pr": "",
+   "pr": "#94",
    "mergedAt": "2026-10-25T18:21:06Z",
    "createdAt": "2026-10-25T18:21:06Z",
-   "updatedAt": "2026-11-12T03:32:40Z",
+   "updatedAt": "2026-11-12T22:30:43.223Z",
    "builtAt": "2026-10-25T18:21:06Z",
    "notes": [
     {
@@ -166617,6 +166617,10 @@
     {
      "text": "Shipped manifest sm-project-thread-k6ckjv rev 1 sent to Shipped features (backfill): landed 6a22c9735, 26 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:32:40Z"
+    },
+    {
+     "text": "Reconciler: PR #94",
+     "at": "2026-11-12T22:30:43.223Z"
     }
    ],
    "approvals": [],
@@ -166648,7 +166652,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -168879,10 +168883,10 @@
    "source": "shipped",
    "pendingId": "",
    "branch": "claude/framework-walkthrough-video-builder-qocfr1",
-   "pr": "",
+   "pr": "#210",
    "mergedAt": "2026-10-23T01:40:06Z",
    "createdAt": "2026-10-23T01:40:06Z",
-   "updatedAt": "2026-11-12T03:33:29Z",
+   "updatedAt": "2026-11-12T22:30:43.223Z",
    "builtAt": "2026-10-23T01:40:06Z",
    "notes": [
     {
@@ -168892,6 +168896,10 @@
     {
      "text": "Shipped manifest sm-framework-walkthrough-video-builder-qocfr1 rev 1 sent to Shipped features (backfill): landed ea20acab6, 58 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:33:29Z"
+    },
+    {
+     "text": "Reconciler: PR #210",
+     "at": "2026-11-12T22:30:43.223Z"
     }
    ],
    "approvals": [],
@@ -168923,7 +168931,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -169009,10 +169017,10 @@
    "source": "shipped",
    "pendingId": "",
    "branch": "claude/project-thread-eew3jm",
-   "pr": "",
+   "pr": "#211",
    "mergedAt": "2026-10-22T19:36:45Z",
    "createdAt": "2026-10-22T19:36:45Z",
-   "updatedAt": "2026-11-12T03:33:32Z",
+   "updatedAt": "2026-11-12T22:30:43.223Z",
    "builtAt": "2026-10-22T19:36:45Z",
    "notes": [
     {
@@ -169022,6 +169030,10 @@
     {
      "text": "Shipped manifest sm-project-thread-eew3jm rev 1 sent to Shipped features (backfill): landed 992abfcab, 113 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:33:32Z"
+    },
+    {
+     "text": "Reconciler: PR #211",
+     "at": "2026-11-12T22:30:43.223Z"
     }
    ],
    "approvals": [],
@@ -169053,7 +169065,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -173450,14 +173462,14 @@
    "title": "One to-do, notes and tasks plugin in the console; take it out of AmberX",
    "category": "one-app",
    "detail": "Brett said: \"take the to-do manager and everything and the notes from AmberX and move it to the console and remove all the notes things from the console. I want just one to-do, note and task management plugin to be in the console. Take it out of AmberX.\" First slice of the one-app merge. Keep all existing data; AmberX Android reads it from the console.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx",
    "pr": "#527",
    "createdAt": "2026-11-12T21:51:44.012Z",
-   "updatedAt": "2026-11-12T22:03:48.327Z",
+   "updatedAt": "2026-11-12T22:30:43.223Z",
    "builtAt": "",
    "notes": [
     {
@@ -173479,6 +173491,10 @@
     {
      "text": "s1 done: design in apps/console-web/plugins/notes-tasks/DESIGN.md (+ schema/notes-tasks.schema.json), PR #527. Store: notes-tasks@1, superset of amberx-notes@1, one hub folder per project (base = amberx-notes/ in place, others notes-<id>/). Next phases proposed in DESIGN.md: s2 engine framework/core/engines/notes-rules.mjs + fixture (Fable), s3 server store + REST + import, s4 web view, s5 settings/types editor, s6 AmberX on the engine, s7 retire todo-manager + notes-browser.",
      "at": "2026-11-12T22:03:27.689Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-12T22:30:43.223Z"
     }
    ],
    "approvals": [],
@@ -173637,7 +173653,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

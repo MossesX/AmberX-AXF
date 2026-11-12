@@ -778,10 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:32 UTC · `project-thread-kxgzso` added (0 steps) (all) · backfill
-- 2026-11-12 03:32 UTC · `project-thread-usdp87` added (0 steps) (all) · backfill
-- 2026-11-12 03:32 UTC · `project-thread-74063i` added (0 steps) (all) · backfill
-- 2026-11-12 03:32 UTC · `project-thread-jjbcw6` added (0 steps) (all) · backfill
 - 2026-11-12 03:32 UTC · `project-thread-qwqfp4` added (0 steps) (all) · backfill
 - 2026-11-12 03:32 UTC · `project-thread-i70ntv` added (0 steps) (all) · backfill
 - 2026-11-12 03:32 UTC · `project-thread-24jq9j` added (0 steps) (all) · backfill
@@ -1178,6 +1174,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 22:24 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` s1 done, → running (all) · orchestrator
 - 2026-11-12 22:27 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` branch claude/build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides, PR #505 (all) · builds-live
 - 2026-11-12 22:27 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` note (all) · orchestrator
+- 2026-11-12 22:30 UTC · `project-thread-k6ckjv` PR #94, note (all) · reconciler
+- 2026-11-12 22:30 UTC · `framework-walkthrough-video-builder-qocfr1` PR #210, note (all) · reconciler
+- 2026-11-12 22:30 UTC · `project-thread-eew3jm` PR #211, note (all) · reconciler
+- 2026-11-12 22:30 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` → pending, note (all) · reconciler
 
 ## Token passes (log)
 
