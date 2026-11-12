@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3559,
- "updatedAt": "2026-11-12T11:06:35.440Z",
+ "rev": 3560,
+ "updatedAt": "2026-11-12T11:06:52.081Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174307,7 +174307,7 @@
    "branch": "claude/pending-tab-one-collapsed-row-per-build-tap-to-e",
    "pr": "#520",
    "createdAt": "2026-11-12T10:48:25.123Z",
-   "updatedAt": "2026-11-12T11:06:33.852Z",
+   "updatedAt": "2026-11-12T11:06:49.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -174321,6 +174321,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-pending-tab-one-collapsed-row-per-build-tap-to-e--earl, own login copy)",
      "at": "2026-11-12T10:50:50.999Z"
+    },
+    {
+     "text": "Headless run axf-pending-tab-one-collapsed-row-per-build-tap-to-e--earl: brief only · start 11.0K tokens ($0.03) · cost $3.41 · 81 turns · 6 tools, MCP none",
+     "at": "2026-11-12T11:06:49.143Z"
     }
    ],
    "approvals": [],
