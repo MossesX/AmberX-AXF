@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3730,
- "updatedAt": "2026-11-12T22:14:47.265Z",
+ "rev": 3731,
+ "updatedAt": "2026-11-12T22:15:08.865Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -171776,7 +171776,7 @@
    "title": "Move AmberX web app into the console; AmberX Android reads the console",
    "category": "",
    "detail": "Move every AmberX web app feature (notes, to-dos, lists, approvals, recorder, open_url, notifications, settings) into the console. Repoint the AmberX Android app to read and call the console instead of the AmberX web app. Keep old AmberX web addresses forwarding to the console until the phone app is switched, so nothing breaks. Each feature moved is its own step.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -171784,7 +171784,7 @@
    "pr": "#528",
    "priority": "P2",
    "createdAt": "2026-11-12T19:46:41.501Z",
-   "updatedAt": "2026-11-12T22:14:45.877Z",
+   "updatedAt": "2026-11-12T22:15:06.830Z",
    "builtAt": "",
    "notes": [
     {
@@ -171842,6 +171842,10 @@
     {
      "text": "Headless run axf-move-amberx-web-app-into-the-console-amberx-andr--sully: brief only · start 11.0K tokens ($0.03) · cost $2.95 · 81 turns · 6 tools, MCP none",
      "at": "2026-11-12T22:14:45.877Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 0) with 13 steps left: back in the Queue (run 2).",
+     "at": "2026-11-12T22:15:06.830Z"
     }
    ],
    "approvals": [
@@ -171871,18 +171875,18 @@
     "queuedAt": "2026-11-12T20:41:12.483Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-move-amberx-web-app-into-the-console-amberx-andr--sully",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-12T22:06:11.244Z",
     "runs": 2,
     "lastRun": {
-     "at": "2026-11-12T22:06:02.841Z",
+     "at": "2026-11-12T22:15:05.192Z",
      "exit": 0,
      "outcome": "requeued",
-     "stepsLeft": 14,
+     "stepsLeft": 13,
      "account": "mossesx-max-",
-     "session": "axf-move-amberx-web-app-into-the-console-amberx-andr--paulie"
+     "session": "axf-move-amberx-web-app-into-the-console-amberx-andr--sully"
     },
     "split": {
      "at": "2026-11-12T20:45:00.435Z",
@@ -171892,7 +171896,7 @@
      "note": "Split by Claude into 14 steps (2 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- ended (exit 0) with 13 steps left: back in the Queue (run 2).",
     "route": "",
     "dispatchedAt": "2026-11-12T22:06:11.244Z",
     "planned": {
@@ -172303,7 +172307,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
