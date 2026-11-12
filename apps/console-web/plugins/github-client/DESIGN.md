@@ -4,8 +4,7 @@ Build: `github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-
 Brett's ask: see and control every PR from the console — status, merge, pull main in, group several into one, bulk
 actions — with the same control from the API, MCP, the CLI and AmberX voice.
 
-This folder holds only the design until s2 lands code. The console's loaders skip a plugin folder with no
-`plugin.json` (server `load_plugins`, web `import.meta.glob` on `plugin.json` / `web/index.tsx`), so nothing here runs.
+The plugin shipped in s2–s9 (Opus, Nov 12 2026); §10 lists where it differs from this design.
 `contract.json` is the machine-readable half of this document: every record, read, command and deep link, and the
 flags plugin-commands@1 needs (read-only, destructive, confirm, navigate). s2–s9 implement it; s7 checks the plugin
 against it; s8's tests replay it.
@@ -211,3 +210,29 @@ s7 registers as examples in the plugin's help so the assistant picks the right c
 5. Conflicts are reported, and only builds-file conflicts are healed automatically (existing `heal`). Agent-assisted
    resolution for groups is optional and goes through `axf.agents@1`, decided at s4.
 6. No Android or Kotlin twin: this is console-only; nothing in `framework/core` changes, so PORTING.md needs no entry.
+
+## 10. As shipped (s2–s9) — differences from the design above
+
+- **Routes** take the repo as two path parts: `pr/{owner}/{name}/{n}/…`, `branch/{owner}/{name}/{branch:path}`,
+  `commit/{owner}/{name}/{sha}`; compare is `GET diff?repo&base&head`. contract.json lists the shipped routes and
+  test.py checks plugin.json against it.
+- **Batches** (Brett's "pull main into a bunch of PRs and merge them all together as one") have their own tab. A
+  batch is `queue/group-<name>` built from main with every member merged in order (main is first pulled into each PR
+  on GitHub too). A clash between members stops at that member; with `conflictHelp: claude` (default) it is filed as
+  a build in the orchestrator's Queue (`axf.build-dispatch@1`) that merges, resolves and pushes to the batch branch
+  and never merges; Brett gets an alert (`cx.raise_alert`, alert@1 → AmberX). `group-retry` carries on from the
+  fixed branch (`fresh: true` rebuilds on the newest main). A batch whose checks fail is rebuilt on fresh main
+  `autoRetry` times (default 1) before it alerts. Landing goes through `merge` (queue or direct); once the batch PR
+  is merged the members are commented on and closed. States: building, open, conflict, landing, checks-failed,
+  landed, dissolved. The plugin owns `queue/group-*` branches: a rebuild pushes with `--force-with-lease` on the
+  SHA it last saw.
+- **Extra commands**: `fix-conflicts` (any PR: Claude resolves its conflicts with the base), `group-retry`,
+  `bulk-preview` (read: what a bulk action would take and skip), `open` / `open-batch` (the deep-link actions).
+- **Who asks**: plugin-commands forwards the caller as `X-Axf-By`; merge, update-main, rebase, group-land and bulk
+  answer 403 to a caller that says it is Claude. The console's own UI sends nothing and counts as the console.
+- **Merge queue**: `axf.merge-queue@1` gained `add(pr, why)` and `remove(pr, why)` (the push banner's own queue
+  commands), so `merge` enqueues without naming that plugin.
+- **Live updates**: the page polls `GET status` every 15 s (no GitHub call) and reloads when `version` moves; the
+  list itself is cached for `pollMinutes`. `GET events` (SSE) stays for API clients.
+- **Voice**: there is no separate voice registry; AmberX reaches the same MCP tools, so the phrasings are in the
+  command descriptions (and `contract.json → voice`).

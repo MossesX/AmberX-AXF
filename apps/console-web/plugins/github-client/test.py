@@ -421,4 +421,19 @@ check(TOKEN not in (DATA / "log.jsonl").read_text(), "the token is never in the 
 check(c.put("/p/config", json={"staleDays": 7, "mergeMethod": "squash"}).json()["staleDays"] == 7, "PUT config")
 check(c.put("/p/config", json={"nope": 1}).status_code == 400 and c.put("/p/config", json={"extraRepos": ["bad"]}).status_code == 400, "bad settings are a 400")
 
+# ---------------------------------------------------------------- s7: the contract is what shipped (REST, MCP, CLI, voice from one list)
+contract = json.loads((HERE / "contract.json").read_text())
+manifest = json.loads((HERE / "plugin.json").read_text())
+items = [i for i in manifest["commands"]["items"] if not i.get("skip")]
+check({x["id"] for x in contract["commands"]} == {i["id"] for i in items if not i.get("readOnly")}, "contract commands = plugin.json commands")
+check({x["id"] for x in contract["reads"] if "id" in x} == {i["id"] for i in items if i.get("readOnly")}, "contract reads = plugin.json reads")
+routes = {f"{m} {r.path}" for r in mod.router.routes for m in getattr(r, "methods", set()) if m != "HEAD"}
+check(all(i["route"] in routes for i in items if "route" in i), "every declared route is on the server")
+check(all((i.get("confirm") is True) == (x.get("confirm") is True) for x in contract["commands"] for i in items if i["id"] == x["id"]), "confirm flags agree")
+for v in contract["voice"]:
+    check(v["command"] in {i["id"] for i in items}, f"voice \"{v['say']}\" maps to {v['command']}")
+web = (HERE / "web" / "core.ts").read_text() + (HERE / "web" / "index.tsx").read_text()
+for word in ("'pr'", "'prs'", "'branch'", "'branches'", "'commits'", "'commit'", "'checks'", "'log'", "'batch'", "'batches'", "github-client.focus"):
+    check(word in web, f"deep link {word} is handled by the web part")
+
 print(f"github-client: {ok} checks passed")

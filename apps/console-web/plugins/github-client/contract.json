@@ -2,223 +2,1777 @@
   "$axf": "github-client@1",
   "plugin": "ai.amberx.axf.console.github-client",
   "folder": "github-client",
-  "about": "Actions contract of the GitHub client plugin (DESIGN.md §3–§5). `commands` is what plugin.json → commands.items carries verbatim (plugin-commands@1); `reads` are the GET routes; `screens` the console.screens / console_show deep links; `records` the JSON shapes every surface returns. s7 checks the shipped plugin against this file; s8 replays it in tests.",
+  "about": "Actions contract of the GitHub client plugin (DESIGN.md §3–§5). `commands` is what plugin.json → commands.items carries verbatim (plugin-commands@1); `reads` are the GET routes; `screens` the console.screens / console_show deep links; `records` the JSON shapes every surface returns. test.py checks plugin.json against this file (every command and read id, route and flag).",
   "records": {
     "pr": {
       "type": "object",
-      "required": ["repo", "number", "title", "author", "head", "base", "draft", "state", "mergeable", "behind", "ahead", "checks", "review", "labels", "updatedAt", "ageDays", "stale", "linkedBuild", "queue", "ready", "url"],
+      "required": [
+        "repo",
+        "number",
+        "title",
+        "author",
+        "head",
+        "base",
+        "draft",
+        "state",
+        "mergeable",
+        "behind",
+        "ahead",
+        "checks",
+        "review",
+        "labels",
+        "updatedAt",
+        "ageDays",
+        "stale",
+        "linkedBuild",
+        "queue",
+        "ready",
+        "url",
+        "why"
+      ],
       "properties": {
-        "repo": { "type": "string", "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})/[A-Za-z0-9._-]{1,100}$" },
-        "number": { "type": "integer", "minimum": 1 },
-        "title": { "type": "string" },
-        "author": { "type": "string" },
-        "head": { "type": "string" },
-        "base": { "type": "string" },
-        "draft": { "type": "boolean" },
-        "state": { "enum": ["open", "closed", "merged"] },
-        "mergeable": { "enum": ["clean", "conflict", "blocked", "unknown"] },
-        "behind": { "type": "integer", "minimum": 0 },
-        "ahead": { "type": "integer", "minimum": 0 },
+        "repo": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})/[A-Za-z0-9._-]{1,100}$"
+        },
+        "number": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "title": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "head": {
+          "type": "string"
+        },
+        "base": {
+          "type": "string"
+        },
+        "draft": {
+          "type": "boolean"
+        },
+        "state": {
+          "enum": [
+            "open",
+            "closed",
+            "merged"
+          ]
+        },
+        "mergeable": {
+          "enum": [
+            "clean",
+            "conflict",
+            "blocked",
+            "unknown"
+          ]
+        },
+        "behind": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ahead": {
+          "type": "integer",
+          "minimum": 0
+        },
         "checks": {
           "type": "object",
-          "required": ["state", "total", "failed", "pending"],
+          "required": [
+            "state",
+            "total",
+            "failed",
+            "pending"
+          ],
           "properties": {
-            "state": { "enum": ["success", "failure", "pending", "none"] },
-            "total": { "type": "integer", "minimum": 0 },
-            "failed": { "type": "array", "items": { "type": "string" } },
-            "pending": { "type": "array", "items": { "type": "string" } }
+            "state": {
+              "enum": [
+                "success",
+                "failure",
+                "pending",
+                "none"
+              ]
+            },
+            "total": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "failed": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "pending": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
           }
         },
-        "review": { "enum": ["approved", "changes", "required", "none"] },
-        "labels": { "type": "array", "items": { "type": "string" } },
-        "updatedAt": { "type": "string", "format": "date-time" },
-        "ageDays": { "type": "integer", "minimum": 0 },
-        "stale": { "type": "boolean" },
-        "linkedBuild": { "oneOf": [{ "type": "null" }, { "type": "object", "required": ["id", "title", "status"], "properties": { "id": { "type": "string" }, "title": { "type": "string" }, "status": { "type": "string" } } }] },
-        "queue": { "oneOf": [{ "type": "null" }, { "type": "object", "required": ["state"], "properties": { "state": { "enum": ["queued", "landing", "none"] }, "position": { "type": "integer", "minimum": 0 } } }] },
-        "ready": { "type": "boolean", "description": "ready(pr, policy): not draft, mergeable clean, checks success (or none when allowed), review satisfied, no do-not-merge label" },
-        "url": { "type": "string", "format": "uri" }
+        "review": {
+          "enum": [
+            "approved",
+            "changes",
+            "required",
+            "none"
+          ]
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ageDays": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "stale": {
+          "type": "boolean"
+        },
+        "linkedBuild": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "required": [
+                "id",
+                "title",
+                "status"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                }
+              }
+            }
+          ]
+        },
+        "queue": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "required": [
+                "state"
+              ],
+              "properties": {
+                "state": {
+                  "enum": [
+                    "queued",
+                    "landing",
+                    "none"
+                  ]
+                },
+                "position": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            }
+          ]
+        },
+        "ready": {
+          "type": "boolean",
+          "description": "ready(pr, policy): not draft, mergeable clean, checks success (or none when allowed), review satisfied, no do-not-merge label"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "why": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "ready_reasons: why it is not ready ([] when ready)"
+        },
+        "headSha": {
+          "type": "string"
+        }
       }
     },
     "branch": {
       "type": "object",
-      "required": ["repo", "name", "sha", "ahead", "behind", "lastCommit", "pr", "protected", "default"],
+      "required": [
+        "repo",
+        "name",
+        "sha",
+        "ahead",
+        "behind",
+        "lastCommit",
+        "pr",
+        "protected",
+        "default"
+      ],
       "properties": {
-        "repo": { "type": "string" },
-        "name": { "type": "string" },
-        "sha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
-        "ahead": { "type": "integer", "minimum": 0 },
-        "behind": { "type": "integer", "minimum": 0 },
-        "lastCommit": { "type": "object", "required": ["sha", "message", "author", "at"] },
-        "pr": { "oneOf": [{ "type": "null" }, { "type": "integer", "minimum": 1 }] },
-        "protected": { "type": "boolean" },
-        "default": { "type": "boolean" }
+        "repo": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "ahead": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "behind": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "lastCommit": {
+          "type": "object",
+          "required": [
+            "sha",
+            "message",
+            "author",
+            "at"
+          ]
+        },
+        "pr": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "integer",
+              "minimum": 1
+            }
+          ]
+        },
+        "protected": {
+          "type": "boolean"
+        },
+        "default": {
+          "type": "boolean"
+        }
       }
     },
     "commit": {
       "type": "object",
-      "required": ["repo", "sha", "message", "author", "at", "parents"],
+      "required": [
+        "repo",
+        "sha",
+        "message",
+        "author",
+        "at",
+        "parents"
+      ],
       "properties": {
-        "repo": { "type": "string" },
-        "sha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
-        "message": { "type": "string" },
-        "author": { "type": "string" },
-        "at": { "type": "string", "format": "date-time" },
-        "parents": { "type": "array", "items": { "type": "string" } },
-        "files": { "type": "array", "items": { "type": "object", "required": ["path", "status", "additions", "deletions"] } },
-        "stats": { "type": "object", "properties": { "additions": { "type": "integer" }, "deletions": { "type": "integer" } } }
+        "repo": {
+          "type": "string"
+        },
+        "sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "message": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "parents": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "path",
+              "status",
+              "additions",
+              "deletions"
+            ]
+          }
+        },
+        "stats": {
+          "type": "object",
+          "properties": {
+            "additions": {
+              "type": "integer"
+            },
+            "deletions": {
+              "type": "integer"
+            }
+          }
+        }
       }
     },
     "check": {
       "type": "object",
-      "required": ["repo", "ref", "name", "kind", "state"],
+      "required": [
+        "repo",
+        "ref",
+        "name",
+        "kind",
+        "state"
+      ],
       "properties": {
-        "repo": { "type": "string" },
-        "ref": { "type": "string" },
-        "name": { "type": "string" },
-        "kind": { "enum": ["check-run", "status"] },
-        "state": { "enum": ["queued", "waiting", "running", "success", "failure", "cancelled", "skipped"] },
-        "startedAt": { "type": "string" },
-        "finishedAt": { "type": "string" },
-        "url": { "type": "string" },
-        "runId": { "type": "integer" },
-        "jobId": { "type": "integer" }
+        "repo": {
+          "type": "string"
+        },
+        "ref": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "check-run",
+            "status"
+          ]
+        },
+        "state": {
+          "enum": [
+            "queued",
+            "waiting",
+            "running",
+            "success",
+            "failure",
+            "cancelled",
+            "skipped"
+          ]
+        },
+        "startedAt": {
+          "type": "string"
+        },
+        "finishedAt": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "runId": {
+          "type": "integer"
+        },
+        "jobId": {
+          "type": "integer"
+        }
       }
     },
     "group": {
       "type": "object",
-      "required": ["id", "repo", "name", "branch", "members", "pr", "state", "conflicts", "createdAt", "by"],
+      "required": [
+        "id",
+        "repo",
+        "name",
+        "branch",
+        "base",
+        "members",
+        "merged",
+        "pr",
+        "state",
+        "conflicts",
+        "createdAt",
+        "by",
+        "autoLand",
+        "tries"
+      ],
       "properties": {
-        "id": { "type": "string" },
-        "repo": { "type": "string" },
-        "name": { "type": "string" },
-        "branch": { "type": "string", "pattern": "^queue/group-[a-z0-9-]+$" },
-        "members": { "type": "array", "items": { "type": "integer", "minimum": 1 }, "minItems": 1 },
-        "pr": { "oneOf": [{ "type": "null" }, { "type": "integer", "minimum": 1 }] },
-        "state": { "enum": ["building", "open", "conflict", "landed", "dissolved"] },
-        "conflicts": { "type": "array", "items": { "type": "object", "required": ["member", "files"] } },
-        "createdAt": { "type": "string", "format": "date-time" },
-        "by": { "type": "string" }
+        "id": {
+          "type": "string"
+        },
+        "repo": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "branch": {
+          "type": "string",
+          "pattern": "^queue/group-[a-z0-9-]+$"
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "minItems": 1
+        },
+        "pr": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "integer",
+              "minimum": 1
+            }
+          ]
+        },
+        "state": {
+          "enum": [
+            "building",
+            "open",
+            "conflict",
+            "landing",
+            "checks-failed",
+            "landed",
+            "dissolved"
+          ]
+        },
+        "conflicts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "member",
+              "files"
+            ]
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "by": {
+          "type": "string"
+        },
+        "base": {
+          "type": "string"
+        },
+        "merged": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "autoLand": {
+          "type": "boolean"
+        },
+        "tries": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "fixBuild": {
+          "type": "string",
+          "description": "the orchestrator build Claude fixes the clash in"
+        },
+        "why": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "titles": {
+          "type": "object"
+        }
       }
     },
     "job": {
       "type": "object",
-      "required": ["id", "kind", "state", "items", "startedAt", "by"],
+      "required": [
+        "id",
+        "kind",
+        "state",
+        "items",
+        "startedAt",
+        "by"
+      ],
       "properties": {
-        "id": { "type": "string" },
-        "kind": { "enum": ["update-main", "rebase", "group", "bulk", "restore", "import"] },
-        "state": { "enum": ["queued", "running", "done", "failed", "cancelled"] },
-        "items": { "type": "array", "items": { "type": "object", "required": ["target", "state"], "properties": { "target": { "type": "string" }, "state": { "enum": ["pending", "running", "ok", "failed", "skipped"] }, "note": { "type": "string" } } } },
-        "startedAt": { "type": "string" },
-        "finishedAt": { "type": "string" },
-        "by": { "type": "string" }
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "update-main",
+            "rebase",
+            "group",
+            "bulk",
+            "restore",
+            "import"
+          ]
+        },
+        "state": {
+          "enum": [
+            "queued",
+            "running",
+            "done",
+            "failed",
+            "cancelled"
+          ]
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "target",
+              "state"
+            ],
+            "properties": {
+              "target": {
+                "type": "string"
+              },
+              "state": {
+                "enum": [
+                  "pending",
+                  "running",
+                  "ok",
+                  "failed",
+                  "skipped"
+                ]
+              },
+              "note": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "startedAt": {
+          "type": "string"
+        },
+        "finishedAt": {
+          "type": "string"
+        },
+        "by": {
+          "type": "string"
+        }
       }
     },
     "log": {
       "type": "object",
-      "required": ["id", "at", "repo", "kind", "target", "actor", "outcome", "restorable"],
+      "required": [
+        "id",
+        "at",
+        "repo",
+        "kind",
+        "target",
+        "actor",
+        "outcome",
+        "restorable"
+      ],
       "properties": {
-        "id": { "type": "string" },
-        "at": { "type": "string", "format": "date-time" },
-        "repo": { "type": "string" },
-        "kind": { "enum": ["merge", "merge-failed", "retry", "update-main", "rebase", "close", "reopen", "comment", "rerun-checks", "ready", "label", "queue-add", "queue-remove", "branch-delete", "restore", "push", "pr-open", "pr-close", "group-create", "group-land", "group-dissolve", "bulk", "import"] },
-        "target": { "type": "object", "properties": { "pr": { "type": "integer" }, "branch": { "type": "string" }, "sha": { "type": "string" }, "group": { "type": "string" } } },
-        "actor": { "type": "object", "required": ["kind", "name"], "properties": { "kind": { "enum": ["console", "api", "claude", "queue", "import"] }, "name": { "type": "string" } } },
-        "outcome": { "enum": ["ok", "failed"] },
-        "why": { "type": "string" },
-        "details": { "type": "string" },
-        "savedSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
-        "restorable": { "type": "boolean" }
+        "id": {
+          "type": "string"
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "repo": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "merge",
+            "merge-failed",
+            "retry",
+            "update-main",
+            "rebase",
+            "close",
+            "reopen",
+            "comment",
+            "rerun-checks",
+            "ready",
+            "label",
+            "queue-add",
+            "queue-remove",
+            "branch-delete",
+            "restore",
+            "push",
+            "pr-open",
+            "pr-close",
+            "group-create",
+            "group-land",
+            "group-dissolve",
+            "bulk",
+            "import"
+          ]
+        },
+        "target": {
+          "type": "object",
+          "properties": {
+            "pr": {
+              "type": "integer"
+            },
+            "branch": {
+              "type": "string"
+            },
+            "sha": {
+              "type": "string"
+            },
+            "group": {
+              "type": "string"
+            }
+          }
+        },
+        "actor": {
+          "type": "object",
+          "required": [
+            "kind",
+            "name"
+          ],
+          "properties": {
+            "kind": {
+              "enum": [
+                "console",
+                "api",
+                "claude",
+                "queue",
+                "import"
+              ]
+            },
+            "name": {
+              "type": "string"
+            }
+          }
+        },
+        "outcome": {
+          "enum": [
+            "ok",
+            "failed"
+          ]
+        },
+        "why": {
+          "type": "string"
+        },
+        "details": {
+          "type": "string"
+        },
+        "savedSha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "restorable": {
+          "type": "boolean"
+        }
       }
     },
     "config": {
       "type": "object",
       "properties": {
-        "extraRepos": { "type": "array", "items": { "type": "string" } },
-        "pollMinutes": { "type": "integer", "minimum": 1, "maximum": 60, "default": 2 },
-        "staleDays": { "type": "integer", "minimum": 1, "default": 14 },
-        "mergeMethod": { "enum": ["queue", "squash", "merge", "rebase"], "default": "queue" },
-        "requireGreenChecks": { "type": "boolean", "default": true },
-        "allowNoChecks": { "type": "boolean", "default": false },
-        "requireReview": { "type": "boolean", "default": false },
-        "doNotMergeLabel": { "type": "string", "default": "do-not-merge" }
+        "extraRepos": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "pollMinutes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 60,
+          "default": 2
+        },
+        "staleDays": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 14
+        },
+        "mergeMethod": {
+          "enum": [
+            "queue",
+            "squash",
+            "merge",
+            "rebase"
+          ],
+          "default": "queue"
+        },
+        "requireGreenChecks": {
+          "type": "boolean",
+          "default": true
+        },
+        "allowNoChecks": {
+          "type": "boolean",
+          "default": false
+        },
+        "requireReview": {
+          "type": "boolean",
+          "default": false
+        },
+        "doNotMergeLabel": {
+          "type": "string",
+          "default": "do-not-merge"
+        },
+        "me": {
+          "type": "string",
+          "default": ""
+        },
+        "autoRetry": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3,
+          "default": 1
+        },
+        "conflictHelp": {
+          "enum": [
+            "claude",
+            "report"
+          ],
+          "default": "claude"
+        }
       }
     }
   },
   "screens": {
     "github-client": {
       "title": "GitHub client",
-      "menu": ["builds", "plugins"],
-      "tabs": ["prs", "branches", "commits", "checks", "log"],
+      "menu": [
+        "builds",
+        "plugins"
+      ],
+      "tabs": [
+        "prs",
+        "batches",
+        "branches",
+        "commits",
+        "checks",
+        "log"
+      ],
       "focus": [
-        { "pattern": "pr [<repo>] <n>", "opens": "prs tab, row expanded" },
-        { "pattern": "prs ready|stale|conflicts|failing|behind|drafts|mine", "opens": "prs tab with that filter" },
-        { "pattern": "branch <name>", "opens": "branches tab, that branch expanded" },
-        { "pattern": "commits <branch>", "opens": "commits tab on that branch" },
-        { "pattern": "commit <sha>", "opens": "dialog github-client.commit" },
-        { "pattern": "checks <ref>", "opens": "checks tab for the ref" },
-        { "pattern": "log <query>", "opens": "log tab with the search filled" },
-        { "pattern": "group <id>", "opens": "dialog github-client.group" }
-      ]
+        {
+          "pattern": "pr [<owner/name>] <n>",
+          "opens": "prs tab, row expanded"
+        },
+        {
+          "pattern": "prs all|ready|failing|conflicts|behind|stale|drafts|mine",
+          "opens": "prs tab with that filter"
+        },
+        {
+          "pattern": "batches | batch <id>",
+          "opens": "batches tab (that batch expanded)"
+        },
+        {
+          "pattern": "branches | branch <name>",
+          "opens": "branches tab (that branch expanded)"
+        },
+        {
+          "pattern": "commits [<branch>]",
+          "opens": "commits tab on that branch"
+        },
+        {
+          "pattern": "commit <sha>",
+          "opens": "dialog github-client.commit"
+        },
+        {
+          "pattern": "checks <ref>",
+          "opens": "checks tab for a branch, SHA or pr:<n>"
+        },
+        {
+          "pattern": "log [<query>]",
+          "opens": "git log tab with the search filled"
+        }
+      ],
+      "action": "github-client.focus"
     },
-    "dialogs": ["github-client.group", "github-client.bulk", "github-client.commit", "github-client.comment"],
+    "dialogs": [
+      "github-client.batch",
+      "github-client.bulk",
+      "github-client.commit",
+      "github-client.diff"
+    ],
     "settings": "plugins/github-client"
   },
   "reads": [
-    { "route": "GET /repos", "id": "repos", "title": "Repos of this project" },
-    { "route": "GET /prs", "id": "prs", "title": "Pull requests", "input": { "type": "object", "properties": { "repo": { "type": "string" }, "filter": { "enum": ["all", "ready", "failing", "conflicts", "behind", "stale", "drafts", "mine"] }, "sort": { "enum": ["updated", "oldest", "number", "behind"] }, "q": { "type": "string" } } } },
-    { "route": "GET /pr/{repo}/{n}", "id": "pr", "title": "One pull request" },
-    { "route": "GET /pr/{repo}/{n}/checks", "id": "pr-checks", "title": "Checks of a pull request" },
-    { "route": "GET /pr/{repo}/{n}/commits", "id": "pr-commits", "title": "Commits of a pull request" },
-    { "route": "GET /pr/{repo}/{n}/files", "id": "pr-files", "title": "Files of a pull request" },
-    { "route": "GET /branches", "id": "branches", "title": "Branches", "input": { "type": "object", "properties": { "repo": { "type": "string" } } } },
-    { "route": "GET /branch/{repo}/{name}", "id": "branch", "title": "One branch" },
-    { "route": "GET /commits", "id": "commits", "title": "Commits", "input": { "type": "object", "properties": { "repo": { "type": "string" }, "branch": { "type": "string" }, "page": { "type": "integer" } } } },
-    { "route": "GET /commit/{repo}/{sha}", "id": "commit", "title": "One commit with files" },
-    { "route": "GET /diff/{repo}/{base}/{head}", "id": "diff", "title": "Compare two refs" },
-    { "route": "GET /checks", "id": "checks", "title": "Checks for a ref", "input": { "type": "object", "properties": { "repo": { "type": "string" }, "ref": { "type": "string" } }, "required": ["repo", "ref"] } },
-    { "route": "GET /groups", "id": "groups", "title": "PR groups" },
-    { "route": "GET /group/{id}", "id": "group", "title": "One PR group" },
-    { "route": "GET /jobs", "id": "jobs", "title": "Jobs" },
-    { "route": "GET /job/{id}", "id": "job", "title": "One job" },
-    { "route": "GET /log", "id": "log", "title": "Git log", "input": { "type": "object", "properties": { "q": { "type": "string" }, "kind": { "type": "string" }, "repo": { "type": "string" }, "since": { "type": "string" }, "page": { "type": "integer" } } } },
-    { "route": "GET /config", "id": "config", "title": "Settings" },
-    { "route": "GET /status", "id": "status", "title": "Token source, rate limit, cache age, queue state, last error" },
-    { "route": "GET /events", "skip": "server-sent events stream, not a command" }
+    {
+      "route": "GET /prs",
+      "id": "prs",
+      "title": "Pull requests",
+      "description": "Open PRs of a repo with status, checks, commits behind main, conflicts, review, linked build, merge-queue position and readiness (ready + why not). filter: all|ready|failing|conflicts|behind|stale|drafts|mine; sort: updated|oldest|number|behind; q searches number, title, branch, author, build. Voice: \"what's ready to merge\" (filter ready), \"which PRs are failing\", \"PRs behind main\". Each item carries repo (owner/name) for the other commands.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "repo": {
+            "type": "string"
+          },
+          "filter": {
+            "enum": [
+              "all",
+              "ready",
+              "failing",
+              "conflicts",
+              "behind",
+              "stale",
+              "drafts",
+              "mine"
+            ]
+          },
+          "sort": {
+            "enum": [
+              "updated",
+              "oldest",
+              "number",
+              "behind"
+            ]
+          },
+          "q": {
+            "type": "string"
+          },
+          "refresh": {
+            "type": "boolean"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "route": "POST /bulk/preview",
+      "id": "bulk-preview",
+      "title": "Preview a bulk action",
+      "description": "Which PRs a bulk action would take and which it skips (and why), without doing anything."
+    },
+    {
+      "route": "GET /repos",
+      "id": "repos",
+      "title": "Repos of this project",
+      "description": "The console's repo, the project's manifest repos, the merge queue's repo and the extra repos setting."
+    },
+    {
+      "route": "GET /pr/{owner}/{name}/{n}",
+      "id": "pr",
+      "title": "One pull request",
+      "description": "One PR read fresh: status, checks, behind/ahead, conflicts, review, linked build, queue position, ready and why not."
+    },
+    {
+      "route": "GET /pr/{owner}/{name}/{n}/checks",
+      "id": "pr-checks",
+      "title": "Checks of a pull request"
+    },
+    {
+      "route": "GET /pr/{owner}/{name}/{n}/commits",
+      "id": "pr-commits",
+      "title": "Commits of a pull request"
+    },
+    {
+      "route": "GET /pr/{owner}/{name}/{n}/files",
+      "id": "pr-files",
+      "title": "Files of a pull request",
+      "description": "Changed files with patches."
+    },
+    {
+      "route": "GET /checks",
+      "id": "checks",
+      "title": "Checks for a ref",
+      "description": "Check runs and statuses for a branch, a SHA or pr:<n>."
+    },
+    {
+      "route": "GET /status",
+      "id": "status",
+      "title": "GitHub client status",
+      "description": "Token set or not (never the token), rate limit left, last poll, last error, merge queue on/off, running jobs, last failure."
+    },
+    {
+      "route": "GET /config",
+      "id": "config",
+      "title": "Settings"
+    },
+    {
+      "route": "GET /jobs",
+      "id": "jobs",
+      "title": "Jobs",
+      "description": "Recent long actions (pull main in, rebase, batch, bulk) with a result per PR."
+    },
+    {
+      "route": "GET /job/{jid}",
+      "id": "job",
+      "title": "One job"
+    },
+    {
+      "route": "GET /groups",
+      "id": "groups",
+      "title": "Batches",
+      "description": "Batch merges: state, members, the batch PR, clashes and who is fixing them."
+    },
+    {
+      "route": "GET /group/{gid}",
+      "id": "group",
+      "title": "One batch"
+    },
+    {
+      "route": "GET /branches",
+      "id": "branches",
+      "title": "Branches",
+      "description": "Every branch with ahead/behind main, last commit, PR, protected and default flags."
+    },
+    {
+      "route": "GET /branch/{owner}/{name}/{branch:path}",
+      "id": "branch",
+      "title": "One branch"
+    },
+    {
+      "route": "GET /commits",
+      "id": "commits",
+      "title": "Commits",
+      "description": "Commits on a branch, newest first, 50 a page."
+    },
+    {
+      "route": "GET /commit/{owner}/{name}/{sha}",
+      "id": "commit",
+      "title": "One commit",
+      "description": "A commit with its files and patches."
+    },
+    {
+      "route": "GET /diff",
+      "id": "diff",
+      "title": "Compare two refs",
+      "description": "Commits and files with patches between base and head."
+    },
+    {
+      "route": "GET /log",
+      "id": "log",
+      "title": "Git log",
+      "description": "Every git action, newest first: merges, failed merges and why, retries, branch deletes (saved SHA, restorable), pushes, main pulled in, PRs opened/closed, batches, bulk runs. q searches; kind, repo, since (ISO or today), outcome (ok|failed), page. Voice: \"show the git log for today\" (since today), \"what failed to merge\" (outcome failed, kind merge-failed)."
+    },
+    {
+      "route": "GET /events",
+      "skip": "server-sent events stream, not a command"
+    }
   ],
   "commands": [
-    { "route": "POST /pr/{repo}/{n}/merge", "id": "merge", "title": "Merge a pull request", "description": "Merge queue on: adds it to the queue. Off: merges with the policy's method. Refused unless ready.", "input": { "type": "object", "properties": { "repo": { "type": "string" }, "n": { "type": "integer" }, "method": { "enum": ["queue", "squash", "merge", "rebase"] }, "why": { "type": "string" } }, "required": ["repo", "n"] }, "deniedTo": ["claude"] },
-    { "route": "POST /pr/{repo}/{n}/update-main", "id": "update-main", "title": "Pull main into a pull request", "description": "GitHub update-branch; a conflict becomes a job that heals builds files and reports the rest.", "job": true, "deniedTo": ["claude"] },
-    { "route": "POST /pr/{repo}/{n}/rebase", "id": "rebase", "title": "Rebase a pull request onto its base", "confirm": true, "job": true, "deniedTo": ["claude"] },
-    { "route": "POST /pr/{repo}/{n}/close", "id": "close", "title": "Close a pull request", "input": { "type": "object", "properties": { "repo": { "type": "string" }, "n": { "type": "integer" }, "why": { "type": "string" } }, "required": ["repo", "n"] } },
-    { "route": "POST /pr/{repo}/{n}/reopen", "id": "reopen", "title": "Reopen a pull request" },
-    { "route": "POST /pr/{repo}/{n}/comment", "id": "comment", "title": "Comment on a pull request", "input": { "type": "object", "properties": { "repo": { "type": "string" }, "n": { "type": "integer" }, "body": { "type": "string", "minLength": 1 } }, "required": ["repo", "n", "body"] } },
-    { "route": "POST /pr/{repo}/{n}/rerun-checks", "id": "rerun-checks", "title": "Re-run checks", "input": { "type": "object", "properties": { "repo": { "type": "string" }, "n": { "type": "integer" }, "failedOnly": { "type": "boolean", "default": true } }, "required": ["repo", "n"] } },
-    { "route": "POST /pr/{repo}/{n}/ready", "id": "ready", "title": "Mark a draft ready for review" },
-    { "route": "POST /pr/{repo}/{n}/label", "id": "label", "title": "Add or remove labels", "input": { "type": "object", "properties": { "repo": { "type": "string" }, "n": { "type": "integer" }, "add": { "type": "array", "items": { "type": "string" } }, "remove": { "type": "array", "items": { "type": "string" } } }, "required": ["repo", "n"] } },
-    { "route": "POST /pr/{repo}/{n}/queue-remove", "id": "queue-remove", "title": "Take a pull request out of the merge queue", "input": { "type": "object", "properties": { "repo": { "type": "string" }, "n": { "type": "integer" }, "why": { "type": "string" } }, "required": ["repo", "n", "why"] } },
-    { "route": "POST /group", "id": "group-create", "title": "Group pull requests into one batch", "input": { "type": "object", "properties": { "repo": { "type": "string" }, "name": { "type": "string" }, "prs": { "type": "array", "items": { "type": "integer" }, "minItems": 2 } }, "required": ["repo", "name", "prs"] }, "job": true },
-    { "route": "POST /group/{id}/add", "id": "group-add", "title": "Add pull requests to a group", "job": true },
-    { "route": "POST /group/{id}/remove", "id": "group-remove", "title": "Remove pull requests from a group", "job": true },
-    { "route": "POST /group/{id}/land", "id": "group-land", "title": "Land a group", "deniedTo": ["claude"] },
-    { "route": "POST /group/{id}/dissolve", "id": "group-dissolve", "title": "Dissolve a group", "confirm": true },
-    { "route": "POST /bulk", "id": "bulk", "title": "Bulk action on many pull requests", "input": { "type": "object", "properties": { "repo": { "type": "string" }, "action": { "enum": ["merge-ready", "close-stale", "update-main", "rerun-failed", "label"] }, "prs": { "type": "array", "items": { "type": "integer" } }, "filter": { "enum": ["ready", "stale", "behind", "failing", "all"] }, "why": { "type": "string" }, "add": { "type": "array", "items": { "type": "string" } }, "remove": { "type": "array", "items": { "type": "string" } } }, "required": ["repo", "action"] }, "confirm": true, "job": true, "deniedTo": ["claude"] },
-    { "route": "DELETE /branch/{repo}/{name}", "id": "branch-delete", "title": "Delete a branch (SHA saved, restorable)", "destructive": true, "confirm": true },
-    { "route": "POST /log/{id}/restore", "id": "restore", "title": "Restore a deleted branch at its saved SHA" },
-    { "route": "POST /refresh", "id": "refresh", "title": "Refresh from GitHub now", "input": { "type": "object", "properties": { "repo": { "type": "string" } } } },
-    { "route": "POST /log/import", "id": "log-import", "title": "Import deleted-branch lists" },
-    { "route": "PUT /config", "id": "config-set", "title": "Change settings" },
-    { "route": "POST /job/{id}/cancel", "id": "job-cancel", "title": "Cancel a running job" }
+    {
+      "route": "POST /pr/{owner}/{name}/{n}/merge",
+      "id": "merge",
+      "title": "Merge a pull request",
+      "description": "Merge queue on for the repo: adds it to the queue (it lands with the next green batch). Off: GitHub merges it with the policy's method. Refused unless ready. Brett's: a Claude session gets 403. Voice: \"merge PR 123\" (owner/name from prs → repo).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "repo owner (MossesX)"
+          },
+          "name": {
+            "type": "string",
+            "description": "repo name (AmberX-AXF)"
+          },
+          "n": {
+            "type": "integer",
+            "description": "PR number"
+          },
+          "method": {
+            "enum": [
+              "queue",
+              "squash",
+              "merge",
+              "rebase"
+            ]
+          },
+          "why": {
+            "type": "string"
+          },
+          "by": {
+            "type": "string",
+            "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+          }
+        },
+        "required": [
+          "owner",
+          "name",
+          "n"
+        ],
+        "additionalProperties": false
+      },
+      "deniedTo": [
+        "claude"
+      ]
+    },
+    {
+      "route": "POST /pr/{owner}/{name}/{n}/update-main",
+      "id": "update-main",
+      "title": "Pull main into a pull request",
+      "description": "GitHub update-branch; when GitHub can't (a conflict) a job merges main in a scratch clone, heals builds files and reports any other conflict. Brett's: a Claude session gets 403. Voice: \"pull main into 123\", \"update 123 from main\".",
+      "input": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "repo owner (MossesX)"
+          },
+          "name": {
+            "type": "string",
+            "description": "repo name (AmberX-AXF)"
+          },
+          "n": {
+            "type": "integer",
+            "description": "PR number"
+          },
+          "by": {
+            "type": "string",
+            "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+          }
+        },
+        "required": [
+          "owner",
+          "name",
+          "n"
+        ],
+        "additionalProperties": false
+      },
+      "deniedTo": [
+        "claude"
+      ],
+      "job": true
+    },
+    {
+      "route": "POST /pr/{owner}/{name}/{n}/rebase",
+      "id": "rebase",
+      "title": "Rebase a pull request onto its base",
+      "description": "A job: rebase in a scratch clone, force-push with lease to the PR's own branch; the old head SHA is saved in the git log.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "repo owner (MossesX)"
+          },
+          "name": {
+            "type": "string",
+            "description": "repo name (AmberX-AXF)"
+          },
+          "n": {
+            "type": "integer",
+            "description": "PR number"
+          },
+          "by": {
+            "type": "string",
+            "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+          }
+        },
+        "required": [
+          "owner",
+          "name",
+          "n"
+        ],
+        "additionalProperties": false
+      },
+      "confirm": true,
+      "deniedTo": [
+        "claude"
+      ],
+      "job": true
+    },
+    {
+      "route": "POST /pr/{owner}/{name}/{n}/close",
+      "id": "close",
+      "title": "Close a pull request",
+      "description": "Close a pull request. Voice: \"close PR 123\".",
+      "input": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "repo owner (MossesX)"
+          },
+          "name": {
+            "type": "string",
+            "description": "repo name (AmberX-AXF)"
+          },
+          "n": {
+            "type": "integer",
+            "description": "PR number"
+          },
+          "why": {
+            "type": "string"
+          },
+          "by": {
+            "type": "string",
+            "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+          }
+        },
+        "required": [
+          "owner",
+          "name",
+          "n"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "route": "POST /pr/{owner}/{name}/{n}/reopen",
+      "id": "reopen",
+      "title": "Reopen a pull request",
+      "input": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "repo owner (MossesX)"
+          },
+          "name": {
+            "type": "string",
+            "description": "repo name (AmberX-AXF)"
+          },
+          "n": {
+            "type": "integer",
+            "description": "PR number"
+          },
+          "by": {
+            "type": "string",
+            "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+          }
+        },
+        "required": [
+          "owner",
+          "name",
+          "n"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "route": "POST /pr/{owner}/{name}/{n}/comment",
+      "id": "comment",
+      "title": "Comment on a pull request",
+      "description": "Comment on a pull request. Voice: \"comment on 123: …\".",
+      "input": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "repo owner (MossesX)"
+          },
+          "name": {
+            "type": "string",
+            "description": "repo name (AmberX-AXF)"
+          },
+          "n": {
+            "type": "integer",
+            "description": "PR number"
+          },
+          "body": {
+            "type": "string",
+            "minLength": 1
+          },
+          "by": {
+            "type": "string",
+            "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+          }
+        },
+        "required": [
+          "owner",
+          "name",
+          "n",
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "route": "POST /pr/{owner}/{name}/{n}/rerun-checks",
+      "id": "rerun-checks",
+      "title": "Re-run checks",
+      "description": "Re-run the failed jobs (failedOnly, default true) or every workflow run on the PR's head commit. Voice: \"re-run the failed checks on 123\".",
+      "input": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "repo owner (MossesX)"
+          },
+          "name": {
+            "type": "string",
+            "description": "repo name (AmberX-AXF)"
+          },
+          "n": {
+            "type": "integer",
+            "description": "PR number"
+          },
+          "failedOnly": {
+            "type": "boolean",
+            "default": true
+          },
+          "by": {
+            "type": "string",
+            "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+          }
+        },
+        "required": [
+          "owner",
+          "name",
+          "n"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "route": "POST /pr/{owner}/{name}/{n}/ready",
+      "id": "ready",
+      "title": "Mark a draft ready for review",
+      "input": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "repo owner (MossesX)"
+          },
+          "name": {
+            "type": "string",
+            "description": "repo name (AmberX-AXF)"
+          },
+          "n": {
+            "type": "integer",
+            "description": "PR number"
+          },
+          "by": {
+            "type": "string",
+            "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+          }
+        },
+        "required": [
+          "owner",
+          "name",
+          "n"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "route": "POST /pr/{owner}/{name}/{n}/label",
+      "id": "label",
+      "title": "Add or remove labels",
+      "input": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "repo owner (MossesX)"
+          },
+          "name": {
+            "type": "string",
+            "description": "repo name (AmberX-AXF)"
+          },
+          "n": {
+            "type": "integer",
+            "description": "PR number"
+          },
+          "add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "by": {
+            "type": "string",
+            "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+          }
+        },
+        "required": [
+          "owner",
+          "name",
+          "n"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "route": "POST /pr/{owner}/{name}/{n}/queue-remove",
+      "id": "queue-remove",
+      "title": "Take a pull request out of the merge queue",
+      "input": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "repo owner (MossesX)"
+          },
+          "name": {
+            "type": "string",
+            "description": "repo name (AmberX-AXF)"
+          },
+          "n": {
+            "type": "integer",
+            "description": "PR number"
+          },
+          "why": {
+            "type": "string"
+          },
+          "by": {
+            "type": "string",
+            "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+          }
+        },
+        "required": [
+          "owner",
+          "name",
+          "n"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "route": "POST /pr/{owner}/{name}/{n}/fix-conflicts",
+      "id": "fix-conflicts",
+      "title": "Ask Claude to fix a PR's conflicts",
+      "description": "Files a build in the orchestrator's Queue that merges the base into the PR branch, resolves the conflicts and pushes; it never merges.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "description": "repo owner (MossesX)"
+          },
+          "name": {
+            "type": "string",
+            "description": "repo name (AmberX-AXF)"
+          },
+          "n": {
+            "type": "integer",
+            "description": "PR number"
+          },
+          "by": {
+            "type": "string",
+            "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+          }
+        },
+        "required": [
+          "owner",
+          "name",
+          "n"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "route": "POST /group",
+      "id": "group-create",
+      "title": "Batch merge several pull requests",
+      "description": "Pull main into each PR, merge them all on one queue/group-<name> branch, open one PR into main (checks run once). A clash between members goes to Claude (a build) and alerts Brett; Retry carries on. autoLand lands it as soon as it is green. Voice: \"batch 120 121 and 122\", \"merge these together as one\".",
+      "input": {
+        "type": "object",
+        "properties": {
+          "repo": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "prs": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "minItems": 2
+          },
+          "autoLand": {
+            "type": "boolean"
+          },
+          "by": {
+            "type": "string",
+            "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+          }
+        },
+        "required": [
+          "prs"
+        ],
+        "additionalProperties": false
+      },
+      "job": true
+    },
+    {
+      "route": "POST /group/{gid}/add",
+      "id": "group-add",
+      "title": "Add pull requests to a batch",
+      "input": {
+        "type": "object",
+        "properties": {
+          "gid": {
+            "type": "string"
+          },
+          "prs": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "by": {
+            "type": "string",
+            "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+          }
+        },
+        "required": [
+          "gid",
+          "prs"
+        ],
+        "additionalProperties": false
+      },
+      "job": true
+    },
+    {
+      "route": "POST /group/{gid}/remove",
+      "id": "group-remove",
+      "title": "Remove pull requests from a batch",
+      "input": {
+        "type": "object",
+        "properties": {
+          "gid": {
+            "type": "string"
+          },
+          "prs": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "by": {
+            "type": "string",
+            "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+          }
+        },
+        "required": [
+          "gid",
+          "prs"
+        ],
+        "additionalProperties": false
+      },
+      "job": true
+    },
+    {
+      "route": "POST /group/{gid}/retry",
+      "id": "group-retry",
+      "title": "Retry a batch",
+      "description": "Carry on from the batch branch (after Claude or a person fixed a clash), or fresh: true rebuilds it on the newest main.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "gid": {
+            "type": "string"
+          },
+          "fresh": {
+            "type": "boolean"
+          },
+          "by": {
+            "type": "string",
+            "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+          }
+        },
+        "required": [
+          "gid"
+        ],
+        "additionalProperties": false
+      },
+      "job": true
+    },
+    {
+      "route": "POST /group/{gid}/land",
+      "id": "group-land",
+      "title": "Land a batch",
+      "description": "The batch PR goes through the merge queue (or merges); its members close as landed by the batch. Brett's: a Claude session gets 403. Voice: \"land the batch\".",
+      "input": {
+        "type": "object",
+        "properties": {
+          "gid": {
+            "type": "string"
+          },
+          "by": {
+            "type": "string",
+            "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+          }
+        },
+        "required": [
+          "gid"
+        ],
+        "additionalProperties": false
+      },
+      "deniedTo": [
+        "claude"
+      ]
+    },
+    {
+      "route": "POST /group/{gid}/dissolve",
+      "id": "group-dissolve",
+      "title": "Dissolve a batch",
+      "description": "Close the batch PR and delete its branch (SHA saved); member PRs are untouched.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "gid": {
+            "type": "string"
+          },
+          "by": {
+            "type": "string",
+            "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+          }
+        },
+        "required": [
+          "gid"
+        ],
+        "additionalProperties": false
+      },
+      "confirm": true
+    },
+    {
+      "route": "POST /bulk",
+      "id": "bulk",
+      "title": "Bulk action on many pull requests",
+      "description": "action: merge-ready (only ready PRs), close-stale (only stale), update-main (only behind), rerun-failed (only failing), label. prs: the numbers, or filter. One job with a result per PR. Brett's: a Claude session gets 403. Voice: \"close the stale PRs\" (close-stale), \"merge everything that's ready\" (merge-ready), \"update every PR from main\" (update-main).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "repo": {
+            "type": "string"
+          },
+          "action": {
+            "enum": [
+              "merge-ready",
+              "close-stale",
+              "update-main",
+              "rerun-failed",
+              "label"
+            ]
+          },
+          "prs": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "filter": {
+            "enum": [
+              "ready",
+              "stale",
+              "behind",
+              "failing",
+              "all"
+            ]
+          },
+          "why": {
+            "type": "string"
+          },
+          "add": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "remove": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "by": {
+            "type": "string",
+            "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "additionalProperties": false
+      },
+      "confirm": true,
+      "deniedTo": [
+        "claude"
+      ],
+      "job": true
+    },
+    {
+      "route": "DELETE /branch/{owner}/{name}/{branch:path}",
+      "id": "branch-delete",
+      "title": "Delete a branch (SHA saved, restorable)",
+      "confirm": true,
+      "destructive": true
+    },
+    {
+      "route": "POST /log/{lid}/restore",
+      "id": "restore",
+      "title": "Restore a deleted branch at its saved SHA",
+      "description": "Restore a deleted branch at its saved SHA. Voice: \"restore the branch I deleted\" (log q=<branch>, then restore its id).",
+      "input": {
+        "type": "object",
+        "properties": {
+          "lid": {
+            "type": "string",
+            "description": "the git log entry id"
+          },
+          "by": {
+            "type": "string",
+            "description": "who asks (a Claude session is refused merge, pull main in, rebase, land and bulk)"
+          }
+        },
+        "required": [
+          "lid"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "route": "POST /log/import",
+      "id": "log-import",
+      "title": "Import deleted-branch lists",
+      "description": "Reads every _deleted-branches-*.txt in the repo root and the plugin's imports folder into the git log as restorable entries (idempotent)."
+    },
+    {
+      "route": "POST /refresh",
+      "id": "refresh",
+      "title": "Refresh from GitHub now"
+    },
+    {
+      "route": "PUT /config",
+      "id": "config-set",
+      "title": "Change settings",
+      "description": "Partial object: extraRepos, pollMinutes, staleDays, mergeMethod (queue|squash|merge|rebase), requireGreenChecks, allowNoChecks, requireReview, doNotMergeLabel, me, autoRetry (0-3), conflictHelp (claude|report)."
+    },
+    {
+      "route": "POST /job/{jid}/cancel",
+      "id": "job-cancel",
+      "title": "Cancel a running job"
+    },
+    {
+      "action": "github-client.focus",
+      "id": "open",
+      "title": "Open the GitHub client (deep link)",
+      "description": "Opens the page in the open console on a focus: pr 123, pr owner/name 123, prs ready|failing|conflicts|behind|stale|drafts|mine, branches, branch <name>, commits <branch>, commit <sha>, checks <ref>, log <query>, batches, batch <id>. Voice: \"show PR 123\", \"show me the ready PRs\" (args \"prs ready\").",
+      "input": {
+        "type": "object",
+        "properties": {
+          "args": {
+            "type": "string",
+            "description": "the focus, e.g. \"pr 123\" or \"prs ready\""
+          },
+          "to": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "navigate": true
+    },
+    {
+      "action": "github-client.batch",
+      "id": "open-batch",
+      "title": "Open the Batch merge dialog",
+      "input": {
+        "type": "object",
+        "properties": {
+          "args": {
+            "type": "string",
+            "description": "PR numbers to pre-select, e.g. \"120,121\""
+          },
+          "to": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "navigate": true
+    }
   ],
   "voice": [
-    { "say": "what's ready to merge", "command": "prs", "input": { "filter": "ready" } },
-    { "say": "merge PR 123", "command": "merge", "input": { "n": 123 } },
-    { "say": "pull main into 123", "command": "update-main", "input": { "n": 123 } },
-    { "say": "re-run the failed checks on 123", "command": "rerun-checks", "input": { "n": 123, "failedOnly": true } },
-    { "say": "close the stale PRs", "command": "bulk", "input": { "action": "close-stale" } },
-    { "say": "update every PR from main", "command": "bulk", "input": { "action": "update-main", "filter": "behind" } },
-    { "say": "group 120 121 and 122", "command": "group-create", "input": { "prs": [120, 121, 122] } },
-    { "say": "show the git log for today", "command": "log", "input": { "since": "today" } }
+    {
+      "say": "what's ready to merge",
+      "command": "prs",
+      "input": {
+        "filter": "ready"
+      }
+    },
+    {
+      "say": "merge PR 123",
+      "command": "merge",
+      "input": {
+        "owner": "<from prs>",
+        "name": "<from prs>",
+        "n": 123
+      }
+    },
+    {
+      "say": "pull main into 123",
+      "command": "update-main",
+      "input": {
+        "n": 123
+      }
+    },
+    {
+      "say": "re-run the failed checks on 123",
+      "command": "rerun-checks",
+      "input": {
+        "n": 123,
+        "failedOnly": true
+      }
+    },
+    {
+      "say": "close the stale PRs",
+      "command": "bulk",
+      "input": {
+        "action": "close-stale"
+      }
+    },
+    {
+      "say": "update every PR from main",
+      "command": "bulk",
+      "input": {
+        "action": "update-main",
+        "filter": "behind"
+      }
+    },
+    {
+      "say": "batch 120 121 and 122",
+      "command": "group-create",
+      "input": {
+        "prs": [
+          120,
+          121,
+          122
+        ]
+      }
+    },
+    {
+      "say": "land the batch",
+      "command": "group-land",
+      "input": {
+        "gid": "<from groups>"
+      }
+    },
+    {
+      "say": "show the git log for today",
+      "command": "log",
+      "input": {
+        "since": "today"
+      }
+    },
+    {
+      "say": "what failed to merge",
+      "command": "log",
+      "input": {
+        "kind": "merge-failed"
+      }
+    },
+    {
+      "say": "show PR 123",
+      "command": "open",
+      "input": {
+        "args": "pr 123"
+      }
+    }
   ],
   "policy": {
     "mergeRespectsQueue": true,
@@ -226,6 +1780,7 @@
     "neverDeleteProtectedOrDefault": true,
     "deletesSaveSha": true,
     "oneJobPerRepo": true,
-    "claudeNeverMerges": "merge, update-main, rebase, group-land and bulk answer 403 to control@1 commands with by: claude"
+    "claudeNeverMerges": "merge, update-main, rebase, group-land and bulk answer 403 when the caller says it is Claude (X-Axf-By from plugin-commands, or by in the body)",
+    "batchBranchesOwned": "queue/group-* branches belong to the plugin: rebuilding one pushes with --force-with-lease on the SHA it last saw"
   }
 }
