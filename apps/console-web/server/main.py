@@ -606,6 +606,49 @@ async def profiles_act(request: Request) -> Any:
     return res
 
 
+# Projects (projects@1, framework/cli/projects.mjs): workspaces with their own builds, notes, to-dos and plans. Each
+# owns a build profile; the active project = the active profile's project (one switch for every list).
+PROJECTS_CLI = ROOT / "framework" / "cli" / "projects.mjs"
+PROJECT_ACTIONS = ("select", "create", "update", "archive", "unarchive", "delete")
+
+
+def _projects_cli(*args: str, actor: str = "console") -> dict[str, Any]:
+    env = {**os.environ, "AXF_ACTOR": actor}
+    proc = subprocess.run(["node", str(PROJECTS_CLI), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=60, env=env)
+    out = proc.stdout.strip().splitlines()
+    try:
+        return json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
+    except json.JSONDecodeError:
+        return {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+
+
+@app.get("/api/projects")
+def projects_state() -> Any:
+    """Projects (projects@1): every project with its builds count, and the active one."""
+    return ok_or_500(_projects_cli("state"))
+
+
+@app.post("/api/projects", dependencies=[Depends(auth)])
+async def projects_act(request: Request) -> Any:
+    """One change: {action: select|create|update|archive|unarchive|delete, id?, name?, description?, confirm?}.
+    archive and delete need confirm = the project id; the main project (AmberX AXF) can't be archived or deleted."""
+    body = await request.body()
+    if len(body) > 16 * 1024:
+        raise HTTPException(413, "change too large")
+    try:
+        change = json.loads(body or b"{}")
+    except json.JSONDecodeError:
+        raise HTTPException(400, "not JSON")
+    if not isinstance(change, dict) or change.get("action") not in PROJECT_ACTIONS:
+        raise HTTPException(400, "action must be one of " + ", ".join(PROJECT_ACTIONS))
+    res = _projects_cli("act", json.dumps(change))
+    for line in res.get("log", []) if isinstance(res, dict) else []:
+        log("projects", line)
+    if not res.get("ok"):
+        raise HTTPException(400, res.get("error", "failed"))
+    return res
+
+
 @app.get("/plan-media/{name}")
 def plan_media_file(name: str) -> FileResponse:
     media = _plan_media_dir()
