@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:03:10.076Z",
+ "updatedAt": "2026-11-12T02:04:13.634Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -99791,6 +99791,80 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mwcwkjtg0e1j27"
+    }
+   ]
+  },
+  {
+   "id": "owner-recognized-everywhere-veto-countdown-only-on-shell-commands",
+   "title": "Owner recognized everywhere + veto countdown only on shell commands",
+   "category": "axhub",
+   "detail": "URGENT, boss order from Brett, Nov 12. Two problems: 1) The console and axHub do not recognize Brett as the owner, so owner-only settings (Claude settings > Approvals & veto tab, policy changes) don't work for him. Fix owner detection so Brett's admin console login and his axHub session count as owner everywhere (check the earlier owner-only-settings-brett-s-admin-console-login-counts-as-owner build and claude-settings-tabs-veto s4, axHub owner-only policy API GET/PUT /auth/api/policy; finish whatever is missing). 2) Change the axHub approval policies: a veto countdown ONLY on shell commands that run on the VPS (vps.run and anything executing a shell). Everything in the console/orchestrator (axf-console control_add, control_set, control_act, build_orchestrator_pipeline_queue, priority_set, agent_slots settings, console_open/show, etc.) becomes allow, no countdown. Keep confirm on the few owner-only items that already need it (model upgrades). Repos: axHub and AmberX-AXF. Tests: Brett's session is owner; vps.run still held on veto; console/orchestrator tools run immediately. PR, land through the gate, redeploy, AmberX FYI when live. Don't stop to ask.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-12T02:04:11.564Z",
+   "updatedAt": "2026-11-12T02:04:11.565Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Fix owner detection: Brett's admin console login and axHub session count as owner everywhere; finish the axHub owner-only policy API (GET/PUT /auth/api/policy) and the Approvals & veto tab so Brett can change policies himself.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwcwmtvl04pde1"
+    },
+    {
+     "id": "s2",
+     "text": "Set axHub policies: veto countdown ONLY for shell commands on the VPS (vps.run and anything executing a shell); all console/orchestrator tools to allow; keep confirm on model upgrades.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwcwmtvl059fyp"
+    },
+    {
+     "id": "s3",
+     "text": "Tests (owner recognized, vps.run still veto, console/orchestrator tools run immediately), PR, land, redeploy, AmberX FYI when live.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwcwmtvl063sln"
     }
    ]
   }
