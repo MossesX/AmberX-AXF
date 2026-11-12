@@ -776,16 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 01:56 UTC · `console-commands-reliable` → pending, note (all) · reconciler
-- 2026-11-12 01:57 UTC · `molly-native-expenses` → running, note (all) · pipeline
-- 2026-11-12 01:57 UTC · `molly-native-expenses` note (all) · orchestrator
-- 2026-11-12 01:57 UTC · `molly-native-expenses` → running, PR #497 (all) · builds-live
-- 2026-11-12 01:58 UTC · `open-any-website-by-voice-on-the-phone-optionall` → queued, note (all) · pipeline
-- 2026-11-12 01:58 UTC · `build-notifications-same-notification-per-build` → queued, note (all) · pipeline
-- 2026-11-12 01:58 UTC · `open-any-website-by-voice-on-the-phone-optionall` → running, note (all) · pipeline
-- 2026-11-12 01:58 UTC · `open-any-website-by-voice-on-the-phone-optionall` note (all) · orchestrator
-- 2026-11-12 01:58 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` s1 done, → running (all) · orchestrator
-- 2026-11-12 01:58 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` s2 done (all) · orchestrator
 - 2026-11-12 01:59 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` → queued, note (all) · pipeline
 - 2026-11-12 01:59 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` PR #498 (all) · builds-live
 - 2026-11-12 01:59 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` added (3 steps) (all) · Claude voice (Gizmo)
@@ -1176,6 +1166,16 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:27 UTC · `amberx-droid` note (all) · backfill
 - 2026-11-12 03:27 UTC · `context-menu-designer` note (all) · backfill
 - 2026-11-12 03:27 UTC · `shared-settings-interface` note (all) · backfill
+- 2026-11-12 03:27 UTC · `activity-hold-continue` note (all) · backfill
+- 2026-11-12 03:27 UTC · `banner-details-reveal` note (all) · backfill
+- 2026-11-12 03:27 UTC · `voice-notes-tab` note (all) · backfill
+- 2026-11-12 03:27 UTC · `voicevault-mic-actions` note (all) · backfill
+- 2026-11-12 03:27 UTC · `widget-arrange` note (all) · backfill
+- 2026-11-12 03:27 UTC · `widget-arrange-fable` note (all) · backfill
+- 2026-11-12 03:27 UTC · `build-manager-sessions` note (all) · backfill
+- 2026-11-12 03:27 UTC · `axhub-pages-console-style` note (all) · backfill
+- 2026-11-12 03:27 UTC · `rebake-console` note (all) · backfill
+- 2026-11-12 03:27 UTC · `axhub-oauth` note (all) · backfill
 
 ## Token passes (log)
 
