@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3445,
- "updatedAt": "2026-11-12T03:17:44.152Z",
+ "rev": 3446,
+ "updatedAt": "2026-11-12T03:17:53.641Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -162158,7 +162158,7 @@
    "branch": "claude/merge-all-ready-buttons-server-side-lander",
    "pr": "",
    "createdAt": "2026-11-12T02:47:57.796Z",
-   "updatedAt": "2026-11-12T03:11:59.113Z",
+   "updatedAt": "2026-11-12T03:17:34.226Z",
    "builtAt": "",
    "notes": [
     {
@@ -162258,12 +162258,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T03:17:34.226Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T02:47:57.796Z",
-     "updatedAt": "2026-11-12T02:47:57.796Z"
+     "updatedAt": "2026-11-12T03:17:34.480Z"
     },
     {
      "id": "s4",
@@ -162340,7 +162340,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
