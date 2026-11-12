@@ -229,6 +229,10 @@ class Pushes:
                 # Merge queue (Nov 4 2026, Brett: "We're paying to do these CI checks twice."): each ready PR is tested
                 # once on top of main + the PRs ahead of it and merges with no retest. On unless switched off.
                 "mergeQueue": raw.get("mergeQueue") is not False,
+                # Lander (Nov 12 2026, Brett: "Retire the old merge queue (it doesn't work)"): land/lander.mjs merges ready PRs
+                # one at a time through the main gate and finished builds merge themselves. On unless switched off; while it
+                # is on the merge queue stays retired whatever mergeQueue says (queue_on).
+                "lander": raw.get("lander") is not False,
                 "queueDepth": raw["queueDepth"] if isinstance(raw.get("queueDepth"), int) and not isinstance(raw.get("queueDepth"), bool) and 1 <= raw["queueDepth"] <= QUEUE_DEPTH_MAX else 3,
                 # Batch mode (Nov 10 2026, Brett: "Everything needs to go into the merge queue so we can make one build out of
                 # it before we send it to CI"): the ready PRs are combined into one commit, CI runs once, it lands as one.
@@ -237,7 +241,7 @@ class Pushes:
                 "batchSize": raw["batchSize"] if isinstance(raw.get("batchSize"), int) and not isinstance(raw.get("batchSize"), bool) and 1 <= raw["batchSize"] <= BATCH_SIZE_MAX else 8}
 
     def save_config(self, body: Any) -> dict[str, Any]:
-        if not isinstance(body, dict) or set(body) - {"repos", "hidden", "claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "mergeQueue", "queueDepth", "queueMode", "batchSize"}:
+        if not isinstance(body, dict) or set(body) - {"repos", "hidden", "claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "mergeQueue", "lander", "queueDepth", "queueMode", "batchSize"}:
             raise HTTPException(400, "send {repos: [owner/name …], hidden: [\"owner/name:branch\" …]}")
         cur = self.config()
         repos, hidden = cur["repos"], cur["hidden"]
@@ -254,7 +258,7 @@ class Pushes:
                     raise HTTPException(400, f"hidden entries look like owner/name:branch[@sha] ({_text(e, 80)!r})")
             hidden = list(dict.fromkeys(h))
         flags = {}
-        for k in ("claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "mergeQueue"):
+        for k in ("claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "mergeQueue", "lander"):
             if k in body and not isinstance(body[k], bool):
                 raise HTTPException(400, f"{k} is true or false")
             flags[k] = body[k] if k in body else cur[k]
@@ -273,6 +277,11 @@ class Pushes:
         return self.config()
 
     # ---- GitHub
+    def queue_on(self, cfg: dict[str, Any] | None = None) -> bool:
+        """The retired merge queue runs only when Brett switched the lander off and the queue on."""
+        cfg = cfg or self.config()
+        return bool(cfg["mergeQueue"]) and not cfg["lander"]
+
     def gh(self) -> github.GitHubClient:
         """The client from axf.github@1 (axHub first, the local GITHUB_TOKEN as the fallback; Settings → Plugins →
         Systems check → GitHub route), else a plain local-token client when the capability isn't installed. Reads the
@@ -474,7 +483,7 @@ class Pushes:
         b = st.get("batch") if isinstance(st.get("batch"), dict) else None
         batch = None if not b else {"prs": [m.get("pr") for m in b.get("members", []) if isinstance(m, dict)], "sha": _text(b.get("sha"), 40), "ci": _text(b.get("ci"), 20),
                                      "runUrl": _safe_url(b.get("runUrl")), "builtAt": _text(b.get("builtAt"), 40), "bisect": b.get("bisect") is True, "why": _text(b.get("why"), 300)}
-        return {"$axf": "merge-queue@1", "on": cfg["mergeQueue"], "depth": cfg["queueDepth"], "mode": cfg["queueMode"], "batchSize": cfg["batchSize"], "batch": batch,
+        return {"$axf": "merge-queue@1", "on": self.queue_on(cfg), "retired": cfg["lander"], "depth": cfg["queueDepth"], "mode": cfg["queueMode"], "batchSize": cfg["batchSize"], "batch": batch,
                 "split": [n for n in st.get("split", []) if isinstance(n, int)] if isinstance(st.get("split"), list) else [],
                 "enlisted": [x for x in st.get("enlisted", []) if isinstance(x, dict)][:10] if isinstance(st.get("enlisted"), list) else [],
                 "repo": UI_REVIEW_REPO, "at": st.get("at"),
@@ -883,7 +892,13 @@ class Pushes:
             raise HTTPException(400, "number is the PR number")
         if body.get("confirm") != f"{repo}#{number}":
             raise HTTPException(400, f'confirm with "{repo}#{number}"')
-        if repo == UI_REVIEW_REPO and self.config()["mergeQueue"]:
+        if repo == UI_REVIEW_REPO and self.config()["lander"]:
+            # Lander (Nov 12 2026): Merge puts the PR at the front of the lander; it merges through the main gate (main
+            # merged in when behind, tests green on that exact head) within minutes, never straight from the browser.
+            self.lander_command("merge", {"pr": number})
+            return {"merged": False, "queued": True, "sha": "", "url": "",
+                    "text": f"#{number} merges next: the lander brings it up to date with main, waits for its tests and merges it."}
+        if repo == UI_REVIEW_REPO and self.queue_on():
             # Enforced (Nov 10 2026, Brett: "Everything needs to go into the merge queue"): nothing reaches this repo's main
             # on its own. Merge puts the PR in the queue; it lands with the next batch once that batch's one CI run is green.
             self.queue_command("add", {"pr": number})
@@ -981,7 +996,10 @@ class Pushes:
             queue.sort(key=lambda p: (p.get("created") or p.get("updated") or "", p["number"]))  # oldest first
             if repo == UI_REVIEW_REPO and rank:  # finished builds first, in auto-land's dependency order (land.json)
                 queue.sort(key=lambda p: rank.get(p["number"], len(rank)))
-            if repo == UI_REVIEW_REPO and cfg["mergeQueue"]:
+            if repo == UI_REVIEW_REPO and cfg["lander"]:
+                done.append({"pr": repo, "merged": False, "why": "merged by the lander"})
+                continue
+            if repo == UI_REVIEW_REPO and self.queue_on(cfg):
                 # the merge queue merges this repo (land/merge-queue.mjs): each PR tested once on top of the ones ahead
                 # of it, so pulling main in here (a new head, a second CI run) is exactly what it saves
                 done.append({"pr": repo, "merged": False, "why": "merged by the merge queue"})
@@ -1081,7 +1099,7 @@ class Pushes:
         rsc = cur.get("required_status_checks") if isinstance(cur.get("required_status_checks"), dict) else None
         rpr = cur.get("required_pull_request_reviews") if isinstance(cur.get("required_pull_request_reviews"), dict) else None
         have_checks = [c for c in (rsc or {}).get("contexts", []) if isinstance(c, str)] if rsc else []
-        queued = repo == UI_REVIEW_REPO and self.config()["mergeQueue"]
+        queued = repo == UI_REVIEW_REPO and (self.queue_on() or self.config()["lander"])
         if rsc and (rsc.get("strict") is True or queued) and rpr is not None and have_checks:
             return {**out, "state": "protected", "checks": have_checks}
         if rpr and (rpr.get("dismissal_restrictions") or rpr.get("bypass_pull_request_allowances")):
@@ -1453,7 +1471,7 @@ def auto_merge_now() -> dict[str, Any]:
 def auto_merge_last() -> dict[str, Any]:
     raw = storage.read_json(data_dir() / "auto-merge.json", {}) or {}
     cfg = PUSHES.config()
-    return {"on": cfg["autoMerge"], "autoPr": cfg["autoPr"], "mergeQueue": cfg["mergeQueue"], "queueMode": cfg["queueMode"], "batchSize": cfg["batchSize"], "batchSizeMax": BATCH_SIZE_MAX, "everyS": AUTO_MERGE_EVERY_S, "last": raw.get("last", []), "at": raw.get("at"),
+    return {"on": cfg["autoMerge"], "autoPr": cfg["autoPr"], "lander": cfg["lander"], "mergeQueue": PUSHES.queue_on(cfg), "queueMode": cfg["queueMode"], "batchSize": cfg["batchSize"], "batchSizeMax": BATCH_SIZE_MAX, "everyS": AUTO_MERGE_EVERY_S, "last": raw.get("last", []), "at": raw.get("at"),
             "protection": PUSHES.protection()["repos"]}
 
 

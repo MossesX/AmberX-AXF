@@ -243,7 +243,8 @@ check(len(fdp.calls) == 1, "not handed over again within the cooldown")
 r = c.post("/p/claude", json={"repo": "MossesX/AmberX-AXF", "branch": "feat/conflict", "confirm": "MossesX/AmberX-AXF:feat/conflict"})
 check(r.status_code == 200 and settle("MossesX/AmberX-AXF:feat/conflict")["state"] == "launched" and len(fdp.calls) == 2, "Fix with Claude by hand skips the cooldown")
 check(c.post("/p/claude", json={"repo": "MossesX/AmberX-AXF", "branch": "main", "confirm": "MossesX/AmberX-AXF:main"}).status_code == 400, "never the default branch")
-c.put("/p/config", json={"mergeQueue": False})  # the hand-merge rules below are for repos the queue does not own; with it on, Merge queues (checked further down)
+check(c.get("/p/config").json()["lander"] is True, "the lander is on by default (Nov 12 2026: it replaces the merge queue)")
+c.put("/p/config", json={"mergeQueue": False, "lander": False})  # the hand-merge rules below are for repos the queue does not own; with it on, Merge queues (checked further down)
 STATE["mergeable"] = False
 m = c.post("/p/merge", json={"repo": "MossesX/AmberX-AXF", "number": 18, "confirm": "MossesX/AmberX-AXF#18"})
 STATE["mergeable"] = True
@@ -410,6 +411,12 @@ check(c.post("/p/lander/stop", json={"x": 1}).status_code == 400 and c.post("/p/
 gl = c.get("/p/gate-log").json()
 check(gl["$axf"] == "server-gate-log@1" and [e["did"] for e in gl["items"]][:2] == ["stop", "finish"] and c.get("/p/gate-log?gate=nope").json()["count"] == 0, "GET /gate-log: newest first, filter by gate")
 cmds = [x["id"] for x in json.load(open(HERE / "plugin.json"))["commands"]["items"]]
+c.put("/p/config", json={"lander": True})
+check(c.get("/p/queue").json()["on"] is False and c.get("/p/queue").json()["retired"] is True, "lander on: the merge queue is retired whatever mergeQueue says")
+ml = c.post("/p/merge", json={"repo": "MossesX/AmberX-AXF", "number": 18, "confirm": "MossesX/AmberX-AXF#18"})
+check(ml.status_code == 200 and ml.json()["queued"] is True and "lander" in ml.json()["text"], "lander on: Merge on AmberX-AXF goes to the lander (main gate), never straight to main")
+check(any(x.get("why") == "merged by the lander" for x in AM()), "lander on: auto-merge leaves AmberX-AXF to the lander")
+c.put("/p/config", json={"lander": False})
 check(all(x in cmds for x in ["lander-status", "lander-merge-all", "lander-merge", "lander-unblock", "lander-finish", "lander-stop", "gate-log"]), "every lander action reaches MCP, CLI and voice (plugin-commands@1)")
 c.put("/p/config", json={"mergeQueue": False})
 r = AM()

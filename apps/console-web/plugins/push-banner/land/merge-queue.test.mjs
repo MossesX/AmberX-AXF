@@ -92,7 +92,7 @@ const heads = { 1: branch('b1', 'one.txt', '1\n'), 2: branch('b2', 'two.txt', '2
 sh(repo, 'fetch', '-q', 'origin');
 
 const s = { repo, slug: 'o/r', dataDir: data, remote: 'origin', base: 'main', archive: join(root, 'archive') };
-writeFileSync(join(data, 'config.json'), JSON.stringify({ queueMode: 'stack' })); // the Nov 4 per-PR stack; batch mode is tested below
+writeFileSync(join(data, 'config.json'), JSON.stringify({ lander: false, mergeQueue: true, queueMode: 'stack' })); // retired queue, opted in by hand (Nov 12 2026); the Nov 4 per-PR stack; batch mode is tested below
 const git = makeGit(repo);
 const ciBySha = {}; const merges = []; const comments = []; const vars = [];
 const open = () => [1, 2, 3].filter((x) => !merges.includes(x)).map((x) => ({ number: x, title: `PR ${x}`, html_url: `u/${x}`, created_at: `2026-11-0${x}`, base: { ref: 'main' }, head: { ref: `b${x}`, sha: heads[x], repo: { full_name: 'o/r' } }, user: { login: 'bot' } }));
@@ -218,6 +218,7 @@ await t('batch rules: members, holds, decide (land all / split in half / kick th
   branch2('b4', 'four.txt', '4\n');
   sh(repo2, 'fetch', '-q', 'origin');
   const s2 = { repo: repo2, slug: 'o/r', dataDir: data2, remote: 'origin', base: 'main', archive: join(root2, 'archive') };
+  writeFileSync(join(data2, 'config.json'), JSON.stringify({ lander: false, mergeQueue: true })); // the retired queue, opted in by hand (Nov 12 2026)
   const git2 = makeGit(repo2);
   const ci2 = {}; const opened = []; const comments2 = []; const deleted = [];
   const onMain = (sha) => spawnSync('git', ['merge-base', '--is-ancestor', sha, 'main'], { cwd: origin2 }).status === 0;
