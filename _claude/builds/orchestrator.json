@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T23:22:20.834Z",
+ "updatedAt": "2026-11-12T23:22:30.504Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -110412,8 +110412,8 @@
    "pr": "#531",
    "priority": "P0",
    "createdAt": "2026-11-12T23:12:31.496Z",
-   "updatedAt": "2026-11-12T23:22:08.774Z",
-   "builtAt": "2026-11-12T23:22:08.774Z",
+   "updatedAt": "2026-11-12T23:22:21.160Z",
+   "builtAt": "2026-11-12T23:22:21.160Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -110426,6 +110426,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-banners-page-focus-scroll-to-and-highlight-any-b--sully, own login copy)",
      "at": "2026-11-12T23:13:18.764Z"
+    },
+    {
+     "text": "Headless run axf-banners-page-focus-scroll-to-and-highlight-any-b--sully: brief only · start 10.8K tokens ($0.02) · cost $2.92 · 81 turns · 6 tools, MCP none",
+     "at": "2026-11-12T23:22:21.160Z"
     },
     {
      "text": "PR #531 (draft). banners.focus works through MCP, REST, CLI, voice and ?axf-banner= links; 30 spec checks in CI. UI Review shots not taken: the sandbox console waits for axHub, which it can't reach. Shots are needed from the live console before the PR is ready.",
