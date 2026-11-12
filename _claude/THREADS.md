@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:30 UTC · `gizmo-rebuild-fable` note (all) · backfill
 - 2026-11-12 03:30 UTC · `badges-notify-followup` note (all) · backfill
 - 2026-11-12 03:30 UTC · `glossary-index-demos` merged, note (all) · backfill
 - 2026-11-12 03:30 UTC · `orchestrator-gate` note (all) · backfill
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 21:00 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` → pending, note (all) · pipeline
 - 2026-11-12 21:00 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` → running, note (all) · orchestrator
 - 2026-11-12 21:00 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` → queued, note (all) · pipeline
+- 2026-11-12 21:47 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note (all) · pipeline
 
 ## Token passes (log)
 
