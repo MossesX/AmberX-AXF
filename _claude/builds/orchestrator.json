@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:29:36.855Z",
+ "updatedAt": "2026-11-12T02:29:54.059Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -100153,9 +100153,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides",
-   "pr": "",
+   "pr": "#505",
    "createdAt": "2026-11-12T02:02:25.273Z",
-   "updatedAt": "2026-11-12T02:29:32.868Z",
+   "updatedAt": "2026-11-12T02:29:50.303Z",
    "builtAt": "",
    "notes": [
     {

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3313,
- "updatedAt": "2026-11-12T02:29:36.855Z",
+ "rev": 3314,
+ "updatedAt": "2026-11-12T02:29:54.059Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -160328,9 +160328,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides",
-   "pr": "",
+   "pr": "#505",
    "createdAt": "2026-11-12T02:02:25.273Z",
-   "updatedAt": "2026-11-12T02:29:32.868Z",
+   "updatedAt": "2026-11-12T02:29:50.303Z",
    "builtAt": "",
    "notes": [
     {
@@ -160552,7 +160552,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
