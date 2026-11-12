@@ -3,7 +3,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
 import { setPriorityHost, type PriorityHost } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
-import { FOLDER, OrchestratorPage, TABS, openTab } from './ui';
+import { BuildDrift, FOLDER, OrchestratorPage, TABS, openTab } from './ui';
 import { focusBuild } from './focus';
 import { BUILD_ACTIONS, type BuildAction } from '@console/axf/core/build-pipeline.mjs';
 
@@ -111,6 +111,8 @@ export const plugin: AxfWebLibrary = {
   nav: { label: 'Builds', items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', view: 'build-orchestrator' }] },
   contextMenu: [{ id: 'build-orchestrator.pending', target: 'axf-pending-item', items: [{ id: 'build-orchestrator.open', label: 'Open in Build orchestrator', icon: 'layers', action: 'build-orchestrator.open' }] },
     { id: 'build-orchestrator.default', target: 'default', order: 91, items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', action: 'nav:build-orchestrator' }] }],
+  // the Builds page's expanded row: Pull in main / Rebuild for a build behind main (Nov 12 2026)
+  slots: { 'build.detail.actions': [{ id: 'build-orchestrator.drift', render: (p) => (typeof p.id === 'string' ? <BuildDrift b={{ id: p.id, status: String(p.status ?? ''), behindMain: typeof p.behindMain === 'number' ? p.behindMain : null, aheadMain: typeof p.aheadMain === 'number' ? p.aheadMain : null }} buttonsOnly /> : null) }] },
   settingsTabs: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', order: 90, parent: 'plugins' }],
   settingsPanels: [{ id: 'build-orchestrator.lifecycle', tab: 'build-orchestrator', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };

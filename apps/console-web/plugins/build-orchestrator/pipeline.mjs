@@ -36,6 +36,8 @@
  *                                  file a build with the orchestrator (the id is assigned here) and, with --queue, put it in the
  *                                  Queue. Every former launch path (Build manager Start, Fix with Claude, feature assist) calls this.
  *   … show <id>                    one build as the table shows it (status, steps, pipeline record)
+ *   … drift [id…]                  commits behind / ahead of origin/main per build branch (default: every live build; — = no branch)
+ *   … pull-main <id> [--no-push] [--request]   (--request: the next tick on the host runs it) merge origin/main into the build's branch in its worktree (no live session, clean tree) and push
  *   … route <id> api|subscription|auto   the per-build override: run on an API-key account, never on one, or the default
  *
  * One way to start builds (Brett, Nov 9 2026: "It has to be the orchestrator"): the tick is the only caller of the
@@ -76,6 +78,7 @@ import * as slots from '../../../../framework/cli/agent-slots.mjs';
 import { issue as issueDispatch } from '../../../../framework/cli/dispatch-gate.mjs';
 import { shipLanded } from '../../../../framework/cli/shipped.mjs';
 import { crewSay } from '../../../../framework/cli/crew-say.mjs';
+import * as drift from '../../../../framework/cli/branch-drift.mjs';
 import { normPriority } from '../../../../framework/core/build-priority.mjs';
 import { act as orchAct } from './orchestrator.mjs';
 import { reap as workersReap, status as workersStatus, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
@@ -100,7 +103,7 @@ export function pipeDir(env = process.env) {
   const hub = join(env.AXHUB_PROJECTS_DIR || '/projects', 'amberx-axf', '_data');
   return existsSync(hub) ? join(hub, 'pipeline') : join(homedir(), '.axf', 'pipeline');
 }
-const files = () => { const d = pipeDir(); return { dir: d, settings: join(d, 'settings.json'), accounts: join(d, 'accounts.json'), state: join(d, 'state.json'), log: join(d, 'log.jsonl'), host: join(d, 'accounts-host.json'), checkRequest: join(d, 'selfcheck-request.json'), health: join(d, 'health.json'), healthLock: join(d, 'health.lock'), healthRequest: join(d, 'health-request.json') }; };
+const files = () => { const d = pipeDir(); return { dir: d, settings: join(d, 'settings.json'), accounts: join(d, 'accounts.json'), state: join(d, 'state.json'), log: join(d, 'log.jsonl'), host: join(d, 'accounts-host.json'), checkRequest: join(d, 'selfcheck-request.json'), health: join(d, 'health.json'), healthLock: join(d, 'health.lock'), healthRequest: join(d, 'health-request.json'), pullRequests: join(d, 'pull-main-requests.json') }; };
 
 /** The Claude settings document's values (owner-only ones included), {} when unreadable. */
 export function claudeSettings(env = process.env) { return readJson(claudeSettingsFile(env))?.values ?? {}; }
@@ -178,35 +181,100 @@ export function accountsRead(store, settings = loadSettings(), env = process.env
 /** Accounts as the pipeline sees them: claude-workers rows + what the store says runs on each + the pipeline's own records. */
 export function accountsNow(store, settings = loadSettings()) { return accountsRead(store, settings).accounts; }
 
-const row = (b) => {
+// behindMain / aheadMain (null = no branch here: the tables show a dash), from framework/cli/branch-drift.mjs
+const row = (b, d = null) => {
   const p = orch.progress(b); const nx = orch.nextUp(b);
   return { id: b.id, title: b.title, status: b.status, priority: priorityLabel(effectivePriority(b)), steps: { done: p.done, total: p.total, left: p.total - p.done - p.skipped }, minutesLeft: p.minutesLeft,
-    nextModel: BP.nextModel(b), nextStep: nx.step ? `${nx.step.id} ${nx.step.text}`.slice(0, 200) : '', needsApproval: nx.needsApproval, needsSplit: P.needsSplit(b), pipeline: b.pipeline ?? null, said: subtitle(b.origin, 160), branch: b.branch, pr: b.pr, createdAt: b.createdAt, updatedAt: b.updatedAt,
+    nextModel: BP.nextModel(b), nextStep: nx.step ? `${nx.step.id} ${nx.step.text}`.slice(0, 200) : '', needsApproval: nx.needsApproval, needsSplit: P.needsSplit(b), pipeline: b.pipeline ?? null, said: subtitle(b.origin, 160), branch: b.branch, pr: b.pr, ...drift.driftFields(b.branch, d), createdAt: b.createdAt, updatedAt: b.updatedAt,
     tab: BP.tabOf(b), held: BP.isHeld(b), actions: BP.actionsFor(b), deleted: !!b.deleted, deletedAt: b.deletedAt ?? '', builtAt: b.builtAt ?? '', stepList: (b.steps ?? []).slice(0, 40).map((x) => ({ id: x.id, text: str(x.text, 160), model: x.model, estimate: x.estimate ?? '', done: !!x.done, skip: !!x.skip })) };
 };
+
+/** Behind / ahead of origin/main for every build branch (cached by main + branch sha; never throws). */
+export function driftOf(builds, { budgetMs = 0 } = {}) {
+  try { return drift.driftFor(builds.map((b) => b.branch).filter(Boolean), { root: REPO_ROOT, budgetMs }); }
+  catch (e) { return { main: '', at: nowIso(), branches: {}, error: str(e.message, 200) }; }
+}
+
+/**
+ * Pull main into a build's branch (Brett, Nov 12 2026: the expanded row's "pull in main" command). In the build's
+ * worktree, when it has no live session and no uncommitted work: merge origin/main; a clean merge is pushed (the PR
+ * picks it up). A conflict is aborted and reported: then "rebuild" (back to Pending, queue it) lets a session resolve it.
+ */
+export function pullMain(id, { by = process.env.AXF_ACTOR || 'console', push = true, env = process.env } = {}) {
+  const b = storeCore.findBuild(loadStore(), id);
+  if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  const branch = drift.branchName(b.branch);
+  if (!branch) throw Object.assign(new Error(`${b.id} has no branch: nothing to pull main into`), { code: 2 });
+  if (BP.isLive(b)) throw Object.assign(new Error(`${b.id} is ${b.status}: its session owns the branch, pull main when it ends`), { code: 2 });
+  const dir = join(worktreesRoot(env), b.id);
+  if (!existsSync(dir)) throw Object.assign(new Error(`${b.id} has no worktree on this host (${dir}): queue it to rebuild on main`), { code: 2 });
+  const head = git(dir, 'rev-parse', '--abbrev-ref', 'HEAD').stdout.trim();
+  if (head !== branch) throw Object.assign(new Error(`the worktree is on ${head || 'a detached HEAD'}, not ${branch}`), { code: 2 });
+  if (git(dir, 'status', '--porcelain', '--untracked-files=no').stdout.trim()) throw Object.assign(new Error(`${b.id}'s worktree has uncommitted changes: not merged under them`), { code: 2 });
+  const f = git(dir, 'fetch', '-q', 'origin', '+refs/heads/main:refs/remotes/origin/main');
+  if (f.status !== 0) throw new Error(`fetch origin/main: ${str((f.stderr || f.stdout).trim(), 300)}`);
+  const before = drift.driftFor([branch], { root: REPO_ROOT, env }).branches[branch];
+  const m = git(dir, 'merge', '--no-edit', '-m', `Merge origin/main into ${branch}`, 'origin/main');
+  if (m.status !== 0) {
+    git(dir, 'merge', '--abort');
+    const why = /CONFLICT/.test(m.stdout + m.stderr) ? 'conflicts' : str((m.stderr || m.stdout).trim(), 200);
+    setPipeline(b.id, {}, { note: `Pull in main refused (${why}); rebuild it to resolve (${by}).`, by, action: 'pipeline:pull-main' });
+    return { ok: false, id: b.id, branch, merged: false, pushed: false, error: `merge of origin/main into ${branch}: ${why}`, before };
+  }
+  let pushed = false; let pushError = '';
+  if (push) { const p = git(dir, 'push', '-q', 'origin', `HEAD:refs/heads/${branch}`); pushed = p.status === 0; pushError = pushed ? '' : str((p.stderr || p.stdout).trim(), 300); }
+  const after = drift.driftFor([branch], { root: REPO_ROOT, env }).branches[branch];
+  setPipeline(b.id, {}, { note: `Pulled in main (${before?.behind ?? '?'} commits behind → ${after?.behind ?? '?'})${pushed ? ', pushed' : push ? `, push failed: ${pushError}` : ''} (${by}).`, by, action: 'pipeline:pull-main' });
+  return { ok: true, id: b.id, branch, merged: true, pushed, pushError, before, after };
+}
+
+/** Ask the host for a pull-main (the console container has no worktrees or push rights): the next tick runs it. */
+export function requestPullMain(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
+  const b = storeCore.findBuild(loadStore(), id);
+  if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  if (!drift.branchName(b.branch)) throw Object.assign(new Error(`${b.id} has no branch: nothing to pull main into`), { code: 2 });
+  const list = (readJson(files().pullRequests, []) ?? []).filter((r) => r && r.id !== b.id).slice(-50);
+  const r = { id: b.id, by: str(by, 80), at: nowIso() };
+  writeJson(files().pullRequests, [...list, r]);
+  return r;
+}
+
+/** The tick's part: run every asked-for pull-main (each one notes its outcome on the build). */
+export function drainPullRequests({ env = process.env } = {}) {
+  const list = readJson(files().pullRequests, []) ?? [];
+  if (!Array.isArray(list) || !list.length) return [];
+  try { rmSync(files().pullRequests, { force: true }); } catch { /* gone */ }
+  const out = [];
+  for (const r of list.slice(0, 10)) {
+    try { const x = pullMain(r.id, { by: r.by || 'console', env }); out.push({ id: r.id, ok: x.ok, error: x.error || x.pushError || '' }); }
+    catch (e) { out.push({ id: r.id, ok: false, error: str(e.message, 300) }); try { setPipeline(r.id, {}, { note: `Pull in main refused: ${str(e.message, 200)}`, by: r.by || 'console', action: 'pipeline:pull-main' }); } catch { /* build gone */ } }
+  }
+  return out;
+}
 
 /** The whole picture for the console and the CLI. */
 export function status() {
   loadUpgradePolicy();
   const store = loadStore(); const settings = loadSettings(); const read = accountsRead(store, settings); const accounts = read.accounts; const sl = slotsNow();
   const builds = live(store);
+  const d = driftOf(store.builds, { budgetMs: 4000 }); // the tick keeps the cache warm; a cold read never stalls the console
   const ageMin = read.at ? Math.max(0, Math.round((Date.now() - Date.parse(read.at)) / 60e3)) : null;
   const accountsFrom = { source: read.source, at: read.at, ageMin, why: read.why || (read.source === 'snapshot' && ageMin > 5 ? `the host's account snapshot is ${ageMin} min old: the dispatcher cron may be stopped` : '') };
   const plan = P.plan({ builds, accounts, slots: sl, settings, rules: rulesOf(store) });
   const byTable = { pending: [], queued: [], building: [] };
-  for (const b of builds) { const t = BP.tableOf(b); if (t && !b.hidden) byTable[t].push(row(b)); }
+  for (const b of builds) { const t = BP.tableOf(b); if (t && !b.hidden) byTable[t].push(row(b, d)); }
   byTable.queued.sort((a, b) => plan.queue.indexOf(a.id) - plan.queue.indexOf(b.id));
   byTable.pending.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   byTable.building.sort((a, b) => str(b.pipeline?.launchedAt).localeCompare(str(a.pipeline?.launchedAt)));
   const tabs = Object.fromEntries(BP.TABS.map((t) => [t, []]));
-  for (const b of store.builds) { const t = BP.tabOf(b); if (t) tabs[t].push(row(b)); } // every record: the Deleted tab shows soft-deleted builds
+  for (const b of store.builds) { const t = BP.tabOf(b); if (t) tabs[t].push(row(b, d)); } // every record: the Deleted tab shows soft-deleted builds
   tabs.queue.sort((a, b) => plan.queue.indexOf(a.id) - plan.queue.indexOf(b.id));
   tabs.active.sort((a, b) => str(b.pipeline?.launchedAt).localeCompare(str(a.pipeline?.launchedAt)));
   for (const t of ['pending', 'incomplete', 'errors']) tabs[t].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   for (const t of ['complete', 'archive']) tabs[t].sort((a, b) => str(b.builtAt || b.updatedAt).localeCompare(str(a.builtAt || a.updatedAt)));
   tabs.deleted.sort((a, b) => str(b.deletedAt).localeCompare(str(a.deletedAt)));
   const st = loadState();
-  return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), table: byTable, tabs, accounts, accountsFrom, health: loadHealth(), slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable, ...(sl.hard?.max ? { hard: { max: sl.hard.max, live: sl.hard.live, free: sl.hard.free } } : {}) }, plan, settings,
+  return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), table: byTable, tabs, main: { sha: d.main, at: d.at, farBehind: drift.FAR_BEHIND }, accounts, accountsFrom, health: loadHealth(), slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable, ...(sl.hard?.max ? { hard: { max: sl.hard.max, live: sl.hard.live, free: sl.hard.free } } : {}) }, plan, settings,
     state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails, selfCheck: st.selfCheck ?? null, selfCheckRequested: readJson(files().checkRequest)?.at || '' } };
 }
 
@@ -652,13 +720,17 @@ export function tick({ env = process.env } = {}) {
     try { check = selfCheck({ reason: asked ? asked.reason || 'on demand' : 'queued builds wait, nothing launched', by: asked?.by || 'dispatcher', env, alert: (kind, d) => consoleApi('POST', '/api/alerts', P.alertFor(kind, d)) }); }
     catch (e) { logLine({ event: 'self-check-failed', error: str(e.message, 300) }); }
   }
+  // behind-main counts: fetch origin/main (at most once a minute) so a push to main shows in every build table
+  let pulled = [];
+  try { pulled = drainPullRequests({ env }); } catch (e) { logLine({ event: 'pull-main-failed', error: str(e.message, 300) }); }
+  try { const r = drift.refresh({ root: REPO_ROOT, env }); if (r.error) logLine({ event: 'main-fetch-failed', error: r.error }); else driftOf(store.builds); } catch (e) { logLine({ event: 'drift-failed', error: str(e.message, 300) }); }
   // account health: every healthEveryMin minutes, in the background, so the tick never waits on it
   let health = null;
   try { health = kickHealth({ env, settings }); } catch (e) { logLine({ event: 'health-kick-failed', error: str(e.message, 300) }); }
   for (const fn of TICK_HOOKS) {
     try { fn({ state: next, plan, launched, ended, failed, env }); } catch (e) { logLine({ event: 'hook-failed', error: str(e.message, 300) }); }
   }
-  return { ok: true, at: next.at, intake: inta, ended, launched, failed, plan, idle, alertsSent: sent, selfCheck: check, health };
+  return { ok: true, at: next.at, intake: inta, ended, launched, failed, plan, idle, alertsSent: sent, selfCheck: check, health, pulled };
 }
 
 const MAX_PICK_TRIES = 4;
@@ -875,7 +947,14 @@ async function main(argv) {
     const b = request({ title: flag('title'), detail, said: flag('said'), priority: flag('priority'), route: flag('route') === 'auto' ? '' : flag('route'), queue: has('queue'), by, source: flag('source') });
     return out({ ok: true, id: b.id, status: b.status, build: { id: b.id, title: b.title, status: b.status } }, `${b.id} filed${b.status === 'queued' ? ' and queued: the dispatcher starts it' : ' in Pending'}`);
   }
-  if (cmd === 'show') { const b = storeCore.findBuild(loadStore(), rest[0]); if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 }); const r = row(b); return out({ ok: true, build: r }, `${r.id} ${r.status} ${r.steps.done}/${r.steps.total}${r.pipeline?.account ? ` on ${r.pipeline.account}` : ''}`); }
+  if (cmd === 'show') { const b = storeCore.findBuild(loadStore(), rest[0]); if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 }); const r = row(b, driftOf([b])); return out({ ok: true, build: r }, `${r.id} ${r.status} ${r.steps.done}/${r.steps.total}${r.pipeline?.account ? ` on ${r.pipeline.account}` : ''} · ${r.behindMain == null ? 'no branch' : `${r.behindMain} behind main, ${r.aheadMain} ahead`}`); }
+  if (cmd === 'drift') {
+    const s = loadStore(); const want = rest.length ? rest.map((x) => storeCore.findBuild(s, x)).filter(Boolean) : live(s).filter((b) => !b.hidden);
+    const d = driftOf(want); const rows = want.map((b) => ({ id: b.id, branch: b.branch || '', tab: BP.tabOf(b), ...drift.driftFields(b.branch, d) })).sort((a, b) => (b.behindMain ?? -1) - (a.behindMain ?? -1));
+    return out({ ok: true, main: d.main, farBehind: drift.FAR_BEHIND, builds: rows }, [`origin/main ${d.main.slice(0, 10) || '(missing)'}`, ...rows.map((r) => `  ${r.id.padEnd(50)} ${r.behindMain == null ? '     —' : `${String(r.behindMain).padStart(5)} behind · ${r.aheadMain} ahead${r.behindMain >= drift.FAR_BEHIND ? ' · far behind' : ''}`}`)].join('\n'));
+  }
+  if (cmd === 'pull-main' && has('request')) { const r = requestPullMain(rest[0], { by }); return out({ ok: true, requested: r }, `${r.id}: pull in main asked for; the next dispatcher tick (within a minute) merges and pushes it`); }
+  if (cmd === 'pull-main') { const r = pullMain(rest[0], { by, push: !has('no-push') }); if (!r.ok) { out(r, `refused: ${r.error}`); process.exitCode = 3; return; } return out(r, `${r.id}: merged origin/main into ${r.branch} (${r.before?.behind ?? '?'} → ${r.after?.behind ?? '?'} behind)${r.pushed ? ', pushed' : r.pushError ? `, push failed: ${r.pushError}` : ''}`); }
   if (cmd === 'route') { const b = setRoute(rest[0], rest[1], { by }); return out({ ok: true, id: b.id, route: b.pipeline?.route || 'auto' }, `${b.id}: route ${b.pipeline?.route || 'auto'}`); }
   if (cmd === 'intake') { const r = intake(); return out({ ok: true, ...r }, [`split: ${r.split.map((x) => `${x.id} (${x.provider}, ${x.steps})`).join(', ') || 'nothing'}`, `queued: ${r.queued.join(', ') || 'nothing'}`, ...r.skipped.map((x) => `skipped ${x.id}: ${x.error}`)].join('\n')); }
   if (cmd === 'tick') {
@@ -915,7 +994,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto | drift [id…] | pull-main <id> [--no-push] [--request] [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

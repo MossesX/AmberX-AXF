@@ -396,6 +396,53 @@
         "output": "{ action, done: [{ id, status, tab }], refused: [{ id, error }] }"
       },
       {
+        "id": "pipeline-drift",
+        "route": "GET /pipeline/drift",
+        "title": "Builds behind main",
+        "description": "How many commits every build branch is behind main (and ahead of it), most behind first. Say 'how far behind main are the builds'. A build with no branch shows a dash (null).",
+        "readOnly": true,
+        "output": "{ main, farBehind, builds: [{ id, branch, tab, behindMain, aheadMain, driftRef }] }"
+      },
+      {
+        "id": "pipeline-drift-get",
+        "route": "GET /pipeline/drift/{build_id}",
+        "title": "Is a build behind main",
+        "description": "How many commits one build's branch is behind main and ahead of it. Say 'how far behind main is skins'.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "build_id": {
+              "type": "string",
+              "description": "Build id"
+            }
+          },
+          "required": [
+            "build_id"
+          ]
+        },
+        "output": "{ main, builds: [{ id, branch, behindMain, aheadMain }] }"
+      },
+      {
+        "id": "pipeline-pull-main",
+        "route": "POST /pipeline/pull-main",
+        "title": "Pull main into a build",
+        "description": "Merge main into a build's branch and push it (the dispatcher does it within a minute, only with no live session and a clean worktree). A conflict is aborted and noted: then rebuild it (queue it). Say 'pull main into skins'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "{ requested: { id, by, at } }"
+      },
+      {
         "id": "pipeline-split",
         "route": "POST /pipeline/split",
         "title": "Split a build into steps",

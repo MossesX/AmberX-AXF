@@ -548,4 +548,25 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
   });
 }
 
+// ---------------- behind / ahead of main (framework/cli/branch-drift.mjs), on a scratch repo
+{
+  const DR = await import('../../../../framework/cli/branch-drift.mjs');
+  const repo = mkdtempSync(join(tmpdir(), 'drift-'));
+  const g = (...a) => { const r = spawnSync('git', a, { cwd: repo, encoding: 'utf8' }); if (r.status !== 0) throw new Error(`git ${a.join(' ')}: ${r.stderr}`); return r.stdout.trim(); };
+  const commit = (m) => { writeFileSync(join(repo, `${m}.txt`), `${m}\n`); g('add', '.'); g('-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-qm', m); return g('rev-parse', 'HEAD'); };
+  const env = { ...process.env, AXF_BRANCH_DRIFT_CACHE: join(repo, '.git', 'drift-cache.json') };
+  const truth = (b) => g('rev-list', '--left-right', '--count', `refs/remotes/origin/main...${b}`).split(/\s+/).map(Number);
+  const setMain = () => g('update-ref', 'refs/remotes/origin/main', 'main');
+  g('init', '-q', '-b', 'main'); commit('m1'); commit('m2');
+  g('checkout', '-qb', 'claude/a'); commit('a1'); commit('a2');
+  g('checkout', '-q', 'main'); g('checkout', '-qb', 'claude/b'); commit('b1');
+  g('checkout', '-q', 'main'); commit('m3'); setMain();
+  const check = (label) => { const d = DR.driftFor(['claude/a', 'origin/claude/b', 'claude/none', ''], { root: repo, env }); for (const br of ['claude/a', 'claude/b']) assert.deepEqual([d.branches[br].behind, d.branches[br].ahead], truth(br), `${label}: ${br}`); assert.equal(d.branches['claude/none'], null); return d; };
+  t('drift: behind / ahead per branch; a branch that is nowhere is null (a dash)', () => { const d = check('cold'); assert.deepEqual([d.branches['claude/a'].behind, d.branches['claude/a'].ahead], [1, 2]); assert.equal(Object.keys(d.branches).length, 3); });
+  t('drift: main pushes update the cached counts incrementally and exactly', () => { commit('m4'); commit('m5'); setMain(); check('push'); });
+  t('drift: a branch merged into main drops its ahead count', () => { g('-c', 'user.name=t', '-c', 'user.email=t@t', 'merge', '-q', '--no-ff', '-m', 'land b', 'claude/b'); setMain(); const d = check('merge'); assert.equal(d.branches['claude/b'].ahead, 0); });
+  t('drift: a rewritten main is counted afresh', () => { g('reset', '-q', '--hard', 'HEAD~2'); commit('m6'); setMain(); check('rewrite'); });
+  t('drift: driftFields gives null counts (a dash) without a branch', () => { assert.deepEqual(DR.driftFields('', { branches: {} }), { behindMain: null, aheadMain: null, driftRef: '', compareUrl: '' }); assert.equal(DR.branchName('origin/claude/x'), 'claude/x'); assert.equal(DR.branchName('a..b'), ''); });
+}
+
 console.log(`pipeline: ${n} checks passed${e2e ? '' : ' (CLI end-to-end skipped)'}`);

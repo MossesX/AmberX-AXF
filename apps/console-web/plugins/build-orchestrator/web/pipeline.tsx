@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { Button, Checkbox, Chip, Icon, Note, PriorityTag, Switch, flashWhenReady, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, Icon, Note, PriorityTag, SelectField, Switch, flashWhenReady, useRuntime } from '@console/axf/react';
+import * as consoleApi from '@console/api';
 import { buildRowSelector, settleFocus, useFocusedBuild } from './focus';
+import { BehindMain, DRIFT_FILTERS, DriftDetail, behindSort, matchesDrift, setFarBehind, type Drift } from './drift';
 import { WatchLiveFor } from '@console/watchLive';
 import { TAB_LABEL, type BuildAction, type PipelineTab as BuildTab } from '@console/axf/core/build-pipeline.mjs';
 
@@ -28,10 +30,10 @@ type Planned = { model: string; account: string; kind: string; at: string; why: 
 type Health = { at: string; startedAt: string; line: string; problems: string[]; accounts: { name: string; kind: string; signedIn: boolean | null; credits: boolean | null; fable: boolean | null; error: string; skipped?: boolean; at: string }[] } | null;
 type Pipeline = { route?: string; planned?: Planned; tried?: string[]; pickedAt?: string; heldAt?: string; heldBy?: string; heldWhy?: string; queuedAt: string; queuedBy: string; account: string; session: string; model: string; launchedAt: string; runs: number; note: string; splitRequested: string; split: { at: string; by: string; provider: string; steps: number; note: string } | null; lastRun: { at: string; exit: number | null; outcome: string; stepsLeft: number; account: string } | null } | null;
 type StepRow = { id: string; text: string; model: string; estimate: string; done: boolean; skip: boolean };
-type Row = { id: string; title: string; status: string; tab: BuildTab | ''; stepList: StepRow[]; builtAt: string; priority: string; steps: { done: number; total: number; left: number }; minutesLeft: number; nextModel: string; nextStep: string; needsApproval: boolean; needsSplit: boolean; pipeline: Pipeline; said: string; branch: string; pr: string; createdAt: string; updatedAt: string; held?: boolean; actions?: BuildAction[]; deleted?: boolean; deletedAt?: string };
+type Row = { id: string; title: string; status: string; tab: BuildTab | ''; stepList: StepRow[]; builtAt: string; priority: string; steps: { done: number; total: number; left: number }; minutesLeft: number; nextModel: string; nextStep: string; needsApproval: boolean; needsSplit: boolean; pipeline: Pipeline; said: string; branch: string; pr: string; createdAt: string; updatedAt: string; held?: boolean; actions?: BuildAction[]; deleted?: boolean; deletedAt?: string } & Drift;
 type Account = { name: string; email: string; plan: string; role: string; kind?: string; label?: string; fable: boolean; fableFrom: string; parallel: number; running: number; free: number; usable: boolean; why: string; api?: { usable: boolean; why: string; spend: { day: number; week: number; dayCap: number; weekCap: number; state: string } | null } | null };
 type Status = {
-  ok: boolean; at: string; table: { pending: Row[]; queued: Row[]; building: Row[] }; tabs?: Record<BuildTab, Row[]>; health?: Health; accounts: Account[];
+  ok: boolean; at: string; main?: { sha: string; at: string; farBehind?: number }; table: { pending: Row[]; queued: Row[]; building: Row[] }; tabs?: Record<BuildTab, Row[]>; health?: Health; accounts: Account[];
   slots: { used: number; cap: number; free: number; queued: number; unavailable: boolean };
   plan: { launches: { id: string; account: string; model: string; phase: string; kind?: string; rule?: string }[]; waits: { id: string; why: string }[]; queue: string[]; idle: { reason: string; kind: string } | null };
   settings: { parallelPerAccount: number; autoQueue: boolean; splitProvider: string; idleAfterMin: number; maxRuns: number; apiOverflow?: boolean; healthEveryMin?: number };
@@ -68,9 +70,13 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
   const [error, setError] = useState('');
   const [busy, setBusy] = useState('');
   const [sel, setSel] = useState<Set<string>>(() => new Set());
+  // behind main (Nov 12 2026): most-behind-first sort and a filter on every build tab, kept per browser
+  const [driftSort, setDriftSort] = useState<boolean>(() => consoleApi.readLocal('orch-pl-drift-sort', false));
+  const [driftFilter, setDriftFilter] = useState<string>(() => consoleApi.readLocal('orch-pl-drift', ''));
+  useEffect(() => { consoleApi.writeLocal('orch-pl-drift-sort', driftSort); consoleApi.writeLocal('orch-pl-drift', driftFilter); }, [driftSort, driftFilter]);
   const timer = useRef<number | null>(null);
   const load = async () => {
-    try { const r = await api.call<Status & { error?: string }>('pipeline'); if (!r.ok) throw new Error(r.error); setS(r); setError(''); }
+    try { const r = await api.call<Status & { error?: string }>('pipeline'); if (!r.ok) throw new Error(r.error); setFarBehind(r.main?.farBehind); setS(r); setError(''); }
     catch (e) { setError((e as Error).message); }
   };
   useEffect(() => {
@@ -191,12 +197,14 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
         )}
       </section>}
       {view !== 'accounts' && (() => {
-        const rows = s.tabs?.[view] ?? [];
+        const all = s.tabs?.[view] ?? [];
+        const filtered = driftFilter ? all.filter((r) => matchesDrift(r, driftFilter)) : all;
+        const rows = driftSort ? [...filtered].sort((a, b) => behindSort(b) - behindSort(a)) : filtered;
         const chosen = rows.filter((r) => sel.has(r.id));
         const offered = ACTION_ORDER.filter((a) => rows.some((r) => r.actions?.includes(a)));
         return (
           <section className="fx-stack" aria-label={TAB_LABEL[view]}>
-            <h2 className="pd-card__title">{TAB_LABEL[view]} <span className="oc-count">{rows.length}</span>
+            <h2 className="pd-card__title">{TAB_LABEL[view]} <span className="oc-count">{rows.length}{rows.length !== all.length ? ` of ${all.length}` : ''}</span>
               {view === 'pending' && <span className="fx-muted fx-small"> · split as soon as filed, model and account planned · tap Queue to send one to the dispatcher</span>}
               {view === 'queue' && <span className="fx-muted fx-small"> · in start order · the final account pick happens when its turn comes</span>}
               {view === 'incomplete' && <span className="fx-muted fx-small"> · started, then stopped with steps left</span>}
@@ -204,6 +212,12 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
               {view === 'archive' && <span className="fx-muted fx-small"> · every completed and archived build</span>}
               {view === 'deleted' && <span className="fx-muted fx-small"> · kept saved for good · Restore brings one back</span>}
             </h2>
+            {all.length > 0 && (
+              <div className="pl-bulk" role="toolbar" aria-label={`${TAB_LABEL[view]}: behind main`}>
+                <Button size="sm" tone="neutral" icon="branch" aria-pressed={driftSort} title="Sort the cards by how many commits each branch is behind main (most behind first); tap again for the tab's own order" onClick={() => setDriftSort((v) => !v)}>{driftSort ? 'Most behind main first' : 'Sort by behind main'}</Button>
+                <SelectField label="Behind main" value={driftFilter} onChange={setDriftFilter} options={DRIFT_FILTERS.map((f) => ({ value: f.value, label: f.value ? `${f.label} (${all.filter((r) => matchesDrift(r, f.value)).length})` : f.label }))} />
+              </div>
+            )}
             {rows.length > 0 && offered.length > 0 && (
               <div className="pl-bulk" role="toolbar" aria-label={`${TAB_LABEL[view]}: bulk actions`}>
                 <Checkbox label={chosen.length ? `${chosen.length} selected` : 'Select all'} checked={chosen.length === rows.length} indeterminate={chosen.length > 0 && chosen.length < rows.length} disabled={busy === 'bulk'} onChange={(on) => setSel(on ? new Set(rows.map((r) => r.id)) : new Set())} />
@@ -213,7 +227,7 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
                 })}
               </div>
             )}
-            {rows.length === 0 ? <div className="fx-empty">{EMPTY[view]}</div>
+            {rows.length === 0 ? <div className="fx-empty">{all.length ? 'No builds match the behind-main filter.' : EMPTY[view]}</div>
               : <div className="pl-cols">{rows.map((r) => <PipelineCard key={r.id} r={r} busy={busy === r.id || busy === 'bulk'} wait={waitsFor(r.id)} launch={launchFor(r.id)} act={act} run={runAction} selected={sel.has(r.id)} onSelect={(on) => toggle(r.id, on)} showSteps={view === 'queue' || view === 'pending' || r.id === focusId} focused={r.id === focusId} />)}</div>}
           </section>
         );
@@ -255,6 +269,7 @@ function PipelineCard({ r, busy, wait, launch, act, run, selected, onSelect, sho
         {p?.queuedAt && table === 'queued' && <span className="fx-muted" title={`Queued ${fmtTime(p.queuedAt)} by ${p.queuedBy}`}><Icon name="clock" size={13} />queued {ago(p.queuedAt)}</span>}
         {p?.lastRun && table !== 'building' && <span className="fx-muted" title={`Last run ended ${fmtTime(p.lastRun.at)}`}><Icon name="clock" size={13} />last run: {p.lastRun.outcome}{p.lastRun.exit != null ? ` (exit ${p.lastRun.exit})` : ''}</span>}
         {table === 'building' && <WatchLiveFor branch={r.branch} text={r.id} />}
+        <span className="pl-behind" title="Commits on main this build's branch does not have">behind main <BehindMain d={r} /></span>
       </div>
       {pl && table !== 'building' && table !== 'done' && <p className="fx-small" title={pl.why}><Icon name="layers" size={13} /> Planned: <b>{pl.model}</b> on <b>{pl.account || 'no account yet'}</b>{pl.kind === 'api' ? ' (API key)' : ''}</p>}
       {p?.account && p.pickedAt && (table === 'building' || table === 'done') && <p className="fx-small" title={`Picked ${fmtTime(p.pickedAt)}`}><Icon name="user" size={13} /> Taken by <b>{p.account}</b>{pl && pl.account && pl.account !== p.account ? ` (planned ${pl.account})` : ''}{p.tried?.length ? ` · refused: ${p.tried.join(', ')}` : ''}</p>}
@@ -264,6 +279,7 @@ function PipelineCard({ r, busy, wait, launch, act, run, selected, onSelect, sho
           {r.stepList.map((x) => <li key={x.id} className={x.done || x.skip ? 'oc-done' : ''}><span className={`oc-model is-${x.model.toLowerCase()}`}>{x.model}</span> <span className="fx-small">{x.id} · {x.text}{x.estimate ? ` · ${x.estimate}` : ''}</span></li>)}
         </ol>
       )}
+      {(showSteps || focused) && r.branch && <DriftDetail d={r} busy={busy} canRebuild={table === 'pending'} onPull={() => void act('pipeline/pull-main', { id: r.id }, `${r.id}: pull in main asked for; the dispatcher merges and pushes it within a minute`)} onRebuild={() => void act('pipeline/queue', { id: r.id }, `${r.id} → Queue: it rebuilds on today's main`)} />}
       {launch && <p className="fx-small"><Icon name="play" size={13} /> Next tick: starts on <b>{launch.account}</b> ({launch.model}{launch.phase ? `, ${launch.phase}` : ''}){launch.kind === 'api' ? ` · API key, ${launch.rule === 'override' ? 'set to API' : 'overflow'}` : ''}</p>}
       {!launch && wait && table === 'queued' && <p className="fx-small fx-muted"><Icon name="clock" size={13} /> {wait}</p>}
       {r.held && p?.heldAt && <p className="fx-small" title={fmtTime(p.heldAt)}><Icon name="pause" size={13} /> On hold since {fmtTime(p.heldAt)}{p.heldBy ? ` (${p.heldBy})` : ''}{p.heldWhy ? `: ${p.heldWhy}` : ''}</p>}

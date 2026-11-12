@@ -17,13 +17,15 @@ import './builds.css';
 
 export const FOLDER = 'builds-page';
 export const VIEW = 'builds';
-export const KEYS = { banner: 'builds.banner', select: 'builds.select', view: 'builds.view', profile: 'builds.profile', filter: 'builds.filter', scope: 'builds.scope' } as const;
+export const KEYS = { banner: 'builds.banner', select: 'builds.select', view: 'builds.view', profile: 'builds.profile', filter: 'builds.filter', scope: 'builds.scope', drift: 'builds.drift' } as const;
 export const api = pluginApi(FOLDER, 'Builds', { unavailable: 'The Builds page is switched off or its server part is not running.' });
 
 export type Progress = { total: number; done: number; pct: number; active: boolean; status?: string };
 type Priority = Parameters<typeof setBuildPriority>[1];
 export type StepV = { uid: string; id: string; title: string; text: string; model: 'Fable' | 'Opus'; why: string; phase: string; group: string; estimate: string; files: string[]; checks: string[]; done: boolean; doneAt: string; skip: boolean; note: string; rev: number; origin?: { build: string; step: string; how: string }; index: number; build: string; buildTitle: string; buildSaid?: string; kind: string; target: string; next: boolean };
-export type BuildV = { id: string; title: string; category: string; detail: string; status: string; kind: string; planRef: string; branch: string; pr: string; profiles: string[]; order: number; rev: number; createdAt: string; updatedAt: string; builtAt: string; hidden: boolean; rearranged: boolean; hasDefault: boolean; notes: { text: string; at: string }[]; pendingStatus: string; progress: Progress; minutesLeft: number; steps: StepV[]; origin?: unknown };
+/** Behind main (Nov 12 2026, framework/cli/branch-drift.mjs): null = no branch (a dash). */
+export type DriftV = { behindMain?: number | null; aheadMain?: number | null; compareUrl?: string };
+export type BuildV = DriftV & { id: string; title: string; category: string; detail: string; status: string; kind: string; planRef: string; branch: string; pr: string; profiles: string[]; order: number; rev: number; createdAt: string; updatedAt: string; builtAt: string; hidden: boolean; rearranged: boolean; hasDefault: boolean; notes: { text: string; at: string }[]; pendingStatus: string; progress: Progress; minutesLeft: number; steps: StepV[]; origin?: unknown };
 type ProfileV = { id: string; name: string; base: boolean; builds: number; progress: Progress & { builds: number; complete: number } };
 export type Op = Record<string, unknown> & { op: string };
 type StateV = { ok: boolean; error?: string; rev: number; profile: string; active: string; profiles: ProfileV[]; progress: Progress & { builds: number; complete: number }; builds: BuildV[]; draft: { ops: Op[]; count: number; updatedAt: string; log: string[] }; log?: string[] };
@@ -214,6 +216,10 @@ const FILTERS: { value: Filter; label: string; title: string }[] = [
 ];
 const keep = (f: Filter) => (b: BuildV) => f === 'all' ? true : f === 'complete' ? (b.status === 'complete' || b.status === 'built') : f === 'archived' ? b.status === 'archived' : f === 'queue' ? b.kind === 'epic' || !!b.planRef : !['complete', 'archived'].includes(b.status);
 
+/** Behind-main filter (Nov 12 2026): any, behind (≥ 1), far (≥ FAR_BEHIND), up to date (0), no branch. */
+const DRIFT_FILTERS = [{ value: '', label: 'Any vs main' }, { value: 'behind', label: 'Behind main' }, { value: 'far', label: 'Far behind main' }, { value: 'current', label: 'Up to date with main' }, { value: 'none', label: 'No branch' }];
+const keepDrift = (f: string) => (b: BuildV) => { const n = b.behindMain; if (!f) return true; if (f === 'none') return typeof n !== 'number'; if (typeof n !== 'number') return false; return f === 'behind' ? n > 0 : f === 'far' ? n >= FAR_BEHIND : f === 'current' ? n === 0 : true; };
+
 export function BuildsPage() {
   const rt = useRuntime();
   const s = useBuilds();
@@ -221,6 +227,8 @@ export function BuildsPage() {
   const [filter, setFilter] = useState<Filter>(() => (rt.settings.get(KEYS.filter) as Filter) || 'open');
   useEffect(() => { rt.settings.set(KEYS.view, view); }, [view]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { rt.settings.set(KEYS.filter, filter); }, [filter]); // eslint-disable-line react-hooks/exhaustive-deps
+  const [drift, setDrift] = useState<string>(() => (rt.settings.get(KEYS.drift) as string) || '');
+  useEffect(() => { rt.settings.set(KEYS.drift, drift); }, [drift]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => rt.actions.register('builds.view', ([v]) => { if (v === 'steps' || v === 'builds') setView(v); }, { label: 'Builds page view', params: true }), []); // eslint-disable-line react-hooks/exhaustive-deps
   // live: poll while the page is visible, and again on focus
   useEffect(() => {
@@ -233,7 +241,7 @@ export function BuildsPage() {
   const state = s.state;
   if (!state) return <div className="fx-page axp-builds"><p className="fx-muted">{s.error || 'Loading the builds store…'}</p></div>;
   const prof = state.profiles.find((p) => p.id === state.profile);
-  const builds = state.builds.filter(keep(filter));
+  const builds = state.builds.filter(keep(filter)).filter(keepDrift(drift));
   return (
     <div className="fx-page axp-builds">
       <header className="fx-pagehead axp-builds__head">
@@ -248,6 +256,7 @@ export function BuildsPage() {
         <SelectField label="Profile" value={state.profile} options={state.profiles.map((p) => ({ value: p.id, label: `${p.name} — ${p.progress.pct}%` }))} onChange={(v) => { rt.settings.set(KEYS.profile, v); void reload(v); }} className="axp-builds__pick" />
         <Segmented label="View" value={view} onChange={setView} options={[{ value: 'builds', label: 'Builds', icon: 'list' }, { value: 'steps', label: 'Steps', icon: 'layers' }]} />
         <Segmented label="Show" size="sm" value={filter} onChange={setFilter} options={FILTERS.map((f) => ({ ...f, label: `${f.label} ${state.builds.filter(keep(f.value)).length}` }))} />
+        <SelectField label="Behind main" value={drift} onChange={setDrift} className="axp-builds__pick" options={DRIFT_FILTERS.map((f) => ({ value: f.value, label: f.value ? `${f.label} (${state.builds.filter(keep(filter)).filter(keepDrift(f.value)).length})` : f.label }))} />
       </div>
       <DraftBar state={state} />
       {/* other plugins' panels above the list (e.g. agent-slots: the queue of headless runs waiting for a slot) */}
@@ -277,6 +286,14 @@ function DraftBar({ state }: { state: StateV }) {
   );
 }
 
+/** Commits behind main: a warning chip when far behind (FAR_BEHIND), 0 muted, a dash without a branch. */
+export const FAR_BEHIND = 50;
+function BehindMain({ b }: { b: DriftV }) {
+  if (typeof b.behindMain !== 'number') return <span className="fx-muted" title="No branch for this build yet">—</span>;
+  const title = `${b.behindMain} commit${b.behindMain === 1 ? '' : 's'} behind main · ${b.aheadMain ?? 0} ahead`;
+  if (b.behindMain === 0) return <span className="fx-small fx-muted" title={title}>0</span>;
+  return <span title={title}><Chip tone={b.behindMain >= FAR_BEHIND ? 'warning' : undefined}>{b.behindMain}</Chip></span>;
+}
 function StatusChip({ b }: { b: BuildV }) { return <Chip tone={STATUS_TONE[b.status]}>{STATUS_LABEL[b.status] ?? b.status}</Chip>; }
 function Bar({ p, label }: { p: Progress; label: string }) {
   return <span className="axp-builds__bar-cell"><Meter small value={p.pct} active={p.active} done={p.pct === 100} label={label} /><span className="fx-small axp-builds__num" data-active={p.active || undefined}>{p.pct}%</span></span>;
@@ -295,6 +312,7 @@ function BuildsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
     { id: 'progress', label: 'Progress', width: 'calc(var(--fx-space) * 22)', sortable: true, sortValue: (b) => b.progress.pct, render: (b) => <Bar p={b.progress} label={`${b.title}: ${b.progress.done} of ${b.progress.total} steps`} /> },
     { id: 'steps', label: 'Steps', width: 'calc(var(--fx-space) * 9)', align: 'end', sortable: true, sortValue: (b) => b.progress.total, render: (b) => <span className="fx-small">{b.progress.done}/{b.progress.total}</span> },
     { id: 'left', label: 'Left', width: 'calc(var(--fx-space) * 10)', align: 'end', sortable: true, sortValue: (b) => b.minutesLeft, render: (b) => <span className="fx-small">{fmtMin(b.minutesLeft)}</span> },
+    { id: 'behind', label: 'Behind main', width: 'calc(var(--fx-space) * 12)', align: 'end', sortable: true, sortValue: (b) => (typeof b.behindMain === 'number' ? b.behindMain : -1), render: (b) => <BehindMain b={b} /> },
   ];
   const groups: GridGroup<BuildV>[] = [{ id: 'all', title: `${builds.length} build(s)`, rows: builds, groups: [], fixed: true, progress: state.progress.pct }];
   return (
@@ -341,6 +359,14 @@ function BuildDetail({ b }: { b: BuildV }) {
           </li>
         ))}
       </ol>
+      {typeof b.behindMain === 'number' && (
+        <div className="axp-builds__drift" role="toolbar" aria-label="Behind main">
+          <span className="fx-small"><Icon name="branch" size={13} /> <b>{b.behindMain}</b> behind main · <b>{b.aheadMain ?? 0}</b> ahead</span>
+          {b.compareUrl && <a className="fx-link fx-small" href={b.compareUrl} target="_blank" rel="noopener noreferrer">Compare with main</a>}
+          {/* Pull in main / Rebuild come from the orchestrator when it is installed */}
+          <Slot name="build.detail.actions" props={{ id: b.id, status: b.status, branch: b.branch, behindMain: b.behindMain, aheadMain: b.aheadMain }} />
+        </div>
+      )}
       {b.notes.length > 0 && <ul className="fx-small fx-muted axp-builds__notes">{b.notes.map((n, i) => <li key={i}>{n.text}</li>)}</ul>}
     </div>
   );

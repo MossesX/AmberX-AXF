@@ -18,6 +18,7 @@ import * as core from '../../../../framework/plan/builds-store-core.mjs';
 import { subtitle } from '../../../../framework/core/build-origin.mjs';
 import { applyDraftNow, loadStore, withStore } from '../../../../framework/cli/builds-store.mjs';
 import { activeProfile, readProfiles } from '../../../../framework/cli/persist.mjs';
+import { driftFields, driftFor } from '../../../../framework/cli/branch-drift.mjs';
 
 const ACTOR = process.env.AXF_ACTOR || 'builds-page';
 const pickProfile = (p) => { const reg = readProfiles(); return reg.profiles.some((x) => x.id === p) ? p : activeProfile().id; };
@@ -28,13 +29,13 @@ function stepView(s, b, i) {
   const kind = /\b(fix|bug|broken|repair|red ci|regression)\b/.test(t) ? 'fix' : /\b(remove|delete|retire|drop|uninstall)\b/.test(t) ? 'removal' : /\b(add|new|create|build|introduce|first)\b/.test(t) ? 'creation' : 'edit';
   return { ...s, index: i, build: b.id, buildTitle: b.title, buildSaid: subtitle(b.origin, 200), kind, target: s.files[0] || s.group || s.phase || '', next: false };
 }
-function buildView(b, profile) {
+function buildView(b, profile, drift = null) {
   const p = core.buildProgress(b);
   const steps = b.steps.map((s, i) => stepView(s, b, i));
   const next = steps.find((s) => !s.done && !s.skip); if (next) next.next = true;
   const minutesLeft = b.steps.filter((s) => !s.done && !s.skip).reduce((t, s) => t + (estimateMin(s.estimate) ?? 0), 0);
   return {
-    id: b.id, title: b.title, category: b.category, detail: b.detail, status: b.status, kind: b.kind, planRef: b.planRef, branch: b.branch, pr: b.pr,
+    id: b.id, title: b.title, category: b.category, detail: b.detail, status: b.status, kind: b.kind, planRef: b.planRef, branch: b.branch, pr: b.pr, ...driftFields(b.branch, drift), // behindMain / aheadMain: null = no branch (a dash)
     profiles: b.profiles, order: b.order[profile] ?? 0, rev: b.rev, createdAt: b.createdAt, updatedAt: b.updatedAt, builtAt: b.builtAt,
     hidden: b.hidden, rearranged: b.rearranged, hasDefault: b.defaultSteps.length > 0, notes: b.notes.slice(-5), pendingStatus: core.pendingStatusOf(b),
     progress: p, minutesLeft, steps, origin: b.origin ?? null, // build-origin@1: what Brett said
@@ -53,7 +54,7 @@ export function state(profileArg) {
     ok: true, rev: s.rev, profile, active: activeProfile().id,
     profiles: reg.profiles.map((p) => ({ id: p.id, name: shown?.profileName?.id === p.id ? shown.profileName.name : p.name, base: !!p.base, progress: core.profileProgress(s, p.id), builds: core.buildsOf(s, p.id).length })),
     progress: core.profileProgress(view, profile),
-    builds: core.buildsOf(view, profile).map((b) => buildView(b, profile)),
+    builds: (() => { const list = core.buildsOf(view, profile); let d = null; try { d = driftFor(list.map((b) => b.branch).filter(Boolean), { budgetMs: 4000 }); } catch { /* no git here: dashes */ } return list.map((b) => buildView(b, profile, d)); })(),
     draft: { ops: d.ops, count: d.ops.length, updatedAt: d.updatedAt, by: d.by, log: shown?.log ?? [] },
   };
 }

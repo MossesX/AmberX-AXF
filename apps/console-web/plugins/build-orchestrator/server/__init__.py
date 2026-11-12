@@ -519,6 +519,28 @@ async def pipeline_action(request: Request) -> dict[str, Any]:
     return _pipeline(*args)
 
 
+@router.get("/pipeline/drift")
+def pipeline_drift(id: str | None = None) -> dict[str, Any]:
+    """Commits behind / ahead of origin/main per build branch (Brett, Nov 12 2026): {main, farBehind, builds: [{id,
+    branch, tab, behindMain, aheadMain, driftRef}]}, most behind first. ?id=<build> for one. behindMain null = no branch."""
+    return _pipeline("drift", *([_build_id(id)] if id else []))
+
+
+@router.get("/pipeline/drift/{build_id}")
+def pipeline_drift_one(build_id: str) -> dict[str, Any]:
+    """One build's commits behind / ahead of origin/main."""
+    return _pipeline("drift", _build_id(build_id))
+
+
+@router.post("/pipeline/pull-main")
+async def pipeline_pull_main(request: Request) -> dict[str, Any]:
+    """{id}: pull main into the build's branch. The host's next dispatcher tick (within a minute) merges origin/main in
+    the build's worktree (no live session, clean tree) and pushes; a conflict is aborted and noted on the build (then
+    rebuild it: queue it and a session resolves it). The outcome is a build note; behindMain drops in GET /pipeline."""
+    body = await _json_body(request)
+    return _pipeline("pull-main", _build_id(body.get("id")), "--request", "--by", (brett_click(request) or "console")[:80])
+
+
 @router.post("/pipeline/split")
 async def pipeline_split(request: Request) -> dict[str, Any]:
     """{id}: ask the orchestrator to (re)split a build into ≤ 30-min steps on its next tick (the console container has no

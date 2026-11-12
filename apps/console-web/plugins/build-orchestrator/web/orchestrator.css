@@ -48,3 +48,7 @@ button.oc-model { cursor: pointer }
 
 /* Bulk select (Nov 10 2026: hold, archive, delete, restore on many builds at once): layout only */
 .pl-bulk { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
+
+/* Behind main (Nov 12 2026): the expanded row's count, compare link and Pull in main / Rebuild: layout only */
+.oc-drift { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
+.pl-behind { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm) }

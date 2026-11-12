@@ -9,6 +9,7 @@ import pricing from '@console/axf/schemas/model-pricing.json';
 import { DataGrid, RowHookButtons, registerRowRefTarget, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 import { PipelineTab, type PipelineView } from './pipeline';
 import { buildRowSelector, settleFocus, useFocusedBuild } from './focus';
+import { BehindMain, DRIFT_FILTERS, DriftButtons, DriftDetail, behindSort, matchesDrift, setFarBehind, type Drift } from './drift';
 import './orchestrator.css';
 
 /*
@@ -26,10 +27,10 @@ export const FOLDER = 'build-orchestrator';
 registerRowRefTarget('axf-orchestrator-build', (id) => (id ? { kind: 'orchestrator', id } : null));
 const api = pluginApi(FOLDER, 'Build orchestrator', { unavailable: 'The build orchestrator is switched off or its server part is not running.' });
 type Step = { id: string; text: string; model: 'Fable' | 'Opus'; why: string; phase: string; group: string; estimate: string; files: string[]; checks: string[]; session: 'same' | 'new'; agent: boolean; done: boolean; doneAt: string; note: string };
-type Build = { id: string; title: string; category: string; detail: string; status: string; hidden: boolean; source: string; pendingId: string; branch: string; pr: string; createdAt: string; updatedAt: string; builtAt: string; notes: { text: string; at: string }[]; approvals: { phase: number; from: string; to: string; at: string; by?: string; via?: string; kind?: string; selfApproved?: boolean }[]; upgradeRequests?: { id: string; phase: number; from: string; to: string; at: string; by: string; state: string }[]; origin?: unknown; steps: Step[] };
+type Build = { id: string; title: string; category: string; detail: string; status: string; hidden: boolean; source: string; pendingId: string; branch: string; pr: string; createdAt: string; updatedAt: string; builtAt: string; notes: { text: string; at: string }[]; approvals: { phase: number; from: string; to: string; at: string; by?: string; via?: string; kind?: string; selfApproved?: boolean }[]; upgradeRequests?: { id: string; phase: number; from: string; to: string; at: string; by: string; state: string }[]; origin?: unknown; steps: Step[] } & Drift;
 type Rules = { sameSession: boolean; subAgents: boolean; approveModelSwitch: boolean; maxStepMinutes: number };
 type State = { updatedAt: string; rules: Rules; builds: Build[] };
-type Res = { ok: boolean; error?: string; state?: State; log?: string[]; brief?: string; upgradePolicy?: { approvalRequired: boolean; source: string } };
+type Res = { ok: boolean; error?: string; state?: State; main?: { farBehind?: number }; log?: string[]; brief?: string; upgradePolicy?: { approvalRequired: boolean; source: string } };
 type Act = (c: Record<string, unknown>) => Promise<boolean>;
 
 /** A build's headless runs, from the launcher's end-of-run notes (headless-context@1; same line format as
@@ -64,7 +65,7 @@ export function OrchestratorPage() {
   useEffect(() => { const on = (e: Event) => setTab((e as CustomEvent<Tab>).detail); window.addEventListener(TAB_EVENT, on); return () => window.removeEventListener(TAB_EVENT, on); }, []);
 
   const load = async () => {
-    try { const r = await api.call<Res>('state'); if (!r.ok) throw new Error(r.error); if (r.upgradePolicy) core.setUpgradePolicy(r.upgradePolicy); setState(r.state!); setError(''); }
+    try { const r = await api.call<Res>('state'); if (!r.ok) throw new Error(r.error); if (r.upgradePolicy) core.setUpgradePolicy(r.upgradePolicy); setFarBehind(r.main?.farBehind); setState(r.state!); setError(''); }
     catch (e) { setError((e as Error).message); setState((s) => s ?? (core.emptyState() as State)); }
   };
   useEffect(() => { void load(); }, []);
@@ -111,7 +112,8 @@ function BuildsTab({ state, busy, act }: { state: State; busy: boolean; act: Act
   const [showHidden, setShowHidden] = useState(false);
   const [view, setView] = useState<'list' | 'grid'>(() => consoleApi.readLocal('orch-view', 'grid'));
   const [cat, setCat] = useState('');
-  useEffect(() => { consoleApi.writeLocal('orch-view', view); }, [view]);
+  const [drift, setDrift] = useState<string>(() => consoleApi.readLocal('orch-drift', ''));
+  useEffect(() => { consoleApi.writeLocal('orch-view', view); consoleApi.writeLocal('orch-drift', drift); }, [view, drift]);
   useEffect(() => { consoleApi.writeLocal('orch-sort', sort); consoleApi.writeLocal('orch-dir', dir); }, [sort, dir]);
   const builds = useMemo(() => {
     let all = state.builds.filter((b) => (showHidden ? true : !b.hidden));
@@ -119,8 +121,9 @@ function BuildsTab({ state, busy, act }: { state: State; busy: boolean; act: Act
     else all = all.filter((b) => b.status === filter);
     if (model) all = all.filter((b) => core.nextUp(b, state.rules).step?.model === model);
     if (cat) all = all.filter((b) => (b.category || core.UNCATEGORISED) === cat);
+    if (drift) all = all.filter((b) => matchesDrift(b, drift));
     return core.sortBuilds(all, sort, dir, state.rules) as Build[];
-  }, [state, sort, dir, filter, model, showHidden, cat]);
+  }, [state, sort, dir, filter, model, showHidden, cat, drift]);
   const cats = core.categories(state.builds.filter((b) => b.status !== 'archived'));
   const counts = core.counts(state.builds) as Record<string, number>;
   const hiddenCount = state.builds.filter((b) => b.hidden).length;
@@ -143,6 +146,9 @@ function BuildsTab({ state, busy, act }: { state: State; busy: boolean; act: Act
           <option value="">Any model next</option>
           {core.MODELS.map((m) => <option key={m} value={m}>Next on {m}</option>)}
         </select>
+        <select className="fx-input oc-bar__pick" aria-label="Behind main" value={drift} onChange={(e) => setDrift(e.target.value)}>
+          {DRIFT_FILTERS.map((f) => <option key={f.value} value={f.value}>{f.label}{f.value ? ` (${state.builds.filter((b) => !b.hidden && b.status !== 'archived' && matchesDrift(b, f.value)).length})` : ''}</option>)}
+        </select>
         {view === 'list' && (
           <select className="fx-input oc-bar__pick" aria-label="Sort by" value={`${sort}:${dir}`} onChange={(e) => { const [k, d] = e.target.value.split(':'); setSort(k!); setDir(d as 'asc' | 'desc'); }}>
             {core.SORTS.flatMap((k) => (['asc', 'desc'] as const).map((d) => <option key={`${k}:${d}`} value={`${k}:${d}`}>{(core.SORT_LABEL as Record<string, string>)[k]} {d === 'asc' ? '↑' : '↓'}</option>))}
@@ -151,7 +157,7 @@ function BuildsTab({ state, busy, act }: { state: State; busy: boolean; act: Act
         {hiddenCount > 0 && <button data-fx-row className="pd-sort" aria-pressed={showHidden} onClick={() => setShowHidden((v) => !v)}><Icon name={showHidden ? 'eye' : 'minimize'} size={13} />Hidden ({hiddenCount})</button>}
         {filter && <button data-fx-row className="pd-sort" onClick={() => setFilter('')}><Icon name="x" size={13} />{(core.STATUS_LABEL as Record<string, string>)[filter]} only</button>}
       </div>
-      {builds.length === 0 ? <div className="fx-empty">{filter || cat ? 'No builds match.' : 'Nothing to orchestrate. Add a build below.'}</div>
+      {builds.length === 0 ? <div className="fx-empty">{filter || cat || drift ? 'No builds match.' : 'Nothing to orchestrate. Add a build below.'}</div>
         : view === 'grid' ? <BuildGrid builds={builds} rules={state.rules} busy={busy} act={act} />
         : <div className="pd-list" role="list">{builds.map((b) => <BuildCard key={b.id} b={b} rules={state.rules} busy={busy} act={act} />)}</div>}
       <AddForm busy={busy} act={act} />
@@ -209,6 +215,7 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
         {b.category && <span><Icon name="layers" size={13} />{b.category}</span>}
         {b.pendingId && <span className="fx-mono">pending:{b.pendingId}</span>}
         {b.branch && <span className="fx-mono">{b.branch}</span>}
+        {b.branch && <BehindMain d={b} label />}
         {(b.status === 'running' || b.status === 'waiting') && <WatchLiveFor branch={b.branch} text={`${b.id} ${b.pendingId ?? ''}`} />}
       </div>
       {!embedded && n.needsApproval && n.phase && (
@@ -433,6 +440,23 @@ function figures(b: Build) {
   return { total, left, cost, costLeft };
 }
 
+/** The expanded row's behind-main block: counts, the compare view, Pull in main (host, next tick) and Rebuild (queue it).
+ * buttonsOnly: the Builds page's expanded row (slot build.detail.actions) shows its own counts. */
+export function BuildDrift({ b, buttonsOnly = false }: { b: Pick<Build, 'id' | 'status'> & Drift; buttonsOnly?: boolean }) {
+  const rt = useRuntime();
+  const [busy, setBusy] = useState(false);
+  const post = async (path: string, what: string) => {
+    setBusy(true);
+    try { const r = await api.post<{ ok: boolean; error?: string }>(path, { id: b.id }); if (!r.ok) throw new Error(r.error); rt.toast(what, 'success'); }
+    catch (e) { rt.toast((e as Error).message, 'danger'); }
+    finally { setBusy(false); }
+  };
+  const props = { d: b, busy, canRebuild: b.status === 'pending',
+    onPull: () => void post('pipeline/pull-main', `${b.id}: pull in main asked for; the dispatcher merges and pushes it within a minute`),
+    onRebuild: () => void post('pipeline/queue', `${b.id} → Queue: it rebuilds on today's main`) };
+  return buttonsOnly ? <DriftButtons {...props} /> : <DriftDetail {...props} />;
+}
+
 /** Grid: one row per build, grouped by category (columns like the Pending builds grid); a row expands to its steps as a subgrid plus the build's actions. */
 function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules; busy: boolean; act: Act }) {
   const [sort, setSort] = useState<GridSort>(() => consoleApi.readLocal<GridSort>('orch-grid-sort', null));
@@ -477,6 +501,7 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
       render: (b) => <span className="fx-small">{core.formatMinutes(fig.get(b.id)!.left) || '—'}</span> },
     { id: 'cost', label: 'Cost', width: 'calc(var(--fx-font-size) * 4)', align: 'end', sortable: true, sortValue: (b) => fig.get(b.id)!.cost,
       render: (b) => { const f = fig.get(b.id)!; return <span className="fx-small" title={`Estimated: minutes × the model’s price per working minute · ${money(f.costLeft)} left`}>{money(f.cost)}</span>; } },
+    { id: 'behind', label: 'Behind main', width: 'calc(var(--fx-font-size) * 6)', align: 'end', sortable: true, sortValue: (b) => behindSort(b), render: (b) => <BehindMain d={b} /> },
     { id: 'added', label: 'Added', width: 'calc(var(--fx-font-size) * 7)', align: 'end', sortable: true, sortValue: (b) => b.createdAt,
       render: (b) => <span className="fx-small" title={fmtTime(b.createdAt)}>{fmtDate(b.createdAt)}</span> },
   ];
@@ -497,6 +522,7 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
           renderDetail={(b) => (
             <div className="oc-detail">
               <BuildOrigin origin={b.origin} showEmpty />
+              <BuildDrift b={b} />
               <StepGrid b={b} rules={rules} busy={busy} act={act} hidden={stepHidden} setHidden={setStepHidden} />
               <BuildCard b={b} rules={rules} busy={busy} act={act} embedded />
             </div>

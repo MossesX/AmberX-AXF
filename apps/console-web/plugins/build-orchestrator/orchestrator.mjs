@@ -39,6 +39,7 @@ import { briefBudget } from '../../../../framework/core/headless-context.mjs';
 
 loadUpgradePolicy(); // Fable upgrades need my approval (owner-only Claude setting, default off; Brett, Nov 4 2026)
 import { activeProfile } from '../../../../framework/cli/persist.mjs';
+import { FAR_BEHIND, driftFields, driftFor } from '../../../../framework/cli/branch-drift.mjs';
 import { storeFile, withStore, loadStore } from '../../../../framework/cli/builds-store.mjs';
 import { absorbOrchestrator, projectOrchestrator } from '../../../../framework/plan/builds-store-core.mjs';
 
@@ -99,7 +100,12 @@ async function main(argv) {
   const [cmd = 'list', ...rest] = args;
   const s = load();
   if (cmd === 'where') return out({ ok: true, file: trackerFile() }, trackerFile());
-  if (cmd === 'list' || cmd === 'state') return out({ ok: true, state: s, upgradePolicy: upgradePolicy() }, s.builds.filter((b) => !b.hidden && b.status !== 'archived').map((b) => line(b, s.rules)).join('\n') || 'No builds.');
+  if (cmd === 'list' || cmd === 'state') {
+    // every build row carries behindMain / aheadMain (null = no branch: a dash), framework/cli/branch-drift.mjs
+    let d = null; try { d = driftFor(s.builds.map((b) => b.branch).filter(Boolean), { budgetMs: 4000 }); } catch { /* no git here: dashes */ }
+    const shown = { ...s, builds: s.builds.map((b) => ({ ...b, ...driftFields(b.branch, d) })) };
+    return out({ ok: true, state: shown, main: { sha: d?.main ?? '', at: d?.at ?? '', farBehind: FAR_BEHIND }, upgradePolicy: upgradePolicy() }, s.builds.filter((b) => !b.hidden && b.status !== 'archived').map((b) => line(b, s.rules)).join('\n') || 'No builds.');
+  }
   if (cmd === 'next') {
     const b = rest[0] ? s.builds.find((x) => x.id === rest[0]) : s.builds.find((x) => !x.hidden && !['built', 'complete', 'archived'].includes(x.status));
     if (!b) return out({ ok: true, next: null }, 'Nothing left to build.');
