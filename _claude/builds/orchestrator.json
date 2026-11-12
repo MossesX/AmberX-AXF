@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T19:57:59.475Z",
+ "updatedAt": "2026-11-12T19:58:15.060Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -108338,7 +108338,7 @@
    "title": "Collapse and auto-collapse buttons on every tab group, toolbar, nav menu and app menu",
    "category": "",
    "detail": "Every tab group, toolbar, navigation menu and application menu (console, Molly, every standalone app, new and existing, via the shared framework component) gets a collapse/expand button and an auto-collapse toggle. Both are settable in each one's settings and reachable by API (REST, MCP, CLI, voice).",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -108346,8 +108346,8 @@
    "pr": "#525",
    "priority": "P1",
    "createdAt": "2026-11-12T18:40:03.355Z",
-   "updatedAt": "2026-11-12T19:57:58.072Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-12T19:58:07.397Z",
+   "builtAt": "2026-11-12T19:58:01.504Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -108364,6 +108364,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-collapse-and-auto-collapse-buttons-on-every-tab--gina, own login copy)",
      "at": "2026-11-12T19:43:14.422Z"
+    },
+    {
+     "text": "PR #525 is open. UI Review desktop and phone shots were not taken: this ran headless with no console to capture. Take them before the PR is called ready.",
+     "at": "2026-11-12T19:58:07.397Z"
     }
    ],
    "approvals": [],
@@ -108433,8 +108437,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T19:58:01.504Z",
      "note": "",
      "uid": "st-mwdwabfh038hd6"
     }
