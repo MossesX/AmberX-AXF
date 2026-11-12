@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:39:51.793Z",
+ "updatedAt": "2026-11-12T02:40:07.552Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -100626,16 +100626,21 @@
    "title": "One source of truth: console shows only what the server says is running",
    "category": "orchestrator",
    "detail": "URGENT, boss order from Brett, Nov 12. The console showed 15 in progress while the server (agent-slots, tmux axf-* sessions) had exactly 8 running: the console counts stale build records (killed, requeued, double-launched) as active. Make the VPS the single source of truth: the server's live list of running sessions/slots (agent-slots queue + actual tmux/claude processes) is the only thing that decides running/active. Console Active tab, in-progress counts, slot meter, orchestrator and Build Manager all read from it; any build record marked running with no live session is reconciled to its real state on every read and by the dispatcher. Same truth via REST/MCP/CLI/voice. Tests: kill a session, console count drops within seconds; stale record never shows as active.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T02:37:57.927Z",
-   "updatedAt": "2026-11-12T02:37:57.927Z",
+   "updatedAt": "2026-11-12T02:39:55.826Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T02:39:55.826Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
