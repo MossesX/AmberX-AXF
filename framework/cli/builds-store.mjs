@@ -14,6 +14,7 @@
  *   … export                                                regenerate the old files (read-only exports of the store)
  *   … history <id>                                          every journal revision of one build
  *   … restore <id> <rev>                                    put a build back as it was at journal revision <rev>
+ *   … unlock                                                remove stale store *.lock files (dead owner or > 30 s old)
  *   … progress [profile]                                    progress per build and per profile (the bars)
  *   … draft <profile> | apply <profile> | discard <profile>  the Steps view draft
  *   --json on any command prints JSON.
@@ -32,6 +33,7 @@ import * as core from '../plan/builds-store-core.mjs';
 import * as merge from '../plan/builds-merge-core.mjs';
 import { mergeOrigin } from '../core/build-origin.mjs';
 import { enqueueLive, flushLiveSoon } from './builds-live.mjs';
+import { runWithFixesSync } from './retry-runner.mjs';
 import { emitChanges } from './build-hooks.mjs';
 import { BASE_PROFILE, REPO_ROOT, activeProfile, orchestratorPath, persistRoot, profileRel, readProfiles } from './persist.mjs';
 
@@ -41,18 +43,77 @@ const scratchDir = () => { const d = process.env.AXF_DATA_DIR; return d && d !==
 export const storeFile = () => process.env.AXF_BUILDS_STORE || (scratchDir() ? join(scratchDir(), STORE_REL) : join(REPO_ROOT, STORE_REL));
 export const journalDir = () => join(dirname(storeFile()), process.env.AXF_BUILDS_STORE ? `${storeFile().replace(/^.*\//, '').replace(/\.json$/, '')}.journal` : 'journal');
 
-export class StoreLocked extends Error {}
+/** The store lock is held by another writer past the wait. `code` lets the retry ladder classify it (auto-fix@1). */
+export class StoreLocked extends Error { constructor(m) { super(m); this.code = 'store_locked'; } }
+/*
+ * Store lock (console-and-axhub-retry, Nov 12 2026). The lock file records its owner (pid, host, time), so a lock left
+ * by a writer that died is cleared at once instead of blocking every writer for 30 s. Contended writers wait with a
+ * short jittered backoff instead of failing; only a lock held by a live writer past `waitMs` throws StoreLocked.
+ */
+export const LOCK_STALE_MS = 30000;
+const HOST = (() => { try { return readFileSync('/etc/hostname', 'utf8').trim(); } catch { return ''; } })();
+const pidAlive = (pid) => { try { process.kill(pid, 0); return true; } catch (e) { return e.code === 'EPERM'; } };
+/** Why a lock file is stale, or '' when its owner may still be writing. */
+export function lockStaleness(l, now = Date.now()) {
+  let st; try { st = statSync(l); } catch { return ''; }
+  let owner = null; try { owner = JSON.parse(readFileSync(l, 'utf8') || 'null'); } catch { /* old empty lock */ }
+  if (owner?.pid && (!owner.host || owner.host === HOST) && owner.pid !== process.pid && !pidAlive(owner.pid)) return `owner pid ${owner.pid} is gone`;
+  if (now - st.mtimeMs > LOCK_STALE_MS) return `older than ${LOCK_STALE_MS / 1000} s`;
+  return '';
+}
 function lock(f, waitMs = 20000) {
-  const l = `${f}.lock`; const t0 = Date.now();
+  const l = `${f}.lock`; const t0 = Date.now(); let pause = 25;
   for (;;) {
-    try { mkdirSync(dirname(l), { recursive: true }); closeSync(openSync(l, 'wx')); return () => rmSync(l, { force: true }); }
-    catch (e) {
+    try {
+      mkdirSync(dirname(l), { recursive: true });
+      const fd = openSync(l, 'wx');
+      try { writeFileSync(fd, JSON.stringify({ pid: process.pid, host: HOST, at: new Date().toISOString() })); } finally { closeSync(fd); }
+      return () => rmSync(l, { force: true });
+    } catch (e) {
       if (e.code !== 'EEXIST') throw e;
-      try { if (Date.now() - statSync(l).mtimeMs > 30000) rmSync(l, { force: true }); } catch { /* gone */ }
+      if (lockStaleness(l)) { try { rmSync(l, { force: true }); } catch { /* another writer cleared it */ } continue; }
       if (Date.now() - t0 > waitMs) throw new StoreLocked(`builds store is locked (${l})`);
-      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 50);
+      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, pause + Math.floor(Math.random() * pause));
+      pause = Math.min(pause * 2, 250);
     }
   }
+}
+/*
+ * A write that still finds the lock held goes through the store-locked ladder (retry-ladder@1): wait again, clear a
+ * stale lock (dead owner or past LOCK_STALE_MS), then "restart the store writer", which is never done to another session's process
+ * from here: it is recorded as missing and the job gives up with one FYI naming the holder. Each attempt is in the
+ * Auto-fixes ledger. A caller that passes lockWaitMs (reads, tests) gets the plain lock and StoreLocked as before.
+ */
+const lockWaitMs = () => Number(process.env.AXF_STORE_LOCK_WAIT_MS) || 8000;
+function lockWithFixes(f, meta) {
+  const l = `${f}.lock`;
+  const holder = () => { try { const o = JSON.parse(readFileSync(l, 'utf8') || 'null'); return o?.pid ? `pid ${o.pid}${o.host ? ` on ${o.host}` : ''} since ${o.at}` : 'an older writer'; } catch { return 'nobody now'; } };
+  const { job, result, error } = runWithFixesSync({
+    title: `builds store write (${meta.action || 'write'} by ${meta.by || 'cli'})`, source: 'builds-store',
+    call: () => lock(f, lockWaitMs()),
+    fixes: {
+      'clear-stale-lock': () => {
+        if (!existsSync(l)) return;
+        if (!lockStaleness(l)) throw new Error(`held by ${holder()}, still writing`);
+        rmSync(l, { force: true });
+      },
+      'restart-store-writer': () => { throw new Error(`the lock is held by ${holder()}; another session's writer is not stopped from here`); },
+    },
+  });
+  if (error) throw error instanceof StoreLocked ? Object.assign(error, { job: job.id }) : error;
+  return result;
+}
+
+/** Remove stale *.lock files next to the store (dead owner or past LOCK_STALE_MS). Returns what was removed and why. */
+export function sweepStaleLocks(dir = dirname(storeFile())) {
+  const out = [];
+  let names = []; try { names = readdirSync(dir); } catch { return out; }
+  for (const n of names) {
+    if (!n.endsWith('.lock')) continue;
+    const l = join(dir, n); const why = lockStaleness(l);
+    if (why) { try { rmSync(l, { force: true }); out.push({ file: l, why }); } catch { /* gone */ } }
+  }
+  return out;
 }
 
 export function storeExists() { return existsSync(storeFile()); }
@@ -280,7 +341,7 @@ export function saveStore(before, after, { by = 'cli', action = 'write', note = 
 /** Read, change, save under a lock. fn(store) returns the new store (or { store, ...extra }). */
 export function withStore(fn, meta = {}) {
   const f = storeFile();
-  const unlock = lock(f, meta.lockWaitMs);
+  const unlock = meta.lockWaitMs !== undefined ? lock(f, meta.lockWaitMs) : lockWithFixes(f, meta);
   try {
     const before = readStore();
     const foreign = [];
@@ -410,6 +471,7 @@ async function main(argv) {
     return out({ ok: r.report.verify.failed.length === 0, report: r.report }, `${dry ? 'dry run' : 'migrated'}: ${r.report.counts.builds} builds, ${r.report.counts.steps} steps; ${r.report.merges.length} merges, ${r.report.conflicts.length} conflicts, ${r.report.recovered.length} recovered; verify ${r.report.verify.total - r.report.verify.failed.length}/${r.report.verify.total}`);
   }
   if (cmd === 'export') { exportNow(); return out({ ok: true }, 'exports written'); }
+  if (cmd === 'unlock') { const r = sweepStaleLocks(); return out({ ok: true, removed: r }, r.length ? r.map((x) => `removed ${x.file} (${x.why})`).join('\n') : 'no stale locks'); }
   if (cmd === 'verify') {
     // 1. the store itself is a valid builds@1 (names what is wrong); 2. nothing from the old files is missing
     const store = loadStore();
