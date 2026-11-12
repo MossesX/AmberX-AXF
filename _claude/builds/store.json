@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3353,
- "updatedAt": "2026-11-12T02:40:18.513Z",
+ "rev": 3354,
+ "updatedAt": "2026-11-12T02:40:28.160Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -157611,7 +157611,7 @@
    "branch": "claude/molly-gap-console-token-handoff",
    "pr": "",
    "createdAt": "2026-11-10T22:09:29.615Z",
-   "updatedAt": "2026-11-12T02:34:18.102Z",
+   "updatedAt": "2026-11-12T02:39:32.186Z",
    "builtAt": "",
    "notes": [
     {
@@ -157716,12 +157716,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T02:39:32.186Z",
      "note": "",
-     "rev": 1,
+     "rev": 3,
      "createdAt": "2026-11-10T22:11:45.052Z",
-     "updatedAt": "2026-11-10T22:11:45.052Z"
+     "updatedAt": "2026-11-12T02:39:32.432Z"
     },
     {
      "id": "s2",
@@ -157779,7 +157779,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
