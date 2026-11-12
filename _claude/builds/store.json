@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3525,
- "updatedAt": "2026-11-12T10:50:19.288Z",
+ "rev": 3526,
+ "updatedAt": "2026-11-12T10:50:41.285Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -173923,14 +173923,14 @@
    "title": "Show commits behind main on every build table and the orchestrator",
    "category": "",
    "detail": "Every build grid/table (All builds, Pending, Queued, Building, landing queue) and Build orchestrator cards show a 'behind main' count for the build's branch (git rev-list --count branch..origin/main), plus ahead count in the expanded row. Refresh on each main push and periodically; sortable/filterable column; highlight when far behind; expanded row links to the compare view and has a 'pull in main / rebuild' command. Expose via REST/MCP/CLI (build list includes behindMain). Builds with no branch show a dash.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "mcp",
    "pendingId": "show-commits-behind-main-on-every-build-table-an",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T10:39:34.736Z",
-   "updatedAt": "2026-11-12T10:40:28.980Z",
+   "updatedAt": "2026-11-12T10:50:25.952Z",
    "builtAt": "",
    "notes": [
     {
@@ -174065,7 +174065,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -174095,14 +174095,14 @@
    "title": "Remove the console's own Notes manager; console uses AmberX's notes/to-do manager",
    "category": "",
    "detail": "The console has its own Notes screen that doesn't show AmberX's notes/to-do items (Inbox, lists). Remove the console's separate Notes manager and make the console's Notes entry open AmberX's notes/to-do manager (same amberx.items store), with deep links to an item (focus by id). Migrate anything only in the console's notes store into amberx.items first. Full API parity.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "mcp",
    "pendingId": "remove-the-console-s-own-notes-manager-console-u",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T10:43:54.592Z",
-   "updatedAt": "2026-11-12T10:44:42.157Z",
+   "updatedAt": "2026-11-12T10:50:29.778Z",
    "builtAt": "",
    "notes": [
     {
@@ -174237,7 +174237,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -174317,7 +174317,13 @@
     "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-12T10:50:38.180Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -174403,7 +174409,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -174436,9 +174442,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T10:49:12.963Z",
-   "updatedAt": "2026-11-12T10:50:12.576Z",
+   "updatedAt": "2026-11-12T10:50:36.976Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-12T10:50:36.976Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -174453,7 +174464,111 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-12T10:50:36.976Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-12T10:50:38.180Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwdfft4g011xgy",
+     "title": "",
+     "text": "Delete every Plan Studio plan (planner.plans), plus a delete action on plans via REST/MCP/CLI/voice (none exists today). 2) Builds must never create, sync or update Plan Studio plans: remove build-plan@1 per-build plans (plan-studio-backfill-12h), any build-todo-sync plan creation, the 'every build goes to Plan Studio' rule in briefs/RULES, and any sync hooks between the builds store and plans. Plan Studio stays as a standalone tool only. Tests: adding/finishing a build creates no plan.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T10:50:36.976Z",
+     "updatedAt": "2026-11-12T10:50:36.976Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwdfft4g027qpo",
+     "title": "",
+     "text": "I want to delete all the plans and um, I no longer want build to automatically make a plan studio plan or sync with them... I don't want this plan studio to be linked to the build at all",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T10:50:36.976Z",
+     "updatedAt": "2026-11-12T10:50:36.976Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwdfft4g03m4rw",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/unlink-plan-studio-from-builds-delete-all-plan-s.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/unlink-plan-studio-from-builds-delete-all-plan-s.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T10:50:36.976Z",
+     "updatedAt": "2026-11-12T10:50:36.976Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -174462,7 +174577,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -174477,7 +174592,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-12T10:50:36.976Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
