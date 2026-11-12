@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3747,
- "updatedAt": "2026-11-12T22:31:16.778Z",
+ "rev": 3748,
+ "updatedAt": "2026-11-12T22:31:46.877Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -171796,7 +171796,7 @@
    "pr": "#528",
    "priority": "P2",
    "createdAt": "2026-11-12T19:46:41.501Z",
-   "updatedAt": "2026-11-12T22:31:10.761Z",
+   "updatedAt": "2026-11-12T22:31:45.302Z",
    "builtAt": "",
    "notes": [
     {
@@ -171870,6 +171870,10 @@
     {
      "text": "Model switch: phase 3 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
      "at": "2026-11-12T22:31:10.761Z"
+    },
+    {
+     "text": "s2 done (commit 2a5013692, pushed). PR #528 comment for s2 was refused twice by GitHub (addComment: submitted too quickly); s14 writes it into the PR body: migration is CLI-only (migrate.py apply|rollback|status), details in apps/console-web/migrations/amberx-import/README.md.",
+     "at": "2026-11-12T22:31:45.302Z"
     }
    ],
    "approvals": [
@@ -172341,7 +172345,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

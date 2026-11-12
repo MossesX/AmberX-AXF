@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T22:31:16.778Z",
+ "updatedAt": "2026-11-12T22:31:46.877Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -108573,7 +108573,7 @@
    "pr": "#528",
    "priority": "P2",
    "createdAt": "2026-11-12T19:46:41.501Z",
-   "updatedAt": "2026-11-12T22:31:10.761Z",
+   "updatedAt": "2026-11-12T22:31:45.302Z",
    "builtAt": "",
    "notes": [
     {
@@ -108647,6 +108647,10 @@
     {
      "text": "Model switch: phase 3 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
      "at": "2026-11-12T22:31:10.761Z"
+    },
+    {
+     "text": "s2 done (commit 2a5013692, pushed). PR #528 comment for s2 was refused twice by GitHub (addComment: submitted too quickly); s14 writes it into the PR body: migration is CLI-only (migrate.py apply|rollback|status), details in apps/console-web/migrations/amberx-import/README.md.",
+     "at": "2026-11-12T22:31:45.302Z"
     }
    ],
    "approvals": [
