@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3575,
- "updatedAt": "2026-11-12T11:15:09.446Z",
+ "rev": 3576,
+ "updatedAt": "2026-11-12T11:16:49.946Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174534,7 +174534,7 @@
    "branch": "claude/unlink-plan-studio-from-builds-delete-all-plan-s",
    "pr": "",
    "createdAt": "2026-11-12T10:49:12.963Z",
-   "updatedAt": "2026-11-12T11:06:18.488Z",
+   "updatedAt": "2026-11-12T11:16:48.575Z",
    "builtAt": "",
    "notes": [
     {
@@ -174548,6 +174548,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-unlink-plan-studio-from-builds-delete-all-plan-s--gina, own login copy)",
      "at": "2026-11-12T10:51:01.424Z"
+    },
+    {
+     "text": "Headless run axf-unlink-plan-studio-from-builds-delete-all-plan-s--gina: brief only · start 11.2K tokens ($0.03) · cost $4.73 · 106 turns · 6 tools, MCP none",
+     "at": "2026-11-12T11:16:48.575Z"
     }
    ],
    "approvals": [],
@@ -174677,7 +174681,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
