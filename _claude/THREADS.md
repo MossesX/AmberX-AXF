@@ -777,8 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:28 UTC · `plan-studio` note (all) · backfill
-- 2026-11-12 03:28 UTC · `audio-extract` note (all) · backfill
 - 2026-11-12 03:28 UTC · `agent-swarm` note (all) · backfill
 - 2026-11-12 03:28 UTC · `urgent-builds` note (all) · backfill
 - 2026-11-12 03:28 UTC · `agent-swarm-fable-rebuild` note (all) · backfill
@@ -1177,6 +1175,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 18:19 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` → queued, note (all) · console
 - 2026-11-12 18:20 UTC · `one-to-do-list-amberx-and-console-read-the-same-source` note (all) · orchestrator
 - 2026-11-12 18:20 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` s3 done, → built, note (all) · orchestrator
+- 2026-11-12 18:20 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` → running, note (all) · pipeline
+- 2026-11-12 18:20 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` branch claude/new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans (all) · pipeline
 
 ## Token passes (log)
 
