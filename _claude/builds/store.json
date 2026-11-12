@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3423,
- "updatedAt": "2026-11-12T03:05:52.658Z",
+ "rev": 3424,
+ "updatedAt": "2026-11-12T03:06:38.383Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -120802,15 +120802,16 @@
    "title": "Molly gap: Expense Tracker screens load natively in Molly (Next.js 16 / React 19 app today)",
    "category": "Molly",
    "detail": "Gap found by molly-one-shell. Expenses is a Next.js 16 + React 19 app; Molly is AXF React 18 + Vite, so its screens cannot mount natively as they are. Standalone expenses.amberxai.com keeps working until this lands.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/molly-native-expenses",
    "pr": "#497",
+   "mergedAt": "2026-11-12T03:02:32Z",
    "priority": "P0",
    "createdAt": "2026-11-08T16:58:59.537Z",
-   "updatedAt": "2026-11-12T02:32:30.649Z",
+   "updatedAt": "2026-11-12T03:06:36.460Z",
    "builtAt": "2026-11-12T02:32:30.649Z",
    "notes": [
     {
@@ -120868,6 +120869,10 @@
     {
      "text": "Phase 1 done (PR #497). Expenses ledger, paydays, reports, assistant and settings are native in Molly; standalone app unchanged. UI Review r-20261112-4ec56890 waits on Brett, with 3 nav-placement options. Gaps still standalone only, to be listed as pending builds: assistant edit/build modes + workspace diff; AI connection keys; receipt/statement import; vault; delete. The shell-surface@1 registration goes live once molly-one-shell (#395) lands.",
      "at": "2026-11-12T02:32:01.078Z"
+    },
+    {
+     "text": "Reconciler: PR #497 merged",
+     "at": "2026-11-12T03:06:36.460Z"
     }
    ],
    "approvals": [],
@@ -121017,7 +121022,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 59,
+   "rev": 60,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -159230,8 +159235,9 @@
    "pendingId": "",
    "branch": "claude/console-commands-reliable",
    "pr": "#496",
+   "mergedAt": "2026-11-12T03:02:18Z",
    "createdAt": "2026-11-11T23:25:41.956Z",
-   "updatedAt": "2026-11-12T01:56:06.711Z",
+   "updatedAt": "2026-11-12T03:06:36.460Z",
    "builtAt": "",
    "notes": [
     {
@@ -159241,6 +159247,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-12T01:56:06.711Z"
+    },
+    {
+     "text": "Reconciler: PR #496 merged",
+     "at": "2026-11-12T03:06:36.460Z"
     }
    ],
    "approvals": [],
@@ -159383,7 +159393,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
