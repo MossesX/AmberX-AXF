@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3694,
- "updatedAt": "2026-11-12T21:50:14.508Z",
+ "rev": 3695,
+ "updatedAt": "2026-11-12T21:50:34.881Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -172248,21 +172248,26 @@
    "title": "New project wizard: name, linked repo (required), starter code, skin, accounts, first plan",
    "category": "projects",
    "detail": "Step-by-step New project wizard (console, voice, API). Linking a repo is required (new GitHub repo, existing repo, or server folder). Builds on merged Projects (#523). Brett said: \"No, we definitely need to link a repo to it. There's no doubt about that.\"",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T20:31:23.288Z",
-   "updatedAt": "2026-11-12T20:38:36.477Z",
+   "updatedAt": "2026-11-12T21:50:33.793Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T21:50:33.793Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
+    "queuedAt": "2026-11-12T21:50:33.450Z",
+    "queuedBy": "console",
     "account": "",
     "session": "",
     "slot": "",
@@ -172518,7 +172523,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
