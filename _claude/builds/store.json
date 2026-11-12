@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3574,
- "updatedAt": "2026-11-12T11:14:55.606Z",
+ "rev": 3575,
+ "updatedAt": "2026-11-12T11:15:09.446Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -173944,14 +173944,14 @@
    "title": "Show commits behind main on every build table and the orchestrator",
    "category": "",
    "detail": "Every build grid/table (All builds, Pending, Queued, Building, landing queue) and Build orchestrator cards show a 'behind main' count for the build's branch (git rev-list --count branch..origin/main), plus ahead count in the expanded row. Refresh on each main push and periodically; sortable/filterable column; highlight when far behind; expanded row links to the compare view and has a 'pull in main / rebuild' command. Expose via REST/MCP/CLI (build list includes behindMain). Builds with no branch show a dash.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "mcp",
    "pendingId": "show-commits-behind-main-on-every-build-table-an",
    "branch": "claude/show-commits-behind-main-on-every-build-table-an",
    "pr": "",
    "createdAt": "2026-11-12T10:39:34.736Z",
-   "updatedAt": "2026-11-12T11:14:40.613Z",
+   "updatedAt": "2026-11-12T11:15:05.812Z",
    "builtAt": "",
    "notes": [
     {
@@ -173987,6 +173987,10 @@
      "at": "2026-11-12T11:14:30.663Z"
     },
     {
+     "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-12T11:15:05.812Z"
+    },
+    {
      "text": "Headless run axf-show-commits-behind-main-on-every-build-table-an--earl: brief only · start 11.2K tokens ($0.03) · cost $1.17 · 45 turns · 6 tools, MCP none",
      "at": "2026-11-12T11:14:40.613Z"
     }
@@ -174009,18 +174013,18 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "mossesx-max-",
-    "session": "axf-show-commits-behind-main-on-every-build-table-an--earl",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-12T11:08:09.491Z",
     "runs": 2,
     "lastRun": {
-     "at": "2026-11-12T11:08:03.189Z",
-     "exit": 1,
-     "outcome": "requeued",
-     "stepsLeft": 2,
+     "at": "2026-11-12T11:15:03.683Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-show-commits-behind-main-on-every-build-table-an--lenny"
+     "session": "axf-show-commits-behind-main-on-every-build-table-an--earl"
     },
     "split": {
      "at": "2026-11-12T10:40:28.980Z",
@@ -174030,7 +174034,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-12T11:08:09.491Z",
     "planned": {

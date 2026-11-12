@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T11:14:55.606Z",
+ "updatedAt": "2026-11-12T11:15:09.446Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -106926,14 +106926,14 @@
    "title": "Show commits behind main on every build table and the orchestrator",
    "category": "",
    "detail": "Every build grid/table (All builds, Pending, Queued, Building, landing queue) and Build orchestrator cards show a 'behind main' count for the build's branch (git rev-list --count branch..origin/main), plus ahead count in the expanded row. Refresh on each main push and periodically; sortable/filterable column; highlight when far behind; expanded row links to the compare view and has a 'pull in main / rebuild' command. Expose via REST/MCP/CLI (build list includes behindMain). Builds with no branch show a dash.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "mcp",
    "pendingId": "show-commits-behind-main-on-every-build-table-an",
    "branch": "claude/show-commits-behind-main-on-every-build-table-an",
    "pr": "",
    "createdAt": "2026-11-12T10:39:34.736Z",
-   "updatedAt": "2026-11-12T11:14:40.613Z",
+   "updatedAt": "2026-11-12T11:15:05.812Z",
    "builtAt": "",
    "notes": [
     {
@@ -106967,6 +106967,10 @@
     {
      "text": "s1 and s2 are done and pushed. The merge queue rows now show behind main too. s3 is left open for 2 reasons. (1) GitHub's secondary rate limit blocked creating the PR (403 at 11:14 UTC); the PR body is written and needs one retry later. (2) No UI Review shots yet: the headless capture could not reach axHub from the build sandbox, so every screen showed 'Waiting for axHub'. Tests, typecheck and the UI checks pass. The report and THREADS row are committed.",
      "at": "2026-11-12T11:14:30.663Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-12T11:15:05.812Z"
     },
     {
      "text": "Headless run axf-show-commits-behind-main-on-every-build-table-an--earl: brief only · start 11.2K tokens ($0.03) · cost $1.17 · 45 turns · 6 tools, MCP none",
