@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3308,
- "updatedAt": "2026-11-12T02:23:30.951Z",
+ "rev": 3309,
+ "updatedAt": "2026-11-12T02:23:43.119Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -157762,7 +157762,7 @@
    "branch": "claude/molly-gap-remote-actions",
    "pr": "#502",
    "createdAt": "2026-11-10T22:09:30.792Z",
-   "updatedAt": "2026-11-12T02:23:16.186Z",
+   "updatedAt": "2026-11-12T02:23:21.851Z",
    "builtAt": "",
    "notes": [
     {
@@ -157818,6 +157818,10 @@
      "at": "2026-11-12T02:17:09.304Z"
     },
     {
+     "text": "Claude account: account-5 (axf-molly-gap-remote-actions--paulie, own login copy)",
+     "at": "2026-11-12T02:23:21.851Z"
+    },
+    {
      "text": "Started run 2 on account-5 (API key, subscriptions first, then API) (Opus, Phase 2): axf-molly-gap-remote-actions--paulie.",
      "at": "2026-11-12T02:23:16.186Z"
     }
@@ -157839,12 +157843,12 @@
    "pipeline": {
     "queuedAt": "2026-11-12T01:42:50.020Z",
     "queuedBy": "console",
-    "account": "account-5",
-    "session": "axf-molly-gap-remote-actions--paulie",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-12T02:23:15.338Z",
-    "runs": 2,
+    "model": "Fable",
+    "launchedAt": "2026-11-12T01:54:08.639Z",
+    "runs": 1,
     "lastRun": {
      "at": "2026-11-12T02:15:08.982Z",
      "exit": 0,
@@ -157855,9 +157859,9 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
-    "dispatchedAt": "2026-11-12T02:23:15.338Z",
+    "dispatchedAt": "2026-11-12T01:54:08.639Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -157866,7 +157870,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-12T02:23:15.338Z",
+    "pickedAt": "2026-11-12T01:54:08.639Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
