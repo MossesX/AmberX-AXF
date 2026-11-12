@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3289,
- "updatedAt": "2026-11-12T02:16:38.697Z",
+ "rev": 3290,
+ "updatedAt": "2026-11-12T02:16:47.446Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -155712,7 +155712,7 @@
    "pr": "#503",
    "priority": "P0",
    "createdAt": "2026-11-10T21:45:52.947Z",
-   "updatedAt": "2026-11-12T02:15:58.964Z",
+   "updatedAt": "2026-11-12T02:16:41.654Z",
    "builtAt": "",
    "notes": [
     {
@@ -155742,6 +155742,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-bug-asset-settings-nav-menu-tab-bar-toolbar-chan--sully, own login copy)",
      "at": "2026-11-12T01:55:16.317Z"
+    },
+    {
+     "text": "Reconciler: PR #503",
+     "at": "2026-11-12T02:16:41.654Z"
     }
    ],
    "approvals": [],
@@ -157715,14 +157719,14 @@
    "title": "Molly gap: Molly's own actions (molly.*) reachable from the console API, MCP, CLI and AmberX",
    "category": "",
    "detail": "Found by molly-sign-in-once s1. The console-commands relay reaches the console frame inside Molly, not Molly itself, so Molly-level actions (molly.auth.status / check / sign-in / sign-out / base, molly.reload, navigation.*, xlayout.*) can only be run inside Molly (menus, toolbar, command search). Give Molly a client on the same relay (console_show / console_open target molly, plugin commands listing Molly's actions, control@1 for its settings) so every Molly action has the same four reaches (REST, MCP, CLI, voice). Needed before molly-sign-in-once s2 can call its screen done.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "molly-sign-in-once",
    "pendingId": "",
    "branch": "claude/molly-gap-remote-actions",
    "pr": "#502",
    "createdAt": "2026-11-10T22:09:30.792Z",
-   "updatedAt": "2026-11-12T02:15:09.906Z",
+   "updatedAt": "2026-11-12T02:16:41.654Z",
    "builtAt": "",
    "notes": [
     {
@@ -157768,6 +157772,10 @@
     {
      "text": "Session on account-5 ended (exit 0) with 2 steps left: back in the Queue (run 1).",
      "at": "2026-11-12T02:15:09.906Z"
+    },
+    {
+     "text": "Reconciler: PR #502 names s1, s2 done",
+     "at": "2026-11-12T02:16:41.654Z"
     }
    ],
    "approvals": [],
@@ -157807,10 +157815,10 @@
     "route": "",
     "dispatchedAt": "2026-11-12T01:54:08.639Z",
     "planned": {
-     "model": "Opus",
+     "model": "Fable",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-12T02:16:05.746Z",
+     "at": "2026-11-12T01:47:20.085Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -157857,12 +157865,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-12T02:16:41.654Z",
+     "note": "PR #502 (claude/molly-gap-remote-actions)",
+     "rev": 2,
      "createdAt": "2026-11-10T22:12:17.952Z",
-     "updatedAt": "2026-11-10T22:12:17.952Z"
+     "updatedAt": "2026-11-12T02:16:41.655Z"
     },
     {
      "id": "s3",
@@ -159229,7 +159237,7 @@
    "title": "Fix axHub #36: pull main in failed",
    "category": "",
    "detail": "## Setup (run first, then work only in that folder)\n```\nmkdir -p '/root/axf-fixes/repos'\n[ -d '/root/axf-fixes/repos/MossesX-axHub' ] || git clone -q 'https://github.com/MossesX/axHub.git' '/root/axf-fixes/repos/MossesX-axHub'\ngit -C '/root/axf-fixes/repos/MossesX-axHub' fetch -q origin && git -C '/root/axf-fixes/repos/MossesX-axHub' worktree prune\nif [ -d '/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold' ]; then git -C '/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold' checkout -q -B 'claude/claude-sync-hold' 'origin/claude/claude-sync-hold'; else git -C '/root/axf-fixes/repos/MossesX-axHub' worktree add -q -B 'claude/claude-sync-hold' '/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold' 'origin/claude/claude-sync-hold'; fi\ncd '/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold'\n```\nDo no work in the orchestrator's own build folder: it only hosts this session. Tick the build's steps there when done.\n\n# Fix pull request #36 (claude-sync: leave a checkout with .claude-sync-hold alone) in MossesX/axHub so it can reach main\n\nThe Dev Console's push banner tried to pull main in and it failed: the banner's Pull all stopped at a failed pull and handed this repo's pulls to this session.\n\n- Repository: MossesX/axHub (the setup above makes a worktree of it, on branch `claude/claude-sync-hold`)\n- Base branch: `main`\n- Pull request: #36 https://github.com/MossesX/axHub/pull/36\n\nWhat to do:\n1. `git fetch origin`, then `git merge origin/main` into `claude/claude-sync-hold`.\n2. Resolve every conflict keeping both sides' intent; when unsure which side wins, keep both and say so in the commit.\n3. Run the repo's own fast checks for what you touched (its CLAUDE.md lists them).\n4. Commit, then `git push origin HEAD:claude/claude-sync-hold`. CI runs again on the PR by itself.\n\nThen finish the banner's Pull all: pull `main` into each of these branches too, one at a time:\n- `claude/amberx-open-url`\n- `go-pass`\nFor each: `git checkout -B <branch> origin/<branch>`, `git merge origin/main`, resolve, run the checks, `git push origin HEAD:<branch>`. If one can't be fixed, skip it, keep going, and list it at the end.\n\nRules:\n- Push only to `claude/claude-sync-hold`. Never push to `main` or any other branch, never force-push, never merge the PR.\n- Never print, copy or commit secrets (tokens, keys, .env files, .axf-console/).\n- If a conflict needs a decision only Brett can make, stop and say exactly what and why in your final message.\n- Record steps and the result on your change-log entry (the hooks do most of it).\n- Pushes may also go to those branches (each only to itself); the base-branch and force rules hold for all of them.\n- You can edit files and run git only; list any other command Brett should run at the end.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "push-banner",
    "pendingId": "",
@@ -159237,7 +159245,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-12T01:46:10.127Z",
-   "updatedAt": "2026-11-12T01:53:49.655Z",
+   "updatedAt": "2026-11-12T02:16:41.654Z",
    "builtAt": "",
    "notes": [
     {
@@ -159263,6 +159271,10 @@
     {
      "text": "Headless run axf-fix-axhub-36-pull-main-in-failed--lenny: brief only · start 11.4K tokens ($0.03) · cost $0.23 · 15 turns · 6 tools, MCP none",
      "at": "2026-11-12T01:53:49.655Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-12T02:16:41.654Z"
     }
    ],
    "approvals": [],
@@ -159766,7 +159778,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
