@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 23:25 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` s1 done (all) · orchestrator
 - 2026-11-10 23:25 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` s1 done, → running (all) · orchestrator
 - 2026-11-10 23:24 UTC · `stall-watchdog-detect-when-nothing-is-building-a` s3 done, → built (all) · orchestrator
 - 2026-11-10 23:25 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` s2 done (all) · orchestrator
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:11 UTC · `molly-gap-expenses-cors` → pending, note (all) · reconciler
 - 2026-11-12 02:11 UTC · `molly-native-expenses` s3 done (all) · orchestrator
 - 2026-11-12 02:11 UTC · `open-any-website-by-voice-on-the-phone-optionall` s1 done, → running (all) · orchestrator
+- 2026-11-12 02:11 UTC · `open-any-website-by-voice-on-the-phone-optionall` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
