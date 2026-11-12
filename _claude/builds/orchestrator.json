@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T23:22:30.504Z",
+ "updatedAt": "2026-11-12T23:22:47.218Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -110688,6 +110688,25 @@
      "uid": "st-mwe63aaf08z2hm"
     }
    ]
+  },
+  {
+   "id": "demonstration-designer-demos-must-actually-show-things-when-a-demo-plays-the-c",
+   "title": "Demonstration Designer demos must actually show things: when a demo plays, the console should go to each screen and tab, scroll to and highlight every control as it's described, and click through it like a walkthrough. Right now pitch-build-orchestrator-5m is just a voice talking over a still screen",
+   "category": "",
+   "detail": "",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-12T23:22:45.967Z",
+   "updatedAt": "2026-11-12T23:22:45.968Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": []
   }
  ]
 }

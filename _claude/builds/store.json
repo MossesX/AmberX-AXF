@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3814,
- "updatedAt": "2026-11-12T23:22:30.504Z",
+ "rev": 3815,
+ "updatedAt": "2026-11-12T23:22:47.218Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174871,6 +174871,43 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-12T23:16:42.326Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "demonstration-designer-demos-must-actually-show-things-when-a-demo-plays-the-c",
+   "title": "Demonstration Designer demos must actually show things: when a demo plays, the console should go to each screen and tab, scroll to and highlight every control as it's described, and click through it like a walkthrough. Right now pitch-build-orchestrator-5m is just a voice talking over a still screen",
+   "category": "",
+   "detail": "",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-12T23:22:45.967Z",
+   "updatedAt": "2026-11-12T23:22:45.968Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 755
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
