@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3569,
- "updatedAt": "2026-11-12T11:10:56.679Z",
+ "rev": 3570,
+ "updatedAt": "2026-11-12T11:11:58.035Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -173951,7 +173951,7 @@
    "branch": "claude/show-commits-behind-main-on-every-build-table-an",
    "pr": "",
    "createdAt": "2026-11-12T10:39:34.736Z",
-   "updatedAt": "2026-11-12T11:08:11.662Z",
+   "updatedAt": "2026-11-12T11:11:56.598Z",
    "builtAt": "",
    "notes": [
     {
@@ -174001,19 +174001,12 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "mossesx-max-",
-    "session": "axf-show-commits-behind-main-on-every-build-table-an--earl",
+    "session": "axf-show-commits-behind-main-on-every-build-table-an--lenny",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-12T11:08:09.491Z",
-    "runs": 2,
-    "lastRun": {
-     "at": "2026-11-12T11:08:03.189Z",
-     "exit": 1,
-     "outcome": "requeued",
-     "stepsLeft": 2,
-     "account": "mossesx-max-",
-     "session": "axf-show-commits-behind-main-on-every-build-table-an--lenny"
-    },
+    "launchedAt": "2026-11-12T10:51:59.354Z",
+    "runs": 1,
+    "lastRun": null,
     "split": {
      "at": "2026-11-12T10:40:28.980Z",
      "by": "orchestrator",
@@ -174024,7 +174017,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-12T11:08:09.491Z",
+    "dispatchedAt": "2026-11-12T10:51:59.354Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -174033,7 +174026,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-12T11:08:09.491Z",
+    "pickedAt": "2026-11-12T10:51:59.354Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -174076,12 +174069,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T11:11:56.598Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T10:40:28.980Z",
-     "updatedAt": "2026-11-12T10:40:28.980Z"
+     "updatedAt": "2026-11-12T11:11:56.739Z"
     },
     {
      "id": "s3",
