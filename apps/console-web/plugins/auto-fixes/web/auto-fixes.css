@@ -1,0 +1,13 @@
+/* Auto-fixes: banner strip, rows and log. Layout only; theme tokens only; controls are the framework's. */
+.axp-autofix-banner { display: flex; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0; flex-wrap: nowrap }
+.axp-autofix-banner__rows { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); flex: 1 1 0; min-width: 0 }
+.axp-autofix__row { display: flex; align-items: baseline; gap: var(--fx-dens-gap-md); min-width: 0; flex: 1 1 0; justify-content: flex-start; text-align: start }
+.axp-autofix__title { font-weight: 600; white-space: nowrap; flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis }
+.axp-autofix__now { flex: 1 1 0; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.axp-autofix__meta { color: var(--fx-muted); font-size: var(--fx-type-root-sm); white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.axp-autofix__row[data-status='gave-up'] .axp-autofix__now { color: var(--fx-danger) }
+.axp-autofix__row[data-status='retrying'] .axp-autofix__now { color: var(--fx-warning) }
+.axp-autofix__item { align-items: center; gap: var(--fx-dens-gap-md); min-width: 0 }
+.axp-autofix__item[data-selected] { border-inline-start: calc(var(--fx-border-w) * 3) solid var(--fx-focus); padding-inline-start: var(--fx-dens-gap-md) }
+.axp-autofix__log { white-space: pre-wrap; font-family: var(--fx-font-mono); font-size: var(--fx-type-root-sm); margin: 0 }
+:where([data-fx-narrow]) .axp-autofix__meta { display: none }
