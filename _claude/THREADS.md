@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 22:21 UTC · `molly-one-shell` s10 done (all) · orchestrator
 - 2026-11-10 22:27 UTC · `molly-one-shell` s11 done (all) · orchestrator
 - 2026-11-10 22:30 UTC · `molly-one-shell` s12 done (all) · orchestrator
 - 2026-11-10 22:30 UTC · `molly-one-shell` note (all) · reconciler
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:02 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` added (7 steps) (all) · Claude voice (Gizmo)
 - 2026-11-12 02:02 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` → queued, note (all) · console
 - 2026-11-12 02:04 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` added (3 steps) (all) · Claude voice (Gizmo)
+- 2026-11-12 02:04 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` → queued, note (all) · console
 
 ## Token passes (log)
 
