@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3591,
- "updatedAt": "2026-11-12T18:02:52.856Z",
+ "rev": 3592,
+ "updatedAt": "2026-11-12T18:03:08.820Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175452,7 +175452,7 @@
    "branch": "claude/plugin-review-map-what-each-plugin-does-depends-on-and-breaks",
    "pr": "#522",
    "createdAt": "2026-11-12T17:47:56.247Z",
-   "updatedAt": "2026-11-12T18:02:48.075Z",
+   "updatedAt": "2026-11-12T18:03:07.036Z",
    "builtAt": "",
    "notes": [
     {
@@ -175466,6 +175466,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-plugin-review-map-what-each-plugin-does-depends---gina, own login copy)",
      "at": "2026-11-12T17:49:19.176Z"
+    },
+    {
+     "text": "Headless run axf-plugin-review-map-what-each-plugin-does-depends---gina: brief only · start 12.6K tokens ($0.09) · cost $4.78 · 28 turns · 6 tools, MCP none",
+     "at": "2026-11-12T18:03:07.036Z"
     },
     {
      "text": "Phase 1 (Fable) done: s1 extracted declared + real dependencies for 66 console plugins into _claude/builds/reports/plugin-review/{deps.json,DEPS.md,extract.mjs}. PR #522. Steps s2 (Opus) and s3 (Fable) read deps.json.",
