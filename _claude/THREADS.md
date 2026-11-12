@@ -778,8 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:32 UTC · `project-thread-2ijgui-aikeys` added (0 steps) (all) · backfill
-- 2026-11-12 03:32 UTC · `project-thread-2ijgui-restore` added (0 steps) (all) · backfill
 - 2026-11-12 03:32 UTC · `project-thread-vfc6wi` added (0 steps) (all) · backfill
 - 2026-11-12 03:32 UTC · `project-thread-jx0w7u` added (0 steps) (all) · backfill
 - 2026-11-12 03:33 UTC · `project-thread-9jsom2` added (0 steps) (all) · backfill
@@ -1178,6 +1176,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 22:44 UTC · `github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro` note (all) · orchestrator
 - 2026-11-12 22:44 UTC · `move-amberx-web-app-into-the-console-amberx-andr` s5 done (all) · orchestrator
 - 2026-11-12 22:45 UTC · `github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro` → queued, note (all) · pipeline
+- 2026-11-12 22:46 UTC · `github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro` → running, note (all) · pipeline
+- 2026-11-12 22:46 UTC · `github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro` note (all) · orchestrator
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3767,
- "updatedAt": "2026-11-12T22:46:05.581Z",
+ "rev": 3768,
+ "updatedAt": "2026-11-12T22:46:16.572Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -172919,7 +172919,7 @@
    "title": "GitHub client plugin: see and control every PR (status, merge, pull main in, group, bulk)",
    "category": "github",
    "detail": "Brett said: \"We need to build that GitHub plugin that shows all the PRs and everything, where you can completely control them, see their status, merge and pull them in, group them into one... You need a full, powerful GitHub plugin-based client.\" Console plugin, full API (REST, MCP, CLI, voice), works per project.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -172927,7 +172927,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-12T20:40:19.258Z",
-   "updatedAt": "2026-11-12T22:45:07.254Z",
+   "updatedAt": "2026-11-12T22:46:10.676Z",
    "builtAt": "",
    "notes": [
     {
@@ -172953,6 +172953,14 @@
     {
      "text": "Session on mossesx-max- ended (exit 0) with 8 steps left: back in the Queue (run 1).",
      "at": "2026-11-12T22:45:07.254Z"
+    },
+    {
+     "text": "Started run 2 on mossesx-max- (Opus, Phase 2): axf-github-client-plugin-see-and-control-every-pr-st--paulie.",
+     "at": "2026-11-12T22:46:09.178Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-github-client-plugin-see-and-control-every-pr-st--paulie, own login copy)",
+     "at": "2026-11-12T22:46:10.676Z"
     }
    ],
    "approvals": [],
@@ -172964,7 +172972,7 @@
     "session": "",
     "link": "",
     "by": "github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro",
-    "brief": "# Build: github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"GitHub client plugin: see and control every PR (status, merge, pull main in, group, bulk)\" (github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro) [github] — Phase 1, model Fable.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~30 min):\n[ ] s1 (~30m) Design the GitHub client plugin: repos per project, PRs, branches, checks; actions contract\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Tick every step as you finish it (orchestrator.mjs act step github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro \"…\"); the build goes back to Pending for Brett.\n",
+    "brief": "# Build: github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"GitHub client plugin: see and control every PR (status, merge, pull main in, group, bulk)\" (github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro) [github] — Phase 2, model Opus.\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro\nSteps in this phase (8 left, ~3.8 h):\n[ ] s2 (~30m) PR list: every PR with status, CI checks, commits behind main, conflicts, linked build; expandable rows, filters, sort\n[ ] s3 (~30m) PR actions: merge, update from main (pull main in), rebase, close, reopen, comment, re-run checks\n[ ] s4 (~30m) Batch merge: select a bunch of PRs, pull main into each, combine them into one batch branch, resolve clashes between them (Claude fixes conflicts), run checks once, merge the batch as one PR into main; failures alert Brett and retry. Brett: \"I need a way to pull main into a bunch of PRs and merge them all together as one so they don't clash with each other.\"\n[ ] s5 (~30m) Bulk actions: select many, merge all ready, close all stale, update all from main\n[ ] s6 (~30m) Branches and commits browser; open diffs\n[ ] s9 (~30m) Git log: every git action in one searchable log (merges, failed merges and why, retries, branch deletes with saved SHA and a Restore button, pushes, main pulled in, PRs opened/closed), expandable rows, AmberX alert on failures; import the existing _deleted-branches-*.txt lists\n[ ] s7 (~30m) Full API parity (REST, MCP, CLI, voice) and deep links for every view and action\n[ ] s8 (~20m) Tests, report, PR\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": false,
     "from": "",
     "addenda": []
@@ -172973,11 +172981,11 @@
     "queuedAt": "2026-11-12T22:22:58.453Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "",
+    "session": "axf-github-client-plugin-see-and-control-every-pr-st--paulie",
     "slot": "",
-    "model": "Fable",
-    "launchedAt": "2026-11-12T22:23:13.464Z",
-    "runs": 1,
+    "model": "Opus",
+    "launchedAt": "2026-11-12T22:46:08.743Z",
+    "runs": 2,
     "lastRun": {
      "at": "2026-11-12T22:45:06.446Z",
      "exit": 0,
@@ -172988,9 +172996,9 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "Session on mossesx-max- ended (exit 0) with 8 steps left: back in the Queue (run 1).",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-12T22:23:13.464Z",
+    "dispatchedAt": "2026-11-12T22:46:08.743Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -172999,7 +173007,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-12T22:23:13.464Z",
+    "pickedAt": "2026-11-12T22:46:08.743Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -173212,7 +173220,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
