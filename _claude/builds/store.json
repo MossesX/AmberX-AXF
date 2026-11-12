@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3378,
- "updatedAt": "2026-11-12T02:46:19.433Z",
+ "rev": 3379,
+ "updatedAt": "2026-11-12T02:46:30.045Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -157269,14 +157269,14 @@
    "title": "Molly gap: axHub allows Molly's origin on /auth/api/* (CORS with credentials) so native screens read the hub session",
    "category": "",
    "detail": "Found by molly-sign-in-once s1. From https://molly.amberxai.com, GET https://axhub.amberxai.com/auth/api/session answers 200 with no Access-Control-Allow-Origin, and the preflight OPTIONS /auth/api/logout answers 200 with no CORS headers, so a browser on Molly cannot read the hub session or post a write. The hub should answer an allow-list of amberxai.com app origins (Molly first) on /auth/api/* with Access-Control-Allow-Origin echoing the origin, Access-Control-Allow-Credentials true, Access-Control-Allow-Headers content-type, accept, x-axhub-csrf, Vary Origin; never * with credentials. The session cookie is same-site (SameSite=Lax is enough). Molly side is in place: apps/molly/src/molly/credentials.ts (axhub provider, credentials include, X-AxHub-CSRF on writes).",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "molly-sign-in-once",
    "pendingId": "",
    "branch": "claude/molly-gap-axhub-cors",
    "pr": "",
    "createdAt": "2026-11-10T22:09:27.000Z",
-   "updatedAt": "2026-11-12T02:45:16.923Z",
+   "updatedAt": "2026-11-12T02:46:25.190Z",
    "builtAt": "",
    "notes": [
     {
@@ -157329,7 +157329,7 @@
    "pipeline": {
     "queuedAt": "2026-11-12T01:43:09.945Z",
     "queuedBy": "console",
-    "account": "",
+    "account": "account-5",
     "session": "",
     "slot": "",
     "model": "Opus",
@@ -157345,7 +157345,7 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "released by the self-check (nothing ran): back in the Queue",
+    "note": "Session on account-5 ended (exit 1) with 3 steps left: back in the Queue (run 1).",
     "route": "",
     "dispatchedAt": "2026-11-12T01:45:51.956Z",
     "planned": {
@@ -157399,12 +157399,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T02:46:25.189Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T22:10:44.496Z",
-     "updatedAt": "2026-11-10T22:10:44.496Z"
+     "updatedAt": "2026-11-12T02:46:25.417Z"
     },
     {
      "id": "s3",
