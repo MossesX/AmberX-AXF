@@ -10,6 +10,14 @@ import { call, ledgerChanged, ledgerQuery, money, todayIso, useApi, type Entry, 
  * action (`expenses.*`, index.tsx), so the console API, MCP, CLI and voice reach the same thing.
  */
 
+/** Grid tracks on the space token: a floor that fits the content, then a share of the rest (phone: the grid scrolls). */
+const W = {
+  date: 'minmax(calc(var(--fx-space) * 22), 1fr)',
+  main: 'minmax(calc(var(--fx-space) * 30), 3fr)',
+  mid: 'minmax(calc(var(--fx-space) * 24), 2fr)',
+  amount: 'minmax(calc(var(--fx-space) * 22), 1fr)',
+};
+
 const KINDS = [{ value: '', label: 'All' }, { value: 'expense', label: 'Spending' }, { value: 'income', label: 'Income' }];
 
 function Toolbar({ label, children }: { label: string; children: React.ReactNode }) {
@@ -54,11 +62,11 @@ export function LedgerScreen() {
   }, [data]);
 
   const columns: GridColumn<Entry>[] = [
-    { id: 'date', label: 'Date', width: 'minmax(6rem, 1fr)', sortable: true, sortValue: (r) => r.date, render: (r) => r.date },
-    { id: 'merchant', label: 'Merchant', width: 'minmax(10rem, 3fr)', fixed: true, sortable: true, sortValue: (r) => r.merchant, render: (r) => r.merchant },
-    { id: 'category', label: 'Category', width: 'minmax(6rem, 2fr)', sortable: true, sortValue: (r) => r.category, render: (r) => r.category },
-    { id: 'account', label: 'Account', width: 'minmax(6rem, 2fr)', render: (r) => r.paymentMethod ?? '' },
-    { id: 'amount', label: 'Amount', width: 'minmax(6rem, 1fr)', align: 'end', sortable: true, sortValue: (r) => r.totalCents,
+    { id: 'date', label: 'Date', width: W.date, sortable: true, sortValue: (r) => r.date, render: (r) => r.date },
+    { id: 'merchant', label: 'Merchant', width: W.main, fixed: true, sortable: true, sortValue: (r) => r.merchant, render: (r) => r.merchant },
+    { id: 'category', label: 'Category', width: W.mid, sortable: true, sortValue: (r) => r.category, render: (r) => r.category },
+    { id: 'account', label: 'Account', width: W.mid, render: (r) => r.paymentMethod ?? '' },
+    { id: 'amount', label: 'Amount', width: W.amount, align: 'end', sortable: true, sortValue: (r) => r.totalCents,
       render: (r) => r.kind === 'income' ? <Chip tone="success">+{money(r.totalCents, r.currency)}</Chip> : money(r.totalCents, r.currency) },
   ];
 
@@ -104,11 +112,11 @@ export function LedgerScreen() {
         </Container>
       )}
       {error ? <Problem error={error} onRetry={reload} /> : (
-        <DataGrid<Entry> id="expenses-ledger" label="Ledger" groups={groups} columns={columns} rowId={(r) => r.id} rowLabel={(r) => r.merchant}
+        <div className="axp-exp__scroll"><DataGrid<Entry> id="expenses-ledger" label="Ledger" groups={groups} columns={columns} rowId={(r) => r.id} rowLabel={(r) => r.merchant}
           hidden={hidden} onToggleColumn={(c, show) => setHidden((h) => (show ?? h.includes(c)) ? h.filter((x) => x !== c) : [...h, c])} onShowAll={() => setHidden([])}
           selected={selected} onRowClick={edit} rowTone={(r) => (r.kind === 'income' ? 'success' : r.disputed ? 'warning' : '')}
           rowCtx={(r) => ({ target: 'expenses-entry', payload: r.id })} dataset={false}
-          empty={loading ? 'Loading the ledger…' : 'No entries match.'} />
+          empty={loading ? 'Loading the ledger…' : 'No entries match.'} /></div>
       )}
       {data && <p className="axp-exp__foot">{data.count} of {data.of} entries · same ledger as expenses.amberxai.com</p>}
     </div>
@@ -151,13 +159,13 @@ export function PaydaysScreen() {
         </div>
       )}
       {data && (
-        <DataGrid<Entry> id="expenses-paydays" label="Recent paydays" groups={recent} rowId={(r) => r.id} hidden={[]} dataset={false}
+        <div className="axp-exp__scroll"><DataGrid<Entry> id="expenses-paydays" label="Recent paydays" groups={recent} rowId={(r) => r.id} hidden={[]} dataset={false}
           columns={[
-            { id: 'date', label: 'Date', width: 'minmax(6rem, 1fr)', render: (r) => r.date },
-            { id: 'payer', label: 'Payer', width: 'minmax(8rem, 3fr)', fixed: true, render: (r) => r.merchant },
-            { id: 'amount', label: 'Amount', width: 'minmax(6rem, 1fr)', align: 'end', render: (r) => money(r.totalCents, r.currency) },
+            { id: 'date', label: 'Date', width: W.date, render: (r) => r.date },
+            { id: 'payer', label: 'Payer', width: W.main, fixed: true, render: (r) => r.merchant },
+            { id: 'amount', label: 'Amount', width: W.amount, align: 'end', render: (r) => money(r.totalCents, r.currency) },
           ]}
-          empty="No paydays in the ledger yet." />
+          empty="No paydays in the ledger yet." /></div>
       )}
     </div>
   );

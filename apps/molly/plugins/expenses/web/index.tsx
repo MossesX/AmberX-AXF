@@ -22,6 +22,25 @@ export const SCREENS = [
   { id: 'assistant', label: 'Assistant', icon: 'sparkles', render: () => <AssistantScreen /> },
 ] as const;
 
+/** Where the screens sit in Molly's navigation (setting `expenses.navPlacement`, the three UI Review options). */
+export const NAV_KEY = 'expenses.navPlacement';
+export const NAV_PLACEMENTS = [
+  { value: 'section', label: 'Own section', hint: 'An "Expenses" section of its own under the apps.' },
+  { value: 'nested', label: 'Under the Expenses app', hint: 'A sub menu that slides open from Apps → Expenses.' },
+  { value: 'menu', label: 'Molly menu only', hint: 'No navigation entries; the Molly menu, search and deep links reach them.' },
+] as const;
+const NAV_SECTION = 'ai.amberx.axf.molly.expenses.nav';
+
+function placeNav(rt: AxfRuntime): void {
+  const p = rt.settings.get(NAV_KEY);
+  const items = SCREENS.map((s) => ({ id: `expenses.${s.id}`, label: s.label, icon: s.icon, view: `expenses/${s.id}` }));
+  rt.removeNavSection(NAV_SECTION);
+  if (p === 'menu') return;
+  // joined by view: the nav-menu asset's own Expenses entry (view `expenses`) takes the screens as its sub menu
+  if (p === 'nested') rt.setNavSection({ id: NAV_SECTION, label: 'Apps', items: [{ id: 'expenses', label: 'Expenses', icon: 'chart', view: 'expenses', items }] });
+  else rt.setNavSection({ id: NAV_SECTION, label: 'Expenses', items });
+}
+
 const argsOf = (args: string[], payload?: string) => (args.length ? args.join(':') : payload ?? '');
 
 /** A JSON object payload (MCP / REST send one), or `{}`. */
@@ -43,9 +62,17 @@ export const plugin: AxfWebLibrary = {
   builtWith: { model: 'opus', builtAt: '2026-11-12' },
   help: helpPack.data as AxfWebLibrary['help'],
   views: Object.fromEntries(SCREENS.map((s) => [`expenses/${s.id}`, { title: `Expenses ${s.label.toLowerCase()}`, icon: s.icon, render: s.render, keywords: ['expenses', 'money', s.id] }])),
-  nav: { label: 'Expenses', items: SCREENS.map((s) => ({ id: `expenses.${s.id}`, label: s.label, icon: s.icon, view: `expenses/${s.id}` })) },
   register(rt) {
     const on = rt.actions.register.bind(rt.actions);
+    // Deep links: #/expenses/<screen> opens the native screen; any other #/expenses/<route> stays the app's own frame.
+    const fromHash = () => {
+      const m = /^#\/?expenses\/([a-z]+)\/?$/.exec(window.location.hash);
+      if (m && SCREENS.some((s) => s.id === m[1])) rt.navigate(`expenses/${m[1]}`);
+    };
+    fromHash();
+    window.addEventListener('hashchange', () => queueMicrotask(fromHash));
+    placeNav(rt);
+    rt.settings.onChange(NAV_KEY, () => placeNav(rt));
     on('expenses.open', (args, ctx) => {
       const id = argsOf(args, ctx.payload) || 'ledger';
       if (SCREENS.some((s) => s.id === id)) rt.navigate(`expenses/${id}`);
@@ -130,6 +157,11 @@ export const plugin: AxfWebLibrary = {
       ledgerChanged();
       return out;
     }, { label: 'Put Expense Tracker settings back to their defaults' });
+    on('expenses.nav', (args, ctx) => {
+      const v = argsOf(args, ctx.payload);
+      if (NAV_PLACEMENTS.some((x) => x.value === v)) rt.settings.set(NAV_KEY, v);
+      return rt.settings.get(NAV_KEY) ?? 'section';
+    }, { label: 'Where Expenses sits in the navigation (section, nested, menu)' });
     on('expenses.refresh', () => ledgerChanged(), { label: 'Re-read the ledger' });
     on('expenses.settings', () => rt.dispatch(`settings.open:${TAB}`), { label: 'Expenses settings…' });
   },
@@ -137,7 +169,10 @@ export const plugin: AxfWebLibrary = {
   settingsTabs: [{ id: TAB, label: 'Expenses', icon: 'chart', order: 40, parent: 'plugins', description: 'The Expense Tracker inside Molly: where its ledger lives.' }],
   settingsPanels: SETTINGS_SECTIONS.map((x, i) => ({ id: `expenses.${x.id}`, tab: TAB, title: x.title, icon: x.icon, order: 20 + i * 10, render: () => <SettingsSection section={x.id} /> })),
   settings: [{ id: 'expenses.connection', label: 'Connection', icon: 'cloud', tab: TAB, order: 10, description: 'The Expense Tracker API Molly reads and writes. You stay signed in through expenses.amberxai.com.',
-    settings: [{ key: API_BASE_KEY, label: 'Ledger API address', kind: 'text', default: DEFAULT_API_BASE, scope: 'device' }] }],
+    settings: [
+      { key: API_BASE_KEY, label: 'Ledger API address', kind: 'text', default: DEFAULT_API_BASE, scope: 'device' },
+      { key: NAV_KEY, label: 'In the navigation', kind: 'choice', default: 'section', description: NAV_PLACEMENTS.map((x) => `${x.label}: ${x.hint}`).join(' '), options: NAV_PLACEMENTS.map(({ value, label }) => ({ value, label })) },
+    ] }],
   // Molly's own menu (its index of every app): the Expenses screens under the Expenses entry
   appMenu: [
     { id: 'expenses.apps', menu: 'molly', menuLabel: 'Molly', after: 'go-expenses', items: [

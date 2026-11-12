@@ -107,7 +107,11 @@
       "receipt and statement import",
       "vault",
       "delete"
-    ]
+    ],
+    "navOptions": {
+      "setting": "expenses.navPlacement",
+      "assets": "assets/nav-menu (UI Review choice set molly-expenses-nav)"
+    }
   },
   "commands": {
     "$axf": "plugin-commands@1",
@@ -342,6 +346,25 @@
           "required": [
             "keys"
           ]
+        }
+      },
+      {
+        "id": "nav",
+        "title": "Where Expenses sits in the navigation",
+        "description": "section (own section), nested (under Apps → Expenses) or menu (Molly menu only). Answers the placement in force.",
+        "action": "expenses.nav",
+        "input": {
+          "type": "object",
+          "properties": {
+            "placement": {
+              "type": "string",
+              "enum": [
+                "section",
+                "nested",
+                "menu"
+              ]
+            }
+          }
         }
       },
       {
