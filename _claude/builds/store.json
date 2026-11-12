@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3218,
- "updatedAt": "2026-11-12T01:57:05.749Z",
+ "rev": 3219,
+ "updatedAt": "2026-11-12T01:57:12.638Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -120679,7 +120679,7 @@
    "title": "Molly gap: Expense Tracker screens load natively in Molly (Next.js 16 / React 19 app today)",
    "category": "Molly",
    "detail": "Gap found by molly-one-shell. Expenses is a Next.js 16 + React 19 app; Molly is AXF React 18 + Vite, so its screens cannot mount natively as they are. Standalone expenses.amberxai.com keeps working until this lands.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -120687,7 +120687,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-08T16:58:59.537Z",
-   "updatedAt": "2026-11-12T01:56:05.103Z",
+   "updatedAt": "2026-11-12T01:57:09.288Z",
    "builtAt": "",
    "notes": [
     {
@@ -120721,6 +120721,14 @@
     {
      "text": "Self-check: molly-native-expenses was marked running on account-5 with no session: released and back in the Queue.",
      "at": "2026-11-12T01:56:05.103Z"
+    },
+    {
+     "text": "Started run 2 on account-5 (API key, subscriptions first, then API) (Opus, Phase 1): axf-molly-native-expenses--lenny.",
+     "at": "2026-11-12T01:57:08.106Z"
+    },
+    {
+     "text": "Claude account: account-5 (axf-molly-native-expenses--lenny, own login copy)",
+     "at": "2026-11-12T01:57:09.288Z"
     }
    ],
    "approvals": [],
@@ -120740,12 +120748,12 @@
    "pipeline": {
     "queuedAt": "2026-11-12T01:43:45.787Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "account-5",
+    "session": "axf-molly-native-expenses--lenny",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-12T01:44:38.113Z",
-    "runs": 1,
+    "launchedAt": "2026-11-12T01:57:07.629Z",
+    "runs": 2,
     "lastRun": {
      "at": "2026-11-12T01:55:06.415Z",
      "exit": 1,
@@ -120756,9 +120764,9 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "released by the self-check (nothing ran): back in the Queue",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-12T01:44:38.113Z",
+    "dispatchedAt": "2026-11-12T01:57:07.629Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -120767,7 +120775,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-12T01:44:38.113Z",
+    "pickedAt": "2026-11-12T01:57:07.629Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -120870,7 +120878,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 53,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": {
