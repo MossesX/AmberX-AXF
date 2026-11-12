@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T03:13:31.815Z",
+ "updatedAt": "2026-11-12T03:13:41.458Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -71733,14 +71733,14 @@
    "title": "Orchestrator checks Shipped features before splitting any job",
    "category": "",
    "detail": "When the orchestrator receives a job and splits it into steps, it first checks the Shipped features ledger (which must hold every feature the orchestrator has ever built). It must: not build anything twice; not break or redo anything already done; and if a step would conflict with or change something already built, notify Brett (AmberX notification) and wait before going on. Make the Shipped features ledger complete (backfill every landed build) and keep it updated on every land. Also standing rule: ONLY the orchestrator launches builds, picks model and account, owns pending/queue and monitors status; voice/chat sessions only hand it requests.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "mcp",
    "pendingId": "orchestrator-checks-shipped-features-before-spli",
-   "branch": "",
+   "branch": "claude/orchestrator-checks-shipped-features-before-spli",
    "pr": "",
    "createdAt": "2026-11-08T17:22:53.861Z",
-   "updatedAt": "2026-11-12T03:13:29.857Z",
+   "updatedAt": "2026-11-12T03:13:39.516Z",
    "builtAt": "",
    "notes": [
     {
@@ -71766,6 +71766,14 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-12T01:44:19.349Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-orchestrator-checks-shipped-features-before-spli--rhonda.",
+     "at": "2026-11-12T03:13:33.396Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-orchestrator-checks-shipped-features-before-spli--rhonda, own login copy)",
+     "at": "2026-11-12T03:13:39.515Z"
     }
    ],
    "approvals": [],

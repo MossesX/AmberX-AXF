@@ -776,9 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 01:44 UTC · `open-any-website-by-voice-on-the-phone-optionall` → queued, note (all) · console
-- 2026-11-12 01:44 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` note (all) · orchestrator
-- 2026-11-12 01:44 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` → running, note (all) · pipeline
 - 2026-11-12 01:44 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` branch claude/bug-asset-settings-nav-menu-tab-bar-toolbar-chan (all) · pipeline
 - 2026-11-12 01:44 UTC · `orchestrator-checks-shipped-features-before-spli` → queued, note (all) · console
 - 2026-11-12 01:44 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` → running, note (all) · pipeline
@@ -1176,6 +1173,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:13 UTC · `account-order-hulu-moses-x-api-account-shown-on-every-build` note (all) · orchestrator
 - 2026-11-12 03:13 UTC · `molly-gap-console-token-handoff` → running, note (all) · pipeline
 - 2026-11-12 03:13 UTC · `molly-gap-console-token-handoff` note (all) · orchestrator
+- 2026-11-12 03:13 UTC · `orchestrator-checks-shipped-features-before-spli` → running, note (all) · pipeline
+- 2026-11-12 03:13 UTC · `orchestrator-checks-shipped-features-before-spli` branch claude/orchestrator-checks-shipped-features-before-spli (all) · pipeline
+- 2026-11-12 03:13 UTC · `orchestrator-checks-shipped-features-before-spli` note (all) · orchestrator
 
 ## Token passes (log)
 
