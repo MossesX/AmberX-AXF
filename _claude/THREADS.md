@@ -776,8 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 23:47 UTC · `ai-assistant-in-molly-console-drives-by-api-open` → running, note (all) · pipeline
-- 2026-11-10 23:47 UTC · `ai-assistant-in-molly-console-drives-by-api-open` branch claude/ai-assistant-in-molly-console-drives-by-api-open (all) · pipeline
 - 2026-11-10 23:47 UTC · `molly-banner-match` note (all) · orchestrator
 - 2026-11-10 23:47 UTC · `per-agent-api-control-switch-in-each-employee-s` → running, note (all) · pipeline
 - 2026-11-10 23:47 UTC · `per-agent-api-control-switch-in-each-employee-s` branch claude/per-agent-api-control-switch-in-each-employee-s (all) · pipeline
@@ -1176,6 +1174,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:31 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` s3 done (all) · orchestrator
 - 2026-11-12 02:30 UTC · `build-notifications-same-notification-per-build` s3 done, → built (all) · orchestrator
 - 2026-11-12 02:32 UTC · `molly-native-expenses` note (all) · orchestrator
+- 2026-11-12 02:31 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` → running, note (all) · pipeline
+- 2026-11-12 02:31 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` note (all) · orchestrator
 
 ## Token passes (log)
 
