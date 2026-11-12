@@ -1,0 +1,154 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-chat-viewer",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:47Z",
+ "build": {
+  "id": "chat-viewer",
+  "title": "Chat viewer: every session stored, synced, searchable, exportable as 2-voice audio",
+  "profile": "all",
+  "category": "Plugin",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Brett, Nov 1 2026 ~3 AM. session@1 schema + validators; console plugin chat-viewer (also AmberX 'Chats'): claude.ai export zip upload, Claude Code JSONL incremental sync, headless build logs, hub drop folder sessions/claude-ai/<uuid>.json; SQLite + FTS5 store on the console data volume with versions + redaction; DataGrid list, search, bubbles, check for updates; 2-voice audio export (Piper free, OpenAI/ElevenLabs optional) to the hub. Branch claude/chat-viewer.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "# Chat Viewer: every session stored, synced, searchable, exportable as 2-voice audio (Brett, Nov 1 ~3 AM)\n\nRead CLAUDE.md, _claude/shared/rules/RULES.md, _claude/persona.md. Opus, one session. Git login works: plain `git push`. Merge origin/main first (other builds are landing).\n\nBrett: store ALL our sessions (claude.ai text + voice chats, Claude Code sessions, headless build sessions) as transcripts in a viewer. When it loads, it checks for updates: new sessions, continued ones, changed ones, and updates the stored copies. Export any session as AUDIO with two separate voices: one for Brett, one for Claude (Amber).\n\nIMPORTANT reality: claude.ai has no API to pull a user's chats, and we must NOT scrape claude.ai with Brett's login/cookies. Supported inputs:\n1. Claude data export: Brett downloads it from claude.ai (Settings > Privacy > Export data) and uploads the zip (or conversations.json) in the viewer (phone file picker). Parse it, upsert by conversation uuid, detect new/changed by updated_at + message count/hash, keep versions.\n2. Claude Code sessions: auto-sync the JSONL session files from ~/.claude/projects (root and axfbuild) on the VPS on a timer + on viewer load; incremental (byte offset/mtime).\n3. Headless build logs (/root/axf-builds/*/*.log, /home/axfbuild/wt-*/*.log) as 'build sessions'.\n4. Hub drop folder: Claude chat sessions can push conversations through axHub memory_write into project amberx-axf, area data, path `sessions/claude-ai/<uuid>.json` (schema below); the viewer ingests that folder too. Document the schema and add a line to _claude/shared/rules/RULES.md: when Brett says 'sync my chats', Claude uses recent_chats/read_conversation and writes each new/updated conversation there.\n\n## Store\nsession@1 schema (framework/schemas + validators): id, source (claude-ai-text|claude-ai-voice|claude-code|headless|hub-drop), title, startedAt, updatedAt, project, messages [{role: user|assistant|tool, text, at, kind (speech|text|tool), toolName?}], hash, version history. Stored on the console data volume (SQLite or JSON files; your call, justify), not in git. Redact secrets (tokens/keys/passwords patterns) on ingest.\n\n## Viewer (console plugin + AmberX entry 'Chats')\n- List: framework DataGrid (sort/filter/search, date columns), source badges, 'updated' badge for changed sessions, counts.\n- Full-text search across everything (SQLite FTS or similar), jump to the hit.\n- Session view: chat bubbles (Brett vs Amber), tool calls collapsible, timestamps, copy/share, export text/markdown.\n- 'Check for updates' on load + button: shows new/changed/unchanged counts.\n\n## Audio export\n- Export a session (or a range) as an audio file with TWO voices: Brett's voice and Amber's voice (configurable). Use a TTS that runs on this VPS for free by default (e.g. Piper with two different English voices; install into a container or venv, no GPU), with an optional provider setting (OpenAI/ElevenLabs) if a key is saved in the console keys. Skip tool-call noise; read only spoken/text turns; short pause between turns; chapters per hour. Output mp3/ogg stored on the hub, with a player in the viewer and a download link. Long sessions render in the background with progress.\n\nFramework controls + theme/scale tokens only, phone-first. Tests: export-zip parsing + upsert/new/changed detection, Claude Code JSONL incremental sync, hub-drop ingest, redaction, search, audio render (short sample) with two voices. Local test block from .github/workflows/android.yml + theme/controls/lifecycle/menu-reach checks. Phone + desktop screenshots to UI Review via framework/cli/shot.mjs, group 'Chat viewer - Nov 1' (use demo/redacted sessions in screenshots). Add an install_steps part. Commit, fetch+merge origin/main, retest, `git push origin HEAD:main` (never force). Report at _claude/builds/reports/chat-viewer.md incl. how Brett gets his claude.ai export in.",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "session@1 schema, JS validator, redaction, chain hash, fixtures + check",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "",
+   "doneAt": "2026-11-01T07:36:42.089Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "SQLite+FTS5 store with upsert, versions, seen badges",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T07:36:42.089Z",
+   "doneAt": "2026-11-01T07:36:42.695Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Ingesters: claude.ai export zip, Claude Code JSONL incremental, build logs, hub drop",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T07:36:42.695Z",
+   "doneAt": "2026-11-01T07:36:43.488Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Server routes + sync timer + check for updates",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T07:36:43.488Z",
+   "doneAt": "2026-11-01T07:36:44.064Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Audio: Piper setup, two-voice mixer, mp3 + chapters, cloud providers, background jobs",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T07:36:44.064Z",
+   "doneAt": "2026-11-01T07:36:44.687Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Web viewer: DataGrid list, search, bubbles, export, audio player, settings",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T07:36:44.687Z",
+   "doneAt": "2026-11-01T07:36:45.260Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Tests, lifecycle, deploy mounts, AmberX entry, RULES line, install steps",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T07:36:45.260Z",
+   "doneAt": "2026-11-01T07:36:45.789Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Checks, screenshots to UI Review, report, merge main, push",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T07:36:45.789Z",
+   "doneAt": "2026-11-01T07:36:46.391Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-11-01T07:36:47.161Z",
+ "landedAt": "2026-11-01T07:36:47.161Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "_claude/builds/reports/chat-viewer.md",
+ "open": [
+  "MP3s have no embedded ID3 chapter frames; chapters live in the sidecar and the viewer's chapter buttons.",
+  "AmberX: uploads over 12 MB refused by its console forwarder (import big exports from the console).",
+  "New `/home/axfbuild/wt-*` worktrees reach the console after the next `install-console.sh` run (one mount each; the axfbuild home itself is never mounted because it holds git credentials).",
+  "The console needs that installer re-run once to get the read-only mounts; until then the viewer shows only what the container itself has (its own Claude Code sessions) plus imports and the hub drop folder.",
+  "Piper isn't installed until someone taps Set up free voices (~130 MB with two voices).",
+  "The export's voice-mode detection is heuristic (no documented field)."
+ ]
+}

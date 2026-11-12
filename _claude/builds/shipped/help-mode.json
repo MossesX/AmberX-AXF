@@ -1,0 +1,995 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-help-mode",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:48Z",
+ "build": {
+  "id": "help-mode",
+  "title": "Help mode: a switch that teaches Brett his own apps",
+  "profile": "all",
+  "category": "Framework",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "? switch + F1 + Help menu + Settings + AmberX voice; help@1 packs; tooltips on every control (hover / long-press / phone ? badge), screen intros, What is this?; coverage CLI + CI ratchet; packs for the framework, the console + every plugin, axHub web. Branch claude/help-mode, pushed to main. Report _claude/builds/reports/help-mode.md",
+  "verbatim": false,
+  "at": "2026-11-01T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "help@1 rules + engine (ids, validators, index, intros, coverage, ratchet), types, schema, fixture",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "",
+   "doneAt": "2026-11-01T07:51:58.581Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Runtime: setting, actions, Help menu item, rt.addHelp, library + plugin help.json hook",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T07:51:58.581Z",
+   "doneAt": "2026-11-01T07:51:59.057Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "React Help layer: ? switch, tagging, hover / long-press / badge tooltips, What is this?, screen intros; theme-token CSS",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T07:51:59.057Z",
+   "doneAt": "2026-11-01T07:51:59.513Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Coverage CLI (scan, drafts, sync, report, --check ratchet) + CI",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T07:51:59.513Z",
+   "doneAt": "2026-11-01T07:51:59.902Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Help packs: framework + console + axHub web hand-written; plugin drafts, key plugins edited; intros",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T07:51:59.902Z",
+   "doneAt": "2026-11-01T07:52:00.435Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Tests: check-help.mts + check-help-mode.mts (jsdom); full local CI block; re-bake apps",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T07:52:00.435Z",
+   "doneAt": "2026-11-01T07:52:00.955Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Screenshots to UI Review (Help mode - Nov 1), install_steps Part K, PORTING, report, push",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T07:52:00.955Z",
+   "doneAt": "2026-11-01T07:52:01.479Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/help-mode",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "203c4ab370fa8d59921d3eadd0360b3b9869cd50",
+ "commits": [
+  "561e15c84dbbd7d29ed34598e8d618a96ad6dbcb",
+  "749ee242c493e5db2b4640461a9012901aa72dfc",
+  "6d8ec149c3c742de5e58c6af1c1b8b1b3416511c",
+  "ffab45a7460f68cd4141f15127233ddf867e74f0"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-11-01T08:11:36Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/THREADS.md",
+  "_claude/builds/help-src/axhub.py",
+  "_claude/builds/help-src/console.py",
+  "_claude/builds/help-src/framework.py",
+  "_claude/builds/help-src/plugin-edits.py",
+  "_claude/builds/journal/2026-11.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/builds/profiles/breakroom/orchestrator.json",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/builds/profiles/urgent/orchestrator.json",
+  "_claude/builds/reports/help-coverage.md",
+  "_claude/builds/reports/help-mode.md",
+  "_claude/builds/store.json",
+  "_claude/memory/STATUS.md",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/assets/help/framework.json",
+  "apps/amberx-droid/src/axf/core/engines/appearance.ts",
+  "apps/amberx-droid/src/axf/core/engines/help-rules.d.mts",
+  "apps/amberx-droid/src/axf/core/engines/help-rules.mjs",
+  "apps/amberx-droid/src/axf/core/engines/help.ts",
+  "apps/amberx-droid/src/axf/core/index.ts",
+  "apps/amberx-droid/src/axf/core/runtime.ts",
+  "apps/amberx-droid/src/axf/core/types.ts",
+  "apps/amberx-droid/src/axf/core/ui-review-schema.d.mts",
+  "apps/amberx-droid/src/axf/core/ui-review-schema.mjs",
+  "apps/amberx-droid/src/axf/core/validate.ts",
+  "apps/amberx-droid/src/axf/libs/approvals/react.tsx",
+  "apps/amberx-droid/src/axf/libs/approvals/row.tsx",
+  "apps/amberx-droid/src/axf/libs/hubsync/sync.ts",
+  "apps/amberx-droid/src/axf/libs/settings/index.tsx",
+  "apps/amberx-droid/src/axf/react/AppShell.tsx",
+  "apps/amberx-droid/src/axf/react/components/AppMenu.tsx",
+  "apps/amberx-droid/src/axf/react/components/Chrome.tsx",
+  "apps/amberx-droid/src/axf/react/components/Help.tsx",
+  "apps/amberx-droid/src/axf/react/components/MenuList.tsx",
+  "apps/amberx-droid/src/axf/react/components/WatchLive.tsx",
+  "apps/amberx-droid/src/axf/react/index.ts",
+  "apps/amberx-droid/src/axf/react/library.ts",
+  "apps/amberx-droid/src/axf/schemas/asset-types.json",
+  "apps/amberx-droid/src/axf/schemas/json/help.schema.json",
+  "apps/amberx-droid/src/axf/schemas/json/ui-review-group.schema.json",
+  "apps/amberx-droid/src/axf/schemas/json/ui-review-item.schema.json",
+  "apps/amberx-droid/src/axf/schemas/plugin.schema.json",
+  "apps/amberx-droid/src/axf/schemas/ui-review.json",
+  "apps/amberx-droid/src/axf/ui/axf.css",
+  "apps/amberx-droid/src/plugins/commands/web/lib-notes.ts",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/assets/help/axhub.json",
+  "apps/axhub-web/src/assets/help/framework.json",
+  "apps/axhub-web/src/axf/core/engines/appearance.ts",
+  "apps/axhub-web/src/axf/core/engines/help-rules.d.mts",
+  "apps/axhub-web/src/axf/core/engines/help-rules.mjs",
+  "apps/axhub-web/src/axf/core/engines/help.ts",
+  "apps/axhub-web/src/axf/core/index.ts",
+  "apps/axhub-web/src/axf/core/runtime.ts",
+  "apps/axhub-web/src/axf/core/types.ts",
+  "apps/axhub-web/src/axf/core/ui-review-schema.d.mts",
+  "apps/axhub-web/src/axf/core/ui-review-schema.mjs",
+  "apps/axhub-web/src/axf/core/validate.ts",
+  "apps/axhub-web/src/axf/libs/approvals/react.tsx",
+  "apps/axhub-web/src/axf/libs/approvals/row.tsx",
+  "apps/axhub-web/src/axf/libs/hubsync/sync.ts",
+  "apps/axhub-web/src/axf/libs/settings/index.tsx",
+  "apps/axhub-web/src/axf/react/AppShell.tsx",
+  "apps/axhub-web/src/axf/react/components/AppMenu.tsx",
+  "apps/axhub-web/src/axf/react/components/Chrome.tsx",
+  "apps/axhub-web/src/axf/react/components/Help.tsx",
+  "apps/axhub-web/src/axf/react/components/MenuList.tsx",
+  "apps/axhub-web/src/axf/react/components/WatchLive.tsx",
+  "apps/axhub-web/src/axf/react/index.ts",
+  "apps/axhub-web/src/axf/react/library.ts",
+  "apps/axhub-web/src/axf/schemas/asset-types.json",
+  "apps/axhub-web/src/axf/schemas/json/help.schema.json",
+  "apps/axhub-web/src/axf/schemas/json/ui-review-group.schema.json",
+  "apps/axhub-web/src/axf/schemas/json/ui-review-item.schema.json",
+  "apps/axhub-web/src/axf/schemas/plugin.schema.json",
+  "apps/axhub-web/src/axf/schemas/ui-review.json",
+  "apps/axhub-web/src/axf/ui/axf.css",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/README.md",
+  "apps/console-web/plugins/_template/help.json",
+  "apps/console-web/plugins/_template/plugin.json",
+  "apps/console-web/plugins/activity/help.json",
+  "apps/console-web/plugins/agent-manager/help.json",
+  "apps/console-web/plugins/agent-swarm/help.json",
+  "apps/console-web/plugins/agent-voice/help.json",
+  "apps/console-web/plugins/ai-assistant/help.json",
+  "apps/console-web/plugins/ai-keys/help.json",
+  "apps/console-web/plugins/alerts-bell/help.json",
+  "apps/console-web/plugins/approvals-banner/help.json",
+  "apps/console-web/plugins/audio-extract/help.json",
+  "apps/console-web/plugins/basic-filter/help.json",
+  "apps/console-web/plugins/brand-library/help.json",
+  "apps/console-web/plugins/build-breaker/help.json",
+  "apps/console-web/plugins/build-manager/help.json",
+  "apps/console-web/plugins/build-orchestrator/help.json",
+  "apps/console-web/plugins/build-profiles/help.json",
+  "apps/console-web/plugins/changes-grid/help.json",
+  "apps/console-web/plugins/claude-badge/help.json",
+  "apps/console-web/plugins/claude-handoff/help.json",
+  "apps/console-web/plugins/codebase-changes/help.json",
+  "apps/console-web/plugins/console-terminal/help.json",
+  "apps/console-web/plugins/container-access/help.json",
+  "apps/console-web/plugins/context-menu-designer/help.json",
+  "apps/console-web/plugins/fable-rebuilds/help.json",
+  "apps/console-web/plugins/feature-assist/help.json",
+  "apps/console-web/plugins/feature-matrix/help.json",
+  "apps/console-web/plugins/main-build-status/help.json",
+  "apps/console-web/plugins/molly-guide/help.json",
+  "apps/console-web/plugins/output-recorder/help.json",
+  "apps/console-web/plugins/plan-studio/help.json",
+  "apps/console-web/plugins/plugin-manager/help.json",
+  "apps/console-web/plugins/plugin-switches/help.json",
+  "apps/console-web/plugins/plugin-update/help.json",
+  "apps/console-web/plugins/plugins-menu/help.json",
+  "apps/console-web/plugins/project-wizard/help.json",
+  "apps/console-web/plugins/push-banner/help.json",
+  "apps/console-web/plugins/session-checkin/help.json",
+  "apps/console-web/plugins/snapshot-manager/help.json",
+  "apps/console-web/plugins/systems-check/help.json",
+  "apps/console-web/plugins/theme-manager/help.json",
+  "apps/console-web/plugins/todo-manager/help.json",
+  "apps/console-web/plugins/ui-review/help.json",
+  "apps/console-web/plugins/voice-notes/help.json",
+  "apps/console-web/src/assets/help/console-web-drafts.json",
+  "apps/console-web/src/assets/help/console.json",
+  "apps/console-web/src/assets/help/framework.json",
+  "apps/console-web/src/axf/core/engines/appearance.ts",
+  "apps/console-web/src/axf/core/engines/help-rules.d.mts",
+  "apps/console-web/src/axf/core/engines/help-rules.mjs",
+  "apps/console-web/src/axf/core/engines/help.ts",
+  "apps/console-web/src/axf/core/index.ts",
+  "apps/console-web/src/axf/core/runtime.ts",
+  "apps/console-web/src/axf/core/types.ts",
+  "apps/console-web/src/axf/core/ui-review-schema.d.mts",
+  "apps/console-web/src/axf/core/ui-review-schema.mjs",
+  "apps/console-web/src/axf/core/validate.ts",
+  "apps/console-web/src/axf/libs/approvals/react.tsx",
+  "apps/console-web/src/axf/libs/approvals/row.tsx",
+  "apps/console-web/src/axf/libs/hubsync/sync.ts",
+  "apps/console-web/src/axf/libs/settings/index.tsx",
+  "apps/console-web/src/axf/react/AppShell.tsx",
+  "apps/console-web/src/axf/react/components/AppMenu.tsx",
+  "apps/console-web/src/axf/react/components/Chrome.tsx",
+  "apps/console-web/src/axf/react/components/Help.tsx",
+  "apps/console-web/src/axf/react/components/MenuList.tsx",
+  "apps/console-web/src/axf/react/components/WatchLive.tsx",
+  "apps/console-web/src/axf/react/index.ts",
+  "apps/console-web/src/axf/react/library.ts",
+  "apps/console-web/src/axf/schemas/asset-types.json",
+  "apps/console-web/src/axf/schemas/json/help.schema.json",
+  "apps/console-web/src/axf/schemas/json/ui-review-group.schema.json",
+  "apps/console-web/src/axf/schemas/json/ui-review-item.schema.json",
+  "apps/console-web/src/axf/schemas/plugin.schema.json",
+  "apps/console-web/src/axf/schemas/ui-review.json",
+  "apps/console-web/src/axf/ui/axf.css",
+  "apps/console-web/src/plugins.ts",
+  "apps/walkthrough-studio/axf.lock.json",
+  "apps/walkthrough-studio/src/assets/help/framework.json",
+  "apps/walkthrough-studio/src/axf/core/engines/appearance.ts",
+  "apps/walkthrough-studio/src/axf/core/engines/help-rules.d.mts",
+  "apps/walkthrough-studio/src/axf/core/engines/help-rules.mjs",
+  "apps/walkthrough-studio/src/axf/core/engines/help.ts",
+  "apps/walkthrough-studio/src/axf/core/index.ts",
+  "apps/walkthrough-studio/src/axf/core/runtime.ts",
+  "apps/walkthrough-studio/src/axf/core/types.ts",
+  "apps/walkthrough-studio/src/axf/core/ui-review-schema.d.mts",
+  "apps/walkthrough-studio/src/axf/core/ui-review-schema.mjs",
+  "apps/walkthrough-studio/src/axf/core/validate.ts",
+  "apps/walkthrough-studio/src/axf/libs/approvals/react.tsx",
+  "apps/walkthrough-studio/src/axf/libs/approvals/row.tsx",
+  "apps/walkthrough-studio/src/axf/libs/hubsync/sync.ts",
+  "apps/walkthrough-studio/src/axf/libs/settings/index.tsx",
+  "apps/walkthrough-studio/src/axf/react/AppShell.tsx",
+  "apps/walkthrough-studio/src/axf/react/components/AppMenu.tsx",
+  "apps/walkthrough-studio/src/axf/react/components/Chrome.tsx",
+  "apps/walkthrough-studio/src/axf/react/components/Help.tsx",
+  "apps/walkthrough-studio/src/axf/react/components/MenuList.tsx",
+  "apps/walkthrough-studio/src/axf/react/components/WatchLive.tsx",
+  "apps/walkthrough-studio/src/axf/react/index.ts",
+  "apps/walkthrough-studio/src/axf/react/library.ts",
+  "apps/walkthrough-studio/src/axf/schemas/asset-types.json",
+  "apps/walkthrough-studio/src/axf/schemas/json/help.schema.json",
+  "apps/walkthrough-studio/src/axf/schemas/json/ui-review-group.schema.json",
+  "apps/walkthrough-studio/src/axf/schemas/json/ui-review-item.schema.json",
+  "apps/walkthrough-studio/src/axf/schemas/plugin.schema.json",
+  "apps/walkthrough-studio/src/axf/schemas/ui-review.json",
+  "apps/walkthrough-studio/src/axf/ui/axf.css",
+  "framework/assets/help/framework.json",
+  "framework/cli/build-engine.mjs",
+  "framework/cli/help-coverage.mjs",
+  "framework/cli/rebuild-shots.mjs",
+  "framework/core/engines/appearance.ts",
+  "framework/core/engines/help-rules.d.mts",
+  "framework/core/engines/help-rules.mjs",
+  "framework/core/engines/help.ts",
+  "framework/core/index.ts",
+  "framework/core/runtime.ts",
+  "framework/core/types.ts",
+  "framework/core/validate.ts",
+  "framework/defaults.json",
+  "framework/libs/approvals/react.tsx",
+  "framework/libs/approvals/row.tsx",
+  "framework/libs/hubsync/sync.ts",
+  "framework/libs/settings/index.tsx",
+  "framework/react/AppShell.tsx",
+  "framework/react/components/AppMenu.tsx",
+  "framework/react/components/Chrome.tsx",
+  "framework/react/components/Help.tsx",
+  "framework/react/components/MenuList.tsx",
+  "framework/react/components/WatchLive.tsx",
+  "framework/react/index.ts",
+  "framework/react/library.ts",
+  "framework/schemas/asset-types.json",
+  "framework/schemas/json/help.schema.json",
+  "framework/schemas/plugin.schema.json",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-help-mode.mts",
+  "framework/spec/check-help.mts",
+  "framework/spec/check-hubsync.mts",
+  "framework/spec/fixtures/help.json",
+  "framework/spec/fixtures/roll.json",
+  "framework/spec/gen-fixtures.mts",
+  "framework/spec/help-coverage.json",
+  "framework/ui/axf.css",
+  "install_steps.md"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/plugins/README.md",
+    "apps/console-web/src/assets/help/console-web-drafts.json",
+    "apps/console-web/src/assets/help/console.json",
+    "apps/console-web/src/assets/help/framework.json",
+    "apps/console-web/src/axf/core/engines/appearance.ts",
+    "apps/console-web/src/axf/core/engines/help-rules.d.mts",
+    "apps/console-web/src/axf/core/engines/help-rules.mjs",
+    "apps/console-web/src/axf/core/engines/help.ts",
+    "apps/console-web/src/axf/core/index.ts",
+    "apps/console-web/src/axf/core/runtime.ts",
+    "apps/console-web/src/axf/core/types.ts",
+    "apps/console-web/src/axf/core/ui-review-schema.d.mts",
+    "apps/console-web/src/axf/core/ui-review-schema.mjs",
+    "apps/console-web/src/axf/core/validate.ts",
+    "apps/console-web/src/axf/libs/approvals/react.tsx",
+    "apps/console-web/src/axf/libs/approvals/row.tsx",
+    "apps/console-web/src/axf/libs/hubsync/sync.ts",
+    "apps/console-web/src/axf/libs/settings/index.tsx",
+    "apps/console-web/src/axf/react/AppShell.tsx",
+    "apps/console-web/src/axf/react/components/AppMenu.tsx",
+    "apps/console-web/src/axf/react/components/Chrome.tsx",
+    "apps/console-web/src/axf/react/components/Help.tsx",
+    "apps/console-web/src/axf/react/components/MenuList.tsx",
+    "apps/console-web/src/axf/react/components/WatchLive.tsx",
+    "apps/console-web/src/axf/react/index.ts",
+    "apps/console-web/src/axf/react/library.ts",
+    "apps/console-web/src/axf/schemas/asset-types.json",
+    "apps/console-web/src/axf/schemas/json/help.schema.json",
+    "apps/console-web/src/axf/schemas/json/ui-review-group.schema.json",
+    "apps/console-web/src/axf/schemas/json/ui-review-item.schema.json",
+    "apps/console-web/src/axf/schemas/plugin.schema.json",
+    "apps/console-web/src/axf/schemas/ui-review.json",
+    "apps/console-web/src/axf/ui/axf.css",
+    "apps/console-web/src/plugins.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/assets/help/axhub.json",
+    "apps/axhub-web/src/assets/help/framework.json",
+    "apps/axhub-web/src/axf/core/engines/appearance.ts",
+    "apps/axhub-web/src/axf/core/engines/help-rules.d.mts",
+    "apps/axhub-web/src/axf/core/engines/help-rules.mjs",
+    "apps/axhub-web/src/axf/core/engines/help.ts",
+    "apps/axhub-web/src/axf/core/index.ts",
+    "apps/axhub-web/src/axf/core/runtime.ts",
+    "apps/axhub-web/src/axf/core/types.ts",
+    "apps/axhub-web/src/axf/core/ui-review-schema.d.mts",
+    "apps/axhub-web/src/axf/core/ui-review-schema.mjs",
+    "apps/axhub-web/src/axf/core/validate.ts",
+    "apps/axhub-web/src/axf/libs/approvals/react.tsx",
+    "apps/axhub-web/src/axf/libs/approvals/row.tsx",
+    "apps/axhub-web/src/axf/libs/hubsync/sync.ts",
+    "apps/axhub-web/src/axf/libs/settings/index.tsx",
+    "apps/axhub-web/src/axf/react/AppShell.tsx",
+    "apps/axhub-web/src/axf/react/components/AppMenu.tsx",
+    "apps/axhub-web/src/axf/react/components/Chrome.tsx",
+    "apps/axhub-web/src/axf/react/components/Help.tsx",
+    "apps/axhub-web/src/axf/react/components/MenuList.tsx",
+    "apps/axhub-web/src/axf/react/components/WatchLive.tsx",
+    "apps/axhub-web/src/axf/react/index.ts",
+    "apps/axhub-web/src/axf/react/library.ts",
+    "apps/axhub-web/src/axf/schemas/asset-types.json",
+    "apps/axhub-web/src/axf/schemas/json/help.schema.json",
+    "apps/axhub-web/src/axf/schemas/json/ui-review-group.schema.json",
+    "apps/axhub-web/src/axf/schemas/json/ui-review-item.schema.json",
+    "apps/axhub-web/src/axf/schemas/plugin.schema.json",
+    "apps/axhub-web/src/axf/schemas/ui-review.json",
+    "apps/axhub-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/assets/help/framework.json",
+    "apps/amberx-droid/src/axf/core/engines/appearance.ts",
+    "apps/amberx-droid/src/axf/core/engines/help-rules.d.mts",
+    "apps/amberx-droid/src/axf/core/engines/help-rules.mjs",
+    "apps/amberx-droid/src/axf/core/engines/help.ts",
+    "apps/amberx-droid/src/axf/core/index.ts",
+    "apps/amberx-droid/src/axf/core/runtime.ts",
+    "apps/amberx-droid/src/axf/core/types.ts",
+    "apps/amberx-droid/src/axf/core/ui-review-schema.d.mts",
+    "apps/amberx-droid/src/axf/core/ui-review-schema.mjs",
+    "apps/amberx-droid/src/axf/core/validate.ts",
+    "apps/amberx-droid/src/axf/libs/approvals/react.tsx",
+    "apps/amberx-droid/src/axf/libs/approvals/row.tsx",
+    "apps/amberx-droid/src/axf/libs/hubsync/sync.ts",
+    "apps/amberx-droid/src/axf/libs/settings/index.tsx",
+    "apps/amberx-droid/src/axf/react/AppShell.tsx",
+    "apps/amberx-droid/src/axf/react/components/AppMenu.tsx",
+    "apps/amberx-droid/src/axf/react/components/Chrome.tsx",
+    "apps/amberx-droid/src/axf/react/components/Help.tsx",
+    "apps/amberx-droid/src/axf/react/components/MenuList.tsx",
+    "apps/amberx-droid/src/axf/react/components/WatchLive.tsx",
+    "apps/amberx-droid/src/axf/react/index.ts",
+    "apps/amberx-droid/src/axf/react/library.ts",
+    "apps/amberx-droid/src/axf/schemas/asset-types.json",
+    "apps/amberx-droid/src/axf/schemas/json/help.schema.json",
+    "apps/amberx-droid/src/axf/schemas/json/ui-review-group.schema.json",
+    "apps/amberx-droid/src/axf/schemas/json/ui-review-item.schema.json",
+    "apps/amberx-droid/src/axf/schemas/plugin.schema.json",
+    "apps/amberx-droid/src/axf/schemas/ui-review.json",
+    "apps/amberx-droid/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "walkthrough-studio",
+   "files": [
+    "apps/walkthrough-studio/axf.lock.json",
+    "apps/walkthrough-studio/src/assets/help/framework.json",
+    "apps/walkthrough-studio/src/axf/core/engines/appearance.ts",
+    "apps/walkthrough-studio/src/axf/core/engines/help-rules.d.mts",
+    "apps/walkthrough-studio/src/axf/core/engines/help-rules.mjs",
+    "apps/walkthrough-studio/src/axf/core/engines/help.ts",
+    "apps/walkthrough-studio/src/axf/core/index.ts",
+    "apps/walkthrough-studio/src/axf/core/runtime.ts",
+    "apps/walkthrough-studio/src/axf/core/types.ts",
+    "apps/walkthrough-studio/src/axf/core/ui-review-schema.d.mts",
+    "apps/walkthrough-studio/src/axf/core/ui-review-schema.mjs",
+    "apps/walkthrough-studio/src/axf/core/validate.ts",
+    "apps/walkthrough-studio/src/axf/libs/approvals/react.tsx",
+    "apps/walkthrough-studio/src/axf/libs/approvals/row.tsx",
+    "apps/walkthrough-studio/src/axf/libs/hubsync/sync.ts",
+    "apps/walkthrough-studio/src/axf/libs/settings/index.tsx",
+    "apps/walkthrough-studio/src/axf/react/AppShell.tsx",
+    "apps/walkthrough-studio/src/axf/react/components/AppMenu.tsx",
+    "apps/walkthrough-studio/src/axf/react/components/Chrome.tsx",
+    "apps/walkthrough-studio/src/axf/react/components/Help.tsx",
+    "apps/walkthrough-studio/src/axf/react/components/MenuList.tsx",
+    "apps/walkthrough-studio/src/axf/react/components/WatchLive.tsx",
+    "apps/walkthrough-studio/src/axf/react/index.ts",
+    "apps/walkthrough-studio/src/axf/react/library.ts",
+    "apps/walkthrough-studio/src/axf/schemas/asset-types.json",
+    "apps/walkthrough-studio/src/axf/schemas/json/help.schema.json",
+    "apps/walkthrough-studio/src/axf/schemas/json/ui-review-group.schema.json",
+    "apps/walkthrough-studio/src/axf/schemas/json/ui-review-item.schema.json",
+    "apps/walkthrough-studio/src/axf/schemas/plugin.schema.json",
+    "apps/walkthrough-studio/src/axf/schemas/ui-review.json",
+    "apps/walkthrough-studio/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/help-src/axhub.py",
+    "_claude/builds/help-src/console.py",
+    "_claude/builds/help-src/framework.py",
+    "_claude/builds/help-src/plugin-edits.py",
+    "_claude/builds/journal/2026-11.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/profiles/angel/orchestrator.json",
+    "_claude/builds/profiles/breakroom/orchestrator.json",
+    "_claude/builds/profiles/refactor/orchestrator.json",
+    "_claude/builds/profiles/urgent/orchestrator.json",
+    "_claude/builds/reports/help-coverage.md",
+    "_claude/builds/reports/help-mode.md",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/appearance.ts",
+    "framework/core/engines/help-rules.d.mts",
+    "framework/core/engines/help-rules.mjs",
+    "framework/core/engines/help.ts",
+    "framework/core/index.ts",
+    "framework/core/runtime.ts",
+    "framework/core/types.ts",
+    "framework/core/validate.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/AppShell.tsx",
+    "framework/react/components/AppMenu.tsx",
+    "framework/react/components/Chrome.tsx",
+    "framework/react/components/Help.tsx",
+    "framework/react/components/MenuList.tsx",
+    "framework/react/components/WatchLive.tsx",
+    "framework/react/index.ts",
+    "framework/react/library.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-help-mode.mts",
+    "framework/spec/check-help.mts",
+    "framework/spec/check-hubsync.mts",
+    "framework/spec/fixtures/help.json",
+    "framework/spec/fixtures/roll.json",
+    "framework/spec/gen-fixtures.mts",
+    "framework/spec/help-coverage.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "libs",
+   "files": [
+    "framework/libs/approvals/react.tsx",
+    "framework/libs/approvals/row.tsx",
+    "framework/libs/hubsync/sync.ts",
+    "framework/libs/settings/index.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/build-engine.mjs",
+    "framework/cli/help-coverage.mjs",
+    "framework/cli/rebuild-shots.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/asset-types.json",
+    "framework/schemas/json/help.schema.json",
+    "framework/schemas/plugin.schema.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md",
+    "install_steps.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "_template",
+   "files": [
+    "apps/console-web/plugins/_template/help.json",
+    "apps/console-web/plugins/_template/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "activity",
+   "files": [
+    "apps/console-web/plugins/activity/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-manager",
+   "files": [
+    "apps/console-web/plugins/agent-manager/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-swarm",
+   "files": [
+    "apps/console-web/plugins/agent-swarm/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-voice",
+   "files": [
+    "apps/console-web/plugins/agent-voice/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ai-assistant",
+   "files": [
+    "apps/console-web/plugins/ai-assistant/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ai-keys",
+   "files": [
+    "apps/console-web/plugins/ai-keys/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "alerts-bell",
+   "files": [
+    "apps/console-web/plugins/alerts-bell/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "approvals-banner",
+   "files": [
+    "apps/console-web/plugins/approvals-banner/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "audio-extract",
+   "files": [
+    "apps/console-web/plugins/audio-extract/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "basic-filter",
+   "files": [
+    "apps/console-web/plugins/basic-filter/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "brand-library",
+   "files": [
+    "apps/console-web/plugins/brand-library/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-breaker",
+   "files": [
+    "apps/console-web/plugins/build-breaker/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-manager",
+   "files": [
+    "apps/console-web/plugins/build-manager/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-profiles",
+   "files": [
+    "apps/console-web/plugins/build-profiles/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "changes-grid",
+   "files": [
+    "apps/console-web/plugins/changes-grid/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-badge",
+   "files": [
+    "apps/console-web/plugins/claude-badge/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-handoff",
+   "files": [
+    "apps/console-web/plugins/claude-handoff/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "codebase-changes",
+   "files": [
+    "apps/console-web/plugins/codebase-changes/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "commands",
+   "files": [
+    "apps/amberx-droid/src/plugins/commands/web/lib-notes.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "console-terminal",
+   "files": [
+    "apps/console-web/plugins/console-terminal/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "container-access",
+   "files": [
+    "apps/console-web/plugins/container-access/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "context-menu-designer",
+   "files": [
+    "apps/console-web/plugins/context-menu-designer/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "fable-rebuilds",
+   "files": [
+    "apps/console-web/plugins/fable-rebuilds/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "feature-assist",
+   "files": [
+    "apps/console-web/plugins/feature-assist/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "feature-matrix",
+   "files": [
+    "apps/console-web/plugins/feature-matrix/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "main-build-status",
+   "files": [
+    "apps/console-web/plugins/main-build-status/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "molly-guide",
+   "files": [
+    "apps/console-web/plugins/molly-guide/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "output-recorder",
+   "files": [
+    "apps/console-web/plugins/output-recorder/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plan-studio",
+   "files": [
+    "apps/console-web/plugins/plan-studio/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plugin-manager",
+   "files": [
+    "apps/console-web/plugins/plugin-manager/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plugin-switches",
+   "files": [
+    "apps/console-web/plugins/plugin-switches/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plugin-update",
+   "files": [
+    "apps/console-web/plugins/plugin-update/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plugins-menu",
+   "files": [
+    "apps/console-web/plugins/plugins-menu/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "project-wizard",
+   "files": [
+    "apps/console-web/plugins/project-wizard/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "push-banner",
+   "files": [
+    "apps/console-web/plugins/push-banner/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "session-checkin",
+   "files": [
+    "apps/console-web/plugins/session-checkin/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "snapshot-manager",
+   "files": [
+    "apps/console-web/plugins/snapshot-manager/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "systems-check",
+   "files": [
+    "apps/console-web/plugins/systems-check/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "theme-manager",
+   "files": [
+    "apps/console-web/plugins/theme-manager/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "todo-manager",
+   "files": [
+    "apps/console-web/plugins/todo-manager/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ui-review",
+   "files": [
+    "apps/console-web/plugins/ui-review/help.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "voice-notes",
+   "files": [
+    "apps/console-web/plugins/voice-notes/help.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "assets",
+   "files": [
+    "framework/assets/help/framework.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "ui",
+   "files": [
+    "framework/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": "framework",
+   "files": [
+    "framework/defaults.json"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "framework/spec/check-help.mts — 208 checks: registration (types, optional, order, collection, never rolled, not a look slot), fixture replay (spec/fixtures/help.json: slugs, ids, packs, index, resolve, intros, coverage, ratchet, errors), both validators agree, every shipped pack validates in both va",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "framework/spec/check-help-mode.mts — 43 checks in jsdom on the real AppShell: off = nothing tagged or drawn; ? switch lights up; F1 / Ctrl+Shift+H; ids (label slug with count dropped, action, icon button, switch row); intro first time, Next, Got it, never again on that screen, target outlined; hover",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "framework/spec/check-hubsync.mts — +1: device-scope settings and Help mode never ride the hub mirror.",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "Local run of the android.yml test block (job 1 + the console job's web/Python block): everything I touched passes, plus theme-swap and interface-scope (Playwright on the built console), check-theme, check-controls, check-plugin-pages, menu-reach, the plugin lifecycle loop (clean worktree), AmberX te",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "Fail here and on a clean origin/main the same way (environment, not this build): tracker.mjs --check and plugins.mjs --check (they read the hub's shared data under /projects), session-checkin test (Node 20 here, CI is 22). Python tests and the Android/Kotlin jobs weren't run (no change there; CI run",
+   "command": "",
+   "result": "fail",
+   "detail": ""
+  }
+ ],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "_claude/builds/reports/help-mode.md",
+ "open": [
+  "700 console entries are still drafts (readable, but templated). Edit them in each plugin's `help.json`; the `written` ratchet keeps the hand-written number from falling.",
+  "AmberX web (amberx-droid) and Walkthrough Studio get the switch, the framework pack and \"No help yet\" for their own controls; they have no app pack yet and aren't counted scopes (add a scope to `SCOPES` in `help-coverage.mjs`).",
+  "Not submitted to the UI Review approve/reject queue: the brief asked for Screenshots via `shot.mjs`. Brett can *Send to review* from the group.",
+  "Build profile: headless, so I couldn't ask; recorded under Main framework."
+ ]
+}

@@ -776,17 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 02:08 UTC · `standing-rule-in-every-brief-fix-problems-yourse` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `split-builds-pages-build-manager-pending-complet-2` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `apply-skin-dialog-tree-of-everything-overridden` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `skin-rule-overrides-are-local-only-global-change` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `permissions-control-panel-every-axhub-tool-s-pol` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `skins-consistent-across-plugins-full-state-saves` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `reserve-build-ids-at-once-add-returns-the-id-wit` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `plugin-appearance-save-button-for-custom-looks-n` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `batch-manager` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `skins-theme-rule` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `skins-restyle-finish` → archived, note (all) · console
 - 2026-11-12 02:08 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` → archived, note (all) · console
 - 2026-11-12 02:08 UTC · `briefs-list-the-existing-files-each-step-needs` → archived, note (all) · console
 - 2026-11-12 02:08 UTC · `terminal-toolbar-responsive-overflow-every-item-` → archived, note (all) · console
@@ -1176,6 +1165,17 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:28 UTC · `urgent-builds` note (all) · backfill
 - 2026-11-12 03:28 UTC · `agent-swarm-fable-rebuild` note (all) · backfill
 - 2026-11-12 03:28 UTC · `watch-live` merged, note (all) · backfill
+- 2026-11-12 03:28 UTC · `agent-cap` merged, note (all) · backfill
+- 2026-11-12 03:28 UTC · `agent-jobs` note (all) · backfill
+- 2026-11-12 03:28 UTC · `amberx-walkthrough` note (all) · backfill
+- 2026-11-12 03:28 UTC · `chat-viewer` note (all) · backfill
+- 2026-11-12 03:28 UTC · `help-mode` merged, note (all) · backfill
+- 2026-11-12 03:28 UTC · `stack-walkthrough` note (all) · backfill
+- 2026-11-12 03:28 UTC · `molly-opus` note (all) · backfill
+- 2026-11-12 03:28 UTC · `walkthrough-chapters` note (all) · backfill
+- 2026-11-12 03:28 UTC · `xlayout` note (all) · backfill
+- 2026-11-12 03:28 UTC · `walkthrough-random-look` note (all) · backfill
+- 2026-11-12 03:28 UTC · `dock-engine` note (all) · backfill
 
 ## Token passes (log)
 
