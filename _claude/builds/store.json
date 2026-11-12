@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3812,
- "updatedAt": "2026-11-12T23:22:07.371Z",
+ "rev": 3813,
+ "updatedAt": "2026-11-12T23:22:20.834Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174401,7 +174401,7 @@
    "title": "Banners page: focus, scroll to and highlight any banner or badge",
    "category": "banner",
    "detail": "Brett said: \"Make it focus, bring it in focus... Highlight the VPS one.\" console_show/console_open with focus on the Banners screen answers \"it has no way to focus\". Every screen must support focus (standing rule).",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -174409,8 +174409,8 @@
    "pr": "#531",
    "priority": "P0",
    "createdAt": "2026-11-12T23:12:31.496Z",
-   "updatedAt": "2026-11-12T23:22:05.994Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-12T23:22:08.774Z",
+   "builtAt": "2026-11-12T23:22:08.774Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -174423,6 +174423,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-banners-page-focus-scroll-to-and-highlight-any-b--sully, own login copy)",
      "at": "2026-11-12T23:13:18.764Z"
+    },
+    {
+     "text": "PR #531 (draft). banners.focus works through MCP, REST, CLI, voice and ?axf-banner= links; 30 spec checks in CI. UI Review shots not taken: the sandbox console waits for axHub, which it can't reach. Shots are needed from the live console before the PR is ready.",
+     "at": "2026-11-12T23:22:07.291Z"
     }
    ],
    "approvals": [],
@@ -174505,12 +174509,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T23:22:08.774Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T23:12:31.497Z",
-     "updatedAt": "2026-11-12T23:12:31.497Z"
+     "updatedAt": "2026-11-12T23:22:08.996Z"
     }
    ],
    "profiles": [
@@ -174521,7 +174525,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

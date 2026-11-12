@@ -778,8 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 05:14 UTC · `account-failover-chain-subscription-next-subscri` branch claude/account-failover-chain-r2 (all) · builds-live
-- 2026-11-12 05:14 UTC · `account-failover-chain-subscription-next-subscri` note (all) · orchestrator
 - 2026-11-12 05:24 UTC · `account-failover-chain-subscription-next-subscri` PR #516 (all) · builds-live
 - 2026-11-12 06:38 UTC · `x.engine.dev` → running (all) · build-queue
 - 2026-11-12 06:38 UTC · `x.work` → pending (all) · build-queue
@@ -1178,6 +1176,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 23:20 UTC · `banners-page-focus-scroll-to-and-highlight-any-banner-or-badge` s1 done, → running (all) · orchestrator
 - 2026-11-12 23:21 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` note (all) · pipeline
 - 2026-11-12 23:22 UTC · `banners-page-focus-scroll-to-and-highlight-any-banner-or-badge` PR #531 (all) · builds-live
+- 2026-11-12 23:22 UTC · `banners-page-focus-scroll-to-and-highlight-any-banner-or-badge` note (all) · orchestrator
+- 2026-11-12 23:22 UTC · `banners-page-focus-scroll-to-and-highlight-any-banner-or-badge` s2 done, → built (all) · orchestrator
 
 ## Token passes (log)
 
