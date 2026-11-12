@@ -777,8 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:27 UTC · `fresh-look` note (all) · backfill
-- 2026-11-12 03:27 UTC · `design-package-fable` note (all) · backfill
 - 2026-11-12 03:27 UTC · `design-packages-10` note (all) · backfill
 - 2026-11-12 03:27 UTC · `build-orchestrator` note (all) · backfill
 - 2026-11-12 03:27 UTC · `build-profiles` note (all) · backfill
@@ -1177,6 +1175,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 11:07 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` note (all) · orchestrator
 - 2026-11-12 11:08 UTC · `focus-on-every-screen-console-open-console-show-` s2 done (all) · orchestrator
 - 2026-11-12 11:08 UTC · `show-commits-behind-main-on-every-build-table-an` → queued, note (all) · pipeline
+- 2026-11-12 11:08 UTC · `show-commits-behind-main-on-every-build-table-an` → running, note (all) · pipeline
+- 2026-11-12 11:08 UTC · `show-commits-behind-main-on-every-build-table-an` note (all) · orchestrator
 
 ## Token passes (log)
 
