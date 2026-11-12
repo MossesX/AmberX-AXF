@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T18:33:39.818Z",
+ "updatedAt": "2026-11-12T18:34:09.962Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -108172,7 +108172,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-12T18:33:10.932Z",
-   "updatedAt": "2026-11-12T18:33:33.920Z",
+   "updatedAt": "2026-11-12T18:34:08.702Z",
    "builtAt": "",
    "notes": [
     {
@@ -108195,6 +108195,13 @@
     "addenda": [
      {
       "said": "And any any plugin or UI that has a custom settings interface, it uses that by default. And new and existing. Build all this now.",
+      "at": "",
+      "source": "voice",
+      "by": "Claude (voice)",
+      "verbatim": true
+     },
+     {
+      "said": "And when you tap the first time, it shows the um, the um, it shows the tooltip saying what it is. So the first tap, instead of saying tap to confirm, they show what it is and tap to confirm.",
       "at": "",
       "source": "voice",
       "by": "Claude (voice)",

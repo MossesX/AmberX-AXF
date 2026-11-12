@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3613,
- "updatedAt": "2026-11-12T18:33:39.818Z",
+ "rev": 3614,
+ "updatedAt": "2026-11-12T18:34:09.962Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175912,7 +175912,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-12T18:33:10.932Z",
-   "updatedAt": "2026-11-12T18:33:33.920Z",
+   "updatedAt": "2026-11-12T18:34:08.702Z",
    "builtAt": "",
    "notes": [
     {
@@ -175935,6 +175935,13 @@
     "addenda": [
      {
       "said": "And any any plugin or UI that has a custom settings interface, it uses that by default. And new and existing. Build all this now.",
+      "at": "",
+      "source": "voice",
+      "by": "Claude (voice)",
+      "verbatim": true
+     },
+     {
+      "said": "And when you tap the first time, it shows the um, the um, it shows the tooltip saying what it is. So the first tap, instead of saying tap to confirm, they show what it is and tap to confirm.",
       "at": "",
       "source": "voice",
       "by": "Claude (voice)",
@@ -175973,7 +175980,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
