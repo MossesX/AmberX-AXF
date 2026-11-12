@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3611,
- "updatedAt": "2026-11-12T18:33:12.349Z",
+ "rev": 3612,
+ "updatedAt": "2026-11-12T18:33:26.121Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175904,16 +175904,22 @@
    "title": "Add a \"Tap to confirm\" option to every settings interface",
    "category": "",
    "detail": "Add a per-item \"Tap to confirm\" setting (when on, the first tap arms the item and a second tap confirms it) in the settings interfaces of: all tabs and tab groups, navigation menus, application menus and toolbars, across the console, Molly and every standalone app. Expose it in each one's settings UI, store it with the framework tokens/settings, and apply it consistently through the shared framework component so new menus/toolbars get it automatically. Each item goes in as its own step.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P2",
    "createdAt": "2026-11-12T18:33:10.932Z",
-   "updatedAt": "2026-11-12T18:33:10.932Z",
+   "updatedAt": "2026-11-12T18:33:12.691Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T18:33:12.691Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -175928,6 +175934,28 @@
     "from": "",
     "addenda": []
    },
+   "pipeline": {
+    "queuedAt": "2026-11-12T18:33:12.290Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -175937,7 +175965,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
