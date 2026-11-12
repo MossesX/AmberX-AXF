@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:07:53.943Z",
+ "updatedAt": "2026-11-12T02:08:08.411Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -87523,7 +87523,7 @@
    "title": "Projects: create a new project and move builds between projects; move every pending build older than 2 days into a new project",
    "category": "",
    "detail": "1) Add create-project (valid project manifest, its own builds, notes, data; per the multi-project setup where picking a project switches all data) and move-builds-between-projects, by UI and full API (no AI). 2) Then create a new project and move every Pending build created before 2026-11-08 out of the current project into it, with their notes, steps, branches and history intact; nothing deleted or archived. Builds from the last two days stay. Report the list moved.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -87531,7 +87531,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T15:38:42.207Z",
-   "updatedAt": "2026-11-10T17:53:37.763Z",
+   "updatedAt": "2026-11-12T02:07:59.454Z",
    "builtAt": "",
    "notes": [
     {
@@ -87545,6 +87545,10 @@
     {
      "text": "Split by Claude into 10 steps (1 Fable).",
      "at": "2026-11-10T17:53:37.763Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:07:59.454Z"
     }
    ],
    "approvals": [],
@@ -87902,7 +87906,7 @@
    "title": "Project Manager add-on: new-project prompt asks internal build or boilerplate for an external app",
    "category": "",
    "detail": "Amends the Project Manager build. When starting a new project, ask: Internal build (framework/self development) or External app (start from a boilerplate template). External app shows boilerplate choices. Full API control.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -87910,7 +87914,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T15:40:48.813Z",
-   "updatedAt": "2026-11-10T17:54:31.081Z",
+   "updatedAt": "2026-11-12T02:07:57.581Z",
    "builtAt": "",
    "notes": [
     {
@@ -87924,6 +87928,10 @@
     {
      "text": "Split by Claude into 7 steps (1 Fable).",
      "at": "2026-11-10T17:54:31.081Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:07:57.581Z"
     }
    ],
    "approvals": [],
@@ -88098,7 +88106,7 @@
    "title": "Project Manager add-on: drag a build to another project's tab/window, drop dialog picks Pending, Queued (with position) or Planned",
    "category": "",
    "detail": "Amends the Project Manager build. Drag a build (or similar item) from one project and drop it on another project's tab or window. A dialog asks where it goes: Pending, Queued or Planned, showing that project's current queue, pending list and plans. If Queued, pick the position: first, second, third... or last. Full API control.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -88106,7 +88114,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T15:43:05.952Z",
-   "updatedAt": "2026-11-10T17:56:14.679Z",
+   "updatedAt": "2026-11-12T02:07:55.520Z",
    "builtAt": "",
    "notes": [
     {
@@ -88120,6 +88128,10 @@
     {
      "text": "Split by Claude into 9 steps (1 Fable).",
      "at": "2026-11-10T17:56:14.679Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:07:55.520Z"
     }
    ],
    "approvals": [],
@@ -90844,7 +90856,7 @@
    "title": "AmberX Android: web view top banner hidden behind the status bar and camera cutout (respect safe-area insets)",
    "category": "",
    "detail": "In the AmberX Android app the rendered page sits too high: the top banner/row is hidden behind the phone's status bar (call notifications) and the camera cutout. Fix edge-to-edge handling: apply system bar and display-cutout insets (WindowInsets / safe-area-inset-top for the web view), so the top row is fully visible. Test on the paired phone, portrait and landscape.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -90852,7 +90864,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T16:43:03.427Z",
-   "updatedAt": "2026-11-10T18:02:47.724Z",
+   "updatedAt": "2026-11-12T02:07:54.367Z",
    "builtAt": "",
    "notes": [
     {
@@ -90862,6 +90874,10 @@
     {
      "text": "Split by Claude into 7 steps (0 Fable).",
      "at": "2026-11-10T18:02:47.724Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:07:54.367Z"
     }
    ],
    "approvals": [],
@@ -92600,7 +92616,7 @@
    "title": "Plugin UI inventory + per-plugin reskin: one button lists every element, behavior and token; rebuild just that plugin's look",
    "category": "",
    "detail": "New plugin. 1) A button in every plugin's settings: generates a full inventory of that plugin's UI: every dialog, table, button, pane, window, tab and other element, every behavior, and every layout, style and colour token. 2) Views: grid with expandable rows, classic tree, 3D, IDE-style tab groups; selectable roots; groups of elements. 3) Reskin / rebuild just that plugin: regenerate its look, layout and behavior as a skin scoped to the one plugin (same code underneath, not rewritten from scratch), to look better, perform better, or be new. Preview before apply, one-click revert. Full API/CLI control; AI only behind its switch.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -92608,7 +92624,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T17:31:45.669Z",
-   "updatedAt": "2026-11-10T18:05:12.224Z",
+   "updatedAt": "2026-11-12T02:07:53.462Z",
    "builtAt": "",
    "notes": [
     {
@@ -92618,6 +92634,10 @@
     {
      "text": "Split by Claude into 15 steps (3 Fable).",
      "at": "2026-11-10T18:05:12.224Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:07:53.462Z"
     }
    ],
    "approvals": [],
@@ -94342,7 +94362,7 @@
    "title": "Ollama: own Docker container 'amberx-llama', internal-only API wired into console, orchestrator and agents",
    "category": "",
    "detail": "Amends Ollama build. Run Ollama in its own Docker container named amberx-llama (Coolify-managed, persistent volume for models, restart always). API internal only: bound to the Docker/internal network, no public port or Traefik route; reachable by the console, orchestrator, agents and search plugin via http://amberx-llama:11434. Register it in axHub as a service and in console AI settings as the local provider (Mistral Small 24B default, Mistral 7B quick). Health check + status widget.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -94350,7 +94370,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T17:51:17.543Z",
-   "updatedAt": "2026-11-10T17:53:28.164Z",
+   "updatedAt": "2026-11-12T02:08:02.808Z",
    "builtAt": "",
    "notes": [
     {
@@ -94360,6 +94380,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T17:53:28.164Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:02.808Z"
     }
    ],
    "approvals": [],
@@ -94441,7 +94465,7 @@
    "title": "amberx-llama: axHub service hooks so AmberX and every app can use it",
    "category": "",
    "detail": "Amends amberx-llama build. Expose the local model through axHub as an axHub service (MCP/API tools: chat, complete, embed, list models, status) so every app can use it, including AmberX (phone app voice/assistant) via axHub. Still internal: no public port; external apps only reach it through authenticated axHub.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -94449,7 +94473,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T17:51:34.577Z",
-   "updatedAt": "2026-11-10T17:53:59.144Z",
+   "updatedAt": "2026-11-12T02:07:58.548Z",
    "builtAt": "",
    "notes": [
     {
@@ -94459,6 +94483,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T17:53:59.144Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:07:58.548Z"
     }
    ],
    "approvals": [],
@@ -94540,7 +94568,7 @@
    "title": "amberx-llama: llama.amberxai.com via Coolify/Traefik, behind axHub auth",
    "category": "",
    "detail": "Amends amberx-llama. Give the container a hostname llama.amberxai.com through Coolify on the VPS (root shell available): set the domain on the Coolify app so Traefik routes it with HTTPS. If *.amberxai.com wildcard DNS already points at the VPS, no Hostinger change is needed; if not, record the exact A record needed (Hostinger API key is missing from the axHub vault, so report it). Put the public route behind axHub auth (forward-auth / token); never expose raw Ollama unauthenticated. Keep the internal http://amberx-llama:11434 for the console and agents.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -94548,7 +94576,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T17:52:45.615Z",
-   "updatedAt": "2026-11-10T17:54:43.788Z",
+   "updatedAt": "2026-11-12T02:07:56.526Z",
    "builtAt": "",
    "notes": [
     {
@@ -94558,6 +94586,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T17:54:43.788Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:07:56.526Z"
     }
    ],
    "approvals": [],

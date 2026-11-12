@@ -776,14 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 23:09 UTC · `molly-sign-in-once` note (all) · orchestrator
-- 2026-11-10 23:11 UTC · `molly-sign-in-once` → queued (all) · builds-live
-- 2026-11-10 23:11 UTC · `make-hulu-actually-take-builds-dispatcher-counts` → running, note (all) · pipeline
-- 2026-11-10 23:11 UTC · `make-hulu-actually-take-builds-dispatcher-counts` branch claude/make-hulu-actually-take-builds-dispatcher-counts (all) · pipeline
-- 2026-11-10 23:11 UTC · `make-hulu-actually-take-builds-dispatcher-counts` note (all) · orchestrator
-- 2026-11-10 23:11 UTC · `molly-sign-in-once` → running, note (all) · pipeline
-- 2026-11-10 23:11 UTC · `molly-sign-in-once` note (all) · orchestrator
-- 2026-11-10 23:11 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` → running, note (all) · pipeline
 - 2026-11-10 23:12 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` → running, note (all) · orchestrator
 - 2026-11-10 23:12 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` → running, note (all) · pipeline
 - 2026-11-10 23:12 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` note (all) · orchestrator
@@ -1176,6 +1168,14 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:07 UTC · `session-transcripts-api-search-what-was-said-fin` → archived, note (all) · console
 - 2026-11-12 02:07 UTC · `shipped-features-show-each-landed-build-s-screen` → archived, note (all) · console
 - 2026-11-12 02:07 UTC · `shared-screenshot-registry-hooked-everywhere-liv` → archived, note (all) · console
+- 2026-11-12 02:07 UTC · `plugin-ui-inventory-per-plugin-reskin-one-button` → archived, note (all) · console
+- 2026-11-12 02:07 UTC · `amberx-android-web-view-top-banner-hidden-behind` → archived, note (all) · console
+- 2026-11-12 02:07 UTC · `project-manager-add-on-drag-a-build-to-another-p` → archived, note (all) · console
+- 2026-11-12 02:07 UTC · `amberx-llama-llama-amberxai-com-via-coolify-trae` → archived, note (all) · console
+- 2026-11-12 02:07 UTC · `project-manager-add-on-new-project-prompt-asks-i` → archived, note (all) · console
+- 2026-11-12 02:07 UTC · `amberx-llama-axhub-service-hooks-so-amberx-and-e` → archived, note (all) · console
+- 2026-11-12 02:07 UTC · `projects-create-a-new-project-and-move-builds-be` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `ollama-own-docker-container-amberx-llama-interna` → archived, note (all) · console
 
 ## Token passes (log)
 
