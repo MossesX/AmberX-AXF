@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3714,
- "updatedAt": "2026-11-12T22:03:11.810Z",
+ "rev": 3715,
+ "updatedAt": "2026-11-12T22:03:25.602Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -173346,14 +173346,14 @@
    "title": "One to-do, notes and tasks plugin in the console; take it out of AmberX",
    "category": "one-app",
    "detail": "Brett said: \"take the to-do manager and everything and the notes from AmberX and move it to the console and remove all the notes things from the console. I want just one to-do, note and task management plugin to be in the console. Take it out of AmberX.\" First slice of the one-app merge. Keep all existing data; AmberX Android reads it from the console.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx",
    "pr": "#527",
    "createdAt": "2026-11-12T21:51:44.012Z",
-   "updatedAt": "2026-11-12T22:03:09.892Z",
+   "updatedAt": "2026-11-12T22:03:11.979Z",
    "builtAt": "",
    "notes": [
     {
@@ -173421,12 +173421,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T22:03:11.979Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T21:51:44.013Z",
-     "updatedAt": "2026-11-12T21:51:44.013Z"
+     "updatedAt": "2026-11-12T22:03:12.262Z"
     },
     {
      "id": "s2",
