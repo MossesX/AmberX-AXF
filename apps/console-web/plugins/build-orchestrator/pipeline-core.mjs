@@ -300,12 +300,14 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
   let free = Math.max(0, Number(slots?.free) || 0);
   const launches = []; const waits = [];
   for (const b of queue) {
+    // only Queued builds take slots (Brett, Nov 12 2026): never a Pending one, whatever else the record says
+    if (b.status !== 'queued') continue;
     if (isHeld(b)) { waits.push({ id: b.id, why: `on hold${b.pipeline.heldBy ? ` (${b.pipeline.heldBy})` : ''}: skipped until released`, held: true }); continue; }
     if (!openSteps(b).length) { waits.push({ id: b.id, why: b.steps?.length ? 'every step is done: nothing to run' : 'no steps yet: waiting for the split' }); continue; }
     const n = orchNextUp(b, rules);
     if (n.needsApproval) { waits.push({ id: b.id, why: `needs Brett's approval: upgrade ${n.phase.from} → ${n.phase.model}` }); continue; }
     const model = nextModel(b);
-    if (free <= 0) { waits.push({ id: b.id, why: `no free agent slot (${slots?.used ?? '?'}/${slots?.cap ?? '?'} in use)` }); continue; }
+    if (free <= 0) { waits.push({ id: b.id, why: slots?.hard?.max && Number(slots.hard.free) <= 0 ? `VPS hard build limit reached (${slots.hard.live ?? '?'}/${slots.hard.max} running)` : `no free agent slot (${slots?.used ?? '?'}/${slots?.cap ?? '?'} in use)` }); continue; }
     const r = routeFor(b, acc, model, settings);
     const a = r.account ? acc.find((x) => x.name === r.account) : null;
     if (!a) { waits.push({ id: b.id, why: r.why }); continue; }
