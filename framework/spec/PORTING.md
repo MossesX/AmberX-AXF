@@ -161,3 +161,10 @@ Web only (Android on hold), Kotlin twins when the Android side resumes:
 - `console.nav` act `refresh` and `console-command@1` op `refresh` (`hard?`).
 - `ui-choices@1` (`framework/core/ui-choices.mjs`): the `choices` and `singleOption` fields of ui-review-item@1.
 
+
+## Deferred: reliable console delivery + screen focus (Nov 11 2026)
+Web only (Android on hold, build `console-commands-reliable`), Kotlin twins when the Android side resumes:
+- `console-command@1` field `focus`, `consoleSplitFocus` ("<screen> <tab or item>"), `consoleMessageLate` + `CONSOLE_LATE_MS`,
+  `CONSOLE_HEARTBEAT_MS`, and `CONSOLE_CLIENT_STALE_MS` down from 90 s to 45 s (`core/engines/console-commands.mjs`).
+- `followSse` options `idleTimeoutMs` and the follower's `reconnect()` / `idleMs()` / `open()` (`core/sse.ts`); the Kotlin `Sse`
+  parser is unchanged, only an Android stream follower would need the idle watchdog.

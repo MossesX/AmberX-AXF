@@ -640,3 +640,45 @@ class DispatchService:
 
 
 plugin_services.provide("axf.build-dispatch@1", DispatchService(), Path(__file__).resolve().parents[1].name)
+
+
+class ConsoleFocus:
+    """console-focus@1 (console-commands-reliable, Nov 11 2026): Console commands asks which screen lists an item a
+    Claude session names. `build:<id>` (explicit) or a bare build id → the orchestrator, focused on that build (the
+    console runs build-orchestrator.focus: its tab opens, the row scrolls into view, expands and stays highlighted)."""
+
+    SCREEN = "build-orchestrator"
+    ID_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{1,120}$")
+
+    def __init__(self) -> None:
+        self._mtime = -1.0
+        self._ids: set[str] = set()
+
+    def store(self) -> Path:
+        return ROOT / "_claude" / "builds" / "store.json"
+
+    def ids(self) -> set[str]:
+        try:
+            mt = self.store().stat().st_mtime
+        except OSError:
+            return set()
+        if mt != self._mtime:
+            try:
+                self._ids = {str(b.get("id")) for b in json.loads(self.store().read_text()).get("builds", []) if isinstance(b, dict) and b.get("id")}
+            except (OSError, ValueError):
+                self._ids = set()
+            self._mtime = mt
+        return self._ids
+
+    def resolve(self, path: str) -> dict[str, Any] | None:
+        p = str(path or "").strip()
+        low = p.lower()
+        for prefix in ("build:", "builds:"):
+            if low.startswith(prefix) and p[len(prefix):].strip():
+                return {"screen": self.SCREEN, "focus": p[len(prefix):].strip(), "explicit": True}
+        if self.ID_RE.match(low) and low in self.ids():
+            return {"screen": self.SCREEN, "focus": low, "explicit": False}
+        return None
+
+
+plugin_services.provide("console-focus@1", ConsoleFocus(), Path(__file__).resolve().parents[1].name)

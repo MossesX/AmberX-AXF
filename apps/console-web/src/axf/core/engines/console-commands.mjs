@@ -12,7 +12,9 @@
  *   catalog  { $axf: 'console-catalog@1', app, items: [{ kind, id, label, detail?, icon?, keywords?, requires?, effect?, params?, parent? }], here? }
  *   client   { id, app, host?, front?, title, device, user, lastUsed, here, catalog }   (one per open console tab, kept by the server;
  *            app `molly/console-web` + host `molly` inside Molly; front = visible and shown by its host)
- *   message  { $axf: 'console-command@1', id, op: open|run|back|home|close|refresh, kind?, target?, label?, spec?, anchor?, arg?, hard?, by, at }
+ *   message  { $axf: 'console-command@1', id, op: open|run|back|home|close|refresh, kind?, target?, label?, spec?, anchor?, arg?, focus?, hard?, by, at }
+ *            focus = what to bring forward on the opened screen (a tab or an item: a build id on the Build orchestrator);
+ *            the console runs the screen's own `<screen>.focus:<focus>` action when it has one.
  *
  * Kotlin twin deferred (Android on hold, spec/PORTING.md).
  */
@@ -27,8 +29,16 @@ export const CONSOLE_ITEM_KINDS = ['screen', 'dialog', 'settings', 'action'];
 export const CONSOLE_DELIVERY = ['recent', 'all'];
 export const CONSOLE_CATALOG_MAX = 3000;
 export const CONSOLE_LIST_DEFAULT = 50;
-/** How long a console counts as open without a heartbeat (the client re-announces every 30 s and on focus). */
-export const CONSOLE_CLIENT_STALE_MS = 90_000;
+/**
+ * How long a console counts as open without a heartbeat. Only the console itself proves it is alive (its hello, seen,
+ * ack, or opening its stream); the server's own keep-alive on the stream never does, because a frozen phone tab keeps
+ * its socket open while it runs nothing (console-commands-reliable, Nov 11 2026). The client beats every
+ * CONSOLE_HEARTBEAT_MS and on every wake (visible, focus, online, page shown again).
+ */
+export const CONSOLE_CLIENT_STALE_MS = 45_000;
+export const CONSOLE_HEARTBEAT_MS = 15_000;
+/** A command a console receives later than this after it was sent live is skipped (it went to a tab that was asleep). */
+export const CONSOLE_LATE_MS = 30_000;
 /** The MCP shortcut tools every console MCP server publishes (names are a contract: Claude sessions call them through axHub). */
 export const CONSOLE_TOOLS = ['console_open', 'console_dialog', 'console_settings', 'console_action', 'console_back', 'console_where', 'console_list', 'console_clients', 'console_refresh'];
 
@@ -159,12 +169,34 @@ export function consoleResolve(items, kind, path) {
   const phrase = foldWords(raw);
   hit = list.find((i) => foldWords(i.label) === phrase);
   if (hit) return { item: hit };
+  if (kind === 'screen') { const f = consoleSplitFocus(list, raw); if (f) return f; }
   const words = wordsOf(raw);
   if (!words.length) return { candidates: [] };
   const scored = list.map((i) => [i, scoreItem(i, words, words.join(' '))]).filter(([, s]) => s > 0).sort((a, b) => b[1] - a[1]);
   if (!scored.length) return { candidates: [] };
   if (scored.length === 1 || scored[0][1] - scored[1][1] >= 1) return { item: scored[0][0] };
   return { candidates: scored.slice(0, 6).map(([i]) => i), ambiguous: true };
+}
+
+/**
+ * A screen named by its exact id or title followed by what to focus on it: "build-orchestrator pending",
+ * "Build orchestrator / pending", "build-orchestrator:my-build" → { item, focus }. The longest screen name wins; null
+ * when the path doesn't start with one (or nothing follows it).
+ */
+export function consoleSplitFocus(screens, path) {
+  const raw = String(path ?? '').trim().replace(/^((open|show|go|to|the|my)\s+)+/i, '');
+  let best = null;
+  for (const i of Array.isArray(screens) ? screens : []) {
+    if (i?.kind !== 'screen') continue;
+    for (const name of [i.id, i.label]) {
+      const n = String(name ?? '').trim();
+      if (!n || raw.length <= n.length || raw.slice(0, n.length).toLowerCase() !== n.toLowerCase()) continue;
+      const m = /^(\s*[/:#>→]\s*|\s+)(.+)$/u.exec(raw.slice(n.length));
+      if (!m || !m[2].trim()) continue;
+      if (!best || n.length > best.len) best = { len: n.length, item: i, focus: m[2].trim() };
+    }
+  }
+  return best ? { item: best.item, focus: best.focus.slice(0, 200) } : null;
 }
 
 /* ================================================================== action policy */
@@ -210,7 +242,7 @@ export const consoleClientSummary = (c) => ({ id: c.id, app: c.app ?? 'console-w
 export function consoleMessage(fields, { id, by = '', now = Date.now() } = {}) {
   const m = { $axf: CONSOLE_COMMAND_FRAME, id: String(id ?? ''), op: fields.op };
   if (fields.hard === true) m.hard = true;
-  for (const k of ['kind', 'target', 'label', 'spec', 'anchor', 'arg']) if (fields[k] !== undefined && fields[k] !== '') m[k] = String(fields[k]);
+  for (const k of ['kind', 'target', 'label', 'spec', 'anchor', 'arg', 'focus']) if (fields[k] !== undefined && fields[k] !== '') m[k] = String(fields[k]);
   m.by = by;
   m.at = new Date(now).toISOString();
   return m;
@@ -224,6 +256,17 @@ export function consoleMessageErrors(m) {
   if (m.op === 'open' && (!CONSOLE_ITEM_KINDS.includes(m.kind) || m.kind === 'action' || !m.target)) errors.push('open needs a kind (screen, dialog, settings) and a target');
   if (m.op === 'run' && !m.spec) errors.push('run needs an action spec');
   return errors;
+}
+
+/**
+ * Is a live command too late to run? A command sent live to a console (no `delivery`) that only reaches it more than
+ * CONSOLE_LATE_MS after it was sent went to a tab that was asleep; the server has moved on (another console or a wake),
+ * so running it now would open the screen twice. Queued commands (`delivery` set) are always run.
+ */
+export function consoleMessageLate(m, now = Date.now()) {
+  if (!isObj(m) || m.delivery) return false;
+  const at = Date.parse(String(m.at ?? ''));
+  return Number.isFinite(at) && now - at > CONSOLE_LATE_MS;
 }
 
 /* ================================================================== the console domain of control@1 */
@@ -299,7 +342,8 @@ export function runConsoleCommand(c, ctx = {}) {
     }
     return send({ op: 'run', kind: 'action', target: item.id, label: item.label, spec }, { item, effect });
   }
-  return send({ op: 'open', kind, target: item.id, label: item.label, anchor: str(input.anchor, 160), arg: str(input.arg, 400) }, { item });
+  const focus = kind === 'screen' ? str(input.focus, 200) || r.focus || '' : '';
+  return send({ op: 'open', kind, target: item.id, label: item.label, anchor: str(input.anchor, 160), arg: str(input.arg, 400), focus }, { item, ...(focus ? { focus } : {}) });
 }
 
 /** The confirm token a destructive console action needs (what the CLI prints, the check uses). */
