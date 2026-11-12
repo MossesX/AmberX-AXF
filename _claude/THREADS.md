@@ -776,8 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 01:43 UTC · `build-notifications-same-notification-per-build` → queued, note (all) · console
-- 2026-11-12 01:44 UTC · `amberx-build-notifications-for-every-stage-start` → queued, note (all) · console
 - 2026-11-12 01:44 UTC · `open-any-website-by-voice-on-the-phone-optionall` → queued, note (all) · console
 - 2026-11-12 01:44 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` note (all) · orchestrator
 - 2026-11-12 01:44 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` → running, note (all) · pipeline
@@ -1176,6 +1174,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:13 UTC · `account-order-hulu-moses-x-api-account-shown-on-every-build` → running, note (all) · pipeline
 - 2026-11-12 03:13 UTC · `account-order-hulu-moses-x-api-account-shown-on-every-build` branch claude/account-order-hulu-moses-x-api-account-shown-on-every-build (all) · pipeline
 - 2026-11-12 03:13 UTC · `account-order-hulu-moses-x-api-account-shown-on-every-build` note (all) · orchestrator
+- 2026-11-12 03:13 UTC · `molly-gap-console-token-handoff` → running, note (all) · pipeline
+- 2026-11-12 03:13 UTC · `molly-gap-console-token-handoff` note (all) · orchestrator
 
 ## Token passes (log)
 
