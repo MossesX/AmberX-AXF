@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 23:26 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` → queued, note (all) · pipeline
 - 2026-11-10 23:26 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` → running, note (all) · pipeline
 - 2026-11-10 23:26 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` note (all) · orchestrator
 - 2026-11-10 23:27 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` → pending, note (all) · pipeline
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:13 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` PR #501 (all) · builds-live
 - 2026-11-12 02:13 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` s3 done, → built (all) · orchestrator
 - 2026-11-12 02:13 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` note (all) · orchestrator
+- 2026-11-12 02:14 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` note (all) · orchestrator
 
 ## Token passes (log)
 
