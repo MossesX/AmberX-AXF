@@ -201,9 +201,10 @@ export class SettingsRegistry {
 
   /** Forget a value (back to its default). */
   clear(key: string): void {
-    const fresh = readValues(this.storageKey);
-    delete fresh[key];
-    this.values = fresh;
+    // same merge as set(): a session without storage keeps its other settings (clearing one key never wipes the rest)
+    const next = { ...this.values, ...readValues(this.storageKey) };
+    delete next[key];
+    this.values = next;
     delete this.secrets[key];
     writeValues(this.storageKey, this.values);
     for (const w of this.watchers.get(key) ?? []) w(this.get(key));
