@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3701,
- "updatedAt": "2026-11-12T21:52:14.463Z",
+ "rev": 3702,
+ "updatedAt": "2026-11-12T21:52:28.698Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -173307,19 +173307,27 @@
    "title": "One to-do, notes and tasks plugin in the console; take it out of AmberX",
    "category": "one-app",
    "detail": "Brett said: \"take the to-do manager and everything and the notes from AmberX and move it to the console and remove all the notes things from the console. I want just one to-do, note and task management plugin to be in the console. Take it out of AmberX.\" First slice of the one-app merge. Keep all existing data; AmberX Android reads it from the console.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx",
    "pr": "",
    "createdAt": "2026-11-12T21:51:44.012Z",
-   "updatedAt": "2026-11-12T21:52:12.906Z",
+   "updatedAt": "2026-11-12T21:52:17.945Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-12T21:51:48.205Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-one-to-do-notes-and-tasks-plugin-in-the-console---joey.",
+     "at": "2026-11-12T21:52:16.047Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-one-to-do-notes-and-tasks-plugin-in-the-console---joey, own login copy)",
+     "at": "2026-11-12T21:52:17.945Z"
     }
    ],
    "approvals": [],
@@ -173339,18 +173347,18 @@
    "pipeline": {
     "queuedAt": "2026-11-12T21:51:47.735Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-one-to-do-notes-and-tasks-plugin-in-the-console---joey",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "launchedAt": "2026-11-12T21:52:15.577Z",
+    "runs": 1,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-12T21:52:15.577Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -173359,7 +173367,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-12T21:52:15.577Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -173484,7 +173492,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
