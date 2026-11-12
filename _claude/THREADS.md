@@ -776,18 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 02:40 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` → running, note (all) · pipeline
-- 2026-11-12 02:40 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` note (all) · orchestrator
-- 2026-11-12 02:40 UTC · `molly-gap-expenses-token-handoff` added (2 steps) (all) · orchestrator
-- 2026-11-12 02:40 UTC · `molly-gap-console-token-handoff` s2 done (all) · orchestrator
-- 2026-11-12 02:40 UTC · `molly-gap-console-warm-token` added (2 steps) (all) · orchestrator
-- 2026-11-12 02:42 UTC · `main-gate-nothing-reaches-main-without-passing` note (all) · orchestrator
-- 2026-11-12 02:42 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` s7 done (all) · orchestrator
-- 2026-11-12 02:42 UTC · `server-gate-one-session-per-build-no-duplicate-launches` added (3 steps) (all) · Claude voice (Gizmo)
-- 2026-11-12 02:42 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` → running, note (all) · pipeline
-- 2026-11-12 02:42 UTC · `server-gate-one-session-per-build-no-duplicate-launches` → queued, note (all) · console
-- 2026-11-12 02:42 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` note (all) · orchestrator
-- 2026-11-12 02:42 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` branch claude/console-and-axhub-retry-failed-calls-themselves-no-claude-needed (all) · pipeline
 - 2026-11-12 02:42 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` → running, note (all) · pipeline
 - 2026-11-12 02:42 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` branch claude/one-source-of-truth-console-shows-only-what-the-server-says-is-running (all) · pipeline
 - 2026-11-12 02:42 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` s7 done (all) · foreign-write
@@ -1176,6 +1164,18 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:32 UTC · `project-thread-76ubmk` added (0 steps) (all) · backfill
 - 2026-11-12 03:32 UTC · `project-thread-y6pzy7` added (0 steps) (all) · backfill
 - 2026-11-12 03:32 UTC · `project-thread-jflo9d` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-a21f46` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-tpor29` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-2ijgui` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-1xk0js` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-aaet0t` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-2ijgui-resume` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-2ijgui-patches` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-2ijgui-aikeys` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-2ijgui-restore` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-vfc6wi` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-jx0w7u` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-9jsom2` added (0 steps) (all) · backfill
 
 ## Token passes (log)
 
