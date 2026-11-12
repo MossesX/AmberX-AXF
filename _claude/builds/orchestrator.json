@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:16:47.446Z",
+ "updatedAt": "2026-11-12T02:16:55.934Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -100266,7 +100266,7 @@
    "branch": "claude/owner-recognized-everywhere-veto-countdown-only-on-shell-commands",
    "pr": "",
    "createdAt": "2026-11-12T02:04:11.564Z",
-   "updatedAt": "2026-11-12T02:16:27.368Z",
+   "updatedAt": "2026-11-12T02:16:49.376Z",
    "builtAt": "",
    "notes": [
     {
@@ -100276,6 +100276,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): hl-mwcx2k2t-f4.",
      "at": "2026-11-12T02:16:27.368Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-owner-recognized-everywhere-veto-countdown-only---rhonda, own login copy)",
+     "at": "2026-11-12T02:16:49.376Z"
     }
    ],
    "approvals": [],
