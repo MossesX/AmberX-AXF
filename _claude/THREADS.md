@@ -778,9 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:33 UTC · `laughing-thompson-eqfjw1` added (0 steps) (all) · backfill
-- 2026-11-12 03:33 UTC · `project-thread-eew3jm` added (0 steps) (all) · backfill
-- 2026-11-12 03:33 UTC · `amberx-cloning-plugin-hzcj78` added (0 steps) (all) · backfill
 - 2026-11-12 03:33 UTC · `yo-a7qg14` added (0 steps) (all) · backfill
 - 2026-11-12 03:35 UTC · `merge-all-ready-buttons-server-side-lander` note (all) · pipeline
 - 2026-11-12 03:35 UTC · `orchestrator-checks-shipped-features-before-spli` s1 done (all) · orchestrator
@@ -1178,6 +1175,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 23:12 UTC · `move-amberx-web-app-into-the-console-amberx-andr` s12 done (all) · orchestrator
 - 2026-11-12 23:12 UTC · `banners-page-focus-scroll-to-and-highlight-any-banner-or-badge` added (2 steps) (all) · Claude (voice)
 - 2026-11-12 23:12 UTC · `banners-page-focus-scroll-to-and-highlight-any-banner-or-badge` → queued, note (all) · console
+- 2026-11-12 23:13 UTC · `banners-page-focus-scroll-to-and-highlight-any-banner-or-badge` → running, note (all) · pipeline
+- 2026-11-12 23:13 UTC · `banners-page-focus-scroll-to-and-highlight-any-banner-or-badge` branch claude/banners-page-focus-scroll-to-and-highlight-any-banner-or-badge (all) · pipeline
+- 2026-11-12 23:13 UTC · `banners-page-focus-scroll-to-and-highlight-any-banner-or-badge` note (all) · orchestrator
 
 ## Token passes (log)
 
