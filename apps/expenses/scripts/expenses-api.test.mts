@@ -86,6 +86,28 @@ try {
   r = route.OPTIONS(new Request("http://x/api/expenses/v1/entries", { method: "OPTIONS", headers: { origin: MOLLY, "access-control-request-method": "POST" } }));
   ok(r.status === 204 && r.headers.get("access-control-allow-methods")?.includes("PATCH"), "preflight from Molly → 204");
   ok(route.OPTIONS(new Request("http://x/api/expenses/v1/entries", { method: "OPTIONS", headers: { origin: "https://evil.example" } })).status === 403, "preflight from elsewhere → 403");
+
+  // paydays: no schedule → not ready, fill refused; with a schedule → missing dates, fill adds them once
+  r = await route.GET(req("GET", "paydays?today=2026-11-10"), ctx("paydays"));
+  j = await r.json();
+  ok(r.status === 200 && j.ready === false && j.missing.length === 0, "paydays without a schedule → not ready");
+  ok((await route.POST(req("POST", "paydays?today=2026-11-10"), ctx("paydays"))).status === 409, "fill without a schedule → 409");
+  writeFileSync(path.join(dir, "expenses-settings.json"), JSON.stringify({ format: "axf-kv/1", user: "Tester", ns: "expenses-settings", updatedAt: new Date().toISOString(),
+    doc: { settings: { paydayAmount: 1500, paydayEvery: "monthly", paydayDayOfMonth: 1, paydaySince: "2026-10-01", paydayPayer: "Acme" } } }));
+  r = await route.GET(req("GET", "paydays?today=2026-11-10"), ctx("paydays"));
+  j = await r.json();
+  ok(j.ready === true && j.missing.join() === "2026-10-01,2026-11-01" && j.next === "2026-12-01" && j.schedule.amount === 150000, "paydays → missing and next from the stored schedule");
+  r = await route.POST(req("POST", "paydays?today=2026-11-10"), ctx("paydays"));
+  j = await r.json();
+  ok(r.status === 200 && j.added === 2 && j.entries[0].merchant === "Acme" && j.entries[0].kind === "income", "fill adds the missing paydays");
+  j = await (await route.POST(req("POST", "paydays?today=2026-11-10"), ctx("paydays"))).json();
+  ok(j.added === 0, "fill twice adds nothing");
+
+  // statement: a month's totals, the periods the ledger spans, markdown
+  r = await route.GET(req("GET", "statement?kind=month&date=2026-11-04"), ctx("statement"));
+  j = await r.json();
+  ok(r.status === 200 && j.statement.period.from === "2026-11-01" && j.statement.income >= 150000 && j.periods.length >= 2 && typeof j.markdown === "string", "statement → month totals and periods");
+  ok((await route.GET(req("GET", "statement?date=nope"), ctx("statement"))).status === 400, "statement with a bad date → 400");
 } finally {
   rmSync(root, { recursive: true, force: true });
 }

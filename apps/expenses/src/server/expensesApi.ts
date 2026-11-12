@@ -17,7 +17,8 @@ import { copyFile, stat } from "node:fs/promises";
 import path from "node:path";
 
 import { axsUserFromCookieHeader } from "@axs/modules/accounts/lib/session";
-import { effectiveTotal, flow, toCents } from "@axs/modules/expenses/math";
+import { buildStatement, effectiveTotal, flow, periodOf, periodsIn, statementMarkdown, toCents, type PeriodKind } from "@axs/modules/expenses/math";
+import { PAY_FREQUENCIES, isPaydayEntry, missingPaydays, nextPayday, paydayEntry, scheduleReady, type PayFrequency, type PaySchedule } from "@axs/modules/expenses/payday";
 import type { Expense, ExpenseKind } from "@axs/modules/expenses/types";
 
 import { KV_ROOT, axfKv } from "./axfKv";
@@ -173,4 +174,62 @@ export function editEntry(e: Expense, i: EntryInput): Expense {
   }
   (out as { updatedAt?: number }).updatedAt = Date.now();
   return out;
+}
+
+/* ------------------------- paydays and statements (Molly) ------------------------- */
+
+/** The pay schedule from the user's stored settings (kv `expenses-settings`), the same rows the app's Paydays
+ *  dialog edits. Mirrors `paySchedule()` in settings.ts, which is client-only. */
+export async function readPaySchedule(user: string): Promise<PaySchedule> {
+  const doc = (await axfKv.read(user, "expenses-settings")) as { settings?: Record<string, unknown> } | null;
+  const v = doc?.settings ?? {};
+  const every = PAY_FREQUENCIES.some((f) => f.value === v.paydayEvery) ? (v.paydayEvery as PayFrequency) : "biweekly";
+  const weekday = Number(v.paydayWeekday ?? 5);
+  return {
+    amount: Math.max(0, Math.round((Number(v.paydayAmount) || 0) * 100)),
+    every,
+    weekday: Number.isInteger(weekday) && weekday >= 0 && weekday <= 6 ? weekday : 5,
+    anchor: String(v.paydayAnchor ?? "").trim(),
+    dayOfMonth: Math.min(31, Math.max(1, Math.round(Number(v.paydayDayOfMonth) || 1))),
+    since: String(v.paydaySince ?? "").trim(),
+    payer: String(v.paydayPayer ?? "").trim() || "Payday",
+  };
+}
+
+/** What the Paydays screen shows: the schedule, the next payday, the ones the ledger is missing, the recent ones. */
+export function paydaysView(list: Expense[], s: PaySchedule, today: string) {
+  const ready = scheduleReady(s);
+  const recent = list.filter(isPaydayEntry).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 12).map(row);
+  return {
+    schedule: { ...s, amountDollars: s.amount / 100 }, ready, today,
+    next: ready ? nextPayday(s, today) : null,
+    missing: ready ? missingPaydays(list, s, today) : [],
+    recent,
+  };
+}
+
+/** Adds every missing payday through `today` (the app's "Add missing paydays"). Fixed ids, so it never doubles up. */
+export function fillPaydays(list: Expense[], s: PaySchedule, today: string): Expense[] {
+  if (!scheduleReady(s)) throw new ApiError(409, "no pay schedule: set the payday amount in Expenses settings");
+  return missingPaydays(list, s, today).map((d) => paydayEntry(s, d));
+}
+
+const PERIOD_KINDS: readonly PeriodKind[] = ["month", "quarter", "year"];
+
+/** A statement for one period (`kind` month|quarter|year containing `date`), plus the periods the ledger spans. */
+export function statementView(list: Expense[], kindIn: string | null, dateIn: string | null, today: string) {
+  const kind = (PERIOD_KINDS as readonly string[]).includes(kindIn ?? "") ? (kindIn as PeriodKind) : "month";
+  const date = dateIn ?? today;
+  if (!ISO.test(date)) throw new ApiError(400, "date must be YYYY-MM-DD");
+  const st = buildStatement(list, periodOf(kind, date));
+  return {
+    statement: {
+      period: st.period, opening: st.opening, closing: st.closing, subtotal: st.subtotal, tax: st.tax, tip: st.tip,
+      total: st.total, income: st.income, net: st.net, previousTotal: st.previousTotal, changePct: st.changePct,
+      categories: st.categories, merchants: st.merchants.slice(0, 10), count: st.expenses.length,
+      unreconciled: st.unreconciled.length,
+    },
+    periods: periodsIn(list, kind),
+    markdown: statementMarkdown(st),
+  };
 }

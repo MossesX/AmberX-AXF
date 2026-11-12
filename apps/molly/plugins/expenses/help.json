@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "expenses-help",
+  "name": "Expenses help",
+  "version": "0.1.0",
+  "description": "Help mode entries for Molly's Expenses plugin (help@1).",
+  "author": "Brett",
+  "tags": ["help"],
+  "data": {
+    "scope": "plugin:expenses",
+    "entries": [
+      { "target": "action:expenses.open", "title": "Expenses", "text": "Your Expense Tracker ledger, paydays and reports, right inside Molly. Same ledger as expenses.amberxai.com." },
+      { "target": "action:expenses.add", "title": "Add entry", "text": "Adds a spending or income entry. Tap a row to change it." },
+      { "target": "action:expenses.paydays.fill", "title": "Add missing paydays", "text": "Writes every payday your schedule says you should have had and the ledger is missing. Running it twice adds nothing." },
+      { "target": "action:expenses.report.copy", "title": "Copy report", "text": "Copies the report on screen as plain text." },
+      { "target": "action:expenses.export", "title": "Export CSV", "text": "Downloads the whole ledger as a spreadsheet file." }
+    ],
+    "intros": []
+  }
+}
