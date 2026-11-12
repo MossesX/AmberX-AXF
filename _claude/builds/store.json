@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3395,
- "updatedAt": "2026-11-12T02:50:37.074Z",
+ "rev": 3396,
+ "updatedAt": "2026-11-12T02:50:50.131Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -160461,15 +160461,15 @@
    "title": "Build Plan 1: skins, one-row build tables, backgrounds, asset overrides",
    "category": "skins",
    "detail": "URGENT. Build Plan 1 (Plan Studio build-plan-1-xuqq), sent to the orchestrator as a normal build so it splits it and assigns the ID. Each step came from a Pending build that was archived; check each against main first and skip anything done, unneeded or breaking. Rule: a skin controls everything (look, layout, behavior) and contains a colour theme; changing the colour theme never creates a new skin. Already done/in flight: skins-finish, PR #494 (colour themes), PR #409 (restyle), skins in asset store. Skip screenshots. Fable steps stay on Fable.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides",
    "pr": "#505",
    "createdAt": "2026-11-12T02:02:25.273Z",
-   "updatedAt": "2026-11-12T02:50:17.283Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-12T02:50:48.540Z",
+   "builtAt": "2026-11-12T02:50:48.540Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -160502,6 +160502,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-build-plan-1-skins-one-row-build-tables-backgrou--rhonda, own login copy)",
      "at": "2026-11-12T02:50:17.283Z"
+    },
+    {
+     "text": "Reconciler: PR #505 names s3, s6 done",
+     "at": "2026-11-12T02:50:48.540Z"
     }
    ],
    "approvals": [
@@ -160688,12 +160692,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 2,
+     "done": true,
+     "doneAt": "2026-11-12T02:50:48.540Z",
+     "note": "PR #505 (claude/build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides)",
+     "rev": 3,
      "createdAt": "2026-11-12T02:02:25.274Z",
-     "updatedAt": "2026-11-12T02:38:34.519Z"
+     "updatedAt": "2026-11-12T02:50:48.541Z"
     },
     {
      "id": "s7",
@@ -160726,7 +160730,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
