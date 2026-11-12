@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:07:40.128Z",
+ "updatedAt": "2026-11-12T02:07:53.943Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -58213,14 +58213,14 @@
    "title": "Module system: modules, extension points, services, placeholders",
    "category": "Kernel & engines",
    "detail": "Modules register screens, actions, settings, dialogs, services and UI kits through extension points, start in dependency order and can define their own extension points. Placeholders answer NotImplemented until a real module arrives.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-11-10T18:55:12.256Z",
+   "updatedAt": "2026-11-12T02:07:46.247Z",
    "builtAt": "",
    "notes": [
     {
@@ -58230,6 +58230,10 @@
     {
      "text": "Watchdog: no session and no claude process; last sign of life 8 days ago (8 steps left). Back in Pending, not relaunched: queue it again if it is still wanted.",
      "at": "2026-11-09T00:09:58.947Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:07:46.247Z"
     }
    ],
    "approvals": [],
@@ -58386,14 +58390,14 @@
    "title": "Console deployment (install-console.sh)",
    "category": "Deploy & CI",
    "detail": "One command on the VPS builds the console + API + panel container behind Coolify Traefik with HTTPS at console.amberxai.com, prints AXF_TOKEN and auto-updates every 5 minutes.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-11-10T18:55:13.549Z",
+   "updatedAt": "2026-11-12T02:07:45.189Z",
    "builtAt": "",
    "notes": [
     {
@@ -58403,6 +58407,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-08T19:19:49.849Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:07:45.189Z"
     }
    ],
    "approvals": [],
@@ -58454,19 +58462,23 @@
    "title": "State, data cache, events, flags, config, migrations",
    "category": "Kernel & engines",
    "detail": "AxfStore (reducer/middleware/undo), QueryClient (stale-while-revalidate), EventBus, layered FeatureFlags and Config, migrations ledger + semver.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-11-10T18:55:18.615Z",
+   "updatedAt": "2026-11-12T02:07:41.545Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:07:41.545Z"
     }
    ],
    "approvals": [],
@@ -58623,19 +58635,23 @@
    "title": "UI-kit switching + fallback",
    "category": "Kernel & engines",
    "detail": "Every component is an abstract kind; the active ui-kit asset picks which library renders it. Kinds a kit lacks fall back to the default AmberX kit and are noted on the output terminal.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-11-10T18:55:15.114Z",
+   "updatedAt": "2026-11-12T02:07:44.447Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:07:44.447Z"
     }
    ],
    "approvals": [],
@@ -58774,19 +58790,23 @@
    "title": "Libraries: settings, logging, admin, accounts, profile, billing",
    "category": "Android port",
    "detail": "The six libraries the console and apps build on. Settings and logging are complete; accounts and billing run on mock providers.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-11-10T18:55:16.378Z",
+   "updatedAt": "2026-11-12T02:07:43.209Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:07:43.209Z"
     }
    ],
    "approvals": [],
@@ -59015,19 +59035,23 @@
    "title": "Import third-party UI libraries → AmberX kits",
    "category": "Build engine",
    "detail": "axf import-ui clones (git/local) or records (maven/npm) a library, rewrites literals and Material/MUI roles to AXF tokens, saves kit-<id> + its ui-kit asset and applies it to the open project.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-11-10T18:55:17.624Z",
+   "updatedAt": "2026-11-12T02:07:42.470Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:07:42.470Z"
     }
    ],
    "approvals": [],
@@ -59231,19 +59255,23 @@
    "title": "Session, principal, audit log",
    "category": "Kernel & engines",
    "detail": "Session/Principal/SessionProvider contracts and an AuditLog service; accounts library uses a mock auth provider.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-11-10T18:55:19.772Z",
+   "updatedAt": "2026-11-12T02:07:40.565Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:07:40.565Z"
     }
    ],
    "approvals": [],
@@ -62099,19 +62127,23 @@
    "title": "Library: Files & sync",
    "category": "Showcase",
    "detail": "Library lib-files with a demo app; covers d.files, d.sync.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-11-10T18:55:20.928Z",
+   "updatedAt": "2026-11-12T02:07:39.668Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:07:39.668Z"
     }
    ],
    "approvals": [],
@@ -77950,14 +77982,14 @@
    "title": "Session transcripts API: search what was said, find which session",
    "category": "",
    "detail": "Builds on ui-review-notify-session-audio (landed Nov 7): sessions are recorded by AmberX's Audio Output Recorder (output-recorder plugin) and transcribed by the faster-whisper worker, transcripts saved on the hub, readable in the recorder page. Today output-recorder's plugin.json declares no transcript commands, so nothing outside the page can read them. Add full API (plugin-commands@1, so MCP/axHub, REST, CLI, voice come for free): list sessions with transcripts (date, length, linked Claude session, title); read one transcript (whole or a time range, with timestamps); search across all transcripts (words or phrase, date range, fuzzy), returning the matching session, timestamp, a few lines of context, and a deep link that opens the recorder page at that moment (and plays the audio there). Also a 'find the session where we talked about X' command that ranks sessions by match. Reachable from Claude chat/voice sessions through axHub so Claude or Gizmo can answer 'which session did we talk about this'. Read-only; respects the recorder's settings. Tests; report.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "mcp",
    "pendingId": "session-transcripts-api-search-what-was-said-fin",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T04:21:03.588Z",
-   "updatedAt": "2026-11-10T18:09:26.196Z",
+   "updatedAt": "2026-11-12T02:07:50.262Z",
    "builtAt": "",
    "notes": [
     {
@@ -77991,6 +78023,10 @@
     {
      "text": "Split by Claude into 11 steps (1 Fable).",
      "at": "2026-11-10T18:09:26.196Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:07:50.262Z"
     }
    ],
    "approvals": [],
@@ -92940,7 +92976,7 @@
    "title": "Shared screenshot registry hooked everywhere + live edit from a screenshot + new per-screen skin asset type",
    "category": "",
    "detail": "1) Shared screenshot registry reachable from anywhere by hook (not only UI Review): Shipped Features entries, Plan Studio plans, orchestrator builds (Build Manager is being retired), errors, any mention of a build/feature/error links its screenshots. 2) Opening a screenshot of an element: side pane with every token/style/parameter for that screen; tweak live with a hot-rendered live preview of the same screen; Save. 3) New asset type: screen skin (colour, style, layout, behavior, icon themes etc.) applied to one particular UI screen only. Full API/CLI control.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -92948,7 +92984,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T17:34:36.360Z",
-   "updatedAt": "2026-11-10T18:06:07.730Z",
+   "updatedAt": "2026-11-12T02:07:51.859Z",
    "builtAt": "",
    "notes": [
     {
@@ -92958,6 +92994,10 @@
     {
      "text": "Split by Claude into 14 steps (4 Fable).",
      "at": "2026-11-10T18:06:07.730Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:07:51.859Z"
     }
    ],
    "approvals": [],
@@ -93528,7 +93568,7 @@
    "title": "Shipped Features: show each landed build's screenshots on its entry",
    "category": "",
    "detail": "Each Shipped Features entry shows the screenshots and before/after shots of what that build did (pulled from the shared screenshot registry / UI Review screenshots grouped by build name), inline with a gallery view. Goes with the shared screenshot registry build.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -93536,7 +93576,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T17:34:46.359Z",
-   "updatedAt": "2026-11-10T18:08:20.331Z",
+   "updatedAt": "2026-11-12T02:07:51.043Z",
    "builtAt": "",
    "notes": [
     {
@@ -93546,6 +93586,10 @@
     {
      "text": "Split by Claude into 7 steps (1 Fable).",
      "at": "2026-11-10T18:08:20.331Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:07:51.043Z"
     }
    ],
    "approvals": [],
@@ -94595,7 +94639,7 @@
    "title": "Dispatcher: a worktree store write can erase a fresh launch record (double launch, then a stuck build)",
    "category": "",
    "detail": "Seen on pass-approval-hook-deep-link-amberx-notification, Nov 10 2026 (journal _claude/builds/journal/2026-11-p4.jsonl): 18:11:16 pipeline:launch wrote status running + pipeline.session earl; 18:11:19 the worktree's orchestrator:note ('Claude account: ...', written by claude-headless.sh at start from a store copy taken before the launch) landed with status queued and no pipeline record, and the per-build newer-wins merge kept it; 18:12:11 the next tick launched the same build again (gina), both runs numbered 1. Earl's 's1 done' tick at 18:24:48 erased the second record the same way, so the live build sat in 'running' with no session: checkEnds and reapBuilds both skip a build without pipeline.session / pipeline.account, so the phase end was never handled (set to queued by hand). Fix, in this order: (1) builds-merge-core: merge the pipeline record per field, never let an incoming copy with no pipeline record replace a newer launch record on main (or have orchestrator.mjs act pull main's record before a note/tick write); (2) pipeline-core plan(): never launch a build whose status is running/waiting or that has a running or queued agent slot for its id (agent-slots status lists build per slot); (3) checkEnds/reapBuilds: a build 'running' with no pipeline record and no live slot for it ends by the phase rule (exit 0 + model switch -> queued) instead of being skipped forever; (4) claude-headless.sh: write the 'Claude account' note only after the launch record is published, or through the per-field merge. Add a check in framework/spec/check-builds-live.mjs that replays this journal sequence.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "Claude (gina, pass-approval s1 watcher)",
    "pendingId": "",
@@ -94603,12 +94647,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T18:28:36.423Z",
-   "updatedAt": "2026-11-10T18:29:28.351Z",
+   "updatedAt": "2026-11-12T02:07:47.049Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T18:29:28.351Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:07:47.049Z"
     }
    ],
    "approvals": [],

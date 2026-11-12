@@ -776,18 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 23:08 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` → queued, note (all) · console
-- 2026-11-10 23:08 UTC · `orchestrator-merge-first-switch-separate-merger` → queued, note (all) · console
-- 2026-11-10 23:08 UTC · `api-accounts-need-no-approval-builds-route-there` → queued, note (all) · console
-- 2026-11-10 23:08 UTC · `stall-watchdog-detect-when-nothing-is-building-a` added (0 steps) (all) · console
-- 2026-11-10 23:08 UTC · `stall-watchdog-detect-when-nothing-is-building-a` → queued, note (all) · console
-- 2026-11-10 23:09 UTC · `stall-watchdog-detect-when-nothing-is-building-a` note (all) · orchestrator
-- 2026-11-10 23:09 UTC · `make-hulu-actually-take-builds-dispatcher-counts` → running, note (all) · pipeline
-- 2026-11-10 23:09 UTC · `make-hulu-actually-take-builds-dispatcher-counts` branch claude/make-hulu-actually-take-builds-dispatcher-counts (all) · pipeline
-- 2026-11-10 23:09 UTC · `make-hulu-actually-take-builds-dispatcher-counts` note (all) · orchestrator
-- 2026-11-10 22:10 UTC · `molly-sign-in-once` s1 done (all) · orchestrator
-- 2026-11-10 22:10 UTC · `molly-sign-in-once` PR #477 (all) · builds-live
-- 2026-11-10 23:09 UTC · `molly-sign-in-once` → running, note (all) · pipeline
 - 2026-11-10 23:09 UTC · `molly-sign-in-once` note (all) · orchestrator
 - 2026-11-10 23:11 UTC · `molly-sign-in-once` → queued (all) · builds-live
 - 2026-11-10 23:11 UTC · `make-hulu-actually-take-builds-dispatcher-counts` → running, note (all) · pipeline
@@ -1176,6 +1164,18 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:07 UTC · `x.lib.hub` → archived (all) · Claude voice (Gizmo)
 - 2026-11-12 02:07 UTC · `employee-hooks-plain-tap-on-an-employee-name-ope` → archived (all) · Claude voice (Gizmo)
 - 2026-11-12 02:07 UTC · `x.lib.notifications` → archived, note (all) · console
+- 2026-11-12 02:07 UTC · `x.lib.files` → archived, note (all) · console
+- 2026-11-12 02:07 UTC · `x.session` → archived, note (all) · console
+- 2026-11-12 02:07 UTC · `x.state` → archived, note (all) · console
+- 2026-11-12 02:07 UTC · `x.engine.uiport` → archived, note (all) · console
+- 2026-11-12 02:07 UTC · `x.libs.core` → archived, note (all) · console
+- 2026-11-12 02:07 UTC · `x.uikits` → archived, note (all) · console
+- 2026-11-12 02:07 UTC · `x.deploy.console` → archived, note (all) · console
+- 2026-11-12 02:07 UTC · `x.modules` → archived, note (all) · console
+- 2026-11-12 02:07 UTC · `dispatcher-a-worktree-store-write-can-erase-a-fr` → archived, note (all) · console
+- 2026-11-12 02:07 UTC · `session-transcripts-api-search-what-was-said-fin` → archived, note (all) · console
+- 2026-11-12 02:07 UTC · `shipped-features-show-each-landed-build-s-screen` → archived, note (all) · console
+- 2026-11-12 02:07 UTC · `shared-screenshot-registry-hooked-everywhere-liv` → archived, note (all) · console
 
 ## Token passes (log)
 
