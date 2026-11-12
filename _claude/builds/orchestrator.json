@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T23:17:03.627Z",
+ "updatedAt": "2026-11-12T23:17:56.111Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -108565,7 +108565,7 @@
    "title": "Move AmberX web app into the console; AmberX Android reads the console",
    "category": "",
    "detail": "Move every AmberX web app feature (notes, to-dos, lists, approvals, recorder, open_url, notifications, settings) into the console. Repoint the AmberX Android app to read and call the console instead of the AmberX web app. Keep old AmberX web addresses forwarding to the console until the phone app is switched, so nothing breaks. Each feature moved is its own step.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -108573,8 +108573,8 @@
    "pr": "#528",
    "priority": "P2",
    "createdAt": "2026-11-12T19:46:41.501Z",
-   "updatedAt": "2026-11-12T23:13:22.961Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-12T23:17:54.369Z",
+   "builtAt": "2026-11-12T23:17:54.369Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -109051,8 +109051,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T23:17:54.369Z",
      "note": "",
      "uid": "st-mwe0o7850e87d6"
     }
