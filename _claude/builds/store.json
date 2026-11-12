@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3436,
- "updatedAt": "2026-11-12T03:15:17.785Z",
+ "rev": 3437,
+ "updatedAt": "2026-11-12T03:15:28.008Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -26991,14 +26991,14 @@
    "title": "Live reload (axf dev) + device hot reload",
    "category": "Build engine",
    "detail": "axf dev watches assets and long-polls changes to devices; the Android HotReloader re-registers changed assets live.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/x.engine.dev",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-11-12T03:15:15.604Z",
+   "updatedAt": "2026-11-12T03:15:23.132Z",
    "builtAt": "",
    "notes": [
     {
@@ -27008,6 +27008,14 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-12T01:44:32.930Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-x.engine.dev--lenny.",
+     "at": "2026-11-12T03:15:20.825Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-x_engine_dev--lenny, own login copy)",
+     "at": "2026-11-12T03:15:23.132Z"
     }
    ],
    "approvals": [],
@@ -27027,18 +27035,18 @@
    "pipeline": {
     "queuedAt": "2026-11-12T01:44:32.639Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-x.engine.dev--lenny",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-12T03:15:20.267Z",
+    "runs": 1,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-12T03:15:20.267Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -27047,7 +27055,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-12T03:15:20.267Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -27150,7 +27158,7 @@
    },
    "kind": "epic",
    "planRef": "x.engine.dev",
-   "rev": 29,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

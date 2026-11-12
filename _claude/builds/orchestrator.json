@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T03:15:17.785Z",
+ "updatedAt": "2026-11-12T03:15:28.008Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -59198,14 +59198,14 @@
    "title": "Live reload (axf dev) + device hot reload",
    "category": "Build engine",
    "detail": "axf dev watches assets and long-polls changes to devices; the Android HotReloader re-registers changed assets live.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/x.engine.dev",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-11-12T03:15:15.604Z",
+   "updatedAt": "2026-11-12T03:15:23.132Z",
    "builtAt": "",
    "notes": [
     {
@@ -59215,6 +59215,14 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-12T01:44:32.930Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-x.engine.dev--lenny.",
+     "at": "2026-11-12T03:15:20.825Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-x_engine_dev--lenny, own login copy)",
+     "at": "2026-11-12T03:15:23.132Z"
     }
    ],
    "approvals": [],

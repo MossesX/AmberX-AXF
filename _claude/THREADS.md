@@ -776,9 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 01:44 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` note (all) · orchestrator
-- 2026-11-12 01:44 UTC · `x.engine.dev` → queued, note (all) · console
-- 2026-11-12 01:44 UTC · `molly-native-expenses` → running, note (all) · pipeline
 - 2026-11-12 01:44 UTC · `molly-native-expenses` branch claude/molly-native-expenses (all) · pipeline
 - 2026-11-12 01:44 UTC · `molly-native-expenses` note (all) · orchestrator
 - 2026-11-12 01:44 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` → running, note (all) · pipeline
@@ -1176,6 +1173,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:13 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` → pending, note (all) · reconciler
 - 2026-11-12 03:14 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` PR #510 (all) · builds-live
 - 2026-11-12 03:14 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` note (all) · orchestrator
+- 2026-11-12 03:15 UTC · `x.engine.dev` → running, note (all) · pipeline
+- 2026-11-12 03:15 UTC · `x.engine.dev` branch claude/x.engine.dev (all) · pipeline
+- 2026-11-12 03:15 UTC · `x.engine.dev` note (all) · orchestrator
 
 ## Token passes (log)
 
