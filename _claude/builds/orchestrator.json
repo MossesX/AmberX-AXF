@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T03:29:53.791Z",
+ "updatedAt": "2026-11-12T03:30:11.609Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -4164,7 +4164,7 @@
    "pr": "#296",
    "mergedAt": "2026-11-04T15:24:48Z",
    "createdAt": "2026-11-03T22:18:50.820Z",
-   "updatedAt": "2026-11-06T23:20:24.638Z",
+   "updatedAt": "2026-11-12T03:29:52Z",
    "builtAt": "2026-11-06T23:20:24.638Z",
    "notes": [
     {
@@ -4206,6 +4206,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-gizmo-companion rev 1 sent to Shipped features (backfill): landed 471e66fe2, 63 file(s), 0 test line(s), 14 open.",
+     "at": "2026-11-12T03:29:52Z"
     }
    ],
    "approvals": [],
@@ -4568,7 +4572,7 @@
    "pr": "#298",
    "mergedAt": "2026-11-04T14:24:10Z",
    "createdAt": "2026-11-03T22:55:16.843Z",
-   "updatedAt": "2026-11-04T14:28:44.908Z",
+   "updatedAt": "2026-11-12T03:29:53Z",
    "builtAt": "2026-11-04T14:28:44.908Z",
    "notes": [
     {
@@ -4586,6 +4590,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-plugin-lazy-load rev 1 sent to Shipped features (backfill): landed f15709c32, 112 file(s), 0 test line(s), 6 open.",
+     "at": "2026-11-12T03:29:53Z"
     }
    ],
    "approvals": [],
@@ -4660,7 +4668,7 @@
    "pr": "#304",
    "mergedAt": "2026-11-04T05:40:41Z",
    "createdAt": "2026-11-03T23:03:01.354Z",
-   "updatedAt": "2026-11-04T05:50:41.843Z",
+   "updatedAt": "2026-11-12T03:29:55Z",
    "builtAt": "2026-11-04T05:27:40.234Z",
    "notes": [
     {
@@ -4682,6 +4690,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-lenny-land-all rev 1 sent to Shipped features (backfill): landed c6203f2d1, 3 file(s), 0 test line(s), 2 open.",
+     "at": "2026-11-12T03:29:55Z"
     }
    ],
    "approvals": [],
@@ -5585,7 +5597,7 @@
    "pr": "#313",
    "mergedAt": "2026-11-04T17:27:24Z",
    "createdAt": "2026-11-04T10:43:58.630Z",
-   "updatedAt": "2026-11-04T17:31:27.232Z",
+   "updatedAt": "2026-11-12T03:29:56Z",
    "builtAt": "",
    "notes": [
     {
@@ -5619,6 +5631,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-land-round-2 rev 1 sent to Shipped features (backfill): landed 585c23993, 2 file(s), 0 test line(s), 10 open.",
+     "at": "2026-11-12T03:29:56Z"
     }
    ],
    "approvals": [],
@@ -5813,7 +5829,7 @@
    "pr": "#305",
    "mergedAt": "2026-11-04T14:03:08Z",
    "createdAt": "2026-11-04T10:48:28.927Z",
-   "updatedAt": "2026-11-04T14:10:24.329Z",
+   "updatedAt": "2026-11-12T03:29:57Z",
    "builtAt": "2026-11-04T10:55:44.452Z",
    "notes": [
     {
@@ -5835,6 +5851,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-terminal-no-focus rev 1 sent to Shipped features (backfill): landed d58f9c72b, 35 file(s), 3 test line(s), 2 open.",
+     "at": "2026-11-12T03:29:57Z"
     }
    ],
    "approvals": [],
@@ -5921,7 +5941,7 @@
    "pr": "#307",
    "mergedAt": "2026-11-04T15:14:30Z",
    "createdAt": "2026-11-04T11:09:10.279Z",
-   "updatedAt": "2026-11-04T15:20:34.063Z",
+   "updatedAt": "2026-11-12T03:29:59Z",
    "builtAt": "2026-11-04T11:35:37.941Z",
    "notes": [
     {
@@ -5939,6 +5959,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-expenses-port rev 1 sent to Shipped features (backfill): landed 88c217c23, 11 file(s), 6 test line(s), 10 open.",
+     "at": "2026-11-12T03:29:59Z"
     }
    ],
    "approvals": [],
@@ -6079,7 +6103,7 @@
    "pr": "#309",
    "mergedAt": "2026-11-04T13:20:57Z",
    "createdAt": "2026-11-04T12:18:43.490Z",
-   "updatedAt": "2026-11-04T13:28:24.500Z",
+   "updatedAt": "2026-11-12T03:30:00Z",
    "builtAt": "2026-11-04T12:47:56.382Z",
    "notes": [
     {
@@ -6089,6 +6113,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-hotfix-build-manager rev 1 sent to Shipped features (backfill): landed cde1d8b82, 11 file(s), 4 test line(s), 0 open.",
+     "at": "2026-11-12T03:30:00Z"
     }
    ],
    "approvals": [],
@@ -6193,7 +6221,7 @@
    "pr": "#298",
    "mergedAt": "2026-11-04T14:24:10Z",
    "createdAt": "2026-11-04T12:29:55.129Z",
-   "updatedAt": "2026-11-04T14:30:42.190Z",
+   "updatedAt": "2026-11-12T03:30:05Z",
    "builtAt": "2026-11-04T14:24:36.644Z",
    "notes": [
     {
@@ -6207,6 +6235,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-urgent-land-lazy-loader rev 1 sent to Shipped features (backfill): landed f15709c32, 112 file(s), 0 test line(s), 2 open.",
+     "at": "2026-11-12T03:30:05Z"
     }
    ],
    "approvals": [],

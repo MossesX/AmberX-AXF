@@ -776,14 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 02:09 UTC · `orchestrator-full-api-control` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `ui-api-parity-framework` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `ui-api-parity-media` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `ui-api-parity-look` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `ui-api-parity-console` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `ui-api-parity-agents` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `amberx-open-any-url` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `axhub-google` → archived, note (all) · console
 - 2026-11-12 02:09 UTC · `slot-aware-plan-optimizer-pre-launch` → archived, note (all) · console
 - 2026-11-12 02:09 UTC · `demo-sandbox-system-sandbox-settings-panel` → archived, note (all) · console
 - 2026-11-12 02:09 UTC · `molly-ri-court-records` → archived, note (all) · console
@@ -1176,6 +1168,14 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:29 UTC · `terminal-drag-chain-tree` note (all) · backfill
 - 2026-11-12 03:29 UTC · `molly-nav-submenus` note (all) · backfill
 - 2026-11-12 03:29 UTC · `molly-banners` note (all) · backfill
+- 2026-11-12 03:29 UTC · `gizmo-companion` note (all) · backfill
+- 2026-11-12 03:29 UTC · `plugin-lazy-load` note (all) · backfill
+- 2026-11-12 03:29 UTC · `lenny-land-all` note (all) · backfill
+- 2026-11-12 03:29 UTC · `land-round-2` note (all) · backfill
+- 2026-11-12 03:29 UTC · `terminal-no-focus` note (all) · backfill
+- 2026-11-12 03:29 UTC · `expenses-port` note (all) · backfill
+- 2026-11-12 03:30 UTC · `hotfix-build-manager` note (all) · backfill
+- 2026-11-12 03:30 UTC · `urgent-land-lazy-loader` note (all) · backfill
 
 ## Token passes (log)
 

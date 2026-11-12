@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3471,
- "updatedAt": "2026-11-12T03:29:53.791Z",
+ "rev": 3472,
+ "updatedAt": "2026-11-12T03:30:11.609Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -74233,7 +74233,7 @@
    "pr": "#296",
    "mergedAt": "2026-11-04T15:24:48Z",
    "createdAt": "2026-11-03T22:18:50.820Z",
-   "updatedAt": "2026-11-06T23:20:24.638Z",
+   "updatedAt": "2026-11-12T03:29:52Z",
    "builtAt": "2026-11-06T23:20:24.638Z",
    "notes": [
     {
@@ -74275,10 +74275,20 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-gizmo-companion rev 1 sent to Shipped features (backfill): landed 471e66fe2, 63 file(s), 0 test line(s), 14 open.",
+     "at": "2026-11-12T03:29:52Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "shipped": {
+    "id": "sm-gizmo-companion",
+    "rev": 1,
+    "at": "2026-11-12T03:29:52Z",
+    "landedCommit": "471e66fe2703937e990fb5e1d0ef6bf89bbc93f0"
+   },
    "steps": [
     {
      "id": "s1",
@@ -74707,7 +74717,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -74761,7 +74771,7 @@
    "pr": "#298",
    "mergedAt": "2026-11-04T14:24:10Z",
    "createdAt": "2026-11-03T22:55:16.843Z",
-   "updatedAt": "2026-11-04T14:28:44.908Z",
+   "updatedAt": "2026-11-12T03:29:53Z",
    "builtAt": "2026-11-04T14:28:44.908Z",
    "notes": [
     {
@@ -74779,10 +74789,20 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-plugin-lazy-load rev 1 sent to Shipped features (backfill): landed f15709c32, 112 file(s), 0 test line(s), 6 open.",
+     "at": "2026-11-12T03:29:53Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "shipped": {
+    "id": "sm-plugin-lazy-load",
+    "rev": 1,
+    "at": "2026-11-12T03:29:53Z",
+    "landedCommit": "f15709c32e4f4c8ffc8dd32edf2ba65446670df1"
+   },
    "steps": [
     {
      "id": "s1",
@@ -74859,7 +74879,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -74897,7 +74917,7 @@
    "pr": "#304",
    "mergedAt": "2026-11-04T05:40:41Z",
    "createdAt": "2026-11-03T23:03:01.354Z",
-   "updatedAt": "2026-11-04T05:50:41.843Z",
+   "updatedAt": "2026-11-12T03:29:55Z",
    "builtAt": "2026-11-04T05:27:40.234Z",
    "notes": [
     {
@@ -74919,10 +74939,20 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-lenny-land-all rev 1 sent to Shipped features (backfill): landed c6203f2d1, 3 file(s), 0 test line(s), 2 open.",
+     "at": "2026-11-12T03:29:55Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "shipped": {
+    "id": "sm-lenny-land-all",
+    "rev": 1,
+    "at": "2026-11-12T03:29:55Z",
+    "landedCommit": "c6203f2d1efd0726295657259193925c4bd6a8ab"
+   },
    "steps": [
     {
      "id": "s1",
@@ -75087,7 +75117,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -77765,7 +77795,7 @@
    "pr": "#313",
    "mergedAt": "2026-11-04T17:27:24Z",
    "createdAt": "2026-11-04T10:43:58.630Z",
-   "updatedAt": "2026-11-04T17:31:27.232Z",
+   "updatedAt": "2026-11-12T03:29:56Z",
    "builtAt": "",
    "notes": [
     {
@@ -77799,6 +77829,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-land-round-2 rev 1 sent to Shipped features (backfill): landed 585c23993, 2 file(s), 0 test line(s), 10 open.",
+     "at": "2026-11-12T03:29:56Z"
     }
    ],
    "approvals": [],
@@ -77814,6 +77848,12 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "shipped": {
+    "id": "sm-land-round-2",
+    "rev": 1,
+    "at": "2026-11-12T03:29:56Z",
+    "landedCommit": "585c23993d0112f28f5aa82c9165b6bfc717c7f8"
    },
    "steps": [
     {
@@ -78023,7 +78063,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -78067,7 +78107,7 @@
    "pr": "#305",
    "mergedAt": "2026-11-04T14:03:08Z",
    "createdAt": "2026-11-04T10:48:28.927Z",
-   "updatedAt": "2026-11-04T14:10:24.329Z",
+   "updatedAt": "2026-11-12T03:29:57Z",
    "builtAt": "2026-11-04T10:55:44.452Z",
    "notes": [
     {
@@ -78089,6 +78129,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-terminal-no-focus rev 1 sent to Shipped features (backfill): landed d58f9c72b, 35 file(s), 3 test line(s), 2 open.",
+     "at": "2026-11-12T03:29:57Z"
     }
    ],
    "approvals": [],
@@ -78104,6 +78148,12 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "shipped": {
+    "id": "sm-terminal-no-focus",
+    "rev": 1,
+    "at": "2026-11-12T03:29:57Z",
+    "landedCommit": "d58f9c72b912085c53b8a9dea8bd3e1e402b762b"
    },
    "steps": [
     {
@@ -78181,7 +78231,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -78301,7 +78351,7 @@
    "pr": "#307",
    "mergedAt": "2026-11-04T15:14:30Z",
    "createdAt": "2026-11-04T11:09:10.279Z",
-   "updatedAt": "2026-11-04T15:20:34.063Z",
+   "updatedAt": "2026-11-12T03:29:59Z",
    "builtAt": "2026-11-04T11:35:37.941Z",
    "notes": [
     {
@@ -78319,6 +78369,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-expenses-port rev 1 sent to Shipped features (backfill): landed 88c217c23, 11 file(s), 6 test line(s), 10 open.",
+     "at": "2026-11-12T03:29:59Z"
     }
    ],
    "approvals": [],
@@ -78334,6 +78388,12 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "shipped": {
+    "id": "sm-expenses-port",
+    "rev": 1,
+    "at": "2026-11-12T03:29:59Z",
+    "landedCommit": "88c217c2346dec6316c585d43082d535bd0507fc"
    },
    "steps": [
     {
@@ -78477,7 +78537,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -78518,7 +78578,7 @@
    "pr": "#309",
    "mergedAt": "2026-11-04T13:20:57Z",
    "createdAt": "2026-11-04T12:18:43.490Z",
-   "updatedAt": "2026-11-04T13:28:24.500Z",
+   "updatedAt": "2026-11-12T03:30:00Z",
    "builtAt": "2026-11-04T12:47:56.382Z",
    "notes": [
     {
@@ -78528,6 +78588,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-hotfix-build-manager rev 1 sent to Shipped features (backfill): landed cde1d8b82, 11 file(s), 4 test line(s), 0 open.",
+     "at": "2026-11-12T03:30:00Z"
     }
    ],
    "approvals": [],
@@ -78543,6 +78607,12 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "shipped": {
+    "id": "sm-hotfix-build-manager",
+    "rev": 1,
+    "at": "2026-11-12T03:30:00Z",
+    "landedCommit": "cde1d8b82179b106b02c39c1622797468b43c3d1"
    },
    "steps": [
     {
@@ -78642,7 +78712,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -78681,7 +78751,7 @@
    "pr": "#298",
    "mergedAt": "2026-11-04T14:24:10Z",
    "createdAt": "2026-11-04T12:29:55.129Z",
-   "updatedAt": "2026-11-04T14:30:42.190Z",
+   "updatedAt": "2026-11-12T03:30:05Z",
    "builtAt": "2026-11-04T14:24:36.644Z",
    "notes": [
     {
@@ -78695,6 +78765,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-urgent-land-lazy-loader rev 1 sent to Shipped features (backfill): landed f15709c32, 112 file(s), 0 test line(s), 2 open.",
+     "at": "2026-11-12T03:30:05Z"
     }
    ],
    "approvals": [],
@@ -78710,6 +78784,12 @@
     "verbatim": true,
     "from": "",
     "addenda": []
+   },
+   "shipped": {
+    "id": "sm-urgent-land-lazy-loader",
+    "rev": 1,
+    "at": "2026-11-12T03:30:05Z",
+    "landedCommit": "f15709c32e4f4c8ffc8dd32edf2ba65446670df1"
    },
    "steps": [
     {
@@ -78809,7 +78889,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
