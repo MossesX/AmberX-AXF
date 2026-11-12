@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3492,
- "updatedAt": "2026-11-12T03:35:09.981Z",
+ "rev": 3493,
+ "updatedAt": "2026-11-12T03:35:37.969Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -123628,7 +123628,7 @@
    "branch": "claude/orchestrator-checks-shipped-features-before-spli",
    "pr": "",
    "createdAt": "2026-11-08T17:22:53.861Z",
-   "updatedAt": "2026-11-12T03:13:39.516Z",
+   "updatedAt": "2026-11-12T03:35:20.606Z",
    "builtAt": "",
    "notes": [
     {
@@ -123722,12 +123722,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T03:35:20.606Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T19:24:43.797Z",
-     "updatedAt": "2026-11-08T19:24:43.797Z"
+     "updatedAt": "2026-11-12T03:35:20.808Z"
     },
     {
      "id": "s2",
