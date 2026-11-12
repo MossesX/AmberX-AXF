@@ -777,7 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:28 UTC · `settings-compact` note (all) · backfill
 - 2026-11-12 03:28 UTC · `app-compact` note (all) · backfill
 - 2026-11-12 03:28 UTC · `screens-compact` note (all) · backfill
 - 2026-11-12 03:28 UTC · `ui-all-assets` note (all) · backfill
@@ -1177,6 +1176,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 18:04 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` → queued, note (all) · pipeline
 - 2026-11-12 18:04 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` → running, note (all) · pipeline
 - 2026-11-12 18:04 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` note (all) · orchestrator
+- 2026-11-12 18:06 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` s2 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
