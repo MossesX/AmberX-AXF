@@ -777,7 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:29 UTC · `home-cards-live` note (all) · backfill
 - 2026-11-12 03:29 UTC · `ui-review-predicted` note (all) · backfill
 - 2026-11-12 03:29 UTC · `terminal-sessions-nav` note (all) · backfill
 - 2026-11-12 03:29 UTC · `profile-manager` note (all) · backfill
@@ -1177,6 +1176,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 19:47 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · orchestrator
 - 2026-11-12 19:54 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` s1 done, → running (all) · orchestrator
 - 2026-11-12 19:56 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` s2 done (all) · orchestrator
+- 2026-11-12 19:57 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` PR #525 (all) · builds-live
 
 ## Token passes (log)
 
