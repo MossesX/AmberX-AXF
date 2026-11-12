@@ -1,0 +1,204 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-angel-app-compact",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:31:44Z",
+ "build": {
+  "id": "angel-app-compact",
+  "title": "angel-app-compact",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "angel-app-compact",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/angel-app-compact",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "1b4ecd5a8e0983278746d4d60df2b0ae9fd9eb71",
+ "commits": [
+  "d1e950f2abd58f9ef2443aea65c029e3a233b774"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-30T17:25:16Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/memory/docs/rebuilds/LOG.md",
+  "_claude/memory/docs/rebuilds/app-compact.md",
+  "_claude/memory/docs/rebuilds/app-compact/shots/after/breaker-desktop.png",
+  "_claude/memory/docs/rebuilds/app-compact/shots/after/breaker-phone.png",
+  "_claude/memory/docs/rebuilds/app-compact/shots/after/design-packs-desktop.png",
+  "_claude/memory/docs/rebuilds/app-compact/shots/after/design-packs-phone.png",
+  "_claude/memory/docs/rebuilds/app-compact/shots/after/home-desktop.png",
+  "_claude/memory/docs/rebuilds/app-compact/shots/after/home-phone.png",
+  "_claude/memory/docs/rebuilds/app-compact/shots/after/matrix-desktop.png",
+  "_claude/memory/docs/rebuilds/app-compact/shots/after/matrix-phone.png",
+  "_claude/memory/docs/rebuilds/app-compact/shots/after/orchestrator-desktop.png",
+  "_claude/memory/docs/rebuilds/app-compact/shots/after/orchestrator-phone.png",
+  "_claude/memory/docs/rebuilds/app-compact/shots/after/pending-desktop.png",
+  "_claude/memory/docs/rebuilds/app-compact/shots/after/pending-phone.png",
+  "_claude/memory/docs/rebuilds/app-compact/shots/after/plugin-manager-desktop.png",
+  "_claude/memory/docs/rebuilds/app-compact/shots/after/plugin-manager-phone.png",
+  "_claude/memory/docs/rebuilds/app-compact/shots/before/breaker-desktop.png",
+  "_claude/memory/docs/rebuilds/app-compact/shots/before/breaker-phone.png",
+  "_claude/memory/docs/rebuilds/app-compact/shots/before/design-packs-desktop.png",
+  "_claude/memory/docs/rebuilds/app-compact/shots/before/design-packs-phone.png",
+  "_claude/memory/docs/rebuilds/app-compact/shots/before/home-desktop.png",
+  "_claude/memory/docs/rebuilds/app-compact/shots/before/home-phone.png",
+  "_claude/memory/docs/rebuilds/app-compact/shots/before/matrix-desktop.png",
+  "_claude/memory/docs/rebuilds/app-compact/shots/before/matrix-phone.png",
+  "_claude/memory/docs/rebuilds/app-compact/shots/before/orchestrator-desktop.png",
+  "_claude/memory/docs/rebuilds/app-compact/shots/before/orchestrator-phone.png",
+  "_claude/memory/docs/rebuilds/app-compact/shots/before/pending-desktop.png",
+  "_claude/memory/docs/rebuilds/app-compact/shots/before/pending-phone.png",
+  "_claude/memory/docs/rebuilds/app-compact/shots/before/plugin-manager-desktop.png",
+  "_claude/memory/docs/rebuilds/app-compact/shots/before/plugin-manager-phone.png",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/axf/ui/axf.css",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/axf/ui/axf.css",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/plugin-manager/web/plugin-manager.css",
+  "apps/console-web/src/axf/ui/axf.css",
+  "apps/console-web/src/console.css",
+  "apps/demo/axf.lock.json",
+  "apps/demo/src/axf/ui/axf.css",
+  "apps/walkthrough-studio/axf.lock.json",
+  "apps/walkthrough-studio/src/axf/ui/axf.css",
+  "framework/ui/axf.css"
+ ],
+ "areas": [
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/docs/rebuilds/LOG.md",
+    "_claude/memory/docs/rebuilds/app-compact.md",
+    "_claude/memory/docs/rebuilds/app-compact/shots/after/breaker-desktop.png",
+    "_claude/memory/docs/rebuilds/app-compact/shots/after/breaker-phone.png",
+    "_claude/memory/docs/rebuilds/app-compact/shots/after/design-packs-desktop.png",
+    "_claude/memory/docs/rebuilds/app-compact/shots/after/design-packs-phone.png",
+    "_claude/memory/docs/rebuilds/app-compact/shots/after/home-desktop.png",
+    "_claude/memory/docs/rebuilds/app-compact/shots/after/home-phone.png",
+    "_claude/memory/docs/rebuilds/app-compact/shots/after/matrix-desktop.png",
+    "_claude/memory/docs/rebuilds/app-compact/shots/after/matrix-phone.png",
+    "_claude/memory/docs/rebuilds/app-compact/shots/after/orchestrator-desktop.png",
+    "_claude/memory/docs/rebuilds/app-compact/shots/after/orchestrator-phone.png",
+    "_claude/memory/docs/rebuilds/app-compact/shots/after/pending-desktop.png",
+    "_claude/memory/docs/rebuilds/app-compact/shots/after/pending-phone.png",
+    "_claude/memory/docs/rebuilds/app-compact/shots/after/plugin-manager-desktop.png",
+    "_claude/memory/docs/rebuilds/app-compact/shots/after/plugin-manager-phone.png",
+    "_claude/memory/docs/rebuilds/app-compact/shots/before/breaker-desktop.png",
+    "_claude/memory/docs/rebuilds/app-compact/shots/before/breaker-phone.png",
+    "_claude/memory/docs/rebuilds/app-compact/shots/before/design-packs-desktop.png",
+    "_claude/memory/docs/rebuilds/app-compact/shots/before/design-packs-phone.png",
+    "_claude/memory/docs/rebuilds/app-compact/shots/before/home-desktop.png",
+    "_claude/memory/docs/rebuilds/app-compact/shots/before/home-phone.png",
+    "_claude/memory/docs/rebuilds/app-compact/shots/before/matrix-desktop.png",
+    "_claude/memory/docs/rebuilds/app-compact/shots/before/matrix-phone.png",
+    "_claude/memory/docs/rebuilds/app-compact/shots/before/orchestrator-desktop.png",
+    "_claude/memory/docs/rebuilds/app-compact/shots/before/orchestrator-phone.png",
+    "_claude/memory/docs/rebuilds/app-compact/shots/before/pending-desktop.png",
+    "_claude/memory/docs/rebuilds/app-compact/shots/before/pending-phone.png",
+    "_claude/memory/docs/rebuilds/app-compact/shots/before/plugin-manager-desktop.png",
+    "_claude/memory/docs/rebuilds/app-compact/shots/before/plugin-manager-phone.png"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/src/axf/ui/axf.css",
+    "apps/console-web/src/console.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "demo",
+   "files": [
+    "apps/demo/axf.lock.json",
+    "apps/demo/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "walkthrough-studio",
+   "files": [
+    "apps/walkthrough-studio/axf.lock.json",
+    "apps/walkthrough-studio/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plugin-manager",
+   "files": [
+    "apps/console-web/plugins/plugin-manager/web/plugin-manager.css"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "ui",
+   "files": [
+    "framework/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/profiles/angel/orchestrator.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

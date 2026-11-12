@@ -776,18 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 02:30 UTC · `build-notifications-same-notification-per-build` PR #506 (all) · builds-live
-- 2026-11-12 02:30 UTC · `build-notifications-same-notification-per-build` note (all) · orchestrator
-- 2026-11-12 02:30 UTC · `molly-gap-remote-actions` → running (all) · builds-live
-- 2026-11-12 02:31 UTC · `molly-gap-remote-actions` s3 done, → built (all) · orchestrator
-- 2026-11-12 02:31 UTC · `molly-gap-remote-actions` note (all) · orchestrator
-- 2026-11-12 02:31 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` s3 done (all) · orchestrator
-- 2026-11-12 02:30 UTC · `build-notifications-same-notification-per-build` s3 done, → built (all) · orchestrator
-- 2026-11-12 02:32 UTC · `molly-native-expenses` note (all) · orchestrator
-- 2026-11-12 02:31 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` → running, note (all) · pipeline
-- 2026-11-12 02:31 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` note (all) · orchestrator
-- 2026-11-12 02:32 UTC · `molly-native-expenses` s4 done, → built (all) · orchestrator
-- 2026-11-12 02:33 UTC · `build-notifications-same-notification-per-build` note (all) · pipeline
 - 2026-11-12 02:33 UTC · `molly-gap-console-token-handoff` → running, note (all) · pipeline
 - 2026-11-12 02:33 UTC · `molly-gap-console-token-handoff` note (all) · orchestrator
 - 2026-11-12 02:34 UTC · `molly-gap-console-token-handoff` → running, note (all) · pipeline
@@ -1176,6 +1164,18 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:31 UTC · `shot-groups` added (0 steps) (all) · backfill
 - 2026-11-12 03:31 UTC · `shots-tab` added (0 steps) (all) · backfill
 - 2026-11-12 03:31 UTC · `angel-screens-compact` added (0 steps) (all) · backfill
+- 2026-11-12 03:31 UTC · `angel-app-compact` added (0 steps) (all) · backfill
+- 2026-11-12 03:31 UTC · `build-breaker` added (0 steps) (all) · backfill
+- 2026-11-12 03:31 UTC · `design-packs` added (0 steps) (all) · backfill
+- 2026-11-12 03:31 UTC · `feature-matrix-compact` added (0 steps) (all) · backfill
+- 2026-11-12 03:31 UTC · `plugin-theme-override` added (0 steps) (all) · backfill
+- 2026-11-12 03:31 UTC · `voice-fix-done` added (0 steps) (all) · backfill
+- 2026-11-12 03:31 UTC · `banner-fix-fallback-done` added (0 steps) (all) · backfill
+- 2026-11-12 03:31 UTC · `fix-merge-pr-stdin` added (0 steps) (all) · backfill
+- 2026-11-12 03:31 UTC · `refactor-profile-today` added (0 steps) (all) · backfill
+- 2026-11-12 03:31 UTC · `move-status-out-of-claude-md` added (0 steps) (all) · backfill
+- 2026-11-12 03:31 UTC · `merge-approvals` added (0 steps) (all) · backfill
+- 2026-11-12 03:31 UTC · `install-tmux-ntfy-tailscale` added (0 steps) (all) · backfill
 
 ## Token passes (log)
 

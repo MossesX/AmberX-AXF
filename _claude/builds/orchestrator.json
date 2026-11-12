@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T03:31:46.317Z",
+ "updatedAt": "2026-11-12T03:32:01.993Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -38,6 +38,498 @@
    "upgradeRequests": [],
    "origin": {
     "said": "From a chat prompt (source chat). Serve apps/axhub-web on the hub host, page paths only via Traefik priority; hub container untouched. Branch claude/axhub-web-on-hub.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "install-tmux-ntfy-tailscale",
+   "title": "install-tmux-ntfy-tailscale",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/install-tmux-ntfy-tailscale",
+   "pr": "",
+   "mergedAt": "2026-10-27T22:27:19Z",
+   "createdAt": "2026-10-27T22:27:19Z",
+   "updatedAt": "2026-11-12T03:31:58Z",
+   "builtAt": "2026-10-27T22:27:19Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 6cb095aca.",
+     "at": "2026-11-12T03:31:58Z"
+    },
+    {
+     "text": "Shipped manifest sm-install-tmux-ntfy-tailscale rev 1 sent to Shipped features (backfill): landed 6cb095aca, 2 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:58Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "install-tmux-ntfy-tailscale",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "merge-approvals",
+   "title": "merge-approvals",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/merge-approvals",
+   "pr": "",
+   "mergedAt": "2026-10-27T22:27:56Z",
+   "createdAt": "2026-10-27T22:27:56Z",
+   "updatedAt": "2026-11-12T03:31:56Z",
+   "builtAt": "2026-10-27T22:27:56Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 6d9545459.",
+     "at": "2026-11-12T03:31:56Z"
+    },
+    {
+     "text": "Shipped manifest sm-merge-approvals rev 1 sent to Shipped features (backfill): landed 6d9545459, 12 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:56Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "merge-approvals",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "move-status-out-of-claude-md",
+   "title": "move-status-out-of-claude-md",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/move-status-out-of-claude-md",
+   "pr": "",
+   "mergedAt": "2026-10-27T23:02:31Z",
+   "createdAt": "2026-10-27T23:02:31Z",
+   "updatedAt": "2026-11-12T03:31:55Z",
+   "builtAt": "2026-10-27T23:02:31Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as c0b777926.",
+     "at": "2026-11-12T03:31:55Z"
+    },
+    {
+     "text": "Shipped manifest sm-move-status-out-of-claude-md rev 1 sent to Shipped features (backfill): landed c0b777926, 37 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:55Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "move-status-out-of-claude-md",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "refactor-profile-today",
+   "title": "refactor-profile-today",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/refactor-profile-today",
+   "pr": "",
+   "mergedAt": "2026-10-27T23:11:08Z",
+   "createdAt": "2026-10-27T23:11:08Z",
+   "updatedAt": "2026-11-12T03:31:54Z",
+   "builtAt": "2026-10-27T23:11:08Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 5de7a7b5a.",
+     "at": "2026-11-12T03:31:54Z"
+    },
+    {
+     "text": "Shipped manifest sm-refactor-profile-today rev 1 sent to Shipped features (backfill): landed 5de7a7b5a, 3 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:54Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "refactor-profile-today",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "fix-merge-pr-stdin",
+   "title": "fix-merge-pr-stdin",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/fix-merge-pr-stdin",
+   "pr": "",
+   "mergedAt": "2026-10-28T02:47:20Z",
+   "createdAt": "2026-10-28T02:47:20Z",
+   "updatedAt": "2026-11-12T03:31:52Z",
+   "builtAt": "2026-10-28T02:47:20Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as b3173afa9.",
+     "at": "2026-11-12T03:31:52Z"
+    },
+    {
+     "text": "Shipped manifest sm-fix-merge-pr-stdin rev 1 sent to Shipped features (backfill): landed b3173afa9, 4 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:52Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "fix-merge-pr-stdin",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "banner-fix-fallback-done",
+   "title": "banner-fix-fallback-done",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/banner-fix-fallback-done",
+   "pr": "",
+   "mergedAt": "2026-10-28T10:19:39Z",
+   "createdAt": "2026-10-28T10:19:39Z",
+   "updatedAt": "2026-11-12T03:31:51Z",
+   "builtAt": "2026-10-28T10:19:39Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 78a599b9a.",
+     "at": "2026-11-12T03:31:51Z"
+    },
+    {
+     "text": "Shipped manifest sm-banner-fix-fallback-done rev 1 sent to Shipped features (backfill): landed 78a599b9a, 2 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:51Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "banner-fix-fallback-done",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "voice-fix-done",
+   "title": "voice-fix-done",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/voice-fix-done",
+   "pr": "",
+   "mergedAt": "2026-10-28T10:20:19Z",
+   "createdAt": "2026-10-28T10:20:19Z",
+   "updatedAt": "2026-11-12T03:31:50Z",
+   "builtAt": "2026-10-28T10:20:19Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 9e2036661.",
+     "at": "2026-11-12T03:31:50Z"
+    },
+    {
+     "text": "Shipped manifest sm-voice-fix-done rev 1 sent to Shipped features (backfill): landed 9e2036661, 2 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:50Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "voice-fix-done",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "plugin-theme-override",
+   "title": "plugin-theme-override",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/plugin-theme-override",
+   "pr": "",
+   "mergedAt": "2026-10-28T20:02:26Z",
+   "createdAt": "2026-10-28T20:02:26Z",
+   "updatedAt": "2026-11-12T03:31:49Z",
+   "builtAt": "2026-10-28T20:02:26Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 17c49f249.",
+     "at": "2026-11-12T03:31:49Z"
+    },
+    {
+     "text": "Shipped manifest sm-plugin-theme-override rev 1 sent to Shipped features (backfill): landed 17c49f249, 20 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:49Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "plugin-theme-override",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "feature-matrix-compact",
+   "title": "feature-matrix-compact",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/feature-matrix-compact",
+   "pr": "",
+   "mergedAt": "2026-10-30T11:35:17Z",
+   "createdAt": "2026-10-30T11:35:17Z",
+   "updatedAt": "2026-11-12T03:31:48Z",
+   "builtAt": "2026-10-30T11:35:17Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 0d69817e0.",
+     "at": "2026-11-12T03:31:48Z"
+    },
+    {
+     "text": "Shipped manifest sm-feature-matrix-compact rev 1 sent to Shipped features (backfill): landed 0d69817e0, 4 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:48Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "feature-matrix-compact",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "design-packs",
+   "title": "design-packs",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/design-packs",
+   "pr": "",
+   "mergedAt": "2026-10-30T11:36:03Z",
+   "createdAt": "2026-10-30T11:36:03Z",
+   "updatedAt": "2026-11-12T03:31:47Z",
+   "builtAt": "2026-10-30T11:36:03Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 17a96679a.",
+     "at": "2026-11-12T03:31:47Z"
+    },
+    {
+     "text": "Shipped manifest sm-design-packs rev 1 sent to Shipped features (backfill): landed 17a96679a, 230 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:47Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "design-packs",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "build-breaker",
+   "title": "build-breaker",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/build-breaker",
+   "pr": "",
+   "mergedAt": "2026-10-30T11:36:28Z",
+   "createdAt": "2026-10-30T11:36:28Z",
+   "updatedAt": "2026-11-12T03:31:45Z",
+   "builtAt": "2026-10-30T11:36:28Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 8f3e548a7.",
+     "at": "2026-11-12T03:31:45Z"
+    },
+    {
+     "text": "Shipped manifest sm-build-breaker rev 1 sent to Shipped features (backfill): landed 8f3e548a7, 17 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:45Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "build-breaker",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "angel-app-compact",
+   "title": "angel-app-compact",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/angel-app-compact",
+   "pr": "",
+   "mergedAt": "2026-10-30T17:25:16Z",
+   "createdAt": "2026-10-30T17:25:16Z",
+   "updatedAt": "2026-11-12T03:31:44Z",
+   "builtAt": "2026-10-30T17:25:16Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 1b4ecd5a8.",
+     "at": "2026-11-12T03:31:44Z"
+    },
+    {
+     "text": "Shipped manifest sm-angel-app-compact rev 1 sent to Shipped features (backfill): landed 1b4ecd5a8, 45 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:44Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "angel-app-compact",
     "at": "",
     "source": "",
     "session": "",
