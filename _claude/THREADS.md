@@ -776,9 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-11 00:37 UTC · `ai-assistant-in-molly-console-drives-by-api-open` s2 done, → running (all) · orchestrator
-- 2026-11-11 00:38 UTC · `ai-assistant-in-molly-console-drives-by-api-open` s3 done, → built (all) · orchestrator
-- 2026-11-11 00:38 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
 - 2026-11-11 00:41 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
 - 2026-11-11 00:50 UTC · `skins-own-everything-colour-theme-swaps-independ` → complete, merged, note (all) · reconciler
 - 2026-11-11 00:50 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` merged, note (all) · reconciler
@@ -1176,6 +1173,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:43 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` note (all) · orchestrator
 - 2026-11-12 02:42 UTC · `molly-gap-axhub-cors` → running, note (all) · pipeline
 - 2026-11-12 02:42 UTC · `molly-gap-axhub-cors` note (all) · orchestrator
+- 2026-11-12 02:43 UTC · `molly-gap-console-token-handoff` note (all) · orchestrator
+- 2026-11-12 02:43 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` → running, note (all) · pipeline
+- 2026-11-12 02:43 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` note (all) · orchestrator
 
 ## Token passes (log)
 

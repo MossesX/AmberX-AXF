@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:43:18.077Z",
+ "updatedAt": "2026-11-12T02:43:41.533Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -97803,7 +97803,7 @@
    "branch": "claude/molly-gap-console-token-handoff",
    "pr": "",
    "createdAt": "2026-11-10T22:09:29.615Z",
-   "updatedAt": "2026-11-12T02:42:53.859Z",
+   "updatedAt": "2026-11-12T02:43:07.502Z",
    "builtAt": "",
    "notes": [
     {
@@ -97841,6 +97841,10 @@
     {
      "text": "Claude account: account-5 (axf-molly-gap-console-token-handoff--gina, own login copy)",
      "at": "2026-11-12T02:34:18.102Z"
+    },
+    {
+     "text": "Headless run axf-molly-gap-console-token-handoff--earl: brief only · start 11.3K tokens ($0.03) · cost $1.04 · 42 turns · 6 tools, MCP none",
+     "at": "2026-11-12T02:43:07.502Z"
     },
     {
      "text": "s1, s2 done; s3 done except the PR. Branch claude/molly-gap-console-token-handoff pushed (b844af7c1), tests green, report and THREADS row in the commit. PR creation was refused by GitHub's secondary rate limit for content creation (gh pr create and REST, 02:42 UTC). Next: open the PR from the branch (title and body in the report), link it with builds-live link --pr, tick s3. Gap filed: molly-gap-expenses-token-handoff.",
@@ -100256,7 +100260,7 @@
    "branch": "claude/build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides",
    "pr": "#505",
    "createdAt": "2026-11-12T02:02:25.273Z",
-   "updatedAt": "2026-11-12T02:43:08.237Z",
+   "updatedAt": "2026-11-12T02:43:22.470Z",
    "builtAt": "",
    "notes": [
     {
@@ -100274,6 +100278,10 @@
     {
      "text": "Phase 1 (Opus) done on PR #505: s1-s5, s7 ticked. s6 (background asset type + token contract) raised to Fable for the next phase. Open: app main Settings 'Controlled by <asset>' greying (needs per-field contract); UI Review shots not taken headless, PR stays draft.",
      "at": "2026-11-12T02:43:08.237Z"
+    },
+    {
+     "text": "Headless run axf-build-plan-1-skins-one-row-build-tables-backgrou--gina: brief only · start 10.9K tokens ($0.03) · cost $4.34 · 118 turns · 6 tools, MCP none",
+     "at": "2026-11-12T02:43:22.470Z"
     }
    ],
    "approvals": [
@@ -100556,14 +100564,14 @@
    "title": "Console and axHub retry failed calls themselves (no Claude needed)",
    "category": "orchestrator",
    "detail": "URGENT, boss order from Brett, Nov 12. When a call from Claude/MCP/voice/CLI fails for a transient reason (e.g. 'builds store is locked', timeout, console client asleep, rate limit, 5xx), the console and axHub must retry it THEMSELVES on the server, whether or not the Claude session is still connected. Retry with backoff until it succeeds (bounded, e.g. 10 tries over ~10 min), then the result is stored on the job so get_job shows success. Only permanent errors (validation, not found) fail, and those send Brett an AmberX FYI with what's missing. Fix the root cause of store.json.lock contention too (stale lock cleanup, short waits for the lock instead of failing). Applies to control_add/set/act, pipeline_queue, console_open/show and all axf-console write tools. Tests: locked store -> call waits/retries and succeeds; session disconnect mid-retry -> still completes.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/console-and-axhub-retry-failed-calls-themselves-no-claude-needed",
    "pr": "",
    "createdAt": "2026-11-12T02:37:24.132Z",
-   "updatedAt": "2026-11-12T02:42:24.421Z",
+   "updatedAt": "2026-11-12T02:43:16.902Z",
    "builtAt": "",
    "notes": [
     {
@@ -100577,6 +100585,14 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-console-and-axhub-retry-failed-calls-themselves---paulie.",
      "at": "2026-11-12T02:42:18.647Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-console-and-axhub-retry-failed-calls-themselves---gina.",
+     "at": "2026-11-12T02:43:14.163Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-and-axhub-retry-failed-calls-themselves---gina, own login copy)",
+     "at": "2026-11-12T02:43:16.902Z"
     }
    ],
    "approvals": [],
