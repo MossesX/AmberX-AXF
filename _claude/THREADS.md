@@ -776,17 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 01:47 UTC · `open-any-website-by-voice-on-the-phone-optionall` branch claude/open-any-website-by-voice-on-the-phone-optionall (all) · pipeline
-- 2026-11-12 01:47 UTC · `open-any-website-by-voice-on-the-phone-optionall` note (all) · orchestrator
-- 2026-11-12 01:47 UTC · `build-notifications-same-notification-per-build` → running, note (all) · pipeline
-- 2026-11-12 01:47 UTC · `build-notifications-same-notification-per-build` branch claude/build-notifications-same-notification-per-build (all) · pipeline
-- 2026-11-12 01:47 UTC · `build-notifications-same-notification-per-build` note (all) · orchestrator
-- 2026-11-12 01:48 UTC · `molly-gap-expenses-cors` s1 done, → running (all) · orchestrator
-- 2026-11-12 01:48 UTC · `molly-native-expenses` s1 done (all) · orchestrator
-- 2026-11-12 01:49 UTC · `molly-gap-expenses-delete` added (3 steps) (all) · orchestrator
-- 2026-11-12 01:49 UTC · `molly-gap-expenses-cors` s2 done (all) · orchestrator
-- 2026-11-12 01:49 UTC · `molly-gap-expenses-delete` added (3 steps) (all) · foreign-write
-- 2026-11-12 01:50 UTC · `molly-gap-expenses-cors` s2 done (all) · foreign-write
 - 2026-11-12 01:51 UTC · `amberx-build-notifications-for-every-stage-start` → running, note (all) · pipeline
 - 2026-11-12 01:51 UTC · `amberx-build-notifications-for-every-stage-start` branch claude/amberx-build-notifications-for-every-stage-start (all) · pipeline
 - 2026-11-12 01:51 UTC · `amberx-build-notifications-for-every-stage-start` note (all) · orchestrator
@@ -1176,6 +1165,17 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:24 UTC · `x.engine.dev` note (all) · orchestrator
 - 2026-11-12 03:24 UTC · `x.engine.dev` PR #513 (all) · foreign-write
 - 2026-11-12 03:26 UTC · `enterprise-branding` note (all) · backfill
+- 2026-11-12 03:26 UTC · `asset-designer` note (all) · backfill
+- 2026-11-12 03:26 UTC · `plugin-manager` note (all) · backfill
+- 2026-11-12 03:26 UTC · `pending-list-manager` note (all) · backfill
+- 2026-11-12 03:26 UTC · `lib-mcp` note (all) · backfill
+- 2026-11-12 03:26 UTC · `claude-pick-api-key` note (all) · backfill
+- 2026-11-12 03:26 UTC · `ai-assistant-plugin` note (all) · backfill
+- 2026-11-12 03:26 UTC · `agent-manager-plugin` note (all) · backfill
+- 2026-11-12 03:26 UTC · `banner-assets` note (all) · backfill
+- 2026-11-12 03:26 UTC · `widget-assets` note (all) · backfill
+- 2026-11-12 03:26 UTC · `console-android-app-tabs` note (all) · backfill
+- 2026-11-12 03:26 UTC · `build-manager-history` note (all) · backfill
 
 ## Token passes (log)
 

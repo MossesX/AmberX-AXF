@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3455,
- "updatedAt": "2026-11-12T03:26:14.723Z",
+ "rev": 3456,
+ "updatedAt": "2026-11-12T03:26:27.416Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -5896,7 +5896,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-18T04:10:00.000Z",
-   "updatedAt": "2026-11-10T04:39:20.621Z",
+   "updatedAt": "2026-11-12T03:26:13Z",
    "builtAt": "2026-11-10T04:39:20.621Z",
    "notes": [
     {
@@ -5910,10 +5910,20 @@
     {
      "text": "Audit: superseded — ui-asset-designer (built Nov 7: designer host plugin + add-ons for app menu, nav menu, toolbar, banner, embed, widgets) and context-menu-designer (complete Oct 25) cover it; the drawer type is in framework/schemas/asset-types.json",
      "at": "2026-11-10T04:35:30.072Z"
+    },
+    {
+     "text": "Shipped manifest sm-asset-designer rev 1 sent to Shipped features (backfill): complete 2026-11-10 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 16 open.",
+     "at": "2026-11-12T03:26:13Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "shipped": {
+    "id": "sm-asset-designer",
+    "rev": 1,
+    "at": "2026-11-12T03:26:13Z",
+    "landedCommit": ""
+   },
    "steps": [
     {
      "id": "s1",
@@ -6276,7 +6286,7 @@
    },
    "kind": "build",
    "planRef": "x.assets.designer",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -6784,7 +6794,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-18T04:10:00.000Z",
-   "updatedAt": "2026-10-21T02:23:02.695Z",
+   "updatedAt": "2026-11-12T03:26:14Z",
    "builtAt": "2026-10-21T02:23:02.695Z",
    "notes": [
     {
@@ -6798,10 +6808,20 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-plugin-manager rev 1 sent to Shipped features (backfill): complete 2026-10-21 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:26:14Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "shipped": {
+    "id": "sm-plugin-manager",
+    "rev": 1,
+    "at": "2026-11-12T03:26:14Z",
+    "landedCommit": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -6811,7 +6831,7 @@
    },
    "kind": "build",
    "planRef": "x.plugins.manager",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -7346,16 +7366,26 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-18T04:10:00.000Z",
-   "updatedAt": "2026-10-18T04:21:56.128Z",
+   "updatedAt": "2026-11-12T03:26:15Z",
    "builtAt": "2026-10-18T04:21:56.128Z",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-pending-list-manager rev 1 sent to Shipped features (backfill): complete 2026-10-18 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:26:15Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "shipped": {
+    "id": "sm-pending-list-manager",
+    "rev": 1,
+    "at": "2026-11-12T03:26:15Z",
+    "landedCommit": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -7365,7 +7395,7 @@
    },
    "kind": "build",
    "planRef": "x.console.pending",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -7413,7 +7443,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-18T04:30:05.551Z",
-   "updatedAt": "2026-10-21T02:19:21.624Z",
+   "updatedAt": "2026-11-12T03:26:16Z",
    "builtAt": "2026-10-21T02:19:21.615Z",
    "notes": [
     {
@@ -7423,10 +7453,20 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-lib-mcp rev 1 sent to Shipped features (backfill): complete 2026-10-21 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:26:16Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "shipped": {
+    "id": "sm-lib-mcp",
+    "rev": 1,
+    "at": "2026-11-12T03:26:16Z",
+    "landedCommit": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -7436,7 +7476,7 @@
    },
    "kind": "build",
    "planRef": "x.lib.mcp",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -7486,16 +7526,26 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-18T06:06:35.214Z",
-   "updatedAt": "2026-10-18T06:07:53.368Z",
+   "updatedAt": "2026-11-12T03:26:17Z",
    "builtAt": "2026-10-18T06:07:53.368Z",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-claude-pick-api-key rev 1 sent to Shipped features (backfill): complete 2026-10-18 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:26:17Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "shipped": {
+    "id": "sm-claude-pick-api-key",
+    "rev": 1,
+    "at": "2026-11-12T03:26:17Z",
+    "landedCommit": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -7505,7 +7555,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -8392,7 +8442,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-18T17:20:00.000Z",
-   "updatedAt": "2026-10-20T22:30:00.000Z",
+   "updatedAt": "2026-11-12T03:26:18Z",
    "builtAt": "2026-10-20T22:30:00.000Z",
    "notes": [
     {
@@ -8410,10 +8460,20 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-ai-assistant-plugin rev 1 sent to Shipped features (backfill): complete 2026-10-20 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 1 open.",
+     "at": "2026-11-12T03:26:18Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "shipped": {
+    "id": "sm-ai-assistant-plugin",
+    "rev": 1,
+    "at": "2026-11-12T03:26:18Z",
+    "landedCommit": ""
+   },
    "steps": [
     {
      "id": "s1",
@@ -8446,7 +8506,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -8487,7 +8547,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-18T17:20:00.000Z",
-   "updatedAt": "2026-10-20T23:59:00.000Z",
+   "updatedAt": "2026-11-12T03:26:19Z",
    "builtAt": "2026-10-20T23:59:00.000Z",
    "notes": [
     {
@@ -8505,10 +8565,20 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-agent-manager-plugin rev 1 sent to Shipped features (backfill): complete 2026-10-20 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:26:19Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "shipped": {
+    "id": "sm-agent-manager-plugin",
+    "rev": 1,
+    "at": "2026-11-12T03:26:19Z",
+    "landedCommit": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -8518,7 +8588,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -8932,7 +9002,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-18T22:30:06.842Z",
-   "updatedAt": "2026-10-20T22:30:00.000Z",
+   "updatedAt": "2026-11-12T03:26:20Z",
    "builtAt": "2026-10-20T22:30:00.000Z",
    "notes": [
     {
@@ -8946,10 +9016,20 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-banner-assets rev 1 sent to Shipped features (backfill): complete 2026-10-20 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:26:20Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "shipped": {
+    "id": "sm-banner-assets",
+    "rev": 1,
+    "at": "2026-11-12T03:26:20Z",
+    "landedCommit": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -8959,7 +9039,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -8998,7 +9078,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-19T00:18:03.979Z",
-   "updatedAt": "2026-10-20T22:30:00.000Z",
+   "updatedAt": "2026-11-12T03:26:22Z",
    "builtAt": "2026-10-20T22:30:00.000Z",
    "notes": [
     {
@@ -9008,10 +9088,20 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-widget-assets rev 1 sent to Shipped features (backfill): complete 2026-10-20 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:26:22Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "shipped": {
+    "id": "sm-widget-assets",
+    "rev": 1,
+    "at": "2026-11-12T03:26:22Z",
+    "landedCommit": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -9021,7 +9111,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -9961,7 +10051,7 @@
    "branch": "claude/console-android-wrapper",
    "pr": "",
    "createdAt": "2026-10-21T03:58:03.794Z",
-   "updatedAt": "2026-11-10T04:29:53.879Z",
+   "updatedAt": "2026-11-12T03:26:23Z",
    "builtAt": "2026-11-07T15:38:20.289Z",
    "notes": [
     {
@@ -9995,6 +10085,10 @@
     {
      "text": "Earlier step list (framework/plan/pending.json, before this build was re-split), kept so nothing is lost: (cont.)\n7. 3b. Manifest tabs: project manifests built on/for AXF with `deploy.url`, read from a bundled `catalog/projects.json` (generated by `sync-data.mjs` into the Android console assets), appended to the list; unit test with a fixture catalog.",
      "at": "2026-11-10T04:29:53.879Z"
+    },
+    {
+     "text": "Shipped manifest sm-console-android-app-tabs rev 1 sent to Shipped features (backfill): complete 2026-11-07 (date inferred: no commit or PR recorded), 115 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:26:23Z"
     }
    ],
    "approvals": [],
@@ -10010,6 +10104,12 @@
     "verbatim": false,
     "from": "detail",
     "addenda": []
+   },
+   "shipped": {
+    "id": "sm-console-android-app-tabs",
+    "rev": 1,
+    "at": "2026-11-12T03:26:23Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -10175,7 +10275,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -11815,7 +11915,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-21T16:02:06.336Z",
-   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "updatedAt": "2026-11-12T03:26:25Z",
    "builtAt": "2026-10-23T11:41:00.284Z",
    "notes": [
     {
@@ -11825,6 +11925,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-build-manager-history rev 1 sent to Shipped features (backfill): complete 2026-10-23 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:26:25Z"
     }
    ],
    "approvals": [],
@@ -11840,6 +11944,12 @@
     "verbatim": false,
     "from": "detail",
     "addenda": []
+   },
+   "shipped": {
+    "id": "sm-build-manager-history",
+    "rev": 1,
+    "at": "2026-11-12T03:26:25Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -12181,7 +12291,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": {
