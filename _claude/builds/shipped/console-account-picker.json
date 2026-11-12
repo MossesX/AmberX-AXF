@@ -1,0 +1,166 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-console-account-picker",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:30:28Z",
+ "build": {
+  "id": "console-account-picker",
+  "title": "Flip the VPS Claude accounts from the console",
+  "profile": "all",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "I need to be able to flip them from the console.",
+  "verbatim": true,
+  "at": "2026-11-05T23:30:48.450Z",
+  "source": "voice",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "# console-account-picker\n\nBrett, Nov 5 2026 (voice): \"I need to be able to flip them from the console.\"\n\n## Problem\nThe VPS has saved Claude accounts in /root/.claude-accounts (account-1..4 subscription logins/tokens, account-5 an Anthropic API key), switched only from a shell with /usr/local/bin/claude-account (list | save | savekey | use | who). It writes /root/.claude-accounts/.token.env (CLAUDE_CODE_OAUTH_TOKEN or ANTHROPIC_API_KEY) and copies the login to /root/.claude/.credentials.json. The console's AI keys plugin (apps/console-web/plugins/ai-keys) has its own key store and /switch, not tied to this switcher.\n\n## Build\n- In the console (AI keys page, plus a small header chip/menu), list the saved accounts with name, type (login / token / API key), email when known, and which is active. One tap switches; new builds use it, running ones keep theirs.\n- Server side: call `claude-account list|use|who` (or the same file logic), never read or return a secret; last 4 at most. Add a rename/label per account (e.g. Brett Spence, Hulu API, mossesx) stored beside the account folder.\n- Show status per account: a cheap test button (OK / limit hit + reset time / expired login / no credit). Never auto-run paid prompts on page load.\n- Make deploy/claude-headless.sh and the other launchers (grep `claude -p`) source /root/.claude-accounts/.token.env so the console choice reaches builds. Coordinate with build-own-login (per-build login snapshot) and the ai-keys active-key logic: one source of truth, the console picker; don't break the existing ai-keys /switch.\n- Tests with a fake claude-account and fake keys. Never print secrets.\n\nDone: PR to main, report `_claude/builds/reports/console-account-picker.md`, THREADS row, orchestrator entry, readme, help text, screenshots to UI Review, hand to the merge queue (don't merge). No sub-agents, Opus only. Short plain report at the end.",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-console-account-picker--gina",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-05T23:27:46.381Z",
+   "endedAt": "2026-11-05T23:31:29.287Z",
+   "exit": 1,
+   "costUsd": 1.7932
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Per-build login copy and launchers: API-key and token accounts (ANTHROPIC_API_KEY / CLAUDE_CODE_OAUTH_TOKEN), global .token.env fallback in every claude -p launcher",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s2",
+   "text": "claude-accounts server: account types from claude-account list, labels beside the account folder, per-account status test script (OK / limit + reset / expired / no credit)",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s3",
+   "text": "Console UI: accounts list with type, label, email, status + Test, rename; header chip shows the label; panel on the AI keys page",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s4",
+   "text": "Limit switch follows the picker: headless builds rotate saved accounts with claude-account use first, ai-keys /switch stays the fallback",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s5",
+   "text": "Tests with a fake claude-account and fake keys, README, help, report, screenshots to UI Review, PR to the merge queue",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "claude/console-account-picker",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "217aab33581c2ef3c0d62c749d46575b39883808",
+ "commits": [
+  "8a67d00b93fa1401919cec46ef58062b74bdb861"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-11-05T23:28:29Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/journal/2026-11.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/builds/profiles/big-dog/orchestrator.json",
+  "_claude/builds/profiles/breakroom/orchestrator.json",
+  "_claude/builds/profiles/current/orchestrator.json",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/builds/profiles/urgent/orchestrator.json",
+  "_claude/builds/store.json"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/journal/2026-11.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/profiles/angel/orchestrator.json",
+    "_claude/builds/profiles/big-dog/orchestrator.json",
+    "_claude/builds/profiles/breakroom/orchestrator.json",
+    "_claude/builds/profiles/current/orchestrator.json",
+    "_claude/builds/profiles/refactor/orchestrator.json",
+    "_claude/builds/profiles/urgent/orchestrator.json",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 1.7932,
+  "estimated": false,
+  "tokens": {
+   "input": 34,
+   "output": 221,
+   "cacheRead": 1868490,
+   "cacheWrite": 135494
+  }
+ },
+ "report": "",
+ "open": [
+  "s1: Per-build login copy and launchers: API-key and token accounts (ANTHROPIC_API_KEY / CLAUDE_CODE_OAUTH_TOKEN), global .token.env fallback in every claude -p launcher",
+  "s2: claude-accounts server: account types from claude-account list, labels beside the account folder, per-account status test script (OK / limit + reset / expired / no credit)",
+  "s3: Console UI: accounts list with type, label, email, status + Test, rename; header chip shows the label; panel on the AI keys page",
+  "s4: Limit switch follows the picker: headless builds rotate saved accounts with claude-account use first, ai-keys /switch stays the fallback",
+  "s5: Tests with a fake claude-account and fake keys, README, help, report, screenshots to UI Review, PR to the merge queue"
+ ]
+}

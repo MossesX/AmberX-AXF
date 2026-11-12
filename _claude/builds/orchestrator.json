@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T03:30:29.095Z",
+ "updatedAt": "2026-11-12T03:30:45.295Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -13665,7 +13665,7 @@
    "pr": "#356",
    "mergedAt": "2026-11-05T23:09:21Z",
    "createdAt": "2026-11-05T22:41:21.410Z",
-   "updatedAt": "2026-11-05T23:10:24.525Z",
+   "updatedAt": "2026-11-12T03:30:26Z",
    "builtAt": "2026-11-05T22:42:24.481Z",
    "notes": [
     {
@@ -13675,6 +13675,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-ai-keys-new-format rev 1 sent to Shipped features (backfill): landed 59da6fa2d, 16 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:30:26Z"
     }
    ],
    "approvals": [],
@@ -13760,7 +13764,7 @@
    "branch": "claude/console-account-picker",
    "pr": "",
    "createdAt": "2026-11-05T23:30:48.450Z",
-   "updatedAt": "2026-11-07T05:14:20.582Z",
+   "updatedAt": "2026-11-12T03:30:28Z",
    "builtAt": "",
    "notes": [
     {
@@ -13778,6 +13782,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-console-account-picker rev 1 sent to Shipped features (backfill): landed 217aab335, 10 file(s), 0 test line(s), 5 open.",
+     "at": "2026-11-12T03:30:28Z"
     }
    ],
    "approvals": [],
@@ -13901,7 +13909,7 @@
    "mergedAt": "2026-11-06T00:33:19Z",
    "priority": "P0",
    "createdAt": "2026-11-05T23:51:02.650Z",
-   "updatedAt": "2026-11-10T02:23:45.058Z",
+   "updatedAt": "2026-11-12T03:30:30Z",
    "builtAt": "",
    "notes": [
     {
@@ -13915,6 +13923,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-ai-keys-console-store rev 1 sent to Shipped features (backfill): landed c79d45b79, 12 file(s), 0 test line(s), 1 open.",
+     "at": "2026-11-12T03:30:30Z"
     }
    ],
    "approvals": [],
@@ -18268,7 +18280,7 @@
    "pr": "#359",
    "mergedAt": "2026-11-06T18:21:20Z",
    "createdAt": "2026-11-06T18:07:12.388Z",
-   "updatedAt": "2026-11-07T00:47:46.559Z",
+   "updatedAt": "2026-11-12T03:30:31Z",
    "builtAt": "2026-11-06T18:07:13.301Z",
    "notes": [
     {
@@ -18294,6 +18306,10 @@
     {
      "text": "Reconciler: PR #359 merged",
      "at": "2026-11-06T19:16:22.437Z"
+    },
+    {
+     "text": "Shipped manifest sm-first-refresh-token-saved-every-time-it-s-used-v rev 1 sent to Shipped features (backfill): landed 529d09876, 12 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:30:31Z"
     }
    ],
    "approvals": [],
@@ -18471,7 +18487,7 @@
    "pr": "#365",
    "mergedAt": "2026-11-07T04:42:28Z",
    "createdAt": "2026-11-06T19:49:18.566Z",
-   "updatedAt": "2026-11-07T04:49:27.594Z",
+   "updatedAt": "2026-11-12T03:30:32Z",
    "builtAt": "2026-11-06T20:15:52.271Z",
    "notes": [
     {
@@ -18489,6 +18505,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-ui-review-notify-session-audio rev 1 sent to Shipped features (backfill): landed 07e953b69, 59 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:30:32Z"
     }
    ],
    "approvals": [],
@@ -18673,7 +18693,7 @@
    "pr": "#366",
    "mergedAt": "2026-11-07T04:24:24Z",
    "createdAt": "2026-11-06T20:18:34.992Z",
-   "updatedAt": "2026-11-07T04:49:27.594Z",
+   "updatedAt": "2026-11-12T03:30:34Z",
    "builtAt": "2026-11-06T20:31:14.742Z",
    "notes": [
     {
@@ -18691,6 +18711,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-claude-badge-vps rev 1 sent to Shipped features (backfill): landed 5a1128510, 22 file(s), 2 test line(s), 3 open.",
+     "at": "2026-11-12T03:30:34Z"
     }
    ],
    "approvals": [],
@@ -18900,7 +18924,7 @@
    "pr": "#367",
    "mergedAt": "2026-11-07T05:54:24Z",
    "createdAt": "2026-11-06T20:57:51.699Z",
-   "updatedAt": "2026-11-07T06:00:38.611Z",
+   "updatedAt": "2026-11-12T03:30:36Z",
    "builtAt": "2026-11-06T21:13:55.212Z",
    "notes": [
     {
@@ -18914,6 +18938,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-notifications-control-panel rev 1 sent to Shipped features (backfill): landed b244d8f2f, 46 file(s), 0 test line(s), 7 open.",
+     "at": "2026-11-12T03:30:36Z"
     }
    ],
    "approvals": [],
@@ -19152,7 +19180,7 @@
    "pr": "#368",
    "mergedAt": "2026-11-07T04:54:28Z",
    "createdAt": "2026-11-06T22:31:04.507Z",
-   "updatedAt": "2026-11-07T05:00:50.940Z",
+   "updatedAt": "2026-11-12T03:30:38Z",
    "builtAt": "2026-11-06T23:23:36.068Z",
    "notes": [
     {
@@ -19162,6 +19190,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-gizmo-rebuild-fable rev 1 sent to Shipped features (backfill): landed d4d84c6fe, 61 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:30:38Z"
     }
    ],
    "approvals": [],
@@ -20247,7 +20279,7 @@
    "pr": "#370",
    "mergedAt": "2026-11-07T05:54:22Z",
    "createdAt": "2026-11-06T23:34:55.329Z",
-   "updatedAt": "2026-11-07T06:00:38.611Z",
+   "updatedAt": "2026-11-12T03:30:40Z",
    "builtAt": "2026-11-06T23:57:04.190Z",
    "notes": [
     {
@@ -20257,6 +20289,10 @@
     {
      "text": "Merged from build profile \"current\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-badges-notify-followup rev 1 sent to Shipped features (backfill): landed aec306850, 47 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:30:40Z"
     }
    ],
    "approvals": [],
@@ -23685,8 +23721,9 @@
    "pendingId": "glossary-index-demos",
    "branch": "claude/glossary-index-demos-r3",
    "pr": "",
+   "mergedAt": "2026-11-08T14:09:48Z",
    "createdAt": "2026-11-07T04:02:18.385Z",
-   "updatedAt": "2026-11-07T21:59:09.198Z",
+   "updatedAt": "2026-11-12T03:30:41Z",
    "builtAt": "2026-11-07T21:58:52.269Z",
    "notes": [
     {
@@ -23720,6 +23757,10 @@
     {
      "text": "s3 Book Builder (wizard, tree with drag, chapter editor, content picker, live sandbox preview, Preview book, Record video → Walkthrough producer job), s4 docs output (docs.mjs: markdown / html / interactive HTML + TS with runnable examples and live frames), s5 build-hooks.mjs (catalog rebuilt on every build event; rule in RULES.md + BRIEF-TEMPLATE), s6 clips (clip from-demo, Register a clip, large keyword set) done on Fable in r3. Checks green: check-demo 243, plugin test.mts, catalog --check (ratchet 388), help-coverage 100%, theme/controls/toolbars/chrome/lifecycle/plugin-commands, tsc, vite build, server routes. Report _claude/builds/reports/glossary-index-demos.md.",
      "at": "2026-11-07T21:58:53.210Z"
+    },
+    {
+     "text": "Shipped manifest sm-glossary-index-demos rev 1 sent to Shipped features (backfill): landed 07e047664, 54 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:30:41Z"
     }
    ],
    "approvals": [

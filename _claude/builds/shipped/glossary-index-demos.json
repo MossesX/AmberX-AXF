@@ -1,0 +1,317 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-glossary-index-demos",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:30:41Z",
+ "build": {
+  "id": "glossary-index-demos",
+  "title": "glossary-index-demos",
+  "profile": "all",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "the demonstration designer is gonna work off of the walkthrough. ... we're going to create a glossary in an index. Of every single motherfucking feature element setting every motherfucking thing you can dream of ... I need an index, a glossary, as if it's indexing an encyclopedia. And so then I'm ... I want to be able to generate a demonstration. ... really need to be able to create chapters. I want to be able to, like, say, write my own book with it. ... when you build a book, you'll be able to check off whether you want uh, documentation and what type and how extensive ... interactive HTML, TypeScript documentation ... In the future, anything built, the orchestrator will update this catalog ... every time we generate a clip ... it needs to automatically attach a shitload of keywords to it. And um, it needs to itself to be to be an asset going to a registry",
+  "verbatim": true,
+  "at": "",
+  "source": "voice",
+  "by": "claude-voice",
+  "addenda": []
+ },
+ "brief": "# Glossary + Index + Demonstration Designer (Brett)\n\n## 1. Encyclopedia-grade glossary & index\nBuild a complete glossary AND index of EVERYTHING in the system — as thorough as indexing an encyclopedia. Cover every plugin, feature, UI element, setting, preference, ability, function, asset, chain, document, command, API/MCP/CLI tool, hook, and the smallest items.\n- Walk every plugin meticulously and document everything it does.\n- For every asset and element: a detailed summary of what it is, what it does, how it works, what it links to / depends on, where it appears, its scope and inheritance, its context menu, and its API.\n- Two structured outputs: a Glossary (defined terms, searchable, cross-linked) and an Index (hierarchical, categorized, like a book index) — both sortable, filterable, searchable, multi-view.\n- Source it from the UI registry + plugin manifests so it stays complete and current automatically; add a CI check that flags any registered asset/feature missing an entry.\n\n## 2. Demonstration Designer (off the walkthrough system)\n- From ANY glossary/index entry, click 'Generate demonstration' to produce a walkthrough/demo of that feature using the existing walkthrough engine.\n- Demonstrations are assets: editable, replayable, voice-controlled, can be chained into larger tours.\n- The Demonstration Designer lets you assemble/edit demos (steps, narration, highlights, actions) and run them against the live UI or a target preview surface.\n\n## Rules\n- Everything is registry assets; full voice + API/MCP/CLI parity.\n- Settings in categorized collapsible sections.\n- Submit at least 3 UI options to UI Review first.\n## Addendum 1 — Book Builder (Brett)\nGo beyond single demos: author full BOOKS (like writing a book, similar model to the to-do list).\n- 'Create new book' -> wizard: rough total length, length per chapter, style, theme, narrator voice, and other options.\n- Chapters: create and organize chapters. Multiple books live in a collapsible tree; drag items to the exact spot in a book. Reorder via drag, context menu, or the icons on top of columns/windows/containers.\n- Content picker: browse EVERYTHING in the glossary/index via filtered, sortable trees and grids with multiple view types; drag entries into a book/chapter.\n- Per-book you can set how much time is dedicated to it (and per chapter).\n- Live sandbox preview: selecting a UI/feature/glossary/index entry opens a floating window showing a REAL, sandboxed version of that thing with real data — the actual focus of that part of the book.\n- Preview the whole book, then Generate a walkthrough video (narrated, themed) and other outputs.\n- Books, chapters and demos are all assets; voice + API/MCP/CLI parity; built on the existing walkthrough engine.\n\n## Addendum 2 — Interactive documentation output for books (Brett)\nWhen building a book, checkboxes choose whether to also generate DOCUMENTATION, what type, and how extensive (from light up to extremely deep). The top tier is full-blown interactive HTML + TypeScript documentation: real, runnable, interactive examples, live/interactive components throughout, deep and hardcore — the real deal, not static pages. Documentation is generated alongside the book/walkthrough from the same sources (glossary/index/registry + sandbox), kept in sync, and saved as an asset. Options for depth, format, and how interactive. Voice + API/MCP/CLI parity.\n\n## Addendum 3 — Orchestrator auto-updates the catalog on every future build (Brett)\nMake catalog upkeep automatic and permanent. From now on, whenever ANY build is created/lands, the orchestrator updates this glossary + index + catalog: add/update entries for every new or changed plugin, feature, asset, setting, function, chain, document, etc., sourced from the registry + plugin manifests. Keep it complete and current with no manual step. Add it to the build lifecycle (part of the standard post-build hook) and write the rule into RULES.md / the brief template so every build does it. CI check fails if a registered asset/feature has no catalog entry after a build.\n\n## Addendum 4 — Generated clips are auto-tagged registry assets (Brett)\nEvery clip/demo/walkthrough/video generated by this system automatically gets a large set of keywords/tags attached (from the source glossary/index entry, plugin, assets shown, actions, topics — auto-extracted), and is itself registered as an asset in the registry. So every generated clip is: a first-class registry asset (id, kind=clip/demo), richly keyword-tagged, searchable/filterable/sortable like everything else, and reusable (droppable into books, chainable). Voice + API/MCP/CLI parity.\n",
+ "models": [
+  "Opus",
+  "Fable"
+ ],
+ "accounts": [
+  "mossesx-max-"
+ ],
+ "runs": [
+  {
+   "session": "axf-glossary-index-demos-r3--joey",
+   "account": "mossesx-max-",
+   "model": "Fable",
+   "startedAt": "2026-11-07T20:45:10.273Z",
+   "endedAt": "",
+   "exit": null,
+   "costUsd": 29.7237
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Glossary + index from registry, CI completeness",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T20:45:10.273Z",
+   "doneAt": "2026-11-07T11:07:07.084Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Demonstration Designer",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T11:07:07.084Z",
+   "doneAt": "2026-11-07T21:33:54.343Z",
+   "actualMin": 627,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Book Builder with sandbox preview and video",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T21:33:54.343Z",
+   "doneAt": "2026-11-07T21:58:49.622Z",
+   "actualMin": 25,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Interactive documentation output",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T21:58:49.622Z",
+   "doneAt": "2026-11-07T21:58:50.482Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Orchestrator auto-catalog hook",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T21:58:50.482Z",
+   "doneAt": "2026-11-07T21:58:51.375Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Auto-tagged clip assets",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-07T21:58:51.375Z",
+   "doneAt": "2026-11-07T21:58:52.269Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/glossary-index-demos-r3",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "07e0476646f8b151e50f763f878e9c11c9782f6e",
+ "commits": [
+  "c246fa1462194679ab69e973c0c94013c49522f6",
+  "36b320b36cfcecd527e4b0d75c987e97806eae7b"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-11-08T14:09:48Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/THREADS.md",
+  "_claude/builds/BRIEF-TEMPLATE.md",
+  "_claude/builds/reports/glossary-index-demos.md",
+  "_claude/memory/STATUS.md",
+  "_claude/rules/RULES.md",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/glossary-index/README.md",
+  "apps/console-web/plugins/glossary-index/build-hooks.mjs",
+  "apps/console-web/plugins/glossary-index/catalog.mjs",
+  "apps/console-web/plugins/glossary-index/demos.mjs",
+  "apps/console-web/plugins/glossary-index/docs.mjs",
+  "apps/console-web/plugins/glossary-index/help.json",
+  "apps/console-web/plugins/glossary-index/plugin.json",
+  "apps/console-web/plugins/glossary-index/server/__init__.py",
+  "apps/console-web/plugins/glossary-index/test.mts",
+  "apps/console-web/plugins/glossary-index/web/books.tsx",
+  "apps/console-web/plugins/glossary-index/web/demos-core.ts",
+  "apps/console-web/plugins/glossary-index/web/designer.tsx",
+  "apps/console-web/plugins/glossary-index/web/glossary-index.css",
+  "apps/console-web/plugins/glossary-index/web/index.tsx",
+  "apps/console-web/plugins/glossary-index/web/menu.ts",
+  "apps/console-web/plugins/glossary-index/web/player.tsx",
+  "apps/console-web/plugins/ui-review/plugin.json",
+  "apps/console-web/src/axf/core/engines/demo-rules.d.mts",
+  "apps/console-web/src/axf/core/engines/demo-rules.mjs",
+  "apps/console-web/src/axf/core/index.ts",
+  "apps/console-web/src/axf/core/types.ts",
+  "apps/console-web/src/axf/core/validate.ts",
+  "apps/console-web/src/axf/schemas/asset-types.json",
+  "apps/console-web/src/axf/schemas/json/book.schema.json",
+  "apps/console-web/src/axf/schemas/json/clip.schema.json",
+  "apps/console-web/src/axf/schemas/json/demonstration.schema.json",
+  "apps/console-web/src/axf/schemas/json/docs.schema.json",
+  "framework/assets/book/getting-started.json",
+  "framework/assets/clip/what-is-an-asset-clip.json",
+  "framework/assets/demonstration/what-is-an-asset.json",
+  "framework/assets/docs/getting-started-docs.json",
+  "framework/cli/build-engine.mjs",
+  "framework/core/engines/demo-rules.d.mts",
+  "framework/core/engines/demo-rules.mjs",
+  "framework/core/index.ts",
+  "framework/core/types.ts",
+  "framework/core/validate.ts",
+  "framework/schemas/asset-types.json",
+  "framework/schemas/json/book.schema.json",
+  "framework/schemas/json/clip.schema.json",
+  "framework/schemas/json/demonstration.schema.json",
+  "framework/schemas/json/docs.schema.json",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-demo.mts",
+  "framework/spec/fixtures/appearance.json",
+  "framework/spec/fixtures/demo.json",
+  "framework/spec/fixtures/roll.json"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "glossary-index",
+   "files": [
+    "apps/console-web/plugins/glossary-index/README.md",
+    "apps/console-web/plugins/glossary-index/build-hooks.mjs",
+    "apps/console-web/plugins/glossary-index/catalog.mjs",
+    "apps/console-web/plugins/glossary-index/demos.mjs",
+    "apps/console-web/plugins/glossary-index/docs.mjs",
+    "apps/console-web/plugins/glossary-index/help.json",
+    "apps/console-web/plugins/glossary-index/plugin.json",
+    "apps/console-web/plugins/glossary-index/server/__init__.py",
+    "apps/console-web/plugins/glossary-index/test.mts",
+    "apps/console-web/plugins/glossary-index/web/books.tsx",
+    "apps/console-web/plugins/glossary-index/web/demos-core.ts",
+    "apps/console-web/plugins/glossary-index/web/designer.tsx",
+    "apps/console-web/plugins/glossary-index/web/glossary-index.css",
+    "apps/console-web/plugins/glossary-index/web/index.tsx",
+    "apps/console-web/plugins/glossary-index/web/menu.ts",
+    "apps/console-web/plugins/glossary-index/web/player.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/src/axf/core/engines/demo-rules.d.mts",
+    "apps/console-web/src/axf/core/engines/demo-rules.mjs",
+    "apps/console-web/src/axf/core/index.ts",
+    "apps/console-web/src/axf/core/types.ts",
+    "apps/console-web/src/axf/core/validate.ts",
+    "apps/console-web/src/axf/schemas/asset-types.json",
+    "apps/console-web/src/axf/schemas/json/book.schema.json",
+    "apps/console-web/src/axf/schemas/json/clip.schema.json",
+    "apps/console-web/src/axf/schemas/json/demonstration.schema.json",
+    "apps/console-web/src/axf/schemas/json/docs.schema.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/demo-rules.d.mts",
+    "framework/core/engines/demo-rules.mjs",
+    "framework/core/index.ts",
+    "framework/core/types.ts",
+    "framework/core/validate.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/asset-types.json",
+    "framework/schemas/json/book.schema.json",
+    "framework/schemas/json/clip.schema.json",
+    "framework/schemas/json/demonstration.schema.json",
+    "framework/schemas/json/docs.schema.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-demo.mts",
+    "framework/spec/fixtures/appearance.json",
+    "framework/spec/fixtures/demo.json",
+    "framework/spec/fixtures/roll.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "assets",
+   "files": [
+    "framework/assets/book/getting-started.json",
+    "framework/assets/clip/what-is-an-asset-clip.json",
+    "framework/assets/demonstration/what-is-an-asset.json",
+    "framework/assets/docs/getting-started-docs.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md",
+    "_claude/rules/RULES.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/BRIEF-TEMPLATE.md",
+    "_claude/builds/reports/glossary-index-demos.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ui-review",
+   "files": [
+    "apps/console-web/plugins/ui-review/plugin.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/build-engine.mjs"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 29.7237,
+  "estimated": true,
+  "tokens": {
+   "input": 1960,
+   "output": 490,
+   "cacheRead": 22635734,
+   "cacheWrite": 528907
+  }
+ },
+ "report": "",
+ "open": []
+}

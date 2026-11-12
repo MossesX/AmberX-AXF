@@ -776,16 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 02:12 UTC · `open-any-website-by-voice-on-the-phone-optionall` → queued, note (all) · pipeline
-- 2026-11-12 02:12 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` s2 done (all) · orchestrator
-- 2026-11-12 02:13 UTC · `open-any-website-by-voice-on-the-phone-optionall` PR #500 (all) · builds-live
-- 2026-11-12 02:13 UTC · `open-any-website-by-voice-on-the-phone-optionall` → running, note (all) · pipeline
-- 2026-11-12 02:13 UTC · `open-any-website-by-voice-on-the-phone-optionall` note (all) · orchestrator
-- 2026-11-12 02:13 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` PR #501 (all) · builds-live
-- 2026-11-12 02:13 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` s3 done, → built (all) · orchestrator
-- 2026-11-12 02:13 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` note (all) · orchestrator
-- 2026-11-12 02:14 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` note (all) · orchestrator
-- 2026-11-12 02:14 UTC · `molly-gap-remote-actions` PR #502 (all) · builds-live
 - 2026-11-12 02:14 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` s3 undone, → running (all) · foreign-write
 - 2026-11-12 02:14 UTC · `molly-gap-remote-actions` s1 done, → running (all) · orchestrator
 - 2026-11-12 02:14 UTC · `molly-gap-remote-actions` note (all) · orchestrator
@@ -1176,6 +1166,16 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:30 UTC · `banner-widgets` note (all) · backfill
 - 2026-11-12 03:30 UTC · `priority-tags` note (all) · backfill
 - 2026-11-12 03:30 UTC · `build-own-login` note (all) · backfill
+- 2026-11-12 03:30 UTC · `ai-keys-new-format` note (all) · backfill
+- 2026-11-12 03:30 UTC · `console-account-picker` note (all) · backfill
+- 2026-11-12 03:30 UTC · `ai-keys-console-store` note (all) · backfill
+- 2026-11-12 03:30 UTC · `first-refresh-token-saved-every-time-it-s-used-v` note (all) · backfill
+- 2026-11-12 03:30 UTC · `ui-review-notify-session-audio` note (all) · backfill
+- 2026-11-12 03:30 UTC · `claude-badge-vps` note (all) · backfill
+- 2026-11-12 03:30 UTC · `notifications-control-panel` note (all) · backfill
+- 2026-11-12 03:30 UTC · `gizmo-rebuild-fable` note (all) · backfill
+- 2026-11-12 03:30 UTC · `badges-notify-followup` note (all) · backfill
+- 2026-11-12 03:30 UTC · `glossary-index-demos` merged, note (all) · backfill
 
 ## Token passes (log)
 

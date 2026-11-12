@@ -1,0 +1,202 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-ai-keys-new-format",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:30:26Z",
+ "build": {
+  "id": "ai-keys-new-format",
+  "title": "AI keys: accept new Anthropic API key formats (sk-ant-usr…)",
+  "profile": "all",
+  "category": "Console > AI keys",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Put someone else on it.",
+  "verbatim": true,
+  "at": "2026-11-05T00:00:00Z",
+  "source": "voice",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-ai-keys-new-format--paulie",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-05T20:59:31.093Z",
+   "endedAt": "2026-11-05T20:59:50.113Z",
+   "exit": 1,
+   "costUsd": 0
+  },
+  {
+   "session": "axf-ai-keys-new-format-r4--earl",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-05T22:35:29.016Z",
+   "endedAt": "2026-11-05T22:42:48.987Z",
+   "exit": 0,
+   "costUsd": 2.5159
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "axf.anthropic_keys: prefix table + unknown sk-ant- fallback + live check",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-05T20:59:31.093Z",
+   "doneAt": "2026-11-05T22:41:26.122Z",
+   "actualMin": 102,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "ai-keys server + web, ai-assistant, providers, amberx-droid, forensics mask use it",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-05T22:41:26.122Z",
+   "doneAt": "2026-11-05T22:41:26.850Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Tests (fake keys), CI, docs, report, PR to the merge queue",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-05T22:41:26.850Z",
+   "doneAt": "2026-11-05T22:42:24.481Z",
+   "actualMin": 1,
+   "done": true
+  }
+ ],
+ "branch": "claude/ai-keys-new-format-r4",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 356,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/356"
+ },
+ "landedCommit": "59da6fa2d99a2b458c2086610b09e55e56973e3c",
+ "commits": [
+  "799ee03781e324275c57cfd3f40d050a9fc9e758",
+  "493a6d7326d1434c43fd206a8970db8ec2544a52"
+ ],
+ "mergedAt": "2026-11-05T23:09:21Z",
+ "landedAt": "2026-11-05T23:09:20Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/THREADS.md",
+  "_claude/builds/help-src/console.py",
+  "_claude/builds/reports/ai-keys-new-format.md",
+  "apps/amberx-droid/server/router.py",
+  "apps/console-web/plugins/ai-assistant/server/store.py",
+  "apps/console-web/plugins/ai-keys/plugin.json",
+  "apps/console-web/plugins/ai-keys/server/__init__.py",
+  "apps/console-web/plugins/ai-keys/test.py",
+  "apps/console-web/plugins/ai-keys/web/index.tsx",
+  "apps/console-web/src/assets/help/console.json",
+  "deploy/forensics.sh",
+  "framework/python/axf/anthropic_keys.py",
+  "framework/python/axf/assistant_host/providers.py",
+  "framework/python/axf/test_anthropic_keys.py",
+  "install_instructions.md"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "ai-keys",
+   "files": [
+    "apps/console-web/plugins/ai-keys/plugin.json",
+    "apps/console-web/plugins/ai-keys/server/__init__.py",
+    "apps/console-web/plugins/ai-keys/test.py",
+    "apps/console-web/plugins/ai-keys/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "python",
+   "files": [
+    "framework/python/axf/anthropic_keys.py",
+    "framework/python/axf/assistant_host/providers.py",
+    "framework/python/axf/test_anthropic_keys.py"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "install_instructions.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/help-src/console.py",
+    "_claude/builds/reports/ai-keys-new-format.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ai-assistant",
+   "files": [
+    "apps/console-web/plugins/ai-assistant/server/store.py"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/server/router.py"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/src/assets/help/console.json"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/forensics.sh"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 2.5159,
+  "estimated": false,
+  "tokens": {
+   "input": 100,
+   "output": 1442,
+   "cacheRead": 5283630,
+   "cacheWrite": 121271
+  }
+ },
+ "report": "_claude/builds/reports/ai-keys-new-format.md",
+ "open": []
+}

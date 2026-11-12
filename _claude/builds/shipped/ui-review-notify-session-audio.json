@@ -1,0 +1,391 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-ui-review-notify-session-audio",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:30:32Z",
+ "build": {
+  "id": "ui-review-notify-session-audio",
+  "title": "UI Review phone notifications + truthful wake + auto session recording and transcripts",
+  "profile": "all",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Anything that's ready for UI review, send me a notification through the AmberX. Yeah, I want you to build it and it's not open on the phone. I want this, the audio... automatically audio built in transcriptions automatic every session.",
+  "verbatim": true,
+  "at": "2026-11-06T19:49:18.565Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": [
+   {
+    "text": "From now on, no matter where I am, when I'm on my phone, bring AmberX to the front and show me the screenshot.",
+    "at": "",
+    "source": "",
+    "verbatim": true
+   }
+  ]
+ },
+ "brief": "# Build: ui-review-notify-session-audio\n\nBrett (voice, verbatim): \"Anything that's ready for UI review, send me a notification through the AmberX.\" \"Yeah, I want you to build it and it's not open on the phone. I want this, the audio... automatically audio built in transcriptions automatic every session.\"\n\n1. UI Review notifications: whenever a build adds items to UI Review, AmberX on Brett's phone shows a high-priority notification (build name + item count); tapping it opens UI Review on that group. Plain code, zero Claude tokens.\n2. Fix: console_show / wake-via-AmberX reported 'opened UI Review' but nothing opened on the phone. Find why (AmberX wake / open_url / Android background start) and fix it so it really opens, or falls back to a tappable notification.\n3. Every session automatically recorded and transcribed: when a Claude session starts (voice, console, AmberX/Gizmo), AmberX's session recorder (output-recorder) starts on its own, and each part is transcribed automatically and saved with the session (searchable, linked from the session). Setting to turn it off. Mic stays off unless Brett's own mic switch is on; respect Android capture consent.\n4. Tests, README, report, screenshots to UI Review, PR to the merge queue. Do NOT land directly.\n\nOther builds running: notes-tasks-sync (notes/tasks/todo plugins). Don't touch those. Nothing gets removed from AmberX. One session for the whole build, read only files you need, no full CLAUDE.md chain.\n## Addendum (Brett, voice)\n\"From now on, no matter where I am, when I'm on my phone, bring AmberX to the front and show me the screenshot.\"\n- When a UI Review item arrives: AmberX comes to the front by itself on the phone and opens that item's screenshots directly. Setting to turn it off; notification stays as fallback.\n",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "account-1"
+ ],
+ "runs": [
+  {
+   "session": "axf-ui-review-notify-audio--gina",
+   "account": "account-1",
+   "model": "Opus",
+   "startedAt": "2026-11-06T19:44:14.873Z",
+   "endedAt": "2026-11-06T20:16:07.192Z",
+   "exit": 0,
+   "costUsd": 15.4116
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Truthful wake: phone, wake.py, console-commands and follow-amber report what really happened; fallback to a tappable notification",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T19:44:14.873Z",
+   "doneAt": "2026-11-06T19:53:52.674Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "UI Review notifications: alert per group with count, deep link to the group, AmberX honours alert link and label, cleared when decided",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T19:53:52.674Z",
+   "doneAt": "2026-11-06T19:53:53.319Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Session recording: claude-session asks AmberX's recorder at start, deduped, setting to turn off, no mic argument",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T19:53:53.319Z",
+   "doneAt": "2026-11-06T19:55:11.208Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Transcription worker: local faster-whisper in a niced subprocess, one part at a time, transcripts saved on the hub",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T19:55:11.208Z",
+   "doneAt": "2026-11-06T19:59:31.537Z",
+   "actualMin": 4,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Transcript UI: read and search in the recorder page, link from the session, settings",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T19:59:31.537Z",
+   "doneAt": "2026-11-06T20:07:30.268Z",
+   "actualMin": 8,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Tests, README, report, screenshots to UI Review, PR to the merge queue",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T20:07:30.268Z",
+   "doneAt": "2026-11-06T20:15:52.270Z",
+   "actualMin": 8,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Addendum 1: When a UI Review item arrives: AmberX comes to the front by itself on the phone and opens that item's screenshots directly. Setting to turn it off; notification stays as fallback.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T20:15:52.271Z",
+   "doneAt": "2026-11-07T00:47:57.275Z",
+   "actualMin": 272,
+   "done": true
+  },
+  {
+   "id": "s7-1",
+   "text": "When a UI Review item arrives: AmberX comes to the front by itself on the phone and opens that item's screenshots directly. Setting to turn it off; notification stays as fallback.",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T20:15:52.270Z",
+   "doneAt": "2026-11-06T20:15:52.271Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/ui-review-notify-audio",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 365,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/365"
+ },
+ "landedCommit": "07e953b69f658ec8dc94a34ddded436b9d0688e9",
+ "commits": [
+  "942d9d5455c2e33050bbf62da5f2794032d7cc50",
+  "eb1a2a7ca00c3489b1d2c89d2ac1af9331cc7a7d"
+ ],
+ "mergedAt": "2026-11-07T04:42:28Z",
+ "landedAt": "2026-11-07T04:09:33Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/THREADS.md",
+  "_claude/builds/reports/ui-review-notify-session-audio.md",
+  "_claude/builds/reports/ui-review-notify-session-audio/shots/desktop-audio-search.png",
+  "_claude/builds/reports/ui-review-notify-session-audio/shots/desktop-audio-transcript.png",
+  "_claude/builds/reports/ui-review-notify-session-audio/shots/desktop-claude-settings-recording.png",
+  "_claude/builds/reports/ui-review-notify-session-audio/shots/desktop-session-recording-link.png",
+  "_claude/builds/reports/ui-review-notify-session-audio/shots/desktop-ui-review-group.png",
+  "_claude/builds/reports/ui-review-notify-session-audio/shots/phone-audio-search.png",
+  "_claude/builds/reports/ui-review-notify-session-audio/shots/phone-audio-transcript.png",
+  "_claude/builds/reports/ui-review-notify-session-audio/shots/phone-claude-settings-recording.png",
+  "_claude/builds/reports/ui-review-notify-session-audio/shots/phone-session-recording-link.png",
+  "_claude/builds/reports/ui-review-notify-session-audio/shots/phone-ui-review-group.png",
+  "_claude/memory/STATUS.md",
+  "_claude/shared/rules/RULES.md",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AxppLink.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/HubRules.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/OpenUrlRules.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java",
+  "apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/HubRulesTest.java",
+  "apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/OpenUrlRulesTest.java",
+  "apps/console-web/plugins/claude-session/README.md",
+  "apps/console-web/plugins/claude-session/help.json",
+  "apps/console-web/plugins/claude-session/plugin.json",
+  "apps/console-web/plugins/claude-session/server/__init__.py",
+  "apps/console-web/plugins/claude-session/server/hub.py",
+  "apps/console-web/plugins/claude-session/server/recording.py",
+  "apps/console-web/plugins/claude-session/test.py",
+  "apps/console-web/plugins/claude-session/web/ui.tsx",
+  "apps/console-web/plugins/claude-settings/registry.json",
+  "apps/console-web/plugins/claude-settings/web/index.tsx",
+  "apps/console-web/plugins/console-commands/server/__init__.py",
+  "apps/console-web/plugins/console-commands/server/test_console_commands.py",
+  "apps/console-web/plugins/console-commands/server/wake.py",
+  "apps/console-web/plugins/follow-amber/plugin.json",
+  "apps/console-web/plugins/follow-amber/server/__init__.py",
+  "apps/console-web/plugins/follow-amber/test.py",
+  "apps/console-web/plugins/output-recorder/README.md",
+  "apps/console-web/plugins/output-recorder/help.json",
+  "apps/console-web/plugins/output-recorder/plugin.json",
+  "apps/console-web/plugins/output-recorder/server/__init__.py",
+  "apps/console-web/plugins/output-recorder/server/transcripts.py",
+  "apps/console-web/plugins/output-recorder/server/whisper_job.py",
+  "apps/console-web/plugins/output-recorder/test.mts",
+  "apps/console-web/plugins/output-recorder/test_transcripts.py",
+  "apps/console-web/plugins/output-recorder/web/core.ts",
+  "apps/console-web/plugins/output-recorder/web/index.tsx",
+  "apps/console-web/plugins/output-recorder/web/output-recorder.css",
+  "apps/console-web/plugins/ui-review/README.md",
+  "apps/console-web/plugins/ui-review/help.json",
+  "apps/console-web/plugins/ui-review/server/__init__.py",
+  "apps/console-web/plugins/ui-review/server/notify.py",
+  "apps/console-web/plugins/ui-review/test.py",
+  "apps/console-web/plugins/ui-review/web/index.tsx",
+  "apps/console-web/plugins/ui-review/web/keys.ts",
+  "apps/console-web/plugins/ui-review/web/review-core.d.mts",
+  "apps/console-web/plugins/ui-review/web/review-core.mjs",
+  "apps/console-web/plugins/ui-review/web/ui.tsx",
+  "apps/console-web/server/requirements.txt"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "output-recorder",
+   "files": [
+    "apps/console-web/plugins/output-recorder/README.md",
+    "apps/console-web/plugins/output-recorder/help.json",
+    "apps/console-web/plugins/output-recorder/plugin.json",
+    "apps/console-web/plugins/output-recorder/server/__init__.py",
+    "apps/console-web/plugins/output-recorder/server/transcripts.py",
+    "apps/console-web/plugins/output-recorder/server/whisper_job.py",
+    "apps/console-web/plugins/output-recorder/test.mts",
+    "apps/console-web/plugins/output-recorder/test_transcripts.py",
+    "apps/console-web/plugins/output-recorder/web/core.ts",
+    "apps/console-web/plugins/output-recorder/web/index.tsx",
+    "apps/console-web/plugins/output-recorder/web/output-recorder.css"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/ui-review-notify-session-audio.md",
+    "_claude/builds/reports/ui-review-notify-session-audio/shots/desktop-audio-search.png",
+    "_claude/builds/reports/ui-review-notify-session-audio/shots/desktop-audio-transcript.png",
+    "_claude/builds/reports/ui-review-notify-session-audio/shots/desktop-claude-settings-recording.png",
+    "_claude/builds/reports/ui-review-notify-session-audio/shots/desktop-session-recording-link.png",
+    "_claude/builds/reports/ui-review-notify-session-audio/shots/desktop-ui-review-group.png",
+    "_claude/builds/reports/ui-review-notify-session-audio/shots/phone-audio-search.png",
+    "_claude/builds/reports/ui-review-notify-session-audio/shots/phone-audio-transcript.png",
+    "_claude/builds/reports/ui-review-notify-session-audio/shots/phone-claude-settings-recording.png",
+    "_claude/builds/reports/ui-review-notify-session-audio/shots/phone-session-recording-link.png",
+    "_claude/builds/reports/ui-review-notify-session-audio/shots/phone-ui-review-group.png"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ui-review",
+   "files": [
+    "apps/console-web/plugins/ui-review/README.md",
+    "apps/console-web/plugins/ui-review/help.json",
+    "apps/console-web/plugins/ui-review/server/__init__.py",
+    "apps/console-web/plugins/ui-review/server/notify.py",
+    "apps/console-web/plugins/ui-review/test.py",
+    "apps/console-web/plugins/ui-review/web/index.tsx",
+    "apps/console-web/plugins/ui-review/web/keys.ts",
+    "apps/console-web/plugins/ui-review/web/review-core.d.mts",
+    "apps/console-web/plugins/ui-review/web/review-core.mjs",
+    "apps/console-web/plugins/ui-review/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-session",
+   "files": [
+    "apps/console-web/plugins/claude-session/README.md",
+    "apps/console-web/plugins/claude-session/help.json",
+    "apps/console-web/plugins/claude-session/plugin.json",
+    "apps/console-web/plugins/claude-session/server/__init__.py",
+    "apps/console-web/plugins/claude-session/server/hub.py",
+    "apps/console-web/plugins/claude-session/server/recording.py",
+    "apps/console-web/plugins/claude-session/test.py",
+    "apps/console-web/plugins/claude-session/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AxppLink.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/HubRules.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/OpenUrlRules.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java",
+    "apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/HubRulesTest.java",
+    "apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/OpenUrlRulesTest.java"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "console-commands",
+   "files": [
+    "apps/console-web/plugins/console-commands/server/__init__.py",
+    "apps/console-web/plugins/console-commands/server/test_console_commands.py",
+    "apps/console-web/plugins/console-commands/server/wake.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "follow-amber",
+   "files": [
+    "apps/console-web/plugins/follow-amber/plugin.json",
+    "apps/console-web/plugins/follow-amber/server/__init__.py",
+    "apps/console-web/plugins/follow-amber/test.py"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md",
+    "_claude/shared/rules/RULES.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-settings",
+   "files": [
+    "apps/console-web/plugins/claude-settings/registry.json",
+    "apps/console-web/plugins/claude-settings/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/server/requirements.txt"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261106-1de971d5",
+   "name": "UI Review opened on one group",
+   "status": "approved",
+   "group": "g-20261106-c358ffb9",
+   "url": "/review/r-20261106-1de971d5"
+  },
+  {
+   "id": "r-20261106-26aa247e",
+   "name": "Audio out: search what was said",
+   "status": "approved",
+   "group": "g-20261106-c358ffb9",
+   "url": "/review/r-20261106-26aa247e"
+  },
+  {
+   "id": "r-20261106-dbbb8c4f",
+   "name": "Audio out: reading a transcript",
+   "status": "approved",
+   "group": "g-20261106-c358ffb9",
+   "url": "/review/r-20261106-dbbb8c4f"
+  },
+  {
+   "id": "r-20261106-d69e7714",
+   "name": "Claude settings: Session recording",
+   "status": "approved",
+   "group": "g-20261106-c358ffb9",
+   "url": "/review/r-20261106-d69e7714"
+  },
+  {
+   "id": "r-20261106-94838732",
+   "name": "Claude sessions: Transcript on a session",
+   "status": "approved",
+   "group": "g-20261106-c358ffb9",
+   "url": "/review/r-20261106-94838732"
+  }
+ ],
+ "cost": {
+  "usd": 15.4116,
+  "estimated": false,
+  "tokens": {
+   "input": 132,
+   "output": 1231,
+   "cacheRead": 14803637,
+   "cacheWrite": 314127
+  }
+ },
+ "report": "_claude/builds/reports/ui-review-notify-session-audio.md",
+ "open": []
+}
