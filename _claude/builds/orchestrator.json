@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T20:42:57.077Z",
+ "updatedAt": "2026-11-12T20:45:04.781Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -108539,7 +108539,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-12T19:46:41.501Z",
-   "updatedAt": "2026-11-12T20:42:31.968Z",
+   "updatedAt": "2026-11-12T20:45:00.435Z",
    "builtAt": "",
    "notes": [
     {
@@ -108561,6 +108561,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-12T20:42:31.968Z"
+    },
+    {
+     "text": "Split by Claude into 14 steps (2 Fable).",
+     "at": "2026-11-12T20:45:00.435Z"
     }
    ],
    "approvals": [],
@@ -108580,13 +108584,18 @@
    "steps": [
     {
      "id": "s1",
-     "text": "Move every AmberX web app feature (notes, to-dos, lists, approvals, recorder, open_url, notifications, settings) into the console. Repoint the AmberX Android app to read and call the console instead of the AmberX web app. Keep old AmberX web addresses forwarding to the console until the phone app is switched, so nothing breaks. Each feature moved is its own step.",
-     "model": "Opus",
-     "why": "",
+     "text": "Design the console API contract that replaces the AmberX web app API: list every endpoint, payload and auth flow AmberX Android calls today (notes, to-dos, lists, approvals, recorder, open_url, notifications, settings), map each to a console REST route and MCP tool, set the versioning and token rules, and write it to docs/contracts/amberx-console-api.md",
+     "model": "Fable",
+     "why": "Cross-port contract between the console and the AmberX Android app",
      "phase": "",
      "group": "",
      "estimate": "30 min",
-     "files": [],
+     "files": [
+      "apps/amberx-web/",
+      "apps/amberx-android/",
+      "apps/console-web/",
+      "docs/contracts/amberx-console-api.md"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -108594,17 +108603,20 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwe0l0o001whf8"
+     "uid": "st-mwe0o78401az22"
     },
     {
      "id": "s2",
-     "text": "Now what we're gonna end up doing is just moving everything over the console and making AmberX app read the console instead of AmberX.",
-     "model": "Opus",
-     "why": "",
+     "text": "Design the schema and data migration that moves AmberX web app data (notes, to-dos, lists, approvals, recordings, notification history, settings) into console storage, with an idempotent migration script and a rollback, in apps/console-web/migrations/amberx-import/",
+     "model": "Fable",
+     "why": "Schema and migration design",
      "phase": "",
      "group": "",
      "estimate": "30 min",
-     "files": [],
+     "files": [
+      "apps/amberx-web/",
+      "apps/console-web/migrations/amberx-import/"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -108612,17 +108624,259 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwe0l0o002k51b"
+     "uid": "st-mwe0o784029tsw"
     },
     {
      "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/move-amberx-web-app-into-the-console-amberx-andr.md, THREADS row, commit, push, PR",
+     "text": "Move notes into the console: a notes plugin UI on the framework plus full API control (deep link console_open notes/<id>, state read, create/edit/delete/search actions and settings) through REST, MCP, CLI and voice",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/amberx-notes/",
+      "apps/console-web/api/",
+      "apps/amberx-web/notes/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe0o78403gwqz"
+    },
+    {
+     "id": "s4",
+     "text": "Move to-dos into the console: plugin UI plus full API control (deep link, state read, add/complete/reorder/delete actions, settings, control@1 planner items) through REST, MCP, CLI and voice",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/amberx-todos/",
+      "apps/console-web/api/",
+      "apps/amberx-web/todos/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe0o78404ts2d"
+    },
+    {
+     "id": "s5",
+     "text": "Move lists into the console: plugin UI plus full API control (deep link, state read, list and item create/edit/check/delete actions, settings) through REST, MCP, CLI and voice",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/amberx-lists/",
+      "apps/console-web/api/",
+      "apps/amberx-web/lists/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe0o78405a36a"
+    },
+    {
+     "id": "s6",
+     "text": "Move approvals into the console: plugin UI plus full API control (deep link to an approval, state read, approve/reject/comment actions, settings) through REST, MCP, CLI and voice, with the same auth checks as today",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/amberx-approvals/",
+      "apps/console-web/api/",
+      "apps/amberx-web/approvals/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe0o78406pcze"
+    },
+    {
+     "id": "s7",
+     "text": "Move the recorder into the console: upload/storage routes, playback UI, and full API control (deep link to a recording, state read, start/stop/upload/delete/transcribe actions, settings) through REST, MCP, CLI and voice",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/amberx-recorder/",
+      "apps/console-web/api/",
+      "apps/amberx-web/recorder/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe0o784078iw2"
+    },
+    {
+     "id": "s8",
+     "text": "Move open_url into the console: route and handler that pushes a URL to the phone, with full API control (state read of pending/sent URLs, send/cancel actions, settings) through REST, MCP, CLI and voice",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "20 min",
      "files": [
+      "apps/console-web/plugins/amberx-open-url/",
+      "apps/console-web/api/",
+      "apps/amberx-web/open-url/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe0o78408tdgw"
+    },
+    {
+     "id": "s9",
+     "text": "Move notifications into the console: push delivery to the phone, notification history UI, and full API control (deep link, state read, send/dismiss/mark-read actions, settings) through REST, MCP, CLI and voice",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/amberx-notifications/",
+      "apps/console-web/api/",
+      "apps/amberx-web/notifications/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe0o78409ri24"
+    },
+    {
+     "id": "s10",
+     "text": "Move AmberX settings into the console: settings page plus full API control (deep link console_open settings/amberx, state read, every setting get/set) through REST, MCP, CLI and voice",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/amberx-settings/",
+      "apps/console-web/api/",
+      "apps/amberx-web/settings/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe0o7840a0mcx"
+    },
+    {
+     "id": "s11",
+     "text": "Add forwarding: every old AmberX web address (pages and API routes) redirects or proxies to the matching console route so the current phone app keeps working, with a request log to see what still hits the old addresses",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/amberx-web/server/",
+      "apps/amberx-web/routes/",
+      "apps/console-web/api/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe0o7840bzb4t"
+    },
+    {
+     "id": "s12",
+     "text": "Repoint the AmberX Android API client to the console: base URL, auth/token handling and every call (notes, to-dos, lists, approvals, recorder, open_url, notifications, settings) moved to the console routes from the contract",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/amberx-android/app/src/main/java/",
+      "apps/amberx-android/app/build.gradle"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe0o7840co8i8"
+    },
+    {
+     "id": "s13",
+     "text": "Add an Android setting to switch between the console and the old AmberX web backend (default console), readable and settable through the console API, MCP, CLI and voice, so the switch can be rolled back without a new build",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "apps/amberx-android/app/src/main/java/",
+      "apps/console-web/plugins/amberx-settings/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe0o7850dvigz"
+    },
+    {
+     "id": "s14",
+     "text": "Run tests (console API REST/MCP/CLI parity for each moved feature, migration dry run, forwarding of old addresses, Android client unit tests), write the report to _claude/builds/reports/move-amberx-web-app-into-the-console-amberx-andr.md, add the THREADS row, and open the PR saying how each feature is reached (deep link, REST, MCP, CLI, voice)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/tests/",
+      "apps/amberx-android/app/src/test/",
       "_claude/builds/reports/move-amberx-web-app-into-the-console-amberx-andr.md",
       "_claude/THREADS.md"
      ],
@@ -108633,7 +108887,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwe0l0o003ipoc"
+     "uid": "st-mwe0o7850e87d6"
     }
    ]
   },

@@ -777,7 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:30 UTC · `hotfix-build-manager` note (all) · backfill
 - 2026-11-12 03:30 UTC · `urgent-land-lazy-loader` note (all) · backfill
 - 2026-11-12 03:30 UTC · `urgent-land-gizmo-chat` note (all) · backfill
 - 2026-11-12 03:30 UTC · `merge-queue` note (all) · backfill
@@ -1177,6 +1176,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 11:07 UTC · `fix-axhub-36-pull-main-in-failed` note (all) · fix-the-step-splitter
 - 2026-11-12 20:42 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` → running, note (all) · pipeline
 - 2026-11-12 20:42 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` note (all) · orchestrator
+- 2026-11-12 20:45 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · fix-the-step-splitter-claude-exit-1-input-must-b
 
 ## Token passes (log)
 
