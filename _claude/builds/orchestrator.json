@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T23:26:54.466Z",
+ "updatedAt": "2026-11-12T23:29:04.200Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -110243,7 +110243,7 @@
    "title": "Fix conflicts and land Build Plan 1 (skins, one-row tables, backgrounds, asset overrides)",
    "category": "merge",
    "detail": "Branch claude/build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides conflicts with main in 7 files: ChromeContext.tsx (framework + amberx-droid, axhub-web, console-web, molly copies), build-orchestrator/web/pipeline.tsx, framework/spec/PORTING.md. Brett: pull main in and merge it right away. Keep both sides' intent (tap-to-confirm #524 and skins).",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -110251,7 +110251,7 @@
    "pr": "#505",
    "priority": "P0",
    "createdAt": "2026-11-12T22:16:05.972Z",
-   "updatedAt": "2026-11-12T23:00:44.345Z",
+   "updatedAt": "2026-11-12T23:29:02.742Z",
    "builtAt": "",
    "notes": [
     {
@@ -110277,6 +110277,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-12T23:00:44.345Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T23:29:02.742Z"
     }
    ],
    "approvals": [],

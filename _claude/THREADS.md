@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 10:39 UTC · `show-commits-behind-main-on-every-build-table-an` added (0 steps) (all) · pending
 - 2026-11-12 10:40 UTC · `show-commits-behind-main-on-every-build-table-an` note (all) · orchestrator
 - 2026-11-12 10:42 UTC · `git-status-board` → archived (all) · claude-voice
 - 2026-11-12 10:42 UTC · `terminal-tabs-left` → archived (all) · claude-voice
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 23:26 UTC · `agent-swarm-group-chat-read-aloud-add-a-setting-off-by-default-with-quick-on` note (all) · orchestrator
 - 2026-11-12 23:26 UTC · `agent-swarm-group-chat-read-aloud-add-a-setting-off-by-default-with-quick-on` note (all) · builds-live
 - 2026-11-12 23:26 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` note (all) · orchestrator
+- 2026-11-12 23:29 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` → queued, note (all) · console
 
 ## Token passes (log)
 
