@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3667,
- "updatedAt": "2026-11-12T20:41:06.266Z",
+ "rev": 3668,
+ "updatedAt": "2026-11-12T20:41:19.515Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -171664,7 +171664,7 @@
    "title": "Move AmberX web app into the console; AmberX Android reads the console",
    "category": "",
    "detail": "Move every AmberX web app feature (notes, to-dos, lists, approvals, recorder, open_url, notifications, settings) into the console. Repoint the AmberX Android app to read and call the console instead of the AmberX web app. Keep old AmberX web addresses forwarding to the console until the phone app is switched, so nothing breaks. Each feature moved is its own step.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -171672,12 +171672,20 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-12T19:46:41.501Z",
-   "updatedAt": "2026-11-12T20:41:04.899Z",
+   "updatedAt": "2026-11-12T20:41:12.948Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-12T19:47:54.922Z"
+    },
+    {
+     "text": "Split asked for by console.",
+     "at": "2026-11-12T20:41:09.363Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T20:41:12.948Z"
     }
    ],
    "approvals": [],
@@ -171695,8 +171703,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
+    "queuedAt": "2026-11-12T20:41:12.483Z",
+    "queuedBy": "console",
     "account": "",
     "session": "",
     "slot": "",
@@ -171711,8 +171719,8 @@
      "steps": 3,
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
-    "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "splitRequested": "2026-11-12T20:41:08.408Z",
+    "note": "",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -171807,7 +171815,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -172297,6 +172305,34 @@
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Fable",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-12T20:41:04.959Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
    "steps": [
     {
      "id": "s1",
@@ -172483,7 +172519,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

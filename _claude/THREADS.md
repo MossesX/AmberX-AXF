@@ -777,8 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:29 UTC · `whats-new-open-fix` note (all) · backfill
-- 2026-11-12 03:29 UTC · `terminal-drag-chain-tree` note (all) · backfill
 - 2026-11-12 03:29 UTC · `molly-nav-submenus` note (all) · backfill
 - 2026-11-12 03:29 UTC · `molly-banners` note (all) · backfill
 - 2026-11-12 03:29 UTC · `gizmo-companion` note (all) · backfill
@@ -1177,6 +1175,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 20:31 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` added (8 steps) (all) · Claude (voice)
 - 2026-11-12 20:35 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` added (4 steps) (all) · Claude (voice)
 - 2026-11-12 20:40 UTC · `github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro` added (8 steps) (all) · Claude (voice)
+- 2026-11-12 20:41 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · console
+- 2026-11-12 20:41 UTC · `move-amberx-web-app-into-the-console-amberx-andr` → queued, note (all) · console
 
 ## Token passes (log)
 
