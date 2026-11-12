@@ -220,6 +220,24 @@ if [[ -z "$inner" && -z "$queued" ]] && command -v node >/dev/null && [[ -f "$DI
   dverdict="$(node "$DISPATCH" check --name "$name" --brief "$brief" 2>&1)"; d_st=$?
   if (( d_st == 3 )); then echo "claude-headless: $dverdict" >&2; echo "$dverdict"; exit 3; fi
 fi
+# One session per build (framework/cli/server-gate.mjs, Nov 12 2026): a build launch takes an exclusive lock on its
+# build ID and on its worktree. A second launch while the first one's session (or its slot / look waiter) is alive is
+# refused here (exit 3), logged in the server gate log and sent to AmberX. The launch's own later runs (the slot waiter,
+# the look waiter's relaunch, the tmux inner run) carry its owner tag (AXF_GATE_OWNER) and pass; a fresh launch never
+# inherits one. The lock goes when the session ends; a lock whose holder is gone is taken over.
+SGATE="$HERE/../framework/cli/server-gate.mjs"
+sgate_on() { command -v node >/dev/null && [[ -f "$SGATE" ]]; }
+gate_owner="${AXF_GATE_OWNER:-}" gate_build="${AXF_GATE_BUILD:-}"
+if [[ -z "$inner" && -z "$queued" ]] && sgate_on; then
+  resume="${AXF_GATE_RESUME:-}"; unset AXF_GATE_RESUME AXF_GATE_OWNER AXF_GATE_BUILD
+  sg_out="$(node "$SGATE" acquire --sh --name "$name" --brief "$brief" --worktree "$(pwd)" --pid "$$" ${resume:+--owner "$resume"} --by "${AXF_SURFACE:-launcher}${account:+ on $account}" 2>&1)"; sg_st=$?
+  if (( sg_st == 3 )); then sg_line="$(tail -1 <<<"$sg_out")"; echo "claude-headless: $sg_line" >&2; echo "$sg_line"; exit 3; fi
+  gate_owner="$(sed -n 's/^gate_owner=\(g_[a-f0-9]*\) gate_build=.*$/\1/p' <<<"$sg_out" | tail -1)"
+  gate_build="$(sed -n 's/^gate_owner=[^ ]* gate_build=\([a-z0-9._-]*\)$/\1/p' <<<"$sg_out" | tail -1)"
+fi
+[[ -n "$gate_owner" ]] && export AXF_GATE_OWNER="$gate_owner" AXF_GATE_BUILD="$gate_build"
+gate_hold() { [[ -n "$gate_owner" ]] && sgate_on && node "$SGATE" hold --build "$gate_build" --worktree "$(pwd)" "$@" >/dev/null 2>&1; true; }
+gate_release() { [[ -n "$gate_owner" ]] && sgate_on && node "$SGATE" release --build "$gate_build" --worktree "$(pwd)" >/dev/null 2>&1; true; }
 
 # What Brett said (build-origin@1, Nov 3 2026): the brief's "## Brett said (verbatim)" block (and any "## Addendum N"
 # blocks) go onto the build's record in the builds store as origin.said / addenda, with the brief and who launched it,
@@ -239,8 +257,9 @@ if [[ -z "$inner" && -z "$queued" ]] && look_on; then
   look_line="$(node "$LOOK" gate --name "$name" --brief "$brief" 2>&1)"; look_st=$?
   if (( look_st == 5 )); then echo "claude-headless: $look_line" >&2; echo "$look_line"; exit 3; fi
   if (( look_st == 4 )); then
-    ${SETSID:-$(command -v setsid)} nohup bash -c 'node "$1" wait --name "$2" --brief "$3" && exec bash "${@:4}"' _ "$LOOK" "$name" "$brief" \
+    AXF_GATE_RESUME="$gate_owner" ${SETSID:-$(command -v setsid)} nohup bash -c 'node "$1" wait --name "$2" --brief "$3" && exec bash "${@:4}"' _ "$LOOK" "$name" "$brief" \
       "$HERE/claude-headless.sh" --name "$name" --agent "$agent" ${account:+--account "$account"} --brief "$brief" --log "$log" ${priority:+--priority "$priority"} -- "$@" > .axf-look-wait.log 2>&1 &
+    gate_hold --pid "$!"
     echo "queued for look approval in $(pwd): $look_line (starts by itself once Brett approves the look in UI Review)"
     exit 0
   fi
@@ -296,6 +315,7 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   act="$HERE/../apps/console-web/plugins/activity/activity.mjs"  # axf-plugin:activity
   command -v node >/dev/null && [[ -f "${act:-}" ]] && node "$act" hooks ensure >/dev/null 2>&1 || true  # axf-plugin:activity
   login_session="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"
+  gate_hold --pid "$$" --session "$login_session"   # the inner run holds the build's lock until it ends
   if [[ -z "$account" ]]; then
     wait_for_worker ""
     if [[ -n "$worker" ]]; then on_worker=1 account="$worker" tried_workers="$worker"
@@ -377,6 +397,9 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   [[ -n "$wl" ]] && kill "$wl" 2>/dev/null   # the session ended: its previews stop and leave the registry
   printf '\n\033[1m── finished (exit %s) · log: %s/%s ──\033[0m\n' "$st" "$(pwd)" "$log"
   event session-end "$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")" "$st"
+  # the run is over: the build's lock goes, and this session (closing in a minute or two) no longer counts as live
+  tmux set-option @axf_ended 1 >/dev/null 2>&1 || true
+  gate_release
   if [[ -n "$on_worker" ]]; then
     worker_note="$(node "$WORKERS_JS" note "$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")" 2>/dev/null)"
     [[ -n "$worker_note" ]] && build_note "$worker_note"
@@ -432,6 +455,7 @@ elif slots_on; then
   eval "$(node "$SLOTS" enqueue --name "$slug" --kind headless ${priority:+--priority "$priority"} ${slot_build:+--build "$slot_build"} --pid "$$" --cwd "$(pwd)" --sh 2>/dev/null | grep -E '^slot_id=[A-Za-z0-9-]+ slot_started=[01] slot_pos=[0-9]+ slot_reason=[a-z]+$')"
   if [[ -n "$slot_id" && "$slot_started" == 0 ]]; then
     ${SETSID:-$(command -v setsid)} nohup bash "$HERE/claude-headless.sh" --queued "$slot_id" --name "$name" --agent "$agent" ${account:+--account "$account"} --brief "$brief" --log "$log" -- "$@" > .axf-queue.log 2>&1 &
+    gate_hold --pid "$!"   # the slot waiter holds the build's lock until its session starts
     why=""; [[ "$slot_reason" == memory ]] && why=", waiting for free memory"
     echo "queued at position $slot_pos ($slot_id$why) in $(pwd): starts by itself when a slot frees"
     exit 0
@@ -444,13 +468,15 @@ if ! command -v tmux >/dev/null; then
   fb_prompt="$(cat "$brief")"; [[ -n "$brief_only" && -n "$ctx_rules" && -f "$ctx_rules" ]] && fb_prompt="$fb_prompt"$'\n\n'"$(cat "$ctx_rules")"
   # the copy is released when that claude exits (a small watcher, since nothing else stays behind to do it)
   nohup bash -c 'claude -p "${@:3}" > "$2" 2>&1; st=$?; [ -n "$1" ] && node "'"$LOGIN_JS"'" release --dir "$PWD" --session "'"$login_session"'" >/dev/null 2>&1; exit $st' _ "$login_dir" "$log" "$@" "$fb_prompt" &
+  gate_hold --pid "$!"
   [[ -n "$slot" ]] && slots_on && node "$SLOTS" bind "$slot" --pid "$!" >/dev/null 2>&1
   echo "started pid $! in $(pwd) (tmux missing: the console can't show it)"
   exit 0
 fi
 tmux has-session -t "=$session" 2>/dev/null && session="$session-$(date +%H%M%S)"
+gate_hold --session "$session" --pid "$$"
 envs=()   # tmux starts the command in its server's environment: pass what the run needs explicitly
-for v in PATH HOME AXF_SURFACE AXF_MODEL AXF_AGENT AXF_AGENT_NAME AXF_AGENT_BOOKED AXF_HEADLESS_DIR AXF_ADOPT_CHANGE AXF_CLAUDE_AUTH AXF_SESSION AXHUB_URL AXF_SLOTS AXF_SLOTS_DIR AXF_SLOTS_PREFIX AXF_SLOTS_HOST AXF_WATCH_LIVE AXF_CLAUDE_ACCOUNT AXF_OWN_LOGIN AXF_CLAUDE_ACCOUNTS AXF_CLAUDE_HOME AXF_CLAUDE_GLOBAL AXF_CLAUDE_SEEN AXF_LOGIN_NOTE AXF_WORKERS AXF_CLAUDE_WORKERS AXF_WORKER_POLL AXF_WORKERS_ALIVE AXF_BUILD_PROFILE AXF_JOB_TYPE; do
+for v in AXF_GATE_OWNER AXF_GATE_BUILD PATH HOME AXF_SURFACE AXF_MODEL AXF_AGENT AXF_AGENT_NAME AXF_AGENT_BOOKED AXF_HEADLESS_DIR AXF_ADOPT_CHANGE AXF_CLAUDE_AUTH AXF_SESSION AXHUB_URL AXF_SLOTS AXF_SLOTS_DIR AXF_SLOTS_PREFIX AXF_SLOTS_HOST AXF_WATCH_LIVE AXF_CLAUDE_ACCOUNT AXF_OWN_LOGIN AXF_CLAUDE_ACCOUNTS AXF_CLAUDE_HOME AXF_CLAUDE_GLOBAL AXF_CLAUDE_SEEN AXF_LOGIN_NOTE AXF_WORKERS AXF_CLAUDE_WORKERS AXF_WORKER_POLL AXF_WORKERS_ALIVE AXF_BUILD_PROFILE AXF_JOB_TYPE; do
   [[ -n "${!v:-}" ]] && envs+=(-e "$v=${!v}")
 done
 # Secrets go through a private file, not tmux's command line: git auth (GIT_CONFIG_COUNT/KEY_n/VALUE_n, which tmux
@@ -466,7 +492,7 @@ tmux new-session -d -s "$session" -x 200 -y 50 -c "$(pwd)" "${envs[@]}" \
   bash "$HERE/claude-headless.sh" --inner --name "$slug" --agent "$agent" ${account:+--account "$account"} --envfile "$secret" --brief "$brief" --log "$log" ${slot:+--slot "$slot"} ${priority:+--priority "$priority"} -- "$@"
 tmux set-option -t "$session" history-limit 50000 >/dev/null 2>&1 || true
 # Headless tabs: what the console's Terminal shows on the tab (one `tmux ls` reads them all)
-for kv in "@axf_kind=headless" "@axf_agent=$agent" "@axf_model=$model" "@axf_cwd=$(pwd)" "@axf_meter=$HDIR/$session.meter.json" "@axf_chain=$HDIR/$session.chain.json"; do
+for kv in ${gate_build:+"@axf_build=$gate_build"} "@axf_kind=headless" "@axf_agent=$agent" "@axf_model=$model" "@axf_cwd=$(pwd)" "@axf_meter=$HDIR/$session.meter.json" "@axf_chain=$HDIR/$session.chain.json"; do
   tmux set-option -t "$session" "${kv%%=*}" "${kv#*=}" >/dev/null 2>&1 || true
 done
 event session-start "$session"
