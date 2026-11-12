@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T03:23:00.560Z",
+ "updatedAt": "2026-11-12T03:23:35.683Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -101427,7 +101427,7 @@
    "branch": "claude/merge-all-ready-buttons-server-side-lander",
    "pr": "",
    "createdAt": "2026-11-12T02:47:57.796Z",
-   "updatedAt": "2026-11-12T03:21:37.112Z",
+   "updatedAt": "2026-11-12T03:23:33.985Z",
    "builtAt": "",
    "notes": [
     {
@@ -101529,8 +101529,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T03:23:33.985Z",
      "note": "",
      "uid": "st-mwcynpqn01sorw"
     },
