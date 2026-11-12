@@ -5,7 +5,8 @@
  * /etc/cron.d/axf-console-nightly runs this every minute (cron here has no time zone of its own, and the time is a
  * setting). It does nothing until Brett's clock reaches the set time, then once that night: if code on main changed
  * since the last deploy (`_claude/` status commits don't count) it runs deploy/install-console.sh under the same lock
- * as the 5-minute updater, logs to AXF_NIGHTLY_LOG, and raises a console alert with the result.
+ * as the 5-minute updater, logs to AXF_NIGHTLY_LOG, and raises a console alert with the result. Start and result also go
+ * to the crew's group chat as the owner of section `nightly-deploy` (framework/cli/crew-say.mjs).
  *
  * Settings (Claude settings, Settings → Plugins → Claude): nightly.enabled, nightly.time.
  *
@@ -17,6 +18,7 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { crewSay } from '../framework/cli/crew-say.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const TIME_ZONE = 'America/New_York';
@@ -96,12 +98,15 @@ async function run(dry) {
     return 0;
   }
   if (dry) { console.log(`would deploy ${head.slice(0, 8)}`); return 0; }
+  crewSay('nightly-deploy', 'start', `Nightly deploy: rebuilding the console from main ${head.slice(0, 8)}.`, { ref: d.day });
   // The 5-minute updater's lock: a build in progress means this minute passes and the next one tries again.
   const r = spawnSync('flock', ['-n', '-E', String(LOCK_BUSY), '/run/axf-console-update.lock', 'sh', '-c', `bash "${dir()}/deploy/install-console.sh" >> "${logFile()}" 2>&1`], { env: { ...process.env, DIR: dir() }, timeout: 3_600_000 });
   if (r.status === LOCK_BUSY) return 0;
   const ok = r.status === 0;
   writeState({ ...st, lastDay: d.day, lastSha: ok ? head : st.lastSha, lastResult: ok ? 'deployed' : 'failed', lastRunAt: new Date().toISOString() });
   alert(ok, ok ? 'Nightly deploy done' : 'Nightly deploy failed', ok ? `Console rebuilt from ${head.slice(0, 8)}.` : `The installer exited ${r.status}. Log: ${logFile()}`);
+  if (ok) crewSay('nightly-deploy', 'done', `Nightly deploy done: the console runs ${head.slice(0, 8)}.`, { ref: d.day });
+  else crewSay('nightly-deploy', 'failed', `Nightly deploy failed: the installer exited ${r.status}. The console stays on the last build. Log: ${logFile()}`, { ref: d.day });
   console.log(`${d.day}: ${ok ? 'deployed' : 'FAILED'} ${head.slice(0, 8)}`);
   return ok ? 0 : 1;
 }

@@ -1,0 +1,140 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-first-refresh-token-saved-every-time-it-s-used-v",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:30:31Z",
+ "build": {
+  "id": "first-refresh-token-saved-every-time-it-s-used-v",
+  "title": "First: refresh token saved every time it is used",
+  "profile": "all",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "I'm going to log in as Moses X. You need to save it, and the very first build is to make the refresh token update every time it's used.",
+  "verbatim": true,
+  "at": "2026-11-06T18:07:12.388Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "# Build: refresh-token-save (pending id first-refresh-token-saved-every-time-it-s-used-v)\n\nBrett said (verbatim): \"I'm going to log in as Moses X. You need to save it, and the very first build is to make the refresh token update every time it's used.\"\n\nTarget: ~20 minutes. Do ONLY this, nothing else.\n\nThe VPS Claude login is now mossesx@gmail.com (/root/.claude/.credentials.json). Whenever that login (or any saved account in /root/.claude-accounts or the ai-keys plugin store) uses or renews its OAuth refresh token, write the rotated refresh + access token back to the saved copy immediately, so the next run never uses a dead token. Check the ai-keys renew thread (apps/console-web/plugins/ai-keys), deploy/claude-headless.sh launches, and the account switch path.\n\nDon't load the full CLAUDE.md chain; read only the files you need. Small test with fake tokens. Commit on this branch, open a PR, do not land. Tick step 17 of pending item token-usage-log-accounts-plan-studio-control and mark pending item first-refresh-token-saved-every-time-it-s-used-v complete when done.",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "account-1"
+ ],
+ "runs": [
+  {
+   "session": "axf-refresh-token-save--joey",
+   "account": "account-1",
+   "model": "Opus",
+   "startedAt": "2026-11-06T17:56:46.306Z",
+   "endedAt": "2026-11-06T18:08:14.444Z",
+   "exit": 0,
+   "costUsd": 3.4619
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Save rotated tokens back from build copies, the live login and AI keys",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-06T17:56:46.306Z",
+   "doneAt": "2026-11-06T18:07:13.301Z",
+   "actualMin": 10,
+   "done": true
+  }
+ ],
+ "branch": "claude/refresh-token-save",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 359,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/359"
+ },
+ "landedCommit": "529d0987624c8e67a4dfd33450bb5a6c8756c4d5",
+ "commits": [
+  "3f869070d719387897ac4603b5f54a1eb1d642e7"
+ ],
+ "mergedAt": "2026-11-06T18:21:20Z",
+ "landedAt": "2026-11-06T18:21:20Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "apps/console-web/plugins/agent-swarm/runner.mjs",
+  "apps/console-web/plugins/ai-keys/plugin.json",
+  "apps/console-web/plugins/ai-keys/server/__init__.py",
+  "apps/console-web/plugins/ai-keys/test.py",
+  "apps/console-web/plugins/claude-accounts/README.md",
+  "deploy/claude-headless.sh",
+  "deploy/claude-login.mjs",
+  "deploy/claude-login.test.mjs",
+  "deploy/claude-token-save.mjs",
+  "deploy/claude-token-save.test.mjs",
+  "deploy/install-console.sh"
+ ],
+ "areas": [
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/claude-headless.sh",
+    "deploy/claude-login.mjs",
+    "deploy/claude-login.test.mjs",
+    "deploy/claude-token-save.mjs",
+    "deploy/claude-token-save.test.mjs",
+    "deploy/install-console.sh"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ai-keys",
+   "files": [
+    "apps/console-web/plugins/ai-keys/plugin.json",
+    "apps/console-web/plugins/ai-keys/server/__init__.py",
+    "apps/console-web/plugins/ai-keys/test.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-swarm",
+   "files": [
+    "apps/console-web/plugins/agent-swarm/runner.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-accounts",
+   "files": [
+    "apps/console-web/plugins/claude-accounts/README.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 3.4619,
+  "estimated": false,
+  "tokens": {
+   "input": 52,
+   "output": 194,
+   "cacheRead": 3907321,
+   "cacheWrite": 187356
+  }
+ },
+ "report": "",
+ "open": []
+}

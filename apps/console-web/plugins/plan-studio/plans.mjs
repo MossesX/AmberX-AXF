@@ -32,6 +32,7 @@ import * as pc from './web/plan-core.mjs';
 import * as ai from './web/plan-ai.mjs';
 import { discover, readMatrices, writeBack } from './catalog.mjs';
 import { dataPath, orchestratorPath, persistRoot, readProfiles, activeProfile } from '../../../../framework/cli/persist.mjs';
+import { activeProject, projectDataDir } from '../../../../framework/cli/projects.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const ROOT = resolve(HERE, '../../../..');
@@ -41,10 +42,14 @@ const ID_RE = /^[a-z0-9][a-z0-9._-]{0,79}$/;
 const readJson = (f, d = null) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
 function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, `${JSON.stringify(v, null, 1)}\n`); renameSync(tmp, f); }
 
+/**
+ * Where the plans live: the active project's copy (projects@1). AmberX AXF keeps the plugin folder itself; any other
+ * project keeps `<folder>/projects/<id>/` and starts with no plans. AXF_PLANS_DIR (tests) is used as given.
+ */
 export function storeDir() {
   if (process.env.AXF_PLANS_DIR) return process.env.AXF_PLANS_DIR;
   const root = persistRoot();
-  return root ? join(root, FOLDER) : join(ROOT, '.axf-console/plugins', FOLDER);
+  return projectDataDir(root ? join(root, FOLDER) : join(ROOT, '.axf-console/plugins', FOLDER));
 }
 const P = (...x) => join(storeDir(), ...x);
 export const onHub = () => !process.env.AXF_PLANS_DIR && !!persistRoot();
@@ -60,8 +65,12 @@ export function prices() {
 
 /* ------------------------------------------------------------------ store */
 
-/** Copy seed plans that are missing (never over a plan that exists, never one deleted on purpose). */
+/**
+ * Copy seed plans that are missing (never over a plan that exists, never one deleted on purpose). The seeds are
+ * AmberX AXF's plans: a new project starts with none (projects@1).
+ */
 export function seed() {
+  if (!process.env.AXF_PLANS_DIR && !activeProject().base) return [];
   const deleted = new Set(readJson(P('deleted.json'), { ids: [] }).ids ?? []);
   const added = [];
   for (const f of existsSync(SEED_DIR) ? readdirSync(SEED_DIR).filter((x) => x.endsWith('.json')) : []) {

@@ -1,0 +1,56 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-banner-assets",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:26:20Z",
+ "build": {
+  "id": "banner-assets",
+  "title": "Banner, badge and clock asset types (Fable rebuild)",
+  "profile": "all",
+  "category": "Framework",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Permanent framework asset types: banner (thin bar above the layout, logo, hosts attached assets on left/center/right, plugins attach at run time), badge and clock (attachable, never rolled or picked as slots). Rebuild the engine (core/engines/banner.ts = Kotlin BannerEngine), runtime APIs, React Banner and add the Android Compose banner (not built on Opus). The Opus version is in the framework (Oct 18 2026); keep the asset types and fixtures (spec/fixtures/banner.json) stable for apps that already use them.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-10-20T22:30:00Z",
+ "landedAt": "2026-10-20T22:30:00Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

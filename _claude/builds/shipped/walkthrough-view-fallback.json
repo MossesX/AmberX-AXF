@@ -1,0 +1,68 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-walkthrough-view-fallback",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:31:32Z",
+ "build": {
+  "id": "walkthrough-view-fallback",
+  "title": "walkthrough-view-fallback",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "walkthrough-view-fallback",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/walkthrough-view-fallback",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "2fd495f6710f56eab804cf7b3635178750c2fd01",
+ "commits": [
+  "4c1be2864aa7b452d6517a3ac73bc319f7f34a36"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-11-02T21:54:23Z",
+ "files": [
+  "apps/amberx-droid/walkthrough/record.mjs"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/walkthrough/record.mjs"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

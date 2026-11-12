@@ -72,6 +72,65 @@ try {
   ok(stored.doc.expenses.length === 3 && stored.doc.expenses[0].id === "exp_seed" && stored.user === "Tester", "document keeps the app's kv shape and the old entry");
   const backups = readdirSync(dir).filter((f) => f.startsWith("expenses.api-backup-"));
   ok(backups.length === 1 && JSON.parse(readFileSync(path.join(dir, backups[0]!), "utf8")).doc.expenses.length === 1, "one daily backup, taken before the first write");
+
+  // Molly: cross-origin with credentials from the allow-list only; same-origin calls get no CORS headers
+  const MOLLY = "https://molly.amberxai.com";
+  r = await route.GET(req("GET", "me"), ctx("me"));
+  ok(r.status === 200 && (await r.json()).user === "Tester" && !r.headers.get("access-control-allow-origin"), "me → user, no CORS headers without an Origin");
+  r = await route.GET(req("GET", "me", undefined, { ...H, origin: MOLLY }), ctx("me"));
+  ok(r.headers.get("access-control-allow-origin") === MOLLY && r.headers.get("access-control-allow-credentials") === "true", "Molly origin → CORS with credentials");
+  r = await route.GET(req("GET", "entries", undefined, { origin: MOLLY }), ctx("entries"));
+  ok(r.status === 401 && r.headers.get("access-control-allow-origin") === MOLLY, "signed-out Molly call → 401 the browser can read");
+  r = await route.GET(req("GET", "me", undefined, { ...H, origin: "https://evil.example" }), ctx("me"));
+  ok(!r.headers.get("access-control-allow-origin"), "other origin → no CORS headers");
+  r = route.OPTIONS(new Request("http://x/api/expenses/v1/entries", { method: "OPTIONS", headers: { origin: MOLLY, "access-control-request-method": "POST" } }));
+  ok(r.status === 204 && r.headers.get("access-control-allow-methods")?.includes("PATCH"), "preflight from Molly → 204");
+  ok(route.OPTIONS(new Request("http://x/api/expenses/v1/entries", { method: "OPTIONS", headers: { origin: "https://evil.example" } })).status === 403, "preflight from elsewhere → 403");
+
+  // paydays: no schedule → not ready, fill refused; with a schedule → missing dates, fill adds them once
+  r = await route.GET(req("GET", "paydays?today=2026-11-10"), ctx("paydays"));
+  j = await r.json();
+  ok(r.status === 200 && j.ready === false && j.missing.length === 0, "paydays without a schedule → not ready");
+  ok((await route.POST(req("POST", "paydays?today=2026-11-10"), ctx("paydays"))).status === 409, "fill without a schedule → 409");
+  writeFileSync(path.join(dir, "expenses-settings.json"), JSON.stringify({ format: "axf-kv/1", user: "Tester", ns: "expenses-settings", updatedAt: new Date().toISOString(),
+    doc: { settings: { paydayAmount: 1500, paydayEvery: "monthly", paydayDayOfMonth: 1, paydaySince: "2026-10-01", paydayPayer: "Acme" } } }));
+  r = await route.GET(req("GET", "paydays?today=2026-11-10"), ctx("paydays"));
+  j = await r.json();
+  ok(j.ready === true && j.missing.join() === "2026-10-01,2026-11-01" && j.next === "2026-12-01" && j.schedule.amount === 150000, "paydays → missing and next from the stored schedule");
+  r = await route.POST(req("POST", "paydays?today=2026-11-10"), ctx("paydays"));
+  j = await r.json();
+  ok(r.status === 200 && j.added === 2 && j.entries[0].merchant === "Acme" && j.entries[0].kind === "income", "fill adds the missing paydays");
+  j = await (await route.POST(req("POST", "paydays?today=2026-11-10"), ctx("paydays"))).json();
+  ok(j.added === 0, "fill twice adds nothing");
+
+  // statement: a month's totals, the periods the ledger spans, markdown
+  r = await route.GET(req("GET", "statement?kind=month&date=2026-11-04"), ctx("statement"));
+  j = await r.json();
+  ok(r.status === 200 && j.statement.period.from === "2026-11-01" && j.statement.income >= 150000 && j.periods.length >= 2 && typeof j.markdown === "string", "statement → month totals and periods");
+  ok((await route.GET(req("GET", "statement?date=nope"), ctx("statement"))).status === 400, "statement with a bad date → 400");
+
+  // settings: the decl's rows over the app's kv document; checked values; null = default
+  r = await route.GET(req("GET", "settings"), ctx("settings"));
+  j = await r.json();
+  ok(r.status === 200 && j.values.paydayAmount === 1500 && j.values.confirmDelete === true && j.sections.length === 6 && j.rows.some((x: { key: string; section: string }) => x.key === "paydayEvery" && x.section === "paydays"), "settings → values with defaults, rows, sections");
+  r = await route.PATCH(req("PATCH", "settings", { toastSeconds: 8, paydayEvery: "weekly", confirmDelete: false }), ctx("settings"));
+  j = await r.json();
+  ok(r.status === 200 && j.values.toastSeconds === 8 && j.values.paydayEvery === "weekly" && j.values.confirmDelete === false, "settings PATCH saves checked values");
+  const storedSettings = JSON.parse(readFileSync(path.join(dir, "expenses-settings.json"), "utf8"));
+  ok(storedSettings.doc.settings.paydayPayer === "Acme" && storedSettings.doc.settings.toastSeconds === 8 && storedSettings.doc.v === 1, "settings keep the app's document shape and other values");
+  ok((await route.PATCH(req("PATCH", "settings", { toastSeconds: 99 }), ctx("settings"))).status === 400, "out-of-range number → 400");
+  ok((await route.PATCH(req("PATCH", "settings", { paydayEvery: "hourly" }), ctx("settings"))).status === 400, "unknown option → 400");
+  ok((await route.PATCH(req("PATCH", "settings", { nope: 1 }), ctx("settings"))).status === 400, "unknown key → 400");
+  j = await (await route.PATCH(req("PATCH", "settings", { toastSeconds: null }), ctx("settings"))).json();
+  ok(j.values.toastSeconds === 4 && !j.changed.includes("toastSeconds"), "null puts a setting back to its default");
+
+  // the assistant routes' wrapper: a Molly call needs a signed-in session; same-origin runs unchanged
+  const { corsRoute } = await import("../src/server/cors.ts");
+  const h = corsRoute(async () => Response.json({ ok: true }));
+  r = await h(new Request("http://x/api/ai/status", { headers: { origin: MOLLY } }));
+  ok(r.status === 401 && r.headers.get("access-control-allow-origin") === MOLLY, "assistant: signed-out Molly call → 401 with CORS");
+  r = await h(new Request("http://x/api/ai/status"));
+  ok(r.status === 200 && !r.headers.get("access-control-allow-origin"), "assistant: same-origin call unchanged");
 } finally {
   rmSync(root, { recursive: true, force: true });
 }

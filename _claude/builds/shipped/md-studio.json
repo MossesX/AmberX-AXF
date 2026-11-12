@@ -1,0 +1,345 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-md-studio",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:58Z",
+ "build": {
+  "id": "md-studio",
+  "title": "MD Studio plugin: powerful Markdown browser/editor with docking tabs, reference chains, splits, 4 views, snippets, Claude-file wizards",
+  "profile": "all",
+  "category": "Urgent",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "build MD Studio. It was planned but NEVER built (no branch, no log). Assigned agent: **Reel Rhonda** (book on her agent-swarm card; set AXF_AGENT=reel-rhonda if supported, else record in report + store note).",
+  "verbatim": false,
+  "at": "2026-11-03T00:00:00Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "# Build: md-studio (Urgent profile)\n\nBrett, Nov 3 2026 (voice): build MD Studio. It was planned but NEVER built (no branch, no log). Assigned agent: **Reel Rhonda** (book on her agent-swarm card; set AXF_AGENT=reel-rhonda if supported, else record in report + store note).\n\n## First\n- s0 Search the hub memory/notes (`/projects/_shared/_claude/notes/`, `/projects/amberx-axf/_claude/`, THREADS, store, plans/) and GitHub for any MD Studio plan/spec Brett wrote; that spec wins over this brief. Register in Urgent (id `md-studio`), banner entry.\n\n## Build (unless his spec says otherwise)\n- MD Studio = a Markdown studio plugin for the Dev Console built ON the dock engine (molly-fable #245, now on main): dockable panes for file tree, editor, live preview, outline.\n- Editor with markdown toolbar (headings, bold/italic, lists, checklists, tables, code, links), live preview side by side or split, tabs for multiple docs, search/replace, autosave, version history with restore.\n- **Notes section step (required):** a Notes section that opens and edits everything in the Notes Vault (`/projects/_shared/_claude/notes/` incl. sessions/, handoffs/, plans/, install/, misc/, INDEX.md) using the Notes Vault commands that landed with plugin-commands-auto; plus opening hub memory/rules files and repo .md files.\n- Every command declared once so REST + MCP + CLI are generated (standing rule), so Amber can open/edit docs by voice.\n- Tokens/theme only for styling; works on phone (compact window class) first.\n- Tests, report `_claude/builds/reports/md-studio.md`, THREADS, PR, mark steps done through the store. Commits clean and professional.",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-md-studio",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-03T17:53:03.853Z",
+   "endedAt": "2026-11-03T18:32:11.970Z",
+   "exit": 0,
+   "costUsd": 9.6895
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Plugin scaffold: plugin.json, install/uninstall, Settings > Plugins > MD Studio (level toolbar), help pack",
+   "model": "Opus",
+   "estimate": "20m",
+   "estimateMin": 20,
+   "startedAt": "2026-11-03T17:53:03.853Z",
+   "doneAt": "2026-11-03T18:10:07.511Z",
+   "actualMin": 17,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Server: md files by scope (Project / Claude / Repo) and category, read/write, reference graph",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T18:10:07.511Z",
+   "doneAt": "2026-11-03T18:10:12.249Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "File column: collapsible scopes + categories, search, edit switch, right-click open in horizontal/vertical split",
+   "model": "Opus",
+   "estimate": "25m",
+   "estimateMin": 25,
+   "startedAt": "2026-11-03T18:10:12.249Z",
+   "doneAt": "2026-11-03T18:29:02.869Z",
+   "actualMin": 19,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Tab group of md files on the dock engine: floating, dockable, resizable; drop on any tab header or split",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T18:29:02.869Z",
+   "doneAt": "2026-11-03T18:29:06.046Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Viewer/editor: rendered markdown, edit mode, save, dirty marks, conflict-safe writes",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T18:29:06.046Z",
+   "doneAt": "2026-11-03T18:29:08.773Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Reference chain as branches; click a referenced name to split; split direction setting",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T18:29:08.773Z",
+   "doneAt": "2026-11-03T18:29:11.480Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Toolbar: 3 views + IDE view, each re-renders column, tabs and panes differently",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T18:29:11.480Z",
+   "doneAt": "2026-11-03T18:29:14.065Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Snippets panel: categorized, drag into the editor",
+   "model": "Opus",
+   "estimate": "25m",
+   "estimateMin": 25,
+   "startedAt": "2026-11-03T18:29:14.065Z",
+   "doneAt": "2026-11-03T18:29:16.751Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "Wizards for Claude md files, categorized by purpose and scope (project, Claude, repo)",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T18:29:16.751Z",
+   "doneAt": "2026-11-03T18:29:19.426Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s10",
+   "text": "Tests, check-theme/check-controls, lifecycle, UI Review shots, PR",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T18:29:29.929Z",
+   "doneAt": "2026-11-03T18:31:29.680Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s11",
+   "text": "Notes scope: a 4th scope 'Notes' in the file column showing /projects/_shared/_claude/notes with the same folders, reusing notes-browser's server route (capability axf.notes@1: list/read/write(if_version)/move/remove/history; optional, hide the scope when absent)",
+   "model": "Opus",
+   "estimate": "20m",
+   "estimateMin": 20,
+   "startedAt": "2026-11-03T18:29:19.426Z",
+   "doneAt": "2026-11-03T18:29:22.038Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s12",
+   "text": "Context view (handoff Nov 3): open a session context md as a reference chain with token counts per part; Open context in MD Studio deep link for approval rows",
+   "model": "Opus",
+   "estimate": "25m",
+   "estimateMin": 25,
+   "startedAt": "2026-11-03T18:29:22.038Z",
+   "doneAt": "2026-11-03T18:29:24.604Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s13",
+   "text": "Editor kit (Brett voice Nov 3): markdown toolbar (headings, bold/italic, lists, checklists, tables, code, links), live preview side-by-side/split, search/replace, autosave, version history with restore",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T18:29:24.604Z",
+   "doneAt": "2026-11-03T18:29:27.206Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s14",
+   "text": "Commands declared once (plugin-commands@1 auto: REST + MCP + CLI) so Amber can open/edit docs by voice; Notes Vault + hub memory/rules + repo .md reachable",
+   "model": "Opus",
+   "estimate": "20m",
+   "estimateMin": 20,
+   "startedAt": "2026-11-03T18:29:27.206Z",
+   "doneAt": "2026-11-03T18:29:29.929Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/md-studio",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 271,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/271"
+ },
+ "landedCommit": "edacd296a96ba31d6df69b512390eeaf03451e8d",
+ "commits": [
+  "3f3759b611681a848c3e6c604583fa6aa8ee6a37",
+  "749e6a32f4ab9c6adb2e3071670438f6f8cc085c",
+  "809cb589b07dd3c71302b8c0c89867b709e1d855",
+  "decf4c91f9c34f928a3ed40eb587a02b1ea5aaca",
+  "5977900e4bb835054002426353161b042d87ad08",
+  "93b12d8708c5d89ebb0817fe2fd01329623fd052"
+ ],
+ "mergedAt": "2026-11-03T02:54:56Z",
+ "landedAt": "2026-11-04T03:05:36Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/journal/2026-11.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/builds/profiles/big-dog/orchestrator.json",
+  "_claude/builds/profiles/breakroom/orchestrator.json",
+  "_claude/builds/profiles/current/orchestrator.json",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/builds/profiles/urgent/orchestrator.json",
+  "_claude/builds/reports/md-studio.md",
+  "_claude/builds/reports/md-studio/shots/after/md-studio-browse-desktop.png",
+  "_claude/builds/reports/md-studio/shots/after/md-studio-browse-phone.png",
+  "_claude/builds/reports/md-studio/shots/after/md-studio-context-desktop.png",
+  "_claude/builds/reports/md-studio/shots/after/md-studio-context-phone.png",
+  "_claude/builds/reports/md-studio/shots/after/md-studio-ide-desktop.png",
+  "_claude/builds/reports/md-studio/shots/after/md-studio-ide-phone.png",
+  "_claude/builds/reports/md-studio/shots/after/md-studio-settings-desktop.png",
+  "_claude/builds/reports/md-studio/shots/after/md-studio-settings-phone.png",
+  "_claude/builds/reports/md-studio/shots/after/md-studio-wizards-desktop.png",
+  "_claude/builds/reports/md-studio/shots/after/md-studio-wizards-phone.png",
+  "_claude/builds/reports/md-studio/shots/after/md-studio-write-desktop.png",
+  "_claude/builds/reports/md-studio/shots/after/md-studio-write-phone.png",
+  "_claude/builds/reports/md-studio/shots/shots.json",
+  "_claude/builds/store.json",
+  "_claude/memory/STATUS.md",
+  "apps/console-web/plugins/md-studio/help.json",
+  "apps/console-web/plugins/md-studio/hooks.mjs",
+  "apps/console-web/plugins/md-studio/install.mjs",
+  "apps/console-web/plugins/md-studio/plugin.json",
+  "apps/console-web/plugins/md-studio/server/__init__.py",
+  "apps/console-web/plugins/md-studio/server/store.py",
+  "apps/console-web/plugins/md-studio/test.mts",
+  "apps/console-web/plugins/md-studio/test.py",
+  "apps/console-web/plugins/md-studio/uninstall.mjs",
+  "apps/console-web/plugins/md-studio/web/Column.tsx",
+  "apps/console-web/plugins/md-studio/web/Doc.tsx",
+  "apps/console-web/plugins/md-studio/web/index.tsx",
+  "apps/console-web/plugins/md-studio/web/md-studio.css",
+  "apps/console-web/plugins/md-studio/web/menu.ts",
+  "apps/console-web/plugins/md-studio/web/model.ts",
+  "apps/console-web/plugins/md-studio/web/state.ts"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/journal/2026-11.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/profiles/angel/orchestrator.json",
+    "_claude/builds/profiles/big-dog/orchestrator.json",
+    "_claude/builds/profiles/breakroom/orchestrator.json",
+    "_claude/builds/profiles/current/orchestrator.json",
+    "_claude/builds/profiles/refactor/orchestrator.json",
+    "_claude/builds/profiles/urgent/orchestrator.json",
+    "_claude/builds/reports/md-studio.md",
+    "_claude/builds/reports/md-studio/shots/after/md-studio-browse-desktop.png",
+    "_claude/builds/reports/md-studio/shots/after/md-studio-browse-phone.png",
+    "_claude/builds/reports/md-studio/shots/after/md-studio-context-desktop.png",
+    "_claude/builds/reports/md-studio/shots/after/md-studio-context-phone.png",
+    "_claude/builds/reports/md-studio/shots/after/md-studio-ide-desktop.png",
+    "_claude/builds/reports/md-studio/shots/after/md-studio-ide-phone.png",
+    "_claude/builds/reports/md-studio/shots/after/md-studio-settings-desktop.png",
+    "_claude/builds/reports/md-studio/shots/after/md-studio-settings-phone.png",
+    "_claude/builds/reports/md-studio/shots/after/md-studio-wizards-desktop.png",
+    "_claude/builds/reports/md-studio/shots/after/md-studio-wizards-phone.png",
+    "_claude/builds/reports/md-studio/shots/after/md-studio-write-desktop.png",
+    "_claude/builds/reports/md-studio/shots/after/md-studio-write-phone.png",
+    "_claude/builds/reports/md-studio/shots/shots.json",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "md-studio",
+   "files": [
+    "apps/console-web/plugins/md-studio/help.json",
+    "apps/console-web/plugins/md-studio/hooks.mjs",
+    "apps/console-web/plugins/md-studio/install.mjs",
+    "apps/console-web/plugins/md-studio/plugin.json",
+    "apps/console-web/plugins/md-studio/server/__init__.py",
+    "apps/console-web/plugins/md-studio/server/store.py",
+    "apps/console-web/plugins/md-studio/test.mts",
+    "apps/console-web/plugins/md-studio/test.py",
+    "apps/console-web/plugins/md-studio/uninstall.mjs",
+    "apps/console-web/plugins/md-studio/web/Column.tsx",
+    "apps/console-web/plugins/md-studio/web/Doc.tsx",
+    "apps/console-web/plugins/md-studio/web/index.tsx",
+    "apps/console-web/plugins/md-studio/web/md-studio.css",
+    "apps/console-web/plugins/md-studio/web/menu.ts",
+    "apps/console-web/plugins/md-studio/web/model.ts",
+    "apps/console-web/plugins/md-studio/web/state.ts"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261103-92e40cd7",
+   "name": "MD Studio",
+   "status": "approved",
+   "group": "g-20261103-4ab5f46b",
+   "url": "/review/r-20261103-92e40cd7"
+  }
+ ],
+ "cost": {
+  "usd": 9.6895,
+  "estimated": false,
+  "tokens": {
+   "input": 266,
+   "output": 2398,
+   "cacheRead": 25111733,
+   "cacheWrite": 274570
+  }
+ },
+ "report": "_claude/builds/reports/md-studio.md",
+ "open": [
+  "\"Open context in MD Studio\" on approval rows (axHub approvals, console banner, AmberX) is not wired: those live in other apps. Ready for it: deep link `https://console.amberxai.com/?md-context=<id or path>` and the `open-context` command. The per-session `.context.md` files the handoff describes don't exist yet (separate build); once they do, the approval row links its path.",
+  "Repo files are saved in the console container's checkout; they are not committed by MD Studio (commit from a session or Snapshots).",
+  "Android twin: none (Android on hold; MD Studio is a console plugin, not a framework engine).",
+  "In the headless screenshot run, fetches started later in a page sometimes waited several seconds behind the console's open live streams (HTTP/1.1 connection limit of the dev server); the API itself answers in milliseconds (`/file` 6 ms, `/files` 0.3 s, `/chain` 0.2 s on the real repo + hub)."
+ ]
+}

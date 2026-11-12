@@ -873,6 +873,18 @@ check(r.status_code == 404, "auto-fix endpoint: unknown check 404")
 h = c.get("/p/health").json()
 check(any(f["id"] == "github-token" for f in h["autoFixes"]) and isinstance(h["history"], list), "health lists the auto-fixes and the history")
 
+# group chat (crew-sections@1): the monitor's owner says a red item, green again and each auto-fix attempt
+said: list[tuple] = []
+plugin_services.provide("axf.crew-sections@1", type("Crew", (), {"say": lambda self, *a: said.append(a)})(), "fake-crew")
+mod._record_fix({"state": "done", "title": "Disk", "check": "disk", "message": "freed 2 GB"})
+mod._record_fix({"state": "failed", "title": "Disk", "check": "disk", "message": "no luck"})
+mod._health_resolve(["system:disk"])
+check([a[:2] for a in said] == [("health-monitor", "done"), ("health-monitor", "failed"), ("health-monitor", "done")] and said[0][3] == "disk", "systems check: auto-fix results and green-again go to the chat as the monitor's owner")
+plugin_services.provide("axf.crew-sections@1", type("Broken", (), {"say": lambda self, *a: 1 / 0})(), "fake-crew")
+mod._record_fix({"state": "done", "title": "Disk", "check": "disk", "message": "ok"})
+check(True, "systems check: a broken chat never breaks the monitor")
+plugin_services.withdraw("fake-crew")
+
 root = os.environ["AXF_SYSTEMS_CHECK_DIR"]
 check(all((p.stat().st_mode & 0o077) == 0 for p in Path(root).rglob("*") if p.is_file()), "data files private")
 print(f"all {ok} checks passed")

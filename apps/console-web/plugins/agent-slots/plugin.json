@@ -6,7 +6,7 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "A configurable cap on how many headless Claude sessions and builds run at once on the VPS (agent-slots@1, framework/cli/agent-slots.mjs). Extras wait in a queue (FIFO within boss / urgent / normal / low) and start by themselves when a slot frees and memory allows; finished sessions don't count and close by themselves (logs kept). Settings (hot-reloaded): max running agents, max heavy test/build steps at once, memory guard, close-after, priority rules; shown in Settings \u2192 Plugins \u2192 Agent cap and in the Breakroom (Agent swarm) settings. Slots used / cap in the activity banner's summary, the queue (position, waiting since, Move up, Cancel) on the Builds page, 'waiting for a desk' on swarm agents past the cap, and a systems-check item when the memory guard trips often or swap stays in use.",
+  "description": "A configurable cap on how many headless Claude sessions and builds run at once on the VPS (agent-slots@1, framework/cli/agent-slots.mjs). Extras wait in a queue (FIFO within boss / urgent / normal / low) and start by themselves when a slot frees and memory allows; finished sessions don't count and close by themselves (logs kept). Settings (hot-reloaded): max running agents, max heavy test/build steps at once, memory guard, close-after, priority rules; shown in Settings → Plugins → Agent cap and in the Breakroom (Agent swarm) settings. Slots used / cap in the activity banner's summary, the queue (position, waiting since, Move up, Cancel) on the Builds page, 'waiting for a desk' on swarm agents past the cap, and a systems-check item when the memory guard trips often or swap stays in use. VPS hard build limit (build-limit@1): the host refuses the N+1st headless build whatever the queue thinks (default 8, one config file), runs every build in axf-builds.slice (CPUQuota, MemoryMax) and caps docker test containers; live usage on the settings tab, banner chip and queue title; only Brett's signed-in console changes it.",
   "targets": [
     "axf-console"
   ],
@@ -27,6 +27,8 @@
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/agent-slots",
     "env": [
+      "AXF_BUILD_LIMIT",
+      "AXF_BUILD_SLICE",
       "AXF_SLOTS",
       "AXF_SLOTS_DIR"
     ],
@@ -37,7 +39,58 @@
       "apps/console-web/plugins/README.md"
     ]
   },
-  "commands": { "$axf": "plugin-commands@1", "auto": true },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "id": "hard-limit",
+        "route": "GET /hard-limit",
+        "title": "VPS hard build limit",
+        "description": "The VPS's hard limit on headless builds running at once, live usage (what really runs on the host: claude -p trees, sessions starting up, launches just admitted), what counts, and the axf-builds.slice CPU / memory caps and docker test-run limits. canEdit says whether this caller may change it (only Brett's own signed-in console).",
+        "output": "build-limit-status@1 plus canEdit",
+        "readOnly": true
+      },
+      {
+        "id": "set-hard-limit",
+        "route": "PUT /hard-limit",
+        "title": "Set the VPS hard build limit (Brett only)",
+        "description": "Brett only, from his own signed-in console: change maxBuilds (default 8), cpuQuotaPct, memoryMaxGb, memoryHighGb, tasksMax, dockerCpus, dockerMemoryGb, dockerImages. Sessions, MCP and voice (the console token) get 403.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "maxBuilds": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 64
+            },
+            "cpuQuotaPct": {
+              "type": "integer"
+            },
+            "memoryMaxGb": {
+              "type": "number"
+            },
+            "memoryHighGb": {
+              "type": "number"
+            },
+            "tasksMax": {
+              "type": "integer"
+            },
+            "dockerCpus": {
+              "type": "number"
+            },
+            "dockerMemoryGb": {
+              "type": "number"
+            },
+            "dockerImages": {
+              "type": "string"
+            }
+          }
+        },
+        "output": "the new status"
+      }
+    ]
+  },
   "builtWith": {
     "model": "opus",
     "builtAt": "2026-11-01"

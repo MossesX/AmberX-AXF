@@ -1,0 +1,227 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-amberx-appearance-lock",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:27:50Z",
+ "build": {
+  "id": "amberx-appearance-lock",
+  "title": "AmberX: fix the messed-up look, lock the look switch, Get the look from axHub switch",
+  "profile": "all",
+  "category": "App",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "AmberX looked broken (overlapping, wide-spaced text from the Sliders). Fix: Restore default appearance clears the Sliders (axf.look), line height never below 100%, letter spacing capped at 0.1em. New Settings → Appearance → Lock the look (greys out every look control, this device's tweaks set aside, axHub look still applies) and Get the look from axHub (developer apps; off = own saved look, no waiting). Web framework + the five web apps re-baked; Android twin deferred (PORTING.md).",
+  "verbatim": false,
+  "at": "2026-10-27T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/amberx-appearance-lock",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 126,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/126"
+ },
+ "landedCommit": "6f87efc9ee441c5cc15db144289c4915bff714e5",
+ "commits": [
+  "b45efc00de8fe0da4321adcb67f0f41d4b4f98d5",
+  "79547acb61fd97e1ab5d7f03a79b009704da0b06"
+ ],
+ "mergedAt": "2026-10-27T19:22:41Z",
+ "landedAt": "2026-10-27T19:22:40Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "CLAUDE.md",
+  "_claude/THREADS.md",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/axf/core/engines/designpackage.ts",
+  "apps/amberx-droid/src/axf/core/engines/looktokens.ts",
+  "apps/amberx-droid/src/axf/core/runtime.ts",
+  "apps/amberx-droid/src/axf/libs/settings/index.tsx",
+  "apps/amberx-droid/src/axf/react/components/BannerSettings.tsx",
+  "apps/amberx-droid/src/axf/react/components/Widgets.tsx",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/axf/core/engines/designpackage.ts",
+  "apps/axhub-web/src/axf/core/engines/looktokens.ts",
+  "apps/axhub-web/src/axf/core/runtime.ts",
+  "apps/axhub-web/src/axf/libs/settings/index.tsx",
+  "apps/axhub-web/src/axf/react/components/BannerSettings.tsx",
+  "apps/axhub-web/src/axf/react/components/Widgets.tsx",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/src/axf/core/engines/designpackage.ts",
+  "apps/console-web/src/axf/core/engines/looktokens.ts",
+  "apps/console-web/src/axf/core/runtime.ts",
+  "apps/console-web/src/axf/libs/settings/index.tsx",
+  "apps/console-web/src/axf/react/components/BannerSettings.tsx",
+  "apps/console-web/src/axf/react/components/Widgets.tsx",
+  "apps/patches-web/axf.lock.json",
+  "apps/patches-web/src/axf/core/engines/designpackage.ts",
+  "apps/patches-web/src/axf/core/engines/looktokens.ts",
+  "apps/patches-web/src/axf/core/runtime.ts",
+  "apps/patches-web/src/axf/libs/settings/index.tsx",
+  "apps/patches-web/src/axf/react/components/BannerSettings.tsx",
+  "apps/patches-web/src/axf/react/components/Widgets.tsx",
+  "apps/walkthrough-studio/axf.lock.json",
+  "apps/walkthrough-studio/src/axf/core/engines/designpackage.ts",
+  "apps/walkthrough-studio/src/axf/core/engines/looktokens.ts",
+  "apps/walkthrough-studio/src/axf/core/runtime.ts",
+  "apps/walkthrough-studio/src/axf/libs/settings/index.tsx",
+  "apps/walkthrough-studio/src/axf/react/components/BannerSettings.tsx",
+  "apps/walkthrough-studio/src/axf/react/components/Widgets.tsx",
+  "framework/core/engines/designpackage.ts",
+  "framework/core/engines/looktokens.ts",
+  "framework/core/runtime.ts",
+  "framework/libs/settings/index.tsx",
+  "framework/plan/pending.json",
+  "framework/react/components/BannerSettings.tsx",
+  "framework/react/components/Widgets.tsx",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-appearance-lock.mts"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/axf/core/engines/designpackage.ts",
+    "apps/amberx-droid/src/axf/core/engines/looktokens.ts",
+    "apps/amberx-droid/src/axf/core/runtime.ts",
+    "apps/amberx-droid/src/axf/libs/settings/index.tsx",
+    "apps/amberx-droid/src/axf/react/components/BannerSettings.tsx",
+    "apps/amberx-droid/src/axf/react/components/Widgets.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/axf/core/engines/designpackage.ts",
+    "apps/axhub-web/src/axf/core/engines/looktokens.ts",
+    "apps/axhub-web/src/axf/core/runtime.ts",
+    "apps/axhub-web/src/axf/libs/settings/index.tsx",
+    "apps/axhub-web/src/axf/react/components/BannerSettings.tsx",
+    "apps/axhub-web/src/axf/react/components/Widgets.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/src/axf/core/engines/designpackage.ts",
+    "apps/console-web/src/axf/core/engines/looktokens.ts",
+    "apps/console-web/src/axf/core/runtime.ts",
+    "apps/console-web/src/axf/libs/settings/index.tsx",
+    "apps/console-web/src/axf/react/components/BannerSettings.tsx",
+    "apps/console-web/src/axf/react/components/Widgets.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "patches-web",
+   "files": [
+    "apps/patches-web/axf.lock.json",
+    "apps/patches-web/src/axf/core/engines/designpackage.ts",
+    "apps/patches-web/src/axf/core/engines/looktokens.ts",
+    "apps/patches-web/src/axf/core/runtime.ts",
+    "apps/patches-web/src/axf/libs/settings/index.tsx",
+    "apps/patches-web/src/axf/react/components/BannerSettings.tsx",
+    "apps/patches-web/src/axf/react/components/Widgets.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "walkthrough-studio",
+   "files": [
+    "apps/walkthrough-studio/axf.lock.json",
+    "apps/walkthrough-studio/src/axf/core/engines/designpackage.ts",
+    "apps/walkthrough-studio/src/axf/core/engines/looktokens.ts",
+    "apps/walkthrough-studio/src/axf/core/runtime.ts",
+    "apps/walkthrough-studio/src/axf/libs/settings/index.tsx",
+    "apps/walkthrough-studio/src/axf/react/components/BannerSettings.tsx",
+    "apps/walkthrough-studio/src/axf/react/components/Widgets.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/designpackage.ts",
+    "framework/core/engines/looktokens.ts",
+    "framework/core/runtime.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/components/BannerSettings.tsx",
+    "framework/react/components/Widgets.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-appearance-lock.mts"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "libs",
+   "files": [
+    "framework/libs/settings/index.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/pending.json"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

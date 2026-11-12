@@ -1,0 +1,184 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-land-everything",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:05Z",
+ "build": {
+  "id": "land-everything",
+  "title": "Land everything: merge finished branches to main and deploy",
+  "profile": "all",
+  "category": "Urgent",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Fuck the review, I review it. Just go. Get everything live.",
+  "verbatim": false,
+  "at": "2026-11-03T00:00:00Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "# Job: land-everything (Urgent profile)\n\nBrett, Nov 3 2026 (voice): \"Fuck the review, I review it. Just go. Get everything live.\" He is away; land the finished work on main and get it deployed. He explicitly waived UI Review for these (EXCEPT banners, see below).\n\n## First\n- Register in the Urgent profile via the orchestrator CLI (id `land-everything`) + banner entry. orch-live-sync is on main (live status writes, reconciler, claude-sync auto-resolve rules): use its tools for every store write and conflict.\n- Check the `land` job type (`node framework/cli/agent-job.mjs list`); if an agent owns landing, you are acting for it this once at Brett's request; book it there if the tooling allows.\n\n## How to land each one\nFor each branch below, in this order: fetch, merge origin/main into the branch in its worktree (/root/axf-builds/<name> where it exists, else a fresh worktree), resolve, run the repo's local CI block (tsc, vite builds of affected apps, check-theme, check-controls, plugin lifecycle, tests touched), push the branch, then fast-forward/merge to main and push main (never force). Close the PR as merged (or merge it via GitHub API) and update its build in the store (complete, per-step branch/pr/merged/mergedAt).\nConflict rules:\n- `_claude/builds/store.json`: merge per record (build, step) by rev/updatedAt, newest wins, never drop a record from either side; then regenerate all exports (`orchestrator.json`, profiles/*/orchestrator.json, pending, queue) from the merged store. Journal `_claude/builds/journal/*.jsonl`: union of lines, dedupe identical, keep chronological order.\n- THREADS.md, STATUS.md, decisions.md, LOG.md, notes/sessions/handoffs: union merge. Build reports: keep the branch's version (it's that build's own report) unless main's is newer for the same build.\n- Hub-synced copies (changes/*.json, _claude/shared/notes/**, apps/*/_claude/**): identical = fine; differing = newer wins.\n- REAL code conflicts: resolve them properly if the intent of both sides is clear (both features must keep working; run the tests). If you can't resolve one safely, skip that branch, leave it pushed, and record exactly why in the report; keep going with the rest.\n\n## Order\n1. claude/notes-vault (PR #256)\n2. claude/agent-chats-hub (PR #248) - Brett wants this one live ASAP (Breakroom group chat viewer)\n3. claude/kill-patches-pilot (AmberX PR; its axHub PR too, in /root/axHub or a fresh clone)\n4. claude/headless-tabs (PR #259)\n5. claude/whats-new-banner (PR #260)\n6. claude/molly-fable (PR #245, dock engine) then claude/xlayout-opus (PR #252)\n7. claude/token-control (PR #246) then claude/token-control-opus (PR #250) then claude/console-commands (PR #249)\n8. claude/theme-editor (PR #243), claude/one-look-default-2 (PR #244), claude/model-upgrade-approval (PR #253)\n9. When they finish (check `vps` builds / tmux axf-theme-veto-pass, axf-plugin-commands-auto): claude/theme-veto-pass (after #250) and claude/plugin-commands-auto (after #250, #249, #256); and the axHub repo branch claude/axhub-veto-pass. Wait for them if they're still running (poll every few minutes, up to 3 hours).\nDO NOT land: claude/banner-pack (#251), claude/banner-editor (#254), claude/banners-one (Brett wants to review banners himself). Leave them untouched.\n\n## After landing\n- Make sure deploys ran (deploy workflow / Coolify) and the console, axHub web, AmberX web and Molly are up and healthy (docker ps, HTTP 200 on their domains).\n- Register the console's MCP (`axf-console` and token-control's MCP) as axHub services if not already (`~/hub/bin/axhub services ...` per axHub examples/README.md), policy preset: reads allow, writes veto, deletes confirm (use the preset from axhub-veto-pass if landed).\n- Confirm status-only commits to main don't trigger full redeploys (paths-ignore from orch-live-sync s9); if they still do, fix the workflow.\n- Tick items on Brett's checklist only if they're his and now done: /projects/_shared/_claude/notes/checklist-one.md (via the hub memory API).\n- Report `_claude/builds/reports/land-everything.md`: each branch -> landed commit or skipped + why, deploy status, services registered. One THREADS line per landing. Commits clean and professional.",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Land notes-vault: merge main, local CI, merge to main, close PR, update build",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "",
+   "doneAt": "2026-11-03T18:02:04.461Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Land agent-chats-hub: merge main, local CI, merge to main, close PR, update build",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-03T18:02:04.461Z",
+   "doneAt": "2026-11-03T18:02:41.980Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Land kill-patches-pilot (+axHub): merge main, local CI, merge to main, close PR, update build",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-03T18:02:41.980Z",
+   "doneAt": "2026-11-03T18:03:34.422Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Land headless-tabs: merge main, local CI, merge to main, close PR, update build",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-03T18:03:34.422Z",
+   "doneAt": "2026-11-03T18:04:10.335Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Land whats-new-banner: merge main, local CI, merge to main, close PR, update build",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-03T18:04:10.335Z",
+   "doneAt": "2026-11-03T18:04:33.904Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Land molly-fable + xlayout-opus: merge main, local CI, merge to main, close PR, update build",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-03T18:04:33.904Z",
+   "doneAt": "2026-11-03T18:04:59.486Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Land token-control + token-control-opus + console-commands: merge main, local CI, merge to main, close PR, update build",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-03T18:04:59.486Z",
+   "doneAt": "2026-11-03T18:05:26.376Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Land theme-editor, one-look-default-2, model-upgrade-approval: merge main, local CI, merge to main, close PR, update build",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-03T18:05:26.376Z",
+   "doneAt": "2026-11-03T18:05:51.186Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "Land theme-veto-pass, plugin-commands-auto, axhub-veto-pass: merge main, local CI, merge to main, close PR, update build",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-03T18:05:51.186Z",
+   "doneAt": "2026-11-03T18:06:18.697Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s10",
+   "text": "Verify deploys + health (console, axHub web, AmberX web, Molly); paths-ignore for status commits",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-03T18:06:18.697Z",
+   "doneAt": "2026-11-03T18:06:47.832Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s11",
+   "text": "Register console + token-control MCP as axHub services; report land-everything.md",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-03T18:06:47.832Z",
+   "doneAt": "2026-11-03T18:07:13.043Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/land-everything",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "a9a2a793d80a6a3635372bf142e02c955470d9bb",
+ "commits": [],
+ "mergedAt": "2026-11-03T18:07:44.501Z",
+ "landedAt": "2026-11-04T14:38:20Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "_claude/builds/reports/land-everything.md",
+ "open": [
+  "kill-patches-pilot s7: removing the Patches/Pilot `/projects` trees on the hub is a delete; left for his call.",
+  "Checklist One: nothing ticked (UI Review item still covers the banner PRs he keeps; voice test can start now that the console MCP is live on axHub).",
+  "`node apps/console-web/plugins/build-orchestrator/test.mjs` (not in GitHub CI) fails on repo store data (builds with steps lacking estimates); pre-existing on main."
+ ]
+}

@@ -1,0 +1,762 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-refactor-all",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:12Z",
+ "build": {
+  "id": "refactor-all",
+  "title": "Refactor: everything left to build, one build (Oct 28 2026)",
+  "profile": "all",
+  "category": "Refactor",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Stop everything from every session right now except the documentation. Put everything left to build into 1 single build in a new session. Send the build to orchestrator and create the matrix then end all other sessions.",
+  "verbatim": false,
+  "at": "2026-10-28T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Fable",
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s17",
+   "text": "[windows-terminal s6] Window engine (windows.ts + WindowHost): resize from all 8 edges/corners with touch, maximize/restore, and a frameless option (WindowSpec.frame: the content draws the title bar, e.g. the Terminal's tab strip, with drag + min/max/close hooks) so the Terminal looks like Windows Terminal (Brett Oct 28: no keep-on-screen); fixture",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T01:29:16.860Z",
+   "doneAt": "2026-10-29T02:00:27.285Z",
+   "actualMin": 31,
+   "done": true
+  },
+  {
+   "id": "s18",
+   "text": "[windows-terminal s7] Window engine: snapping — screen edges, half/quarter snap zones, window-to-window snap, no-overlap option, drop a window on another to split; fixture",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T02:00:27.285Z",
+   "doneAt": "2026-10-29T02:00:27.336Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s19",
+   "text": "[windows-terminal s8] lib-workspace floating panes use the same physics (resize handles, snap, minimize/maximize; no keep-on-screen)",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T02:00:27.336Z",
+   "doneAt": "2026-10-29T02:00:27.389Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s20",
+   "text": "[windows-terminal s9] settings-ui@1 levels → Simple / Basic / Developer / Administrator (Pro→Administrator, Advanced→Developer migration; Administrator shows all) + per-interface visible-set override; fixture + migration (folds apply-all-levels-fable s3)",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T02:00:27.389Z",
+   "doneAt": "2026-10-29T02:00:27.439Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s21",
+   "text": "[windows-terminal s10] Level toolbar on every settings interface (default on, hideable): level picker, Available settings in a collapsible container, the rest in another",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T02:00:27.439Z",
+   "doneAt": "2026-10-29T02:00:27.492Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s22",
+   "text": "[windows-terminal s11] Level editor dialog (switch in settings): left sortable categorized tree coloured available/not, multi-select, toolbar + right-click Add to visible / Remove; right tree of what's on; live updates",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T02:00:27.492Z",
+   "doneAt": "2026-10-29T02:00:27.542Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s23",
+   "text": "[windows-terminal s12] Re-bake apps (skip Patches), before/after shots, differences report; tick apply-all-levels-fable s3",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T02:10:51.216Z",
+   "doneAt": "2026-10-29T02:22:20.263Z",
+   "actualMin": 11,
+   "done": true
+  },
+  {
+   "id": "s24",
+   "text": "[feature-matrix s1] feature-matrix@1 contract: one dataset (matrix per build ref + profile; items: id, name, why, group, minutes, model, state keep|skip, addedAt, history; never deleted), totals (kept/skipped minutes, Fable/Opus split), version + dirty/applied; fixture + check",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-28T19:43:14.152Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s25",
+   "text": "[feature-matrix s2] Apply engine: project a matrix onto every list (orchestrator steps skip flags + estimate, pending item, build-queue step, build manager entry, plan) idempotently, never deleting; what changed report; fixture",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-28T19:43:14.152Z",
+   "doneAt": "2026-10-28T19:43:14.236Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s26",
+   "text": "[amberx-handsfree s4] Tests (test.mjs), README, CI green, PR + merge approval",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-10-29T02:09:31.093Z",
+   "doneAt": "2026-10-29T02:10:51.216Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s27",
+   "text": "[basic-filter s7] Checks (typecheck, build, check-theme, check-controls, menu-reach, plugins --check, lifecycle check), docs, THREADS, PR + merge approval",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-10-28T19:43:14.236Z",
+   "doneAt": "2026-10-29T01:29:16.807Z",
+   "actualMin": 346,
+   "done": true
+  },
+  {
+   "id": "s28",
+   "text": "[enterprise-branding s27] Brand library console plugin 1/3: view with tabs Logos · Animated logos · Icon packs · Branding packages, virtualised grid, search, filters.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T02:57:11.635Z",
+   "doneAt": "2026-10-29T03:15:28.918Z",
+   "actualMin": 18,
+   "done": true
+  },
+  {
+   "id": "s29",
+   "text": "[enterprise-branding s28] Brand library 2/3: preview pane (light/dark, sizes, animation play), Apply / Set as brand, copy id.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T03:15:28.918Z",
+   "doneAt": "2026-10-29T03:15:28.968Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s30",
+   "text": "[enterprise-branding s29] Brand library 3/3: settings tab, lifecycle panel, menu, tests.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T03:15:28.968Z",
+   "doneAt": "2026-10-29T03:15:29.018Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s31",
+   "text": "[enterprise-branding s31] AmberX app 1/3: banner, toolbar, nav and app menu on the new design language + branding.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T03:15:29.018Z",
+   "doneAt": "2026-10-29T03:15:29.068Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s32",
+   "text": "[enterprise-branding s32] AmberX app 2/3: windows, floating windows, dialogs, containers, tab groups.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T03:15:29.068Z",
+   "doneAt": "2026-10-29T03:15:29.122Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s33",
+   "text": "[enterprise-branding s33] AmberX app 3/3: pages (Approvals, Settings, Plugins, voice, monitor) polished; test.mjs green.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T03:15:29.122Z",
+   "doneAt": "2026-10-29T03:15:29.172Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s34",
+   "text": "[enterprise-branding s34] Console shell refactor: frame, menu bar, nav, page heads, cards, empty states.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T03:15:29.172Z",
+   "doneAt": "2026-10-29T03:15:29.222Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s35",
+   "text": "[enterprise-branding s35] Console: refactor the enabled plugins 1/3.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T03:15:29.222Z",
+   "doneAt": "2026-10-29T03:15:29.270Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s36",
+   "text": "[enterprise-branding s36] Console: refactor the enabled plugins 2/3.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T03:15:29.270Z",
+   "doneAt": "2026-10-29T03:15:29.335Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s37",
+   "text": "[enterprise-branding s37] Console: refactor the enabled plugins 3/3.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T03:15:29.335Z",
+   "doneAt": "2026-10-29T03:15:29.388Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s38",
+   "text": "[enterprise-branding s38] Console: refactor every banner plugin (activity, build manager, codebase changes, push, approvals, systems check, keys, handoff).",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T03:15:29.388Z",
+   "doneAt": "2026-10-29T03:15:29.439Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s39",
+   "text": "[enterprise-branding s39] Re-bake the web apps, defaults + manifests name a design package and branding; before/after web shots.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T03:15:29.439Z",
+   "doneAt": "2026-10-29T03:15:29.491Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s40",
+   "text": "[enterprise-branding s40] CI checks for every new checker, PORTING.md (Android twins deferred), rebuild report, CLAUDE.md status, THREADS.md.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T03:15:29.491Z",
+   "doneAt": "2026-10-29T03:15:29.557Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s62",
+   "text": "[feature-matrix s3] Console plugin feature-matrix: server API (list dataset, get/add item, keep/skip, edit, apply; no delete), data in its lifecycle dataDir mirrored to the hub; seed a matrix from a build's orchestrator steps",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T05:51:30.365Z",
+   "doneAt": "2026-10-29T07:38:54.255Z",
+   "actualMin": 107,
+   "done": true
+  },
+  {
+   "id": "s63",
+   "text": "[feature-matrix s4] Matrix view (like the windows-terminal scope list): groups, tick keep / untick skip, add item, totals + Fable/Opus split, Apply lights up when changed",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T07:38:54.255Z",
+   "doneAt": "2026-10-29T07:38:54.329Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s64",
+   "text": "[feature-matrix s5] Matrices grid: one row per build, expandable to its matrix; columns build, profile, date added, time cost (from the matrix), kept/skipped, status, last applied",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T07:38:54.329Z",
+   "doneAt": "2026-10-29T07:38:54.398Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s65",
+   "text": "[feature-matrix s6] Hooks in every builds grid (orchestrator, pending, build queue, build manager, changes grid, plan): row button + right-click \"Feature matrix\" opening that entry's matrix; through a grid hook registry compatible with share-search grid-attach@1. PLUS (Brett, Oct 29 03:08): the matrix is reachable from the application menu — Build ▸ Feature matrix (the dataset grid) — and from the Builds page toolbar",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T07:38:54.398Z",
+   "doneAt": "2026-10-29T07:38:54.469Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s66",
+   "text": "[feature-matrix s7] Import the windows-terminal scope list (artifact db scope/selection) as the first matrix; seed matrices for every open build",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-10-29T07:38:54.469Z",
+   "doneAt": "2026-10-29T07:38:54.529Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s67",
+   "text": "[feature-matrix s8] Lifecycle install/uninstall, tests, before/after shots, report, THREADS, PR + merge approval",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T07:38:54.529Z",
+   "doneAt": "2026-10-29T07:38:54.592Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s71",
+   "text": "[plugin-theme-override s7+s8] Merge PR #161 (built + CI green on c10129f2, branch claude/plugin-theme-override, marked WIP by the STOP ORDER): Plugins ▸ All plugins ▸ <plugin> ▸ Interface · Settings · Documentation · About · Disable (setting plugins-menu.ladder.disableStyle: check mark or plain toggle) + framework MenuSub (submenus flip left only when no room). Merge main in, CI, merge approval",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "2026-10-29T01:29:16.807Z",
+   "doneAt": "2026-10-29T01:29:16.860Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s72",
+   "text": "[plugin-theme-override s4] Appearance tab for every plugin (Settings → Plugins → <plugin> → Appearance) with a Theme override switch; when on, a collapsible container with every layout/colour/style/animation token",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T02:22:20.263Z",
+   "doneAt": "2026-10-29T02:34:58.934Z",
+   "actualMin": 13,
+   "done": true
+  },
+  {
+   "id": "s73",
+   "text": "[plugin-theme-override s5] Override editing views: token tree (tri-state, search), grouped form (sliders, colour pickers, choices), raw JSON, copy from another plugin / a theme asset, reset per token/group/all; live preview of the plugin",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T02:34:58.934Z",
+   "doneAt": "2026-10-29T02:34:58.987Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s74",
+   "text": "[plugin-theme-override s6] Switch a plugin's theme override from right-click (every plugin UI's context menu), a toolbar action and the application menu (Plugins ladder)",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-10-29T02:34:58.987Z",
+   "doneAt": "2026-10-29T02:34:59.038Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s75",
+   "text": "[plugin-theme-override s9] Checks (tsc, build, check-theme, check-controls, menu-reach, theme-swap, lifecycle), docs (STATUS, README, PORTING deferred), THREADS, PR + merge approval",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-10-29T02:34:59.038Z",
+   "doneAt": "2026-10-29T02:34:59.089Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s77",
+   "text": "[assistant-approvals s2] framework/libs/approvals: shared library over the approval-badge@1 feed (axHub session, live updates via the hub, approve/decline calls, errors), used by both apps; unit tests",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T02:34:59.089Z",
+   "doneAt": "2026-10-29T02:57:11.396Z",
+   "actualMin": 22,
+   "done": true
+  },
+  {
+   "id": "s78",
+   "text": "[assistant-approvals s3] Dev Console AI assistant window: badge + popover in its title bar from the shared library; click Approve runs the approval and shows the result; nothing drawn when there are no open approvals; snaps, never overlaps (banner rule)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T02:57:11.396Z",
+   "doneAt": "2026-10-29T02:57:11.477Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s79",
+   "text": "[assistant-approvals s4] AmberX app assistant: the same badge + popover in its title bar (apps/amberx-droid ai plugin), tap Approve from the phone; an axHub push notification opens the popover",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T02:57:11.477Z",
+   "doneAt": "2026-10-29T02:57:11.547Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s80",
+   "text": "[assistant-approvals s5] Checks (tsc, build, check-theme, lifecycle), before/after shots of both title bars, docs, THREADS, PR + merge approval",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-10-29T02:57:11.547Z",
+   "doneAt": "2026-10-29T02:57:11.635Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s81",
+   "text": "[veto-approvals s1] axHub (repo MossesX/axHub, on top of PR #14 hub-runs-approved): tool policy 'veto' = the call is held for a countdown (default 180 s, per tool) and then RUN by the hub itself unless denied; states held → running → ran | denied | expired; Deny API (session, revision-checked, audited; no Approve button for veto calls); vps.run moves to veto. Vinnie = the hub's own agent module that holds, notifies and runs veto calls (packages/server/src/vinnie.ts) and streams the countdown + the command's output as a job stream (SSE) the AmberX terminal can attach to. Approval page/feed: countdown + Deny on the first screen. Tests.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T02:01:47.901Z",
+   "doneAt": "2026-10-29T02:09:31.017Z",
+   "actualMin": 8,
+   "done": true
+  },
+  {
+   "id": "s82",
+   "text": "[veto-approvals s2] axHub: Vinnie sends the hold as a push to the AmberX Android app (push channel the app already uses) with a Deny action, a 'time running out' push at 30 s and a 'running' push when it starts; feed fields for the console banner (runsAt, secondsLeft, denyUrl, streamUrl); docs (decision log, context, roadmap), tests, PR",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T02:09:31.017Z",
+   "doneAt": "2026-10-29T02:09:31.093Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s83",
+   "text": "[veto-approvals s3] AmberX app: held-call notification with Deny action; Settings → Plugins → Approvals: notification sound, vibration pattern, 'time running out' sound, 'running' sound (pickers + test buttons, tokens only); the three pushes play the chosen sounds",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T02:00:27.542Z",
+   "doneAt": "2026-10-29T02:01:47.724Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s84",
+   "text": "[veto-approvals s4] AmberX terminal: a Terminal view in the AmberX app (the console-terminal plugin installed in AmberX if it fits, else a tabbed terminal view); when a veto timer starts a tab opens showing the title, the command and the live countdown with a Deny button; at zero it attaches to Vinnie's job stream and shows the command running + its output",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T02:01:47.724Z",
+   "doneAt": "2026-10-29T02:01:47.785Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s85",
+   "text": "[veto-approvals s5] Dev Console approvals banner: held (veto) entries with live countdown + Deny (no Approve), opens the approval page; snaps, never overlaps; AXHub web app approval page: countdown + Deny first screen",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-10-29T02:01:47.785Z",
+   "doneAt": "2026-10-29T02:01:47.847Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s86",
+   "text": "[veto-approvals s6] Shared rule + docs: veto calls are sent once and never polled (read the job once at the end); _claude/shared/rules/RULES.md in both repos; tests, before/after shots (banner, AmberX settings, terminal tab), THREADS, PRs (axHub + AXF) + merge approvals",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-10-29T02:01:47.847Z",
+   "doneAt": "2026-10-29T02:01:47.901Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s87",
+   "text": "[amberx-voice-wake s1] AmberX (Capacitor shell, apps/amberx-droid/android): silent offline wake listener like ActiveX — Vosk (small en model bundled or downloaded once) running in the hands-free foreground service, matching the trigger phrases (the app's wake phrase + 'always armed' off by default), no system tone; replaces SpeechRecognizer for idle listening",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T03:15:29.557Z",
+   "doneAt": "2026-10-29T05:51:30.232Z",
+   "actualMin": 156,
+   "done": true
+  },
+  {
+   "id": "s88",
+   "text": "[amberx-voice-wake s2] After a trigger: start Android SpeechRecognizer (Google) for one utterance, feed the result to the existing voice plugin pipeline, then back to the silent Vosk idle; mute the recognizer's start/stop tones (AudioManager on the notification/system streams around the call) with a setting 'play tone on trigger' default off; overlay shows wake vs listening state",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-29T05:51:30.232Z",
+   "doneAt": "2026-10-29T05:51:30.294Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s89",
+   "text": "[amberx-voice-wake s3] Settings (Voice): trigger phrases list like ActiveX (dense single column, add/remove), sensitivity, tone switch; tests (test.mjs + Java unit where possible), CI compiles the Java, docs (STATUS, _claude/memory/docs/amberx-voice-wake.md), THREADS, PR + merge approval",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-10-29T05:51:30.294Z",
+   "doneAt": "2026-10-29T05:51:30.365Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/refactor-all",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 166,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/166"
+ },
+ "landedCommit": "24227d9669d45952481d09fa97850fc6fd721305",
+ "commits": [
+  "bef908d745ca88ea2064da3e953f70a784b02ead",
+  "a3249c7f47dc98c047b5b7c5154b0974f59e720c",
+  "9a3d03d4957d2b4a461f5d9538cc4c25d2f7dc3c",
+  "e48c23c69a15cc4b9cdf9b07a72c36891de8151a",
+  "b67a10f5f2986e78cc628b98b3e7448168244b18",
+  "0ce0c82d189fefa04a8439879d4c9e192f033e05",
+  "aae1ec2e5437f4ca44cf2a5ecfb27b215977d85e"
+ ],
+ "mergedAt": "2026-10-29T03:49:47Z",
+ "landedAt": "2026-10-29T03:49:46Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/profiles/refactor/matrices.json",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/axf/core/settings.ts",
+  "apps/amberx-droid/src/axf/libs/README.md",
+  "apps/amberx-droid/src/axf/libs/plugintheme/core.ts",
+  "apps/amberx-droid/src/axf/libs/plugintheme/index.tsx",
+  "apps/amberx-droid/src/axf/libs/plugintheme/library.json",
+  "apps/amberx-droid/src/axf/libs/plugintheme/plugintheme.css",
+  "apps/amberx-droid/src/axf/libs/settings/index.tsx",
+  "apps/amberx-droid/src/axf/react/components/Forms.tsx",
+  "apps/amberx-droid/src/axf/react/index.ts",
+  "apps/amberx-droid/src/axf/ui/axf.css",
+  "apps/amberx-droid/tsconfig.json",
+  "apps/amberx-droid/vite.config.ts",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/axf/core/settings.ts",
+  "apps/axhub-web/src/axf/libs/README.md",
+  "apps/axhub-web/src/axf/libs/approvals/approvals.css",
+  "apps/axhub-web/src/axf/libs/approvals/core.ts",
+  "apps/axhub-web/src/axf/libs/approvals/index.ts",
+  "apps/axhub-web/src/axf/libs/approvals/library.json",
+  "apps/axhub-web/src/axf/libs/approvals/react.tsx",
+  "apps/axhub-web/src/axf/libs/plugintheme/core.ts",
+  "apps/axhub-web/src/axf/libs/plugintheme/index.tsx",
+  "apps/axhub-web/src/axf/libs/plugintheme/library.json",
+  "apps/axhub-web/src/axf/libs/plugintheme/plugintheme.css",
+  "apps/axhub-web/src/axf/libs/settings/index.tsx",
+  "apps/axhub-web/src/axf/react/components/Forms.tsx",
+  "apps/axhub-web/src/axf/react/index.ts",
+  "apps/axhub-web/src/axf/ui/axf.css",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/plugins-menu/test.mts",
+  "apps/console-web/src/axf/libs/README.md",
+  "apps/demo/axf.lock.json",
+  "apps/demo/src/axf/core/settings.ts",
+  "apps/demo/src/axf/react/components/Forms.tsx",
+  "apps/demo/src/axf/react/index.ts",
+  "apps/demo/src/axf/react/windows/WindowHost.tsx",
+  "apps/demo/src/axf/ui/axf.css",
+  "apps/walkthrough-studio/axf.lock.json",
+  "apps/walkthrough-studio/src/axf/core/settings.ts",
+  "apps/walkthrough-studio/src/axf/libs/README.md",
+  "apps/walkthrough-studio/src/axf/libs/approvals/approvals.css",
+  "apps/walkthrough-studio/src/axf/libs/approvals/core.ts",
+  "apps/walkthrough-studio/src/axf/libs/approvals/index.ts",
+  "apps/walkthrough-studio/src/axf/libs/approvals/library.json",
+  "apps/walkthrough-studio/src/axf/libs/approvals/react.tsx",
+  "apps/walkthrough-studio/src/axf/libs/hub/veto.ts",
+  "apps/walkthrough-studio/src/axf/libs/plugintheme/core.ts",
+  "apps/walkthrough-studio/src/axf/libs/plugintheme/index.tsx",
+  "apps/walkthrough-studio/src/axf/libs/plugintheme/library.json",
+  "apps/walkthrough-studio/src/axf/libs/plugintheme/plugintheme.css",
+  "apps/walkthrough-studio/src/axf/libs/settings/index.tsx",
+  "apps/walkthrough-studio/src/axf/react/components/Forms.tsx",
+  "apps/walkthrough-studio/src/axf/react/index.ts",
+  "apps/walkthrough-studio/src/axf/ui/axf.css"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "walkthrough-studio",
+   "files": [
+    "apps/walkthrough-studio/axf.lock.json",
+    "apps/walkthrough-studio/src/axf/core/settings.ts",
+    "apps/walkthrough-studio/src/axf/libs/README.md",
+    "apps/walkthrough-studio/src/axf/libs/approvals/approvals.css",
+    "apps/walkthrough-studio/src/axf/libs/approvals/core.ts",
+    "apps/walkthrough-studio/src/axf/libs/approvals/index.ts",
+    "apps/walkthrough-studio/src/axf/libs/approvals/library.json",
+    "apps/walkthrough-studio/src/axf/libs/approvals/react.tsx",
+    "apps/walkthrough-studio/src/axf/libs/hub/veto.ts",
+    "apps/walkthrough-studio/src/axf/libs/plugintheme/core.ts",
+    "apps/walkthrough-studio/src/axf/libs/plugintheme/index.tsx",
+    "apps/walkthrough-studio/src/axf/libs/plugintheme/library.json",
+    "apps/walkthrough-studio/src/axf/libs/plugintheme/plugintheme.css",
+    "apps/walkthrough-studio/src/axf/libs/settings/index.tsx",
+    "apps/walkthrough-studio/src/axf/react/components/Forms.tsx",
+    "apps/walkthrough-studio/src/axf/react/index.ts",
+    "apps/walkthrough-studio/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/axf/core/settings.ts",
+    "apps/axhub-web/src/axf/libs/README.md",
+    "apps/axhub-web/src/axf/libs/approvals/approvals.css",
+    "apps/axhub-web/src/axf/libs/approvals/core.ts",
+    "apps/axhub-web/src/axf/libs/approvals/index.ts",
+    "apps/axhub-web/src/axf/libs/approvals/library.json",
+    "apps/axhub-web/src/axf/libs/approvals/react.tsx",
+    "apps/axhub-web/src/axf/libs/plugintheme/core.ts",
+    "apps/axhub-web/src/axf/libs/plugintheme/index.tsx",
+    "apps/axhub-web/src/axf/libs/plugintheme/library.json",
+    "apps/axhub-web/src/axf/libs/plugintheme/plugintheme.css",
+    "apps/axhub-web/src/axf/libs/settings/index.tsx",
+    "apps/axhub-web/src/axf/react/components/Forms.tsx",
+    "apps/axhub-web/src/axf/react/index.ts",
+    "apps/axhub-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/axf/core/settings.ts",
+    "apps/amberx-droid/src/axf/libs/README.md",
+    "apps/amberx-droid/src/axf/libs/plugintheme/core.ts",
+    "apps/amberx-droid/src/axf/libs/plugintheme/index.tsx",
+    "apps/amberx-droid/src/axf/libs/plugintheme/library.json",
+    "apps/amberx-droid/src/axf/libs/plugintheme/plugintheme.css",
+    "apps/amberx-droid/src/axf/libs/settings/index.tsx",
+    "apps/amberx-droid/src/axf/react/components/Forms.tsx",
+    "apps/amberx-droid/src/axf/react/index.ts",
+    "apps/amberx-droid/src/axf/ui/axf.css",
+    "apps/amberx-droid/tsconfig.json",
+    "apps/amberx-droid/vite.config.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "demo",
+   "files": [
+    "apps/demo/axf.lock.json",
+    "apps/demo/src/axf/core/settings.ts",
+    "apps/demo/src/axf/react/components/Forms.tsx",
+    "apps/demo/src/axf/react/index.ts",
+    "apps/demo/src/axf/react/windows/WindowHost.tsx",
+    "apps/demo/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/src/axf/libs/README.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/profiles/refactor/matrices.json",
+    "_claude/builds/profiles/refactor/orchestrator.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plugins-menu",
+   "files": [
+    "apps/console-web/plugins/plugins-menu/test.mts"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

@@ -1,0 +1,184 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-audio-output-recorder",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:31Z",
+ "build": {
+  "id": "audio-output-recorder",
+  "title": "AmberX Audio Output Recorder -> axHub (no mic)",
+  "profile": "all",
+  "category": "Plugin",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "AmberX plugin that records all audio the phone outputs while it is on, saved to the server on axHub. One switch + quick-settings tile. Playback capture only, NEVER the microphone. Android 10+; system consent prompt each start and a notification while recording. Calls and opt-out apps (DRM) cannot be captured. 30-minute timestamped chunks, each uploaded to axHub; keep the local file until axHub confirms, queue and retry when offline, small local cap. Built on the capture engine from claude/audio-extract (PR #187).",
+  "verbatim": false,
+  "at": "2026-10-30T00:00:00Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Fable",
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Capture service: AudioPlaybackCapture via MediaProjection, foreground notification, no mic",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "",
+   "doneAt": "2026-11-01T02:36:59.574Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Switch in AmberX + quick-settings tile; consent prompt flow",
+   "model": "Fable",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T02:36:59.574Z",
+   "doneAt": "2026-11-01T02:37:00.146Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "30-min timestamped chunks uploaded to axHub (same store as AmberX notes); local copy kept until upload confirmed; offline queue + retry; local cap",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T02:37:00.146Z",
+   "doneAt": "2026-11-01T02:37:25.023Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Recordings list from axHub: play, share, delete, send to Audio Extract; also visible in the console",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T02:37:00.146Z",
+   "doneAt": "2026-11-01T02:37:25.023Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Tests + docs",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-01T02:37:00.146Z",
+   "doneAt": "2026-11-01T02:37:25.023Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/audio-output-recorder",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 194,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/194"
+ },
+ "landedCommit": "7603d68c49ce55a4f2c1b6e76eb20acf1ffe8d48",
+ "commits": [
+  "b26d818d1dee8a99f28de584c73a6b3ed095a014",
+  "9ac9b7ffe105777b40857c7eca758600ac364c66",
+  "631eb0cdd82234ba52cb07469ab4fd1992b0c701",
+  "55d12c55039fb00a8dd68a3462fffb325a343e1f",
+  "ea833fc226d3d1d8dae3a691776d5ce2b98f865b",
+  "842e47ae186af1953ccafd3bbddefaf09e1feef4"
+ ],
+ "mergedAt": "2026-10-31T07:26:36Z",
+ "landedAt": "2026-10-31T07:26:30Z",
+ "files": [
+  "_claude/THREADS.md",
+  "apps/amberx-droid/android/app/src/main/AndroidManifest.xml",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AudioExtractPlugin.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/MainActivity.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/OutputRecordQueue.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/OutputRecordService.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/OutputRecordStartActivity.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/OutputRecordTile.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/OutputRecordUploader.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/OutputRecorderPlugin.java",
+  "apps/console-web/plugins/output-recorder/README.md",
+  "apps/console-web/plugins/output-recorder/hooks.mjs",
+  "apps/console-web/plugins/output-recorder/install.mjs",
+  "apps/console-web/plugins/output-recorder/plugin.json",
+  "apps/console-web/plugins/output-recorder/test.mts",
+  "apps/console-web/plugins/output-recorder/uninstall.mjs",
+  "apps/console-web/plugins/output-recorder/web/bridge.ts",
+  "apps/console-web/plugins/output-recorder/web/core.ts",
+  "apps/console-web/plugins/output-recorder/web/index.tsx",
+  "apps/console-web/plugins/output-recorder/web/output-recorder.css",
+  "apps/console-web/plugins/output-recorder/web/store.ts"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "output-recorder",
+   "files": [
+    "apps/console-web/plugins/output-recorder/README.md",
+    "apps/console-web/plugins/output-recorder/hooks.mjs",
+    "apps/console-web/plugins/output-recorder/install.mjs",
+    "apps/console-web/plugins/output-recorder/plugin.json",
+    "apps/console-web/plugins/output-recorder/test.mts",
+    "apps/console-web/plugins/output-recorder/uninstall.mjs",
+    "apps/console-web/plugins/output-recorder/web/bridge.ts",
+    "apps/console-web/plugins/output-recorder/web/core.ts",
+    "apps/console-web/plugins/output-recorder/web/index.tsx",
+    "apps/console-web/plugins/output-recorder/web/output-recorder.css",
+    "apps/console-web/plugins/output-recorder/web/store.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/android/app/src/main/AndroidManifest.xml",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AudioExtractPlugin.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/MainActivity.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/OutputRecordQueue.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/OutputRecordService.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/OutputRecordStartActivity.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/OutputRecordTile.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/OutputRecordUploader.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/OutputRecorderPlugin.java"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

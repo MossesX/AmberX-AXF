@@ -1,0 +1,152 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-build-orchestrator",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:27:48Z",
+ "build": {
+  "id": "build-orchestrator",
+  "title": "Build orchestrator plugin (Fable/Opus steps, approval at model switches, repo tracker)",
+  "profile": "all",
+  "category": "Plugin",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "everything from today and the refactor goes into the Refactor profile).",
+  "verbatim": false,
+  "at": "2026-10-27T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/build-orchestrator",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 122,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/122"
+ },
+ "landedCommit": "83a480f0dd09f4c276d5c931b611917ead294341",
+ "commits": [
+  "a8ad8e98e5eb6d675d4a6e8933fce470b54483a5",
+  "a5050aaf6273998866da6b76c3da0b19aea4c926",
+  "e5e731738e7df31330d40743ebb5ef4fb34a3e85",
+  "1fc7126b41f0de437c5f9b132ee0a8e73d6e02a8",
+  "32db59ac78344415d1697fb35ff84a734034a83f",
+  "a01618188c50f3073aa06ed7055d7be288d130f2",
+  "5a081de90ed85da4d0e698ebbc039c1b7c763fbb",
+  "a447b8411263260a0d831ec0e61ad677e0a7eb07",
+  "a7e48fbbc05ddfb3bdebf1380f53aa583c7c6540"
+ ],
+ "mergedAt": "2026-10-27T18:17:28Z",
+ "landedAt": "2026-10-27T18:17:28Z",
+ "files": [
+  "CLAUDE.md",
+  "_claude/THREADS.md",
+  "_claude/builds/README.md",
+  "_claude/builds/orchestrator.json",
+  "_claude/rules/RULES.md",
+  "_claude/shared/rules/RULES.md",
+  "apps/console-web/plugins/ai-keys/plugin.json",
+  "apps/console-web/plugins/build-orchestrator/hooks.mjs",
+  "apps/console-web/plugins/build-orchestrator/install.mjs",
+  "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+  "apps/console-web/plugins/build-orchestrator/plugin.json",
+  "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+  "apps/console-web/plugins/build-orchestrator/test.mjs",
+  "apps/console-web/plugins/build-orchestrator/uninstall.mjs",
+  "apps/console-web/plugins/build-orchestrator/web/index.tsx",
+  "apps/console-web/plugins/build-orchestrator/web/menu.ts",
+  "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.d.mts",
+  "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+  "apps/console-web/plugins/build-orchestrator/web/orchestrator.css",
+  "apps/console-web/plugins/build-orchestrator/web/ui.tsx",
+  "apps/console-web/plugins/codebase-changes/plugin.json",
+  "framework/plan/pending.json",
+  "install_instructions.md",
+  "install_steps.md"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/hooks.mjs",
+    "apps/console-web/plugins/build-orchestrator/install.mjs",
+    "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+    "apps/console-web/plugins/build-orchestrator/plugin.json",
+    "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+    "apps/console-web/plugins/build-orchestrator/test.mjs",
+    "apps/console-web/plugins/build-orchestrator/uninstall.mjs",
+    "apps/console-web/plugins/build-orchestrator/web/index.tsx",
+    "apps/console-web/plugins/build-orchestrator/web/menu.ts",
+    "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.d.mts",
+    "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+    "apps/console-web/plugins/build-orchestrator/web/orchestrator.css",
+    "apps/console-web/plugins/build-orchestrator/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/THREADS.md",
+    "_claude/rules/RULES.md",
+    "_claude/shared/rules/RULES.md",
+    "install_instructions.md",
+    "install_steps.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/README.md",
+    "_claude/builds/orchestrator.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ai-keys",
+   "files": [
+    "apps/console-web/plugins/ai-keys/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "codebase-changes",
+   "files": [
+    "apps/console-web/plugins/codebase-changes/plugin.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/pending.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

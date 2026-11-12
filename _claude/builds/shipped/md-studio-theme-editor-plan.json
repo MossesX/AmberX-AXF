@@ -1,0 +1,101 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-md-studio-theme-editor-plan",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:31:31Z",
+ "build": {
+  "id": "md-studio-theme-editor-plan",
+  "title": "md-studio-theme-editor-plan",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "md-studio-theme-editor-plan",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/md-studio-theme-editor-plan",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "f41458afa14b3dc8b5e9f7799de793b97bef2243",
+ "commits": [
+  "1fa16a90c77effe1a4ae5184e6d4ae8c30a5809f",
+  "0a121113ca994a875534d9060eb07b05b5c45567"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-11-03T02:54:55Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/journal/2026-11.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/builds/profiles/big-dog/orchestrator.json",
+  "_claude/builds/profiles/breakroom/orchestrator.json",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/builds/profiles/urgent/orchestrator.json",
+  "_claude/builds/store.json",
+  "framework/plan/profiles/big-dog/framework/plan/pending.json",
+  "framework/plan/profiles/urgent/framework/plan/pending.json"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/journal/2026-11.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/profiles/angel/orchestrator.json",
+    "_claude/builds/profiles/big-dog/orchestrator.json",
+    "_claude/builds/profiles/breakroom/orchestrator.json",
+    "_claude/builds/profiles/refactor/orchestrator.json",
+    "_claude/builds/profiles/urgent/orchestrator.json",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/profiles/big-dog/framework/plan/pending.json",
+    "framework/plan/profiles/urgent/framework/plan/pending.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

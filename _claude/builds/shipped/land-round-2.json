@@ -1,0 +1,201 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-land-round-2",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:56Z",
+ "build": {
+  "id": "land-round-2",
+  "title": "Land round 2: catch up and land the rest, Molly first",
+  "profile": "all",
+  "category": "Landing",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "After lenny-land-all, every remaining PR conflicts with main. Brett agreed: one agent catches them up and lands them, Molly first (commands must reach the console inside Molly).",
+  "verbatim": true,
+  "at": "2026-11-04T10:43:58.630Z",
+  "source": "voice",
+  "by": "Landin' Lenny",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-land-round-2--earl",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-04T10:43:19.948Z",
+   "endedAt": "2026-11-04T14:12:42.850Z",
+   "exit": 0,
+   "costUsd": 360.4798
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Land #288 console commands in Molly (fix red CI); close or land #266",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-04T10:43:19.948Z",
+   "doneAt": "2026-11-04T12:06:00.045Z",
+   "actualMin": 83,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Redeploy console + Molly; check console_show reaches Molly",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "2026-11-04T12:06:00.045Z",
+   "doneAt": "2026-11-04T13:31:12.946Z",
+   "actualMin": 85,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Land #294 Molly banners and #295 Molly nav submenus",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-04T13:31:12.946Z",
+   "doneAt": "2026-11-04T13:31:14.733Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Land #296 Gizmo companion chat",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s5",
+   "text": "Land #298 console lazy loader",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s6",
+   "text": "Land #281 smart menus, #291 git status board, #293 terminal tab position",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s7",
+   "text": "Land #289 plugin settings placement and #269 builds one page (fix red CI)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s8",
+   "text": "Land #300 profile switcher widget; close #297 if orphan",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s9",
+   "text": "Redeploy all apps; report, THREADS",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "claude/land-round-2",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 313,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/313"
+ },
+ "landedCommit": "585c23993d0112f28f5aa82c9165b6bfc717c7f8",
+ "commits": [
+  "92ba1bb7c01fc99d4fb98b9f5fcf2a79bac8918b",
+  "7b9e9a805e1894aa54b208de2d458789cb293969",
+  "dfcc7b6ca78a7753e633a78eeaf898a91049e822"
+ ],
+ "mergedAt": "2026-11-04T17:27:24Z",
+ "landedAt": "2026-11-04T17:27:24Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/land-round-2.md"
+ ],
+ "areas": [
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/land-round-2.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 360.4798,
+  "estimated": false,
+  "tokens": {
+   "input": 798,
+   "output": 4971,
+   "cacheRead": 94193584,
+   "cacheWrite": 381640
+  }
+ },
+ "report": "_claude/builds/reports/land-round-2.md",
+ "open": [
+  "s4: Land #296 Gizmo companion chat",
+  "s5: Land #298 console lazy loader",
+  "s6: Land #281 smart menus, #291 git status board, #293 terminal tab position",
+  "s7: Land #289 plugin settings placement and #269 builds one page (fix red CI)",
+  "s8: Land #300 profile switcher widget; close #297 if orphan",
+  "s9: Redeploy all apps; report, THREADS",
+  "Fix the GitHub budget drain (above).",
+  "#296: add `role=\"toolbar\"` + `aria-label` to the companion's tools row (Chat.tsx:45), push, CI, merge.",
+  "#298 #281 (re-resolve `runtime.ts` against #295) #291 #293 #289 #269: `git checkout land/<pr>`, merge main, push to the PR branch, CI, merge. Then #300 reworked on top of #269.",
+  "Redeploy all apps at the end."
+ ]
+}

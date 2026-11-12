@@ -1,0 +1,92 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-syscheck-rebake",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:26:48Z",
+ "build": {
+  "id": "syscheck-rebake",
+  "title": "Systems check: one entry per app whose baked framework is out of date, Auto fix re-bakes it",
+  "profile": "all",
+  "category": "App",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Branch ccr-46e5de6c-d9d9wh (PR to follow): framework/cli/rebake.mjs + systems-check rebake rows with Auto fix.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Detect stale baked apps (lock vs framework) + derive checks",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "",
+   "doneAt": "2026-10-23T05:40:04.657Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Auto fix: re-bake + commit/push to a branch",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-10-23T05:40:04.657Z",
+   "doneAt": "2026-10-23T05:40:04.664Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Tests, docs, PR",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "2026-10-23T05:40:04.664Z",
+   "doneAt": "2026-10-23T05:40:04.669Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-10-23T05:40:04.677Z",
+ "landedAt": "2026-10-23T05:40:04.677Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

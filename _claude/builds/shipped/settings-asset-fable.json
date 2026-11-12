@@ -1,0 +1,118 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-settings-asset-fable",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:27:07Z",
+ "build": {
+  "id": "settings-asset-fable",
+  "title": "Settings interface asset type (Fable rebuild)",
+  "profile": "all",
+  "category": "Framework",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Fable was suggested for the settings asset type and Opus was chosen (Oct 23 2026, branch claude/project-thread-55oakl). Start by reviewing/replacing the Opus build: settings-ui@1 as a full cross-port contract, a validator check for groups/tabs in all three validators, Settings → Appearance preview of each settings asset, theme-manager / asset designer support, Kotlin twin recorded (Android on hold). Build together with patches-settings-banner-hide-fable (same settings code).",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Review the Opus settings-ui engine + library changes; list what changes",
+   "model": "Fable",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s2",
+   "text": "Validators (core/validate.ts, build-engine.mjs, spec-driven Kotlin) check tabs/hide/groups from asset-types.json limits",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s3",
+   "text": "Settings asset preview + picker cards in Appearance; designer hooks",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s4",
+   "text": "Hub-shared settings asset per developer app (appearance@1 slot) + Patches settings tab group reads it",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s5",
+   "text": "Fixture extensions, differences report + rebuild log, PORTING.md",
+   "model": "Fable",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-11-10T04:39:20.621Z",
+ "landedAt": "2026-11-10T04:39:20.621Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": [
+  "s1: Review the Opus settings-ui engine + library changes; list what changes",
+  "s2: Validators (core/validate.ts, build-engine.mjs, spec-driven Kotlin) check tabs/hide/groups from asset-types.json limits",
+  "s3: Settings asset preview + picker cards in Appearance; designer hooks",
+  "s4: Hub-shared settings asset per developer app (appearance@1 slot) + Patches settings tab group reads it",
+  "s5: Fixture extensions, differences report + rebuild log, PORTING.md"
+ ]
+}

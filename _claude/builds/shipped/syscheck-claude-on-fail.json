@@ -1,0 +1,94 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-syscheck-claude-on-fail",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:26:31Z",
+ "build": {
+  "id": "syscheck-claude-on-fail",
+  "title": "Systems check: launch headless Claude Code on the VPS when a fix fails, shown in the building banner",
+  "profile": "all",
+  "category": "Feature",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Systems check: launch headless Claude Code on the VPS when a fix fails, shown in the building banner",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Setting + server launcher (brief, command, axHub approval, change-log entry)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s2",
+   "text": "Triggers: failed VPS Auto fix, failed server fix, Fix all failures; settings UI",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s3",
+   "text": "Tests, docs, push",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-10-22T20:44:42.448Z",
+ "landedAt": "2026-10-22T20:44:42.448Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": [
+  "s1: Setting + server launcher (brief, command, axHub approval, change-log entry)",
+  "s2: Triggers: failed VPS Auto fix, failed server fix, Fix all failures; settings UI",
+  "s3: Tests, docs, push"
+ ]
+}

@@ -1,0 +1,69 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-fresh-look",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:27:44Z",
+ "build": {
+  "id": "fresh-look",
+  "title": "Fresh look: new default style theme + fresh appearance package",
+  "profile": "all",
+  "category": "App",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "rebuild the default style theme (the UI looked bad) and save the new look as a full appearance package named fresh. New fresh style theme, fresh-light/fresh-dark colour themes, fresh-day-night switch, made the default in the framework and every web app; fresh package per app.",
+  "verbatim": false,
+  "at": "2026-10-26T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/fresh-look-done",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 120,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/120"
+ },
+ "landedCommit": "c455fd8cfdbffef17db2c3357ef1020314ad3e8c",
+ "commits": [
+  "716db0844175fc636ca3f798058ad020f68c567c",
+  "69a1ed14d0b2da57fbc88f321ca6e860affc7152"
+ ],
+ "mergedAt": "2026-10-27T22:25:38Z",
+ "landedAt": "2026-10-27T22:25:38Z",
+ "files": [
+  "_claude/THREADS.md"
+ ],
+ "areas": [
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

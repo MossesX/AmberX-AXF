@@ -12,7 +12,8 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './land-core.mjs';
-import { makeGit, round, control, readState, ciOf } from './land.mjs';
+import { makeGit, round, control, readState, ciOf, reasonEvent } from './land.mjs';
+process.env.AXF_CREW_SAY = 'off'; // group-chat posts (crew-say.mjs) stay out of the real Breakroom
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const PLUGIN = dirname(HERE);
@@ -217,5 +218,8 @@ const dflt = await round({ s, git, gh, api });
 check(dflt.on === false && calls.gh.length === n, 'Auto-land is off by default (Nov 4 2026: only the merge queue merges)');
 
 rmSync(tmp, { recursive: true, force: true });
+console.log('group chat: a landing reason is Brett\'s move, a code fix, or something in the way');
+check(['held', 'ui', 'code'].every((k) => reasonEvent(k) === 'waiting'), 'held, UI Review and uncommitted code wait for Brett');
+check(['conflict', 'ci', 'error'].every((k) => reasonEvent(k) === 'failed') && ['push', 'pr', 'dependency'].every((k) => reasonEvent(k) === 'blocked'), 'conflicts and red CI failed; push, PR and dependencies blocked');
 console.log(`auto-land: ${ok} checks passed${bad ? `, ${bad} FAILED` : ''}`);
 if (bad) process.exitCode = 1;

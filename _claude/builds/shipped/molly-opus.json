@@ -1,0 +1,192 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-molly-opus",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:51Z",
+ "build": {
+  "id": "molly-opus",
+  "title": "Molly: one interface for AmberX, axHub and the Dev Console (Opus)",
+  "profile": "all",
+  "category": "Big Dog",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "combine AmberX, axHub and the console into one interface but keep them separate apps. Opus version named Molly at molly.amberxai.com; a Fable version comes later in its own build. New app apps/molly (own manifest, baked framework, shared assets) is a shell that shows each app at its own live URL in a kept-alive frame with one banner, one app switcher, one hub sign-in and the look from axHub. Hard rule: AmberX, axHub and the console are not edited and keep running on their own URLs exactly as now; the only allowed outside change is a frame-ancestors header allowing molly.amberxai.com, if needed. No embed marker, no takes, no hiding or merging their menus (same as the Patches rule). No plain axHub hub page, all data on axHub, no storage picker. Patches code is not touched (paused).",
+  "verbatim": false,
+  "at": "2026-11-02T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Project manifest apps/molly/project.manifest.json, add Molly to framework/schemas/shared-assets.json, plan notes",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "",
+   "doneAt": "2026-11-02T03:37:33.665Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Scaffold apps/molly with axf init (react-ts), baked framework + shared assets, landing screen + settings interface",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-02T03:37:33.665Z",
+   "doneAt": "2026-11-02T03:37:34.056Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Shell: app switcher (AmberX / axHub / Console) and one banner, from menu/toolbar/layout assets only",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-02T03:37:34.056Z",
+   "doneAt": "2026-11-02T03:37:34.590Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "App frames: each app at its own URL, kept alive per tab, deep links #/<app>/<route>, plain URLs (no embed marker)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-02T03:37:34.590Z",
+   "doneAt": "2026-11-02T03:37:35.010Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Framing check: confirm each app lets molly.amberxai.com frame it; if not, add only a frame-ancestors allow header (no app UI change)",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-02T03:37:35.010Z",
+   "doneAt": "2026-11-02T03:37:35.418Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "One hub sign-in and look from axHub (hubstatus badge red until live), settings on axHub, no storage picker",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-02T03:37:36.219Z",
+   "doneAt": "2026-11-02T03:37:45.139Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Checks: check-theme, check-controls, project validate, typecheck/build, shared-assets check, add Molly to CI",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-11-02T03:37:35.418Z",
+   "doneAt": "2026-11-02T03:37:35.795Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Separation test: the three apps' builds and files unchanged (diff limited to apps/molly + config), each still runs alone",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "2026-11-02T03:37:35.795Z",
+   "doneAt": "2026-11-02T03:37:36.219Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s9",
+   "text": "Deploy: static image + Coolify app, DNS A record molly.amberxai.com to the VPS, DNS log line",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s10",
+   "text": "UI Review: desktop + phone shots submitted, PR opened (waits on review)",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "claude/project-thread-nxdu3m",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 230,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/230"
+ },
+ "landedCommit": "aa7179f26014c95a6af3f7eca051896773a095f4",
+ "commits": [
+  "0c42661ecfc8619f8f33d7d2c151744640a72950"
+ ],
+ "mergedAt": "2026-11-02T04:01:24Z",
+ "landedAt": "2026-11-02T04:28:04Z",
+ "files": [
+  "_claude/THREADS.md",
+  "apps/molly/deploy/install.sh"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/deploy/install.sh"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": [
+  "s9: Deploy: static image + Coolify app, DNS A record molly.amberxai.com to the VPS, DNS log line",
+  "s10: UI Review: desktop + phone shots submitted, PR opened (waits on review)"
+ ]
+}

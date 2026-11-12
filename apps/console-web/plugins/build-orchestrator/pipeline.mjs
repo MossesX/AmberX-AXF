@@ -46,6 +46,9 @@
  * Watchdog hook: afterTick(fn) registers fn({ state, plan, launched, ended, failed }) to run at the end of every tick
  * (build running-builds-watchdog plugs in here; a hook that throws is logged and never stops the tick).
  * Shipped manifests: the first hook ships every newly landed build's shipped-manifest@1 to Shipped features.
+ * Group chat (crew-sections@1, framework/cli/crew-say.mjs): each section's key events are posted as the employee who owns
+ * it: orchestrator (splits, auto-queue), dispatcher (launches, session ends, launch failures, idle), watchdog (self-check),
+ * shipped (manifests). Dropped while the chat is off; AXF_CREW_SAY=off for tests.
  *
  * Files (AXF_PIPELINE_DIR, else /projects/amberx-axf/_data/pipeline where the hub is mounted, else ~/.axf/pipeline; shared
  * with the console container): settings.json, accounts.json, state.json (what the last tick saw and did), log.jsonl.
@@ -68,10 +71,12 @@ import { MODEL_IDS, modelKey } from '../../../../framework/core/model-policy.mjs
 import * as storeCore from '../../../../framework/plan/builds-store-core.mjs';
 import { loadStore, withStore } from '../../../../framework/cli/builds-store.mjs';
 import { activeProfile } from '../../../../framework/cli/persist.mjs';
+import { activeProject, readProjects } from '../../../../framework/cli/projects.mjs';
 import { loadUpgradePolicy, settingsFile as claudeSettingsFile } from '../../../../framework/cli/upgrade-policy.mjs';
 import * as slots from '../../../../framework/cli/agent-slots.mjs';
 import { issue as issueDispatch } from '../../../../framework/cli/dispatch-gate.mjs';
 import { shipLanded } from '../../../../framework/cli/shipped.mjs';
+import { crewSay } from '../../../../framework/cli/crew-say.mjs';
 import { normPriority } from '../../../../framework/core/build-priority.mjs';
 import { act as orchAct } from './orchestrator.mjs';
 import { reap as workersReap, status as workersStatus, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
@@ -127,11 +132,25 @@ const logLine = (o) => { try { mkdirSync(files().dir, { recursive: true }); appe
 
 const profile = () => activeProfile().id;
 const live = (store) => store.builds.filter((b) => !b.deleted);
+/**
+ * Projects (projects@1): the tables and tabs show the active project's builds; the dispatcher runs the Queue of every
+ * project that is not archived (switching projects never stops a build that is running or queued elsewhere).
+ */
+const inProfile = (b, p) => (b.profiles ?? []).includes(p);
+export function projectScope() {
+  const reg = readProjects();
+  const archived = new Set(reg.projects.filter((p) => p.status === 'archived').map((p) => p.profile));
+  const known = new Set(reg.projects.map((p) => p.profile));
+  return { active: activeProject(reg), profile: profile(), archived, known, projects: reg.projects };
+}
+/** Builds the dispatcher may run: not deleted, and in at least one project that is listed and not archived. */
+export const runnable = (store, scope = projectScope()) => live(store).filter((b) => !(b.profiles ?? []).length || (b.profiles ?? []).some((p) => !scope.archived.has(p) && (scope.known.has(p) || p === scope.profile)));
 const rulesOf = (store) => storeCore.projectOrchestrator(store, profile()).rules;
 
 /** Agent slots as agent-slots.mjs status shows them (finished sessions pruned), or a quiet default without a store. */
 export function slotsNow() {
-  try { const s = slots.loadSettings(); return slots.withState((st) => { const mem = slots.prune(st, s); return slots.summary(st, s, mem); }); }
+  // free = the smaller of the soft cap and the VPS's hard build limit (build-limit@1: what really runs on the host)
+  try { const s = slots.loadSettings(); const sum = slots.withState((st) => { const mem = slots.prune(st, s); return slots.summary(st, s, mem); }); return slots.withHard ? slots.withHard(sum) : sum; }
   catch { return { used: 0, cap: 1, free: 1, running: [], queue: [], unavailable: true }; }
 }
 
@@ -184,24 +203,27 @@ const row = (b) => {
 export function status() {
   loadUpgradePolicy();
   const store = loadStore(); const settings = loadSettings(); const read = accountsRead(store, settings); const accounts = read.accounts; const sl = slotsNow();
-  const builds = live(store);
+  const scope = projectScope();
+  const builds = live(store).filter((b) => inProfile(b, scope.profile));
   const ageMin = read.at ? Math.max(0, Math.round((Date.now() - Date.parse(read.at)) / 60e3)) : null;
   const accountsFrom = { source: read.source, at: read.at, ageMin, why: read.why || (read.source === 'snapshot' && ageMin > 5 ? `the host's account snapshot is ${ageMin} min old: the dispatcher cron may be stopped` : '') };
-  const plan = P.plan({ builds, accounts, slots: sl, settings, rules: rulesOf(store) });
+  const plan = P.plan({ builds: runnable(store, scope), accounts, slots: sl, settings, rules: rulesOf(store) });
   const byTable = { pending: [], queued: [], building: [] };
   for (const b of builds) { const t = BP.tableOf(b); if (t && !b.hidden) byTable[t].push(row(b)); }
   byTable.queued.sort((a, b) => plan.queue.indexOf(a.id) - plan.queue.indexOf(b.id));
   byTable.pending.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   byTable.building.sort((a, b) => str(b.pipeline?.launchedAt).localeCompare(str(a.pipeline?.launchedAt)));
   const tabs = Object.fromEntries(BP.TABS.map((t) => [t, []]));
-  for (const b of store.builds) { const t = BP.tabOf(b); if (t) tabs[t].push(row(b)); } // every record: the Deleted tab shows soft-deleted builds
+  for (const b of store.builds) { if (!inProfile(b, scope.profile)) continue; const t = BP.tabOf(b); if (t) tabs[t].push(row(b)); } // every record of the project: the Deleted tab shows soft-deleted builds
   tabs.queue.sort((a, b) => plan.queue.indexOf(a.id) - plan.queue.indexOf(b.id));
   tabs.active.sort((a, b) => str(b.pipeline?.launchedAt).localeCompare(str(a.pipeline?.launchedAt)));
   for (const t of ['pending', 'incomplete', 'errors']) tabs[t].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   for (const t of ['complete', 'archive']) tabs[t].sort((a, b) => str(b.builtAt || b.updatedAt).localeCompare(str(a.builtAt || a.updatedAt)));
   tabs.deleted.sort((a, b) => str(b.deletedAt).localeCompare(str(a.deletedAt)));
   const st = loadState();
-  return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), table: byTable, tabs, accounts, accountsFrom, health: loadHealth(), slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable }, plan, settings,
+  const elsewhere = live(store).filter((b) => !inProfile(b, scope.profile) && ['running', 'waiting'].includes(b.status)).length;
+  const project = { id: scope.active.id, name: scope.active.name, profile: scope.profile, runningElsewhere: elsewhere };
+  return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), project, table: byTable, tabs, accounts, accountsFrom, health: loadHealth(), slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable, ...(sl.hard?.max ? { hard: { max: sl.hard.max, live: sl.hard.live, free: sl.hard.free } } : {}) }, plan, settings,
     state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails, selfCheck: st.selfCheck ?? null, selfCheckRequested: readJson(files().checkRequest)?.at || '' } };
 }
 
@@ -363,7 +385,11 @@ export function intake({ max = MAX_SPLITS_PER_TICK, alert = () => {} } = {}) {
     // never replaced unless the console asked for a split (splitRequested); the table flags them as "needs split"
     const want = live(store).filter((b) => (b.status === 'pending' || b.status === 'queued') && !b.hidden && (b.pipeline?.splitRequested || !b.steps.length));
     for (const b of want.slice(0, max)) {
-      try { const r = splitBuild(b.id); out.split.push(r); alert('split', { id: b.id, title: b.title, steps: r.steps, error: r.provider === 'rules' ? r.note : '', note: r.note }); }
+      try {
+        const r = splitBuild(b.id); out.split.push(r); alert('split', { id: b.id, title: b.title, steps: r.steps, error: r.provider === 'rules' ? r.note : '', note: r.note });
+        if (r.provider === 'rules') crewSay('orchestrator', 'waiting', `Split ${b.id} by rules into ${r.steps} steps (Claude couldn't). Brett, check the steps before it runs.`, { ref: b.id });
+        else crewSay('orchestrator', 'done', `Split ${b.id} into ${r.steps} steps.`, { ref: b.id });
+      }
       catch (e) { out.skipped.push({ id: b.id, error: e.message }); }
     }
     for (const b of want.slice(max)) out.skipped.push({ id: b.id, error: 'next round' });
@@ -374,7 +400,7 @@ export function intake({ max = MAX_SPLITS_PER_TICK, alert = () => {} } = {}) {
       // Launch builds without asking is ON: a split build with every step still open goes to the Queue by itself; one a session
       // handed back to Pending (returned) waits for Brett
       if (b.status !== 'pending' || b.hidden || !b.steps.length || P.needsSplit(b, rules) || b.pipeline?.lastRun?.outcome === 'returned') continue;
-      try { queue(b.id, { by: 'auto (Launch builds without asking)' }); out.queued.push(b.id); } catch (e) { out.skipped.push({ id: b.id, error: e.message }); }
+      try { queue(b.id, { by: 'auto (Launch builds without asking)' }); out.queued.push(b.id); crewSay('orchestrator', 'start', `Queued ${b.id} by itself (Launch builds without asking is on).`, { ref: b.id }); } catch (e) { out.skipped.push({ id: b.id, error: e.message }); }
     }
   }
   return out;
@@ -472,6 +498,9 @@ export function checkEnds({ alert = () => {}, env = process.env } = {}) {
     setPipeline(b.id, { lastRun: r.run, session: '', slot: '', note: r.outcome === 'finished' ? '' : r.note }, { status: r.status, note: r.note, action: 'pipeline:end' });
     alert(r.outcome === 'failed' ? 'failed' : 'ended', { id: b.id, title: b.title, outcome: r.outcome, note: r.note, account: b.pipeline.account });
     logLine({ event: 'ended', build: b.id, outcome: r.outcome, exit, account: b.pipeline.account, session: b.pipeline.session });
+    if (r.outcome === 'failed') crewSay('dispatcher', 'failed', `${b.id} failed: ${r.note}`, { ref: b.id });
+    else if (r.outcome === 'returned') crewSay('dispatcher', 'waiting', `${b.id} stopped with steps left and is back in Pending. Brett, it needs you: ${r.note}`, { ref: b.id });
+    else crewSay('dispatcher', 'done', `${b.id}: ${r.note}`, { ref: b.id });
     out.push({ id: b.id, outcome: r.outcome, status: r.status, exit });
   }
   return out;
@@ -550,6 +579,8 @@ export function selfCheck({ reason = 'on demand', by = 'pipeline', env = process
   if (P.checkNotify(result, prev)) {
     try { result.notified = !!(alert ?? ((kind, d) => makeConsole(env)('POST', '/api/alerts', P.alertFor(kind, d))))('selfcheck', { fixes, problems: sum.problems, line: sum.line }); }
     catch (e) { logLine({ event: 'self-check-alert-failed', error: str(e.message, 300) }); }
+    if (fixes.length) crewSay('watchdog', 'done', `Self-check fixed ${fixes.length}: ${str(fixes.join('; '), 220)}.`);
+    if (sum.problems.length) crewSay('watchdog', 'blocked', `Accounts I can't use: ${str(sum.problems.join('; '), 220)}. ${sum.line}.`, { dedupeMin: 360 });
   }
   // the state file is the tick's too: re-read it so this never undoes what the tick wrote
   saveState({ ...loadState(), selfCheck: result });
@@ -573,7 +604,7 @@ export function tick({ env = process.env } = {}) {
   const read = accountsRead(store, settings, env); const accounts = read.accounts; const sl = slotsNow();
   // the console (in its container) can't see the logins: it reads what the host saw here
   if (read.source === 'host') { try { writeHostAccounts(read.rows, read.at || nowIso()); } catch (e) { logLine({ event: 'snapshot-failed', error: str(e.message, 300) }); } }
-  const plan = P.plan({ builds: live(store), accounts, slots: sl, settings, rules });
+  const plan = P.plan({ builds: runnable(store), accounts, slots: sl, settings, rules });
   planAhead(store, accounts, settings);
   const launched = []; const failed = [];
   const hourAgo = Date.now() - 3600e3;
@@ -601,12 +632,14 @@ export function tick({ env = process.env } = {}) {
       alert('launched', { id: b.id, title: b.title, account: l.account, model: l.model, phase: l.phase, session: r.session });
       launched.push({ ...l, session: r.session, dir: r.dir });
       logLine({ event: 'launched', build: b.id, account: l.account, kind: l.kind || 'subscription', rule: l.rule || '', model: l.model, session: r.session });
+      crewSay('dispatcher', 'start', `Started ${b.id} on ${l.account}${moved}${l.kind === 'api' ? ' (API key)' : ''}, ${l.model}${l.phase ? ` ${l.phase}` : ''}${r.queuedInSlots ? ', waiting for a free slot' : ''}.`, { ref: b.id });
       delete state.launchFails[l.id];
     } catch (e) {
       state.launchFails[l.id] = [...fails, nowIso()];
       failed.push({ id: l.id, error: e.message, tried });
       setPipeline(l.id, { note: `launch failed: ${str(e.message, 300)}`, tried }, { note: `Launch failed on ${tried.join(', ') || l.account}: ${str(e.message, 500)}`, action: 'pipeline:launch-failed' });
       logLine({ event: 'launch-failed', build: l.id, account: l.account, tried, error: e.message });
+      crewSay('dispatcher', 'failed', `Couldn't start ${l.id} on ${tried.join(', ') || l.account}: ${str(e.message, 160)}`, { ref: l.id });
     }
   }
   // idle: nothing running while work waits. Recorded at once; the phone hears about it after idleAfterMin, once per idle spell.
@@ -616,13 +649,17 @@ export function tick({ env = process.env } = {}) {
     idle = { ...plan.idle, since };
     const dueAt = Date.parse(since) + settings.idleAfterMin * 60e3;
     const already = state.alerts.find((a) => a.key === 'pipeline:idle');
-    if (!already && Date.now() >= dueAt) alert('idle', { kind: plan.idle.kind, reason: plan.idle.reason });
+    if (!already && Date.now() >= dueAt) {
+      alert('idle', { kind: plan.idle.kind, reason: plan.idle.reason });
+      if (plan.idle.kind === 'empty') crewSay('dispatcher', 'waiting', `Nothing to run. ${plan.idle.reason}.`, { dedupeMin: 360 });
+      else crewSay('dispatcher', 'blocked', `Stuck: ${plan.idle.reason}.`, { dedupeMin: 360 });
+    }
   } else if (state.alerts.some((a) => a.key === 'pipeline:idle')) {
     consoleApi('POST', '/api/alerts/resolve', { keys: ['pipeline:idle'] });
     state.alerts = state.alerts.filter((a) => a.key !== 'pipeline:idle');
   }
   const alerts = [...state.alerts.filter((a) => a.key !== 'pipeline:idle' || idle), ...sent.filter((a) => a.kind === 'idle')].filter((a, i, arr) => arr.findIndex((x) => x.key === a.key) === i);
-  const next = { ...state, at: nowIso(), plan: { launches: plan.launches, waits: plan.waits, queue: plan.queue, running: plan.running, pending: plan.pending }, slots: { used: sl.used, cap: sl.cap, free: sl.free }, accounts: accounts.map((a) => ({ name: a.name, fable: a.fable, parallel: a.parallel, running: a.running, usable: a.usable, why: a.why })), idle, alerts,
+  const next = { ...state, at: nowIso(), plan: { launches: plan.launches, waits: plan.waits, queue: plan.queue, running: plan.running, pending: plan.pending }, slots: { used: sl.used, cap: sl.cap, free: sl.free, ...(sl.hard?.max ? { hard: { max: sl.hard.max, live: sl.hard.live, free: sl.hard.free } } : {}) }, accounts: accounts.map((a) => ({ name: a.name, fable: a.fable, parallel: a.parallel, running: a.running, usable: a.usable, why: a.why })), idle, alerts,
     recent: [...state.recent, ...launched.map((l) => ({ at: nowIso(), event: 'launched', id: l.id, account: l.account, model: l.model })), ...ended.map((e) => ({ at: nowIso(), event: e.outcome, id: e.id })), ...failed.map((f) => ({ at: nowIso(), event: 'launch-failed', id: f.id, error: f.error }))].slice(-50) };
   saveState(next);
   // self-check: asked for (console load, voice, API), or queued work waits and this tick started nothing
@@ -676,7 +713,11 @@ export function afterTick(fn) { if (typeof fn === 'function') TICK_HOOKS.push(fn
  */
 afterTick(({ env }) => {
   const r = shipLanded({ env });
-  for (const s of r.shipped ?? []) logLine(s.error ? { event: 'ship-failed', build: s.id, error: str(s.error, 300) } : { event: 'shipped', build: s.id, manifest: s.manifest, rev: s.rev });
+  for (const s of r.shipped ?? []) {
+    logLine(s.error ? { event: 'ship-failed', build: s.id, error: str(s.error, 300) } : { event: 'shipped', build: s.id, manifest: s.manifest, rev: s.rev });
+    if (s.error) crewSay('shipped', 'failed', `Couldn't send the shipped manifest for ${s.id}: ${str(s.error, 160)}`, { ref: s.id, dedupeMin: 360 });
+    else crewSay('shipped', 'done', `${s.id} landed: shipped manifest sent to Shipped features.`, { ref: s.id });
+  }
 });
 
 // ------------------------------------------------------------------ the one way in: request a build, route it
@@ -822,7 +863,7 @@ async function main(argv) {
     const s = status();
     const line = (r) => `  ${r.id.padEnd(40)} ${r.priority.padEnd(7)} ${String(r.steps.done).padStart(2)}/${r.steps.total} · next ${r.nextModel || '—'}${r.pipeline?.account ? ` · ${r.pipeline.account}` : ''}${r.needsSplit ? ' · needs split' : ''}${r.pipeline?.note ? ` · ${r.pipeline.note}` : ''}`;
     return out(s, [
-      `Pipeline · ${s.at} · slots ${s.slots.used}/${s.slots.cap} (${s.slots.free} free)${s.slots.unavailable ? ' (no slots store here)' : ''}`,
+      `Pipeline · ${s.at} · slots ${s.slots.used}/${s.slots.cap} (${s.slots.free} free)${s.slots.hard ? ` · VPS hard limit ${s.slots.hard.live ?? '?'}/${s.slots.hard.max}` : ''}${s.slots.unavailable ? ' (no slots store here)' : ''}`,
       `Accounts: ${s.accounts.map((a) => `${a.name}${a.kind === 'api' ? ' [API]' : ''} ${a.fable ? 'Fable' : 'Opus'} ${a.running}/${a.parallel}${a.kind === 'api' ? (a.api?.usable ? '' : ` (${a.api?.why})`) : a.usable ? '' : ` (${a.why})`}`).join(' · ') || 'none'}`,
       `API overflow: ${s.settings.apiOverflow ? 'on' : 'off'}`,
       `Pending (${s.table.pending.length})`, ...s.table.pending.map(line),

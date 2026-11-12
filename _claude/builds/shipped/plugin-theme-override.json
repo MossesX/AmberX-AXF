@@ -1,0 +1,159 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-plugin-theme-override",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:31:49Z",
+ "build": {
+  "id": "plugin-theme-override",
+  "title": "plugin-theme-override",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "plugin-theme-override",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/plugin-theme-override",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "17c49f24957101eafd622e18af3cd72477e1cc53",
+ "commits": [
+  "fff5a8f4c069ab2bea94379befdfacbea4867287",
+  "c9613386c4e4ade7a94c317ba2a06ab0f97f0faa",
+  "c10129f2b86a52dcbff65364da8025fdbfe7ca61",
+  "0d049a5410cf8efcda0bdc0ac60d3a43d0ff5fd5",
+  "97cc141a806f84e4afbdc2e6b1aa734b7513b650",
+  "00d991a61ee57e6a6028f24c97ad1861654b34be"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-28T20:02:26Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/memory/STATUS.md",
+  "apps/console-web/plugins/plugins-menu/test.mts",
+  "apps/console-web/plugins/plugins-menu/web/core.ts",
+  "apps/console-web/plugins/plugins-menu/web/index.tsx",
+  "apps/console-web/plugins/plugins-menu/web/menu.ts",
+  "apps/console-web/plugins/plugins-menu/web/plugins-menu.css",
+  "apps/console-web/src/axf/react/components/AppMenu.tsx",
+  "apps/console-web/src/axf/react/components/MenuList.tsx",
+  "apps/console-web/src/axf/react/index.ts",
+  "apps/console-web/src/axf/ui/axf.css",
+  "framework/catalog/libraries.json",
+  "framework/plan/profiles/refactor/framework/plan/plan.json",
+  "framework/plan/profiles/refactor/tracker.json",
+  "framework/react/components/AppMenu.tsx",
+  "framework/react/components/MenuList.tsx",
+  "framework/react/index.ts",
+  "framework/spec/PORTING.md",
+  "framework/ui/axf.css"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "plugins-menu",
+   "files": [
+    "apps/console-web/plugins/plugins-menu/test.mts",
+    "apps/console-web/plugins/plugins-menu/web/core.ts",
+    "apps/console-web/plugins/plugins-menu/web/index.tsx",
+    "apps/console-web/plugins/plugins-menu/web/menu.ts",
+    "apps/console-web/plugins/plugins-menu/web/plugins-menu.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/src/axf/react/components/AppMenu.tsx",
+    "apps/console-web/src/axf/react/components/MenuList.tsx",
+    "apps/console-web/src/axf/react/index.ts",
+    "apps/console-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/components/AppMenu.tsx",
+    "framework/react/components/MenuList.tsx",
+    "framework/react/index.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/profiles/refactor/framework/plan/plan.json",
+    "framework/plan/profiles/refactor/tracker.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "catalog",
+   "files": [
+    "framework/catalog/libraries.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "ui",
+   "files": [
+    "framework/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/profiles/refactor/orchestrator.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

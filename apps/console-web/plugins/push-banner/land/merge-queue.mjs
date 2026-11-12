@@ -24,6 +24,7 @@
  *      and CI runs on it by itself (android.yml runs on queue/**);
  *   5. queue branches no longer in the stack are deleted (a merged one is kept a while, so main's CI can see it
  *      already ran), and the repo variable AXF_MERGE_QUEUE follows the setting (on = PRs run the light checks).
+ * After each round its news goes to the crew's group chat as the owner of section `merge-queue` (chatRound below).
  */
 import { existsSync, mkdtempSync, readFileSync, renameSync, rmSync, writeFileSync, mkdirSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
@@ -32,7 +33,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as q from './merge-queue-core.mjs';
 import * as core from './land-core.mjs';
-import { ciOf, mergeMain, settings, makeGit, makeGitHub, makeConsole } from './land.mjs';
+import { ciOf, crewSay, mergeMain, settings, makeGit, makeGitHub, makeConsole } from './land.mjs';
 
 const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
 function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const t = `${f}.tmp-${process.pid}`; writeFileSync(t, `${JSON.stringify(v, null, 1)}\n`); renameSync(t, f); }
@@ -119,7 +120,31 @@ const agentOf = (b, pr) => {
   return by && !/^(backfill|brett|console|orchestrator)$/i.test(by) ? by : (pr?.user?.login || '');
 };
 
-export async function queueRound({ s, git, gh, api, dry = false, now = () => new Date(), log = () => {}, fetched = false } = {}) {
+export async function queueRound(opts = {}) {
+  const prev = readQueue(opts.s);
+  const st = await roundOnce(opts);
+  if (!opts.dry && st?.on) for (const l of chatLines(prev, st)) crewSay('merge-queue', l.event, l.text, { ref: l.ref, repo: opts.s?.repo, dedupeMin: l.dedupeMin });
+  return st;
+}
+
+/**
+ * What this round did, as lines for the crew's group chat (posted as the owner of section `merge-queue`): a batch
+ * started, PRs landed, a PR kicked out, a green batch that couldn't land. Only entries stamped with this round's time.
+ */
+export function chatLines(prev, st) {
+  const at = st.at; const out = [];
+  const tag = (list) => list.map((n) => `#${n}`).join(', ');
+  const landed = (st.merged || []).filter((m) => m.at === at).map((m) => m.pr);
+  if (landed.length) out.push({ event: 'done', text: `Landed ${tag(landed)} on main.`, ref: landed.join('-') });
+  for (const k of (st.kicked || []).filter((x) => x.at === at)) out.push({ event: 'failed', text: `Kicked #${k.pr} out of the queue: ${String(k.why || '').slice(0, 200)}`, ref: String(k.pr) });
+  const b = st.batch;
+  if (b?.builtAt === at && (b.members || []).length) out.push({ event: 'start', text: `Testing ${tag(b.members.map((m) => m.pr))} together: one CI run on the batch.`, ref: String(b.sha || '').slice(0, 8) });
+  if (b?.state === 'passed' && b.why && !(prev?.batch?.state === 'passed' && prev.batch.why === b.why)) out.push({ event: 'blocked', text: `The batch ${tag((b.members || []).map((m) => m.pr))} passed but couldn't land: ${String(b.why).slice(0, 200)}`, ref: String(b.sha || '').slice(0, 8), dedupeMin: 360 });
+  for (const e of (st.stack || []).filter((x) => x.builtAt === at)) out.push({ event: 'start', text: `Testing #${e.pr} on the queue.`, ref: String(e.pr) });
+  return out;
+}
+
+async function roundOnce({ s, git, gh, api, dry = false, now = () => new Date(), log = () => {}, fetched = false } = {}) {
   const cfg = readQueueConfig(s); const prev = readQueue(s); let ctl = readQueueControl(s);
   const at = now().toISOString();
   const base = { $axf: q.QUEUE_FRAME, at, on: cfg.mergeQueue, depth: cfg.depth, mode: cfg.mode, batchSize: cfg.batchSize };

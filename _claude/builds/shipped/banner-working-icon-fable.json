@@ -1,0 +1,82 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-banner-working-icon-fable",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:27:04Z",
+ "build": {
+  "id": "banner-working-icon-fable",
+  "title": "Fable rebuild: banner working icon animation",
+  "profile": "all",
+  "category": "Plugin",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Rebuild the Opus build (branch claude/project-thread-c4954d) of BannerIcon / workIcon / workAnim in framework BannerSettings: a runtime working signal on banners instead of per-plugin props, fixtures. Starts by replacing the Opus version.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Review the Opus BannerIcon + prefs; design a runtime working signal",
+   "model": "Fable",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s2",
+   "text": "Implement, move banner plugins to it, tests",
+   "model": "Fable",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-11-10T04:39:20.621Z",
+ "landedAt": "2026-11-10T04:39:20.621Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": [
+  "s1: Review the Opus BannerIcon + prefs; design a runtime working signal",
+  "s2: Implement, move banner plugins to it, tests"
+ ]
+}

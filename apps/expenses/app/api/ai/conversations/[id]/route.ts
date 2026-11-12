@@ -2,11 +2,13 @@ import { caller, json, str } from "../../../../../src/server/ai/http";
 import { deleteConversation, getConversation, summary, updateConversation } from "../../../../../src/server/ai/store";
 import { MODES, type AssistantMode } from "../../../../../src/server/ai/types";
 
+import { corsRoute, preflight } from "../../../../../src/server/cors";
+
 export const dynamic = "force-dynamic";
 
 type Ctx = { params: Promise<{ id: string }> };
 
-export async function GET(request: Request, ctx: Ctx): Promise<Response> {
+async function handleGET(request: Request, ctx: Ctx): Promise<Response> {
   const c = await caller(request);
   const conv = await getConversation(c.user, Number((await ctx.params).id));
   if (!conv) return Response.json({ error: "Conversation not found" }, { status: 404 });
@@ -29,3 +31,7 @@ export async function DELETE(request: Request, ctx: Ctx): Promise<Response> {
   const ok = await deleteConversation(c.user, Number((await ctx.params).id));
   return ok ? Response.json({ ok: true }) : Response.json({ error: "Conversation not found" }, { status: 404 });
 }
+
+/* Molly (molly.amberxai.com) reaches the assistant cross-origin with the signed-in session: src/server/cors.ts */
+export const GET = corsRoute(handleGET);
+export const OPTIONS = preflight;

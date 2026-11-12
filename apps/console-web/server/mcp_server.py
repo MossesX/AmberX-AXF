@@ -954,11 +954,15 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         return d
 
     @mcp.tool(annotations=NAVIGATE)
-    async def console_open(screen: str, to: Delivery = "recent") -> dict[str, Any]:
-        """Open a screen in Brett's open Dev Console (the one he used last; to="all" for every open one, or a client id).
-        `screen` = the view id ("plan-studio"), its title ("Plan Studio") or a few words ("plan studio", "builds",
-        "orchestrator"); plugins' screens count. Not sure of the name? console_list(kind="screens", q="…") first."""
-        return await go({"op": "act", "target": "console.screens", "path": screen, "action": "open", "input": inp(to)})
+    async def console_open(screen: str, focus: str = "", to: Delivery = "recent") -> dict[str, Any]:
+        """Open a screen in Brett's open Dev Console (the live one he used last, then the next live one if it doesn't
+        answer; to="all" for every open one, or a client id). `screen` = the view id ("plan-studio"), its title ("Plan
+        Studio") or a few words ("plan studio", "orchestrator"); plugins' screens count. A tab or item on the screen:
+        "build-orchestrator pending", or `focus` ("pending", a build id). A build: "build:<build id>" (or the bare id)
+        opens the Build orchestrator on its tab with that build scrolled into view, expanded and highlighted.
+        Read `status`: delivered (a console acked it), pending (no console answered yet; queued and AmberX opens the
+        console on Brett's phone) or failed. Not sure of the name? console_list(kind="screens", q="…") first."""
+        return await go({"op": "act", "target": "console.screens", "path": screen, "action": "open", "input": inp(to, focus=focus)})
 
     @mcp.tool(annotations=NAVIGATE)
     async def console_dialog(dialog: str = "", arg: str = "", action: Literal["open", "close"] = "open", to: Delivery = "recent") -> dict[str, Any]:
@@ -1018,14 +1022,17 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         return r
 
     @mcp.tool(annotations=NAVIGATE)
-    async def console_show(target: str, highlight: str = "", say: str = "", to: Delivery = "recent") -> dict[str, Any]:
+    async def console_show(target: str, highlight: str = "", say: str = "", focus: str = "", to: Delivery = "recent") -> dict[str, Any]:
         """Follow Amber: call this EVERY time you mention something in Brett's Dev Console (a screen, a settings tab, a
         dialog, a build, a plugin, a UI Review item, anything that needs him). When Follow Amber is on, his console opens
         it right away, focused and highlighted, with `say` as a note; when it's off this does nothing (shown: false).
         `target` = a screen, settings tab, dialog or navigation-only action by id, title or words ("plan studio",
         "plugins/<plugin>"), or kind:name (screen:, settings:, dialog:, action:, approval:<id> pops up a waiting
-        axHub approval). `highlight` = a CSS selector or exact visible text to flash once it's open. Only navigates."""
-        return await follow("show", target=target, highlight=highlight, say=say, to=to)
+        axHub approval). A build: "build:<build id>" (or the bare id) opens the Build orchestrator on that build's tab,
+        scrolled into view, expanded and highlighted. A tab: "build-orchestrator pending", or `focus` = the tab or item.
+        `highlight` = a CSS selector or exact visible text to flash once it's open. Only navigates. `status` says
+        whether it is on screen: delivered, pending (no console answered yet; it opens when one does) or failed."""
+        return await follow("show", target=target, highlight=highlight, say=say, to=to, focus=focus)
 
     @mcp.tool(annotations=READ)
     async def console_follow() -> dict[str, Any]:
@@ -1049,7 +1056,7 @@ def follow_call(op: str, args: dict[str, Any]) -> dict[str, Any]:
             return {"ok": False, "code": "not_implemented", "message": "the Follow Amber plugin is turned off (Settings → Plugins)"}
         if op == "state":
             return {"ok": True, **svc.state()}
-        return svc.show(str(args.get("target") or ""), "", str(args.get("highlight") or ""), str(args.get("say") or ""), str(args.get("to") or "recent"), "amber (mcp)")
+        return svc.show(str(args.get("target") or ""), "", str(args.get("highlight") or ""), str(args.get("say") or ""), str(args.get("to") or "recent"), "amber (mcp)", focus=str(args.get("focus") or ""))
     import urllib.error
     import urllib.request
     base = os.environ.get("AXF_CONSOLE_URL", "https://console.amberxai.com").rstrip("/") + "/api/plugins/follow-amber/"  # axf-plugin:follow-amber
@@ -1057,7 +1064,7 @@ def follow_call(op: str, args: dict[str, Any]) -> dict[str, Any]:
     req = (urllib.request.Request(base + "state", headers=auth) if op == "state" else
            urllib.request.Request(base + "show", data=json.dumps({**args, "by": "amber (mcp)"}).encode(), method="POST", headers={"content-type": "application/json", **auth}))
     try:
-        with urllib.request.urlopen(req, timeout=30) as res:
+        with urllib.request.urlopen(req, timeout=75) as res:
             return json.loads(res.read().decode() or "{}")
     except urllib.error.HTTPError as e:
         return {"ok": False, "code": "unexpected", "message": f"{e.code} from {base}"}

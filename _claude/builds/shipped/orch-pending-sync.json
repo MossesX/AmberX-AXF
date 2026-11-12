@@ -1,0 +1,163 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-orch-pending-sync",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:22Z",
+ "build": {
+  "id": "orch-pending-sync",
+  "title": "Orchestrator ↔ Pending builds auto-sync (Build manager follows)",
+  "profile": "all",
+  "category": "Builds",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "all builds go to the orchestrator, which splits them into Fable/Opus steps and sends them out to Pending builds and the Build manager; they always stay in sync. Bridge until builds-one-page (paused) merges the datasets. Every orchestrator save rewrites the profile Pending list; every Pending change (console, CLI, MCP, plugins) flows back into the orchestrator. Profile: Refactor.",
+  "verbatim": false,
+  "at": "2026-10-27T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "framework/plan/orch-sync.mjs (pure): orchestratorToPending + pendingToOrchestrator on the raw shapes ([Fable]/[Opus] step prefixes, status map, notes, step ticks, removals archive the build), fixture test",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-28T01:10:06.928Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Wire both writers: orchestrator.mjs save() pushes to Pending; pending.mjs actPending() pulls into the orchestrator (covers console, engine-rpc, MCP, plugins); same build profile on both sides; no loops",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-10-28T01:10:06.928Z",
+   "doneAt": "2026-10-28T01:10:06.991Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Rule + docs (RULES.md, _claude/builds/README.md), CI test, PR + merge approval",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-10-28T01:10:06.991Z",
+   "doneAt": "2026-11-01T02:28:34.899Z",
+   "actualMin": 5838,
+   "done": true
+  }
+ ],
+ "branch": "claude/orch-pending-sync",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 143,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/143"
+ },
+ "landedCommit": "5348a1bb91697f43bb8fc86355e3f774158a1f96",
+ "commits": [
+  "55cdeae56eb814bffa982ba0aa2c7fefca5a2d88",
+  "39279cab71ab899a8a8d2485fe3d4551677925c4"
+ ],
+ "mergedAt": "2026-10-31T07:26:37Z",
+ "landedAt": "2026-10-31T07:26:31Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/builds/README.md",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/shared/rules/RULES.md",
+  "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+  "apps/console-web/plugins/build-orchestrator/test.mjs",
+  "framework/cli/engine-rpc.mjs",
+  "framework/cli/orch-sync.mjs",
+  "framework/cli/pending.mjs",
+  "framework/plan/orch-sync.mjs",
+  "framework/plan/profiles/refactor/framework/plan/pending.json",
+  "framework/spec/check-orch-sync.mjs"
+ ],
+ "areas": [
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/engine-rpc.mjs",
+    "framework/cli/orch-sync.mjs",
+    "framework/cli/pending.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+    "apps/console-web/plugins/build-orchestrator/test.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/orch-sync.mjs",
+    "framework/plan/profiles/refactor/framework/plan/pending.json"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/README.md",
+    "_claude/builds/profiles/refactor/orchestrator.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/check-orch-sync.mjs"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/shared/rules/RULES.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

@@ -1,0 +1,56 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-handoff-session-button",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:27:15Z",
+ "build": {
+  "id": "handoff-session-button",
+  "title": "Claude handoff: Handoff Session button",
+  "profile": "all",
+  "category": "Feature",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Button under Assemble prompt: paste-ready summary of everything still open (change log, pending list, open PRs) plus rules and known gaps, for an existing project on another account; copied and kept in the kit as ACTIVE-THREADS.md. Branch claude/project-thread-tpor29 (PR #65).",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-10-25T10:39:16.155Z",
+ "landedAt": "2026-10-25T10:39:16.155Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

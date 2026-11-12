@@ -18,7 +18,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[3]
 STORE = Path(tempfile.mkdtemp(prefix="axf-slots-test-"))
-os.environ.update(AXF_SLOTS_DIR=str(STORE), AXF_SLOTS_TMUX="off", AXF_SLOTS_MEM_GB="8", AXF_SLOTS_SWAP_MB="0")
+os.environ.update(AXF_SLOTS_DIR=str(STORE), AXF_SLOTS_TMUX="off", AXF_SLOTS_MEM_GB="8", AXF_SLOTS_SWAP_MB="0", AXF_BUILD_LIMIT_SCAN="off")
 sys.path.insert(0, str(HERE.parent.parent / "server"))
 import plugin_services  # noqa: E402
 
@@ -74,6 +74,28 @@ ok(c.post(f"/api/plugins/agent-slots/queue/{b['id']}/cancel").status_code == 409
 ok(c.post("/api/plugins/agent-slots/queue/bad$id/up").status_code in (400, 404), "bad id refused")
 ok(plugin_services.get("axf.agent-slots@1").status()["queued"] == 1, "capability axf.agent-slots@1")
 
+# the hard build limit: everyone reads it, only Brett's signed-in session sets it
+h = c.get("/api/plugins/agent-slots/hard-limit").json()
+ok(h.get("max") == 8 and h.get("canEdit") is False and "slice" in h and "limit" in h, f"hard limit read: 8 by default, not editable with the console token ({h})")
+r = c.put("/api/plugins/agent-slots/hard-limit", json={"maxBuilds": 12})
+ok(r.status_code == 403 and "Only Brett" in r.json().get("detail", ""), "console token (sessions, MCP, voice) cannot set it")
+ok(c.get("/api/plugins/agent-slots/hard-limit").json().get("max") == 8, "unchanged after the refused set")
+owner_app = FastAPI()
+
+
+@owner_app.middleware("http")
+async def as_brett(request, call_next):  # what the console's auth does for Brett's own signed-in session
+    request.state.axf_user = types.SimpleNamespace(admin=True, name="Brett")
+    return await call_next(request)
+
+
+owner_app.include_router(mod.router, prefix="/api/plugins/agent-slots")
+bc = TestClient(owner_app)
+r = bc.put("/api/plugins/agent-slots/hard-limit", json={"maxBuilds": 5, "dockerCpus": 1.5, "nope": 1})
+ok(r.status_code == 200 and r.json().get("max") == 5 and r.json().get("canEdit") is True and r.json()["limit"]["setBy"] == "Brett", f"Brett sets it ({r.status_code} {r.text[:200]})")
+ok(bc.put("/api/plugins/agent-slots/hard-limit", json={"nope": 1}).status_code == 400, "nothing to save = 400")
+ok(json.loads(cli("settings", "--json"))["maxAgents"] == 1 and c.get("/api/plugins/agent-slots/status").json()["settings"].get("hardMax") == 5, "the soft cap sees the hard limit")
+
 # systems-check probe
 base = {"used": 1, "cap": 6, "queued": 0, "memory": {"availGb": 6, "floorGb": 2}, "settings": {"guardWarnTrips": 5, "swapWarnMin": 30}, "guard": {"tripsLastHour": 0}, "swap": {"since": None, "mb": 0}}
 ok(mod.health_probe(base)["status"] == "ok", "probe ok")
@@ -81,6 +103,8 @@ ok(mod.health_probe({**base, "guard": {"tripsLastHour": 7}})["status"] == "warn"
 ok(mod.health_probe({**base, "swap": {"since": 0, "mb": 900}}, now_ms=31 * 60000)["status"] == "warn", "probe warns on swap in use 31 min")
 ok(mod.health_probe({**base, "swap": {"since": 0, "mb": 900}}, now_ms=5 * 60000)["status"] == "ok", "short swap use is fine")
 ok(mod.health_probe({"error": "x"})["status"] == "unknown", "unreadable store = unknown")
+ok(mod.health_probe({**base, "hard": {"max": 8, "live": None, "source": "unknown"}})["status"] == "warn", "probe warns when the hard-limit enforcer isn't reporting")
+ok(mod.health_probe({**base, "hard": {"max": 8, "live": 3, "source": "snapshot"}})["status"] == "ok", "a fresh hard-limit snapshot is fine")
 
 
 class Reg:

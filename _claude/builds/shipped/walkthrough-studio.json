@@ -1,0 +1,147 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-walkthrough-studio",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:26:42Z",
+ "build": {
+  "id": "walkthrough-studio",
+  "title": "Walkthrough Studio: narrated framework walkthrough video assembly suite",
+  "profile": "all",
+  "category": "App",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "apps/walkthrough-studio (react-ts on AXF). Projects column, categorized index tree (filters, search, drag-and-drop), status grid (built/partial/failed/skipped/needs review, progress, clip lengths, drag to trash, hideable columns), IDE layouts with show/hide panes, unlimited dockable/floating toolbars with a command picker, file browser, live browser with mouse recorder, narration script per piece, compiler plan (narrate + assemble, swap + recompile). Branch claude/framework-walkthrough-video-builder-qocfr1.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Scaffold app (axf init), manifest, data model + store (projects, sections, pieces, toolbars)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-22T22:32:27.809Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Walkthrough content: categorized outline of every framework area, plugin, setting, flow (seed project)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-22T22:32:27.809Z",
+   "doneAt": "2026-10-22T22:32:27.871Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Shell: app menu, banner, nav, IDE layouts, pane manager",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-22T22:32:27.871Z",
+   "doneAt": "2026-10-22T22:32:27.928Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Index tree with filters/search/drag + status grid with columns, drag-to-trash",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-22T22:32:27.928Z",
+   "doneAt": "2026-10-22T22:32:27.980Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Toolbars: unlimited, dock/float, command picker dialog",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-22T22:32:27.980Z",
+   "doneAt": "2026-10-22T22:32:28.030Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Live browser + recorder, file browser, script/narration editor",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-22T22:32:28.030Z",
+   "doneAt": "2026-10-22T22:32:28.094Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Compiler plan + export, project settings (lengths)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-22T22:32:28.094Z",
+   "doneAt": "2026-10-22T22:32:28.152Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "Tests, build, screenshots, docs, PR",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-22T22:32:28.152Z",
+   "doneAt": "2026-10-22T22:32:40.585Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-10-22T22:32:32.202Z",
+ "landedAt": "2026-10-22T22:32:32.202Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

@@ -1,0 +1,112 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-24jq9j",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:32:30Z",
+ "build": {
+  "id": "project-thread-24jq9j",
+  "title": "project-thread-24jq9j",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-24jq9j",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-24jq9j",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "92252bb5abfcbe96b5d5f72632747432f532600d",
+ "commits": [
+  "c259cb1e1a5bb2573c3d6cd33c8ccbf6f2b52eeb"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-25T22:03:58Z",
+ "files": [
+  "CLAUDE.md",
+  "apps/console-web/plugins/build-manager/test.mjs",
+  "apps/console-web/plugins/build-manager/web/build-manager.css",
+  "apps/console-web/plugins/build-manager/web/history.d.mts",
+  "apps/console-web/plugins/build-manager/web/history.mjs",
+  "apps/console-web/plugins/build-manager/web/ui.tsx",
+  "apps/console-web/plugins/codebase-changes/changes-core.mjs",
+  "apps/console-web/plugins/codebase-changes/server/store.py",
+  "apps/console-web/plugins/codebase-changes/test.py",
+  "apps/console-web/src/App.tsx",
+  "framework/plan/pending.json"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "build-manager",
+   "files": [
+    "apps/console-web/plugins/build-manager/test.mjs",
+    "apps/console-web/plugins/build-manager/web/build-manager.css",
+    "apps/console-web/plugins/build-manager/web/history.d.mts",
+    "apps/console-web/plugins/build-manager/web/history.mjs",
+    "apps/console-web/plugins/build-manager/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "codebase-changes",
+   "files": [
+    "apps/console-web/plugins/codebase-changes/changes-core.mjs",
+    "apps/console-web/plugins/codebase-changes/server/store.py",
+    "apps/console-web/plugins/codebase-changes/test.py"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/src/App.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/pending.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

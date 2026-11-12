@@ -1,0 +1,338 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-auto-land",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:25Z",
+ "build": {
+  "id": "auto-land",
+  "title": "Auto-land finished builds (zero-token merge pipeline)",
+  "profile": "all",
+  "category": "Framework",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Earl the Ear. Plain-script merge pipeline reusing the push banner batch merge; AI only for real conflicts / red CI needing code.",
+  "verbatim": false,
+  "at": "2026-11-03T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-auto-land",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-03T17:58:15.975Z",
+   "endedAt": "",
+   "exit": null,
+   "costUsd": 0.2176
+  },
+  {
+   "session": "axf-auto-land-2",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-03T18:00:18.303Z",
+   "endedAt": "2026-11-03T19:43:14.846Z",
+   "exit": 0,
+   "costUsd": 64.3433
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Read push-banner batch/auto-merge + land scripts; report what exists; land PR #265 via existing path",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T17:58:15.975Z",
+   "doneAt": "2026-11-03T18:20:42.014Z",
+   "actualMin": 22,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Script pipeline: finished build -> batch; clean worktree, merge main, auto-resolve store/THREADS/logs, wait CI, batch-merge in dependency order",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T18:20:42.014Z",
+   "doneAt": "2026-11-03T18:25:29.413Z",
+   "actualMin": 5,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "UI Review stays the gate: held PRs wait, merge by themselves once approved",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T18:25:29.413Z",
+   "doneAt": "2026-11-03T18:25:30.560Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Stop claude-sync dropping files into finished/landing worktrees",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T18:25:30.560Z",
+   "doneAt": "2026-11-03T18:28:25.306Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Blocked = one plain push + What's New Ready-to-merge reason; only code conflicts/red CI create an agent job",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T18:28:25.306Z",
+   "doneAt": "2026-11-03T18:28:26.342Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Console overview/build_queue/plan read the live store; health@1 red if zero builds seen while builds run",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T18:28:26.342Z",
+   "doneAt": "2026-11-03T18:30:36.761Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Settings > Builds toggles (Auto-land, Wait for UI Review); commands declared once -> REST+MCP+CLI",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T18:30:36.761Z",
+   "doneAt": "2026-11-03T18:30:37.438Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s8",
+   "text": "No-LLM import test, pipeline tests with fake builds, report auto-land.md, THREADS, PR",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-03T18:30:37.438Z",
+   "doneAt": "2026-11-03T18:37:09.577Z",
+   "actualMin": 7,
+   "done": true
+  }
+ ],
+ "branch": "claude/auto-land-2",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 270,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/270"
+ },
+ "landedCommit": "3caf0ee0026759a4ced995c2e53cf93cca2597bd",
+ "commits": [
+  "a7cca0db103b35e45f687a1fa66098440d4ae74f",
+  "bb809a2bdff80b6476603ff78bbaf1cfdb58123e",
+  "6366e86ab557a29875126ba2e3507c5fcf876b68",
+  "d55eb5fa1ba0e76abf2eaa654563c9ff318b586a",
+  "1f3912009764a29c3ecd4d90a18f34f11216bfc3",
+  "cd6c728e0b0aa02fe945a1ca500f5beff051d037",
+  "a9d6b654771f366c56e3f0d265ff0e147e895d48",
+  "d01573b30d717e800f734870a8a06c34b933535c",
+  "cea1ac39c79087078e9ba940e880c5e76938042e",
+  "a83e539b7ccf23e2bb28f3253926cfe37b5406d5",
+  "6578a6f7f5f7dc9fe14bf8ce0d29480f7a0ef76d",
+  "250d2f3aefe23cf24b73a2a644b778e350f32969",
+  "4d8a2d72518fcd456e62da9e3ac9a3e7610cd7ee",
+  "c28cd91b53267ad54ef0a09c356d783da794dd5d",
+  "c39690c77d5d9a36f07d248b92195b8d27516b4b",
+  "835d1415b162b5d7c732d181c4fd85c7be58e43c",
+  "0df69d05aab5149e05375e2f0691d6faa918e40d"
+ ],
+ "mergedAt": "2026-11-04T00:53:37Z",
+ "landedAt": "2026-11-04T00:53:36Z",
+ "files": [
+  ".github/workflows/android.yml",
+  ".gitignore",
+  "_claude/THREADS.md",
+  "_claude/builds/journal/2026-11.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/builds/profiles/big-dog/orchestrator.json",
+  "_claude/builds/profiles/breakroom/orchestrator.json",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/builds/profiles/urgent/orchestrator.json",
+  "_claude/builds/reports/auto-land.md",
+  "_claude/builds/reports/auto-land/shots/auto-land-settings-desktop.png",
+  "_claude/builds/reports/auto-land/shots/auto-land-settings-phone.png",
+  "_claude/builds/store.json",
+  "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+  "apps/console-web/plugins/build-orchestrator/test.py",
+  "apps/console-web/plugins/push-banner/help.json",
+  "apps/console-web/plugins/push-banner/land/land-core.mjs",
+  "apps/console-web/plugins/push-banner/land/land.mjs",
+  "apps/console-web/plugins/push-banner/land/land.test.mjs",
+  "apps/console-web/plugins/push-banner/plugin.json",
+  "apps/console-web/plugins/push-banner/server/__init__.py",
+  "apps/console-web/plugins/push-banner/test.py",
+  "apps/console-web/plugins/push-banner/web/store.ts",
+  "apps/console-web/plugins/push-banner/web/ui.tsx",
+  "apps/console-web/server/mcp_server.py",
+  "apps/molly/plugins/xlayout/plugin.json",
+  "deploy/install-console.sh",
+  "framework/cli/build-queue.mjs",
+  "framework/cli/engine-rpc.mjs",
+  "framework/plan/builds-store-core.mjs",
+  "framework/plan/profiles/urgent/framework/catalog/status.json",
+  "framework/plan/profiles/urgent/framework/plan/plan.json",
+  "framework/plan/profiles/urgent/tracker.json",
+  "framework/spec/fixtures/widgets.json",
+  "framework/spec/gen-fixtures.mts"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/journal/2026-11.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/profiles/angel/orchestrator.json",
+    "_claude/builds/profiles/big-dog/orchestrator.json",
+    "_claude/builds/profiles/breakroom/orchestrator.json",
+    "_claude/builds/profiles/refactor/orchestrator.json",
+    "_claude/builds/profiles/urgent/orchestrator.json",
+    "_claude/builds/reports/auto-land.md",
+    "_claude/builds/reports/auto-land/shots/auto-land-settings-desktop.png",
+    "_claude/builds/reports/auto-land/shots/auto-land-settings-phone.png",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "push-banner",
+   "files": [
+    "apps/console-web/plugins/push-banner/help.json",
+    "apps/console-web/plugins/push-banner/land/land-core.mjs",
+    "apps/console-web/plugins/push-banner/land/land.mjs",
+    "apps/console-web/plugins/push-banner/land/land.test.mjs",
+    "apps/console-web/plugins/push-banner/plugin.json",
+    "apps/console-web/plugins/push-banner/server/__init__.py",
+    "apps/console-web/plugins/push-banner/test.py",
+    "apps/console-web/plugins/push-banner/web/store.ts",
+    "apps/console-web/plugins/push-banner/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/builds-store-core.mjs",
+    "framework/plan/profiles/urgent/framework/catalog/status.json",
+    "framework/plan/profiles/urgent/framework/plan/plan.json",
+    "framework/plan/profiles/urgent/tracker.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+    "apps/console-web/plugins/build-orchestrator/test.py"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/build-queue.mjs",
+    "framework/cli/engine-rpc.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/fixtures/widgets.json",
+    "framework/spec/gen-fixtures.mts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "xlayout",
+   "files": [
+    "apps/molly/plugins/xlayout/plugin.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/server/mcp_server.py"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/install-console.sh"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".gitignore",
+   "files": [
+    ".gitignore"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261103-6537ada7",
+   "name": "Push banner: Auto-land finished builds",
+   "status": "approved",
+   "group": "g-20261103-7b742196",
+   "url": "/review/r-20261103-6537ada7"
+  }
+ ],
+ "cost": {
+  "usd": 64.5609,
+  "estimated": true,
+  "tokens": {
+   "input": 476,
+   "output": 3841,
+   "cacheRead": 54583641,
+   "cacheWrite": 397850
+  }
+ },
+ "report": "_claude/builds/reports/auto-land.md",
+ "open": []
+}

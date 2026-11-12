@@ -1,0 +1,68 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-axhub-veto-pass-web",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:31:30Z",
+ "build": {
+  "id": "axhub-veto-pass-web",
+  "title": "axhub-veto-pass-web",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "axhub-veto-pass-web",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/axhub-veto-pass-web",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "9f4c6a2853f60c57ae795a0fb29896a4e09faebf",
+ "commits": [
+  "bc344492b3c537224609da75c8d8a139cf6b33a7"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-11-03T17:35:39Z",
+ "files": [
+  "apps/axhub-web/src/assets/help/axhub-web-drafts.json"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/src/assets/help/axhub-web-drafts.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

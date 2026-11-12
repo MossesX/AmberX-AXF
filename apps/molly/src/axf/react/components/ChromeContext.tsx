@@ -25,9 +25,14 @@
  *   chrome.unset:<type>:<instance>:<field>       reset one field: it inherits from the app's asset again
  *   chrome.edits                                 open Settings → Appearance at the "Assets with edits" list
  *   settings.controlled-colour:<warning|accent|info|success|danger>   the colour that marks overridden settings
+ *   tapconfirm.item:<type>:<instance>:<inherit|on|off>    one item's Tap to confirm (= chrome.set …:tapConfirm:…)
+ *   tapconfirm.kind:<type>:<on|off>               Tap to confirm for a whole kind (every toolbar, tab group, nav, …)
+ *   tapconfirm.window:<ms>                        how long an armed item waits for the second tap (1000–10000)
  */
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { CONTROLLED_COLORS, CONTROLLED_COLOR_KEY, chromeOverrideList, controlledColorOf, CHROME_FIELDS, CHROME_ICONS, CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, CHROME_LABELS, CHROME_MANY, CHROME_MOVES, CHROME_SETTINGS_PATCH_KEY, CHROME_SETTINGS_PICK_KEY, CHROME_SETTINGS_TABS, CHROME_TYPES, FRAMEWORK_MODULE, POSITION_LABELS, SETTINGS_LEVEL_KEY, SETTINGS_LEVELS, SETTINGS_LEVEL_LABEL, chromeFieldValue, chromeLabel, chromeSettingsChoices, chromeSettingsCustomId, chromeSettingsDefaultId, chromeSettingsPick, chromeTypeOfTarget, isChromeInstanceId, isChromeType, normalizeInstanceOverride, normalizeSettingsUi, resolveSettingsChain, settingsLevelOf, settingsLevelRank, type AssetType, type AxfRuntime, type ChromeField, type ChromeType, type SettingsLevel, type SettingsUi, type SettingSpec, type SettingValue } from '../../core';
+import { TAP_KEYS, TAP_KINDS, isTapKind, tapArmMs, tapKindKey } from '../../core/engines/tapconfirm';
+import { CHROME_TAP_FIELD, CHROME_TAP_OPTIONS } from '../../core/engines/chrome-settings-rules.mjs';
 import { CONTROL_TOKEN_SLOTS, withTokenOverride, withoutTokenOverride } from '../../core/engines/control-tokens.mjs';
 import type { MenuEntry } from '../../core/engines/windows';
 import { useAxfState, useRuntime } from '../AxfProvider';
@@ -77,7 +82,8 @@ export function setChromeField(rt: AxfRuntime, type: ChromeType, instance: strin
   const cur = normalizeInstanceOverride(type, rt.settings.get(k));
   const base = baseDataOf(rt, type, instance);
   const next: Record<string, string | number | boolean> = { ...cur };
-  if (value === null || (base && base[key] === value)) delete next[key]; else next[key] = value;
+  const asDefault = (!base || base[key] === undefined) && CHROME_FIELDS[type].find((f) => f.key === key)?.default === value;
+  if (value === null || (base && base[key] === value) || asDefault) delete next[key]; else next[key] = value;
   const clean = normalizeInstanceOverride(type, next);
   if (Object.keys(clean).length) rt.settings.set(k, clean as never); else rt.settings.clear(k);
 }
@@ -172,6 +178,17 @@ export function installChrome(rt: AxfRuntime): void {
       if (!rt.registry.get('settings', id)) { rt.toast(`No settings interface "${id}".`, 'warning', 'Chrome settings'); return; }
       if (id === chromeSettingsDefaultId(ty)) rt.settings.clear(key); else rt.settings.set(key, id);
     }, { label: 'Pick which settings interface a chrome kind uses (default | custom | <id> | reset)', params: true });
+    // Tap to confirm (build add-a-tap-to-confirm-option-to-every-settings-in): the same settings the dialogs edit.
+    rt.actions.register('tapconfirm.item', ([type, instance, value = ''], ctx) => {
+      const ty = t(type); if (!ty) return;
+      if (!(CHROME_TAP_OPTIONS as readonly string[]).includes(value)) { rt.toast(`Tap to confirm takes inherit, on or off (not "${value}").`, 'warning', 'Tap to confirm'); return; }
+      setChromeField(rt, ty, inst(ty, instance, ctx), CHROME_TAP_FIELD, value);
+    }, { label: 'Tap to confirm for one item (tapconfirm.item:<type>:<instance>:<inherit|on|off>)', params: true });
+    rt.actions.register('tapconfirm.kind', ([type, value = '']) => {
+      if (!isTapKind(type) || !/^(on|off)$/i.test(value)) { rt.toast(`Use tapconfirm.kind:<${TAP_KINDS.join('|')}>:<on|off>.`, 'warning', 'Tap to confirm'); return; }
+      if (/^on$/i.test(value)) rt.settings.clear(tapKindKey(type)); else rt.settings.set(tapKindKey(type), false);
+    }, { label: 'Tap to confirm for a whole kind (tapconfirm.kind:<type>:<on|off>)', params: true });
+    rt.actions.register('tapconfirm.window', ([ms = '']) => { rt.settings.set(TAP_KEYS.armMs, String(tapArmMs(ms))); }, { label: 'Tap to confirm: how long an armed item waits (tapconfirm.window:<ms>)', params: true });
   });
   // The shared block, after the kind's own items (window tab groups: Undock / Split…; banners: Hide…).
   rt.contextExtras.set('*:chrome', (target, payload) => {
@@ -320,7 +337,7 @@ export function ChromeSettingsPanel({ type, instance }: { type: ChromeType; inst
         <div className="fx-stack">
           {fs.length ? fs.map((f) => <FieldControl key={f.key} type={type} instance={instance} field={f} descriptions={ui.descriptions} />) : <p className="fx-muted">Nothing at this level{q ? ' matches' : ''}.</p>}
           {id === 'look' && type === 'banner' && <Button icon="settings" onClick={() => rt.openDialog(BANNER_SETTINGS_DIALOG, instance !== CHROME_APP_INSTANCE ? { id: instance } : {})}>Banner settings (look, behaviour, Apply to all)…</Button>}
-          {id === 'behaviour' && type === 'toolbar' && <Note tone="info">Tap-to-confirm on touch and this toolbar's own override live in Settings → Plugins → Toolbars.</Note>}
+          {id === 'behaviour' && <Note tone="info">Tap to confirm: on a touch screen the first tap shows what an item is and the second tap confirms it. Same as all follows the switch for every {chromeLabel(type).toLowerCase()} in Settings → Plugins → Toolbars.</Note>}
           {id === 'behaviour' && type === 'nav-menu' && <Note tone="info">Sub menus, animation and colours of a nav that opts in are the Navigation style settings (nav-style@1).</Note>}
           {ui.groups.filter((g) => g.tab === id && levelOk(g.id, g.level ?? ui.defaultLevel)).map((g) => <ExtraGroup key={g.id} group={g} />)}
         </div>

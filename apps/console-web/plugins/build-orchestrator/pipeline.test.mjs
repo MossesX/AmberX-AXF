@@ -1,5 +1,7 @@
 // Self-test: node apps/console-web/plugins/build-orchestrator/pipeline.test.mjs
 // Pipeline core (pure) + the CLI end to end on a scratch store with a fake launcher, fake accounts and a fake splitter.
+process.env.AXF_CREW_SAY ??= 'off'; // group-chat posts (crew-say.mjs) stay out of the real Breakroom
+process.env.AXF_BUILD_LIMIT ??= 'off'; // the hard build limit counts the VPS's real builds: keep these tests off it (check-build-limit.mjs covers it)
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';

@@ -18,6 +18,8 @@ export interface ChromeField {
   default?: string | number | boolean;
   group: ChromeFieldGroup;
   level: ChromeLevel;
+  /** a choice of the item only (not a field of the asset type), e.g. tapConfirm */
+  instanceOnly?: boolean;
 }
 export interface ChromeMove { positions: ChromePosition[]; via: 'instance' | 'layout' | 'none'; field: string }
 export interface ChromeSettingsTab { id: string; label: string; icon: string; order: number }
@@ -50,6 +52,8 @@ export function chromeTypeOfTarget(target: unknown): ChromeType | null;
 export const CHROME_MOVES: Record<ChromeType, ChromeMove>;
 export const POSITION_LABELS: Record<ChromePosition, string>;
 export const CHROME_FIELDS: Record<ChromeType, ChromeField[]>;
+export const CHROME_TAP_FIELD: 'tapConfirm';
+export const CHROME_TAP_OPTIONS: readonly ['inherit', 'on', 'off'];
 export const CHROME_SETTINGS_TABS: ChromeSettingsTab[];
 export function normalizeInstanceOverride(type: string, raw: unknown): Record<string, string | number | boolean>;
 export function chromeInstanceData<T extends object>(type: string, base: T | null | undefined, override: unknown): T;

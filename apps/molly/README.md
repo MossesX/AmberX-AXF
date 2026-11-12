@@ -30,6 +30,11 @@ Big Dog profile, Opus; a Fable version comes later as its own build).
   menu it opens covers Molly's window, a view it opens opens in the console's frame. Settings → Plugins → Banners
   (show the strip, show / hide each banner). <!-- axf-plugin:banners -->
 
+- **Expenses** (`plugins/expenses`): the Expense Tracker's Ledger, Paydays, Reports and Assistant drawn natively (no
+  frame) on its own APIs, same ledger, conversations and settings as expenses.amberxai.com; views
+  `expenses/ledger|paydays|reports|assistant`, `expenses.*` actions, entries in the Molly menu. Settings → Plugins →
+  Expenses (the app's own settings sections). <!-- axf-plugin:expenses -->
+
 ```bash
 npm install && npm run dev      # :5173
 docker build -t molly . && docker run -p 7490:8080 molly

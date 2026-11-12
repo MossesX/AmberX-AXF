@@ -150,4 +150,14 @@ try:
 finally:
     srv.subprocess.run = _real_run
 
+# console-focus@1 (console-commands-reliable, Nov 11 2026): a build named in a console command opens here, focused on it
+fx = srv.ConsoleFocus()
+_store = Path(tempfile.mkdtemp()) / "store.json"
+_store.write_text(json.dumps({"builds": [{"id": "console-commands-reliable"}, {"id": "plan-studio"}]}))
+fx.store = lambda: _store  # type: ignore[method-assign]
+check(fx.resolve("build:Any-Build") == {"screen": "build-orchestrator", "focus": "Any-Build", "explicit": True}, "build:<id> is always a build")
+check(fx.resolve("console-commands-reliable") == {"screen": "build-orchestrator", "focus": "console-commands-reliable", "explicit": False}, "a bare build id from the store")
+check(fx.resolve("plan studio") is None and fx.resolve("no-such-build") is None and fx.resolve("build:") is None, "anything else is not a build")
+check(srv.plugin_services.get("console-focus@1") is not None, "provided as console-focus@1")
+
 print(f"build-orchestrator: {n} checks passed")

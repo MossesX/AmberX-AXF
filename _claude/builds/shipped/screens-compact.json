@@ -1,0 +1,114 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-screens-compact",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:26Z",
+ "build": {
+  "id": "screens-compact",
+  "title": "Compact screens pass 2: orchestrator filters, Home actions, catalog, tracker, asset studio — button walls into dropdowns and ⋯ menus",
+  "profile": "all",
+  "category": "Console",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "'More compact screens' after app-compact (PR #178). Per-screen: replace rows/walls of buttons and filter chips with one dropdown or a ⋯ menu, shorten page descriptions, tighten lists. Profile: Angel. Web only.",
+  "verbatim": false,
+  "at": "2026-10-30T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Before screenshots: Home, Build orchestrator, Catalog, Tracker, Asset studio, Build queue (phone + desktop)",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "",
+   "doneAt": "2026-10-30T21:21:37.348Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Build orchestrator: tabs + Grid/List + category chips + Next on Fable/Opus become one compact toolbar (category dropdown, view toggle, next-model dropdown)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T21:21:37.348Z",
+   "doneAt": "2026-10-30T21:21:37.402Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Home: page actions row (Open project, Terminal, Export plan, Token, Tracker) → 2 main buttons + ⋯ menu; summary cards denser",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-10-30T21:21:37.402Z",
+   "doneAt": "2026-10-30T21:21:37.447Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Catalog + Tracker: filter chip rows → one dropdown each; item rows one line with status chip; Asset studio slot chips → dropdown",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-30T21:21:37.447Z",
+   "doneAt": "2026-10-30T21:21:37.499Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Checks, after screenshots, report + LOG, PR",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-10-30T21:21:37.499Z",
+   "doneAt": "2026-10-30T21:21:37.559Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-10-30T21:21:37.560Z",
+ "landedAt": "2026-10-30T21:21:37.560Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

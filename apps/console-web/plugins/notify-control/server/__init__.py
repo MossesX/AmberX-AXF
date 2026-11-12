@@ -218,11 +218,24 @@ def run_rules(a: dict[str, Any]) -> None:
         fire(tr, view)
 
 
+def crew_say(section: str, event: str, text: str, ref: str = "") -> None:
+    """The section's event in the crew's group chat, as its owner (capability axf.crew-sections@1). Never raises."""
+    svc = plugin_services.get("axf.crew-sections@1")
+    if svc is None:
+        return
+    try:
+        svc.say(section, event, text, ref)
+    except Exception:  # noqa: BLE001 — the chat never breaks a notification
+        pass
+
+
 def fire(tr: dict[str, Any], a: dict[str, Any]) -> None:
-    """A rule's own notification. On a side thread: the hub is in the middle of the raise that set it off."""
+    """A rule's own notification. On a side thread: the hub is in the middle of the raise that set it off. The rules'
+    owner says it in the group chat."""
     alert = {"source": "notify-rule", "severity": tr["severity"], "key": f"notify-rule:{tr['id']}", "title": tr["title"][:200], "body": tr["body"] or str(a.get("title") or ""),
              "link": str(a.get("link") or "view:notify-control"), "meta": {"notifyRule": tr["id"], "notifyType": a["type"], "label": tr["name"]}}
     threading.Thread(target=cx.raise_alert, args=(alert,), name="notify-rule", daemon=True).start()
+    crew_say("notifications", "done", f"Your rule \"{str(tr.get('name') or tr['id'])[:60]}\" fired: {str(tr['title'])[:140]}", str(tr["id"]))
 
 
 def plain_key(source: str, title: str) -> str:

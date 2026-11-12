@@ -11,3 +11,4 @@
 .axp-slots__num { display: flex; align-items: flex-end; gap: var(--fx-dens-gap-md); flex-wrap: wrap; }
 .axp-slots__num > :first-child { flex: 1 1 14em; }
 .axp-slots__running { margin-top: var(--fx-dens-gap-md); }
+.axp-slots__hard-now { margin: 0; display: flex; align-items: center; gap: var(--fx-dens-gap-sm); flex-wrap: wrap; }

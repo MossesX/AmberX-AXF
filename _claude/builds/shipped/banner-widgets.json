@@ -1,0 +1,573 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-banner-widgets",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:30:21Z",
+ "build": {
+  "id": "banner-widgets",
+  "title": "Banner widgets",
+  "profile": "all",
+  "category": "Feature",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "I need that [usage meter] to be in the banner too. And then I need to right-click the banner and select which widgets appear in it. It's getting cluttered. And some of them are way too big. I need settings for them all so I can change how big they are, how much room they take up.\n\nAddendum (voice, Nov 4): Start that as a second build right now. Merge it right away. Deploy it.",
+  "verbatim": true,
+  "at": "2026-11-05T02:08:38.606Z",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-banner-widgets--gina",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-05T02:05:35.938Z",
+   "endedAt": "2026-11-05T03:07:48.776Z",
+   "exit": 1,
+   "costUsd": 27.3637
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "banner widget engine: prefs, defaults, overflow rule + fixtures-free check",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-05T02:05:35.938Z",
+   "doneAt": "2026-11-05T02:17:07.046Z",
+   "actualMin": 12,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "runtime: one widget registry, hidden/size in placement, actions, context menu",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-05T02:17:07.046Z",
+   "doneAt": "2026-11-05T02:17:08.309Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Banner + Molly strip draw prefs; overflow menu; CSS tokens",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-05T02:17:08.309Z",
+   "doneAt": "2026-11-05T02:29:17.992Z",
+   "actualMin": 12,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Widgets dialog: picker, reorder, per-widget settings, live preview, reset",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-05T02:29:17.992Z",
+   "doneAt": "2026-11-05T02:29:19.516Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Plugins declare labels + compact defaults; ticker compact; usage meter ready",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-05T02:29:19.516Z",
+   "doneAt": "2026-11-05T02:29:20.996Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "CI check against hard-coded chips; API/voice actions; tests; docs",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-11-05T02:29:20.996Z",
+   "doneAt": "2026-11-05T02:29:22.206Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Shots, UI Review, report, PR, merge queue front, deploy",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "claude/banner-widgets",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 352,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/352"
+ },
+ "landedCommit": "214a19afafad179aea02f9cad0aa997649da6196",
+ "commits": [
+  "529505f0c89b172142fb6bee44525474da1c46dd",
+  "1c9c8fe94c3715b5a78f24d45e8d8a1959a9062c",
+  "b3dfb028c2a25e5776742b1a53f2d6770afe5ec3",
+  "5892cf54397b3a4beb215f4e723284f47ec4ca57"
+ ],
+ "mergedAt": "2026-11-05T03:21:37Z",
+ "landedAt": "2026-11-05T03:21:36Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/THREADS.md",
+  "_claude/builds/reports/banner-widgets.md",
+  "_claude/builds/reports/banner-widgets/shots/desktop-bar.png",
+  "_claude/builds/reports/banner-widgets/shots/desktop-context.png",
+  "_claude/builds/reports/banner-widgets/shots/desktop-overflow.png",
+  "_claude/builds/reports/banner-widgets/shots/desktop-picker.png",
+  "_claude/builds/reports/banner-widgets/shots/phone-bar.png",
+  "_claude/builds/reports/banner-widgets/shots/phone-overflow.png",
+  "_claude/builds/reports/banner-widgets/shots/phone-picker.png",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/axf/assets/help/framework-drafts.json",
+  "apps/amberx-droid/src/axf/assets/help/framework.json",
+  "apps/amberx-droid/src/axf/core/engines/bannerwidgets.ts",
+  "apps/amberx-droid/src/axf/core/engines/card-rules.mjs",
+  "apps/amberx-droid/src/axf/core/engines/widgets.ts",
+  "apps/amberx-droid/src/axf/core/index.ts",
+  "apps/amberx-droid/src/axf/core/model-switch.mjs",
+  "apps/amberx-droid/src/axf/core/runtime.ts",
+  "apps/amberx-droid/src/axf/libs/hub/react.tsx",
+  "apps/amberx-droid/src/axf/libs/hubstatus/index.tsx",
+  "apps/amberx-droid/src/axf/react/AppShell.tsx",
+  "apps/amberx-droid/src/axf/react/components/Arrange.tsx",
+  "apps/amberx-droid/src/axf/react/components/Banner.tsx",
+  "apps/amberx-droid/src/axf/react/components/BannerSettings.tsx",
+  "apps/amberx-droid/src/axf/react/components/BannerStrip.tsx",
+  "apps/amberx-droid/src/axf/react/components/BannerWidgets.tsx",
+  "apps/amberx-droid/src/axf/react/components/Overlays.tsx",
+  "apps/amberx-droid/src/axf/react/components/Widgets.tsx",
+  "apps/amberx-droid/src/axf/react/index.ts",
+  "apps/amberx-droid/src/axf/ui/axf.css",
+  "apps/amberx-droid/src/mic.tsx",
+  "apps/amberx-droid/src/plugins/ai/web/index.tsx",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/axf/assets/help/framework-drafts.json",
+  "apps/axhub-web/src/axf/assets/help/framework.json",
+  "apps/axhub-web/src/axf/core/engines/bannerwidgets.ts",
+  "apps/axhub-web/src/axf/core/engines/card-rules.mjs",
+  "apps/axhub-web/src/axf/core/engines/widgets.ts",
+  "apps/axhub-web/src/axf/core/index.ts",
+  "apps/axhub-web/src/axf/core/model-switch.mjs",
+  "apps/axhub-web/src/axf/core/runtime.ts",
+  "apps/axhub-web/src/axf/libs/hub/react.tsx",
+  "apps/axhub-web/src/axf/libs/hubstatus/index.tsx",
+  "apps/axhub-web/src/axf/react/AppShell.tsx",
+  "apps/axhub-web/src/axf/react/components/Arrange.tsx",
+  "apps/axhub-web/src/axf/react/components/Banner.tsx",
+  "apps/axhub-web/src/axf/react/components/BannerSettings.tsx",
+  "apps/axhub-web/src/axf/react/components/BannerStrip.tsx",
+  "apps/axhub-web/src/axf/react/components/BannerWidgets.tsx",
+  "apps/axhub-web/src/axf/react/components/Overlays.tsx",
+  "apps/axhub-web/src/axf/react/components/Widgets.tsx",
+  "apps/axhub-web/src/axf/react/index.ts",
+  "apps/axhub-web/src/axf/ui/axf.css",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/agent-voice/web/index.tsx",
+  "apps/console-web/plugins/alerts-bell/web/core.ts",
+  "apps/console-web/plugins/build-profiles/web/index.tsx",
+  "apps/console-web/plugins/builds-page/web/index.tsx",
+  "apps/console-web/plugins/claude-badge/web/index.tsx",
+  "apps/console-web/plugins/follow-amber/web/index.tsx",
+  "apps/console-web/plugins/main-build-status/web/core.ts",
+  "apps/console-web/plugins/plan-studio/web/index.tsx",
+  "apps/console-web/plugins/whats-shipped/web/core.ts",
+  "apps/console-web/src/assets/app-menu/console.json",
+  "apps/console-web/src/axf/assets/help/framework-drafts.json",
+  "apps/console-web/src/axf/assets/help/framework.json",
+  "apps/console-web/src/axf/core/engines/bannerwidgets.ts",
+  "apps/console-web/src/axf/core/engines/card-rules.mjs",
+  "apps/console-web/src/axf/core/engines/widgets.ts",
+  "apps/console-web/src/axf/core/index.ts",
+  "apps/console-web/src/axf/core/model-switch.mjs",
+  "apps/console-web/src/axf/core/runtime.ts",
+  "apps/console-web/src/axf/libs/hub/react.tsx",
+  "apps/console-web/src/axf/libs/hubstatus/index.tsx",
+  "apps/console-web/src/axf/react/AppShell.tsx",
+  "apps/console-web/src/axf/react/components/Arrange.tsx",
+  "apps/console-web/src/axf/react/components/Banner.tsx",
+  "apps/console-web/src/axf/react/components/BannerSettings.tsx",
+  "apps/console-web/src/axf/react/components/BannerStrip.tsx",
+  "apps/console-web/src/axf/react/components/BannerWidgets.tsx",
+  "apps/console-web/src/axf/react/components/Overlays.tsx",
+  "apps/console-web/src/axf/react/components/Widgets.tsx",
+  "apps/console-web/src/axf/react/index.ts",
+  "apps/console-web/src/axf/ui/axf.css",
+  "apps/molly/axf.lock.json",
+  "apps/molly/src/axf/assets/help/framework-drafts.json",
+  "apps/molly/src/axf/assets/help/framework.json",
+  "apps/molly/src/axf/core/engines/bannerwidgets.ts",
+  "apps/molly/src/axf/core/engines/card-rules.mjs",
+  "apps/molly/src/axf/core/engines/widgets.ts",
+  "apps/molly/src/axf/core/index.ts",
+  "apps/molly/src/axf/core/model-switch.mjs",
+  "apps/molly/src/axf/core/runtime.ts",
+  "apps/molly/src/axf/libs/hub/react.tsx",
+  "apps/molly/src/axf/libs/hubstatus/index.tsx",
+  "apps/molly/src/axf/react/AppShell.tsx",
+  "apps/molly/src/axf/react/components/Arrange.tsx",
+  "apps/molly/src/axf/react/components/Banner.tsx",
+  "apps/molly/src/axf/react/components/BannerSettings.tsx",
+  "apps/molly/src/axf/react/components/BannerStrip.tsx",
+  "apps/molly/src/axf/react/components/BannerWidgets.tsx",
+  "apps/molly/src/axf/react/components/Overlays.tsx",
+  "apps/molly/src/axf/react/components/Widgets.tsx",
+  "apps/molly/src/axf/react/index.ts",
+  "apps/molly/src/axf/ui/axf.css",
+  "apps/walkthrough-studio/src/assets/help/framework-drafts.json",
+  "apps/walkthrough-studio/src/assets/help/framework.json",
+  "framework/assets/help/framework-drafts.json",
+  "framework/assets/help/framework.json",
+  "framework/cli/check-banner-widgets.mjs",
+  "framework/cli/plugin-lifecycle.mjs",
+  "framework/core/engines/bannerwidgets.ts",
+  "framework/core/engines/widgets.ts",
+  "framework/core/index.ts",
+  "framework/core/runtime.ts",
+  "framework/libs/hub/react.tsx",
+  "framework/libs/hubstatus/index.tsx",
+  "framework/react/AppShell.tsx",
+  "framework/react/components/Arrange.tsx",
+  "framework/react/components/Banner.tsx",
+  "framework/react/components/BannerSettings.tsx",
+  "framework/react/components/BannerStrip.tsx",
+  "framework/react/components/BannerWidgets.tsx",
+  "framework/react/components/Overlays.tsx",
+  "framework/react/components/Widgets.tsx",
+  "framework/react/index.ts",
+  "framework/spec/BANNER-WIDGETS.md",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-widgets.mts",
+  "framework/ui/axf.css"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/axf/assets/help/framework-drafts.json",
+    "apps/amberx-droid/src/axf/assets/help/framework.json",
+    "apps/amberx-droid/src/axf/core/engines/bannerwidgets.ts",
+    "apps/amberx-droid/src/axf/core/engines/card-rules.mjs",
+    "apps/amberx-droid/src/axf/core/engines/widgets.ts",
+    "apps/amberx-droid/src/axf/core/index.ts",
+    "apps/amberx-droid/src/axf/core/model-switch.mjs",
+    "apps/amberx-droid/src/axf/core/runtime.ts",
+    "apps/amberx-droid/src/axf/libs/hub/react.tsx",
+    "apps/amberx-droid/src/axf/libs/hubstatus/index.tsx",
+    "apps/amberx-droid/src/axf/react/AppShell.tsx",
+    "apps/amberx-droid/src/axf/react/components/Arrange.tsx",
+    "apps/amberx-droid/src/axf/react/components/Banner.tsx",
+    "apps/amberx-droid/src/axf/react/components/BannerSettings.tsx",
+    "apps/amberx-droid/src/axf/react/components/BannerStrip.tsx",
+    "apps/amberx-droid/src/axf/react/components/BannerWidgets.tsx",
+    "apps/amberx-droid/src/axf/react/components/Overlays.tsx",
+    "apps/amberx-droid/src/axf/react/components/Widgets.tsx",
+    "apps/amberx-droid/src/axf/react/index.ts",
+    "apps/amberx-droid/src/axf/ui/axf.css",
+    "apps/amberx-droid/src/mic.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/src/assets/app-menu/console.json",
+    "apps/console-web/src/axf/assets/help/framework-drafts.json",
+    "apps/console-web/src/axf/assets/help/framework.json",
+    "apps/console-web/src/axf/core/engines/bannerwidgets.ts",
+    "apps/console-web/src/axf/core/engines/card-rules.mjs",
+    "apps/console-web/src/axf/core/engines/widgets.ts",
+    "apps/console-web/src/axf/core/index.ts",
+    "apps/console-web/src/axf/core/model-switch.mjs",
+    "apps/console-web/src/axf/core/runtime.ts",
+    "apps/console-web/src/axf/libs/hub/react.tsx",
+    "apps/console-web/src/axf/libs/hubstatus/index.tsx",
+    "apps/console-web/src/axf/react/AppShell.tsx",
+    "apps/console-web/src/axf/react/components/Arrange.tsx",
+    "apps/console-web/src/axf/react/components/Banner.tsx",
+    "apps/console-web/src/axf/react/components/BannerSettings.tsx",
+    "apps/console-web/src/axf/react/components/BannerStrip.tsx",
+    "apps/console-web/src/axf/react/components/BannerWidgets.tsx",
+    "apps/console-web/src/axf/react/components/Overlays.tsx",
+    "apps/console-web/src/axf/react/components/Widgets.tsx",
+    "apps/console-web/src/axf/react/index.ts",
+    "apps/console-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/axf/assets/help/framework-drafts.json",
+    "apps/axhub-web/src/axf/assets/help/framework.json",
+    "apps/axhub-web/src/axf/core/engines/bannerwidgets.ts",
+    "apps/axhub-web/src/axf/core/engines/card-rules.mjs",
+    "apps/axhub-web/src/axf/core/engines/widgets.ts",
+    "apps/axhub-web/src/axf/core/index.ts",
+    "apps/axhub-web/src/axf/core/model-switch.mjs",
+    "apps/axhub-web/src/axf/core/runtime.ts",
+    "apps/axhub-web/src/axf/libs/hub/react.tsx",
+    "apps/axhub-web/src/axf/libs/hubstatus/index.tsx",
+    "apps/axhub-web/src/axf/react/AppShell.tsx",
+    "apps/axhub-web/src/axf/react/components/Arrange.tsx",
+    "apps/axhub-web/src/axf/react/components/Banner.tsx",
+    "apps/axhub-web/src/axf/react/components/BannerSettings.tsx",
+    "apps/axhub-web/src/axf/react/components/BannerStrip.tsx",
+    "apps/axhub-web/src/axf/react/components/BannerWidgets.tsx",
+    "apps/axhub-web/src/axf/react/components/Overlays.tsx",
+    "apps/axhub-web/src/axf/react/components/Widgets.tsx",
+    "apps/axhub-web/src/axf/react/index.ts",
+    "apps/axhub-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/axf.lock.json",
+    "apps/molly/src/axf/assets/help/framework-drafts.json",
+    "apps/molly/src/axf/assets/help/framework.json",
+    "apps/molly/src/axf/core/engines/bannerwidgets.ts",
+    "apps/molly/src/axf/core/engines/card-rules.mjs",
+    "apps/molly/src/axf/core/engines/widgets.ts",
+    "apps/molly/src/axf/core/index.ts",
+    "apps/molly/src/axf/core/model-switch.mjs",
+    "apps/molly/src/axf/core/runtime.ts",
+    "apps/molly/src/axf/libs/hub/react.tsx",
+    "apps/molly/src/axf/libs/hubstatus/index.tsx",
+    "apps/molly/src/axf/react/AppShell.tsx",
+    "apps/molly/src/axf/react/components/Arrange.tsx",
+    "apps/molly/src/axf/react/components/Banner.tsx",
+    "apps/molly/src/axf/react/components/BannerSettings.tsx",
+    "apps/molly/src/axf/react/components/BannerStrip.tsx",
+    "apps/molly/src/axf/react/components/BannerWidgets.tsx",
+    "apps/molly/src/axf/react/components/Overlays.tsx",
+    "apps/molly/src/axf/react/components/Widgets.tsx",
+    "apps/molly/src/axf/react/index.ts",
+    "apps/molly/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/AppShell.tsx",
+    "framework/react/components/Arrange.tsx",
+    "framework/react/components/Banner.tsx",
+    "framework/react/components/BannerSettings.tsx",
+    "framework/react/components/BannerStrip.tsx",
+    "framework/react/components/BannerWidgets.tsx",
+    "framework/react/components/Overlays.tsx",
+    "framework/react/components/Widgets.tsx",
+    "framework/react/index.ts"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/banner-widgets.md",
+    "_claude/builds/reports/banner-widgets/shots/desktop-bar.png",
+    "_claude/builds/reports/banner-widgets/shots/desktop-context.png",
+    "_claude/builds/reports/banner-widgets/shots/desktop-overflow.png",
+    "_claude/builds/reports/banner-widgets/shots/desktop-picker.png",
+    "_claude/builds/reports/banner-widgets/shots/phone-bar.png",
+    "_claude/builds/reports/banner-widgets/shots/phone-overflow.png",
+    "_claude/builds/reports/banner-widgets/shots/phone-picker.png"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/bannerwidgets.ts",
+    "framework/core/engines/widgets.ts",
+    "framework/core/index.ts",
+    "framework/core/runtime.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/BANNER-WIDGETS.md",
+    "framework/spec/PORTING.md",
+    "framework/spec/check-widgets.mts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "walkthrough-studio",
+   "files": [
+    "apps/walkthrough-studio/src/assets/help/framework-drafts.json",
+    "apps/walkthrough-studio/src/assets/help/framework.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "assets",
+   "files": [
+    "framework/assets/help/framework-drafts.json",
+    "framework/assets/help/framework.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/check-banner-widgets.mjs",
+    "framework/cli/plugin-lifecycle.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "libs",
+   "files": [
+    "framework/libs/hub/react.tsx",
+    "framework/libs/hubstatus/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-voice",
+   "files": [
+    "apps/console-web/plugins/agent-voice/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ai",
+   "files": [
+    "apps/amberx-droid/src/plugins/ai/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "alerts-bell",
+   "files": [
+    "apps/console-web/plugins/alerts-bell/web/core.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-profiles",
+   "files": [
+    "apps/console-web/plugins/build-profiles/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "builds-page",
+   "files": [
+    "apps/console-web/plugins/builds-page/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-badge",
+   "files": [
+    "apps/console-web/plugins/claude-badge/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "follow-amber",
+   "files": [
+    "apps/console-web/plugins/follow-amber/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "main-build-status",
+   "files": [
+    "apps/console-web/plugins/main-build-status/web/core.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plan-studio",
+   "files": [
+    "apps/console-web/plugins/plan-studio/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "whats-shipped",
+   "files": [
+    "apps/console-web/plugins/whats-shipped/web/core.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "ui",
+   "files": [
+    "framework/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 27.3637,
+  "estimated": false,
+  "tokens": {
+   "input": 138,
+   "output": 641,
+   "cacheRead": 15043484,
+   "cacheWrite": 302565
+  }
+ },
+ "report": "_claude/builds/reports/banner-widgets.md",
+ "open": [
+  "s7: Shots, UI Review, report, PR, merge queue front, deploy",
+  "Usage meter: the `usage-meter` build had not landed when this was written (branch has no commits, queued behind the agent cap). Its chip appears by itself once it attaches; docs give the exact call. It was exercised here with a stand-in chip of the same shape.",
+  "Per device means per form factor, not per physical phone.",
+  "Region and order stay in the shared arrangement (`axf.widgets.arrange.banner`), so they are not per form factor. That is what keeps arrange mode and the picker in agreement.",
+  "A chip whose plugin has taken it down is listed under *Not on the bar right now* only after it attached once this page load.",
+  "Shots use a console with no server behind it, so plugin chips show their offline text.",
+  "Molly's strip shares the same code but was only typechecked and built, not opened in Molly."
+ ]
+}

@@ -1,0 +1,82 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-28v1xw",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:33:12Z",
+ "build": {
+  "id": "project-thread-28v1xw",
+  "title": "project-thread-28v1xw",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-28v1xw",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-28v1xw",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "91a8209782640709078779e226c63486664c0e59",
+ "commits": [
+  "e6092fe59d0a7bc204f24f86f221220502f1be75"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-24T15:39:14Z",
+ "files": [
+  "CLAUDE.md",
+  "apps/console-web/plugins/agent-manager/addons/vinny/addon.json",
+  "apps/console-web/plugins/agent-manager/server/__init__.py",
+  "apps/console-web/plugins/agent-manager/server/store.py",
+  "apps/console-web/plugins/agent-manager/test.py"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "agent-manager",
+   "files": [
+    "apps/console-web/plugins/agent-manager/addons/vinny/addon.json",
+    "apps/console-web/plugins/agent-manager/server/__init__.py",
+    "apps/console-web/plugins/agent-manager/server/store.py",
+    "apps/console-web/plugins/agent-manager/test.py"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

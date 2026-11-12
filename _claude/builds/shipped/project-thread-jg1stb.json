@@ -1,0 +1,180 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-project-thread-jg1stb",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:33:14Z",
+ "build": {
+  "id": "project-thread-jg1stb",
+  "title": "project-thread-jg1stb",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "project-thread-jg1stb",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/project-thread-jg1stb",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "95ebf4b1b11b3b9547a74a31c3d9d2d715e0f7ea",
+ "commits": [
+  "0703c3d399f1c9fae920b05e5d9fc7393802ae9f",
+  "c58a6853972ed9f64f7c1882e205794fc9ebe16b",
+  "7d1b2ce3aeb27c34d91bef705c4f6df94b5daa63"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-24T15:37:10Z",
+ "files": [
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/axf.manifest.json",
+  "apps/axhub-web/src/App.tsx",
+  "apps/axhub-web/src/assets/context-menu/axhub-web.json",
+  "apps/axhub-web/src/assets/settings/axhub-web.json",
+  "apps/axhub-web/src/assets/settings/developer-apps.json",
+  "apps/axhub-web/src/assets/settings/side-tabs.json",
+  "apps/axhub-web/src/assets/settings/standard.json",
+  "apps/axhub-web/src/axf/core/engines/bannerhide.ts",
+  "apps/axhub-web/src/axf/libs/hubstore/core.ts",
+  "apps/axhub-web/src/axf/libs/hubstore/index.ts",
+  "apps/axhub-web/src/axf/libs/hubstore/library.json",
+  "apps/axhub-web/src/axf/libs/hubsync/core.ts",
+  "apps/axhub-web/src/axf/libs/hubsync/hubsync.css",
+  "apps/axhub-web/src/axf/libs/hubsync/index.tsx",
+  "apps/axhub-web/src/axf/libs/hubsync/library.json",
+  "apps/axhub-web/src/axf/libs/hubsync/sync.ts",
+  "apps/axhub-web/src/axf/react/components/BannerGroup.tsx",
+  "apps/axhub-web/src/axf/react/components/BannerSettings.tsx",
+  "apps/axhub-web/src/axf/react/components/Slots.tsx",
+  "apps/axhub-web/src/axf/react/index.ts",
+  "apps/axhub-web/src/axf/react/library.ts",
+  "apps/axhub-web/src/axf/schemas/json/settings.schema.json",
+  "apps/axhub-web/src/axf/ui/axf.css",
+  "apps/axhub-web/test.mjs",
+  "apps/console-web/axf.manifest.json",
+  "apps/console-web/src/assets/settings/console.json",
+  "apps/console-web/src/assets/settings/developer-apps.json",
+  "apps/console-web/src/assets/settings/side-tabs.json",
+  "apps/console-web/src/assets/settings/standard.json",
+  "apps/patches-web/axf.lock.json",
+  "apps/patches-web/axf.manifest.json",
+  "apps/patches-web/src/App.tsx",
+  "apps/patches-web/src/assets/settings/patches.json",
+  "apps/patches-web/src/axf/core/engines/bannerhide.ts",
+  "apps/patches-web/src/axf/react/components/BannerGroup.tsx",
+  "apps/patches-web/src/axf/react/components/BannerSettings.tsx",
+  "apps/patches-web/src/axf/react/components/Slots.tsx",
+  "apps/patches-web/src/axf/react/index.ts",
+  "apps/patches-web/src/axf/react/library.ts",
+  "apps/patches-web/src/axf/schemas/json/settings.schema.json",
+  "apps/patches-web/src/axf/ui/axf.css",
+  "apps/patches-web/src/patches.ts",
+  "apps/patches-web/src/patchesLibrary.tsx",
+  "apps/patches/app/src/main/kotlin/ai/amberx/axf/patches/AppModule.kt",
+  "apps/patches/app/src/main/kotlin/ai/amberx/axf/patches/MainActivity.kt",
+  "apps/patches/app/src/main/kotlin/ai/amberx/axf/patches/views/CombinedSettings.kt"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/axf.manifest.json",
+    "apps/axhub-web/src/App.tsx",
+    "apps/axhub-web/src/assets/context-menu/axhub-web.json",
+    "apps/axhub-web/src/assets/settings/axhub-web.json",
+    "apps/axhub-web/src/assets/settings/developer-apps.json",
+    "apps/axhub-web/src/assets/settings/side-tabs.json",
+    "apps/axhub-web/src/assets/settings/standard.json",
+    "apps/axhub-web/src/axf/core/engines/bannerhide.ts",
+    "apps/axhub-web/src/axf/libs/hubstore/core.ts",
+    "apps/axhub-web/src/axf/libs/hubstore/index.ts",
+    "apps/axhub-web/src/axf/libs/hubstore/library.json",
+    "apps/axhub-web/src/axf/libs/hubsync/core.ts",
+    "apps/axhub-web/src/axf/libs/hubsync/hubsync.css",
+    "apps/axhub-web/src/axf/libs/hubsync/index.tsx",
+    "apps/axhub-web/src/axf/libs/hubsync/library.json",
+    "apps/axhub-web/src/axf/libs/hubsync/sync.ts",
+    "apps/axhub-web/src/axf/react/components/BannerGroup.tsx",
+    "apps/axhub-web/src/axf/react/components/BannerSettings.tsx",
+    "apps/axhub-web/src/axf/react/components/Slots.tsx",
+    "apps/axhub-web/src/axf/react/index.ts",
+    "apps/axhub-web/src/axf/react/library.ts",
+    "apps/axhub-web/src/axf/schemas/json/settings.schema.json",
+    "apps/axhub-web/src/axf/ui/axf.css",
+    "apps/axhub-web/test.mjs"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "patches-web",
+   "files": [
+    "apps/patches-web/axf.lock.json",
+    "apps/patches-web/axf.manifest.json",
+    "apps/patches-web/src/App.tsx",
+    "apps/patches-web/src/assets/settings/patches.json",
+    "apps/patches-web/src/axf/core/engines/bannerhide.ts",
+    "apps/patches-web/src/axf/react/components/BannerGroup.tsx",
+    "apps/patches-web/src/axf/react/components/BannerSettings.tsx",
+    "apps/patches-web/src/axf/react/components/Slots.tsx",
+    "apps/patches-web/src/axf/react/index.ts",
+    "apps/patches-web/src/axf/react/library.ts",
+    "apps/patches-web/src/axf/schemas/json/settings.schema.json",
+    "apps/patches-web/src/axf/ui/axf.css",
+    "apps/patches-web/src/patches.ts",
+    "apps/patches-web/src/patchesLibrary.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.manifest.json",
+    "apps/console-web/src/assets/settings/console.json",
+    "apps/console-web/src/assets/settings/developer-apps.json",
+    "apps/console-web/src/assets/settings/side-tabs.json",
+    "apps/console-web/src/assets/settings/standard.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "patches",
+   "files": [
+    "apps/patches/app/src/main/kotlin/ai/amberx/axf/patches/AppModule.kt",
+    "apps/patches/app/src/main/kotlin/ai/amberx/axf/patches/MainActivity.kt",
+    "apps/patches/app/src/main/kotlin/ai/amberx/axf/patches/views/CombinedSettings.kt"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

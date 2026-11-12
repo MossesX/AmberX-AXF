@@ -25,6 +25,10 @@
  *   4. the reason it waits (land-core.mjs blockReason) written to land.json; a new reason is pushed to Brett once
  *      (console alert, key land:<build>), and resolved when it lands.
  *
+ * Group chat (crew-sections@1): each landing event is posted as the section's owner through framework/cli/crew-say.mjs (a
+ * child process: this folder imports only node built-ins). Sections `landing` (this round) and `merge-queue`
+ * (merge-queue.mjs). Dropped while the chat is off; AXF_CREW_SAY=off for tests; never on a dry run.
+ *
  * Settings (push banner config.json, Settings → Plugins → Push banner → Auto-land): autoLand (off since Nov 4 2026:
  * only the merge queue merges; Brett: "Stop merging these things one at a time"), landWaitUi (on).
  * Environment: AXF_LAND_REPO (checkout to run git in; default this file's repo), AXF_PUSH_BANNER_DIR (data folder;
@@ -126,6 +130,17 @@ export function makeConsole(s) {
 }
 
 // ------------------------------------------------------------------ state files (the push banner's data folder)
+
+/** A section event in the crew's group chat, as its owner (framework/cli/crew-say.mjs). Never fails the round. */
+export function crewSay(section, event, text, { ref = '', repo = SELF_REPO, dedupeMin } = {}) {
+  if (process.env.AXF_CREW_SAY === 'off') return false;
+  const cli = join(repo, 'framework/cli/crew-say.mjs');
+  if (!existsSync(cli)) return false;
+  const args = [cli, section, event, String(text || '').slice(0, 600), ...(ref ? ['--ref', String(ref)] : []), ...(dedupeMin !== undefined ? ['--dedupe-min', String(dedupeMin)] : [])];
+  return spawnSync(process.execPath, args, { cwd: repo, encoding: 'utf8', timeout: 30000 }).status === 0;
+}
+/** Which chat event a landing reason is: Brett's move, a code fix, or something in the way. */
+export const reasonEvent = (kind) => (['held', 'ui', 'code'].includes(kind) ? 'waiting' : ['conflict', 'ci', 'error'].includes(kind) ? 'failed' : 'blocked');
 
 export const stateFile = (s) => join(s.dataDir, 'land.json');
 export const controlFile = (s) => join(s.dataDir, 'land-control.json');
@@ -336,7 +351,7 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
             else if (m.merged) { it.mergedMain = { sha: m.sha, resolved: m.resolved || [] }; git(['fetch', '-q', s.remote, `+refs/heads/${b.branch}:refs/remotes/${s.remote}/${b.branch}`]); }
           }
           if (!pr && !facts.conflicts && !dry) {
-            try { pr = await gh('POST', `/repos/${s.slug}/pulls`, { title: it.title.slice(0, 120), head: b.branch, base: s.base, body: `Build \`${b.id}\` is finished (every step done). Opened by auto-land: it merges by itself once CI is green on its head and UI Review doesn't hold it.\n\n${String(b.detail || '').slice(0, 1500)}` }); }
+            try { pr = await gh('POST', `/repos/${s.slug}/pulls`, { title: it.title.slice(0, 120), head: b.branch, base: s.base, body: `Build \`${b.id}\` is finished (every step done). Opened by auto-land: it merges by itself once CI is green on its head and UI Review doesn't hold it.\n\n${String(b.detail || '').slice(0, 1500)}` }); if (pr?.number) crewSay('landing', 'start', `${b.id} is finished. Opened PR #${pr.number} and CI is on it.`, { ref: b.id, repo: s.repo }); }
             catch (e) { facts.prError = e.message; }
           }
         }
@@ -365,13 +380,23 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
     it.pushed = old.pushed || null; it.agent = old.agent || null;
     if (it.reason && !it.reason.quiet && core.shouldPush(old.pushed, it.reason, it.head)) {
       if (!dry) await api('POST', '/api/alerts', core.alertFor(it.reason, { pr: it.pr ? `#${it.pr}` : '', since: it.since }));
+      if (!dry) {
+        const text = it.reason.text.replace(`${b.id}: `, `${b.id}${it.pr ? ` (#${it.pr})` : ''}: `);
+        if (reasonEvent(it.reason.kind) === 'waiting') crewSay('landing', 'waiting', `Brett, ${text}`, { ref: b.id, repo: s.repo });
+        else if (reasonEvent(it.reason.kind) === 'failed') crewSay('landing', 'failed', text, { ref: b.id, repo: s.repo });
+        else crewSay('landing', 'blocked', text, { ref: b.id, repo: s.repo });
+      }
       it.pushed = { kind: it.reason.kind, head: it.head, at };
     }
     if (it.reason?.agent && !(old.agent && old.agent.kind === it.reason.kind && old.agent.head === it.head)) {
       const job = core.agentJobFor(b, it.reason);
-      if (job && !dry) it.agent = { kind: it.reason.kind, head: it.head, at, ...agentJob(job) };
+      if (job && !dry) {
+        it.agent = { kind: it.reason.kind, head: it.head, at, ...agentJob(job) };
+        if (it.agent.exit === 0) crewSay('landing', 'start', `Handed ${b.id} to ${it.agent.session || 'an agent'} for the ${it.reason.kind === 'ci' ? 'red CI' : 'code conflict'}.`, { ref: b.id, repo: s.repo });
+      }
     }
     if (!it.reason && old.pushed && !dry) await api('POST', '/api/alerts/resolve', { keys: [core.alertKey(b.id)] });
+    if (!it.reason && old.state !== 'ready' && !dry) crewSay('landing', 'done', `${b.id}${it.pr ? ` (#${it.pr})` : ''} is ready: CI green, nothing holds it. It joins the merge queue.`, { ref: b.id, repo: s.repo });
     items.push(it);
   }
   // builds that left the list (merged, or no longer finished): their alert goes

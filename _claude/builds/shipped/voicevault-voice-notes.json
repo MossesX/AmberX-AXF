@@ -1,0 +1,125 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-voicevault-voice-notes",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:27:00Z",
+ "build": {
+  "id": "voicevault-voice-notes",
+  "title": "Voice notes listener in Voice Vault (start/stop triggers, list of lists, questions, saved to axHub)",
+  "profile": "all",
+  "category": "App",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "bake voice notes into the Voice Vault Android app. Voice Vault app code only (Android hold exception): background listener hears the start triggers from the console's Voice notes settings on axHub, beeps, records the note to the stop trigger, asks where to store it (list of lists, numbers, subcategories, question sets) and saves it to table notes in voice-notes on axHub via a hub session cookie (lib-hub sign-in). Kotlin hubstore twin stays deferred (framework). Branch claude/project-thread-l3b0qo.",
+  "verbatim": false,
+  "at": "2026-10-23T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Pure notes model (Kotlin port of voice-notes core rules) + unit test",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-24T11:08:03.315Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "axHub data client in app code (settings doc, lists table, notes table write with If-Match)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-24T11:08:03.315Z",
+   "doneAt": "2026-10-24T11:08:03.335Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Note conversation (beep, record to stop trigger, list of lists, subcategory, questions, confirm)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-24T11:08:03.335Z",
+   "doneAt": "2026-10-24T11:08:03.345Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Background service: start triggers heard alongside the global trigger",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-24T11:08:03.345Z",
+   "doneAt": "2026-10-24T11:08:03.351Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Notes screen: hub sign-in, status, take a note, last saved; settings + route",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-24T11:08:03.351Z",
+   "doneAt": "2026-10-24T11:08:03.358Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Docs, status, CI, PR",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-24T11:08:03.358Z",
+   "doneAt": "2026-10-24T11:08:03.363Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-10-24T11:08:03.374Z",
+ "landedAt": "2026-10-24T11:08:03.374Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

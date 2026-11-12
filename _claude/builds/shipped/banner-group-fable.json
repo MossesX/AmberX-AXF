@@ -1,0 +1,94 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-banner-group-fable",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:26:58Z",
+ "build": {
+  "id": "banner-group-fable",
+  "title": "Banner group window: Fable rebuild",
+  "profile": "all",
+  "category": "Framework",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Rebuild of the Opus banner group (branch claude/project-thread-1d9f6k, BannerGroup.tsx). Start by replacing the Opus version. Fable suggested, Opus chosen.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Review the Opus BannerGroup and decide the group state contract (setting axf.banners.group), as a pure engine in core",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s2",
+   "text": "Move parse/clamp into core/engines with a fixture + check script; record the Android twin in PORTING.md",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s3",
+   "text": "Replace the React component on the engine; keyboard move/resize, phone layout, screenshots + differences report",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-11-10T04:39:20.621Z",
+ "landedAt": "2026-11-10T04:39:20.621Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": [
+  "s1: Review the Opus BannerGroup and decide the group state contract (setting axf.banners.group), as a pure engine in core",
+  "s2: Move parse/clamp into core/engines with a fixture + check script; record the Android twin in PORTING.md",
+  "s3: Replace the React component on the engine; keyboard move/resize, phone layout, screenshots + differences report"
+ ]
+}

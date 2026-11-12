@@ -1,0 +1,177 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-lenny-land-all",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:55Z",
+ "build": {
+  "id": "lenny-land-all",
+  "title": "Land everything finished (freeze plan step two)",
+  "profile": "all",
+  "category": "Landing",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "What Brett said (voice, Nov 3 2026): CI fix is done (PR #284 merged 22:42 UTC, main green). \"Number two.\" Plan step two = merge everything finished. \"Give me Lenny.\"\nAgent: Landin' Lenny. Land #270 first, then #265-#292 oldest first and #279; close #267 (superseded by #284); leave #251/#254 for Brett; list older PRs #207-#236 for him; redeploy all apps.",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-lenny-land-all",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-03T22:45:56.656Z",
+   "endedAt": "2026-11-04T05:28:37.134Z",
+   "exit": 0,
+   "costUsd": 33.2427
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Land #270 auto-land first",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-03T22:45:56.656Z",
+   "doneAt": "2026-11-04T00:55:26.046Z",
+   "actualMin": 129,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Land #265-#269, #271-#277 oldest first (update from main, resolve, CI green, merge)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-04T00:56:03.656Z",
+   "doneAt": "2026-11-04T04:26:55.942Z",
+   "actualMin": 211,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Land #280-#283, #285-#289",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-04T04:26:55.942Z",
+   "doneAt": "2026-11-04T04:52:55.364Z",
+   "actualMin": 26,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Land #290-#292 and #279",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-04T04:52:55.364Z",
+   "doneAt": "2026-11-04T04:52:57.155Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Close #267 as superseded by #284",
+   "model": "Opus",
+   "estimate": "5 min",
+   "estimateMin": 5,
+   "startedAt": "2026-11-04T00:55:26.046Z",
+   "doneAt": "2026-11-04T00:56:03.656Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Redeploy console, Molly, axHub web, demo; confirm up",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-04T04:52:57.155Z",
+   "doneAt": "2026-11-04T05:27:37.066Z",
+   "actualMin": 35,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Report, older-PR list for Brett, THREADS",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-04T05:27:37.066Z",
+   "doneAt": "2026-11-04T05:27:40.234Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/lenny-land-all",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 304,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/304"
+ },
+ "landedCommit": "c6203f2d1efd0726295657259193925c4bd6a8ab",
+ "commits": [
+  "28616b7fb55a4eb0d7ad3eafed993006eb970126"
+ ],
+ "mergedAt": "2026-11-04T05:40:41Z",
+ "landedAt": "2026-11-04T05:40:40Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/lenny-land-all.md",
+  "deploy/install-console.sh"
+ ],
+ "areas": [
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/install-console.sh"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/lenny-land-all.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 33.2427,
+  "estimated": false,
+  "tokens": {
+   "input": 952,
+   "output": 6208,
+   "cacheRead": 128082852,
+   "cacheWrite": 456774
+  }
+ },
+ "report": "_claude/builds/reports/lenny-land-all.md",
+ "open": [
+  "#251 banner pack, #254 banner editor — untouched except set to draft so the push banner's auto-merge can't land them while he reviews (one tap on \"Ready for review\" puts them back).",
+  "Older PRs, none merged:"
+ ]
+}

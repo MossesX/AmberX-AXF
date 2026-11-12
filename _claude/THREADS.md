@@ -33,6 +33,8 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 ## Active
 
 | Thread | State | Branch | PR | Queued / next | Updated |
+| Tap to confirm in every settings interface (`add-a-tap-to-confirm-option-to-every-settings-in`, Opus; Brett Nov 12 voice: "put tap to confirm option in all of them. In all their settings interfaces." + Addenda 1–2): tap to confirm on touch now covers tab groups, nav menus, app menus, context menus and banners as well as toolbars (framework `react/tapConfirm.ts` `tapSurfaceOf`); every chrome settings dialog and every custom settings interface has Behaviour → Tap to confirm (chrome-settings@1 `tapConfirm`, instance-only); per-kind switches in Settings → Plugins → Toolbars; first tap tip = what it is + "Tap again to confirm"; actions `tapconfirm.item / kind / window` | PR open, UI Review r-20261112-55e4690f waiting | `claude/add-a-tap-to-confirm-option-to-every-settings-in` | [#524](https://github.com/MossesX/AmberX-AXF/pull/524) | Report `_claude/builds/reports/add-a-tap-to-confirm-option-to-every-settings-in.md`. walkthrough-studio + demo get it on their next rebake | 2026-11-12 |
+| An employee for every section, all in the group chat (`employee-for-every-section`, Opus; Brett Nov 11 voice: "Every everything has to have an employee so she can communicate in the group chat."): 11 sections that act on their own (orchestrator, dispatcher, watchdog, shipped, account failover, landing, merge queue, nightly deploy, backups, health monitor, notification rules), one crew owner each in `agents/sections.json` (crew-sections@1), Settings → Agent swarm → Section owners; start/done/failed/blocked/waiting posted as the owner through `framework/cli/crew-say.mjs` (chat switch respected, deduped); CI `crew-say.mjs check` fails a section that posts without an owner <!-- axf-plugin:agent-swarm --> | built, committed on the branch, not pushed | `claude/employee-for-every-section` | – | Brett approves the merge; UI Review shots of the Section owners panel. Not in the builds store: file it to track. Report `_claude/builds/reports/employee-for-every-section.md` | 2026-11-12 |
 | Enforce the merge queue, batched (`enforce-the-merge-queue-every-finished-build-goe`, Opus; Brett Nov 10: "What happened to the merge queue? … Everything needs to go into the merge queue so we can make one build out of it before we send it to CI."): queue was empty since Nov 7 because main's own light checks were red (retired `breakroom` profile folder came back → builds-store verify + check-profiles failed). Fixed in #455 (no UI). Batch mode: finished builds get a PR and join; up to 8 ready PRs → one commit on `queue/batch`, one CI run, lands on main as that commit; red batch split in half until the culprit is kicked; Merge on AmberX-AXF queues; REST/MCP/CLI `mergequeue-settings` <!-- axf-plugin:push-banner --> | built; #455 in the queue; batch PR draft until UI Review shots | `claude/enforce-the-merge-queue-every-finished-build-goe` (+ `claude/enforce-the-merge-queue-main-green`) | #455 + (see build) | Shots of Settings → Push banner (Batch switch, batch size) and the queue's batch line to UI Review, then mark ready. Report `_claude/builds/reports/enforce-the-merge-queue-every-finished-build-goe.md` | 2026-11-10 |
 | Orchestrator Hold status, Archive and Deleted tabs (`orchestrator-hold-status-archive-tab-deleted-tab`, Opus; Brett Nov 10: "Make a hold status … A deleted tab where all deleted builds stay saved forever."): On hold (stays in the Queue, dispatcher skips it), Back to Pending / Hold / Release / Archive / Unarchive / Delete (soft, kept forever) / Restore on any build, bulk select, Archive tab (complete + archived), Deleted tab; REST `pipeline/action`, MCP `pipeline-build-action`, console actions, CLI | PR open; screenshots + UI Review still to do (scratch console blocked on axHub) | `claude/orchestrator-hold-status-archive-tab-deleted-tab` | [#463](https://github.com/MossesX/AmberX-AXF/pull/463) | Report `_claude/builds/reports/orchestrator-hold-status-archive-tab-deleted-tab.md` | Nov 10 2026 |
 | Land all built PRs, skins first (`land-all-97-built-but-unmerged-builds-skins-firs`, Opus; Brett Nov 10: "Merge them all. Start with the skins"): main is red (stray breakroom profile, menu-reach, Kotlin appearance twin), which kept the merge queue empty since Nov 7. #455 fixed up (main merged, Kotlin NEVER list) and put first in the queue. Skins #409 #429 #355 #376 merged with main, conflicts kept both sides, pushed. #432 #440 #269 closed (superseded by #450). Drafts #430 #472 #469 #377 wait for their builds; #446 #466 wait for Brett in UI Review | phase 1 done, s1/s2 continue | `claude/land-all-97-built-but-unmerged-builds-skins-firs` | (report PR) | after #455 lands: one fresh check run on every open PR, then the kicked-out conflicts. Report `_claude/builds/reports/land-all-97-built-but-unmerged-builds-skins-firs.md` | 2026-11-10 |
@@ -776,406 +778,406 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 23:36 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` → queued, note (all) · console
-- 2026-11-10 23:36 UTC · `auto-requeue-builds-whose-session-stops-early-go` added (0 steps) (all) · console
-- 2026-11-10 23:36 UTC · `auto-requeue-builds-whose-session-stops-early-go` → queued, note (all) · console
-- 2026-11-10 23:37 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` → pending, note (all) · reconciler
-- 2026-11-10 23:37 UTC · `auto-requeue-builds-whose-session-stops-early-go` note (all) · orchestrator
-- 2026-11-10 23:26 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` PR #482 (all) · builds-live
-- 2026-11-10 23:26 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` s3 done, → built (all) · orchestrator
-- 2026-11-10 23:37 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` → running, note (all) · pipeline
-- 2026-11-10 23:37 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` note (all) · orchestrator
-- 2026-11-10 23:38 UTC · `auto-requeue-builds-whose-session-stops-early-go` → running, note (all) · pipeline
-- 2026-11-10 23:38 UTC · `auto-requeue-builds-whose-session-stops-early-go` branch claude/auto-requeue-builds-whose-session-stops-early-go (all) · pipeline
-- 2026-11-10 23:38 UTC · `auto-requeue-builds-whose-session-stops-early-go` note (all) · orchestrator
-- 2026-11-10 23:40 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` note (all) · orchestrator
-- 2026-11-10 23:41 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` note (all) · pipeline
-- 2026-11-10 23:42 UTC · `auto-requeue-builds-whose-session-stops-early-go` s1 done (all) · orchestrator
-- 2026-11-10 23:43 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` note (all) · orchestrator
-- 2026-11-10 23:43 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` note (all) · pipeline
-- 2026-11-10 23:43 UTC · `molly-banner-match` → queued, note (all) · auto-requeue (Brett: re-queue them)
-- 2026-11-10 23:43 UTC · `home-page-build-queue-card-opens-the-orchestrato` → queued, note (all) · auto-requeue (Brett: re-queue them)
-- 2026-11-10 23:43 UTC · `resolve-conflicts-and-land-pr-449-account-order` → queued, note (all) · auto-requeue (Brett: re-queue them)
-- 2026-11-10 23:43 UTC · `convert-every-app-into-a-molly-module-expenses-c` → queued, note (all) · auto-requeue (Brett: re-queue them)
-- 2026-11-10 23:43 UTC · `auto-requeue-builds-whose-session-stops-early-go` s2 done (all) · orchestrator
-- 2026-11-10 23:44 UTC · `molly-banner-match` → running, note (all) · pipeline
-- 2026-11-10 23:44 UTC · `molly-banner-match` note (all) · orchestrator
-- 2026-11-10 23:44 UTC · `resolve-conflicts-and-land-pr-449-account-order` → running, note (all) · pipeline
-- 2026-11-10 23:44 UTC · `resolve-conflicts-and-land-pr-449-account-order` → running, note (all) · orchestrator
-- 2026-11-10 23:44 UTC · `convert-every-app-into-a-molly-module-expenses-c` → running, note (all) · pipeline
-- 2026-11-10 23:44 UTC · `convert-every-app-into-a-molly-module-expenses-c` note (all) · orchestrator
-- 2026-11-10 23:44 UTC · `home-page-build-queue-card-opens-the-orchestrato` → running, note (all) · pipeline
-- 2026-11-10 23:44 UTC · `home-page-build-queue-card-opens-the-orchestrato` note (all) · orchestrator
-- 2026-11-10 23:44 UTC · `auto-requeue-builds-whose-session-stops-early-go` PR #484 (all) · builds-live
-- 2026-11-10 23:44 UTC · `auto-requeue-builds-whose-session-stops-early-go` s3 done, → built (all) · orchestrator
-- 2026-11-10 23:44 UTC · `auto-requeue-builds-whose-session-stops-early-go` note (all) · orchestrator
-- 2026-11-10 23:45 UTC · `auto-requeue-builds-whose-session-stops-early-go` PR #484, note (all) · reconciler
-- 2026-11-10 23:45 UTC · `auto-requeue-builds-whose-session-stops-early-go` note (all) · pipeline
-- 2026-11-10 23:46 UTC · `ai-assistant-in-molly-console-drives-by-api-open` added (0 steps) (all) · console
-- 2026-11-10 23:46 UTC · `ai-assistant-in-molly-console-drives-by-api-open` → queued, note (all) · console
-- 2026-11-10 23:46 UTC · `resolve-conflicts-and-land-pr-449-account-order` note (all) · orchestrator
-- 2026-11-10 23:46 UTC · `resolve-conflicts-and-land-pr-449-account-order` s7 done, → built (all) · orchestrator
-- 2026-11-10 23:46 UTC · `per-agent-api-control-switch-in-each-employee-s` added (0 steps) (all) · console
-- 2026-11-10 23:46 UTC · `per-agent-api-control-switch-in-each-employee-s` → queued, note (all) · console
-- 2026-11-10 23:47 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
-- 2026-11-10 23:47 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · builds-live
-- 2026-11-10 23:47 UTC · `per-agent-api-control-switch-in-each-employee-s` note (all) · orchestrator
-- 2026-11-10 23:47 UTC · `ai-assistant-in-molly-console-drives-by-api-open` → running, note (all) · pipeline
-- 2026-11-10 23:47 UTC · `ai-assistant-in-molly-console-drives-by-api-open` branch claude/ai-assistant-in-molly-console-drives-by-api-open (all) · pipeline
-- 2026-11-10 23:47 UTC · `molly-banner-match` note (all) · orchestrator
-- 2026-11-10 23:47 UTC · `per-agent-api-control-switch-in-each-employee-s` → running, note (all) · pipeline
-- 2026-11-10 23:47 UTC · `per-agent-api-control-switch-in-each-employee-s` branch claude/per-agent-api-control-switch-in-each-employee-s (all) · pipeline
-- 2026-11-10 23:48 UTC · `molly-banner-match` → pending, note (all) · pipeline
-- 2026-11-10 23:52 UTC · `home-page-build-queue-card-opens-the-orchestrato` s1 done, → running (all) · orchestrator
-- 2026-11-10 23:53 UTC · `home-page-build-queue-card-opens-the-orchestrato` s2 done (all) · orchestrator
-- 2026-11-10 23:53 UTC · `home-page-build-queue-card-opens-the-orchestrato` s3 done (all) · orchestrator
-- 2026-11-10 23:55 UTC · `convert-every-app-into-a-molly-module-expenses-c` s1 done, → running (all) · orchestrator
-- 2026-11-10 23:55 UTC · `convert-every-app-into-a-molly-module-expenses-c` note (all) · orchestrator
-- 2026-11-10 23:55 UTC · `convert-every-app-into-a-molly-module-expenses-c` s2 done (all) · orchestrator
-- 2026-11-10 23:56 UTC · `home-page-build-queue-card-opens-the-orchestrato` PR #485 (all) · builds-live
-- 2026-11-10 23:56 UTC · `home-page-build-queue-card-opens-the-orchestrato` s4 done, → built (all) · orchestrator
-- 2026-11-10 23:56 UTC · `home-page-build-queue-card-opens-the-orchestrato` note (all) · orchestrator
-- 2026-11-10 23:56 UTC · `per-agent-api-control-switch-in-each-employee-s` s1 done, → running (all) · orchestrator
-- 2026-11-10 23:57 UTC · `home-page-build-queue-card-opens-the-orchestrato` note (all) · orchestrator
-- 2026-11-10 23:57 UTC · `per-agent-api-control-switch-in-each-employee-s` s2 done (all) · orchestrator
-- 2026-11-10 23:58 UTC · `convert-every-app-into-a-molly-module-expenses-c` PR #486 (all) · builds-live
-- 2026-11-10 23:59 UTC · `convert-every-app-into-a-molly-module-expenses-c` s3 done, → built (all) · orchestrator
-- 2026-11-10 23:59 UTC · `convert-every-app-into-a-molly-module-expenses-c` note (all) · orchestrator
-- 2026-11-11 00:02 UTC · `per-agent-api-control-switch-in-each-employee-s` PR #487 (all) · builds-live
-- 2026-11-11 00:02 UTC · `per-agent-api-control-switch-in-each-employee-s` note (all) · orchestrator
-- 2026-11-11 00:02 UTC · `per-agent-api-control-switch-in-each-employee-s` s3 done, → built (all) · orchestrator
-- 2026-11-11 00:06 UTC · `merge-review-one-by-one-every-built-but-unmerged` added (0 steps) (all) · console
-- 2026-11-11 00:06 UTC · `merge-review-one-by-one-every-built-but-unmerged` → queued, note (all) · console
-- 2026-11-11 00:07 UTC · `enforce-the-merge-queue-every-finished-build-goe` → complete, merged, note (all) · reconciler
-- 2026-11-11 00:07 UTC · `merge-review-one-by-one-every-built-but-unmerged` note (all) · orchestrator
-- 2026-11-11 00:08 UTC · `merge-review-one-by-one-every-built-but-unmerged` → running, note (all) · pipeline
-- 2026-11-11 00:08 UTC · `merge-review-one-by-one-every-built-but-unmerged` branch claude/merge-review-one-by-one-every-built-but-unmerged (all) · pipeline
-- 2026-11-11 00:08 UTC · `merge-review-one-by-one-every-built-but-unmerged` note (all) · orchestrator
-- 2026-11-11 00:15 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
-- 2026-11-11 00:16 UTC · `ai-assistant-in-molly-console-drives-by-api-open` → running, note (all) · pipeline
-- 2026-11-11 00:16 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
-- 2026-11-11 00:17 UTC · `ai-assistant-in-molly-console-drives-by-api-open` PR #488 (all) · builds-live
-- 2026-11-11 00:17 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
-- 2026-11-11 00:19 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` → blocked (all) · merge-review
-- 2026-11-11 00:20 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` note (all) · merge-review
-- 2026-11-11 00:20 UTC · `merge-review-one-by-one-every-built-but-unmerged` s1 done (all) · orchestrator
-- 2026-11-11 00:21 UTC · `merge-review-one-by-one-every-built-but-unmerged` s2 done (all) · orchestrator
-- 2026-11-11 00:23 UTC · `merge-review-one-by-one-every-built-but-unmerged` PR #492 (all) · builds-live
-- 2026-11-11 00:23 UTC · `merge-review-one-by-one-every-built-but-unmerged` s3 done, → built (all) · orchestrator
-- 2026-11-11 00:23 UTC · `merge-review-one-by-one-every-built-but-unmerged` note (all) · orchestrator
-- 2026-11-11 00:24 UTC · `merge-review-one-by-one-every-built-but-unmerged` note (all) · pipeline
-- 2026-11-11 00:30 UTC · `resolve-conflicts-and-land-460-456-457-459-342` note (all) · orchestrator
-- 2026-11-11 00:33 UTC · `ai-assistant-in-molly-console-drives-by-api-open` s1 done (all) · orchestrator
-- 2026-11-11 00:34 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
-- 2026-11-11 00:35 UTC · `ai-assistant-in-molly-console-drives-by-api-open` → queued, note (all) · pipeline
-- 2026-11-11 00:35 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · pipeline
-- 2026-11-11 00:35 UTC · `ai-assistant-in-molly-console-drives-by-api-open` → running (all) · builds-live
-- 2026-11-11 00:35 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
-- 2026-11-11 00:36 UTC · `ai-assistant-in-molly-console-drives-by-api-open` → queued, note (all) · pipeline
-- 2026-11-11 00:36 UTC · `ai-assistant-in-molly-console-drives-by-api-open` → running, note (all) · pipeline
-- 2026-11-11 00:36 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
-- 2026-11-11 00:37 UTC · `ai-assistant-in-molly-console-drives-by-api-open` s2 done, → running (all) · orchestrator
-- 2026-11-11 00:38 UTC · `ai-assistant-in-molly-console-drives-by-api-open` s3 done, → built (all) · orchestrator
-- 2026-11-11 00:38 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
-- 2026-11-11 00:41 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
-- 2026-11-11 00:50 UTC · `skins-own-everything-colour-theme-swaps-independ` → complete, merged, note (all) · reconciler
-- 2026-11-11 00:50 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` merged, note (all) · reconciler
-- 2026-11-11 00:50 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` merged, note (all) · reconciler
-- 2026-11-11 01:11 UTC · `skins-in-the-asset-store-skin-browser-skin-edito` added (0 steps) (all) · console
-- 2026-11-11 01:11 UTC · `skins-in-the-asset-store-skin-browser-skin-edito` → queued, note (all) · console
-- 2026-11-11 01:12 UTC · `skins-in-the-asset-store-skin-browser-skin-edito` note (all) · orchestrator
-- 2026-11-11 01:12 UTC · `skins-in-the-asset-store-skin-browser-skin-edito` → running, note (all) · pipeline
-- 2026-11-11 01:12 UTC · `skins-in-the-asset-store-skin-browser-skin-edito` branch claude/skins-in-the-asset-store-skin-browser-skin-edito (all) · pipeline
-- 2026-11-11 01:25 UTC · `skins-in-the-asset-store-skin-browser-skin-edito` s1 done, → running (all) · orchestrator
-- 2026-11-11 01:34 UTC · `skins-in-the-asset-store-skin-browser-skin-edito` s2 done (all) · orchestrator
-- 2026-11-11 01:48 UTC · `skins-in-the-asset-store-skin-browser-skin-edito` PR #493 (all) · builds-live
-- 2026-11-11 01:49 UTC · `skins-in-the-asset-store-skin-browser-skin-edito` s3 done, → built (all) · orchestrator
-- 2026-11-11 01:49 UTC · `skins-in-the-asset-store-skin-browser-skin-edito` note (all) · orchestrator
-- 2026-11-11 19:42 UTC · `appearance-skins-colour-themes-only-remove-design-packs` branch claude/skins-colour-themes-resume, PR #494 (all) · builds-live
-- 2026-11-11 23:05 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · orchestrator
-- 2026-11-11 23:24 UTC · `full-api-cli-control-of-everything-plus-an-offli` → queued, note (all) · console
-- 2026-11-11 23:25 UTC · `full-api-cli-control-of-everything-plus-an-offli` → running, note (all) · pipeline
-- 2026-11-11 23:25 UTC · `full-api-cli-control-of-everything-plus-an-offli` note (all) · orchestrator
-- 2026-11-11 23:25 UTC · `console-commands-reliable` added (4 steps) (all) · orchestrator
-- 2026-11-11 23:26 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · orchestrator
-- 2026-11-11 23:26 UTC · `asset-overrides-changed-asset-settings-override` → archived (all) · Claude voice (Gizmo)
-- 2026-11-11 23:27 UTC · `banner-skins-context-menu-item-with-sub-menu-of-all-skins-widget-hidden-by-def` → archived (all) · Claude voice (Gizmo)
-- 2026-11-11 23:27 UTC · `skins-are-a-complete-rework-look-layout-behavior` → archived (all) · Claude voice (Gizmo)
-- 2026-11-11 23:27 UTC · `remove-the-old-theme-manager-style-and-layout-se` → archived (all) · Claude voice (Gizmo)
-- 2026-11-11 23:27 UTC · `background-is-its-own-asset-type-with-asset-sett` → archived (all) · Claude voice (Gizmo)
-- 2026-11-11 23:27 UTC · `background-token-for-every-ui-background-designe` → archived (all) · Claude voice (Gizmo)
-- 2026-11-11 23:27 UTC · `overrides-summary-highlight-colour-setting-asset` → archived (all) · Claude voice (Gizmo)
-- 2026-11-11 23:27 UTC · `correction-to-overrides-list-expanded-asset-show` → archived (all) · Claude voice (Gizmo)
-- 2026-11-11 23:30 UTC · `full-api-cli-control-of-everything-plus-an-offli` s4 done (all) · orchestrator
-- 2026-11-11 23:31 UTC · `full-api-cli-control-of-everything-plus-an-offli` s5 done (all) · orchestrator
-- 2026-11-11 23:33 UTC · `full-api-cli-control-of-everything-plus-an-offli` s6 done (all) · orchestrator
-- 2026-11-11 23:37 UTC · `full-api-cli-control-of-everything-plus-an-offli` s7 done (all) · orchestrator
-- 2026-11-11 23:38 UTC · `console-commands-reliable` s1 done, → running (all) · orchestrator
-- 2026-11-11 23:38 UTC · `console-commands-reliable` s2 done (all) · orchestrator
-- 2026-11-11 23:38 UTC · `console-commands-reliable` s3 done (all) · orchestrator
-- 2026-11-11 23:40 UTC · `console-commands-reliable` branch claude/console-commands-reliable, PR #496 (all) · builds-live
-- 2026-11-11 23:40 UTC · `full-api-cli-control-of-everything-plus-an-offli` s8 done (all) · orchestrator
-- 2026-11-11 23:40 UTC · `console-commands-reliable` note (all) · reconciler
-- 2026-11-11 23:43 UTC · `full-api-cli-control-of-everything-plus-an-offli` s9 done (all) · orchestrator
-- 2026-11-11 23:45 UTC · `full-api-cli-control-of-everything-plus-an-offli` s10 done (all) · orchestrator
-- 2026-11-11 23:45 UTC · `full-api-cli-control-of-everything-plus-an-offli` s11 done (all) · orchestrator
-- 2026-11-11 23:46 UTC · `full-api-cli-control-of-everything-plus-an-offli` s12 done (all) · orchestrator
-- 2026-11-11 23:51 UTC · `full-api-cli-control-of-everything-plus-an-offli` s13 done (all) · orchestrator
-- 2026-11-11 23:52 UTC · `full-api-cli-control-of-everything-plus-an-offli` s14 done (all) · orchestrator
-- 2026-11-12 00:07 UTC · `full-api-cli-control-of-everything-plus-an-offli` s15 done (all) · orchestrator
-- 2026-11-12 00:09 UTC · `full-api-cli-control-of-everything-plus-an-offli` s16 done (all) · orchestrator
-- 2026-11-12 00:14 UTC · `full-api-cli-control-of-everything-plus-an-offli` s17 done, → built (all) · orchestrator
-- 2026-11-12 00:14 UTC · `full-api-cli-control-of-everything-plus-an-offli` note (all) · orchestrator
-- 2026-11-12 00:15 UTC · `full-api-cli-control-of-everything-plus-an-offli` note (all) · pipeline
-- 2026-11-12 01:42 UTC · `molly-gap-remote-actions` → queued, note (all) · console
-- 2026-11-12 01:43 UTC · `molly-gap-console-token-handoff` → queued, note (all) · console
-- 2026-11-12 01:43 UTC · `molly-gap-expenses-cors` → queued, note (all) · console
-- 2026-11-12 01:43 UTC · `molly-gap-axhub-cors` → queued, note (all) · console
-- 2026-11-12 01:43 UTC · `molly-gap-remote-actions` → running, note (all) · pipeline
-- 2026-11-12 01:43 UTC · `molly-gap-remote-actions` branch claude/molly-gap-remote-actions (all) · pipeline
-- 2026-11-12 01:43 UTC · `molly-gap-remote-actions` note (all) · orchestrator
-- 2026-11-12 01:43 UTC · `molly-gap-console-token-handoff` → running, note (all) · pipeline
-- 2026-11-12 01:43 UTC · `molly-gap-console-token-handoff` branch claude/molly-gap-console-token-handoff (all) · pipeline
-- 2026-11-12 01:43 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` → queued, note (all) · console
-- 2026-11-12 01:43 UTC · `molly-gap-console-token-handoff` note (all) · orchestrator
-- 2026-11-12 01:43 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` → queued, note (all) · console
-- 2026-11-12 01:43 UTC · `molly-native-expenses` → queued, note (all) · console
-- 2026-11-12 01:43 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` → queued, note (all) · console
-- 2026-11-12 01:43 UTC · `build-notifications-same-notification-per-build` → queued, note (all) · console
-- 2026-11-12 01:44 UTC · `amberx-build-notifications-for-every-stage-start` → queued, note (all) · console
-- 2026-11-12 01:44 UTC · `open-any-website-by-voice-on-the-phone-optionall` → queued, note (all) · console
-- 2026-11-12 01:44 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` note (all) · orchestrator
-- 2026-11-12 01:44 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` → running, note (all) · pipeline
-- 2026-11-12 01:44 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` branch claude/bug-asset-settings-nav-menu-tab-bar-toolbar-chan (all) · pipeline
-- 2026-11-12 01:44 UTC · `orchestrator-checks-shipped-features-before-spli` → queued, note (all) · console
-- 2026-11-12 01:44 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` → running, note (all) · pipeline
-- 2026-11-12 01:44 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` branch claude/rebuild-gizmo-from-scratch-full-claude-style-cha (all) · pipeline
-- 2026-11-12 01:44 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` note (all) · orchestrator
-- 2026-11-12 01:44 UTC · `x.engine.dev` → queued, note (all) · console
-- 2026-11-12 01:44 UTC · `molly-native-expenses` → running, note (all) · pipeline
-- 2026-11-12 01:44 UTC · `molly-native-expenses` branch claude/molly-native-expenses (all) · pipeline
-- 2026-11-12 01:44 UTC · `molly-native-expenses` note (all) · orchestrator
-- 2026-11-12 01:44 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` → running, note (all) · pipeline
-- 2026-11-12 01:44 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` branch claude/queue-drag-and-drop-reorder-dispatcher-follows-t (all) · pipeline
-- 2026-11-12 01:44 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` note (all) · orchestrator
-- 2026-11-12 01:45 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` → running, branch claude/queue-drag-and-drop-reorder-dispatcher-follows-t, note (all) · foreign-write
-- 2026-11-12 01:45 UTC · `molly-gap-expenses-cors` → running, note (all) · pipeline
-- 2026-11-12 01:45 UTC · `molly-gap-expenses-cors` branch claude/molly-gap-expenses-cors (all) · pipeline
-- 2026-11-12 01:45 UTC · `molly-gap-expenses-cors` note (all) · orchestrator
-- 2026-11-12 01:45 UTC · `molly-gap-remote-actions` note (all) · orchestrator
-- 2026-11-12 01:45 UTC · `molly-gap-remote-actions` → queued (all) · foreign-write
-- 2026-11-12 01:45 UTC · `molly-gap-axhub-cors` → running, note (all) · pipeline
-- 2026-11-12 01:45 UTC · `molly-gap-axhub-cors` branch claude/molly-gap-axhub-cors (all) · pipeline
-- 2026-11-12 01:45 UTC · `molly-gap-axhub-cors` note (all) · orchestrator
-- 2026-11-12 01:46 UTC · `fix-axhub-36-pull-main-in-failed` added (0 steps) (all) · push-banner
-- 2026-11-12 01:46 UTC · `fix-axhub-36-pull-main-in-failed` → queued, note (all) · push-banner
-- 2026-11-12 01:46 UTC · `molly-gap-remote-actions` note (all) · orchestrator
-- 2026-11-12 01:47 UTC · `fix-axhub-36-pull-main-in-failed` note (all) · orchestrator
-- 2026-11-12 01:47 UTC · `open-any-website-by-voice-on-the-phone-optionall` → running, note (all) · pipeline
-- 2026-11-12 01:47 UTC · `open-any-website-by-voice-on-the-phone-optionall` branch claude/open-any-website-by-voice-on-the-phone-optionall (all) · pipeline
-- 2026-11-12 01:47 UTC · `open-any-website-by-voice-on-the-phone-optionall` note (all) · orchestrator
-- 2026-11-12 01:47 UTC · `build-notifications-same-notification-per-build` → running, note (all) · pipeline
-- 2026-11-12 01:47 UTC · `build-notifications-same-notification-per-build` branch claude/build-notifications-same-notification-per-build (all) · pipeline
-- 2026-11-12 01:47 UTC · `build-notifications-same-notification-per-build` note (all) · orchestrator
-- 2026-11-12 01:48 UTC · `molly-gap-expenses-cors` s1 done, → running (all) · orchestrator
-- 2026-11-12 01:48 UTC · `molly-native-expenses` s1 done (all) · orchestrator
-- 2026-11-12 01:49 UTC · `molly-gap-expenses-delete` added (3 steps) (all) · orchestrator
-- 2026-11-12 01:49 UTC · `molly-gap-expenses-cors` s2 done (all) · orchestrator
-- 2026-11-12 01:49 UTC · `molly-gap-expenses-delete` added (3 steps) (all) · foreign-write
-- 2026-11-12 01:50 UTC · `molly-gap-expenses-cors` s2 done (all) · foreign-write
-- 2026-11-12 01:51 UTC · `amberx-build-notifications-for-every-stage-start` → running, note (all) · pipeline
-- 2026-11-12 01:51 UTC · `amberx-build-notifications-for-every-stage-start` branch claude/amberx-build-notifications-for-every-stage-start (all) · pipeline
-- 2026-11-12 01:51 UTC · `amberx-build-notifications-for-every-stage-start` note (all) · orchestrator
-- 2026-11-12 01:51 UTC · `fix-axhub-36-pull-main-in-failed` → running, note (all) · pipeline
-- 2026-11-12 01:51 UTC · `fix-axhub-36-pull-main-in-failed` branch claude/fix-axhub-36-pull-main-in-failed (all) · pipeline
-- 2026-11-12 01:51 UTC · `fix-axhub-36-pull-main-in-failed` note (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s1 done, → running (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s2 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s3 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s4 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s5 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s6 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s7 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s8 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s9 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s10 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s11 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s12 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s13 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s14 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s15 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s16 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s17 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s18 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s19 done (all) · orchestrator
-- 2026-11-12 01:53 UTC · `fix-axhub-36-pull-main-in-failed` note (all) · orchestrator
-- 2026-11-12 01:53 UTC · `fix-axhub-36-pull-main-in-failed` s20 done (all) · orchestrator
-- 2026-11-12 01:54 UTC · `molly-gap-console-token-handoff` → queued, note (all) · pipeline
-- 2026-11-12 01:54 UTC · `molly-gap-remote-actions` → running, note (all) · pipeline
-- 2026-11-12 01:54 UTC · `molly-gap-remote-actions` note (all) · orchestrator
-- 2026-11-12 01:55 UTC · `molly-native-expenses` → queued, note (all) · pipeline
-- 2026-11-12 01:55 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` → queued, note (all) · pipeline
-- 2026-11-12 01:55 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` → queued, note (all) · pipeline
-- 2026-11-12 01:55 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` → queued, note (all) · pipeline
-- 2026-11-12 01:55 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` → running, note (all) · pipeline
-- 2026-11-12 01:55 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` note (all) · orchestrator
-- 2026-11-12 01:55 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` → running, note (all) · pipeline
-- 2026-11-12 01:55 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` note (all) · orchestrator
-- 2026-11-12 01:55 UTC · `molly-native-expenses` → running, note (all) · pipeline
-- 2026-11-12 01:55 UTC · `molly-native-expenses` → running, note (all) · orchestrator
-- 2026-11-12 01:55 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` → running, note (all) · pipeline
-- 2026-11-12 01:55 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` note (all) · orchestrator
-- 2026-11-12 01:56 UTC · `molly-gap-axhub-cors` → queued, note (all) · pipeline
-- 2026-11-12 01:56 UTC · `molly-native-expenses` → queued, note (all) · pipeline
-- 2026-11-12 01:56 UTC · `console-commands-reliable` → pending, note (all) · reconciler
-- 2026-11-12 01:57 UTC · `molly-native-expenses` → running, note (all) · pipeline
-- 2026-11-12 01:57 UTC · `molly-native-expenses` note (all) · orchestrator
-- 2026-11-12 01:57 UTC · `molly-native-expenses` → running, PR #497 (all) · builds-live
-- 2026-11-12 01:58 UTC · `open-any-website-by-voice-on-the-phone-optionall` → queued, note (all) · pipeline
-- 2026-11-12 01:58 UTC · `build-notifications-same-notification-per-build` → queued, note (all) · pipeline
-- 2026-11-12 01:58 UTC · `open-any-website-by-voice-on-the-phone-optionall` → running, note (all) · pipeline
-- 2026-11-12 01:58 UTC · `open-any-website-by-voice-on-the-phone-optionall` note (all) · orchestrator
-- 2026-11-12 01:58 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` s1 done, → running (all) · orchestrator
-- 2026-11-12 01:58 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` s2 done (all) · orchestrator
-- 2026-11-12 01:59 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` → queued, note (all) · pipeline
-- 2026-11-12 01:59 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` PR #498 (all) · builds-live
-- 2026-11-12 01:59 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` added (3 steps) (all) · Claude voice (Gizmo)
-- 2026-11-12 01:59 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` → running, note (all) · orchestrator
-- 2026-11-12 01:59 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` s3 done, → built (all) · orchestrator
-- 2026-11-12 01:59 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` note (all) · orchestrator
-- 2026-11-12 01:59 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` → queued, note (all) · console
-- 2026-11-12 02:00 UTC · `main-gate-nothing-reaches-main-without-passing` added (3 steps) (all) · Claude voice (Gizmo)
-- 2026-11-12 02:00 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` → running, note (all) · pipeline
-- 2026-11-12 02:00 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` branch claude/vps-server-gate-no-build-starts-without-an-orchestrator-issued-id (all) · pipeline
-- 2026-11-12 02:00 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` note (all) · orchestrator
-- 2026-11-12 02:00 UTC · `main-gate-nothing-reaches-main-without-passing` → queued, note (all) · console
-- 2026-11-12 02:02 UTC · `amberx-build-notifications-for-every-stage-start` s1 done, → running (all) · orchestrator
-- 2026-11-12 02:02 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` added (7 steps) (all) · Claude voice (Gizmo)
-- 2026-11-12 02:02 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` → queued, note (all) · console
-- 2026-11-12 02:04 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` added (3 steps) (all) · Claude voice (Gizmo)
-- 2026-11-12 02:04 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` → queued, note (all) · console
-- 2026-11-12 02:04 UTC · `molly-native-expenses` s2 done (all) · orchestrator
-- 2026-11-12 02:04 UTC · `amberx-build-notifications-for-every-stage-start` s2 done (all) · orchestrator
-- 2026-11-12 02:05 UTC · `amberx-build-notifications-for-every-stage-start` s2 done (all) · foreign-write
-- 2026-11-12 02:05 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` s1 done, → running (all) · orchestrator
-- 2026-11-12 02:05 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` s1 done (all) · orchestrator
-- 2026-11-12 02:06 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` → queued, note (all) · pipeline
-- 2026-11-12 02:06 UTC · `molly-gap-expenses-delete` → archived (all) · Claude voice (Gizmo)
-- 2026-11-12 02:07 UTC · `employee-hooks-everywhere-any-mention-of-an-agen` → archived (all) · Claude voice (Gizmo)
-- 2026-11-12 02:07 UTC · `x.lib.hub` → archived (all) · Claude voice (Gizmo)
-- 2026-11-12 02:07 UTC · `employee-hooks-plain-tap-on-an-employee-name-ope` → archived (all) · Claude voice (Gizmo)
-- 2026-11-12 02:07 UTC · `x.lib.notifications` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `x.lib.files` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `x.session` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `x.state` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `x.engine.uiport` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `x.libs.core` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `x.uikits` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `x.deploy.console` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `x.modules` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `dispatcher-a-worktree-store-write-can-erase-a-fr` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `session-transcripts-api-search-what-was-said-fin` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `shipped-features-show-each-landed-build-s-screen` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `shared-screenshot-registry-hooked-everywhere-liv` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `plugin-ui-inventory-per-plugin-reskin-one-button` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `amberx-android-web-view-top-banner-hidden-behind` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `project-manager-add-on-drag-a-build-to-another-p` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `amberx-llama-llama-amberxai-com-via-coolify-trae` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `project-manager-add-on-new-project-prompt-asks-i` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `amberx-llama-axhub-service-hooks-so-amberx-and-e` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `projects-create-a-new-project-and-move-builds-be` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `ollama-own-docker-container-amberx-llama-interna` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `approval-page-allow-all-deny-all-for-a-set-time` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `ollama-model-pick-mistral-small-24b-q4-default-m` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `local-ai-ollama-mistral-on-the-vps-wired-into-th` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `auto-land-every-build-the-moment-it-finishes-red` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `landing-tool-takes-long-build-names-and-auto-fix` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `skin-chunk-previews-interactive-demos-and-an-ide` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `standing-rule-in-every-brief-fix-problems-yourse` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `split-builds-pages-build-manager-pending-complet-2` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `apply-skin-dialog-tree-of-everything-overridden` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `skin-rule-overrides-are-local-only-global-change` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `permissions-control-panel-every-axhub-tool-s-pol` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `skins-consistent-across-plugins-full-state-saves` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `reserve-build-ids-at-once-add-returns-the-id-wit` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `plugin-appearance-save-button-for-custom-looks-n` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `batch-manager` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `skins-theme-rule` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `skins-restyle-finish` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `amberx-floating-toolbar-always-on-top-mic-approvals-build-status` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `briefs-list-the-existing-files-each-step-needs` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `terminal-toolbar-responsive-overflow-every-item-` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `transcription-engine` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `audio-mic-filters` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `android-framework-update` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `brief-approval-dialog-before-every-headless-sess` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `auto-switch-claude-account-when-the-active-one-r` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `toast-manager-plugin` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `pending-builds-steps-column-first-done-total-sortable` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `approve-deny-anywhere-send-in-background-never-navigate` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `go-to-hooks-every-shipped-feature-build-and-plan` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `ui-roller-roll-a-random-style-on-any-ui-element` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `shipped-features-live-manifests-from-dispatch-to` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `headless-loop-guards-stop-endless-loops-and-sear` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `rebase-land-approve-button-fix-approve-goes-stra` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `style-rule-every-design-element-overrides-axhub-` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `toolbar-labels-managed-in-each-toolbar-s-setting` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `tap-to-confirm-switch-in-every-toolbar-s-own-set` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `big-library-of-snappable-title-bar-widgets-each-` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `every-banner-title-bar-and-toolbar-snappable-ass` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `clean-up-plan-studio-simplify-remove-redundancy` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `agent-profile-schema-skills-personas-with-a-big-` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `standing-rule-every-ui-ships-with-full-api-contr` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `adopt-today-s-direct-launched-builds-record-only` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `orchestrator-chain-trace-brownie-molly-group-cha` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `investor-demo-player-shell-with-login-gate-skins` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `slotstest-2208251-b` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `amberx-build-notifications-for-every-stage-start` PR #499 (all) · builds-live
-- 2026-11-12 02:09 UTC · `slotstest-2208251-a` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `partial-land-ship-completed-steps-of-a-build` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `planner-select-items-and-build-them` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `handoff-session-threads` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `slot-watchdog` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `ui-api-parity-builds` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `amberx-build-notifications-for-every-stage-start` s3 done, → built (all) · orchestrator
-- 2026-11-12 02:09 UTC · `amberx-build-notifications-for-every-stage-start` note (all) · orchestrator
-- 2026-11-12 02:09 UTC · `orchestrator-full-api-control` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `ui-api-parity-framework` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `ui-api-parity-media` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `ui-api-parity-look` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `ui-api-parity-console` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `ui-api-parity-agents` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `amberx-open-any-url` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `axhub-google` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `slot-aware-plan-optimizer-pre-launch` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `demo-sandbox-system-sandbox-settings-panel` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `molly-ri-court-records` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `amberx-build-notifications-for-every-stage-start` PR #499 (all) · foreign-write
-- 2026-11-12 02:09 UTC · `fix-follow-amber-highlight-console-search-ignoring-its-text` → archived, note (all) · console
-- 2026-11-12 02:10 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` s2 done (all) · orchestrator
-- 2026-11-12 02:11 UTC · `molly-gap-expenses-cors` → pending, note (all) · reconciler
-- 2026-11-12 02:11 UTC · `molly-native-expenses` s3 done (all) · orchestrator
-- 2026-11-12 02:11 UTC · `open-any-website-by-voice-on-the-phone-optionall` s1 done, → running (all) · orchestrator
-- 2026-11-12 02:11 UTC · `open-any-website-by-voice-on-the-phone-optionall` s2 done (all) · orchestrator
-- 2026-11-12 02:12 UTC · `open-any-website-by-voice-on-the-phone-optionall` → queued, note (all) · pipeline
-- 2026-11-12 02:12 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` s2 done (all) · orchestrator
-- 2026-11-12 02:13 UTC · `open-any-website-by-voice-on-the-phone-optionall` PR #500 (all) · builds-live
-- 2026-11-12 02:13 UTC · `open-any-website-by-voice-on-the-phone-optionall` → running, note (all) · pipeline
-- 2026-11-12 02:13 UTC · `open-any-website-by-voice-on-the-phone-optionall` note (all) · orchestrator
-- 2026-11-12 02:13 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` PR #501 (all) · builds-live
-- 2026-11-12 02:13 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` s3 done, → built (all) · orchestrator
-- 2026-11-12 02:13 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` note (all) · orchestrator
-- 2026-11-12 02:14 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` note (all) · orchestrator
-- 2026-11-12 02:14 UTC · `molly-gap-remote-actions` PR #502 (all) · builds-live
-- 2026-11-12 02:14 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` s3 undone, → running (all) · foreign-write
-- 2026-11-12 02:14 UTC · `molly-gap-remote-actions` s1 done, → running (all) · orchestrator
-- 2026-11-12 02:14 UTC · `molly-gap-remote-actions` note (all) · orchestrator
-- 2026-11-12 02:14 UTC · `main-gate-nothing-reaches-main-without-passing` → running, note (all) · pipeline
-- 2026-11-12 02:14 UTC · `main-gate-nothing-reaches-main-without-passing` branch claude/main-gate-nothing-reaches-main-without-passing (all) · pipeline
-- 2026-11-12 02:14 UTC · `main-gate-nothing-reaches-main-without-passing` note (all) · orchestrator
-- 2026-11-12 02:14 UTC · `molly-gap-remote-actions` → queued, PR #502 (all) · foreign-write
-- 2026-11-12 02:14 UTC · `open-any-website-by-voice-on-the-phone-optionall` note (all) · orchestrator
+- 2026-11-12 03:32 UTC · `threads-amberx-shell` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `threads-carry-on` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `threads-cleanup` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `banner-apply-all-keys-recheck` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `amberx-router-name` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `threads-110-merged` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `threads-oauth-soft` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `approval-reasons` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `axhub-oauth-thread` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-139zmj` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-kxgzso` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-usdp87` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-74063i` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-jjbcw6` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-qwqfp4` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-i70ntv` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-24jq9j` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-c4xw4s` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-lmyb8k` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-l3b0qo` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-85vrhz` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-u82s3d` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-5gc822` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-k6ckjv` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-76ubmk` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-y6pzy7` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-jflo9d` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-a21f46` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-tpor29` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-2ijgui` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-1xk0js` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-aaet0t` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-2ijgui-resume` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-2ijgui-patches` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-2ijgui-aikeys` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-2ijgui-restore` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-vfc6wi` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-jx0w7u` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-9jsom2` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-g27t3y` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-1f6dcd` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-1nc43b` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-b088wy` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-7hzl6f` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-28v1xw` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-jg1stb` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-u0oyjm` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-55oakl` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-c4954d` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `merge-all-ready-buttons-server-side-lander` PR #514 (all) · builds-live
+- 2026-11-12 03:28 UTC · `element-inspector` note (all) · orchestrator
+- 2026-11-12 03:32 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` → pending, note (all) · reconciler
+- 2026-11-12 03:34 UTC · `merge-all-ready-buttons-server-side-lander` note (all) · orchestrator
+- 2026-11-12 03:34 UTC · `merge-all-ready-buttons-server-side-lander` s3 done, → built (all) · orchestrator
+- 2026-11-12 03:33 UTC · `project-thread-farg39` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-tbz3ro` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `axhub-web-wall-msg` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-v9io2i` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-j1ri9d` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-1d9f6k` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-32ym2e` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-t9zktq` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `axhub-web-on-hub` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `framework-walkthrough-video-builder-qocfr1` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `laughing-thompson-eqfjw1` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `project-thread-eew3jm` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `amberx-cloning-plugin-hzcj78` added (0 steps) (all) · backfill
+- 2026-11-12 03:33 UTC · `yo-a7qg14` added (0 steps) (all) · backfill
+- 2026-11-12 03:35 UTC · `merge-all-ready-buttons-server-side-lander` note (all) · pipeline
+- 2026-11-12 03:35 UTC · `orchestrator-checks-shipped-features-before-spli` s1 done (all) · orchestrator
+- 2026-11-12 03:35 UTC · `orchestrator-checks-shipped-features-before-spli` s2 done (all) · orchestrator
+- 2026-11-12 03:36 UTC · `orchestrator-checks-shipped-features-before-spli` PR #515 (all) · builds-live
+- 2026-11-12 03:36 UTC · `orchestrator-checks-shipped-features-before-spli` s3 done, → built (all) · orchestrator
+- 2026-11-12 03:37 UTC · `orchestrator-checks-shipped-features-before-spli` note (all) · orchestrator
+- 2026-11-12 03:38 UTC · `orchestrator-checks-shipped-features-before-spli` note (all) · pipeline
+- 2026-11-12 03:40 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` → pending, note (all) · reconciler
+- 2026-11-12 03:40 UTC · `server-gate-one-session-per-build-no-duplicate-launches` → pending, note (all) · reconciler
+- 2026-11-12 03:40 UTC · `orch-self-check-stuck` PR #406, note (all) · reconciler
+- 2026-11-12 03:40 UTC · `shipped-manifest-api` PR #402, note (all) · reconciler
+- 2026-11-12 03:40 UTC · `land-batch-1` PR #339, note (all) · reconciler
+- 2026-11-12 03:40 UTC · `maintenance-plugin-acct2` PR #332, note (all) · reconciler
+- 2026-11-12 03:40 UTC · `window-resize-fix-threads` PR #279, note (all) · reconciler
+- 2026-11-12 03:40 UTC · `axhub-veto-pass-web` PR #261, note (all) · reconciler
+- 2026-11-12 03:50 UTC · `element-inspector` → pending, note (all) · reconciler
+- 2026-11-12 05:14 UTC · `account-failover-chain-subscription-next-subscri` branch claude/account-failover-chain-r2 (all) · builds-live
+- 2026-11-12 05:14 UTC · `account-failover-chain-subscription-next-subscri` note (all) · orchestrator
+- 2026-11-12 05:24 UTC · `account-failover-chain-subscription-next-subscri` PR #516 (all) · builds-live
+- 2026-11-12 06:38 UTC · `x.engine.dev` → running (all) · build-queue
+- 2026-11-12 06:38 UTC · `x.work` → pending (all) · build-queue
+- 2026-11-12 10:35 UTC · `search-bar-plugin-snappable-search-asset-globe-e` → complete (all) · pending
+- 2026-11-12 10:35 UTC · `search-bar-plugin-add-on-search-builds-session-h` → complete (all) · pending
+- 2026-11-12 10:35 UTC · `project-manager-every-project-its-own-console-in` → complete (all) · pending
+- 2026-11-12 10:35 UTC · `focus-on-every-screen-console-open-console-show-` added (0 steps) (all) · pending
+- 2026-11-12 10:36 UTC · `focus-on-every-screen-console-open-console-show-` note (all) · orchestrator
+- 2026-11-12 10:36 UTC · `search-bar-plugin-snappable-search-asset-globe-e` note (all) · orchestrator
+- 2026-11-12 10:36 UTC · `search-bar-plugin-add-on-search-builds-session-h` note (all) · orchestrator
+- 2026-11-12 10:36 UTC · `project-manager-every-project-its-own-console-in` note (all) · orchestrator
+- 2026-11-12 10:39 UTC · `show-commits-behind-main-on-every-build-table-an` added (0 steps) (all) · pending
+- 2026-11-12 10:40 UTC · `show-commits-behind-main-on-every-build-table-an` note (all) · orchestrator
+- 2026-11-12 10:42 UTC · `git-status-board` → archived (all) · claude-voice
+- 2026-11-12 10:42 UTC · `terminal-tabs-left` → archived (all) · claude-voice
+- 2026-11-12 10:42 UTC · `browser-automation` → archived (all) · claude-voice
+- 2026-11-12 10:42 UTC · `main-area-tabs` → archived (all) · claude-voice
+- 2026-11-12 10:42 UTC · `app-style-override` → archived (all) · claude-voice
+- 2026-11-12 10:43 UTC · `remove-the-console-s-own-notes-manager-console-u` added (0 steps) (all) · pending
+- 2026-11-12 10:44 UTC · `remove-the-console-s-own-notes-manager-console-u` note (all) · orchestrator
+- 2026-11-12 10:45 UTC · `focus-on-every-screen-console-open-console-show-` note (all) · pending
+- 2026-11-12 10:48 UTC · `gizmo-terminal` → archived (all) · claude-voice
+- 2026-11-12 10:48 UTC · `profile-filter-tables` → archived (all) · claude-voice
+- 2026-11-12 10:48 UTC · `fable-review-nov3` → archived (all) · claude-voice
+- 2026-11-12 10:48 UTC · `molly-banner-match` → archived (all) · claude-voice
+- 2026-11-12 10:48 UTC · `build-todo-sync` → archived (all) · claude-voice
+- 2026-11-12 10:48 UTC · `banner-widgets` → archived (all) · claude-voice
+- 2026-11-12 10:48 UTC · `pending-tab-one-collapsed-row-per-build-tap-to-e` added (0 steps) (all) · pending
+- 2026-11-12 10:49 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` added (0 steps) (all) · pending
+- 2026-11-12 10:49 UTC · `pending-tab-one-collapsed-row-per-build-tap-to-e` note (all) · orchestrator
+- 2026-11-12 10:50 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` → queued (all) · claude-voice
+- 2026-11-12 10:50 UTC · `pending-tab-one-collapsed-row-per-build-tap-to-e` → queued (all) · claude-voice
+- 2026-11-12 10:50 UTC · `focus-on-every-screen-console-open-console-show-` → queued (all) · claude-voice
+- 2026-11-12 10:50 UTC · `show-commits-behind-main-on-every-build-table-an` → queued (all) · claude-voice
+- 2026-11-12 10:50 UTC · `remove-the-console-s-own-notes-manager-console-u` → queued (all) · claude-voice
+- 2026-11-12 10:50 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` note (all) · orchestrator
+- 2026-11-12 10:50 UTC · `pending-tab-one-collapsed-row-per-build-tap-to-e` → running, note (all) · pipeline
+- 2026-11-12 10:50 UTC · `pending-tab-one-collapsed-row-per-build-tap-to-e` branch claude/pending-tab-one-collapsed-row-per-build-tap-to-e (all) · pipeline
+- 2026-11-12 10:50 UTC · `pending-tab-one-collapsed-row-per-build-tap-to-e` note (all) · orchestrator
+- 2026-11-12 10:50 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` → running, note (all) · pipeline
+- 2026-11-12 10:50 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` branch claude/unlink-plan-studio-from-builds-delete-all-plan-s (all) · pipeline
+- 2026-11-12 10:51 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` note (all) · orchestrator
+- 2026-11-12 10:51 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` added (0 steps) (all) · pending
+- 2026-11-12 10:51 UTC · `focus-on-every-screen-console-open-console-show-` → running, note (all) · pipeline
+- 2026-11-12 10:51 UTC · `focus-on-every-screen-console-open-console-show-` note (all) · orchestrator
+- 2026-11-12 10:51 UTC · `focus-on-every-screen-console-open-console-show-` branch claude/focus-on-every-screen-console-open-console-show- (all) · pipeline
+- 2026-11-12 10:51 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` → queued (all) · claude-voice
+- 2026-11-12 10:52 UTC · `show-commits-behind-main-on-every-build-table-an` → running, note (all) · pipeline
+- 2026-11-12 10:52 UTC · `show-commits-behind-main-on-every-build-table-an` branch claude/show-commits-behind-main-on-every-build-table-an (all) · pipeline
+- 2026-11-12 10:52 UTC · `show-commits-behind-main-on-every-build-table-an` note (all) · orchestrator
+- 2026-11-12 10:52 UTC · `remove-the-console-s-own-notes-manager-console-u` → running, note (all) · pipeline
+- 2026-11-12 10:52 UTC · `remove-the-console-s-own-notes-manager-console-u` branch claude/remove-the-console-s-own-notes-manager-console-u (all) · pipeline
+- 2026-11-12 10:52 UTC · `remove-the-console-s-own-notes-manager-console-u` note (all) · orchestrator
+- 2026-11-12 10:52 UTC · `handoff-2-addenda-r2` → archived (all) · claude-voice
+- 2026-11-12 10:52 UTC · `console-account-picker` → archived (all) · claude-voice
+- 2026-11-12 10:52 UTC · `ai-keys-console-store` → archived (all) · claude-voice
+- 2026-11-12 10:52 UTC · `amberx-slim-down-voice-queue` → archived (all) · claude-voice
+- 2026-11-12 10:52 UTC · `headless-progress-file-lean-claude-md-chain` → archived (all) · claude-voice
+- 2026-11-12 10:52 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` → archived (all) · claude-voice
+- 2026-11-12 10:52 UTC · `claude-settings-tabs-veto` → archived (all) · claude-voice
+- 2026-11-12 10:53 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` note (all) · orchestrator
+- 2026-11-12 10:54 UTC · `plugin-floatable` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `claude-accounts-edit` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `notes-tasks-calendar` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `icon-browser-manager` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `library-harvest` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `follow-amber-stay-connected` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `voice-ui-edit-library` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `merge-conflict-alerts` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `new-app-wizard` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `element-inspector` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `context-menu-editor` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `grid-sort-filter` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `plugin-cleanup` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `ui-review-alarm` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `github-app` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `orch-step-click` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `named-asset-rule` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `app-port-engine` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `lib-clone` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `axhub-agent-host` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `axhub-web-hub-rules` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `walkthrough-studio-deploy` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `x.python.port` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `x.plugins` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `asset-browser` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `asset-templates` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `new-app-wizard` → complete (all) · foreign-write
+- 2026-11-12 10:55 UTC · `focus-on-every-screen-console-open-console-show-` note (all) · foreign-write
+- 2026-11-12 10:55 UTC · `show-commits-behind-main-on-every-build-table-an` note (all) · foreign-write
+- 2026-11-12 10:55 UTC · `remove-the-console-s-own-notes-manager-console-u` note (all) · foreign-write
+- 2026-11-12 10:55 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` note (all) · foreign-write
+- 2026-11-12 10:55 UTC · `x.work` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `x.showcase.packs` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `x.lib.media` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `x.lib.location` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `x.lib.editor` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `x.lib.ai` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `x.lib.vps` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `x.lib.github` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `x.lib.sensors` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `x.lib.charts` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `x.console.repo` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `postgres-console` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `amberx-full-ui-redesign-8-game-style-concepts-for-ui-review` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `universal-voice-api-control-everything-controllable` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `amberx-notify-panel` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `one-way-to-start-builds-the-orchestrator-dispatc` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `nested-menus-for-console-amberx-and-molly-overri` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `urgent-approval-links-say-method-not-allowed` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `walkthrough-player-ide-layout-setting-collapsibl` → archived (all) · claude-voice
+- 2026-11-12 11:01 UTC · `ai-keys` branch claude/ai-keys-console-store-2, PR #358, merged, note (all) · reconciler
+- 2026-11-12 11:01 UTC · `remove-the-console-s-own-notes-manager-console-u` s1 done, → running (all) · orchestrator
+- 2026-11-12 11:02 UTC · `remove-the-console-s-own-notes-manager-console-u` s2 done (all) · orchestrator
+- 2026-11-12 11:02 UTC · `remove-the-console-s-own-notes-manager-console-u` PR #519 (all) · builds-live
+- 2026-11-12 11:03 UTC · `remove-the-console-s-own-notes-manager-console-u` note (all) · orchestrator
+- 2026-11-12 11:03 UTC · `remove-the-console-s-own-notes-manager-console-u` s3 done, → built (all) · orchestrator
+- 2026-11-12 11:03 UTC · `focus-on-every-screen-console-open-console-show-` s1 done, → running (all) · orchestrator
+- 2026-11-12 11:04 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` → running, note (all) · pipeline
+- 2026-11-12 11:04 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` branch claude/fix-the-step-splitter-claude-exit-1-input-must-b (all) · pipeline
+- 2026-11-12 11:04 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` note (all) · orchestrator
+- 2026-11-12 11:04 UTC · `show-commits-behind-main-on-every-build-table-an` s1 done (all) · orchestrator
+- 2026-11-12 11:05 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` s1 done, → running (all) · orchestrator
+- 2026-11-12 11:05 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` s5-4 done (all) · orchestrator
+- 2026-11-12 11:05 UTC · `pending-tab-one-collapsed-row-per-build-tap-to-e` s1 done, → running (all) · orchestrator
+- 2026-11-12 11:05 UTC · `pending-tab-one-collapsed-row-per-build-tap-to-e` s2 done (all) · orchestrator
+- 2026-11-12 11:06 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` s1 done, → running (all) · orchestrator
+- 2026-11-12 11:06 UTC · `pending-tab-one-collapsed-row-per-build-tap-to-e` PR #520 (all) · builds-live
+- 2026-11-12 11:06 UTC · `pending-tab-one-collapsed-row-per-build-tap-to-e` note (all) · orchestrator
+- 2026-11-12 11:06 UTC · `pending-tab-one-collapsed-row-per-build-tap-to-e` s3 done, → built (all) · orchestrator
+- 2026-11-12 11:07 UTC · `show-commits-behind-main-on-every-build-table-an` note (all) · orchestrator
+- 2026-11-12 11:07 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` note (all) · orchestrator
+- 2026-11-12 11:08 UTC · `focus-on-every-screen-console-open-console-show-` s2 done (all) · orchestrator
+- 2026-11-12 11:08 UTC · `show-commits-behind-main-on-every-build-table-an` → queued, note (all) · pipeline
+- 2026-11-12 11:08 UTC · `show-commits-behind-main-on-every-build-table-an` → running, note (all) · pipeline
+- 2026-11-12 11:08 UTC · `show-commits-behind-main-on-every-build-table-an` note (all) · orchestrator
+- 2026-11-12 11:10 UTC · `focus-on-every-screen-console-open-console-show-` PR #521 (all) · builds-live
+- 2026-11-12 11:10 UTC · `focus-on-every-screen-console-open-console-show-` note (all) · orchestrator
+- 2026-11-12 11:10 UTC · `focus-on-every-screen-console-open-console-show-` s3 done, → built (all) · orchestrator
+- 2026-11-12 11:11 UTC · `show-commits-behind-main-on-every-build-table-an` s2 done (all) · orchestrator
+- 2026-11-12 11:12 UTC · `show-commits-behind-main-on-every-build-table-an` s2 done (all) · foreign-write
+- 2026-11-12 11:14 UTC · `show-commits-behind-main-on-every-build-table-an` note (all) · orchestrator
+- 2026-11-12 11:14 UTC · `show-commits-behind-main-on-every-build-table-an` note (all) · foreign-write
+- 2026-11-12 11:15 UTC · `show-commits-behind-main-on-every-build-table-an` → pending, note (all) · pipeline
+- 2026-11-12 11:16 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` note (all) · orchestrator
+- 2026-11-12 11:30 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` → pending, note (all) · reconciler
+- 2026-11-12 11:40 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` → pending, note (all) · reconciler
+- 2026-11-12 15:31 UTC · `session-summaries-amberx-axf-project-history-readiness-audit` added (3 steps) (all) · claude-voice
+- 2026-11-12 15:33 UTC · `amberx-approval-pop-up-not-showing-only-the-android-notification` added (2 steps) (all) · claude-voice
+- 2026-11-12 17:35 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` added (6 steps) (all) · claude-voice
+- 2026-11-12 17:47 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` added (3 steps) (all) · claude-voice
+- 2026-11-12 17:48 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` → queued, note (all) · console
+- 2026-11-12 17:49 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` → running, note (all) · pipeline
+- 2026-11-12 17:49 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` branch claude/plugin-review-map-what-each-plugin-does-depends-on-and-breaks (all) · pipeline
+- 2026-11-12 17:49 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` note (all) · orchestrator
+- 2026-11-12 18:02 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` s1 done (all) · orchestrator
+- 2026-11-12 18:02 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` PR #522 (all) · builds-live
+- 2026-11-12 18:02 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` note (all) · orchestrator
+- 2026-11-12 18:03 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` note (all) · orchestrator
+- 2026-11-12 18:04 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` → queued, note (all) · pipeline
+- 2026-11-12 18:04 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` → running, note (all) · pipeline
+- 2026-11-12 18:04 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` note (all) · orchestrator
+- 2026-11-12 18:06 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` s2 done, → running (all) · orchestrator
+- 2026-11-12 18:06 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` note (all) · orchestrator
+- 2026-11-12 18:07 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` → queued, note (all) · pipeline
+- 2026-11-12 18:07 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` → running, note (all) · pipeline
+- 2026-11-12 18:07 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` note (all) · orchestrator
+- 2026-11-12 18:18 UTC · `one-to-do-list-amberx-and-console-read-the-same-source` added (0 steps) (all) · claude-voice
+- 2026-11-12 18:19 UTC · `one-to-do-list-amberx-and-console-read-the-same-source` added (0 steps) (all) · builds-live
+- 2026-11-12 18:19 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` → queued, note (all) · console
+- 2026-11-12 18:20 UTC · `one-to-do-list-amberx-and-console-read-the-same-source` note (all) · orchestrator
+- 2026-11-12 18:20 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` s3 done, → built, note (all) · orchestrator
+- 2026-11-12 18:20 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` → running, note (all) · pipeline
+- 2026-11-12 18:20 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` branch claude/new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans (all) · pipeline
+- 2026-11-12 18:20 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` note (all) · orchestrator
+- 2026-11-12 18:20 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` note (all) · orchestrator
+- 2026-11-12 18:21 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` note (all) · pipeline
+- 2026-11-12 18:21 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` → running, note (all) · pipeline
+- 2026-11-12 18:21 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` note (all) · orchestrator
+- 2026-11-12 18:24 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` s1 done, → running (all) · orchestrator
+- 2026-11-12 18:25 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` note (all) · orchestrator
+- 2026-11-12 18:28 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` s2 done (all) · orchestrator
+- 2026-11-12 18:33 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` added (0 steps) (all) · console
+- 2026-11-12 18:33 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` → queued, note (all) · console
+- 2026-11-12 18:34 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` note (all) · orchestrator
+- 2026-11-12 18:34 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` s3 done (all) · orchestrator
+- 2026-11-12 18:34 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` → running, note (all) · pipeline
+- 2026-11-12 18:34 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` branch claude/add-a-tap-to-confirm-option-to-every-settings-in (all) · pipeline
+- 2026-11-12 18:35 UTC · `skins-as-packages-of-slices-every-section-its-ow` → queued, note (all) · console
+- 2026-11-12 18:36 UTC · `skins-as-packages-of-slices-every-section-its-ow` → running, note (all) · pipeline
+- 2026-11-12 18:36 UTC · `skins-as-packages-of-slices-every-section-its-ow` note (all) · orchestrator
+- 2026-11-12 18:38 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` s4 done (all) · orchestrator
+- 2026-11-12 18:39 UTC · `skins-as-packages-of-slices-every-section-its-ow` s2 done, → running (all) · orchestrator
+- 2026-11-12 18:40 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` added (0 steps) (all) · console
+- 2026-11-12 18:40 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` → queued, note (all) · console
+- 2026-11-12 18:40 UTC · `skins-as-packages-of-slices-every-section-its-ow` s3 done, → built (all) · orchestrator
+- 2026-11-12 18:41 UTC · `skins-as-packages-of-slices-every-section-its-ow` note (all) · orchestrator
+- 2026-11-12 18:41 UTC · `skins-as-packages-of-slices-every-section-its-ow` note (all) · builds-live
+- 2026-11-12 18:42 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` note (all) · orchestrator
+- 2026-11-12 18:44 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` s5 done (all) · orchestrator
+- 2026-11-12 18:45 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` s1 done, → running (all) · orchestrator
+- 2026-11-12 18:45 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` s2 done (all) · orchestrator
+- 2026-11-12 18:56 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` PR #523 (all) · builds-live
+- 2026-11-12 18:56 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` s6 done, → built (all) · orchestrator
+- 2026-11-12 18:56 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` note (all) · orchestrator
+- 2026-11-12 18:59 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` PR #524 (all) · builds-live
+- 2026-11-12 19:00 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` s3 done, → built (all) · orchestrator
+- 2026-11-12 19:00 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` note (all) · orchestrator
+- 2026-11-12 19:43 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` → running, note (all) · pipeline
+- 2026-11-12 19:43 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` branch claude/collapse-and-auto-collapse-buttons-on-every-tab (all) · pipeline
+- 2026-11-12 19:43 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` note (all) · orchestrator
+- 2026-11-12 19:46 UTC · `move-amberx-web-app-into-the-console-amberx-andr` added (0 steps) (all) · console
+- 2026-11-12 19:47 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · orchestrator
+- 2026-11-12 19:54 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` s1 done, → running (all) · orchestrator
+- 2026-11-12 19:56 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` s2 done (all) · orchestrator
+- 2026-11-12 19:57 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` PR #525 (all) · builds-live
+- 2026-11-12 19:58 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` s3 done, → built (all) · orchestrator
+- 2026-11-12 19:58 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` note (all) · orchestrator
+- 2026-11-12 20:30 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` → complete, merged, note (all) · reconciler
+- 2026-11-12 20:31 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` note (all) · orchestrator
+- 2026-11-12 20:31 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` added (8 steps) (all) · Claude (voice)
+- 2026-11-12 20:35 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` added (4 steps) (all) · Claude (voice)
+- 2026-11-12 20:40 UTC · `github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro` added (8 steps) (all) · Claude (voice)
+- 2026-11-12 20:41 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · console
+- 2026-11-12 20:41 UTC · `move-amberx-web-app-into-the-console-amberx-andr` → queued, note (all) · console
+- 2026-11-12 20:41 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` → queued, note (all) · console
+- 2026-11-12 20:42 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` → queued, note (all) · builds-live
+- 2026-11-12 20:42 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · builds-live
+- 2026-11-12 20:42 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · orchestrator
+- 2026-11-10 18:08 UTC · `shipped-features-show-each-landed-build-s-screen` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
+- 2026-11-12 11:07 UTC · `fix-axhub-36-pull-main-in-failed` note (all) · fix-the-step-splitter
+- 2026-11-12 20:42 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` → running, note (all) · pipeline
+- 2026-11-12 20:42 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` note (all) · orchestrator
+- 2026-11-12 20:45 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · fix-the-step-splitter-claude-exit-1-input-must-b
+- 2026-11-12 20:45 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` added (3 steps) (all) · Claude (voice)
+- 2026-11-12 20:45 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` → queued, note (all) · console
+- 2026-11-12 20:45 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` s2 done (all) · orchestrator
+- 2026-11-12 20:45 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` s6-5 done (all) · orchestrator
+- 2026-11-12 20:46 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note (all) · pipeline
+- 2026-11-12 20:47 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note (all) · pipeline
+- 2026-11-12 20:46 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` s3 done (all) · orchestrator
+- 2026-11-12 20:46 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` s7-6 done (all) · orchestrator
+- 2026-11-12 20:48 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note (all) · pipeline
+- 2026-11-12 20:50 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` → complete, merged, note (all) · reconciler
+- 2026-11-12 20:51 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` note (all) · orchestrator
+- 2026-11-12 20:59 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` PR #526 (all) · builds-live
+- 2026-11-12 20:59 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` s4 done (all) · orchestrator
+- 2026-11-12 20:59 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` s8-7 done, → built (all) · orchestrator
+- 2026-11-12 21:00 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` PR #526 (all) · foreign-write
+- 2026-11-12 21:00 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` → pending, note (all) · pipeline
+- 2026-11-12 21:00 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` → running, note (all) · orchestrator
+- 2026-11-12 21:00 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` → queued, note (all) · pipeline
+- 2026-11-12 21:47 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note (all) · pipeline
+- 2026-11-12 21:48 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note (all) · pipeline
+- 2026-11-12 21:49 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` added (3 steps) (all) · Claude (voice)
+- 2026-11-12 21:49 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note (all) · pipeline
+- 2026-11-12 21:49 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` → queued, note (all) · console
+- 2026-11-12 21:50 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` note (all) · pipeline
+- 2026-11-12 21:50 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` → queued, note (all) · console
+- 2026-11-12 21:50 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` → queued, note (all) · console
+- 2026-11-12 21:51 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` note (all) · pipeline
+- 2026-11-12 21:51 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` → running, note (all) · pipeline
+- 2026-11-12 21:51 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` branch claude/new-project-wizard-name-linked-repo-required-starter-code-skin-accounts (all) · pipeline
+- 2026-11-12 21:51 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` note (all) · orchestrator
+- 2026-11-12 21:51 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` note (all) · pipeline
+- 2026-11-12 21:51 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` added (5 steps) (all) · Claude (voice)
+- 2026-11-12 21:51 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` → queued, note (all) · console
+- 2026-11-12 21:52 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` note (all) · pipeline
+- 2026-11-12 21:52 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` note (all) · pipeline
+- 2026-11-12 21:52 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` → running, note (all) · pipeline
+- 2026-11-12 21:52 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` branch claude/one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx (all) · pipeline
+- 2026-11-12 21:52 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` note (all) · orchestrator
+- 2026-11-12 21:53 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` note (all) · pipeline
+- 2026-11-12 21:53 UTC · `server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until` added (3 steps) (all) · Claude (voice)
+- 2026-11-12 21:53 UTC · `server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until` → queued, note (all) · console
+- 2026-11-12 21:54 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · console
+- 2026-11-12 21:54 UTC · `remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel` added (2 steps) (all) · Claude (voice)
+- 2026-11-12 21:54 UTC · `remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel` → queued, note (all) · console
+- 2026-11-12 21:55 UTC · `remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel` note (all) · pipeline
+- 2026-11-12 21:55 UTC · `move-amberx-web-app-into-the-console-amberx-andr` → running, note (all) · pipeline
+- 2026-11-12 21:55 UTC · `move-amberx-web-app-into-the-console-amberx-andr` branch claude/move-amberx-web-app-into-the-console-amberx-andr (all) · pipeline
+- 2026-11-12 21:55 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · orchestrator
+- 2026-11-12 21:55 UTC · `amberx-approval-pop-up-not-showing-only-the-android-notification` → queued, note (all) · console
+- 2026-11-12 21:56 UTC · `remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel` note (all) · pipeline
+- 2026-11-12 21:57 UTC · `remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel` note (all) · pipeline
+- 2026-11-12 22:03 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` branch claude/one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx, PR #527 (all) · builds-live
+- 2026-11-12 22:03 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` s1 done, → running (all) · orchestrator
+- 2026-11-12 22:03 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` note (all) · orchestrator
+- 2026-11-12 22:04 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` s1 done, → running (all) · orchestrator
+- 2026-11-12 22:04 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` s9 done (all) · orchestrator
+- 2026-11-12 22:04 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` s2 done (all) · orchestrator
+- 2026-11-12 22:04 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` s3 done (all) · orchestrator
+- 2026-11-12 22:04 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` s10 done (all) · orchestrator
+- 2026-11-12 22:04 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` s4 done (all) · orchestrator
+- 2026-11-12 22:04 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` s5 done (all) · orchestrator
+- 2026-11-12 22:04 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` s6 done (all) · orchestrator
+- 2026-11-12 22:04 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` s7 done (all) · orchestrator
+- 2026-11-12 22:05 UTC · `move-amberx-web-app-into-the-console-amberx-andr` PR #528 (all) · builds-live
+- 2026-11-12 22:05 UTC · `move-amberx-web-app-into-the-console-amberx-andr` s1 done (all) · orchestrator
+- 2026-11-12 22:05 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · orchestrator
+- 2026-11-12 22:06 UTC · `move-amberx-web-app-into-the-console-amberx-andr` → queued, note (all) · pipeline
+- 2026-11-12 22:06 UTC · `move-amberx-web-app-into-the-console-amberx-andr` → running, note (all) · pipeline
+- 2026-11-12 22:06 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · orchestrator
+- 2026-11-12 22:09 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` PR #529 (all) · builds-live
+- 2026-11-12 22:10 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` note (all) · orchestrator
+- 2026-11-12 22:10 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` s8 done, → built (all) · orchestrator
+- 2026-11-12 22:14 UTC · `move-amberx-web-app-into-the-console-amberx-andr` s15 done (all) · orchestrator
+- 2026-11-12 22:14 UTC · `move-amberx-web-app-into-the-console-amberx-andr` s15 done (all) · foreign-write
+- 2026-11-12 22:14 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · orchestrator
+- 2026-11-12 22:15 UTC · `move-amberx-web-app-into-the-console-amberx-andr` → queued, note (all) · pipeline
+- 2026-11-12 22:15 UTC · `move-amberx-web-app-into-the-console-amberx-andr` → running, note (all) · pipeline
+- 2026-11-12 22:15 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · orchestrator
+- 2026-11-12 22:16 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` added (2 steps) (all) · Claude (voice)
+- 2026-11-12 22:16 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` → queued, note (all) · console
 
 ## Token passes (log)
 

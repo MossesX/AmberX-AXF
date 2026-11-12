@@ -1,0 +1,56 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-syscheck-live-keys-credits",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:26:40Z",
+ "build": {
+  "id": "syscheck-live-keys-credits",
+  "title": "Systems check: keys + tokens live on every load, Claude credits check with auto-switch",
+  "profile": "all",
+  "category": "Framework",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Systems check: keys + tokens live on every load, Claude credits check with auto-switch",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-10-23T00:51:52.239Z",
+ "landedAt": "2026-10-23T00:51:52.239Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

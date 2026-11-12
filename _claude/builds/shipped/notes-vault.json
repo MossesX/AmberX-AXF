@@ -1,0 +1,140 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-notes-vault",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:08Z",
+ "build": {
+  "id": "notes-vault",
+  "title": "Notes vault: gather Brett's saved notes into /projects/_shared/_claude/notes, notes-browser plugin, MD Studio Notes scope",
+  "profile": "all",
+  "category": "Urgent",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "gather the hand-saved notes scattered across the axHub projects tree into one shared place, add a quick notes browser plugin, and add a Notes scope to MD Studio.",
+  "verbatim": false,
+  "at": "2026-11-03T00:00:00Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Find the notes: inventory hand-saved notes across /projects (owner MCP writes, loose md/txt, install/command notes), excluding system files",
+   "model": "Opus",
+   "estimate": "20m",
+   "estimateMin": 20,
+   "startedAt": "",
+   "doneAt": "2026-11-03T14:09:25.339Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Move them to /projects/_shared/_claude/notes/{sessions,handoffs,plans,install,misc} with versions kept; update references; pointer files; notes/INDEX.md",
+   "model": "Opus",
+   "estimate": "25m",
+   "estimateMin": 25,
+   "startedAt": "2026-11-03T14:09:25.339Z",
+   "doneAt": "2026-11-03T14:09:26.289Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Add notes/orchestrator/orch-live-sync-2026-11-03.md",
+   "model": "Opus",
+   "estimate": "5m",
+   "estimateMin": 5,
+   "startedAt": "2026-11-03T14:09:26.289Z",
+   "doneAt": "2026-11-03T14:09:27.137Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "notes-browser console plugin: server route on the hub notes folder, tree + rendered markdown, search, sort, new/rename/move/delete, conflict-safe edit; Settings > Plugins sub-tab, help pack, lifecycle",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T14:09:27.137Z",
+   "doneAt": "2026-11-03T14:09:27.962Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "MD Studio: add Notes scope step to md-studio; expose notes-browser route as capability service axf.notes@1",
+   "model": "Opus",
+   "estimate": "10m",
+   "estimateMin": 10,
+   "startedAt": "2026-11-03T14:09:27.962Z",
+   "doneAt": "2026-11-03T14:09:28.539Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Tests, check-theme/check-controls, lifecycle check, UI Review shots, report _claude/builds/reports/notes-vault.md, THREADS.md, PR",
+   "model": "Opus",
+   "estimate": "25m",
+   "estimateMin": 25,
+   "startedAt": "2026-11-03T14:09:28.539Z",
+   "doneAt": "2026-11-03T14:10:56.767Z",
+   "actualMin": 1,
+   "done": true
+  }
+ ],
+ "branch": "claude/notes-vault",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 256,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/256"
+ },
+ "landedCommit": "dfee2c7fb713e2db3ef08016bb6cbf4e8780dec3",
+ "commits": [],
+ "mergedAt": "2026-11-03T16:07:18.707Z",
+ "landedAt": "2026-11-04T14:38:31Z",
+ "files": [],
+ "areas": [],
+ "tests": [
+  {
+   "name": "python3 apps/console-web/plugins/notes-browser/test.py: 28/28.",
+   "command": "python3 apps/console-web/plugins/notes-browser/test.py",
+   "result": "unknown",
+   "detail": ""
+  }
+ ],
+ "uiReview": [
+  {
+   "id": "r-20261103-185a54df",
+   "name": "Notes browser",
+   "status": "approved",
+   "group": "g-20261103-fa7879d0",
+   "url": "/review/r-20261103-185a54df"
+  }
+ ],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "_claude/builds/reports/notes-vault.md",
+ "open": []
+}

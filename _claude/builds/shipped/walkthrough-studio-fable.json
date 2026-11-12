@@ -1,0 +1,130 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-walkthrough-studio-fable",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:26:43Z",
+ "build": {
+  "id": "walkthrough-studio-fable",
+  "title": "Walkthrough Studio: workspace engine (panes, layouts, dockable + floating toolbars) as a framework contract (Fable rebuild)",
+  "profile": "all",
+  "category": "App",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Fable was offered for new cross-app engines, Opus chosen). Lift the studio-local workspace (ui.ts: pane areas, layouts, floats; toolbars docked on any edge or floating, the command catalog + customizer; pointer DnD with the pop-up trash can) into framework/core + framework/react as an engine every app can use (asset types for workspace layouts and user toolbars?), with fixtures; then switch the studio onto it and remove its private copy. Android twin deferred (PORTING.md).",
+  "verbatim": false,
+  "at": "2026-10-22T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Read the Opus build (apps/walkthrough-studio/src/studio: ui.ts, Workspace.tsx, dnd.tsx, commands.ts) and write a design note: what becomes framework contract, asset types or not.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s2",
+   "text": "Pure engine in framework/core/engines (workspace + toolbars: places, docking, catalog) with fixtures + check script.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s3",
+   "text": "React layer: WorkspaceHost, ToolbarDock, floating toolbar, pane tabs + splitters, DnD + trash can, customizer dialog.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s4",
+   "text": "Runtime + settings: saved per app, last save wins, search/app-menu hooks (panes, layouts, toolbars).",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s5",
+   "text": "Switch Walkthrough Studio onto it, delete its private copy; tests + screenshots; differences report.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  },
+  {
+   "id": "s6",
+   "text": "PORTING.md deferred Kotlin twin; docs; CLAUDE.md.",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-11-10T04:39:20.621Z",
+ "landedAt": "2026-11-10T04:39:20.621Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": [
+  "s1: Read the Opus build (apps/walkthrough-studio/src/studio: ui.ts, Workspace.tsx, dnd.tsx, commands.ts) and write a design note: what becomes framework contract, asset types or not.",
+  "s2: Pure engine in framework/core/engines (workspace + toolbars: places, docking, catalog) with fixtures + check script.",
+  "s3: React layer: WorkspaceHost, ToolbarDock, floating toolbar, pane tabs + splitters, DnD + trash can, customizer dialog.",
+  "s4: Runtime + settings: saved per app, last save wins, search/app-menu hooks (panes, layouts, toolbars).",
+  "s5: Switch Walkthrough Studio onto it, delete its private copy; tests + screenshots; differences report.",
+  "s6: PORTING.md deferred Kotlin twin; docs; CLAUDE.md."
+ ]
+}

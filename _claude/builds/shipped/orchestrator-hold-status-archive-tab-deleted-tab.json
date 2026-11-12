@@ -1,0 +1,242 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-orchestrator-hold-status-archive-tab-deleted-tab",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:31:20Z",
+ "build": {
+  "id": "orchestrator-hold-status-archive-tab-deleted-tab",
+  "title": "Orchestrator: Hold status, Archive tab, Deleted tab (deleted builds kept forever)",
+  "profile": "all",
+  "category": "",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Make a hold status. Anything in the queue you can send back to pending, leave in queue on hold, move to the archive, or delete. All completed builds go to the archive, add an archive tab. A deleted tab where all deleted builds stay saved forever.",
+  "verbatim": true,
+  "at": "2026-11-10T17:07:33.143Z",
+  "source": "",
+  "by": "orchestrator-hold-status-archive-tab-deleted-tab",
+  "addenda": []
+ },
+ "brief": "# Build: orchestrator-hold-status-archive-tab-deleted-tab\n\n## Brett said (verbatim)\nAt: 2026-11-10T17:07:33.143Z\n> Make a hold status. Anything in the queue you can send back to pending, leave in queue on hold, move to the archive, or delete. All completed builds go to the archive, add an archive tab. A deleted tab where all deleted builds stay saved forever.\n\n## What to build\nContinue build \"Orchestrator: Hold status, Archive tab, Deleted tab (deleted builds kept forever)\" (orchestrator-hold-status-archive-tab-deleted-tab) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 17:07):\n\"Make a hold status. Anything in the queue you can send back to pending, leave in queue on hold, move to the archive, or delete. All completed builds go to the archive, add an archive tab. A deleted tab where all deleted builds stay saved forever.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Amends Retire Build Manager tabs. Actions on any queued build: Send back to Pending, Hold (stays in the queue, skipped by the dispatcher until released), Move to Archive, Delete. Archive tab: all completed and retired builds go there. Deleted tab: deleted builds are kept saved forever (soft delete, restorable). Bulk select. Full API/CLI control, no AI.\n[ ] s2 (~30 min) Make a hold status. Anything in the queue you can send back to pending, leave in queue on hold, move to the archive, or delete. All completed builds go to the archive, add an archive tab. A deleted tab where all deleted builds stay saved forever.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/orchestrator-hold-status-archive-tab-deleted-tab.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/orchestrator-hold-status-archive-tab-deleted-tab.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step orchestrator-hold-status-archive-tab-deleted-tab <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link orchestrator-hold-status-archive-tab-deleted-tab --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step orchestrator-hold-status-archive-tab-deleted-tab <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note orchestrator-hold-status-archive-tab-deleted-tab \"…\"); the build goes back to Pending for Brett.\n",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "mossesx-max-"
+ ],
+ "runs": [
+  {
+   "session": "axf-orchestrator-hold-status-archive-tab-deleted-tab--sully",
+   "account": "mossesx-max-",
+   "model": "Opus",
+   "startedAt": "2026-11-10T17:57:13.044Z",
+   "endedAt": "2026-11-10T18:11:53.624Z",
+   "exit": 0,
+   "costUsd": 4.6952
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Amends Retire Build Manager tabs. Actions on any queued build: Send back to Pending, Hold (stays in the queue, skipped by the dispatcher until released), Move to Archive, Delete. Archive tab: all completed and retired builds go there. Deleted tab: deleted builds are kept saved forever (soft delete, restorable). Bulk select. Full API/CLI control, no AI.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-10T17:57:13.044Z",
+   "doneAt": "2026-11-10T18:08:18.387Z",
+   "actualMin": 11,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Make a hold status. Anything in the queue you can send back to pending, leave in queue on hold, move to the archive, or delete. All completed builds go to the archive, add an archive tab. A deleted tab where all deleted builds stay saved forever.",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-10T18:08:18.387Z",
+   "doneAt": "2026-11-10T18:08:19.946Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Tests green, report _claude/builds/reports/orchestrator-hold-status-archive-tab-deleted-tab.md, THREADS row, commit, push, PR",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "",
+   "doneAt": "",
+   "actualMin": 0,
+   "done": false
+  }
+ ],
+ "branch": "claude/orchestrator-hold-status-archive-tab-deleted-tab",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 463,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/463"
+ },
+ "landedCommit": "7c211d233e0f7868c7b86261c81c964d95cda270",
+ "commits": [
+  "7ba70464f3be9f3cb5afd7f3f12b074cbac2d24d",
+  "0a50ad19777c065f4b5ac3eda10296b6eb22c63e",
+  "f6a418005bbe0863670834f233412bebba3ecd02"
+ ],
+ "mergedAt": "2026-11-11T00:48:50Z",
+ "landedAt": "2026-11-11T00:33:54Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/orchestrator-hold-status-archive-tab-deleted-tab.md",
+  "apps/console-web/plugins/build-orchestrator/help.json",
+  "apps/console-web/plugins/build-orchestrator/pipeline-core.mjs",
+  "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+  "apps/console-web/plugins/build-orchestrator/pipeline.test.mjs",
+  "apps/console-web/plugins/build-orchestrator/plugin.json",
+  "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+  "apps/console-web/plugins/build-orchestrator/test.py",
+  "apps/console-web/plugins/build-orchestrator/web/index.tsx",
+  "apps/console-web/plugins/build-orchestrator/web/menu.ts",
+  "apps/console-web/plugins/build-orchestrator/web/orchestrator.css",
+  "apps/console-web/plugins/build-orchestrator/web/pipeline.tsx",
+  "apps/console-web/plugins/build-orchestrator/web/ui.tsx",
+  "apps/console-web/src/axf/core/build-pipeline.d.mts",
+  "apps/console-web/src/axf/core/build-pipeline.mjs",
+  "framework/core/build-pipeline.d.mts",
+  "framework/core/build-pipeline.mjs",
+  "framework/spec/PORTING.md"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/help.json",
+    "apps/console-web/plugins/build-orchestrator/pipeline-core.mjs",
+    "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+    "apps/console-web/plugins/build-orchestrator/pipeline.test.mjs",
+    "apps/console-web/plugins/build-orchestrator/plugin.json",
+    "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+    "apps/console-web/plugins/build-orchestrator/test.py",
+    "apps/console-web/plugins/build-orchestrator/web/index.tsx",
+    "apps/console-web/plugins/build-orchestrator/web/menu.ts",
+    "apps/console-web/plugins/build-orchestrator/web/orchestrator.css",
+    "apps/console-web/plugins/build-orchestrator/web/pipeline.tsx",
+    "apps/console-web/plugins/build-orchestrator/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/src/axf/core/build-pipeline.d.mts",
+    "apps/console-web/src/axf/core/build-pipeline.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/build-pipeline.d.mts",
+    "framework/core/build-pipeline.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/orchestrator-hold-status-archive-tab-deleted-tab.md"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "pipeline.test.mjs: 45 passed. New tests:",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "hold in plan(): skipped, not stuck;",
+   "command": "",
+   "result": "skip",
+   "detail": ""
+  },
+  {
+   "name": "actionsFor / unarchivedStatus;",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "an e2e run of hold → release → unqueue → bulk archive with a live build refused → unarchive → bulk delete → Deleted tab → an orchestrator write keeps it deleted → restore.",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "Orchestrator test.mjs: 33 passed. test.py: 37 passed (new: /pipeline/action args, bulk ids, bad action / id / empty refused). test_upgrade.py: 12 passed.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "tsc --noEmit (console-web) is clean.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "check-theme, check-controls, check-toolbars and check-chrome-assets pass. check-help.mts: 262 checks pass.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "plugin-lifecycle check build-orchestrator still flags only the old references: framework/cli/dispatch-gate.mjs, plus this worktree's untracked brief files.",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  }
+ ],
+ "uiReview": [],
+ "cost": {
+  "usd": 4.6952,
+  "estimated": false,
+  "tokens": {
+   "input": 184,
+   "output": 1302,
+   "cacheRead": 10468580,
+   "cacheWrite": 168765
+  }
+ },
+ "report": "_claude/builds/reports/orchestrator-hold-status-archive-tab-deleted-tab.md",
+ "open": [
+  "s3: Tests green, report _claude/builds/reports/orchestrator-hold-status-archive-tab-deleted-tab.md, THREADS row, commit, push, PR",
+  "No screenshots, so no UI Review submission yet.",
+  "Tried: a scratch console via `rebuild-shots.mjs` on a copy of the builds store, with one queued build put on hold there.",
+  "Result: the headless browser stops at \"Waiting for axHub\". `https://axhub.amberxai.com` can't be fetched from the scratch origin.",
+  "The local `axhub-web` container needs a signed-in session the build does not have.",
+  "Shots needed: the Queue with the On hold chip and the bulk toolbar, the Archive tab and the Deleted tab, on desktop and phone. Shot file: `/tmp/axf-hold-shots/shots.json` on the VPS.",
+  "Kotlin / Android twin: none (console only). Recorded in `framework/spec/PORTING.md`.",
+  "Hiding builds is unchanged: hidden builds stay out of every tab, as before."
+ ]
+}

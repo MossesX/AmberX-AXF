@@ -1,0 +1,287 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-merge-queue",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:30:11Z",
+ "build": {
+  "id": "merge-queue",
+  "title": "Merge queue: test once, never twice",
+  "profile": "all",
+  "category": "Landing",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "How do we prevent this from happening? Things get added to main before it gets merged, so it has to do it again. We're paying to do these CI checks twice. ... Two things being checked at the same time - if one finishes and merges, the other one is corrupted? ... Yeah, do that. And how am I going to access this merge queue?",
+  "verbatim": true,
+  "at": "2026-11-04T14:32:10.064Z",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-merge-queue--paulie",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-04T14:28:16.213Z",
+   "endedAt": "2026-11-04T15:08:29.162Z",
+   "exit": 0,
+   "costUsd": 19.4551
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "merge-queue-core.mjs: queue order, stack plan, blame/kick-out, ETA (pure, tested)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-04T14:28:16.213Z",
+   "doneAt": "2026-11-04T14:48:11.221Z",
+   "actualMin": 20,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "ci-scope.mjs: changed files -> CI jobs, light PR checks, tested-tree gate; android.yml wired",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-04T14:48:11.221Z",
+   "doneAt": "2026-11-04T14:48:12.701Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "land.mjs queue round: build queue/* branches, read CI, merge green head, kick red, cleanup",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-04T14:48:12.701Z",
+   "doneAt": "2026-11-04T14:48:13.997Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "push banner: queue mode stops direct merges, REST + MCP + CLI mergequeue_list/add/remove/move",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-04T14:48:13.997Z",
+   "doneAt": "2026-11-04T14:48:16.295Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Merge queue view (order, agent, status, ETA, drag/remove/jump to front) + banner chip",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-04T14:48:16.295Z",
+   "doneAt": "2026-11-04T14:48:17.770Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "tests, report _claude/builds/reports/merge-queue.md, PR",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-04T14:48:17.770Z",
+   "doneAt": "2026-11-04T15:08:13.941Z",
+   "actualMin": 20,
+   "done": true
+  }
+ ],
+ "branch": "claude/merge-queue",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 320,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/320"
+ },
+ "landedCommit": "fd6eb00be2428fd3978ad45900b33de5eb26d76f",
+ "commits": [
+  "dd00afb2ebd355b7be272dc34584acce8efaca50",
+  "33b6f94ed7aab225776a3495ea81a7eba92d7c22",
+  "024164d3cd9981a5b6261d1432ef38775f9dbc9b",
+  "4007a813cd0159cfb773b634c608057234484d1a",
+  "6c9199ceecf7ec7a4a9f24d39f8a326d536f808b",
+  "4a055a0fd9294a10d33c0badc1d4ea907ce7ec7e",
+  "56363008ff4aa0a5fb33825de2228832ec52df6a",
+  "a272e61144691e59a8672d36e831858b5176b069"
+ ],
+ "mergedAt": "2026-11-04T19:51:03Z",
+ "landedAt": "2026-11-04T17:43:38Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/THREADS.md",
+  "_claude/builds/journal/2026-11.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/origins.json",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/builds/profiles/big-dog/orchestrator.json",
+  "_claude/builds/profiles/breakroom/orchestrator.json",
+  "_claude/builds/profiles/current/orchestrator.json",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/builds/profiles/urgent/orchestrator.json",
+  "_claude/builds/reports/merge-queue.md",
+  "_claude/builds/reports/merge-queue/shots/merge-queue-desktop.png",
+  "_claude/builds/reports/merge-queue/shots/merge-queue-phone.png",
+  "_claude/builds/store.json",
+  "_claude/rules/RULES.md",
+  "_claude/shared/rules/RULES.md",
+  "apps/console-web/plugins/push-banner/help.json",
+  "apps/console-web/plugins/push-banner/land/land-core.mjs",
+  "apps/console-web/plugins/push-banner/land/land.mjs",
+  "apps/console-web/plugins/push-banner/land/land.test.mjs",
+  "apps/console-web/plugins/push-banner/land/merge-queue-core.mjs",
+  "apps/console-web/plugins/push-banner/land/merge-queue.mjs",
+  "apps/console-web/plugins/push-banner/land/merge-queue.test.mjs",
+  "apps/console-web/plugins/push-banner/plugin.json",
+  "apps/console-web/plugins/push-banner/server/__init__.py",
+  "apps/console-web/plugins/push-banner/test.py",
+  "apps/console-web/plugins/push-banner/web/index.tsx",
+  "apps/console-web/plugins/push-banner/web/menu.ts",
+  "apps/console-web/plugins/push-banner/web/push-banner.css",
+  "apps/console-web/plugins/push-banner/web/queue.tsx",
+  "apps/console-web/plugins/push-banner/web/ui.tsx",
+  "changes/2026/11/chg-20261104-146867671e.json",
+  "changes/2026/11/chg-20261104-5d61647dc1.json",
+  "changes/2026/11/chg-20261104-61aaa7618a.json",
+  "changes/2026/11/chg-20261104-ee7551f189.json",
+  "deploy/install-console.sh",
+  "framework/cli/ci-scope.mjs",
+  "framework/spec/check-ci-scope.mjs",
+  "sessions/archive/2026/11/cc-3ad9849d-0900-4f20-af85-5c9c87eb0119.json"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/journal/2026-11.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/origins.json",
+    "_claude/builds/profiles/angel/orchestrator.json",
+    "_claude/builds/profiles/big-dog/orchestrator.json",
+    "_claude/builds/profiles/breakroom/orchestrator.json",
+    "_claude/builds/profiles/current/orchestrator.json",
+    "_claude/builds/profiles/refactor/orchestrator.json",
+    "_claude/builds/profiles/urgent/orchestrator.json",
+    "_claude/builds/reports/merge-queue.md",
+    "_claude/builds/reports/merge-queue/shots/merge-queue-desktop.png",
+    "_claude/builds/reports/merge-queue/shots/merge-queue-phone.png",
+    "_claude/builds/store.json",
+    "changes/2026/11/chg-20261104-146867671e.json",
+    "changes/2026/11/chg-20261104-5d61647dc1.json",
+    "changes/2026/11/chg-20261104-61aaa7618a.json",
+    "changes/2026/11/chg-20261104-ee7551f189.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "push-banner",
+   "files": [
+    "apps/console-web/plugins/push-banner/help.json",
+    "apps/console-web/plugins/push-banner/land/land-core.mjs",
+    "apps/console-web/plugins/push-banner/land/land.mjs",
+    "apps/console-web/plugins/push-banner/land/land.test.mjs",
+    "apps/console-web/plugins/push-banner/land/merge-queue-core.mjs",
+    "apps/console-web/plugins/push-banner/land/merge-queue.mjs",
+    "apps/console-web/plugins/push-banner/land/merge-queue.test.mjs",
+    "apps/console-web/plugins/push-banner/plugin.json",
+    "apps/console-web/plugins/push-banner/server/__init__.py",
+    "apps/console-web/plugins/push-banner/test.py",
+    "apps/console-web/plugins/push-banner/web/index.tsx",
+    "apps/console-web/plugins/push-banner/web/menu.ts",
+    "apps/console-web/plugins/push-banner/web/push-banner.css",
+    "apps/console-web/plugins/push-banner/web/queue.tsx",
+    "apps/console-web/plugins/push-banner/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/rules/RULES.md",
+    "_claude/shared/rules/RULES.md"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/ci-scope.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/check-ci-scope.mjs"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/install-console.sh"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": "sessions",
+   "files": [
+    "sessions/archive/2026/11/cc-3ad9849d-0900-4f20-af85-5c9c87eb0119.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261104-d7a77e5c",
+   "name": "Merge queue view (push banner)",
+   "status": "approved",
+   "group": "g-20261104-b6548d56",
+   "url": "/review/r-20261104-d7a77e5c"
+  }
+ ],
+ "cost": {
+  "usd": 19.4551,
+  "estimated": false,
+  "tokens": {
+   "input": 272,
+   "output": 1496,
+   "cacheRead": 27093786,
+   "cacheWrite": 276183
+  }
+ },
+ "report": "_claude/builds/reports/merge-queue.md",
+ "open": [
+  "Git status board tab: #291 isn't on main yet. The view is one component (`push-banner/web/queue.tsx` → `MergeQueueView`); when the board lands it mounts it as its *Merge queue* tab.",
+  "Bugs board: no bugs board exists on main, so a kick-out goes to the PR (comment), the view and one console alert. When one lands, `queueRound`'s kick branch is the one place to add it.",
+  "Repo variable: the runner sets `AXF_MERGE_QUEUE` with the GitHub token. If that token may not write Actions variables, the view says so and PRs keep running their full (path-filtered) checks: correct, just not the cheapest.",
+  "Shared token: the GitHub token was out of calls during this build (5000/h, shared with the banner and the reconciler). The runner caches every finished result per commit, so a quiet round costs one call (the PR list)."
+ ]
+}

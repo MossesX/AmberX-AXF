@@ -1,0 +1,125 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-walkthrough-chapters",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:52Z",
+ "build": {
+  "id": "walkthrough-chapters",
+  "title": "Walkthrough: one video per chapter, re-record a chapter, Chapters view",
+  "profile": "all",
+  "category": "Plugin",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "break each chapter into its own video so one chapter can be re-recorded alone; a view listing every chapter with length and the version of its video segment.",
+  "verbatim": false,
+  "at": "2026-11-02T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Assembly keeps each chapter video: publish chapters/<id>.mp4 + segments.json (length, version, recordedAt, hash)",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "",
+   "doneAt": "2026-11-02T12:55:30.051Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Re-record one chapter: ONLY=<id> records + cuts just that chapter, bumps its version, re-joins the full video from the kept segments",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-02T12:55:30.051Z",
+   "doneAt": "2026-11-02T12:55:30.798Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Server: serve segments.json and chapter videos; render route takes a chapter",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-02T12:55:30.798Z",
+   "doneAt": "2026-11-02T12:56:18.967Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Chapters view in the Walkthrough plugin: chapter, length, version, date, play, Re-record",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-02T12:56:18.967Z",
+   "doneAt": "2026-11-02T12:58:09.311Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Tests (server, molly-guide, app), checks, PR",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-02T12:58:09.311Z",
+   "doneAt": "2026-11-02T12:58:09.721Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Split the published video into chapters on the VPS (assembly only)",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-02T12:58:09.721Z",
+   "doneAt": "2026-11-02T14:39:53.392Z",
+   "actualMin": 102,
+   "done": true
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-11-02T14:39:53.393Z",
+ "landedAt": "2026-11-02T14:39:53.393Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}
