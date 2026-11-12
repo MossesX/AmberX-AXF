@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3554,
- "updatedAt": "2026-11-12T11:05:17.701Z",
+ "rev": 3555,
+ "updatedAt": "2026-11-12T11:05:36.533Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174661,7 +174661,7 @@
    "branch": "claude/fix-the-step-splitter-claude-exit-1-input-must-b",
    "pr": "",
    "createdAt": "2026-11-12T10:51:23.133Z",
-   "updatedAt": "2026-11-12T11:05:15.491Z",
+   "updatedAt": "2026-11-12T11:05:17.805Z",
    "builtAt": "",
    "notes": [
     {
@@ -174829,12 +174829,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T11:05:17.805Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T10:53:18.716Z",
-     "updatedAt": "2026-11-12T10:53:18.716Z"
+     "updatedAt": "2026-11-12T11:05:18.088Z"
     },
     {
      "id": "s6-5",
