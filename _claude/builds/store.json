@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3729,
- "updatedAt": "2026-11-12T22:14:34.223Z",
+ "rev": 3730,
+ "updatedAt": "2026-11-12T22:14:47.265Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -171784,7 +171784,7 @@
    "pr": "#528",
    "priority": "P2",
    "createdAt": "2026-11-12T19:46:41.501Z",
-   "updatedAt": "2026-11-12T22:14:32.678Z",
+   "updatedAt": "2026-11-12T22:14:45.877Z",
    "builtAt": "",
    "notes": [
     {
@@ -171838,6 +171838,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-move-amberx-web-app-into-the-console-amberx-andr--sully, own login copy)",
      "at": "2026-11-12T22:06:13.582Z"
+    },
+    {
+     "text": "Headless run axf-move-amberx-web-app-into-the-console-amberx-andr--sully: brief only · start 11.0K tokens ($0.03) · cost $2.95 · 81 turns · 6 tools, MCP none",
+     "at": "2026-11-12T22:14:45.877Z"
     }
    ],
    "approvals": [
@@ -171952,7 +171956,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-12T21:53:49.837Z",
-     "updatedAt": "2026-11-12T22:14:32.845Z"
+     "updatedAt": "2026-11-12T22:14:45.373Z"
     },
     {
      "id": "s2",
@@ -172299,7 +172303,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
