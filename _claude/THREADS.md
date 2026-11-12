@@ -776,16 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 02:09 UTC · `slot-aware-plan-optimizer-pre-launch` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `demo-sandbox-system-sandbox-settings-panel` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `molly-ri-court-records` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `amberx-build-notifications-for-every-stage-start` PR #499 (all) · foreign-write
-- 2026-11-12 02:09 UTC · `fix-follow-amber-highlight-console-search-ignoring-its-text` → archived, note (all) · console
-- 2026-11-12 02:10 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` s2 done (all) · orchestrator
-- 2026-11-12 02:11 UTC · `molly-gap-expenses-cors` → pending, note (all) · reconciler
-- 2026-11-12 02:11 UTC · `molly-native-expenses` s3 done (all) · orchestrator
-- 2026-11-12 02:11 UTC · `open-any-website-by-voice-on-the-phone-optionall` s1 done, → running (all) · orchestrator
-- 2026-11-12 02:11 UTC · `open-any-website-by-voice-on-the-phone-optionall` s2 done (all) · orchestrator
 - 2026-11-12 02:12 UTC · `open-any-website-by-voice-on-the-phone-optionall` → queued, note (all) · pipeline
 - 2026-11-12 02:12 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` s2 done (all) · orchestrator
 - 2026-11-12 02:13 UTC · `open-any-website-by-voice-on-the-phone-optionall` PR #500 (all) · builds-live
@@ -1176,6 +1166,16 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:29 UTC · `expenses-port` note (all) · backfill
 - 2026-11-12 03:30 UTC · `hotfix-build-manager` note (all) · backfill
 - 2026-11-12 03:30 UTC · `urgent-land-lazy-loader` note (all) · backfill
+- 2026-11-12 03:30 UTC · `urgent-land-gizmo-chat` note (all) · backfill
+- 2026-11-12 03:30 UTC · `merge-queue` note (all) · backfill
+- 2026-11-12 03:30 UTC · `fable-no-approval` note (all) · backfill
+- 2026-11-12 03:30 UTC · `tab-group-assets` note (all) · backfill
+- 2026-11-12 03:30 UTC · `urgent-console-perf` note (all) · backfill
+- 2026-11-12 03:30 UTC · `land-merge-queue-first` note (all) · backfill
+- 2026-11-12 03:30 UTC · `claude-account-switcher` note (all) · backfill
+- 2026-11-12 03:30 UTC · `banner-widgets` note (all) · backfill
+- 2026-11-12 03:30 UTC · `priority-tags` note (all) · backfill
+- 2026-11-12 03:30 UTC · `build-own-login` note (all) · backfill
 
 ## Token passes (log)
 
