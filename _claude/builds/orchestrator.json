@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T20:51:07.413Z",
+ "updatedAt": "2026-11-12T20:59:52.394Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -107468,10 +107468,10 @@
    "source": "mcp",
    "pendingId": "fix-the-step-splitter-claude-exit-1-input-must-b",
    "branch": "claude/fix-the-step-splitter-claude-exit-1-input-must-b",
-   "pr": "",
+   "pr": "#526",
    "priority": "P0",
    "createdAt": "2026-11-12T10:51:23.133Z",
-   "updatedAt": "2026-11-12T20:46:38.643Z",
+   "updatedAt": "2026-11-12T20:59:51.222Z",
    "builtAt": "",
    "notes": [
     {

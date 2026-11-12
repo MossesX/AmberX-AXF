@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3685,
- "updatedAt": "2026-11-12T20:51:07.413Z",
+ "rev": 3686,
+ "updatedAt": "2026-11-12T20:59:52.394Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -170145,10 +170145,10 @@
    "source": "mcp",
    "pendingId": "fix-the-step-splitter-claude-exit-1-input-must-b",
    "branch": "claude/fix-the-step-splitter-claude-exit-1-input-must-b",
-   "pr": "",
+   "pr": "#526",
    "priority": "P0",
    "createdAt": "2026-11-12T10:51:23.133Z",
-   "updatedAt": "2026-11-12T20:46:38.643Z",
+   "updatedAt": "2026-11-12T20:59:51.222Z",
    "builtAt": "",
    "notes": [
     {
@@ -170421,7 +170421,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": {
