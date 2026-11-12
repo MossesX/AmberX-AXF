@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T20:31:02.564Z",
+ "updatedAt": "2026-11-12T20:31:16.564Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -107746,7 +107746,7 @@
    "mergedAt": "2026-11-12T20:23:30Z",
    "priority": "P0",
    "createdAt": "2026-11-12T17:35:35.216Z",
-   "updatedAt": "2026-11-12T20:30:59.866Z",
+   "updatedAt": "2026-11-12T20:31:03Z",
    "builtAt": "2026-11-12T18:56:38.976Z",
    "notes": [
     {
@@ -107788,6 +107788,10 @@
     {
      "text": "Reconciler: PR #523 merged",
      "at": "2026-11-12T20:30:59.866Z"
+    },
+    {
+     "text": "Shipped manifest sm-new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans rev 1 sent to Shipped features (orchestrator): landed 1d831a002, 30 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T20:31:03Z"
     }
    ],
    "approvals": [],

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3652,
- "updatedAt": "2026-11-12T20:31:02.564Z",
+ "rev": 3653,
+ "updatedAt": "2026-11-12T20:31:16.564Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -170621,7 +170621,7 @@
    "mergedAt": "2026-11-12T20:23:30Z",
    "priority": "P0",
    "createdAt": "2026-11-12T17:35:35.216Z",
-   "updatedAt": "2026-11-12T20:30:59.866Z",
+   "updatedAt": "2026-11-12T20:31:03Z",
    "builtAt": "2026-11-12T18:56:38.976Z",
    "notes": [
     {
@@ -170663,6 +170663,10 @@
     {
      "text": "Reconciler: PR #523 merged",
      "at": "2026-11-12T20:30:59.866Z"
+    },
+    {
+     "text": "Shipped manifest sm-new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans rev 1 sent to Shipped features (orchestrator): landed 1d831a002, 30 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T20:31:03Z"
     }
    ],
    "approvals": [],
@@ -170706,6 +170710,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans",
+    "rev": 1,
+    "at": "2026-11-12T20:31:03Z",
+    "landedCommit": "1d831a002f177158778c478e3ce64b14e13bb3cc"
    },
    "steps": [
     {
@@ -170849,7 +170859,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
