@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3490,
- "updatedAt": "2026-11-12T03:34:35.195Z",
+ "rev": 3491,
+ "updatedAt": "2026-11-12T03:34:41.985Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -164390,7 +164390,7 @@
    "branch": "claude/merge-all-ready-buttons-server-side-lander",
    "pr": "#514",
    "createdAt": "2026-11-12T02:47:57.796Z",
-   "updatedAt": "2026-11-12T03:34:10.885Z",
+   "updatedAt": "2026-11-12T03:34:34.980Z",
    "builtAt": "2026-11-12T03:34:10.885Z",
    "notes": [
     {
@@ -164412,6 +164412,10 @@
     {
      "text": "PR #514 open. UI Review submit failed: the console answered 503. Re-run when it is up: set -a; . /opt/axf/.axf-console/env; set +a; AXF_CONSOLE_URL=https://$DOMAIN node apps/console-web/plugins/ui-review/review.mjs submit --kind screen --name 'Merging into main: lander view' --app console-web --screen settings/push-banner --group 'merge-all-ready-buttons-server-side-lander - Nov 12 3:40 AM' --shots <desktop.png>,<phone.png> --branch claude/merge-all-ready-buttons-server-side-lander --pr 514 --single-option 'replaces the merge queue panel in place' --console (shots are reproducible with framework/cli/rebuild-shots.mjs, Settings > Push banner > Merging into main). Backlog drain is queued on the host (lander-control.json drain set); axf-lander.service starts within 3 minutes of this reaching /opt/axf (auto-land cron) and sends a 'Lander started' AmberX FYI.",
      "at": "2026-11-12T03:34:09.122Z"
+    },
+    {
+     "text": "Headless run axf-merge-all-ready-buttons-server-side-lander--paulie: brief only · start 11.1K tokens ($0.03) · cost $7.93 · 161 turns · 6 tools, MCP none",
+     "at": "2026-11-12T03:34:34.980Z"
     }
    ],
    "approvals": [],
@@ -164576,7 +164580,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
