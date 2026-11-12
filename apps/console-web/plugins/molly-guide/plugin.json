@@ -32,6 +32,7 @@
     "env": [],
     "mentions": [
       "docs/contracts/amberx-console-api.md",
+      "apps/console-web/migrations/amberx-import/README.md",
       "_claude/memory/STATUS.md"
     ]
   },

@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberxai.com/axf/schemas/amberx-import.json",
+  "title": "amberx-import@1",
+  "description": "The AmberX web app → console data import: the manifest migrate.py keeps (what it created, what it replaced, every run), the amberx-ai@1 profile document as it is stored on the console (secrets replaced by credential names), and the alert-history@1 record the console's notification history is made of. Build move-amberx-web-app-into-the-console-amberx-andr, step s2.",
+  "$ref": "#/$defs/manifest",
+  "$defs": {
+    "isoTime": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$" },
+    "relPath": { "type": "string", "minLength": 1, "pattern": "^(?!/)(?!.*(^|/)\\.\\.(/|$)).+$", "description": "Relative to the console's state folder (.axf-console)." },
+    "credentialName": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{1,63}$", "description": "A key in the console credential store (secrets.env). Never the value." },
+    "sectionState": {
+      "type": "string",
+      "enum": ["moved", "unchanged", "in-place", "empty", "stays-on-axhub", "skipped", "conflict", "error"],
+      "description": "moved: apply wrote something this run. unchanged: everything was already there. in-place: the data already lives where the console reads it; checked and counted, nothing copied. empty: nothing to import. stays-on-axhub: not console data. skipped: left out with --only. conflict: a credential the console already holds with another value (left alone, exit 2). error: the section failed; the others still ran."
+    },
+    "manifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["$axf", "runs", "created", "backups"],
+      "properties": {
+        "$axf": { "const": "amberx-import@1" },
+        "appliedAt": { "oneOf": [{ "$ref": "#/$defs/isoTime" }, { "type": "null" }], "description": "Last apply that wrote something." },
+        "rolledBackAt": { "oneOf": [{ "$ref": "#/$defs/isoTime" }, { "type": "null" }] },
+        "created": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["files", "secrets", "history"],
+          "description": "Everything apply made that did not exist before. Rollback removes exactly this.",
+          "properties": {
+            "files": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["path", "size", "at"],
+                "properties": {
+                  "path": { "$ref": "#/$defs/relPath" },
+                  "size": { "type": "integer", "minimum": 0 },
+                  "sha256": { "oneOf": [{ "type": "string", "pattern": "^[a-f0-9]{64}$" }, { "type": "null" }], "description": "Null for media over 64 MB." },
+                  "at": { "$ref": "#/$defs/isoTime" }
+                }
+              }
+            },
+            "secrets": { "type": "array", "items": { "$ref": "#/$defs/credentialName" }, "description": "Credential entries apply added to secrets.env (names only)." },
+            "history": { "type": "array", "items": { "type": "string" }, "description": "Alert ids whose legacy delivery record apply appended to alerts-history.jsonl." }
+          }
+        },
+        "backups": {
+          "type": "object",
+          "description": "Files apply replaced: target path → where the pre-migration original was moved (migrations/amberx-import.bak/). Rollback moves them back. First replacement only, so the original survives repeated runs.",
+          "additionalProperties": { "$ref": "#/$defs/relPath" },
+          "propertyNames": { "pattern": "^(?!/)" }
+        },
+        "runs": {
+          "type": "array",
+          "maxItems": 20,
+          "items": {
+            "type": "object",
+            "required": ["at", "mode"],
+            "properties": {
+              "at": { "$ref": "#/$defs/isoTime" },
+              "mode": { "type": "string", "enum": ["apply", "check", "rollback"] },
+              "from": { "type": "string" },
+              "projects": { "type": "string" },
+              "sections": { "type": "object", "additionalProperties": { "$ref": "#/$defs/sectionState" } },
+              "conflicts": { "type": "array", "items": { "$ref": "#/$defs/credentialName" } },
+              "removed": { "type": "integer" },
+              "secretsCleared": { "type": "integer" },
+              "historyDropped": { "type": "integer" },
+              "restored": { "type": "integer" }
+            }
+          }
+        }
+      }
+    },
+    "aiProfilesOnConsole": {
+      "title": "amberx-ai@1 as stored on the console",
+      "description": "The AmberX router's document unchanged in shape (apps/amberx-droid/server/router.py), except that `key` and `refresh` never appear: `keyRef` / `refreshRef` name the credential-store entries (AMBERX_AI_KEY_<ID>, AMBERX_AI_REFRESH_<ID>), which the console loads into its environment at start. Per-kind fallbacks keep the AmberX names (AMBERX_<KIND>_API_KEY, AMBERX_CLAUDE_OAUTH_TOKEN, AMBERX_CLAUDE_REFRESH_TOKEN).",
+      "type": "object",
+      "required": ["$axf", "profiles", "order", "active", "keepAliveMin"],
+      "properties": {
+        "$axf": { "const": "amberx-ai@1" },
+        "profiles": {
+          "type": "object",
+          "propertyNames": { "pattern": "^[a-z0-9][a-z0-9-]{0,39}$" },
+          "additionalProperties": {
+            "type": "object",
+            "required": ["id", "kind"],
+            "properties": {
+              "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,39}$" },
+              "kind": { "type": "string", "description": "A provider kind from framework/schemas/ai-providers.json." },
+              "label": { "type": "string", "maxLength": 60 },
+              "model": { "type": "string", "maxLength": 120 },
+              "baseUrl": { "type": "string" },
+              "enabled": { "type": "boolean" },
+              "expiresAt": { "type": ["number", "string", "null"] },
+              "keyRef": { "$ref": "#/$defs/credentialName" },
+              "refreshRef": { "$ref": "#/$defs/credentialName" },
+              "key": false,
+              "refresh": false
+            }
+          }
+        },
+        "order": { "type": "array", "items": { "type": "string" } },
+        "active": { "type": "string" },
+        "keepAliveMin": { "type": "integer", "minimum": 0, "maximum": 60 }
+      }
+    },
+    "alertHistoryRecord": {
+      "title": "alert-history@1",
+      "description": "One line of .axf-console/alerts-history.jsonl: one alert delivered to one device (contract C35b). The console appends a record when it pushes an alert to a device and fills readAt / tappedAt from the device's acks. The import back-fills one `legacy` record per alert the AmberX app polled from the console before the history existed.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["$axf", "alert", "key", "device", "channel", "deliveredAt"],
+      "properties": {
+        "$axf": { "const": "alert-history@1" },
+        "alert": { "type": "string", "description": "alert@1 id" },
+        "key": { "type": "string", "description": "alert@1 key (source:title or the raiser's key)" },
+        "device": { "type": "string", "description": "amberx-devices device id, or `amberx-web` for legacy records" },
+        "channel": { "type": "string", "enum": ["stream", "ntfy", "webpush", "poll", "legacy-poll"] },
+        "deliveredAt": { "$ref": "#/$defs/isoTime" },
+        "readAt": { "oneOf": [{ "$ref": "#/$defs/isoTime" }, { "type": "null" }] },
+        "tappedAt": { "oneOf": [{ "$ref": "#/$defs/isoTime" }, { "type": "null" }] },
+        "legacy": { "type": "boolean", "description": "True when back-filled by the import rather than observed." }
+      }
+    }
+  }
+}

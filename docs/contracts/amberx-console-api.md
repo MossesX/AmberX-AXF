@@ -308,6 +308,8 @@ commands); the console never holds a microphone.
 
 - The Android client code (s12, s13): this is the server side the client is written against. No Kotlin or Java changes are part of
   s1; the twin gap is recorded in `framework/spec/PORTING.md` when s12 starts.
-- Storage layout for anything that already lives under `/projects` does not change; the s2 migration covers only `ai.json`
-  profiles and keys, the walkthrough media and the AmberX server's request log.
+- Storage layout for anything that already lives under `/projects` does not change. The s2 migration
+  (`apps/console-web/migrations/amberx-import/`, amberx-import@1) moves `ai.json` profiles and keys and the walkthrough
+  media, starts the C35b history store (`alerts-history.jsonl`, alert-history@1) from the alerts the phone polled, and
+  checks and counts the hub data in place; it is idempotent and has a rollback. The request log does not exist until s11.
 - The merge of the AmberX plugins' UI into the console (which nav items, which banner) is the s3–s10 UI work, reviewed in UI Review.
