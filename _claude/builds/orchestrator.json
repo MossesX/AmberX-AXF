@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:04:33.545Z",
+ "updatedAt": "2026-11-12T02:04:43.009Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -71148,7 +71148,7 @@
    "pr": "#497",
    "priority": "P0",
    "createdAt": "2026-11-08T16:58:59.537Z",
-   "updatedAt": "2026-11-12T01:57:38.305Z",
+   "updatedAt": "2026-11-12T02:04:36.171Z",
    "builtAt": "",
    "notes": [
     {
@@ -71184,6 +71184,10 @@
      "at": "2026-11-12T01:56:05.103Z"
     },
     {
+     "text": "Stopped after s1 (PR #497, CORS + v1/me, 23 tests pass). s2-s4 still blocked: shell-surface@1 manifest + native mount seam exist only on open PR #395 (claude/molly-one-shell-r4, 148 files, +16.6k lines), and native modules can't sign in until molly-sign-in-once lands. Building now would invent a second manifest contract or stack on an unlanded PR. Next: land #395 and molly-sign-in-once, then re-queue s2-s4. Also cleaned up a stale half-finished rebase that was left in this worktree.",
+     "at": "2026-11-12T01:57:27.978Z"
+    },
+    {
      "text": "Started run 2 on account-5 (API key, subscriptions first, then API) (Opus, Phase 1): axf-molly-native-expenses--lenny.",
      "at": "2026-11-12T01:57:08.106Z"
     },
@@ -71194,10 +71198,6 @@
     {
      "text": "Headless run axf-molly-native-expenses--gina: brief only · start 10.4K tokens ($0.02) · cost $0.33 · 23 turns · 6 tools, MCP none",
      "at": "2026-11-12T01:57:38.305Z"
-    },
-    {
-     "text": "Stopped after s1 (PR #497, CORS + v1/me, 23 tests pass). s2-s4 still blocked: shell-surface@1 manifest + native mount seam exist only on open PR #395 (claude/molly-one-shell-r4, 148 files, +16.6k lines), and native modules can't sign in until molly-sign-in-once lands. Building now would invent a second manifest contract or stack on an unlanded PR. Next: land #395 and molly-sign-in-once, then re-queue s2-s4. Also cleaned up a stale half-finished rebase that was left in this worktree.",
-     "at": "2026-11-12T01:57:27.978Z"
     }
    ],
    "approvals": [],
@@ -71246,8 +71246,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T02:04:36.171Z",
      "note": "",
      "uid": "st-mw82u4zr06yw63"
     },
