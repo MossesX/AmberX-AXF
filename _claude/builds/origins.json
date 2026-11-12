@@ -5795,6 +5795,18 @@
    "from": "report",
    "addenda": []
   },
+  "show-commits-behind-main-on-every-build-table-an": {
+   "said": "We need, I need, um, I need all the build tables and the orchestrator to, um, list how many commits they are behind main.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "skin-checker-flags-anything-that-breaks-a-profes": {
    "said": "Yeah, build that shit right now.",
    "at": "2026-11-10T17:11:27.008Z",
