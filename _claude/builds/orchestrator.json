@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T22:43:55.422Z",
+ "updatedAt": "2026-11-12T22:44:08.521Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -108573,7 +108573,7 @@
    "pr": "#528",
    "priority": "P2",
    "createdAt": "2026-11-12T19:46:41.501Z",
-   "updatedAt": "2026-11-12T22:43:54.045Z",
+   "updatedAt": "2026-11-12T22:44:06.937Z",
    "builtAt": "",
    "notes": [
     {
@@ -108679,6 +108679,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-move-amberx-web-app-into-the-console-amberx-andr--joey, own login copy)",
      "at": "2026-11-12T22:40:17.872Z"
+    },
+    {
+     "text": "Headless run axf-move-amberx-web-app-into-the-console-amberx-andr--joey: brief only · start 12.3K tokens ($0.03) · cost $1.19 · 27 turns · 6 tools, MCP none",
+     "at": "2026-11-12T22:44:06.937Z"
     },
     {
      "text": "Duplicate dispatch: two Opus sessions ran on this worktree at once (agent Land… from 22:33, agent Janitor Joey from 22:40). Joey added the s4 server test (amberx-tasks/test.py, passing), the s4 contract lines and the framework-confirm Delete, committed f349a0e39 and ticked s4, then stopped so the two sessions don't overwrite each other. The Land… session carries on from s5. Dispatcher: one session per build worktree.",
