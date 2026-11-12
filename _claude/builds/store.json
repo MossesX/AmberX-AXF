@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3426,
- "updatedAt": "2026-11-12T03:10:45.565Z",
+ "rev": 3427,
+ "updatedAt": "2026-11-12T03:11:13.053Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -159229,7 +159229,7 @@
    "title": "Console commands reliable: live clients, failover, wake, focus a build or tab",
    "category": "Console",
    "detail": "",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -159237,8 +159237,8 @@
    "pr": "#496",
    "mergedAt": "2026-11-12T03:02:18Z",
    "createdAt": "2026-11-11T23:25:41.956Z",
-   "updatedAt": "2026-11-12T03:06:36.460Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-12T03:11:10.212Z",
+   "builtAt": "2026-11-12T03:11:10.213Z",
    "notes": [
     {
      "text": "Reconciler: branch claude/console-commands-reliable (PR #496); PR #496",
@@ -159253,7 +159253,16 @@
      "at": "2026-11-12T03:06:36.460Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-12T03:11:10.212Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "console commands from Claude/MCP (console_open, console_show / Follow Amber) keep failing ... Fix: keep console client connections alive, deliver to the most recently active live client, retry, wake via AmberX; console_show/console_open accept a build id or tab; truthful result.",
@@ -159377,12 +159386,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T03:11:10.212Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-11T23:25:41.957Z",
-     "updatedAt": "2026-11-11T23:25:41.957Z"
+     "updatedAt": "2026-11-12T03:11:10.555Z"
     }
    ],
    "profiles": [

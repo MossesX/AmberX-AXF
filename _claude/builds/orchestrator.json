@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T03:10:45.565Z",
+ "updatedAt": "2026-11-12T03:11:13.053Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -99429,7 +99429,7 @@
    "title": "Console commands reliable: live clients, failover, wake, focus a build or tab",
    "category": "Console",
    "detail": "",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -99437,8 +99437,8 @@
    "pr": "#496",
    "mergedAt": "2026-11-12T03:02:18Z",
    "createdAt": "2026-11-11T23:25:41.956Z",
-   "updatedAt": "2026-11-12T03:06:36.460Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-12T03:11:10.212Z",
+   "builtAt": "2026-11-12T03:11:10.213Z",
    "notes": [
     {
      "text": "Reconciler: branch claude/console-commands-reliable (PR #496); PR #496",
@@ -99453,7 +99453,16 @@
      "at": "2026-11-12T03:06:36.460Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-12T03:11:10.212Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "console commands from Claude/MCP (console_open, console_show / Follow Amber) keep failing ... Fix: keep console client connections alive, deliver to the most recently active live client, retry, wake via AmberX; console_show/console_open accept a build id or tab; truthful result.",
@@ -99535,8 +99544,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T03:11:10.212Z",
      "note": "",
      "uid": "st-mwcqz04g08hvst"
     }
