@@ -1,0 +1,163 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-mosses-build-tools",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:13Z",
+ "build": {
+  "id": "mosses-build-tools",
+  "title": "Mosses builds in the AI assistant: Edit/Write/Bash in the /axf git checkout + push/PR tools (token stays in the host)",
+  "profile": "all",
+  "category": "assistant",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Mosses could not build; the Claude Code provider hard-blocked Edit/Write/Bash. Picked: live /axf folder, Bash free there, Refactor profile. Build agents get Edit/Write/MultiEdit/Bash in the CLI provider (admins only) plus repo_git_push / repo_open_pr run by the console with GITHUB_TOKEN.",
+  "verbatim": false,
+  "at": "2026-10-28T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "providers.py build mode",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "",
+   "doneAt": "2026-10-29T03:53:16.760Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "agent-manager build agents + git push / PR builtins; ai-assistant passes build mode",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-10-29T03:53:16.760Z",
+   "doneAt": "2026-10-29T03:53:16.849Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Tests, THREADS, PR + merge approval",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "2026-10-29T03:53:16.849Z",
+   "doneAt": "2026-10-29T03:53:16.932Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/mosses-build-tools",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 164,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/164"
+ },
+ "landedCommit": "4bf11fee77d02bbb954277cf6a87bdcddccaf564",
+ "commits": [
+  "0cb393c237faf3395875ca2f419b91c6841562bf",
+  "1a463946e9191cc18efe889947a088edab3ddfe7",
+  "c4ac881e0dddf2191e0de90f37ef7da546f023d7",
+  "fa8afe127b8c5e90feb9412a630fc7a7b5c11afd"
+ ],
+ "mergedAt": "2026-10-29T04:01:03Z",
+ "landedAt": "2026-10-29T04:01:02Z",
+ "files": [
+  ".gitignore",
+  "_claude/THREADS.md",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/memory/decisions.md",
+  "apps/console-web/plugins/agent-manager/server/__init__.py",
+  "apps/console-web/plugins/agent-manager/server/engine.py",
+  "apps/console-web/plugins/agent-manager/server/gittools.py",
+  "apps/console-web/plugins/agent-manager/server/store.py",
+  "apps/console-web/plugins/agent-manager/test.py",
+  "apps/console-web/plugins/agent-manager/web/api.ts",
+  "apps/console-web/plugins/agent-manager/web/settings.tsx",
+  "apps/console-web/plugins/ai-assistant/server/__init__.py",
+  "apps/console-web/plugins/ai-assistant/test.py",
+  "framework/python/axf/assistant_host/providers.py"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "agent-manager",
+   "files": [
+    "apps/console-web/plugins/agent-manager/server/__init__.py",
+    "apps/console-web/plugins/agent-manager/server/engine.py",
+    "apps/console-web/plugins/agent-manager/server/gittools.py",
+    "apps/console-web/plugins/agent-manager/server/store.py",
+    "apps/console-web/plugins/agent-manager/test.py",
+    "apps/console-web/plugins/agent-manager/web/api.ts",
+    "apps/console-web/plugins/agent-manager/web/settings.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ai-assistant",
+   "files": [
+    "apps/console-web/plugins/ai-assistant/server/__init__.py",
+    "apps/console-web/plugins/ai-assistant/test.py"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/decisions.md"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "python",
+   "files": [
+    "framework/python/axf/assistant_host/providers.py"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/profiles/refactor/orchestrator.json"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".gitignore",
+   "files": [
+    ".gitignore"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

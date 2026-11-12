@@ -776,17 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 02:06 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` → queued, note (all) · pipeline
-- 2026-11-12 02:06 UTC · `molly-gap-expenses-delete` → archived (all) · Claude voice (Gizmo)
-- 2026-11-12 02:07 UTC · `employee-hooks-everywhere-any-mention-of-an-agen` → archived (all) · Claude voice (Gizmo)
-- 2026-11-12 02:07 UTC · `x.lib.hub` → archived (all) · Claude voice (Gizmo)
-- 2026-11-12 02:07 UTC · `employee-hooks-plain-tap-on-an-employee-name-ope` → archived (all) · Claude voice (Gizmo)
-- 2026-11-12 02:07 UTC · `x.lib.notifications` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `x.lib.files` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `x.session` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `x.state` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `x.engine.uiport` → archived, note (all) · console
-- 2026-11-12 02:07 UTC · `x.libs.core` → archived, note (all) · console
 - 2026-11-12 02:07 UTC · `x.uikits` → archived, note (all) · console
 - 2026-11-12 02:07 UTC · `x.deploy.console` → archived, note (all) · console
 - 2026-11-12 02:07 UTC · `x.modules` → archived, note (all) · console
@@ -1176,6 +1165,17 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:27 UTC · `amberx-voice-fix` merged, note (all) · backfill
 - 2026-11-12 03:27 UTC · `fix-hubsync-look-source` note (all) · backfill
 - 2026-11-12 03:28 UTC · `fix-banner-snap` note (all) · backfill
+- 2026-11-12 03:28 UTC · `banner-fix-fallback` note (all) · backfill
+- 2026-11-12 03:28 UTC · `amberx-push` note (all) · backfill
+- 2026-11-12 03:28 UTC · `amberx-voice-center` note (all) · backfill
+- 2026-11-12 03:28 UTC · `amberx-assistant-agents` note (all) · backfill
+- 2026-11-12 03:28 UTC · `amberx-claude-tokens` note (all) · backfill
+- 2026-11-12 03:28 UTC · `hub-runs-approved` note (all) · backfill
+- 2026-11-12 03:28 UTC · `refactor-all` note (all) · backfill
+- 2026-11-12 03:28 UTC · `mosses-build-tools` note (all) · backfill
+- 2026-11-12 03:28 UTC · `assistant-no-subagents` note (all) · backfill
+- 2026-11-12 03:28 UTC · `shared-look-fix` note (all) · backfill
+- 2026-11-12 03:28 UTC · `veto-everywhere` note (all) · backfill
 
 ## Token passes (log)
 

@@ -1,0 +1,107 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-assistant-no-subagents",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:28:14Z",
+ "build": {
+  "id": "assistant-no-subagents",
+  "title": "No sub-agents in the AI assistant (Task/Agent denied) + fix build mode crash (env scrub flag)",
+  "profile": "all",
+  "category": "assistant",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Disable sub agents in assistant. 01:56: Mosses chats crash with Claude Code exited with code 1 (CLAUDE_CODE_SUBPROCESS_ENV_SCRUB needs managed settings); the flag set by mosses-build-tools is removed.",
+  "verbatim": false,
+  "at": "2026-10-29T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Deny Task/Agent in the CLI provider; drop the env scrub flag; tests, PR, merge, deploy",
+   "model": "Opus",
+   "estimate": "",
+   "estimateMin": 0,
+   "startedAt": "",
+   "doneAt": "2026-10-29T05:57:18.705Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/assistant-no-subagents",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 167,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/167"
+ },
+ "landedCommit": "051b9ca2ec8aa3bbc8100ca426d17a896315aa9c",
+ "commits": [
+  "84ab5ad8e44fc3a7a135e8cc0ecce1e7d24bcc92",
+  "fe5cbfaeb38f13146e2a2d9153e16262b03013a5"
+ ],
+ "mergedAt": "2026-10-29T06:15:14Z",
+ "landedAt": "2026-10-29T06:15:13Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "apps/console-web/plugins/ai-assistant/test.py",
+  "framework/python/axf/assistant_host/providers.py"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "ai-assistant",
+   "files": [
+    "apps/console-web/plugins/ai-assistant/test.py"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "python",
+   "files": [
+    "framework/python/axf/assistant_host/providers.py"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/profiles/refactor/orchestrator.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

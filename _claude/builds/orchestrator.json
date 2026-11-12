@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T03:28:04.103Z",
+ "updatedAt": "2026-11-12T03:28:19.430Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -41118,7 +41118,7 @@
    "pr": "#152",
    "mergedAt": "2026-10-28T10:19:39Z",
    "createdAt": "2026-10-28T09:55:19.427Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:28:00Z",
    "builtAt": "2026-10-28T10:11:22.405Z",
    "notes": [
     {
@@ -41132,6 +41132,10 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-banner-fix-fallback rev 1 sent to Shipped features (backfill): landed 6b3ea2faf, 10 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:00Z"
     }
    ],
    "approvals": [],
@@ -41218,7 +41222,7 @@
    "pr": "#154",
    "mergedAt": "2026-10-28T14:51:50Z",
    "createdAt": "2026-10-28T14:39:25.869Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:28:04Z",
    "builtAt": "2026-10-28T14:52:00.612Z",
    "notes": [
     {
@@ -41232,6 +41236,10 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-amberx-push rev 1 sent to Shipped features (backfill): landed 9cada4e27, 16 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:04Z"
     }
    ],
    "approvals": [],
@@ -41318,7 +41326,7 @@
    "pr": "#153",
    "mergedAt": "2026-10-28T15:21:29Z",
    "createdAt": "2026-10-28T13:59:55.535Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:28:06Z",
    "builtAt": "2026-10-28T15:29:37.365Z",
    "notes": [
     {
@@ -41328,6 +41336,10 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-amberx-voice-center rev 1 sent to Shipped features (backfill): landed 8296f64ec, 40 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:06Z"
     }
    ],
    "approvals": [],
@@ -42005,7 +42017,7 @@
    "pr": "#156",
    "mergedAt": "2026-10-28T15:54:26Z",
    "createdAt": "2026-10-28T15:41:17.167Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:28:07Z",
    "builtAt": "2026-10-28T15:54:37.523Z",
    "notes": [
     {
@@ -42019,6 +42031,10 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-amberx-assistant-agents rev 1 sent to Shipped features (backfill): landed b7d2e17e4, 19 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:07Z"
     }
    ],
    "approvals": [],
@@ -42069,7 +42085,7 @@
    "pr": "#157",
    "mergedAt": "2026-10-28T17:04:30Z",
    "createdAt": "2026-10-28T16:55:24.086Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:28:09Z",
    "builtAt": "2026-10-28T17:04:41.490Z",
    "notes": [
     {
@@ -42083,6 +42099,10 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-amberx-claude-tokens rev 1 sent to Shipped features (backfill): landed b5d2492b2, 7 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:09Z"
     }
    ],
    "approvals": [],
@@ -42943,7 +42963,7 @@
    "branch": "claude/hub-runs-approved (axHub)",
    "pr": "axHub #14",
    "createdAt": "2026-10-28T18:56:29.828Z",
-   "updatedAt": "2026-10-28T19:13:47.224Z",
+   "updatedAt": "2026-11-12T03:28:11Z",
    "builtAt": "2026-10-28T19:13:47.224Z",
    "notes": [
     {
@@ -42957,6 +42977,10 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-hub-runs-approved rev 1 sent to Shipped features (backfill): PR #14, 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:11Z"
     }
    ],
    "approvals": [],
@@ -43043,7 +43067,7 @@
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/166",
    "mergedAt": "2026-10-29T03:49:47Z",
    "createdAt": "2026-10-28T19:31:15.654Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:28:12Z",
    "builtAt": "2026-10-29T07:38:54.593Z",
    "notes": [
     {
@@ -43089,6 +43113,10 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-refactor-all rev 1 sent to Shipped features (backfill): landed 24227d966, 58 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:12Z"
     }
    ],
    "approvals": [
@@ -44765,7 +44793,7 @@
    "pr": "#164",
    "mergedAt": "2026-10-29T04:01:03Z",
    "createdAt": "2026-10-29T03:53:16.640Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:28:13Z",
    "builtAt": "2026-10-29T03:53:16.932Z",
    "notes": [
     {
@@ -44775,6 +44803,10 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-mosses-build-tools rev 1 sent to Shipped features (backfill): landed 4bf11fee7, 14 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:13Z"
     }
    ],
    "approvals": [],
@@ -44861,7 +44893,7 @@
    "pr": "#167",
    "mergedAt": "2026-10-29T06:15:14Z",
    "createdAt": "2026-10-29T05:57:18.585Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:28:14Z",
    "builtAt": "2026-10-29T05:57:18.706Z",
    "notes": [
     {
@@ -44871,6 +44903,10 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-assistant-no-subagents rev 1 sent to Shipped features (backfill): landed 051b9ca2e, 4 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:14Z"
     }
    ],
    "approvals": [],
@@ -44920,7 +44956,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-29T18:04:38.474Z",
-   "updatedAt": "2026-10-29T18:57:38.776Z",
+   "updatedAt": "2026-11-12T03:28:16Z",
    "builtAt": "2026-10-29T18:57:38.704Z",
    "notes": [
     {
@@ -44934,6 +44970,10 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-shared-look-fix rev 1 sent to Shipped features (backfill): complete 2026-10-29 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:16Z"
     }
    ],
    "approvals": [],
@@ -45026,7 +45066,7 @@
    "pr": "#176",
    "mergedAt": "2026-10-31T07:26:37Z",
    "createdAt": "2026-10-30T13:20:06.580Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:28:17Z",
    "builtAt": "2026-11-01T02:31:12.147Z",
    "notes": [
     {
@@ -45048,6 +45088,10 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-veto-everywhere rev 1 sent to Shipped features (backfill): PR #176, 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:17Z"
     }
    ],
    "approvals": [],

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3463,
- "updatedAt": "2026-11-12T03:28:04.103Z",
+ "rev": 3464,
+ "updatedAt": "2026-11-12T03:28:19.430Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -34085,7 +34085,7 @@
    "pr": "#152",
    "mergedAt": "2026-10-28T10:19:39Z",
    "createdAt": "2026-10-28T09:55:19.427Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:28:00Z",
    "builtAt": "2026-10-28T10:11:22.405Z",
    "notes": [
     {
@@ -34099,6 +34099,10 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-banner-fix-fallback rev 1 sent to Shipped features (backfill): landed 6b3ea2faf, 10 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:00Z"
     }
    ],
    "approvals": [],
@@ -34114,6 +34118,12 @@
     "verbatim": false,
     "from": "detail",
     "addenda": []
+   },
+   "shipped": {
+    "id": "sm-banner-fix-fallback",
+    "rev": 1,
+    "at": "2026-11-12T03:28:00Z",
+    "landedCommit": "6b3ea2fafe1964b8e49a7dce0bb99462bbdc4821"
    },
    "steps": [
     {
@@ -34191,7 +34201,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -34240,7 +34250,7 @@
    "pr": "#154",
    "mergedAt": "2026-10-28T14:51:50Z",
    "createdAt": "2026-10-28T14:39:25.869Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:28:04Z",
    "builtAt": "2026-10-28T14:52:00.612Z",
    "notes": [
     {
@@ -34254,6 +34264,10 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-amberx-push rev 1 sent to Shipped features (backfill): landed 9cada4e27, 16 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:04Z"
     }
    ],
    "approvals": [],
@@ -34269,6 +34283,12 @@
     "verbatim": false,
     "from": "detail",
     "addenda": []
+   },
+   "shipped": {
+    "id": "sm-amberx-push",
+    "rev": 1,
+    "at": "2026-11-12T03:28:04Z",
+    "landedCommit": "9cada4e27bbd22d33cd194ec77ba8becd7737781"
    },
    "steps": [
     {
@@ -34346,7 +34366,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -34395,7 +34415,7 @@
    "pr": "#153",
    "mergedAt": "2026-10-28T15:21:29Z",
    "createdAt": "2026-10-28T13:59:55.535Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:28:06Z",
    "builtAt": "2026-10-28T15:29:37.365Z",
    "notes": [
     {
@@ -34405,6 +34425,10 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-amberx-voice-center rev 1 sent to Shipped features (backfill): landed 8296f64ec, 40 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:06Z"
     }
    ],
    "approvals": [],
@@ -34420,6 +34444,12 @@
     "verbatim": false,
     "from": "detail",
     "addenda": []
+   },
+   "shipped": {
+    "id": "sm-amberx-voice-center",
+    "rev": 1,
+    "at": "2026-11-12T03:28:06Z",
+    "landedCommit": "8296f64ec7bbee2442e978ec8a3ea9555bf2f3d4"
    },
    "steps": [
     {
@@ -34739,7 +34769,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -35372,7 +35402,7 @@
    "pr": "#156",
    "mergedAt": "2026-10-28T15:54:26Z",
    "createdAt": "2026-10-28T15:41:17.167Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:28:07Z",
    "builtAt": "2026-10-28T15:54:37.523Z",
    "notes": [
     {
@@ -35386,6 +35416,10 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-amberx-assistant-agents rev 1 sent to Shipped features (backfill): landed b7d2e17e4, 19 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:07Z"
     }
    ],
    "approvals": [],
@@ -35401,6 +35435,12 @@
     "verbatim": false,
     "from": "detail",
     "addenda": []
+   },
+   "shipped": {
+    "id": "sm-amberx-assistant-agents",
+    "rev": 1,
+    "at": "2026-11-12T03:28:07Z",
+    "landedCommit": "b7d2e17e49a2cf51c3b7a4ca4c417a75c56209e0"
    },
    "steps": [
     {
@@ -35434,7 +35474,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -35481,7 +35521,7 @@
    "pr": "#157",
    "mergedAt": "2026-10-28T17:04:30Z",
    "createdAt": "2026-10-28T16:55:24.086Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:28:09Z",
    "builtAt": "2026-10-28T17:04:41.490Z",
    "notes": [
     {
@@ -35495,6 +35535,10 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-amberx-claude-tokens rev 1 sent to Shipped features (backfill): landed b5d2492b2, 7 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:09Z"
     }
    ],
    "approvals": [],
@@ -35510,6 +35554,12 @@
     "verbatim": false,
     "from": "detail",
     "addenda": []
+   },
+   "shipped": {
+    "id": "sm-amberx-claude-tokens",
+    "rev": 1,
+    "at": "2026-11-12T03:28:09Z",
+    "landedCommit": "b5d2492b227a6787829a5708718bdb3af49c48aa"
    },
    "steps": [
     {
@@ -35543,7 +35593,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -36740,7 +36790,7 @@
    "branch": "claude/hub-runs-approved (axHub)",
    "pr": "axHub #14",
    "createdAt": "2026-10-28T18:56:29.828Z",
-   "updatedAt": "2026-10-28T19:13:47.224Z",
+   "updatedAt": "2026-11-12T03:28:11Z",
    "builtAt": "2026-10-28T19:13:47.224Z",
    "notes": [
     {
@@ -36754,6 +36804,10 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-hub-runs-approved rev 1 sent to Shipped features (backfill): PR #14, 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:11Z"
     }
    ],
    "approvals": [],
@@ -36769,6 +36823,12 @@
     "verbatim": false,
     "from": "detail",
     "addenda": []
+   },
+   "shipped": {
+    "id": "sm-hub-runs-approved",
+    "rev": 1,
+    "at": "2026-11-12T03:28:11Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -36846,7 +36906,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -36895,7 +36955,7 @@
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/166",
    "mergedAt": "2026-10-29T03:49:47Z",
    "createdAt": "2026-10-28T19:31:15.654Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:28:12Z",
    "builtAt": "2026-10-29T07:38:54.593Z",
    "notes": [
     {
@@ -36941,6 +37001,10 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-refactor-all rev 1 sent to Shipped features (backfill): landed 24227d966, 58 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:12Z"
     }
    ],
    "approvals": [
@@ -36975,6 +37039,12 @@
     "verbatim": false,
     "from": "detail",
     "addenda": []
+   },
+   "shipped": {
+    "id": "sm-refactor-all",
+    "rev": 1,
+    "at": "2026-11-12T03:28:12Z",
+    "landedCommit": "24227d9669d45952481d09fa97850fc6fd721305"
    },
    "steps": [
     {
@@ -38967,7 +39037,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -39102,7 +39172,7 @@
    "pr": "#164",
    "mergedAt": "2026-10-29T04:01:03Z",
    "createdAt": "2026-10-29T03:53:16.640Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:28:13Z",
    "builtAt": "2026-10-29T03:53:16.932Z",
    "notes": [
     {
@@ -39112,6 +39182,10 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-mosses-build-tools rev 1 sent to Shipped features (backfill): landed 4bf11fee7, 14 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:13Z"
     }
    ],
    "approvals": [],
@@ -39127,6 +39201,12 @@
     "verbatim": false,
     "from": "detail",
     "addenda": []
+   },
+   "shipped": {
+    "id": "sm-mosses-build-tools",
+    "rev": 1,
+    "at": "2026-11-12T03:28:13Z",
+    "landedCommit": "4bf11fee77d02bbb954277cf6a87bdcddccaf564"
    },
    "steps": [
     {
@@ -39204,7 +39284,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -39253,7 +39333,7 @@
    "pr": "#167",
    "mergedAt": "2026-10-29T06:15:14Z",
    "createdAt": "2026-10-29T05:57:18.585Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:28:14Z",
    "builtAt": "2026-10-29T05:57:18.706Z",
    "notes": [
     {
@@ -39263,6 +39343,10 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-assistant-no-subagents rev 1 sent to Shipped features (backfill): landed 051b9ca2e, 4 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:14Z"
     }
    ],
    "approvals": [],
@@ -39278,6 +39362,12 @@
     "verbatim": false,
     "from": "detail",
     "addenda": []
+   },
+   "shipped": {
+    "id": "sm-assistant-no-subagents",
+    "rev": 1,
+    "at": "2026-11-12T03:28:14Z",
+    "landedCommit": "051b9ca2ec8aa3bbc8100ca426d17a896315aa9c"
    },
    "steps": [
     {
@@ -39311,7 +39401,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -39357,7 +39447,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-29T18:04:38.474Z",
-   "updatedAt": "2026-10-29T18:57:38.776Z",
+   "updatedAt": "2026-11-12T03:28:16Z",
    "builtAt": "2026-10-29T18:57:38.704Z",
    "notes": [
     {
@@ -39371,10 +39461,20 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-shared-look-fix rev 1 sent to Shipped features (backfill): complete 2026-10-29 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:16Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "shipped": {
+    "id": "sm-shared-look-fix",
+    "rev": 1,
+    "at": "2026-11-12T03:28:16Z",
+    "landedCommit": ""
+   },
    "steps": [
     {
      "id": "s1",
@@ -39473,7 +39573,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -39523,7 +39623,7 @@
    "pr": "#176",
    "mergedAt": "2026-10-31T07:26:37Z",
    "createdAt": "2026-10-30T13:20:06.580Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:28:17Z",
    "builtAt": "2026-11-01T02:31:12.147Z",
    "notes": [
     {
@@ -39545,6 +39645,10 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-veto-everywhere rev 1 sent to Shipped features (backfill): PR #176, 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:28:17Z"
     }
    ],
    "approvals": [],
@@ -39560,6 +39664,12 @@
     "verbatim": false,
     "from": "detail",
     "addenda": []
+   },
+   "shipped": {
+    "id": "sm-veto-everywhere",
+    "rev": 1,
+    "at": "2026-11-12T03:28:17Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -39769,7 +39879,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": {
