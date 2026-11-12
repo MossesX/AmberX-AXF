@@ -776,17 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 01:51 UTC · `amberx-build-notifications-for-every-stage-start` → running, note (all) · pipeline
-- 2026-11-12 01:51 UTC · `amberx-build-notifications-for-every-stage-start` branch claude/amberx-build-notifications-for-every-stage-start (all) · pipeline
-- 2026-11-12 01:51 UTC · `amberx-build-notifications-for-every-stage-start` note (all) · orchestrator
-- 2026-11-12 01:51 UTC · `fix-axhub-36-pull-main-in-failed` → running, note (all) · pipeline
-- 2026-11-12 01:51 UTC · `fix-axhub-36-pull-main-in-failed` branch claude/fix-axhub-36-pull-main-in-failed (all) · pipeline
-- 2026-11-12 01:51 UTC · `fix-axhub-36-pull-main-in-failed` note (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s1 done, → running (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s2 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s3 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s4 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s5 done (all) · orchestrator
 - 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s6 done (all) · orchestrator
 - 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s7 done (all) · orchestrator
 - 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s8 done (all) · orchestrator
@@ -1176,6 +1165,17 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:26 UTC · `widget-assets` note (all) · backfill
 - 2026-11-12 03:26 UTC · `console-android-app-tabs` note (all) · backfill
 - 2026-11-12 03:26 UTC · `build-manager-history` note (all) · backfill
+- 2026-11-12 03:26 UTC · `todo-manager-tabs` note (all) · backfill
+- 2026-11-12 03:26 UTC · `session-close-race` note (all) · backfill
+- 2026-11-12 03:26 UTC · `syscheck-autofix-jobs` note (all) · backfill
+- 2026-11-12 03:26 UTC · `syscheck-claude-on-fail` note (all) · backfill
+- 2026-11-12 03:26 UTC · `push-banner-pull-all` note (all) · backfill
+- 2026-11-12 03:26 UTC · `push-banner-claude-fix` note (all) · backfill
+- 2026-11-12 03:26 UTC · `autofix-through-mosses` note (all) · backfill
+- 2026-11-12 03:26 UTC · `vps-run-terminal-output` note (all) · backfill
+- 2026-11-12 03:26 UTC · `push-banner-branches-that-can-merge-cleanly` note (all) · backfill
+- 2026-11-12 03:26 UTC · `ai-keys` note (all) · backfill
+- 2026-11-12 03:26 UTC · `syscheck-live-keys-credits` note (all) · backfill
 
 ## Token passes (log)
 

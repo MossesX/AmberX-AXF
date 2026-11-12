@@ -1,0 +1,103 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-autofix-through-mosses",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:26:34Z",
+ "build": {
+  "id": "autofix-through-mosses",
+  "title": "Route every Auto fix through Mosses: axhub_call tool for Mosses; systems check + push banner send vps.run through him",
+  "profile": "all",
+  "category": "Add-on",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Route every Auto fix through Mosses: axhub_call tool for Mosses; systems check + push banner send vps.run through him",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "axhub_call tool in agent-manager (hub call, job follow, approval), coder add-on 2.1 + migration",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-22T22:55:27.428Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Systems check: VPS Auto fix + Claude on failure through Mosses",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-22T22:55:27.428Z",
+   "doneAt": "2026-10-22T22:55:27.491Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Push banner: Fix with Claude through Mosses",
+   "model": "Opus",
+   "estimate": "25 min",
+   "estimateMin": 25,
+   "startedAt": "2026-10-22T22:55:27.491Z",
+   "doneAt": "2026-10-22T22:55:27.553Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Tests, docs, push",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-22T22:55:27.553Z",
+   "doneAt": "2026-10-22T22:55:27.612Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-10-22T22:55:27.670Z",
+ "landedAt": "2026-10-22T22:55:27.670Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

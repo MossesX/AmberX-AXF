@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T03:26:27.416Z",
+ "updatedAt": "2026-11-12T03:26:42.224Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -51697,7 +51697,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-22T23:08:37.968Z",
-   "updatedAt": "2026-10-22T23:25:54.201Z",
+   "updatedAt": "2026-11-12T03:26:26Z",
    "builtAt": "2026-10-22T23:25:53.915Z",
    "notes": [
     {
@@ -51707,6 +51707,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-todo-manager-tabs rev 1 sent to Shipped features (backfill): complete 2026-10-22 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:26:26Z"
     }
    ],
    "approvals": [],
@@ -51834,7 +51838,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-23T00:07:55.175Z",
-   "updatedAt": "2026-10-23T00:08:41.756Z",
+   "updatedAt": "2026-11-12T03:26:28Z",
    "builtAt": "2026-10-23T00:08:41.711Z",
    "notes": [
     {
@@ -51844,6 +51848,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-session-close-race rev 1 sent to Shipped features (backfill): complete 2026-10-23 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:26:28Z"
     }
    ],
    "approvals": [],
@@ -51862,7 +51870,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-22T20:20:34.515Z",
-   "updatedAt": "2026-10-22T20:20:34.515Z",
+   "updatedAt": "2026-11-12T03:26:29Z",
    "builtAt": "2026-10-22T20:20:34.515Z",
    "notes": [
     {
@@ -51872,6 +51880,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-syscheck-autofix-jobs rev 1 sent to Shipped features (backfill): complete 2026-10-22 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:26:29Z"
     }
    ],
    "approvals": [],
@@ -51890,7 +51902,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-22T20:34:25.869Z",
-   "updatedAt": "2026-10-22T20:44:42.519Z",
+   "updatedAt": "2026-11-12T03:26:31Z",
    "builtAt": "2026-10-22T20:44:42.448Z",
    "notes": [
     {
@@ -51900,6 +51912,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-syscheck-claude-on-fail rev 1 sent to Shipped features (backfill): complete 2026-10-22 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 3 open.",
+     "at": "2026-11-12T03:26:31Z"
     }
    ],
    "approvals": [],
@@ -51973,7 +51989,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-22T21:06:39.317Z",
-   "updatedAt": "2026-10-22T21:07:43.754Z",
+   "updatedAt": "2026-11-12T03:26:32Z",
    "builtAt": "2026-10-22T21:07:43.682Z",
    "notes": [
     {
@@ -51983,6 +51999,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-push-banner-pull-all rev 1 sent to Shipped features (backfill): complete 2026-10-22 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:26:32Z"
     }
    ],
    "approvals": [],
@@ -52001,7 +52021,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-22T22:31:30.552Z",
-   "updatedAt": "2026-10-22T22:37:36.833Z",
+   "updatedAt": "2026-11-12T03:26:33Z",
    "builtAt": "2026-10-22T22:37:36.773Z",
    "notes": [
     {
@@ -52011,6 +52031,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-push-banner-claude-fix rev 1 sent to Shipped features (backfill): complete 2026-10-22 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 2 open.",
+     "at": "2026-11-12T03:26:33Z"
     }
    ],
    "approvals": [],
@@ -52066,7 +52090,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-22T22:49:40.096Z",
-   "updatedAt": "2026-10-22T22:55:27.752Z",
+   "updatedAt": "2026-11-12T03:26:34Z",
    "builtAt": "2026-10-22T22:55:27.670Z",
    "notes": [
     {
@@ -52076,6 +52100,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-autofix-through-mosses rev 1 sent to Shipped features (backfill): complete 2026-10-22 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:26:34Z"
     }
    ],
    "approvals": [],
@@ -52167,7 +52195,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-23T00:04:16.316Z",
-   "updatedAt": "2026-10-23T11:41:00.284Z",
+   "updatedAt": "2026-11-12T03:26:35Z",
    "builtAt": "2026-10-23T00:09:00.415Z",
    "notes": [
     {
@@ -52177,6 +52205,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-vps-run-terminal-output rev 1 sent to Shipped features (backfill): complete 2026-10-23 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:26:35Z"
     }
    ],
    "approvals": [],
@@ -52232,7 +52264,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-23T04:06:48.309Z",
-   "updatedAt": "2026-10-23T04:06:51.531Z",
+   "updatedAt": "2026-11-12T03:26:37Z",
    "builtAt": "2026-10-23T04:06:51.471Z",
    "notes": [
     {
@@ -52242,6 +52274,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-push-banner-branches-that-can-merge-cleanly rev 1 sent to Shipped features (backfill): complete 2026-10-23 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:26:37Z"
     }
    ],
    "approvals": [],
@@ -52260,12 +52296,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-23T00:40:17.479Z",
-   "updatedAt": "2026-10-23T00:40:17.479Z",
+   "updatedAt": "2026-11-12T03:26:38Z",
    "builtAt": "2026-10-23T00:40:17.479Z",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-ai-keys rev 1 sent to Shipped features (backfill): complete 2026-10-23 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:26:38Z"
     }
    ],
    "approvals": [],
@@ -52284,12 +52324,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-23T00:49:33.693Z",
-   "updatedAt": "2026-10-23T00:51:52.239Z",
+   "updatedAt": "2026-11-12T03:26:40Z",
    "builtAt": "2026-10-23T00:51:52.239Z",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Shipped manifest sm-syscheck-live-keys-credits rev 1 sent to Shipped features (backfill): complete 2026-10-23 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:26:40Z"
     }
    ],
    "approvals": [],
