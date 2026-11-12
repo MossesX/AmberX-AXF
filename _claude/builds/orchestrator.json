@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T20:42:33.376Z",
+ "updatedAt": "2026-11-12T20:42:45.280Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -104759,7 +104759,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-12T01:46:10.127Z",
-   "updatedAt": "2026-11-12T02:16:41.654Z",
+   "updatedAt": "2026-11-12T11:07:46.715Z",
    "builtAt": "",
    "notes": [
     {
@@ -104789,6 +104789,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-12T02:16:41.654Z"
+    },
+    {
+     "text": "Split by Claude into 6 steps (0 Fable).",
+     "at": "2026-11-12T11:07:46.715Z"
     }
    ],
    "approvals": [],
@@ -104898,24 +104902,6 @@
     },
     {
      "id": "s6",
-     "text": "cd '/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold'",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwcw14ii062vdo"
-    },
-    {
-     "id": "s7",
      "text": "Do no work in the orchestrator's own build folder: it only hosts this session. Tick the build's steps there when done.",
      "model": "Opus",
      "why": "",
@@ -104933,7 +104919,7 @@
      "uid": "st-mwcw14ii071h5q"
     },
     {
-     "id": "s8",
+     "id": "s7",
      "text": "# Fix pull request #36 (claude-sync: leave a checkout with .claude-sync-hold alone) in MossesX/axHub so it can reach main",
      "model": "Opus",
      "why": "",
@@ -104951,7 +104937,7 @@
      "uid": "st-mwcw14ii08qqzu"
     },
     {
-     "id": "s9",
+     "id": "s8",
      "text": "The Dev Console's push banner tried to pull main in and it failed: the banner's Pull all stopped at a failed pull and handed this repo's pulls to this session.",
      "model": "Opus",
      "why": "",
@@ -104969,7 +104955,7 @@
      "uid": "st-mwcw14ii09cldt"
     },
     {
-     "id": "s10",
+     "id": "s9",
      "text": "Repository: MossesX/axHub (the setup above makes a worktree of it, on branch `claude/claude-sync-hold`)",
      "model": "Opus",
      "why": "",
@@ -104987,7 +104973,7 @@
      "uid": "st-mwcw14ii0a1smn"
     },
     {
-     "id": "s11",
+     "id": "s10",
      "text": "Base branch: `main`",
      "model": "Opus",
      "why": "",
@@ -105005,25 +104991,7 @@
      "uid": "st-mwcw14ii0bfqrj"
     },
     {
-     "id": "s12",
-     "text": "Pull request: #36 https://github.com/MossesX/axHub/pull/36",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwcw14ii0cgd41"
-    },
-    {
-     "id": "s13",
+     "id": "s11",
      "text": "`git fetch origin`, then `git merge origin/main` into `claude/claude-sync-hold`.",
      "model": "Opus",
      "why": "",
@@ -105041,7 +105009,7 @@
      "uid": "st-mwcw14ii0dt4r2"
     },
     {
-     "id": "s14",
+     "id": "s12",
      "text": "Resolve every conflict keeping both sides' intent; when unsure which side wins, keep both and say so in the commit.",
      "model": "Opus",
      "why": "",
@@ -105059,7 +105027,7 @@
      "uid": "st-mwcw14ii0eaoj7"
     },
     {
-     "id": "s15",
+     "id": "s13",
      "text": "Run the repo's own fast checks for what you touched (its CLAUDE.md lists them).",
      "model": "Opus",
      "why": "",
@@ -105077,7 +105045,7 @@
      "uid": "st-mwcw14ii0fy8m3"
     },
     {
-     "id": "s16",
+     "id": "s14",
      "text": "Commit, then `git push origin HEAD:claude/claude-sync-hold`. CI runs again on the PR by itself.",
      "model": "Opus",
      "why": "",
@@ -105095,43 +105063,7 @@
      "uid": "st-mwcw14ii0guqlr"
     },
     {
-     "id": "s17",
-     "text": "Then finish the banner's Pull all: pull `main` into each of these branches too, one at a time:",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwcw14ii0h8xam"
-    },
-    {
-     "id": "s18",
-     "text": "`claude/amberx-open-url`",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwcw14ii0i765y"
-    },
-    {
-     "id": "s19",
+     "id": "s15",
      "text": "For each: `git checkout -B <branch> origin/<branch>`, `git merge origin/main`, resolve, run the checks, `git push origin HEAD:<branch>`. If one can't be fixed, skip it, keep going, and list it at the end.",
      "model": "Opus",
      "why": "",
@@ -105149,7 +105081,7 @@
      "uid": "st-mwcw14ij0j9xz8"
     },
     {
-     "id": "s20",
+     "id": "s16",
      "text": "Tests green, report _claude/builds/reports/fix-axhub-36-pull-main-in-failed.md, THREADS row, commit, push, PR",
      "model": "Opus",
      "why": "",
@@ -105168,6 +105100,130 @@
      "doneAt": "2026-11-12T01:53:39.080Z",
      "note": "",
      "uid": "st-mwcw14ij0kurfw"
+    },
+    {
+     "id": "s17",
+     "text": "Run the build's Setup block: clone or refresh MossesX/axHub under /root/axf-fixes/repos, prune worktrees, then create or reset the worktree /root/axf-fixes/MossesX-axHub--claude-claude-sync-hold on claude/claude-sync-hold from origin. Read its CLAUDE.md to find the fast checks. Run git fetch origin, then git merge origin/main. List every conflicted file with git diff --name-only --diff-filter=U. Do no work in the orchestrator's build folder.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "/root/axf-fixes/repos/MossesX-axHub",
+      "/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold",
+      "/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold/CLAUDE.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwdg1voc01t6hr"
+    },
+    {
+     "id": "s18",
+     "text": "Resolve every merge conflict in the claude/claude-sync-hold worktree so both sides' intent survives. Keep PR #36's rule that claude-sync leaves alone any checkout that has .claude-sync-hold, and keep main's newer sync changes. Where it is unclear which side wins, keep both and note it for the commit message. If a conflict needs a decision only Brett can make, stop and record exactly what and why. Never touch .env files, .axf-console/ or secrets.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold (conflicted files from step 1, e.g. the claude-sync sources and their tests)"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwdg1voc02ealf"
+    },
+    {
+     "id": "s19",
+     "text": "In the claude/claude-sync-hold worktree, run the fast checks that CLAUDE.md lists for the touched areas and fix any failures the merge caused. Commit the merge with a message that names each keep-both choice. Push with git push origin HEAD:claude/claude-sync-hold, never force and never to main. CI on PR #36 re-runs by itself.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwdg1voc03vr88"
+    },
+    {
+     "id": "s20",
+     "text": "Finish the push banner's Pull all for claude/amberx-open-url, in the same worktree folder. Run git checkout -B claude/amberx-open-url origin/claude/amberx-open-url, then git merge origin/main. Resolve conflicts keeping both sides' intent, run the CLAUDE.md fast checks, commit, and git push origin HEAD:claude/amberx-open-url (no force). If it can't be fixed, abort the merge, skip the branch and note why.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold (branch claude/amberx-open-url: conflicted files)"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwdg1voc04ahm3"
+    },
+    {
+     "id": "s21",
+     "text": "Do the same for go-pass. Run git checkout -B go-pass origin/go-pass, then git merge origin/main. Resolve conflicts keeping both sides' intent, run the CLAUDE.md fast checks, commit, and git push origin HEAD:go-pass (no force). If it can't be fixed, abort the merge, skip the branch and note why. Afterwards check out claude/claude-sync-hold again.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold (branch go-pass: conflicted files)"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwdg1voc0549wd"
+    },
+    {
+     "id": "s22",
+     "text": "Tests, report, THREADS row and PR. Confirm that each pushed branch's checks passed and that PR #36 CI was re-triggered. Write _claude/builds/reports/fix-axhub-36-pull-main-in-failed.md listing each branch (merged and pushed, or skipped and why), every keep-both decision, anything only Brett can decide, and any non-git command Brett should run. This build adds no UI, so it has no API surface. Add the THREADS row and post a PR #36 note that summarises the merge and the other two branches. Tick the build's steps in the orchestrator folder and record the change-log result.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [
+      "_claude/builds/reports/fix-axhub-36-pull-main-in-failed.md",
+      "_claude/THREADS.md",
+      "https://github.com/MossesX/axHub/pull/36"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwdg1voc06a6at"
     }
    ]
   },
