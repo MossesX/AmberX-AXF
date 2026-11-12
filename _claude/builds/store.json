@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3441,
- "updatedAt": "2026-11-12T03:16:55.421Z",
+ "rev": 3442,
+ "updatedAt": "2026-11-12T03:17:09.407Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -157693,7 +157693,7 @@
    "branch": "claude/molly-gap-console-token-handoff",
    "pr": "#511",
    "createdAt": "2026-11-10T22:09:29.615Z",
-   "updatedAt": "2026-11-12T03:16:35.159Z",
+   "updatedAt": "2026-11-12T03:17:06.955Z",
    "builtAt": "2026-11-12T03:16:35.159Z",
    "notes": [
     {
@@ -157755,6 +157755,10 @@
     {
      "text": "Headless run axf-molly-gap-console-token-handoff--gina: brief only · start 11.3K tokens ($0.03) · cost $0.88 · 56 turns · 6 tools, MCP none",
      "at": "2026-11-12T03:16:35.159Z"
+    },
+    {
+     "text": "Session axf-molly-gap-console-token-handoff--gina on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-12T03:17:06.955Z"
     }
    ],
    "approvals": [],
@@ -157775,17 +157779,17 @@
     "queuedAt": "2026-11-12T01:43:00.313Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-molly-gap-console-token-handoff--gina",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-12T03:13:21.437Z",
     "runs": 3,
     "lastRun": {
-     "at": "2026-11-12T02:45:08.032Z",
-     "exit": 1,
-     "outcome": "requeued",
-     "stepsLeft": 1,
-     "account": "account-5",
+     "at": "2026-11-12T03:17:06.355Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
      "session": "axf-molly-gap-console-token-handoff--gina"
     },
     "split": null,
@@ -157885,7 +157889,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

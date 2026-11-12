@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 01:45 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` → running, branch claude/queue-drag-and-drop-reorder-dispatcher-follows-t, note (all) · foreign-write
 - 2026-11-12 01:45 UTC · `molly-gap-expenses-cors` → running, note (all) · pipeline
 - 2026-11-12 01:45 UTC · `molly-gap-expenses-cors` branch claude/molly-gap-expenses-cors (all) · pipeline
 - 2026-11-12 01:45 UTC · `molly-gap-expenses-cors` note (all) · orchestrator
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:16 UTC · `molly-gap-console-token-handoff` s3 done, → built (all) · orchestrator
 - 2026-11-10 18:08 UTC · `shipped-features-show-each-landed-build-s-screen` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-12 03:16 UTC · `account-order-hulu-moses-x-api-account-shown-on-every-build` branch claude/account-order-hulu-moses-x-api-account-shown-on-every-build, PR #512 (all) · builds-live
+- 2026-11-12 03:17 UTC · `molly-gap-console-token-handoff` note (all) · pipeline
 
 ## Token passes (log)
 
