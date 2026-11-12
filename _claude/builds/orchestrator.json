@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T03:34:11.487Z",
+ "updatedAt": "2026-11-12T03:34:19.554Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -105915,15 +105915,15 @@
    "title": "Merge all ready: buttons + server-side lander",
    "category": "orchestrator",
    "detail": "URGENT, boss order from Brett, Nov 12. The merge banner shows PRs 'ready for merge' but there's no way to merge them. Add: a 'Merge all ready' button on the merge banner and merge queue page, plus a Merge button on each row. Every merge goes through the main gate (tests must pass, rebase if behind, no force-push); conflicts get auto-rebased, and anything that can't land is marked with why. Progress shows live in the banner (merging 3 of 12...). Also a server-side lander that works through the whole backlog (~168 PRs) by itself, oldest first, one at a time, through the gate. Each merge and failure logged in the Server gate log / Automatic fixes. Full API: REST/MCP/CLI and voice ('merge everything ready').",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/merge-all-ready-buttons-server-side-lander",
    "pr": "#514",
    "createdAt": "2026-11-12T02:47:57.796Z",
-   "updatedAt": "2026-11-12T03:34:09.122Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-12T03:34:10.885Z",
+   "builtAt": "2026-11-12T03:34:10.885Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -106046,8 +106046,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T03:34:10.885Z",
      "note": "",
      "uid": "st-mwcy746j06kmda"
     }

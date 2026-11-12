@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 02:44 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` note (all) · Claude voice (Gizmo)
 - 2026-11-12 02:45 UTC · `all-banners-hide-when-empty` added (3 steps) (all) · Claude voice (Gizmo)
 - 2026-11-12 02:45 UTC · `molly-gap-console-token-handoff` → queued, note (all) · pipeline
 - 2026-11-12 02:45 UTC · `all-banners-hide-when-empty` → queued, note (all) · console
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:28 UTC · `element-inspector` note (all) · orchestrator
 - 2026-11-12 03:32 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` → pending, note (all) · reconciler
 - 2026-11-12 03:34 UTC · `merge-all-ready-buttons-server-side-lander` note (all) · orchestrator
+- 2026-11-12 03:34 UTC · `merge-all-ready-buttons-server-side-lander` s3 done, → built (all) · orchestrator
 
 ## Token passes (log)
 
