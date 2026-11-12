@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3369,
- "updatedAt": "2026-11-12T02:43:41.533Z",
+ "rev": 3370,
+ "updatedAt": "2026-11-12T02:43:50.381Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -160885,7 +160885,7 @@
    "branch": "claude/console-and-axhub-retry-failed-calls-themselves-no-claude-needed",
    "pr": "",
    "createdAt": "2026-11-12T02:37:24.132Z",
-   "updatedAt": "2026-11-12T02:43:16.902Z",
+   "updatedAt": "2026-11-12T02:43:47.356Z",
    "builtAt": "",
    "notes": [
     {
@@ -160907,6 +160907,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-and-axhub-retry-failed-calls-themselves---gina, own login copy)",
      "at": "2026-11-12T02:43:16.902Z"
+    },
+    {
+     "text": "CHANGE from Brett (02:43): s5 changed. NO separate banner. Auto-fixes gets a banner widget plus a setting to pick WHICH existing banner its entries appear in (dropdown of all banners). Re-read s5 from the store before doing it.",
+     "at": "2026-11-12T02:43:47.356Z"
     }
    ],
    "approvals": [],
@@ -161000,7 +161004,7 @@
      "id": "s5",
      "uid": "st-mwcxwntl01ty4w",
      "title": "",
-     "text": "'Auto-fixes' plugin with a setting to show it as EITHER its own full banner (a strip across the top) OR a banner widget (snappable asset); Brett picks in its settings, switchable live, also via REST/MCP/CLI/voice. Shows in console, Molly and AmberX. Lists every call that failed and is being retried: what failed, which fix on the ladder it is trying now (e.g. 'store locked: clearing stale lock, step 2 of 3'), attempts so far, live updates, and items that gave up after the whole ladder (with what's missing). Count badge; tap a row to open its 'Automatic fixes' log entry. Voice: 'what's failing'.",
+     "text": "'Auto-fixes' plugin with a banner widget (snappable asset) and a setting to pick WHICH existing banner its entries appear in (dropdown of all banners), switchable live; no separate banner of its own. Also via REST/MCP/CLI/voice. Shows in console, Molly and AmberX. Lists every call that failed and is being retried: what failed, which fix on the ladder it is trying now (e.g. 'store locked: clearing stale lock, step 2 of 3'), attempts so far, live updates, and items that gave up after the whole ladder (with what's missing). Count badge; tap a row to open its 'Automatic fixes' log entry. Voice: 'what's failing'.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -161014,9 +161018,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-12T02:39:49.993Z",
-     "updatedAt": "2026-11-12T02:40:35.046Z"
+     "updatedAt": "2026-11-12T02:43:43.805Z"
     },
     {
      "id": "s2",
@@ -161071,7 +161075,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -161495,7 +161499,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T02:42:15.357Z",
-   "updatedAt": "2026-11-12T02:42:56.082Z",
+   "updatedAt": "2026-11-12T02:43:41.333Z",
    "builtAt": "",
    "notes": [
     {
@@ -161601,6 +161605,28 @@
      "updatedAt": "2026-11-12T02:42:56.202Z"
     },
     {
+     "id": "s5",
+     "uid": "st-mwcy1mba01ib96",
+     "title": "",
+     "text": "Server gate log banner widget (snappable asset) with count badge showing latest gate hits; tap opens the Server gate log page. Setting: pick which existing banner its entries appear in (dropdown of all banners), switchable live; also via REST/MCP/CLI/voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T02:43:41.334Z",
+     "updatedAt": "2026-11-12T02:43:41.494Z"
+    },
+    {
      "id": "s3",
      "uid": "st-mwcxzs0a06xeu0",
      "title": "",
@@ -161631,7 +161657,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

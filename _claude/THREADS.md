@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-11 00:41 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
 - 2026-11-11 00:50 UTC · `skins-own-everything-colour-theme-swaps-independ` → complete, merged, note (all) · reconciler
 - 2026-11-11 00:50 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` merged, note (all) · reconciler
 - 2026-11-11 00:50 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` merged, note (all) · reconciler
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:43 UTC · `molly-gap-console-token-handoff` note (all) · orchestrator
 - 2026-11-12 02:43 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` → running, note (all) · pipeline
 - 2026-11-12 02:43 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` note (all) · orchestrator
+- 2026-11-12 02:43 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` note (all) · Claude voice (Gizmo)
 
 ## Token passes (log)
 
