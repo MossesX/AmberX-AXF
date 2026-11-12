@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3538,
- "updatedAt": "2026-11-12T10:54:36.153Z",
+ "rev": 3539,
+ "updatedAt": "2026-11-12T10:54:52.490Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -5452,14 +5452,14 @@
    "title": "Every UI element is a named asset",
    "category": "Module",
    "detail": "Apply the rule across schemas/asset-types.json, the web and Android ports, the 39 starter assets and the conformance fixtures.\n\n- Two tiers: element assets (button, slider, toggle, input, icon, label...) and parent assets (toolbar, menu, nav, app menu, dialog, container, window). A standalone element in a layout is its own named asset; groups only exist inside a parent asset.\n- Namespaced ids for every asset (e.g. axf.button.save, axf.toolbar.editor); layouts and parents reference ids.\n- Split instance (label, icon, action, state) from skin (style asset + theme tokens).\n- Slots with type contracts in layout regions and parents; hot-swap and drag-and-drop = rebinding a slot to a compatible asset id.\n- Kernel unchanged (open type registry).",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "artifact",
    "pendingId": "named-asset-rule",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-18T04:05:00.000Z",
-   "updatedAt": "2026-10-23T18:22:53.000Z",
+   "updatedAt": "2026-11-12T10:54:50.326Z",
    "builtAt": "",
    "notes": [
     {
@@ -5841,7 +5841,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -42690,7 +42690,7 @@
    "title": "Element inspector (Android first)",
    "category": "Feature",
    "detail": "Brett, Oct 30 2026 (voice): Left click only. Press-drag: panel follows, live updates to element under pointer. Release closes. Double click pins; pinned panel drags and resizes. Current fields + size.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -42698,7 +42698,7 @@
    "pr": "#192",
    "priority": "P0",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-11-12T03:50:46.088Z",
+   "updatedAt": "2026-11-12T10:54:39.162Z",
    "builtAt": "",
    "notes": [
     {
@@ -42876,7 +42876,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -42918,14 +42918,14 @@
    "title": "C+click context-menu map + pinned items",
    "category": "Feature",
    "detail": "Brett, Oct 30 2026 (voice): Hold C + click: shows which menu fires there and its file. Drag an element into the map to save it; saves the action/destination, not the element. Pinned top: Build profiles submenu, Settings, user picks.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/context-menu-editor",
    "pr": "",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-11-10T04:39:20.621Z",
+   "updatedAt": "2026-11-12T10:54:40.811Z",
    "builtAt": "",
    "notes": [
     {
@@ -43099,7 +43099,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 65,
+   "rev": 66,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -43709,14 +43709,14 @@
    "title": "Framework grid: built-in sort, search, filter + Date and time column",
    "category": "Framework",
    "detail": "Brett, Oct 30 2026 (voice): Every grid that lists builds, tasks, asks or anything else is sortable, searchable and filterable, taking little screen. Basic filter attached by default. Tap header sorts, tap again reverses, long-press adds a second sort. One thin row: small search box + filter icon; on phones just a search icon. Filters hidden until used, then small clearable chips. Custom tables move onto the framework grid. Android parity. Per grid: right-click a grid or its header -> Filter -> off/on for this grid; 'All grids...' lists every grid in the app with the right-clicked one scrolled into view and highlighted, a switch per grid; a default switch decides whether new grids get the filter (on). Defaults are decided per grid by the build: on for data grids with many rows or columns (builds, asks, changes, plugins, PRs), off for small lists (settings, keys, short pickers); record the choice and reason per grid. On grids where it is off, hovering the header for a moment shows a tooltip 'Add the filter to this grid?' with Enable (long-press on phones). Framework grid (part of the app, not the filter plugin): every grid that has no date/time column gets an automatic 'Date and time' column (row created / last changed), hidden by default; grids that already show a date/time get nothing. Right-click the header -> Show/Hide 'Date and time'. Web + Android. UPDATE (Brett): build BOTH into the framework grid. Sort/search/filter live in the framework (not the Basic filter plugin); smart per-grid defaults, right-click on/off, All grids list and hover offer all framework features. Date and time column is ensured at first render: if a grid renders without one, the framework adds the hidden column then. New grids get everything automatically. CI check flags any table not built on the framework grid.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/grid-sort-filter",
    "pr": "",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-11-04T14:38:20.523Z",
+   "updatedAt": "2026-11-12T10:54:42.469Z",
    "builtAt": "",
    "notes": [
     {
@@ -44083,7 +44083,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 67,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -44133,14 +44133,14 @@
    "title": "Merge overlapping plugins",
    "category": "Plugin",
    "detail": "Brett, Oct 30 2026 (voice): First a merge map so no feature is lost, then: Build Breaker + Changes & features grid + Codebase changes banner -> one; Plugin switches + Plugin Update + Plugins menu -> Plugin Manager; Main build status -> Activity banner; retire Design packs after UI Review (#184); console Todo manager on the shared AmberX notes store; Voice notes vs Dictation; AmberX Voice control vs Voice command center. Uninstall scripts for removed plugins. Also retire the Basic filter plugin once grid-sort-filter moves filtering into the framework (migrate its saved filters).",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/plugin-cleanup",
    "pr": "",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-11-04T14:38:21.427Z",
+   "updatedAt": "2026-11-12T10:54:43.998Z",
    "builtAt": "",
    "notes": [
     {
@@ -44347,7 +44347,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 64,
+   "rev": 65,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -52683,14 +52683,14 @@
    "title": "GitHub App for the whole stack: one-click setup, tokens that never die",
    "category": "App",
    "detail": "",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "github-app",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-01T07:17:49.320Z",
-   "updatedAt": "2026-11-01T07:17:49.320Z",
+   "updatedAt": "2026-11-12T10:54:47.080Z",
    "builtAt": "",
    "notes": [
     {
@@ -52860,7 +52860,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 63,
+   "rev": 64,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -53878,7 +53878,7 @@
    "title": "Fix: can't click steps in the Build orchestrator",
    "category": "Console",
    "detail": "Brett Nov 1 23:08: \"I can't click steps\" (Build orchestrator steps in the console). Code read: step rows are a DataGrid nested in the expanded build row (ui.tsx StepGrid); tick boxes are disabled when the build is complete or the phase is locked; tiny tick target on phone. Repro on desktop + phone first, then fix. Queued: waits for Brett's go.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -53886,7 +53886,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-01T23:09:37.031Z",
-   "updatedAt": "2026-11-10T02:23:45.058Z",
+   "updatedAt": "2026-11-12T10:54:48.494Z",
    "builtAt": "",
    "notes": [
     {
@@ -54024,7 +54024,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -93246,14 +93246,14 @@
    "title": "UI Review alarm",
    "category": "Feature",
    "detail": "Open UI Review on new items; alarm at 30 min unreviewed; 5 min grace then auto-approve or hold (switch). Addenda: sort/group by PR + ids on rows + deep links; default newest-first; live previews in active theme; per-item Color/Style/Layout preview pickers; Layout Apply adds a follow-up step; layout list = the screen's 3 generated layouts.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/ui-review-alarm",
    "pr": "#343",
    "createdAt": "2026-11-04T21:04:36.261Z",
-   "updatedAt": "2026-11-05T11:50:16.057Z",
+   "updatedAt": "2026-11-12T10:54:45.526Z",
    "builtAt": "",
    "notes": [
     {
@@ -93549,7 +93549,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 64,
+   "rev": 65,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -114066,14 +114066,14 @@
    "title": "merge-conflict-alerts",
    "category": "merge-queue",
    "detail": "When any PR has merge conflicts (merge queue, direct merge attempt, or periodic scan), immediately alert Brett: an approval-style alert with a 'Fix conflicts now' action, sent to AmberX push AND the console, plus a persistent item on the fixed status banner until resolved. Approving launches a conflict-fix job through the orchestrator (with a build ID) that rebases or merges main, resolves, re-runs CI, and re-queues the PR. First job: fix PR #370 (badges + usage meter), which failed to merge with conflicts. Orchestrator assigns models.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/merge-conflict-alerts",
    "pr": "",
    "createdAt": "2026-11-07T04:56:03.670Z",
-   "updatedAt": "2026-11-07T05:34:11.217Z",
+   "updatedAt": "2026-11-12T10:54:35.361Z",
    "builtAt": "",
    "notes": [
     {
@@ -114251,7 +114251,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 57,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -114801,14 +114801,14 @@
    "title": "new-app-wizard",
    "category": "framework",
    "detail": "A New App wizard (console screen, voice, API/MCP/CLI). It asks for: app name, quick summary, brief (what it should do), and the subdomain on amberxai.com. Then it does everything: creates a GitHub repo under MossesX, scaffolds a framework app with standard style and assets, a settings interface and a control panel, adds the Hostinger DNS record for the subdomain, sets up HTTPS and routing on the VPS behind Brett's login, registers the app in the registry, and sends the brief to the orchestrator as a build with a build ID (orchestrator makes the plan and picks models). Shows progress and a summary with links at the end. Voice controlled; every step also has an API function.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-07T05:31:49.289Z",
-   "updatedAt": "2026-11-07T05:34:43.392Z",
+   "updatedAt": "2026-11-12T10:54:37.358Z",
    "builtAt": "",
    "notes": [
     {
@@ -115092,7 +115092,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 57,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

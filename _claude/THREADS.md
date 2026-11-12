@@ -777,16 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:26 UTC · `console-android-app-tabs` note (all) · backfill
-- 2026-11-12 03:26 UTC · `build-manager-history` note (all) · backfill
-- 2026-11-12 03:26 UTC · `todo-manager-tabs` note (all) · backfill
-- 2026-11-12 03:26 UTC · `session-close-race` note (all) · backfill
-- 2026-11-12 03:26 UTC · `syscheck-autofix-jobs` note (all) · backfill
-- 2026-11-12 03:26 UTC · `syscheck-claude-on-fail` note (all) · backfill
-- 2026-11-12 03:26 UTC · `push-banner-pull-all` note (all) · backfill
-- 2026-11-12 03:26 UTC · `push-banner-claude-fix` note (all) · backfill
-- 2026-11-12 03:26 UTC · `autofix-through-mosses` note (all) · backfill
-- 2026-11-12 03:26 UTC · `vps-run-terminal-output` note (all) · backfill
 - 2026-11-12 03:26 UTC · `push-banner-branches-that-can-merge-cleanly` note (all) · backfill
 - 2026-11-12 03:26 UTC · `ai-keys` note (all) · backfill
 - 2026-11-12 03:26 UTC · `syscheck-live-keys-credits` note (all) · backfill
@@ -1177,6 +1167,16 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 10:54 UTC · `library-harvest` → archived (all) · claude-voice
 - 2026-11-12 10:54 UTC · `follow-amber-stay-connected` → archived (all) · claude-voice
 - 2026-11-12 10:54 UTC · `voice-ui-edit-library` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `merge-conflict-alerts` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `new-app-wizard` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `element-inspector` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `context-menu-editor` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `grid-sort-filter` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `plugin-cleanup` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `ui-review-alarm` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `github-app` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `orch-step-click` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `named-asset-rule` → archived (all) · claude-voice
 
 ## Token passes (log)
 
