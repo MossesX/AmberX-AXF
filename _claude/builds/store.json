@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3282,
- "updatedAt": "2026-11-12T02:15:13.361Z",
+ "rev": 3283,
+ "updatedAt": "2026-11-12T02:15:23.185Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -153689,7 +153689,7 @@
    "title": "Open any website by voice on the phone, optionally with the AmberX recorder running",
    "category": "",
    "detail": "Merges/supersedes amberx-open-any-url and amberx-open-any-url-apk. 1) Voice: 'go to <any website>' opens it on the phone in Chrome (any https host, not just amberxai.com; block non-http schemes), brought to the front. 2) Option to open it with AmberX's recorder running (screen/audio recorder plugin), recordings saved to axHub with the URL and time. 3) Also available as a browser plugin in the console/Molly (embedded browser pane). Audit-log every open. Full API control.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -153697,8 +153697,8 @@
    "pr": "#500",
    "priority": "P0",
    "createdAt": "2026-11-10T20:46:28.820Z",
-   "updatedAt": "2026-11-12T02:14:47.199Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-12T02:15:00.042Z",
+   "builtAt": "2026-11-12T02:15:00.042Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -153861,12 +153861,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T02:15:00.042Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T20:47:42.129Z",
-     "updatedAt": "2026-11-10T20:47:42.129Z"
+     "updatedAt": "2026-11-12T02:15:00.298Z"
     }
    ],
    "profiles": [
