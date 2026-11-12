@@ -777,10 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:00 UTC · `all-banners-hide-when-empty` note (all) · orchestrator
-- 2026-11-12 03:00 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` s4 done (all) · orchestrator
-- 2026-11-12 03:00 UTC · `account-order-hulu-moses-x-api-account-shown-on-every-build` → queued, note (all) · foreign-write
-- 2026-11-12 03:00 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` s5 done (all) · orchestrator
 - 2026-11-12 03:04 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` note (all) · orchestrator
 - 2026-11-12 03:04 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` note (all) · orchestrator
 - 2026-11-12 02:59 UTC · `server-gate-one-session-per-build-no-duplicate-launches` s4 done (all) · orchestrator
@@ -1177,6 +1173,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 05:24 UTC · `account-failover-chain-subscription-next-subscri` PR #516 (all) · builds-live
 - 2026-11-12 06:38 UTC · `x.engine.dev` → running (all) · build-queue
 - 2026-11-12 06:38 UTC · `x.work` → pending (all) · build-queue
+- 2026-11-12 10:35 UTC · `search-bar-plugin-snappable-search-asset-globe-e` → complete (all) · pending
+- 2026-11-12 10:35 UTC · `search-bar-plugin-add-on-search-builds-session-h` → complete (all) · pending
+- 2026-11-12 10:35 UTC · `project-manager-every-project-its-own-console-in` → complete (all) · pending
+- 2026-11-12 10:35 UTC · `focus-on-every-screen-console-open-console-show-` added (0 steps) (all) · pending
 
 ## Token passes (log)
 

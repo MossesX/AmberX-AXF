@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T06:39:09.350Z",
+ "updatedAt": "2026-11-12T10:35:51.747Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -92671,7 +92671,7 @@
    "title": "Search bar plugin: snappable search asset (globe = everything, gear = settings only), live tree drop-down with quick-set sub-menus; replaces the old Search everywhere",
    "category": "",
    "detail": "New plugin providing a search bar asset: snappable/embeddable widget for toolbars and banners like any other asset; multiple instances allowed; multiple view types. 1) Scope switch: globe = search everywhere (whole program, every plugin, every setting); gear = settings only. 2) Matching: its own built-in logic, live letter-by-letter results; regular expressions, exact match and other options in its own settings. Uses AI only if an Ollama (local Llama) connection exists AND AI assistance is enabled; otherwise no AI. 3) Results drop-down: left column = categories (plugins, settings interfaces, etc., named sensibly); right side = tree listing of the matches under each. Selecting a result navigates to it. 4) Right-click a result: spawns a sub-menu tree to the right or left (whichever fits on screen) with that setting's options (on/off, multi-choice); pick directly from the drop-down with no confirmation, just the small check-mark confirmation toast in place. 5) Remove the existing Search everywhere. Full API control.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -92680,7 +92680,7 @@
    "priority": "P1",
    "createdAt": "2026-11-10T15:33:40.111Z",
    "updatedAt": "2026-11-10T17:06:57.437Z",
-   "builtAt": "",
+   "builtAt": "2026-11-12T10:35:49.272Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -92786,7 +92786,7 @@
    "title": "Search bar plugin add-on: search builds, session histories and build notes; jump to the highlighted spot in the log",
    "category": "",
    "detail": "Amends the Search bar plugin build. 1) Builds scope: search all session histories, build logs and build notes for related matches. 2) Results list every hit in the drop-down, each with an icon by type (session, log entry, note, build, etc.). Clicking a hit opens that session's log scrolled to the spot, highlighted. Multiple hits in one session listed as instance 1, 2, 3, 4... 3) Make it very powerful: extensive integrations and easy actions; users can add sources and actions by typing. 4) Everything fully API-controlled without AI. Anything that needs AI has its own enable/disable switch, OFF by default; never uses AI automatically even when an AI connection exists. Full API control.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -92795,7 +92795,7 @@
    "priority": "P1",
    "createdAt": "2026-11-10T15:36:52.351Z",
    "updatedAt": "2026-11-10T17:09:43.019Z",
-   "builtAt": "",
+   "builtAt": "2026-11-12T10:35:49.272Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -93169,7 +93169,7 @@
    "title": "Project Manager: every project its own console instance, multi-project tab view, project types (self/framework dev vs new app), live app preview window",
    "category": "",
    "detail": "Builds on the create/move-projects build. 1) Project Manager plugin: create, open, rename and switch projects; each project is its own instance of the console with its own builds, notes, data. 2) Setting: Multi-project view. When on, the console shows a group (tab group) with each project's console running side by side. 3) Project type: (a) Framework/self development: developing the console itself or framework tools (the console builds itself); (b) New app: uses all the console's tools to generate a new, real app. 4) Live preview: the app being built renders live in a separate floating or dockable preview window while you work in the console. Full API control, no AI needed.",
-   "status": "pending",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -93178,7 +93178,7 @@
    "priority": "P1",
    "createdAt": "2026-11-10T15:40:27.752Z",
    "updatedAt": "2026-11-10T17:09:45.177Z",
-   "builtAt": "",
+   "builtAt": "2026-11-12T10:35:49.272Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -106789,6 +106789,37 @@
      "uid": "st-mwcyma6606zt32"
     }
    ]
+  },
+  {
+   "id": "focus-on-every-screen-console-open-console-show-",
+   "title": "Focus on every screen: console_open/console_show can jump to any item (UI Review, Plan Studio, all screens)",
+   "category": "",
+   "detail": "PR #496 added <screen>.focus only for the Build orchestrator. Opening UI Review with focus r-20261112-4ec56890 answered: opened UI Review; it has no way to focus. Every screen (UI Review, Plan Studio, Pending, All builds, settings tabs, plugins' screens) must declare a <screen>.focus action that opens the right tab, scrolls the item/row/group into view, expands and highlights it. Add a check that fails if any screen with items lacks a focus action. Also: opening a screen should close a covering dialog (settings dialog was left on top).",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "focus-on-every-screen-console-open-console-show-",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-12T10:35:49.272Z",
+   "updatedAt": "2026-11-12T10:35:49.272Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Everything, everything needs to plan studio, UI review, everything. What the fuck?",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
