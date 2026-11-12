@@ -299,6 +299,14 @@
         "output": "{ tab, rows: [{ id, title, status, held, actions, deleted, deletedAt, steps, stepList, pipeline: { planned, account, pickedAt, tried, heldAt, heldBy, heldWhy } }] }"
       },
       {
+        "id": "pipeline-gate",
+        "route": "GET /pipeline/gate",
+        "title": "Build launch gate",
+        "description": "The server gate on VPS build launches: only a build with an orchestrator-issued ID in Queued starts (no ID, an unknown ID or Pending is refused, logged and sent as an FYI). Shows whether Brett's owner-only override is on (Claude setting builds.dispatchGateOverride, off by default; changed only from his signed-in session through the Claude settings) and the latest refusals. Say 'is the build gate on'.",
+        "readOnly": true,
+        "output": "{ gate, override, overrideSetting, overrideSource, line, refusals: [{ at, kind, build, name, reason, overridden, why }] }"
+      },
+      {
         "id": "pipeline-health",
         "route": "GET /pipeline/health",
         "title": "Claude account health",

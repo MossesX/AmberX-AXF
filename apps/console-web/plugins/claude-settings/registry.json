@@ -36,6 +36,8 @@
       "description": "Model for new builds. Split = the orchestrator pins each step to Opus or Fable. Whether an upgrade to Fable waits for Brett is the Fable upgrades setting." },
     { "key": "builds.fableUpgradeApproval", "group": "builds", "label": "Fable upgrades need my approval", "kind": "toggle", "default": false, "owner": true, "level": "basic",
       "description": "Off (Brett, Nov 4 2026: \"No more approvals. If it needs Fable, set it to be Fable.\"): a phase or step that needs Fable runs on Fable by itself and the switch is logged on the build. On: every Opus → Fable upgrade waits for your console click or axHub approval." },
+    { "key": "builds.dispatchGateOverride", "group": "builds", "label": "Let builds start without the orchestrator", "kind": "toggle", "default": false, "owner": true, "level": "developer",
+      "description": "Off (the default): the VPS starts a build only when it has an orchestrator-issued ID and is in the Queue; anything else is refused, logged and sent to AmberX. On: a refused build launch starts anyway, and each one is still logged and sent to AmberX. Only for when the orchestrator itself is broken; turn it back off." },
     { "key": "builds.launchWithoutAsking", "group": "builds", "label": "Launch builds without asking", "kind": "toggle", "default": false, "owner": true, "level": "basic",
       "description": "On: Claude starts a build as soon as it is in the orchestrator, without a card asking first." },
     { "key": "builds.maxParallel", "group": "builds", "label": "Max parallel builds", "kind": "number", "default": 3, "min": 1, "max": 12, "step": 1, "owner": "raise", "level": "developer",

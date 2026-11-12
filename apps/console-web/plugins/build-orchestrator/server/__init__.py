@@ -453,6 +453,13 @@ async def pipeline_selfcheck(request: Request) -> dict[str, Any]:
     return _pipeline("selfcheck", "--request", "--reason", reason, who=(brett_click(request) or "console")[:80])
 
 
+@router.get("/pipeline/gate")
+def pipeline_gate() -> dict[str, Any]:
+    """The server gate on VPS build launches: only orchestrator-issued IDs in Queued start. Whether the owner-only
+    override (Claude setting builds.dispatchGateOverride, default off) is on, and the latest refused launches."""
+    return _pipeline("gate")
+
+
 PIPELINE_TABS = ("pending", "queue", "active", "incomplete", "complete", "errors", "archive", "deleted")
 
 

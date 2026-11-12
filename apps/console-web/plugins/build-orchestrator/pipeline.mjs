@@ -70,7 +70,7 @@ import { loadStore, withStore } from '../../../../framework/cli/builds-store.mjs
 import { activeProfile } from '../../../../framework/cli/persist.mjs';
 import { loadUpgradePolicy, settingsFile as claudeSettingsFile } from '../../../../framework/cli/upgrade-policy.mjs';
 import * as slots from '../../../../framework/cli/agent-slots.mjs';
-import { issue as issueDispatch } from '../../../../framework/cli/dispatch-gate.mjs';
+import { issue as issueDispatch, status as gateStatus } from '../../../../framework/cli/dispatch-gate.mjs';
 import { shipLanded } from '../../../../framework/cli/shipped.mjs';
 import { normPriority } from '../../../../framework/core/build-priority.mjs';
 import { act as orchAct } from './orchestrator.mjs';
@@ -181,6 +181,12 @@ const row = (b) => {
 };
 
 /** The whole picture for the console and the CLI. */
+/** The server gate (framework/cli/dispatch-gate.mjs): on, the owner-only override, the latest refusals. Never throws. */
+export function gateOf(env = process.env) {
+  try { const g = gateStatus(env); return { gate: g.gate, override: g.override, overrideSetting: g.overrideSetting, overrideSource: g.overrideSource, line: g.line, refusals: g.refusals.slice(0, 10) }; }
+  catch (e) { return { gate: 'on', override: false, overrideSetting: 'builds.dispatchGateOverride', overrideSource: '', line: `Build gate: on (status unreadable: ${str(e.message, 120)})`, refusals: [] }; }
+}
+
 export function status() {
   loadUpgradePolicy();
   const store = loadStore(); const settings = loadSettings(); const read = accountsRead(store, settings); const accounts = read.accounts; const sl = slotsNow();
@@ -201,7 +207,7 @@ export function status() {
   for (const t of ['complete', 'archive']) tabs[t].sort((a, b) => str(b.builtAt || b.updatedAt).localeCompare(str(a.builtAt || a.updatedAt)));
   tabs.deleted.sort((a, b) => str(b.deletedAt).localeCompare(str(a.deletedAt)));
   const st = loadState();
-  return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), table: byTable, tabs, accounts, accountsFrom, health: loadHealth(), slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable }, plan, settings,
+  return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), table: byTable, tabs, accounts, accountsFrom, health: loadHealth(), slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable }, plan, settings, gate: gateOf(),
     state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails, selfCheck: st.selfCheck ?? null, selfCheckRequested: readJson(files().checkRequest)?.at || '' } };
 }
 
@@ -818,13 +824,14 @@ async function main(argv) {
   const out = (o, text) => console.log(json ? JSON.stringify(o) : text);
   const [cmd = 'status', ...rest] = args;
   const by = flag('by', process.env.AXF_ACTOR || 'cli');
+  if (cmd === 'gate') { const g = gateOf(); return out({ ok: true, ...g }, [g.line, ...g.refusals.slice(0, 5).map((r) => `  ${r.at} ${r.overridden ? 'override' : 'refused'} ${r.build || r.name} (${r.reason})`)].join('\n')); }
   if (cmd === 'status') {
     const s = status();
     const line = (r) => `  ${r.id.padEnd(40)} ${r.priority.padEnd(7)} ${String(r.steps.done).padStart(2)}/${r.steps.total} · next ${r.nextModel || '—'}${r.pipeline?.account ? ` · ${r.pipeline.account}` : ''}${r.needsSplit ? ' · needs split' : ''}${r.pipeline?.note ? ` · ${r.pipeline.note}` : ''}`;
     return out(s, [
       `Pipeline · ${s.at} · slots ${s.slots.used}/${s.slots.cap} (${s.slots.free} free)${s.slots.unavailable ? ' (no slots store here)' : ''}`,
       `Accounts: ${s.accounts.map((a) => `${a.name}${a.kind === 'api' ? ' [API]' : ''} ${a.fable ? 'Fable' : 'Opus'} ${a.running}/${a.parallel}${a.kind === 'api' ? (a.api?.usable ? '' : ` (${a.api?.why})`) : a.usable ? '' : ` (${a.why})`}`).join(' · ') || 'none'}`,
-      `API overflow: ${s.settings.apiOverflow ? 'on' : 'off'}`,
+      `API overflow: ${s.settings.apiOverflow ? 'on' : 'off'}`, s.gate.line,
       `Pending (${s.table.pending.length})`, ...s.table.pending.map(line),
       `Queue (${s.table.queued.length})`, ...s.table.queued.map(line),
       `Building (${s.table.building.length})`, ...s.table.building.map(line),

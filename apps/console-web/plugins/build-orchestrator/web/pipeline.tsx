@@ -35,8 +35,11 @@ type Status = {
   plan: { launches: { id: string; account: string; model: string; phase: string; kind?: string; rule?: string }[]; waits: { id: string; why: string }[]; queue: string[]; idle: { reason: string; kind: string } | null };
   settings: { parallelPerAccount: number; autoQueue: boolean; splitProvider: string; idleAfterMin: number; maxRuns: number; apiOverflow?: boolean; healthEveryMin?: number };
   accountsFrom?: { source: 'host' | 'snapshot' | 'none'; at: string; ageMin: number | null; why: string };
+  gate?: Gate;
   state: { at: string; idle: { reason: string; kind: string; since: string } | null; alerts: { key: string; at: string }[]; recent: { at: string; event: string; id: string; account?: string; model?: string; error?: string }[]; selfCheck?: SelfCheck | null; selfCheckRequested?: string };
 };
+/** The server gate on VPS build launches (framework/cli/dispatch-gate.mjs status; GET /pipeline/gate). */
+type Gate = { gate: string; override: boolean; overrideSetting: string; overrideSource: string; line: string; refusals: { at: string; kind: string; build: string; name: string; reason: string; overridden: boolean; why: string }[] };
 type Finding = { name: string; kind: string; role: string; state: 'ready' | 'busy' | 'standby' | 'blocked'; running: number; parallel: number; note: string };
 type SelfCheck = { at: string; reason: string; by: string; line: string; fixes: string[]; problems: string[]; findings: Finding[]; notified: boolean };
 const CHECK_TONE: Record<Finding['state'], 'success' | 'accent' | undefined | 'danger'> = { ready: 'success', busy: 'accent', standby: undefined, blocked: 'danger' };
@@ -124,8 +127,14 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
         <span className="pl-stat" title="Builds waiting in Pending for you"><Icon name="clock" size={14} /><b>{s.table.pending.length}</b> pending</span>
         <span className="pl-stat fx-muted" title={s.state.at ? `Last dispatcher tick ${fmtTime(s.state.at)}` : 'The dispatcher has not run yet on this VPS'}><Icon name="refresh" size={14} />{s.state.at ? `tick ${tickAge}` : 'no tick yet'}</span>
         {s.settings.autoQueue && <Chip tone="accent">Launch without asking: new builds queue by themselves</Chip>}
+        {s.gate && <span title={`${s.gate.line} Override: Claude settings → ${s.gate.overrideSetting} (owner-only, off by default).`}><Chip tone={s.gate.override ? 'danger' : 'success'}>{s.gate.override ? 'Build gate: override on' : 'Build gate: on'}{s.gate.refusals.length ? ` · ${s.gate.refusals.length} refused` : ''}</Chip></span>}
         <Switch label="Then any API" text="Subscriptions first; when every subscription account is full or out, an API-key account takes it (billed per token, under its caps)" checked={!!s.settings.apiOverflow} disabled={busy === 'pipeline/settings'} onChange={(on) => act('pipeline/settings', { apiOverflow: on }, `API overflow ${on ? 'on' : 'off'}`)} />
       </div>
+      {s.gate?.override && <Note tone="warning">{s.gate.line} Every launch past the gate is logged and sent to AmberX. Turn it off in Settings → Plugins → Claude → Builds.</Note>}
+      {view === 'accounts' && s.gate && s.gate.refusals.length > 0 && <article className="pd-card pl-selfcheck" aria-label="Refused build launches">
+        <h3 className="pd-card__title">Refused build launches<span className="fx-muted fx-small"> · the server gate · latest {s.gate.refusals.length}</span></h3>
+        {s.gate.refusals.slice(0, 5).map((r) => <p key={`${r.at}${r.build}${r.name}`} className="fx-small" title={r.why}><Icon name="alert" size={13} /> {ago(r.at)} · {r.build || r.name || 'no ID'} · {r.overridden ? 'started (override)' : 'refused'}: {r.reason}</p>)}
+      </article>}
       {idle && <Note tone={idle.kind === 'stuck' ? 'warning' : 'info'}>{idle.reason}{(idle as { since?: string }).since ? ` (since ${fmtTime((idle as { since?: string }).since ?? '')})` : ''}</Note>}
       {s.plan.launches.length > 0 && <Note tone="success">Next tick starts {s.plan.launches.map((l) => `${l.id} on ${l.account} (${l.model}${l.phase ? `, ${l.phase}` : ''})`).join(', ')}.</Note>}
       {view === 'accounts' && <section className="fx-stack">
