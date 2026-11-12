@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T11:05:36.533Z",
+ "updatedAt": "2026-11-12T11:05:53.411Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -107133,7 +107133,7 @@
    "branch": "claude/pending-tab-one-collapsed-row-per-build-tap-to-e",
    "pr": "",
    "createdAt": "2026-11-12T10:48:25.123Z",
-   "updatedAt": "2026-11-12T10:50:50.999Z",
+   "updatedAt": "2026-11-12T11:05:39.760Z",
    "builtAt": "",
    "notes": [
     {
@@ -107177,8 +107177,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T11:05:39.760Z",
      "note": "",
      "uid": "st-mwdferxo0139bt"
     },

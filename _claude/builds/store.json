@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3555,
- "updatedAt": "2026-11-12T11:05:36.533Z",
+ "rev": 3556,
+ "updatedAt": "2026-11-12T11:05:53.411Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174307,7 +174307,7 @@
    "branch": "claude/pending-tab-one-collapsed-row-per-build-tap-to-e",
    "pr": "",
    "createdAt": "2026-11-12T10:48:25.123Z",
-   "updatedAt": "2026-11-12T10:50:50.999Z",
+   "updatedAt": "2026-11-12T11:05:39.760Z",
    "builtAt": "",
    "notes": [
     {
@@ -174340,12 +174340,12 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "mossesx-max-",
-    "session": "axf-pending-tab-one-collapsed-row-per-build-tap-to-e--earl",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-12T10:50:47.847Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T10:49:48.779Z",
@@ -174355,12 +174355,18 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-12T10:50:47.847Z",
-    "planned": null,
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-12T10:50:38.180Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
-    "pickedAt": "2026-11-12T10:50:47.847Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -174381,12 +174387,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T11:05:39.760Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T10:49:48.779Z",
-     "updatedAt": "2026-11-12T10:49:48.779Z"
+     "updatedAt": "2026-11-12T11:05:40.161Z"
     },
     {
      "id": "s2",
@@ -174456,11 +174462,7 @@
     "createdAt": "2026-11-12T10:48:25.123Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {
-     "st-mwdferxo0139bt": "2026-11-12T10:49:48.779Z",
-     "st-mwdferxo021p91": "2026-11-12T10:49:48.779Z",
-     "st-mwdferxo03vaef": "2026-11-12T10:49:48.779Z"
-    }
+    "stepAt": {}
    },
    "queue": null,
    "defaultAt": "2026-11-12T10:49:48.779Z",
