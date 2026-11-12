@@ -238,6 +238,9 @@ axf_cron_file axf-console "*/5 * * * * root flock -n /run/axf-console-update.loc
 # Builds reconciler (orch-live-sync, Nov 3 2026): links open PRs and claude/* branches to their builds, records merges,
 # lists orphans for the systems check; its store writes go live to main as status-only commits (builds-live.mjs).
 axf_cron_file axf-builds-reconcile "*/10 * * * * root cd $DIR && node framework/cli/builds-reconcile.mjs --apply --brief >> /var/log/axf-builds-reconcile.log 2>&1"
+# Live truth (live-truth@1, Brett, Nov 12 2026: "one source of truth"): every 3 s the host publishes which axf-* tmux
+# sessions really run claude (agent-slots + ps) to the shared agent-slots dir; the console reads only that for running.
+axf_cron_file axf-live-truth "* * * * * root cd $DIR && flock -n /run/axf-live-truth.lock timeout 70 node framework/cli/live-truth.mjs watch --for 58 --every 3 >> /var/log/axf-live-truth.log 2>&1"
 # The build pipeline's dispatcher (Brett, Nov 8 2026): every minute, split new builds, watch the Queue, the Claude accounts
 # and the agent slots, and start a headless session for the next Queue build when a slot is free (never two at once).
 axf_cron_file axf-pipeline "* * * * * root P=$DIR/apps/console-web/plugins/build-orchestrator/pipeline.mjs; [ -f \$P ] && cd $DIR && flock -n /run/axf-pipeline.lock timeout 600 node \$P tick >> /var/log/axf-pipeline.log 2>&1"  # axf-plugin:build-orchestrator

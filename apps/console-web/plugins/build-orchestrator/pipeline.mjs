@@ -74,6 +74,8 @@ import { activeProfile } from '../../../../framework/cli/persist.mjs';
 import { activeProject, readProjects } from '../../../../framework/cli/projects.mjs';
 import { loadUpgradePolicy, settingsFile as claudeSettingsFile } from '../../../../framework/cli/upgrade-policy.mjs';
 import * as slots from '../../../../framework/cli/agent-slots.mjs';
+import * as liveTruth from '../../../../framework/cli/live-truth.mjs';
+import { view as truthView, START_GRACE_MS } from '../../../../framework/plan/live-truth-core.mjs';
 import { issue as issueDispatch } from '../../../../framework/cli/dispatch-gate.mjs';
 import { shipLanded } from '../../../../framework/cli/shipped.mjs';
 import { crewSay } from '../../../../framework/cli/crew-say.mjs';
@@ -475,8 +477,10 @@ function tmuxHas(name) {
 }
 
 /** Running builds whose session ended: { id, outcome, status, exit }. */
-export function checkEnds({ alert = () => {}, env = process.env } = {}) {
+export function checkEnds({ alert = () => {}, env = process.env, truth = null } = {}) {
   const store = loadStore(); const settings = loadSettings();
+  // the live truth (live-truth@1): with a fresh look, a session no claude runs in is gone after the start grace, not 10 min
+  const seen = truth?.seen && truth.fresh; const liveSessions = new Set((truth?.sessions ?? []).map((x) => x.session));
   const events = readEvents(env);
   const out = [];
   for (const b of live(store)) {
@@ -489,8 +493,9 @@ export function checkEnds({ alert = () => {}, env = process.env } = {}) {
     if (end) exit = Number.isInteger(end.exit) ? end.exit : Number(end.exit) || 0;
     else {
       // no end event: the session may have died with tmux (a reboot, a kill). After a grace period, gone = a crash.
-      const alive = tmuxHas(b.pipeline.session);
-      if (alive !== false || Date.now() - Date.parse(b.pipeline.launchedAt || 0) < GONE_GRACE_MS) continue;
+      const age = Date.now() - Date.parse(b.pipeline.launchedAt || 0);
+      if (seen) { if (liveSessions.has(b.pipeline.session) || age < START_GRACE_MS) continue; }
+      else { const alive = tmuxHas(b.pipeline.session); if (alive !== false || age < GONE_GRACE_MS) continue; }
       exit = 1;
     }
     const r = P.endOutcome(b, { exit, account: b.pipeline.account, session: b.pipeline.session }, settings);
@@ -526,14 +531,15 @@ export function makeConsole(env = process.env) {
  * running nor queued (a launch that never started, a slot that was cleared). After the grace period they go back to the
  * Queue (the dispatcher starts them again) and their account count drops. Builds with a session are checkEnds()'s.
  */
-export function reapBuilds({ sl = slotsNow(), now = Date.now() } = {}) {
+export function reapBuilds({ sl = slotsNow(), now = Date.now(), truth = null } = {}) {
   if (sl.unavailable) return [];
+  const grace = truth?.seen && truth.fresh ? START_GRACE_MS : GONE_GRACE_MS;
   const held = new Set([...(sl.running ?? []), ...(sl.queue ?? [])].flatMap((x) => [x.id, x.session].filter(Boolean)));
   const out = [];
   for (const b of live(loadStore())) {
     const p = b.pipeline;
     if (!(b.status === 'running' || b.status === 'waiting') || !p?.account || p.session) continue;
-    if ((p.slot && held.has(p.slot)) || now - Date.parse(p.launchedAt || p.dispatchedAt || b.updatedAt || 0) < GONE_GRACE_MS) continue;
+    if ((p.slot && held.has(p.slot)) || now - Date.parse(p.launchedAt || p.dispatchedAt || b.updatedAt || 0) < grace) continue;
     const note = `Self-check: ${b.id} was marked running on ${p.account} with no session${p.slot ? ` and agent slot ${p.slot} gone` : ''}: released and back in the Queue.`;
     setPipeline(b.id, { account: '', slot: '', session: '', note: 'released by the self-check (nothing ran): back in the Queue' }, { status: 'queued', note, action: 'pipeline:reap' });
     logLine({ event: 'reaped', build: b.id, account: p.account, slot: p.slot || '' });
@@ -568,7 +574,8 @@ export function selfCheck({ reason = 'on demand', by = 'pipeline', env = process
     for (const c of r.claims) fixes.push(`released ${c.account || '?'} slot held by ended session ${c.session}`);
     for (const n of r.limits) fixes.push(`cleared ${n}'s expired limit`);
   } catch (e) { logLine({ event: 'self-check-reap-failed', error: str(e.message, 300) }); }
-  for (const b of reapBuilds()) fixes.push(`requeued ${b.id} (marked running on ${b.account}, nothing ran)`);
+  let truth = null; try { truth = liveTruth.read(); } catch { /* judged the old way */ }
+  for (const b of reapBuilds({ truth })) fixes.push(`requeued ${b.id} (marked running on ${b.account}, nothing ran)`);
   const store = loadStore(); const settings = loadSettings();
   const read = accountsRead(store, settings, env);
   if (read.source === 'host') writeHostAccounts(read.rows, read.at || nowIso());
@@ -599,7 +606,18 @@ export function tick({ env = process.env } = {}) {
   const alert = (kind, d) => { const a = P.alertFor(kind, d); consoleApi('POST', '/api/alerts', a); sent.push({ key: a.key, kind, at: nowIso(), title: a.title }); };
   const started = nowIso();
   const inta = intake({ alert });
-  const ended = checkEnds({ alert, env });
+  // one look at what really runs (live-truth@1): session ends, reaping and the stale-record rule all judge by it
+  let truth = null; try { truth = liveTruth.read(); } catch (e) { logLine({ event: 'live-truth-failed', error: str(e.message, 300) }); }
+  const ended = checkEnds({ alert, env, truth });
+  if (truth?.seen) {
+    for (const b of reapBuilds({ truth })) logLine({ event: 'reaped', build: b.id, by: 'tick' });
+    try {
+      const fresh = liveTruth.read();
+      const r = liveTruth.reconcile({ apply: true, by: 'pipeline', t: fresh, skip: ended.map((e) => e.id) });
+      for (const c of r.changes) logLine({ event: 'stale-settled', build: c.id, was: c.was, status: c.status, why: c.why });
+      truth = liveTruth.read();
+    } catch (e) { logLine({ event: 'live-truth-reconcile-failed', error: str(e.message, 300) }); }
+  }
   const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
   const read = accountsRead(store, settings, env); const accounts = read.accounts; const sl = slotsNow();
   // the console (in its container) can't see the logins: it reads what the host saw here
