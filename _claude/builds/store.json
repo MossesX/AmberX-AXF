@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3440,
- "updatedAt": "2026-11-12T03:16:46.990Z",
+ "rev": 3441,
+ "updatedAt": "2026-11-12T03:16:55.421Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -162352,14 +162352,14 @@
    "title": "Account order (Hulu -> Moses X -> API) + account shown on every build",
    "category": "orchestrator",
    "detail": "URGENT, boss order from Brett, Nov 12. (1) Account ORDER setting for the dispatcher, drag-and-drop in Claude accounts + REST/MCP/CLI/voice: new builds go to the first account in the order that has a free slot and isn't limited. Brett's order now: Hulu subscription (account-3) -> Moses X subscription (mossesx-max-) -> API keys (account-5 Hulu API, mossesx-api) last, under their caps. When one runs out, move to the next; move back when it resets. Today the dispatcher picks the least busy subscription and ignores order, and ai-keys/order does nothing for the dispatcher. (2) Show the account on every build row in Queue, Active and Pending: the planned account before it starts, the account it's running on, and the last run's account; filter by account. (3) Fix the Hulu login: Brett re-signed the Hulu subscription and it went to /root/.claude-add; move/link it to account-3's folder so account-3 uses the fresh token, and remove the stray 'add' folder.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/account-order-hulu-moses-x-api-account-shown-on-every-build",
-   "pr": "",
+   "pr": "#512",
    "createdAt": "2026-11-12T02:59:45.402Z",
-   "updatedAt": "2026-11-12T03:13:16.907Z",
+   "updatedAt": "2026-11-12T03:16:53.604Z",
    "builtAt": "",
    "notes": [
     {
@@ -162392,18 +162392,18 @@
    "pipeline": {
     "queuedAt": "2026-11-12T02:59:52.199Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-account-order-hulu-moses-x-api-account-shown-on---earl",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-12T03:13:14.463Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-12T03:13:14.463Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -162412,7 +162412,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-12T03:13:14.463Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
