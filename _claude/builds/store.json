@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3272,
- "updatedAt": "2026-11-12T02:13:15.050Z",
+ "rev": 3273,
+ "updatedAt": "2026-11-12T02:13:24.381Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -153697,7 +153697,7 @@
    "pr": "#500",
    "priority": "P0",
    "createdAt": "2026-11-10T20:46:28.820Z",
-   "updatedAt": "2026-11-12T02:13:08.434Z",
+   "updatedAt": "2026-11-12T02:13:14.168Z",
    "builtAt": "",
    "notes": [
     {
@@ -153735,6 +153735,14 @@
     {
      "text": "Self-check: open-any-website-by-voice-on-the-phone-optionall was marked running on mossesx-max- with no session: released and back in the Queue.",
      "at": "2026-11-12T02:12:06.410Z"
+    },
+    {
+     "text": "Started run 2 on account-5 (API key, subscriptions first, then API) (Opus, Phase 1): axf-open-any-website-by-voice-on-the-phone-optionall--sully.",
+     "at": "2026-11-12T02:13:11.818Z"
+    },
+    {
+     "text": "Claude account: account-5 (axf-open-any-website-by-voice-on-the-phone-optionall--sully, own login copy)",
+     "at": "2026-11-12T02:13:14.168Z"
     }
    ],
    "approvals": [],
@@ -153754,12 +153762,12 @@
    "pipeline": {
     "queuedAt": "2026-11-12T01:44:11.175Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "account-5",
+    "session": "axf-open-any-website-by-voice-on-the-phone-optionall--sully",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-12T01:47:27.720Z",
-    "runs": 1,
+    "launchedAt": "2026-11-12T02:13:11.286Z",
+    "runs": 2,
     "lastRun": {
      "at": "2026-11-12T01:58:02.337Z",
      "exit": 1,
@@ -153770,9 +153778,9 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "released by the self-check (nothing ran): back in the Queue",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-12T01:47:27.720Z",
+    "dispatchedAt": "2026-11-12T02:13:11.286Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -153781,7 +153789,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-12T01:47:27.720Z",
+    "pickedAt": "2026-11-12T02:13:11.286Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -153865,7 +153873,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

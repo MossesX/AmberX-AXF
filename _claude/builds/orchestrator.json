@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:13:15.050Z",
+ "updatedAt": "2026-11-12T02:13:24.381Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -95678,7 +95678,7 @@
    "pr": "#500",
    "priority": "P0",
    "createdAt": "2026-11-10T20:46:28.820Z",
-   "updatedAt": "2026-11-12T02:13:08.434Z",
+   "updatedAt": "2026-11-12T02:13:14.168Z",
    "builtAt": "",
    "notes": [
     {
@@ -95716,6 +95716,14 @@
     {
      "text": "Self-check: open-any-website-by-voice-on-the-phone-optionall was marked running on mossesx-max- with no session: released and back in the Queue.",
      "at": "2026-11-12T02:12:06.410Z"
+    },
+    {
+     "text": "Started run 2 on account-5 (API key, subscriptions first, then API) (Opus, Phase 1): axf-open-any-website-by-voice-on-the-phone-optionall--sully.",
+     "at": "2026-11-12T02:13:11.818Z"
+    },
+    {
+     "text": "Claude account: account-5 (axf-open-any-website-by-voice-on-the-phone-optionall--sully, own login copy)",
+     "at": "2026-11-12T02:13:14.168Z"
     }
    ],
    "approvals": [],
