@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3477,
- "updatedAt": "2026-11-12T03:31:34.381Z",
+ "rev": 3478,
+ "updatedAt": "2026-11-12T03:31:46.317Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -165546,6 +165546,656 @@
     "rev": 1,
     "at": "2026-11-12T03:31:32Z",
     "landedCommit": "2fd495f6710f56eab804cf7b3635178750c2fd01"
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 0
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "xlayout-plan",
+   "title": "xlayout-plan",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/xlayout-plan",
+   "pr": "",
+   "mergedAt": "2026-11-02T18:57:03Z",
+   "createdAt": "2026-11-02T18:57:03Z",
+   "updatedAt": "2026-11-12T03:31:33Z",
+   "builtAt": "2026-11-02T18:57:03Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 08be44835.",
+     "at": "2026-11-12T03:31:33Z"
+    },
+    {
+     "text": "Shipped manifest sm-xlayout-plan rev 1 sent to Shipped features (backfill): landed 08be44835, 10 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:33Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "xlayout-plan",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "shipped": {
+    "id": "sm-xlayout-plan",
+    "rev": 1,
+    "at": "2026-11-12T03:31:33Z",
+    "landedCommit": "08be44835160785b0f90ca743558bcc980856f32"
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 0
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "claude-accounts-switch",
+   "title": "claude-accounts-switch",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/claude-accounts-switch",
+   "pr": "",
+   "mergedAt": "2026-11-02T16:16:23Z",
+   "createdAt": "2026-11-02T16:16:23Z",
+   "updatedAt": "2026-11-12T03:31:34Z",
+   "builtAt": "2026-11-02T16:16:23Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 88f412791.",
+     "at": "2026-11-12T03:31:34Z"
+    },
+    {
+     "text": "Shipped manifest sm-claude-accounts-switch rev 1 sent to Shipped features (backfill): landed 88f412791, 16 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:34Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "claude-accounts-switch",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "shipped": {
+    "id": "sm-claude-accounts-switch",
+    "rev": 1,
+    "at": "2026-11-12T03:31:34Z",
+    "landedCommit": "88f412791fcee8072081fcaeec610696ff459cf4"
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 0
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "one-look-opus",
+   "title": "one-look-opus — one default look from axHub, design theme precedence, selection-only Appearance",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/one-look-opus",
+   "pr": "",
+   "mergedAt": "2026-11-01T21:20:47Z",
+   "createdAt": "2026-11-01T21:20:47Z",
+   "updatedAt": "2026-11-12T03:31:35Z",
+   "builtAt": "2026-11-01T21:20:47Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 195193a05.",
+     "at": "2026-11-12T03:31:35Z"
+    },
+    {
+     "text": "Shipped manifest sm-one-look-opus rev 1 sent to Shipped features (backfill): landed 195193a05, 54 file(s), 0 test line(s), 4 open.",
+     "at": "2026-11-12T03:31:35Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "one-look-opus — one default look from axHub, design theme precedence, selection-only Appearance",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "shipped": {
+    "id": "sm-one-look-opus",
+    "rev": 1,
+    "at": "2026-11-12T03:31:35Z",
+    "landedCommit": "195193a05802bb0386101103592589b857c07565"
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 0
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "console-rename-gizmox-ai-studio",
+   "title": "console-rename-gizmox-ai-studio",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/console-rename-gizmox-ai-studio",
+   "pr": "",
+   "mergedAt": "2026-11-01T19:01:51Z",
+   "createdAt": "2026-11-01T19:01:51Z",
+   "updatedAt": "2026-11-12T03:31:37Z",
+   "builtAt": "2026-11-01T19:01:51Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 4f13de1d8.",
+     "at": "2026-11-12T03:31:37Z"
+    },
+    {
+     "text": "Shipped manifest sm-console-rename-gizmox-ai-studio rev 1 sent to Shipped features (backfill): landed 4f13de1d8, 15 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:37Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "console-rename-gizmox-ai-studio",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "shipped": {
+    "id": "sm-console-rename-gizmox-ai-studio",
+    "rev": 1,
+    "at": "2026-11-12T03:31:37Z",
+    "landedCommit": "4f13de1d85c330822834267d259254926516fdc1"
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 0
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "hub-look-all-assets",
+   "title": "hub-look-all-assets — one look from axHub, every app ships every shareable asset",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/hub-look-all-assets",
+   "pr": "",
+   "mergedAt": "2026-11-01T18:48:57Z",
+   "createdAt": "2026-11-01T18:48:57Z",
+   "updatedAt": "2026-11-12T03:31:38Z",
+   "builtAt": "2026-11-01T18:48:57Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 418b66890.",
+     "at": "2026-11-12T03:31:38Z"
+    },
+    {
+     "text": "Shipped manifest sm-hub-look-all-assets rev 1 sent to Shipped features (backfill): landed 418b66890, 1528 file(s), 4 test line(s), 5 open.",
+     "at": "2026-11-12T03:31:38Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "hub-look-all-assets — one look from axHub, every app ships every shareable asset",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "shipped": {
+    "id": "sm-hub-look-all-assets",
+    "rev": 1,
+    "at": "2026-11-12T03:31:38Z",
+    "landedCommit": "418b668901b6ca0bd21f131dce34c27354c1fdb2"
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 0
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "theme-sync-pane",
+   "title": "theme-sync-pane",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/theme-sync-pane",
+   "pr": "",
+   "mergedAt": "2026-11-01T17:29:35Z",
+   "createdAt": "2026-11-01T17:29:35Z",
+   "updatedAt": "2026-11-12T03:31:39Z",
+   "builtAt": "2026-11-01T17:29:35Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 1156332ce.",
+     "at": "2026-11-12T03:31:39Z"
+    },
+    {
+     "text": "Shipped manifest sm-theme-sync-pane rev 1 sent to Shipped features (backfill): landed 1156332ce, 57 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:39Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "theme-sync-pane",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "shipped": {
+    "id": "sm-theme-sync-pane",
+    "rev": 1,
+    "at": "2026-11-12T03:31:39Z",
+    "landedCommit": "1156332cec82a5a2c8a21252f72fde296f3bf986"
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 0
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "leftovers",
+   "title": "Leftovers — finishing every nearly-done build (Nov 1 2026)",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/leftovers",
+   "pr": "",
+   "mergedAt": "2026-11-01T02:28:08Z",
+   "createdAt": "2026-11-01T02:28:08Z",
+   "updatedAt": "2026-11-12T03:31:40Z",
+   "builtAt": "2026-11-01T02:28:08Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 13a18ef5a.",
+     "at": "2026-11-12T03:31:40Z"
+    },
+    {
+     "text": "Shipped manifest sm-leftovers rev 1 sent to Shipped features (backfill): landed 13a18ef5a, 24 file(s), 1 test line(s), 5 open.",
+     "at": "2026-11-12T03:31:40Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Leftovers — finishing every nearly-done build (Nov 1 2026)",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "shipped": {
+    "id": "sm-leftovers",
+    "rev": 1,
+    "at": "2026-11-12T03:31:40Z",
+    "landedCommit": "13a18ef5a7a0286c140a30385cfc574b3a2c1d13"
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 0
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "shot-groups",
+   "title": "UI Review → Screenshots: named, timestamped groups (`shot-groups`, Nov 1 2026)",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/shot-groups",
+   "pr": "",
+   "mergedAt": "2026-11-01T02:08:18Z",
+   "createdAt": "2026-11-01T02:08:18Z",
+   "updatedAt": "2026-11-12T03:31:41Z",
+   "builtAt": "2026-11-01T02:08:18Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as ce73487ab.",
+     "at": "2026-11-12T03:31:41Z"
+    },
+    {
+     "text": "Shipped manifest sm-shot-groups rev 1 sent to Shipped features (backfill): landed ce73487ab, 27 file(s), 0 test line(s), 3 open.",
+     "at": "2026-11-12T03:31:41Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "UI Review → Screenshots: named, timestamped groups (`shot-groups`, Nov 1 2026)",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "shipped": {
+    "id": "sm-shot-groups",
+    "rev": 1,
+    "at": "2026-11-12T03:31:41Z",
+    "landedCommit": "ce73487abdc3cfd164feada61d13dc0e4899bb28"
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 0
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "shots-tab",
+   "title": "UI Review → Screenshots tab (`shots-tab`, Nov 1 2026)",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/shots-tab",
+   "pr": "",
+   "mergedAt": "2026-11-01T00:56:32Z",
+   "createdAt": "2026-11-01T00:56:32Z",
+   "updatedAt": "2026-11-12T03:31:42Z",
+   "builtAt": "2026-11-01T00:56:32Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 5963aa3ea.",
+     "at": "2026-11-12T03:31:42Z"
+    },
+    {
+     "text": "Shipped manifest sm-shots-tab rev 1 sent to Shipped features (backfill): landed 5963aa3ea, 5 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:42Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "UI Review → Screenshots tab (`shots-tab`, Nov 1 2026)",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "shipped": {
+    "id": "sm-shots-tab",
+    "rev": 1,
+    "at": "2026-11-12T03:31:42Z",
+    "landedCommit": "5963aa3eaa4555bd2bbd6b94b9a0533fa68c6f83"
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 0
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "angel-screens-compact",
+   "title": "angel-screens-compact",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/angel-screens-compact",
+   "pr": "",
+   "mergedAt": "2026-10-30T22:56:35Z",
+   "createdAt": "2026-10-30T22:56:35Z",
+   "updatedAt": "2026-11-12T03:31:43Z",
+   "builtAt": "2026-10-30T22:56:35Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 33bf14346.",
+     "at": "2026-11-12T03:31:43Z"
+    },
+    {
+     "text": "Shipped manifest sm-angel-screens-compact rev 1 sent to Shipped features (backfill): landed 33bf14346, 15 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:43Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "angel-screens-compact",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "shipped": {
+    "id": "sm-angel-screens-compact",
+    "rev": 1,
+    "at": "2026-11-12T03:31:43Z",
+    "landedCommit": "33bf1434667a6d2939b71b84a412e894f81ebd65"
    },
    "steps": [],
    "profiles": [

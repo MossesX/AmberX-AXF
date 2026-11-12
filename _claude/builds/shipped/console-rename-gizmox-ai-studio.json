@@ -1,0 +1,114 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-console-rename-gizmox-ai-studio",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:31:37Z",
+ "build": {
+  "id": "console-rename-gizmox-ai-studio",
+  "title": "console-rename-gizmox-ai-studio",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "console-rename-gizmox-ai-studio",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/console-rename-gizmox-ai-studio",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "4f13de1d85c330822834267d259254926516fdc1",
+ "commits": [
+  "1bc983eedc234a9e194c6aaed1bebd34e2fcedba"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-11-01T19:01:51Z",
+ "files": [
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/axf/react/components/Chrome.tsx",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/axf/react/components/Chrome.tsx",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/axf.manifest.json",
+  "apps/console-web/index.html",
+  "apps/console-web/project.manifest.json",
+  "apps/console-web/server/alerts.py",
+  "apps/console-web/server/main.py",
+  "apps/console-web/server/mcp_server.py",
+  "apps/console-web/src/App.tsx",
+  "apps/console-web/src/axf/react/components/Chrome.tsx",
+  "apps/console-web/src/views/Home.tsx",
+  "framework/react/components/Chrome.tsx"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/axf.manifest.json",
+    "apps/console-web/index.html",
+    "apps/console-web/project.manifest.json",
+    "apps/console-web/server/alerts.py",
+    "apps/console-web/server/main.py",
+    "apps/console-web/server/mcp_server.py",
+    "apps/console-web/src/App.tsx",
+    "apps/console-web/src/axf/react/components/Chrome.tsx",
+    "apps/console-web/src/views/Home.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/axf/react/components/Chrome.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/axf/react/components/Chrome.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/components/Chrome.tsx"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

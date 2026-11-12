@@ -776,16 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 02:23 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` → pending, note (all) · pipeline
-- 2026-11-12 02:23 UTC · `molly-gap-remote-actions` → running, note (all) · pipeline
-- 2026-11-12 02:22 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` s3 done, → built (all) · orchestrator
-- 2026-11-12 02:23 UTC · `molly-gap-remote-actions` → running, note (all) · orchestrator
-- 2026-11-12 02:27 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` → queued, note (all) · pipeline
-- 2026-11-12 02:27 UTC · `build-notifications-same-notification-per-build` s1 done (all) · orchestrator
-- 2026-11-12 02:28 UTC · `build-notifications-same-notification-per-build` s2 done (all) · orchestrator
-- 2026-11-12 02:29 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` s2 done (all) · orchestrator
-- 2026-11-12 02:29 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` PR #505 (all) · builds-live
-- 2026-11-12 02:30 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` PR #505 (all) · foreign-write
 - 2026-11-12 02:30 UTC · `build-notifications-same-notification-per-build` PR #506 (all) · builds-live
 - 2026-11-12 02:30 UTC · `build-notifications-same-notification-per-build` note (all) · orchestrator
 - 2026-11-12 02:30 UTC · `molly-gap-remote-actions` → running (all) · builds-live
@@ -1176,6 +1166,16 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:31 UTC · `axhub-veto-pass-web` added (0 steps) (all) · backfill
 - 2026-11-12 03:31 UTC · `md-studio-theme-editor-plan` added (0 steps) (all) · backfill
 - 2026-11-12 03:31 UTC · `walkthrough-view-fallback` added (0 steps) (all) · backfill
+- 2026-11-12 03:31 UTC · `xlayout-plan` added (0 steps) (all) · backfill
+- 2026-11-12 03:31 UTC · `claude-accounts-switch` added (0 steps) (all) · backfill
+- 2026-11-12 03:31 UTC · `one-look-opus` added (0 steps) (all) · backfill
+- 2026-11-12 03:31 UTC · `console-rename-gizmox-ai-studio` added (0 steps) (all) · backfill
+- 2026-11-12 03:31 UTC · `hub-look-all-assets` added (0 steps) (all) · backfill
+- 2026-11-12 03:31 UTC · `theme-sync-pane` added (0 steps) (all) · backfill
+- 2026-11-12 03:31 UTC · `leftovers` added (0 steps) (all) · backfill
+- 2026-11-12 03:31 UTC · `shot-groups` added (0 steps) (all) · backfill
+- 2026-11-12 03:31 UTC · `shots-tab` added (0 steps) (all) · backfill
+- 2026-11-12 03:31 UTC · `angel-screens-compact` added (0 steps) (all) · backfill
 
 ## Token passes (log)
 

@@ -1,0 +1,181 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-leftovers",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:31:40Z",
+ "build": {
+  "id": "leftovers",
+  "title": "Leftovers — finishing every nearly-done build (Nov 1 2026)",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Leftovers — finishing every nearly-done build (Nov 1 2026)",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/leftovers",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "13a18ef5a7a0286c140a30385cfc574b3a2c1d13",
+ "commits": [
+  "196bbbaa8125a59233e2ef1b5462609d83c2cf87",
+  "a76d9704965eafdfca11ba689f79bccc7801d7ab",
+  "8f3500ce157971ab1ecc1c507384429175161790",
+  "3bd4289718493a92924eb268429b019ade572715",
+  "e14b9952e0181f2580dd9845294d7c3ee1b7c098",
+  "ce6d16fd74407ce1c728e9bc1f132a15b35755a9",
+  "b0ab04948e34eacc530460f2aae75a79b39a8055",
+  "03a62fa948acddb0977137377d1509c8c3121317",
+  "b741cf04d1f00f36bc4a59832eed80e4ca751095",
+  "17ab0bdd67777fc3e45b71bb935a406165ce907c",
+  "1c372327323d3c401b2bd53c36944a82b74f8d92"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-11-01T02:28:08Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/journal/2026-11.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/builds/profiles/breakroom/orchestrator.json",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/builds/profiles/urgent/orchestrator.json",
+  "_claude/builds/reports/leftovers.md",
+  "_claude/builds/reports/leftovers/approvals-log-desktop.png",
+  "_claude/builds/reports/leftovers/approvals-log-phone.png",
+  "_claude/builds/store.json",
+  "_claude/memory/STATUS.md",
+  "_claude/shared/rules/RULES.md",
+  "apps/axhub-web/src/hub/core.ts",
+  "apps/axhub-web/src/views/ApprovalLog.tsx",
+  "apps/axhub-web/test.mjs",
+  "apps/console-web/plugins/push-banner/server/__init__.py",
+  "apps/console-web/plugins/push-banner/test.py",
+  "apps/console-web/plugins/systems-check/README.md",
+  "apps/console-web/plugins/systems-check/server/githubsvc.py",
+  "apps/console-web/plugins/systems-check/server/healthchecks.py",
+  "apps/console-web/plugins/ui-review/README.md",
+  "framework/plan/profiles/refactor/framework/plan/pending.json",
+  "framework/plan/profiles/urgent/framework/plan/pending.json"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/journal/2026-11.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/profiles/angel/orchestrator.json",
+    "_claude/builds/profiles/breakroom/orchestrator.json",
+    "_claude/builds/profiles/refactor/orchestrator.json",
+    "_claude/builds/profiles/urgent/orchestrator.json",
+    "_claude/builds/reports/leftovers.md",
+    "_claude/builds/reports/leftovers/approvals-log-desktop.png",
+    "_claude/builds/reports/leftovers/approvals-log-phone.png",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "systems-check",
+   "files": [
+    "apps/console-web/plugins/systems-check/README.md",
+    "apps/console-web/plugins/systems-check/server/githubsvc.py",
+    "apps/console-web/plugins/systems-check/server/healthchecks.py"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/src/hub/core.ts",
+    "apps/axhub-web/src/views/ApprovalLog.tsx",
+    "apps/axhub-web/test.mjs"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md",
+    "_claude/shared/rules/RULES.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "push-banner",
+   "files": [
+    "apps/console-web/plugins/push-banner/server/__init__.py",
+    "apps/console-web/plugins/push-banner/test.py"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/profiles/refactor/framework/plan/pending.json",
+    "framework/plan/profiles/urgent/framework/plan/pending.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ui-review",
+   "files": [
+    "apps/console-web/plugins/ui-review/README.md"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "**Tests:** axHub pnpm test on Node 22 (docker): **514/514**. AmberX test.mjs **2045/2045** + tsc clean. approvals-banner self-test 10/10. Build Complete 9/9. **Commit:** b741cf04.",
+   "command": "pnpm test",
+   "result": "pass",
+   "detail": ""
+  }
+ ],
+ "uiReview": [
+  {
+   "id": "r-20261101-f74d2ada",
+   "name": "axHub web: approvals log shows no-approval runs inline",
+   "status": "approved",
+   "group": "g-20261101-3b6f71d9",
+   "url": "/review/r-20261101-f74d2ada"
+  }
+ ],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "_claude/builds/reports/leftovers.md",
+ "open": [
+  "claude-sync holds 16 files (store, journal, orchestrator exports, THREADS, shared RULES, STATUS, some plan data). In every case I checked, the repo copy is a superset of the hub's (store rev 16 vs 14; the hub RULES is just older). Picking a side is Brett's call (`claude-sync resolve <id> --keep local|hub`); the banner already has `blocked:claude-sync-held`.",
+  "UI Review `r-20261101-f74d2ada` is waiting for Brett.",
+  "Item 9 has no orchestrator build: the rules want one, and the build profile is Brett's pick. A headless run can't ask, so it's tracked in the change log entry and THREADS instead.",
+  "asset-conform (`blocked:push:asset-conform`) has 3 commits not on main. It wasn't on this list, so I left it and its banner item alone.",
+  "Not started, as told: home-cards (0/18), plugin-floatable, and every other unstarted build. Archived builds untouched."
+ ]
+}
