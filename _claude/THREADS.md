@@ -776,8 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 01:46 UTC · `fix-axhub-36-pull-main-in-failed` → queued, note (all) · push-banner
-- 2026-11-12 01:46 UTC · `molly-gap-remote-actions` note (all) · orchestrator
 - 2026-11-12 01:47 UTC · `fix-axhub-36-pull-main-in-failed` note (all) · orchestrator
 - 2026-11-12 01:47 UTC · `open-any-website-by-voice-on-the-phone-optionall` → running, note (all) · pipeline
 - 2026-11-12 01:47 UTC · `open-any-website-by-voice-on-the-phone-optionall` branch claude/open-any-website-by-voice-on-the-phone-optionall (all) · pipeline
@@ -1176,6 +1174,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:22 UTC · `x.engine.dev` s3 done (all) · orchestrator
 - 2026-11-12 03:23 UTC · `merge-all-ready-buttons-server-side-lander` s5 done (all) · orchestrator
 - 2026-11-12 03:24 UTC · `x.engine.dev` PR #513 (all) · builds-live
+- 2026-11-12 03:24 UTC · `x.engine.dev` s4 done, → built (all) · orchestrator
+- 2026-11-12 03:24 UTC · `x.engine.dev` note (all) · orchestrator
 
 ## Token passes (log)
 
