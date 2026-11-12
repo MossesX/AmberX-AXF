@@ -366,6 +366,39 @@ final class HubRules {
         return isHub(hub, url) && url.startsWith(hub + "/data/") && !url.contains("..");
     }
 
+    /** Only the Dev Console's own API takes the phone's console calls (no other host, no path tricks). */
+    static boolean isConsoleApi(String url) {
+        return url != null && url.startsWith(CONSOLE + "/api/") && !url.contains("..") && !url.contains("@");
+    }
+
+    /**
+     * POST or PUT JSON to the Dev Console's API with the phone's session for the console (the console as Origin, no
+     * redirects, capped like every other call). Build move-amberx-web-app-into-the-console-amberx-andr s12.
+     */
+    static Reply consoleSend(String method, String url, String body, String cookie) throws IOException {
+        if (!isConsoleApi(url)) throw new IOException("not the console's API");
+        if (!"POST".equals(method) && !"PUT".equals(method)) throw new IOException("POST or PUT only");
+        byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
+        if (bytes.length > PUT_MAX_BYTES + 4096) throw new IOException("document too large");
+        HttpURLConnection c = (HttpURLConnection) new URL(url).openConnection();
+        try {
+            c.setInstanceFollowRedirects(false);
+            c.setConnectTimeout(10_000); c.setReadTimeout(20_000); c.setUseCaches(false);
+            c.setRequestMethod(method); c.setDoOutput(true);
+            c.setRequestProperty("Content-Type", "application/json");
+            c.setRequestProperty("Accept", "application/json");
+            c.setRequestProperty("Origin", CONSOLE);
+            if (cookie != null) c.setRequestProperty("Cookie", cookie);
+            c.getOutputStream().write(bytes);
+            int code = c.getResponseCode();
+            InputStream in = code >= 400 ? c.getErrorStream() : c.getInputStream();
+            String reply = in == null ? "" : readLimited(in, FEED_MAX_BYTES);
+            return new Reply(code, reply, c.getHeaderField("Location"), c.getHeaderField("ETag"));
+        } finally {
+            c.disconnect();
+        }
+    }
+
     /** PUT a JSON document to the hub's data server with the hub session (hub as Origin, If-Match kept, no redirects). */
     static Reply put(String hub, String url, String body, String ifMatch, String cookie) throws IOException {
         byte[] bytes = body.getBytes(StandardCharsets.UTF_8);

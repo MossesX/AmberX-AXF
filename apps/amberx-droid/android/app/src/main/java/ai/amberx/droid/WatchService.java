@@ -281,6 +281,8 @@ public class WatchService extends Service {
             }
         }
         int alerts = cfg.optBoolean("consoleAlerts", true) ? consoleAlerts() : -1;
+        if (ConsoleBackend.console(ConsoleBackend.get(this))) openQueuedPages();
+        followBackendSwitch();
         JSONObject s = new JSONObject();
         try {
             s.put("running", true).put("listening", listening).put("lastCheck", Instant.now().toString())
@@ -336,7 +338,9 @@ public class WatchService extends Service {
         if (cookie == null) return -1;
         HubRules.Alerts a;
         try {
-            HubRules.Reply r = HubRules.get(HubRules.CONSOLE + HubRules.ALERTS_PATH, cookie);
+            // the console app (s12): the phone's view with its name, so the console keeps its notification history
+            String url = ConsoleBackend.console(ConsoleBackend.get(this)) ? ConsoleBackend.alertsUrl(AxppLink.deviceId(this)) : HubRules.CONSOLE + HubRules.ALERTS_PATH;
+            HubRules.Reply r = HubRules.get(url, cookie);
             a = HubRules.consoleAlerts(r.status, r.body);
             Set<String> off = HubRules.mutedTypes(r.status, r.body);
             if (off != null) muted = off;
@@ -356,6 +360,49 @@ public class WatchService extends Service {
         }
         p.edit().putStringSet("alertsSeen", now).apply();
         return a.open.size();
+    }
+
+    /**
+     * The backend switch (s13): the console's `backend` setting (Settings → Plugins → AmberX, amberx-settings_set,
+     * `axf amberx-settings set backend …`, voice) is read every round, from either backend, and saved on the phone; the
+     * app opens on it from the next start, so a bad console deploy rolls back without a new APK.
+     */
+    private void followBackendSwitch() {
+        String cookie = CookieManager.getInstance().getCookie(HubRules.CONSOLE);
+        if (cookie == null) return;
+        try {
+            HubRules.Reply r = HubRules.get(ConsoleBackend.backendSettingUrl(), cookie);
+            String want = ConsoleBackend.backendOf(r.status, r.body);
+            if (want != null) ConsoleBackend.set(this, want);
+        } catch (Exception ignored) { /* the console isn't reachable: keep what the phone has */ }
+    }
+
+    /**
+     * Pages the console queued for this phone (open_url, contract C31): each is checked with {@link OpenUrlRules#allowed}
+     * again, opened the way the AXPP `browser.open` command opens it, and answered so the console's history says what
+     * happened. Build move-amberx-web-app-into-the-console-amberx-andr s12.
+     */
+    private void openQueuedPages() {
+        String cookie = CookieManager.getInstance().getCookie(HubRules.CONSOLE);
+        if (cookie == null) return;
+        try {
+            HubRules.Reply r = HubRules.get(ConsoleBackend.openUrlPendingUrl(AxppLink.deviceId(this)), cookie);
+            if (r.status != 200) return;
+            JSONArray items = new JSONObject(r.body).optJSONArray("items");
+            for (int i = 0; items != null && i < items.length() && i < 5; i++) {
+                JSONObject it = items.optJSONObject(i);
+                if (it == null) continue;
+                String id = it.optString("id", "");
+                JSONObject answer = new JSONObject();
+                try {
+                    JSONObject done = AxppLink.openUrl(this, OpenUrlRules.allowed(it.optString("url", "")), OpenUrlRules.browserOf(it));
+                    answer.put("opened", done.optBoolean("opened", false)).put("notified", done.optBoolean("notified", false));
+                } catch (Exception e) {
+                    answer.put("error", String.valueOf(e.getMessage()));
+                }
+                HubRules.consoleSend("POST", ConsoleBackend.openUrlAnswerUrl(id), answer.toString(), cookie);
+            }
+        } catch (Exception ignored) { /* the next round tries again */ }
     }
 
     /* ---------------------------------------------------------------- hands-free listening */

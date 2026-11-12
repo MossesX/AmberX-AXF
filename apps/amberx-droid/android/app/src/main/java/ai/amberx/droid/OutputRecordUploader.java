@@ -171,8 +171,10 @@ final class OutputRecordUploader {
         File f = OutputRecordQueue.audio(c, id);
         if (!OutputRecordQueue.isId(id) || !f.isFile()) return;
         String project = OutputRecordQueue.settings(c).project;
-        String cookie = CookieManager.getInstance().getCookie(HubRules.HUB);
-        if (cookie == null || cookie.isEmpty()) throw new Stop("signed-out", "Sign in to axHub in AmberX to send recordings.");
+        // the console app (s12): parts and index go to the console, which writes the same files on axHub's volume
+        boolean toConsole = ConsoleBackend.console(ConsoleBackend.get(c));
+        String cookie = CookieManager.getInstance().getCookie(toConsole ? HubRules.CONSOLE : HubRules.HUB);
+        if (cookie == null || cookie.isEmpty()) throw new Stop("signed-out", "Sign in to axHub in the app to send recordings.");
         try {
             long size = f.length();
             int parts = (int) ((size + PART_BYTES - 1) / PART_BYTES);
@@ -190,7 +192,8 @@ final class OutputRecordUploader {
                     doc.put("id", id);
                     doc.put("n", n);
                     doc.put("b64", Base64.encodeToString(buf, 0, len, Base64.NO_WRAP));
-                    put(project, partPath(id, n), doc.toString(), cookie);
+                    if (toConsole) consolePut(ConsoleBackend.recordingPartUrl(id, n), doc.toString(), cookie);
+                    else put(project, partPath(id, n), doc.toString(), cookie);
                     m.put("uploadedParts", n + 1);
                     OutputRecordQueue.writeMeta(c, id, m);
                 }
@@ -222,6 +225,21 @@ final class OutputRecordUploader {
                 index.put("micBusyMs", m.optLong("micBusyMs"));
             }
             index.put("deleted", false);
+            if (toConsole) {
+                // confirmed only when the console has every part and the SHA-256 matches (C26)
+                JSONObject ans = new JSONObject(consolePut(ConsoleBackend.recordingIndexUrl(id), index.toString(), cookie));
+                if (!ans.optBoolean("confirmed", false)) {
+                    m.put("uploadedParts", 0);
+                    OutputRecordQueue.writeMeta(c, id, m);
+                    throw new Stop("offline", "The console didn’t confirm " + id + ": sending it again.");
+                }
+                OutputRecordQueue.removeLocal(c, id);
+                OutputRecordQueue.sessionUploaded(c, m.optString("session"));
+                JSObject e = new JSObject();
+                e.put("id", id);
+                OutputRecordService.emit("uploaded", e);
+                return;
+            }
             put(project, indexPath(id), index.toString(), cookie);
             // confirmed only by reading the index back
             HubRules.Reply r = HubRules.get(hubUrl(project, indexPath(id)), cookie);
@@ -254,6 +272,15 @@ final class OutputRecordUploader {
         if (r.status == 400 && msg.contains("at most")) throw new Stop("hub-full", "axHub is full: " + msg + " Delete old recordings to make room.");
         if (r.status == 400 || r.status == 413) throw new Stop("error", "axHub refused " + path + ": " + msg);
         throw new Stop("offline", "axHub answered " + (r.status == 0 ? "nothing" : String.valueOf(r.status)) + ".");
+    }
+
+    /** One PUT to the console's recordings routes → the answer body; refusals become the same Stop states as the hub's. */
+    private static String consolePut(String url, String body, String cookie) throws IOException, Stop {
+        HubRules.Reply r = HubRules.consoleSend("PUT", url, body, cookie);
+        if (r.status == 200) return r.body;
+        if (r.status == 401 || r.status == 403 || (r.status >= 300 && r.status < 400)) throw new Stop("signed-out", "The console refused the upload (" + r.status + "): sign in to axHub again.");
+        if (r.status == 400 || r.status == 413) throw new Stop("error", "The console refused " + url.substring(url.lastIndexOf("/recordings/")) + ": " + (r.body.length() > 160 ? r.body.substring(0, 160) : r.body));
+        throw new Stop("offline", "The console answered " + (r.status == 0 ? "nothing" : String.valueOf(r.status)) + ".");
     }
 
     private static String message(String body) {

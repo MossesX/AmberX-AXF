@@ -3,9 +3,13 @@ package ai.amberx.droid;
 import android.content.Intent;
 import android.os.Bundle;
 import com.getcapacitor.BridgeActivity;
+import com.getcapacitor.CapConfig;
 
 /**
- * AmberX's one screen: the web app (dist/, bundled) in Capacitor's WebView, plus the AmberxNative plugin. It tells the
+ * The phone app's one screen. Since build move-amberx-web-app-into-the-console-amberx-andr (s12) it is the Dev Console
+ * (https://console.amberxai.com) in Capacitor's WebView, with AmberX's native side (watch, alerts, approvals pop-up,
+ * open_url, recorder, voice); the backend switch ({@link ConsoleBackend}, `amberx-web`) brings back the old AmberX web
+ * app without a new APK. Before: AmberX's one screen: the web app (dist/, bundled) in Capacitor's WebView, plus the AmberxNative plugin. It tells the
  * watch service when it is on screen (the web side listens itself then) and hands notification taps and wake-phrase hits
  * to the web side.
  */
@@ -23,6 +27,16 @@ public class MainActivity extends BridgeActivity {
         registerPlugin(AmberxNativePlugin.class);
         registerPlugin(AudioExtractPlugin.class); // Audio Extract (apps/console-web/plugins/audio-extract)
         registerPlugin(OutputRecorderPlugin.class); // Audio Output Recorder (apps/console-web/plugins/output-recorder)
+        // The site comes from the backend switch, read once at start (s12 / s13): the console unless switched back.
+        String backend = ConsoleBackend.get(this);
+        config = new CapConfig.Builder(this)
+            .setServerUrl(ConsoleBackend.siteUrl(backend))
+            .setAllowNavigation(ConsoleBackend.allowNavigation(backend))
+            .setAndroidScheme("https")
+            .setErrorPath("offline.html")
+            .setAllowMixedContent(false)
+            .setWebContentsDebuggingEnabled(false)
+            .create();
         super.onCreate(state);
         // No FLAG_SECURE on normal screens (Oct 31 2026): Android's recorder, screenshots and Audio Extract work. The
         // opt-in "Hide sensitive screens from recordings" hides only password / key / vault screens (SecureScreen).

@@ -371,6 +371,19 @@ approvals relay and decide answer for the calling browser's own hub session). Ev
 route how often, when last, from which client (phone native, phone page, browser) and which routes are still answered
 here; `python forward.py table` prints the table. Nothing changes for the current phone until the switches are set.
 
+Built in s12 and s13 (`apps/amberx-droid`, the AmberX Capacitor shell, which the Android hold excepts): the installed
+app becomes the Console app (name "Console", same package so it updates in place). `ConsoleBackend.java` holds the
+rules: the site is `https://console.amberxai.com` unless the backend switch says `amberx-web`; `MainActivity` builds
+Capacitor's config from it at start. The native side talks to the console: alerts read with the device's name (C33,
+C35b), pages the console queued for the phone opened and answered every watch round (C31 pick-up), recordings uploaded
+to the console's routes and deleted locally only on `confirmed` (C25, C26). Console calls go through
+`HubRules.consoleSend` (console API only, console as Origin, no redirects). The switch is the console setting `backend`
+(amberx-settings: REST `PUT /api/plugins/amberx-settings/settings/backend`, MCP `amberx-settings_set`, CLI `axf
+amberx-settings set backend amberx-web`, voice "switch the phone back to amberx"); the watch reads it every round and the
+app opens on it from the next start; `AmberxNative.backendGet|backendSet` read and set it on the phone. Still on the
+old paths until a later step: the approvals feed (T9, native straight to the hub), the AXPP link (T16) and the voice
+plugin, whose phrases the console page registers only when the AmberX page's voice registry is present.
+
 ## 6. What this contract does not decide
 
 - The Android client code (s12, s13): this is the server side the client is written against. No Kotlin or Java changes are part of

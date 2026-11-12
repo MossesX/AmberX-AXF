@@ -278,7 +278,7 @@ final class AxppLink {
      * The answer says what really happened: `opened` only for a start Android can't have dropped, `notified` only when
      * notifications are on, `overlay` whether "Display over other apps" is granted.
      */
-    private static JSONObject openUrl(Context c, String url, String browser) throws Exception {
+    static JSONObject openUrl(Context c, String url, String browser) throws Exception {
         Intent open = browserIntent(c, url, browser);
         boolean[] started = { false };
         boolean[] notified = { false };
