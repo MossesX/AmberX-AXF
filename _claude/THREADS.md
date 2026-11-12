@@ -776,8 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 21:50 UTC · `molly-one-shell` → running, note (all) · pipeline
-- 2026-11-10 21:50 UTC · `molly-one-shell` note (all) · orchestrator
 - 2026-11-10 21:50 UTC · `overrides-summary-highlight-colour-setting-asset` added (0 steps) (all) · console
 - 2026-11-10 21:50 UTC · `overrides-summary-highlight-colour-setting-asset` → queued, note (all) · console
 - 2026-11-10 21:51 UTC · `overrides-summary-highlight-colour-setting-asset` note (all) · orchestrator
@@ -1176,6 +1174,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 01:53 UTC · `fix-axhub-36-pull-main-in-failed` note (all) · orchestrator
 - 2026-11-12 01:53 UTC · `fix-axhub-36-pull-main-in-failed` s20 done (all) · orchestrator
 - 2026-11-12 01:54 UTC · `molly-gap-console-token-handoff` → queued, note (all) · pipeline
+- 2026-11-12 01:54 UTC · `molly-gap-remote-actions` → running, note (all) · pipeline
+- 2026-11-12 01:54 UTC · `molly-gap-remote-actions` note (all) · orchestrator
 
 ## Token passes (log)
 
