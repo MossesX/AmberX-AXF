@@ -230,6 +230,12 @@ does for other hub tools.
 
 Deep links: `console_open("output-recorder", focus="<recording id>")`.
 
+Built in s7 (Audio Output Recorder plugin, `server/recordings.py`): C25–C30 as above, plus `POST device/status` (the <!-- axf-plugin:output-recorder -->
+phone publishes, `GET device/status` reads) and `GET|PUT settings` (`autoTranscribe`, `listLimit`). The delete confirm <!-- axf-plugin:output-recorder -->
+token is the plugin's own (HMAC over the id, five-minute window); a deleted recording keeps a tombstone index. Start / <!-- axf-plugin:output-recorder -->
+stop call axHub's `amberx.recorder_start|stop` until s12's device stream. The screen gains "Recordings on the console" <!-- axf-plugin:output-recorder -->
+(play, transcript, transcribe, delete, remote start / stop, phone status); action `output-recorder.focus:<id>`. <!-- axf-plugin:output-recorder -->
+
 ### 4.7 open_url
 
 | Call | Replaces | REST (`/api/plugins/console-commands/...`) | MCP | CLI | Voice | <!-- axf-plugin:console-commands -->

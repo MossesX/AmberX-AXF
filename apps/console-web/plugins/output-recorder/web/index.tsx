@@ -22,6 +22,7 @@ import {
   type Recording,
 } from './core';
 import { createController, type Controller } from './store';
+import { ConsoleRecordingSettings, ConsoleRecordings, FOCUS_EVENT } from './recordings';
 import { appMenu } from './menu';
 import './output-recorder.css';
 
@@ -203,6 +204,7 @@ function OutputRecorderView() {
       </header>
       {c.native() ? <Recorder /> : <Note tone="info">Recording runs in the AmberX app on Android (switch or the “Record audio out” quick-settings tile). Here you can play, download, read, search and delete what it sent to axHub.</Note>}
       <HubList />
+      <ConsoleRecordings />
     </div>
   );
 }
@@ -260,6 +262,7 @@ export const plugin: AxfWebLibrary = {
     },
   ],
   settingsPanels: [
+    { id: 'output-recorder.console', tab: 'output-recorder', title: 'Recordings on the console', icon: 'play', render: () => <ConsoleRecordingSettings /> },
     { id: 'output-recorder.budget', tab: 'output-recorder', title: 'Room on axHub', icon: 'cloud', render: () => <HubBudget /> },
     { id: 'output-recorder.lifecycle', tab: 'output-recorder', title: 'Install & uninstall', icon: 'package', render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
@@ -273,12 +276,19 @@ export const plugin: AxfWebLibrary = {
     const c = ctl;
     rt.actions.register('output-recorder.start', () => void c.start(), { label: 'Record what the phone plays' });
     rt.actions.register('output-recorder.stop', () => void c.stop(), { label: 'Stop recording phone audio' });
+    // output-recorder.focus:<recording id> — what console_open("output-recorder", focus=<id>) runs (s7)
+    rt.actions.register('output-recorder.focus', ([id]) => {
+      (window as { __outputRecorderFocus?: string }).__outputRecorderFocus = id ?? '';
+      rt.navigate('output-recorder');
+      setTimeout(() => window.dispatchEvent(new CustomEvent(FOCUS_EVENT, { detail: id ?? '' })), 0);
+    }, { label: 'Audio out: open a recording', params: true, effect: 'navigate' });
     rt.actions.register('output-recorder.toggle', () => void c.toggle(!c.get().rec.running), { label: 'Record audio out on / off' });
     const v = (globalThis as { amberxVoice?: VoiceRegistry }).amberxVoice;
     v?.register(ID, [
       { id: 'output-recorder.start', phrases: [...VOICE.start], action: 'output-recorder.start', owner: 'Audio out' },
       { id: 'output-recorder.stop', phrases: [...VOICE.stop], action: 'output-recorder.stop', owner: 'Audio out' },
       { id: 'output-recorder.open', phrases: [...VOICE.open], action: 'nav:output-recorder', owner: 'Audio out' },
+      { id: 'output-recorder.recordings', phrases: ['play the last recording', 'show my recordings', 'open recordings'], action: 'nav:output-recorder', owner: 'Audio out' },
     ]);
     if (!bridge) return;
     for (const k of SETTING_KEYS) if (k !== K.mic) rt.settings.onChange(k, () => void c.configure({}));

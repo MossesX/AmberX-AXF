@@ -13,12 +13,107 @@
   ],
   "provides": [
     "view:output-recorder",
-    "settings-tab:output-recorder"
+    "settings-tab:output-recorder",
+    "action:output-recorder.focus"
   ],
   "scopes": [],
   "enabledByDefault": true,
-  "commands": { "$axf": "plugin-commands@1", "auto": true },
-  "builtWith": { "model": "opus", "builtAt": "2026-11-01" },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "route": "GET /recordings",
+        "id": "recordings",
+        "title": "Every recording uploaded to the console, newest first (since = ISO time, limit)",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "since": {
+              "type": "string"
+            },
+            "limit": {
+              "type": "integer"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "GET /recordings/{rid}",
+        "id": "recording",
+        "title": "One recording: its index and transcript",
+        "readOnly": true
+      },
+      {
+        "route": "DELETE /recordings/{rid}",
+        "id": "remove",
+        "title": "Delete a recording for good: the first call answers a confirm token, repeat with confirm"
+      },
+      {
+        "route": "POST /recordings/{rid}/transcribe",
+        "id": "transcribe",
+        "title": "Transcribe a recording next"
+      },
+      {
+        "route": "POST /recordings/act/{verb}",
+        "id": "act",
+        "title": "Start (session required; an axHub approval first) or stop the phone's recorder"
+      },
+      {
+        "route": "GET /device/status",
+        "id": "device-status",
+        "title": "The phone's recorder as it last reported (on, session, uploaded parts, queue)",
+        "readOnly": true
+      },
+      {
+        "route": "GET /settings",
+        "id": "settings",
+        "title": "Recording settings on the console (autoTranscribe, listLimit)",
+        "readOnly": true
+      },
+      {
+        "route": "PUT /settings",
+        "id": "set-settings",
+        "title": "Change recording settings (autoTranscribe true|false, listLimit 10\u2013500)",
+        "input": {
+          "type": "object",
+          "properties": {
+            "autoTranscribe": {
+              "type": "boolean"
+            },
+            "listLimit": {
+              "type": "integer",
+              "minimum": 10,
+              "maximum": 500
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "PUT /recordings/{rid}/parts/{n}",
+        "skip": "the phone's upload of one audio part (C25)"
+      },
+      {
+        "route": "PUT /recordings/{rid}",
+        "skip": "the phone's upload of a recording's index (C26)"
+      },
+      {
+        "route": "GET /recordings/{rid}/audio",
+        "skip": "audio bytes for a player, not a command"
+      },
+      {
+        "route": "POST /device/status",
+        "skip": "the phone publishing its recorder state"
+      }
+    ]
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-01"
+  },
   "banner": false,
   "tabable": false,
   "lifecycle": {

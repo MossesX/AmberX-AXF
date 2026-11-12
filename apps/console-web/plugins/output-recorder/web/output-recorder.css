@@ -7,3 +7,12 @@
 .axp-output-recorder-name { font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .axp-output-recorder-audio { width: 100%; }
 .axp-output-recorder-transcript { display: flex; flex-direction: column; gap: calc(var(--fx-space) / 2); max-height: calc(var(--fx-space) * 40); overflow-y: auto; }
+
+/* Recordings on the console (s7): layout only. */
+.axp-output-recorder__console { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); }
+.axp-output-recorder__row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-sm); }
+.axp-output-recorder__grow { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+.axp-output-recorder__rec { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-sm); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); }
+.axp-output-recorder__rec.is-focused { border-color: var(--fx-accent); }
+.axp-output-recorder__player { width: 100%; }
+.axp-output-recorder__transcript { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
