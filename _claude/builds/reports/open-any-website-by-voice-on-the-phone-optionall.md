@@ -65,3 +65,11 @@ recorder in AmberX, or in a plugin somewhere."
 
 - `plugin-lifecycle check` flags the gitignored, auto-written `.axf-focus.json` when it names a plugin file; it is not
   in the repo, so CI is unaffected.
+
+## UI Review (outstanding)
+
+Shots of the console Web browser pane and the AmberX Web page are not in UI Review yet: the headless capture
+(`rebuild-shots.mjs`, Nov 12) stops at "Waiting for axHub" because the build sandbox can't reach
+`https://axhub.amberxai.com`, and the session has no `AXF_CONSOLE_URL` to submit through. Capture them from a
+console that reaches the hub (group "open-any-website-by-voice-on-the-phone-optionall"), phone and desktop, before
+the PR is called ready. Re-run of tests on Nov 12: AmberX 2345/2345, web-browser server 29/29, UI checks pass.
