@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3590,
- "updatedAt": "2026-11-12T18:02:38.362Z",
+ "rev": 3591,
+ "updatedAt": "2026-11-12T18:02:52.856Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175450,9 +175450,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/plugin-review-map-what-each-plugin-does-depends-on-and-breaks",
-   "pr": "",
+   "pr": "#522",
    "createdAt": "2026-11-12T17:47:56.247Z",
-   "updatedAt": "2026-11-12T18:02:36.736Z",
+   "updatedAt": "2026-11-12T18:02:48.075Z",
    "builtAt": "",
    "notes": [
     {
@@ -175466,6 +175466,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-plugin-review-map-what-each-plugin-does-depends---gina, own login copy)",
      "at": "2026-11-12T17:49:19.176Z"
+    },
+    {
+     "text": "Phase 1 (Fable) done: s1 extracted declared + real dependencies for 66 console plugins into _claude/builds/reports/plugin-review/{deps.json,DEPS.md,extract.mjs}. PR #522. Steps s2 (Opus) and s3 (Fable) read deps.json.",
+     "at": "2026-11-12T18:02:48.075Z"
     }
    ],
    "approvals": [],
@@ -175586,7 +175590,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
