@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T01:48:58.450Z",
+ "updatedAt": "2026-11-12T01:49:37.556Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -99220,6 +99220,96 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mwcw14ij0kurfw"
+    }
+   ]
+  },
+  {
+   "id": "molly-gap-expenses-delete",
+   "title": "Molly gap: Expenses ledger API deletes an entry (soft delete + undo) so Molly's native ledger matches the standalone app",
+   "category": "",
+   "detail": "Found by molly-gap-expenses-cors s2. /api/expenses/v1/* now answers Molly's origin with CORS and credentials, but it has no DELETE: removing an entry is only possible in the standalone app (its undoable delete dialog). Molly's native ledger (molly-native-expenses s2) needs the same: DELETE /api/expenses/v1/entries/<id> that keeps a restorable copy (trash or daily backup) and POST .../entries/<id>/restore, DELETE added to the CORS Allow-Methods in apps/expenses/src/server/cors.ts, the same verb in the expenses CLI and MCP tools, and tests in apps/expenses/scripts/expenses-api.test.mts. Standalone expenses.amberxai.com keeps its delete until this lands.",
+   "status": "pending",
+   "hidden": false,
+   "source": "molly-gap-expenses-cors",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-12T01:49:35.622Z",
+   "updatedAt": "2026-11-12T01:49:35.623Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Standalone apps keep working until Molly covers them; list gaps as pending builds.",
+    "at": "2026-11-10T22:09:28.380Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "molly-gap-expenses-cors",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "DELETE /api/expenses/v1/entries/<id> (restorable) + POST entries/<id>/restore in apps/expenses/app/api/expenses/v1/[...path]/route.ts and src/server/expensesApi.ts; DELETE in the CORS Allow-Methods (src/server/cors.ts)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/expenses/app/api/expenses/v1/[...path]/route.ts",
+      "apps/expenses/src/server/expensesApi.ts",
+      "apps/expenses/src/server/cors.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwcw41y904haw7"
+    },
+    {
+     "id": "s2",
+     "text": "Same verbs in the expenses CLI (apps/expenses/scripts/expenses-cli.mjs) and the console MCP tools; tests in apps/expenses/scripts/expenses-api.test.mts",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwcw41y905pwbs"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/molly-gap-expenses-delete.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwcw41y90657qa"
     }
    ]
   }
