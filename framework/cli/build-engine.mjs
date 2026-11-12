@@ -208,6 +208,7 @@ export function skinErrors(d) {
   if (!isO(d)) return ['data must be an object'];
   const errors = [];
   for (const [k, t] of Object.entries(SKIN_THEMES)) if (typeof d[k] !== 'string' || !ID.test(d[k])) errors.push(`data.${k} must be a ${t} asset id`);
+  if ('behaviorTheme' in d && (typeof d.behaviorTheme !== 'string' || !ID.test(d.behaviorTheme))) errors.push('data.behaviorTheme must be a behavior-theme asset id');
   if (!isO(d.assets)) errors.push('data.assets must be an object (slot → asset id)');
   else for (const [t, id] of Object.entries(d.assets)) {
     if (SKIN_NEVER.includes(t) || Object.values(SKIN_THEMES).includes(t)) errors.push(`data.assets.${t}: a skin never sets ${t} here`);

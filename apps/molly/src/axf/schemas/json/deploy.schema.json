@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/deploy.schema.json",
+  "title": "deploy@1 (deploy-log@1 record)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "target",
+    "sha",
+    "at"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "deploy@1"
+    },
+    "id": {
+      "type": "string"
+    },
+    "target": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,39}(:[a-z0-9][a-z0-9-]{0,39})?$"
+    },
+    "sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{7,40}$"
+    },
+    "from": {
+      "type": "string"
+    },
+    "at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "who": {
+      "type": "string"
+    },
+    "host": {
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "deploy",
+        "rollback",
+        "publish"
+      ]
+    },
+    "state": {
+      "enum": [
+        "done",
+        "failed"
+      ]
+    },
+    "version": {
+      "type": "string"
+    },
+    "note": {
+      "type": "string"
+    },
+    "guessed": {
+      "type": "boolean"
+    }
+  }
+}

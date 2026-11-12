@@ -142,6 +142,16 @@ Regenerate fixtures after changing a reference engine: `npx -y tsx framework/spe
 
 `framework/core/engines/skin.ts` and `skin-rules.mjs` (web only, built on Opus, format marked for a possible Fable review: plan `skins-possible-fable-review-6xha`) have no Kotlin twin. Android work is on hold. A port needs the same pure functions, the same `skin` asset type and the same document on the hub: `normalizeSkin`, `skinFromDesignPackage`, `composeLook`, `lookAfterChange`, `pickSkin`, `setUseSkin`, `backToSkin`, `restoreAppDefault`, `undoRestore`, pinned by `spec/fixtures/skin.json` and `spec/check-skin.mts`. Build skins-asset-types (Fable, Nov 7 2026) added `skin-coverage.mjs` (coverage of every registered type from the registry, the scope chain global → app → UI → plugin with `resolveSkinChain`, `partsErrors`), `composeLookAt`, `resolveLookSkin`, per-scope states in app-look@1 (`scopes`, `skin.inherit`), the hub-wide `skin` field on appearance@1, `iconPack` + `parts` on skin@1, and the runtime's `skinScoped` views; a port carries the same functions and the `coverage` / `scopes` blocks of the fixture. Build skins-own-everything-colour-theme-swaps-independ (Fable, Nov 10 2026) added the colour theme switched inside the skin: `colorTheme` on the app level, on a scope and on the hub-wide skin (never an override, never a new skin), `setSkinColorTheme`, `skinColorTheme`, `skinColorOf`, `setLookSlot(look, slot, id, global)`, the legacy `overrides["color-theme"]` migration on read, and the `colour` block of the fixture; a port carries those too. `theme.ts`'s scrollbar tokens stay out of the output Kotlin is tested against until then. Until a port does this, an Android app keeps reading `appearance@1` directly and shows no skin.
 
+## Deferred: look-migration@1 and the skin sections (Nov 10 2026)
+
+Build remove-the-old-theme-manager-style-and-layout-se (Fable): `framework/core/engines/look-migration.mjs` (the one-run
+fold of the retired theme / style / layout picks and settings into the active skin: `migrateLook`, `foldLegacyPicks`,
+`migrateLookSettings`, `legacyPicks`, `parseLegacyLook`), the `SKIN_SECTIONS` / `SKIN_SWAPPABLE_SECTION` /
+`RETIRED_PACKAGE_TYPES` / `SKIN_SCALE_TYPES` / `skinSlotMap` rules in `skin-rules.mjs`, the optional `behaviorTheme` on
+skin@1 and the `migrated` / `legacy` fields of app-look@1 have no Kotlin twin (Android on hold). A port runs the same
+fold once per profile against `spec/fixtures/look-migration.json` (`fold`, `settings`, `combined` blocks) and keeps the
+two fields through its document rules. Until then an Android app keeps reading `appearance@1` directly.
+
 ## Deferred: build-pipeline@1 route + dispatch (Nov 9 2026)
 
 `framework/core/build-pipeline.mjs` gained `pipeline.route` ('' | api | subscription: the per-build override that lets
