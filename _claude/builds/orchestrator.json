@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T22:38:14.301Z",
+ "updatedAt": "2026-11-12T22:39:09.807Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -108565,7 +108565,7 @@
    "title": "Move AmberX web app into the console; AmberX Android reads the console",
    "category": "",
    "detail": "Move every AmberX web app feature (notes, to-dos, lists, approvals, recorder, open_url, notifications, settings) into the console. Repoint the AmberX Android app to read and call the console instead of the AmberX web app. Keep old AmberX web addresses forwarding to the console until the phone app is switched, so nothing breaks. Each feature moved is its own step.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -108573,7 +108573,7 @@
    "pr": "#528",
    "priority": "P2",
    "createdAt": "2026-11-12T19:46:41.501Z",
-   "updatedAt": "2026-11-12T22:38:12.757Z",
+   "updatedAt": "2026-11-12T22:39:07.612Z",
    "builtAt": "",
    "notes": [
     {
@@ -108667,6 +108667,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-move-amberx-web-app-into-the-console-amberx-andr--lenny, own login copy)",
      "at": "2026-11-12T22:33:13.272Z"
+    },
+    {
+     "text": "Self-check: move-amberx-web-app-into-the-console-amberx-andr was marked running on mossesx-max- with no session: released and back in the Queue.",
+     "at": "2026-11-12T22:39:07.612Z"
     }
    ],
    "approvals": [

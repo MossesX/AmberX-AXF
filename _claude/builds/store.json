@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3755,
- "updatedAt": "2026-11-12T22:38:14.301Z",
+ "rev": 3756,
+ "updatedAt": "2026-11-12T22:39:09.807Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -171788,7 +171788,7 @@
    "title": "Move AmberX web app into the console; AmberX Android reads the console",
    "category": "",
    "detail": "Move every AmberX web app feature (notes, to-dos, lists, approvals, recorder, open_url, notifications, settings) into the console. Repoint the AmberX Android app to read and call the console instead of the AmberX web app. Keep old AmberX web addresses forwarding to the console until the phone app is switched, so nothing breaks. Each feature moved is its own step.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -171796,7 +171796,7 @@
    "pr": "#528",
    "priority": "P2",
    "createdAt": "2026-11-12T19:46:41.501Z",
-   "updatedAt": "2026-11-12T22:38:12.757Z",
+   "updatedAt": "2026-11-12T22:39:07.612Z",
    "builtAt": "",
    "notes": [
     {
@@ -171890,6 +171890,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-move-amberx-web-app-into-the-console-amberx-andr--lenny, own login copy)",
      "at": "2026-11-12T22:33:13.272Z"
+    },
+    {
+     "text": "Self-check: move-amberx-web-app-into-the-console-amberx-andr was marked running on mossesx-max- with no session: released and back in the Queue.",
+     "at": "2026-11-12T22:39:07.612Z"
     }
    ],
    "approvals": [
@@ -171936,7 +171940,7 @@
    "pipeline": {
     "queuedAt": "2026-11-12T20:41:12.483Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
+    "account": "",
     "session": "",
     "slot": "",
     "model": "Fable",
@@ -171958,7 +171962,7 @@
      "note": "Split by Claude into 14 steps (2 Fable)."
     },
     "splitRequested": "",
-    "note": "Session on mossesx-max- ended (exit 0) with 12 steps left: back in the Queue (run 3).",
+    "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
     "dispatchedAt": "2026-11-12T22:15:14.526Z",
     "planned": {
@@ -172369,7 +172373,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
