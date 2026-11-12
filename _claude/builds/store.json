@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3399,
- "updatedAt": "2026-11-12T02:51:46.810Z",
+ "rev": 3400,
+ "updatedAt": "2026-11-12T02:51:55.504Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -160753,7 +160753,7 @@
    "branch": "claude/owner-recognized-everywhere-veto-countdown-only-on-shell-commands",
    "pr": "",
    "createdAt": "2026-11-12T02:04:11.564Z",
-   "updatedAt": "2026-11-12T02:51:32.268Z",
+   "updatedAt": "2026-11-12T02:51:46.627Z",
    "builtAt": "",
    "notes": [
     {
@@ -160795,6 +160795,10 @@
     {
      "text": "s1+s2 done; live axHub policy already applied (veto only on vps.run/launch + console terminal-open/Vinny command run; 229 console/orchestrator tools allow; upgrade confirm; backup /root/axf-runs/policy-backup). s3 stopped: GitHub secondary rate limit blocked PR creation (403, 02:40-02:48 UTC). Branches pushed, tests green. Left: open PR AmberX-AXF head claude/owner-recognized-everywhere-veto-countdown-only-on-shell-commands (body /tmp/axf-pr.md, supersedes #415 #416 #371) and axHub PR head claude/owner-policy-api (body /tmp/axhub-pr.md); link with builds-live; merge queue lands; redeploy axHub so GET/PUT /auth/api/policy goes live; AmberX FYI.",
      "at": "2026-11-12T02:51:26.290Z"
+    },
+    {
+     "text": "Headless run axf-owner-recognized-everywhere-veto-countdown-only---rhonda: brief only · start 10.8K tokens ($0.03) · cost $5.47 · 137 turns · 6 tools, MCP none",
+     "at": "2026-11-12T02:51:46.627Z"
     },
     {
      "text": "PR bodies saved at /root/axf-runs/policy-backup/axf-pr.md and axhub-pr.md.",
