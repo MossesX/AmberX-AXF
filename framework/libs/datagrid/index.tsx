@@ -6,7 +6,7 @@
  * `axf-grid-header:<grid id>`, payload = column id) hides and shows columns; drag uses lib-dnd.
  * Parts (installed config `libraries.datagrid.parts`): groups, column-menu {hidden}, sort, expand, drag {trash}, compact.
  */
-import { useEffect, useMemo, type CSSProperties, type ReactNode, type MouseEvent as RMouseEvent, type PointerEvent as RPointerEvent } from 'react';
+import { useEffect, useMemo, useState, type CSSProperties, type ReactNode, type MouseEvent as RMouseEvent, type PointerEvent as RPointerEvent } from 'react';
 import { Icon, IconButton, Meter, Slot, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { partOn, partParams, type LibraryPart } from '../../core/library';
@@ -14,6 +14,10 @@ import { registerZone, startDrag, type DropPos } from '../dnd';
 import spec from './library.json';
 import { anyRowHooks, applyDataset, DATASET_TOOLBAR_SLOT, datasetFiltered, noteDrawnRef, registerRowRefTarget, rowHooks, rowRefForContext, runRowHook, useDataset, useDatasetsRevision, type DatasetField, type RowRef } from './datasets';
 export * from './datasets';
+export * from './rowkinds';
+export * from './rowdetail';
+import { allRowCommands, commandsFor, setRowRuntime, encodeRowIds, findRowCommand, noteRecord, parseRowIds, rowCommandAction, rowKind, runRowCommand, setGridSelection, subscribeRowKinds, targetIds } from './rowkinds';
+import { RowCommandButtons, RowDetail, runRowCommandFromUi, useRowKindsRevision } from './rowdetail';
 import './datagrid.css';
 
 export const DATAGRID_LIBRARY_ID = 'ai.amberx.axf.datagrid';
@@ -49,22 +53,38 @@ export type GridSort = { col: string; dir: 1 | -1 } | null;
 export interface DataGridProps<R> {
   id: string;
   label?: string;
-  groups: GridGroup<R>[];
+  /** categorized rows; leave out and give `rows` for a flat grid, table or log (no group header) */
+  groups?: GridGroup<R>[];
+  /** a flat grid / table / log: the rows in one headerless group */
+  rows?: R[];
   columns: GridColumn<R>[];
   rowId: (r: R) => string;
   rowLabel?: (r: R) => string;
-  hidden: readonly string[];
+  /** hidden columns (left out = the grid keeps them itself) */
+  hidden?: readonly string[];
   onToggleColumn?: (col: string, show?: boolean) => void;
   onShowAll?: () => void;
   onChooseColumns?: () => void;
   sort?: GridSort;
   onSort?: (col: string | null) => void;
+  /** expanded rows (left out with `onToggleExpand` = the grid keeps them itself; every row expands) */
   expanded?: readonly string[];
   onToggleExpand?: (id: string) => void;
+  /** the screen's own part of the expanded row (grid-row@1 adds every field, Related and Commands under it) */
   renderDetail?: (r: R) => ReactNode;
+  /**
+   * What kind of record every row is (grid-row@1, rowkinds.ts): `rowRef` becomes `{ kind, id: rowId(r) }`, so the kind's
+   * registered fields, related links and commands apply. Use `rowRef` when rows are of several kinds.
+   */
+  rowKind?: string;
+  /** the record shown under "All fields" and handed to commands (default: the row itself) */
+  record?: (r: R) => unknown;
+  /** false: no "All fields" section (the screen's detail already shows everything) */
+  allFields?: boolean;
   /** status edge tone: muted / success / accent / danger / warning / info */
   rowTone?: (r: R) => string;
   selected?: string | null;
+  /** multi-selected row ids (left out = the grid keeps its own: ctrl / cmd / shift click, or "Select" in the row menu) */
   multi?: readonly string[];
   onRowClick?: (r: R, e: RMouseEvent) => void;
   onToggleGroup?: (id: string) => void;
@@ -104,17 +124,32 @@ const flatRows = <R,>(gs: GridGroup<R>[]): R[] => gs.flatMap((g) => [...g.rows, 
 
 type Line<R> = { kind: 'group'; g: GridGroup<R>; depth: number } | { kind: 'row'; r: R; depth: number };
 
-export function DataGrid<R>(p: DataGridProps<R>) {
+export function DataGrid<R>(props: DataGridProps<R>) {
   const rt = useRuntime();
+  useRowKindsRevision();
+  const [ownHidden, setOwnHidden] = useState<string[]>([]);
+  const [ownOpen, setOwnOpen] = useState<string[]>([]);
+  const [ownSort, setOwnSort] = useState<GridSort>(null);
+  const [ownMulti, setOwnMulti] = useState<string[]>([]);
+  const p = useGridDefaults(props, { ownHidden, setOwnHidden, ownOpen, setOwnOpen, ownSort, setOwnSort, ownMulti, setOwnMulti });
   const zone = p.zone ?? `axf-grid:${p.id}`;
   const drag = config.drag && p.onMove ? config.drag : false;
   const cols = p.columns.filter((c) => c.fixed || !config.columnMenu || !p.hidden.includes(c.id));
   useDatasetsRevision(); // row hooks registered later redraw the grid
-  const tail = p.rowRef && anyRowHooks() ? 'minmax(calc(var(--fx-space) * 4), max-content)' : 'calc(var(--fx-space) * 4)';
+  const tail = p.rowRef && (anyRowHooks() || anyButtonCommands()) ? 'minmax(calc(var(--fx-space) * 4), max-content)' : 'calc(var(--fx-space) * 4)';
   const template = { '--axf-grid-cols': `calc(var(--fx-space) * 3) ${cols.map((c) => c.width).join(' ')} ${tail}` } as CSSProperties;
   const headerTarget = `axf-grid-header:${p.id}`;
   const dsId = p.dataset === false ? '' : p.dataset ?? p.id;
   const all = useMemo(() => flatRows(p.groups), [p.groups]);
+  const selKind = p.rowRef && all.length ? p.rowRef(all[0]!)?.kind ?? '' : '';
+  const ownMultiOn = !props.multi;
+  useEffect(() => { if (dsId && ownMultiOn) setGridSelection(dsId, selKind, ownMulti); }, [dsId, selKind, ownMulti, ownMultiOn]);
+  useEffect(() => () => { if (dsId) setGridSelection(dsId, '', []); }, [dsId]);
+  useEffect(() => {
+    if (!dsId || !ownMultiOn) return;
+    selectors.set(dsId, (id) => setOwnMulti((m) => (m.includes(id) ? m.filter((x) => x !== id) : [...m, id])));
+    return () => { selectors.delete(dsId); };
+  }, [dsId, ownMultiOn]);
   const fields = useMemo(() => columnFields(p.columns), [p.columns]);
   const dsInfo = { id: dsId, label: p.label ?? p.id, fields, rows: all, ...(p.rowLabel ? { rowText: (r: R) => `${p.rowLabel!(r)} ${fields.map((f) => f.value(r) ?? '').join(' ')}` } : {}) };
   useDataset(dsInfo); // no id (dataset={false}) = not registered
@@ -146,7 +181,7 @@ export function DataGrid<R>(p: DataGridProps<R>) {
 
   const lines: Line<R>[] = [];
   const walk = (g: GridGroup<R>, depth: number) => {
-    if (config.groups) lines.push({ kind: 'group', g, depth });
+    if (config.groups && !g.id.startsWith(FLAT)) lines.push({ kind: 'group', g, depth });
     if (g.collapsed && config.groups) return;
     let rows = dsId ? applyDataset(dsId, g.rows) : g.rows;
     const s = config.sort ? p.sort : null;
@@ -160,6 +195,7 @@ export function DataGrid<R>(p: DataGridProps<R>) {
     onPointerDown: (e: RPointerEvent) => startDrag(e, { kind: `${zone}:${kind}`, id, label, icon, trashable: !!(drag.trash && p.onTrash), onTrash: p.onTrash ? () => p.onTrash!({ kind, id, label }) : undefined }),
   } : {});
 
+  const selBar = ownMultiOn && ownMulti.length > 0 && dsId ? <SelectionBar label={p.label ?? p.id} kind={selKind} ids={ownMulti} dataset={dsId} clear={() => setOwnMulti([])} /> : null;
   const grid = (
     <div className={`axf-grid ${p.compact ? 'is-compact' : ''}`} style={template} role="grid" aria-label={p.label ?? 'Grid'} data-axf-dataset={dsId || undefined}>
       <div className="axf-grid-head" role="row">
@@ -194,27 +230,70 @@ export function DataGrid<R>(p: DataGridProps<R>) {
     </div>
   );
   // plugins attached to this dataset draw above it (a toolbar, chips); nothing contributed = just the grid
-  return dsId ? <><Slot name={DATASET_TOOLBAR_SLOT} props={{ dataset: dsId, label: p.label ?? p.id }} />{grid}</> : grid;
+  return dsId ? <><Slot name={DATASET_TOOLBAR_SLOT} props={{ dataset: dsId, label: p.label ?? p.id }} />{selBar}{grid}</> : <>{selBar}{grid}</>;
 }
 
 function Row<R>({ p, r, depth, cols, dragProps, drop }: { p: DataGridProps<R>; r: R; depth: number; cols: GridColumn<R>[]; dragProps: { onPointerDown?: (e: RPointerEvent) => void }; drop?: string }) {
   const id = p.rowId(r);
   const open = config.expand && !!p.expanded?.includes(id);
   const ref = p.rowRef?.(r) ?? null;
+  const ds = p.dataset === false ? undefined : p.dataset ?? p.id;
   const ctx = p.rowCtx?.(r) ?? (ref ? { target: ROW_TARGET, payload: `${ref.kind}:${ref.id}` } : undefined);
-  if (ref && ctx) noteDrawnRef(ctx.target, ctx.payload ?? '', ref, p.dataset === false ? undefined : p.dataset ?? p.id);
-  const expand = config.expand && p.renderDetail ? <IconButton icon={open ? 'chevron-up' : 'chevron-down'} label={open ? 'Collapse row' : 'Expand row'} onClick={(e) => { e.stopPropagation(); p.onToggleExpand?.(id); }} /> : null;
+  if (ref && ctx) noteDrawnRef(ctx.target, ctx.payload ?? '', ref, ds);
+  const rec = p.record ? p.record(r) : r;
+  if (ref) noteRecord(ref, rec);
+  const expand = config.expand && p.onToggleExpand ? <IconButton icon={open ? 'chevron-up' : 'chevron-down'} label={open ? 'Collapse row' : 'Expand row'} onClick={(e) => { e.stopPropagation(); p.onToggleExpand?.(id); }} /> : null;
   return (
     <>
       <div className={`axf-grid-row ${p.selected === id ? 'is-active' : ''} ${p.multi?.includes(id) ? 'is-multi' : ''} axf-grid-edge--${p.rowTone?.(r) ?? 'muted'}`} role="row" aria-selected={p.selected === id}
         data-axf-drop={drop} data-axf-drop-id={`row:${id}`} data-fx-ctx-target={ctx?.target} data-fx-ctx-payload={ctx?.payload}
-        {...dragProps} onClick={(e) => p.onRowClick?.(r, e)} onDoubleClick={() => config.expand && p.onToggleExpand?.(id)}>
+        {...dragProps} onClick={(e) => { if ((e.ctrlKey || e.metaKey || e.shiftKey) && ds && selectors.has(ds)) { selectors.get(ds)!(id); return; } if (p.onRowClick) p.onRowClick(r, e); else if (config.expand) p.onToggleExpand?.(id); }} onDoubleClick={() => config.expand && p.onToggleExpand?.(id)}>
         <span className="axf-dnd-grip" style={{ marginInlineStart: `calc(var(--fx-space) * ${depth * 2})` }}><Icon name="more" size={12} /></span>
         {cols.map((c) => <span key={c.id} role="gridcell" className={`axf-grid-cell ${c.align === 'end' ? 'is-end' : ''}`}>{c.render(r)}</span>)}
-        {ref ? <span className="axf-grid-tail"><RowHookButtons rowRef={ref} dataset={p.dataset === false ? undefined : p.dataset ?? p.id} />{expand}</span> : expand ?? <span />}
+        {ref ? <span className="axf-grid-tail"><RowCommandButtons rowRef={ref} record={rec} dataset={ds} /><RowHookButtons rowRef={ref} dataset={ds} />{expand}</span> : expand ?? <span />}
       </div>
-      {open && p.renderDetail && <div className="axf-grid-detail" role="row">{p.renderDetail(r)}</div>}
+      {open && <div className="axf-grid-detail" role="row"><RowDetail rowRef={ref} record={rec} dataset={ds} fields={p.allFields !== false}>{p.renderDetail?.(r)}</RowDetail></div>}
     </>
+  );
+}
+
+const FLAT = '\u0000flat';
+const anyButtonCommands = () => allRowCommands().some((x) => x.command.button);
+/** dataset id → toggles a row in that grid's own selection (ctrl-click, the row menu's "Select") */
+const selectors = new Map<string, (id: string) => void>();
+type Own = { ownHidden: string[]; setOwnHidden: (f: (h: string[]) => string[]) => void; ownOpen: string[]; setOwnOpen: (f: (h: string[]) => string[]) => void; ownSort: GridSort; setOwnSort: (f: (s: GridSort) => GridSort) => void; ownMulti: string[]; setOwnMulti: (f: (h: string[]) => string[]) => void };
+const toggle = (xs: string[], x: string, on?: boolean) => ((on ?? !xs.includes(x)) ? (xs.includes(x) ? xs : [...xs, x]) : xs.filter((y) => y !== x));
+/**
+ * Fill what a screen left out, so every grid has the same abilities (grid-row@1): flat `rows`, the grid's own hidden
+ * columns / sort / expanded rows / selection, and `rowKind` → `rowRef`.
+ */
+function useGridDefaults<R>(p: DataGridProps<R>, o: Own): DataGridProps<R> & { groups: GridGroup<R>[]; hidden: readonly string[] } {
+  const groups = useMemo(() => p.groups ?? [{ id: `${FLAT}:${p.id}`, title: p.label ?? p.id, rows: p.rows ?? [], groups: [], fixed: true }], [p.groups, p.rows, p.id, p.label]);
+  const ownExpand = !p.onToggleExpand && p.expanded === undefined;
+  const ownCols = p.hidden === undefined;
+  const ownSort = p.sort === undefined && !p.onSort;
+  return {
+    ...p,
+    groups,
+    hidden: p.hidden ?? o.ownHidden,
+    ...(ownCols ? { onToggleColumn: (c: string, show?: boolean) => o.setOwnHidden((h) => toggle(h, c, show === undefined ? undefined : !show)), onShowAll: () => o.setOwnHidden(() => []) } : {}),
+    ...(ownSort ? { sort: o.ownSort, onSort: (c: string | null) => o.setOwnSort((s) => (c == null ? null : s?.col !== c ? { col: c, dir: 1 } : s.dir === 1 ? { col: c, dir: -1 } : null)) } : {}),
+    ...(ownExpand ? { expanded: o.ownOpen, onToggleExpand: (id: string) => o.setOwnOpen((x) => toggle(x, id)) } : {}),
+    multi: p.multi ?? o.ownMulti,
+    rowRef: p.rowRef ?? (p.rowKind ? (r: R) => ({ kind: p.rowKind!, id: p.rowId(r) }) : undefined),
+  };
+}
+
+/** The bar above a grid with a multi-selection: how many, the commands that take several rows, Clear. */
+function SelectionBar({ label, kind, ids, dataset, clear }: { label: string; kind: string; ids: string[]; dataset: string; clear: () => void }) {
+  const rt = useRuntime();
+  const cs = kind ? commandsFor({ kind, id: ids[0]! }, undefined, { multi: true }) : [];
+  return (
+    <div className="axf-grid-selbar" role="toolbar" aria-label={`${label}: selected rows`}>
+      <span className="axf-grid-selcount">{ids.length} selected</span>
+      {cs.map((c) => <button key={c.id} type="button" className={`fx-btn fx-btn--sm ${c.effect === 'destructive' ? 'fx-btn--danger' : 'fx-btn--neutral'}`} onClick={() => void runRowCommandFromUi(rt, kind, c, ids, dataset)}><Icon name={c.icon ?? 'zap'} size={11} /><span>{c.label}</span></button>)}
+      <button type="button" className="fx-btn fx-btn--sm fx-btn--quiet" onClick={clear}><Icon name="x" size={11} /><span>Clear</span></button>
+    </div>
   );
 }
 
@@ -241,6 +320,7 @@ export const library: AxfWebLibrary = {
   version: '0.1.0',
   provides: ['axf.datagrid'],
   register(rt) {
+    setRowRuntime(rt);
     configureDataGrid((rt.manifest as { libraries?: Record<string, { parts?: Record<string, unknown> }> }).libraries?.datagrid);
     rt.actions.register('axf.grid.do', ([grid = '', what = '', col = '']) => {
       const g = grids.get(grid); if (!g) return;
@@ -252,6 +332,43 @@ export const library: AxfWebLibrary = {
       const ref = rowRefForContext(target, payload); if (!ref) return [];
       return rowHooks(ref).map((h) => ({ id: `row-hook-${h.id}`, label: h.label, icon: h.icon ?? 'link', action: `axf.grid.hook:${encodeURIComponent(h.id)}:${encodeURIComponent(ref.kind)}:${encodeURIComponent(ref.id)}:${encodeURIComponent(ref.dataset ?? '')}` }));
     });
+    // row commands (grid-row@1): every command of the row's kind in its menu (multi-select aware), plus "Select"
+    rt.contextExtras.set('*:axf.row-commands', (target, payload) => {
+      const ref = rowRefForContext(target, payload); if (!ref) return [];
+      const k = rowKind(ref.kind); if (!k) return [];
+      const ds = ref.dataset ?? '';
+      const items: { id: string; label?: string; icon?: string; action?: string; separator?: boolean }[] = commandsFor(ref, undefined).map((c) => {
+        const ids = c.multi ? targetIds(ref, ref.dataset) : [ref.id];
+        return { id: `row-cmd-${c.id}`, label: ids.length > 1 ? `${c.label} (${ids.length})` : c.label, icon: c.icon ?? 'zap', action: `axf.row.ui:${encodeURIComponent(ref.kind)}:${encodeURIComponent(c.id)}:${encodeURIComponent(ds)}:${encodeRowIds(ids)}` };
+      });
+      if (ds && selectors.has(ds)) items.push({ id: 'row-cmd-sep', separator: true }, { id: 'row-cmd-select', label: 'Select / unselect row', icon: 'check', action: `axf.row.select:${encodeURIComponent(ds)}:${encodeURIComponent(ref.id)}` });
+      if (k.open) items.push({ id: 'row-cmd-open', label: `Open ${k.label.toLowerCase()}`, icon: 'external', action: `axf.row.open:${encodeURIComponent(k.kind)}:${encodeURIComponent(ref.id)}` });
+      return items;
+    });
+    const d = (v: string) => { try { return decodeURIComponent(v); } catch { return v; } };
+    rt.actions.register('axf.row.ui', ([kind = '', cmd = '', ds = '', ...ids]) => {
+      const c = findRowCommand(d(kind), d(cmd)); if (!c) return;
+      void runRowCommandFromUi(rt as never, d(kind), c, parseRowIds(ids), d(ds) || undefined);
+    }, { label: 'Row command', params: true, personOnly: true } as never);
+    rt.actions.register('axf.row.select', ([ds = '', id = '']) => selectors.get(d(ds))?.(d(id)), { label: 'Select a grid row', params: true, personOnly: true } as never);
+    rt.actions.register('axf.row.open', ([kind = '', id = '']) => rowKind(d(kind))?.open?.(d(id)), { label: 'Open a row\'s record', params: true, effect: 'navigate' } as never);
+    // each command is a console action, so control@1 (API, MCP, CLI, voice) runs it: row.<kind>.<command>:<id>[,<id>…]
+    const registered = new Map<string, () => void>();
+    const sync = () => {
+      const want = new Set<string>();
+      for (const { kind, command } of allRowCommands()) {
+        const id = rowCommandAction(kind.kind, command.id); want.add(id);
+        if (registered.has(id)) continue;
+        registered.set(id, rt.actions.register(id, async (args) => {
+          const ids = parseRowIds(args);
+          if (!ids.length) { rt.toast(`Name a row: ${id}:<id>${command.multi ? '[,<id>…]' : ''}`, 'warning'); return; }
+          const r = await runRowCommand(kind.kind, command.id, ids);
+          if (!r.ok) rt.toast(r.error ?? `${command.label} failed.`, 'danger', command.label);
+        }, { label: `${kind.label}: ${command.label}${command.multi ? ' (one or several ids, comma separated)' : ''}`, params: true, effect: command.effect ?? 'write', module: kind.owner } as never));
+      }
+      for (const [id, off] of registered) if (!want.has(id)) { off(); registered.delete(id); }
+    };
+    sync(); subscribeRowKinds(sync);
     rt.actions.register('axf.grid.hook', ([hook = '', kind = '', id = '', dataset = '']) => {
       const d = (v: string) => { try { return decodeURIComponent(v); } catch { return v; } };
       runRowHook(d(hook), { kind: d(kind), id: d(id) }, d(dataset) ? { dataset: d(dataset) } : {});

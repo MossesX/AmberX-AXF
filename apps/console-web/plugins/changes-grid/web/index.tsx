@@ -11,7 +11,7 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import * as api from '@console/api';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
-import { RowHookButtons } from '@console/axf/libs/datagrid';
+import { RowCommandButtons, RowDetail, RowHookButtons } from '@console/axf/libs/datagrid';
 import { buildRows, counts, formatWhen, statusTone, type ChangeSummary, type FeatureLike, type Row, type Show, type Sort } from './core';
 import { appMenu } from './menu';
 import './changes-grid.css';
@@ -138,12 +138,14 @@ function GridView() {
                     <td className="axp-changes-grid__wide"><Chip>{type}</Chip></td>
                     <td><Chip tone={statusTone(r.status)}>{r.status}</Chip> <PriorityTag build={r.build} /></td>
                     <td className="axp-changes-grid__wide">{r.model ? <ModelBadge model={r.model} /> : <span className="fx-muted fx-small">—</span>}</td>
-                    <td className="axp-changes-grid__wide"><RowHookButtons rowRef={{ kind: r.source === 'change' ? 'change' : 'plan', id: r.refId }} /></td>
+                    <td className="axp-changes-grid__wide"><RowCommandButtons rowRef={{ kind: r.source === 'change' ? 'change' : 'plan', id: r.refId }} record={r} dataset="changes-grid" /><RowHookButtons rowRef={{ kind: r.source === 'change' ? 'change' : 'plan', id: r.refId }} /></td>
                   </tr>
                   {isOpen ? (
                     <tr><td className="axp-changes-grid__wide" /><td colSpan={6} className="axp-changes-grid__detail">
-                      {r.source === 'change' ? <ChangeDetail row={r} /> : f ? <FeatureDetail f={f} row={r} /> : null}
-                      <div className="axp-changes-grid__phonehooks"><RowHookButtons rowRef={{ kind: r.source === 'change' ? 'change' : 'plan', id: r.refId }} /></div>
+                      <RowDetail rowRef={{ kind: r.source === 'change' ? 'change' : 'plan', id: r.refId }} record={f ? { ...r, feature: f } : r} dataset="changes-grid">
+                        {r.source === 'change' ? <ChangeDetail row={r} /> : f ? <FeatureDetail f={f} row={r} /> : null}
+                        <div className="axp-changes-grid__phonehooks"><RowHookButtons rowRef={{ kind: r.source === 'change' ? 'change' : 'plan', id: r.refId }} /></div>
+                      </RowDetail>
                     </td></tr>
                   ) : null}
                 </Fragment>

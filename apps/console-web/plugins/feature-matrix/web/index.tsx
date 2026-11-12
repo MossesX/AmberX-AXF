@@ -1,6 +1,6 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
-import { registerRowHook } from '@console/axf/libs/datagrid';
+import { actionCommand, registerRowHook, registerRowKind } from '@console/axf/libs/datagrid';
 import * as fm from './fm-core.mjs';
 import { appMenu } from './menu';
 import { FOLDER, ID, KEYS, setFocus, VIEW } from './focus';
@@ -12,6 +12,13 @@ export const plugin: AxfWebLibrary = {
   version: '0.1.0',
   appMenu,
   register(rt) {
+    // grid-row@1: a feature matrix row expands into every field and these commands
+    registerRowKind({
+      kind: 'feature-matrix', label: 'Feature matrix', icon: 'check-circle', owner: ID,
+      title: (r) => String((r as { title?: string }).title ?? ''),
+      open: (id) => rt.dispatch(`feature-matrix.open:${encodeURIComponent(id)}`),
+      commands: [actionCommand((s) => rt.dispatch(s), { id: 'open', label: 'Open the matrix', icon: 'check-circle', effect: 'navigate', order: 1, action: (id) => `feature-matrix.open:${encodeURIComponent(id)}` })],
+    });
     // every builds grid's rows (orchestrator, pending, build queue, plan, change log): a row button + right-click "Feature matrix"
     registerRowHook({ id: 'feature-matrix', owner: ID, label: 'Feature matrix', icon: 'check-circle', kinds: [...fm.REF_KINDS], order: 20,
       button: () => { try { return rt.settings.get(KEYS.rowButton) !== false; } catch { return true; } },

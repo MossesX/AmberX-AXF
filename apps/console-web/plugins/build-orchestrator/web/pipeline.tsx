@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Button, Checkbox, Chip, Icon, Note, PriorityTag, Switch, flashWhenReady, useRuntime } from '@console/axf/react';
 import { buildRowSelector, settleFocus, useFocusedBuild } from './focus';
+import { RowExpander, onRowsChanged } from '@console/axf/libs/datagrid';
 import { WatchLiveFor } from '@console/watchLive';
 import { TAB_LABEL, type BuildAction, type PipelineTab as BuildTab } from '@console/axf/core/build-pipeline.mjs';
 
@@ -73,6 +74,8 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
     try { const r = await api.call<Status & { error?: string }>('pipeline'); if (!r.ok) throw new Error(r.error); setS(r); setError(''); }
     catch (e) { setError((e as Error).message); }
   };
+  // a row command (grid-row@1) changed a build: show it
+  useEffect(() => onRowsChanged('build', () => void load()), []); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     void load();
     // console load: the dispatcher checks every account on its next tick (quietly: no toast)
@@ -179,6 +182,7 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
                   {a.kind === 'api' ? (a.api?.usable ? <span title="Takes a build set to API, or overflow when it is on"><Icon name="check" size={13} />ready for API jobs</span> : <span className="oc-flag" title={a.api?.why}><Icon name="alert" size={13} />{a.api?.why}</span>)
                     : !a.usable && <span className="oc-flag" title={a.why}><Icon name="alert" size={13} />{a.why}</span>}
                 </div>
+                <RowExpander rowRef={{ kind: 'account', id: a.name }} record={a} dataset="orch-accounts" />
                 <div className="fx-row fx-row--wrap">
                   <Button size="sm" tone="neutral" icon="zap" disabled={busy === a.name} title={`Fable access is from the ${a.fableFrom}; tap to set it by hand (on, off) or back to auto`} onClick={() => act('pipeline/account', { name: a.name, fable: a.fableFrom === 'override' ? 'auto' : a.fable ? 'off' : 'on' }, `${a.name}: Fable ${a.fableFrom === 'override' ? 'auto' : a.fable ? 'off' : 'on'}`)}>Toggle Fable</Button>
                   <Button size="sm" tone="neutral" icon="minus" disabled={busy === a.name || a.parallel <= 1} onClick={() => act('pipeline/account', { name: a.name, parallel: a.parallel - 1 }, `${a.name}: ${a.parallel - 1} at once`)}>Less parallel</Button>
@@ -275,6 +279,7 @@ function PipelineCard({ r, busy, wait, launch, act, run, selected, onSelect, sho
         {(table === 'pending' || table === 'queued') && <Button size="sm" tone="neutral" icon="edit" disabled={busy || !!p?.splitRequested} title={p?.splitRequested ? 'Split asked for: the dispatcher does it within a minute' : 'Ask the orchestrator to (re)split this build into steps of 30 min or less'} onClick={() => act('pipeline/split', { id: r.id }, `${r.id}: split on the next tick`)}>{p?.splitRequested ? 'Splitting…' : 'Split now'}</Button>}
         {ACTION_ORDER.filter((a) => r.actions?.includes(a)).map((a) => <Button key={a} size="sm" tone={ACTION[a].tone} icon={ACTION[a].icon} disabled={busy} title={ACTION[a].title} onClick={() => void run(a, [r.id])}>{ACTION[a].label}</Button>)}
       </div>
+      <RowExpander rowRef={{ kind: 'build', id: r.id }} record={r} dataset={`orch-pipeline-${table}`} />
     </article>
   );
 }

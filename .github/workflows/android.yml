@@ -127,6 +127,8 @@ jobs:
         run: node framework/cli/check-toolbars.mjs
       - name: Banner widgets — every banner chip comes through the one widget registry, none hard-coded
         run: node framework/cli/check-banner-widgets.mjs
+      - name: Grids — every grid, table and log has expandable rows, Related links and row commands (grid-row@1; frozen baseline with reasons)
+        run: node framework/cli/check-grids.mjs
       - name: Asset conformance — the checker and the adopter agree (scale-adopt self-test)
         run: node framework/spec/check-conform.mjs
       - name: Plugin pages follow the design language (page heads with eyebrow + title + one sentence, no spinners; DESIGN-LANGUAGE §12)
@@ -247,6 +249,7 @@ jobs:
             pip install -r apps/console-web/server/requirements.txt httpx
             (cd framework && npm install --no-audit --no-fund --silent)
             npx -y tsx framework/spec/check-alerts.mts
+            npx -y tsx framework/spec/check-rowkinds.mts               # grid-row@1: row kinds (fields, secrets redacted, Related links, multi-select commands, the row.<kind>.<command> wire)
             npx -y tsx framework/spec/check-widgets.mts
             npx -y tsx framework/spec/check-tapconfirm.mts            # toolbar tap-to-confirm: touch arms then runs, mouse/pen/keyboard click once, re-arm, window, per-toolbar settings
             npx -y tsx framework/spec/check-menu-fit.mts               # menu-fit@1: menus flip / shift to stay on screen and scroll only when taller than the room

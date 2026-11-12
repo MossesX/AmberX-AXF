@@ -13,10 +13,10 @@
  */
 import { Button, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
-import { DATASET_TOOLBAR_SLOT } from '@console/axf/libs/datagrid';
+import { DATASET_TOOLBAR_SLOT, registerRowKind } from '@console/axf/libs/datagrid';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { DIALOG, FOLDER } from './core';
-import { AttachList, DatasetSlot, FilterDialog, SwitchesExtra, ToolbarDesigner } from './ui';
+import { AttachList, DatasetSlot, FilterDialog, ROW_CMD_EVENT, SwitchesExtra, ToolbarDesigner } from './ui';
 import { appMenu } from './menu';
 import './basic-filter.css';
 
@@ -45,6 +45,15 @@ export const plugin: AxfWebLibrary = {
   appMenu,
   register(rt) {
     rt.actions.register('basic-filter.open', ([dataset = '']) => rt.openDialog(DIALOG, dataset ? { dataset } : undefined), { label: 'Sort & filter', params: true } as never);
+    // grid-row@1: the Toolbar actions grid's rows (the designer on screen does the change)
+    const send = (cmd: string) => ({ ids }: { ids: string[] }) => { for (const id of ids) window.dispatchEvent(new CustomEvent(ROW_CMD_EVENT, { detail: { cmd, id } })); };
+    registerRowKind({ kind: 'toolbar-action', label: 'Toolbar action', icon: 'zap', owner: 'basic-filter', commands: [
+      { id: 'toggle', label: 'Show / hide on the toolbar', icon: 'eye', multi: true, order: 1, run: send('toggle') },
+      { id: 'remove', label: 'Remove', icon: 'trash', multi: true, effect: 'destructive', confirm: 'Remove this toolbar action?', order: 9, run: send('remove') },
+    ] });
+    registerRowKind({ kind: 'toolbar-preset', label: 'Preset action', icon: 'zap', owner: 'basic-filter', commands: [
+      { id: 'add', label: 'Add to the toolbar', icon: 'plus', button: true, multi: true, order: 1, run: send('add') },
+    ] });
   },
   dialogs: {
     [DIALOG]: { title: 'Sort & filter', icon: 'sliders', render: (props, close) => <FilterDialog dataset={typeof props.dataset === 'string' ? props.dataset : typeof props.arg === 'string' ? props.arg : undefined} close={close} /> },

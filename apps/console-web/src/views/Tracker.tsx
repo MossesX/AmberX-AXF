@@ -1,7 +1,20 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
+import { DetailTableRow, RowToggle, registerRowKind, registerRowRefTarget, useExpandedRows } from '../axf/libs/datagrid';
+import * as api from '../api';
 import { Button, Chip, Container, useRuntime } from '../axf/react';
 import { useStore } from '../store';
 import { STATUSES, statusTone, type Status } from '../api';
+registerRowRefTarget('tracker-item', (id) => (id ? { kind: 'tracker-item', id } : null));
+
+/** grid-row@1: a tracker item expands into every field and sets its status from the menu (API: POST status). */
+registerRowKind({
+  kind: 'tracker-item', label: 'Tracker item', icon: 'layers', owner: 'console',
+  title: (r) => String((r as { title?: string }).title ?? ''),
+  commands: STATUSES.map((x, i) => ({
+    id: `status-${x}`, label: `Mark ${x}`, icon: x === 'built' ? 'check' : 'edit', multi: true, order: i + 1, control: `POST /api/status {"id":"{id}","status":"${x}"}`,
+    run: async ({ ids }: { ids: string[] }) => { for (const id of ids) { const r = await api.post('status', { id, status: x }); if (!r.ok) throw new Error(`${id}: status not saved`); } },
+  })),
+});
 
 /** Built / not built, per catalog tab → group; status chips edit status.json through the backend (or locally). */
 export function Tracker() {
@@ -10,6 +23,7 @@ export function Tracker() {
   const [tab, setTab] = useState('foundations');
   const [q, setQ] = useState('');
   const [only, setOnly] = useState<Status | 'all'>('all');
+  const ex = useExpandedRows();
   const tabs = s.catalog.tabs;
   const cur = tabs.find((t) => t.id === tab) ?? tabs[0];
   const needle = q.trim().toLowerCase();
@@ -32,10 +46,14 @@ export function Tracker() {
           <Container key={g.id} title={g.label} icon="layers" actions={<Chip>{rows.filter((i) => s.status(i.id) === 'built').length}/{rows.length} built</Chip>}>
             <table className="fx-table cx-tracker">
               <tbody>{rows.map((i) => { const st = s.status(i.id); const tr = s.tracker.items.find((x) => x.id === i.id); return (
-                <tr key={i.id} data-fx-ctx-target="tracker-item" data-fx-ctx-payload={i.id}>
+                <Fragment key={i.id}>
+                <tr data-fx-ctx-target="tracker-item" data-fx-ctx-payload={i.id}>
+                  <td><RowToggle open={ex.isOpen(i.id)} onToggle={() => ex.toggle(i.id)} rowRef={{ kind: 'tracker-item', id: i.id }} record={{ ...i, status: st, ...(tr ?? {}) }} dataset="tracker" /></td>
                   <td><div>{i.title}</div><div className="fx-muted fx-small fx-mono">{i.id}{tr?.module ? ` · ${tr.module}` : ''}{tr ? ` · wave ${tr.wave}` : ''}{i.note ? ` · ${i.note}` : ''}</div></td>
                   <td className="cx-status">{STATUSES.map((x) => <button key={x} className={`fx-chip ${x === st ? 'is-selected' : ''} ${x === st ? `cx-${statusTone(x) ?? 'neutral'}` : ''}`} onClick={() => s.setStatus(i.id, x)}>{x}</button>)}</td>
-                </tr>); })}</tbody>
+                </tr>
+                {ex.isOpen(i.id) && <DetailTableRow colSpan={3} rowRef={{ kind: 'tracker-item', id: i.id }} record={{ ...i, status: st, ...(tr ?? {}) }} dataset="tracker" />}
+                </Fragment>); })}</tbody>
             </table>
           </Container>
         );

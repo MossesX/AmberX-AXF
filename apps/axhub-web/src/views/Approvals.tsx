@@ -13,7 +13,7 @@ import { Button, Chip, Container, Note, useRuntime } from '../axf/react';
 import { checkHubNow } from '../axf/libs/hub/react';
 import { hubPost } from '../hub/api';
 import { countdownKey, nextSort, relTime, replyBase, requestedKey, sameJson, showReading, shownRow, sourceChips, sourceKind, sourceWho, SOURCE_LABEL, SOURCE_ORDER, waitingCount, waitingTitle, type KeptReply } from '../hub/core';
-import { clearDatasetTransform, DataGrid, setDatasetTransform, type GridColumn, type GridGroup, type GridSort } from '../axf/libs/datagrid';
+import { clearDatasetTransform, DataGrid, registerRowKind, rowRuntime, setDatasetTransform, type GridColumn, type GridGroup, type GridSort } from '../axf/libs/datagrid';
 import { go, useRouteParams } from '../hub/route';
 import { ACTION_LABELS, SOURCE_TONE, STATUS_TONE, type ActionReply, type ApprovalAction, type ApprovalGrid, type ApprovalItem, type AutoState } from '../hub/types';
 import { HUB } from '../hub/useHub';
@@ -21,6 +21,21 @@ import { ApprovalDetailsPanel } from '../axf/libs/approvals/react';
 import { approvalsOpenStore, detailsOfHubEntry, type ApprovalDecision } from '../axf/libs/approvals';
 import { HubGate, TapTwice, useHubJson } from './hubPage';
 import { actHeld, HeldBar, HeldChip, isHeld } from './HeldCall';
+
+/**
+ * grid-row@1: an approval row opens its page or copies its id. Approve / Deny stay the person's own buttons in the row
+ * (never a row command: a row command is a console action a remote caller could run). The row's own detail already shows
+ * every field, so the grid draws no "All fields" section.
+ */
+registerRowKind({
+  kind: 'approval', label: 'Approval', icon: 'shield', owner: 'axhub-web',
+  title: (r) => String((r as Partial<ApprovalItem>).title ?? ''),
+  commands: [
+    { id: 'page', label: 'Open its page', icon: 'external', effect: 'navigate', order: 1, run: ({ ids }) => { const rt = rowRuntime(); if (rt) go(rt as never, 'approval', { id: ids[0]! }); } },
+    { id: 'log', label: 'Approvals log', icon: 'list', effect: 'navigate', order: 2, run: () => { const rt = rowRuntime(); if (rt) go(rt as never, 'approvals-log'); } },
+    { id: 'copy-id', label: 'Copy id', icon: 'copy', effect: 'read', order: 9, run: async ({ ids }) => { await navigator.clipboard?.writeText(ids.join(' ')); } },
+  ],
+});
 
 export function Approvals() {
   return (
@@ -236,6 +251,7 @@ function ApprovalsTable({ items, onDone }: { items: ApprovalItem[]; onDone: () =
         columns={columns}
         rowId={(r) => r.id}
         rowLabel={(r) => `${r.title} ${sourceWho(r)} ${r.tool}`}
+        rowKind="approval" allFields={false}
         hidden={hidden}
         onToggleColumn={(c, show) => setHidden((h) => (show ?? h.includes(c) ? h.filter((x) => x !== c) : [...h, c]))}
         onShowAll={() => setHidden([])}

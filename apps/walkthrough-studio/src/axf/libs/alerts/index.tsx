@@ -21,6 +21,7 @@ import {
 } from '../../core';
 import { Button, Chip, Icon, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
+import { RowDetail, registerRowKind } from '../datagrid';
 import './alerts.css';
 
 export const ALERTS_LIBRARY_ID = 'ai.amberx.axf.alerts';
@@ -174,7 +175,12 @@ function openLink(rt: AxfRuntime, link: string): void {
   if (link.startsWith('view:')) rt.navigate(link.slice(5));
   else if (link.startsWith('settings:')) rt.dispatch(`settings.open:${link.slice(9)}`);
   else if (/^https?:\/\//.test(link)) window.open(link, '_blank', 'noopener,noreferrer');
+  else rt.dispatch(link);
 }
+
+/** A command button the notification registry put on an alert (`notify.actions`); it runs in this browser only. */
+interface AlertCommand { label: string; kind: string; target: string; icon?: string }
+const commandsOf = (a: object) => (a as { notify?: { actions?: AlertCommand[] } }).notify?.actions ?? [];
 
 /* ================================================================== Alerts view */
 
@@ -237,8 +243,10 @@ function AlertsView() {
                 <div className={`${P}__detail`}>
                   {a.body && <pre className={`${P}__body`}>{a.body}</pre>}
                   <p className="fx-small fx-muted" style={{ margin: 0 }}>First {new Date(a.firstAt).toLocaleString()} · last {new Date(a.lastAt).toLocaleString()}{Object.keys(a.meta).length ? ` · ${Object.entries(a.meta).map(([k, v]) => `${k}: ${v}`).join(' · ')}` : ''}</p>
+                  <RowDetail rowRef={{ kind: 'alert', id: a.id }} record={a} dataset="alerts" />
                   <div className="fx-row fx-row--wrap">
                     {a.link && <Button icon="external" tone="primary" onClick={() => openLink(rt, a.link)}>Open</Button>}
+                    {commandsOf(a).map((c) => <Button key={c.label} icon={c.icon || (c.kind === 'approve' ? 'check' : 'play')} onClick={() => openLink(rt, c.target)}>{c.label}</Button>)}
                     {!a.resolved && <Button icon="check-circle" onClick={() => void s.act(() => s.transport.resolve([a.key]))}>Resolve</Button>}
                     <Button icon="trash" tone="ghost" onClick={() => void s.act(() => s.transport.dismiss([a.id]))}>Dismiss</Button>
                   </div>
@@ -492,6 +500,20 @@ export function createAlertsLibrary(opts: AlertsOptions = {}): AxfWebLibrary {
       s.start();
       const store = s;
       rt.actions.register('alerts.open', () => rt.navigate('alerts'), { label: 'Open alerts' });
+      // grid-row@1: an alert (the Alerts page, a build's Related) expands into every field and these commands
+      const alertOf = (id: string) => store.list.find((x) => x.id === id);
+      registerRowKind({
+        kind: 'alert', label: 'Alert', icon: 'bell', owner: ALERTS_LIBRARY_ID, aliases: ['notification'],
+        title: (r) => String((r as Partial<Alert>).title ?? ''),
+        open: () => rt.navigate('alerts'),
+        commands: [
+          { id: 'open', label: 'Open its link', icon: 'external', effect: 'navigate', order: 1, when: (r) => !!(r as Alert).link, run: ({ ids }) => { const a = alertOf(ids[0]!); if (a?.link) openLink(rt, a.link); } },
+          { id: 'seen', label: 'Mark seen', icon: 'check', multi: true, order: 2, run: ({ ids }) => store.act(() => store.transport.ack(ids)) },
+          { id: 'resolve', label: 'Resolve', icon: 'check-circle', multi: true, order: 3, when: (r) => !(r as Alert).resolved,
+            run: ({ ids }) => store.act(() => store.transport.resolve(ids.map((id) => alertOf(id)?.key).filter((k): k is string => !!k))) },
+          { id: 'dismiss', label: 'Dismiss', icon: 'trash', multi: true, effect: 'destructive', order: 9, run: ({ ids }) => store.act(() => store.transport.dismiss(ids)) },
+        ],
+      });
       rt.actions.register('alerts.ackAll', () => void store.act(() => store.transport.ack('all')), { label: 'Mark all alerts seen' });
     },
     views: { alerts: { title: 'Alerts', icon: 'bell', render: () => <AlertsView /> } },

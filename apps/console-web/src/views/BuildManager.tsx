@@ -6,7 +6,7 @@ import * as core from '../axf/plan/build-queue-core.mjs';
 import type { Proposal, QFeature, QueueState, StepView } from '../axf/plan/build-queue-core.mjs';
 import { ModelChip, applyLocalStatuses, loadPlanStore, planFeatures, usePlan } from './Plan';
 import { formatMinutes } from '../axf/plan/pending-core.mjs';
-import { RowHookButtons, registerRowRefTarget } from '../axf/libs/datagrid';
+import { RowDetail, RowHookButtons, registerRowKind, registerRowRefTarget } from '../axf/libs/datagrid';
 
 // grid-hook@1: plugins' row hooks for build-queue steps (button + right-click on the step)
 registerRowRefTarget('axf-queue-step', (id) => (id ? { kind: 'queue', id } : null));
@@ -69,6 +69,23 @@ type Act =
   | { kind: 'reprocess'; apply: boolean }
   | { kind: 'step'; id: string; action: core.StepAction; status?: string; note?: string }
   | { kind: 'sync'; by?: string };
+
+/** grid-row@1: a build-queue step anywhere expands into every field, Related and these commands (API: POST build/step). */
+const stepCmd = (action: core.StepAction, label: string, icon: string, when: (s: StepView) => boolean, order: number) => ({
+  id: action, label, icon, order, multi: true, when: (r: unknown) => when(r as StepView),
+  run: async ({ ids }: { ids: string[] }) => { for (const id of ids) await act({ kind: 'step', id, action }, () => undefined); },
+});
+registerRowKind({
+  kind: 'queue', label: 'Build-queue step', icon: 'play', owner: 'console', aliases: ['queue-step'],
+  title: (r) => String((r as Partial<StepView>).title ?? ''),
+  related: (r) => ((r as Partial<StepView>).deps ?? []).map((d) => ({ kind: 'queue', id: d.id, label: d.title, note: 'depends on' })),
+  commands: [
+    stepCmd('start', 'Start', 'play', (s) => s.state === 'queued' || s.state === 'blocked', 1),
+    stepCmd('complete', 'Mark built', 'check', (s) => s.state !== 'done' && s.state !== 'rework', 2),
+    stepCmd('resolve-rework', 'Reworked', 'check', (s) => s.state === 'rework', 3),
+    stepCmd('reopen', 'Reopen', 'undo', (s) => s.state === 'done' || s.state === 'rework', 4),
+  ],
+});
 
 /** Run an action through the API (repo files) or, offline, against this browser's copy. Returns the proposal for reprocess. */
 async function act(a: Act, log: Log): Promise<Proposal | null> {
@@ -304,6 +321,7 @@ function StepRow({ s, open, onToggle, busy, run, copy, draggable, onDragStart, o
             <Button icon="copy" onClick={() => copy(s)}>Copy brief</Button>
             <Button icon="layers" onClick={() => rt.navigate('plan')}>In feature tracker</Button>
           </div>
+          <RowDetail rowRef={{ kind: 'queue', id: s.id }} record={s} dataset="build-queue" />
         </div>
       )}
     </div>

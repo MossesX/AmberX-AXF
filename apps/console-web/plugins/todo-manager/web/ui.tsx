@@ -13,6 +13,8 @@ import {
 import { bulk, createList, deleteEntry, deleteList, exportList, loadAll, openList, saveEntry, saveTypes, toggleCheck, toggleDone, todoState, updateList, useTodo, type EntryDraft } from './store';
 import { LoadingSkeleton } from '@console/emptyState';
 import { MoreMenu } from './MoreMenu';
+import { DetailTableRow, RowToggle, useExpandedRows } from '@console/axf/libs/datagrid';
+import { Fragment } from 'react';
 
 export const ENTRY_DIALOG = 'todo-manager.entry';
 const VIEW_KEY = 'todo-manager.view';
@@ -273,15 +275,18 @@ function Grid({ entries, sel, toggle }: { entries: Entry[]; sel: number[]; toggl
     for (const k of KINDS) for (const f of types[k].fields) if (f.showInGrid && !seen.has(f.key)) seen.set(f.key, f);
     return [...seen.values()];
   }, [types]);
+  const rows = useExpandedRows();
   const cell = (v: unknown, f: FieldDef) => (v == null || v === '' ? '' : f.type === 'checkbox' ? (v ? '✓' : '') : f.type === 'date' ? new Date(Number(v)).toLocaleDateString() : Array.isArray(v) ? v.join(', ') : String(v));
   return (
     <div className="axp-todo__gridwrap">
       <table className="fx-table axp-todo__grid">
-        <thead><tr><th aria-label="Select" /><th>Title</th><th>Kind</th><th>Status</th><th>Priority</th><th>Due</th><th>Tags</th>{extra.map((f) => <th key={f.key}>{f.label}</th>)}</tr></thead>
+        <thead><tr><th aria-label="Select" /><th aria-label="Expand" /><th>Title</th><th>Kind</th><th>Status</th><th>Priority</th><th>Due</th><th>Tags</th>{extra.map((f) => <th key={f.key}>{f.label}</th>)}</tr></thead>
         <tbody>
           {entries.map((e) => (
-            <tr key={e.id} className={e.status === 'done' ? 'is-done' : ''} data-fx-ctx-target="axf-todo-entry" data-fx-ctx-payload={String(e.id)}>
+            <Fragment key={e.id}>
+            <tr className={e.status === 'done' ? 'is-done' : ''} data-fx-ctx-target="axf-todo-entry" data-fx-ctx-payload={String(e.id)}>
               <td><input type="checkbox" aria-label={`Select ${e.title}`} checked={sel.includes(e.id)} onChange={() => toggle(e.id)} /></td>
+              <td><RowToggle open={rows.isOpen(String(e.id))} onToggle={() => rows.toggle(String(e.id))} rowRef={{ kind: 'todo', id: String(e.id) }} record={e} dataset="todo-manager" /></td>
               <td><button type="button" data-fx-row="" className="axp-todo__cellbtn" onClick={() => rt.openDialog(ENTRY_DIALOG, { id: e.id })}>{e.title}</button></td>
               <td>{types[e.kind].label}</td>
               <td>{types[e.kind].core.status === 'hidden' ? '' : words(e.status)}</td>
@@ -290,6 +295,8 @@ function Grid({ entries, sel, toggle }: { entries: Entry[]; sel: number[]; toggl
               <td>{e.tags.join(', ')}</td>
               {extra.map((f) => <td key={f.key}>{cell(e.fields[f.key], f)}</td>)}
             </tr>
+            {rows.isOpen(String(e.id)) && <DetailTableRow colSpan={8 + extra.length} rowRef={{ kind: 'todo', id: String(e.id) }} record={e} dataset="todo-manager" />}
+            </Fragment>
           ))}
         </tbody>
       </table>

@@ -15,6 +15,16 @@
 import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { Icon, useRuntime } from '@console/axf/react';
+import { RowDetail, recordFor, registerRowKind, useExpandedRows } from '@console/axf/libs/datagrid';
+
+/** grid-row@1: a line of a chat's live feed opens in place: every field, its session, and these commands. */
+registerRowKind({
+  kind: 'feed-line', label: 'Feed line', icon: 'sparkles', owner: 'console-terminal',
+  title: (r) => String((r as { text?: string }).text ?? '').slice(0, 80),
+  commands: [
+    { id: 'copy', label: 'Copy the line', icon: 'copy', effect: 'read', order: 1, run: async ({ ids, kind }) => { const r = recordFor(kind, ids[0]!) as { text?: string } | undefined; await navigator.clipboard?.writeText(r?.text ?? ''); } },
+  ],
+});
 import type { AxfRuntime } from '@console/axf/core';
 import * as consoleApi from '@console/api';
 import { FOLDER, call, post, type Open } from './api';
@@ -304,6 +314,7 @@ export function FeedPane({ feed, active }: { feed: string; active: boolean }) {
   }, [feed, lastAt]);
   useEffect(() => { if (active) end.current?.scrollIntoView({ block: 'end' }); }, [f?.items.length, active]);
   const url = f?.url && /^https:\/\/claude\.ai\//.test(f.url) ? f.url : '';
+  const ex = useExpandedRows();
   return (
     <div className={`${N}-feed`} hidden={!active}>
       <div className={`${N}-feed__bar`}>
@@ -317,9 +328,12 @@ export function FeedPane({ feed, active }: { feed: string; active: boolean }) {
         {f && f.items.length === 0 && <div className={`${N}__empty`}>No lines yet. The chat posts them with console_session_note.</div>}
         {f?.items.map((l, k) => (
           <div key={`${l.at}-${k}`} className={`${N}-feed__line is-${l.kind} ${l.ok === false ? 'is-failed' : ''}`}>
-            <span className={`${N}-feed__at`}>{new Date(l.at).toLocaleTimeString()}</span>
-            {l.kind === 'call' ? <span className={`${N}-feed__tool`}><Icon name={l.ok === false ? 'x-circle' : 'zap'} size={11} /> {l.tool}</span> : null}
-            <span className={`${N}-feed__text`}>{l.text}{l.error ? ` (${l.error})` : ''}</span>
+            <button type="button" data-fx-row className={`${N}-feed__open`} aria-expanded={ex.isOpen(`${feed}:${k}`)} onClick={() => ex.toggle(`${feed}:${k}`)}>
+              <span className={`${N}-feed__at`}>{new Date(l.at).toLocaleTimeString()}</span>
+              {l.kind === 'call' ? <span className={`${N}-feed__tool`}><Icon name={l.ok === false ? 'x-circle' : 'zap'} size={11} /> {l.tool}</span> : null}
+              <span className={`${N}-feed__text`}>{l.text}{l.error ? ` (${l.error})` : ''}</span>
+            </button>
+            {ex.isOpen(`${feed}:${k}`) && <RowDetail rowRef={{ kind: 'feed-line', id: `${feed}:${k}` }} record={{ ...l, session: f?.session || feed, agent: f?.agent, model: f?.model }} dataset={`feed-${feed}`} />}
           </div>
         ))}
         <div ref={end} />

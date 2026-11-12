@@ -5,6 +5,7 @@ import helpPack from '../help.json';
 import manifest from '../plugin.json';
 import { API_BASE_KEY, DEFAULT_API_BASE, apiBase, call, ledgerChanged, ledgerQuery, todayIso, type EntryInput, type PaydaysData, type StatementData } from './api';
 import { LedgerScreen, PaydaysScreen, ReportsScreen, reportState } from './screens';
+import { registerRowKind } from '../../../src/axf/libs/datagrid';
 import { AssistantScreen, SETTINGS_SECTIONS, SettingsSection, ask, assistantChanged, assistantState, listConversations, newConversation, patchSettings, readConversation, type SettingsData } from './assistant';
 import './expenses.css';
 
@@ -79,6 +80,18 @@ export const plugin: AxfWebLibrary = {
   views: Object.fromEntries(SCREENS.map((s) => [`expenses/${s.id}`, { title: `Expenses ${s.label.toLowerCase()}`, icon: s.icon, render: s.render, keywords: ['expenses', 'money', s.id] }])),
   register(rt) {
     const on = rt.actions.register.bind(rt.actions);
+    // grid-row@1: a ledger entry (Ledger, Paydays) expands into every field, Related and these commands
+    registerRowKind({
+      kind: 'expense', label: 'Ledger entry', icon: 'list', owner: 'expenses', aliases: ['payday'],
+      title: (r) => String((r as { merchant?: string }).merchant ?? ''),
+      open: () => rt.dispatch('expenses.open:ledger'),
+      commands: [
+        { id: 'open', label: 'Open the ledger', icon: 'list', effect: 'navigate', order: 1, run: () => { rt.dispatch('expenses.open:ledger'); } },
+        { id: 'read', label: 'Read it (API)', icon: 'file', effect: 'read', order: 2, control: 'GET /api/plugins/expenses/entries/{id}', run: ({ ids }) => { rt.dispatch(`expenses.get:${encodeURIComponent(ids[0]!)}`); } },
+        { id: 'export', label: 'Export CSV', icon: 'download', effect: 'read', order: 5, run: () => { rt.dispatch('expenses.export'); } },
+        { id: 'copy-id', label: 'Copy id', icon: 'copy', effect: 'read', order: 9, run: async ({ ids }) => { await navigator.clipboard?.writeText(ids.join(' ')); } },
+      ],
+    });
     // Deep links: #/expenses/<screen> opens the native screen; any other #/expenses/<route> stays the app's own frame.
     const fromHash = () => {
       const m = /^#\/?expenses\/([a-z]+)\/?$/.exec(window.location.hash);

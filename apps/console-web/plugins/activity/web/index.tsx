@@ -21,6 +21,7 @@ import { Button, Chip, Container, Icon, Section, SelectField, Slot, Switch, Text
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { RowDetail, noteRecord, onRowsChanged, recordFor, registerRowKind } from '@console/axf/libs/datagrid';
 import './activity.css';
 import { appMenu } from './menu';
 
@@ -306,6 +307,7 @@ function ItemActions({ it }: { it: Item }) {
 
 function Row({ it, now }: { it: Item; now: number }) {
   const [open, setOpen] = useState(false);
+  noteRecord({ kind: 'activity', id: it.id }, it);
   const icon = KIND_ICON[it.kind] ?? SOURCE_ICON[it.source] ?? 'zap';
   const kind = KIND_LABEL[it.kind];
   const stuck = isStuck(it, now);
@@ -332,7 +334,7 @@ function Row({ it, now }: { it: Item; now: number }) {
       </div>
       {it.state === 'held' && <ItemActions it={it} />}
       {it.progress != null && ACTIVE.has(it.state) && <Progress value={it.progress} />}
-      {open && <ItemDetail it={it} now={now} />}
+      {open && <RowDetail rowRef={{ kind: 'activity', id: it.id }} record={it} dataset="activity"><ItemDetail it={it} now={now} /></RowDetail>}
     </li>
   );
 }
@@ -549,6 +551,24 @@ export const plugin: AxfWebLibrary = {
     start();
     rt.actions.register('activity.open', () => { set({ open: true, pinned: true, hiddenFor: '' }); void refresh(); }, { label: 'Show what\'s in progress' });
     rt.actions.register('activity.check', () => void refresh(), { label: 'Check activity now' });
+    // grid-row@1: an activity item expands into its jobs, every field, Related (build, session, PR…) and these commands
+    const itemOf = (id: string) => (recordFor('activity', id) as Item | undefined) ?? st.feed?.items.find((x) => x.id === id);
+    registerRowKind({
+      kind: 'activity', label: 'Activity item', icon: 'refresh', owner: FOLDER,
+      title: (r) => (r as Item).title,
+      commands: [
+        { id: 'run', label: 'Run its first action', icon: 'play', order: 1, when: (r) => !!(r as Item).actions?.length,
+          run: ({ ids }) => { const a = itemOf(ids[0]!)?.actions?.[0]; if (a) rt.dispatch(a.action); } },
+        { id: 'open-url', label: 'Open its link', icon: 'external', effect: 'navigate', order: 2, when: (r) => !!(r as Item).url,
+          run: ({ ids }) => { const u = itemOf(ids[0]!)?.url; if (u) window.open(u, '_blank', 'noopener'); } },
+        { id: 'close', label: 'Close', icon: 'x', multi: true, order: 5, when: (r) => !ACTIVE.has((r as Item).state),
+          run: async ({ ids }) => { for (const id of ids) await call('close', { method: 'POST', body: JSON.stringify({ id }) }); } },
+        { id: 'remove', label: 'Remove (stuck)', icon: 'trash', multi: true, effect: 'destructive', confirm: 'Remove it from the banners on every device?', order: 9,
+          run: async ({ ids }) => { for (const id of ids) await call(`item?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); } },
+        { id: 'check', label: 'Check activity now', icon: 'refresh', effect: 'read', order: 20, run: () => refresh() },
+      ],
+    });
+    onRowsChanged('activity', () => void refresh());
   },
   banners: [{ id: 'activity', label: 'Activity', icon: 'refresh', settingsTab: 'activity', order: 4, render: () => <ActivityBanner /> }],
   settingsTabs: [{ id: 'activity', label: 'Activity', icon: 'refresh', order: 7, parent: 'plugins' }],

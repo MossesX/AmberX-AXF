@@ -15,7 +15,8 @@
 import type { AxfRuntime } from '@console/axf/core';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
-import { FOLDER, ID, KEYS, STATE_LABEL, VERSION, VIEW, getStore, kindLabel, setFocus, start } from './store';
+import { FOLDER, ID, KEYS, STATE_LABEL, VERSION, VIEW, closeEntry, getStore, kindLabel, reopenEntry, setFocus, start } from './store';
+import { registerRowKind } from '@console/axf/libs/datagrid';
 import { ChangesBanner, ChangesView, SettingsSummary } from './ui';
 import './codebase-changes.css';
 import { appMenu } from './menu';
@@ -34,6 +35,18 @@ export const plugin: AxfWebLibrary = {
   register(rt) {
     start(rt);
     rt.actions.register('codebase-changes.open', ([arg]) => open(rt, decodeURIComponent(arg ?? '')), { label: 'Open the Codebase changes log' });
+    // grid-row@1: a change-log entry anywhere (this log, Changes & features, a build's Related) gets these commands
+    registerRowKind({
+      kind: 'change', label: 'Change', icon: 'branch', owner: FOLDER, aliases: ['change-entry'],
+      title: (r) => String((r as { title?: string }).title ?? ''),
+      open: (id) => open(rt, id),
+      commands: [
+        { id: 'open', label: 'Open in Codebase changes', icon: 'branch', effect: 'navigate', order: 1, run: ({ ids }) => open(rt, ids[0]!) },
+        { id: 'close', label: 'Close (everywhere)', icon: 'x', multi: true, order: 5, when: (r) => !(r as { closed?: boolean }).closed, run: async ({ ids }) => { for (const id of ids) await closeEntry(id); } },
+        { id: 'reopen', label: 'Show in the banner again', icon: 'undo', multi: true, order: 6, when: (r) => !!(r as { closed?: boolean }).closed, run: async ({ ids }) => { for (const id of ids) await reopenEntry(id); } },
+        { id: 'copy-id', label: 'Copy id', icon: 'copy', effect: 'read', order: 9, run: async ({ ids }) => { await navigator.clipboard?.writeText(ids.join(' ')); rt.toast('Id copied', 'info'); } },
+      ],
+    });
     rt.search.add('codebase-changes.entries', () => [...getStore().known.values()].map((e) => ({
       id: `change:${e.id}`, kind: 'change', label: e.title, icon: 'branch',
       detail: `Codebase changes · ${kindLabel(e.kind)} · ${STATE_LABEL[e.state] ?? e.state}${e.closed ? '' : ' · in banner'}`,

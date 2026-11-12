@@ -5,10 +5,22 @@ import type { PlanFeature, PlanStatus, PortId } from '../api';
 import { PreviewPane } from './Boilerplates';
 import { ElementPreview } from './Explorer';
 import { useStore } from '../store';
-import { RowHookButtons, registerRowRefTarget } from '../axf/libs/datagrid';
+import { RowDetail, RowHookButtons, registerRowKind, registerRowRefTarget, rowRuntime } from '../axf/libs/datagrid';
 
 // grid-hook@1: plugins' row hooks for plan features (right-click on a row; a button in the feature's details)
 registerRowRefTarget('axf-plan-feature', (id) => (id ? { kind: 'plan', id } : null));
+/** grid-row@1: a plan feature anywhere (this tracker, Changes & features, a build's Related) gets every field, Related and these commands. */
+registerRowKind({
+  kind: 'plan', label: 'Plan feature', icon: 'layers', owner: 'console', aliases: ['plan-feature', 'feature-plan'],
+  title: (r) => String((r as Partial<PlanFeature>).title ?? ''),
+  related: (r) => [...((r as Partial<PlanFeature>).dependsOn ?? []).map((id) => ({ kind: 'plan', id, note: 'needs' }))],
+  open: () => rowRuntime()?.navigate('plan'),
+  commands: [
+    { id: 'open', label: 'Open the feature tracker', icon: 'layers', effect: 'navigate', order: 1, run: () => { rowRuntime()?.navigate('plan'); } },
+    { id: 'queue', label: 'Open the build queue', icon: 'play', effect: 'navigate', order: 2, run: () => { rowRuntime()?.navigate('build'); } },
+    { id: 'copy-id', label: 'Copy id', icon: 'copy', effect: 'read', order: 9, run: async ({ ids }) => { await navigator.clipboard?.writeText(ids.join(' ')); } },
+  ],
+});
 
 /* ------------------------------------------------------------------ */
 /* plan store: one shared copy for the view, floating windows, dialogs */
@@ -353,6 +365,7 @@ export function FeatureDetail({ feature, a, onSelect }: { feature: PlanFeature; 
           <Button icon="external" onClick={() => wm.openFloating([{ id: `plan-${d.id}-${Date.now().toString(36)}`, title: d.title, kind: 'plan-feature', payload: d.id, icon: 'layers' }], d.title, 'floating', 460, 620)}>Open in window</Button>
           {d.source === 'user' && <Button tone="danger" icon="trash" onClick={() => removeFeature(d.id, (t, l) => log(t, l))}>Delete</Button>}
         </div>
+        <RowDetail rowRef={{ kind: 'plan', id: d.id }} record={feature} dataset="plan-features" />
       </div>
 
       <Section title="Summary" icon="file"><textarea className="fx-input" rows={4} value={d.summary} onChange={(e) => patch({ summary: e.target.value })} placeholder="What this feature does and why it matters" /></Section>

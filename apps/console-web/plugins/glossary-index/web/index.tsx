@@ -16,7 +16,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Button, Chip, Icon, SelectField, Switch, TabGroup, TextField, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
-import { DataGrid, type GridColumn, type GridSort } from '@console/axf/libs/datagrid';
+import { DataGrid, actionCommand, registerRowKind, type GridColumn, type GridSort } from '@console/axf/libs/datagrid';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import './glossary-index.css';
@@ -193,7 +193,7 @@ function Grid({ entries, cat, selected, onSelect, limit }: { entries: Entry[]; c
   const groups = byKind(entries, cat.kinds).map((g) => ({ id: g.kind, title: `${g.label} (${g.entries.length.toLocaleString()})`, rows: g.entries.slice(0, limit), groups: [], collapsed: collapsed.has(g.kind) }));
   return (
     <DataGrid<Entry>
-      id="glossary.grid" label="Glossary entries" groups={groups} columns={columns} rowId={(e) => e.id} rowLabel={(e) => e.term}
+      id="glossary.grid" label="Glossary entries" groups={groups} columns={columns} rowId={(e) => e.id} rowLabel={(e) => e.term} rowKind="glossary-entry"
       hidden={hidden} onToggleColumn={(c) => setHidden((h) => (h.includes(c) ? h.filter((x) => x !== c) : [...h, c]))} onShowAll={() => setHidden([])}
       sort={sort} onSort={(c) => setSort((s) => (!c ? null : s?.col === c ? (s.dir === 1 ? { col: c, dir: -1 } : null) : { col: c, dir: 1 }))}
       onToggleGroup={(id) => setCollapsed((s) => { const n = new Set(s); if (n.has(id)) n.delete(id); else n.add(id); return n; })}
@@ -341,6 +341,15 @@ export const plugin: AxfWebLibrary = {
     try { const v = new URLSearchParams(globalThis.location?.search ?? '').get('axf-view'); if (v && /^[a-z][a-z0-9-]*$/.test(v)) setTimeout(() => rt.navigate(v), 0); } catch { /* no window */ }
     rt.actions.register('demo.generate', ([entry]) => { if (!entry) { rt.navigate('demo-designer'); return; } void generateDemo(decodeURIComponent(entry), true).then((a) => { openInDesigner('demonstration', a.id); rt.navigate('demo-designer'); }, (e: Error) => rt.toast(e.message, 'danger', 'Demonstration')); }, { label: 'Generate a demonstration of a glossary entry', params: true });
     rt.actions.register('book.new', () => rt.openDialog(WIZARD_DIALOG), { label: 'New book…' });
+    // grid-row@1: a glossary entry expands into every field and these commands
+    registerRowKind({
+      kind: 'glossary-entry', label: 'Glossary entry', icon: 'list', owner: 'glossary-index',
+      title: (r) => String((r as { term?: string }).term ?? ''),
+      commands: [
+        actionCommand((s) => rt.dispatch(s), { id: 'demo', label: 'Generate a demo', icon: 'play', order: 1, action: (id) => `demo.generate:${encodeURIComponent(id)}` }),
+        actionCommand((s) => rt.dispatch(s), { id: 'book', label: 'Add to a book…', icon: 'plus', order: 2, action: (id) => `book.add:${encodeURIComponent(id)}` }),
+      ],
+    });
     rt.actions.register('book.open', ([id]) => { if (id) openBook(id); rt.navigate('book-builder'); }, { label: 'Open a book in the Book Builder', params: true });
     rt.actions.register('book.add', ([ref]) => { if (ref) rt.openDialog(ADD_TO_BOOK_DIALOG, { ref: decodeURIComponent(ref) }); }, { label: 'Add an entry to a book…', params: true });
   },

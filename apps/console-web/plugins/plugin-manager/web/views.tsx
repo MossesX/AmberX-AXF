@@ -1,5 +1,6 @@
 /** The views (Install is in InstallView.tsx). Each layout restyles them (and wraps them in its own chrome); the data and actions are shared. */
-import { useMemo, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
+import { DetailTableRow, RowToggle, useExpandedRows } from '@console/axf/libs/datagrid';
 import { Chip, Icon, IconButton, ModelBadge, useRuntime } from '@console/axf/react';
 import { hasSettings, hasUi, openSettings, openUi } from './actions';
 import { DetailPane, HealthChip, Monogram, QuickActions } from './Detail';
@@ -74,6 +75,7 @@ export function TableView({ rows, layout, selected, onSelect }: ViewProps) {
     const x = value(a, sort.col), y = value(b, sort.col);
     return (x < y ? -1 : x > y ? 1 : 0) * sort.dir;
   }), [rows, sort]);
+  const ex = useExpandedRows();
   if (!rows.length) return <Empty />;
   return (
     <div className="axp-plugin-manager-tablewrap">
@@ -92,7 +94,8 @@ export function TableView({ rows, layout, selected, onSelect }: ViewProps) {
         </thead>
         <tbody>
           {sorted.map((r) => (
-            <tr key={r.folder} className={`axp-plugin-manager-tr is-${r.health} ${selected === r.folder ? 'is-selected' : ''}`} onClick={() => onSelect(r.folder)} {...ctx(r)}>
+            <Fragment key={r.folder}>
+            <tr className={`axp-plugin-manager-tr is-${r.health} ${selected === r.folder ? 'is-selected' : ''}`} onClick={() => onSelect(r.folder)} {...ctx(r)}>
               <td><span className="axp-plugin-manager-namecell"><Monogram row={r} size="sm" /><span><strong>{r.name}</strong><span className="fx-mono fx-small fx-muted"> {r.folder}</span></span></span></td>
               <td className="fx-mono">{r.version} <ModelBadge model={r.builtWith?.model} builtAt={r.builtWith?.builtAt} compact /></td>
               <td>{layout === 'terminal' ? <span className={`axp-plugin-manager-tag is-${r.health}`}>{HEALTH_LABEL[r.health].toUpperCase()}</span> : <HealthChip row={r} />}</td>
@@ -106,9 +109,12 @@ export function TableView({ rows, layout, selected, onSelect }: ViewProps) {
                 <span className="axp-plugin-manager-iconbtns">
                   <IconButton icon="external" label="Open its UI" disabled={!hasUi(r) || !r.enabled} onClick={() => openUi(rt, r)} />
                   <IconButton icon="settings" label="Open its settings" disabled={!hasSettings(r) || !r.enabled} onClick={() => openSettings(rt, r)} />
+                  <RowToggle open={ex.isOpen(r.folder)} onToggle={() => ex.toggle(r.folder)} rowRef={{ kind: 'plugin', id: r.folder }} record={r} dataset="plugin-manager" />
                 </span>
               </td>
             </tr>
+            {ex.isOpen(r.folder) && <DetailTableRow colSpan={COLS.length + 1} rowRef={{ kind: 'plugin', id: r.folder }} record={r} dataset="plugin-manager" />}
+            </Fragment>
           ))}
         </tbody>
       </table>

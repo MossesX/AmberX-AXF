@@ -4,6 +4,7 @@ import type { AxfRuntime } from '@console/axf/core';
 import * as api from '@console/api';
 import { StepList } from '@console/commandText';
 import './systems-check.css';
+import { RowDetail, RowCommandButtons } from '@console/axf/libs/datagrid';
 
 /*
  * Systems check plugin (server/__init__.py): runs every time the console loads. When something the console or its features
@@ -581,11 +582,11 @@ export function SystemCheckDialog({ focus }: { focus?: string }) {
                   <tr className={`axp-systems-check-row ${open.has(c.id) ? 'is-open' : ''}`} onClick={() => toggle(c.id)}>
                     <td><button type="button" className="fx-iconbtn" aria-expanded={open.has(c.id)} aria-label={`Details for ${c.title}`} onClick={(e) => { e.stopPropagation(); toggle(c.id); }}><Icon name={open.has(c.id) ? 'chevron-down' : 'chevron-right'} size={14} /></button></td>
                     <td>{s.run[c.id] ? <RunBadge r={s.run[c.id]} /> : <StatusChip s={c.status} />}</td>
-                    <td><strong>{c.title}</strong>{' '}<SourceBadge ai={isAiCheck(c)} /><span className="axp-systems-check-show-sm fx-small fx-muted axp-systems-check-sumline">{c.summary}</span></td>
+                    <td><strong>{c.title}</strong>{' '}<SourceBadge ai={isAiCheck(c)} /><RowCommandButtons rowRef={{ kind: 'system-check', id: c.id }} record={c} dataset="systems-check" /><span className="axp-systems-check-show-sm fx-small fx-muted axp-systems-check-sumline">{c.summary}</span></td>
                     <td className="axp-systems-check-hide-sm">{r.services.find((x) => x.id === c.service)?.label ?? c.service}</td>
                     <td className="axp-systems-check-hide-sm fx-small">{c.summary}</td>
                   </tr>
-                  {open.has(c.id) && <tr className="axp-systems-check-exp"><td colSpan={5}><CheckBody c={c} /></td></tr>}
+                  {open.has(c.id) && <tr className="axp-systems-check-exp"><td colSpan={5}><RowDetail rowRef={{ kind: 'system-check', id: c.id }} record={c} dataset="systems-check"><CheckBody c={c} /></RowDetail></td></tr>}
                 </Fragment>
               ))}
             </tbody>

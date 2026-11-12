@@ -2504,6 +2504,10 @@
                 {
                   "id": "cx.buildengine.sectionowners",
                   "title": "Section owners: every section that acts on its own has one employee who posts its key events in the group chat (crew-sections@1, framework/cli/crew-say.mjs, CI owner check)"
+                },
+                {
+                  "id": "cx.buildengine.gridrows",
+                  "title": "Expandable rows everywhere: every grid, table and log row opens into every field, Related links (open in place) and row commands, multi-select aware, each command also a control@1 console action (grid-row@1, lib-datagrid rowkinds.ts, CI check-grids.mjs)"
                 }
               ]
             },

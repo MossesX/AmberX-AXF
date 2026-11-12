@@ -6,10 +6,12 @@
 import { useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { registerRowKind, registerRowRefTarget } from '@console/axf/libs/datagrid';
 import { appMenu } from './menu';
 import { ENTRY_DIALOG, EntryEditor, TodoView, TypesPanel } from './ui';
 import { FOLDER, deleteEntry, loadAll, saveEntry, todoState } from './store';
 import './todo-manager.css';
+registerRowRefTarget('axf-todo-entry', (id) => (id ? { kind: 'todo', id } : null));
 
 function Page() {
   const rt = useRuntime();
@@ -36,6 +38,18 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('todo-manager.subtask', (_a, ctx) => { const e = entryOf(ctx?.payload); if (e) rt.openDialog(ENTRY_DIALOG, { kind: 'task', listId: e.listId, parentId: e.id }); }, { label: 'Add a subtask', searchable: false });
     rt.actions.register('todo-manager.delete', (_a, ctx) => { const e = entryOf(ctx?.payload); if (e && window.confirm(`Delete “${e.title}” and its subtasks?`)) void deleteEntry(e.id); }, { label: 'Delete entry', searchable: false });
     rt.actions.register('todo-manager.reload', () => void loadAll(), { label: 'Reload todos' });
+    // grid-row@1: a todo entry anywhere expands into every field, Related and these commands
+    const byId = (id: string) => entryOf(id);
+    registerRowKind({
+      kind: 'todo', label: 'Todo', icon: 'check', owner: FOLDER, aliases: ['todo-entry'],
+      title: (r) => String((r as { title?: string }).title ?? ''),
+      commands: [
+        { id: 'edit', label: 'Edit…', icon: 'edit', button: true, effect: 'navigate', order: 1, run: ({ ids }) => { rt.openDialog(ENTRY_DIALOG, { id: Number(ids[0]) }); } },
+        { id: 'done', label: 'Done / not done', icon: 'check', multi: true, order: 2, run: async ({ ids }) => { for (const id of ids) { const e = byId(id); if (e) await saveEntry(e.id, { status: e.status === 'done' ? 'open' : 'done' }); } } },
+        { id: 'subtask', label: 'Add a subtask…', icon: 'plus', order: 3, run: ({ ids }) => { const e = byId(ids[0]!); if (e) rt.openDialog(ENTRY_DIALOG, { kind: 'task', listId: e.listId, parentId: e.id }); } },
+        { id: 'delete', label: 'Delete', icon: 'trash', multi: true, effect: 'destructive', confirm: 'Delete this entry and its subtasks?', order: 9, run: async ({ ids }) => { for (const id of ids) await deleteEntry(Number(id)); } },
+      ],
+    });
   },
   views: { 'todo-manager': { title: 'Todos', icon: 'list', keywords: ['todo', 'tasks', 'notes', 'checklist', 'lists'], render: () => <Page /> } },
   nav: { label: 'Plugins', items: [{ id: 'todo-manager', label: 'Todos', icon: 'list', view: 'todo-manager' }] },

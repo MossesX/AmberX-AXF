@@ -3,6 +3,7 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginApi } from '@console/plugins';
 import { ACTIVE_BADGE, appMenu } from './menu';
 import { FOLDER, ShippedFeaturesPage, VIEW, focusShipped } from './ui';
+import { actionCommand, registerRowKind } from '@console/axf/libs/datagrid';
 
 const api = pluginApi(FOLDER, 'Shipped features');
 let timer = 0;
@@ -17,6 +18,17 @@ export const plugin: AxfWebLibrary = {
   nav: { label: 'Builds', items: [{ id: VIEW, label: 'Shipped features', icon: 'check-circle', view: VIEW }] },
   settingsTabs: [{ id: FOLDER, label: 'Shipped features', icon: 'check-circle', order: 90, parent: 'plugins' }],
   register(rt) {
+    // grid-row@1: a shipped feature expands into every field, its build / PR / branch, and these commands
+    const go = (spec: string) => rt.dispatch(spec);
+    registerRowKind({
+      kind: 'feature', label: 'Feature', icon: 'check-circle', owner: FOLDER, aliases: ['shipped-feature'],
+      title: (r) => String((r as { name?: string }).name ?? ''),
+      open: (id) => go(`shipped-features.show:${id}`),
+      commands: [
+        actionCommand(go, { id: 'show', label: 'Show in Shipped features', icon: 'eye', effect: 'navigate', order: 1, action: (id) => `shipped-features.show:${id}` }),
+        actionCommand(go, { id: 'sync', label: 'Sync builds, PRs and deploys', icon: 'refresh', order: 5, action: () => 'shipped-features.sync' }),
+      ],
+    });
     const tick = () => { api.call<{ active?: number }>('summary').then((r) => rt.setBadge(ACTIVE_BADGE, Number(r.active) || 0), () => rt.setBadge(ACTIVE_BADGE, 0)); };
     tick(); window.clearInterval(timer); timer = window.setInterval(tick, 120_000);
     rt.actions.register('shipped-features.open', () => rt.navigate(VIEW), { label: 'Open Shipped features' });

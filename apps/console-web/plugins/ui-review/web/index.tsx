@@ -12,6 +12,7 @@ import { appMenu } from './menu';
 import { FOLDER, GROUP_BYS, GROUP_PARAM, ID, KEYS, MOCKUP_VIEW, PACKS_VIEW, SHOT_PARAM, SHOTS_VIEW, VIEW, VIEWS } from './keys';
 import { MOCKUP_PARAM } from '../../../../../framework/core/ui-predict.mjs';
 import { MockupPage } from './mockup';
+import { registerRowKind } from '@console/axf/libs/datagrid';
 import { LookApprovalPanel } from './look-settings';
 import { UiReviewPage } from './ui';
 import { ASK_DIALOG, AskClient, AskDialog, ChoicesPanel } from './choices';
@@ -33,6 +34,28 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('ui-review.open', () => rt.navigate(VIEW), { label: 'Open UI Review' });
     rt.actions.register('ui-review.design-packs', () => rt.navigate(PACKS_VIEW), { label: 'Open Design packs' });
     rt.actions.register('ui-review.screenshots', () => rt.navigate(SHOTS_VIEW), { label: 'Open Screenshots' });
+    // grid-row@1: screenshots, screenshot groups and review items expand into every field, Related and these commands
+    const linkTo = (param: string, id: string) => `${globalThis.location?.origin ?? ''}${globalThis.location?.pathname ?? '/'}?${param}=${encodeURIComponent(id)}`;
+    const copy = async (text: string) => { await navigator.clipboard?.writeText(text); rt.toast('Link copied.', 'success'); };
+    const openShot = (id: string) => { globalThis.history?.replaceState(null, '', linkTo(SHOT_PARAM, id)); rt.navigate(SHOTS_VIEW); };
+    const openGroup = (id: string) => { globalThis.history?.replaceState(null, '', linkTo(GROUP_PARAM, id.replace(/^group:/, ''))); rt.navigate(VIEW); };
+    registerRowKind({
+      kind: 'screenshot', label: 'Screenshot', icon: 'monitor', owner: FOLDER, open: openShot,
+      title: (r) => String((r as { title?: string }).title ?? ''),
+      commands: [
+        { id: 'open', label: 'Open the picture', icon: 'eye', effect: 'navigate', order: 1, run: ({ ids }) => openShot(ids[0]!) },
+        { id: 'link', label: 'Copy link', icon: 'copy', effect: 'read', order: 2, run: ({ ids }) => copy(linkTo(SHOT_PARAM, ids[0]!)) },
+      ],
+    });
+    registerRowKind({
+      kind: 'review-group', label: 'Screenshot group', icon: 'layers', owner: FOLDER, aliases: ['review'], open: openGroup,
+      title: (r) => String((r as { name?: string }).name ?? ''),
+      commands: [
+        { id: 'open', label: 'Open in UI Review', icon: 'eye', effect: 'navigate', order: 1, run: ({ ids }) => openGroup(ids[0]!) },
+        { id: 'link', label: 'Copy review link', icon: 'copy', effect: 'read', order: 2, run: ({ ids }) => copy(linkTo(GROUP_PARAM, ids[0]!.replace(/^group:/, ''))) },
+        { id: 'shots', label: 'All screenshots', icon: 'monitor', effect: 'navigate', order: 3, run: () => rt.navigate(SHOTS_VIEW) },
+      ],
+    });
     // a copied screenshot link (?ui-shot=<id>) lands on the Screenshots tab, which opens that picture
     // AmberX's "ready for review" notification (?axf-review-group=<id>) lands on the queue, filtered to that group
     if (new URLSearchParams(globalThis.location?.search ?? '').get(GROUP_PARAM)) setTimeout(() => rt.navigate(VIEW), 0);

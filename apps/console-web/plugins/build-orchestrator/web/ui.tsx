@@ -6,7 +6,7 @@ import { WatchLiveFor } from '@console/watchLive';
 import * as core from './orchestrator-core.mjs';
 import * as pendingCore from '@console/axf/plan/pending-core.mjs';
 import pricing from '@console/axf/schemas/model-pricing.json';
-import { DataGrid, RowHookButtons, registerRowRefTarget, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
+import { DataGrid, RowHookButtons, onRowsChanged, registerRowRefTarget, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 import { PipelineTab, type PipelineView } from './pipeline';
 import { buildRowSelector, settleFocus, useFocusedBuild } from './focus';
 import './orchestrator.css';
@@ -68,6 +68,8 @@ export function OrchestratorPage() {
     catch (e) { setError((e as Error).message); setState((s) => s ?? (core.emptyState() as State)); }
   };
   useEffect(() => { void load(); }, []);
+  // a row command (grid-row@1) changed a build or a step somewhere: show it
+  useEffect(() => { const a = onRowsChanged('build', () => void load()); const b = onRowsChanged('build-step', () => void load()); return () => { a(); b(); }; }, []);
 
   const act: Act = async (change) => {
     setBusy(true);
@@ -546,7 +548,7 @@ function StepGrid({ b, rules, busy, act, hidden, setHidden }: { b: Build; rules:
   return (
     <div className="oc-subgrid">
       <DataGrid<GStep> id={`orch-steps-${b.id.replace(/[^a-z0-9-]/gi, '-')}`} label={`Steps of ${b.title}`} compact groups={groups} columns={cols}
-        rowId={(s) => s.id} rowLabel={(s) => s.text}
+        rowId={(s) => s.id} rowLabel={(s) => s.text} rowRef={(s) => ({ kind: 'build-step', id: `${b.id}/${s.id}` })} record={(s) => ({ ...s, build: b.id })}
         rowTone={(s) => (s.done ? 'success' : s.locked ? 'warning' : s.next ? 'accent' : 'muted')}
         hidden={hidden} onToggleColumn={(c, show) => setHidden((h) => toggleIn(h, c, show))} onShowAll={() => setHidden(() => [])}
         sort={sort} onSort={(c) => setSort((x) => nextSort(x, c))}
