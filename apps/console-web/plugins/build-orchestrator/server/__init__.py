@@ -29,6 +29,7 @@ from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
 
+import console_context as cx
 import plugin_services
 
 router = APIRouter()
@@ -622,6 +623,61 @@ async def pipeline_request(request: Request) -> dict[str, Any]:
         raise HTTPException(400, "a build needs a title")
     return request_build(title, str(body.get("detail") or ""), by=(brett_click(request) or "console"), source="console",
                          said=str(body.get("said") or ""), priority=str(body.get("priority") or ""), queue=body.get("queue") is not False)
+
+
+# ---- merge review (merge-review.mjs): every built-but-unmerged build checked against main, Brett answers one by one
+REVIEW_CLI = CLI.parent / "merge-review.mjs"
+
+
+def _review(*args: str) -> dict[str, Any]:
+    env = {**os.environ, "AXF_CONSOLE_ROOT": os.environ.get("AXF_CONSOLE_ROOT") or str(ROOT)}
+    proc = subprocess.run(["node", str(REVIEW_CLI), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=120, env=env)
+    out = proc.stdout.strip().splitlines()
+    try:
+        res = json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
+    except json.JSONDecodeError:
+        res = {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+    if not res.get("ok"):
+        raise HTTPException(404 if "no build" in str(res.get("error")) else 400, str(res.get("error") or "merge review failed")[:400])
+    return res
+
+
+@router.get("/merge-review")
+def merge_review_list() -> dict[str, Any]:
+    """Every build in the merge review, oldest first: risk, advice, why, Brett's answer; plus the summary."""
+    return {**_review("list"), **{k: v for k, v in _review("summary").items() if k != "ok"}}
+
+
+@router.get("/merge-review/{build}")
+def merge_review_show(build: str) -> dict[str, Any]:
+    """One build's full findings: changed files, overlap with newer main work, lines it would drop, conflicts, CI."""
+    return _review("show", _build_id(build))
+
+
+@router.post("/merge-review/next")
+def merge_review_next() -> dict[str, Any]:
+    """Present the oldest undecided build: a console alert that also pushes to AmberX (notify type merge-review.next)."""
+    res = _review("next", "--no-push")
+    if res.get("alert"):
+        cx.raise_alert(res["alert"])
+        res["sent"] = True
+    return res
+
+
+@router.post("/merge-review/decide")
+async def merge_review_decide(request: Request) -> dict[str, Any]:
+    """{build, decision: merge|skip|rebuild, why?}. Brett's answer: merge puts the PR back in the merge queue (the queue
+    lands it), skip archives the build, rebuild queues it again on current main."""
+    body = await request.json()
+    build, decision = _build_id(str(body.get("build") or "")), str(body.get("decision") or "")
+    if decision not in ("merge", "skip", "rebuild"):
+        raise HTTPException(400, "decision is merge, skip or rebuild")
+    by = brett_click(request) or str(request.headers.get("x-axhub-source") or "console")[:80]
+    res = _review("decide", build, decision, "--by", by, "--why", str(body.get("why") or "")[:400])
+    nxt = _review("next", "--no-push") if res.get("next") else {}
+    if nxt.get("alert"):
+        cx.raise_alert(nxt["alert"])
+    return {**res, "presented": (nxt.get("item") or {}).get("id", "")}
 
 
 class DispatchService:

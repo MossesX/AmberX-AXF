@@ -528,6 +528,72 @@
           }
         },
         "output": "{ settings }"
+      },
+      {
+        "id": "merge-review-list",
+        "route": "GET /merge-review",
+        "title": "Merge review: every built build vs main",
+        "description": "Every built-but-unmerged build, oldest first, checked against current main: risk (clean, overlap, reverts, conflict, red, closed, landed, gone), advice, why, and Brett's answer so far. Say 'where is the merge review'.",
+        "readOnly": true,
+        "output": "{ items: [{ id, title, pr, builtAt, risk, advice, why, decision }], summary, current, pausedAt }"
+      },
+      {
+        "id": "merge-review-show",
+        "route": "GET /merge-review/{build}",
+        "title": "Merge review: one build's findings",
+        "description": "What one build changes, which newer main code it would overwrite or revert (file + lines), conflicts, whether its PR merged or closed, CI and the test on main.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ item: { id, title, pr, analysis, verdict, decision } }"
+      },
+      {
+        "id": "merge-review-next",
+        "route": "POST /merge-review/next",
+        "title": "Merge review: show me the next one",
+        "description": "Present the oldest undecided build as a console alert and AmberX push with merge / skip / rebuild. Say 'next merge review'.",
+        "output": "{ item, card, left, sent }"
+      },
+      {
+        "id": "merge-review-decide",
+        "route": "POST /merge-review/decide",
+        "title": "Merge review: answer merge, skip or rebuild",
+        "description": "Brett's answer for one build: merge puts its PR back in the merge queue (the queue lands it), skip archives it, rebuild queues it again on current main. Then the next build is presented. Say 'merge it', 'skip it' or 'rebuild it'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id"
+            },
+            "decision": {
+              "type": "string",
+              "enum": [
+                "merge",
+                "skip",
+                "rebuild"
+              ]
+            },
+            "why": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "build",
+            "decision"
+          ]
+        },
+        "output": "{ id, decision, done, next, presented }"
       }
     ]
   },
