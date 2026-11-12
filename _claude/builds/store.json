@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3660,
- "updatedAt": "2026-11-12T20:36:07.480Z",
+ "rev": 3661,
+ "updatedAt": "2026-11-12T20:36:22.228Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -172072,7 +172072,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T20:35:05.081Z",
-   "updatedAt": "2026-11-12T20:35:47.590Z",
+   "updatedAt": "2026-11-12T20:36:14.329Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -172154,7 +172154,7 @@
      "id": "s3",
      "uid": "st-mwe0bg2h07zd81",
      "title": "",
-     "text": "Clone project action: copy accounts, credentials, plugins and settings into a new project, leave builds, notes, to-dos and plans empty (console, voice, API)",
+     "text": "Default for a new project: it carries over everything from the project you're in (Claude accounts, credentials, plugins, settings, console/axHub config), but starts with empty builds, notes, to-dos and plans. Any of the carried-over items can then be changed to the new project's own. Brett: \"by default, if you make a new project, it carries over everything from the one you're using.\"",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -172168,9 +172168,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T20:35:05.083Z",
-     "updatedAt": "2026-11-12T20:35:05.083Z"
+     "updatedAt": "2026-11-12T20:36:14.480Z"
     },
     {
      "id": "s4",
@@ -172203,7 +172203,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
