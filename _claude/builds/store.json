@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3800,
- "updatedAt": "2026-11-12T23:16:19.655Z",
+ "rev": 3801,
+ "updatedAt": "2026-11-12T23:16:42.526Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -172927,7 +172927,7 @@
    "pr": "#530",
    "priority": "P1",
    "createdAt": "2026-11-12T20:40:19.258Z",
-   "updatedAt": "2026-11-12T23:16:05.173Z",
+   "updatedAt": "2026-11-12T23:16:30.966Z",
    "builtAt": "2026-11-12T23:08:14.129Z",
    "notes": [
     {
@@ -172969,6 +172969,10 @@
     {
      "text": "Reconciler: PR #530 names s1, s7, s8 done",
      "at": "2026-11-12T23:00:44.345Z"
+    },
+    {
+     "text": "Headless run axf-github-client-plugin-see-and-control-every-pr-st--paulie: brief only · start 11.4K tokens ($0.03) · cost $9.94 · 135 turns · 6 tools, MCP none",
+     "at": "2026-11-12T23:16:30.966Z"
     }
    ],
    "approvals": [
@@ -173226,7 +173230,7 @@
      "note": "PR #530 (claude/github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro)",
      "rev": 3,
      "createdAt": "2026-11-12T20:40:19.259Z",
-     "updatedAt": "2026-11-12T23:16:05.440Z"
+     "updatedAt": "2026-11-12T23:16:22.124Z"
     }
    ],
    "profiles": [
@@ -173237,7 +173241,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
