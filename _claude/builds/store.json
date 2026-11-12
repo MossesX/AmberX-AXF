@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3704,
- "updatedAt": "2026-11-12T21:53:19.278Z",
+ "rev": 3705,
+ "updatedAt": "2026-11-12T21:53:50.972Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -171783,7 +171783,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-12T19:46:41.501Z",
-   "updatedAt": "2026-11-12T20:45:00.435Z",
+   "updatedAt": "2026-11-12T21:53:49.836Z",
    "builtAt": "",
    "notes": [
     {
@@ -171886,6 +171886,28 @@
      "rev": 1,
      "createdAt": "2026-11-12T20:45:00.435Z",
      "updatedAt": "2026-11-12T20:45:00.435Z"
+    },
+    {
+     "id": "s15",
+     "uid": "st-mwe34pky019kbk",
+     "title": "",
+     "text": "All notifications go through the console: build alerts, approvals, merge failures, FYIs. The console sends phone push itself; nothing depends on the AmberX web app. Brett: \"I want to get rid of the AmberX app and make it all run on the console. I want all the notifications. I want everything to go through the console.\"",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T21:53:49.837Z",
+     "updatedAt": "2026-11-12T21:53:49.955Z"
     },
     {
      "id": "s2",
@@ -172232,7 +172254,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
