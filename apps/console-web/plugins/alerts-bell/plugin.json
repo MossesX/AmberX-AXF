@@ -188,7 +188,9 @@
     "mentions": [
       "CLAUDE.md",
       "_claude/memory/STATUS.md",
-      "apps/console-web/plugins/README.md"
+      "apps/console-web/plugins/README.md",
+      "apps/console-web/scripts/amberx-parity.test.mjs",
+      "docs/contracts/amberx-console-api.md"
     ]
   },
   "opens": false

@@ -35,7 +35,8 @@
       "_claude/THREADS.md",
       "apps/console-web/server/main.py",
       "apps/console-web/server/mcp_server.py",
-      ".github/workflows/android.yml"
+      ".github/workflows/android.yml",
+      "apps/console-web/scripts/amberx-parity.test.mjs"
     ]
   },
   "commands": {

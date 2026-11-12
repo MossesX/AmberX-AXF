@@ -378,8 +378,8 @@ Capacitor's config from it at start. The native side talks to the console: alert
 C35b), pages the console queued for the phone opened and answered every watch round (C31 pick-up), recordings uploaded
 to the console's routes and deleted locally only on `confirmed` (C25, C26). Console calls go through
 `HubRules.consoleSend` (console API only, console as Origin, no redirects). The switch is the console setting `backend`
-(amberx-settings: REST `PUT /api/plugins/amberx-settings/settings/backend`, MCP `amberx-settings_set`, CLI `axf
-amberx-settings set backend amberx-web`, voice "switch the phone back to amberx"); the watch reads it every round and the
+(amberx-settings: REST `PUT /api/plugins/amberx-settings/settings/backend`, MCP `amberx-settings_set`, CLI `axf <!-- axf-plugin:amberx-settings -->
+amberx-settings set backend amberx-web`, voice "switch the phone back to amberx"); the watch reads it every round and the <!-- axf-plugin:amberx-settings -->
 app opens on it from the next start; `AmberxNative.backendGet|backendSet` read and set it on the phone. Still on the
 old paths until a later step: the approvals feed (T9, native straight to the hub), the AXPP link (T16) and the voice
 plugin, whose phrases the console page registers only when the AmberX page's voice registry is present.

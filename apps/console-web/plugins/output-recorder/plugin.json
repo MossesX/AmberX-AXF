@@ -124,7 +124,8 @@
       "docs/contracts/amberx-console-api.md",
       ".github/workflows/android.yml",
       "_claude/THREADS.md",
-      "_claude/memory/STATUS.md"
+      "_claude/memory/STATUS.md",
+      "apps/console-web/scripts/amberx-parity.test.mjs"
     ]
   },
   "opens": "main"

@@ -31,7 +31,8 @@
     ],
     "mentions": [
       "docs/contracts/amberx-console-api.md",
-      "_claude/THREADS.md"
+      "_claude/THREADS.md",
+      "apps/console-web/scripts/amberx-parity.test.mjs"
     ],
     "keeps": [
       "/projects/_shared/_data/settings/apps/amberx-droid.json on axHub: AmberX's settings document (the phones' own)"
