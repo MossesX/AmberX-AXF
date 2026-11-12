@@ -92,7 +92,7 @@ Every act answer carries `status`: `delivered` (a console acked it as done) · `
 `delivery.tried` (the consoles asked, in turn) with `delivery.how` `live` · `after retry` · the ones above.
 Focus on a screen: `act open` on `console.screens` takes `input.focus` or a path "<screen id or title> <rest>" ("build-orchestrator
 pending", `consoleSplitFocus`); the message carries `focus` and the console runs the screen's own `<screen>.focus:<focus>` action.
-The console server maps `build:<id>` (or a bare build id that is no screen id) to the Build orchestrator with that focus: the build's
+The console server asks the capability `console-focus@1` (the Build orchestrator provides it) to map `build:<id>` (or a bare build id that is no screen id) to its screen with that focus: the build's
 tab opens, its row scrolls into view, expands and stays highlighted.
 
 **Follow Amber** (build follow-amber, Nov 3 2026, Brett): one switch for the owner's consoles. While it is on, a Claude session

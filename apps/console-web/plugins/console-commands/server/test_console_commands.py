@@ -443,9 +443,16 @@ ok("not re-sent" in r["message"], "and says it was not re-sent")
 eq(len(client.get("/api/console/queue").json()["items"]), before_q, "nothing queued for it")
 
 # focus: a build id or a screen + tab opens the Build orchestrator on that build or tab
-store = Path(tempfile.mkdtemp()) / "store.json"
-store.write_text(json.dumps({"builds": [{"id": "console-commands-reliable"}, {"id": "home"}]}))
-cc.BUILDS_STORE = store
+class FakeFocus:  # what the Build orchestrator provides as console-focus@1
+    def resolve(self, path: str):  # type: ignore[no-untyped-def]
+        if path.startswith("build:"):
+            return {"screen": "build-orchestrator", "focus": path[6:], "explicit": True}
+        if path in ("console-commands-reliable", "home"):
+            return {"screen": "build-orchestrator", "focus": path, "explicit": False}
+        return None
+
+
+plugin_services.provide("console-focus@1", FakeFocus(), folder="build-orchestrator")
 client.post("/api/console/bye", json={"client": "sleep-0001"})
 client.post("/api/console/hello", json={"client": "awake-0001", "catalog": CATALOG, "used": True})
 wait_for(lambda: stream_open("awake-0001"))

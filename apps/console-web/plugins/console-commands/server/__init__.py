@@ -559,50 +559,35 @@ def _navigates(command: dict[str, Any], r: dict[str, Any]) -> bool:
     return t == "console.actions" and (r.get("data") or {}).get("effect") == "navigate"
 
 
-# Builds by id open on the Build orchestrator, focused on that build (console_open / console_show "build:<id>" or a
-# bare build id). Exact screen ids win over a build of the same name.
-BUILDS_STORE = ROOT / "_claude" / "builds" / "store.json"
-BUILD_SCREEN = "build-orchestrator"
-BUILD_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{1,120}$")
-_builds_cache: dict[str, Any] = {"at": 0.0, "mtime": 0.0, "ids": set()}
-
-
-def build_ids() -> set[str]:
-    try:
-        mt = BUILDS_STORE.stat().st_mtime
-    except OSError:
-        return set()
-    with _lock:
-        if _builds_cache["mtime"] == mt:
-            return _builds_cache["ids"]
-    try:
-        ids = {str(b.get("id")) for b in json.loads(BUILDS_STORE.read_text()).get("builds", []) if isinstance(b, dict) and b.get("id")}
-    except (OSError, ValueError):
-        ids = set()
-    with _lock:
-        _builds_cache.update({"mtime": mt, "ids": ids})
-    return ids
+# Items another plugin knows by name (a build id) open on that plugin's screen, focused on the item: the capability
+# console-focus@1 (provided by the plugin that owns the screen) turns a path into {screen, focus}. `<kind>:<name>` is
+# always that plugin's; a bare name only when it is no screen's exact id.
+def _focus_provider() -> Any | None:
+    return plugin_services.get("console-focus@1")
 
 
 def focus_rewrite(command: dict[str, Any], audience: str) -> dict[str, Any]:
-    """`build:<id>` (or a bare build id that is no screen's id) on console.screens → the Build orchestrator, focused on
-    that build: the console opens its tab, scrolls the row into view, expands and highlights it."""
+    """`build:<id>` (or a bare build id that is no screen's id) on console.screens → the screen that lists it, focused on
+    it: the console opens its tab, scrolls the row into view, expands and highlights it."""
     if command.get("target") != "console.screens" or command.get("op") not in ("act", "get"):
         return command
+    svc = _focus_provider()
     path = str(command.get("path") or "").strip()
-    low = path.lower()
-    bid = ""
-    if low.startswith("build:") or low.startswith("builds:"):
-        bid = path.split(":", 1)[1].strip()
-    elif BUILD_RE.match(low) and low in build_ids():
-        screens = {str(i.get("id") or "").lower() for c in ready_clients(audience)[:1] for i in (c.get("catalog") or {}).get("items") or [] if i.get("kind") == "screen"}
-        if low not in screens:
-            bid = path
-    if not bid:
+    if svc is None or not path:
         return command
+    try:
+        hit = svc.resolve(path)
+    except Exception:  # noqa: BLE001 — a broken provider never stops a plain screen command
+        hit = None
+    if not isinstance(hit, dict) or not hit.get("screen") or not hit.get("focus"):
+        return command
+    if not hit.get("explicit"):
+        screens = {str(i.get("id") or "").lower() for c in ready_clients(audience)[:1] for i in (c.get("catalog") or {}).get("items") or [] if i.get("kind") == "screen"}
+        if path.lower() in screens:
+            return command
     inp = dict(command.get("input") or {}) if isinstance(command.get("input"), dict) else {}
-    inp.setdefault("focus", bid)
-    return {**command, "path": BUILD_SCREEN, "input": inp}
+    inp.setdefault("focus", str(hit["focus"]))
+    return {**command, "path": str(hit["screen"]), "input": inp}
 
 
 def run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", audience: str = OWNER, wait: float | None = None) -> dict[str, Any]:
