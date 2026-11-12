@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T22:15:20.634Z",
+ "updatedAt": "2026-11-12T22:16:07.753Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -109996,6 +109996,62 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mwe35zxe04nvua"
+    }
+   ]
+  },
+  {
+   "id": "fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o",
+   "title": "Fix conflicts and land Build Plan 1 (skins, one-row tables, backgrounds, asset overrides)",
+   "category": "merge",
+   "detail": "Branch claude/build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides conflicts with main in 7 files: ChromeContext.tsx (framework + amberx-droid, axhub-web, console-web, molly copies), build-orchestrator/web/pipeline.tsx, framework/spec/PORTING.md. Brett: pull main in and merge it right away. Keep both sides' intent (tap-to-confirm #524 and skins).",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-12T22:16:05.972Z",
+   "updatedAt": "2026-11-12T22:16:05.976Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Merge origin/main into the Build Plan 1 branch; resolve the 7 conflicts keeping both tap-to-confirm (#524) and the skins work; rebake app copies of ChromeContext from framework",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe3xcmv03krzy"
+    },
+    {
+     "id": "s2",
+     "text": "Run checks, push, open or update its PR, land through the gate; alert Brett if anything fails and retry",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe3xcmv04lkhv"
     }
    ]
   }
