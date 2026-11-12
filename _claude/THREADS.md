@@ -778,9 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:31 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` note (all) · backfill
-- 2026-11-12 03:31 UTC · `console-commands-reliable` note (all) · backfill
-- 2026-11-12 03:31 UTC · `orch-self-check-stuck` added (0 steps) (all) · backfill
 - 2026-11-12 03:31 UTC · `shipped-manifest-api` added (0 steps) (all) · backfill
 - 2026-11-12 03:31 UTC · `land-batch-1` added (0 steps) (all) · backfill
 - 2026-11-12 03:31 UTC · `maintenance-plugin-acct2` added (0 steps) (all) · backfill
@@ -1178,6 +1175,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 21:54 UTC · `remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel` added (2 steps) (all) · Claude (voice)
 - 2026-11-12 21:54 UTC · `remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel` → queued, note (all) · console
 - 2026-11-12 21:55 UTC · `remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel` note (all) · pipeline
+- 2026-11-12 21:55 UTC · `move-amberx-web-app-into-the-console-amberx-andr` → running, note (all) · pipeline
+- 2026-11-12 21:55 UTC · `move-amberx-web-app-into-the-console-amberx-andr` branch claude/move-amberx-web-app-into-the-console-amberx-andr (all) · pipeline
+- 2026-11-12 21:55 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · orchestrator
 
 ## Token passes (log)
 

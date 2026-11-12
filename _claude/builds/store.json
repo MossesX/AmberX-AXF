@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3709,
- "updatedAt": "2026-11-12T21:55:24.318Z",
+ "rev": 3710,
+ "updatedAt": "2026-11-12T21:55:38.149Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -171775,15 +171775,15 @@
    "title": "Move AmberX web app into the console; AmberX Android reads the console",
    "category": "",
    "detail": "Move every AmberX web app feature (notes, to-dos, lists, approvals, recorder, open_url, notifications, settings) into the console. Repoint the AmberX Android app to read and call the console instead of the AmberX web app. Keep old AmberX web addresses forwarding to the console until the phone app is switched, so nothing breaks. Each feature moved is its own step.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/move-amberx-web-app-into-the-console-amberx-andr",
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-12T19:46:41.501Z",
-   "updatedAt": "2026-11-12T21:54:04.791Z",
+   "updatedAt": "2026-11-12T21:55:32.399Z",
    "builtAt": "",
    "notes": [
     {
@@ -171813,6 +171813,14 @@
     {
      "text": "Released from hold (console): the dispatcher may start it.",
      "at": "2026-11-12T21:54:04.791Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-move-amberx-web-app-into-the-console-amberx-andr--paulie.",
+     "at": "2026-11-12T21:55:29.451Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-move-amberx-web-app-into-the-console-amberx-andr--paulie, own login copy)",
+     "at": "2026-11-12T21:55:32.399Z"
     }
    ],
    "approvals": [],
@@ -171823,8 +171831,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "move-amberx-web-app-into-the-console-amberx-andr",
+    "brief": "# Build: move-amberx-web-app-into-the-console-amberx-andr\n\n## Brett said (verbatim)\nAt: 2026-11-12T19:46:41.501Z\n> Now what we're gonna end up doing is just moving everything over the console and making AmberX app read the console instead of AmberX.\n\n## What to build\nContinue build \"Move AmberX web app into the console; AmberX Android reads the console\" (move-amberx-web-app-into-the-console-amberx-andr) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-12 19:46):\n\"Now what we're gonna end up doing is just moving everything over the console and making AmberX app read the console instead of AmberX.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~30 min):\n[ ] s1 (~30 min) Design the console API contract that replaces the AmberX web app API: list every endpoint, payload and auth flow AmberX Android calls today (notes, to-dos, lists, approvals, recorder, open_url, notifications, settings), map each to a console REST route and MCP tool, set the versioning and token rules, and write it to docs/contracts/amberx-console-api.md\nRead first: apps/amberx-web/, apps/amberx-android/, apps/console-web/, docs/contracts/amberx-console-api.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step move-amberx-web-app-into-the-console-amberx-andr <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link move-amberx-web-app-into-the-console-amberx-andr --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Tick every step as you finish it (orchestrator.mjs act step move-amberx-web-app-into-the-console-amberx-andr <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note move-amberx-web-app-into-the-console-amberx-andr \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -171832,12 +171840,12 @@
    "pipeline": {
     "queuedAt": "2026-11-12T20:41:12.483Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-move-amberx-web-app-into-the-console-amberx-andr--paulie",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "launchedAt": "2026-11-12T21:55:28.950Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T20:45:00.435Z",
@@ -171849,7 +171857,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-12T21:55:28.950Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -171858,7 +171866,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-12T21:55:28.950Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -172258,7 +172266,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
