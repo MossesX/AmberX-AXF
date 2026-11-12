@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3726,
- "updatedAt": "2026-11-12T22:10:26.183Z",
+ "rev": 3727,
+ "updatedAt": "2026-11-12T22:10:39.327Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -172306,15 +172306,15 @@
    "title": "New project wizard: name, linked repo (required), starter code, skin, accounts, first plan",
    "category": "projects",
    "detail": "Step-by-step New project wizard (console, voice, API). Linking a repo is required (new GitHub repo, existing repo, or server folder). Builds on merged Projects (#523). Brett said: \"No, we definitely need to link a repo to it. There's no doubt about that.\"",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/new-project-wizard-name-linked-repo-required-starter-code-skin-accounts",
    "pr": "#529",
    "createdAt": "2026-11-12T20:31:23.288Z",
-   "updatedAt": "2026-11-12T22:10:24.128Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-12T22:10:32.058Z",
+   "builtAt": "2026-11-12T22:10:32.059Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -172589,12 +172589,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T22:10:32.058Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T20:31:23.289Z",
-     "updatedAt": "2026-11-12T20:31:23.289Z"
+     "updatedAt": "2026-11-12T22:10:32.233Z"
     }
    ],
    "profiles": [
@@ -172605,7 +172605,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

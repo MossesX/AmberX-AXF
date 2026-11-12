@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T22:10:26.183Z",
+ "updatedAt": "2026-11-12T22:10:39.327Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -108964,15 +108964,15 @@
    "title": "New project wizard: name, linked repo (required), starter code, skin, accounts, first plan",
    "category": "projects",
    "detail": "Step-by-step New project wizard (console, voice, API). Linking a repo is required (new GitHub repo, existing repo, or server folder). Builds on merged Projects (#523). Brett said: \"No, we definitely need to link a repo to it. There's no doubt about that.\"",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/new-project-wizard-name-linked-repo-required-starter-code-skin-accounts",
    "pr": "#529",
    "createdAt": "2026-11-12T20:31:23.288Z",
-   "updatedAt": "2026-11-12T22:10:24.128Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-12T22:10:32.058Z",
+   "builtAt": "2026-11-12T22:10:32.059Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -109181,8 +109181,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T22:10:32.058Z",
      "note": "",
      "uid": "st-mwe06osu0gshj3"
     }
