@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3708,
- "updatedAt": "2026-11-12T21:55:08.230Z",
+ "rev": 3709,
+ "updatedAt": "2026-11-12T21:55:24.318Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -173683,12 +173683,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-12T21:54:49.855Z",
-   "updatedAt": "2026-11-12T21:54:55.426Z",
+   "updatedAt": "2026-11-12T21:55:17.057Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-12T21:54:54.297Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-12T21:55:17.057Z"
     }
    ],
    "approvals": [],
@@ -173705,11 +173709,19 @@
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "launch failed: launcher exit 2: claude-headless: --log is a plain file name",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-12T21:55:07.560Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [
+     "mossesx-max-"
+    ],
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
@@ -173769,7 +173781,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
