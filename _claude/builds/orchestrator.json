@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T18:24:11.966Z",
+ "updatedAt": "2026-11-12T18:25:39.183Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -107719,7 +107719,7 @@
    "branch": "claude/new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans",
    "pr": "",
    "createdAt": "2026-11-12T17:35:35.216Z",
-   "updatedAt": "2026-11-12T18:24:10.332Z",
+   "updatedAt": "2026-11-12T18:25:37.700Z",
    "builtAt": "",
    "notes": [
     {
@@ -107741,6 +107741,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-new-project-start-fresh-with-its-own-builds-note--paulie, own login copy)",
      "at": "2026-11-12T18:21:14.049Z"
+    },
+    {
+     "text": "Double launch: the dispatcher started two Opus sessions on this build in the same worktree (Janitor Joey 18:20, pid 704365; Ping Paulie 18:21, pid 710593, both on mossesx-max-, slots hl-mwdvi9uj-gj and hl-mwdvj8v9-gk). They were overwriting each other's files (projects.mjs, persist.mjs). Joey stopped and left the build to Paulie. Joey's work: s1 committed (0e4058e84: projects@1 registry framework/plan/projects-core.mjs + framework/cli/projects.mjs, /api/projects, live registry written to the hub recording AmberX AXF over profile all) and s1 ticked. Joey's unfinished s2 (orchestrator finds a build's own project; pipeline tables scoped to the active project, dispatcher runs every non-archived project) is saved as /root/axf-handoff/new-project-s2-joey.patch, not applied. Dispatcher bug to fix: one build must never get two live sessions.",
+     "at": "2026-11-12T18:25:37.700Z"
     }
    ],
    "approvals": [],
