@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "amberx-lists-help",
+  "name": "AmberX lists help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the AmberX lists plugin (help@1): the page, its controls and its settings tab.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:amberx-lists",
+    "entries": [
+      {
+        "target": "view:amberx-lists",
+        "title": "AmberX lists",
+        "text": "Every AmberX list on every device. Pick one to see what is in it; tick items off, edit or delete them, add new ones. Claude reaches the same lists with amberx-lists_* and control_*, the CLI with axf list."
+      },
+      {
+        "target": "amberx-lists.tree",
+        "title": "Every list",
+        "text": "The list tree with how many items each holds. Make a list here: it goes inside the list picked, or at the top."
+      },
+      {
+        "target": "amberx-lists.items",
+        "title": "One list",
+        "text": "Rename it, move it inside another list, export it as Markdown (copied), or delete it with everything in it (asks first; Inbox, Plugins and Voice notes can't be deleted)."
+      },
+      {
+        "target": "amberx-lists",
+        "title": "AmberX lists settings",
+        "text": "Whether new list items are to-dos (they can be ticked) or notes, whether ticked items show and go last, and whether empty lists show. Kept on the console: axf amberx-lists set-settings changes them too."
+      },
+      {
+        "target": "action:amberx-lists.open",
+        "title": "AmberX lists",
+        "text": "Opens the AmberX lists page."
+      },
+      {
+        "target": "action:amberx-lists.focus",
+        "title": "Open a list",
+        "text": "Opens the lists page on one list (its id) or the new list field (new)."
+      }
+    ]
+  }
+}

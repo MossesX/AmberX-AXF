@@ -1,0 +1,15 @@
+/* AmberX lists (console): layout only (THEMING.md); controls are framework controls, sizes and colours are tokens. */
+.axp-amberx-lists { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); }
+.axp-amberx-lists__row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-md); }
+.axp-amberx-lists__body { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(var(--fx-space) * 70)), 1fr)); gap: var(--fx-dens-gap-xl); align-items: start; }
+.axp-amberx-lists__tree, .axp-amberx-lists__items, .axp-amberx-lists__settings { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
+.axp-amberx-lists__node { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); text-align: start; }
+.axp-amberx-lists__depth-1 { margin-inline-start: var(--fx-dens-gap-xl); }
+.axp-amberx-lists__depth-2 { margin-inline-start: calc(var(--fx-dens-gap-xl) * 2); }
+.axp-amberx-lists__depth-3 { margin-inline-start: calc(var(--fx-dens-gap-xl) * 3); }
+.axp-amberx-lists__depth-4 { margin-inline-start: calc(var(--fx-dens-gap-xl) * 4); }
+.axp-amberx-lists__grow { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+.axp-amberx-lists__item { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); }
+.axp-amberx-lists__item > :first-child { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+.axp-amberx-lists__actions { display: flex; gap: var(--fx-dens-gap-xs); }
+.axp-amberx-lists__new { margin-block-start: var(--fx-dens-gap-md); }

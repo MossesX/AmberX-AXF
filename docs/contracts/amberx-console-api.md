@@ -149,6 +149,11 @@ C2–C7; routes `GET state`, `GET items?tab=`, `POST add|complete|reorder|remove
 `amberx-tasks_*`; CLI `axf amberx-tasks …`; `reorder` sets control@1 `order` per item, so `axf todo set <id> --field <!-- axf-plugin:amberx-tasks -->
 order=N` is the same); deep link focus as above plus `item:<id>`, `new`; voice "what's due today", "show todos", "new todo". <!-- axf-plugin:amberx-tasks -->
 
+Built in s5 (console plugin `amberx-lists`, Apps → AmberX → Lists): the list tree over C8 and the items of one list; <!-- axf-plugin:amberx-lists -->
+routes `GET state|list|export`, `POST lists/add|rename|move|remove`, `POST items/add|edit|check|remove`, `GET|PUT settings` <!-- axf-plugin:amberx-lists -->
+(MCP `amberx-lists_*`, CLI `axf amberx-lists …`); C12's Markdown export is `GET export?id=` there. Deep link focus <!-- axf-plugin:amberx-lists -->
+`<list id>` or `new`; voice "open lists", "make a new list". <!-- axf-plugin:amberx-lists -->
+
 Voice notes (T12) stay read-only under the `voice-notes` system list; the console's `voice-notes` plugin keeps owning them.
 
 ### 4.3 AI
