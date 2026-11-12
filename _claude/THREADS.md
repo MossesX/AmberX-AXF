@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:31 UTC · `window-resize-fix-threads` added (0 steps) (all) · backfill
 - 2026-11-12 03:31 UTC · `axhub-veto-pass-web` added (0 steps) (all) · backfill
 - 2026-11-12 03:31 UTC · `md-studio-theme-editor-plan` added (0 steps) (all) · backfill
 - 2026-11-12 03:31 UTC · `walkthrough-view-fallback` added (0 steps) (all) · backfill
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 21:55 UTC · `amberx-approval-pop-up-not-showing-only-the-android-notification` → queued, note (all) · console
 - 2026-11-12 21:56 UTC · `remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel` note (all) · pipeline
 - 2026-11-12 21:57 UTC · `remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel` note (all) · pipeline
+- 2026-11-12 22:03 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` branch claude/one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx, PR #527 (all) · builds-live
 
 ## Token passes (log)
 

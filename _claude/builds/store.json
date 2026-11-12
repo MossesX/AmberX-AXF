@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3713,
- "updatedAt": "2026-11-12T21:57:06.706Z",
+ "rev": 3714,
+ "updatedAt": "2026-11-12T22:03:11.810Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -173346,14 +173346,14 @@
    "title": "One to-do, notes and tasks plugin in the console; take it out of AmberX",
    "category": "one-app",
    "detail": "Brett said: \"take the to-do manager and everything and the notes from AmberX and move it to the console and remove all the notes things from the console. I want just one to-do, note and task management plugin to be in the console. Take it out of AmberX.\" First slice of the one-app merge. Keep all existing data; AmberX Android reads it from the console.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx",
-   "pr": "",
+   "pr": "#527",
    "createdAt": "2026-11-12T21:51:44.012Z",
-   "updatedAt": "2026-11-12T21:52:17.945Z",
+   "updatedAt": "2026-11-12T22:03:09.892Z",
    "builtAt": "",
    "notes": [
     {
@@ -173386,27 +173386,21 @@
    "pipeline": {
     "queuedAt": "2026-11-12T21:51:47.735Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-one-to-do-notes-and-tasks-plugin-in-the-console---joey",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
-    "launchedAt": "2026-11-12T21:52:15.577Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-12T21:52:15.577Z",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-12T21:52:03.217Z",
-     "why": "subscription account mossesx-max-"
-    },
+    "dispatchedAt": "",
+    "planned": null,
     "tried": [],
-    "pickedAt": "2026-11-12T21:52:15.577Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
