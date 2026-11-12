@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:38:39.002Z",
+ "updatedAt": "2026-11-12T02:38:48.030Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -100514,7 +100514,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T02:37:24.132Z",
-   "updatedAt": "2026-11-12T02:38:02.969Z",
+   "updatedAt": "2026-11-12T02:38:44.800Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -100540,7 +100540,7 @@
     },
     {
      "id": "s4",
-     "text": "Retry DIFFERENT ways, not the same call over and over: each failure type has a ladder of fixes tried in order (store locked: wait, then clear a stale lock; console asleep: retry, then wake it via AmberX open_url, then send to another open console; account limit or dead login: switch to the next working account or API key; rate limit: back off, then reroute). Log each attempt in the AmberX notes 'Automatic fixes' list. Only when every fix fails, AmberX FYI to Brett naming what's missing.",
+     "text": "Retry DIFFERENT ways, not the same call over and over. Each failure type has a ladder of fixes tried in order, each one once: store locked: wait, clear a stale lock, restart the store writer. Console asleep or disconnected: retry, wake it via AmberX open_url, send to another open console, queue it for the next console that opens. Account limit, dead login or expired token: refresh the token, switch to the next working subscription, then an API key. Rate limit or 5xx: back off, retry on another account or route. Timeout: retry with a longer timeout, then as a background job. Stale cache or state: reload state from the server source of truth, then retry. Service down: health-check it, restart the container via Coolify, retry. Network/DNS: retry, then via the internal address. Validation errors: re-read the tool schema and fix the arguments once. Log each attempt in the AmberX notes 'Automatic fixes' list. When every fix on the ladder has been tried and it still fails, STOP retrying, mark it failed, and send Brett one AmberX FYI saying what was tried and what's missing.",
      "model": "Opus",
      "why": "",
      "phase": "",
