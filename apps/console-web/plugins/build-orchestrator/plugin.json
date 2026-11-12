@@ -248,6 +248,14 @@
         "output": "{ table: { pending, queued, building }, accounts, accountsFrom: { source, at, ageMin, why }, slots, plan: { launches, waits, idle }, state: { selfCheck, selfCheckRequested, … } }"
       },
       {
+        "id": "pipeline-live",
+        "route": "GET /pipeline/live",
+        "title": "What is really running",
+        "description": "The one source of truth for running work (live-truth@1): the axf-* tmux sessions on the VPS a claude process really runs in, the build each works on, builds waiting for an agent slot, and stale records (marked running with no live session) with the status they really have. Every running count in the console comes from this. Say 'what's running' or 'how many builds are running'.",
+        "readOnly": true,
+        "output": "{ live: { seen, fresh, line, count, running: [{ id, sessions }], queued, starting, stale: [{ id, was, status, why }], sessions: [{ session, build, state, startedAt, registered }], at, ageSec, source } }"
+      },
+      {
         "id": "pipeline-selfcheck",
         "route": "POST /pipeline/selfcheck",
         "title": "Dispatcher self-check",

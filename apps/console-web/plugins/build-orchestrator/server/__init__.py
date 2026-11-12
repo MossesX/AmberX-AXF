@@ -435,6 +435,14 @@ def pipeline_status() -> dict[str, Any]:
     return _pipeline("status")
 
 
+@router.get("/pipeline/live")
+def pipeline_live() -> dict[str, Any]:
+    """What really runs on the VPS (live-truth@1, framework/cli/live-truth.mjs): the axf-* tmux sessions a claude process
+    runs in, the build each works on, the builds waiting for an agent slot, and the stale records (marked running with no
+    live session) with the status they really have. The one source for every running count in the console."""
+    return _pipeline("live")
+
+
 SELFCHECK_REASONS = {"console-load", "on demand", "voice"}
 
 

@@ -30,6 +30,7 @@
  *                                  never claims a slot and never signs anything out (a renewed token is saved back to the
  *                                  login's stores; a login due to renew is not called, so no build's copy is left on a spent
  *                                  token). The dispatcher reads the answers and never tests an account at launch time.
+ *   … live [--json]                what really runs (live-truth@1: tmux sessions with a claude process, agent slots) and the stale records
  *   … tab <pending|queue|active|incomplete|complete|errors|archive|deleted> [--json]   one of the orchestrator's tabs
  *   … settings [--json] | set k=v…  pipeline settings (pipeline-settings@1; apiOverflow=true|false is the overflow rule)
  *   … request --title T [--detail D | --detail-file F] [--said S] [--priority P0-P3] [--route api|subscription] [--queue] [--by who]
@@ -198,13 +199,26 @@ const row = (b) => {
   const p = orch.progress(b); const nx = orch.nextUp(b);
   return { id: b.id, title: b.title, status: b.status, priority: priorityLabel(effectivePriority(b)), steps: { done: p.done, total: p.total, left: p.total - p.done - p.skipped }, minutesLeft: p.minutesLeft,
     nextModel: BP.nextModel(b), nextStep: nx.step ? `${nx.step.id} ${nx.step.text}`.slice(0, 200) : '', needsApproval: nx.needsApproval, needsSplit: P.needsSplit(b), pipeline: b.pipeline ?? null, said: subtitle(b.origin, 160), branch: b.branch, pr: b.pr, createdAt: b.createdAt, updatedAt: b.updatedAt,
-    tab: BP.tabOf(b), held: BP.isHeld(b), actions: BP.actionsFor(b), deleted: !!b.deleted, deletedAt: b.deletedAt ?? '', builtAt: b.builtAt ?? '', stepList: (b.steps ?? []).slice(0, 40).map((x) => ({ id: x.id, text: str(x.text, 160), model: x.model, estimate: x.estimate ?? '', done: !!x.done, skip: !!x.skip })) };
+    tab: BP.tabOf(b), held: BP.isHeld(b), actions: BP.actionsFor(b), deleted: !!b.deleted, deletedAt: b.deletedAt ?? '', builtAt: b.builtAt ?? '', stale: b.stale ?? null, stepList: (b.steps ?? []).slice(0, 40).map((x) => ({ id: x.id, text: str(x.text, 160), model: x.model, estimate: x.estimate ?? '', done: !!x.done, skip: !!x.skip })) };
 };
+
+/** The live truth as the console and the API show it next to the tables (live-truth@1, framework/cli/live-truth.mjs). */
+export function liveSummary(t) {
+  if (!t) return { seen: false, fresh: false, line: 'live truth unavailable', count: 0, running: [], queued: [], starting: [], stale: [], sessions: [], at: '', ageSec: null };
+  return { seen: !!t.seen, fresh: !!t.fresh, line: liveTruth.line(t), count: t.count, running: t.builds.running, queued: t.builds.queued, starting: t.builds.starting,
+    stale: t.stale, sessions: t.sessions.map((x) => ({ session: x.session, build: x.build, state: x.state, startedAt: x.startedAt, registered: x.registered })), at: t.at, ageSec: t.ageSec, source: t.source };
+}
 
 /** The whole picture for the console and the CLI. */
 export function status() {
   loadUpgradePolicy();
-  const store = loadStore(); const settings = loadSettings(); const read = accountsRead(store, settings); const accounts = read.accounts; const sl = slotsNow();
+  const raw = loadStore(); const settings = loadSettings();
+  // one source of truth (live-truth@1): a record that says running / waiting with no live session shows as what it really
+  // is, and the slot count is the sessions that really run; the dispatcher writes the same settlement on its next tick
+  let truth = null; try { truth = liveTruth.read({ builds: live(raw) }); } catch { truth = null; }
+  const store = truth?.seen ? { ...raw, builds: raw.builds.map((b) => truthView(b, truth)) } : raw;
+  const read = accountsRead(store, settings); const accounts = read.accounts; const slRaw = slotsNow();
+  const sl = truth?.seen ? { ...slRaw, used: truth.count, free: Math.max(0, (slRaw.cap ?? truth.slots.cap) - truth.count) } : slRaw;
   const scope = projectScope();
   const builds = live(store).filter((b) => inProfile(b, scope.profile));
   const ageMin = read.at ? Math.max(0, Math.round((Date.now() - Date.parse(read.at)) / 60e3)) : null;
@@ -225,7 +239,7 @@ export function status() {
   const st = loadState();
   const elsewhere = live(store).filter((b) => !inProfile(b, scope.profile) && ['running', 'waiting'].includes(b.status)).length;
   const project = { id: scope.active.id, name: scope.active.name, profile: scope.profile, runningElsewhere: elsewhere };
-  return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), project, table: byTable, tabs, accounts, accountsFrom, health: loadHealth(), slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable, ...(sl.hard?.max ? { hard: { max: sl.hard.max, live: sl.hard.live, free: sl.hard.free } } : {}) }, plan, settings,
+  return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), project, table: byTable, tabs, accounts, accountsFrom, health: loadHealth(), slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable, ...(sl.hard?.max ? { hard: { max: sl.hard.max, live: sl.hard.live, free: sl.hard.free } } : {}) }, live: liveSummary(truth), plan, settings,
     state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails, selfCheck: st.selfCheck ?? null, selfCheckRequested: readJson(files().checkRequest)?.at || '' } };
 }
 
@@ -882,6 +896,7 @@ async function main(argv) {
     const line = (r) => `  ${r.id.padEnd(40)} ${r.priority.padEnd(7)} ${String(r.steps.done).padStart(2)}/${r.steps.total} · next ${r.nextModel || '—'}${r.pipeline?.account ? ` · ${r.pipeline.account}` : ''}${r.needsSplit ? ' · needs split' : ''}${r.pipeline?.note ? ` · ${r.pipeline.note}` : ''}`;
     return out(s, [
       `Pipeline · ${s.at} · slots ${s.slots.used}/${s.slots.cap} (${s.slots.free} free)${s.slots.hard ? ` · VPS hard limit ${s.slots.hard.live ?? '?'}/${s.slots.hard.max}` : ''}${s.slots.unavailable ? ' (no slots store here)' : ''}`,
+      `Live: ${s.live.line}`,
       `Accounts: ${s.accounts.map((a) => `${a.name}${a.kind === 'api' ? ' [API]' : ''} ${a.fable ? 'Fable' : 'Opus'} ${a.running}/${a.parallel}${a.kind === 'api' ? (a.api?.usable ? '' : ` (${a.api?.why})`) : a.usable ? '' : ` (${a.why})`}`).join(' · ') || 'none'}`,
       `API overflow: ${s.settings.apiOverflow ? 'on' : 'off'}`,
       `Pending (${s.table.pending.length})`, ...s.table.pending.map(line),
@@ -892,6 +907,10 @@ async function main(argv) {
       `Archive ${s.tabs.archive.length} · Deleted ${s.tabs.deleted.length} (kept forever)`,
       s.plan.idle ? `IDLE: ${s.plan.idle.reason}` : '',
     ].filter(Boolean).join('\n'));
+  }
+  if (cmd === 'live') {
+    const t = liveSummary(liveTruth.read());
+    return out({ ok: true, live: t }, [t.line, ...t.sessions.map((x) => `  ${x.state.padEnd(8)} ${x.session}${x.build ? ` -> ${x.build}` : ''}`), ...t.stale.map((x) => `  stale    ${x.id}: ${x.was} -> ${x.status} (${x.why})`)].join('\n'));
   }
   if (cmd === 'queue') { const b = queue(rest[0], { by }); return out({ ok: true, id: b.id, status: b.status, pipeline: b.pipeline }, `${b.id} → Queue (by ${by})`); }
   if (BP.BUILD_ACTIONS.includes(cmd)) {
@@ -950,7 +969,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | live | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
