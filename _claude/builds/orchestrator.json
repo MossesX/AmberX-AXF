@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:23:20.301Z",
+ "updatedAt": "2026-11-12T02:23:30.951Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -99934,7 +99934,7 @@
    "title": "VPS server gate: no build starts without an orchestrator-issued ID",
    "category": "orchestrator",
    "detail": "URGENT. Brett, Nov 12: Claude keeps starting builds straight on the VPS outside the orchestrator. Add a SERVER-SIDE gate on the VPS, enforced by the server itself: every path that starts a headless build (vps build_start, any claude -p launcher, tmux axf-* sessions, agent-slots) refuses to start unless the build has a valid orchestrator-issued ID (Postgres ID registry) AND is in Queued. No ID, unknown ID, or Pending = refused, logged, AmberX FYI to Brett. Pairs with vps-hard-slot-limit. Owner-only override, off by default.",
-   "status": "pending",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -99942,7 +99942,7 @@
    "pr": "#504",
    "createdAt": "2026-11-12T01:59:21.464Z",
    "updatedAt": "2026-11-12T02:23:04.953Z",
-   "builtAt": "",
+   "builtAt": "2026-11-12T02:23:04.953Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -99963,6 +99963,10 @@
     {
      "text": "Session on account-5 stopped on its own with 1 step left: back in Pending for Brett.",
      "at": "2026-11-12T02:23:04.953Z"
+    },
+    {
+     "text": "PR #504 (draft): gate refuses no-ID, unknown-ID and non-Queued launches plus hand --inner re-entries; owner-only override builds.dispatchGateOverride (off). Draft only because desktop/phone UI Review shots of the gate chip were not taken headless. Also fixed: stale AXF_BUILD_ID + dispatch token in the VPS tmux global env leaked into every inner run.",
+     "at": "2026-11-12T02:22:33.409Z"
     }
    ],
    "approvals": [],
@@ -100029,8 +100033,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T02:22:27.509Z",
      "note": "",
      "uid": "st-mwcwgm340678el"
     }
