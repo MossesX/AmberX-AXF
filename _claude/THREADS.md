@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:30 UTC · `glossary-index-demos` merged, note (all) · backfill
 - 2026-11-12 03:30 UTC · `orchestrator-gate` note (all) · backfill
 - 2026-11-12 03:30 UTC · `profiles-all-finish` → complete, merged, note (all) · backfill
 - 2026-11-12 03:30 UTC · `build-pipeline-v2` note (all) · backfill
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 21:00 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` → queued, note (all) · pipeline
 - 2026-11-12 21:47 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note (all) · pipeline
 - 2026-11-12 21:48 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note (all) · pipeline
+- 2026-11-12 21:49 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` added (3 steps) (all) · Claude (voice)
 
 ## Token passes (log)
 
