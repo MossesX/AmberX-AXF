@@ -156,7 +156,7 @@ export function TasksPage() {
               <span className="axp-amberx-tasks__actions" role="toolbar" aria-label="To-do actions">
                 <IconButton icon="arrow-up" label="Move up" disabled={busy || i === 0} onClick={() => move(it.id, -1)} />
                 <IconButton icon="arrow-down" label="Move down" disabled={busy || i === items.length - 1} onClick={() => move(it.id, 1)} />
-                <IconButton icon="trash" label="Delete" disabled={busy} onClick={() => { if (window.confirm(`Delete "${it.title || it.text}"? It can't be brought back.`)) void remove(it); }} />
+                <Button tone="danger" icon="trash" aria-label="Delete" disabled={busy} confirm={`Delete "${it.title || it.text}"? It can't be brought back.`} onClick={() => void remove(it)}>Delete</Button>
               </span>
             </div>
           ))}
