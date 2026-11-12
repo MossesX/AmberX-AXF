@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 23:53 UTC · `home-page-build-queue-card-opens-the-orchestrato` s3 done (all) · orchestrator
 - 2026-11-10 23:55 UTC · `convert-every-app-into-a-molly-module-expenses-c` s1 done, → running (all) · orchestrator
 - 2026-11-10 23:55 UTC · `convert-every-app-into-a-molly-module-expenses-c` note (all) · orchestrator
 - 2026-11-10 23:55 UTC · `convert-every-app-into-a-molly-module-expenses-c` s2 done (all) · orchestrator
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:33 UTC · `molly-gap-console-token-handoff` note (all) · orchestrator
 - 2026-11-12 02:34 UTC · `molly-gap-console-token-handoff` → running, note (all) · pipeline
 - 2026-11-12 02:34 UTC · `molly-gap-console-token-handoff` note (all) · orchestrator
+- 2026-11-12 02:34 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` s4 done (all) · orchestrator
 
 ## Token passes (log)
 
