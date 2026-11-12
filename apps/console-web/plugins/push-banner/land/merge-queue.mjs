@@ -303,6 +303,18 @@ export async function enlist({ s, git, gh, builds, pulls, log = () => {} }) {
 }
 
 /**
+ * Ask the main gate (framework/cli/main-gate.mjs) whether <sha> may become main: { allow, why, via }. Refusals are logged
+ * in the gate's folder and sent to AmberX by the gate itself. A gate that can't run refuses (fail closed).
+ */
+export function gateCheck(s, sha, source, { merge = false } = {}) {
+  const gate = join(s.repo, 'framework/cli/main-gate.mjs');
+  const r = spawnSync('node', [gate, 'check', sha, '--json', '--repo', s.repo, '--slug', s.slug, '--api', s.api, '--remote', s.remote,
+    '--dir', s.gateDir || join(s.dataDir, '..', '..', 'main-gate'), '--console', s.console || 'off', '--source', source, ...(merge ? ['--merge'] : [])], { encoding: 'utf8', timeout: 15 * 60000, maxBuffer: 16 << 20 });
+  try { const j = JSON.parse(String(r.stdout || '').trim().split('\n').pop()); if (j && typeof j.allow === 'boolean') return j; } catch { /* below */ }
+  return { allow: false, via: 'refused', why: `the main gate couldn't run (${String(r.stderr || r.error || `exit ${r.status}`).trim().slice(-200)})` };
+}
+
+/**
  * Land a green batch: main becomes the batch commit (one push, never forced). When main moved meanwhile in status only
  * (`[skip ci]` commits under _claude/), those commits are merged into the batch first and it lands only if its code is
  * still exactly what CI tested. Returns { landed, sha, why }.
@@ -317,6 +329,9 @@ export function landBatch({ s, git, batch }) {
     if (!q.sameCodeFiles(lines(git(['diff', '--name-only', batch.sha, c.sha]).out))) return { landed: false, why: 'main moved in code while the batch ran; the batch is rebuilt' };
     sha = c.sha;
   }
+  // the main gate decides first (full CI on this code, theme + controls on its tree); the pre-push hook asks it again
+  const g = (s.gateCheck || gateCheck)(s, sha, 'merge queue batch');
+  if (!g.allow) return { landed: false, why: `main gate refused it: ${g.why}`, gate: g };
   const p = git(['push', '-q', s.remote, `${sha}:refs/heads/${s.base}`], { timeout: 90000 });
   if (p.code) return { landed: false, why: `main refused the push (${p.err.slice(-160)}); tried again next round` };
   git(['fetch', '-q', s.remote, s.base]);
@@ -453,6 +468,9 @@ async function batchRound({ s, git, gh, api, dry, at, cfg, prev, ctl, prs, rank,
  * its code equals the tested queue commit. Returns { merged, sha, same, why }.
  */
 async function mergeTested({ s, git, gh, e, p, log }) {
+  // GitHub merges the tested queue commit's code: the gate checks that commit before main gets it
+  const g = (s.gateCheck || gateCheck)(s, e.sha, `merge queue #${e.pr}`, { merge: true });
+  if (!g.allow) return { merged: false, why: `main gate refused it: ${g.why}` };
   const tryMerge = async (sha) => gh('PUT', `/repos/${s.slug}/pulls/${e.pr}/merge`, { merge_method: 'merge', sha, commit_title: `Merge pull request #${e.pr} from ${p?.branch || ''} (merge queue: tested as ${q.queueBranch(e.pr)} ${e.sha.slice(0, 8)})`.slice(0, 250) });
   let head = e.head; let r;
   try { r = await tryMerge(head); }

@@ -482,8 +482,9 @@ res = c.post("/p/protection").json()["repos"]["MossesX/AmberX-AXF"]
 put = STATE["protection_put"]
 check(res["state"] == "protected" and put["required_status_checks"] == {"strict": True, "contexts": ["Build engine sweep (Node)"]},
       "protection: branches must be up to date, and the CI check every merged PR ran is required")
-check(put["required_pull_request_reviews"] == {"required_approving_review_count": 0} and put["enforce_admins"] is True and put["restrictions"] is None,
-      "protection: a PR is required (no reviewer needed), admins included")
+check(put["required_pull_request_reviews"] == {"required_approving_review_count": 0} and put["enforce_admins"] is False and put["restrictions"] is None
+      and put["allow_force_pushes"] is False and put["allow_deletions"] is False,
+      "protection: a PR is required (no reviewer needed), no force-push, no delete; the admin (the VPS main gate) can land tested batches")
 STATE.pop("protection_put")
 c.post("/p/protection")
 check("protection_put" not in STATE, "protection already there: left alone")

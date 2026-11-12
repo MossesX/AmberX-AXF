@@ -8,6 +8,7 @@ import { join } from 'node:path';
 import * as q from './merge-queue-core.mjs';
 import { queueRound, readQueue, queueControl } from './merge-queue.mjs';
 import { makeGit } from './land.mjs';
+import { ciVerdict, decide, statusOnly } from '../../../../../framework/cli/main-gate.mjs';
 
 let n = 0;
 const t = async (name, fn) => { await fn(); n++; console.log(`ok ${name}`); };
@@ -91,7 +92,16 @@ const branch = (name, file, text) => { sh(repo, 'checkout', '-q', '-b', name, 'o
 const heads = { 1: branch('b1', 'one.txt', '1\n'), 2: branch('b2', 'two.txt', '2\n'), 3: branch('b3', 'three.txt', '3\n') };
 sh(repo, 'fetch', '-q', 'origin');
 
-const s = { repo, slug: 'o/r', dataDir: data, remote: 'origin', base: 'main', archive: join(root, 'archive') };
+// the main gate with this test's fake CI: the real decision (main-gate.mjs decide), facts from the fake
+const gated = []; const gateLocal = { ok: true };
+const gateCheck = (_s, sha, source, { merge = false } = {}) => {
+  sh(repo, 'fetch', '-q', 'origin'); const main = sh(repo, 'rev-parse', 'origin/main');
+  const ff = spawnSync('git', ['merge-base', '--is-ancestor', main, sha], { cwd: repo }).status === 0
+    || (merge && statusOnly(sh(repo, 'diff', '--name-only', sh(repo, 'merge-base', main, sha), main).split('\n')));
+  const d = decide({ fastForward: ff, statusOnly: false, ci: ciVerdict(runs(Object.values(heads).includes(sha) ? 'success' : ciBySha[sha] || 'running')), local: [{ id: 'theme', ok: gateLocal.ok, why: gateLocal.ok ? 'passed' : 'a literal colour' }] });
+  gated.push({ sha, source, ...d }); return d;
+};
+const s = { repo, slug: 'o/r', dataDir: data, remote: 'origin', base: 'main', archive: join(root, 'archive'), gateCheck };
 writeFileSync(join(data, 'config.json'), JSON.stringify({ queueMode: 'stack' })); // the Nov 4 per-PR stack; batch mode is tested below
 const git = makeGit(repo);
 const ciBySha = {}; const merges = []; const comments = []; const vars = [];
@@ -133,6 +143,7 @@ await t('round 2: #1 green merges, #2 red is kicked out, #3 is rebuilt without i
   ciBySha[st0.stack[0].sha] = 'success'; ciBySha[st0.stack[1].sha] = 'failure'; ciBySha[st0.stack[2].sha] = 'failure';
   const st = await queueRound({ s, git, gh, api });
   assert.deepEqual(merges, [1]);
+  assert.ok(gated.some((g) => g.source === 'merge queue #1' && g.allow), 'the gate passed #1 before GitHub merged it');
   assert.equal(st.merged.at(-1).retested, false);
   assert.match(st.kicked.at(-1).why, /#2 broke CI when tested on top of main/);
   assert.match(comments[0], /Kicked out of the merge queue/);
@@ -217,9 +228,16 @@ await t('batch rules: members, holds, decide (land all / split in half / kick th
   const h = { 1: branch2('b1', 'one.txt', '1\n'), 2: branch2('b2', 'two.txt', '2\n'), 3: branch2('b3', 'three.txt', '3\n') };
   branch2('b4', 'four.txt', '4\n');
   sh(repo2, 'fetch', '-q', 'origin');
-  const s2 = { repo: repo2, slug: 'o/r', dataDir: data2, remote: 'origin', base: 'main', archive: join(root2, 'archive') };
+  const ci2 = {}; const opened = []; const comments2 = []; const deleted = []; const gated2 = []; const local2 = { ok: true };
+  const gateCheck2 = (_s, sha, source) => {
+    sh(repo2, 'fetch', '-q', 'origin'); const main = sh(repo2, 'rev-parse', 'origin/main');
+    const ff = spawnSync('git', ['merge-base', '--is-ancestor', main, sha], { cwd: repo2 }).status === 0;
+    const files = sh(repo2, 'diff', '--name-only', main, sha).split('\n');
+    const d = decide({ fastForward: ff, statusOnly: statusOnly(files), ci: ciVerdict(runs(ci2[sha] || ci2[sh(repo2, 'rev-parse', `${sha}^1`)] || 'running')), local: [{ id: 'theme', ok: local2.ok, why: local2.ok ? 'passed' : 'a literal colour in one.css' }] });
+    gated2.push({ sha, source, ...d }); return d;
+  };
+  const s2 = { repo: repo2, slug: 'o/r', dataDir: data2, remote: 'origin', base: 'main', archive: join(root2, 'archive'), gateCheck: gateCheck2 };
   const git2 = makeGit(repo2);
-  const ci2 = {}; const opened = []; const comments2 = []; const deleted = [];
   const onMain = (sha) => spawnSync('git', ['merge-base', '--is-ancestor', sha, 'main'], { cwd: origin2 }).status === 0;
   const open2 = () => [1, 2, 3].filter((x) => !onMain(h[x])).map((x) => ({ number: x, title: `PR ${x}`, html_url: `u/${x}`, created_at: `2026-11-0${x}`, base: { ref: 'main' }, head: { ref: `b${x}`, sha: h[x], repo: { full_name: 'o/r' } }, user: { login: 'bot' } }));
   const gh2 = async (method, path, body) => {
@@ -253,9 +271,28 @@ await t('batch rules: members, holds, decide (land all / split in half / kick th
     assert.match(st.items.find((x) => x.pr === 3).why, /smaller batch/);
   });
 
+  await t('main gate: a green batch whose theme check fails never reaches main (the batch waits, main unchanged)', async () => {
+    const tested = readQueue(s2).batch.sha; ci2[tested] = 'success';
+    const before = sh(origin2, 'rev-parse', 'main');
+    local2.ok = false;
+    const st = await queueRound({ s: s2, git: git2, gh: gh2, api });
+    local2.ok = true;
+    assert.equal(sh(origin2, 'rev-parse', 'main'), before, 'main did not move');
+    assert.equal(gated2.at(-1).allow, false); assert.match(gated2.at(-1).why, /theme check failed/);
+    assert.match(st.batch.why, /main gate refused it: theme check failed/);
+    assert.deepEqual(st.merged, []);
+  });
+
+  await t('main gate: a light-only CI run is not enough to land', () => {
+    const v = ciVerdict([{ name: 'Light PR checks (full run happens once, in the merge queue)', status: 'completed', conclusion: 'success' }, { name: 'Build engine sweep (Node)', status: 'completed', conclusion: 'skipped' }]);
+    assert.equal(v.ok, false); assert.equal(v.state, 'light');
+    assert.equal(decide({ fastForward: true, ci: v, local: [] }).allow, false);
+  });
+
   await t('batch round 3: the green half lands on main as the one tested commit; #3 is tested alone', async () => {
     const tested = readQueue(s2).batch.sha; ci2[tested] = 'success';
     const st = await queueRound({ s: s2, git: git2, gh: gh2, api });
+    assert.ok(gated2.at(-1).allow && gated2.at(-1).via === 'passed', 'the gate passed it first');
     assert.equal(sh(origin2, 'rev-parse', 'main'), tested, 'main is exactly the commit CI ran on');
     assert.deepEqual(st.merged.map((m) => m.pr), [1, 2]);
     assert.ok(st.merged.every((m) => m.retested === false && m.queueSha === tested));

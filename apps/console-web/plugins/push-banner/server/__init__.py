@@ -105,6 +105,7 @@ HEALTH_ID = "push-banner-github"
 STATUS_ONLY_MARK = "[skip ci]"   # status-only commits on main (framework/cli/builds-live.mjs); = land-core.mjs
 STATUS_PATHS = "_claude/"          # the only paths they touch
 LAND_SCRIPT = Path(__file__).resolve().parent.parent / "land" / "land.mjs"
+MAIN_GATE = cx.ROOT / "framework" / "cli" / "main-gate.mjs"  # the main gate (framework): every way to main asks it
 # merge queue (Nov 4 2026): land/merge-queue.mjs on the VPS host runs it every auto-land round; commands go through it too
 QUEUE_SCRIPT = Path(__file__).resolve().parent.parent / "land" / "merge-queue.mjs"
 QUEUE_DEPTH_MAX = 6
@@ -1029,14 +1030,17 @@ class Pushes:
             # new protection leaves GitHub's own strict rule off, which would re-test every stacked PR after the one
             # ahead of it merged; a strict rule already set is kept (never loosened)
             "required_status_checks": {"strict": True if not queued else bool(rsc and rsc.get("strict")), "contexts": sorted(set(want))},
-            # unchanged when set; admins are held to it too when it's new, so nothing reaches main except through a PR
-            "enforce_admins": bool((cur.get("enforce_admins") or {}).get("enabled")) if cur else True,
+            # unchanged when set; new protection leaves the admin (the VPS, where the main gate decides every push and
+            # merge first: framework/cli/main-gate.mjs) able to land the merge queue's tested batch and builds-live's
+            # status commits, which a PR-only rule would block; everyone else needs a PR
+            "enforce_admins": bool((cur.get("enforce_admins") or {}).get("enabled")) if cur else False,
+            "allow_force_pushes": False, "allow_deletions": False,
             "required_pull_request_reviews": reviews,
             "restrictions": {"users": [u.get("login") for u in restr.get("users", []) if isinstance(u, dict)],
                              "teams": [t.get("slug") for t in restr.get("teams", []) if isinstance(t, dict)],
                              "apps": [a.get("slug") for a in restr.get("apps", []) if isinstance(a, dict)]} if restr else None,
         }
-        for k in ("required_linear_history", "allow_force_pushes", "allow_deletions", "required_conversation_resolution", "lock_branch", "block_creations"):
+        for k in ("required_linear_history", "required_conversation_resolution", "lock_branch", "block_creations"):  # force-push and delete: always off
             if isinstance(cur.get(k), dict) and isinstance(cur[k].get("enabled"), bool):
                 body[k] = cur[k]["enabled"]
         try:
@@ -1220,6 +1224,34 @@ class ProtectionChecks:
     """axf.syscheck.items@1 (one provider per name, so this one is named …:push-protection): the systems check lists
     these items and runs `fix` for Auto fix."""
 
+    def gate_items(self) -> list[dict[str, Any]]:
+        """The main gate: the hook on this VPS, the override, and GitHub's ruleset where it couldn't be set."""
+        try:
+            st = _gate("state")
+        except HTTPException:
+            return [{"id": "main-gate", "title": "Main gate", "status": "warn", "summary": "main-gate.mjs couldn't run: nothing is gated by the console"}]
+        out = []
+        ov = st.get("override") or {}
+        hooks = st.get("hooks") or []
+        out.append({"id": "main-gate", "title": "Main gate", "status": "warn" if ov.get("on") or not hooks else "ok", "autoFix": False,
+                    "summary": (f"OVERRIDE ON until {ov.get('until')} ({_text(ov.get('by'), 60)}): builds that didn't pass can reach main" if ov.get("on") else
+                                "nothing reaches main without full CI + theme/controls checks" if hooks else "the pre-push hook isn't installed on this VPS")
+                               + f" · {st.get('refusals24h', 0)} refused in 24 h",
+                    "details": ([] if hooks else ["Run on the VPS: node /opt/axf/framework/cli/main-gate.mjs install --repo /opt/axf"])
+                               + ([f"Last refusal: {_text((st.get('lastRefusal') or {}).get('why'), 300)}"] if st.get("lastRefusal") else [])})
+        for slug, p in (st.get("protection") or {}).items():
+            if not isinstance(p, dict) or p.get("state") == "protected":
+                continue
+            out.append({"id": f"main-gate-rules:{slug}", "title": f"Main gate: GitHub rules on {slug}", "status": "warn", "autoFix": True,
+                        "summary": f"GitHub doesn't hold main yet: {_text(p.get('error'), 200)}",
+                        "details": ["The VPS gate holds every push and merge made here; GitHub's ruleset makes it hold for every other route too.",
+                                    *(["axHub is private on a free plan: upgrade the account to GitHub Pro (github.com/settings/billing) or make the repo public; rulesets need one of them."]
+                                      if "GitHub Pro" in str(p.get("error")) else
+                                      [f"GitHub → Settings → Developer settings → Fine-grained tokens → the console's token → Repository permissions → Administration: Read and write (on {slug}). Save."]),
+                                    "Then tap Auto fix: it sets the 'AXF main gate' ruleset (no delete, no force-push, a PR with the CI checks, up to date with main).",
+                                    "GitHub's own merge queue needs an organisation-owned repo; the console's merge queue lands main instead."]})
+        return out
+
     def items(self) -> list[dict[str, Any]]:
         if not PUSHES.has_local():
             return []
@@ -1245,9 +1277,15 @@ class ProtectionChecks:
                                         "permissions), or a classic token with repo scope. Private repos on a free plan need GitHub Pro for protection.",
                                         "Then tap Auto fix: it sets require a PR, require branches to be up to date and the CI checks every PR runs, "
                                         "and never loosens what is already set."]})
-        return out
+        return out + self.gate_items()
 
     def fix(self, item_id: str) -> str:
+        if item_id.startswith("main-gate-rules:"):
+            slug = item_id.split(":", 1)[1]
+            r = next((x for x in _gate("protect", "--slug", slug).get("repos", []) if x.get("slug") == slug), {})
+            if r.get("state") == "protected":
+                return f"{slug}: main has the 'AXF main gate' ruleset"
+            raise HTTPException(409, f"{slug}: still can't set it: {_text(r.get('error'), 200)}")
         res = PUSHES.protect_all(force=True)
         repo = item_id.split(":", 1)[1] if ":" in item_id else ""
         st = res["repos"].get(repo, {})
@@ -1395,6 +1433,58 @@ def get_protection() -> dict[str, Any]:
 @router.post("/protection")
 def set_protection() -> dict[str, Any]:
     return PUSHES.protect_all(force=True)
+
+
+# ---- main gate (build main-gate-nothing-reaches-main-without-passing): state, refusals, the owner's override
+def main_gate_dir() -> Path:
+    return data_dir().parent.parent / "main-gate"
+
+
+def _gate(*args: str, stdin: dict[str, Any] | None = None) -> dict[str, Any]:
+    try:
+        r = subprocess.run(["node", str(MAIN_GATE), *args, "--json", "--dir", str(main_gate_dir())], input=json.dumps(stdin) if stdin is not None else None,
+                           capture_output=True, text=True, timeout=30, cwd=str(cx.ROOT))
+    except (OSError, subprocess.TimeoutExpired) as e:
+        raise HTTPException(502, _text(str(e))) from None
+    out = r.stdout.strip().splitlines()
+    try:
+        return json.loads(out[-1]) if out else {"ok": False, "message": _text(r.stderr, 400)}
+    except ValueError:
+        raise HTTPException(502, _text(r.stderr.strip() or r.stdout.strip() or "main-gate.mjs failed")) from None
+
+
+@router.get("/main-gate")
+def main_gate_state() -> dict[str, Any]:
+    """The main gate: override (off by default), the hook, refusals and passes in 24 h, the last refusal, GitHub rules."""
+    return _gate("state")
+
+
+@router.get("/main-gate/log")
+def main_gate_log(refusals: bool = False, limit: int = 50) -> dict[str, Any]:
+    return _gate("log", *(["--refusals"] if refusals else []), "--limit", str(max(1, min(int(limit), 500))))
+
+
+@router.put("/main-gate/override")
+def main_gate_override(request: Request, body: Any = Body(None)) -> dict[str, Any]:
+    """{on: bool, minutes?: 1-120, reason?}. On is owner only (Brett's signed-in console session, control@1 owner());
+    a token, MCP or voice call without it is refused and Brett gets an FYI. Off is open to anyone (it only tightens)."""
+    if not isinstance(body, dict) or not isinstance(body.get("on"), bool):
+        raise HTTPException(400, "send {on: true|false, minutes?: 1-120, reason?}")
+    if not body["on"]:
+        return _gate("override", "off", "--by", _text(getattr(getattr(request.state, "axf_user", None), "name", "") or "console", 80))
+    c = claudefix.plugin_services.get("control@1")
+    owner = c.owner(request) if c is not None and hasattr(c, "owner") else None
+    r = _gate("override", "on", "--stdin", stdin={"owner": owner, "minutes": body.get("minutes", 30), "reason": _text(body.get("reason"), 300)})
+    if not r.get("ok"):
+        raise HTTPException(403 if r.get("code") == "owner-only" else 400, r.get("message") or "override refused")
+    return r
+
+
+@router.post("/main-gate/protect")
+def main_gate_protect(body: Any = Body(None)) -> dict[str, Any]:
+    """Set the 'AXF main gate' ruleset on main (AmberX-AXF, axHub) where the token may. {dryRun?: bool}."""
+    dry = isinstance(body, dict) and body.get("dryRun") is True
+    return _gate("protect", *(["--dry-run"] if dry else []))
 
 
 @router.post("/merge-branch")

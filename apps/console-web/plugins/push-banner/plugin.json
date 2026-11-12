@@ -2,11 +2,11 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.push-banner",
   "name": "Push banner",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "A banner listing every branch that isn't on main yet in AmberX-AXF and axHub (commits ahead/behind, age, last commit, its open PR and that PR's CI), with Open PR and Merge: every change reaches main only through its PR (one is opened for every branch), brought up to date with main and re-tested before it merges (not behind, CI passed on the pinned head; re-checked on the server). Auto-merge takes ready PRs oldest first, one merge per round, and sets branch protection on main where the token may. Auto-land (land/land.mjs, plain scripts on the VPS, no model calls) lands every finished build: worktree cleaned, main merged in with the builds files newer-wins, PR opened, CI started, merged here in dependency order once green and not held by UI Review; blocked builds are pushed to Brett once, in plain words. The console server talks to GitHub with its own token, which never reaches the browser. Merge queue (0.7.0): GitHub's own merge queue needs an organisation-owned repo, so the queue is ours: ready PRs line up, each is tested once on top of main + every PR ahead of it (queue/pr-<n> branches), the green head merges with no retest, a red one is kicked out with the reason in plain words and the ones behind it are retested without it; CI runs only what a change touches, PRs run light checks while the queue is on. Merge queue view, banner chip, REST + MCP + CLI. 0.7.1 (Nov 4 2026, Brett: \"Stop merging these things one at a time\"): auto-land is off by default and only the merge queue merges AmberX-AXF; GitHub reads are cached with ETags (a 304 costs no API call) and held back when the shared limit runs low; the console redeploys once per stack. 0.8.0 (Nov 10 2026, Brett: \"Everything needs to go into the merge queue so we can make one build out of it before we send it to CI\"): batch mode by default: every finished build gets a PR and joins the queue, up to batchSize ready PRs are combined into one commit on queue/batch, CI runs once, and a green batch lands on main as that one commit (one redeploy); a red batch is split in half until the PR that broke it is kicked out. Merge on AmberX-AXF puts the PR in the queue.",
+  "description": "A banner listing every branch that isn't on main yet in AmberX-AXF and axHub (commits ahead/behind, age, last commit, its open PR and that PR's CI), with Open PR and Merge: every change reaches main only through its PR (one is opened for every branch), brought up to date with main and re-tested before it merges (not behind, CI passed on the pinned head; re-checked on the server). Auto-merge takes ready PRs oldest first, one merge per round, and sets branch protection on main where the token may. Auto-land (land/land.mjs, plain scripts on the VPS, no model calls) lands every finished build: worktree cleaned, main merged in with the builds files newer-wins, PR opened, CI started, merged here in dependency order once green and not held by UI Review; blocked builds are pushed to Brett once, in plain words. The console server talks to GitHub with its own token, which never reaches the browser. Merge queue (0.7.0): GitHub's own merge queue needs an organisation-owned repo, so the queue is ours: ready PRs line up, each is tested once on top of main + every PR ahead of it (queue/pr-<n> branches), the green head merges with no retest, a red one is kicked out with the reason in plain words and the ones behind it are retested without it; CI runs only what a change touches, PRs run light checks while the queue is on. Merge queue view, banner chip, REST + MCP + CLI. 0.7.1 (Nov 4 2026, Brett: \"Stop merging these things one at a time\"): auto-land is off by default and only the merge queue merges AmberX-AXF; GitHub reads are cached with ETags (a 304 costs no API call) and held back when the shared limit runs low; the console redeploys once per stack. 0.8.0 (Nov 10 2026, Brett: \"Everything needs to go into the merge queue so we can make one build out of it before we send it to CI\"): batch mode by default: every finished build gets a PR and joins the queue, up to batchSize ready PRs are combined into one commit on queue/batch, CI runs once, and a green batch lands on main as that one commit (one redeploy); a red batch is split in half until the PR that broke it is kicked out. Merge on AmberX-AXF puts the PR in the queue. 0.9.0 (Nov 12 2026, Brett: \"NOTHING gets pushed or merged to main unless it passes\"): the main gate (framework/cli/main-gate.mjs) decides every way to main: the merge queue asks it before a batch lands or a PR merges, and a git pre-push hook in the VPS repo asks it for any push to main; full CI on the exact code plus check-theme and check-controls on its tree, fast-forward only, status-only (_claude/) commits pass; refusals logged and sent to AmberX; owner-only override, off by default. REST /main-gate, MCP + CLI + voice through the plugin commands.",
   "targets": [
     "axf-console"
   ],
@@ -193,6 +193,71 @@
               "minimum": 1,
               "maximum": 20,
               "description": "PRs in one batch (default 8)"
+            }
+          }
+        }
+      },
+      {
+        "id": "main-gate-state",
+        "title": "Main gate: state",
+        "description": "Whether anything can reach main without passing: the owner override (off by default), the pre-push hook, refusals and passes in the last 24 h, the last refusal, GitHub's rules on main.",
+        "route": "GET /main-gate",
+        "readOnly": true
+      },
+      {
+        "id": "main-gate-log",
+        "title": "Main gate: decisions",
+        "description": "What the main gate decided, newest last: every refusal (why: CI red, no CI, light-only, theme or controls check, force-push), every pass and override use.",
+        "route": "GET /main-gate/log",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "refusals": {
+              "type": "boolean",
+              "description": "refusals only"
+            },
+            "limit": {
+              "type": "integer",
+              "description": "1 to 500, default 50"
+            }
+          }
+        }
+      },
+      {
+        "id": "main-gate-override",
+        "title": "Main gate: owner override",
+        "description": "Owner only, off by default: lets a build that didn't pass reach main for 1 to 120 minutes (never a force-push or a delete). On needs Brett's signed-in console; from a token, MCP or voice it is refused and Brett gets an FYI. Off works from anywhere.",
+        "route": "PUT /main-gate/override",
+        "input": {
+          "type": "object",
+          "properties": {
+            "on": {
+              "type": "boolean"
+            },
+            "minutes": {
+              "type": "integer",
+              "description": "1 to 120"
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "on"
+          ]
+        }
+      },
+      {
+        "id": "main-gate-protect",
+        "title": "Main gate: set GitHub's rules on main",
+        "description": "Sets the 'AXF main gate' ruleset on main in AmberX-AXF and axHub (no delete, no force-push, a PR with the CI checks, up to date) where the GitHub token may; says what is missing where it may not.",
+        "route": "POST /main-gate/protect",
+        "input": {
+          "type": "object",
+          "properties": {
+            "dryRun": {
+              "type": "boolean"
             }
           }
         }
