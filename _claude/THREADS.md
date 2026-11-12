@@ -777,9 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:29 UTC · `toolbar-tap-confirm` note (all) · backfill
-- 2026-11-12 03:29 UTC · `claude-settings` note (all) · backfill
-- 2026-11-12 03:29 UTC · `follow-amber` note (all) · backfill
 - 2026-11-12 03:29 UTC · `agent-pick` note (all) · backfill
 - 2026-11-12 03:29 UTC · `ui-review-shots` note (all) · backfill
 - 2026-11-12 03:29 UTC · `terminal-vps-host` note (all) · backfill
@@ -1177,6 +1174,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 18:59 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` PR #524 (all) · builds-live
 - 2026-11-12 19:00 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` s3 done, → built (all) · orchestrator
 - 2026-11-12 19:00 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` note (all) · orchestrator
+- 2026-11-12 19:43 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` → running, note (all) · pipeline
+- 2026-11-12 19:43 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` branch claude/collapse-and-auto-collapse-buttons-on-every-tab (all) · pipeline
+- 2026-11-12 19:43 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` note (all) · orchestrator
 
 ## Token passes (log)
 
