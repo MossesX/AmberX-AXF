@@ -94,7 +94,7 @@ def classify(err: Any) -> str:
         return "auth"
     if status in (408, 504) or _has(code, "timeout", "timed_out", "etimedout") or _has(msg, "timed out", "timeout"):
         return "timeout"
-    if _has(code, "enotfound", "eai_again", "econnreset", "ehostunreach", "enetunreach") or _has(msg, "enotfound", "eai_again", "econnreset", "getaddrinfo", "name resolution", "network is unreachable", "socket hang up"):
+    if _has(code, "enotfound", "eai_again", "econnreset", "ehostunreach", "enetunreach") or _has(msg, "enotfound", "eai_again", "econnreset", "getaddrinfo", "name resolution", "network is unreachable", "socket hang up", "name or service not known"):
         return "network"
     if status in (502, 503) or _has(code, "econnrefused", "service_down", "unavailable") or _has(msg, "econnrefused", "connection refused", "service unavailable", "bad gateway"):
         return "service-down"
@@ -277,10 +277,12 @@ class Runner:
 
     # running
     def run(self, title: str, call: Callable[[dict[str, Any]], Any], *, source: str = "", ctx: dict[str, Any] | None = None,
-            ok: Callable[[Any], Any] | None = None, id: str = "") -> tuple[dict[str, Any], Any]:
+            ok: Callable[[Any], Any] | None = None, id: str = "", fixes: dict[str, Fix] | None = None) -> tuple[dict[str, Any], Any]:
         """Call until it works or the ladder is done. `call(ctx)` returns a result or raises; `ok(result)` returns None for
-        success or the error ({code, status, message}) when a returned result is a failure. Returns (job, last result)."""
-        ctx = dict(ctx or {})
+        success or the error ({code, status, message}) when a returned result is a failure. `fixes` add to (and win over)
+        the runner's own handlers for this call. Returns (job, last result)."""
+        ctx = ctx if ctx is not None else {}
+        handlers = {**self.fixes, **(fixes or {})}
         job = new_job(id or f"{time.strftime('%Y%m%d-%H%M%S')}-{secrets.token_hex(3)}", title, source, _iso())
         result: Any = None
         while True:
@@ -309,13 +311,13 @@ class Runner:
                             pass
                 return job, result
             self.save(job)
-            self._apply(job, nxt, ctx)
+            self._apply(job, nxt, ctx, handlers)
 
-    def _apply(self, job: dict[str, Any], nxt: dict[str, Any], ctx: dict[str, Any]) -> None:
+    def _apply(self, job: dict[str, Any], nxt: dict[str, Any], ctx: dict[str, Any], handlers: dict[str, Fix]) -> None:
         fix = nxt["fix"]
         if nxt.get("delayMs"):
             self.sleep(nxt["delayMs"] / 1000 * self.delay_scale)
-        handler = self.fixes.get(fix)
+        handler = handlers.get(fix)
         if handler is None and fix in ("wait", "retry", "backoff"):
             return
         if handler is None and fix == "longer-timeout":
@@ -332,7 +334,7 @@ class Runner:
             self.save(job)
 
     def submit(self, title: str, call: Callable[[dict[str, Any]], Any], *, source: str = "", ctx: dict[str, Any] | None = None,
-               ok: Callable[[Any], Any] | None = None) -> tuple[str, threading.Event, dict[str, Any]]:
+               ok: Callable[[Any], Any] | None = None, fixes: dict[str, Fix] | None = None) -> tuple[str, threading.Event, dict[str, Any]]:
         """The same as run() on a daemon thread, independent of the caller: returns (job id, done event, box) at once;
         box["job"], box["result"] are set when it ends. The caller may wait on the event or go away."""
         id = f"{time.strftime('%Y%m%d-%H%M%S')}-{secrets.token_hex(3)}"
@@ -340,7 +342,7 @@ class Runner:
 
         def go() -> None:
             try:
-                box["job"], box["result"] = self.run(title, call, source=source, ctx=ctx, ok=ok, id=id)
+                box["job"], box["result"] = self.run(title, call, source=source, ctx=ctx, ok=ok, id=id, fixes=fixes)
             finally:
                 done.set()
                 self._threads.pop(id, None)

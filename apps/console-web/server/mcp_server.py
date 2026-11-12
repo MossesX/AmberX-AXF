@@ -980,9 +980,7 @@ async def retried(title: str, source: str, call: Callable[[dict[str, Any]], dict
     away): the thread carries on; a permanent error is then logged and FYI'd, since nobody saw it."""
     runner = retry_runner()
     ctx: dict[str, Any] = {}
-    if fixes:
-        runner.fixes.update(fixes)
-    _, done, box = runner.submit(title, call, source=source, ctx=ctx, ok=ok)
+    _, done, box = runner.submit(title, call, source=source, ctx=ctx, ok=ok, fixes=fixes)
     try:
         await anyio.to_thread.run_sync(done.wait, abandon_on_cancel=True)
     except BaseException:
@@ -1232,22 +1230,32 @@ def console_runner(root: Path) -> Callable[[dict[str, Any]], dict[str, Any]]:
     (a local clone) they are sent to the console itself: AXF_CONSOLE_URL (default https://console.amberxai.com) with
     AXF_TOKEN, since only the console knows Brett's open browser tabs."""
 
-    def remote(command: dict[str, Any]) -> dict[str, Any]:
+    def remote_once(command: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
         import urllib.error
         import urllib.request
-        url = os.environ.get("AXF_CONSOLE_URL", "https://console.amberxai.com").rstrip("/") + "/api/console"
+        url = str(ctx.setdefault("base", os.environ.get("AXF_CONSOLE_URL", "https://console.amberxai.com").rstrip("/"))) + "/api/console"
+        token = ctx.get("token") or os.environ.get("AXF_TOKEN")
         req = urllib.request.Request(url, data=json.dumps({"$axf": "control@1", **command}).encode(), method="POST",
-                                     headers={"content-type": "application/json", **({"authorization": f"Bearer {os.environ['AXF_TOKEN']}"} if os.environ.get("AXF_TOKEN") else {})})
+                                     headers={"content-type": "application/json", **({"authorization": f"Bearer {token}"} if token else {})})
         try:
-            with urllib.request.urlopen(req, timeout=90) as res:  # a queued command waits up to a minute for a console
+            with urllib.request.urlopen(req, timeout=float(ctx.get("timeout") or 90)) as res:  # a queued command waits up to a minute for a console
                 return json.loads(res.read().decode() or "{}")
         except urllib.error.HTTPError as e:
             try:
-                return json.loads(e.read().decode() or "{}")
+                return {"status": e.code, **json.loads(e.read().decode() or "{}")}
             except ValueError:
-                return {"ok": False, "code": "unexpected", "message": f"{e.code} from {url}"}
+                return {"ok": False, "code": "unexpected", "status": e.code, "message": f"{e.code} from {url}"}
         except (OSError, ValueError) as e:
             return {"ok": False, "code": "unexpected", "message": f"could not reach {url}: {str(e)[:200]}"}
+
+    def remote(command: dict[str, Any]) -> dict[str, Any]:
+        # the HTTP leg gets its own ladder: longer timeout, internal address, health check + Coolify restart, token re-read
+        runner = retry_runner()  # puts framework/python on the path in stdio mode
+        from axf_server import retry_fixes
+        ctx: dict[str, Any] = {"service": "console", "token_file": os.environ.get("AXF_TOKEN_FILE", "")}
+        _, r = runner.run("console API call", lambda c: remote_once(_console_fixed(command, c), c), source="console-http", ctx=ctx, fixes=retry_fixes.HTTP_FIXES,
+                                  ok=lambda r: None if r.get("ok") or r.get("code") == "confirmation_required" else {"code": r.get("code", ""), "status": r.get("status", 0), "message": r.get("message", "failed")})
+        return r if isinstance(r, dict) else {"ok": False, "code": "unexpected", "message": "the console API call failed"}
 
     def run(command: dict[str, Any]) -> dict[str, Any]:
         try:
