@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3742,
- "updatedAt": "2026-11-12T22:27:24.585Z",
+ "rev": 3743,
+ "updatedAt": "2026-11-12T22:27:38.985Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -173928,7 +173928,7 @@
    "pr": "#505",
    "priority": "P0",
    "createdAt": "2026-11-12T22:16:05.972Z",
-   "updatedAt": "2026-11-12T22:27:23.151Z",
+   "updatedAt": "2026-11-12T22:27:34.850Z",
    "builtAt": "",
    "notes": [
     {
@@ -173942,6 +173942,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-conflicts-and-land-build-plan-1-skins-one-ro--gina, own login copy)",
      "at": "2026-11-12T22:17:16.360Z"
+    },
+    {
+     "text": "s1 done: main is merged into Build Plan 1 (PR #505, pushed), with all 7 conflicts resolved and both tap-to-confirm and skins kept. s2 is not done: the code checks are green, but #505 stays a draft because its screenshots were never sent to UI Review, so the merge queue will not take it. The headless shots stop at Waiting for axHub (the browser cannot reach axhub.amberxai.com and there is no local hub on :18080). To land it: take desktop and phone shots of Build orchestrator (any tab), Settings > Appearance (Assets with edits) and the banner right-click Skins menu, then run review.mjs submit with --pr 505. Or approve it without shots and mark #505 ready.",
+     "at": "2026-11-12T22:27:34.850Z"
     }
    ],
    "approvals": [],
@@ -174034,7 +174038,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
