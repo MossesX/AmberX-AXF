@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T18:39:09.343Z",
+ "updatedAt": "2026-11-12T18:39:57.629Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -89292,7 +89292,7 @@
    "pr": "#446",
    "priority": "P1",
    "createdAt": "2026-11-10T00:21:59.738Z",
-   "updatedAt": "2026-11-12T18:36:11.873Z",
+   "updatedAt": "2026-11-12T18:39:55.833Z",
    "builtAt": "",
    "notes": [
     {
@@ -89364,7 +89364,16 @@
      "at": "2026-11-12T18:36:11.873Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-12T18:39:55.833Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "For each section in skins, like colors, layouts, design, behavior, you need to be able to save each individual section as a new asset, then build your skins with these assets. Drag one from the list into a template that has all the categories a pack needs, build an entire skin, export it as a new skin, apply it. Make it sick. Every skin has to be a package of chunks. Every single thing has to be its own asset. It can't be one. Every section must be its own chunk. When you're building a new one, or enabling or changing one, you can select which sections you want taken in and which ones left out. When you apply a theme, you can leave certain things out, and when those mix with the existing theme, it asks you to create the new skin, in a dialog.",
@@ -89410,8 +89419,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T18:39:55.833Z",
      "note": "",
      "uid": "st-mw9y5oxp02n4m3"
     },

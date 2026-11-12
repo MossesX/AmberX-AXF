@@ -777,7 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:29 UTC · `orch-live-sync` note (all) · backfill
 - 2026-11-12 03:29 UTC · `land-everything` note (all) · backfill
 - 2026-11-12 03:29 UTC · `crew-retrain` note (all) · backfill
 - 2026-11-12 03:29 UTC · `notes-vault` note (all) · backfill
@@ -1177,6 +1176,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 18:36 UTC · `skins-as-packages-of-slices-every-section-its-ow` → running, note (all) · pipeline
 - 2026-11-12 18:36 UTC · `skins-as-packages-of-slices-every-section-its-ow` note (all) · orchestrator
 - 2026-11-12 18:38 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` s4 done (all) · orchestrator
+- 2026-11-12 18:39 UTC · `skins-as-packages-of-slices-every-section-its-ow` s2 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
