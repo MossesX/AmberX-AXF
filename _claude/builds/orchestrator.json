@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T10:48:36.481Z",
+ "updatedAt": "2026-11-12T10:49:16.153Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -107107,6 +107107,37 @@
    "upgradeRequests": [],
    "origin": {
     "said": "No! Every building pending should have its own row that opens, that expands to show everything.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "unlink-plan-studio-from-builds-delete-all-plan-s",
+   "title": "Unlink Plan Studio from builds; delete all Plan Studio plans",
+   "category": "",
+   "detail": "1) Delete every Plan Studio plan (planner.plans), plus a delete action on plans via REST/MCP/CLI/voice (none exists today). 2) Builds must never create, sync or update Plan Studio plans: remove build-plan@1 per-build plans (plan-studio-backfill-12h), any build-todo-sync plan creation, the 'every build goes to Plan Studio' rule in briefs/RULES, and any sync hooks between the builds store and plans. Plan Studio stays as a standalone tool only. Tests: adding/finishing a build creates no plan.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "unlink-plan-studio-from-builds-delete-all-plan-s",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-12T10:49:12.963Z",
+   "updatedAt": "2026-11-12T10:49:12.963Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I want to delete all the plans and um, I no longer want build to automatically make a plan studio plan or sync with them... I don't want this plan studio to be linked to the build at all",
     "at": "",
     "source": "",
     "session": "",
