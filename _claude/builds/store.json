@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3335,
- "updatedAt": "2026-11-12T02:36:04.920Z",
+ "rev": 3336,
+ "updatedAt": "2026-11-12T02:36:19.886Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -160218,8 +160218,8 @@
    "branch": "claude/main-gate-nothing-reaches-main-without-passing",
    "pr": "#508",
    "createdAt": "2026-11-12T02:00:17.612Z",
-   "updatedAt": "2026-11-12T02:35:27.860Z",
-   "builtAt": "2026-11-12T02:35:27.861Z",
+   "updatedAt": "2026-11-12T02:36:08.572Z",
+   "builtAt": "2026-11-12T02:36:08.572Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -160232,6 +160232,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-main-gate-nothing-reaches-main-without-passing--earl, own login copy)",
      "at": "2026-11-12T02:14:30.814Z"
+    },
+    {
+     "text": "Headless run axf-main-gate-nothing-reaches-main-without-passing--earl: brief only · start 10.7K tokens ($0.02) · cost $4.15 · 80 turns · 6 tools, MCP none",
+     "at": "2026-11-12T02:36:08.572Z"
     }
    ],
    "approvals": [],
@@ -160352,7 +160356,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

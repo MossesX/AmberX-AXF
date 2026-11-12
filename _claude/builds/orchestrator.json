@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:36:04.920Z",
+ "updatedAt": "2026-11-12T02:36:19.886Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -100101,8 +100101,8 @@
    "branch": "claude/main-gate-nothing-reaches-main-without-passing",
    "pr": "#508",
    "createdAt": "2026-11-12T02:00:17.612Z",
-   "updatedAt": "2026-11-12T02:35:27.860Z",
-   "builtAt": "2026-11-12T02:35:27.861Z",
+   "updatedAt": "2026-11-12T02:36:08.572Z",
+   "builtAt": "2026-11-12T02:36:08.572Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -100115,6 +100115,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-main-gate-nothing-reaches-main-without-passing--earl, own login copy)",
      "at": "2026-11-12T02:14:30.814Z"
+    },
+    {
+     "text": "Headless run axf-main-gate-nothing-reaches-main-without-passing--earl: brief only · start 10.7K tokens ($0.02) · cost $4.15 · 80 turns · 6 tools, MCP none",
+     "at": "2026-11-12T02:36:08.572Z"
     }
    ],
    "approvals": [],
