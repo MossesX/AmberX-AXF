@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3719,
- "updatedAt": "2026-11-12T22:04:57.190Z",
+ "rev": 3720,
+ "updatedAt": "2026-11-12T22:05:30.164Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -171781,10 +171781,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/move-amberx-web-app-into-the-console-amberx-andr",
-   "pr": "",
+   "pr": "#528",
    "priority": "P2",
    "createdAt": "2026-11-12T19:46:41.501Z",
-   "updatedAt": "2026-11-12T21:55:32.399Z",
+   "updatedAt": "2026-11-12T22:05:28.696Z",
    "builtAt": "",
    "notes": [
     {
@@ -172267,7 +172267,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
