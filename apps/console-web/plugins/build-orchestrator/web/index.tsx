@@ -4,6 +4,7 @@ import { appMenu } from './menu';
 import { setPriorityHost, type PriorityHost } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { FOLDER, OrchestratorPage, TABS, openTab } from './ui';
+import { GateLogPage, openGate } from './gate-log';
 import { BUILD_ACTIONS, type BuildAction } from '@console/axf/core/build-pipeline.mjs';
 
 const ACTION_LABEL: Record<BuildAction, string> = { unqueue: 'Back to Pending', hold: 'Hold (stays in the Queue)', release: 'Release from hold', archive: 'Move to the Archive', unarchive: 'Bring back from the Archive', delete: 'Delete (kept in Deleted)', restore: 'Restore' };
@@ -53,6 +54,9 @@ export const plugin: AxfWebLibrary = {
       catch { openTab('builds'); }
     };
     rt.actions.register('build-orchestrator.open', ([arg]) => void open(arg ?? ''), { label: 'Open the Build orchestrator (a build or a tab)' });
+    // Server gate log (Nov 12 2026): the page, optionally filtered to one gate (duplicate-launch, duplicate-reaped,
+    // slot-limit, dispatch, main). Same data: GET gate-log, MCP command gate-log, `server-gate.mjs log`, voice.
+    rt.actions.register('build-orchestrator.gate-log', ([arg]) => { openGate(decodeURIComponent(arg ?? '')); rt.navigate('server-gate-log'); }, { label: 'Open the Server gate log (optionally one gate)' });
     rt.actions.register('build-orchestrator.tab', ([arg]) => { rt.navigate('build-orchestrator'); openTab(decodeURIComponent(arg ?? 'queue')); }, { label: 'Build orchestrator: open a tab' });
     rt.actions.register('build-orchestrator.start', ([arg]) => {
       const id = decodeURIComponent(arg ?? '');
@@ -95,8 +99,9 @@ export const plugin: AxfWebLibrary = {
       return out;
     });
   },
-  views: { 'build-orchestrator': { title: 'Build orchestrator', icon: 'layers', keywords: ['orchestrator', 'builds', 'build manager', 'pending', 'queue', 'active', 'incomplete', 'complete', 'errors', 'archive', 'deleted', 'hold', 'on hold', 'restore', 'accounts', 'health', 'fable', 'opus', 'steps', 'phases', 'approve model'], render: () => <OrchestratorPage /> } },
-  nav: { label: 'Builds', items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', view: 'build-orchestrator' }] },
+  views: { 'build-orchestrator': { title: 'Build orchestrator', icon: 'layers', keywords: ['orchestrator', 'builds', 'build manager', 'pending', 'queue', 'active', 'incomplete', 'complete', 'errors', 'archive', 'deleted', 'hold', 'on hold', 'restore', 'accounts', 'health', 'fable', 'opus', 'steps', 'phases', 'approve model'], render: () => <OrchestratorPage /> },
+    'server-gate-log': { title: 'Server gate log', icon: 'shield', keywords: ['server gate', 'gate log', 'duplicate launch', 'duplicate session', 'reaped', 'slot limit', 'dispatch gate', 'orchestrator id', 'main gate', 'merge queue kicked'], render: () => <GateLogPage /> } },
+  nav: { label: 'Builds', items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', view: 'build-orchestrator' }, { id: 'server-gate-log', label: 'Server gate log', icon: 'shield', view: 'server-gate-log' }] },
   contextMenu: [{ id: 'build-orchestrator.pending', target: 'axf-pending-item', items: [{ id: 'build-orchestrator.open', label: 'Open in Build orchestrator', icon: 'layers', action: 'build-orchestrator.open' }] },
     { id: 'build-orchestrator.default', target: 'default', order: 91, items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', action: 'nav:build-orchestrator' }] }],
   settingsTabs: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', order: 90, parent: 'plugins' }],

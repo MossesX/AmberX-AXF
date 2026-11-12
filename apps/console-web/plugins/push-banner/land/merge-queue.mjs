@@ -33,9 +33,12 @@ import { fileURLToPath } from 'node:url';
 import * as q from './merge-queue-core.mjs';
 import * as core from './land-core.mjs';
 import { ciOf, mergeMain, settings, makeGit, makeGitHub, makeConsole } from './land.mjs';
+import { record as gateRecord } from '../../../../../framework/cli/server-gate.mjs';
 
 const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
 function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const t = `${f}.tmp-${process.pid}`; writeFileSync(t, `${JSON.stringify(v, null, 1)}\n`); renameSync(t, f); }
+/** The main gate's hits go to the server gate log (framework/cli/server-gate.mjs): a PR kicked out of the queue. */
+function mainGate(pr, build, why, dry) { if (!dry) gateRecord({ gate: 'main', build: build || '', by: `merge queue (PR #${pr})`, action: `kicked PR #${pr} out of the merge queue`, detail: why }); }
 const lines = (t) => String(t || '').split('\n').map((x) => x.trim()).filter(Boolean);
 
 export const queueFile = (s) => join(s.dataDir, 'merge-queue.json');
@@ -223,6 +226,7 @@ export async function queueRound({ s, git, gh, api, dry = false, now = () => new
       await api('POST', '/api/alerts', { source: 'push-banner', key: `queue:${e.pr}`, severity: 'warning', title: `Merge queue: #${e.pr} kicked out`.slice(0, 200), body: why });
     }
     kicked.push({ pr: e.pr, title: prs.find((x) => x.number === e.pr)?.title || '', head: e.head, why, at, runUrl: e.runUrl || '' });
+    mainGate(e.pr, prs.find((x) => x.number === e.pr)?.build, why, dry);
     stack = stack.slice(0, i);
     const p = prs.find((x) => x.number === e.pr); if (p) p.why = `kicked out: ${why}`;
   }
@@ -243,6 +247,7 @@ export async function queueRound({ s, git, gh, api, dry = false, now = () => new
         const why = `#${p.number} conflicts with main in code (${c.conflicts.slice(0, 3).join(', ')}). Merge main in and fix them.`;
         if (!dry) ctl = q.applyQueueControl(ctl, 'kick', p.number, { why, head: p.head, at });
         kicked.push({ pr: p.number, title: p.title, head: p.head, why, at }); p.why = `kicked out: ${why}`;
+        mainGate(p.number, p.build, why, dry);
       } else skipped.set(p.number, `conflicts with ${ahead.map((n) => `#${n}`).join(', ')} ahead of it in code; tested once they merge`);
       continue;
     }
@@ -386,6 +391,7 @@ async function batchRound({ s, git, gh, api, dry, at, cfg, prev, ctl, prs, rank,
         await api('POST', '/api/alerts', { source: 'push-banner', key: `queue:${d.kick}`, severity: 'warning', title: `Merge queue: #${d.kick} kicked out`.slice(0, 200), body: why });
       }
       kicked.push({ pr: d.kick, title: prOf(d.kick).title || '', head: e.head, why, at, runUrl: batch.runUrl || '' });
+      mainGate(d.kick, prOf(d.kick).build, why, dry);
       const p = prs.find((x) => x.number === d.kick); if (p) p.why = `kicked out: ${why}`;
       split = d.split; batch = null;
     } else {
@@ -410,6 +416,7 @@ async function batchRound({ s, git, gh, api, dry, at, cfg, prev, ctl, prs, rank,
           const why = `#${p.number} conflicts with main in code (${c.conflicts.slice(0, 3).join(', ')}). Merge main in and fix them.`;
           if (!dry) ctl = q.applyQueueControl(ctl, 'kick', p.number, { why, head: p.head, at });
           kicked.push({ pr: p.number, title: p.title, head: p.head, why, at }); p.why = `kicked out: ${why}`;
+          mainGate(p.number, p.build, why, dry);
         } else skipped.set(p.number, `conflicts in code with ${members.map((m) => `#${m.pr}`).join(', ') || 'the batch'}; goes in the next batch`);
         continue;
       }

@@ -218,7 +218,10 @@ fi
 DISPATCH="$HERE/../framework/cli/dispatch-gate.mjs"
 if [[ -z "$inner" && -z "$queued" ]] && command -v node >/dev/null && [[ -f "$DISPATCH" ]]; then
   dverdict="$(node "$DISPATCH" check --name "$name" --brief "$brief" 2>&1)"; d_st=$?
-  if (( d_st == 3 )); then echo "claude-headless: $dverdict" >&2; echo "$dverdict"; exit 3; fi
+  if (( d_st == 3 )); then
+    [[ -f "$HERE/../framework/cli/server-gate.mjs" ]] && node "$HERE/../framework/cli/server-gate.mjs" record --gate dispatch --name "$name" --brief "$brief" --by "${AXF_SURFACE:-launcher}${account:+ on $account}" --action "refused the launch: no orchestrator dispatch token" --detail "$dverdict" >/dev/null 2>&1
+    echo "claude-headless: $dverdict" >&2; echo "$dverdict"; exit 3
+  fi
 fi
 # One session per build (framework/cli/server-gate.mjs, Nov 12 2026): a build launch takes an exclusive lock on its
 # build ID and on its worktree. A second launch while the first one's session (or its slot / look waiter) is alive is
@@ -457,6 +460,7 @@ elif slots_on; then
     ${SETSID:-$(command -v setsid)} nohup bash "$HERE/claude-headless.sh" --queued "$slot_id" --name "$name" --agent "$agent" ${account:+--account "$account"} --brief "$brief" --log "$log" -- "$@" > .axf-queue.log 2>&1 &
     gate_hold --pid "$!"   # the slot waiter holds the build's lock until its session starts
     why=""; [[ "$slot_reason" == memory ]] && why=", waiting for free memory"
+    sgate_on && node "$SGATE" record --gate slot-limit --build "${gate_build:-$slug}" --by "${AXF_SURFACE:-launcher}${account:+ on $account}" --action "queued at position $slot_pos ($slot_id)" --detail "The VPS agent cap was full${why}: the run waits in the agent-slots queue and starts by itself when a slot frees." >/dev/null 2>&1
     echo "queued at position $slot_pos ($slot_id$why) in $(pwd): starts by itself when a slot frees"
     exit 0
   fi

@@ -640,3 +640,28 @@ class DispatchService:
 
 
 plugin_services.provide("axf.build-dispatch@1", DispatchService(), Path(__file__).resolve().parents[1].name)
+
+
+# ------------------------------------------------------------------ server gate log (server-gate-log@1, Nov 12 2026)
+
+GATE_CLI = ROOT / "framework" / "cli" / "server-gate.mjs"
+GATES = ("duplicate-launch", "duplicate-reaped", "slot-limit", "dispatch", "main")
+
+
+@router.get("/gate-log")
+def gate_log(gate: str = "", build: str = "", limit: int = 200) -> dict[str, Any]:
+    """The server gate log: every hit of a VPS server gate (duplicate launch refused, duplicate session reaped, slot
+    limit, orchestrator-ID (dispatch) gate, main gate), newest first, with counts per gate. Filter by gate and build."""
+    args = ["log", "--limit", str(max(1, min(int(limit or 200), 2000)))]
+    if gate:
+        if gate not in GATES:
+            raise HTTPException(400, f"gate is one of {', '.join(GATES)}")
+        args += ["--gate", gate]
+    if build:
+        args += ["--build", _build_id(build)]
+    proc = subprocess.run(["node", str(GATE_CLI), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=30)
+    try:
+        res = json.loads(proc.stdout)
+    except json.JSONDecodeError:
+        raise HTTPException(500, (proc.stderr or proc.stdout).strip()[-400:] or "server gate log unreadable")
+    return {"ok": True, **res}

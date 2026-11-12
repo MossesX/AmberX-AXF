@@ -9,6 +9,9 @@ import * as q from './merge-queue-core.mjs';
 import { queueRound, readQueue, queueControl } from './merge-queue.mjs';
 import { makeGit } from './land.mjs';
 
+// main gate hits land in a scratch server gate log, never the real one
+process.env.AXF_GATE_DIR = mkdtempSync(join(tmpdir(), 'mq-gate-'));
+
 let n = 0;
 const t = async (name, fn) => { await fn(); n++; console.log(`ok ${name}`); };
 

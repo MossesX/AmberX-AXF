@@ -25,7 +25,7 @@
  *   … sessions <build> [--json]    the live tmux sessions of one build (oldest first)
  *   … reap [--dry] [--json]        every build with more than one live session: keep the oldest, end the rest
  *   … log [--gate <g>] [--build <id>] [--limit n] [--json]      the gate log, newest first
- *   … record --gate <g> [--build <id>] [--by <who>] --action <what the gate did> [--detail <text>]
+ *   … record --gate <g> [--build <id> | --name <session> --brief <file>] [--by <who>] --action <what> [--detail <text>]
  *   … gates [--json]               the gate kinds and their counts
  *
  * Env: AXF_GATE_DIR (else the pipeline folder: AXF_PIPELINE_DIR, the hub's _data/pipeline, ~/.axf/pipeline),
@@ -333,7 +333,13 @@ async function main(argv) {
   if (cmd === 'status') { const s = status(); return out({ locks: s }, s.length ? s.map((l) => `${l.alive ? 'live' : 'stale'}  ${l.build}  ${l.session || `pid ${l.pid}`}  ${l.worktree}  since ${l.at}`).join('\n') : 'no locks'); }
   if (cmd === 'sessions') { const s = sessionsOf(first || ''); return out({ build: first, sessions: s }, s.map((x) => x.name).join('\n') || 'none'); }
   if (cmd === 'reap') { const r = reap({ dry, by: opt('by') || 'cli' }); return out(r, r.duplicates.length ? r.duplicates.map((d) => `${d.build}: keep ${d.keep}, ${dry ? 'would end' : 'ended'} ${d.end.join(', ')}`).join('\n') : 'no duplicate sessions'); }
-  if (cmd === 'record') { const e = record({ gate: opt('gate'), build: opt('build'), by: opt('by') || process.env.AXF_SURFACE || 'cli', action: opt('action'), detail: opt('detail'), session: opt('session') }); return out(e, `logged: ${e.gate} ${e.build}`); }
+  if (cmd === 'record') {
+    const briefFile = opt('brief');
+    const brief = briefFile && existsSync(briefFile) ? readFileSync(briefFile, 'utf8').slice(0, 64 * 1024) : '';
+    const build = await resolveBuild({ build: opt('build'), name: opt('name'), brief }) || opt('name');
+    const e = record({ gate: opt('gate'), build, by: opt('by') || process.env.AXF_SURFACE || 'cli', action: opt('action'), detail: opt('detail'), session: opt('session') });
+    return out(e, `logged: ${e.gate} ${e.build}`);
+  }
   if (cmd === 'log' || cmd === 'gates') {
     const q = readLog({ gate: opt('gate'), build: opt('build'), limit: Number(opt('limit')) || 50 });
     if (cmd === 'gates') return out({ total: q.total, gates: q.gates }, q.gates.map((g) => `${String(g.count).padStart(5)}  ${g.label}`).join('\n'));

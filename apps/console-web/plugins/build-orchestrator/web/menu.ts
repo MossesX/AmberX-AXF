@@ -9,6 +9,7 @@ export const appMenu: NonNullable<AxfWebLibrary['appMenu']> = [
     { id: 'build-orchestrator.errors', label: 'Build errors', icon: 'alert', action: 'build-orchestrator.tab:errors' },
     { id: 'build-orchestrator.archive', label: 'Build archive', icon: 'package', action: 'build-orchestrator.tab:archive' },
     { id: 'build-orchestrator.deleted', label: 'Deleted builds', icon: 'trash', action: 'build-orchestrator.tab:deleted' },
+    { id: 'build-orchestrator.gate-log', label: 'Server gate log', icon: 'shield', action: 'build-orchestrator.gate-log' },
     { id: 'build-orchestrator.accounts', label: 'Claude account health', icon: 'user', action: 'build-orchestrator.tab:accounts' },
   ] },
 ];

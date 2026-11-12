@@ -248,6 +248,38 @@
         "output": "{ table: { pending, queued, building }, accounts, accountsFrom: { source, at, ageMin, why }, slots, plan: { launches, waits, idle }, state: { selfCheck, selfCheckRequested, … } }"
       },
       {
+        "id": "gate-log",
+        "route": "GET /gate-log",
+        "title": "Server gate log",
+        "description": "Every time a server gate on the VPS was hit: a second launch of a build with a live session refused, a duplicate session reaped by the watchdog (oldest kept), the agent-slot limit, the orchestrator-ID (dispatch token) gate, a PR kicked out at the main gate. Each entry: when, which gate, which build, who or what tried it, what the gate did; newest first, with counts per gate. Opens in the console with build-orchestrator.gate-log[:<gate>]. Say 'show the gate log' or 'show duplicate launches'.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "gate": {
+              "type": "string",
+              "enum": [
+                "duplicate-launch",
+                "duplicate-reaped",
+                "slot-limit",
+                "dispatch",
+                "main"
+              ],
+              "description": "Only this gate"
+            },
+            "build": {
+              "type": "string",
+              "description": "Only this build id"
+            },
+            "limit": {
+              "type": "integer",
+              "description": "How many entries (default 200)"
+            }
+          }
+        },
+        "output": "{ total, counts: { <gate>: n }, gates: [{ id, label, count }], matched, shown, entries: [{ at, gate, build, by, action, detail, session? }] }"
+      },
+      {
         "id": "pipeline-selfcheck",
         "route": "POST /pipeline/selfcheck",
         "title": "Dispatcher self-check",
