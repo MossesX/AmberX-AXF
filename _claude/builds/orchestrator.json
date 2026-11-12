@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T03:16:22.688Z",
+ "updatedAt": "2026-11-12T03:16:37.869Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -97869,7 +97869,7 @@
    "branch": "claude/molly-gap-console-token-handoff",
    "pr": "#511",
    "createdAt": "2026-11-10T22:09:29.615Z",
-   "updatedAt": "2026-11-12T03:16:20.945Z",
+   "updatedAt": "2026-11-12T03:16:35.159Z",
    "builtAt": "",
    "notes": [
     {
@@ -97927,6 +97927,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-molly-gap-console-token-handoff--gina, own login copy)",
      "at": "2026-11-12T03:13:24.236Z"
+    },
+    {
+     "text": "Headless run axf-molly-gap-console-token-handoff--gina: brief only · start 11.3K tokens ($0.03) · cost $0.88 · 56 turns · 6 tools, MCP none",
+     "at": "2026-11-12T03:16:35.159Z"
     }
    ],
    "approvals": [],

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3438,
- "updatedAt": "2026-11-12T03:16:22.688Z",
+ "rev": 3439,
+ "updatedAt": "2026-11-12T03:16:37.869Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -157693,7 +157693,7 @@
    "branch": "claude/molly-gap-console-token-handoff",
    "pr": "#511",
    "createdAt": "2026-11-10T22:09:29.615Z",
-   "updatedAt": "2026-11-12T03:16:20.945Z",
+   "updatedAt": "2026-11-12T03:16:35.159Z",
    "builtAt": "",
    "notes": [
     {
@@ -157751,6 +157751,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-molly-gap-console-token-handoff--gina, own login copy)",
      "at": "2026-11-12T03:13:24.236Z"
+    },
+    {
+     "text": "Headless run axf-molly-gap-console-token-handoff--gina: brief only · start 11.3K tokens ($0.03) · cost $0.88 · 56 turns · 6 tools, MCP none",
+     "at": "2026-11-12T03:16:35.159Z"
     }
    ],
    "approvals": [],
