@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3551,
- "updatedAt": "2026-11-12T11:04:13.848Z",
+ "rev": 3552,
+ "updatedAt": "2026-11-12T11:04:27.799Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174654,19 +174654,27 @@
    "title": "Fix the step splitter: 'claude exit 1: Input must be provided'",
    "category": "",
    "detail": "When a build is added, the splitter runs claude -p without the prompt (stdin or argument missing), fails with 'Error: Input must be provided either through stdin or as a prompt argument when using --print', and falls back to one step per line, pasting Brett's raw words in as a step. Fix the invocation so the request is passed, split into real <=30 min steps, and re-split today's queued builds whose steps are the fallback. Test: adding a build yields proper steps, no fallback note.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "mcp",
    "pendingId": "fix-the-step-splitter-claude-exit-1-input-must-b",
-   "branch": "",
+   "branch": "claude/fix-the-step-splitter-claude-exit-1-input-must-b",
    "pr": "",
    "createdAt": "2026-11-12T10:51:23.133Z",
-   "updatedAt": "2026-11-12T11:04:12.226Z",
+   "updatedAt": "2026-11-12T11:04:19.985Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-12T10:53:18.716Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-fix-the-step-splitter-claude-exit-1-input-must-b--sully.",
+     "at": "2026-11-12T11:04:17.439Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-the-step-splitter-claude-exit-1-input-must-b--sully, own login copy)",
+     "at": "2026-11-12T11:04:19.985Z"
     }
    ],
    "approvals": [],
@@ -174686,12 +174694,12 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-fix-the-step-splitter-claude-exit-1-input-must-b--sully",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-12T11:04:16.958Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T10:53:18.716Z",
@@ -174701,9 +174709,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-12T11:04:16.958Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -174712,7 +174720,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-12T11:04:16.958Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -174906,7 +174914,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": {
