@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3728,
- "updatedAt": "2026-11-12T22:10:50.215Z",
+ "rev": 3729,
+ "updatedAt": "2026-11-12T22:14:34.223Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -171784,7 +171784,7 @@
    "pr": "#528",
    "priority": "P2",
    "createdAt": "2026-11-12T19:46:41.501Z",
-   "updatedAt": "2026-11-12T22:06:13.582Z",
+   "updatedAt": "2026-11-12T22:14:32.678Z",
    "builtAt": "",
    "notes": [
     {
@@ -171840,7 +171840,16 @@
      "at": "2026-11-12T22:06:13.582Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-12T22:14:32.678Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "Now what we're gonna end up doing is just moving everything over the console and making AmberX app read the console instead of AmberX.",
@@ -171938,12 +171947,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T22:14:32.678Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T21:53:49.837Z",
-     "updatedAt": "2026-11-12T21:53:49.955Z"
+     "updatedAt": "2026-11-12T22:14:32.845Z"
     },
     {
      "id": "s2",
@@ -172290,7 +172299,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
