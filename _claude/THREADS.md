@@ -776,10 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 00:14 UTC · `full-api-cli-control-of-everything-plus-an-offli` s17 done, → built (all) · orchestrator
-- 2026-11-12 00:14 UTC · `full-api-cli-control-of-everything-plus-an-offli` note (all) · orchestrator
-- 2026-11-12 00:15 UTC · `full-api-cli-control-of-everything-plus-an-offli` note (all) · pipeline
-- 2026-11-12 01:42 UTC · `molly-gap-remote-actions` → queued, note (all) · console
 - 2026-11-12 01:43 UTC · `molly-gap-console-token-handoff` → queued, note (all) · console
 - 2026-11-12 01:43 UTC · `molly-gap-expenses-cors` → queued, note (all) · console
 - 2026-11-12 01:43 UTC · `molly-gap-axhub-cors` → queued, note (all) · console
@@ -1176,6 +1172,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:04 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` note (all) · orchestrator
 - 2026-11-12 02:59 UTC · `server-gate-one-session-per-build-no-duplicate-launches` s4 done (all) · orchestrator
 - 2026-11-12 03:05 UTC · `server-gate-one-session-per-build-no-duplicate-launches` s5 done (all) · orchestrator
+- 2026-11-12 03:05 UTC · `merge-all-ready-buttons-server-side-lander` → running, note (all) · pipeline
+- 2026-11-12 03:05 UTC · `merge-all-ready-buttons-server-side-lander` branch claude/merge-all-ready-buttons-server-side-lander (all) · pipeline
+- 2026-11-12 03:05 UTC · `merge-all-ready-buttons-server-side-lander` note (all) · orchestrator
+- 2026-11-12 03:05 UTC · `server-gate-one-session-per-build-no-duplicate-launches` s5 done (all) · foreign-write
 
 ## Token passes (log)
 

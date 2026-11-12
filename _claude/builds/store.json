@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3422,
- "updatedAt": "2026-11-12T03:05:39.611Z",
+ "rev": 3423,
+ "updatedAt": "2026-11-12T03:05:52.658Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -161728,7 +161728,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-12T02:43:41.334Z",
-     "updatedAt": "2026-11-12T03:05:08.878Z"
+     "updatedAt": "2026-11-12T03:05:34.028Z"
     },
     {
      "id": "s3",
@@ -162060,14 +162060,14 @@
    "title": "Merge all ready: buttons + server-side lander",
    "category": "orchestrator",
    "detail": "URGENT, boss order from Brett, Nov 12. The merge banner shows PRs 'ready for merge' but there's no way to merge them. Add: a 'Merge all ready' button on the merge banner and merge queue page, plus a Merge button on each row. Every merge goes through the main gate (tests must pass, rebase if behind, no force-push); conflicts get auto-rebased, and anything that can't land is marked with why. Progress shows live in the banner (merging 3 of 12...). Also a server-side lander that works through the whole backlog (~168 PRs) by itself, oldest first, one at a time, through the gate. Each merge and failure logged in the Server gate log / Automatic fixes. Full API: REST/MCP/CLI and voice ('merge everything ready').",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/merge-all-ready-buttons-server-side-lander",
    "pr": "",
    "createdAt": "2026-11-12T02:47:57.796Z",
-   "updatedAt": "2026-11-12T03:05:19.913Z",
+   "updatedAt": "2026-11-12T03:05:32.161Z",
    "builtAt": "",
    "notes": [
     {
@@ -162077,6 +162077,14 @@
     {
      "text": "Brett re-logged the Hulu SUBSCRIPTION at 02:56; tested OK. It lives in /root/.claude-add (account named 'add'). s4 failover order: mossesx-max- (Moses X) -> 'add' (Hulu subscription, /root/.claude-add) -> account-5 'Hulu API' key last. account-3 is the old dead Hulu entry; ignore/remove it.",
      "at": "2026-11-12T02:57:30.638Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-merge-all-ready-buttons-server-side-lander--paulie.",
+     "at": "2026-11-12T03:05:28.808Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-merge-all-ready-buttons-server-side-lander--paulie, own login copy)",
+     "at": "2026-11-12T03:05:32.161Z"
     }
    ],
    "approvals": [],
@@ -162096,18 +162104,18 @@
    "pipeline": {
     "queuedAt": "2026-11-12T02:47:59.836Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-merge-all-ready-buttons-server-side-lander--paulie",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-12T03:05:28.144Z",
+    "runs": 1,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-12T03:05:28.144Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -162116,7 +162124,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-12T03:05:28.144Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -162241,7 +162249,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
