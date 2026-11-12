@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T22:58:05.893Z",
+ "updatedAt": "2026-11-12T23:00:46.111Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -109431,7 +109431,7 @@
    "pr": "#530",
    "priority": "P1",
    "createdAt": "2026-11-12T20:40:19.258Z",
-   "updatedAt": "2026-11-12T22:55:59.743Z",
+   "updatedAt": "2026-11-12T23:00:44.345Z",
    "builtAt": "",
    "notes": [
     {
@@ -109469,6 +109469,10 @@
     {
      "text": "PR #530 opened and linked once GitHub's content-creation block cleared.",
      "at": "2026-11-12T22:55:59.743Z"
+    },
+    {
+     "text": "Reconciler: PR #530 names s1, s7, s8 done",
+     "at": "2026-11-12T23:00:44.345Z"
     }
    ],
    "approvals": [],
@@ -109625,9 +109629,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-12T23:00:44.345Z",
+     "note": "PR #530 (claude/github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro)",
      "uid": "st-mwe0i6fq0fl777"
     },
     {
@@ -109643,9 +109647,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-12T23:00:44.345Z",
+     "note": "PR #530 (claude/github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro)",
      "uid": "st-mwe0i6fq0gbypl"
     }
    ]
@@ -110186,7 +110190,7 @@
    "title": "Fix conflicts and land Build Plan 1 (skins, one-row tables, backgrounds, asset overrides)",
    "category": "merge",
    "detail": "Branch claude/build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides conflicts with main in 7 files: ChromeContext.tsx (framework + amberx-droid, axhub-web, console-web, molly copies), build-orchestrator/web/pipeline.tsx, framework/spec/PORTING.md. Brett: pull main in and merge it right away. Keep both sides' intent (tap-to-confirm #524 and skins).",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -110194,7 +110198,7 @@
    "pr": "#505",
    "priority": "P0",
    "createdAt": "2026-11-12T22:16:05.972Z",
-   "updatedAt": "2026-11-12T22:27:47.619Z",
+   "updatedAt": "2026-11-12T23:00:44.345Z",
    "builtAt": "",
    "notes": [
     {
@@ -110216,6 +110220,10 @@
     {
      "text": "s1 done: main is merged into Build Plan 1 (PR #505, pushed), with all 7 conflicts resolved and both tap-to-confirm and skins kept. s2 is not done: the code checks are green, but #505 stays a draft because its screenshots were never sent to UI Review, so the merge queue will not take it. The headless shots stop at Waiting for axHub (the browser cannot reach axhub.amberxai.com and there is no local hub on :18080). To land it: take desktop and phone shots of Build orchestrator (any tab), Settings > Appearance (Assets with edits) and the banner right-click Skins menu, then run review.mjs submit with --pr 505. Or approve it without shots and mark #505 ready.",
      "at": "2026-11-12T22:27:34.850Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-12T23:00:44.345Z"
     }
    ],
    "approvals": [],
