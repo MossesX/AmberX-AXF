@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T11:07:05.015Z",
+ "updatedAt": "2026-11-12T11:07:43.213Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -106925,7 +106925,7 @@
    "branch": "claude/show-commits-behind-main-on-every-build-table-an",
    "pr": "",
    "createdAt": "2026-11-12T10:39:34.736Z",
-   "updatedAt": "2026-11-12T11:04:13.913Z",
+   "updatedAt": "2026-11-12T11:07:41.618Z",
    "builtAt": "",
    "notes": [
     {
@@ -106939,6 +106939,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-show-commits-behind-main-on-every-build-table-an--lenny, own login copy)",
      "at": "2026-11-12T10:52:04.683Z"
+    },
+    {
+     "text": "Headless run axf-show-commits-behind-main-on-every-build-table-an--lenny: brief only · start 11.1K tokens ($0.03) · cost $4.47 · 99 turns · 6 tools, MCP none",
+     "at": "2026-11-12T11:07:41.618Z"
     }
    ],
    "approvals": [],
