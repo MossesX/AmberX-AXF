@@ -632,6 +632,11 @@ export function tick({ env = process.env } = {}) {
       truth = liveTruth.read();
     } catch (e) { logLine({ event: 'live-truth-reconcile-failed', error: str(e.message, 300) }); }
   }
+  // keep the console's copy fresh between ticks: the 3-second publisher (same lock as cron axf-live-truth, so one runs)
+  if (truth?.source === 'host' && env.AXF_LIVE_TRUTH_WATCH !== 'off') {
+    try { spawn('flock', ['-n', '/run/axf-live-truth.lock', 'timeout', '70', process.execPath, join(REPO_ROOT, 'framework/cli/live-truth.mjs'), 'watch', '--for', '58', '--every', '3'], { cwd: REPO_ROOT, detached: true, stdio: 'ignore' }).on('error', () => {}).unref(); }
+    catch (e) { logLine({ event: 'live-truth-watch-failed', error: str(e.message, 300) }); }
+  }
   const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
   const read = accountsRead(store, settings, env); const accounts = read.accounts; const sl = slotsNow();
   // the console (in its container) can't see the logins: it reads what the host saw here
