@@ -776,9 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 21:47 UTC · `asset-overrides-changed-asset-settings-override` added (0 steps) (all) · console
-- 2026-11-10 21:47 UTC · `asset-overrides-changed-asset-settings-override` → queued, note (all) · console
-- 2026-11-10 21:47 UTC · `convert-every-app-into-a-molly-module-expenses-c` → running, note (all) · pipeline
 - 2026-11-10 21:47 UTC · `convert-every-app-into-a-molly-module-expenses-c` branch claude/convert-every-app-into-a-molly-module-expenses-c (all) · pipeline
 - 2026-11-10 21:47 UTC · `convert-every-app-into-a-molly-module-expenses-c` note (all) · orchestrator
 - 2026-11-10 21:47 UTC · `no-veto-timer-on-navigation-follow-amber-open-x` PR #476 (all) · builds-live
@@ -1176,6 +1173,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 01:49 UTC · `molly-gap-expenses-cors` s2 done (all) · orchestrator
 - 2026-11-12 01:49 UTC · `molly-gap-expenses-delete` added (3 steps) (all) · foreign-write
 - 2026-11-12 01:50 UTC · `molly-gap-expenses-cors` s2 done (all) · foreign-write
+- 2026-11-12 01:51 UTC · `amberx-build-notifications-for-every-stage-start` → running, note (all) · pipeline
+- 2026-11-12 01:51 UTC · `amberx-build-notifications-for-every-stage-start` branch claude/amberx-build-notifications-for-every-stage-start (all) · pipeline
+- 2026-11-12 01:51 UTC · `amberx-build-notifications-for-every-stage-start` note (all) · orchestrator
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T01:51:13.537Z",
+ "updatedAt": "2026-11-12T01:51:21.789Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -95397,15 +95397,15 @@
    "title": "AmberX build notifications for every stage: start, complete, ready to merge, merged, live",
    "category": "",
    "detail": "Extends #436 (one AmberX build notification: start + finish). Add AmberX notifications for: ready to merge (PR open, CI green), merged/landed, and live (console redeployed with it). One notification per build that updates in place through the stages rather than spamming; per-stage on/off in notification settings.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/amberx-build-notifications-for-every-stage-start",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T20:56:54.475Z",
-   "updatedAt": "2026-11-12T01:51:12.121Z",
+   "updatedAt": "2026-11-12T01:51:17.869Z",
    "builtAt": "",
    "notes": [
     {
@@ -95419,6 +95419,14 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-12T01:44:04.824Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-amberx-build-notifications-for-every-stage-start--rhonda.",
+     "at": "2026-11-12T01:51:16.038Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-amberx-build-notifications-for-every-stage-start--rhonda, own login copy)",
+     "at": "2026-11-12T01:51:17.869Z"
     }
    ],
    "approvals": [],

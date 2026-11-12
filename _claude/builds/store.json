@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3199,
- "updatedAt": "2026-11-12T01:51:13.537Z",
+ "rev": 3200,
+ "updatedAt": "2026-11-12T01:51:21.789Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -153467,15 +153467,15 @@
    "title": "AmberX build notifications for every stage: start, complete, ready to merge, merged, live",
    "category": "",
    "detail": "Extends #436 (one AmberX build notification: start + finish). Add AmberX notifications for: ready to merge (PR open, CI green), merged/landed, and live (console redeployed with it). One notification per build that updates in place through the stages rather than spamming; per-stage on/off in notification settings.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/amberx-build-notifications-for-every-stage-start",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T20:56:54.475Z",
-   "updatedAt": "2026-11-12T01:51:12.121Z",
+   "updatedAt": "2026-11-12T01:51:17.869Z",
    "builtAt": "",
    "notes": [
     {
@@ -153489,6 +153489,14 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-12T01:44:04.824Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-amberx-build-notifications-for-every-stage-start--rhonda.",
+     "at": "2026-11-12T01:51:16.038Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-amberx-build-notifications-for-every-stage-start--rhonda, own login copy)",
+     "at": "2026-11-12T01:51:17.869Z"
     }
    ],
    "approvals": [],
@@ -153508,18 +153516,18 @@
    "pipeline": {
     "queuedAt": "2026-11-12T01:44:04.125Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-amberx-build-notifications-for-every-stage-start--rhonda",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-12T01:51:14.295Z",
+    "runs": 1,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-12T01:51:14.295Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -153528,7 +153536,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-12T01:51:14.295Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -153612,7 +153620,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
