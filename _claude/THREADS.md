@@ -776,17 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 23:14 UTC · `stall-watchdog-detect-when-nothing-is-building-a` branch claude/stall-watchdog-detect-when-nothing-is-building-a (all) · pipeline
-- 2026-11-10 23:14 UTC · `stall-watchdog-detect-when-nothing-is-building-a` note (all) · orchestrator
-- 2026-11-10 23:15 UTC · `make-hulu-actually-take-builds-dispatcher-counts` note (all) · orchestrator
-- 2026-11-10 23:16 UTC · `make-hulu-actually-take-builds-dispatcher-counts` → pending, note (all) · pipeline
-- 2026-11-10 23:17 UTC · `make-hulu-actually-take-builds-dispatcher-counts` s1 done, → running (all) · orchestrator
-- 2026-11-10 23:17 UTC · `make-hulu-actually-take-builds-dispatcher-counts` s2 done (all) · orchestrator
-- 2026-11-10 23:18 UTC · `make-hulu-actually-take-builds-dispatcher-counts` PR #478 (all) · builds-live
-- 2026-11-10 23:18 UTC · `api-accounts-need-no-approval-builds-route-there` s1 done (all) · orchestrator
-- 2026-11-10 23:19 UTC · `api-accounts-need-no-approval-builds-route-there` s2 done (all) · orchestrator
-- 2026-11-10 23:18 UTC · `make-hulu-actually-take-builds-dispatcher-counts` note (all) · orchestrator
-- 2026-11-10 23:19 UTC · `molly-sign-in-once` s3 done, → built (all) · orchestrator
 - 2026-11-10 23:19 UTC · `molly-sign-in-once` note (all) · orchestrator
 - 2026-11-10 23:19 UTC · `api-accounts-need-no-approval-builds-route-there` PR #479 (all) · builds-live
 - 2026-11-10 23:20 UTC · `orchestrator-merge-first-switch-separate-merger` s1 done (all) · orchestrator
@@ -1176,6 +1165,17 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:08 UTC · `headless-loop-guards-stop-endless-loops-and-sear` → archived, note (all) · console
 - 2026-11-12 02:08 UTC · `rebase-land-approve-button-fix-approve-goes-stra` → archived, note (all) · console
 - 2026-11-12 02:08 UTC · `style-rule-every-design-element-overrides-axhub-` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `toolbar-labels-managed-in-each-toolbar-s-setting` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `tap-to-confirm-switch-in-every-toolbar-s-own-set` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `big-library-of-snappable-title-bar-widgets-each-` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `every-banner-title-bar-and-toolbar-snappable-ass` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `clean-up-plan-studio-simplify-remove-redundancy` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `agent-profile-schema-skills-personas-with-a-big-` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `standing-rule-every-ui-ships-with-full-api-contr` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `adopt-today-s-direct-launched-builds-record-only` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `orchestrator-chain-trace-brownie-molly-group-cha` → archived, note (all) · console
+- 2026-11-12 02:09 UTC · `investor-demo-player-shell-with-login-gate-skins` → archived, note (all) · console
+- 2026-11-12 02:09 UTC · `slotstest-2208251-b` → archived, note (all) · console
 
 ## Token passes (log)
 
