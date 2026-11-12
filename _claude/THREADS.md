@@ -777,7 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:28 UTC · `banner-fix-fallback` note (all) · backfill
 - 2026-11-12 03:28 UTC · `amberx-push` note (all) · backfill
 - 2026-11-12 03:28 UTC · `amberx-voice-center` note (all) · backfill
 - 2026-11-12 03:28 UTC · `amberx-assistant-agents` note (all) · backfill
@@ -1177,6 +1176,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 11:15 UTC · `show-commits-behind-main-on-every-build-table-an` → pending, note (all) · pipeline
 - 2026-11-12 11:16 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` note (all) · orchestrator
 - 2026-11-12 11:30 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` → pending, note (all) · reconciler
+- 2026-11-12 11:40 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` → pending, note (all) · reconciler
 
 ## Token passes (log)
 

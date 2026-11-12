@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3577,
- "updatedAt": "2026-11-12T11:30:38.268Z",
+ "rev": 3578,
+ "updatedAt": "2026-11-12T11:40:37.155Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174527,14 +174527,14 @@
    "title": "Unlink Plan Studio from builds; delete all Plan Studio plans",
    "category": "",
    "detail": "1) Delete every Plan Studio plan (planner.plans), plus a delete action on plans via REST/MCP/CLI/voice (none exists today). 2) Builds must never create, sync or update Plan Studio plans: remove build-plan@1 per-build plans (plan-studio-backfill-12h), any build-todo-sync plan creation, the 'every build goes to Plan Studio' rule in briefs/RULES, and any sync hooks between the builds store and plans. Plan Studio stays as a standalone tool only. Tests: adding/finishing a build creates no plan.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "mcp",
    "pendingId": "unlink-plan-studio-from-builds-delete-all-plan-s",
    "branch": "claude/unlink-plan-studio-from-builds-delete-all-plan-s",
    "pr": "",
    "createdAt": "2026-11-12T10:49:12.963Z",
-   "updatedAt": "2026-11-12T11:16:48.575Z",
+   "updatedAt": "2026-11-12T11:40:35.817Z",
    "builtAt": "",
    "notes": [
     {
@@ -174552,6 +174552,10 @@
     {
      "text": "Headless run axf-unlink-plan-studio-from-builds-delete-all-plan-s--gina: brief only · start 11.2K tokens ($0.03) · cost $4.73 · 106 turns · 6 tools, MCP none",
      "at": "2026-11-12T11:16:48.575Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-12T11:40:35.817Z"
     }
    ],
    "approvals": [],
@@ -174681,7 +174685,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
