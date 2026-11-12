@@ -776,8 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 21:26 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` branch claude/land-all-97-built-but-unmerged-builds-skins-firs, PR #474 (all) · builds-live
-- 2026-11-10 21:27 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` s3 done, → running (all) · orchestrator
 - 2026-11-10 21:27 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` note (all) · orchestrator
 - 2026-11-10 21:28 UTC · `finish-and-land-the-git-status-board-every-ready` → running, note (all) · pipeline
 - 2026-11-10 21:28 UTC · `finish-and-land-the-git-status-board-every-ready` branch claude/finish-and-land-the-git-status-board-every-ready (all) · pipeline
@@ -1176,6 +1174,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 01:44 UTC · `open-any-website-by-voice-on-the-phone-optionall` → queued, note (all) · console
 - 2026-11-12 01:44 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` note (all) · orchestrator
 - 2026-11-12 01:44 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` → running, note (all) · pipeline
+- 2026-11-12 01:44 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` branch claude/bug-asset-settings-nav-menu-tab-bar-toolbar-chan (all) · pipeline
+- 2026-11-12 01:44 UTC · `orchestrator-checks-shipped-features-before-spli` → queued, note (all) · console
 
 ## Token passes (log)
 

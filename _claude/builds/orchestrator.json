@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T01:44:18.975Z",
+ "updatedAt": "2026-11-12T01:44:26.111Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -71553,14 +71553,14 @@
    "title": "Orchestrator checks Shipped features before splitting any job",
    "category": "",
    "detail": "When the orchestrator receives a job and splits it into steps, it first checks the Shipped features ledger (which must hold every feature the orchestrator has ever built). It must: not build anything twice; not break or redo anything already done; and if a step would conflict with or change something already built, notify Brett (AmberX notification) and wait before going on. Make the Shipped features ledger complete (backfill every landed build) and keep it updated on every land. Also standing rule: ONLY the orchestrator launches builds, picks model and account, owns pending/queue and monitors status; voice/chat sessions only hand it requests.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "mcp",
    "pendingId": "orchestrator-checks-shipped-features-before-spli",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T17:22:53.861Z",
-   "updatedAt": "2026-11-10T19:09:46.307Z",
+   "updatedAt": "2026-11-12T01:44:19.349Z",
    "builtAt": "",
    "notes": [
     {
@@ -71582,6 +71582,10 @@
     {
      "text": "Merged with orchestrator-checks-each-build-against-main-righ for the 'never build twice' part: every build is now checked against main (Shipped features, its PR, its branch, the files its steps create) right before it is queued and again at dispatch; done = closed, partly done = only what is left is queued. Still open here: the check at split time, the AmberX conflict notice and the ledger backfill.",
      "at": "2026-11-10T19:09:46.307Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T01:44:19.349Z"
     }
    ],
    "approvals": [],
@@ -96552,7 +96556,7 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/bug-asset-settings-nav-menu-tab-bar-toolbar-chan",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:45:52.947Z",
