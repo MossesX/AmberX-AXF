@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3285,
- "updatedAt": "2026-11-12T02:15:44.592Z",
+ "rev": 3286,
+ "updatedAt": "2026-11-12T02:16:03.767Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -155709,10 +155709,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/bug-asset-settings-nav-menu-tab-bar-toolbar-chan",
-   "pr": "",
+   "pr": "#503",
    "priority": "P0",
    "createdAt": "2026-11-10T21:45:52.947Z",
-   "updatedAt": "2026-11-12T01:55:16.317Z",
+   "updatedAt": "2026-11-12T02:15:58.964Z",
    "builtAt": "",
    "notes": [
     {
@@ -155872,7 +155872,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

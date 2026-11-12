@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:15:44.592Z",
+ "updatedAt": "2026-11-12T02:16:03.767Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -97085,10 +97085,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/bug-asset-settings-nav-menu-tab-bar-toolbar-chan",
-   "pr": "",
+   "pr": "#503",
    "priority": "P0",
    "createdAt": "2026-11-10T21:45:52.947Z",
-   "updatedAt": "2026-11-12T01:55:16.317Z",
+   "updatedAt": "2026-11-12T02:15:58.964Z",
    "builtAt": "",
    "notes": [
     {
