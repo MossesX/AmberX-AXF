@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
 import type { NavItem } from '../../core';
 import { NAV_OPEN_KEY, NAV_COLLAPSED_KEY, NAV_WIDTH_KEY } from '../../core/runtime';
+import { CHROME_FOLD_LABELS } from '../../core/engines/chrome-settings-rules.mjs';
 import { navAccent, navArrange, navContains, navFollow, navPathTo, navToggle, parseNavOpen, type NavStyleData } from '../../core/engines/navstyle';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import type { ViewMap } from '../AppShell';
@@ -91,7 +92,11 @@ export function NavTree({ sections, views, style, orient, header }: { sections: 
       toggle(it.id);
       return;
     }
-    if (it.view) rt.navigate(it.view);
+    if (it.view) {
+      rt.navigate(it.view);
+      // auto-collapse: opening a page folds the nav to its icons again
+      if (!narrow) rt.setChromeFold('nav-menu', 'app', 'use');
+    }
   };
 
   const renderItems = (items: readonly NavItem[], depth: number, sheet = false): JSX.Element[] => items.map((it, i) => {
@@ -185,12 +190,12 @@ export function NavTree({ sections, views, style, orient, header }: { sections: 
 
   return (
     <div className="fx-navs" data-orient={orient}>
-      <nav ref={navRef} className={`fx-nav fx-nav--${rt.asset('nav-menu').data.style}`} data-orient={orient} aria-label="Main" data-axf-nav="app" data-fx-ctx-target="nav" data-fx-ctx-payload="app" onPointerDown={onDown}>
+      <nav ref={navRef} className={`fx-nav fx-nav--${rt.asset('nav-menu').data.style}`} data-orient={orient} aria-label="Main" data-axf-nav="app" data-axf-folded={collapsed ? 'on' : 'off'} data-fx-ctx-target="nav" data-fx-ctx-payload="app" onPointerDown={onDown}>
         {(header || (style.width.collapsible && !narrow)) && orient === 'vertical' && (
           <div className="fx-nav__head">
             {header && <div className="fx-nav__header">{header}</div>}
             {style.width.collapsible && !narrow && (
-              <button type="button" className="fx-iconbtn fx-nav__fold" title={collapsed ? 'Show labels' : 'Collapse to icons'} aria-label={collapsed ? 'Show labels' : 'Collapse to icons'} onClick={() => (collapsed ? rt.settings.clear(NAV_COLLAPSED_KEY) : rt.settings.set(NAV_COLLAPSED_KEY, true))}>
+              <button type="button" className="fx-iconbtn fx-nav__fold" data-axf-fold="nav-menu" aria-expanded={!collapsed} title={collapsed ? CHROME_FOLD_LABELS['nav-menu'].unfold : CHROME_FOLD_LABELS['nav-menu'].fold} aria-label={collapsed ? CHROME_FOLD_LABELS['nav-menu'].unfold : CHROME_FOLD_LABELS['nav-menu'].fold} onClick={() => (collapsed ? rt.settings.clear(NAV_COLLAPSED_KEY) : rt.settings.set(NAV_COLLAPSED_KEY, true))}>
                 <Icon name={collapsed ? 'chevron-right' : 'chevron-left'} size={14} />
               </button>
             )}

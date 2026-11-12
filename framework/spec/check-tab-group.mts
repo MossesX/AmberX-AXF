@@ -30,8 +30,8 @@ eq(t.enums.style, TAB_GROUP_STYLES, 'asset-types.json style enum = engine');
 eq(t.enums.position, TAB_GROUP_POSITIONS, 'position enum = engine');
 eq(t.enums.overflow, TAB_GROUP_OVERFLOWS, 'overflow enum = engine');
 eq(t.enums.display, TAB_GROUP_DISPLAYS, 'display enum = engine');
-for (const f of ['position', 'density', 'overflow', 'display', 'showIcons', 'divider', 'sticky', 'collapsible', 'closable', 'reorderable', 'badges', 'rememberLast']) ok(typeof t.optional_fields?.[f] === 'string', `optional field ${f} documented`);
-eq(Object.keys(TAB_GROUP_DEFAULT).sort(), ['align', 'badges', 'closable', 'collapsible', 'density', 'display', 'divider', 'overflow', 'position', 'rememberLast', 'reorderable', 'showIcons', 'sticky', 'style'], 'default covers every field');
+for (const f of ['position', 'density', 'overflow', 'display', 'showIcons', 'divider', 'sticky', 'collapsible', 'autoCollapse', 'closable', 'reorderable', 'badges', 'rememberLast']) ok(typeof t.optional_fields?.[f] === 'string', `optional field ${f} documented`);
+eq(Object.keys(TAB_GROUP_DEFAULT).sort(), ['align', 'autoCollapse', 'badges', 'closable', 'collapsible', 'density', 'display', 'divider', 'overflow', 'position', 'rememberLast', 'reorderable', 'showIcons', 'sticky', 'style'], 'default covers every field');
 
 /* ---- defaults.json ---- */
 const defaults = JSON.parse(readFileSync(join(root, 'defaults.json'), 'utf8'));

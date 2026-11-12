@@ -1,6 +1,6 @@
 /** Shell chrome: application menu bar, toolbar, navigation menu, status bar. */
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from 'react';
-import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION, type NavItem } from '../../core';
+import { ASSET_TYPES, assetTypeSpecs, CHROME_FOLD_KEY, CHROME_FOLD_LABELS, CHROME_INSTANCE_KEY, FRAMEWORK_VERSION, type AxfRuntime, type NavItem } from '../../core';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 import { NavTree } from './NavTree';
@@ -14,6 +14,39 @@ import { ArrangeBar, arrangedSide, useArrange } from './Arrange';
 import type { PlacedAttachment } from '../../core/engines/widgets';
 import type { CompiledMenuItem } from '../../core/engines/appmenu';
 
+/* ---------------- fold (collapse / expand + auto-collapse, chrome-settings-rules.mjs) ---------------- */
+
+/**
+ * One chrome piece's fold, live: re-renders when its fold setting or its own overrides change. Every tab group,
+ * toolbar, nav menu and app menu has a collapse / expand button (field `collapsible`, on by default) and an
+ * auto-collapse switch (field `autoCollapse`): both in the piece's settings dialog and through `chrome.set`;
+ * folding is `chrome.fold:<type>:<instance>:<fold|unfold|toggle>` (installChrome).
+ */
+export function useChromeFold(type: 'toolbar' | 'nav-menu' | 'app-menu', instance = 'app') {
+  const rt = useRuntime();
+  useAxfState();
+  const [, tick] = useState(0);
+  const key = CHROME_FOLD_KEY(type, instance) as string;
+  useEffect(() => {
+    const offs = [key, CHROME_INSTANCE_KEY(type, instance)].map((k) => rt.settings.onChange(k, () => tick((t) => t + 1)));
+    return () => offs.forEach((off) => off());
+  }, [rt, key, type, instance]);
+  const fold = rt.chromeFold(type, instance);
+  const labels = CHROME_FOLD_LABELS[type];
+  return { ...fold, label: fold.folded ? labels.unfold : labels.fold, set: (event: 'fold' | 'unfold' | 'toggle' | 'use') => rt.setChromeFold(type, instance, event) };
+}
+
+/** After a click on one of a piece's own controls (not its fold button), report a use so auto-collapse can fold it. */
+function afterUse(rt: AxfRuntime, type: string, instance: string, auto: boolean) {
+  return (e: { target: EventTarget }) => {
+    if (!auto) return;
+    const el = (e.target as Element).closest?.('button, a, [role="menuitem"], [role="menuitemradio"], [role="menuitemcheckbox"]');
+    if (!el || el.closest('[data-axf-fold]')) return;
+    // after the control's own handler ran (it may open a dialog or move the page)
+    window.setTimeout(() => rt.setChromeFold(type, instance, 'use'), 0);
+  };
+}
+
 /* ---------------- MenuBar (app-menu asset) ---------------- */
 
 export function MenuBar() {
@@ -26,6 +59,8 @@ export function MenuBar() {
   const role = policy.roles.find((r) => r.id === state.role);
   // The compiled menu: the asset's menus + every contribution + live lists, gated for the current role (core/engines/appmenu.ts).
   const menus = rt.appMenu().menus;
+  // collapse / expand: folded, the bar keeps its brand and one Menu button that expands it again
+  const fold = useChromeFold('app-menu');
 
   useEffect(() => {
     if (!open) return;
@@ -47,14 +82,21 @@ export function MenuBar() {
   };
 
   return (
-    <div className="fx-menubar" ref={ref} role="menubar" onKeyDown={onKey} data-fx-ctx-target="app-menu" data-fx-ctx-payload="app">
+    <div className={`fx-menubar${fold.folded ? ' is-collapsed' : ''}`} ref={ref} role="menubar" onKeyDown={onKey} data-fx-ctx-target="app-menu" data-fx-ctx-payload="app" data-axf-folded={fold.folded ? 'on' : 'off'}>
       <div className="fx-brand">
         {/* the app's own name (manifest): the branding package is one look shared by every app through axHub, so it gives the
             mark, not the name (Nov 1 2026: the console is GizmoX AI Studio, axHub web is AXHub, AmberX is AmberX) */}
         {menuMark?.svg ? <BrandMark slot="app-menu" height={18} /> : <span className="fx-brand__mark" aria-hidden="true" />}
         <span className="fx-brand__name">{rt.manifest.app.name || rt.branding()?.name}</span>
       </div>
-      <div className="fx-menubar__menus">
+      {fold.folded && (
+        <div className="fx-menubar__menus">
+          <button type="button" className="fx-menubar__btn" data-axf-fold="app-menu" aria-expanded="false" aria-label={fold.label} title={fold.label} onClick={() => fold.set('unfold')}>
+            <Icon name="menu" size={14} /> Menu
+          </button>
+        </div>
+      )}
+      {!fold.folded && <div className="fx-menubar__menus">
         {menus.map((m) => (
           <div key={m.id} className="fx-menubar__item">
             <button
@@ -68,10 +110,15 @@ export function MenuBar() {
             >
               {m.label}
             </button>
-            {open === m.id && <AppMenuDropdown key={m.id} menu={m} onDone={() => setOpen(null)} />}
+            {open === m.id && <AppMenuDropdown key={m.id} menu={m} onDone={() => { setOpen(null); fold.set('use'); }} />}
           </div>
         ))}
-      </div>
+        {fold.collapsible && (
+          <button type="button" className="fx-iconbtn fx-menubar__fold" data-axf-fold="app-menu" aria-expanded="true" aria-label={fold.label} title={fold.label} onClick={() => { setOpen(null); fold.set('fold'); }}>
+            <Icon name="chevron-left" size={14} />
+          </button>
+        )}
+      </div>}
       {/* Help mode's switch (Brett, Nov 1 2026): a ? that lights up while it's on */}
       <HelpModeButton />
       <button type="button" className="fx-rolechip" onClick={() => rt.navigate('account')} title="User account control">
@@ -96,14 +143,14 @@ export function Toolbar({ views }: { views: ViewMap }) {
   const brand = useBrandPlace('toolbar');
   const brandHost = brandHostProps(brand);
   const drawWidget = (w: PlacedAttachment, i: number) => arrange.item(w, i, 'fx-toolbar__widget', { 'data-axf-toolbar-widget': w.key, 'data-axf-origin': w.origin }, <WidgetView type={w.type} id={w.id} host="toolbar" />);
-  // `collapsible` toolbars fold to a thin handle; the fold is a per-device setting (axf.toolbar.collapsed).
-  const collapsible = tb.data.collapsible === true;
-  const collapsed = rt.toolbarCollapsed();
-  const fold = (on: boolean) => rt.setToolbarCollapsed(on);
-  if (collapsible && collapsed) {
+  // Collapse / expand (on unless the asset or its settings turn it off) folds the toolbar to a thin handle, per device
+  // (axf.toolbar.collapsed); auto-collapse folds it again after one of its tools is used.
+  const fold = useChromeFold('toolbar');
+  const collapsible = fold.collapsible;
+  if (collapsible && fold.folded) {
     return (
-      <div className={`fx-toolbar fx-toolbar--${tb.data.variant} is-collapsed`} data-align={tb.data.align} role="toolbar" aria-label="Toolbar (folded)" data-axf-toolbar="app">
-        <button type="button" className="fx-toolbtn fx-toolbar__fold" aria-label="Unfold the toolbar" aria-expanded="false" onClick={() => fold(false)}><Icon name="chevron-down" size={14} /></button>
+      <div className={`fx-toolbar fx-toolbar--${tb.data.variant} is-collapsed`} data-align={tb.data.align} role="toolbar" aria-label="Toolbar (collapsed)" data-axf-toolbar="app" data-axf-folded="on" data-fx-ctx-target="toolbar" data-fx-ctx-payload="app">
+        <button type="button" className="fx-toolbtn fx-toolbar__fold" data-axf-fold="toolbar" aria-label={fold.label} title={fold.label} aria-expanded="false" onClick={() => fold.set('unfold')}><Icon name="chevron-down" size={14} /></button>
       </div>
     );
   }
@@ -131,7 +178,7 @@ export function Toolbar({ views }: { views: ViewMap }) {
   };
 
   return (
-    <div className={`fx-toolbar fx-toolbar--${tb.data.variant}${arrange.on ? ' is-arranging' : ''} ${brandHost.className}`.trim()} data-align={tb.data.align} role="toolbar" aria-label="Toolbar" data-axf-toolbar="app" data-fx-ctx-target="toolbar" data-fx-ctx-payload="app" data-axf-arrange-host="toolbar" data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
+    <div className={`fx-toolbar fx-toolbar--${tb.data.variant}${arrange.on ? ' is-arranging' : ''} ${brandHost.className}`.trim()} data-align={tb.data.align} role="toolbar" aria-label="Toolbar" data-axf-toolbar="app" data-axf-folded="off" data-fx-ctx-target="toolbar" data-fx-ctx-payload="app" data-axf-arrange-host="toolbar" data-fx-brand-mode={brandHost['data-fx-brand-mode']} onClickCapture={afterUse(rt, 'toolbar', 'app', fold.autoCollapse && !arrange.on)}>
       <ArrangeBar host="toolbar" label="toolbar" />
       {brand?.svg && <span className="fx-toolbar__brand"><BrandMark slot="toolbar" height={20} /></span>}
       {(arrange.on || widgets.start.length > 0) && <span className="fx-toolbar__widgets is-start" {...arrange.sideProps('start')}>{arrangedSide(arrange, 'start', widgets.start, drawWidget)}</span>}
@@ -144,7 +191,7 @@ export function Toolbar({ views }: { views: ViewMap }) {
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Go to view or swap asset…" aria-label="Search views and assets" />
         </form>
       )}
-      {collapsible && <button type="button" className="fx-toolbtn fx-toolbar__fold" aria-label="Fold the toolbar" aria-expanded="true" onClick={() => fold(true)}><Icon name="chevron-up" size={14} /></button>}
+      {collapsible && <button type="button" className="fx-toolbtn fx-toolbar__fold" data-axf-fold="toolbar" aria-label={fold.label} title={fold.label} aria-expanded="true" onClick={() => fold.set('fold')}><Icon name="chevron-up" size={14} /></button>}
     </div>
   );
 }
@@ -214,19 +261,29 @@ function ToolbarButton({ item: it, variant, lockedNote }: { item: ToolbarItem; v
 
 /**
  * A toolbar drawn from a named toolbar asset rather than the app's active one: a page's own toolbar (the settings
- * interface names one in its `toolbar` field). Same items, look and gating as the app toolbar; no widgets or fold.
+ * interface names one in its `toolbar` field). Same items, look and gating as the app toolbar; no widgets. It folds
+ * like the app toolbar (its own fold setting, instance = the asset id).
  * `search` fills the asset's search spot when it has `showSearch`. Null when the asset isn't registered.
  */
 export function AssetToolbar({ id, search, label = 'Page toolbar' }: { id: string; search?: ReactNode; label?: string }) {
   const rt = useRuntime();
   useAxfState();
   const tb = rt.registry.list('toolbar').find((a) => a.id === id);
+  const fold = useChromeFold('toolbar', id);
   if (!tb) return null;
   const data = tb.data as { variant: string; align?: string; showSearch?: boolean; groups: ToolbarGroup[] };
+  if (fold.collapsible && fold.folded) {
+    return (
+      <div className={`fx-toolbar fx-toolbar--${data.variant} is-collapsed`} data-align={data.align} role="toolbar" aria-label={`${label} (collapsed)`} data-axf-toolbar-asset={tb.id} data-axf-folded="on" data-fx-ctx-target="toolbar" data-fx-ctx-payload={tb.id}>
+        <button type="button" className="fx-toolbtn fx-toolbar__fold" data-axf-fold="toolbar" aria-label={fold.label} title={fold.label} aria-expanded="false" onClick={() => fold.set('unfold')}><Icon name="chevron-down" size={14} /></button>
+      </div>
+    );
+  }
   return (
-    <div className={`fx-toolbar fx-toolbar--${data.variant}`} data-align={data.align} role="toolbar" aria-label={label} data-axf-toolbar-asset={tb.id}>
+    <div className={`fx-toolbar fx-toolbar--${data.variant}`} data-align={data.align} role="toolbar" aria-label={label} data-axf-toolbar-asset={tb.id} data-axf-folded="off" data-fx-ctx-target="toolbar" data-fx-ctx-payload={tb.id} onClickCapture={afterUse(rt, 'toolbar', tb.id, fold.autoCollapse)}>
       {data.groups.map((g) => <ToolbarGroupView key={g.id} group={g} variant={data.variant} />)}
       {data.showSearch && search}
+      {fold.collapsible && <button type="button" className="fx-toolbtn fx-toolbar__fold" data-axf-fold="toolbar" aria-label={fold.label} title={fold.label} aria-expanded="true" onClick={() => fold.set('fold')}><Icon name="chevron-up" size={14} /></button>}
     </div>
   );
 }
@@ -286,11 +343,24 @@ export function NavMenu({ views }: { views: ViewMap }) {
   const orient = layout.data.nav === 'top' ? 'horizontal' : 'vertical';
   // a nav-menu that opts in to nav-style@1 draws sub menus (NavTree); every other nav is drawn as it always was
   const navStyle = rt.navStyleData();
+  // collapse / expand to icons (vertical, not on a phone), auto-collapse after a page is opened
+  const fold = useChromeFold('nav-menu');
   if (navStyle) return <NavTree sections={mergeNavSections([...nav.data.sections, ...rt.navExtras])} views={views} style={navStyle} orient={orient} header={nav.data.header} />;
+  const narrow = 'data-fx-narrow' in rt.viewportAttrs();
+  const canFold = fold.collapsible && orient === 'vertical' && !narrow;
 
   return (
-    <nav className={`fx-nav fx-nav--${nav.data.style}`} data-orient={orient} aria-label="Main" data-axf-nav="app" data-fx-ctx-target="nav" data-fx-ctx-payload="app">
-      {nav.data.header && orient === 'vertical' && <div className="fx-nav__header">{nav.data.header}</div>}
+    <nav className={`fx-nav fx-nav--${nav.data.style}`} data-orient={orient} aria-label="Main" data-axf-nav="app" data-axf-folded={canFold && fold.folded ? 'on' : 'off'} data-fx-ctx-target="nav" data-fx-ctx-payload="app">
+      {(nav.data.header || canFold) && orient === 'vertical' && (
+        <div className="fx-nav__head">
+          {nav.data.header && <div className="fx-nav__header">{nav.data.header}</div>}
+          {canFold && (
+            <button type="button" className="fx-iconbtn fx-nav__fold" data-axf-fold="nav-menu" aria-expanded={!fold.folded} title={fold.label} aria-label={fold.label} onClick={() => fold.set('toggle')}>
+              <Icon name={fold.folded ? 'chevron-right' : 'chevron-left'} size={14} />
+            </button>
+          )}
+        </div>
+      )}
       {mergeNavSections([...nav.data.sections, ...rt.navExtras]).map((sec, i) => {
         const items = sec.items.filter((it) => views[it.view] && rt.gate(it.requires) !== 'hide' && !rt.takenByHost({ view: it.view }));
         if (!items.length) return null;
@@ -311,7 +381,7 @@ export function NavMenu({ views }: { views: ViewMap }) {
                   data-axf-view-link={it.view}
                   data-fx-ctx-target="nav-item"
                   data-fx-ctx-payload={it.view}
-                  onClick={() => rt.navigate(it.view)}
+                  onClick={() => { rt.navigate(it.view); if (canFold) fold.set('use'); }}
                 >
                   <Icon name={locked ? 'lock' : it.icon} size={17} />
                   <span className="fx-nav__text">{it.label}</span>

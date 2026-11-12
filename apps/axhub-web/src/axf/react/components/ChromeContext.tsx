@@ -22,9 +22,11 @@
  *   chrome.reset:<type>:<instance>               drop every override + the instance's own asset pick
  *   chrome.swap:<type>:<instance>:<asset|next>   use another asset (tab groups: for this row; the rest: the app's slot)
  *   chrome.interface:<type>:<settings id|default|custom|reset>   which settings interface the dialog uses
+ *   chrome.fold:<type>:<instance>:<fold|unfold|toggle>   collapse / expand a tab group, toolbar, nav menu or app menu
+ *   chrome.set:<type>:<instance>:collapsible|autoCollapse:on|off   its collapse button and its auto-collapse switch
  */
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { CHROME_FIELDS, CHROME_ICONS, CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, CHROME_LABELS, CHROME_MANY, CHROME_MOVES, CHROME_SETTINGS_PATCH_KEY, CHROME_SETTINGS_PICK_KEY, CHROME_SETTINGS_TABS, CHROME_TYPES, FRAMEWORK_MODULE, POSITION_LABELS, SETTINGS_LEVEL_KEY, SETTINGS_LEVELS, SETTINGS_LEVEL_LABEL, chromeFieldValue, chromeLabel, chromeSettingsChoices, chromeSettingsCustomId, chromeSettingsDefaultId, chromeSettingsPick, chromeTypeOfTarget, isChromeInstanceId, isChromeType, normalizeInstanceOverride, normalizeSettingsUi, resolveSettingsChain, settingsLevelOf, settingsLevelRank, type AssetType, type AxfRuntime, type ChromeField, type ChromeType, type SettingsLevel, type SettingsUi, type SettingSpec, type SettingValue } from '../../core';
+import { CHROME_FIELDS, CHROME_FOLD_LABELS, CHROME_ICONS, CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, CHROME_LABELS, CHROME_MANY, CHROME_MOVES, CHROME_SETTINGS_PATCH_KEY, CHROME_SETTINGS_PICK_KEY, CHROME_SETTINGS_TABS, CHROME_TYPES, FRAMEWORK_MODULE, POSITION_LABELS, SETTINGS_LEVEL_KEY, SETTINGS_LEVELS, SETTINGS_LEVEL_LABEL, chromeFieldValue, chromeLabel, chromeSettingsChoices, chromeSettingsCustomId, chromeSettingsDefaultId, chromeSettingsPick, chromeTypeOfTarget, isChromeFoldType, isChromeInstanceId, isChromeType, normalizeInstanceOverride, normalizeSettingsUi, resolveSettingsChain, settingsLevelOf, settingsLevelRank, type AssetType, type AxfRuntime, type ChromeField, type ChromeType, type SettingsLevel, type SettingsUi, type SettingSpec, type SettingValue } from '../../core';
 import { CONTROL_TOKEN_SLOTS, withTokenOverride, withoutTokenOverride } from '../../core/engines/control-tokens.mjs';
 import type { MenuEntry } from '../../core/engines/windows';
 import { useAxfState, useRuntime } from '../AxfProvider';
@@ -64,6 +66,11 @@ function baseDataOf(rt: AxfRuntime, type: ChromeType, instance: string): Record<
     const pick = rt.settings.get(CHROME_INSTANCE_ASSET_KEY(type, instance));
     const own = typeof pick === 'string' && pick ? rt.registry.get('tab-group', pick) : null;
     return (own?.data as unknown as Record<string, unknown>) ?? (rt.assetOrNull('tab-group')?.data as unknown as Record<string, unknown>) ?? null;
+  }
+  // a page toolbar (AssetToolbar) is its own instance: its asset id
+  if (type === 'toolbar' && instance !== CHROME_APP_INSTANCE) {
+    const own = rt.registry.list('toolbar').find((a) => a.id === instance);
+    if (own) return own.data as unknown as Record<string, unknown>;
   }
   return (rt.assetOrNull(type as AssetType)?.data as Record<string, unknown>) ?? null;
 }
@@ -135,6 +142,12 @@ export function chromeMenu(rt: AxfRuntime, type: ChromeType, instance: string): 
     const cur = m.via === 'instance' ? chromeFieldValue(type, baseDataOf(rt, type, instance), rt.settings.get(CHROME_INSTANCE_KEY(type, instance)), m.field) : (rt.asset('layout').data as unknown as Record<string, unknown>)[m.field];
     items.push({ id: `chrome-move-${type}`, label: 'Move', icon: 'move', items: m.positions.map((p) => ({ id: `chrome-move-${type}-${p}`, label: `${POSITION_LABELS[p]}${cur === p ? ' ✓' : ''}`, action: `chrome.move:${type}:${instance}:${p}` })) });
   }
+  // collapse / expand + auto-collapse (tab groups, toolbars, nav menus, app menus)
+  if (isChromeFoldType(type)) {
+    const f = rt.chromeFold(type, instance);
+    if (f.collapsible) items.push({ id: `chrome-fold-${type}`, label: f.folded ? CHROME_FOLD_LABELS[type as keyof typeof CHROME_FOLD_LABELS].unfold : CHROME_FOLD_LABELS[type as keyof typeof CHROME_FOLD_LABELS].fold, icon: f.folded ? 'chevron-down' : 'chevron-up', action: `chrome.fold:${type}:${instance}:toggle` });
+    items.push({ id: `chrome-auto-${type}`, label: `Auto-collapse${f.autoCollapse ? ' ✓' : ''}`, icon: 'minimize', action: `chrome.set:${type}:${instance}:autoCollapse:${f.autoCollapse ? 'off' : 'on'}` });
+  }
   // every chrome kind leads to this app's own look; the action asks first (lib-settings)
   if (rt.actions.list().some(({ id }) => id === 'skin.restore.ask')) items.push({ id: `chrome-restore-${type}`, label: 'Restore to default…', icon: 'refresh', action: 'skin.restore.ask' });
   return items;
@@ -158,6 +171,14 @@ export function installChrome(rt: AxfRuntime): void {
     }, { label: 'Set one chrome setting (chrome.set:<type>:<instance>:<field>:<value>)', params: true, requires: 'assets.swap' });
     rt.actions.register('chrome.reset', ([type, instance], ctx) => { const ty = t(type); if (!ty) return; const i = inst(ty, instance, ctx); rt.settings.clear(CHROME_INSTANCE_KEY(ty, i)); rt.settings.clear(CHROME_INSTANCE_ASSET_KEY(ty, i)); }, { label: 'Reset a chrome piece to its asset', params: true, requires: 'assets.swap' });
     rt.actions.register('chrome.swap', ([type, instance, asset = 'next'], ctx) => { const ty = t(type); if (ty && !swapChrome(rt, ty, inst(ty, instance, ctx), asset)) rt.toast(`No ${chromeLabel(ty).toLowerCase()} asset "${asset}".`, 'warning', 'Change'); }, { label: 'Use another chrome asset (chrome.swap:<type>:<instance>:<asset|next>)', params: true, requires: 'assets.swap' });
+    rt.actions.register('chrome.fold', ([type, instance, event = 'toggle'], ctx) => {
+      const ty = t(type);
+      if (!ty || !isChromeFoldType(ty)) { rt.toast(`"${type ?? ''}" does not collapse (tab-group, toolbar, nav-menu, app-menu).`, 'warning', 'Collapse'); return; }
+      const ev = event === 'fold' || event === 'collapse' ? 'fold' : event === 'unfold' || event === 'expand' ? 'unfold' : 'toggle';
+      const i = inst(ty, instance, ctx);
+      if (!rt.chromeFold(ty, i).collapsible) { rt.toast(`This ${chromeLabel(ty).toLowerCase()} has its collapse button off (chrome.set:${ty}:${i}:collapsible:on).`, 'warning', 'Collapse'); return; }
+      rt.setChromeFold(ty, i, ev);
+    }, { label: 'Collapse or expand a tab group, toolbar, nav menu or app menu (chrome.fold:<type>:<instance>:<fold|unfold|toggle>)', params: true });
     rt.actions.register('chrome.interface', ([type, which = 'default']) => {
       const ty = t(type); if (!ty) return;
       const key = CHROME_SETTINGS_PICK_KEY(ty);

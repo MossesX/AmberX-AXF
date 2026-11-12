@@ -154,7 +154,7 @@ export function contextMenuStyle(c: ContextMenuData): StyleOutput {
 /* ---------- tab-group: every tab row (page tabs + window tab bars) ---------- */
 
 // closable / reorderable default on: they only show where the host passes onClose / onReorder, so an asset turns them off
-export const TAB_GROUP_DEFAULT: Required<TabGroupData> = { style: 'underline', align: 'start', position: 'top', density: 'regular', overflow: 'scroll', display: 'both', showIcons: true, divider: true, sticky: false, collapsible: false, closable: true, reorderable: true, badges: true, rememberLast: false };
+export const TAB_GROUP_DEFAULT: Required<TabGroupData> = { style: 'underline', align: 'start', position: 'top', density: 'regular', overflow: 'scroll', display: 'both', showIcons: true, divider: true, sticky: false, collapsible: true, autoCollapse: false, closable: true, reorderable: true, badges: true, rememberLast: false };
 export const TAB_GROUP_STYLES = ['underline', 'pills', 'boxed', 'segmented', 'plain', 'chips'] as const;
 export const TAB_GROUP_POSITIONS = ['top', 'bottom', 'left', 'right'] as const;
 export const TAB_GROUP_OVERFLOWS = ['scroll', 'wrap', 'more', 'dropdown'] as const;
@@ -179,6 +179,7 @@ export function normalizeTabGroup(t: Partial<TabGroupData> | null | undefined): 
     divider: flag(t?.divider, d.divider),
     sticky: flag(t?.sticky, d.sticky),
     collapsible: flag(t?.collapsible, d.collapsible),
+    autoCollapse: flag(t?.autoCollapse, d.autoCollapse),
     closable: flag(t?.closable, d.closable),
     reorderable: flag(t?.reorderable, d.reorderable),
     badges: flag(t?.badges, d.badges),
@@ -234,7 +235,7 @@ export function toolbarStyle(t: ToolbarData): StyleOutput {
       'data-fx-toolbar': t.variant,
       'data-fx-toolbar-surface': t.surface ?? 'flat',
       'data-fx-toolbar-divider': t.divider === false ? 'off' : 'on',
-      'data-fx-toolbar-collapsible': t.collapsible === true ? 'on' : 'off',
+      'data-fx-toolbar-collapsible': t.collapsible === false ? 'off' : 'on',
     },
   };
 }

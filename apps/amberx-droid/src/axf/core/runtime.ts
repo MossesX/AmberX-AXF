@@ -34,7 +34,8 @@ import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProvide
 import { backToSkin, composeLookAt, globalSkinOf, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCoverage, skinCovers, skinEntries, skinFromDesignPackage, skinScopeDomId, skinScopeOf, snapshotLook, undoRestore, SKIN_COLOR_SLOT, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinColor, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState } from './engines/skin';
 import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, type DesignOverrides } from './engines/designpackage';
 import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
-import { navStyleOutput, normalizeNavStyle, type NavStyleData } from './engines/navstyle';
+import { NAV_COLLAPSED_EM, navStyleOutput, normalizeNavStyle, type NavStyleData } from './engines/navstyle';
+import { CHROME_FOLD_KEY, CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, chromeFoldNext, chromeFoldSettings, chromeFolded, isChromeFoldType } from './engines/chrome-settings-rules.mjs';
 import { animationFor, brandingVars, glyphFor, markSvg, resolveBranding, type Glyph, type MarkAnimation, type ResolvedBrand } from './engines/brand';
 import { INTERFACE_SETTING_KEY, INTERFACE_TYPE, captureInterface, isScopeId, resolveInterface, scopeAttrs, scopeSheet, scopeVarsCss, type InterfaceData, type ResolvedInterface } from './engines/interface';
 import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceChange, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
@@ -908,7 +909,10 @@ export class AxfRuntime {
     if (this.assetOrNull('nav-menu')?.data.navStyle !== true) return null;
     const a = this.assetOrNull('nav-style' as AssetType);
     if (!a) return null;
-    return normalizeNavStyle(this.withTokenOverrides('tokens.nav', 'nav-style' as AssetType, a.data));
+    const s = normalizeNavStyle(this.withTokenOverrides('tokens.nav', 'nav-style' as AssetType, a.data));
+    // the nav menu's collapse button (chrome field `collapsible`, on by default) folds it to icons whatever the style says
+    const fold = chromeFoldSettings('nav-menu', this.assetOrNull('nav-menu')?.data as unknown as Record<string, unknown>, this.settings.get(CHROME_INSTANCE_KEY('nav-menu', 'app')));
+    return fold.collapsible === s.width.collapsible ? s : { ...s, width: { ...s.width, collapsible: fold.collapsible } };
   }
 
   /** Nav sections libraries and plugins added, in the order they were added. */
@@ -1562,13 +1566,49 @@ export class AxfRuntime {
 
   /** Is a collapsible toolbar folded to its handle on this device? (setting `axf.toolbar.collapsed`, same key on Android) */
   toolbarCollapsed(): boolean {
-    return this.asset('toolbar').data.collapsible === true && this.settings.get(TOOLBAR_COLLAPSED_KEY) === true;
+    return this.chromeFold('toolbar', 'app').folded;
   }
 
   setToolbarCollapsed(on: boolean): void {
-    if (on) this.settings.set(TOOLBAR_COLLAPSED_KEY, true);
-    else this.settings.clear(TOOLBAR_COLLAPSED_KEY);
+    this.setChromeFold('toolbar', 'app', on ? 'fold' : 'unfold');
+  }
+
+  /* ---------------- fold: collapse / expand + auto-collapse (chrome-settings-rules.mjs) ---------------- */
+
+  /** The asset data one chrome piece renders from (a tab group's own pick, a page toolbar's asset, else the app's active one). */
+  private chromeBase(type: string, instance: string): Record<string, unknown> | null {
+    if (type === 'tab-group') {
+      const pick = this.settings.get(CHROME_INSTANCE_ASSET_KEY(type, instance));
+      const hit = typeof pick === 'string' && pick ? this.registry.get('tab-group', pick) : null;
+      if (hit) return hit.data as unknown as Record<string, unknown>;
+    }
+    if (type === 'toolbar' && instance !== 'app') {
+      const hit = this.registry.list('toolbar').find((a) => a.id === instance);
+      if (hit) return hit.data as unknown as Record<string, unknown>;
+    }
+    return (this.assetOrNull(type as AssetType)?.data as unknown as Record<string, unknown>) ?? null;
+  }
+
+  /**
+   * One tab group / toolbar / nav menu / app menu's fold: whether it has the collapse button, whether it auto-collapses,
+   * and whether it is folded on this device. `instance` = the tab group's id, a page toolbar's asset id, else 'app'.
+   */
+  chromeFold(type: string, instance = 'app'): { type: string; instance: string; collapsible: boolean; autoCollapse: boolean; folded: boolean; key: string | null } {
+    const key = CHROME_FOLD_KEY(type, instance) as string | null;
+    const s = chromeFoldSettings(type, this.chromeBase(type, instance), this.settings.get(CHROME_INSTANCE_KEY(type, instance)));
+    return { type, instance, ...s, folded: key ? chromeFolded(s, this.settings.get(key)) : false, key };
+  }
+
+  /** Fold, unfold, toggle, or report a use (auto-collapse folds it). Returns the new folded state. */
+  setChromeFold(type: string, instance: string, event: 'fold' | 'unfold' | 'toggle' | 'use'): boolean {
+    if (!isChromeFoldType(type)) return false;
+    const cur = this.chromeFold(type, instance);
+    const next = chromeFoldNext(cur, cur.folded, event);
+    if (next === cur.folded || !cur.key) return cur.folded;
+    if (next) this.settings.set(cur.key, true);
+    else this.settings.clear(cur.key);
     this.set({});
+    return next;
   }
 
   /* ---------------- hidden slots (core/engines/hide.ts) ---------------- */
@@ -2513,6 +2553,8 @@ export class AxfRuntime {
     // the nav width (resized or collapsed to icons), so it wins over the layout's
     const navStyle = this.navStyleData();
     if (navStyle) parts.push(navStyleOutput(navStyle, { reducedMotion, collapsed: this.settings.get(NAV_COLLAPSED_KEY) === true, width: Number(this.settings.get(NAV_WIDTH_KEY)) || null }));
+    // a plain nav (no nav-style) folds to its icons too: the same width and the same attribute the nav-style nav uses
+    else if (this.chromeFold('nav-menu', 'app').folded && !('data-fx-narrow' in this.viewportAttrs())) parts.push({ vars: { '--fx-layout-nav-width': `calc(var(--fx-font-size) * ${NAV_COLLAPSED_EM})` }, attrs: { 'data-fx-navs-collapsed': 'on' } });
     // the window manager follows the behaviour theme's `windows` group (stack / snap / minimize) from the same compile
     this.windows.setPlacement(normalizeBehavior(behavior).windows);
     const attrs: Record<string, string> = { 'data-fx-scheme': color.scheme, ...this.viewportAttrs() };

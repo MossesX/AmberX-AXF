@@ -113,7 +113,8 @@ export const CHROME_FIELDS = {
     { key: 'badges', label: 'Count badges', kind: 'toggle', default: true, group: 'look', level: 'basic' },
     { key: 'overflow', label: 'When tabs do not fit', kind: 'choice', options: ['scroll', 'wrap', 'more', 'dropdown'], labels: { scroll: 'Scroll', wrap: 'Wrap', more: 'More menu', dropdown: 'Dropdown' }, default: "scroll", group: 'behaviour', level: 'basic' },
     { key: 'sticky', label: 'Sticky', kind: 'toggle', default: false, group: 'behaviour', level: 'basic' },
-    { key: 'collapsible', label: 'Collapsible', kind: 'toggle', default: false, group: 'behaviour', level: 'basic' },
+    { key: 'collapsible', label: 'Collapse button', kind: 'toggle', default: true, group: 'behaviour', level: 'simple' },
+    { key: 'autoCollapse', label: 'Auto-collapse (fold after picking a tab)', kind: 'toggle', default: false, group: 'behaviour', level: 'simple' },
     { key: 'rememberLast', label: 'Remember last tab', kind: 'toggle', default: false, group: 'behaviour', level: 'basic' },
     { key: 'closable', label: 'Closable (where the host allows)', kind: 'toggle', default: true, group: 'behaviour', level: 'developer' },
     { key: 'reorderable', label: 'Reorderable (where the host allows)', kind: 'toggle', default: true, group: 'behaviour', level: 'developer' },
@@ -125,7 +126,8 @@ export const CHROME_FIELDS = {
     { key: 'surface', label: 'Surface', kind: 'choice', options: SURFACE, default: 'flat', group: 'look', level: 'basic' },
     { key: 'divider', label: 'Rule between groups', kind: 'toggle', default: true, group: 'look', level: 'basic' },
     { key: 'showSearch', label: 'Search box', kind: 'toggle', default: false, group: 'behaviour', level: 'basic' },
-    { key: 'collapsible', label: 'Collapsible', kind: 'toggle', default: false, group: 'behaviour', level: 'basic' },
+    { key: 'collapsible', label: 'Collapse button', kind: 'toggle', default: true, group: 'behaviour', level: 'simple' },
+    { key: 'autoCollapse', label: 'Auto-collapse (fold after using a tool)', kind: 'toggle', default: false, group: 'behaviour', level: 'simple' },
   ],
   banner: [
     { key: 'surface', label: 'Surface', kind: 'choice', options: ['flat', 'raised', 'accent'], default: "flat", group: 'look', level: 'simple' },
@@ -137,11 +139,15 @@ export const CHROME_FIELDS = {
     { key: 'density', label: 'Size', kind: 'choice', options: DENSITY, default: 'regular', group: 'look', level: 'basic' },
     { key: 'indicator', label: 'Active mark', kind: 'choice', options: ['auto', 'bar', 'fill', 'none'], default: "auto", group: 'look', level: 'basic' },
     { key: 'showIcons', label: 'Icons', kind: 'toggle', default: true, group: 'look', level: 'basic' },
+    { key: 'collapsible', label: 'Collapse button', kind: 'toggle', default: true, group: 'behaviour', level: 'simple' },
+    { key: 'autoCollapse', label: 'Auto-collapse (fold to icons after opening a page)', kind: 'toggle', default: false, group: 'behaviour', level: 'simple' },
     { key: 'navStyle', label: 'Sub menus (nav-style)', kind: 'toggle', default: false, group: 'behaviour', level: 'developer' },
   ],
   'app-menu': [
     { key: 'density', label: 'Size', kind: 'choice', options: DENSITY, default: 'regular', group: 'look', level: 'simple' },
     { key: 'surface', label: 'Surface', kind: 'choice', options: SURFACE, default: 'flat', group: 'look', level: 'basic' },
+    { key: 'collapsible', label: 'Collapse button', kind: 'toggle', default: true, group: 'behaviour', level: 'simple' },
+    { key: 'autoCollapse', label: 'Auto-collapse (fold after running a command)', kind: 'toggle', default: false, group: 'behaviour', level: 'simple' },
   ],
   'context-menu': [
     { key: 'variant', label: 'Style', kind: 'choice', options: ['compact', 'roomy', 'glass'], default: "compact", group: 'look', level: 'simple' },
@@ -149,6 +155,63 @@ export const CHROME_FIELDS = {
     { key: 'showShortcuts', label: 'Shortcuts', kind: 'toggle', default: true, group: 'look', level: 'basic' },
   ],
 };
+
+/* ---------------- fold: collapse / expand + auto-collapse ---------------- */
+
+/**
+ * Brett, Nov 12 2026 (build collapse-and-auto-collapse-buttons-on-every-tab): "All tab groups and toolbars and nav menus
+ * and application menus need a, auto collapse button or, and a collapsible button."
+ *
+ * Every tab group, toolbar, navigation menu and application menu carries a collapse / expand button (field
+ * `collapsible`, on unless the asset or the instance turns it off) and an auto-collapse switch (field `autoCollapse`,
+ * off by default: on, the piece folds itself again after it is used). Both are ordinary chrome fields, so the settings
+ * dialog, `chrome.set` and the instance override setting all reach them. The fold itself is a per-device setting:
+ *   tab group  → folds to its active tab      (axf.tabs.<instance>.folded)
+ *   toolbar    → folds to a thin handle       (axf.toolbar.collapsed; a page toolbar: axf.toolbar.<instance>.collapsed)
+ *   nav menu   → folds to its icons           (axf.nav.collapsed)
+ *   app menu   → folds to one Menu button     (axf.app-menu.collapsed)
+ */
+export const CHROME_FOLD_TYPES = ['tab-group', 'toolbar', 'nav-menu', 'app-menu'];
+export const isChromeFoldType = (t) => CHROME_FOLD_TYPES.includes(t);
+/** The per-device setting that holds whether one piece is folded (null for a type that does not fold). */
+export function CHROME_FOLD_KEY(type, instance) {
+  if (type === 'tab-group') return TAB_GROUP_FOLD_KEY(instance);
+  if (type === 'toolbar') return !instance || instance === 'app' ? 'axf.toolbar.collapsed' : `axf.toolbar.${instance}.collapsed`;
+  if (type === 'nav-menu') return 'axf.nav.collapsed';
+  if (type === 'app-menu') return 'axf.app-menu.collapsed';
+  return null;
+}
+/** The button's words, folded and unfolded, per type. */
+export const CHROME_FOLD_LABELS = {
+  'tab-group': { fold: 'Collapse to the active tab', unfold: 'Expand: show every tab' },
+  toolbar: { fold: 'Collapse the toolbar', unfold: 'Expand the toolbar' },
+  'nav-menu': { fold: 'Collapse to icons', unfold: 'Expand: show labels' },
+  'app-menu': { fold: 'Collapse the menu bar', unfold: 'Expand the menu bar' },
+};
+/** What uses a piece: the event after which auto-collapse folds it again. */
+export const CHROME_FOLD_USE = { 'tab-group': 'pick a tab', toolbar: 'use a tool', 'nav-menu': 'open a page', 'app-menu': 'run a command' };
+
+/** A piece's fold settings after its asset and its instance override: { collapsible, autoCollapse }. */
+export function chromeFoldSettings(type, base, override) {
+  if (!isChromeFoldType(type)) return { collapsible: false, autoCollapse: false };
+  const collapsible = chromeFieldValue(type, base, override, 'collapsible') !== false;
+  return { collapsible, autoCollapse: collapsible && chromeFieldValue(type, base, override, 'autoCollapse') === true };
+}
+/** Is the piece folded now: only a collapsible piece folds, and only when its fold setting says so. */
+export const chromeFolded = (settings, saved) => !!settings?.collapsible && saved === true;
+/**
+ * What the fold becomes after an event: 'fold' / 'unfold' / 'toggle' (the button, the API) or 'use' (the person used
+ * the piece: auto-collapse folds it). Returns the new folded state.
+ */
+export function chromeFoldNext(settings, folded, event) {
+  if (!settings?.collapsible) return false;
+  if (event === 'fold') return true;
+  if (event === 'unfold') return false;
+  if (event === 'toggle') return !folded;
+  if (event === 'use') return settings.autoCollapse ? true : !!folded;
+  return !!folded;
+}
+export const CHROME_FOLD_EVENTS = ['fold', 'unfold', 'toggle', 'use'];
 
 /** The tabs every chrome settings interface starts with (a settings asset may relabel, reorder or hide them). */
 export const CHROME_SETTINGS_TABS = [

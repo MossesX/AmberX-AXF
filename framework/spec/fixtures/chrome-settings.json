@@ -238,11 +238,19 @@
       },
       {
         "key": "collapsible",
-        "label": "Collapsible",
+        "label": "Collapse button",
+        "kind": "toggle",
+        "default": true,
+        "group": "behaviour",
+        "level": "simple"
+      },
+      {
+        "key": "autoCollapse",
+        "label": "Auto-collapse (fold after picking a tab)",
         "kind": "toggle",
         "default": false,
         "group": "behaviour",
-        "level": "basic"
+        "level": "simple"
       },
       {
         "key": "rememberLast",
@@ -345,11 +353,19 @@
       },
       {
         "key": "collapsible",
-        "label": "Collapsible",
+        "label": "Collapse button",
+        "kind": "toggle",
+        "default": true,
+        "group": "behaviour",
+        "level": "simple"
+      },
+      {
+        "key": "autoCollapse",
+        "label": "Auto-collapse (fold after using a tool)",
         "kind": "toggle",
         "default": false,
         "group": "behaviour",
-        "level": "basic"
+        "level": "simple"
       }
     ],
     "banner": [
@@ -435,6 +451,22 @@
         "level": "basic"
       },
       {
+        "key": "collapsible",
+        "label": "Collapse button",
+        "kind": "toggle",
+        "default": true,
+        "group": "behaviour",
+        "level": "simple"
+      },
+      {
+        "key": "autoCollapse",
+        "label": "Auto-collapse (fold to icons after opening a page)",
+        "kind": "toggle",
+        "default": false,
+        "group": "behaviour",
+        "level": "simple"
+      },
+      {
         "key": "navStyle",
         "label": "Sub menus (nav-style)",
         "kind": "toggle",
@@ -469,6 +501,22 @@
         "default": "flat",
         "group": "look",
         "level": "basic"
+      },
+      {
+        "key": "collapsible",
+        "label": "Collapse button",
+        "kind": "toggle",
+        "default": true,
+        "group": "behaviour",
+        "level": "simple"
+      },
+      {
+        "key": "autoCollapse",
+        "label": "Auto-collapse (fold after running a command)",
+        "kind": "toggle",
+        "default": false,
+        "group": "behaviour",
+        "level": "simple"
       }
     ],
     "context-menu": [
@@ -871,5 +919,218 @@
     "chrome-app-menu-molly",
     "chrome-context-menu",
     "chrome-context-menu-molly"
-  ]
+  ],
+  "fold": {
+    "types": [
+      "tab-group",
+      "toolbar",
+      "nav-menu",
+      "app-menu"
+    ],
+    "labels": {
+      "tab-group": {
+        "fold": "Collapse to the active tab",
+        "unfold": "Expand: show every tab"
+      },
+      "toolbar": {
+        "fold": "Collapse the toolbar",
+        "unfold": "Expand the toolbar"
+      },
+      "nav-menu": {
+        "fold": "Collapse to icons",
+        "unfold": "Expand: show labels"
+      },
+      "app-menu": {
+        "fold": "Collapse the menu bar",
+        "unfold": "Expand the menu bar"
+      }
+    },
+    "use": {
+      "tab-group": "pick a tab",
+      "toolbar": "use a tool",
+      "nav-menu": "open a page",
+      "app-menu": "run a command"
+    },
+    "events": [
+      "fold",
+      "unfold",
+      "toggle",
+      "use"
+    ],
+    "keys": {
+      "tab-group": "axf.tabs.ui-review.sections.folded",
+      "toolbar": "axf.toolbar.ui-review.sections.collapsed",
+      "banner": null,
+      "nav-menu": "axf.nav.collapsed",
+      "app-menu": "axf.app-menu.collapsed",
+      "context-menu": null,
+      "toolbar:app": "axf.toolbar.collapsed"
+    },
+    "settings": [
+      {
+        "type": "tab-group",
+        "base": null,
+        "override": null,
+        "out": {
+          "collapsible": true,
+          "autoCollapse": false
+        }
+      },
+      {
+        "type": "tab-group",
+        "base": {
+          "collapsible": false
+        },
+        "override": null,
+        "out": {
+          "collapsible": false,
+          "autoCollapse": false
+        }
+      },
+      {
+        "type": "tab-group",
+        "base": {
+          "collapsible": false
+        },
+        "override": {
+          "collapsible": true,
+          "autoCollapse": true
+        },
+        "out": {
+          "collapsible": true,
+          "autoCollapse": true
+        }
+      },
+      {
+        "type": "toolbar",
+        "base": {
+          "collapsible": true
+        },
+        "override": {
+          "autoCollapse": true
+        },
+        "out": {
+          "collapsible": true,
+          "autoCollapse": true
+        }
+      },
+      {
+        "type": "toolbar",
+        "base": {},
+        "override": {
+          "collapsible": false,
+          "autoCollapse": true
+        },
+        "out": {
+          "collapsible": false,
+          "autoCollapse": false
+        }
+      },
+      {
+        "type": "nav-menu",
+        "base": {
+          "style": "list"
+        },
+        "override": null,
+        "out": {
+          "collapsible": true,
+          "autoCollapse": false
+        }
+      },
+      {
+        "type": "app-menu",
+        "base": {
+          "autoCollapse": true
+        },
+        "override": null,
+        "out": {
+          "collapsible": true,
+          "autoCollapse": true
+        }
+      },
+      {
+        "type": "banner",
+        "base": {},
+        "override": null,
+        "out": {
+          "collapsible": false,
+          "autoCollapse": false
+        }
+      }
+    ],
+    "folded": [
+      true,
+      false,
+      false,
+      false
+    ],
+    "next": [
+      {
+        "settings": {
+          "collapsible": true,
+          "autoCollapse": false
+        },
+        "from": [
+          [
+            true,
+            false,
+            true,
+            false,
+            false
+          ],
+          [
+            true,
+            false,
+            false,
+            true,
+            true
+          ]
+        ]
+      },
+      {
+        "settings": {
+          "collapsible": true,
+          "autoCollapse": true
+        },
+        "from": [
+          [
+            true,
+            false,
+            true,
+            true,
+            false
+          ],
+          [
+            true,
+            false,
+            false,
+            true,
+            true
+          ]
+        ]
+      },
+      {
+        "settings": {
+          "collapsible": false,
+          "autoCollapse": true
+        },
+        "from": [
+          [
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        ]
+      }
+    ]
+  }
 }

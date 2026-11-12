@@ -222,7 +222,9 @@
         "density": "compact | regular (default) | roomy — menubar height",
         "surface": "flat (default) | raised | glass",
         "menus[].order": "number — placement of a menu created by a contribution (default 100; asset menus keep their order)",
-        "items[].provider|badge|checked|order|before|after": "see menuItems"
+        "items[].provider|badge|checked|order|before|after": "see menuItems",
+        "collapsible": "boolean, default true — a chevron folds the menu bar to one Menu button (and back); remembered per device (setting axf.app-menu.collapsed); false hides it",
+        "autoCollapse": "boolean, default false — fold the menu bar again after a command runs (only when collapsible)"
       },
       "hideable": true
     },
@@ -266,11 +268,12 @@
         "search": "object — live search: { live: boolean (dropdown that updates on every keystroke), placeholder?: string, maxResults?: number (default 12), kinds?: string[] (limit to result kinds: view, action, setting, settings-tab, dialog, asset, window, text) }. Without it (or live:false) the search box is the classic submit-to-jump box.",
         "groups[].items[].badge": "string — name of a runtime counter (runtime.setBadge) shown as a small badge on the button, e.g. `alerts.unread`; hidden at 0",
         "widgets": "[{type, id, at: start|end, order?}] — widget assets (clock, search bar, logo, action button, label, status, counter, progress, avatar, link, theme switch, spacer, divider) placed at the toolbar's start or end. Runtime widgets (rt.attachToToolbar) with the same type+id replace these.",
-        "collapsible": "boolean, default false — a chevron at the toolbar's end folds it to a thin handle (and back); the fold is remembered per device (setting axf.toolbar.collapsed)",
+        "collapsible": "boolean, default true — a chevron at the toolbar's end folds it to a thin handle (and back); the fold is remembered per device (setting axf.toolbar.collapsed); false hides the chevron",
         "groups[].provider": "string — live list id: the group's buttons come from that provider (the app menu's registry: views, nav, toolbar, settings, windows, dialogs, chrome built in; apps and plugins register more with rt.registerAppMenuProvider), after any fixed items, refreshed as the app changes",
         "groups[].max": "number 1–24, default 8 — cap on provider buttons",
         "groups[].label": "string — group name for screen readers",
-        "groups[].items[].checked": "string — toggle binding drawn as a pressed button: setting:<key> | counter:<name> | slot:<type> | hidden:<type> (same as app-menu checked)"
+        "groups[].items[].checked": "string — toggle binding drawn as a pressed button: setting:<key> | counter:<name> | slot:<type> | hidden:<type> (same as app-menu checked)",
+        "autoCollapse": "boolean, default false — fold the toolbar again after one of its tools is used (only when collapsible)"
       },
       "hideable": true,
       "widgets": {
@@ -312,7 +315,9 @@
         "indicator": "auto (default, per style) | bar | fill | none — active-item marker",
         "showIcons": "boolean, default true",
         "navStyle": "boolean, default false — opt in to nav-style@1: items with children (NavItem.items) open sub menus that slide open, styled, timed and arranged by the nav-style asset in force",
-        "items": "per item: items?: [NavItem] — children (a sub menu; nested levels allowed). Shown as a sub menu only when navStyle is true"
+        "items": "per item: items?: [NavItem] — children (a sub menu; nested levels allowed). Shown as a sub menu only when navStyle is true",
+        "collapsible": "boolean, default true — a chevron folds the nav to its icons (and back); remembered per device (setting axf.nav.collapsed); false hides it",
+        "autoCollapse": "boolean, default false — fold the nav to its icons again after a page is opened from it (only when collapsible)"
       },
       "hideable": true
     },
@@ -402,11 +407,12 @@
         "showIcons": "boolean, default true — older form of display: false = text only",
         "divider": "boolean, default true — the rule under the row",
         "sticky": "boolean, default false — the row stays at the top of its scrolling panel",
-        "collapsible": "boolean, default false — a fold button leaves only the active tab (per device)",
+        "collapsible": "boolean, default true — a fold button leaves only the active tab (per device, setting axf.tabs.<id>.folded); false hides the button",
         "closable": "boolean, default true — tabs get a close button where the host allows closing (false hides it)",
         "reorderable": "boolean, default true — tabs can be dragged into another order where the host allows it (false turns it off)",
         "badges": "boolean, default true — count badges on tabs",
-        "rememberLast": "boolean, default false — the row reopens on the tab it was on last time (per device)"
+        "rememberLast": "boolean, default false — the row reopens on the tab it was on last time (per device)",
+        "autoCollapse": "boolean, default false — fold to the active tab again after a tab is picked (only when collapsible)"
       },
       "hideable": true,
       "optional": true

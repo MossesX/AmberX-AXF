@@ -699,7 +699,26 @@ write('spacing.json', {
     },
     plan: cs.chromeSettingsPlan('molly'),
     missing: cs.chromeSettingsMissing('molly', ['chrome-tab-group', 'chrome-tab-group-molly', 'chrome-toolbar']),
+    fold: chromeFoldFixture(),
   });
+}
+/** Collapse / expand + auto-collapse (Nov 12 2026): keys, labels, settings after asset + override, every event. */
+function chromeFoldFixture() {
+  const cases: [string, Record<string, unknown> | null, Record<string, unknown> | null][] = [
+    ['tab-group', null, null], ['tab-group', { collapsible: false }, null], ['tab-group', { collapsible: false }, { collapsible: true, autoCollapse: true }],
+    ['toolbar', { collapsible: true }, { autoCollapse: true }], ['toolbar', {}, { collapsible: false, autoCollapse: true }],
+    ['nav-menu', { style: 'list' }, null], ['app-menu', { autoCollapse: true }, null], ['banner', {}, null],
+  ];
+  const settings = cases.map(([t, b, o]) => ({ type: t, base: b, override: o, out: cs.chromeFoldSettings(t, b, o) }));
+  const events = [...cs.CHROME_FOLD_EVENTS, 'nonsense'];
+  const states = [{ collapsible: true, autoCollapse: false }, { collapsible: true, autoCollapse: true }, { collapsible: false, autoCollapse: true }];
+  return {
+    types: cs.CHROME_FOLD_TYPES, labels: cs.CHROME_FOLD_LABELS, use: cs.CHROME_FOLD_USE, events: cs.CHROME_FOLD_EVENTS,
+    keys: Object.fromEntries([...cs.CHROME_TYPES.map((t) => [t, cs.CHROME_FOLD_KEY(t, 'ui-review.sections')]), ['toolbar:app', cs.CHROME_FOLD_KEY('toolbar', 'app')]]),
+    settings,
+    folded: [[states[0], true], [states[0], false], [states[2], true], [states[0], 'yes']].map(([s, v]) => cs.chromeFolded(s, v)),
+    next: states.map((s) => ({ settings: s, from: [false, true].map((f) => events.map((e) => cs.chromeFoldNext(s, f, e))) })),
+  };
 }
 write('components.json', {
   button: Object.fromEntries(load('button').map((a) => [a.id, buttonStyle(a.data)])),

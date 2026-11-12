@@ -110,6 +110,19 @@ ok(cs.chromeSettingsErrors({ id: 'chrome-x', data: { for: 'clock' } }).length ==
 /* ---- plan + every app (shared-assets apps + Expenses) ---- */
 eq(f.plan, cs.chromeSettingsPlan('molly'), 'plan fixture');
 eq(f.missing, cs.chromeSettingsMissing('molly', ['chrome-tab-group', 'chrome-tab-group-molly', 'chrome-toolbar']), 'missing fixture');
+/* ---- fold: collapse / expand + auto-collapse on every tab group, toolbar, nav menu and app menu ---- */
+{
+  const fo = f.fold;
+  eq(fo.types, cs.CHROME_FOLD_TYPES, 'fold types'); eq(fo.labels, cs.CHROME_FOLD_LABELS, 'fold labels'); eq(fo.use, cs.CHROME_FOLD_USE, 'fold use'); eq(fo.events, cs.CHROME_FOLD_EVENTS, 'fold events');
+  for (const [k, v] of Object.entries(fo.keys)) eq(k === 'toolbar:app' ? cs.CHROME_FOLD_KEY('toolbar', 'app') : cs.CHROME_FOLD_KEY(k, 'ui-review.sections'), v, `fold key ${k}`);
+  for (const c of fo.settings) eq(cs.chromeFoldSettings(c.type, c.base, c.override), c.out, `fold settings ${c.type}`);
+  const events = [...cs.CHROME_FOLD_EVENTS, 'nonsense'];
+  for (const n of fo.next) eq([false, true].map((fr) => events.map((e) => cs.chromeFoldNext(n.settings, fr, e))), n.from, `fold next ${JSON.stringify(n.settings)}`);
+  for (const t of cs.CHROME_FOLD_TYPES) {
+    for (const k of ['collapsible', 'autoCollapse']) ok(cs.CHROME_FIELDS[t].some((x) => x.key === k && x.kind === 'toggle' && x.group === 'behaviour'), `${t} has the ${k} field`);
+    ok(cs.CHROME_FIELDS[t].find((x) => x.key === 'collapsible')!.default === true, `${t}: the collapse button is on by default`);
+  }
+}
 const apps = defaultApps() as string[];
 ok(apps.length >= 5, `at least five apps carry copies (${apps.length})`);
 for (const d of apps) {

@@ -323,8 +323,10 @@ export interface ToolbarData {
   search?: ToolbarSearch;
   /** widget assets (clock, search bar) at the toolbar's start or end (core/engines/widgets.ts) */
   widgets?: ToolbarWidget[];
-  /** a chevron at the end folds the toolbar to a thin handle and back (default false); remembered per device */
+  /** a chevron at the end folds the toolbar to a thin handle and back (default true; false hides it); remembered per device */
   collapsible?: boolean;
+  /** fold the toolbar again after one of its tools is used (default false; only when collapsible) */
+  autoCollapse?: boolean;
 }
 
 /** Toolbar search behaviour. Results come from the runtime's search index (engines/search.ts). */
@@ -365,6 +367,10 @@ export interface NavMenuData {
   showIcons?: boolean;
   /** Opt in to nav-style@1 (core/engines/navstyle.ts): sub menus that slide open, styled and timed by the nav-style asset in force. Default false. */
   navStyle?: boolean;
+  /** a chevron folds the nav to its icons and back (default true; false hides it); remembered per device */
+  collapsible?: boolean;
+  /** fold to icons again after a page is opened from the nav (default false; only when collapsible) */
+  autoCollapse?: boolean;
 }
 
 export interface ContextMenuData {
@@ -500,8 +506,10 @@ export interface TabGroupData {
   divider?: boolean;
   /** the row stays at the top of its scrolling panel */
   sticky?: boolean;
-  /** a fold button hides every tab but the active one (per device) */
+  /** a fold button hides every tab but the active one (per device; default true, false hides the button) */
   collapsible?: boolean;
+  /** fold to the active tab again after a tab is picked (default false; only when collapsible) */
+  autoCollapse?: boolean;
   /** tabs show a close button where the host allows closing (default true; false hides it) */
   closable?: boolean;
   /** tabs can be dragged into another order where the host allows it (default true; false turns it off) */

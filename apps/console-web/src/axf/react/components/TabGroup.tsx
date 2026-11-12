@@ -9,7 +9,8 @@
  * long-press the row → Settings… / Change tab style… / Move (components/ChromeContext.tsx).
  *
  * What the asset decides (tab-group@1): style, position (top / bottom / left / right), display (icons + text / text /
- * icons), overflow (scroll / wrap / More menu / dropdown), size, divider, sticky, collapsible (fold to the active tab),
+ * icons), overflow (scroll / wrap / More menu / dropdown), size, divider, sticky, collapsible (a collapse / expand
+ * button folds the row to the active tab; on by default), autoCollapse (fold again after a tab is picked),
  * closable + reorderable (only where the host passes onClose / onReorder), count badges, remember the last tab.
  * The host decides the tabs, the value and what happens on change. Nothing here is styled by a literal: every colour,
  * size and radius comes from axf.css tokens through the engine's data attributes and vars.
@@ -21,7 +22,7 @@
  * `id` is the row's settings id: stable, unique in the app (`<plugin>.<row>`), and what check-chrome-assets.mjs asks for.
  */
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type DragEvent, type ReactNode } from 'react';
-import { CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, TAB_GROUP_FOLD_KEY, TAB_GROUP_LAST_KEY, chromeInstanceData, normalizeTabGroup, tabGroupStyle, type AxfRuntime, type TabGroupData } from '../../core';
+import { CHROME_FOLD_LABELS, CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, TAB_GROUP_FOLD_KEY, TAB_GROUP_LAST_KEY, chromeInstanceData, normalizeTabGroup, tabGroupStyle, type AxfRuntime, type TabGroupData } from '../../core';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 
@@ -114,8 +115,10 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
   const pick = useCallback((v: T) => {
     onChange(v);
     if (data.rememberLast) rt.settings.set(lastKey, v);
+    // auto-collapse: the row folds to the tab just picked
+    if (data.collapsible && data.autoCollapse) rt.settings.set(TAB_GROUP_FOLD_KEY(id), true);
     setMenu(false);
-  }, [value, onChange, data.rememberLast, rt, lastKey]);
+  }, [value, onChange, data.rememberLast, data.collapsible, data.autoCollapse, rt, lastKey, id]);
 
   // overflow 'more': measure once with every tab shown, then keep what fits; the active tab is always on the row
   const more = data.overflow === 'more' && data.position !== 'left' && data.position !== 'right';
@@ -237,7 +240,7 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
     );
   } else {
     row = (
-      <div ref={rowRef} className={cls} role="tablist" aria-label={label} aria-orientation={vertical ? 'vertical' : 'horizontal'} data-axf-tab-group={id} data-fx-ctx-target="tab-group" data-fx-ctx-payload={id} style={style} {...attrs}>
+      <div ref={rowRef} className={cls} role="tablist" aria-label={label} aria-orientation={vertical ? 'vertical' : 'horizontal'} data-axf-tab-group={id} data-axf-folded={folded ? 'on' : 'off'} data-fx-ctx-target="tab-group" data-fx-ctx-payload={id} style={style} {...attrs}>
         {shown.map(tabEl)}
         {overflowed.length > 0 && (
           <button type="button" className="fx-tab fx-tabs__more" aria-haspopup="menu" aria-expanded={menu} aria-label={`${overflowed.length} more`} title={`${overflowed.length} more`} onClick={() => setMenu((m) => !m)}>
@@ -246,7 +249,7 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
           </button>
         )}
         {data.collapsible && (
-          <button type="button" className="fx-tab fx-tabs__fold" aria-pressed={folded} aria-label={folded ? 'Show every tab' : 'Fold to the active tab'} title={folded ? 'Show every tab' : 'Fold to the active tab'} onClick={() => rt.settings.set(TAB_GROUP_FOLD_KEY(id), !folded)}>
+          <button type="button" className="fx-tab fx-tabs__fold" aria-expanded={!folded} data-axf-fold="tab-group" aria-label={folded ? CHROME_FOLD_LABELS['tab-group'].unfold : CHROME_FOLD_LABELS['tab-group'].fold} title={folded ? CHROME_FOLD_LABELS['tab-group'].unfold : CHROME_FOLD_LABELS['tab-group'].fold} onClick={() => (folded ? rt.settings.clear(TAB_GROUP_FOLD_KEY(id)) : rt.settings.set(TAB_GROUP_FOLD_KEY(id), true))}>
             <Icon name={folded ? 'chevron-down' : 'chevron-up'} size={12} />
           </button>
         )}

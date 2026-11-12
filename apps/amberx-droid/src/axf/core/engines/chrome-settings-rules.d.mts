@@ -61,3 +61,17 @@ export function chromeSettingsChoices(type: ChromeType | string, assets: AssetLi
 export function customCopy(defaultAsset: AssetLike, app: string | { id: string; name?: string }): { $axf: 'asset@1'; type: 'settings'; id: string; name: string; version: string; description: string; author: string; tags: string[]; data: Record<string, unknown> };
 export function chromeSettingsPlan(appId: string): ChromeSettingsPlanEntry[];
 export function chromeSettingsMissing(appId: string, ids: string[]): string[];
+
+/* fold: collapse / expand + auto-collapse (tab groups, toolbars, nav menus, app menus) */
+export type ChromeFoldType = 'tab-group' | 'toolbar' | 'nav-menu' | 'app-menu';
+export type ChromeFoldEvent = 'fold' | 'unfold' | 'toggle' | 'use';
+export interface ChromeFoldSettings { collapsible: boolean; autoCollapse: boolean }
+export const CHROME_FOLD_TYPES: ChromeFoldType[];
+export function isChromeFoldType(t: unknown): t is ChromeFoldType;
+export function CHROME_FOLD_KEY(type: ChromeType | string, instance?: string): string | null;
+export const CHROME_FOLD_LABELS: Record<ChromeFoldType, { fold: string; unfold: string }>;
+export const CHROME_FOLD_USE: Record<ChromeFoldType, string>;
+export const CHROME_FOLD_EVENTS: ChromeFoldEvent[];
+export function chromeFoldSettings(type: ChromeType | string, base: unknown, override: unknown): ChromeFoldSettings;
+export function chromeFolded(settings: ChromeFoldSettings | null | undefined, saved: unknown): boolean;
+export function chromeFoldNext(settings: ChromeFoldSettings | null | undefined, folded: boolean, event: ChromeFoldEvent | string): boolean;

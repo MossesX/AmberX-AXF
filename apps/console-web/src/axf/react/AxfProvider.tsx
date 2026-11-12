@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useLayoutEffect, useSyncExternalStore, type ReactNode } from 'react';
 import type { AssetType, AxfRuntime, MenuItem } from '../core';
 import { installTapConfirm } from './tapConfirm';
+import { ToolbarFolds } from './toolbarFolds';
 import { installMenuFit } from './components/menuFit';
 
 export const AxfContext = createContext<AxfRuntime | null>(null);
@@ -134,5 +135,6 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
     return () => host.dispose();
   }, [runtime]);
 
-  return <AxfContext.Provider value={runtime}>{children}</AxfContext.Provider>;
+  // Collapse / expand + auto-collapse on every toolbar that has no fold of its own (framework/react/toolbarFolds.tsx).
+  return <AxfContext.Provider value={runtime}>{children}<ToolbarFolds rt={runtime} /></AxfContext.Provider>;
 }
