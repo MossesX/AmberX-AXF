@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3737,
- "updatedAt": "2026-11-12T22:22:58.455Z",
+ "rev": 3738,
+ "updatedAt": "2026-11-12T22:23:10.366Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -172845,21 +172845,27 @@
    "title": "GitHub client plugin: see and control every PR (status, merge, pull main in, group, bulk)",
    "category": "github",
    "detail": "Brett said: \"We need to build that GitHub plugin that shows all the PRs and everything, where you can completely control them, see their status, merge and pull them in, group them into one... You need a full, powerful GitHub plugin-based client.\" Console plugin, full API (REST, MCP, CLI, voice), works per project.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-12T20:40:19.258Z",
-   "updatedAt": "2026-11-12T22:22:56.923Z",
+   "updatedAt": "2026-11-12T22:23:00.409Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T22:22:58.905Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
+    "queuedAt": "2026-11-12T22:22:58.453Z",
+    "queuedBy": "console",
     "account": "",
     "session": "",
     "slot": "",
@@ -173093,7 +173099,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

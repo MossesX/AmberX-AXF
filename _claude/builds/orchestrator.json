@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T22:22:58.455Z",
+ "updatedAt": "2026-11-12T22:23:10.366Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -109349,16 +109349,22 @@
    "title": "GitHub client plugin: see and control every PR (status, merge, pull main in, group, bulk)",
    "category": "github",
    "detail": "Brett said: \"We need to build that GitHub plugin that shows all the PRs and everything, where you can completely control them, see their status, merge and pull them in, group them into one... You need a full, powerful GitHub plugin-based client.\" Console plugin, full API (REST, MCP, CLI, voice), works per project.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-12T20:40:19.258Z",
-   "updatedAt": "2026-11-12T22:22:56.923Z",
+   "updatedAt": "2026-11-12T22:23:00.409Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T22:22:58.905Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
