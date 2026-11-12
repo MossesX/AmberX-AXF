@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3609,
- "updatedAt": "2026-11-12T18:25:59.874Z",
+ "rev": 3610,
+ "updatedAt": "2026-11-12T18:28:17.078Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175254,7 +175254,7 @@
    "branch": "claude/new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans",
    "pr": "",
    "createdAt": "2026-11-12T17:35:35.216Z",
-   "updatedAt": "2026-11-12T18:25:58.368Z",
+   "updatedAt": "2026-11-12T18:28:15.397Z",
    "builtAt": "",
    "notes": [
     {
@@ -175366,12 +175366,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T18:28:15.397Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T17:35:35.217Z",
-     "updatedAt": "2026-11-12T17:35:35.217Z"
+     "updatedAt": "2026-11-12T18:28:15.586Z"
     },
     {
      "id": "s3",
