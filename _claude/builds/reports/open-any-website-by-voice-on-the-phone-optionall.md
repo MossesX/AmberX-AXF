@@ -61,5 +61,7 @@ recorder in AmberX, or in a plugin somewhere."
 
 ## Notes
 
+- UI Review shots not taken: the headless console capture stops at "Waiting for axHub" (the capture browser cannot fetch axhub.amberxai.com). Needs a run with a reachable hub.
+
 - `plugin-lifecycle check` flags the gitignored, auto-written `.axf-focus.json` when it names a plugin file; it is not
   in the repo, so CI is unaffected.
