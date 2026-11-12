@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3804,
- "updatedAt": "2026-11-12T23:17:56.111Z",
+ "rev": 3805,
+ "updatedAt": "2026-11-12T23:18:10.936Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -171796,7 +171796,7 @@
    "pr": "#528",
    "priority": "P2",
    "createdAt": "2026-11-12T19:46:41.501Z",
-   "updatedAt": "2026-11-12T23:17:54.369Z",
+   "updatedAt": "2026-11-12T23:17:56.097Z",
    "builtAt": "2026-11-12T23:17:54.369Z",
    "notes": [
     {
@@ -171910,6 +171910,10 @@
     {
      "text": "Headless run axf-move-amberx-web-app-into-the-console-amberx-andr--joey: brief only · start 12.3K tokens ($0.03) · cost $1.19 · 27 turns · 6 tools, MCP none",
      "at": "2026-11-12T22:44:06.937Z"
+    },
+    {
+     "text": "s3–s14 built and pushed (PR #528, now draft). Left: desktop + phone screenshots of the new screens (Notes, To-dos, Lists, Approvals page, Recordings panel, Open a page on the phone, Notification history, Settings → Plugins → AmberX) into UI Review; Android code compiles in CI only (no JDK here). Follow-ups in the report: approvals feed / AXPP / voice inside the console page, amberx-ai plugin, control@1 amberx.settings (Fable).",
+     "at": "2026-11-12T23:17:56.097Z"
     }
    ],
    "approvals": [
@@ -172389,7 +172393,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 58,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
