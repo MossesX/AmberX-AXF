@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3394,
- "updatedAt": "2026-11-12T02:50:25.456Z",
+ "rev": 3395,
+ "updatedAt": "2026-11-12T02:50:37.074Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -161548,19 +161548,27 @@
    "title": "Server gate: one session per build, no duplicate launches",
    "category": "orchestrator",
    "detail": "URGENT, boss order from Brett, Nov 12. The dispatcher double/triple-launched builds: owner-recognized-everywhere ran 3 sessions and molly-gap-console-token-handoff ran 2, in the same worktree folders, clobbering each other and wasting slots. Add a SERVER GATE on the VPS, enforced by the server itself: only ONE live session per build ID and per worktree folder, ever. Every launch path (vps build_start, dispatcher, agent-slots, any claude -p/tmux axf-* launcher) takes an exclusive lock per build ID + folder (flock), and refuses a second launch while a session for that build is alive. A watchdog finds any duplicates that slip through, keeps the oldest, stops the rest, and logs it in 'Automatic fixes' with an AmberX FYI. Also fix the dispatcher's double-launch root cause (see pending dispatcher-a-worktree-store-write-can-erase-a-fr: store write erases the fresh launch record). Tests: second launch of the same build refused; duplicates reaped.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/server-gate-one-session-per-build-no-duplicate-launches",
    "pr": "",
    "createdAt": "2026-11-12T02:42:15.357Z",
-   "updatedAt": "2026-11-12T02:50:23.629Z",
+   "updatedAt": "2026-11-12T02:50:30.298Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-12T02:42:22.383Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-server-gate-one-session-per-build-no-duplicate-l--lenny.",
+     "at": "2026-11-12T02:50:28.889Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-server-gate-one-session-per-build-no-duplicate-l--lenny, own login copy)",
+     "at": "2026-11-12T02:50:30.298Z"
     }
    ],
    "approvals": [],
@@ -161580,18 +161588,18 @@
    "pipeline": {
     "queuedAt": "2026-11-12T02:42:18.688Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-server-gate-one-session-per-build-no-duplicate-l--lenny",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-12T02:50:26.891Z",
+    "runs": 1,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-12T02:50:26.891Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -161600,7 +161608,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-12T02:50:26.891Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -161725,7 +161733,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
