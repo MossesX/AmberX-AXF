@@ -777,9 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:14 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` note (all) · orchestrator
-- 2026-11-12 03:15 UTC · `x.engine.dev` → running, note (all) · pipeline
-- 2026-11-12 03:15 UTC · `x.engine.dev` branch claude/x.engine.dev (all) · pipeline
 - 2026-11-12 03:15 UTC · `x.engine.dev` note (all) · orchestrator
 - 2026-11-12 03:16 UTC · `molly-gap-console-token-handoff` PR #511 (all) · builds-live
 - 2026-11-12 03:16 UTC · `molly-gap-console-token-handoff` note (all) · orchestrator
@@ -1177,6 +1174,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 10:50 UTC · `show-commits-behind-main-on-every-build-table-an` → queued (all) · claude-voice
 - 2026-11-12 10:50 UTC · `remove-the-console-s-own-notes-manager-console-u` → queued (all) · claude-voice
 - 2026-11-12 10:50 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` note (all) · orchestrator
+- 2026-11-12 10:50 UTC · `pending-tab-one-collapsed-row-per-build-tap-to-e` → running, note (all) · pipeline
+- 2026-11-12 10:50 UTC · `pending-tab-one-collapsed-row-per-build-tap-to-e` branch claude/pending-tab-one-collapsed-row-per-build-tap-to-e (all) · pipeline
+- 2026-11-12 10:50 UTC · `pending-tab-one-collapsed-row-per-build-tap-to-e` note (all) · orchestrator
 
 ## Token passes (log)
 
