@@ -778,9 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:32 UTC · `threads-amberx-shell` added (0 steps) (all) · backfill
-- 2026-11-12 03:32 UTC · `threads-carry-on` added (0 steps) (all) · backfill
-- 2026-11-12 03:32 UTC · `threads-cleanup` added (0 steps) (all) · backfill
 - 2026-11-12 03:32 UTC · `banner-apply-all-keys-recheck` added (0 steps) (all) · backfill
 - 2026-11-12 03:32 UTC · `amberx-router-name` added (0 steps) (all) · backfill
 - 2026-11-12 03:32 UTC · `threads-110-merged` added (0 steps) (all) · backfill
@@ -1178,6 +1175,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 22:15 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · orchestrator
 - 2026-11-12 22:16 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` added (2 steps) (all) · Claude (voice)
 - 2026-11-12 22:16 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` → queued, note (all) · console
+- 2026-11-12 22:17 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` → running, note (all) · pipeline
+- 2026-11-12 22:17 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` branch claude/fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o (all) · pipeline
+- 2026-11-12 22:17 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` note (all) · orchestrator
 
 ## Token passes (log)
 
