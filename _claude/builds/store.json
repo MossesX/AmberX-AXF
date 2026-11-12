@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3776,
- "updatedAt": "2026-11-12T22:53:06.169Z",
+ "rev": 3777,
+ "updatedAt": "2026-11-12T22:55:59.852Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -172924,10 +172924,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro",
-   "pr": "",
+   "pr": "#530",
    "priority": "P1",
    "createdAt": "2026-11-12T20:40:19.258Z",
-   "updatedAt": "2026-11-12T22:46:10.676Z",
+   "updatedAt": "2026-11-12T22:55:58.438Z",
    "builtAt": "",
    "notes": [
     {
@@ -173220,7 +173220,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
