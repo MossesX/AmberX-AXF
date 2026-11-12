@@ -154,6 +154,15 @@ skin@1 and the `migrated` / `legacy` fields of app-look@1 have no Kotlin twin (A
 fold once per profile against `spec/fixtures/look-migration.json` (`fold`, `settings`, `combined` blocks) and keeps the
 two fields through its document rules. Until then an Android app keeps reading `appearance@1` directly.
 
+## Deferred: retry-ladder@1 automatic fixes (Nov 12 2026)
+
+`framework/core/retry-ladder.mjs` (reference) and its Python twin `framework/python/axf_server/retry.py` classify a
+failed call into a failure kind and walk that kind's ladder of fixes, each once, recording every attempt in a
+one-file-per-job ledger (retry-job@1); fixture `spec/fixtures/retry-ladder.json`, `spec/check-retry-ladder.mjs`. Both
+retrying runners are server-side (the console API, the builds store, axHub's job runner through the baked axf_server).
+No Kotlin twin: Android work is on hold and no Android client retries server calls itself. A port needs `KINDS`,
+`FIXES`, `classify`, `onFailure` / `onSuccess` / `fixUnavailable`, `stepText`, `fyiText` and `view`, replaying the fixture.
+
 ## Deferred: build-pipeline@1 route + dispatch (Nov 9 2026)
 
 `framework/core/build-pipeline.mjs` gained `pipeline.route` ('' | api | subscription: the per-build override that lets
