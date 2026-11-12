@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3194,
- "updatedAt": "2026-11-12T01:49:37.556Z",
+ "rev": 3195,
+ "updatedAt": "2026-11-12T01:49:48.543Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -156830,7 +156830,7 @@
    "branch": "claude/molly-gap-expenses-cors",
    "pr": "",
    "createdAt": "2026-11-10T22:09:28.380Z",
-   "updatedAt": "2026-11-12T01:48:28.563Z",
+   "updatedAt": "2026-11-12T01:49:43.139Z",
    "builtAt": "",
    "notes": [
     {
@@ -156930,12 +156930,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T01:49:43.139Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T22:11:15.788Z",
-     "updatedAt": "2026-11-10T22:11:15.788Z"
+     "updatedAt": "2026-11-12T01:49:43.475Z"
     },
     {
      "id": "s3",
@@ -156971,7 +156971,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
