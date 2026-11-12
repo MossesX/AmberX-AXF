@@ -1,0 +1,156 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-theme-veto-pass",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:19Z",
+ "build": {
+  "id": "theme-veto-pass",
+  "title": "Theme veto pass: timed no-veto window for token changes",
+  "profile": "all",
+  "category": "Token control",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "a timed pass (\"allow theme changes for the next 30 minutes\") during which token set/reset runs without the axHub veto. Grant approved once by Brett; server-side expiry; deletes never covered; banner chip with countdown; audit + undo; read tools annotated read-only; contract with axHub build axhub-veto-pass. Based on PR #250 (merge after it).",
+  "verbatim": false,
+  "at": "2026-11-03T00:00:00Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "control@1 pass resource: grant/status/revoke/list/undo, scopes tokens.theme|style|layout|*, minutes 1-240, one pass per scope, deletes never covered",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-11-03T15:45:04.721Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Grant needs owner approval once (model-upgrade-approval pattern); covered set/reset skip veto until server-side expiry",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T15:45:04.721Z",
+   "doneAt": "2026-11-03T15:45:06.084Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Expose in REST, MCP (token_pass_*) and CLI (axf token pass …) with plain-language answers",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T15:45:06.084Z",
+   "doneAt": "2026-11-03T15:45:06.925Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Banner chip with live countdown (revoke/extend), 2-minute warning, audit + THREADS line per grant and change, pass.undo",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T15:45:06.925Z",
+   "doneAt": "2026-11-03T15:45:07.572Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Read-only annotations on every read tool + recommended axHub policy doc",
+   "model": "Opus",
+   "estimate": "20m",
+   "estimateMin": 20,
+   "startedAt": "2026-11-03T15:45:07.572Z",
+   "doneAt": "2026-11-03T15:45:08.233Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "axHub contract: signed GET /pass, scope stamp per call (docs for axhub-veto-pass)",
+   "model": "Opus",
+   "estimate": "20m",
+   "estimateMin": 20,
+   "startedAt": "2026-11-03T15:45:08.233Z",
+   "doneAt": "2026-11-03T15:45:08.911Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s7",
+   "text": "Help pack, tests, theme/controls checks, lifecycle, report, THREADS, PR after #250",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T15:45:08.911Z",
+   "doneAt": "2026-11-03T15:46:07.456Z",
+   "actualMin": 1,
+   "done": true
+  }
+ ],
+ "branch": "claude/theme-veto-pass",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 262,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/262"
+ },
+ "landedCommit": "dfee2c7fb713e2db3ef08016bb6cbf4e8780dec3",
+ "commits": [],
+ "mergedAt": "2026-11-03T17:25:37.071Z",
+ "landedAt": "2026-11-04T14:38:31Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261103-dbed7dea",
+   "name": "Token pass banner chip + Token control Passes tab",
+   "status": "approved",
+   "group": "g-20261103-0d966c94",
+   "url": "/review/r-20261103-dbed7dea"
+  },
+  {
+   "id": "r-20261103-7cd5aa8b",
+   "name": "Pass chip: Everything by default",
+   "status": "approved",
+   "group": "g-20261103-7256db38",
+   "url": "/review/r-20261103-7cd5aa8b"
+  }
+ ],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "_claude/builds/reports/theme-veto-pass.md",
+ "open": [
+  "axHub side (`axhub-veto-pass`, axHub repo) still has to read `GET pass`, skip covered calls and forward Brett's approval with the signature; until it lands, a pass shows and logs but axHub still vetoes every call.",
+  "A shell on the VPS can always write files directly; the pass guards the API, MCP and CLI surfaces, not the disk.",
+  "Undo writes the before-values even if someone changed the same token outside the pass afterwards (last write wins, as everywhere).",
+  "Kotlin twin deferred (Android on hold); recorded with the control@1 gap."
+ ]
+}

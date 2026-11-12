@@ -776,15 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 02:08 UTC · `toast-manager-plugin` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `pending-builds-steps-column-first-done-total-sortable` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `approve-deny-anywhere-send-in-background-never-navigate` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `go-to-hooks-every-shipped-feature-build-and-plan` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `ui-roller-roll-a-random-style-on-any-ui-element` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `shipped-features-live-manifests-from-dispatch-to` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `headless-loop-guards-stop-endless-loops-and-sear` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `rebase-land-approve-button-fix-approve-goes-stra` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `style-rule-every-design-element-overrides-axhub-` → archived, note (all) · console
 - 2026-11-12 02:08 UTC · `toolbar-labels-managed-in-each-toolbar-s-setting` → archived, note (all) · console
 - 2026-11-12 02:08 UTC · `tap-to-confirm-switch-in-every-toolbar-s-own-set` → archived, note (all) · console
 - 2026-11-12 02:08 UTC · `big-library-of-snappable-title-bar-widgets-each-` → archived, note (all) · console
@@ -1176,6 +1167,15 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:29 UTC · `notes-vault` note (all) · backfill
 - 2026-11-12 03:29 UTC · `kill-patches-pilot` note (all) · backfill
 - 2026-11-12 03:29 UTC · `headless-tabs` note (all) · backfill
+- 2026-11-12 03:29 UTC · `whats-new-banner` note (all) · backfill
+- 2026-11-12 03:29 UTC · `console-commands` note (all) · backfill
+- 2026-11-12 03:29 UTC · `model-upgrade-approval` note (all) · backfill
+- 2026-11-12 03:29 UTC · `console-wake` note (all) · backfill
+- 2026-11-12 03:29 UTC · `theme-veto-pass` note (all) · backfill
+- 2026-11-12 03:29 UTC · `pass-all` note (all) · backfill
+- 2026-11-12 03:29 UTC · `plugin-commands-auto` note (all) · backfill
+- 2026-11-12 03:29 UTC · `menu-scroll` note (all) · backfill
+- 2026-11-12 03:29 UTC · `auto-land` note (all) · backfill
 
 ## Token passes (log)
 

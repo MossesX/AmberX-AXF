@@ -1,0 +1,274 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-console-wake",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:17Z",
+ "build": {
+  "id": "console-wake",
+  "title": "Console wake: console commands always reach a console (queue + deliver on reconnect, wake via AmberX when closed)",
+  "profile": "all",
+  "category": "Urgent",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "console commands fail with not_found when the tab is not connected (approval inside the console dropped client cc-cq7hakm3a02p for 2 s at 17:18:49 UTC; redeploys; tab sleep; browser closed). Rule: no matter what, a console command must reach a console; if the browser is closed, open it. Agent: Ping Paulie.",
+  "verbatim": false,
+  "at": "2026-11-03T00:00:00Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "# Build: console-wake (Urgent profile)\n\nBrett, Nov 3 2026 (voice). GO given. Assigned agent: **Ping Paulie** (book this run on his agent-swarm card: stats, cost, chat; set AXF_AGENT=ping-paulie or the equivalent if crew-retrain's launcher support is on main, otherwise record it in the report and the builds store note).\n\n## Problem\nVoice control of the Dev Console works through axHub -> axf-console MCP (console_open / console_action / console_dialog / console_settings, console-commands on main). But commands fail with `not_found: no console is open for you right now` whenever the browser tab isn't connected at that instant:\n- Brett approved a held command from INSIDE the console; his client `cc-cq7hakm3a02p` dropped for ~2 s exactly as the approved call ran (failed 17:18:49, reconnected 17:18:51 UTC) and the command was lost.\n- Console redeploys (Lenny's landings) and phone tab sleep drop the connection too.\n- If the browser is closed, nothing can happen at all.\n\n## Brett's rule\nNo matter what, a console command must reach a console: even if the browser is closed, open it.\n\n## Steps\n- s0 Register in Urgent via the orchestrator CLI (id `console-wake`) + banner entry.\n- s1 Queue + deliver: console commands never fail just because no client is connected. The server queues the command (per user, short TTL, default 2 min, setting) and delivers it the moment a console client connects/reconnects; the MCP call waits (up to ~60 s) for delivery and returns 'delivered' / 'queued, waiting for the console'. Dedupe on reconnect so a command never runs twice. Find and fix why approving inside the console drops the websocket (approvals dialog re-render / page reload / ticket refresh) so it stops happening.\n- s2 Wake via AmberX (Android, allowed: AmberX is the Android-hold exception): when a command is queued and no console client connects within ~3 s, the console server asks axHub to tell Brett's AmberX app (AXPP device connection, `amberx` service) to open https://console.amberxai.com in Chrome (Intent ACTION_VIEW to the default browser, Chrome preferred; deep link with `?axf-cmd=<id>` so the page picks the queued command right away). Works from background: use a high-priority notification with a full-screen/launch intent where Android blocks background activity starts (Android 10+ background activity limits), tap = open. Add the AXPP command to the AmberX app (Java, Capacitor shell) and the axHub device-relay side (axHub repo, separate PR) with an `amberx.open_url` tool restricted to Brett's own domains (amberxai.com allowlist).\n- s3 Settings: Settings > Plugins > (console commands) 'Wake the console through AmberX when it's closed' (on by default), queue TTL, which browser.\n- s4 Visibility: the console shows a brief toast 'Amber: opening Terminal' when a queued command runs; the MCP result says how it was delivered (live / after reconnect / woke via AmberX).\n- s5 Tests (queue, TTL, dedupe, reconnect delivery, wake path with a fake device), axHub tests, AmberX JUnit for the URL allowlist; report `_claude/builds/reports/console-wake.md`; THREADS; PRs (AmberX-AXF + axHub). Mark steps done through the store.\nNote: the new AmberX APK must be installed on Brett's phone for the wake path; put that on his checklist (/projects/_shared/_claude/notes/checklist-one.md) via the hub memory API. Commits clean and professional.",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-console-wake",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-03T17:21:07.369Z",
+   "endedAt": "2026-11-03T17:45:38.267Z",
+   "exit": 0,
+   "costUsd": 7.6868
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "s0 Register in Urgent (orchestrator id console-wake) + banner entry",
+   "model": "Opus",
+   "estimate": "5 min",
+   "estimateMin": 5,
+   "startedAt": "2026-11-03T17:21:07.369Z",
+   "doneAt": "2026-11-03T17:22:26.074Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "s1 Queue + deliver: per-user queue (TTL 2 min), deliver on connect/reconnect, MCP waits up to ~60 s, dedupe; fix the approval-inside-console disconnect",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T17:22:26.074Z",
+   "doneAt": "2026-11-03T17:31:23.232Z",
+   "actualMin": 9,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "s2 Wake via AmberX: server asks axHub/AmberX to open console.amberxai.com?axf-cmd=<id> when no client in ~3 s; AmberX AXPP open_url (allowlist amberxai.com, full-screen intent notification); axHub amberx.open_url relay (separate PR)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T17:31:23.232Z",
+   "doneAt": "2026-11-03T17:45:03.367Z",
+   "actualMin": 14,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "s3 Settings: Settings > Plugins > Console commands: wake through AmberX (on), queue TTL, browser",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "2026-11-03T17:45:03.367Z",
+   "doneAt": "2026-11-03T17:45:04.652Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "s4 Visibility: toast 'Amber: opening <screen>' on queued delivery; MCP result says live / after reconnect / woke via AmberX",
+   "model": "Opus",
+   "estimate": "15 min",
+   "estimateMin": 15,
+   "startedAt": "2026-11-03T17:45:04.652Z",
+   "doneAt": "2026-11-03T17:45:05.490Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "s5 Tests (queue, TTL, dedupe, reconnect, wake w/ fake device), axHub tests, AmberX JUnit allowlist; report; THREADS; PRs; checklist item for APK install",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T17:45:05.490Z",
+   "doneAt": "2026-11-03T17:45:06.485Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/console-wake",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 288,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/288"
+ },
+ "landedCommit": "",
+ "commits": [
+  "71759634e7f7f5efc629179241df7a8b1e85d25d",
+  "d82b46e41b935e7e519b424713afb0cb96dc86d9",
+  "c39e2ca86eb81fb2fa6097c27a02a0998f0491a4",
+  "dd5499e0d3bfbf67c98595767d610fbea07d193b",
+  "6eb2aac3867d052eeaa2e6402ac00838586159a9",
+  "4b5b5ac0ac607d968d8e76c85ca8bcd8788cc1cb"
+ ],
+ "mergedAt": "2026-11-04T12:05:58.906Z",
+ "landedAt": "2026-11-04T12:05:58.906Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/console-wake.md",
+  "_claude/builds/reports/console-wake/shots/console-commands-settings-desktop.png",
+  "_claude/builds/reports/console-wake/shots/console-commands-settings-phone.png",
+  "apps/amberx-droid/android/app/src/main/AndroidManifest.xml",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AxppLink.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/OpenUrlRules.java",
+  "apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/OpenUrlRulesTest.java",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/axf/core/engines/console-commands.d.mts",
+  "apps/amberx-droid/src/axf/core/engines/console-commands.mjs",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/axf/core/engines/console-commands.d.mts",
+  "apps/axhub-web/src/axf/core/engines/console-commands.mjs",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/plugins/console-commands/console.mjs",
+  "apps/console-web/plugins/console-commands/help.json",
+  "apps/console-web/plugins/console-commands/plugin.json",
+  "apps/console-web/plugins/console-commands/server/__init__.py",
+  "apps/console-web/plugins/console-commands/server/test_console_commands.py",
+  "apps/console-web/plugins/console-commands/server/wake.py",
+  "apps/console-web/plugins/console-commands/test.mjs",
+  "apps/console-web/plugins/console-commands/web/index.tsx",
+  "apps/console-web/server/mcp_server.py",
+  "apps/console-web/src/axf/core/engines/console-commands.d.mts",
+  "apps/console-web/src/axf/core/engines/console-commands.mjs",
+  "apps/molly/axf.lock.json",
+  "apps/molly/src/axf/core/engines/console-commands.d.mts",
+  "apps/molly/src/axf/core/engines/console-commands.mjs",
+  "framework/core/engines/console-commands.d.mts",
+  "framework/core/engines/console-commands.mjs",
+  "framework/spec/CONTROL.md"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "console-commands",
+   "files": [
+    "apps/console-web/plugins/console-commands/console.mjs",
+    "apps/console-web/plugins/console-commands/help.json",
+    "apps/console-web/plugins/console-commands/plugin.json",
+    "apps/console-web/plugins/console-commands/server/__init__.py",
+    "apps/console-web/plugins/console-commands/server/test_console_commands.py",
+    "apps/console-web/plugins/console-commands/server/wake.py",
+    "apps/console-web/plugins/console-commands/test.mjs",
+    "apps/console-web/plugins/console-commands/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/android/app/src/main/AndroidManifest.xml",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AxppLink.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/OpenUrlRules.java",
+    "apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/OpenUrlRulesTest.java",
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/axf/core/engines/console-commands.d.mts",
+    "apps/amberx-droid/src/axf/core/engines/console-commands.mjs"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/server/mcp_server.py",
+    "apps/console-web/src/axf/core/engines/console-commands.d.mts",
+    "apps/console-web/src/axf/core/engines/console-commands.mjs"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/axf/core/engines/console-commands.d.mts",
+    "apps/axhub-web/src/axf/core/engines/console-commands.mjs"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/axf.lock.json",
+    "apps/molly/src/axf/core/engines/console-commands.d.mts",
+    "apps/molly/src/axf/core/engines/console-commands.mjs"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/console-wake.md",
+    "_claude/builds/reports/console-wake/shots/console-commands-settings-desktop.png",
+    "_claude/builds/reports/console-wake/shots/console-commands-settings-phone.png"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/console-commands.d.mts",
+    "framework/core/engines/console-commands.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/CONTROL.md"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261103-177ac4f1",
+   "name": "Console commands: When no console is open",
+   "status": "approved",
+   "group": "g-20261103-40326d06",
+   "url": "/review/r-20261103-177ac4f1"
+  }
+ ],
+ "cost": {
+  "usd": 7.6868,
+  "estimated": false,
+  "tokens": {
+   "input": 260,
+   "output": 1857,
+   "cacheRead": 21356438,
+   "cacheWrite": 225154
+  }
+ },
+ "report": "_claude/builds/reports/console-wake.md",
+ "open": [
+  "The queue is in memory. A console redeploy while a command waits drops it, and the waiting call dies with the server anyway.",
+  "Android 14+ limits full-screen intents to calling and alarm apps unless the user allows it. There it shows as a heads-up notification, and one tap opens the console.",
+  "Only the owner audience wakes a phone. Hub users' commands queue but never wake anything."
+ ]
+}

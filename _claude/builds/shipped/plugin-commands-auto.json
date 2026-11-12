@@ -1,0 +1,139 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-plugin-commands-auto",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:22Z",
+ "build": {
+  "id": "plugin-commands-auto",
+  "title": "Plugin commands, automatically: every plugin's commands and reads on REST, MCP and the CLI through control@1",
+  "profile": "all",
+  "category": "Urgent",
+  "priority": "P0",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "every plugin, existing and new, automatically exposes all of its commands and reads through control@1, so they appear in the REST API, the MCP server and the CLI with no per-plugin work; Brett drives the console by talking to Claude through axHub. Base claude/token-control-opus (#250) + claude/console-commands (#249) merged in; reuses the console-commands action catalog instead of a second registry. Merges after #250 and #249.",
+  "verbatim": false,
+  "at": "2026-11-03T00:00:00Z",
+  "source": "voice",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Command declaration: plugin.json commands (id, title, description, input schema, output, readOnly/destructive, confirm) + existing action registrations become commands",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-11-03T15:40:33.850Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Auto surfaces: REST /api/control/<plugin>/<command>, MCP <plugin>_<command> with annotations, CLI axf <plugin> <command>, help text; hot-registered on install, removed on uninstall",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T15:40:33.850Z",
+   "doneAt": "2026-11-03T15:40:34.506Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Reads: list/get reads (readOnly) over every plugin's data",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T15:40:34.506Z",
+   "doneAt": "2026-11-03T15:40:35.242Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Backfill: every existing plugin's commands + reads declared; inventory in the report",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T15:40:35.242Z",
+   "doneAt": "2026-11-03T15:40:36.059Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Enforcement: lifecycle check + _template fail on unexposed actions or no reads; scaffold includes commands",
+   "model": "Opus",
+   "estimate": "25m",
+   "estimateMin": 25,
+   "startedAt": "2026-11-03T15:40:36.059Z",
+   "doneAt": "2026-11-03T15:46:24.517Z",
+   "actualMin": 6,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Docs page, help packs, tests, theme/controls checks, report, THREADS, PR",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T15:46:24.517Z",
+   "doneAt": "2026-11-03T15:55:54.169Z",
+   "actualMin": 9,
+   "done": true
+  }
+ ],
+ "branch": "claude/plugin-commands-auto",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 263,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/263"
+ },
+ "landedCommit": "f136b77a01bfa7edab2a551e1c3c7ca819d8d40b",
+ "commits": [],
+ "mergedAt": "2026-11-03T17:34:51.924Z",
+ "landedAt": "2026-11-04T14:38:44Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261103-3345d3d4",
+   "name": "Plugin commands page and settings",
+   "status": "approved",
+   "group": "g-20261103-ac76eedc",
+   "url": "/review/r-20261103-3345d3d4"
+  }
+ ],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "_claude/builds/reports/plugin-commands-auto.md",
+ "open": [
+  "AmberX and axHub-web plugins are listed (their actions are commands) but run in their own app; the console answers `not_implemented` for them until those apps take commands.",
+  "An action that acts on a row or selection (`ctx.payload`) needs its target in `input.args`; most of those are reachable through the plugin's own routes anyway (flagged as warnings by the coverage check).",
+  "POST routes that only read are writes unless the plugin declares `readOnly` (safe default: they need `control.plugins.write`).",
+  "axHub: the console's `/mcp` already goes through axHub; the hub's per-tool policy needs `<plugin>_*`, `plugin_commands`, `plugin_read`, `plugin_run` allowed (an axHub admin setting, like the `console_*` tools).",
+  "Kotlin twin deferred (Android on hold)."
+ ]
+}
