@@ -1,0 +1,115 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.auto-fixes",
+  "name": "Auto-fixes",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Every call that failed and is being fixed automatically on the server (retry-ladder@1): what failed, which fix on the ladder it is trying now (\"store locked: clearing stale lock, step 2 of 3\"), attempts so far, live; and the ones that gave up after the whole ladder, with what is missing. Shows as its own banner across the top or as a banner widget with a count (Settings → Plugins → Auto-fixes, or REST / MCP / CLI / voice). Each job is logged in the AmberX list \"Automatic fixes\"; a job that gives up sends Brett one AmberX FYI.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:auto-fixes",
+    "banner:auto-fixes",
+    "settings-tab:auto-fixes",
+    "action:auto-fixes.open",
+    "service:auto-fixes@1"
+  ],
+  "uses": [
+    "service:control@1"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "optional": [],
+  "banner": [
+    "auto-fixes"
+  ],
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/auto-fixes",
+    "env": [],
+    "mentions": [
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "route": "GET /state",
+        "id": "state",
+        "title": "Auto-fixes: every failing call being fixed and the ones that gave up (count, current fix, attempts)",
+        "readOnly": true
+      },
+      {
+        "route": "GET /jobs/{id}",
+        "id": "job",
+        "title": "Auto-fixes: one job's Automatic fixes log (every attempt)",
+        "readOnly": true
+      },
+      {
+        "route": "GET /say",
+        "id": "say",
+        "title": "What's failing (spoken answer: what is being fixed and what gave up)",
+        "readOnly": true
+      },
+      {
+        "route": "GET /settings",
+        "id": "settings",
+        "title": "Auto-fixes display: banner, widget or off",
+        "readOnly": true
+      },
+      {
+        "route": "POST /settings",
+        "id": "display",
+        "title": "Show Auto-fixes as its own banner, as a banner widget, or off",
+        "input": {
+          "type": "object",
+          "properties": {
+            "display": {
+              "type": "string",
+              "enum": [
+                "banner",
+                "widget",
+                "off"
+              ]
+            }
+          },
+          "required": [
+            "display"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /dismiss",
+        "id": "dismiss",
+        "title": "Dismiss an Auto-fixes job that gave up",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false
+        }
+      }
+    ]
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-12"
+  },
+  "help": "help.json",
+  "opens": "main"
+}
