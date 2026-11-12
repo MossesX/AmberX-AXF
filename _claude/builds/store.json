@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3536,
- "updatedAt": "2026-11-12T10:53:31.872Z",
+ "rev": 3537,
+ "updatedAt": "2026-11-12T10:54:21.315Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -41589,14 +41589,14 @@
    "title": "Plugin manifest field 'floatable': can the plugin open as a floating window",
    "category": "Plugins",
    "detail": "Brett, Oct 30 2026 (voice): a field in plugin manifests that declares whether the plugin is floatable, like 'tabable'. Profile: Angel.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-30T13:01:42.796Z",
-   "updatedAt": "2026-10-30T13:01:42.797Z",
+   "updatedAt": "2026-11-12T10:54:19.911Z",
    "builtAt": "",
    "notes": [
     {
@@ -41700,7 +41700,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 63,
+   "rev": 64,
    "deleted": false,
    "deletedAt": "",
    "pending": {
