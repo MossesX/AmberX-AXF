@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T05:14:11.848Z",
+ "updatedAt": "2026-11-12T05:14:24.036Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -85142,7 +85142,7 @@
    "pr": "#425",
    "priority": "P0",
    "createdAt": "2026-11-09T17:44:47.652Z",
-   "updatedAt": "2026-11-12T05:14:10.204Z",
+   "updatedAt": "2026-11-12T05:14:16.469Z",
    "builtAt": "2026-11-10T01:03:25.374Z",
    "notes": [
     {
@@ -85236,6 +85236,10 @@
     {
      "text": "Headless run axf-account-failover-chain-subscription-next-subscri--joey: brief only · start 11.2K tokens ($0.03) · cost $2.67 · 61 turns · 6 tools, MCP none",
      "at": "2026-11-10T01:04:26.291Z"
+    },
+    {
+     "text": "Redone on current main as claude/account-failover-chain-r2 (old branch not merged, #425 superseded): every subscription is a peer ranked by usage left, API only when Brett has it on, each hop on the build and in the group chat. Draft PR waits for UI Review shots of the Pipeline card.",
+     "at": "2026-11-12T05:14:16.469Z"
     }
    ],
    "approvals": [],
