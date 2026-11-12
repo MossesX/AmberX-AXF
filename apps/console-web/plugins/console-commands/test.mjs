@@ -71,6 +71,24 @@ t('recent = the console in front (Molly)', () => {
   assert.equal(list.items.find((c) => c.id === 'phone-1').host, undefined, 'standalone has no host');
 });
 
+t('Molly is its own client: to=molly, recent by catalog, lists span every client', () => {
+  const inMolly = { id: 'tab-1', app: 'molly/console-web', host: 'molly', front: true, lastUsed: NOW, lastSeen: NOW, catalog: { items: [{ kind: 'screen', id: 'plan-studio', label: 'Plan Studio' }, { kind: 'action', id: 'terminal.open', label: 'Open output terminal' }] } };
+  const molly = { id: 'molly-1', app: 'molly', front: true, lastUsed: NOW - 5_000, lastSeen: NOW, catalog: { items: [{ kind: 'screen', id: 'console/nav:builds', label: 'Builds' }, { kind: 'action', id: 'molly.reload', label: 'Reload this app' }, { kind: 'settings', id: 'xlayout', label: 'xLayout', parent: 'plugins' }] } };
+  const both = [inMolly, molly];
+  // the console inside Molly was touched last, yet a Molly action goes to Molly and a console screen to the console
+  assert.deepEqual(runConsole({ op: 'act', target: 'console.actions', path: 'molly.reload', action: 'run' }, { clients: both }).deliver.to, ['molly-1'], 'recent resolves per catalog');
+  assert.deepEqual(runConsole({ op: 'act', target: 'console.screens', path: 'plan studio', action: 'open' }, { clients: both }).deliver.to, ['tab-1']);
+  assert.deepEqual(runConsole({ op: 'act', target: 'console.settings', path: 'plugins/xlayout', action: 'open' }, { clients: both }).deliver.to, ['molly-1'], 'a Molly settings sub-tab');
+  assert.deepEqual(runConsole({ op: 'act', target: 'console.nav', path: 'here', action: 'home', input: { to: 'molly' } }, { clients: both }).deliver.to, ['molly-1'], 'to=molly names Molly itself');
+  assert.deepEqual(runConsole({ op: 'act', target: 'console.nav', path: 'here', action: 'home', input: { to: 'console' } }, { clients: both }).deliver.to, ['tab-1'], 'to=console names a console, inside Molly too');
+  assert.equal(runConsole({ op: 'act', target: 'console.nav', path: 'here', action: 'home', input: { to: 'amberx' } }, { clients: both }).code, 'not_found', 'an app with no client');
+  const list = runConsole({ op: 'list', target: 'console.actions' }, { clients: both });
+  assert.deepEqual(list.items.map((i) => `${i.app}:${i.id}`), ['molly/console-web:terminal.open', 'molly:molly.reload'], 'a list spans every open client, tagged by app');
+  assert.deepEqual(runConsole({ op: 'list', target: 'console.actions', select: { client: 'molly' } }, { clients: both }).items.map((i) => i.id), ['molly.reload'], 'select.client takes an app name');
+  assert.deepEqual(commandFromArgv(['list', 'actions', '--to', 'molly']).command.select, { client: 'molly' }, 'CLI --to molly on a list');
+  assert.deepEqual(commandFromArgv(['action', 'molly.reload', '--to', 'molly']).command.input, { to: 'molly' }, 'CLI --to molly on an action');
+});
+
 t('answers as text', () => {
   assert.equal(formatAnswer({ ok: true, op: 'act', action: 'open', target: 'console.screens', item: { id: 'plan-studio', label: 'Plan Studio' }, delivered: [{ client: 'tab-1', ok: true, message: 'opened Plan Studio' }] }), '✓ open Plan Studio (plan-studio) → tab-1: opened Plan Studio');
   assert.ok(formatAnswer({ ok: true, op: 'act', action: 'open', target: 'console.screens', item: { id: 'home', label: 'Home' }, queued: true, message: 'queued, waiting for the console' }).startsWith('queued: open Home'), 'queued');

@@ -29,6 +29,10 @@ Big Dog profile, Opus; a Fable version comes later as its own build).
   in a strip (its banner-strip page, `framework/react/bannerStrip.ts`) in Molly's `app.frame.banners` slot; a dialog or
   menu it opens covers Molly's window, a view it opens opens in the console's frame. Settings → Plugins → Banners
   (show the strip, show / hide each banner). <!-- axf-plugin:banners -->
+- **Remote commands** (`plugins/remote-commands`): Molly's own client on the console-commands relay (app `molly`), so
+  Molly's actions (`molly.*`, `navigation.*`, `xlayout.*`), screens, settings tabs and dialogs run from the console API,
+  the MCP tools (`console_action`, `console_open` … `to="molly"`), the CLI (`axf console … --to molly`) and AmberX, not
+  only from inside Molly. Settings → Plugins → Remote commands (console token, on / off, state). <!-- axf-plugin:remote-commands -->
 
 ```bash
 npm install && npm run dev      # :5173

@@ -143,8 +143,15 @@ class PluginError extends Error { constructor(code, message, extra = {}) { super
 const listItem = (p, c) => ({ id: `${p.folder}/${c.id}`, plugin: p.folder, app: p.app, name: p.name, command: c.id, title: c.title, description: c.description, kind: c.kind, effect: c.effect, confirm: c.confirm, run: c.run.route ? 'route' : c.run.action ? 'action' : c.run.data ? 'data' : 'info', tool: p.app === 'console-web' ? commandToolName(p.folder, c.id) : null, enabled: p.enabled !== false, ...(c.context ? { context: true } : {}) });
 
 /**
+ * Apps whose plugin actions run through the console relay (console-commands@1) and where the relay sends them by default:
+ * the console's own go to the console in front; Molly's go to Molly, which keeps its own client on the relay (`to: molly`).
+ */
+export const RELAY_APPS = { 'console-web': 'recent', molly: 'molly' };
+
+/**
  * Gate and plan one plugins.* command. Answers the control@1 envelope for list / get / local reads and failures, or
- * `{ ok: true, dispatch, command, effect }` for the console server to run (route in-process, action in the open console).
+ * `{ ok: true, dispatch, command, effect }` for the console server to run (route in-process, action in the open console
+ * or, for a Molly plugin, in Molly through the same relay).
  */
 export function plan(raw, { grants = ['*'], by = '', enabled = null, now = Date.now(), reg = null } = {}) {
   const c = normalizeControl(raw);
@@ -178,7 +185,8 @@ export function plan(raw, { grants = ['*'], by = '', enabled = null, now = Date.
     if (c.op === 'get') return controlResult(c, { item: { ...listItem(plugin, cmd), input: cmd.input, output: cmd.output, source: cmd.source, rest: pluginCommandRoutes({ plugins: [{ ...plugin, commands: [cmd] }] })[0] ?? null, cli: pluginCommandCli({ plugins: [{ ...plugin, commands: [cmd] }] }).commands[0]?.usage ?? null } });
     // act
     if (plugin.enabled === false) throw new PluginError(CONTROL_WIRE.NOT_IMPLEMENTED, `${plugin.name} is turned off (Settings → Plugins)`);
-    if (plugin.app !== 'console-web') throw new PluginError(CONTROL_WIRE.NOT_IMPLEMENTED, `${plugin.name} runs in ${plugin.app}, not the console: its commands are listed here and run there`);
+    if (!(plugin.app in RELAY_APPS)) throw new PluginError(CONTROL_WIRE.NOT_IMPLEMENTED, `${plugin.name} runs in ${plugin.app}, not the console: its commands are listed here and run there`);
+    if (plugin.app !== 'console-web' && cmd.run.route) throw new PluginError(CONTROL_WIRE.NOT_IMPLEMENTED, `${plugin.name} runs in ${plugin.app}, which has no server routes here`);
     const input = isObj(c.input) ? c.input : {};
     const errs = pluginInputErrors(cmd, input);
     if (errs.length) throw new PluginError(CONTROL_WIRE.VALIDATION, errs.join('; '), { errors: errs });
@@ -196,7 +204,7 @@ export function plan(raw, { grants = ['*'], by = '', enabled = null, now = Date.
     }
     const dispatch = cmd.run.route
       ? { kind: 'route', ...pluginRouteRequest(plugin.folder, cmd, input) }
-      : { kind: 'action', action: cmd.run.action, args: input.args ?? null, to: input.to ?? 'recent' };
+      : { kind: 'action', action: cmd.run.action, args: input.args ?? null, to: input.to ?? RELAY_APPS[plugin.app] };
     return { ok: true, dispatch, command: c, effect: cmd.effect, plugin: plugin.folder, name: plugin.name, title: cmd.title };
   } catch (e) {
     if (e instanceof PluginError) return fail(e.code, e.message, e.extra);

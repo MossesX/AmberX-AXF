@@ -11,8 +11,14 @@
  *
  *   catalog  { $axf: 'console-catalog@1', app, items: [{ kind, id, label, detail?, icon?, keywords?, requires?, effect?, params?, parent? }], here? }
  *   client   { id, app, host?, front?, title, device, user, lastUsed, here, catalog }   (one per open console tab, kept by the server;
- *            app `molly/console-web` + host `molly` inside Molly; front = visible and shown by its host)
- *   message  { $axf: 'console-command@1', id, op: open|run|back|home|close, kind?, target?, label?, spec?, anchor?, arg?, by, at }
+ *            app `molly/console-web` + host `molly` inside Molly; front = visible and shown by its host; app `molly` is Molly's
+ *            own client (build molly-gap-remote-actions, Nov 2026): its views, settings tabs, dialogs and actions — molly.*,
+ *            navigation.*, xlayout.* — so a Molly-level action has the same four reaches as a console one)
+ *   message  { $axf: 'console-command@1', id, op: open|run|back|home|close|refresh, kind?, target?, label?, spec?, anchor?, arg?, hard?, by, at }
+ *
+ * Delivery (`input.to`): `recent` goes to the client in front / used last whose catalog has the thing named (so "molly.reload"
+ * reaches Molly even when the console inside it was touched last), `all` to every client, a client id to that one, and an app
+ * name (`molly`, `console`) to that app's client in front. A list without a client spans every open client (items tagged `app`).
  *
  * Kotlin twin deferred (Android on hold, spec/PORTING.md).
  */
@@ -23,14 +29,16 @@ export const CONSOLE_COMMAND_FRAME = 'console-command@1';
 /** control@1 target → catalog kind. */
 export const CONSOLE_KINDS = { 'console.screens': 'screen', 'console.dialogs': 'dialog', 'console.settings': 'settings', 'console.actions': 'action' };
 export const CONSOLE_ITEM_KINDS = ['screen', 'dialog', 'settings', 'action'];
-/** Where a console command goes: the console used last (default), every open console of the caller, or one client id. */
+/** Where a console command goes: the console used last (default), every open console of the caller, one client id, or an app name. */
 export const CONSOLE_DELIVERY = ['recent', 'all'];
+/** App names `to` understands besides a client's own app id: `console` = a Dev Console (standalone or inside Molly). */
+export const CONSOLE_APP_ALIASES = { console: 'console-web' };
 export const CONSOLE_CATALOG_MAX = 3000;
 export const CONSOLE_LIST_DEFAULT = 50;
 /** How long a console counts as open without a heartbeat (the client re-announces every 30 s and on focus). */
 export const CONSOLE_CLIENT_STALE_MS = 90_000;
 /** The MCP shortcut tools every console MCP server publishes (names are a contract: Claude sessions call them through axHub). */
-export const CONSOLE_TOOLS = ['console_open', 'console_dialog', 'console_settings', 'console_action', 'console_back', 'console_where', 'console_list', 'console_clients'];
+export const CONSOLE_TOOLS = ['console_open', 'console_dialog', 'console_settings', 'console_action', 'console_back', 'console_where', 'console_list', 'console_clients', 'console_refresh'];
 
 /** Action ids that only navigate (open, show, move a window): run with control.console.navigate alone. */
 const NAVIGATING = /^(nav|dialog|settings\.open|banners\.settings|windows\.[A-Za-z]+|terminal\.(open|dialog)|help(\.[A-Za-z.]+)?|help\.mode|search(\.[A-Za-z]+)?|inspector|asset\.json|plugins\.open|views?\.[A-Za-z.]+)$/;
@@ -97,7 +105,7 @@ export function consoleCatalogFrom(entries, actions = [], extra = {}) {
   }
   for (const a of Array.isArray(actions) ? actions : []) {
     const m = isObj(a?.meta) ? a.meta : {};
-    if (!a?.id || m.stub) continue;
+    if (!a?.id || m.stub || m.personOnly === true) continue; // personOnly: a person's tap only, never a remote caller
     items.push({ kind: 'action', id: a.id, label: m.label || a.id, detail: a.id, requires: m.requires, effect: m.effect, params: m.params === true, module: m.module });
   }
   return normalizeConsoleCatalog({ ...extra, items });
@@ -200,7 +208,19 @@ export function consolePickClients(clients, to = 'recent', now = Date.now()) {
   const sorted = [...live].sort((a, b) => front(b) - front(a) || (Number(b.lastUsed) || 0) - (Number(a.lastUsed) || 0));
   if (to === 'all') return sorted;
   if (!to || to === 'recent') return sorted.slice(0, 1);
-  return sorted.filter((c) => c.id === to);
+  const byId = sorted.filter((c) => c.id === to);
+  if (byId.length) return byId;
+  // an app's name: that app's client in front / used last (`molly` = Molly itself, `console` = a Dev Console, inside Molly too)
+  return sorted.filter((c) => consoleClientIsApp(c, to)).slice(0, 1);
+}
+
+/** The app a client runs as (`console-web`, `molly/console-web`, `molly`). */
+export const consoleClientApp = (c) => str(c?.app, 60) || 'console-web';
+/** Does `name` (an app id or alias) name this client's app? `molly/console-web` is a console, not Molly. */
+export function consoleClientIsApp(c, name) {
+  const n = CONSOLE_APP_ALIASES[String(name ?? '').toLowerCase()] ?? String(name ?? '').toLowerCase();
+  const app = consoleClientApp(c).toLowerCase();
+  return !!n && (app === n || app.endsWith(`/${n}`));
 }
 
 /** A client as `console.clients list` shows it (no catalog). */
@@ -209,6 +229,7 @@ export const consoleClientSummary = (c) => ({ id: c.id, app: c.app ?? 'console-w
 /** The message an open console receives. */
 export function consoleMessage(fields, { id, by = '', now = Date.now() } = {}) {
   const m = { $axf: CONSOLE_COMMAND_FRAME, id: String(id ?? ''), op: fields.op };
+  if (fields.hard === true) m.hard = true;
   for (const k of ['kind', 'target', 'label', 'spec', 'anchor', 'arg']) if (fields[k] !== undefined && fields[k] !== '') m[k] = String(fields[k]);
   m.by = by;
   m.at = new Date(now).toISOString();
@@ -219,7 +240,7 @@ export function consoleMessage(fields, { id, by = '', now = Date.now() } = {}) {
 export function consoleMessageErrors(m) {
   const errors = [];
   if (!isObj(m) || m.$axf !== CONSOLE_COMMAND_FRAME) return [`$axf must be ${CONSOLE_COMMAND_FRAME}`];
-  if (!['open', 'run', 'back', 'home', 'close'].includes(m.op)) errors.push('op must be open, run, back, home or close');
+  if (!['open', 'run', 'back', 'home', 'close', 'refresh'].includes(m.op)) errors.push('op must be open, run, back, home, close or refresh');
   if (m.op === 'open' && (!CONSOLE_ITEM_KINDS.includes(m.kind) || m.kind === 'action' || !m.target)) errors.push('open needs a kind (screen, dialog, settings) and a target');
   if (m.op === 'run' && !m.spec) errors.push('run needs an action spec');
   return errors;
@@ -251,16 +272,23 @@ export function runConsoleCommand(c, ctx = {}) {
     const live = consolePickClients(clients, 'all', now).slice(0, limit);
     return { ok: true, data: { items: live.map(consoleClientSummary), total: live.length } };
   }
-  const targets = consolePickClients(clients, c.op === 'act' ? to : (str(select.client, 80) || 'recent'), now);
-  if (!targets.length) return to !== 'recent' && to !== 'all' && c.op === 'act' ? fail(CONTROL_WIRE.NOT_FOUND, `no open console ${to} (console.clients lists them)`) : noConsole();
+  const want = c.op === 'act' ? to : (str(select.client, 80) || 'recent');
+  let targets = consolePickClients(clients, want, now);
+  if (!targets.length) return want !== 'recent' && want !== 'all' ? fail(CONTROL_WIRE.NOT_FOUND, `no open console ${want} (console.clients lists them; an app name such as molly or console works too)`, { noConsole: !clients.length }) : noConsole();
+  const kind = CONSOLE_KINDS[c.target];
+  // `recent` with something named: the client in front / used last whose catalog has it (Molly and the console inside it
+  // are both open; a Molly action goes to Molly, a console screen to the console, whichever was touched last)
+  if (kind && want === 'recent' && c.op !== 'list' && c.path && !(c.target === 'console.dialogs' && c.action === 'close' && ANY_DIALOG.has(str(c.path, 200).toLowerCase()))) {
+    const hit = consolePickClients(clients, 'all', now).find((t) => consoleResolve(t.catalog?.items ?? [], kind, c.path).item);
+    if (hit) targets = [hit];
+  }
   const catalog = targets[0].catalog?.items ?? [];
   const send = (fields, extra = {}) => ({ ok: true, data: { changed: [], ...extra }, deliver: { to: targets.map((t) => t.id), message: consoleMessage(fields, { id: ctx.id, by: ctx.by ?? c.by ?? '', now }) } });
 
   if (c.target === 'console.nav') {
     if (c.op === 'get') return { ok: true, data: { value: normalizeHere(targets[0].here), client: consoleClientSummary(targets[0]) } };
-    return send({ op: c.action });
+    return send(c.action === 'refresh' ? { op: 'refresh', hard: input.hard === true } : { op: c.action });
   }
-  const kind = CONSOLE_KINDS[c.target];
   // act close on dialogs: shut the open one ("current" / "any" / "open" = whichever it is; a dialog's id or name = only that one)
   if (c.target === 'console.dialogs' && c.op === 'act' && c.action === 'close') {
     const p = str(c.path, 200).trim().toLowerCase();
@@ -270,8 +298,18 @@ export function runConsoleCommand(c, ctx = {}) {
     return send({ op: 'close', kind, target: d.item.id, label: d.item.label }, { item: d.item });
   }
   if (c.op === 'list') {
-    const items = consoleSearch(catalog, kind, str(select.q, 200), limit);
-    return { ok: true, data: { items, total: catalog.filter((i) => i.kind === kind).length, client: targets[0].id } };
+    // no client named: every open client's items together (Molly's and its console's), each tagged with its app
+    const pool = want === 'recent' ? consolePickClients(clients, 'all', now) : targets;
+    const apps = new Set(pool.map(consoleClientApp));
+    const seen = new Set();
+    const all = [];
+    for (const t of pool) for (const i of t.catalog?.items ?? []) {
+      if (i.kind !== kind || seen.has(i.id)) continue;
+      seen.add(i.id);
+      all.push(apps.size > 1 ? { ...i, app: consoleClientApp(t) } : i);
+    }
+    const items = consoleSearch(all, kind, str(select.q, 200), limit);
+    return { ok: true, data: { items, total: all.length, client: targets[0].id, ...(pool.length > 1 ? { clients: pool.map((t) => t.id) } : {}) } };
   }
   const r = consoleResolve(catalog, kind, c.path);
   if (!r.item) {

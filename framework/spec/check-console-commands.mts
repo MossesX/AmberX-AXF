@@ -9,7 +9,7 @@ import assert from 'node:assert/strict';
 import { controlGate } from '../core/engines/control-rules.mjs';
 import {
   CONSOLE_CLIENT_STALE_MS, CONSOLE_TOOLS, consoleActionConfirm, consoleActionEffect, consoleActionNeeds, consoleCatalogFrom, consoleMessage, consoleMessageErrors,
-  consolePickClients, consoleResolve, consoleSearch, normalizeConsoleCatalog, runConsoleCommand,
+  consoleClientIsApp, consolePickClients, consoleResolve, consoleSearch, normalizeConsoleCatalog, runConsoleCommand,
 } from '../core/engines/console-commands.mjs';
 
 let n = 0;
@@ -91,6 +91,27 @@ eq(consolePickClients(clients, 'recent', NOW).map((c) => c.id), ['phone'], 'rece
 eq(consolePickClients(clients, 'all', NOW).map((c) => c.id), ['phone', 'desk'], 'all live ones');
 eq(consolePickClients(clients, 'desk', NOW).map((c) => c.id), ['desk'], 'one by id');
 eq(consolePickClients(clients, 'old', NOW).length, 0, 'a stale id is gone');
+// an app name (build molly-gap-remote-actions): Molly's own client vs the console inside it
+const mollyCat = normalizeConsoleCatalog({ app: 'molly', items: [{ kind: 'screen', id: 'console/nav:builds', label: 'Builds' }, { kind: 'action', id: 'molly.reload', label: 'Reload this app' }] });
+const withMolly = [
+  { id: 'in-molly', app: 'molly/console-web', host: 'molly', front: true, lastUsed: NOW - 1_000, lastSeen: NOW, catalog: cat },
+  { id: 'molly-1', app: 'molly', front: true, lastUsed: NOW - 2_000, lastSeen: NOW, catalog: mollyCat },
+  ...clients,
+];
+eq(consolePickClients(withMolly, 'molly', NOW).map((c) => c.id), ['molly-1'], 'to=molly is Molly itself, never the console inside it');
+eq(consolePickClients(withMolly, 'console', NOW).map((c) => c.id), ['in-molly'], 'to=console is a Dev Console (inside Molly too), the one in front / used last');
+eq(consolePickClients(withMolly, 'console-web', NOW).map((c) => c.id), ['in-molly'], 'the app id works as well as the alias');
+eq(consolePickClients(withMolly, 'amberx', NOW).length, 0, 'an app with no client');
+ok(consoleClientIsApp({ app: 'molly/console-web' }, 'console') && !consoleClientIsApp({ app: 'molly/console-web' }, 'molly') && consoleClientIsApp({}, 'console-web'), 'consoleClientIsApp');
+const mctx = { clients: withMolly, grants: ['*'], salt: 'check', now: NOW, id: 'm0', by: 'claude' };
+const m1 = runConsoleCommand({ op: 'act', target: 'console.actions', path: 'molly.reload', action: 'run' }, mctx);
+ok(m1.ok && m1.deliver!.to.join() === 'molly-1', 'recent: a Molly action goes to Molly though the console was used last');
+const m2 = runConsoleCommand({ op: 'act', target: 'console.screens', path: 'plan studio', action: 'open' }, mctx);
+ok(m2.ok && m2.deliver!.to.join() === 'in-molly', 'recent: a console screen goes to the console');
+const m3 = runConsoleCommand({ op: 'list', target: 'console.screens', select: { q: 'builds' } }, mctx);
+ok(m3.ok && (m3.data.items as { id: string; app?: string }[]).some((i) => i.id === 'console/nav:builds' && i.app === 'molly') && (m3.data.items as { id: string }[]).some((i) => i.id === 'builds'), 'a list without a client spans every client, tagged by app');
+const m4 = runConsoleCommand({ op: 'list', target: 'console.actions', select: { client: 'molly' } }, mctx);
+ok(m4.ok && (m4.data.items as { id: string }[]).map((i) => i.id).join() === 'molly.reload', 'select.client = an app name');
 
 /* ---- runner (after the gate) ---- */
 const salt = 'check';

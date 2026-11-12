@@ -34,7 +34,11 @@ export function consoleSearch(items: readonly ConsoleItem[], kind: ConsoleItemKi
 export function consoleResolve(items: readonly ConsoleItem[], kind: ConsoleItemKind, path: string): { item?: ConsoleItem; args?: string[]; candidates?: ConsoleItem[]; ambiguous?: boolean };
 export function consoleActionEffect(item: Partial<ConsoleItem>): Exclude<ConsoleActionEffect, 'read'>;
 export function consoleActionNeeds(item: Partial<ConsoleItem>): { effect: Exclude<ConsoleActionEffect, 'read'>; needs: string[] };
+export const CONSOLE_APP_ALIASES: Record<string, string>;
+/** `to`: recent (default), all, a client id, or an app name (`molly` = Molly's own client, `console` = a Dev Console, inside Molly too). */
 export function consolePickClients<C extends ConsoleClient>(clients: readonly C[], to?: string, now?: number): C[];
+export function consoleClientApp(c: Partial<ConsoleClient> | null | undefined): string;
+export function consoleClientIsApp(c: Partial<ConsoleClient> | null | undefined, name: string): boolean;
 export function consoleClientSummary(c: ConsoleClient): Record<string, unknown>;
 export function consoleMessage(fields: Partial<ConsoleMessage> & { op: ConsoleMessage['op'] }, opts?: { id?: string; by?: string; now?: number }): ConsoleMessage;
 export function consoleMessageErrors(m: unknown): string[];

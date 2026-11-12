@@ -81,7 +81,7 @@ const STEP_FIELDS = { text: 'string', title: 'string', model: 'enum:Fable,Opus',
 
 const CONSOLE_SELECT = { q: 'string', limit: 'number', client: 'string' };
 const PLUGIN_SELECT = { plugin: 'string', app: 'string', effect: 'enum:read,write,destructive,navigate', q: 'string', limit: 'number' };
-const CONSOLE_DELIVERY = 'Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them).';
+const CONSOLE_DELIVERY = 'Every console act takes optional input.to: recent (default: the client in front / used last that has the thing named), all (every open client of the caller), an app name (molly = Molly itself, console = a Dev Console, inside Molly too) or a client id (console.clients lists them).';
 
 const scalePaths = (type) => [...Object.keys(SCALE_FIELDS[type]), ...Object.keys(SCALE_ENUMS[type] ?? {})];
 const TOKEN_OPS = ['list', 'get', 'set', 'reset'];

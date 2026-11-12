@@ -405,43 +405,51 @@ export function pluginControlCommand(folder, cmd, input = {}, extra = {}) {
   return { $axf: 'control@1', op: 'act', target: cmd.kind === 'read' ? 'plugins.reads' : 'plugins.commands', path: `${folder}/${cmd.id}`, action: cmd.kind === 'read' ? 'read' : 'run', input, ...extra };
 }
 
-/** MCP tools: one per command of every enabled console plugin (`<plugin>_<command>`), annotations from its effect. */
+/**
+ * Apps whose plugin commands the console runs and so projects as tools, routes and CLI lines: its own, and Molly's
+ * (Molly keeps its own client on the console relay; build molly-gap-remote-actions). The other apps' are listed only.
+ */
+export const PLUGIN_RUN_APPS = ['console-web', 'molly'];
+/** How a plugin of another app is named in a path: `molly:navigation` (resolvePluginCommand reads the prefix). */
+export const pluginPathName = (p) => (!p.app || p.app === 'console-web' ? p.folder : `${p.app}:${p.folder}`);
+
+/** MCP tools: one per command of every enabled console plugin (`<plugin>_<command>`; Molly's `molly_<plugin>_<command>`), annotations from its effect. */
 export function pluginCommandTools(registry) {
   const tools = [];
   for (const p of registry?.plugins ?? []) {
-    if (p.app !== 'console-web' || p.enabled === false) continue;
+    if (!PLUGIN_RUN_APPS.includes(p.app) || p.enabled === false) continue;
     for (const c of p.commands) {
       tools.push({
-        name: commandToolName(p.folder, c.id), title: `${p.name}: ${c.title}`.slice(0, 120),
-        description: `${c.description || c.title}${c.confirm ? ' Needs a confirm token: the first call answers confirmation_required with one; call again with confirm set to it.' : ''}${c.context ? ' Acts on a row or selection: pass it in input.args.' : ''} (control@1 ${c.kind === 'read' ? 'plugins.reads read' : 'plugins.commands run'} ${p.folder}/${c.id})`.slice(0, 1000),
+        name: commandToolName(p.folder, c.id, p.app), title: `${p.name}: ${c.title}`.slice(0, 120),
+        description: `${c.description || c.title}${c.confirm ? ' Needs a confirm token: the first call answers confirmation_required with one; call again with confirm set to it.' : ''}${c.context ? ' Acts on a row or selection: pass it in input.args.' : ''}${p.app === 'console-web' ? '' : ` Runs in ${p.app}.`} (control@1 ${c.kind === 'read' ? 'plugins.reads read' : 'plugins.commands run'} ${pluginPathName(p)}/${c.id})`.slice(0, 1000),
         inputSchema: { type: 'object', properties: { input: c.input, ...(c.kind === 'read' ? {} : { by: { type: 'string', description: 'who asks (audited)' }, reason: { type: 'string', description: 'why (audited)' } }), ...(c.confirm ? { confirm: { type: 'string', description: 'the confirm token from the first call' } } : {}) }, additionalProperties: false },
         annotations: { readOnlyHint: c.effect === 'read', destructiveHint: c.effect === 'destructive', idempotentHint: c.effect === 'read', openWorldHint: false },
-        plugin: p.folder, command: c.id, kind: c.kind, effect: c.effect,
+        plugin: pluginPathName(p), command: c.id, kind: c.kind, effect: c.effect, app: p.app,
       });
     }
   }
   return tools;
 }
 
-/** REST: GET /api/control/<plugin>/<read> (input as query parameters), POST /api/control/<plugin>/<command> (input as the body). */
+/** REST: GET /api/control/<plugin>/<read> (input as query parameters), POST /api/control/<plugin>/<command> (input as the body); Molly's under `molly:<plugin>`. */
 export function pluginCommandRoutes(registry) {
   const out = [];
   for (const p of registry?.plugins ?? []) {
-    if (p.app !== 'console-web') continue;
-    for (const c of p.commands) out.push({ plugin: p.folder, command: c.id, method: c.kind === 'read' ? 'GET' : c.effect === 'destructive' ? 'DELETE' : 'POST', path: `/api/control/${p.folder}/${c.id}`, ...(c.kind === 'read' ? { query: 'input fields' } : { body: '{ input?, by?, reason?, confirm? } or the input fields themselves' }) });
+    if (!PLUGIN_RUN_APPS.includes(p.app)) continue;
+    for (const c of p.commands) out.push({ plugin: pluginPathName(p), command: c.id, method: c.kind === 'read' ? 'GET' : c.effect === 'destructive' ? 'DELETE' : 'POST', path: `/api/control/${pluginPathName(p)}/${c.id}`, ...(c.kind === 'read' ? { query: 'input fields' } : { body: '{ input?, by?, reason?, confirm? } or the input fields themselves' }) });
   }
   return out;
 }
 
-/** CLI: `axf <plugin> <command> [--field value]… [--json]` (also `axf plugin <plugin> <command>`). */
+/** CLI: `axf <plugin> <command> [--field value]… [--json]` (also `axf plugin <plugin> <command>`; Molly's plugins through `axf plugin …`). */
 export function pluginCommandCli(registry) {
   const lines = [];
   for (const p of registry?.plugins ?? []) {
-    if (p.app !== 'console-web') continue;
+    if (!PLUGIN_RUN_APPS.includes(p.app)) continue;
     for (const c of p.commands) {
       const props = Object.entries(c.input?.properties ?? {}).filter(([k]) => k !== 'to');
       const req = new Set(c.input?.required ?? []);
-      lines.push({ plugin: p.folder, command: c.id, usage: `axf ${p.folder} ${c.id}${props.map(([k]) => (req.has(k) ? ` --${k} <${k}>` : ` [--${k} <${k}>]`)).join('')}${c.confirm ? ' [--confirm <token>]' : ''}`, help: c.title });
+      lines.push({ plugin: pluginPathName(p), command: c.id, usage: `axf ${p.app === 'console-web' ? p.folder : `plugin ${p.folder}`} ${c.id}${props.map(([k]) => (req.has(k) ? ` --${k} <${k}>` : ` [--${k} <${k}>]`)).join('')}${c.confirm ? ' [--confirm <token>]' : ''}`, help: c.title });
     }
   }
   return { usage: ['axf plugins [plugin]                      every plugin and its commands (or one plugin\'s)', 'axf <plugin> <command> [--field value]… run a command or a read (also: axf plugin <plugin> <command> …)', 'axf <plugin> <command> --help            what it does and what it takes'], commands: lines };

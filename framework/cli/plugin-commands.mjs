@@ -27,9 +27,13 @@ function* files(dir, test, depth = 0) {
   }
 }
 
-/** Where each app keeps its plugins. Only the console's run here; the others are listed (their app runs them). */
+/**
+ * Where each app keeps its plugins. The console's run here; Molly's actions run in Molly through the same console relay
+ * (Molly keeps its own client on it, `to: molly`; build molly-gap-remote-actions); the others are listed (their app runs them).
+ */
 export const PLUGIN_HOMES = [
   { app: 'console-web', dir: 'apps/console-web/plugins' },
+  { app: 'molly', dir: 'apps/molly/plugins' },
   { app: 'amberx-droid', dir: 'apps/amberx-droid/src/plugins' },
   { app: 'axhub-web', dir: 'apps/axhub-web/src/plugins' },
 ];

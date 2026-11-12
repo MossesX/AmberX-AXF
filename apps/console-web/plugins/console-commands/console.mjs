@@ -10,7 +10,8 @@
  *   node console.mjs open <screen> | dialog <id> | dialog close [id] | settings <tab> [--anchor a] | action <id> [args…] [--confirm t]
  *                    | back | home | close | refresh [--hard] [--all] | where | list [screens|dialogs|settings|actions|clients] [words] | clients
  *        → sent to the console (AXF_CONSOLE_URL, default https://console.amberxai.com; AXF_TOKEN), which runs it
- *   --to recent|all|<client id>   which open console (default: the one used last)
+ *   --to recent|all|<app>|<client id>   which open client (default: the one in front / used last that has the thing named;
+ *                    `molly` = Molly itself, `console` = a Dev Console, inside Molly too; console.clients lists ids)
  *   --remote <url> · --json
  *
  * Exit codes: 0 ok · 1 failed · 2 usage · 3 confirmation_required (a destructive action: the token and the command to repeat are printed).
@@ -73,7 +74,7 @@ function flags(argv) {
 }
 
 const LIST_KINDS = { screens: 'console.screens', screen: 'console.screens', dialogs: 'console.dialogs', dialog: 'console.dialogs', settings: 'console.settings', actions: 'console.actions', action: 'console.actions', clients: 'console.clients', consoles: 'console.clients' };
-export const USAGE = 'usage: axf console open <screen> | dialog <id> | dialog close [id] | settings <tab> | action <id> [args…] | back | home | close | refresh [--hard] [--all] | where | list [screens|dialogs|settings|actions|clients] [words] | clients   [--to recent|all|<client>]';
+export const USAGE = 'usage: axf console open <screen> | dialog <id> | dialog close [id] | settings <tab> | action <id> [args…] | back | home | close | refresh [--hard] [--all] | where | list [screens|dialogs|settings|actions|clients] [words] | clients   [--to recent|all|molly|console|<client>]';
 
 /** `axf console …` words → a control@1 console command, or { error }. */
 export function commandFromArgv(argv) {
@@ -150,6 +151,7 @@ export async function main(argv) {
   const [cmd] = argv;
   if (!cmd || cmd === 'help' || cmd === '--help') {
     console.log([USAGE, '', 'Examples:', '  axf console open plan studio', '  axf console settings plugins', '  axf console action terminal.open', '  axf console list screens build', '  axf console back · axf console where · axf console clients',
+      '  axf console action molly.reload · axf console open account --to molly · axf console list actions --to molly   (Molly itself; to=console is the console, inside Molly too)',
       '', `MCP tools (console /mcp, and through axHub): ${CONSOLE_TOOLS.join(', ')}`, `REST: POST ${API_PATH} (a whole control@1 command), POST ${API_PATH}/open {screen} …`].join('\n'));
     return 0;
   }

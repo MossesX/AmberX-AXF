@@ -7,7 +7,7 @@ export interface ConsoleItem { kind: ConsoleItemKind; id: string; label: string;
 export interface ConsoleHere { screen?: string; screenLabel?: string; dialog?: string; settings?: string }
 export interface ConsoleCatalog { $axf: 'console-catalog@1'; app: string; items: ConsoleItem[]; here: ConsoleHere }
 export interface ConsoleClient { id: string; app?: string; title?: string; device?: string; user?: string; lastUsed?: number; lastSeen?: number; here?: ConsoleHere; catalog?: ConsoleCatalog }
-export interface ConsoleMessage { $axf: 'console-command@1'; id: string; op: 'open' | 'run' | 'back' | 'home' | 'close'; kind?: ConsoleItemKind; target?: string; label?: string; spec?: string; anchor?: string; arg?: string; by: string; at: string }
+export interface ConsoleMessage { $axf: 'console-command@1'; id: string; op: 'open' | 'run' | 'back' | 'home' | 'close' | 'refresh'; kind?: ConsoleItemKind; target?: string; label?: string; spec?: string; anchor?: string; arg?: string; hard?: boolean; by: string; at: string; /** set by the console server on a queued command: `queued` (held until a console connected) or `woke` (AmberX opened the console for it) */ delivery?: 'queued' | 'woke' }
 export type ConsoleRun =
   | { ok: true; data: Record<string, unknown>; deliver?: { to: string[]; message: ConsoleMessage } }
   | { ok: false; code: ControlWireCode; message: string; [k: string]: unknown };
@@ -34,7 +34,11 @@ export function consoleSearch(items: readonly ConsoleItem[], kind: ConsoleItemKi
 export function consoleResolve(items: readonly ConsoleItem[], kind: ConsoleItemKind, path: string): { item?: ConsoleItem; args?: string[]; candidates?: ConsoleItem[]; ambiguous?: boolean };
 export function consoleActionEffect(item: Partial<ConsoleItem>): Exclude<ConsoleActionEffect, 'read'>;
 export function consoleActionNeeds(item: Partial<ConsoleItem>): { effect: Exclude<ConsoleActionEffect, 'read'>; needs: string[] };
+export const CONSOLE_APP_ALIASES: Record<string, string>;
+/** `to`: recent (default), all, a client id, or an app name (`molly` = Molly's own client, `console` = a Dev Console, inside Molly too). */
 export function consolePickClients<C extends ConsoleClient>(clients: readonly C[], to?: string, now?: number): C[];
+export function consoleClientApp(c: Partial<ConsoleClient> | null | undefined): string;
+export function consoleClientIsApp(c: Partial<ConsoleClient> | null | undefined, name: string): boolean;
 export function consoleClientSummary(c: ConsoleClient): Record<string, unknown>;
 export function consoleMessage(fields: Partial<ConsoleMessage> & { op: ConsoleMessage['op'] }, opts?: { id?: string; by?: string; now?: number }): ConsoleMessage;
 export function consoleMessageErrors(m: unknown): string[];

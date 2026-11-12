@@ -928,7 +928,8 @@ FOLLOW_TOOLS = ("console_show", "console_follow")  # Follow Amber plugin (follow
 # Opening and moving only navigate, so they are annotated read-only: axHub's recommended preset (decision #112) runs
 # read-only tools at once, and navigation never waits on a veto countdown (Brett, Nov 3 2026: Follow Amber).
 NAVIGATE = ToolAnnotations(readOnlyHint=True, destructiveHint=False, idempotentHint=True, openWorldHint=False)
-Delivery = str  # "recent" (the console used last), "all", or a client id from console_clients
+Delivery = str  # "recent" (the client in front / used last that has the thing named), "all", an app ("molly" = Molly itself,
+# "console" = a Dev Console, inside Molly too; build molly-gap-remote-actions), or a client id from console_clients
 
 
 def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], dict[str, Any]]) -> None:
@@ -955,9 +956,10 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
 
     @mcp.tool(annotations=NAVIGATE)
     async def console_open(screen: str, to: Delivery = "recent") -> dict[str, Any]:
-        """Open a screen in Brett's open Dev Console (the one he used last; to="all" for every open one, or a client id).
-        `screen` = the view id ("plan-studio"), its title ("Plan Studio") or a few words ("plan studio", "builds",
-        "orchestrator"); plugins' screens count. Not sure of the name? console_list(kind="screens", q="…") first."""
+        """Open a screen in Brett's open Dev Console, or in Molly (the client in front that has it; to="all" for every open
+        one, to="molly" for Molly itself: its apps and their pages such as "console/nav:builds", to="console" for a console,
+        or a client id). `screen` = the view id ("plan-studio"), its title ("Plan Studio") or a few words ("plan studio",
+        "builds", "orchestrator"); plugins' screens count. Not sure of the name? console_list(kind="screens", q="…") first."""
         return await go({"op": "act", "target": "console.screens", "path": screen, "action": "open", "input": inp(to)})
 
     @mcp.tool(annotations=NAVIGATE)
@@ -978,7 +980,8 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
     @mcp.tool(annotations=WRITE)
     async def console_action(action: str, args: list[str] | None = None, confirm: str = "", to: Delivery = "recent") -> dict[str, Any]:
         """Run a registered action in the open console (menus, toolbar, search all use them): its id ("terminal.open"),
-        a spec with arguments ("swap:color-theme:dark") or its label. Actions that only navigate run straight away; one
+        a spec with arguments ("swap:color-theme:dark") or its label. Molly's own actions too (molly.reload, molly.auth.*,
+        navigation.*, xlayout.*): they go to Molly by themselves, or say to="molly". Actions that only navigate run straight away; one
         that changes data needs the permission the action itself requires; one that deletes or resets answers
         confirmation_required with `confirm`: tell Brett what it will do, then call again with that token."""
         return await go({"op": "act", "target": "console.actions", "path": action, "action": "run", "input": inp(to, args=args or None), "confirm": confirm})
@@ -1000,10 +1003,11 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         return await go({"op": "get", "target": "console.nav", "path": "here"})
 
     @mcp.tool(annotations=READ)
-    async def console_list(kind: Literal["screens", "dialogs", "settings", "actions"] = "screens", q: str = "", limit: int = 50) -> dict[str, Any]:
-        """What the open console has, so you can pick the right name: its screens, dialogs, settings tabs or actions,
-        best matches for `q` first (all of them when q is empty)."""
-        return await go({"op": "list", "target": f"console.{kind}", "select": {k: v for k, v in {"q": q, "limit": max(1, min(limit, 500))}.items() if v}})
+    async def console_list(kind: Literal["screens", "dialogs", "settings", "actions"] = "screens", q: str = "", limit: int = 50, to: Delivery = "recent") -> dict[str, Any]:
+        """What the open clients have, so you can pick the right name: their screens, dialogs, settings tabs or actions,
+        best matches for `q` first (all of them when q is empty). Without `to` every open client's items come together,
+        each tagged with its app (console-web, molly/console-web, molly); to="molly" lists Molly's own, to="console" a console's."""
+        return await go({"op": "list", "target": f"console.{kind}", "select": {k: v for k, v in {"q": q, "limit": max(1, min(limit, 500)), "client": to if to and to != "recent" else ""}.items() if v}})
 
     @mcp.tool(annotations=READ)
     async def console_clients() -> dict[str, Any]:

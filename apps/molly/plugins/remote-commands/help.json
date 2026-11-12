@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "remote-commands-help",
+  "name": "Remote commands help",
+  "version": "0.1.0",
+  "description": "Help mode entries for Molly's Remote commands plugin (help@1).",
+  "author": "Brett",
+  "tags": ["help"],
+  "data": {
+    "scope": "plugin:remote-commands",
+    "entries": [
+      { "target": "action:remote-commands.status", "title": "Remote commands status", "text": "Is Molly connected to the console's command relay, as which client, and what the last remote command did." },
+      { "target": "action:remote-commands.reconnect", "title": "Reconnect", "text": "Says hello to the console again and reopens the stream, e.g. after pasting a new token or a console restart." },
+      { "target": "action:remote-commands.listen", "title": "Remote commands on / off", "text": "Off: Molly stops listening for remote commands. The console inside Molly keeps taking its own." },
+      { "target": "action:remote-commands.forget-token", "title": "Forget the console token", "text": "Removes the console token from this browser. Molly takes no remote commands until a token is pasted again." }
+    ],
+    "intros": []
+  }
+}

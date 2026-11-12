@@ -1,0 +1,37 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.molly.remote-commands",
+  "name": "Remote commands",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Molly's own client on the console-commands relay: Molly announces itself to the console server as app `molly` with its own catalog (its views and the apps' pages, settings tabs, dialogs and every action: molly.*, navigation.*, xlayout.*, the sign-in actions), so each one runs from the console API (POST /api/console/action with to: molly), the MCP tools console_open / console_action / console_list (to=\"molly\"), the CLI (axf console action molly.reload, axf console list actions --to molly) and AmberX voice. Without a `to`, the relay sends a command to whichever open client has what it names. Needs the console token for Molly's origin (Settings → Plugins → Remote commands, or the Connections screen).",
+  "targets": ["molly"],
+  "provides": ["settings-tab:remote-commands", "service:molly-remote-commands@1"],
+  "scopes": [],
+  "enabledByDefault": true,
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/remote-commands",
+    "env": [],
+    "mentions": ["apps/molly/README.md", "framework/spec/CONTROL.md"]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      { "id": "status", "title": "Remote commands status", "description": "Is Molly connected to the console's command relay: state (off, no-token, connecting, connected, denied, unreachable), client id, console origin, item count, last command.", "action": "remote-commands.status", "readOnly": true, "output": "{ state, client, base, hasToken, items, last, lastAt }" },
+      { "id": "reconnect", "title": "Reconnect to the console", "description": "Drops the stream and says hello again (after a token change or a console restart).", "action": "remote-commands.reconnect" },
+      { "id": "listen", "title": "Remote commands on / off", "description": "on | off (no value toggles). Off: Molly stops listening; the console inside it still takes its own commands.", "action": "remote-commands.listen", "input": { "type": "object", "properties": { "args": { "type": "array", "items": { "type": "string", "enum": ["on", "off"] } } } } },
+      { "id": "toasts", "title": "A note per command on / off", "description": "on | off (no value toggles) for the toast that says who ran what.", "action": "remote-commands.toasts", "input": { "type": "object", "properties": { "args": { "type": "array", "items": { "type": "string", "enum": ["on", "off"] } } } } },
+      { "id": "forget-token", "title": "Forget the console token", "description": "Removes the console token from this browser; Molly stops taking remote commands until a token is pasted again. Needs a confirm token.", "action": "remote-commands.forget-token", "confirm": true }
+    ],
+    "noReads": "no data folder: the on/off and toast settings are per-device; the console token is a browser credential and is never read or set remotely"
+  },
+  "builtWith": { "model": "fable", "builtAt": "2026-11-12", "branch": "claude/molly-gap-remote-actions" },
+  "help": "help.json",
+  "opens": "settings"
+}
