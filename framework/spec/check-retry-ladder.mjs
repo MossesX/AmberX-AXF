@@ -22,7 +22,7 @@ const CLASSIFY = [
   { status: 429 }, { message: 'Too Many Requests' }, { message: 'Overloaded' },
   { status: 401 }, { code: 'token_expired' }, { message: 'Claude usage limit reached' },
   { status: 504 }, { code: 'ETIMEDOUT' }, { message: 'request timed out after 30s' },
-  { code: 'ENOTFOUND', message: 'getaddrinfo ENOTFOUND hub' }, { message: 'socket hang up' },
+  { code: 'ENOTFOUND', message: 'getaddrinfo ENOTFOUND hub' }, { message: 'socket hang up' }, { message: '[Errno -2] Name or service not known' },
   { status: 503 }, { code: 'ECONNREFUSED' }, { status: 502 },
   { status: 409 }, { message: 'rev mismatch: changed since read' },
   { status: 500 }, { status: 422 }, { message: 'validation error: missing required field id' },

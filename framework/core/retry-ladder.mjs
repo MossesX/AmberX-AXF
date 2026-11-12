@@ -71,7 +71,7 @@ export function classify(err) {
   if (status === 429 || has(code, 'rate_limit', 'rate_limited') || has(msg, 'rate limit', 'too many requests', 'overloaded')) return 'rate-limit';
   if (status === 401 || has(code, 'unauthorized', 'token_expired', 'auth', 'quota', 'usage_limit') || has(msg, 'token expired', 'expired token', 'invalid token', 'login expired', 'not logged in', 'usage limit', 'account limit', 'credit balance')) return 'auth';
   if (status === 408 || status === 504 || has(code, 'timeout', 'timed_out', 'etimedout') || has(msg, 'timed out', 'timeout')) return 'timeout';
-  if (has(code, 'enotfound', 'eai_again', 'econnreset', 'ehostunreach', 'enetunreach') || has(msg, 'enotfound', 'eai_again', 'econnreset', 'getaddrinfo', 'name resolution', 'network is unreachable', 'socket hang up')) return 'network';
+  if (has(code, 'enotfound', 'eai_again', 'econnreset', 'ehostunreach', 'enetunreach') || has(msg, 'enotfound', 'eai_again', 'econnreset', 'getaddrinfo', 'name resolution', 'network is unreachable', 'socket hang up', 'name or service not known')) return 'network';
   if (status === 502 || status === 503 || has(code, 'econnrefused', 'service_down', 'unavailable') || has(msg, 'econnrefused', 'connection refused', 'service unavailable', 'bad gateway')) return 'service-down';
   if (status === 409 || has(code, 'stale', 'conflict', 'rev_mismatch') || has(msg, 'stale', 'out of date', 'rev mismatch', 'changed since')) return 'stale-state';
   if (status >= 500) return 'rate-limit';

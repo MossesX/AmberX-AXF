@@ -256,6 +256,12 @@
   },
   {
    "input": {
+    "message": "[Errno -2] Name or service not known"
+   },
+   "kind": "network"
+  },
+  {
+   "input": {
     "status": 503
    },
    "kind": "service-down"
