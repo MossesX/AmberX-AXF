@@ -49,7 +49,7 @@ export function judgeHeard(i: HeardInput): HeardVerdict {
 /* ---------------------------------------------------------------- brains (build rebuild-gizmo-from-scratch, Nov 2026) */
 /** Who answers a chat: Claude (the Claude plan) or Brett's Ollama on the VPS (amberx-llama). The console assistant's
  * GET /brains (brains@1) is the source; this list is what the switcher shows while that answer is on its way or the
- * console is unreachable. Mirrors apps/console-web/plugins/ai-assistant/server/brains.py. */
+ * console is unreachable. Mirrors the assistant's brains@1 list (same ids, same rule in brainOf). */
 export type BrainFamily = 'claude' | 'local';
 export interface Brain { id: string; family: BrainFamily; label: string; short: string; model: string; description: string; ready?: boolean; why?: string }
 export const LOCAL_PROFILE = 'amberx-llama';

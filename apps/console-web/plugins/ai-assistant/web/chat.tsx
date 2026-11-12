@@ -5,7 +5,7 @@
  * cards. Used full-page (view "ai-assistant") and inside the chat dialog ("ai-assistant.chat").
  */
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ClipboardEvent, type DragEvent, type KeyboardEvent } from 'react';
-import { Button, Chip, Icon, Markdown, Slot, TabGroup, useAxfState, useRuntime, useSlotFilled } from '@console/axf/react';
+import { Button, Chip, Icon, Markdown, Segmented, Slot, TabGroup, useAxfState, useRuntime, useSlotFilled } from '@console/axf/react';
 import { ChangeBatchCard, readEventStream, type Batch } from '@console/changeBatch';
 import { pluginFetch } from '@console/plugins';
 import { ApprovalsBadge } from '@console/axf/libs/approvals/react';
@@ -14,11 +14,14 @@ import { MoreMenu } from './more';
 import { ChatSettingsDialog } from './settings';
 import { VoiceMicStandIn } from './voicemic';
 import {
-  APPROVALS_BADGE_KEY, FOLDER, TOOL_MODES, call, client, consoleHub, emptyLiveReply, fileToImage, fmtNum, fmtTime, normalizeChatContext, post, statusStore, turnModeLabel, watchReply,
+  APPROVALS_BADGE_KEY, FOLDER, TOOL_MODES, call, client, consoleHub, emptyLiveReply, fileToImage, fmtNum, fmtTime, normalizeChatContext, post, put, statusStore, turnModeLabel, watchReply,
   type ConvSettings, type ConvSummary, type Conversation, type Ctx, type Image, type LiveReply, type Message, type Status, type WriteMode,
 } from './api';
 
 interface TextFile { name: string; text: string }
+/** One entry of the assistant's GET /brains (brains@1). */
+interface BrainItem { id: string; family: 'claude' | 'local'; label: string; short: string; model: string }
+const LOCAL_PROFILE = 'amberx-llama';
 const MODE_NAME = { auto: 'Auto', chat: 'Chat only', tools: 'Tools on' };
 
 /** The chat window used last (the one voice input goes to when several are open). */
@@ -161,6 +164,23 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
     setConv(await client.patchConversation(conv.id, { settings: s }));
   };
 
+  /** Who answers (brains@1: Claude Opus / Fable, or the local Ollama on the VPS, amberx-llama). Per chat, via the
+   * assistant's own route, so REST / MCP / CLI / Gizmo in AmberX switch the same way. */
+  const [brainList, setBrainList] = useState<BrainItem[]>([]);
+  useEffect(() => { void call<{ items: BrainItem[] }>('brains?check=false').then((r) => setBrainList(r.items), () => undefined); }, []);
+  const brainFamily: 'claude' | 'local' = (conv?.settings ?? pending).profileId === LOCAL_PROFILE ? 'local' : 'claude';
+  const setBrain = async (want: string) => {
+    const w = want.trim().toLowerCase();
+    const id = brainList.find((b) => b.id === w || b.short.toLowerCase() === w)?.id
+      ?? (w === 'ollama' || w === 'local' ? 'local-24b' : w === 'claude' || w === 'opus' ? 'claude-opus' : w === 'fable' ? 'claude-fable' : w);
+    try {
+      const c = await ensureConv();
+      const r = await put<{ conversation: Conversation; brain: string }>(`conversations/${encodeURIComponent(c.id)}/brain`, { brain: id });
+      setConv(r.conversation);
+      rt.toast(`Now answering: ${brainList.find((b) => b.id === r.brain)?.label ?? r.brain}`, 'info');
+    } catch (e) { rt.toast((e as Error).message, 'danger'); }
+  };
+
   const ensureConv = async (): Promise<Conversation> => {
     if (conv) return conv;
     const s = { ...pending };
@@ -246,6 +266,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
       return true;
     }
     if (cmd === '/model') { void updateSettings({ model: arg }); rt.toast(arg ? `Model set to ${arg}` : 'Model reset to the provider default', 'info'); return true; }
+    if (cmd === '/brain') { void setBrain(arg || 'claude'); return true; }
     if (cmd === '/system') { void updateSettings({ systemPrompt: arg }); rt.toast(arg ? 'Conversation instructions set' : 'Conversation instructions cleared', 'info'); return true; }
     return false;
   };
@@ -312,6 +333,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
       { shortcut: '/new', title: 'New conversation', text: '' }, { shortcut: '/settings', title: 'Chat settings', text: '' },
       { shortcut: '/compare', title: 'Compare models', text: '' }, { shortcut: '/export', title: 'Export as Markdown (/export json|txt)', text: '' },
       { shortcut: '/system ', title: 'Set instructions for this conversation', text: '' }, { shortcut: '/model ', title: 'Set the model for this conversation', text: '' },
+      { shortcut: '/brain ', title: 'Who answers: claude | fable | ollama | local-7b', text: '' },
       { shortcut: '/tag ', title: 'Tag this conversation', text: '' }, { shortcut: '/stop', title: 'Stop the running reply', text: '' },
       ...(agents.length ? [{ shortcut: '/agent ', title: 'Switch agent', text: '' }] : []),
     ];
@@ -391,6 +413,10 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
           </div>
           {/* axHub approvals + held calls (lib-approvals): nothing drawn while nothing waits; click = popover with
               Approve / Decline (the hub's own page, framed: the hub allows the console's origin) or countdown + Deny. */}
+          {brainList.length > 0 && (
+            <Segmented<'claude' | 'local'> size="sm" label="Who answers" value={brainFamily} disabled={!!live} onChange={(f) => void setBrain(f === 'local' ? 'local-24b' : 'claude-opus')}
+              options={[{ value: 'claude', label: 'Claude', icon: 'sparkles', title: 'Claude (the Claude plan)' }, { value: 'local', label: 'Ollama', icon: 'monitor', title: 'Your Ollama on the VPS (amberx-llama)' }]} />
+          )}
           {rt.settings.get(APPROVALS_BADGE_KEY) !== false && <ApprovalsBadge resolveHub={consoleHub} frame className="axp-ai-assistant__approvals" />}
           {/* Title-bar extension point: e.g. the agent voice plugin's live status light + speech controls. */}
           <Slot name="assistant.head" props={voiceProps} />
