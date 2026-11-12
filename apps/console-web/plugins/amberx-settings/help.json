@@ -1,0 +1,32 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "amberx-settings-help",
+  "name": "AmberX settings help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the AmberX settings plugin (help@1).",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:amberx-settings",
+    "entries": [
+      {
+        "target": "amberx",
+        "title": "AmberX settings",
+        "text": "The AmberX app's settings for every phone: voice, the axHub watch, links and quiet. They live on axHub, so each phone follows on its next settings refresh. Claude changes the same with amberx-settings_set, the CLI with axf amberx-settings set. The auto-approve switches change only here, in your own browser."
+      },
+      {
+        "target": "action:amberx-settings.open",
+        "title": "AmberX settings",
+        "text": "Opens Settings \u2192 Plugins \u2192 AmberX."
+      },
+      {
+        "target": "action:amberx-settings.focus",
+        "title": "One AmberX setting",
+        "text": "Opens AmberX settings on one setting (its key, like voice.lang)."
+      }
+    ]
+  }
+}

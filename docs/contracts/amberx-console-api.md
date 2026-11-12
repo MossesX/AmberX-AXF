@@ -330,6 +330,14 @@ Keys (append-only; the full list comes with s10 from the plugins' settings group
 
 Deep link: `console_settings("plugins/amberx", anchor="setting:<key>")`.
 
+Built in s10 as the console plugin `amberx-settings` instead of a new control@1 target: adding `amberx.settings` to <!-- axf-plugin:amberx-settings -->
+control@1 changes the control-rules engine and its schema (Fable work with a Kotlin twin), so C32 is served by plugin <!-- axf-plugin:amberx-settings -->
+commands on the same keys: `GET settings`, `GET|PUT settings/{key}`, `POST settings/{key}/reset`, `GET|PUT document` <!-- axf-plugin:amberx-settings -->
+(C32a, ETag / If-Match) under `/api/plugins/amberx-settings/`; MCP `amberx-settings_list|get|set|reset|document`; CLI <!-- axf-plugin:amberx-settings -->
+`axf amberx-settings set voice.lang en-GB`. The keys are in the plugin's `registry.json` (short name → document key). <!-- axf-plugin:amberx-settings -->
+The watch's auto-approve keys change only from a signed-in admin browser (403 for the token). Settings tab `amberx` <!-- axf-plugin:amberx-settings -->
+(Settings → Plugins → AmberX), one setting `amberx-settings.focus:<key>`. The control@1 target stays a follow-up. <!-- axf-plugin:amberx-settings -->
+
 ### 4.11 Stays on the phone (no route)
 
 T19: speech recognition, text to speech, the quiet switch, mic off, secure screen, talk mode, hands-free, the veto alarm, the

@@ -1,0 +1,95 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.amberx-settings",
+  "name": "AmberX settings",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "The AmberX app's settings on the console (Settings \u2192 Plugins \u2192 AmberX): voice, the axHub watch, links and quiet, read and written in AmberX's own hub-settings@1 document on axHub so every phone follows (per-key, a phone's other keys untouched). REST /api/plugins/amberx-settings (settings, settings/{key}, reset, document with ETag for the phone's mirror); MCP amberx-settings_*; CLI axf amberx-settings \u2026; voice \"open amberx settings\". Deep link console_settings(\"amberx\"), one setting amberx-settings.focus:<key>. The watch's auto-approve switches change only from a signed-in browser, never with a token.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "settings-tab:amberx",
+    "action:amberx-settings.open",
+    "action:amberx-settings.focus"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/amberx-settings",
+    "env": [
+      "AXF_AMBERX_SETTINGS_PROJECTS"
+    ],
+    "mentions": [
+      "docs/contracts/amberx-console-api.md",
+      "_claude/THREADS.md"
+    ],
+    "keeps": [
+      "/projects/_shared/_data/settings/apps/amberx-droid.json on axHub: AmberX's settings document (the phones' own)"
+    ]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "route": "GET /settings",
+        "id": "list",
+        "title": "Every AmberX setting the console knows: value, default, kind, options or range",
+        "readOnly": true
+      },
+      {
+        "route": "GET /settings/{key}",
+        "id": "get",
+        "title": "One AmberX setting (key like voice.lang, monitor.interval)",
+        "readOnly": true
+      },
+      {
+        "route": "PUT /settings/{key}",
+        "id": "set",
+        "title": "Set an AmberX setting for every phone (auto-approve ones only from a signed-in browser)",
+        "input": {
+          "type": "object",
+          "properties": {
+            "key": {
+              "type": "string"
+            },
+            "value": {}
+          },
+          "required": [
+            "key",
+            "value"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /settings/{key}/reset",
+        "id": "reset",
+        "title": "Put an AmberX setting back to its default"
+      },
+      {
+        "route": "GET /document",
+        "id": "document",
+        "title": "AmberX's whole hub-settings@1 document",
+        "readOnly": true
+      },
+      {
+        "route": "PUT /document",
+        "skip": "the phone's settings mirror (If-Match)"
+      }
+    ]
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-12"
+  },
+  "help": "help.json"
+}

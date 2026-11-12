@@ -1,0 +1,215 @@
+{
+ "$axf": "amberx-settings-registry@1",
+ "note": "The AmberX settings the console reads and writes in the hub-settings@1 document (shared/settings/apps/amberx-droid.json). key = the console's short name (contract C32); doc = the key in the document the phone reads. Append-only.",
+ "settings": [
+  {
+   "key": "quiet",
+   "doc": "amberx.sound.quiet",
+   "label": "Quiet (no speech, tones or alarms on any device)",
+   "kind": "toggle",
+   "default": false,
+   "group": "Sound"
+  },
+  {
+   "key": "voice.lang",
+   "doc": "amberx.voice.lang",
+   "label": "Language for recognition and replies",
+   "kind": "text",
+   "default": "en-US",
+   "group": "Voice",
+   "pattern": "^[a-z]{2,3}(-[A-Z]{2})?$"
+  },
+  {
+   "key": "voice.handsFree",
+   "doc": "amberx.voice.handsFree",
+   "label": "Listen hands-free",
+   "kind": "toggle",
+   "default": true,
+   "group": "Voice"
+  },
+  {
+   "key": "voice.wake",
+   "doc": "amberx.voice.wake",
+   "label": "Wake phrases (comma separated)",
+   "kind": "text",
+   "default": "hey amberx, okay amberx",
+   "group": "Voice"
+  },
+  {
+   "key": "voice.mode",
+   "doc": "amberx.voice.mode",
+   "label": "Hands-free mode",
+   "kind": "choice",
+   "default": "wake",
+   "options": [
+    "wake",
+    "classic"
+   ],
+   "group": "Voice"
+  },
+  {
+   "key": "voice.sensitivity",
+   "doc": "amberx.voice.sensitivity",
+   "label": "Wake sensitivity",
+   "kind": "choice",
+   "default": "normal",
+   "options": [
+    "low",
+    "normal",
+    "high"
+   ],
+   "group": "Voice"
+  },
+  {
+   "key": "voice.triggerTone",
+   "doc": "amberx.voice.triggerTone",
+   "label": "Play tone on trigger",
+   "kind": "toggle",
+   "default": false,
+   "group": "Voice"
+  },
+  {
+   "key": "voice.alwaysArmed",
+   "doc": "amberx.voice.alwaysArmed",
+   "label": "Always armed (no wake phrase)",
+   "kind": "toggle",
+   "default": false,
+   "group": "Voice"
+  },
+  {
+   "key": "voice.overlay",
+   "doc": "amberx.voice.overlay",
+   "label": "Detection overlay",
+   "kind": "toggle",
+   "default": true,
+   "group": "Voice"
+  },
+  {
+   "key": "voice.beep",
+   "doc": "amberx.voice.beep",
+   "label": "Listening tone",
+   "kind": "choice",
+   "default": "silence",
+   "options": [
+    "silence",
+    "silence-all",
+    "on"
+   ],
+   "group": "Voice"
+  },
+  {
+   "key": "voice.online",
+   "doc": "amberx.voice.online",
+   "label": "Best recognition (online)",
+   "kind": "toggle",
+   "default": true,
+   "group": "Voice"
+  },
+  {
+   "key": "voice.swears",
+   "doc": "amberx.voice.swears",
+   "label": "Show swear words",
+   "kind": "toggle",
+   "default": true,
+   "group": "Voice"
+  },
+  {
+   "key": "voice.speak",
+   "doc": "amberx.voice.speak",
+   "label": "Answer out loud",
+   "kind": "toggle",
+   "default": true,
+   "group": "Voice"
+  },
+  {
+   "key": "voice.notes",
+   "doc": "amberx.voice.notes",
+   "label": "Notes sentences go to Notes",
+   "kind": "toggle",
+   "default": true,
+   "group": "Voice"
+  },
+  {
+   "key": "monitor.on",
+   "doc": "amberx.monitor.on",
+   "label": "Watch axHub in the background",
+   "kind": "toggle",
+   "default": true,
+   "group": "Watch"
+  },
+  {
+   "key": "monitor.interval",
+   "doc": "amberx.monitor.interval",
+   "label": "Check every (seconds)",
+   "kind": "number",
+   "default": 30,
+   "min": 15,
+   "max": 300,
+   "step": 5,
+   "group": "Watch"
+  },
+  {
+   "key": "monitor.listen",
+   "doc": "amberx.monitor.listen",
+   "label": "Listen for the wake phrase while watching",
+   "kind": "toggle",
+   "default": true,
+   "group": "Watch"
+  },
+  {
+   "key": "monitor.consoleAlerts",
+   "doc": "amberx.monitor.consoleAlerts",
+   "label": "Dev Console alerts",
+   "kind": "toggle",
+   "default": true,
+   "group": "Watch"
+  },
+  {
+   "key": "monitor.autoApprove",
+   "doc": "amberx.monitor.autoApprove",
+   "label": "Approve these tools by themselves",
+   "kind": "toggle",
+   "default": false,
+   "group": "Watch",
+   "sensitive": true
+  },
+  {
+   "key": "monitor.autoApproveAll",
+   "doc": "amberx.monitor.autoApproveAll",
+   "label": "Approve everything except vps.run",
+   "kind": "toggle",
+   "default": false,
+   "group": "Watch",
+   "sensitive": true
+  },
+  {
+   "key": "monitor.autoApproveTools",
+   "doc": "amberx.monitor.autoApproveTools",
+   "label": "Tools approved by themselves (comma separated)",
+   "kind": "text",
+   "default": "vps.logs, github.*",
+   "group": "Watch",
+   "sensitive": true
+  },
+  {
+   "key": "openUrl.browser",
+   "doc": "amberx.openUrl.browser",
+   "label": "Open links in",
+   "kind": "choice",
+   "default": "chrome",
+   "options": [
+    "chrome",
+    "default"
+   ],
+   "group": "Links"
+  },
+  {
+   "key": "openUrl.notifyWhenBlocked",
+   "doc": "amberx.openUrl.notifyWhenBlocked",
+   "label": "Notify when Android blocks the browser",
+   "kind": "toggle",
+   "default": true,
+   "group": "Links"
+  }
+ ]
+}
