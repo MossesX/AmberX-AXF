@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3811,
- "updatedAt": "2026-11-12T23:21:07.190Z",
+ "rev": 3812,
+ "updatedAt": "2026-11-12T23:22:07.371Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174406,10 +174406,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/banners-page-focus-scroll-to-and-highlight-any-banner-or-badge",
-   "pr": "",
+   "pr": "#531",
    "priority": "P0",
    "createdAt": "2026-11-12T23:12:31.496Z",
-   "updatedAt": "2026-11-12T23:20:16.574Z",
+   "updatedAt": "2026-11-12T23:22:05.994Z",
    "builtAt": "",
    "notes": [
     {
@@ -174521,7 +174521,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
