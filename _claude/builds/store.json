@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3733,
- "updatedAt": "2026-11-12T22:16:07.753Z",
+ "rev": 3734,
+ "updatedAt": "2026-11-12T22:16:19.507Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -173872,18 +173872,46 @@
    "title": "Fix conflicts and land Build Plan 1 (skins, one-row tables, backgrounds, asset overrides)",
    "category": "merge",
    "detail": "Branch claude/build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides conflicts with main in 7 files: ChromeContext.tsx (framework + amberx-droid, axhub-web, console-web, molly copies), build-orchestrator/web/pipeline.tsx, framework/spec/PORTING.md. Brett: pull main in and merge it right away. Keep both sides' intent (tap-to-confirm #524 and skins).",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-12T22:16:05.972Z",
-   "updatedAt": "2026-11-12T22:16:05.976Z",
+   "updatedAt": "2026-11-12T22:16:12.143Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T22:16:10.719Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "2026-11-12T22:16:10.262Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
    "steps": [
     {
      "id": "s1",
@@ -173938,7 +173966,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
