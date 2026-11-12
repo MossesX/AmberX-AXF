@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:31 UTC · `retire-build-manager-the-orchestrator-is-the-onl` note (all) · backfill
 - 2026-11-12 03:31 UTC · `enforce-the-merge-queue-every-finished-build-goe` note (all) · backfill
 - 2026-11-12 03:31 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` note (all) · backfill
 - 2026-11-12 03:31 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` note (all) · backfill
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 21:53 UTC · `server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until` added (3 steps) (all) · Claude (voice)
 - 2026-11-12 21:53 UTC · `server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until` → queued, note (all) · console
 - 2026-11-12 21:54 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · console
+- 2026-11-12 21:54 UTC · `remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel` added (2 steps) (all) · Claude (voice)
 
 ## Token passes (log)
 
