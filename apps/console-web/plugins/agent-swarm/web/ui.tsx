@@ -120,7 +120,7 @@ function AgentsTab({ state, act }: { state: SwarmState; act: Act }) {
       <div className="sw-scroll">
         <DataGrid<AgentLine> id="agent-swarm-agents" label="Agents" compact
           groups={[{ id: 'all', title: `Agents (${lines.length} of ${state.roster.agents.length})`, icon: 'user', rows: lines, groups: [], fixed: true }]}
-          columns={columns} rowId={(l) => l.a.id} rowLabel={(l) => l.a.name} rowTone={(l) => (l.as.status === 'fired' ? 'muted' : TONE_EDGE[defs[l.as.status]?.tone ?? ''] ?? 'muted')}
+          columns={columns} rowId={(l) => l.a.id} rowLabel={(l) => l.a.name} rowKind="employee" record={(l) => ({ ...l.a, state: l.as, pay: l.pay })} rowTone={(l) => (l.as.status === 'fired' ? 'muted' : TONE_EDGE[defs[l.as.status]?.tone ?? ''] ?? 'muted')}
           {...prefs} empty="No agents match the filter." />
       </div>
       <p className="fx-muted">{Object.values(defs).map((d) => `${d.label}: ${d.about}`).join(' · ')} Salary is the agent's weekly budget: spent it all = broke, no new jobs till payday (Monday) or a top-up. A higher salary is a raise, a lower one docks it.</p>
@@ -191,17 +191,18 @@ function JobsTab({ state }: { state: SwarmState }) {
       {plan && plan.waves.map((w, i) => (
         <div key={i}>
           <p className="sw-wave">Wave {i + 1}{i > 0 ? ' · waits for overlapping jobs' : ' · starts at once'}</p>
-          <div className="sw-scroll"><table className="sw-table">
-            <thead><tr><th>Step</th><th>Agent</th><th>Model</th><th className="is-num">Budget</th><th>Leases</th></tr></thead>
-            <tbody>{w.map((id) => { const j = plan.jobs.find((x) => x.id === id)!; return (
-              <tr key={id}>
-                <td title={j.text}><b>{j.stepId}</b> {j.text.length > 90 ? `${j.text.slice(0, 87)}…` : j.text}</td>
-                <td>{agents.get(j.agent)?.name ?? j.agent}</td>
-                <td><ModelChip m={j.model} /></td>
-                <td className="is-num">{core.fmtTokens(j.budget.tokens)} · {j.budget.maxTurns} turns · {core.fmtUsd(core.budgetUsd(j, state.prices))}</td>
-                <td className="sw-leases fx-mono">{j.leases.join(', ') || 'whole repo (no files named)'}{j.shared.length ? ` · Boss writes: ${j.shared.join(', ')}` : ''}</td>
-              </tr>); })}</tbody>
-          </table></div>
+          <div className="sw-scroll">
+            <DataGrid<Job> id={`agent-swarm-wave-${i + 1}`} label={`Wave ${i + 1} jobs`} compact rowKind="swarm-job" rowId={(j) => j.id} rowLabel={(j) => `${j.stepId} ${j.text}`}
+              rows={w.map((id) => plan.jobs.find((x) => x.id === id)).filter((j): j is Job => !!j)}
+              record={(j) => ({ ...j, build: j.buildId, employee: j.agent })}
+              columns={[
+                { id: 'step', label: 'Step', width: `minmax(${W(16)}, 4fr)`, fixed: true, sortable: true, sortValue: (j) => j.stepId, render: (j) => <span title={j.text}><b>{j.stepId}</b> {j.text.length > 90 ? `${j.text.slice(0, 87)}…` : j.text}</span> },
+                { id: 'agent', label: 'Agent', width: W(8), sortable: true, sortValue: (j) => agents.get(j.agent)?.name ?? j.agent, render: (j) => agents.get(j.agent)?.name ?? j.agent },
+                { id: 'model', label: 'Model', width: W(6), sortable: true, sortValue: (j) => j.model, render: (j) => <ModelChip m={j.model} /> },
+                { id: 'budget', label: 'Budget', width: W(14), align: 'end', sortable: true, sortValue: (j) => core.budgetUsd(j, state.prices), render: (j) => `${core.fmtTokens(j.budget.tokens)} · ${j.budget.maxTurns} turns · ${core.fmtUsd(core.budgetUsd(j, state.prices))}` },
+                { id: 'leases', label: 'Leases', width: `minmax(${W(12)}, 3fr)`, render: (j) => <span className="sw-leases fx-mono">{j.leases.join(', ') || 'whole repo (no files named)'}{j.shared.length ? ` · Boss writes: ${j.shared.join(', ')}` : ''}</span> },
+              ]} />
+          </div>
         </div>
       ))}
     </div>
@@ -209,7 +210,7 @@ function JobsTab({ state }: { state: SwarmState }) {
 }
 
 type MeterRow = { k: string; v: Slot };
-function MeterTable({ title, rows, label }: { title: string; rows: Record<string, Slot>; label: (k: string) => string }) {
+function MeterTable({ title, rows, label, kind }: { title: string; rows: Record<string, Slot>; label: (k: string) => string; kind: string }) {
   const id = title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
   const prefs = useGridPrefs(`meter-${id}`, { col: 'usd', dir: -1 });
   const list: MeterRow[] = useMemo(() => Object.entries(rows).map(([k, v]) => ({ k, v })), [rows]);
@@ -225,7 +226,7 @@ function MeterTable({ title, rows, label }: { title: string; rows: Record<string
     <section className="fx-stack">
       <div className="sw-scroll">
         <DataGrid<MeterRow> id={`agent-swarm-${id}`} label={title} compact groups={[{ id: 'all', title, icon: 'chart', rows: list, groups: [], fixed: true }]}
-          columns={columns} rowId={(r) => r.k} rowLabel={(r) => label(r.k)} {...prefs} />
+          columns={columns} rowId={(r) => r.k} rowLabel={(r) => label(r.k)} rowKind={kind} record={(r) => ({ name: label(r.k), id: r.k, ...r.v })} {...prefs} />
       </div>
     </section>
   );
@@ -243,10 +244,10 @@ function CostTab({ state }: { state: SwarmState }) {
         <div className="sw-tile"><b>{core.fmtUsd(m.total.runs ? m.total.usd / m.total.runs : 0)}</b><span>average per run</span></div>
       </div>
       {m.total.runs === 0 && <div className="fx-empty">No runs yet. Start one with <code>swarm.mjs run &lt;build&gt; &lt;step&gt;</code>.</div>}
-      <MeterTable title="By agent" rows={m.byAgent} label={(k) => names.get(k) ?? k} />
-      <MeterTable title="By build" rows={m.byBuild} label={(k) => titles.get(k) ?? k} />
-      <MeterTable title="By model" rows={m.byModel} label={(k) => core.MODEL_LABEL[k] ?? k} />
-      <MeterTable title="By job" rows={m.byJob} label={(k) => k} />
+      <MeterTable title="By agent" kind="employee" rows={m.byAgent} label={(k) => names.get(k) ?? k} />
+      <MeterTable title="By build" kind="build" rows={m.byBuild} label={(k) => titles.get(k) ?? k} />
+      <MeterTable title="By model" kind="swarm-model" rows={m.byModel} label={(k) => core.MODEL_LABEL[k] ?? k} />
+      <MeterTable title="By job" kind="swarm-job" rows={m.byJob} label={(k) => k} />
     </div>
   );
 }

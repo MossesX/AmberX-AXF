@@ -6,6 +6,7 @@ import { pluginApi } from '@console/plugins';
 import { FOLDER, OrchestratorPage, TABS, openTab } from './ui';
 import { focusBuild } from './focus';
 import { BUILD_ACTIONS, type BuildAction } from '@console/axf/core/build-pipeline.mjs';
+import { registerOrchestratorRowKinds } from './rowkinds';
 
 const ACTION_LABEL: Record<BuildAction, string> = { unqueue: 'Back to Pending', hold: 'Hold (stays in the Queue)', release: 'Release from hold', archive: 'Move to the Archive', unarchive: 'Bring back from the Archive', delete: 'Delete (kept in Deleted)', restore: 'Restore' };
 const ACTION_ICON: Record<BuildAction, string> = { unqueue: 'arrow-left', hold: 'pause', release: 'play', archive: 'package', unarchive: 'undo', delete: 'trash', restore: 'undo' };
@@ -64,6 +65,8 @@ export const plugin: AxfWebLibrary = {
       catch { openTab('builds'); }
     };
     rt.actions.register('build-orchestrator.open', ([arg]) => void open(arg ?? ''), { label: 'Open the Build orchestrator (a build or a tab)', effect: 'navigate' });
+    // grid-row@1: build / build-step / account rows everywhere get fields, Related links and these commands
+    registerOrchestratorRowKinds(rt, (id) => void open(encodeURIComponent(id)));
     rt.actions.register('build-orchestrator.focus', ([arg]) => void open(arg ?? ''), { label: 'Build orchestrator: bring a tab or a build forward', params: true, effect: 'navigate' });
     rt.actions.register('build-orchestrator.tab', ([arg]) => { rt.navigate('build-orchestrator'); openTab(tabOf(decodeURIComponent(arg ?? 'queue')) || 'queue'); }, { label: 'Build orchestrator: open a tab', effect: 'navigate' });
     rt.actions.register('build-orchestrator.start', ([arg]) => {
@@ -98,7 +101,7 @@ export const plugin: AxfWebLibrary = {
       }));
     });
     rt.contextExtras.set('*:build-orchestrator', (target, payload) => {
-      if (!payload || !['axf-build-item', 'axf-plan-feature', 'axf-orchestrator-build'].includes(target ?? '')) return [];
+      if (!payload || !['axf-build-item', 'axf-plan-feature'].includes(target ?? '')) return [];
       const id = String(payload).replace(/^pending:/, '');
       const out = [{ id: 'build-orchestrator.open', label: 'Open in Build orchestrator', icon: 'layers', action: `build-orchestrator.open:${encodeURIComponent(id)}` }];
       const b = rows.find((x) => x.id === id);

@@ -112,7 +112,7 @@ export function LedgerScreen() {
         </Container>
       )}
       {error ? <Problem error={error} onRetry={reload} /> : (
-        <div className="axp-exp__scroll"><DataGrid<Entry> id="expenses-ledger" label="Ledger" groups={groups} columns={columns} rowId={(r) => r.id} rowLabel={(r) => r.merchant}
+        <div className="axp-exp__scroll"><DataGrid<Entry> id="expenses-ledger" label="Ledger" groups={groups} columns={columns} rowId={(r) => r.id} rowLabel={(r) => r.merchant} rowKind="expense"
           hidden={hidden} onToggleColumn={(c, show) => setHidden((h) => (show ?? h.includes(c)) ? h.filter((x) => x !== c) : [...h, c])} onShowAll={() => setHidden([])}
           selected={selected} onRowClick={edit} rowTone={(r) => (r.kind === 'income' ? 'success' : r.disputed ? 'warning' : '')}
           rowCtx={(r) => ({ target: 'expenses-entry', payload: r.id })} dataset={false}
@@ -159,7 +159,7 @@ export function PaydaysScreen() {
         </div>
       )}
       {data && (
-        <div className="axp-exp__scroll"><DataGrid<Entry> id="expenses-paydays" label="Recent paydays" groups={recent} rowId={(r) => r.id} hidden={[]} dataset={false}
+        <div className="axp-exp__scroll"><DataGrid<Entry> id="expenses-paydays" label="Recent paydays" groups={recent} rowId={(r) => r.id} rowKind="expense" hidden={[]} dataset={false}
           columns={[
             { id: 'date', label: 'Date', width: W.date, render: (r) => r.date },
             { id: 'payer', label: 'Payer', width: W.main, fixed: true, render: (r) => r.merchant },

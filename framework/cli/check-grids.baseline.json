@@ -1,0 +1,150 @@
+{
+  "$axf": "check-grids-baseline@1",
+  "note": "Grids, tables and logs that cannot use the expandable-row framework (grid-row@1) yet, with why. Counts may only go down.",
+  "files": {
+    "apps/amberx-droid/src/plugins/approvals/web/terminal.tsx": {
+      "logs": 1,
+      "why": "AmberX phone app (Android on hold): approval terminal log. Deferred to an AmberX build."
+    },
+    "apps/amberx-droid/src/plugins/commands/web/index.tsx": {
+      "grids": 1,
+      "why": "AmberX phone app (on hold): commands grid. Deferred to an AmberX build."
+    },
+    "apps/amberx-droid/src/plugins/monitor/web/index.tsx": {
+      "tables": 1,
+      "why": "AmberX phone app (on hold): monitor table. Deferred to an AmberX build."
+    },
+    "apps/amberx-droid/src/plugins/tasks/web/index.tsx": {
+      "grids": 1,
+      "why": "AmberX phone app (on hold): tasks grid. Deferred to an AmberX build."
+    },
+    "apps/amberx-droid/src/plugins/voice/web/index.tsx": {
+      "grids": 5,
+      "why": "AmberX phone app (on hold): voice grids. Deferred to an AmberX build."
+    },
+    "apps/amberx-droid/src/plugins/walkthrough/web/chapters.tsx": {
+      "grids": 1,
+      "why": "AmberX phone app (on hold): walkthrough chapters grid. Deferred to an AmberX build."
+    },
+    "apps/amberx-droid/src/plugins/web/web/index.tsx": {
+      "grids": 1,
+      "why": "AmberX phone app (on hold): web pages grid. Deferred to an AmberX build."
+    },
+    "apps/axhub-web/src/views/ApprovalDetail.tsx": {
+      "tables": 2,
+      "why": "axHub app (separate from the console): one approval's key/value detail. Deferred: axHub tables adopt grid-row@1 in their own build."
+    },
+    "apps/axhub-web/src/views/ApprovalLog.tsx": {
+      "tables": 3,
+      "why": "axHub app: approval log tables. Deferred to an axHub build (the Approvals grid there is on the framework)."
+    },
+    "apps/axhub-web/src/views/GoPass.tsx": {
+      "tables": 1,
+      "why": "axHub app: pass grant form. Deferred to an axHub build."
+    },
+    "apps/axhub-web/src/views/Handoff.tsx": {
+      "tables": 2,
+      "why": "axHub app: handoff key/value tables. Deferred to an axHub build."
+    },
+    "apps/axhub-web/src/views/HubAccount.tsx": {
+      "tables": 1,
+      "why": "axHub app: account key/value table. Deferred to an axHub build."
+    },
+    "apps/axhub-web/src/views/HubView.tsx": {
+      "tables": 1,
+      "why": "axHub app: hub summary table. Deferred to an axHub build."
+    },
+    "apps/axhub-web/src/views/Passes.tsx": {
+      "tables": 1,
+      "why": "axHub app: passes table. Deferred to an axHub build."
+    },
+    "apps/console-web/plugins/agent-swarm/web/chat-settings.tsx": {
+      "tables": 1,
+      "why": "Chat settings: per-agent sliders laid out as a table (a settings form)."
+    },
+    "apps/console-web/plugins/ai-assistant/web/settings.tsx": {
+      "tables": 3,
+      "why": "AI assistant settings: usage totals by provider / model / user (summary counts, no records to act on)."
+    },
+    "apps/console-web/plugins/project-wizard/web/index.tsx": {
+      "tables": 4,
+      "why": "Project wizard: explanatory tables of the files it writes and the steps it runs (documentation in a dialog)."
+    },
+    "apps/console-web/plugins/token-control/web/index.tsx": {
+      "tables": 4,
+      "why": "Token control: the token editor (each row is an inline form) and the API reference tables (routes, MCP tools, CLI) \u2014 documentation and editors, not records."
+    },
+    "apps/console-web/plugins/token-control/web/pass.tsx": {
+      "tables": 2,
+      "why": "Veto passes: the scope list is the grant form (each row is its own Grant / Revoke control)."
+    },
+    "apps/console-web/plugins/ui-review/web/mockup.tsx": {
+      "tables": 1,
+      "why": "Predicted-look mockup: a sample table drawn as a picture of a build's future UI."
+    },
+    "apps/console-web/src/views/DemosModules.tsx": {
+      "tables": 1,
+      "why": "Demo apps recorded: a short key/value list (name \u2192 folder) on a catalog page; deferred, low value."
+    },
+    "apps/console-web/src/views/Explorer.tsx": {
+      "tables": 2,
+      "why": "Element explorer: a sample TABLE element preview and a library's key/value facts."
+    },
+    "apps/console-web/src/views/Libraries.tsx": {
+      "tables": 1,
+      "why": "Library installs log (name, kind, date): read-only history on the Libraries page; deferred to the Libraries rework."
+    },
+    "apps/console-web/src/views/LibraryTemplates.tsx": {
+      "tables": 1,
+      "why": "Generated libraries with per-port compile buttons: deferred to the Libraries rework."
+    },
+    "apps/demo/src/views/Home.tsx": {
+      "tables": 1,
+      "why": "Demo app (axf init output) showing a sample key/value table."
+    },
+    "apps/expenses/src/modules/expenses/assistant/Markdown.tsx": {
+      "tables": 1,
+      "why": "Markdown renderer: tables written in a document."
+    },
+    "apps/expenses/src/modules/expenses/report.ts": {
+      "tables": 5,
+      "why": "HTML report export (string templates printed / saved as a file), not an on-screen grid."
+    },
+    "apps/walkthrough-studio/src/studio/panes/capture.tsx": {
+      "tables": 1,
+      "why": "Walkthrough Studio (separate app): capture settings table. Deferred to a Walkthrough Studio build."
+    },
+    "apps/walkthrough-studio/src/studio/panes/grid.tsx": {
+      "grids": 1,
+      "why": "Walkthrough Studio (separate app): status grid. Deferred to a Walkthrough Studio build."
+    },
+    "apps/walkthrough-studio/src/studio/panes/video.tsx": {
+      "tables": 1,
+      "why": "Walkthrough Studio (separate app): video settings table. Deferred to a Walkthrough Studio build."
+    },
+    "framework/libs/mcp/index.tsx": {
+      "tables": 2,
+      "why": "MCP settings: server and tool key/value tables in a settings panel, not record grids."
+    },
+    "framework/libs/settings/skinwhere.tsx": {
+      "tables": 1,
+      "why": "Settings form: which skin applies where (a choice per surface)."
+    },
+    "framework/react/components/DataCard.tsx": {
+      "tables": 1,
+      "why": "DataCard draws one record's fields as a key/value table (it is itself a detail view)."
+    },
+    "framework/react/components/Markdown.tsx": {
+      "tables": 1,
+      "why": "Markdown renderer: tables written in a document."
+    },
+    "framework/react/studio/AccountView.tsx": {
+      "tables": 1,
+      "why": "Account page key/value table (one record)."
+    },
+    "framework/react/studio/builtinDialogs.tsx": {
+      "tables": 2,
+      "why": "Built-in dialogs: About and shortcut key/value tables."
+    }
+  }
+}

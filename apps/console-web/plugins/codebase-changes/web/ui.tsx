@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button, Icon, IconButton, RefText, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
 import { MoreMenu } from './MoreMenu';
+import { RowDetail } from '@console/axf/libs/datagrid';
 import {
   CHANGED, KIND_ICON, NO_FILTERS, STATE_ICON, STATE_LABEL, VIEW, abandonEntry, ago, api, bannerOn, closeAll, closeEntry, isActive, NO_WORD_MS, quietMs, startedMs, stuckWhy, kindLabel, linkHref, loadEntry, loadOpen, loadResume,
   loadPage, reopenEntry, takeFocus, took, useStore, when, type Entry, type Filters, type Page, type Step, type Summary,
@@ -246,7 +247,7 @@ function Row({ s, open, onToggle, onChanged }: { s: Summary; open: boolean; onTo
           {!s.closed && <span className="axp-codebase-changes__meta is-accent" title="Showing in the banner"><Icon name="bell" size={11} /> in banner</span>}
         </span>
       </button>
-      {open && <EntryDetail id={s.id} onChanged={onChanged} />}
+      {open && <RowDetail rowRef={{ kind: 'change', id: s.id }} record={s} dataset="codebase-changes"><EntryDetail id={s.id} onChanged={onChanged} /></RowDetail>}
     </li>
   );
 }

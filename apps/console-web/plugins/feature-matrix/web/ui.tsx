@@ -137,7 +137,7 @@ function MatricesGrid({ data, busy, act, focus, lastReport }: { data: StateRes; 
         </div>
       )}
       {rows.length === 0 ? <EmptyState icon="list" action={{ label: 'Import open builds', icon: 'download', onClick: () => void act('import', { profile: data.active }) }}>{show !== 'all' || profile ? 'No matrices match.' : 'No feature matrices yet.'}</EmptyState> : (
-        <DataGrid<fm.Row> id="feature-matrices" label="Feature matrices" groups={groups} columns={cols} rowId={(r) => r.id} rowLabel={(r) => r.title}
+        <DataGrid<fm.Row> id="feature-matrices" label="Feature matrices" groups={groups} columns={cols} rowId={(r) => r.id} rowLabel={(r) => r.title} rowKind="feature-matrix"
           hidden={hidden} onToggleColumn={(c) => setHidden((h) => (h.includes(c) ? h.filter((x) => x !== c) : [...h, c]))} onShowAll={() => setHidden([])}
           sort={sort} onSort={(c) => setSort((s) => (!c ? null : s?.col === c ? { col: c, dir: s.dir === 1 ? -1 : 1 } : { col: c, dir: -1 }))}
           expanded={open} onToggleExpand={toggle} onRowClick={(r) => toggle(r.id)}

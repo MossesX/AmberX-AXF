@@ -322,7 +322,7 @@ export function CrewView() {
       </div>
       <DataGrid<Run>
         id="crew-runs" label="Agents at work" compact groups={groups} columns={narrow ? cols.filter((c) => !NARROW_HIDDEN.includes(c.id)) : cols}
-        rowId={(r) => r.id} rowLabel={(r) => `${r.agent.name} ${r.name}`}
+        rowId={(r) => r.id} rowLabel={(r) => `${r.agent.name} ${r.name}`} rowKind="agent-run"
         hidden={hidden} onToggleColumn={(c, show) => setHidden((h) => (show ?? h.includes(c)) ? h.filter((x) => x !== c) : [...h, c])} onShowAll={() => setHidden([])}
         sort={sort} onSort={(col) => setSort((s) => (!col ? null : s?.col === col ? (s.dir === 1 ? { col, dir: -1 } : null) : { col, dir: 1 }))}
         expanded={expanded} onToggleExpand={(id) => setExpanded((xs) => (xs.includes(id) ? xs.filter((x) => x !== id) : [...xs, id]))}

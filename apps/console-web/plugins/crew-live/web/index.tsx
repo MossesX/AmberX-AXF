@@ -15,6 +15,7 @@ import { useEffect } from 'react';
 import { CrewView, FOCUS_EVENT, FOLDER, VIEW, publish } from './ui';
 import { appMenu } from './menu';
 import { isSnapshot, type Run } from './core';
+import { actionCommand, registerRowKind } from '@console/axf/libs/datagrid';
 import './crew.css';
 
 const ID = 'ai.amberx.axf.console.crew-live';
@@ -54,6 +55,22 @@ export const plugin: AxfWebLibrary = {
   version: '0.1.0',
   appMenu,
   register(rt) {
+    // grid-row@1: a running agent's row (Crew) expands into every field, its session / employee / build, and these commands
+    const go = (spec: string) => rt.dispatch(spec);
+    const agentOf = (rec: unknown) => encodeURIComponent((rec as Run | undefined)?.agent?.id ?? '');
+    registerRowKind({
+      kind: 'agent-run', label: 'Agent run', icon: 'user', owner: FOLDER,
+      title: (r) => `${(r as Run).agent?.name ?? ''} · ${(r as Run).name ?? ''}`,
+      open: () => rt.navigate(VIEW),
+      related: (r) => { const x = r as Run; return [...(x.agent?.id ? [{ kind: 'employee', id: x.agent.id, label: x.agent.name, note: 'agent' }] : []), ...(x.sessionId ? [{ kind: 'session', id: x.sessionId, note: 'session' }] : [])]; },
+      commands: [
+        actionCommand(go, { id: 'show', label: 'Show in the Crew', icon: 'eye', effect: 'navigate', order: 1, action: (_id, r) => `crew.agent:${agentOf(r)}` }),
+        actionCommand(go, { id: 'terminal', label: 'Attach the terminal', icon: 'terminal', button: true, effect: 'navigate', order: 2, action: (_id, r) => `crew.terminal:${agentOf(r)}` }),
+        actionCommand(go, { id: 'session', label: 'Session history', icon: 'list', effect: 'navigate', order: 3, action: (_id, r) => `crew.session:${agentOf(r)}` }),
+        actionCommand(go, { id: 'history', label: 'Agent history', icon: 'clock', effect: 'navigate', order: 4, action: (_id, r) => `crew.history:${agentOf(r)}` }),
+        actionCommand(go, { id: 'stop', label: 'Stop it', icon: 'x', effect: 'destructive', confirm: 'Stop this agent\'s run?', order: 20, action: (_id, r) => `crew.stop:${agentOf(r)}` }),
+      ],
+    });
     rt.actions.register('crew.open', () => rt.navigate(VIEW), { label: 'Open the Crew (who is working)' });
     rt.actions.register('crew.agent', ([agent = '']) => { if (agent) focus(rt, agent); }, { label: 'Show an agent\'s current task in the Crew', params: true, searchable: false });
     rt.actions.register('crew.history', ([agent = '']) => { if (agent) run(rt, `agent-swarm.profile:${agent}`); }, { label: 'An agent\'s history and past runs', params: true, searchable: false });

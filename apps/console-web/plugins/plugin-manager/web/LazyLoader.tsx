@@ -3,7 +3,8 @@
  * all the ways to configure the lazy loader"). The loader itself is the console's (src/pluginLoader.tsx); this panel
  * edits its config through this plugin's server part (`/lazy`, also REST / MCP / CLI) and shows its live table.
  */
-import { useState, type DragEvent } from 'react';
+import { Fragment, useState, type DragEvent } from 'react';
+import { DetailTableRow, RowToggle, useExpandedRows } from '@console/axf/libs/datagrid';
 import { Button, Chip, IconButton, Note, Segmented, Slider, Switch, useRuntime } from '@console/axf/react';
 import { bundledPlugins, pluginApi } from '@console/plugins';
 import { CORE_PLUGINS, LAZY_DEFAULTS, loader, normalizeLazyConfig, useLoaderVersion, type LazyConfig, type LazyMode, type PluginLoadRow, type StartReason } from '@console/pluginLoader';
@@ -35,6 +36,7 @@ const MODES: { value: LazyMode; label: string; title: string }[] = [
 ];
 
 export function LazyLoaderPanel() {
+  const ex = useExpandedRows();
   useLoaderVersion();
   const rt = useRuntime();
   const [busy, setBusy] = useState(false);
@@ -112,12 +114,14 @@ export function LazyLoaderPanel() {
       <h4 className="axp-plugin-manager-h">Every plugin</h4>
       <div className="fx-tablewrap">
         <table className="fx-table axp-plugin-manager-lazy__table">
-          <thead><tr><th>Plugin</th><th>State</th><th>Loads</th><th>Pin</th><th>Size</th><th>Load time</th><th>Last used</th><th>Uses</th></tr></thead>
+          <thead><tr><th aria-label="Expand" /><th>Plugin</th><th>State</th><th>Loads</th><th>Pin</th><th>Size</th><th>Load time</th><th>Last used</th><th>Uses</th></tr></thead>
           <tbody>
             {rows.map((r) => {
               const pinned = cfg.pins.includes(r.folder);
               return (
-                <tr key={r.folder} title={r.error ?? r.eager ?? undefined}>
+                <Fragment key={r.folder}>
+                <tr title={r.error ?? r.eager ?? undefined}>
+                  <td><RowToggle open={ex.isOpen(r.folder)} onToggle={() => ex.toggle(r.folder)} rowRef={{ kind: 'plugin', id: r.folder }} record={r} dataset="plugin-loader" /></td>
                   <td>
                     <span className="axp-plugin-manager-lazy__name">{nameOf(r.folder)}</span>
                     {r.banner && <Chip tone="accent">Banner</Chip>}
@@ -134,6 +138,8 @@ export function LazyLoaderPanel() {
                   <td>{ago(r.lastUsed)}</td>
                   <td className="axp-plugin-manager-lazy__num">{r.uses}</td>
                 </tr>
+                {ex.isOpen(r.folder) && <DetailTableRow colSpan={9} rowRef={{ kind: 'plugin', id: r.folder }} record={r} dataset="plugin-loader" />}
+                </Fragment>
               );
             })}
           </tbody>

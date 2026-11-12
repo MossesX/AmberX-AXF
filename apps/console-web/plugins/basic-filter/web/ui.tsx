@@ -287,6 +287,8 @@ const displayOpts: { value: Display; label: string }[] = [{ value: 'icon', label
 const ICONS = ['sliders', 'search', 'x', 'chevron-up', 'chevron-down', 'list', 'grid', 'shuffle', 'chart', 'star', 'eye', 'refresh', 'check', 'zap', 'layers', 'minus', 'arrow-right'];
 
 type Line = { kind: 'action'; a: ToolbarAction; i: number } | { kind: 'preset'; p: Preset };
+/** Row commands of the Toolbar actions grid → the designer on screen (detail `{ cmd, id }`). */
+export const ROW_CMD_EVENT = 'axf:basic-filter-row';
 
 function Detail({ label, children }: { label: string; children: ReactNode }) {
   return <div className="axp-basic-filter__kv"><span className="axp-basic-filter__muted">{label}</span><span>{children}</span></div>;
@@ -389,6 +391,17 @@ export function ToolbarDesigner() {
   const add = (p: Preset) => { const a = actionFrom(p); save({ ...tb, actions: [...tb.actions, a] }); setExpanded((x) => [...x, `act:${a.uid}`]); };
 
   const lineId = (l: Line) => (l.kind === 'action' ? `act:${l.a.uid}` : `pre:${l.p.id}`);
+  // row commands (grid-row@1, registered in index.tsx) reach this editor's state through one event
+  useEffect(() => {
+    const on = (e: Event) => {
+      const { cmd, id } = (e as CustomEvent<{ cmd: string; id: string }>).detail;
+      const a = tb.actions.find((x) => x.uid === id); const p = PRESETS.find((x) => x.id === id);
+      if (cmd === 'toggle' && a) update(a.uid, { visible: !a.visible });
+      else if (cmd === 'remove' && a) save({ ...tb, actions: tb.actions.filter((x) => x.uid !== a.uid) });
+      else if (cmd === 'add' && p) add(p);
+    };
+    window.addEventListener(ROW_CMD_EVENT, on); return () => window.removeEventListener(ROW_CMD_EVENT, on);
+  });
   const columns: GridColumn<Line>[] = [
     { id: 'name', label: 'Action', width: 'minmax(calc(var(--fx-space) * 16), 2fr)', fixed: true, render: (l) => {
       const p = l.kind === 'action' ? presetOf(l.a.preset)! : l.p;
@@ -417,6 +430,7 @@ export function ToolbarDesigner() {
       <DataGrid<Line>
         id="basic-filter.actions" label="Toolbar actions" dataset={false}
         groups={groups} columns={columns} rowId={lineId} rowLabel={(l) => (l.kind === 'action' ? l.a.label : l.p.name)}
+        rowRef={(l) => (l.kind === 'action' ? { kind: 'toolbar-action', id: l.a.uid } : { kind: 'toolbar-preset', id: l.p.id })} allFields={false}
         hidden={[]} expanded={expanded}
         onToggleExpand={(id) => setExpanded((x) => (x.includes(id) ? x.filter((y) => y !== id) : [...x, id]))}
         onRowClick={(l) => { const id = lineId(l); setExpanded((x) => (x.includes(id) ? x.filter((y) => y !== id) : [...x, id])); }}

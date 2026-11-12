@@ -7,6 +7,9 @@ import * as core from './core';
 import type { AudioExport, Hit, Job, Message, Row, SyncReport, Version } from './core';
 
 export const FOLDER = 'chat-viewer';
+/** Another screen (a session row's Open command, grid-row@1) asks the page to open a session: detail = session id. */
+export const OPEN_EVENT = 'axf:chat-viewer-open';
+export const sessionsApi = () => api;
 const api = pluginApi(FOLDER, 'The Chat viewer');
 const enc = encodeURIComponent;
 const W = (n: number) => `calc(var(--fx-space) * ${n})`;
@@ -36,6 +39,7 @@ export function ChatViewer() {
   const fileRef = useRef<HTMLInputElement>(null);
   const [importing, setImporting] = useState('');
 
+  useEffect(() => { const on = (e: Event) => setOpen({ id: String((e as CustomEvent<string>).detail) }); window.addEventListener(OPEN_EVENT, on); return () => window.removeEventListener(OPEN_EVENT, on); }, []);
   const load = useCallback(async () => {
     const [l, s] = await Promise.all([api.call<{ sessions: Row[] }>('sessions'), api.call<Status>('status')]);
     setRows(l.sessions); setStatus(s);
@@ -104,7 +108,7 @@ export function ChatViewer() {
         : <div className="axp-chat-viewer-grid">
             <DataGrid<Row> id="chat-viewer-sessions" label="Sessions" compact
               groups={[{ id: 'all', title: `Sessions (${shown.length})`, icon: 'list', rows: sortRows(shown, sort, cols), groups: [], fixed: true }]}
-              columns={cols} rowId={(r) => r.id} rowLabel={(r) => r.title} rowTone={(r) => (core.badge(r) ? 'accent' : 'muted')}
+              columns={cols} rowId={(r) => r.id} rowLabel={(r) => r.title} rowKind="session" rowTone={(r) => (core.badge(r) ? 'accent' : 'muted')}
               sort={sort} onSort={(c) => setSort(sortFor(sort, c))} hidden={hidden}
               onToggleColumn={(c, show) => setHidden(show === true || (show === undefined && hidden.includes(c)) ? hidden.filter((x) => x !== c) : [...hidden, c])} onShowAll={() => setHidden([])}
               onRowClick={(r) => setOpen({ id: r.id })} empty="No session matches." />

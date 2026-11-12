@@ -1,7 +1,8 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import * as api from '@console/api';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
-import { SystemBanner, SystemCheckDialog, loadSystemCheck, setSystemCheckRuntime } from './SystemCheck';
+import { SystemBanner, SystemCheckDialog, loadSystemCheck, recheck, setSystemCheckRuntime } from './SystemCheck';
+import { registerRowKind } from '@console/axf/libs/datagrid';
 import { KeysBanner, KeysDialog } from './KeysBanner';
 import { FixHelpDialog } from './FixHelp';
 import { WhatsNewBanner, loadWhatsNew } from './WhatsNew';
@@ -53,6 +54,16 @@ export const plugin: AxfWebLibrary = {
     startOnce();
     rt.actions.register('system-check.open', () => rt.openDialog('system-check', {}), { label: 'Open the systems check' });
     rt.actions.register('keys-needed.open', () => rt.openDialog('keys-needed', {}), { label: 'Add the keys the console needs' });
+    // grid-row@1: a check row (here, a banner item, a build's Related) expands into every field and these commands
+    registerRowKind({
+      kind: 'system-check', label: 'System check', icon: 'shield', owner: 'systems-check',
+      title: (r) => String((r as { title?: string }).title ?? ''),
+      open: () => rt.openDialog('system-check', {}),
+      commands: [
+        { id: 'recheck', label: 'Check again', icon: 'refresh', button: true, multi: true, order: 1, run: async ({ ids }) => { for (const id of ids) await recheck(id); } },
+        { id: 'open', label: 'Open the systems check', icon: 'shield', effect: 'navigate', order: 2, run: () => { rt.openDialog('system-check', {}); } },
+      ],
+    });
   },
   banners: [
     { id: 'keys-needed', label: 'Keys needed', icon: 'key', settingsTab: 'systems-check', order: 8, render: () => <KeysBanner /> },

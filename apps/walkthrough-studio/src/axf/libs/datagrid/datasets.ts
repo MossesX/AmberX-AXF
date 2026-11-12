@@ -177,6 +177,8 @@ const refTargets = new Map<string, (payload: string) => RowRef | null>();
 /** context target + payload → ref, as the grids on screen last drew them */
 const drawnRefs = new Map<string, RowRef & { dataset?: string }>();
 const normRowRef = (r: RowRef | null | undefined): RowRef | null => (r && typeof r.kind === 'string' && r.kind && typeof r.id === 'string' && r.id ? { kind: r.kind, id: r.id } : null);
+/** A ref with a non-empty kind and id, or null (row kinds use it for related links). */
+export const normRef = normRowRef;
 
 export function registerRowHook(h: RowHook): () => void {
   hooks.set(h.id, h); emit();

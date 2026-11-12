@@ -18,7 +18,7 @@ export { InterfaceScope, usePortalRoot, useScopeId } from './components/Interfac
 export { LookEditor, LookLevelSwitch, LookTokenRow } from './components/LookEditor';
 export { WidgetView, SearchBarWidget, registerWidgetRenderer, widgetRenderer, type WidgetRenderer, type WidgetRenderProps } from './components/Widgets';
 export { LiveSearch, useSearchHost, scanPage, flashWhenReady } from './components/Search';
-export { DialogHost, ToastHost, ContextMenuHost, type DialogDef, type DialogMap } from './components/Overlays';
+export { DialogHost, ToastHost, ContextMenuHost, ROW_COMMANDS_EXTRA, type DialogDef, type DialogMap } from './components/Overlays';
 export { AssetStudio } from './studio/AssetStudio';
 export { AccountView } from './studio/AccountView';
 export { Inspector } from './studio/Inspector';

@@ -49,9 +49,10 @@ const CHANGES_DIR = join(ROOT, 'changes');
 const HANDOFF_DIR = join(ROOT, '_claude/handoff'); // the Claude handoff kit: a generated snapshot of the docs, like the rebuild reports
 const SESSIONS_DIR = join(ROOT, 'sessions'); // the session check-in archive (session-log@1): records of past sessions, history like the changes log
 // The builds store's read-only exports (pending list + build queue, per profile) carry build notes: plans, like _claude/builds.
-// CI ratchet baselines (check-chrome-assets.mjs → framework/spec/chrome-baseline.json): per-file counts of findings that
-// may only shrink. A removed plugin's line only lowers a count nobody can exceed, so it is not a stale reference.
-const RATCHET_BASELINE = /^framework\/spec\/chrome-baseline\.json$/;
+// CI ratchet baselines (check-chrome-assets.mjs → framework/spec/chrome-baseline.json, check-grids.mjs →
+// framework/cli/check-grids.baseline.json): per-file counts of findings that may only shrink. A removed plugin's line only
+// lowers a count nobody can exceed, so it is not a stale reference.
+const RATCHET_BASELINE = /^framework\/(spec\/chrome-baseline|cli\/check-grids\.baseline)\.json$/;
 // Generated fixtures that snapshot real data: the shipped-features manifest (files a build shipped, history) and the
 // demonstration fixture generated from a glossary entry. A plugin removed later only leaves a stale snapshot behind.
 const SNAPSHOT_FIXTURE = /^framework\/spec\/fixtures\/(shipped-manifest|demo)\.json$/;

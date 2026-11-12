@@ -2280,5 +2280,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "11 sections (orchestrator, dispatcher, watchdog, shipped, account failover, landing, merge queue, nightly deploy, backups, health monitor, notification rules), one owner each from the crew; registry agents/sections.json, reassign in Settings → Agent swarm → Section owners; posts start/done/failed/blocked/waiting as the owner, respects the chat switch, deduped; crew-say.mjs check in CI. Kotlin twin deferred."
+  },
+  "cx.buildengine.gridrows": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-datagrid",
+    "notes": "grid-row@1: registerRowKind (fields, related resolvers, commands) in lib-datagrid; DataGrid rowKind / rows / own state, RowDetail, RowExpander, RowToggle + DetailTableRow; 45 kinds over the console, Molly expenses and axHub approvals; every command is the console action row.<kind>.<command> (control@1). CI: check-grids.mjs (frozen baseline with reasons) + check-rowkinds.mts. Compose twin deferred (axf.datagrid.rowkinds.android)."
   }
 }

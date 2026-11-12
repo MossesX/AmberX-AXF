@@ -8,6 +8,7 @@ import { appMenu } from './menu';
 import { PROFILE_EVENT } from './cards';
 import { writeLocal } from '@console/api';
 import { SectionOwnersPanel } from './sections';
+import { actionCommand, recordFor, registerRowKind } from '@console/axf/libs/datagrid';
 
 function Desks() {
   const filled = useSlotFilled('swarm.settings.desks');
@@ -28,6 +29,35 @@ export const plugin: AxfWebLibrary = {
     }, { label: 'Open an agent\'s employee card', params: true, searchable: false });
     // the Breakroom (group chat, Jobs) from other plugins: agent-swarm.open
     rt.actions.register('agent-swarm.open', () => rt.navigate('agent-swarm'), { label: 'Open the Breakroom', searchable: false });
+    // grid-row@1: employees, swarm jobs and models anywhere expand into every field, Related and these commands
+    const go = (spec: string) => rt.dispatch(spec);
+    const profile = (id: string) => { go(`agent-swarm.profile:${encodeURIComponent(id)}`); };
+    const tab = (t: string) => { writeLocal('swarm-tab', t); rt.navigate('agent-swarm'); };
+    const s = (v: unknown) => (typeof v === 'string' ? v : '');
+    registerRowKind({
+      kind: 'employee', label: 'Employee', icon: 'user', owner: FOLDER, aliases: ['agent'],
+      title: (r) => s((r as { name?: string }).name), open: profile,
+      commands: [
+        actionCommand(go, { id: 'profile', label: 'Employee card', icon: 'user', button: true, effect: 'navigate', order: 1, action: (id) => `agent-swarm.profile:${encodeURIComponent(id)}` }),
+        { id: 'chat', label: 'Group chat', icon: 'bell', effect: 'navigate', order: 2, run: () => tab('chat') },
+        { id: 'jobs', label: 'Build plan', icon: 'layers', effect: 'navigate', order: 3, run: () => tab('jobs') },
+      ],
+    });
+    registerRowKind({
+      kind: 'swarm-job', label: 'Swarm job', icon: 'hammer', owner: FOLDER,
+      title: (r) => `${s((r as { stepId?: string }).stepId)} ${s((r as { text?: string }).text)}`.trim(),
+      related: (r, ref) => { const j = r as { buildId?: string; agent?: string } | undefined; const b = j?.buildId || ref.id.split(/[/:]/)[0] || ''; return b ? [{ kind: 'build', id: b, note: 'job of' }] : []; },
+      commands: [
+        { id: 'jobs', label: 'Open Jobs', icon: 'list', effect: 'navigate', order: 1, run: () => tab('jobs') },
+        { id: 'cost', label: 'Cost tab', icon: 'chart', effect: 'navigate', order: 2, run: () => tab('cost') },
+        { id: 'copy', label: 'Copy run command', icon: 'copy', effect: 'read', order: 5, control: 'node apps/console-web/plugins/agent-swarm/swarm.mjs run <build> <step>',
+          run: async ({ ids, kind }) => { const r = recordFor(kind, ids[0]!) as { buildId?: string; stepId?: string } | undefined; await navigator.clipboard?.writeText(r?.buildId ? `swarm.mjs run ${r.buildId} ${r.stepId}` : ids[0]!); rt.toast('Copied.', 'success'); } },
+      ],
+    });
+    registerRowKind({
+      kind: 'swarm-model', label: 'Model', icon: 'zap', owner: FOLDER,
+      commands: [{ id: 'cost', label: 'Cost tab', icon: 'chart', effect: 'navigate', order: 1, run: () => tab('cost') }],
+    });
     rt.actions.register(COLOR_BY_VIBE_ACTION, () => rt.settings.set(KEYS.colorByVibe, !rt.settings.get(KEYS.colorByVibe)), { label: 'Color chat messages by vibe' });
   },
   views: { 'agent-swarm': { title: 'Agent swarm', icon: 'user', keywords: ['swarm', 'agents', 'jobs', 'leases', 'cost', 'tokens', 'headless'], render: () => <SwarmPage /> } },

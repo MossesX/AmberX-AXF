@@ -45,6 +45,7 @@ import { approvalExpandKey, detailsOfItem, fetchApprovals, heldDecisions, regist
 import { decidedState, decisionButtons } from '@console/axf/libs/approvals/menu';
 import type { MenuActResult, MenuItem } from '@console/axf/core';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { RowDetail, registerRowKind } from '@console/axf/libs/datagrid';
 import { WatchLiveFor } from '@console/watchLive';
 import './approvals-banner.css';
 import { appMenu, WAITING, WAITING_LIST } from './menu';
@@ -208,7 +209,9 @@ function HeldRow({ c }: { c: VetoCall }) {
   const decide = (d: ApprovalDecision) => { setBusy(`${c.id}:${d}`); void act(deps, c, d === 'approve' ? 'approve-now' : 'deny').finally(() => setBusy('')); };
   return (
     <ApprovalRow scope="banner" className="axp-approvals-banner__xrow" compact details={detailsOfItem(it)} hub={st.hub} busy={busy} onDecide={decide}
-      openPage={() => openVeto(c.id)} actions={<VetoButtons c={c} deps={deps} row />} />
+      openPage={() => openVeto(c.id)} actions={<VetoButtons c={c} deps={deps} row />}>
+      <RowDetail rowRef={{ kind: 'approval', id: c.id }} record={it} dataset="approvals-held" />
+    </ApprovalRow>
   );
 }
 
@@ -323,7 +326,9 @@ function PendingRow({ p, hide }: { p: Pending; hide?: () => void }) {
       actions={<>
         <PendingButtons p={p} />
         {hide && <button type="button" className="fx-iconbtn" aria-label="Hide until something new is waiting" title="Hide until something new is waiting" onClick={hide}><Icon name="x" size={16} /></button>}
-      </>} />
+      </>}>
+      <RowDetail rowRef={{ kind: 'approval', id: p.id }} record={it} dataset="approvals-pending" />
+    </ApprovalRow>
   );
 }
 
@@ -483,6 +488,16 @@ export const plugin: AxfWebLibrary = {
     },
   },
   register(rt) {
+    // grid-row@1: an approval anywhere opens its review in place. Approve / Deny stay the person's own buttons on the row
+    // (never a row command: a row command is a console action a remote caller could run).
+    registerRowKind({
+      kind: 'approval', label: 'Approval', icon: 'shield', owner: 'approvals-banner', open: openReview,
+      title: (r) => String((r as { title?: string }).title ?? ''),
+      commands: [
+        { id: 'review', label: 'Review it', icon: 'eye', button: false, effect: 'navigate', order: 1, run: ({ ids }) => openReview(ids[0]!) },
+        { id: 'list', label: 'All approvals', icon: 'list', effect: 'navigate', order: 2, run: () => { rt.dispatch('approvals.open'); } },
+      ],
+    });
     runtime = rt;
     watch.setup((k) => rt.settings.get(k), (id) => openVeto(id));
     start();

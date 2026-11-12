@@ -10,6 +10,7 @@ import type { AxfRuntime } from '@console/axf/core';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { RowExpander, extendRowKind, rowsChanged } from '@console/axf/libs/datagrid';
 import { appMenu } from './menu';
 import { JobRouting, ROUTING_ASSETS, loadRouting } from './routing';
 import './claude-accounts.css';
@@ -113,6 +114,7 @@ function Row({ a, view, onDone, manage }: { a: Account; view: View; onDone: (m: 
       {manage && !isApi && <Button icon="key" busy={busy} disabled={held} onClick={() => run(ask('signin', a.name))}>Sign in</Button>}
       {manage && !a.active && a.hasKey !== false && <Button tone="danger" icon="trash" busy={busy} disabled={held || a.running.length > 0} confirm={`Set ${a.name} aside? Its saved login moves out of the list. Nothing is deleted.`} onClick={() => run(ask('remove', a.name))}>Remove</Button>}
       </div>
+      <RowExpander rowRef={{ kind: 'account', id: a.name }} record={a} dataset="claude-accounts" />
     </div>
   );
 }
@@ -212,6 +214,7 @@ function WorkerRuns({ view }: { view: View | null }) {
           </div>
           <Chip tone={r.end ? (r.exit ? 'warning' : undefined) : 'accent'}>{r.end ? (r.exit ? `Exit ${r.exit}` : 'Finished') : 'Running'}</Chip>
           <span>{usd(r.costUsd)}</span>
+          {r.session && <RowExpander rowRef={{ kind: 'session', id: r.session }} record={r} dataset="claude-accounts-runs" />}
         </div>
       ))}
     </div>
@@ -273,6 +276,13 @@ export const plugin: AxfWebLibrary = {
   version: '0.1.0',
   appMenu,
   register(rt) {
+    // grid-row@1: every account row (here, the orchestrator's Accounts tab, a build's Related) gets these commands
+    const said = (m: string) => { rt.toast(m, 'success', 'Claude accounts'); rowsChanged('account'); };
+    extendRowKind('account', { owner: FOLDER, commands: [
+      { id: 'switch', label: 'Switch the console to it', icon: 'refresh', order: 20, when: (r) => !(r as { active?: boolean }).active, run: async ({ ids }) => said(await ask('use', ids[0]!)) },
+      { id: 'signin', label: 'Sign in again', icon: 'key', order: 21, run: async ({ ids }) => said(await ask('signin', ids[0]!)) },
+      { id: 'settings', label: 'Claude accounts settings', icon: 'settings', effect: 'navigate', order: 22, run: () => { rt.dispatch(`settings.open:${VIEW}`); } },
+    ] });
     rt.actions.register('claude-accounts.open', () => rt.dispatch(`settings.open:${VIEW}`), { label: 'Claude accounts settings' });
     rt.actions.register('claude-accounts.switch', () => rt.openDialog(DIALOG, {}), { label: 'Switch Claude account' });
     rt.actions.register('claude-accounts.routing', () => rt.dispatch(`settings.open:${VIEW}`), { label: 'Claude job routing settings' });

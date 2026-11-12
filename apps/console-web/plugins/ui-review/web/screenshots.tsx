@@ -322,7 +322,7 @@ export function ScreenshotsTab({ onCount }: { onCount?: (n: number) => void }) {
           </div>
         ) : (
           <DataGrid<GroupRow> id="ui-review-shot-groups" label="Screenshot groups" groups={[{ id: 'all', title: 'Groups', icon: 'layers', collapsed: false, rows: sorted, groups: [], counts: <span className="fx-small fx-muted">{sorted.length}</span> }]}
-            columns={gcols} rowId={(g) => g.id} rowLabel={(g) => g.name} hidden={ghidden} onToggleColumn={(c) => setGhidden((h) => (h.includes(c) ? h.filter((x) => x !== c) : [...h, c]))} onShowAll={() => setGhidden([])}
+            columns={gcols} rowId={(g) => g.id} rowLabel={(g) => g.name} rowKind="review-group" hidden={ghidden} onToggleColumn={(c) => setGhidden((h) => (h.includes(c) ? h.filter((x) => x !== c) : [...h, c]))} onShowAll={() => setGhidden([])}
             sort={sort} onSort={(c) => setSort((s) => (!c ? null : s?.col === c ? { col: c, dir: s.dir === 1 ? -1 : 1 } : { col: c, dir: c === 'date' ? -1 : 1 }))}
             onRowClick={(g) => openGroup(g.id)} rowTone={() => 'muted'} compact />
         )}
@@ -379,7 +379,7 @@ export function ScreenshotsTab({ onCount }: { onCount?: (n: number) => void }) {
           ))}
         </div>
       ) : (
-        <DataGrid<Screenshot> id="ui-review-screenshots" label="Screenshots" groups={gridGroups} columns={cols} rowId={(s) => s.id} rowLabel={(s) => s.title}
+        <DataGrid<Screenshot> id="ui-review-screenshots" label="Screenshots" groups={gridGroups} columns={cols} rowId={(s) => s.id} rowLabel={(s) => s.title} rowKind="screenshot"
           hidden={hidden} onToggleColumn={(c) => setHidden((h) => (h.includes(c) ? h.filter((x) => x !== c) : [...h, c]))} onShowAll={() => setHidden([])}
           sort={sort} onSort={(c) => setSort((s) => (!c ? null : s?.col === c ? { col: c, dir: s.dir === 1 ? -1 : 1 } : { col: c, dir: c === 'date' ? -1 : 1 }))}
           onToggleGroup={(id) => setCollapsed((x) => (x.includes(id) ? x.filter((y) => y !== id) : [...x, id]))}

@@ -16,7 +16,9 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { PluginManager } from './PluginManager';
 import { KEYS, LAYOUTS, VIEWS } from './prefs';
-import { FOLDER } from './model';
+import { FOLDER, type PluginRow } from './model';
+import { hasSettings, hasUi, openSettings, openUi } from './actions';
+import { recordFor, registerRowKind } from '@console/axf/libs/datagrid';
 import { appMenu } from './menu';
 import { LazyLoaderPanel } from './LazyLoader';
 
@@ -38,6 +40,18 @@ export const plugin: AxfWebLibrary = {
       rt.navigate('plugin-manager');
       select(folder);
     }, { label: 'Open the Plugin Manager' });
+    // grid-row@1: a plugin row anywhere expands into every field, Related and these commands
+    const rowOf = (id: string) => recordFor('plugin', id) as PluginRow | undefined;
+    registerRowKind({
+      kind: 'plugin', label: 'Plugin', icon: 'package', owner: FOLDER,
+      title: (r) => String((r as Partial<PluginRow>).name ?? ''),
+      open: (id) => rt.dispatch(`plugin-manager.open:${id}`),
+      commands: [
+        { id: 'open', label: 'Open in Plugin Manager', icon: 'package', effect: 'navigate', order: 1, run: ({ ids }) => { rt.dispatch(`plugin-manager.open:${ids[0]}`); } },
+        { id: 'ui', label: 'Open its UI', icon: 'external', effect: 'navigate', order: 2, when: (r) => hasUi(r as PluginRow) && (r as PluginRow).enabled, run: ({ ids }) => { const r = rowOf(ids[0]!); if (r) openUi(rt, r); } },
+        { id: 'settings', label: 'Open its settings', icon: 'settings', effect: 'navigate', order: 3, when: (r) => hasSettings(r as PluginRow) && (r as PluginRow).enabled, run: ({ ids }) => { const r = rowOf(ids[0]!); if (r) openSettings(rt, r); } },
+      ],
+    });
     rt.actions.register('plugin-manager.window', ([folder]) => {
       if (folder) rt.settings.set(KEYS.selected, folder);
       rt.openDialog('plugin-manager.window');

@@ -3,7 +3,7 @@ import { BuildOrigin, Button, Icon, PriorityTag, Slot, useRuntime } from '../axf
 import * as api from '../api';
 import * as core from '../axf/plan/pending-core.mjs';
 import pricing from '../axf/schemas/model-pricing.json';
-import { RowHookButtons, registerRowRefTarget } from '../axf/libs/datagrid';
+import { RowExpander, RowHookButtons, onRowsChanged, registerRowKind, registerRowRefTarget } from '../axf/libs/datagrid';
 import type { PendingAction, PendingItem, PendingModel, PendingSort, PendingState, PendingStatus } from '../axf/plan/pending-core.mjs';
 
 /** Estimated dollars for `minutes` on a model (the pricing file's price per working minute), '' without a price. */
@@ -17,6 +17,18 @@ const usdFor = (model: string, minutes: number | null | undefined) => (minutes ?
  */
 
 const LOCAL_KEY = 'pending';
+
+/** grid-row@1: a pending item anywhere (this list, a build's Related "filed as") gets every field, Related and these commands. */
+async function pendingAct(change: PendingAction) { const r = await api.pendingPost(change); if (!r.ok) throw new Error(r.error ?? 'Change failed'); }
+registerRowKind({
+  kind: 'pending', label: 'Pending item', icon: 'clock', owner: 'console', aliases: ['pending-item'],
+  title: (r) => String((r as Partial<PendingItem>).title ?? ''),
+  commands: [
+    { id: 'note', label: 'Add a note…', icon: 'edit', order: 2, run: async ({ ids }) => { const text = globalThis.prompt?.(`Note on ${ids[0]}`) ?? ''; if (text.trim()) await pendingAct({ action: 'note', id: ids[0]!, text } as PendingAction); } },
+    { id: 'copy-id', label: 'Copy id', icon: 'copy', effect: 'read', order: 8, run: async ({ ids }) => { await navigator.clipboard?.writeText(ids.join(' ')); } },
+    { id: 'remove', label: 'Remove', icon: 'trash', multi: true, effect: 'destructive', confirm: 'Remove this build from the pending list?', order: 9, run: async ({ ids }) => { for (const id of ids) await pendingAct({ action: 'remove', id } as PendingAction); } },
+  ],
+});
 /** Status → the framework chip's tone (a framework control, so the chip asset + colour theme restyle it). */
 const STATUS_TONE: Record<PendingStatus, string> = { pending: 'fx-chip--warning', complete: 'fx-chip--success', failed: 'fx-chip--danger', unsafe: 'fx-chip--danger', broken: 'fx-chip--accent' };
 const fmtDate = (v: string) => { if (!v) return '—'; const d = new Date(v); return Number.isNaN(d.getTime()) ? '—' : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }); };
@@ -42,6 +54,7 @@ export function Pending() {
     } catch (e) { setError((e as Error).message); setState(core.emptyPending()); }
   };
   useEffect(() => { void load(); }, []);
+  useEffect(() => onRowsChanged('pending', () => void load()), []); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { api.writeLocal('pending-sort', sort); api.writeLocal('pending-dir', dir); }, [sort, dir]);
 
   /** Through the API (repo file) when it answers; otherwise this browser's copy. */
@@ -199,6 +212,7 @@ function PendingRow({ it, busy, act }: { it: PendingItem; busy: boolean; act: (c
           <Button icon="trash" onClick={() => setMode('confirm')}>Remove</Button>
         </div>
       )}
+      <RowExpander rowRef={{ kind: 'pending', id: it.id }} record={it} dataset="pending" />
     </article>
   );
 }

@@ -414,7 +414,7 @@ function StepsView({ state, builds }: { state: StateV; builds: BuildV[] }) {
         onRowClick={click} expanded={expanded} onToggleExpand={(id) => setExpanded(expanded.includes(id) ? expanded.filter((x) => x !== id) : [...expanded, id])}
         onToggleGroup={(id) => setCollapsed(collapsed.includes(id) ? collapsed.filter((x) => x !== id) : [...collapsed, id])}
         rowTone={(s) => (s.done ? 'success' : s.next ? 'accent' : s.kind === 'fix' ? 'warning' : 'muted')}
-        rowRef={(s) => ({ kind: 'build-step', id: s.uid })}
+        rowRef={(s) => ({ kind: 'build-step', id: `${s.build}/${s.id}` })}
         onMove={(item, target, pos) => {
           if (item.kind === 'group' && target.kind === 'group') {
             const ids = state.builds.map((b) => b.id).filter((id) => id !== item.id); ids.splice(ids.indexOf(target.id) + (pos === 'after' ? 1 : 0), 0, item.id);

@@ -23,3 +23,33 @@
 /* row hooks (grid-hook@1): the hook buttons sit with the expand button; the tail track sizes to them, nothing overlaps */
 .axf-grid-tail { display: inline-flex; align-items: center; justify-content: flex-end; gap: calc(var(--fx-space) / 4); min-width: 0; }
 .axf-grid-hooks { display: inline-flex; align-items: center; gap: calc(var(--fx-space) / 4); }
+/* grid-row@1: the expanded row (screen detail, Commands, Related, All fields), the selection bar */
+.axf-grid-detail { position: sticky; inset-inline-start: 0; }
+.axf-rowd { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); min-width: 0; }
+.axf-rowd.is-nested { gap: var(--fx-dens-gap-md); }
+.axf-rowd-own { min-width: 0; }
+.axf-rowd-section { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); min-width: 0; }
+.axf-rowd-title { margin: 0; font-size: var(--fx-type-scale-xs); font-weight: var(--fx-type-weights-strong); color: var(--fx-muted); text-transform: uppercase; cursor: default; }
+details.axf-rowd-section > summary.axf-rowd-title { cursor: pointer; }
+.axf-rowd-fields { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-space) * 36), 1fr)); gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-xl); margin: 0; }
+.axf-rowd-field { display: flex; flex-direction: column; min-width: 0; }
+.axf-rowd-key { font-size: var(--fx-type-scale-xs); color: var(--fx-muted); }
+.axf-rowd-val { margin: 0; font-family: var(--fx-font-mono); font-size: var(--fx-type-scale-sm); overflow-wrap: anywhere; white-space: pre-wrap; }
+.axf-rowd-links, .axf-rowd-cmds { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-sm); align-items: center; }
+.axf-rowd-link { cursor: pointer; }
+.axf-rowd-link.is-open { outline: var(--fx-border-w) solid var(--fx-accent); }
+.axf-rowd-linkkind { color: var(--fx-muted); }
+.axf-rowd-card { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-lg); background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); min-width: 0; }
+.axf-rowd-cardhead { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); }
+.axf-rowd-muted { margin: 0; color: var(--fx-muted); font-size: var(--fx-type-scale-sm); }
+.axf-grid-selbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); background: var(--fx-accent-soft); border-bottom: var(--fx-border-w) solid var(--fx-border); position: sticky; top: 0; z-index: 4; }
+.axf-grid-selcount { font-weight: var(--fx-type-weights-strong); margin-inline-end: var(--fx-dens-gap-md); }
+/* phone: one column of fields, the detail fits the screen, commands wrap full width */
+:where([data-fx-narrow], [data-fx-small], [data-fx-tiny]) .axf-grid-detail { padding: var(--fx-dens-gap-lg); }
+:where([data-fx-narrow], [data-fx-small], [data-fx-tiny]) .axf-rowd-fields { grid-template-columns: 1fr; }
+:where([data-fx-narrow], [data-fx-small], [data-fx-tiny]) .axf-rowd-cmds > .fx-btn { flex: 1 1 auto; }
+/* RowExpander (card lists and logs that aren't a DataGrid) */
+.axf-rowx { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); min-width: 0; }
+.axf-rowx-bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); }
+.axf-rowx-detail { position: static; border-radius: var(--fx-radius-sm); }
+.axf-grid-tdetail > td { padding: 0; }

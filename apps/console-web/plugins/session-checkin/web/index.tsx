@@ -5,6 +5,16 @@ import { pluginFetch } from '@console/plugins';
 import './session-checkin.css';
 import { appMenu } from './menu';
 import { LoadingSkeleton } from '@console/emptyState';
+import { RowDetail, registerRowKind } from '@console/axf/libs/datagrid';
+
+/** grid-row@1: a session check-in expands into its answers, every field, Related (repo branch, session) and these commands. */
+registerRowKind({
+  kind: 'checkin', label: 'Session check-in', icon: 'user', owner: 'session-checkin',
+  title: (r) => String((r as { project?: string }).project ?? ''),
+  commands: [
+    { id: 'copy-id', label: 'Copy session id', icon: 'copy', effect: 'read', order: 1, run: async ({ ids }) => { await navigator.clipboard?.writeText(ids.join(' ')); } },
+  ],
+});
 
 /** Plugin folder: server routes live at /api/plugins/session-checkin/. */
 const FOLDER = 'session-checkin';
@@ -126,7 +136,7 @@ function SessionsView() {
                 {r.effort && <span className={`${P}__effort`}>{r.effort}</span>}
                 <StatusMark s={r.status} flags={r.flags} />
               </button>
-              {sel === r.id && <SessionDetail id={r.id} />}
+              {sel === r.id && <RowDetail rowRef={{ kind: 'checkin', id: r.id }} record={{ ...r, session: r.id }} dataset="session-checkin"><SessionDetail id={r.id} /></RowDetail>}
             </div>
           ))}
         </div>
