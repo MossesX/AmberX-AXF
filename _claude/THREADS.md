@@ -776,17 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 02:15 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` branch claude/build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides (all) · pipeline
-- 2026-11-12 02:15 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` note (all) · orchestrator
-- 2026-11-12 02:15 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` PR #503 (all) · builds-live
-- 2026-11-12 02:16 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` → running, note (all) · pipeline
-- 2026-11-12 02:16 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` branch claude/owner-recognized-everywhere-veto-countdown-only-on-shell-commands (all) · pipeline
-- 2026-11-12 02:16 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` PR #503, note (all) · reconciler
-- 2026-11-12 02:16 UTC · `molly-gap-remote-actions` s2 done, → running, note (all) · reconciler
-- 2026-11-12 02:16 UTC · `fix-axhub-36-pull-main-in-failed` → pending, note (all) · reconciler
-- 2026-11-12 02:16 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` note (all) · orchestrator
-- 2026-11-12 02:17 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` → queued, note (all) · pipeline
-- 2026-11-12 02:17 UTC · `molly-gap-remote-actions` → queued, note (all) · pipeline
 - 2026-11-12 02:17 UTC · `open-any-website-by-voice-on-the-phone-optionall` note (all) · orchestrator
 - 2026-11-12 02:18 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` → running, note (all) · pipeline
 - 2026-11-12 02:18 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` note (all) · orchestrator
@@ -1176,6 +1165,17 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:30 UTC · `orchestrator-start-a-build-through-the-api-mcp-and-cli` note (all) · backfill
 - 2026-11-12 03:30 UTC · `idle-alert-phone-flag-when-nothing-is-building` note (all) · backfill
 - 2026-11-12 03:31 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits` added (8 steps) (all) · backfill
+- 2026-11-12 03:31 UTC · `workers-api-routing` note (all) · backfill
+- 2026-11-12 03:31 UTC · `brief-only-headless` note (all) · backfill
+- 2026-11-12 03:31 UTC · `molly-native-expenses` note (all) · backfill
+- 2026-11-12 03:31 UTC · `amberx-notify-panel` note (all) · backfill
+- 2026-11-12 03:31 UTC · `demonstration-designer-plugin-new-standalone` note (all) · backfill
+- 2026-11-12 03:31 UTC · `urgent-approval-links-say-method-not-allowed` note (all) · backfill
+- 2026-11-12 03:31 UTC · `fix-stale-running-counts-per-claude-account-not-cleared` note (all) · backfill
+- 2026-11-12 03:31 UTC · `skins-own-everything-colour-theme-swaps-independ` note (all) · backfill
+- 2026-11-12 03:31 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` note (all) · backfill
+- 2026-11-12 03:31 UTC · `retire-build-manager-the-orchestrator-is-the-onl` note (all) · backfill
+- 2026-11-12 03:31 UTC · `enforce-the-merge-queue-every-finished-build-goe` note (all) · backfill
 
 ## Token passes (log)
 

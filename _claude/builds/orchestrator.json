@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T03:31:04.800Z",
+ "updatedAt": "2026-11-12T03:31:20.986Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -71575,12 +71575,16 @@
    "pr": "#388",
    "mergedAt": "2026-11-08T22:32:09Z",
    "createdAt": "2026-11-08T16:14:35.744Z",
-   "updatedAt": "2026-11-08T22:33:33.896Z",
+   "updatedAt": "2026-11-12T03:31:04Z",
    "builtAt": "2026-11-08T16:42:58.380Z",
    "notes": [
     {
      "text": "Reconciler: PR #388 merged",
      "at": "2026-11-08T22:33:33.896Z"
+    },
+    {
+     "text": "Shipped manifest sm-brief-only-headless rev 1 sent to Shipped features (backfill): landed eab37d1a5, 22 file(s), 3 test line(s), 3 open.",
+     "at": "2026-11-12T03:31:04Z"
     }
    ],
    "approvals": [],
@@ -71843,12 +71847,16 @@
    "pr": "#389",
    "mergedAt": "2026-11-08T21:56:21Z",
    "createdAt": "2026-11-08T16:15:21.028Z",
-   "updatedAt": "2026-11-08T21:59:37.789Z",
+   "updatedAt": "2026-11-12T03:31:01Z",
    "builtAt": "2026-11-08T16:37:59.282Z",
    "notes": [
     {
      "text": "Reconciler: PR #389 merged",
      "at": "2026-11-08T21:59:37.789Z"
+    },
+    {
+     "text": "Shipped manifest sm-workers-api-routing rev 1 sent to Shipped features (backfill): landed eab37d1a5, 0 file(s), 5 test line(s), 5 open.",
+     "at": "2026-11-12T03:31:01Z"
     }
    ],
    "approvals": [],
@@ -72361,7 +72369,7 @@
    "mergedAt": "2026-11-12T03:02:32Z",
    "priority": "P0",
    "createdAt": "2026-11-08T16:58:59.537Z",
-   "updatedAt": "2026-11-12T03:06:36.460Z",
+   "updatedAt": "2026-11-12T03:31:06Z",
    "builtAt": "2026-11-12T02:32:30.649Z",
    "notes": [
     {
@@ -72423,6 +72431,10 @@
     {
      "text": "Reconciler: PR #497 merged",
      "at": "2026-11-12T03:06:36.460Z"
+    },
+    {
+     "text": "Shipped manifest sm-molly-native-expenses rev 1 sent to Shipped features (backfill): landed af1975191, 24 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:06Z"
     }
    ],
    "approvals": [],
@@ -75303,7 +75315,7 @@
    "branch": "claude/amberx-notify-panel",
    "pr": "",
    "createdAt": "2026-11-08T17:50:26.084Z",
-   "updatedAt": "2026-11-10T20:58:11.581Z",
+   "updatedAt": "2026-11-12T03:31:07Z",
    "builtAt": "",
    "notes": [
     {
@@ -75313,6 +75325,10 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-10T20:58:11.581Z"
+    },
+    {
+     "text": "Shipped manifest sm-amberx-notify-panel rev 1 sent to Shipped features (backfill): landed eab37d1a5, 0 file(s), 0 test line(s), 4 open.",
+     "at": "2026-11-12T03:31:07Z"
     }
    ],
    "approvals": [],
@@ -75803,7 +75819,7 @@
    "pr": "#405",
    "mergedAt": "2026-11-09T04:16:30Z",
    "createdAt": "2026-11-08T19:10:13.866Z",
-   "updatedAt": "2026-11-09T04:30:30.691Z",
+   "updatedAt": "2026-11-12T03:31:09Z",
    "builtAt": "2026-11-09T04:30:30.691Z",
    "notes": [
     {
@@ -75829,6 +75845,10 @@
     {
      "text": "Reconciler: PR #405 merged: complete",
      "at": "2026-11-09T04:30:30.691Z"
+    },
+    {
+     "text": "Shipped manifest sm-demonstration-designer-plugin-new-standalone rev 1 sent to Shipped features (backfill): landed 4aafd97f1, 0 file(s), 0 test line(s), 2 open.",
+     "at": "2026-11-12T03:31:09Z"
     }
    ],
    "approvals": [],
@@ -78095,7 +78115,7 @@
    "mergedAt": "2026-11-09T04:24:12Z",
    "priority": "P0",
    "createdAt": "2026-11-09T02:25:05.067Z",
-   "updatedAt": "2026-11-10T02:23:45.058Z",
+   "updatedAt": "2026-11-12T03:31:11Z",
    "builtAt": "",
    "notes": [
     {
@@ -78109,6 +78129,10 @@
     {
      "text": "Reconciler: PR #403 merged",
      "at": "2026-11-09T04:30:30.691Z"
+    },
+    {
+     "text": "Shipped manifest sm-urgent-approval-links-say-method-not-allowed rev 1 sent to Shipped features (backfill): landed 4aafd97f1, 2 file(s), 0 test line(s), 1 open.",
+     "at": "2026-11-12T03:31:11Z"
     }
    ],
    "approvals": [],
@@ -80570,7 +80594,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-09T14:33:29.282Z",
-   "updatedAt": "2026-11-09T16:39:28.294Z",
+   "updatedAt": "2026-11-12T03:31:12Z",
    "builtAt": "2026-11-09T16:39:28.294Z",
    "notes": [
     {
@@ -80580,6 +80604,10 @@
     {
      "text": "Root cause fixed in PR #406 (claude/orch-self-check-stuck): tmux 'no server running' was read as unknown, so every unclosed session in events.jsonl counted as running. Self-check on console load and stuck ticks releases dead claims, expired limits and builds with no session; tests in claude-workers.test.mjs and pipeline.test.mjs; each release logged.",
      "at": "2026-11-09T16:39:27.394Z"
+    },
+    {
+     "text": "Shipped manifest sm-fix-stale-running-counts-per-claude-account-not-cleared rev 1 sent to Shipped features (backfill): complete 2026-11-09 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:12Z"
     }
    ],
    "approvals": [],
@@ -82167,7 +82195,7 @@
    "mergedAt": "2026-11-11T00:48:50Z",
    "priority": "P0",
    "createdAt": "2026-11-09T17:52:45.295Z",
-   "updatedAt": "2026-11-11T00:50:38.563Z",
+   "updatedAt": "2026-11-12T03:31:13Z",
    "builtAt": "2026-11-11T00:50:38.563Z",
    "notes": [
     {
@@ -82285,6 +82313,10 @@
     {
      "text": "Reconciler: PR #429 merged",
      "at": "2026-11-11T00:50:38.563Z"
+    },
+    {
+     "text": "Shipped manifest sm-skins-own-everything-colour-theme-swaps-independ rev 1 sent to Shipped features (backfill): landed e402e586a, 65 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:13Z"
     }
    ],
    "approvals": [
@@ -86638,7 +86670,7 @@
    "mergedAt": "2026-11-10T04:26:11Z",
    "priority": "P0",
    "createdAt": "2026-11-10T03:10:30.744Z",
-   "updatedAt": "2026-11-10T04:27:17.964Z",
+   "updatedAt": "2026-11-12T03:31:15Z",
    "builtAt": "2026-11-10T04:05:07.683Z",
    "notes": [
     {
@@ -86684,6 +86716,10 @@
     {
      "text": "Reconciler: PR #438 merged; PR #438 names s2, s3 done",
      "at": "2026-11-10T04:27:17.964Z"
+    },
+    {
+     "text": "Shipped manifest sm-demo-designer-finish-phase-2-s2-s3-resuming-from rev 1 sent to Shipped features (backfill): landed f3c3158bc, 14 file(s), 3 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:15Z"
     }
    ],
    "approvals": [],
@@ -88425,7 +88461,7 @@
    "mergedAt": "2026-11-10T17:34:44Z",
    "priority": "P1",
    "createdAt": "2026-11-10T15:29:42.107Z",
-   "updatedAt": "2026-11-10T17:38:52.723Z",
+   "updatedAt": "2026-11-12T03:31:17Z",
    "builtAt": "2026-11-10T16:26:07.261Z",
    "notes": [
     {
@@ -88455,6 +88491,10 @@
     {
      "text": "Reconciler: PR #450 merged",
      "at": "2026-11-10T17:38:52.723Z"
+    },
+    {
+     "text": "Shipped manifest sm-retire-build-manager-the-orchestrator-is-the-onl rev 1 sent to Shipped features (backfill): PR #450, 76 file(s), 5 test line(s), 3 open.",
+     "at": "2026-11-12T03:31:17Z"
     }
    ],
    "approvals": [],
@@ -92419,7 +92459,7 @@
    "mergedAt": "2026-11-11T00:01:05Z",
    "priority": "P0",
    "createdAt": "2026-11-10T16:43:57.553Z",
-   "updatedAt": "2026-11-11T00:07:54.537Z",
+   "updatedAt": "2026-11-12T03:31:19Z",
    "builtAt": "2026-11-10T17:22:07.151Z",
    "notes": [
     {
@@ -92453,6 +92493,10 @@
     {
      "text": "Reconciler: PR #456 merged",
      "at": "2026-11-11T00:07:54.537Z"
+    },
+    {
+     "text": "Shipped manifest sm-enforce-the-merge-queue-every-finished-build-goe rev 1 sent to Shipped features (backfill): landed 45360476f, 21 file(s), 0 test line(s), 6 open.",
+     "at": "2026-11-12T03:31:19Z"
     }
    ],
    "approvals": [],

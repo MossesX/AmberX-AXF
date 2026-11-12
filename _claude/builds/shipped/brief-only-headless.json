@@ -1,0 +1,284 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-brief-only-headless",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:31:04Z",
+ "build": {
+  "id": "brief-only-headless",
+  "title": "Headless sessions get the brief only",
+  "profile": "all",
+  "category": "Builds",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Headless builds (deploy/claude-headless.sh, claude -p) must NOT load CLAUDE.md, the CLAUDE.md chain, memory folders, rules files or any auto-loaded context. The ONLY input is the brief the orchestrator writes: exactly what that job needs, nothing more.",
+  "verbatim": true,
+  "at": "2026-11-08T16:14:35.744Z",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "# Headless sessions get the brief only (Brett)\n\nHeadless builds (deploy/claude-headless.sh, claude -p) must NOT load CLAUDE.md, the CLAUDE.md chain, memory folders, rules files or any auto-loaded context. The ONLY input is the brief the orchestrator writes: exactly what that job needs, nothing more.\n\n1. Stop all auto-loaded context in headless runs: no CLAUDE.md / chain / user or project memory / settings-injected instructions. Use Claude Code's options for this (setting sources, custom system prompt, strict MCP config, etc.); verify in the log what actually loads.\n2. Load only the MCP servers and tools the job needs (default none); cut the ~31K start tokens as far as possible.\n3. Orchestrator writes self-contained briefs: it pulls only the relevant rules, file paths and context for that job into the brief (rule snippets by tag, not whole files). Brief template + a size budget with a warning when exceeded.\n4. Measure: start tokens before vs after on a sample build; show per-build start tokens and cost in the console.\n5. Look at the unlanded token-optimize and md-chain-default branches and reuse what fits; note what's superseded.\n\n## Rules\nSettings in categorized collapsible sections (toggle, budget); voice + API/MCP/CLI parity; tests; report, STATUS, THREADS.",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "mossesx-max-"
+ ],
+ "runs": [
+  {
+   "session": "axf-brief-only-headless--earl",
+   "account": "mossesx-max-",
+   "model": "Opus",
+   "startedAt": "2026-11-08T16:12:58.645Z",
+   "endedAt": "2026-11-08T16:43:30.743Z",
+   "exit": 0,
+   "costUsd": 10.9052
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Brief-only launch profile: core + CLI (no CLAUDE.md / memory / setting sources / hooks that inject; MCP default none)",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-08T16:12:58.645Z",
+   "doneAt": "2026-11-08T16:18:41.853Z",
+   "actualMin": 6,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Launcher: run headless claude with the profile; log what actually loads (init event: tools, MCP, memory files)",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-08T16:18:41.853Z",
+   "doneAt": "2026-11-08T16:21:34.746Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Self-contained briefs: rule snippets by tag (rules-brief@1 from token-optimize), brief template, size budget with warning",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-08T16:21:34.746Z",
+   "doneAt": "2026-11-08T16:23:15.559Z",
+   "actualMin": 2,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Measure start tokens before vs after on a sample build; meter records start tokens",
+   "model": "Opus",
+   "estimate": "25m",
+   "estimateMin": 25,
+   "startedAt": "2026-11-08T16:23:15.559Z",
+   "doneAt": "2026-11-08T16:26:32.631Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Console: per-build start tokens + cost; settings section (toggle, budget, MCP list) with API/MCP/CLI/voice parity",
+   "model": "Opus",
+   "estimate": "30m",
+   "estimateMin": 30,
+   "startedAt": "2026-11-08T16:26:32.631Z",
+   "doneAt": "2026-11-08T16:34:02.983Z",
+   "actualMin": 8,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Tests, report, STATUS, THREADS; note what token-optimize / md-chain-control parts are superseded",
+   "model": "Opus",
+   "estimate": "25m",
+   "estimateMin": 25,
+   "startedAt": "2026-11-08T16:34:02.983Z",
+   "doneAt": "2026-11-08T16:42:58.380Z",
+   "actualMin": 9,
+   "done": true
+  }
+ ],
+ "branch": "claude/brief-only-headless",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 388,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/388"
+ },
+ "landedCommit": "eab37d1a5a6327bff844bc8a69fd49fb86959ab6",
+ "commits": [
+  "69f267dce37b0cf1b692c76ccb1dd7a40c0455e8",
+  "cdf0fe5355b5d764d5bb56e16d2227f62bab700c",
+  "1c592a806018998291d271c6a4c535e2fee73ed4"
+ ],
+ "mergedAt": "2026-11-08T22:32:09Z",
+ "landedAt": "2026-11-08T22:30:23Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "_claude/THREADS.md",
+  "_claude/builds/BRIEF-TEMPLATE.md",
+  "_claude/builds/reports/brief-only-headless.md",
+  "_claude/memory/STATUS.md",
+  "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+  "apps/console-web/plugins/build-orchestrator/plugin.json",
+  "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+  "apps/console-web/plugins/build-orchestrator/web/ui.tsx",
+  "apps/console-web/plugins/claude-settings/registry.json",
+  "apps/console-web/plugins/claude-settings/web/index.tsx",
+  "apps/console-web/plugins/console-terminal/web/TerminalHost.tsx",
+  "apps/console-web/plugins/console-terminal/web/headless-core.ts",
+  "deploy/claude-headless.sh",
+  "deploy/claude-meter.mjs",
+  "deploy/claude-stream.mjs",
+  "framework/cli/headless-context.mjs",
+  "framework/cli/rules-brief.mjs",
+  "framework/core/headless-context.mjs",
+  "framework/core/rules-brief.mjs",
+  "framework/schemas/rules-briefs.json",
+  "framework/spec/check-headless-context.mjs"
+ ],
+ "areas": [
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+    "apps/console-web/plugins/build-orchestrator/plugin.json",
+    "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+    "apps/console-web/plugins/build-orchestrator/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/claude-headless.sh",
+    "deploy/claude-meter.mjs",
+    "deploy/claude-stream.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-settings",
+   "files": [
+    "apps/console-web/plugins/claude-settings/registry.json",
+    "apps/console-web/plugins/claude-settings/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "console-terminal",
+   "files": [
+    "apps/console-web/plugins/console-terminal/web/TerminalHost.tsx",
+    "apps/console-web/plugins/console-terminal/web/headless-core.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/headless-context.mjs",
+    "framework/cli/rules-brief.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/headless-context.mjs",
+    "framework/core/rules-brief.mjs"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md",
+    "_claude/memory/STATUS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/BRIEF-TEMPLATE.md",
+    "_claude/builds/reports/brief-only-headless.md"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/rules-briefs.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/check-headless-context.mjs"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "New framework/spec/check-headless-context.mjs (38 checks, in CI): plan, settings cleaning, variadic = forms, lean hooks (muted keep stdin), MCP needs / skipped without token, init summary, start tokens, budget, rules by tag, empty template heading, run-note parsing, CLI line protocol, launcher wirin",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "Real runs: measure full vs brief (above); an end-to-end deploy/claude-headless.sh launch in tmux (log line, meter start + context, hooks fired); MCP-with---tools probe.",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "Unchanged and green: check-theme, check-controls, check-toolbars, check-chrome-assets, glossary catalog --check, tracker --check, claude-settings test.mjs (47) + test.py (21), plugin-commands test.mjs (41) + server (53), check-plugin-commands (57), check-headless-tabs (63), build-orchestrator test_u",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  }
+ ],
+ "uiReview": [
+  {
+   "id": "r-20261108-66e8c903",
+   "name": "Headless sessions: settings group + per-build start tokens",
+   "status": "approved",
+   "group": "g-20261108-8e0887a8",
+   "url": "/review/r-20261108-66e8c903"
+  }
+ ],
+ "cost": {
+  "usd": 10.9052,
+  "estimated": false,
+  "tokens": {
+   "input": 292,
+   "output": 2349,
+   "cacheRead": 30930948,
+   "cacheWrite": 309448
+  }
+ },
+ "report": "_claude/builds/reports/brief-only-headless.md",
+ "open": [
+  "The live launcher in /opt/axf picks this up only after merge (the merge queue).",
+  "Per-build start tokens are read from build notes in the console (the meters live on the VPS host); a structured field on the build record would need a builds@1 change (normBuild drops unknown fields).",
+  "Kotlin twin: none needed (launcher / CLI only, no engine)."
+ ]
+}
