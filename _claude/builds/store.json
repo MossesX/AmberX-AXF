@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3495,
- "updatedAt": "2026-11-12T03:36:53.082Z",
+ "rev": 3496,
+ "updatedAt": "2026-11-12T03:37:07.918Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -123621,15 +123621,15 @@
    "title": "Orchestrator checks Shipped features before splitting any job",
    "category": "",
    "detail": "When the orchestrator receives a job and splits it into steps, it first checks the Shipped features ledger (which must hold every feature the orchestrator has ever built). It must: not build anything twice; not break or redo anything already done; and if a step would conflict with or change something already built, notify Brett (AmberX notification) and wait before going on. Make the Shipped features ledger complete (backfill every landed build) and keep it updated on every land. Also standing rule: ONLY the orchestrator launches builds, picks model and account, owns pending/queue and monitors status; voice/chat sessions only hand it requests.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "mcp",
    "pendingId": "orchestrator-checks-shipped-features-before-spli",
    "branch": "claude/orchestrator-checks-shipped-features-before-spli",
    "pr": "#515",
    "createdAt": "2026-11-08T17:22:53.861Z",
-   "updatedAt": "2026-11-12T03:36:51.619Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-12T03:36:52.965Z",
+   "builtAt": "2026-11-12T03:36:52.965Z",
    "notes": [
     {
      "text": "Conflict flow (Brett): a conflicting step is moved to a special Conflicts section and removed from the build; the other steps still build. Brett gets an AmberX notification-panel item that explains the conflict and offers suggested resolutions; he taps a suggestion or types a prompt, which goes to the orchestrator, and the orchestrator makes a new build from it. Then test it: Brett will send a 3-4 step build that deliberately overlaps existing shipped features to confirm the orchestrator catches it.",
@@ -123769,12 +123769,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T03:36:52.965Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T19:24:43.797Z",
-     "updatedAt": "2026-11-08T19:24:43.797Z"
+     "updatedAt": "2026-11-12T03:36:53.154Z"
     }
    ],
    "profiles": [
@@ -123785,7 +123785,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 59,
+   "rev": 60,
    "deleted": false,
    "deletedAt": "",
    "pending": {

@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 02:50 UTC · `server-gate-one-session-per-build-no-duplicate-launches` → running, note (all) · pipeline
 - 2026-11-12 02:50 UTC · `server-gate-one-session-per-build-no-duplicate-launches` note (all) · orchestrator
 - 2026-11-12 02:50 UTC · `server-gate-one-session-per-build-no-duplicate-launches` branch claude/server-gate-one-session-per-build-no-duplicate-launches (all) · pipeline
 - 2026-11-12 02:50 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` s6 done, → built, note (all) · reconciler
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:35 UTC · `orchestrator-checks-shipped-features-before-spli` s1 done (all) · orchestrator
 - 2026-11-12 03:35 UTC · `orchestrator-checks-shipped-features-before-spli` s2 done (all) · orchestrator
 - 2026-11-12 03:36 UTC · `orchestrator-checks-shipped-features-before-spli` PR #515 (all) · builds-live
+- 2026-11-12 03:36 UTC · `orchestrator-checks-shipped-features-before-spli` s3 done, → built (all) · orchestrator
 
 ## Token passes (log)
 
