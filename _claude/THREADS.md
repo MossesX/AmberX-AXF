@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 23:55 UTC · `convert-every-app-into-a-molly-module-expenses-c` s2 done (all) · orchestrator
 - 2026-11-10 23:56 UTC · `home-page-build-queue-card-opens-the-orchestrato` PR #485 (all) · builds-live
 - 2026-11-10 23:56 UTC · `home-page-build-queue-card-opens-the-orchestrato` s4 done, → built (all) · orchestrator
 - 2026-11-10 23:56 UTC · `home-page-build-queue-card-opens-the-orchestrato` note (all) · orchestrator
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:34 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` s4 done (all) · orchestrator
 - 2026-11-12 02:35 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` s4 done (all) · foreign-write
 - 2026-11-12 02:35 UTC · `main-gate-nothing-reaches-main-without-passing` branch claude/main-gate-nothing-reaches-main-without-passing, PR #508 (all) · builds-live
+- 2026-11-12 02:35 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
