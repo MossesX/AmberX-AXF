@@ -3,13 +3,17 @@
 // A fake GitHub API + bare repos in a throwaway folder stand in for GitHub and the VPS; nothing real is touched.
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const HERE = fileURLToPath(new URL('.', import.meta.url));
+// A project's build profile keeps its orchestrator tracker in the repo (_claude/builds/profiles/<id>/): remove the ones
+// this test makes, and only those.
+const PROFILES = fileURLToPath(new URL('../../../../_claude/builds/profiles/', import.meta.url));
+const profilesBefore = new Set(existsSync(PROFILES) ? readdirSync(PROFILES) : []);
 const tmp = mkdtempSync(join(tmpdir(), 'axf-wizard-'));
 const gitBase = join(tmp, 'github');   // <owner>/<name>.git bare repos = "GitHub"
 const vpsGit = join(tmp, 'srv-git');   // the VPS's /srv/git
@@ -198,5 +202,6 @@ try {
   console.log('project-wizard: all checks passed');
 } finally {
   server.close();
+  for (const d of existsSync(PROFILES) ? readdirSync(PROFILES) : []) if (!profilesBefore.has(d)) rmSync(join(PROFILES, d), { recursive: true, force: true });
   rmSync(tmp, { recursive: true, force: true });
 }
