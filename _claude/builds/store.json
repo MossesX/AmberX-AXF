@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3533,
- "updatedAt": "2026-11-12T10:52:41.396Z",
+ "rev": 3534,
+ "updatedAt": "2026-11-12T10:52:53.557Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -101227,14 +101227,14 @@
    "title": "Token usage log + accounts + Plan Studio control (small steps)",
    "category": "Builds",
    "detail": "Replaces token-usage-log-accounts-plan-studio-control. Every step sized ~10 min so work isn't lost on an account switch (Brett, voice, Nov 6 2026).",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/token-optimize",
    "pr": "#360",
    "createdAt": "2026-11-06T14:13:14.290Z",
-   "updatedAt": "2026-11-09T00:10:00.696Z",
+   "updatedAt": "2026-11-12T10:52:46.841Z",
    "builtAt": "",
    "notes": [
     {
@@ -102548,7 +102548,7 @@
    },
    "kind": "build",
    "planRef": "token-usage-log-accounts-plan-studio-control-small-steps",
-   "rev": 84,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -108488,14 +108488,14 @@
    "title": "Claude settings: tabs, views, Approvals & veto tab",
    "category": "Builds",
    "detail": "",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/claude-settings-tabs-veto",
    "pr": "#371",
    "createdAt": "2026-11-07T00:13:39.002Z",
-   "updatedAt": "2026-11-10T04:39:20.621Z",
+   "updatedAt": "2026-11-12T10:52:48.620Z",
    "builtAt": "",
    "notes": [
     {
@@ -108807,7 +108807,7 @@
    },
    "kind": "build",
    "planRef": "claude-settings-tabs-veto",
-   "rev": 63,
+   "rev": 64,
    "deleted": false,
    "deletedAt": "",
    "pending": {
