@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:32:37.130Z",
+ "updatedAt": "2026-11-12T02:32:49.232Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -71263,7 +71263,7 @@
    "title": "Molly gap: Expense Tracker screens load natively in Molly (Next.js 16 / React 19 app today)",
    "category": "Molly",
    "detail": "Gap found by molly-one-shell. Expenses is a Next.js 16 + React 19 app; Molly is AXF React 18 + Vite, so its screens cannot mount natively as they are. Standalone expenses.amberxai.com keeps working until this lands.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -71271,8 +71271,8 @@
    "pr": "#497",
    "priority": "P0",
    "createdAt": "2026-11-08T16:58:59.537Z",
-   "updatedAt": "2026-11-12T02:32:01.078Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-12T02:32:09.619Z",
+   "builtAt": "2026-11-12T02:32:09.619Z",
    "notes": [
     {
      "text": "Queued by brett.",
@@ -71409,8 +71409,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T02:32:09.619Z",
      "note": "",
      "uid": "st-mw82u4zr08aqf6"
     }

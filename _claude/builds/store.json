@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3323,
- "updatedAt": "2026-11-12T02:32:37.130Z",
+ "rev": 3324,
+ "updatedAt": "2026-11-12T02:32:49.232Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -120802,7 +120802,7 @@
    "title": "Molly gap: Expense Tracker screens load natively in Molly (Next.js 16 / React 19 app today)",
    "category": "Molly",
    "detail": "Gap found by molly-one-shell. Expenses is a Next.js 16 + React 19 app; Molly is AXF React 18 + Vite, so its screens cannot mount natively as they are. Standalone expenses.amberxai.com keeps working until this lands.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -120810,8 +120810,8 @@
    "pr": "#497",
    "priority": "P0",
    "createdAt": "2026-11-08T16:58:59.537Z",
-   "updatedAt": "2026-11-12T02:32:01.078Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-12T02:32:09.619Z",
+   "builtAt": "2026-11-12T02:32:09.619Z",
    "notes": [
     {
      "text": "Queued by brett.",
@@ -120997,12 +120997,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T02:32:09.619Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-08T16:58:59.538Z",
-     "updatedAt": "2026-11-08T16:58:59.538Z"
+     "updatedAt": "2026-11-12T02:32:10.594Z"
     }
    ],
    "profiles": [
@@ -121013,7 +121013,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 58,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": {
