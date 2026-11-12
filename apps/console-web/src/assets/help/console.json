@@ -255,12 +255,6 @@
         "kind": "screen"
       },
       {
-        "target": "view:todo-manager",
-        "title": "Todos",
-        "text": "Your to-do list.",
-        "kind": "screen"
-      },
-      {
         "target": "view:voice-notes",
         "title": "Voice notes",
         "text": "Record a note out loud; it's transcribed and kept.",

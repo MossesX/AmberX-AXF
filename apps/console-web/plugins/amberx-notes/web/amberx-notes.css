@@ -1,0 +1,4 @@
+/* Notes (AmberX's notes manager framed in the console): layout only; every value is a theme token. */
+.axp-amberx-notes { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-width: 0; height: 100% }
+.axp-amberx-notes__bar { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--fx-dens-gap-md) }
+.axp-amberx-notes__frame { flex: 1; width: 100%; min-height: calc(var(--fx-row-h) * 24); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }

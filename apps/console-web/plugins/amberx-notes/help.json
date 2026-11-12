@@ -1,0 +1,54 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "amberx-notes-help",
+  "name": "Notes help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the console's Notes screen (AmberX's notes manager, framed).",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:amberx-notes",
+    "entries": [
+      {
+        "target": "view:notes",
+        "title": "Notes",
+        "text": "AmberX's notes and to-do manager, the same one the AmberX app shows: Inbox, Lists, Notes, Pinned and Search, on the one store every device reads on axHub. There is no separate console notes store.",
+        "kind": "screen"
+      },
+      {
+        "target": "Reload",
+        "title": "Reload",
+        "text": "Loads AmberX's Notes page again, on the same note, list or tab."
+      },
+      {
+        "target": "Open in AmberX",
+        "title": "Open in AmberX",
+        "text": "Opens the same page in AmberX itself, in a new tab."
+      },
+      {
+        "target": "amberx-notes",
+        "title": "Notes settings",
+        "text": "Where AmberX's Notes page is served from. The notes stay on axHub whatever this says."
+      }
+    ],
+    "intros": [
+      {
+        "screen": "notes",
+        "title": "Notes",
+        "steps": [
+          {
+            "say": "This is AmberX's notes manager inside the console: the Inbox, your lists and every note, to-do and task.",
+            "target": ""
+          },
+          {
+            "say": "Anything you change here is changed in AmberX on every device.",
+            "target": ""
+          }
+        ]
+      }
+    ]
+  }
+}

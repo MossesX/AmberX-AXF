@@ -8,6 +8,9 @@
  *   action `notes.open:<listId>`     open the Notes page on that list (Lists tab)
  *   action `notes.search:<text>`     open the Search tab with that text (`notes.search` alone = an empty search)
  *   action `notes.add`               open the quick add box and focus it
+ *   action `notes.focus:<focus>`     `item:<id>` (open that note), `list:<id>`, `search:<text>`, `add` or a tab name
+ *   query  `?notes=<focus>`          the same on load: the Dev Console's Notes screen frames this page with it
+ *                                    (embed@1 page `view:notes`), so a console deep link lands on the note
  *   dialogs `notes.item {id}`, `notes.lists {id?}`, `notes.export {id?}`  (rt.openDialog)
  *   data: `useNotes`, `mutate`, `runIntent`, `adoptShared` from `./store`; pure rules in `./core`
  * The page shows a Dictate button when action `dictation.start` is registered (another plugin); it dispatches
@@ -21,7 +24,7 @@ import { ItemEditor } from './ItemEditor';
 import { ListsManager } from './ListsManager';
 import { NotesView } from './NotesView';
 import { NOTES_ID, snapshot, startSync, subscribe, syncPlugins } from './store';
-import { getUi, setUi } from './ui';
+import { getUi, parseFocus, setUi } from './ui';
 import './notes.css';
 
 const VERSION = '0.1.0';
@@ -31,6 +34,29 @@ const str = (v: unknown) => (typeof v === 'string' ? v : '');
 function open(rt: AxfRuntime, list?: string) {
   setUi(list ? { tab: 'lists', list } : {});
   rt.navigate('notes');
+}
+
+/** Applies a focus (ui.ts parseFocus); an item opens in its dialog once the hub has answered (it may not be loaded yet). */
+function focus(rt: AxfRuntime, raw: string | null | undefined): boolean {
+  const f = parseFocus(raw);
+  if (!f) return false;
+  const ui = getUi();
+  setUi({ ...f.ui, ...(f.add ? { quickAdd: ui.quickAdd + 1 } : {}) });
+  rt.navigate('notes');
+  const item = f.item;
+  if (item) {
+    let off: (() => void) | null = null;
+    const run = () => {
+      if (snapshot().status !== 'ready' && !snapshot().loaded) return;
+      off?.(); off = null;
+      const it = snapshot().view.items[item];
+      if (it) setUi({ tab: 'lists', list: it.list });
+      rt.openDialog('notes.item', { id: item });
+    };
+    off = subscribe(run);
+    run();
+  }
+  return true;
 }
 
 /** Once the hub has answered, make one list per installed plugin (plugins.ts globs this module: read it lazily). */
@@ -76,7 +102,9 @@ export const library: AxfWebLibrary = {
       setUi({ quickAdd: ui.quickAdd + 1, ...(ui.tab === 'pinned' || ui.tab === 'search' || (ui.tab === 'lists' && !ui.list) ? { tab: 'inbox' } : {}) });
       rt.navigate('notes');
     }, { label: 'New note' });
+    rt.actions.register('notes.focus', (args) => { focus(rt, args.map((a) => { try { return decodeURIComponent(a); } catch { return a; } }).join(':')); }, { label: 'Open a note, list or tab', params: true });
     startSync();
     watchPlugins();
+    try { const q = new URLSearchParams(window.location.search).get('notes'); if (q) focus(rt, q); } catch { /* no location (tests) */ }
   },
 };

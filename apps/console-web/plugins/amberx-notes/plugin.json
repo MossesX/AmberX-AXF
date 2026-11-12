@@ -1,0 +1,45 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.amberx-notes",
+  "name": "Notes",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "The console's Notes screen is AmberX's own notes and to-do manager: AmberX's Notes page (Inbox, Lists, Notes, Pinned, Search, the item editor, lists and export) framed in the console as an embed@1 view page, on the same amberx.items / amberx.lists store every device reads on axHub. No second notes store. Deep links: console_open notes with focus item:<id> | list:<id> | search:<text> | add | a tab name (action notes.focus:<focus>). Reading and changing items without the UI is control@1 (REST /api/control, MCP amberx_*, CLI axf note | todo | task | list, AmberX voice). migrate.mjs moves a todo-store@1 file (the retired Todo manager's) into amberx.items.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:notes",
+    "settings-tab:amberx-notes"
+  ],
+  "scopes": [],
+  "enabledByDefault": true,
+  "optional": [
+    "control@1"
+  ],
+  "banner": false,
+  "tabable": {
+    "view": "notes",
+    "label": "Notes",
+    "icon": "file"
+  },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/amberx-notes",
+    "env": [],
+    "mentions": [
+      "_claude/THREADS.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "commands": { "$axf": "plugin-commands@1", "auto": true },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-12",
+    "branch": "claude/remove-the-console-s-own-notes-manager-console-u"
+  },
+  "help": "help.json",
+  "opens": "main"
+}

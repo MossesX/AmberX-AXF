@@ -11,7 +11,6 @@
     "apps/console-web/plugins/console-terminal/web/TerminalHost.tsx": 1,
     "apps/console-web/plugins/md-studio/web/Column.tsx": 1,
     "apps/console-web/plugins/md-studio/web/Doc.tsx": 2,
-    "apps/console-web/plugins/notes-browser/web/index.tsx": 1,
     "apps/console-web/plugins/plan-studio/web/editor.tsx": 2,
     "apps/console-web/plugins/plugin-manager/web/PluginManager.tsx": 1,
     "apps/console-web/plugins/plugin-manager/web/views.tsx": 1,

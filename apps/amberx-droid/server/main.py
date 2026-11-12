@@ -601,7 +601,8 @@ def make_app(router: Router | None = None, approvals_transport: httpx.BaseTransp
 
     # ---------------------------------------------------------------- the built web app, single-page fallback
 
-    SEC = {"X-Content-Type-Options": "nosniff", "Referrer-Policy": "strict-origin-when-cross-origin", "Content-Security-Policy": "frame-ancestors 'self' https://molly.amberxai.com"}
+    # Framed by Molly and by the Dev Console (its Notes screen is this app's Notes page, embed@1 page view:notes).
+    SEC = {"X-Content-Type-Options": "nosniff", "Referrer-Policy": "strict-origin-when-cross-origin", "Content-Security-Policy": "frame-ancestors 'self' https://molly.amberxai.com https://console.amberxai.com"}
 
     @app.get("/healthz", include_in_schema=False)
     def healthz() -> Response:
