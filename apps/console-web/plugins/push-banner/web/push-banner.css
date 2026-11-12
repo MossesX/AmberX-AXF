@@ -88,3 +88,6 @@ a.axp-push-banner__name:hover { text-decoration: underline }
 .axp-lander__row.is-merging { border-color: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-muted) * 100%), transparent) }
 .axp-lander__chip { flex: none; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); cursor: pointer }
 .axp-lander__why { display: block; white-space: normal; overflow-wrap: anywhere }
+.axp-lander__row { flex-wrap: wrap }
+.axp-lander__row > .axp-push-banner__entry { flex-basis: 100%; white-space: normal }
+.axp-lander__row > .axp-push-banner__acts { margin-left: 0 }

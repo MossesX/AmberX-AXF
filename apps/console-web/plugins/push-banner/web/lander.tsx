@@ -60,7 +60,7 @@ function Row({ it }: { it: LanderItem }) {
           <span className={`axp-lander__state is-${it.state}`}><Icon name={ICON[it.state]} size={14} /> {WORD[it.state]}</span>
           {it.finished ? ' · build just finished' : it.requested ? ' · asked to merge' : ''}
         </span>
-        {it.why && <span className="axp-push-banner__sub axp-lander__why">{it.why}</span>}
+        {it.why && <span className="axp-push-banner__sub axp-lander__why">{it.why.replace(/^blocked: /, '')}</span>}
       </span>
       {!live && (
         <div className="axp-push-banner__acts" role="toolbar" aria-label={`Lander #${it.pr}`}>
