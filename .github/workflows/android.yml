@@ -92,7 +92,9 @@ jobs:
       - run: node framework/spec/check-profiles.mjs                 # every build profile folder is registered in framework/plan/profiles.json
       - run: node framework/spec/check-feature-matrix.mjs           # feature-matrix@1: contract + Apply engine replay fixtures/feature-matrix.json
       - run: node framework/spec/check-builds-store.mjs             # builds@1: migration loses nothing, projections round-trip, reorder, rename, divide, harvest, Restore default, Apply/Discard
-      - run: node framework/spec/check-builds-store-lock.mjs        # a store read never fails on the lock (GET /api/build-queue 500, urgent-console-perf)
+      - run: node framework/spec/check-builds-store-lock.mjs        # a store read never fails on the lock; writes wait, clear dead owners' locks, go through the store-locked ladder
+      - run: node framework/spec/check-retry-ladder.mjs             # retry-ladder@1: reference engine = axf_server.retry (Python twin), fixtures/retry-ladder.json
+      - run: node framework/spec/check-retry-runner.mjs             # retry-runner: ladder order, ledger, missing fixes, a detached run outlives its caller
       - run: node framework/spec/check-build-origin.mjs            # build-origin@1: Brett's verbatim words on every build, never lost on merge, brief capture, backfill
       - run: node framework/spec/check-builds-live.mjs              # builds-live: store writes reach main (status-only commits, rebase-retry, never forced), parallel writers, newer-wins merge driver, heal, reconciler matching
       - run: node framework/spec/check-agent-slots.mjs              # agent-slots@1: cap, queue order, priority, auto-start, finished sessions closed, memory guard, hot reload, heavy lock, claude-headless.sh end to end
@@ -311,6 +313,7 @@ jobs:
             node framework/spec/check-github.mjs                      # lib-github (Node): fixtures/github.json + client guards
             node framework/spec/check-github-app.mjs                  # github-app@1 broker against a fake GitHub
             python framework/python/axf_server/test.py                # axf_server: wall, storage, http, credentials, console client, plugin packages, github
+            python framework/python/axf_server/test_retry.py          # axf_server.retry: locked store retried to success, caller gone mid-retry, one FYI on give-up
             npx -y tsx framework/spec/check-plugin-inventory.mts
             npx -y tsx framework/spec/check-library-params.mts         # library@1 parameters: UI contract = CLI installer (Kotlin LibraryParamsTest replays the same fixture)
             npx -y tsx framework/spec/check-library-parts.mts          # library@1 parts (features inside a library): core/library.ts = CLI installer (Kotlin twin deferred)
@@ -324,6 +327,7 @@ jobs:
             npx -y tsx framework/spec/check-web-client.mts             # SSE reader, API client library, typed catalog models (fixture + real files)
             npx -y tsx framework/spec/check-watch-live.mts             # watch-live@1: focus params, asset hot swap (no reload), registry, targets, focus file, Vite plugin
             python apps/console-web/server/test_alerts.py
+            python apps/console-web/server/test_mcp_retry.py         # console MCP: engine ops + console commands retried on the server, outlive the caller
             python apps/console-web/server/test_wall_users.py
             python apps/console-web/server/test_plugin_catalog.py
             python apps/console-web/server/test_app_catalog.py
