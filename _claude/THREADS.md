@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 01:43 UTC · `molly-gap-axhub-cors` → queued, note (all) · console
 - 2026-11-12 01:43 UTC · `molly-gap-remote-actions` → running, note (all) · pipeline
 - 2026-11-12 01:43 UTC · `molly-gap-remote-actions` branch claude/molly-gap-remote-actions (all) · pipeline
 - 2026-11-12 01:43 UTC · `molly-gap-remote-actions` note (all) · orchestrator
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:05 UTC · `server-gate-one-session-per-build-no-duplicate-launches` s5 done (all) · foreign-write
 - 2026-11-12 03:06 UTC · `molly-native-expenses` → complete, merged, note (all) · reconciler
 - 2026-11-12 03:06 UTC · `console-commands-reliable` merged, note (all) · reconciler
+- 2026-11-12 03:10 UTC · `all-banners-hide-when-empty` PR #509 (all) · builds-live
 
 ## Token passes (log)
 
