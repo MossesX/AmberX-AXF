@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3201,
- "updatedAt": "2026-11-12T01:51:32.561Z",
+ "rev": 3202,
+ "updatedAt": "2026-11-12T01:52:30.479Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -158622,7 +158622,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-12T01:46:10.127Z",
-   "updatedAt": "2026-11-12T01:51:27.793Z",
+   "updatedAt": "2026-11-12T01:52:28.852Z",
    "builtAt": "",
    "notes": [
     {
@@ -158659,12 +158659,12 @@
    "pipeline": {
     "queuedAt": "2026-11-12T01:46:12.403Z",
     "queuedBy": "push-banner",
-    "account": "account-5",
-    "session": "axf-fix-axhub-36-pull-main-in-failed--lenny",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-12T01:51:25.711Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T01:47:19.194Z",
@@ -158674,9 +158674,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-12T01:51:25.711Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -158685,7 +158685,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-12T01:51:25.711Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -158706,12 +158706,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T01:52:28.852Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T01:47:19.194Z",
-     "updatedAt": "2026-11-12T01:47:19.194Z"
+     "updatedAt": "2026-11-12T01:52:29.061Z"
     },
     {
      "id": "s2",
