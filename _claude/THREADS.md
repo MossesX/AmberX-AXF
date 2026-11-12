@@ -776,11 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 21:50 UTC · `overrides-summary-highlight-colour-setting-asset` → queued, note (all) · console
-- 2026-11-10 21:51 UTC · `overrides-summary-highlight-colour-setting-asset` note (all) · orchestrator
-- 2026-11-10 21:51 UTC · `correction-to-overrides-list-expanded-asset-show` added (0 steps) (all) · console
-- 2026-11-10 21:51 UTC · `correction-to-overrides-list-expanded-asset-show` → queued, note (all) · console
-- 2026-11-10 21:52 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` → pending, note (all) · reconciler
 - 2026-11-10 21:52 UTC · `correction-to-overrides-list-expanded-asset-show` note (all) · orchestrator
 - 2026-11-10 21:54 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` added (0 steps) (all) · console
 - 2026-11-10 21:54 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` → queued, note (all) · console
@@ -1176,6 +1171,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 01:54 UTC · `molly-gap-remote-actions` → running, note (all) · pipeline
 - 2026-11-12 01:54 UTC · `molly-gap-remote-actions` note (all) · orchestrator
 - 2026-11-12 01:55 UTC · `molly-native-expenses` → queued, note (all) · pipeline
+- 2026-11-12 01:55 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` → queued, note (all) · pipeline
+- 2026-11-12 01:55 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` → queued, note (all) · pipeline
+- 2026-11-12 01:55 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` → queued, note (all) · pipeline
+- 2026-11-12 01:55 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` → running, note (all) · pipeline
+- 2026-11-12 01:55 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` note (all) · orchestrator
 
 ## Token passes (log)
 
