@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3418,
- "updatedAt": "2026-11-12T03:04:48.176Z",
+ "rev": 3419,
+ "updatedAt": "2026-11-12T03:04:56.364Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -160953,7 +160953,7 @@
    "branch": "claude/console-and-axhub-retry-failed-calls-themselves-no-claude-needed",
    "pr": "",
    "createdAt": "2026-11-12T02:37:24.132Z",
-   "updatedAt": "2026-11-12T03:00:17.591Z",
+   "updatedAt": "2026-11-12T03:04:46.672Z",
    "builtAt": "",
    "notes": [
     {
@@ -160983,6 +160983,10 @@
     {
      "text": "CHANGE again from Brett (02:45): s5 final: setting chooses its OWN banner (only appears when non-empty) OR any existing banner from a dropdown, plus the banner widget. Re-read s5 from the store.",
      "at": "2026-11-12T02:44:39.948Z"
+    },
+    {
+     "text": "s1 s2 s4 s5 done and pushed (branch claude/console-and-axhub-retry-failed-calls-themselves-no-claude-needed). s3 open: tests written and passing (ladder 76, runner py 17, runner node 5, store lock 9, MCP retry 4, plugin 23) and wired into CI; PR creation hit GitHub's secondary rate limit (content creation blocked), one retry scheduled 10 min later, body in .axf-pr-body.md. Still to do for s3: land through the merge queue, redeploy, AmberX FYI when live. UI Review shots missing: local console (rebuild-shots) waits for axHub from this sandbox, so a session with hub access must shoot desktop + phone and submit. Gaps in PR: axHub repo call sites (bakes axf_server.retry), account rungs (next subscription / API key) unhandled on the console path, AmberX native banner not built.",
+     "at": "2026-11-12T03:04:46.672Z"
     }
    ],
    "approvals": [],
@@ -161147,7 +161151,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
