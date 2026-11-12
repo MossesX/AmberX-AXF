@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3515,
- "updatedAt": "2026-11-12T10:43:56.668Z",
+ "rev": 3516,
+ "updatedAt": "2026-11-12T10:44:43.306Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174098,9 +174098,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T10:43:54.592Z",
-   "updatedAt": "2026-11-12T10:43:54.592Z",
+   "updatedAt": "2026-11-12T10:44:42.157Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-12T10:44:42.157Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -174115,7 +174120,105 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-12T10:44:42.157Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwdf87ce011esn",
+     "title": "",
+     "text": "The console has its own Notes screen that doesn't show AmberX's notes/to-do items (Inbox, lists). Remove the console's separate Notes manager and make the console's Notes entry open AmberX's notes/to-do manager (same amberx.items store), with deep links to an item (focus by id). Migrate anything only in the console's notes store into amberx.items first. Full API parity.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T10:44:42.157Z",
+     "updatedAt": "2026-11-12T10:44:42.157Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwdf87ce02vfc4",
+     "title": "",
+     "text": "Delete the console with no manager. That's whack. Open the Amber X's no manager.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T10:44:42.157Z",
+     "updatedAt": "2026-11-12T10:44:42.157Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwdf87ce0354ls",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/remove-the-console-s-own-notes-manager-console-u.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/remove-the-console-s-own-notes-manager-console-u.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T10:44:42.157Z",
+     "updatedAt": "2026-11-12T10:44:42.157Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -174124,7 +174227,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -174139,7 +174242,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-12T10:44:42.157Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

@@ -777,7 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:11 UTC · `console-commands-reliable` s4 done, → built (all) · orchestrator
 - 2026-11-12 03:11 UTC · `merge-all-ready-buttons-server-side-lander` s1 done (all) · orchestrator
 - 2026-11-12 03:10 UTC · `all-banners-hide-when-empty` note (all) · orchestrator
 - 2026-11-12 03:12 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` note (all) · orchestrator
@@ -1177,6 +1176,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 10:42 UTC · `main-area-tabs` → archived (all) · claude-voice
 - 2026-11-12 10:42 UTC · `app-style-override` → archived (all) · claude-voice
 - 2026-11-12 10:43 UTC · `remove-the-console-s-own-notes-manager-console-u` added (0 steps) (all) · pending
+- 2026-11-12 10:44 UTC · `remove-the-console-s-own-notes-manager-console-u` note (all) · orchestrator
 
 ## Token passes (log)
 
