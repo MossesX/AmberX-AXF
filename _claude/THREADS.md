@@ -777,7 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:29 UTC · `agent-pick` note (all) · backfill
 - 2026-11-12 03:29 UTC · `ui-review-shots` note (all) · backfill
 - 2026-11-12 03:29 UTC · `terminal-vps-host` note (all) · backfill
 - 2026-11-12 03:29 UTC · `window-resize-fix` note (all) · backfill
@@ -1177,6 +1176,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 19:43 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` → running, note (all) · pipeline
 - 2026-11-12 19:43 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` branch claude/collapse-and-auto-collapse-buttons-on-every-tab (all) · pipeline
 - 2026-11-12 19:43 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` note (all) · orchestrator
+- 2026-11-12 19:46 UTC · `move-amberx-web-app-into-the-console-amberx-andr` added (0 steps) (all) · console
 
 ## Token passes (log)
 

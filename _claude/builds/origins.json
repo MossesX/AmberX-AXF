@@ -3723,6 +3723,18 @@
    "from": "detail",
    "addenda": []
   },
+  "move-amberx-web-app-into-the-console-amberx-andr": {
+   "said": "Now what we're gonna end up doing is just moving everything over the console and making AmberX app read the console instead of AmberX.",
+   "at": "2026-11-12T19:46:41.501Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "move-status-out-of-claude-md": {
    "said": "move-status-out-of-claude-md",
    "at": "",

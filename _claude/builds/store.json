@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3641,
- "updatedAt": "2026-11-12T19:43:18.624Z",
+ "rev": 3642,
+ "updatedAt": "2026-11-12T19:46:42.773Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -171630,6 +171630,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-12T18:42:14.237Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "move-amberx-web-app-into-the-console-amberx-andr",
+   "title": "Move AmberX web app into the console; AmberX Android reads the console",
+   "category": "",
+   "detail": "Move every AmberX web app feature (notes, to-dos, lists, approvals, recorder, open_url, notifications, settings) into the console. Repoint the AmberX Android app to read and call the console instead of the AmberX web app. Keep old AmberX web addresses forwarding to the console until the phone app is switched, so nothing breaks. Each feature moved is its own step.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-12T19:46:41.501Z",
+   "updatedAt": "2026-11-12T19:46:41.501Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Now what we're gonna end up doing is just moving everything over the console and making AmberX app read the console instead of AmberX.",
+    "at": "2026-11-12T19:46:41.501Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 741
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
