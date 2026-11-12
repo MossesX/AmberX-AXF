@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3573,
- "updatedAt": "2026-11-12T11:14:44.429Z",
+ "rev": 3574,
+ "updatedAt": "2026-11-12T11:14:55.606Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -173951,7 +173951,7 @@
    "branch": "claude/show-commits-behind-main-on-every-build-table-an",
    "pr": "",
    "createdAt": "2026-11-12T10:39:34.736Z",
-   "updatedAt": "2026-11-12T11:14:30.663Z",
+   "updatedAt": "2026-11-12T11:14:40.613Z",
    "builtAt": "",
    "notes": [
     {
@@ -173985,6 +173985,10 @@
     {
      "text": "s1 and s2 are done and pushed. The merge queue rows now show behind main too. s3 is left open for 2 reasons. (1) GitHub's secondary rate limit blocked creating the PR (403 at 11:14 UTC); the PR body is written and needs one retry later. (2) No UI Review shots yet: the headless capture could not reach axHub from the build sandbox, so every screen showed 'Waiting for axHub'. Tests, typecheck and the UI checks pass. The report and THREADS row are committed.",
      "at": "2026-11-12T11:14:30.663Z"
+    },
+    {
+     "text": "Headless run axf-show-commits-behind-main-on-every-build-table-an--earl: brief only · start 11.2K tokens ($0.03) · cost $1.17 · 45 turns · 6 tools, MCP none",
+     "at": "2026-11-12T11:14:40.613Z"
     }
    ],
    "approvals": [],
@@ -174121,7 +174125,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": {
