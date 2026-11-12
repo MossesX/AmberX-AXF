@@ -478,6 +478,49 @@ export function checkEnds({ alert = () => {}, env = process.env } = {}) {
   return out;
 }
 
+// ------------------------------------------------------------------ merge on finish (the lander, found by capability)
+
+/** The runner of the plugin that provides service:axf.lander@1 (land/lander.mjs), or '' (lander plugin removed). */
+export function landerScript(plugins = resolve(HERE, '..')) {
+  try {
+    for (const n of readdirSync(plugins).sort()) {
+      try {
+        const j = JSON.parse(readFileSync(join(plugins, n, 'plugin.json'), 'utf8'));
+        const f = join(plugins, n, 'land', 'lander.mjs');
+        if (j.provides?.includes('service:axf.lander@1') && existsSync(f)) return f;
+      } catch { /* not a plugin */ }
+    }
+  } catch { /* no plugins folder */ }
+  return '';
+}
+
+/** A build finished: the lander merges it next (its PR opened when missing, main merged in, tests, main gate). */
+export function mergeOnFinish(id, { env = process.env, script = landerScript() } = {}) {
+  if (!script || env.AXF_MERGE_ON_FINISH === 'off') return false;
+  const r = spawnSync('node', [script, 'finish', id, '--json'], { encoding: 'utf8', timeout: 30e3, env: { ...env, AXF_LANDER_BY: 'orchestrator' } });
+  logLine({ event: 'merge-on-finish', build: id, ok: r.status === 0, ...(r.status === 0 ? {} : { error: str(r.stderr || r.stdout, 300) }) });
+  return r.status === 0;
+}
+
+/** Blocked finished builds get the lander's reason as a build note, once per reason (the lander already sent the FYI). */
+export function landerNotes({ env = process.env, script = landerScript() } = {}) {
+  if (!script || env.AXF_MERGE_ON_FINISH === 'off') return [];
+  const r = spawnSync('node', [script, 'status', '--json'], { encoding: 'utf8', timeout: 30e3, env });
+  let st = null; try { st = JSON.parse(r.stdout || 'null'); } catch { return []; }
+  const out = [];
+  const store = loadStore();
+  for (const it of st?.items ?? []) {
+    if (it.state !== 'blocked' || !it.build || !it.why) continue;
+    const b = storeCore.findBuild(store, it.build);
+    if (!b || b.status !== 'built') continue;
+    const text = `Not merged: ${it.why} (PR #${it.pr}). It merges by itself once it gets a new commit.`;
+    if (b.notes.some((n) => n.text === text)) continue;
+    setPipeline(b.id, {}, { note: text, action: 'pipeline:lander' });
+    out.push(b.id);
+  }
+  return out;
+}
+
 // ------------------------------------------------------------------ alerts (the console's alerts API, from the host)
 
 export function makeConsole(env = process.env) {
@@ -570,6 +613,10 @@ export function tick({ env = process.env } = {}) {
   const started = nowIso();
   const inta = intake({ alert });
   const ended = checkEnds({ alert, env });
+  // merge on finish (Brett, Nov 12 2026: "the moment a build finishes, the orchestrator pulls latest main into its PR,
+  // runs the tests, and if they pass merges it into main right away"): the lander does it, ahead of the backlog
+  for (const e of ended) if (e.outcome === 'finished' && e.status === 'built') mergeOnFinish(e.id, { env });
+  landerNotes({ env });
   const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
   const read = accountsRead(store, settings, env); const accounts = read.accounts; const sl = slotsNow();
   // the console (in its container) can't see the logins: it reads what the host saw here

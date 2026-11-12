@@ -370,7 +370,7 @@ echo "started axf-$name--fake in $(pwd)"
 cat > "${tmp}/split-prompt.txt"
 echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"20 min","why":"contract"},{"text":"Wire the UI and tests","model":"Opus","estimate":"25 min"}]}'
 `); chmodSync(splitter, 0o755);
-  const env = { ...process.env, AXF_BUILDS_STORE: storeFile, AXF_BUILD_HOOKS: 'off', AXF_BUILDS_LIVE: '0', AXF_SHIPPED: 'off', AXF_PIPELINE_DIR: pipeDir, AXF_SLOTS_DIR: slotsDir, AXF_SLOTS_TMUX: 'off', AXF_SLOTS_MEM_GB: '8', AXF_HEADLESS_DIR: hdir,
+  const env = { ...process.env, AXF_MERGE_ON_FINISH: 'off', AXF_BUILDS_STORE: storeFile, AXF_BUILD_HOOKS: 'off', AXF_BUILDS_LIVE: '0', AXF_SHIPPED: 'off', AXF_PIPELINE_DIR: pipeDir, AXF_SLOTS_DIR: slotsDir, AXF_SLOTS_TMUX: 'off', AXF_SLOTS_MEM_GB: '8', AXF_HEADLESS_DIR: hdir,
     AXF_CLAUDE_ACCOUNTS: accountsDir, AXF_CLAUDE_SEEN: join(workersDir, 'seen.json'), AXF_CLAUDE_WORKERS: workersDir, AXF_CLAUDE_HOME: join(tmp, 'claude-home'), AXF_CLAUDE_GLOBAL: join(tmp, 'claude.json'),
     AXF_PIPELINE_LAUNCHER: launcher, AXF_PIPELINE_SPLITTER: splitter, AXF_PIPELINE_WORKTREES: wtRoot, AXF_PIPELINE_WORKTREE_MODE: 'mkdir', AXF_PIPELINE_CONSOLE: 'off', AXF_PIPELINE_SETTINGS: JSON.stringify({ parallelPerAccount: 1, idleAfterMin: 0 }), AXF_DATA_DIR: 'off', AXF_BUILD_PROFILE: 'all' };
   mkdirSync(join(tmp, 'claude-home'), { recursive: true }); writeFileSync(join(tmp, 'claude.json'), '{}');
@@ -546,5 +546,17 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.equal(find('delta').pipeline.split.provider, 'rules'); assert.ok(find('delta').steps.length >= 3); assert.match(find('delta').pipeline.note, /rules/);
   });
 }
+
+// merge on finish (Nov 12 2026): a finished build is handed to the lander found by capability (service:axf.lander@1)
+t('merge on finish: the lander gets `finish <build>`; off by env; the lander plugin is found by capability', () => {
+  const d = mkdtempSync(join(tmpdir(), 'mof-')); const out = join(d, 'argv.json'); const fake = join(d, 'lander.mjs');
+  writeFileSync(fake, `import { writeFileSync } from 'node:fs'; writeFileSync(${JSON.stringify(out)}, JSON.stringify({ argv: process.argv.slice(2), by: process.env.AXF_LANDER_BY }));`);
+  const run = (env) => spawnSync('node', ['--input-type=module', '-e', `const m = await import(${JSON.stringify(join(HERE, 'pipeline.mjs'))}); console.log(JSON.stringify({ ok: m.mergeOnFinish('b-1', { script: ${JSON.stringify(fake)}, env: { ...process.env, ...${JSON.stringify(env)} } }), found: m.landerScript() }));`], { encoding: 'utf8', env: { ...process.env, AXF_PIPELINE_DIR: d, AXF_BUILDS_STORE: join(d, 'store.json') } });
+  const r = JSON.parse(run({}).stdout.trim().split('\n').pop());
+  assert.equal(r.ok, true); assert.deepEqual(JSON.parse(readFileSync(out, 'utf8')), { argv: ['finish', 'b-1', '--json'], by: 'orchestrator' });
+  assert.match(r.found, /land\/lander\.mjs$/);
+  const off = JSON.parse(run({ AXF_MERGE_ON_FINISH: 'off' }).stdout.trim().split('\n').pop());
+  assert.equal(off.ok, false);
+});
 
 console.log(`pipeline: ${n} checks passed${e2e ? '' : ' (CLI end-to-end skipped)'}`);
