@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3504,
- "updatedAt": "2026-11-12T05:24:29.063Z",
+ "rev": 3505,
+ "updatedAt": "2026-11-12T06:38:16.639Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -5499,9 +5499,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -6459,9 +6457,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -6925,9 +6921,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -7648,9 +7642,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -8122,9 +8114,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -9549,9 +9539,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -12410,9 +12398,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -15321,9 +15307,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -19632,9 +19616,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -20364,9 +20346,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -26439,9 +26419,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -26704,9 +26682,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -26836,9 +26812,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -27097,9 +27071,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -27336,9 +27308,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -27685,9 +27655,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -27833,7 +27801,7 @@
    "title": "Live reload (axf dev) + device hot reload",
    "category": "Build engine",
    "detail": "axf dev watches assets and long-polls changes to devices; the Android HotReloader re-registers changed assets live.",
-   "status": "built",
+   "status": "running",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
@@ -27841,7 +27809,7 @@
    "pr": "#513",
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-11-12T03:24:20.682Z",
-   "builtAt": "2026-11-12T03:24:20.682Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
@@ -27908,9 +27876,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -28010,7 +27976,7 @@
    },
    "kind": "epic",
    "planRef": "x.engine.dev",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -28081,9 +28047,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -28316,9 +28280,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -28771,9 +28733,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -29029,7 +28989,7 @@
    "title": "Background work scheduler",
    "category": "Kernel & engines",
    "detail": "WorkSpec / Worker / WorkRegistry contracts and a placeholder scheduler. Real implementation is WorkManager on Android.",
-   "status": "complete",
+   "status": "pending",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
@@ -29037,7 +28997,7 @@
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
    "updatedAt": "2026-11-10T04:39:20.621Z",
-   "builtAt": "2026-11-10T04:39:20.621Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
@@ -29192,7 +29152,7 @@
    },
    "kind": "epic",
    "planRef": "x.work",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -29259,9 +29219,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -29472,9 +29430,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -29685,9 +29641,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -29898,9 +29852,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -30111,9 +30063,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -30324,9 +30274,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -30537,9 +30485,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -30754,9 +30700,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -30967,9 +30911,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -31184,9 +31126,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -31397,9 +31337,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -31610,9 +31548,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -31801,9 +31737,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -41682,9 +41616,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -42496,9 +42428,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -42812,9 +42742,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-element-inspector",
@@ -43021,9 +42949,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -43853,9 +43779,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -44251,9 +44175,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -44719,9 +44641,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -44964,9 +44884,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -52792,9 +52710,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -54002,9 +53918,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -68628,9 +68542,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -74003,9 +73915,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -75351,9 +75261,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -76047,9 +75955,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -77740,9 +77646,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -81867,9 +81771,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -83883,9 +83785,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -88734,9 +88634,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -91274,9 +91172,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -92674,9 +92570,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -93395,9 +93289,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -95799,9 +95691,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-banner-widgets",
@@ -96506,9 +96396,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -97505,9 +97393,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-console-account-picker",
@@ -97736,9 +97622,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-ai-keys-console-store",
@@ -98272,9 +98156,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -98617,9 +98499,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -99422,9 +99302,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -99618,9 +99496,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -99806,9 +99682,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -100115,9 +99989,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -101408,9 +101280,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -104272,9 +104142,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -108661,9 +108529,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -109378,9 +109244,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -109568,9 +109432,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -109783,9 +109645,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -109975,9 +109835,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -110198,9 +110056,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -111745,9 +111601,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -112382,9 +112236,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -113551,9 +113403,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -113926,9 +113776,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -114214,9 +114062,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -114417,9 +114263,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -114949,9 +114793,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -115462,9 +115304,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -117969,9 +117809,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -118110,9 +117948,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -118963,9 +118799,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -119341,9 +119175,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -119487,9 +119319,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -119959,9 +119789,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -120131,9 +119959,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -120600,9 +120426,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -121018,9 +120842,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -121221,9 +121043,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -121443,9 +121263,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -123268,9 +123086,7 @@
     "pickedAt": "2026-11-12T01:44:38.113Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-molly-native-expenses",
@@ -123540,9 +123356,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -123937,9 +123751,7 @@
     "pickedAt": "2026-11-12T03:13:32.895Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -124109,9 +123921,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -124684,9 +124494,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -125144,9 +124952,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -125708,9 +125514,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -126506,9 +126310,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -126810,9 +126612,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -127166,9 +126966,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -127426,9 +127224,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-amberx-notify-panel",
@@ -127643,9 +127439,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -127904,9 +127698,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -128085,9 +127877,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -128584,9 +128374,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -128768,9 +128556,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -128956,9 +128742,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -129128,9 +128912,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -129304,9 +129086,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -129476,9 +129256,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -129648,9 +129426,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -129986,9 +129762,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -130158,9 +129932,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -130330,9 +130102,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -131174,9 +130944,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -131371,9 +131139,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -131563,9 +131329,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -131735,9 +131499,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -131917,9 +131679,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-urgent-approval-links-say-method-not-allowed",
@@ -132095,9 +131855,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -132268,9 +132026,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -132810,9 +132566,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -133127,9 +132881,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -133638,9 +133390,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -134097,9 +133847,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -134258,9 +134006,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -134375,9 +134121,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -134466,9 +134210,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -134561,9 +134303,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -136552,9 +136292,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -138467,9 +138205,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -139683,9 +139419,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -140408,9 +140142,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -140873,9 +140605,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -141229,9 +140959,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -141392,9 +141120,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -141897,9 +141623,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -142048,9 +141772,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -143798,9 +143520,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -144135,9 +143855,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -144928,9 +144646,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -145871,9 +145587,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -146372,9 +146086,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -146648,9 +146360,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -146995,9 +146705,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -147408,9 +147116,7 @@
     "pickedAt": "2026-11-11T23:25:08.702Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -147955,9 +147661,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -149253,9 +148957,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -149767,9 +149469,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -150119,9 +149819,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -151438,9 +151136,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-orchestrator-hold-status-archive-tab-deleted-tab",
@@ -151643,9 +151339,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -152399,9 +152093,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -152887,9 +152579,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -153379,9 +153069,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -153653,9 +153341,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -153921,9 +153607,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -154080,9 +153764,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -154239,9 +153921,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -154398,9 +154078,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -154561,9 +154239,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -154724,9 +154400,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -154887,9 +154561,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -155050,9 +154722,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -155213,9 +154883,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -155360,9 +155028,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -155730,9 +155396,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -155938,9 +155602,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-land-all-97-built-but-unmerged-builds-skins-firs",
@@ -156456,9 +156118,7 @@
     "pickedAt": "2026-11-12T01:47:27.720Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -156635,9 +156295,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -156833,9 +156491,7 @@
     "pickedAt": "2026-11-12T02:22:11.770Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -157035,9 +156691,7 @@
     "pickedAt": "2026-11-12T01:44:52.810Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -157240,9 +156894,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -157448,9 +157100,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -157660,9 +157310,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -157879,9 +157527,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -158095,9 +157741,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -158317,9 +157961,7 @@
     "pickedAt": "2026-11-12T02:18:11.326Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -158540,9 +158182,7 @@
     "pickedAt": "2026-11-12T01:55:14.610Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -158699,9 +158339,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -158858,9 +158496,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -159017,9 +158653,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -159229,9 +158863,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -159388,9 +159020,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -159547,9 +159177,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -159706,9 +159334,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -159865,9 +159491,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -160066,9 +159690,7 @@
     "pickedAt": "2026-11-12T01:45:51.956Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -160236,9 +159858,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -160457,9 +160077,7 @@
     "pickedAt": "2026-11-12T03:13:21.437Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -160691,9 +160309,7 @@
     "pickedAt": "2026-11-12T01:54:08.639Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -160862,9 +160478,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -161048,9 +160662,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -161297,9 +160909,7 @@
     "pickedAt": "2026-11-11T00:16:07.794Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -161478,9 +161088,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -161666,9 +161274,7 @@
     "pickedAt": "2026-11-11T00:08:16.721Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -161843,9 +161449,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -162019,9 +161623,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-console-commands-reliable",
@@ -162229,9 +161831,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -162752,9 +162352,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -162934,9 +162532,7 @@
     "pickedAt": "2026-11-12T02:00:37.730Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -163117,9 +162713,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -163324,9 +162918,7 @@
     "pickedAt": "2026-11-12T02:50:14.085Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -163618,9 +163210,7 @@
     "pickedAt": "2026-11-12T02:16:25.728Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -163805,9 +163395,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -164020,9 +163608,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -164166,9 +163752,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -164290,9 +163874,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -164435,9 +164017,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -164646,9 +164226,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -164792,9 +164370,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -164952,9 +164528,7 @@
     "pickedAt": "2026-11-12T03:05:28.144Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -165163,9 +164737,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "failovers": [],
-    "builtBy": []
+    "heldWhy": ""
    },
    "steps": [
     {
