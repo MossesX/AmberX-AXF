@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T03:17:09.407Z",
+ "updatedAt": "2026-11-12T03:17:21.507Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -101559,15 +101559,15 @@
    "title": "Account order (Hulu -> Moses X -> API) + account shown on every build",
    "category": "orchestrator",
    "detail": "URGENT, boss order from Brett, Nov 12. (1) Account ORDER setting for the dispatcher, drag-and-drop in Claude accounts + REST/MCP/CLI/voice: new builds go to the first account in the order that has a free slot and isn't limited. Brett's order now: Hulu subscription (account-3) -> Moses X subscription (mossesx-max-) -> API keys (account-5 Hulu API, mossesx-api) last, under their caps. When one runs out, move to the next; move back when it resets. Today the dispatcher picks the least busy subscription and ignores order, and ai-keys/order does nothing for the dispatcher. (2) Show the account on every build row in Queue, Active and Pending: the planned account before it starts, the account it's running on, and the last run's account; filter by account. (3) Fix the Hulu login: Brett re-signed the Hulu subscription and it went to /root/.claude-add; move/link it to account-3's folder so account-3 uses the fresh token, and remove the stray 'add' folder.",
-   "status": "queued",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/account-order-hulu-moses-x-api-account-shown-on-every-build",
    "pr": "#512",
    "createdAt": "2026-11-12T02:59:45.402Z",
-   "updatedAt": "2026-11-12T03:16:53.604Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-12T03:16:55.508Z",
+   "builtAt": "2026-11-12T03:16:55.508Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -101646,8 +101646,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T03:16:55.508Z",
      "note": "",
      "uid": "st-mwcyma6606zt32"
     }
