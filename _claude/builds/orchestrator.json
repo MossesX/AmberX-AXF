@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:09:17.189Z",
+ "updatedAt": "2026-11-12T02:09:27.405Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -13978,14 +13978,14 @@
    "title": "Planner: select items and build them",
    "category": "",
    "detail": "In Plan Studio, select any parts (single steps or features at any depth, or the whole plan) with multi-select, then click Create build to make one build from the selection.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "mcp",
    "pendingId": "planner-select-items-and-build-them",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T02:30:29.394Z",
-   "updatedAt": "2026-11-08T19:20:13.993Z",
+   "updatedAt": "2026-11-12T02:09:11.811Z",
    "builtAt": "",
    "notes": [
     {
@@ -14035,6 +14035,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-08T19:20:13.993Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:09:11.811Z"
     }
    ],
    "approvals": [],
@@ -14116,14 +14120,14 @@
    "title": "Partial land: ship completed steps of a build",
    "category": "",
    "detail": "Start AFTER planner-registry lands. Brett selects completed steps in any build (even one that's unfinished or running). The tool works out which changes belong to those steps (files/diffs), splits them into their own branch and PR, merges, and deploys right away. A dependency check pulls in anything required, or warns. The rest of the build continues. No forced one-commit-per-step rule.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "mcp",
    "pendingId": "partial-land-ship-completed-steps-of-a-build",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T02:40:18.142Z",
-   "updatedAt": "2026-11-08T19:21:21.629Z",
+   "updatedAt": "2026-11-12T02:09:08.954Z",
    "builtAt": "",
    "notes": [
     {
@@ -14137,6 +14141,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-08T19:21:21.629Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:09:08.954Z"
     }
    ],
    "approvals": [],
@@ -55505,14 +55513,14 @@
    "title": "Claude handoff: Handoff Session prompt recreates the open threads",
    "category": "Feature",
    "detail": "The copied Handoff Session prompt gets a Threads to recreate part: one first message per open thread (unfinished changes, open PRs, a hand-written list), and tells the other account to start one thread per entry.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "chat",
    "pendingId": "handoff-session-threads",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-25T14:46:55.696Z",
-   "updatedAt": "2026-11-08T19:19:32.433Z",
+   "updatedAt": "2026-11-12T02:09:12.787Z",
    "builtAt": "",
    "notes": [
     {
@@ -55522,6 +55530,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-08T19:19:32.433Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:09:12.787Z"
     }
    ],
    "approvals": [],
@@ -69077,14 +69089,14 @@
    "title": "slotstest-2208251-a",
    "category": "",
    "detail": "hi",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "pending",
    "pendingId": "slotstest-2208251-a",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T00:17:39.669Z",
-   "updatedAt": "2026-11-08T19:22:08.834Z",
+   "updatedAt": "2026-11-12T02:09:07.767Z",
    "builtAt": "",
    "notes": [
     {
@@ -69094,6 +69106,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-08T19:22:08.834Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:09:07.767Z"
     }
    ],
    "approvals": [],
@@ -72170,19 +72186,23 @@
    "title": "UI = API parity: builds, plans and orchestration screens",
    "category": "Framework > API",
    "detail": "Part of the \"every UI is fully API-controllable\" rule (ui-api@1; build ui-api-parity-rule, which did the Demonstration Designer and Book Builder and the CI check). 437 gaps across 13 UI area(s) today (framework/spec/ui-parity-baseline.json). Per area: `node framework/cli/ui-parity.mjs gaps <area>`, then map each view/dialog in its plugin.json `ui` block (open = deep link, state = read command or value:<key>, actions = commands / console actions / settings, uiOnly with why), add any op that is missing, and `ui-parity.mjs write-baseline` once it went down. Model of a full map: apps/console-web/plugins/glossary-index/plugin.json `ui`. Audit: _claude/builds/reports/ui-api-parity-rule/audit.md.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T17:38:35.326Z",
-   "updatedAt": "2026-11-08T17:38:59.094Z",
+   "updatedAt": "2026-11-12T02:09:18.194Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Clash: orchestrator-full-api-control (pending) adds step hold/resume/kill to the Build orchestrator; build them together so its controls are mapped once.",
      "at": "2026-11-08T17:38:59.094Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:09:18.194Z"
     }
    ],
    "approvals": [],
@@ -74241,16 +74261,21 @@
    "title": "Slot watchdog crew member (Slot Warden)",
    "category": "new feature",
    "detail": "Plain-code watchdog (zero tokens) on the headless build slots and queue: every ~30 s checks each running slot against reality (tmux alive, claude pid alive, log advancing); dead / finished / hung -> release slot, mark build failed with reason (auth, limit, crash, hung), tell the orchestrator, notify Brett (type slot). Live status + intervention log in console and AmberX. Root fix: claude-headless.sh always releases its slot when Claude exits. Duplicate guard on launch and in the watchdog (reuses orchestrator-dup-check). Crew member Slot Warden on the roster.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/slot-watchdog",
    "pr": "",
    "createdAt": "2026-11-08T17:54:52.704Z",
-   "updatedAt": "2026-11-08T17:54:58.259Z",
+   "updatedAt": "2026-11-12T02:09:13.819Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:09:13.819Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
