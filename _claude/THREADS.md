@@ -777,7 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:05 UTC · `merge-all-ready-buttons-server-side-lander` note (all) · orchestrator
 - 2026-11-12 03:05 UTC · `server-gate-one-session-per-build-no-duplicate-launches` s5 done (all) · foreign-write
 - 2026-11-12 03:06 UTC · `molly-native-expenses` → complete, merged, note (all) · reconciler
 - 2026-11-12 03:06 UTC · `console-commands-reliable` merged, note (all) · reconciler
@@ -1177,6 +1176,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 10:36 UTC · `project-manager-every-project-its-own-console-in` note (all) · orchestrator
 - 2026-11-12 10:39 UTC · `show-commits-behind-main-on-every-build-table-an` added (0 steps) (all) · pending
 - 2026-11-12 10:40 UTC · `show-commits-behind-main-on-every-build-table-an` note (all) · orchestrator
+- 2026-11-12 10:42 UTC · `git-status-board` → archived (all) · claude-voice
 
 ## Token passes (log)
 
