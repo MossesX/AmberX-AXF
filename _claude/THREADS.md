@@ -776,16 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 02:02 UTC · `amberx-build-notifications-for-every-stage-start` s1 done, → running (all) · orchestrator
-- 2026-11-12 02:02 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` added (7 steps) (all) · Claude voice (Gizmo)
-- 2026-11-12 02:02 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` → queued, note (all) · console
-- 2026-11-12 02:04 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` added (3 steps) (all) · Claude voice (Gizmo)
-- 2026-11-12 02:04 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` → queued, note (all) · console
-- 2026-11-12 02:04 UTC · `molly-native-expenses` s2 done (all) · orchestrator
-- 2026-11-12 02:04 UTC · `amberx-build-notifications-for-every-stage-start` s2 done (all) · orchestrator
-- 2026-11-12 02:05 UTC · `amberx-build-notifications-for-every-stage-start` s2 done (all) · foreign-write
-- 2026-11-12 02:05 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` s1 done, → running (all) · orchestrator
-- 2026-11-12 02:05 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` s1 done (all) · orchestrator
 - 2026-11-12 02:06 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` → queued, note (all) · pipeline
 - 2026-11-12 02:06 UTC · `molly-gap-expenses-delete` → archived (all) · Claude voice (Gizmo)
 - 2026-11-12 02:07 UTC · `employee-hooks-everywhere-any-mention-of-an-agen` → archived (all) · Claude voice (Gizmo)
@@ -1176,6 +1166,16 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:27 UTC · `amberx-empty-shell` note (all) · backfill
 - 2026-11-12 03:27 UTC · `fresh-look` note (all) · backfill
 - 2026-11-12 03:27 UTC · `design-package-fable` note (all) · backfill
+- 2026-11-12 03:27 UTC · `design-packages-10` note (all) · backfill
+- 2026-11-12 03:27 UTC · `build-orchestrator` note (all) · backfill
+- 2026-11-12 03:27 UTC · `build-profiles` note (all) · backfill
+- 2026-11-12 03:27 UTC · `amberx-appearance-lock` note (all) · backfill
+- 2026-11-12 03:27 UTC · `amberx-handsfree` note (all) · backfill
+- 2026-11-12 03:27 UTC · `amberx-notes` note (all) · backfill
+- 2026-11-12 03:27 UTC · `fix-interface-scope-settings` note (all) · backfill
+- 2026-11-12 03:27 UTC · `amberx-voice-fix` merged, note (all) · backfill
+- 2026-11-12 03:27 UTC · `fix-hubsync-look-source` note (all) · backfill
+- 2026-11-12 03:28 UTC · `fix-banner-snap` note (all) · backfill
 
 ## Token passes (log)
 
