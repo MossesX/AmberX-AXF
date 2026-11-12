@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:15:33.468Z",
+ "updatedAt": "2026-11-12T02:15:44.592Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -100076,19 +100076,27 @@
    "title": "Build Plan 1: skins, one-row build tables, backgrounds, asset overrides",
    "category": "skins",
    "detail": "URGENT. Build Plan 1 (Plan Studio build-plan-1-xuqq), sent to the orchestrator as a normal build so it splits it and assigns the ID. Each step came from a Pending build that was archived; check each against main first and skip anything done, unneeded or breaking. Rule: a skin controls everything (look, layout, behavior) and contains a colour theme; changing the colour theme never creates a new skin. Already done/in flight: skins-finish, PR #494 (colour themes), PR #409 (restyle), skins in asset store. Skip screenshots. Fable steps stay on Fable.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides",
    "pr": "",
    "createdAt": "2026-11-12T02:02:25.273Z",
-   "updatedAt": "2026-11-12T02:15:22.760Z",
+   "updatedAt": "2026-11-12T02:15:31.290Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-12T02:02:49.331Z"
+    },
+    {
+     "text": "Started run 1 on account-5 (API key, subscriptions first, then API) (Opus, Phase 1): axf-build-plan-1-skins-one-row-build-tables-backgrou--gina.",
+     "at": "2026-11-12T02:15:26.608Z"
+    },
+    {
+     "text": "Claude account: account-5 (axf-build-plan-1-skins-one-row-build-tables-backgrou--gina, own login copy)",
+     "at": "2026-11-12T02:15:31.290Z"
     }
    ],
    "approvals": [],
