@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3419,
- "updatedAt": "2026-11-12T03:04:56.364Z",
+ "rev": 3420,
+ "updatedAt": "2026-11-12T03:05:09.023Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -161583,7 +161583,7 @@
    "branch": "claude/server-gate-one-session-per-build-no-duplicate-launches",
    "pr": "",
    "createdAt": "2026-11-12T02:42:15.357Z",
-   "updatedAt": "2026-11-12T02:56:32.075Z",
+   "updatedAt": "2026-11-12T02:59:58.216Z",
    "builtAt": "",
    "notes": [
     {
@@ -161701,12 +161701,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T02:59:58.216Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T02:42:56.083Z",
-     "updatedAt": "2026-11-12T02:42:56.202Z"
+     "updatedAt": "2026-11-12T02:59:58.373Z"
     },
     {
      "id": "s5",
@@ -161761,7 +161761,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
