@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T01:44:52.945Z",
+ "updatedAt": "2026-11-12T01:45:09.424Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -95595,15 +95595,15 @@
    "title": "Queue drag-and-drop reorder (dispatcher follows the order)",
    "category": "",
    "detail": "Orchestrator Queue tab: drag and drop builds to reorder; the dispatcher follows the order. Also right-click: Move to top / bottom / position N. Order persists; full API/CLI control.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/queue-drag-and-drop-reorder-dispatcher-follows-t",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T20:59:27.366Z",
-   "updatedAt": "2026-11-12T01:44:50.004Z",
+   "updatedAt": "2026-11-12T01:44:55.230Z",
    "builtAt": "",
    "notes": [
     {
@@ -95617,6 +95617,14 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-12T01:43:51.703Z"
+    },
+    {
+     "text": "Started run 1 on account-5 (API key, subscriptions first, then API) (Opus, Phase 1): axf-queue-drag-and-drop-reorder-dispatcher-follows-t--lenny.",
+     "at": "2026-11-12T01:44:53.232Z"
+    },
+    {
+     "text": "Claude account: account-5 (axf-queue-drag-and-drop-reorder-dispatcher-follows-t--lenny, own login copy)",
+     "at": "2026-11-12T01:44:55.230Z"
     }
    ],
    "approvals": [],

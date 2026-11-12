@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3180,
- "updatedAt": "2026-11-12T01:44:52.945Z",
+ "rev": 3181,
+ "updatedAt": "2026-11-12T01:45:09.424Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -153781,15 +153781,15 @@
    "title": "Queue drag-and-drop reorder (dispatcher follows the order)",
    "category": "",
    "detail": "Orchestrator Queue tab: drag and drop builds to reorder; the dispatcher follows the order. Also right-click: Move to top / bottom / position N. Order persists; full API/CLI control.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/queue-drag-and-drop-reorder-dispatcher-follows-t",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T20:59:27.366Z",
-   "updatedAt": "2026-11-12T01:44:50.004Z",
+   "updatedAt": "2026-11-12T01:44:55.230Z",
    "builtAt": "",
    "notes": [
     {
@@ -153803,6 +153803,14 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-12T01:43:51.703Z"
+    },
+    {
+     "text": "Started run 1 on account-5 (API key, subscriptions first, then API) (Opus, Phase 1): axf-queue-drag-and-drop-reorder-dispatcher-follows-t--lenny.",
+     "at": "2026-11-12T01:44:53.232Z"
+    },
+    {
+     "text": "Claude account: account-5 (axf-queue-drag-and-drop-reorder-dispatcher-follows-t--lenny, own login copy)",
+     "at": "2026-11-12T01:44:55.230Z"
     }
    ],
    "approvals": [],
@@ -153822,18 +153830,18 @@
    "pipeline": {
     "queuedAt": "2026-11-12T01:43:51.415Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "account-5",
+    "session": "axf-queue-drag-and-drop-reorder-dispatcher-follows-t--lenny",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-12T01:44:52.810Z",
+    "runs": 1,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-12T01:44:52.810Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -153842,7 +153850,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-12T01:44:52.810Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -153926,7 +153934,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
