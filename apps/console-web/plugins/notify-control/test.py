@@ -375,4 +375,10 @@ ok(c.post("/trigger-remove", json={"id": "twice"}).status_code == 200 and c.post
 ok(c.post("/group-remove", json={"id": "my-builds"}).status_code == 200, "POST group-remove")
 ok("userGroups" in c.get("/state").json() and "ruleOptions" in c.get("/state").json(), "the panel gets all of it")
 
+said: list[tuple] = []
+plugin_services.provide("axf.crew-sections@1", types.SimpleNamespace(say=lambda *a: said.append(a)), folder="fake-crew")
+mod.fire({"id": "r1", "name": "Night builds", "severity": "info", "title": "A build finished", "body": ""}, {"type": "builds", "title": "x"})
+ok(said and said[0][:2] == ("notifications", "done") and "Night builds" in said[0][2], "a rule that fires is said in the group chat by the rules' owner")
+plugin_services.withdraw("fake-crew")
+
 print(f"notify-control: {checks} checks passed")

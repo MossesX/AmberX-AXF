@@ -94,3 +94,9 @@
 .sw-job .sw-card__stats dd { text-align: right; overflow-wrap: anywhere }
 /* Who's free: the job crew at a glance above the cards */
 .sw-roster { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-card-pad); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-lg); background: var(--fx-surface) }
+/* Settings → Section owners: one row per section that acts on its own, its owner picker on the right */
+.sw-sections__head { margin: 0; text-transform: uppercase; letter-spacing: .04em }
+.sw-sections__row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-sm) 0; border-bottom: var(--fx-border-w) solid var(--fx-border) }
+.sw-sections__what { display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs); flex: 1 1 calc(var(--fx-space) * 40); min-width: 0 }
+.sw-sections__what strong { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm) }
+.sw-sections__history ul { margin: var(--fx-dens-gap-sm) 0 0; padding-left: var(--fx-dens-gap-lg) }

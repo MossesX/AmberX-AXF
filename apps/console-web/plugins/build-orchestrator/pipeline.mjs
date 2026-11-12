@@ -46,6 +46,9 @@
  * Watchdog hook: afterTick(fn) registers fn({ state, plan, launched, ended, failed }) to run at the end of every tick
  * (build running-builds-watchdog plugs in here; a hook that throws is logged and never stops the tick).
  * Shipped manifests: the first hook ships every newly landed build's shipped-manifest@1 to Shipped features.
+ * Group chat (crew-sections@1, framework/cli/crew-say.mjs): each section's key events are posted as the employee who owns
+ * it: orchestrator (splits, auto-queue), dispatcher (launches, session ends, launch failures, idle), watchdog (self-check),
+ * shipped (manifests). Dropped while the chat is off; AXF_CREW_SAY=off for tests.
  *
  * Files (AXF_PIPELINE_DIR, else /projects/amberx-axf/_data/pipeline where the hub is mounted, else ~/.axf/pipeline; shared
  * with the console container): settings.json, accounts.json, state.json (what the last tick saw and did), log.jsonl.
@@ -72,6 +75,7 @@ import { loadUpgradePolicy, settingsFile as claudeSettingsFile } from '../../../
 import * as slots from '../../../../framework/cli/agent-slots.mjs';
 import { issue as issueDispatch } from '../../../../framework/cli/dispatch-gate.mjs';
 import { shipLanded } from '../../../../framework/cli/shipped.mjs';
+import { crewSay } from '../../../../framework/cli/crew-say.mjs';
 import { normPriority } from '../../../../framework/core/build-priority.mjs';
 import { act as orchAct } from './orchestrator.mjs';
 import { reap as workersReap, status as workersStatus, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
@@ -364,7 +368,11 @@ export function intake({ max = MAX_SPLITS_PER_TICK, alert = () => {} } = {}) {
     // never replaced unless the console asked for a split (splitRequested); the table flags them as "needs split"
     const want = live(store).filter((b) => (b.status === 'pending' || b.status === 'queued') && !b.hidden && (b.pipeline?.splitRequested || !b.steps.length));
     for (const b of want.slice(0, max)) {
-      try { const r = splitBuild(b.id); out.split.push(r); alert('split', { id: b.id, title: b.title, steps: r.steps, error: r.provider === 'rules' ? r.note : '', note: r.note }); }
+      try {
+        const r = splitBuild(b.id); out.split.push(r); alert('split', { id: b.id, title: b.title, steps: r.steps, error: r.provider === 'rules' ? r.note : '', note: r.note });
+        if (r.provider === 'rules') crewSay('orchestrator', 'waiting', `Split ${b.id} by rules into ${r.steps} steps (Claude couldn't). Brett, check the steps before it runs.`, { ref: b.id });
+        else crewSay('orchestrator', 'done', `Split ${b.id} into ${r.steps} steps.`, { ref: b.id });
+      }
       catch (e) { out.skipped.push({ id: b.id, error: e.message }); }
     }
     for (const b of want.slice(max)) out.skipped.push({ id: b.id, error: 'next round' });
@@ -375,7 +383,7 @@ export function intake({ max = MAX_SPLITS_PER_TICK, alert = () => {} } = {}) {
       // Launch builds without asking is ON: a split build with every step still open goes to the Queue by itself; one a session
       // handed back to Pending (returned) waits for Brett
       if (b.status !== 'pending' || b.hidden || !b.steps.length || P.needsSplit(b, rules) || b.pipeline?.lastRun?.outcome === 'returned') continue;
-      try { queue(b.id, { by: 'auto (Launch builds without asking)' }); out.queued.push(b.id); } catch (e) { out.skipped.push({ id: b.id, error: e.message }); }
+      try { queue(b.id, { by: 'auto (Launch builds without asking)' }); out.queued.push(b.id); crewSay('orchestrator', 'start', `Queued ${b.id} by itself (Launch builds without asking is on).`, { ref: b.id }); } catch (e) { out.skipped.push({ id: b.id, error: e.message }); }
     }
   }
   return out;
@@ -473,6 +481,9 @@ export function checkEnds({ alert = () => {}, env = process.env } = {}) {
     setPipeline(b.id, { lastRun: r.run, session: '', slot: '', note: r.outcome === 'finished' ? '' : r.note }, { status: r.status, note: r.note, action: 'pipeline:end' });
     alert(r.outcome === 'failed' ? 'failed' : 'ended', { id: b.id, title: b.title, outcome: r.outcome, note: r.note, account: b.pipeline.account });
     logLine({ event: 'ended', build: b.id, outcome: r.outcome, exit, account: b.pipeline.account, session: b.pipeline.session });
+    if (r.outcome === 'failed') crewSay('dispatcher', 'failed', `${b.id} failed: ${r.note}`, { ref: b.id });
+    else if (r.outcome === 'returned') crewSay('dispatcher', 'waiting', `${b.id} stopped with steps left and is back in Pending. Brett, it needs you: ${r.note}`, { ref: b.id });
+    else crewSay('dispatcher', 'done', `${b.id}: ${r.note}`, { ref: b.id });
     out.push({ id: b.id, outcome: r.outcome, status: r.status, exit });
   }
   return out;
@@ -551,6 +562,8 @@ export function selfCheck({ reason = 'on demand', by = 'pipeline', env = process
   if (P.checkNotify(result, prev)) {
     try { result.notified = !!(alert ?? ((kind, d) => makeConsole(env)('POST', '/api/alerts', P.alertFor(kind, d))))('selfcheck', { fixes, problems: sum.problems, line: sum.line }); }
     catch (e) { logLine({ event: 'self-check-alert-failed', error: str(e.message, 300) }); }
+    if (fixes.length) crewSay('watchdog', 'done', `Self-check fixed ${fixes.length}: ${str(fixes.join('; '), 220)}.`);
+    if (sum.problems.length) crewSay('watchdog', 'blocked', `Accounts I can't use: ${str(sum.problems.join('; '), 220)}. ${sum.line}.`, { dedupeMin: 360 });
   }
   // the state file is the tick's too: re-read it so this never undoes what the tick wrote
   saveState({ ...loadState(), selfCheck: result });
@@ -602,12 +615,14 @@ export function tick({ env = process.env } = {}) {
       alert('launched', { id: b.id, title: b.title, account: l.account, model: l.model, phase: l.phase, session: r.session });
       launched.push({ ...l, session: r.session, dir: r.dir });
       logLine({ event: 'launched', build: b.id, account: l.account, kind: l.kind || 'subscription', rule: l.rule || '', model: l.model, session: r.session });
+      crewSay('dispatcher', 'start', `Started ${b.id} on ${l.account}${moved}${l.kind === 'api' ? ' (API key)' : ''}, ${l.model}${l.phase ? ` ${l.phase}` : ''}${r.queuedInSlots ? ', waiting for a free slot' : ''}.`, { ref: b.id });
       delete state.launchFails[l.id];
     } catch (e) {
       state.launchFails[l.id] = [...fails, nowIso()];
       failed.push({ id: l.id, error: e.message, tried });
       setPipeline(l.id, { note: `launch failed: ${str(e.message, 300)}`, tried }, { note: `Launch failed on ${tried.join(', ') || l.account}: ${str(e.message, 500)}`, action: 'pipeline:launch-failed' });
       logLine({ event: 'launch-failed', build: l.id, account: l.account, tried, error: e.message });
+      crewSay('dispatcher', 'failed', `Couldn't start ${l.id} on ${tried.join(', ') || l.account}: ${str(e.message, 160)}`, { ref: l.id });
     }
   }
   // idle: nothing running while work waits. Recorded at once; the phone hears about it after idleAfterMin, once per idle spell.
@@ -617,7 +632,11 @@ export function tick({ env = process.env } = {}) {
     idle = { ...plan.idle, since };
     const dueAt = Date.parse(since) + settings.idleAfterMin * 60e3;
     const already = state.alerts.find((a) => a.key === 'pipeline:idle');
-    if (!already && Date.now() >= dueAt) alert('idle', { kind: plan.idle.kind, reason: plan.idle.reason });
+    if (!already && Date.now() >= dueAt) {
+      alert('idle', { kind: plan.idle.kind, reason: plan.idle.reason });
+      if (plan.idle.kind === 'empty') crewSay('dispatcher', 'waiting', `Nothing to run. ${plan.idle.reason}.`, { dedupeMin: 360 });
+      else crewSay('dispatcher', 'blocked', `Stuck: ${plan.idle.reason}.`, { dedupeMin: 360 });
+    }
   } else if (state.alerts.some((a) => a.key === 'pipeline:idle')) {
     consoleApi('POST', '/api/alerts/resolve', { keys: ['pipeline:idle'] });
     state.alerts = state.alerts.filter((a) => a.key !== 'pipeline:idle');
@@ -677,7 +696,11 @@ export function afterTick(fn) { if (typeof fn === 'function') TICK_HOOKS.push(fn
  */
 afterTick(({ env }) => {
   const r = shipLanded({ env });
-  for (const s of r.shipped ?? []) logLine(s.error ? { event: 'ship-failed', build: s.id, error: str(s.error, 300) } : { event: 'shipped', build: s.id, manifest: s.manifest, rev: s.rev });
+  for (const s of r.shipped ?? []) {
+    logLine(s.error ? { event: 'ship-failed', build: s.id, error: str(s.error, 300) } : { event: 'shipped', build: s.id, manifest: s.manifest, rev: s.rev });
+    if (s.error) crewSay('shipped', 'failed', `Couldn't send the shipped manifest for ${s.id}: ${str(s.error, 160)}`, { ref: s.id, dedupeMin: 360 });
+    else crewSay('shipped', 'done', `${s.id} landed: shipped manifest sent to Shipped features.`, { ref: s.id });
+  }
 });
 
 // ------------------------------------------------------------------ the one way in: request a build, route it

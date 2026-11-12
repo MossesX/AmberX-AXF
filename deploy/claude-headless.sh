@@ -379,11 +379,13 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
       wait_for_worker "$tried_workers"
       if [[ -z "$worker" ]]; then
         build_note "Worker $gone stopped ($hit) and no worker is left: the run stopped here"
+        node "$HERE/../framework/cli/crew-say.mjs" accounts failed "Account $gone stopped ($hit) and no account is left to take over: ${name:-the run} stopped." --ref "${name:-run}" >/dev/null 2>&1 || true  # group chat, as the accounts section's owner
         printf 'No worker account left to take over.\n'; break
       fi
       tried_workers="$tried_workers,$worker"
       release_login; own_login "$worker"
       build_note "Worker $gone stopped ($hit): the run moved to $worker"
+      node "$HERE/../framework/cli/crew-say.mjs" accounts blocked "Account $gone stopped ($hit). Moved ${name:-the run} to $worker." --ref "${name:-run}" >/dev/null 2>&1 || true
       prompt="$prompt"$'\n\n'"An account limit cut off an earlier run of this brief. Read the worktree and the build's ticked steps first, and carry on from there instead of starting over."
       switches=$((switches + 1))
       continue
@@ -394,6 +396,7 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     printf '\n\033[1m── this Claude account hit its limit: switching accounts ──\033[0m\n'
     sw="$(node "$sw_js" --reason "headless build ${name:-run} hit its limit" 2>&1)" || { printf '%s\n' "$sw"; break; }
     printf '%s · starting again\n\n' "$sw"
+    node "$HERE/../framework/cli/crew-say.mjs" accounts done "The Claude account hit its limit during ${name:-a run}: switched accounts and started it again." --ref "${name:-run}" >/dev/null 2>&1 || true
     [[ -n "$login_dir" ]] && { release_login; own_login live; }   # the run's copy follows the switch AI keys wrote
     switches=$((switches + 1))
   done
