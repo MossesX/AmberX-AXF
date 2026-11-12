@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3269,
- "updatedAt": "2026-11-12T02:12:08.589Z",
+ "rev": 3270,
+ "updatedAt": "2026-11-12T02:12:40.445Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -155488,7 +155488,7 @@
    "title": "Rebuild Gizmo from scratch: full Claude-style chat interface, switch between Claude and local Ollama/Llama",
    "category": "",
    "detail": "Replace the current Gizmo chat. Full Claude.ai-quality interface: conversation list, streaming replies, markdown/code, attachments, voice talk mode, history search. Model switcher per chat: Claude (accounts/API) or local Ollama (amberx-llama container, Mistral Small 24B default, 7B option) via the internal API. Works in AmberX app, AmberX web app and console, with a real deep link. Keep what worked before the Nov 7 Fable rebuild.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -155496,7 +155496,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:38:57.321Z",
-   "updatedAt": "2026-11-12T02:06:07.749Z",
+   "updatedAt": "2026-11-12T02:12:38.697Z",
    "builtAt": "",
    "notes": [
     {
@@ -155553,7 +155553,7 @@
    "pipeline": {
     "queuedAt": "2026-11-12T01:43:38.089Z",
     "queuedBy": "console",
-    "account": "",
+    "account": "mossesx-max-",
     "session": "",
     "slot": "",
     "model": "Opus",
@@ -155569,7 +155569,7 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "released by the self-check (nothing ran): back in the Queue",
+    "note": "Session on mossesx-max- ended (exit 1) with 3 steps left: back in the Queue (run 1).",
     "route": "",
     "dispatchedAt": "2026-11-12T01:44:28.069Z",
     "planned": {
@@ -155623,12 +155623,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T02:12:38.697Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T21:39:38.105Z",
-     "updatedAt": "2026-11-10T21:39:38.105Z"
+     "updatedAt": "2026-11-12T02:12:38.920Z"
     },
     {
      "id": "s3",
