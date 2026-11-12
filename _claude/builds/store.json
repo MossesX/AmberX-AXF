@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3170,
- "updatedAt": "2026-11-12T01:43:17.832Z",
+ "rev": 3171,
+ "updatedAt": "2026-11-12T01:43:37.923Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -155113,7 +155113,7 @@
    "title": "Bug: asset settings (nav menu, tab bar, toolbar) change the settings panel instead of the asset; reset to default resets the wrong thing",
    "category": "",
    "detail": "Right-click > Settings on any asset (nav menu, tab bar, toolbar, banner) opens a settings panel whose changes and Reset to default currently target the settings panel's own assets. Fix: the panel binds to the asset that was right-clicked (and the app it lives in); every change and Reset to default applies to that target asset in the live app. The settings panel's own look is never edited from there. Add a test per asset type.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -155121,7 +155121,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:45:52.947Z",
-   "updatedAt": "2026-11-10T21:47:14.535Z",
+   "updatedAt": "2026-11-12T01:43:29.618Z",
    "builtAt": "",
    "notes": [
     {
@@ -155131,6 +155131,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T21:47:14.535Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T01:43:29.618Z"
     }
    ],
    "approvals": [],
@@ -155148,8 +155152,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
+    "queuedAt": "2026-11-12T01:43:28.836Z",
+    "queuedBy": "console",
     "account": "",
     "session": "",
     "slot": "",
@@ -155254,7 +155258,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -156891,14 +156895,14 @@
    "title": "Molly gap: the console frame hands Molly its token once (embed@1 credentials) and the console API allows Molly's origin",
    "category": "",
    "detail": "Found by molly-sign-in-once s1. Two halves. (1) The console API refuses cross-origin calls from Molly: OPTIONS https://console.amberxai.com/api/me with Origin https://molly.amberxai.com answers 401 with no CORS headers (the token check runs before FastAPI's CORSMiddleware, and allow_origins * cannot be used by the wall). Let preflights through and answer an allow-list of amberxai.com app origins with Access-Control-Allow-Headers authorization, content-type, accept. (2) The console token lives only in the console origin's storage (axf-console:token); Molly keeps its own copy (molly:console-token) that today a person must paste. Add an embed@1 message (guest to host, e.g. credentials with {app, scheme, token}) the console frame sends once to a host it recognises (frame-ancestors origin, embed host name), handled by Molly's xLayout host into the console provider's signIn(token); never to a URL or a log. Molly side is in place: apps/molly/src/molly/credentials.ts (console provider, bearer, credentials omit).",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "molly-sign-in-once",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/molly-gap-console-token-handoff",
    "pr": "",
    "createdAt": "2026-11-10T22:09:29.615Z",
-   "updatedAt": "2026-11-12T01:43:00.821Z",
+   "updatedAt": "2026-11-12T01:43:32.542Z",
    "builtAt": "",
    "notes": [
     {
@@ -156908,6 +156912,14 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-12T01:43:00.821Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-molly-gap-console-token-handoff--sully.",
+     "at": "2026-11-12T01:43:23.797Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-molly-gap-console-token-handoff--sully, own login copy)",
+     "at": "2026-11-12T01:43:32.542Z"
     }
    ],
    "approvals": [],
@@ -156918,8 +156930,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "molly-gap-console-token-handoff",
+    "brief": "# Build: molly-gap-console-token-handoff\n\n## Brett said (verbatim)\nAt: 2026-11-10T22:09:29.615Z\n> Standalone apps keep working until Molly covers them; list gaps as pending builds.\n\n## What to build\nContinue build \"Molly gap: the console frame hands Molly its token once (embed@1 credentials) and the console API allows Molly's origin\" (molly-gap-console-token-handoff) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 22:09):\n\"Standalone apps keep working until Molly covers them; list gaps as pending builds.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Found by molly-sign-in-once s1. Two halves. (1) The console API refuses cross-origin calls from Molly: OPTIONS https://console.amberxai.com/api/me with Origin https://molly.amberxai.com answers 401 with no CORS headers (the token check runs before FastAPI's CORSMiddleware, and allow_origins * cannot be used by the wall). Let preflights through and answer an allow-list of amberxai.com app origins with Access-Control-Allow-Headers authorization, content-type, accept. (2) The console token lives only in the console origin's storage (axf-console:token); Molly keeps its own copy (molly:console-token) that today a person must paste. Add an embed@1 message (guest to host, e.g. credentials with {app, scheme, token}) the console frame sends once to a host it recognises (frame-ancestors origin, embed host name), handled by Molly's xLayout host into the console provider's signIn(token); never to a URL or a log. Molly side is in place: apps/molly/src/molly/credentials.ts (console provider, bearer, credentials omit).\n[ ] s2 (~30 min) Standalone apps keep working until Molly covers them; list gaps as pending builds.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/molly-gap-console-token-handoff.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/molly-gap-console-token-handoff.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step molly-gap-console-token-handoff <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link molly-gap-console-token-handoff --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step molly-gap-console-token-handoff <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note molly-gap-console-token-handoff \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -156927,18 +156939,18 @@
    "pipeline": {
     "queuedAt": "2026-11-12T01:43:00.313Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-molly-gap-console-token-handoff--sully",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-12T01:43:22.712Z",
+    "runs": 1,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-12T01:43:22.712Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -156947,7 +156959,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-12T01:43:22.712Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -157031,7 +157043,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -157054,7 +157066,7 @@
    "branch": "claude/molly-gap-remote-actions",
    "pr": "",
    "createdAt": "2026-11-10T22:09:30.792Z",
-   "updatedAt": "2026-11-12T01:43:13.561Z",
+   "updatedAt": "2026-11-12T01:43:17.715Z",
    "builtAt": "",
    "notes": [
     {
@@ -157068,6 +157080,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-molly-gap-remote-actions--paulie.",
      "at": "2026-11-12T01:43:13.561Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-molly-gap-remote-actions--paulie, own login copy)",
+     "at": "2026-11-12T01:43:17.715Z"
     }
    ],
    "approvals": [],
@@ -157191,7 +157207,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
