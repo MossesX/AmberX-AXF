@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3831,
- "updatedAt": "2026-11-12T23:32:24.977Z",
+ "rev": 3832,
+ "updatedAt": "2026-11-12T23:32:34.601Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174138,7 +174138,7 @@
    "pr": "#532",
    "priority": "P0",
    "createdAt": "2026-11-12T22:16:05.972Z",
-   "updatedAt": "2026-11-12T23:31:56.565Z",
+   "updatedAt": "2026-11-12T23:32:29.391Z",
    "builtAt": "",
    "notes": [
     {
@@ -174176,6 +174176,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-conflicts-and-land-build-plan-1-skins-one-ro--joey, own login copy)",
      "at": "2026-11-12T23:30:25.728Z"
+    },
+    {
+     "text": "s2 not done. #505 was closed and its branch deleted at 22:24 UTC (by the MossesX account, still a draft). Reopened as draft PR #532, same commit f7e770329. Theme, controls, toolbars and chrome-assets checks pass; Light PR checks pass; it is MERGEABLE. It can't land yet because it's a draft with no UI Review shots: headless shots can't sign in to axHub (401) and there's no local hub on :18080. To land it, either: (1) take desktop and phone shots of Build orchestrator (any tab), Settings > Appearance (Assets with edits) and the banner right-click Skins menu, then run review.mjs submit --pr 532; or (2) approve without shots and mark #532 ready. If #505 was closed on purpose, close #532 too.",
+     "at": "2026-11-12T23:32:29.391Z"
     }
    ],
    "approvals": [],
@@ -174274,7 +174278,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
