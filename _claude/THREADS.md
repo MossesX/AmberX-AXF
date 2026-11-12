@@ -776,12 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 21:48 UTC · `no-veto-timer-on-navigation-follow-amber-open-x` note (all) · orchestrator
-- 2026-11-10 21:48 UTC · `asset-overrides-changed-asset-settings-override` note (all) · orchestrator
-- 2026-11-10 21:48 UTC · `convert-every-app-into-a-molly-module-expenses-c` → running, note (all) · pipeline
-- 2026-11-10 21:48 UTC · `convert-every-app-into-a-molly-module-expenses-c` note (all) · orchestrator
-- 2026-11-10 21:48 UTC · `convert-every-app-into-a-molly-module-expenses-c` note (all) · orchestrator
-- 2026-11-10 21:49 UTC · `molly-sign-in-once` → running, note (all) · pipeline
 - 2026-11-10 21:49 UTC · `molly-sign-in-once` branch claude/molly-sign-in-once (all) · pipeline
 - 2026-11-10 21:49 UTC · `molly-sign-in-once` note (all) · orchestrator
 - 2026-11-10 21:49 UTC · `convert-every-app-into-a-molly-module-expenses-c` note (all) · orchestrator
@@ -1176,6 +1170,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 01:51 UTC · `fix-axhub-36-pull-main-in-failed` branch claude/fix-axhub-36-pull-main-in-failed (all) · pipeline
 - 2026-11-12 01:51 UTC · `fix-axhub-36-pull-main-in-failed` note (all) · orchestrator
 - 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s1 done, → running (all) · orchestrator
+- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s2 done (all) · orchestrator
+- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s3 done (all) · orchestrator
+- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s4 done (all) · orchestrator
+- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s5 done (all) · orchestrator
+- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s6 done (all) · orchestrator
+- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s7 done (all) · orchestrator
 
 ## Token passes (log)
 
