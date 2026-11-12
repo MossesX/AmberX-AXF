@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:40 UTC · `shipped-manifest-api` PR #402, note (all) · reconciler
 - 2026-11-12 03:40 UTC · `land-batch-1` PR #339, note (all) · reconciler
 - 2026-11-12 03:40 UTC · `maintenance-plugin-acct2` PR #332, note (all) · reconciler
 - 2026-11-12 03:40 UTC · `window-resize-fix-threads` PR #279, note (all) · reconciler
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 23:17 UTC · `move-amberx-web-app-into-the-console-amberx-andr` s14 done, → built (all) · orchestrator
 - 2026-11-12 23:17 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · orchestrator
 - 2026-11-12 23:18 UTC · `move-amberx-web-app-into-the-console-amberx-andr` s14 done, → built (all) · foreign-write
+- 2026-11-12 23:18 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · orchestrator
 
 ## Token passes (log)
 
