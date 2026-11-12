@@ -1777,3 +1777,8 @@ One line per veto pass grant, change made under it, revoke, undo and end (Token 
 - Checks: `npx -y tsx framework/spec/check-tab-group.mts`, `check-chrome-settings.mts`, `check-customize.mts`, `check-settings-ui.mts`; `node framework/cli/chrome-settings.mjs check`, `check-chrome-assets.mjs`, `check-theme.mjs`, `check-controls.mjs`, `check-toolbars.mjs`, `axf.mjs validate --framework`.
 - Waits on: nothing from Brett (UI Review shots are non-blocking for this build).
 - First message to carry on: "Carry on tab-group-assets from the typecheck step on branch claude/tab-group-assets (see THREADS.md To carry on)."
+
+### Molly gap: Molly's own actions reachable remotely (`molly-gap-remote-actions`, Current, Fable s1 / Opus s2-s3) — branch `claude/molly-gap-remote-actions`
+- Asked (verbatim): "Standalone apps keep working until Molly covers them; list gaps as pending builds."
+- Done: everything in the report `_claude/builds/reports/molly-gap-remote-actions.md`. Molly plugin `remote-commands` puts Molly on the console-commands relay as app `molly`; `to: molly` across REST, MCP, CLI, AmberX. Checks: `console-commands/test.mjs`, `plugin-commands/test.mjs`, `npx tsx framework/spec/check-console-commands.mts`, `plugin-commands.mjs check`, `AXF_PLUGINS_DIR=apps/molly/plugins node framework/cli/plugin-lifecycle.mjs check remote-commands`, `check-theme.mjs`, `check-controls.mjs`, Molly `tsc --noEmit`.
+- Left: UI Review shots of Molly Settings → Plugins → Remote commands (desktop + phone) need a session that can reach axHub (local Molly stops at "Waiting for axHub"); merge queue lands PR #502; then molly-sign-in-once s2 can close its screen. Open gap: `molly-gap-console-token-handoff`.
