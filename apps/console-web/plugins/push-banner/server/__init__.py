@@ -804,6 +804,14 @@ class Pushes:
             return "unknown"
         return str(st.get("state") or "waiting") if st.get("holds") else ""
 
+    def gate(self, repo: str, number: int, sha: str) -> dict[str, Any]:
+        """May GitHub merge PR <number> (head <sha>) into main? The main gate's answer, judged from this checkout when
+        it has the commit, from GitHub alone when it doesn't (axHub). One that can't run refuses."""
+        try:
+            return _gate("check", sha, "--merge", "--github", "--repo", str(cx.ROOT), "--slug", repo, "--source", f"console merge #{number}", timeout=900)
+        except HTTPException as e:
+            return {"allow": False, "why": f"the main gate couldn't run ({_text(e.detail, 200)})"}
+
     def merge(self, body: Any, wait_ui: bool = True) -> dict[str, Any]:
         if not isinstance(body, dict) or set(body) - {"repo", "number", "confirm"}:
             raise HTTPException(400, "send {repo, number, confirm}")
@@ -848,6 +856,12 @@ class Pushes:
                 raise HTTPException(409, "its CI failed" + self._hand({**task, "failure": "CI failed on its head commit"}))
             if ci != "success":
                 raise HTTPException(409, {"running": "its CI is still running", "none": "it has no CI result yet"}.get(ci, "its CI isn't green"))
+            if pbase == "main":
+                # the main gate (framework/cli/main-gate.mjs) decides first: full CI on this code, theme + controls on its
+                # tree, or the owner's override; a refusal is logged there and sent to AmberX
+                g = self.gate(repo, number, sha)
+                if not g.get("allow"):
+                    raise HTTPException(409, f"main gate refused it: {_text(g.get('why'), 300)}")
             r = gh.json("PUT", github.repo_path(repo, "pulls", number, "merge"), {"merge_method": "merge", "sha": sha})
         except github.GitHubError as e:
             hand = self._hand({**task, "failure": f"GitHub refused the merge: {_text(str(e), 160)}"}) if "task" in locals() and getattr(e, "status", 0) in (405, 409, 422) else ""
@@ -1440,10 +1454,10 @@ def main_gate_dir() -> Path:
     return data_dir().parent.parent / "main-gate"
 
 
-def _gate(*args: str, stdin: dict[str, Any] | None = None) -> dict[str, Any]:
+def _gate(*args: str, stdin: dict[str, Any] | None = None, timeout: int = 30) -> dict[str, Any]:
     try:
         r = subprocess.run(["node", str(MAIN_GATE), *args, "--json", "--dir", str(main_gate_dir())], input=json.dumps(stdin) if stdin is not None else None,
-                           capture_output=True, text=True, timeout=30, cwd=str(cx.ROOT))
+                           capture_output=True, text=True, timeout=timeout, cwd=str(cx.ROOT))
     except (OSError, subprocess.TimeoutExpired) as e:
         raise HTTPException(502, _text(str(e))) from None
     out = r.stdout.strip().splitlines()

@@ -8,7 +8,7 @@ import { createServer } from 'node:http';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { ciVerdict, decide, install, overrideActive, readLog, rulesetBody, setOverride, state, statusOnly, uninstall } from '../cli/main-gate.mjs';
+import { check, ciVerdict, decide, install, overrideActive, readLog, rulesetBody, setOverride, state, statusOnly, uninstall } from '../cli/main-gate.mjs';
 
 let n = 0;
 const t = async (name, fn) => { await fn(); n++; console.log(`ok ${name}`); };
@@ -70,10 +70,19 @@ await t('GitHub ruleset: no delete, no force-push, a PR, required checks up to d
 // ------------------------------------------------------------------ the real hook: real git, fake GitHub
 
 const ci = {}; // sha → runs
+const remote = { compare: {}, back: {}, contents: false }; // GitHub-only repo (no clone here): main...sha, sha...main
 const server = createServer((req, res) => {
+  const send = (code, v) => { res.writeHead(code, { 'Content-Type': 'application/json' }); res.end(JSON.stringify(v)); };
   const m = req.url.match(/\/commits\/([0-9a-f]{40})\/check-runs/);
-  res.writeHead(200, { 'Content-Type': 'application/json' });
-  res.end(JSON.stringify({ check_runs: m ? ci[m[1]] || [] : [] }));
+  if (m) return send(200, { check_runs: ci[m[1]] || [] });
+  const c = req.url.match(/\/commits\/([0-9a-f]{40})$/);
+  if (c) return send(200, { sha: c[1] });
+  const cm = req.url.match(/\/compare\/main\.\.\.([0-9a-f]{40})$/);
+  if (cm) return remote.compare[cm[1]] ? send(200, remote.compare[cm[1]]) : send(404, { message: 'Not Found' });
+  const cb = req.url.match(/\/compare\/([0-9a-f]{40})\.\.\.main$/);
+  if (cb) return send(200, remote.back[cb[1]] || { files: [] });
+  if (/\/contents\//.test(req.url)) return remote.contents ? send(200, {}) : send(404, { message: 'Not Found' });
+  return send(200, {});
 });
 await new Promise((r) => server.listen(0, '127.0.0.1', r));
 const api = `http://127.0.0.1:${server.address().port}`;
@@ -157,6 +166,30 @@ await t('force-push and delete are refused, override or not', async () => {
   assert.notEqual((await push('origin', '--delete', 'main')).code, 0);
   assert.equal(main(), before);
   setOverride(dir, { on: false, by: 'test' });
+});
+
+await t('a PR merged on GitHub with no clone here: judged from GitHub alone', async () => {
+  const o = { repo, slug: 'o/hub', api, token: 'test', dir, console: 'off', github: true, merge: true, source: 'console merge' };
+  const red = 'a'.repeat(40); const green = 'b'.repeat(40); const behind = 'c'.repeat(40); const status = 'd'.repeat(40);
+  remote.compare[red] = { status: 'ahead', base_commit: { sha: 'f'.repeat(40) }, files: [{ filename: 'src/app.ts' }] };
+  ci[red] = [run('build', 'failure')];
+  let r = await check(o, red);
+  assert.equal(r.allow, false); assert.match(r.why, /CI failed: build/);
+  assert.equal(readLog(dir, { refusals: true }).at(-1).sha, red);
+  remote.compare[green] = { ...remote.compare[red] }; ci[green] = [run('build', 'success')];
+  assert.equal((await check(o, green)).allow, true);
+  remote.contents = true; // a repo that carries check-theme / check-controls can't be judged without its tree
+  r = await check(o, green); assert.equal(r.allow, false); assert.match(r.why, /merge queue/);
+  remote.contents = false;
+  remote.compare[behind] = { status: 'diverged', base_commit: { sha: 'f'.repeat(40) }, merge_base_commit: { sha: 'e'.repeat(40) }, files: [{ filename: 'src/app.ts' }] };
+  ci[behind] = [run('build', 'success')];
+  remote.back[behind] = { files: [{ filename: 'src/other.ts' }] };
+  r = await check(o, behind); assert.equal(r.allow, false); assert.match(r.why, /fast-forward/);
+  remote.back[behind] = { files: [{ filename: '_claude/builds/store.json' }] };
+  assert.equal((await check(o, behind)).allow, true, 'main ahead in status only: GitHub may merge it');
+  remote.compare[status] = { status: 'ahead', base_commit: { sha: 'f'.repeat(40) }, files: [{ filename: '_claude/builds/store.json' }] };
+  assert.equal((await check(o, status)).via, 'status');
+  r = await check(o, '9'.repeat(40)); assert.equal(r.allow, false); assert.match(r.why, /couldn't compare/);
 });
 
 await t('uninstall removes only its own hook', () => {

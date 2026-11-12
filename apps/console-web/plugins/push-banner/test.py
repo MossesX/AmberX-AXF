@@ -168,6 +168,8 @@ from fastapi.testclient import TestClient  # noqa: E402
 
 clock = {"t": 1_000_000.0}
 mod.PUSHES.clock = lambda: clock["t"]
+GATE = {"allow": True, "why": "CI passed (2 jobs)", "asked": []}  # the main gate (framework/cli/main-gate.mjs; own spec)
+mod.PUSHES.gate = lambda repo, number, sha: (GATE["asked"].append((repo, number, sha)), {"allow": GATE["allow"], "why": GATE["why"]})[1]
 app = FastAPI()
 app.include_router(mod.router, prefix="/p")
 c = TestClient(app)
@@ -348,6 +350,12 @@ m = c.post("/p/merge", json={"repo": "MossesX/AmberX-AXF", "number": 18, "confir
 check(m.status_code == 409, "no merge when GitHub can't merge it (conflicts)")
 STATE["mergeable"] = True
 check(not STATE["merged"], "nothing merged so far")
+GATE.update(allow=False, why="only the light PR checks ran on this commit")
+m = c.post("/p/merge", json={"repo": "MossesX/AmberX-AXF", "number": 18, "confirm": "MossesX/AmberX-AXF#18"})
+check(m.status_code == 409 and "main gate refused it: only the light PR checks" in m.json()["detail"] and not STATE["merged"],
+      "green on GitHub but the main gate refuses: nothing merged")
+check(GATE["asked"][-1] == ("MossesX/AmberX-AXF", 18, "aaa111"), "the gate is asked about the exact head that merges")
+GATE.update(allow=True, why="CI passed (2 jobs)")
 m = c.post("/p/merge", json={"repo": "MossesX/AmberX-AXF", "number": 18, "confirm": "MossesX/AmberX-AXF#18"}).json()
 path, body = STATE["merged"][-1]
 check(m["merged"] is True and path == R + "/pulls/18/merge", "green + mergeable: merged through the PR")
@@ -740,4 +748,29 @@ STATE["bsha"]["feat/a"] = "feat/a-sha2"
 n3 = cmp_n(); mod.PUSHES._forget(); mod.PUSHES.branches(force=True)
 check(cmp_n() == n3 + 1, "one branch got a commit: only it is compared again")
 del STATE["bsha"]
+# ---------------------------------------------------------------- main gate REST (0.9.0): the real main-gate.mjs, a temp gate folder
+GDIR = Path(tempfile.mkdtemp(prefix="axf-main-gate-test-"))
+mod.main_gate_dir = lambda: GDIR
+os.environ["AXF_MAIN_GATE_CONSOLE"] = "off"  # no FYIs from a test
+g = c.get("/p/main-gate").json()
+check(g["$axf"] == "main-gate@1" and g["override"]["on"] is False, "main gate: the override is off by default")
+r = c.put("/p/main-gate/override", json={"on": True, "minutes": 10, "reason": "test"})
+check(r.status_code == 403 and "owner only" in r.json()["detail"], "override on without Brett's session (token, MCP, voice): refused")
+check(c.get("/p/main-gate").json()["override"]["on"] is False, "…and it stays off")
+
+
+class FakeControl:
+    def owner(self, request): return {"name": "Brett"}
+
+
+plugin_services.provide("control@1", FakeControl(), "fake-control")
+r = c.put("/p/main-gate/override", json={"on": True, "minutes": 500, "reason": "test"})
+check(r.status_code == 400 and "1 to 120" in r.json()["detail"], "override: 1 to 120 minutes")
+r = c.put("/p/main-gate/override", json={"on": True, "minutes": 10, "reason": "hotfix"})
+check(r.status_code == 200 and c.get("/p/main-gate").json()["override"]["on"] is True, "override on from the owner's console")
+plugin_services.withdraw("fake-control")
+check(c.put("/p/main-gate/override", json={"on": False}).status_code == 200 and c.get("/p/main-gate").json()["override"]["on"] is False,
+      "override off: anyone (it only tightens)")
+log = c.get("/p/main-gate/log").json()["rows"]
+check([x["via"] for x in log] == ["override-on", "override-off"], "every override use is in the gate's log")
 print(f"push-banner: {ok} checks passed")

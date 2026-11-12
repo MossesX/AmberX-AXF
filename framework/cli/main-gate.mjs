@@ -19,7 +19,8 @@
  * Every refusal is logged (decisions.jsonl in the gate folder) and sent to AmberX as an FYI.
  *
  *   node framework/cli/main-gate.mjs check <sha> [--merge] [--repo <dir>] [--slug <owner/repo>] [--json]   may <sha> become main?
- *                                                     (--merge: GitHub merges it, so main may be ahead in status only)
+ *                                                     (--merge: GitHub merges it, so main may be ahead in status only;
+ *                                                      --github: a commit with no clone here is judged from GitHub alone)
  *   node framework/cli/main-gate.mjs push <sha> [--repo <dir>] [--remote origin]                   check, then push it to main
  *   node framework/cli/main-gate.mjs hook <remote> <url>                                           git pre-push hook (stdin)
  *   node framework/cli/main-gate.mjs state | log [--refusals] [--limit n]                         what the gate did
@@ -56,7 +57,7 @@ const APPROVAL_TTL_MS = 15 * 60000;
 const ZERO = /^0{40}$/;
 const HOOK_MARK = '# axf main gate';
 
-// ------------------------------------------------------------------ pure rules (tested in main-gate.test.mjs)
+// ------------------------------------------------------------------ pure rules (tested in framework/spec/check-main-gate.mjs)
 
 /** Every file under a status prefix (an empty change counts as status only). */
 export const statusOnly = (files) => (files || []).map((f) => String(f || '').trim()).filter(Boolean)
@@ -220,16 +221,50 @@ const approvalFile = (dir, sha) => join(dir, 'approved', sha);
  * May <sha> become main? Gathers the facts, decides, logs, and on a refusal sends AmberX an FYI.
  * o: { repo, slug, api, dir, console, remote, source, from (the main it replaces; default the remote main) }.
  */
+/**
+ * The facts from GitHub alone, for a repo with no clone here (the console's PR merge of axHub): the compare API gives
+ * fast-forward and the changed files, check runs give CI. The asset checks need the tree: a repo that carries them is
+ * refused here (it lands through the merge queue on its clone); one without them has none to run.
+ */
+async function remoteFacts(o, sha, facts) {
+  const files = (c) => (c?.files || []).map((f) => f.filename);
+  const full = String((await gh(o, 'GET', `/repos/${o.slug}/commits/${sha}`))?.sha || '');
+  if (!full) return { full: '', from: '' };
+  const cmp = await gh(o, 'GET', `/repos/${o.slug}/compare/${BASE}...${full}`);
+  let from = String(cmp?.base_commit?.sha || '');
+  facts.fastForward = cmp.status === 'ahead' || cmp.status === 'identical';
+  if (!facts.fastForward && o.merge && cmp.status === 'diverged') {
+    const back = await gh(o, 'GET', `/repos/${o.slug}/compare/${sha}...${BASE}`); // what main has that <sha> lacks
+    if (statusOnly(files(back)) && (back?.files || []).length < 300) { facts.fastForward = true; from = String(cmp?.merge_base_commit?.sha || from); }
+  }
+  // the compare API lists at most 300 files: more than that is never called status only
+  facts.statusOnly = (cmp?.files || []).length < 300 && statusOnly(files(cmp));
+  facts.files = (cmp?.files || []).length;
+  if (facts.fastForward && !facts.statusOnly) {
+    let runs; try { runs = (await gh(o, 'GET', `/repos/${o.slug}/commits/${full}/check-runs?per_page=100`))?.check_runs || []; } catch (e) { runs = null; facts.ci = { ok: false, state: 'error', why: `couldn't read CI (${e.message.slice(0, 160)})` }; }
+    if (runs) facts.ci = ciVerdict(runs);
+    facts.local = [];
+    for (const c of LOCAL_CHECKS) {
+      try { await gh(o, 'GET', `/repos/${o.slug}/contents/${c.file}?ref=${full}`); facts.local.push({ id: c.id, ok: false, why: 'this repo carries the asset checks and has no clone here: it lands through the merge queue' }); }
+      catch (e) { if (e.status !== 404) facts.local.push({ id: c.id, ok: false, why: `couldn't look for ${c.file} (${e.message.slice(0, 120)})` }); }
+    }
+  }
+  return { full, from };
+}
+
 export async function check(o, sha) {
   const git = makeGit(o.repo);
   const remote = o.remote || 'origin';
-  const full = git(['rev-parse', '--verify', '-q', `${sha}^{commit}`]).out;
+  let full = git(['rev-parse', '--verify', '-q', `${sha}^{commit}`]).out;
   const at = new Date().toISOString();
   const dir = o.dir;
   const override = readJson(join(dir, 'override.json'), null);
   const facts = { deleting: ZERO.test(sha || ''), fastForward: false, statusOnly: false, ci: null, local: null, override };
   let from = o.from;
-  if (!facts.deleting) {
+  if (!facts.deleting && !full && o.github) {
+    try { ({ full, from } = await remoteFacts(o, sha, facts)); } catch (e) { full = ''; facts.githubError = e.message.slice(0, 200); }
+    if (!full) facts.missing = true;
+  } else if (!facts.deleting) {
     if (!full) facts.missing = true;
     if (!from || ZERO.test(from)) { git(['fetch', '-q', remote, BASE], { timeout: 120000 }); from = git(['rev-parse', '-q', '--verify', `refs/remotes/${remote}/${BASE}`]).out; }
     facts.fastForward = !!full && (!from || git(['merge-base', '--is-ancestor', from, full]).code === 0);
@@ -249,7 +284,7 @@ export async function check(o, sha) {
       facts.local = localChecks(git, full);
     }
   }
-  const d = facts.missing ? { allow: false, via: 'refused', why: `${sha} is not a commit here` } : decide(facts);
+  const d = facts.missing ? { allow: false, via: 'refused', why: facts.githubError ? `GitHub couldn't compare ${sha} with main (${facts.githubError})` : `${sha} is not a commit here` } : decide(facts);
   const rec = { $axf: GATE_FRAME, at, sha: full || sha, from: from || '', slug: o.slug, source: o.source || 'check', ...d, ci: facts.ci, local: facts.local, statusOnly: facts.statusOnly, cached: !!facts.cached };
   if (!(d.via === 'status' && facts.statusOnly)) { // status pushes are many a minute: only code decisions are logged
     mkdirSync(dir, { recursive: true });
@@ -426,10 +461,11 @@ function opts(argv) {
     repo: top, slug: argOf(argv, 'slug') || process.env.AXF_MAIN_GATE_SLUG || slugOf(git), remote: argOf(argv, 'remote', 'origin'),
     api: argOf(argv, 'api') || process.env.AXF_MAIN_GATE_API || 'https://api.github.com', dir: gateDir(argv),
     console: argOf(argv, 'console') || undefined, source: argOf(argv, 'source') || undefined, merge: argv.includes('--merge'),
+    github: argv.includes('--github'),
   };
 }
 
-const BARE_FLAGS = ['--json', '--dry-run', '--refusals', '--stdin', '--merge'];
+const BARE_FLAGS = ['--json', '--dry-run', '--refusals', '--stdin', '--merge', '--github'];
 const readStdin = () => { try { return readFileSync(0, 'utf8'); } catch { return ''; } };
 
 export async function main(argv) {
