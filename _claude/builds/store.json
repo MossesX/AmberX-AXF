@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3627,
- "updatedAt": "2026-11-12T18:40:43.020Z",
+ "rev": 3628,
+ "updatedAt": "2026-11-12T18:41:04.429Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -27421,7 +27421,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -91123,7 +91129,13 @@
     "splitRequested": "",
     "note": "Session on mossesx-max- stopped on its own with 2 steps left: back in Pending for Brett.",
     "route": "",
-    "dispatchedAt": "2026-11-10T23:44:06.945Z"
+    "dispatchedAt": "2026-11-10T23:44:06.945Z",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -120603,7 +120615,13 @@
     "splitRequested": "",
     "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
-    "dispatchedAt": "2026-11-12T01:44:38.113Z"
+    "dispatchedAt": "2026-11-12T01:44:38.113Z",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-molly-native-expenses",
@@ -120867,7 +120885,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T23:13:17.993Z"
+    "dispatchedAt": "2026-11-10T23:13:17.993Z",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -121250,7 +121274,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-12T03:13:32.895Z"
+    "dispatchedAt": "2026-11-12T03:13:32.895Z",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -134984,7 +135014,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -137770,7 +137806,7 @@
    "pr": "#446",
    "priority": "P1",
    "createdAt": "2026-11-10T00:21:59.738Z",
-   "updatedAt": "2026-11-12T18:40:40.962Z",
+   "updatedAt": "2026-11-12T18:41:01.378Z",
    "builtAt": "2026-11-12T18:40:40.962Z",
    "notes": [
     {
@@ -137840,6 +137876,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skins-as-packages-of-slices-every-section-its-ow--earl, own login copy)",
      "at": "2026-11-12T18:36:11.873Z"
+    },
+    {
+     "text": "Headless run axf-skins-as-packages-of-slices-every-section-its-ow--earl: brief only · start 11.6K tokens ($0.03) · cost $0.75 · 29 turns · 6 tools, MCP none",
+     "at": "2026-11-12T18:41:01.378Z"
     }
    ],
    "approvals": [
@@ -137879,7 +137919,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -137960,7 +138006,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -144200,7 +144246,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-11T23:25:08.702Z"
+    "dispatchedAt": "2026-11-11T23:25:08.702Z",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -150272,7 +150324,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -152471,7 +152529,13 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -152679,7 +152743,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-land-all-97-built-but-unmerged-builds-skins-firs",
@@ -153211,7 +153281,13 @@
     "splitRequested": "",
     "note": "Session on mossesx-max- ended (exit 1) with 3 steps left: back in the Queue (run 1).",
     "route": "",
-    "dispatchedAt": "2026-11-12T01:47:27.720Z"
+    "dispatchedAt": "2026-11-12T01:47:27.720Z",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -153390,7 +153466,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -153588,7 +153670,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-12T02:22:11.770Z"
+    "dispatchedAt": "2026-11-12T02:22:11.770Z",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -153790,7 +153878,13 @@
     "splitRequested": "",
     "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
-    "dispatchedAt": "2026-11-12T01:44:52.810Z"
+    "dispatchedAt": "2026-11-12T01:44:52.810Z",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -154001,7 +154095,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -154215,7 +154315,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T23:23:12.403Z"
+    "dispatchedAt": "2026-11-10T23:23:12.403Z",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -154433,7 +154539,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T23:21:13.313Z"
+    "dispatchedAt": "2026-11-10T23:21:13.313Z",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -154652,7 +154764,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -154874,7 +154992,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T23:26:11.877Z"
+    "dispatchedAt": "2026-11-10T23:26:11.877Z",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -155096,7 +155220,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-12T02:18:11.326Z"
+    "dispatchedAt": "2026-11-12T02:18:11.326Z",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -155319,7 +155449,13 @@
     "splitRequested": "",
     "note": "Session on mossesx-max- ended (exit 0) with 2 steps left: back in the Queue (run 2).",
     "route": "",
-    "dispatchedAt": "2026-11-12T01:55:14.610Z"
+    "dispatchedAt": "2026-11-12T01:55:14.610Z",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -155966,7 +156102,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T23:37:53.361Z"
+    "dispatchedAt": "2026-11-10T23:37:53.361Z",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -156739,7 +156881,13 @@
     "splitRequested": "",
     "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
-    "dispatchedAt": "2026-11-12T01:45:51.956Z"
+    "dispatchedAt": "2026-11-12T01:45:51.956Z",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -156909,7 +157057,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -157130,7 +157284,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-12T03:13:21.437Z"
+    "dispatchedAt": "2026-11-12T03:13:21.437Z",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -157364,7 +157524,13 @@
     "splitRequested": "",
     "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
-    "dispatchedAt": "2026-11-12T01:54:08.639Z"
+    "dispatchedAt": "2026-11-12T01:54:08.639Z",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -157541,7 +157707,13 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -157733,7 +157905,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-10T23:38:03.674Z"
+    "dispatchedAt": "2026-11-10T23:38:03.674Z",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -157982,7 +158160,13 @@
     "splitRequested": "",
     "note": "Session on mossesx-max- ended (exit 0) with 2 steps left: back in the Queue (run 1).",
     "route": "",
-    "dispatchedAt": "2026-11-11T00:16:07.794Z"
+    "dispatchedAt": "2026-11-11T00:16:07.794Z",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -158163,7 +158347,13 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -158351,7 +158541,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-11T00:08:16.721Z"
+    "dispatchedAt": "2026-11-11T00:08:16.721Z",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -158528,7 +158724,13 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -158884,7 +159086,13 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -159590,7 +159798,13 @@
     "splitRequested": "",
     "note": "Session on account-5 stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "",
-    "dispatchedAt": "2026-11-12T02:00:37.730Z"
+    "dispatchedAt": "2026-11-12T02:00:37.730Z",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -159773,7 +159987,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -159980,7 +160200,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-12T02:50:14.085Z"
+    "dispatchedAt": "2026-11-12T02:50:14.085Z",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -160278,7 +160504,13 @@
     "splitRequested": "",
     "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
-    "dispatchedAt": "2026-11-12T02:16:25.728Z"
+    "dispatchedAt": "2026-11-12T02:16:25.728Z",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -160465,7 +160697,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -160682,7 +160920,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -161063,7 +161307,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -161276,7 +161526,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -161565,7 +161821,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-12T03:05:28.144Z"
+    "dispatchedAt": "2026-11-12T03:05:28.144Z",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -161778,7 +162040,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -168586,7 +168854,13 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -168789,7 +169063,13 @@
     "splitRequested": "",
     "note": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "",
-    "dispatchedAt": "2026-11-12T11:08:09.491Z"
+    "dispatchedAt": "2026-11-12T11:08:09.491Z",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -168961,7 +169241,13 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -169137,7 +169423,13 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -169309,7 +169601,13 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -169481,7 +169779,13 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -169951,7 +170255,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -170217,7 +170527,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-12T18:07:11.653Z"
+    "dispatchedAt": "2026-11-12T18:07:11.653Z",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -170348,7 +170664,13 @@
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -170602,7 +170924,13 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-12T18:34:38.750Z"
+    "dispatchedAt": "2026-11-12T18:34:38.750Z",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -170743,7 +171071,13 @@
     "splitRequested": "",
     "note": "waiting for the split before it can start",
     "route": "",
-    "dispatchedAt": ""
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [

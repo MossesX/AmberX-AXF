@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T18:40:43.020Z",
+ "updatedAt": "2026-11-12T18:41:04.429Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -89292,7 +89292,7 @@
    "pr": "#446",
    "priority": "P1",
    "createdAt": "2026-11-10T00:21:59.738Z",
-   "updatedAt": "2026-11-12T18:40:40.962Z",
+   "updatedAt": "2026-11-12T18:41:01.378Z",
    "builtAt": "2026-11-12T18:40:40.962Z",
    "notes": [
     {
@@ -89362,6 +89362,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skins-as-packages-of-slices-every-section-its-ow--earl, own login copy)",
      "at": "2026-11-12T18:36:11.873Z"
+    },
+    {
+     "text": "Headless run axf-skins-as-packages-of-slices-every-section-its-ow--earl: brief only · start 11.6K tokens ($0.03) · cost $0.75 · 29 turns · 6 tools, MCP none",
+     "at": "2026-11-12T18:41:01.378Z"
     }
    ],
    "approvals": [
