@@ -3,3 +3,8 @@
 .axf-cc__row { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs) var(--fx-dens-gap-2xl); padding: var(--fx-dens-gap-xs) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); }
 .axf-cc__id { font-family: var(--fx-font-mono); font-weight: 600; }
 .axf-cc__muted { color: var(--fx-muted); }
+
+/* Open a page on the phone (s8): layout only. */
+.axp-console-commands__openurl { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); }
+.axp-console-commands__row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-sm); min-width: 0; }
+.axp-console-commands__grow { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }

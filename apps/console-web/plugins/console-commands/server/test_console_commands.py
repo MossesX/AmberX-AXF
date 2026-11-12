@@ -214,7 +214,7 @@ eq(j["delivery"]["how"], "live", "a live console: delivery live")
 
 # ======================================================================== console wake: no console connected
 client.post("/api/console/bye", json={"client": "desk-0001"})
-eq(client.get("/api/console/settings").json()["settings"], {"wake": True, "ttlS": 120, "browser": "chrome"}, "default settings: wake on, 2 minutes, Chrome")
+eq(client.get("/api/console/settings").json()["settings"], {"wake": True, "ttlS": 120, "browser": "chrome", "openUrlNotifyWhenBlocked": True, "openUrlViaHub": True}, "default settings: wake on, 2 minutes, Chrome, open_url through axHub")
 
 # a wrong name answers at once (checked against the last catalog the console sent), nothing queued, nobody woken
 r = client.post("/api/console/open", json={"screen": "spreadsheet"})
@@ -259,7 +259,7 @@ time.sleep(0.4)
 eq(len(WOKEN), 1, "no wake when a console came back in time")
 
 # wake off: queued, nobody woken; the call gives up waiting with queued (still delivered later)
-eq(client.post("/api/console/settings", json={"wake": False, "ttlS": 5, "browser": "default"}).json()["settings"], {"wake": False, "ttlS": 30, "browser": "default"}, "settings saved, TTL clamped to 30 s")
+eq(client.post("/api/console/settings", json={"wake": False, "ttlS": 5, "browser": "default"}).json()["settings"], {"wake": False, "ttlS": 30, "browser": "default", "openUrlNotifyWhenBlocked": True, "openUrlViaHub": True}, "settings saved, TTL clamped to 30 s")
 eq(client.post("/api/console/settings", json={"wake": True}, headers={"x-user": "sam"}).status_code, 403, "only the owner changes them")
 client.post("/api/console/bye", json={"client": "woke-0001"})
 r = cc.run({"op": "act", "target": "console.screens", "path": "plan studio", "action": "open"}, ["*"], "Amber", cc.OWNER, wait=cc.WAKE_AFTER_S + 0.5)
@@ -466,6 +466,32 @@ j = client.post("/api/console/open", json={"screen": "build-orchestrator pending
 eq((awake_got[-1]["target"], awake_got[-1].get("focus"), j.get("focus")), ("build-orchestrator", "pending", "pending"), "screen + tab")
 j = svc.run({"op": "act", "target": "console.screens", "path": "build-orchestrator", "action": "open", "input": {"focus": "queue"}}, ["*"], "mcp")
 eq(awake_got[-1].get("focus"), "queue", "input.focus")
+
+# ---- open_url on the console (s8): the phone's URL rule, axHub delivery, the phone's own pick-up, cancel, history
+for bad, why in [("http://console.amberxai.com/", "https"), ("https://evil.example/", "own sites"), ("https://a:b@console.amberxai.com/", "user name"),
+                 ("https://console.amberxai.com:8443/", "port"), ("https://amberxai.com.evil.example/", "own sites"), ("https://console.amberxai.com/" + "x" * 2001, "too long")]:
+    r = client.post("/api/console/open-url", json={"url": bad})
+    ok(r.status_code == 400 and r.json()["state"] == "refused" and why in r.json()["reason"], f"refused {bad[:40]}: {r.json()}")
+ok(client.post("/api/console/open-url", json={"url": "https://console.amberxai.com/"}, headers={"x-user": "sam"}).status_code == 403, "only the owner sends")
+WOKEN.clear()
+r = client.post("/api/console/open-url", json={"url": "https://console.amberxai.com/?axf-cmd=x", "browser": "default"}).json()
+ok(r["ok"] and r["via"] == "axhub" and r["state"] == "sent" and WOKEN == [("https://console.amberxai.com/?axf-cmd=x", "default")], f"no phone picking: through axHub {r}")
+p = client.get("/api/console/open-url/pending?device=pixel").json()
+eq(p["items"], [], "nothing waiting for the phone")
+r = client.post("/api/console/open-url", json={"url": "https://amberxai.com/notes"}).json()
+ok(r["state"] == "queued" and r["via"] == "phone", "a phone picking up: queued for it")
+eq([i["id"] for i in client.get("/api/console/open-url/pending?device=pixel").json()["items"]], [r["id"]], "the phone sees it")
+a = client.post(f"/api/console/open-url/{r['id']}/answer", json={"opened": True}).json()
+eq(a["state"], "opened", "the phone's answer")
+q = client.post("/api/console/open-url", json={"url": "https://amberxai.com/later"}).json()
+eq(client.post(f"/api/console/open-url/{q['id']}/cancel").json()["state"], "cancelled", "cancel a queued URL")
+ok(client.post(f"/api/console/open-url/{r['id']}/cancel").json()["ok"] is False, "an opened URL can't be cancelled")
+eq(client.post("/api/console/open-url/nope/cancel").status_code, 404, "unknown id")
+h = client.get("/api/console/open-url").json()
+eq([i["state"] for i in h["items"]][:3], ["cancelled", "opened", "sent"], "history newest first")
+eq(client.get("/api/console/open-url?state=refused").json()["items"].__len__(), 6, "refused kept in the history")
+eq(client.get("/api/console/open-url?state=bogus").status_code, 400, "bad state")
+eq(client.post("/api/console/settings", json={"openUrlViaHub": False}).json()["settings"]["openUrlViaHub"], False, "settings: via hub off")
 
 print(f"✓ console commands server — {checks} checks", flush=True)
 os._exit(0)  # the fake consoles' streams are still open

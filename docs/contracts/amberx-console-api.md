@@ -247,6 +247,13 @@ stop call axHub's `amberx.recorder_start|stop` until s12's device stream. The sc
 Delivery: through the device stream (C36) when the phone is connected; through axHub's `amberx.open_url` (today's path,
 `wake.py`) when it is not, so the console wake (Nov 3 2026) keeps working during the switch.
 
+Built in s8 (Console commands plugin, `server/open_url.py`): C31 / C31a as above with the MCP names <!-- axf-plugin:console-commands -->
+`console-commands_open-url`, `console-commands_open-url-list`, `console-commands_open-url-cancel` (plugin-commands ids). <!-- axf-plugin:console-commands -->
+Until C36 the phone's pick-up is `GET open-url/pending?device=` and `POST open-url/{id}/answer {opened, notified, error?}`; <!-- axf-plugin:console-commands -->
+a phone that polled in the last 20 s gets the URL queued, otherwise it goes through axHub at once. Settings (the <!-- axf-plugin:console-commands -->
+plugin's own until s10 mirrors them as `openUrl.*`): `browser`, `openUrlViaHub`, `openUrlNotifyWhenBlocked`. The panel <!-- axf-plugin:console-commands -->
+"Open a page on the phone" is under Settings → Plugins → Console commands. <!-- axf-plugin:console-commands -->
+
 ### 4.8 Notifications
 
 The console's alerts hub (`server/alerts.py`, `alert@1`) already answers the phone (T17). It becomes the one notification feed:

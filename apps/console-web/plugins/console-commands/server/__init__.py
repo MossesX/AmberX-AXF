@@ -88,7 +88,7 @@ FALLBACK_KEY = "console:wake-fallback"
 WAKE_AGAIN_S = 45.0     # one wake per this long per user (Chrome takes a moment to open)
 CONSOLE_URL = (os.environ.get("AXF_CONSOLE_PUBLIC_URL") or "https://console.amberxai.com").rstrip("/")
 DATA_DIR = Path(os.environ.get("AXF_CONSOLE_COMMANDS_DATA_DIR") or ROOT / ".axf-console" / "plugins" / FOLDER)
-DEFAULTS: dict[str, Any] = {"wake": True, "ttlS": 120, "browser": "chrome"}
+DEFAULTS: dict[str, Any] = {"wake": True, "ttlS": 120, "browser": "chrome", "openUrlNotifyWhenBlocked": True, "openUrlViaHub": True}
 BROWSERS = ("chrome", "default")
 
 _lock = threading.Lock()
@@ -302,6 +302,9 @@ def clean_settings(raw: dict[str, Any]) -> dict[str, Any]:
         pass
     if raw.get("browser") in BROWSERS:
         out["browser"] = raw["browser"]
+    for k in ("openUrlNotifyWhenBlocked", "openUrlViaHub"):
+        if isinstance(raw.get(k), bool):
+            out[k] = raw[k]
     return out
 
 
@@ -988,3 +991,93 @@ class ConsoleCommands:
 
 
 plugin_services.provide("console-commands@1", ConsoleCommands(), folder=FOLDER)
+
+
+# ---------------------------------------------------------------------- open_url on the console (s8, contract C31)
+#
+#   POST open-url {url, browser?, to?}     send a page to the phone → {ok, id, state, reason?}; refused URLs are kept
+#                                          in the history as `refused` and answered 400
+#   GET  open-url?since=&state=&limit=     the history, newest first (queued, sent, opened, notified, refused, …)
+#   POST open-url/{id}/cancel              cancel a URL still queued
+#   GET  open-url/pending?device=          a phone's pick-up (s12): what it should open now
+#   POST open-url/{id}/answer {opened, notified, error?}   the phone's answer
+# Settings (GET|POST settings): browser (chrome | default), openUrlNotifyWhenBlocked, openUrlViaHub (send through
+# axHub's amberx.open_url when no phone picks it up).
+
+try:
+    from . import open_url as OU  # noqa: E402
+except ImportError:  # loaded as a single file (the plugin's own test)
+    import importlib.util as _ilu
+
+    _spec = _ilu.spec_from_file_location("console_commands_open_url", Path(__file__).with_name("open_url.py"))
+    OU = _ilu.module_from_spec(_spec)
+    assert _spec.loader is not None
+    _spec.loader.exec_module(OU)
+
+OPEN_URLS = OU.Store(lambda: DATA_DIR / "open-url.json")
+_pickers: dict[str, float] = {}  # device -> last pick-up
+
+
+def _phone_picking() -> bool:
+    return any(_now() - t < OU.PICKUP_S for t in _pickers.values())
+
+
+@router.post("/open-url")
+async def open_url_send(request: Request) -> JSONResponse:
+    _, name, audience = caller(request)
+    if audience != OWNER:
+        raise HTTPException(403, "only the console's owner sends pages to the phone")
+    b = await _body(request)
+    st = settings()
+    browser = b.get("browser") if b.get("browser") in OU.BROWSERS else st["browser"]
+    to = str(b.get("to") or "")[:80]
+    try:
+        url = OU.allowed(b.get("url"))
+    except ValueError as e:
+        item = OPEN_URLS.add(str(b.get("url") or "")[:OU.MAX_URL], browser, to, name)
+        OPEN_URLS.update(item["id"], state="refused", reason=str(e))
+        return JSONResponse({"ok": False, "id": item["id"], "state": "refused", "reason": str(e)}, status_code=400)
+    item = OPEN_URLS.add(url, browser, to, name)
+    if _phone_picking() or not st["openUrlViaHub"]:
+        return JSONResponse({"ok": True, "id": item["id"], "state": "queued", "via": "phone"})
+    r = await run_in_threadpool(WAKER, url, browser)
+    state = OU.outcome_state(r)
+    OPEN_URLS.update(item["id"], state=state, via="axhub", reason=str(r.get("message") or "")[:300])
+    return JSONResponse({"ok": bool(r.get("ok")), "id": item["id"], "state": state, "via": "axhub", "reason": r.get("message", "")})
+
+
+@router.get("/open-url")
+def open_url_list(since: int = 0, state: str = "", limit: int = 50) -> dict[str, Any]:
+    if state and state not in OU.STATES:
+        raise HTTPException(400, f"state is one of {', '.join(OU.STATES)}")
+    items = OPEN_URLS.listing(since, state, limit)
+    return {"ok": True, "items": items, "queued": len([i for i in items if i.get("state") == "queued"]), "phonePicking": _phone_picking()}
+
+
+@router.post("/open-url/{iid}/cancel")
+def open_url_cancel(iid: str, request: Request) -> dict[str, Any]:
+    _, _, audience = caller(request)
+    if audience != OWNER:
+        raise HTTPException(403, "only the console's owner cancels")
+    cur = OPEN_URLS.get(iid)
+    if cur is None:
+        raise HTTPException(404, f"no open-url {iid}")
+    if cur.get("state") != "queued":
+        return {"ok": False, "id": iid, "state": cur.get("state"), "reason": "only a queued URL can be cancelled; this one already went"}
+    return {"ok": True, **(OPEN_URLS.update(iid, state="cancelled") or {})}
+
+
+@router.get("/open-url/pending")
+def open_url_pending(device: str = "") -> dict[str, Any]:
+    dev = device[:80] or "phone"
+    _pickers[dev] = _now()
+    return {"ok": True, "items": OPEN_URLS.pending(dev), "notifyWhenBlocked": settings()["openUrlNotifyWhenBlocked"]}
+
+
+@router.post("/open-url/{iid}/answer")
+async def open_url_answer(iid: str, request: Request) -> dict[str, Any]:
+    b = await _body(request)
+    if OPEN_URLS.get(iid) is None:
+        raise HTTPException(404, f"no open-url {iid}")
+    r = {"ok": not b.get("error"), "opened": b.get("opened") is True, "notified": b.get("notified") is True}
+    return {"ok": True, **(OPEN_URLS.update(iid, state=OU.outcome_state(r), via="phone", reason=str(b.get("error") or "")[:300]) or {})}

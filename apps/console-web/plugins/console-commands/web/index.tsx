@@ -28,6 +28,7 @@ import { followSse, sseJson } from '@console/axf/core/sse';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
+import { OpenUrlPanel } from './openUrl';
 import './console-commands.css';
 import { CONSOLE_HEARTBEAT_MS, consoleCatalogFrom, consoleMessageErrors, consoleMessageLate, type ConsoleHere, type ConsoleMessage } from '@console/axf/core/engines/console-commands.mjs';
 
@@ -365,6 +366,7 @@ export const plugin: AxfWebLibrary = {
   }],
   settingsPanels: [
     { id: 'console-commands.wake', tab: FOLDER, title: 'When no console is open', icon: 'smartphone', order: 15, render: () => <WakePanel /> },
+    { id: 'console-commands.open-url', tab: FOLDER, title: 'Open a page on the phone', icon: 'smartphone', order: 17, render: () => <OpenUrlPanel /> },
     { id: 'console-commands.consoles', tab: FOLDER, title: 'Open consoles and last commands', icon: 'monitor', order: 20, render: () => <ConsolesPanel /> },
     { id: 'console-commands.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
