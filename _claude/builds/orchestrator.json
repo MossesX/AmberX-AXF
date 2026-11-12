@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T20:41:52.559Z",
+ "updatedAt": "2026-11-12T20:42:05.868Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -107407,7 +107407,7 @@
    "title": "Fix the step splitter: 'claude exit 1: Input must be provided'",
    "category": "",
    "detail": "When a build is added, the splitter runs claude -p without the prompt (stdin or argument missing), fails with 'Error: Input must be provided either through stdin or as a prompt argument when using --print', and falls back to one step per line, pasting Brett's raw words in as a step. Fix the invocation so the request is passed, split into real <=30 min steps, and re-split today's queued builds whose steps are the fallback. Test: adding a build yields proper steps, no fallback note.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "mcp",
    "pendingId": "fix-the-step-splitter-claude-exit-1-input-must-b",
@@ -107415,7 +107415,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-12T10:51:23.133Z",
-   "updatedAt": "2026-11-12T20:41:51.061Z",
+   "updatedAt": "2026-11-12T20:41:53.251Z",
    "builtAt": "",
    "notes": [
     {
@@ -107437,6 +107437,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-12T11:30:36.631Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T20:41:53.251Z"
     }
    ],
    "approvals": [],
@@ -108471,7 +108475,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-12T19:46:41.501Z",
-   "updatedAt": "2026-11-12T20:41:12.948Z",
+   "updatedAt": "2026-11-12T20:41:54.806Z",
    "builtAt": "",
    "notes": [
     {
@@ -108485,6 +108489,10 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-12T20:41:12.948Z"
+    },
+    {
+     "text": "On hold (console): Wait for the splitter fix so it gets real steps. It keeps its place in the Queue; the dispatcher skips it until released.",
+     "at": "2026-11-12T20:41:54.806Z"
     }
    ],
    "approvals": [],
