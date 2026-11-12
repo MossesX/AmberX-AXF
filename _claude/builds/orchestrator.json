@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T21:53:50.972Z",
+ "updatedAt": "2026-11-12T21:54:07.589Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -108560,7 +108560,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-12T19:46:41.501Z",
-   "updatedAt": "2026-11-12T21:53:49.836Z",
+   "updatedAt": "2026-11-12T21:54:04.791Z",
    "builtAt": "",
    "notes": [
     {
@@ -108586,6 +108586,10 @@
     {
      "text": "Split by Claude into 14 steps (2 Fable).",
      "at": "2026-11-12T20:45:00.435Z"
+    },
+    {
+     "text": "Released from hold (console): the dispatcher may start it.",
+     "at": "2026-11-12T21:54:04.791Z"
     }
    ],
    "approvals": [],
@@ -108865,7 +108869,7 @@
     },
     {
      "id": "s12",
-     "text": "Repoint the AmberX Android API client to the console: base URL, auth/token handling and every call (notes, to-dos, lists, approvals, recorder, open_url, notifications, settings) moved to the console routes from the contract",
+     "text": "Replace the AmberX Android app with a Console Android app: the phone app is the console (push notifications, approvals pop-up, open_url, recorder, voice) talking only to the console. AmberX app is retired once the Console app works. Brett: \"I want to get rid of the AmberX app and make a console app.\" Reuse the earlier console-android-wrapper work where it still fits.",
      "model": "Opus",
      "why": "",
      "phase": "",

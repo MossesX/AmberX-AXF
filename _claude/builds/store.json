@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3705,
- "updatedAt": "2026-11-12T21:53:50.972Z",
+ "rev": 3706,
+ "updatedAt": "2026-11-12T21:54:07.589Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -171783,7 +171783,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-12T19:46:41.501Z",
-   "updatedAt": "2026-11-12T21:53:49.836Z",
+   "updatedAt": "2026-11-12T21:54:04.791Z",
    "builtAt": "",
    "notes": [
     {
@@ -171809,6 +171809,10 @@
     {
      "text": "Split by Claude into 14 steps (2 Fable).",
      "at": "2026-11-12T20:45:00.435Z"
+    },
+    {
+     "text": "Released from hold (console): the dispatcher may start it.",
+     "at": "2026-11-12T21:54:04.791Z"
     }
    ],
    "approvals": [],
@@ -171855,9 +171859,9 @@
     },
     "tried": [],
     "pickedAt": "",
-    "heldAt": "2026-11-12T20:41:54.806Z",
-    "heldBy": "console",
-    "heldWhy": "Wait for the splitter fix so it gets real steps"
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -172172,7 +172176,7 @@
      "id": "s12",
      "uid": "st-mwe0o7840co8i8",
      "title": "",
-     "text": "Repoint the AmberX Android API client to the console: base URL, auth/token handling and every call (notes, to-dos, lists, approvals, recorder, open_url, notifications, settings) moved to the console routes from the contract",
+     "text": "Replace the AmberX Android app with a Console Android app: the phone app is the console (push notifications, approvals pop-up, open_url, recorder, voice) talking only to the console. AmberX app is retired once the Console app works. Brett: \"I want to get rid of the AmberX app and make a console app.\" Reuse the earlier console-android-wrapper work where it still fits.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -172189,9 +172193,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T20:45:00.435Z",
-     "updatedAt": "2026-11-12T20:45:00.435Z"
+     "updatedAt": "2026-11-12T21:53:59.991Z"
     },
     {
      "id": "s13",
@@ -172254,7 +172258,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -173566,7 +173570,13 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-12T21:54:04.810Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -173649,7 +173659,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
