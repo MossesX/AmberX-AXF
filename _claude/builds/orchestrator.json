@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:14:39.536Z",
+ "updatedAt": "2026-11-12T02:14:46.857Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -97976,7 +97976,7 @@
    "branch": "claude/molly-gap-remote-actions",
    "pr": "#502",
    "createdAt": "2026-11-10T22:09:30.792Z",
-   "updatedAt": "2026-11-12T02:14:20.575Z",
+   "updatedAt": "2026-11-12T02:14:37.729Z",
    "builtAt": "",
    "notes": [
     {
@@ -98004,16 +98004,20 @@
      "at": "2026-11-12T01:46:38.240Z"
     },
     {
-     "text": "s1 done: PR #502. Molly plugin remote-commands = Molly's own client on the console-commands relay (app molly); to=molly / to=console, recent resolves per catalog, lists span clients; Molly plugins in the plugin-commands registry. All checks pass. UI Review NOT submitted: no Playwright package in this session, so no shots of Settings > Plugins > Remote commands; next phase should build Molly and submit desktop + phone shots.",
-     "at": "2026-11-12T02:14:20.575Z"
-    },
-    {
      "text": "Started run 1 on account-5 (API key, subscriptions first, then API) (Fable, Phase 1): axf-molly-gap-remote-actions--paulie.",
      "at": "2026-11-12T01:54:09.015Z"
     },
     {
      "text": "Claude account: account-5 (axf-molly-gap-remote-actions--paulie, own login copy)",
      "at": "2026-11-12T01:54:11.481Z"
+    },
+    {
+     "text": "Headless run axf-molly-gap-remote-actions--paulie: brief only · start 10.9K tokens ($0.03) · cost $9.61 · 129 turns · 6 tools, MCP none",
+     "at": "2026-11-12T02:14:37.729Z"
+    },
+    {
+     "text": "s1 done: PR #502. Molly plugin remote-commands = Molly's own client on the console-commands relay (app molly); to=molly / to=console, recent resolves per catalog, lists span clients; Molly plugins in the plugin-commands registry. All checks pass. UI Review NOT submitted: no Playwright package in this session, so no shots of Settings > Plugins > Remote commands; next phase should build Molly and submit desktop + phone shots.",
+     "at": "2026-11-12T02:14:20.575Z"
     }
    ],
    "approvals": [],
@@ -99961,23 +99965,43 @@
    "title": "Main gate: nothing reaches main without passing",
    "category": "orchestrator",
    "detail": "URGENT. Brett, Nov 12, boss order: NOTHING gets pushed or merged to main unless it passes. Enforce at the server/repo level, not by Claude: 1) GitHub branch protection on main (AmberX-AXF, axHub): required CI checks, up to date with main, no force-push, no direct pushes, merge queue only. 2) VPS gate: build_land and every land/merge script runs full tests + theme/controls checks on the merged result and refuses to push to main unless they pass; failure leaves only the branch. 3) Log refusals, AmberX FYI. Owner-only override, off by default.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/main-gate-nothing-reaches-main-without-passing",
    "pr": "",
    "createdAt": "2026-11-12T02:00:17.612Z",
-   "updatedAt": "2026-11-12T02:00:50.047Z",
+   "updatedAt": "2026-11-12T02:14:30.814Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-12T02:00:50.047Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-main-gate-nothing-reaches-main-without-passing--earl.",
+     "at": "2026-11-12T02:14:26.871Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-main-gate-nothing-reaches-main-without-passing--earl, own login copy)",
+     "at": "2026-11-12T02:14:30.814Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "main-gate-nothing-reaches-main-without-passing",
+    "brief": "# Build: main-gate-nothing-reaches-main-without-passing\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Main gate: nothing reaches main without passing\" (main-gate-nothing-reaches-main-without-passing) [orchestrator] — Phase 1, model Opus.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~25 min) GitHub branch protection on main (AmberX-AXF and axHub): required CI checks, up to date, no force-push, no direct pushes, merge queue only.\n[ ] s2 (~30 min) VPS gate: build_land and all land/merge scripts refuse to push to main unless full tests + theme/controls checks pass on the merged result. Log refusals, AmberX FYI.\n[ ] s3 (~20 min) Owner-only override (off by default) via REST/MCP/CLI/voice; tests proving a failing build can't reach main. Report, PR, AmberX FYI when live.\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step main-gate-nothing-reaches-main-without-passing <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link main-gate-nothing-reaches-main-without-passing --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step main-gate-nothing-reaches-main-without-passing <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note main-gate-nothing-reaches-main-without-passing \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": false,
+    "from": "",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",

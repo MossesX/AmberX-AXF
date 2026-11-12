@@ -776,10 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 23:28 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` → pending, note (all) · pipeline
-- 2026-11-10 23:28 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` PR #483 (all) · builds-live
-- 2026-11-10 23:28 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` s3 done, → built (all) · orchestrator
-- 2026-11-10 23:28 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` note (all) · orchestrator
 - 2026-11-10 23:33 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` note (all) · orchestrator
 - 2026-11-10 23:36 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` → queued, note (all) · console
 - 2026-11-10 23:36 UTC · `auto-requeue-builds-whose-session-stops-early-go` added (0 steps) (all) · console
@@ -1176,6 +1172,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:14 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` s3 undone, → running (all) · foreign-write
 - 2026-11-12 02:14 UTC · `molly-gap-remote-actions` s1 done, → running (all) · orchestrator
 - 2026-11-12 02:14 UTC · `molly-gap-remote-actions` note (all) · orchestrator
+- 2026-11-12 02:14 UTC · `main-gate-nothing-reaches-main-without-passing` → running, note (all) · pipeline
+- 2026-11-12 02:14 UTC · `main-gate-nothing-reaches-main-without-passing` branch claude/main-gate-nothing-reaches-main-without-passing (all) · pipeline
+- 2026-11-12 02:14 UTC · `main-gate-nothing-reaches-main-without-passing` note (all) · orchestrator
+- 2026-11-12 02:14 UTC · `molly-gap-remote-actions` → queued, PR #502 (all) · foreign-write
 
 ## Token passes (log)
 
