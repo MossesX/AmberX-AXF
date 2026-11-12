@@ -57,6 +57,40 @@ try {
     assert.equal(statSync(ex).mtimeMs, before, 'exports index rewritten by a read'); assert.equal(statSync(io.storeFile()).mtimeMs, store);
     assert.equal(existsSync(lock), false);
   });
+  // console-and-axhub-retry (Nov 12 2026): writes wait and fix instead of failing; stale locks are cleared
+  process.env.AXF_RETRY_DIR = join(dir, 'auto-fixes'); process.env.AXF_RETRY_DELAY_SCALE = '0'; process.env.AXF_STORE_LOCK_WAIT_MS = '300';
+  const { listJobs } = await import('../cli/retry-runner.mjs');
+  t('a lock left by a writer that died is cleared at once (no 30 s wait)', () => {
+    writeFileSync(lock, JSON.stringify({ pid: 2 ** 22 + 12345, host: '', at: new Date().toISOString() }));
+    const t0 = Date.now(); io.withStore((s) => s, { by: 'test', action: 'noop', lockWaitMs: 5000 });
+    assert.ok(Date.now() - t0 < 2000, `took ${Date.now() - t0} ms`); assert.equal(existsSync(lock), false);
+  });
+  t('`unlock` sweeps stale lock files next to the store', () => {
+    const extra = `${io.storeFile()}.exports.lock`; writeFileSync(extra, JSON.stringify({ pid: 2 ** 22 + 12346, host: '' }));
+    const r = io.sweepStaleLocks(); assert.ok(r.some((x) => x.file === extra && /gone/.test(x.why)), JSON.stringify(r)); assert.equal(existsSync(extra), false);
+  });
+  await (async () => {
+    // a live writer holds the lock for 1.2 s: the write waits (rung 1 of the store-locked ladder) and then lands
+    const { spawn } = await import('node:child_process');
+    const child = spawn(process.execPath, ['-e', `const fs=require('fs');fs.writeFileSync(${JSON.stringify(lock)},JSON.stringify({pid:process.pid,host:'',at:new Date().toISOString()}),{flag:'wx'});setTimeout(()=>fs.rmSync(${JSON.stringify(lock)}),1200)`]);
+    for (let i = 0; i < 100 && !existsSync(lock); i += 1) await new Promise((r) => setTimeout(r, 20));
+    t('a locked store is retried to success (wait rung), logged in the Auto-fixes ledger', () => {
+      const r = io.withStore((s) => s, { by: 'test', action: 'contended' });
+      assert.equal(r.store.$axf, 'builds@1');
+      const job = listJobs().find((j) => j.title.includes('contended'));
+      assert.ok(job, `job in the ledger: ${JSON.stringify(listJobs().map((j) => [j.title, j.status]))} lock=${existsSync(lock)}`); assert.equal(job.status, 'fixed'); assert.equal(job.attempts[0].fix, 'wait');
+    });
+    await new Promise((r) => child.on('exit', r));
+  })();
+  t('a lock held by a live writer past every rung: StoreLocked, gave-up job with what was tried and what is missing', () => {
+    writeFileSync(lock, JSON.stringify({ pid: process.ppid, host: '', at: new Date().toISOString() })); // our parent: alive
+    assert.throws(() => io.withStore((s) => s, { by: 'test', action: 'held' }), (e) => e instanceof io.StoreLocked && e.code === 'store_locked' && !!e.job);
+    const job = listJobs().find((j) => j.title.includes('held'));
+    assert.equal(job.status, 'gave-up'); assert.deepEqual(job.attempts.map((a) => a.fix), ['wait', 'clear-stale-lock', 'restart-store-writer']);
+    assert.match(job.fyi, /Tried: waited for the lock, cleared a stale lock, restarted the store writer\./);
+    assert.match(job.fyi, /not stopped from here/);
+    rmSync(lock, { force: true });
+  });
 } finally {
   rmSync(dir, { recursive: true, force: true });
 }
