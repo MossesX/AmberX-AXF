@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3444,
- "updatedAt": "2026-11-12T03:17:33.889Z",
+ "rev": 3445,
+ "updatedAt": "2026-11-12T03:17:44.152Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -162381,6 +162381,10 @@
     {
      "text": "Headless run axf-account-order-hulu-moses-x-api-account-shown-on---earl: brief only · start 10.8K tokens ($0.02) · cost $0.72 · 29 turns · 6 tools, MCP none",
      "at": "2026-11-12T03:17:22.993Z"
+    },
+    {
+     "text": "s3: Hulu login (Max 20x) is account-3's login; headless run on account-3 verified. PR #512 adds 'claude-workers.mjs adopt'. ~/.claude live login is still the old stale Pro token (left alone, switch in console to refresh). No AmberX FYI command found in this session; FYI not sent.",
+     "at": "2026-11-12T03:17:11.075Z"
     }
    ],
    "approvals": [],
