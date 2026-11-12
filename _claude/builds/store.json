@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3596,
- "updatedAt": "2026-11-12T18:06:52.989Z",
+ "rev": 3597,
+ "updatedAt": "2026-11-12T18:07:09.036Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175445,14 +175445,14 @@
    "title": "Plugin review: map what each plugin does, depends on, and breaks",
    "category": "report",
    "detail": "Brett said: \"For each plugin put a list for everything that it does, what will be broken, what it depends on, and what other plugins use it.\"\n\nREAD-ONLY analysis, change no code. For every folder in apps/console-web/plugins (68, skip _template): read plugin.json, README.md and web/ + server/ code. Find real dependencies from imports, requires, service contracts (service:xxx@1), API routes it calls (/api/plugins/<other>/...), events, settings keys and banner/slot ids it reads. Build the reverse map (used by). Then fill the existing Plan Studio plan 'Plugin review: what to disable' (planner.plans, via control_set) so each plugin's step holds four plain-English lists: What it does / What breaks if disabled (including other plugins, banners, voice commands, AmberX features) / Depends on / Used by. Mark core plugins that must never be disabled (e.g. plugin-manager, build-orchestrator, approvals-banner, hub-sync) with a warning. Also write _claude/builds/reports/plugin-review.md with the same table.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/plugin-review-map-what-each-plugin-does-depends-on-and-breaks",
    "pr": "#522",
    "createdAt": "2026-11-12T17:47:56.247Z",
-   "updatedAt": "2026-11-12T18:06:51.314Z",
+   "updatedAt": "2026-11-12T18:07:04.618Z",
    "builtAt": "",
    "notes": [
     {
@@ -175490,6 +175490,10 @@
     {
      "text": "Headless run axf-plugin-review-map-what-each-plugin-does-depends---rhonda: brief only · start 10.9K tokens ($0.03) · cost $0.61 · 12 turns · 6 tools, MCP none",
      "at": "2026-11-12T18:06:51.314Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 0) with 1 step left: back in the Queue (run 2).",
+     "at": "2026-11-12T18:07:04.618Z"
     }
    ],
    "approvals": [],
@@ -175510,29 +175514,29 @@
     "queuedAt": "2026-11-12T17:48:35.850Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-plugin-review-map-what-each-plugin-does-depends---rhonda",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-12T18:04:10.671Z",
     "runs": 2,
     "lastRun": {
-     "at": "2026-11-12T18:04:02.933Z",
+     "at": "2026-11-12T18:07:04.151Z",
      "exit": 0,
      "outcome": "requeued",
-     "stepsLeft": 2,
+     "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-plugin-review-map-what-each-plugin-does-depends---gina"
+     "session": "axf-plugin-review-map-what-each-plugin-does-depends---rhonda"
     },
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- ended (exit 0) with 1 step left: back in the Queue (run 2).",
     "route": "",
     "dispatchedAt": "2026-11-12T18:04:10.671Z",
     "planned": {
-     "model": "Opus",
+     "model": "Fable",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-12T18:04:05.293Z",
+     "at": "2026-11-12T18:07:06.426Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -175617,7 +175621,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
