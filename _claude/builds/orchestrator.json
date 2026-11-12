@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T21:00:30.296Z",
+ "updatedAt": "2026-11-12T21:00:44.526Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -107471,8 +107471,8 @@
    "pr": "#526",
    "priority": "P0",
    "createdAt": "2026-11-12T10:51:23.133Z",
-   "updatedAt": "2026-11-12T21:00:14.609Z",
-   "builtAt": "2026-11-12T21:00:14.609Z",
+   "updatedAt": "2026-11-12T21:00:18.244Z",
+   "builtAt": "2026-11-12T21:00:18.244Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -107509,6 +107509,14 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 2 steps left: back in Pending for Brett.",
      "at": "2026-11-12T21:00:14.609Z"
+    },
+    {
+     "text": "Headless run axf-fix-the-step-splitter-claude-exit-1-input-must-b--rhonda: brief only · start 12.3K tokens ($0.03) · cost $1.25 · 42 turns · 6 tools, MCP none",
+     "at": "2026-11-12T21:00:16.312Z"
+    },
+    {
+     "text": "Self-check: fix-the-step-splitter-claude-exit-1-input-must-b was marked running on mossesx-max- with no session: released and back in the Queue.",
+     "at": "2026-11-12T21:00:18.244Z"
     }
    ],
    "approvals": [],
