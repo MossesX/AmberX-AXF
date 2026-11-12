@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T23:12:29.614Z",
+ "updatedAt": "2026-11-12T23:12:41.639Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -110364,6 +110364,62 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mwe4hna1060nck"
+    }
+   ]
+  },
+  {
+   "id": "banners-page-focus-scroll-to-and-highlight-any-banner-or-badge",
+   "title": "Banners page: focus, scroll to and highlight any banner or badge",
+   "category": "banner",
+   "detail": "Brett said: \"Make it focus, bring it in focus... Highlight the VPS one.\" console_show/console_open with focus on the Banners screen answers \"it has no way to focus\". Every screen must support focus (standing rule).",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-12T23:12:31.496Z",
+   "updatedAt": "2026-11-12T23:12:31.496Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Banners page: support focus=<badge or banner id/label>: scroll it into view, expand it, flash highlight; works from console_show, console_open, deep links, CLI and voice",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe5xwue03wcn7"
+    },
+    {
+     "id": "s2",
+     "text": "Tests, report, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe5xwue04racc"
     }
    ]
   }
