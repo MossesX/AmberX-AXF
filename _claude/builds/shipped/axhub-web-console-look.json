@@ -1,0 +1,125 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-axhub-web-console-look",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:26:59Z",
+ "build": {
+  "id": "axhub-web-console-look",
+  "title": "axHub web app: Dev Console / Patches look and layout + web harvest into lib-hub",
+  "profile": "all",
+  "category": "Module",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "rebuild the axHub web app (served at axhub.amberxai.com since Oct 23) with the framework, look and layout matching the Dev Console and Patches, and harvest reusable libraries from it. Web only (Android on hold). Branch claude/project-thread-j1ri9d, PR #30. The Kotlin twin of the catalog rules stays with axhub-web-hub-rules (Fable).",
+  "verbatim": false,
+  "at": "2026-10-22T00:00:00Z",
+  "source": "",
+  "by": "backfill",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Banner like the console: logo, search in the middle, approvals counter, day/night switch and clock on the right (banner asset axhub)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "",
+   "doneAt": "2026-10-23T04:23:16.782Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Application menu like the console: Hub, Approvals (live list + badge), Apps (live list), Manage, View (bar toggles, look, spacing), Help; menu bar above the banners",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-23T04:23:16.782Z",
+   "doneAt": "2026-10-23T04:23:16.851Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Layout + views: console page structure on Approvals, Hub, Apps, Manage; layout per Brett pick",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-23T04:23:16.851Z",
+   "doneAt": "2026-10-23T04:23:16.909Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Harvest: app-catalog rules out of the app into lib-hub (web) with an apps section in the hub fixture; PORTING.md gap for the Kotlin twin",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-23T04:23:16.909Z",
+   "doneAt": "2026-10-23T04:23:16.969Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Harvest: approvals + catalog React hooks and the approvals list into lib-hub web views the console approvals banner and other apps can use",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-23T04:23:16.969Z",
+   "doneAt": "2026-10-23T04:23:17.028Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s6",
+   "text": "Tests (app test.mjs, check-hub, typecheck + build), docs, CLAUDE.md status, pending/notes",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-10-23T04:23:17.028Z",
+   "doneAt": "2026-10-23T04:23:17.085Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [],
+ "mergedAt": "2026-10-23T04:23:17.214Z",
+ "landedAt": "2026-10-23T04:23:17.214Z",
+ "files": [],
+ "areas": [],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}

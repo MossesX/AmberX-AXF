@@ -776,16 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s17 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s18 done (all) · orchestrator
-- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s19 done (all) · orchestrator
-- 2026-11-12 01:53 UTC · `fix-axhub-36-pull-main-in-failed` note (all) · orchestrator
-- 2026-11-12 01:53 UTC · `fix-axhub-36-pull-main-in-failed` s20 done (all) · orchestrator
-- 2026-11-12 01:54 UTC · `molly-gap-console-token-handoff` → queued, note (all) · pipeline
-- 2026-11-12 01:54 UTC · `molly-gap-remote-actions` → running, note (all) · pipeline
-- 2026-11-12 01:54 UTC · `molly-gap-remote-actions` note (all) · orchestrator
-- 2026-11-12 01:55 UTC · `molly-native-expenses` → queued, note (all) · pipeline
-- 2026-11-12 01:55 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` → queued, note (all) · pipeline
 - 2026-11-12 01:55 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` → queued, note (all) · pipeline
 - 2026-11-12 01:55 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` → queued, note (all) · pipeline
 - 2026-11-12 01:55 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` → running, note (all) · pipeline
@@ -1176,6 +1166,16 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:26 UTC · `hubstore-fable` note (all) · backfill
 - 2026-11-12 03:26 UTC · `plugin-model-badges-update` note (all) · backfill
 - 2026-11-12 03:26 UTC · `plugins-menu` note (all) · backfill
+- 2026-11-12 03:26 UTC · `ashes-ui` note (all) · backfill
+- 2026-11-12 03:26 UTC · `build-list-estimates-usd` note (all) · backfill
+- 2026-11-12 03:26 UTC · `banner-group` note (all) · backfill
+- 2026-11-12 03:26 UTC · `banner-group-fable` note (all) · backfill
+- 2026-11-12 03:27 UTC · `axhub-web-console-look` note (all) · backfill
+- 2026-11-12 03:27 UTC · `voicevault-voice-notes` note (all) · backfill
+- 2026-11-12 03:27 UTC · `banner-working-icon` note (all) · backfill
+- 2026-11-12 03:27 UTC · `banner-working-icon-fable` note (all) · backfill
+- 2026-11-12 03:27 UTC · `settings-asset` note (all) · backfill
+- 2026-11-12 03:27 UTC · `settings-asset-fable` note (all) · backfill
 
 ## Token passes (log)
 
