@@ -168,3 +168,13 @@ Web only (Android on hold, build `console-commands-reliable`), Kotlin twins when
   `CONSOLE_HEARTBEAT_MS`, and `CONSOLE_CLIENT_STALE_MS` down from 90 s to 45 s (`core/engines/console-commands.mjs`).
 - `followSse` options `idleTimeoutMs` and the follower's `reconnect()` / `idleMs()` / `open()` (`core/sse.ts`); the Kotlin `Sse`
   parser is unchanged, only an Android stream follower would need the idle watchdog.
+
+## Deferred: auto-merge switch (Nov 11 2026)
+Web/Node/Python only (Android on hold, build `auto-merge-switch`), Kotlin twins when the Android side resumes:
+- builds@1 record fields `autoMerge` (false by default, every existing build reads false), `autoMergeAt` / `autoMergeBy`
+  (Brett answered the question) and `mergeApproval { by, at }` (`plan/builds-store-core.mjs` normBuild + the orchestrator@1
+  projection). A Kotlin builds reader keeps them; no fixture change (the store fixtures predate the fields and read false).
+- control@1 `planner.builds` act `auto-merge { on }` (`core/engines/control-rules.mjs`, snapshot `schemas/control.json`):
+  an Android `ControlRules` reading the `schemas/control.json` snapshot picks it up.
+- The merge banner (`merge-banner@1`, console plugin build-orchestrator `auto-merge-core.mjs`) has no AmberX screen yet; its
+  blocked case reaches the phone through the existing `merge.blocked` push. <!-- axf-plugin:build-orchestrator -->

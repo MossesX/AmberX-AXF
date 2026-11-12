@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AgentAvatar, BuildOrigin, Button, Icon, PriorityTag, Segmented, Slot, TabGroup, flashWhenReady, originSubtitle, useRuntime } from '@console/axf/react';
+import { AgentAvatar, BuildOrigin, Button, Chip, Icon, PriorityTag, Segmented, Slot, Switch, TabGroup, flashWhenReady, originSubtitle, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import * as consoleApi from '@console/api';
 import { WatchLiveFor } from '@console/watchLive';
@@ -8,6 +8,7 @@ import * as pendingCore from '@console/axf/plan/pending-core.mjs';
 import pricing from '@console/axf/schemas/model-pricing.json';
 import { DataGrid, RowHookButtons, registerRowRefTarget, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 import { PipelineTab, type PipelineView } from './pipeline';
+import { setAutoMerge } from './merge-banner';
 import { buildRowSelector, settleFocus, useFocusedBuild } from './focus';
 import './orchestrator.css';
 
@@ -26,7 +27,7 @@ export const FOLDER = 'build-orchestrator';
 registerRowRefTarget('axf-orchestrator-build', (id) => (id ? { kind: 'orchestrator', id } : null));
 const api = pluginApi(FOLDER, 'Build orchestrator', { unavailable: 'The build orchestrator is switched off or its server part is not running.' });
 type Step = { id: string; text: string; model: 'Fable' | 'Opus'; why: string; phase: string; group: string; estimate: string; files: string[]; checks: string[]; session: 'same' | 'new'; agent: boolean; done: boolean; doneAt: string; note: string };
-type Build = { id: string; title: string; category: string; detail: string; status: string; hidden: boolean; source: string; pendingId: string; branch: string; pr: string; createdAt: string; updatedAt: string; builtAt: string; notes: { text: string; at: string }[]; approvals: { phase: number; from: string; to: string; at: string; by?: string; via?: string; kind?: string; selfApproved?: boolean }[]; upgradeRequests?: { id: string; phase: number; from: string; to: string; at: string; by: string; state: string }[]; origin?: unknown; steps: Step[] };
+type Build = { id: string; title: string; autoMerge?: boolean; autoMergeAt?: string; category: string; detail: string; status: string; hidden: boolean; source: string; pendingId: string; branch: string; pr: string; createdAt: string; updatedAt: string; builtAt: string; notes: { text: string; at: string }[]; approvals: { phase: number; from: string; to: string; at: string; by?: string; via?: string; kind?: string; selfApproved?: boolean }[]; upgradeRequests?: { id: string; phase: number; from: string; to: string; at: string; by: string; state: string }[]; origin?: unknown; steps: Step[] };
 type Rules = { sameSession: boolean; subAgents: boolean; approveModelSwitch: boolean; maxStepMinutes: number };
 type State = { updatedAt: string; rules: Rules; builds: Build[] };
 type Res = { ok: boolean; error?: string; state?: State; log?: string[]; brief?: string; upgradePolicy?: { approvalRequired: boolean; source: string } };
@@ -67,7 +68,7 @@ export function OrchestratorPage() {
     try { const r = await api.call<Res>('state'); if (!r.ok) throw new Error(r.error); if (r.upgradePolicy) core.setUpgradePolicy(r.upgradePolicy); setState(r.state!); setError(''); }
     catch (e) { setError((e as Error).message); setState((s) => s ?? (core.emptyState() as State)); }
   };
-  useEffect(() => { void load(); }, []);
+  useEffect(() => { void load(); const re = () => void load(); window.addEventListener('axf:orchestrator-auto-merge', re); return () => window.removeEventListener('axf:orchestrator-auto-merge', re); }, []);
 
   const act: Act = async (change) => {
     setBusy(true);
@@ -192,8 +193,10 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
     <article className={`${embedded ? 'oc-embedded ' : ''}pd-card is-${core.isFinished(b.status) ? 'complete' : b.status === 'failed' ? 'failed' : b.status === 'blocked' ? 'broken' : 'pending'}`} role={embedded ? undefined : "listitem"} data-fx-ctx-target="axf-orchestrator-build" data-fx-ctx-payload={b.id}>
       <div className="pd-card__top">
         <h2 className="pd-card__title">{embedded ? <span className="fx-small fx-muted">Build</span> : b.title}<span className="fx-muted fx-small fx-mono"> {b.id}</span>{b.hidden && <span className="fx-muted fx-small"> · hidden</span>}</h2>
+        {b.autoMerge && <Chip tone="success">Auto-merge</Chip>}
         <button data-fx-row className={`pd-badge oc-badge is-${b.status}`} aria-expanded={statusOpen} aria-label={`Status: ${b.status}. Change`} onClick={() => setStatusOpen((o) => !o)}>{(core.STATUS_LABEL as Record<string, string>)[b.status]}</button>
       </div>
+      {b.status !== 'complete' && <Switch label="Auto-merge when done" text={b.autoMerge ? 'On: main merged in, tested, lands by itself on green; red or a clash holds it and pushes you' : 'Off: waits for your Merge in the merge banner'} checked={!!b.autoMerge} disabled={busy} onChange={(on) => void setAutoMerge([b.id], on, (text, tone) => rt.toast(text, tone)).then((ok) => { if (ok) window.dispatchEvent(new CustomEvent('axf:orchestrator-auto-merge')); })} />}
       {statusOpen && (
         <div className="fx-row fx-row--wrap">
           {core.STATUSES.map((s) => <button data-fx-row key={s} className={`pd-badge oc-badge is-${s}`} disabled={busy || s === b.status} onClick={async () => { if (await act({ action: 'status', id: b.id, status: s })) setStatusOpen(false); }}>{(core.STATUS_LABEL as Record<string, string>)[s]}</button>)}
@@ -330,7 +333,7 @@ function ApprovalsTab({ state, busy, act }: { state: State; busy: boolean; act: 
         const req = (b.upgradeRequests ?? []).find((x) => x.phase === p.index && x.state === 'open');
         const by = approvalBy(b, p);
         return (
-          <article key={`${b.id}-${p.index}`} className={`pd-card ${p.approved ? 'is-complete' : 'is-pending'}`} role="listitem">
+          <article key={`${b.id}-${p.index}`} className={`pd-card ${p.approved ? 'is-complete' : 'is-pending'}`} role="listitem" data-fx-ctx-target="axf-orchestrator-build" data-fx-ctx-payload={b.id}>
             <div className="pd-card__top">
               <h2 className="pd-card__title">{b.title}<span className="fx-muted fx-small"> · phase {p.index + 1}</span></h2>
               <span className={`pd-badge oc-badge is-${p.approved ? 'complete' : 'waiting'}`}>{down ? 'Downgrade' : p.approved ? (b.approvals.some((a) => a.phase === p.index && a.via !== 'policy') || core.upgradePolicy().approvalRequired ? 'Upgrade approved' : 'Upgrade: automatic') : 'Upgrade: needs you'}</span>
@@ -463,7 +466,7 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
   }, [builds, fig, collapsed]);
   const cols: GridColumn<Build>[] = [
     { id: 'title', label: 'Build', width: 'minmax(calc(var(--fx-font-size) * 16), calc(var(--fx-font-size) * 25))', fixed: true, sortable: true, sortValue: (b) => b.title.toLowerCase(),
-      render: (b) => <span className="oc-cell-title" title={b.detail || b.title}><strong><AgentAvatar inText={`${b.id}\n${b.detail}`} size="small" /> {b.title}{b.hidden && <span className="fx-muted fx-small"> · hidden</span>}</strong>{summary(b) && <span className="fx-small fx-muted">{summary(b)}</span>}</span> },
+      render: (b) => <span className="oc-cell-title" title={b.detail || b.title}><strong><AgentAvatar inText={`${b.id}\n${b.detail}`} size="small" /> {b.title}{b.hidden && <span className="fx-muted fx-small"> · hidden</span>}{b.autoMerge && <span className="fx-small" title="Auto-merge on: lands by itself once its test run on current main is green"> <Chip tone="success">Auto-merge</Chip></span>}</strong>{summary(b) && <span className="fx-small fx-muted">{summary(b)}</span>}</span> },
     { id: 'priority', label: 'Priority', width: 'calc(var(--fx-font-size) * 9)', render: (b) => <PriorityTag build={b.id} /> },
     { id: 'status', label: 'Status', width: 'calc(var(--fx-font-size) * 7.5)', sortable: true, sortValue: (b) => core.STATUSES.indexOf(b.status),
       render: (b) => <span className={`pd-badge oc-badge is-${b.status}`}>{(core.STATUS_LABEL as Record<string, string>)[b.status]}</span> },

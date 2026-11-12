@@ -19,6 +19,8 @@
  *
  *   BuildRecord = every orchestrator@1 build field (id, title, category, detail, status, hidden, source, pendingId,
  *     branch, pr, createdAt, updatedAt, builtAt, notes, approvals, steps) plus
+ *     autoMerge                    land by itself when done (false by default: waits for Brett's yes); autoMergeAt / By
+ *                                  when he answered; mergeApproval { by, at } = his yes to merge one that was off
  *     profiles: [profileId…]      the profiles it belongs to (a field, never a copy; one record shown in each)
  *     order: { <profile>: n }     its place in that profile's list (the build queue = this order for plan epics)
  *     kind: 'build' | 'epic'      epic = a plan epic from the build queue (planRef = its plan feature id)
@@ -81,7 +83,7 @@ const stepModel = (m) => (m === 'Fable' ? 'Fable' : 'Opus');
 const clone = (o) => JSON.parse(JSON.stringify(o));
 const nowIso = () => new Date().toISOString();
 export const slug = (t) => str(t, 80).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'build';
-const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'priority', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'origin', 'steps'];
+const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'autoMerge', 'autoMergeAt', 'autoMergeBy', 'mergeApproval', 'priority', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'origin', 'steps'];
 const ORCH_STEP_KEYS = ['id', 'text', 'model', 'why', 'phase', 'group', 'estimate', 'files', 'checks', 'session', 'agent', 'skip', 'done', 'doneAt', 'note'];
 
 // ------------------------------------------------------------------ records
@@ -154,6 +156,11 @@ export function normBuild(b, ctx = {}) {
     branch: str(o.branch, 200),
     pr: str(o.pr, 200),
     ...(str(o.mergedAt) ? { mergedAt: str(o.mergedAt, 40) } : {}), // when its PR merged (built → complete)
+    // auto-merge (Brett, Nov 11 2026): off by default = it waits for his yes in the merge banner (mergeApproval);
+    // on = it lands by itself once main is merged in and the test gate is green. autoMergeAt set = he answered.
+    autoMerge: o.autoMerge === true,
+    ...(str(o.autoMergeAt) ? { autoMergeAt: str(o.autoMergeAt, 40), autoMergeBy: str(o.autoMergeBy, 120) } : {}),
+    ...(o.mergeApproval && typeof o.mergeApproval === 'object' && str(o.mergeApproval.at) ? { mergeApproval: { by: str(o.mergeApproval.by, 120), at: str(o.mergeApproval.at, 40) } } : {}),
     ...(priority ? { priority } : {}), // optional: unset = worked out on read (core/build-priority.mjs)
     createdAt: str(o.createdAt, 40) || at,
     updatedAt: str(o.updatedAt, 40) || at,

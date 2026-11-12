@@ -22,6 +22,17 @@ t('models sort cheapest first, blocked ones coerced up (model policy: never Sonn
 t('bad roster is reported', () => { const r = c.normRoster({ agents: [{ id: 'A b', skill: 'none' }, { id: 'A b' }] }); const p = c.checkRoster(r, skills); assert.ok(p.some((x) => /lowercase/.test(x)) && p.some((x) => /twice/.test(x)) && p.some((x) => /no skill file/.test(x))); });
 t('long skill is flagged', () => { const s = c.parseSkill(`---\n$axf: agent-skill@1\nid: big\n---\n${'line\n'.repeat(80)}`); assert.match(c.checkRoster({ agents: [] }, { big: s })[0], /one page/); });
 
+// merge results in the group chat (axf.group-chat@1, the orchestrator's merge banner)
+t('post-as: the owning agent says the merge result; Boss when nobody on the roster owns it', () => {
+  const at = '2026-11-11T10:00:00.000Z';
+  let s = c.normState({}, roster);
+  s.chat = { ...s.chat, enabled: true };
+  s = c.applyChange(s, { action: 'post-as', agent: 'kat', text: 'Landed on main: Skins.', jobId: 'merge:skins' }, roster, at).state;
+  const last = s.messages.at(-1); assert.equal(last.from, 'kat'); assert.equal(last.kind, 'report'); assert.match(last.text, /Landed on main/);
+  s = c.applyChange(s, { action: 'post-as', agent: 'nobody', text: 'Landed on main: X.' }, roster, at).state;
+  assert.equal(s.messages.at(-1).from, 'boss'); assert.equal(s.messages.at(-1).kind, 'merge');
+  assert.throws(() => c.applyChange(s, { action: 'post-as', agent: 'kat', text: ' ' }, roster, at), /empty/);
+});
 // ID cards (agent-card@1 designs, per-agent identity + design)
 t('ID cards: identity edits, per-agent design, default, save as new, remove', () => {
   const at = '2026-10-31T10:00:00.000Z';
@@ -437,7 +448,7 @@ t('book: a Claude session on an agent card grows, then closes once (agent-pick)'
 t('manifest: lifecycle, builtWith, page and settings tab', () => {
   const m = JSON.parse(readFileSync(here('./plugin.json'), 'utf8'));
   assert.equal(m.lifecycle.dataDir, '.axf-console/plugins/agent-swarm'); assert.ok(m.builtWith.model && m.builtWith.builtAt);
-  assert.deepEqual(m.provides, ['view:agent-swarm', 'settings-tab:agent-swarm', 'service:agent-jobs@1', 'service:axf.crew@1', 'service:axf.swarm-roster@1']); assert.equal(m.tabable.view, 'agent-swarm');
+  assert.deepEqual(m.provides, ['view:agent-swarm', 'settings-tab:agent-swarm', 'service:agent-jobs@1', 'service:axf.crew@1', 'service:axf.group-chat@1', 'service:axf.swarm-roster@1']); assert.equal(m.tabable.view, 'agent-swarm');
 });
 
 // batch merge end to end on a scratch repo

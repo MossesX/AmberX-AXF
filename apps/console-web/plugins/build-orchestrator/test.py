@@ -72,10 +72,12 @@ class _Proc:
 
 
 _calls: list[list[str]] = []
+_envs: list[dict] = []
 
 
 def _fake_run(cmd, **kw):  # noqa: ANN001
     _calls.append(cmd)
+    _envs.append(kw.get("env") or {})
     if "no-such-build" in cmd:
         return _Proc('{"ok":false,"error":"no build \"no-such-build\""}', 2)
     if "refused" in cmd:
@@ -146,6 +148,25 @@ try:
         except srv.HTTPException as e:
             code = e.status_code
         check(code == want, f"action {body}: {want}")
+    # auto-merge (Nov 11 2026): off by anyone, on and Merge only by Brett's own click (his name reaches the CLI as approver)
+    for body, brett, want in (({"ids": ["alpha", "beta"], "on": True}, False, 403), ({"ids": ["alpha", "beta"], "on": False}, False, 200), ({"ids": ["alpha", "beta"], "on": True}, True, 200), ({"ids": ["alpha"]}, True, 400), ({"ids": ["../x"], "on": False}, True, 400)):
+        try:
+            asyncio.run(srv.pipeline_auto_merge(_Req(body, brett)))
+            code = 200
+        except srv.HTTPException as e:
+            code = e.status_code
+        check(code == want, f"auto-merge {body} by {'Brett' if brett else 'a session'}: {want}")
+    check(_calls[-1][2:6] == ["auto-merge", "alpha", "beta", "on"] and _envs[-1].get("AXF_APPROVER") == "Brett", "auto-merge on: both builds, Brett as approver")
+    for body, brett, want in (({"id": "alpha", "decision": "merge"}, False, 403), ({"id": "alpha", "decision": "merge"}, True, 200), ({"id": "alpha", "decision": "skip"}, False, 200), ({"id": "alpha", "decision": "land"}, True, 400)):
+        try:
+            asyncio.run(srv.merge_banner_decide(_Req(body, brett)))
+            code = 200
+        except srv.HTTPException as e:
+            code = e.status_code
+        check(code == want, f"merge banner {body['decision']} by {'Brett' if brett else 'a session'}: {want}")
+    check(_calls[-1][2:5] == ["merge-decide", "alpha", "skip"] and not _envs[-1].get("AXF_APPROVER"), "skip carries no approver")
+    srv.merge_banner()
+    check(_calls[-1][2:4] == ["merge-banner", "--queue-stdin"], "the banner reads through the pipeline CLI with the merge queue on stdin")
     check(set(srv.BUILD_ACTIONS) == {"unqueue", "hold", "release", "archive", "unarchive", "delete", "restore"} and "archive" in srv.PIPELINE_TABS and "deleted" in srv.PIPELINE_TABS, "no hard delete: actions and the Archive / Deleted tabs")
 finally:
     srv.subprocess.run = _real_run

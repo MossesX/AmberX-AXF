@@ -48,3 +48,25 @@ button.oc-model { cursor: pointer }
 
 /* Bulk select (Nov 10 2026: hold, archive, delete, restore on many builds at once): layout only */
 .pl-bulk { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
+
+/* Merge banner (Nov 11 2026, auto-merge switch): four collapsible groups; layout only, every control is a framework control */
+.mb-banner { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
+.mb-banner__row { display: flex; align-items: center; gap: var(--fx-dens-gap-xl); min-width: 0 }
+.mb-banner__icon { display: inline-flex; flex: none; color: var(--fx-accent) }
+.mb-banner.is-blocked .mb-banner__icon { color: var(--fx-danger) }
+.mb-banner__main { all: unset; flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs); cursor: pointer }
+.mb-banner__main:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w) }
+.mb-banner__body { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); border-top: var(--fx-border-w) solid var(--fx-border); padding-top: var(--fx-dens-gap-md); max-height: min(60vh, calc(var(--fx-row-h) * 18)); overflow: auto }
+.mb-group { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm) }
+.mb-group__head { display: flex; align-items: center; flex-wrap: wrap; gap: var(--fx-dens-gap-md) }
+.mb-group__hint { min-width: 0 }
+.mb-group__bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
+.mb-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
+.mb-item { display: flex; align-items: flex-start; flex-wrap: wrap; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface) }
+.mb-item.is-blocked { border-color: var(--fx-danger) }
+.mb-item__body { flex: 1 1 calc(var(--fx-space) * 22); min-width: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
+.mb-item__line { display: flex; align-items: center; flex-wrap: wrap; gap: var(--fx-dens-gap-sm); min-width: 0 }
+.mb-item__title { min-width: 0; overflow-wrap: anywhere }
+.mb-item__meta { overflow-wrap: anywhere }
+.mb-item__why { color: var(--fx-danger); overflow-wrap: anywhere }
+.mb-item__acts { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm) }

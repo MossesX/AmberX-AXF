@@ -143,6 +143,7 @@ async function runBuilds(c) {
           'remove-step': { step: i.step },
           'move-step': {},
           archive: {}, hide: {}, unhide: {},
+          'auto-merge': { on: i.on !== false, by }, // land by itself when done (auto-merge-core.mjs); off = waits for Brett's Merge
         };
         if (!(c.action in map) || !(c.action in (CONTROL_TARGETS['planner.builds'].acts ?? {}))) throw new ControlError('invalid', `planner.builds has no action ${c.action}`);
         if (c.action === 'move-step') { // the orchestrator moves one place at a time: walk to the index asked for

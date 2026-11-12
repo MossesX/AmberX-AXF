@@ -58,6 +58,19 @@ class CrewService:
 plugin_services.provide("axf.crew@1", CrewService(), CLI.parent.name)
 
 
+class GroupChatService:
+    """Capability `axf.group-chat@1`: post a work result in the Breakroom group chat as the agent who owns it (Boss when
+    nobody on the roster does). Dropped quietly when the group chat is off. Used by the orchestrator's merge banner."""
+    version = 1
+
+    def post(self, agent: str, text: str, job: str = "") -> bool:
+        change = {"action": "post-as", "agent": str(agent or "")[:40], "text": str(text or "")[:1000], "jobId": str(job or "")[:120]}
+        return bool(_run("act", json.dumps(change)).get("ok"))
+
+
+plugin_services.provide("axf.group-chat@1", GroupChatService(), CLI.parent.name)
+
+
 @router.get("/state")
 def state() -> dict[str, Any]:
     return _run("state")

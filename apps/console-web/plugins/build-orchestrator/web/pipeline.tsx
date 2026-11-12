@@ -3,6 +3,11 @@ import { Button, Checkbox, Chip, Icon, Note, PriorityTag, Switch, flashWhenReady
 import { buildRowSelector, settleFocus, useFocusedBuild } from './focus';
 import { WatchLiveFor } from '@console/watchLive';
 import { TAB_LABEL, type BuildAction, type PipelineTab as BuildTab } from '@console/axf/core/build-pipeline.mjs';
+import { setAutoMerge } from './merge-banner';
+
+/** The builds selected in the open orchestrator table: the right-click Auto-merge item acts on all of them. */
+let selectedNow: string[] = [];
+export const selectedBuilds = (): string[] => selectedNow;
 
 /*
  * Nov 10 2026 (build retire-build-manager-the-orchestrator-is-the-onl): the orchestrator is the only place that browses
@@ -28,7 +33,7 @@ type Planned = { model: string; account: string; kind: string; at: string; why: 
 type Health = { at: string; startedAt: string; line: string; problems: string[]; accounts: { name: string; kind: string; signedIn: boolean | null; credits: boolean | null; fable: boolean | null; error: string; skipped?: boolean; at: string }[] } | null;
 type Pipeline = { route?: string; planned?: Planned; tried?: string[]; pickedAt?: string; heldAt?: string; heldBy?: string; heldWhy?: string; queuedAt: string; queuedBy: string; account: string; session: string; model: string; launchedAt: string; runs: number; note: string; splitRequested: string; split: { at: string; by: string; provider: string; steps: number; note: string } | null; lastRun: { at: string; exit: number | null; outcome: string; stepsLeft: number; account: string } | null } | null;
 type StepRow = { id: string; text: string; model: string; estimate: string; done: boolean; skip: boolean };
-type Row = { id: string; title: string; status: string; tab: BuildTab | ''; stepList: StepRow[]; builtAt: string; priority: string; steps: { done: number; total: number; left: number }; minutesLeft: number; nextModel: string; nextStep: string; needsApproval: boolean; needsSplit: boolean; pipeline: Pipeline; said: string; branch: string; pr: string; createdAt: string; updatedAt: string; held?: boolean; actions?: BuildAction[]; deleted?: boolean; deletedAt?: string };
+type Row = { id: string; title: string; status: string; tab: BuildTab | ''; stepList: StepRow[]; builtAt: string; priority: string; steps: { done: number; total: number; left: number }; minutesLeft: number; nextModel: string; nextStep: string; needsApproval: boolean; needsSplit: boolean; pipeline: Pipeline; said: string; branch: string; pr: string; createdAt: string; updatedAt: string; autoMerge?: boolean; autoMergeAnswered?: boolean; held?: boolean; actions?: BuildAction[]; deleted?: boolean; deletedAt?: string };
 type Account = { name: string; email: string; plan: string; role: string; kind?: string; label?: string; fable: boolean; fableFrom: string; parallel: number; running: number; free: number; usable: boolean; why: string; api?: { usable: boolean; why: string; spend: { day: number; week: number; dayCap: number; weekCap: number; state: string } | null } | null };
 type Status = {
   ok: boolean; at: string; table: { pending: Row[]; queued: Row[]; building: Row[] }; tabs?: Record<BuildTab, Row[]>; health?: Health; accounts: Account[];
@@ -81,7 +86,8 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
     const tickIt = () => { if (document.visibilityState === 'visible') void load(); };
     timer.current = window.setInterval(tickIt, REFRESH_MS);
     document.addEventListener('visibilitychange', tickIt);
-    return () => { if (timer.current) window.clearInterval(timer.current); document.removeEventListener('visibilitychange', tickIt); };
+    window.addEventListener('axf:orchestrator-auto-merge', tickIt);
+    return () => { if (timer.current) window.clearInterval(timer.current); document.removeEventListener('visibilitychange', tickIt); window.removeEventListener('axf:orchestrator-auto-merge', tickIt); };
   }, []);
   const act = async (path: string, body: Record<string, unknown>, what: string) => {
     setBusy(String(body.id ?? body.name ?? path));
@@ -107,6 +113,10 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
     finally { setBusy(''); }
   };
   const toggle = (id: string, on: boolean) => setSel((cur) => { const n = new Set(cur); if (on) n.add(id); else n.delete(id); return n; });
+  useEffect(() => { selectedNow = [...sel]; }, [sel]);
+  useEffect(() => () => { selectedNow = []; }, []);
+  /** Auto-merge on / off for one build or the selected ones (cards, bulk toolbar, right-click). */
+  const autoMerge = async (ids: string[], on: boolean) => { if (await setAutoMerge(ids, on, (text, tone) => { log(text, tone === 'danger' ? 'error' : tone === 'warning' ? 'warn' : 'ok'); rt.toast(text, tone); })) await load(); };
   // a build asked for (console command, search, menu): once this tab lists it, scroll it into view and flash it; the
   // card stays expanded (its steps) and marked as the current one
   const focusId = useFocusedBuild();
@@ -204,9 +214,11 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
               {view === 'archive' && <span className="fx-muted fx-small"> · every completed and archived build</span>}
               {view === 'deleted' && <span className="fx-muted fx-small"> · kept saved for good · Restore brings one back</span>}
             </h2>
-            {rows.length > 0 && offered.length > 0 && (
+            {rows.length > 0 && (
               <div className="pl-bulk" role="toolbar" aria-label={`${TAB_LABEL[view]}: bulk actions`}>
                 <Checkbox label={chosen.length ? `${chosen.length} selected` : 'Select all'} checked={chosen.length === rows.length} indeterminate={chosen.length > 0 && chosen.length < rows.length} disabled={busy === 'bulk'} onChange={(on) => setSel(on ? new Set(rows.map((r) => r.id)) : new Set())} />
+                <Button size="sm" tone="primary" icon="branch" disabled={!chosen.length || busy === 'bulk'} title={chosen.length ? `Auto-merge when done: every selected build lands by itself once its test run on current main is green (${chosen.length} selected)` : 'Select builds first'} onClick={() => void autoMerge(chosen.map((r) => r.id), true)}>Auto-merge on{chosen.length ? ` (${chosen.length})` : ''}</Button>
+                <Button size="sm" tone="neutral" icon="x" disabled={!chosen.length || busy === 'bulk'} title={chosen.length ? `Auto-merge off: every selected build waits for your Merge in the merge banner (${chosen.length} selected)` : 'Select builds first'} onClick={() => void autoMerge(chosen.map((r) => r.id), false)}>Auto-merge off{chosen.length ? ` (${chosen.length})` : ''}</Button>
                 {offered.map((a) => {
                   const ids = chosen.filter((r) => r.actions?.includes(a)).map((r) => r.id);
                   return <Button key={a} size="sm" tone={ACTION[a].tone} icon={ACTION[a].icon} disabled={!ids.length || busy === 'bulk'} title={ids.length ? `${ACTION[a].title} (${ids.length} selected)` : 'Select builds first'} onClick={() => void runAction(a, ids)}>{ACTION[a].label}{ids.length ? ` (${ids.length})` : ''}</Button>;
@@ -214,7 +226,7 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
               </div>
             )}
             {rows.length === 0 ? <div className="fx-empty">{EMPTY[view]}</div>
-              : <div className="pl-cols">{rows.map((r) => <PipelineCard key={r.id} r={r} busy={busy === r.id || busy === 'bulk'} wait={waitsFor(r.id)} launch={launchFor(r.id)} act={act} run={runAction} selected={sel.has(r.id)} onSelect={(on) => toggle(r.id, on)} showSteps={view === 'queue' || view === 'pending' || r.id === focusId} focused={r.id === focusId} />)}</div>}
+              : <div className="pl-cols">{rows.map((r) => <PipelineCard key={r.id} r={r} autoMerge={autoMerge} busy={busy === r.id || busy === 'bulk'} wait={waitsFor(r.id)} launch={launchFor(r.id)} act={act} run={runAction} selected={sel.has(r.id)} onSelect={(on) => toggle(r.id, on)} showSteps={view === 'queue' || view === 'pending' || r.id === focusId} focused={r.id === focusId} />)}</div>}
           </section>
         );
       })()}
@@ -232,7 +244,7 @@ const ROUTE_AUTO: RouteStep = { to: 'api', label: 'Auto' };
 const ROUTE_NEXT: Record<string, RouteStep> = { '': ROUTE_AUTO, api: { to: 'subscription', label: 'API' }, subscription: { to: 'auto', label: 'Subscriptions' } };
 const routeOf = (r?: string): RouteStep => ROUTE_NEXT[r ?? ''] ?? ROUTE_AUTO;
 
-function PipelineCard({ r, busy, wait, launch, act, run, selected, onSelect, showSteps, focused = false }: { r: Row; busy: boolean; wait: string; launch?: { account: string; model: string; phase: string; kind?: string; rule?: string }; act: (path: string, body: Record<string, unknown>, what: string) => Promise<void>; run: (action: BuildAction, ids: string[]) => Promise<void>; selected: boolean; onSelect: (on: boolean) => void; showSteps: boolean; focused?: boolean }) {
+function PipelineCard({ r, busy, wait, launch, act, run, selected, onSelect, showSteps, focused = false, autoMerge }: { autoMerge: (ids: string[], on: boolean) => Promise<void>; r: Row; busy: boolean; wait: string; launch?: { account: string; model: string; phase: string; kind?: string; rule?: string }; act: (path: string, body: Record<string, unknown>, what: string) => Promise<void>; run: (action: BuildAction, ids: string[]) => Promise<void>; selected: boolean; onSelect: (on: boolean) => void; showSteps: boolean; focused?: boolean }) {
   const p = r.pipeline;
   const table = r.deleted ? 'done' : r.status === 'queued' ? 'queued' : r.status === 'running' || r.status === 'waiting' ? 'building' : r.status === 'pending' ? 'pending' : 'done';
   const pl = p?.planned ?? null;
@@ -242,7 +254,8 @@ function PipelineCard({ r, busy, wait, launch, act, run, selected, onSelect, sho
         <h3 className="pd-card__title">{r.title}<span className="fx-muted fx-small fx-mono"> {r.id}</span></h3>
         {r.held && <Chip tone="warning">On hold</Chip>}
         {r.deleted ? <Chip tone="danger">Deleted</Chip> : <PriorityTag build={r.id} />}
-        {(r.actions?.length ?? 0) > 0 && <Checkbox label="Select" checked={selected} onChange={onSelect} />}
+        {r.autoMerge && <span title="Auto-merge on: lands by itself once its test run on current main is green"><Chip tone="success">Auto-merge</Chip></span>}
+        <Checkbox label="Select" checked={selected} onChange={onSelect} />
       </div>
       {r.said && <p className="fx-small fx-muted">“{r.said}”</p>}
       <div className="pd-meta">
@@ -269,6 +282,7 @@ function PipelineCard({ r, busy, wait, launch, act, run, selected, onSelect, sho
       {r.held && p?.heldAt && <p className="fx-small" title={fmtTime(p.heldAt)}><Icon name="pause" size={13} /> On hold since {fmtTime(p.heldAt)}{p.heldBy ? ` (${p.heldBy})` : ''}{p.heldWhy ? `: ${p.heldWhy}` : ''}</p>}
       {r.deleted && r.deletedAt && <p className="fx-small fx-muted"><Icon name="trash" size={13} /> Deleted {fmtTime(r.deletedAt)} · status before: {r.status}</p>}
       {p?.note && <p className="fx-small fx-muted">{p.note}</p>}
+      {!r.deleted && r.status !== 'complete' && <Switch label="Auto-merge when done" text={r.autoMerge ? 'On: main merged in, tested, lands by itself on green; red or a clash holds it and pushes you' : r.autoMergeAnswered ? 'Off: waits for your Merge in the merge banner' : 'Off (not answered yet): waits for your Merge in the merge banner'} checked={!!r.autoMerge} disabled={busy} onChange={(on) => void autoMerge([r.id], on)} />}
       <div className="fx-row fx-row--wrap">
         {table === 'pending' && <Button size="sm" tone="primary" icon="arrow-right" disabled={busy} onClick={() => act('pipeline/queue', { id: r.id }, `${r.id} → Queue`)}>Queue</Button>}
         {(table === 'pending' || table === 'queued') && <Button size="sm" tone="neutral" icon="zap" disabled={busy} title="Where this build may run: Auto (subscriptions first, then any API), API (API-key accounts only, billed per token) or Subscriptions (never API). Tap to switch." onClick={() => { const n = routeOf(p?.route); void act('pipeline/route', { id: r.id, route: n.to }, `${r.id}: route ${n.to}`); }}>Runs on: {routeOf(p?.route).label}</Button>}

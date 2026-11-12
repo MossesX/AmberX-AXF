@@ -37,6 +37,9 @@
  *                                  Queue. Every former launch path (Build manager Start, Fix with Claude, feature assist) calls this.
  *   … show <id>                    one build as the table shows it (status, steps, pipeline record)
  *   … route <id> api|subscription|auto   the per-build override: run on an API-key account, never on one, or the default
+ *   … auto-merge <id…> on|off       land by itself when done (off by default: waits for Brett's Merge in the merge banner)
+ *   … merge-banner [--queue-stdin]  the merge banner's groups (Auto-merge?, Ready to merge, Blocked, Merged)
+ *   … merge-decide <id> merge|skip|rebuild | merge-dismiss <id…>   Brett's answers in the merge banner
  *
  * One way to start builds (Brett, Nov 9 2026: "It has to be the orchestrator"): the tick is the only caller of the
  * launcher for a build. It issues a one-build dispatch token (framework/cli/dispatch-gate.mjs) and passes it in
@@ -61,10 +64,12 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as P from './pipeline-core.mjs';
 import * as orch from './web/orchestrator-core.mjs';
+import * as AM from './auto-merge-core.mjs';
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
 import { addendumBlock, saidBlock, subtitle } from '../../../../framework/core/build-origin.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { MODEL_IDS, modelKey } from '../../../../framework/core/model-policy.mjs';
+import { approverFrom } from '../../../../framework/core/model-switch.mjs';
 import * as storeCore from '../../../../framework/plan/builds-store-core.mjs';
 import { loadStore, withStore } from '../../../../framework/cli/builds-store.mjs';
 import { activeProfile } from '../../../../framework/cli/persist.mjs';
@@ -178,7 +183,7 @@ const row = (b) => {
   const p = orch.progress(b); const nx = orch.nextUp(b);
   return { id: b.id, title: b.title, status: b.status, priority: priorityLabel(effectivePriority(b)), steps: { done: p.done, total: p.total, left: p.total - p.done - p.skipped }, minutesLeft: p.minutesLeft,
     nextModel: BP.nextModel(b), nextStep: nx.step ? `${nx.step.id} ${nx.step.text}`.slice(0, 200) : '', needsApproval: nx.needsApproval, needsSplit: P.needsSplit(b), pipeline: b.pipeline ?? null, said: subtitle(b.origin, 160), branch: b.branch, pr: b.pr, createdAt: b.createdAt, updatedAt: b.updatedAt,
-    tab: BP.tabOf(b), held: BP.isHeld(b), actions: BP.actionsFor(b), deleted: !!b.deleted, deletedAt: b.deletedAt ?? '', builtAt: b.builtAt ?? '', stepList: (b.steps ?? []).slice(0, 40).map((x) => ({ id: x.id, text: str(x.text, 160), model: x.model, estimate: x.estimate ?? '', done: !!x.done, skip: !!x.skip })) };
+    tab: BP.tabOf(b), autoMerge: b.autoMerge === true, autoMergeAnswered: AM.answered(b), mergeApproval: b.mergeApproval ?? null, held: BP.isHeld(b), actions: BP.actionsFor(b), deleted: !!b.deleted, deletedAt: b.deletedAt ?? '', builtAt: b.builtAt ?? '', stepList: (b.steps ?? []).slice(0, 40).map((x) => ({ id: x.id, text: str(x.text, 160), model: x.model, estimate: x.estimate ?? '', done: !!x.done, skip: !!x.skip })) };
 };
 
 /** The whole picture for the console and the CLI. */
@@ -711,6 +716,95 @@ export function setRoute(id, route, { by = process.env.AXF_ACTOR || 'console' } 
   return out;
 }
 
+// ------------------------------------------------------------------ auto-merge and the merge banner (auto-merge-core.mjs)
+
+/**
+ * Auto-merge on or off for one build or many (right-click on any orchestrator table, the build card, the merge banner's
+ * Auto-merge? group, voice / MCP `auto-merge`). Answers the banner's question for each build. Returns { done, refused }.
+ */
+/** A yes that lets a build reach main is Brett's own: his signed-in console click (the server hands AXF_APPROVER) or an
+ * axHub approval. A session, agent or script may turn auto-merge off or skip, never on or merge. */
+export function brettYes(what, env = process.env) {
+  const a = approverFrom(env);
+  if (!a.ok) throw Object.assign(new Error(`${what} is Brett's yes (his console click or an axHub approval); ${a.why.replace(/^.*?: /, '').replace(/a model upgrade/, 'it')}`), { code: 2 });
+  return `${a.by} (${a.via})`;
+}
+
+export function setAutoMerge(ids, on, { by = process.env.AXF_ACTOR || 'console', env = process.env } = {}) {
+  if (on === true) by = brettYes('Turning auto-merge on', env);
+  const list = [...new Set((Array.isArray(ids) ? ids : [ids]).map((x) => str(x, 120).trim()).filter(Boolean))];
+  if (!list.length) throw Object.assign(new Error('no build id given'), { code: 2 });
+  const done = []; const refused = [];
+  withStore((s) => {
+    const now = nowIso();
+    for (const id of list) {
+      const b = storeCore.findBuild(s, id);
+      if (!b || b.deleted) { refused.push({ id, error: `no build "${id}"` }); continue; }
+      if (AM.merged(b)) { refused.push({ id, error: `${b.id} is already on main` }); continue; }
+      AM.setAutoMerge(b, on === true, { by, at: now });
+      b.notes.push({ text: `Auto-merge ${on ? 'on: lands by itself once main is merged in and its test run is green' : 'off: waits for Brett\'s Merge in the merge banner'} (${by}).`, at: now });
+      b.updatedAt = now;
+      done.push({ id: b.id, autoMerge: b.autoMerge });
+    }
+    return s;
+  }, { by, action: 'pipeline:auto-merge', note: list.join(',').slice(0, 200) });
+  for (const d of done) logLine({ event: 'auto-merge', build: d.id, on: d.autoMerge, by });
+  return { on: on === true, done, refused };
+}
+
+/** Brett's answer on a finished build in the merge banner: merge (his yes), skip (archive) or rebuild (queued again). */
+export function mergeDecide(id, decision, { by = process.env.AXF_ACTOR || 'console', env = process.env } = {}) {
+  if (decision === 'merge') by = brettYes('Merging a build', env);
+  let out = null;
+  withStore((s) => {
+    const b = storeCore.findBuild(s, id); if (!b || b.deleted) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+    const now = nowIso();
+    const d = AM.decision(b, decision, { by, at: now });
+    if (d.mergeApproval) b.mergeApproval = d.mergeApproval;
+    if (d.status === 'archived') { b.status = 'archived'; b.builtAt = ''; }
+    if (d.status === 'queued') {
+      // a fresh step so the dispatcher has work: rebuild the branch on current main
+      const n = b.steps.filter((x) => /^rebuild/.test(x.id)).length + 1;
+      b.steps.push(storeCore.normStep({ id: `rebuild-${n}`, text: 'Rebuild on current main: merge origin/main into the branch, keep every newer change on main, re-run the tests, push.', model: 'Opus', estimate: '30m' }, b.steps.length, { now }));
+      b.status = 'queued'; b.builtAt = ''; delete b.mergeApproval;
+      b.pipeline = BP.normPipeline({ ...(b.pipeline ?? {}), queuedAt: now, queuedBy: str(by, 80) }) ?? undefined;
+    }
+    b.notes.push({ text: d.note, at: now });
+    b.updatedAt = now; out = { id: b.id, decision, status: b.status, mergeApproval: b.mergeApproval ?? null };
+    return s;
+  }, { by, action: `pipeline:merge-${decision}`, note: id });
+  logLine({ event: `merge-${decision}`, build: id, by });
+  return out;
+}
+
+const bannerFile = () => join(pipeDir(), 'merge-banner.json');
+export const loadBanner = () => ({ dismissed: [], posted: {}, ...(readJson(bannerFile(), {}) ?? {}) });
+/** Clear builds from the Merged group (kept as dismissed ids; the build records are untouched). */
+export function dismissMerged(ids) {
+  const st = loadBanner(); const add = (Array.isArray(ids) ? ids : [ids]).map((x) => str(x, 120)).filter(Boolean);
+  st.dismissed = [...new Set([...st.dismissed, ...add])].slice(-500);
+  writeJson(bannerFile(), st);
+  return st.dismissed;
+}
+/** Remember which merge results were posted to the Breakroom (once per build and kind). */
+export function markPosted(keys) {
+  const st = loadBanner(); for (const k of keys) st.posted[str(k, 200)] = nowIso();
+  const keep = Object.entries(st.posted).sort((a, b) => b[1].localeCompare(a[1])).slice(0, 400);
+  st.posted = Object.fromEntries(keep); writeJson(bannerFile(), st);
+  return st.posted;
+}
+
+/** The merge banner: the four groups (auto-merge-core.mjs groups()); `queue` = what the merge queue knows, if any. */
+export function mergeBanner({ queue = {} } = {}) {
+  const st = loadBanner();
+  const r = AM.groups(loadStore(), { queue, dismissed: st.dismissed });
+  // results not yet told in the Breakroom: merged, and blocked builds that were set to land by themselves
+  const unposted = [...r.groups.merged.map((e) => ({ e, kind: 'merged' })), ...r.groups.blocked.filter((e) => e.autoMerge).map((e) => ({ e, kind: 'blocked' }))]
+    .filter(({ e, kind }) => !st.posted[`${kind}:${e.id}:${kind === 'blocked' ? e.why.slice(0, 60) : ''}`])
+    .map(({ e, kind }) => ({ key: `${kind}:${e.id}:${kind === 'blocked' ? e.why.slice(0, 60) : ''}`, build: e.id, agent: e.agent, kind, text: AM.chatLine(e, kind) }));
+  return { ok: true, ...r, unposted };
+}
+
 // ------------------------------------------------------------------ probe
 
 /** A login that renews within this window is not called: a renewal would leave a running build's copy on a spent token. */
@@ -853,6 +947,23 @@ async function main(argv) {
     return out({ ok: true, id: b.id, status: b.status, build: { id: b.id, title: b.title, status: b.status } }, `${b.id} filed${b.status === 'queued' ? ' and queued: the dispatcher starts it' : ' in Pending'}`);
   }
   if (cmd === 'show') { const b = storeCore.findBuild(loadStore(), rest[0]); if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 }); const r = row(b); return out({ ok: true, build: r }, `${r.id} ${r.status} ${r.steps.done}/${r.steps.total}${r.pipeline?.account ? ` on ${r.pipeline.account}` : ''}`); }
+  if (cmd === 'auto-merge') {
+    const ids = rest.filter((a, i) => !a.startsWith('--') && !(i > 0 && rest[i - 1] === '--by') && !['on', 'off'].includes(a));
+    const v = rest.find((a) => a === 'on' || a === 'off');
+    if (!v) throw Object.assign(new Error('usage: auto-merge <id…> on|off'), { code: 2 });
+    const r = setAutoMerge(ids, v === 'on', { by });
+    if (!r.done.length) throw Object.assign(new Error(r.refused.map((x) => x.error).join('; ')), { code: 2 });
+    return out({ ok: true, ...r }, [...r.done.map((d) => `${d.id}: auto-merge ${d.autoMerge ? 'on' : 'off'}`), ...r.refused.map((x) => `refused ${x.id}: ${x.error}`)].join('\n'));
+  }
+  if (cmd === 'merge-decide') { const r = mergeDecide(rest[0], rest[1], { by }); return out({ ok: true, ...r }, `${r.id}: ${r.decision} (${r.status})`); }
+  if (cmd === 'merge-dismiss') { const d = dismissMerged(rest.filter((a, i) => !a.startsWith('--') && !(i > 0 && rest[i - 1] === '--by'))); return out({ ok: true, dismissed: d.length }, `${d.length} dismissed`); }
+  if (cmd === 'merge-posted') { const p = markPosted(rest.filter((a) => !a.startsWith('--'))); return out({ ok: true, posted: Object.keys(p).length }, 'noted'); }
+  if (cmd === 'merge-banner') {
+    let queue = {};
+    if (has('queue-stdin')) { try { queue = JSON.parse(readFileSync(0, 'utf8') || '{}') || {}; } catch { queue = {}; } }
+    const r = mergeBanner({ queue });
+    return out(r, AM.GROUPS.map((g) => [`${AM.GROUP_LABEL[g]} (${r.counts[g]})`, ...r.groups[g].slice(0, 40).map((e) => `  ${e.id}${e.why ? ` · ${e.why}` : e.landing ? ' · landing' : e.tests ? ` · tests ${e.tests}, ${e.clash}` : ''}`)].join('\n')).join('\n'));
+  }
   if (cmd === 'route') { const b = setRoute(rest[0], rest[1], { by }); return out({ ok: true, id: b.id, route: b.pipeline?.route || 'auto' }, `${b.id}: route ${b.pipeline?.route || 'auto'}`); }
   if (cmd === 'intake') { const r = intake(); return out({ ok: true, ...r }, [`split: ${r.split.map((x) => `${x.id} (${x.provider}, ${x.steps})`).join(', ') || 'nothing'}`, `queued: ${r.queued.join(', ') || 'nothing'}`, ...r.skipped.map((x) => `skipped ${x.id}: ${x.error}`)].join('\n')); }
   if (cmd === 'tick') {
@@ -892,7 +1003,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto | auto-merge <id…> on|off | merge-banner | merge-decide <id> merge|skip|rebuild | merge-dismiss <id…> [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

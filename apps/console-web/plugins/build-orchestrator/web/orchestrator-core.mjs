@@ -105,6 +105,9 @@ function normBuild(b) {
     branch: str(o.branch, 200),
     pr: str(o.pr, 200),
     ...(str(o.mergedAt) ? { mergedAt: str(o.mergedAt, 40) } : {}),
+    autoMerge: o.autoMerge === true, // auto-merge-core.mjs: off = waits for Brett's Merge
+    ...(str(o.autoMergeAt) ? { autoMergeAt: str(o.autoMergeAt, 40), autoMergeBy: str(o.autoMergeBy, 120) } : {}),
+    ...(o.mergeApproval && typeof o.mergeApproval === 'object' && str(o.mergeApproval.at) ? { mergeApproval: { by: str(o.mergeApproval.by, 120), at: str(o.mergeApproval.at, 40) } } : {}),
     ...(/^P[0-3]$/.test(str(o.priority)) ? { priority: o.priority } : {}),
     createdAt: str(o.createdAt, 40) || now(),
     updatedAt: str(o.updatedAt, 40) || now(),
@@ -301,6 +304,7 @@ export function apply(state, change) {
     case 'remove': { b = find(); s.builds = s.builds.filter((x) => x !== b); log.push(`removed ${b.id}`); break; }
     case 'status': { b = find(); if (!STATUSES.includes(c.status)) throw new Error(`unknown status ${c.status}`); b.status = c.status; b.builtAt = isFinished(c.status) ? (b.builtAt || now()) : ''; log.push(`${b.id} → ${c.status}`); break; }
     case 'archive': { b = find(); b.status = 'archived'; log.push(`archived ${b.id}`); break; }
+    case 'auto-merge': { b = find(); if (c.on !== false && !(str(c.approver?.by).trim() && ['console', 'axhub'].includes(str(c.approver?.via)))) throw new Error(`turning auto-merge on for ${b.id} is Brett's yes (his console click or an axHub approval); a session, agent or script may only turn it off`); b.autoMerge = c.on !== false; b.autoMergeAt = now(); b.autoMergeBy = str(c.approver?.by || c.by || '', 120); log.push(`${b.id} auto-merge ${b.autoMerge ? 'on' : 'off'}`); break; } // auto-merge-core.mjs
     case 'hide': case 'unhide': { b = find(); b.hidden = c.action === 'hide'; log.push(`${c.action} ${b.id}`); break; }
     case 'note': { b = find(); if (!str(c.text).trim()) throw new Error('empty note'); b.notes.push({ text: str(c.text, 2000), at: now() }); log.push(`note on ${b.id}`); break; }
     case 'step': { b = find(); const st = stepOf(b); const ps = phases(b); const ph = ps.find((p) => p.steps.some((x) => x.id === st.id));

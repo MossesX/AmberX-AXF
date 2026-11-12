@@ -189,6 +189,66 @@
         "title": "Deleted builds",
         "text": "Opens the Deleted tab: every deleted build, kept for good and restorable.",
         "kind": "menu"
+      },
+      {
+        "target": "auto-merge-when-done",
+        "title": "Auto-merge when done",
+        "text": "On: when this build finishes, main is merged in, it is tested in the merge queue and it lands on main by itself if the tests pass. Red tests or a clash hold it and push you a Landing blocked banner. Off (the default): it waits in the merge banner for your Merge. Also on the right-click menu of every orchestrator table; with builds selected it sets all of them.",
+        "kind": "toggle"
+      },
+      {
+        "target": "auto-merge-on",
+        "title": "Auto-merge on",
+        "text": "Turns auto-merge on for every selected build: each lands by itself once its tests pass on current main.",
+        "kind": "button"
+      },
+      {
+        "target": "auto-merge-off",
+        "title": "Auto-merge off",
+        "text": "Turns auto-merge off for every selected build: each waits for your Merge in the merge banner.",
+        "kind": "button"
+      },
+      {
+        "target": "merge-banner",
+        "title": "Merge banner",
+        "text": "Builds grouped by what they need from you: Auto-merge? (answer On or Off for each new build), Ready to merge (finished, tests and clash shown), Blocked (tests failed or it clashes with main) and Merged (landed, with the commit). Each group folds and has Select all. Hides when empty.",
+        "kind": "banner"
+      },
+      {
+        "target": "merge",
+        "title": "Merge",
+        "text": "Merges this one build: the merge queue tests it on current main and lands it if the tests pass. Tap twice to confirm. Only your own click counts.",
+        "kind": "button"
+      },
+      {
+        "target": "skip",
+        "title": "Skip",
+        "text": "Never merge this build: it moves to the Archive.",
+        "kind": "button"
+      },
+      {
+        "target": "rebuild",
+        "title": "Rebuild",
+        "text": "Sends the build back to the Queue to be rebuilt on current main, keeping every newer change.",
+        "kind": "button"
+      },
+      {
+        "target": "dismiss",
+        "title": "Dismiss",
+        "text": "Clears landed builds from the Merged group. The builds themselves are untouched.",
+        "kind": "button"
+      },
+      {
+        "target": "on",
+        "title": "On",
+        "text": "Auto-merge this build when it is done.",
+        "kind": "button"
+      },
+      {
+        "target": "off",
+        "title": "Off",
+        "text": "Keep auto-merge off: the build waits for your Merge.",
+        "kind": "button"
       }
     ],
     "intros": []

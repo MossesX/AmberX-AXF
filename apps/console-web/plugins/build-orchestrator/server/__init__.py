@@ -401,14 +401,17 @@ PIPELINE_CLI = CLI.parent / "pipeline.mjs"
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{0,79}$")
 
 
-def _pipeline(*args: str, who: str = "") -> dict[str, Any]:
+def _pipeline(*args: str, who: str = "", approver: str = "", stdin: str | None = None) -> dict[str, Any]:
     """Run the pipeline CLI (reads the store, the slots store, the accounts and the dispatcher's state file; writes go
-    through the builds store under its lock). `who` = Brett's name on a queue / unqueue so the build says who moved it."""
+    through the builds store under its lock). `who` = Brett's name on a queue / unqueue so the build says who moved it.
+    `approver` = his name only when the request is his own console click (auto-merge on, Merge): the CLI checks it."""
     env = {k: v for k, v in os.environ.items() if k not in APPROVER_KEYS}
     if who:
         env["AXF_ACTOR"] = who
+    if approver:
+        env.update(AXF_APPROVER=approver, AXF_APPROVER_VIA="console")
     cmd = ["node", str(PIPELINE_CLI), *args, "--json"]
-    proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, timeout=120, env=env)
+    proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, timeout=120, env=env, input=stdin)
     out = proc.stdout.strip().splitlines()
     try:
         res = json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
@@ -584,6 +587,95 @@ async def pipeline_route(request: Request) -> dict[str, Any]:
     if route == "api" and not who:
         raise HTTPException(403, "sending a build to an API account is Brett's own click in the console (it bills per token)")
     return _pipeline("route", _build_id(body.get("id")), route, "--by", (who or "console")[:80])
+
+
+# ---- auto-merge and the merge banner (auto-merge-core.mjs; Brett, Nov 11 2026)
+MERGE_DECISIONS = ("merge", "skip", "rebuild")
+CHAT_CAP = "axf.group-chat@1"
+QUEUE_CAP = "axf.merge-queue@1"
+
+
+def _ids(body: dict[str, Any]) -> list[str]:
+    raw = body.get("ids")
+    ids = raw if isinstance(raw, list) else [body.get("id")]
+    out = [_build_id(x) for x in ids[:200]]
+    if not out:
+        raise HTTPException(400, "no build id given")
+    return out
+
+
+@router.post("/pipeline/auto-merge")
+async def pipeline_auto_merge(request: Request) -> dict[str, Any]:
+    """{ids: [id…] | id, on: bool}: land by itself when done (on) or wait for Brett's Merge in the merge banner (off, the
+    default). Turning it on is Brett's own click (it lets a build reach main without another yes); anyone may turn it off.
+    Answers the merge banner's Auto-merge? question for each build: { done: [{id, autoMerge}], refused: [{id, error}] }."""
+    body = await _json_body(request)
+    if not isinstance(body.get("on"), bool):
+        raise HTTPException(400, "on is true or false")
+    ids = _ids(body)
+    who = brett_click(request)
+    if body["on"] and not who:
+        raise HTTPException(403, "turning auto-merge on is Brett's own click in the console (the build then reaches main without another yes)")
+    return _pipeline("auto-merge", *ids, "on" if body["on"] else "off", "--by", (who or "console")[:80], approver=who if body["on"] else "")
+
+
+def _post_results(unposted: list[dict[str, Any]]) -> list[str]:
+    """Tell the Breakroom group chat each merge result once, as the build's owning employee (axf.group-chat@1)."""
+    svc = plugin_services.get(CHAT_CAP)
+    if svc is None or not unposted:
+        return []
+    done = []
+    for u in unposted[:10]:
+        try:
+            svc.post(str(u.get("agent") or ""), str(u.get("text") or ""), f"merge:{u.get('build')}")
+        except Exception:  # noqa: BLE001 - the chat is a courtesy; the banner never fails on it
+            continue
+        done.append(str(u.get("key") or ""))
+    if done:
+        try:
+            _pipeline("merge-posted", *[k for k in done if k])
+        except HTTPException:
+            pass
+    return done
+
+
+@router.get("/merge-banner")
+def merge_banner() -> dict[str, Any]:
+    """The merge banner (merge-banner@1): Auto-merge? (every build on its way whose question is unanswered), Ready to merge
+    (finished, not on main: tests and clash from the merge queue), Blocked (red tests or a clash), Merged (last 7 days).
+    New merge results are posted once in the Breakroom group chat as the build's owning employee."""
+    queue: dict[str, Any] = {}
+    svc = plugin_services.get(QUEUE_CAP)
+    if svc is not None:
+        try:
+            queue = svc.queue() or {}
+        except Exception:  # noqa: BLE001 - without the merge queue the groups still show, tests read 'unknown'
+            queue = {}
+    res = _pipeline("merge-banner", "--queue-stdin", stdin=json.dumps(queue))
+    res["posted"] = _post_results(res.pop("unposted", []) or [])
+    return res
+
+
+@router.post("/merge-banner/decide")
+async def merge_banner_decide(request: Request) -> dict[str, Any]:
+    """{id, decision: merge|skip|rebuild}: Brett's answer on one finished build, one at a time. merge = his yes (the merge
+    queue tests it on current main and lands it on green; Brett's own click only), skip = archived, never merged,
+    rebuild = back in the Queue to be rebuilt on current main."""
+    body = await _json_body(request)
+    decision = str(body.get("decision") or "")
+    if decision not in MERGE_DECISIONS:
+        raise HTTPException(400, "decision is merge, skip or rebuild")
+    who = brett_click(request)
+    if decision == "merge" and not who:
+        raise HTTPException(403, "merging is Brett's own click in the console: nothing reaches main without his yes")
+    return _pipeline("merge-decide", _build_id(body.get("id")), decision, "--by", (who or "console")[:80], approver=who if decision == "merge" else "")
+
+
+@router.post("/merge-banner/dismiss")
+async def merge_banner_dismiss(request: Request) -> dict[str, Any]:
+    """{ids: [id…] | id}: clear landed builds from the Merged group (the build records are untouched)."""
+    body = await _json_body(request)
+    return _pipeline("merge-dismiss", *_ids(body))
 
 
 def request_build(title: str, detail: str = "", *, by: str = "console", source: str = "", said: str = "", priority: str = "",

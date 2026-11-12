@@ -1513,7 +1513,10 @@
         },
         "archive": {},
         "hide": {},
-        "unhide": {}
+        "unhide": {},
+        "auto-merge": {
+          "on": "boolean"
+        }
       },
       "stepFields": {
         "text": "string",
@@ -3682,7 +3685,12 @@
           },
           "archive": {},
           "hide": {},
-          "unhide": {}
+          "unhide": {},
+          "auto-merge": {
+            "on": {
+              "type": "boolean"
+            }
+          }
         },
         "paths": "entity"
       },

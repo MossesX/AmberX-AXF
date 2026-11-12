@@ -6,6 +6,11 @@ import { pluginApi } from '@console/plugins';
 import { FOLDER, OrchestratorPage, TABS, openTab } from './ui';
 import { focusBuild } from './focus';
 import { BUILD_ACTIONS, type BuildAction } from '@console/axf/core/build-pipeline.mjs';
+import { MergeBanner, setAutoMerge } from './merge-banner';
+import { selectedBuilds } from './pipeline';
+
+/** The right-click Auto-merge item's check mark (a runtime counter: 1 = on for every build it acts on). */
+const AUTO_MERGE_COUNTER = 'build-orchestrator.auto-merge';
 
 const ACTION_LABEL: Record<BuildAction, string> = { unqueue: 'Back to Pending', hold: 'Hold (stays in the Queue)', release: 'Release from hold', archive: 'Move to the Archive', unarchive: 'Bring back from the Archive', delete: 'Delete (kept in Deleted)', restore: 'Restore' };
 const ACTION_ICON: Record<BuildAction, string> = { unqueue: 'arrow-left', hold: 'pause', release: 'play', archive: 'package', unarchive: 'undo', delete: 'trash', restore: 'undo' };
@@ -24,7 +29,7 @@ const ACTION_ICON: Record<BuildAction, string> = { unqueue: 'arrow-left', hold: 
  * release|archive|unarchive|delete|restore>:<build>[,<build>…] → POST pipeline/action (the same call as the cards, the
  * bulk toolbar, the MCP command pipeline-build-action and `pipeline.mjs <action> <id…>`).
  */
-type TabRow = { id: string; title: string; status: string; tab: string; nextModel: string; actions?: BuildAction[]; pipeline?: { planned?: { account: string; model: string } | null; account?: string } | null };
+type TabRow = { id: string; title: string; status: string; tab: string; autoMerge?: boolean; nextModel: string; actions?: BuildAction[]; pipeline?: { planned?: { account: string; model: string } | null; account?: string } | null };
 const pipeApi = pluginApi(FOLDER, 'Build orchestrator', { unavailable: 'The build orchestrator is switched off or its server part is not running.' });
 let rows: TabRow[] = []; let loadedAt = 0;
 async function loadRows(force = false): Promise<TabRow[]> {
@@ -46,7 +51,7 @@ setPriorityHost({
 export const plugin: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.build-orchestrator',
   label: 'Build orchestrator',
-  version: '0.5.0',
+  version: '0.6.0',
   appMenu,
   register(rt) {
     /** A tab by id or label ("pending", "Pending", "all builds"), or ''. */
@@ -89,6 +94,18 @@ export const plugin: AxfWebLibrary = {
           .catch((e: Error) => rt.toast(e.message, 'danger'));
       }, { label: `Build orchestrator: ${ACTION_LABEL[action]} (one build or several, comma separated)` });
     }
+    // Auto-merge (Brett, Nov 11 2026): build-orchestrator.auto-merge:<build>[,<build>…]:<on|off|toggle>. The right-click item on
+    // every orchestrator table and the merge banner run it; toggle turns it on unless every named build already has it on.
+    rt.actions.register('build-orchestrator.auto-merge', ([arg, mode]) => {
+      const ids = decodeURIComponent(arg ?? '').split(',').map((x) => x.trim()).filter(Boolean);
+      if (!ids.length) { rt.toast('Name a build: build-orchestrator.auto-merge:<build>:on|off', 'warning'); return; }
+      const on = mode === 'on' ? true : mode === 'off' ? false : !ids.every((id) => rows.find((r) => r.id === id)?.autoMerge);
+      void setAutoMerge(ids, on, (text, tone) => rt.toast(text, tone, 'Build orchestrator')).then((ok) => {
+        if (!ok) return;
+        void loadRows(true).catch(() => undefined);
+        window.dispatchEvent(new CustomEvent('axf:orchestrator-auto-merge'));
+      });
+    }, { label: 'Build orchestrator: auto-merge on or off (one build or several, comma separated; :on, :off or :toggle)', params: true });
     rt.search.add('build-orchestrator.builds', () => {
       if (Date.now() - loadedAt > 30_000) void loadRows().catch(() => undefined);
       return rows.map((r) => ({
@@ -100,13 +117,23 @@ export const plugin: AxfWebLibrary = {
     rt.contextExtras.set('*:build-orchestrator', (target, payload) => {
       if (!payload || !['axf-build-item', 'axf-plan-feature', 'axf-orchestrator-build'].includes(target ?? '')) return [];
       const id = String(payload).replace(/^pending:/, '');
-      const out = [{ id: 'build-orchestrator.open', label: 'Open in Build orchestrator', icon: 'layers', action: `build-orchestrator.open:${encodeURIComponent(id)}` }];
+      const out: { id: string; label: string; icon: string; action: string; checked?: string }[] = [{ id: 'build-orchestrator.open', label: 'Open in Build orchestrator', icon: 'layers', action: `build-orchestrator.open:${encodeURIComponent(id)}` }];
       const b = rows.find((x) => x.id === id);
       if (b && b.status === 'pending') out.push({ id: 'build-orchestrator.start', label: 'Queue it (start when its turn comes)', icon: 'play', action: `build-orchestrator.start:${encodeURIComponent(id)}` });
       for (const a of b?.actions ?? []) out.push({ id: `build-orchestrator.${a}`, label: ACTION_LABEL[a], icon: ACTION_ICON[a], action: `build-orchestrator.${a}:${encodeURIComponent(id)}` });
+      // Auto-merge when done (checkable), on every table: right-clicking a selected build acts on every selected one
+      if (!b || (b.status !== 'complete' && b.tab !== 'deleted')) {
+        const sel = selectedBuilds();
+        const ids = sel.length > 1 && sel.includes(id) ? sel : [id];
+        const on = ids.every((x) => rows.find((r) => r.id === x)?.autoMerge);
+        rt.setBadge(AUTO_MERGE_COUNTER, on ? 1 : 0);
+        out.push({ id: 'build-orchestrator.auto-merge', label: `Auto-merge when done${ids.length > 1 ? ` (${ids.length} selected)` : ''}`, icon: 'branch', action: `build-orchestrator.auto-merge:${encodeURIComponent(ids.join(','))}:${on ? 'off' : 'on'}`, checked: `counter:${AUTO_MERGE_COUNTER}` });
+      }
       return out;
     });
   },
+  // the merge banner (after the push banner, 4.8): Auto-merge?, Ready to merge, Blocked, Merged; hides when empty
+  banners: [{ id: 'merge-banner', label: 'Merge banner', icon: 'branch', workIcon: 'refresh', order: 4.85, settingsTab: 'build-orchestrator', render: () => <MergeBanner /> }],
   views: { 'build-orchestrator': { title: 'Build orchestrator', icon: 'layers', keywords: ['orchestrator', 'builds', 'build manager', 'pending', 'queue', 'active', 'incomplete', 'complete', 'errors', 'archive', 'deleted', 'hold', 'on hold', 'restore', 'accounts', 'health', 'fable', 'opus', 'steps', 'phases', 'approve model'], render: () => <OrchestratorPage /> } },
   nav: { label: 'Builds', items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', view: 'build-orchestrator' }] },
   contextMenu: [{ id: 'build-orchestrator.pending', target: 'axf-pending-item', items: [{ id: 'build-orchestrator.open', label: 'Open in Build orchestrator', icon: 'layers', action: 'build-orchestrator.open' }] },

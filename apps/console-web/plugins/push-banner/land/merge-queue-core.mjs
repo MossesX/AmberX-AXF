@@ -50,6 +50,25 @@ export const STATES = Object.freeze({
 });
 
 /**
+ * Auto-merge (build auto-merge-switch, Brett Nov 11 2026): every builds@1 record carries `autoMerge` (false by default).
+ * Off = its PR stays out of the queue until Brett says Merge (`mergeApproval`); on = it joins by itself and lands only
+ * when its queue run is green. The orchestrator's auto-merge-core.mjs gate() is the same rule (the tests hold the two
+ * together; this folder runs on the host with node built-ins only and never imports another plugin).
+ */
+export const AWAITS_BRETT = 'waiting for Brett: auto-merge is off (Merge it in the merge banner, Ready to merge)';
+export const awaitsBrett = (b) => !!b && b.autoMerge !== true && !str(b?.mergeApproval?.at);
+/** The high-priority push (notify type merge.blocked, key land:<build>) when a build set to auto-merge can't land. */
+export function autoMergeBlocked(p, why) {
+  const id = str(p?.build, 120);
+  return {
+    source: 'push-banner', key: `land:${id}`, severity: 'error',
+    title: `Landing blocked: ${id} (auto-merge held it)`.slice(0, 200),
+    body: `${id} was set to merge by itself, but it did not land: ${str(why, 400)} PR #${num(p?.number) || '?'}. It waits for you in the merge banner (Blocked).`.slice(0, 600),
+    meta: { build: id, pr: num(p?.number) || 0 },
+  };
+}
+
+/**
  * Why an open PR can't be in the queue (plain words), or '' when it can. `pr` is what the runner knows about it:
  *   { number, draft, head, ci: PR checks on its head (success|failure|running|none), ui: UI Review hold ('' = none),
  *     landHeld: auto-land hold reason, conflicts: [code files] }
@@ -60,6 +79,8 @@ export function notReady(pr, ctl = {}, { waitUi = true, redJoins = false } = {})
   if (!n) return 'not a pull request';
   if (pr.draft) return 'it is a draft';
   if (pr.fork) return 'it comes from a fork';
+  // auto-merge off (the default): nothing reaches main without Brett's yes; Add back / Merge on the PR counts as his yes
+  if (pr.awaitsBrett && !(ctl.added || []).includes(n)) return AWAITS_BRETT;
   const removed = ctl.removed?.[n];
   if (removed && (!removed.head || removed.head === pr.head) && !(ctl.added || []).includes(n)) return `taken out of the queue by hand${removed.why ? ` (${str(removed.why, 120)})` : ''}`;
   const kicked = ctl.kicked?.[n];

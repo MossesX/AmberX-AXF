@@ -2,15 +2,16 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.build-orchestrator",
   "name": "Build orchestrator",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Breaks every build into small steps (30 min or less), each pinned to Fable or Opus, and runs the build pipeline (Brett, Nov 8 2026): every build gets an id and a Claude split (Fable only where needed) and sits in Pending; Brett moves it to the Queue; the dispatcher (pipeline.mjs on the VPS, every minute) watches the Claude accounts (which have Fable, parallel per account) and the agent slots and, when a slot is free, starts a headless session for the next Queue build on an account that runs its next phase's model. The only place that browses and manages builds (Brett, Nov 10 2026; the Build manager is retired): tabs Pending, Queue (each build's steps, planned model and account), Active, Incomplete, Complete, Errors, Archive (every completed and archived build), Deleted (soft-deleted builds kept forever, restorable), then Accounts (health every 5 minutes: sign-in, credits, Fable), All builds, Approvals and Rules. When a build's turn comes the dispatcher makes the final account pick, subscriptions first (in Brett's order), then any API account, moving on until one accepts, and records which account took it. Tracker is the one builds store, _claude/builds/store.json, so any session or account continues the build (orchestrator.mjs next | brief | act; pipeline.mjs status | queue | unqueue | hold | release | archive | unarchive | delete | restore | split | tick).",
+  "description": "Breaks every build into small steps (30 min or less), each pinned to Fable or Opus, and runs the build pipeline (Brett, Nov 8 2026): every build gets an id and a Claude split (Fable only where needed) and sits in Pending; Brett moves it to the Queue; the dispatcher (pipeline.mjs on the VPS, every minute) watches the Claude accounts (which have Fable, parallel per account) and the agent slots and, when a slot is free, starts a headless session for the next Queue build on an account that runs its next phase's model. The only place that browses and manages builds (Brett, Nov 10 2026; the Build manager is retired): tabs Pending, Queue (each build's steps, planned model and account), Active, Incomplete, Complete, Errors, Archive (every completed and archived build), Deleted (soft-deleted builds kept forever, restorable), then Accounts (health every 5 minutes: sign-in, credits, Fable), All builds, Approvals and Rules. When a build's turn comes the dispatcher makes the final account pick, subscriptions first (in Brett's order), then any API account, moving on until one accepts, and records which account took it. Tracker is the one builds store, _claude/builds/store.json, so any session or account continues the build (orchestrator.mjs next | brief | act; pipeline.mjs status | queue | unqueue | hold | release | archive | unarchive | delete | restore | split | tick). Auto-merge (0.6.0, Brett Nov 11 2026): every build carries autoMerge, off by default. Off = the finished build waits in the merge banner's Ready to merge for Brett's Merge (one at a time; the merge queue keeps its PR out until then). On = main merged in, the merge queue's test run is the gate, it lands only on green; red or a clash holds it and pushes the high-priority merge.blocked banner. Set it from the right-click item on every orchestrator table (multi-select aware), the build card, the merge banner, REST, MCP, CLI (pipeline.mjs auto-merge) and voice (control_act planner.builds auto-merge). The merge banner groups Auto-merge?, Ready to merge, Blocked and Merged, each collapsible with select-all; merge results are posted in the Breakroom group chat as the owning employee.",
   "targets": [
     "axf-console"
   ],
   "provides": [
+    "banner:merge-banner",
     "view:build-orchestrator",
     "settings-tab:build-orchestrator",
     "service:orchestrator@1",
@@ -24,9 +25,12 @@
     "service:axf.agent-slots@1",
     "service:axf.merge-queue@1",
     "service:plans@1",
-    "service:ui-review@1"
+    "service:ui-review@1",
+    "service:axf.group-chat@1"
   ],
-  "banner": false,
+  "banner": [
+    "merge-banner"
+  ],
   "tabable": {
     "view": "build-orchestrator",
     "label": "Orchestrator",
@@ -528,6 +532,94 @@
           }
         },
         "output": "{ settings }"
+      },
+      {
+        "id": "auto-merge",
+        "route": "POST /pipeline/auto-merge",
+        "title": "Auto-merge a build when done",
+        "description": "Turn auto-merge on or off for one build or many. On: when the build finishes, main is merged in, the merge queue tests it and it lands by itself on green; red or a clash holds it and pushes you. Off (the default): it waits for your Merge in the merge banner. Turning it on is Brett's own click. Say 'auto-merge the skins build' or 'turn auto-merge off for these builds'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Build ids (multi-select)"
+            },
+            "id": {
+              "type": "string",
+              "description": "One build id (instead of ids)"
+            },
+            "on": {
+              "type": "boolean",
+              "description": "true = auto-merge on, false = off"
+            }
+          },
+          "required": [
+            "on"
+          ]
+        },
+        "output": "{ on, done: [{ id, autoMerge }], refused: [{ id, error }] }"
+      },
+      {
+        "id": "merge-banner",
+        "route": "GET /merge-banner",
+        "title": "Merge banner",
+        "description": "The merge banner's groups: Auto-merge? (builds whose question is unanswered), Ready to merge (finished, tests and clash shown), Blocked (red tests or a clash) and Merged (last 7 days, with the commit). Say 'what's ready to merge'.",
+        "readOnly": true,
+        "output": "{ groups: { ask, ready, blocked, merged }, counts, total }"
+      },
+      {
+        "id": "merge-decide",
+        "route": "POST /merge-banner/decide",
+        "title": "Merge, skip or rebuild a finished build",
+        "description": "Brett's answer on one finished build, one at a time: merge (his yes; the merge queue tests it on current main and lands it on green; Brett's own click), skip (archived, never merged) or rebuild (back in the Queue on current main).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            },
+            "decision": {
+              "type": "string",
+              "enum": [
+                "merge",
+                "skip",
+                "rebuild"
+              ],
+              "description": "The answer"
+            }
+          },
+          "required": [
+            "id",
+            "decision"
+          ]
+        },
+        "output": "{ id, decision, status }"
+      },
+      {
+        "id": "merge-dismiss",
+        "route": "POST /merge-banner/dismiss",
+        "title": "Clear merged builds from the merge banner",
+        "description": "Take landed builds out of the merge banner's Merged group (the builds are untouched).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "id": {
+              "type": "string"
+            }
+          }
+        },
+        "output": "{ dismissed }"
       }
     ]
   },

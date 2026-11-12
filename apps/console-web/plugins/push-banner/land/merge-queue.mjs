@@ -119,6 +119,13 @@ const agentOf = (b, pr) => {
   return by && !/^(backfill|brett|console|orchestrator)$/i.test(by) ? by : (pr?.user?.login || '');
 };
 
+/** A build set to auto-merge didn't land (red run or a clash): hold it and push Brett the high-priority banner, once per head. */
+async function autoBlocked({ api, dry, p, why, sent }) {
+  if (dry || !p?.autoMerge || !p.build) return;
+  const k = `${p.number}:${p.head || ''}`; if (sent?.has(k)) return; sent?.add(k);
+  await api('POST', '/api/alerts', q.autoMergeBlocked(p, why));
+}
+
 export async function queueRound({ s, git, gh, api, dry = false, now = () => new Date(), log = () => {}, fetched = false } = {}) {
   const cfg = readQueueConfig(s); const prev = readQueue(s); let ctl = readQueueControl(s);
   const at = now().toISOString();
@@ -159,6 +166,7 @@ export async function queueRound({ s, git, gh, api, dry = false, now = () => new
     if (fact.ci === 'none') fact.conflicted = git(['merge-tree', '--write-tree', '--quiet', `${s.remote}/${s.base}`, fact.head]).code === 1;
     if (cfg.waitUi) { const u = await api('GET', `/api/plugins/push-banner/ui-hold?branch=${encodeURIComponent(fact.branch)}&pr=${fact.number}`); fact.ui = u ? String(u.hold || '') : 'unknown'; }
     if (b && landCtl.holds?.[b.id]) fact.landHeld = landCtl.holds[b.id].why || 'held';
+    if (b) { fact.autoMerge = b.autoMerge === true; fact.awaitsBrett = q.awaitsBrett(b); }
     fact.why = q.notReady(fact, ctl, { waitUi: cfg.waitUi, redJoins: cfg.mode === 'batch' });
     prs.push(fact);
   }
@@ -221,6 +229,7 @@ export async function queueRound({ s, git, gh, api, dry = false, now = () => new
       ctl = q.applyQueueControl(ctl, 'kick', e.pr, { why, head: e.head, at });
       await gh('POST', `/repos/${s.slug}/issues/${e.pr}/comments`, { body: `**Kicked out of the merge queue.** ${why}\n\nPush a fix to this branch and it rejoins the queue by itself. The PRs behind it are retested without it.` }).catch(() => {});
       await api('POST', '/api/alerts', { source: 'push-banner', key: `queue:${e.pr}`, severity: 'warning', title: `Merge queue: #${e.pr} kicked out`.slice(0, 200), body: why });
+      await autoBlocked({ api, dry, p: prs.find((x) => x.number === e.pr), why });
     }
     kicked.push({ pr: e.pr, title: prs.find((x) => x.number === e.pr)?.title || '', head: e.head, why, at, runUrl: e.runUrl || '' });
     stack = stack.slice(0, i);
@@ -243,6 +252,7 @@ export async function queueRound({ s, git, gh, api, dry = false, now = () => new
         const why = `#${p.number} conflicts with main in code (${c.conflicts.slice(0, 3).join(', ')}). Merge main in and fix them.`;
         if (!dry) ctl = q.applyQueueControl(ctl, 'kick', p.number, { why, head: p.head, at });
         kicked.push({ pr: p.number, title: p.title, head: p.head, why, at }); p.why = `kicked out: ${why}`;
+        await autoBlocked({ api, dry, p, why });
       } else skipped.set(p.number, `conflicts with ${ahead.map((n) => `#${n}`).join(', ')} ahead of it in code; tested once they merge`);
       continue;
     }
@@ -384,6 +394,7 @@ async function batchRound({ s, git, gh, api, dry, at, cfg, prev, ctl, prs, rank,
         ctl = q.applyQueueControl(ctl, 'kick', d.kick, { why, head: e.head, at });
         await gh('POST', `/repos/${s.slug}/issues/${d.kick}/comments`, { body: `**Kicked out of the merge queue.** ${why}\n\nPush a fix to this branch and it rejoins the queue by itself. The rest of the batch is tested without it.` }).catch(() => {});
         await api('POST', '/api/alerts', { source: 'push-banner', key: `queue:${d.kick}`, severity: 'warning', title: `Merge queue: #${d.kick} kicked out`.slice(0, 200), body: why });
+        await autoBlocked({ api, dry, p: prs.find((x) => x.number === d.kick), why });
       }
       kicked.push({ pr: d.kick, title: prOf(d.kick).title || '', head: e.head, why, at, runUrl: batch.runUrl || '' });
       const p = prs.find((x) => x.number === d.kick); if (p) p.why = `kicked out: ${why}`;
@@ -410,6 +421,7 @@ async function batchRound({ s, git, gh, api, dry, at, cfg, prev, ctl, prs, rank,
           const why = `#${p.number} conflicts with main in code (${c.conflicts.slice(0, 3).join(', ')}). Merge main in and fix them.`;
           if (!dry) ctl = q.applyQueueControl(ctl, 'kick', p.number, { why, head: p.head, at });
           kicked.push({ pr: p.number, title: p.title, head: p.head, why, at }); p.why = `kicked out: ${why}`;
+          await autoBlocked({ api, dry, p, why });
         } else skipped.set(p.number, `conflicts in code with ${members.map((m) => `#${m.pr}`).join(', ') || 'the batch'}; goes in the next batch`);
         continue;
       }

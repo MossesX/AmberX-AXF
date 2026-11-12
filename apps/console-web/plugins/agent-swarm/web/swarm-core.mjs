@@ -578,6 +578,12 @@ export function applyChange(state, change, roster, at) {
       const text = str(c.text, 1000).trim(); if (!text) throw new Error('empty message');
       if (!post(s, [{ from: 'brett', kind: 'brett', text }], at)) throw new Error('the group chat is off'); log.push('posted'); break;
     }
+    case 'post-as': { // a work result said by the agent who owns it (merge banner results; Boss when nobody on the roster owns it)
+      const text = str(c.text, 1000).trim(); if (!text) throw new Error('empty message');
+      const agent = str(c.agent, 40); const own = agent && roster?.agents?.some((a) => a.id === agent);
+      const m = own ? { from: agent, kind: 'report', jobId: str(c.jobId, 120) || 'merge', text } : { from: BOSS.id, kind: 'merge', text };
+      if (!post(s, [m], at)) throw new Error('the group chat is off'); log.push(`posted as ${m.from}`); break;
+    }
     case 'suspend': {
       const until = str(c.until, 40); const reason = str(c.reason, 300).trim();
       if (!(until > at)) throw new Error('a suspension needs an end in the future');
