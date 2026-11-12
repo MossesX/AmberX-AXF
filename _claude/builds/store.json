@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3411,
- "updatedAt": "2026-11-12T03:00:15.300Z",
+ "rev": 3412,
+ "updatedAt": "2026-11-12T03:00:26.343Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -160953,7 +160953,7 @@
    "branch": "claude/console-and-axhub-retry-failed-calls-themselves-no-claude-needed",
    "pr": "",
    "createdAt": "2026-11-12T02:37:24.132Z",
-   "updatedAt": "2026-11-12T02:54:22.638Z",
+   "updatedAt": "2026-11-12T03:00:13.861Z",
    "builtAt": "",
    "notes": [
     {
@@ -161065,12 +161065,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T03:00:13.861Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-12T02:38:02.971Z",
-     "updatedAt": "2026-11-12T02:38:45.062Z"
+     "updatedAt": "2026-11-12T03:00:14.133Z"
     },
     {
      "id": "s5",
@@ -161147,7 +161147,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

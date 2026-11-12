@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T03:00:15.300Z",
+ "updatedAt": "2026-11-12T03:00:26.343Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -100632,7 +100632,7 @@
    "branch": "claude/console-and-axhub-retry-failed-calls-themselves-no-claude-needed",
    "pr": "",
    "createdAt": "2026-11-12T02:37:24.132Z",
-   "updatedAt": "2026-11-12T02:54:22.638Z",
+   "updatedAt": "2026-11-12T03:00:13.861Z",
    "builtAt": "",
    "notes": [
     {
@@ -100710,8 +100710,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T03:00:13.861Z",
      "note": "",
      "uid": "st-mwcxudd501mdnd"
     },
