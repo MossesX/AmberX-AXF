@@ -664,6 +664,34 @@ def _register_claude_settings_tools(mcp: MCPServer) -> None:
             raise ToolError("invalid: send values as {key: value}")
         return await go("set", *pairs, "--by", by or "mcp")
 
+    @mcp.tool(annotations=READ)
+    async def claude_view_get(device: str = "") -> dict[str, Any]:
+        """How the Claude settings page looks on one device: mode (classic | tabbed), tab position (top, bottom, left,
+        right), labels (both, words, icons). Saved per device. Empty `device` lists every device."""
+        return await go("view", "get", "--device", device) if device else await go("view", "devices")
+
+    @mcp.tool(annotations=IDEMPOTENT)
+    async def claude_view_set(device: str, values: dict[str, Any], by: str = "") -> dict[str, Any]:
+        """Change the Claude settings view on one device. `values`: mode (classic | tabbed), position (top, bottom,
+        left, right), labels (both, words, icons), tab. `claude_view_get` lists the devices."""
+        pairs = [f"{k}={v}" for k, v in (values or {}).items()]
+        if not pairs:
+            raise ToolError("invalid: send values as {mode, position, labels, tab}")
+        return await go("view", "set", *pairs, "--device", device, "--by", by or "mcp")
+
+    @mcp.tool(annotations=READ)
+    async def claude_policy_get() -> dict[str, Any]:
+        """axHub's live tool policy: per service and tool, allow / veto / confirm / deny and the hold length. Read only:
+        no session, token or tool can change it. Only Brett does, from his own hub session (Settings, Plugins, Claude,
+        Approvals & veto)."""
+        return await go("policy", "get")
+
+    @mcp.tool(annotations=READ)
+    async def claude_policy_plan_get() -> dict[str, Any]:
+        """What Brett's default (hold only VPS writes and account switches, reads run at once) would change in axHub's
+        live policy. Read only: only his click in the console applies it."""
+        return await go("policy", "plan")
+
 
 # ---------------------------------------------------------------------- Expenses (apps/expenses, /api/expenses/v1)
 

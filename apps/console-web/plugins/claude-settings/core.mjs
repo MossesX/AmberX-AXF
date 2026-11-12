@@ -18,6 +18,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, writeFile
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { nonHumanSource } from '../../../../framework/core/model-switch.mjs';
+import { VIEW_FRAME, deviceOk, normView, viewProblem } from './web/view-core.mjs';
 
 export const FRAME = 'claude-settings@1';
 export const FOLDER = 'claude-settings';
@@ -82,13 +83,17 @@ export function loadRegistry({ extra = [] } = {}) {
   if (hub && !process.env.AXF_CLAUDE_SETTINGS_FILE) sources.push(join(hub, 'claude', 'registry.json'));
   const groups = new Map();
   const settings = new Map();
+  const tabs = new Map();
+  let policyDefaults = {};
   for (const doc of [...sources.map(readJson), ...extra]) {
     if (!isObj(doc)) continue;
     for (const g of Array.isArray(doc.groups) ? doc.groups : []) if (isObj(g) && typeof g.id === 'string') groups.set(g.id, { id: g.id, label: String(g.label || g.id), icon: g.icon || 'settings', order: Number(g.order) || 100, description: String(g.description || '') });
     for (const e of Array.isArray(doc.settings) ? doc.settings : []) { const n = normEntry(e); if (n) settings.set(n.key, n); }
+    for (const t of Array.isArray(doc.tabs) ? doc.tabs : []) if (isObj(t) && typeof t.id === 'string') tabs.set(t.id, { id: t.id, label: String(t.label || t.id), icon: t.icon || 'settings', order: Number(t.order) || 100, description: String(t.description || ''), always: t.always === true, groups: Array.isArray(t.groups) ? t.groups.filter((g) => typeof g === 'string') : [] });
+    if (isObj(doc.policyDefaults)) policyDefaults = doc.policyDefaults;
   }
   for (const s of settings.values()) if (!groups.has(s.group)) groups.set(s.group, { id: s.group, label: s.group, icon: 'settings', order: 900, description: '' });
-  return { groups: [...groups.values()].sort((a, b) => a.order - b.order), settings: [...settings.values()] };
+  return { groups: [...groups.values()].sort((a, b) => a.order - b.order), settings: [...settings.values()], tabs: [...tabs.values()].sort((a, b) => a.order - b.order), policyDefaults };
 }
 
 /* ------------------------------------------------------------------ values */
@@ -155,7 +160,7 @@ export function view({ doc = readDoc(), registry = loadRegistry(), extras = {} }
   const values = Object.fromEntries(settings.map((s) => [s.key, s.value]));
   return {
     $axf: FRAME, live, store: live ? (process.env.AXF_CLAUDE_SETTINGS_FILE ? file : 'axHub /projects/_shared/_data/claude/settings.json') : file,
-    updatedAt: doc.updatedAt || '', groups: registry.groups, values, settings,
+    updatedAt: doc.updatedAt || '', groups: registry.groups, tabs: registry.tabs, values, settings,
     howToUse: 'Read at session start and before acting; follow every value. Owner-only settings are changed only by Brett in the console.',
     ...extras,
   };
@@ -207,6 +212,61 @@ export function systemOff(key, why, { registry = loadRegistry(), now = new Date(
   writeDoc(out);
   audit({ action: 'system-off', key, why });
   return { changed: [{ key, from: true, to: false }] };
+}
+
+/* ------------------------------------------------------------------ views, per device */
+
+/** claude-settings-view@1: next to the settings document, one entry per device. Not owner-only: it only changes a look. */
+export const viewsFile = () => join(dirname(storeFile().file), 'views.json');
+export function readViews() {
+  const d = readJson(viewsFile());
+  return isObj(d) && d.$axf === VIEW_FRAME && isObj(d.devices) ? d : { $axf: VIEW_FRAME, devices: {} };
+}
+const needDevice = (device) => { if (!deviceOk(device)) throw new SettingsError('invalid', 'name the device (--device <id>; the console shows it under View)'); };
+export function getView(device) {
+  needDevice(device);
+  const all = readViews().devices;
+  const e = Object.hasOwn(all, device) ? all[device] : null;
+  return { device, saved: !!e, ...normView(e), ...(e?.name ? { name: e.name } : {}), ...(e?.updatedAt ? { updatedAt: e.updatedAt } : {}) };
+}
+export function setView(device, patch, { by = 'unknown', name, now = new Date() } = {}) {
+  needDevice(device);
+  if (!isObj(patch) || !Object.keys(patch).length) throw new SettingsError('invalid', 'nothing to change: send mode, position, labels or tab');
+  const bad = viewProblem(patch);
+  if (bad) throw new SettingsError('invalid', bad);
+  const doc = readViews();
+  const was = Object.hasOwn(doc.devices, device) ? doc.devices[device] : {};
+  const next = { ...normView({ ...was, ...patch }), ...(name || was.name ? { name: String(name || was.name).slice(0, 60) } : {}), updatedAt: now.toISOString(), by: String(by).slice(0, 80) };
+  const file = viewsFile();
+  mkdirSync(dirname(file), { recursive: true });
+  const tmp = `${file}.tmp-${process.pid}`;
+  writeFileSync(tmp, `${JSON.stringify({ ...doc, devices: { ...doc.devices, [device]: next } }, null, 1)}\n`);
+  renameSync(tmp, file);
+  return getView(device);
+}
+
+/* ------------------------------------------------------------------ axHub's policy table (read only here) */
+
+/** The hub's address from AXHUB_URL (which may name /mcp). */
+export const hubBase = (env = process.env) => String(env.AXHUB_URL || 'https://axhub.amberxai.com').replace(/\/mcp\/?$/, '').replace(/\/+$/, '');
+function hubToken(env) {
+  if (env.AXHUB_TOKEN) return env.AXHUB_TOKEN.trim();
+  try { return readFileSync(join(env.HOME || '', '.config', 'axhub', 'token'), 'utf8').trim(); } catch { return ''; }
+}
+/**
+ * The live policy table (policy-table@1, framework/spec/AXHUB-POLICY-API.md). Read with the hub token: a bearer can
+ * read, never write. → { hub, available: true, table } | { hub, available: false, message }, never a stale copy.
+ */
+export async function readPolicy({ env = process.env, fetch: f = globalThis.fetch } = {}) {
+  const hub = hubBase(env);
+  const token = hubToken(env);
+  if (!token) return { hub, available: false, message: 'No axHub token here, so the table cannot be read.' };
+  try {
+    const r = await f(`${hub}/auth/api/policy`, { headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' }, redirect: 'error', signal: AbortSignal.timeout(20000) });
+    if (r.status === 404) return { hub, available: false, message: "axHub doesn't have the policy API yet (build claude-settings-tabs-veto, step s4)." };
+    if (!r.ok) return { hub, available: false, message: `axHub answered ${r.status}.` };
+    return { hub, available: true, table: await r.json() };
+  } catch (e) { return { hub, available: false, message: `Can't reach axHub: ${String(e?.message ?? e).slice(0, 120)}` }; }
 }
 
 /* ------------------------------------------------------------------ No wait ↔ the veto pass */

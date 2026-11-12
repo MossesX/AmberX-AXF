@@ -173,5 +173,26 @@ os.environ["CLAUDECODE"] = "1"
 ok(put({"builds.launchWithoutAsking": True}, ADMIN).status_code == 403, "inside a Claude session even the admin headers don't count")
 os.environ.pop("CLAUDECODE", None)
 
+# views: per device, over REST
+r = c.put("/api/plugins/claude-settings/view", json={"device": "phone", "name": "S26", "values": {"position": "left", "labels": "icons"}})
+ok(r.status_code == 200 and r.json()["view"]["position"] == "left", "a device saves its view")
+ok(c.get("/api/plugins/claude-settings/view?device=phone").json()["view"]["labels"] == "icons", "the view comes back")
+ok(c.get("/api/plugins/claude-settings/view?device=desk").json()["view"]["position"] == "top", "another device keeps the default")
+ok(c.put("/api/plugins/claude-settings/view", json={"device": "phone", "values": {"mode": "x"}}).status_code == 400, "a bad view is refused")
+ok(c.get("/api/plugins/claude-settings/view").status_code == 400, "no device named: refused")
+ok(len(c.get("/api/plugins/claude-settings/views").json()["devices"]) == 1, "views lists the devices")
+
+# policy: the console server never writes it, whoever asks
+ok(c.put("/api/plugins/claude-settings/policy", json={"changes": []}).status_code == 403, "policy write refused for a console token")
+ok(c.put("/api/plugins/claude-settings/policy", json={"changes": []}, headers=BRETT).status_code == 403, "policy write refused here even for Brett: his session goes to axHub itself")
+ok(c.get("/api/plugins/claude-settings/policy").json().get("ok") is True, "policy read answers (available or not)")
+ok(c.get("/api/plugins/claude-settings/policy/plan").json().get("plan") is not None, "the plan answers")
+
+# the longest pass: Brett only
+ok(c.get("/api/plugins/claude-settings/passes").json().get("maxMinutes") == 240, "reads the longest pass")
+ok(c.put("/api/plugins/claude-settings/passes", json={"maxMinutes": 120}).status_code == 403, "a console token can't change it")
+ok(c.put("/api/plugins/claude-settings/passes", json={"maxMinutes": 999}, headers=BRETT).status_code == 400, "out of range refused")
+ok(c.put("/api/plugins/claude-settings/passes", json={"maxMinutes": 120}, headers=BRETT).json().get("maxMinutes") == 120, "Brett changes it")
+
 print(f"✗ claude-settings server — {failed}/{n} failed" if failed else f"✓ claude-settings server — {n} checks")
 sys.exit(1 if failed else 0)
