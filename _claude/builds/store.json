@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3552,
- "updatedAt": "2026-11-12T11:04:27.799Z",
+ "rev": 3553,
+ "updatedAt": "2026-11-12T11:04:39.686Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -173943,7 +173943,7 @@
    "branch": "claude/show-commits-behind-main-on-every-build-table-an",
    "pr": "",
    "createdAt": "2026-11-12T10:39:34.736Z",
-   "updatedAt": "2026-11-12T10:52:04.683Z",
+   "updatedAt": "2026-11-12T11:04:13.913Z",
    "builtAt": "",
    "notes": [
     {
@@ -174023,12 +174023,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T11:04:13.913Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T10:40:28.980Z",
-     "updatedAt": "2026-11-12T10:40:28.980Z"
+     "updatedAt": "2026-11-12T11:04:14.123Z"
     },
     {
      "id": "s2",
@@ -174086,7 +174086,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": {
