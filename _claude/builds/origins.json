@@ -1010,6 +1010,18 @@
    "from": "",
    "addenda": []
   },
+  "axhub-veto-pass-web": {
+   "said": "axhub-veto-pass-web",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": false,
+   "from": "report",
+   "addenda": []
+  },
   "axhub-web-app-live-at-axhub-amberxai-com-banner": {
    "said": "From a chat prompt (source chat). Serve apps/axhub-web on the hub host, page paths only via Traefik priority; hub container untouched. Branch claude/axhub-web-on-hub.",
    "at": "",
@@ -2791,6 +2803,18 @@
    "from": "",
    "addenda": []
   },
+  "land-batch-1": {
+   "said": "land-batch-1",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": false,
+   "from": "report",
+   "addenda": []
+  },
   "land-everything": {
    "said": "Fuck the review, I review it. Just go. Get everything live.",
    "at": "2026-11-03",
@@ -2935,6 +2959,18 @@
    "from": "",
    "addenda": []
   },
+  "maintenance-plugin-acct2": {
+   "said": "maintenance-plugin-acct2",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": false,
+   "from": "report",
+   "addenda": []
+  },
   "maintenance-redundancy-scan": {
    "said": "Maintenance: redundancy scan (Brett, Nov 7)\n\nAdd a job to the Maintenance plan/runner (reuse maintenance-vps-monitor / AmberX Maintenance / syscheck pieces where they exist) that searches for redundant data sets in a controlled, methodical way and REPORTS them. It never deletes or merges anything.",
    "at": "2026-11-07T13:46:06.752Z",
@@ -2969,6 +3005,18 @@
    "brief": "# Build: md-studio (Urgent profile)\n\nBrett, Nov 3 2026 (voice): build MD Studio. It was planned but NEVER built (no branch, no log). Assigned agent: **Reel Rhonda** (book on her agent-swarm card; set AXF_AGENT=reel-rhonda if supported, else record in report + store note).\n\n## First\n- s0 Search the hub memory/notes (`/projects/_shared/_claude/notes/`, `/projects/amberx-axf/_claude/`, THREADS, store, plans/) and GitHub for any MD Studio plan/spec Brett wrote; that spec wins over this brief. Register in Urgent (id `md-studio`), banner entry.\n\n## Build (unless his spec says otherwise)\n- MD Studio = a Markdown studio plugin for the Dev Console built ON the dock engine (molly-fable #245, now on main): dockable panes for file tree, editor, live preview, outline.\n- Editor with markdown toolbar (headings, bold/italic, lists, checklists, tables, code, links), live preview side by side or split, tabs for multiple docs, search/replace, autosave, version history with restore.\n- **Notes section step (required):** a Notes section that opens and edits everything in the Notes Vault (`/projects/_shared/_claude/notes/` incl. sessions/, handoffs/, plans/, install/, misc/, INDEX.md) using the Notes Vault commands that landed with plugin-commands-auto; plus opening hub memory/rules files and repo .md files.\n- Every command declared once so REST + MCP + CLI are generated (standing rule), so Amber can open/edit docs by voice.\n- Tokens/theme only for styling; works on phone (compact window class) first.\n- Tests, report `_claude/builds/reports/md-studio.md`, THREADS, PR, mark steps done through the store. Commits clean and professional.",
    "verbatim": false,
    "from": "brief",
+   "addenda": []
+  },
+  "md-studio-theme-editor-plan": {
+   "said": "md-studio-theme-editor-plan",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": false,
+   "from": "report",
    "addenda": []
   },
   "memory-restructure-chunked-claude-md-store-memor": {
@@ -3620,6 +3668,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "orch-self-check-stuck": {
+   "said": "orch-self-check-stuck",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "# Orchestrator self-check when stuck: verify each account one by one, clear stale jobs\n\nLaunched directly by Brett's request (voice) because the dispatcher is stuck. Orchestrator build record id (filed separately, will be marked built after): `orchestrator-self-check-when-stuck-verify-each-a`.\n\n## Problem\nThe build pipeline (build-orchestrator plugin, pipeline-status) shows every queued build waiting with \"no Claude account is signed in on the VPS\" and an empty accounts list, while claude-accounts/list shows mossesx-max- (Max) active and signed in, account-3 (Hulu) saved, and API workers mossesx-api and account-5. The dispatcher's account view is out of sync with claude-workers / claude-login.\n\n## Do\n1. Find why pipeline-status `accounts` is empty and why the dispatcher thinks no account is signed in (compare build-orchestrator pipeline code with deploy/claude-workers.mjs and claude-login.mjs). Fix the root cause.\n2. Self-check: on console load, on every dispatcher tick where queued builds wait with no launch, and on demand, the orchestrator checks each saved account one by one (subscription logins and API keys: signed in, limited, key valid, free slots), rebuilds its account list from that, and logs what it found.\n3. Stale reaper: release running counts / slots / build records with no live tmux session or claude process; requeue or mark their builds. Overlaps pending builds fix-stale-running-counts-per-claude-account-not-cleared and real-time-slot-tracking-stale-data-reaper: fold in what fits.\n4. Notify AmberX when the self-check fixes something or finds an account it can't use.\n5. Expose the self-check as a control command (API/voice) and show its last result in the orchestrator UI.\n6. Tests green, report in _claude/builds/reports/, THREADS row, commit, push, PR. Keep it small; stop and report if blocked.",
+   "verbatim": false,
+   "from": "report",
    "addenda": []
   },
   "orch-step-click": {
@@ -4787,6 +4847,18 @@
    "from": "",
    "addenda": []
   },
+  "shipped-manifest-api": {
+   "said": "Isn't it part of the pipeline? ... You put an API on it? ... The orchestrator should send a manifest with the information on the shipped feature. Including the prompt that created it and everything.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "# Shipped Features: orchestrator manifest + API (urgent)\n\nBrett's words: \"Isn't it part of the pipeline?\" ... \"You put an API on it?\" ... \"The orchestrator should send a manifest with the information on the shipped feature. Including the prompt that created it and everything.\"\n\n## Context\n- Shipped Features (feature-ledger@1) only updates through the build-hook@1 events fired by builds-store writes (framework/cli/builds-store.mjs). Builds launched straight through vps.build_start tonight had no builds-store record, so nothing reached the ledger.\n- `orchestrator-only-launcher` just landed on main (e15e5287681b): the orchestrator is now the only launcher (pipeline.mjs, afterTick hook). Build on that.\n\n## Do\n1. Manifest: when a build lands (or a step completes and ships), the orchestrator writes a shipped-feature manifest and sends it to the Shipped Features ledger. It holds: build id and title, Brett's verbatim prompt (the `said` field / brief origin) plus the full brief, model(s) and account(s) used, steps with estimates and actual times, branch, PR, landed commit, files/areas changed, tests run and results, UI Review item, cost and tokens, report path, and what's still open. Schema versioned (shipped-manifest@1), validated.\n2. The ledger shows the manifest on each entry (prompt highlighted, collapsible sections).\n3. API: Shipped Features gets full API control: list/read/search entries, add/update an entry from a manifest, link to build/PR; via MCP (axf-console tools), axHub, CLI, deep link and voice. Writes go through the builds-store so hooks stay consistent.\n4. Backfill: create entries now for builds landed tonight that missed the ledger: `orchestrator-only-launcher` (e15e5287681b) and `urgent-amberx-veto-notice-alarm-too-loud-approve` (commits 864ab0549, 44862718a), using their briefs and reports in _claude/builds/reports/. Add a CLI `shipped backfill --since <date>` that finds landed builds with no ledger entry.\n5. Tests for manifest schema, ledger write, API and backfill; console typecheck green. Short report, commit, stop so it can be landed with build_land.",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "skin-checker-flags-anything-that-breaks-a-profes": {
    "said": "Yeah, build that shit right now.",
    "at": "2026-11-10T17:11:27.008Z",
@@ -5824,6 +5896,18 @@
    "from": "detail",
    "addenda": []
   },
+  "walkthrough-view-fallback": {
+   "said": "walkthrough-view-fallback",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": false,
+   "from": "report",
+   "addenda": []
+  },
   "watch-live": {
    "said": "Watch live = HOT RENDER. A Watch live link on every approval row (details) and every running build in the Build manager / Build orchestrator pops up (floating window desktop, full-screen sheet phone) the exact screen the session is changing, changed element scrolled to + outlined, hot-rendering as files change. Every web app, every hot-swappable asset (no reload), Android screens through the web port with a next-APK note. claude-headless.sh starts previews + registry; console proxies /preview/<session>/<app>/ behind auth; axf focus + .axf-focus.json; greyed No live preview otherwise.",
    "at": "",
@@ -5867,6 +5951,18 @@
      "verbatim": true
     }
    ]
+  },
+  "window-resize-fix-threads": {
+   "said": "window-resize-fix-threads",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": false,
+   "from": "report",
+   "addenda": []
   },
   "windows-terminal": {
    "said": "Add those plus build a powerful terminal plugin that looks and feels and behaves exactly like a Windows program.",
@@ -5914,6 +6010,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "xlayout-plan": {
+   "said": "xlayout-plan",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": false,
+   "from": "report",
    "addenda": []
   }
  }

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T03:31:20.986Z",
+ "updatedAt": "2026-11-12T03:31:34.381Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -38,6 +38,252 @@
    "upgradeRequests": [],
    "origin": {
     "said": "From a chat prompt (source chat). Serve apps/axhub-web on the hub host, page paths only via Traefik priority; hub container untouched. Branch claude/axhub-web-on-hub.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "walkthrough-view-fallback",
+   "title": "walkthrough-view-fallback",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/walkthrough-view-fallback",
+   "pr": "",
+   "mergedAt": "2026-11-02T21:54:23Z",
+   "createdAt": "2026-11-02T21:54:23Z",
+   "updatedAt": "2026-11-12T03:31:32Z",
+   "builtAt": "2026-11-02T21:54:23Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 2fd495f67.",
+     "at": "2026-11-12T03:31:32Z"
+    },
+    {
+     "text": "Shipped manifest sm-walkthrough-view-fallback rev 1 sent to Shipped features (backfill): landed 2fd495f67, 1 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:32Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "walkthrough-view-fallback",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "md-studio-theme-editor-plan",
+   "title": "md-studio-theme-editor-plan",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/md-studio-theme-editor-plan",
+   "pr": "",
+   "mergedAt": "2026-11-03T02:54:55Z",
+   "createdAt": "2026-11-03T02:54:55Z",
+   "updatedAt": "2026-11-12T03:31:31Z",
+   "builtAt": "2026-11-03T02:54:55Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as f41458afa.",
+     "at": "2026-11-12T03:31:31Z"
+    },
+    {
+     "text": "Shipped manifest sm-md-studio-theme-editor-plan rev 1 sent to Shipped features (backfill): landed f41458afa, 11 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:31Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "md-studio-theme-editor-plan",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "axhub-veto-pass-web",
+   "title": "axhub-veto-pass-web",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/axhub-veto-pass-web",
+   "pr": "",
+   "mergedAt": "2026-11-03T17:35:39Z",
+   "createdAt": "2026-11-03T17:35:39Z",
+   "updatedAt": "2026-11-12T03:31:30Z",
+   "builtAt": "2026-11-03T17:35:39Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 9f4c6a285.",
+     "at": "2026-11-12T03:31:30Z"
+    },
+    {
+     "text": "Shipped manifest sm-axhub-veto-pass-web rev 1 sent to Shipped features (backfill): landed 9f4c6a285, 1 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:30Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "axhub-veto-pass-web",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "window-resize-fix-threads",
+   "title": "window-resize-fix-threads",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/window-resize-fix-threads",
+   "pr": "",
+   "mergedAt": "2026-11-04T04:00:59Z",
+   "createdAt": "2026-11-04T04:00:59Z",
+   "updatedAt": "2026-11-12T03:31:29Z",
+   "builtAt": "2026-11-04T04:00:59Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as d5e787014.",
+     "at": "2026-11-12T03:31:29Z"
+    },
+    {
+     "text": "Shipped manifest sm-window-resize-fix-threads rev 1 sent to Shipped features (backfill): landed d5e787014, 1 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:29Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "window-resize-fix-threads",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "maintenance-plugin-acct2",
+   "title": "maintenance-plugin-acct2",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/maintenance-plugin-acct2",
+   "pr": "",
+   "mergedAt": "2026-11-04T20:36:23Z",
+   "createdAt": "2026-11-04T20:36:23Z",
+   "updatedAt": "2026-11-12T03:31:28Z",
+   "builtAt": "2026-11-04T20:36:23Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 4b80f6b21.",
+     "at": "2026-11-12T03:31:28Z"
+    },
+    {
+     "text": "Shipped manifest sm-maintenance-plugin-acct2 rev 1 sent to Shipped features (backfill): landed 4b80f6b21, 1 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:28Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "maintenance-plugin-acct2",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "land-batch-1",
+   "title": "land-batch-1",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/land-batch-1",
+   "pr": "",
+   "mergedAt": "2026-11-04T22:15:37Z",
+   "createdAt": "2026-11-04T22:15:37Z",
+   "updatedAt": "2026-11-12T03:31:26Z",
+   "builtAt": "2026-11-04T22:15:37Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 01259edad.",
+     "at": "2026-11-12T03:31:26Z"
+    },
+    {
+     "text": "Shipped manifest sm-land-batch-1 rev 1 sent to Shipped features (backfill): landed 01259edad, 29 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:26Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "land-batch-1",
     "at": "",
     "source": "",
     "session": "",
@@ -371,6 +617,88 @@
      "uid": "st-mwczqh5m08fhd0"
     }
    ]
+  },
+  {
+   "id": "shipped-manifest-api",
+   "title": "Shipped Features: orchestrator manifest + API",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/shipped-manifest-api",
+   "pr": "",
+   "mergedAt": "2026-11-09T01:20:30Z",
+   "createdAt": "2026-11-09T00:36:11.714Z",
+   "updatedAt": "2026-11-12T03:31:25Z",
+   "builtAt": "2026-11-09T01:20:30Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 79ed472c0.",
+     "at": "2026-11-12T03:31:25Z"
+    },
+    {
+     "text": "Shipped manifest sm-shipped-manifest-api rev 1 sent to Shipped features (backfill): landed 79ed472c0, 42 file(s), 7 test line(s), 5 open.",
+     "at": "2026-11-12T03:31:25Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Isn't it part of the pipeline? ... You put an API on it? ... The orchestrator should send a manifest with the information on the shipped feature. Including the prompt that created it and everything.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "# Shipped Features: orchestrator manifest + API (urgent)\n\nBrett's words: \"Isn't it part of the pipeline?\" ... \"You put an API on it?\" ... \"The orchestrator should send a manifest with the information on the shipped feature. Including the prompt that created it and everything.\"\n\n## Context\n- Shipped Features (feature-ledger@1) only updates through the build-hook@1 events fired by builds-store writes (framework/cli/builds-store.mjs). Builds launched straight through vps.build_start tonight had no builds-store record, so nothing reached the ledger.\n- `orchestrator-only-launcher` just landed on main (e15e5287681b): the orchestrator is now the only launcher (pipeline.mjs, afterTick hook). Build on that.\n\n## Do\n1. Manifest: when a build lands (or a step completes and ships), the orchestrator writes a shipped-feature manifest and sends it to the Shipped Features ledger. It holds: build id and title, Brett's verbatim prompt (the `said` field / brief origin) plus the full brief, model(s) and account(s) used, steps with estimates and actual times, branch, PR, landed commit, files/areas changed, tests run and results, UI Review item, cost and tokens, report path, and what's still open. Schema versioned (shipped-manifest@1), validated.\n2. The ledger shows the manifest on each entry (prompt highlighted, collapsible sections).\n3. API: Shipped Features gets full API control: list/read/search entries, add/update an entry from a manifest, link to build/PR; via MCP (axf-console tools), axHub, CLI, deep link and voice. Writes go through the builds-store so hooks stay consistent.\n4. Backfill: create entries now for builds landed tonight that missed the ledger: `orchestrator-only-launcher` (e15e5287681b) and `urgent-amberx-veto-notice-alarm-too-loud-approve` (commits 864ab0549, 44862718a), using their briefs and reports in _claude/builds/reports/. Add a CLI `shipped backfill --since <date>` that finds landed builds with no ledger entry.\n5. Tests for manifest schema, ledger write, API and backfill; console typecheck green. Short report, commit, stop so it can be landed with build_land.",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "orch-self-check-stuck",
+   "title": "orch-self-check-stuck",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/orch-self-check-stuck",
+   "pr": "",
+   "mergedAt": "2026-11-10T03:11:02Z",
+   "createdAt": "2026-11-09T16:25:09.655Z",
+   "updatedAt": "2026-11-12T03:31:24Z",
+   "builtAt": "2026-11-10T03:11:02Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 45aad4cef.",
+     "at": "2026-11-12T03:31:24Z"
+    },
+    {
+     "text": "Shipped manifest sm-orch-self-check-stuck rev 1 sent to Shipped features (backfill): landed 45aad4cef, 11 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:24Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "orch-self-check-stuck",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "# Orchestrator self-check when stuck: verify each account one by one, clear stale jobs\n\nLaunched directly by Brett's request (voice) because the dispatcher is stuck. Orchestrator build record id (filed separately, will be marked built after): `orchestrator-self-check-when-stuck-verify-each-a`.\n\n## Problem\nThe build pipeline (build-orchestrator plugin, pipeline-status) shows every queued build waiting with \"no Claude account is signed in on the VPS\" and an empty accounts list, while claude-accounts/list shows mossesx-max- (Max) active and signed in, account-3 (Hulu) saved, and API workers mossesx-api and account-5. The dispatcher's account view is out of sync with claude-workers / claude-login.\n\n## Do\n1. Find why pipeline-status `accounts` is empty and why the dispatcher thinks no account is signed in (compare build-orchestrator pipeline code with deploy/claude-workers.mjs and claude-login.mjs). Fix the root cause.\n2. Self-check: on console load, on every dispatcher tick where queued builds wait with no launch, and on demand, the orchestrator checks each saved account one by one (subscription logins and API keys: signed in, limited, key valid, free slots), rebuilds its account list from that, and logs what it found.\n3. Stale reaper: release running counts / slots / build records with no live tmux session or claude process; requeue or mark their builds. Overlaps pending builds fix-stale-running-counts-per-claude-account-not-cleared and real-time-slot-tracking-stale-data-reaper: fold in what fits.\n4. Notify AmberX when the self-check fixes something or finds an account it can't use.\n5. Expose the self-check as a control command (API/voice) and show its last result in the orchestrator UI.\n6. Tests green, report in _claude/builds/reports/, THREADS row, commit, push, PR. Keep it small; stop and report if blocked.",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "steps": []
   },
   {
    "id": "terminal-vps-host",
@@ -93265,7 +93593,7 @@
    "mergedAt": "2026-11-11T00:48:50Z",
    "priority": "P0",
    "createdAt": "2026-11-10T17:07:33.143Z",
-   "updatedAt": "2026-11-11T00:50:38.563Z",
+   "updatedAt": "2026-11-12T03:31:20Z",
    "builtAt": "",
    "notes": [
     {
@@ -93295,6 +93623,10 @@
     {
      "text": "Reconciler: PR #463 merged",
      "at": "2026-11-11T00:50:38.563Z"
+    },
+    {
+     "text": "Shipped manifest sm-orchestrator-hold-status-archive-tab-deleted-tab rev 1 sent to Shipped features (backfill): landed 7c211d233, 19 file(s), 8 test line(s), 8 open.",
+     "at": "2026-11-12T03:31:20Z"
     }
    ],
    "approvals": [],
@@ -96455,7 +96787,7 @@
    "mergedAt": "2026-11-11T00:48:50Z",
    "priority": "P0",
    "createdAt": "2026-11-10T20:43:36.267Z",
-   "updatedAt": "2026-11-11T00:50:38.563Z",
+   "updatedAt": "2026-11-12T03:31:21Z",
    "builtAt": "",
    "notes": [
     {
@@ -96509,6 +96841,10 @@
     {
      "text": "Reconciler: PR #474 merged",
      "at": "2026-11-11T00:50:38.563Z"
+    },
+    {
+     "text": "Shipped manifest sm-land-all-97-built-but-unmerged-builds-skins-firs rev 1 sent to Shipped features (backfill): landed 654c24ce3, 2 file(s), 0 test line(s), 5 open.",
+     "at": "2026-11-12T03:31:21Z"
     }
    ],
    "approvals": [],
@@ -100598,7 +100934,7 @@
    "pr": "#496",
    "mergedAt": "2026-11-12T03:02:18Z",
    "createdAt": "2026-11-11T23:25:41.956Z",
-   "updatedAt": "2026-11-12T03:11:10.212Z",
+   "updatedAt": "2026-11-12T03:31:22Z",
    "builtAt": "2026-11-12T03:11:10.213Z",
    "notes": [
     {
@@ -100612,6 +100948,10 @@
     {
      "text": "Reconciler: PR #496 merged",
      "at": "2026-11-12T03:06:36.460Z"
+    },
+    {
+     "text": "Shipped manifest sm-console-commands-reliable rev 1 sent to Shipped features (backfill): landed 6b31248c5, 27 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:31:22Z"
     }
    ],
    "approvals": [

@@ -776,17 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 02:17 UTC · `open-any-website-by-voice-on-the-phone-optionall` note (all) · orchestrator
-- 2026-11-12 02:18 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` → running, note (all) · pipeline
-- 2026-11-12 02:18 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` note (all) · orchestrator
-- 2026-11-12 02:18 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` s1 done (all) · orchestrator
-- 2026-11-12 02:19 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` s3 done, → built (all) · orchestrator
-- 2026-11-12 02:19 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` note (all) · orchestrator
-- 2026-11-12 02:20 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` note (all) · pipeline
-- 2026-11-12 02:22 UTC · `build-notifications-same-notification-per-build` → running, note (all) · pipeline
-- 2026-11-12 02:22 UTC · `build-notifications-same-notification-per-build` note (all) · orchestrator
-- 2026-11-12 02:22 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` PR #504 (all) · builds-live
-- 2026-11-12 02:22 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` note (all) · orchestrator
 - 2026-11-12 02:23 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` → pending, note (all) · pipeline
 - 2026-11-12 02:23 UTC · `molly-gap-remote-actions` → running, note (all) · pipeline
 - 2026-11-12 02:22 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` s3 done, → built (all) · orchestrator
@@ -1176,6 +1165,17 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:31 UTC · `demo-designer-finish-phase-2-s2-s3-resuming-from` note (all) · backfill
 - 2026-11-12 03:31 UTC · `retire-build-manager-the-orchestrator-is-the-onl` note (all) · backfill
 - 2026-11-12 03:31 UTC · `enforce-the-merge-queue-every-finished-build-goe` note (all) · backfill
+- 2026-11-12 03:31 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` note (all) · backfill
+- 2026-11-12 03:31 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` note (all) · backfill
+- 2026-11-12 03:31 UTC · `console-commands-reliable` note (all) · backfill
+- 2026-11-12 03:31 UTC · `orch-self-check-stuck` added (0 steps) (all) · backfill
+- 2026-11-12 03:31 UTC · `shipped-manifest-api` added (0 steps) (all) · backfill
+- 2026-11-12 03:31 UTC · `land-batch-1` added (0 steps) (all) · backfill
+- 2026-11-12 03:31 UTC · `maintenance-plugin-acct2` added (0 steps) (all) · backfill
+- 2026-11-12 03:31 UTC · `window-resize-fix-threads` added (0 steps) (all) · backfill
+- 2026-11-12 03:31 UTC · `axhub-veto-pass-web` added (0 steps) (all) · backfill
+- 2026-11-12 03:31 UTC · `md-studio-theme-editor-plan` added (0 steps) (all) · backfill
+- 2026-11-12 03:31 UTC · `walkthrough-view-fallback` added (0 steps) (all) · backfill
 
 ## Token passes (log)
 

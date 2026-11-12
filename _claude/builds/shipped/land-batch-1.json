@@ -1,0 +1,210 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-land-batch-1",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:31:26Z",
+ "build": {
+  "id": "land-batch-1",
+  "title": "land-batch-1",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "land-batch-1",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/land-batch-1",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "01259edadaabe42dbcfad0111c83bad21f0f1299",
+ "commits": [
+  "ea22d8c69fd8505e3b1cdcf052796a94dd209239",
+  "6cff7945c5f0dfb1b1b009a086477df136aa9622",
+  "b46abe71d0ec3e7bcc7f83329602a1944b5b0a8d",
+  "41dfc4d569c3ffcb514d5a597cdc45819d44cce8",
+  "f73a884daf16cceae804c6409dfa1fee00aae3a0",
+  "7e02712ed41ce2ee3f822c42da388ee500751652",
+  "f87f109e54d788aff66030ef933eeb35ab5fbe55",
+  "e2cc054c428fba8684b99438a18ca813e9873282",
+  "4605a609133b7d7937be2c36e7dbed435475b45a"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-11-04T22:15:37Z",
+ "files": [
+  ".github/merge-queue.json",
+  "_claude/THREADS.md",
+  "_claude/builds/journal/2026-11.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/origins.json",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/builds/profiles/big-dog/orchestrator.json",
+  "_claude/builds/profiles/breakroom/orchestrator.json",
+  "_claude/builds/profiles/current/orchestrator.json",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/builds/profiles/urgent/orchestrator.json",
+  "_claude/builds/reports/land-merge-queue-first.md",
+  "_claude/builds/store.json",
+  "apps/amberx-droid/src/axf/assets/help/framework-drafts.json",
+  "apps/axhub-web/src/axf/assets/help/framework-drafts.json",
+  "apps/console-web/plugins/build-orchestrator/test.mjs",
+  "apps/console-web/plugins/follow-amber/help.json",
+  "apps/console-web/plugins/push-banner/server/__init__.py",
+  "apps/console-web/plugins/push-banner/test.py",
+  "apps/console-web/src/assets/help/console-web-drafts.json",
+  "apps/console-web/src/axf/assets/help/framework-drafts.json",
+  "apps/molly/src/axf/assets/help/framework-drafts.json",
+  "apps/walkthrough-studio/src/assets/help/framework-drafts.json",
+  "framework/assets/help/framework-drafts.json",
+  "framework/cli/ci-scope.mjs",
+  "framework/cli/plugin-lifecycle.mjs",
+  "framework/spec/check-ci-scope.mjs",
+  "framework/spec/fixtures/agent-card.json",
+  "framework/spec/gen-fixtures.mts"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/journal/2026-11.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/origins.json",
+    "_claude/builds/profiles/angel/orchestrator.json",
+    "_claude/builds/profiles/big-dog/orchestrator.json",
+    "_claude/builds/profiles/breakroom/orchestrator.json",
+    "_claude/builds/profiles/current/orchestrator.json",
+    "_claude/builds/profiles/refactor/orchestrator.json",
+    "_claude/builds/profiles/urgent/orchestrator.json",
+    "_claude/builds/reports/land-merge-queue-first.md",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/check-ci-scope.mjs",
+    "framework/spec/fixtures/agent-card.json",
+    "framework/spec/gen-fixtures.mts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "push-banner",
+   "files": [
+    "apps/console-web/plugins/push-banner/server/__init__.py",
+    "apps/console-web/plugins/push-banner/test.py"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/src/assets/help/console-web-drafts.json",
+    "apps/console-web/src/axf/assets/help/framework-drafts.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/ci-scope.mjs",
+    "framework/cli/plugin-lifecycle.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/test.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "follow-amber",
+   "files": [
+    "apps/console-web/plugins/follow-amber/help.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/src/axf/assets/help/framework-drafts.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/src/axf/assets/help/framework-drafts.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/src/axf/assets/help/framework-drafts.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "walkthrough-studio",
+   "files": [
+    "apps/walkthrough-studio/src/assets/help/framework-drafts.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "assets",
+   "files": [
+    "framework/assets/help/framework-drafts.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/merge-queue.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}
