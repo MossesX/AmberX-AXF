@@ -777,9 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:17 UTC · `account-order-hulu-moses-x-api-account-shown-on-every-build` note (all) · orchestrator
-- 2026-11-12 03:17 UTC · `merge-all-ready-buttons-server-side-lander` s2 done (all) · orchestrator
-- 2026-11-12 03:19 UTC · `x.engine.dev` s1 done, → running (all) · orchestrator
 - 2026-11-12 03:21 UTC · `x.engine.dev` s2 done (all) · orchestrator
 - 2026-11-12 03:21 UTC · `merge-all-ready-buttons-server-side-lander` s4 done (all) · orchestrator
 - 2026-11-12 03:22 UTC · `x.engine.dev` s3 done (all) · orchestrator
@@ -1177,6 +1174,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 10:51 UTC · `focus-on-every-screen-console-open-console-show-` note (all) · orchestrator
 - 2026-11-12 10:51 UTC · `focus-on-every-screen-console-open-console-show-` branch claude/focus-on-every-screen-console-open-console-show- (all) · pipeline
 - 2026-11-12 10:51 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` → queued (all) · claude-voice
+- 2026-11-12 10:52 UTC · `show-commits-behind-main-on-every-build-table-an` → running, note (all) · pipeline
+- 2026-11-12 10:52 UTC · `show-commits-behind-main-on-every-build-table-an` branch claude/show-commits-behind-main-on-every-build-table-an (all) · pipeline
+- 2026-11-12 10:52 UTC · `show-commits-behind-main-on-every-build-table-an` note (all) · orchestrator
 
 ## Token passes (log)
 
