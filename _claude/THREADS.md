@@ -777,7 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:29 UTC · `profile-manager` note (all) · backfill
 - 2026-11-12 03:29 UTC · `build-prompt-origin` note (all) · backfill
 - 2026-11-12 03:29 UTC · `banner-ref-links` note (all) · backfill
 - 2026-11-12 03:29 UTC · `molly-console-commands` note (all) · backfill
@@ -1177,6 +1176,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 19:57 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` PR #525 (all) · builds-live
 - 2026-11-12 19:58 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` s3 done, → built (all) · orchestrator
 - 2026-11-12 19:58 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` note (all) · orchestrator
+- 2026-11-12 20:30 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` → complete, merged, note (all) · reconciler
 
 ## Token passes (log)
 

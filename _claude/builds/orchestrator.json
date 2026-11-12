@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T19:58:31.813Z",
+ "updatedAt": "2026-11-12T20:31:02.564Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -107737,15 +107737,16 @@
    "title": "New project: start fresh with its own builds, notes, to-dos and plans",
    "category": "new feature",
    "detail": "Merged build (Brett: \"Put them all into one build and run it, so it only has to pull main once.\")\n\nPART 1: Projects. Start a new project that has its own notes, to-do list, builds, plans, everything, starting fresh. Move all current builds, notes, to-dos and plans into a project called \"AmberX AXF\". Nothing deleted.\n\nPART 2: One to-do list. AmberX (phone app mirrors the web app) has its own to-do list; the console has Todo manager (ported from xGallery, currently off). Make one source of truth on axHub that both read and write, per project. Migrate the existing AmberX to-dos and any console todo-manager data into it, nothing deleted. Remove the duplicate store and its references after migration.\n\nTest: create a project, confirm it starts empty; switch back to AmberX AXF and confirm everything's there; confirm both apps show the same to-do list live.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans",
    "pr": "#523",
+   "mergedAt": "2026-11-12T20:23:30Z",
    "priority": "P0",
    "createdAt": "2026-11-12T17:35:35.216Z",
-   "updatedAt": "2026-11-12T19:47:38.211Z",
+   "updatedAt": "2026-11-12T20:30:59.866Z",
    "builtAt": "2026-11-12T18:56:38.976Z",
    "notes": [
     {
@@ -107783,6 +107784,10 @@
     {
      "text": "Phase 1 done on PR #523 (Paulie). Projects work end to end: registry, scoped builds/orchestrator/merge queue, per-project to-dos, plans and notes, new-project action on console/REST/MCP/CLI/voice, switcher + banner chip, archive/delete with typed id. Owed: UI Review shots (headless browser on the VPS can't reach axHub, so the live preview shows the waiting screen). Also fixed: build-limit docker shim recursion that hung every heavy docker run from headless builds.",
      "at": "2026-11-12T18:56:21.152Z"
+    },
+    {
+     "text": "Reconciler: PR #523 merged",
+     "at": "2026-11-12T20:30:59.866Z"
     }
    ],
    "approvals": [],
