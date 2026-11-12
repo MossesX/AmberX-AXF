@@ -22,16 +22,21 @@
       {
         "target": "show-the-alerts-bell-on-the-banner",
         "title": "Show the alerts bell on the banner",
-        "text": "Where you set “Show the alerts bell on the banner”. Change it and the app uses the new value. Part of Alerts bell.",
+        "text": "Where you set \u201cShow the alerts bell on the banner\u201d. Change it and the app uses the new value. Part of Alerts bell.",
         "kind": "field",
         "draft": true
       },
       {
         "target": "alerts-bell",
         "title": "Alerts bell",
-        "text": "Shows the “Alerts bell” part of this screen. Part of Alerts bell.",
+        "text": "Shows the \u201cAlerts bell\u201d part of this screen. Part of Alerts bell.",
         "kind": "tab",
         "draft": true
+      },
+      {
+        "target": "view:alerts-history",
+        "title": "Notification history",
+        "text": "Every alert the console delivered to each device (the phone, a browser) with when it arrived, was read and was tapped. Mark read and Dismiss are the alerts' own actions, so Claude (alerts tools), the CLI and voice do the same."
       }
     ],
     "intros": []

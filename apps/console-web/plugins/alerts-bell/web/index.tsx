@@ -17,6 +17,8 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { COUNTER, ID, placeBell, showOf, sideOf } from './core';
 import { appMenu } from './menu';
+import { FOCUS_EVENT, HISTORY_VIEW, HistoryPage } from './history';
+import './alerts-bell.css';
 
 const FOLDER = 'alerts-bell';
 const SHOW_KEY = 'alerts-bell.show';
@@ -45,6 +47,7 @@ function StatusPanel() {
       <div className="fx-row fx-row--wrap">
         <Button icon="bell" onClick={() => rt.dispatch('alerts.open')}>Open alerts</Button>
         <Button icon="settings" onClick={() => rt.dispatch('settings.open:alerts')}>Alert settings</Button>
+        <Button icon="clock" onClick={() => rt.dispatch('alerts-history.open')}>Notification history</Button>
       </div>
     </div>
   );
@@ -59,8 +62,20 @@ export const plugin: AxfWebLibrary = {
   provides: ['banner.alerts-bell'],
   // Only a bell on the app's banner: inside a host that hides the banner it isn't loaded (embed@1 skipWhen).
   embed: { skipWhen: ['hidden:banner'] },
+  views: { [HISTORY_VIEW]: { title: 'Notification history', icon: 'bell', keywords: ['notifications', 'history', 'alerts', 'delivered', 'read', 'tapped', 'phone'], render: () => <HistoryPage /> } },
   register(rt) {
     runtime = rt;
+    // alerts-history.focus:<alert id> | device:<name> (s9 deep link)
+    rt.actions.register('alerts-history.focus', ([arg]) => {
+      (window as { __alertsHistoryFocus?: string }).__alertsHistoryFocus = arg ?? '';
+      rt.navigate(HISTORY_VIEW);
+      setTimeout(() => window.dispatchEvent(new CustomEvent(FOCUS_EVENT, { detail: arg ?? '' })), 0);
+    }, { label: 'Notification history: an alert (its id) or a device (device:<name>)', params: true, effect: 'navigate' });
+    rt.actions.register('alerts-history.open', () => rt.navigate(HISTORY_VIEW), { label: 'Notification history' });
+    (globalThis as { amberxVoice?: { register: (m: string, c: { id: string; phrases: string[]; action: string; owner?: string }[]) => () => void } }).amberxVoice?.register(ID, [
+      { id: 'alerts-history.open', phrases: ['notification history', 'show my notifications', 'what did i miss'], action: 'alerts-history.open', owner: 'Notifications' },
+      { id: 'alerts.read-all', phrases: ['mark them read', 'mark all read'], action: 'alerts.ackAll', owner: 'Notifications' },
+    ]);
     if (!watching) {
       watching = true;
       for (const k of [SHOW_KEY, SIDE_KEY]) rt.settings.onChange(k, () => { if (runtime) place(runtime); });

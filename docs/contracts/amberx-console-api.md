@@ -270,6 +270,14 @@ through the console"). Nothing new in the shape; the additions are per-device de
 
 Deep link: `console_open("alerts", focus="<alert id>")`; an alert's `link` (checked by `OpenUrlRules.linkOr`) is what a tap opens.
 
+Built in s9: `server/alerts.py` keeps the per-device history (alert-history@1 in `alerts-history.jsonl`, the file the s2
+migration started): `GET /api/alerts?device=<name>` records what that device was shown (`deliveredAt`), `POST
+/api/alerts/ack {ids|all, device?}` sets `readAt`, the new `POST /api/alerts/tapped {id, device}` sets `tappedAt`;
+`GET /api/alerts/history` (C35b) and `GET /api/alerts?since=<version>` (C33, `unchanged` when nothing moved). The MCP
+and CLI forms are the Alerts bell plugin's commands over the same hub (`alerts-bell_feed`, `_history`, `_raise`, <!-- axf-plugin:alerts-bell -->
+`_read`, `_dismiss`, `_resolve`; `axf alerts-bell …`) instead of the `alerts_*` names above. The Notification history <!-- axf-plugin:alerts-bell -->
+screen is view `alerts-history`, deep link `alerts-history.focus:<alert id>` or `device:<name>`. <!-- axf-plugin:alerts-bell -->
+
 Built in s15 (every notification is raised and pushed by the console; none needs the AmberX web app):
 
 - **Approvals and veto calls.** The approvals banner's watch reads axHub's feed every 30 s with the console's owner sign-in

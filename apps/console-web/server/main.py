@@ -1776,7 +1776,7 @@ ALERTS = alerts_hub.AlertHub(STATE.parent, log=log, github_token=_gh_token, defa
                              systems=_systems_checks, pending_file=_pending_file, plugins=PLUGINS)
 app.include_router(alerts_hub.router_for(ALERTS, auth_always))
 console_context.set_context(raise_alert=lambda inp: ALERTS.raise_alert(inp)[0], resolve_alerts=ALERTS.resolve, alerts_changed=ALERTS.touch,
-                            open_alert_keys=ALERTS.open_keys)
+                            open_alert_keys=ALERTS.open_keys, alerts_hub=ALERTS)
 
 
 async def _alert_on_crash(request: Request, exc: Exception) -> JSONResponse:

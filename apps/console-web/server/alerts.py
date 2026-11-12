@@ -39,6 +39,18 @@ from axf_server import github, http as axf_http, storage
 SEVERITIES = ["info", "success", "warning", "error", "critical"]
 DEFAULT_RULES: dict[str, Any] = {"channels": {"bell": {"min": "info"}, "ntfy": {"min": "error"}, "webpush": {"min": "error"}}}
 LIMIT = 500
+HISTORY_FORMAT = "alert-history@1"
+HISTORY_LIMIT = 5000
+DEVICE_RE = re.compile(r"[^A-Za-z0-9._:-]")
+
+
+def clean_device(d: Any) -> str:
+    """A device name as the history keeps it (letters, digits and . _ : -, at most 80)."""
+    return DEVICE_RE.sub("", d)[:80] if isinstance(d, str) else ""
+
+
+def iso_now() -> str:
+    return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 TITLE_MAX, BODY_MAX, KEY_MAX = 200, 2000, 200
 
 
@@ -243,6 +255,7 @@ class AlertHub:
         self.f_push = data_dir / "alerts-push.json"
         self.f_vapid = data_dir / "alerts-vapid.pem"
         self.f_run = data_dir / "alerts-run.json"
+        self.f_history = data_dir / "alerts-history.jsonl"  # alert-history@1 (C35b; started by the amberx-import migration)
         self.log = log
         self.github_token = github_token
         self.github_api = (github_api or github.api_base_from_env()).rstrip("/")
@@ -369,6 +382,66 @@ class AlertHub:
         if phone:
             snap["notify"] = {"off": _notify(lambda g: g.device_off(), [])}
         return snap
+
+    # ---- per-device history (alert-history@1, contract C35b; build move-amberx-web-app-into-the-console-amberx-andr s9)
+
+    def _history(self) -> list[dict[str, Any]]:
+        out: list[dict[str, Any]] = []
+        try:
+            lines = self.f_history.read_text().splitlines()
+        except OSError:
+            return out
+        for line in lines:
+            try:
+                rec = json.loads(line)
+            except ValueError:
+                continue
+            if isinstance(rec, dict) and rec.get("$axf") == HISTORY_FORMAT:
+                out.append(rec)
+        return out
+
+    def _save_history(self, rows: list[dict[str, Any]]) -> None:
+        self.f_history.parent.mkdir(parents=True, exist_ok=True)
+        tmp = self.f_history.with_name(f".{self.f_history.name}.{os.getpid()}")
+        tmp.write_text("".join(json.dumps(r) + "\n" for r in rows[-HISTORY_LIMIT:]))
+        os.replace(tmp, self.f_history)
+
+    def delivered(self, device: str, alerts: list[dict[str, Any]], channel: str = "feed") -> int:
+        """Record each alert a device was shown for the first time (deliveredAt). → how many were new."""
+        dev = clean_device(device)
+        if not dev or not alerts:
+            return 0
+        with self.lock:
+            rows = self._history()
+            have = {(r.get("alert"), r.get("device")) for r in rows}
+            now = iso_now()
+            new = [{"$axf": HISTORY_FORMAT, "alert": a["id"], "key": a.get("key") or a["id"], "device": dev, "channel": channel, "deliveredAt": now,
+                    "readAt": None, "tappedAt": None, "title": str(a.get("title") or "")[:200], "source": a.get("source"), "severity": a.get("severity")}
+                   for a in alerts if isinstance(a.get("id"), str) and (a["id"], dev) not in have]
+            if new:
+                self._save_history(rows + new)
+            return len(new)
+
+    def mark(self, field: str, ids: list[str] | None, device: str = "") -> int:
+        """Set readAt or tappedAt on history records (one device, or every device when none is named). ids None = all."""
+        dev = clean_device(device)
+        with self.lock:
+            rows = self._history()
+            now, n = iso_now(), 0
+            for r in rows:
+                if (ids is None or r.get("alert") in ids) and (not dev or r.get("device") == dev) and not r.get(field):
+                    r[field] = now
+                    n += 1
+            if n:
+                self._save_history(rows)
+            return n
+
+    def history(self, device: str = "", since: str = "", limit: int = 100) -> dict[str, Any]:
+        dev = clean_device(device)
+        rows = [r for r in self._history() if (not dev or r.get("device") == dev) and (not since or str(r.get("deliveredAt") or "") > since)]
+        rows.sort(key=lambda r: str(r.get("deliveredAt") or ""), reverse=True)
+        devices = sorted({str(r.get("device")) for r in self._history() if r.get("device")})
+        return {"items": rows[: max(1, min(limit, 1000))], "total": len(rows), "devices": devices}
 
     def touch(self) -> None:
         """What a reader sees changed without an alert changing (the notification panel): the streams send it again."""
@@ -814,6 +887,12 @@ class RaiseReq(BaseModel):
 class IdsReq(BaseModel):
     ids: list[str] | None = Field(default=None, max_length=1000)
     all: bool = False
+    device: str | None = Field(default=None, max_length=80)
+
+
+class TapReq(BaseModel):
+    id: str = Field(max_length=200)
+    device: str = Field(default="", max_length=80)
 
 
 class KeysReq(BaseModel):
@@ -840,7 +919,27 @@ def router_for(hub: AlertHub, auth: Callable[..., None]) -> APIRouter:
     @r.get("")
     def list_alerts(request: Request) -> dict[str, Any]:
         ua = request.headers.get("user-agent", "")  # the AmberX watch reads this route with Android's plain HTTP client
-        return hub.snapshot(phone=request.query_params.get("view") == "phone" or ua.startswith("Dalvik/"))
+        q = request.query_params
+        snap = hub.snapshot(phone=q.get("view") == "phone" or ua.startswith("Dalvik/"))
+        # device=<name>: what this device was shown goes into the history (C35b); since=<version>: unchanged → no list (C33)
+        if q.get("device"):
+            hub.delivered(q.get("device", ""), [a for a in snap["alerts"] if not a.get("resolved")], q.get("channel") or "feed")
+        if q.get("since") is not None and q.get("since") == str(snap["version"]):
+            return {"unchanged": True, "version": snap["version"], "unread": snap["unread"], **({"notify": snap["notify"]} if "notify" in snap else {})}
+        return snap
+
+    @r.get("/history")
+    def get_history(device: str = "", since: str = "", limit: int = 100) -> dict[str, Any]:
+        """Every alert delivered to a device (or every device), newest first, with deliveredAt / readAt / tappedAt."""
+        return {"ok": True, **hub.history(device, since[:40], limit)}
+
+    @r.post("/tapped")
+    def tapped(req: TapReq) -> dict[str, Any]:
+        """A device's tap on an alert: tappedAt in its history, and the alert counts as read."""
+        n = hub.mark("tappedAt", [req.id], req.device)
+        hub.mark("readAt", [req.id], req.device)
+        hub.ack([req.id])
+        return {"ok": True, "marked": n}
 
     @r.post("")
     def raise_alert(req: RaiseReq) -> dict[str, Any]:
@@ -854,6 +953,7 @@ def router_for(hub: AlertHub, auth: Callable[..., None]) -> APIRouter:
     @r.post("/ack")
     def ack(req: IdsReq) -> dict[str, Any]:
         hub.ack(None if req.all else (req.ids or []))
+        hub.mark("readAt", None if req.all else (req.ids or []), req.device or "")
         return hub.snapshot()
 
     @r.post("/resolve")
