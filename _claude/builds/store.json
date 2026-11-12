@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3166,
- "updatedAt": "2026-11-12T00:15:06.357Z",
+ "rev": 3167,
+ "updatedAt": "2026-11-12T01:42:51.367Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -157035,19 +157035,23 @@
    "title": "Molly gap: Molly's own actions (molly.*) reachable from the console API, MCP, CLI and AmberX",
    "category": "",
    "detail": "Found by molly-sign-in-once s1. The console-commands relay reaches the console frame inside Molly, not Molly itself, so Molly-level actions (molly.auth.status / check / sign-in / sign-out / base, molly.reload, navigation.*, xlayout.*) can only be run inside Molly (menus, toolbar, command search). Give Molly a client on the same relay (console_show / console_open target molly, plugin commands listing Molly's actions, control@1 for its settings) so every Molly action has the same four reaches (REST, MCP, CLI, voice). Needed before molly-sign-in-once s2 can call its screen done.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "molly-sign-in-once",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-10T22:09:30.792Z",
-   "updatedAt": "2026-11-10T22:12:17.952Z",
+   "updatedAt": "2026-11-12T01:42:50.354Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T22:12:17.952Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T01:42:50.354Z"
     }
    ],
    "approvals": [],
@@ -157065,8 +157069,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
+    "queuedAt": "2026-11-12T01:42:50.020Z",
+    "queuedBy": "console",
     "account": "",
     "session": "",
     "slot": "",
@@ -157171,7 +157175,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
