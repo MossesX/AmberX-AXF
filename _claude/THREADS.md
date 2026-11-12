@@ -776,16 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 02:38 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` note (all) · orchestrator
-- 2026-11-12 02:38 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` s1 done (all) · orchestrator
-- 2026-11-12 02:38 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` s5 done (all) · orchestrator
-- 2026-11-12 02:38 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` → queued, note (all) · console
-- 2026-11-12 02:39 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` note (all) · orchestrator
-- 2026-11-12 02:38 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` s2 done, → running (all) · orchestrator
-- 2026-11-12 02:39 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` s2 done (all) · builds-live
-- 2026-11-12 02:39 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` → queued, note (all) · console
-- 2026-11-12 02:40 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` → queued, note (all) · pipeline
-- 2026-11-12 02:38 UTC · `molly-gap-console-token-handoff` s1 done (all) · orchestrator
 - 2026-11-12 02:40 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` → running, note (all) · pipeline
 - 2026-11-12 02:40 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` note (all) · orchestrator
 - 2026-11-12 02:40 UTC · `molly-gap-expenses-token-handoff` added (2 steps) (all) · orchestrator
@@ -1176,6 +1166,16 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:32 UTC · `project-thread-qwqfp4` added (0 steps) (all) · backfill
 - 2026-11-12 03:32 UTC · `project-thread-i70ntv` added (0 steps) (all) · backfill
 - 2026-11-12 03:32 UTC · `project-thread-24jq9j` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-c4xw4s` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-lmyb8k` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-l3b0qo` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-85vrhz` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-u82s3d` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-5gc822` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-k6ckjv` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-76ubmk` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-y6pzy7` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `project-thread-jflo9d` added (0 steps) (all) · backfill
 
 ## Token passes (log)
 
