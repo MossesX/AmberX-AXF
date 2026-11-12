@@ -1,0 +1,17 @@
+/* Registry page: layout only; every control is the framework's and every value a theme token. */
+.axp-registry__filters { gap: var(--fx-dens-gap-md); align-items: flex-end }
+.axp-registry__body { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: var(--fx-dens-gap-xl); align-items: start }
+.axp-registry__list { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); max-height: calc(var(--fx-row-h) * 24); overflow: auto }
+.axp-registry__item { justify-content: flex-start; flex-wrap: wrap; text-align: left; gap: var(--fx-dens-gap-sm) }
+.axp-registry__itemlabel { flex: 1 1 auto }
+.axp-registry__itemid { flex: 1 1 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fx-type-root-sm) }
+.axp-registry__desc { margin: 0; white-space: pre-wrap }
+.axp-registry__ways { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); margin: 0 }
+.axp-registry__ways dd { margin: 0; overflow-wrap: anywhere }
+.axp-registry__action { border-top: var(--fx-border-w) solid var(--fx-border); padding-top: var(--fx-dens-gap-md) }
+.axp-registry__acthead { gap: var(--fx-dens-gap-sm); align-items: center }
+.axp-registry__ref { overflow-wrap: anywhere; font-size: var(--fx-type-root-sm) }
+.axp-registry__say { margin: 0 }
+.axp-registry__json { max-height: calc(var(--fx-row-h) * 14); overflow: auto; margin: 0 }
+:where([data-fx-tiny], [data-fx-small], [data-fx-narrow]) .axp-registry__body { grid-template-columns: minmax(0, 1fr) }
+:where([data-fx-tiny], [data-fx-small], [data-fx-narrow]) .axp-registry__list { max-height: calc(var(--fx-row-h) * 12) }

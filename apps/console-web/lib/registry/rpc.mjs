@@ -17,7 +17,7 @@ import { readFileSync } from 'node:fs';
 import { resolve as resolvePath } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { aiFallbackBrief, canonical, checkParams, fnv1a64, getEntry } from '../../../../framework/core/engines/control-registry.mjs';
-import { dispatch } from './dispatch.mjs';
+import { aiAvailable, dispatch } from './dispatch.mjs';
 import { channelGap, consoleTargets, planResolution, planState, providerIds } from './execute.mjs';
 import { surfacesOf } from '../../../../framework/core/engines/control-registry.mjs';
 import { ControlRegistry } from './index.mjs';
@@ -95,6 +95,7 @@ export function handle(req) {
     case 'export': return { ok: true, index: { ...r.index, exportedAt: new Date().toISOString() } };
     case 'stats': return { ok: true, ...r.stats(), providers: providerIds() };
     case 'owners': return { ok: true, owners: r.owners() };
+    case 'ai': { const a = aiAvailable(); return { ok: true, available: a.available, source: a.source, ...(a.why ? { why: a.why } : {}), setting: 'console.claudeAvailable', label: 'Make Claude available to the console' }; }
     case 'providerOps': {
       // every provider op the registry declares, per connection (the provider check compares them with the live hub)
       const ops = {};

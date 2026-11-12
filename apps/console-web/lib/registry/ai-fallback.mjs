@@ -48,7 +48,7 @@ export function readSetting({ now = Date.now(), root = ROOT, cli = settingsCli(r
     try {
       const out = execFileSync('node', [cli, 'get', SETTING_KEY, '--json'], { cwd: root, encoding: 'utf8', timeout: 10_000, stdio: ['ignore', 'pipe', 'ignore'] });
       const j = JSON.parse(out.trim().split('\n').pop() || '{}');
-      const v = j?.value ?? j?.settings?.find?.((s) => s.key === SETTING_KEY)?.value ?? j?.[SETTING_KEY];
+      const v = j?.setting?.key === SETTING_KEY ? j.setting.value : j?.value ?? j?.settings?.find?.((s) => s.key === SETTING_KEY)?.value ?? j?.[SETTING_KEY];
       value = { available: v === true, source: 'plugin', ...(v === undefined ? { why: `${SETTING_KEY} is not in the Claude settings registry` } : {}) };
     } catch (e) { value = { available: false, source: 'none', why: `could not read Claude settings: ${String(e.message ?? e).slice(0, 160)}` }; }
   }

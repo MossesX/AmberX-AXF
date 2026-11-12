@@ -1,0 +1,335 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.registry",
+  "name": "Registry",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Everything that can be controlled in the console, Molly, axHub, Hostinger, Coolify, the VPS, AmberX and Moshi, in one page: browse, search and filter every registry entry (control-registry@1), see where it lives, how it opens, how its state is read, every action with every parameter and allowed value, which surfaces reach it (REST, MCP, CLI, voice, deep link) and its gaps; run any action from the page; resolve a phrase the way voice does; and see whether the Claude fallback is on (Claude settings \u2192 Make Claude available to the console). REST /api/plugins/control-registry (state, entries, entry, run, resolve, open, page) and the core /api/registry + /api/control routes, MCP registry_* / control_* and registry_* plugin tools, CLI axf ctl and axf control-registry <command>, voice through the dispatcher. Deep link ?axf-view=registry&id=<entry>&q=<words>.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:registry",
+    "settings-tab:control-registry",
+    "action:registry.open"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "optional": [],
+  "banner": false,
+  "tabable": true,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/control-registry",
+    "env": [],
+    "mentions": [
+      "_claude/THREADS.md",
+      "docs/contracts/control-registry.md"
+    ]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "route": "GET /state",
+        "id": "state",
+        "title": "The Registry page's state: its filters, the open entry, the counts and whether the Claude fallback is on",
+        "readOnly": true
+      },
+      {
+        "route": "GET /entries",
+        "id": "entries",
+        "title": "List or search registry entries",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "q": {
+              "type": "string",
+              "maxLength": 300
+            },
+            "owner": {
+              "type": "string",
+              "enum": [
+                "",
+                "console-web",
+                "molly",
+                "axhub-web",
+                "hostinger",
+                "coolify",
+                "vps",
+                "amberx-droid",
+                "moshi"
+              ]
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "",
+                "page",
+                "app",
+                "plugin",
+                "tool",
+                "behavior",
+                "display",
+                "setting"
+              ]
+            },
+            "surface": {
+              "type": "string",
+              "enum": [
+                "",
+                "rest",
+                "mcp",
+                "cli",
+                "voice",
+                "deepLink"
+              ]
+            },
+            "gaps": {
+              "type": "string",
+              "enum": [
+                "",
+                "only",
+                "none"
+              ]
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100000
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "GET /entry",
+        "id": "entry",
+        "title": "One registry entry with its actions, parameters, allowed values, surfaces and gaps",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]*/[a-z]+/.+$"
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /run",
+        "id": "run",
+        "title": "Run one action of one entry (parameters checked by the registry first)",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]*/[a-z]+/.+$"
+            },
+            "action": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9._:-]{0,63}$"
+            },
+            "params": {
+              "type": "object"
+            },
+            "confirm": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{0,80}$"
+            },
+            "reason": {
+              "type": "string",
+              "maxLength": 300
+            },
+            "dry": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id",
+            "action"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /resolve",
+        "id": "resolve",
+        "title": "Resolve a phrase or a CLI call to an entry and action (deterministic first, Claude only when allowed)",
+        "input": {
+          "type": "object",
+          "properties": {
+            "input": {
+              "type": "string",
+              "maxLength": 500
+            },
+            "run": {
+              "type": "boolean"
+            },
+            "confirm": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{0,80}$"
+            }
+          },
+          "required": [
+            "input"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /open",
+        "id": "open",
+        "title": "Open the Registry page in the console on an entry or a search",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "maxLength": 300
+            },
+            "q": {
+              "type": "string",
+              "maxLength": 300
+            },
+            "owner": {
+              "type": "string",
+              "enum": [
+                "",
+                "console-web",
+                "molly",
+                "axhub-web",
+                "hostinger",
+                "coolify",
+                "vps",
+                "amberx-droid",
+                "moshi"
+              ]
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "",
+                "page",
+                "app",
+                "plugin",
+                "tool",
+                "behavior",
+                "display",
+                "setting"
+              ]
+            },
+            "to": {
+              "type": "string",
+              "pattern": "^(recent|all|[A-Za-z0-9_-]{6,64})$"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      {
+        "route": "POST /page",
+        "id": "page",
+        "title": "Set the Registry page's filters (the page reports them too)",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "q": {
+              "type": "string",
+              "maxLength": 300
+            },
+            "owner": {
+              "type": "string",
+              "maxLength": 40
+            },
+            "type": {
+              "type": "string",
+              "maxLength": 20
+            },
+            "surface": {
+              "type": "string",
+              "maxLength": 20
+            },
+            "gaps": {
+              "type": "string",
+              "enum": [
+                "",
+                "only",
+                "none"
+              ]
+            },
+            "id": {
+              "type": "string",
+              "maxLength": 300
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    ]
+  },
+  "control": {
+    "$axf": "control-registry@1",
+    "entries": [
+      {
+        "id": "console-web/page/registry",
+        "synonyms": [
+          "registry",
+          "control registry",
+          "everything i can control"
+        ],
+        "state": {
+          "read": "control-registry/state",
+          "shape": "{ page: { q, owner, type, surface, gaps, id }, stats, ai }"
+        },
+        "actions": [
+          {
+            "id": "open",
+            "phrases": [
+              "open the registry",
+              "show the registry",
+              "what can i control"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "console-web/tool/control-registry/open",
+        "actions": [
+          {
+            "id": "run",
+            "phrases": [
+              "show {q} in the registry",
+              "find {q} in the registry"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-11"
+  },
+  "help": "help.json",
+  "opens": "main"
+}
