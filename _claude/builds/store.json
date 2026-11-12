@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3797,
- "updatedAt": "2026-11-12T23:14:27.964Z",
+ "rev": 3798,
+ "updatedAt": "2026-11-12T23:14:48.296Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174523,6 +174523,43 @@
    ],
    "order": {
     "all": 753
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n",
+   "title": "Stop the Molly guide from popping up and talking every time the console loads: no auto-open, it only opens when Brett asks. Carry out the Nov 3 decision: Molly is no longer an agent, so swap the Molly guide, Ask Molly and walkthrough texts over to Gizmo. Android twin too.",
+   "category": "",
+   "detail": "",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-12T23:14:47.128Z",
+   "updatedAt": "2026-11-12T23:14:47.128Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 754
    },
    "kind": "build",
    "planRef": "",
