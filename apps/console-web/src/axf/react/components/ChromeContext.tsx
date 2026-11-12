@@ -22,9 +22,12 @@
  *   chrome.reset:<type>:<instance>               drop every override + the instance's own asset pick
  *   chrome.swap:<type>:<instance>:<asset|next>   use another asset (tab groups: for this row; the rest: the app's slot)
  *   chrome.interface:<type>:<settings id|default|custom|reset>   which settings interface the dialog uses
+ *   chrome.unset:<type>:<instance>:<field>       reset one field: it inherits from the app's asset again
+ *   chrome.edits                                 open Settings → Appearance at the "Assets with edits" list
+ *   settings.controlled-colour:<warning|accent|info|success|danger>   the colour that marks overridden settings
  */
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { CHROME_FIELDS, CHROME_ICONS, CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, CHROME_LABELS, CHROME_MANY, CHROME_MOVES, CHROME_SETTINGS_PATCH_KEY, CHROME_SETTINGS_PICK_KEY, CHROME_SETTINGS_TABS, CHROME_TYPES, FRAMEWORK_MODULE, POSITION_LABELS, SETTINGS_LEVEL_KEY, SETTINGS_LEVELS, SETTINGS_LEVEL_LABEL, chromeFieldValue, chromeLabel, chromeSettingsChoices, chromeSettingsCustomId, chromeSettingsDefaultId, chromeSettingsPick, chromeTypeOfTarget, isChromeInstanceId, isChromeType, normalizeInstanceOverride, normalizeSettingsUi, resolveSettingsChain, settingsLevelOf, settingsLevelRank, type AssetType, type AxfRuntime, type ChromeField, type ChromeType, type SettingsLevel, type SettingsUi, type SettingSpec, type SettingValue } from '../../core';
+import { CONTROLLED_COLORS, CONTROLLED_COLOR_KEY, chromeOverrideList, controlledColorOf, CHROME_FIELDS, CHROME_ICONS, CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, CHROME_LABELS, CHROME_MANY, CHROME_MOVES, CHROME_SETTINGS_PATCH_KEY, CHROME_SETTINGS_PICK_KEY, CHROME_SETTINGS_TABS, CHROME_TYPES, FRAMEWORK_MODULE, POSITION_LABELS, SETTINGS_LEVEL_KEY, SETTINGS_LEVELS, SETTINGS_LEVEL_LABEL, chromeFieldValue, chromeLabel, chromeSettingsChoices, chromeSettingsCustomId, chromeSettingsDefaultId, chromeSettingsPick, chromeTypeOfTarget, isChromeInstanceId, isChromeType, normalizeInstanceOverride, normalizeSettingsUi, resolveSettingsChain, settingsLevelOf, settingsLevelRank, type AssetType, type AxfRuntime, type ChromeField, type ChromeType, type SettingsLevel, type SettingsUi, type SettingSpec, type SettingValue } from '../../core';
 import { CONTROL_TOKEN_SLOTS, withTokenOverride, withoutTokenOverride } from '../../core/engines/control-tokens.mjs';
 import type { MenuEntry } from '../../core/engines/windows';
 import { useAxfState, useRuntime } from '../AxfProvider';
@@ -158,6 +161,9 @@ export function installChrome(rt: AxfRuntime): void {
     }, { label: 'Set one chrome setting (chrome.set:<type>:<instance>:<field>:<value>)', params: true, requires: 'assets.swap' });
     rt.actions.register('chrome.reset', ([type, instance], ctx) => { const ty = t(type); if (!ty) return; const i = inst(ty, instance, ctx); rt.settings.clear(CHROME_INSTANCE_KEY(ty, i)); rt.settings.clear(CHROME_INSTANCE_ASSET_KEY(ty, i)); }, { label: 'Reset a chrome piece to its asset', params: true, requires: 'assets.swap' });
     rt.actions.register('chrome.swap', ([type, instance, asset = 'next'], ctx) => { const ty = t(type); if (ty && !swapChrome(rt, ty, inst(ty, instance, ctx), asset)) rt.toast(`No ${chromeLabel(ty).toLowerCase()} asset "${asset}".`, 'warning', 'Change'); }, { label: 'Use another chrome asset (chrome.swap:<type>:<instance>:<asset|next>)', params: true, requires: 'assets.swap' });
+    rt.actions.register('chrome.unset', ([type, instance, key = ''], ctx) => { const ty = t(type); if (ty && key) setChromeField(rt, ty, inst(ty, instance, ctx), key, null); }, { label: 'Reset one chrome setting to the app (chrome.unset:<type>:<instance>:<field>)', params: true, requires: 'assets.swap' });
+    rt.actions.register('chrome.edits', () => rt.dispatch('settings.open:appearance'), { label: 'Assets with edits (Settings → Appearance)' });
+    rt.actions.register('settings.controlled-colour', ([c]) => { if (c && (CONTROLLED_COLORS as readonly string[]).includes(c)) rt.settings.set(CONTROLLED_COLOR_KEY, c); }, { label: 'Colour of controlled (overridden) settings', params: true });
     rt.actions.register('chrome.interface', ([type, which = 'default']) => {
       const ty = t(type); if (!ty) return;
       const key = CHROME_SETTINGS_PICK_KEY(ty);
@@ -192,6 +198,18 @@ function FieldControl({ type, instance, field, descriptions }: { type: ChromeTyp
   const overridden = field.key in normalizeInstanceOverride(type, override);
   const hint = descriptions && overridden ? 'Set for this one (the asset says otherwise)' : undefined;
   const set = (v: string | number | boolean | null) => setChromeField(rt, type, instance, field.key, v);
+  const control = fieldInput(field, value, hint, set);
+  if (!overridden) return control;
+  // an override of the app's setting for this asset: marked in the controlled colour, with a note and a Reset
+  return (
+    <div className={`axf-controlled axf-controlled--${controlledColorOf(rt.settings.get(CONTROLLED_COLOR_KEY))}`} data-axf-overridden={field.key}>
+      {control}
+      <span className="fx-row fx-small fx-muted axf-controlled__note">Overrides the app's setting<Button size="sm" tone="neutral" icon="undo" onClick={() => rt.dispatch(`chrome.unset:${type}:${instance}:${field.key}`)}>Reset</Button></span>
+    </div>
+  );
+}
+
+function fieldInput(field: ChromeField, value: unknown, hint: string | undefined, set: (v: string | number | boolean | null) => void): ReactNode {
   if (field.kind === 'toggle') return <Switch label={field.label} hint={hint} checked={value === true} onChange={(on) => set(on)} />;
   if (field.kind === 'number') return <Slider label={field.label} value={typeof value === 'number' ? value : field.min ?? 0} min={field.min} max={field.max} step={1} onChange={(n) => set(n)} />;
   const options = (field.options ?? []).map((o) => ({ value: o, label: field.labels?.[o] ?? o.replace(/-/g, ' ').replace(/^./, (c) => c.toUpperCase()) }));
@@ -344,5 +362,54 @@ export const chromeDialogs: DialogMap = {
 };
 
 /** Every chrome type's settings reachable by voice: the catalog lists these ids (console.actions). */
-export const CHROME_ACTION_IDS = ['chrome.settings', 'chrome.pick', 'chrome.move', 'chrome.set', 'chrome.reset', 'chrome.swap', 'chrome.interface'] as const;
+export const CHROME_ACTION_IDS = ['chrome.settings', 'chrome.pick', 'chrome.move', 'chrome.set', 'chrome.reset', 'chrome.swap', 'chrome.interface', 'chrome.unset', 'chrome.edits'] as const;
 export { CHROME_TYPES as CHROME_SETTINGS_TYPES, CHROME_LABELS as CHROME_SETTINGS_LABELS };
+
+/**
+ * Settings → Appearance, top: "N assets are controlled by their own settings". Tap it for every asset with edits; a row
+ * expands to every setting of that asset, row by row, the changed ones marked in the controlled colour; every row is
+ * editable and writes to that asset's own settings (a new override), never the app's (Brett, Nov 10 2026).
+ */
+export function AssetsWithEdits() {
+  const rt = useRuntime();
+  useSettingsTick(rt, [CONTROLLED_COLOR_KEY]);
+  const [, force] = useState(0);
+  useEffect(() => rt.settings.onAnyChange((k) => { if (k.startsWith('axf.chrome.') || k === CONTROLLED_COLOR_KEY) force((n) => n + 1); }), [rt]);
+  const [open, setOpen] = useState(false);
+  const [rowOpen, setRowOpen] = useState<string[]>([]);
+  const list = chromeOverrideList(rt.settings.savedValues());
+  const colour = controlledColorOf(rt.settings.get(CONTROLLED_COLOR_KEY));
+  const colourPick = <SelectField label="Controlled item colour" hint="Marks every setting an asset overrides." value={colour} options={CONTROLLED_COLORS.map((c) => ({ value: c, label: c.replace(/^./, (x) => x.toUpperCase()) }))} onChange={(v) => rt.dispatch(`settings.controlled-colour:${v}`)} />;
+  if (!list.length) return <div className="fx-stack fx-stack--xs" data-axf-asset-edits="0"><span className="fx-small fx-muted">No asset overrides its app settings.</span>{colourPick}</div>;
+  return (
+    <div className="fx-stack fx-stack--xs" data-axf-asset-edits={list.length}>
+      <Button tone="neutral" icon={open ? 'chevron-up' : 'chevron-down'} aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+        {list.length} asset{list.length === 1 ? ' is' : 's are'} controlled by {list.length === 1 ? 'its' : 'their'} own settings
+      </Button>
+      {open && (
+        <div className="fx-stack fx-stack--xs" role="list" aria-label="Assets with edits">
+          {colourPick}
+          {list.map((o) => {
+            const id = `${o.type}:${o.instance}`;
+            const expanded = rowOpen.includes(id);
+            const name = `${chromeLabel(o.type)}${o.instance !== CHROME_APP_INSTANCE ? ` · ${o.instance}` : ''}`;
+            return (
+              <div key={id} role="listitem" className="fx-stack fx-stack--xs" data-axf-asset-edit={id}>
+                <div className="fx-row fx-row--between">
+                  <Button size="sm" tone="neutral" icon={expanded ? 'chevron-up' : 'chevron-right'} aria-expanded={expanded} onClick={() => setRowOpen((x) => (expanded ? x.filter((y) => y !== id) : [...x, id]))}>
+                    <Icon name={CHROME_ICONS[o.type]} size={13} /> {name} · {Object.keys(o.fields).length} changed
+                  </Button>
+                  <span className="fx-row">
+                    <Button size="sm" tone="neutral" icon="settings" onClick={() => rt.dispatch(`chrome.settings:${o.type}:${o.instance}`)}>Asset settings</Button>
+                    <Button size="sm" tone="neutral" icon="undo" onClick={() => rt.dispatch(`chrome.reset:${o.type}:${o.instance}`)}>Reset all</Button>
+                  </span>
+                </div>
+                {expanded && <div className="fx-stack fx-stack--xs">{CHROME_FIELDS[o.type].map((f) => <FieldControl key={f.key} type={o.type} instance={o.instance} field={f} descriptions={false} />)}</div>}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}

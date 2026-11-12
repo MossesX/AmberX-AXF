@@ -187,6 +187,32 @@ export function chromeFieldValue(type, base, override, key) {
   return CHROME_FIELDS[type]?.find((f) => f.key === key)?.default;
 }
 
+/**
+ * Asset overrides (Brett, Nov 10 2026: "Anytime a setting of an asset ... is changed, it's an override"): an asset
+ * inherits until one of its own fields is set; every saved `axf.chrome.<type>.<instance>` with at least one valid field
+ * is an asset with edits. `saved` = the settings store's saved values. Sorted by type order, then instance.
+ */
+export function chromeOverrideList(saved) {
+  const out = [];
+  if (!isObj(saved)) return out;
+  for (const [key, raw] of Object.entries(saved)) {
+    if (!key.startsWith('axf.chrome.')) continue;
+    const rest = key.slice('axf.chrome.'.length);
+    const type = CHROME_TYPES.find((t) => rest.startsWith(`${t}.`));
+    if (!type) continue;
+    const instance = rest.slice(type.length + 1);
+    if (!isChromeInstanceId(instance) || instance.endsWith('.asset')) continue;
+    const fields = normalizeInstanceOverride(type, raw);
+    if (Object.keys(fields).length) out.push({ type, instance, fields });
+  }
+  return out.sort((a, b) => CHROME_TYPES.indexOf(a.type) - CHROME_TYPES.indexOf(b.type) || a.instance.localeCompare(b.instance));
+}
+
+/** The colour that marks a controlled / overridden setting everywhere (a status token name, never a literal). */
+export const CONTROLLED_COLOR_KEY = 'axf.settings.controlledColor';
+export const CONTROLLED_COLORS = ['warning', 'accent', 'info', 'success', 'danger'];
+export const controlledColorOf = (v) => (CONTROLLED_COLORS.includes(v) ? v : CONTROLLED_COLORS[0]);
+
 /** What is wrong with a settings asset that names a chrome type (data.for / data.extends); [] when nothing. */
 export function chromeSettingsErrors(asset) {
   const errors = [];

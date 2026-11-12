@@ -54,6 +54,11 @@ export const CHROME_SETTINGS_TABS: ChromeSettingsTab[];
 export function normalizeInstanceOverride(type: string, raw: unknown): Record<string, string | number | boolean>;
 export function chromeInstanceData<T extends object>(type: string, base: T | null | undefined, override: unknown): T;
 export function chromeFieldValue(type: string, base: unknown, override: unknown, key: string): unknown;
+export interface ChromeOverride { type: ChromeType; instance: string; fields: Record<string, string | number | boolean> }
+export function chromeOverrideList(saved: unknown): ChromeOverride[];
+export const CONTROLLED_COLOR_KEY: string;
+export const CONTROLLED_COLORS: readonly ('warning' | 'accent' | 'info' | 'success' | 'danger')[];
+export function controlledColorOf(v: unknown): (typeof CONTROLLED_COLORS)[number];
 export function chromeSettingsErrors(asset: unknown): string[];
 export function resolveSettingsChain(get: (id: string) => AssetLike | null | undefined, id: string, seen?: string[]): Record<string, unknown> | null;
 export function chromeSettingsPick(saved: unknown, type: ChromeType | string, ids: string[]): string | null;
