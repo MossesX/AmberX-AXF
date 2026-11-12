@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3787,
- "updatedAt": "2026-11-12T23:07:17.081Z",
+ "rev": 3788,
+ "updatedAt": "2026-11-12T23:08:07.619Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -172927,7 +172927,7 @@
    "pr": "#530",
    "priority": "P1",
    "createdAt": "2026-11-12T20:40:19.258Z",
-   "updatedAt": "2026-11-12T23:00:44.345Z",
+   "updatedAt": "2026-11-12T23:08:05.558Z",
    "builtAt": "",
    "notes": [
     {
@@ -172971,7 +172971,16 @@
      "at": "2026-11-12T23:00:44.345Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-12T23:08:05.558Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "",
@@ -173058,12 +173067,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T23:08:05.558Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T20:40:19.259Z",
-     "updatedAt": "2026-11-12T20:40:19.259Z"
+     "updatedAt": "2026-11-12T23:08:05.972Z"
     },
     {
      "id": "s3",
