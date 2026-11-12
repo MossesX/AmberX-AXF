@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3278,
- "updatedAt": "2026-11-12T02:14:30.077Z",
+ "rev": 3279,
+ "updatedAt": "2026-11-12T02:14:39.536Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -157707,14 +157707,14 @@
    "title": "Molly gap: Molly's own actions (molly.*) reachable from the console API, MCP, CLI and AmberX",
    "category": "",
    "detail": "Found by molly-sign-in-once s1. The console-commands relay reaches the console frame inside Molly, not Molly itself, so Molly-level actions (molly.auth.status / check / sign-in / sign-out / base, molly.reload, navigation.*, xlayout.*) can only be run inside Molly (menus, toolbar, command search). Give Molly a client on the same relay (console_show / console_open target molly, plugin commands listing Molly's actions, control@1 for its settings) so every Molly action has the same four reaches (REST, MCP, CLI, voice). Needed before molly-sign-in-once s2 can call its screen done.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "molly-sign-in-once",
    "pendingId": "",
    "branch": "claude/molly-gap-remote-actions",
    "pr": "#502",
    "createdAt": "2026-11-10T22:09:30.792Z",
-   "updatedAt": "2026-11-12T02:14:14.213Z",
+   "updatedAt": "2026-11-12T02:14:20.575Z",
    "builtAt": "",
    "notes": [
     {
@@ -157740,6 +157740,10 @@
     {
      "text": "Headless run axf-molly-gap-remote-actions--paulie: brief only · start 10.9K tokens ($0.03) · cost $0.96 · 27 turns · 6 tools, MCP none",
      "at": "2026-11-12T01:46:38.240Z"
+    },
+    {
+     "text": "s1 done: PR #502. Molly plugin remote-commands = Molly's own client on the console-commands relay (app molly); to=molly / to=console, recent resolves per catalog, lists span clients; Molly plugins in the plugin-commands registry. All checks pass. UI Review NOT submitted: no Playwright package in this session, so no shots of Settings > Plugins > Remote commands; next phase should build Molly and submit desktop + phone shots.",
+     "at": "2026-11-12T02:14:20.575Z"
     },
     {
      "text": "Started run 1 on account-5 (API key, subscriptions first, then API) (Fable, Phase 1): axf-molly-gap-remote-actions--paulie.",
@@ -157808,12 +157812,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T02:14:17.278Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-10T22:12:17.952Z",
-     "updatedAt": "2026-11-12T01:45:44.193Z"
+     "updatedAt": "2026-11-12T02:14:17.537Z"
     },
     {
      "id": "s2",
