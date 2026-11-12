@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3356,
- "updatedAt": "2026-11-12T02:40:55.232Z",
+ "rev": 3357,
+ "updatedAt": "2026-11-12T02:41:06.951Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -160844,7 +160844,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T02:37:24.132Z",
-   "updatedAt": "2026-11-12T02:39:49.993Z",
+   "updatedAt": "2026-11-12T02:40:34.646Z",
    "builtAt": "",
    "notes": [
     {
@@ -160931,7 +160931,7 @@
      "id": "s5",
      "uid": "st-mwcxwntl01ty4w",
      "title": "",
-     "text": "Banner plugin 'Auto-fixes': a banner widget (snappable asset, shows in console, Molly and AmberX) listing every call that failed and is being retried: what failed, which fix on the ladder it is trying now (e.g. 'store locked: clearing stale lock, step 2 of 3'), attempts so far, live updates, and items that gave up after the whole ladder (with what's missing). Count badge on the widget; tap a row to open its 'Automatic fixes' log entry. Full API: REST/MCP/CLI/voice ('what's failing').",
+     "text": "'Auto-fixes' plugin with a setting to show it as EITHER its own full banner (a strip across the top) OR a banner widget (snappable asset); Brett picks in its settings, switchable live, also via REST/MCP/CLI/voice. Shows in console, Molly and AmberX. Lists every call that failed and is being retried: what failed, which fix on the ladder it is trying now (e.g. 'store locked: clearing stale lock, step 2 of 3'), attempts so far, live updates, and items that gave up after the whole ladder (with what's missing). Count badge; tap a row to open its 'Automatic fixes' log entry. Voice: 'what's failing'.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -160945,9 +160945,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T02:39:49.993Z",
-     "updatedAt": "2026-11-12T02:39:50.169Z"
+     "updatedAt": "2026-11-12T02:40:35.046Z"
     },
     {
      "id": "s2",
@@ -161002,7 +161002,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
