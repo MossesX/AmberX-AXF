@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T10:55:43.673Z",
+ "updatedAt": "2026-11-12T10:55:58.672Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -67049,14 +67049,14 @@
    "title": "Library: Sensors & connectivity",
    "category": "Showcase",
    "detail": "Library lib-sensors with a demo app; covers dv.sensors, dv.ble, dv.nfc.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-10-31T23:41:15.585Z",
+   "updatedAt": "2026-11-12T10:55:32.796Z",
    "builtAt": "",
    "notes": [
     {
@@ -67319,14 +67319,14 @@
    "title": "Library: Charts & tables",
    "category": "Showcase",
    "detail": "Library lib-charts with a demo app; covers ui.charts, ui.tables.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-10-31T23:41:15.585Z",
+   "updatedAt": "2026-11-12T10:55:34.882Z",
    "builtAt": "",
    "notes": [
     {
@@ -67452,14 +67452,14 @@
    "title": "Console in its own private repo",
    "category": "Dev Console",
    "detail": "Split apps/console-web into a private repo that depends on a tagged framework version.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-10-31T23:41:15.585Z",
+   "updatedAt": "2026-11-12T10:55:36.402Z",
    "builtAt": "",
    "notes": [
     {
@@ -71015,7 +71015,7 @@
    "title": "Postgres for the console: orchestrator ID registry + all build data",
    "category": "Framework > Database",
    "detail": "Parked for Molly. Replace JSON builds/plans files with Postgres bundled in the console container; orchestrator assigns and registers every ID; queryable from the console. Supersedes the SQLite idea in 'Build data on a real database'.\n\nFrom Plan Studio plan postgres-for-the-console-orchestrator-id-registr-anyx (parked for Molly; not to be run until Brett says so).",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
@@ -71023,7 +71023,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-07T10:22:04.645Z",
-   "updatedAt": "2026-11-10T02:23:45.058Z",
+   "updatedAt": "2026-11-12T10:55:37.974Z",
    "builtAt": "",
    "notes": [
     {
@@ -73190,7 +73190,7 @@
    "title": "Patches/AmberX redesign: 8 game-style PREVIEWS for UI Review (no build until pick)",
    "category": "ui",
    "detail": "Rebuild the entire AmberX UI (app and console) from scratch, ignoring the current look. Overall direction: make it look really good, like a polished Windows PC game UI — game-launcher / game-menu feel, rich depth, glow, motion, HUD-style panels, bold typography. Produce 8 distinct concepts within that game direction, each with its own style, colour theme and layout (e.g. sci-fi HUD, fantasy RPG menu, cyberpunk neon, racing/sports dashboard, tactical military, sleek AAA launcher, retro arcade, space strategy), and post each to UI Review so Brett can pick one. Reference: the Gizmo chat restyle from October. Brett's words: \"The entirety of, of AmberX. Rewrite, rebuild the whole thing. Use its own style, its own design, its own color theme, its own layout. Just build that shit from scratch. Give me a whole shitload of fucking UI reviews to pick from, man.\" and \"Make it look good, give it a really good, like a Windows game.\"",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -73198,7 +73198,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-07T17:00:11.176Z",
-   "updatedAt": "2026-11-07T17:15:39.108Z",
+   "updatedAt": "2026-11-12T10:55:39.640Z",
    "builtAt": "",
    "notes": [
     {
@@ -74936,14 +74936,14 @@
    "title": "Universal voice + API control (everything controllable)",
    "category": "new feature",
    "detail": "Every setting, every screen and every button in the whole app (console, axHub, patches, AmberX, everything) must be fully controllable by the API and by voice. Everything is already an asset and a token, so build one control registry: each control gets a stable ID, type, allowed actions and a description; the API can list, find and act on any of them; voice maps spoken commands onto those API calls. Separate build so it can run in parallel with the others.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T00:46:49.844Z",
-   "updatedAt": "2026-11-08T18:00:48.077Z",
+   "updatedAt": "2026-11-12T10:55:41.091Z",
    "builtAt": "",
    "notes": [
     {
@@ -79284,14 +79284,14 @@
    "title": "AmberX notification panel",
    "category": "AmberX",
    "detail": "Console plugin notify-panel (targets console + AmberX): typed kinds registry over the alert hub, one send API (POST /send, capability axf.notify-panel@1), history/read/clear/pin, live status (accounts, running builds, queue), approvals feed merged in with Deny / Run now through lib-approvals' decideApproval. AmberX push: console alert notifications get action buttons from notify.actions.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/amberx-notify-panel",
    "pr": "",
    "createdAt": "2026-11-08T17:50:26.084Z",
-   "updatedAt": "2026-11-12T03:31:07Z",
+   "updatedAt": "2026-11-12T10:55:42.530Z",
    "builtAt": "",
    "notes": [
     {
@@ -79680,7 +79680,7 @@
    "title": "One way to start builds: the orchestrator dispatches from the queue",
    "category": "",
    "detail": "Brett: only ONE path starts builds, and it is the orchestrator. The orchestrator takes builds from the queue and launches them itself (picks model + account from the account-health store, takes a slot, starts claude-headless.sh, records the build ID so Plan Studio and Build Manager stay in sync). Remove/disable every other launch path: Build Manager Start button (becomes 'send to orchestrator queue' only), feature-assist build_start, push-banner/systems-check claudefix launches, direct axHub vps.build_start from sessions (route to orchestrator or refuse). Reuse the unlanded pipeline-rebuild dispatcher. Every brief the orchestrator writes MUST include: anything with a UI gets full API control (deep link, read state, every action and setting) plus voice/MCP/CLI parity. Tests: only the orchestrator can launch; brief template contains the API rule.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "mcp",
    "pendingId": "one-way-to-start-builds-the-orchestrator-dispatc",
@@ -79688,7 +79688,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-08T18:47:33.943Z",
-   "updatedAt": "2026-11-10T02:23:45.058Z",
+   "updatedAt": "2026-11-12T10:55:44.456Z",
    "builtAt": "",
    "notes": [
     {
@@ -80228,14 +80228,14 @@
    "title": "Nested menus for console, AmberX and Molly (override the shared menus)",
    "category": "",
    "detail": "Brett: the console navigation and application menus are way too long. Generate new nested menus with categories and sub categories (slim, max ~12 per level, sliding sub menus, search/jump-to, favorites, recents) for the Dev Console, AmberX and Molly, all generated the same exact way from the plugin/UI registry so new plugins show up automatically. Each app's generated menus OVERRIDE the shared menus (per app override on). Reuse menu-index@1 from molly-one-shell if landed. Every menu and setting has API + voice + MCP/CLI control. Settings in categorized collapsible sections; 3 UI options to UI Review; desktop + phone shots; tests; report. Must create its Plan Studio plan.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "mcp",
    "pendingId": "nested-menus-for-console-amberx-and-molly-overri",
    "branch": "claude/nested-menus-for-console-amberx-and-molly-overri",
    "pr": "#399",
    "createdAt": "2026-11-08T21:14:21.020Z",
-   "updatedAt": "2026-11-09T00:10:09.938Z",
+   "updatedAt": "2026-11-12T10:55:46.244Z",
    "builtAt": "",
    "notes": [
     {
@@ -82082,7 +82082,7 @@
    "title": "URGENT: approval links say 'Method not allowed'",
    "category": "",
    "detail": "Approval links sent in notices and by Claude (https://axhub.amberxai.com/auth/admin/approvals/<id>) answer 'Method not allowed' when Brett taps Approve. The hub's plain HTML approval pages were removed when every axhub.amberxai.com route moved to the axhub-web app, so the old link/form posts to a route that no longer takes it. Fix: the approval link opens the approval in axhub-web (or the console) with working Approve/Deny that call the hub's decide API with the right method; keep the old URL working as a redirect. Check every place that builds approval links (notices, AmberX push, console banner, axHub tool results approvalUrl). Test Approve and Deny end to end on a veto hold and a confirm hold. Land it the same day.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "mcp",
    "pendingId": "urgent-approval-links-say-method-not-allowed",
@@ -82091,7 +82091,7 @@
    "mergedAt": "2026-11-09T04:24:12Z",
    "priority": "P0",
    "createdAt": "2026-11-09T02:25:05.067Z",
-   "updatedAt": "2026-11-12T03:31:11Z",
+   "updatedAt": "2026-11-12T10:55:47.690Z",
    "builtAt": "",
    "notes": [
     {
@@ -88665,7 +88665,7 @@
    "title": "Walkthrough player: IDE layout setting, collapsible panels, build books from clips; merge with the Demonstration manager",
    "category": "",
    "detail": "Upgrade the existing walkthrough/demonstration tools, don't make new ones. 1) Player setting: Layout = Player or IDE. IDE style: collapsible side columns and panels (clips library, book outline, properties, picture-in-picture group chat, captions/script). 2) Books: drag and drop clips into a book, reorder, nest chapters. 3) Merge the walkthrough player and the already-built Demonstration manager into one plugin (harvest its code, keep its data: demonstration, book, clip asset types), one source of truth. 4) Keep the playback controls (voice switch, speed, hide parts). Full API control.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -88673,7 +88673,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-09T23:59:19.114Z",
-   "updatedAt": "2026-11-10T04:27:17.964Z",
+   "updatedAt": "2026-11-12T10:55:49.117Z",
    "builtAt": "",
    "notes": [
     {

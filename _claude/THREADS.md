@@ -777,17 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:27 UTC · `settings-asset` note (all) · backfill
-- 2026-11-12 03:27 UTC · `settings-asset-fable` note (all) · backfill
-- 2026-11-12 03:27 UTC · `hubsync` note (all) · backfill
-- 2026-11-12 03:27 UTC · `hub-status-badge` note (all) · backfill
-- 2026-11-12 03:27 UTC · `appearance-asset-tokens` note (all) · backfill
-- 2026-11-12 03:27 UTC · `appearance-asset-tokens-fable` note (all) · backfill
-- 2026-11-12 03:27 UTC · `codebase-changes-resume` note (all) · backfill
-- 2026-11-12 03:27 UTC · `vinny-offline-commands` note (all) · backfill
-- 2026-11-12 03:27 UTC · `vinny-app-tokens` note (all) · backfill
-- 2026-11-12 03:27 UTC · `handoff-session-button` note (all) · backfill
-- 2026-11-12 03:27 UTC · `changes-grid` note (all) · backfill
 - 2026-11-12 03:27 UTC · `amberx-droid` note (all) · backfill
 - 2026-11-12 03:27 UTC · `context-menu-designer` note (all) · backfill
 - 2026-11-12 03:27 UTC · `shared-settings-interface` note (all) · backfill
@@ -1177,6 +1166,17 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 10:55 UTC · `x.lib.ai` → archived (all) · claude-voice
 - 2026-11-12 10:55 UTC · `x.lib.vps` → archived (all) · claude-voice
 - 2026-11-12 10:55 UTC · `x.lib.github` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `x.lib.sensors` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `x.lib.charts` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `x.console.repo` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `postgres-console` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `amberx-full-ui-redesign-8-game-style-concepts-for-ui-review` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `universal-voice-api-control-everything-controllable` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `amberx-notify-panel` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `one-way-to-start-builds-the-orchestrator-dispatc` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `nested-menus-for-console-amberx-and-molly-overri` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `urgent-approval-links-say-method-not-allowed` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `walkthrough-player-ide-layout-setting-collapsibl` → archived (all) · claude-voice
 
 ## Token passes (log)
 
