@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3544,
- "updatedAt": "2026-11-12T11:01:20.782Z",
+ "rev": 3545,
+ "updatedAt": "2026-11-12T11:01:57.854Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174123,7 +174123,7 @@
    "branch": "claude/remove-the-console-s-own-notes-manager-console-u",
    "pr": "",
    "createdAt": "2026-11-12T10:43:54.592Z",
-   "updatedAt": "2026-11-12T10:52:20.723Z",
+   "updatedAt": "2026-11-12T11:01:56.330Z",
    "builtAt": "",
    "notes": [
     {
@@ -174156,12 +174156,12 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "mossesx-max-",
-    "session": "axf-remove-the-console-s-own-notes-manager-console-u--joey",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-12T10:52:15.416Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T10:44:42.157Z",
@@ -174171,9 +174171,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-12T10:52:15.416Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -174182,7 +174182,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-12T10:52:15.416Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -174203,12 +174203,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T11:01:56.330Z",
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-12T10:44:42.157Z",
-     "updatedAt": "2026-11-12T10:55:11.672Z"
+     "updatedAt": "2026-11-12T11:01:56.510Z"
     },
     {
      "id": "s2",

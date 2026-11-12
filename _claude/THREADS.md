@@ -777,7 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:27 UTC · `context-menu-designer` note (all) · backfill
 - 2026-11-12 03:27 UTC · `shared-settings-interface` note (all) · backfill
 - 2026-11-12 03:27 UTC · `activity-hold-continue` note (all) · backfill
 - 2026-11-12 03:27 UTC · `banner-details-reveal` note (all) · backfill
@@ -1177,6 +1176,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 10:55 UTC · `urgent-approval-links-say-method-not-allowed` → archived (all) · claude-voice
 - 2026-11-12 10:55 UTC · `walkthrough-player-ide-layout-setting-collapsibl` → archived (all) · claude-voice
 - 2026-11-12 11:01 UTC · `ai-keys` branch claude/ai-keys-console-store-2, PR #358, merged, note (all) · reconciler
+- 2026-11-12 11:01 UTC · `remove-the-console-s-own-notes-manager-console-u` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
