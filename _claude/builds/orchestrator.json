@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-11T23:05:59.422Z",
+ "updatedAt": "2026-11-12T01:45:42.305Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -59130,19 +59130,23 @@
    "title": "Live reload (axf dev) + device hot reload",
    "category": "Build engine",
    "detail": "axf dev watches assets and long-polls changes to devices; the Android HotReloader re-registers changed assets live.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "plan",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-11-10T18:55:23.100Z",
+   "updatedAt": "2026-11-12T01:44:32.930Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T01:44:32.930Z"
     }
    ],
    "approvals": [],
@@ -71136,20 +71140,32 @@
    "title": "Molly gap: Expense Tracker screens load natively in Molly (Next.js 16 / React 19 app today)",
    "category": "Molly",
    "detail": "Gap found by molly-one-shell. Expenses is a Next.js 16 + React 19 app; Molly is AXF React 18 + Vite, so its screens cannot mount natively as they are. Standalone expenses.amberxai.com keeps working until this lands.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/molly-native-expenses",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-08T16:58:59.537Z",
-   "updatedAt": "2026-11-10T21:34:31.434Z",
+   "updatedAt": "2026-11-12T01:44:42.884Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by brett.",
      "at": "2026-11-10T04:27:42.548Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T01:43:46.278Z"
+    },
+    {
+     "text": "Started run 1 on account-5 (API key, subscriptions first, then API) (Opus, Phase 1): axf-molly-native-expenses--rhonda.",
+     "at": "2026-11-12T01:44:38.479Z"
+    },
+    {
+     "text": "Claude account: account-5 (axf-molly-native-expenses--rhonda, own login copy)",
+     "at": "2026-11-12T01:44:42.884Z"
     }
    ],
    "approvals": [],
@@ -71160,8 +71176,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "molly-native-expenses",
+    "brief": "# Build: molly-native-expenses\n\n## Brett said (verbatim)\nAt: 2026-11-08T16:58:59.537Z\n> Standalone apps keep working until Molly covers them; list gaps as pending builds.\n\n## What to build\nContinue build \"Molly gap: Expense Tracker screens load natively in Molly (Next.js 16 / React 19 app today)\" (molly-native-expenses) [Molly] — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-08 16:58):\n\"Standalone apps keep working until Molly covers them; list gaps as pending builds.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (4 left, ~?):\n[ ] s1 Expenses API reachable from molly.amberxai.com (CORS + session) without changing the standalone app\n[ ] s2 Expenses ledger, paydays and reports as a Molly plugin on framework controls (shell-surface@1 manifest)\n[ ] s3 Expenses assistant + settings as Molly plugin screens; menu entries in the all-apps index\n[ ] s4 Tests, UI Review (3 options), report\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step molly-native-expenses <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link molly-native-expenses --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-5 (an API key: billed per token, keep it lean) for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step molly-native-expenses <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note molly-native-expenses \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -71549,14 +71565,14 @@
    "title": "Orchestrator checks Shipped features before splitting any job",
    "category": "",
    "detail": "When the orchestrator receives a job and splits it into steps, it first checks the Shipped features ledger (which must hold every feature the orchestrator has ever built). It must: not build anything twice; not break or redo anything already done; and if a step would conflict with or change something already built, notify Brett (AmberX notification) and wait before going on. Make the Shipped features ledger complete (backfill every landed build) and keep it updated on every land. Also standing rule: ONLY the orchestrator launches builds, picks model and account, owns pending/queue and monitors status; voice/chat sessions only hand it requests.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "mcp",
    "pendingId": "orchestrator-checks-shipped-features-before-spli",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-08T17:22:53.861Z",
-   "updatedAt": "2026-11-10T19:09:46.307Z",
+   "updatedAt": "2026-11-12T01:44:19.349Z",
    "builtAt": "",
    "notes": [
     {
@@ -71578,6 +71594,10 @@
     {
      "text": "Merged with orchestrator-checks-each-build-against-main-righ for the 'never build twice' part: every build is now checked against main (Shipped features, its PR, its branch, the files its steps create) right before it is queued and again at dispatch; done = closed, partly done = only what is left is queued. Still open here: the check at split time, the AmberX conflict notice and the ledger backfill.",
      "at": "2026-11-10T19:09:46.307Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T01:44:19.349Z"
     }
    ],
    "approvals": [],
@@ -76905,7 +76925,7 @@
    "title": "Skins are a complete rework: look + layout + behavior, and professional skins",
    "category": "",
    "detail": "After skins-finish lands (skin@1 + skin-coverage@1 for every asset type). Today a skin covers look only; layout and behavior live in design packs. Change: a skin is the complete rework of an app. Extend skin@1 (contract, Fable) to carry everything a design pack does: look (colors, grid and hover/selection colors, typography sizes, spacing/density, radius, borders, shadows, icons, motion), layout (nav placement, app menu, toolbars, banners, panel arrangement, grid density) and behavior (how menus open/slide/collapse, context menu style, hover/press feedback, transitions, overflow rules) for every registry asset type: nav menu, app menu, context menu, grids, dialogs, windows, bars, widgets, text. Design packs fold into skins (migrate, keep a compatibility alias). Applying a skin swaps all of it at once and resets rolled assets (UI Roller rule). CI: every asset type has skin coverage for look, layout and behavior. Then design at least 5 complete professional skins (clean enterprise, dark pro, compact data, modern SaaS, plus one more), applied to the real console, AmberX and Molly; post each to UI Review with desktop and phone shots; the pick becomes the default. Full API/MCP/CLI/voice control. Tests; report.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "mcp",
    "pendingId": "skins-are-a-complete-rework-look-layout-behavior",
@@ -76913,7 +76933,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T02:57:30.536Z",
-   "updatedAt": "2026-11-11T01:11:25.619Z",
+   "updatedAt": "2026-11-11T23:27:34.758Z",
    "builtAt": "",
    "notes": [
     {
@@ -78474,7 +78494,7 @@
    "title": "Banner: Skins context-menu item with sub-menu of all skins (widget hidden by default)",
    "category": "Banner",
    "detail": "A skins banner widget that shows nothing on the banner by default; instead right-clicking (long-press on touch) the banner shows a context menu item 'Skins' with a sub-menu listing every skin, current one checked; picking one applies it live. Option in settings to also show it as a visible banner widget. Uses the existing banner widgets and context menu system, assets/tokens only. Brett: \"by default I don't want it to show anything, just part of the context menu... right click the banner, it will show a context menu item with skins with a sub menu of all the skins.\"",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -78482,7 +78502,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-09T13:13:43.065Z",
-   "updatedAt": "2026-11-11T01:11:25.619Z",
+   "updatedAt": "2026-11-11T23:27:33.858Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -78595,7 +78615,7 @@
    "pr": "#409",
    "priority": "P0",
    "createdAt": "2026-11-09T13:17:25.806Z",
-   "updatedAt": "2026-11-11T23:05:58.115Z",
+   "updatedAt": "2026-11-11T23:26:07.948Z",
    "builtAt": "2026-11-09T23:50:28.253Z",
    "notes": [
     {
@@ -78725,6 +78745,10 @@
     {
      "text": "Finished on Fable (Nov 11): s6 registry contract completed from the earlier worktree (claude/skins-restyle-finish ran out of credits; its uncommitted work merged, parts/via/declarationConflicts/ingredients API, fixtures, CLI, docs). s5: CI light check was red from a stale builds-store verify (retired breakroom profile folder); took main's fix, verify green; skin-shots gate green (0 new unchanged); screenshots and UI Review SKIPPED on instruction (step kept). PR #409 ready.",
      "at": "2026-11-11T23:05:58.115Z"
+    },
+    {
+     "text": "PR #409 conflicted with main (GitHub ran no checks: mergeable=dirty). Merged main in per the merge queue's own rule, resolved 3 spec conflicts toward main's colorTheme-inside-the-skin model; skin-shots gate made deterministic (animations frozen), baseline +4 colour-only entries for the themes-only packages. All local checks green; pushed.",
+     "at": "2026-11-11T23:26:07.948Z"
     }
    ],
    "approvals": [
@@ -88530,7 +88554,7 @@
    "title": "Full API + CLI control of everything, plus an offline index/registry; AI only as fallback",
    "category": "",
    "detail": "1) Extensive API and CLI control over every page, app, plugin, tool, behavior, display and setting, covering every option and every possible parameter value. Scope: console, Molly, axHub, AmberX app, and through axHub: Hostinger, Coolify, VPS. Moshi is a third-party phone SSH app: cover it only as far as it can be driven (deep links/intents), otherwise record the gap. 2) A complete index and registry of everything controllable (ids, types, actions, parameters, allowed values, where it lives) for offline management and internal logic. 3) Rule: anything that can be done without AI is done without AI. AI is only a fallback, and only when 'Make Claude available to the console' is on in Claude settings. Builds on universal-voice-api-control and the ui-api-parity builds; reuse them, don't duplicate.",
-   "status": "pending",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -88538,8 +88562,8 @@
    "pr": "#468",
    "priority": "P1",
    "createdAt": "2026-11-10T16:28:24.043Z",
-   "updatedAt": "2026-11-10T20:20:40.080Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-12T00:15:04.361Z",
+   "builtAt": "2026-11-12T00:14:12.134Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -88572,9 +88596,42 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-10T20:20:40.080Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-11T23:24:07.312Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 2): axf-full-api-cli-control-of-everything-plus-an-offli--joey.",
+     "at": "2026-11-11T23:25:09.098Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-full-api-cli-control-of-everything-plus-an-offli--joey, own login copy)",
+     "at": "2026-11-11T23:25:13.277Z"
+    },
+    {
+     "text": "Phase 2 done (s4-s17), PR #468. Waiting on Brett: (1) Registry page shots were taken but not sent to UI Review (no console token in the headless session): submit from a session with AXF_TOKEN. (2) Run GET /api/registry/providers/check once: Hostinger/Coolify op names are unverified against the live hub.",
+     "at": "2026-11-12T00:14:13.314Z"
+    },
+    {
+     "text": "Headless run axf-full-api-cli-control-of-everything-plus-an-offli--joey: brief only · start 12.9K tokens ($0.04) · cost $20.96 · 263 turns · 6 tools, MCP none",
+     "at": "2026-11-12T00:14:29.071Z"
+    },
+    {
+     "text": "Session axf-full-api-cli-control-of-everything-plus-an-offli--joey on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-12T00:15:04.361Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-11T23:30:03.897Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "I need extensive API and CLI control over every single page, app, plugin, tool, behavior, display, and setting with every single option or possibility for a parameter. Need to be able to completely run the console, Molly, axHub, Hostinger, Coolify, VPS, Moshi app, AmberX app. I need a powerful complete index and registry for offline management and internal logic. Anything that can possibly be done without AI needs to be, with AI only as a fallback by default unless you have made Claude available to the console in Claude settings.",
@@ -88673,8 +88730,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-11T23:30:03.897Z",
      "note": "",
      "uid": "st-mwaztl1q4csaj6"
     },
@@ -88695,8 +88752,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-11T23:31:35.183Z",
      "note": "",
      "uid": "st-mwaztl1q4dt43x"
     },
@@ -88717,8 +88774,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-11T23:33:39.814Z",
      "note": "",
      "uid": "st-mwaztl1q4embgf"
     },
@@ -88738,8 +88795,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-11T23:37:40.088Z",
      "note": "",
      "uid": "st-mwaztl1q4fvy87"
     },
@@ -88759,8 +88816,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-11T23:40:28.493Z",
      "note": "",
      "uid": "st-mwaztl1q4gsje6"
     },
@@ -88781,8 +88838,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-11T23:43:23.131Z",
      "note": "",
      "uid": "st-mwaztl1q4hjdhd"
     },
@@ -88802,8 +88859,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-11T23:45:08.711Z",
      "note": "",
      "uid": "st-mwaztl1q4itfk8"
     },
@@ -88823,8 +88880,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-11T23:45:40.298Z",
      "note": "",
      "uid": "st-mwaztl1q4j3y4w"
     },
@@ -88844,8 +88901,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-11T23:46:36.830Z",
      "note": "",
      "uid": "st-mwaztl1q4kso5e"
     },
@@ -88866,8 +88923,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-11T23:51:18.189Z",
      "note": "",
      "uid": "st-mwaztl1q4ls4r8"
     },
@@ -88887,8 +88944,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-11T23:52:40.895Z",
      "note": "",
      "uid": "st-mwaztl1q4mmuct"
     },
@@ -88908,8 +88965,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T00:07:28.902Z",
      "note": "",
      "uid": "st-mwaztl1q4nifja"
     },
@@ -88930,8 +88987,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T00:09:56.991Z",
      "note": "",
      "uid": "st-mwaztl1q4oj7wr"
     },
@@ -88953,8 +89010,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T00:14:12.133Z",
      "note": "",
      "uid": "st-mwaztl1q4pip7s"
     }
@@ -90431,7 +90488,7 @@
    "title": "Remove the old theme manager, style and layout settings everywhere; skins replace them",
    "category": "",
    "detail": "Goes with appearance-skins-colour-themes-only-remove-design-packs. Remove the old Theme manager, style themes, layout settings and any other look/layout pickers from Appearance in Molly, console and every app. Skins (with their colour theme) are the only appearance control. Migrate current picks into the active skin so nothing breaks; keep API parity.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -90439,7 +90496,7 @@
    "pr": "#472",
    "priority": "P0",
    "createdAt": "2026-11-10T16:42:29.017Z",
-   "updatedAt": "2026-11-11T01:11:25.619Z",
+   "updatedAt": "2026-11-11T23:27:35.842Z",
    "builtAt": "",
    "notes": [
     {
@@ -95229,7 +95286,7 @@
    "title": "Open any website by voice on the phone, optionally with the AmberX recorder running",
    "category": "",
    "detail": "Merges/supersedes amberx-open-any-url and amberx-open-any-url-apk. 1) Voice: 'go to <any website>' opens it on the phone in Chrome (any https host, not just amberxai.com; block non-http schemes), brought to the front. 2) Option to open it with AmberX's recorder running (screen/audio recorder plugin), recordings saved to axHub with the URL and time. 3) Also available as a browser plugin in the console/Molly (embedded browser pane). Audit-log every open. Full API control.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -95237,7 +95294,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T20:46:28.820Z",
-   "updatedAt": "2026-11-10T20:47:42.129Z",
+   "updatedAt": "2026-11-12T01:44:11.545Z",
    "builtAt": "",
    "notes": [
     {
@@ -95247,6 +95304,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T20:47:42.129Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T01:44:11.545Z"
     }
    ],
    "approvals": [],
@@ -95328,7 +95389,7 @@
    "title": "AmberX build notifications for every stage: start, complete, ready to merge, merged, live",
    "category": "",
    "detail": "Extends #436 (one AmberX build notification: start + finish). Add AmberX notifications for: ready to merge (PR open, CI green), merged/landed, and live (console redeployed with it). One notification per build that updates in place through the stages rather than spamming; per-stage on/off in notification settings.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -95336,7 +95397,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T20:56:54.475Z",
-   "updatedAt": "2026-11-10T20:58:09.728Z",
+   "updatedAt": "2026-11-12T01:44:04.824Z",
    "builtAt": "",
    "notes": [
     {
@@ -95346,6 +95407,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T20:58:09.728Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T01:44:04.824Z"
     }
    ],
    "approvals": [],
@@ -95427,7 +95492,7 @@
    "title": "Build notifications: same notification per build, but it alerts (sound/vibrate) on every stage",
    "category": "",
    "detail": "Amends build-stage notifications: keep one notification per build that updates in place, but each stage change (started, complete, ready to merge, merged, live) re-alerts: sound/vibration and heads-up, not a silent update.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -95435,7 +95500,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T20:57:38.838Z",
-   "updatedAt": "2026-11-10T20:59:19.999Z",
+   "updatedAt": "2026-11-12T01:43:59.053Z",
    "builtAt": "",
    "notes": [
     {
@@ -95445,6 +95510,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T20:59:19.999Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T01:43:59.053Z"
     }
    ],
    "approvals": [],
@@ -95526,15 +95595,15 @@
    "title": "Queue drag-and-drop reorder (dispatcher follows the order)",
    "category": "",
    "detail": "Orchestrator Queue tab: drag and drop builds to reorder; the dispatcher follows the order. Also right-click: Move to top / bottom / position N. Order persists; full API/CLI control.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/queue-drag-and-drop-reorder-dispatcher-follows-t",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T20:59:27.366Z",
-   "updatedAt": "2026-11-10T21:00:50.366Z",
+   "updatedAt": "2026-11-12T01:44:55.230Z",
    "builtAt": "",
    "notes": [
     {
@@ -95544,6 +95613,18 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T21:00:50.366Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T01:43:51.703Z"
+    },
+    {
+     "text": "Started run 1 on account-5 (API key, subscriptions first, then API) (Opus, Phase 1): axf-queue-drag-and-drop-reorder-dispatcher-follows-t--lenny.",
+     "at": "2026-11-12T01:44:53.232Z"
+    },
+    {
+     "text": "Claude account: account-5 (axf-queue-drag-and-drop-reorder-dispatcher-follows-t--lenny, own login copy)",
+     "at": "2026-11-12T01:44:55.230Z"
     }
    ],
    "approvals": [],
@@ -95554,8 +95635,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "queue-drag-and-drop-reorder-dispatcher-follows-t",
+    "brief": "# Build: queue-drag-and-drop-reorder-dispatcher-follows-t\n\n## Brett said (verbatim)\nAt: 2026-11-10T20:59:27.366Z\n> Can I drag and drop builds in the queue? Yes, make it, run it now on an API account.\n\n## What to build\nContinue build \"Queue drag-and-drop reorder (dispatcher follows the order)\" (queue-drag-and-drop-reorder-dispatcher-follows-t) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 20:59):\n\"Can I drag and drop builds in the queue? Yes, make it, run it now on an API account.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Orchestrator Queue tab: drag and drop builds to reorder; the dispatcher follows the order. Also right-click: Move to top / bottom / position N. Order persists; full API/CLI control.\n[ ] s2 (~30 min) Can I drag and drop builds in the queue? Yes, make it, run it now on an API account.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/queue-drag-and-drop-reorder-dispatcher-follows-t.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/queue-drag-and-drop-reorder-dispatcher-follows-t.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step queue-drag-and-drop-reorder-dispatcher-follows-t <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link queue-drag-and-drop-reorder-dispatcher-follows-t --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-5 (an API key: billed per token, keep it lean) for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step queue-drag-and-drop-reorder-dispatcher-follows-t <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note queue-drag-and-drop-reorder-dispatcher-follows-t \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -96388,15 +96469,15 @@
    "title": "Rebuild Gizmo from scratch: full Claude-style chat interface, switch between Claude and local Ollama/Llama",
    "category": "",
    "detail": "Replace the current Gizmo chat. Full Claude.ai-quality interface: conversation list, streaming replies, markdown/code, attachments, voice talk mode, history search. Model switcher per chat: Claude (accounts/API) or local Ollama (amberx-llama container, Mistral Small 24B default, 7B option) via the internal API. Works in AmberX app, AmberX web app and console, with a real deep link. Keep what worked before the Nov 7 Fable rebuild.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/rebuild-gizmo-from-scratch-full-claude-style-cha",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:38:57.321Z",
-   "updatedAt": "2026-11-10T21:39:38.105Z",
+   "updatedAt": "2026-11-12T01:44:29.884Z",
    "builtAt": "",
    "notes": [
     {
@@ -96406,6 +96487,18 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T21:39:38.105Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T01:43:38.472Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-rebuild-gizmo-from-scratch-full-claude-style-cha--gina.",
+     "at": "2026-11-12T01:44:28.486Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-rebuild-gizmo-from-scratch-full-claude-style-cha--gina, own login copy)",
+     "at": "2026-11-12T01:44:29.884Z"
     }
    ],
    "approvals": [],
@@ -96416,8 +96509,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "rebuild-gizmo-from-scratch-full-claude-style-cha",
+    "brief": "# Build: rebuild-gizmo-from-scratch-full-claude-style-cha\n\n## Brett said (verbatim)\nAt: 2026-11-10T21:38:57.321Z\n> You might as well just build it over again and make it sick. Make it better. It's gotta be a full-blown Claude interface where I can either talk to Claude or talk to my Ollama. The Gizmo plugin is trash, the chat is trash, it used to be way better.\n\n## What to build\nContinue build \"Rebuild Gizmo from scratch: full Claude-style chat interface, switch between Claude and local Ollama/Llama\" (rebuild-gizmo-from-scratch-full-claude-style-cha) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 21:38):\n\"You might as well just build it over again and make it sick. Make it better. It's gotta be a full-blown Claude interface where I can either talk to Claude or talk to my Ollama. The Gizmo plugin is trash, the chat is trash, it used to be way better.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Replace the current Gizmo chat. Full Claude.ai-quality interface: conversation list, streaming replies, markdown/code, attachments, voice talk mode, history search. Model switcher per chat: Claude (accounts/API) or local Ollama (amberx-llama container, Mistral Small 24B default, 7B option) via the internal API. Works in AmberX app, AmberX web app and console, with a real deep link. Keep what worked before the Nov 7 Fable rebuild.\n[ ] s2 (~30 min) You might as well just build it over again and make it sick. Make it better. It's gotta be a full-blown Claude interface where I can either talk to Claude or talk to my Ollama. The Gizmo plugin is trash, the chat is trash, it used to be way better.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/rebuild-gizmo-from-scratch-full-claude-style-cha.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/rebuild-gizmo-from-scratch-full-claude-style-cha.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step rebuild-gizmo-from-scratch-full-claude-style-cha <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link rebuild-gizmo-from-scratch-full-claude-style-cha --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step rebuild-gizmo-from-scratch-full-claude-style-cha <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note rebuild-gizmo-from-scratch-full-claude-style-cha \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -96487,15 +96580,15 @@
    "title": "Bug: asset settings (nav menu, tab bar, toolbar) change the settings panel instead of the asset; reset to default resets the wrong thing",
    "category": "",
    "detail": "Right-click > Settings on any asset (nav menu, tab bar, toolbar, banner) opens a settings panel whose changes and Reset to default currently target the settings panel's own assets. Fix: the panel binds to the asset that was right-clicked (and the app it lives in); every change and Reset to default applies to that target asset in the live app. The settings panel's own look is never edited from there. Add a test per asset type.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/bug-asset-settings-nav-menu-tab-bar-toolbar-chan",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:45:52.947Z",
-   "updatedAt": "2026-11-10T21:47:14.535Z",
+   "updatedAt": "2026-11-12T01:44:17.743Z",
    "builtAt": "",
    "notes": [
     {
@@ -96505,6 +96598,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T21:47:14.535Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T01:43:29.618Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-bug-asset-settings-nav-menu-tab-bar-toolbar-chan--earl.",
+     "at": "2026-11-12T01:44:17.743Z"
     }
    ],
    "approvals": [],
@@ -96515,8 +96616,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "bug-asset-settings-nav-menu-tab-bar-toolbar-chan",
+    "brief": "# Build: bug-asset-settings-nav-menu-tab-bar-toolbar-chan\n\n## Brett said (verbatim)\nAt: 2026-11-10T21:45:52.947Z\n> When I click on a navigation menu settings and change it, it changes the settings interface, not the navigation menu itself. Reset to default only resets that asset, the settings panel. When you right click an asset like a nav menu, tab bar or toolbar, the settings need to apply to the app, not the settings panel.\n\n## What to build\nContinue build \"Bug: asset settings (nav menu, tab bar, toolbar) change the settings panel instead of the asset; reset to default resets the wrong thing\" (bug-asset-settings-nav-menu-tab-bar-toolbar-chan) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 21:45):\n\"When I click on a navigation menu settings and change it, it changes the settings interface, not the navigation menu itself. Reset to default only resets that asset, the settings panel. When you right click an asset like a nav menu, tab bar or toolbar, the settings need to apply to the app, not the settings panel.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~30 min):\n[ ] s1 (~30 min) Right-click > Settings on any asset (nav menu, tab bar, toolbar, banner) opens a settings panel whose changes and Reset to default currently target the settings panel's own assets. Fix: the panel binds to the asset that was right-clicked (and the app it lives in); every change and Reset to default applies to that target asset in the live app. The settings panel's own look is never edited from there. Add a test per asset type.\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step bug-asset-settings-nav-menu-tab-bar-toolbar-chan <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link bug-asset-settings-nav-menu-tab-bar-toolbar-chan --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Tick every step as you finish it (orchestrator.mjs act step bug-asset-settings-nav-menu-tab-bar-toolbar-chan <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note bug-asset-settings-nav-menu-tab-bar-toolbar-chan \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -96586,7 +96687,7 @@
    "title": "Asset overrides: changed asset settings override the app's global settings, with a reset note; app settings grey out and link to the asset",
    "category": "",
    "detail": "Inheritance model for every asset (tab group, nav menu, toolbar, banner, etc.): by default an asset inherits the app's global settings. Any change in the asset's own settings becomes an override of the app's global settings for that asset. The asset settings panel shows a small note on overridden fields with a Reset action that removes the override and goes back to inheriting. In the app's main Settings, every option overridden by an asset is greyed out with the note 'Controlled by <asset name>' and a link that opens that asset's settings interface. Pairs with the bug fix that makes asset settings target the right-clicked asset.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -96594,7 +96695,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:47:24.390Z",
-   "updatedAt": "2026-11-10T21:48:21.770Z",
+   "updatedAt": "2026-11-11T23:26:16.100Z",
    "builtAt": "",
    "notes": [
     {
@@ -96685,7 +96786,7 @@
    "title": "Overrides summary: highlight colour setting + 'Assets with edits' list at the top of Appearance",
    "category": "",
    "detail": "Builds on the per-field asset overrides build (e69479a3). 1) Every settings interface gets a setting: 'Controlled item colour' (colour picker), used to highlight overridden/controlled options everywhere. 2) Top of Settings > Appearance: a notice when any asset has edits ('N assets are controlled by their own settings'). Tapping it opens a list of every edited asset; each row expands to list that asset's changed properties (old app value vs asset value), highlighted in the chosen colour, with a link to the asset's settings and a per-property reset.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -96693,7 +96794,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:50:48.036Z",
-   "updatedAt": "2026-11-10T21:51:28.744Z",
+   "updatedAt": "2026-11-11T23:27:38.748Z",
    "builtAt": "",
    "notes": [
     {
@@ -96784,19 +96885,23 @@
    "title": "Molly gap: axHub allows Molly's origin on /auth/api/* (CORS with credentials) so native screens read the hub session",
    "category": "",
    "detail": "Found by molly-sign-in-once s1. From https://molly.amberxai.com, GET https://axhub.amberxai.com/auth/api/session answers 200 with no Access-Control-Allow-Origin, and the preflight OPTIONS /auth/api/logout answers 200 with no CORS headers, so a browser on Molly cannot read the hub session or post a write. The hub should answer an allow-list of amberxai.com app origins (Molly first) on /auth/api/* with Access-Control-Allow-Origin echoing the origin, Access-Control-Allow-Credentials true, Access-Control-Allow-Headers content-type, accept, x-axhub-csrf, Vary Origin; never * with credentials. The session cookie is same-site (SameSite=Lax is enough). Molly side is in place: apps/molly/src/molly/credentials.ts (axhub provider, credentials include, X-AxHub-CSRF on writes).",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "molly-sign-in-once",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-10T22:09:27.000Z",
-   "updatedAt": "2026-11-10T22:10:44.496Z",
+   "updatedAt": "2026-11-12T01:43:10.366Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T22:10:44.496Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T01:43:10.366Z"
     }
    ],
    "approvals": [],
@@ -96878,19 +96983,31 @@
    "title": "Molly gap: Expenses allows Molly's origin on /api/expenses/v1/* (CORS with credentials) so native screens read the ledger",
    "category": "",
    "detail": "Found by molly-sign-in-once s1. From https://molly.amberxai.com, GET https://expenses.amberxai.com/api/expenses/v1/entries?limit=1 answers 401 with no Access-Control-Allow-Origin and the preflight answers 204 with no CORS headers, so a browser on Molly cannot call the ledger API with the axs_session cookie. The route handler (apps/expenses/app/api/expenses/v1/[...path]/route.ts, or proxy.ts) should answer an allow-list of amberxai.com app origins with Access-Control-Allow-Origin echoing the origin, Allow-Credentials true, Allow-Headers content-type, accept, authorization, x-expenses-user, Allow-Methods GET POST PATCH OPTIONS, Vary Origin, and an OPTIONS handler. Molly side is in place: apps/molly/src/molly/credentials.ts (expenses provider: cookie session or bearer token + X-Expenses-User).",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "molly-sign-in-once",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/molly-gap-expenses-cors",
    "pr": "",
    "createdAt": "2026-11-10T22:09:28.380Z",
-   "updatedAt": "2026-11-10T22:11:15.788Z",
+   "updatedAt": "2026-11-12T01:45:39.062Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T22:11:15.788Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T01:43:06.246Z"
+    },
+    {
+     "text": "Started run 1 on account-5 (API key, subscriptions first, then API) (Opus, Phase 1): axf-molly-gap-expenses-cors--joey.",
+     "at": "2026-11-12T01:45:35.693Z"
+    },
+    {
+     "text": "Claude account: account-5 (axf-molly-gap-expenses-cors--joey, own login copy)",
+     "at": "2026-11-12T01:45:39.062Z"
     }
    ],
    "approvals": [],
@@ -96901,8 +97018,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "molly-gap-expenses-cors",
+    "brief": "# Build: molly-gap-expenses-cors\n\n## Brett said (verbatim)\nAt: 2026-11-10T22:09:28.380Z\n> Standalone apps keep working until Molly covers them; list gaps as pending builds.\n\n## What to build\nContinue build \"Molly gap: Expenses allows Molly's origin on /api/expenses/v1/* (CORS with credentials) so native screens read the ledger\" (molly-gap-expenses-cors) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 22:09):\n\"Standalone apps keep working until Molly covers them; list gaps as pending builds.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Found by molly-sign-in-once s1. From https://molly.amberxai.com, GET https://expenses.amberxai.com/api/expenses/v1/entries?limit=1 answers 401 with no Access-Control-Allow-Origin and the preflight answers 204 with no CORS headers, so a browser on Molly cannot call the ledger API with the axs_session cookie. The route handler (apps/expenses/app/api/expenses/v1/[...path]/route.ts, or proxy.ts) should answer an allow-list of amberxai.com app origins with Access-Control-Allow-Origin echoing the origin, Allow-Credentials true, Allow-Headers content-type, accept, authorization, x-expenses-user, Allow-Methods GET POST PATCH OPTIONS, Vary Origin, and an OPTIONS handler. Molly side is in place: apps/molly/src/molly/credentials.ts (expenses provider: cookie session or bearer token + X-Expenses-User).\n[ ] s2 (~30 min) Standalone apps keep working until Molly covers them; list gaps as pending builds.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/molly-gap-expenses-cors.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/molly-gap-expenses-cors.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step molly-gap-expenses-cors <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link molly-gap-expenses-cors --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account account-5 (an API key: billed per token, keep it lean) for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step molly-gap-expenses-cors <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note molly-gap-expenses-cors \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -96972,7 +97089,7 @@
    "title": "Correction to overrides list: expanded asset shows ALL its settings, changed ones highlighted, all editable and saved as asset overrides",
    "category": "",
    "detail": "Amends 'Overrides summary' build (job a58efebb). In the Appearance 'Assets with edits' list, expanding an asset row shows every setting of that asset row by row (not only the changed ones). Changed/overridden ones are highlighted in the chosen controlled-item colour. Every row is editable inline; any edit writes to that asset's own settings (never the app's global settings) and becomes a new override, which then highlights too.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -96980,7 +97097,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:51:35.883Z",
-   "updatedAt": "2026-11-10T21:52:59.225Z",
+   "updatedAt": "2026-11-11T23:27:40.628Z",
    "builtAt": "",
    "notes": [
     {
@@ -97071,19 +97188,31 @@
    "title": "Molly gap: the console frame hands Molly its token once (embed@1 credentials) and the console API allows Molly's origin",
    "category": "",
    "detail": "Found by molly-sign-in-once s1. Two halves. (1) The console API refuses cross-origin calls from Molly: OPTIONS https://console.amberxai.com/api/me with Origin https://molly.amberxai.com answers 401 with no CORS headers (the token check runs before FastAPI's CORSMiddleware, and allow_origins * cannot be used by the wall). Let preflights through and answer an allow-list of amberxai.com app origins with Access-Control-Allow-Headers authorization, content-type, accept. (2) The console token lives only in the console origin's storage (axf-console:token); Molly keeps its own copy (molly:console-token) that today a person must paste. Add an embed@1 message (guest to host, e.g. credentials with {app, scheme, token}) the console frame sends once to a host it recognises (frame-ancestors origin, embed host name), handled by Molly's xLayout host into the console provider's signIn(token); never to a URL or a log. Molly side is in place: apps/molly/src/molly/credentials.ts (console provider, bearer, credentials omit).",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "molly-sign-in-once",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/molly-gap-console-token-handoff",
    "pr": "",
    "createdAt": "2026-11-10T22:09:29.615Z",
-   "updatedAt": "2026-11-10T22:11:45.052Z",
+   "updatedAt": "2026-11-12T01:43:32.542Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T22:11:45.052Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T01:43:00.821Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-molly-gap-console-token-handoff--sully.",
+     "at": "2026-11-12T01:43:23.797Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-molly-gap-console-token-handoff--sully, own login copy)",
+     "at": "2026-11-12T01:43:32.542Z"
     }
    ],
    "approvals": [],
@@ -97094,8 +97223,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "molly-gap-console-token-handoff",
+    "brief": "# Build: molly-gap-console-token-handoff\n\n## Brett said (verbatim)\nAt: 2026-11-10T22:09:29.615Z\n> Standalone apps keep working until Molly covers them; list gaps as pending builds.\n\n## What to build\nContinue build \"Molly gap: the console frame hands Molly its token once (embed@1 credentials) and the console API allows Molly's origin\" (molly-gap-console-token-handoff) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 22:09):\n\"Standalone apps keep working until Molly covers them; list gaps as pending builds.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Found by molly-sign-in-once s1. Two halves. (1) The console API refuses cross-origin calls from Molly: OPTIONS https://console.amberxai.com/api/me with Origin https://molly.amberxai.com answers 401 with no CORS headers (the token check runs before FastAPI's CORSMiddleware, and allow_origins * cannot be used by the wall). Let preflights through and answer an allow-list of amberxai.com app origins with Access-Control-Allow-Headers authorization, content-type, accept. (2) The console token lives only in the console origin's storage (axf-console:token); Molly keeps its own copy (molly:console-token) that today a person must paste. Add an embed@1 message (guest to host, e.g. credentials with {app, scheme, token}) the console frame sends once to a host it recognises (frame-ancestors origin, embed host name), handled by Molly's xLayout host into the console provider's signIn(token); never to a URL or a log. Molly side is in place: apps/molly/src/molly/credentials.ts (console provider, bearer, credentials omit).\n[ ] s2 (~30 min) Standalone apps keep working until Molly covers them; list gaps as pending builds.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/molly-gap-console-token-handoff.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/molly-gap-console-token-handoff.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step molly-gap-console-token-handoff <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link molly-gap-console-token-handoff --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step molly-gap-console-token-handoff <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note molly-gap-console-token-handoff \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -97316,19 +97445,31 @@
    "title": "Molly gap: Molly's own actions (molly.*) reachable from the console API, MCP, CLI and AmberX",
    "category": "",
    "detail": "Found by molly-sign-in-once s1. The console-commands relay reaches the console frame inside Molly, not Molly itself, so Molly-level actions (molly.auth.status / check / sign-in / sign-out / base, molly.reload, navigation.*, xlayout.*) can only be run inside Molly (menus, toolbar, command search). Give Molly a client on the same relay (console_show / console_open target molly, plugin commands listing Molly's actions, control@1 for its settings) so every Molly action has the same four reaches (REST, MCP, CLI, voice). Needed before molly-sign-in-once s2 can call its screen done.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "molly-sign-in-once",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/molly-gap-remote-actions",
    "pr": "",
    "createdAt": "2026-11-10T22:09:30.792Z",
-   "updatedAt": "2026-11-10T22:12:17.952Z",
+   "updatedAt": "2026-11-12T01:45:24.628Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T22:12:17.952Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T01:42:50.354Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-molly-gap-remote-actions--paulie.",
+     "at": "2026-11-12T01:43:13.561Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-molly-gap-remote-actions--paulie, own login copy)",
+     "at": "2026-11-12T01:43:17.715Z"
     }
    ],
    "approvals": [],
@@ -97339,8 +97480,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "molly-gap-remote-actions",
+    "brief": "# Build: molly-gap-remote-actions\n\n## Brett said (verbatim)\nAt: 2026-11-10T22:09:30.792Z\n> Standalone apps keep working until Molly covers them; list gaps as pending builds.\n\n## What to build\nContinue build \"Molly gap: Molly's own actions (molly.*) reachable from the console API, MCP, CLI and AmberX\" (molly-gap-remote-actions) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-10 22:09):\n\"Standalone apps keep working until Molly covers them; list gaps as pending builds.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Found by molly-sign-in-once s1. The console-commands relay reaches the console frame inside Molly, not Molly itself, so Molly-level actions (molly.auth.status / check / sign-in / sign-out / base, molly.reload, navigation.*, xlayout.*) can only be run inside Molly (menus, toolbar, command search). Give Molly a client on the same relay (console_show / console_open target molly, plugin commands listing Molly's actions, control@1 for its settings) so every Molly action has the same four reaches (REST, MCP, CLI, voice). Needed before molly-sign-in-once s2 can call its screen done.\n[ ] s2 (~30 min) Standalone apps keep working until Molly covers them; list gaps as pending builds.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/molly-gap-remote-actions.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/molly-gap-remote-actions.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step molly-gap-remote-actions <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link molly-gap-remote-actions --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step molly-gap-remote-actions <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note molly-gap-remote-actions \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -97349,8 +97490,8 @@
     {
      "id": "s1",
      "text": "Found by molly-sign-in-once s1. The console-commands relay reaches the console frame inside Molly, not Molly itself, so Molly-level actions (molly.auth.status / check / sign-in / sign-out / base, molly.reload, navigation.*, xlayout.*) can only be run inside Molly (menus, toolbar, command search). Give Molly a client on the same relay (console_show / console_open target molly, plugin commands listing Molly's actions, control@1 for its settings) so every Molly action has the same four reaches (REST, MCP, CLI, voice). Needed before molly-sign-in-once s2 can call its screen done.",
-     "model": "Opus",
-     "why": "",
+     "model": "Fable",
+     "why": "Needs a cross-app protocol change: new embed@1 messages so the console frame inside Molly relays commands to Molly (Molly has no console token of its own).",
      "phase": "",
      "group": "",
      "estimate": "30 min",
@@ -97509,7 +97650,7 @@
    "title": "Background token for every UI + Background Designer (animated, logos, brand library, design import, semi-transparent foreground)",
    "category": "",
    "detail": "1) New token 'background' in the token sets (tokens.look/style) for every app, screen and asset, exposed in axHub style settings and Appearance, inheriting/overridable like other tokens. Values: colour, gradient, image, video/animation (Lottie, CSS/WebGL, GIF/MP4), logo/brand marks from Brand library, pattern. 2) Background Designer plugin: layers, animated backgrounds, generators, brand integration, design import (Figma/SVG/image/Lottie), presets saved as assets and usable in skins. 3) Foreground transparency control: make panels/cards/banners in front semi-transparent (opacity + blur) per app or skin. Respects reduced-motion and phone battery.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -97517,7 +97658,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:56:52.404Z",
-   "updatedAt": "2026-11-10T21:58:09.525Z",
+   "updatedAt": "2026-11-11T23:27:37.666Z",
    "builtAt": "",
    "notes": [
     {
@@ -97707,7 +97848,7 @@
    "title": "Background is its own asset type (with asset settings, right-click, overrides)",
    "category": "",
    "detail": "Addition to the background token + Background Designer build (4c4f05f2): add 'background' as a named asset type like nav menus, tab groups, toolbars and banners. Every screen/app/panel background is an asset: right-click > Settings opens its asset settings, follows per-field override rules and the Appearance 'Assets with edits' list, saveable/reusable from Background Designer and skins.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -97715,7 +97856,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:57:17.444Z",
-   "updatedAt": "2026-11-10T21:59:17.083Z",
+   "updatedAt": "2026-11-11T23:27:36.696Z",
    "builtAt": "",
    "notes": [
     {
@@ -98545,6 +98686,115 @@
      "doneAt": "2026-11-11T01:49:05.611Z",
      "note": "",
      "uid": "st-mwbfc9xu03kft4"
+    }
+   ]
+  },
+  {
+   "id": "console-commands-reliable",
+   "title": "Console commands reliable: live clients, failover, wake, focus a build or tab",
+   "category": "Console",
+   "detail": "",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/console-commands-reliable",
+   "pr": "#496",
+   "createdAt": "2026-11-11T23:25:41.956Z",
+   "updatedAt": "2026-11-11T23:40:30.332Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Reconciler: branch claude/console-commands-reliable (PR #496); PR #496",
+     "at": "2026-11-11T23:40:30.332Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "console commands from Claude/MCP (console_open, console_show / Follow Amber) keep failing ... Fix: keep console client connections alive, deliver to the most recently active live client, retry, wake via AmberX; console_show/console_open accept a build id or tab; truthful result.",
+    "at": "2026-11-11T23:25:41.956Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Liveness: client-only lastSeen, faster heartbeat, wake on visibilitychange, drop dead clients fast",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-11T23:38:17.052Z",
+     "note": "",
+     "uid": "st-mwcqz04g05tk1a"
+    },
+    {
+     "id": "s2",
+     "text": "Delivery: most recently active live client, retry next, wake via AmberX when none answers, truthful delivered/pending",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-11T23:38:18.135Z",
+     "note": "",
+     "uid": "st-mwcqz04g06yulr"
+    },
+    {
+     "id": "s3",
+     "text": "Focus: console_open/console_show accept a build id or screen+tab; orchestrator opens tab, scrolls, expands, highlights",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-11T23:38:19.346Z",
+     "note": "",
+     "uid": "st-mwcqz04g07yje9"
+    },
+    {
+     "id": "s4",
+     "text": "Tests + fixtures + PR + redeploy",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwcqz04g08hvst"
     }
    ]
   }

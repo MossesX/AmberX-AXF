@@ -50,7 +50,8 @@
       "CLAUDE.md",
       "_claude/memory/STATUS.md",
       "apps/console-web/plugins/README.md",
-      "_claude/THREADS.md"
+      "_claude/THREADS.md",
+      ".github/workflows/android.yml"
     ]
   },
   "userGrantable": true,
