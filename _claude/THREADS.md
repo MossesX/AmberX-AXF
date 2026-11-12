@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 10:50 UTC · `pending-tab-one-collapsed-row-per-build-tap-to-e` → running, note (all) · pipeline
 - 2026-11-12 10:50 UTC · `pending-tab-one-collapsed-row-per-build-tap-to-e` branch claude/pending-tab-one-collapsed-row-per-build-tap-to-e (all) · pipeline
 - 2026-11-12 10:50 UTC · `pending-tab-one-collapsed-row-per-build-tap-to-e` note (all) · orchestrator
 - 2026-11-12 10:50 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` → running, note (all) · pipeline
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 23:51 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note (all) · pipeline
 - 2026-11-12 23:52 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` note (all) · pipeline
 - 2026-11-12 23:54 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` note (all) · pipeline
+- 2026-11-12 23:57 UTC · `remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel` note (all) · pipeline
 
 ## Token passes (log)
 
