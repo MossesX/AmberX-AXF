@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-11 00:36 UTC · `ai-assistant-in-molly-console-drives-by-api-open` → queued, note (all) · pipeline
 - 2026-11-11 00:36 UTC · `ai-assistant-in-molly-console-drives-by-api-open` → running, note (all) · pipeline
 - 2026-11-11 00:36 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
 - 2026-11-11 00:37 UTC · `ai-assistant-in-molly-console-drives-by-api-open` s2 done, → running (all) · orchestrator
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:42 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` s7 done (all) · foreign-write
 - 2026-11-12 02:42 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` note (all) · orchestrator
 - 2026-11-12 02:42 UTC · `molly-gap-console-token-handoff` note (all) · orchestrator
+- 2026-11-12 02:43 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` note (all) · orchestrator
 
 ## Token passes (log)
 
