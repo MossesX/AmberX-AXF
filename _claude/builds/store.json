@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3314,
- "updatedAt": "2026-11-12T02:29:54.059Z",
+ "rev": 3315,
+ "updatedAt": "2026-11-12T02:30:37.033Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -154087,10 +154087,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/build-notifications-same-notification-per-build",
-   "pr": "",
+   "pr": "#506",
    "priority": "P1",
    "createdAt": "2026-11-10T20:57:38.838Z",
-   "updatedAt": "2026-11-12T02:28:45.110Z",
+   "updatedAt": "2026-11-12T02:30:24.361Z",
    "builtAt": "",
    "notes": [
     {
@@ -154254,7 +154254,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
