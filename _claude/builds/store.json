@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3376,
- "updatedAt": "2026-11-12T02:45:10.526Z",
+ "rev": 3377,
+ "updatedAt": "2026-11-12T02:45:20.649Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -157269,14 +157269,14 @@
    "title": "Molly gap: axHub allows Molly's origin on /auth/api/* (CORS with credentials) so native screens read the hub session",
    "category": "",
    "detail": "Found by molly-sign-in-once s1. From https://molly.amberxai.com, GET https://axhub.amberxai.com/auth/api/session answers 200 with no Access-Control-Allow-Origin, and the preflight OPTIONS /auth/api/logout answers 200 with no CORS headers, so a browser on Molly cannot read the hub session or post a write. The hub should answer an allow-list of amberxai.com app origins (Molly first) on /auth/api/* with Access-Control-Allow-Origin echoing the origin, Access-Control-Allow-Credentials true, Access-Control-Allow-Headers content-type, accept, x-axhub-csrf, Vary Origin; never * with credentials. The session cookie is same-site (SameSite=Lax is enough). Molly side is in place: apps/molly/src/molly/credentials.ts (axhub provider, credentials include, X-AxHub-CSRF on writes).",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "molly-sign-in-once",
    "pendingId": "",
    "branch": "claude/molly-gap-axhub-cors",
    "pr": "",
    "createdAt": "2026-11-10T22:09:27.000Z",
-   "updatedAt": "2026-11-12T02:44:42.600Z",
+   "updatedAt": "2026-11-12T02:45:16.923Z",
    "builtAt": "",
    "notes": [
     {
@@ -157306,6 +157306,10 @@
     {
      "text": "Claude account: account-5 (axf-molly-gap-axhub-cors--earl, own login copy)",
      "at": "2026-11-12T02:42:54.502Z"
+    },
+    {
+     "text": "Self-check: molly-gap-axhub-cors was marked running on account-5 with no session: released and back in the Queue.",
+     "at": "2026-11-12T02:45:16.923Z"
     }
    ],
    "approvals": [],
@@ -157325,7 +157329,7 @@
    "pipeline": {
     "queuedAt": "2026-11-12T01:43:09.945Z",
     "queuedBy": "console",
-    "account": "account-5",
+    "account": "",
     "session": "",
     "slot": "",
     "model": "Opus",
@@ -157341,7 +157345,7 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "Session on account-5 ended (exit 1) with 3 steps left: back in the Queue (run 1).",
+    "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
     "dispatchedAt": "2026-11-12T01:45:51.956Z",
     "planned": {
@@ -157436,7 +157440,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -157620,14 +157624,14 @@
    "title": "Molly gap: the console frame hands Molly its token once (embed@1 credentials) and the console API allows Molly's origin",
    "category": "",
    "detail": "Found by molly-sign-in-once s1. Two halves. (1) The console API refuses cross-origin calls from Molly: OPTIONS https://console.amberxai.com/api/me with Origin https://molly.amberxai.com answers 401 with no CORS headers (the token check runs before FastAPI's CORSMiddleware, and allow_origins * cannot be used by the wall). Let preflights through and answer an allow-list of amberxai.com app origins with Access-Control-Allow-Headers authorization, content-type, accept. (2) The console token lives only in the console origin's storage (axf-console:token); Molly keeps its own copy (molly:console-token) that today a person must paste. Add an embed@1 message (guest to host, e.g. credentials with {app, scheme, token}) the console frame sends once to a host it recognises (frame-ancestors origin, embed host name), handled by Molly's xLayout host into the console provider's signIn(token); never to a URL or a log. Molly side is in place: apps/molly/src/molly/credentials.ts (console provider, bearer, credentials omit).",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "molly-sign-in-once",
    "pendingId": "",
    "branch": "claude/molly-gap-console-token-handoff",
    "pr": "",
    "createdAt": "2026-11-10T22:09:29.615Z",
-   "updatedAt": "2026-11-12T02:43:07.502Z",
+   "updatedAt": "2026-11-12T02:45:10.604Z",
    "builtAt": "",
    "notes": [
     {
@@ -157673,6 +157677,10 @@
     {
      "text": "s1, s2 done; s3 done except the PR. Branch claude/molly-gap-console-token-handoff pushed (b844af7c1), tests green, report and THREADS row in the commit. PR creation was refused by GitHub's secondary rate limit for content creation (gh pr create and REST, 02:42 UTC). Next: open the PR from the branch (title and body in the report), link it with builds-live link --pr, tick s3. Gap filed: molly-gap-expenses-token-handoff.",
      "at": "2026-11-12T02:42:53.859Z"
+    },
+    {
+     "text": "Session on account-5 ended (exit 1) with 1 step left: back in the Queue (run 2).",
+     "at": "2026-11-12T02:45:10.604Z"
     }
    ],
    "approvals": [],
@@ -157693,22 +157701,22 @@
     "queuedAt": "2026-11-12T01:43:00.313Z",
     "queuedBy": "console",
     "account": "account-5",
-    "session": "axf-molly-gap-console-token-handoff--gina",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-12T02:34:10.785Z",
     "runs": 2,
     "lastRun": {
-     "at": "2026-11-12T01:54:04.177Z",
+     "at": "2026-11-12T02:45:08.032Z",
      "exit": 1,
      "outcome": "requeued",
-     "stepsLeft": 3,
-     "account": "mossesx-max-",
-     "session": "axf-molly-gap-console-token-handoff--sully"
+     "stepsLeft": 1,
+     "account": "account-5",
+     "session": "axf-molly-gap-console-token-handoff--gina"
     },
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "Session on account-5 ended (exit 1) with 1 step left: back in the Queue (run 2).",
     "route": "",
     "dispatchedAt": "2026-11-12T02:34:10.785Z",
     "planned": {
@@ -157803,7 +157811,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -161688,18 +161696,51 @@
    "title": "All banners hide when empty",
    "category": "framework",
    "detail": "URGENT, Brett's rule, Nov 12: EVERY banner (console, Molly, AmberX, plugin banners, Auto-fixes, Server gate log, any future banner) only appears when it has something in it. Empty = fully hidden, takes no space; appears live when an entry arrives, hides again when it empties. Make it a framework rule in the banner base component, so new banners get it automatically. Audit all existing banners and fix any that show when empty. Add a check (CI) that fails if a banner renders with no entries.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T02:45:08.669Z",
-   "updatedAt": "2026-11-12T02:45:08.670Z",
+   "updatedAt": "2026-11-12T02:45:12.497Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T02:45:12.497Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "2026-11-12T02:45:11.466Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-12T02:45:15.163Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
    "steps": [
     {
      "id": "s1",
@@ -161776,7 +161817,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
