@@ -777,7 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:29 UTC · `theme-veto-pass` note (all) · backfill
 - 2026-11-12 03:29 UTC · `pass-all` note (all) · backfill
 - 2026-11-12 03:29 UTC · `plugin-commands-auto` note (all) · backfill
 - 2026-11-12 03:29 UTC · `menu-scroll` note (all) · backfill
@@ -1177,6 +1176,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 18:44 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` s5 done (all) · orchestrator
 - 2026-11-12 18:45 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` s1 done, → running (all) · orchestrator
 - 2026-11-12 18:45 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` s2 done (all) · orchestrator
+- 2026-11-12 18:56 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` PR #523 (all) · builds-live
 
 ## Token passes (log)
 
