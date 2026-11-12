@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3336,
- "updatedAt": "2026-11-12T02:36:19.886Z",
+ "rev": 3337,
+ "updatedAt": "2026-11-12T02:36:34.618Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -160236,6 +160236,10 @@
     {
      "text": "Headless run axf-main-gate-nothing-reaches-main-without-passing--earl: brief only · start 10.7K tokens ($0.02) · cost $4.15 · 80 turns · 6 tools, MCP none",
      "at": "2026-11-12T02:36:08.572Z"
+    },
+    {
+     "text": "Gate live on the VPS (pre-push hook in /opt/axf/.git/hooks + merge queue). GitHub ruleset waits on Brett: give the console token Administration read/write on AmberX-AXF; axHub needs GitHub Pro. Native merge queue needs an org-owned repo. PR #508.",
+     "at": "2026-11-12T02:35:42.439Z"
     }
    ],
    "approvals": [],

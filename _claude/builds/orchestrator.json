@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:36:19.886Z",
+ "updatedAt": "2026-11-12T02:36:34.618Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -100119,6 +100119,10 @@
     {
      "text": "Headless run axf-main-gate-nothing-reaches-main-without-passing--earl: brief only · start 10.7K tokens ($0.02) · cost $4.15 · 80 turns · 6 tools, MCP none",
      "at": "2026-11-12T02:36:08.572Z"
+    },
+    {
+     "text": "Gate live on the VPS (pre-push hook in /opt/axf/.git/hooks + merge queue). GitHub ruleset waits on Brett: give the console token Administration read/write on AmberX-AXF; axHub needs GitHub Pro. Native merge queue needs an org-owned repo. PR #508.",
+     "at": "2026-11-12T02:35:42.439Z"
     }
    ],
    "approvals": [],
