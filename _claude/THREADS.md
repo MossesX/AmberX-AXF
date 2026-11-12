@@ -777,15 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:26 UTC · `push-banner-branches-that-can-merge-cleanly` note (all) · backfill
-- 2026-11-12 03:26 UTC · `ai-keys` note (all) · backfill
-- 2026-11-12 03:26 UTC · `syscheck-live-keys-credits` note (all) · backfill
-- 2026-11-12 03:26 UTC · `credits-switch-ai-keys` note (all) · backfill
-- 2026-11-12 03:26 UTC · `walkthrough-studio` note (all) · backfill
-- 2026-11-12 03:26 UTC · `walkthrough-studio-fable` note (all) · backfill
-- 2026-11-12 03:26 UTC · `walkthrough-harvest` note (all) · backfill
-- 2026-11-12 03:26 UTC · `axhub-web-app-live-at-axhub-amberxai-com-banner` added (0 steps) (all) · backfill
-- 2026-11-12 03:26 UTC · `axhub-web-rebuild` note (all) · backfill
 - 2026-11-12 03:26 UTC · `syscheck-rebake` note (all) · backfill
 - 2026-11-12 03:26 UTC · `hubstore-voice-notes` note (all) · backfill
 - 2026-11-12 03:26 UTC · `hubstore-fable` note (all) · backfill
@@ -1177,6 +1168,15 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 10:54 UTC · `github-app` → archived (all) · claude-voice
 - 2026-11-12 10:54 UTC · `orch-step-click` → archived (all) · claude-voice
 - 2026-11-12 10:54 UTC · `named-asset-rule` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `app-port-engine` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `lib-clone` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `axhub-agent-host` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `axhub-web-hub-rules` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `walkthrough-studio-deploy` → archived (all) · claude-voice
+- 2026-11-12 10:54 UTC · `x.python.port` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `x.plugins` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `asset-browser` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `asset-templates` → archived (all) · claude-voice
 
 ## Token passes (log)
 
