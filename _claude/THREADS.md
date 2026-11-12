@@ -776,8 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 23:59 UTC · `convert-every-app-into-a-molly-module-expenses-c` note (all) · orchestrator
-- 2026-11-11 00:02 UTC · `per-agent-api-control-switch-in-each-employee-s` PR #487 (all) · builds-live
 - 2026-11-11 00:02 UTC · `per-agent-api-control-switch-in-each-employee-s` note (all) · orchestrator
 - 2026-11-11 00:02 UTC · `per-agent-api-control-switch-in-each-employee-s` s3 done, → built (all) · orchestrator
 - 2026-11-11 00:06 UTC · `merge-review-one-by-one-every-built-but-unmerged` added (0 steps) (all) · console
@@ -1176,6 +1174,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:36 UTC · `main-gate-nothing-reaches-main-without-passing` note (all) · builds-live
 - 2026-11-12 02:36 UTC · `main-gate-nothing-reaches-main-without-passing` → running, note (all) · pipeline
 - 2026-11-12 02:37 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` → queued, note (all) · pipeline
+- 2026-11-12 02:37 UTC · `molly-gap-remote-actions` note (all) · orchestrator
+- 2026-11-12 02:37 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` added (3 steps) (all) · Claude voice (Gizmo)
 
 ## Token passes (log)
 

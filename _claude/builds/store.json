@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3339,
- "updatedAt": "2026-11-12T02:37:14.128Z",
+ "rev": 3340,
+ "updatedAt": "2026-11-12T02:37:26.872Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -157794,7 +157794,7 @@
    "branch": "claude/molly-gap-remote-actions",
    "pr": "#502",
    "createdAt": "2026-11-10T22:09:30.792Z",
-   "updatedAt": "2026-11-12T02:31:10.151Z",
+   "updatedAt": "2026-11-12T02:37:21.556Z",
    "builtAt": "2026-11-12T02:31:02.862Z",
    "notes": [
     {
@@ -157860,6 +157860,10 @@
     {
      "text": "Started run 2 on account-5 (API key, subscriptions first, then API) (Opus, Phase 2): axf-molly-gap-remote-actions--paulie.",
      "at": "2026-11-12T02:23:16.186Z"
+    },
+    {
+     "text": "Headless run axf-molly-gap-remote-actions--paulie: brief only · start 10.9K tokens ($0.03) · cost $11.01 · 163 turns · 6 tools, MCP none",
+     "at": "2026-11-12T02:37:21.556Z"
     }
    ],
    "approvals": [
@@ -157999,7 +158003,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -160799,6 +160803,110 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-12T02:04:11.565Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "console-and-axhub-retry-failed-calls-themselves-no-claude-needed",
+   "title": "Console and axHub retry failed calls themselves (no Claude needed)",
+   "category": "orchestrator",
+   "detail": "URGENT, boss order from Brett, Nov 12. When a call from Claude/MCP/voice/CLI fails for a transient reason (e.g. 'builds store is locked', timeout, console client asleep, rate limit, 5xx), the console and axHub must retry it THEMSELVES on the server, whether or not the Claude session is still connected. Retry with backoff until it succeeds (bounded, e.g. 10 tries over ~10 min), then the result is stored on the job so get_job shows success. Only permanent errors (validation, not found) fail, and those send Brett an AmberX FYI with what's missing. Fix the root cause of store.json.lock contention too (stale lock cleanup, short waits for the lock instead of failing). Applies to control_add/set/act, pipeline_queue, console_open/show and all axf-console write tools. Tests: locked store -> call waits/retries and succeeds; session disconnect mid-retry -> still completes.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-12T02:37:24.132Z",
+   "updatedAt": "2026-11-12T02:37:24.132Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwcxtjcy047r5l",
+     "title": "",
+     "text": "Server-side retry in axHub job runner and axf-console: transient failures (store locked, timeout, sleeping console client, rate limit, 5xx) retry with backoff until success, independent of the caller's session; permanent errors fail with an AmberX FYI.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T02:37:24.132Z",
+     "updatedAt": "2026-11-12T02:37:24.132Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwcxtjcy0572h8",
+     "title": "",
+     "text": "Fix builds store lock contention: wait briefly for the lock instead of failing, clean up stale store.json.lock files.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T02:37:24.132Z",
+     "updatedAt": "2026-11-12T02:37:24.132Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwcxtjcz06hcjc",
+     "title": "",
+     "text": "Tests (locked store retried to success; caller disconnects mid-retry and it still completes), PR, land through the gate, redeploy, AmberX FYI when live.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T02:37:24.132Z",
+     "updatedAt": "2026-11-12T02:37:24.132Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 621
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-12T02:37:24.132Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
