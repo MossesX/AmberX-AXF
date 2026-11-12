@@ -303,6 +303,15 @@ export function buildAction(action, ids, { by = process.env.AXF_ACTOR || 'consol
 
 // ------------------------------------------------------------------ the split
 
+/**
+ * The one-shot `claude -p` call the splitter makes: { args, input }. The prompt goes on stdin, never as an argument:
+ * `--tools <tools...>` is variadic, so a prompt placed after it is read as a tool name and claude exits 1 with
+ * "Input must be provided either through stdin or as a prompt argument". `--tools=` (equals form) means no tools.
+ */
+export function splitterCall(prompt) {
+  return { args: ['-p', '--model', MODEL_IDS.opus, '--output-format', 'json', '--max-turns', '1', '--tools='], input: String(prompt ?? '') };
+}
+
 /** Run the configured splitter on a prompt: { text, provider, error }. */
 export function askSplitter(prompt, settings, env = process.env) {
   if (env.AXF_PIPELINE_SPLITTER) {
@@ -318,7 +327,9 @@ export function askSplitter(prompt, settings, env = process.env) {
     try { snap = snapshotLogin({ dir, session: 'split', account }); } catch { snap = null; }
     const e = snap ? childEnv(snap, env) : { ...env };
     e.PATH = `${join(homedir(), '.local', 'bin')}:${e.PATH || ''}`;
-    const r = spawnSync('claude', ['-p', '--model', MODEL_IDS.opus, '--output-format', 'json', '--max-turns', '1', '--tools', '', prompt], { encoding: 'utf8', timeout: 240e3, env: e, cwd: REPO_ROOT, maxBuffer: 8 * 1024 * 1024 });
+    const call = splitterCall(prompt);
+    if (!call.input.trim()) return { text: '', provider: 'claude', error: 'empty split prompt' };
+    const r = spawnSync('claude', call.args, { input: call.input, encoding: 'utf8', timeout: 240e3, env: e, cwd: REPO_ROOT, maxBuffer: 8 * 1024 * 1024 });
     if (r.error) return { text: '', provider: 'claude', error: `claude not available: ${r.error.message}` };
     if (r.status !== 0) return { text: '', provider: 'claude', error: `claude exit ${r.status}: ${str((r.stderr || r.stdout || '').trim(), 300)}` };
     let text = r.stdout; try { const j = JSON.parse(r.stdout); text = typeof j?.result === 'string' ? j.result : r.stdout; } catch { /* plain text */ }

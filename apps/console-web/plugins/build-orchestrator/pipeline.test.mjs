@@ -546,6 +546,51 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     const r = json(pipe('intake', '--json')); assert.deepEqual(r.split.map((x) => x.id), ['delta']);
     assert.equal(find('delta').pipeline.split.provider, 'rules'); assert.ok(find('delta').steps.length >= 3); assert.match(find('delta').pipeline.note, /rules/);
   });
+
+  // The real one-shot `claude -p` path (no AXF_PIPELINE_SPLITTER): a fake `claude` on ~/.local/bin that parses its arguments
+  // the way the real CLI does: `--tools <tools...>` is variadic (it eats every following value that is not a flag), the
+  // first remaining value is the prompt, else stdin; neither gives the exact error the real CLI prints and exit 1.
+  const fakeHome = join(tmp, 'home'); mkdirSync(join(fakeHome, '.local', 'bin'), { recursive: true });
+  const fakeClaude = join(fakeHome, '.local', 'bin', 'claude');
+  writeFileSync(fakeClaude, `#!/usr/bin/env bash
+printf '%s\\n' "$@" > "${tmp}/claude-args.txt"
+prompt=""; have=0
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --tools) shift; while [[ $# -gt 0 && "$1" != -* ]]; do shift; done;;
+    --model|--output-format|--max-turns) shift 2;;
+    -*) shift;;
+    *) if [[ $have -eq 0 ]]; then prompt="$1"; have=1; fi; shift;;
+  esac
+done
+if [[ $have -eq 0 && ! -t 0 ]]; then prompt="$(cat)"; fi
+if [[ -z "$prompt" ]]; then echo "Error: Input must be provided either through stdin or as a prompt argument when using --print" >&2; exit 1; fi
+printf '%s' "$prompt" > "${tmp}/claude-prompt.txt"
+cat <<'JSON'
+{"type":"result","subtype":"success","is_error":false,"result":"{\\"steps\\":[{\\"text\\":\\"Design the epsilon contract\\",\\"model\\":\\"Fable\\",\\"estimate\\":\\"25 min\\",\\"why\\":\\"contract\\"},{\\"text\\":\\"Build the epsilon screen with its API\\",\\"model\\":\\"Opus\\",\\"estimate\\":\\"30 min\\"},{\\"text\\":\\"Tests, report, PR\\",\\"model\\":\\"Opus\\",\\"estimate\\":\\"20 min\\"}]}"}
+JSON
+`); chmodSync(fakeClaude, 0o755);
+  const claudeEnv = { ...env, HOME: fakeHome, AXF_PIPELINE_SPLITTER: '' };
+  t('e2e fake claude is faithful: the old invocation (prompt after `--tools ""`) fails with "Input must be provided"', () => {
+    const r = spawnSync(fakeClaude, ['-p', '--model', 'claude-opus-5-5', '--output-format', 'json', '--max-turns', '1', '--tools', '', 'Split this build'], { input: '', encoding: 'utf8' });
+    assert.equal(r.status, 1); assert.match(r.stderr, /Input must be provided either through stdin or as a prompt argument when using --print/);
+  });
+  t('e2e split through claude -p: adding a build yields the proper steps, the request reaches claude on stdin, no fallback note', () => {
+    orch('act', JSON.stringify({ action: 'add', id: 'epsilon', title: 'Epsilon feature', detail: 'Add the epsilon screen.', said: 'give me epsilon, quick' }));
+    const r = spawnSync(process.execPath, [join(HERE, 'pipeline.mjs'), 'intake', '--json'], { cwd: ROOT, env: claudeEnv, encoding: 'utf8', timeout: 120000 });
+    assert.equal(r.status, 0, `${r.stdout}\n${r.stderr}`);
+    const out = json(r); assert.deepEqual(out.split.map((x) => [x.id, x.provider, x.error]), [['epsilon', 'claude', '']]);
+    const e = find('epsilon');
+    assert.equal(e.pipeline.split.provider, 'claude'); assert.equal(e.steps.length, 3);
+    assert.deepEqual(e.steps.map((s) => s.model), ['Fable', 'Opus', 'Opus']);
+    assert.ok(!e.steps.some((s) => /give me epsilon/.test(s.text)), 'his raw words are never pasted in as a step');
+    assert.equal(e.pipeline.note ?? '', '', 'no "steps made by rules" note');
+    assert.ok(!e.notes.some((n) => /Split by rules|Input must be provided/.test(n.text)), 'no fallback note');
+    assert.match(readFileSync(join(tmp, 'claude-prompt.txt'), 'utf8'), /give me epsilon, quick/, 'the split prompt carries his words');
+    const args = readFileSync(join(tmp, 'claude-args.txt'), 'utf8').split('\n');
+    assert.ok(args.includes('-p') && args.includes('--tools=') && !args.includes('--tools'), 'no tools, in the equals form');
+    assert.ok(!args.some((a) => /give me epsilon/.test(a)), 'the prompt goes on stdin, never as an argument');
+  });
 }
 
 console.log(`pipeline: ${n} checks passed${e2e ? '' : ' (CLI end-to-end skipped)'}`);
