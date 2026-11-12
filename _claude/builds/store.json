@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3437,
- "updatedAt": "2026-11-12T03:15:28.008Z",
+ "rev": 3438,
+ "updatedAt": "2026-11-12T03:16:22.688Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -157691,9 +157691,9 @@
    "source": "molly-sign-in-once",
    "pendingId": "",
    "branch": "claude/molly-gap-console-token-handoff",
-   "pr": "",
+   "pr": "#511",
    "createdAt": "2026-11-10T22:09:29.615Z",
-   "updatedAt": "2026-11-12T03:13:24.236Z",
+   "updatedAt": "2026-11-12T03:16:20.945Z",
    "builtAt": "",
    "notes": [
     {
@@ -157881,7 +157881,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
