@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3348,
- "updatedAt": "2026-11-12T02:39:19.321Z",
+ "rev": 3349,
+ "updatedAt": "2026-11-12T02:39:28.667Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -155764,7 +155764,7 @@
    "pr": "#503",
    "priority": "P0",
    "createdAt": "2026-11-10T21:45:52.947Z",
-   "updatedAt": "2026-11-12T02:38:11.939Z",
+   "updatedAt": "2026-11-12T02:39:13.659Z",
    "builtAt": "",
    "notes": [
     {
@@ -155798,6 +155798,10 @@
     {
      "text": "Reconciler: PR #503",
      "at": "2026-11-12T02:16:41.654Z"
+    },
+    {
+     "text": "Headless run axf-bug-asset-settings-nav-menu-tab-bar-toolbar-chan--sully: brief only · start 13.0K tokens ($0.07) · cost $13.53 · 170 turns · 6 tools, MCP none",
+     "at": "2026-11-12T02:39:13.659Z"
     }
    ],
    "approvals": [],
@@ -155928,7 +155932,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

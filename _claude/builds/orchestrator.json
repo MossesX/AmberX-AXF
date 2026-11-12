@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:39:19.321Z",
+ "updatedAt": "2026-11-12T02:39:28.667Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -97140,7 +97140,7 @@
    "pr": "#503",
    "priority": "P0",
    "createdAt": "2026-11-10T21:45:52.947Z",
-   "updatedAt": "2026-11-12T02:38:11.939Z",
+   "updatedAt": "2026-11-12T02:39:13.659Z",
    "builtAt": "",
    "notes": [
     {
@@ -97174,6 +97174,10 @@
     {
      "text": "Reconciler: PR #503",
      "at": "2026-11-12T02:16:41.654Z"
+    },
+    {
+     "text": "Headless run axf-bug-asset-settings-nav-menu-tab-bar-toolbar-chan--sully: brief only · start 13.0K tokens ($0.07) · cost $13.53 · 170 turns · 6 tools, MCP none",
+     "at": "2026-11-12T02:39:13.659Z"
     }
    ],
    "approvals": [],
