@@ -19,7 +19,7 @@ import { filterMenu, gateFor, hasPermission, resolvePermissions } from '../core/
 import { ActionBus } from '../core/engines/actions';
 import { rollPlan, rollSlotDefault } from '../core/engines/roll';
 import { defaultHidden, hiddenSlots, hideableTypes } from '../core/engines/hide';
-import { EMBED_TAKE_UA_TOKEN, detectEmbedFull, embedFromQueryFull, embedFromUserAgentFull, embedLinkOk, embedLockNote, embedLockedBy, embedPage, embedPageView, embedTakeIds, embedTakenBy, embedTakenProvider, embedTakenView, embedTakes, embedUrlFull, parseEmbedMessage, settingsTabOf, userAgentSuffixFull, DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
+import { EMBED_TAKE_UA_TOKEN, detectEmbedFull, embedFromQueryFull, embedFromUserAgentFull, embedLinkOk, embedLockNote, embedLockedBy, embedPage, embedPageView, embedTakeIds, embedTakenBy, embedTakenProvider, embedTakenView, embedTakes, embedUrlFull, embedCredentialTarget, parseEmbedMessage, settingsTabOf, userAgentSuffixFull, DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
 import { SPACING_DEFAULT, SPACINGS, spacingOf } from '../core/engines/spacing';
 import { appearanceRetryMs, appearanceSlotTypes, mergeAppearance, paletteFromColorTheme, parseAppearance, resolveAppearance, serializeAppearance } from '../core/engines/appearance';
 import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, placeToolbarWidgets, progressPercent, searchBarConfig, statusOn, themeSwitchNext, validateHostAttachments, widgetTone } from '../core/engines/widgets';
@@ -507,6 +507,36 @@ write('hide.json', {
       { $axf: 'embed@1', type: 'shown', on: 'yes' },
       { $axf: 'embed@1', type: 'shown' },
     ].map((m) => ({ input: m, message: parseEmbedMessage(m) })),
+    // Credentials (guest → host, molly-gap-console-token-handoff, Nov 2026). Web only so far (Kotlin deferred, PORTING.md).
+    credentialMessages: [
+      { $axf: 'embed@1', type: 'credentials', app: 'console', scheme: 'bearer', token: 'Ab3_-x.y~z+w/q=' },
+      { $axf: 'embed@1', type: 'credentials', app: 'Console', scheme: 'bearer', token: 'a'.repeat(512) },
+      { $axf: 'embed@1', type: 'credentials', app: 'console', scheme: 'bearer', token: 'a'.repeat(513) },
+      { $axf: 'embed@1', type: 'credentials', app: 'console', scheme: 'bearer', token: 'short' },
+      { $axf: 'embed@1', type: 'credentials', app: 'console', scheme: 'bearer', token: 'has a space in it' },
+      { $axf: 'embed@1', type: 'credentials', app: 'console', scheme: 'cookie', token: 'abcdefghijkl' },
+      { $axf: 'embed@1', type: 'credentials', app: 'bad app!', scheme: 'bearer', token: 'abcdefghijkl' },
+      { $axf: 'embed@1', type: 'credentials', scheme: 'bearer', token: 'abcdefghijkl' },
+      { $axf: 'embed@1', type: 'credentials', app: 'console', scheme: 'bearer', token: 7 },
+    ].map((m) => ({ input: m, message: parseEmbedMessage(m) })),
+    credentialTargets: ([
+      ['molly', 'https://molly.amberxai.com'],
+      ['Molly', 'https://molly.amberxai.com/'],
+      ['molly', 'https://molly.amberxai.com:8443'],
+      ['molly', 'http://molly.amberxai.com'],
+      ['molly', 'https://evil.example'],
+      ['molly', 'https://molly.amberxai.com.evil.example'],
+      ['other', 'https://molly.amberxai.com'],
+      ['molly', ''],
+      ['molly', null],
+      [null, 'https://molly.amberxai.com'],
+      ['molly', 'not a url'],
+    ] as [string | null, string | null][]).map(([host, parent]) => ({ host, parent, target: embedCredentialTarget(host, parent) })),
+    credentialExtra: ([
+      ['molly', 'https://staging.example.test', { molly: ['https://staging.example.test'] }],
+      ['molly', 'http://localhost:5173', { molly: ['http://localhost:5173'] }],
+      ['molly', 'http://staging.example.test', { molly: ['http://staging.example.test'] }],
+    ] as [string, string, Record<string, string[]>][]).map(([host, parent, extra]) => ({ host, parent, extra, target: embedCredentialTarget(host, parent, extra) })),
     settingsTab: ['settings.open:appearance', 'settings.open', 'app.settings', 'settings.open:a b'].map((a) => ({ action: a, tab: settingsTabOf(a) ?? null })),
     // View pages (`view:<id>`: one view alone, e.g. a tabable plugin as a host's tab) and plugin tabs in a plugin report.
     // Web only so far (Kotlin deferred, PORTING.md).

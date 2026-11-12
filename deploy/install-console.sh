@@ -205,6 +205,9 @@ if axf_coolify_proxy_running; then
       say "  no owner sign-in for Approve / Deny yet: AXF_HUB_RELAY_USER=<hub admin> AXF_HUB_RELAY_PASSWORD=… bash $DIR/deploy/install-console.sh"
     fi
     axf_wall_labels WALL_ARGS "$R" "$(axf_wall_verify_url "$WALL_HUB" "$USER_PATHS")"
+    # CORS preflights (Molly and the other amberxai.com apps calling /api with the console token) skip the wall; the
+    # server's origin allow-list answers them (server/main.py, AXF_CORS_ORIGINS adds more)
+    axf_wall_preflight_labels WALL_ARGS "$R" "$DOMAIN"
     [ -n "$USER_PATHS" ] && say "  hub users (not only admins) may use: $USER_PATHS"
   else
     touch "$DIR/.axf-console/wall-waiting"

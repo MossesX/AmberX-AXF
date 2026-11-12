@@ -168,6 +168,23 @@ axf_wall_labels() {
     -l "traefik.http.routers.$_axf_r.middlewares=$_axf_r-strip,$_axf_r-wall")
 }
 
+# axf_wall_preflight_labels ARRAY ROUTER DOMAIN → appends a router ROUTER-preflight for OPTIONS requests on DOMAIN that
+# skips the wall (strip only) and goes to ROUTER's service. A browser's CORS preflight carries no cookie and no
+# Authorization, so the hub's forwardAuth would answer 401 and the browser would refuse the real call; the app's own CORS
+# middleware answers the preflight instead (its origin allow-list decides). Opt-in per app: only an app that answers
+# OPTIONS itself without side effects (FastAPI's CORSMiddleware) should use it. The real request still meets the wall.
+axf_wall_preflight_labels() {
+  local -n _axf_pl="$1"
+  local _axf_r="$2" _axf_domain="$3"
+  _axf_pl+=(-l "traefik.http.routers.$_axf_r-preflight.rule=($(axf_router_rule "$_axf_domain")) && Method(\`OPTIONS\`)"
+    -l "traefik.http.routers.$_axf_r-preflight.entrypoints=https"
+    -l "traefik.http.routers.$_axf_r-preflight.tls=true" -l "traefik.http.routers.$_axf_r-preflight.tls.certresolver=letsencrypt"
+    -l "traefik.http.routers.$_axf_r-preflight.service=$_axf_r"
+    -l "traefik.http.routers.$_axf_r-preflight.middlewares=$_axf_r-strip")
+  # without an explicit priority Traefik ranks by rule length, and this rule is the main one plus a clause
+  [ -z "${AXF_ROUTER_PRIORITY:-}" ] || _axf_pl+=(-l "traefik.http.routers.$_axf_r-preflight.priority=$((AXF_ROUTER_PRIORITY + 1))")
+}
+
 # ---------------------------------------------------------------------------------------------------- deploy log
 
 # axf_deploy_log LOGFILE TARGET SHA [WHO] [STATE] [FROM] [VERSION]

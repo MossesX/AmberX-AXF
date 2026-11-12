@@ -64,6 +64,21 @@ wantw=(-e X=1
   -l traefik.http.middlewares.rr-wall.forwardauth.authResponseHeaders=X-Auth-User,X-Auth-Role,X-Auth-Perms,X-Auth-Via,X-Auth-Sig
   -l traefik.http.routers.rr.middlewares=rr-strip,rr-wall)
 eq "$(printf '%s\n' "${W[@]}")" "$(printf '%s\n' "${wantw[@]}")" "wall labels"
+
+# ---- preflight router: OPTIONS on the host skips the wall (strip only), same service
+P=()
+axf_wall_preflight_labels P rr hub.example
+wantp=(-l 'traefik.http.routers.rr-preflight.rule=(Host(`hub.example`)) && Method(`OPTIONS`)'
+  -l traefik.http.routers.rr-preflight.entrypoints=https
+  -l traefik.http.routers.rr-preflight.tls=true -l traefik.http.routers.rr-preflight.tls.certresolver=letsencrypt
+  -l traefik.http.routers.rr-preflight.service=rr
+  -l traefik.http.routers.rr-preflight.middlewares=rr-strip)
+eq "$(printf '%s\n' "${P[@]}")" "$(printf '%s\n' "${wantp[@]}")" "preflight labels"
+P=()
+AXF_ROUTER_PRIORITY=1000 axf_wall_preflight_labels P rr hub.example
+eq "$(printf '%s\n' "${P[@]}" | grep -F 'priority=')" 'traefik.http.routers.rr-preflight.priority=1001' "preflight outranks the main router"
+eq "$(printf '%s\n' "${P[@]}" | grep -c 'rr-wall')" 0 "preflight never meets the wall"
+
 eq "$(axf_wall_verify_url https://hub.example)" "https://hub.example/auth/verify" "admins only: no user_paths"
 eq "$(axf_wall_verify_url https://hub.example /)" "https://hub.example/auth/verify?user_paths=/" "every user"
 eq "$(axf_wall_join_paths)" "" "no paths"

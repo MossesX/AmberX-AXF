@@ -16,7 +16,7 @@ import { mergeChrome, routePick, parseChromeBundle, type ChromeBundle, type Unif
 import { EMBED_MESSAGE, parseEmbedMessage, type EmbedMessage } from '../../../src/axf/core/engines/embed';
 import { guestUrl, type XLayoutData } from '../../../src/axf/core/engines/xlayout';
 import { MOLLY_APPS, type MollyApp } from '../../../src/molly/apps';
-import { appOfView } from '../../../src/molly/host';
+import { appOfView, mollyAuth } from '../../../src/molly/host';
 import { PLUGIN_ID } from './model';
 
 /** The module the merged items are contributed under (xLayout's own menu and context entries stay under its plugin id). */
@@ -161,7 +161,26 @@ export class ChromeHost {
       this.show(app.id);
     } else if (m.type === 'open-settings') {
       this.rt.dispatch(m.tab ? `settings.open:${m.tab}` : 'settings.open');
+    } else if (m.type === 'credentials') {
+      void this.takeCredentials(app.id, m);
     }
+  }
+
+  /**
+   * An app's frame handed over its API token (embed@1 `credentials`): it goes into that app's provider in Molly's
+   * credential seam (`signIn(token)`), so Molly's own screens call the app's API without anyone pasting it. Only for
+   * the frame's own app and the provider's own scheme; kept when Molly already has a token that works. Never logged.
+   */
+  private async takeCredentials(app: string, m: Extract<EmbedMessage, { type: 'credentials' }>): Promise<void> {
+    if (m.app !== app) return;
+    let p: ReturnType<typeof mollyAuth> = null;
+    try { p = mollyAuth(app); } catch { return; /* the seam isn't attached (tests, an older Molly) */ }
+    if (!p || p.scheme !== m.scheme) return;
+    const c = p.connection();
+    if (c.hasToken && c.state === 'unknown') await p.check();
+    const now = p.connection();
+    if (now.hasToken && now.state === 'signed-in') return;
+    await p.signIn(m.token);
   }
 
   private hasCtx(app: string, target: string): boolean { return !!this.bundles.get(app)?.context.some((t) => t.target === target); }

@@ -391,7 +391,54 @@ export type EmbedMessage =
    * viewport on `target` (its data-fx-ctx-target, `default` when none) with that element's payload; the host shows its
    * one context menu there. Picks come back as `run` with the ids the guest sent in its chrome.
    */
-  | { $axf: typeof EMBED_MESSAGE; type: 'context'; x: number; y: number; target: string; payload?: string };
+  | { $axf: typeof EMBED_MESSAGE; type: 'context'; x: number; y: number; target: string; payload?: string }
+  /**
+   * guest → host: this app's API credential, handed once so the host can call the app's API itself (Molly's native
+   * screens; build molly-gap-console-token-handoff, Nov 2026). Web only. The guest sends it only to an exact host origin
+   * it recognises ({@link embedCredentialTarget}, never `*`); the host accepts it only from that app's own frame and
+   * origin. Never put in a URL, a log line or storage other than the host's own token store for that app.
+   */
+  | { $axf: typeof EMBED_MESSAGE; type: 'credentials'; app: string; scheme: EmbedCredentialScheme; token: string };
+
+/* ---------------------------------------------------------------------------------------------------------------
+ * Credentials (embed@1 `credentials`): which hosts a guest hands its token to. A host is recognised by its embed host
+ * name and the exact origin the guest's frame runs in (the parent's origin, which the browser reports and the page
+ * cannot change); the message is then posted with that origin as the target, so the browser itself refuses delivery
+ * to anything else. A host not listed here gets nothing.
+ * --------------------------------------------------------------------------------------------------------------- */
+
+export type EmbedCredentialScheme = 'bearer';
+export const EMBED_CREDENTIAL_SCHEMES: readonly EmbedCredentialScheme[] = ['bearer'];
+/** A token as it may travel: printable, no spaces, 8–512 characters (the console's AXF_TOKEN is url-safe base64). */
+export const EMBED_TOKEN = /^[A-Za-z0-9._~+/=-]{8,512}$/;
+/** embed host name → the exact https origins it runs at. */
+export const EMBED_CREDENTIAL_HOSTS: Readonly<Record<string, readonly string[]>> = {
+  molly: ['https://molly.amberxai.com'],
+};
+
+/** An origin as the browser writes it (`scheme://host[:port]`, lower case), or null. */
+export function exactOrigin(raw: unknown): string | null {
+  if (typeof raw !== 'string' || !raw) return null;
+  try {
+    const u = new URL(raw);
+    if (u.protocol !== 'https:' && u.protocol !== 'http:') return null;
+    if (u.username || u.password) return null;
+    return u.origin;
+  } catch { return null; }
+}
+
+/**
+ * Where a guest may post its credentials: the parent's origin when the embed marker names a recognised host and that
+ * host runs at exactly this origin; null otherwise (standalone, an unknown host, a parent somewhere else). `extra` adds
+ * origins per host name (a staging host); http origins count only for localhost / 127.0.0.1.
+ */
+export function embedCredentialTarget(host: string | null | undefined, parentOrigin: string | null | undefined, extra: Readonly<Record<string, readonly string[]>> = {}): string | null {
+  const h = embedHost(host); const o = exactOrigin(parentOrigin);
+  if (!h || !o) return null;
+  if (o.startsWith('http:') && !/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(o)) return null;
+  const known = [...(EMBED_CREDENTIAL_HOSTS[h] ?? []), ...(extra[h] ?? [])].map(exactOrigin);
+  return known.includes(o) ? o : null;
+}
 
 /**
  * One plugin an app reports to its host (data only: id, name, version, whether the app had it on by itself). A tabable
@@ -593,6 +640,12 @@ export function parseEmbedMessage(raw: unknown): EmbedMessage | null {
       const out: EmbedMessage = { $axf: EMBED_MESSAGE, type: 'context', x, y, target };
       const payload = clip(o.payload, EMBED_MESSAGE_LIMITS.payload); if (payload) out.payload = payload;
       return out;
+    }
+    case 'credentials': {
+      const app = embedHost(o.app);
+      const scheme = (EMBED_CREDENTIAL_SCHEMES as readonly unknown[]).includes(o.scheme) ? (o.scheme as EmbedCredentialScheme) : null;
+      const token = typeof o.token === 'string' && EMBED_TOKEN.test(o.token) ? o.token : null;
+      return app && scheme && token ? { $axf: EMBED_MESSAGE, type: 'credentials', app, scheme, token } : null;
     }
     default: return null;
   }

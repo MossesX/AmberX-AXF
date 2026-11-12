@@ -3768,6 +3768,198 @@
       "message": null
     }
   ],
+  "credentialMessages": [
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "credentials",
+        "app": "console",
+        "scheme": "bearer",
+        "token": "Ab3_-x.y~z+w/q="
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "credentials",
+        "app": "console",
+        "scheme": "bearer",
+        "token": "Ab3_-x.y~z+w/q="
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "credentials",
+        "app": "Console",
+        "scheme": "bearer",
+        "token": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "message": {
+        "$axf": "embed@1",
+        "type": "credentials",
+        "app": "console",
+        "scheme": "bearer",
+        "token": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "credentials",
+        "app": "console",
+        "scheme": "bearer",
+        "token": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "message": null
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "credentials",
+        "app": "console",
+        "scheme": "bearer",
+        "token": "short"
+      },
+      "message": null
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "credentials",
+        "app": "console",
+        "scheme": "bearer",
+        "token": "has a space in it"
+      },
+      "message": null
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "credentials",
+        "app": "console",
+        "scheme": "cookie",
+        "token": "abcdefghijkl"
+      },
+      "message": null
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "credentials",
+        "app": "bad app!",
+        "scheme": "bearer",
+        "token": "abcdefghijkl"
+      },
+      "message": null
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "credentials",
+        "scheme": "bearer",
+        "token": "abcdefghijkl"
+      },
+      "message": null
+    },
+    {
+      "input": {
+        "$axf": "embed@1",
+        "type": "credentials",
+        "app": "console",
+        "scheme": "bearer",
+        "token": 7
+      },
+      "message": null
+    }
+  ],
+  "credentialTargets": [
+    {
+      "host": "molly",
+      "parent": "https://molly.amberxai.com",
+      "target": "https://molly.amberxai.com"
+    },
+    {
+      "host": "Molly",
+      "parent": "https://molly.amberxai.com/",
+      "target": "https://molly.amberxai.com"
+    },
+    {
+      "host": "molly",
+      "parent": "https://molly.amberxai.com:8443",
+      "target": null
+    },
+    {
+      "host": "molly",
+      "parent": "http://molly.amberxai.com",
+      "target": null
+    },
+    {
+      "host": "molly",
+      "parent": "https://evil.example",
+      "target": null
+    },
+    {
+      "host": "molly",
+      "parent": "https://molly.amberxai.com.evil.example",
+      "target": null
+    },
+    {
+      "host": "other",
+      "parent": "https://molly.amberxai.com",
+      "target": null
+    },
+    {
+      "host": "molly",
+      "parent": "",
+      "target": null
+    },
+    {
+      "host": "molly",
+      "parent": null,
+      "target": null
+    },
+    {
+      "host": null,
+      "parent": "https://molly.amberxai.com",
+      "target": null
+    },
+    {
+      "host": "molly",
+      "parent": "not a url",
+      "target": null
+    }
+  ],
+  "credentialExtra": [
+    {
+      "host": "molly",
+      "parent": "https://staging.example.test",
+      "extra": {
+        "molly": [
+          "https://staging.example.test"
+        ]
+      },
+      "target": "https://staging.example.test"
+    },
+    {
+      "host": "molly",
+      "parent": "http://localhost:5173",
+      "extra": {
+        "molly": [
+          "http://localhost:5173"
+        ]
+      },
+      "target": "http://localhost:5173"
+    },
+    {
+      "host": "molly",
+      "parent": "http://staging.example.test",
+      "extra": {
+        "molly": [
+          "http://staging.example.test"
+        ]
+      },
+      "target": null
+    }
+  ],
   "settingsTab": [
     {
       "action": "settings.open:appearance",

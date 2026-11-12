@@ -46,6 +46,7 @@ from fastapi.staticfiles import StaticFiles
 import hmac as _hmac  # noqa: E402
 
 import axf_framework  # noqa: E402,F401  (framework/python on sys.path: axf_server, axf_libs)
+import cors  # noqa: E402  (server/cors.py: the origins that may call /api cross-origin)
 import wall  # noqa: E402  (server/wall.py: who is calling behind axHub's sign-in wall, on axf_server.wall)
 from axf_server import github, storage  # noqa: E402
 from axf_server.console_client import TokenFile  # noqa: E402
@@ -95,7 +96,6 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
 
 
 app = FastAPI(title="GizmoX AI Studio API", version="0.2.0", lifespan=lifespan)
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 
 @app.middleware("http")
@@ -128,6 +128,12 @@ async def _wall_user_gate(request: Request, call_next):  # type: ignore[no-untyp
         if request.method.upper() not in wall.SAFE_METHODS and not wall.same_origin(request):
             return JSONResponse({"detail": "cross-site request refused"}, status_code=403)
     return await call_next(request)
+
+
+# CORS for the amberxai.com apps (Molly calls /api with the console token): an origin allow-list, never cookies
+# (server/cors.py). Added after the gates above, so it is the outermost middleware: a preflight is answered before any
+# token check and a gate's 401 still carries the CORS headers.
+app.add_middleware(CORSMiddleware, **cors.middleware_kwargs())
 
 
 # Plugins whose plugin.json says "wallUsers": true (open to every signed-in user) or "userGrantable": true (an admin

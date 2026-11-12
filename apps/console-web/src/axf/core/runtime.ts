@@ -22,7 +22,7 @@ import { CHROME_CONTRACT, emptyChrome, type ChromeBundle, type ChromeNavItem, ty
 const CHROME_TAKES: readonly string[] = ['app-menu', 'nav-menu', 'context-menu', 'toolbar', 'widgets'];
 import { normalizePlacement, placementKey, placementRoute, PLACEMENT_TAB_GROUP, type Placement, type UiRef } from './engines/placement';
 import { defaultHidden, hideable, hiddenSlots } from './engines/hide';
-import { detectEmbedFull, embedHostLabel, embedTakeSpec, embedLockedBy, embedLockNote, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, type Embed, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type EmbedPlugin } from './engines/embed';
+import { detectEmbedFull, embedHostLabel, embedTakeSpec, embedLockedBy, embedLockNote, embedTakenBy, embedTakenProvider, embedTakenView, embedTakesFn, embedCredentialTarget, parseEmbedMessage, settingsTabOf, EMBED_MESSAGE, EMBED_TOKEN, type Embed, type EmbedCredentialScheme, type EmbedMenu, type EmbedMenuItem, type EmbedMessage, type EmbedPlugin } from './engines/embed';
 import { SPACING_DEFAULT as SPACING_DEFAULT_VALUE, spacingOf, type Spacing } from './engines/spacing';
 import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, type PlacedBanner } from './engines/banner';
 import { BANNER_FIXED_SHAPE, bannerWidgetEmpty, bannerWidgetView, findBannerWidget, normalizeBannerWidgetPrefs, patchBannerWidget, BANNER_WIDGET_SIZES, type BannerWidgetHint, type BannerWidgetPrefs, type BannerWidgetSize, type BannerWidgetView } from './engines/bannerwidgets';
@@ -2217,6 +2217,29 @@ export class AxfRuntime {
   /** Inside a host: ask it to bring this app's frame to the front (embed@1 `show`). False standalone or with no host. */
   bringToFront(reason?: string): boolean {
     return this.postToHost(reason ? { $axf: EMBED_MESSAGE, type: 'show', reason } : { $axf: EMBED_MESSAGE, type: 'show' });
+  }
+
+  /** app → the token last handed to the host (in memory only): each value goes once per page load. */
+  private handedCredentials = new Map<string, string>();
+
+  /**
+   * Inside a recognised host (embed@1 `credentials`, engines/embed.ts → EMBED_CREDENTIAL_HOSTS): hand it this app's
+   * API token so the host can call the API itself. Posted to the parent's exact origin only (never `*`), once per
+   * token value; nothing is logged. False standalone, inside an unknown host, on Android (no bridge for this yet) or
+   * when the token isn't one. `parentOrigin` is for tests; the browser's own report is used otherwise.
+   */
+  handCredentials(app: string, scheme: EmbedCredentialScheme, token: string, parentOrigin?: string | null): boolean {
+    if (!this.embedded || this.embedded.page || !token || !EMBED_TOKEN.test(token)) return false;
+    if (this.handedCredentials.get(app) === token) return false;
+    const g = globalThis as unknown as { parent?: { postMessage?: (m: unknown, o: string) => void }; location?: { ancestorOrigins?: ArrayLike<string> }; document?: { referrer?: string } };
+    if (!g.parent || g.parent === (globalThis as unknown) || typeof g.parent.postMessage !== 'function') return false;
+    // the parent's origin as the browser reports it (Chromium / Safari: ancestorOrigins; Firefox: the referrer)
+    const reported = parentOrigin !== undefined ? parentOrigin : (g.location?.ancestorOrigins?.[0] ?? g.document?.referrer ?? null);
+    const target = embedCredentialTarget(this.embedded.host, reported);
+    if (!target) return false;
+    try { g.parent.postMessage({ $axf: EMBED_MESSAGE, type: 'credentials', app, scheme, token } satisfies EmbedMessage, target); } catch { return false; }
+    this.handedCredentials.set(app, token);
+    return true;
   }
 
   /** A taken hook was used: ask the host (open its settings on this app's tab, and the tab the action named). */

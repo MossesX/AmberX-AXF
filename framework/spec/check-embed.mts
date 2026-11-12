@@ -7,7 +7,7 @@
  */
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { EMBED_TAKE_UA_TOKEN, detectEmbedFull, embedFromQueryFull, embedFromUserAgentFull, embedLinkOk, embedLockNote, embedLockedBy, embedPage, embedPageView, embedSkipReason as skipReason, embedTakeIds, embedTakenBy, embedTakenProvider, embedTakenView, embedTakes, embedUrlFull, parseEmbedMessage, settingsTabOf, userAgentSuffixFull, DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
+import { EMBED_TAKE_UA_TOKEN, detectEmbedFull, embedFromQueryFull, embedFromUserAgentFull, embedLinkOk, embedLockNote, embedLockedBy, embedPage, embedPageView, embedSkipReason as skipReason, embedTakeIds, embedTakenBy, embedTakenProvider, embedTakenView, embedTakes, embedUrlFull, embedCredentialTarget, parseEmbedMessage, settingsTabOf, userAgentSuffixFull, DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
 import { hiddenSlots } from '../core/engines/hide';
 import { AxfRuntime, HIDE_KEY } from '../core/runtime';
 import { readdirSync } from 'node:fs';
@@ -105,6 +105,32 @@ for (const c of t.viewUrls) eq(embedUrlFull(c.url, c.host, c.opts), c.out, `view
 for (const c of t.viewDetect) eq(embedFromQueryFull(c.search), c.embed, `view detect ${c.search}`);
 for (const c of t.pluginTabs) eq(parseEmbedMessage(c.input), c.message, 'plugin tabs');
 eq(skipReason({ host: 'host', hidden: ['banner'], page: 'view:todos' }, ['embedded']), null, 'a view page never skips');
+// Credentials (guest → host): message shape and the hosts a guest hands its token to (web only; Kotlin deferred, PORTING.md).
+for (const c of t.credentialMessages) eq(parseEmbedMessage(c.input), c.message, `credentials ${JSON.stringify(c.input).slice(0, 60)}`);
+for (const c of t.credentialTargets) eq(embedCredentialTarget(c.host, c.parent), c.target, `credential target ${c.host} ${c.parent}`);
+for (const c of t.credentialExtra) eq(embedCredentialTarget(c.host, c.parent, c.extra), c.target, `credential target (extra) ${c.parent}`);
+eq(embedCredentialTarget('molly', 'https://molly.amberxai.com'), 'https://molly.amberxai.com', 'Molly is a recognised credentials host');
+eq(embedCredentialTarget('molly', 'https://evil.example'), null, 'a parent elsewhere gets nothing');
+{
+  // the runtime posts to the parent's exact origin, once per token value, and never standalone or to an unknown host
+  const sent: { msg: unknown; origin: string }[] = [];
+  const g = globalThis as unknown as { parent?: unknown };
+  const before = g.parent;
+  g.parent = { postMessage: (msg: unknown, origin: string) => sent.push({ msg, origin }) };
+  const tok = 'T0ken_' + 'x'.repeat(20);
+  const inMolly = make({ host: 'molly', hidden: ['banner'], takes: [] });
+  eq(inMolly.handCredentials('console', 'bearer', tok, 'https://molly.amberxai.com'), true, 'credentials: handed to Molly');
+  eq(sent, [{ msg: { $axf: 'embed@1', type: 'credentials', app: 'console', scheme: 'bearer', token: tok }, origin: 'https://molly.amberxai.com' }], 'credentials: posted to the exact origin, never *');
+  eq(inMolly.handCredentials('console', 'bearer', tok, 'https://molly.amberxai.com'), false, 'credentials: the same token goes once');
+  eq(inMolly.handCredentials('console', 'bearer', tok + 'y', 'https://molly.amberxai.com'), true, 'credentials: a new token goes again');
+  eq(inMolly.handCredentials('console', 'bearer', 'bad token', 'https://molly.amberxai.com'), false, 'credentials: not a token');
+  eq(make({ host: 'molly', hidden: ['banner'], takes: [] }).handCredentials('console', 'bearer', tok, 'https://evil.example'), false, 'credentials: parent elsewhere');
+  eq(make({ host: 'other', hidden: ['banner'], takes: [] }).handCredentials('console', 'bearer', tok, 'https://molly.amberxai.com'), false, 'credentials: unknown host');
+  eq(make({ host: 'molly', hidden: ['banner'], takes: [], page: 'settings' }).handCredentials('console', 'bearer', tok, 'https://molly.amberxai.com'), false, 'credentials: never from a page shown alone');
+  eq(make(null).handCredentials('console', 'bearer', tok, 'https://molly.amberxai.com'), false, 'credentials: never standalone');
+  eq(sent.length, 2, 'credentials: nothing else was posted');
+  g.parent = before;
+}
 for (const c of t.settingsTab) eq(settingsTabOf(c.action) ?? null, c.tab, `settingsTab ${c.action}`);
 // Old embed.json shapes are unchanged by the extension (no takes/page keys appear on them).
 for (const c of f.queries) eq(embedFromQueryFull(c.input), c.embed, `full = old for ${c.input}`);

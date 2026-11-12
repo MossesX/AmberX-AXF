@@ -5,6 +5,7 @@ import { createAxf, type AxfManifest } from './axf/core';
 import { AxfProvider } from './axf/react';
 import manifest from '../axf.manifest.json';
 import { registerActions } from './actions';
+import { consoleTokens } from './api';
 import { App } from './App';
 import './axf/ui/axf.css';
 import './console.css';
@@ -25,6 +26,12 @@ const axf = createAxf({
   assets: Object.values(assetModules),
 });
 registerActions(axf);
+
+// Inside Molly (a recognised embed host): hand it the console token once so Molly's own screens can call /api
+// (embed@1 `credentials`, posted to Molly's exact origin only). Again when the token changes here; never logged.
+const handToken = () => { const t = consoleTokens.get(); if (t) axf.handCredentials('console', 'bearer', t); };
+handToken();
+consoleTokens.subscribe(handToken);
 
 // One-time move to the new default toolbar for browsers that saved their choices before saves recorded the
 // app's defaults (newer saves carry them, and the runtime adopts a changed default by itself).
