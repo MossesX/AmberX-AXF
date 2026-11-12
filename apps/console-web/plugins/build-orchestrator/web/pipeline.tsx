@@ -26,7 +26,11 @@ import { TAB_LABEL, type BuildAction, type PipelineTab as BuildTab } from '@cons
 
 type Planned = { model: string; account: string; kind: string; at: string; why: string } | null;
 type Health = { at: string; startedAt: string; line: string; problems: string[]; accounts: { name: string; kind: string; signedIn: boolean | null; credits: boolean | null; fable: boolean | null; error: string; skipped?: boolean; at: string }[] } | null;
-type Pipeline = { route?: string; planned?: Planned; tried?: string[]; pickedAt?: string; heldAt?: string; heldBy?: string; heldWhy?: string; queuedAt: string; queuedBy: string; account: string; session: string; model: string; launchedAt: string; runs: number; note: string; splitRequested: string; split: { at: string; by: string; provider: string; steps: number; note: string } | null; lastRun: { at: string; exit: number | null; outcome: string; stepsLeft: number; account: string } | null } | null;
+type Pipeline = { route?: string; planned?: Planned; tried?: string[]; pickedAt?: string; heldAt?: string; heldBy?: string; heldWhy?: string; queuedAt: string; queuedBy: string; account: string; session: string; model: string; launchedAt: string; runs: number; note: string; splitRequested: string; split: { at: string; by: string; provider: string; steps: number; note: string } | null; lastRun: { at: string; exit: number | null; outcome: string; stepsLeft: number; account: string; email?: string; costUsd?: number } | null; failovers?: Failover[]; builtBy?: BuiltBy[] } | null;
+/** One hop of the failover chain (an account's login failed or it hit its limit; to '' = nothing was left). */
+type Failover = { at: string; from: string; to: string; kind: string; hit: string; why: string };
+/** One login that ran the build, with its cost and the steps it ticked. */
+type BuiltBy = { account: string; email: string; kind: string; model: string; from: string; to: string; costUsd: number; steps: string[]; outcome: string };
 type StepRow = { id: string; text: string; model: string; estimate: string; done: boolean; skip: boolean };
 type Row = { id: string; title: string; status: string; tab: BuildTab | ''; stepList: StepRow[]; builtAt: string; priority: string; steps: { done: number; total: number; left: number }; minutesLeft: number; nextModel: string; nextStep: string; needsApproval: boolean; needsSplit: boolean; pipeline: Pipeline; said: string; branch: string; pr: string; createdAt: string; updatedAt: string; held?: boolean; actions?: BuildAction[]; deleted?: boolean; deletedAt?: string };
 type Account = { name: string; email: string; plan: string; role: string; kind?: string; label?: string; fable: boolean; fableFrom: string; parallel: number; running: number; free: number; usable: boolean; why: string; api?: { usable: boolean; why: string; spend: { day: number; week: number; dayCap: number; weekCap: number; state: string } | null } | null };
@@ -231,6 +235,12 @@ type RouteStep = { to: string; label: string };
 const ROUTE_AUTO: RouteStep = { to: 'api', label: 'Auto' };
 const ROUTE_NEXT: Record<string, RouteStep> = { '': ROUTE_AUTO, api: { to: 'subscription', label: 'API' }, subscription: { to: 'auto', label: 'Subscriptions' } };
 const routeOf = (r?: string): RouteStep => ROUTE_NEXT[r ?? ''] ?? ROUTE_AUTO;
+const HIT_LABEL: Record<string, string> = { auth: 'login failed', usage: 'limit', rate: 'rate limited' };
+/** The failover chain's hops, oldest first: "w1 (limit) → w2 · w2 (login failed) → nothing left". */
+const failoverLine = (hops: Failover[]) => hops.map((h) => `${h.from} (${HIT_LABEL[h.hit] ?? h.hit}) → ${h.to ? `${h.to}${h.kind === 'api' ? ' [API]' : ''}` : 'nothing left'}`).join(' · ');
+const failoverTitle = (hops: Failover[]) => hops.map((h) => `${fmtTime(h.at)} ${h.from} → ${h.to || 'none'}: ${h.why}`).join('\n');
+/** Every login that ran the build, oldest first: account, email, model, cost, steps ticked. */
+const builtByTitle = (runs: BuiltBy[]) => runs.map((x) => `${fmtTime(x.from)} ${x.account}${x.kind === 'api' ? ' [API]' : ''}${x.email ? ` (${x.email})` : ''} · ${x.model || '?'}${x.costUsd > 0 ? ` · $${x.costUsd.toFixed(2)}` : ''}${x.steps.length ? ` · ${x.steps.join(', ')}` : ''}${x.outcome === 'limited' ? ' · stopped, moved on' : ''}`).join('\n');
 
 function PipelineCard({ r, busy, wait, launch, act, run, selected, onSelect, showSteps, focused = false }: { r: Row; busy: boolean; wait: string; launch?: { account: string; model: string; phase: string; kind?: string; rule?: string }; act: (path: string, body: Record<string, unknown>, what: string) => Promise<void>; run: (action: BuildAction, ids: string[]) => Promise<void>; selected: boolean; onSelect: (on: boolean) => void; showSteps: boolean; focused?: boolean }) {
   const p = r.pipeline;
@@ -259,6 +269,8 @@ function PipelineCard({ r, busy, wait, launch, act, run, selected, onSelect, sho
       {pl && table !== 'building' && table !== 'done' && <p className="fx-small" title={pl.why}><Icon name="layers" size={13} /> Planned: <b>{pl.model}</b> on <b>{pl.account || 'no account yet'}</b>{pl.kind === 'api' ? ' (API key)' : ''}</p>}
       {p?.account && p.pickedAt && (table === 'building' || table === 'done') && <p className="fx-small" title={`Picked ${fmtTime(p.pickedAt)}`}><Icon name="user" size={13} /> Taken by <b>{p.account}</b>{pl && pl.account && pl.account !== p.account ? ` (planned ${pl.account})` : ''}{p.tried?.length ? ` · refused: ${p.tried.join(', ')}` : ''}</p>}
       {table === 'done' && p?.tried?.length ? <p className="fx-small oc-flag"><Icon name="alert" size={13} /> Refused by {p.tried.join(', ')}</p> : null}
+      {(p?.failovers?.length ?? 0) > 0 && <p className={`fx-small${p!.failovers!.at(-1)!.to ? '' : ' oc-flag'}`} title={failoverTitle(p!.failovers!)}><Icon name="refresh" size={13} /> Failover: {failoverLine(p!.failovers!)}</p>}
+      {(p?.builtBy?.length ?? 0) > 0 && <p className="fx-small fx-muted" title={builtByTitle(p!.builtBy!)}><Icon name="user" size={13} /> Built by {[...new Set(p!.builtBy!.map((x) => `${x.account}${x.kind === 'api' ? ' (API)' : ''}`))].join(' → ')}</p>}
       {showSteps && r.stepList.length > 0 && (
         <ol className="pl-steps" aria-label={`${r.id} steps`}>
           {r.stepList.map((x) => <li key={x.id} className={x.done || x.skip ? 'oc-done' : ''}><span className={`oc-model is-${x.model.toLowerCase()}`}>{x.model}</span> <span className="fx-small">{x.id} · {x.text}{x.estimate ? ` · ${x.estimate}` : ''}</span></li>)}

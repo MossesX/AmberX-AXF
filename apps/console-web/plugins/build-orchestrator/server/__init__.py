@@ -572,6 +572,13 @@ async def pipeline_settings_set(request: Request) -> dict[str, Any]:
     return _pipeline("set", *pairs)
 
 
+@router.get("/pipeline/builtby/{build}")
+def pipeline_builtby(build: str) -> dict[str, Any]:
+    """Who actually built it (Brett, Nov 9 2026): per login the account or API key that ran it, its email, kind, model,
+    cost and the steps it ticked, the builder (the login that ticked the most steps) and every failover hop."""
+    return _pipeline("builtby", _build_id(build))
+
+
 @router.post("/pipeline/route")
 async def pipeline_route(request: Request) -> dict[str, Any]:
     """{id, route: api|subscription|auto}: the per-build override. api = only API-key accounts (billed per token, under

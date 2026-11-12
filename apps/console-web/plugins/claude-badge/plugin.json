@@ -16,6 +16,7 @@
     "asset:badge/axhub",
     "asset:badge/amberx-phone",
     "asset:badge/claude-usage",
+    "service:claude-usage@1",
     "banner:left",
     "settings-tab:claude-badge"
   ],

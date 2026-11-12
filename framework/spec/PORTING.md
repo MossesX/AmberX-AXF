@@ -154,6 +154,15 @@ stays in the Queue, the dispatcher skips it), the `archive` and `deleted` tabs i
 archived builds → archive; soft-deleted → deleted), and the action rules `isHeld`, `canHold`, `isLive`, `canArchive`,
 `canDelete`, `unarchivedStatus`, `actionsFor`, `BUILD_ACTIONS`. Same deferral: no Kotlin twin while Android is on hold.
 
+## Deferred: build-pipeline@1 failovers + builtBy (Nov 12 2026)
+
+Build `account-failover-chain-r2` (redo of `account-failover-chain-subscription-next-subscri` on current main) gave
+`framework/core/build-pipeline.mjs` `pipeline.failovers` (`normFailovers`: one hop per account switch, `{ at, from, to,
+kind, hit: auth | usage | rate, why }`, to '' = the chain had nothing left), `pipeline.builtBy` (`normBuiltBy`: one entry
+per login a run used, with account, email, kind, model, from / to, costUsd, steps ticked, session, outcome ran | limited)
+and `lastRun.email` / `lastRun.costUsd`. The failover chain that fills them runs only on the VPS host. No Kotlin twin:
+Android work is on hold. A port needs `normFailovers`, `normBuiltBy` and the same fields.
+
 ## Deferred: person-only actions, console refresh, UI choices (Nov 7 2026)
 
 Web only (Android on hold), Kotlin twins when the Android side resumes:

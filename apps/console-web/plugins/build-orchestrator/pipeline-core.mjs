@@ -32,6 +32,12 @@
  *              anything out checks all the accounts: can get in, have credits, can accept the Fable model.")
  *              healthOf() reads one tiny call's answer; a fresh health record (own.health) decides usable / Fable,
  *              so the dispatcher never tests an account at launch time. healthDue() says when the next sweep runs.
+ *   failover   (Brett, Nov 9 2026: "The orchestrator assigns a model; if it doesn't work, it goes to another
+ *              subscription, and if there's no subscriptions, it goes to an API.") failoverFor() picks the next link when
+ *              a run's account fails (login expired, limit reached, rate limited): every subscription login is a peer
+ *              (the console's own login too), ranked by usage left on the usage meter (usageLeft()); an API account only
+ *              when no subscription can take it, the build may use API and Brett has the API account switched on.
+ *              segmentsOf() / builtByEntries() / builtBy() record which login actually ran each part of the build.
  */
 import { DEFAULT_MAX_RUNS, STATUS_AFTER, isHeld, nextModel, openSteps, outcomeLine, outcomeOf, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
@@ -128,7 +134,7 @@ export function accountView(row, own = {}, { settings = normSettings(), anyWorke
   const api = apiKey ? apiState(row, o, settings, { limited, apiParallel, running }) : null;
   const rawOrder = o.order ?? row?.order;
   const order = typeof rawOrder === 'number' && Number.isFinite(rawOrder) ? rawOrder : null;
-  return { name: str(row?.name, 40), email: str(row?.email, 200), plan, role, kind: apiKey ? 'api' : 'subscription', label: str(row?.label, 40), order, health: health ?? (o.health && typeof o.health === 'object' ? o.health : null),
+  return { name: str(row?.name, 40), email: str(row?.email, 200), plan, role, kind: apiKey ? 'api' : 'subscription', label: str(row?.label, 40), order, off, health: health ?? (o.health && typeof o.health === 'object' ? o.health : null),
     fable: apiKey && typeof o.fable !== 'boolean' && !probe ? true : fable, fableFrom: apiKey && typeof o.fable !== 'boolean' && !probe ? 'api' : fableFrom,
     parallel: apiKey ? apiParallel : parallel, running, free: Math.max(0, (apiKey ? apiParallel : parallel) - running), usable, why, limited, probe: probe ?? (o.probe ?? null), api };
 }
@@ -272,6 +278,131 @@ export function routeFor(b, accounts, model, settings = normSettings()) {
     : { account: '', kind: '', rule: 'overflow', why: `${subWhy}; overflow: ${apiNoAccountWhy(accounts, model)}` };
 }
 
+// ------------------------------------------------------------------ failover chain
+
+/** Below this much left (percent of the tighter window) a subscription counts as out. */
+export const MIN_LEFT = 2;
+
+/**
+ * Usage left on one login, from a usage meter row ({ name, http, fiveHour: { used, resetsAt, locked }, weekly: … },
+ * the Badges plugin's host reader): { left: 0–100 | null (unknown), out, why }. The tighter of the 5-hour and weekly
+ * windows counts; a window whose reset time has passed counts as fresh; HTTP 401 = the login is dead.
+ */
+export function usageLeft(row, now = Date.now()) {
+  if (!row || typeof row !== 'object') return { left: null, out: false, why: '' };
+  if (row.http === 401 || row.http === -1) return { left: 0, out: true, why: row.http === 401 ? 'login expired (usage meter)' : 'no login saved (usage meter)' };
+  if (row.http !== 200) return { left: null, out: false, why: '' };
+  let used = 0; let locked = false; let resets = '';
+  for (const w of [row.fiveHour, row.weekly]) {
+    if (!w || typeof w !== 'object') continue;
+    const at = Date.parse(w.resetsAt || '');
+    if (Number.isFinite(at) && at <= now) continue; // that window has reset since the reading
+    if (w.locked) locked = true;
+    const u = Number(w.used);
+    if (Number.isFinite(u) && u >= used) { used = u; resets = str(w.resetsAt, 40); }
+  }
+  const left = Math.max(0, Math.round(100 - used));
+  const out = locked || left < MIN_LEFT;
+  return { left, out, why: out ? `${locked ? 'locked' : `${left}% left`}${resets ? ` until ${resets.slice(0, 16).replace('T', ' ')}` : ''} (usage meter)` : '' };
+}
+
+/** Meter rows → { name: usageLeft() }. */
+export function usageMap(rows, now = Date.now()) {
+  return Object.fromEntries(list(rows).filter((r) => r && r.name).map((r) => [str(r.name, 40), usageLeft(r, now)]));
+}
+
+/**
+ * The next link of the chain once the account a run was on failed (auth expired, limit reached, rate limited).
+ *   1. every subscription login is a peer (the console's own login too, whatever its worker role): not tried by this
+ *      run, not switched off for the pipeline, not limited, usage left on the meter, Fable when the phase needs it.
+ *      Those with a free slot first, then most usage left (unknown after known), then Brett's order; one at its
+ *      parallel cap comes last (the run gives its old slot back as it moves).
+ *   2. then an API account, only when the build may use API (route api, or route auto with the API overflow rule on)
+ *      and Brett has that account switched on as an API worker, with a key, under its caps (apiCandidates()).
+ * `usage` = usageMap(); `tried` = every account this run already used (never retried).
+ * → { account, kind, why } (account '' = the chain has nothing left; why names what kept each one out).
+ */
+export function failoverFor(b, accounts, model, settings = normSettings(), tried = [], usage = {}) {
+  const skip = new Set(list(tried).map((n) => str(n, 40)));
+  const route = b?.pipeline?.route || '';
+  const needFable = modelKey(model) === FOUNDATION_MODEL;
+  const out = [];
+  const peers = [];
+  for (const a of list(accounts)) {
+    if (a.kind === 'api' || skip.has(a.name)) continue;
+    const u = usage[a.name] ?? { left: null, out: false, why: '' };
+    const why = a.off ? 'switched off for the pipeline' : a.limited ? a.why : u.out ? u.why : needFable && !a.fable ? `no ${MODEL_LABELS[FOUNDATION_MODEL]}` : '';
+    if (why) out.push(`${a.name}: ${why}`); else peers.push({ a, left: u.left });
+  }
+  peers.sort((x, y) => (x.a.free > 0 ? 0 : 1) - (y.a.free > 0 ? 0 : 1) || (x.left == null ? 1 : 0) - (y.left == null ? 1 : 0) || (y.left ?? 0) - (x.left ?? 0) || byOrder(x.a, y.a) || x.a.running - y.a.running);
+  if (route !== 'api' && peers.length) {
+    const p = peers[0];
+    return { account: p.a.name, kind: 'subscription', why: `next subscription with usage left: ${p.a.name}${p.left != null ? ` (${p.left}% left)` : ''}${p.a.free > 0 ? '' : ', over its parallel cap'}` };
+  }
+  const subWhy = route === 'api' ? 'this build is set to run on API' : out.length ? `no subscription left (${out.join('; ')})` : 'no other subscription login';
+  if (route === 'subscription') return { account: '', kind: '', why: `${subWhy}; this build is kept off API accounts` };
+  if (route !== 'api' && !settings.apiOverflow) return { account: '', kind: '', why: `${subWhy}; API accounts are off for the pipeline (API overflow)` };
+  const api = apiCandidates(list(accounts).filter((a) => !skip.has(a.name)), model)[0];
+  return api ? { account: api.name, kind: 'api', why: `${subWhy}: API account ${api.name} (billed per token, under its caps)` }
+    : { account: '', kind: '', why: `${subWhy}; ${apiNoAccountWhy(list(accounts).filter((a) => !skip.has(a.name)), model)}` };
+}
+
+/**
+ * Who ran one session, from the headless event stream (session-login / session-part / session-end lines of
+ * deploy/claude-headless.sh): one segment per login it used, with what it cost there.
+ * → [{ account, email, model, from, to, costUsd, exit, cut }] (cut = that account stopped and the run moved on).
+ */
+export function segmentsOf(events, session, since = 0) {
+  const out = []; let cur = null; let base = 0;
+  for (const e of list(events)) {
+    if (!e || e.session !== session || Date.parse(e.at || 0) < since) continue;
+    if (e.event === 'session-login' && e.account) {
+      if (cur) out.push({ ...cur, to: str(e.at, 40), cut: true });
+      cur = { account: str(e.account, 40), email: str(e.email, 200), model: str(e.model, 40), from: str(e.at, 40), to: '', costUsd: 0, exit: null, cut: false };
+    } else if (e.event === 'session-part' && cur) {
+      const total = Number(e.costUsd) || 0; cur.costUsd = +Math.max(0, total - base).toFixed(4); base = total; cur.cut = true;
+    } else if (e.event === 'session-end' && cur) {
+      const total = Number(e.costUsd) || 0;
+      out.push({ ...cur, to: str(e.at, 40), costUsd: +(cur.costUsd + Math.max(0, total - base)).toFixed(4), exit: Number.isInteger(e.exit) ? e.exit : null, cut: false });
+      cur = null;
+    }
+  }
+  if (cur) out.push(cur);
+  return out;
+}
+
+/** Steps of `b` ticked inside [from, to) (to '' = up to now). */
+export function stepsIn(b, from, to = '') {
+  const f = Date.parse(from || 0) || 0; const t = to ? Date.parse(to) : Infinity;
+  return list(b?.steps).filter((s) => s.done && s.doneAt && Date.parse(s.doneAt) >= f && Date.parse(s.doneAt) < t).map((s) => s.id);
+}
+
+/** A session's segments → pipeline.builtBy entries (kind from the account list). */
+export function builtByEntries(b, segments, accounts = [], { session = '' } = {}) {
+  return list(segments).map((s) => {
+    const a = list(accounts).find((x) => x.name === s.account);
+    return { account: s.account, email: s.email || a?.email || '', kind: a?.kind === 'api' ? 'api' : 'subscription', model: s.model, from: s.from, to: s.to, costUsd: s.costUsd, steps: stepsIn(b, s.from, s.to), session, outcome: s.cut ? 'limited' : 'ran' };
+  });
+}
+
+/** Who built what: per step the entry whose window holds its tick, and the builder (the login that ticked the most steps; ties go to the latest). */
+export function builtBy(b) {
+  const runs = list(b?.pipeline?.builtBy);
+  const steps = {};
+  for (const r of runs) for (const id of list(r.steps)) steps[id] = r;
+  const count = new Map();
+  for (const r of Object.values(steps)) count.set(r.account, (count.get(r.account) ?? 0) + 1);
+  let builder = null; let best = 0;
+  for (const r of runs) { const n = count.get(r.account) ?? 0; if (n >= best && n > 0) { best = n; builder = r; } }
+  return { steps, builder, accounts: [...new Set(runs.map((r) => r.account))] };
+}
+
+/** One line: "w1 (a@x, opus, $1.20): s1, s2". */
+export function builtByLine(r) {
+  if (!r) return '';
+  return `${r.account}${r.kind === 'api' ? ' [API]' : ''} (${[r.email, r.model, Number(r.costUsd) > 0 ? `$${Number(r.costUsd).toFixed(2)}` : ''].filter(Boolean).join(', ')})${list(r.steps).length ? `: ${r.steps.join(', ')}` : ''}`;
+}
+
 /** Why no account takes `model` right now, in plain words. */
 export function noAccountWhy(accounts, model) {
   const usable = list(accounts).filter((a) => a.usable);
@@ -328,12 +459,12 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
 // ------------------------------------------------------------------ session end
 
 /** A run ended: the build's new status, its lastRun record and a note line. */
-export function endOutcome(b, { exit, account = '', session = '', now = new Date().toISOString() } = {}, settings = normSettings()) {
+export function endOutcome(b, { exit, account = '', email = '', costUsd = 0, session = '', now = new Date().toISOString() } = {}, settings = normSettings()) {
   const stepsLeft = openSteps(b).length;
   const runs = (b.pipeline?.runs ?? 0) || 1;
   const phaseSwitch = stepsLeft > 0 && !!b.pipeline?.model && nextModel(b) !== b.pipeline.model;
   const outcome = outcomeOf({ exit, stepsLeft, runs, phaseSwitch }, settings.maxRuns);
-  const run = { at: now, exit: Number.isInteger(exit) ? exit : null, outcome, stepsLeft, account: account || b.pipeline?.account || '', session: session || b.pipeline?.session || '' };
+  const run = { at: now, exit: Number.isInteger(exit) ? exit : null, outcome, stepsLeft, account: account || b.pipeline?.account || '', session: session || b.pipeline?.session || '', ...(email ? { email: str(email, 200) } : {}), ...(Number(costUsd) > 0 ? { costUsd: +Number(costUsd).toFixed(4) } : {}) };
   let status = STATUS_AFTER[outcome];
   if (outcome === 'finished') status = b.pr && !b.mergedAt ? 'built' : 'complete';
   return { outcome, status, run, note: outcomeLine({ ...b, pipeline: { ...(b.pipeline ?? {}), runs } }, run) };

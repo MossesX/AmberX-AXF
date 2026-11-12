@@ -198,6 +198,29 @@ build_note() {   # one line on the orchestrator build this run belongs to
   [[ -n "$bid" && -f "$ORCH_JS" && "${AXF_LOGIN_NOTE:-on}" != off ]] && (node "$ORCH_JS" act note "$bid" "$1" >/dev/null 2>&1 &)  # axf-plugin:build-orchestrator
   return 0
 }
+# The orchestrator's failover chain (Brett, Nov 9 2026: "if it doesn't work, it goes to another subscription, and if
+# there's no subscriptions, it goes to an API"). A pipeline run whose login fails (expired, limit, rate limit) asks the
+# dispatcher for the next link (pipeline.mjs failover: the next subscription with usage left, then an API account only
+# when Brett has API on); the dispatcher records the hop on the build and posts it in the group chat. A pipeline run
+# never uses the console's own account switch below.
+PIPE_JS="$HERE/../apps/console-web/plugins/build-orchestrator/pipeline.mjs"  # axf-plugin:build-orchestrator
+is_pipeline() { [[ "${AXF_SURFACE:-}" == pipeline && -n "${AXF_BUILD_ID:-}" ]]; }
+on_chain() { is_pipeline && [[ "${AXF_OWN_LOGIN:-on}" != off && -f "$PIPE_JS" && -f "$LOGIN_JS" ]] && command -v node >/dev/null; }
+pipe_failover() {   # $1 = account that stopped, $2 = usage | auth | rate, $3 = log (optional): moves this run on; 1 = nothing left
+  local gone="$1" hit="$2" logf="${3:-}" fo_state="" fo_acct="" fo_kind=""
+  while :; do
+    tried_workers="${tried_workers:+$tried_workers,}$gone"
+    read -r fo_state fo_acct fo_kind < <(node "$PIPE_JS" failover "$AXF_BUILD_ID" --from "$gone" --kind "$hit" ${logf:+--log "$logf"} --tried "$tried_workers" 2>/dev/null | tail -1)
+    if [[ "$fo_state" != run || -z "$fo_acct" ]]; then
+      printf '\n\033[1m── account %s stopped (%s): the failover chain has nothing left ──\033[0m\n' "$gone" "$hit"; return 1
+    fi
+    printf '\n\033[1m── account %s stopped (%s): moving to %s (%s) ──\033[0m\n' "$gone" "$hit" "$fo_acct" "$fo_kind"
+    release_login; login_account=""; own_login "$fo_acct"
+    account="$fo_acct"; export AXF_CLAUDE_ACCOUNT="$fo_acct"
+    [[ -n "$login_account" ]] && return 0
+    gone="$fo_acct" hit=auth logf=""   # its login could not be copied either: the next link
+  done
+}
 release_login() {
   [[ -n "$login_dir" && -f "$LOGIN_JS" ]] && node "$LOGIN_JS" release --dir "$(pwd)" --session "$login_session" >/dev/null 2>&1
   [[ -n "$login_dir" && "${CLAUDE_CONFIG_DIR:-}" == "$login_dir" ]] && unset CLAUDE_CONFIG_DIR
@@ -324,6 +347,8 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     fi
   fi
   own_login "${account:-active}"
+  pipe_stop=""   # a pipeline run pinned to a login that can't be copied never runs on the shared login: the chain moves it
+  if on_chain && [[ -n "$account" && "$account" != active && -z "$login_account" ]]; then pipe_failover "$account" auth || pipe_stop=1; fi
   [[ -n "$login_line" ]] && printf '\033[2m%s\033[0m\n' "$login_line"
   [[ -n "$ctx_line" ]] && printf '\033[2m%s\033[0m\n' "$ctx_line"
   for w in "${ctx_warn[@]}"; do printf '\033[33m# warning: %s\033[0m\n' "$w"; done
@@ -356,7 +381,9 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     if (( g_st == 3 )); then gate_ok="" st=3; printf 'Not started: the VPS hard build limit stayed full for a day.\n' | tee "$log"
     elif (( g_st != 0 )); then printf '\033[33m# build-limit: the hard-limit gate failed (exit %s); starting\033[0m\n' "$g_st"; fi
   fi
-  switches=0 max_switches="${AXF_ACCOUNT_SWITCHES:-3}"
+  if [[ -n "$gate_ok" && -n "$pipe_stop" ]]; then gate_ok="" st=3; printf 'Not started: the login of %s failed and the failover chain has nothing left.\n' "$account" | tee "$log"; fi
+  switches=0 max_switches="${AXF_ACCOUNT_SWITCHES:-3}" carry_on=""
+  is_pipeline && max_switches="${AXF_ACCOUNT_SWITCHES:-6}"   # the chain may walk every subscription, then API
   run_build=""   # the orchestrator build of this run: its meter (start tokens, cost) is grouped under it
   read -r _ run_build < <(node "$HERE/../framework/cli/build-priority.mjs" slot --name "$name" --brief "$brief" 2>/dev/null) || true
   while [[ -n "$gate_ok" ]]; do
@@ -369,6 +396,15 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     fi
     st=${PIPESTATUS[0]}
     (( switches < max_switches )) || break
+    if on_chain && [[ -n "$login_account" ]]; then   # a pipeline run moves along the orchestrator's failover chain
+      hit="$(node "$WORKERS_JS" hit --log "$log" --exit "$st" 2>/dev/null)"
+      [[ -n "$hit" ]] || break
+      event session-part "$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"
+      pipe_failover "$login_account" "$hit" "$log" || break
+      [[ -z "$carry_on" ]] && prompt="$prompt"$'\n\n'"An account limit cut off an earlier run of this brief. Read the worktree and the build's ticked steps first, and carry on from there instead of starting over." && carry_on=1
+      switches=$((switches + 1))
+      continue
+    fi
     if [[ -n "$on_worker" ]]; then   # a worker's run moves to the next worker; the console's account stays where it is
       hit="$(node "$WORKERS_JS" hit --log "$log" --exit "$st" 2>/dev/null)"
       [[ -n "$hit" ]] || break
@@ -390,6 +426,7 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
       switches=$((switches + 1))
       continue
     fi
+    is_pipeline && break   # pipeline runs stay inside the orchestrator's chain: never the console's account switch
     tail -n 40 "$log" 2>/dev/null | grep -qiE "hit your (weekly |daily |session |5-hour )?limit|usage limit reached|out of credits|credit balance is too low" || break
     sw_js="$HERE/../apps/console-web/plugins/ai-keys/switch.mjs"  # axf-plugin:ai-keys
     command -v node >/dev/null && [[ -f "$sw_js" ]] || break
@@ -496,7 +533,7 @@ if ! command -v tmux >/dev/null; then
 fi
 tmux has-session -t "=$session" 2>/dev/null && session="$session-$(date +%H%M%S)"
 envs=()   # tmux starts the command in its server's environment: pass what the run needs explicitly
-for v in PATH HOME AXF_BUILD_LIMIT AXF_BUILD_SLICE AXF_BUILD_LIMIT_ONLY AXF_BUILD_LIMIT_POLL AXF_SURFACE AXF_MODEL AXF_AGENT AXF_AGENT_NAME AXF_AGENT_BOOKED AXF_HEADLESS_DIR AXF_ADOPT_CHANGE AXF_CLAUDE_AUTH AXF_SESSION AXHUB_URL AXF_SLOTS AXF_SLOTS_DIR AXF_SLOTS_PREFIX AXF_SLOTS_HOST AXF_WATCH_LIVE AXF_CLAUDE_ACCOUNT AXF_OWN_LOGIN AXF_CLAUDE_ACCOUNTS AXF_CLAUDE_HOME AXF_CLAUDE_GLOBAL AXF_CLAUDE_SEEN AXF_LOGIN_NOTE AXF_WORKERS AXF_CLAUDE_WORKERS AXF_WORKER_POLL AXF_WORKERS_ALIVE AXF_BUILD_PROFILE AXF_JOB_TYPE; do
+for v in PATH HOME AXF_BUILD_LIMIT AXF_BUILD_SLICE AXF_BUILD_LIMIT_ONLY AXF_BUILD_LIMIT_POLL AXF_SURFACE AXF_MODEL AXF_AGENT AXF_AGENT_NAME AXF_AGENT_BOOKED AXF_HEADLESS_DIR AXF_ADOPT_CHANGE AXF_CLAUDE_AUTH AXF_SESSION AXHUB_URL AXF_SLOTS AXF_SLOTS_DIR AXF_SLOTS_PREFIX AXF_SLOTS_HOST AXF_WATCH_LIVE AXF_CLAUDE_ACCOUNT AXF_OWN_LOGIN AXF_CLAUDE_ACCOUNTS AXF_CLAUDE_HOME AXF_CLAUDE_GLOBAL AXF_CLAUDE_SEEN AXF_LOGIN_NOTE AXF_WORKERS AXF_CLAUDE_WORKERS AXF_WORKER_POLL AXF_WORKERS_ALIVE AXF_BUILD_PROFILE AXF_JOB_TYPE AXF_PIPELINE_DIR AXF_PIPELINE_SETTINGS AXF_PIPELINE_USAGE AXF_ACCOUNT_SWITCHES; do
   [[ -n "${!v:-}" ]] && envs+=(-e "$v=${!v}")
 done
 envs+=(-e "AXF_BUILD_ID=${AXF_BUILD_ID:-}")   # always set: never the tmux server's stale value from an older launch

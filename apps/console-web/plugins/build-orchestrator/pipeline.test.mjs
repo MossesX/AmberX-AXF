@@ -13,6 +13,7 @@ import * as OC from './web/orchestrator-core.mjs';
 import { verdict as dispatchVerdict } from '../../../../framework/cli/dispatch-gate.mjs';
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
 import { setUpgradePolicy } from '../../../../framework/core/model-switch.mjs';
+import { hitOf } from '../../../../deploy/claude-workers.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, '../../../..');
@@ -342,6 +343,84 @@ t('dispatch gate: a build launch needs the orchestrator token for that build; ot
   assert.match(dispatchVerdict({ b, name: 'alpha', token: 'axd_x', rec: { ...rec, hash: 'f'.repeat(64) } }).why, /not alpha's/);
 });
 
+// ---------------- failover chain (Brett, Nov 9 2026: "if it doesn't work, it goes to another subscription, and if there's no subscriptions, it goes to an API")
+const meter = (name, used5, usedW, extra = {}) => ({ name, http: 200, fiveHour: { used: used5, resetsAt: '2099-01-01T00:00:00Z', locked: false }, weekly: { used: usedW, resetsAt: '2099-01-08T00:00:00Z', locked: false }, ...extra });
+t('usageLeft: the tighter window counts; a reset window is fresh; locked, nearly empty or a dead login is out', () => {
+  assert.deepEqual([P.usageLeft(meter('a', 30, 70)).left, P.usageLeft(meter('a', 30, 70)).out], [30, false]);
+  assert.equal(P.usageLeft(meter('a', 99, 10)).out, true); assert.match(P.usageLeft(meter('a', 99, 10)).why, /1% left until 2099-01-01 00:00 \(usage meter\)/);
+  assert.equal(P.usageLeft(meter('a', 99, 10, { fiveHour: { used: 99, resetsAt: '2020-01-01T00:00:00Z' } })).left, 90, 'the 5-hour window has reset since the reading');
+  assert.equal(P.usageLeft(meter('a', 5, 5, { weekly: { used: 5, locked: true } })).out, true);
+  assert.deepEqual([P.usageLeft({ name: 'a', http: 401 }).out, P.usageLeft({ name: 'a', http: 0 }).left, P.usageLeft(null).out], [true, null, false]);
+  assert.deepEqual(Object.keys(P.usageMap([meter('a', 1, 1), meter('b', 1, 1)])), ['a', 'b']);
+});
+t('failoverFor: every subscription is a peer (the console login too), most usage left first; never one tried, limited, off or out', () => {
+  const s = P.normSettings({ parallelPerAccount: 1 });
+  const rows = [{ name: 'hulu', role: 'interactive', plan: 'max', limited: null, running: [] }, { name: 'w1', role: 'worker', plan: 'max', limited: null, running: ['x'] }, { name: 'w2', role: 'worker', plan: 'max', limited: null, running: [] },
+    { name: 'w3', role: 'worker', plan: 'pro', limited: null, running: [] }, { name: 'w4', role: 'worker', plan: 'max', limited: { reason: 'hit its limit', until: '2099-01-01T00:00:00Z' }, running: [] }];
+  const acc = P.accountViews(rows, { w3: { use: false } }, { settings: s });
+  assert.equal(acc.find((a) => a.name === 'hulu').usable, false, 'the dispatcher keeps the console login for itself while workers exist…');
+  const b = build('x', 'running', [step('s1', 'Opus')], { pipeline: { account: 'w1' } });
+  const usage = P.usageMap([meter('hulu', 5, 10), meter('w2', 10, 15)]);
+  let d = P.failoverFor(b, acc, 'Opus', s, ['w1'], usage);
+  assert.deepEqual([d.account, d.kind], ['hulu', 'subscription'], '…but the failover chain treats it as a peer, and it has the most left'); assert.match(d.why, /90% left/);
+  d = P.failoverFor(b, acc, 'Opus', s, ['w1', 'hulu'], usage); assert.equal(d.account, 'w2');
+  d = P.failoverFor(b, acc, 'Opus', s, ['w1'], P.usageMap([meter('hulu', 99, 40), meter('w2', 10, 15)]));
+  assert.equal(d.account, 'w2', 'a login with no usage left is skipped');
+  d = P.failoverFor(b, acc, 'Opus', s, ['w1', 'hulu', 'w2'], usage);
+  assert.equal(d.account, '', 'w3 is switched off, w4 limited: nothing left'); assert.match(d.why, /w3: switched off for the pipeline/); assert.match(d.why, /w4: hit its limit/); assert.match(d.why, /no API account is set up/);
+  d = P.failoverFor(b, acc, 'Opus', s, ['hulu'], P.usageMap([meter('w2', 99, 1)]));
+  assert.equal(d.account, 'w1', 'one at its parallel cap still takes it when it is the only one with usage left'); assert.match(d.why, /over its parallel cap/);
+  const pro = P.accountViews([{ name: 'p1', role: 'worker', plan: 'pro', limited: null, running: [] }, { name: 'm1', role: 'worker', plan: 'max', limited: null, running: [] }], {}, { settings: s });
+  assert.equal(P.failoverFor(b, pro, 'Fable', s, [], P.usageMap([meter('p1', 1, 1), meter('m1', 50, 50)])).account, 'm1', 'Fable: only a login with Fable');
+});
+t('failoverFor: API only when no subscription can take it, the build may use API and Brett has the API account switched on', () => {
+  const s = P.normSettings({ parallelPerAccount: 1 });
+  const rows = [{ name: 'w1', role: 'worker', plan: 'max', limited: null, running: [] }, apiRow('off-api', { role: 'api-off', why: 'not set up as an API worker' }), apiRow('hulu-api'), apiRow('capped-api', { spend: { day: 9, week: 9, state: 'capped', why: 'daily cap' } })];
+  const acc = P.accountViews(rows, {}, { settings: s });
+  const b = build('x', 'running', [step('s1', 'Opus')]);
+  assert.equal(P.failoverFor(b, acc, 'Opus', s, []).account, 'w1', 'subscriptions first');
+  let d = P.failoverFor(b, acc, 'Opus', s, ['w1']);
+  assert.deepEqual([d.account, d.kind], ['hulu-api', 'api'], 'the switched-on API account under its caps'); assert.match(d.why, /billed per token/);
+  d = P.failoverFor(b, acc, 'Opus', s, ['w1', 'hulu-api']);
+  assert.equal(d.account, '', 'an API account switched off or capped never takes it'); assert.match(d.why, /off-api: not set up as an API worker/); assert.match(d.why, /capped-api: spend cap reached/);
+  d = P.failoverFor(b, acc, 'Opus', P.normSettings({ apiOverflow: false }), ['w1']);
+  assert.equal(d.account, ''); assert.match(d.why, /API accounts are off for the pipeline/);
+  d = P.failoverFor(build('x', 'running', [], { pipeline: { route: 'subscription' } }), acc, 'Opus', s, ['w1']);
+  assert.equal(d.account, ''); assert.match(d.why, /kept off API accounts/);
+  assert.equal(P.failoverFor(build('x', 'running', [], { pipeline: { route: 'api' } }), acc, 'Opus', s, []).account, 'hulu-api', 'set to API: stays on API accounts');
+});
+t('who built it: session events → one segment per login with its cost; steps ticked in each window; the builder', () => {
+  const ev = [
+    { event: 'session-start', session: 'S', at: '2026-11-09T10:00:00Z' },
+    { event: 'session-login', session: 'S', account: 'w1', email: 'one@x', model: 'opus', at: '2026-11-09T10:00:01Z' },
+    { event: 'session-part', session: 'S', account: 'w1', costUsd: 1.5, at: '2026-11-09T10:20:00Z' },
+    { event: 'session-login', session: 'S', account: 'hulu', email: 'h@x', model: 'opus', at: '2026-11-09T10:20:05Z' },
+    { event: 'session-login', session: 'OTHER', account: 'w9', at: '2026-11-09T10:21:00Z' },
+    { event: 'session-end', session: 'S', account: 'hulu', exit: 0, costUsd: 4, at: '2026-11-09T10:50:00Z' },
+  ];
+  const seg = P.segmentsOf(ev, 'S');
+  assert.deepEqual(seg.map((x) => [x.account, x.costUsd, x.cut]), [['w1', 1.5, true], ['hulu', 2.5, false]]);
+  const b = build('x', 'running', [{ ...step('s1', 'Opus', true), doneAt: '2026-11-09T10:10:00Z' }, { ...step('s2', 'Opus', true), doneAt: '2026-11-09T10:30:00Z' }, { ...step('s3', 'Opus', true), doneAt: '2026-11-09T10:40:00Z' }]);
+  const acc = P.accountViews([{ name: 'w1', role: 'worker', plan: 'max', email: 'one@x' }, { name: 'hulu', role: 'interactive', plan: 'max' }], {}, {});
+  const runs = P.builtByEntries(b, seg, acc, { session: 'S' });
+  assert.deepEqual(runs.map((r) => [r.account, r.kind, r.steps, r.outcome]), [['w1', 'subscription', ['s1'], 'limited'], ['hulu', 'subscription', ['s2', 's3'], 'ran']]);
+  const p = BP.normPipeline({ builtBy: runs, failovers: [{ at: '2026-11-09T10:20:01Z', from: 'w1', to: 'hulu', kind: 'subscription', hit: 'usage', why: 'next subscription' }, { from: 'Bad Name' }] });
+  assert.equal(p.builtBy.length, 2); assert.equal(p.builtBy[1].costUsd, 2.5); assert.deepEqual(p.failovers.map((h) => [h.from, h.to, h.hit]), [['w1', 'hulu', 'usage']]);
+  assert.deepEqual(BP.normFailovers([{ from: 'w1', to: '', hit: 'rate' }])[0], { at: '', from: 'w1', to: '', kind: '', hit: 'rate', why: '' }, 'to empty = nothing left');
+  const w = P.builtBy({ ...b, pipeline: p });
+  assert.equal(w.builder.account, 'hulu'); assert.equal(w.steps.s1.account, 'w1'); assert.deepEqual(w.accounts, ['w1', 'hulu']);
+  assert.equal(P.builtByLine(w.builder), 'hulu (h@x, opus, $2.50): s2, s3');
+  const run = P.endOutcome(b, { exit: 0, account: 'hulu', email: 'h@x', costUsd: 4 }).run;
+  assert.deepEqual([run.account, run.email, run.costUsd], ['hulu', 'h@x', 4]);
+  assert.deepEqual([BP.normPipeline({ lastRun: run }).lastRun.email, BP.normPipeline({ lastRun: run }).lastRun.costUsd], ['h@x', 4]);
+});
+t('claude-workers hitOf: a limit always; a dead login or a 429 only on a failed exit', () => {
+  assert.equal(hitOf("You've hit your weekly limit · resets 3pm", 0), 'usage');
+  assert.equal(hitOf('API Error: 429 {"type":"error","error":{"type":"rate_limit_error"}}', 1), 'rate');
+  assert.equal(hitOf('API Error: 429 rate_limit_error', 0), '', 'a clean exit that printed the words is not a hit');
+  assert.equal(hitOf('Please run /login', 1), 'auth');
+});
+
 // ---------------- the CLI end to end (scratch store, fake accounts, fake launcher, fake splitter)
 const e2e = process.env.AXF_PIPELINE_TEST_E2E !== 'off' && existsSync(join(HERE, 'pipeline.mjs'));
 if (e2e) {
@@ -539,6 +618,47 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.notEqual(pipe('restore', 'h3', '--json', '--expect-fail').status, 0, 'restoring a live build is refused');
     assert.notEqual(pipe('archive', 'nope', '--json', '--expect-fail').status, 0, 'unknown build: refused');
     assert.match(readFileSync(join(pipeDir, 'log.jsonl'), 'utf8'), /"event":"hold"/);
+  });
+  t('e2e failover: the account that stopped is marked limited, the run moves to the peer with most usage left (the console login too), then nothing left', () => {
+    orch('act', JSON.stringify({ action: 'add', id: 'omega', title: 'Gamma', steps: [{ text: 'do omega', model: 'Opus', estimate: '20 min' }] }));
+    json(pipe('queue', 'omega', '--json'));
+    const r = json(pipe('tick', '--json'));
+    const from = find('omega').pipeline.account; assert.ok(from, JSON.stringify(r.plan.waits));
+    const usageFile = join(tmp, 'usage.json');
+    writeFileSync(usageFile, JSON.stringify({ at: new Date().toISOString(), rows: [meter('console', 20, 30), meter('w-max', 85, 10), meter('w-pro', 50, 50)] }));
+    env.AXF_PIPELINE_USAGE = usageFile;
+    const u = json(pipe('usage', '--json')); assert.equal(u.source, 'file'); assert.equal(u.left.console.left, 70);
+    const peer = ['console', 'w-max', 'w-pro'].filter((n) => n !== from);
+    const h1 = json(pipe('failover', 'omega', '--from', from, '--kind', 'usage', '--json'));
+    assert.deepEqual([h1.state, h1.account, h1.kind], ['run', 'console', 'subscription'], 'the console login is a peer, and it has the most left');
+    const g = find('omega'); assert.equal(g.pipeline.account, 'console');
+    assert.deepEqual(g.pipeline.failovers.map((h) => [h.from, h.to, h.hit]), [[from, 'console', 'usage']]);
+    assert.match(g.notes.at(-1).text, new RegExp(`Account ${from} hit its limit.*moved to console`));
+    assert.ok(json(pipe('accounts', '--json')).accounts.find((a) => a.name === from).limited, `${from} is out now`);
+    const h2 = json(pipe('failover', 'omega', '--from', 'console', '--kind', 'auth', '--tried', from, '--json'));
+    assert.equal(h2.account, peer.find((n) => n !== 'console'));
+    const h3 = pipe('failover', 'omega', '--from', h2.account, '--kind', 'rate', '--tried', `${from},console`);
+    assert.match(h3.stdout, /^none /, 'every subscription tried, no API account: nothing left');
+    const last = find('omega'); assert.equal(last.pipeline.failovers.length, 3); assert.equal(last.pipeline.failovers.at(-1).to, ''); assert.equal(last.pipeline.failovers.at(-1).hit, 'rate');
+    assert.match(last.notes.at(-1).text, /failover chain has nothing left/);
+    const log = readFileSync(join(pipeDir, 'log.jsonl'), 'utf8'); assert.match(log, /"event":"failover"/); assert.match(log, /"event":"failover-none"/);
+    const who = json(pipe('builtby', 'omega', '--json')); assert.equal(who.failovers.length, 3);
+    delete env.AXF_PIPELINE_USAGE;
+  });
+  t('e2e who built it: the session end records each login the run used, its cost and the steps it ticked', () => {
+    const ses = find('omega').pipeline.session; const t0 = Date.parse(find('omega').pipeline.launchedAt); const at = (ms) => new Date(t0 + ms).toISOString();
+    const add = (o) => writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ session: ses, name: 'omega', ...o }) + '\n');
+    add({ event: 'session-login', account: 'w-pro', email: 'pro@x', model: 'opus', at: at(1) });
+    add({ event: 'session-part', account: 'w-pro', costUsd: 0.5, at: at(2) });
+    add({ event: 'session-login', account: 'console', email: 'c@x', model: 'opus', at: at(3) });
+    orch('act', 'step', 'omega', 's1', 'done');
+    add({ event: 'session-end', account: 'console', email: 'c@x', exit: 0, costUsd: 1.25, at: new Date(Date.now() + 60000).toISOString() });
+    json(pipe('tick', '--json'));
+    const p = find('omega').pipeline;
+    assert.deepEqual(p.builtBy.map((x) => [x.account, x.outcome, x.costUsd, x.steps]), [['w-pro', 'limited', 0.5, []], ['console', 'ran', 0.75, ['s1']]]);
+    assert.deepEqual([p.lastRun.account, p.lastRun.email, p.lastRun.costUsd], ['console', 'c@x', 1.25]);
+    assert.match(find('omega').notes.map((x) => x.text).join('\n'), /Built by w-pro \(pro@x, opus, \$0\.50\) · console \(c@x, opus, \$0\.75\): s1/);
+    assert.equal(json(pipe('builtby', 'omega', '--json')).builder.account, 'console');
   });
   t('e2e rules fallback when the splitter fails', () => {
     writeFileSync(splitter, '#!/usr/bin/env bash\nexit 1\n');
