@@ -5,6 +5,7 @@
  */
 import { createContext, Fragment, useCallback, useContext, useEffect, useRef, useState, type MouseEvent, type ReactNode } from 'react';
 import type { SlotDef } from '../library';
+import { bannerFrameEmpty } from '../bannerEmpty';
 import { BannerGroup } from './BannerGroup';
 import { HiddenBannersNote } from './BannerSettings';
 
@@ -45,7 +46,7 @@ export function stripHasContent(strip: Element): boolean {
   for (const el of Array.from(strip.children)) if (el !== group) return true; // a note under the banners
   for (const el of Array.from(body?.children ?? [])) {
     if (!el.classList.contains('fx-banner-frame')) return true; // an app's own banner, or a quick-hide note
-    if (!(el as HTMLElement).hidden && el.childElementCount > 0) return true;
+    if (!(el as HTMLElement).hidden && !bannerFrameEmpty(el as never)) return true; // a banner with something in it
   }
   return false;
 }

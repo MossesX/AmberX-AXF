@@ -7,6 +7,7 @@
  */
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type PointerEvent as ReactPointerEvent, type ReactNode, type RefObject } from 'react';
 import { useRuntime } from '../AxfProvider';
+import { bannerFrameEmpty } from '../bannerEmpty';
 import { IconButton } from './Controls';
 
 export const BANNER_GROUP_KEY = 'axf.banners.group';
@@ -60,10 +61,10 @@ function useShownCount(ref: RefObject<HTMLElement | null>): number {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const count = () => setN(Array.from(el.querySelectorAll<HTMLElement>('.fx-banner-frame')).filter((f) => !f.hidden && f.childElementCount > 0).length);
+    const count = () => setN(Array.from(el.querySelectorAll<HTMLElement>('.fx-banner-frame')).filter((f) => !f.hidden && !bannerFrameEmpty(f as never)).length);
     count();
     const obs = new MutationObserver(count);
-    obs.observe(el, { subtree: true, childList: true, attributes: true, attributeFilter: ['hidden'] });
+    obs.observe(el, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['hidden'] });
     return () => obs.disconnect();
   }, [ref]);
   return n;

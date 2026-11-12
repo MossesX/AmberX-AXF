@@ -39,6 +39,8 @@ export { OutputTerminalPane, terminalDialog } from './studio/OutputTerminal';
 export { installLibraries, orderLibraries, type AxfWebLibrary, type BannerDef, type SlotDef } from './library';
 export { FRAME_BANNERS_SLOT, FrameBanners, Slot, SlotsProvider, useSlotFilled } from './components/Slots';
 export { BannerStripPage, useBannerStripFollower } from './components/BannerStrip';
+export { BannerBase, bannerIsEmpty, type BannerBaseProps } from './components/BannerBase';
+export { BANNER_EMPTY_ATTR, bannerEntryCount, bannerFrameEmpty, bannerNodeEmpty, type BannerNodeLike } from './bannerEmpty';
 export { BANNER_STRIP_CHANNEL, BANNER_STRIP_MESSAGE, BANNER_STRIP_PAGE, BANNER_STRIP_VIEW, bannerStripUrl, parseBannerStripChannel, parseBannerStripMessage, type BannerStripChannelMessage, type BannerStripEntry, type BannerStripMessage } from './bannerStrip';
 export { PageDataSets, RepeatingSlot, RepeatingSlots, RepeatView, usePageDataSets, type RepeatRenderProps } from './components/Repeat';
 export { BANNER_LOOK_KEY, BANNER_PREFS_KEY, BANNER_SETTINGS_DIALOG, BANNERS_VIEW, BannerIcon, BANNER_WORK_ICONS, BannerSettingsPanel, askBannerTab, bannerSettingsTabs, setBannerOwnSettingsRenderer, bannerPrefs, bannerSettingsDialog, bannerSlotDefs, knownBanners, setBannerPrefs, useBannerLaunchOpen, useBannerPrefsTick, useKnownBanners, type BannerPrefs, type BannerWorkAnim } from './components/BannerSettings';
