@@ -27,6 +27,99 @@
     "auto": true,
     "items": [
       {
+        "id": "lander-status",
+        "title": "Lander: what is merging",
+        "description": "The server-side lander: the PR merging now and its phase (updating from main, testing, merging), every open PR ready or blocked with the reason, the last merged, the progress line and whether the service is alive. Voice: \"what's merging\".",
+        "route": "GET /lander",
+        "readOnly": true
+      },
+      {
+        "id": "lander-merge-all",
+        "title": "Lander: merge all ready",
+        "description": "Merge every ready PR, one at a time through the main gate (main merged in when behind, tests green on that exact head, never a force-push); red or conflicted ones are blocked with the reason. An AmberX FYI when the backlog is cleared. Voice: \"merge all ready\".",
+        "route": "POST /lander/merge-all"
+      },
+      {
+        "id": "lander-merge",
+        "title": "Lander: merge this PR",
+        "description": "Put one PR at the front of the lander: it goes through the main gate next. Voice: \"merge PR 412\".",
+        "route": "POST /lander/merge",
+        "input": {
+          "type": "object",
+          "properties": {
+            "pr": {
+              "type": "integer",
+              "description": "PR number"
+            }
+          },
+          "required": [
+            "pr"
+          ]
+        }
+      },
+      {
+        "id": "lander-unblock",
+        "title": "Lander: try a blocked PR again",
+        "description": "Clear the lander's block on a PR (red tests, conflict) and try it again at its current head.",
+        "route": "POST /lander/unblock",
+        "input": {
+          "type": "object",
+          "properties": {
+            "pr": {
+              "type": "integer",
+              "description": "PR number"
+            }
+          },
+          "required": [
+            "pr"
+          ]
+        }
+      },
+      {
+        "id": "lander-finish",
+        "title": "Lander: a build finished, merge it",
+        "description": "Merge on finish: the build's PR (opened when missing) goes first: latest main merged in, tests run, merged into main when they pass; a conflict is blocked with why and sent as an AmberX FYI. The orchestrator calls this when a build finishes.",
+        "route": "POST /lander/finish",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "build id"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        }
+      },
+      {
+        "id": "lander-stop",
+        "title": "Lander: stop merging the backlog",
+        "description": "Stop Merge all ready after the PR in flight; finished builds still merge themselves.",
+        "route": "POST /lander/stop"
+      },
+      {
+        "id": "gate-log",
+        "title": "Server gate log: main gate",
+        "description": "The main gate's entries, newest first: every merge, block, catch-up with main, account switch and lander restart, with who asked and why. Filter with gate (main gate, account switch, lander service). Voice: \"show the gate log\".",
+        "route": "GET /gate-log",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "description": "entries (default 200)"
+            },
+            "gate": {
+              "type": "string",
+              "description": "filter by gate"
+            }
+          }
+        }
+      },
+      {
         "id": "land-list",
         "title": "Auto-land: every finished build",
         "description": "Every finished build the pipeline lands, in landing order, with its PR, state and what it waits on.",

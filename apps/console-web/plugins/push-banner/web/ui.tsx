@@ -1,7 +1,7 @@
 /** Push banner UI: the banner (open pull requests + branches not on main, grouped by what's ready) and the settings panel. Theme tokens only. */
 import { useEffect, useState, type ReactNode } from 'react';
 import { Button, Icon, RefText, SelectField, Switch, useAxfState, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
-import { MergeQueueChip, MergeQueueView } from './queue';
+import { LanderChip, LanderView, MergeAllButton } from './lander';
 import { ago, bannerOn, doneKeys, doneRows, failedKeys, failedRows, fixWithClaude, jobOf, REPAIR_ALL, removeFailed, repair, repairAll, load, loadDetail, mergePr, needsPull, openPr, PULL_ALL, pullAll, pullMain, pullRows, removeDone, rows, saveClaude, setHidden, useStore, api, type Done, type Failed, type PullRow, type Row } from './store';
 
 const CI_WORD: Record<string, string> = { success: 'CI passed', failure: 'CI failed', running: 'CI running', none: 'no CI yet', unknown: 'CI unknown' };
@@ -366,11 +366,12 @@ export function PushBanner() {
           </span>
           <span className="axp-push-banner__lead">{[pulls.length ? plural(pulls.length, 'pull request', 'pull requests') : '', fails.length ? `${fails.length} pull${fails.length === 1 ? '' : 's'} failed` : '', behindCount ? `${behindCount} need main pulled in` : '', clean.length ? `${clean.length} need a PR` : '', allBare.length ? `${plural(allBare.length, 'branch', 'branches')} without a PR` : '', finished.length ? `${finished.length} done` : '', repos.join(' · ')].filter(Boolean).join(' · ')}</span>
         </button>
-        <MergeQueueChip open={queueOpen} onToggle={() => { setQueueOpen(!queueOpen); if (!open) setOpen(true); }} />
+        <LanderChip open={queueOpen} onToggle={() => { setQueueOpen(!queueOpen); if (!open) setOpen(true); }} />
+        <MergeAllButton />
       </div>
       {open && (
         <div className="axp-push-banner__body">
-          {queueOpen && <section className="axp-push-banner__group" aria-label="Merge queue"><h4 className="axp-push-banner__group-title">Merge queue</h4><MergeQueueView compact /></section>}
+          {queueOpen && <section className="axp-push-banner__group" aria-label="Lander"><h4 className="axp-push-banner__group-title">Merging into main</h4><LanderView compact /></section>}
           <Group title="Done" count={finished.length}>{finished.map((d) => <DoneItem key={d.key} d={d} sha={d.kind === 'pulled' ? headOf(d.key) : undefined} />)}</Group>
           <Group title="Pull failed" tone="warning" count={fails.length} action={<RepairAllButton list={fails} />}>{fails.map((f) => <FailedItem key={f.key} f={f} base={baseOf(f.key)} />)}</Group>
           <Group title="Ready to merge" count={ready.length}>{ready.map((p) => <PullItem key={p.key} p={p} />)}</Group>

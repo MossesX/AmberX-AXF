@@ -399,6 +399,18 @@ check(q["$axf"] == "merge-queue@1" and q["on"] is True and q["chip"]["label"] ==
 check(c.post("/p/queue/move", json={"pr": 18, "to": 0}).status_code == 403, "Jump to front is Brett's own click (the console token alone is refused)")
 check(c.post("/p/queue/add", json={"pr": "x"}).status_code == 400, "queue commands take a PR number")
 check(c.post("/p/queue/remove", json={"pr": 18, "why": "test"}).json()["ok"] is True, "Remove from queue goes through merge-queue.mjs")
+# lander (Nov 12 2026): the server-side merge runner; every button is a route the CLI, MCP and voice share
+ld = c.get("/p/lander").json()
+check(ld["$axf"] == "lander@1" and ld["alive"] is False and ld["chip"]["label"] == "Lander idle", "GET /lander: state, heartbeat and chip (service not seen yet = not alive)")
+ma = c.post("/p/lander/merge-all")
+check(ma.status_code == 200 and ma.json()["ok"] is True, "POST /lander/merge-all goes through lander.mjs")
+check(c.post("/p/lander/merge", json={"pr": 18}).status_code == 200 and c.post("/p/lander/merge", json={"pr": "x"}).status_code == 400, "POST /lander/merge takes a PR number")
+check(c.post("/p/lander/finish", json={"build": "../x"}).status_code == 400 and c.post("/p/lander/finish", json={"build": "some-build"}).status_code == 200, "POST /lander/finish takes a build id")
+check(c.post("/p/lander/stop", json={"x": 1}).status_code == 400 and c.post("/p/lander/stop").status_code == 200, "POST /lander/stop takes no body")
+gl = c.get("/p/gate-log").json()
+check(gl["$axf"] == "server-gate-log@1" and [e["did"] for e in gl["items"]][:2] == ["stop", "finish"] and c.get("/p/gate-log?gate=nope").json()["count"] == 0, "GET /gate-log: newest first, filter by gate")
+cmds = [x["id"] for x in json.load(open(HERE / "plugin.json"))["commands"]["items"]]
+check(all(x in cmds for x in ["lander-status", "lander-merge-all", "lander-merge", "lander-unblock", "lander-finish", "lander-stop", "gate-log"]), "every lander action reaches MCP, CLI and voice (plugin-commands@1)")
 c.put("/p/config", json={"mergeQueue": False})
 r = AM()
 check([x["pr"] for x in r if x.get("merged")] == ["MossesX/AmberX-AXF#18"], "auto-merge: the green, up-to-date PR merges; the fork and the draft don't")

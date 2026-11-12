@@ -78,6 +78,7 @@ import copy
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable
 from urllib.parse import quote
@@ -107,6 +108,8 @@ STATUS_PATHS = "_claude/"          # the only paths they touch
 LAND_SCRIPT = Path(__file__).resolve().parent.parent / "land" / "land.mjs"
 # merge queue (Nov 4 2026): land/merge-queue.mjs on the VPS host runs it every auto-land round; commands go through it too
 QUEUE_SCRIPT = Path(__file__).resolve().parent.parent / "land" / "merge-queue.mjs"
+# lander (Nov 12 2026): land/lander.mjs, axf-lander.service on the VPS host, merges ready PRs one at a time; it replaces the queue
+LANDER_SCRIPT = Path(__file__).resolve().parent.parent / "land" / "lander.mjs"
 QUEUE_DEPTH_MAX = 6
 QUEUE_MODES = ("batch", "stack")  # land/merge-queue-core.mjs QUEUE_MODES
 BATCH_SIZE_MAX = 20  # land/merge-queue-core.mjs BATCH_SIZE_MAX
@@ -393,6 +396,73 @@ class Pushes:
         if r.returncode != 0:
             raise HTTPException(400, _text(r.stderr.strip() or r.stdout.strip() or f"land.mjs {cmd} failed"))
         return {"ok": True, "command": cmd, "build": body["build"], **self.land()}
+
+    # ---- lander (land/lander.mjs, axf-lander.service on the VPS host, writes lander.json; commands write lander-control.json)
+    def lander(self) -> dict[str, Any]:
+        """What is merging, ready, blocked and merged, the progress line and the conflict fixer's Claude account."""
+        st = storage.read_json(data_dir() / "lander.json", {}) or {}
+        lst = lambda k: [x for x in st.get(k, []) if isinstance(x, dict)] if isinstance(st.get(k), list) else []  # noqa: E731
+        items = lst("items")
+        cur = st.get("current") if isinstance(st.get("current"), dict) else None
+        prog = st.get("progress") if isinstance(st.get("progress"), dict) else {}
+        beat = st.get("heartbeat") if isinstance(st.get("heartbeat"), str) else ""
+        try:
+            alive = bool(beat) and time.time() - datetime.fromisoformat(beat.replace("Z", "+00:00")).timestamp() < 600
+        except ValueError:
+            alive = False
+        blocked = [x for x in items if x.get("state") == "blocked"]
+        acc = st.get("account") if isinstance(st.get("account"), dict) else {}
+        return {"$axf": "lander@1", "on": st.get("on") is not False, "drain": st.get("drain") is True, "stop": st.get("stop") is True,
+                "alive": alive, "heartbeat": beat, "startedAt": _text(st.get("startedAt"), 40), "restarts": st.get("restarts") if isinstance(st.get("restarts"), int) else 0,
+                "repo": UI_REVIEW_REPO, "at": st.get("at"), "current": cur, "items": items, "merged": lst("merged")[-20:],
+                "account": {"account": _text(acc.get("account"), 40), "label": _text(acc.get("label"), 40), "why": _text(acc.get("why"), 300)},
+                "progress": {"text": _text(prog.get("text"), 200), "now": _text(prog.get("now"), 80), "ready": prog.get("ready", 0), "blocked": prog.get("blocked", 0), "merged": prog.get("merged", 0)},
+                "chip": {"label": f"Merging #{cur['pr']}" if cur and isinstance(cur.get("pr"), int) else f"Blocked: {len(blocked)}" if blocked else "Lander idle",
+                         "count": len(blocked), "tone": "info" if cur else "warning" if blocked else "muted"}}
+
+    def lander_command(self, cmd: str, body: Any) -> dict[str, Any]:
+        """merge-all | merge | unblock | finish | stop: one implementation, land/lander.mjs (the same file the CLI, MCP,
+        voice and the host service use)."""
+        body = body if isinstance(body, dict) else {}
+        args = ["node", str(LANDER_SCRIPT), cmd]
+        if cmd in ("merge", "unblock"):
+            pr = body.get("pr")
+            if set(body) - {"pr"} or not isinstance(pr, int) or isinstance(pr, bool) or pr <= 0:
+                raise HTTPException(400, "send {pr: <PR number>}")
+            args.append(str(pr))
+        elif cmd == "finish":
+            b = body.get("build")
+            if set(body) - {"build"} or not isinstance(b, str) or not re.fullmatch(r"[a-z0-9][a-z0-9-]{0,119}", b):
+                raise HTTPException(400, "send {build: <build id>}")
+            args.append(b)
+        elif body:
+            raise HTTPException(400, "send no body")
+        try:
+            r = subprocess.run([*args, "--json"], capture_output=True, text=True, timeout=30, env={**os.environ, "AXF_PUSH_BANNER_DIR": str(data_dir()), "AXF_LANDER_BY": "console"})
+        except (OSError, subprocess.TimeoutExpired) as e:
+            raise HTTPException(502, _text(str(e))) from None
+        if r.returncode != 0:
+            raise HTTPException(400, _text(r.stderr.strip() or r.stdout.strip() or f"lander.mjs {cmd} failed"))
+        return {"ok": True, "command": cmd, "note": "the lander takes it at its next step (within a minute)", **self.lander()}
+
+    def gate_log(self, limit: int = 200, gate: str = "") -> dict[str, Any]:
+        """Server gate log entries the lander writes (gate-log.jsonl), newest first; `gate` filters by gate name."""
+        out: list[dict[str, Any]] = []
+        try:
+            with open(data_dir() / "gate-log.jsonl", encoding="utf-8") as f:
+                rows = f.read().splitlines()[-5000:]
+        except OSError:
+            rows = []
+        for line in reversed(rows):
+            try:
+                e = json.loads(line)
+            except ValueError:
+                continue
+            if isinstance(e, dict) and (not gate or e.get("gate") == gate):
+                out.append(e)
+                if len(out) >= max(1, min(limit, 2000)):
+                    break
+        return {"$axf": "server-gate-log@1", "items": out, "count": len(out)}
 
     # ---- merge queue (land/merge-queue.mjs on the VPS host writes merge-queue.json; commands write merge-queue-control.json)
     def queue(self) -> dict[str, Any]:
@@ -1477,6 +1547,42 @@ def _owner(request: Request) -> str:
         if v and v != "console":
             return ""
     return str(getattr(c, "name", "") or "brett")[:120]
+
+
+@router.get("/lander")
+def lander_state() -> dict[str, Any]:
+    """The lander: what is merging now, ready, blocked (with why), merged, the progress line and service heartbeat."""
+    return PUSHES.lander()
+
+
+@router.post("/lander/merge-all")
+def lander_merge_all(body: Any = Body(None)) -> dict[str, Any]:
+    return PUSHES.lander_command("merge-all", body)
+
+
+@router.post("/lander/merge")
+def lander_merge(body: Any = Body(None)) -> dict[str, Any]:
+    return PUSHES.lander_command("merge", body)
+
+
+@router.post("/lander/unblock")
+def lander_unblock(body: Any = Body(None)) -> dict[str, Any]:
+    return PUSHES.lander_command("unblock", body)
+
+
+@router.post("/lander/finish")
+def lander_finish(body: Any = Body(None)) -> dict[str, Any]:
+    return PUSHES.lander_command("finish", body)
+
+
+@router.post("/lander/stop")
+def lander_stop(body: Any = Body(None)) -> dict[str, Any]:
+    return PUSHES.lander_command("stop", body)
+
+
+@router.get("/gate-log")
+def gate_log(limit: int = 200, gate: str = "") -> dict[str, Any]:
+    return PUSHES.gate_log(limit, gate)
 
 
 @router.get("/queue")

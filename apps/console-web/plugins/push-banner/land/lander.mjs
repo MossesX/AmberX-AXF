@@ -60,7 +60,7 @@ export function readGateLog(s, limit = 200) {
 
 /** An AmberX FYI: a console alert (severity info) that reaches Brett's phone through the alert routing. */
 async function fyi(api, key, title, body = '') {
-  try { await api('POST', '/api/alerts', { source: 'push-banner', severity: 'info', key: `lander:${key}`.slice(0, 120), title: title.slice(0, 200), body: body.slice(0, 600), link: '/?show=push-banner:lander' }); } catch { /* best effort */ }
+  try { await api('POST', '/api/alerts', { source: 'push-banner', severity: 'info', key: `lander:${key}`.slice(0, 120), title: title.slice(0, 200), body: body.slice(0, 600), link: 'action:push-banner.lander' }); } catch { /* best effort */ }
 }
 
 /** claude-workers@1 status rows (the host's saved accounts), [] when the script isn't there. */
