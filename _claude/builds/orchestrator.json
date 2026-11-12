@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T15:32:15.300Z",
+ "updatedAt": "2026-11-12T15:33:11.130Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -107648,6 +107648,62 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mwdphnol06gz3w"
+    }
+   ]
+  },
+  {
+   "id": "amberx-approval-pop-up-not-showing-only-the-android-notification",
+   "title": "AmberX: approval pop-up not showing, only the Android notification",
+   "category": "bug",
+   "detail": "Brett said: \"Why isn't the approval thing popping up on my phone? Only the notification is. The Android notification.\"\n\nWhen axHub holds a vps.run call on the veto countdown, AmberX shows only the Android notification; the in-app approval pop-up (approve/deny with the command) does not appear. Find why (Follow Amber / approvals-banner relay, AXPP event, background start limits), fix it so the pop-up appears over any screen like before, keep the notification, add a test, and confirm on the phone.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-12T15:33:08.904Z",
+   "updatedAt": "2026-11-12T15:33:08.904Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Trace the veto event path hub -> AmberX and find where the pop-up is dropped",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwdpj5k003waoq"
+    },
+    {
+     "id": "s2",
+     "text": "Fix and test: pop-up appears on every held approval, notification still fires",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwdpj5k0042bdf"
     }
    ]
   }

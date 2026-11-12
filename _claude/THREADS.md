@@ -777,7 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:28 UTC · `amberx-voice-center` note (all) · backfill
 - 2026-11-12 03:28 UTC · `amberx-assistant-agents` note (all) · backfill
 - 2026-11-12 03:28 UTC · `amberx-claude-tokens` note (all) · backfill
 - 2026-11-12 03:28 UTC · `hub-runs-approved` note (all) · backfill
@@ -1177,6 +1176,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 11:30 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` → pending, note (all) · reconciler
 - 2026-11-12 11:40 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` → pending, note (all) · reconciler
 - 2026-11-12 15:31 UTC · `session-summaries-amberx-axf-project-history-readiness-audit` added (3 steps) (all) · claude-voice
+- 2026-11-12 15:33 UTC · `amberx-approval-pop-up-not-showing-only-the-android-notification` added (2 steps) (all) · claude-voice
 
 ## Token passes (log)
 
