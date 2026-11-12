@@ -47,7 +47,9 @@ export function parseFocus(f: string): { tab?: Tab; item?: string; create?: bool
 export function moved(ids: string[], id: string, by: -1 | 1): string[] {
   const i = ids.indexOf(id); const j = i + by;
   if (i < 0 || j < 0 || j >= ids.length) return ids;
-  const out = [...ids]; [out[i], out[j]] = [out[j], out[i]];
+  const out = [...ids];
+  out[i] = ids[j] as string;
+  out[j] = id;
   return out;
 }
 
