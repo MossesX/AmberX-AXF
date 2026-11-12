@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T22:18:12.996Z",
+ "updatedAt": "2026-11-12T22:22:58.455Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -109356,7 +109356,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T20:40:19.258Z",
-   "updatedAt": "2026-11-12T20:40:19.258Z",
+   "updatedAt": "2026-11-12T22:22:56.923Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -109469,6 +109469,24 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mwe0i6fq0e2lwq"
+    },
+    {
+     "id": "s9",
+     "text": "Git log: every git action in one searchable log (merges, failed merges and why, retries, branch deletes with saved SHA and a Restore button, pushes, main pulled in, PRs opened/closed), expandable rows, AmberX alert on failures; import the existing _deleted-branches-*.txt lists",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe465op01901g"
     },
     {
      "id": "s7",

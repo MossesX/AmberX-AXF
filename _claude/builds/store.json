@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3736,
- "updatedAt": "2026-11-12T22:18:12.996Z",
+ "rev": 3737,
+ "updatedAt": "2026-11-12T22:22:58.455Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -172852,7 +172852,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T20:40:19.258Z",
-   "updatedAt": "2026-11-12T20:40:19.258Z",
+   "updatedAt": "2026-11-12T22:22:56.923Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -173019,6 +173019,28 @@
      "updatedAt": "2026-11-12T20:40:19.259Z"
     },
     {
+     "id": "s9",
+     "uid": "st-mwe465op01901g",
+     "title": "",
+     "text": "Git log: every git action in one searchable log (merges, failed merges and why, retries, branch deletes with saved SHA and a Restore button, pushes, main pulled in, PRs opened/closed), expandable rows, AmberX alert on failures; import the existing _deleted-branches-*.txt lists",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T22:22:56.924Z",
+     "updatedAt": "2026-11-12T22:22:57.097Z"
+    },
+    {
      "id": "s7",
      "uid": "st-mwe0i6fq0fl777",
      "title": "",
@@ -173071,7 +173093,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
