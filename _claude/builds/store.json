@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3664,
- "updatedAt": "2026-11-12T20:38:30.905Z",
+ "rev": 3665,
+ "updatedAt": "2026-11-12T20:38:42.986Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -171830,7 +171830,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T20:31:23.288Z",
-   "updatedAt": "2026-11-12T20:38:29.632Z",
+   "updatedAt": "2026-11-12T20:38:36.477Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -171956,7 +171956,7 @@
      "id": "s10",
      "uid": "st-mwe0ftsi01m2q9",
      "title": "",
-     "text": "Wizard step: framework and libraries. Default: the AXF framework and its shared libraries. Optional: the project adds its own private libraries on top, builds its own framework, or imports another framework. Brett: \"the project is going to by default use our framework, but not have to use our framework. It will allow you to make your own framework or import frameworks.\"",
+     "text": "Wizard step: framework and libraries. Default: the AXF framework and its shared libraries. Optional: add private libraries on top, build your own framework, or import another framework, including frameworks that come with their own boilerplates (pick one of its boilerplates as the starter). Brett: \"the project is going to by default use our framework, but not have to use our framework. It will allow you to make your own framework or import frameworks. Or frameworks with boilerplates.\"",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -171970,9 +171970,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T20:38:29.633Z",
-     "updatedAt": "2026-11-12T20:38:29.778Z"
+     "updatedAt": "2026-11-12T20:38:36.617Z"
     },
     {
      "id": "s4",
@@ -172093,7 +172093,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

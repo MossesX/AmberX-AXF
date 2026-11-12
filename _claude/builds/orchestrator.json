@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T20:38:30.905Z",
+ "updatedAt": "2026-11-12T20:38:42.986Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -108564,7 +108564,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T20:31:23.288Z",
-   "updatedAt": "2026-11-12T20:38:29.632Z",
+   "updatedAt": "2026-11-12T20:38:36.477Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -108644,7 +108644,7 @@
     },
     {
      "id": "s10",
-     "text": "Wizard step: framework and libraries. Default: the AXF framework and its shared libraries. Optional: the project adds its own private libraries on top, builds its own framework, or imports another framework. Brett: \"the project is going to by default use our framework, but not have to use our framework. It will allow you to make your own framework or import frameworks.\"",
+     "text": "Wizard step: framework and libraries. Default: the AXF framework and its shared libraries. Optional: add private libraries on top, build your own framework, or import another framework, including frameworks that come with their own boilerplates (pick one of its boilerplates as the starter). Brett: \"the project is going to by default use our framework, but not have to use our framework. It will allow you to make your own framework or import frameworks. Or frameworks with boilerplates.\"",
      "model": "Opus",
      "why": "",
      "phase": "",
