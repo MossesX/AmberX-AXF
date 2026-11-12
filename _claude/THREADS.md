@@ -778,8 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 10:48 UTC · `molly-banner-match` → archived (all) · claude-voice
-- 2026-11-12 10:48 UTC · `build-todo-sync` → archived (all) · claude-voice
 - 2026-11-12 10:48 UTC · `banner-widgets` → archived (all) · claude-voice
 - 2026-11-12 10:48 UTC · `pending-tab-one-collapsed-row-per-build-tap-to-e` added (0 steps) (all) · pending
 - 2026-11-12 10:49 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` added (0 steps) (all) · pending
@@ -1178,6 +1176,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 23:33 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` → pending (all) · builds-live
 - 2026-11-12 23:33 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` note (all) · orchestrator
 - 2026-11-12 23:40 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` added (0 steps) (all) · mcp
+- 2026-11-12 23:40 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` added (0 steps) (all) · foreign-write
+- 2026-11-12 23:40 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` → queued, note (all) · console
 
 ## Token passes (log)
 
