@@ -776,9 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 21:13 UTC · `resolve-conflicts-and-land-460-456-457-459-342` note (all) · orchestrator
-- 2026-11-10 21:14 UTC · `molly-flagship-skin-premium-sellable-uncluttered` note (all) · orchestrator
-- 2026-11-10 21:13 UTC · `molly-flagship-skin-premium-sellable-uncluttered` note (all) · orchestrator
 - 2026-11-10 21:13 UTC · `resolve-conflicts-and-land-460-456-457-459-342` s1 done, → running (all) · orchestrator
 - 2026-11-10 21:15 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` → running, note (all) · pipeline
 - 2026-11-10 21:15 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` branch claude/land-all-97-built-but-unmerged-builds-skins-firs (all) · pipeline
@@ -1176,6 +1173,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 01:42 UTC · `molly-gap-remote-actions` → queued, note (all) · console
 - 2026-11-12 01:43 UTC · `molly-gap-console-token-handoff` → queued, note (all) · console
 - 2026-11-12 01:43 UTC · `molly-gap-expenses-cors` → queued, note (all) · console
+- 2026-11-12 01:43 UTC · `molly-gap-axhub-cors` → queued, note (all) · console
+- 2026-11-12 01:43 UTC · `molly-gap-remote-actions` → running, note (all) · pipeline
+- 2026-11-12 01:43 UTC · `molly-gap-remote-actions` branch claude/molly-gap-remote-actions (all) · pipeline
 
 ## Token passes (log)
 
