@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T23:16:07.150Z",
+ "updatedAt": "2026-11-12T23:16:19.655Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -110461,12 +110461,93 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T23:14:26.317Z",
-   "updatedAt": "2026-11-12T23:14:26.317Z",
+   "updatedAt": "2026-11-12T23:16:08.502Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-12T23:16:08.502Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Badge shape picker on the Banners screen: pill (text), icon or dot for every badge, like Following AmberX.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe62k6v01dlm2"
+    },
+    {
+     "id": "s2",
+     "text": "Shape already exists in code (types.ts, Banner.tsx), it just isn't shown.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe62k6v02vb5e"
+    },
+    {
+     "id": "s3",
+     "text": "Android twin too.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe62k6v03q5y0"
+    },
+    {
+     "id": "s4",
+     "text": "Tests green, report _claude/builds/reports/badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe62k6v04jam9"
+    }
+   ]
   },
   {
    "id": "stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n",
