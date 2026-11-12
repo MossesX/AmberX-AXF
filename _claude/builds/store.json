@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3560,
- "updatedAt": "2026-11-12T11:06:52.081Z",
+ "rev": 3561,
+ "updatedAt": "2026-11-12T11:07:05.015Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174300,7 +174300,7 @@
    "title": "Pending tab: one collapsed row per build, tap to expand everything",
    "category": "",
    "detail": "Build orchestrator Pending tab (and every build table) shows each build as ONE compact row (title, model, steps done/total, behind-main, age). Tapping the row expands it to show everything: detail, steps, notes, branch/PR, origin said, commands. Never show steps or notes inline by default. Desktop and phone.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "mcp",
    "pendingId": "pending-tab-one-collapsed-row-per-build-tap-to-e",
@@ -174308,7 +174308,7 @@
    "pr": "#520",
    "createdAt": "2026-11-12T10:48:25.123Z",
    "updatedAt": "2026-11-12T11:06:49.143Z",
-   "builtAt": "",
+   "builtAt": "2026-11-12T11:06:49.143Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -174325,6 +174325,10 @@
     {
      "text": "Headless run axf-pending-tab-one-collapsed-row-per-build-tap-to-e--earl: brief only · start 11.0K tokens ($0.03) · cost $3.41 · 81 turns · 6 tools, MCP none",
      "at": "2026-11-12T11:06:49.143Z"
+    },
+    {
+     "text": "PR #520 open. UI Review screenshots not taken: scratch console (rebuild-shots) could not load the orchestrator; desktop + phone shots needed from the live console.",
+     "at": "2026-11-12T11:06:35.905Z"
     }
    ],
    "approvals": [],
@@ -174438,12 +174442,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T11:06:37.428Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T10:49:48.779Z",
-     "updatedAt": "2026-11-12T10:49:48.779Z"
+     "updatedAt": "2026-11-12T11:06:37.610Z"
     }
    ],
    "profiles": [
@@ -174454,7 +174458,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
