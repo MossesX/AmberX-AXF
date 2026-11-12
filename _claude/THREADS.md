@@ -778,9 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:30 UTC · `orchestrator-dup-check` note (all) · backfill
-- 2026-11-12 03:30 UTC · `plan-designer` note (all) · backfill
-- 2026-11-12 03:30 UTC · `approve-button-fix` note (all) · backfill
 - 2026-11-12 03:30 UTC · `orchestrator-start-a-build-through-the-api-mcp-and-cli` note (all) · backfill
 - 2026-11-12 03:30 UTC · `idle-alert-phone-flag-when-nothing-is-building` note (all) · backfill
 - 2026-11-12 03:31 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits` added (8 steps) (all) · backfill
@@ -1178,6 +1175,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 21:50 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` → queued, note (all) · console
 - 2026-11-12 21:50 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` → queued, note (all) · console
 - 2026-11-12 21:51 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` note (all) · pipeline
+- 2026-11-12 21:51 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` → running, note (all) · pipeline
+- 2026-11-12 21:51 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` branch claude/new-project-wizard-name-linked-repo-required-starter-code-skin-accounts (all) · pipeline
+- 2026-11-12 21:51 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` note (all) · orchestrator
 
 ## Token passes (log)
 
