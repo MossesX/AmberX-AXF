@@ -1,0 +1,456 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-orchestrator-gate",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:30:43Z",
+ "build": {
+  "id": "orchestrator-gate",
+  "title": "Orchestrator is the only door to the VPS (vps-action-policy@1)",
+  "profile": "all",
+  "category": "orchestrator",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Orchestrator is the only door to the VPS; approval rules in orchestrator settings. Nothing talks to the VPS directly except the orchestrator. Claude sessions, the console, AmberX, axHub agents, headless builds — all VPS actions go through the orchestrator. The approval/veto rules live in the orchestrator's settings, and work even when no Claude session exists.",
+  "verbatim": true,
+  "at": "",
+  "source": "console",
+  "by": "headless build orchestrator-vps-gate",
+  "addenda": []
+ },
+ "brief": "# Orchestrator is the only door to the VPS; approval rules in orchestrator settings (Brett, Nov 7)\n\nRule: nothing talks to the VPS directly except the orchestrator. Claude sessions, the console, AmberX, axHub agents, headless builds — all VPS actions go through the orchestrator. The approval/veto rules live in the **orchestrator's settings**, and work even when no Claude session exists.\n\nReuse: orchestrator-gate (orchestrator id, 0/4), build-pipeline-v2 / pipeline-v2 work (check claude/pipeline-v2 and land-ready state), vps-safe-reads (axHub branch), claude-settings-tabs-veto (its Approvals & veto tab UI can move here), axHub tool policies (allow/veto/confirm), passes.\n\n1. Contract (Fable): vps-action-policy@1 — per action kind (read, build start/stop/land, queue edit, account switch, file write, shell write, destructive) choose: run instantly | veto countdown (seconds) | needs approve; plus where alerts go (console in-place, AmberX push, both), quiet hours, per-caller overrides. Defaults: reads instant; build start/stop/land + queue edits instant; account switch + writes = veto 90 s; destructive = veto.\n2. Orchestrator settings screen (settings assets, in-place) to edit it. Approvals are shown and answered IN the console (approvals-in-place), never by jumping to axHub web.\n3. Route every VPS call through the orchestrator API (console, MCP, CLI, AmberX, headless); axHub vps tools become orchestrator-backed or restricted to the orchestrator's identity. Keep a break-glass path for Brett only.\n4. Enforce: CI check that no code outside the orchestrator calls the VPS directly.\n5. UI Review with three options (--choices). Tests for each policy mode. Add to Shipped features.\n\nProgress: append `<time> START|DONE <step>` to PROGRESS.md here at each step; don't stop between steps. Commit, don't push.",
+ "models": [
+  "Fable"
+ ],
+ "accounts": [
+  "mossesx-max-"
+ ],
+ "runs": [
+  {
+   "session": "axf-orchestrator-vps-gate--sully",
+   "account": "mossesx-max-",
+   "model": "Fable",
+   "startedAt": "2026-11-07T13:13:32.188Z",
+   "endedAt": "2026-11-07T15:23:23.751Z",
+   "exit": 0,
+   "costUsd": 86.8197
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "vps-action-policy@1 contract: pure engine (kinds, modes, defaults, quiet hours, per-caller overrides, classifier), Python twin, fixture, schema snapshot, check script",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-07T13:13:32.188Z",
+   "doneAt": "2026-11-07T13:44:36.656Z",
+   "actualMin": 31,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Orchestrator VPS gate server: policy store (owner-only writes), act / held / deny / approve / shelve / break-glass routes, countdown runner that works with no Claude session, alerts, health item, capability axf.vps-gate@1",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-07T13:44:36.656Z",
+   "doneAt": "2026-11-07T13:59:42.866Z",
+   "actualMin": 15,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Orchestrator settings screen through a settings asset (in-place approvals, never a jump to axHub) + three asset options for UI Review",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-07T13:59:42.866Z",
+   "doneAt": "2026-11-07T14:13:51.352Z",
+   "actualMin": 14,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Route every VPS call through the gate: console plugins, MCP + CLI (axf vps), AmberX, headless briefs; launches need an orchestrator build id and take the model from the step plan (orchestrator-gate s1-s3)",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-07T14:13:51.352Z",
+   "doneAt": "2026-11-07T14:51:35.881Z",
+   "actualMin": 38,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "CI check that no code outside the orchestrator calls the VPS directly, tests for each policy mode, RULES.md + CLAUDE.md rule, report, UI Review submit with --choices",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-07T14:51:35.881Z",
+   "doneAt": "2026-11-07T15:22:27.195Z",
+   "actualMin": 31,
+   "done": true
+  }
+ ],
+ "branch": "claude/orchestrator-vps-gate",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [
+  "5aa8ae81db01d56aefd8a1ff90fa050004543184",
+  "7e009d1bcd1825218be1933cb3b5c8d5e07ea343",
+  "096bfeafd3b17cfb53d102805b4b98e485cca73d",
+  "89380f7c76654189219c8a5f662c92e5a815ebe2",
+  "6f25b70b65ce6da7abb30e9c36d40688f3da0da9",
+  "99468061fa2260a2b5b2cb9436a783cfb8df11f6",
+  "0c197fcd1072e3f0c56fdf6f02b6c03e1455b9f5",
+  "5b94b6234775fda51ef8881025cdacf20d2334cd",
+  "a89661f20d6ae23e457c94d84ed234ce200e582e",
+  "fe5756a3d569ff66e48e1b261af8d002e4e05fb4",
+  "6aae8ba3f8ac3685bb8cee77e37a65967c42f525",
+  "955b7b305bb645b0d4b18bc907ef0437c1b187c3",
+  "76644a0dde0fbe48c5ae227cde213ebc53a8b3c2",
+  "1b907789054cf772d1935cd3b6fdd93f2fb324ee",
+  "3f6ab0ab368ca71fb9a5df0dd71132c8504ff159"
+ ],
+ "mergedAt": "2026-11-07T15:22:27.195Z",
+ "landedAt": "2026-11-07T15:22:27.195Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "CLAUDE.md",
+  "_claude/THREADS.md",
+  "_claude/builds/journal/2026-11-p2.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/origins.json",
+  "_claude/builds/profiles/all/orchestrator.json",
+  "_claude/builds/reports/amberx-voice-echo-fix.md",
+  "_claude/builds/reports/gizmo-voice.md",
+  "_claude/builds/reports/orchestrator-vps-gate.md",
+  "_claude/builds/reports/orchestrator-vps-gate/shots/callers-desktop.png",
+  "_claude/builds/reports/orchestrator-vps-gate/shots/held-desktop.png",
+  "_claude/builds/reports/orchestrator-vps-gate/shots/held-phone.png",
+  "_claude/builds/reports/orchestrator-vps-gate/shots/list-desktop.png",
+  "_claude/builds/reports/orchestrator-vps-gate/shots/list-phone.png",
+  "_claude/builds/reports/orchestrator-vps-gate/shots/tabs-side-desktop.png",
+  "_claude/builds/reports/orchestrator-vps-gate/shots/tabs-side-phone.png",
+  "_claude/builds/reports/orchestrator-vps-gate/shots/tabs-top-desktop.png",
+  "_claude/builds/reports/orchestrator-vps-gate/shots/tabs-top-phone.png",
+  "_claude/builds/store.json",
+  "_claude/rules/RULES.md",
+  "_claude/shared/rules/RULES.md",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/FocusRules.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/TalkService.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java",
+  "apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/FocusRulesTest.java",
+  "apps/amberx-droid/src/plugins/commands/web/lib-developer.ts",
+  "apps/amberx-droid/src/plugins/companion/web/core.ts",
+  "apps/amberx-droid/src/plugins/companion/web/talk.ts",
+  "apps/amberx-droid/src/plugins/notes/web/core.ts",
+  "apps/amberx-droid/src/plugins/voice/web/index.tsx",
+  "apps/amberx-droid/src/plugins/voice/web/speechgate.ts",
+  "apps/amberx-droid/test.mjs",
+  "apps/console-web/plugins/agent-manager/server/hubtools.py",
+  "apps/console-web/plugins/agent-manager/test.py",
+  "apps/console-web/plugins/ai-keys/server/__init__.py",
+  "apps/console-web/plugins/ai-keys/test.py",
+  "apps/console-web/plugins/build-manager/server/__init__.py",
+  "apps/console-web/plugins/build-orchestrator/assets/settings/vps-gate-settings-list.json",
+  "apps/console-web/plugins/build-orchestrator/assets/settings/vps-gate-settings-tabs-side.json",
+  "apps/console-web/plugins/build-orchestrator/assets/settings/vps-gate-settings-tabs-top.json",
+  "apps/console-web/plugins/build-orchestrator/help.json",
+  "apps/console-web/plugins/build-orchestrator/notify.json",
+  "apps/console-web/plugins/build-orchestrator/plugin.json",
+  "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+  "apps/console-web/plugins/build-orchestrator/server/test_vps_gate.py",
+  "apps/console-web/plugins/build-orchestrator/server/vps_gate.py",
+  "apps/console-web/plugins/build-orchestrator/test.py",
+  "apps/console-web/plugins/build-orchestrator/vps.mjs",
+  "apps/console-web/plugins/build-orchestrator/web/index.tsx",
+  "apps/console-web/plugins/build-orchestrator/web/orchestrator.css",
+  "apps/console-web/plugins/build-orchestrator/web/ui.tsx",
+  "apps/console-web/plugins/build-orchestrator/web/vps-gate.tsx",
+  "apps/console-web/plugins/claude-accounts/server/__init__.py",
+  "apps/console-web/plugins/claude-accounts/test.py",
+  "apps/console-web/plugins/console-terminal/server/__init__.py",
+  "apps/console-web/plugins/console-terminal/server/sessions.py",
+  "apps/console-web/plugins/console-terminal/test.py",
+  "apps/console-web/plugins/molly-guide/server/__init__.py",
+  "apps/console-web/plugins/molly-guide/test.py",
+  "apps/console-web/plugins/push-banner/server/claudefix.py",
+  "apps/console-web/plugins/push-banner/test.py",
+  "apps/console-web/plugins/systems-check/server/__init__.py",
+  "apps/console-web/plugins/systems-check/server/claudefix.py",
+  "apps/console-web/plugins/systems-check/server/healthchecks.py",
+  "apps/console-web/plugins/systems-check/server/hostfix.py",
+  "apps/console-web/plugins/systems-check/server/mosses.py",
+  "apps/console-web/plugins/systems-check/test.py",
+  "deploy/claude-headless.sh",
+  "framework/cli/axf.mjs",
+  "framework/cli/build-engine.mjs",
+  "framework/cli/check-vps-gate.mjs",
+  "framework/cli/model-gate.mjs",
+  "framework/core/vps-action-policy.mjs",
+  "framework/python/axf/vps_action_policy.py",
+  "framework/schemas/json/vps-action-policy.schema.json",
+  "framework/schemas/vps-action-policy.json",
+  "framework/spec/PORTING.md",
+  "framework/spec/VPS-GATE.md",
+  "framework/spec/check-agent-slots.mjs",
+  "framework/spec/check-model-policy.mjs",
+  "framework/spec/check-vps-action-policy.mjs",
+  "framework/spec/fixtures/vps-action-policy.json"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/journal/2026-11-p2.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/origins.json",
+    "_claude/builds/profiles/all/orchestrator.json",
+    "_claude/builds/reports/amberx-voice-echo-fix.md",
+    "_claude/builds/reports/gizmo-voice.md",
+    "_claude/builds/reports/orchestrator-vps-gate.md",
+    "_claude/builds/reports/orchestrator-vps-gate/shots/callers-desktop.png",
+    "_claude/builds/reports/orchestrator-vps-gate/shots/held-desktop.png",
+    "_claude/builds/reports/orchestrator-vps-gate/shots/held-phone.png",
+    "_claude/builds/reports/orchestrator-vps-gate/shots/list-desktop.png",
+    "_claude/builds/reports/orchestrator-vps-gate/shots/list-phone.png",
+    "_claude/builds/reports/orchestrator-vps-gate/shots/tabs-side-desktop.png",
+    "_claude/builds/reports/orchestrator-vps-gate/shots/tabs-side-phone.png",
+    "_claude/builds/reports/orchestrator-vps-gate/shots/tabs-top-desktop.png",
+    "_claude/builds/reports/orchestrator-vps-gate/shots/tabs-top-phone.png",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/assets/settings/vps-gate-settings-list.json",
+    "apps/console-web/plugins/build-orchestrator/assets/settings/vps-gate-settings-tabs-side.json",
+    "apps/console-web/plugins/build-orchestrator/assets/settings/vps-gate-settings-tabs-top.json",
+    "apps/console-web/plugins/build-orchestrator/help.json",
+    "apps/console-web/plugins/build-orchestrator/notify.json",
+    "apps/console-web/plugins/build-orchestrator/plugin.json",
+    "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+    "apps/console-web/plugins/build-orchestrator/server/test_vps_gate.py",
+    "apps/console-web/plugins/build-orchestrator/server/vps_gate.py",
+    "apps/console-web/plugins/build-orchestrator/test.py",
+    "apps/console-web/plugins/build-orchestrator/vps.mjs",
+    "apps/console-web/plugins/build-orchestrator/web/index.tsx",
+    "apps/console-web/plugins/build-orchestrator/web/orchestrator.css",
+    "apps/console-web/plugins/build-orchestrator/web/ui.tsx",
+    "apps/console-web/plugins/build-orchestrator/web/vps-gate.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "systems-check",
+   "files": [
+    "apps/console-web/plugins/systems-check/server/__init__.py",
+    "apps/console-web/plugins/systems-check/server/claudefix.py",
+    "apps/console-web/plugins/systems-check/server/healthchecks.py",
+    "apps/console-web/plugins/systems-check/server/hostfix.py",
+    "apps/console-web/plugins/systems-check/server/mosses.py",
+    "apps/console-web/plugins/systems-check/test.py"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/VPS-GATE.md",
+    "framework/spec/check-agent-slots.mjs",
+    "framework/spec/check-model-policy.mjs",
+    "framework/spec/check-vps-action-policy.mjs",
+    "framework/spec/fixtures/vps-action-policy.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/FocusRules.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/TalkService.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java",
+    "apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/FocusRulesTest.java",
+    "apps/amberx-droid/test.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/axf.mjs",
+    "framework/cli/build-engine.mjs",
+    "framework/cli/check-vps-gate.mjs",
+    "framework/cli/model-gate.mjs"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/THREADS.md",
+    "_claude/rules/RULES.md",
+    "_claude/shared/rules/RULES.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "console-terminal",
+   "files": [
+    "apps/console-web/plugins/console-terminal/server/__init__.py",
+    "apps/console-web/plugins/console-terminal/server/sessions.py",
+    "apps/console-web/plugins/console-terminal/test.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-manager",
+   "files": [
+    "apps/console-web/plugins/agent-manager/server/hubtools.py",
+    "apps/console-web/plugins/agent-manager/test.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ai-keys",
+   "files": [
+    "apps/console-web/plugins/ai-keys/server/__init__.py",
+    "apps/console-web/plugins/ai-keys/test.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "claude-accounts",
+   "files": [
+    "apps/console-web/plugins/claude-accounts/server/__init__.py",
+    "apps/console-web/plugins/claude-accounts/test.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "companion",
+   "files": [
+    "apps/amberx-droid/src/plugins/companion/web/core.ts",
+    "apps/amberx-droid/src/plugins/companion/web/talk.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "molly-guide",
+   "files": [
+    "apps/console-web/plugins/molly-guide/server/__init__.py",
+    "apps/console-web/plugins/molly-guide/test.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "push-banner",
+   "files": [
+    "apps/console-web/plugins/push-banner/server/claudefix.py",
+    "apps/console-web/plugins/push-banner/test.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "voice",
+   "files": [
+    "apps/amberx-droid/src/plugins/voice/web/index.tsx",
+    "apps/amberx-droid/src/plugins/voice/web/speechgate.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/json/vps-action-policy.schema.json",
+    "framework/schemas/vps-action-policy.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-manager",
+   "files": [
+    "apps/console-web/plugins/build-manager/server/__init__.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "commands",
+   "files": [
+    "apps/amberx-droid/src/plugins/commands/web/lib-developer.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "notes",
+   "files": [
+    "apps/amberx-droid/src/plugins/notes/web/core.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/vps-action-policy.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "python",
+   "files": [
+    "framework/python/axf/vps_action_policy.py"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/claude-headless.sh"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261107-69a251c4",
+   "name": "VPS gate settings: the orchestrator is the only door to the VPS",
+   "status": "approved",
+   "group": "g-20261107-c70d73ab",
+   "url": "/review/r-20261107-69a251c4"
+  }
+ ],
+ "cost": {
+  "usd": 86.8197,
+  "estimated": false,
+  "tokens": {
+   "input": 14024,
+   "output": 10019,
+   "cacheRead": 208287933,
+   "cacheWrite": 730199
+  }
+ },
+ "report": "",
+ "open": []
+}

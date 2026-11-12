@@ -776,18 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 02:14 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` s3 undone, → running (all) · foreign-write
-- 2026-11-12 02:14 UTC · `molly-gap-remote-actions` s1 done, → running (all) · orchestrator
-- 2026-11-12 02:14 UTC · `molly-gap-remote-actions` note (all) · orchestrator
-- 2026-11-12 02:14 UTC · `main-gate-nothing-reaches-main-without-passing` → running, note (all) · pipeline
-- 2026-11-12 02:14 UTC · `main-gate-nothing-reaches-main-without-passing` branch claude/main-gate-nothing-reaches-main-without-passing (all) · pipeline
-- 2026-11-12 02:14 UTC · `main-gate-nothing-reaches-main-without-passing` note (all) · orchestrator
-- 2026-11-12 02:14 UTC · `molly-gap-remote-actions` → queued, PR #502 (all) · foreign-write
-- 2026-11-12 02:14 UTC · `open-any-website-by-voice-on-the-phone-optionall` note (all) · orchestrator
-- 2026-11-12 02:15 UTC · `molly-gap-remote-actions` → queued, note (all) · pipeline
-- 2026-11-12 02:15 UTC · `open-any-website-by-voice-on-the-phone-optionall` s3 done, → built (all) · orchestrator
-- 2026-11-12 02:15 UTC · `open-any-website-by-voice-on-the-phone-optionall` note (all) · orchestrator
-- 2026-11-12 02:15 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` → running, note (all) · pipeline
 - 2026-11-12 02:15 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` branch claude/build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides (all) · pipeline
 - 2026-11-12 02:15 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` note (all) · orchestrator
 - 2026-11-12 02:15 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` PR #503 (all) · builds-live
@@ -1176,6 +1164,18 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:30 UTC · `gizmo-rebuild-fable` note (all) · backfill
 - 2026-11-12 03:30 UTC · `badges-notify-followup` note (all) · backfill
 - 2026-11-12 03:30 UTC · `glossary-index-demos` merged, note (all) · backfill
+- 2026-11-12 03:30 UTC · `orchestrator-gate` note (all) · backfill
+- 2026-11-12 03:30 UTC · `profiles-all-finish` → complete, merged, note (all) · backfill
+- 2026-11-12 03:30 UTC · `build-pipeline-v2` note (all) · backfill
+- 2026-11-12 03:30 UTC · `amber-chat-asset` note (all) · backfill
+- 2026-11-12 03:30 UTC · `style-override-rule` note (all) · backfill
+- 2026-11-12 03:30 UTC · `maintenance-redundancy-scan` note (all) · backfill
+- 2026-11-12 03:30 UTC · `orchestrator-dup-check` note (all) · backfill
+- 2026-11-12 03:30 UTC · `plan-designer` note (all) · backfill
+- 2026-11-12 03:30 UTC · `approve-button-fix` note (all) · backfill
+- 2026-11-12 03:30 UTC · `orchestrator-start-a-build-through-the-api-mcp-and-cli` note (all) · backfill
+- 2026-11-12 03:30 UTC · `idle-alert-phone-flag-when-nothing-is-building` note (all) · backfill
+- 2026-11-12 03:31 UTC · `urgent-rebuild-pipeline-orchestrator-ids-splits` added (8 steps) (all) · backfill
 
 ## Token passes (log)
 

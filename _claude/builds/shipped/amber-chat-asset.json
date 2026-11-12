@@ -1,0 +1,835 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-amber-chat-asset",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:30:48Z",
+ "build": {
+  "id": "amber-chat-asset",
+  "title": "Amber chat: one UI asset + rename Gizmo -> Amber",
+  "profile": "all",
+  "category": "AmberX > Companion",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "Amber chat: one UI asset + rename Gizmo -> Amber (Brett, Nov 7). Rule: every UI element is an asset. The AmberX companion chat is a plain component. 1. Chat as an asset (Fable: contract). 2. Rename Gizmo -> Amber, safely: inventory, rename everywhere, migrate saved chats/settings, keep gizmo as an alias, back up old data, one-step rollback, CI check. 3. UI Review with choices: THREE distinct looks. 4. Tests + Shipped features.",
+  "verbatim": true,
+  "at": "2026-11-07T12:30:40.602Z",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "# Amber chat: one UI asset + rename Gizmo -> Amber (Brett, Nov 7)\n\nRule: every UI element is an asset. The AmberX companion chat (apps/amberx-droid/src/plugins/companion/web: Chat.tsx, index.tsx, companion.css) is a plain component. Styling already uses tokens (no hard-coded values) — keep it that way.\n\n## 1. Chat as an asset (Fable: contract)\n- Define/extend the shared chat UI asset type (reuse an existing chat/build-chat@1/assistant asset type if one fits; else a new `chat-view@1` in framework/assets with schema, both validators, fixture, check). Covers layout, message bubbles, input bar, voice/talk controls, header, empty/no-provider states.\n- Chat.tsx renders from the asset. The console AI assistant chat should be able to use the same asset (same assistant@1 plugin backs both).\n\n## 2. Rename Gizmo -> Amber, safely\n- Inventory every `gizmo` reference first (code, ids, settings keys, storage paths, docs, persona, voice). Save the list in the report.\n- Rename to Amber everywhere: ids, files, labels, persona, voice.\n- Migrate saved chats/settings to new keys; dry-run the migration on a copy first and verify it loads.\n- Keep `gizmo` as an alias that resolves to Amber (old links/settings/commands keep working).\n- Back up old data; one-step rollback.\n- CI check: fails if `gizmo` appears anywhere except the alias table and migration.\n\n## 3. UI Review with choices\n- Submit THREE distinct looks for the Amber chat (phone + desktop shots) to UI Review with --choices, so Brett picks one in the Choices tab. The pick becomes the asset's default.\n\n## 4. Tests + Shipped features\nAll AmberX + console tests green; add to Shipped features.\n\nProgress: append `<time> START|DONE <step>` to PROGRESS.md here at each step; don't stop between steps. Commit, don't push. No hard-coded styling.\n## Addendum (Brett, Nov 7): a full Claude.ai replacement\nRight now the chat is crap. Bar: as good as claude.ai, phone and desktop.\n- Desktop: a left navigation sidebar (new chat, chat history with search, pinned, projects/blueprints, agents, settings), collapsible; phone: slide-out drawer.\n- Polished: markdown, code blocks with copy, images/files, streaming, stop/regenerate/edit, model + agent picker, voice/talk button, long-chat performance.\n- All from assets (nav, sidebar, bubbles, input bar each their own asset), no hard-coded styling.\n- UI Review: three full-screen looks, desktop + phone (--choices).\n\n## Addendum 2 (Brett, Nov 7): go crazy, entirely new design\n- Turn the chat's style override ON and give it an entirely NEW design: new colour theme + new style theme (its own theme/skin assets), not the app's. Changes only the chat (override rule).\n- 10 distinct layouts (e.g. sidebar classic, floating dock, split canvas, minimal focus, cards, terminal-style, command-palette-first, threaded, bubble-heavy mobile, dashboard) and many options per piece (bubbles, input bar, header, sidebar, buttons, voice controls).\n- Send them all to UI Review as choice sets (--choices) so Brett picks layout, theme, style and each piece. Desktop + phone shots each.\n",
+ "models": [
+  "Fable",
+  "Opus"
+ ],
+ "accounts": [
+  "mossesx-max-"
+ ],
+ "runs": [
+  {
+   "session": "axf-amber-chat-asset--lenny",
+   "account": "mossesx-max-",
+   "model": "Fable",
+   "startedAt": "2026-11-07T12:18:22.581Z",
+   "endedAt": "2026-11-07T13:13:27.393Z",
+   "exit": 0,
+   "costUsd": 28.0297
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "chat-view@1 contract: asset type in asset-types.json + types.ts, rules engine core/engines/chat-view-rules.mjs (+ .d.mts), both validators, JSON schema, 3 starter assets, fixture + spec/check-chat-view.mjs, CI line, chrome-settings@1 registration (right-click Settings), app manifest defaults",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-07T12:18:22.581Z",
+   "doneAt": "2026-11-07T13:02:03.886Z",
+   "actualMin": 44,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Render from the asset: framework ui/axf.css .fx-chat layer + react/chatView hook; AmberX companion Chat.tsx draws from chat-view; console ai-assistant ChatPanel reads the same asset",
+   "model": "Fable",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-07T13:02:03.886Z",
+   "doneAt": "2026-11-07T13:02:04.835Z",
+   "actualMin": 0,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Rename Gizmo -> Amber: inventory saved in the report, alias table (claude-session COMPANION.aliases + schemas/companion-aliases.json), ids/files/labels/persona/voice renamed, agent-manager addon amber + migration with backup and one-step rollback (dry-run on a copy), ai-assistant conversation agentId migration, CI check framework/cli/check-companion-rename.mjs",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-07T13:02:04.835Z",
+   "doneAt": "2026-11-07T13:07:36.298Z",
+   "actualMin": 6,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "UI Review: three distinct chat-view looks (phone + desktop shots) submitted with --choices; the pick becomes the default",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-07T13:07:36.298Z",
+   "doneAt": "2026-11-07T13:10:22.770Z",
+   "actualMin": 3,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Tests green (AmberX test.mjs + typecheck, console plugin tests, framework checks), Shipped features, report, THREADS.md, commit",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-07T13:10:22.770Z",
+   "doneAt": "2026-11-07T13:12:23.670Z",
+   "actualMin": 2,
+   "done": true
+  }
+ ],
+ "branch": "claude/amber-chat-asset",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "",
+ "commits": [
+  "8242eb45f0f1c937f26ba74309935201a9e901c9",
+  "3a48beeb0249956cd1808318a8966c1bc7e9a3a2",
+  "1eb877f1d0afaa71ed2ee40358cf086046843f15",
+  "1b907789054cf772d1935cd3b6fdd93f2fb324ee",
+  "3f6ab0ab368ca71fb9a5df0dd71132c8504ff159"
+ ],
+ "mergedAt": "2026-11-07T13:12:23.670Z",
+ "landedAt": "2026-11-07T13:12:23.670Z",
+ "files": [
+  ".github/workflows/android.yml",
+  "CLAUDE.md",
+  "_claude/THREADS.md",
+  "_claude/builds/journal/2026-11-p2.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/profiles/all/orchestrator.json",
+  "_claude/builds/reports/amber-chat-asset.md",
+  "_claude/builds/reports/amber-chat-asset/shots/amber-signature-desktop.png",
+  "_claude/builds/reports/amber-chat-asset/shots/amber-signature-phone.png",
+  "_claude/builds/reports/amber-chat-asset/shots/messenger-desktop.png",
+  "_claude/builds/reports/amber-chat-asset/shots/messenger-phone.png",
+  "_claude/builds/reports/amber-chat-asset/shots/terminal-desktop.png",
+  "_claude/builds/reports/amber-chat-asset/shots/terminal-phone.png",
+  "_claude/builds/reports/amberx-voice-echo-fix.md",
+  "_claude/builds/reports/gizmo-voice.md",
+  "_claude/builds/store.json",
+  "_claude/memory/decisions.md",
+  "apps/amberx-droid/android/app/src/main/AndroidManifest.xml",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/FocusRules.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/ListenerRegistry.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/TalkService.java",
+  "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java",
+  "apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/FocusRulesTest.java",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/axf.manifest.json",
+  "apps/amberx-droid/src/assets/settings/chrome-chat-view-amberx-droid.json",
+  "apps/amberx-droid/src/axf/assets/chat-view/amber-signature.json",
+  "apps/amberx-droid/src/axf/assets/chat-view/console-assistant.json",
+  "apps/amberx-droid/src/axf/assets/chat-view/messenger.json",
+  "apps/amberx-droid/src/axf/assets/chat-view/reader.json",
+  "apps/amberx-droid/src/axf/assets/chat-view/terminal.json",
+  "apps/amberx-droid/src/axf/assets/settings/chrome-chat-view.json",
+  "apps/amberx-droid/src/axf/core/engines/chat-view-rules.d.mts",
+  "apps/amberx-droid/src/axf/core/engines/chat-view-rules.mjs",
+  "apps/amberx-droid/src/axf/core/engines/chrome-settings-rules.mjs",
+  "apps/amberx-droid/src/axf/core/index.ts",
+  "apps/amberx-droid/src/axf/core/types.ts",
+  "apps/amberx-droid/src/axf/core/validate.ts",
+  "apps/amberx-droid/src/axf/libs/claude-session/core.ts",
+  "apps/amberx-droid/src/axf/libs/claude-session/index.ts",
+  "apps/amberx-droid/src/axf/libs/claude-session/library.json",
+  "apps/amberx-droid/src/axf/libs/listeners/core.ts",
+  "apps/amberx-droid/src/axf/libs/listeners/library.json",
+  "apps/amberx-droid/src/axf/libs/listeners/registry.json",
+  "apps/amberx-droid/src/axf/react/components/ChatView.tsx",
+  "apps/amberx-droid/src/axf/react/index.ts",
+  "apps/amberx-droid/src/axf/schemas/asset-types.json",
+  "apps/amberx-droid/src/axf/schemas/companion-aliases.json",
+  "apps/amberx-droid/src/axf/schemas/json/chat-view.schema.json",
+  "apps/amberx-droid/src/axf/ui/axf.css",
+  "apps/amberx-droid/src/miclease.ts",
+  "apps/amberx-droid/src/native.ts",
+  "apps/amberx-droid/src/plugins/ai/web/client.ts",
+  "apps/amberx-droid/src/plugins/ai/web/index.tsx",
+  "apps/amberx-droid/src/plugins/commands/plugin.json",
+  "apps/amberx-droid/src/plugins/commands/web/core.ts",
+  "apps/amberx-droid/src/plugins/commands/web/index.tsx",
+  "apps/amberx-droid/src/plugins/commands/web/lib-developer.ts",
+  "apps/amberx-droid/src/plugins/commands/web/lib-snippets.ts",
+  "apps/amberx-droid/src/plugins/commands/web/runner.ts",
+  "apps/amberx-droid/src/plugins/companion/plugin.json",
+  "apps/amberx-droid/src/plugins/companion/web/Chat.tsx",
+  "apps/amberx-droid/src/plugins/companion/web/api.ts",
+  "apps/amberx-droid/src/plugins/companion/web/companion.css",
+  "apps/amberx-droid/src/plugins/companion/web/core.ts",
+  "apps/amberx-droid/src/plugins/companion/web/index.tsx",
+  "apps/amberx-droid/src/plugins/companion/web/keys.ts",
+  "apps/amberx-droid/src/plugins/companion/web/mirror.ts",
+  "apps/amberx-droid/src/plugins/companion/web/talk.ts",
+  "apps/amberx-droid/src/plugins/listeners/README.md",
+  "apps/amberx-droid/src/plugins/listeners/plugin.json",
+  "apps/amberx-droid/src/plugins/notes/web/core.ts",
+  "apps/amberx-droid/src/plugins/voice/web/index.tsx",
+  "apps/amberx-droid/src/plugins/voice/web/speechgate.ts",
+  "apps/amberx-droid/test.mjs",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/axf.manifest.json",
+  "apps/axhub-web/src/assets/settings/chrome-chat-view-axhub-web.json",
+  "apps/axhub-web/src/axf/assets/chat-view/amber-signature.json",
+  "apps/axhub-web/src/axf/assets/chat-view/console-assistant.json",
+  "apps/axhub-web/src/axf/assets/chat-view/messenger.json",
+  "apps/axhub-web/src/axf/assets/chat-view/reader.json",
+  "apps/axhub-web/src/axf/assets/chat-view/terminal.json",
+  "apps/axhub-web/src/axf/assets/settings/chrome-chat-view.json",
+  "apps/axhub-web/src/axf/core/build-priority.mjs",
+  "apps/axhub-web/src/axf/core/engines/actions.ts",
+  "apps/axhub-web/src/axf/core/engines/chat-view-rules.d.mts",
+  "apps/axhub-web/src/axf/core/engines/chat-view-rules.mjs",
+  "apps/axhub-web/src/axf/core/engines/chrome-settings-rules.mjs",
+  "apps/axhub-web/src/axf/core/engines/console-commands.d.mts",
+  "apps/axhub-web/src/axf/core/engines/console-commands.mjs",
+  "apps/axhub-web/src/axf/core/engines/control-rules.mjs",
+  "apps/axhub-web/src/axf/core/index.ts",
+  "apps/axhub-web/src/axf/core/types.ts",
+  "apps/axhub-web/src/axf/core/ui-choices.d.mts",
+  "apps/axhub-web/src/axf/core/ui-choices.mjs",
+  "apps/axhub-web/src/axf/core/ui-review-schema.mjs",
+  "apps/axhub-web/src/axf/core/validate.ts",
+  "apps/axhub-web/src/axf/libs/approvals/core.ts",
+  "apps/axhub-web/src/axf/libs/claude-session/core.ts",
+  "apps/axhub-web/src/axf/libs/claude-session/index.ts",
+  "apps/axhub-web/src/axf/libs/claude-session/library.json",
+  "apps/axhub-web/src/axf/libs/hub/veto.ts",
+  "apps/axhub-web/src/axf/libs/listeners/cases.json",
+  "apps/axhub-web/src/axf/libs/listeners/core.ts",
+  "apps/axhub-web/src/axf/libs/listeners/index.ts",
+  "apps/axhub-web/src/axf/libs/listeners/library.json",
+  "apps/axhub-web/src/axf/libs/listeners/registry.json",
+  "apps/axhub-web/src/axf/react/components/ChatView.tsx",
+  "apps/axhub-web/src/axf/react/index.ts",
+  "apps/axhub-web/src/axf/schemas/asset-types.json",
+  "apps/axhub-web/src/axf/schemas/companion-aliases.json",
+  "apps/axhub-web/src/axf/schemas/control.json",
+  "apps/axhub-web/src/axf/schemas/json/chat-view.schema.json",
+  "apps/axhub-web/src/axf/schemas/json/ui-review-item.schema.json",
+  "apps/axhub-web/src/axf/schemas/ui-review.json",
+  "apps/axhub-web/src/axf/ui/axf.css",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/axf.manifest.json",
+  "apps/console-web/plugins/activity/server/feed.py",
+  "apps/console-web/plugins/agent-manager/addons/amber/addon.json",
+  "apps/console-web/plugins/agent-manager/server/__init__.py",
+  "apps/console-web/plugins/agent-manager/server/companion_rename.py",
+  "apps/console-web/plugins/agent-manager/server/vinny.py",
+  "apps/console-web/plugins/agent-manager/test.py",
+  "apps/console-web/plugins/agent-swarm/agents/roster.json",
+  "apps/console-web/plugins/agent-swarm/agents/skills/companion.md",
+  "apps/console-web/plugins/ai-assistant/assets/chat-view/amber-chat-look-amber-signature.json",
+  "apps/console-web/plugins/ai-assistant/assets/chat-view/amber-chat-look-messenger.json",
+  "apps/console-web/plugins/ai-assistant/assets/chat-view/amber-chat-look-terminal.json",
+  "apps/console-web/plugins/ai-assistant/server/__init__.py",
+  "apps/console-web/plugins/ai-assistant/server/chatmode.py",
+  "apps/console-web/plugins/ai-assistant/server/companion_rename.py",
+  "apps/console-web/plugins/ai-assistant/test.py",
+  "apps/console-web/plugins/ai-assistant/web/ai-assistant.css",
+  "apps/console-web/plugins/ai-assistant/web/chat.tsx",
+  "apps/console-web/plugins/amberx-listeners/help.json",
+  "apps/console-web/plugins/amberx-listeners/plugin.json",
+  "apps/console-web/plugins/amberx-listeners/test.mjs",
+  "apps/console-web/plugins/amberx-listeners/web/index.tsx",
+  "apps/console-web/plugins/codebase-changes/changes-core.mjs",
+  "apps/console-web/src/assets/settings/chrome-chat-view-axf-console.json",
+  "apps/console-web/src/axf/assets/chat-view/amber-signature.json",
+  "apps/console-web/src/axf/assets/chat-view/console-assistant.json",
+  "apps/console-web/src/axf/assets/chat-view/messenger.json",
+  "apps/console-web/src/axf/assets/chat-view/reader.json",
+  "apps/console-web/src/axf/assets/chat-view/terminal.json",
+  "apps/console-web/src/axf/assets/settings/chrome-chat-view.json",
+  "apps/console-web/src/axf/core/engines/chat-view-rules.d.mts",
+  "apps/console-web/src/axf/core/engines/chat-view-rules.mjs",
+  "apps/console-web/src/axf/core/engines/chrome-settings-rules.mjs",
+  "apps/console-web/src/axf/core/index.ts",
+  "apps/console-web/src/axf/core/types.ts",
+  "apps/console-web/src/axf/core/validate.ts",
+  "apps/console-web/src/axf/libs/claude-session/core.ts",
+  "apps/console-web/src/axf/libs/claude-session/index.ts",
+  "apps/console-web/src/axf/libs/claude-session/library.json",
+  "apps/console-web/src/axf/libs/listeners/core.ts",
+  "apps/console-web/src/axf/libs/listeners/library.json",
+  "apps/console-web/src/axf/libs/listeners/registry.json",
+  "apps/console-web/src/axf/react/components/ChatView.tsx",
+  "apps/console-web/src/axf/react/index.ts",
+  "apps/console-web/src/axf/schemas/asset-types.json",
+  "apps/console-web/src/axf/schemas/companion-aliases.json",
+  "apps/console-web/src/axf/schemas/json/chat-view.schema.json",
+  "apps/console-web/src/axf/ui/axf.css",
+  "apps/expenses/_claude/README.md",
+  "apps/expenses/_claude/instructions/README.md",
+  "apps/expenses/_claude/memory/README.md",
+  "apps/expenses/_claude/rules/README.md",
+  "apps/expenses/src/assets/settings/chrome-chat-view-expenses.json",
+  "apps/molly/axf.lock.json",
+  "apps/molly/axf.manifest.json",
+  "apps/molly/src/assets/settings/chrome-chat-view-molly.json",
+  "apps/molly/src/axf/assets/chat-view/amber-signature.json",
+  "apps/molly/src/axf/assets/chat-view/console-assistant.json",
+  "apps/molly/src/axf/assets/chat-view/messenger.json",
+  "apps/molly/src/axf/assets/chat-view/reader.json",
+  "apps/molly/src/axf/assets/chat-view/terminal.json",
+  "apps/molly/src/axf/assets/settings/chrome-chat-view.json",
+  "apps/molly/src/axf/core/build-priority.mjs",
+  "apps/molly/src/axf/core/engines/actions.ts",
+  "apps/molly/src/axf/core/engines/chat-view-rules.d.mts",
+  "apps/molly/src/axf/core/engines/chat-view-rules.mjs",
+  "apps/molly/src/axf/core/engines/chrome-settings-rules.mjs",
+  "apps/molly/src/axf/core/engines/console-commands.d.mts",
+  "apps/molly/src/axf/core/engines/console-commands.mjs",
+  "apps/molly/src/axf/core/engines/control-rules.mjs",
+  "apps/molly/src/axf/core/index.ts",
+  "apps/molly/src/axf/core/types.ts",
+  "apps/molly/src/axf/core/ui-choices.d.mts",
+  "apps/molly/src/axf/core/ui-choices.mjs",
+  "apps/molly/src/axf/core/ui-review-schema.mjs",
+  "apps/molly/src/axf/core/validate.ts",
+  "apps/molly/src/axf/libs/approvals/core.ts",
+  "apps/molly/src/axf/libs/claude-session/core.ts",
+  "apps/molly/src/axf/libs/claude-session/index.ts",
+  "apps/molly/src/axf/libs/claude-session/library.json",
+  "apps/molly/src/axf/libs/hub/veto.ts",
+  "apps/molly/src/axf/libs/listeners/cases.json",
+  "apps/molly/src/axf/libs/listeners/core.ts",
+  "apps/molly/src/axf/libs/listeners/index.ts",
+  "apps/molly/src/axf/libs/listeners/library.json",
+  "apps/molly/src/axf/libs/listeners/registry.json",
+  "apps/molly/src/axf/react/components/ChatView.tsx",
+  "apps/molly/src/axf/react/index.ts",
+  "apps/molly/src/axf/schemas/asset-types.json",
+  "apps/molly/src/axf/schemas/companion-aliases.json",
+  "apps/molly/src/axf/schemas/control.json",
+  "apps/molly/src/axf/schemas/json/chat-view.schema.json",
+  "apps/molly/src/axf/schemas/json/ui-review-item.schema.json",
+  "apps/molly/src/axf/schemas/ui-review.json",
+  "apps/molly/src/axf/ui/axf.css",
+  "apps/walkthrough-studio/axf.manifest.json",
+  "framework/assets/chat-view/amber-signature.json",
+  "framework/assets/chat-view/console-assistant.json",
+  "framework/assets/chat-view/messenger.json",
+  "framework/assets/chat-view/reader.json",
+  "framework/assets/chat-view/terminal.json",
+  "framework/assets/settings/chrome-chat-view.json",
+  "framework/catalog/libraries.json",
+  "framework/cli/build-engine.mjs",
+  "framework/cli/check-companion-rename.mjs",
+  "framework/core/engines/chat-view-rules.d.mts",
+  "framework/core/engines/chat-view-rules.mjs",
+  "framework/core/engines/chrome-settings-rules.mjs",
+  "framework/core/index.ts",
+  "framework/core/types.ts",
+  "framework/core/validate.ts",
+  "framework/defaults.json",
+  "framework/libs/claude-session/core.ts",
+  "framework/libs/claude-session/index.ts",
+  "framework/libs/claude-session/library.json",
+  "framework/libs/listeners/core.ts",
+  "framework/libs/listeners/library.json",
+  "framework/libs/listeners/registry.json",
+  "framework/react/components/ChatView.tsx",
+  "framework/react/index.ts",
+  "framework/schemas/asset-types.json",
+  "framework/schemas/companion-aliases.json",
+  "framework/schemas/json/chat-view.schema.json",
+  "framework/spec/ASSISTANT.md",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-ashes.mts",
+  "framework/spec/check-chat-view.mjs",
+  "framework/spec/check-claude-session.mts",
+  "framework/spec/check-listeners.mts",
+  "framework/spec/fixtures/appearance.json",
+  "framework/spec/fixtures/chat-view.json",
+  "framework/spec/fixtures/chrome-settings.json",
+  "framework/spec/fixtures/roll.json",
+  "framework/ui/axf.css"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/axf.manifest.json",
+    "apps/axhub-web/src/assets/settings/chrome-chat-view-axhub-web.json",
+    "apps/axhub-web/src/axf/assets/chat-view/amber-signature.json",
+    "apps/axhub-web/src/axf/assets/chat-view/console-assistant.json",
+    "apps/axhub-web/src/axf/assets/chat-view/messenger.json",
+    "apps/axhub-web/src/axf/assets/chat-view/reader.json",
+    "apps/axhub-web/src/axf/assets/chat-view/terminal.json",
+    "apps/axhub-web/src/axf/assets/settings/chrome-chat-view.json",
+    "apps/axhub-web/src/axf/core/build-priority.mjs",
+    "apps/axhub-web/src/axf/core/engines/actions.ts",
+    "apps/axhub-web/src/axf/core/engines/chat-view-rules.d.mts",
+    "apps/axhub-web/src/axf/core/engines/chat-view-rules.mjs",
+    "apps/axhub-web/src/axf/core/engines/chrome-settings-rules.mjs",
+    "apps/axhub-web/src/axf/core/engines/console-commands.d.mts",
+    "apps/axhub-web/src/axf/core/engines/console-commands.mjs",
+    "apps/axhub-web/src/axf/core/engines/control-rules.mjs",
+    "apps/axhub-web/src/axf/core/index.ts",
+    "apps/axhub-web/src/axf/core/types.ts",
+    "apps/axhub-web/src/axf/core/ui-choices.d.mts",
+    "apps/axhub-web/src/axf/core/ui-choices.mjs",
+    "apps/axhub-web/src/axf/core/ui-review-schema.mjs",
+    "apps/axhub-web/src/axf/core/validate.ts",
+    "apps/axhub-web/src/axf/libs/approvals/core.ts",
+    "apps/axhub-web/src/axf/libs/claude-session/core.ts",
+    "apps/axhub-web/src/axf/libs/claude-session/index.ts",
+    "apps/axhub-web/src/axf/libs/claude-session/library.json",
+    "apps/axhub-web/src/axf/libs/hub/veto.ts",
+    "apps/axhub-web/src/axf/libs/listeners/cases.json",
+    "apps/axhub-web/src/axf/libs/listeners/core.ts",
+    "apps/axhub-web/src/axf/libs/listeners/index.ts",
+    "apps/axhub-web/src/axf/libs/listeners/library.json",
+    "apps/axhub-web/src/axf/libs/listeners/registry.json",
+    "apps/axhub-web/src/axf/react/components/ChatView.tsx",
+    "apps/axhub-web/src/axf/react/index.ts",
+    "apps/axhub-web/src/axf/schemas/asset-types.json",
+    "apps/axhub-web/src/axf/schemas/companion-aliases.json",
+    "apps/axhub-web/src/axf/schemas/control.json",
+    "apps/axhub-web/src/axf/schemas/json/chat-view.schema.json",
+    "apps/axhub-web/src/axf/schemas/json/ui-review-item.schema.json",
+    "apps/axhub-web/src/axf/schemas/ui-review.json",
+    "apps/axhub-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/axf.lock.json",
+    "apps/molly/axf.manifest.json",
+    "apps/molly/src/assets/settings/chrome-chat-view-molly.json",
+    "apps/molly/src/axf/assets/chat-view/amber-signature.json",
+    "apps/molly/src/axf/assets/chat-view/console-assistant.json",
+    "apps/molly/src/axf/assets/chat-view/messenger.json",
+    "apps/molly/src/axf/assets/chat-view/reader.json",
+    "apps/molly/src/axf/assets/chat-view/terminal.json",
+    "apps/molly/src/axf/assets/settings/chrome-chat-view.json",
+    "apps/molly/src/axf/core/build-priority.mjs",
+    "apps/molly/src/axf/core/engines/actions.ts",
+    "apps/molly/src/axf/core/engines/chat-view-rules.d.mts",
+    "apps/molly/src/axf/core/engines/chat-view-rules.mjs",
+    "apps/molly/src/axf/core/engines/chrome-settings-rules.mjs",
+    "apps/molly/src/axf/core/engines/console-commands.d.mts",
+    "apps/molly/src/axf/core/engines/console-commands.mjs",
+    "apps/molly/src/axf/core/engines/control-rules.mjs",
+    "apps/molly/src/axf/core/index.ts",
+    "apps/molly/src/axf/core/types.ts",
+    "apps/molly/src/axf/core/ui-choices.d.mts",
+    "apps/molly/src/axf/core/ui-choices.mjs",
+    "apps/molly/src/axf/core/ui-review-schema.mjs",
+    "apps/molly/src/axf/core/validate.ts",
+    "apps/molly/src/axf/libs/approvals/core.ts",
+    "apps/molly/src/axf/libs/claude-session/core.ts",
+    "apps/molly/src/axf/libs/claude-session/index.ts",
+    "apps/molly/src/axf/libs/claude-session/library.json",
+    "apps/molly/src/axf/libs/hub/veto.ts",
+    "apps/molly/src/axf/libs/listeners/cases.json",
+    "apps/molly/src/axf/libs/listeners/core.ts",
+    "apps/molly/src/axf/libs/listeners/index.ts",
+    "apps/molly/src/axf/libs/listeners/library.json",
+    "apps/molly/src/axf/libs/listeners/registry.json",
+    "apps/molly/src/axf/react/components/ChatView.tsx",
+    "apps/molly/src/axf/react/index.ts",
+    "apps/molly/src/axf/schemas/asset-types.json",
+    "apps/molly/src/axf/schemas/companion-aliases.json",
+    "apps/molly/src/axf/schemas/control.json",
+    "apps/molly/src/axf/schemas/json/chat-view.schema.json",
+    "apps/molly/src/axf/schemas/json/ui-review-item.schema.json",
+    "apps/molly/src/axf/schemas/ui-review.json",
+    "apps/molly/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/android/app/src/main/AndroidManifest.xml",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/AmberxNativePlugin.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/FocusRules.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/ListenerRegistry.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/TalkService.java",
+    "apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java",
+    "apps/amberx-droid/android/app/src/test/java/ai/amberx/droid/FocusRulesTest.java",
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/axf.manifest.json",
+    "apps/amberx-droid/src/assets/settings/chrome-chat-view-amberx-droid.json",
+    "apps/amberx-droid/src/axf/assets/chat-view/amber-signature.json",
+    "apps/amberx-droid/src/axf/assets/chat-view/console-assistant.json",
+    "apps/amberx-droid/src/axf/assets/chat-view/messenger.json",
+    "apps/amberx-droid/src/axf/assets/chat-view/reader.json",
+    "apps/amberx-droid/src/axf/assets/chat-view/terminal.json",
+    "apps/amberx-droid/src/axf/assets/settings/chrome-chat-view.json",
+    "apps/amberx-droid/src/axf/core/engines/chat-view-rules.d.mts",
+    "apps/amberx-droid/src/axf/core/engines/chat-view-rules.mjs",
+    "apps/amberx-droid/src/axf/core/engines/chrome-settings-rules.mjs",
+    "apps/amberx-droid/src/axf/core/index.ts",
+    "apps/amberx-droid/src/axf/core/types.ts",
+    "apps/amberx-droid/src/axf/core/validate.ts",
+    "apps/amberx-droid/src/axf/libs/claude-session/core.ts",
+    "apps/amberx-droid/src/axf/libs/claude-session/index.ts",
+    "apps/amberx-droid/src/axf/libs/claude-session/library.json",
+    "apps/amberx-droid/src/axf/libs/listeners/core.ts",
+    "apps/amberx-droid/src/axf/libs/listeners/library.json",
+    "apps/amberx-droid/src/axf/libs/listeners/registry.json",
+    "apps/amberx-droid/src/axf/react/components/ChatView.tsx",
+    "apps/amberx-droid/src/axf/react/index.ts",
+    "apps/amberx-droid/src/axf/schemas/asset-types.json",
+    "apps/amberx-droid/src/axf/schemas/companion-aliases.json",
+    "apps/amberx-droid/src/axf/schemas/json/chat-view.schema.json",
+    "apps/amberx-droid/src/axf/ui/axf.css",
+    "apps/amberx-droid/src/miclease.ts",
+    "apps/amberx-droid/src/native.ts",
+    "apps/amberx-droid/test.mjs"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/axf.manifest.json",
+    "apps/console-web/src/assets/settings/chrome-chat-view-axf-console.json",
+    "apps/console-web/src/axf/assets/chat-view/amber-signature.json",
+    "apps/console-web/src/axf/assets/chat-view/console-assistant.json",
+    "apps/console-web/src/axf/assets/chat-view/messenger.json",
+    "apps/console-web/src/axf/assets/chat-view/reader.json",
+    "apps/console-web/src/axf/assets/chat-view/terminal.json",
+    "apps/console-web/src/axf/assets/settings/chrome-chat-view.json",
+    "apps/console-web/src/axf/core/engines/chat-view-rules.d.mts",
+    "apps/console-web/src/axf/core/engines/chat-view-rules.mjs",
+    "apps/console-web/src/axf/core/engines/chrome-settings-rules.mjs",
+    "apps/console-web/src/axf/core/index.ts",
+    "apps/console-web/src/axf/core/types.ts",
+    "apps/console-web/src/axf/core/validate.ts",
+    "apps/console-web/src/axf/libs/claude-session/core.ts",
+    "apps/console-web/src/axf/libs/claude-session/index.ts",
+    "apps/console-web/src/axf/libs/claude-session/library.json",
+    "apps/console-web/src/axf/libs/listeners/core.ts",
+    "apps/console-web/src/axf/libs/listeners/library.json",
+    "apps/console-web/src/axf/libs/listeners/registry.json",
+    "apps/console-web/src/axf/react/components/ChatView.tsx",
+    "apps/console-web/src/axf/react/index.ts",
+    "apps/console-web/src/axf/schemas/asset-types.json",
+    "apps/console-web/src/axf/schemas/companion-aliases.json",
+    "apps/console-web/src/axf/schemas/json/chat-view.schema.json",
+    "apps/console-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/journal/2026-11-p2.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/profiles/all/orchestrator.json",
+    "_claude/builds/reports/amber-chat-asset.md",
+    "_claude/builds/reports/amber-chat-asset/shots/amber-signature-desktop.png",
+    "_claude/builds/reports/amber-chat-asset/shots/amber-signature-phone.png",
+    "_claude/builds/reports/amber-chat-asset/shots/messenger-desktop.png",
+    "_claude/builds/reports/amber-chat-asset/shots/messenger-phone.png",
+    "_claude/builds/reports/amber-chat-asset/shots/terminal-desktop.png",
+    "_claude/builds/reports/amber-chat-asset/shots/terminal-phone.png",
+    "_claude/builds/reports/amberx-voice-echo-fix.md",
+    "_claude/builds/reports/gizmo-voice.md",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/ASSISTANT.md",
+    "framework/spec/PORTING.md",
+    "framework/spec/check-ashes.mts",
+    "framework/spec/check-chat-view.mjs",
+    "framework/spec/check-claude-session.mts",
+    "framework/spec/check-listeners.mts",
+    "framework/spec/fixtures/appearance.json",
+    "framework/spec/fixtures/chat-view.json",
+    "framework/spec/fixtures/chrome-settings.json",
+    "framework/spec/fixtures/roll.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ai-assistant",
+   "files": [
+    "apps/console-web/plugins/ai-assistant/assets/chat-view/amber-chat-look-amber-signature.json",
+    "apps/console-web/plugins/ai-assistant/assets/chat-view/amber-chat-look-messenger.json",
+    "apps/console-web/plugins/ai-assistant/assets/chat-view/amber-chat-look-terminal.json",
+    "apps/console-web/plugins/ai-assistant/server/__init__.py",
+    "apps/console-web/plugins/ai-assistant/server/chatmode.py",
+    "apps/console-web/plugins/ai-assistant/server/companion_rename.py",
+    "apps/console-web/plugins/ai-assistant/test.py",
+    "apps/console-web/plugins/ai-assistant/web/ai-assistant.css",
+    "apps/console-web/plugins/ai-assistant/web/chat.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "companion",
+   "files": [
+    "apps/amberx-droid/src/plugins/companion/plugin.json",
+    "apps/amberx-droid/src/plugins/companion/web/Chat.tsx",
+    "apps/amberx-droid/src/plugins/companion/web/api.ts",
+    "apps/amberx-droid/src/plugins/companion/web/companion.css",
+    "apps/amberx-droid/src/plugins/companion/web/core.ts",
+    "apps/amberx-droid/src/plugins/companion/web/index.tsx",
+    "apps/amberx-droid/src/plugins/companion/web/keys.ts",
+    "apps/amberx-droid/src/plugins/companion/web/mirror.ts",
+    "apps/amberx-droid/src/plugins/companion/web/talk.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "commands",
+   "files": [
+    "apps/amberx-droid/src/plugins/commands/plugin.json",
+    "apps/amberx-droid/src/plugins/commands/web/core.ts",
+    "apps/amberx-droid/src/plugins/commands/web/index.tsx",
+    "apps/amberx-droid/src/plugins/commands/web/lib-developer.ts",
+    "apps/amberx-droid/src/plugins/commands/web/lib-snippets.ts",
+    "apps/amberx-droid/src/plugins/commands/web/runner.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "assets",
+   "files": [
+    "framework/assets/chat-view/amber-signature.json",
+    "framework/assets/chat-view/console-assistant.json",
+    "framework/assets/chat-view/messenger.json",
+    "framework/assets/chat-view/reader.json",
+    "framework/assets/chat-view/terminal.json",
+    "framework/assets/settings/chrome-chat-view.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/chat-view-rules.d.mts",
+    "framework/core/engines/chat-view-rules.mjs",
+    "framework/core/engines/chrome-settings-rules.mjs",
+    "framework/core/index.ts",
+    "framework/core/types.ts",
+    "framework/core/validate.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "libs",
+   "files": [
+    "framework/libs/claude-session/core.ts",
+    "framework/libs/claude-session/index.ts",
+    "framework/libs/claude-session/library.json",
+    "framework/libs/listeners/core.ts",
+    "framework/libs/listeners/library.json",
+    "framework/libs/listeners/registry.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-manager",
+   "files": [
+    "apps/console-web/plugins/agent-manager/addons/amber/addon.json",
+    "apps/console-web/plugins/agent-manager/server/__init__.py",
+    "apps/console-web/plugins/agent-manager/server/companion_rename.py",
+    "apps/console-web/plugins/agent-manager/server/vinny.py",
+    "apps/console-web/plugins/agent-manager/test.py"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "expenses",
+   "files": [
+    "apps/expenses/_claude/README.md",
+    "apps/expenses/_claude/instructions/README.md",
+    "apps/expenses/_claude/memory/README.md",
+    "apps/expenses/_claude/rules/README.md",
+    "apps/expenses/src/assets/settings/chrome-chat-view-expenses.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "amberx-listeners",
+   "files": [
+    "apps/console-web/plugins/amberx-listeners/help.json",
+    "apps/console-web/plugins/amberx-listeners/plugin.json",
+    "apps/console-web/plugins/amberx-listeners/test.mjs",
+    "apps/console-web/plugins/amberx-listeners/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "schemas",
+   "files": [
+    "framework/schemas/asset-types.json",
+    "framework/schemas/companion-aliases.json",
+    "framework/schemas/json/chat-view.schema.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/THREADS.md",
+    "_claude/memory/decisions.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "agent-swarm",
+   "files": [
+    "apps/console-web/plugins/agent-swarm/agents/roster.json",
+    "apps/console-web/plugins/agent-swarm/agents/skills/companion.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ai",
+   "files": [
+    "apps/amberx-droid/src/plugins/ai/web/client.ts",
+    "apps/amberx-droid/src/plugins/ai/web/index.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "listeners",
+   "files": [
+    "apps/amberx-droid/src/plugins/listeners/README.md",
+    "apps/amberx-droid/src/plugins/listeners/plugin.json"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "voice",
+   "files": [
+    "apps/amberx-droid/src/plugins/voice/web/index.tsx",
+    "apps/amberx-droid/src/plugins/voice/web/speechgate.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/build-engine.mjs",
+    "framework/cli/check-companion-rename.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/components/ChatView.tsx",
+    "framework/react/index.ts"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "activity",
+   "files": [
+    "apps/console-web/plugins/activity/server/feed.py"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "codebase-changes",
+   "files": [
+    "apps/console-web/plugins/codebase-changes/changes-core.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "notes",
+   "files": [
+    "apps/amberx-droid/src/plugins/notes/web/core.ts"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "walkthrough-studio",
+   "files": [
+    "apps/walkthrough-studio/axf.manifest.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "catalog",
+   "files": [
+    "framework/catalog/libraries.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "ui",
+   "files": [
+    "framework/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": "framework",
+   "files": [
+    "framework/defaults.json"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261107-2a4f80e8",
+   "name": "Amber chat: pick the chat's look (chat-view@1)",
+   "status": "approved",
+   "group": "g-20261107-0f84565f",
+   "url": "/review/r-20261107-2a4f80e8"
+  }
+ ],
+ "cost": {
+  "usd": 28.0297,
+  "estimated": false,
+  "tokens": {
+   "input": 3106,
+   "output": 1277,
+   "cacheRead": 28364309,
+   "cacheWrite": 504974
+  }
+ },
+ "report": "",
+ "open": []
+}
