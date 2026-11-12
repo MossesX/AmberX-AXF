@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-11 00:23 UTC · `merge-review-one-by-one-every-built-but-unmerged` PR #492 (all) · builds-live
 - 2026-11-11 00:23 UTC · `merge-review-one-by-one-every-built-but-unmerged` s3 done, → built (all) · orchestrator
 - 2026-11-11 00:23 UTC · `merge-review-one-by-one-every-built-but-unmerged` note (all) · orchestrator
 - 2026-11-11 00:24 UTC · `merge-review-one-by-one-every-built-but-unmerged` note (all) · pipeline
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:40 UTC · `molly-gap-console-token-handoff` s2 done (all) · orchestrator
 - 2026-11-12 02:40 UTC · `molly-gap-console-warm-token` added (2 steps) (all) · orchestrator
 - 2026-11-12 02:42 UTC · `main-gate-nothing-reaches-main-without-passing` note (all) · orchestrator
+- 2026-11-12 02:42 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` s7 done (all) · orchestrator
 
 ## Token passes (log)
 

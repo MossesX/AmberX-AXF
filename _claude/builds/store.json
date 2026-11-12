@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3362,
- "updatedAt": "2026-11-12T02:42:19.382Z",
+ "rev": 3363,
+ "updatedAt": "2026-11-12T02:42:31.065Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -160415,7 +160415,7 @@
    "branch": "claude/build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides",
    "pr": "#505",
    "createdAt": "2026-11-12T02:02:25.273Z",
-   "updatedAt": "2026-11-12T02:38:34.222Z",
+   "updatedAt": "2026-11-12T02:42:23.716Z",
    "builtAt": "",
    "notes": [
     {
@@ -160431,7 +160431,16 @@
      "at": "2026-11-12T02:15:31.290Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 2,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-12T02:42:23.716Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "",
@@ -160621,12 +160630,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T02:42:23.716Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T02:02:25.274Z",
-     "updatedAt": "2026-11-12T02:02:25.274Z"
+     "updatedAt": "2026-11-12T02:42:23.948Z"
     }
    ],
    "profiles": [
@@ -160637,7 +160646,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

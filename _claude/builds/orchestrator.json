@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:42:19.382Z",
+ "updatedAt": "2026-11-12T02:42:31.065Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -100240,7 +100240,7 @@
    "branch": "claude/build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides",
    "pr": "#505",
    "createdAt": "2026-11-12T02:02:25.273Z",
-   "updatedAt": "2026-11-12T02:38:34.222Z",
+   "updatedAt": "2026-11-12T02:42:23.716Z",
    "builtAt": "",
    "notes": [
     {
@@ -100256,7 +100256,16 @@
      "at": "2026-11-12T02:15:31.290Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 2,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-12T02:42:23.716Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "",
@@ -100392,8 +100401,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T02:42:23.716Z",
      "note": "",
      "uid": "st-mwcwkjtg0e1j27"
     }
