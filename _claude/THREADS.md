@@ -777,7 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:29 UTC · `model-upgrade-approval` note (all) · backfill
 - 2026-11-12 03:29 UTC · `console-wake` note (all) · backfill
 - 2026-11-12 03:29 UTC · `theme-veto-pass` note (all) · backfill
 - 2026-11-12 03:29 UTC · `pass-all` note (all) · backfill
@@ -1177,6 +1176,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 18:41 UTC · `skins-as-packages-of-slices-every-section-its-ow` note (all) · builds-live
 - 2026-11-12 18:42 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` note (all) · orchestrator
 - 2026-11-12 18:44 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` s5 done (all) · orchestrator
+- 2026-11-12 18:45 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
