@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:35:37.441Z",
+ "updatedAt": "2026-11-12T02:36:04.920Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -100094,15 +100094,15 @@
    "title": "Main gate: nothing reaches main without passing",
    "category": "orchestrator",
    "detail": "URGENT. Brett, Nov 12, boss order: NOTHING gets pushed or merged to main unless it passes. Enforce at the server/repo level, not by Claude: 1) GitHub branch protection on main (AmberX-AXF, axHub): required CI checks, up to date with main, no force-push, no direct pushes, merge queue only. 2) VPS gate: build_land and every land/merge script runs full tests + theme/controls checks on the merged result and refuses to push to main unless they pass; failure leaves only the branch. 3) Log refusals, AmberX FYI. Owner-only override, off by default.",
-   "status": "queued",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/main-gate-nothing-reaches-main-without-passing",
    "pr": "#508",
    "createdAt": "2026-11-12T02:00:17.612Z",
-   "updatedAt": "2026-11-12T02:35:19.190Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-12T02:35:27.860Z",
+   "builtAt": "2026-11-12T02:35:27.861Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -100145,8 +100145,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T02:35:21.232Z",
      "note": "",
      "uid": "st-mwcwhtkf04ewuu"
     },
@@ -100163,8 +100163,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T02:35:24.772Z",
      "note": "",
      "uid": "st-mwcwhtkf052d1i"
     },
@@ -100181,8 +100181,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T02:35:27.860Z",
      "note": "",
      "uid": "st-mwcwhtkf065ayl"
     }
