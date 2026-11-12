@@ -4,6 +4,7 @@
  * own plugin) are its first section; View → Design packs opens straight onto it.
  */
 import type { AxfWebLibrary } from '@console/axf/react/library';
+import { askScreenFocus, focusKeyOf } from '@console/axf/react';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { pluginApi } from '@console/plugins';
 import * as core from './review-core.mjs';
@@ -33,6 +34,16 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('ui-review.open', () => rt.navigate(VIEW), { label: 'Open UI Review' });
     rt.actions.register('ui-review.design-packs', () => rt.navigate(PACKS_VIEW), { label: 'Open Design packs' });
     rt.actions.register('ui-review.screenshots', () => rt.navigate(SHOTS_VIEW), { label: 'Open Screenshots' });
+    // <view>.focus:<key> for all three of its screens: a tab (review / screenshots), a section, a review group, an item
+    // (r-…: filters cleared, row opened and highlighted) or a screenshot / screenshot group (ui.tsx answers the ask)
+    for (const view of [VIEW, SHOTS_VIEW, PACKS_VIEW]) {
+      rt.actions.register(`${view}.focus`, ([arg]) => {
+        const key = focusKeyOf(arg);
+        if (rt.getState().dialog) rt.closeDialog();
+        rt.navigate(view);
+        if (key) askScreenFocus(VIEW, key);
+      }, { label: 'UI Review: bring a tab, section, group, item or screenshot forward', params: true, effect: 'navigate' });
+    }
     // a copied screenshot link (?ui-shot=<id>) lands on the Screenshots tab, which opens that picture
     // AmberX's "ready for review" notification (?axf-review-group=<id>) lands on the queue, filtered to that group
     if (new URLSearchParams(globalThis.location?.search ?? '').get(GROUP_PARAM)) setTimeout(() => rt.navigate(VIEW), 0);

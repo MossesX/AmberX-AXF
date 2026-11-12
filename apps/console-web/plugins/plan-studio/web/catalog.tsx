@@ -115,7 +115,7 @@ function EntryRow({ e, tree, onPlanThis, onAddTo, onOpenPlan }: { e: CatalogEntr
           {e.total > 0 && <Segmented size="sm" label="Features" value={fs} onChange={setFs} options={[{ value: 'all', label: `All ${e.total}` }, ...pc.FEATURE_STATES.filter((s) => e.counts[s]).map((s) => ({ value: s, label: `${s} ${e.counts[s]}` }))]} />}
           <ul className="axp-plan-studio__feats">
             {feats.slice(0, 120).map((f) => (
-              <li key={f.id}>
+              <li key={f.id} data-fx-focus-key={f.id}>
                 <input type="checkbox" className="fx-check" checked={f.state === 'have'} readOnly aria-label={`${f.title}: ${f.state}`} />
                 <span className="axp-plan-studio__ftitle">{f.title}</span>
                 <Chip tone={STATE_TONE[f.state]}><Icon name={STATE_ICON[f.state]} size={10} /> {f.state}</Chip>
@@ -137,7 +137,7 @@ function Coverage({ entries }: { entries: CatalogEntry[] }) {
     <div className="axp-plan-studio__matrix" role="table" aria-label="Coverage">
       <div role="row" className="axp-plan-studio__mrow is-head"><span role="columnheader">Entry</span>{pc.FEATURE_STATES.map((s) => <span key={s} role="columnheader">{s}</span>)}<span role="columnheader">%</span></div>
       {entries.map((e) => (
-        <div role="row" key={e.key} className="axp-plan-studio__mrow">
+        <div role="row" key={e.key} data-fx-focus-key={e.key} className="axp-plan-studio__mrow">
           <span role="cell" className="axp-plan-studio__rtitle">{e.name}</span>
           {pc.FEATURE_STATES.map((s) => <span role="cell" key={s} className={`axp-plan-studio__mcell is-${s}${e.counts[s] ? '' : ' is-zero'}`}>{e.counts[s] || ''}</span>)}
           <span role="cell" className="axp-plan-studio__n">{e.total ? `${e.progress}%` : '–'}</span>

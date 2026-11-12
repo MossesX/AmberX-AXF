@@ -314,7 +314,7 @@ export function ScreenshotsTab({ onCount }: { onCount?: (n: number) => void }) {
         ) : mode === 'thumbs' ? (
           <div className="axp-ui-review__thumbs">
             {sorted.map((g) => (
-              <button key={g.id} type="button" data-fx-row className={`axp-ui-review__tcard is-${g.cover?.viewport ?? 'desktop'}`} onClick={() => openGroup(g.id)} title={g.name}>
+              <button key={g.id} type="button" data-fx-row data-fx-focus-key={g.id} className={`axp-ui-review__tcard is-${g.cover?.viewport ?? 'desktop'}`} onClick={() => openGroup(g.id)} title={g.name}>
                 {g.cover ? <Pic id={g.cover.id} alt="" className="axp-ui-review__big" /> : <span className="axp-ui-review__noimg axp-ui-review__big" />}
                 <span className="axp-ui-review__tcap fx-small"><b>{g.name}</b><span className="fx-muted">{fmtDate(g.createdAt)} · {g.count}</span></span>
               </button>
@@ -365,11 +365,11 @@ export function ScreenshotsTab({ onCount }: { onCount?: (n: number) => void }) {
       ) : mode === 'thumbs' ? (
         <div className="fx-stack axp-ui-review__tgroups">
           {groups.map((g) => (
-            <section key={g.id} className="axp-ui-review__tgroup" aria-label={g.label}>
+            <section key={g.id} className="axp-ui-review__tgroup" aria-label={g.label} data-fx-focus-key={g.id}>
               {by !== 'none' && <h3 className="axp-ui-review__thead fx-small">{g.label} <span className="fx-muted">{g.shots.length}</span></h3>}
               <div className="axp-ui-review__thumbs">
                 {g.shots.map((s) => (
-                  <button key={s.id} type="button" data-fx-row className={`axp-ui-review__tcard is-${s.viewport}${picked.includes(s.id) ? ' is-picked' : ''}`} aria-pressed={selecting ? picked.includes(s.id) : undefined} onClick={() => open(s, g.shots)} title={s.title}>
+                  <button key={s.id} type="button" data-fx-row data-fx-focus-key={s.id} className={`axp-ui-review__tcard is-${s.viewport}${picked.includes(s.id) ? ' is-picked' : ''}`} aria-pressed={selecting ? picked.includes(s.id) : undefined} onClick={() => open(s, g.shots)} title={s.title}>
                     <Pic id={s.id} alt="" className="axp-ui-review__big" />
                     <span className="axp-ui-review__tcap fx-small"><b>{s.title}</b><span className="fx-muted">{fmtDate(s.takenAt)}</span></span>
                   </button>

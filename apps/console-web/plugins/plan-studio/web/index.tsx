@@ -4,6 +4,7 @@
  * AI edits; voice planning in AmberX (the plugin targets amberx-droid too: AmberX loads it unchanged and forwards its
  * server calls to the console). Quick capture from the banner (+ Plan), Builds ▸ New plan…, the search and right-click.
  */
+import { askScreenFocus, focusKeyOf } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { Button, useRuntime } from '@console/axf/react';
@@ -30,6 +31,12 @@ export const plugin: AxfWebLibrary = {
   builtWith: { model: 'opus', builtAt: '2026-10-30' },
   register(rt) {
     rt.actions.register('plan-studio.open', () => rt.navigate(VIEW), { label: 'Open Plan Studio' });
+    rt.actions.register('plan-studio.focus', ([arg]) => {
+      const key = focusKeyOf(arg);
+      if (rt.getState().dialog) rt.closeDialog();
+      rt.navigate(VIEW);
+      if (key) askScreenFocus(VIEW, key);
+    }, { label: 'Plan Studio: bring a tab, plan, category or catalog feature forward', params: true, effect: 'navigate' });
     rt.actions.register('plan-studio.capture', () => rt.openDialog(DIALOG), { label: 'New plan (quick capture)' });
     // the banner "+ Plan": the framework's action-button widget (opens quick capture; Settings → Plugins → Plan Studio hides it)
     const paint = () => {

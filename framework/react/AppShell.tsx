@@ -13,6 +13,7 @@ import { priorityDialogs } from './components/PriorityTag';
 import { FloatingWindowsHost, TabRenderersProvider, windowDialogs, useWindowShortcuts, type TabRenderers } from './windows/WindowHost';
 import { OutputTerminalPane, terminalDialog } from './studio/OutputTerminal';
 import { useSearchHost } from './components/Search';
+import { useScreenFocusActions } from './screenFocus';
 import { Banner } from './components/Banner';
 import { FrameBanners, Slot } from './components/Slots';
 import { BannerStripPage, useBannerStripFollower } from './components/BannerStrip';
@@ -73,6 +74,8 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
   const allDialogs: DialogMap = { ...builtinDialogs, ...bannerSettingsDialog, ...bannerWidgetsDialog, ...chromeDialogs, ...priorityDialogs, ...windowDialogs, ...terminalDialog, ...dialogs };
   // Live search: views, dialogs and page text go into the runtime's search index; picks are focused here.
   useSearchHost(declaredViews, allDialogs);
+  // Every view answers <view>.focus:<key> (console_show / console_open focus): the generic one unless it has its own.
+  useScreenFocusActions(rt, Object.keys(views));
   const view = views[state.view] ?? Object.values(views)[0];
   // Kept views (`keep`): mounted the first time they're shown, then only hidden, so their state (a frame) survives.
   const [kept, setKept] = useState<string[]>([]);

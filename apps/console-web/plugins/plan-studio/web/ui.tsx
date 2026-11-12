@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState, type DragEvent } from 'react';
-import { Button, Checkbox, Chip, Icon, IconButton, Markdown, Segmented, TabGroup, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, Icon, IconButton, Markdown, Segmented, TabGroup, focusOnPage, settleScreenFocus, useRuntime, useScreenFocus } from '@console/axf/react';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import * as pc from './plan-core.mjs';
 import type { CatNode, Filter, Plan, SavedView } from './plan-core.mjs';
-import { call, fmtDay, KEYS, putPlan, reload, savePlan, setPart, statusInfo, useBusy, useStudio } from './api';
+import { call, fmtDay, KEYS, putPlan, reload, savePlan, setPart, statusInfo, useBusy, useStudio, VIEW } from './api';
 import { CommandBox, VoicePanel } from './ai';
 import { PlanEditor } from './editor';
 import { CatalogTab } from './catalog';
@@ -59,6 +59,29 @@ export function PlanStudioPage() {
     openers.add(take); take();
     return () => { openers.delete(take); };
   }, [state]);
+
+  // plan-studio.focus:<key> (console_show / console_open focus): a tab, a plan (id or title: its editor opens), a
+  // category path (Categories), a catalog feature (Catalog) or anything else drawn on the page (highlighted in place)
+  const ask = useScreenFocus(VIEW);
+  const rt = useRuntime();
+  useEffect(() => {
+    const key = ask.key;
+    if (!key || !state) return;
+    settleScreenFocus(VIEW);
+    const low = key.toLowerCase();
+    const t = (['plans', 'catalog', 'categories'] as const).find((x) => x === low);
+    if (t) { setOpen(null); setTab(t); return; }
+    const plan = state.plans.find((p) => p.id === key) ?? state.plans.find((p) => p.title.toLowerCase() === low);
+    if (plan) { setTab('plans'); setOpen({ plan, isNew: false }); return; }
+    setOpen(null);
+    if (state.categories.paths.some((c) => c.toLowerCase() === low)) setTab('categories');
+    void focusOnPage(key).then((hit) => {
+      if (hit !== 'none') return;
+      setTab('catalog'); // features live on the Catalog tab
+      void focusOnPage(key, { waitMs: 4_000 }).then((h) => { if (h === 'none') rt.toast(`Nothing called "${key}" in Plan Studio.`, 'warning'); });
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ask.n, ask.key, state]);
 
   if (!state) return <div className="fx-stack axp-plan-studio"><Head />{error ? <EmptyState icon="alert" action={{ label: 'Try again', icon: 'refresh', onClick: () => void reload() }}>{error}</EmptyState> : <LoadingSkeleton rows={8} label="Loading plans" />}</div>;
   const openId = (id: string) => { const p = state.plans.find((x) => x.id === id); if (p) setOpen({ plan: p, isNew: false }); };
@@ -187,7 +210,7 @@ function Row({ p, sel, pick, onOpen }: { p: Plan; sel: Set<string>; pick: (id: s
   const st = statusInfo(p.status);
   const t = pc.totals(p);
   return (
-    <li className={`axp-plan-studio__row${open ? ' is-open' : ''}`}>
+    <li className={`axp-plan-studio__row${open ? ' is-open' : ''}`} data-fx-focus-key={p.id}>
       <div className="axp-plan-studio__rline">
         <input type="checkbox" className="fx-check" checked={sel.has(p.id)} onChange={() => pick(p.id)} aria-label={`Select ${p.title}`} />
         <button type="button" data-fx-row className="axp-plan-studio__rmain" aria-expanded={open} onClick={() => setOpen(!open)}>
@@ -274,7 +297,7 @@ function TreeView({ plans, sel, pick, onOpen, onCategory }: { plans: Plan[]; sel
 function TreeLeaf({ p, sel, pick, onOpen }: { p: Plan; sel: Set<string>; pick: (id: string) => void; onOpen: (p: Plan) => void }) {
   const st = statusInfo(p.status);
   return (
-    <li className="axp-plan-studio__tleaf" role="treeitem" aria-selected={sel.has(p.id)}>
+    <li className="axp-plan-studio__tleaf" role="treeitem" aria-selected={sel.has(p.id)} data-fx-focus-key={p.id}>
       <input type="checkbox" className="fx-check" checked={sel.has(p.id)} onChange={() => pick(p.id)} aria-label={`Select ${p.title}`} />
       <button type="button" data-fx-row className="axp-plan-studio__tname" onClick={() => onOpen(p)}><span className={`axp-plan-studio__prio is-${p.priority.toLowerCase()}`}>{p.priority}</span>{p.title}</button>
       <Chip tone={st.tone || undefined}>{st.label}</Chip>
@@ -299,10 +322,10 @@ function Board({ plans, onOpen }: { plans: Plan[]; onOpen: (p: Plan) => void }) 
       {pc.STATUSES.map((s) => {
         const col = plans.filter((p) => p.status === s.id);
         return (
-          <section key={s.id} role="listitem" className={`axp-plan-studio__col${over === s.id ? ' is-over' : ''}`} onDragOver={(e) => { e.preventDefault(); setOver(s.id); }} onDragLeave={() => setOver('')} onDrop={(e) => void drop(e, s.id)} aria-label={s.label}>
+          <section key={s.id} role="listitem" data-fx-focus-key={s.id} className={`axp-plan-studio__col${over === s.id ? ' is-over' : ''}`} onDragOver={(e) => { e.preventDefault(); setOver(s.id); }} onDragLeave={() => setOver('')} onDrop={(e) => void drop(e, s.id)} aria-label={s.label}>
             <h3><Icon name={s.icon} size={12} />{s.label}<span className="axp-plan-studio__n">{col.length}</span></h3>
             {col.map((p) => (
-              <button key={p.id} type="button" data-fx-row draggable className="axp-plan-studio__card" onDragStart={(e) => e.dataTransfer.setData('text/plain', p.id)} onClick={() => onOpen(p)}>
+              <button key={p.id} type="button" data-fx-row data-fx-focus-key={p.id} draggable className="axp-plan-studio__card" onDragStart={(e) => e.dataTransfer.setData('text/plain', p.id)} onClick={() => onOpen(p)}>
                 <span className={`axp-plan-studio__prio is-${p.priority.toLowerCase()}`}>{p.priority}</span>
                 <span className="axp-plan-studio__ctitle">{p.title}</span>
                 <span className="fx-muted axp-plan-studio__n">{[p.category, pc.fmtMinutes(p.effort.left)].filter(Boolean).join(' · ')}</span>
@@ -326,7 +349,7 @@ function Roadmap({ plans, onOpen }: { plans: Plan[]; onOpen: (p: Plan) => void }
           <ul>{l.plans.map((p) => {
             const t = pc.totals(p);
             return (
-              <li key={p.id}><button type="button" data-fx-row className="axp-plan-studio__rmain" onClick={() => onOpen(p)}>
+              <li key={p.id} data-fx-focus-key={p.id}><button type="button" data-fx-row className="axp-plan-studio__rmain" onClick={() => onOpen(p)}>
                 <span className="axp-plan-studio__rdate">{p.targetDate ? fmtDay(p.targetDate) : '—'}</span>
                 <span className="axp-plan-studio__rtitle">{p.title}</span>
                 <span className="axp-plan-studio__bar" aria-label={`${t.progress}% done`}><span style={{ width: `${t.progress}%` }} /></span>
@@ -382,7 +405,7 @@ function CategoriesTab() {
       {paths.length === 0 ? <EmptyState icon="folder">No categories yet.</EmptyState> : (
         <ul className="axp-plan-studio__catlist" role="listbox" aria-label="Categories">
           {flat(tree).map(({ n, d }) => (
-            <li key={n.path} role="option" aria-selected={sel === n.path} style={{ ['--axp-ps-depth' as string]: d }}>
+            <li key={n.path} role="option" aria-selected={sel === n.path} data-fx-focus-key={n.path} style={{ ['--axp-ps-depth' as string]: d }}>
               <button type="button" data-fx-row className={`axp-plan-studio__tname${sel === n.path ? ' is-on' : ''}`} onClick={() => setSel(sel === n.path ? '' : n.path)}><Icon name="folder" size={12} />{n.name}<span className="axp-plan-studio__n">{n.count} here · {n.total} in all</span></button>
             </li>
           ))}

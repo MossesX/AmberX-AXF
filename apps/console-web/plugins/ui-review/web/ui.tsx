@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { AgentAvatar, Button, Checkbox, Icon, IconButton, Segmented, TabGroup, useRuntime } from '@console/axf/react';
+import { AgentAvatar, Button, Checkbox, Icon, IconButton, Segmented, TabGroup, focusOnPage, settleScreenFocus, useRuntime, useScreenFocus } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { OriginFor } from '@console/buildOrigin';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
@@ -8,7 +8,7 @@ import * as cf from './conform.mjs';
 import * as P from '../../../../../framework/core/ui-predict.mjs';
 import type { Prediction } from '../../../../../framework/core/ui-predict.mjs';
 import type { Decision, Item, Kind } from './review-core.mjs';
-import { FOLDER, GROUP_BYS, GROUP_PARAM, KEYS, VIEWS, type GroupBy, type ViewId } from './keys';
+import { FOLDER, GROUP_BYS, GROUP_PARAM, KEYS, VIEW, VIEWS, type GroupBy, type ViewId } from './keys';
 import { ShotBrowser } from './shots';
 import { ScreenshotsTab } from './screenshots';
 import { ChoicesTab, choicesOf } from './choices';
@@ -236,6 +236,30 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
     catch (e) { rt.toast((e as Error).message, 'danger'); }
   };
   const toggleOpen = (id: string) => setOpen((o) => (o.includes(id) ? o.filter((x) => x !== id) : [...o, id]));
+  // ui-review.focus:<key> (console_show / console_open focus): a tab, a section, a review group, an item or a screenshot.
+  // An item clears the filters that would hide it, opens its row and scrolls to it; anything else lands on Screenshots.
+  const ask = useScreenFocus(VIEW);
+  useEffect(() => {
+    const key = ask.key;
+    if (!key || !data) return;
+    settleScreenFocus(VIEW);
+    const low = key.toLowerCase();
+    if (low === 'review' || low === 'waiting') { setTabRaw('review'); return; }
+    if (low === 'shots' || low === 'screenshots') { setTabRaw('shots'); return; }
+    const k = kinds.find((x) => x.id.toLowerCase() === low || x.label.toLowerCase() === low);
+    if (k) { setTabRaw('review'); setKindRaw(k.id); return; }
+    if (all.some((x) => x.id === key)) {
+      setTabRaw('review'); setKindRaw(''); setStatusRaw(''); setApp(''); setQ(''); setGroupId('');
+      if (view === 'compare') setViewRaw('grid');
+      setOpen((o) => (o.includes(key) ? o : [...o, key]));
+      void focusOnPage(key);
+      return;
+    }
+    if (all.some((x) => x.group === key)) { setTabRaw('review'); setKindRaw(''); setStatusRaw(''); setGroupId(key); return; }
+    setTabRaw('shots');
+    void focusOnPage(key).then((hit) => { if (hit === 'none') rt.toast(`Nothing called "${key}" in UI Review.`, 'warning'); });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ask.n, ask.key, data]);
   const ctx: Review = { kinds, sel, setSel, open, toggleOpen, decide, picked, togglePick, device, reload: load };
 
   if (!data) return <LoadingSkeleton rows={6} label="Loading UI Review" />;

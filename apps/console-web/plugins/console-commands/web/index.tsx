@@ -128,8 +128,10 @@ function runMessage(rt: AxfRuntime, m: ConsoleMessage, history: string[]): [bool
   switch (m.op) {
     case 'open':
       if (m.kind === 'screen') {
+        // a dialog left on top (settings, a picker) would cover the screen asked for: it closes first
+        if (rt.getState().dialog) rt.closeDialog();
         rt.search.focus({ id: `view:${m.target}`, kind: 'view', label: m.label ?? m.target!, focus: { kind: 'view', view: m.target! } });
-        const opened = rt.getState().view === m.target || !!rt.getState().dialog;
+        const opened = rt.getState().view === m.target || !!rt.getState().dialog; // a view placed as a dialog opens as one
         const label = m.label ?? m.target!;
         if (!m.focus) return [opened, `opened ${label}`];
         // the screen brings the tab or item forward itself (opens the tab, scrolls the row into view, expands, highlights)
@@ -139,6 +141,8 @@ function runMessage(rt: AxfRuntime, m: ConsoleMessage, history: string[]): [bool
         return [opened && ran, ran ? `opened ${label} on ${m.focus}` : `opened ${label}; focusing "${m.focus}" didn't run here`];
       }
       if (m.kind === 'dialog') { rt.openDialog(m.target!, m.arg ? { arg: m.arg } : undefined); return [true, `opened ${m.label ?? m.target}`]; }
+      // a settings tab with a row, group or panel to bring forward goes through settings.focus (unfolds and highlights it)
+      if ((m.anchor || m.focus) && rt.actions.get('settings.focus')) { rt.dispatch(`settings.focus:${encodeURIComponent(`${m.target}#${m.anchor || m.focus}`)}`); return [true, `opened ${m.label ?? m.target} settings on ${m.anchor || m.focus}`]; }
       rt.search.focus({ id: `settings-tab:${m.target}`, kind: 'setting', label: m.label ?? m.target!, focus: { kind: 'setting', tab: m.target!, ...(m.anchor ? { anchor: m.anchor } : {}) } });
       return [true, `opened ${m.label ?? m.target} settings`];
     case 'run':

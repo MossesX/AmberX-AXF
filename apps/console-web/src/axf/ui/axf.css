@@ -1283,6 +1283,8 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 .fx-iconbtn.is-active { color: var(--fx-accent); }
 .fx-window { position: fixed; display: flex; flex-direction: column; background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-lg); box-shadow: var(--fx-shadow-lg); overflow: hidden; min-width: 200px; min-height: 160px; }
 .fx-window.is-focused { border-color: var(--fx-accent); }
+/* screen-focus.ts: the tab, group or item a console_show / <view>.focus brought forward */
+.fx-focus-hit { box-shadow: 0 0 0 var(--fx-border-w) var(--fx-accent); border-radius: var(--fx-radius-sm); scroll-margin: var(--fx-dens-gap-lg); }
 .fx-window__title { display: flex; align-items: center; gap: var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-2xl); background: var(--fx-surface2); border-bottom: var(--fx-border-w) solid var(--fx-border); cursor: move; user-select: none; font-size: var(--fx-type-root-md); font-weight: 600; touch-action: none; }
 .fx-window__name { flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .fx-window__badge { font-size: var(--fx-type-root-2xs); text-transform: uppercase; letter-spacing: .06em; color: var(--fx-muted); }

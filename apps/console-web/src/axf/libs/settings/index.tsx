@@ -12,6 +12,7 @@
  * search, descriptions, tab order/labels, what is left out and extra option groups, so apps loading the same
  * settings asset share one settings interface with the same options. No settings asset = the page as before.
  */
+import { focusKeyOf, focusOnPage, askScreenFocus } from '../../core/screen-focus';
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { SettingsPanel } from '../../core';
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, SKIN_COLOR_SLOT, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, hideableTypes, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
@@ -981,6 +982,25 @@ export const library: AxfWebLibrary = {
       { id: 'axf-settings-levels-add', label: 'Add to visible', icon: 'plus', action: LEVEL_EDITOR_ACTIONS.add },
       { id: 'axf-settings-levels-remove', label: 'Remove', icon: 'minus', action: LEVEL_EDITOR_ACTIONS.remove },
     ] });
+    // settings.focus:<tab | tab label | tab#anchor | setting key | group or panel id>: the tab opens, the row or group
+    // scrolls into view, unfolds and is highlighted (screen-focus.ts; console_show focus).
+    rt.actions.register('settings.focus', ([arg]) => {
+      const key = focusKeyOf(arg);
+      if (rt.getState().dialog) rt.closeDialog();
+      const [head = '', anchor = ''] = key.split('#');
+      const low = head.toLowerCase();
+      const tabs = rt.settings.listTabs();
+      const tab = tabs.find((t) => t.id === head || t.label.toLowerCase() === low)?.id
+        ?? tabs.find((t) => rt.settings.groupsIn(t.id).some((g) => g.id === head || g.settings.some((x) => x.key === head)) || rt.settings.panelsIn(t.id).some((p) => p.id === head))?.id;
+      rt.dispatch(tab ? `settings.open:${tab}` : 'app.settings');
+      const target = anchor || (tab && (head === tab || low === rt.settings.getTab(tab)?.label.toLowerCase()) ? '' : head);
+      askScreenFocus(VIEW, target || tab || '');
+      // a setting inside a folded group: the group unfolds first, then its row comes forward
+      const home = tab ? rt.settings.groupsIn(tab).find((g) => g.settings.some((x) => x.key === target)) : undefined;
+      if (target) void (home ? focusOnPage(`settings-group:${home.id}`) : Promise.resolve('none'))
+        .then(() => focusOnPage(target))
+        .then((hit) => { if (hit === 'none') rt.toast(`No setting "${target}" here.`, 'warning'); });
+    }, { label: 'Settings: open a tab and bring a setting, group or panel forward', params: true, effect: 'navigate' });
     rt.actions.register('settings.open', ([tab]) => {
       // A plugin's own tab follows the plugin's "Opens in" pick (window-resize-fix, Nov 3 2026, Brett: "I selected
       // dialog for the terminal settings in its settings, but it doesn't open"): dialog = that tab in a pop-up dialog
