@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-11 23:51 UTC · `full-api-cli-control-of-everything-plus-an-offli` s13 done (all) · orchestrator
 - 2026-11-11 23:52 UTC · `full-api-cli-control-of-everything-plus-an-offli` s14 done (all) · orchestrator
 - 2026-11-12 00:07 UTC · `full-api-cli-control-of-everything-plus-an-offli` s15 done (all) · orchestrator
 - 2026-11-12 00:09 UTC · `full-api-cli-control-of-everything-plus-an-offli` s16 done (all) · orchestrator
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:00 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` s4 done (all) · orchestrator
 - 2026-11-12 03:00 UTC · `account-order-hulu-moses-x-api-account-shown-on-every-build` → queued, note (all) · foreign-write
 - 2026-11-12 03:00 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` s5 done (all) · orchestrator
+- 2026-11-12 03:04 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` note (all) · orchestrator
 
 ## Token passes (log)
 

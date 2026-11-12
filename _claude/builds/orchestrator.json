@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T03:02:05.804Z",
+ "updatedAt": "2026-11-12T03:04:34.999Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -100919,7 +100919,7 @@
    "branch": "claude/one-source-of-truth-console-shows-only-what-the-server-says-is-running",
    "pr": "",
    "createdAt": "2026-11-12T02:37:57.927Z",
-   "updatedAt": "2026-11-12T02:51:28.316Z",
+   "updatedAt": "2026-11-12T03:04:33.083Z",
    "builtAt": "",
    "notes": [
     {
@@ -100933,6 +100933,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-one-source-of-truth-console-shows-only-what-the---sully, own login copy)",
      "at": "2026-11-12T02:42:45.576Z"
+    },
+    {
+     "text": "s1 and s2 done; s3 code and tests done and pushed (branch claude/one-source-of-truth-console-shows-only-what-the-server-says-is-running, 3 commits: check-live-truth 27/27, pipeline 46/46, agent-slots 19/19, orchestrator 33/33, tsc clean). Not done: the PR. GitHub returned 'secondary rate limit, blocked from content creation' for this token on 7 tries over 12 min (gh GraphQL and REST), so there's no PR, no landing, no redeploy and no AmberX FYI. Next: open the PR with the body in .axf-pr-body.md in the worktree (or let auto-land open it), link it, then tick s3 once it's live. UI Review shots weren't taken (headless, no branch build of the console); the PR says so.",
+     "at": "2026-11-12T03:04:33.083Z"
     }
    ],
    "approvals": [],
