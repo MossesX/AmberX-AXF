@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-11 23:40 UTC · `console-commands-reliable` note (all) · reconciler
 - 2026-11-11 23:43 UTC · `full-api-cli-control-of-everything-plus-an-offli` s9 done (all) · orchestrator
 - 2026-11-11 23:45 UTC · `full-api-cli-control-of-everything-plus-an-offli` s10 done (all) · orchestrator
 - 2026-11-11 23:45 UTC · `full-api-cli-control-of-everything-plus-an-offli` s11 done (all) · orchestrator
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:57 UTC · `merge-all-ready-buttons-server-side-lander` note (all) · Claude voice (Gizmo)
 - 2026-11-12 02:58 UTC · `all-banners-hide-when-empty` s2 done (all) · orchestrator
 - 2026-11-12 02:59 UTC · `account-order-hulu-moses-x-api-account-shown-on-every-build` added (3 steps) (all) · Claude voice (Gizmo)
+- 2026-11-12 02:59 UTC · `account-order-hulu-moses-x-api-account-shown-on-every-build` → queued, note (all) · console
 
 ## Token passes (log)
 
