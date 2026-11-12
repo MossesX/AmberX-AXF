@@ -98,7 +98,15 @@
    "brief": "",
    "verbatim": true,
    "from": "",
-   "addenda": []
+   "addenda": [
+    {
+     "said": "And any any plugin or UI that has a custom settings interface, it uses that by default. And new and existing. Build all this now.",
+     "at": "",
+     "source": "voice",
+     "by": "Claude (voice)",
+     "verbatim": true
+    }
+   ]
   },
   "adopt-today-s-direct-launched-builds-record-only": {
    "said": "Yeah, might as well fuck it, do it. But that motherfucker better not be launched.",

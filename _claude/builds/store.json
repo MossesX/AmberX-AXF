@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3612,
- "updatedAt": "2026-11-12T18:33:26.121Z",
+ "rev": 3613,
+ "updatedAt": "2026-11-12T18:33:39.818Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175910,9 +175910,9 @@
    "pendingId": "",
    "branch": "",
    "pr": "",
-   "priority": "P2",
+   "priority": "P0",
    "createdAt": "2026-11-12T18:33:10.932Z",
-   "updatedAt": "2026-11-12T18:33:12.691Z",
+   "updatedAt": "2026-11-12T18:33:33.920Z",
    "builtAt": "",
    "notes": [
     {
@@ -175932,7 +175932,15 @@
     "brief": "",
     "verbatim": true,
     "from": "",
-    "addenda": []
+    "addenda": [
+     {
+      "said": "And any any plugin or UI that has a custom settings interface, it uses that by default. And new and existing. Build all this now.",
+      "at": "",
+      "source": "voice",
+      "by": "Claude (voice)",
+      "verbatim": true
+     }
+    ]
    },
    "pipeline": {
     "queuedAt": "2026-11-12T18:33:12.290Z",
@@ -175965,7 +175973,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

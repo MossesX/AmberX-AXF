@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T18:33:26.121Z",
+ "updatedAt": "2026-11-12T18:33:39.818Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -108170,9 +108170,9 @@
    "pendingId": "",
    "branch": "",
    "pr": "",
-   "priority": "P2",
+   "priority": "P0",
    "createdAt": "2026-11-12T18:33:10.932Z",
-   "updatedAt": "2026-11-12T18:33:12.691Z",
+   "updatedAt": "2026-11-12T18:33:33.920Z",
    "builtAt": "",
    "notes": [
     {
@@ -108192,7 +108192,15 @@
     "brief": "",
     "verbatim": true,
     "from": "",
-    "addenda": []
+    "addenda": [
+     {
+      "said": "And any any plugin or UI that has a custom settings interface, it uses that by default. And new and existing. Build all this now.",
+      "at": "",
+      "source": "voice",
+      "by": "Claude (voice)",
+      "verbatim": true
+     }
+    ]
    },
    "steps": []
   }
