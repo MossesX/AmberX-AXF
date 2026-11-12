@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3347,
- "updatedAt": "2026-11-12T02:39:10.688Z",
+ "rev": 3348,
+ "updatedAt": "2026-11-12T02:39:19.321Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -160395,7 +160395,7 @@
    "branch": "claude/build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides",
    "pr": "#505",
    "createdAt": "2026-11-12T02:02:25.273Z",
-   "updatedAt": "2026-11-12T02:38:17.359Z",
+   "updatedAt": "2026-11-12T02:38:34.222Z",
    "builtAt": "",
    "notes": [
     {
@@ -160569,8 +160569,8 @@
      "uid": "st-mwcwkjtg0dbcyh",
      "title": "",
      "text": "Background as its own asset type + background token for every UI + Background Designer (sources: background-is-its-own-asset-type-with-asset-sett, background-token-for-every-ui-background-designe)",
-     "model": "Opus",
-     "why": "",
+     "model": "Fable",
+     "why": "New asset type 'background' (schemas/asset-types.json), a background token contract for every app and its axHub style slot: schema + asset type + contract work runs on Fable (Brett, Nov 4 2026).",
      "phase": "",
      "group": "",
      "estimate": "30 min",
@@ -160582,9 +160582,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T02:02:25.274Z",
-     "updatedAt": "2026-11-12T02:02:25.274Z"
+     "updatedAt": "2026-11-12T02:38:34.519Z"
     },
     {
      "id": "s7",
@@ -160617,7 +160617,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
