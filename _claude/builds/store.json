@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3410,
- "updatedAt": "2026-11-12T02:59:54.902Z",
+ "rev": 3411,
+ "updatedAt": "2026-11-12T03:00:15.300Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -161772,7 +161772,7 @@
    "branch": "claude/all-banners-hide-when-empty",
    "pr": "",
    "createdAt": "2026-11-12T02:45:08.669Z",
-   "updatedAt": "2026-11-12T02:58:20.993Z",
+   "updatedAt": "2026-11-12T03:00:08.943Z",
    "builtAt": "",
    "notes": [
     {
@@ -161786,6 +161786,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-all-banners-hide-when-empty--joey, own login copy)",
      "at": "2026-11-12T02:52:18.698Z"
+    },
+    {
+     "text": "Opus phase: banner frame/strip/group hide when empty (live), BannerBase, CI check-banner-empty. Gap for a Fable step: banner empty/shown state readable over REST/MCP needs console-commands normalizeHere to carry a banners field (contract change). UI Review shots not taken (no preview build of the branch).",
+     "at": "2026-11-12T03:00:08.943Z"
     }
    ],
    "approvals": [],
@@ -161906,7 +161910,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
