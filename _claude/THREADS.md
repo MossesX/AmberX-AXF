@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-11 23:37 UTC · `full-api-cli-control-of-everything-plus-an-offli` s7 done (all) · orchestrator
 - 2026-11-11 23:38 UTC · `console-commands-reliable` s1 done, → running (all) · orchestrator
 - 2026-11-11 23:38 UTC · `console-commands-reliable` s2 done (all) · orchestrator
 - 2026-11-11 23:38 UTC · `console-commands-reliable` s3 done (all) · orchestrator
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:52 UTC · `all-banners-hide-when-empty` branch claude/all-banners-hide-when-empty (all) · pipeline
 - 2026-11-12 02:52 UTC · `all-banners-hide-when-empty` note (all) · orchestrator
 - 2026-11-12 02:54 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` s2 done (all) · orchestrator
+- 2026-11-12 02:55 UTC · `server-gate-one-session-per-build-no-duplicate-launches` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
