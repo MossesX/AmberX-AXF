@@ -776,16 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 02:08 UTC · `toolbar-labels-managed-in-each-toolbar-s-setting` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `tap-to-confirm-switch-in-every-toolbar-s-own-set` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `big-library-of-snappable-title-bar-widgets-each-` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `every-banner-title-bar-and-toolbar-snappable-ass` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `clean-up-plan-studio-simplify-remove-redundancy` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `agent-profile-schema-skills-personas-with-a-big-` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `standing-rule-every-ui-ships-with-full-api-contr` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `adopt-today-s-direct-launched-builds-record-only` → archived, note (all) · console
-- 2026-11-12 02:08 UTC · `orchestrator-chain-trace-brownie-molly-group-cha` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `investor-demo-player-shell-with-login-gate-skins` → archived, note (all) · console
 - 2026-11-12 02:09 UTC · `slotstest-2208251-b` → archived, note (all) · console
 - 2026-11-12 02:09 UTC · `amberx-build-notifications-for-every-stage-start` PR #499 (all) · builds-live
 - 2026-11-12 02:09 UTC · `slotstest-2208251-a` → archived, note (all) · console
@@ -1176,6 +1166,16 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:29 UTC · `plugin-commands-auto` note (all) · backfill
 - 2026-11-12 03:29 UTC · `menu-scroll` note (all) · backfill
 - 2026-11-12 03:29 UTC · `auto-land` note (all) · backfill
+- 2026-11-12 03:29 UTC · `crew-live` note (all) · backfill
+- 2026-11-12 03:29 UTC · `toolbar-tap-confirm` note (all) · backfill
+- 2026-11-12 03:29 UTC · `claude-settings` note (all) · backfill
+- 2026-11-12 03:29 UTC · `follow-amber` note (all) · backfill
+- 2026-11-12 03:29 UTC · `agent-pick` note (all) · backfill
+- 2026-11-12 03:29 UTC · `ui-review-shots` note (all) · backfill
+- 2026-11-12 03:29 UTC · `terminal-vps-host` note (all) · backfill
+- 2026-11-12 03:29 UTC · `window-resize-fix` note (all) · backfill
+- 2026-11-12 03:29 UTC · `home-cards-live` note (all) · backfill
+- 2026-11-12 03:29 UTC · `ui-review-predicted` note (all) · backfill
 
 ## Token passes (log)
 
