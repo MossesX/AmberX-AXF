@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3622,
- "updatedAt": "2026-11-12T18:38:31.666Z",
+ "rev": 3623,
+ "updatedAt": "2026-11-12T18:39:09.343Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -100013,10 +100013,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T23:57:03.853Z",
-     "why": "subscription account mossesx-max-"
+     "account": "",
+     "kind": "",
+     "at": "2026-11-12T18:39:06.485Z",
+     "why": "no usable Claude account (account-3: not a worker (workers take every headless job); account-5: API key (billed per token): takes a build only when routed there; mossesx-api: API key (billed per token): takes a build only when routed there; mossesx-max-: switched off for the pipeline); overflow: no "
     },
     "tried": [],
     "pickedAt": "",
@@ -100166,7 +100166,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 57,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -109307,10 +109307,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T23:57:03.853Z",
-     "why": "subscription account mossesx-max-"
+     "account": "",
+     "kind": "",
+     "at": "2026-11-12T18:39:06.489Z",
+     "why": "no usable Claude account (account-3: not a worker (workers take every headless job); account-5: API key (billed per token): takes a build only when routed there; mossesx-api: API key (billed per token): takes a build only when routed there; mossesx-max-: switched off for the pipeline); overflow: no "
     },
     "tried": [],
     "pickedAt": "",
@@ -109416,7 +109416,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -141179,10 +141179,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T23:57:03.854Z",
-     "why": "subscription account mossesx-max-"
+     "account": "",
+     "kind": "",
+     "at": "2026-11-12T18:39:06.490Z",
+     "why": "no usable Claude account (account-3: not a worker (workers take every headless job); account-5: API key (billed per token): takes a build only when routed there; mossesx-api: API key (billed per token): takes a build only when routed there; mossesx-max-: switched off for the pipeline); overflow: no "
     },
     "tried": [],
     "pickedAt": "",
@@ -141269,7 +141269,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 57,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -147754,10 +147754,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T23:57:03.854Z",
-     "why": "subscription account mossesx-max-"
+     "account": "",
+     "kind": "",
+     "at": "2026-11-12T18:39:06.490Z",
+     "why": "no usable Claude account (account-3: not a worker (workers take every headless job); account-5: API key (billed per token): takes a build only when routed there; mossesx-api: API key (billed per token): takes a build only when routed there; mossesx-max-: switched off for the pipeline); overflow: no "
     },
     "tried": [],
     "pickedAt": "",
@@ -148034,7 +148034,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 57,
+   "rev": 58,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -148759,10 +148759,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T23:57:03.854Z",
-     "why": "subscription account mossesx-max-"
+     "account": "",
+     "kind": "",
+     "at": "2026-11-12T18:39:06.490Z",
+     "why": "no usable Claude account (account-3: not a worker (workers take every headless job); account-5: API key (billed per token): takes a build only when routed there; mossesx-api: API key (billed per token): takes a build only when routed there; mossesx-max-: switched off for the pipeline); overflow: no "
     },
     "tried": [],
     "pickedAt": "",
@@ -149044,7 +149044,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 55,
+   "rev": 56,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -150123,10 +150123,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T23:57:03.854Z",
-     "why": "subscription account mossesx-max-"
+     "account": "",
+     "kind": "",
+     "at": "2026-11-12T18:39:06.491Z",
+     "why": "no usable Claude account (account-3: not a worker (workers take every headless job); account-5: API key (billed per token): takes a build only when routed there; mossesx-api: API key (billed per token): takes a build only when routed there; mossesx-max-: switched off for the pipeline); overflow: no "
     },
     "tried": [],
     "pickedAt": "",
@@ -150399,7 +150399,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 59,
+   "rev": 60,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -152460,10 +152460,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T23:57:03.854Z",
-     "why": "subscription account mossesx-max-"
+     "account": "",
+     "kind": "",
+     "at": "2026-11-12T18:39:06.491Z",
+     "why": "no usable Claude account (account-3: not a worker (workers take every headless job); account-5: API key (billed per token): takes a build only when routed there; mossesx-api: API key (billed per token): takes a build only when routed there; mossesx-max-: switched off for the pipeline); overflow: no "
     },
     "tried": [],
     "pickedAt": "",
@@ -152556,7 +152556,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -152663,10 +152663,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T23:57:03.854Z",
-     "why": "subscription account mossesx-max-"
+     "account": "",
+     "kind": "",
+     "at": "2026-11-12T18:39:06.491Z",
+     "why": "no usable Claude account (account-3: not a worker (workers take every headless job); account-5: API key (billed per token): takes a build only when routed there; mossesx-api: API key (billed per token): takes a build only when routed there; mossesx-max-: switched off for the pipeline); overflow: no "
     },
     "tried": [],
     "pickedAt": "",
@@ -152912,7 +152912,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 63,
+   "rev": 64,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -161609,10 +161609,10 @@
     "dispatchedAt": "2026-11-12T01:45:51.956Z",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T23:57:03.854Z",
-     "why": "subscription account mossesx-max-"
+     "account": "",
+     "kind": "",
+     "at": "2026-11-12T18:39:06.491Z",
+     "why": "no usable Claude account (account-3: not a worker (workers take every headless job); account-5: API key (billed per token): takes a build only when routed there; mossesx-api: API key (billed per token): takes a build only when routed there; mossesx-max-: switched off for the pipeline); overflow: no "
     },
     "tried": [],
     "pickedAt": "2026-11-12T01:45:51.956Z",
@@ -161699,7 +161699,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -161791,10 +161791,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-10T23:57:03.854Z",
-     "why": "subscription account mossesx-max-"
+     "account": "",
+     "kind": "",
+     "at": "2026-11-12T18:39:06.491Z",
+     "why": "no usable Claude account (account-3: not a worker (workers take every headless job); account-5: API key (billed per token): takes a build only when routed there; mossesx-api: API key (billed per token): takes a build only when routed there; mossesx-max-: switched off for the pipeline); overflow: no "
     },
     "tried": [],
     "pickedAt": "",
@@ -161881,7 +161881,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -163890,10 +163890,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-12T01:47:20.085Z",
-     "why": "subscription account mossesx-max-"
+     "account": "",
+     "kind": "",
+     "at": "2026-11-12T18:39:06.491Z",
+     "why": "no usable Claude account (account-3: not a worker (workers take every headless job); account-5: API key (billed per token): takes a build only when routed there; mossesx-api: API key (billed per token): takes a build only when routed there; mossesx-max-: switched off for the pipeline); overflow: no "
     },
     "tried": [],
     "pickedAt": "",
@@ -164354,7 +164354,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -165360,10 +165360,10 @@
     "dispatchedAt": "2026-11-12T02:16:25.728Z",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-12T02:05:10.392Z",
-     "why": "subscription account mossesx-max-"
+     "account": "",
+     "kind": "",
+     "at": "2026-11-12T18:39:06.492Z",
+     "why": "no usable Claude account (account-3: not a worker (workers take every headless job); account-5: API key (billed per token): takes a build only when routed there; mossesx-api: API key (billed per token): takes a build only when routed there; mossesx-max-: switched off for the pipeline); overflow: no "
     },
     "tried": [],
     "pickedAt": "2026-11-12T02:16:25.728Z",
@@ -165447,7 +165447,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -165559,10 +165559,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-12T02:38:08.900Z",
-     "why": "subscription account mossesx-max-"
+     "account": "",
+     "kind": "",
+     "at": "2026-11-12T18:39:06.492Z",
+     "why": "no usable Claude account (account-3: not a worker (workers take every headless job); account-5: API key (billed per token): takes a build only when routed there; mossesx-api: API key (billed per token): takes a build only when routed there; mossesx-max-: switched off for the pipeline); overflow: no "
     },
     "tried": [],
     "pickedAt": "",
@@ -165690,7 +165690,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -165788,10 +165788,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-12T02:38:08.900Z",
-     "why": "subscription account mossesx-max-"
+     "account": "",
+     "kind": "",
+     "at": "2026-11-12T18:39:06.492Z",
+     "why": "no usable Claude account (account-3: not a worker (workers take every headless job); account-5: API key (billed per token): takes a build only when routed there; mossesx-api: API key (billed per token): takes a build only when routed there; mossesx-max-: switched off for the pipeline); overflow: no "
     },
     "tried": [],
     "pickedAt": "",
@@ -165875,7 +165875,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -165946,10 +165946,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-12T02:42:04.348Z",
-     "why": "subscription account mossesx-max-"
+     "account": "",
+     "kind": "",
+     "at": "2026-11-12T18:39:06.492Z",
+     "why": "no usable Claude account (account-3: not a worker (workers take every headless job); account-5: API key (billed per token): takes a build only when routed there; mossesx-api: API key (billed per token): takes a build only when routed there; mossesx-max-: switched off for the pipeline); overflow: no "
     },
     "tried": [],
     "pickedAt": "",
@@ -166011,7 +166011,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -166081,10 +166081,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-12T02:42:04.349Z",
-     "why": "subscription account mossesx-max-"
+     "account": "",
+     "kind": "",
+     "at": "2026-11-12T18:39:06.492Z",
+     "why": "no usable Claude account (account-3: not a worker (workers take every headless job); account-5: API key (billed per token): takes a build only when routed there; mossesx-api: API key (billed per token): takes a build only when routed there; mossesx-max-: switched off for the pipeline); overflow: no "
     },
     "tried": [],
     "pickedAt": "",
@@ -166146,7 +166146,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -166237,10 +166237,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-12T02:43:05.253Z",
-     "why": "subscription account mossesx-max-"
+     "account": "",
+     "kind": "",
+     "at": "2026-11-12T18:39:06.492Z",
+     "why": "no usable Claude account (account-3: not a worker (workers take every headless job); account-5: API key (billed per token): takes a build only when routed there; mossesx-api: API key (billed per token): takes a build only when routed there; mossesx-max-: switched off for the pipeline); overflow: no "
     },
     "tried": [],
     "pickedAt": "",
@@ -166368,7 +166368,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -166620,10 +166620,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-12T02:47:05.996Z",
-     "why": "subscription account mossesx-max-"
+     "account": "",
+     "kind": "",
+     "at": "2026-11-12T18:39:06.492Z",
+     "why": "no usable Claude account (account-3: not a worker (workers take every headless job); account-5: API key (billed per token): takes a build only when routed there; mossesx-api: API key (billed per token): takes a build only when routed there; mossesx-max-: switched off for the pipeline); overflow: no "
     },
     "tried": [],
     "pickedAt": "",
@@ -166685,7 +166685,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -174051,10 +174051,10 @@
     "dispatchedAt": "2026-11-12T11:08:09.491Z",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-12T10:40:30.038Z",
-     "why": "subscription account mossesx-max-"
+     "account": "",
+     "kind": "",
+     "at": "2026-11-12T18:39:06.492Z",
+     "why": "no usable Claude account (account-3: not a worker (workers take every headless job); account-5: API key (billed per token): takes a build only when routed there; mossesx-api: API key (billed per token): takes a build only when routed there; mossesx-max-: switched off for the pipeline); overflow: no "
     },
     "tried": [],
     "pickedAt": "2026-11-12T11:08:09.491Z",
@@ -174141,7 +174141,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -174607,10 +174607,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-12T10:50:38.180Z",
-     "why": "subscription account mossesx-max-"
+     "account": "",
+     "kind": "",
+     "at": "2026-11-12T18:39:06.492Z",
+     "why": "no usable Claude account (account-3: not a worker (workers take every headless job); account-5: API key (billed per token): takes a build only when routed there; mossesx-api: API key (billed per token): takes a build only when routed there; mossesx-max-: switched off for the pipeline); overflow: no "
     },
     "tried": [],
     "pickedAt": "",
@@ -174697,7 +174697,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -174791,10 +174791,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-12T10:53:19.870Z",
-     "why": "subscription account mossesx-max-"
+     "account": "",
+     "kind": "",
+     "at": "2026-11-12T18:39:06.492Z",
+     "why": "no usable Claude account (account-3: not a worker (workers take every headless job); account-5: API key (billed per token): takes a build only when routed there; mossesx-api: API key (billed per token): takes a build only when routed there; mossesx-max-: switched off for the pipeline); overflow: no "
     },
     "tried": [],
     "pickedAt": "",
@@ -174991,7 +174991,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -175046,10 +175046,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-12T15:32:04.258Z",
-     "why": "subscription account mossesx-max-"
+     "account": "",
+     "kind": "",
+     "at": "2026-11-12T18:39:06.492Z",
+     "why": "no usable Claude account (account-3: not a worker (workers take every headless job); account-5: API key (billed per token): takes a build only when routed there; mossesx-api: API key (billed per token): takes a build only when routed there; mossesx-max-: switched off for the pipeline); overflow: no "
     },
     "tried": [],
     "pickedAt": "",
@@ -175133,7 +175133,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -175178,10 +175178,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-12T15:34:04.615Z",
-     "why": "subscription account mossesx-max-"
+     "account": "",
+     "kind": "",
+     "at": "2026-11-12T18:39:06.492Z",
+     "why": "no usable Claude account (account-3: not a worker (workers take every headless job); account-5: API key (billed per token): takes a build only when routed there; mossesx-api: API key (billed per token): takes a build only when routed there; mossesx-max-: switched off for the pipeline); overflow: no "
     },
     "tried": [],
     "pickedAt": "",
@@ -175243,7 +175243,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
