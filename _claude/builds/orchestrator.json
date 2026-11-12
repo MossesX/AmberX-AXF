@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T01:53:55.820Z",
+ "updatedAt": "2026-11-12T01:54:06.312Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -97220,14 +97220,14 @@
    "title": "Molly gap: the console frame hands Molly its token once (embed@1 credentials) and the console API allows Molly's origin",
    "category": "",
    "detail": "Found by molly-sign-in-once s1. Two halves. (1) The console API refuses cross-origin calls from Molly: OPTIONS https://console.amberxai.com/api/me with Origin https://molly.amberxai.com answers 401 with no CORS headers (the token check runs before FastAPI's CORSMiddleware, and allow_origins * cannot be used by the wall). Let preflights through and answer an allow-list of amberxai.com app origins with Access-Control-Allow-Headers authorization, content-type, accept. (2) The console token lives only in the console origin's storage (axf-console:token); Molly keeps its own copy (molly:console-token) that today a person must paste. Add an embed@1 message (guest to host, e.g. credentials with {app, scheme, token}) the console frame sends once to a host it recognises (frame-ancestors origin, embed host name), handled by Molly's xLayout host into the console provider's signIn(token); never to a URL or a log. Molly side is in place: apps/molly/src/molly/credentials.ts (console provider, bearer, credentials omit).",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "molly-sign-in-once",
    "pendingId": "",
    "branch": "claude/molly-gap-console-token-handoff",
    "pr": "",
    "createdAt": "2026-11-10T22:09:29.615Z",
-   "updatedAt": "2026-11-12T01:43:32.542Z",
+   "updatedAt": "2026-11-12T01:54:04.857Z",
    "builtAt": "",
    "notes": [
     {
@@ -97245,6 +97245,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-molly-gap-console-token-handoff--sully, own login copy)",
      "at": "2026-11-12T01:43:32.542Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 1) with 3 steps left: back in the Queue (run 1).",
+     "at": "2026-11-12T01:54:04.857Z"
     }
    ],
    "approvals": [],
