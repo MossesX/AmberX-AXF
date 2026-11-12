@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 22:09 UTC · `molly-gap-axhub-cors` added (0 steps) (all) · orchestrator
 - 2026-11-10 22:09 UTC · `molly-gap-expenses-cors` added (0 steps) (all) · orchestrator
 - 2026-11-10 22:09 UTC · `molly-gap-console-token-handoff` added (0 steps) (all) · orchestrator
 - 2026-11-10 22:09 UTC · `molly-gap-remote-actions` added (0 steps) (all) · orchestrator
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 01:58 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` s2 done (all) · orchestrator
 - 2026-11-12 01:59 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` → queued, note (all) · pipeline
 - 2026-11-12 01:59 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` PR #498 (all) · builds-live
+- 2026-11-12 01:59 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` added (3 steps) (all) · Claude voice (Gizmo)
 
 ## Token passes (log)
 
