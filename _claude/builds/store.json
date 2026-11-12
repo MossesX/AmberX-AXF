@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3724,
- "updatedAt": "2026-11-12T22:06:24.486Z",
+ "rev": 3725,
+ "updatedAt": "2026-11-12T22:09:50.413Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -172311,9 +172311,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/new-project-wizard-name-linked-repo-required-starter-code-skin-accounts",
-   "pr": "",
+   "pr": "#529",
    "createdAt": "2026-11-12T20:31:23.288Z",
-   "updatedAt": "2026-11-12T22:04:53.273Z",
+   "updatedAt": "2026-11-12T22:09:49.114Z",
    "builtAt": "",
    "notes": [
     {
@@ -172601,7 +172601,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
