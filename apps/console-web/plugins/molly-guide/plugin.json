@@ -31,6 +31,7 @@
     "dataDir": ".axf-console/plugins/molly-guide",
     "env": [],
     "mentions": [
+      "docs/contracts/amberx-console-api.md",
       "_claude/memory/STATUS.md"
     ]
   },

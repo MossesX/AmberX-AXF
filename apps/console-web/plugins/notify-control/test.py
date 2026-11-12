@@ -381,4 +381,23 @@ mod.fire({"id": "r1", "name": "Night builds", "severity": "info", "title": "A bu
 ok(said and said[0][:2] == ("notifications", "done") and "Night builds" in said[0][2], "a rule that fires is said in the group chat by the rules' owner")
 plugin_services.withdraw("fake-crew")
 
+# ---- s15: everything goes through the console. An FYI is raised by the console; a must-buzz type reaches the
+# console's own push channels (ntfy, web push) at any severity, the same as AmberX.
+r = c.post("/fyi", json={"title": "Deploy done", "body": "console is on 1.2", "key": "deploy-1", "link": "view:pending"})
+ok(r.status_code == 200 and r.json()["key"] == "fyi:deploy-1", f"POST fyi {r.text}")
+fyi = next(a for a in hub.items if a["key"] == "fyi:deploy-1")
+ok(fyi["source"] == "fyi" and mod.alert_verdict(fyi)["type"] == "fyi.note", "an FYI is the fyi.note type")
+ok("fyi:deploy-1" in phone(), "an info FYI still reaches the phone (must buzz)")
+ok(c.post("/fyi", json={"title": ""}).status_code == 400, "an FYI needs a title")
+ok(c.post("/fyi", json={"title": "x", "link": "javascript:alert(1)"}).status_code == 400, "an FYI link is https, view: or settings: only")
+ok(c.post("/fyi", json={"title": "x", "link": "http://example.com"}).status_code == 400, "plain http links are refused")
+ok(A.promoted_targets(["bell"], "new", A.DEFAULT_RULES, "fyi") == ["bell", "ntfy", "webpush"], "must-buzz adds the push channels")
+ok(A.promoted_targets(["bell"], "repeat", A.DEFAULT_RULES, "fyi") == ["bell"], "a repeat never pushes again")
+off = {"channels": {"bell": {"min": "info"}, "ntfy": {"min": "error", "sources": {"fyi": "off"}}}}
+ok(A.promoted_targets(["bell"], "new", off, "fyi") == ["bell"], "a channel switched off for the source stays off")
+_, _, tg = hub.raise_alert({"source": "fyi", "severity": "info", "key": "fyi:t2", "title": "Hello", "meta": {"notifyType": "fyi.note"}})
+ok("webpush" in tg and "ntfy" in tg, f"an info FYI is pushed by the console itself {tg}")
+_, _, tg = hub.raise_alert({"source": "maintenance", "severity": "info", "title": "Note", "key": "maintenance:jobs2"})
+ok("webpush" not in tg, f"an ordinary info alert still isn't pushed {tg}")
+
 print(f"notify-control: {checks} checks passed")

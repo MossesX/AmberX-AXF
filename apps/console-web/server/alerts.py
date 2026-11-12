@@ -135,6 +135,17 @@ def delivery_targets(alert: dict[str, Any], event: str, rules: dict[str, Any] = 
     return out
 
 
+def promoted_targets(targets: list[str], event: str, rules: dict[str, Any], source: str) -> list[str]:
+    """A type the notify gate marks as must-buzz (`push: true`, or picked for the phone) reaches the console's own push
+    channels whatever its severity, like it reaches AmberX: the console sends phone push itself (build s15). A channel
+    switched off for the source stays off; a repeat never pushes again. Server-only: the notify gate that decides
+    `promote` lives in the console, not in core/engines/alerts.ts."""
+    if event == "repeat":
+        return targets
+    extra = [ch for ch in ("ntfy", "webpush") if ch in rules.get("channels", {}) and ch not in targets and channel_min(rules, ch, source) != "off"]
+    return [*targets, *extra]
+
+
 def ntfy_priority(severity: str) -> int:
     return {"info": 2, "success": 2, "warning": 3, "error": 4, "critical": 5}.get(severity, 3)
 
@@ -374,9 +385,12 @@ class AlertHub:
         with self.lock:
             self.items, alert, event = apply_alert(self.items, inp, _now())
             self._changed()
-            targets = delivery_targets(alert, event, self.config()["rules"])
+            rules = self.config()["rules"]
+            targets = delivery_targets(alert, event, rules)
         if verdict:
             on = verdict["channels"]
+            if verdict.get("promote"):
+                targets = promoted_targets(targets, event, rules, alert["source"])
             targets = [t for t in targets if on.get("banner" if t == "bell" else "webpush")]
         pushes = [t for t in targets if t != "bell"]
         if deliver and pushes:

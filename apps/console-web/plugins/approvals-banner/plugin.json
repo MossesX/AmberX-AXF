@@ -2,7 +2,7 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.approvals-banner",
   "name": "Approvals banner",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
@@ -33,7 +33,9 @@
     "auto": true,
     "items": [
       { "route": "POST /decide", "skip": "a person's tap only: it needs the signed-in browser's hub session, no session may ever call it" },
-      { "route": "GET /relay", "skip": "the browser's own probe" }
+      { "route": "GET /relay", "skip": "the browser's own probe" },
+      { "route": "GET /watch", "id": "watch", "title": "The approvals watch: is the console reading axHub's waiting calls, how many, when, and any error", "readOnly": true },
+      { "route": "POST /watch/poll", "id": "watch-poll", "title": "Read axHub's waiting approvals now and update their console alerts (read only; never decides)" }
     ]
   },
   "builtWith": {
@@ -51,6 +53,7 @@
       "AXF_APPROVALS_BANNER_DATA_DIR"
     ],
     "mentions": [
+      "docs/contracts/amberx-console-api.md",
       "CLAUDE.md",
       "_claude/memory/STATUS.md"
     ]

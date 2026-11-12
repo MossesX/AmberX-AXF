@@ -26,6 +26,7 @@
     "dataDir": ".axf-console/plugins/output-recorder",
     "env": [],
     "mentions": [
+      "docs/contracts/amberx-console-api.md",
       ".github/workflows/android.yml",
       "_claude/THREADS.md",
       "_claude/memory/STATUS.md"

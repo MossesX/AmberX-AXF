@@ -17,13 +17,15 @@ sys.path.insert(0, str(HERE.parents[1] / "server"))
 DATA = tempfile.mkdtemp()
 os.environ["AXF_APPROVALS_BANNER_DATA_DIR"] = DATA
 os.environ["AXF_WALL_HUB"] = "https://hub.example.test"
+os.environ["AXF_APPROVALS_WATCH"] = "0"
 
 import httpx  # noqa: E402
 from fastapi import FastAPI  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
 
-spec = importlib.util.spec_from_file_location("approvals_banner_server", HERE / "server" / "__init__.py")
+spec = importlib.util.spec_from_file_location("approvals_banner_server", HERE / "server" / "__init__.py", submodule_search_locations=[str(HERE / "server")])
 srv = importlib.util.module_from_spec(spec)
+sys.modules["approvals_banner_server"] = srv
 assert spec.loader
 spec.loader.exec_module(srv)
 
@@ -274,5 +276,54 @@ h = srv.health_probe()
 ok(h["status"] == "ok", f"health green with the owner sign-in {h}")
 del os.environ["AXF_HUB_RELAY_USER"]
 ok(srv.health_probe()["status"] == "warn", "health amber without it")
+
+# ---- the watch: axHub's waiting calls become console alerts (s15), read with the owner sign-in only
+W = sys.modules["approvals_banner_server.watch"]
+HUB = "https://hub.example.test"
+ID2 = "22222222-2222-2222-2222-222222222222"
+raised: list[dict] = []
+resolved: list[str] = []
+open_now: list[str] = []
+feed = {"pending": [{"id": ID, "tool": "vps.run", "summary": "deploy", "url": f"{HUB}/auth/admin/approvals/{ID}", "title": "Deploy console"},
+                    {"id": ID2, "tool": "git.push", "status": "held", "veto": {"secondsLeft": 80}, "url": f"{HUB}/auth/admin/approvals/{ID2}"},
+                    {"id": "not-an-id", "url": f"{HUB}/x"}, {"id": ID, "url": f"{HUB}/dup"},
+                    {"id": "33333333-3333-3333-3333-333333333333", "url": "https://evil.example/x"}], "count": 2}
+reads: list[str] = []
+
+
+def hubside(req: httpx.Request) -> httpx.Response:
+    if req.url.path == "/auth/login":
+        return httpx.Response(303, headers={"set-cookie": "axhub_session=w1; Path=/", "location": "/"})
+    reads.append(req.headers.get("cookie", ""))
+    return httpx.Response(200, json=feed)
+
+
+w = W.Watch(lambda: HUB, srv.owner_credential, srv.OwnerSession(), lambda i: bool(srv.ID_RE.match(i)),
+            raise_alert=lambda a: (raised.append(a), open_now.append(a["key"])), resolve=lambda ks: (resolved.extend(ks), [open_now.remove(k) for k in ks]),
+            open_keys=lambda pre: [k for k in open_now if k.startswith(pre)])
+ok(w.poll()["state"] == "off" and not raised, "no owner sign-in: the watch stays off and reads nothing")
+os.environ["AXF_HUB_RELAY_USER"], os.environ["AXF_HUB_RELAY_PASSWORD"] = "owner1", "s3cret"
+cl = real_client(transport=httpx.MockTransport(hubside), follow_redirects=False)
+st = w.poll(cl)
+ok(st["state"] == "ok" and st["waiting"] == 2, f"two real waiting calls {st}")
+ok(reads == ["axhub_session=w1"], f"read with the owner session only {reads}")
+keys = sorted(a["key"] for a in raised)
+ok(keys == sorted([f"approvals:{ID}", f"approvals:veto:{ID2}"]), f"one alert per call, the held one as a veto call {keys}")
+veto = next(a for a in raised if a["key"].startswith("approvals:veto:"))
+ok(veto["severity"] == "critical" and veto["meta"]["notifyType"] == "approvals.veto-call", "a held call is critical")
+plain = next(a for a in raised if a["key"] == f"approvals:{ID}")
+ok(plain["link"] == f"{HUB}/auth/admin/approvals/{ID}" and "Deploy console" in plain["title"], f"tap opens the approval on the hub {plain}")
+n = len(raised)
+w.poll(cl)
+ok(len(raised) == n, "a second read raises nothing new (no double buzz)")
+feed["pending"] = feed["pending"][1:2]
+w.poll(cl)
+ok(resolved == [f"approvals:{ID}"], f"a decided call resolves its alert {resolved}")
+cl.close()
+down_c = real_client(transport=httpx.MockTransport(down), follow_redirects=False)
+st = w.poll(down_c)
+ok(st["state"] == "unreachable" and resolved == [f"approvals:{ID}"], "an outage clears nothing")
+down_c.close()
+del os.environ["AXF_HUB_RELAY_USER"], os.environ["AXF_HUB_RELAY_PASSWORD"]
 
 print(f"approvals-banner relay ok ({checks} checks)")

@@ -19,11 +19,45 @@
       "group": "approvals",
       "app": "console",
       "source": "Veto banner",
-      "description": "The alarm that rings in an open console while a call counts down. Its tone and timing stay in Settings → Plugins → Approvals banner.",
+      "description": "The alarm that rings in an open console while a call counts down. Its tone and timing stay in Settings \u2192 Plugins \u2192 Approvals banner.",
       "enforced": "browser",
       "only": [
         "sound"
       ]
+    },
+    {
+      "id": "approvals.waiting",
+      "label": "Approval waiting (from the console)",
+      "group": "approvals",
+      "app": "console",
+      "source": "Approvals banner, approvals watch",
+      "description": "The console reads axHub's approvals with its own owner sign-in and raises one alert per call waiting for you, so the bell, web push and ntfy carry it without the AmberX web app. Clears when the call is decided or expires. Off on AmberX by default: its watch already rings for approvals straight from axHub.",
+      "match": {
+        "source": "approvals",
+        "keyPrefix": "approvals:"
+      },
+      "push": true,
+      "priority": "high",
+      "channels": {
+        "amberx": false
+      }
+    },
+    {
+      "id": "approvals.veto-call",
+      "label": "Veto call counting down (from the console)",
+      "group": "approvals",
+      "app": "console",
+      "source": "Approvals banner, approvals watch",
+      "description": "A held call that runs by itself unless you stop it, raised by the console from axHub's feed and pushed through web push and ntfy. Off on AmberX by default: its veto alarm already rings straight from axHub.",
+      "match": {
+        "source": "approvals",
+        "keyPrefix": "approvals:veto:"
+      },
+      "push": true,
+      "priority": "urgent",
+      "channels": {
+        "amberx": false
+      }
     }
   ]
 }

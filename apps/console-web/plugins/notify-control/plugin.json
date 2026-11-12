@@ -25,7 +25,7 @@
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/notify-control",
     "env": ["AXF_NOTIFY_DATA_DIR"],
-    "mentions": ["_claude/rules/RULES.md", "_claude/memory/STATUS.md", "_claude/THREADS.md", "apps/console-web/plugins/README.md"]
+    "mentions": ["docs/contracts/amberx-console-api.md", "_claude/rules/RULES.md", "_claude/memory/STATUS.md", "_claude/THREADS.md", "apps/console-web/plugins/README.md"]
   },
   "commands": {
     "$axf": "plugin-commands@1",
@@ -40,6 +40,7 @@
       { "route": "POST /set", "id": "set", "title": "Change one notification type: on or off, a channel, or its priority", "input": { "type": "object", "properties": { "type": { "type": "string", "description": "the type id, e.g. ci.failed" }, "enabled": { "type": "boolean" }, "channel": { "type": "string", "enum": ["banner", "amberx", "sound", "popup", "webpush"] }, "on": { "type": "boolean", "description": "with channel" }, "priority": { "type": "string", "enum": ["low", "normal", "high", "urgent"] } }, "required": ["type"], "additionalProperties": false } },
       { "route": "POST /quiet", "id": "quiet", "title": "Set quiet hours", "input": { "type": "object", "properties": { "enabled": { "type": "boolean" }, "start": { "type": "string", "description": "HH:MM, 24 hour" }, "end": { "type": "string", "description": "HH:MM, 24 hour" } }, "additionalProperties": false } },
       { "route": "POST /test", "id": "test", "title": "Send a test of one notification type", "input": { "type": "object", "properties": { "type": { "type": "string" } }, "required": ["type"], "additionalProperties": false } },
+      { "route": "POST /fyi", "id": "fyi", "title": "Send Brett an FYI: kept in the bell and pushed to his phone by the console", "input": { "type": "object", "properties": { "title": { "type": "string", "maxLength": 200 }, "body": { "type": "string", "maxLength": 2000 }, "link": { "type": "string", "description": "https:// URL, view:<id> or settings:<tab> the tap opens" }, "key": { "type": "string", "description": "same key = the same FYI, updated instead of a new one" } }, "required": ["title"], "additionalProperties": false } },
       { "route": "POST /reset", "id": "reset", "title": "Put one type, or everything, back to its defaults", "input": { "type": "object", "properties": { "type": { "type": "string" }, "confirm": { "type": "string", "enum": ["reset"] } }, "required": ["confirm"], "additionalProperties": false } },
       { "route": "GET /groups", "id": "groups", "title": "List the notification groups, with their types and commands", "readOnly": true },
       { "route": "POST /group", "id": "group", "title": "Make or change a notification group: name, on or off, types, commands", "input": { "type": "object", "properties": { "id": { "type": "string" }, "name": { "type": "string" }, "on": { "type": "boolean" }, "types": { "type": "array", "items": { "type": "string" } }, "commands": { "type": "array", "items": { "type": "object", "properties": { "label": { "type": "string" }, "kind": { "type": "string", "enum": ["approve", "open", "console"] }, "target": { "type": "string" }, "icon": { "type": "string" } }, "required": ["label", "kind"] } } }, "additionalProperties": false } },

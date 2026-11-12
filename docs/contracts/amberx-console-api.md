@@ -88,7 +88,7 @@ Collected from `server/main.py`, `src/native.ts`, `src/plugins/*/web`, `src/cons
 | T12 | Voice notes (read-only in AmberX) | `GET /data/amberx-axf/voice-notes/...` | axHub data server | hub-table@1 |
 | T13 | App settings on every device (hub-settings@1), appearance | `GET|PUT /data/_shared/settings/apps/amberx-droid.json`, `.../settings/appearance.json` | axHub data server | per-key merge, mirrored by lib-hubsync |
 | T14 | Recorder uploads | `PUT /data/amberx-recordings/output-recorder/parts/{id}/NNNN.json` (`audio-part@1`), `PUT .../recordings/{id}.json` (`audio-recording@1`), then read back to confirm | axHub data server | 44 000-byte base64 parts, SHA-256 index |
-| T15 | Recorder transcripts | `GET /api/console/plugins/output-recorder/status`, `POST .../run` | console (through T7) | worker status |
+| T15 | Recorder transcripts | `GET /api/console/plugins/output-recorder/status`, `POST .../run` | console (through T7) | worker status | <!-- axf-plugin:output-recorder -->
 | T16 | Recorder remote and open_url (AXPP) | `POST /axpp/v1/hello|next|answer` (`X-AXPP: axpp@1`), capabilities `recorder@1`, `open-url@1`; commands `recorder.start|stop|status`, `browser.open {url, browser}` | axHub device relay; the console asks the hub (`console-commands/server/wake.py`, tool `amberx.open_url`) | long poll, answers `{opened, notified}` |
 | T17 | Console alerts as phone notifications | `GET https://console.amberxai.com/api/alerts` (`view=phone` or a `Dalvik/` UA) | console | `{alerts[], unread, version, notify: {off[]}}` |
 | T18 | Listeners (listener@1) | native registry (`ListenerRegistry`), policies through T13; the console reads devices from `/projects/amberx-axf/_data/listeners/devices` | hub data + console plugin `amberx-listeners` | `{micOff, micHolder, listeners[]}` |
@@ -165,8 +165,8 @@ knows what is waiting, and it also tells the phone about veto calls and console-
 
 | Call | Replaces | REST | MCP | CLI | Voice |
 |---|---|---|---|---|---|
-| C19 relay | T6 | `GET /api/plugins/approvals-banner/relay` → `{ok, relay, via, reason}`; `POST /api/plugins/approvals-banner/decide {id, action, rev?}` (admin browser, same origin, cookie; token refused) | none (a person's tap only; declared `skip` in the plugin manifest) | none | "approve that", "deny it" run through the phone's native action with the person's session, never a token |
-| C20 feed | T9 | `GET /api/plugins/approvals-banner/pending?since=<version>` → `{pending[{id, tool, summary, url, status, rev, secondsLeft?}], count, version, signedIn, admin}`; `GET .../pending/stream` (SSE) | `approvals_pending` (read) | `axf approvals pending` | "anything waiting?" (reply `{waiting}`) |
+| C19 relay | T6 | `GET /api/plugins/approvals-banner/relay` → `{ok, relay, via, reason}`; `POST /api/plugins/approvals-banner/decide {id, action, rev?}` (admin browser, same origin, cookie; token refused) | none (a person's tap only; declared `skip` in the plugin manifest) | none | "approve that", "deny it" run through the phone's native action with the person's session, never a token | <!-- axf-plugin:approvals-banner -->
+| C20 feed | T9 | `GET /api/plugins/approvals-banner/pending?since=<version>` → `{pending[{id, tool, summary, url, status, rev, secondsLeft?}], count, version, signedIn, admin}`; `GET .../pending/stream` (SSE) | `approvals_pending` (read) | `axf approvals pending` | "anything waiting?" (reply `{waiting}`) | <!-- axf-plugin:approvals-banner -->
 | C20a auto-approve | T10 auto | stays native: `POST <hub>/auth/api/approvals/{id}/approve` with the phone's session, under the monitor rules (`monitor/web/core.ts`: never `amberx.recorder_start`, `vps.run` only when named). The console exposes the rules as settings (C32) but never approves. | none | none | none |
 
 Deep links: `console_open("approvals", focus="<approval id>")`; `console_dialog("approvals.veto", arg="<id>")` for a held veto call.
@@ -175,9 +175,9 @@ Deep links: `console_open("approvals", focus="<approval id>")`; `console_dialog(
 
 | Call | Replaces | REST | MCP | CLI |
 |---|---|---|---|---|
-| C21 Molly | T4 | `GET /api/plugins/molly-guide/walkthroughs`; `POST /api/plugins/molly-guide/ask {task, app: "amberx", page?}` → `{text, walkthrough?}` | `molly-guide_ask` | `axf molly-guide ask` |
-| C22 walkthrough media | T5 | `GET /api/plugins/molly-guide/amberx-walkthrough/{wid}/{name}` (mp4 with `Range`, vtt, chapters.json, poster.jpg, `?download=1`), `.../walkthroughs.json`, `.../{wid}/chapters/{name}`; files move from `$AMBERX_DATA_DIR/walkthrough` to the plugin's `dataDir` (s2) | `molly-guide_walkthroughs` | `axf molly-guide walkthroughs` |
-| C23 re-voice | T5 render | `POST /api/plugins/molly-guide/amberx-walkthrough/rerecord {walkthrough, voiceOnly, overrides: {voice, speed, lines}, chapter?}` (the same `walkthrough_edits` limits: 10 voices, speed 0.75–1.3, 600 lines, 64 KB) | `molly-guide_rerecord` | `axf molly-guide rerecord` |
+| C21 Molly | T4 | `GET /api/plugins/molly-guide/walkthroughs`; `POST /api/plugins/molly-guide/ask {task, app: "amberx", page?}` → `{text, walkthrough?}` | `molly-guide_ask` | `axf molly-guide ask` | <!-- axf-plugin:molly-guide -->
+| C22 walkthrough media | T5 | `GET /api/plugins/molly-guide/amberx-walkthrough/{wid}/{name}` (mp4 with `Range`, vtt, chapters.json, poster.jpg, `?download=1`), `.../walkthroughs.json`, `.../{wid}/chapters/{name}`; files move from `$AMBERX_DATA_DIR/walkthrough` to the plugin's `dataDir` (s2) | `molly-guide_walkthroughs` | `axf molly-guide walkthroughs` | <!-- axf-plugin:molly-guide -->
+| C23 re-voice | T5 render | `POST /api/plugins/molly-guide/amberx-walkthrough/rerecord {walkthrough, voiceOnly, overrides: {voice, speed, lines}, chapter?}` (the same `walkthrough_edits` limits: 10 voices, speed 0.75–1.3, 600 lines, 64 KB) | `molly-guide_rerecord` | `axf molly-guide rerecord` | <!-- axf-plugin:molly-guide -->
 | C24 console plugins in AmberX | T7 | the phone calls `/api/plugins/{folder}/{rest}` on the console directly; `src/console/plugins.ts` `pluginUrl` drops the `/api/console/plugins/` hop. The forwarder in `server/main.py` becomes the s11 proxy. | unchanged | unchanged |
 
 ### 4.6 Recorder
@@ -186,7 +186,7 @@ Recordings keep `audio-recording@1` and `audio-part@1` in hub project `amberx-re
 transcripts already read that folder from `/projects`). The phone uploads to the console instead of the hub's data server; the
 console writes the same files, so the transcript worker and the AmberX page read nothing new.
 
-| Call | Replaces | REST (`/api/plugins/output-recorder/...`) | MCP | CLI | Voice |
+| Call | Replaces | REST (`/api/plugins/output-recorder/...`) | MCP | CLI | Voice | <!-- axf-plugin:output-recorder -->
 |---|---|---|---|---|---|
 | C25 upload part | T14 | `PUT recordings/{id}/parts/{n}` body `{$axf: "audio-part@1", id, n, b64}` (≤ 64 KB) → `{ok, n, sha256}`; idempotent | none (phone-only) | `axf output-recorder upload <dir>` | none |
 | C26 upload index | T14 | `PUT recordings/{id}` body `audio-recording@1 {id, name, startedAt, endedAt, parts, bytes, sha256, session?, mic}` → `{ok, confirmed}`; `confirmed` true only when every part is on disk and the SHA-256 matches, which is when the phone deletes its local copy (as `OutputRecordUploader` does today) | none | none | none |
@@ -203,7 +203,7 @@ Deep links: `console_open("output-recorder", focus="<recording id>")`.
 
 ### 4.7 open_url
 
-| Call | Replaces | REST (`/api/plugins/console-commands/...`) | MCP | CLI | Voice |
+| Call | Replaces | REST (`/api/plugins/console-commands/...`) | MCP | CLI | Voice | <!-- axf-plugin:console-commands -->
 |---|---|---|---|---|---|
 | C31 send | T16 `browser.open` | `POST open-url {url, browser?: "chrome"|"default", to?: "<device id>"}` → `{id, state: "queued"|"sent"|"opened"|"notified"|"refused", reason?}`; the console checks the URL with the same rule as `OpenUrlRules.allowed` (https, `amberxai.com` or a subdomain, no user info, default port, ≤ 2000 chars) and the phone checks it again | `console-commands_open_url` | `axf console-commands open-url https://console.amberxai.com/?axf-cmd=…` | "open the console on my phone" |
 | C31a state | new | `GET open-url?since=` → `{items[{id, url, state, at, device}]}`; `POST open-url/{id}/cancel` | `console-commands_open_url_list`, `..._cancel` | `axf console-commands open-url list` | none |
@@ -223,10 +223,28 @@ through the console"). Nothing new in the shape; the additions are per-device de
 | C33 feed | T17 | `GET /api/alerts?view=phone&since=<version>` → `{alerts[alert@1], unread, version, notify: {off[]}}`; `GET /api/alerts/stream` (SSE) | `alerts_list` | `axf alerts` | "what's new" |
 | C34 raise | new for AmberX | `POST /api/alerts {source, severity, title, body, key?, link?, meta?}`; `POST /api/alerts/test` | `alerts_raise`, `alerts_test` | `axf alerts raise …` | none (machines raise) |
 | C35 read / dismiss / resolve | T17 (`ack` / `resolved` flags) | `POST /api/alerts/ack {ids[]}`; `POST /api/alerts/dismiss {ids[]}`; `POST /api/alerts/resolve {keys[]}` | `alerts_ack`, `alerts_dismiss`, `alerts_resolve` | `axf alerts ack <id>` | "dismiss that", "mark them read" |
-| C35a types and quiet | T17 `notify.off` | the `notify-control` plugin's `GET state|types`, `POST set|master|app|quiet|test|reset`, groups and triggers, unchanged (`/api/plugins/notify-control/...`) | `notify-control_*` | `axf notify-control …` | "quiet for an hour" |
+| C35a types and quiet | T17 `notify.off` | the `notify-control` plugin's `GET state|types`, `POST set|master|app|quiet|test|reset`, groups and triggers, unchanged (`/api/plugins/notify-control/...`) | `notify-control_*` | `axf notify-control …` | "quiet for an hour" | <!-- axf-plugin:notify-control -->
 | C35b history | new | `GET /api/alerts/history?device=&since=&limit=` → every alert delivered to this device with `deliveredAt`, `readAt`, `tappedAt` | `alerts_history` | `axf alerts history` | none |
 
 Deep link: `console_open("alerts", focus="<alert id>")`; an alert's `link` (checked by `OpenUrlRules.linkOr`) is what a tap opens.
+
+Built in s15 (every notification is raised and pushed by the console; none needs the AmberX web app):
+
+- **Approvals and veto calls.** The approvals banner's watch reads axHub's feed every 30 s with the console's owner sign-in
+  (`AXF_HUB_RELAY_USER` / `AXF_HUB_RELAY_PASSWORD`) and keeps one alert per waiting call: source `approvals`, key
+  `approvals:<id>` (type `approvals.waiting`, warning) or `approvals:veto:<id>` (type `approvals.veto-call`, critical). A
+  decided or expired call resolves its alert; a failed read changes nothing. It only reads. State `GET
+  /api/plugins/approvals-banner/watch`, read now `POST .../watch/poll` (MCP `approvals-banner_watch`, <!-- axf-plugin:approvals-banner -->
+  `approvals-banner_watch-poll`; CLI through plugin commands). Both types start with the AmberX channel off, because the
+  phone's own watch still rings for approvals straight from axHub; s12 turns it on when that watch goes. <!-- axf-plugin:approvals-banner -->
+- **FYIs.** `POST /api/plugins/notify-control/fyi {title, body?, link?, key?}` (MCP `notify-control_fyi`) raises source <!-- axf-plugin:notify-control -->
+  `fyi` (type `fyi.note`); the same `key` updates one FYI and buzzes again. <!-- axf-plugin:notify-control -->
+- **Push at any severity.** A type the notify gate marks must-buzz (`push: true`, or AmberX picked in the Notifications
+  panel) now reaches the console's own ntfy and web push whatever its severity, as it already reached AmberX; before, a
+  warning such as "Back in Pending" or "Approval waiting" only reached the phone through the AmberX app. A channel switched
+  off for the source in Settings → Alerts stays off; a repeat never pushes twice.
+- Builds, CI, deploys, merge failures (`merge.blocked`, `merge.kicked`), systems check and UI Review already raise console
+  alerts; nothing changed there.
 
 ### 4.9 Device stream (replaces AXPP for AmberX, s12)
 
@@ -275,13 +293,13 @@ commands); the console never holds a microphone.
 | `https://amberx.amberxai.com` (site) | `https://console.amberxai.com` (the AmberX screens are console plugins: Notes, Tasks, Approvals, Recorder, Settings → Plugins → AmberX); the old host proxies and logs (s11) | s3–s10, s11 |
 | `GET /api/health`, `/api/me` | `GET /api/health`, `/api/me` with `amberx.api` | s11 |
 | `/api/ai/*` | `/api/plugins/amberx-ai/*` | s3 |
-| `/api/ai/molly*`, `/api/walkthrough/*` | `/api/plugins/molly-guide/...` | s11 (routes exist) |
-| `/api/approvals/relay`, `/decide` | `/api/plugins/approvals-banner/relay`, `/decide` | s6 |
+| `/api/ai/molly*`, `/api/walkthrough/*` | `/api/plugins/molly-guide/...` | s11 (routes exist) | <!-- axf-plugin:molly-guide -->
+| `/api/approvals/relay`, `/decide` | `/api/plugins/approvals-banner/relay`, `/decide` | s6 | <!-- axf-plugin:approvals-banner -->
 | `/api/console/plugins/{folder}/...` | `/api/plugins/{folder}/...` | s11 |
 | hub `/data/amberx-axf/amberx-notes/...` | `/api/control/amberx.items`, `amberx.lists` (+ intent, flush, stream) | s3, s4, s5 |
-| hub `/data/amberx-recordings/...` | `/api/plugins/output-recorder/recordings/...` | s7 |
+| hub `/data/amberx-recordings/...` | `/api/plugins/output-recorder/recordings/...` | s7 | <!-- axf-plugin:output-recorder -->
 | hub `/data/_shared/settings/apps/amberx-droid.json` | `/api/control/amberx.settings` | s10 |
-| hub `/auth/admin/approvals.json` | `/api/plugins/approvals-banner/pending` (+ stream) | s6 |
+| hub `/auth/admin/approvals.json` | `/api/plugins/approvals-banner/pending` (+ stream) | s6 | <!-- axf-plugin:approvals-banner -->
 | hub `/auth/api/approvals/{id}/{action}` | unchanged, native, the person's session | — |
 | hub `/axpp/v1/*` (`browser.open`, `recorder.*`) | `/api/plugins/amberx-devices/stream` (+ `console-commands/open-url`) | s8, s12 |
 | console `/api/alerts` | unchanged, plus `since`, `stream`, `history` | s9, s15 |

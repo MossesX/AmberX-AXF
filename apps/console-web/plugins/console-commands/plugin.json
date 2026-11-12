@@ -29,6 +29,7 @@
       "AXF_CONSOLE_COMMANDS_DATA_DIR"
     ],
     "mentions": [
+      "docs/contracts/amberx-console-api.md",
       "_claude/THREADS.md",
       "apps/console-web/server/main.py",
       "apps/console-web/server/mcp_server.py",
