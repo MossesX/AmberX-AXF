@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T19:58:15.060Z",
+ "updatedAt": "2026-11-12T19:58:31.813Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -108346,8 +108346,8 @@
    "pr": "#525",
    "priority": "P1",
    "createdAt": "2026-11-12T18:40:03.355Z",
-   "updatedAt": "2026-11-12T19:58:07.397Z",
-   "builtAt": "2026-11-12T19:58:01.504Z",
+   "updatedAt": "2026-11-12T19:58:20.158Z",
+   "builtAt": "2026-11-12T19:58:20.158Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -108364,6 +108364,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-collapse-and-auto-collapse-buttons-on-every-tab--gina, own login copy)",
      "at": "2026-11-12T19:43:14.422Z"
+    },
+    {
+     "text": "Headless run axf-collapse-and-auto-collapse-buttons-on-every-tab--gina: brief only · start 11.1K tokens ($0.03) · cost $4.48 · 100 turns · 6 tools, MCP none",
+     "at": "2026-11-12T19:58:20.158Z"
     },
     {
      "text": "PR #525 is open. UI Review desktop and phone shots were not taken: this ran headless with no console to capture. Take them before the PR is called ready.",
