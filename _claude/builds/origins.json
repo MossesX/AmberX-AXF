@@ -504,6 +504,18 @@
    "from": "detail",
    "addenda": []
   },
+  "amberx-router-name": {
+   "said": "amberx-router-name",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": false,
+   "from": "report",
+   "addenda": []
+  },
   "amberx-slim-down-voice-queue": {
    "said": "I want you to put it in the Amber X and I also want you to fucking scrap a lot of shit in Amber X. It's too bloated, don't work. All I want Amber X to have the to-do, the notes, the task manager. I want it to have this, the session recorder, um, the, sc the um, screen recording, um, and what else? And uh, I think that's it. Oh, yeah. And oh yeah, Gizmo chat, the agent chat.",
    "at": "",
@@ -718,6 +730,18 @@
    "brief": "",
    "verbatim": true,
    "from": "",
+   "addenda": []
+  },
+  "approval-reasons": {
+   "said": "approval-reasons",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": false,
+   "from": "report",
    "addenda": []
   },
   "approval-row-buttons": {
@@ -1127,6 +1151,18 @@
      "verbatim": true
     }
    ]
+  },
+  "banner-apply-all-keys-recheck": {
+   "said": "banner-apply-all-keys-recheck",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": false,
+   "from": "report",
+   "addenda": []
   },
   "banner-fix-fallback": {
    "said": "If fix button fails on banner check approve mosses to commit the repair and show Claude connection status badge information about the account in the dialogue then if approved and connected launch Claude code headless session and fix using mosses in a headless ai session. If no connection and status badge is dead explain error, fix, and vps command if available with an autofix that uses Vinny for vps.",
@@ -2023,6 +2059,18 @@
    "brief": "",
    "verbatim": false,
    "from": "detail",
+   "addenda": []
+  },
+  "design-package-thread": {
+   "said": "design-package-thread",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": false,
+   "from": "report",
    "addenda": []
   },
   "design-packages-10": {
@@ -5559,8 +5607,80 @@
    "from": "detail",
    "addenda": []
   },
+  "threads-110-merged": {
+   "said": "threads-110-merged",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": false,
+   "from": "report",
+   "addenda": []
+  },
   "threads-after-129": {
    "said": "threads-after-129",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": false,
+   "from": "report",
+   "addenda": []
+  },
+  "threads-amberx-keep": {
+   "said": "threads-amberx-keep",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": false,
+   "from": "report",
+   "addenda": []
+  },
+  "threads-amberx-shell": {
+   "said": "threads-amberx-shell",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": false,
+   "from": "report",
+   "addenda": []
+  },
+  "threads-carry-on": {
+   "said": "threads-carry-on",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": false,
+   "from": "report",
+   "addenda": []
+  },
+  "threads-cleanup": {
+   "said": "threads-cleanup",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": false,
+   "from": "report",
+   "addenda": []
+  },
+  "threads-oauth-soft": {
+   "said": "threads-oauth-soft",
    "at": "",
    "source": "",
    "session": "",

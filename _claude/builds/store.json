@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3479,
- "updatedAt": "2026-11-12T03:32:01.993Z",
+ "rev": 3480,
+ "updatedAt": "2026-11-12T03:32:19.294Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -166976,6 +166976,656 @@
     "rev": 1,
     "at": "2026-11-12T03:31:58Z",
     "landedCommit": "6cb095aca19a61e47d7a14210b72f7df39f066b9"
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 0
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "threads-after-129",
+   "title": "threads-after-129",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/threads-after-129",
+   "pr": "",
+   "mergedAt": "2026-10-27T20:01:43Z",
+   "createdAt": "2026-10-27T20:01:43Z",
+   "updatedAt": "2026-11-12T03:32:00Z",
+   "builtAt": "2026-10-27T20:01:43Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 0bbc09d47.",
+     "at": "2026-11-12T03:32:00Z"
+    },
+    {
+     "text": "Shipped manifest sm-threads-after-129 rev 1 sent to Shipped features (backfill): landed 0bbc09d47, 2 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:32:00Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "threads-after-129",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "shipped": {
+    "id": "sm-threads-after-129",
+    "rev": 1,
+    "at": "2026-11-12T03:32:00Z",
+    "landedCommit": "0bbc09d4745eea87d39c83916bafe205603dac37"
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 0
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "design-package-thread",
+   "title": "design-package-thread",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/design-package-thread",
+   "pr": "",
+   "mergedAt": "2026-10-27T16:20:18Z",
+   "createdAt": "2026-10-27T16:20:18Z",
+   "updatedAt": "2026-11-12T03:32:03Z",
+   "builtAt": "2026-10-27T16:20:18Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 2b6d4c95d.",
+     "at": "2026-11-12T03:32:03Z"
+    },
+    {
+     "text": "Shipped manifest sm-design-package-thread rev 1 sent to Shipped features (backfill): landed 2b6d4c95d, 2 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:32:03Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "design-package-thread",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "shipped": {
+    "id": "sm-design-package-thread",
+    "rev": 1,
+    "at": "2026-11-12T03:32:03Z",
+    "landedCommit": "2b6d4c95d287439b140cc519f96664c586555eb9"
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 0
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "threads-amberx-keep",
+   "title": "threads-amberx-keep",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/threads-amberx-keep",
+   "pr": "",
+   "mergedAt": "2026-10-27T03:27:53Z",
+   "createdAt": "2026-10-27T03:27:53Z",
+   "updatedAt": "2026-11-12T03:32:06Z",
+   "builtAt": "2026-10-27T03:27:53Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as e435b930e.",
+     "at": "2026-11-12T03:32:06Z"
+    },
+    {
+     "text": "Shipped manifest sm-threads-amberx-keep rev 1 sent to Shipped features (backfill): landed e435b930e, 1 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:32:06Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "threads-amberx-keep",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "shipped": {
+    "id": "sm-threads-amberx-keep",
+    "rev": 1,
+    "at": "2026-11-12T03:32:06Z",
+    "landedCommit": "e435b930ef94dbd2866bb72d885f47acbd858bf1"
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 0
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "threads-amberx-shell",
+   "title": "threads-amberx-shell",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/threads-amberx-shell",
+   "pr": "",
+   "mergedAt": "2026-10-27T03:25:34Z",
+   "createdAt": "2026-10-27T03:25:34Z",
+   "updatedAt": "2026-11-12T03:32:08Z",
+   "builtAt": "2026-10-27T03:25:34Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as ecb201864.",
+     "at": "2026-11-12T03:32:08Z"
+    },
+    {
+     "text": "Shipped manifest sm-threads-amberx-shell rev 1 sent to Shipped features (backfill): landed ecb201864, 1 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:32:08Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "threads-amberx-shell",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "shipped": {
+    "id": "sm-threads-amberx-shell",
+    "rev": 1,
+    "at": "2026-11-12T03:32:08Z",
+    "landedCommit": "ecb201864a49f3640a23f60f416c3f88e8325e03"
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 0
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "threads-carry-on",
+   "title": "threads-carry-on",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/threads-carry-on",
+   "pr": "",
+   "mergedAt": "2026-10-27T00:20:09Z",
+   "createdAt": "2026-10-27T00:20:09Z",
+   "updatedAt": "2026-11-12T03:32:10Z",
+   "builtAt": "2026-10-27T00:20:09Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 44e88c784.",
+     "at": "2026-11-12T03:32:10Z"
+    },
+    {
+     "text": "Shipped manifest sm-threads-carry-on rev 1 sent to Shipped features (backfill): landed 44e88c784, 2 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:32:10Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "threads-carry-on",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "shipped": {
+    "id": "sm-threads-carry-on",
+    "rev": 1,
+    "at": "2026-11-12T03:32:10Z",
+    "landedCommit": "44e88c78478f401c34fd172935b195724e709f4a"
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 0
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "threads-cleanup",
+   "title": "threads-cleanup",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/threads-cleanup",
+   "pr": "",
+   "mergedAt": "2026-10-27T00:06:55Z",
+   "createdAt": "2026-10-27T00:06:55Z",
+   "updatedAt": "2026-11-12T03:32:11Z",
+   "builtAt": "2026-10-27T00:06:55Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 916f7e650.",
+     "at": "2026-11-12T03:32:11Z"
+    },
+    {
+     "text": "Shipped manifest sm-threads-cleanup rev 1 sent to Shipped features (backfill): landed 916f7e650, 1 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:32:11Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "threads-cleanup",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "shipped": {
+    "id": "sm-threads-cleanup",
+    "rev": 1,
+    "at": "2026-11-12T03:32:11Z",
+    "landedCommit": "916f7e65098943dd6b553c556e2cd738eb9d9be2"
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 0
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "banner-apply-all-keys-recheck",
+   "title": "banner-apply-all-keys-recheck",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/banner-apply-all-keys-recheck",
+   "pr": "",
+   "mergedAt": "2026-10-26T23:54:51Z",
+   "createdAt": "2026-10-26T23:54:51Z",
+   "updatedAt": "2026-11-12T03:32:12Z",
+   "builtAt": "2026-10-26T23:54:51Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as ba2535890.",
+     "at": "2026-11-12T03:32:12Z"
+    },
+    {
+     "text": "Shipped manifest sm-banner-apply-all-keys-recheck rev 1 sent to Shipped features (backfill): landed ba2535890, 15 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:32:12Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "banner-apply-all-keys-recheck",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "shipped": {
+    "id": "sm-banner-apply-all-keys-recheck",
+    "rev": 1,
+    "at": "2026-11-12T03:32:12Z",
+    "landedCommit": "ba25358909be5c5b031c6c6fb4bd6485c2032c22"
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 0
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "amberx-router-name",
+   "title": "amberx-router-name",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/amberx-router-name",
+   "pr": "",
+   "mergedAt": "2026-10-26T23:46:07Z",
+   "createdAt": "2026-10-26T23:46:07Z",
+   "updatedAt": "2026-11-12T03:32:13Z",
+   "builtAt": "2026-10-26T23:46:07Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 6277b7795.",
+     "at": "2026-11-12T03:32:13Z"
+    },
+    {
+     "text": "Shipped manifest sm-amberx-router-name rev 1 sent to Shipped features (backfill): landed 6277b7795, 3 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:32:13Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "amberx-router-name",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "shipped": {
+    "id": "sm-amberx-router-name",
+    "rev": 1,
+    "at": "2026-11-12T03:32:13Z",
+    "landedCommit": "6277b7795609773a305ac4bc9f50e0c9a366c30b"
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 0
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "threads-110-merged",
+   "title": "threads-110-merged",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/threads-110-merged",
+   "pr": "",
+   "mergedAt": "2026-10-26T23:39:54Z",
+   "createdAt": "2026-10-26T23:39:54Z",
+   "updatedAt": "2026-11-12T03:32:15Z",
+   "builtAt": "2026-10-26T23:39:54Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as b11d97be5.",
+     "at": "2026-11-12T03:32:15Z"
+    },
+    {
+     "text": "Shipped manifest sm-threads-110-merged rev 1 sent to Shipped features (backfill): landed b11d97be5, 1 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:32:15Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "threads-110-merged",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "shipped": {
+    "id": "sm-threads-110-merged",
+    "rev": 1,
+    "at": "2026-11-12T03:32:15Z",
+    "landedCommit": "b11d97be546e9ee9c5453b464380c9c1460fe999"
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 0
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "threads-oauth-soft",
+   "title": "threads-oauth-soft",
+   "category": "",
+   "detail": "",
+   "status": "complete",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/threads-oauth-soft",
+   "pr": "",
+   "mergedAt": "2026-10-26T23:14:04Z",
+   "createdAt": "2026-10-26T23:14:04Z",
+   "updatedAt": "2026-11-12T03:32:16Z",
+   "builtAt": "2026-10-26T23:14:04Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (backfill): it was started outside the builds store and landed as 690480b3f.",
+     "at": "2026-11-12T03:32:16Z"
+    },
+    {
+     "text": "Shipped manifest sm-threads-oauth-soft rev 1 sent to Shipped features (backfill): landed 690480b3f, 2 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:32:16Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "threads-oauth-soft",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "shipped": {
+    "id": "sm-threads-oauth-soft",
+    "rev": 1,
+    "at": "2026-11-12T03:32:16Z",
+    "landedCommit": "690480b3fc09850114113e56c862456eef8bfd12"
    },
    "steps": [],
    "profiles": [

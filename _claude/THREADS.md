@@ -776,16 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 02:33 UTC · `molly-gap-console-token-handoff` → running, note (all) · pipeline
-- 2026-11-12 02:33 UTC · `molly-gap-console-token-handoff` note (all) · orchestrator
-- 2026-11-12 02:34 UTC · `molly-gap-console-token-handoff` → running, note (all) · pipeline
-- 2026-11-12 02:34 UTC · `molly-gap-console-token-handoff` note (all) · orchestrator
-- 2026-11-12 02:34 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` s4 done (all) · orchestrator
-- 2026-11-12 02:35 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` s4 done (all) · foreign-write
-- 2026-11-12 02:35 UTC · `main-gate-nothing-reaches-main-without-passing` branch claude/main-gate-nothing-reaches-main-without-passing, PR #508 (all) · builds-live
-- 2026-11-12 02:35 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` s1 done, → running (all) · orchestrator
-- 2026-11-12 02:35 UTC · `main-gate-nothing-reaches-main-without-passing` s1 done, → running (all) · orchestrator
-- 2026-11-12 02:35 UTC · `main-gate-nothing-reaches-main-without-passing` s2 done (all) · orchestrator
 - 2026-11-12 02:35 UTC · `main-gate-nothing-reaches-main-without-passing` s3 done, → built (all) · orchestrator
 - 2026-11-12 02:36 UTC · `main-gate-nothing-reaches-main-without-passing` note (all) · orchestrator
 - 2026-11-12 02:35 UTC · `main-gate-nothing-reaches-main-without-passing` note (all) · orchestrator
@@ -1176,6 +1166,16 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:31 UTC · `move-status-out-of-claude-md` added (0 steps) (all) · backfill
 - 2026-11-12 03:31 UTC · `merge-approvals` added (0 steps) (all) · backfill
 - 2026-11-12 03:31 UTC · `install-tmux-ntfy-tailscale` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `threads-after-129` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `design-package-thread` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `threads-amberx-keep` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `threads-amberx-shell` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `threads-carry-on` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `threads-cleanup` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `banner-apply-all-keys-recheck` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `amberx-router-name` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `threads-110-merged` added (0 steps) (all) · backfill
+- 2026-11-12 03:32 UTC · `threads-oauth-soft` added (0 steps) (all) · backfill
 
 ## Token passes (log)
 

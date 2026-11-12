@@ -1,0 +1,76 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-threads-oauth-soft",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:32:16Z",
+ "build": {
+  "id": "threads-oauth-soft",
+  "title": "threads-oauth-soft",
+  "profile": "",
+  "category": "",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "threads-oauth-soft",
+  "verbatim": false,
+  "at": "",
+  "source": "",
+  "by": "",
+  "addenda": []
+ },
+ "brief": "",
+ "models": [],
+ "accounts": [],
+ "runs": [],
+ "steps": [],
+ "branch": "claude/threads-oauth-soft",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 0,
+  "url": ""
+ },
+ "landedCommit": "690480b3fc09850114113e56c862456eef8bfd12",
+ "commits": [
+  "57b4186028fffbd57715136c7e1fd306aa07a00f"
+ ],
+ "mergedAt": "",
+ "landedAt": "2026-10-26T23:14:04Z",
+ "files": [
+  "_claude/THREADS.md",
+  "framework/plan/pending.json"
+ ],
+ "areas": [
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/pending.json"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [],
+ "cost": {
+  "usd": 0,
+  "estimated": false,
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0
+  }
+ },
+ "report": "",
+ "open": []
+}
