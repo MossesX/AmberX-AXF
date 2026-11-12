@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T23:25:07.448Z",
+ "updatedAt": "2026-11-12T23:25:18.397Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -110782,6 +110782,25 @@
      "uid": "st-mwe6cbh2035aaa"
     }
    ]
+  },
+  {
+   "id": "agent-swarm-group-chat-read-aloud-add-a-setting-off-by-default-with-quick-on",
+   "title": "Agent Swarm group chat read aloud: add a setting (off by default, with quick on/off) so new group chat messages are read out loud to Brett on his phone through AmberX, each in the speaking agent's voice. Include pause and skip, and choose which agents or chats get read. Full API, MCP, CLI and voice ",
+   "category": "",
+   "detail": "",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-12T23:25:10.539Z",
+   "updatedAt": "2026-11-12T23:25:10.539Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": []
   }
  ]
 }
