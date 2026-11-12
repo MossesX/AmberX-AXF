@@ -483,7 +483,7 @@
     "status": "partial",
     "wave": 1,
     "module": "axf-devtools",
-    "notes": "Client + flag exist; VPS endpoint is wave 2."
+    "notes": "axf dev (framework/cli/dev-server.mjs) + web useDevServer built and checked (check-dev-server.mjs). Android HotReloader exists; settings → config bridge and launch extras deferred (PORTING.md)."
   },
   "k.buildbridge": {
     "status": "partial",
