@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3741,
- "updatedAt": "2026-11-12T22:24:16.540Z",
+ "rev": 3742,
+ "updatedAt": "2026-11-12T22:27:24.585Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -173924,11 +173924,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o",
-   "pr": "",
+   "branch": "claude/build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides",
+   "pr": "#505",
    "priority": "P0",
    "createdAt": "2026-11-12T22:16:05.972Z",
-   "updatedAt": "2026-11-12T22:24:14.914Z",
+   "updatedAt": "2026-11-12T22:27:23.151Z",
    "builtAt": "",
    "notes": [
     {
@@ -174034,7 +174034,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
