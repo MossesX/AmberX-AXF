@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T00:14:20.972Z",
+ "updatedAt": "2026-11-12T00:14:30.462Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -88542,7 +88542,7 @@
    "pr": "#468",
    "priority": "P1",
    "createdAt": "2026-11-10T16:28:24.043Z",
-   "updatedAt": "2026-11-12T00:14:13.314Z",
+   "updatedAt": "2026-11-12T00:14:29.071Z",
    "builtAt": "2026-11-12T00:14:12.134Z",
    "notes": [
     {
@@ -88592,6 +88592,10 @@
     {
      "text": "Phase 2 done (s4-s17), PR #468. Waiting on Brett: (1) Registry page shots were taken but not sent to UI Review (no console token in the headless session): submit from a session with AXF_TOKEN. (2) Run GET /api/registry/providers/check once: Hostinger/Coolify op names are unverified against the live hub.",
      "at": "2026-11-12T00:14:13.314Z"
+    },
+    {
+     "text": "Headless run axf-full-api-cli-control-of-everything-plus-an-offli--joey: brief only · start 12.9K tokens ($0.04) · cost $20.96 · 263 turns · 6 tools, MCP none",
+     "at": "2026-11-12T00:14:29.071Z"
     }
    ],
    "approvals": [
