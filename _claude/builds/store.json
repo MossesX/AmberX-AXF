@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3454,
- "updatedAt": "2026-11-12T03:24:34.368Z",
+ "rev": 3455,
+ "updatedAt": "2026-11-12T03:26:14.723Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -1972,7 +1972,7 @@
    "pr": "https://github.com/MossesX/AmberX-AXF/pull/166",
    "mergedAt": "2026-10-29T03:49:47Z",
    "createdAt": "2026-10-27T16:56:46.231Z",
-   "updatedAt": "2026-11-03T13:57:06.541Z",
+   "updatedAt": "2026-11-12T03:26:12Z",
    "builtAt": "2026-10-30T18:10:39.641Z",
    "notes": [
     {
@@ -2038,6 +2038,10 @@
     {
      "text": "Merged from build profile \"refactor\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T09:19:06.251Z"
+    },
+    {
+     "text": "Shipped manifest sm-enterprise-branding rev 1 sent to Shipped features (backfill): landed 24227d966, 58 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-12T03:26:12Z"
     }
    ],
    "approvals": [
@@ -2060,6 +2064,12 @@
     "verbatim": false,
     "from": "detail",
     "addenda": []
+   },
+   "shipped": {
+    "id": "sm-enterprise-branding",
+    "rev": 1,
+    "at": "2026-11-12T03:26:12Z",
+    "landedCommit": "24227d9669d45952481d09fa97850fc6fd721305"
    },
    "steps": [
     {
@@ -3103,7 +3113,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {
