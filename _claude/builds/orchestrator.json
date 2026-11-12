@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:08:08.411Z",
+ "updatedAt": "2026-11-12T02:08:23.116Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -80214,7 +80214,7 @@
    "title": "Split builds pages (Build Manager = Pending + Complete; Orchestrator = Queued + Active) with one clean shared table design",
    "category": "",
    "detail": "Replaces one-builds-page-pending-queued-built-tabs-remove (mark superseded).\n\nPages: Build Manager owns Pending (create, edit, prioritize, Send to orchestrator) and Complete (finished builds sent back by the orchestrator: account that actually built it, model, cost, PR, land status). Build orchestrator owns only Queued and Active (route, assign account, hold, cancel/return to Pending); finished builds go back to Build Manager Complete. Remove every other builds table and the separate Build queue screen (redirect).\n\nDesign: one shared framework build-table asset used by all four tabs so they look the same. Each build is one clean compact line (title, priority, status badge, steps done/total, account, model) that expands; inside the expanded row, collapsible sections/sub-grids (steps with state, runs/sessions, cost, files/PR, Brett's words, log tail). Per-tab columns differ only where needed: Active shows a live elapsed timer, steps complete with a progress bar, current step, account actually running it; Queued shows position and why it's waiting; Complete shows duration, cost, who built it. Clean, minimal, theme tokens only, phone and desktop. Screenshots to UI Review. Full API/voice control.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -80222,7 +80222,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T17:49:22.125Z",
-   "updatedAt": "2026-11-10T17:46:18.551Z",
+   "updatedAt": "2026-11-12T02:08:19.969Z",
    "builtAt": "",
    "notes": [
     {
@@ -80232,6 +80232,10 @@
     {
      "text": "Split by Claude into 11 steps (2 Fable).",
      "at": "2026-11-10T17:46:18.551Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:19.969Z"
     }
    ],
    "approvals": [],
@@ -82789,7 +82793,7 @@
    "title": "Standing rule in every brief: fix problems yourself, log and notify, never stop to ask",
    "category": "",
    "detail": "Add to the orchestrator's brief rules (every build it splits and briefs), the headless session rules, agent profiles and the shared CLAUDE rules every Claude session reads: when something blocks the work, try every fix within your permissions (axHub tools, console, VPS check/run, Coolify, hosting, or hand off to an agent with the right permissions) and keep going; don't stop to ask Brett. Log each attempt and send him an FYI notification through AmberX (trying X / X failed / trying Y / fixed) using the fix-log tool; informational, never a permission request. Existing approval gates on VPS writes stay as they are.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -82797,7 +82801,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-09T23:45:25.391Z",
-   "updatedAt": "2026-11-10T17:48:09.529Z",
+   "updatedAt": "2026-11-12T02:08:19.123Z",
    "builtAt": "",
    "notes": [
     {
@@ -82807,6 +82811,10 @@
     {
      "text": "Split by Claude into 8 steps (0 Fable).",
      "at": "2026-11-10T17:48:09.529Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:19.123Z"
     }
    ],
    "approvals": [],
@@ -84084,7 +84092,7 @@
    "title": "Skin chunk previews, interactive demos, and an IDE-style studio with floating tab groups, side-by-side compare and live split editor",
    "category": "",
    "detail": "Follows the skins-as-section-packages build; upgrade that and reuse existing pieces (the IDE layout and tab groups from walkthrough-player-ide-layout-setting-collapsibl, the Demonstration designer, and UI asset designer). 1) PREVIEW EVERYWHERE: every list and grid that shows skin chunks or assets gets a preview action (hover thumbnail plus a full preview pane). 2) INTERACTIVE DEMO: if a chunk can be demoed (behaviour, layouts, components), Demo opens a live sandbox where you can actually use it. Otherwise it shows a rendered preview of what it looks like. 3) COMPARE: open chunks side by side in any number of containers, docked or floating. 4) IDE STUDIO VIEW (optional view, not forced): floating and dockable tab groups, each holding any asset types, with a chunk info panel (name, category, source skin, tags, used-by). Drag tabs between groups, and drag chunks onto each other or into a pack template to build new skins and assets. 5) SPLIT TAB: any tab can split into editor plus live preview, with real-time updates while editing. 6) Layouts can be saved and restored. Full REST, MCP, CLI and voice control. Desktop and phone screenshots go to UI Review grouped by screen.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -84092,7 +84100,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T00:23:46.567Z",
-   "updatedAt": "2026-11-10T17:49:12.686Z",
+   "updatedAt": "2026-11-12T02:08:18.138Z",
    "builtAt": "",
    "notes": [
     {
@@ -84102,6 +84110,10 @@
     {
      "text": "Split by Claude into 16 steps (3 Fable).",
      "at": "2026-11-10T17:49:12.686Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:18.138Z"
     }
    ],
    "approvals": [],
@@ -85936,7 +85948,7 @@
    "title": "Landing tool takes long build names, and auto-fixes and retries failed lands",
    "category": "",
    "detail": "vps.build_land, build_start, build_stop and build_clean reject names over 40 characters (^[a-z0-9][a-z0-9-]{0,39}$), but the orchestrator makes build IDs up to about 50 characters (e.g. demo-designer-finish-phase-2-s2-s3-resuming-from, skins-restyle-everything-badges-banner-and-every-visual-element). 1) In the axHub vps service, raise the name limit to match the orchestrator's longest IDs (at least 80), keeping the same safe character set. 2) If the orchestrator ever makes an ID the tools can't take, it shortens it consistently (folder, branch, tmux) instead of failing. 3) When build_land fails for any fixable reason (stray files, stale locks, name format), it fixes it and retries automatically, logging to the fix log. Real code clashes go to a conflict-fix build automatically. 4) Tests with long names. Repos: axHub (vps service config) and AmberX-AXF (orchestrator).",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -85944,7 +85956,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T04:26:25.764Z",
-   "updatedAt": "2026-11-10T17:50:15.498Z",
+   "updatedAt": "2026-11-12T02:08:17.113Z",
    "builtAt": "",
    "notes": [
     {
@@ -85954,6 +85966,10 @@
     {
      "text": "Split by Claude into 9 steps (1 Fable).",
      "at": "2026-11-10T17:50:15.498Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:17.113Z"
     }
    ],
    "approvals": [],
@@ -86174,14 +86190,14 @@
    "title": "Auto-land every build the moment it finishes, redeploy the console on every land, and backfill the 134 unlanded",
    "category": "",
    "detail": "Plain code in the orchestrator dispatcher, no AI. 1) The moment a build's session finishes with its steps ticked and tests green, the orchestrator lands it straight away: clean sync files and stray logs, clear stale locks, merge origin/main, rerun the build's own tests, push to main. No waiting on a person or a later session. 2) UPDATE THE CONSOLE ON EVERY LAND: right after each push to main, trigger the console redeploy immediately (the same path as install-console.sh's auto-update, run now, not on the 5-minute timer), and rebuild any other app the change touched (AmberX web, axHub web, Molly and so on). Wait for it to come up healthy, then refresh open consoles. If the deploy fails, roll back to the last good image and queue a fix. 3) UI Review never blocks landing: screenshots and picks can follow after landing, and changes come as follow-up builds. 4) If main moved and tests fail after the merge, or there's a code clash, the orchestrator immediately queues a conflict-fix run on the same branch (top priority, any working account) and lands when green. It retries until it's on main. 5) Land in finish order, one at a time (a merge lock), so each lands on the newest main. Batch redeploys if several land within a minute. 6) Backfill now: land every finished-but-unlanded build (about 134), oldest first, skipping ones superseded or already on main, with conflict-fix runs where needed. 7) Each land and deploy shows in the Activity Monitor and fix log, with a phone FYI only for failures that need Brett. Tests with fake clashes and a fake failed deploy. Supersedes any auto-land pieces in other builds; don't duplicate.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-10T04:28:17.210Z",
-   "updatedAt": "2026-11-10T17:51:25.771Z",
+   "updatedAt": "2026-11-12T02:08:15.838Z",
    "builtAt": "",
    "notes": [
     {
@@ -86203,6 +86219,10 @@
     {
      "text": "Split by Claude into 15 steps (2 Fable).",
      "at": "2026-11-10T17:51:25.771Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:15.838Z"
     }
    ],
    "approvals": [],
@@ -86806,7 +86826,7 @@
    "title": "Approval page: allow-all / deny-all for a set time, plus a veto countdown length setting",
    "category": "",
    "detail": "axHub approval page settings: 1) Allow all approvals for the next 1 hour, 2 hours, or a custom duration / until a set time. 2) Deny all for a custom duration / until a set time. 3) A setting to change the veto countdown length (today fixed at 90 seconds). Show the active window and let it be cancelled early. Full API control.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -86814,7 +86834,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T15:26:32.806Z",
-   "updatedAt": "2026-11-10T17:52:41.548Z",
+   "updatedAt": "2026-11-12T02:08:10.386Z",
    "builtAt": "",
    "notes": [
     {
@@ -86824,6 +86844,10 @@
     {
      "text": "Split by Claude into 10 steps (1 Fable).",
      "at": "2026-11-10T17:52:41.548Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:10.386Z"
     }
    ],
    "approvals": [],
@@ -94069,7 +94093,7 @@
    "title": "Apply-skin dialog: tree of everything, overridden items highlighted, choose keep override or take the new skin per item",
    "category": "",
    "detail": "Amends skin rules + overrides list. Every override is recorded in an overrides registry. Applying a skin opens a dialog: collapsible/expandable tree (plus other views) of everything the skin touches, all checked by default; filter to show only overridden items, highlighted in a distinct colour; per item (and per branch) choose keep my override or take the new skin's value. Bulk keep-all / replace-all. Full API/CLI control.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -94077,12 +94101,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T17:42:17.406Z",
-   "updatedAt": "2026-11-10T17:43:17.233Z",
+   "updatedAt": "2026-11-12T02:08:20.730Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T17:43:17.233Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:20.730Z"
     }
    ],
    "approvals": [],
@@ -94164,7 +94192,7 @@
    "title": "Local AI: Ollama + Mistral on the VPS, wired into the AI-assist switch",
    "category": "",
    "detail": "Install Ollama with a Mistral model (7B, quantized) as the local AI the console/search/agents use when the AI switch is on (zero-cost fallback before Claude). Check VPS RAM/disk first: the VPS was hitting memory/swap limits, so pick a model size that fits, add swap or report if it won't. Run as a service behind Coolify, internal-only endpoint, health check, axHub service entry. Full API/CLI control.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -94172,7 +94200,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T17:50:25.480Z",
-   "updatedAt": "2026-11-10T17:51:36.004Z",
+   "updatedAt": "2026-11-12T02:08:13.610Z",
    "builtAt": "",
    "notes": [
     {
@@ -94182,6 +94210,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T17:51:36.004Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:13.610Z"
     }
    ],
    "approvals": [],
@@ -94263,7 +94295,7 @@
    "title": "Ollama model pick: Mistral Small 24B (Q4) default + Mistral 7B for quick tasks (VPS has 64 GB)",
    "category": "",
    "detail": "Amends the Ollama + Mistral build. VPS now has 64 GB RAM. Use Mistral Small (24B, Q4 quant, ~14 GB) as the default model; also pull Mistral 7B for fast lightweight tasks. Keep headroom for builds (cap Ollama memory, one model loaded at a time, unload after idle).",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -94271,7 +94303,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T17:50:42.350Z",
-   "updatedAt": "2026-11-10T17:52:29.947Z",
+   "updatedAt": "2026-11-12T02:08:12.794Z",
    "builtAt": "",
    "notes": [
     {
@@ -94281,6 +94313,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T17:52:29.947Z"
+    },
+    {
+     "text": "Moved to the Archive from pending (console).",
+     "at": "2026-11-12T02:08:12.794Z"
     }
    ],
    "approvals": [],

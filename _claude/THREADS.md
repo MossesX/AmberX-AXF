@@ -776,15 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 23:12 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` → running, note (all) · orchestrator
-- 2026-11-10 23:12 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` → running, note (all) · pipeline
-- 2026-11-10 23:12 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` note (all) · orchestrator
-- 2026-11-10 23:12 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` branch claude/gizmo-opens-by-voice-link-amberx-web-app-android (all) · pipeline
-- 2026-11-10 23:12 UTC · `molly-sign-in-once` note (all) · orchestrator
-- 2026-11-10 23:12 UTC · `make-hulu-actually-take-builds-dispatcher-counts` note (all) · orchestrator
-- 2026-11-10 23:12 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` note (all) · orchestrator
-- 2026-11-10 23:12 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` → running, note (all) · pipeline
-- 2026-11-10 23:12 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` branch claude/ai-assistant-gizmo-moved-to-the-console-remove-t (all) · pipeline
 - 2026-11-10 23:12 UTC · `ai-assistant-gizmo-moved-to-the-console-remove-t` note (all) · orchestrator
 - 2026-11-10 23:12 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` note (all) · orchestrator
 - 2026-11-10 23:12 UTC · `orchestrator-merge-first-switch-separate-merger` → running, note (all) · pipeline
@@ -1176,6 +1167,15 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:07 UTC · `amberx-llama-axhub-service-hooks-so-amberx-and-e` → archived, note (all) · console
 - 2026-11-12 02:07 UTC · `projects-create-a-new-project-and-move-builds-be` → archived, note (all) · console
 - 2026-11-12 02:08 UTC · `ollama-own-docker-container-amberx-llama-interna` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `approval-page-allow-all-deny-all-for-a-set-time` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `ollama-model-pick-mistral-small-24b-q4-default-m` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `local-ai-ollama-mistral-on-the-vps-wired-into-th` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `auto-land-every-build-the-moment-it-finishes-red` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `landing-tool-takes-long-build-names-and-auto-fix` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `skin-chunk-previews-interactive-demos-and-an-ide` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `standing-rule-in-every-brief-fix-problems-yourse` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `split-builds-pages-build-manager-pending-complet-2` → archived, note (all) · console
+- 2026-11-12 02:08 UTC · `apply-skin-dialog-tree-of-everything-overridden` → archived, note (all) · console
 
 ## Token passes (log)
 
