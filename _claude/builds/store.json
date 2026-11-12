@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3321,
- "updatedAt": "2026-11-12T02:32:14.904Z",
+ "rev": 3322,
+ "updatedAt": "2026-11-12T02:32:26.001Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -120810,7 +120810,7 @@
    "pr": "#497",
    "priority": "P0",
    "createdAt": "2026-11-08T16:58:59.537Z",
-   "updatedAt": "2026-11-12T02:11:16.250Z",
+   "updatedAt": "2026-11-12T02:32:01.078Z",
    "builtAt": "",
    "notes": [
     {
@@ -120860,6 +120860,10 @@
     {
      "text": "Headless run axf-molly-native-expenses--gina: brief only · start 10.4K tokens ($0.02) · cost $0.33 · 23 turns · 6 tools, MCP none",
      "at": "2026-11-12T01:57:38.305Z"
+    },
+    {
+     "text": "Phase 1 done (PR #497). Expenses ledger, paydays, reports, assistant and settings are native in Molly; standalone app unchanged. UI Review r-20261112-4ec56890 waits on Brett, with 3 nav-placement options. Gaps still standalone only, to be listed as pending builds: assistant edit/build modes + workspace diff; AI connection keys; receipt/statement import; vault; delete. The shell-surface@1 registration goes live once molly-one-shell (#395) lands.",
+     "at": "2026-11-12T02:32:01.078Z"
     }
    ],
    "approvals": [],
@@ -121009,7 +121013,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 57,
+   "rev": 58,
    "deleted": false,
    "deletedAt": "",
    "pending": {
