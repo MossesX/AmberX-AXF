@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3345,
- "updatedAt": "2026-11-12T02:38:48.030Z",
+ "rev": 3346,
+ "updatedAt": "2026-11-12T02:38:58.235Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -160395,7 +160395,7 @@
    "branch": "claude/build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides",
    "pr": "#505",
    "createdAt": "2026-11-12T02:02:25.273Z",
-   "updatedAt": "2026-11-12T02:34:47.497Z",
+   "updatedAt": "2026-11-12T02:38:17.359Z",
    "builtAt": "",
    "notes": [
     {
@@ -160557,12 +160557,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T02:38:17.359Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T02:02:25.274Z",
-     "updatedAt": "2026-11-12T02:02:25.274Z"
+     "updatedAt": "2026-11-12T02:38:17.844Z"
     },
     {
      "id": "s6",
@@ -160617,7 +160617,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
