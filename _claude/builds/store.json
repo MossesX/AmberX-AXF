@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3293,
- "updatedAt": "2026-11-12T02:17:25.804Z",
+ "rev": 3294,
+ "updatedAt": "2026-11-12T02:17:33.377Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -153697,8 +153697,8 @@
    "pr": "#500",
    "priority": "P0",
    "createdAt": "2026-11-10T20:46:28.820Z",
-   "updatedAt": "2026-11-12T02:17:12.383Z",
-   "builtAt": "2026-11-12T02:15:00.042Z",
+   "updatedAt": "2026-11-12T02:17:28.257Z",
+   "builtAt": "2026-11-12T02:15:18.702Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -153749,12 +153749,16 @@
      "at": "2026-11-12T02:13:14.168Z"
     },
     {
-     "text": "UI Review shots still needed: headless capture stops at 'Waiting for axHub' (sandbox can't reach the hub). Capture the console Web browser pane and AmberX Web page, phone + desktop, from a console that reaches axHub, then submit to UI Review for PR #500.",
-     "at": "2026-11-12T02:17:12.383Z"
-    },
-    {
      "text": "Headless run axf-open-any-website-by-voice-on-the-phone-optionall--joey: brief only · start 11.0K tokens ($0.03) · cost $4.22 · 98 turns · 6 tools, MCP none",
      "at": "2026-11-12T02:15:18.702Z"
+    },
+    {
+     "text": "Headless run axf-open-any-website-by-voice-on-the-phone-optionall--sully: brief only · start 11.0K tokens ($0.03) · cost $0.82 · 50 turns · 6 tools, MCP none",
+     "at": "2026-11-12T02:17:28.257Z"
+    },
+    {
+     "text": "UI Review shots still needed: headless capture stops at 'Waiting for axHub' (sandbox can't reach the hub). Capture the console Web browser pane and AmberX Web page, phone + desktop, from a console that reaches axHub, then submit to UI Review for PR #500.",
+     "at": "2026-11-12T02:17:12.383Z"
     }
    ],
    "approvals": [],
@@ -153885,7 +153889,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
