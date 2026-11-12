@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3388,
- "updatedAt": "2026-11-12T02:48:42.686Z",
+ "rev": 3389,
+ "updatedAt": "2026-11-12T02:49:07.044Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -155756,7 +155756,7 @@
    "title": "Bug: asset settings (nav menu, tab bar, toolbar) change the settings panel instead of the asset; reset to default resets the wrong thing",
    "category": "",
    "detail": "Right-click > Settings on any asset (nav menu, tab bar, toolbar, banner) opens a settings panel whose changes and Reset to default currently target the settings panel's own assets. Fix: the panel binds to the asset that was right-clicked (and the app it lives in); every change and Reset to default applies to that target asset in the live app. The settings panel's own look is never edited from there. Add a test per asset type.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -155764,7 +155764,7 @@
    "pr": "#503",
    "priority": "P0",
    "createdAt": "2026-11-10T21:45:52.947Z",
-   "updatedAt": "2026-11-12T02:48:34.344Z",
+   "updatedAt": "2026-11-12T02:49:05.099Z",
    "builtAt": "",
    "notes": [
     {
@@ -155814,6 +155814,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-bug-asset-settings-nav-menu-tab-bar-toolbar-chan--joey, own login copy)",
      "at": "2026-11-12T02:40:28.915Z"
+    },
+    {
+     "text": "Self-check: bug-asset-settings-nav-menu-tab-bar-toolbar-chan was marked running on mossesx-max- with no session: released and back in the Queue.",
+     "at": "2026-11-12T02:49:05.099Z"
     }
    ],
    "approvals": [
@@ -155842,7 +155846,7 @@
    "pipeline": {
     "queuedAt": "2026-11-12T01:43:28.836Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
+    "account": "",
     "session": "",
     "slot": "",
     "model": "Fable",
@@ -155858,7 +155862,7 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "Session on mossesx-max- ended (exit 0) with 2 steps left: back in the Queue (run 2).",
+    "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
     "dispatchedAt": "2026-11-12T01:55:14.610Z",
     "planned": {
@@ -155953,7 +155957,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
