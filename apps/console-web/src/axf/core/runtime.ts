@@ -806,6 +806,7 @@ export class AxfRuntime {
 
   /** The 'Use skin' switch. `id` picks the skin too; on with none picked takes the first skin. */
   useSkin(on: boolean, id?: string): boolean {
+    if (id === 'next' || id === 'prev') id = this.stepSkin(id === 'next' ? 1 : -1);
     const pick = id ?? this.appLook()?.skin.id ?? '';
     const skin = pick || (on ? this.skinList()[0]?.id ?? '' : '');
     if (on && !this.skinData(skin)) { this.toast(`No skin "${skin}" in this app.`, 'warning', 'Skin'); return false; }
@@ -813,6 +814,14 @@ export class AxfRuntime {
     this.terminal.ok('hot-swap', on ? `skin ${skin} on for this app` : 'skin off: back to this app\'s own look');
     this.lookApplied('default', skin);
     return true;
+  }
+
+  /** The skin one step after (1) or before (-1) the one in force, wrapping; replaces the retired Next layout / style picks. */
+  stepSkin(dir: 1 | -1): string {
+    const list = this.skinList();
+    if (!list.length) return '';
+    const at = list.findIndex((e) => e.id === this.skinInForce().id);
+    return list[(at + dir + list.length) % list.length]!.id;
   }
 
   /** Pick a skin; it shows only while Use skin is on. */
@@ -2884,6 +2893,8 @@ export class AxfRuntime {
       a.register(id, () => this.toast(`${meta.label} has no handler in this app yet.`, 'info', meta.label), { ...meta, stub: true });
     }
     a.register('swap', ([type, target = 'next']) => {
+      // the retired Next style / layout / behaviour picks in older menus and toolbars step the skin instead (skins only)
+      if (type && (target === 'next' || target === 'prev') && this.lookLayerOn() && isFoldedPickType(type as AssetType) && type !== SKIN_SWAPPABLE_SECTION && type !== DESIGN_PACKAGE_TYPE) { this.useSkin(true, target); return; }
       if (type && (ASSET_TYPES as readonly string[]).includes(type)) this.swap(type as AssetType, target);
       else this.toast(`Unknown asset type "${type}".`, 'warning');
     }, { label: 'Swap asset', params: true });
