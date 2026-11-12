@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 22:11 UTC · `molly-gap-expenses-cors` note (all) · builds-live
 - 2026-11-10 22:11 UTC · `molly-gap-console-token-handoff` note (all) · orchestrator
 - 2026-11-10 22:12 UTC · `molly-gap-remote-actions` note (all) · orchestrator
 - 2026-11-10 22:21 UTC · `molly-one-shell` s10 done (all) · orchestrator
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:00 UTC · `vps-server-gate-no-build-starts-without-an-orchestrator-issued-id` note (all) · orchestrator
 - 2026-11-12 02:00 UTC · `main-gate-nothing-reaches-main-without-passing` → queued, note (all) · console
 - 2026-11-12 02:02 UTC · `amberx-build-notifications-for-every-stage-start` s1 done, → running (all) · orchestrator
+- 2026-11-12 02:02 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` added (7 steps) (all) · Claude voice (Gizmo)
 
 ## Token passes (log)
 
