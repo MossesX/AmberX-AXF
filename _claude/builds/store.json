@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3739,
- "updatedAt": "2026-11-12T22:23:21.333Z",
+ "rev": 3740,
+ "updatedAt": "2026-11-12T22:23:33.224Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -172853,7 +172853,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-12T20:40:19.258Z",
-   "updatedAt": "2026-11-12T22:23:16.178Z",
+   "updatedAt": "2026-11-12T22:23:29.849Z",
    "builtAt": "",
    "notes": [
     {
@@ -172982,7 +172982,7 @@
      "id": "s4",
      "uid": "st-mwe0i6fp0c6t21",
      "title": "",
-     "text": "Group PRs: combine several PRs into one batch branch/PR, resolve and land together",
+     "text": "Batch merge: select a bunch of PRs, pull main into each, combine them into one batch branch, resolve clashes between them (Claude fixes conflicts), run checks once, merge the batch as one PR into main; failures alert Brett and retry. Brett: \"I need a way to pull main into a bunch of PRs and merge them all together as one so they don't clash with each other.\"",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -172996,9 +172996,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T20:40:19.259Z",
-     "updatedAt": "2026-11-12T20:40:19.259Z"
+     "updatedAt": "2026-11-12T22:23:30.127Z"
     },
     {
      "id": "s5",
@@ -173119,7 +173119,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

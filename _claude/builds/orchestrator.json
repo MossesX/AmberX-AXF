@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T22:23:21.333Z",
+ "updatedAt": "2026-11-12T22:23:33.224Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -109357,7 +109357,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-12T20:40:19.258Z",
-   "updatedAt": "2026-11-12T22:23:16.178Z",
+   "updatedAt": "2026-11-12T22:23:29.849Z",
    "builtAt": "",
    "notes": [
     {
@@ -109444,7 +109444,7 @@
     },
     {
      "id": "s4",
-     "text": "Group PRs: combine several PRs into one batch branch/PR, resolve and land together",
+     "text": "Batch merge: select a bunch of PRs, pull main into each, combine them into one batch branch, resolve clashes between them (Claude fixes conflicts), run checks once, merge the batch as one PR into main; failures alert Brett and retry. Brett: \"I need a way to pull main into a bunch of PRs and merge them all together as one so they don't clash with each other.\"",
      "model": "Opus",
      "why": "",
      "phase": "",
