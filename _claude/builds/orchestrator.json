@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T01:45:09.424Z",
+ "updatedAt": "2026-11-12T01:45:31.375Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -97437,14 +97437,14 @@
    "title": "Molly gap: Molly's own actions (molly.*) reachable from the console API, MCP, CLI and AmberX",
    "category": "",
    "detail": "Found by molly-sign-in-once s1. The console-commands relay reaches the console frame inside Molly, not Molly itself, so Molly-level actions (molly.auth.status / check / sign-in / sign-out / base, molly.reload, navigation.*, xlayout.*) can only be run inside Molly (menus, toolbar, command search). Give Molly a client on the same relay (console_show / console_open target molly, plugin commands listing Molly's actions, control@1 for its settings) so every Molly action has the same four reaches (REST, MCP, CLI, voice). Needed before molly-sign-in-once s2 can call its screen done.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "molly-sign-in-once",
    "pendingId": "",
    "branch": "claude/molly-gap-remote-actions",
    "pr": "",
    "createdAt": "2026-11-10T22:09:30.792Z",
-   "updatedAt": "2026-11-12T01:43:17.715Z",
+   "updatedAt": "2026-11-12T01:45:24.628Z",
    "builtAt": "",
    "notes": [
     {
@@ -97482,8 +97482,8 @@
     {
      "id": "s1",
      "text": "Found by molly-sign-in-once s1. The console-commands relay reaches the console frame inside Molly, not Molly itself, so Molly-level actions (molly.auth.status / check / sign-in / sign-out / base, molly.reload, navigation.*, xlayout.*) can only be run inside Molly (menus, toolbar, command search). Give Molly a client on the same relay (console_show / console_open target molly, plugin commands listing Molly's actions, control@1 for its settings) so every Molly action has the same four reaches (REST, MCP, CLI, voice). Needed before molly-sign-in-once s2 can call its screen done.",
-     "model": "Opus",
-     "why": "",
+     "model": "Fable",
+     "why": "Needs a cross-app protocol change: new embed@1 messages so the console frame inside Molly relays commands to Molly (Molly has no console token of its own).",
      "phase": "",
      "group": "",
      "estimate": "30 min",

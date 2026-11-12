@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3181,
- "updatedAt": "2026-11-12T01:45:09.424Z",
+ "rev": 3182,
+ "updatedAt": "2026-11-12T01:45:31.375Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -157119,14 +157119,14 @@
    "title": "Molly gap: Molly's own actions (molly.*) reachable from the console API, MCP, CLI and AmberX",
    "category": "",
    "detail": "Found by molly-sign-in-once s1. The console-commands relay reaches the console frame inside Molly, not Molly itself, so Molly-level actions (molly.auth.status / check / sign-in / sign-out / base, molly.reload, navigation.*, xlayout.*) can only be run inside Molly (menus, toolbar, command search). Give Molly a client on the same relay (console_show / console_open target molly, plugin commands listing Molly's actions, control@1 for its settings) so every Molly action has the same four reaches (REST, MCP, CLI, voice). Needed before molly-sign-in-once s2 can call its screen done.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "molly-sign-in-once",
    "pendingId": "",
    "branch": "claude/molly-gap-remote-actions",
    "pr": "",
    "createdAt": "2026-11-10T22:09:30.792Z",
-   "updatedAt": "2026-11-12T01:43:17.715Z",
+   "updatedAt": "2026-11-12T01:45:24.628Z",
    "builtAt": "",
    "notes": [
     {
@@ -157163,18 +157163,18 @@
    "pipeline": {
     "queuedAt": "2026-11-12T01:42:50.020Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-molly-gap-remote-actions--paulie",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-12T01:43:13.167Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-12T01:43:13.167Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -157183,7 +157183,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-12T01:43:13.167Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -157194,8 +157194,8 @@
      "uid": "st-mwb8wr6o01xzfx",
      "title": "",
      "text": "Found by molly-sign-in-once s1. The console-commands relay reaches the console frame inside Molly, not Molly itself, so Molly-level actions (molly.auth.status / check / sign-in / sign-out / base, molly.reload, navigation.*, xlayout.*) can only be run inside Molly (menus, toolbar, command search). Give Molly a client on the same relay (console_show / console_open target molly, plugin commands listing Molly's actions, control@1 for its settings) so every Molly action has the same four reaches (REST, MCP, CLI, voice). Needed before molly-sign-in-once s2 can call its screen done.",
-     "model": "Opus",
-     "why": "",
+     "model": "Fable",
+     "why": "Needs a cross-app protocol change: new embed@1 messages so the console frame inside Molly relays commands to Molly (Molly has no console token of its own).",
      "phase": "",
      "group": "",
      "estimate": "30 min",
@@ -157207,9 +157207,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T22:12:17.952Z",
-     "updatedAt": "2026-11-10T22:12:17.952Z"
+     "updatedAt": "2026-11-12T01:45:24.882Z"
     },
     {
      "id": "s2",
