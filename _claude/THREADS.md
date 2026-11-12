@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-11 01:11 UTC · `skins-in-the-asset-store-skin-browser-skin-edito` added (0 steps) (all) · console
 - 2026-11-11 01:11 UTC · `skins-in-the-asset-store-skin-browser-skin-edito` → queued, note (all) · console
 - 2026-11-11 01:12 UTC · `skins-in-the-asset-store-skin-browser-skin-edito` note (all) · orchestrator
 - 2026-11-11 01:12 UTC · `skins-in-the-asset-store-skin-browser-skin-edito` → running, note (all) · pipeline
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:44 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` → queued, note (all) · pipeline
 - 2026-11-12 02:44 UTC · `molly-gap-axhub-cors` s1 done, → running (all) · orchestrator
 - 2026-11-12 02:44 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` note (all) · Claude voice (Gizmo)
+- 2026-11-12 02:45 UTC · `all-banners-hide-when-empty` added (3 steps) (all) · Claude voice (Gizmo)
 
 ## Token passes (log)
 

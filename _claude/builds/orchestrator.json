@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:44:53.148Z",
+ "updatedAt": "2026-11-12T02:45:10.526Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -101061,6 +101061,80 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mwcxzs0a06xeu0"
+    }
+   ]
+  },
+  {
+   "id": "all-banners-hide-when-empty",
+   "title": "All banners hide when empty",
+   "category": "framework",
+   "detail": "URGENT, Brett's rule, Nov 12: EVERY banner (console, Molly, AmberX, plugin banners, Auto-fixes, Server gate log, any future banner) only appears when it has something in it. Empty = fully hidden, takes no space; appears live when an entry arrives, hides again when it empties. Make it a framework rule in the banner base component, so new banners get it automatically. Audit all existing banners and fix any that show when empty. Add a check (CI) that fails if a banner renders with no entries.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-12T02:45:08.669Z",
+   "updatedAt": "2026-11-12T02:45:08.670Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Banner base component: auto-hide when empty, show live when an entry arrives, no reserved space.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwcy3hpe04vaim"
+    },
+    {
+     "id": "s2",
+     "text": "Audit every existing banner across console, Molly, AmberX and plugins; move any custom ones onto the base so they all hide when empty.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwcy3hpe05wj8x"
+    },
+    {
+     "id": "s3",
+     "text": "CI check plus tests (empty banner not rendered, appears on entry, hides when cleared), PR, land through the gate, AmberX FYI when live.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwcy3hpe06rgs4"
     }
    ]
   }
