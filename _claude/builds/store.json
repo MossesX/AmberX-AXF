@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3545,
- "updatedAt": "2026-11-12T11:01:57.854Z",
+ "rev": 3546,
+ "updatedAt": "2026-11-12T11:02:22.253Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174123,7 +174123,7 @@
    "branch": "claude/remove-the-console-s-own-notes-manager-console-u",
    "pr": "",
    "createdAt": "2026-11-12T10:43:54.592Z",
-   "updatedAt": "2026-11-12T11:01:56.330Z",
+   "updatedAt": "2026-11-12T11:02:19.455Z",
    "builtAt": "",
    "notes": [
     {
@@ -174225,12 +174225,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T11:02:19.455Z",
      "note": "",
-     "rev": 3,
+     "rev": 4,
      "createdAt": "2026-11-12T10:44:42.157Z",
-     "updatedAt": "2026-11-12T10:55:11.672Z"
+     "updatedAt": "2026-11-12T11:02:19.881Z"
     },
     {
      "id": "s3",
@@ -174266,7 +174266,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
