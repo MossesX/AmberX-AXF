@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3507,
- "updatedAt": "2026-11-12T10:35:51.747Z",
+ "rev": 3508,
+ "updatedAt": "2026-11-12T10:36:47.317Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -173724,9 +173724,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T10:35:49.272Z",
-   "updatedAt": "2026-11-12T10:35:49.272Z",
+   "updatedAt": "2026-11-12T10:36:46.032Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-12T10:36:46.032Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -173741,7 +173746,105 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-12T10:36:46.032Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwdexzyo010bwo",
+     "title": "",
+     "text": "PR #496 added <screen>.focus only for the Build orchestrator. Opening UI Review with focus r-20261112-4ec56890 answered: opened UI Review; it has no way to focus. Every screen (UI Review, Plan Studio, Pending, All builds, settings tabs, plugins' screens) must declare a <screen>.focus action that opens the right tab, scrolls the item/row/group into view, expands and highlights it. Add a check that fails if any screen with items lacks a focus action. Also: opening a screen should close a covering dialog (settings dialog was left on top).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T10:36:46.032Z",
+     "updatedAt": "2026-11-12T10:36:46.032Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwdexzyo02dp61",
+     "title": "",
+     "text": "Everything, everything needs to plan studio, UI review, everything. What the fuck?",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T10:36:46.032Z",
+     "updatedAt": "2026-11-12T10:36:46.032Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwdexzyo03negf",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/focus-on-every-screen-console-open-console-show-.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/focus-on-every-screen-console-open-console-show-.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T10:36:46.032Z",
+     "updatedAt": "2026-11-12T10:36:46.032Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -173750,7 +173853,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -173765,7 +173868,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-12T10:36:46.032Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
