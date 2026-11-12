@@ -5,7 +5,7 @@
  */
 import { createContext, Fragment, useCallback, useContext, useEffect, useRef, useState, type MouseEvent, type ReactNode } from 'react';
 import type { SlotDef } from '../library';
-import { bannerFrameEmpty } from '../bannerEmpty';
+import { bannerFrameEmpty, bannerNodeEmpty } from '../bannerEmpty';
 import { BannerGroup } from './BannerGroup';
 import { HiddenBannersNote } from './BannerSettings';
 
@@ -43,9 +43,11 @@ export function FrameBanners() {
 export function stripHasContent(strip: Element): boolean {
   const group = strip.querySelector(':scope > .fx-banner-group');
   const body = group?.querySelector(':scope > .fx-banner-group__body');
-  for (const el of Array.from(strip.children)) if (el !== group) return true; // a note under the banners
+  // a note under the banners (unless it drew an empty shell)
+  for (const el of Array.from(strip.children)) if (el !== group && !bannerNodeEmpty(el as never)) return true;
   for (const el of Array.from(body?.children ?? [])) {
-    if (!el.classList.contains('fx-banner-frame')) return true; // an app's own banner, or a quick-hide note
+    // an app's own banner, a host's strip or a quick-hide note: the same empty rule as a framed banner
+    if (!el.classList.contains('fx-banner-frame')) { if (!bannerNodeEmpty(el as never)) return true; continue; }
     if (!(el as HTMLElement).hidden && !bannerFrameEmpty(el as never)) return true; // a banner with something in it
   }
   return false;
@@ -61,7 +63,7 @@ function useStripEmpty() {
     const check = () => setOn(!stripHasContent(el));
     check();
     obs.current = new MutationObserver(check);
-    obs.current.observe(el, { subtree: true, childList: true, attributes: true, attributeFilter: ['hidden'] });
+    obs.current.observe(el, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['hidden', 'aria-hidden', 'data-fx-banner-empty'] });
   }, []);
   useEffect(() => () => obs.current?.disconnect(), []);
   return { ref, on };
