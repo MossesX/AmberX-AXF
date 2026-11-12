@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 10:42 UTC · `app-style-override` → archived (all) · claude-voice
 - 2026-11-12 10:43 UTC · `remove-the-console-s-own-notes-manager-console-u` added (0 steps) (all) · pending
 - 2026-11-12 10:44 UTC · `remove-the-console-s-own-notes-manager-console-u` note (all) · orchestrator
 - 2026-11-12 10:45 UTC · `focus-on-every-screen-console-open-console-show-` note (all) · pending
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 23:30 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` → running, note (all) · pipeline
 - 2026-11-12 23:30 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` note (all) · orchestrator
 - 2026-11-12 23:31 UTC · `claude-badge-can-claude-build-green-when-at-least-one-build-account-in-the-or` note (all) · orchestrator
+- 2026-11-12 23:31 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` → running, branch claude/fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o, PR #532 (all) · builds-live
 
 ## Token passes (log)
 

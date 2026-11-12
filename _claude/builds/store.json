@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3829,
- "updatedAt": "2026-11-12T23:31:37.654Z",
+ "rev": 3830,
+ "updatedAt": "2026-11-12T23:31:57.820Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174134,11 +174134,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides",
-   "pr": "#505",
+   "branch": "claude/fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o",
+   "pr": "#532",
    "priority": "P0",
    "createdAt": "2026-11-12T22:16:05.972Z",
-   "updatedAt": "2026-11-12T23:30:25.728Z",
+   "updatedAt": "2026-11-12T23:31:56.565Z",
    "builtAt": "",
    "notes": [
     {
@@ -174195,18 +174195,18 @@
    "pipeline": {
     "queuedAt": "2026-11-12T23:29:01.857Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-fix-conflicts-and-land-build-plan-1-skins-one-ro--joey",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-12T23:30:20.573Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-12T23:30:20.573Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -174215,7 +174215,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-12T23:30:20.573Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
