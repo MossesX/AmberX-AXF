@@ -778,10 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 10:40 UTC · `show-commits-behind-main-on-every-build-table-an` note (all) · orchestrator
-- 2026-11-12 10:42 UTC · `git-status-board` → archived (all) · claude-voice
-- 2026-11-12 10:42 UTC · `terminal-tabs-left` → archived (all) · claude-voice
-- 2026-11-12 10:42 UTC · `browser-automation` → archived (all) · claude-voice
 - 2026-11-12 10:42 UTC · `main-area-tabs` → archived (all) · claude-voice
 - 2026-11-12 10:42 UTC · `app-style-override` → archived (all) · claude-voice
 - 2026-11-12 10:43 UTC · `remove-the-console-s-own-notes-manager-console-u` added (0 steps) (all) · pending
@@ -1178,6 +1174,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 23:26 UTC · `agent-swarm-group-chat-read-aloud-add-a-setting-off-by-default-with-quick-on` note (all) · builds-live
 - 2026-11-12 23:26 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` note (all) · orchestrator
 - 2026-11-12 23:29 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` → queued, note (all) · console
+- 2026-11-12 23:30 UTC · `claude-badge-can-claude-build-green-when-at-least-one-build-account-in-the-or` added (0 steps) (all) · mcp
+- 2026-11-12 23:30 UTC · `claude-badge-can-claude-build-green-when-at-least-one-build-account-in-the-or` → queued, note (all) · console
+- 2026-11-12 23:30 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` → running, note (all) · pipeline
+- 2026-11-12 23:30 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` note (all) · orchestrator
 
 ## Token passes (log)
 

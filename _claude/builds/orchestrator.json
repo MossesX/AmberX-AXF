@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T23:30:16.497Z",
+ "updatedAt": "2026-11-12T23:30:34.426Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -110243,7 +110243,7 @@
    "title": "Fix conflicts and land Build Plan 1 (skins, one-row tables, backgrounds, asset overrides)",
    "category": "merge",
    "detail": "Branch claude/build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides conflicts with main in 7 files: ChromeContext.tsx (framework + amberx-droid, axhub-web, console-web, molly copies), build-orchestrator/web/pipeline.tsx, framework/spec/PORTING.md. Brett: pull main in and merge it right away. Keep both sides' intent (tap-to-confirm #524 and skins).",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -110251,7 +110251,7 @@
    "pr": "#505",
    "priority": "P0",
    "createdAt": "2026-11-12T22:16:05.972Z",
-   "updatedAt": "2026-11-12T23:30:14.177Z",
+   "updatedAt": "2026-11-12T23:30:25.728Z",
    "builtAt": "",
    "notes": [
     {
@@ -110281,6 +110281,14 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-12T23:29:02.742Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-fix-conflicts-and-land-build-plan-1-skins-one-ro--joey.",
+     "at": "2026-11-12T23:30:22.695Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-conflicts-and-land-build-plan-1-skins-one-ro--joey, own login copy)",
+     "at": "2026-11-12T23:30:25.728Z"
     }
    ],
    "approvals": [],
@@ -110968,6 +110976,30 @@
      "uid": "st-mwe6g65p07tyg3"
     }
    ]
+  },
+  {
+   "id": "claude-badge-can-claude-build-green-when-at-least-one-build-account-in-the-or",
+   "title": "Claude badge = can Claude build: green when at least one build account in the orchestrator's account health sweep can sign in and has credits (the same check the dispatcher uses), red when none can. Stop using the VPS root `claude auth status` / .active login. Tap shows which accounts are ready. And",
+   "category": "",
+   "detail": "",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-12T23:30:16.119Z",
+   "updatedAt": "2026-11-12T23:30:20.571Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T23:30:20.571Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": []
   }
  ]
 }
