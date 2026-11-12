@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 01:43 UTC · `molly-gap-remote-actions` note (all) · orchestrator
 - 2026-11-12 01:43 UTC · `molly-gap-console-token-handoff` → running, note (all) · pipeline
 - 2026-11-12 01:43 UTC · `molly-gap-console-token-handoff` branch claude/molly-gap-console-token-handoff (all) · pipeline
 - 2026-11-12 01:43 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` → queued, note (all) · console
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:10 UTC · `all-banners-hide-when-empty` PR #509 (all) · builds-live
 - 2026-11-12 03:10 UTC · `all-banners-hide-when-empty` s3 done, → built (all) · orchestrator
 - 2026-11-12 03:11 UTC · `console-commands-reliable` s4 done, → built (all) · orchestrator
+- 2026-11-12 03:11 UTC · `merge-all-ready-buttons-server-side-lander` s1 done (all) · orchestrator
 
 ## Token passes (log)
 
