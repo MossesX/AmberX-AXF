@@ -777,7 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:28 UTC · `shared-look-fix` note (all) · backfill
 - 2026-11-12 03:28 UTC · `veto-everywhere` note (all) · backfill
 - 2026-11-12 03:28 UTC · `agent-voice` note (all) · backfill
 - 2026-11-12 03:28 UTC · `pr-only-merge` note (all) · backfill
@@ -1177,6 +1176,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 17:49 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` → running, note (all) · pipeline
 - 2026-11-12 17:49 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` branch claude/plugin-review-map-what-each-plugin-does-depends-on-and-breaks (all) · pipeline
 - 2026-11-12 17:49 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` note (all) · orchestrator
+- 2026-11-12 18:02 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` s1 done (all) · orchestrator
 
 ## Token passes (log)
 
