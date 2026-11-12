@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3449,
- "updatedAt": "2026-11-12T03:21:46.952Z",
+ "rev": 3450,
+ "updatedAt": "2026-11-12T03:23:00.560Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -26998,7 +26998,7 @@
    "branch": "claude/x.engine.dev",
    "pr": "",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-11-12T03:21:37.253Z",
+   "updatedAt": "2026-11-12T03:22:58.558Z",
    "builtAt": "",
    "notes": [
     {
@@ -27120,12 +27120,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T03:22:58.558Z",
      "note": "",
-     "rev": 5,
+     "rev": 6,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-11-07T10:46:39.420Z"
+     "updatedAt": "2026-11-12T03:22:58.786Z"
     },
     {
      "id": "s4",
@@ -27158,7 +27158,7 @@
    },
    "kind": "epic",
    "planRef": "x.engine.dev",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
