@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3453,
- "updatedAt": "2026-11-12T03:24:19.603Z",
+ "rev": 3454,
+ "updatedAt": "2026-11-12T03:24:34.368Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -26998,8 +26998,8 @@
    "branch": "claude/x.engine.dev",
    "pr": "#513",
    "createdAt": "2026-10-31T23:41:15.585Z",
-   "updatedAt": "2026-11-12T03:24:10.859Z",
-   "builtAt": "2026-11-12T03:24:09.327Z",
+   "updatedAt": "2026-11-12T03:24:20.682Z",
+   "builtAt": "2026-11-12T03:24:20.682Z",
    "notes": [
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
@@ -27016,6 +27016,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-x_engine_dev--lenny, own login copy)",
      "at": "2026-11-12T03:15:23.132Z"
+    },
+    {
+     "text": "Headless run axf-x_engine_dev--lenny: brief only · start 10.9K tokens ($0.03) · cost $2.23 · 64 turns · 6 tools, MCP none",
+     "at": "2026-11-12T03:24:20.682Z"
     },
     {
      "text": "Phase 1 done, PR #513. Web live reload works and is checked. Android emulator e2e job is manual: the device never gets axf.devServer/axf.hotReload (needs Kotlin, deferred in PORTING.md).",
