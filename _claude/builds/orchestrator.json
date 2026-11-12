@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T01:43:37.923Z",
+ "updatedAt": "2026-11-12T01:43:47.785Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -71136,7 +71136,7 @@
    "title": "Molly gap: Expense Tracker screens load natively in Molly (Next.js 16 / React 19 app today)",
    "category": "Molly",
    "detail": "Gap found by molly-one-shell. Expenses is a Next.js 16 + React 19 app; Molly is AXF React 18 + Vite, so its screens cannot mount natively as they are. Standalone expenses.amberxai.com keeps working until this lands.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -71144,12 +71144,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-08T16:58:59.537Z",
-   "updatedAt": "2026-11-10T21:34:31.434Z",
+   "updatedAt": "2026-11-12T01:43:46.278Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by brett.",
      "at": "2026-11-10T04:27:42.548Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T01:43:46.278Z"
     }
    ],
    "approvals": [],
@@ -96425,7 +96429,7 @@
    "title": "Rebuild Gizmo from scratch: full Claude-style chat interface, switch between Claude and local Ollama/Llama",
    "category": "",
    "detail": "Replace the current Gizmo chat. Full Claude.ai-quality interface: conversation list, streaming replies, markdown/code, attachments, voice talk mode, history search. Model switcher per chat: Claude (accounts/API) or local Ollama (amberx-llama container, Mistral Small 24B default, 7B option) via the internal API. Works in AmberX app, AmberX web app and console, with a real deep link. Keep what worked before the Nov 7 Fable rebuild.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -96433,7 +96437,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T21:38:57.321Z",
-   "updatedAt": "2026-11-10T21:39:38.105Z",
+   "updatedAt": "2026-11-12T01:43:38.472Z",
    "builtAt": "",
    "notes": [
     {
@@ -96443,6 +96447,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-10T21:39:38.105Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T01:43:38.472Z"
     }
    ],
    "approvals": [],
