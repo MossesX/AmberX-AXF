@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:34 UTC · `merge-all-ready-buttons-server-side-lander` s3 done, → built (all) · orchestrator
 - 2026-11-12 03:33 UTC · `project-thread-farg39` added (0 steps) (all) · backfill
 - 2026-11-12 03:33 UTC · `project-thread-tbz3ro` added (0 steps) (all) · backfill
 - 2026-11-12 03:33 UTC · `axhub-web-wall-msg` added (0 steps) (all) · backfill
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 23:00 UTC · `github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro` s7 done, s8 done, note (all) · reconciler
 - 2026-11-12 23:00 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` → pending, note (all) · reconciler
 - 2026-11-12 23:01 UTC · `move-amberx-web-app-into-the-console-amberx-andr` s9 done (all) · orchestrator
+- 2026-11-12 23:05 UTC · `move-amberx-web-app-into-the-console-amberx-andr` s10 done (all) · orchestrator
 
 ## Token passes (log)
 
