@@ -22,7 +22,7 @@
   ],
   "policyDefaults": {
     "readme": "Brett, Nov 12 2026: a veto countdown ONLY on shell commands that run on the VPS; everything in the console and the orchestrator runs at once; model upgrades keep their confirm. Only used to work out the 'Apply the default' plan; Brett's click applies it. Reads run at once; destructive tools keep the hub's confirm.",
-    "hold": [{ "service": "vps", "tools": ["run", "launch"], "why": "runs a shell command on the VPS" }],
+    "hold": [{ "service": "vps", "tools": ["run", "launch"], "why": "runs a shell command on the VPS" }, { "service": "axf-console", "tools": ["console_terminal_sessions_run", "agent_manager_vinny_commands_by_cid_run"], "why": "opens a shell or runs a command on the VPS" }],
     "holdMatch": [],
     "confirm": [{ "service": "axf-console", "tools": ["orchestrator_upgrade_approve"], "why": "a model upgrade" }]
   },
