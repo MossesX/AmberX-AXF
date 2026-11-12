@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-11 23:27 UTC · `overrides-summary-highlight-colour-setting-asset` → archived (all) · Claude voice (Gizmo)
 - 2026-11-11 23:27 UTC · `correction-to-overrides-list-expanded-asset-show` → archived (all) · Claude voice (Gizmo)
 - 2026-11-11 23:30 UTC · `full-api-cli-control-of-everything-plus-an-offli` s4 done (all) · orchestrator
 - 2026-11-11 23:31 UTC · `full-api-cli-control-of-everything-plus-an-offli` s5 done (all) · orchestrator
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:50 UTC · `server-gate-one-session-per-build-no-duplicate-launches` branch claude/server-gate-one-session-per-build-no-duplicate-launches (all) · pipeline
 - 2026-11-12 02:50 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` s6 done, → built, note (all) · reconciler
 - 2026-11-12 02:51 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` note (all) · orchestrator
+- 2026-11-12 02:51 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` s2 done (all) · orchestrator
 
 ## Token passes (log)
 

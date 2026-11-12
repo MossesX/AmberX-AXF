@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3397,
- "updatedAt": "2026-11-12T02:51:27.988Z",
+ "rev": 3398,
+ "updatedAt": "2026-11-12T02:51:37.068Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -161162,7 +161162,7 @@
    "branch": "claude/one-source-of-truth-console-shows-only-what-the-server-says-is-running",
    "pr": "",
    "createdAt": "2026-11-12T02:37:57.927Z",
-   "updatedAt": "2026-11-12T02:47:14.854Z",
+   "updatedAt": "2026-11-12T02:51:28.316Z",
    "builtAt": "",
    "notes": [
     {
@@ -161258,12 +161258,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T02:51:28.316Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T02:37:57.931Z",
-     "updatedAt": "2026-11-12T02:37:57.931Z"
+     "updatedAt": "2026-11-12T02:51:28.503Z"
     },
     {
      "id": "s3",
@@ -161296,7 +161296,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
