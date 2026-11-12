@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T20:42:05.868Z",
+ "updatedAt": "2026-11-12T20:42:33.376Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -108475,7 +108475,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-12T19:46:41.501Z",
-   "updatedAt": "2026-11-12T20:41:54.806Z",
+   "updatedAt": "2026-11-12T20:42:31.968Z",
    "builtAt": "",
    "notes": [
     {
@@ -108493,6 +108493,10 @@
     {
      "text": "On hold (console): Wait for the splitter fix so it gets real steps. It keeps its place in the Queue; the dispatcher skips it until released.",
      "at": "2026-11-12T20:41:54.806Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-12T20:42:31.968Z"
     }
    ],
    "approvals": [],
@@ -108512,7 +108516,7 @@
    "steps": [
     {
      "id": "s1",
-     "text": "Merge AmberX web app, axHub and the console into ONE app (the console). Brett: \"I want to get merging AmberX, axHub, and the console into one app.\" AmberX Android stays and reads the console. Old AmberX and axHub web addresses forward to the console until everything is switched, so nothing breaks.",
+     "text": "Move every AmberX web app feature (notes, to-dos, lists, approvals, recorder, open_url, notifications, settings) into the console. Repoint the AmberX Android app to read and call the console instead of the AmberX web app. Keep old AmberX web addresses forwarding to the console until the phone app is switched, so nothing breaks. Each feature moved is its own step.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -108526,7 +108530,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwdyms2y01lj1y"
+     "uid": "st-mwe0l0o001whf8"
     },
     {
      "id": "s2",
@@ -108544,7 +108548,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwdyms2y02uif7"
+     "uid": "st-mwe0l0o002k51b"
     },
     {
      "id": "s3",
@@ -108565,7 +108569,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwdyms2y03451f"
+     "uid": "st-mwe0l0o003ipoc"
     }
    ]
   },

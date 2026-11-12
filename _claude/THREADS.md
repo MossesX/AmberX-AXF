@@ -777,7 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:29 UTC · `plugin-lazy-load` note (all) · backfill
 - 2026-11-12 03:29 UTC · `lenny-land-all` note (all) · backfill
 - 2026-11-12 03:29 UTC · `land-round-2` note (all) · backfill
 - 2026-11-12 03:29 UTC · `terminal-no-focus` note (all) · backfill
@@ -1177,6 +1176,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 20:41 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` → queued, note (all) · console
 - 2026-11-12 20:42 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` → queued, note (all) · builds-live
 - 2026-11-12 20:42 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · builds-live
+- 2026-11-12 20:42 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · orchestrator
 
 ## Token passes (log)
 

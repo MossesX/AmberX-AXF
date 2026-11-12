@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3670,
- "updatedAt": "2026-11-12T20:42:05.868Z",
+ "rev": 3671,
+ "updatedAt": "2026-11-12T20:42:33.376Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -171677,7 +171677,7 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-12T19:46:41.501Z",
-   "updatedAt": "2026-11-12T20:41:54.806Z",
+   "updatedAt": "2026-11-12T20:42:31.968Z",
    "builtAt": "",
    "notes": [
     {
@@ -171695,6 +171695,10 @@
     {
      "text": "On hold (console): Wait for the splitter fix so it gets real steps. It keeps its place in the Queue; the dispatcher skips it until released.",
      "at": "2026-11-12T20:41:54.806Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-12T20:42:31.968Z"
     }
    ],
    "approvals": [],
@@ -171722,14 +171726,14 @@
     "runs": 0,
     "lastRun": null,
     "split": {
-     "at": "2026-11-12T19:47:54.922Z",
+     "at": "2026-11-12T20:42:31.968Z",
      "by": "orchestrator",
      "provider": "rules",
      "steps": 3,
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
-    "splitRequested": "2026-11-12T20:41:08.408Z",
-    "note": "",
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -171748,9 +171752,9 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mwdyms2y01lj1y",
+     "uid": "st-mwe0l0o001whf8",
      "title": "",
-     "text": "Merge AmberX web app, axHub and the console into ONE app (the console). Brett: \"I want to get merging AmberX, axHub, and the console into one app.\" AmberX Android stays and reads the console. Old AmberX and axHub web addresses forward to the console until everything is switched, so nothing breaks.",
+     "text": "Move every AmberX web app feature (notes, to-dos, lists, approvals, recorder, open_url, notifications, settings) into the console. Repoint the AmberX Android app to read and call the console instead of the AmberX web app. Keep old AmberX web addresses forwarding to the console until the phone app is switched, so nothing breaks. Each feature moved is its own step.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -171764,13 +171768,13 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-12T19:47:54.922Z",
-     "updatedAt": "2026-11-12T20:41:05.072Z"
+     "rev": 1,
+     "createdAt": "2026-11-12T20:42:31.968Z",
+     "updatedAt": "2026-11-12T20:42:31.968Z"
     },
     {
      "id": "s2",
-     "uid": "st-mwdyms2y02uif7",
+     "uid": "st-mwe0l0o002k51b",
      "title": "",
      "text": "Now what we're gonna end up doing is just moving everything over the console and making AmberX app read the console instead of AmberX.",
      "model": "Opus",
@@ -171787,12 +171791,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-12T19:47:54.922Z",
-     "updatedAt": "2026-11-12T19:47:54.922Z"
+     "createdAt": "2026-11-12T20:42:31.968Z",
+     "updatedAt": "2026-11-12T20:42:31.968Z"
     },
     {
      "id": "s3",
-     "uid": "st-mwdyms2y03451f",
+     "uid": "st-mwe0l0o003ipoc",
      "title": "",
      "text": "Tests green, report _claude/builds/reports/move-amberx-web-app-into-the-console-amberx-andr.md, THREADS row, commit, push, PR",
      "model": "Opus",
@@ -171812,8 +171816,8 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-12T19:47:54.922Z",
-     "updatedAt": "2026-11-12T19:47:54.922Z"
+     "createdAt": "2026-11-12T20:42:31.968Z",
+     "updatedAt": "2026-11-12T20:42:31.968Z"
     }
    ],
    "profiles": [
@@ -171824,12 +171828,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-12T19:47:54.922Z",
+   "defaultAt": "2026-11-12T20:42:31.968Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
