@@ -776,16 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 02:09 UTC · `slotstest-2208251-b` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `amberx-build-notifications-for-every-stage-start` PR #499 (all) · builds-live
-- 2026-11-12 02:09 UTC · `slotstest-2208251-a` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `partial-land-ship-completed-steps-of-a-build` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `planner-select-items-and-build-them` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `handoff-session-threads` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `slot-watchdog` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `ui-api-parity-builds` → archived, note (all) · console
-- 2026-11-12 02:09 UTC · `amberx-build-notifications-for-every-stage-start` s3 done, → built (all) · orchestrator
-- 2026-11-12 02:09 UTC · `amberx-build-notifications-for-every-stage-start` note (all) · orchestrator
 - 2026-11-12 02:09 UTC · `orchestrator-full-api-control` → archived, note (all) · console
 - 2026-11-12 02:09 UTC · `ui-api-parity-framework` → archived, note (all) · console
 - 2026-11-12 02:09 UTC · `ui-api-parity-media` → archived, note (all) · console
@@ -1176,6 +1166,16 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:29 UTC · `window-resize-fix` note (all) · backfill
 - 2026-11-12 03:29 UTC · `home-cards-live` note (all) · backfill
 - 2026-11-12 03:29 UTC · `ui-review-predicted` note (all) · backfill
+- 2026-11-12 03:29 UTC · `terminal-sessions-nav` note (all) · backfill
+- 2026-11-12 03:29 UTC · `profile-manager` note (all) · backfill
+- 2026-11-12 03:29 UTC · `build-prompt-origin` note (all) · backfill
+- 2026-11-12 03:29 UTC · `banner-ref-links` note (all) · backfill
+- 2026-11-12 03:29 UTC · `molly-console-commands` note (all) · backfill
+- 2026-11-12 03:29 UTC · `urgent-main-ci-green` note (all) · backfill
+- 2026-11-12 03:29 UTC · `whats-new-open-fix` note (all) · backfill
+- 2026-11-12 03:29 UTC · `terminal-drag-chain-tree` note (all) · backfill
+- 2026-11-12 03:29 UTC · `molly-nav-submenus` note (all) · backfill
+- 2026-11-12 03:29 UTC · `molly-banners` note (all) · backfill
 
 ## Token passes (log)
 

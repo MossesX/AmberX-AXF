@@ -1,0 +1,416 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-build-prompt-origin",
+ "rev": 1,
+ "source": "backfill",
+ "by": "backfill",
+ "shippedAt": "2026-11-12T03:29:42Z",
+ "build": {
+  "id": "build-prompt-origin",
+  "title": "Show what Brett said (verbatim prompt) on every build",
+  "profile": "all",
+  "category": "Builds",
+  "priority": "",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "All the build entries, like wherever it shows a build in the build manager, pending, all that, I need it to show the prompt, what I said, the verbatim prompt that kicked it off, that initiated it.",
+  "verbatim": true,
+  "at": "2026-11-03T00:00:00Z",
+  "source": "voice",
+  "by": "Janitor Joey (headless build-prompt-origin)",
+  "addenda": []
+ },
+ "brief": "# Build: build-prompt-origin (Current profile)\n\nBrett, Nov 3 2026 (voice), verbatim: \"All the build entries, like wherever it shows a build in the build manager, pending, all that, I need it to show the prompt, what I said, the verbatim prompt that kicked it off, that initiated it.\"\nAssigned agent: whoever is free (router if on main; else **Janitor Joey**; record who). Register in `current` (id `build-prompt-origin`) + banner entry.\n\n## Build\n- s1 Data: every build / pending item / orchestrator build / queue epic in the builds store gets an `origin` record: {said: Brett's verbatim words (as transcribed, unedited), at, source: voice|chat|console|code, session/conversation id or link if known, by: which Claude session/agent launched it, brief: the full brief file text, addenda: [{said, at}] for later changes}. Schema + migration in the builds store (orch-live-sync rules), never lost on merge.\n- s2 Capture: `vps.build_start` / claude-headless.sh / orchestrator add / pending_change add / Plan Studio 'turn into a build' accept an `origin.said` field; the brief template gets a required '## Brett said (verbatim)' block that the launcher parses into origin.said. Addendum appends ('## Addendum N (Brett ...)') are parsed into addenda. Rule in shared RULES.md + CLAUDE.md: 'Every build launch includes Brett's exact words verbatim in origin.said / the Brett said block; paraphrase goes in the brief, never in place of his words.'\n- s3 UI: everywhere a build shows (Build manager, Builds page all views, Pending, Queue, Orchestrator, Steps, Build Breaker, What's New banner items, Crew rows, UI Review items, Session browser, PR rows): a 'What Brett said' quote block at the top of the expanded row (speech-bubble style, timestamp, source icon, link to the session), then the brief collapsible below, then addenda in order. Collapsed rows show the first line of what he said as the subtitle. Search covers it.\n- s4 Backfill: for every existing build, fill origin from what exists: the brief file's verbatim quotes (lines quoted after 'Brett ... (voice):'), pending item `detail` text ('Brett, Oct 30 2026 (voice): ...'), THREADS, reports. Mark backfilled ones 'from the brief, may be paraphrased' when it's not clearly verbatim.\n- s5 Commands declared once -> REST + MCP + CLI (get origin, add addendum). Zero tokens. Tests, screenshots, UI Review item, report `_claude/builds/reports/build-prompt-origin.md`, THREADS, PR, steps through the store. Commits clean and professional.",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [],
+ "runs": [
+  {
+   "session": "axf-build-prompt-origin",
+   "account": "",
+   "model": "Opus",
+   "startedAt": "2026-11-03T20:13:48.993Z",
+   "endedAt": "2026-11-03T20:53:50.836Z",
+   "exit": 0,
+   "costUsd": 30.457
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Data: origin record (build-origin@1) on every build in the builds store: said verbatim, at, source, session/link, by, brief, addenda; schema + merge rules that never lose it (store, live publish, git merge driver, sidecar)",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T20:13:48.993Z",
+   "doneAt": "2026-11-03T20:23:48.536Z",
+   "actualMin": 10,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "Capture: claude-headless.sh / vps.build_start (brief block), orchestrator add, pending_change add, Plan Studio turn-into-build accept origin.said; brief template '## Brett said (verbatim)' + addenda parsed; rule in RULES.md + CLAUDE.md",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T20:23:48.536Z",
+   "doneAt": "2026-11-03T20:25:11.182Z",
+   "actualMin": 1,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "UI: 'What Brett said' quote block at the top of every expanded build row (Build manager, Builds page, Pending, Orchestrator, Steps), first line as the collapsed subtitle, search covers it",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T20:30:35.517Z",
+   "doneAt": "2026-11-03T20:53:22.412Z",
+   "actualMin": 23,
+   "done": true
+  },
+  {
+   "id": "s4",
+   "text": "Backfill: fill origin for existing builds from brief files, pending detail, notes; mark non-verbatim ones 'from the brief, may be paraphrased'",
+   "model": "Opus",
+   "estimate": "20 min",
+   "estimateMin": 20,
+   "startedAt": "2026-11-03T20:25:11.182Z",
+   "doneAt": "2026-11-03T20:30:35.517Z",
+   "actualMin": 5,
+   "done": true
+  },
+  {
+   "id": "s5",
+   "text": "Commands once -> REST + MCP + CLI (get origin, add addendum), tests, screenshots, UI Review item, report, THREADS, PR",
+   "model": "Opus",
+   "estimate": "30 min",
+   "estimateMin": 30,
+   "startedAt": "2026-11-03T20:53:22.412Z",
+   "doneAt": "2026-11-03T20:53:24.237Z",
+   "actualMin": 0,
+   "done": true
+  }
+ ],
+ "branch": "claude/build-prompt-origin",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 282,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/282"
+ },
+ "landedCommit": "5765f519fa73bc6ede07cc2eb57493221e0efa6f",
+ "commits": [
+  "91b09d381fddae90a70de1710d57d956e970dd6b",
+  "6e072be8bb1c1e1f9190a1d898c51ec63b609763",
+  "ec67b7eca52493d774fc89de328c780cb1bd8e86",
+  "100ba0f50279ecdd6fe8837a4af71ee8ca0e01e2",
+  "9f0ed409c60a5e0d47a6c8f470a6d34cd1831199",
+  "05ac76f0c3d9c4ab3269a03408274d10c9afd5cc",
+  "5f76bb440ffd35a173912ae94d660e983cb7cd43",
+  "b6d423f5c51acd986f5e02d4fb9dfc47d2a4a515",
+  "ddb8e6c611bc5d1d8e612561708c49560f04417b"
+ ],
+ "mergedAt": "2026-11-04T04:52:23Z",
+ "landedAt": "2026-11-04T04:14:13Z",
+ "files": [
+  ".gitattributes",
+  ".github/workflows/android.yml",
+  "CLAUDE.md",
+  "_claude/THREADS.md",
+  "_claude/builds/BRIEF-TEMPLATE.md",
+  "_claude/builds/README.md",
+  "_claude/builds/journal/2026-11.jsonl",
+  "_claude/builds/orchestrator.json",
+  "_claude/builds/origins.json",
+  "_claude/builds/profiles/angel/orchestrator.json",
+  "_claude/builds/profiles/big-dog/orchestrator.json",
+  "_claude/builds/profiles/breakroom/orchestrator.json",
+  "_claude/builds/profiles/current/orchestrator.json",
+  "_claude/builds/profiles/refactor/orchestrator.json",
+  "_claude/builds/profiles/urgent/orchestrator.json",
+  "_claude/builds/reports/build-prompt-origin.md",
+  "_claude/builds/reports/build-prompt-origin/shots/after/build-manager-what-brett-said-desktop.png",
+  "_claude/builds/reports/build-prompt-origin/shots/after/build-manager-what-brett-said-phone.png",
+  "_claude/builds/reports/build-prompt-origin/shots/after/orchestrator-what-brett-said-desktop.png",
+  "_claude/builds/reports/build-prompt-origin/shots/after/orchestrator-what-brett-said-phone.png",
+  "_claude/builds/reports/build-prompt-origin/shots/after/pending-what-brett-said-desktop.png",
+  "_claude/builds/reports/build-prompt-origin/shots/after/pending-what-brett-said-phone.png",
+  "_claude/builds/reports/build-prompt-origin/shots/shots.json",
+  "_claude/builds/store.json",
+  "_claude/shared/rules/RULES.md",
+  "apps/console-web/plugins/build-manager/web/history.mjs",
+  "apps/console-web/plugins/build-manager/web/merge.d.mts",
+  "apps/console-web/plugins/build-manager/web/merge.mjs",
+  "apps/console-web/plugins/build-manager/web/ui.tsx",
+  "apps/console-web/plugins/build-orchestrator/plugin.json",
+  "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+  "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+  "apps/console-web/plugins/build-orchestrator/web/ui.tsx",
+  "apps/console-web/plugins/builds-page/builds.mjs",
+  "apps/console-web/plugins/builds-page/web/ui.tsx",
+  "apps/console-web/plugins/plan-studio/plans.mjs",
+  "apps/console-web/plugins/plan-studio/web/plan-core.mjs",
+  "apps/console-web/plugins/ui-review/web/ui.tsx",
+  "apps/console-web/server/main.py",
+  "apps/console-web/server/mcp_server.py",
+  "apps/console-web/src/api.ts",
+  "apps/console-web/src/axf/core/build-origin.d.mts",
+  "apps/console-web/src/axf/core/build-origin.mjs",
+  "apps/console-web/src/axf/plan/pending-core.d.mts",
+  "apps/console-web/src/axf/plan/pending-core.mjs",
+  "apps/console-web/src/axf/react/components/BuildOrigin.tsx",
+  "apps/console-web/src/axf/react/index.ts",
+  "apps/console-web/src/axf/ui/axf.css",
+  "apps/console-web/src/buildOrigin.tsx",
+  "apps/console-web/src/views/Pending.tsx",
+  "apps/walkthrough-studio/src/assets/help/framework-drafts.json",
+  "deploy/claude-headless.sh",
+  "framework/assets/help/framework-drafts.json",
+  "framework/cli/build-origin.mjs",
+  "framework/cli/builds-live.mjs",
+  "framework/cli/builds-store.mjs",
+  "framework/core/build-origin.d.mts",
+  "framework/core/build-origin.mjs",
+  "framework/plan/builds-merge-core.mjs",
+  "framework/plan/builds-store-core.mjs",
+  "framework/plan/pending-core.d.mts",
+  "framework/plan/pending-core.mjs",
+  "framework/react/components/BuildOrigin.tsx",
+  "framework/react/index.ts",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-build-origin.mjs",
+  "framework/ui/axf.css"
+ ],
+ "areas": [
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/BRIEF-TEMPLATE.md",
+    "_claude/builds/README.md",
+    "_claude/builds/journal/2026-11.jsonl",
+    "_claude/builds/orchestrator.json",
+    "_claude/builds/origins.json",
+    "_claude/builds/profiles/angel/orchestrator.json",
+    "_claude/builds/profiles/big-dog/orchestrator.json",
+    "_claude/builds/profiles/breakroom/orchestrator.json",
+    "_claude/builds/profiles/current/orchestrator.json",
+    "_claude/builds/profiles/refactor/orchestrator.json",
+    "_claude/builds/profiles/urgent/orchestrator.json",
+    "_claude/builds/reports/build-prompt-origin.md",
+    "_claude/builds/reports/build-prompt-origin/shots/after/build-manager-what-brett-said-desktop.png",
+    "_claude/builds/reports/build-prompt-origin/shots/after/build-manager-what-brett-said-phone.png",
+    "_claude/builds/reports/build-prompt-origin/shots/after/orchestrator-what-brett-said-desktop.png",
+    "_claude/builds/reports/build-prompt-origin/shots/after/orchestrator-what-brett-said-phone.png",
+    "_claude/builds/reports/build-prompt-origin/shots/after/pending-what-brett-said-desktop.png",
+    "_claude/builds/reports/build-prompt-origin/shots/after/pending-what-brett-said-phone.png",
+    "_claude/builds/reports/build-prompt-origin/shots/shots.json",
+    "_claude/builds/store.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/server/main.py",
+    "apps/console-web/server/mcp_server.py",
+    "apps/console-web/src/api.ts",
+    "apps/console-web/src/axf/core/build-origin.d.mts",
+    "apps/console-web/src/axf/core/build-origin.mjs",
+    "apps/console-web/src/axf/plan/pending-core.d.mts",
+    "apps/console-web/src/axf/plan/pending-core.mjs",
+    "apps/console-web/src/axf/react/components/BuildOrigin.tsx",
+    "apps/console-web/src/axf/react/index.ts",
+    "apps/console-web/src/axf/ui/axf.css",
+    "apps/console-web/src/buildOrigin.tsx",
+    "apps/console-web/src/views/Pending.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-manager",
+   "files": [
+    "apps/console-web/plugins/build-manager/web/history.mjs",
+    "apps/console-web/plugins/build-manager/web/merge.d.mts",
+    "apps/console-web/plugins/build-manager/web/merge.mjs",
+    "apps/console-web/plugins/build-manager/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "build-orchestrator",
+   "files": [
+    "apps/console-web/plugins/build-orchestrator/plugin.json",
+    "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+    "apps/console-web/plugins/build-orchestrator/web/orchestrator-core.mjs",
+    "apps/console-web/plugins/build-orchestrator/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "plan",
+   "files": [
+    "framework/plan/builds-merge-core.mjs",
+    "framework/plan/builds-store-core.mjs",
+    "framework/plan/pending-core.d.mts",
+    "framework/plan/pending-core.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "cli",
+   "files": [
+    "framework/cli/build-origin.mjs",
+    "framework/cli/builds-live.mjs",
+    "framework/cli/builds-store.mjs"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "CLAUDE.md",
+    "_claude/THREADS.md",
+    "_claude/shared/rules/RULES.md"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "builds-page",
+   "files": [
+    "apps/console-web/plugins/builds-page/builds.mjs",
+    "apps/console-web/plugins/builds-page/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "plan-studio",
+   "files": [
+    "apps/console-web/plugins/plan-studio/plans.mjs",
+    "apps/console-web/plugins/plan-studio/web/plan-core.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/build-origin.d.mts",
+    "framework/core/build-origin.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/components/BuildOrigin.tsx",
+    "framework/react/index.ts"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-build-origin.mjs"
+   ]
+  },
+  {
+   "kind": "plugin",
+   "id": "ui-review",
+   "files": [
+    "apps/console-web/plugins/ui-review/web/ui.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "walkthrough-studio",
+   "files": [
+    "apps/walkthrough-studio/src/assets/help/framework-drafts.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "assets",
+   "files": [
+    "framework/assets/help/framework-drafts.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "ui",
+   "files": [
+    "framework/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "deploy",
+   "id": "deploy",
+   "files": [
+    "deploy/claude-headless.sh"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".gitattributes",
+   "files": [
+    ".gitattributes"
+   ]
+  },
+  {
+   "kind": "other",
+   "id": ".github",
+   "files": [
+    ".github/workflows/android.yml"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "New framework/spec/check-build-origin.mjs: 21 checks (parsing, merge, store projections, mergeBuild/mergeStores, CLI set/refuse/addendum/capture, sidecar heal after an old-code rewrite, backfill dry/apply, brief-folder backfill). Added to CI next to check-builds-store.mjs.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "check-builds-store.mjs 37/37, builds-store.mjs verify ok (289 records), build-manager test 128/128, check-theme ✓, check-controls ✓, console tsc --noEmit clean.",
+   "command": "",
+   "result": "pass",
+   "detail": ""
+  },
+  {
+   "name": "Pre-existing, not from this build: build-orchestrator/test.mjs fails on store data (kill-patches-pilot) on clean HEAD too; plan-studio/test.mjs needs Node 22 (.ts imports) and this host has Node 20.",
+   "command": "",
+   "result": "fail",
+   "detail": ""
+  }
+ ],
+ "uiReview": [
+  {
+   "id": "r-20261103-786e50e7",
+   "name": "What Brett said on every build",
+   "status": "approved",
+   "group": "g-20261103-7a61531d",
+   "url": "/review/r-20261103-786e50e7"
+  }
+ ],
+ "cost": {
+  "usd": 30.457,
+  "estimated": false,
+  "tokens": {
+   "input": 312,
+   "output": 2614,
+   "cacheRead": 31071543,
+   "cacheWrite": 295384
+  }
+ },
+ "report": "_claude/builds/reports/build-prompt-origin.md",
+ "open": [
+  "Views listed under s3 \"Not wired yet\".",
+  "axHub's `vps.build_start` has no `origin.said` input of its own (axHub repo); the brief block carries it.",
+  "Android twin of build-origin@1 deferred (Android on hold) — the record is plain JSON on the store.",
+  "`claude-sync` holds `shared:rules/RULES.md` (changed on both sides before this build); the new rule is in the repo copy and reaches the hub once Brett picks which copy to keep."
+ ]
+}
