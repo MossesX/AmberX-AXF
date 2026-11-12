@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T22:31:46.877Z",
+ "updatedAt": "2026-11-12T22:31:58.324Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -110164,6 +110164,80 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mwe3xcmv04lkhv"
+    }
+   ]
+  },
+  {
+   "id": "vps-badge-shows-shell-commands-work-banner-widgets-for-disk-cpu-load-and-memor",
+   "title": "VPS badge shows shell commands work; banner widgets for disk, CPU load and memory",
+   "category": "banner",
+   "detail": "Brett said: \"we need the VPS badge to show that we're able to run shell commands.\" axHub badge already covers the server being reachable (axHub runs on the VPS). Claude login status moves off the VPS badge (it lives with the Claude badge / accounts). Also add the resource widgets Brett asked about: disk, CPU load, memory.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-12T22:31:52.977Z",
+   "updatedAt": "2026-11-12T22:31:52.977Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "VPS badge: green only when a shell command round-trip on the VPS succeeds (cheap read-only probe through axHub every minute); red with the reason (unreachable, shell refused, timeout); tap opens details; Claude login status moved to the Claude badge",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe4hna104x5i7"
+    },
+    {
+     "id": "s2",
+     "text": "Banner widgets (snappable assets): VPS disk %, CPU load, memory and swap; colour thresholds settable; tap opens a server health page; AmberX/console alert when disk passes the red threshold",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe4hna105y0zs"
+    },
+    {
+     "id": "s3",
+     "text": "Tests, API parity (REST, MCP, CLI, voice), report, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe4hna1060nck"
     }
    ]
   }
