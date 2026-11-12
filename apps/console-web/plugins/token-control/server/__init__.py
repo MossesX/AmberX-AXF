@@ -46,6 +46,7 @@ from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import JSONResponse
 
 import plugin_services
+import wall
 
 router = APIRouter()
 FOLDER = "token-control"
@@ -179,6 +180,13 @@ def owner_approval(request: Request) -> tuple[dict[str, str] | None, dict[str, s
     """How this request reached Brett: his signed-in axHub session in the console (a browser, never a bearer token),
     a console with no token at all (local development), or axHub's signed approval headers (checked by the runner)."""
     user = getattr(request.state, "axf_user", None)
+    if not (user is not None and getattr(user, "via", "") == "session" and getattr(user, "admin", False)):
+        # The console's browser also sends the stored console token, so auth resolves it to the token caller first.
+        # Brett's signed-in admin session (axHub's signed wall headers, same origin) still makes it his click; a
+        # Claude session, CLI or MCP call holds only the token and never carries those headers.
+        session = wall.wall_caller(request.headers)
+        if session is not None and session.admin and session.via == "session" and wall.same_origin(request):
+            user = session
     approver = None
     if user is not None and getattr(user, "via", "") == "session" and getattr(user, "admin", False):
         approver = {"via": "console", "name": str(getattr(user, "name", "") or "brett")}

@@ -19,7 +19,8 @@ HERE = Path(__file__).resolve().parent
 PLUGINS = HERE.parent
 TMP = Path(tempfile.mkdtemp(prefix="axf-claude-settings-test-"))
 os.environ.update(AXF_CLAUDE_SETTINGS_FILE=str(TMP / "settings.json"), AXF_CLAUDE_SETTINGS_DATA=str(TMP), AXF_CLAUDE_SETTINGS_NO_CLOCK="1",
-                  AXF_CONTROL_DATA_DIR=str(TMP / "control"), AXF_TOKEN="test-token", AXF_PASS_SECRET="test-secret")
+                  AXF_CONTROL_DATA_DIR=str(TMP / "control"), AXF_TOKEN="test-token", AXF_PASS_SECRET="test-secret",
+                  AXF_TRUST_WALL="1", AXF_WALL_SECRET="wall-secret-for-the-claude-settings-test-0123456789")
 for k in ("CLAUDECODE", "CLAUDE_CODE_ENTRYPOINT", "AI_AGENT", "AXF_SURFACE", "AXF_SESSION"):
     os.environ.pop(k, None)  # the console server is never a Claude session
 sys.path.insert(0, str(PLUGINS.parent / "server"))
@@ -132,6 +133,45 @@ ok(ch.get("via") == "system" and "revoked" in ch.get("why", ""), "recorded as th
 # a grant through the plain capability (MCP, other plugins) is only ever a request
 g = control.run({"op": "act", "target": "pass.scopes", "path": "all", "action": "grant", "input": {"minutes": 30}}, ["*"], "mcp")
 ok((g.get("approval") or {}).get("required") and not all_pass(), "a grant without Brett's session stays a request")
+
+# Brett's admin browser also sends the stored console token: auth resolves it to the token caller first, but his signed
+# wall session (axHub's x-auth-* headers, same origin) still makes it his click, for every owner-only setting
+def wall_session(name: str = "admin", role: str = "admin", sig_ok: bool = True) -> dict[str, str]:
+    import hashlib, hmac, time  # noqa: E401, PLC0415
+    t, host = int(time.time()), "testserver"
+    secret = os.environ["AXF_WALL_SECRET"] if sig_ok else "not-the-wall-secret-0123456789-abcdefghijkl"
+    sig = f"v1.{t}." + hmac.new(secret.encode(), f"v1|{t}|{name}|{role}||{host}".encode(), hashlib.sha256).hexdigest()
+    return {"x-auth-user": name, "x-auth-role": role, "x-auth-perms": "", "x-auth-via": "session", "x-auth-sig": sig, "origin": f"http://{host}"}
+
+
+ADMIN = wall_session()
+OWNER_KEYS = {"builds.launchWithoutAsking": (True, False), "builds.fableUpgradeApproval": (True, False), "builds.uiReviewGate": None,
+              "builds.defaultModel": None, "noWait.includeIrreversible": (True, False), "noWait.autoOffAtNight": None}
+for spec in get()["settings"]:
+    k = spec["key"]
+    if spec["owner"] is not True or (k not in OWNER_KEYS and not k.startswith("noWait.")) or k == "noWait.enabled":
+        continue
+    if spec["kind"] == "toggle":
+        a, b = (not spec["value"], spec["value"])
+    elif spec.get("options"):
+        others = [o["value"] for o in spec["options"] if o["value"] != spec["value"]]
+        a, b = (others[0], spec["value"])
+    else:
+        continue
+    r1, r2 = put({k: a}, ADMIN), put({k: b}, ADMIN)
+    ok(r1.status_code == 200 and r1.json()["values"][k] == a and r2.status_code == 200 and r2.json()["values"][k] == b, f"admin console login toggles owner-only {k} on and off")
+ok(next(s for s in get()["settings"] if s["key"] == "builds.launchWithoutAsking")["changed"]["via"] == "console", "recorded as Brett's console click")
+r = put({"noWait.enabled": True, "noWait.duration": "1h"}, ADMIN)
+ok(r.status_code == 200 and all_pass().get("approvedVia") == "console", "admin login turns No wait on with a real pass")
+ok(put({"noWait.enabled": False}, ADMIN).status_code == 200 and not all_pass(), "and off again")
+ok(put({"builds.maxParallel": 6}, ADMIN).status_code == 200, "admin login raises Max parallel builds")
+ok(put({"builds.launchWithoutAsking": True}, wall_session(sig_ok=False)).status_code == 403, "a forged wall signature is still only the token: refused")
+ok(put({"builds.launchWithoutAsking": True}, wall_session("conrad", "user")).status_code == 403, "a non-admin wall user is refused")
+ok(put({"builds.launchWithoutAsking": True}, {k: v for k, v in ADMIN.items() if k != "origin"}).status_code == 403, "a cross-site (no origin) session write is refused")
+ok(put({"builds.maxParallel": 12}).status_code == 403, "the bare console token (Claude sessions, MCP) still can't raise")
+os.environ["CLAUDECODE"] = "1"
+ok(put({"builds.launchWithoutAsking": True}, ADMIN).status_code == 403, "inside a Claude session even the admin headers don't count")
+os.environ.pop("CLAUDECODE", None)
 
 print(f"✗ claude-settings server — {failed}/{n} failed" if failed else f"✓ claude-settings server — {n} checks")
 sys.exit(1 if failed else 0)
