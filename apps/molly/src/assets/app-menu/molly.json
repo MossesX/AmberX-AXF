@@ -70,6 +70,12 @@
             "separator": true
           },
           {
+            "id": "connections",
+            "label": "App connections",
+            "icon": "key",
+            "action": "molly.auth.open"
+          },
+          {
             "id": "settings",
             "label": "Settings",
             "icon": "settings",
