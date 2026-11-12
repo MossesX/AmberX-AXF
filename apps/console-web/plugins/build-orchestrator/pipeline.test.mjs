@@ -634,7 +634,8 @@ t('stages: stageOf, stageDue, tracking window, rollup', () => {
   assert.equal(P.stageDue('', 'ready'), 'ready'); assert.equal(P.stageDue('ready', 'ready'), ''); assert.equal(P.stageDue('', 'live'), 'live', 'a jump sends the furthest stage only');
   assert.equal(P.stageDue('merged', 'ready'), '', 'stages never go back');
   assert.equal(P.stageTracked(b), true); assert.equal(P.stageTracked(b, { stage: 'live' }), false, 'live is the end');
-  assert.equal(P.stageTracked({ ...b, pipeline: { runs: 0 } }), false, 'only builds the dispatcher ran');
+  assert.equal(P.stageTracked({ ...b, pipeline: { runs: 0 } }), true, 'a build with a PR is followed even when a console session ran it');
+  assert.equal(P.stageTracked({ ...b, pr: '', pipeline: { runs: 0 } }), false, 'no PR and never dispatched: nothing to follow');
   assert.equal(P.stageTracked({ ...b, status: 'running' }), false);
   assert.equal(P.stageTracked({ ...b, builtAt: '2026-01-01T00:00:00Z', updatedAt: '2026-01-01T00:00:00Z' }), false, 'old builds are not followed');
   assert.equal(P.rollupCi('SUCCESS'), 'success'); assert.equal(P.rollupCi('ERROR'), 'failure'); assert.equal(P.rollupCi('EXPECTED'), 'pending'); assert.equal(P.rollupCi(null), '');

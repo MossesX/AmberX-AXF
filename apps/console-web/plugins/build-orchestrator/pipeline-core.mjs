@@ -638,12 +638,13 @@ export const stageRank = (stage) => STAGES.indexOf(stage) + 1;
 export const prNumber = (pr) => { const n = Number(String(pr ?? '').trim().replace(/^#/, '')); return Number.isInteger(n) && n > 0 ? n : 0; };
 
 /**
- * Builds whose stages the dispatcher follows: ones it ran itself (pipeline.runs), built or complete, finished within
+ * Builds whose stages the dispatcher follows: every built or complete build it ran itself (pipeline.runs) or that has a
+ * PR (most builds are run in console sessions, not by the dispatcher: "every time a build…"), finished within
  * STAGE_MAX_DAYS, not yet live. rec = the stage record kept for it ({ stage }), if any.
  */
 export function stageTracked(b, rec = null, now = Date.now()) {
   if (!b || b.deleted || b.hidden || rec?.stage === 'live') return false;
-  if (!['built', 'complete'].includes(b.status) || !(b.pipeline?.runs > 0)) return false;
+  if (!['built', 'complete'].includes(b.status) || !(b.pipeline?.runs > 0 || prNumber(b.pr))) return false;
   const at = Date.parse(b.mergedAt || b.builtAt || b.updatedAt || '');
   return Number.isFinite(at) && now - at <= STAGE_MAX_DAYS * 864e5;
 }

@@ -611,20 +611,23 @@ const repoSlug = (env = process.env) => {
 
 /** GitHub's view of the PRs, one GraphQL query: { <n>: { state, draft, ci, mergedAt, mergeSha, headSha } }. */
 export async function prFacts(numbers, { env = process.env, gh = null } = {}) {
-  const ns = [...new Set(numbers.filter((n) => Number.isInteger(n) && n > 0))].slice(0, 50);
-  if (!ns.length) return {};
+  const all = [...new Set(numbers.filter((n) => Number.isInteger(n) && n > 0))].slice(0, 500);
+  if (!all.length) return {};
   const r = parseRepo(repoSlug(env)); if (!r) throw new Error('no GitHub repo for the stage check');
   const [owner, name] = r.split('/');
   const fields = 'state isDraft mergedAt mergeCommit { oid } headRefOid commits(last: 1) { nodes { commit { statusCheckRollup { state } } } }';
-  const query = `query($owner: String!, $name: String!) { repository(owner: $owner, name: $name) { ${ns.map((n) => `p${n}: pullRequest(number: ${n}) { ${fields} }`).join(' ')} } }`;
   const client = gh ?? createGitHub({ userAgent: 'axf-pipeline-stages' });
-  const d = await client.json('POST', '/graphql', { query, variables: { owner, name } });
-  if (d?.errors?.length && !d?.data?.repository) throw new Error(`GitHub GraphQL: ${d.errors.map((e) => e.message).join('; ').slice(0, 300)}`);
   const out = {};
-  for (const n of ns) {
-    const p = d?.data?.repository?.[`p${n}`]; if (!p) continue;
-    out[n] = { state: p.mergedAt ? 'merged' : p.state === 'OPEN' ? 'open' : 'closed', draft: !!p.isDraft, mergedAt: p.mergedAt || '',
-      ci: P.rollupCi(p.commits?.nodes?.[0]?.commit?.statusCheckRollup?.state), mergeSha: p.mergeCommit?.oid || '', headSha: p.headRefOid || '' };
+  for (let i = 0; i < all.length; i += 50) {
+    const ns = all.slice(i, i + 50);
+    const query = `query($owner: String!, $name: String!) { repository(owner: $owner, name: $name) { ${ns.map((n) => `p${n}: pullRequest(number: ${n}) { ${fields} }`).join(' ')} } }`;
+    const d = await client.json('POST', '/graphql', { query, variables: { owner, name } });
+    if (d?.errors?.length && !d?.data?.repository) throw new Error(`GitHub GraphQL: ${d.errors.map((e) => e.message).join('; ').slice(0, 300)}`);
+    for (const n of ns) {
+      const p = d?.data?.repository?.[`p${n}`]; if (!p) continue;
+      out[n] = { state: p.mergedAt ? 'merged' : p.state === 'OPEN' ? 'open' : 'closed', draft: !!p.isDraft, mergedAt: p.mergedAt || '',
+        ci: P.rollupCi(p.commits?.nodes?.[0]?.commit?.statusCheckRollup?.state), mergeSha: p.mergeCommit?.oid || '', headSha: p.headRefOid || '' };
+    }
   }
   return out;
 }
@@ -652,7 +655,9 @@ export async function checkStages({ env = process.env, alert = null, force = fal
   const store = loadStore();
   const tracked = (store.builds ?? []).filter((b) => P.stageTracked(b, cur.builds[b.id], now));
   let prs = {}; let error = '';
-  try { prs = await facts(tracked.map((b) => P.prNumber(b.pr)), { env }); } catch (e) { error = str(e.message, 300); logLine({ event: 'stages-github-failed', error }); }
+  // GitHub only for what it can still tell: builds not yet merged, or merged without a known commit
+  const ask = tracked.filter((b) => { const rec = cur.builds[b.id]; return !(rec?.stage === 'merged' && rec.sha && rec.pr === P.prNumber(b.pr)); });
+  try { prs = await facts(ask.map((b) => P.prNumber(b.pr)), { env }); } catch (e) { error = str(e.message, 300); logLine({ event: 'stages-github-failed', error }); }
   const dep = (() => { try { return deploy(env); } catch { return null; } })();
   const send = alert ?? makeAlerter({ env });
   const moved = [];
