@@ -7,6 +7,7 @@ import { useAxfState, useRuntime } from '../AxfProvider';
 import { Button, Slider } from './Controls';
 import { SelectField, Switch } from './Forms';
 import { Icon } from './Icon';
+import { TapConfirmChoice } from './TapConfirmChoice';
 
 /**
  * The navigation settings interface (nav-style@1): every field of the nav-style in force, a preset picker, a live
@@ -159,10 +160,12 @@ function Items({ items }: { items: readonly NavStyleItem[] }) {
 /** One group of the navigation settings (a settings panel each). */
 export function NavStyleGroup({ group, items = [] }: { group: NavStyleGroupId; items?: readonly NavStyleItem[] }) {
   const rt = useRuntime();
-  if (!rt.navStyleData()) return <p className="fx-muted">This app’s navigation doesn’t use sub menus (its nav-menu asset has no navStyle: true), so these settings don’t apply here.</p>;
+  // Tap to confirm applies to every navigation menu, sub menus or not (build add-a-tap-to-confirm-option-to-every-settings-in)
+  const tap = group === 'behavior' ? <TapConfirmChoice kind="nav-menu" /> : null;
+  if (!rt.navStyleData()) return <div className="fx-stack">{tap}<p className="fx-muted">This app’s navigation doesn’t use sub menus (its nav-menu asset has no navStyle: true), so these settings don’t apply here.</p></div>;
   if (group === 'presets') return <Presets />;
   if (group === 'items') return <Items items={items} />;
-  return <div className="fx-stack">{fieldsOf(group).map((p) => <Field key={p} path={p} />)}</div>;
+  return <div className="fx-stack">{tap}{fieldsOf(group).map((p) => <Field key={p} path={p} />)}</div>;
 }
 
 /** Every group in one place (a dialog, or an app without per-panel settings). */

@@ -20,7 +20,7 @@ import type { AxfWebLibrary } from '../../react/library';
 import { useAxfState, useRuntime } from '../../react/AxfProvider';
 import { SelectField, Note } from '../../react/components/Forms';
 import { Button } from '../../react/components/Controls';
-import { TAP_ARM_DEFAULT_MS, TAP_ARM_RANGE, TAP_KEYS, TAP_OVERRIDES, tapConfig, type TapOverride } from '../../core/engines/tapconfirm';
+import { TAP_ARM_DEFAULT_MS, TAP_ARM_RANGE, TAP_KEYS, TAP_KINDS, TAP_KIND_LABELS, TAP_OVERRIDES, tapConfig, tapKindKey, type TapOverride } from '../../core/engines/tapconfirm';
 import { toolbarElementId } from '../../react/tapConfirm';
 import './toolbars.css';
 
@@ -84,13 +84,13 @@ export const toolbarsLibrary: AxfWebLibrary = {
   id: TOOLBARS_ID,
   label: 'Toolbars',
   version: '0.1.0',
-  settingsTabs: [{ id: TOOLBARS_TAB, label: 'Toolbars', icon: 'layout', order: 40, parent: 'plugins', description: 'Every toolbar in this app: tap-to-confirm on touch, and each toolbar’s own choice.' }],
+  settingsTabs: [{ id: TOOLBARS_TAB, label: 'Toolbars', icon: 'layout', order: 40, parent: 'plugins', description: 'Tap to confirm on touch for every toolbar, tab group, navigation and menu in this app, and each toolbar’s own choice.' }],
   settings: [{
     id: 'toolbars.tap', tab: TOOLBARS_TAB, label: 'Tap to confirm (touch)', icon: 'smartphone', order: 10,
-    description: 'On a phone or any touch screen, the first tap on a toolbar button shows what it does and lights it up; a second tap runs it. A mouse, trackpad or pen clicks once, as usual.',
+    description: 'On a phone or any touch screen, the first tap on a toolbar button, tab, navigation or menu item shows what it is and lights it up; a second tap confirms it. A mouse, trackpad or pen clicks once, as usual. Each one can choose for itself in its own settings (right-click or long-press it → Settings → Behaviour).',
     settings: [
-      { key: TAP_KEYS.enabled, label: 'Tap twice on touch', kind: 'toggle', default: true, scope: 'device' },
-      { key: TAP_KEYS.armMs, label: 'Ready for the second tap', description: 'How long a button stays lit after the first tap.', kind: 'choice', default: String(TAP_ARM_DEFAULT_MS), options: ARM_CHOICES, scope: 'device' },
+      ...TAP_KINDS.map((kind) => ({ key: tapKindKey(kind), label: `Tap twice on touch: ${TAP_KIND_LABELS[kind].toLowerCase()}`, kind: 'toggle' as const, default: true, scope: 'device' as const })),
+      { key: TAP_KEYS.armMs, label: 'Ready for the second tap', description: 'How long an item stays lit after the first tap.', kind: 'choice', default: String(TAP_ARM_DEFAULT_MS), options: ARM_CHOICES, scope: 'device' },
     ],
   }],
   settingsPanels: [{ id: ALL_TOOLBARS_PANEL, tab: TOOLBARS_TAB, title: 'All toolbars', icon: 'list', order: 20, render: () => <AllToolbarsPanel /> }],

@@ -35,7 +35,7 @@ for (const t of cs.CHROME_TYPES) {
   const ts = spec.types[t];
   const known = new Set([...(ts.required ?? []), ...Object.keys(ts.optional_fields ?? {}), ...Object.keys(ts.enums ?? {}), ...Object.keys(ts.nested ?? {})]);
   for (const fd of cs.CHROME_FIELDS[t]) {
-    ok(known.has(fd.key), `${t}.${fd.key} is a field of the ${t} asset type`);
+    ok(fd.instanceOnly === true || known.has(fd.key), `${t}.${fd.key} is a field of the ${t} asset type (or an instance-only choice)`);
     if (fd.kind === 'choice' && ts.enums?.[fd.key]) eq(fd.options, ts.enums[fd.key], `${t}.${fd.key} options = asset-types.json enum`);
     ok(['look', 'behaviour'].includes(fd.group) && ['simple', 'basic', 'developer', 'administrator'].includes(fd.level), `${t}.${fd.key} group + level`);
   }

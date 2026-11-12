@@ -267,6 +267,25 @@
         "default": true,
         "group": "behaviour",
         "level": "developer"
+      },
+      {
+        "key": "tapConfirm",
+        "label": "Tap to confirm (touch)",
+        "kind": "choice",
+        "options": [
+          "inherit",
+          "on",
+          "off"
+        ],
+        "labels": {
+          "inherit": "Same as all",
+          "on": "On",
+          "off": "Off"
+        },
+        "default": "inherit",
+        "group": "behaviour",
+        "level": "simple",
+        "instanceOnly": true
       }
     ],
     "toolbar": [
@@ -350,6 +369,25 @@
         "default": false,
         "group": "behaviour",
         "level": "basic"
+      },
+      {
+        "key": "tapConfirm",
+        "label": "Tap to confirm (touch)",
+        "kind": "choice",
+        "options": [
+          "inherit",
+          "on",
+          "off"
+        ],
+        "labels": {
+          "inherit": "Same as all",
+          "on": "On",
+          "off": "Off"
+        },
+        "default": "inherit",
+        "group": "behaviour",
+        "level": "simple",
+        "instanceOnly": true
       }
     ],
     "banner": [
@@ -383,6 +421,25 @@
         "default": true,
         "group": "look",
         "level": "basic"
+      },
+      {
+        "key": "tapConfirm",
+        "label": "Tap to confirm (touch)",
+        "kind": "choice",
+        "options": [
+          "inherit",
+          "on",
+          "off"
+        ],
+        "labels": {
+          "inherit": "Same as all",
+          "on": "On",
+          "off": "Off"
+        },
+        "default": "inherit",
+        "group": "behaviour",
+        "level": "simple",
+        "instanceOnly": true
       }
     ],
     "nav-menu": [
@@ -441,6 +498,25 @@
         "default": false,
         "group": "behaviour",
         "level": "developer"
+      },
+      {
+        "key": "tapConfirm",
+        "label": "Tap to confirm (touch)",
+        "kind": "choice",
+        "options": [
+          "inherit",
+          "on",
+          "off"
+        ],
+        "labels": {
+          "inherit": "Same as all",
+          "on": "On",
+          "off": "Off"
+        },
+        "default": "inherit",
+        "group": "behaviour",
+        "level": "simple",
+        "instanceOnly": true
       }
     ],
     "app-menu": [
@@ -469,6 +545,25 @@
         "default": "flat",
         "group": "look",
         "level": "basic"
+      },
+      {
+        "key": "tapConfirm",
+        "label": "Tap to confirm (touch)",
+        "kind": "choice",
+        "options": [
+          "inherit",
+          "on",
+          "off"
+        ],
+        "labels": {
+          "inherit": "Same as all",
+          "on": "On",
+          "off": "Off"
+        },
+        "default": "inherit",
+        "group": "behaviour",
+        "level": "simple",
+        "instanceOnly": true
       }
     ],
     "context-menu": [
@@ -500,6 +595,25 @@
         "default": true,
         "group": "look",
         "level": "basic"
+      },
+      {
+        "key": "tapConfirm",
+        "label": "Tap to confirm (touch)",
+        "kind": "choice",
+        "options": [
+          "inherit",
+          "on",
+          "off"
+        ],
+        "labels": {
+          "inherit": "Same as all",
+          "on": "On",
+          "off": "Off"
+        },
+        "default": "inherit",
+        "group": "behaviour",
+        "level": "simple",
+        "instanceOnly": true
       }
     ]
   },

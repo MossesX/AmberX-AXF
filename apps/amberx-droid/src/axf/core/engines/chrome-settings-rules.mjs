@@ -150,6 +150,20 @@ export const CHROME_FIELDS = {
   ],
 };
 
+/**
+ * Tap to confirm (Brett, Nov 12 2026, build add-a-tap-to-confirm-option-to-every-settings-in: "put tap to confirm option
+ * in all of them. In all their settings interfaces." Addendum 1: every custom settings interface uses it by default).
+ * One field in every chrome kind's settings dialog, so every tab group, toolbar, navigation menu, application menu,
+ * context menu and banner offers it, and every settings interface (the shared default and each app's custom copy)
+ * shows it with no asset edit. `instanceOnly`: a choice of the item, not a field of its asset type (asset-types.json
+ * is unchanged), so it is only ever an instance override. `inherit` follows the switch for that whole kind (core/engines/tapconfirm.ts).
+ */
+export const CHROME_TAP_FIELD = 'tapConfirm';
+export const CHROME_TAP_OPTIONS = ['inherit', 'on', 'off'];
+for (const t of CHROME_TYPES) {
+  CHROME_FIELDS[t].push({ key: CHROME_TAP_FIELD, label: 'Tap to confirm (touch)', kind: 'choice', options: [...CHROME_TAP_OPTIONS], labels: { inherit: 'Same as all', on: 'On', off: 'Off' }, default: 'inherit', group: 'behaviour', level: 'simple', instanceOnly: true });
+}
+
 /** The tabs every chrome settings interface starts with (a settings asset may relabel, reorder or hide them). */
 export const CHROME_SETTINGS_TABS = [
   { id: 'look', label: 'Look', icon: 'palette', order: 10 },
