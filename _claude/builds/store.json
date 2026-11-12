@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3656,
- "updatedAt": "2026-11-12T20:32:59.720Z",
+ "rev": 3657,
+ "updatedAt": "2026-11-12T20:34:00.952Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -171830,7 +171830,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T20:31:23.288Z",
-   "updatedAt": "2026-11-12T20:32:58.558Z",
+   "updatedAt": "2026-11-12T20:33:59.256Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -171912,7 +171912,7 @@
      "id": "s3",
      "uid": "st-mwe06osu0bm7mp",
      "title": "",
-     "text": "Wizard step: starter boilerplate = a React + TypeScript + Python app like the console, with user accounts, console login and axHub login already wired in",
+     "text": "Wizard step: starter boilerplate = a React + TypeScript + Python app like the console, with user accounts, console login and axHub login wired in, and the Claude settings plugin, Claude accounts plugin and axHub plugin preinstalled in its Settings. Each project has its own Claude account.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -171926,9 +171926,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-12T20:31:23.289Z",
-     "updatedAt": "2026-11-12T20:32:58.667Z"
+     "updatedAt": "2026-11-12T20:33:59.397Z"
     },
     {
      "id": "s4",
@@ -172049,7 +172049,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
