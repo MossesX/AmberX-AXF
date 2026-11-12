@@ -777,7 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:28 UTC · `dock-engine` note (all) · backfill
 - 2026-11-12 03:28 UTC · `md-studio` note (all) · backfill
 - 2026-11-12 03:29 UTC · `theme-editor` note (all) · backfill
 - 2026-11-12 03:29 UTC · `token-control` note (all) · backfill
@@ -1177,6 +1176,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 18:34 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` s3 done (all) · orchestrator
 - 2026-11-12 18:34 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` → running, note (all) · pipeline
 - 2026-11-12 18:34 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` branch claude/add-a-tap-to-confirm-option-to-every-settings-in (all) · pipeline
+- 2026-11-12 18:35 UTC · `skins-as-packages-of-slices-every-section-its-ow` → queued, note (all) · console
 
 ## Token passes (log)
 
