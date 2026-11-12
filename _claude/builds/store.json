@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3304,
- "updatedAt": "2026-11-12T02:22:40.405Z",
+ "rev": 3305,
+ "updatedAt": "2026-11-12T02:22:49.445Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -159987,9 +159987,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/vps-server-gate-no-build-starts-without-an-orchestrator-issued-id",
-   "pr": "",
+   "pr": "#504",
    "createdAt": "2026-11-12T01:59:21.464Z",
-   "updatedAt": "2026-11-12T02:10:13.482Z",
+   "updatedAt": "2026-11-12T02:22:21.404Z",
    "builtAt": "",
    "notes": [
     {
@@ -160123,7 +160123,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
