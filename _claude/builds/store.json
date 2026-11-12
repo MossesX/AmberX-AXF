@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3837,
- "updatedAt": "2026-11-12T23:33:38.745Z",
+ "rev": 3838,
+ "updatedAt": "2026-11-12T23:40:04.828Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175688,6 +175688,43 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-12T23:33:26.512Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the",
+   "title": "Everything on tokens before skins: fix the 27 open check-theme problems and the 1 check-controls finding (apps/player Home.tsx raw button), burn down all 1,209 frozen findings in framework/spec/conform-baseline.json (use framework/cli/scale-adopt.mjs, then hand-fix the rest) and empty the baseline, ",
+   "category": "",
+   "detail": "",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-12T23:40:00.983Z",
+   "updatedAt": "2026-11-12T23:40:00.983Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 760
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
