@@ -1,6 +1,8 @@
 import type { AxfRuntime } from '../../../src/axf/core';
 import type { AxfWebLibrary } from '../../../src/axf/react/library';
+import { mollyService } from '../../../src/molly/host';
 import helpPack from '../help.json';
+import manifest from '../plugin.json';
 import { API_BASE_KEY, DEFAULT_API_BASE, apiBase, call, ledgerChanged, ledgerQuery, todayIso, type EntryInput, type PaydaysData, type StatementData } from './api';
 import { LedgerScreen, PaydaysScreen, ReportsScreen, reportState } from './screens';
 import { AssistantScreen, SETTINGS_SECTIONS, SettingsSection, ask, assistantChanged, assistantState, listConversations, newConversation, patchSettings, readConversation, type SettingsData } from './assistant';
@@ -41,6 +43,19 @@ function placeNav(rt: AxfRuntime): void {
   else rt.setNavSection({ id: NAV_SECTION, label: 'Expenses', items });
 }
 
+interface ShellService { register(surface: unknown, open?: (item: { kind: string; id: string }, target: unknown) => boolean): () => void }
+let offSurface: (() => void) | null = null;
+function registerSurface(rt: AxfRuntime): void {
+  const shell = mollyService<ShellService>('axf.shell@1');
+  if (!shell || offSurface) return;
+  offSurface = shell.register(manifest.surface, (item) => {
+    if (item.kind === 'screen') { rt.navigate(`expenses/${item.id}`); return true; }
+    if (item.kind === 'settings') return rt.dispatch('expenses.settings');
+    if (item.kind === 'action') return rt.dispatch(item.id);
+    return false;
+  });
+}
+
 const argsOf = (args: string[], payload?: string) => (args.length ? args.join(':') : payload ?? '');
 
 /** A JSON object payload (MCP / REST send one), or `{}`. */
@@ -72,6 +87,9 @@ export const plugin: AxfWebLibrary = {
     fromHash();
     window.addEventListener('hashchange', () => queueMicrotask(fromHash));
     placeNav(rt);
+    // One shell (molly-one-shell): hand the shell our surface (shell-surface@1) through its capability when it is there
+    registerSurface(rt);
+    setTimeout(() => registerSurface(rt), 0);
     rt.settings.onChange(NAV_KEY, () => placeNav(rt));
     on('expenses.open', (args, ctx) => {
       const id = argsOf(args, ctx.payload) || 'ledger';

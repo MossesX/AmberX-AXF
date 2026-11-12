@@ -18,7 +18,11 @@ const registered = new Set([...src.matchAll(/on\('([a-z.]+)'/g)].map((m) => m[1]
 for (const c of manifest.commands.items) ok(registered.has(c.action), `command ${c.id} → action ${c.action} is registered`);
 for (const a of ['expenses.open', 'expenses.add', 'expenses.edit', 'expenses.paydays.fill', 'expenses.report.copy', 'expenses.export', 'expenses.settings', 'expenses.refresh'])
   ok(registered.has(a), `UI action ${a} is registered`);
-for (const s of manifest.surface.screens) if (s.view) ok(manifest.provides.includes(`view:${s.view}`) && src.includes(`id: '${s.id}'`), `surface screen ${s.id} is a provided view`);
+ok(manifest.surface.$axf === 'shell-surface@1' && manifest.surface.app.id === 'expenses' && manifest.surface.mount.kind === 'native', 'surface is a native shell-surface@1');
+for (const it of manifest.surface.items) {
+  if (it.kind === 'screen') ok(manifest.provides.includes(`view:expenses/${it.id}`) && src.includes(`id: '${it.id}'`), `surface screen ${it.id} is a provided view`);
+  if (it.kind === 'action') ok(registered.has(it.id), `surface action ${it.id} is registered`);
+}
 const assets = readdirSync(join(dir, 'assets', 'nav-menu'));
 ok(assets.length >= 3, 'three navigation options ship as nav-menu assets');
 for (const f of assets) {

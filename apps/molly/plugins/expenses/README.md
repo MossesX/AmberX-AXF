@@ -17,5 +17,6 @@ Brett, Nov 8 2026: "Standalone apps keep working until Molly covers them; list g
   `expenses.add`, `expenses.edit`, `expenses.totals`, `expenses.export`, `expenses.paydays.get`,
   `expenses.paydays.fill`, `expenses.report.get`, `expenses.report`, `expenses.report.copy`, `expenses.refresh`,
   `expenses.assistant.list|read|new|ask`, `expenses.settings.get|set|reset`, `expenses.settings`.
-- **Surface** (plugin.json `surface`, shell-surface@1): which standalone screens this replaces and what is still pending
+- **Surface** (plugin.json `surface`, shell-surface@1): the screens, settings and main actions, handed to the one shell through
+  `axf.shell@1` when that capability is there (molly-one-shell). Still pending (plugin.json `gaps`):
   (assistant edit/build modes, AI keys, import, vault, delete).

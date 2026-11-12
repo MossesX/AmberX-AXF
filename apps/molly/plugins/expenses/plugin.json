@@ -33,86 +33,6 @@
       "apps/molly/README.md"
     ]
   },
-  "surface": {
-    "$axf": "shell-surface@1",
-    "app": "expenses",
-    "source": "https://expenses.amberxai.com",
-    "api": [
-      "https://expenses.amberxai.com/api/expenses/v1",
-      "https://expenses.amberxai.com/api/ai"
-    ],
-    "screens": [
-      {
-        "id": "ledger",
-        "view": "expenses/ledger",
-        "deepLink": "#/expenses/ledger",
-        "replaces": "Expense Tracker → Ledger grid",
-        "reads": [
-          "entries",
-          "totals"
-        ],
-        "writes": [
-          "entries"
-        ]
-      },
-      {
-        "id": "paydays",
-        "view": "expenses/paydays",
-        "deepLink": "#/expenses/paydays",
-        "replaces": "Expense Tracker → Paydays dialog",
-        "reads": [
-          "paydays"
-        ],
-        "writes": [
-          "paydays"
-        ]
-      },
-      {
-        "id": "reports",
-        "view": "expenses/reports",
-        "deepLink": "#/expenses/reports",
-        "replaces": "Expense Tracker → Report tab",
-        "reads": [
-          "statement"
-        ]
-      },
-      {
-        "id": "assistant",
-        "view": "expenses/assistant",
-        "deepLink": "#/expenses/assistant",
-        "replaces": "Expense Tracker → Assistant panel",
-        "reads": [
-          "ai/conversations"
-        ],
-        "writes": [
-          "ai/conversations"
-        ]
-      },
-      {
-        "id": "settings",
-        "settingsTab": "expenses",
-        "opens": "expenses.settings",
-        "replaces": "Expense Tracker → Settings dialog",
-        "reads": [
-          "settings"
-        ],
-        "writes": [
-          "settings"
-        ]
-      }
-    ],
-    "pending": [
-      "assistant edit and build modes, workspace diff",
-      "AI connection keys (stay in the standalone app)",
-      "receipt and statement import",
-      "vault",
-      "delete"
-    ],
-    "navOptions": {
-      "setting": "expenses.navPlacement",
-      "assets": "assets/nav-menu (UI Review choice set molly-expenses-nav)"
-    }
-  },
   "commands": {
     "$axf": "plugin-commands@1",
     "auto": true,
@@ -381,5 +301,137 @@
     "branch": "claude/molly-native-expenses"
   },
   "help": "help.json",
-  "opens": "main"
+  "opens": "main",
+  "surface": {
+    "$axf": "shell-surface@1",
+    "app": {
+      "id": "expenses",
+      "label": "Expenses",
+      "icon": "chart",
+      "description": "The Expense Tracker: ledger, paydays, reports, assistant.",
+      "url": "https://expenses.amberxai.com"
+    },
+    "mount": {
+      "kind": "native",
+      "module": "apps/molly/plugins/expenses/web/index.tsx",
+      "export": "plugin",
+      "api": "https://expenses.amberxai.com/api",
+      "auth": "app-session"
+    },
+    "items": [
+      {
+        "kind": "screen",
+        "id": "ledger",
+        "label": "Ledger",
+        "icon": "list",
+        "category": [
+          "Expenses"
+        ],
+        "detail": "Every entry, by month; add and change entries",
+        "plugin": "ai.amberx.axf.molly.expenses",
+        "effect": "navigate"
+      },
+      {
+        "kind": "screen",
+        "id": "paydays",
+        "label": "Paydays",
+        "icon": "clock",
+        "category": [
+          "Expenses"
+        ],
+        "detail": "Pay schedule, next and missing paydays",
+        "plugin": "ai.amberx.axf.molly.expenses",
+        "effect": "navigate"
+      },
+      {
+        "kind": "screen",
+        "id": "reports",
+        "label": "Reports",
+        "icon": "chart",
+        "category": [
+          "Expenses"
+        ],
+        "detail": "Month, quarter or year: spent, income, net, categories",
+        "plugin": "ai.amberx.axf.molly.expenses",
+        "effect": "navigate"
+      },
+      {
+        "kind": "screen",
+        "id": "assistant",
+        "label": "Assistant",
+        "icon": "sparkles",
+        "category": [
+          "Expenses"
+        ],
+        "detail": "Ask about your spending",
+        "plugin": "ai.amberx.axf.molly.expenses",
+        "effect": "navigate"
+      },
+      {
+        "kind": "settings",
+        "id": "expenses",
+        "label": "Expenses settings",
+        "icon": "settings",
+        "category": [
+          "Expenses"
+        ],
+        "plugin": "ai.amberx.axf.molly.expenses",
+        "effect": "navigate"
+      },
+      {
+        "kind": "action",
+        "id": "expenses.add",
+        "label": "Add an expense entry",
+        "category": [
+          "Expenses"
+        ],
+        "plugin": "ai.amberx.axf.molly.expenses",
+        "effect": "change"
+      },
+      {
+        "kind": "action",
+        "id": "expenses.paydays.fill",
+        "label": "Add the missing paydays",
+        "category": [
+          "Expenses"
+        ],
+        "plugin": "ai.amberx.axf.molly.expenses",
+        "effect": "change"
+      },
+      {
+        "kind": "action",
+        "id": "expenses.export",
+        "label": "Export the ledger as CSV",
+        "category": [
+          "Expenses"
+        ],
+        "plugin": "ai.amberx.axf.molly.expenses",
+        "effect": "navigate"
+      },
+      {
+        "kind": "action",
+        "id": "expenses.report.copy",
+        "label": "Copy the report as text",
+        "category": [
+          "Expenses"
+        ],
+        "plugin": "ai.amberx.axf.molly.expenses",
+        "effect": "navigate"
+      }
+    ]
+  },
+  "gaps": {
+    "pending": [
+      "assistant edit and build modes, workspace diff",
+      "AI connection keys (stay in the standalone app)",
+      "receipt and statement import",
+      "vault",
+      "delete"
+    ],
+    "navOptions": {
+      "setting": "expenses.navPlacement",
+      "assets": "assets/nav-menu (UI Review choice set molly-expenses-nav)"
+    },
+    "note": "Standalone screens not covered yet; the app keeps them at expenses.amberxai.com."
+  }
 }
