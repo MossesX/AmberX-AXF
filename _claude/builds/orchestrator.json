@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T11:40:37.155Z",
+ "updatedAt": "2026-11-12T15:32:01.014Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -107574,6 +107574,80 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mwdfj9x8046rch"
+    }
+   ]
+  },
+  {
+   "id": "session-summaries-amberx-axf-project-history-readiness-audit",
+   "title": "Session summaries: AmberX-AXF project history + readiness audit",
+   "category": "report",
+   "detail": "Brett said: \"Create summaries then, and then read the summaries. It's only this project, the AmberX framework and axHub. And console and AmberX and Molly, obviously.\"\n\nRead-only source: Chat Viewer SQLite store /opt/axf/.axf-console/plugins/chat-viewer/chats.db (open with mode=ro; sessions + messages tables, fts for search). Scope ONLY sessions about the AmberX-AXF framework, axHub (Patches), the Dev Console, AmberX and Molly; skip everything else. Use Brett's (user role) messages as the primary signal; skip tool output noise. Output to _claude/builds/reports/session-summaries/: (1) one short summary per day (asks, decisions, reversals, shipped, broke); (2) master-summary.md under ~3,000 words: vision, every major component and what it does, features, standing rules, open/unfinished items, known bugs; cite session ids; (3) readiness-audit.md: per component finished / half-done / broken, checked against code on main and CI, UI polish notes. Do not modify the database.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-12T15:31:59.264Z",
+   "updatedAt": "2026-11-12T15:31:59.264Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Filter sessions to AmberX-AXF/axHub/console/AmberX/Molly; write per-day summaries from Brett's messages",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwdphnol04nqnb"
+    },
+    {
+     "id": "s2",
+     "text": "Merge per-day summaries into master-summary.md (vision, components, features, rules, open items, bugs)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwdphnol05r1fs"
+    },
+    {
+     "id": "s3",
+     "text": "readiness-audit.md against code on main and CI: finished / half-done / broken per component, polish notes",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwdphnol06gz3w"
     }
    ]
   }
