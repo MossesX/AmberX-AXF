@@ -777,9 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:13 UTC · `orchestrator-checks-shipped-features-before-spli` → running, note (all) · pipeline
-- 2026-11-12 03:13 UTC · `orchestrator-checks-shipped-features-before-spli` branch claude/orchestrator-checks-shipped-features-before-spli (all) · pipeline
-- 2026-11-12 03:13 UTC · `orchestrator-checks-shipped-features-before-spli` note (all) · orchestrator
 - 2026-11-12 03:13 UTC · `molly-gap-axhub-cors` → pending, note (all) · reconciler
 - 2026-11-12 03:13 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` → pending, note (all) · reconciler
 - 2026-11-12 03:14 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` PR #510 (all) · builds-live
@@ -1177,6 +1174,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 10:48 UTC · `pending-tab-one-collapsed-row-per-build-tap-to-e` added (0 steps) (all) · pending
 - 2026-11-12 10:49 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` added (0 steps) (all) · pending
 - 2026-11-12 10:49 UTC · `pending-tab-one-collapsed-row-per-build-tap-to-e` note (all) · orchestrator
+- 2026-11-12 10:50 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` → queued (all) · claude-voice
+- 2026-11-12 10:50 UTC · `pending-tab-one-collapsed-row-per-build-tap-to-e` → queued (all) · claude-voice
+- 2026-11-12 10:50 UTC · `focus-on-every-screen-console-open-console-show-` → queued (all) · claude-voice
 
 ## Token passes (log)
 
