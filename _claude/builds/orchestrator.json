@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T01:47:42.377Z",
+ "updatedAt": "2026-11-12T01:48:30.271Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -97014,7 +97014,7 @@
    "branch": "claude/molly-gap-expenses-cors",
    "pr": "",
    "createdAt": "2026-11-10T22:09:28.380Z",
-   "updatedAt": "2026-11-12T01:45:39.062Z",
+   "updatedAt": "2026-11-12T01:48:28.563Z",
    "builtAt": "",
    "notes": [
     {
@@ -97062,8 +97062,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T01:48:28.563Z",
      "note": "",
      "uid": "st-mwb8vf7w04nb64"
     },

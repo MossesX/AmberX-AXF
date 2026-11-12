@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3191,
- "updatedAt": "2026-11-12T01:47:42.377Z",
+ "rev": 3192,
+ "updatedAt": "2026-11-12T01:48:30.271Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -156830,7 +156830,7 @@
    "branch": "claude/molly-gap-expenses-cors",
    "pr": "",
    "createdAt": "2026-11-10T22:09:28.380Z",
-   "updatedAt": "2026-11-12T01:45:39.062Z",
+   "updatedAt": "2026-11-12T01:48:28.563Z",
    "builtAt": "",
    "notes": [
     {
@@ -156867,18 +156867,18 @@
    "pipeline": {
     "queuedAt": "2026-11-12T01:43:05.835Z",
     "queuedBy": "console",
-    "account": "account-5",
-    "session": "axf-molly-gap-expenses-cors--joey",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-12T01:45:27.162Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-12T01:45:27.162Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -156887,7 +156887,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-12T01:45:27.162Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -156908,12 +156908,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T01:48:28.563Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T22:11:15.788Z",
-     "updatedAt": "2026-11-10T22:11:15.788Z"
+     "updatedAt": "2026-11-12T01:48:28.752Z"
     },
     {
      "id": "s2",
