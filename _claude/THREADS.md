@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-11 00:08 UTC · `merge-review-one-by-one-every-built-but-unmerged` branch claude/merge-review-one-by-one-every-built-but-unmerged (all) · pipeline
 - 2026-11-11 00:08 UTC · `merge-review-one-by-one-every-built-but-unmerged` note (all) · orchestrator
 - 2026-11-11 00:15 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · orchestrator
 - 2026-11-11 00:16 UTC · `ai-assistant-in-molly-console-drives-by-api-open` → running, note (all) · pipeline
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:38 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` s5 done (all) · orchestrator
 - 2026-11-12 02:38 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` → queued, note (all) · console
 - 2026-11-12 02:39 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` note (all) · orchestrator
+- 2026-11-12 02:38 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` s2 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
