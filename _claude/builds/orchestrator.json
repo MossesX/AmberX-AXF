@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T01:59:24.000Z",
+ "updatedAt": "2026-11-12T01:59:32.209Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -95675,7 +95675,7 @@
    "pr": "#498",
    "priority": "P0",
    "createdAt": "2026-11-10T20:59:27.366Z",
-   "updatedAt": "2026-11-12T01:59:08.541Z",
+   "updatedAt": "2026-11-12T01:59:24.174Z",
    "builtAt": "",
    "notes": [
     {
@@ -95713,6 +95713,10 @@
     {
      "text": "Self-check: queue-drag-and-drop-reorder-dispatcher-follows-t was marked running on account-5 with no session: released and back in the Queue.",
      "at": "2026-11-12T01:59:05.284Z"
+    },
+    {
+     "text": "Headless run axf-queue-drag-and-drop-reorder-dispatcher-follows-t--rhonda: brief only · start 11.0K tokens ($0.03) · cost $0.51 · 22 turns · 6 tools, MCP none",
+     "at": "2026-11-12T01:59:24.174Z"
     }
    ],
    "approvals": [],
