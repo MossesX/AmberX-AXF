@@ -415,6 +415,67 @@
         "output": "{ id, requested }"
       },
       {
+        "id": "pipeline-shipped-check",
+        "route": "GET /pipeline/shipped-check",
+        "title": "Check a build against Shipped features",
+        "description": "What the orchestrator found when it checked a build against Shipped features before splitting it: anything it would build twice, change or conflict with, the shipped builds it shares files with, and whether it is waiting for Brett's go-ahead. Say 'does the icon browser build touch anything shipped?'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "{ id, check: { verdict, line, findings, touches, ackedAt, ackedBy }, holds }"
+      },
+      {
+        "id": "pipeline-shipped-recheck",
+        "route": "POST /pipeline/shipped-check",
+        "title": "Check a build against Shipped features again",
+        "description": "Check the build's current steps against the Shipped features ledger again, without a new split (hand-written steps, or after more builds landed).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "{ id, check, holds }"
+      },
+      {
+        "id": "pipeline-shipped-ack",
+        "route": "POST /pipeline/shipped-ack",
+        "title": "Go ahead with a build that touches shipped work",
+        "description": "Brett's go-ahead on a build the shipped-features check held because it would redo, change or conflict with something already built. Until then the dispatcher does not start it. Say 'go ahead with the icon browser build'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            },
+            "why": {
+              "type": "string",
+              "description": "Why it is fine (kept in the build notes)"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "{ id, check }"
+      },
+      {
         "id": "pipeline-request",
         "route": "POST /pipeline/request",
         "title": "Ask for a build",

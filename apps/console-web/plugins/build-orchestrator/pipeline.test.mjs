@@ -139,6 +139,51 @@ t('endOutcome: finished → built with a PR, complete without; crash requeues; c
 
 // ---------------- split
 const raw = build('raw', 'pending', [], { title: 'Icon browser', detail: 'Add an icon browser plugin.\nList every icon pack.\nSearch by name.', origin: { said: 'I want an icon browser, dude.', addenda: [] } });
+// ---------------- shipped features check (Brett, Nov 12 2026: check the Shipped features before splitting a job)
+{
+  const man = (id, title, said, files = [], extra = {}) => ({ build: { id, title }, said: { text: said }, files, landedAt: '2026-11-01T00:00:00Z', pr: { number: 7 }, ...extra });
+  const ledger = [
+    man('icon-browser', 'Icon browser plugin', 'I want an icon browser where I can search every icon', ['apps/console-web/plugins/icon-browser/web/index.tsx', '_claude/THREADS.md']),
+    man('toast-stack', 'Toast notifications stack', 'toasts stack bottom right', ['framework/react/Toast.tsx']),
+    man('self', 'Same build', 'whatever', ['x.mjs']),
+  ];
+  t('shippedContext: related shipped builds first, never the job itself, bookkeeping files dropped', () => {
+    const c = P.shippedContext({ id: 'self', title: 'Icon browser: add favourites', origin: { said: 'add favourites to the icon browser so I can star icons' } }, ledger);
+    assert.equal(c[0].id, 'icon-browser'); assert.ok(!c.some((x) => x.id === 'self'));
+    assert.deepEqual(c[0].files, ['apps/console-web/plugins/icon-browser/web/index.tsx']);
+    const block = P.shippedPromptBlock(c); assert.match(block, /BEFORE you split/); assert.match(block, /icon-browser: Icon browser plugin/); assert.match(block, /alreadyShipped/);
+    assert.match(P.splitPrompt({ id: 'self', title: 't' }, { maxStepMinutes: 30 }, c), /Shipped features: these builds already landed/);
+    assert.doesNotMatch(P.splitPrompt({ id: 'self', title: 't' }), /Shipped features/, 'nothing related: no block');
+  });
+  t('parseSplit: per-step shipped flags and a whole-build alreadyShipped answer', () => {
+    const p = P.parseSplit('{"steps":[{"text":"Add a star to each icon","model":"Opus","estimate":"20 min","shipped":[{"id":"icon-browser","kind":"changes","why":"changes the grid"}]},{"text":"Tests and PR","model":"Opus","estimate":"10 min"}]}');
+    assert.equal(p.error, ''); assert.deepEqual(p.flags, [{ step: 's1', id: 'icon-browser', kind: 'changes', why: 'changes the grid' }]);
+    const d = P.parseSplit('{"alreadyShipped":"toast-stack","why":"toasts already stack","steps":[]}');
+    assert.equal(d.error, ''); assert.equal(d.steps.length, 0); assert.equal(d.alreadyShipped.id, 'toast-stack');
+  });
+  t('shippedCheck: a job built before is a duplicate; Claude flags hold; file overlap alone only lists', () => {
+    const dup = P.shippedCheck({ id: 'n1', title: 'Icon browser plugin', origin: { said: 'an icon browser where I can search every icon please' } }, [], ledger);
+    assert.equal(dup.verdict, 'needs-brett'); assert.equal(dup.findings[0].kind, 'duplicate'); assert.equal(dup.findings[0].ship, 'icon-browser'); assert.ok(P.shippedHolds(dup));
+    const steps = [{ id: 's1', text: 'Add favourites to the grid', files: ['apps/console-web/plugins/icon-browser/web/index.tsx', '_claude/THREADS.md'] }];
+    const touch = P.shippedCheck({ id: 'n2', title: 'Favourites for icons' }, steps, ledger);
+    assert.equal(touch.verdict, 'clear'); assert.equal(touch.touches.length, 1); assert.deepEqual(touch.touches[0].files, ['apps/console-web/plugins/icon-browser/web/index.tsx']); assert.match(touch.line, /nothing done twice/);
+    const flagged = P.shippedCheck({ id: 'n2', title: 'Favourites for icons' }, steps, ledger, { flags: [{ step: 's1', id: 'icon-browser', kind: 'changes', why: 'grid changes' }] });
+    assert.equal(flagged.verdict, 'needs-brett'); assert.match(flagged.line, /s1 changes icon-browser/);
+    assert.equal(P.shippedHolds({ ...flagged, ackedAt: now }), false, 'Brett said go: no longer held');
+    const sameBuild = P.shippedCheck({ id: 'self', title: 'Same build' }, [], ledger); assert.equal(sameBuild.verdict, 'clear', 'a build is never its own duplicate');
+  });
+  t('plan: a queued build held by the shipped check waits for Brett; the alert says how to go on', () => {
+    const b = build('held', 'queued', [step('s1', 'Opus')], { pipeline: { queuedAt: now } });
+    const accounts = [{ name: 'w', kind: 'subscription', usable: true, fable: true, running: 0, parallel: 1, free: 1, order: 0 }];
+    const chk = { verdict: 'needs-brett', findings: [{ kind: 'changes', step: 's1', ship: 'icon-browser' }], touches: [], ledger: 3, ackedAt: '' };
+    const p = P.plan({ builds: [b], accounts, slots: { free: 2, used: 0, cap: 2 }, rules: { maxStepMinutes: 30 }, checks: { held: chk } });
+    assert.equal(p.launches.length, 0); assert.match(p.waits[0].why, /waiting for Brett: 1 shipped feature affected: s1 changes icon-browser/);
+    const go = P.plan({ builds: [b], accounts, slots: { free: 2, used: 0, cap: 2 }, rules: { maxStepMinutes: 30 }, checks: { held: { ...chk, ackedAt: now } } });
+    assert.ok(!go.waits.some((w) => w.shipped), 'acknowledged: no shipped wait');
+    const a = P.alertFor('shipped', { id: 'held', title: 'Held build', line: 'x', findings: chk.findings });
+    assert.equal(a.key, 'pipeline:shipped:held'); assert.equal(a.severity, 'warning'); assert.match(a.body, /Step s1: changes icon-browser/); assert.match(a.body, /shipped-ack held/);
+  });
+}
 t('splitPrompt carries the title, detail, his words and the JSON shape', () => {
   const p = P.splitPrompt(raw);
   assert.match(p, /Icon browser/); assert.match(p, /icon browser, dude/); assert.match(p, /"steps"/); assert.match(p, /30 minutes or less/); assert.match(p, /Fable ONLY for/);
@@ -544,6 +589,25 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     orch('act', JSON.stringify({ action: 'add', id: 'delta', title: 'Delta', detail: 'Add the delta screen.\nDesign the delta schema.' }));
     const r = json(pipe('intake', '--json')); assert.deepEqual(r.split.map((x) => x.id), ['delta']);
     assert.equal(find('delta').pipeline.split.provider, 'rules'); assert.ok(find('delta').steps.length >= 3); assert.match(find('delta').pipeline.note, /rules/);
+  });
+  t('e2e shipped check: a job that is already shipped is split, flagged, alerted and held until Brett says go', () => {
+    const shippedDir = `${storeFile.replace(/\.json$/, '')}.shipped`; mkdirSync(shippedDir, { recursive: true });
+    writeFileSync(join(shippedDir, 'alpha-v1.json'), JSON.stringify({ $axf: 'shipped-manifest@1', build: { id: 'alpha-v1', title: 'Alpha feature' }, said: { text: 'build me alpha, kid' }, landedCommit: 'a'.repeat(40), landedAt: '2026-11-01T00:00:00Z', files: ['apps/alpha/index.ts'] }));
+    writeFileSync(splitter, `#!/usr/bin/env bash\ncat > "${tmp}/split-prompt.txt"\necho '{"steps":[{"text":"Build the alpha screen","model":"Opus","estimate":"20 min"},{"text":"Tests and PR","model":"Opus","estimate":"10 min"}]}'\n`);
+    orch('act', JSON.stringify({ action: 'add', id: 'alpha-again', title: 'Alpha feature', said: 'build me alpha, kid' }));
+    const r = json(pipe('split', 'alpha-again', '--json'));
+    assert.equal(r.shipped.verdict, 'needs-brett'); assert.equal(r.shipped.findings[0].ship, 'alpha-v1'); assert.match(r.note, /Shipped features: 1 shipped feature affected/);
+    assert.match(readFileSync(join(tmp, 'split-prompt.txt'), 'utf8'), /alpha-v1: Alpha feature/, 'the ledger went into the split prompt');
+    json(pipe('queue', 'alpha-again', '--by', 'brett', '--json'));
+    const s = json(pipe('status', '--json'));
+    assert.match(s.plan.waits.find((w) => w.id === 'alpha-again').why, /waiting for Brett/);
+    assert.equal(s.table.queued.find((x) => x.id === 'alpha-again').shipped.holds, true);
+    assert.equal(json(pipe('shipped-check', 'alpha-again', '--json')).holds, true);
+    const ack = json(pipe('shipped-ack', 'alpha-again', '--by', 'brett', '--why', 'rebuild on purpose', '--json'));
+    assert.equal(ack.check.ackedBy, 'brett'); assert.match(find('alpha-again').notes.pop().text, /Go-ahead on the shipped-features check \(brett\): rebuild on purpose/);
+    assert.ok(!json(pipe('status', '--json')).plan.waits.some((w) => w.id === 'alpha-again' && /waiting for Brett/.test(w.why)));
+    assert.notEqual(pipe('shipped-ack', 'alpha-again', '--json', '--expect-fail').status, 0, 'a second go-ahead is refused');
+    json(pipe('unqueue', 'alpha-again', '--json'));
   });
 }
 

@@ -221,7 +221,7 @@ export function recordFromManifest(m, now = nowIso()) {
  * Gather, build and write one manifest; put its ref on the build record (created from the manifest when the store has
  * none). `manifest` = a partial manifest that wins over what is gathered (API / backfill). Returns { manifest, file, created }.
  */
-export function ship(id, { manifest: over = null, source = 'orchestrator', by = process.env.AXF_ACTOR || 'orchestrator', env = process.env, dry = false, now = nowIso() } = {}) {
+export function ship(id, { manifest: over = null, source = 'orchestrator', by = process.env.AXF_ACTOR || 'orchestrator', env = process.env, dry = false, now = nowIso(), inferred = false } = {}) {
   const store = loadStore();
   const rec = core.findBuild(store, id) ?? null;
   const prev = readManifest(rec?.id || id, env);
@@ -248,8 +248,9 @@ export function ship(id, { manifest: over = null, source = 'orchestrator', by = 
     // the build is on main: record when it landed (the reconciler does this for PR merges; build_land fast-forwards don't have one)
     // only when nothing is left: a build with open steps keeps its status (Brett decides), its manifest lists them
     const left = (b.steps ?? []).some((x) => !x.done && !x.skip);
-    if (!b.mergedAt && (m.mergedAt || m.landedAt) && !left) { b.mergedAt = m.mergedAt || m.landedAt; if (!['complete', 'archived'].includes(b.status)) b.status = 'complete'; b.builtAt = b.builtAt || b.mergedAt; }
-    b.notes = [...(b.notes ?? []), { text: `Shipped manifest ${m.id} rev ${m.rev} sent to Shipped features (${m.source}): ${m.landedCommit ? `landed ${m.landedCommit.slice(0, 9)}` : `PR #${m.pr.number}`}, ${m.files.length} file(s), ${m.tests.length} test line(s), ${m.open.length} open.`, at: now }];
+    // an inferred landing (backfill of a build marked complete with no commit, PR or merge date) never writes a merge date
+    if (!inferred && !b.mergedAt && (m.mergedAt || m.landedAt) && !left) { b.mergedAt = m.mergedAt || m.landedAt; if (!['complete', 'archived'].includes(b.status)) b.status = 'complete'; b.builtAt = b.builtAt || b.mergedAt; }
+    b.notes = [...(b.notes ?? []), { text: `Shipped manifest ${m.id} rev ${m.rev} sent to Shipped features (${m.source}): ${m.landedCommit ? `landed ${m.landedCommit.slice(0, 9)}` : m.pr.number ? `PR #${m.pr.number}` : `complete ${str(m.mergedAt, 10)}${inferred ? ' (date inferred: no commit or PR recorded)' : ''}`}, ${m.files.length} file(s), ${m.tests.length} test line(s), ${m.open.length} open.`, at: now }];
     b.updatedAt = now;
     return s;
   }, { by, action: 'shipped', note: `${m.build.id}: ${m.id} rev ${m.rev}` });
@@ -273,7 +274,13 @@ export function findUnshipped({ from, env = process.env } = {}) {
     if (b.branch) branches.add(b.branch);
     const when = b.mergedAt || b.updatedAt || '';
     if (when < at || readManifest(b.id, env)) continue;
-    if (SM.isLanded(b)) { out.push({ id: b.id, why: b.mergedAt ? `merged ${b.mergedAt}` : 'complete', branch: b.branch }); continue; }
+    if (SM.isLanded(b)) {
+      // complete with nothing to name the landing by (older chat / console builds): its finish time stands in, marked inferred
+      const lc = !b.mergedAt && b.branch ? landedCommitOf(branchHead(b.branch, env), env) : '';
+      const bare = !b.mergedAt && !lc && !/\d/.test(str(b.pr));
+      out.push({ id: b.id, why: b.mergedAt ? `merged ${b.mergedAt}` : 'complete', branch: b.branch, ...(lc ? { landedCommit: lc } : {}), ...(bare ? { inferredAt: b.builtAt || b.updatedAt } : {}) });
+      continue;
+    }
     if (b.branch && b.status !== 'archived') { const lc = landedCommitOf(branchHead(b.branch, env), env); if (lc) out.push({ id: b.id, why: `branch ${b.branch} is on main (${lc.slice(0, 9)})`, branch: b.branch, landedCommit: lc }); }
   }
   for (const line of git(['log', '--first-parent', mainRef(env), `--since=${at}`, '--format=%H%x09%cI%x09%s'], { env }).split('\n').filter(Boolean)) {
@@ -297,8 +304,8 @@ export function backfill({ from, dry = false, by = 'backfill', env = process.env
   const found = findUnshipped({ from, env }); const done = [];
   for (const c of found) {
     try {
-      const over = c.fromGit ? fromReport(c) : c.landedCommit ? { landedCommit: c.landedCommit } : null;
-      const r = ship(c.id, { manifest: over, source: 'backfill', by, env, dry });
+      const over = c.fromGit ? fromReport(c) : c.landedCommit ? { landedCommit: c.landedCommit } : c.inferredAt ? { mergedAt: SM.iso(c.inferredAt) } : null;
+      const r = ship(c.id, { manifest: over, source: 'backfill', by, env, dry, inferred: !!c.inferredAt });
       done.push({ id: c.id, why: c.why, ok: true, created: r.created, manifest: SM.summaryOf(r.manifest), file: r.file });
     } catch (e) { done.push({ id: c.id, why: c.why, ok: false, error: e.message }); }
   }
@@ -311,7 +318,11 @@ export function shipLanded({ days = 3, max = 3, env = process.env } = {}) {
   const store = loadStore();
   const due = store.builds.filter((b) => !b.deleted && SM.isLanded(b) && (b.mergedAt || b.updatedAt) >= from && !b.shipped && !readManifest(b.id, env)).slice(0, max);
   const shipped = [];
-  for (const b of due) { try { const r = ship(b.id, { source: 'orchestrator', by: 'orchestrator', env }); shipped.push({ id: b.id, manifest: r.manifest.id, rev: r.manifest.rev }); } catch (e) { shipped.push({ id: b.id, error: e.message }); } }
+  for (const b of due) {
+    // a build marked complete with no commit, PR or merge date still goes in the ledger (its finish time, marked inferred)
+    const bare = !b.mergedAt && !b.branch && !/\d/.test(str(b.pr));
+    try { const r = ship(b.id, { source: 'orchestrator', by: 'orchestrator', env, ...(bare ? { manifest: { mergedAt: SM.iso(b.builtAt || b.updatedAt) }, inferred: true } : {}) }); shipped.push({ id: b.id, manifest: r.manifest.id, rev: r.manifest.rev }); } catch (e) { shipped.push({ id: b.id, error: e.message }); }
+  }
   return { shipped };
 }
 

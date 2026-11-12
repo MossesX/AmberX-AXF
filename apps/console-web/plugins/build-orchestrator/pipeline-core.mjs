@@ -291,7 +291,7 @@ export function noAccountWhy(accounts, model) {
  *   waits     [{ id, why }]                    queued builds that stay put this tick, and why
  *   idle      null, or { reason, since? }      nothing is running while work waits
  */
-export function plan({ builds, accounts, slots, settings = normSettings(), rules, now = Date.now() }) {
+export function plan({ builds, accounts, slots, settings = normSettings(), rules, now = Date.now(), checks = {} }) {
   const live = list(builds).filter((b) => !b.deleted);
   const queue = queueOrder(live, (b) => effectivePriority(b));
   const running = live.filter((b) => b.status === 'running' || b.status === 'waiting');
@@ -304,6 +304,8 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
     if (b.status !== 'queued') continue;
     if (isHeld(b)) { waits.push({ id: b.id, why: `on hold${b.pipeline.heldBy ? ` (${b.pipeline.heldBy})` : ''}: skipped until released`, held: true }); continue; }
     if (!openSteps(b).length) { waits.push({ id: b.id, why: b.steps?.length ? 'every step is done: nothing to run' : 'no steps yet: waiting for the split' }); continue; }
+    // the split found shipped work this build would redo, change or conflict with: Brett was told; it waits for his go
+    if (shippedHolds(checks?.[b.id])) { waits.push({ id: b.id, why: `waiting for Brett: ${shippedLine(checks[b.id])} (shipped-ack ${b.id} to go on)`, shipped: true }); continue; }
     const n = orchNextUp(b, rules);
     if (n.needsApproval) { waits.push({ id: b.id, why: `needs Brett's approval: upgrade ${n.phase.from} → ${n.phase.model}` }); continue; }
     const model = nextModel(b);
@@ -341,17 +343,116 @@ export function endOutcome(b, { exit, account = '', session = '', now = new Date
 
 // ------------------------------------------------------------------ split
 
+// ------------------------------------------------------------------ shipped features check (before every split)
+
+/**
+ * Brett, Nov 12 2026: "when he receives a job, he splits it up into steps. And when he does that, he needs to check with
+ * the shipped features... make sure he's not doing something twice or fucking up something that's already been done and
+ * if it's gonna conflict with something or change something that's already built he's gonna let me know".
+ *
+ *   shippedContext()  the shipped builds (shipped-manifest@1, one per landed build) most related to a job: they go into the
+ *                     split prompt so Claude plans around them and flags any step that redoes, changes or conflicts with one
+ *   shippedCheck()    the verdict on a split: Claude's flags plus the orchestrator's own matching (a job or a step whose
+ *                     words match a shipped build's title). verdict = clear | needs-brett. needs-brett = an AmberX alert and
+ *                     the build does not start until Brett acknowledges it (shipped-ack); file overlap alone is listed
+ *                     (touches) and never holds a build.
+ */
+export const SHIPPED_CHECK = 'shipped-check@1';
+export const SHIPPED_KINDS = ['duplicate', 'changes', 'conflicts'];
+const STOP = new Set(('the and for with that this from into when then them they have has been were will just also make made only every each what which your about there their should would could need needs onto over under than more most some such like want wants gonna going build builds step steps brett said fine right sure thing things know mean really else here where while after before first last next same other another able well back good does doing done keep goes come comes give gets cant dont isnt thats show shows actually').split(' '));
+/** The significant words of a text (4+ letters, no filler). */
+export const words = (t) => new Set(str(t, 20000).toLowerCase().replace(/[^a-z0-9]+/g, ' ').split(' ').filter((w) => w.length >= 4 && !STOP.has(w)));
+/** Dice similarity of two word sets (0..1). */
+export const dice = (a, c) => { if (!a.size || !c.size) return 0; let n = 0; for (const w of a) if (c.has(w)) n += 1; return (2 * n) / (a.size + c.size); };
+/** Files every build touches (bookkeeping): never a sign that two builds overlap. */
+const BOOKKEEPING = /^(_claude\/|changes\/|sessions\/|framework\/spec\/fixtures\/|framework\/catalog\/|framework\/schemas\/json\/|framework\/schemas\/[a-z-]+\.json$)|(^|\/)(THREADS|STATUS|README|CHANGELOG)\.md$|(package-lock|pnpm-lock)\.(json|yaml)$|\.axf-brief\.md$|\.(log|jsonl)$/;
+export const ownFiles = (files) => list(files).map((f) => str(f, 300)).filter((f) => f && !BOOKKEEPING.test(f));
+const mWords = (m) => words(`${m.build?.title} ${str(m.said?.text, 4000)}`);
+const jobWords = (b) => words(`${b.title} ${str(b.detail, 8000)} ${str(b.origin?.said, 6000)} ${list(b.origin?.addenda).map((a) => str(a?.said, 2000)).join(' ')}`);
+
+/** The shipped builds most related to a job (never the job itself), best first: { id, title, said, landedAt, pr, files, score }. */
+export function shippedContext(b, manifests, { max = 12, min = 0.12 } = {}) {
+  const jw = jobWords(b); const tw = words(b.title);
+  return list(manifests)
+    .filter((m) => m?.build?.id && m.build.id !== b.id && !(b.branch && m.branch === b.branch))
+    .map((m) => ({ m, score: Math.max(dice(jw, mWords(m)), dice(tw, words(m.build.title))) }))
+    .filter((x) => x.score >= min)
+    .sort((x, y) => y.score - x.score || x.m.build.id.localeCompare(y.m.build.id))
+    .slice(0, max)
+    .map(({ m, score }) => ({ id: m.build.id, title: str(m.build.title, 200), said: str(m.said?.text, 300).replace(/\s+/g, ' ').trim(), landedAt: str(m.landedAt || m.mergedAt, 10), pr: m.pr?.number || 0, files: ownFiles(m.files).slice(0, 12), score: Math.round(score * 100) / 100 }));
+}
+
+/** The split prompt's block on shipped features ('' when nothing related has shipped). */
+export function shippedPromptBlock(ctx) {
+  if (!list(ctx).length) return '';
+  return [
+    `Shipped features: these builds already landed (the Shipped features ledger). Check this build against them BEFORE you split it: never plan a step that builds one of them again, and never redo or break one.`,
+    `When a step would change how one of them works, remove it, or conflict with it, say so on that step: "shipped":[{"id":"<shipped build id>","kind":"changes|conflicts|duplicate","why":"<one line>"}]. Adding something next to a shipped feature is not a change; leave those unflagged.`,
+    `If the whole build is already shipped, answer {"alreadyShipped":"<shipped build id>","why":"<one line>","steps":[]}.`,
+    ...ctx.map((c) => `- ${c.id}: ${c.title}${c.landedAt ? ` (landed ${c.landedAt}${c.pr ? `, PR #${c.pr}` : ''})` : ''}${c.said && c.said !== c.title ? ` · Brett: "${c.said.slice(0, 200)}"` : ''}${c.files.length ? ` · files: ${c.files.slice(0, 8).join(', ')}` : ''}`),
+  ].join('\n');
+}
+
+/**
+ * The verdict on a split. `steps` = the split's steps (with files); `flags` = Claude's per-step flags ([{ step, id, kind, why }]);
+ * `alreadyShipped` = Claude's whole-build answer ({ id, why }) or null. Returns a shipped-check@1 record.
+ */
+export function shippedCheck(b, steps, manifests, { flags = [], alreadyShipped = null, now = new Date().toISOString(), provider = '' } = {}) {
+  const all = list(manifests).filter((m) => m?.build?.id && m.build.id !== b.id && !(b.branch && m.branch === b.branch));
+  const byId = new Map(all.map((m) => [m.build.id, m]));
+  const findings = []; const seen = new Set();
+  const add = (f) => { const k = `${f.kind}|${f.step}|${f.ship}`; if (seen.has(k)) return; seen.add(k); findings.push(f); };
+  const titleOf = (id) => str(byId.get(id)?.build?.title, 200);
+  if (alreadyShipped?.id) add({ kind: 'duplicate', step: '', ship: str(alreadyShipped.id, 120), title: titleOf(alreadyShipped.id), why: str(alreadyShipped.why, 300) || 'Claude: the whole build is already shipped', by: 'claude' });
+  // the orchestrator's own match: the job's title against every shipped title, and Brett's words against theirs
+  const tw = words(b.title); const sw = words(b.origin?.said);
+  for (const m of all) {
+    const t = dice(tw, words(m.build.title)); const s = sw.size >= 6 ? dice(sw, words(m.said?.text)) : 0;
+    // Brett's words alone are not enough: builds split off one request share them (the title must be alike too)
+    if (t >= 0.8 || (t >= 0.6 && s >= 0.6) || (t >= 0.4 && s >= 0.85)) add({ kind: 'duplicate', step: '', ship: m.build.id, title: str(m.build.title, 200), why: `same job as shipped "${str(m.build.title, 120)}" (title ${Math.round(t * 100)}%, words ${Math.round(s * 100)}% alike)`, by: 'orchestrator' });
+  }
+  for (const f of list(flags)) {
+    const kind = SHIPPED_KINDS.includes(f?.kind) ? f.kind : 'changes'; const id = str(f?.id, 120).trim(); if (!id) continue;
+    add({ kind, step: str(f.step, 10), ship: id, title: titleOf(id), why: str(f.why, 300), by: 'claude' });
+  }
+  const touches = [];
+  for (const st of list(steps)) {
+    const sw2 = words(st.text);
+    for (const m of all) {
+      // a step that is word for word a shipped build is a redo
+      if (sw2.size >= 3 && dice(sw2, words(m.build.title)) >= 0.75) add({ kind: 'duplicate', step: str(st.id, 10), ship: m.build.id, title: str(m.build.title, 200), why: `step ${st.id} matches shipped "${str(m.build.title, 120)}"`, by: 'orchestrator' });
+      const mf = new Set(ownFiles(m.files)); const shared = ownFiles(st.files).filter((f) => mf.has(f));
+      if (shared.length) touches.push({ step: str(st.id, 10), ship: m.build.id, title: str(m.build.title, 200), files: shared.slice(0, 10) });
+    }
+  }
+  const verdict = findings.length ? 'needs-brett' : 'clear';
+  return { $axf: SHIPPED_CHECK, build: b.id, at: now, provider: str(provider, 20), ledger: all.length, verdict, findings: findings.slice(0, 30), touches: touches.slice(0, 40), line: shippedLine({ verdict, findings, touches, ledger: all.length }), ackedAt: '', ackedBy: '', ackWhy: '' };
+}
+
+const KIND_WORD = { duplicate: 'already built', changes: 'changes', conflicts: 'conflicts with' };
+/** One line for a check (notes, waits, the alert title). */
+export function shippedLine(c) {
+  if (!c) return 'not checked against Shipped features yet';
+  if (c.verdict !== 'needs-brett') return `checked against ${c.ledger} shipped builds: nothing done twice, nothing shipped changed${list(c.touches).length ? ` (${new Set(list(c.touches).map((t) => t.ship)).size} share files, listed)` : ''}`;
+  const f = list(c.findings);
+  return `${f.length} shipped feature${f.length === 1 ? '' : 's'} affected: ${f.slice(0, 3).map((x) => `${x.step ? `${x.step} ` : ''}${KIND_WORD[x.kind] || x.kind} ${x.ship}`).join('; ')}${f.length > 3 ? '; …' : ''}`;
+}
+/** Does this check hold the build until Brett says go? */
+export const shippedHolds = (c) => !!c && c.verdict === 'needs-brett' && !c.ackedAt;
+
 /** The one-shot prompt the orchestrator sends to Claude to split a build. The answer must be JSON only. */
-export function splitPrompt(b, rules = { maxStepMinutes: 30 }) {
+export function splitPrompt(b, rules = { maxStepMinutes: 30 }, shipped = []) {
   const max = rules.maxStepMinutes || 30;
   const said = str(b.origin?.said, 6000).trim();
   const addenda = list(b.origin?.addenda).map((a, i) => `Addendum ${i + 1}: ${str(a.said, 2000)}`).join('\n');
+  const shippedBlock = shippedPromptBlock(shipped);
   return [
     `You are the AmberX AXF build orchestrator. Split the build below into small steps a headless Claude Code session does one after another in one repo checkout.`,
     `Rules: every step ${max} minutes or less, with an estimate; 3 to 20 steps; each step is one concrete piece of work naming the files or folders it touches; the last step is tests, report (_claude/builds/reports/<build id>.md), THREADS row and PR.`,
     `API rule: ${API_RULE} So every step that adds or changes UI names its API part (deep link, state read, actions, settings; REST + MCP + CLI + voice) in the same step or the step right after it.`,
     `Model per step, Opus by default. Fable ONLY for: ${MODEL_GUIDE.Fable} Opus for: ${MODEL_GUIDE.Opus} Put Fable steps first when the work allows, so the build switches model at most once.`,
-    `Answer with JSON only, no prose: {"steps":[{"text":"…","model":"Fable|Opus","estimate":"<n> min","why":"<one line when Fable>","files":["…"]}]}`,
+    `Answer with JSON only, no prose: {"steps":[{"text":"…","model":"Fable|Opus","estimate":"<n> min","why":"<one line when Fable>","files":["…"]${shippedBlock ? ',"shipped":[]' : ''}}]}`,
+    shippedBlock ? `\n${shippedBlock}` : '',
     '', `Build id: ${b.id}`, `Title: ${str(b.title, 300)}`, b.category ? `Category: ${str(b.category, 60)}` : '', b.detail ? `Details:\n${str(b.detail, 8000)}` : '',
     said ? `Brett said (verbatim):\n${said}` : '', addenda,
   ].filter(Boolean).join('\n');
@@ -367,10 +468,12 @@ export function parseSplit(text, rules = { maxStepMinutes: 30 }) {
   let j;
   try { j = JSON.parse(s.slice(start, end + 1)); } catch (e) { return { steps: [], error: `not JSON: ${e.message}` }; }
   const raw = list(j?.steps);
-  if (raw.length < 1) return { steps: [], error: 'no steps in the answer' };
+  const alreadyShipped = str(j?.alreadyShipped, 120).trim() ? { id: str(j.alreadyShipped, 120).trim(), why: str(j?.why, 300) } : null;
+  if (raw.length < 1) return alreadyShipped ? { steps: [], error: '', alreadyShipped, flags: [] } : { steps: [], error: 'no steps in the answer' };
   if (raw.length > 40) return { steps: [], error: `${raw.length} steps: too many (40 at most)` };
-  const steps = []; const problems = [];
+  const steps = []; const problems = []; const flags = [];
   raw.forEach((r, i) => {
+    for (const f of list(r?.shipped)) if (f && typeof f === 'object' && str(f.id, 120).trim()) flags.push({ step: `s${i + 1}`, id: str(f.id, 120).trim(), kind: SHIPPED_KINDS.includes(f.kind) ? f.kind : 'changes', why: str(f.why, 300) });
     const text = str(r?.text ?? r?.title, 2000).trim();
     if (text.length < 5) { problems.push(`step ${i + 1} has no text`); return; }
     const est = typeof r?.estimate === 'number' ? `${Math.round(r.estimate)} min` : str(r?.estimate, 20).trim();
@@ -379,7 +482,7 @@ export function parseSplit(text, rules = { maxStepMinutes: 30 }) {
     const model = modelKey(r?.model) === FOUNDATION_MODEL ? 'Fable' : 'Opus';
     steps.push({ id: `s${i + 1}`, text, model, estimate: minutes != null ? `${minutes} min` : '', why: str(r?.why, 300), files: list(r?.files).map((f) => str(f, 300)).filter(Boolean).slice(0, 30), checks: list(r?.checks).map((f) => str(f, 300)).filter(Boolean).slice(0, 20) });
   });
-  return problems.length ? { steps, error: problems.join('; ') } : { steps, error: '' };
+  return problems.length ? { steps, error: problems.join('; '), flags, alreadyShipped } : { steps, error: '', flags, alreadyShipped };
 }
 
 /**
@@ -476,6 +579,8 @@ export function alertFor(kind, d = {}) {
     case 'selfcheck': return { ...base, key: 'pipeline:selfcheck', severity: list(d.problems).length ? 'warning' : 'info',
       title: `Dispatcher self-check: ${list(d.fixes).length ? `fixed ${list(d.fixes).length}` : 'nothing fixed'}${list(d.problems).length ? `, ${list(d.problems).length} account${list(d.problems).length === 1 ? '' : 's'} can't work` : ''}`,
       body: str([...list(d.fixes).map((x) => `Fixed: ${x}`), ...list(d.problems).map((x) => `Can't use ${x}`), d.line ? `Now: ${d.line}` : ''].filter(Boolean).join('\n'), 1500) };
+    case 'shipped': return { ...base, key: `pipeline:shipped:${d.id}`, severity: 'warning', title: `Check before building: ${str(d.title, 120)}`,
+      body: str([d.line, ...list(d.findings).slice(0, 8).map((f) => `${f.step ? `Step ${f.step}: ` : 'Whole build: '}${KIND_WORD[f.kind] || f.kind} ${f.ship}${f.title ? ` (${f.title})` : ''}${f.why ? `: ${f.why}` : ''}`), `It waits until you say go: "go ahead with ${d.id}" or pipeline.mjs shipped-ack ${d.id}.`].filter(Boolean).join('\n'), 1500) };
     case 'split': return { ...base, key: `pipeline:split:${d.id}`, severity: d.error ? 'warning' : 'info', title: d.error ? `Split needs a look: ${str(d.title, 120)}` : `Split into ${d.steps} steps: ${str(d.title, 120)}`, body: str(d.error || d.note, 1500) };
     default: throw new Error(`unknown alert kind ${kind}`);
   }

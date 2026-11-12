@@ -17,6 +17,21 @@
       "priority": "high"
     },
     {
+      "id": "pipeline.shipped",
+      "label": "Check before building: touches shipped work",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator dispatcher",
+      "description": "The orchestrator split a job and, checking it against Shipped features, found it would build something already shipped again, or change or conflict with something already built. It says which steps and which shipped builds, and the build does not start until you say go (shipped-ack).",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:shipped"
+      },
+      "setting": "notify.blocked",
+      "push": true,
+      "priority": "high"
+    },
+    {
       "id": "pipeline.selfcheck",
       "label": "Dispatcher self-check",
       "group": "builds",
