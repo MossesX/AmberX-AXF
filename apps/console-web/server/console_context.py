@@ -1,7 +1,7 @@
 """What the console core shares with its plugins' server parts (set by main.py before plugins load).
 
     import console_context as cx
-    cx.ROOT, cx.current_token(), cx.persist_root(), cx.data_path(rel), cx.build_profile(), cx.PLUGINS, cx.set_plugin_enabled(folder, on), cx.log(channel, text, level), cx.GITHUB_REPO,
+    cx.ROOT, cx.current_token(), cx.persist_root(), cx.data_path(rel), cx.build_profile(), cx.project(), cx.project_dir(path), cx.PLUGINS, cx.set_plugin_enabled(folder, on), cx.log(channel, text, level), cx.GITHUB_REPO,
     cx.terminal_lines(), cx.raise_alert({source, severity, title, body?, key?, link?}), cx.resolve_alerts([keys]),
     cx.asgi_app (the console's ASGI app), cx.mcp_server (its MCP server: plugins may add and remove tools)
 
@@ -21,6 +21,13 @@ persist_root: Callable[[], Path | None] = lambda: None  # noqa: E731
 # queue, status, tracker, plan media); other shared files resolve as before. build_profile() = the active profile.
 data_path: Callable[[str], Path] = lambda rel: ROOT / rel  # noqa: E731
 build_profile: Callable[[], dict[str, Any]] = lambda: {"id": "all", "name": "All builds", "base": True}  # noqa: E731
+# Projects (projects@1, server/projects.py): project() = the project in force (it owns the active build profile);
+# project_dir(path) = where it keeps data a plugin keeps in `path` (base project: `path` itself, else path/projects/<id>);
+# project_of_profile(id) = the project owning a build profile (a build's project: its profiles[0]).
+project: Callable[[], dict[str, Any]] = lambda: {"id": "amberx-axf", "name": "AmberX AXF", "profile": "all", "base": True}  # noqa: E731
+project_dir: Callable[[Any], Path] = lambda path: Path(path)  # noqa: E731
+project_of_profile: Callable[[str], dict[str, Any]] = lambda pid: {"id": "amberx-axf", "name": "AmberX AXF", "profile": "all", "base": True}  # noqa: E731
+project_of_build: Callable[[str], dict[str, Any] | None] = lambda build_id: None  # noqa: E731
 log: Callable[..., None] = lambda *a, **k: None  # noqa: E731
 plugin_enabled: Callable[[str], bool] = lambda folder: True  # noqa: E731
 # Switch a plugin on/off, as the admin's Settings → Plugins switch does (the systems check's Auto fix for a plugin

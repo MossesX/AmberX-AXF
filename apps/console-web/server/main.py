@@ -609,6 +609,9 @@ async def profiles_act(request: Request) -> Any:
 # Projects (projects@1, framework/cli/projects.mjs): workspaces with their own builds, notes, to-dos and plans. Each
 # owns a build profile; the active project = the active profile's project (one switch for every list).
 PROJECTS_CLI = ROOT / "framework" / "cli" / "projects.mjs"
+import projects as projects_mod  # noqa: E402
+
+PROJECTS = projects_mod.Projects(ROOT, _persist_root, PROFILES.active)
 PROJECT_ACTIONS = ("select", "create", "update", "archive", "unarchive", "delete")
 
 
@@ -1363,6 +1366,7 @@ import credentials  # noqa: E402
 credentials.init(ROOT)
 console_context.set_context(ROOT=ROOT, GITHUB_REPO=GITHUB_REPO, PLUGINS=PLUGINS, current_token=current_token, persist_root=_persist_root,
                             data_path=PROFILES.data_path, build_profile=PROFILES.active,
+                            project=PROJECTS.active, project_dir=PROJECTS.dir, project_of_profile=PROJECTS.of_profile, project_of_build=PROJECTS.of_build,
                             asgi_app=app, mcp_server=_mcp,
                             log=log, plugin_enabled=plugin_enabled, set_plugin_enabled=lambda f, on: set_plugin_enabled(f, {"enabled": on}), terminal_lines=lambda: list(_state.get("terminal", [])))
 

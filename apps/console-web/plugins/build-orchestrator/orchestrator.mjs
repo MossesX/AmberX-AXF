@@ -44,13 +44,23 @@ import { absorbOrchestrator, projectOrchestrator } from '../../../../framework/p
 
 const legacy = () => process.env.AXF_ORCH_FILE || '';
 const profile = () => activeProfile().id;
+/**
+ * The profile a change works in (projects@1): the active project's, unless the build it names lives only in another
+ * project (a session still running that project's build after Brett switched), which then gets its own.
+ */
+export function profileFor(store, id, active = profile()) {
+  if (!id) return active;
+  const b = store.builds.find((x) => x.id === id && !x.deleted) ?? store.builds.find((x) => x.id === id);
+  return !b || (b.profiles ?? []).includes(active) || !b.profiles?.length ? active : b.profiles[0];
+}
 /** Where the builds are: the store (normally) or AXF_ORCH_FILE. */
 export const trackerFile = () => legacy() || storeFile();
 
-export function load() {
+export function load(id = '') {
   const f = legacy();
   if (f) return core.normalizeState(existsSync(f) ? JSON.parse(readFileSync(f, 'utf8')) : core.emptyState());
-  return core.normalizeState(projectOrchestrator(loadStore(), profile()));
+  const store = loadStore();
+  return core.normalizeState(projectOrchestrator(store, profileFor(store, id)));
 }
 export function save(state, by = 'orchestrator') {
   const f = legacy();
@@ -63,9 +73,8 @@ export function act(change, by = process.env.AXF_ACTOR || 'orchestrator') {
   change = withApprover(change);
   if (change.approver) by = `${change.approver.by} (${change.approver.via})`;
   if (legacy()) { const r = core.apply(load(), change); save(r.state); return r; }
-  const p = profile();
   let r;
-  withStore((s) => { r = core.apply(projectOrchestrator(s, p), change); return absorbOrchestrator(s, p, r.state, { by }); }, { by, action: `orchestrator:${change?.action}`, note: change?.id ?? '' });
+  withStore((s) => { const p = change?.action === 'add' ? profile() : profileFor(s, change?.id); r = core.apply(projectOrchestrator(s, p), change); return absorbOrchestrator(s, p, r.state, { by }); }, { by, action: `orchestrator:${change?.action}`, note: change?.id ?? '' });
   return r;
 }
 
@@ -97,7 +106,7 @@ async function main(argv) {
   const json = argv.includes('--json'); const args = argv.filter((a) => a !== '--json');
   const out = (o, text) => console.log(json ? JSON.stringify(o) : text);
   const [cmd = 'list', ...rest] = args;
-  const s = load();
+  const s = load(['next', 'brief'].includes(cmd) ? rest[0] : '');
   if (cmd === 'where') return out({ ok: true, file: trackerFile() }, trackerFile());
   if (cmd === 'list' || cmd === 'state') return out({ ok: true, state: s, upgradePolicy: upgradePolicy() }, s.builds.filter((b) => !b.hidden && b.status !== 'archived').map((b) => line(b, s.rules)).join('\n') || 'No builds.');
   if (cmd === 'next') {
