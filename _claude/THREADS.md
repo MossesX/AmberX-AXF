@@ -777,14 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:26 UTC · `ashes-ui` note (all) · backfill
-- 2026-11-12 03:26 UTC · `build-list-estimates-usd` note (all) · backfill
-- 2026-11-12 03:26 UTC · `banner-group` note (all) · backfill
-- 2026-11-12 03:26 UTC · `banner-group-fable` note (all) · backfill
-- 2026-11-12 03:27 UTC · `axhub-web-console-look` note (all) · backfill
-- 2026-11-12 03:27 UTC · `voicevault-voice-notes` note (all) · backfill
-- 2026-11-12 03:27 UTC · `banner-working-icon` note (all) · backfill
-- 2026-11-12 03:27 UTC · `banner-working-icon-fable` note (all) · backfill
 - 2026-11-12 03:27 UTC · `settings-asset` note (all) · backfill
 - 2026-11-12 03:27 UTC · `settings-asset-fable` note (all) · backfill
 - 2026-11-12 03:27 UTC · `hubsync` note (all) · backfill
@@ -1177,6 +1169,14 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 10:55 UTC · `show-commits-behind-main-on-every-build-table-an` note (all) · foreign-write
 - 2026-11-12 10:55 UTC · `remove-the-console-s-own-notes-manager-console-u` note (all) · foreign-write
 - 2026-11-12 10:55 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` note (all) · foreign-write
+- 2026-11-12 10:55 UTC · `x.work` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `x.showcase.packs` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `x.lib.media` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `x.lib.location` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `x.lib.editor` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `x.lib.ai` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `x.lib.vps` → archived (all) · claude-voice
+- 2026-11-12 10:55 UTC · `x.lib.github` → archived (all) · claude-voice
 
 ## Token passes (log)
 
