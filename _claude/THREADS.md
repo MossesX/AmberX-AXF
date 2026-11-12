@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 10:50 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` → queued (all) · claude-voice
 - 2026-11-12 10:50 UTC · `pending-tab-one-collapsed-row-per-build-tap-to-e` → queued (all) · claude-voice
 - 2026-11-12 10:50 UTC · `focus-on-every-screen-console-open-console-show-` → queued (all) · claude-voice
 - 2026-11-12 10:50 UTC · `show-commits-behind-main-on-every-build-table-an` → queued (all) · claude-voice
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 23:41 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` note (all) · pipeline
 - 2026-11-12 23:42 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` note (all) · pipeline
 - 2026-11-12 23:43 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` note (all) · pipeline
+- 2026-11-12 23:48 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note (all) · pipeline
 
 ## Token passes (log)
 
