@@ -72,6 +72,20 @@ try {
   ok(stored.doc.expenses.length === 3 && stored.doc.expenses[0].id === "exp_seed" && stored.user === "Tester", "document keeps the app's kv shape and the old entry");
   const backups = readdirSync(dir).filter((f) => f.startsWith("expenses.api-backup-"));
   ok(backups.length === 1 && JSON.parse(readFileSync(path.join(dir, backups[0]!), "utf8")).doc.expenses.length === 1, "one daily backup, taken before the first write");
+
+  // Molly: cross-origin with credentials from the allow-list only; same-origin calls get no CORS headers
+  const MOLLY = "https://molly.amberxai.com";
+  r = await route.GET(req("GET", "me"), ctx("me"));
+  ok(r.status === 200 && (await r.json()).user === "Tester" && !r.headers.get("access-control-allow-origin"), "me → user, no CORS headers without an Origin");
+  r = await route.GET(req("GET", "me", undefined, { ...H, origin: MOLLY }), ctx("me"));
+  ok(r.headers.get("access-control-allow-origin") === MOLLY && r.headers.get("access-control-allow-credentials") === "true", "Molly origin → CORS with credentials");
+  r = await route.GET(req("GET", "entries", undefined, { origin: MOLLY }), ctx("entries"));
+  ok(r.status === 401 && r.headers.get("access-control-allow-origin") === MOLLY, "signed-out Molly call → 401 the browser can read");
+  r = await route.GET(req("GET", "me", undefined, { ...H, origin: "https://evil.example" }), ctx("me"));
+  ok(!r.headers.get("access-control-allow-origin"), "other origin → no CORS headers");
+  r = route.OPTIONS(new Request("http://x/api/expenses/v1/entries", { method: "OPTIONS", headers: { origin: MOLLY, "access-control-request-method": "POST" } }));
+  ok(r.status === 204 && r.headers.get("access-control-allow-methods")?.includes("PATCH"), "preflight from Molly → 204");
+  ok(route.OPTIONS(new Request("http://x/api/expenses/v1/entries", { method: "OPTIONS", headers: { origin: "https://evil.example" } })).status === 403, "preflight from elsewhere → 403");
 } finally {
   rmSync(root, { recursive: true, force: true });
 }

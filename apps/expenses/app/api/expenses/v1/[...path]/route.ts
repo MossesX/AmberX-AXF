@@ -9,6 +9,10 @@
  *   GET   /api/expenses/v1/accounts?from&to                                 → { accounts }
  *   GET   /api/expenses/v1/totals?from&to&category&account&by=category|account|month|merchant → { totals }
  *   GET   /api/expenses/v1/export?format=csv|json&from&to…                  → text/csv or { entries }
+ *   GET   /api/expenses/v1/me                                               → { user } (who this call acts as)
+ *
+ * Molly (molly.amberxai.com) calls these cross-origin with the user's session cookie: an allowed Origin gets CORS
+ * headers and preflight answers (`src/server/cors.ts`); same-origin and tool calls are unchanged.
  *
  * Deleting is left to the app (it has the undoable delete dialog); the API never removes an entry.
  */
@@ -16,6 +20,7 @@ import {
   ApiError, accounts, apiUser, editEntry, filterLedger, newEntry, queryOf, readLedger, row, toCsv, totals, writeLedger,
   type EntryInput,
 } from "../../../../../src/server/expensesApi";
+import { preflight, withCors } from "../../../../../src/server/cors";
 
 export const dynamic = "force-dynamic";
 
@@ -41,9 +46,14 @@ function fail(e: unknown): Response {
 }
 
 export async function GET(request: Request, ctx: Ctx): Promise<Response> {
+  return withCors(request, await handleGET(request, ctx));
+}
+
+async function handleGET(request: Request, ctx: Ctx): Promise<Response> {
   try {
     const user = apiUser(request);
     const [what, id] = (await ctx.params).path ?? [];
+    if (what === "me") return Response.json({ user });
     const url = new URL(request.url);
     const q = queryOf(url);
     const list = await readLedger(user);
@@ -59,11 +69,15 @@ export async function GET(request: Request, ctx: Ctx): Promise<Response> {
       if ((url.searchParams.get("format") ?? "csv") === "json") return Response.json({ entries: entries.map(row), count: entries.length });
       return new Response(toCsv(entries), { headers: { "content-type": "text/csv; charset=utf-8", "content-disposition": `attachment; filename="expenses-${new Date().toISOString().slice(0, 10)}.csv"` } });
     }
-    return Response.json({ error: "unknown endpoint", endpoints: ["entries", "entries/<id>", "accounts", "totals", "export"] }, { status: 404 });
+    return Response.json({ error: "unknown endpoint", endpoints: ["entries", "entries/<id>", "accounts", "totals", "export", "me"] }, { status: 404 });
   } catch (e) { return fail(e); }
 }
 
 export async function POST(request: Request, ctx: Ctx): Promise<Response> {
+  return withCors(request, await handlePOST(request, ctx));
+}
+
+async function handlePOST(request: Request, ctx: Ctx): Promise<Response> {
   try {
     const user = apiUser(request);
     const [what, id] = (await ctx.params).path ?? [];
@@ -76,6 +90,10 @@ export async function POST(request: Request, ctx: Ctx): Promise<Response> {
 }
 
 export async function PATCH(request: Request, ctx: Ctx): Promise<Response> {
+  return withCors(request, await handlePATCH(request, ctx));
+}
+
+async function handlePATCH(request: Request, ctx: Ctx): Promise<Response> {
   try {
     const user = apiUser(request);
     const [what, id] = (await ctx.params).path ?? [];
@@ -89,4 +107,8 @@ export async function PATCH(request: Request, ctx: Ctx): Promise<Response> {
     await writeLedger(user, next);
     return Response.json({ entry: row(next[i]!) });
   } catch (e) { return fail(e); }
+}
+
+export function OPTIONS(request: Request): Response {
+  return preflight(request);
 }
