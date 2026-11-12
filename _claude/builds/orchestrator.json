@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T02:42:11.239Z",
+ "updatedAt": "2026-11-12T02:42:19.382Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -100121,7 +100121,7 @@
    "branch": "claude/main-gate-nothing-reaches-main-without-passing",
    "pr": "#508",
    "createdAt": "2026-11-12T02:00:17.612Z",
-   "updatedAt": "2026-11-12T02:41:59.409Z",
+   "updatedAt": "2026-11-12T02:42:08.689Z",
    "builtAt": "2026-11-12T02:36:08.572Z",
    "notes": [
     {
@@ -100143,6 +100143,10 @@
     {
      "text": "Gate live on the VPS (pre-push hook in /opt/axf/.git/hooks + merge queue). GitHub ruleset waits on Brett: give the console token Administration read/write on AmberX-AXF; axHub needs GitHub Pro. Native merge queue needs an org-owned repo. PR #508.",
      "at": "2026-11-12T02:35:42.439Z"
+    },
+    {
+     "text": "GitHub rules on main need Brett: AmberX-AXF token needs Administration: Read and write, then Systems check > 'Main gate: GitHub rules' > Auto fix (ruleset ready). axHub is private on a free plan: rulesets need GitHub Pro or a public repo. GitHub's merge queue needs an org-owned repo, so the console merge queue stays the only lander. VPS gate (pre-push hook + merge queue + console Merge) is live and holds every VPS route meanwhile.",
+     "at": "2026-11-12T02:42:08.689Z"
     },
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-main-gate-nothing-reaches-main-without-passing--rhonda.",
@@ -100200,7 +100204,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-12T02:35:24.772Z",
+     "doneAt": "2026-11-12T02:42:01.967Z",
      "note": "",
      "uid": "st-mwcwhtkf052d1i"
     },
@@ -100218,7 +100222,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-12T02:35:27.860Z",
+     "doneAt": "2026-11-12T02:42:05.850Z",
      "note": "",
      "uid": "st-mwcwhtkf065ayl"
     }
