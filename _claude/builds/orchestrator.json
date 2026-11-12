@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T23:16:42.526Z",
+ "updatedAt": "2026-11-12T23:16:52.509Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -109477,6 +109477,10 @@
     {
      "text": "Headless run axf-github-client-plugin-see-and-control-every-pr-st--paulie: brief only · start 11.4K tokens ($0.03) · cost $9.94 · 135 turns · 6 tools, MCP none",
      "at": "2026-11-12T23:16:30.966Z"
+    },
+    {
+     "text": "Phase 2 (Opus) done: s2-s9 on PR #530 (commits 8999ea1f2, fc2dac71a). test.py 97 checks, plugin-commands 53, push-banner 183, tsc/build/theme/controls/toolbars green. UI Review item r-20261112-hodh501 (6 shots, desktop+phone) is only in this worktree: this headless session had no AXF_CONSOLE_URL / AXF_TOKEN. To put it in front of Brett: from a shell with those set, run: node apps/console-web/plugins/ui-review/review.mjs submit --kind screen --name 'GitHub client: pull requests, batches, git log' --app console-web --screen github-client --viewport mixed --group 'github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro - Nov 12 11:20 PM' --single-option 'new plugin page on framework controls' --shots /root/axf-review-shots/github-client/prs-desktop.png,/root/axf-review-shots/github-client/prs-phone.png,/root/axf-review-shots/github-client/batches-desktop.png,/root/axf-review-shots/github-client/batches-phone.png,/root/axf-review-shots/github-client/log-desktop.png,/root/axf-review-shots/github-client/log-phone.png --branch claude/github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro --pr 530 --console. Lasting fix: give dispatched sessions AXF_CONSOLE_URL and AXF_TOKEN.",
+     "at": "2026-11-12T23:16:07.924Z"
     }
    ],
    "approvals": [
