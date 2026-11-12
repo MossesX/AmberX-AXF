@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3383,
- "updatedAt": "2026-11-12T02:47:30.867Z",
+ "rev": 3384,
+ "updatedAt": "2026-11-12T02:47:38.600Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -157269,14 +157269,14 @@
    "title": "Molly gap: axHub allows Molly's origin on /auth/api/* (CORS with credentials) so native screens read the hub session",
    "category": "",
    "detail": "Found by molly-sign-in-once s1. From https://molly.amberxai.com, GET https://axhub.amberxai.com/auth/api/session answers 200 with no Access-Control-Allow-Origin, and the preflight OPTIONS /auth/api/logout answers 200 with no CORS headers, so a browser on Molly cannot read the hub session or post a write. The hub should answer an allow-list of amberxai.com app origins (Molly first) on /auth/api/* with Access-Control-Allow-Origin echoing the origin, Access-Control-Allow-Credentials true, Access-Control-Allow-Headers content-type, accept, x-axhub-csrf, Vary Origin; never * with credentials. The session cookie is same-site (SameSite=Lax is enough). Molly side is in place: apps/molly/src/molly/credentials.ts (axhub provider, credentials include, X-AxHub-CSRF on writes).",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "molly-sign-in-once",
    "pendingId": "",
    "branch": "claude/molly-gap-axhub-cors",
    "pr": "",
    "createdAt": "2026-11-10T22:09:27.000Z",
-   "updatedAt": "2026-11-12T02:47:07.677Z",
+   "updatedAt": "2026-11-12T02:47:36.882Z",
    "builtAt": "",
    "notes": [
     {
@@ -157314,6 +157314,10 @@
     {
      "text": "Self-check: molly-gap-axhub-cors was marked running on account-5 with no session: released and back in the Queue.",
      "at": "2026-11-12T02:47:07.677Z"
+    },
+    {
+     "text": "Headless run axf-molly-gap-axhub-cors--earl: brief only · start 10.8K tokens ($0.03) · cost $1.06 · 49 turns · 6 tools, MCP none",
+     "at": "2026-11-12T02:47:36.882Z"
     }
    ],
    "approvals": [],
@@ -157444,7 +157448,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

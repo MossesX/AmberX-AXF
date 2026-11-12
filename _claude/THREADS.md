@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-11 01:49 UTC · `skins-in-the-asset-store-skin-browser-skin-edito` s3 done, → built (all) · orchestrator
 - 2026-11-11 01:49 UTC · `skins-in-the-asset-store-skin-browser-skin-edito` note (all) · orchestrator
 - 2026-11-11 19:42 UTC · `appearance-skins-colour-themes-only-remove-design-packs` branch claude/skins-colour-themes-resume, PR #494 (all) · builds-live
 - 2026-11-11 23:05 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · orchestrator
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:46 UTC · `molly-gap-axhub-cors` s2 done (all) · orchestrator
 - 2026-11-12 02:47 UTC · `molly-gap-axhub-cors` → queued, note (all) · pipeline
 - 2026-11-12 02:47 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` s1 done, → running (all) · orchestrator
+- 2026-11-12 02:47 UTC · `molly-gap-axhub-cors` → running, note (all) · orchestrator
 
 ## Token passes (log)
 
