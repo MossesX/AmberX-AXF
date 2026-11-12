@@ -778,14 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:31 UTC · `xlayout-plan` added (0 steps) (all) · backfill
-- 2026-11-12 03:31 UTC · `claude-accounts-switch` added (0 steps) (all) · backfill
-- 2026-11-12 03:31 UTC · `one-look-opus` added (0 steps) (all) · backfill
-- 2026-11-12 03:31 UTC · `console-rename-gizmox-ai-studio` added (0 steps) (all) · backfill
-- 2026-11-12 03:31 UTC · `hub-look-all-assets` added (0 steps) (all) · backfill
-- 2026-11-12 03:31 UTC · `theme-sync-pane` added (0 steps) (all) · backfill
-- 2026-11-12 03:31 UTC · `leftovers` added (0 steps) (all) · backfill
-- 2026-11-12 03:31 UTC · `shot-groups` added (0 steps) (all) · backfill
 - 2026-11-12 03:31 UTC · `shots-tab` added (0 steps) (all) · backfill
 - 2026-11-12 03:31 UTC · `angel-screens-compact` added (0 steps) (all) · backfill
 - 2026-11-12 03:31 UTC · `angel-app-compact` added (0 steps) (all) · backfill
@@ -1178,6 +1170,14 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 22:03 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` s1 done, → running (all) · orchestrator
 - 2026-11-12 22:03 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` note (all) · orchestrator
 - 2026-11-12 22:04 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` s1 done, → running (all) · orchestrator
+- 2026-11-12 22:04 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` s9 done (all) · orchestrator
+- 2026-11-12 22:04 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` s2 done (all) · orchestrator
+- 2026-11-12 22:04 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` s3 done (all) · orchestrator
+- 2026-11-12 22:04 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` s10 done (all) · orchestrator
+- 2026-11-12 22:04 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` s4 done (all) · orchestrator
+- 2026-11-12 22:04 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` s5 done (all) · orchestrator
+- 2026-11-12 22:04 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` s6 done (all) · orchestrator
+- 2026-11-12 22:04 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` s7 done (all) · orchestrator
 
 ## Token passes (log)
 
