@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3303,
- "updatedAt": "2026-11-12T02:22:25.699Z",
+ "rev": 3304,
+ "updatedAt": "2026-11-12T02:22:40.405Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -154090,7 +154090,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-10T20:57:38.838Z",
-   "updatedAt": "2026-11-12T02:22:12.491Z",
+   "updatedAt": "2026-11-12T02:22:26.278Z",
    "builtAt": "",
    "notes": [
     {
@@ -154120,6 +154120,10 @@
     {
      "text": "Started run 2 on account-5 (API key, subscriptions first, then API) (Opus, Phase 1): hl-mwcx9z46-f6.",
      "at": "2026-11-12T02:22:12.491Z"
+    },
+    {
+     "text": "Claude account: account-5 (axf-build-notifications-same-notification-per-build--joey, own login copy)",
+     "at": "2026-11-12T02:22:26.278Z"
     }
    ],
    "approvals": [],
@@ -154250,7 +154254,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
