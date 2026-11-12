@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3239,
- "updatedAt": "2026-11-12T02:02:27.738Z",
+ "rev": 3240,
+ "updatedAt": "2026-11-12T02:02:51.272Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -159809,18 +159809,45 @@
    "title": "Build Plan 1: skins, one-row build tables, backgrounds, asset overrides",
    "category": "skins",
    "detail": "URGENT. Build Plan 1 (Plan Studio build-plan-1-xuqq), sent to the orchestrator as a normal build so it splits it and assigns the ID. Each step came from a Pending build that was archived; check each against main first and skip anything done, unneeded or breaking. Rule: a skin controls everything (look, layout, behavior) and contains a colour theme; changing the colour theme never creates a new skin. Already done/in flight: skins-finish, PR #494 (colour themes), PR #409 (restyle), skins in asset store. Skip screenshots. Fable steps stay on Fable.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T02:02:25.273Z",
-   "updatedAt": "2026-11-12T02:02:25.274Z",
+   "updatedAt": "2026-11-12T02:02:49.331Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T02:02:49.331Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "2026-11-12T02:02:48.683Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
    "steps": [
     {
      "id": "s1",
@@ -159985,7 +160012,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
