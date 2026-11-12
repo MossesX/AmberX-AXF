@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T01:46:11.884Z",
+ "updatedAt": "2026-11-12T01:46:22.778Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -96885,14 +96885,14 @@
    "title": "Molly gap: axHub allows Molly's origin on /auth/api/* (CORS with credentials) so native screens read the hub session",
    "category": "",
    "detail": "Found by molly-sign-in-once s1. From https://molly.amberxai.com, GET https://axhub.amberxai.com/auth/api/session answers 200 with no Access-Control-Allow-Origin, and the preflight OPTIONS /auth/api/logout answers 200 with no CORS headers, so a browser on Molly cannot read the hub session or post a write. The hub should answer an allow-list of amberxai.com app origins (Molly first) on /auth/api/* with Access-Control-Allow-Origin echoing the origin, Access-Control-Allow-Credentials true, Access-Control-Allow-Headers content-type, accept, x-axhub-csrf, Vary Origin; never * with credentials. The session cookie is same-site (SameSite=Lax is enough). Molly side is in place: apps/molly/src/molly/credentials.ts (axhub provider, credentials include, X-AxHub-CSRF on writes).",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "molly-sign-in-once",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/molly-gap-axhub-cors",
    "pr": "",
    "createdAt": "2026-11-10T22:09:27.000Z",
-   "updatedAt": "2026-11-12T01:45:48.564Z",
+   "updatedAt": "2026-11-12T01:45:57.964Z",
    "builtAt": "",
    "notes": [
     {
@@ -96902,6 +96902,14 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-12T01:43:10.366Z"
+    },
+    {
+     "text": "Started run 1 on account-5 (API key, subscriptions first, then API) (Opus, Phase 1): axf-molly-gap-axhub-cors--paulie.",
+     "at": "2026-11-12T01:45:52.948Z"
+    },
+    {
+     "text": "Claude account: account-5 (axf-molly-gap-axhub-cors--paulie, own login copy)",
+     "at": "2026-11-12T01:45:57.964Z"
     }
    ],
    "approvals": [],
@@ -98801,6 +98809,31 @@
      "uid": "st-mwcqz04g08hvst"
     }
    ]
+  },
+  {
+   "id": "fix-axhub-36-pull-main-in-failed",
+   "title": "Fix axHub #36: pull main in failed",
+   "category": "",
+   "detail": "## Setup (run first, then work only in that folder)\n```\nmkdir -p '/root/axf-fixes/repos'\n[ -d '/root/axf-fixes/repos/MossesX-axHub' ] || git clone -q 'https://github.com/MossesX/axHub.git' '/root/axf-fixes/repos/MossesX-axHub'\ngit -C '/root/axf-fixes/repos/MossesX-axHub' fetch -q origin && git -C '/root/axf-fixes/repos/MossesX-axHub' worktree prune\nif [ -d '/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold' ]; then git -C '/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold' checkout -q -B 'claude/claude-sync-hold' 'origin/claude/claude-sync-hold'; else git -C '/root/axf-fixes/repos/MossesX-axHub' worktree add -q -B 'claude/claude-sync-hold' '/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold' 'origin/claude/claude-sync-hold'; fi\ncd '/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold'\n```\nDo no work in the orchestrator's own build folder: it only hosts this session. Tick the build's steps there when done.\n\n# Fix pull request #36 (claude-sync: leave a checkout with .claude-sync-hold alone) in MossesX/axHub so it can reach main\n\nThe Dev Console's push banner tried to pull main in and it failed: the banner's Pull all stopped at a failed pull and handed this repo's pulls to this session.\n\n- Repository: MossesX/axHub (the setup above makes a worktree of it, on branch `claude/claude-sync-hold`)\n- Base branch: `main`\n- Pull request: #36 https://github.com/MossesX/axHub/pull/36\n\nWhat to do:\n1. `git fetch origin`, then `git merge origin/main` into `claude/claude-sync-hold`.\n2. Resolve every conflict keeping both sides' intent; when unsure which side wins, keep both and say so in the commit.\n3. Run the repo's own fast checks for what you touched (its CLAUDE.md lists them).\n4. Commit, then `git push origin HEAD:claude/claude-sync-hold`. CI runs again on the PR by itself.\n\nThen finish the banner's Pull all: pull `main` into each of these branches too, one at a time:\n- `claude/amberx-open-url`\n- `go-pass`\nFor each: `git checkout -B <branch> origin/<branch>`, `git merge origin/main`, resolve, run the checks, `git push origin HEAD:<branch>`. If one can't be fixed, skip it, keep going, and list it at the end.\n\nRules:\n- Push only to `claude/claude-sync-hold`. Never push to `main` or any other branch, never force-push, never merge the PR.\n- Never print, copy or commit secrets (tokens, keys, .env files, .axf-console/).\n- If a conflict needs a decision only Brett can make, stop and say exactly what and why in your final message.\n- Record steps and the result on your change-log entry (the hooks do most of it).\n- Pushes may also go to those branches (each only to itself); the base-branch and force rules hold for all of them.\n- You can edit files and run git only; list any other command Brett should run at the end.",
+   "status": "queued",
+   "hidden": false,
+   "source": "push-banner",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-12T01:46:10.127Z",
+   "updatedAt": "2026-11-12T01:46:12.878Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by push-banner.",
+     "at": "2026-11-12T01:46:12.878Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": []
   }
  ]
 }

@@ -776,11 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 21:36 UTC · `convert-every-app-into-a-molly-module-expenses-c` note (all) · orchestrator
-- 2026-11-10 21:37 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` added (0 steps) (all) · console
-- 2026-11-10 21:37 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` → queued, note (all) · console
-- 2026-11-10 21:38 UTC · `gizmo-opens-by-voice-link-amberx-web-app-android` note (all) · orchestrator
-- 2026-11-10 21:38 UTC · `finish-and-land-the-git-status-board-every-ready` s2 done (all) · orchestrator
 - 2026-11-10 21:38 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` added (0 steps) (all) · console
 - 2026-11-10 21:38 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` → queued, note (all) · console
 - 2026-11-10 21:39 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` added (0 steps) (all) · builds-live
@@ -1176,6 +1171,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 01:45 UTC · `molly-gap-expenses-cors` note (all) · orchestrator
 - 2026-11-12 01:45 UTC · `molly-gap-remote-actions` note (all) · orchestrator
 - 2026-11-12 01:45 UTC · `molly-gap-remote-actions` → queued (all) · foreign-write
+- 2026-11-12 01:45 UTC · `molly-gap-axhub-cors` → running, note (all) · pipeline
+- 2026-11-12 01:45 UTC · `molly-gap-axhub-cors` branch claude/molly-gap-axhub-cors (all) · pipeline
+- 2026-11-12 01:45 UTC · `molly-gap-axhub-cors` note (all) · orchestrator
+- 2026-11-12 01:46 UTC · `fix-axhub-36-pull-main-in-failed` added (0 steps) (all) · push-banner
+- 2026-11-12 01:46 UTC · `fix-axhub-36-pull-main-in-failed` → queued, note (all) · push-banner
 
 ## Token passes (log)
 
