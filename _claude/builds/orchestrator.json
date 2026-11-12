@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T20:36:22.228Z",
+ "updatedAt": "2026-11-12T20:36:43.194Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -108728,7 +108728,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T20:35:05.081Z",
-   "updatedAt": "2026-11-12T20:36:14.329Z",
+   "updatedAt": "2026-11-12T20:36:41.739Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -108787,6 +108787,24 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mwe0bg2h07zd81"
+    },
+    {
+     "id": "s5",
+     "text": "Carry-over also includes repo locations and axHub folders (project _claude/_data paths). Wizard pre-fills them from the current project; the repo link step lets you keep or change it. Brett: \"that includes the location of the repos and the axHub folders and all of that.\"",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe0dij401sv9s"
     },
     {
      "id": "s4",

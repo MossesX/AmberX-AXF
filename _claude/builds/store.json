@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3661,
- "updatedAt": "2026-11-12T20:36:22.228Z",
+ "rev": 3662,
+ "updatedAt": "2026-11-12T20:36:43.194Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -172072,7 +172072,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T20:35:05.081Z",
-   "updatedAt": "2026-11-12T20:36:14.329Z",
+   "updatedAt": "2026-11-12T20:36:41.739Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -172173,6 +172173,28 @@
      "updatedAt": "2026-11-12T20:36:14.480Z"
     },
     {
+     "id": "s5",
+     "uid": "st-mwe0dij401sv9s",
+     "title": "",
+     "text": "Carry-over also includes repo locations and axHub folders (project _claude/_data paths). Wizard pre-fills them from the current project; the repo link step lets you keep or change it. Brett: \"that includes the location of the repos and the axHub folders and all of that.\"",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T20:36:41.741Z",
+     "updatedAt": "2026-11-12T20:36:41.872Z"
+    },
+    {
      "id": "s4",
      "uid": "st-mwe0bg2h08kquu",
      "title": "",
@@ -172203,7 +172225,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
