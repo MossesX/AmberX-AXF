@@ -10,7 +10,9 @@ real=""
 IFS=: read -r -a dirs <<<"$PATH"
 for d in "${dirs[@]}"; do
   [[ -z "$d" || "$(cd "$d" 2>/dev/null && pwd)" == "$HERE" ]] && continue
-  [[ -x "$d/docker" ]] && { real="$d/docker"; break; }
+  # another copy of this shim (a worktree's deploy/build-limit ahead of /opt/axf's on PATH) is not the real docker:
+  # taking it made the two copies exec each other forever
+  [[ -x "$d/docker" ]] && ! grep -q '^# docker shim for headless builds (build-limit@1' "$d/docker" 2>/dev/null && { real="$d/docker"; break; }
 done
 [[ -n "$real" ]] || { echo "docker: not found" >&2; exit 127; }
 

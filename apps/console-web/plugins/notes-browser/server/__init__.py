@@ -21,13 +21,22 @@ from typing import Any
 
 from fastapi import APIRouter, Body, HTTPException, Query
 
+import console_context as cx
 import plugin_services
 
 from .store import NotesError, NotesStore
 
 FOLDER = "notes-browser"
 SERVICE = "axf.notes@1"
-STORE = NotesStore(by="console:notes-browser")
+
+
+def _project_folder() -> str:
+    """The active project's notes folder (projects@1): AmberX AXF keeps `notes`, any other project its own."""
+    p = cx.project()
+    return "notes" if p.get("base") else f"project-notes/{p['id']}"
+
+
+STORE = NotesStore(by="console:notes-browser", folder=_project_folder)
 
 router = APIRouter()
 
@@ -98,7 +107,7 @@ class Service:
         return STORE.read(path)
 
     def write(self, path: str, content: str, if_version: str | None = None, by: str | None = None) -> dict[str, Any]:
-        return (NotesStore(STORE.root, by=by) if by else STORE).write(path, content, if_version)
+        return (NotesStore(STORE.root, by=by, folder=_project_folder) if by else STORE).write(path, content, if_version)
 
     def move(self, src: str, dst: str, if_version: str | None = None) -> dict[str, Any]:
         return STORE.move(src, dst, if_version)

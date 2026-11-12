@@ -103,6 +103,7 @@ jobs:
       - run: node deploy/worker-routing.test.mjs                    # workers-api-routing: routing rules, per-account limits and queues, API spend caps, who may raise a cap
       - run: node deploy/claude-login.test.mjs                      # build-own-login: every headless build runs on its own Claude login copy (fake accounts + fake claude; logout/switch mid-run, refresh stays in the copy, no token printed)
       - run: node framework/spec/check-build-priority.mjs           # priority tags: levels, backfill, what waits on a build, the agent queue follows priority
+      - run: node framework/spec/check-projects.mjs                 # projects@1: a new project starts empty, AmberX AXF keeps everything, archive/delete need the id
       - run: node apps/console-web/plugins/build-orchestrator/pipeline.test.mjs   # build pipeline: Pending → Queue → Building, accounts with Fable, slot-open launches, session ends, idle alert, split  # axf-plugin:build-orchestrator
       - run: node framework/spec/check-model-policy.mjs             # model-policy@1: Opus or Fable only, never Sonnet; job types, roster, plan picker and the builds store read one registry
       - run: node framework/spec/check-card.mjs                     # card@1 + home-layout@1: binding, view pick, live refresh, layout, suggestions, drops, zero tokens, fixture
@@ -331,6 +332,7 @@ jobs:
             python apps/console-web/server/test_plugin_catalog.py
             python apps/console-web/server/test_app_catalog.py
             python apps/console-web/server/test_build_profiles.py
+            python apps/console-web/server/test_projects.py          # projects@1: the server's mirror agrees with framework/cli/projects.mjs
             python apps/console-web/server/test_readcache.py         # shared read cache (single-flight, stale-while-revalidate, file-change) + node spawn cap
             python apps/console-web/server/test_previews.py          # Watch live: registry, signed keys, /preview proxy auth (HTTP + HMR WebSocket)
             python apps/console-web/plugins/console-commands/server/test_console_commands.py  # console commands: consoles announce + stream, resolve, deliver + ack, per-user mailbox, confirm, liveness, failover to the next live console, wake, late acks, build focus  # axf-plugin:console-commands

@@ -71,6 +71,7 @@ import { MODEL_IDS, modelKey } from '../../../../framework/core/model-policy.mjs
 import * as storeCore from '../../../../framework/plan/builds-store-core.mjs';
 import { loadStore, withStore } from '../../../../framework/cli/builds-store.mjs';
 import { activeProfile } from '../../../../framework/cli/persist.mjs';
+import { activeProject, readProjects } from '../../../../framework/cli/projects.mjs';
 import { loadUpgradePolicy, settingsFile as claudeSettingsFile } from '../../../../framework/cli/upgrade-policy.mjs';
 import * as slots from '../../../../framework/cli/agent-slots.mjs';
 import { issue as issueDispatch } from '../../../../framework/cli/dispatch-gate.mjs';
@@ -131,6 +132,19 @@ const logLine = (o) => { try { mkdirSync(files().dir, { recursive: true }); appe
 
 const profile = () => activeProfile().id;
 const live = (store) => store.builds.filter((b) => !b.deleted);
+/**
+ * Projects (projects@1): the tables and tabs show the active project's builds; the dispatcher runs the Queue of every
+ * project that is not archived (switching projects never stops a build that is running or queued elsewhere).
+ */
+const inProfile = (b, p) => (b.profiles ?? []).includes(p);
+export function projectScope() {
+  const reg = readProjects();
+  const archived = new Set(reg.projects.filter((p) => p.status === 'archived').map((p) => p.profile));
+  const known = new Set(reg.projects.map((p) => p.profile));
+  return { active: activeProject(reg), profile: profile(), archived, known, projects: reg.projects };
+}
+/** Builds the dispatcher may run: not deleted, and in at least one project that is listed and not archived. */
+export const runnable = (store, scope = projectScope()) => live(store).filter((b) => !(b.profiles ?? []).length || (b.profiles ?? []).some((p) => !scope.archived.has(p) && (scope.known.has(p) || p === scope.profile)));
 const rulesOf = (store) => storeCore.projectOrchestrator(store, profile()).rules;
 
 /** Agent slots as agent-slots.mjs status shows them (finished sessions pruned), or a quiet default without a store. */
@@ -189,24 +203,27 @@ const row = (b) => {
 export function status() {
   loadUpgradePolicy();
   const store = loadStore(); const settings = loadSettings(); const read = accountsRead(store, settings); const accounts = read.accounts; const sl = slotsNow();
-  const builds = live(store);
+  const scope = projectScope();
+  const builds = live(store).filter((b) => inProfile(b, scope.profile));
   const ageMin = read.at ? Math.max(0, Math.round((Date.now() - Date.parse(read.at)) / 60e3)) : null;
   const accountsFrom = { source: read.source, at: read.at, ageMin, why: read.why || (read.source === 'snapshot' && ageMin > 5 ? `the host's account snapshot is ${ageMin} min old: the dispatcher cron may be stopped` : '') };
-  const plan = P.plan({ builds, accounts, slots: sl, settings, rules: rulesOf(store) });
+  const plan = P.plan({ builds: runnable(store, scope), accounts, slots: sl, settings, rules: rulesOf(store) });
   const byTable = { pending: [], queued: [], building: [] };
   for (const b of builds) { const t = BP.tableOf(b); if (t && !b.hidden) byTable[t].push(row(b)); }
   byTable.queued.sort((a, b) => plan.queue.indexOf(a.id) - plan.queue.indexOf(b.id));
   byTable.pending.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   byTable.building.sort((a, b) => str(b.pipeline?.launchedAt).localeCompare(str(a.pipeline?.launchedAt)));
   const tabs = Object.fromEntries(BP.TABS.map((t) => [t, []]));
-  for (const b of store.builds) { const t = BP.tabOf(b); if (t) tabs[t].push(row(b)); } // every record: the Deleted tab shows soft-deleted builds
+  for (const b of store.builds) { if (!inProfile(b, scope.profile)) continue; const t = BP.tabOf(b); if (t) tabs[t].push(row(b)); } // every record of the project: the Deleted tab shows soft-deleted builds
   tabs.queue.sort((a, b) => plan.queue.indexOf(a.id) - plan.queue.indexOf(b.id));
   tabs.active.sort((a, b) => str(b.pipeline?.launchedAt).localeCompare(str(a.pipeline?.launchedAt)));
   for (const t of ['pending', 'incomplete', 'errors']) tabs[t].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   for (const t of ['complete', 'archive']) tabs[t].sort((a, b) => str(b.builtAt || b.updatedAt).localeCompare(str(a.builtAt || a.updatedAt)));
   tabs.deleted.sort((a, b) => str(b.deletedAt).localeCompare(str(a.deletedAt)));
   const st = loadState();
-  return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), table: byTable, tabs, accounts, accountsFrom, health: loadHealth(), slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable, ...(sl.hard?.max ? { hard: { max: sl.hard.max, live: sl.hard.live, free: sl.hard.free } } : {}) }, plan, settings,
+  const elsewhere = live(store).filter((b) => !inProfile(b, scope.profile) && ['running', 'waiting'].includes(b.status)).length;
+  const project = { id: scope.active.id, name: scope.active.name, profile: scope.profile, runningElsewhere: elsewhere };
+  return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), project, table: byTable, tabs, accounts, accountsFrom, health: loadHealth(), slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable, ...(sl.hard?.max ? { hard: { max: sl.hard.max, live: sl.hard.live, free: sl.hard.free } } : {}) }, plan, settings,
     state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails, selfCheck: st.selfCheck ?? null, selfCheckRequested: readJson(files().checkRequest)?.at || '' } };
 }
 
@@ -587,7 +604,7 @@ export function tick({ env = process.env } = {}) {
   const read = accountsRead(store, settings, env); const accounts = read.accounts; const sl = slotsNow();
   // the console (in its container) can't see the logins: it reads what the host saw here
   if (read.source === 'host') { try { writeHostAccounts(read.rows, read.at || nowIso()); } catch (e) { logLine({ event: 'snapshot-failed', error: str(e.message, 300) }); } }
-  const plan = P.plan({ builds: live(store), accounts, slots: sl, settings, rules });
+  const plan = P.plan({ builds: runnable(store), accounts, slots: sl, settings, rules });
   planAhead(store, accounts, settings);
   const launched = []; const failed = [];
   const hourAgo = Date.now() - 3600e3;
