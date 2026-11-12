@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:32 UTC · `project-thread-85vrhz` added (0 steps) (all) · backfill
 - 2026-11-12 03:32 UTC · `project-thread-u82s3d` added (0 steps) (all) · backfill
 - 2026-11-12 03:32 UTC · `project-thread-5gc822` added (0 steps) (all) · backfill
 - 2026-11-12 03:32 UTC · `project-thread-k6ckjv` added (0 steps) (all) · backfill
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 22:31 UTC · `vps-badge-shows-shell-commands-work-banner-widgets-for-disk-cpu-load-and-memor` → queued, note (all) · console
 - 2026-11-12 22:32 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · orchestrator
 - 2026-11-12 22:32 UTC · `github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro` s1 done (all) · orchestrator
+- 2026-11-12 22:33 UTC · `move-amberx-web-app-into-the-console-amberx-andr` → queued, note (all) · pipeline
 
 ## Token passes (log)
 

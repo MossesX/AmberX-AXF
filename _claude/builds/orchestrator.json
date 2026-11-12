@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T22:32:45.310Z",
+ "updatedAt": "2026-11-12T22:33:06.335Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -108565,7 +108565,7 @@
    "title": "Move AmberX web app into the console; AmberX Android reads the console",
    "category": "",
    "detail": "Move every AmberX web app feature (notes, to-dos, lists, approvals, recorder, open_url, notifications, settings) into the console. Repoint the AmberX Android app to read and call the console instead of the AmberX web app. Keep old AmberX web addresses forwarding to the console until the phone app is switched, so nothing breaks. Each feature moved is its own step.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -108573,7 +108573,7 @@
    "pr": "#528",
    "priority": "P2",
    "createdAt": "2026-11-12T19:46:41.501Z",
-   "updatedAt": "2026-11-12T22:32:06.619Z",
+   "updatedAt": "2026-11-12T22:33:04.791Z",
    "builtAt": "",
    "notes": [
     {
@@ -108655,6 +108655,10 @@
     {
      "text": "Headless run axf-move-amberx-web-app-into-the-console-amberx-andr--earl: brief only · start 12.8K tokens ($0.06) · cost $7.16 · 65 turns · 6 tools, MCP none",
      "at": "2026-11-12T22:32:06.619Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 0) with 12 steps left: back in the Queue (run 3).",
+     "at": "2026-11-12T22:33:04.791Z"
     }
    ],
    "approvals": [
