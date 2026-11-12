@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3510,
- "updatedAt": "2026-11-12T10:39:37.093Z",
+ "rev": 3511,
+ "updatedAt": "2026-11-12T10:40:30.210Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -173926,9 +173926,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T10:39:34.736Z",
-   "updatedAt": "2026-11-12T10:39:34.736Z",
+   "updatedAt": "2026-11-12T10:40:28.980Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-12T10:40:28.980Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -173943,7 +173948,105 @@
     "from": "",
     "addenda": []
    },
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-12T10:40:28.980Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwdf2rzo019h3u",
+     "title": "",
+     "text": "Every build grid/table (All builds, Pending, Queued, Building, landing queue) and Build orchestrator cards show a 'behind main' count for the build's branch (git rev-list --count branch..origin/main), plus ahead count in the expanded row. Refresh on each main push and periodically; sortable/filterable column; highlight when far behind; expanded row links to the compare view and has a 'pull in main / rebuild' command. Expose via REST/MCP/CLI (build list includes behindMain). Builds with no branch show a dash.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T10:40:28.980Z",
+     "updatedAt": "2026-11-12T10:40:28.980Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwdf2rzo02szpa",
+     "title": "",
+     "text": "We need, I need, um, I need all the build tables and the orchestrator to, um, list how many commits they are behind main.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T10:40:28.980Z",
+     "updatedAt": "2026-11-12T10:40:28.980Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwdf2rzo03ecaj",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/show-commits-behind-main-on-every-build-table-an.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/show-commits-behind-main-on-every-build-table-an.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T10:40:28.980Z",
+     "updatedAt": "2026-11-12T10:40:28.980Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -173952,7 +174055,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -173967,7 +174070,7 @@
     "stepAt": {}
    },
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-12T10:40:28.980Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T10:39:37.093Z",
+ "updatedAt": "2026-11-12T10:40:30.210Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -106908,9 +106908,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T10:39:34.736Z",
-   "updatedAt": "2026-11-12T10:39:34.736Z",
+   "updatedAt": "2026-11-12T10:40:28.980Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-12T10:40:28.980Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -106925,7 +106930,65 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Every build grid/table (All builds, Pending, Queued, Building, landing queue) and Build orchestrator cards show a 'behind main' count for the build's branch (git rev-list --count branch..origin/main), plus ahead count in the expanded row. Refresh on each main push and periodically; sortable/filterable column; highlight when far behind; expanded row links to the compare view and has a 'pull in main / rebuild' command. Expose via REST/MCP/CLI (build list includes behindMain). Builds with no branch show a dash.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwdf2rzo019h3u"
+    },
+    {
+     "id": "s2",
+     "text": "We need, I need, um, I need all the build tables and the orchestrator to, um, list how many commits they are behind main.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwdf2rzo02szpa"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/show-commits-behind-main-on-every-build-table-an.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/show-commits-behind-main-on-every-build-table-an.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwdf2rzo03ecaj"
+    }
+   ]
   }
  ]
 }
