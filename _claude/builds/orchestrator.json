@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T22:33:17.609Z",
+ "updatedAt": "2026-11-12T22:33:35.557Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -110195,7 +110195,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T22:31:52.977Z",
-   "updatedAt": "2026-11-12T22:31:56.645Z",
+   "updatedAt": "2026-11-12T22:33:34.355Z",
    "builtAt": "",
    "notes": [
     {
@@ -110208,7 +110208,7 @@
    "steps": [
     {
      "id": "s1",
-     "text": "VPS badge: green only when a shell command round-trip on the VPS succeeds (cheap read-only probe through axHub every minute); red with the reason (unreachable, shell refused, timeout); tap opens details; Claude login status moved to the Claude badge",
+     "text": "VPS badge: green if the VPS answers a ping, red if it doesn't. Nothing else (no shell check, no Claude login); Claude login status moves to the Claude badge. Brett: \"make it VPS badge as long as my VPS is pingable. Green if it's pingable, red if it's not.\"",
      "model": "Opus",
      "why": "",
      "phase": "",
