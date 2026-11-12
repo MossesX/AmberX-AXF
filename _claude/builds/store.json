@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3840,
- "updatedAt": "2026-11-12T23:41:21.034Z",
+ "rev": 3841,
+ "updatedAt": "2026-11-12T23:41:30.651Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175706,7 +175706,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-12T23:40:00.983Z",
-   "updatedAt": "2026-11-12T23:41:19.671Z",
+   "updatedAt": "2026-11-12T23:41:25.987Z",
    "builtAt": "",
    "notes": [
     {
@@ -175716,6 +175716,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-12T23:41:19.671Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-12T23:41:25.987Z"
     }
    ],
    "approvals": [],
@@ -175738,11 +175742,19 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "launch failed: launcher exit 2: claude-headless: --log is a plain file name",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-12T23:41:20.890Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [
+     "mossesx-max-"
+    ],
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
@@ -175805,7 +175817,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
