@@ -776,12 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 21:49 UTC · `molly-sign-in-once` branch claude/molly-sign-in-once (all) · pipeline
-- 2026-11-10 21:49 UTC · `molly-sign-in-once` note (all) · orchestrator
-- 2026-11-10 21:49 UTC · `convert-every-app-into-a-molly-module-expenses-c` note (all) · orchestrator
-- 2026-11-06 18:06 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (current) · foreign-write
-- 2026-11-06 18:06 UTC · `token-usage-log-accounts-plan-studio-control` s17 done (current) · foreign-write
-- 2026-11-06 18:06 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s15 undone, s16 undone, note (current) · foreign-write
 - 2026-11-06 18:06 UTC · `first-refresh-token-saved-every-time-it-s-used-v` added (1 steps) (current) · foreign-write
 - 2026-11-06 18:40 UTC · `token-usage-log-accounts-plan-studio-control-small-steps` s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s7 undone, s8 undone, s9 undone, s11 undone, s12 undone, s13 undone, s14 undone, s15 undone, s16 undone, s17 undone, s18 undone, s19 undone, s20 undone, note (current) · foreign-write
 - 2026-11-06 18:40 UTC · `first-refresh-token-saved-every-time-it-s-used-v` note (current) · foreign-write
@@ -1176,6 +1170,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s5 done (all) · orchestrator
 - 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s6 done (all) · orchestrator
 - 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s7 done (all) · orchestrator
+- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s8 done (all) · orchestrator
+- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s9 done (all) · orchestrator
+- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s10 done (all) · orchestrator
+- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s11 done (all) · orchestrator
+- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s12 done (all) · orchestrator
+- 2026-11-12 01:52 UTC · `fix-axhub-36-pull-main-in-failed` s13 done (all) · orchestrator
 
 ## Token passes (log)
 
