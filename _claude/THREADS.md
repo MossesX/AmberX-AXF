@@ -776,9 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 01:43 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` → queued, note (all) · console
-- 2026-11-12 01:43 UTC · `molly-native-expenses` → queued, note (all) · console
-- 2026-11-12 01:43 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` → queued, note (all) · console
 - 2026-11-12 01:43 UTC · `build-notifications-same-notification-per-build` → queued, note (all) · console
 - 2026-11-12 01:44 UTC · `amberx-build-notifications-for-every-stage-start` → queued, note (all) · console
 - 2026-11-12 01:44 UTC · `open-any-website-by-voice-on-the-phone-optionall` → queued, note (all) · console
@@ -1176,6 +1173,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:12 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` note (all) · orchestrator
 - 2026-11-12 03:12 UTC · `server-gate-one-session-per-build-no-duplicate-launches` note (all) · orchestrator
 - 2026-11-12 03:13 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` note (all) · pipeline
+- 2026-11-12 03:13 UTC · `account-order-hulu-moses-x-api-account-shown-on-every-build` → running, note (all) · pipeline
+- 2026-11-12 03:13 UTC · `account-order-hulu-moses-x-api-account-shown-on-every-build` branch claude/account-order-hulu-moses-x-api-account-shown-on-every-build (all) · pipeline
+- 2026-11-12 03:13 UTC · `account-order-hulu-moses-x-api-account-shown-on-every-build` note (all) · orchestrator
 
 ## Token passes (log)
 
