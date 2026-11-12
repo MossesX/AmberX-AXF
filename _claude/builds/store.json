@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3687,
- "updatedAt": "2026-11-12T21:00:14.804Z",
+ "rev": 3688,
+ "updatedAt": "2026-11-12T21:00:30.296Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -170148,8 +170148,8 @@
    "pr": "#526",
    "priority": "P0",
    "createdAt": "2026-11-12T10:51:23.133Z",
-   "updatedAt": "2026-11-12T20:59:53.630Z",
-   "builtAt": "2026-11-12T20:59:53.631Z",
+   "updatedAt": "2026-11-12T21:00:14.609Z",
+   "builtAt": "2026-11-12T21:00:14.609Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -170182,6 +170182,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-the-step-splitter-claude-exit-1-input-must-b--rhonda, own login copy)",
      "at": "2026-11-12T20:42:39.134Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 2 steps left: back in Pending for Brett.",
+     "at": "2026-11-12T21:00:14.609Z"
     }
    ],
    "approvals": [],
@@ -170202,12 +170206,19 @@
     "queuedAt": "2026-11-12T20:41:52.891Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-fix-the-step-splitter-claude-exit-1-input-must-b--rhonda",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-12T20:42:37.390Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-12T21:00:11.424Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 2,
+     "account": "mossesx-max-",
+     "session": "axf-fix-the-step-splitter-claude-exit-1-input-must-b--rhonda"
+    },
     "split": {
      "at": "2026-11-12T10:53:18.716Z",
      "by": "orchestrator",
@@ -170216,7 +170227,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 2 steps left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-12T20:42:37.390Z",
     "planned": {

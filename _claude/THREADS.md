@@ -778,8 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:30 UTC · `first-refresh-token-saved-every-time-it-s-used-v` note (all) · backfill
-- 2026-11-12 03:30 UTC · `ui-review-notify-session-audio` note (all) · backfill
 - 2026-11-12 03:30 UTC · `claude-badge-vps` note (all) · backfill
 - 2026-11-12 03:30 UTC · `notifications-control-panel` note (all) · backfill
 - 2026-11-12 03:30 UTC · `gizmo-rebuild-fable` note (all) · backfill
@@ -1178,6 +1176,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 20:59 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` PR #526 (all) · builds-live
 - 2026-11-12 20:59 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` s4 done (all) · orchestrator
 - 2026-11-12 20:59 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` s8-7 done, → built (all) · orchestrator
+- 2026-11-12 21:00 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` PR #526 (all) · foreign-write
+- 2026-11-12 21:00 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` → pending, note (all) · pipeline
 
 ## Token passes (log)
 
