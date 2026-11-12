@@ -777,10 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 18:08 UTC · `shipped-features-show-each-landed-build-s-screen` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
-- 2026-11-12 03:16 UTC · `account-order-hulu-moses-x-api-account-shown-on-every-build` branch claude/account-order-hulu-moses-x-api-account-shown-on-every-build, PR #512 (all) · builds-live
-- 2026-11-12 03:17 UTC · `molly-gap-console-token-handoff` note (all) · pipeline
-- 2026-11-12 03:16 UTC · `account-order-hulu-moses-x-api-account-shown-on-every-build` s3 done, → built (all) · orchestrator
 - 2026-11-12 03:17 UTC · `account-order-hulu-moses-x-api-account-shown-on-every-build` note (all) · orchestrator
 - 2026-11-12 03:17 UTC · `merge-all-ready-buttons-server-side-lander` s2 done (all) · orchestrator
 - 2026-11-12 03:19 UTC · `x.engine.dev` s1 done, → running (all) · orchestrator
@@ -1177,6 +1173,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 10:50 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` branch claude/unlink-plan-studio-from-builds-delete-all-plan-s (all) · pipeline
 - 2026-11-12 10:51 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` note (all) · orchestrator
 - 2026-11-12 10:51 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` added (0 steps) (all) · pending
+- 2026-11-12 10:51 UTC · `focus-on-every-screen-console-open-console-show-` → running, note (all) · pipeline
+- 2026-11-12 10:51 UTC · `focus-on-every-screen-console-open-console-show-` note (all) · orchestrator
+- 2026-11-12 10:51 UTC · `focus-on-every-screen-console-open-console-show-` branch claude/focus-on-every-screen-console-open-console-show- (all) · pipeline
+- 2026-11-12 10:51 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` → queued (all) · claude-voice
 
 ## Token passes (log)
 
