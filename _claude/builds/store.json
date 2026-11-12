@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3306,
- "updatedAt": "2026-11-12T02:23:02.361Z",
+ "rev": 3307,
+ "updatedAt": "2026-11-12T02:23:20.301Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -157755,14 +157755,14 @@
    "title": "Molly gap: Molly's own actions (molly.*) reachable from the console API, MCP, CLI and AmberX",
    "category": "",
    "detail": "Found by molly-sign-in-once s1. The console-commands relay reaches the console frame inside Molly, not Molly itself, so Molly-level actions (molly.auth.status / check / sign-in / sign-out / base, molly.reload, navigation.*, xlayout.*) can only be run inside Molly (menus, toolbar, command search). Give Molly a client on the same relay (console_show / console_open target molly, plugin commands listing Molly's actions, control@1 for its settings) so every Molly action has the same four reaches (REST, MCP, CLI, voice). Needed before molly-sign-in-once s2 can call its screen done.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "molly-sign-in-once",
    "pendingId": "",
    "branch": "claude/molly-gap-remote-actions",
    "pr": "#502",
    "createdAt": "2026-11-10T22:09:30.792Z",
-   "updatedAt": "2026-11-12T02:17:09.304Z",
+   "updatedAt": "2026-11-12T02:23:16.186Z",
    "builtAt": "",
    "notes": [
     {
@@ -157816,6 +157816,10 @@
     {
      "text": "Self-check: molly-gap-remote-actions was marked running on account-5 with no session: released and back in the Queue.",
      "at": "2026-11-12T02:17:09.304Z"
+    },
+    {
+     "text": "Started run 2 on account-5 (API key, subscriptions first, then API) (Opus, Phase 2): axf-molly-gap-remote-actions--paulie.",
+     "at": "2026-11-12T02:23:16.186Z"
     }
    ],
    "approvals": [],
@@ -157835,12 +157839,12 @@
    "pipeline": {
     "queuedAt": "2026-11-12T01:42:50.020Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "account-5",
+    "session": "axf-molly-gap-remote-actions--paulie",
     "slot": "",
-    "model": "Fable",
-    "launchedAt": "2026-11-12T01:54:08.639Z",
-    "runs": 1,
+    "model": "Opus",
+    "launchedAt": "2026-11-12T02:23:15.338Z",
+    "runs": 2,
     "lastRun": {
      "at": "2026-11-12T02:15:08.982Z",
      "exit": 0,
@@ -157851,9 +157855,9 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "released by the self-check (nothing ran): back in the Queue",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-12T01:54:08.639Z",
+    "dispatchedAt": "2026-11-12T02:23:15.338Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -157862,7 +157866,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-12T01:54:08.639Z",
+    "pickedAt": "2026-11-12T02:23:15.338Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -157946,7 +157950,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -159982,14 +159986,14 @@
    "title": "VPS server gate: no build starts without an orchestrator-issued ID",
    "category": "orchestrator",
    "detail": "URGENT. Brett, Nov 12: Claude keeps starting builds straight on the VPS outside the orchestrator. Add a SERVER-SIDE gate on the VPS, enforced by the server itself: every path that starts a headless build (vps build_start, any claude -p launcher, tmux axf-* sessions, agent-slots) refuses to start unless the build has a valid orchestrator-issued ID (Postgres ID registry) AND is in Queued. No ID, unknown ID, or Pending = refused, logged, AmberX FYI to Brett. Pairs with vps-hard-slot-limit. Owner-only override, off by default.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/vps-server-gate-no-build-starts-without-an-orchestrator-issued-id",
    "pr": "#504",
    "createdAt": "2026-11-12T01:59:21.464Z",
-   "updatedAt": "2026-11-12T02:22:51.264Z",
+   "updatedAt": "2026-11-12T02:23:04.953Z",
    "builtAt": "",
    "notes": [
     {
@@ -160007,6 +160011,10 @@
     {
      "text": "Headless run axf-vps-server-gate-no-build-starts-without-an-orche--paulie: brief only · start 10.5K tokens ($0.02) · cost $2.61 · 77 turns · 6 tools, MCP none",
      "at": "2026-11-12T02:22:51.264Z"
+    },
+    {
+     "text": "Session on account-5 stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-12T02:23:04.953Z"
     }
    ],
    "approvals": [],
@@ -160027,15 +160035,22 @@
     "queuedAt": "2026-11-12T01:59:43.948Z",
     "queuedBy": "console",
     "account": "account-5",
-    "session": "axf-vps-server-gate-no-build-starts-without-an-orche--paulie",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-12T02:00:37.729Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-12T02:23:03.796Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 1,
+     "account": "account-5",
+     "session": "axf-vps-server-gate-no-build-starts-without-an-orche--paulie"
+    },
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "Session on account-5 stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-12T02:00:37.730Z",
     "planned": {
@@ -160127,7 +160142,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
