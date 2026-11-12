@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T00:09:58.312Z",
+ "updatedAt": "2026-11-12T00:14:13.475Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -88534,7 +88534,7 @@
    "title": "Full API + CLI control of everything, plus an offline index/registry; AI only as fallback",
    "category": "",
    "detail": "1) Extensive API and CLI control over every page, app, plugin, tool, behavior, display and setting, covering every option and every possible parameter value. Scope: console, Molly, axHub, AmberX app, and through axHub: Hostinger, Coolify, VPS. Moshi is a third-party phone SSH app: cover it only as far as it can be driven (deep links/intents), otherwise record the gap. 2) A complete index and registry of everything controllable (ids, types, actions, parameters, allowed values, where it lives) for offline management and internal logic. 3) Rule: anything that can be done without AI is done without AI. AI is only a fallback, and only when 'Make Claude available to the console' is on in Claude settings. Builds on universal-voice-api-control and the ui-api-parity builds; reuse them, don't duplicate.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -88542,8 +88542,8 @@
    "pr": "#468",
    "priority": "P1",
    "createdAt": "2026-11-10T16:28:24.043Z",
-   "updatedAt": "2026-11-12T00:09:56.991Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-12T00:14:12.133Z",
+   "builtAt": "2026-11-12T00:14:12.134Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -88978,8 +88978,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T00:14:12.133Z",
      "note": "",
      "uid": "st-mwaztl1q4pip7s"
     }
