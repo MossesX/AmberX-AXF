@@ -6,11 +6,11 @@
  * the mergequeue-list command). Theme tokens and framework controls only.
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
-import { AgentAvatar, Button, Icon, PriorityTag, useRuntime } from '@console/axf/react';
+import { AgentAvatar, Button, Chip, Icon, PriorityTag, useRuntime } from '@console/axf/react';
 import { cardFromDrop } from '@console/axf/core/engines/card-rules.mjs';
 import { api, FOLDER } from './store';
 
-export interface QueueItem { inBatch?: boolean; pr: number; title: string; url?: string; branch?: string; build?: string; agent?: string; state: 'waiting' | 'testing' | 'passed' | 'merging' | 'kicked' | 'held'; ci?: string; why?: string; etaMin?: number; runUrl?: string; queueBranch?: string; ahead?: number[]; prCi?: string }
+export interface QueueItem { inBatch?: boolean; pr: number; title: string; url?: string; branch?: string; build?: string; agent?: string; state: 'waiting' | 'testing' | 'passed' | 'merging' | 'kicked' | 'held'; ci?: string; why?: string; etaMin?: number; runUrl?: string; queueBranch?: string; ahead?: number[]; prCi?: string; behindMain?: number | null; aheadMain?: number | null; compareUrl?: string }
 export interface QueueKick { pr: number; title: string; why: string; at: string; runUrl?: string }
 export interface QueueMerged { pr: number; title: string; at: string; agent?: string }
 export interface QueueBatch { prs: number[]; sha: string; ci: string; runUrl?: string; builtAt?: string; bisect?: boolean; why?: string }
@@ -40,6 +40,16 @@ const STATE_WORD: Record<QueueItem['state'], string> = { waiting: 'Waiting', tes
 const STATE_ICON: Record<QueueItem['state'], string> = { waiting: 'clock', testing: 'refresh', passed: 'check-circle', merging: 'branch', kicked: 'x-circle', held: 'pause' };
 const eta = (m?: number) => (m == null ? '' : m < 60 ? `~${m} min` : `~${Math.round(m / 6) / 10} h`);
 
+/** Commits the PR's branch is behind main (Brett, Nov 12 2026): a chip (warning when far behind), "up to date", or a dash. */
+const FAR_BEHIND = 50; // framework/cli/branch-drift.mjs FAR_BEHIND
+function BehindMain({ it }: { it: QueueItem }) {
+  const n = it.behindMain;
+  if (typeof n !== 'number') return <span className="fx-muted" title="No branch here to compare with main">—</span>;
+  const title = `${n} commit${n === 1 ? '' : 's'} behind main · ${it.aheadMain ?? 0} ahead${it.branch ? ` (${it.branch})` : ''}`;
+  const body = n === 0 ? <span className="fx-small fx-muted">up to date with main</span> : <Chip tone={n >= FAR_BEHIND ? 'warning' : undefined}>{n} behind main</Chip>;
+  return it.compareUrl ? <a className="fx-link" href={it.compareUrl} target="_blank" rel="noopener noreferrer" title={`${title}: open the compare view`}>{body}</a> : <span title={title}>{body}</span>;
+}
+
 function Row({ it, i, count, onDrop }: { it: QueueItem; i: number; count: number; onDrop: (pr: number, to: number) => void }) {
   const q = useQueue();
   const [sure, setSure] = useState(false);
@@ -54,6 +64,7 @@ function Row({ it, i, count, onDrop }: { it: QueueItem; i: number; count: number
           <AgentAvatar agent={it.agent || null} size="small" />
           {it.url ? <a className="axp-push-banner__name" href={it.url} target="_blank" rel="noreferrer">#{it.pr} {it.title}</a> : <span className="axp-push-banner__name">#{it.pr} {it.title}</span>}
           <PriorityTag build={it.build} />
+          <BehindMain it={it} />
         </span>
         <span className="axp-push-banner__meta">
           <span className={`axp-mq__state is-${it.state}`}><Icon name={STATE_ICON[it.state]} size={14} /> {STATE_WORD[it.state]}</span>
@@ -111,7 +122,7 @@ export function MergeQueueView({ compact = false }: { compact?: boolean }) {
           <ul className="axp-push-banner__list">{kickedOpen.map((w) => (
             <li key={w.pr} className="axp-push-banner__item is-ci-failure">
               <span className="axp-push-banner__entry">
-                <span className="axp-push-banner__line"><AgentAvatar agent={w.agent || null} size="small" /><a className="axp-push-banner__name" href={w.url} target="_blank" rel="noreferrer">#{w.pr} {w.title}</a></span>
+                <span className="axp-push-banner__line"><AgentAvatar agent={w.agent || null} size="small" /><a className="axp-push-banner__name" href={w.url} target="_blank" rel="noreferrer">#{w.pr} {w.title}</a><BehindMain it={w} /></span>
                 <span className="axp-push-banner__sub axp-mq__why">{(w.why || '').replace(/^kicked out: /, '')}</span>
               </span>
               <div className="axp-push-banner__acts" role="toolbar" aria-label={`Kicked out #${w.pr}`}><Button size="sm" tone="neutral" icon="plus" disabled={q.busy === w.pr} title="Put it back in the queue as it is" onClick={() => void command('add', { pr: w.pr }, `#${w.pr} is back in the queue.`)}>Add back</Button></div>
@@ -125,7 +136,7 @@ export function MergeQueueView({ compact = false }: { compact?: boolean }) {
           <ul className="axp-push-banner__list">{out.map((w) => (
             <li key={w.pr} className="axp-push-banner__item">
               <span className="axp-push-banner__entry">
-                <span className="axp-push-banner__line"><AgentAvatar agent={w.agent || null} size="small" /><a className="axp-push-banner__name" href={w.url} target="_blank" rel="noreferrer">#{w.pr} {w.title}</a></span>
+                <span className="axp-push-banner__line"><AgentAvatar agent={w.agent || null} size="small" /><a className="axp-push-banner__name" href={w.url} target="_blank" rel="noreferrer">#{w.pr} {w.title}</a><BehindMain it={w} /></span>
                 <span className="axp-push-banner__sub axp-mq__why">{(w.why || '').replace(/^kicked out: /, '')}</span>
               </span>
               {/by hand/.test(w.why || '') && <div className="axp-push-banner__acts" role="toolbar" aria-label={`Not queued #${w.pr}`}><Button size="sm" tone="neutral" icon="plus" disabled={q.busy === w.pr} onClick={() => void command('add', { pr: w.pr }, `#${w.pr} is back in the queue.`)}>Add to queue</Button></div>}

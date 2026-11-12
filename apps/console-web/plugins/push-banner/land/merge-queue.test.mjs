@@ -6,7 +6,7 @@ import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import * as q from './merge-queue-core.mjs';
-import { chatLines, queueRound, readQueue, queueControl } from './merge-queue.mjs';
+import { addDrift, chatLines, queueRound, readQueue, queueControl } from './merge-queue.mjs';
 import { makeGit } from './land.mjs';
 process.env.AXF_CREW_SAY = 'off'; // group-chat posts (crew-say.mjs) stay out of the real Breakroom
 
@@ -301,6 +301,20 @@ await t('batch rules: members, holds, decide (land all / split in half / kick th
   assert.equal(chatLines({}, stuck)[0].event, 'blocked');
   assert.deepEqual(chatLines({ batch: stuck.batch }, stuck), [], 'the same stuck batch is said once');
   n += 1; console.log('ok group chat lines: landed, kicked, started, stuck; nothing old said again');
+}
+
+{ // behind main on every queue row (Nov 12 2026): counts from branch-drift, a dash (null) with no branch or no ref
+  const seen = [];
+  const run = (args) => { seen.push(args); return { status: 0, stdout: JSON.stringify({ repo: 'o/r', branches: { 'claude/a': { behind: 7, ahead: 2 }, 'claude/b': null } }) }; };
+  const rows = addDrift([{ branch: 'claude/a' }, { branch: 'claude/b' }, { branch: '' }, { branch: 'claude/a' }], '/repo', run);
+  assert.equal(seen.length, 1, 'one branch-drift call per round');
+  assert.deepEqual(seen[0].slice(1), ['claude/a', 'claude/b', '--json']);
+  assert.deepEqual([rows[0].behindMain, rows[0].aheadMain, rows[0].compareUrl], [7, 2, 'https://github.com/o/r/compare/claude/a...main']);
+  assert.deepEqual([rows[1].behindMain, rows[2].behindMain, rows[2].compareUrl], [null, null, '']);
+  const failed = addDrift([{ branch: 'claude/a' }], '/repo', () => ({ status: 1, stdout: '' }));
+  assert.equal(failed[0].behindMain, null, 'a failed count is a dash, never a wrong number');
+  assert.equal(addDrift([{ branch: '' }], '/repo', () => { throw new Error('not called'); })[0].behindMain, null);
+  n += 1; console.log('ok behind main: one count per round, a dash with no branch');
 }
 
 console.log(`merge queue: ${n} checks passed`);

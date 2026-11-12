@@ -101,7 +101,7 @@
       {
         "id": "mergequeue-list",
         "title": "Merge queue: the line",
-        "description": "Every PR in the merge queue in order: title, agent, test state (waiting, testing, passed, kicked out and why), ETA in minutes; plus the open PRs not in it and why, the last merged and kicked-out ones. Each PR is tested once on top of main + the PRs ahead of it and merges with no retest.",
+        "description": "Every PR in the merge queue in order: title, agent, test state (waiting, testing, passed, kicked out and why), ETA in minutes, behindMain / aheadMain (commits its branch is behind / ahead of origin/main; null = no branch) and compareUrl; plus the open PRs not in it and why, the last merged and kicked-out ones. Each PR is tested once on top of main + the PRs ahead of it and merges with no retest.",
         "route": "GET /queue",
         "readOnly": true
       },

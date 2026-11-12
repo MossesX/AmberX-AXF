@@ -301,9 +301,27 @@ async function roundOnce({ s, git, gh, api, dry = false, now = () => new Date(),
   for (const [j, p] of rest.entries()) items.push({ pr: p.number, title: p.title, url: p.url, branch: p.branch, head: p.head, build: p.build, agent: p.agent, priority: p.priority, state: 'waiting', ci: '', why: skipped.get(p.number) || '', etaMin: q.etaMinutes(stack.length + j, { depth: cfg.depth, avg }) });
   const waiting = prs.filter((p) => p.why && !mergedNow.has(p.number)).map((p) => ({ pr: p.number, title: p.title, url: p.url, branch: p.branch, head: p.head, build: p.build, agent: p.agent, state: p.why.startsWith('kicked out') ? 'kicked' : 'held', why: p.why, prCi: p.ci }));
   for (const it of items) { const p = prs.find((x) => x.number === it.pr); if (p) it.prCi = p.ci; }
+  // commits behind / ahead of main per PR branch (Brett, Nov 12 2026: every build table lists how far behind main it is)
+  addDrift([...items, ...waiting], s.repo);
   const st = { ...base, mainSha, expect: newExpect || mainSha, avgMin: avg, history: history.slice(-20), stack, items, waiting, kicked: kicked.filter((k) => prs.some((p) => p.number === k.pr)).slice(-20), merged, ...v };
   if (!dry) { writeJson(queueFile(s), st); writeJson(queueControlFile(s), ctl); }
   return st;
+}
+
+/** Stamp behindMain / aheadMain / compareUrl on each queue row from its branch (null = no branch or no ref: a dash).
+ * The counts come from framework/cli/branch-drift.mjs (cached per main + branch sha), run as a script like github-token. */
+export function addDrift(rows, root, run = (args) => spawnSync('node', args, { encoding: 'utf8', timeout: 60000 })) {
+  const names = [...new Set(rows.map((r) => r.branch).filter(Boolean))];
+  let d = null;
+  if (names.length) {
+    try { const r = run([join(root, 'framework/cli/branch-drift.mjs'), ...names, '--json']); d = r.status === 0 ? JSON.parse(r.stdout) : null; } catch { d = null; }
+  }
+  for (const r of rows) {
+    const v = (r.branch && d?.branches?.[r.branch]) || null;
+    r.behindMain = v ? v.behind : null; r.aheadMain = v ? v.ahead : null;
+    r.compareUrl = v && d?.repo ? `https://github.com/${d.repo}/compare/${encodeURIComponent(r.branch).replace(/%2F/g, '/')}...main` : '';
+  }
+  return rows;
 }
 
 /** At most this many PRs are opened for finished builds in one round (the GitHub token is shared). */
@@ -500,7 +518,7 @@ async function mergeTested({ s, git, gh, e, p, log }) {
 
 // ------------------------------------------------------------------ CLI
 
-const lineOf = (x, i) => `${String(i + 1).padStart(2)}. #${x.pr} ${(q.STATES[x.state] || x.state).padEnd(9)} ${x.title}${x.agent ? ` · ${x.agent}` : ''}${x.etaMin ? ` · ~${x.etaMin} min` : ''}${x.why ? ` · ${x.why}` : ''}`;
+const lineOf = (x, i) => `${String(i + 1).padStart(2)}. #${x.pr} ${(q.STATES[x.state] || x.state).padEnd(9)} ${x.title}${x.agent ? ` · ${x.agent}` : ''}${x.etaMin ? ` · ~${x.etaMin} min` : ''}${typeof x.behindMain === 'number' ? ` · ${x.behindMain} behind main` : ''}${x.why ? ` · ${x.why}` : ''}`;
 
 export async function main(argv) {
   const json = argv.includes('--json'); const dry = argv.includes('--dry-run');
