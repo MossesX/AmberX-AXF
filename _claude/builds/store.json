@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3725,
- "updatedAt": "2026-11-12T22:09:50.413Z",
+ "rev": 3726,
+ "updatedAt": "2026-11-12T22:10:26.183Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -172313,7 +172313,7 @@
    "branch": "claude/new-project-wizard-name-linked-repo-required-starter-code-skin-accounts",
    "pr": "#529",
    "createdAt": "2026-11-12T20:31:23.288Z",
-   "updatedAt": "2026-11-12T22:09:49.114Z",
+   "updatedAt": "2026-11-12T22:10:24.128Z",
    "builtAt": "",
    "notes": [
     {
@@ -172327,6 +172327,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-new-project-wizard-name-linked-repo-required-sta--lenny, own login copy)",
      "at": "2026-11-12T21:51:15.359Z"
+    },
+    {
+     "text": "PR #529. UI Review item r-20261112-018x801 sits only in the build worktree: the dispatcher started this session without AXF_CONSOLE_URL/AXF_TOKEN, so review.mjs --console could not upload. Fix: pass both to build sessions, or resubmit: node apps/console-web/plugins/ui-review/review.mjs submit --console … with the shots in the PR. Gaps (in the PR): console-style starter uses web-fastapi-wall + records plugins/accounts for the first build; first builds go to docs/FIRST_PLAN.md, not the queue.",
+     "at": "2026-11-12T22:10:24.128Z"
     }
    ],
    "approvals": [],
@@ -172601,7 +172605,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
