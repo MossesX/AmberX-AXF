@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3637,
- "updatedAt": "2026-11-12T18:59:15.874Z",
+ "rev": 3638,
+ "updatedAt": "2026-11-12T19:00:14.139Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -171271,7 +171271,7 @@
    "title": "Add a \"Tap to confirm\" option to every settings interface",
    "category": "",
    "detail": "Add a per-item \"Tap to confirm\" setting (when on, the first tap arms the item and a second tap confirms it) in the settings interfaces of: all tabs and tab groups, navigation menus, application menus and toolbars, across the console, Molly and every standalone app. Expose it in each one's settings UI, store it with the framework tokens/settings, and apply it consistently through the shared framework component so new menus/toolbars get it automatically. Each item goes in as its own step.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -171279,8 +171279,8 @@
    "pr": "#524",
    "priority": "P0",
    "createdAt": "2026-11-12T18:33:10.932Z",
-   "updatedAt": "2026-11-12T18:59:14.586Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-12T19:00:10.432Z",
+   "builtAt": "2026-11-12T19:00:10.432Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -171433,12 +171433,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T19:00:10.432Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T18:34:28.186Z",
-     "updatedAt": "2026-11-12T18:34:28.186Z"
+     "updatedAt": "2026-11-12T19:00:10.947Z"
     }
    ],
    "profiles": [
@@ -171449,7 +171449,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
