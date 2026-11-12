@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3497,
- "updatedAt": "2026-11-12T03:37:17.342Z",
+ "rev": 3498,
+ "updatedAt": "2026-11-12T03:38:04.794Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -123628,7 +123628,7 @@
    "branch": "claude/orchestrator-checks-shipped-features-before-spli",
    "pr": "#515",
    "createdAt": "2026-11-08T17:22:53.861Z",
-   "updatedAt": "2026-11-12T03:37:07.380Z",
+   "updatedAt": "2026-11-12T03:38:03.038Z",
    "builtAt": "2026-11-12T03:37:07.380Z",
    "notes": [
     {
@@ -123666,6 +123666,10 @@
     {
      "text": "Headless run axf-orchestrator-checks-shipped-features-before-spli--rhonda: brief only · start 11.2K tokens ($0.03) · cost $3.20 · 60 turns · 6 tools, MCP none",
      "at": "2026-11-12T03:37:07.380Z"
+    },
+    {
+     "text": "Session axf-orchestrator-checks-shipped-features-before-spli--rhonda on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-12T03:38:03.038Z"
     }
    ],
    "approvals": [],
@@ -123686,12 +123690,19 @@
     "queuedAt": "2026-11-12T01:44:16.578Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-orchestrator-checks-shipped-features-before-spli--rhonda",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-12T03:13:32.895Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-12T03:38:02.383Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-orchestrator-checks-shipped-features-before-spli--rhonda"
+    },
     "split": null,
     "splitRequested": "",
     "note": "",
@@ -123789,7 +123800,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 60,
+   "rev": 61,
    "deleted": false,
    "deletedAt": "",
    "pending": {
