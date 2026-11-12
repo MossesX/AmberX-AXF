@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3658,
- "updatedAt": "2026-11-12T20:35:07.027Z",
+ "rev": 3659,
+ "updatedAt": "2026-11-12T20:35:48.775Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -172072,7 +172072,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T20:35:05.081Z",
-   "updatedAt": "2026-11-12T20:35:05.081Z",
+   "updatedAt": "2026-11-12T20:35:47.590Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -172082,7 +172082,7 @@
      "id": "s1",
      "uid": "st-mwe0bg2h05a63i",
      "title": "",
-     "text": "Design: everything is per project - Claude accounts, credentials and keys, plugin settings, console and axHub config; switching project switches all of it",
+     "text": "Design: per-project Claude accounts, credentials, plugin settings and console/axHub config are OPTIONAL. By default a project shares the global ones; a project can switch any of them to its own. Brett: \"don't make the project have to do that, but allow it to.\"",
      "model": "Fable",
      "why": "",
      "phase": "",
@@ -172096,9 +172096,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T20:35:05.083Z",
-     "updatedAt": "2026-11-12T20:35:05.083Z"
+     "updatedAt": "2026-11-12T20:35:47.717Z"
     },
     {
      "id": "s2",
@@ -172175,7 +172175,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

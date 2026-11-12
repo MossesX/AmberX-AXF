@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T20:35:07.027Z",
+ "updatedAt": "2026-11-12T20:35:48.775Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -108728,7 +108728,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T20:35:05.081Z",
-   "updatedAt": "2026-11-12T20:35:05.081Z",
+   "updatedAt": "2026-11-12T20:35:47.590Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -108736,7 +108736,7 @@
    "steps": [
     {
      "id": "s1",
-     "text": "Design: everything is per project - Claude accounts, credentials and keys, plugin settings, console and axHub config; switching project switches all of it",
+     "text": "Design: per-project Claude accounts, credentials, plugin settings and console/axHub config are OPTIONAL. By default a project shares the global ones; a project can switch any of them to its own. Brett: \"don't make the project have to do that, but allow it to.\"",
      "model": "Fable",
      "why": "",
      "phase": "",
