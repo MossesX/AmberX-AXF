@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 23:46 UTC · `ai-assistant-in-molly-console-drives-by-api-open` added (0 steps) (all) · console
 - 2026-11-10 23:46 UTC · `ai-assistant-in-molly-console-drives-by-api-open` → queued, note (all) · console
 - 2026-11-10 23:46 UTC · `resolve-conflicts-and-land-pr-449-account-order` note (all) · orchestrator
 - 2026-11-10 23:46 UTC · `resolve-conflicts-and-land-pr-449-account-order` s7 done, → built (all) · orchestrator
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:28 UTC · `build-notifications-same-notification-per-build` s2 done (all) · orchestrator
 - 2026-11-12 02:29 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` s2 done (all) · orchestrator
 - 2026-11-12 02:29 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` PR #505 (all) · builds-live
+- 2026-11-12 02:30 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` PR #505 (all) · foreign-write
 
 ## Token passes (log)
 
