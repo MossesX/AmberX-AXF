@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 02:56 UTC · `all-banners-hide-when-empty` s1 done, → running (all) · orchestrator
 - 2026-11-12 02:56 UTC · `server-gate-one-session-per-build-no-duplicate-launches` s2 done (all) · orchestrator
 - 2026-11-12 02:57 UTC · `merge-all-ready-buttons-server-side-lander` note (all) · Claude voice (Gizmo)
 - 2026-11-12 02:58 UTC · `all-banners-hide-when-empty` s2 done (all) · orchestrator
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 03:40 UTC · `maintenance-plugin-acct2` PR #332, note (all) · reconciler
 - 2026-11-12 03:40 UTC · `window-resize-fix-threads` PR #279, note (all) · reconciler
 - 2026-11-12 03:40 UTC · `axhub-veto-pass-web` PR #261, note (all) · reconciler
+- 2026-11-12 03:50 UTC · `element-inspector` → pending, note (all) · reconciler
 
 ## Token passes (log)
 

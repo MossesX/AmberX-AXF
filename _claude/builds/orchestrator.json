@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T03:40:42.464Z",
+ "updatedAt": "2026-11-12T03:50:47.634Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -36464,7 +36464,7 @@
    "title": "Element inspector (Android first)",
    "category": "Feature",
    "detail": "Brett, Oct 30 2026 (voice): Left click only. Press-drag: panel follows, live updates to element under pointer. Release closes. Double click pins; pinned panel drags and resizes. Current fields + size.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -36472,7 +36472,7 @@
    "pr": "#192",
    "priority": "P0",
    "createdAt": "2026-10-31T09:07:21.792Z",
-   "updatedAt": "2026-11-12T03:28:28Z",
+   "updatedAt": "2026-11-12T03:50:46.088Z",
    "builtAt": "",
    "notes": [
     {
@@ -36498,6 +36498,10 @@
     {
      "text": "Shipped manifest sm-element-inspector rev 1 sent to Shipped features (orchestrator): PR #192, 31 file(s), 0 test line(s), 1 open.",
      "at": "2026-11-12T03:28:07Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-12T03:50:46.088Z"
     }
    ],
    "approvals": [],
