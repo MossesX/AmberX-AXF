@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3830,
- "updatedAt": "2026-11-12T23:31:57.820Z",
+ "rev": 3831,
+ "updatedAt": "2026-11-12T23:32:24.977Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175529,6 +175529,43 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-12T23:31:24.959Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e",
+   "title": "Professional skins that rebuild the whole app (Fable, ultrathink, every step): each skin is a complete restyle AND rebehave of the entire console UI. Every asset (theme, layout, toolbars, tab groups and where tabs go, buttons and how they behave, context menus, nav menu, app menus, dialogs, tables, ",
+   "category": "",
+   "detail": "",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-12T23:32:23.494Z",
+   "updatedAt": "2026-11-12T23:32:23.494Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 759
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
