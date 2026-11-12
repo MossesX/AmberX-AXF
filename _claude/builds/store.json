@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3197,
- "updatedAt": "2026-11-12T01:50:12.358Z",
+ "rev": 3198,
+ "updatedAt": "2026-11-12T01:50:20.576Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -159155,6 +159155,34 @@
     "from": "",
     "addenda": []
    },
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-12T01:50:12.593Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
    "steps": [
     {
      "id": "s1",
@@ -159235,12 +159263,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-12T01:49:35.623Z",
+   "defaultAt": "2026-11-12T01:49:47.829Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
