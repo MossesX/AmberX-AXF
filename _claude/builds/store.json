@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3615,
- "updatedAt": "2026-11-12T18:34:29.570Z",
+ "rev": 3616,
+ "updatedAt": "2026-11-12T18:34:40.906Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175254,7 +175254,7 @@
    "branch": "claude/new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans",
    "pr": "",
    "createdAt": "2026-11-12T17:35:35.216Z",
-   "updatedAt": "2026-11-12T18:28:15.397Z",
+   "updatedAt": "2026-11-12T18:34:28.542Z",
    "builtAt": "",
    "notes": [
     {
@@ -175388,12 +175388,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T18:34:28.542Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T17:35:35.217Z",
-     "updatedAt": "2026-11-12T17:35:35.217Z"
+     "updatedAt": "2026-11-12T18:34:28.736Z"
     },
     {
      "id": "s4",
@@ -175470,7 +175470,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
