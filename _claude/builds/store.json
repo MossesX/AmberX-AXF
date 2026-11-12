@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3163,
- "updatedAt": "2026-11-12T00:14:13.475Z",
+ "rev": 3164,
+ "updatedAt": "2026-11-12T00:14:20.972Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -143930,7 +143930,7 @@
    "pr": "#468",
    "priority": "P1",
    "createdAt": "2026-11-10T16:28:24.043Z",
-   "updatedAt": "2026-11-12T00:14:12.133Z",
+   "updatedAt": "2026-11-12T00:14:13.314Z",
    "builtAt": "2026-11-12T00:14:12.134Z",
    "notes": [
     {
@@ -143976,6 +143976,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-full-api-cli-control-of-everything-plus-an-offli--joey, own login copy)",
      "at": "2026-11-11T23:25:13.277Z"
+    },
+    {
+     "text": "Phase 2 done (s4-s17), PR #468. Waiting on Brett: (1) Registry page shots were taken but not sent to UI Review (no console token in the headless session): submit from a session with AXF_TOKEN. (2) Run GET /api/registry/providers/check once: Hostinger/Coolify op names are unverified against the live hub.",
+     "at": "2026-11-12T00:14:13.314Z"
     }
    ],
    "approvals": [
@@ -144473,7 +144477,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
