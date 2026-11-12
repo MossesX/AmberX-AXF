@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3390,
- "updatedAt": "2026-11-12T02:49:15.999Z",
+ "rev": 3391,
+ "updatedAt": "2026-11-12T02:49:22.866Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -155756,7 +155756,7 @@
    "title": "Bug: asset settings (nav menu, tab bar, toolbar) change the settings panel instead of the asset; reset to default resets the wrong thing",
    "category": "",
    "detail": "Right-click > Settings on any asset (nav menu, tab bar, toolbar, banner) opens a settings panel whose changes and Reset to default currently target the settings panel's own assets. Fix: the panel binds to the asset that was right-clicked (and the app it lives in); every change and Reset to default applies to that target asset in the live app. The settings panel's own look is never edited from there. Add a test per asset type.",
-   "status": "queued",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -155764,8 +155764,8 @@
    "pr": "#503",
    "priority": "P0",
    "createdAt": "2026-11-10T21:45:52.947Z",
-   "updatedAt": "2026-11-12T02:49:05.099Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-12T02:49:21.476Z",
+   "builtAt": "2026-11-12T02:49:21.476Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -155846,7 +155846,7 @@
    "pipeline": {
     "queuedAt": "2026-11-12T01:43:28.836Z",
     "queuedBy": "console",
-    "account": "",
+    "account": "mossesx-max-",
     "session": "",
     "slot": "",
     "model": "Fable",
@@ -155862,7 +155862,7 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "released by the self-check (nothing ran): back in the Queue",
+    "note": "Session on mossesx-max- ended (exit 0) with 2 steps left: back in the Queue (run 2).",
     "route": "",
     "dispatchedAt": "2026-11-12T01:55:14.610Z",
     "planned": {
@@ -155941,12 +155941,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-12T02:49:21.476Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T21:47:14.535Z",
-     "updatedAt": "2026-11-10T21:47:14.535Z"
+     "updatedAt": "2026-11-12T02:49:21.645Z"
     }
    ],
    "profiles": [

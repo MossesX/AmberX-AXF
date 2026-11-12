@@ -776,7 +776,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-11 23:25 UTC · `full-api-cli-control-of-everything-plus-an-offli` note (all) · orchestrator
 - 2026-11-11 23:25 UTC · `console-commands-reliable` added (4 steps) (all) · orchestrator
 - 2026-11-11 23:26 UTC · `skins-restyle-everything-badges-banner-and-every-visual-element` note (all) · orchestrator
 - 2026-11-11 23:26 UTC · `asset-overrides-changed-asset-settings-override` → archived (all) · Claude voice (Gizmo)
@@ -1176,6 +1175,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 02:48 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` s2 done, → running (all) · orchestrator
 - 2026-11-12 02:49 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` → queued, note (all) · pipeline
 - 2026-11-12 02:49 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` s1 done, → running (all) · orchestrator
+- 2026-11-12 02:49 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` s3 done, → built (all) · orchestrator
 
 ## Token passes (log)
 
