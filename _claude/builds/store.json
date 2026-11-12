@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3518,
- "updatedAt": "2026-11-12T10:45:08.098Z",
+ "rev": 3519,
+ "updatedAt": "2026-11-12T10:48:14.013Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -81744,14 +81744,14 @@
    "title": "Gizmo terminal panel: the console Terminal inside the companion window",
    "category": "AmberX",
    "detail": "Addendum 3 of gizmo-companion, queued after gizmo-voice. Harvest the console Terminal (tabs, headless agent tabs, split panes, text size, tooltip mode) into the shared claude-session library and embed it as a panel in Gizmo's window: show/hide, dock top/bottom/left/right, fully configurable.",
-   "status": "pending",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-04T14:21:17.381Z",
-   "updatedAt": "2026-11-04T15:51:39.555Z",
+   "updatedAt": "2026-11-12T10:48:12.845Z",
    "builtAt": "",
    "notes": [
     {
@@ -81899,7 +81899,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 57,
+   "rev": 58,
    "deleted": false,
    "deletedAt": "",
    "pending": {

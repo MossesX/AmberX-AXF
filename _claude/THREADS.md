@@ -777,7 +777,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 03:10 UTC · `all-banners-hide-when-empty` note (all) · orchestrator
 - 2026-11-12 03:12 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` note (all) · orchestrator
 - 2026-11-12 03:12 UTC · `server-gate-one-session-per-build-no-duplicate-launches` note (all) · orchestrator
 - 2026-11-12 03:13 UTC · `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides` note (all) · pipeline
@@ -1177,6 +1176,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 10:43 UTC · `remove-the-console-s-own-notes-manager-console-u` added (0 steps) (all) · pending
 - 2026-11-12 10:44 UTC · `remove-the-console-s-own-notes-manager-console-u` note (all) · orchestrator
 - 2026-11-12 10:45 UTC · `focus-on-every-screen-console-open-console-show-` note (all) · pending
+- 2026-11-12 10:48 UTC · `gizmo-terminal` → archived (all) · claude-voice
 
 ## Token passes (log)
 
