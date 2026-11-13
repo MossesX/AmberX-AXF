@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-12T23:59:05.037Z",
+ "updatedAt": "2026-11-13T00:01:01.058Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -110279,7 +110279,7 @@
    "title": "Fix conflicts and land Build Plan 1 (skins, one-row tables, backgrounds, asset overrides)",
    "category": "merge",
    "detail": "Branch claude/build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides conflicts with main in 7 files: ChromeContext.tsx (framework + amberx-droid, axhub-web, console-web, molly copies), build-orchestrator/web/pipeline.tsx, framework/spec/PORTING.md. Brett: pull main in and merge it right away. Keep both sides' intent (tap-to-confirm #524 and skins).",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -110287,7 +110287,7 @@
    "pr": "#532",
    "priority": "P0",
    "createdAt": "2026-11-12T22:16:05.972Z",
-   "updatedAt": "2026-11-12T23:32:38.532Z",
+   "updatedAt": "2026-11-13T00:00:56.565Z",
    "builtAt": "",
    "notes": [
     {
@@ -110333,6 +110333,10 @@
     {
      "text": "s2 not done. #505 was closed and its branch deleted at 22:24 UTC (by the MossesX account, still a draft). Reopened as draft PR #532, same commit f7e770329. Theme, controls, toolbars and chrome-assets checks pass; Light PR checks pass; it is MERGEABLE. It can't land yet because it's a draft with no UI Review shots: headless shots can't sign in to axHub (401) and there's no local hub on :18080. To land it, either: (1) take desktop and phone shots of Build orchestrator (any tab), Settings > Appearance (Assets with edits) and the banner right-click Skins menu, then run review.mjs submit --pr 532; or (2) approve without shots and mark #532 ready. If #505 was closed on purpose, close #532 too.",
      "at": "2026-11-12T23:32:29.391Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T00:00:56.565Z"
     }
    ],
    "approvals": [],

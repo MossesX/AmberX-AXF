@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 10:50 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` → running, note (all) · pipeline
 - 2026-11-12 10:50 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` branch claude/unlink-plan-studio-from-builds-delete-all-plan-s (all) · pipeline
 - 2026-11-12 10:51 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` note (all) · orchestrator
 - 2026-11-12 10:51 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` added (0 steps) (all) · pending
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-12 23:57 UTC · `remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel` note (all) · pipeline
 - 2026-11-12 23:58 UTC · `remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel` note (all) · pipeline
 - 2026-11-12 23:59 UTC · `remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel` note (all) · pipeline
+- 2026-11-13 00:00 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` → pending, note (all) · reconciler
 
 ## Token passes (log)
 
