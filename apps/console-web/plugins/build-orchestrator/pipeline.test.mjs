@@ -288,6 +288,23 @@ t('actions: Queue → back to Pending / hold / archive / delete; live builds are
   assert.equal(BP.unarchivedStatus(build('x', 'archived', [step('s1', 'Opus', true)], { mergedAt: now })), 'complete');
   assert.equal(BP.unarchivedStatus(build('x', 'archived', [step('s1', 'Opus')])), 'pending');
 });
+t('one build account: only it takes builds, whatever its role; every other one (API too) is off, overflow included', () => {
+  const pick = (r) => ({ ...r, buildPick: 'console' });
+  const v = P.accountViews([...rows, apiRow('hulu-api')].map(pick), { console: { use: false } }, { settings });
+  const by = Object.fromEntries(v.map((a) => [a.name, a]));
+  assert.equal(P.buildPick(v.length ? [...rows, apiRow('hulu-api')].map(pick) : []), 'console');
+  assert.equal(by.console.usable, true, 'the pick wins over the pipeline\'s own off and over workers existing');
+  assert.equal(by.console.buildAccount, true);
+  for (const n of ['w-pro', 'w-max']) { assert.equal(by[n].usable, false); assert.match(by[n].why, /off for builds: console takes every build/); }
+  assert.equal(by['hulu-api'].api.usable, false, 'API accounts are off too');
+  assert.equal(P.routeFor(build('x', 'queued', []), v, 'Opus', P.normSettings({ apiOverflow: true })).account, 'console');
+  const busy = P.accountViews([...rows, apiRow('hulu-api')].map((r) => pick(r.name === 'console' ? { ...r, running: ['a', 'b'] } : r)), {}, { settings });
+  const r = P.routeFor(build('x', 'queued', []), busy, 'Opus', P.normSettings({ apiOverflow: true }));
+  assert.equal(r.account, '', 'the pick full = the build waits, no overflow');
+  const gone = P.accountViews(rows.map((x) => ({ ...x, buildPick: 'ghost' })), {}, { settings });
+  assert.ok(gone.every((a) => !a.usable)); assert.match(P.noAccountWhy(gone, 'Opus'), /one build account ghost is not saved/);
+  assert.equal(P.buildPick(rows), '', 'no pick = the normal routing');
+});
 t('routeOptions: every subscription in Brett\'s order, then every API account; route overrides respected', () => {
   const s = P.normSettings({});
   const rows = [{ name: 'b-sub', role: 'worker', plan: 'max', running: [] }, { name: 'a-sub', role: 'worker', plan: 'max', running: [] }, apiRow('hulu-api')];

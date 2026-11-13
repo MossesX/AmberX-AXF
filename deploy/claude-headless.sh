@@ -317,12 +317,12 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   login_session="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"
   # One build account (claude-workers build-account; build one-account-picker): every build runs on it, an explicit
   # --account included; every other account is off for builds. Read once here, so a switch takes effect for the next run.
-  build_pick=""
+  build_pick="" pick_line=""
   if [[ "${AXF_WORKERS:-on}" != off && "${AXF_OWN_LOGIN:-on}" != off && -f "$WORKERS_JS" ]] && command -v node >/dev/null; then
     build_pick="$(node "$WORKERS_JS" build-account 2>/dev/null | grep -E '^[a-z0-9][a-z0-9-]{0,31}$' | grep -vx off | head -1)" || build_pick=""
   fi
   if [[ -n "$build_pick" && -n "$account" && "$account" != "$build_pick" && "$account" != active && "$account" != live ]]; then
-    printf '\033[2m# %s is off for builds: this run uses the one build account, %s\033[0m\n' "$account" "$build_pick"
+    pick_line="# $account is off for builds: this run uses the one build account, $build_pick"
     build_note "Asked for $account, ran on $build_pick (the one build account)"
     account=""
   fi
@@ -337,6 +337,7 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     fi
   fi
   own_login "${account:-active}"
+  [[ -n "$pick_line" ]] && login_line="$pick_line${login_line:+$'\n'$login_line}"   # the log says why it isn't the asked account
   [[ -n "$login_line" ]] && printf '\033[2m%s\033[0m\n' "$login_line"
   [[ -n "$ctx_line" ]] && printf '\033[2m%s\033[0m\n' "$ctx_line"
   for w in "${ctx_warn[@]}"; do printf '\033[33m# warning: %s\033[0m\n' "$w"; done
