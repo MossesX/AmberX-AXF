@@ -1,20 +1,22 @@
 """Badges — server part (folder claude-badge). Mounted at /api/plugins/claude-badge/ (console token, 404 when disabled).
 
-POST /test runs one tiny request through the AI assistant's model service (axf.llm@1) and says whether AI answers and
-which model did, and which of three states it is in: `ok` (answers), `no-credit` (the account or key works but is out
-of credits / over its usage limit) or `error` (can't connect: bad token, invalid account, no assistant); GET /status returns the last result (kept in the plugin's data folder, no reply text, no keys).
+GET /build is the Claude badge: can Claude build? The build orchestrator's ready read through axf.build-dispatch@1, the
+dispatcher's own check: an account counts when the dispatcher may put a build on it and the latest account health sweep
+says it signs in and has credits. `ok` (green) when one or more is ready, `error` (red) when none is, `off` when the
+orchestrator can't be read. Per account: ready, signed in, credits, Fable, when it was checked and why not (names only for
+the owner). Plain reads: no model call, no login touched; the VPS root `claude auth status` / `.active` login is not used.
+GET /vps is the VPS badge from the same read: can the console see the build accounts on the host (live, or the host
+dispatcher's snapshot and how old it is).
 
-GET /vps reads the Claude Code login on the VPS, the second badge: `ok` (logged in, no recent limit), `no-credit` (it hit a
-limit) or `error` (not logged in, expired, or the VPS can't be read; `reachable` says which). It never calls a model, so it
-costs no tokens: `claude auth status` on the host through axf.claude-accounts@1 (30 s cache there) and the limit mark
-through axf.ai-keys@1. Only the owner gets the email and plan.
+POST /test runs one tiny request through the AI assistant's model service (axf.llm@1), on demand only (Settings → Badges →
+AI assistant test): `ok`, `no-credit` or `error`; GET /status returns the last result (no reply text, no keys).
 GET /usage is the usage meter: 5-hour and weekly use of every saved Claude login (server/usage_host.py on the host, plain HTTP,
 no model call). Cached 5 minutes in memory and on disk; `?refresh=1` reads again, at most every 30 s. A login whose copy can't
 be read keeps its last numbers with the time they are from, so the list never goes blank.
 
 GET /amberx says whether the AmberX phone is connected: axHub's `amberx.recorder_status` through axf.vinny@1, which runs at
 once (no veto, no tokens). Cached for a minute.
-Nothing here names another plugin: no service = "AI unavailable" / "can't read the VPS".
+Nothing here names another plugin: no service = "AI unavailable" / "can't tell whether Claude can build".
 """
 from __future__ import annotations
 
@@ -90,12 +92,6 @@ def run_test() -> dict[str, Any]:
     res["name"] = pretty_model(res["model"]) if res["ok"] else ""
     res["claude"] = res["name"].startswith("Claude")
     res["state"] = classify(res["ok"], res["error"])
-    keys = plugin_services.get("axf.ai-keys@1")  # the signed-in Claude account's email, when the AI keys plugin has one
-    try:
-        acct = keys.active_account("claude-code") if keys and hasattr(keys, "active_account") else {}
-    except Exception:  # noqa: BLE001 — the badge never fails over the email
-        acct = {}
-    res["account"] = str((acct or {}).get("email") or "")
     _save(res)
     said = {"ok": "ok, " + (res["name"] or "model unknown"), "no-credit": "out of credits (" + res["error"][:120] + ")", "error": "unavailable (" + res["error"][:120] + ")"}
     cx.log("system", f"AI connection: {said[res['state']]}", "ok" if res["ok"] else "warn")
@@ -110,44 +106,83 @@ def _ms(iso: str) -> int:
         return 0
 
 
-def vps_classify(view: dict[str, Any], limited_at: int, now_ms: int) -> tuple[str, bool, str]:
-    """(state, reachable, why) for one read of the VPS login. Unreadable says so: it never reads as logged out."""
-    if not view.get("ready"):
-        return "error", False, str(view.get("why") or "The console can't reach the VPS")
-    if not view.get("checked"):
-        return "error", False, "The VPS didn't answer `claude auth status`"
-    if not (view.get("login") or {}).get("email"):
-        return "error", True, "Claude Code isn't logged in on the VPS"
-    if 0 < _ms(str(view.get("expiresAt") or "")) <= now_ms:
-        return "error", True, "The Claude Code login on the VPS has expired"
-    if limited_at:
-        return "no-credit", True, "The Claude Code login on the VPS hit its limit"
-    return "ok", True, ""
+# ---------------------------------------------------------------------- can Claude build (Claude + VPS badges)
+
+BUILD_TTL_S = 30.0
+BUILD_MIN_S = 5.0
+SNAPSHOT_OLD_MIN = 10
+_build_lock = threading.Lock()
+_build: dict[str, Any] = {"at": 0.0, "value": None}
 
 
-def read_vps() -> dict[str, Any]:
-    """The Claude Code login on the VPS, read with plain code: no model call, no tokens, no credential."""
-    now = int(time.time() * 1000)
-    accounts = plugin_services.get("axf.claude-accounts@1")
-    res: dict[str, Any] = {"at": now, "ok": False, "state": "error", "reachable": False, "account": "", "email": "", "plan": "", "expiresAt": "", "limitedAt": 0, "error": ""}
-    if not accounts:
-        res["error"] = "The Claude accounts plugin is off, so the console can't read the VPS login"
-        return res
-    try:
-        view = accounts.view()
-    except Exception as e:  # noqa: BLE001 — the badge says why instead of failing
-        res["error"] = (str(e).strip("'\"") or e.__class__.__name__)[:300]
-        return res
-    keys = plugin_services.get("axf.ai-keys@1")
-    try:
-        limited = int(keys.limited_at(str(view.get("active") or ""))) if keys and hasattr(keys, "limited_at") else 0
-    except Exception:  # noqa: BLE001 — no limit mark is not a broken login
-        limited = 0
-    state, reachable, why = vps_classify(view, limited, now)
-    login = view.get("login") or {}
-    res.update(ok=state == "ok", state=state, reachable=reachable, error=why, limitedAt=limited, account=str(view.get("active") or ""),
-               email=str(login.get("email") or ""), plan=str(login.get("plan") or ""), expiresAt=str(view.get("expiresAt") or ""))
-    return res
+def build_classify(r: dict[str, Any]) -> tuple[str, str]:
+    """(state, line) for the Claude badge from the dispatcher's ready read: green when one build account or more can sign
+    in and has credits, red when none can."""
+    n, total = int(r.get("ready") or 0), int(r.get("total") or 0)
+    if n > 0:
+        return "ok", f"Claude can build: {n} of {total} build account{'s' if total != 1 else ''} ready"
+    if not total:
+        return "error", "Claude can't build: no build account found" + (f" ({r.get('why')})" if r.get("why") else "")
+    return "error", f"Claude can't build: none of {total} build account{'s' if total != 1 else ''} can sign in with credits left"
+
+
+def vps_classify(source: str, at: str, why: str, now_ms: int) -> tuple[str, bool, str]:
+    """(state, reachable, line) for the VPS badge: can the console see the build accounts on the host? `host` = read live,
+    `snapshot` = the host dispatcher's account snapshot (amber once it is over 10 minutes old: the host tick stopped),
+    `none` = nothing to read. Never the root `claude auth status`."""
+    if source == "host":
+        return "ok", True, "The console reads the build accounts on the VPS live"
+    if source == "snapshot":
+        t = _ms(at)
+        age = (now_ms - t) // 60000 if t else -1
+        if 0 <= age <= SNAPSHOT_OLD_MIN:
+            return "ok", True, f"The VPS dispatcher reported the build accounts {age} min ago"
+        return "warn", True, f"The VPS dispatcher's account snapshot is {age if age >= 0 else '?'} min old: its tick may have stopped"
+    return "error", False, why or "The console can't see the build accounts on the VPS"
+
+
+def _clean_account(a: Any) -> dict[str, Any] | None:
+    if not isinstance(a, dict) or not a.get("name"):
+        return None
+    tri = lambda v: v if isinstance(v, bool) else None  # noqa: E731
+    return {"name": str(a["name"])[:40], "label": str(a.get("label") or "")[:40], "kind": "api" if a.get("kind") == "api" else "subscription",
+            "ready": a.get("ready") is True, "signedIn": tri(a.get("signedIn")), "credits": tri(a.get("credits")), "fable": tri(a.get("fable")),
+            "healthAt": str(a.get("healthAt") or "")[:40], "why": str(a.get("why") or "")[:200]}
+
+
+def read_build(refresh: bool = False) -> dict[str, Any]:
+    """Can Claude build? The orchestrator's ready read (axf.build-dispatch@1): the dispatcher's own check over the latest
+    account health sweep. Plain reads, no model call, no login touched. Cached 30 s; refresh reads again (at most every 5 s)."""
+    with _build_lock:
+        now = time.time()
+        value = _build["value"]
+        if value is not None and now - _build["at"] < (BUILD_MIN_S if refresh else BUILD_TTL_S):
+            return {**value, "cached": True}
+        now_ms = int(now * 1000)
+        res: dict[str, Any] = {"at": now_ms, "ok": False, "state": "off", "ready": 0, "total": 0, "accounts": [], "source": "none", "from": "",
+                               "healthAt": "", "text": "", "error": "", "vps": {}}
+        svc = plugin_services.get("axf.build-dispatch@1")
+        if svc is None or not hasattr(svc, "ready"):
+            res["text"] = res["error"] = "The build orchestrator is off, so the console can't tell whether Claude can build"
+        else:
+            try:
+                r = svc.ready()
+                accounts = [c for c in (_clean_account(a) for a in r.get("accounts") or []) if c]
+                res.update(ready=sum(1 for a in accounts if a["ready"]), total=len(accounts), accounts=accounts, source=str(r.get("source") or "none"),
+                           **{"from": str(r.get("from") or "")[:40]}, healthAt=str(r.get("health") or "")[:40])
+                state, line = build_classify({**r, "ready": res["ready"], "total": res["total"]})
+                res.update(ok=state == "ok", state=state, text=line, error="" if state == "ok" else str(r.get("why") or "")[:300])
+            except Exception as e:  # noqa: BLE001 — the badge says why instead of failing
+                res["text"] = res["error"] = ("Can't read the build accounts: " + (str(getattr(e, "detail", "") or e).strip("'\"") or e.__class__.__name__))[:300]
+        vs, reachable, vline = vps_classify(res["source"], res["from"], res["error"] if res["state"] == "off" else "", now_ms)
+        res["vps"] = {"state": "off" if res["state"] == "off" else vs, "reachable": reachable, "text": vline if res["state"] != "off" else res["text"], "source": res["source"], "from": res["from"]}
+        _build.update(at=now, value=res)
+        return {**res, "cached": False}
+
+
+def _owner(request: Request) -> bool:
+    user = getattr(request.state, "axf_user", None)
+    return user is None or bool(getattr(user, "admin", False))
 
 
 # ---------------------------------------------------------------------- usage meter
@@ -341,10 +376,16 @@ def status() -> dict[str, Any]:
     return {"last": last}
 
 
+@router.get("/build")
+def build(request: Request, refresh: int = 0) -> dict[str, Any]:
+    """The Claude badge: can Claude build, and which build accounts are ready (account names only for the owner)."""
+    res = read_build(refresh == 1)
+    return res if _owner(request) else {**res, "accounts": []}
+
+
 @router.get("/vps")
-def vps(request: Request) -> dict[str, Any]:
-    res = read_vps()
-    user = getattr(request.state, "axf_user", None)
-    if user is not None and not getattr(user, "admin", False):  # the state for everyone, who it is only for the owner
-        res.update(account="", email="", plan="")
-    return res
+def vps(refresh: int = 0) -> dict[str, Any]:
+    """The VPS badge: can the console see the build accounts on the host (from the same read as /build)."""
+    r = read_build(refresh == 1)
+    v = r["vps"]
+    return {"at": r["at"], "ok": v["state"] == "ok", "state": v["state"], "reachable": v["reachable"], "text": v["text"], "source": v["source"], "from": v["from"]}

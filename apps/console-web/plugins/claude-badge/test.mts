@@ -1,6 +1,6 @@
 /** Badges: the pure model. `npx -y tsx apps/console-web/plugins/claude-badge/test.mts` */
-import { BADGES, ICONS, KINDS, STATE_IDS, iconKey, iconOf, keyOf, labelOf, meterText, orderOf, shapeOf, shownOf, sideOf, tapPlan } from './web/model.ts';
-import type { UsageResult } from './web/model.ts';
+import { BADGES, ICONS, KINDS, STATE_IDS, buildState, buildText, iconKey, iconOf, keyOf, labelOf, meterText, orderOf, readyLine, shapeOf, shownOf, sideOf, tapPlan } from './web/model.ts';
+import type { BuildResult, ReadyAccount, UsageResult } from './web/model.ts';
 
 let n = 0;
 const ok = (v: unknown, what: string) => { n += 1; if (!v) throw new Error(`FAILED: ${what}`); };
@@ -24,7 +24,8 @@ ok(sideOf(none, 'axhub') === 'right' && sideOf(none, 'usage') === 'left' && side
 
 ok(tapPlan(none, 'usage').do === 'drop', 'usage meter: drop-down by default');
 ok(tapPlan(none, 'axhub').spec === 'hubstatus.open', 'axHub: its details by default');
-ok(tapPlan(none, 'console').spec === 'settings.open:claude-badge', 'Claude: settings by default, as before');
+ok(tapPlan(none, 'console').do === 'drop', 'Claude: the ready list drops down by default');
+ok(tapPlan(none, 'vps').spec === 'settings.open:claude-badge', 'VPS: settings by default, as before');
 const set = (o: object) => settings(Object.fromEntries(Object.entries(o).map(([k, v]) => [keyOf('usage', k as 'tap'), v])));
 ok(tapPlan(set({ tap: 'none' }), 'usage').do === 'none', 'nothing');
 ok(tapPlan(set({ tap: 'screen', 'tap-target': 'alerts' }), 'usage').spec === 'nav:alerts', 'a page id');
@@ -42,4 +43,11 @@ ok(meterText(r({ fiveHour: win(12.4), weekly: win(13) })) === '5h 12% · wk 13%'
 ok(meterText(r({ weekly: win(13) })) === '5h – · wk 13%', 'no 5-hour window open');
 ok(meterText(r({ weekly: win(13) }), 'Max') === 'Max 5h – · wk 13%', 'a label in front');
 ok(meterText(null) === 'no reading' && meterText(r({ status: 'no-meter' })) === 'no reading', 'nothing to read');
+const acct = (o: Partial<ReadyAccount>): ReadyAccount => ({ name: 'w1', label: '', kind: 'subscription', ready: true, signedIn: true, credits: true, fable: true, healthAt: '', why: '', ...o });
+const br = (o: Partial<BuildResult>): BuildResult => ({ at: 0, ok: true, state: 'ok', ready: 1, total: 2, accounts: [], source: 'host', from: '', healthAt: '', text: '', error: '', ...o });
+ok(buildState(br({})) === 'ok' && buildState(br({ state: 'error' })) === 'error' && buildState(null) === 'off', 'Claude: the server says green or red');
+ok(buildState(br({ state: 'bogus' as never })) === 'off', 'an unknown state is never green');
+ok(buildText(br({})) === 'Claude 1/2' && buildText(br({ state: 'off' })) === 'Claude' && buildText(null, 'AI') === 'AI', 'badge words: ready of all');
+ok(readyLine(acct({})) === 'Ready · takes Fable' && readyLine(acct({ fable: false })) === 'Ready · Opus only', 'a ready account says what it takes');
+ok(readyLine(acct({ ready: false, why: 'no credits left' })) === 'No credits left' && readyLine(acct({ ready: false })) === 'Not ready', 'a not-ready account says why');
 console.log(`claude-badge model: ${n} checks passed`);

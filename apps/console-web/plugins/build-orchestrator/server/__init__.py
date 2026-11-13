@@ -473,6 +473,14 @@ def pipeline_health() -> dict[str, Any]:
     return {"ok": True, "health": res.get("health"), "every": (res.get("settings") or {}).get("healthEveryMin")}
 
 
+@router.get("/pipeline/ready")
+def pipeline_ready() -> dict[str, Any]:
+    """Can Claude build right now? {ready, total, accounts: [{name, kind, label, ready, signedIn, credits, fable, healthAt,
+    why}]}: the dispatcher's own check (may it use the account, and does the latest health sweep say it signs in and has
+    credits). Plain reads, no model call. The Claude badge shows this."""
+    return _pipeline("ready")
+
+
 @router.post("/pipeline/health")
 async def pipeline_health_now(request: Request) -> dict[str, Any]:
     """Ask for an account health sweep now: the dispatcher starts it in the background on its next tick (within a
@@ -626,13 +634,18 @@ async def pipeline_request(request: Request) -> dict[str, Any]:
 
 class DispatchService:
     """axf.build-dispatch@1: the one way for other plugins to start a build. request(title, detail, by=…, source=…,
-    priority=…, queue=True) → {ok, id, status}; queue(id, by) puts an existing build in the Queue; build(id) reads one."""
+    priority=…, queue=True) → {ok, id, status}; queue(id, by) puts an existing build in the Queue; build(id) reads one;
+    ready() says which build accounts can sign in and have credits (the dispatcher's own check)."""
 
     def request(self, title: str, detail: str = "", **kw: Any) -> dict[str, Any]:
         return request_build(title, detail, **kw)
 
     def queue(self, build_id: str, by: str = "console") -> dict[str, Any]:
         return _pipeline("queue", _build_id(build_id), "--by", by[:80])
+
+    def ready(self) -> dict[str, Any]:
+        """Can Claude build? {ready, total, accounts[]}: the dispatcher's check over the latest account health sweep."""
+        return _pipeline("ready")
 
     def build(self, build_id: str) -> dict[str, Any]:
         """{id, status, steps, pipeline…} of one build (so a caller can follow what it asked for)."""

@@ -27,23 +27,23 @@ export interface BadgeDef {
 
 export const BADGES: Record<BadgeKind, BadgeDef> = {
   console: {
-    id: 'claude', label: 'Claude', title: 'Claude (console AI)', icon: 'sparkles', order: 5, side: 'left', aliases: ['claude', 'console connection'],
-    tap: 'screen', target: 'settings.open:claude-badge', about: 'The AI connection, tested when the console loads.',
+    id: 'claude', label: 'Claude', title: 'Claude (can build)', icon: 'sparkles', order: 5, side: 'left', aliases: ['claude', 'can claude build', 'build accounts'],
+    tap: 'dropdown', target: '', about: 'Can Claude build: green when one build account or more can sign in and has credits (the dispatcher\'s own check), red when none can.',
     states: {
-      ok: { label: 'connected', icon: 'sparkles', setting: 'Connected (has credits)' },
-      warn: { label: 'out of credits', icon: 'zap', setting: 'Account works, out of credits' },
-      error: { label: 'unavailable', icon: 'sparkles', setting: "Can't connect (bad token or account)" },
-      off: { label: 'not tested', icon: 'minus', setting: 'Not tested yet' },
+      ok: { label: 'can build', icon: 'sparkles', setting: 'A build account is ready' },
+      warn: { label: 'checking', icon: 'clock', setting: 'Checking' },
+      error: { label: "can't build", icon: 'alert', setting: 'No build account can sign in with credits' },
+      off: { label: "can't tell", icon: 'minus', setting: "Can't read the orchestrator" },
     },
   },
   vps: {
-    id: 'claude-vps', label: 'VPS', title: 'VPS (Claude login)', icon: 'cloud', order: 6, side: 'left', aliases: ['vps', 'vps connection'],
-    tap: 'screen', target: 'settings.open:claude-badge', about: 'The Claude Code login on the VPS.',
+    id: 'claude-vps', label: 'VPS', title: 'VPS (build accounts)', icon: 'cloud', order: 6, side: 'left', aliases: ['vps', 'vps connection'],
+    tap: 'screen', target: 'settings.open:claude-badge', about: 'Whether the console can see the build accounts on the VPS.',
     states: {
-      ok: { label: 'logged in', icon: 'cloud', setting: 'Logged in and working' },
-      warn: { label: 'limit hit', icon: 'zap', setting: 'Limit hit or out of credits' },
-      error: { label: 'not logged in', icon: 'alert', setting: 'Not logged in or expired' },
-      off: { label: "can't read", icon: 'minus', setting: "Can't read the VPS" },
+      ok: { label: 'connected', icon: 'cloud', setting: 'Build accounts read from the VPS' },
+      warn: { label: 'out of date', icon: 'clock', setting: 'The VPS account snapshot is old' },
+      error: { label: "can't see", icon: 'alert', setting: "Can't see the build accounts" },
+      off: { label: "can't tell", icon: 'minus', setting: "Can't read the orchestrator" },
     },
   },
   axhub: {
@@ -141,3 +141,19 @@ const STATUS_WORDS: Record<string, string> = { ok: 'Up to date', limit: 'Limit h
 export const statusWord = (s: string) => STATUS_WORDS[s] ?? s;
 const TYPE_WORDS: Record<string, string> = { login: 'Login', token: 'Token', 'api-key': 'API key' };
 export const typeWord = (t: string) => TYPE_WORDS[t] ?? t;
+
+/** One build account in the Claude badge's read (GET /build): the dispatcher's check over the latest health sweep. */
+export interface ReadyAccount { name: string; label: string; kind: 'subscription' | 'api'; ready: boolean; signedIn: boolean | null; credits: boolean | null; fable: boolean | null; healthAt: string; why: string }
+export interface BuildResult { at: number; ok: boolean; state: BadgeState; ready: number; total: number; accounts: ReadyAccount[]; source: string; from: string; healthAt: string; text: string; error: string; cached?: boolean; vps?: { state: BadgeState; reachable: boolean; text: string } }
+const SERVER_STATES: Record<string, BadgeState> = { ok: 'ok', warn: 'warn', error: 'error', off: 'off' };
+/** The server's state as one of the four; anything unknown is `off`, never green. */
+export const buildState = (r: BuildResult | null): BadgeState => (r ? SERVER_STATES[r.state] ?? 'off' : 'off');
+/** The badge words: `Claude 1/4` (ready of all), or just the label when nothing was read. */
+export function buildText(r: BuildResult | null, label = BADGES.console.label): string {
+  return r && r.state !== 'off' && r.total ? `${label} ${r.ready}/${r.total}` : label;
+}
+/** One account's line in the drop-down. */
+export function readyLine(a: ReadyAccount): string {
+  if (a.ready) return `Ready${a.fable === true ? ' · takes Fable' : a.fable === false ? ' · Opus only' : ''}`;
+  return a.why ? a.why.charAt(0).toUpperCase() + a.why.slice(1) : 'Not ready';
+}

@@ -242,6 +242,29 @@ export function healthSummary(rows) {
   return { line: r.length ? `${r.length} accounts: ${r.length - problems.length} ok${problems.length ? `, ${problems.length} not` : ''}` : 'no Claude account found', problems };
 }
 
+/**
+ * Can Claude build right now? The dispatcher's own check over accountView() rows: an account is ready when the
+ * dispatcher may put a build on it (usable, or an API account it may route to) and its latest health sweep says it
+ * can sign in and has credits (fresh enough to trust). Busy accounts still count: they take the next build when free.
+ * → { ready: n, total, accounts: [{ name, kind, label, ready, signedIn, credits, fable, healthAt, why }] }
+ */
+export function buildReady(accounts, settings = normSettings(), now = Date.now()) {
+  const rows = list(accounts).map((a) => {
+    const h = freshHealth(a.health, settings, now);
+    const takes = a.kind === 'api' ? !!a.api?.usable : !!a.usable;
+    const signedIn = h ? h.signedIn ?? null : null; const credits = h ? h.credits ?? null : null;
+    const ready = takes && signedIn === true && credits === true;
+    let why = '';
+    if (!takes) why = (a.kind === 'api' ? a.api?.why : a.why) || 'the dispatcher does not use it';
+    else if (!h) why = a.health ? 'its last health check is too old' : 'not health-checked yet';
+    else if (signedIn === false) why = 'cannot sign in';
+    else if (credits === false) why = 'no credits left';
+    else if (!ready) why = 'the health check got no clear answer';
+    return { name: str(a.name, 40), kind: a.kind === 'api' ? 'api' : 'subscription', label: str(a.label, 40), ready, signedIn, credits, fable: h ? h.fable ?? null : null, healthAt: h?.at || a.health?.at || '', why: str(why, 200) };
+  });
+  return { ready: rows.filter((r) => r.ready).length, total: rows.length, accounts: rows };
+}
+
 /** Why no API account takes `model` right now: every API account and what keeps it out. */
 export function apiNoAccountWhy(accounts, model) {
   const apis = list(accounts).filter((a) => a.kind === 'api');
