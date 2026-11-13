@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4501,
- "updatedAt": "2026-11-13T17:22:16.295Z",
+ "rev": 4502,
+ "updatedAt": "2026-11-13T17:22:35.676Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -189057,7 +189057,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-13T17:18:30.441Z",
-   "updatedAt": "2026-11-13T17:18:30.441Z",
+   "updatedAt": "2026-11-13T17:22:33.333Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -189158,28 +189158,6 @@
      "updatedAt": "2026-11-13T17:18:30.442Z"
     },
     {
-     "id": "s4-3",
-     "uid": "st-mwf8qiq904pxkk",
-     "title": "",
-     "text": "Form fields and validation",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-13T17:18:30.442Z",
-     "updatedAt": "2026-11-13T17:18:31.666Z"
-    },
-    {
      "id": "s5-4",
      "uid": "st-mwf8qiq9054t9g",
      "title": "",
@@ -189232,7 +189210,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -189253,7 +189231,35 @@
    "queue": null,
    "defaultAt": "2026-11-13T17:18:31.666Z",
    "rearranged": false,
-   "removedSteps": [],
+   "removedSteps": [
+    {
+     "step": {
+      "id": "s4-3",
+      "uid": "st-mwf8qiq904pxkk",
+      "title": "",
+      "text": "Form fields and validation",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-13T17:18:30.442Z",
+      "updatedAt": "2026-11-13T17:18:31.666Z"
+     },
+     "at": "2026-11-13T17:22:33.334Z",
+     "why": "removed in the orchestrator",
+     "by": "project-seed"
+    }
+   ],
    "legacy": [],
    "copies": []
   }
