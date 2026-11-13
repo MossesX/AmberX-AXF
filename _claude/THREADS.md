@@ -786,12 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 17:46 UTC · `per-instance-settings-window-picker` added (0 steps) (all) · console
-- 2026-11-13 17:46 UTC · `per-instance-settings-window-picker` → queued, note (all) · console
-- 2026-11-13 17:46 UTC · `chrome-settings-actually-apply-toolbars` → running, note (all) · pipeline
-- 2026-11-13 17:46 UTC · `chrome-settings-actually-apply-toolbars` branch claude/chrome-settings-actually-apply-toolbars (all) · pipeline
-- 2026-11-13 17:47 UTC · `chrome-settings-actually-apply-toolbars` note (all) · orchestrator
-- 2026-11-13 17:47 UTC · `chrome-settings-actually-apply-toolbars` → running, branch claude/chrome-settings-actually-apply-toolbars, note (all) · builds-live
 - 2026-11-13 17:47 UTC · `per-instance-settings-window-picker` note (all) · claude-voice
 - 2026-11-13 17:47 UTC · `per-instance-settings-window-picker` note (all) · orchestrator
 - 2026-11-13 17:48 UTC · `full-voice-api-control-type-fields-press` s1 done, → running (all) · orchestrator
@@ -1186,6 +1180,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:41 UTC · `land-project-duplicate-boilerplate` → pending, note (all) · reconciler
 - 2026-11-13 19:41 UTC · `land-rename-long-builds-resolve-clash` note (all) · reconciler
 - 2026-11-13 19:41 UTC · `land-drive-live-console-first-resolve` s1 done (all) · foreign-write
+- 2026-11-13 19:40 UTC · `orchestrator-custom-groups-custom-tabs` s2 done (all) · orchestrator
+- 2026-11-13 19:40 UTC · `orchestrator-custom-groups-custom-tabs` s3 done (all) · orchestrator
+- 2026-11-13 19:41 UTC · `orchestrator-custom-groups-custom-tabs` s4 done (all) · orchestrator
+- 2026-11-13 19:41 UTC · `orchestrator-custom-groups-custom-tabs` s5 done (all) · orchestrator
+- 2026-11-13 19:41 UTC · `orchestrator-custom-groups-custom-tabs` s6 done (all) · orchestrator
+- 2026-11-13 19:41 UTC · `orchestrator-custom-groups-custom-tabs` s7 done (all) · orchestrator
 
 ## Token passes (log)
 
