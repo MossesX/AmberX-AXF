@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T20:05:38.390Z",
+ "updatedAt": "2026-11-13T20:05:55.227Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -129899,7 +129899,7 @@
    "title": "Orchestrator: custom groups and custom tabs on the builds board",
    "category": "",
    "detail": "Build Orchestrator board gets user-made groups.\n- Brett creates, renames, reorders, colours and deletes custom groups/tabs (e.g. 'Console app', 'UI', 'Urgent').\n- Builds are dragged or assigned into a group (one or several), by hand, by voice or by API.\n- Custom tabs can sit next to Pending, Queued, Building and Done. Mostly used for Pending: custom Pending tabs.\n- Inside a group, builds are sorted by state (partial/pending, queued, running, done, landed) with a sort and filter picker, and the group shows counts per state.\n- Smart groups by rule (e.g. 'title contains console app', 'more than 500 behind main', 'filed today').\n- Group actions: queue all, land all, archive all, change priority.\n- Groups are saved per project. Full API: REST/MCP/CLI/voice/control@1. Tests, help, Shipped features.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -129907,8 +129907,8 @@
    "pr": "#644",
    "priority": "P1",
    "createdAt": "2026-11-13T18:50:33.284Z",
-   "updatedAt": "2026-11-13T20:04:35.812Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T20:04:44.608Z",
+   "builtAt": "2026-11-13T20:04:39.984Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -129925,6 +129925,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-orchestrator-custom-groups-custom-tabs--joey.",
      "at": "2026-11-13T19:31:49.059Z"
+    },
+    {
+     "text": "Phase 1 done, PR #644 is a draft: no UI Review shots yet (the scratch console never loaded the orchestrator's web part). Needed: desktop and phone shots of the Groups tab and a custom Pending tab. A broad pkill during cleanup may also have stopped another session's local vite/uvicorn.",
+     "at": "2026-11-13T20:04:44.608Z"
     }
    ],
    "approvals": [],
@@ -130129,8 +130133,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T20:04:39.984Z",
      "note": "",
      "uid": "st-mwfc2gnw0ah51l",
      "createdAt": "2026-11-13T18:51:47.804Z"
