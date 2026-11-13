@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T11:29:28.460Z",
+ "updatedAt": "2026-11-13T11:29:43.182Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -118559,7 +118559,7 @@
    "pr": "#554",
    "priority": "P0",
    "createdAt": "2026-11-13T06:57:42.497Z",
-   "updatedAt": "2026-11-13T11:29:20.136Z",
+   "updatedAt": "2026-11-13T11:29:35.961Z",
    "builtAt": "",
    "notes": [
     {
@@ -118653,6 +118653,10 @@
     {
      "text": "s25 left open: UI Review shots could not be taken in this headless sandbox. The scratch console (rebuild-shots, AXF_APPEARANCE_HUB=off) does not load the Build orchestrator's web screens at all, with this branch's code and with main's, so there is nothing to shoot. The three Slots strip layout options ship as toolbar assets (apps/console-web/plugins/build-orchestrator/assets/toolbar/build-orchestrator-slots-{chips,grid,list}.json). To finish: on a console that shows the orchestrator, shoot Active tab (Slots strip), an expanded build (Step dependencies) and Settings → Plugins → Build orchestrator → Fill every slot, desktop + phone, and submit with review.mjs submit --choices.",
      "at": "2026-11-13T11:26:45.433Z"
+    },
+    {
+     "text": "Headless run axf-always-fill-every-slot-when-slots-are-free-run-i--joey: brief only · start 13.6K tokens ($0.07) · cost $25.96 · 307 turns · 6 tools, MCP none",
+     "at": "2026-11-13T11:29:35.961Z"
     }
    ],
    "approvals": [
