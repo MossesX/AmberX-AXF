@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T20:01:57.394Z",
+ "updatedAt": "2026-11-13T20:02:36.370Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -132581,9 +132581,14 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:57:29.839Z",
-   "updatedAt": "2026-11-13T19:57:31.322Z",
+   "updatedAt": "2026-11-13T20:02:34.017Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"023b2825-a31b-4e08-b1b1-99a3b4891b7e\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T20:02:34.017Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -132598,7 +132603,68 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Today grids/tables only have layout tokens (--fx-grid-areas/cols/rows and the -m mobile variants) and borrow the general colour tokens, so hover/selected/striping can't be styled per grid. Add a dedicated grid token family in tokens.style, following skins and editable in Token Control, the UI Manager and per instance: header background/text/border/sort arrow/filter chip; row, alternate row, hover, selected, focused, expanded, disabled; grid lines, outer border, cell padding, row height, radius; group header, sticky column shadow, empty state; transparency per grid (default 100%). Wire every grid/table component to read them, and add a CI check against hard-coded grid colours. Per-instance overrides with Restore previous edit / Restore from axHub. Full API. Tests, help, Shipped features. Fable for the token schema.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfelh290aroo1",
+     "createdAt": "2026-11-13T20:02:34.017Z"
+    },
+    {
+     "id": "s2",
+     "text": "how many tokens does a grid have; don't they need that to have hover colors",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfelh290bqeqq",
+     "createdAt": "2026-11-13T20:02:34.017Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/grid-token-set-colours-hover-selected.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/grid-token-set-colours-hover-selected.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfelh290c17mu",
+     "createdAt": "2026-11-13T20:02:34.017Z"
+    }
+   ]
   },
   {
    "id": "own-token-sets-for-grids-and-tab-groups",
