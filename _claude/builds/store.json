@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4590,
- "updatedAt": "2026-11-13T18:08:53.851Z",
+ "rev": 4591,
+ "updatedAt": "2026-11-13T18:09:15.519Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -195896,7 +195896,7 @@
    "pr": "#622",
    "priority": "P1",
    "createdAt": "2026-11-13T17:46:43.480Z",
-   "updatedAt": "2026-11-13T18:08:34.562Z",
+   "updatedAt": "2026-11-13T18:09:08.109Z",
    "builtAt": "",
    "notes": [
     {
@@ -195942,6 +195942,14 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-per-instance-settings-window-picker--lenny, own login copy)",
      "at": "2026-11-13T18:04:49.172Z"
+    },
+    {
+     "text": "Self-check: per-instance-settings-window-picker was marked running on mossesx-max- with no session: released and back in the Queue.",
+     "at": "2026-11-13T18:08:46.782Z"
+    },
+    {
+     "text": "Headless run axf-per-instance-settings-window-picker--sully: brief only · start 11.2K tokens ($0.03) · cost $2.81 · 71 turns · 6 tools, MCP none",
+     "at": "2026-11-13T18:09:08.109Z"
     }
    ],
    "approvals": [],
@@ -195961,7 +195969,7 @@
    "pipeline": {
     "queuedAt": "2026-11-13T17:46:45.998Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
+    "account": "",
     "session": "",
     "slot": "",
     "model": "Opus",
@@ -195983,7 +195991,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"b6d527f6-7e3c-46c2-b1ed-2ba93d1e986c\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Session on mossesx-max- ended (exit 3) with 3 steps left: back in the Queue (run 1).",
+    "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
     "dispatchedAt": "2026-11-13T17:49:19.495Z",
     "planned": {
@@ -196078,7 +196086,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -196738,7 +196746,13 @@
     "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Fable",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T18:08:44.017Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -196956,7 +196970,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

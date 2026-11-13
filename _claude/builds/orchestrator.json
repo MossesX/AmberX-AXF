@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:08:53.851Z",
+ "updatedAt": "2026-11-13T18:09:15.519Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -125709,7 +125709,7 @@
    "pr": "#622",
    "priority": "P1",
    "createdAt": "2026-11-13T17:46:43.480Z",
-   "updatedAt": "2026-11-13T18:08:34.562Z",
+   "updatedAt": "2026-11-13T18:09:08.109Z",
    "builtAt": "",
    "notes": [
     {
@@ -125755,6 +125755,14 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-per-instance-settings-window-picker--lenny, own login copy)",
      "at": "2026-11-13T18:04:49.172Z"
+    },
+    {
+     "text": "Self-check: per-instance-settings-window-picker was marked running on mossesx-max- with no session: released and back in the Queue.",
+     "at": "2026-11-13T18:08:46.782Z"
+    },
+    {
+     "text": "Headless run axf-per-instance-settings-window-picker--sully: brief only · start 11.2K tokens ($0.03) · cost $2.81 · 71 turns · 6 tools, MCP none",
+     "at": "2026-11-13T18:09:08.109Z"
     }
    ],
    "approvals": [],
