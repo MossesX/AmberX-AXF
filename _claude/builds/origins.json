@@ -1183,6 +1183,18 @@
    "from": "",
    "addenda": []
   },
+  "auto-land-merge-main-land-land-mjs-clash": {
+   "said": "land what finished",
+   "at": "2026-11-13T23:38:56.061Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "auto-recover-stuck-builds": {
    "said": "Brett: if anything stops working, the server/orchestrator fixes it automatically with no one asking. Detect builds marked running with no live session (killed exit 143, failed exit 1), reset and requeue them, retry failed sessions, keep every slot filled, FYI to phone per fix.",
    "at": "2026-11-13T11:45:11.111Z",
