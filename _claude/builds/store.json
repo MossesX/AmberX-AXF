@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3979,
- "updatedAt": "2026-11-13T03:32:43.496Z",
+ "rev": 3980,
+ "updatedAt": "2026-11-13T03:33:50.182Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -176507,7 +176507,7 @@
    "branch": "claude/change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to",
    "pr": "",
    "createdAt": "2026-11-13T00:40:38.452Z",
-   "updatedAt": "2026-11-13T03:32:41.381Z",
+   "updatedAt": "2026-11-13T03:33:48.419Z",
    "builtAt": "",
    "notes": [
     {
@@ -176613,12 +176613,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T03:33:48.419Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T00:41:48.903Z",
-     "updatedAt": "2026-11-13T00:41:48.903Z"
+     "updatedAt": "2026-11-13T03:33:48.656Z"
     },
     {
      "id": "s3",
@@ -176654,7 +176654,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
