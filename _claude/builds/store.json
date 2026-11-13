@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4029,
- "updatedAt": "2026-11-13T06:31:39.877Z",
+ "rev": 4030,
+ "updatedAt": "2026-11-13T06:32:09.944Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -170619,7 +170619,7 @@
    "mergedAt": "2026-11-13T06:14:16Z",
    "priority": "P0",
    "createdAt": "2026-11-12T15:33:08.904Z",
-   "updatedAt": "2026-11-13T06:31:06.529Z",
+   "updatedAt": "2026-11-13T06:32:06Z",
    "builtAt": "2026-11-13T00:50:28.107Z",
    "notes": [
     {
@@ -170645,6 +170645,10 @@
     {
      "text": "Reconciler: PR #533 merged",
      "at": "2026-11-13T06:31:06.529Z"
+    },
+    {
+     "text": "Shipped manifest sm-amberx-approval-pop-up-not-showing-only-the-android-notification rev 1 sent to Shipped features (orchestrator): PR #533, 11 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-13T06:32:06Z"
     }
    ],
    "approvals": [],
@@ -170695,6 +170699,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-amberx-approval-pop-up-not-showing-only-the-android-notification",
+    "rev": 1,
+    "at": "2026-11-13T06:32:06Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -170750,7 +170760,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
