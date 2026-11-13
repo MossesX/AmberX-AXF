@@ -1,6 +1,6 @@
 # Remove the console's own Notes manager; console uses AmberX's notes/to-do manager
 
-Build `remove-the-console-s-own-notes-manager-console-u` · Opus · branch `claude/remove-the-console-s-own-notes-manager-console-u`
+Build `remove-console-s-own-notes-manager` · Opus · branch `claude/remove-console-s-own-notes-manager`
 
 Brett (verbatim): "Delete the console with no manager. That's whack. Open the Amber X's no manager."
 
