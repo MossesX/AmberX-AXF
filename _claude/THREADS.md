@@ -788,7 +788,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:13 UTC · `chrome-settings-actually-apply-toolbars` PR #625 (all) · builds-live
 - 2026-11-13 18:13 UTC · `new-asset-type-animated-expanding-row` added (0 steps) (all) · console
 - 2026-11-13 18:13 UTC · `new-asset-type-animated-expanding-row` → queued, note (all) · console
 - 2026-11-13 18:13 UTC · `vps-builds-get-console-token-ui-review` added (0 steps) (all) · console
@@ -1188,6 +1187,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:53 UTC · `land-drive-live-console-first-resolve` note (all) · orchestrator
 - 2026-11-13 19:53 UTC · `full-voice-control-merge-main-and-land` added (0 steps) (all) · console
 - 2026-11-13 19:53 UTC · `full-voice-control-merge-main-and-land` → queued, note (all) · console
+- 2026-11-13 19:54 UTC · `demo-pipelines-guided-walkthrough-live` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
