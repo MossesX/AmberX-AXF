@@ -238,11 +238,21 @@ public class AmberxNativePlugin extends Plugin {
     @PluginMethod
     public void approvalOverlayState(PluginCall call) { call.resolve(js(WatchService.approvalOverlayState(getContext()))); }
 
-    /** expand / collapse, or a card action (approve, deny, shelve, approve-now, decline) on [id] or the card shown. */
+    /**
+     * expand / collapse, a card action (approve, deny, shelve, approve-now, decline) on [id] or the card shown, or the
+     * browser window: {@code page} opens [url] (Brett's own sites; empty: the last page or the console) full screen,
+     * {@code close-page} closes it and leaves the floating toolbar.
+     */
     @PluginMethod
     public void approvalOverlayCommand(PluginCall call) {
-        boolean ok = WatchService.approvalOverlayCommand(getContext(), call.getString("command", ""), call.getString("id", ""));
-        call.resolve(new JSObject().put("ok", ok));
+        String command = call.getString("command", "");
+        String arg = "page".equals(command) ? call.getString("url", call.getString("id", "")) : call.getString("id", "");
+        try {
+            boolean ok = WatchService.approvalOverlayCommand(getContext(), command, arg);
+            call.resolve(new JSObject().put("ok", ok));
+        } catch (IllegalArgumentException e) {
+            call.reject(e.getMessage());
+        }
     }
 
     static void approvalOverlayChanged(JSONObject state) {

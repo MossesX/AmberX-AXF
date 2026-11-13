@@ -341,7 +341,11 @@ export interface VetoHost {
   open?(url: string): void;
   /** The approval overlay's settings changed (AmberX's floating toolbar that opens into the approval card). */
   overlay?(cfg: Record<string, unknown>): void;
-  /** Open (`expand`) or fold (`collapse`) the overlay's card, or run a card action on [id] (the shown one when empty). */
+  /**
+   * Open (`expand`) or fold (`collapse`) the overlay's card, run a card action on [id] (the shown one when empty), open
+   * a page in the overlay's full-screen browser window (`page`, [id] is the URL; empty: the last page or the console) or
+   * close it so it is just the floating toolbar again (`close-page`).
+   */
   overlayCommand?(command: string, id?: string): Promise<boolean>;
   /** The overlay's state: settings, shown, expanded and what waits; null where there is no overlay (browsers). */
   overlayState?(): Promise<Record<string, unknown> | null>;

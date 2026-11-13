@@ -978,17 +978,58 @@ public class WatchService extends Service {
         return o;
     }
 
-    /** Opens or folds the card, or runs a card action (approve / deny / shelve / approve-now / decline) without the UI. */
+    /**
+     * Opens or folds the card, runs a card action (approve / deny / shelve / approve-now / decline), opens a page in the
+     * overlay's browser window ({@code page}, [id] is the URL; empty: the last page or the console) or closes it
+     * ({@code close-page}: just the toolbar again), without the UI.
+     */
     static boolean approvalOverlayCommand(Context c, String command, String id) {
+        if ("page".equals(command)) return openOverlayPage(c, OverlayPageRules.pageButtonUrl(lastPage(c, id)));
         WatchService w = running;
         if (w == null) return false;
         w.main.post(() -> {
             if (w.approvalOverlay == null) return;
             if ("expand".equals(command)) w.approvalOverlay.setExpanded(true);
             else if ("collapse".equals(command)) w.approvalOverlay.setExpanded(false);
+            else if ("close-page".equals(command)) w.approvalOverlay.closePage();
             else w.approvalOverlay.act(id == null || id.isEmpty() ? null : id, command);
         });
         return true;
+    }
+
+    private static String lastPage(Context c, String url) {
+        if (url != null && !url.isEmpty()) return url;
+        WatchService w = running;
+        return w != null && w.approvalOverlay != null ? w.approvalOverlay.lastPage() : "";
+    }
+
+    /**
+     * Opens one of Brett's pages in the overlay's full-screen browser window, from any thread (AXPP {@code browser.open},
+     * the native bridge, voice). True when the window is up; false when the overlay can't take it (watching off,
+     * overlay off, no "Display over other apps"), so the caller opens Chrome instead. The URL must pass
+     * {@link OpenUrlRules#allowed} (throws otherwise).
+     */
+    static boolean openOverlayPage(Context c, String url) {
+        String u = OpenUrlRules.allowed(url);
+        WatchService w = running;
+        if (w == null) return false;
+        boolean[] ok = { false };
+        java.util.concurrent.CountDownLatch done = new java.util.concurrent.CountDownLatch(1);
+        w.main.post(() -> {
+            try {
+                if (w.approvalOverlay == null) w.syncApprovalOverlay();
+                ok[0] = w.approvalOverlay != null && w.approvalOverlay.openPage(u);
+            } catch (RuntimeException ignored) { /* the caller falls back to Chrome */ }
+            done.countDown();
+        });
+        if (android.os.Looper.myLooper() == android.os.Looper.getMainLooper()) return true; // posted; can't wait on the main thread
+        try { done.await(3, java.util.concurrent.TimeUnit.SECONDS); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+        return ok[0];
+    }
+
+    /** Whether the overlay could take a page now (watching on, overlay on, "Display over other apps" granted). */
+    static boolean overlayPagesReady(Context c) {
+        return running != null && approvalOverlaySettings(c).on && DetectionOverlay.canDraw(c);
     }
 
     /** Shows the approval overlay to match its settings and the "Display over other apps" permission (main thread). */

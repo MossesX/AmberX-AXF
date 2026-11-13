@@ -133,11 +133,14 @@ export interface NativeApi {
   /**
    * The approval overlay (Java `ApprovalOverlay`): a small floating toolbar that opens into the approval card when an
    * approval or held command arrives. Settings come from the banner plugin (`approvals-banner.overlay.*`); state and
-   * commands (expand, collapse, approve, deny, shelve, approve-now, decline) for the API and voice. Browser: no overlay.
+   * commands (expand, collapse, approve, deny, shelve, approve-now, decline) for the API and voice. `page` opens one of
+   * Brett's pages (`url`; empty: the last page or the console) in the overlay's full-screen browser window, and
+   * `close-page` closes it so it is just the floating toolbar again; the state's `page` says what is open.
+   * Browser: no overlay.
    */
   approvalOverlaySet(opts: Record<string, unknown>): Promise<Record<string, unknown>>;
   approvalOverlayState(): Promise<Record<string, unknown>>;
-  approvalOverlayCommand(opts: { command: string; id?: string }): Promise<{ ok: boolean }>;
+  approvalOverlayCommand(opts: { command: string; id?: string; url?: string }): Promise<{ ok: boolean }>;
   /** Gizmo talk mode as a foreground microphone service (Android `TalkService`): listens turn by turn with the screen
    * off, a notification with Stop, audio focus, one owner of the mic. The page keeps the conversation and speaks the
    * reply, telling the service its half of the turn with `talkPhase`. Browser: the same turns on Web Speech while the
@@ -591,7 +594,7 @@ export function installVetoHost(): void {
     stopAlarm: () => { void native.vetoAlarmStop().catch(() => undefined); },
     open: (url) => { void native.hubOpen({ url }).catch(() => undefined); },
     overlay: (cfg) => { void native.approvalOverlaySet(cfg).catch(() => undefined); },
-    overlayCommand: async (command, id) => (await native.approvalOverlayCommand({ command, ...(id ? { id } : {}) }).catch(() => ({ ok: false }))).ok,
+    overlayCommand: async (command, id) => (await native.approvalOverlayCommand({ command, ...(id ? (command === 'page' ? { url: id } : { id }) : {}) }).catch(() => ({ ok: false }))).ok,
     overlayState: async () => native.approvalOverlayState().catch(() => null),
     onEvent: (fn) => {
       const h = native.addListener('veto', (e) => {

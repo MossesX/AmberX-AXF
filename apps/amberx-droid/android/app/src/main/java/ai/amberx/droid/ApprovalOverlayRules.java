@@ -36,17 +36,20 @@ final class ApprovalOverlayRules {
         final boolean idleVisible;
         /** Shrink back on its own this many seconds after the last approval went (0 = at once). */
         final int shrinkAfterSec;
+        /** Where pages Amber opens go ({@link OverlayPageRules#PAGES}): the toolbar's own browser window, or Chrome. */
+        final String pages;
 
-        Settings(boolean on, String edge, int top, String size, String expand, String show, int idleOpacity, boolean idleVisible, int shrinkAfterSec) {
+        Settings(boolean on, String edge, int top, String size, String expand, String show, int idleOpacity, boolean idleVisible, int shrinkAfterSec, String pages) {
             this.on = on; this.edge = edge; this.top = top; this.size = size; this.expand = expand; this.show = show;
-            this.idleOpacity = idleOpacity; this.idleVisible = idleVisible; this.shrinkAfterSec = shrinkAfterSec;
+            this.idleOpacity = idleOpacity; this.idleVisible = idleVisible; this.shrinkAfterSec = shrinkAfterSec; this.pages = pages;
         }
 
         JSONObject toJson() {
             JSONObject o = new JSONObject();
             try {
                 o.put("on", on).put("edge", edge).put("top", top).put("size", size).put("expand", expand).put("show", show)
-                    .put("idleOpacity", idleOpacity).put("idleVisible", idleVisible).put("shrinkAfterSec", shrinkAfterSec);
+                    .put("idleOpacity", idleOpacity).put("idleVisible", idleVisible).put("shrinkAfterSec", shrinkAfterSec)
+                    .put("pages", pages);
             } catch (Exception ignored) {}
             return o;
         }
@@ -63,7 +66,8 @@ final class ApprovalOverlayRules {
             pick(c.optString("show", ""), SHOWS),
             clamp(c.optInt("idleOpacity", 85), 40, 100),
             c.optBoolean("idleVisible", true),
-            clamp(c.optInt("shrinkAfterSec", 0), 0, 60));
+            clamp(c.optInt("shrinkAfterSec", 0), 0, 60),
+            pick(c.optString("pages", ""), OverlayPageRules.PAGES));
     }
 
     /** Merges a partial change (any subset of the keys) onto the current settings, clamped. */
