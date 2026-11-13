@@ -781,11 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 03:54 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` s3 done (all) · orchestrator
-- 2026-11-13 03:55 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` PR #547 (all) · builds-live
-- 2026-11-13 03:56 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` note (all) · orchestrator
-- 2026-11-13 04:00 UTC · `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` → pending, note (all) · reconciler
-- 2026-11-13 04:00 UTC · `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do` → pending, note (all) · reconciler
 - 2026-11-13 04:20 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` → pending, note (all) · reconciler
 - 2026-11-13 06:12 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` → queued, note (all) · console
 - 2026-11-13 06:12 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` → queued, note (all) · console
@@ -1181,6 +1176,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 11:25 UTC · `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do` → running, note (all) · pipeline
 - 2026-11-13 11:25 UTC · `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do` note (all) · orchestrator
 - 2026-11-13 11:25 UTC · `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` → running, note (all) · pipeline
+- 2026-11-13 11:25 UTC · `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` → running, note (all) · orchestrator
+- 2026-11-13 11:25 UTC · `show-commits-behind-main-on-every-build-table-an` → running, note (all) · pipeline
+- 2026-11-13 11:25 UTC · `show-commits-behind-main-on-every-build-table-an` note (all) · orchestrator
+- 2026-11-13 11:25 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` → running, note (all) · pipeline
+- 2026-11-13 11:25 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` note (all) · orchestrator
 
 ## Token passes (log)
 
