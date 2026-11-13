@@ -3780,6 +3780,18 @@
    "from": "",
    "addenda": []
   },
+  "land-project-duplicate-boilerplate": {
+   "said": "land duplicate projects and templates",
+   "at": "2026-11-13T19:03:35.763Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "land-round-2": {
    "said": "After lenny-land-all, every remaining PR conflicts with main. Brett agreed: one agent catches them up and lands them, Molly first (commands must reach the console inside Molly).",
    "at": "2026-11-04T10:43:58.630Z",

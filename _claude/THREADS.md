@@ -786,7 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 12:38 UTC · `auto-recover-stuck-builds` s13 done (all) · orchestrator
 - 2026-11-13 12:39 UTC · `ui-review-gate-switch-default-off` s7 done (all) · orchestrator
 - 2026-11-13 12:40 UTC · `fix-toolbar-settings-doing-nothing` PR #572 (all) · builds-live
 - 2026-11-13 12:40 UTC · `assets-menu-hide-any-asset-visible-and-hidden-li` s1 done, → running (all) · orchestrator
@@ -1186,6 +1185,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:02 UTC · `decision-dialog-ui-review-other` s8 done (all) · orchestrator
 - 2026-11-13 19:01 UTC · `ui-manager-floating-window-to-select-any` note (all) · orchestrator
 - 2026-11-13 19:03 UTC · `console-android-app-thin-webview-wrapper` s4 done (all) · orchestrator
+- 2026-11-13 19:03 UTC · `land-project-create-mcp-resolve-clash` note (all) · orchestrator
 
 ## Token passes (log)
 
