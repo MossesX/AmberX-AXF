@@ -35,6 +35,7 @@
  */
 import { DEFAULT_MAX_RUNS, STATUS_AFTER, isHeld, nextModel, openSteps, outcomeLine, outcomeOf, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
+import { canLaunch, recoveryOf } from '../../../../framework/core/build-recovery.mjs';
 import { FOUNDATION_MODEL, MODEL_LABELS, modelForWork, modelKey } from '../../../../framework/core/model-policy.mjs';
 import { API_RULE, estimateMinutes, maxStep, nextUp as orchNextUp, MODEL_GUIDE, STEP_MINUTES, stepLimit } from './web/orchestrator-core.mjs';
 
@@ -321,6 +322,8 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
     if (b.status !== 'queued') continue;
     if (isHeld(b)) { waits.push({ id: b.id, why: `on hold${b.pipeline.heldBy ? ` (${b.pipeline.heldBy})` : ''}: skipped until released`, held: true }); continue; }
     if (!openSteps(b).length) { waits.push({ id: b.id, why: b.steps?.length ? 'every step is done: nothing to run' : 'no steps yet: waiting for the split' }); continue; }
+    // auto-recovery backoff (build-recovery@1): a recovered build waits its 1 / 5 / 15 min before it launches again
+    if (!canLaunch(b, now)) { waits.push({ id: b.id, why: `auto-recovery backoff: launches again after ${recoveryOf(b).nextAt}`, backoff: true }); continue; }
     const n = orchNextUp(b, rules);
     if (n.needsApproval) { waits.push({ id: b.id, why: `needs Brett's approval: upgrade ${n.phase.from} → ${n.phase.model}` }); continue; }
     const model = nextModel(b);

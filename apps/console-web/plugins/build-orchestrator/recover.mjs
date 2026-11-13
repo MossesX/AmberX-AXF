@@ -53,6 +53,8 @@ export function dataDir(env = process.env) {
 export const files = (env = process.env) => { const d = dataDir(env); return { dir: d, state: join(d, 'recovery-state.json'), log: join(d, 'recovery.jsonl'), lock: join(d, 'recovery.lock') }; };
 export const DATA_FILES = ['recovery-state.json', 'recovery.jsonl', 'recovery.lock'];
 const LOG_KEEP_BYTES = 512 * 1024;
+/** A session that ended with exit 0 is the dispatcher's to close (pipeline.mjs checkEnds); recovery waits this long first. */
+export const NORMAL_END_GRACE_MS = 15 * 60e3;
 function logLine(o, env = process.env) {
   try {
     const f = files(env).log; mkdirSync(dirname(f), { recursive: true });
@@ -175,7 +177,10 @@ export function run(opts = {}) {
     const young = (id) => { const s = l.slots.running.find((x) => x.id === id); return !!s && t - Date.parse(s.startedAt || s.enqueuedAt || 0) < policy.graceMs; };
     // a slot whose session still runs, or that was taken a moment ago, is not leaked: its build record is only behind
     // (the dispatcher takes the slot before it marks the build running); never free a slot under a live session
-    const actions = R.plan(...planArgs(l), policy).filter((a) => a.action !== 'release-slot' || (!liveNames.has(a.session) && !young(a.slot)));
+    // a session that ended with exit 0 stopped on purpose (its phase is done): the dispatcher's session-end pass closes
+    // it (next phase, or back to Pending). Only when nobody did for NORMAL_END_GRACE_MS is it a stuck build.
+    const ended0 = (a) => { const r = l.rows.find((x) => x.build === a.build); return !!r && r.recorded && !r.alive && r.exit === 0 && t - Date.parse(r.endedAt || 0) < NORMAL_END_GRACE_MS; };
+    const actions = R.plan(...planArgs(l), policy).filter((a) => (a.action === 'release-slot' ? !liveNames.has(a.session) && !young(a.slot) : !ended0(a)));
     const out = { ...base, ran: true, actions };
     if (opts.dryRun || !actions.length) return out;
     const kill = opts.kill ?? tmuxKill; const release = opts.release ?? releaseSlot;
