@@ -296,6 +296,27 @@ def _static(under: str | None, kinds: list[str] | None = None) -> list[dict[str,
     return ts
 
 
+def targets(under: str = "", kinds: list[str] | None = None, source: str = "auto", by: str = "console", audience: str = OWNER, grants: set[str] | None = None) -> dict[str, Any]:
+    """Every addressable target: the open console's live list (source console / auto), else the static inventory."""
+    if source != "inventory":
+        live = guarded({"$axf": cc.FRAME, "verb": "list", **({"address": under} if under else {})}, by, audience, grants if grants is not None else {"*"})
+        if live.get("ok") and live.get("source") != "inventory":
+            ts = [t for t in live.get("targets") or [] if not kinds or t.get("kind") in kinds]
+            return {"$axf": cc.TARGETS_FRAME, "ok": True, "source": "console", "client": live.get("client"), "view": live.get("view"), "targets": ts, "state": live.get("state")}
+        if source == "console":
+            return live if not live.get("ok") else {**live, "ok": False, "code": "unavailable", "because": "no console open", "message": "no console open: open the console (openUrl), then ask again"}
+    return {"$axf": cc.TARGETS_FRAME, "ok": True, "source": "inventory", "targets": _static(under or None, kinds), "counts": cc.inventory().get("counts", {})}
+
+
+def command(b: dict[str, Any], by: str = "", audience: str = OWNER, grants: set[str] | None = None) -> dict[str, Any]:
+    """One command from a body ({verb, address, value, …, to}) → the guarded answer (what /do answers; MCP and the CLI use it)."""
+    try:
+        cmd = normalize(b)
+    except cc.ControlError as e:
+        return e.envelope()
+    return guarded(cmd, str(b.get("by") or by or "api")[:80], audience, grants if grants is not None else {"*"}, str(b.get("to") or "recent"))
+
+
 def _kinds(v: str | None) -> list[str] | None:
     ks = [k.strip() for k in (v or "").split(",") if k.strip()]
     return ks or None
@@ -320,20 +341,10 @@ def router_for(auth: Any) -> APIRouter:
         return await go(request, cmd, str(b.get("to") or "recent"))
 
     @r.get("/targets")
-    async def targets(request: Request, under: str = "", kinds: str = "", source: str = "auto") -> JSONResponse:
+    async def targets_route(request: Request, under: str = "", kinds: str = "", source: str = "auto") -> JSONResponse:
         """source=inventory: the static list only; console: the open console's live list (503 when none); auto: live, else static."""
-        if source != "inventory":
-            audience, name = audience_of(request)
-            live = await run_in_threadpool(guarded, {"$axf": cc.FRAME, "verb": "list", **({"address": under} if under else {})}, name, audience, grants_of(request))
-            if live.get("source") == "inventory" and source != "console":
-                live = {"ok": False}
-            if live.get("ok"):
-                ks = _kinds(kinds)
-                ts = [t for t in live.get("targets") or [] if not ks or t.get("kind") in ks]
-                return answer({"$axf": cc.TARGETS_FRAME, "ok": True, "source": "console", "client": live.get("client"), "view": live.get("view"), "targets": ts, "state": live.get("state")})
-            if source == "console":
-                return answer(live)
-        return answer({"$axf": cc.TARGETS_FRAME, "ok": True, "source": "inventory", "targets": _static(under or None, _kinds(kinds)), "counts": cc.inventory().get("counts", {})})
+        audience, name = audience_of(request)
+        return answer(await run_in_threadpool(targets, under, _kinds(kinds), source, name, audience, grants_of(request)))
 
     @r.get("/state")
     async def state(request: Request, address: str = "") -> JSONResponse:
