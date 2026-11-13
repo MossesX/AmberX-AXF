@@ -2299,5 +2299,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "context-lead@1: rt.contextExtras keys '^:<name>' lead every context menu above one separator (core/engines/windows.ts withContextLead, react Overlays ContextMenuHost; any target, even contributions:false, right-click and long-press). The console registers Console settings (app.settings, folding the asset's own Settings in) plus console.settings.open for search, voice, MCP and CLI; help entries; checks spec/check-context-lead.mts + apps/console-web/scripts/console-settings-menu.mts. Kotlin twin deferred."
+  },
+  "cx.skin.animations": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Skin animations (build skin-animations-swatches-skin-switch): behaviour-theme motion.swatches / skinSwitch / picker / animSpeed / animIntensity (core/engines/animation-rules.mjs + behavior.ts) compiled to --fx-anim-* tokens, off under reduced motion; Swatches rows on skin cards, the skin-switch View Transition ripple / sweep / fade from the tap point, SwatchFan colour pickers (ColorField, colour settings, Theme manager, Explorer); per-skin sets in the behaviour themes; Settings → Appearance → Animations. API: rt.animations / setAnimation / resetAnimations, actions animations.set|off|reset|state|open (console.actions run: REST /api/control, MCP control, axf control, voice), CLI framework/cli/animations.mjs. Check spec/check-skin-animations.mts, fixture skin-animations.json. Kotlin twin deferred."
   }
 }

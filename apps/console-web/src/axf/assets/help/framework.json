@@ -694,7 +694,7 @@
         "target": "animations",
         "title": "Animations",
         "text": "Off cuts down the motion.",
-        "kind": "field"
+        "kind": "card"
       },
       {
         "target": "lock-the-look",
@@ -1538,6 +1538,63 @@
         "target": "apply-layout",
         "title": "Apply layout",
         "text": "Lays the open tabs out on the layout you picked, spread evenly over its panes. The pane limit holds: a layout with more panes uses only its first ones."
+      },
+      {
+        "target": "action:animations.set",
+        "title": "Set a skin animation",
+        "text": "Changes one skin animation in this app: the colour swatches (wave, ripple, pop), the skin switch (ripple, sweep, fade), the colour picker (fan, pop), or speed (25 to 400 percent) and intensity (0 to 100). 'skin' puts the skin's own back.",
+        "more": "Every skin's behaviour theme carries its own animations; this only lays this app's picks over them. Reduced motion always wins: nothing moves while it is on.",
+        "tryIt": "animations.set:swatches:ripple",
+        "related": [
+          "action:animations.reset",
+          "action:animations.open"
+        ],
+        "kind": "control"
+      },
+      {
+        "target": "action:animations.off",
+        "title": "Turn skin animations off",
+        "text": "Turns one skin animation off (swatches, skinSwitch or picker), or all three when none is named.",
+        "related": [
+          "action:animations.set"
+        ],
+        "kind": "control"
+      },
+      {
+        "target": "action:animations.reset",
+        "title": "Animations back to the skin's",
+        "text": "Drops every animation pick this app made, so the skin's own animations play again.",
+        "related": [
+          "action:animations.set"
+        ],
+        "kind": "control"
+      },
+      {
+        "target": "action:animations.state",
+        "title": "Which animations are on",
+        "text": "Says which skin animations play here, their style, the speed and the intensity, and whether reduced motion has stopped them.",
+        "kind": "control"
+      },
+      {
+        "target": "action:animations.open",
+        "title": "Animations settings",
+        "text": "Opens Settings → Appearance, at the Animations section.",
+        "related": [
+          "view:settings"
+        ],
+        "kind": "control"
+      },
+      {
+        "target": "animation-speed",
+        "title": "Animation speed",
+        "text": "How fast the skin animations play, as a percent of normal: 25 is slow and dreamy, 400 is a quick flick. The skin sets its own; moving this makes it this app's pick.",
+        "kind": "slider"
+      },
+      {
+        "target": "animation-intensity",
+        "title": "Animation intensity",
+        "text": "How far the skin animations move: 0 keeps everything still, 100 is the full wave, ripple and fan. The skin sets its own; moving this makes it this app's pick.",
+        "kind": "slider"
       }
     ],
     "intros": [

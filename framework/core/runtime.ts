@@ -3052,6 +3052,10 @@ export class AxfRuntime {
     a.register('animations.set', ([key, value]) => { if (key) this.setAnimation(key, value ?? 'skin'); }, { label: 'Set a skin animation (swatches, skinSwitch, picker, speed, intensity)', requires: 'assets.swap', params: true });
     a.register('animations.off', ([key]) => { if (key) this.setAnimation(key, 'off'); else for (const k of ['swatches', 'skinSwitch', 'picker']) this.setAnimation(k, 'off'); }, { label: 'Turn a skin animation off (all when none named)', requires: 'assets.swap', params: true });
     a.register('animations.reset', () => { this.resetAnimations(); }, { label: "Skin animations back to the skin's", requires: 'assets.swap' });
+    a.register('animations.state', () => {
+      const st = this.animations();
+      this.toast(`${st.animations.map((x) => `${x.label}: ${x.on ? x.value : 'off'}`).join(' · ')} · speed ${st.speed}% · intensity ${st.intensity}${st.reduced ? ' (reduced motion)' : ''}`, 'info', 'Animations');
+    }, { label: 'Which skin animations are on' });
     a.register('animations.open', () => { this.actions.dispatch('settings.open:appearance', { runtime: this }); }, { label: 'Open Settings → Appearance → Animations' });
     // skin.color:<colour theme> switches the colour theme inside the skin in force (the skin stays the same skin; nothing
     // is created); skin.color:default goes back to the skin's own colours; skin.color:<ui|plugin>:<id>:<theme|default> = one scope

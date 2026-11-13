@@ -16,6 +16,8 @@
  */
 import type { BehaviorThemeData } from '../types';
 import type { StyleOutput } from './components';
+import { ANIMATION_ENUMS, ANIMATION_RANGES, SKIN_ANIMATIONS, animationStateOf, applyAnimationPrefs, type AnimationState } from './animation-rules.mjs';
+export { ANIMATION_DEFAULTS, ANIMATION_ENUMS, ANIMATION_PREF_KEYS, ANIMATION_PREFS_KEY, ANIMATION_RANGES, SKIN_ANIMATIONS, animationStateOf, applyAnimationPrefs, normalizeAnimationMotion, normalizeAnimationPrefs, setAnimationPref, type AnimationPrefKey, type AnimationPrefs, type AnimationState, type SkinAnimationKey } from './animation-rules.mjs';
 
 export const BEHAVIOR_TYPE = 'behavior-theme';
 
@@ -25,9 +27,9 @@ export const BEHAVIOR_ENUMS = {
   'motion.easing': ['standard', 'emphasized', 'linear', 'spring', 'bounce'],
   'motion.reduced': ['system', 'always', 'never'],
   'motion.entrance': ['theme', 'none', 'fade', 'rise', 'scale'],
-  'motion.swatches': ['wave', 'ripple', 'pop', 'off'],
-  'motion.skinSwitch': ['ripple', 'sweep', 'fade', 'off'],
-  'motion.picker': ['fan', 'pop', 'off'],
+  'motion.swatches': ANIMATION_ENUMS.swatches,
+  'motion.skinSwitch': ANIMATION_ENUMS.skinSwitch,
+  'motion.picker': ANIMATION_ENUMS.picker,
   'interaction.hover': ['theme', 'none', 'tint', 'lift', 'glow', 'underline'],
   'interaction.press': ['theme', 'none', 'shrink', 'darken', 'ripple'],
   'interaction.focusRing': ['auto', 'always', 'never'],
@@ -46,8 +48,8 @@ export const BEHAVIOR_ENUMS = {
 
 /** Number fields: [min, max]. */
 export const BEHAVIOR_RANGES = {
-  'motion.animSpeed': [25, 400],
-  'motion.animIntensity': [0, 100],
+  'motion.animSpeed': ANIMATION_RANGES.animSpeed,
+  'motion.animIntensity': ANIMATION_RANGES.animIntensity,
   'interaction.longPressMs': [250, 1500],
   'interaction.doubleTapMs': [150, 700],
   'interaction.dragThreshold': [0, 24],
@@ -72,16 +74,8 @@ export const DEFAULT_BEHAVIOR: BehaviorThemeData = {
 export const MOTION_MS: Record<string, number> = { instant: 0, fast: 90, normal: 160, slow: 260, relaxed: 380 };
 /**
  * The skin animations (colour swatches that wave, the skin-switch ripple / sweep, the colour picker that fans out
- * into shades). Each is an on/off-able field of `motion`, so a skin's behaviour theme carries its own set; speed is a
- * percent of normal and intensity how far things move (0 to 100).
+ * into shades): fields of `motion` (core/engines/animation-rules.mjs), so a skin's behaviour theme carries its own set.
  */
-export const SKIN_ANIMATIONS = [
-  { key: 'swatches', label: 'Colour swatches', attr: 'data-fx-anim-swatches', help: 'Skin cards: the swatch row waves or ripples on hover or tap.' },
-  { key: 'skinSwitch', label: 'Skin switch', attr: 'data-fx-anim-skin-switch', help: 'Switching skins: the new colours ripple or sweep across the screen from where you tapped.' },
-  { key: 'picker', label: 'Colour picker', attr: 'data-fx-anim-picker', help: 'Colour pickers: the picked swatch pops and fans out into its shades, the colour morphs.' },
-] as const;
-export type SkinAnimationKey = (typeof SKIN_ANIMATIONS)[number]['key'];
-
 /** The animation tokens (CSS vars) every skin animation reads: duration, easing, intensity, speed and stagger. */
 export function skinAnimationVars(b: BehaviorThemeData): Record<string, string> {
   const speed = b.motion.animSpeed > 0 ? b.motion.animSpeed : 100;
@@ -207,75 +201,16 @@ export function vibrationPattern(raw: unknown, kind: 'tap' | 'success' | 'warnin
   return kind === 'tap' ? [base] : kind === 'success' ? [base, 40, base] : [base * 2, 60, base * 2, 60, base * 2];
 }
 
-/**
- * Settings → Appearance → Animations: this app's own picks over the skin's (the behaviour theme the skin carries).
- * One settings value under ANIMATION_PREFS_KEY; a field that is missing or `skin` keeps the skin's choice.
- */
-export const ANIMATION_PREFS_KEY = 'axf.appearance.animations';
-export interface AnimationPrefs { swatches?: string; skinSwitch?: string; picker?: string; speed?: number; intensity?: number }
-export const ANIMATION_PREF_KEYS = ['swatches', 'skinSwitch', 'picker', 'speed', 'intensity'] as const;
-export type AnimationPrefKey = (typeof ANIMATION_PREF_KEYS)[number];
-
-/** Only valid picks survive; anything else is dropped (= the skin's). */
-export function normalizeAnimationPrefs(raw: unknown): AnimationPrefs {
-  const out: AnimationPrefs = {};
-  if (!isObj(raw)) return out;
-  for (const a of SKIN_ANIMATIONS) {
-    const v = raw[a.key];
-    if (typeof v === 'string' && (BEHAVIOR_ENUMS[`motion.${a.key}`] as readonly string[]).includes(v)) out[a.key] = v;
-  }
-  const num = (v: unknown, [min, max]: readonly [number, number]) => (typeof v === 'number' && Number.isFinite(v) ? Math.round(Math.min(max, Math.max(min, v))) : undefined);
-  const speed = num(raw.speed, BEHAVIOR_RANGES['motion.animSpeed']);
-  const intensity = num(raw.intensity, BEHAVIOR_RANGES['motion.animIntensity']);
-  if (speed !== undefined) out.speed = speed;
-  if (intensity !== undefined) out.intensity = intensity;
-  return out;
-}
-
-/** One pick changed: `skin` (or null) drops it back to the skin's. Returns null when the value isn't allowed. */
-export function setAnimationPref(prefs: unknown, key: string, value: unknown): AnimationPrefs | null {
-  if (!(ANIMATION_PREF_KEYS as readonly string[]).includes(key)) return null;
-  const cur = normalizeAnimationPrefs(prefs) as Record<string, unknown>;
-  if (value === null || value === undefined || value === 'skin') { delete cur[key]; return cur as AnimationPrefs; }
-  const v = key === 'speed' || key === 'intensity' ? (typeof value === 'string' && value.trim() !== '' ? Number(value) : value) : value;
-  const next = normalizeAnimationPrefs({ ...cur, [key]: v }) as Record<string, unknown>;
-  if (!(key in next)) return null;
-  return next as AnimationPrefs;
-}
-
-/** The behaviour theme with this app's animation picks laid over it. */
+/** The behaviour theme with this app's animation picks (Settings → Appearance → Animations) laid over it. */
 export function withAnimationPrefs(raw: unknown, prefs: unknown): BehaviorThemeData {
   const b = normalizeBehavior(raw);
-  const p = normalizeAnimationPrefs(prefs);
-  const m = b.motion as unknown as Record<string, unknown>;
-  for (const a of SKIN_ANIMATIONS) if (p[a.key]) m[a.key] = p[a.key];
-  if (p.speed !== undefined) b.motion.animSpeed = p.speed;
-  if (p.intensity !== undefined) b.motion.animIntensity = p.intensity;
+  Object.assign(b.motion, applyAnimationPrefs(b.motion, prefs));
   return b;
-}
-
-export interface AnimationState {
-  reduced: boolean;
-  speed: number;
-  intensity: number;
-  animations: { key: SkinAnimationKey; label: string; help: string; value: string; skin: string; own: boolean; on: boolean; options: string[] }[];
-  prefs: AnimationPrefs;
 }
 
 /** What the Animations section, the API and voice read: each animation's value, the skin's, and whether it plays. */
 export function animationState(raw: unknown, prefs: unknown, prefersReduced = false): AnimationState {
-  const skin = normalizeBehavior(raw);
-  const p = normalizeAnimationPrefs(prefs);
-  const eff = withAnimationPrefs(raw, p);
-  const reduced = eff.motion.reduced === 'always' || (eff.motion.reduced === 'system' && prefersReduced);
-  return {
-    reduced,
-    speed: eff.motion.animSpeed,
-    intensity: eff.motion.animIntensity,
-    prefs: p,
-    animations: SKIN_ANIMATIONS.map((a) => {
-      const value = String(eff.motion[a.key]);
-      return { key: a.key, label: a.label, help: a.help, value, skin: String(skin.motion[a.key]), own: !!p[a.key], on: !reduced && eff.motion.animIntensity > 0 && value !== 'off', options: [...BEHAVIOR_ENUMS[`motion.${a.key}`]] };
-    }),
-  };
+  const b = normalizeBehavior(raw);
+  const reduced = b.motion.reduced === 'always' || (b.motion.reduced === 'system' && prefersReduced);
+  return animationStateOf(b.motion, prefs, reduced);
 }
