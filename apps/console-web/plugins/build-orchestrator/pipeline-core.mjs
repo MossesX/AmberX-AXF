@@ -367,12 +367,28 @@ export function splitPrompt(b, rules = { maxStepMinutes: STEP_MINUTES }) {
     `You are the AmberX AXF build orchestrator. Split the build below into small steps a headless Claude Code session does one after another in one repo checkout.`,
     `Steps are checkpoints inside ONE session, not separate launches: the session works through them in order, commits and ticks each one as it finishes it, so nothing is lost if it dies; no step gets its own prompt or relaunch. Small steps cost nothing extra, so cut fine.`,
     `Rules: every step ${max} minutes or less, with an estimate; 3 to 40 steps; each step is one concrete piece of work naming the files or folders it touches and ending in something that can be committed; anything bigger than ${max} minutes is cut into several steps; the last step is tests, report (_claude/builds/reports/<build id>.md), THREADS row and PR.`,
+    `UI Review is not a gate (Nov 13 2026): never add a step to submit to UI Review, take approval screenshots or wait for an approval; the PR opens ready for review.`,
     `API rule: ${API_RULE} So every step that adds or changes UI names its API part (deep link, state read, actions, settings; REST + MCP + CLI + voice) in the same step or the step right after it.`,
     `Model per step, Opus by default. Fable ONLY for: ${MODEL_GUIDE.Fable} Opus for: ${MODEL_GUIDE.Opus} Put Fable steps first when the work allows, so the build switches model at most once.`,
     `Answer with JSON only, no prose: {"steps":[{"text":"…","model":"Fable|Opus","estimate":"<n> min","why":"<one line when Fable>","files":["…"]}]}`,
     '', `Build id: ${b.id}`, `Title: ${str(b.title, 300)}`, b.category ? `Category: ${str(b.category, 60)}` : '', b.detail ? `Details:\n${str(b.detail, 8000)}` : '',
     said ? `Brett said (verbatim):\n${said}` : '', addenda,
   ].filter(Boolean).join('\n');
+}
+
+/**
+ * UI Review is not a gate (Brett, Nov 13 2026): a step whose only job is UI Review (submit shots, approval screenshots,
+ * options made for review) is dropped from a split and skipped in the store (ui-review-steps migration). Such a step
+ * leads with it ("UI Review…", "Screenshots…", "Submit … to UI Review", "Capture … screenshots") and names no other
+ * work (code, tests, report, THREADS, PR, docs, API, a migration, checks…). Conservative: when in doubt it stays.
+ */
+const UI_REVIEW_LEAD = /^(?:s\d+[a-z]?\s*[:.-]?\s*)?(?:ui[ -]?review\b|(?:desktop|phone)\s*(?:\+|and)\s*(?:desktop|phone)\s+(?:screenshots|shots)\b|screenshots?\b|(?:submit|post|send)\b[^.]*\bui[ -]?review\b|(?:capture|take|shoot)\b[^.]*\b(?:screenshots|shots)\b)/i;
+const OTHER_WORK = /\b(?:reports?|threads|prs?|pull requests?|tests?|type-?check\w*|readme|docs?|help|rules?|migrat\w+|api|rest|mcp|cli|voice|implement\w*|wire\w*|schemas?|stores?|checks?|ci|deploy\w*|merge\w*|status|install\w*|fix\w*|code|server|routes?|plugin\.json|commands?|gaps?|gate|draft|splitter|then build)\b|\(ui-review\)/i;
+export const UI_REVIEW_SKIP_NOTE = 'UI Review no longer a gate';
+export function uiReviewOnlyStep(text) {
+  // file paths and inline code name tools, not work: `review.mjs submit --choices`, apps/…/assets/<type>/
+  const t = String(text ?? '').replace(/`[^`]*`/g, ' ').replace(/\S*\/\S*/g, ' ').replace(/\s+/g, ' ').trim();
+  return /\bui[ -]?review\b|review\.mjs/i.test(String(text ?? '')) && UI_REVIEW_LEAD.test(t) && !OTHER_WORK.test(t);
 }
 
 const EST_RE = /^\s*(\d+(?:\.\d+)?)\s*(m|min|mins|minutes?|h|hr|hrs|hours?)?\s*$/i;
@@ -394,9 +410,11 @@ export function parseSplit(text, rules = { maxStepMinutes: STEP_MINUTES }) {
     const est = typeof r?.estimate === 'number' ? `${Math.round(r.estimate)} min` : str(r?.estimate, 20).trim();
     const m = EST_RE.exec(est); const minutes = m ? Math.round(Number(m[1]) * (/^h/i.test(m[2] || '') ? 60 : 1)) : null;
     if (minutes == null) problems.push(`step ${i + 1} has no estimate`); else if (minutes > max) problems.push(`step ${i + 1} is ${minutes} min (limit ${max})`);
+    if (uiReviewOnlyStep(text)) return; // UI Review is not a gate (Nov 13 2026): no step only for it
     const model = modelKey(r?.model) === FOUNDATION_MODEL ? 'Fable' : 'Opus';
-    steps.push({ id: `s${i + 1}`, text, model, estimate: minutes != null ? `${minutes} min` : '', why: str(r?.why, 300), files: list(r?.files).map((f) => str(f, 300)).filter(Boolean).slice(0, 30), checks: list(r?.checks).map((f) => str(f, 300)).filter(Boolean).slice(0, 20) });
+    steps.push({ id: `s${steps.length + 1}`, text, model, estimate: minutes != null ? `${minutes} min` : '', why: str(r?.why, 300), files: list(r?.files).map((f) => str(f, 300)).filter(Boolean).slice(0, 30), checks: list(r?.checks).map((f) => str(f, 300)).filter(Boolean).slice(0, 20) });
   });
+  if (!steps.length && !problems.length) return { steps: [], error: 'no steps in the answer besides UI Review (not a gate)' };
   return problems.length ? { steps, error: problems.join('; ') } : { steps, error: '' };
 }
 
