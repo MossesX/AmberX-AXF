@@ -8,7 +8,7 @@
     "tabs": 78,
     "settingsTabs": 68,
     "settings": 85,
-    "functions": 236,
+    "functions": 239,
     "buttons": 62,
     "plugins": 68
   },
@@ -1474,7 +1474,7 @@
       "view": "icon-map",
       "plugin": "ai.amberx.axf.console.icon-map",
       "file": "plugins/icon-map/web/IconMapView.tsx",
-      "line": 191,
+      "line": 200,
       "tabs": [
         {
           "address": "view:icon-map/tab:icon-map.mode=tree",
@@ -5332,6 +5332,59 @@
         "refresh"
       ],
       "effect": "read",
+      "plugin": "ai.amberx.axf.console.icon-map",
+      "file": "plugins/icon-map/web/index.tsx"
+    },
+    {
+      "address": "function:icon-map.slot.restore",
+      "kind": "function",
+      "id": "icon-map.slot.restore",
+      "label": "Restore one slot (previous edit or axHub)",
+      "detail": "Action · Icon map",
+      "keywords": [
+        "icon-map.slot.restore",
+        "icon",
+        "map",
+        "slot",
+        "restore"
+      ],
+      "effect": "write",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.icon-map",
+      "file": "plugins/icon-map/web/index.tsx"
+    },
+    {
+      "address": "function:icon-map.pack.restore",
+      "kind": "function",
+      "id": "icon-map.pack.restore",
+      "label": "Restore the icon pack (previous edit or axHub)",
+      "detail": "Action · Icon map",
+      "keywords": [
+        "icon-map.pack.restore",
+        "icon",
+        "map",
+        "pack",
+        "restore"
+      ],
+      "effect": "write",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.icon-map",
+      "file": "plugins/icon-map/web/index.tsx"
+    },
+    {
+      "address": "function:icon-map.template",
+      "kind": "function",
+      "id": "icon-map.template",
+      "label": "Download the icon pack template",
+      "detail": "Action · Icon map",
+      "keywords": [
+        "icon-map.template",
+        "icon",
+        "map",
+        "template"
+      ],
+      "effect": "read",
+      "params": true,
       "plugin": "ai.amberx.axf.console.icon-map",
       "file": "plugins/icon-map/web/index.tsx"
     },

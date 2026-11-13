@@ -25,10 +25,27 @@ the place draws now, through the runtime, so a pack switch or a pick shows at on
 previews at three sizes, why it draws what it draws (pick, pack role, pack glyph, framework, fallback) and a glyph
 grid; one click on a glyph changes that place.
 
+## The template
+
+One icon-pack@1 file maps every role in the map (168 today: the framework vocabulary, every glyph as a role of its
+own name, and each plugin's declared roles) to a glyph, plus the glyph art. Change a role's line to change every place
+of that role; apply the pack to change every icon at once. Get it with **Download template** on the page,
+`GET /api/plugins/icon-map/template?from=<pack>`, MCP `icon-map_template`, `node framework/cli/icon-map.mjs template
+--from <pack> --out my-pack.json`, or by voice ("download the icon pack template").
+
+## Restore
+
+Each slot and the pack keep their edit history (`prev` on every history row). **Restore previous edit** goes back one
+edit; a restore counts as an edit, so pressing it again goes forward. **Restore from axHub** uses the icons axHub's
+look document held when the console last loaded the look (the open console sends that copy to `PUT /hub-copy`; with
+axHub sync off there is none and the route answers 503 with the steps). REST `POST /slot/{id}/restore {from}`,
+`POST /pack/restore {from}`; actions `icon-map.slot.restore:<slot>:previous|hub`, `icon-map.pack.restore:previous|hub`;
+voice "restore the previous icon pack", "restore the icons from axhub".
+
 ## State
 
 `icons.json` in the plugin's data folder (`.axf-console/plugins/icon-map/`, or `AXF_ICON_MAP_DIR`):
-`{ "pack": "<icon-pack id or ''>", "slots": { "<slot id>": "<glyph>" } }`. The open console reads it on load and
+`{ "pack": "<icon-pack id or ''>", "slots": { "<slot id>": "<glyph>" }, "history": [...], "hub": { "pack", "slots", "at" } }`. The open console reads it on load and
 every few seconds, and writes it back when a pick is made on screen, so REST, MCP, CLI, voice and the page agree.
 The runtime keys are `axf.icons.pack.app` (the skin engine's own key) and `axf.icons.slot.<slot id>`.
 

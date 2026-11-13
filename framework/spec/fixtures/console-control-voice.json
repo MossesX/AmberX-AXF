@@ -218,7 +218,21 @@
       "value": true
     },
     "what time is it": null,
-    "": null
+    "": null,
+    "restore the previous icon pack": {
+      "verb": "press",
+      "address": "function:icon-map.pack.restore",
+      "value": "previous"
+    },
+    "restore the icons from axhub": {
+      "verb": "press",
+      "address": "function:icon-map.pack.restore",
+      "value": "hub"
+    },
+    "download the icon pack template": {
+      "verb": "press",
+      "address": "function:icon-map.template"
+    }
   },
   "commands": {
     "switch to the duotone icon pack": {
@@ -339,6 +353,20 @@
       "verb": "set",
       "address": "view:build-orchestrator/grid:builds/row:b1",
       "value": true
+    },
+    "restore the previous icon pack": {
+      "verb": "press",
+      "address": "function:icon-map.pack.restore",
+      "value": "previous"
+    },
+    "restore the icons from axhub": {
+      "verb": "press",
+      "address": "function:icon-map.pack.restore",
+      "value": "hub"
+    },
+    "download the icon pack template": {
+      "verb": "press",
+      "address": "function:icon-map.template"
     }
   },
   "replies": {

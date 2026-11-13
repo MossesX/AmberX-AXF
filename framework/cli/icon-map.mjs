@@ -13,6 +13,9 @@
  *   node framework/cli/icon-map.mjs packs [--json]                   every icon-pack@1 asset: style, themable, covers, roles, glyphs
  *   node framework/cli/icon-map.mjs resolve <name> [--slot id] [--role r] [--pack id] [--json]   what a place draws, and why
  *   node framework/cli/icon-map.mjs check [--update-baseline] [--json]   CI: fails on a hard-coded icon not in the map (framework/cli/check-icons.mjs runs this)
+ *   node framework/cli/icon-map.mjs template [--from pack] [--id id] [--name n] [--style s] [--fixed] [--out file] [--json]
+ *                                                                   an icon-pack@1 file mapping EVERY role to a glyph (the
+ *                                                                   from-pack's mapping, else the role default): edit, import, apply
  *   node framework/cli/icon-map.mjs schemas                          the contract's JSON Schemas
  *
  * AXF_ROOT points at another checkout (tests). Exit codes: 0 ok · 1 failed · 2 usage.
@@ -24,7 +27,7 @@ import {
   ICON_MAP_FRAME, ICON_OWNER_KINDS, ICON_ROLE_GROUPS, ICON_SLOT_KINDS, ICON_SOURCES, ICON_SURFACES, ICON_ROLES,
   allRoles, buildIconMap, iconMapCheck, iconMapSchemas, iconMapSearch, iconMapTree, resolveIcon, scanRawIcons,
 } from '../core/engines/icon-map-rules.mjs';
-import { GLYPH_ALIASES, GLYPH_FALLBACK, GLYPH_NAMES } from '../core/engines/glyphs.mjs';
+import { GLYPHS, GLYPH_ALIASES, GLYPH_FALLBACK, GLYPH_NAMES } from '../core/engines/glyphs.mjs';
 import { normalizeIconPack } from '../core/engines/brand-rules.mjs';
 
 export const ROOT = resolve(process.env.AXF_ROOT || join(dirname(fileURLToPath(import.meta.url)), '../..'));
@@ -166,6 +169,48 @@ export function runCheck({ updateBaseline = false } = {}) {
   return { ...r, slots: map.slots.length, unknown: map.unknown.length, raws: raws.length, files: Object.keys(r.baseline.files).length };
 }
 
+/* ------------------------------------------------------------------ template */
+
+const PACK_STYLES = ['outline', 'filled', 'duotone', 'sharp', 'rounded'];
+
+/**
+ * The icon pack template: one icon-pack@1 file whose `roles` names every role in the map (framework vocabulary, every
+ * glyph as a role of its own name, and every plugin's declared roles) with the glyph it draws: the base pack's role
+ * mapping when one is given, else the role's default. Applying the file changes every icon in the app at once; editing
+ * one line changes every place of that role. `glyphs` is the base pack's art, else every framework glyph's path, so the
+ * file is also the place to redraw any glyph.
+ */
+export function packTemplate({ from = '', id = '', name = '', style = '', themable = true, roles = null } = {}) {
+  const all = roles ?? buildMap().roles;
+  const baseRow = from ? readPacks().find((x) => x.id === from) : null;
+  if (from && !baseRow) return { ok: false, message: `no icon pack "${from}"` };
+  const base = baseRow ? readJson(join(ROOT, baseRow.file)) : null;
+  const bd = base?.data ?? {};
+  const map = {};
+  for (const r of Object.keys(all).sort()) map[r] = (bd.roles && typeof bd.roles[r] === 'string' && bd.roles[r]) || all[r].glyph;
+  const st = PACK_STYLES.includes(style) ? style : (PACK_STYLES.includes(bd.style) ? bd.style : 'outline');
+  const pid = (id || (base ? `${base.id}-custom` : 'my-icon-pack')).toLowerCase().replace(/[^a-z0-9-]+/g, '-').slice(0, 64);
+  return {
+    ok: true,
+    pack: {
+      $axf: 'asset@1', type: 'icon-pack', id: pid,
+      name: name || (base ? `${base.name ?? base.id} (custom)` : 'My icon pack'),
+      version: '1.0.0',
+      description: `Icon pack template: every role in the icon map (${Object.keys(map).length}) mapped to a glyph${base ? `, starting from ${base.id}` : ''}. Change a role's glyph to change every place of that role; apply the pack to change every icon at once.`,
+      author: 'icon-map template',
+      tags: ['icon-pack', st, themable ? 'themable' : 'fixed-colour', 'template'],
+      data: {
+        style: st, grid: bd.grid ?? 24, stroke: bd.stroke ?? 1.8, linecap: bd.linecap ?? 'round', fallback: 'framework',
+        themable: base ? bd.themable !== false : !!themable,
+        covers: Array.isArray(bd.covers) && bd.covers.length ? bd.covers : ['icons', 'badges', 'logos'],
+        license: bd.license ?? { name: 'MIT', url: 'https://opensource.org/licenses/MIT' },
+        roles: map,
+        glyphs: bd.glyphs && typeof bd.glyphs === 'object' && Object.keys(bd.glyphs).length ? bd.glyphs : { ...GLYPHS },
+      },
+    },
+  };
+}
+
 /* ------------------------------------------------------------------ CLI */
 
 function flagsOf(argv) {
@@ -254,6 +299,13 @@ export async function main(argv = process.argv.slice(2)) {
       for (const w of r.warnings) console.log(`\x1b[33m! ${w}\x1b[0m`);
       console.log(r.ok ? `\x1b[32m✓ icon map: ${r.slots} slots, every icon in the map; ${r.raws} raw icons in ${r.files} files held by the baseline\x1b[0m` : `\x1b[31m✗ icon map: ${r.failures.length} problem(s)\x1b[0m`);
       return r.ok ? 0 : 1;
+    }
+    case 'template': {
+      const r = packTemplate({ from: typeof flags.from === 'string' ? flags.from : '', id: typeof flags.id === 'string' ? flags.id : '', name: typeof flags.name === 'string' ? flags.name : '', style: typeof flags.style === 'string' ? flags.style : '', themable: !flags.fixed });
+      if (!r.ok) { console.error(r.message); return 1; }
+      const text = `${JSON.stringify(r.pack, null, 2)}\n`;
+      if (typeof flags.out === 'string') { writeFileSync(resolve(flags.out), text); if (!json) { console.log(`wrote ${flags.out}: ${Object.keys(r.pack.data.roles).length} roles`); return 0; } }
+      return json ? out(r.pack) : (process.stdout.write(text), 0);
     }
     case 'schemas': return out(iconMapSchemas());
     default:

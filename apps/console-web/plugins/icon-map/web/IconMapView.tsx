@@ -83,8 +83,12 @@ function SlotPanel({ slotId, slots, onClose }: { slotId: string; slots: Slot[]; 
         <p className="axp-icon-map__summary">Draws {res.glyph} (decided by {res.via}){picked ? `, picked by hand` : ''}.</p>
         <div className="axp-icon-map__bar">
           <div className="axp-icon-map__grow"><TextField label="Find a glyph" value={find} onChange={(v: string) => setFind(v)} placeholder="check, star, user…" /></div>
-          {picked ? <Button icon="undo" onClick={() => rt.dispatch(`icon-map.slot.clear:${slotId}`)}>Clear pick</Button> : null}
           <Button icon="x" onClick={onClose}>Close</Button>
+        </div>
+        <div className="axp-icon-map__bar" role="toolbar" aria-label="Slot edits">
+          {picked ? <Button size="sm" icon="x" onClick={() => rt.dispatch(`icon-map.slot.clear:${slotId}`)}>Clear pick</Button> : null}
+          <Button size="sm" icon="undo" onClick={() => rt.dispatch(`icon-map.slot.restore:${slotId}:previous`)}>Restore previous edit</Button>
+          <Button size="sm" icon="cloud" onClick={() => rt.dispatch(`icon-map.slot.restore:${slotId}:hub`)}>Restore from axHub</Button>
         </div>
         <div className="axp-icon-map__grid" role="listbox" aria-label="Glyphs">
           {glyphs.map((g) => (
@@ -180,7 +184,12 @@ export function IconMapView() {
             <SelectField label="Pack" value={pickPack || activePack} onChange={(v: string) => setPickPack(v)} options={[{ value: '', label: 'Framework glyphs (branding default)' }, ...packs.map((p) => ({ value: p.id, label: `${p.name} · ${p.style}${p.themable ? ' · themable' : ' · fixed colour'}` }))]} />
           </div>
           <Button tone="primary" icon="check" onClick={() => { if (pickPack || activePack) rt.dispatch(`icon-map.pack.use:${pickPack || activePack}`); }} disabled={!packs.length}>Use pack</Button>
-          <Button icon="undo" onClick={() => rt.dispatch('icon-map.pack.clear')} disabled={!activePack}>Back to branding pack</Button>
+          <Button icon="x" onClick={() => rt.dispatch('icon-map.pack.clear')} disabled={!activePack}>Back to branding pack</Button>
+        </div>
+        <div className="axp-icon-map__bar" role="toolbar" aria-label="Pack edits and template">
+          <Button size="sm" icon="undo" onClick={() => rt.dispatch('icon-map.pack.restore:previous')}>Restore previous pack</Button>
+          <Button size="sm" icon="cloud" onClick={() => rt.dispatch('icon-map.pack.restore:hub')}>Restore pack from axHub</Button>
+          <Button size="sm" icon="download" onClick={() => rt.dispatch(`icon-map.template:${pickPack || activePack}`)}>Download template</Button>
         </div>
         <p className="axp-icon-map__summary">In force: {packLabel}. {nPicked} place{nPicked === 1 ? '' : 's'} picked by hand.</p>
       </Container>

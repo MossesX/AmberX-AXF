@@ -493,6 +493,10 @@ def voice_intent(text: Any) -> dict[str, Any] | None:
     if m := re.match(r"^(?:turn|switch)(?: the)? (.+?) plugin (on|off)$", p):
         return {"verb": "plugin.enable" if m.group(2) == "on" else "plugin.disable", "find": {"q": _strip(m.group(1)), "kinds": ["plugin"]}}
     # icon packs (icon-map@1, the Icon map plugin's actions; twin of the rules in console-control-voice.mjs, before the generic set rule)
+    if re.match(r"^(?:restore|undo|bring back)(?: the)? (?:previous |last |old )?(?:icon pack|icons|icon set)(?: change)?(?: from (?:axhub|the hub))?$", p):
+        return {"verb": "press", "address": "function:icon-map.pack.restore", "value": "hub" if re.search(r"from (?:axhub|the hub)$", p) else "previous"}
+    if re.match(r"^(?:download|get|make|give me)(?: the| an| a)? icon (?:pack )?template$", p):
+        return {"verb": "press", "address": "function:icon-map.template"}
     if re.match(r"^(?:(?:switch|go|change|set) )?(?:back )?(?:to |use )?(?:the )?(?:default|original|normal|branding|standard|framework) (?:icon pack|icons|icon set)$", p) or re.match(r"^(?:reset|clear|drop) (?:the )?(?:icon pack|icons|icon set)$", p):
         return {"verb": "press", "address": "function:icon-map.pack.clear"}
     m = re.match(r"^(?:switch to|use|apply|turn on|put on|go to|change to|set)(?: the)? (.+?) (?:icon pack|icons|icon set)$", p) or re.match(r"^set (?:the )?icon pack (?:to|at) (.+)$", p) or re.match(r"^(?:switch|change) (?:the )?icon pack to (.+)$", p)

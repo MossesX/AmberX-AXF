@@ -16,6 +16,10 @@ made on screen, so REST, MCP, the CLI, voice and the page agree. plugin-commands
   DELETE pack                                                            back to the branding's / skin's pack
   PUT    slot/{id}      { glyph, by?, reason? }                          one place draws this glyph
   DELETE slot/{id}                                                       drop the pick
+  GET    template       ?from&id&name&style&fixed                       an icon-pack@1 file mapping every role to a glyph
+  POST   slot/{id}/restore   { from: previous | hub, by?, reason? }      Restore previous edit / Restore from axHub
+  POST   pack/restore        { from: previous | hub, by?, reason? }      the same for the pack in force
+  PUT    hub-copy       { pack, slots, at? }                            the open console's last read of axHub's copy
 
 Data: AXF_ICON_MAP_DIR or <repo>/.axf-console/plugins/icon-map/icons.json.
 """
@@ -98,7 +102,10 @@ def read_state() -> dict[str, Any]:
     pack = raw.get("pack") if isinstance(raw.get("pack"), str) else ""
     slots = {k: v for k, v in (raw.get("slots") or {}).items() if isinstance(k, str) and SLOT_ID.match(k) and isinstance(v, str) and GLYPH.match(v)} if isinstance(raw.get("slots"), dict) else {}
     history = [h for h in (raw.get("history") or []) if isinstance(h, dict)][-HISTORY:] if isinstance(raw.get("history"), list) else []
-    return {"$axf": "icon-state@1", "pack": pack, "packKey": PACK_KEY, "slots": slots, "history": history}
+    hub = raw.get("hub") if isinstance(raw.get("hub"), dict) else None
+    if hub is not None:
+        hub = {"pack": hub.get("pack") if isinstance(hub.get("pack"), str) else "", "slots": {k: v for k, v in (hub.get("slots") or {}).items() if isinstance(k, str) and SLOT_ID.match(k) and isinstance(v, str) and GLYPH.match(v)} if isinstance(hub.get("slots"), dict) else {}, "at": str(hub.get("at") or "")[:40]}
+    return {"$axf": "icon-state@1", "pack": pack, "packKey": PACK_KEY, "slots": slots, "history": history, "hub": hub}
 
 
 def write_state(state: dict[str, Any]) -> None:
@@ -285,15 +292,17 @@ async def put_pack(request: Request) -> JSONResponse:
     state = read_state()
     by, reason = _who(request, body), str(body.get("reason") or "")
     if not words.strip():
+        prev = state["pack"]
         state["pack"] = ""
-        note(state, "pack-clear", by, reason)
+        note(state, "pack-clear", by, reason, prev=prev)
         write_state(state)
         return answer({"ok": True, "pack": "", "applied": None, "message": "back to the branding's icon pack"})
     p = await run_in_threadpool(find_pack, words)
     if not p:
         return answer(fail("not_found", f'no icon pack matches "{words}"', packs=[x.get("id") for x in packs()]))
+    prev = state["pack"]
     state["pack"] = p["id"]
-    note(state, "pack-set", by, reason, pack=p["id"])
+    note(state, "pack-set", by, reason, pack=p["id"], prev=prev)
     write_state(state)
     return answer({"ok": True, "pack": p["id"], "applied": p, "message": f"{p.get('name') or p['id']} is the icon pack"})
 
@@ -302,8 +311,9 @@ async def put_pack(request: Request) -> JSONResponse:
 async def delete_pack(request: Request) -> JSONResponse:
     body = await _body(request)
     state = read_state()
+    prev = state["pack"]
     state["pack"] = ""
-    note(state, "pack-clear", _who(request, body), str(body.get("reason") or ""))
+    note(state, "pack-clear", _who(request, body), str(body.get("reason") or ""), prev=prev)
     write_state(state)
     return answer({"ok": True, "pack": "", "message": "back to the branding's icon pack"})
 
@@ -318,8 +328,9 @@ async def put_slot(slot_id: str, request: Request) -> JSONResponse:
         return answer(fail("invalid", "body.glyph must be a glyph name (lowercase words with dashes)"))
     known = glyph in await run_in_threadpool(glyph_names)
     state = read_state()
+    prev = state["slots"].get(slot_id)
     state["slots"][slot_id] = glyph
-    note(state, "slot-set", _who(request, body), str(body.get("reason") or ""), slot=slot_id, glyph=glyph)
+    note(state, "slot-set", _who(request, body), str(body.get("reason") or ""), slot=slot_id, glyph=glyph, prev=prev)
     write_state(state)
     return answer({"ok": True, "slot": slot_id, "glyph": glyph, "known": known, **({} if known else {"warning": f'"{glyph}" is not a framework glyph; it draws only if the active pack has it'})})
 
@@ -331,6 +342,95 @@ async def delete_slot(slot_id: str, request: Request) -> JSONResponse:
         return answer(fail("invalid", "a slot id is <app>/<owner>/<surface>/<name> in lowercase words"))
     state = read_state()
     had = state["slots"].pop(slot_id, None)
-    note(state, "slot-clear", _who(request, body), str(body.get("reason") or ""), slot=slot_id)
+    note(state, "slot-clear", _who(request, body), str(body.get("reason") or ""), slot=slot_id, prev=had)
     write_state(state)
     return answer({"ok": True, "slot": slot_id, "cleared": had is not None})
+
+
+# ---------------------------------------------------------------------- template and restore
+
+@router.get("/template")
+async def get_template(request: Request) -> JSONResponse:
+    q = request.query_params
+    args = ["template"]
+    for k in ("from", "id", "name", "style"):
+        v = (q.get(k) or "").strip()[:80]
+        if v:
+            args += [f"--{k}", v]
+    if (q.get("fixed") or "").lower() in ("1", "true", "yes"):
+        args.append("--fixed")
+    r = await run_in_threadpool(cli, *args, cache=False)
+    if not r.get("ok"):
+        return answer(fail("not_found", r.get("message", "")) if "no icon pack" in str(r.get("message", "")) else r)
+    return answer({"ok": True, "pack": r["value"], "roles": len((r["value"].get("data") or {}).get("roles") or {})})
+
+
+def previous_of(state: dict[str, Any], slot: str | None) -> tuple[bool, str | None]:
+    """The value before the last edit of a slot (slot id) or of the pack (None): (found, value; None = no pick)."""
+    for h in reversed(state.get("history") or []):
+        if slot is None and h.get("what") in ("pack-set", "pack-clear", "pack-restore"):
+            return True, h.get("prev") or ""
+        if slot is not None and h.get("slot") == slot and h.get("what") in ("slot-set", "slot-clear", "slot-restore"):
+            return True, h.get("prev")
+    return False, None
+
+
+@router.post("/slot/{slot_id:path}/restore")
+async def restore_slot(slot_id: str, request: Request) -> JSONResponse:
+    body = await _body(request)
+    src = body.get("from") or "previous"
+    if not SLOT_ID.match(slot_id):
+        return answer(fail("invalid", "a slot id is <app>/<owner>/<surface>/<name> in lowercase words"))
+    if src not in ("previous", "hub"):
+        return answer(fail("invalid", "body.from is previous or hub"))
+    state = read_state()
+    if src == "previous":
+        found, value = previous_of(state, slot_id)
+        if not found:
+            return answer(fail("not_found", f"no earlier edit of {slot_id} to go back to"))
+    else:
+        if state.get("hub") is None:
+            return answer(fail("unavailable", "no axHub copy yet: open the console with axHub sync on (Settings -> Plugins -> axHub sync), it sends the hub's icons here"))
+        value = state["hub"]["slots"].get(slot_id)
+    cur = state["slots"].get(slot_id)
+    if value:
+        state["slots"][slot_id] = value
+    else:
+        state["slots"].pop(slot_id, None)
+    note(state, "slot-restore", _who(request, body), str(body.get("reason") or ""), slot=slot_id, glyph=value, prev=cur, source=src)
+    write_state(state)
+    return answer({"ok": True, "slot": slot_id, "glyph": value, "from": src, "message": f"{slot_id} draws {value}" if value else f"{slot_id} follows the pack again"})
+
+
+@router.post("/pack/restore")
+async def restore_pack(request: Request) -> JSONResponse:
+    body = await _body(request)
+    src = body.get("from") or "previous"
+    if src not in ("previous", "hub"):
+        return answer(fail("invalid", "body.from is previous or hub"))
+    state = read_state()
+    if src == "previous":
+        found, value = previous_of(state, None)
+        if not found:
+            return answer(fail("not_found", "no earlier pack change to go back to"))
+    else:
+        if state.get("hub") is None:
+            return answer(fail("unavailable", "no axHub copy yet: open the console with axHub sync on, it sends the hub's icons here"))
+        value = state["hub"]["pack"]
+    cur = state["pack"]
+    state["pack"] = value or ""
+    note(state, "pack-restore", _who(request, body), str(body.get("reason") or ""), pack=state["pack"], prev=cur, source=src)
+    write_state(state)
+    return answer({"ok": True, "pack": state["pack"], "from": src})
+
+
+@router.put("/hub-copy")
+async def put_hub_copy(request: Request) -> JSONResponse:
+    body = await _body(request)
+    pack, slots = body.get("pack"), body.get("slots")
+    if not isinstance(pack, str) or not isinstance(slots, dict):
+        return answer(fail("invalid", "body is { pack: string, slots: { slot id: glyph } }"))
+    state = read_state()
+    state["hub"] = {"pack": pack[:80], "slots": {k: v for k, v in slots.items() if isinstance(k, str) and SLOT_ID.match(k) and isinstance(v, str) and GLYPH.match(v)}, "at": str(body.get("at") or time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))[:40]}
+    write_state(state)
+    return answer({"ok": True, "slots": len(state["hub"]["slots"]), "pack": state["hub"]["pack"]})

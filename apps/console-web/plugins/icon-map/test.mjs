@@ -57,6 +57,9 @@ await test('voice: pack and slot intents (the same rules the Python twin replays
   assert.deepEqual(voiceIntent('back to the default icon pack'), { verb: 'press', address: 'function:icon-map.pack.clear' });
   assert.deepEqual(voiceIntent('reset the icons'), { verb: 'press', address: 'function:icon-map.pack.clear' });
   assert.deepEqual(voiceIntent('change the save icon to check circle'), { verb: 'press', address: 'function:icon-map.slot.set', value: 'save:check-circle' });
+  assert.deepEqual(voiceIntent('restore the previous icon pack'), { verb: 'press', address: 'function:icon-map.pack.restore', value: 'previous' });
+  assert.deepEqual(voiceIntent('restore the icons from axhub'), { verb: 'press', address: 'function:icon-map.pack.restore', value: 'hub' });
+  assert.deepEqual(voiceIntent('download the icon pack template'), { verb: 'press', address: 'function:icon-map.template' });
   assert.equal(voiceIntent('open the icon map').verb, 'open', 'opening the page stays a screen intent');
   assert.equal(voiceIntent('switch to the pipeline tab').verb, 'open', 'other switch-to phrases are untouched');
 });
@@ -75,6 +78,18 @@ await test('framework CLI: list / show / resolve / roles answer as JSON (what th
     assert.equal(JSON.parse(logs.join('\n')).glyph, 'check-circle'); logs.length = 0;
     assert.equal(await main(['show', 'no/such/slot/here']), 1);
   } finally { console.log = orig; }
+});
+
+await test('template: one icon-pack@1 file maps every role, valid, from a pack or the defaults', async () => {
+  const { packTemplate } = await import('../../../../framework/cli/icon-map.mjs');
+  const { iconPackErrors } = await import('../../../../framework/core/engines/brand-rules.mjs');
+  const roles = JSON.parse(JSON.stringify((await import('../../../../framework/core/engines/icon-map-rules.mjs')).allRoles()));
+  const t = packTemplate({});
+  assert.ok(t.ok && t.pack.type === 'icon-pack' && t.pack.data.themable === true);
+  assert.deepEqual(iconPackErrors(t.pack.data), []);
+  for (const r of Object.keys(roles)) assert.ok(t.pack.data.roles[r], `role ${r} is in the template`);
+  assert.equal(packTemplate({ themable: false }).pack.data.themable, false);
+  assert.equal(packTemplate({ from: 'no-such-pack' }).ok, false);
 });
 
 console.log(process.exitCode ? `icon-map tests: failures (${n} passed)` : `icon-map tests: ${n} passed`);

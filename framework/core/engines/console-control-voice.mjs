@@ -75,6 +75,9 @@ export function voiceIntent(text) {
   // icon packs (icon-map@1, the Icon map plugin's actions; before the generic set / switch-to rules): "switch to the
   // duotone icon pack" · "use the filled icons" · "set the icon pack to amberx outline" · "back to the default icon pack" ·
   // "change the save icon to check circle"
+  // "restore the previous icon pack" · "restore the icons from axhub" · "download the icon pack template"
+  if ((m = /^(?:restore|undo|bring back)(?: the)? (?:previous |last |old )?(?:icon pack|icons|icon set)(?: change)?(?: from (?:axhub|the hub))?$/.exec(p))) return { verb: 'press', address: 'function:icon-map.pack.restore', value: /from (?:axhub|the hub)$/.test(p) ? 'hub' : 'previous' };
+  if (/^(?:download|get|make|give me)(?: the| an| a)? icon (?:pack )?template$/.test(p)) return { verb: 'press', address: 'function:icon-map.template' };
   if (/^(?:(?:switch|go|change|set) )?(?:back )?(?:to |use )?(?:the )?(?:default|original|normal|branding|standard|framework) (?:icon pack|icons|icon set)$/.test(p) || /^(?:reset|clear|drop) (?:the )?(?:icon pack|icons|icon set)$/.test(p)) {
     return { verb: 'press', address: 'function:icon-map.pack.clear' };
   }

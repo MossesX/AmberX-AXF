@@ -12,7 +12,7 @@
  */
 import { Button, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
-import type { AxfRuntime } from '@console/axf/core';
+import { iconMapRules, type AxfRuntime } from '@console/axf/core';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import './icon-map.css';
 import { appMenu } from './menu';
@@ -21,6 +21,8 @@ import { CHANGED, FOLDER, VIEW, enc, get, packsOf, send, setSelectedSlot, type P
 
 const ID = 'ai.amberx.axf.console.icon-map';
 const POLL_MS = 20000;
+const PACK_KEY = iconMapRules.ICON_PACK_KEY;
+const SLOT_KEY = iconMapRules.ICON_SLOT_KEY('');
 /** Capability for other UI tools (Theme manager, UI Review, Plugin manager): open a slot, read what a place draws. */
 export const ICON_MAP_SERVICE = 'axf.icon-map@1';
 const services = () => ((globalThis as { __axfWebServices?: Record<string, unknown> }).__axfWebServices ??= {});
@@ -109,6 +111,43 @@ export const plugin: AxfWebLibrary = {
       say(`${slot} follows the pack again.`);
     }, { label: 'Drop one slot’s pick', params: true, effect: 'write' });
     rt.actions.register('icon-map.refresh', () => { void pull(rt, true); }, { label: 'Reload the icon map', effect: 'read' });
+    // Restore previous edit / Restore from axHub: the server keeps the history and the hub copy, so REST / MCP / CLI agree
+    const restore = (path: string, from: string, what: string) => {
+      const src = from === 'hub' ? 'hub' : 'previous';
+      void send<{ ok: boolean; message?: string }>('POST', path, { from: src, by: 'console' }).then(
+        (r) => { void pull(rt, true); say(r.message || `${what} restored ${src === 'hub' ? 'from axHub' : 'to the previous edit'}.`); },
+        (e: Error) => say(`${what}: ${e.message.replace(/^\d+ /, '').slice(0, 160)}`, 'warning'),
+      );
+    };
+    rt.actions.register('icon-map.slot.restore', ([slot, from = 'previous']) => {
+      if (!slot) { say('Say which slot: icon-map.slot.restore:<slot id>:previous|hub.', 'warning'); return; }
+      restore(`slot/${enc(slot)}/restore`, from, slot);
+    }, { label: 'Restore one slot (previous edit or axHub)', params: true, effect: 'write' });
+    rt.actions.register('icon-map.pack.restore', ([from = 'previous']) => restore('pack/restore', from, 'The icon pack'), { label: 'Restore the icon pack (previous edit or axHub)', params: true, effect: 'write' });
+    // The template: one icon-pack@1 file mapping every role to a glyph (from a pack, else the role defaults)
+    rt.actions.register('icon-map.template', ([from = '']) => {
+      void get<{ pack: { id: string } }>(`template${from ? `?from=${encodeURIComponent(from)}` : ''}`).then((r) => {
+        const url = URL.createObjectURL(new Blob([`${JSON.stringify(r.pack, null, 2)}\n`], { type: 'application/json' }));
+        const a = document.createElement('a'); a.href = url; a.download = `${r.pack.id}.json`; a.click();
+        window.setTimeout(() => URL.revokeObjectURL(url), 5000);
+        say(`Template ${r.pack.id}.json: every role mapped. Edit it and import it as a pack.`);
+      }, (e: Error) => say(`Template: ${e.message.slice(0, 160)}`, 'warning'));
+    }, { label: 'Download the icon pack template', params: true, effect: 'read' });
+    // The hub copy: when the look (axf.icons.* ride axHub's appearance document) loads from axHub, tell the server
+    let hubReady = false;
+    const hubCopy = () => {
+      const ready = rt.hasAppearanceSource() && rt.appearanceState()?.status === 'ready';
+      if (ready === hubReady) return;
+      hubReady = ready;
+      if (!ready) return;
+      const saved = rt.settings.savedValues();
+      const slots: Record<string, string> = {};
+      for (const [k, v] of Object.entries(saved)) if (k.startsWith(SLOT_KEY) && typeof v === 'string' && v) slots[k.slice(SLOT_KEY.length)] = v;
+      const pack = typeof saved[PACK_KEY] === 'string' ? (saved[PACK_KEY] as string) : '';
+      void send('PUT', 'hub-copy', { pack, slots }).catch(() => undefined);
+    };
+    rt.subscribe(hubCopy);
+    hubCopy();
     const openSlot = (slot: string) => { setSelectedSlot(slot || null); rt.dispatch(`nav:${VIEW}`); };
     rt.actions.register('icon-map.slot.open', ([slot]) => openSlot(slot ?? ''), { label: 'Open one slot in the icon map', params: true, effect: 'navigate' });
     // axf.icon-map@1: how the other UI tools reach the map without naming this folder
