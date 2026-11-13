@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4581,
- "updatedAt": "2026-11-13T18:03:21.514Z",
+ "rev": 4582,
+ "updatedAt": "2026-11-13T18:04:27.166Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -195888,7 +195888,7 @@
    "title": "Per-instance settings-window picker inside every tab group and toolbar's settings",
    "category": "",
    "detail": "Every chrome instance (tab group, toolbar, banner, nav, menu bar) has its own chrome settings dialog (framework ChromeContext.tsx / chrome-settings-rules.mjs). Today the settings asset is picked per type/app (axf.chrome.settings.<type>). Add, inside each instance's settings dialog, a picker to choose which settings interface (settings asset) THAT instance uses, per instance, with the shared default preselected. Changing it re-renders the dialog live. Persist per instance, survive reload, follow skins. Expose via REST/MCP/CLI/voice and control@1. Tests, help entry, Shipped features.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -195896,7 +195896,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T17:46:43.480Z",
-   "updatedAt": "2026-11-13T18:02:09.286Z",
+   "updatedAt": "2026-11-13T18:04:25.100Z",
    "builtAt": "",
    "notes": [
     {
@@ -195953,7 +195953,7 @@
    "pipeline": {
     "queuedAt": "2026-11-13T17:46:45.998Z",
     "queuedBy": "console",
-    "account": "",
+    "account": "mossesx-max-",
     "session": "",
     "slot": "",
     "model": "Opus",
@@ -195975,7 +195975,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"b6d527f6-7e3c-46c2-b1ed-2ba93d1e986c\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "released by the self-check (nothing ran): back in the Queue",
+    "note": "Session on mossesx-max- ended (exit 3) with 3 steps left: back in the Queue (run 1).",
     "route": "",
     "dispatchedAt": "2026-11-13T17:49:19.495Z",
     "planned": {
@@ -196029,12 +196029,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T18:04:25.100Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T17:47:52.425Z",
-     "updatedAt": "2026-11-13T17:47:52.425Z"
+     "updatedAt": "2026-11-13T18:04:25.388Z"
     },
     {
      "id": "s3",

@@ -785,7 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 11:11 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s22 done (all) · orchestrator
 - 2026-11-13 11:13 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` note (all) · mcp
 - 2026-11-13 11:13 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` added (0 steps) (all) · console
 - 2026-11-13 11:13 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s24 done (all) · orchestrator
@@ -1185,6 +1184,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:02 UTC · `per-instance-settings-window-picker` → queued, note (all) · pipeline
 - 2026-11-13 18:03 UTC · `all-settings-interfaces-open-floating` added (0 steps) (all) · console
 - 2026-11-13 18:03 UTC · `all-settings-interfaces-open-floating` → queued, note (all) · console
+- 2026-11-13 18:04 UTC · `per-instance-settings-window-picker` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
