@@ -61,10 +61,10 @@
         "kind": "button"
       },
       {
-        "target": "wait-for-my-look-approval-before-ui-builds-start",
-        "title": "Wait for my look approval before UI builds start",
-        "text": "On: a build that changes UI waits in UI Review until you approve its predicted look; Reject holds it. Off: it starts straight away.",
-        "kind": "toggle"
+        "target": "read-the-gate-api",
+        "title": "Read the gate API",
+        "text": "UI Review is not a gate: this reads GET /api/plugins/ui-review/gate ({gate: false, since, why}) and logs it. The same answer comes from MCP ui_review_gate, review.mjs gate and the ui-review.gate action.",
+        "kind": "button"
       },
       {
         "target": "more",

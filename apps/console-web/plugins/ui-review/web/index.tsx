@@ -1,5 +1,6 @@
 /**
- * UI Review console plugin (ai.amberx.axf.console.ui-review): every UI a build makes waits here for Brett's approval,
+ * UI Review console plugin (ai.amberx.axf.console.ui-review): optional feedback on every UI a build makes (not a gate
+ * since Nov 13 2026: nothing waits on it),
  * one section per kind (open registry), five views with multi-select and bulk decisions. Design packs (formerly their
  * own plugin) are its first section; View → Design packs opens straight onto it.
  */
@@ -12,7 +13,7 @@ import { appMenu } from './menu';
 import { FOLDER, GROUP_BYS, GROUP_PARAM, ID, KEYS, MOCKUP_VIEW, PACKS_VIEW, SHOT_PARAM, SHOTS_VIEW, VIEW, VIEWS } from './keys';
 import { MOCKUP_PARAM } from '../../../../../framework/core/ui-predict.mjs';
 import { MockupPage } from './mockup';
-import { LookApprovalPanel } from './look-settings';
+import { GatePanel } from './look-settings';
 import { UiReviewPage } from './ui';
 import { ASK_DIALOG, AskClient, AskDialog, ChoicesPanel } from './choices';
 
@@ -51,19 +52,19 @@ export const plugin: AxfWebLibrary = {
   slots: { 'app.frame.cover': [{ id: 'ui-review.ask', order: 97, render: () => <AskClient /> }] },
   dialogs: { [ASK_DIALOG]: { title: 'How many options?', icon: 'layers', render: (p) => <AskDialog ask={p.ask as Parameters<typeof AskDialog>[0]['ask']} /> } },
   nav: { label: 'Plugins', items: [{ id: 'ui-review', label: 'UI Review', icon: 'eye', view: 'ui-review' }, { id: 'design-packs', label: 'Design packs', icon: 'palette', view: 'design-packs' }, { id: 'ui-screenshots', label: 'Screenshots', icon: 'monitor', view: 'ui-screenshots' }] },
-  settingsTabs: [{ id: FOLDER, label: 'UI Review', icon: 'eye', parent: 'plugins', order: 46, description: 'Every UI a build makes, waiting for your approval.' }],
+  settingsTabs: [{ id: FOLDER, label: 'UI Review', icon: 'eye', parent: 'plugins', order: 46, description: 'Optional feedback on the UI builds make. Not a gate: nothing waits on it.' }],
   settings: [{
     id: 'ui-review.prefs', label: 'UI Review', icon: 'eye', tab: FOLDER, order: 10,
     settings: [
       { key: KEYS.view, label: 'View', kind: 'choice', default: 'grid', options: VIEWS.map((v) => ({ value: v.id, label: v.label })) },
       { key: KEYS.sort, label: 'Order', kind: 'choice', default: 'waiting', options: core.SORTS.map((s) => ({ value: s.id, label: s.label })) },
-      { key: KEYS.tab, label: 'Opens on', kind: 'choice', default: 'review', options: [{ value: 'review', label: 'Review (waiting for approval)' }, { value: 'shots', label: 'Screenshots' }] },
+      { key: KEYS.tab, label: 'Opens on', kind: 'choice', default: 'review', options: [{ value: 'review', label: 'Review (optional feedback)' }, { value: 'shots', label: 'Screenshots' }] },
       { key: KEYS.shotGroup, label: 'Screenshots group by', kind: 'choice', default: 'app', options: SHOT_GROUPS.map((g) => ({ value: g.id, label: g.label })) },
       { key: KEYS.groupBy, label: 'Sub-grids group by', kind: 'choice', default: 'kind', options: GROUP_BYS.map((g) => ({ value: g.id, label: g.label })) },
       { key: KEYS.thumbs, label: 'Show the screens list', kind: 'toggle', default: true, description: 'The list of screens beside (on a phone: above) the preview.' },
     ],
   }],
-  settingsPanels: [{ id: 'ui-review.look', tab: FOLDER, title: 'Predicted looks', icon: 'eye', order: 20, render: () => <LookApprovalPanel /> },
+  settingsPanels: [{ id: 'ui-review.gate', tab: FOLDER, title: 'Not a gate', icon: 'info', order: 5, render: () => <GatePanel /> },
     { id: 'ui-review.choices', tab: FOLDER, title: 'Choices', icon: 'layers', order: 15, render: () => <ChoicesPanel /> },
     { id: 'ui-review.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };

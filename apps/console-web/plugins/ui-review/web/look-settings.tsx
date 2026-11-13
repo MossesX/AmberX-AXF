@@ -1,32 +1,34 @@
 import { useEffect, useState } from 'react';
-import { Note, Switch, useRuntime } from '@console/axf/react';
+import { Button, Note, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
+import { GATE } from './review-core.mjs';
 import { FOLDER } from './keys';
 
 /*
- * Settings → Plugins → UI Review → Predicted looks. Kept by the server (the data folder's settings.json), because the
- * headless launcher on the VPS reads it too (framework/cli/ui-predict.mjs gate): with it on, a build that changes UI
- * waits until Brett approves its predicted look.
+ * Settings → Plugins → UI Review → Not a gate. UI Review stopped being a gate on Nov 13 2026 (build
+ * remove-ui-review-as-a-gate-…): no PR waits for it, no build has to submit screenshots and the launcher never waits for
+ * a predicted look. This read-only line shows that, read from the gate API (GET gate; also MCP ui_review_gate,
+ * review.mjs gate and the console action ui-review.gate). The old "Wait for my look approval before UI builds start"
+ * switch is retired with it: predicted looks are still made, as feedback.
  */
 
 const api = pluginApi(FOLDER, 'UI Review', { unavailable: 'The UI Review plugin is switched off or its server part is not running.' });
-interface LookSettings { waitForLook: boolean }
+type Gate = typeof GATE;
 
-export function LookApprovalPanel() {
+export function GatePanel() {
   const rt = useRuntime();
-  const [s, setS] = useState<LookSettings | null>(null);
-  const [error, setError] = useState('');
-  useEffect(() => { api.call<LookSettings>('settings').then(setS, (e: Error) => setError(e.message)); }, []);
-  const set = async (waitForLook: boolean) => {
-    setS((x) => ({ ...(x ?? { waitForLook }), waitForLook }));
-    try { setS(await api.put<LookSettings>('settings', { waitForLook })); rt.terminal.log('ui-review', `wait for look approval: ${waitForLook ? 'on' : 'off'}`, 'ok'); }
-    catch (e) { rt.toast((e as Error).message, 'danger'); }
-  };
-  if (error) return <Note tone="warning">{error}</Note>;
+  const [g, setG] = useState<Gate>(GATE);
+  useEffect(() => { api.call<Gate>('gate').then(setG, () => undefined); }, []);
+  const read = () => { void api.call<Gate>('gate').then((x) => { setG(x); rt.terminal.log('ui-review', `GET /api/plugins/${FOLDER}/gate → ${JSON.stringify(x)}`, 'ok'); }, (e: Error) => rt.toast(e.message, 'danger')); };
   return (
-    <div className="fx-stack">
-      <Switch label="Wait for my look approval before UI builds start" checked={!!s?.waitForLook} disabled={!s} onChange={(v) => void set(v)}
-        hint="Every build that changes UI gets predicted pictures in UI Review when it is launched. When this is on, it waits there until you approve the look; Reject holds it." />
+    <div className="fx-stack" data-ui-review-gate={g.gate ? 'on' : 'off'}>
+      <Note tone="info" icon="info">
+        Not a gate (since {g.since}). Approve, Ask changes, Reject and Choices are optional feedback: no PR waits for them, no build has to send screenshots, and predicted looks never hold a build.
+      </Note>
+      <p className="fx-small fx-muted">Read it anywhere: GET /api/plugins/{FOLDER}/gate · MCP ui_review_gate · review.mjs gate · voice / console action ui-review.gate.</p>
+      <div className="fx-row" role="toolbar" aria-label="UI Review gate">
+        <Button size="sm" icon="external" onClick={read}>Read the gate API</Button>
+      </div>
     </div>
   );
 }

@@ -16,7 +16,7 @@ import { CompareView, GalleryView, GridView, GroupsView, TreeView } from './view
 import './ui-review.css';
 
 /*
- * UI Review: every UI a build makes waits here for Brett's approval. A strip of sections (one per kind, with waiting
+ * UI Review: optional feedback on every UI a build makes (not a gate since Nov 13 2026: nothing waits on it). A strip of sections (one per kind, with waiting
  * counts), search + status / app / sort, five remembered views, multi-select in all of them and one bulk bar
  * (Approve / Ask changes / Reject). Design packs are a section; their Pick flow (3 picks) stays.
  */
@@ -249,9 +249,9 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
       <div className="fx-stack axp-ui-review">
         <header className="fx-pagehead">
           <div>
-            <p className="fx-eyebrow">Approvals · {c.waiting} waiting · {c.total} in all{shotCount !== null ? ` · ${shotCount} screenshots` : ''}</p>
+            <p className="fx-eyebrow">Feedback · not a gate · {c.waiting} new · {c.total} in all{shotCount !== null ? ` · ${shotCount} screenshots` : ''}</p>
             <h1>UI Review</h1>
-            <p className="fx-muted">{tab === 'shots' ? 'Screenshots from checks, live captures, PRs and your uploads. Not waiting for approval.' : 'Every UI a build makes waits here for your OK, sorted by kind.'}</p>
+            <p className="fx-muted">{tab === 'shots' ? 'Screenshots from checks, live captures, PRs and your uploads. Not waiting for approval.' : 'Optional feedback on every UI a build makes, sorted by kind. No PR or build waits on it.'}</p>
           </div>
           <div className="axp-ui-review__headacts">
             {tab === 'review' && showPicks && (
