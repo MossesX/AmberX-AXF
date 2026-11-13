@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 10:51 UTC · `focus-on-every-screen-console-open-console-show-` branch claude/focus-on-every-screen-console-open-console-show- (all) · pipeline
 - 2026-11-12 10:51 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` → queued (all) · claude-voice
 - 2026-11-12 10:52 UTC · `show-commits-behind-main-on-every-build-table-an` → running, note (all) · pipeline
 - 2026-11-12 10:52 UTC · `show-commits-behind-main-on-every-build-table-an` branch claude/show-commits-behind-main-on-every-build-table-an (all) · pipeline
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 00:22 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` note (all) · pipeline
 - 2026-11-13 00:39 UTC · `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do` added (0 steps) (all) · mcp
 - 2026-11-13 00:40 UTC · `change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to` added (0 steps) (all) · mcp
+- 2026-11-13 00:40 UTC · `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do` note (all) · orchestrator
 
 ## Token passes (log)
 
