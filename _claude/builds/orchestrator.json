@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T21:55:14.521Z",
+ "updatedAt": "2026-11-13T21:55:26.356Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -133110,7 +133110,7 @@
    "pr": "#657",
    "priority": "P1",
    "createdAt": "2026-11-13T20:04:16.679Z",
-   "updatedAt": "2026-11-13T21:53:26.570Z",
+   "updatedAt": "2026-11-13T21:55:24.444Z",
    "builtAt": "",
    "notes": [
     {
@@ -133136,6 +133136,10 @@
     {
      "text": "Phase 1 done on Fable: PR #657. Token registry (223 tokens, token-registry@1, CI check, manifest tokens block), Skin editor plugin (sandbox hot render, Basic/Pro/Advanced, snapshot chain with revert, export as skin, REST/MCP/CLI/voice), console bake fixes (build-id, windows engine). UI Review r-20261113-5f636908 waiting for Brett. Note: own-token-sets-for-grids-and-tab-groups had not pushed its schema; the registry derives from the engines, so its families register on the next sync.",
      "at": "2026-11-13T21:53:26.570Z"
+    },
+    {
+     "text": "Headless run axf-token-registry-skin-editor-live-sandbox--lenny: brief only · start 13.4K tokens ($0.07) · cost $35.59 · 241 turns · 6 tools, MCP none",
+     "at": "2026-11-13T21:55:24.444Z"
     }
    ],
    "approvals": [],
