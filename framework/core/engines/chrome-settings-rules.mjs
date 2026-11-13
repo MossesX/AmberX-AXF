@@ -69,6 +69,10 @@ export const CHROME_INSTANCE_ASSET_KEY = (type, instance) => `axf.chrome.${type}
 /** A tab group's remembered tab and fold state (per device). */
 export const TAB_GROUP_LAST_KEY = (instance) => `axf.tabs.${instance}.last`;
 export const TAB_GROUP_FOLD_KEY = (instance) => `axf.tabs.${instance}.folded`;
+/** The quick-switches pane at the top of a chrome type's settings dialog: 'folded' or unset (open). */
+export const CHROME_QUICK_KEY = (type) => `axf.chrome.quick.${type}`;
+/** The fields of a type the quick-switches pane shows (label visibility, tap to confirm, …); [] = no pane. */
+export const chromeQuickFields = (type) => (CHROME_FIELDS[type] ?? []).filter((f) => f.quick === true);
 export const isChromeInstanceId = (id) => typeof id === 'string' && INSTANCE.test(id);
 
 /* ---------------- context targets + moves ---------------- */

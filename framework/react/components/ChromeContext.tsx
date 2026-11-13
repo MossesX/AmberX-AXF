@@ -22,13 +22,19 @@
  *   chrome.reset:<type>:<instance>               drop every override + the instance's own asset pick
  *   chrome.swap:<type>:<instance>:<asset|next>   use another asset (tab groups: for this row; the rest: the app's slot)
  *   chrome.interface:<type>:<settings id|default|custom|reset>   which settings interface the dialog uses
+ *   chrome.quick:<type>:<open|fold|toggle>       open or fold the quick-switches pane at the top of the dialog
+ *
+ * Quick switches: every toolbar, tab group, nav menu and app menu dialog starts with a collapsible pane holding the
+ * fields marked `quick` (label visibility, tap to confirm) and what tap to confirm does there now and why (follows
+ * the labels, set here, set for all), with a one-tap "follow labels" when a manual setting is in force. Its fold is
+ * the setting `axf.chrome.quick.<type>` ('folded' or unset).
  */
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { CHROME_FIELDS, CHROME_ICONS, CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, CHROME_LABELS, CHROME_MANY, CHROME_MOVES, CHROME_SETTINGS_PATCH_KEY, CHROME_SETTINGS_PICK_KEY, CHROME_SETTINGS_TABS, CHROME_TYPES, FRAMEWORK_MODULE, POSITION_LABELS, SETTINGS_LEVEL_KEY, SETTINGS_LEVELS, SETTINGS_LEVEL_LABEL, chromeFieldValue, chromeLabel, chromeSettingsChoices, chromeSettingsCustomId, chromeSettingsDefaultId, chromeSettingsPick, chromeTypeOfTarget, isChromeInstanceId, isChromeType, normalizeInstanceOverride, normalizeSettingsUi, resolveSettingsChain, settingsLevelOf, settingsLevelRank, type AssetType, type AxfRuntime, type ChromeField, type ChromeType, type SettingsLevel, type SettingsUi, type SettingSpec, type SettingValue } from '../../core';
+import { CHROME_FIELDS, CHROME_ICONS, CHROME_QUICK_KEY, TAP_KEYS, chromeLabelsHidden, chromeQuickFields, tapConfig, type TapSource, CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, CHROME_LABELS, CHROME_MANY, CHROME_MOVES, CHROME_SETTINGS_PATCH_KEY, CHROME_SETTINGS_PICK_KEY, CHROME_SETTINGS_TABS, CHROME_TYPES, FRAMEWORK_MODULE, POSITION_LABELS, SETTINGS_LEVEL_KEY, SETTINGS_LEVELS, SETTINGS_LEVEL_LABEL, chromeFieldValue, chromeLabel, chromeSettingsChoices, chromeSettingsCustomId, chromeSettingsDefaultId, chromeSettingsPick, chromeTypeOfTarget, isChromeInstanceId, isChromeType, normalizeInstanceOverride, normalizeSettingsUi, resolveSettingsChain, settingsLevelOf, settingsLevelRank, type AssetType, type AxfRuntime, type ChromeField, type ChromeType, type SettingsLevel, type SettingsUi, type SettingSpec, type SettingValue } from '../../core';
 import { CONTROL_TOKEN_SLOTS, withTokenOverride, withoutTokenOverride } from '../../core/engines/control-tokens.mjs';
 import type { MenuEntry } from '../../core/engines/windows';
 import { useAxfState, useRuntime } from '../AxfProvider';
-import { Button, Segmented, Slider } from './Controls';
+import { Button, Container, Segmented, Slider } from './Controls';
 import { ChoiceGrid, Note, Section, SelectField, Switch, TextField } from './Forms';
 import { Icon } from './Icon';
 import type { DialogMap } from './Overlays';
@@ -159,6 +165,12 @@ export function installChrome(rt: AxfRuntime): void {
       setChromeField(rt, ty, inst(ty, instance, ctx), key, v);
     }, { label: 'Set one chrome setting (chrome.set:<type>:<instance>:<field>:<value>)', params: true, requires: 'assets.swap' });
     rt.actions.register('chrome.reset', ([type, instance], ctx) => { const ty = t(type); if (!ty) return; const i = inst(ty, instance, ctx); rt.settings.clear(CHROME_INSTANCE_KEY(ty, i)); rt.settings.clear(CHROME_INSTANCE_ASSET_KEY(ty, i)); }, { label: 'Reset a chrome piece to its asset', params: true, requires: 'assets.swap' });
+    rt.actions.register('chrome.quick', ([type, how = 'toggle']) => {
+      const ty = t(type);
+      if (!ty) return;
+      const folded = how === 'fold' ? true : how === 'open' ? false : rt.settings.get(CHROME_QUICK_KEY(ty)) !== 'folded';
+      if (folded) rt.settings.set(CHROME_QUICK_KEY(ty), 'folded'); else rt.settings.clear(CHROME_QUICK_KEY(ty));
+    }, { label: 'Open or fold the quick switches of a chrome settings dialog (chrome.quick:<type>:<open|fold|toggle>)', params: true });
     rt.actions.register('chrome.swap', ([type, instance, asset = 'next'], ctx) => { const ty = t(type); if (ty && !swapChrome(rt, ty, inst(ty, instance, ctx), asset)) rt.toast(`No ${chromeLabel(ty).toLowerCase()} asset "${asset}".`, 'warning', 'Change'); }, { label: 'Use another chrome asset (chrome.swap:<type>:<instance>:<asset|next>)', params: true, requires: 'assets.swap' });
     rt.actions.register('chrome.interface', ([type, which = 'default']) => {
       const ty = t(type); if (!ty) return;
@@ -273,6 +285,45 @@ function ExtraGroup({ group }: { group: { id: string; label: string; icon?: stri
   return <Section title={group.label}>{group.description && <p className="fx-muted">{group.description}</p>}{group.settings.map(row)}</Section>;
 }
 
+const TAP_SOURCE_TEXT: Record<TapSource, string> = { labels: 'follows the labels', instance: 'set here', global: 'set for every toolbar, tab group and menu (Settings → Plugins → Toolbars)', toolbar: "set for this toolbar in Settings → Plugins → Toolbars" };
+
+/** What tap to confirm does for one chrome instance now, and which setting decided it. */
+export function chromeTapState(rt: AxfRuntime, type: ChromeType, instance: string): { enabled: boolean; source: TapSource; labelsHidden: boolean } {
+  const data = { ...(baseDataOf(rt, type, instance) ?? {}), ...normalizeInstanceOverride(type, rt.settings.get(CHROME_INSTANCE_KEY(type, instance))) };
+  const labelsHidden = chromeLabelsHidden(type, data);
+  const tapType = type === 'toolbar' || type === 'tab-group' || type === 'nav-menu' || type === 'app-menu' ? type : undefined;
+  const cfg = tapConfig((k) => rt.settings.get(k), type === 'toolbar' ? instance : '', { type: tapType, instance, labelsHidden });
+  return { enabled: cfg.enabled, source: cfg.source ?? 'labels', labelsHidden };
+}
+
+/** The collapsible quick-switches pane at the top of a chrome settings dialog (nothing when the type has no quick fields). */
+export function ChromeQuickSwitches({ type, instance, descriptions }: { type: ChromeType; instance: string; descriptions: boolean }) {
+  const rt = useRuntime();
+  useSettingsTick(rt, [CHROME_QUICK_KEY(type), CHROME_INSTANCE_KEY(type, instance), TAP_KEYS.enabled, `${TAP_KEYS.perToolbar}${instance}.tapConfirm`]);
+  const fields = chromeQuickFields(type);
+  if (!fields.length) return null;
+  const open = rt.settings.get(CHROME_QUICK_KEY(type)) !== 'folded';
+  const tap = fields.some((f) => f.key === 'tapConfirm') ? chromeTapState(rt, type, instance) : null;
+  const manual = tap && tap.source === 'instance';
+  return (
+    <div data-axf-chrome-quick={type}>
+      <Container title="Quick switches" icon="zap" collapsible open={open} onOpenChange={(o) => rt.dispatch(`chrome.quick:${type}:${o ? 'open' : 'fold'}`)}>
+        <div className="fx-stack">
+          {fields.map((f) => <FieldControl key={f.key} type={type} instance={instance} field={f} descriptions={descriptions} />)}
+          {tap && (
+            <div className="fx-row fx-row--between">
+              <span className="fx-small fx-muted" data-axf-tap-state={tap.enabled ? 'on' : 'off'}>
+                Tap to confirm is {tap.enabled ? 'on' : 'off'}: {TAP_SOURCE_TEXT[tap.source]}{tap.source === 'labels' ? ` (labels ${tap.labelsHidden ? 'hidden' : 'shown'})` : ''}.
+              </span>
+              {manual && <Button size="sm" icon="undo" onClick={() => setChromeField(rt, type, instance, 'tapConfirm', 'auto')}>Follow labels</Button>}
+            </div>
+          )}
+        </div>
+      </Container>
+    </div>
+  );
+}
+
 /** The settings dialog of one chrome instance, laid out by the settings asset in force for its type. */
 export function ChromeSettingsPanel({ type, instance }: { type: ChromeType; instance: string }) {
   const rt = useRuntime();
@@ -293,7 +344,9 @@ export function ChromeSettingsPanel({ type, instance }: { type: ChromeType; inst
   const shownTab = tabs.some((t) => t.id === tab) ? tab : tabs[0]?.id ?? 'look';
   const levelOk = (id: string, own: string) => !ui.levels || settingsLevelRank(level) >= settingsLevelRank(settingsLevelOf(ui.levelOf[id]) ?? (own as SettingsLevel));
   const q = query.trim().toLowerCase();
-  const fields = (group: 'look' | 'behaviour') => CHROME_FIELDS[type].filter((f) => f.group === group && !ui.hide.includes(f.key) && levelOk(f.key, f.level) && (!q || f.label.toLowerCase().includes(q) || f.key.toLowerCase().includes(q)));
+  // the quick switches sit in their own pane at the top, so the tabs below leave them out (unless the asset hides the pane)
+  const quickShown = !ui.hide.includes('quick');
+  const fields = (group: 'look' | 'behaviour') => CHROME_FIELDS[type].filter((f) => f.group === group && !(quickShown && f.quick) && !ui.hide.includes(f.key) && levelOk(f.key, f.level) && (!q || f.label.toLowerCase().includes(q) || f.key.toLowerCase().includes(q)));
   const overrides = normalizeInstanceOverride(type, rt.settings.get(CHROME_INSTANCE_KEY(type, instance)));
   const title = `${chromeLabel(type)}${instance !== CHROME_APP_INSTANCE ? ` · ${instance}` : ''}`;
   const tabsForRow = tabs.map((t) => ({ value: t.id, label: t.label, icon: t.icon }));
@@ -304,7 +357,7 @@ export function ChromeSettingsPanel({ type, instance }: { type: ChromeType; inst
         <div className="fx-stack">
           {fs.length ? fs.map((f) => <FieldControl key={f.key} type={type} instance={instance} field={f} descriptions={ui.descriptions} />) : <p className="fx-muted">Nothing at this level{q ? ' matches' : ''}.</p>}
           {id === 'look' && type === 'banner' && <Button icon="settings" onClick={() => rt.openDialog(BANNER_SETTINGS_DIALOG, instance !== CHROME_APP_INSTANCE ? { id: instance } : {})}>Banner settings (look, behaviour, Apply to all)…</Button>}
-          {id === 'behaviour' && type === 'toolbar' && <Note tone="info">Tap-to-confirm on touch and this toolbar's own override live in Settings → Plugins → Toolbars.</Note>}
+          {id === 'behaviour' && type === 'toolbar' && <Note tone="info">The tap-to-confirm switch for every toolbar, tab group and menu, and the arm window, live in Settings → Plugins → Toolbars.</Note>}
           {id === 'behaviour' && type === 'nav-menu' && <Note tone="info">Sub menus, animation and colours of a nav that opts in are the Navigation style settings (nav-style@1).</Note>}
           {ui.groups.filter((g) => g.tab === id && levelOk(g.id, g.level ?? ui.defaultLevel)).map((g) => <ExtraGroup key={g.id} group={g} />)}
         </div>
@@ -324,11 +377,12 @@ export function ChromeSettingsPanel({ type, instance }: { type: ChromeType; inst
     </div>
   );
   const search = ui.search ? <TextField label="Find a setting" value={query} onChange={setQuery} placeholder="style, position, badges…" /> : null;
-  if (!res) return <div className="fx-stack">{header}<Note tone="warning">This app ships no settings interface for {chromeLabel(type).toLowerCase()}s (chrome-settings@1: settings/{chromeSettingsDefaultId(type)}); showing the built-in layout.</Note>{search}<TabGroup id={`chrome.settings.${type}`} label={`${chromeLabel(type)} settings sections`} value={shownTab} onChange={setTab} tabs={tabsForRow}>{body(shownTab)}</TabGroup></div>;
-  if (ui.layout === 'list') return <div className="fx-stack fx-stack--lg">{header}{search}{tabs.map((t) => <Section key={t.id} title={t.label}>{body(t.id)}</Section>)}</div>;
+  const quick = !quickShown ? null : <ChromeQuickSwitches type={type} instance={instance} descriptions={ui.descriptions} />;
+  if (!res) return <div className="fx-stack">{header}{quick}<Note tone="warning">This app ships no settings interface for {chromeLabel(type).toLowerCase()}s (chrome-settings@1: settings/{chromeSettingsDefaultId(type)}); showing the built-in layout.</Note>{search}<TabGroup id={`chrome.settings.${type}`} label={`${chromeLabel(type)} settings sections`} value={shownTab} onChange={setTab} tabs={tabsForRow}>{body(shownTab)}</TabGroup></div>;
+  if (ui.layout === 'list') return <div className="fx-stack fx-stack--lg">{header}{quick}{search}{tabs.map((t) => <Section key={t.id} title={t.label}>{body(t.id)}</Section>)}</div>;
   return (
     <div className="fx-stack">
-      {header}{search}
+      {header}{quick}{search}
       <TabGroup id={`chrome.settings.${type}`} label={`${chromeLabel(type)} settings sections`} value={shownTab} onChange={setTab} tabs={tabsForRow} asset={ui.layout === 'tabs-side' ? 'side-dock' : undefined}>
         <div className="fx-stack" style={{ paddingBlockStart: 'var(--fx-dens-gap-md)' }}>{body(shownTab)}</div>
       </TabGroup>
@@ -346,5 +400,5 @@ export const chromeDialogs: DialogMap = {
 };
 
 /** Every chrome type's settings reachable by voice: the catalog lists these ids (console.actions). */
-export const CHROME_ACTION_IDS = ['chrome.settings', 'chrome.pick', 'chrome.move', 'chrome.set', 'chrome.reset', 'chrome.swap', 'chrome.interface'] as const;
+export const CHROME_ACTION_IDS = ['chrome.settings', 'chrome.pick', 'chrome.move', 'chrome.set', 'chrome.reset', 'chrome.swap', 'chrome.interface', 'chrome.quick'] as const;
 export { CHROME_TYPES as CHROME_SETTINGS_TYPES, CHROME_LABELS as CHROME_SETTINGS_LABELS };

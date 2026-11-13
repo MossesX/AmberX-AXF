@@ -3,7 +3,7 @@
  * (react/tapConfirm.ts) on a small fake DOM. Run: npx -y tsx framework/spec/check-tapconfirm.mts
  */
 import { TAP_ARM_DEFAULT_MS, TAP_IDLE, TAP_KEYS, chromeLabelsHidden, tapArmMs, tapConfig, tapDecide, tapExpired, tapMode, tapPointer, toolbarIdOf, type TapState } from '../core/engines/tapconfirm';
-import { CHROME_FIELDS } from '../core/engines/chrome-settings-rules.mjs';
+import { CHROME_FIELDS, CHROME_QUICK_KEY, chromeQuickFields } from '../core/engines/chrome-settings-rules.mjs';
 import { installTapConfirm } from '../react/tapConfirm';
 
 let pass = 0;
@@ -60,6 +60,13 @@ for (const t of ['toolbar', 'tab-group', 'nav-menu', 'app-menu'] as const) {
   const f = CHROME_FIELDS[t].find((x) => x.key === 'tapConfirm');
   ok(!!f && f.default === 'auto' && f.quick === true && f.options!.join() === 'auto,on,off', `${t}: tapConfirm field (auto / on / off, quick)`);
 }
+const quickKeys = (t: Parameters<typeof chromeQuickFields>[0]) => chromeQuickFields(t).map((f) => f.key).join();
+ok(quickKeys('toolbar') === 'variant,tapConfirm', 'quick switches: toolbar = buttons (labels) + tap to confirm');
+ok(quickKeys('tab-group') === 'display,tapConfirm', 'quick switches: tab group = show (labels) + tap to confirm');
+ok(quickKeys('nav-menu') === 'showLabels,tapConfirm', 'quick switches: nav = labels + tap to confirm');
+ok(quickKeys('app-menu') === 'tapConfirm', 'quick switches: menu bar = tap to confirm');
+ok(quickKeys('banner') === '' && quickKeys('context-menu') === '', 'no quick pane where nothing is quick');
+ok(CHROME_QUICK_KEY('toolbar') === 'axf.chrome.quick.toolbar', 'quick pane fold key');
 ok(tapConfig(settings({ [TAP_KEYS.armMs]: 5000 }), 'x').armMs === 5000, 'arm window from settings');
 ok(toolbarIdOf({ id: 'Main Bar' }) === 'main-bar' && toolbarIdOf({ asset: 'console-search' }) === 'console-search' && toolbarIdOf({ label: 'Terminal tools' }) === 'terminal-tools' && toolbarIdOf({}) === 'toolbar', 'toolbar ids');
 

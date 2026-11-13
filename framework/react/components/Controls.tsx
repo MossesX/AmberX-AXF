@@ -140,13 +140,18 @@ export interface ContainerProps {
   collapsible?: boolean;
   /** starts folded when false (only with a collapsible card) */
   defaultOpen?: boolean;
+  /** controlled fold state (a card whose fold is a setting); with `onOpenChange` */
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-export function Container({ title, icon, actions, children, className, ctx, ctxPayload, collapsible: own, defaultOpen = true }: ContainerProps) {
+export function Container({ title, icon, actions, children, className, ctx, ctxPayload, collapsible: own, defaultOpen = true, open: controlled, onOpenChange }: ContainerProps) {
   const c = useAsset('container').data;
   // style-theme `wrapGroups` (build option --wrap-groups) makes every titled group collapsible.
   const collapsible = own === true || containerCollapsible(c, useAsset('style-theme').data);
-  const [open, setOpen] = useState(defaultOpen);
+  const [own_, setOwn] = useState(defaultOpen);
+  const open = controlled ?? own_;
+  const setOpen = (f: (o: boolean) => boolean) => { const next = f(open); setOwn(next); onOpenChange?.(next); };
   const bodyId = useId();
   const shown = open || !collapsible;
   const brand = useBrandPlace('container', 14);
