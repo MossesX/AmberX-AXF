@@ -7,6 +7,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Container, Icon, ICON_NAMES, IconButton, SelectField, TabGroup, TextField, useRuntime } from '@console/axf/react';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
+import { PacksPanel } from './PacksPanel';
 import { CHANGED, get, packsOf, type MapAnswer, type Slot, VIEW, selectedSlot, setSelectedSlot, SELECTED } from './shared';
 
 const PAGE = 2000;
@@ -104,6 +105,7 @@ function SlotPanel({ slotId, slots, onClose }: { slotId: string; slots: Slot[]; 
 export function IconMapView() {
   const rt = useRuntime();
   const [mode, setMode] = useState<Mode>('tree');
+  const [section, setSection] = useState<'slots' | 'packs'>('slots');
   const [q, setQ] = useState('');
   const [surface, setSurface] = useState('');
   const [app, setApp] = useState('');
@@ -117,7 +119,7 @@ export function IconMapView() {
   const [slot, setSlot] = useState<string | null>(selectedSlot());
   const [pickPack, setPickPack] = useState('');
   const [tick, setTick] = useState(0);
-  const packs = useMemo(() => packsOf(rt), [rt]);
+  const packs = useMemo(() => packsOf(rt), [rt, tick]);
   const activePack = rt.iconPackId();
   const overrides = rt.iconOverrides();
 
@@ -139,9 +141,10 @@ export function IconMapView() {
   useEffect(() => { const t = setTimeout(() => void load(), 150); return () => clearTimeout(t); }, [load, tick]);
   useEffect(() => {
     const on = () => setTick((n) => n + 1);
-    const sel = () => setSlot(selectedSlot());
-    window.addEventListener(CHANGED, on); window.addEventListener(SELECTED, sel);
-    return () => { window.removeEventListener(CHANGED, on); window.removeEventListener(SELECTED, sel); };
+    const sel = () => { setSlot(selectedSlot()); if (selectedSlot()) setSection('slots'); };
+    const imp = () => setSection('packs');
+    window.addEventListener(CHANGED, on); window.addEventListener(SELECTED, sel); window.addEventListener('axf:icon-map-import', imp);
+    return () => { window.removeEventListener(CHANGED, on); window.removeEventListener(SELECTED, sel); window.removeEventListener('axf:icon-map-import', imp); };
   }, []);
 
   const truncated = !!answer && answer.total > answer.slots.length;
@@ -194,7 +197,11 @@ export function IconMapView() {
         <p className="axp-icon-map__summary">In force: {packLabel}. {nPicked} place{nPicked === 1 ? '' : 's'} picked by hand.</p>
       </Container>
 
-      <div className={`axp-icon-map__split${slot ? ' has-panel' : ''}`}>
+      <TabGroup id="icon-map.section" label="Icon map sections" value={section} onChange={(v) => setSection(v as 'slots' | 'packs')} tabs={[{ value: 'slots', label: 'Slots', icon: 'grid', badge: answer?.total }, { value: 'packs', label: 'Packs', icon: 'package', badge: packs.length }]} />
+
+      {section === 'packs' ? <PacksPanel /> : null}
+
+      {section === 'slots' ? <div className={`axp-icon-map__split${slot ? ' has-panel' : ''}`}>
         <Container title="Slots" icon="grid">
           <div className="fx-stack">
             <TabGroup id="icon-map.mode" label="Icon map view" value={mode} onChange={(v) => setMode(v as Mode)} tabs={[{ value: 'tree', label: 'Tree', icon: 'folder' }, { value: 'list', label: 'List', icon: 'list' }]} />
@@ -267,7 +274,7 @@ export function IconMapView() {
           </div>
         </Container>
         {slot ? <SlotPanel slotId={slot} slots={slots} onClose={() => { setSelectedSlot(null); setSlot(null); }} /> : null}
-      </div>
+      </div> : null}
     </div>
   );
 }

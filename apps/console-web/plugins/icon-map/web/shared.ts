@@ -1,6 +1,8 @@
 /** Shared bits of the Icon map plugin: server calls, the pack list, the selected slot. */
 import type { AxfRuntime } from '@console/axf/core';
 import { pluginFetch } from '@console/plugins';
+import { createHubData, type HubValue } from '@console/axf/libs/hubstore';
+import { resolveHubSync, savedConnection } from '@console/axf/libs/hubsync';
 
 /** The folder under plugins/ — the server routes live at /api/plugins/icon-map/. */
 export const FOLDER = 'icon-map';
@@ -12,7 +14,8 @@ export const SELECTED = 'axf:icon-map-selected';
 
 export interface Slot { id: string; kind: string; role: string; glyph: string; surface: string; label: string; app: string; owner: string; ownerKind: string; screen: string; source: string; file: string; line: number; picked?: string }
 export interface MapAnswer { ok: boolean; slots: Slot[]; total: number; counts?: { bySurface?: Record<string, number>; byApp?: Record<string, number>; byKind?: Record<string, number> }; pack: string }
-export interface State { ok: boolean; pack: string; slots: Record<string, string> }
+export interface State { ok: boolean; pack: string; slots: Record<string, string>; skinPacks?: Record<string, string>; hubPacks?: HubPackRow[] }
+export interface HubPackRow { id: string; name: string; style: string; themable: boolean; by?: string; at?: string }
 export interface PackRow { id: string; name: string; style: string; themable: boolean; covers: string[] }
 
 const json = async <T,>(r: Response): Promise<T> => { if (!r.ok) throw new Error(`${r.status} ${(await r.text()).slice(0, 200)}`); return (await r.json()) as T; };
@@ -34,4 +37,16 @@ export const selectedSlot = () => selected;
 export function setSelectedSlot(id: string | null): void {
   selected = id;
   window.dispatchEvent(new Event(SELECTED));
+}
+
+/** A shared icon pack on axHub: the summary plus the whole asset. */
+export type HubPack = { id: string; name: string; style: string; themable: boolean; by: string; at: string; pack: HubValue } & Record<string, HubValue>;
+
+/**
+ * The axHub table of shared icon packs (hubstore data API, the axHub sync connection's hub and project, folder
+ * icon-packs, table packs; 64 KB per file, the browser's own hub session). Every app on that project sees the same rows.
+ */
+export function hubPacks(rt: AxfRuntime) {
+  const c = resolveHubSync(null, savedConnection(rt));
+  return createHubData({ hub: c.hub, project: c.project, mode: 'all', folder: 'icon-packs', appId: 'console' }).table<HubPack>('packs');
 }

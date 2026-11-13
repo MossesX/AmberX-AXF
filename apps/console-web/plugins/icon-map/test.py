@@ -116,9 +116,37 @@ c.delete(f"{B}/slot/{first}")
 other = m["slots"][1]["id"]
 ok(c.post(f"{B}/slot/{other}/restore", json={"from": "hub"}).json()["glyph"] is None, "restore from axHub: not on the hub = follows the pack")
 
+# packs are assets: import / export / per-skin defaults / axHub list
+tpl = c.get(f"{B}/template", params={"id": "test-imported", "name": "Test imported"}).json()["pack"]
+imp = c.post(f"{B}/packs/import", json={"pack": tpl}).json()
+ok(imp["ok"] and imp["pack"]["id"] == "test-imported" and imp["pack"]["roles"] >= 100, "import: a template comes back in as a pack")
+ok(c.post(f"{B}/packs/import", json={"pack": tpl}).status_code == 409, "import: twice needs replace")
+ok(c.post(f"{B}/packs/import", json={"pack": tpl, "replace": True}).json()["ok"], "import: replace")
+ok(c.post(f"{B}/packs/import", json={"pack": {**tpl, "id": dup["id"]}}).status_code == 409, "import: a shipped id is refused")
+bad = c.post(f"{B}/packs/import", json={"pack": {"type": "icon-pack"}})
+ok(bad.status_code == 400 and bad.json()["errors"], "import: an invalid pack says why")
+ok(any(p["id"] == "test-imported" for p in c.get(f"{B}/packs/imported").json()["packs"]), "imported packs listed whole")
+ok(any(p["id"] == "test-imported" and p.get("source") == "imported" for p in c.get(f"{B}/packs").json()["packs"]), "imported packs join the pack list")
+ok(c.put(f"{B}/pack", json={"pack": "test-imported"}).json()["pack"] == "test-imported", "an imported pack can be used")
+ex = c.get(f"{B}/packs/test-imported/export").json()
+ok(ex["ok"] and ex["pack"]["id"] == "test-imported" and ex["source"] == "imported", "export an imported pack")
+ok(c.get(f"{B}/packs/{dup['id']}/export").json()["pack"]["type"] == "icon-pack", "export a shipped pack")
+ok(c.get(f"{B}/packs/nope-nope/export").status_code == 404, "export: unknown is 404")
+sk = c.get(f"{B}/skin-packs").json()
+ok(sk["ok"] and len(sk["skins"]) >= 1 and "iconPack" in sk["skins"][0], "skin-packs: every skin and the pack it names")
+skin = sk["skins"][0]["id"]
+ok(c.put(f"{B}/skin-packs/{skin}", json={"pack": "test-imported"}).json()["pack"] == "test-imported", "per-skin default set")
+ok(next(k for k in c.get(f"{B}/skin-packs").json()["skins"] if k["id"] == skin)["draws"] == "test-imported", "skin-packs: the default is what the skin draws")
+ok(c.put(f"{B}/skin-packs/{skin}", json={"pack": "no such pack at all"}).status_code == 404, "per-skin default: unknown pack 404")
+d = c.delete(f"{B}/packs/imported/test-imported").json()
+ok(d["ok"] and c.get(f"{B}/state").json()["pack"] == "" and skin not in c.get(f"{B}/state").json()["skinPacks"], "removing an imported pack drops it from the pack in force and the skin defaults")
+ok(c.delete(f"{B}/skin-packs/{skin}").json()["cleared"] is False, "skin default clear is idempotent")
+ok(c.put(f"{B}/hub-packs", json={"packs": [{"id": "shared-one", "name": "Shared one", "style": "outline", "themable": True, "by": "x"}, {"id": "BAD"}]}).json()["packs"] == 1, "hub-packs: the console's read of axHub, cleaned")
+ok(c.get(f"{B}/hub-packs").json()["packs"][0]["id"] == "shared-one", "hub-packs listed")
+
 raw = json.loads((DATA / "icons.json").read_text())
 ok(raw["pack"] == "" and raw["slots"] == {} and len(raw["history"]) >= 6 and raw["hub"]["slots"], "the state file is the only thing written, with its history")
-ok(not [f for f in DATA.iterdir() if f.name != "icons.json"], "nothing else in the data folder")
+ok(not [f for f in DATA.iterdir() if f.name not in ("icons.json", "packs")], "nothing else in the data folder (icons.json + imported packs)")
 
 chk = c.get(f"{B}/check").json()
 ok(chk["ok"] is True and "slots" in chk and "failures" in chk, "check: the CI verdict")

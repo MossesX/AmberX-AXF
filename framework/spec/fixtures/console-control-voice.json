@@ -232,6 +232,16 @@
     "download the icon pack template": {
       "verb": "press",
       "address": "function:icon-map.template"
+    },
+    "share the phosphor duotone icon pack": {
+      "verb": "press",
+      "address": "function:icon-map.pack.share",
+      "value": "phosphor-duotone"
+    },
+    "export the lucide icon pack": {
+      "verb": "press",
+      "address": "function:icon-map.pack.export",
+      "value": "lucide"
     }
   },
   "commands": {
@@ -367,6 +377,16 @@
     "download the icon pack template": {
       "verb": "press",
       "address": "function:icon-map.template"
+    },
+    "share the phosphor duotone icon pack": {
+      "verb": "press",
+      "address": "function:icon-map.pack.share",
+      "value": "phosphor-duotone"
+    },
+    "export the lucide icon pack": {
+      "verb": "press",
+      "address": "function:icon-map.pack.export",
+      "value": "lucide"
     }
   },
   "replies": {

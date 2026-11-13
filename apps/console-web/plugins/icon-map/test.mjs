@@ -60,6 +60,8 @@ await test('voice: pack and slot intents (the same rules the Python twin replays
   assert.deepEqual(voiceIntent('restore the previous icon pack'), { verb: 'press', address: 'function:icon-map.pack.restore', value: 'previous' });
   assert.deepEqual(voiceIntent('restore the icons from axhub'), { verb: 'press', address: 'function:icon-map.pack.restore', value: 'hub' });
   assert.deepEqual(voiceIntent('download the icon pack template'), { verb: 'press', address: 'function:icon-map.template' });
+  assert.deepEqual(voiceIntent('share the phosphor duotone icon pack'), { verb: 'press', address: 'function:icon-map.pack.share', value: 'phosphor-duotone' });
+  assert.deepEqual(voiceIntent('export the lucide icon pack'), { verb: 'press', address: 'function:icon-map.pack.export', value: 'lucide' });
   assert.equal(voiceIntent('open the icon map').verb, 'open', 'opening the page stays a screen intent');
   assert.equal(voiceIntent('switch to the pipeline tab').verb, 'open', 'other switch-to phrases are untouched');
 });

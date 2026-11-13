@@ -13,11 +13,12 @@
 import { Button, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { iconMapRules, type AxfRuntime } from '@console/axf/core';
+import type { HubValue } from '@console/axf/libs/hubstore';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import './icon-map.css';
 import { appMenu } from './menu';
 import { IconMapView } from './IconMapView';
-import { CHANGED, FOLDER, VIEW, enc, get, packsOf, send, setSelectedSlot, type PackRow, type State } from './shared';
+import { CHANGED, FOLDER, VIEW, enc, get, hubPacks, packsOf, send, setSelectedSlot, type HubPackRow, type PackRow, type State } from './shared';
 
 const ID = 'ai.amberx.axf.console.icon-map';
 const POLL_MS = 20000;
@@ -37,24 +38,50 @@ export function findPack(packs: PackRow[], words: string): PackRow | null {
   if (exact) return exact;
   const parts = w.replace(/\b(the|icon|icons|pack|set|please)\b/g, ' ').trim().split(/\s+/).filter(Boolean);
   if (!parts.length) return null;
-  return packs.find((p) => { const hay = `${p.id} ${p.name.toLowerCase()} ${p.style}`; return parts.every((x) => hay.includes(x)); }) ?? null;
+  // words in the id or name first ("duotone" → phosphor-duotone), then the style too
+  return packs.find((p) => { const hay = `${p.id} ${p.name.toLowerCase()}`; return parts.every((x) => hay.includes(x)); })
+    ?? packs.find((p) => { const hay = `${p.id} ${p.name.toLowerCase()} ${p.style}`; return parts.every((x) => hay.includes(x)); }) ?? null;
+}
+
+/** The pack the skin in force names itself ('' = the branding's). */
+function skinOwnPack(rt: AxfRuntime): string {
+  const id = rt.skinInForce().id;
+  const d = id ? (rt.registry.get('skin', id)?.data as { iconPack?: string } | undefined) : undefined;
+  return typeof d?.iconPack === 'string' && rt.registry.has('icon-pack', d.iconPack) ? d.iconPack : '';
+}
+
+/**
+ * The pack the console should draw: the hand pick, else this skin's default set in the Icon map, else the skin's own
+ * pack (else the branding's). Returns undefined when nothing here decides (no pick, no default, nothing dropped).
+ */
+let decided = '';
+function packFor(rt: AxfRuntime, state: State): string | undefined {
+  if (state.pack) return state.pack;
+  const skin = rt.skinInForce().id;
+  const def = skin ? state.skinPacks?.[skin] : '';
+  if (def) return def;
+  return decided ? skinOwnPack(rt) : undefined;
 }
 
 /** Make the runtime draw what the server state says (pack + every pick); true when something changed. */
 function applyState(rt: AxfRuntime, state: State): boolean {
   let changed = false;
-  if ((rt.iconPackId() || '') !== (state.pack || '') && (!state.pack || rt.registry.has('icon-pack', state.pack))) { rt.setIconPack(state.pack || null); changed = true; }
+  const target = packFor(rt, state);
+  if (target !== undefined && (rt.iconPackId() || '') !== target && (!target || rt.registry.has('icon-pack', target))) { rt.setIconPack(target || null); changed = true; }
+  if (target !== undefined) decided = state.pack || state.skinPacks?.[rt.skinInForce().id] || '';
   const have = rt.iconOverrides();
   for (const [slot, glyph] of Object.entries(state.slots ?? {})) if (have[slot] !== glyph) { rt.setIconSlot(slot, glyph); changed = true; }
   for (const slot of Object.keys(have)) if (!(slot in (state.slots ?? {}))) { rt.setIconSlot(slot, null); changed = true; }
   return changed;
 }
 
+let lastStateObj: State | null = null;
 let lastState = '';
 async function pull(rt: AxfRuntime, force = false): Promise<void> {
   try {
     const s = await get<State>('state');
-    const key = JSON.stringify([s.pack, s.slots]);
+    lastStateObj = s;
+    const key = JSON.stringify([s.pack, s.slots, s.skinPacks]);
     if (!force && key === lastState) return;
     lastState = key;
     applyState(rt, s);
@@ -94,7 +121,7 @@ export const plugin: AxfWebLibrary = {
       say(`${p.name} is the icon pack.`);
     }, { label: 'Switch the icon pack', params: true, effect: 'write' });
     rt.actions.register('icon-map.pack.clear', () => {
-      if (!rt.setIconPack(null)) { say('Your role cannot change the look.', 'danger'); return; }
+      if (!rt.setIconPack(skinOwnPack(rt) || null)) { say('Your role cannot change the look.', 'danger'); return; }
       void send('DELETE', 'pack').then(() => window.dispatchEvent(new Event(CHANGED)), () => undefined);
       say('Back to the branding’s icon pack.');
     }, { label: 'Back to the branding icon pack', effect: 'write' });
@@ -148,6 +175,71 @@ export const plugin: AxfWebLibrary = {
     };
     rt.subscribe(hubCopy);
     hubCopy();
+    // Packs are assets: imported ones (the server's data folder) join the registry; a skin change re-applies its default
+    let lastSkin = rt.skinInForce().id;
+    rt.subscribe(() => { const k = rt.skinInForce().id; if (k !== lastSkin) { lastSkin = k; if (lastStateObj) applyState(rt, lastStateObj); } });
+    const loadImported = () => get<{ packs: unknown[] }>('packs/imported').then((r) => {
+      for (const a of r.packs) { const id = (a as { id?: string }).id; if (id) rt.registry.register(a, 'imported'); }
+      window.dispatchEvent(new Event(CHANGED));
+    }, () => undefined);
+    void loadImported();
+    const download = (name: string, body: unknown) => {
+      const url = URL.createObjectURL(new Blob([`${JSON.stringify(body, null, 2)}\n`], { type: 'application/json' }));
+      const a = document.createElement('a'); a.href = url; a.download = name; a.click();
+      window.setTimeout(() => URL.revokeObjectURL(url), 5000);
+    };
+    rt.actions.register('icon-map.pack.export', ([id]) => {
+      if (!id) { say('Say which pack: icon-map.pack.export:<pack id>.', 'warning'); return; }
+      void get<{ pack: unknown }>(`packs/${encodeURIComponent(id)}/export`).then((r) => { download(`${id}.json`, r.pack); say(`${id}.json downloaded.`); }, (e: Error) => say(`Export: ${e.message.slice(0, 160)}`, 'warning'));
+    }, { label: 'Export an icon pack (file)', params: true, effect: 'read' });
+    rt.actions.register('icon-map.pack.import', (args) => {
+      const text = args.join(':');
+      if (!text.trim().startsWith('{')) { openSlot(''); window.dispatchEvent(new Event('axf:icon-map-import')); return; }
+      let pack: unknown; try { pack = JSON.parse(text); } catch { say('That is not valid JSON.', 'warning'); return; }
+      void send<{ message: string }>('POST', 'packs/import', { pack, by: 'console' }).then((r) => { say(r.message); void loadImported(); }, (e: Error) => say(`Import: ${e.message.replace(/^\d+ /, '').slice(0, 200)}`, 'warning'));
+    }, { label: 'Import an icon pack', params: true, effect: 'write' });
+    rt.actions.register('icon-map.pack.remove', ([id]) => {
+      if (!id) { say('Say which imported pack: icon-map.pack.remove:<pack id>.', 'warning'); return; }
+      void send('DELETE', `packs/imported/${encodeURIComponent(id)}`).then(() => { void pull(rt, true); say(`${id} removed (this console keeps drawing it until it reloads).`); }, (e: Error) => say(`Remove: ${e.message.slice(0, 160)}`, 'warning'));
+    }, { label: 'Remove an imported icon pack', params: true, effect: 'write' });
+    rt.actions.register('icon-map.skin.pack', ([skin, ...rest]) => {
+      const pack = rest.join(':');
+      if (!skin || !pack) { say('Say which skin and pack: icon-map.skin.pack:<skin id>:<pack>.', 'warning'); return; }
+      void send<{ message: string }>('PUT', `skin-packs/${encodeURIComponent(skin)}`, { pack, by: 'console' }).then((r) => { void pull(rt, true); say(r.message); }, (e: Error) => say(`Skin default: ${e.message.slice(0, 160)}`, 'warning'));
+    }, { label: 'Set a skin’s default icon pack', params: true, effect: 'write' });
+    rt.actions.register('icon-map.skin.clear', ([skin]) => {
+      if (!skin) { say('Say which skin: icon-map.skin.clear:<skin id>.', 'warning'); return; }
+      void send('DELETE', `skin-packs/${encodeURIComponent(skin)}`).then(() => { void pull(rt, true); say(`${skin} draws the pack it names again.`); }, () => undefined);
+    }, { label: 'Drop a skin’s default icon pack', params: true, effect: 'write' });
+    // axHub's shared icon packs (the hub asset library for this type): share, list, take one in
+    const hubRefresh = async (quiet = false) => {
+      try {
+        const rows = Object.values(await hubPacks(rt).rows());
+        const list: HubPackRow[] = rows.map((r) => ({ id: r.id, name: r.name, style: r.style, themable: r.themable !== false, by: r.by, at: r.at }));
+        await send('PUT', 'hub-packs', { packs: list });
+        window.dispatchEvent(new Event(CHANGED));
+        if (!quiet) say(`${list.length} icon pack${list.length === 1 ? '' : 's'} shared on axHub.`);
+      } catch (e) { if (!quiet) say(`axHub: ${(e as Error).message.slice(0, 160)}`, 'warning'); }
+    };
+    rt.actions.register('icon-map.hub.refresh', () => { void hubRefresh(); }, { label: 'Read the icon packs shared on axHub', effect: 'read' });
+    rt.actions.register('icon-map.pack.share', ([id]) => {
+      if (!id) { say('Say which pack: icon-map.pack.share:<pack id>.', 'warning'); return; }
+      void get<{ pack: Record<string, unknown> }>(`packs/${encodeURIComponent(id)}/export`).then(async (r) => {
+        const d = (r.pack.data ?? {}) as { style?: string; themable?: boolean };
+        await hubPacks(rt).put(id, { id, name: String(r.pack.name ?? id), style: d.style ?? 'outline', themable: d.themable !== false, by: 'console', at: new Date().toISOString(), pack: r.pack as HubValue });
+        say(`${id} shared on axHub: every app on this project can take it.`);
+        void hubRefresh(true);
+      }).catch((e: Error) => say(`Share: ${e.message.slice(0, 200)}`, 'warning'));
+    }, { label: 'Share an icon pack on axHub', params: true, effect: 'write' });
+    rt.actions.register('icon-map.pack.fromhub', ([id]) => {
+      if (!id) { say('Say which shared pack: icon-map.pack.fromhub:<pack id>.', 'warning'); return; }
+      void hubPacks(rt).get(id).then(async (row) => {
+        if (!row?.pack) { say(`axHub has no shared pack "${id}".`, 'warning'); return; }
+        await send('POST', 'packs/import', { pack: row.pack, replace: true, by: 'axhub' });
+        await loadImported();
+        say(`${row.name} taken from axHub: it is in the pack list now.`);
+      }).catch((e: Error) => say(`From axHub: ${e.message.replace(/^\d+ /, '').slice(0, 200)}`, 'warning'));
+    }, { label: 'Take a shared icon pack from axHub', params: true, effect: 'write' });
     const openSlot = (slot: string) => { setSelectedSlot(slot || null); rt.dispatch(`nav:${VIEW}`); };
     rt.actions.register('icon-map.slot.open', ([slot]) => openSlot(slot ?? ''), { label: 'Open one slot in the icon map', params: true, effect: 'navigate' });
     // axf.icon-map@1: how the other UI tools reach the map without naming this folder

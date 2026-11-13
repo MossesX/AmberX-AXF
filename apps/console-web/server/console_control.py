@@ -495,6 +495,10 @@ def voice_intent(text: Any) -> dict[str, Any] | None:
     # icon packs (icon-map@1, the Icon map plugin's actions; twin of the rules in console-control-voice.mjs, before the generic set rule)
     if re.match(r"^(?:restore|undo|bring back)(?: the)? (?:previous |last |old )?(?:icon pack|icons|icon set)(?: change)?(?: from (?:axhub|the hub))?$", p):
         return {"verb": "press", "address": "function:icon-map.pack.restore", "value": "hub" if re.search(r"from (?:axhub|the hub)$", p) else "previous"}
+    if m := re.match(r"^(?:share|publish)(?: the)? (.+?) (?:icon pack|icons|icon set)(?: on (?:axhub|the hub))?$", p):
+        return {"verb": "press", "address": "function:icon-map.pack.share", "value": _slug(m.group(1))}
+    if (m := re.match(r"^(?:export|download|save)(?: the)? (.+?) (?:icon pack|icon set)$", p)) and not m.group(1).endswith("template"):
+        return {"verb": "press", "address": "function:icon-map.pack.export", "value": _slug(m.group(1))}
     if re.match(r"^(?:download|get|make|give me)(?: the| an| a)? icon (?:pack )?template$", p):
         return {"verb": "press", "address": "function:icon-map.template"}
     if re.match(r"^(?:(?:switch|go|change|set) )?(?:back )?(?:to |use )?(?:the )?(?:default|original|normal|branding|standard|framework) (?:icon pack|icons|icon set)$", p) or re.match(r"^(?:reset|clear|drop) (?:the )?(?:icon pack|icons|icon set)$", p):

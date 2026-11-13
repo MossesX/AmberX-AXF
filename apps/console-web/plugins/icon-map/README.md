@@ -69,10 +69,25 @@ data, shapes to path commands, scaled onto the grid; a glyph a set lacks or can'
 falls back to the framework glyph). Fixed-colour packs carry `layers: [{ d, color }]` per glyph with a one-colour `d`
 fallback; until the icon-pack@1 colour-layer step (Fable) lands they draw that one-colour fallback.
 
+## Packs are assets
+
+- **Swap**: Use (page), `PUT /pack`, `icon-map.pack.use:<pack>`, voice "switch to the duotone icon pack".
+- **Per-skin defaults**: a skin may name its pack (skin@1 `iconPack`); Packs → Per-skin defaults sets another one per
+  skin here (`PUT /skin-packs/{skin} {pack}`, `icon-map.skin.pack:<skin>:<pack>`). Order: hand pick → this skin's
+  default → the pack the skin names → the branding's. With no hand pick the console no longer clears the skin's pack.
+- **Import / export**: paste a pack (an edited template or an exported file) in Packs → Import and share, or
+  `POST /packs/import {pack}`; it is validated (`node framework/cli/icon-map.mjs validate-pack <file>`), kept in the
+  data folder (`packs/<id>.json`) and joins the pack list in every transport. Export: `GET /packs/{id}/export`,
+  `icon-map.pack.export:<id>`, voice "export the lucide icon pack".
+- **Share via axHub**: Share puts the pack in axHub's shared icon-pack table (hubstore data API, folder `icon-packs`,
+  table `packs`, on the axHub sync connection's project); Read axHub lists them (`GET /hub-packs` shows the console's
+  last read); Take brings one in as an imported pack. Voice "share the phosphor duotone icon pack". The browser's own
+  axHub sign-in is used; files over axHub's 64 KB limit (twemoji) can't be shared that way.
+
 ## State
 
 `icons.json` in the plugin's data folder (`.axf-console/plugins/icon-map/`, or `AXF_ICON_MAP_DIR`):
-`{ "pack": "<icon-pack id or ''>", "slots": { "<slot id>": "<glyph>" }, "history": [...], "hub": { "pack", "slots", "at" } }`. The open console reads it on load and
+`{ "pack": "<icon-pack id or ''>", "slots": { "<slot id>": "<glyph>" }, "history": [...], "hub": { "pack", "slots", "at" }, "skinPacks": { "<skin>": "<pack>" }, "hubPacks": [...] }`; imported packs in `packs/`. The open console reads it on load and
 every few seconds, and writes it back when a pick is made on screen, so REST, MCP, CLI, voice and the page agree.
 The runtime keys are `axf.icons.pack.app` (the skin engine's own key) and `axf.icons.slot.<slot id>`.
 

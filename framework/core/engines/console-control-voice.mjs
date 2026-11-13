@@ -77,6 +77,9 @@ export function voiceIntent(text) {
   // "change the save icon to check circle"
   // "restore the previous icon pack" · "restore the icons from axhub" · "download the icon pack template"
   if ((m = /^(?:restore|undo|bring back)(?: the)? (?:previous |last |old )?(?:icon pack|icons|icon set)(?: change)?(?: from (?:axhub|the hub))?$/.exec(p))) return { verb: 'press', address: 'function:icon-map.pack.restore', value: /from (?:axhub|the hub)$/.test(p) ? 'hub' : 'previous' };
+  // "share the phosphor duotone icon pack" · "export the lucide icon pack" (on axHub / as a file)
+  if ((m = /^(?:share|publish)(?: the)? (.+?) (?:icon pack|icons|icon set)(?: on (?:axhub|the hub))?$/.exec(p))) return { verb: 'press', address: 'function:icon-map.pack.share', value: slug(m[1]) };
+  if ((m = /^(?:export|download|save)(?: the)? (.+?) (?:icon pack|icon set)$/.exec(p)) && !/template$/.test(m[1])) return { verb: 'press', address: 'function:icon-map.pack.export', value: slug(m[1]) };
   if (/^(?:download|get|make|give me)(?: the| an| a)? icon (?:pack )?template$/.test(p)) return { verb: 'press', address: 'function:icon-map.template' };
   if (/^(?:(?:switch|go|change|set) )?(?:back )?(?:to |use )?(?:the )?(?:default|original|normal|branding|standard|framework) (?:icon pack|icons|icon set)$/.test(p) || /^(?:reset|clear|drop) (?:the )?(?:icon pack|icons|icon set)$/.test(p)) {
     return { verb: 'press', address: 'function:icon-map.pack.clear' };

@@ -29,3 +29,6 @@
 .axp-icon-map__big .axp-icon-map__preview { width: auto; height: auto; padding: var(--fx-dens-gap-sm) }
 .axp-icon-map__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--fx-row-h), 1fr)); gap: var(--fx-dens-gap-sm); max-height: calc(var(--fx-row-h) * 10); overflow: auto }
 .axp-icon-map__panel p { margin: 0 }
+.axp-icon-map__row--two { grid-template-columns: minmax(0, 1fr) auto }
+.axp-icon-map__swatch { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-2xs); padding: var(--fx-dens-gap-2xs) var(--fx-dens-gap-sm); border-radius: var(--fx-radius-sm); background: var(--fx-bg); color: var(--fx-text) }
+.axp-icon-map__swatch-glyph { display: inline-flex }

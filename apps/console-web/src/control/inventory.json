@@ -4,11 +4,11 @@
   "counts": {
     "views": 62,
     "nav": 16,
-    "tabGroups": 23,
-    "tabs": 78,
+    "tabGroups": 24,
+    "tabs": 80,
     "settingsTabs": 68,
     "settings": 85,
-    "functions": 239,
+    "functions": 247,
     "buttons": 62,
     "plugins": 68
   },
@@ -1468,13 +1468,34 @@
       "tabs": []
     },
     {
+      "address": "view:icon-map/tab:icon-map.section",
+      "id": "icon-map.section",
+      "dynamic": false,
+      "view": "icon-map",
+      "plugin": "ai.amberx.axf.console.icon-map",
+      "file": "plugins/icon-map/web/IconMapView.tsx",
+      "line": 200,
+      "tabs": [
+        {
+          "address": "view:icon-map/tab:icon-map.section=slots",
+          "value": "slots",
+          "label": "Slots"
+        },
+        {
+          "address": "view:icon-map/tab:icon-map.section=packs",
+          "value": "packs",
+          "label": "Packs"
+        }
+      ]
+    },
+    {
       "address": "view:icon-map/tab:icon-map.mode",
       "id": "icon-map.mode",
       "dynamic": false,
       "view": "icon-map",
       "plugin": "ai.amberx.axf.console.icon-map",
       "file": "plugins/icon-map/web/IconMapView.tsx",
-      "line": 200,
+      "line": 207,
       "tabs": [
         {
           "address": "view:icon-map/tab:icon-map.mode=tree",
@@ -5384,6 +5405,151 @@
         "template"
       ],
       "effect": "read",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.icon-map",
+      "file": "plugins/icon-map/web/index.tsx"
+    },
+    {
+      "address": "function:icon-map.pack.export",
+      "kind": "function",
+      "id": "icon-map.pack.export",
+      "label": "Export an icon pack (file)",
+      "detail": "Action · Icon map",
+      "keywords": [
+        "icon-map.pack.export",
+        "icon",
+        "map",
+        "pack",
+        "export"
+      ],
+      "effect": "read",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.icon-map",
+      "file": "plugins/icon-map/web/index.tsx"
+    },
+    {
+      "address": "function:icon-map.pack.import",
+      "kind": "function",
+      "id": "icon-map.pack.import",
+      "label": "Import an icon pack",
+      "detail": "Action · Icon map",
+      "keywords": [
+        "icon-map.pack.import",
+        "icon",
+        "map",
+        "pack",
+        "import"
+      ],
+      "effect": "write",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.icon-map",
+      "file": "plugins/icon-map/web/index.tsx"
+    },
+    {
+      "address": "function:icon-map.pack.remove",
+      "kind": "function",
+      "id": "icon-map.pack.remove",
+      "label": "Remove an imported icon pack",
+      "detail": "Action · Icon map",
+      "keywords": [
+        "icon-map.pack.remove",
+        "icon",
+        "map",
+        "pack",
+        "remove"
+      ],
+      "effect": "write",
+      "params": true,
+      "destructive": true,
+      "plugin": "ai.amberx.axf.console.icon-map",
+      "file": "plugins/icon-map/web/index.tsx"
+    },
+    {
+      "address": "function:icon-map.skin.pack",
+      "kind": "function",
+      "id": "icon-map.skin.pack",
+      "label": "Set a skin’s default icon pack",
+      "detail": "Action · Icon map",
+      "keywords": [
+        "icon-map.skin.pack",
+        "icon",
+        "map",
+        "skin",
+        "pack"
+      ],
+      "effect": "write",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.icon-map",
+      "file": "plugins/icon-map/web/index.tsx"
+    },
+    {
+      "address": "function:icon-map.skin.clear",
+      "kind": "function",
+      "id": "icon-map.skin.clear",
+      "label": "Drop a skin’s default icon pack",
+      "detail": "Action · Icon map",
+      "keywords": [
+        "icon-map.skin.clear",
+        "icon",
+        "map",
+        "skin",
+        "clear"
+      ],
+      "effect": "write",
+      "params": true,
+      "destructive": true,
+      "plugin": "ai.amberx.axf.console.icon-map",
+      "file": "plugins/icon-map/web/index.tsx"
+    },
+    {
+      "address": "function:icon-map.hub.refresh",
+      "kind": "function",
+      "id": "icon-map.hub.refresh",
+      "label": "Read the icon packs shared on axHub",
+      "detail": "Action · Icon map",
+      "keywords": [
+        "icon-map.hub.refresh",
+        "icon",
+        "map",
+        "hub",
+        "refresh"
+      ],
+      "effect": "read",
+      "plugin": "ai.amberx.axf.console.icon-map",
+      "file": "plugins/icon-map/web/index.tsx"
+    },
+    {
+      "address": "function:icon-map.pack.share",
+      "kind": "function",
+      "id": "icon-map.pack.share",
+      "label": "Share an icon pack on axHub",
+      "detail": "Action · Icon map",
+      "keywords": [
+        "icon-map.pack.share",
+        "icon",
+        "map",
+        "pack",
+        "share"
+      ],
+      "effect": "write",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.icon-map",
+      "file": "plugins/icon-map/web/index.tsx"
+    },
+    {
+      "address": "function:icon-map.pack.fromhub",
+      "kind": "function",
+      "id": "icon-map.pack.fromhub",
+      "label": "Take a shared icon pack from axHub",
+      "detail": "Action · Icon map",
+      "keywords": [
+        "icon-map.pack.fromhub",
+        "icon",
+        "map",
+        "pack",
+        "fromhub"
+      ],
+      "effect": "write",
       "params": true,
       "plugin": "ai.amberx.axf.console.icon-map",
       "file": "plugins/icon-map/web/index.tsx"

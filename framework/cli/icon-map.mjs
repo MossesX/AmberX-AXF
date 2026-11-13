@@ -16,6 +16,8 @@
  *   node framework/cli/icon-map.mjs template [--from pack] [--id id] [--name n] [--style s] [--fixed] [--out file] [--json]
  *                                                                   an icon-pack@1 file mapping EVERY role to a glyph (the
  *                                                                   from-pack's mapping, else the role default): edit, import, apply
+ *   node framework/cli/icon-map.mjs validate-pack <file> [--json]    is this an importable icon-pack@1 asset (and its id / name)
+ *   node framework/cli/icon-map.mjs skins [--json]                   every skin with the icon pack it names (its per-skin default)
  *   node framework/cli/icon-map.mjs schemas                          the contract's JSON Schemas
  *
  * AXF_ROOT points at another checkout (tests). Exit codes: 0 ok · 1 failed · 2 usage.
@@ -28,7 +30,7 @@ import {
   allRoles, buildIconMap, iconMapCheck, iconMapSchemas, iconMapSearch, iconMapTree, resolveIcon, scanRawIcons,
 } from '../core/engines/icon-map-rules.mjs';
 import { GLYPHS, GLYPH_ALIASES, GLYPH_FALLBACK, GLYPH_NAMES } from '../core/engines/glyphs.mjs';
-import { normalizeIconPack } from '../core/engines/brand-rules.mjs';
+import { iconPackErrors, normalizeIconPack } from '../core/engines/brand-rules.mjs';
 
 export const ROOT = resolve(process.env.AXF_ROOT || join(dirname(fileURLToPath(import.meta.url)), '../..'));
 export const SNAPSHOT_REL = 'framework/schemas/icon-map.json';
@@ -141,7 +143,9 @@ export function snapshot(map = buildMap()) {
 /** Every icon-pack@1 asset in the framework and the apps' own assets. */
 export function readPacks() {
   const out = [];
-  const dirs = [join(ROOT, 'framework/assets/icon-pack'), ...(existsSync(join(ROOT, 'apps')) ? readdirSync(join(ROOT, 'apps')).map((a) => join(ROOT, 'apps', a, 'src/assets/icon-pack')) : [])];
+  // AXF_ICON_PACKS_EXTRA: more folders of icon-pack files (the Icon map plugin's imported packs), ':'-separated
+  const extra = (process.env.AXF_ICON_PACKS_EXTRA || '').split(':').filter(Boolean);
+  const dirs = [join(ROOT, 'framework/assets/icon-pack'), ...(existsSync(join(ROOT, 'apps')) ? readdirSync(join(ROOT, 'apps')).map((a) => join(ROOT, 'apps', a, 'src/assets/icon-pack')) : []), ...extra];
   const seen = new Set();
   for (const d of dirs) {
     if (!existsSync(d)) continue;
@@ -150,7 +154,7 @@ export function readPacks() {
       if (!j || j.type !== 'icon-pack' || seen.has(j.id)) continue;
       seen.add(j.id);
       const p = normalizeIconPack(j.data);
-      out.push({ id: j.id, name: j.name ?? j.id, style: p.style, themable: p.themable, covers: p.covers, license: p.license, roles: Object.keys(p.roles).length, glyphs: Object.keys(p.glyphs).length, tags: p.tags, file: rel(join(d, f)) });
+      out.push({ id: j.id, name: j.name ?? j.id, style: p.style, themable: p.themable, covers: p.covers, license: p.license, roles: Object.keys(p.roles).length, glyphs: Object.keys(p.glyphs).length, tags: p.tags, file: extra.includes(d) ? join(d, f) : rel(join(d, f)), source: extra.includes(d) ? 'imported' : 'shipped' });
     }
   }
   return out;
@@ -209,6 +213,20 @@ export function packTemplate({ from = '', id = '', name = '', style = '', themab
       },
     },
   };
+}
+
+/** An icon-pack@1 asset someone wants to import: shape, id, the type's data rules. */
+export function validatePack(j) {
+  const errors = [];
+  if (!j || typeof j !== 'object' || Array.isArray(j)) return { ok: false, errors: ['not a JSON object'] };
+  if (j.$axf !== 'asset@1') errors.push('$axf must be "asset@1"');
+  if (j.type !== 'icon-pack') errors.push('type must be "icon-pack"');
+  if (typeof j.id !== 'string' || !/^[a-z0-9][a-z0-9-]{0,63}$/.test(j.id)) errors.push('id must be lowercase words with dashes (max 64)');
+  if (typeof j.name !== 'string' || !j.name.trim()) errors.push('name is required');
+  errors.push(...iconPackErrors(j.data).map((e) => `data: ${e}`));
+  if (errors.length) return { ok: false, errors };
+  const p = normalizeIconPack(j.data);
+  return { ok: true, errors: [], id: j.id, name: j.name, style: p.style, themable: p.themable, covers: p.covers, glyphs: Object.keys(p.glyphs).length, roles: Object.keys(p.roles).length, shipped: readPacks().some((x) => x.id === j.id && x.source === 'shipped') };
 }
 
 /* ------------------------------------------------------------------ CLI */
@@ -306,6 +324,20 @@ export async function main(argv = process.argv.slice(2)) {
       const text = `${JSON.stringify(r.pack, null, 2)}\n`;
       if (typeof flags.out === 'string') { writeFileSync(resolve(flags.out), text); if (!json) { console.log(`wrote ${flags.out}: ${Object.keys(r.pack.data.roles).length} roles`); return 0; } }
       return json ? out(r.pack) : (process.stdout.write(text), 0);
+    }
+    case 'validate-pack': {
+      if (!rest[0]) { console.error('usage: icon-map.mjs validate-pack <file>'); return 2; }
+      const r = validatePack(readJson(resolve(rest[0])));
+      if (json) return out(r);
+      console.log(r.ok ? `✓ ${r.id}: ${r.glyphs} glyphs, ${r.roles} roles, ${r.themable ? 'themable' : 'fixed colour'}` : `✗ ${r.errors.join('; ')}`);
+      return r.ok ? 0 : 1;
+    }
+    case 'skins': {
+      const d = join(ROOT, 'framework/assets/skin');
+      const skins = existsSync(d) ? readdirSync(d).filter((f) => f.endsWith('.json')).sort().map((f) => readJson(join(d, f))).filter((j) => j?.type === 'skin').map((j) => ({ id: j.id, name: j.name ?? j.id, iconPack: typeof j.data?.iconPack === 'string' ? j.data.iconPack : '' })) : [];
+      if (json) return out(skins);
+      for (const k of skins) console.log(`${pad(k.id, 20)} ${k.iconPack || '(branding pack)'}`);
+      return 0;
     }
     case 'schemas': return out(iconMapSchemas());
     default:

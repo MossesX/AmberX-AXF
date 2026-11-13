@@ -20,6 +20,14 @@ made on screen, so REST, MCP, the CLI, voice and the page agree. plugin-commands
   POST   slot/{id}/restore   { from: previous | hub, by?, reason? }      Restore previous edit / Restore from axHub
   POST   pack/restore        { from: previous | hub, by?, reason? }      the same for the pack in force
   PUT    hub-copy       { pack, slots, at? }                            the open console's last read of axHub's copy
+  GET    packs/imported                                                 the imported packs (whole icon-pack@1 assets)
+  POST   packs/import   { pack, replace? }                              import an icon-pack@1 asset (validated; kept in the data folder)
+  DELETE packs/imported/{id}                                            drop an imported pack
+  GET    packs/{id}/export                                              one pack as its asset file (shipped or imported)
+  GET    skin-packs                                                     every skin, the pack it names, and the per-skin defaults set here
+  PUT    skin-packs/{skin}  { pack }                                    this skin's default icon pack (used while no pack is picked by hand)
+  DELETE skin-packs/{skin}                                              back to the pack the skin itself names
+  GET    hub-packs  ·  PUT hub-packs { packs }                          the icon packs shared on axHub, as the open console last read them
 
 Data: AXF_ICON_MAP_DIR or <repo>/.axf-console/plugins/icon-map/icons.json.
 """
@@ -43,7 +51,9 @@ ROOT = Path(__file__).resolve().parents[5]
 CLI = ROOT / "framework" / "cli" / "icon-map.mjs"
 SLOT_ID = re.compile(r"^[a-z0-9][a-z0-9-]*/[a-z0-9][a-z0-9_-]*/[a-z0-9][a-z0-9-]*/[a-z0-9][a-z0-9_.-]*$")
 GLYPH = re.compile(r"^[a-z][a-z0-9-]*$")
-STATUS = {"invalid": 400, "not_found": 404, "unavailable": 503}
+PACK_ID = re.compile(r"^[a-z0-9][a-z0-9-]{0,63}$")
+MAX_PACK = 512 * 1024
+STATUS = {"invalid": 400, "not_found": 404, "conflict": 409, "unavailable": 503}
 MAX_BODY = 16 * 1024
 HISTORY = 50
 CACHE_S = 20.0
@@ -58,6 +68,10 @@ def state_file() -> Path:
     return data_dir() / "icons.json"
 
 
+def packs_dir() -> Path:
+    return data_dir() / "packs"
+
+
 # ---------------------------------------------------------------------- the engine, through its CLI
 
 _cache: dict[str, tuple[float, Any]] = {}
@@ -69,7 +83,8 @@ def cli(*args: str, timeout: int = 90, cache: bool = True) -> dict[str, Any]:
     if cache and key in _cache and now - _cache[key][0] < CACHE_S:
         return _cache[key][1]
     try:
-        p = subprocess.run(["node", str(CLI), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=timeout)
+        env = {**os.environ, "AXF_ICON_PACKS_EXTRA": str(packs_dir())}
+        p = subprocess.run(["node", str(CLI), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=timeout, env=env)
     except (OSError, subprocess.TimeoutExpired) as e:
         return {"ok": False, "code": "unavailable", "message": f"the icon map engine could not run: {str(e)[:200]}"}
     try:
@@ -105,7 +120,9 @@ def read_state() -> dict[str, Any]:
     hub = raw.get("hub") if isinstance(raw.get("hub"), dict) else None
     if hub is not None:
         hub = {"pack": hub.get("pack") if isinstance(hub.get("pack"), str) else "", "slots": {k: v for k, v in (hub.get("slots") or {}).items() if isinstance(k, str) and SLOT_ID.match(k) and isinstance(v, str) and GLYPH.match(v)} if isinstance(hub.get("slots"), dict) else {}, "at": str(hub.get("at") or "")[:40]}
-    return {"$axf": "icon-state@1", "pack": pack, "packKey": PACK_KEY, "slots": slots, "history": history, "hub": hub}
+    skin_packs = {k: v for k, v in (raw.get("skinPacks") or {}).items() if isinstance(k, str) and PACK_ID.match(k) and isinstance(v, str) and PACK_ID.match(v)} if isinstance(raw.get("skinPacks"), dict) else {}
+    hub_packs = [h for h in (raw.get("hubPacks") or []) if isinstance(h, dict) and isinstance(h.get("id"), str) and PACK_ID.match(h["id"])][:200] if isinstance(raw.get("hubPacks"), list) else []
+    return {"$axf": "icon-state@1", "pack": pack, "packKey": PACK_KEY, "slots": slots, "history": history, "hub": hub, "skinPacks": skin_packs, "hubPacks": hub_packs}
 
 
 def write_state(state: dict[str, Any]) -> None:
@@ -133,9 +150,9 @@ def _who(request: Request, body: dict[str, Any]) -> str:
     return f"console:{str(name)[:40]}" if name and name != "console-token" else "console"
 
 
-async def _body(request: Request) -> dict[str, Any]:
+async def _body(request: Request, limit: int = MAX_BODY) -> dict[str, Any]:
     raw = await request.body()
-    if len(raw) > MAX_BODY:
+    if len(raw) > limit:
         return {}
     try:
         body = json.loads(raw or b"{}")
@@ -161,10 +178,14 @@ def find_pack(words: str) -> dict[str, Any] | None:
         if p.get("id") == w:
             return p
     w2 = re.sub(r"\b(the|icon|icons|pack|set|please)\b", " ", w).strip()
-    for p in ps:
-        hay = " ".join([str(p.get("id", "")), str(p.get("name", "")).lower(), str(p.get("style", "")), *[str(t).lower() for t in p.get("tags") or []]])
-        if w2 and all(part in hay for part in w2.split()):
-            return p
+    if not w2:
+        return None
+    # words in the id or name first ("duotone" → phosphor-duotone), then style and tags
+    for wide in (False, True):
+        for p in ps:
+            hay = " ".join([str(p.get("id", "")), str(p.get("name", "")).lower(), *([str(p.get("style", "")), *[str(t).lower() for t in p.get("tags") or []]] if wide else [])])
+            if all(part in hay for part in w2.split()):
+                return p
     return None
 
 
@@ -434,3 +455,149 @@ async def put_hub_copy(request: Request) -> JSONResponse:
     state["hub"] = {"pack": pack[:80], "slots": {k: v for k, v in slots.items() if isinstance(k, str) and SLOT_ID.match(k) and isinstance(v, str) and GLYPH.match(v)}, "at": str(body.get("at") or time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))[:40]}
     write_state(state)
     return answer({"ok": True, "slots": len(state["hub"]["slots"]), "pack": state["hub"]["pack"]})
+
+
+# ---------------------------------------------------------------------- packs as assets: import, export, per-skin, axHub
+
+@router.get("/packs/imported")
+async def get_imported() -> JSONResponse:
+    d = packs_dir()
+    out = []
+    if d.is_dir():
+        for f in sorted(d.glob("*.json")):
+            try:
+                j = json.loads(f.read_text())
+            except (OSError, ValueError):
+                continue
+            if isinstance(j, dict) and j.get("type") == "icon-pack":
+                out.append(j)
+    return answer({"ok": True, "packs": out})
+
+
+@router.post("/packs/import")
+async def import_pack(request: Request) -> JSONResponse:
+    raw = await request.body()
+    if len(raw) > MAX_PACK:
+        return answer(fail("invalid", f"a pack is at most {MAX_PACK // 1024} KB"))
+    try:
+        body = json.loads(raw or b"{}")
+    except ValueError:
+        return answer(fail("invalid", "body is JSON: { pack: <icon-pack@1 asset>, replace? }"))
+    pack = body.get("pack") if isinstance(body, dict) else None
+    if not isinstance(pack, dict):
+        return answer(fail("invalid", "body.pack must be an icon-pack@1 asset"))
+    d = packs_dir()
+    d.mkdir(parents=True, exist_ok=True)
+    tmp = d / ".incoming.json.tmp"
+    tmp.write_text(json.dumps(pack))
+    r = await run_in_threadpool(cli, "validate-pack", str(tmp), cache=False)
+    v = r.get("value") if r.get("ok") else None
+    if not isinstance(v, dict) or not v.get("ok"):
+        tmp.unlink(missing_ok=True)
+        return answer(fail("invalid", "not an importable icon pack", errors=(v or {}).get("errors") or [r.get("message", "")]))
+    if v.get("shipped"):
+        tmp.unlink(missing_ok=True)
+        return answer(fail("conflict", f'"{v["id"]}" is a shipped pack: import it under another id'))
+    dest = d / f"{v['id']}.json"
+    if dest.exists() and not body.get("replace"):
+        tmp.unlink(missing_ok=True)
+        return answer(fail("conflict", f'"{v["id"]}" is imported already: send replace: true to overwrite'))
+    os.replace(tmp, dest)
+    _cache.clear()
+    state = read_state()
+    note(state, "pack-import", _who(request, body), str(body.get("reason") or ""), pack=v["id"])
+    write_state(state)
+    return answer({"ok": True, "pack": {k: v[k] for k in ("id", "name", "style", "themable", "covers", "glyphs", "roles")}, "message": f"{v['name']} imported"})
+
+
+@router.delete("/packs/imported/{pack_id}")
+async def delete_imported(pack_id: str, request: Request) -> JSONResponse:
+    if not PACK_ID.match(pack_id):
+        return answer(fail("invalid", "a pack id is lowercase words with dashes"))
+    f = packs_dir() / f"{pack_id}.json"
+    if not f.exists():
+        return answer(fail("not_found", f'no imported pack "{pack_id}"'))
+    f.unlink()
+    _cache.clear()
+    state = read_state()
+    if state["pack"] == pack_id:
+        state["pack"] = ""
+    state["skinPacks"] = {k: v for k, v in state["skinPacks"].items() if v != pack_id}
+    note(state, "pack-remove", _who(request, {}), "", pack=pack_id)
+    write_state(state)
+    return answer({"ok": True, "removed": pack_id})
+
+
+@router.get("/packs/{pack_id}/export")
+async def export_pack(pack_id: str) -> JSONResponse:
+    if not PACK_ID.match(pack_id):
+        return answer(fail("invalid", "a pack id is lowercase words with dashes"))
+    row = next((p for p in packs() if p.get("id") == pack_id), None)
+    if not row:
+        return answer(fail("not_found", f'no icon pack "{pack_id}"'))
+    f = Path(row["file"]) if os.path.isabs(str(row["file"])) else ROOT / str(row["file"])
+    try:
+        asset = json.loads(f.read_text())
+    except (OSError, ValueError):
+        return answer(fail("unavailable", f"{pack_id} could not be read"))
+    return answer({"ok": True, "pack": asset, "source": row.get("source", "shipped")})
+
+
+@router.get("/skin-packs")
+async def get_skin_packs() -> JSONResponse:
+    r = await run_in_threadpool(cli, "skins")
+    skins = r["value"] if r.get("ok") and isinstance(r.get("value"), list) else []
+    state = read_state()
+    return answer({"ok": True, "skins": [{**k, "default": state["skinPacks"].get(k["id"], ""), "draws": state["skinPacks"].get(k["id"]) or k.get("iconPack") or ""} for k in skins], "defaults": state["skinPacks"]})
+
+
+@router.put("/skin-packs/{skin_id}")
+async def put_skin_pack(skin_id: str, request: Request) -> JSONResponse:
+    body = await _body(request)
+    words = body.get("pack")
+    if not PACK_ID.match(skin_id):
+        return answer(fail("invalid", "a skin id is lowercase words with dashes"))
+    if not isinstance(words, str) or not words.strip():
+        return answer(fail("invalid", "body.pack must be a pack id, name or style word"))
+    p = await run_in_threadpool(find_pack, words)
+    if not p:
+        return answer(fail("not_found", f'no icon pack matches "{words}"'))
+    state = read_state()
+    prev = state["skinPacks"].get(skin_id)
+    state["skinPacks"][skin_id] = p["id"]
+    note(state, "skin-pack-set", _who(request, body), str(body.get("reason") or ""), skin=skin_id, pack=p["id"], prev=prev)
+    write_state(state)
+    return answer({"ok": True, "skin": skin_id, "pack": p["id"], "message": f"{skin_id} draws {p.get('name') or p['id']} unless a pack is picked by hand"})
+
+
+@router.delete("/skin-packs/{skin_id}")
+async def delete_skin_pack(skin_id: str, request: Request) -> JSONResponse:
+    if not PACK_ID.match(skin_id):
+        return answer(fail("invalid", "a skin id is lowercase words with dashes"))
+    state = read_state()
+    had = state["skinPacks"].pop(skin_id, None)
+    note(state, "skin-pack-clear", _who(request, {}), "", skin=skin_id, prev=had)
+    write_state(state)
+    return answer({"ok": True, "skin": skin_id, "cleared": had is not None})
+
+
+@router.get("/hub-packs")
+async def get_hub_packs() -> JSONResponse:
+    state = read_state()
+    return answer({"ok": True, "packs": state["hubPacks"], "note": "the packs shared on axHub, as the open console last read them (icon-map.hub.refresh reads again)"})
+
+
+@router.put("/hub-packs")
+async def put_hub_packs(request: Request) -> JSONResponse:
+    body = await _body(request, 64 * 1024)
+    rows = body.get("packs")
+    if not isinstance(rows, list):
+        return answer(fail("invalid", "body.packs must be a list of { id, name, style, themable, by, at }"))
+    keep = []
+    for h in rows[:200]:
+        if isinstance(h, dict) and isinstance(h.get("id"), str) and PACK_ID.match(h["id"]):
+            keep.append({k: (str(h.get(k))[:120] if k != "themable" else h.get(k) is not False) for k in ("id", "name", "style", "themable", "by", "at") if k in h or k == "themable"})
+    state = read_state()
+    state["hubPacks"] = keep
+    write_state(state)
+    return answer({"ok": True, "packs": len(keep)})
