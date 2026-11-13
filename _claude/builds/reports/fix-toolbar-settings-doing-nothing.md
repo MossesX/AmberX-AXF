@@ -92,3 +92,8 @@ that appears later get the saved settings.
   icon to show, so on the filter bar the other settings are the visible ones.
 - No core engine or contract changed (chrome-settings@1 fields are as they were); no fixture or Kotlin twin needed.
 - Other baked apps (axHub web, AmberX, Molly, walkthrough-studio, demo) get it on their next rebake / CI copy.
+- UI Review: not sent. `review.mjs submit --console` needs AXF_CONSOLE_URL + AXF_TOKEN, which this headless session
+  doesn't have, and `axf shot` only saved locally. The six shots are in `_claude/builds/reports/fix-toolbar-settings-doing-nothing/`
+  (`before|after|folded`-`desktop|phone`.png). To submit: `node apps/console-web/plugins/ui-review/review.mjs submit --kind toolbar
+  --name "Toolbar settings apply live" --app console-web --screen shipped-features --group "fix-toolbar-settings-doing-nothing - Nov 13 12:45 PM"
+  --shots <those six> --branch claude/fix-toolbar-settings-doing-nothing --pr 572 --console --single-option "Bug fix"`.
