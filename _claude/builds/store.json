@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4046,
- "updatedAt": "2026-11-13T06:44:04.334Z",
+ "rev": 4047,
+ "updatedAt": "2026-11-13T06:45:47.497Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -178510,7 +178510,7 @@
    "pr": "#553",
    "priority": "P0",
    "createdAt": "2026-11-13T06:25:11.720Z",
-   "updatedAt": "2026-11-13T06:43:53.929Z",
+   "updatedAt": "2026-11-13T06:45:45.573Z",
    "builtAt": "",
    "notes": [
     {
@@ -178634,31 +178634,6 @@
      "rev": 1,
      "createdAt": "2026-11-13T06:39:04.188Z",
      "updatedAt": "2026-11-13T06:39:04.188Z"
-    },
-    {
-     "id": "s3",
-     "uid": "st-mwelw64c035md3",
-     "title": "",
-     "text": "Tests green, report _claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga.md, THREADS row, commit, push, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga.md",
-      "_claude/THREADS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-13T06:39:04.188Z",
-     "updatedAt": "2026-11-13T06:39:04.188Z"
     }
    ],
    "profiles": [
@@ -178669,14 +178644,45 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-13T06:39:04.188Z",
    "rearranged": false,
-   "removedSteps": [],
+   "removedSteps": [
+    {
+     "step": {
+      "id": "s3",
+      "uid": "st-mwelw64c035md3",
+      "title": "",
+      "text": "Tests green, report _claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga.md, THREADS row, commit, push, PR",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "10 min",
+      "files": [
+       "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga.md",
+       "_claude/THREADS.md"
+      ],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-13T06:39:04.188Z",
+      "updatedAt": "2026-11-13T06:39:04.188Z"
+     },
+     "at": "2026-11-13T06:45:45.573Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
+    }
+   ],
    "legacy": [],
    "copies": []
   }

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T06:44:04.334Z",
+ "updatedAt": "2026-11-13T06:45:47.497Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -117356,7 +117356,7 @@
    "pr": "#553",
    "priority": "P0",
    "createdAt": "2026-11-13T06:25:11.720Z",
-   "updatedAt": "2026-11-13T06:43:53.929Z",
+   "updatedAt": "2026-11-13T06:45:45.573Z",
    "builtAt": "",
    "notes": [
     {
@@ -117439,28 +117439,6 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mwelw64c02pcf8",
-     "createdAt": "2026-11-13T06:39:04.188Z"
-    },
-    {
-     "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga.md, THREADS row, commit, push, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga.md",
-      "_claude/THREADS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwelw64c035md3",
      "createdAt": "2026-11-13T06:39:04.188Z"
     }
    ]
