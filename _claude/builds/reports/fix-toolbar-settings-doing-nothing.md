@@ -23,3 +23,31 @@ Build `fix-toolbar-settings-doing-nothing` (Phase 1, Opus). Brett, Nov 13 2026:
 - Second bug: `setChromeField` drops an override that equals the *app toolbar asset's* value. For a page toolbar that
   meant picking **Icons** (the toolbar asset's default) saved nothing at all, so even a working renderer would not
   have seen it.
+
+## s2 Fix: every toolbar draws its settings, live
+
+- New `framework/react/toolbarLook.ts`, installed once by `<AxfProvider>` (next to tap-to-confirm): finds every
+  `[role="toolbar"]` now and as pages open (MutationObserver), reads `axf.chrome.toolbar.<instance>` and writes
+  `data-axf-tb-*` attributes; a change of any setting re-applies them at once (settings subscription).
+- `framework/ui/axf.css` draws them from tokens: Buttons (Icons hides button text but keeps it for screen readers,
+  Labels hides icons), Align, Size, Surface, Rule between items; Collapsible adds a fold button (fold saved per device,
+  `axf.toolbars.<instance>.folded`); Search box adds a filter box that hides items (and chips in a group) that don't match.
+- Only what a person set is written: an unset toolbar looks exactly as its plugin built it.
+- Page toolbars now compare with how they were built (`TOOLBAR_AS_BUILT`: Icons + labels, start, regular, flat, no
+  rule), not with the app toolbar asset, so picking Icons is saved.
+- The app toolbar (`Chrome.tsx`) merges its own instance (`app`) settings over its toolbar asset; it lists the fields it
+  draws itself in `data-axf-tb-native` and the host draws the rest.
+
+## s3 Shipped features
+
+The three bars Brett named are plain plugin toolbars, so they get it with no plugin change:
+
+| Bar | Instance (context menu opens) | Contents |
+|---|---|---|
+| Sync / CSV / Markdown | `shipped-features-actions` | icon buttons: Buttons Icons / Labels visibly switch |
+| View by + Search | `shipped-features-view` | segmented "group-by" tabs + search field |
+| Filters | `shipped-features-filters` | checkboxes, status chips (group), Edit status select, Clear |
+
+`framework/spec/check-toolbar-settings.mts` renders the same three bars from the same framework controls inside the
+real AppShell and changes every setting on each of them. Buttons Icons / Labels only has something to switch where a
+button has an icon; on the filter bar (checkboxes, chips) the other six settings are the visible ones.
