@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4570,
- "updatedAt": "2026-11-13T17:56:06.502Z",
+ "rev": 4571,
+ "updatedAt": "2026-11-13T17:59:19.352Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -196243,6 +196243,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-13T17:53:12.928Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "restore-asset-designer-plugin-merged-nov",
+   "title": "Restore the Asset Designer plugin (merged Nov 10, now missing)",
+   "category": "",
+   "detail": "_claude/builds/shipped/asset-designer.json says the Asset Designer plugin (no-code; apps/console-web/plugins/asset-designer, id ai.amberx.axf.console.asset-designer) merged 2026-11-10T04:39Z, but the folder is not in main now and branch claude/asset-designer is deleted.\n1. Find it in git history (git log --all -- apps/console-web/plugins/asset-designer, reflog, any branch/PR/combine branch), find the commit that removed it and why.\n2. Restore it onto current main, update to current framework (tokens, chrome, skins, control@1), make it able to edit every asset type including the chrome settings interface for toolbars and tab groups (all its tokens), with the validation gate.\n3. If history is gone, rebuild from the shipped spec's steps.\n4. Installed and enabled by default, in nav and console.actions, REST/MCP/CLI/voice. Tests, Shipped features. Report what removed it so it doesn't happen again.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-13T17:59:17.167Z",
+   "updatedAt": "2026-11-13T17:59:17.167Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "find the archive build for it and rebuild it, branches should still be around somewhere",
+    "at": "2026-11-13T17:59:17.167Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 795
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

@@ -6402,6 +6402,18 @@
    "from": "",
    "addenda": []
   },
+  "restore-asset-designer-plugin-merged-nov": {
+   "said": "find the archive build for it and rebuild it, branches should still be around somewhere",
+   "at": "2026-11-13T17:59:17.167Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "retire-build-manager-the-orchestrator-is-the-onl": {
    "said": "Get rid of build manager. Remove it. Uninstall it. If it has responsibilities, decide who to hand them to. The only thing that browses or manages builds is the orchestrator. Tabs: pending, active, incomplete, complete, errors, queue. He has to split it right away so the queue can show the steps. He'll plan what model, what account. When the time comes up in the queue he makes his final decision and updates which subscription took it. Subscriptions first, then any API. Every five minutes a background headless session that doesn't affect any builds or sign anything out checks all the accounts: can get in, have credits, can accept the Fable model.",
    "at": "2026-11-10T15:29:42.107Z",
