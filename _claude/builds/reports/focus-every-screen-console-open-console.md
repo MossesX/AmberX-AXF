@@ -1,6 +1,6 @@
 # Focus on every screen: console_open / console_show can jump to any item
 
-Build `focus-on-every-screen-console-open-console-show-` · Phase 1 (Opus) · branch `claude/focus-on-every-screen-console-open-console-show-`
+Build `focus-every-screen-console-open-console` · Phase 1 (Opus) · branch `claude/focus-every-screen-console-open-console`
 
 ## Brett said (verbatim)
 > Everything, everything needs to plan studio, UI review, everything. What the fuck?
