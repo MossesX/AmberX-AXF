@@ -153,6 +153,34 @@
         "route": "POST /land/sweep"
       },
       {
+        "id": "land-status",
+        "title": "Auto-land: sweeper status",
+        "description": "The sweeper: paused or running, when it last swept and what it did (landed, regenerated, fix build filed), what is stuck over 30 minutes.",
+        "route": "GET /land/status",
+        "readOnly": true
+      },
+      {
+        "id": "land-pause",
+        "title": "Auto-land: pause the sweeper",
+        "description": "Stop the 10-minute sweeper acting (rounds still land finished builds; the merge queue still merges).",
+        "route": "POST /land/pause",
+        "input": {
+          "type": "object",
+          "properties": {
+            "why": {
+              "type": "string",
+              "description": "optional reason"
+            }
+          }
+        }
+      },
+      {
+        "id": "land-resume",
+        "title": "Auto-land: resume the sweeper",
+        "description": "Let the 10-minute sweeper act again (the default).",
+        "route": "POST /land/resume"
+      },
+      {
         "id": "mergequeue-list",
         "title": "Merge queue: the line",
         "description": "Every PR in the merge queue in order: title, agent, test state (waiting, testing, passed, kicked out and why), ETA in minutes; plus the open PRs not in it and why, the last merged and kicked-out ones. Each PR is tested once on top of main + the PRs ahead of it and merges with no retest.",

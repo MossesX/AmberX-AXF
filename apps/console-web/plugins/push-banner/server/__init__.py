@@ -458,6 +458,26 @@ class Pushes:
             raise HTTPException(400, _text(r.stderr.strip() or r.stdout.strip() or f"land.mjs {cmd} failed"))
         return {"ok": True, "command": cmd, "build": body["build"], **self.land()}
 
+    def land_sweeper(self, cmd: str, body: Any = None) -> dict[str, Any]:
+        """status | pause | resume: the sweeper's own switch and state, through land/land.mjs (= CLI status / pause / resume)."""
+        if body is not None and (not isinstance(body, dict) or set(body) - {"why"}):
+            raise HTTPException(400, "send {why?}")
+        args = ["node", str(LAND_SCRIPT), cmd, "--json"]
+        if cmd == "pause" and isinstance((body or {}).get("why"), str) and body["why"].strip():
+            args += ["--why", _text(body["why"], 200)]
+        try:
+            r = subprocess.run(args, capture_output=True, text=True, timeout=30, env={**os.environ, "AXF_PUSH_BANNER_DIR": str(data_dir())})
+        except (OSError, subprocess.TimeoutExpired) as e:
+            raise HTTPException(502, _text(str(e))) from None
+        if r.returncode != 0:
+            raise HTTPException(400, _text(r.stderr.strip() or r.stdout.strip() or f"land.mjs {cmd} failed"))
+        try:
+            out = json.loads(r.stdout.strip().splitlines()[-1])
+        except (ValueError, IndexError):
+            raise HTTPException(502, f"land.mjs {cmd}: no JSON back") from None
+        out.pop("control", None)
+        return {"ok": True, "command": cmd, **out}
+
     # ---- merge queue (land/merge-queue.mjs on the VPS host writes merge-queue.json; commands write merge-queue-control.json)
     def queue(self) -> dict[str, Any]:
         st = storage.read_json(data_dir() / "merge-queue.json", {}) or {}
@@ -1541,6 +1561,23 @@ def land_line() -> dict[str, Any]:
 @router.post("/land/sweep")
 def land_sweep() -> dict[str, Any]:
     return PUSHES.land_sweep()
+
+
+@router.get("/land/status")
+def land_status() -> dict[str, Any]:
+    """The sweeper: paused or on, last sweep and what it did, what is stuck over 30 minutes."""
+    return PUSHES.land_sweeper("status")
+
+
+@router.post("/land/pause")
+def land_pause(body: Any = Body(None)) -> dict[str, Any]:
+    """{why?}: the 10-minute sweeper stops acting (rounds still land; the merge queue still merges)."""
+    return PUSHES.land_sweeper("pause", body)
+
+
+@router.post("/land/resume")
+def land_resume() -> dict[str, Any]:
+    return PUSHES.land_sweeper("resume")
 
 
 @router.post("/land/off")

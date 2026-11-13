@@ -14,6 +14,7 @@
  *   … off <build> [--why "…"] | on <build>   the per-build switch (auto-land is on for every build unless switched off)
  *   … sweep [--dry-run]                  the sweeper now (it also runs every 10 min inside a round): land or fix-build each
  *                                        finished build not on main; say what is stuck over 30 min
+ *   … status | pause [--why "…"] | resume   the sweeper's state (paused, last sweep, what it did) | stop / restart its timed runs
  *   … lock | serial -- <cmd …>           the serial landing line: who lands now | run a command in the line (waits its turn)
  *   run takes the line's lock (skips when busy; --wait-lock waits up to 15 min, the finish hook's round)
  *   … merge-main <build|branch> [--dry-run] [--json]   merge main into one build's branch now (same rules as a round)
@@ -615,6 +616,10 @@ export const sweepFile = (s) => join(s.dataDir, 'land-sweep.json');
  */
 export async function sweep({ s, api = makeConsole(s), nowMs = Date.now(), dry = false, force = false, agentJob = defaultAgentJob(s), git = null, merge = mergeMain, log = () => {} } = {}) {
   const prev = readJson(sweepFile(s), {}) || {};
+  // paused (land.mjs pause, POST /land/pause): the timed sweep stands still; an asked-for sweep (CLI sweep, POST
+  // /land/sweep, which clears `at` and sets `requested`) still runs, the same through every channel
+  const asked = force || Boolean(prev.requested && !prev.at);
+  if (!asked && readControl(s).sweepPaused) return { ...prev, skipped: true, paused: readControl(s).sweepPaused };
   if (!force && nowMs - (Date.parse(prev.at || 0) || 0) < core.SWEEP_MS) return { ...prev, skipped: true };
   const at = new Date(nowMs).toISOString();
   const st = readState(s); const mq = readJson(join(s.dataDir, 'merge-queue.json'), {}) || {};
@@ -660,6 +665,13 @@ export async function sweep({ s, api = makeConsole(s), nowMs = Date.now(), dry =
   return out;
 }
 
+/** The sweeper's state, the same for the CLI (status), REST (GET /land/status) and MCP (push_banner_land_status). */
+export function sweepStatus(s, nowMs = Date.now()) {
+  const sw = readJson(sweepFile(s), {}) || {}; const ctl = readControl(s); const st = readState(s);
+  return { $axf: 'auto-land-sweep@1', on: st.on !== false, paused: ctl.sweepPaused || null, at: sw.at || null, requested: sw.requested || null,
+    everyMin: core.SWEEP_MS / 60000, acted: sw.acted || [], regen: sw.regen || {}, stuck: core.stuckItems(st.items || [], nowMs) };
+}
+
 // ------------------------------------------------------------------ CLI
 
 const line = (x) => `${x.state.padEnd(8)} ${x.id}${x.pr ? ` #${x.pr}` : ''}${x.reason ? ` · ${x.reason.text.replace(`${x.id}: `, '')}` : ' · ready: merges at the next push banner round'}`;
@@ -694,6 +706,14 @@ export async function main(argv) {
     try { return await runRound({ s, dry, json, opt, print }); } finally { if (!dry) dropLandLock(); }
   }
   if (cmd === 'queue') return queueMain(argv.slice(argv.indexOf('queue') + 1));
+  if (cmd === 'pause' || cmd === 'resume') {
+    const d = control(s, cmd, '', { why: opt('why') });
+    return print({ ok: true, ...sweepStatus(s), control: d }, cmd === 'pause' ? 'the sweeper is paused (rounds still land; land.mjs resume)' : 'the sweeper is on');
+  }
+  if (cmd === 'status') {
+    const st = sweepStatus(s);
+    return print(st, `sweeper ${st.paused ? `paused (${st.paused.why})` : 'on'} · last sweep ${st.at || 'never'}${st.acted.length ? `\n${st.acted.map((a) => `${a.act.padEnd(6)} ${a.id}${a.fix ? ` → ${a.fix}` : ''}`).join('\n')}` : ''}${st.stuck.length ? `\nstuck over 30 min: ${st.stuck.map((x) => x.id).join(', ')}` : ''}`);
+  }
   if (cmd === 'line') {
     const st = readState(s); const ctl = readControl(s); const sw = readJson(sweepFile(s), {}) || {};
     const items = (st.items || []).filter((x) => !['ready', 'off'].includes(x.state));
@@ -727,7 +747,7 @@ export async function main(argv) {
     const d = control(s, cmd, id, { why: opt('why'), after: rest[1] });
     return print({ ok: true, control: d }, `${cmd}: ${id}${cmd === 'after' ? ` after ${rest[1]}` : ''}`);
   }
-  throw new Error('usage: land.mjs run [--dry-run] [--only <build>] | list | blocked | now <build> | hold <build> [--why …] | release <build> | off <build> [--why …] | on <build> | after <build> <other> | sweep | lock | serial -- <cmd …> | merge-main <build> [--dry-run]');
+  throw new Error('usage: land.mjs run [--dry-run] [--only <build>] | list | blocked | now <build> | hold <build> [--why …] | release <build> | off <build> [--why …] | on <build> | after <build> <other> | sweep | status | pause [--why …] | resume | lock | serial -- <cmd …> | merge-main <build> [--dry-run]');
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

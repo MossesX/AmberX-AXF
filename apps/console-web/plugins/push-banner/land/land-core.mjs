@@ -427,12 +427,18 @@ export const LAND_COMMANDS = Object.freeze([
   { id: 'land-on', method: 'POST', path: '/land/on', cli: 'on', title: 'Auto-land: switch one build back on', description: 'The per-build switch: this build lands by itself again (the default).', effect: 'write', input: { build: 'build id' } },
   { id: 'land-line', method: 'GET', path: '/land/line', cli: 'line', title: 'Auto-land: the landing line', description: 'The serial landing line: builds waiting to land in order, what is stuck for over 30 minutes and why, each fix build filed, the last sweep.', effect: 'read' },
   { id: 'land-sweep', method: 'POST', path: '/land/sweep', cli: 'sweep', title: 'Auto-land: sweep now', description: 'Run the sweeper at the next round: every finished build not on main is landed or gets its P0 fix build.', effect: 'write' },
+  { id: 'land-status', method: 'GET', path: '/land/status', cli: 'status', title: 'Auto-land: sweeper status', description: 'The sweeper: paused or running, when it last swept and what it did (landed, regenerated, fix build filed), what is stuck over 30 minutes.', effect: 'read' },
+  { id: 'land-pause', method: 'POST', path: '/land/pause', cli: 'pause', title: 'Auto-land: pause the sweeper', description: 'Stop the 10-minute sweeper acting (rounds still land finished builds; the merge queue still merges).', effect: 'write', input: { why: 'optional reason' } },
+  { id: 'land-resume', method: 'POST', path: '/land/resume', cli: 'resume', title: 'Auto-land: resume the sweeper', description: 'Let the 10-minute sweeper act again (the default).', effect: 'write' },
 ]);
 
 /** Apply one control command to the control document (holds, now, after). Returns the new document. */
 export function applyControl(doc, cmd, build, { why = '', at = new Date().toISOString(), after = '' } = {}) {
   const d = { $axf: CONTROL_FRAME, holds: {}, now: [], after: {}, off: {}, ...(doc && typeof doc === 'object' ? doc : {}) };
   d.holds = { ...(d.holds || {}) }; d.now = [...(d.now || [])]; d.after = { ...(d.after || {}) }; d.off = { ...(d.off || {}) };
+  // the sweeper's own switch (not per build): pause keeps rounds landing but stops the 10-minute sweep acting
+  if (cmd === 'pause') { d.sweepPaused = { why: str(why, 200) || 'sweeper paused by hand', at }; d.updatedAt = at; return d; }
+  if (cmd === 'resume') { delete d.sweepPaused; d.updatedAt = at; return d; }
   if (!/^[a-z0-9][a-z0-9._-]{0,80}$/i.test(build || '')) throw new Error('send a build id');
   if (cmd === 'hold') d.holds[build] = { why: str(why, 200) || 'held by hand', at };
   else if (cmd === 'release') delete d.holds[build];
