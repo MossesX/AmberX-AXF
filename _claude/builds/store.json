@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4648,
- "updatedAt": "2026-11-13T18:29:08.664Z",
+ "rev": 4649,
+ "updatedAt": "2026-11-13T18:29:20.925Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -197401,7 +197401,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T18:13:51.274Z",
-   "updatedAt": "2026-11-13T18:28:16.848Z",
+   "updatedAt": "2026-11-13T18:28:43.110Z",
    "builtAt": "",
    "notes": [
     {
@@ -197419,6 +197419,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-vps-builds-get-console-token-ui-review--lenny.",
      "at": "2026-11-13T18:16:53.145Z"
+    },
+    {
+     "text": "s6: removed the duplicate build builds-get-console-token-banner-alert (same request and steps, filed 17:34 without a pending id); this build covers it.",
+     "at": "2026-11-13T18:28:43.110Z"
     }
    ],
    "approvals": [],
@@ -197674,7 +197678,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
