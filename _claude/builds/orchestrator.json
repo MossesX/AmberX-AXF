@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T10:47:51.854Z",
+ "updatedAt": "2026-11-13T10:48:04.154Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -109758,7 +109758,7 @@
    "branch": "claude/console-and-axhub-retry-failed-calls-themselves-no-claude-needed",
    "pr": "#561",
    "createdAt": "2026-11-12T02:37:24.132Z",
-   "updatedAt": "2026-11-13T10:47:37.420Z",
+   "updatedAt": "2026-11-13T10:47:50.582Z",
    "builtAt": "",
    "notes": [
     {
@@ -109824,6 +109824,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-and-axhub-retry-failed-calls-themselves---joey, own login copy)",
      "at": "2026-11-13T10:43:12.156Z"
+    },
+    {
+     "text": "Headless run axf-console-and-axhub-retry-failed-calls-themselves---joey: brief only · start 11.8K tokens ($0.03) · cost $0.83 · 36 turns · 6 tools, MCP none",
+     "at": "2026-11-13T10:47:50.582Z"
     },
     {
      "text": "PR #510 had been closed and its branch deleted after the queue kicked it out (agent-slots help.json + help coverage 99.8%). Rebased the same commits on main, added the 3 missing help entries (coverage 100%), all retry tests re-run green. New PR #561; landing through the merge queue. Gaps: no UI Review shots (local console can't reach axHub from the build sandbox); AmberX FYI on live is left to the lander/deploy, not polled.",
