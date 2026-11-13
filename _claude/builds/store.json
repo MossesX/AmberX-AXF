@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4488,
- "updatedAt": "2026-11-13T13:34:04.651Z",
+ "rev": 4489,
+ "updatedAt": "2026-11-13T16:53:15.387Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -26233,7 +26233,7 @@
      "id": "s6",
      "uid": "st-1ej3g1f",
      "title": "",
-     "text": "Services: typed service registry on web (`rt.services.register/get` with `service:<cap>` names as `plugin-inventory@1` uses) + Python; inventory engine reads providers from it; one fixture case.",
+     "text": "Services: typed service registry on web (`rt.services.register/get` with `service:<cap>` names as `plugin-inventory@1` uses); inventory engine reads providers from it; one fixture case.",
      "model": "Fable",
      "why": "",
      "phase": "",
@@ -26247,9 +26247,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 5,
+     "rev": 6,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-11-07T10:46:39.420Z"
+     "updatedAt": "2026-11-13T16:53:14.161Z"
     },
     {
      "id": "s7",
@@ -26304,7 +26304,7 @@
    },
    "kind": "epic",
    "planRef": "x.modules",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
