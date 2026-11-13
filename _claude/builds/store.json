@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4749,
- "updatedAt": "2026-11-13T19:07:44.305Z",
+ "rev": 4750,
+ "updatedAt": "2026-11-13T19:08:01.689Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -199114,6 +199114,10 @@
     {
      "text": "Double launch again: Paulie (run 2, 18:52) found the Fable session from run 1 (agent Greenlight Gina, pid 811375, started 18:39, session a2405ba5) still live in the same worktree and writing s2 (test.mjs, spec/check-ui-manager.mjs, fixtures/ui-manager.json, CI lines, catalog status cx.uimanager). Paulie committed and pushed s1 (b09c0e80a: engine + plugin + validate/schemas routes + PORTING row + plugins README line; the commit swept in the other session's test.mjs draft) and ticked s1, then stood down so two sessions do not both commit s2. The other session continues s2 on disk. Needs Brett: dispatch-gate must refuse a launch while a session for the same build is alive (third time: see the Earl/Paulie and Lenny/Paulie notes).",
      "at": "2026-11-13T19:06:37.485Z"
+    },
+    {
+     "text": "Headless run axf-ui-manager-floating-window-to-select-any--paulie: brief only · start 13.2K tokens ($0.07) · cost $5.11 · 69 turns · 6 tools, MCP none",
+     "at": "2026-11-13T19:06:57.573Z"
     }
    ],
    "approvals": [],
@@ -202575,12 +202579,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T19:03:35.763Z",
-   "updatedAt": "2026-11-13T19:03:49.406Z",
+   "updatedAt": "2026-11-13T19:07:47.374Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T19:03:49.406Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"6c0ab83b-8cbd-4e20-912b-32970857880a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T19:07:47.374Z"
     }
    ],
    "approvals": [],
@@ -202607,9 +202615,15 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-13T19:07:47.374Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"6c0ab83b-8cbd-4e20-912b-32970857880a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
     "planned": null,
@@ -202619,7 +202633,77 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwfcn12m0a5aqi",
+     "title": "",
+     "text": "Branch claude/project-duplicate-boilerplate clashed with main in framework/catalog/status.json and framework/spec/PORTING.md (merge aborted, main untouched). Merge origin/main into the branch, resolve by keeping both sides' entries (additive), run tests, push, then land on main. No feature changes. If the project-create-mcp clash fix landed first, merge after it.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T19:07:47.374Z",
+     "updatedAt": "2026-11-13T19:07:47.374Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwfcn12m0b0h4w",
+     "title": "",
+     "text": "land duplicate projects and templates",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T19:07:47.374Z",
+     "updatedAt": "2026-11-13T19:07:47.374Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwfcn12m0cg3fy",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/land-project-duplicate-boilerplate.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/land-project-duplicate-boilerplate.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T19:07:47.374Z",
+     "updatedAt": "2026-11-13T19:07:47.374Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -202628,12 +202712,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-13T19:07:47.374Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
