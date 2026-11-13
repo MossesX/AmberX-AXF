@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4160,
- "updatedAt": "2026-11-13T07:51:55.360Z",
+ "rev": 4161,
+ "updatedAt": "2026-11-13T07:54:45.428Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -178518,7 +178518,7 @@
    "title": "Skins plugin: its own removable console plugin and screen for changing skins. Gallery of every skin with live preview (desktop and phone), one-tap Use skin, Back and Restore to Default with undo, per-scope switching (whole hub, one app, one screen, one plugin), a quick skin switcher on the banner an",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -178526,7 +178526,7 @@
    "pr": "#553",
    "priority": "P0",
    "createdAt": "2026-11-13T06:25:11.720Z",
-   "updatedAt": "2026-11-13T07:50:35.041Z",
+   "updatedAt": "2026-11-13T07:54:44.029Z",
    "builtAt": "",
    "notes": [
     {
@@ -179127,12 +179127,12 @@
      "session": "same",
      "agent": false,
      "skip": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T07:54:44.029Z",
      "note": "UI Review no longer a gate",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-13T06:52:08.440Z",
-     "updatedAt": "2026-11-13T07:10:49.965Z"
+     "updatedAt": "2026-11-13T07:54:44.193Z"
     },
     {
      "id": "s20",
