@@ -7795,6 +7795,18 @@
    "from": "",
    "addenda": []
   },
+  "ui-manager-floating-window-to-select-any": {
+   "said": "a UI manager, opens a floating window which contains the ability to select any UI element in the whole console; collapsible categories; one category is all the ones visible on screen, like a Windows shortcut, two things point to the shared source; select one and it opens an expanding row with all the properties and tokens; you change them by selecting from predetermined things from the integration with the console and the framework",
+   "at": "2026-11-13T18:30:38.922Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "ui-registry-shortcuts": {
    "said": "Let's go with a UI shortcuts plugin. All the UIs need to be in a registry. Every single dialog, pop-up, settings interface, main plugin screen, every UI element has to be an asset. Every single asset in the whole app and all its plugins, from a button to a pop-up to a link to a menu to a menu entry, every thing needs to be an asset. That needs to be visible to the API. Create a registry so I can open them with my voice.",
    "at": "2026-11-06T22:45:12.082Z",
