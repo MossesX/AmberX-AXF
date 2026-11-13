@@ -4,7 +4,7 @@
  * accounts, tmux and the build worktrees are (cron every minute, deploy/install-console.sh), and answers the console.
  *
  * Brett, Nov 8 2026: everything he asks for is a build in the orchestrator → the orchestrator assigns the id, splits it
- * (Claude, ≤ 30-min steps, Fable only where needed) → Pending → Brett moves it to the Queue → when a slot is free the
+ * (Claude, ≤ 10-min steps that are checkpoints inside one session, Fable only where needed) → Pending → Brett moves it to the Queue → when a slot is free the
  * dispatcher takes the next Queue build and starts a headless session on an account that runs its next phase's model.
  *
  *   node apps/console-web/plugins/build-orchestrator/pipeline.mjs status [--json]    the table (Pending / Queue / Building), accounts, slots, what the next tick would do
@@ -439,7 +439,7 @@ export function briefFor(b, rules, { account, model, kind = '' }) {
     saidBlock(o), ...(addenda.length ? ['', ...addenda] : []), '',
     '## What to build', orch.brief(b, rules), '',
     `## Pipeline`,
-    `This session was started by the orchestrator's dispatcher on Claude account ${account}${kind === 'api' ? ' (an API key: billed per token, keep it lean)' : ''} for the ${model} phase. Tick every step as you finish it (orchestrator.mjs act step ${b.id} <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note ${b.id} "…"); the build goes back to Pending for Brett.`,
+    `This session was started by the orchestrator's dispatcher on Claude account ${account}${kind === 'api' ? ' (an API key: billed per token, keep it lean)' : ''} for the ${model} phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step ${b.id} <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note ${b.id} "…"); the build goes back to Pending for Brett.`,
   ].join('\n');
 }
 

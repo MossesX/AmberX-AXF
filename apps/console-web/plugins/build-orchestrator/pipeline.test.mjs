@@ -419,6 +419,7 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     const a = find('alpha'); assert.equal(a.status, 'running'); assert.equal(a.pipeline.account, 'w-max'); assert.equal(a.pipeline.runs, 1); assert.match(a.pipeline.session, /^axf-alpha/); assert.equal(a.pipeline.model, 'Fable');
     assert.ok(existsSync(join(wtRoot, 'alpha', '.axf-brief.md')), 'a brief file is written in the worktree');
     const brief = readFileSync(join(wtRoot, 'alpha', '.axf-brief.md'), 'utf8'); assert.match(brief, /## Brett said \(verbatim\)/); assert.match(brief, /build me alpha, kid/); assert.match(brief, /Continue build "Alpha feature" \(alpha\)/);
+    assert.match(brief, /Checkpoints: Steps are checkpoints inside this ONE session/); assert.match(brief, /they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it/);
     assert.equal(json(pipe('tick', '--json')).launched.length, 0, 'nothing free: no second launch');
   });
   t('e2e one way to start builds: every dispatcher launch carries a token the gate accepts once; anything else is refused', () => {
