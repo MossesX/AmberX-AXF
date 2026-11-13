@@ -786,8 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 12:35 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` note (all) · orchestrator
-- 2026-11-13 12:35 UTC · `fix-step-splitter-claude-exit-1` note (all) · orchestrator
 - 2026-11-13 12:35 UTC · `fix-toolbar-settings-doing-nothing` s4 done (all) · foreign-write
 - 2026-11-13 12:35 UTC · `fix-toolbar-settings-doing-nothing` s5 done (all) · orchestrator
 - 2026-11-13 12:36 UTC · `auto-recover-stuck-builds` s12 done (all) · orchestrator
@@ -1186,6 +1184,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:00 UTC · `skin-axhub-override-switch-greyed-out` note (all) · claude-voice
 - 2026-11-13 19:00 UTC · `console-android-app-thin-webview-wrapper` → queued, note (all) · pipeline
 - 2026-11-13 19:01 UTC · `land-project-create-mcp-resolve-clash` added (0 steps) (all) · console
+- 2026-11-13 19:01 UTC · `demo-pipelines-guided-walkthrough-live` added (0 steps) (all) · console
+- 2026-11-13 19:01 UTC · `demo-pipelines-guided-walkthrough-live` → queued, note (all) · console
 
 ## Token passes (log)
 
