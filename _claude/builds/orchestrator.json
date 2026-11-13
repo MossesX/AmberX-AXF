@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T12:12:12.935Z",
+ "updatedAt": "2026-11-13T12:12:27.396Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -123225,15 +123225,15 @@
    "title": "Combine merge queue into one PR",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/combine-merge-queue-into-one-pr",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:55:36.143Z",
-   "updatedAt": "2026-11-13T12:12:11.461Z",
+   "updatedAt": "2026-11-13T12:12:17.698Z",
    "builtAt": "",
    "notes": [
     {
@@ -123263,6 +123263,18 @@
     {
      "text": "Brett: start with the skins. Merge #566 (professional skins / #557) and #563 (light/dark) into the combined branch FIRST, before the others.",
      "at": "2026-11-13T12:11:28.638Z"
+    },
+    {
+     "text": "Back to Pending (console).",
+     "at": "2026-11-13T12:12:15.044Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-combine-merge-queue-into-one-pr--rhonda.",
+     "at": "2026-11-13T12:12:16.698Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-combine-merge-queue-into-one-pr--rhonda, own login copy)",
+     "at": "2026-11-13T12:12:17.698Z"
     }
    ],
    "approvals": [],

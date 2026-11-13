@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4381,
- "updatedAt": "2026-11-13T12:12:12.935Z",
+ "rev": 4382,
+ "updatedAt": "2026-11-13T12:12:27.396Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -186435,15 +186435,15 @@
    "title": "Combine merge queue into one PR",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/combine-merge-queue-into-one-pr",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:55:36.143Z",
-   "updatedAt": "2026-11-13T12:12:11.461Z",
+   "updatedAt": "2026-11-13T12:12:17.698Z",
    "builtAt": "",
    "notes": [
     {
@@ -186473,6 +186473,18 @@
     {
      "text": "Brett: start with the skins. Merge #566 (professional skins / #557) and #563 (light/dark) into the combined branch FIRST, before the others.",
      "at": "2026-11-13T12:11:28.638Z"
+    },
+    {
+     "text": "Back to Pending (console).",
+     "at": "2026-11-13T12:12:15.044Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-combine-merge-queue-into-one-pr--rhonda.",
+     "at": "2026-11-13T12:12:16.698Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-combine-merge-queue-into-one-pr--rhonda, own login copy)",
+     "at": "2026-11-13T12:12:17.698Z"
     }
    ],
    "approvals": [],
@@ -186490,14 +186502,14 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-13T12:11:21.244Z",
-    "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "mossesx-max-",
+    "session": "axf-combine-merge-queue-into-one-pr--rhonda",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-13T12:12:14.020Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T11:57:37.071Z",
@@ -186509,7 +186521,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T12:12:14.020Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -186518,7 +186530,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T12:12:14.020Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -187102,7 +187114,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

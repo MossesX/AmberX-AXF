@@ -781,10 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 06:59 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` → running, note (all) · pipeline
-- 2026-11-13 06:59 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` branch claude/always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu (all) · pipeline
-- 2026-11-13 07:00 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` s2 done (all) · orchestrator
-- 2026-11-13 07:02 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` s3 done (all) · orchestrator
 - 2026-11-13 07:03 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` s4 done (all) · orchestrator
 - 2026-11-13 07:03 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` s4 done (all) · orchestrator
 - 2026-11-13 07:04 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s1 done, → running (all) · orchestrator
@@ -1181,6 +1177,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 12:10 UTC · `auto-recover-stuck-builds` note (all) · pipeline
 - 2026-11-13 12:11 UTC · `combine-merge-queue-into-one-pr` note (all) · mcp
 - 2026-11-13 12:11 UTC · `combine-merge-queue-into-one-pr` → queued, note (all) · console
+- 2026-11-13 12:12 UTC · `combine-merge-queue-into-one-pr` → pending, note (all) · console
+- 2026-11-13 12:12 UTC · `combine-merge-queue-into-one-pr` → running, note (all) · pipeline
+- 2026-11-13 12:12 UTC · `combine-merge-queue-into-one-pr` note (all) · orchestrator
+- 2026-11-13 12:12 UTC · `combine-merge-queue-into-one-pr` branch claude/combine-merge-queue-into-one-pr (all) · pipeline
 
 ## Token passes (log)
 
