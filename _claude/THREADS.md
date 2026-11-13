@@ -786,11 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 12:34 UTC · `ui-review-gate-switch-default-off` s5 done (all) · orchestrator
-- 2026-11-13 12:34 UTC · `fix-the-step-splitter-crash` note (all) · orchestrator
-- 2026-11-13 12:34 UTC · `fix-the-step-splitter-crash` note (all) · builds-live
-- 2026-11-13 12:34 UTC · `splitter-crash-fix` note (all) · orchestrator
-- 2026-11-13 12:34 UTC · `splitter-crash-fix` note (all) · builds-live
 - 2026-11-13 12:35 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s31 done, → built (all) · orchestrator
 - 2026-11-13 12:35 UTC · `fix-toolbar-settings-doing-nothing` s4 done (all) · orchestrator
 - 2026-11-13 12:35 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` note (all) · orchestrator
@@ -1186,6 +1181,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:58 UTC · `skin-axhub-override-switch-greyed-out` note (all) · claude-voice
 - 2026-11-13 18:58 UTC · `skin-axhub-override-switch-greyed-out` note (all) · claude-voice
 - 2026-11-13 18:58 UTC · `console-android-app-thin-webview-wrapper` s3 done (all) · orchestrator
+- 2026-11-13 18:59 UTC · `skin-axhub-override-switch-greyed-out` note (all) · claude-voice
+- 2026-11-13 18:59 UTC · `console-android-app-thin-webview-wrapper` → running, note (all) · pipeline
+- 2026-11-13 18:59 UTC · `console-android-app-thin-webview-wrapper` s3 undone, note (all) · foreign-write
+- 2026-11-13 18:59 UTC · `console-android-app-thin-webview-wrapper` note (all) · orchestrator
+- 2026-11-13 19:00 UTC · `skin-axhub-override-switch-greyed-out` note (all) · claude-voice
 
 ## Token passes (log)
 

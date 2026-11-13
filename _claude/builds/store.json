@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4732,
- "updatedAt": "2026-11-13T18:59:39.377Z",
+ "rev": 4733,
+ "updatedAt": "2026-11-13T19:00:16.366Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -199497,7 +199497,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:38:53.122Z",
-   "updatedAt": "2026-11-13T18:59:14.111Z",
+   "updatedAt": "2026-11-13T18:59:54.903Z",
    "builtAt": "",
    "notes": [
     {
@@ -199547,6 +199547,14 @@
     {
      "text": "Self-check: console-android-app-thin-webview-wrapper was marked running on mossesx-max- with no session: released and back in the Queue.",
      "at": "2026-11-13T18:58:01.143Z"
+    },
+    {
+     "text": "Started run 2 on mossesx-max- (Opus, Phase 1): axf-console-android-app-thin-webview-wrapper--sully.",
+     "at": "2026-11-13T18:59:43.445Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-android-app-thin-webview-wrapper--sully, own login copy)",
+     "at": "2026-11-13T18:59:54.903Z"
     }
    ],
    "approvals": [],
@@ -199558,7 +199566,7 @@
     "session": "",
     "link": "",
     "by": "console-android-app-thin-webview-wrapper",
-    "brief": "# Build: console-android-app-thin-webview-wrapper\n\n## Brett said (verbatim)\nAt: 2026-11-13T18:38:53.122Z\n> make the console an Android app, just a wrapper for the web app, keep it floating on top; AmberX's banner was behind the camera, the clock and the notification panel\n\n## What to build\nContinue build \"Console Android app: thin WebView wrapper with overlay, replaces AmberX\" (console-android-app-thin-webview-wrapper) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 18:38):\n\"make the console an Android app, just a wrapper for the web app, keep it floating on top; AmberX's banner was behind the camera, the clock and the notification panel\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/console-android-app-thin-webview-wrapper\nSteps in this phase (8 left, ~1.3 h):\n[x] s1 (~10 min) New Android app that replaces AmberX: a thin native shell that runs the AXF console web app in a WebView. Not a native rewrite.\n[x] s2 (~10 min) Native only where Android requires it: draw-over-apps floating toolbar/bubble (port from overlay-toolbar-v2), approvals bar, notifications, mic/recorder, open_url, wake, permissions. Everything else is the web console.\n[ ] s3 (~10 min) SAFE AREA (Brett's screenshots, Nov 13): AmberX drew its top bar under the status bar, so the clock, camera cutout, call pill, notification icons and signal sat on top of the title/search/menu. The wrapper must handle WindowInsets (status bar, display cutout, navigation bar, IME), pass them into the WebView as CSS env(safe-area-inset-*) with viewport-fit=cover, and the console must pad every top bar, banner, toolbar and bottom nav with them. Nothing is ever drawn under the clock, camera or notification shade. Test on cutout and punch-hole phones, portrait and landscape.\n[ ] s4 (~10 min) The floating toolbar expands to the full-screen console with the toolbar top-left, keeps the app in front, and pops up approvals with a link to the approvals page.\n[ ] s5 (~10 min) A JS bridge exposes the native features to the console (window.axfNative), with full API parity: REST/MCP/CLI/voice.\n[ ] s6 (~10 min) Auto-updates the web content from the live console. The shell rarely needs a rebuild.\n[ ] s7 (~10 min) Migrate AmberX's axHub device service (amberx.open_url, recorder) to the new app.\n[ ] s8 (~10 min) Tests, help, Shipped features.\n[ ] s9 (~10 min) make the console an Android app, just a wrapper for the web app, keep it floating on top; AmberX's banner was behind the camera, the clock and the notification panel\n[ ] s10 (~10 min) Tests green, report _claude/builds/reports/console-android-app-thin-webview-wrapper.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/console-android-app-thin-webview-wrapper.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step console-android-app-thin-webview-wrapper <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link console-android-app-thin-webview-wrapper --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step console-android-app-thin-webview-wrapper <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note console-android-app-thin-webview-wrapper \"…\"); the build goes back to Pending for Brett.\n",
+    "brief": "# Build: console-android-app-thin-webview-wrapper\n\n## Brett said (verbatim)\nAt: 2026-11-13T18:38:53.122Z\n> make the console an Android app, just a wrapper for the web app, keep it floating on top; AmberX's banner was behind the camera, the clock and the notification panel\n\n## What to build\nContinue build \"Console Android app: thin WebView wrapper with overlay, replaces AmberX\" (console-android-app-thin-webview-wrapper) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 18:38):\n\"make the console an Android app, just a wrapper for the web app, keep it floating on top; AmberX's banner was behind the camera, the clock and the notification panel\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (10 left, ~1.7 h):\n[ ] s1 (~10 min) New Android app that replaces AmberX: a thin native shell that runs the AXF console web app in a WebView. Not a native rewrite.\n[ ] s2 (~10 min) Native only where Android requires it: draw-over-apps floating toolbar/bubble (port from overlay-toolbar-v2), approvals bar, notifications, mic/recorder, open_url, wake, permissions. Everything else is the web console.\n[ ] s3 (~10 min) SAFE AREA (Brett's screenshots, Nov 13): AmberX drew its top bar under the status bar, so the clock, camera cutout, call pill, notification icons and signal sat on top of the title/search/menu. The wrapper must handle WindowInsets (status bar, display cutout, navigation bar, IME), pass them into the WebView as CSS env(safe-area-inset-*) with viewport-fit=cover, and the console must pad every top bar, banner, toolbar and bottom nav with them. Nothing is ever drawn under the clock, camera or notification shade. Test on cutout and punch-hole phones, portrait and landscape.\n[ ] s4 (~10 min) The floating toolbar expands to the full-screen console with the toolbar top-left, keeps the app in front, and pops up approvals with a link to the approvals page.\n[ ] s5 (~10 min) A JS bridge exposes the native features to the console (window.axfNative), with full API parity: REST/MCP/CLI/voice.\n[ ] s6 (~10 min) Auto-updates the web content from the live console. The shell rarely needs a rebuild.\n[ ] s7 (~10 min) Migrate AmberX's axHub device service (amberx.open_url, recorder) to the new app.\n[ ] s8 (~10 min) Tests, help, Shipped features.\n[ ] s9 (~10 min) make the console an Android app, just a wrapper for the web app, keep it floating on top; AmberX's banner was behind the camera, the clock and the notification panel\n[ ] s10 (~10 min) Tests green, report _claude/builds/reports/console-android-app-thin-webview-wrapper.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/console-android-app-thin-webview-wrapper.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step console-android-app-thin-webview-wrapper <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link console-android-app-thin-webview-wrapper --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step console-android-app-thin-webview-wrapper <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note console-android-app-thin-webview-wrapper \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -199566,7 +199574,7 @@
    "pipeline": {
     "queuedAt": "2026-11-13T18:38:55.070Z",
     "queuedBy": "console",
-    "account": "",
+    "account": "mossesx-max-",
     "session": "",
     "slot": "",
     "model": "Opus",
@@ -199588,7 +199596,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"42523f40-ad67-40c7-a2c7-fbb1f4b209fc\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "released by the self-check (nothing ran): back in the Queue",
+    "note": "Session on mossesx-max- ended (exit 3) with 10 steps left: back in the Queue (run 1).",
     "route": "",
     "dispatchedAt": "2026-11-13T18:39:57.071Z",
     "planned": {
@@ -199664,12 +199672,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-13T18:58:14.995Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-13T18:39:44.852Z",
-     "updatedAt": "2026-11-13T18:58:15.509Z"
+     "updatedAt": "2026-11-13T18:59:53.681Z"
     },
     {
      "id": "s4",
@@ -199837,7 +199845,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -201806,7 +201814,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:56:15.400Z",
-   "updatedAt": "2026-11-13T18:58:51.273Z",
+   "updatedAt": "2026-11-13T18:59:59.658Z",
    "builtAt": "",
    "notes": [
     {
@@ -201828,6 +201836,14 @@
     {
      "text": "Brett: in the overrides dialog everything starts collapsed except the path to the changes. Only the categories and parents that contain an overridden token are expanded, down to the changed tokens. Parents of a change (asset, category, sub-category) are drawn in a different colour (a token, e.g. accent) so you can follow the trail. IMPORTANT: steps s2 and s5 say the switches are mutually exclusive; that is SUPERSEDED by the earlier note. Both switches can be on, and only edited tokens stop inheriting from axHub.",
      "at": "2026-11-13T18:58:51.273Z"
+    },
+    {
+     "text": "Brett: two different actions on every overridden token (and per category, per asset, and all). 'Reset' goes back to the value it had right before this override, which may be an earlier hand edit, not axHub's value; keep a value history per token so this works. 'Restore from axHub' is a separate, explicit button that drops the override and re-inherits axHub's current value. Never restore from axHub unless that button is clicked. Supersedes 'reset to axHub' wording in earlier notes.",
+     "at": "2026-11-13T18:59:33.414Z"
+    },
+    {
+     "text": "Brett: EVERYWHERE in the console that has a reset/restore for a skin, asset, token or setting value (UI Manager, Quick settings, per-instance settings, asset editors, overrides dialog), offer both: 'Restore previous edit' (the value before the last change) and 'Restore from axHub' (re-inherit axHub's value). Use one shared framework control for it, so future screens get both automatically.",
+     "at": "2026-11-13T18:59:59.658Z"
     }
    ],
    "approvals": [],
@@ -202067,7 +202083,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
