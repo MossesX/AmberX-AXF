@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4288,
- "updatedAt": "2026-11-13T11:15:32.841Z",
+ "rev": 4289,
+ "updatedAt": "2026-11-13T11:16:02.178Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -183283,7 +183283,7 @@
    "title": "Fix merge conflicts on PR #557 (professional skins) with main, run the checks, push and land it; confirm the merge on GitHub",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -183291,8 +183291,8 @@
    "pr": "#557",
    "priority": "P0",
    "createdAt": "2026-11-13T10:40:45.569Z",
-   "updatedAt": "2026-11-13T11:14:31.931Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T11:15:47.905Z",
+   "builtAt": "2026-11-13T11:15:47.905Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -183404,12 +183404,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T11:15:47.905Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T10:44:27.308Z",
-     "updatedAt": "2026-11-13T10:44:27.308Z"
+     "updatedAt": "2026-11-13T11:15:48.288Z"
     }
    ],
    "profiles": [
@@ -183420,7 +183420,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
