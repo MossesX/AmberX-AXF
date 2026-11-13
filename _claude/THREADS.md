@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 07:19 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s1 done, → running (all) · orchestrator
 - 2026-11-13 07:19 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` branch claude/full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu (all) · builds-live
 - 2026-11-10 18:08 UTC · `shipped-features-show-each-landed-build-s-screen` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-13 07:16 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` s11 done (all) · orchestrator
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 12:29 UTC · `fix-toolbar-settings-doing-nothing` s1 done, → running (all) · orchestrator
 - 2026-11-13 12:30 UTC · `combine-merge-queue-into-one-pr` s12 done (all) · orchestrator
 - 2026-11-13 12:31 UTC · `assets-menu-hide-any-asset-visible-and-hidden-li` added (0 steps) (all) · console
+- 2026-11-13 12:31 UTC · `ui-review-gate-switch-default-off` s4 done (all) · orchestrator
 
 ## Token passes (log)
 
