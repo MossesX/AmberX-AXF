@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4232,
- "updatedAt": "2026-11-13T10:47:10.364Z",
+ "rev": 4233,
+ "updatedAt": "2026-11-13T10:47:23.649Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -160982,9 +160982,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/console-and-axhub-retry-failed-calls-themselves-no-claude-needed",
-   "pr": "#510",
+   "pr": "#561",
    "createdAt": "2026-11-12T02:37:24.132Z",
-   "updatedAt": "2026-11-13T10:43:12.156Z",
+   "updatedAt": "2026-11-13T10:47:17.701Z",
    "builtAt": "",
    "notes": [
     {
@@ -161221,7 +161221,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
