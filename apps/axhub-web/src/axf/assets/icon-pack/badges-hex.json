@@ -1,0 +1,49 @@
+{
+ "$axf": "asset@1",
+ "type": "icon-pack",
+ "id": "badges-hex",
+ "name": "Badges: hexagon",
+ "version": "1.0.0",
+ "description": "Badges: hexagon: 3 glyphs drawn for AXF; anything it lacks falls back to the framework's. Themable: takes its colour and stroke from the skin.",
+ "author": "icon-packs-import (framework/cli/icon-packs-import.mjs)",
+ "tags": [
+  "filled",
+  "themable",
+  "badges",
+  "own"
+ ],
+ "data": {
+  "style": "filled",
+  "grid": 24,
+  "stroke": 1.75,
+  "linecap": "round",
+  "fallback": "framework",
+  "themable": true,
+  "covers": [
+   "badges"
+  ],
+  "license": {
+   "name": "MIT (AmberX AXF)",
+   "url": "https://opensource.org/licenses/MIT"
+  },
+  "roles": {
+   "badge-status": "badge-dot",
+   "badge-count": "badge-pill",
+   "badge-new": "badge-new"
+  },
+  "glyphs": {
+   "badge-dot": {
+    "d": "M12 3l7.8 4.5v9L12 21l-7.8-4.5v-9Z",
+    "fill": true
+   },
+   "badge-pill": {
+    "d": "M8 7h8l4 5-4 5H8l-4-5Z",
+    "fill": true
+   },
+   "badge-new": {
+    "d": "M12 2c.8 5 3.2 7.4 8 8-4.8.8-7.2 3.2-8 8-.8-4.8-3.2-7.2-8-8 4.8-.6 7.2-3 8-8Z",
+    "fill": true
+   }
+  }
+ }
+}

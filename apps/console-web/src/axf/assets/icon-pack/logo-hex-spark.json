@@ -1,0 +1,39 @@
+{
+ "$axf": "asset@1",
+ "type": "icon-pack",
+ "id": "logo-hex-spark",
+ "name": "Logo: hex spark",
+ "version": "1.0.0",
+ "description": "Logo: hex spark: 1 glyph drawn for AXF; anything it lacks falls back to the framework's. Themable: takes its colour and stroke from the skin.",
+ "author": "icon-packs-import (framework/cli/icon-packs-import.mjs)",
+ "tags": [
+  "outline",
+  "themable",
+  "logos",
+  "own"
+ ],
+ "data": {
+  "style": "outline",
+  "grid": 24,
+  "stroke": 1.75,
+  "linecap": "round",
+  "fallback": "framework",
+  "themable": true,
+  "covers": [
+   "logos"
+  ],
+  "license": {
+   "name": "MIT (AmberX AXF)",
+   "url": "https://opensource.org/licenses/MIT"
+  },
+  "roles": {
+   "app-logo": "logo-mark",
+   "app-mark": "logo-mark"
+  },
+  "glyphs": {
+   "logo-mark": {
+    "d": "M12 2.5l8.2 4.75v9.5L12 21.5l-8.2-4.75v-9.5ZM12 7c0.4 2.5 1.6 3.7 4 4-2.4 0.4-3.6 1.6-4 4-0.4-2.4-1.6-3.6-4-4 2.4-0.3 3.6-1.5 4-4Z"
+   }
+  }
+ }
+}

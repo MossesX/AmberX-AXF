@@ -1,0 +1,49 @@
+{
+ "$axf": "asset@1",
+ "type": "icon-pack",
+ "id": "badges-square",
+ "name": "Badges: square",
+ "version": "1.0.0",
+ "description": "Badges: square: 3 glyphs drawn for AXF; anything it lacks falls back to the framework's. Themable: takes its colour and stroke from the skin.",
+ "author": "icon-packs-import (framework/cli/icon-packs-import.mjs)",
+ "tags": [
+  "filled",
+  "themable",
+  "badges",
+  "own"
+ ],
+ "data": {
+  "style": "filled",
+  "grid": 24,
+  "stroke": 1.75,
+  "linecap": "round",
+  "fallback": "framework",
+  "themable": true,
+  "covers": [
+   "badges"
+  ],
+  "license": {
+   "name": "MIT (AmberX AXF)",
+   "url": "https://opensource.org/licenses/MIT"
+  },
+  "roles": {
+   "badge-status": "badge-dot",
+   "badge-count": "badge-pill",
+   "badge-new": "badge-new"
+  },
+  "glyphs": {
+   "badge-dot": {
+    "d": "M8.5 6h7a2.5 2.5 0 0 1 2.5 2.5v7a2.5 2.5 0 0 1 -2.5 2.5h-7a2.5 2.5 0 0 1 -2.5 -2.5v-7a2.5 2.5 0 0 1 2.5 -2.5Z",
+    "fill": true
+   },
+   "badge-pill": {
+    "d": "M5 7h14a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-6a2 2 0 0 1 2 -2Z",
+    "fill": true
+   },
+   "badge-new": {
+    "d": "M12 3l2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5Z",
+    "fill": true
+   }
+  }
+ }
+}
